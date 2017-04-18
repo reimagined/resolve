@@ -1,0 +1,21 @@
+{
+  "name": "resolve",
+  "version": "0.0.1",
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb-base": "^11.1.3",
+    "eslint-plugin-import": "^2.2.0",
+    "lerna": "^2.0.0-rc.2"
+  },
+  "engines": {
+    "node": "^6.0.0",
+    "npm": "^3.0.0"
+  },
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "postinstall": "lerna bootstrap",
+    "test": "lerna run test",
+    "lint": "eslint ."
+  }
+}
