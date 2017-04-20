@@ -4,6 +4,16 @@ import { MongoClient, _setToArray } from 'mongodb';
 
 import createAdapter from '../src';
 
+const adapterSettings = {
+    url: 'test-url',
+    collection: 'test-collection'
+};
+
+const testEvent = {
+    id: '1',
+    type: 'event-type'
+};
+
 describe('eventstore-mongo', () => {
     afterEach(() => {
         _setToArray(null);
@@ -11,17 +21,9 @@ describe('eventstore-mongo', () => {
     });
 
     it('should save event', () => {
-        const adapter = createAdapter({
-            url: 'test-url',
-            collection: 'test-collection'
-        });
+        const adapter = createAdapter(adapterSettings);
 
-        const event = {
-            id: '1',
-            type: 'event-type'
-        };
-
-        return adapter.saveEvent(event)
+        return adapter.saveEvent(testEvent)
             .then(() => {
                 expect(MongoClient.connect.lastCall.args).to.deep.equal(['test-url']);
                 return MongoClient.connect.lastCall.returnValue;
@@ -29,16 +31,12 @@ describe('eventstore-mongo', () => {
             .then((db) => {
                 expect(db.collection.lastCall.args).to.deep.equal(['test-collection']);
                 expect(db.collection.lastCall.returnValue.insert.lastCall.args)
-                    .to.deep.equal([event]);
+                    .to.deep.equal([testEvent]);
             });
     });
 
     it('should load events by types', () => {
-        const adapter = createAdapter({
-            url: 'test-url',
-            collection: 'test-collection'
-        });
-
+        const adapter = createAdapter(adapterSettings);
         const types = ['event-type-1', 'event-type-2'];
         const eventsByTypes = [{
             id: '1',
@@ -47,15 +45,12 @@ describe('eventstore-mongo', () => {
             id: '1',
             type: 'event-type-2'
         }];
-
         const processEvent = sinon.spy();
+
         _setToArray(() => Promise.resolve(eventsByTypes));
 
         return adapter.loadEventsByTypes(types, processEvent)
-            .then(() => {
-                expect(MongoClient.connect.lastCall.args).to.deep.equal(['test-url']);
-                return MongoClient.connect.lastCall.returnValue;
-            })
+            .then(() => MongoClient.connect.lastCall.returnValue)
             .then((db) => {
                 expect(db.collection.lastCall.args).to.deep.equal(['test-collection']);
                 expect(db.collection.lastCall.returnValue.find.lastCall.args)
@@ -73,13 +68,8 @@ describe('eventstore-mongo', () => {
     });
 
     it('should load events by aggregate id', () => {
-        const adapter = createAdapter({
-            url: 'test-url',
-            collection: 'test-collection'
-        });
-
+        const adapter = createAdapter(adapterSettings);
         const aggregateId = 'test-aggregate-id';
-
         const eventsByAggregateId = [{
             id: '1',
             aggregateId
@@ -92,10 +82,7 @@ describe('eventstore-mongo', () => {
         _setToArray(() => Promise.resolve(eventsByAggregateId));
 
         return adapter.loadEventsByAggregateId(aggregateId, processEvent)
-            .then(() => {
-                expect(MongoClient.connect.lastCall.args).to.deep.equal(['test-url']);
-                return MongoClient.connect.lastCall.returnValue;
-            })
+            .then(() => MongoClient.connect.lastCall.returnValue)
             .then((db) => {
                 expect(db.collection.lastCall.args).to.deep.equal(['test-collection']);
                 expect(db.collection.lastCall.returnValue.find.lastCall.args)
@@ -113,35 +100,22 @@ describe('eventstore-mongo', () => {
     });
 
     it('should notify when an event is saved', () => {
-        const adapter = createAdapter({
-            url: 'test-url',
-            collection: 'test-collection'
-        });
-
-        const event = {
-            id: '1',
-            type: 'event-type'
-        };
-
+        const adapter = createAdapter(adapterSettings);
         const onEventSaved = sinon.spy();
 
         adapter.onEventSaved(onEventSaved);
 
-        return adapter.saveEvent(event)
+        return adapter.saveEvent(testEvent)
             .then(() => {
-                expect(onEventSaved.lastCall.args).to.deep.equal([event]);
+                expect(onEventSaved.lastCall.args).to.deep.equal([testEvent]);
             });
     });
 
     it('should load events using batching', () => {
-        const adapter = createAdapter({
-            url: 'test-url',
-            collection: 'test-collection'
-        });
+        const adapter = createAdapter(adapterSettings);
         const types = ['event-type-1', 'event-type-2'];
         const processEvent = sinon.spy();
         const toArray = sinon.stub();
-
         const getArray = (length) => {
             const a = [];
             for (let i = 0; i < length; i++) {
