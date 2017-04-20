@@ -1,0 +1,6 @@
+--reporter spec
+--recursive
+--check-leaks
+--colors
+
+--require babel-register
