@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import sinon from 'sinon';
 import mockFs from 'mock-fs';
 import adapter from '../src/index';
 
@@ -30,10 +31,17 @@ const row4 = {
     },
     payload: {}
 };
-const newRow = {
+const row5 = {
     type: 'testtype_3',
     aggregate: {
         id: '5'
+    },
+    payload: {}
+};
+const row6 = {
+    type: 'testtype_3',
+    aggregate: {
+        id: '6'
     },
     payload: {}
 };
@@ -47,13 +55,15 @@ const rows = [
 
 const TEST_PATH = './testpath.txt';
 
-mockFs({
-    [TEST_PATH]: JSON.stringify(rows)
-});
-
 const eventstore = adapter({ pathToFile: TEST_PATH });
 
 describe('eventstore-file', () => {
+    before(() => {
+        mockFs({
+            [TEST_PATH]: JSON.stringify(rows)
+        });
+    });
+
     after(() => {
         mockFs.restore();
     });
@@ -72,8 +82,21 @@ describe('eventstore-file', () => {
             expect(result).to.be.deep.equal(row4);
         }));
 
-    it('save event', () => eventstore.saveEvent(newRow)
+    it('save event', () => eventstore
+        .saveEvent(row5)
         .then(() => eventstore.loadEventsByAggregateId('5', (result) => {
-            expect(result).to.be.deep.equal(newRow);
+            expect(result).to.be.deep.equal(row5);
         })));
+
+    it('onEventSaved called', () => {
+        const cb = sinon.spy();
+        eventstore.onEventSaved(cb);
+
+        return eventstore
+            .saveEvent(row6)
+            .then(() => {
+                expect(cb.callCount).to.be.equal(1);
+                expect(cb.firstCall.args[0]).to.be.deep.equal(row6);
+            });
+    });
 });
