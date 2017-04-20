@@ -9,11 +9,11 @@ function generateTrigger() {
 }
 
 describe('Resolve messagebus express', () => {
-    it('integration test', () => {
-        const busOnReady = generateTrigger();
-        const busDispose = generateTrigger();
+    let busInstanse = null;
+    const busDispose = generateTrigger();
 
-        const busInstanse = expressBus({
+    before(() => {
+        busInstanse = expressBus({
             exchangePort: 12999,
             messageTimeout: 5000,
             serverHost: 'localhost',
@@ -21,7 +21,14 @@ describe('Resolve messagebus express', () => {
             fetchRepeatTimeout: 2000,
             disposePromise: busDispose.promise
         });
+    });
 
+    after(() => {
+        busDispose.callback();
+    });
+
+    it('should deliver events to subscribers', () => {
+        const busOnReady = generateTrigger();
         const eventOneSpy = sinon.spy(busOnReady.callback);
         const eventTwoSpy = sinon.spy(busOnReady.callback);
 
@@ -32,19 +39,15 @@ describe('Resolve messagebus express', () => {
         busInstanse.emitEvent({ _type: 'EVENT_TWO', data: 'BBB' });
 
         return busOnReady.promise.then(() => {
-            expect(eventOneSpy.getCall(0).args).to.be.deep.equal(
-                [ { _type: 'EVENT_ONE', data: 'AAA' } ]
-            );
+            expect(eventOneSpy.getCall(0).args)
+                .to.be.deep.equal([{ _type: 'EVENT_ONE', data: 'AAA' }]);
 
-            expect(eventOneSpy.getCall(1).args).to.be.deep.equal(
-                [ { _type: 'EVENT_TWO', data: 'BBB' } ]
-            );
+            expect(eventOneSpy.getCall(1).args)
+                .to.be.deep.equal([{ _type: 'EVENT_TWO', data: 'BBB' }]);
 
-            expect(eventTwoSpy.getCall(0).args).to.be.deep.equal(
-                [ { _type: 'EVENT_TWO', data: 'BBB' } ]
-            );
+            expect(eventTwoSpy.getCall(0).args)
+                .to.be.deep.equal([{ _type: 'EVENT_TWO', data: 'BBB' }]);
 
-            busDispose.callback();
-        }).catch(busDispose.callback);
+        });
     }).timeout(5000);
 });

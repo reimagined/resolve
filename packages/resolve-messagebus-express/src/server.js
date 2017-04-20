@@ -11,21 +11,20 @@ const messages = new Map();
 const server = express();
 
 server.get('/getMessages', (req, res) => {
-    const result = Array.from(messages)
-        .sort(([messageIdLeft], [messageIdRight]) =>
-            ((messageIdLeft < messageIdRight) ? -1 : 1)
-        )
-        .map(([messageId, message]) =>
-            Object.assign({ messageId }, message)
-        );
+    const result = [];
+
+    // ECMA-262 Ver 6.0 Sec 23.1.3.5 Item 7 guarantees original key insertion order
+    messages.forEach((message, messageId) =>
+        result.push(Object.assign({ messageId }, message))
+    );
 
     res.json(result);
-    res.end();
 });
 
 server.post('/postMessage', [jsonBodyParser, (req, res) => {
     const messageId = (new MID()).toString('hex');
     messages.set(messageId, Object.assign({ messageId }, req.body));
+
     // Comsumer process have litimed time to get messages from bus
     // after recieve system signal - it's most straightforward solution
     // for notification with memory economy together
@@ -35,7 +34,6 @@ server.post('/postMessage', [jsonBodyParser, (req, res) => {
     );
 
     res.json({ ok: 'ok' });
-    res.end();
 }]);
 
 server.listen(CONSUMER_EXCHANGE_TCP_PORT);
