@@ -57,7 +57,7 @@ function disposeImpl(options) {
 export default function expressBus(inputOptions) {
     const options = Object.assign({}, inputOptions, {
         exchangePort: inputOptions.exchangePort || 12999,
-        eventSeparationField: inputOptions.eventSeparationField || '_type',
+        eventSeparationField: inputOptions.eventSeparationField || 'type',
         messageTimeout: inputOptions.messageTimeout || 5000,
         serverHost: inputOptions.serverHost || 'localhost',
         fetchAttemptTimeout: inputOptions.fetchAttemptTimeout || 1000,
