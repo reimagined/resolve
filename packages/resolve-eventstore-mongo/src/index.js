@@ -24,11 +24,9 @@ export default function ({ url, collection }) {
     let promise;
 
     function getCollection() {
-        if (promise) {
-            return promise;
+        if (!promise) {
+            promise = MongoClient.connect(url).then(db => db.collection(collection));
         }
-
-        promise = MongoClient.connect(url).then(db => db.collection(collection));
 
         return promise;
     }
