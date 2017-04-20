@@ -35,18 +35,18 @@ describe('Integration: Resolve messagebus express', () => {
         busInstanse.onEvent(['EVENT_ONE', 'EVENT_TWO'], eventOneSpy);
         busInstanse.onEvent(['EVENT_TWO'], eventTwoSpy);
 
-        busInstanse.emitEvent({ _type: 'EVENT_ONE', data: 'AAA' });
-        busInstanse.emitEvent({ _type: 'EVENT_TWO', data: 'BBB' });
+        busInstanse.emitEvent({ type: 'EVENT_ONE', data: 'AAA' });
+        busInstanse.emitEvent({ type: 'EVENT_TWO', data: 'BBB' });
 
         return busOnReady.promise.then(() => {
             expect(eventOneSpy.getCall(0).args)
-                .to.be.deep.equal([{ _type: 'EVENT_ONE', data: 'AAA' }]);
+                .to.be.deep.equal([{ type: 'EVENT_ONE', data: 'AAA' }]);
 
             expect(eventOneSpy.getCall(1).args)
-                .to.be.deep.equal([{ _type: 'EVENT_TWO', data: 'BBB' }]);
+                .to.be.deep.equal([{ type: 'EVENT_TWO', data: 'BBB' }]);
 
             expect(eventTwoSpy.getCall(0).args)
-                .to.be.deep.equal([{ _type: 'EVENT_TWO', data: 'BBB' }]);
+                .to.be.deep.equal([{ type: 'EVENT_TWO', data: 'BBB' }]);
 
         });
     }).timeout(5000);
