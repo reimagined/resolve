@@ -39,8 +39,8 @@ function onEventImpl(eventFunctionsMap, eventDescriptor, callback) {
     }
 }
 
-function localTriggerImpl(eventFunctionsMap, message) {
-    const callbacks = eventFunctionsMap.get(message._type);
+function localTriggerImpl(eventFunctionsMap, eventSeparationField, message) {
+    const callbacks = eventFunctionsMap.get(message[eventSeparationField]);
     if (callbacks) {
         callbacks.forEach(handler => handler(message));
     }
@@ -57,6 +57,7 @@ function disposeImpl(options) {
 export default function expressBus(inputOptions) {
     const options = Object.assign({}, inputOptions, {
         exchangePort: inputOptions.exchangePort || 12999,
+        eventSeparationField: inputOptions.eventSeparationField || '_type',
         messageTimeout: inputOptions.messageTimeout || 5000,
         serverHost: inputOptions.serverHost || 'localhost',
         fetchAttemptTimeout: inputOptions.fetchAttemptTimeout || 1000,
@@ -68,7 +69,11 @@ export default function expressBus(inputOptions) {
     });
 
     const eventFunctionsMap = new Map();
-    const localTrigger = (...args) => localTriggerImpl(eventFunctionsMap, ...args);
+    const localTrigger = (...args) => localTriggerImpl(
+        eventFunctionsMap,
+        options.eventSeparationField,
+        ...args
+    );
 
     let initialMessageQueue = [];
     let localPusher = message => initialMessageQueue.push(message);
