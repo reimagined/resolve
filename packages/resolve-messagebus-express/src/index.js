@@ -59,6 +59,14 @@ const emitEventImpl = (sendFunction, localChannelName, message) => {
     sendFunction(message);
 };
 
+const disposeImpl = (options) => {
+    const serverProcs = options.managedServerProcs;
+    options.managedServerPid = null;
+    options.fullStop = true;
+
+    serverProcs.forEach(proc => proc.kill());
+};
+
 export default (inputOptions) => {
     const options = Object.assign({}, inputOptions, {
         channelName: inputOptions.channelName || globalId,
@@ -66,7 +74,10 @@ export default (inputOptions) => {
         messageTimeout: inputOptions.messageTimeout || 5000,
         serverHost: inputOptions.serverHost || 'localhost',
         fetchAttemptTimeout: inputOptions.fetchAttemptTimeout || 1000,
-        fetchRepeatTimeout: inputOptions.fetchRepeatTimeout || 3000
+        fetchRepeatTimeout: inputOptions.fetchRepeatTimeout || 3000,
+        consumerCallbacks: [],
+        managedServerProcs: [],
+        fullStop: false
     });
 
     const eventFunctionsMap = new Map();
@@ -85,6 +96,9 @@ export default (inputOptions) => {
         },
         emitEvent: {
             value: (...args) => localPusher(...args)
+        },
+        dispose: {
+            value: () => disposeImpl(options)
         }
     });
 

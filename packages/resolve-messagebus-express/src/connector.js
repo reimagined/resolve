@@ -16,7 +16,6 @@ Promise.resolve() // Guarantees a non-blocking call when loading the module
     );
 
 const serverPath = path.join(__dirname, './server');
-const consumerCallbacks = [];
 
 const post = (url, data) => {
     const options = { method: 'POST', credentials: 'same-origin' };
@@ -77,12 +76,15 @@ const buildExchangeUrl = (options, isPost) => {
 const upstartServer = (options) => {
     // Spawn server only if it's network interface belongs to current host
     checkIsOwnHost(options.serverHost)
-        .then(() => childProcess.fork(
+        .then(() => (options.managedServerProcs === null ? Promise.reject() : null))
+        .then(() => (options.managedServerProcs.push(childProcess.fork(
             serverPath,
             [options.exchangePort, options.messageTimeout],
-            { silent: false }
-        ))
+            { silent: true }
+        ))))
         .catch(() => null);
+
+    if (options.fullStop) return Promise.reject();
 
     return checkRunning(options).catch(
         () => upstartServer(options)
@@ -90,6 +92,8 @@ const upstartServer = (options) => {
 }
 
 const checkRunning = (options) => {
+    if (options.fullStop) return Promise.reject();
+
     return promiseRaceSafe([
         roundFetch(buildExchangeUrl(options), {}, {
             validateFunction: text => (text !== ''),
@@ -104,6 +108,8 @@ const checkRunning = (options) => {
 }
 
 export const postMessage = (info, options) => {
+    if (options.fullStop) return Promise.reject();
+
     return promiseRaceSafe([
         post(buildExchangeUrl(options, true), info).then(res => res.json()),
         delay(options.fetchAttemptTimeout).then(
@@ -118,13 +124,15 @@ export const postMessage = (info, options) => {
 }
 
 const fetchMessages = (options) => {
+    if (options.fullStop) return Promise.reject();
+
     return promiseRaceSafe([
         fetch(buildExchangeUrl(options)).then(res => res.json()),
         delay(options.fetchRepeatTimeout).then(
             () => Promise.reject('Messagebus server not working')
         )
     ])
-        .then(messagesList => consumerCallbacks.map(callback =>
+        .then(messagesList => options.consumerCallbacks.map(callback =>
             messagesList.forEach(message =>
                 // Ensure that every consumer recieves own copy of bus message
                 callback(JSON.parse(JSON.stringify(message)))
@@ -142,9 +150,9 @@ export const init = (options) => {
 }
 
 export const attachConsumer = (func, options) => {
-    if (consumerCallbacks.length === 0) {
+    if (options.consumerCallbacks.length === 0) {
         delay(100).then(() => fetchMessages(options));
     }
 
-    consumerCallbacks.push(func);
+    options.consumerCallbacks.push(func);
 }

@@ -35,8 +35,35 @@ describe('Resolve messagebus express', () => {
         privateBus.emitEvent({ _type: 'EVENT_TWO', data: 'DDD' });
 
         return promise.then(() => {
-            console.log('Bus works');
+            expect(eventHandlerSpy.getCall(0).args).to.be.deep.equal(
+                [ { _type: 'EVENT_ONE', data: 'AAA' } ]
+            );
 
+            expect(eventHandlerSpy.getCall(1).args).to.be.deep.equal(
+                [ { _type: 'EVENT_TWO', data: 'BBB' } ]
+            );
+
+            expect(eventHandlerSpy.getCall(2).args).to.be.deep.equal(
+                [ { _type: 'EVENT_ONE', data: 'AAA' } ]
+            );
+
+            expect(eventHandlerSpy.getCall(3).args).to.be.deep.equal(
+                [ { _type: 'EVENT_TWO', data: 'BBB' } ]
+            );
+
+            expect(eventHandlerSpy.getCall(4).args).to.be.deep.equal(
+                [ { _type: 'EVENT_ONE', data: 'CCC' } ]
+            );
+
+            expect(eventHandlerSpy.getCall(5).args).to.be.deep.equal(
+                [ { _type: 'EVENT_TWO', data: 'DDD' } ]
+            );
+
+            publicBus.dispose();
+            privateBus.dispose();
+        }).catch(() => {
+            publicBus.dispose();
+            privateBus.dispose();
         });
-    })
+    }).timeout(5000);
 });
