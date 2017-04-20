@@ -38,8 +38,7 @@ describe('messagebus-rabbitmq', () => {
             .resolves(fakeConnection);
 
         consumeExpectation = fakeChannelMock
-            .expects('consume')
-            .callsArgWith(1, message);
+            .expects('consume');
 
         fakeChannelMock
             .expects('assertQueue')
@@ -62,7 +61,7 @@ describe('messagebus-rabbitmq', () => {
     });
 
     describe('emitEvent', () => {
-        it('calls amqplib connect once', () => {
+        it('calls amqplib connect once. sequence', () => {
             const instance = adapter(adapterConfig);
 
             return instance.emitEvent({})
@@ -86,6 +85,35 @@ describe('messagebus-rabbitmq', () => {
             return instance.emitEvent(event)
                 .then(() => fakeChannelMock.verify());
         });
+
+        it('calls amqplib connect once. parallel', () => {
+            const instance = adapter(adapterConfig);
+            const firstEvent = { message: 1 };
+            const secondEvent = { message: 2 };
+
+            fakeChannelMock
+                .expects('publish')
+                .onCall(0)
+                .callsFake((exchange, queueName, event) => {
+                    expect(new Buffer(JSON.stringify(firstEvent)))
+                        .to.be.deep.equal(event);
+                });
+
+            fakeChannelMock
+                .expects('publish')
+                .onCall(1)
+                .callsFake((exchange, queueName, event) => {
+                    expect(new Buffer(JSON.stringify(secondEvent)))
+                        .to.be.deep.equal(event);
+                });
+
+            return Promise.all([
+                instance.emitEvent(firstEvent),
+                instance.emitEvent(secondEvent)
+            ])
+                .then(() => {})
+                .then(() => amqplibMock.verify());
+        });
     });
 
     describe('onEvent', () => {
@@ -99,12 +127,14 @@ describe('messagebus-rabbitmq', () => {
 
         it('calls callback on message is got from amqplib', (done) => {
             const instance = adapter(adapterConfig);
+            let emitter;
 
             consumeExpectation
                 .callsFake((queueName, func, options) => {
                     expect(queueName).to.be.equal('');
                     expect(func).to.be.a('function');
                     expect(options).to.be.deep.equal({ noAck: true });
+                    emitter = func;
                 });
 
             instance.onEvent(['eventType'], (event) => {
@@ -112,35 +142,26 @@ describe('messagebus-rabbitmq', () => {
                 fakeChannelMock.verify();
                 done();
             })
+                .then(() => emitter(message))
                 .catch(error => done(error));
         });
 
-        it('calls amqplib bindQueue with correct arguments', (done) => {
+        it('calls amqplib bindQueue with correct arguments', () => {
             const instance = adapter(adapterConfig);
 
-            instance.onEvent(['eventType'], (event) => {
-                expect(JSON.stringify(event)).to.be.deep.equal(message.content);
-                fakeChannelMock.verify();
-                done();
-            });
+            return instance.onEvent(['eventType'], () => {})
+                .then(() => fakeChannelMock.verify());
         });
 
-        it('calls amqplib assertExchange', (done) => {
+        it('calls amqplib assertExchange', () => {
             const instance = adapter(adapterConfig);
+
             assertExchangeExpectation
-                 .callsFake((exchange, type, options) => {
-                     expect(exchange).to.be.equal('exchange');
-                     expect(type).to.be.equal('fanout');
-                     expect(options).to.be.deep.equal({ durable: false });
-                     return Promise.resolve();
-                 });
+                .withArgs('exchange', 'fanout', { durable: false })
+                .resolves();
 
-
-            instance.onEvent(['eventType'], () => {
-                fakeChannelMock.verify();
-                done();
-            })
-                .catch(error => done(error));
+            return instance.onEvent(['eventType'], () => {})
+                .then(() => fakeChannelMock.verify());
         });
     });
 });
