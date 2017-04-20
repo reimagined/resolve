@@ -1,23 +1,10 @@
 import childProcess from 'child_process';
-import dns from 'dns';
 import fetch from 'isomorphic-fetch';
-import os from 'os';
 import path from 'path';
-
-const SELF_NETWORK_ADDRESSES = new Set();
-Promise.resolve() // Guarantees a non-blocking call when loading the module
-    .then(() => os.networkInterfaces())
-    .then(networkInfo =>
-        Object.keys(networkInfo).forEach(ifaceGroupName =>
-            networkInfo[ifaceGroupName].forEach(iface => {
-                SELF_NETWORK_ADDRESSES.add(iface.address)
-            })
-        )
-    );
 
 const serverPath = path.join(__dirname, './server');
 
-const post = (url, data) => {
+function post(url, data) {
     const options = { method: 'POST', credentials: 'same-origin' };
     if (data) {
         options.headers = { 'Content-Type': 'application/json' };
@@ -26,17 +13,17 @@ const post = (url, data) => {
     return fetch(url, options);
 }
 
-const promiseRaceSafe = (promiseList) => {
+function promiseRaceSafe(promiseList) {
     return new Promise((resolve, reject) =>
         promiseList.forEach(promise => promise.then(resolve, reject))
     );
 }
 
-const delay = (time) => {
+function delay(time) {
     return new Promise(resolve => setTimeout(resolve, time));
 }
 
-const roundFetch = (urlAddress, options, roundFetchOptions) => {
+function roundFetch(urlAddress, options, roundFetchOptions) {
     return promiseRaceSafe([
         fetch(urlAddress, options).then(response =>
             (response.ok ? response : Promise.reject(new Error(response.statusText)))
@@ -63,26 +50,20 @@ const roundFetch = (urlAddress, options, roundFetchOptions) => {
         );
 }
 
-const checkIsOwnHost = (hostname) =>
-    new Promise((resolve, reject) => dns.lookup(hostname, (err, result) => (
-        (err || !SELF_NETWORK_ADDRESSES.has(result)) ? reject() : resolve()
-    )));
-
-const buildExchangeUrl = (options, isPost) => {
+function buildExchangeUrl(options, isPost) {
     const baseUrl = `http://${options.serverHost}:${options.exchangePort}/`;
     return isPost ? `${baseUrl}postMessage` : `${baseUrl}getMessages`;
 };
 
-const upstartServer = (options) => {
+function upstartServer(options) {
     // Spawn server only if it's network interface belongs to current host
-    checkIsOwnHost(options.serverHost)
-        .then(() => (options.managedServerProcs === null ? Promise.reject() : null))
-        .then(() => (options.managedServerProcs.push(childProcess.fork(
+    if ((options.managedServerProcs !== null) && (options.serverHost === 'localhost')) {
+        options.managedServerProcs.push(childProcess.fork(
             serverPath,
             [options.exchangePort, options.messageTimeout],
             { silent: true }
-        ))))
-        .catch(() => null);
+        ));
+    }
 
     if (options.fullStop) return Promise.reject();
 
@@ -91,7 +72,7 @@ const upstartServer = (options) => {
     );
 }
 
-const checkRunning = (options) => {
+function checkRunning(options) {
     if (options.fullStop) return Promise.reject();
 
     return promiseRaceSafe([
@@ -107,7 +88,7 @@ const checkRunning = (options) => {
     ]);
 }
 
-export const postMessage = (info, options) => {
+export function postMessage(info, options) {
     if (options.fullStop) return Promise.reject();
 
     return promiseRaceSafe([
@@ -123,7 +104,7 @@ export const postMessage = (info, options) => {
     );
 }
 
-const fetchMessages = (options) => {
+function fetchMessages(options) {
     if (options.fullStop) return Promise.reject();
 
     return promiseRaceSafe([
@@ -143,13 +124,13 @@ const fetchMessages = (options) => {
         .then(() => fetchMessages(options));
 }
 
-export const init = (options) => {
+export function init(options) {
     return checkRunning(options).catch(
         () => upstartServer(options)
     );
 }
 
-export const attachConsumer = (func, options) => {
+export function attachConsumer(func, options) {
     if (options.consumerCallbacks.length === 0) {
         delay(100).then(() => fetchMessages(options));
     }
