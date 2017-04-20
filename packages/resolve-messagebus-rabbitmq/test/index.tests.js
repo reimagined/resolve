@@ -7,7 +7,8 @@ const fakeChannel = {
     publish: () => {},
     consume: () => {},
     bindQueue: () => {},
-    assertQueue: () => {}
+    assertQueue: () => {},
+    assertExchange: () => {}
 };
 
 const fakeConnection = {
@@ -18,6 +19,7 @@ describe('messagebus-rabbitmq', () => {
     let amqplibMock;
     let fakeChannelMock;
     let consumeExpectation;
+    let assertExchangeExpectation;
 
     const adapterConfig = { url: 'url' };
     const queue = { queue: 'queue' };
@@ -48,6 +50,10 @@ describe('messagebus-rabbitmq', () => {
             .expects('bindQueue')
             .withArgs(queue.queue, 'exchange')
             .resolves();
+
+        assertExchangeExpectation = fakeChannelMock
+            .expects('assertExchange')
+            .resolves();
     });
 
     afterEach(() => {
@@ -64,7 +70,7 @@ describe('messagebus-rabbitmq', () => {
                 .then(() => amqplibMock.verify());
         });
 
-        it('calls amqpblib publish', () => {
+        it('calls amqplib publish', () => {
             const event = {};
 
             fakeChannelMock
@@ -83,7 +89,7 @@ describe('messagebus-rabbitmq', () => {
     });
 
     describe('onEvent', () => {
-        it('calls amqpblib connect only once', () => {
+        it('calls amqplib connect only once', () => {
             const instance = adapter(adapterConfig);
 
             return instance.onEvent(['eventType'], () => {})
@@ -91,7 +97,7 @@ describe('messagebus-rabbitmq', () => {
                 .then(() => amqplibMock.verify());
         });
 
-        it('calls callback on message is got from amqpblib', (done) => {
+        it('calls callback on message is got from amqplib', (done) => {
             const instance = adapter(adapterConfig);
 
             consumeExpectation
@@ -109,7 +115,7 @@ describe('messagebus-rabbitmq', () => {
                 .catch(error => done(error));
         });
 
-        it('calls amqpblib bindQueue with correct arguments', (done) => {
+        it('calls amqplib bindQueue with correct arguments', (done) => {
             const instance = adapter(adapterConfig);
 
             instance.onEvent(['eventType'], (event) => {
@@ -117,6 +123,24 @@ describe('messagebus-rabbitmq', () => {
                 fakeChannelMock.verify();
                 done();
             });
+        });
+
+        it('calls amqplib assertExchange', (done) => {
+            const instance = adapter(adapterConfig);
+            assertExchangeExpectation
+                 .callsFake((exchange, type, options) => {
+                     expect(exchange).to.be.equal('exchange');
+                     expect(type).to.be.equal('fanout');
+                     expect(options).to.be.deep.equal({ durable: false });
+                     return Promise.resolve();
+                 });
+
+
+            instance.onEvent(['eventType'], () => {
+                fakeChannelMock.verify();
+                done();
+            })
+                .catch(error => done(error));
         });
     });
 });

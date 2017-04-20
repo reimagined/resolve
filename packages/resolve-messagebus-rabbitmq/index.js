@@ -56,6 +56,10 @@ function init(data, options) {
     return amqp
         .connect(options.url)
         .then(connection => connection.createChannel())
+        .then(channel =>
+            channel.assertExchange(config.exchange, 'fanout', { durable: false })
+                .then(() => channel)
+            )
         .then(channel => (data.channel = channel))
         .then(channel =>
             channel.assertQueue(config.queueName)
