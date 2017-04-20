@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
-import expressBus, { publicId } from '../src/index.js';
+import expressBus from '../src/index.js';
 
 function generateTrigger() {
     let callback = null;
@@ -8,7 +8,7 @@ function generateTrigger() {
     return { callback, promise };
 }
 
-describe('Resolve messagebus express', () => {
+describe('Integration: Resolve messagebus express', () => {
     let busInstanse = null;
     const busDispose = generateTrigger();
 
