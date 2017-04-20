@@ -23,7 +23,7 @@ server.get('/getMessages', (req, res) => {
 
 server.post('/postMessage', [jsonBodyParser, (req, res) => {
     const messageId = (new MID()).toString('hex');
-    messages.set(messageId, Object.assign({ messageId }, req.body));
+    messages.set(messageId, req.body);
 
     // Comsumer process have litimed time to get messages from bus
     // after recieve system signal - it's most straightforward solution
