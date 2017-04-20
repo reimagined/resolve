@@ -5,44 +5,32 @@ import adapter from '../src/index';
 
 const row1 = {
     type: 'testtype_1',
-    aggregate: {
-        id: '1'
-    },
+    aggregateId: '1',
     payload: {}
 };
 const row2 = {
     type: 'testtype_1',
-    aggregate: {
-        id: '2'
-    },
+    aggregateId: '2',
     payload: {}
 };
 const row3 = {
     type: 'testtype_1',
-    aggregate: {
-        id: '3'
-    },
+    aggregateId: '3',
     payload: {}
 };
 const row4 = {
     type: 'testtype_2',
-    aggregate: {
-        id: '4'
-    },
+    aggregateId: '4',
     payload: {}
 };
 const row5 = {
     type: 'testtype_3',
-    aggregate: {
-        id: '5'
-    },
+    aggregateId: '5',
     payload: {}
 };
 const row6 = {
     type: 'testtype_3',
-    aggregate: {
-        id: '6'
-    },
+    aggregateId: '6',
     payload: {}
 };
 

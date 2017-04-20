@@ -26,7 +26,7 @@ export default ({ pathToFile }) => {
 
         loadEventsByAggregateId: (id, callback) =>
             loadEvents(pathToFile)
-            .then(events => callback(events.find(event => event.aggregate.id === id))),
+            .then(events => callback(events.find(event => event.aggregateId === id))),
 
         onEventSaved: (callback) => {
             onEventSavedCallbacks.push(callback);
