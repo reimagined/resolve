@@ -1,6 +1,6 @@
 import amqp from 'amqplib';
 
-const config = {
+const defaultOptions = {
     exchange: 'exchange',
     queueName: '',
     channelName: ''
@@ -20,13 +20,13 @@ function init(options, callbacks) {
         .connect(options.url)
         .then(connection => connection.createChannel())
         .then(channel =>
-            channel.assertExchange(config.exchange, 'fanout', { durable: false })
+            channel.assertExchange(options.exchange, 'fanout', { durable: false })
                 .then(() => channel)
             )
         .then(channel =>
-            channel.assertQueue(config.queueName)
-                .then(queue => channel.bindQueue(queue.queue, config.exchange))
-                .then(() => channel.consume(config.queueName, (msg) => {
+            channel.assertQueue(options.queueName)
+                .then(queue => channel.bindQueue(queue.queue, options.exchange))
+                .then(() => channel.consume(options.queueName, (msg) => {
                     if (msg) {
                         const content = msg.content.toString();
                         const message = JSON.parse(content);
@@ -39,12 +39,13 @@ function init(options, callbacks) {
 
 export default function (options) {
     const callbacks = {};
+    const config = Object.assign(defaultOptions, options);
 
     let promise;
 
     function getChannel() {
         if (!promise) {
-            promise = init(options, callbacks);
+            promise = init(config, callbacks);
         }
         return promise;
     }
