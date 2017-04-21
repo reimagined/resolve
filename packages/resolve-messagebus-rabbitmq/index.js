@@ -3,7 +3,8 @@ import amqp from 'amqplib';
 const defaultOptions = {
     exchange: 'exchange',
     queueName: '',
-    channelName: ''
+    channelName: '',
+    exchangeType: 'fanout'
 };
 
 function createTrigger(callbackStore) {
@@ -20,7 +21,7 @@ function init(options, callbacks) {
         .connect(options.url)
         .then(connection => connection.createChannel())
         .then(channel =>
-            channel.assertExchange(options.exchange, 'fanout', { durable: false })
+            channel.assertExchange(options.exchange, options.exchangeType, { durable: false })
                 .then(() => channel)
             )
         .then(channel =>
