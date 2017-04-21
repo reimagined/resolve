@@ -3,8 +3,7 @@ import amqp from 'amqplib';
 const config = {
     exchange: 'exchange',
     queueName: '',
-    channelName: '',
-    globalId: '$global'
+    channelName: ''
 };
 
 function createTrigger(callbackStore) {

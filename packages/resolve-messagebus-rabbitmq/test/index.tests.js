@@ -125,7 +125,7 @@ describe('messagebus-rabbitmq', () => {
                 .then(() => amqplibMock.verify());
         });
 
-        it('calls callback on message is got from amqplib', (done) => {
+        it('calls callback on message is got from amqplib', () => {
             const instance = adapter(adapterConfig);
             let emitter;
 
@@ -137,13 +137,11 @@ describe('messagebus-rabbitmq', () => {
                     emitter = func;
                 });
 
-            instance.onEvent(['eventType'], (event) => {
+            return instance.onEvent(['eventType'], (event) => {
                 expect(JSON.stringify(event)).to.be.deep.equal(message.content);
                 fakeChannelMock.verify();
-                done();
             })
-                .then(() => emitter(message))
-                .catch(error => done(error));
+                .then(() => emitter(message));
         });
 
         it('calls amqplib bindQueue with correct arguments', () => {
