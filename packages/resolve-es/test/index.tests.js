@@ -3,7 +3,9 @@ import sinon from 'sinon';
 import createStore from '../src/index';
 
 const eventstore = createStore({
-    saveEvent: () => Promise.resolve()
+    driver: {
+        saveEvent: () => Promise.resolve()
+    }
 });
 
 const event = {

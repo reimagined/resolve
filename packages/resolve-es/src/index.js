@@ -1,4 +1,4 @@
-export default (driver) => {
+export default ({ driver }) => {
     const onEventSavedCallbacks = [];
 
     return {
