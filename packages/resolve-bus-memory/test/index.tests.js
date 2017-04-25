@@ -12,7 +12,6 @@ describe('inMemoryBus', () => {
         const event3 = { __type: 'ONE', data: 'CCC' };
 
         const onEventSpy = sinon.spy();
-        const offEvent = busInstanse.onEvent(['ONE'], onEventSpy);
 
         busInstanse.emitEvent(event1);
         busInstanse.emitEvent(event2);
@@ -30,7 +29,7 @@ describe('inMemoryBus', () => {
 
     it('unsubscribe', () => {
         const busInstanse = inMemoryBus();
-        const event = { __type: 'ONE', data: 'AAA'};
+        const event = { __type: 'ONE', data: 'AAA' };
         const onEventSpy = sinon.spy();
         const unsubscribe = busInstanse.onEvent(['ONE'], onEventSpy);
 
@@ -41,5 +40,5 @@ describe('inMemoryBus', () => {
 
         busInstanse.emitEvent(event);
         expect(onEventSpy.callCount).to.be.equal(1);
-    })
+    });
 });
