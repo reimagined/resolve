@@ -20,7 +20,7 @@ const handlers = {
 
 const execute = createExecutor({
     eventStore: {
-        loadEventsByTypes: (types, cb) => Promise.resolve(cb(events))
+        loadEventsByTypes: (types, cb) => Promise.resolve(events.forEach(cb))
     },
     projection: {
         initialState,
