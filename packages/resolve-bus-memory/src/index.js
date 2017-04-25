@@ -1,6 +1,5 @@
-const eventHandlersMap = new Map();
-
 export default function inMemoryBus() {
+    const eventHandlersMap = new Map();
     return {
         onEvent: (eventTypesArray, callback) => {
             eventTypesArray.forEach((eventType) => {
@@ -11,14 +10,12 @@ export default function inMemoryBus() {
 
             return () => {
                 eventTypesArray.forEach((eventType) => {
-                    const callbackArray = eventHandlersMap.get(eventType) || [];
+                    const callbackArray = eventHandlersMap.get(eventType);
                     const callbackIndex = callbackArray.indexOf(callback);
 
                     if (callbackIndex >= 0) {
                         callbackArray.splice(callbackIndex, 1);
                     }
-
-                    eventHandlersMap.set(eventType, callbackArray);
                 });
             };
         },
