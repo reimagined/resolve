@@ -45,7 +45,7 @@ const TEST_PATH = './testpath.txt';
 
 const eventstore = adapter({ pathToFile: TEST_PATH });
 
-describe('eventstore-file', () => {
+describe('es-file', () => {
     before(() => {
         mockFs({
             [TEST_PATH]: JSON.stringify(rows)

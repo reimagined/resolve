@@ -15,7 +15,7 @@ const fakeConnection = {
     createChannel: () => fakeChannel
 };
 
-describe('messagebus-rabbitmq', () => {
+describe('bus-rabbitmq', () => {
     let amqplibMock;
     let fakeChannelMock;
     let consumeExpectation;
