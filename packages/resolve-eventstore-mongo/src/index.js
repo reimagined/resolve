@@ -40,11 +40,11 @@ export default function ({ url, collection }) {
                 ),
         loadEventsByTypes: (types, callback) =>
             getCollection().then(coll =>
-                loadEvents(coll, { type: { $in: types } }, 0, LIMIT, callback)
+                loadEvents(coll, { __type: { $in: types } }, 0, LIMIT, callback)
             ),
         loadEventsByAggregateId: (aggregateId, callback) =>
             getCollection().then(coll =>
-                loadEvents(coll, { aggregateId }, 0, LIMIT, callback)
+                loadEvents(coll, { __aggregateId: aggregateId }, 0, LIMIT, callback)
             ),
         onEventSaved: (callback) => {
             onEventSavedCallbacks.push(callback);

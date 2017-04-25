@@ -22,11 +22,11 @@ export default ({ pathToFile }) => {
 
         loadEventsByTypes: (types, callback) =>
             loadEvents(pathToFile)
-            .then(events => callback(events.filter(event => types.includes(event.type)))),
+            .then(events => callback(events.filter(event => types.includes(event.__type)))),
 
         loadEventsByAggregateId: (id, callback) =>
             loadEvents(pathToFile)
-            .then(events => callback(events.find(event => event.aggregateId === id))),
+            .then(events => callback(events.find(event => event.__aggregateId === id))),
 
         onEventSaved: (callback) => {
             onEventSavedCallbacks.push(callback);
