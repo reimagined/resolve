@@ -38,3 +38,7 @@ jspm_packages
 
 # IDE directory
 .idea
+.vscode
+
+#
+dist
