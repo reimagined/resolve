@@ -11,10 +11,10 @@ const adapterSettings = {
 
 const testEvent = {
     id: '1',
-    type: 'event-type'
+    __type: 'event-type'
 };
 
-describe('eventstore-mongo', () => {
+describe('es-mongo', () => {
     afterEach(() => {
         _setToArray(null);
         MongoClient.connect.reset();
@@ -54,7 +54,7 @@ describe('eventstore-mongo', () => {
             .then((db) => {
                 expect(db.collection.lastCall.args).to.deep.equal(['test-collection']);
                 expect(db.collection.lastCall.returnValue.find.lastCall.args)
-                    .to.deep.equal([{ type: { $in: types } }]);
+                    .to.deep.equal([{ __type: { $in: types } }]);
 
                 const find = db.collection.lastCall.returnValue.find.lastCall.returnValue;
 
@@ -86,7 +86,7 @@ describe('eventstore-mongo', () => {
             .then((db) => {
                 expect(db.collection.lastCall.args).to.deep.equal(['test-collection']);
                 expect(db.collection.lastCall.returnValue.find.lastCall.args)
-                    .to.deep.equal([{ aggregateId }]);
+                    .to.deep.equal([{ __aggregateId: aggregateId }]);
 
                 const find = db.collection.lastCall.returnValue.find.lastCall.returnValue;
 
@@ -96,18 +96,6 @@ describe('eventstore-mongo', () => {
 
                 expect(processEvent.args)
                     .to.deep.equal([[eventsByAggregateId[0]], [eventsByAggregateId[1]]]);
-            });
-    });
-
-    it('should notify when an event is saved', () => {
-        const adapter = createAdapter(adapterSettings);
-        const onEventSaved = sinon.spy();
-
-        adapter.onEventSaved(onEventSaved);
-
-        return adapter.saveEvent(testEvent)
-            .then(() => {
-                expect(onEventSaved.lastCall.args).to.deep.equal([testEvent]);
             });
     });
 

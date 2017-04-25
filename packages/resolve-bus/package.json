@@ -1,5 +1,5 @@
 {
-  "name": "resolve-eventstore-mongo",
+  "name": "resolve-bus",
   "version": "0.0.1",
   "description": "",
   "main": "./src/index.js",
@@ -14,10 +14,6 @@
     "babel-register": "^6.24.1",
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
-    "mockery": "^2.0.0",
     "sinon": "^2.1.0"
-  },
-  "dependencies": {
-    "mongodb": "^2.2.26"
   }
 }
