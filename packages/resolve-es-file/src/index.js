@@ -6,30 +6,21 @@ const loadEvents = path => new Promise((resolve, reject) =>
     )
 );
 
-export default ({ pathToFile }) => {
-    const onEventSavedCallbacks = [];
+export default ({ pathToFile }) => ({
+    saveEvent: event =>
+        loadEvents(pathToFile)
+        .then(events => new Promise((resolve, reject) => {
+            events.push(event);
+            fs.writeFile(pathToFile, JSON.stringify(events, null, 2), 'utf8', err =>
+                (err ? reject(err) : resolve())
+            );
+        })),
 
-    return {
-        saveEvent: event =>
-            loadEvents(pathToFile)
-            .then(events => new Promise((resolve, reject) => {
-                events.push(event);
-                fs.writeFile(pathToFile, JSON.stringify(events, null, 2), 'utf8', err =>
-                    (err ? reject(err) : resolve())
-                );
-            }))
-            .then(() => onEventSavedCallbacks.forEach(cb => cb(event))),
+    loadEventsByTypes: (types, callback) =>
+        loadEvents(pathToFile)
+        .then(events => callback(events.filter(event => types.includes(event.__type)))),
 
-        loadEventsByTypes: (types, callback) =>
-            loadEvents(pathToFile)
-            .then(events => callback(events.filter(event => types.includes(event.__type)))),
-
-        loadEventsByAggregateId: (id, callback) =>
-            loadEvents(pathToFile)
-            .then(events => callback(events.find(event => event.__aggregateId === id))),
-
-        onEventSaved: (callback) => {
-            onEventSavedCallbacks.push(callback);
-        }
-    };
-};
+    loadEventsByAggregateId: (id, callback) =>
+        loadEvents(pathToFile)
+        .then(events => callback(events.find(event => event.__aggregateId === id)))
+});

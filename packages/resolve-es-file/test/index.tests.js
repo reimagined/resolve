@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import sinon from 'sinon';
 import mockFs from 'mock-fs';
 import adapter from '../src/index';
 
@@ -26,11 +25,6 @@ const row4 = {
 const row5 = {
     __type: 'testtype_3',
     __aggregateId: '5',
-    payload: {}
-};
-const row6 = {
-    __type: 'testtype_3',
-    __aggregateId: '6',
     payload: {}
 };
 
@@ -75,16 +69,4 @@ describe('es-file', () => {
         .then(() => eventstore.loadEventsByAggregateId('5', (result) => {
             expect(result).to.be.deep.equal(row5);
         })));
-
-    it('onEventSaved called', () => {
-        const cb = sinon.spy();
-        eventstore.onEventSaved(cb);
-
-        return eventstore
-            .saveEvent(row6)
-            .then(() => {
-                expect(cb.callCount).to.be.equal(1);
-                expect(cb.firstCall.args[0]).to.be.deep.equal(row6);
-            });
-    });
 });
