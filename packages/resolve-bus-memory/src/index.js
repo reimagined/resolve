@@ -1,32 +1,21 @@
 export default function inMemoryBus() {
-    const eventHandlersMap = new Map();
+    const callbacks = [];
 
     return {
-        onEvent: (eventTypesArray, callback) => {
-            eventTypesArray.forEach((eventType) => {
-                const callbackArray = eventHandlersMap.get(eventType) || [];
-                callbackArray.push(callback);
-                eventHandlersMap.set(eventType, callbackArray);
-            });
+        subscribe: (callback) => {
+            callbacks.push(callback);
 
             return () => {
-                eventTypesArray.forEach((eventType) => {
-                    const callbackArray = eventHandlersMap.get(eventType);
-                    const callbackIndex = callbackArray.indexOf(callback);
+                const callbackIndex = callbacks.indexOf(callback);
 
-                    if (callbackIndex >= 0) {
-                        callbackArray.splice(callbackIndex, 1);
-                    }
-                });
+                if (callbackIndex >= 0) {
+                    callbacks.splice(callbackIndex, 1);
+                }
             };
         },
 
         publish: (event) => {
-            const callbacks = eventHandlersMap.get(event.__type);
-
-            if (callbacks) {
-                callbacks.forEach(handler => handler(event));
-            }
+            callbacks.forEach(handler => handler(event));
         }
     };
 }
