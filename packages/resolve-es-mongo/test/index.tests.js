@@ -14,7 +14,7 @@ const testEvent = {
     __type: 'event-type'
 };
 
-describe('eventstore-mongo', () => {
+describe('es-mongo', () => {
     afterEach(() => {
         _setToArray(null);
         MongoClient.connect.reset();
