@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { expect } from 'chai';
 import amqplib from 'amqplib';
-import adapter from '../index';
+import adapter from '../src';
 
 const fakeChannel = {
     publish: () => {},
