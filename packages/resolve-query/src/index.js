@@ -3,9 +3,6 @@ export default ({ eventStore, projection }) => {
     let events = [];
     return () => eventStore.loadEventsByTypes(eventsNames, (partEvents) => {
         events = events.concat(partEvents);
-    }).then(() => {
-        let state = projection.initialState;
-        events.forEach(e => (state = projection.handlers[e.__type](state, e)));
-        return state;
-    });
+    }).then(() => events.reduce((state, e) =>
+        projection.handlers[e.__type](state, e), projection.initialState));
 };

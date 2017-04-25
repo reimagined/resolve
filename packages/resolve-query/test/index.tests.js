@@ -12,6 +12,7 @@ const events = [
 const initialState = {
     count: 0
 };
+
 const handlers = {
     SUM: (state, event) => ({ count: state.count + event.value }),
     SUB: (state, event) => ({ count: state.count - event.value })
