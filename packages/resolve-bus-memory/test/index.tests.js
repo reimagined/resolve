@@ -4,17 +4,17 @@ import { expect } from 'chai';
 import inMemoryBus from '../src';
 
 describe('inMemoryBus', () => {
-    it('emitEvent', () => {
-        const busInstanse = inMemoryBus();
+    it('publish', () => {
+        const busInstance = inMemoryBus();
 
         const event1 = { __type: 'ONE', data: 'AAA' };
         const event2 = { __type: 'TWO', data: 'BBB' };
 
         const onEventSpy = sinon.spy();
-        busInstanse.onEvent(['ONE'], onEventSpy);
+        busInstance.onEvent(['ONE'], onEventSpy);
 
-        busInstanse.emitEvent(event1);
-        busInstanse.emitEvent(event2);
+        busInstance.publish(event1);
+        busInstance.publish(event2);
 
         expect(onEventSpy.callCount).to.be.equal(1);
         expect(onEventSpy.lastCall.args[0])
@@ -22,34 +22,34 @@ describe('inMemoryBus', () => {
     });
 
     it('onEvent handles all events by __type', () => {
-        const busInstanse = inMemoryBus();
+        const busInstance = inMemoryBus();
 
         const event1 = { __type: 'ONE', data: 'AAA' };
         const event2 = { __type: 'ONE', data: 'BBB' };
 
         const onEventSpy = sinon.spy();
-        busInstanse.onEvent(['ONE'], onEventSpy);
+        busInstance.onEvent(['ONE'], onEventSpy);
 
-        busInstanse.emitEvent(event1);
-        busInstanse.emitEvent(event2);
+        busInstance.publish(event1);
+        busInstance.publish(event2);
 
         expect(onEventSpy.callCount).to.be.equal(2);
         expect(onEventSpy.lastCall.args[0])
             .to.be.deep.equal(event2);
     });
 
-    it('emitEvent handles all subscribtions', () => {
-        const busInstanse = inMemoryBus();
+    it('publish handles all subscribtions', () => {
+        const busInstance = inMemoryBus();
 
         const event = { __type: 'ONE', data: 'AAA' };
 
         const eventHandlerSpy1 = sinon.spy();
-        busInstanse.onEvent(['ONE'], eventHandlerSpy1);
+        busInstance.onEvent(['ONE'], eventHandlerSpy1);
 
         const eventHandlerSpy2 = sinon.spy();
-        busInstanse.onEvent(['ONE'], eventHandlerSpy2);
+        busInstance.onEvent(['ONE'], eventHandlerSpy2);
 
-        busInstanse.emitEvent(event);
+        busInstance.publish(event);
 
         expect(eventHandlerSpy1.callCount).to.be.equal(1);
         expect(eventHandlerSpy1.lastCall.args[0])
@@ -61,33 +61,33 @@ describe('inMemoryBus', () => {
     });
 
     it('unsubscribe', () => {
-        const busInstanse = inMemoryBus();
+        const busInstance = inMemoryBus();
         const event = { __type: 'ONE', data: 'AAA' };
         const onEventSpy = sinon.spy();
-        const unsubscribe = busInstanse.onEvent(['ONE'], onEventSpy);
+        const unsubscribe = busInstance.onEvent(['ONE'], onEventSpy);
 
-        busInstanse.emitEvent(event);
+        busInstance.publish(event);
         expect(onEventSpy.callCount).to.be.equal(1);
 
         unsubscribe();
 
-        busInstanse.emitEvent(event);
+        busInstance.publish(event);
         expect(onEventSpy.callCount).to.be.equal(1);
     });
 
     it('unsubscribe only nedded handler', () => {
-        const busInstanse = inMemoryBus();
+        const busInstance = inMemoryBus();
         const event = { __type: 'ONE', data: 'AAA' };
 
         const eventHandlerSpy1 = sinon.spy();
-        busInstanse.onEvent(['ONE'], eventHandlerSpy1);
+        busInstance.onEvent(['ONE'], eventHandlerSpy1);
 
         const eventHandlerSpy2 = sinon.spy();
-        const unsubscribeHandler2 = busInstanse.onEvent(['ONE'], eventHandlerSpy2);
+        const unsubscribeHandler2 = busInstance.onEvent(['ONE'], eventHandlerSpy2);
 
         unsubscribeHandler2();
 
-        busInstanse.emitEvent(event);
+        busInstance.publish(event);
 
         expect(eventHandlerSpy1.callCount).to.be.equal(1);
         expect(eventHandlerSpy1.lastCall.args[0])

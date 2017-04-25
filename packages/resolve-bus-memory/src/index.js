@@ -1,5 +1,6 @@
 export default function inMemoryBus() {
     const eventHandlersMap = new Map();
+
     return {
         onEvent: (eventTypesArray, callback) => {
             eventTypesArray.forEach((eventType) => {
@@ -20,8 +21,9 @@ export default function inMemoryBus() {
             };
         },
 
-        emitEvent: (event) => {
+        publish: (event) => {
             const callbacks = eventHandlersMap.get(event.__type);
+
             if (callbacks) {
                 callbacks.forEach(handler => handler(event));
             }
