@@ -1,6 +1,5 @@
-const eventHandlersMap = new Map();
-
 export default function inMemoryBus() {
+    const eventHandlersMap = new Map();
     return {
         onEvent: (eventTypesArray, callback) => {
             eventTypesArray.forEach((eventType) => {
