@@ -50,14 +50,20 @@ describe('es-file', () => {
         mockFs.restore();
     });
 
-    it('load events by types', () => eventstore
-        .loadEventsByTypes(['testtype_1'], (result) => {
-            expect(result).to.be.deep.equal([
-                row1,
-                row2,
-                row3
-            ]);
-        }));
+    it('load events by types', () => {
+        const result = [];
+        return eventstore
+            .loadEventsByTypes(['testtype_1'], (item) => {
+                result.push(item);
+            })
+            .then(() => {
+                expect(result).to.be.deep.equal([
+                    row1,
+                    row2,
+                    row3
+                ]);
+            });
+    });
 
     it('load events by aggregate id', () => eventstore
         .loadEventsByAggregateId('4', (result) => {
