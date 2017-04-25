@@ -99,18 +99,6 @@ describe('es-mongo', () => {
             });
     });
 
-    it('should notify when an event is saved', () => {
-        const adapter = createAdapter(adapterSettings);
-        const onEventSaved = sinon.spy();
-
-        adapter.onEventSaved(onEventSaved);
-
-        return adapter.saveEvent(testEvent)
-            .then(() => {
-                expect(onEventSaved.lastCall.args).to.deep.equal([testEvent]);
-            });
-    });
-
     it('should load events using batching', () => {
         const adapter = createAdapter(adapterSettings);
         const types = ['event-type-1', 'event-type-2'];

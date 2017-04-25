@@ -19,8 +19,6 @@ function loadEvents(coll, query, skip, limit, callback) {
 }
 
 export default function ({ url, collection }) {
-    const onEventSavedCallbacks = [];
-
     let promise;
 
     function getCollection() {
@@ -34,10 +32,7 @@ export default function ({ url, collection }) {
     return {
         saveEvent: event =>
             getCollection()
-                .then(coll => coll.insert(event))
-                .then(() =>
-                    onEventSavedCallbacks.forEach(cb => cb(event))
-                ),
+                .then(coll => coll.insert(event)),
         loadEventsByTypes: (types, callback) =>
             getCollection().then(coll =>
                 loadEvents(coll, { __type: { $in: types } }, 0, LIMIT, callback)
@@ -45,9 +40,6 @@ export default function ({ url, collection }) {
         loadEventsByAggregateId: (aggregateId, callback) =>
             getCollection().then(coll =>
                 loadEvents(coll, { __aggregateId: aggregateId }, 0, LIMIT, callback)
-            ),
-        onEventSaved: (callback) => {
-            onEventSavedCallbacks.push(callback);
-        }
+            )
     };
 }
