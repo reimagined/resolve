@@ -7,16 +7,7 @@ const defaultOptions = {
     exchangeType: 'fanout'
 };
 
-function createTrigger(callbackStore) {
-    return (message) => {
-        const handlers = callbackStore[message.__type] || [];
-        handlers.forEach(handler => handler(message));
-    };
-}
-
 function init(options, callbacks) {
-    const trigger = createTrigger(callbacks);
-
     return amqp
         .connect(options.url)
         .then(connection => connection.createChannel())
@@ -31,7 +22,7 @@ function init(options, callbacks) {
                     if (msg) {
                         const content = msg.content.toString();
                         const message = JSON.parse(content);
-                        trigger(message);
+                        callbacks.forEach(callback => callback(message));
                     }
                 }, { noAck: true }))
                 .then(() => channel)
@@ -39,21 +30,13 @@ function init(options, callbacks) {
 }
 
 export default function (options) {
-    const callbacks = {};
+    const callbacks = [];
     const config = Object.assign(defaultOptions, options);
-
-    let promise;
-
-    function getChannel() {
-        if (!promise) {
-            promise = init(config, callbacks);
-        }
-        return promise;
-    }
+    const initPromise = init(config, callbacks);
 
     return {
         publish: event =>
-            getChannel()
+            initPromise
                 .then((channel) => {
                     channel.publish(
                         config.exchange,
@@ -61,13 +44,8 @@ export default function (options) {
                         new Buffer(JSON.stringify(event))
                     );
                 }),
-        onEvent: (eventTypes, callback) =>
-            getChannel()
-                .then(() => {
-                    eventTypes.forEach((eventType) => {
-                        callbacks[eventType] = callbacks[eventType] || [];
-                        callbacks[eventType].push(callback);
-                    });
-                })
+        subscribe: callback =>
+            initPromise
+                .then(() => callbacks.push(callback))
     };
 }

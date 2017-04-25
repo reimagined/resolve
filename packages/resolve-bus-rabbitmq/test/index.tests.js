@@ -120,8 +120,8 @@ describe('RabbitMQ bus', () => {
         it('calls amqplib connect only once in sequence', () => {
             const instance = adapter(adapterConfig);
 
-            return instance.onEvent(['eventType'], () => {})
-                .then(() => instance.onEvent(['eventType'], () => {}))
+            return instance.subscribe(() => {})
+                .then(() => instance.subscribe(['eventType'], () => {}))
                 .then(() => amqplibMock.verify());
         });
 
@@ -137,7 +137,7 @@ describe('RabbitMQ bus', () => {
                     emitter = func;
                 });
 
-            return instance.onEvent(['eventType'], (event) => {
+            return instance.subscribe((event) => {
                 expect(JSON.stringify(event)).to.be.deep.equal(message.content);
                 fakeChannelMock.verify();
             })
@@ -147,7 +147,7 @@ describe('RabbitMQ bus', () => {
         it('calls amqplib bindQueue with correct arguments', () => {
             const instance = adapter(adapterConfig);
 
-            return instance.onEvent(['eventType'], () => {})
+            return instance.subscribe(['eventType'], () => {})
                 .then(() => fakeChannelMock.verify());
         });
 
@@ -158,7 +158,7 @@ describe('RabbitMQ bus', () => {
                 .withArgs('exchange', 'fanout', { durable: false })
                 .resolves();
 
-            return instance.onEvent(['eventType'], () => {})
+            return instance.subscribe(() => {})
                 .then(() => fakeChannelMock.verify());
         });
     });
