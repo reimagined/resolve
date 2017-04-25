@@ -2,7 +2,7 @@
   "name": "resolve-es-file",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "./src/index.js",
   "scripts": {
     "test": "mocha",
     "testw": "mocha -w"
@@ -14,7 +14,6 @@
     "babel-register": "^6.24.1",
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
-    "mock-fs": "^4.2.0",
-    "sinon": "^2.1.0"
+    "mock-fs": "^4.2.0"
   }
 }
