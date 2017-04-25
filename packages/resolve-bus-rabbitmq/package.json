@@ -2,8 +2,9 @@
   "name": "resolve-bus-rabbitmq",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "scripts": {
+    "prepublish": "babel --out-dir ./dist ./src",
     "test": "mocha",
     "testw": "mocha -w"
   },
@@ -13,8 +14,6 @@
     "amqplib": "^0.5.1"
   },
   "devDependencies": {
-    "babel-preset-es2015": "^6.24.1",
-    "babel-register": "^6.24.1",
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
     "sinon": "^2.1.0"
