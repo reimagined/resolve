@@ -11,7 +11,7 @@ const adapterSettings = {
 
 const testEvent = {
     id: '1',
-    type: 'event-type'
+    __type: 'event-type'
 };
 
 describe('eventstore-mongo', () => {
@@ -54,7 +54,7 @@ describe('eventstore-mongo', () => {
             .then((db) => {
                 expect(db.collection.lastCall.args).to.deep.equal(['test-collection']);
                 expect(db.collection.lastCall.returnValue.find.lastCall.args)
-                    .to.deep.equal([{ type: { $in: types } }]);
+                    .to.deep.equal([{ __type: { $in: types } }]);
 
                 const find = db.collection.lastCall.returnValue.find.lastCall.returnValue;
 
@@ -86,7 +86,7 @@ describe('eventstore-mongo', () => {
             .then((db) => {
                 expect(db.collection.lastCall.args).to.deep.equal(['test-collection']);
                 expect(db.collection.lastCall.returnValue.find.lastCall.args)
-                    .to.deep.equal([{ aggregateId }]);
+                    .to.deep.equal([{ __aggregateId: aggregateId }]);
 
                 const find = db.collection.lastCall.returnValue.find.lastCall.returnValue;
 

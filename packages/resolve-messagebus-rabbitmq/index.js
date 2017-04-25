@@ -9,7 +9,7 @@ const defaultOptions = {
 
 function createTrigger(callbackStore) {
     return (message) => {
-        const handlers = callbackStore[message.type] || [];
+        const handlers = callbackStore[message.__type] || [];
         handlers.forEach(handler => handler(message));
     };
 }
