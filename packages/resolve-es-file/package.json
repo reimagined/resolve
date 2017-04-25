@@ -1,5 +1,5 @@
 {
-  "name": "resolve-eventstore-file",
+  "name": "resolve-es-file",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
