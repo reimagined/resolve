@@ -23,7 +23,7 @@ function init(options, callbacks) {
         .then(channel =>
             channel.assertExchange(options.exchange, options.exchangeType, { durable: false })
                 .then(() => channel)
-            )
+        )
         .then(channel =>
             channel.assertQueue(options.queueName)
                 .then(queue => channel.bindQueue(queue.queue, options.exchange))
@@ -52,7 +52,7 @@ export default function (options) {
     }
 
     return {
-        emitEvent: event =>
+        publish: event =>
             getChannel()
                 .then((channel) => {
                     channel.publish(
