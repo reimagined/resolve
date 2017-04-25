@@ -63,11 +63,11 @@ export default function (options) {
                 }),
         onEvent: (eventTypes, callback) =>
             getChannel()
-                    .then(() => {
-                        eventTypes.forEach((eventType) => {
-                            callbacks[eventType] = callbacks[eventType] || [];
-                            callbacks[eventType].push(callback);
-                        });
-                    })
+                .then(() => {
+                    eventTypes.forEach((eventType) => {
+                        callbacks[eventType] = callbacks[eventType] || [];
+                        callbacks[eventType].push(callback);
+                    });
+                })
     };
 }
