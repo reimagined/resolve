@@ -19,12 +19,9 @@ export default function ({ driver }) {
 
             return () => {
                 eventTypes.forEach((eventType) => {
-                    const callbackArray = eventHandlersMap.get(eventType);
-                    const callbackIndex = callbackArray.indexOf(callback);
-
-                    if (callbackIndex >= 0) {
-                        callbackArray.splice(callbackIndex, 1);
-                    }
+                    const handlers = eventHandlersMap
+                        .get(eventType).filter(item => item !== callback);
+                    eventHandlersMap.set(eventType, handlers);
                 });
             };
         }

@@ -14,5 +14,5 @@ export default (events) => {
         loadEventsByAggregateId: (id, callback) => Promise.resolve(
             store.filter(event => event.__aggregateId === id).forEach(callback)
         )
-    }
+    };
 };
