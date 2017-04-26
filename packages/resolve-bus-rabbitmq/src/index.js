@@ -7,7 +7,7 @@ const defaultOptions = {
     exchangeType: 'fanout'
 };
 
-function init(options, callbacks) {
+function init(options, handler) {
     return amqp
         .connect(options.url)
         .then(connection => connection.createChannel())
@@ -22,7 +22,7 @@ function init(options, callbacks) {
                     if (msg) {
                         const content = msg.content.toString();
                         const message = JSON.parse(content);
-                        callbacks.forEach(callback => callback(message));
+                        handler(message);
                     }
                 }, { noAck: true }))
                 .then(() => channel)
@@ -30,9 +30,9 @@ function init(options, callbacks) {
 }
 
 export default function (options) {
-    const callbacks = [];
+    let handler = () => {};
     const config = Object.assign(defaultOptions, options);
-    const initPromise = init(config, callbacks);
+    const initPromise = init(config, event => handler(event));
 
     return {
         publish: event =>
@@ -46,6 +46,6 @@ export default function (options) {
                 }),
         subscribe: callback =>
             initPromise
-                .then(() => callbacks.push(callback))
+                .then(() => (handler = callback))
     };
 }
