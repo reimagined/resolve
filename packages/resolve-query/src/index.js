@@ -5,19 +5,17 @@ export default ({ eventStore, eventBus, projection }) => {
     const eventsNames = Object.keys(projection.handlers);
     let state = projection.initialState;
 
+    const handler = event => (state = updateState(projection, event, state));
+    eventBus.onEvent(eventsNames, handler);
+
     let firstCall = true;
-    return () => {
-        if (firstCall) {
-            firstCall = false;
-            return eventStore.loadEventsByTypes(eventsNames, event =>
-                (state = updateState(projection, event, state)))
+    return () => (
+        firstCall
+            ? eventStore.loadEventsByTypes(eventsNames, handler)
                 .then(() => {
-                    eventBus.onEvent(eventsNames, (event) => {
-                        state = updateState(projection, event, state);
-                    });
+                    firstCall = false;
                     return state;
-                });
-        }
-        return Promise.resolve(state);
-    };
+                })
+            : Promise.resolve(state)
+    );
 };

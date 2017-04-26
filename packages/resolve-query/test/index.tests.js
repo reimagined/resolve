@@ -41,21 +41,26 @@ const options = {
     }
 };
 
-const execute = createExecutor(options);
-
 describe('resolve-query', () => {
-    it('execute', () => execute().then((result) => {
-        expect(result).to.be.deep.equal({ count: 3 });
-    }));
+    it('execute', () => {
+        const execute = createExecutor(options);
+        return execute().then((result) => {
+            expect(result).to.be.deep.equal({ count: 3 });
+        });
+    });
 
-    it('initial call once', () => execute().then(() => {
-        expect(options.eventStore.loadEventsByTypes.callCount).to.be.equal(1);
-    }));
+    it('initial call once', () => {
+        let execute = createExecutor(options);
+        execute = createExecutor(options);
+        execute().then(() => {
+            expect(options.eventStore.loadEventsByTypes.callCount).to.be.equal(1);
+        });
+    });
 
     it('eventbus onEvent', () => {
-        options.eventBus.emitEvent(newEvent);
+        const execute = createExecutor(options);
         return execute().then((result) => {
-            expect(result).to.be.deep.equal({ count: 4 });
+            expect(result).to.be.deep.equal({ count: 3 });
         });
     });
 });
