@@ -1,6 +1,5 @@
-export default function (createDriver, options) {
+export default function (driver) {
     const eventHandlersMap = new Map();
-    const driver = createDriver(options);
 
     function trigger(event) {
         const handlers = eventHandlersMap.get(event.__type) || [];

@@ -5,30 +5,18 @@ import createBus from '../src';
 
 describe('resolve-bus', () => {
     let driver;
-    let driverInstance;
 
     beforeEach(() => {
-        driver = sinon.spy(() => {
-            driverInstance = {
-                publish: sinon.spy(),
-                subscribe: sinon.spy()
-            };
-
-            return driverInstance;
-        });
-    });
-
-    it('creates correct adapter instance', () => {
-        const options = { a: 1, b: '2' };
-        createBus(driver, options);
-        expect(driver.calledOnce).to.be.true;
-        expect(driver.args[0][0]).to.be.deep.equal(options);
+        driver = {
+            publish: sinon.spy(),
+            subscribe: sinon.spy()
+        };
     });
 
     it('passes handler to adapter', () => {
         createBus(driver);
-        expect(driverInstance.subscribe.calledOnce).to.be.true;
-        expect(driverInstance.subscribe.args[0][0]).to.be.a('function');
+        expect(driver.subscribe.calledOnce).to.be.true;
+        expect(driver.subscribe.args[0][0]).to.be.a('function');
     });
 
     it('emitEvent calls driver\'s publish', () => {
@@ -36,8 +24,8 @@ describe('resolve-bus', () => {
         const bus = createBus(driver);
         bus.emitEvent(fakeEvent);
 
-        expect(driverInstance.publish.calledOnce).to.be.true;
-        expect(driverInstance.publish.args[0][0]).to.be.deep.equal(fakeEvent);
+        expect(driver.publish.calledOnce).to.be.true;
+        expect(driver.publish.args[0][0]).to.be.deep.equal(fakeEvent);
     });
 
     it('calls onEvent handler if subscribe on type', (done) => {
@@ -51,6 +39,6 @@ describe('resolve-bus', () => {
             done();
         });
 
-        driverInstance.subscribe.args[0][0](fakeEvent);
+        driver.subscribe.args[0][0](fakeEvent);
     });
 });
