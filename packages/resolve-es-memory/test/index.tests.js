@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import mockFs from 'mock-fs';
 import adapter from '../src/index';
 
 const row1 = {
@@ -35,23 +34,11 @@ const rows = [
     row4
 ];
 
-const TEST_PATH = './testpath.txt';
-
-const eventstore = adapter({ pathToFile: TEST_PATH });
-
-describe('es-file', () => {
-    before(() => {
-        mockFs({
-            [TEST_PATH]: JSON.stringify(rows)
-        });
-    });
-
-    after(() => {
-        mockFs.restore();
-    });
-
+describe('es-memory', () => {
     it('load events by types', () => {
+        const eventstore = adapter(rows);
         const result = [];
+
         return eventstore
             .loadEventsByTypes(['testtype_1'], (item) => {
                 result.push(item);
@@ -65,14 +52,22 @@ describe('es-file', () => {
             });
     });
 
-    it('load events by aggregate id', () => eventstore
-        .loadEventsByAggregateId('4', (result) => {
-            expect(result).to.be.deep.equal(row4);
-        }));
+    it('load events by aggregate id', () => {
+        const eventstore = adapter(rows);
 
-    it('save event', () => eventstore
-        .saveEvent(row5)
-        .then(() => eventstore.loadEventsByAggregateId('5', (result) => {
-            expect(result).to.be.deep.equal(row5);
-        })));
+        return eventstore
+            .loadEventsByAggregateId('4', (result) => {
+                expect(result).to.be.deep.equal(row4);
+            });
+    });
+
+    it('save event', () => {
+        const eventstore = adapter(rows);
+
+        return eventstore
+            .saveEvent(row5)
+            .then(() => eventstore.loadEventsByAggregateId('5', (result) => {
+                expect(result).to.be.deep.equal(row5);
+            }));
+    })
 });

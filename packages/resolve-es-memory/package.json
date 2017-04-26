@@ -1,5 +1,5 @@
 {
-  "name": "resolve-es-file",
+  "name": "resolve-es-memory",
   "version": "0.0.1",
   "description": "",
   "main": "./dist/index.js",

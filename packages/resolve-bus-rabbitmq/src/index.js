@@ -7,23 +7,14 @@ const defaultOptions = {
     exchangeType: 'fanout'
 };
 
-function createTrigger(callbackStore) {
-    return (message) => {
-        const handlers = callbackStore.get(message.__type) || [];
-        handlers.forEach(handler => handler(message));
-    };
-}
-
-function init(options, callbacks) {
-    const trigger = createTrigger(callbacks);
-
+function init(options, handler) {
     return amqp
         .connect(options.url)
         .then(connection => connection.createChannel())
         .then(channel =>
             channel.assertExchange(options.exchange, options.exchangeType, { durable: false })
                 .then(() => channel)
-            )
+        )
         .then(channel =>
             channel.assertQueue(options.queueName)
                 .then(queue => channel.bindQueue(queue.queue, options.exchange))
@@ -31,7 +22,7 @@ function init(options, callbacks) {
                     if (msg) {
                         const content = msg.content.toString();
                         const message = JSON.parse(content);
-                        trigger(message);
+                        handler(message);
                     }
                 }, { noAck: true }))
                 .then(() => channel)
@@ -39,14 +30,13 @@ function init(options, callbacks) {
 }
 
 export default function (options) {
-    const callbacks = new Map();
+    let handler = () => {};
     const config = Object.assign(defaultOptions, options);
-
-    const promise = init(config, callbacks);
+    const initPromise = init(config, event => handler(event));
 
     return {
-        emitEvent: event =>
-            promise
+        publish: event =>
+            initPromise
                 .then((channel) => {
                     channel.publish(
                         config.exchange,
@@ -54,17 +44,8 @@ export default function (options) {
                         new Buffer(JSON.stringify(event))
                     );
                 }),
-        onEvent: (eventTypes, callback) => {
-            eventTypes.forEach((eventType) => {
-                callbacks.set(eventType, callbacks.get(eventType) || []);
-                callbacks.get(eventType).push(callback);
-            });
-
-            return () => {
-                eventTypes.forEach(eventType =>
-                    (callbacks.set(eventType, callbacks.get(eventType)
-                        .filter(item => item !== callback))));
-            };
-        }
+        subscribe: callback =>
+            initPromise
+                .then(() => (handler = callback))
     };
 }

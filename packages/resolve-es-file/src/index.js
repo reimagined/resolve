@@ -18,9 +18,9 @@ export default ({ pathToFile }) => ({
 
     loadEventsByTypes: (types, callback) =>
         loadEvents(pathToFile)
-        .then(events => callback(events.filter(event => types.includes(event.__type)))),
+        .then(events => events.filter(event => types.includes(event.__type)).forEach(callback)),
 
     loadEventsByAggregateId: (id, callback) =>
         loadEvents(pathToFile)
-        .then(events => callback(events.find(event => event.__aggregateId === id)))
+        .then(events => events.filter(event => event.__aggregateId === id).forEach(callback))
 });
