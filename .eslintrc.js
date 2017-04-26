@@ -11,12 +11,7 @@ module.exports = {
     "rules": {
         "indent": ["error", 4, { "SwitchCase": 1 }],
         "func-names": "off",
-        "no-underscore-dangle": [
-            "error", {
-                "allowAfterThis": true,
-                "allow": ["__aggregateId", "__type"]
-            }
-        ],
+        "no-underscore-dangle": "off",
         "import/no-unresolved": ["error", { "ignore": ["react"] }],
         "comma-dangle": ["error", "never"],
         "no-plusplus": "off",
