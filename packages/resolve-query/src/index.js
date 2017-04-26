@@ -6,16 +6,13 @@ export default ({ eventStore, eventBus, projection }) => {
     let state = projection.initialState;
 
     const handler = event => (state = updateState(projection, event, state));
-    eventBus.onEvent(eventsNames, handler);
 
-    let firstCall = true;
-    return () => (
-        firstCall
-            ? eventStore.loadEventsByTypes(eventsNames, handler)
-                .then(() => {
-                    firstCall = false;
-                    return state;
-                })
-            : Promise.resolve(state)
-    );
+    let result = null;
+    return () => {
+        result = result || eventStore.loadEventsByTypes(eventsNames, handler).then(() => {
+            eventBus.onEvent(eventsNames, handler);
+        });
+
+        return result.then(() => state);
+    };
 };

@@ -42,6 +42,10 @@ const options = {
 };
 
 describe('resolve-query', () => {
+    afterEach(() => {
+        options.eventStore.loadEventsByTypes.reset();
+    });
+
     it('execute', () => {
         const execute = createExecutor(options);
         return execute().then((result) => {
@@ -52,15 +56,18 @@ describe('resolve-query', () => {
     it('initial call once', () => {
         let execute = createExecutor(options);
         execute = createExecutor(options);
-        execute().then(() => {
+        return execute().then(() => {
             expect(options.eventStore.loadEventsByTypes.callCount).to.be.equal(1);
         });
     });
 
     it('eventbus onEvent', () => {
         const execute = createExecutor(options);
-        return execute().then((result) => {
-            expect(result).to.be.deep.equal({ count: 3 });
+        return execute().then(() => {
+            options.eventBus.emitEvent(newEvent);
+            return execute().then((result) => {
+                expect(result).to.be.deep.equal({ count: 4 });
+            });
         });
     });
 });
