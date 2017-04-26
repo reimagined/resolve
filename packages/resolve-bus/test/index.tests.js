@@ -14,14 +14,14 @@ describe('resolve-bus', () => {
     });
 
     it('passes handler to adapter', () => {
-        createBus(driver);
+        createBus({ driver });
         expect(driver.subscribe.calledOnce).to.be.true;
         expect(driver.subscribe.args[0][0]).to.be.a('function');
     });
 
     it('emitEvent calls driver\'s publish', () => {
         const fakeEvent = { __type: 'fakeType' };
-        const bus = createBus(driver);
+        const bus = createBus({ driver });
         bus.emitEvent(fakeEvent);
 
         expect(driver.publish.calledOnce).to.be.true;
@@ -29,7 +29,7 @@ describe('resolve-bus', () => {
     });
 
     it('calls onEvent handler if subscribe on type', (done) => {
-        const bus = createBus(driver);
+        const bus = createBus({ driver });
 
         const fakeEventTypes = ['firstType', 'secondType'];
         const fakeEvent = { __type: 'secondType' };

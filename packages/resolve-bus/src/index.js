@@ -1,4 +1,4 @@
-export default function (driver) {
+export default function ({ driver }) {
     const eventHandlersMap = new Map();
 
     function trigger(event) {
@@ -30,4 +30,3 @@ export default function (driver) {
         }
     };
 }
-
