@@ -25,7 +25,7 @@ describe('bus-rabbitmq', () => {
     const queue = { queue: 'queue' };
 
     const message = {
-        content: JSON.stringify({ type: 'eventType' })
+        content: JSON.stringify({ __type: 'eventType' })
     };
 
     beforeEach(() => {
@@ -114,40 +114,11 @@ describe('bus-rabbitmq', () => {
                 .then(() => {})
                 .then(() => amqplibMock.verify());
         });
-    });
-
-    describe('onEvent', () => {
-        it('calls amqplib connect only once', () => {
-            const instance = adapter(adapterConfig);
-
-            return instance.onEvent(['eventType'], () => {})
-                .then(() => instance.onEvent(['eventType'], () => {}))
-                .then(() => amqplibMock.verify());
-        });
-
-        it('calls callback on message is got from amqplib', () => {
-            const instance = adapter(adapterConfig);
-            let emitter;
-
-            consumeExpectation
-                .callsFake((queueName, func, options) => {
-                    expect(queueName).to.be.equal('');
-                    expect(func).to.be.a('function');
-                    expect(options).to.be.deep.equal({ noAck: true });
-                    emitter = func;
-                });
-
-            return instance.onEvent(['eventType'], (event) => {
-                expect(JSON.stringify(event)).to.be.deep.equal(message.content);
-                fakeChannelMock.verify();
-            })
-                .then(() => emitter(message));
-        });
 
         it('calls amqplib bindQueue with correct arguments', () => {
             const instance = adapter(adapterConfig);
 
-            return instance.onEvent(['eventType'], () => {})
+            return instance.emitEvent(message)
                 .then(() => fakeChannelMock.verify());
         });
 
@@ -158,8 +129,61 @@ describe('bus-rabbitmq', () => {
                 .withArgs('exchange', 'fanout', { durable: false })
                 .resolves();
 
-            return instance.onEvent(['eventType'], () => {})
+            return instance.emitEvent(message)
                 .then(() => fakeChannelMock.verify());
+        });
+    });
+
+    describe('onEvent', () => {
+        it('calls callback on message is got from amqplib', () => {
+            const instance = adapter(adapterConfig);
+            return new Promise((resolve, reject) => {
+                instance.onEvent(['eventType'], (event) => {
+                    try {
+                        expect(JSON.stringify(event)).to.be.deep.equal(message.content);
+                        fakeChannelMock.verify();
+                        resolve();
+                    } catch (e) {
+                        reject(e);
+                    }
+                });
+
+                consumeExpectation
+                    .callsFake((queueName, func, options) => {
+                        expect(queueName).to.be.equal('');
+                        expect(func).to.be.a('function');
+                        expect(options).to.be.deep.equal({ noAck: true });
+                        func(message);
+                    });
+            });
+        });
+
+        it(('unsubscribe'), () => {
+            const instance = adapter(adapterConfig);
+
+            const cb = sinon.spy((event) => {
+                expect(JSON.stringify(event)).to.be.deep.equal(message.content);
+                fakeChannelMock.verify();
+            });
+
+            const unsubscribe = instance.onEvent(['eventType'], cb);
+            unsubscribe();
+
+            return new Promise((resolve, reject) => {
+                consumeExpectation
+                    .callsFake((queueName, func, options) => {
+                        try {
+                            expect(queueName).to.be.equal('');
+                            expect(func).to.be.a('function');
+                            expect(options).to.be.deep.equal({ noAck: true });
+                            func(message);
+                            expect(cb.callCount).to.be.equal(0);
+                            resolve();
+                        } catch (e) {
+                            reject(e);
+                        }
+                    });
+            });
         });
     });
 });

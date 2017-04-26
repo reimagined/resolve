@@ -9,7 +9,7 @@ const defaultOptions = {
 
 function createTrigger(callbackStore) {
     return (message) => {
-        const handlers = callbackStore[message.__type] || [];
+        const handlers = callbackStore.get(message.__type) || [];
         handlers.forEach(handler => handler(message));
     };
 }
@@ -39,21 +39,14 @@ function init(options, callbacks) {
 }
 
 export default function (options) {
-    const callbacks = {};
+    const callbacks = new Map();
     const config = Object.assign(defaultOptions, options);
 
-    let promise;
-
-    function getChannel() {
-        if (!promise) {
-            promise = init(config, callbacks);
-        }
-        return promise;
-    }
+    const promise = init(config, callbacks);
 
     return {
         emitEvent: event =>
-            getChannel()
+            promise
                 .then((channel) => {
                     channel.publish(
                         config.exchange,
@@ -61,13 +54,17 @@ export default function (options) {
                         new Buffer(JSON.stringify(event))
                     );
                 }),
-        onEvent: (eventTypes, callback) =>
-            getChannel()
-                .then(() => {
-                    eventTypes.forEach((eventType) => {
-                        callbacks[eventType] = callbacks[eventType] || [];
-                        callbacks[eventType].push(callback);
-                    });
-                })
+        onEvent: (eventTypes, callback) => {
+            eventTypes.forEach((eventType) => {
+                callbacks.set(eventType, callbacks.get(eventType) || []);
+                callbacks.get(eventType).push(callback);
+            });
+
+            return () => {
+                eventTypes.forEach(eventType =>
+                    (callbacks.set(eventType, callbacks.get(eventType)
+                        .filter(item => item !== callback))));
+            };
+        }
     };
 }
