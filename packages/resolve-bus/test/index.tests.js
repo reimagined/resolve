@@ -42,7 +42,7 @@ describe('resolve-bus', () => {
         driver.subscribe.args[0][0](fakeEvent);
     });
 
-    it('calls correct onEvent handlers if one of handlers is being unsubscribed', () => {
+    it('calls correct onEvent handlers if one of handlers is unsubscribed', () => {
         const bus = createBus({ driver });
 
         const fakeEventTypes = ['firstType', 'secondType'];
@@ -53,6 +53,27 @@ describe('resolve-bus', () => {
 
         bus.onEvent(fakeEventTypes, firstSpy);
         const unsibscribe = bus.onEvent(fakeEventTypes, secondSpy);
+        unsibscribe();
+
+        driver.subscribe.args[0][0](fakeEvent);
+
+        expect(firstSpy.callCount).to.be.equal(1);
+        expect(secondSpy.callCount).to.be.equal(0);
+    });
+
+    it('calls correct onEvent handlers if one of handlers is unsubscribed twice', () => {
+        const bus = createBus({ driver });
+
+        const fakeEventTypes = ['firstType', 'secondType'];
+        const fakeEvent = { __type: 'secondType' };
+
+        const firstSpy = sinon.spy();
+        const secondSpy = sinon.spy();
+
+        bus.onEvent(fakeEventTypes, firstSpy);
+        const unsibscribe = bus.onEvent(fakeEventTypes, secondSpy);
+
+        unsibscribe();
         unsibscribe();
 
         driver.subscribe.args[0][0](fakeEvent);
