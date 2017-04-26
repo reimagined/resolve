@@ -1,6 +1,14 @@
 const INITIAL_STATE_FUNC = '__initialState';
 const BUILD_STATE_FUNC = '__applyEvent';
 
+function verifyCommand(command) {
+    if (!command.__aggregateName) return Promise.reject('Miss __aggregateName argument');
+    if (!command.__aggregateId) return Promise.reject('Miss __aggregateId argument');
+    if (!command.__commandName) return Promise.reject('Miss __commandName argument');
+
+    return Promise.resolve(command);
+}
+
 function getAggregateState(aggregate, aggregateId, store) {
     const initialStateFunc = aggregate[INITIAL_STATE_FUNC] || (() => ({}));
     const buildStateFunc = aggregate[BUILD_STATE_FUNC] || (state => state);
@@ -9,38 +17,33 @@ function getAggregateState(aggregate, aggregateId, store) {
 
     return store.loadEventsByAggregateId(aggregateId, (event) => {
         aggregateState = buildStateFunc(aggregateState, event);
-    });
+    }).then(() => aggregateState);
 }
 
-function verifyCommand(command) {
-    const aggregateName = command.__aggregateName;
-    const aggregateId = command.__aggregateId;
-    const commandName = command.__commandName;
+function executeCommand(command, aggregates, store) {
+    const aggregate = aggregates[command.__aggregateName];
 
-    if (!aggregateName) return Promise.reject('Miss __aggregateName argument');
+    return getAggregateState(aggregate, command.__aggregateId, store)
+        .then((aggregateState) => {
+            const handler = aggregate[command.__commandName];
+            const event = handler(aggregateState, command);
+            return event;
+        });
+}
 
-    if (!aggregateId) return Promise.reject('Miss __aggregateId argument');
+function saveEvent(event, store) {
+    return store.saveEvent(event).then(() => event);
+}
 
-    if (!commandName) return Promise.reject('Miss __commandName argument');
+function publishEvent(event, bus) {
+    bus.emitEvent(event);
 
-    return Promise.resolve({ aggregateName, aggregateId, commandName });
+    return Promise.resolve(event);
 }
 
 export default function ({ store, bus, aggregates }) {
-    return command => verifyCommand(command)
-        .then(({ aggregateName, aggregateId, commandName }) => {
-            const aggregate = aggregates[aggregateName];
-
-            return getAggregateState(aggregate, aggregateId, store)
-                .then((aggregateState) => {
-                    const handler = aggregate[commandName];
-                    const event = handler(aggregateState, command);
-                    return event;
-                })
-                .then(event =>
-                    store.saveEvent(event).then(
-                        () => bus.emitEvent(event)
-                    )
-                );
-        });
+    return rawCommand => verifyCommand(rawCommand)
+        .then(command => executeCommand(command, aggregates, store))
+        .then(event => saveEvent(event, store))
+        .then(event => publishEvent(event, bus));
 }
