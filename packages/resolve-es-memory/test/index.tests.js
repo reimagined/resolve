@@ -69,5 +69,5 @@ describe('es-memory', () => {
             .then(() => eventstore.loadEventsByAggregateId('5', (result) => {
                 expect(result).to.be.deep.equal(row5);
             }));
-    })
+    });
 });
