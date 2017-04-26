@@ -171,11 +171,8 @@ describe('bus-rabbitmq', () => {
 
             return new Promise((resolve, reject) => {
                 consumeExpectation
-                    .callsFake((queueName, func, options) => {
+                    .callsFake((queueName, func) => {
                         try {
-                            expect(queueName).to.be.equal('');
-                            expect(func).to.be.a('function');
-                            expect(options).to.be.deep.equal({ noAck: true });
                             func(message);
                             expect(cb.callCount).to.be.equal(0);
                             resolve();
