@@ -60,27 +60,27 @@ describe('command', () => {
     });
 
     it('should reject event in case of aggregateName absense', () => {
-        Reflect.deleteProperty(testCommand, '__aggregateName');
+        delete testCommand.__aggregateName;
 
         return execute(testCommand)
             .then(() => expect(false).to.be.true)
-            .catch(err => expect(err).to.be.equal('Miss __aggregateName argument'));
+            .catch(err => expect(err).to.be.equal('__aggregateName argument is required'));
     });
 
     it('should reject event in case of commandName absense', () => {
-        Reflect.deleteProperty(testCommand, '__commandName');
+        delete testCommand.__commandName;
 
         return execute(testCommand)
             .then(() => expect(false).to.be.true)
-            .catch(err => expect(err).to.be.equal('Miss __commandName argument'));
+            .catch(err => expect(err).to.be.equal('__commandName argument is required'));
     });
 
     it('should reject event in case of aggregateId absense', () => {
-        Reflect.deleteProperty(testCommand, '__aggregateId');
+        delete testCommand.__aggregateId;
 
         return execute(testCommand)
             .then(() => expect(false).to.be.true)
-            .catch(err => expect(err).to.be.equal('Miss __aggregateId argument'));
+            .catch(err => expect(err).to.be.equal('__aggregateId argument is required'));
     });
 
     it('should pass initialState and args to command handler', () => {

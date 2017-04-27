@@ -2,16 +2,20 @@ const INITIAL_STATE_FUNC = '__initialState';
 const BUILD_STATE_FUNC = '__applyEvent';
 
 function verifyCommand(command) {
-    if (!command.__aggregateName) return Promise.reject('Miss __aggregateName argument');
-    if (!command.__aggregateId) return Promise.reject('Miss __aggregateId argument');
-    if (!command.__commandName) return Promise.reject('Miss __commandName argument');
+    if (!command.__aggregateName) return Promise.reject('__aggregateName argument is required');
+    if (!command.__aggregateId) return Promise.reject('__aggregateId argument is required');
+    if (!command.__commandName) return Promise.reject('__commandName argument is required');
 
     return Promise.resolve(command);
 }
 
 function getAggregateState(aggregate, aggregateId, store) {
     const initialStateFunc = aggregate[INITIAL_STATE_FUNC] || (() => ({}));
-    const buildStateFunc = aggregate[BUILD_STATE_FUNC] || (state => state);
+    const buildStateFunc = aggregate[BUILD_STATE_FUNC];
+
+    if (!buildStateFunc) {
+        return Promise.resolve(initialStateFunc());
+    }
 
     let aggregateState = initialStateFunc();
 
@@ -38,7 +42,7 @@ function saveEvent(event, store) {
 function publishEvent(event, bus) {
     bus.emitEvent(event);
 
-    return Promise.resolve(event);
+    return event;
 }
 
 export default function ({ store, bus, aggregates }) {
