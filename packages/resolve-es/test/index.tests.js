@@ -27,6 +27,18 @@ describe('resolve-es', () => {
             });
     });
 
+    it('unsubscribe', () => {
+        const cb = sinon.spy();
+        const unsubscribe = eventstore.onEventSaved(cb);
+        unsubscribe();
+
+        return eventstore
+            .saveEvent(event)
+            .then(() => {
+                expect(cb.callCount).to.be.equal(0);
+            });
+    });
+
     it('loadEventsByTypes', () => {
         const cb = () => {};
         eventstore.loadEventsByTypes(['type'], cb);

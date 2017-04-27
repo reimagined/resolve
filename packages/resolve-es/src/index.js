@@ -1,5 +1,5 @@
 export default ({ driver }) => {
-    const onEventSavedCallbacks = [];
+    let onEventSavedCallbacks = [];
 
     return {
         saveEvent: event => driver
@@ -12,6 +12,8 @@ export default ({ driver }) => {
 
         onEventSaved: (callback) => {
             onEventSavedCallbacks.push(callback);
+            return () =>
+                (onEventSavedCallbacks = onEventSavedCallbacks.filter(item => item !== callback));
         }
     };
 };
