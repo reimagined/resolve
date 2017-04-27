@@ -1,5 +1,4 @@
-const updateState = (projection, event, state) =>
-    projection.handlers[event.__type](state, event);
+const updateState = (projection, event, state) => projection.handlers[event.__type](state, event);
 
 export default ({ eventStore, eventBus, projection }) => {
     const eventsNames = Object.keys(projection.handlers);
@@ -9,9 +8,11 @@ export default ({ eventStore, eventBus, projection }) => {
 
     let result = null;
     return () => {
-        result = result || eventStore.loadEventsByTypes(eventsNames, handler).then(() => {
-            eventBus.onEvent(eventsNames, handler);
-        });
+        result =
+            result ||
+            eventStore.loadEventsByTypes(eventsNames, handler).then(() => {
+                eventBus.onEvent(eventsNames, handler);
+            });
 
         return result.then(() => state);
     };

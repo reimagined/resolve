@@ -27,12 +27,7 @@ const row5 = {
     payload: {}
 };
 
-const rows = [
-    row1,
-    row2,
-    row3,
-    row4
-];
+const rows = [row1, row2, row3, row4];
 
 describe('es-memory', () => {
     it('load events by types', () => {
@@ -44,30 +39,25 @@ describe('es-memory', () => {
                 result.push(item);
             })
             .then(() => {
-                expect(result).to.be.deep.equal([
-                    row1,
-                    row2,
-                    row3
-                ]);
+                expect(result).to.be.deep.equal([row1, row2, row3]);
             });
     });
 
     it('load events by aggregate id', () => {
         const eventstore = adapter(rows);
 
-        return eventstore
-            .loadEventsByAggregateId('4', (result) => {
-                expect(result).to.be.deep.equal(row4);
-            });
+        return eventstore.loadEventsByAggregateId('4', (result) => {
+            expect(result).to.be.deep.equal(row4);
+        });
     });
 
     it('save event', () => {
         const eventstore = adapter(rows);
 
-        return eventstore
-            .saveEvent(row5)
-            .then(() => eventstore.loadEventsByAggregateId('5', (result) => {
+        return eventstore.saveEvent(row5).then(() =>
+            eventstore.loadEventsByAggregateId('5', (result) => {
                 expect(result).to.be.deep.equal(row5);
-            }));
+            })
+        );
     });
 });

@@ -10,9 +10,11 @@ function loadEvents(coll, query, skip, limit, callback) {
         .limit(limit)
         .toArray()
         .then(events =>
-            events.reduce((total, event) => total.then(() => callback(event)), Promise.resolve())
-                .then(() =>
-                    events.length === limit &&
+            events
+                .reduce((total, event) => total.then(() => callback(event)), Promise.resolve())
+                .then(
+                    () =>
+                        events.length === limit &&
                         loadEvents(coll, query, skip + limit, limit, callback)
                 )
         );
@@ -30,9 +32,7 @@ export default function ({ url, collection }) {
     }
 
     return {
-        saveEvent: event =>
-            getCollection()
-                .then(coll => coll.insert(event)),
+        saveEvent: event => getCollection().then(coll => coll.insert(event)),
         loadEventsByTypes: (types, callback) =>
             getCollection().then(coll =>
                 loadEvents(coll, { __type: { $in: types } }, 0, LIMIT, callback)

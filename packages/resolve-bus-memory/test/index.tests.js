@@ -32,8 +32,6 @@ describe('inMemoryBus', () => {
 
         expect(eventHandlerSpy.callCount).to.be.equal(1);
 
-        expect(
-            eventHandlerSpy.lastCall.args[0]
-        ).to.be.deep.equal(event);
+        expect(eventHandlerSpy.lastCall.args[0]).to.be.deep.equal(event);
     });
 });

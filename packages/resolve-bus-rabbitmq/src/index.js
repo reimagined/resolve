@@ -12,19 +12,27 @@ function init(options, handler) {
         .connect(options.url)
         .then(connection => connection.createChannel())
         .then(channel =>
-            channel.assertExchange(options.exchange, options.exchangeType, { durable: false })
+            channel
+                .assertExchange(options.exchange, options.exchangeType, { durable: false })
                 .then(() => channel)
         )
         .then(channel =>
-            channel.assertQueue(options.queueName)
+            channel
+                .assertQueue(options.queueName)
                 .then(queue => channel.bindQueue(queue.queue, options.exchange))
-                .then(() => channel.consume(options.queueName, (msg) => {
-                    if (msg) {
-                        const content = msg.content.toString();
-                        const message = JSON.parse(content);
-                        handler(message);
-                    }
-                }, { noAck: true }))
+                .then(() =>
+                    channel.consume(
+                        options.queueName,
+                        (msg) => {
+                            if (msg) {
+                                const content = msg.content.toString();
+                                const message = JSON.parse(content);
+                                handler(message);
+                            }
+                        },
+                        { noAck: true }
+                    )
+                )
                 .then(() => channel)
         );
 }
@@ -36,16 +44,13 @@ export default function (options) {
 
     return {
         publish: event =>
-            initPromise
-                .then((channel) => {
-                    channel.publish(
-                        config.exchange,
-                        config.queueName,
-                        new Buffer(JSON.stringify(event))
-                    );
-                }),
-        subscribe: callback =>
-            initPromise
-                .then(() => (handler = callback))
+            initPromise.then((channel) => {
+                channel.publish(
+                    config.exchange,
+                    config.queueName,
+                    new Buffer(JSON.stringify(event))
+                );
+            }),
+        subscribe: callback => initPromise.then(() => (handler = callback))
     };
 }

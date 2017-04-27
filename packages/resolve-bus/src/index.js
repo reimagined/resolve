@@ -20,7 +20,8 @@ export default function ({ driver }) {
             return () => {
                 eventTypes.forEach((eventType) => {
                     const handlers = eventHandlersMap
-                        .get(eventType).filter(item => item !== callback);
+                        .get(eventType)
+                        .filter(item => item !== callback);
                     eventHandlersMap.set(eventType, handlers);
                 });
             };

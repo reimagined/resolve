@@ -7,12 +7,10 @@ export default (events) => {
             return Promise.resolve();
         },
 
-        loadEventsByTypes: (types, callback) => Promise.resolve(
-            store.filter(event => types.includes(event.__type)).forEach(callback)
-        ),
+        loadEventsByTypes: (types, callback) =>
+            Promise.resolve(store.filter(event => types.includes(event.__type)).forEach(callback)),
 
-        loadEventsByAggregateId: (id, callback) => Promise.resolve(
-            store.filter(event => event.__aggregateId === id).forEach(callback)
-        )
+        loadEventsByAggregateId: (id, callback) =>
+            Promise.resolve(store.filter(event => event.__aggregateId === id).forEach(callback))
     };
 };
