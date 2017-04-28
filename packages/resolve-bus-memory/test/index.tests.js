@@ -10,15 +10,15 @@ describe('inMemoryBus', () => {
         const event1 = { __type: 'ONE', data: 'AAA' };
         const event2 = { __type: 'TWO', data: 'BBB' };
 
-        const subscribeSpy = sinon.spy();
-        busInstance.subscribe(subscribeSpy);
+        const triggerSpy = sinon.spy();
+        busInstance.setTrigger(triggerSpy);
 
         busInstance.publish(event1);
         busInstance.publish(event2);
 
-        expect(subscribeSpy.callCount).to.be.equal(2);
-        expect(subscribeSpy.args[0][0]).to.be.deep.equal(event1);
-        expect(subscribeSpy.args[1][0]).to.be.deep.equal(event2);
+        expect(triggerSpy.callCount).to.be.equal(2);
+        expect(triggerSpy.args[0][0]).to.be.deep.equal(event1);
+        expect(triggerSpy.args[1][0]).to.be.deep.equal(event2);
     });
 
     it('publish handles subscription', () => {
@@ -26,7 +26,7 @@ describe('inMemoryBus', () => {
         const event = { __type: 'ONE', data: 'AAA' };
 
         const eventHandlerSpy = sinon.spy();
-        busInstance.subscribe(eventHandlerSpy);
+        busInstance.setTrigger(eventHandlerSpy);
 
         busInstance.publish(event);
 

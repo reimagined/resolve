@@ -51,6 +51,6 @@ export default function (options) {
                     new Buffer(JSON.stringify(event))
                 );
             }),
-        subscribe: callback => initPromise.then(() => (handler = callback))
+        setTrigger: callback => initPromise.then(() => (handler = callback))
     };
 }

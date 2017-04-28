@@ -6,7 +6,7 @@ export default function ({ driver }) {
         handlers.forEach(handler => handler(event));
     }
 
-    driver.subscribe(trigger);
+    driver.setTrigger(trigger);
 
     return {
         emitEvent: event => driver.publish(event),

@@ -9,14 +9,14 @@ describe('resolve-bus', () => {
     beforeEach(() => {
         driver = {
             publish: sinon.spy(),
-            subscribe: sinon.spy()
+            setTrigger: sinon.spy()
         };
     });
 
     it('passes handler to adapter', () => {
         createBus({ driver });
-        expect(driver.subscribe.calledOnce).to.be.true;
-        expect(driver.subscribe.args[0][0]).to.be.a('function');
+        expect(driver.setTrigger.calledOnce).to.be.true;
+        expect(driver.setTrigger.args[0][0]).to.be.a('function');
     });
 
     it("emitEvent calls driver's publish", () => {
@@ -39,7 +39,7 @@ describe('resolve-bus', () => {
             done();
         });
 
-        driver.subscribe.args[0][0](fakeEvent);
+        driver.setTrigger.args[0][0](fakeEvent);
     });
 
     it('calls correct onEvent handlers if one of handlers is unsubscribed', () => {
@@ -52,10 +52,10 @@ describe('resolve-bus', () => {
         const secondSpy = sinon.spy();
 
         bus.onEvent(fakeEventTypes, firstSpy);
-        const unsibscribe = bus.onEvent(fakeEventTypes, secondSpy);
-        unsibscribe();
+        const unsubscribe = bus.onEvent(fakeEventTypes, secondSpy);
+        unsubscribe();
 
-        driver.subscribe.args[0][0](fakeEvent);
+        driver.setTrigger.args[0][0](fakeEvent);
 
         expect(firstSpy.callCount).to.be.equal(1);
         expect(secondSpy.callCount).to.be.equal(0);
@@ -71,12 +71,12 @@ describe('resolve-bus', () => {
         const secondSpy = sinon.spy();
 
         bus.onEvent(fakeEventTypes, firstSpy);
-        const unsibscribe = bus.onEvent(fakeEventTypes, secondSpy);
+        const unsubscribe = bus.onEvent(fakeEventTypes, secondSpy);
 
-        unsibscribe();
-        unsibscribe();
+        unsubscribe();
+        unsubscribe();
 
-        driver.subscribe.args[0][0](fakeEvent);
+        driver.setTrigger.args[0][0](fakeEvent);
 
         expect(firstSpy.callCount).to.be.equal(1);
         expect(secondSpy.callCount).to.be.equal(0);
