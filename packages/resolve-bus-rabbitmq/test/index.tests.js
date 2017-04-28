@@ -32,27 +32,15 @@ describe('RabbitMQ bus', () => {
         amqplibMock = sinon.mock(amqplib);
         fakeChannelMock = sinon.mock(fakeChannel);
 
-        amqplibMock
-            .expects('connect')
-            .withArgs(adapterConfig.url)
-            .resolves(fakeConnection);
+        amqplibMock.expects('connect').withArgs(adapterConfig.url).resolves(fakeConnection);
 
-        consumeExpectation = fakeChannelMock
-            .expects('consume');
+        consumeExpectation = fakeChannelMock.expects('consume');
 
-        fakeChannelMock
-            .expects('assertQueue')
-            .withArgs('')
-            .resolves(queue);
+        fakeChannelMock.expects('assertQueue').withArgs('').resolves(queue);
 
-        fakeChannelMock
-            .expects('bindQueue')
-            .withArgs(queue.queue, 'exchange')
-            .resolves();
+        fakeChannelMock.expects('bindQueue').withArgs(queue.queue, 'exchange').resolves();
 
-        assertExchangeExpectation = fakeChannelMock
-            .expects('assertExchange')
-            .resolves();
+        assertExchangeExpectation = fakeChannelMock.expects('assertExchange').resolves();
     });
 
     afterEach(() => {
@@ -64,7 +52,8 @@ describe('RabbitMQ bus', () => {
         it('calls amqplib connect once', () => {
             const instance = adapter(adapterConfig);
 
-            return instance.publish({})
+            return instance
+                .publish({})
                 .then(() => instance.publish({}))
                 .then(() => amqplibMock.verify());
         });
@@ -74,16 +63,11 @@ describe('RabbitMQ bus', () => {
 
             fakeChannelMock
                 .expects('publish')
-                .withArgs(
-                    'exchange',
-                    '',
-                    new Buffer(JSON.stringify(event))
-                );
+                .withArgs('exchange', '', new Buffer(JSON.stringify(event)));
 
             const instance = adapter(adapterConfig);
 
-            return instance.publish(event)
-                .then(() => fakeChannelMock.verify());
+            return instance.publish(event).then(() => fakeChannelMock.verify());
         });
 
         it('calls amqplib connect once in parallel', () => {
@@ -91,26 +75,15 @@ describe('RabbitMQ bus', () => {
             const firstEvent = { message: 1 };
             const secondEvent = { message: 2 };
 
-            fakeChannelMock
-                .expects('publish')
-                .onCall(0)
-                .callsFake((exchange, queueName, event) => {
-                    expect(new Buffer(JSON.stringify(firstEvent)))
-                        .to.be.deep.equal(event);
-                });
+            fakeChannelMock.expects('publish').onCall(0).callsFake((exchange, queueName, event) => {
+                expect(new Buffer(JSON.stringify(firstEvent))).to.be.deep.equal(event);
+            });
 
-            fakeChannelMock
-                .expects('publish')
-                .onCall(1)
-                .callsFake((exchange, queueName, event) => {
-                    expect(new Buffer(JSON.stringify(secondEvent)))
-                        .to.be.deep.equal(event);
-                });
+            fakeChannelMock.expects('publish').onCall(1).callsFake((exchange, queueName, event) => {
+                expect(new Buffer(JSON.stringify(secondEvent))).to.be.deep.equal(event);
+            });
 
-            return Promise.all([
-                instance.publish(firstEvent),
-                instance.publish(secondEvent)
-            ])
+            return Promise.all([instance.publish(firstEvent), instance.publish(secondEvent)])
                 .then(() => {})
                 .then(() => amqplibMock.verify());
         });
@@ -120,7 +93,8 @@ describe('RabbitMQ bus', () => {
         it('calls amqplib connect only once in sequence', () => {
             const instance = adapter(adapterConfig);
 
-            return instance.subscribe(() => {})
+            return instance
+                .subscribe(() => {})
                 .then(() => instance.subscribe(['eventType'], () => {}))
                 .then(() => amqplibMock.verify());
         });
@@ -129,37 +103,33 @@ describe('RabbitMQ bus', () => {
             const instance = adapter(adapterConfig);
             let emitter;
 
-            consumeExpectation
-                .callsFake((queueName, func, options) => {
-                    expect(queueName).to.be.equal('');
-                    expect(func).to.be.a('function');
-                    expect(options).to.be.deep.equal({ noAck: true });
-                    emitter = func;
-                });
+            consumeExpectation.callsFake((queueName, func, options) => {
+                expect(queueName).to.be.equal('');
+                expect(func).to.be.a('function');
+                expect(options).to.be.deep.equal({ noAck: true });
+                emitter = func;
+            });
 
-            return instance.subscribe((event) => {
-                expect(JSON.stringify(event)).to.be.deep.equal(message.content);
-                fakeChannelMock.verify();
-            })
+            return instance
+                .subscribe((event) => {
+                    expect(JSON.stringify(event)).to.be.deep.equal(message.content);
+                    fakeChannelMock.verify();
+                })
                 .then(() => emitter(message));
         });
 
         it('calls amqplib bindQueue with correct arguments', () => {
             const instance = adapter(adapterConfig);
 
-            return instance.subscribe(['eventType'], () => {})
-                .then(() => fakeChannelMock.verify());
+            return instance.subscribe(['eventType'], () => {}).then(() => fakeChannelMock.verify());
         });
 
         it('calls amqplib assertExchange', () => {
             const instance = adapter(adapterConfig);
 
-            assertExchangeExpectation
-                .withArgs('exchange', 'fanout', { durable: false })
-                .resolves();
+            assertExchangeExpectation.withArgs('exchange', 'fanout', { durable: false }).resolves();
 
-            return instance.subscribe(() => {})
-                .then(() => fakeChannelMock.verify());
+            return instance.subscribe(() => {}).then(() => fakeChannelMock.verify());
         });
     });
 });

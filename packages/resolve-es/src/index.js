@@ -2,9 +2,8 @@ export default ({ driver }) => {
     let onEventSavedCallbacks = [];
 
     return {
-        saveEvent: event => driver
-            .saveEvent(event)
-            .then(() => onEventSavedCallbacks.forEach(cb => cb(event))),
+        saveEvent: event =>
+            driver.saveEvent(event).then(() => onEventSavedCallbacks.forEach(cb => cb(event))),
 
         loadEventsByTypes: driver.loadEventsByTypes,
 

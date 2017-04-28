@@ -23,38 +23,45 @@ describe('es-mongo', () => {
     it('should save event', () => {
         const adapter = createAdapter(adapterSettings);
 
-        return adapter.saveEvent(testEvent)
+        return adapter
+            .saveEvent(testEvent)
             .then(() => {
                 expect(MongoClient.connect.lastCall.args).to.deep.equal(['test-url']);
                 return MongoClient.connect.lastCall.returnValue;
             })
             .then((db) => {
                 expect(db.collection.lastCall.args).to.deep.equal(['test-collection']);
-                expect(db.collection.lastCall.returnValue.insert.lastCall.args)
-                    .to.deep.equal([testEvent]);
+                expect(db.collection.lastCall.returnValue.insert.lastCall.args).to.deep.equal([
+                    testEvent
+                ]);
             });
     });
 
     it('should load events by types', () => {
         const adapter = createAdapter(adapterSettings);
         const types = ['event-type-1', 'event-type-2'];
-        const eventsByTypes = [{
-            id: '1',
-            type: 'event-type-1'
-        }, {
-            id: '1',
-            type: 'event-type-2'
-        }];
+        const eventsByTypes = [
+            {
+                id: '1',
+                type: 'event-type-1'
+            },
+            {
+                id: '1',
+                type: 'event-type-2'
+            }
+        ];
         const processEvent = sinon.spy();
 
         _setToArray(() => Promise.resolve(eventsByTypes));
 
-        return adapter.loadEventsByTypes(types, processEvent)
+        return adapter
+            .loadEventsByTypes(types, processEvent)
             .then(() => MongoClient.connect.lastCall.returnValue)
             .then((db) => {
                 expect(db.collection.lastCall.args).to.deep.equal(['test-collection']);
-                expect(db.collection.lastCall.returnValue.find.lastCall.args)
-                    .to.deep.equal([{ __type: { $in: types } }]);
+                expect(db.collection.lastCall.returnValue.find.lastCall.args).to.deep.equal([
+                    { __type: { $in: types } }
+                ]);
 
                 const find = db.collection.lastCall.returnValue.find.lastCall.returnValue;
 
@@ -62,31 +69,35 @@ describe('es-mongo', () => {
                 expect(find.skip.lastCall.args).to.deep.equal([0]);
                 expect(find.limit.lastCall.args).to.deep.equal([1000]);
 
-                expect(processEvent.args)
-                    .to.deep.equal([[eventsByTypes[0]], [eventsByTypes[1]]]);
+                expect(processEvent.args).to.deep.equal([[eventsByTypes[0]], [eventsByTypes[1]]]);
             });
     });
 
     it('should load events by aggregate id', () => {
         const adapter = createAdapter(adapterSettings);
         const aggregateId = 'test-aggregate-id';
-        const eventsByAggregateId = [{
-            id: '1',
-            aggregateId
-        }, {
-            id: '1',
-            aggregateId
-        }];
+        const eventsByAggregateId = [
+            {
+                id: '1',
+                aggregateId
+            },
+            {
+                id: '1',
+                aggregateId
+            }
+        ];
 
         const processEvent = sinon.spy();
         _setToArray(() => Promise.resolve(eventsByAggregateId));
 
-        return adapter.loadEventsByAggregateId(aggregateId, processEvent)
+        return adapter
+            .loadEventsByAggregateId(aggregateId, processEvent)
             .then(() => MongoClient.connect.lastCall.returnValue)
             .then((db) => {
                 expect(db.collection.lastCall.args).to.deep.equal(['test-collection']);
-                expect(db.collection.lastCall.returnValue.find.lastCall.args)
-                    .to.deep.equal([{ __aggregateId: aggregateId }]);
+                expect(db.collection.lastCall.returnValue.find.lastCall.args).to.deep.equal([
+                    { __aggregateId: aggregateId }
+                ]);
 
                 const find = db.collection.lastCall.returnValue.find.lastCall.returnValue;
 
@@ -94,8 +105,10 @@ describe('es-mongo', () => {
                 expect(find.skip.lastCall.args).to.deep.equal([0]);
                 expect(find.limit.lastCall.args).to.deep.equal([1000]);
 
-                expect(processEvent.args)
-                    .to.deep.equal([[eventsByAggregateId[0]], [eventsByAggregateId[1]]]);
+                expect(processEvent.args).to.deep.equal([
+                    [eventsByAggregateId[0]],
+                    [eventsByAggregateId[1]]
+                ]);
             });
     });
 
@@ -118,7 +131,8 @@ describe('es-mongo', () => {
 
         _setToArray(toArray);
 
-        return adapter.loadEventsByTypes(types, processEvent)
+        return adapter
+            .loadEventsByTypes(types, processEvent)
             .then(() => MongoClient.connect.lastCall.returnValue)
             .then((db) => {
                 const find = db.collection.lastCall.returnValue.find;

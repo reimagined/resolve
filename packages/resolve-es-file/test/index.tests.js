@@ -28,12 +28,7 @@ const row5 = {
     payload: {}
 };
 
-const rows = [
-    row1,
-    row2,
-    row3,
-    row4
-];
+const rows = [row1, row2, row3, row4];
 
 const TEST_PATH = './testpath.txt';
 
@@ -57,22 +52,19 @@ describe('es-file', () => {
                 result.push(item);
             })
             .then(() => {
-                expect(result).to.be.deep.equal([
-                    row1,
-                    row2,
-                    row3
-                ]);
+                expect(result).to.be.deep.equal([row1, row2, row3]);
             });
     });
 
-    it('load events by aggregate id', () => eventstore
-        .loadEventsByAggregateId('4', (result) => {
+    it('load events by aggregate id', () =>
+        eventstore.loadEventsByAggregateId('4', (result) => {
             expect(result).to.be.deep.equal(row4);
         }));
 
-    it('save event', () => eventstore
-        .saveEvent(row5)
-        .then(() => eventstore.loadEventsByAggregateId('5', (result) => {
-            expect(result).to.be.deep.equal(row5);
-        })));
+    it('save event', () =>
+        eventstore.saveEvent(row5).then(() =>
+            eventstore.loadEventsByAggregateId('5', (result) => {
+                expect(result).to.be.deep.equal(row5);
+            })
+        ));
 });

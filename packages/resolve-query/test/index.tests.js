@@ -11,7 +11,8 @@ const events = [
 ];
 
 const newEvent = {
-    __type: 'SUM', value: 1
+    __type: 'SUM',
+    value: 1
 };
 
 const initialState = {

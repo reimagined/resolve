@@ -13,23 +13,25 @@ mockery.registerMock('mongodb', {
         toArray = func;
     },
     MongoClient: {
-        connect: sinon.spy(() => Promise.resolve({
-            collection: sinon.spy(() => {
-                const find = sinon.spy(() => {
-                    const result = {
-                        skip: sinon.spy(() => result),
-                        limit: sinon.spy(() => result),
-                        sort: sinon.spy(() => result),
-                        toArray
-                    };
-                    return result;
-                });
+        connect: sinon.spy(() =>
+            Promise.resolve({
+                collection: sinon.spy(() => {
+                    const find = sinon.spy(() => {
+                        const result = {
+                            skip: sinon.spy(() => result),
+                            limit: sinon.spy(() => result),
+                            sort: sinon.spy(() => result),
+                            toArray
+                        };
+                        return result;
+                    });
 
-                return {
-                    insert: sinon.spy(() => Promise.resolve()),
-                    find
-                };
+                    return {
+                        insert: sinon.spy(() => Promise.resolve()),
+                        find
+                    };
+                })
             })
-        }))
+        )
     }
 });

@@ -19,7 +19,7 @@ describe('resolve-bus', () => {
         expect(driver.subscribe.args[0][0]).to.be.a('function');
     });
 
-    it('emitEvent calls driver\'s publish', () => {
+    it("emitEvent calls driver's publish", () => {
         const fakeEvent = { __type: 'fakeType' };
         const bus = createBus({ driver });
         bus.emitEvent(fakeEvent);
