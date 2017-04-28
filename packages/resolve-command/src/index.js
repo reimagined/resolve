@@ -1,35 +1,28 @@
-const INITIAL_STATE_FUNC = '__initialState';
-const BUILD_STATE_FUNC = '__applyEvent';
-
 function verifyCommand(command) {
-    if (!command.__aggregateName) return Promise.reject('__aggregateName argument is required');
-    if (!command.__aggregateId) return Promise.reject('__aggregateId argument is required');
-    if (!command.__commandName) return Promise.reject('__commandName argument is required');
+    if (!command.aggregateId) return Promise.reject('aggregateId argument is required');
+    if (!command.commandName) return Promise.reject('commandName argument is required');
 
     return Promise.resolve(command);
 }
 
 function getAggregateState(aggregate, aggregateId, store) {
-    const initialStateFunc = aggregate[INITIAL_STATE_FUNC] || (() => ({}));
-    const buildStateFunc = aggregate[BUILD_STATE_FUNC];
-
-    if (!buildStateFunc) {
-        return Promise.resolve(initialStateFunc());
-    }
-
+    const initialStateFunc = aggregate.initialState || (() => ({}));
+    const handlers = aggregate.handlers;
     let aggregateState = initialStateFunc();
 
+    if (!handlers) {
+        return Promise.resolve(aggregateState);
+    }
+
     return store.loadEventsByAggregateId(aggregateId, (event) => {
-        aggregateState = buildStateFunc(aggregateState, event);
+        aggregateState = handlers[event.__type](aggregateState, event);
     }).then(() => aggregateState);
 }
 
-function executeCommand(command, aggregates, store) {
-    const aggregate = aggregates[command.__aggregateName];
-
-    return getAggregateState(aggregate, command.__aggregateId, store)
+function executeCommand(command, aggregate, store) {
+    return getAggregateState(aggregate, command.aggregateId, store)
         .then((aggregateState) => {
-            const handler = aggregate[command.__commandName];
+            const handler = aggregate.commands[command.commandName];
             const event = handler(aggregateState, command);
             return event;
         });
@@ -45,9 +38,9 @@ function publishEvent(event, bus) {
     return event;
 }
 
-export default function ({ store, bus, aggregates }) {
+export default function ({ store, bus, aggregate }) {
     return rawCommand => verifyCommand(rawCommand)
-        .then(command => executeCommand(command, aggregates, store))
+        .then(command => executeCommand(command, aggregate, store))
         .then(event => saveEvent(event, store))
         .then(event => publishEvent(event, bus));
 }
