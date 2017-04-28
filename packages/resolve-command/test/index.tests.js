@@ -155,4 +155,31 @@ describe('command', () => {
             ]);
         });
     });
+
+    it('should return event without additional fields', () => {
+        const createHandlerSpy = sinon.spy((state, args) => ({
+            __type: 'TEST_HANDLED',
+            name: args.name
+        }));
+
+        Object.assign(aggregate, {
+            handlers: {
+                TEST_HANDLED: (state, event) => ({
+                    name: event.name
+                })
+            },
+            commands: {
+                CREATE: createHandlerSpy
+            }
+        });
+
+        return execute(testCommand)
+            .then(() => execute(testCommand))
+            .then(() => {
+                expect(createHandlerSpy.lastCall.args).to.be.deep.equal([
+                { name: testCommand.name },
+                    testCommand
+                ]);
+            });
+    });
 });
