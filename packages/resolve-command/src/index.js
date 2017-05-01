@@ -15,7 +15,10 @@ function getAggregateState(aggregate, aggregateId, store) {
     }
 
     return store.loadEventsByAggregateId(aggregateId, (event) => {
-        aggregateState = handlers[event.__type](aggregateState, event);
+        const handler = handlers[event.__type];
+        if (handler) {
+            aggregateState = handler(aggregateState, event);
+        }
     }).then(() => aggregateState);
 }
 

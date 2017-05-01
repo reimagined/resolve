@@ -182,4 +182,35 @@ describe('command', () => {
                 ]);
             });
     });
+
+    it('should handles correctly unnecessary event', () => {
+        const events = [
+            { __aggregateId: 'test-id', __type: 'USER_CREATED', name: 'User1' },
+            { __aggregateId: 'test-id-2', __type: 'USER_CREATED' },
+            { __aggregateId: 'test-id', __type: 'USER_UPDATED', newName: 'User2' },
+            { __aggregateId: 'test-id', __type: 'USER_UPDATED', newName: 'User3' }
+        ];
+
+        store = createStore({ driver: memoryEsDriver(events) });
+
+        const createHandlerSpy = sinon.spy(() => testEvent);
+
+        aggregate = {
+            handlers: {
+                USER_CREATED: (_, event) => ({ name: event.name })
+            },
+            commands: {
+                CREATE: createHandlerSpy
+            }
+        };
+
+        execute = commandHandler({ store, bus, aggregate });
+
+        return execute(testCommand).then(() => {
+            expect(createHandlerSpy.lastCall.args).to.be.deep.equal([
+                { name: 'User1' },
+                testCommand
+            ]);
+        });
+    });
 });
