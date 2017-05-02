@@ -3,7 +3,7 @@ function updateState(projection, event, state) {
 }
 
 export default ({ store, bus, projection }) => {
-    const eventsNames = Object.keys(projection.handlers);
+    const eventTypes = Object.keys(projection.handlers);
     const inititialStateFunc = projection.initialState || (() => ({}));
     let state = inititialStateFunc();
 
@@ -13,8 +13,8 @@ export default ({ store, bus, projection }) => {
     return () => {
         result =
             result ||
-            store.loadEventsByTypes(eventsNames, handler).then(() => {
-                bus.onEvent(eventsNames, handler);
+            store.loadEventsByTypes(eventTypes, handler).then(() => {
+                bus.onEvent(eventTypes, handler);
             });
 
         return result.then(() => state);
