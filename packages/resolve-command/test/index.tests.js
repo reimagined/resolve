@@ -13,15 +13,14 @@ describe('command', () => {
     let store;
     let bus;
     let execute;
-    let aggregates;
+    let aggregate;
     let testCommand;
     let testEvent;
 
     beforeEach(() => {
         testCommand = {
-            __aggregateId: 'test-id',
-            __aggregateName: 'USER',
-            __commandName: 'CREATE',
+            aggregateId: 'test-id',
+            commandName: 'CREATE',
             name: 'Vasiliy'
         };
 
@@ -31,15 +30,15 @@ describe('command', () => {
             name: 'Vasiliy'
         };
 
-        aggregates = {
-            USER: {
+        aggregate = {
+            commands: {
                 CREATE: () => testEvent
             }
         };
 
         store = createStore({ driver: memoryEsDriver() });
         bus = createBus({ driver: memoryBusDriver() });
-        execute = commandHandler({ store, bus, aggregates });
+        execute = commandHandler({ store, bus, aggregate });
     });
 
     it('should save and publish event', () => {
@@ -59,34 +58,26 @@ describe('command', () => {
         });
     });
 
-    it('should reject event in case of aggregateName absense', () => {
-        delete testCommand.__aggregateName;
-
-        return execute(testCommand)
-            .then(() => expect(false).to.be.true)
-            .catch(err => expect(err).to.be.equal('__aggregateName argument is required'));
-    });
-
     it('should reject event in case of commandName absense', () => {
-        delete testCommand.__commandName;
+        delete testCommand.commandName;
 
         return execute(testCommand)
             .then(() => expect(false).to.be.true)
-            .catch(err => expect(err).to.be.equal('__commandName argument is required'));
+            .catch(err => expect(err).to.be.equal('commandName argument is required'));
     });
 
     it('should reject event in case of aggregateId absense', () => {
-        delete testCommand.__aggregateId;
+        delete testCommand.aggregateId;
 
         return execute(testCommand)
             .then(() => expect(false).to.be.true)
-            .catch(err => expect(err).to.be.equal('__aggregateId argument is required'));
+            .catch(err => expect(err).to.be.equal('aggregateId argument is required'));
     });
 
     it('should pass initialState and args to command handler', () => {
         const createHandlerSpy = sinon.spy(() => testEvent);
 
-        aggregates.USER.CREATE = createHandlerSpy;
+        aggregate.commands.CREATE = createHandlerSpy;
 
         return execute(testCommand).then(() => {
             expect(createHandlerSpy.lastCall.args).to.be.deep.equal([
@@ -99,55 +90,127 @@ describe('command', () => {
     it('should get custom initialState and args to command handler', () => {
         const createHandlerSpy = sinon.spy(() => testEvent);
 
-        aggregates.USER.CREATE = createHandlerSpy;
-        aggregates.USER.__initialState = () => ({
-            users: []
+        aggregate.commands.CREATE = createHandlerSpy;
+        aggregate.initialState = () => ({
+            name: 'Initial name'
         });
 
         return execute(testCommand).then(() => {
             expect(createHandlerSpy.lastCall.args).to.be.deep.equal([
-                { users: [] },
+                { name: 'Initial name' },
                 testCommand
             ]);
         });
     });
 
     it('should pass initialState and args to command handler', () => {
-        store = createStore({ driver: memoryEsDriver([
+        const events = [
             { __aggregateId: 'test-id', __type: 'USER_CREATED', name: 'User1' },
             { __aggregateId: 'test-id-2', __type: 'USER_CREATED' },
             { __aggregateId: 'test-id', __type: 'USER_UPDATED', name: 'User1', newName: 'User2' }
-        ]) });
+        ];
 
-        const applyEventHandlerSpy = sinon.spy((state, event) => {
-            if (event.__type === 'USER_CREATED') {
-                state.users.push(event.name);
-            }
-            if (event.__type === 'USER_UPDATED') {
-                const userIndex = state.users.indexOf(event.name);
-                if (userIndex >= 0) state.users[userIndex] = event.newName;
-            }
-
-            return state;
-        });
+        store = createStore({ driver: memoryEsDriver(events) });
 
         const createHandlerSpy = sinon.spy(() => testEvent);
 
-        Object.assign(aggregates.USER, {
-            __applyEvent: applyEventHandlerSpy,
-            __initialState: () => ({ users: [] }),
-            CREATE: createHandlerSpy
-        });
+        const userCreatedHandlerSpy = sinon.spy((state, event) => ({
+            name: event.name
+        }));
 
-        execute = commandHandler({ store, bus, aggregates });
+        const userUpdatedHandlerSpy = sinon.spy((state, event) => Object.assign(
+            {},
+            state,
+            { name: event.newName }
+        ));
+
+        aggregate = {
+            handlers: {
+                USER_CREATED: userCreatedHandlerSpy,
+                USER_UPDATED: userUpdatedHandlerSpy
+            },
+            commands: {
+                CREATE: createHandlerSpy
+            }
+        };
+
+        execute = commandHandler({ store, bus, aggregate });
 
         return execute(testCommand).then(() => {
             expect(createHandlerSpy.lastCall.args).to.be.deep.equal([
-                { users: ['User2'] },
+                { name: 'User2' },
                 testCommand
             ]);
 
-            expect(applyEventHandlerSpy.callCount).to.be.equal(2);
+            expect(userCreatedHandlerSpy.callCount).to.be.equal(1);
+            expect(userCreatedHandlerSpy.lastCall.args).to.be.deep.equal([
+                {},
+                events[0]
+            ]);
+
+            expect(userUpdatedHandlerSpy.callCount).to.be.equal(1);
+            expect(userUpdatedHandlerSpy.lastCall.args).to.be.deep.equal([
+                { name: 'User1' },
+                events[2]
+            ]);
+        });
+    });
+
+    it('should return event without additional fields', () => {
+        const createHandlerSpy = sinon.spy((state, args) => ({
+            __type: 'TEST_HANDLED',
+            name: args.name
+        }));
+
+        Object.assign(aggregate, {
+            handlers: {
+                TEST_HANDLED: (state, event) => ({
+                    name: event.name
+                })
+            },
+            commands: {
+                CREATE: createHandlerSpy
+            }
+        });
+
+        return execute(testCommand)
+            .then(() => execute(testCommand))
+            .then(() => {
+                expect(createHandlerSpy.lastCall.args).to.be.deep.equal([
+                { name: testCommand.name },
+                    testCommand
+                ]);
+            });
+    });
+
+    it('should handles correctly unnecessary event', () => {
+        const events = [
+            { __aggregateId: 'test-id', __type: 'USER_CREATED', name: 'User1' },
+            { __aggregateId: 'test-id-2', __type: 'USER_CREATED' },
+            { __aggregateId: 'test-id', __type: 'USER_UPDATED', newName: 'User2' },
+            { __aggregateId: 'test-id', __type: 'USER_UPDATED', newName: 'User3' }
+        ];
+
+        store = createStore({ driver: memoryEsDriver(events) });
+
+        const createHandlerSpy = sinon.spy(() => testEvent);
+
+        aggregate = {
+            handlers: {
+                USER_CREATED: (_, event) => ({ name: event.name })
+            },
+            commands: {
+                CREATE: createHandlerSpy
+            }
+        };
+
+        execute = commandHandler({ store, bus, aggregate });
+
+        return execute(testCommand).then(() => {
+            expect(createHandlerSpy.lastCall.args).to.be.deep.equal([
+                { name: 'User1' },
+                testCommand
+            ]);
         });
     });
 });
