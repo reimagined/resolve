@@ -4,8 +4,8 @@ function updateState(projection, event, state) {
 
 export default ({ store, bus, projection }) => {
     const eventTypes = Object.keys(projection.handlers);
-    const inititialStateFunc = projection.initialState || (() => ({}));
-    let state = inititialStateFunc();
+    const initialStateFunc = projection.initialState || (() => ({}));
+    let state = initialStateFunc();
 
     const handler = event => (state = updateState(projection, event, state));
 
