@@ -66,4 +66,9 @@ describe('es-file', () => {
                 expect(result).to.be.deep.equal(row5);
             })
         ));
+
+    it('does not fail when file does not exist', () => {
+        mockFs.restore();
+        return eventstore.loadEventsByTypes([], () => 0);
+    });
 });

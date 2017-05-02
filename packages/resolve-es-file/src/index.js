@@ -8,7 +8,7 @@ const loadEvents = path =>
             path,
             ENCODING,
             (err, content) =>
-                (err
+                (err && err.code !== 'ENOENT'
                     ? reject(err)
                     : resolve(content ? JSON.parse(`[${content.replace(/,$/, '')}]`) : []))
         )
