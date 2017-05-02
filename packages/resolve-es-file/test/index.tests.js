@@ -28,8 +28,7 @@ const row5 = {
     payload: {}
 };
 
-const rows = [row1, row2, row3, row4];
-
+const FILE_CONTENT = [row1, row2, row3, row4].map(row => `${JSON.stringify(row)},`).join('');
 const TEST_PATH = './testpath.txt';
 
 const eventstore = adapter({ pathToFile: TEST_PATH });
@@ -37,7 +36,7 @@ const eventstore = adapter({ pathToFile: TEST_PATH });
 describe('es-file', () => {
     before(() => {
         mockFs({
-            [TEST_PATH]: JSON.stringify(rows)
+            [TEST_PATH]: FILE_CONTENT
         });
     });
 
