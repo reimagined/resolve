@@ -1,27 +1,28 @@
 import fs from 'fs';
 
+const ENCODING = 'utf8';
+
 const loadEvents = path =>
     new Promise((resolve, reject) =>
         fs.readFile(
             path,
-            'utf8',
-            (err, content) => (err ? reject(err) : resolve(content ? JSON.parse(content) : []))
+            ENCODING,
+            (err, content) =>
+                (err
+                    ? reject(err)
+                    : resolve(content ? JSON.parse(`[${content.replace(/,$/, '')}]`) : []))
         )
     );
 
 export default ({ pathToFile }) => ({
     saveEvent: event =>
-        loadEvents(pathToFile).then(
-            events =>
-                new Promise((resolve, reject) => {
-                    events.push(event);
-                    fs.writeFile(
-                        pathToFile,
-                        JSON.stringify(events, null, 2),
-                        'utf8',
-                        err => (err ? reject(err) : resolve())
-                    );
-                })
+        new Promise((resolve, reject) =>
+            fs.appendFile(
+                pathToFile,
+                `${JSON.stringify(event, null, 2)},`,
+                ENCODING,
+                err => (err ? reject(err) : resolve())
+            )
         ),
 
     loadEventsByTypes: (types, callback) =>
