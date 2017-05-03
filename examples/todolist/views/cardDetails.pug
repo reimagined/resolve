@@ -1,33 +1,47 @@
-html
-    head
-        title Demo
-    body
-        h1 Card Details:
-
-        div= 'Id: ' + card.aggregateId
-        div= 'Name: ' + card.name
-
+include includes/header.pug
+.container
+    .page-header
+        h1
+            a(href='/')
+                i.fa.fa-arrow-circle-o-left
+            text  Card Details:&nbsp;
+            text= card.name
+    p.lead
         h2 Todo List:
-        ul
+        ul.list-group
             each key in Object.keys(card.todoList)
-                li
-                    span= card.todoList[key].name
-                    form(method='POST' action='/command')
-                        input(name='aggregateId' value=card.todoList[key].aggregateId type='hidden')
-                        input(name='aggregateType' value='todo' type='hidden')
-                        input(name='commandName' value='toggleCheck' type='hidden')
-                        input(type='submit' value=(card.todoList[key].checked ? '[X]' : '[ ]'))
-                    form(method='POST' action='/command')
-                        input(name='aggregateId' value=card.todoList[key].aggregateId type='hidden')
-                        input(name='aggregateType' value='todo' type='hidden')
-                        input(name='commandName' value='remove' type='hidden')
-                        input(type='submit' value='Delete')
+                li.list-group-item
+                    .row
+                        .col-xs-8
+                            form(method='POST' action='/command')
+                                input(name='aggregateId' value=card.todoList[key].aggregateId type='hidden')
+                                input(name='aggregateType' value='todo' type='hidden')
+                                input(name='commandName' value='toggleCheck' type='hidden')
+                                input(name='returnUrl' value='/'+card.aggregateId type='hidden')
+                                button(style='background: none; border: none;')
+                                    if card.todoList[key].checked
+                                        i.fa.fa-check-square-o(aria-hidden="true")
+                                    else
+                                        i.fa.fa-square-o(aria-hidden="true")
+                                    span= ' ' + card.todoList[key].name
+
+                        .col-xs-4.text-right
+                            form(method='POST' action='/command')
+                                input(name='aggregateId' value=card.todoList[key].aggregateId type='hidden')
+                                input(name='aggregateType' value='todo' type='hidden')
+                                input(name='commandName' value='remove' type='hidden')
+                                input(name='returnUrl' value='/'+card.aggregateId type='hidden')
+                                button(style='background: none; border: none;color: darkred')
+                                    i.fa.fa-trash
 
         form(method='POST' action='/command')
             input(name='commandName' value='create' type='hidden')
             input(name='aggregateType' value='todo' type='hidden')
             input(name='cardId' value=card.aggregateId type='hidden')
-            input(name='name')
-            input(type='submit' value='add')
+            input(name='returnUrl' value='/'+card.aggregateId type='hidden')
+            .input-group
+                input.form-control(name='name')
+                span.input-group-btn
+                    button.btn.btn-default Add
 
 

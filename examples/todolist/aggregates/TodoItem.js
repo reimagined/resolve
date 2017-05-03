@@ -3,7 +3,7 @@ import Immutable from 'seamless-immutable';
 export default {
     initialState: () => null,
 
-    handlers: {
+    eventHandlers: {
         TodoItemCreated: (state, event) =>
             Immutable({ activated: true, cardId: event.cardId }),
 
@@ -18,19 +18,11 @@ export default {
             if (state && state.activated) throw new Error('already-exist');
 
             return {
-                __type: 'TodoItemCreated',
-                name: args.name,
-                cardId: args.cardId
-            };
-        },
-
-        rename: (state, args) => {
-            if (!args.name) throw new Error('no-name');
-            if (!state.activated) throw new Error('no-exist');
-
-            return {
-                __type: 'TodoItemRenamed',
-                name: args.name
+                type: 'TodoItemCreated',
+                payload: {
+                    name: args.name,
+                    cardId: args.cardId
+                }
             };
         },
 
@@ -38,7 +30,7 @@ export default {
             if (!state.activated) throw new Error('no-exist');
 
             return {
-                __type: 'TodoItemRemoved'
+                type: 'TodoItemRemoved'
             };
         },
 
@@ -46,7 +38,7 @@ export default {
             if (!state.activated) throw new Error('no-exist');
 
             return {
-                __type: 'TodoItemCheckToggled'
+                type: 'TodoItemCheckToggled'
             };
         }
     }

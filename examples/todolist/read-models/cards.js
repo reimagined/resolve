@@ -3,18 +3,15 @@ import Immutable from 'seamless-immutable';
 export default {
     initialState: () => Immutable({}),
 
-    handlers: {
+    eventHandlers: {
         TodoCardCreated: (state, event) =>
-            state.setIn([event.__aggregateId], {
-                aggregateId: event.__aggregateId,
+            state.setIn([event.aggregateId], {
+                aggregateId: event.aggregateId,
                 activated: true,
-                name: event.name
+                name: event.payload.name
             }),
 
-        TodoCardRenamed: (state, event) =>
-            state.setIn([event.__aggregateId, 'name'], event.name),
-
         TodoCardRemoved: (state, event) =>
-                state.without(event.__aggregateId)
+                state.without(event.aggregateId)
     }
 };

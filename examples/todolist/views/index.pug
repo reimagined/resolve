@@ -1,17 +1,29 @@
-html
-    head
-        title Demo
-    body
-        h1 Cards:
+include includes/header.pug
+.container
+    .page-header
+        h1 CardList
 
-        ul
+        ul.list-group
             each item in items
-                li
-                    a(href=item.aggregateId)= item.name
+                li.list-group-item
+                    .row
+                        .col-xs-8
+                            a(href=item.aggregateId)= item.name
+                        .col-xs-4.text-right
+                            form(method='POST' action='/command')
+                                input(name='commandName' value='remove' type='hidden')
+                                input(name='aggregateType' value='card' type='hidden')
+                                input(name='aggregateId' value=item.aggregateId type='hidden')
+                                button(style='background: none; border: none;color: darkred')
+                                    i.fa.fa-trash
 
         form(method='POST' action='/command')
             input(name='commandName' value='create' type='hidden')
             input(name='aggregateType' value='card' type='hidden')
-            input(name='name')
-            input(type='submit' value='add')
+            .input-group
+                input.form-control(name='name')
+                span.input-group-btn
+                    button.btn.btn-default Add
+
+include includes/footer.pug
 

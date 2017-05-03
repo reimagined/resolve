@@ -31,15 +31,21 @@ const eventStore = createStore({driver: esDriver({pathToFile: './storage/eventSt
 const bus = createBus({ driver: busDriver()});
 const cardCommandHandler = commandHandler({ store: eventStore, bus, aggregate: todoCardAggregate });
 const itemCommandHandler = commandHandler({ store: eventStore, bus, aggregate: todoItemAggregate });
-const getCardList = query({ store: eventStore, bus, projection: cardsReadModel });
-const getCardDetails = query({ store: eventStore, bus, projection: cardDetailsReadModel });
 
-setupMiddlewares(app);
+const queries = query({ store: eventStore, bus, projections: {
+    cards: cardsReadModel,
+    cardDetails: cardDetailsReadModel
+}});
+
+const getCardList = () => queries('cards');
+const getCardDetails = () => queries('cardDetails');
 
 const aggregates = {
     card: cardCommandHandler,
     todo: itemCommandHandler
 }
+
+setupMiddlewares(app);
 
 app.get('/', function (req, res) {
     return getCardList()
@@ -56,19 +62,20 @@ app.get('/:card', function (req, res) {
 
 app.post('/command', (req, res) => {
     const command = Object.keys(req.body)
-        .filter(key => key !== 'aggregateType')
+        .filter(key => (key !== 'aggregateType' || key !== 'returnUrl'))
         .reduce((result, key) => {
             result[key] = req.body[key];
             return result;
         }, {});
+    const redirectUrl = req.body.returnUrl || '/';
 
     command.aggregateId = command.aggregateId || uuid.v4();
 
     aggregates[req.body.aggregateType](command)
-        .then(() => res.redirect('/'))
+        .then(() => res.redirect(redirectUrl))
         .catch((err) => {
             console.log(err);
-            res.redirect('/')
+            res.redirect(redirectUrl)
         });
 })
 

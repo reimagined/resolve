@@ -3,72 +3,57 @@ import Immutable from 'seamless-immutable';
 export default {
     initialState: () => Immutable({ cards: {}, mapTodoToCard: {} }),
 
-    handlers: {
+    eventHandlers: {
         TodoCardCreated: (state, event) =>
-            state.setIn(['cards', event.__aggregateId], {
-                aggregateId: event.__aggregateId,
+            state.setIn(['cards', event.aggregateId], {
+                aggregateId: event.aggregateId,
                 activated: true,
-                name: event.name,
+                name: event.payload.name,
                 todoList: {}
             }),
-
-        TodoCardRenamed: (state, event) =>
-            state.setIn(['cards', event.__aggregateId, 'name'], event.name),
 
         TodoCardRemoved: (state, event) =>
             state.setIn(
                 ['cards'],
-                state.cards.without(event.__aggregateId)
+                state.cards.without(event.aggregateId)
             ),
 
         TodoItemCreated: (state, event) =>
             state.setIn(
-                ['cards', event.cardId, 'todoList', event.__aggregateId], {
-                    aggregateId: event.__aggregateId,
-                    name: event.name,
+                ['cards', event.payload.cardId, 'todoList', event.aggregateId], {
+                    aggregateId: event.aggregateId,
+                    name: event.payload.name,
                     checked: false
                 })
-            .setIn(['mapTodoToCard', event.__aggregateId],
-                event.cardId
-            ),
-
-        TodoItemRenamed: (state, event) =>
-            state.setIn(
-                [
-                    'cards',
-                    state.mapTodoToCard[event.__aggregateId],
-                    'todoList',
-                    event.__aggregateId,
-                    'name'
-                ],
-                event.name
+            .setIn(['mapTodoToCard', event.aggregateId],
+                event.payload.cardId
             ),
 
         TodoItemRemoved: (state, event) =>
             state.setIn(
                 [
                     'cards',
-                    state.mapTodoToCard[event.__aggregateId],
+                    state.mapTodoToCard[event.aggregateId],
                     'todoList'
                 ],
                 state
-                    .cards[state.mapTodoToCard[event.__aggregateId]]
+                    .cards[state.mapTodoToCard[event.aggregateId]]
                     .todoList
-                    .without(event.__aggregateId)
+                    .without(event.aggregateId)
             ),
 
         TodoItemCheckToggled: (state, event) =>
             state.setIn(
                 [
                     'cards',
-                    state.mapTodoToCard[event.__aggregateId],
+                    state.mapTodoToCard[event.aggregateId],
                     'todoList',
-                    event.__aggregateId,
+                    event.aggregateId,
                     'checked'
                 ],
                 !state
-                    .cards[state.mapTodoToCard[event.__aggregateId]]
-                    .todoList[event.__aggregateId]
+                    .cards[state.mapTodoToCard[event.aggregateId]]
+                    .todoList[event.aggregateId]
                     .checked
             )
     }
