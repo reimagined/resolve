@@ -17,15 +17,19 @@ const handlers = {
     SUB: (state, event) => ({ count: state.count - event.payload.value })
 };
 
+const PROJECTION_NAME = 'prj1';
+
 let onEventCallback = null;
 
 const options = {
     store: {
         loadEventsByTypes: sinon.spy((types, cb) => Promise.resolve(events.forEach(cb)))
     },
-    projection: {
-        initialState,
-        handlers
+    projections: {
+        [PROJECTION_NAME]: {
+            initialState,
+            handlers
+        }
     },
     bus: {
         emitEvent: (event) => {
@@ -42,26 +46,26 @@ describe('resolve-query', () => {
 
     it('execute', () => {
         const execute = createExecutor(options);
-        return execute().then((result) => {
+        return execute(PROJECTION_NAME).then((result) => {
             expect(result).to.be.deep.equal({ count: 3 });
         });
     });
 
     it('initial call once', () => {
         const execute = createExecutor(options);
-        return Promise.all([execute(), execute()]).then(() => {
+        return Promise.all([execute(PROJECTION_NAME), execute(PROJECTION_NAME)]).then(() => {
             expect(options.store.loadEventsByTypes.callCount).to.be.equal(1);
         });
     });
 
     it('eventbus onEvent', () => {
         const execute = createExecutor(options);
-        return execute().then(() => {
+        return execute(PROJECTION_NAME).then(() => {
             options.bus.emitEvent({
                 type: 'SUM',
                 payload: { value: 1 }
             });
-            return execute().then((result) => {
+            return execute(PROJECTION_NAME).then((result) => {
                 expect(result).to.be.deep.equal({ count: 4 });
             });
         });
