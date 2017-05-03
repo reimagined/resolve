@@ -12,7 +12,7 @@ const events = [
 
 const initialState = () => ({ count: 0 });
 
-const handlers = {
+const eventHandlers = {
     SUM: (state, event) => ({ count: state.count + event.payload.value }),
     SUB: (state, event) => ({ count: state.count - event.payload.value })
 };
@@ -28,7 +28,7 @@ const options = {
     projections: {
         [PROJECTION_NAME]: {
             initialState,
-            handlers
+            eventHandlers
         }
     },
     bus: {

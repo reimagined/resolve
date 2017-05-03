@@ -1,9 +1,9 @@
 function updateState(projection, event, state) {
-    return projection.handlers[event.type](state, event);
+    return projection.eventHandlers[event.type](state, event);
 }
 
 const executor = ({ store, bus, projection }) => {
-    const eventTypes = Object.keys(projection.handlers);
+    const eventTypes = Object.keys(projection.eventHandlers);
     const initialStateFunc = projection.initialState || (() => ({}));
     let state = initialStateFunc();
 
