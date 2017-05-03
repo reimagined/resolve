@@ -7,7 +7,7 @@ function verifyCommand(command) {
 
 function getAggregateState(aggregate, aggregateId, store) {
     const initialStateFunc = aggregate.initialState || (() => ({}));
-    const handlers = aggregate.handlers;
+    const handlers = aggregate.eventHandlers;
     let aggregateState = initialStateFunc();
 
     if (!handlers) {

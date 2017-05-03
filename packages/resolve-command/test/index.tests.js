@@ -132,7 +132,7 @@ describe('command', () => {
         }));
 
         aggregate = {
-            handlers: {
+            eventHandlers: {
                 USER_CREATED: userCreatedHandlerSpy,
                 USER_UPDATED: userUpdatedHandlerSpy
             },
@@ -167,7 +167,7 @@ describe('command', () => {
         }));
 
         Object.assign(aggregate, {
-            handlers: {
+            eventHandlers: {
                 TEST_HANDLED: (state, event) => ({
                     name: event.name
                 })
@@ -213,7 +213,7 @@ describe('command', () => {
         const createHandlerSpy = sinon.spy(() => testEvent);
 
         aggregate = {
-            handlers: {
+            eventHandlers: {
                 USER_CREATED: (_, event) => ({ name: event.payload.name })
             },
             commands: {
