@@ -1,0 +1,17 @@
+html
+    head
+        title Demo
+    body
+        h1 Cards:
+
+        ul
+            each item in items
+                li
+                    a(href=item.aggregateId)= item.name
+
+        form(method='POST' action='/command')
+            input(name='commandName' value='create' type='hidden')
+            input(name='aggregateType' value='card' type='hidden')
+            input(name='name')
+            input(type='submit' value='add')
+

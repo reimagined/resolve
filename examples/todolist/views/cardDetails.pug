@@ -1,0 +1,33 @@
+html
+    head
+        title Demo
+    body
+        h1 Card Details:
+
+        div= 'Id: ' + card.aggregateId
+        div= 'Name: ' + card.name
+
+        h2 Todo List:
+        ul
+            each key in Object.keys(card.todoList)
+                li
+                    span= card.todoList[key].name
+                    form(method='POST' action='/command')
+                        input(name='aggregateId' value=card.todoList[key].aggregateId type='hidden')
+                        input(name='aggregateType' value='todo' type='hidden')
+                        input(name='commandName' value='toggleCheck' type='hidden')
+                        input(type='submit' value=(card.todoList[key].checked ? '[X]' : '[ ]'))
+                    form(method='POST' action='/command')
+                        input(name='aggregateId' value=card.todoList[key].aggregateId type='hidden')
+                        input(name='aggregateType' value='todo' type='hidden')
+                        input(name='commandName' value='remove' type='hidden')
+                        input(type='submit' value='Delete')
+
+        form(method='POST' action='/command')
+            input(name='commandName' value='create' type='hidden')
+            input(name='aggregateType' value='todo' type='hidden')
+            input(name='cardId' value=card.aggregateId type='hidden')
+            input(name='name')
+            input(type='submit' value='add')
+
+
