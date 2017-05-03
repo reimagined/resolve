@@ -35,11 +35,9 @@ export default function ({ url, collection }) {
         saveEvent: event => getCollection().then(coll => coll.insert(event)),
         loadEventsByTypes: (types, callback) =>
             getCollection().then(coll =>
-                loadEvents(coll, { __type: { $in: types } }, 0, LIMIT, callback)
+                loadEvents(coll, { type: { $in: types } }, 0, LIMIT, callback)
             ),
         loadEventsByAggregateId: (aggregateId, callback) =>
-            getCollection().then(coll =>
-                loadEvents(coll, { __aggregateId: aggregateId }, 0, LIMIT, callback)
-            )
+            getCollection().then(coll => loadEvents(coll, { aggregateId }, 0, LIMIT, callback))
     };
 }

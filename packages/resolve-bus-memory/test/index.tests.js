@@ -7,8 +7,8 @@ describe('inMemoryBus', () => {
     it('publish', () => {
         const busInstance = inMemoryBus();
 
-        const event1 = { __type: 'ONE', data: 'AAA' };
-        const event2 = { __type: 'TWO', data: 'BBB' };
+        const event1 = { type: 'ONE', payload: { data: 'AAA' } };
+        const event2 = { type: 'TWO', payload: { data: 'BBB' } };
 
         const triggerSpy = sinon.spy();
         busInstance.setTrigger(triggerSpy);
@@ -23,7 +23,7 @@ describe('inMemoryBus', () => {
 
     it('publish handles subscription', () => {
         const busInstance = inMemoryBus();
-        const event = { __type: 'ONE', data: 'AAA' };
+        const event = { type: 'ONE', payload: { data: 'AAA' } };
 
         const eventHandlerSpy = sinon.spy();
         busInstance.setTrigger(eventHandlerSpy);

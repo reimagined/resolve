@@ -3,18 +3,18 @@ import sinon from 'sinon';
 import createExecutor from '../src';
 
 const events = [
-    { __type: 'SUM', value: 1 },
-    { __type: 'SUM', value: 2 },
-    { __type: 'SUB', value: 1 },
-    { __type: 'SUB', value: 1 },
-    { __type: 'SUM', value: 2 }
+    { type: 'SUM', payload: { value: 1 } },
+    { type: 'SUM', payload: { value: 2 } },
+    { type: 'SUB', payload: { value: 1 } },
+    { type: 'SUB', payload: { value: 1 } },
+    { type: 'SUM', payload: { value: 2 } }
 ];
 
 const initialState = () => ({ count: 0 });
 
 const handlers = {
-    SUM: (state, event) => ({ count: state.count + event.value }),
-    SUB: (state, event) => ({ count: state.count - event.value })
+    SUM: (state, event) => ({ count: state.count + event.payload.value }),
+    SUB: (state, event) => ({ count: state.count - event.payload.value })
 };
 
 let onEventCallback = null;
@@ -58,8 +58,8 @@ describe('resolve-query', () => {
         const execute = createExecutor(options);
         return execute().then(() => {
             options.bus.emitEvent({
-                __type: 'SUM',
-                value: 1
+                type: 'SUM',
+                payload: { value: 1 }
             });
             return execute().then((result) => {
                 expect(result).to.be.deep.equal({ count: 4 });

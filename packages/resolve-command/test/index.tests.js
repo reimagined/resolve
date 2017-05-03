@@ -21,13 +21,13 @@ describe('command', () => {
         testCommand = {
             aggregateId: 'test-id',
             commandName: 'CREATE',
-            name: 'Vasiliy'
+            payload: { name: 'Vasiliy' }
         };
 
         testEvent = {
-            __aggregateId: 'test-id',
-            __type: 'USER_CREATED',
-            name: 'Vasiliy'
+            aggregateId: 'test-id',
+            type: 'USER_CREATED',
+            payload: { name: 'Vasiliy' }
         };
 
         aggregate = {
@@ -47,14 +47,12 @@ describe('command', () => {
 
         return execute(testCommand).then(() => {
             expect(eventHandlerSpy.callCount).to.be.equal(1);
-            expect(eventHandlerSpy.lastCall.args[0])
-                .to.be.deep.equal(testEvent);
+            expect(eventHandlerSpy.lastCall.args[0]).to.be.deep.equal(testEvent);
 
             const storedEvents = [];
-            return store.loadEventsByAggregateId('test-id', event => storedEvents.push(event))
-                .then(() => expect(storedEvents)
-                    .to.be.deep.equal([testEvent])
-                );
+            return store
+                .loadEventsByAggregateId('test-id', event => storedEvents.push(event))
+                .then(() => expect(storedEvents).to.be.deep.equal([testEvent]));
         });
     });
 
@@ -80,10 +78,7 @@ describe('command', () => {
         aggregate.commands.CREATE = createHandlerSpy;
 
         return execute(testCommand).then(() => {
-            expect(createHandlerSpy.lastCall.args).to.be.deep.equal([
-                {},
-                testCommand
-            ]);
+            expect(createHandlerSpy.lastCall.args).to.be.deep.equal([{}, testCommand]);
         });
     });
 
@@ -105,9 +100,23 @@ describe('command', () => {
 
     it('should pass initialState and args to command handler', () => {
         const events = [
-            { __aggregateId: 'test-id', __type: 'USER_CREATED', name: 'User1' },
-            { __aggregateId: 'test-id-2', __type: 'USER_CREATED' },
-            { __aggregateId: 'test-id', __type: 'USER_UPDATED', name: 'User1', newName: 'User2' }
+            {
+                aggregateId: 'test-id',
+                type: 'USER_CREATED',
+                payload: { name: 'User1' }
+            },
+            {
+                aggregateId: 'test-id-2',
+                type: 'USER_CREATED'
+            },
+            {
+                aggregateId: 'test-id',
+                type: 'USER_UPDATED',
+                payload: {
+                    name: 'User1',
+                    newName: 'User2'
+                }
+            }
         ];
 
         store = createStore({ driver: memoryEsDriver(events) });
@@ -115,14 +124,12 @@ describe('command', () => {
         const createHandlerSpy = sinon.spy(() => testEvent);
 
         const userCreatedHandlerSpy = sinon.spy((state, event) => ({
-            name: event.name
+            name: event.payload.name
         }));
 
-        const userUpdatedHandlerSpy = sinon.spy((state, event) => Object.assign(
-            {},
-            state,
-            { name: event.newName }
-        ));
+        const userUpdatedHandlerSpy = sinon.spy((state, event) => ({
+            name: event.payload.newName
+        }));
 
         aggregate = {
             handlers: {
@@ -143,10 +150,7 @@ describe('command', () => {
             ]);
 
             expect(userCreatedHandlerSpy.callCount).to.be.equal(1);
-            expect(userCreatedHandlerSpy.lastCall.args).to.be.deep.equal([
-                {},
-                events[0]
-            ]);
+            expect(userCreatedHandlerSpy.lastCall.args).to.be.deep.equal([{}, events[0]]);
 
             expect(userUpdatedHandlerSpy.callCount).to.be.equal(1);
             expect(userUpdatedHandlerSpy.lastCall.args).to.be.deep.equal([
@@ -158,8 +162,8 @@ describe('command', () => {
 
     it('should return event without additional fields', () => {
         const createHandlerSpy = sinon.spy((state, args) => ({
-            __type: 'TEST_HANDLED',
-            name: args.name
+            type: 'TEST_HANDLED',
+            payload: { name: args.name }
         }));
 
         Object.assign(aggregate, {
@@ -173,22 +177,35 @@ describe('command', () => {
             }
         });
 
-        return execute(testCommand)
-            .then(() => execute(testCommand))
-            .then(() => {
-                expect(createHandlerSpy.lastCall.args).to.be.deep.equal([
+        return execute(testCommand).then(() => execute(testCommand)).then(() => {
+            expect(createHandlerSpy.lastCall.args).to.be.deep.equal([
                 { name: testCommand.name },
-                    testCommand
-                ]);
-            });
+                testCommand
+            ]);
+        });
     });
 
     it('should handles correctly unnecessary event', () => {
         const events = [
-            { __aggregateId: 'test-id', __type: 'USER_CREATED', name: 'User1' },
-            { __aggregateId: 'test-id-2', __type: 'USER_CREATED' },
-            { __aggregateId: 'test-id', __type: 'USER_UPDATED', newName: 'User2' },
-            { __aggregateId: 'test-id', __type: 'USER_UPDATED', newName: 'User3' }
+            {
+                aggregateId: 'test-id',
+                type: 'USER_CREATED',
+                payload: { name: 'User1' }
+            },
+            {
+                aggregateId: 'test-id-2',
+                type: 'USER_CREATED'
+            },
+            {
+                aggregateId: 'test-id',
+                type: 'USER_UPDATED',
+                payload: { newName: 'User2' }
+            },
+            {
+                aggregateId: 'test-id',
+                type: 'USER_UPDATED',
+                payload: { newName: 'User3' }
+            }
         ];
 
         store = createStore({ driver: memoryEsDriver(events) });
@@ -197,7 +214,7 @@ describe('command', () => {
 
         aggregate = {
             handlers: {
-                USER_CREATED: (_, event) => ({ name: event.name })
+                USER_CREATED: (_, event) => ({ name: event.payload.name })
             },
             commands: {
                 CREATE: createHandlerSpy
