@@ -8,7 +8,7 @@ const loadEvents = path =>
             path,
             ENCODING,
             (err, content) =>
-                (err
+                (err && err.code !== 'ENOENT'
                     ? reject(err)
                     : resolve(content ? JSON.parse(`[${content.replace(/,$/, '')}]`) : []))
         )
@@ -27,11 +27,11 @@ export default ({ pathToFile }) => ({
 
     loadEventsByTypes: (types, callback) =>
         loadEvents(pathToFile).then(events =>
-            events.filter(event => types.includes(event.__type)).forEach(callback)
+            events.filter(event => types.includes(event.type)).forEach(callback)
         ),
 
     loadEventsByAggregateId: (id, callback) =>
         loadEvents(pathToFile).then(events =>
-            events.filter(event => event.__aggregateId === id).forEach(callback)
+            events.filter(event => event.aggregateId === id).forEach(callback)
         )
 });

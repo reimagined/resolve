@@ -7,30 +7,35 @@ function verifyCommand(command) {
 
 function getAggregateState(aggregate, aggregateId, store) {
     const initialStateFunc = aggregate.initialState || (() => ({}));
-    const handlers = aggregate.handlers;
+    const handlers = aggregate.eventHandlers;
     let aggregateState = initialStateFunc();
 
     if (!handlers) {
         return Promise.resolve(aggregateState);
     }
 
-    return store.loadEventsByAggregateId(aggregateId, (event) => {
-        const handler = handlers[event.__type];
-        if (handler) {
-            aggregateState = handler(aggregateState, event);
-        }
-    }).then(() => aggregateState);
+    return store
+        .loadEventsByAggregateId(aggregateId, (event) => {
+            const handler = handlers[event.type];
+            if (handler) {
+                aggregateState = handler(aggregateState, event);
+            }
+        })
+        .then(() => aggregateState);
 }
 
 function executeCommand(command, aggregate, store) {
-    return getAggregateState(aggregate, command.aggregateId, store)
-        .then((aggregateState) => {
-            const handler = aggregate.commands[command.commandName];
-            const event = handler(aggregateState, command);
-            return Object.assign({
-                __aggregateId: command.aggregateId
-            }, event);
-        });
+    return getAggregateState(aggregate, command.aggregateId, store).then((aggregateState) => {
+        const handler = aggregate.commands[command.commandName];
+        const event = handler(aggregateState, command);
+
+        return Object.assign(
+            {
+                aggregateId: command.aggregateId
+            },
+            event
+        );
+    });
 }
 
 function saveEvent(event, store) {
@@ -39,13 +44,13 @@ function saveEvent(event, store) {
 
 function publishEvent(event, bus) {
     bus.emitEvent(event);
-
     return event;
 }
 
 export default function ({ store, bus, aggregate }) {
-    return rawCommand => verifyCommand(rawCommand)
-        .then(command => executeCommand(command, aggregate, store))
-        .then(event => saveEvent(event, store))
-        .then(event => publishEvent(event, bus));
+    return rawCommand =>
+        verifyCommand(rawCommand)
+            .then(command => executeCommand(command, aggregate, store))
+            .then(event => saveEvent(event, store))
+            .then(event => publishEvent(event, bus));
 }
