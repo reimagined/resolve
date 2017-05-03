@@ -20,7 +20,7 @@ describe('resolve-bus', () => {
     });
 
     it("emitEvent calls driver's publish", () => {
-        const fakeEvent = { __type: 'fakeType' };
+        const fakeEvent = { type: 'fakeType' };
         const bus = createBus({ driver });
         bus.emitEvent(fakeEvent);
 
@@ -32,7 +32,7 @@ describe('resolve-bus', () => {
         const bus = createBus({ driver });
 
         const fakeEventTypes = ['firstType', 'secondType'];
-        const fakeEvent = { __type: 'secondType' };
+        const fakeEvent = { type: 'secondType' };
 
         bus.onEvent(fakeEventTypes, (event) => {
             expect(event).to.be.deep.equal(fakeEvent);
@@ -46,7 +46,7 @@ describe('resolve-bus', () => {
         const bus = createBus({ driver });
 
         const fakeEventTypes = ['firstType', 'secondType'];
-        const fakeEvent = { __type: 'secondType' };
+        const fakeEvent = { type: 'secondType' };
 
         const firstSpy = sinon.spy();
         const secondSpy = sinon.spy();
@@ -65,7 +65,7 @@ describe('resolve-bus', () => {
         const bus = createBus({ driver });
 
         const fakeEventTypes = ['firstType', 'secondType'];
-        const fakeEvent = { __type: 'secondType' };
+        const fakeEvent = { type: 'secondType' };
 
         const firstSpy = sinon.spy();
         const secondSpy = sinon.spy();

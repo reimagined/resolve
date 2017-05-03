@@ -1,5 +1,5 @@
 function updateState(projection, event, state) {
-    return projection.handlers[event.__type](state, event);
+    return projection.handlers[event.type](state, event);
 }
 
 export default ({ store, bus, projection }) => {

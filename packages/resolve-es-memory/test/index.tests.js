@@ -2,28 +2,28 @@ import { expect } from 'chai';
 import adapter from '../src/index';
 
 const row1 = {
-    __type: 'testtype_1',
-    __aggregateId: '1',
+    type: 'testtype_1',
+    aggregateId: '1',
     payload: {}
 };
 const row2 = {
-    __type: 'testtype_1',
-    __aggregateId: '2',
+    type: 'testtype_1',
+    aggregateId: '2',
     payload: {}
 };
 const row3 = {
-    __type: 'testtype_1',
-    __aggregateId: '3',
+    type: 'testtype_1',
+    aggregateId: '3',
     payload: {}
 };
 const row4 = {
-    __type: 'testtype_2',
-    __aggregateId: '4',
+    type: 'testtype_2',
+    aggregateId: '4',
     payload: {}
 };
 const row5 = {
-    __type: 'testtype_3',
-    __aggregateId: '5',
+    type: 'testtype_3',
+    aggregateId: '5',
     payload: {}
 };
 
