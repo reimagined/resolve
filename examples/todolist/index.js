@@ -27,6 +27,7 @@ const eventStore = createStore({
     driver: esDriver({ pathToFile: './storage/eventStore' })
 });
 const bus = createBus({ driver: busDriver() });
+
 const execute = commandHandler({
     store: eventStore,
     bus,
