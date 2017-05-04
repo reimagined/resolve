@@ -10,16 +10,18 @@ import memoryBusDriver from '../../resolve-bus-memory/src';
 import commandHandler from '../src';
 
 describe('command', () => {
+    const AGGREGATE_NAME = 'test_aggregate';
     let store;
     let bus;
     let execute;
-    let aggregate;
+    let aggregates;
     let testCommand;
     let testEvent;
 
     beforeEach(() => {
         testCommand = {
             aggregateId: 'test-id',
+            aggregate: AGGREGATE_NAME,
             commandName: 'CREATE',
             payload: { name: 'Vasiliy' }
         };
@@ -30,15 +32,17 @@ describe('command', () => {
             payload: { name: 'Vasiliy' }
         };
 
-        aggregate = {
-            commands: {
-                CREATE: () => testEvent
+        aggregates = {
+            [AGGREGATE_NAME]: {
+                commands: {
+                    CREATE: () => testEvent
+                }
             }
         };
 
         store = createStore({ driver: memoryEsDriver() });
         bus = createBus({ driver: memoryBusDriver() });
-        execute = commandHandler({ store, bus, aggregate });
+        execute = commandHandler({ store, bus, aggregates });
     });
 
     it('should save and publish event', () => {
@@ -75,7 +79,7 @@ describe('command', () => {
     it('should pass initialState and args to command handler', () => {
         const createHandlerSpy = sinon.spy(() => testEvent);
 
-        aggregate.commands.CREATE = createHandlerSpy;
+        aggregates[AGGREGATE_NAME].commands.CREATE = createHandlerSpy;
 
         return execute(testCommand).then(() => {
             expect(createHandlerSpy.lastCall.args).to.be.deep.equal([{}, testCommand]);
@@ -85,8 +89,8 @@ describe('command', () => {
     it('should get custom initialState and args to command handler', () => {
         const createHandlerSpy = sinon.spy(() => testEvent);
 
-        aggregate.commands.CREATE = createHandlerSpy;
-        aggregate.initialState = () => ({
+        aggregates[AGGREGATE_NAME].commands.CREATE = createHandlerSpy;
+        aggregates[AGGREGATE_NAME].initialState = () => ({
             name: 'Initial name'
         });
 
@@ -131,8 +135,8 @@ describe('command', () => {
             name: event.payload.newName
         }));
 
-        aggregate = {
-            handlers: {
+        aggregates[AGGREGATE_NAME] = {
+            eventHandlers: {
                 USER_CREATED: userCreatedHandlerSpy,
                 USER_UPDATED: userUpdatedHandlerSpy
             },
@@ -141,7 +145,7 @@ describe('command', () => {
             }
         };
 
-        execute = commandHandler({ store, bus, aggregate });
+        execute = commandHandler({ store, bus, aggregates });
 
         return execute(testCommand).then(() => {
             expect(createHandlerSpy.lastCall.args).to.be.deep.equal([
@@ -166,8 +170,8 @@ describe('command', () => {
             payload: { name: args.name }
         }));
 
-        Object.assign(aggregate, {
-            handlers: {
+        Object.assign(aggregates[AGGREGATE_NAME], {
+            eventHandlers: {
                 TEST_HANDLED: (state, event) => ({
                     name: event.name
                 })
@@ -212,8 +216,8 @@ describe('command', () => {
 
         const createHandlerSpy = sinon.spy(() => testEvent);
 
-        aggregate = {
-            handlers: {
+        aggregates[AGGREGATE_NAME] = {
+            eventHandlers: {
                 USER_CREATED: (_, event) => ({ name: event.payload.name })
             },
             commands: {
@@ -221,7 +225,7 @@ describe('command', () => {
             }
         };
 
-        execute = commandHandler({ store, bus, aggregate });
+        execute = commandHandler({ store, bus, aggregates });
 
         return execute(testCommand).then(() => {
             expect(createHandlerSpy.lastCall.args).to.be.deep.equal([

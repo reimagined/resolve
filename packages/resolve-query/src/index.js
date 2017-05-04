@@ -1,9 +1,9 @@
 function updateState(projection, event, state) {
-    return projection.handlers[event.type](state, event);
+    return projection.eventHandlers[event.type](state, event);
 }
 
-export default ({ store, bus, projection }) => {
-    const eventTypes = Object.keys(projection.handlers);
+const executor = ({ store, bus, projection }) => {
+    const eventTypes = Object.keys(projection.eventHandlers);
     const initialStateFunc = projection.initialState || (() => ({}));
     let state = initialStateFunc();
 
@@ -19,4 +19,14 @@ export default ({ store, bus, projection }) => {
 
         return result.then(() => state);
     };
+};
+
+export default ({ store, bus, projections }) => {
+    const names = Object.keys(projections);
+    const executors = names.reduce((result, name) => {
+        result[name] = executor({ store, bus, projection: projections[name] });
+        return result;
+    }, {});
+
+    return name => executors[name]();
 };

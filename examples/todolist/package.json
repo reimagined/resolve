@@ -1,0 +1,29 @@
+{
+  "name": "demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "babel-node ./index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "babel-cli": "^6.24.1",
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "pug": "^2.0.0-beta.12",
+    "resolve-bus": "*",
+    "resolve-bus-memory": "*",
+    "resolve-command": "*",
+    "resolve-es": "*",
+    "resolve-es-file": "*",
+    "resolve-query": "*",
+    "seamless-immutable": "^7.1.2",
+    "uuid": "^3.0.1"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1"
+  }
+}
