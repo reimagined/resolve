@@ -47,10 +47,18 @@ function publishEvent(event, bus) {
     return event;
 }
 
-export default function ({ store, bus, aggregate }) {
-    return rawCommand =>
-        verifyCommand(rawCommand)
-            .then(command => executeCommand(command, aggregate, store))
-            .then(event => saveEvent(event, store))
-            .then(event => publishEvent(event, bus));
-}
+const executor = ({ store, bus, aggregate }) => rawCommand =>
+    verifyCommand(rawCommand)
+        .then(command => executeCommand(command, aggregate, store))
+        .then(event => saveEvent(event, store))
+        .then(event => publishEvent(event, bus));
+
+export default ({ store, bus, aggregates }) => {
+    const names = Object.keys(aggregates);
+    const executors = names.reduce((result, name) => {
+        result[name] = executor({ store, bus, aggregate: aggregates[name] });
+        return result;
+    }, {});
+
+    return command => executors[command.aggregate](command);
+};
