@@ -27,15 +27,17 @@ const aggregate = {
     }
 };
 
+const command = {
+    aggregateId: 'test-id',
+    commandName: 'Create',
+    payload: { email: 'test@user.com' }
+};
+
 const execute = createHandler({ store, bus, aggregate });
 
 bus.onEvent(['UserCreated'], event =>
     console.log('Event emitted', event)
 );
 
-execute({
-    aggregateId: 'test-id',
-    commandName: 'Create',
-    payload: { email: 'test@user.com' }
-});
+execute(command);
 ```
