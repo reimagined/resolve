@@ -27,15 +27,14 @@ const eventStore = createStore({
     driver: esDriver({ pathToFile: './storage/eventStore' })
 });
 const bus = createBus({ driver: busDriver() });
-const cardCommandHandler = commandHandler({
+
+const execute = commandHandler({
     store: eventStore,
     bus,
-    aggregate: todoCardAggregate
-});
-const itemCommandHandler = commandHandler({
-    store: eventStore,
-    bus,
-    aggregate: todoItemAggregate
+    aggregates: {
+        card: todoCardAggregate,
+        todo: todoItemAggregate
+    }
 });
 
 const queries = query({
@@ -46,11 +45,6 @@ const queries = query({
         cardDetails: cardDetailsProjectionl
     }
 });
-
-const aggregates = {
-    card: cardCommandHandler,
-    todo: itemCommandHandler
-};
 
 setupMiddlewares(app);
 
@@ -77,11 +71,11 @@ app.post('/command', (req, res) => {
         }, {});
 
     const redirectUrl = req.body.returnUrl || '/';
-    const aggregate = aggregates[req.body.aggregateType];
 
     command.aggregateId = command.aggregateId || uuid.v4();
+    command.aggregate = req.body.aggregateType;
 
-    aggregate(command)
+    execute(command)
         .catch((err) => {
             // eslint-disable-next-line no-console
             console.log(err);
