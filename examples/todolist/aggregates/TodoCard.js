@@ -4,11 +4,9 @@ export default {
     initialState: () => null,
 
     eventHandlers: {
-        TodoCardCreated: () =>
-            Immutable({ activated: true }),
+        TodoCardCreated: () => Immutable({ activated: true }),
 
-        TodoCardRemoved: state =>
-            state.setIn(['activated'], false)
+        TodoCardRemoved: state => state.setIn(['activated'], false)
     },
 
     commands: {

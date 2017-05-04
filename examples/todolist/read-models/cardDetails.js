@@ -13,33 +13,23 @@ export default {
             }),
 
         TodoCardRemoved: (state, event) =>
-            state.setIn(
-                ['cards'],
-                state.cards.without(event.aggregateId)
-            ),
+            state.setIn(['cards'], state.cards.without(event.aggregateId)),
 
         TodoItemCreated: (state, event) =>
-            state.setIn(
-                ['cards', event.payload.cardId, 'todoList', event.aggregateId], {
+            state
+                .setIn(['cards', event.payload.cardId, 'todoList', event.aggregateId], {
                     aggregateId: event.aggregateId,
                     name: event.payload.name,
                     checked: false
                 })
-            .setIn(['mapTodoToCard', event.aggregateId],
-                event.payload.cardId
-            ),
+                .setIn(['mapTodoToCard', event.aggregateId], event.payload.cardId),
 
         TodoItemRemoved: (state, event) =>
             state.setIn(
-                [
-                    'cards',
-                    state.mapTodoToCard[event.aggregateId],
-                    'todoList'
-                ],
-                state
-                    .cards[state.mapTodoToCard[event.aggregateId]]
-                    .todoList
-                    .without(event.aggregateId)
+                ['cards', state.mapTodoToCard[event.aggregateId], 'todoList'],
+                state.cards[state.mapTodoToCard[event.aggregateId]].todoList.without(
+                    event.aggregateId
+                )
             ),
 
         TodoItemCheckToggled: (state, event) =>
@@ -51,9 +41,7 @@ export default {
                     event.aggregateId,
                     'checked'
                 ],
-                !state
-                    .cards[state.mapTodoToCard[event.aggregateId]]
-                    .todoList[event.aggregateId]
+                !state.cards[state.mapTodoToCard[event.aggregateId]].todoList[event.aggregateId]
                     .checked
             )
     }
