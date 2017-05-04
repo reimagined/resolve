@@ -11,7 +11,6 @@ export default {
                 name: event.payload.name
             }),
 
-        TodoCardRemoved: (state, event) =>
-                state.without(event.aggregateId)
+        TodoCardRemoved: (state, event) => state.without(event.aggregateId)
     }
 };

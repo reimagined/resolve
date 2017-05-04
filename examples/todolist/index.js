@@ -11,8 +11,8 @@ import query from 'resolve-query';
 
 import todoCardAggregate from './aggregates/TodoCard';
 import todoItemAggregate from './aggregates/TodoItem';
-import cardsReadModel from './read-models/cards';
-import cardDetailsReadModel from './read-models/cardDetails';
+import cardsProjection from './projections/cards';
+import cardDetailsProjectionl from './projections/cardDetails';
 
 const setupMiddlewares = (app) => {
     app.use(bodyParser.json());
@@ -42,8 +42,8 @@ const queries = query({
     store: eventStore,
     bus,
     projections: {
-        cards: cardsReadModel,
-        cardDetails: cardDetailsReadModel
+        cards: cardsProjection,
+        cardDetails: cardDetailsProjectionl
     }
 });
 
