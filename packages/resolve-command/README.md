@@ -17,23 +17,26 @@ const store = createStore({ driver: esDriver });
 const busDriver = createBusDriver();
 const bus = createBus({ driver: busDriver });
 
-const aggregate = {
-    commands: {
-        Create: ({ aggregateId, payload }) => ({
-            type: 'UserCreated',
-            aggregateId,
-            payload
-        })
+const aggregates = {
+    User: {
+        commands: {
+            Create: ({ aggregateId, payload }) => ({
+                type: 'UserCreated',
+                aggregateId,
+                payload
+            })
+        }
     }
 };
 
 const command = {
     aggregateId: 'test-id',
+    aggregateName: 'User',
     commandName: 'Create',
     payload: { email: 'test@user.com' }
 };
 
-const execute = createHandler({ store, bus, aggregate });
+const execute = createHandler({ store, bus, aggregates });
 
 bus.onEvent(['UserCreated'], event =>
     console.log('Event emitted', event)

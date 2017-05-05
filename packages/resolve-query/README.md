@@ -17,14 +17,17 @@ const store = createStore({ driver: esDriver });
 const busDriver = createBusDriver();
 const bus = createBus({ driver: busDriver });
 
-const projection = {
-    initialState: [],
-    handlers: {
-        UserCreated(state, event) {
-            return state.concat(event.payload);
+const projections = {
+    User: {
+        initialState: [],
+        eventHandlers: {
+            UserCreated(state, event) {
+                return state.concat(event.payload);
+            }
         }
     }
 };
 
-const query = createQuery({ store, bus, projection });
+const query = createQuery({ store, bus, projections });
+const state = query('User');
 ```
