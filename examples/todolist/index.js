@@ -12,7 +12,7 @@ import query from 'resolve-query';
 import todoCardAggregate from './aggregates/TodoCard';
 import todoItemAggregate from './aggregates/TodoItem';
 import cardsProjection from './projections/cards';
-import cardDetailsProjectionl from './projections/cardDetails';
+import cardDetailsProjection from './projections/cardDetails';
 
 const setupMiddlewares = (app) => {
     app.use(bodyParser.json());
@@ -43,7 +43,7 @@ const queries = query({
     bus,
     projections: {
         cards: cardsProjection,
-        cardDetails: cardDetailsProjectionl
+        cardDetails: cardDetailsProjection
     }
 });
 

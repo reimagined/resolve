@@ -1,10 +1,11 @@
 {
-  "name": "demo",
+  "name": "todolist-example",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "babel-node ./index.js"
+    "start": "babel-node ./index.js",
+    "test": "exit 0"
   },
   "author": "",
   "license": "ISC",
