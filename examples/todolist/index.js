@@ -22,9 +22,10 @@ const setupMiddlewares = (app) => {
 };
 
 const app = express();
+app.use(express.static('static'));
 
 const eventStore = createStore({
-    driver: esDriver({ pathToFile: './storage/eventStore' })
+    driver: esDriver({ pathToFile: './event_store.json' })
 });
 const bus = createBus({ driver: busDriver() });
 
