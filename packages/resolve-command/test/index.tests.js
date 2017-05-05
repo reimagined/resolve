@@ -23,13 +23,13 @@ describe('command', () => {
             aggregateId: 'test-id',
             aggregate: AGGREGATE_NAME,
             commandName: 'CREATE',
-            payload: { name: 'Vasiliy' }
+            payload: { name: 'Jack' }
         };
 
         testEvent = {
             aggregateId: 'test-id',
             type: 'USER_CREATED',
-            payload: { name: 'Vasiliy' }
+            payload: { name: 'Jack' }
         };
 
         aggregates = {
