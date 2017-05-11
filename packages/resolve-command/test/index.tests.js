@@ -239,4 +239,20 @@ describe('command', () => {
             ]);
         });
     });
+
+    it('custom event type', () => {
+        const CUSTOM_EVENT_TYPE = 'custom_type';
+        Object.assign(aggregates[AGGREGATE_NAME], {
+            commands: {
+                [COMMAND_NAME]: (state, args) => ({
+                    type: () => CUSTOM_EVENT_TYPE,
+                    payload: { name: args.name }
+                })
+            }
+        });
+
+        return execute(testCommand).then((event) => {
+            expect(event.type).to.be.equal(CUSTOM_EVENT_TYPE);
+        });
+    });
 });

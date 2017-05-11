@@ -29,7 +29,9 @@ function executeCommand(command, aggregate, store) {
         const handler = aggregate.commands[command.commandName];
         const event = handler(aggregateState, command);
 
-        event.type = `${command.aggregate}_${event.type}`.toUpperCase();
+        event.type = typeof event.type === 'function'
+            ? event.type()
+            : `${command.aggregate}_${event.type}`.toUpperCase();
 
         return Object.assign(
             {
