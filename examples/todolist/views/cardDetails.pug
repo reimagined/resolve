@@ -15,7 +15,7 @@ include includes/header.pug
                         .col-xs-8
                             form(method='POST' action='/command')
                                 input(name='aggregateId' value=card.todoList[key].aggregateId type='hidden')
-                                input(name='aggregateType' value='todo' type='hidden')
+                                input(name='aggregateType' value='todoitem' type='hidden')
                                 input(name='commandName' value='toggleCheck' type='hidden')
                                 input(name='returnUrl' value='/'+card.aggregateId type='hidden')
                                 button(style='background: none; border: none;')
@@ -28,7 +28,7 @@ include includes/header.pug
                         .col-xs-4.text-right
                             form(method='POST' action='/command')
                                 input(name='aggregateId' value=card.todoList[key].aggregateId type='hidden')
-                                input(name='aggregateType' value='todo' type='hidden')
+                                input(name='aggregateType' value='todoitem' type='hidden')
                                 input(name='commandName' value='remove' type='hidden')
                                 input(name='returnUrl' value='/'+card.aggregateId type='hidden')
                                 button(style='background: none; border: none;color: darkred')
@@ -36,7 +36,7 @@ include includes/header.pug
 
         form(method='POST' action='/command')
             input(name='commandName' value='create' type='hidden')
-            input(name='aggregateType' value='todo' type='hidden')
+            input(name='aggregateType' value='todoitem' type='hidden')
             input(name='cardId' value=card.aggregateId type='hidden')
             input(name='returnUrl' value='/'+card.aggregateId type='hidden')
             .input-group

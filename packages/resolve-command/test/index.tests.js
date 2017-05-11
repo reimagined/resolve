@@ -36,13 +36,14 @@ describe('command', () => {
             payload: { name: 'Jack' }
         };
 
-        aggregates = {
-            [AGGREGATE_NAME]: {
+        aggregates = [
+            {
+                name: AGGREGATE_NAME,
                 commands: {
                     [COMMAND_NAME]: () => testEvent
                 }
             }
-        };
+        ];
 
         store = createStore({ driver: memoryEsDriver() });
         bus = createBus({ driver: memoryBusDriver() });
@@ -83,7 +84,7 @@ describe('command', () => {
     it('should pass initialState and args to command handler', () => {
         const createHandlerSpy = sinon.spy(() => testEvent);
 
-        aggregates[AGGREGATE_NAME].commands[COMMAND_NAME] = createHandlerSpy;
+        aggregates[0].commands[COMMAND_NAME] = createHandlerSpy;
 
         return execute(testCommand).then(() => {
             expect(createHandlerSpy.lastCall.args).to.be.deep.equal([{}, testCommand]);
@@ -93,8 +94,8 @@ describe('command', () => {
     it('should get custom initialState and args to command handler', () => {
         const createHandlerSpy = sinon.spy(() => testEvent);
 
-        aggregates[AGGREGATE_NAME].commands[COMMAND_NAME] = createHandlerSpy;
-        aggregates[AGGREGATE_NAME].initialState = () => ({
+        aggregates[0].commands[COMMAND_NAME] = createHandlerSpy;
+        aggregates[0].initialState = () => ({
             name: 'Initial name'
         });
 
@@ -139,7 +140,8 @@ describe('command', () => {
             name: event.payload.newName
         }));
 
-        aggregates[AGGREGATE_NAME] = {
+        aggregates[0] = {
+            name: AGGREGATE_NAME,
             eventHandlers: {
                 [BUILDED_EVENT_TYPE]: userCreatedHandlerSpy,
                 USER_UPDATED: userUpdatedHandlerSpy
@@ -176,7 +178,7 @@ describe('command', () => {
         }));
 
         const handlerName = AGGREGATE_NAME + TEST_EVENT_TYPE;
-        Object.assign(aggregates[AGGREGATE_NAME], {
+        Object.assign(aggregates[0], {
             eventHandlers: {
                 [handlerName]: (state, event) => ({
                     name: event.name
@@ -222,7 +224,8 @@ describe('command', () => {
 
         const createHandlerSpy = sinon.spy(() => testEvent);
 
-        aggregates[AGGREGATE_NAME] = {
+        aggregates[0] = {
+            name: AGGREGATE_NAME,
             eventHandlers: {
                 [BUILDED_EVENT_TYPE]: (_, event) => ({ name: event.payload.name })
             },
@@ -243,7 +246,7 @@ describe('command', () => {
 
     it('custom event type', () => {
         const CUSTOM_EVENT_TYPE = 'custom_type';
-        Object.assign(aggregates[AGGREGATE_NAME], {
+        Object.assign(aggregates[0], {
             commands: {
                 [COMMAND_NAME]: (state, args) => ({
                     type: () => CUSTOM_EVENT_TYPE,

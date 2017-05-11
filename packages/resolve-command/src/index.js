@@ -29,9 +29,7 @@ function executeCommand(command, aggregate, store) {
         const handler = aggregate.commands[command.commandName];
         const event = handler(aggregateState, command);
 
-        event.type = typeof event.type === 'function'
-            ? event.type()
-            : command.aggregate + event.type;
+        event.type = typeof event.type === 'function' ? event.type() : aggregate.name + event.type;
 
         return Object.assign(
             {
@@ -58,11 +56,10 @@ const executor = ({ store, bus, aggregate }) => rawCommand =>
         .then(event => publishEvent(event, bus));
 
 export default ({ store, bus, aggregates }) => {
-    const names = Object.keys(aggregates);
-    const executors = names.reduce((result, name) => {
-        result[name] = executor({ store, bus, aggregate: aggregates[name] });
+    const executors = aggregates.reduce((result, aggregate) => {
+        result[aggregate.name.toLowerCase()] = executor({ store, bus, aggregate });
         return result;
     }, {});
 
-    return command => executors[command.aggregate](command);
+    return command => executors[command.aggregate.toLowerCase()](command);
 };

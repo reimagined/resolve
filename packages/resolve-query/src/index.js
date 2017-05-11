@@ -22,11 +22,10 @@ const executor = ({ store, bus, projection }) => {
 };
 
 export default ({ store, bus, projections }) => {
-    const names = Object.keys(projections);
-    const executors = names.reduce((result, name) => {
-        result[name] = executor({ store, bus, projection: projections[name] });
+    const executors = projections.reduce((result, projection) => {
+        result[projection.name.toLowerCase()] = executor({ store, bus, projection });
         return result;
     }, {});
 
-    return name => executors[name]();
+    return name => executors[name.toLowerCase()]();
 };

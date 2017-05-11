@@ -1,6 +1,7 @@
 import Immutable from 'seamless-immutable';
 
 export default {
+    name: 'TodoCard',
     initialState: () => null,
 
     eventHandlers: {

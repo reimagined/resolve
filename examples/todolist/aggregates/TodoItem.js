@@ -1,6 +1,7 @@
 import Immutable from 'seamless-immutable';
 
 export default {
+    name: 'TodoItem',
     initialState: () => null,
 
     eventHandlers: {
