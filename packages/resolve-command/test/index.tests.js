@@ -10,7 +10,10 @@ import memoryBusDriver from '../../resolve-bus-memory/src';
 import commandHandler from '../src';
 
 describe('command', () => {
+    const AGGREGATE_ID = 'test-id';
     const AGGREGATE_NAME = 'test_aggregate';
+    const COMMAND_NAME = 'CREATE';
+    const EVENT_TYPE = 'CREATED';
     let store;
     let bus;
     let execute;
@@ -20,22 +23,22 @@ describe('command', () => {
 
     beforeEach(() => {
         testCommand = {
-            aggregateId: 'test-id',
+            aggregateId: AGGREGATE_ID,
             aggregate: AGGREGATE_NAME,
-            commandName: 'CREATE',
+            commandName: COMMAND_NAME,
             payload: { name: 'Jack' }
         };
 
         testEvent = {
-            aggregateId: 'test-id',
-            type: 'USER_CREATED',
+            aggregateId: AGGREGATE_ID,
+            type: EVENT_TYPE,
             payload: { name: 'Jack' }
         };
 
         aggregates = {
             [AGGREGATE_NAME]: {
                 commands: {
-                    CREATE: () => testEvent
+                    [COMMAND_NAME]: () => testEvent
                 }
             }
         };
@@ -47,7 +50,7 @@ describe('command', () => {
 
     it('should save and publish event', () => {
         const eventHandlerSpy = sinon.spy();
-        bus.onEvent(['USER_CREATED'], eventHandlerSpy);
+        bus.onEvent(['TEST_AGGREGATE_CREATED'], eventHandlerSpy);
 
         return execute(testCommand).then(() => {
             expect(eventHandlerSpy.callCount).to.be.equal(1);
@@ -55,7 +58,7 @@ describe('command', () => {
 
             const storedEvents = [];
             return store
-                .loadEventsByAggregateId('test-id', event => storedEvents.push(event))
+                .loadEventsByAggregateId(AGGREGATE_ID, event => storedEvents.push(event))
                 .then(() => expect(storedEvents).to.be.deep.equal([testEvent]));
         });
     });
@@ -105,7 +108,7 @@ describe('command', () => {
     it('should pass initialState and args to command handler', () => {
         const events = [
             {
-                aggregateId: 'test-id',
+                aggregateId: AGGREGATE_ID,
                 type: 'USER_CREATED',
                 payload: { name: 'User1' }
             },
@@ -114,7 +117,7 @@ describe('command', () => {
                 type: 'USER_CREATED'
             },
             {
-                aggregateId: 'test-id',
+                aggregateId: AGGREGATE_ID,
                 type: 'USER_UPDATED',
                 payload: {
                     name: 'User1',
@@ -165,19 +168,21 @@ describe('command', () => {
     });
 
     it('should return event without additional fields', () => {
+        const TEST_EVENT_TYPE = 'TEST_HANDLED';
         const createHandlerSpy = sinon.spy((state, args) => ({
-            type: 'TEST_HANDLED',
+            type: TEST_EVENT_TYPE,
             payload: { name: args.name }
         }));
 
+        const handlerName = `${AGGREGATE_NAME}_${TEST_EVENT_TYPE}`.toUpperCase();
         Object.assign(aggregates[AGGREGATE_NAME], {
             eventHandlers: {
-                TEST_HANDLED: (state, event) => ({
+                [handlerName]: (state, event) => ({
                     name: event.name
                 })
             },
             commands: {
-                CREATE: createHandlerSpy
+                [COMMAND_NAME]: createHandlerSpy
             }
         });
 
@@ -192,7 +197,7 @@ describe('command', () => {
     it('should handles correctly unnecessary event', () => {
         const events = [
             {
-                aggregateId: 'test-id',
+                aggregateId: AGGREGATE_ID,
                 type: 'USER_CREATED',
                 payload: { name: 'User1' }
             },
@@ -201,12 +206,12 @@ describe('command', () => {
                 type: 'USER_CREATED'
             },
             {
-                aggregateId: 'test-id',
+                aggregateId: AGGREGATE_ID,
                 type: 'USER_UPDATED',
                 payload: { newName: 'User2' }
             },
             {
-                aggregateId: 'test-id',
+                aggregateId: AGGREGATE_ID,
                 type: 'USER_UPDATED',
                 payload: { newName: 'User3' }
             }
