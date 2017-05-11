@@ -11,9 +11,10 @@ import commandHandler from '../src';
 
 describe('command', () => {
     const AGGREGATE_ID = 'test-id';
-    const AGGREGATE_NAME = 'test_aggregate';
-    const COMMAND_NAME = 'CREATE';
-    const EVENT_TYPE = 'CREATED';
+    const AGGREGATE_NAME = 'testAggregate';
+    const COMMAND_NAME = 'create';
+    const EVENT_TYPE = 'created';
+    const BUILDED_EVENT_TYPE = AGGREGATE_NAME + EVENT_TYPE;
     let store;
     let bus;
     let execute;
@@ -50,7 +51,7 @@ describe('command', () => {
 
     it('should save and publish event', () => {
         const eventHandlerSpy = sinon.spy();
-        bus.onEvent(['TEST_AGGREGATE_CREATED'], eventHandlerSpy);
+        bus.onEvent([BUILDED_EVENT_TYPE], eventHandlerSpy);
 
         return execute(testCommand).then(() => {
             expect(eventHandlerSpy.callCount).to.be.equal(1);
@@ -82,7 +83,7 @@ describe('command', () => {
     it('should pass initialState and args to command handler', () => {
         const createHandlerSpy = sinon.spy(() => testEvent);
 
-        aggregates[AGGREGATE_NAME].commands.CREATE = createHandlerSpy;
+        aggregates[AGGREGATE_NAME].commands[COMMAND_NAME] = createHandlerSpy;
 
         return execute(testCommand).then(() => {
             expect(createHandlerSpy.lastCall.args).to.be.deep.equal([{}, testCommand]);
@@ -92,7 +93,7 @@ describe('command', () => {
     it('should get custom initialState and args to command handler', () => {
         const createHandlerSpy = sinon.spy(() => testEvent);
 
-        aggregates[AGGREGATE_NAME].commands.CREATE = createHandlerSpy;
+        aggregates[AGGREGATE_NAME].commands[COMMAND_NAME] = createHandlerSpy;
         aggregates[AGGREGATE_NAME].initialState = () => ({
             name: 'Initial name'
         });
@@ -109,12 +110,12 @@ describe('command', () => {
         const events = [
             {
                 aggregateId: AGGREGATE_ID,
-                type: 'USER_CREATED',
+                type: BUILDED_EVENT_TYPE,
                 payload: { name: 'User1' }
             },
             {
                 aggregateId: 'test-id-2',
-                type: 'USER_CREATED'
+                type: BUILDED_EVENT_TYPE
             },
             {
                 aggregateId: AGGREGATE_ID,
@@ -140,11 +141,11 @@ describe('command', () => {
 
         aggregates[AGGREGATE_NAME] = {
             eventHandlers: {
-                USER_CREATED: userCreatedHandlerSpy,
+                [BUILDED_EVENT_TYPE]: userCreatedHandlerSpy,
                 USER_UPDATED: userUpdatedHandlerSpy
             },
             commands: {
-                CREATE: createHandlerSpy
+                [COMMAND_NAME]: createHandlerSpy
             }
         };
 
@@ -174,7 +175,7 @@ describe('command', () => {
             payload: { name: args.name }
         }));
 
-        const handlerName = `${AGGREGATE_NAME}_${TEST_EVENT_TYPE}`.toUpperCase();
+        const handlerName = AGGREGATE_NAME + TEST_EVENT_TYPE;
         Object.assign(aggregates[AGGREGATE_NAME], {
             eventHandlers: {
                 [handlerName]: (state, event) => ({
@@ -198,21 +199,21 @@ describe('command', () => {
         const events = [
             {
                 aggregateId: AGGREGATE_ID,
-                type: 'USER_CREATED',
+                type: BUILDED_EVENT_TYPE,
                 payload: { name: 'User1' }
             },
             {
                 aggregateId: 'test-id-2',
-                type: 'USER_CREATED'
+                type: 'updated'
             },
             {
                 aggregateId: AGGREGATE_ID,
-                type: 'USER_UPDATED',
+                type: 'updated',
                 payload: { newName: 'User2' }
             },
             {
                 aggregateId: AGGREGATE_ID,
-                type: 'USER_UPDATED',
+                type: 'updated',
                 payload: { newName: 'User3' }
             }
         ];
@@ -223,10 +224,10 @@ describe('command', () => {
 
         aggregates[AGGREGATE_NAME] = {
             eventHandlers: {
-                USER_CREATED: (_, event) => ({ name: event.payload.name })
+                [BUILDED_EVENT_TYPE]: (_, event) => ({ name: event.payload.name })
             },
             commands: {
-                CREATE: createHandlerSpy
+                [COMMAND_NAME]: createHandlerSpy
             }
         };
 

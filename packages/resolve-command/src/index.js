@@ -31,7 +31,7 @@ function executeCommand(command, aggregate, store) {
 
         event.type = typeof event.type === 'function'
             ? event.type()
-            : `${command.aggregate}_${event.type}`.toUpperCase();
+            : command.aggregate + event.type;
 
         return Object.assign(
             {
