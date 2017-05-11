@@ -15,7 +15,7 @@ export default {
             if (state && state.activated) throw new Error('already-exist');
 
             return {
-                type: 'TodoCardCreated',
+                type: () => 'TodoCardCreated',
                 payload: {
                     name: args.name
                 }
@@ -26,7 +26,7 @@ export default {
             if (!state.activated) throw new Error('no-exist');
 
             return {
-                type: 'TodoCardRemoved'
+                type: () => 'TodoCardRemoved'
             };
         }
     }
