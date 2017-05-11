@@ -29,7 +29,7 @@ describe('resolve-redux', () => {
         it('should return reducer by projection', () => {
             _reducer = reducer(projection);
 
-            let state = _reducer(undefined, '@@INIT');
+            let state = _reducer(undefined, { type: '@@INIT' });
             expect(state).to.deep.equal(projection.initialState());
 
             const aggregateId = uuidV4();

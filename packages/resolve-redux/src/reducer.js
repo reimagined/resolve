@@ -1,21 +1,23 @@
 import { MERGE } from './actions';
 
-export default function reducer(projection) {
-    const _projection = Object.assign({}, projection);
-    _projection.eventHandlers = Object.assign({}, _projection.eventHandlers, {
+export default function reducer({ name, eventHandlers, initialState }) {
+    const handlers = {
+        ...eventHandlers,
         [MERGE]: (state, action) => {
-            if (action.projectionName === projection.name) {
+            if (action.projectionName === name) {
                 return state.merge(action.state);
             }
             return state;
         }
-    });
-    const _reducer = (state = projection.initialState(), action) => {
-        const eventHandler = _projection.eventHandlers[action.type];
+    };
+
+    return (state = initialState(), action) => {
+        const eventHandler = handlers[action.type];
+
         if (eventHandler) {
             return eventHandler(state, action);
         }
+
         return state;
     };
-    return _reducer;
 }
