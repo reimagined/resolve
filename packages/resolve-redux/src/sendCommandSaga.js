@@ -1,10 +1,21 @@
-import { take } from 'redux-saga/effects';
+import { take, put } from 'redux-saga/effects';
 
-// TODO
-export default function* sendCommandSaga() {
+export default function* sendCommandSaga({ sendCommand }) {
     while (true) {
         const action = yield take('*');
-        // ...
-        action();
+        const { command, aggregateId, aggregateType, payload } = action;
+
+        if (command && aggregateId && aggregateType) {
+            const error = yield sendCommand({
+                commandName: command.name,
+                aggregateId,
+                aggregateType,
+                payload
+            });
+
+            if (error) {
+                yield put(error);
+            }
+        }
     }
 }
