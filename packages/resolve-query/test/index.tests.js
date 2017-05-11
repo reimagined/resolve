@@ -25,12 +25,13 @@ const options = {
     store: {
         loadEventsByTypes: sinon.spy((types, cb) => Promise.resolve(events.forEach(cb)))
     },
-    projections: {
-        [PROJECTION_NAME]: {
+    projections: [
+        {
+            name: PROJECTION_NAME,
             initialState,
             eventHandlers
         }
-    },
+    ],
     bus: {
         emitEvent: (event) => {
             onEventCallback(event);

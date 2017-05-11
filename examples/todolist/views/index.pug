@@ -12,14 +12,14 @@ include includes/header.pug
                         .col-xs-4.text-right
                             form(method='POST' action='/command')
                                 input(name='commandName' value='remove' type='hidden')
-                                input(name='aggregateType' value='card' type='hidden')
+                                input(name='aggregateType' value='todocard' type='hidden')
                                 input(name='aggregateId' value=item.aggregateId type='hidden')
                                 button(style='background: none; border: none;color: darkred')
                                     i.fa.fa-trash
 
         form(method='POST' action='/command')
             input(name='commandName' value='create' type='hidden')
-            input(name='aggregateType' value='card' type='hidden')
+            input(name='aggregateType' value='todocard' type='hidden')
             .input-group
                 input.form-control(name='name')
                 span.input-group-btn

@@ -1,6 +1,7 @@
 import Immutable from 'seamless-immutable';
 
 export default {
+    name: 'cards',
     initialState: () => Immutable({}),
 
     eventHandlers: {
