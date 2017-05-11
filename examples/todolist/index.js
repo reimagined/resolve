@@ -32,19 +32,13 @@ const bus = createBus({ driver: busDriver() });
 const execute = commandHandler({
     store: eventStore,
     bus,
-    aggregates: {
-        card: todoCardAggregate,
-        todo: todoItemAggregate
-    }
+    aggregates: [todoCardAggregate, todoItemAggregate]
 });
 
 const queries = query({
     store: eventStore,
     bus,
-    projections: {
-        cards: cardsProjection,
-        cardDetails: cardDetailsProjection
-    }
+    projections: [cardsProjection, cardDetailsProjection]
 });
 
 setupMiddlewares(app);

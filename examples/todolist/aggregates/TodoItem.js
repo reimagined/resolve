@@ -1,6 +1,7 @@
 import Immutable from 'seamless-immutable';
 
 export default {
+    name: 'TodoItem',
     initialState: () => null,
 
     eventHandlers: {
@@ -16,7 +17,7 @@ export default {
             if (state && state.activated) throw new Error('already-exist');
 
             return {
-                type: 'TodoItemCreated',
+                type: 'Created',
                 payload: {
                     name: args.name,
                     cardId: args.cardId
@@ -28,7 +29,7 @@ export default {
             if (!state.activated) throw new Error('no-exist');
 
             return {
-                type: 'TodoItemRemoved'
+                type: 'Removed'
             };
         },
 
@@ -36,7 +37,7 @@ export default {
             if (!state.activated) throw new Error('no-exist');
 
             return {
-                type: 'TodoItemCheckToggled'
+                type: 'CheckToggled'
             };
         }
     }
