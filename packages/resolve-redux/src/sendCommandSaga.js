@@ -7,7 +7,7 @@ export default function* sendCommandSaga({ sendCommand }) {
 
         if (command && aggregateId && aggregateType) {
             const error = yield sendCommand({
-                commandName: command.name,
+                commandType: command.type,
                 aggregateId,
                 aggregateType,
                 payload

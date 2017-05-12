@@ -13,7 +13,7 @@ describe('sendCommandSaga', () => {
 
         const action = {
             command: {
-                name: 'commandName'
+                type: 'commandType'
             },
             aggregateId: 'aggregateId',
             aggregateType: 'aggregateType',
@@ -26,7 +26,7 @@ describe('sendCommandSaga', () => {
 
         expect(
             sendCommand.withArgs({
-                commandName: action.command.name,
+                commandType: action.command.type,
                 aggregateId: action.aggregateId,
                 aggregateType: action.aggregateType,
                 payload: action.payload
@@ -44,7 +44,7 @@ describe('sendCommandSaga', () => {
 
         const action = {
             command: {
-                name: 'commandName'
+                type: 'commandType'
             },
             aggregateId: 'aggregateId',
             aggregateType: 'aggregateType',
@@ -57,7 +57,7 @@ describe('sendCommandSaga', () => {
 
         expect(
             sendCommand.withArgs({
-                commandName: action.command.name,
+                commandType: action.command.type,
                 aggregateId: action.aggregateId,
                 aggregateType: action.aggregateType,
                 payload: action.payload

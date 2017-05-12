@@ -1,6 +1,6 @@
 function verifyCommand(command) {
     if (!command.aggregateId) return Promise.reject('aggregateId argument is required');
-    if (!command.commandName) return Promise.reject('commandName argument is required');
+    if (!command.commandType) return Promise.reject('commandType argument is required');
 
     return Promise.resolve(command);
 }
@@ -26,10 +26,10 @@ function getAggregateState(aggregate, aggregateId, store) {
 
 function executeCommand(command, aggregate, store) {
     return getAggregateState(aggregate, command.aggregateId, store).then((aggregateState) => {
-        const handler = aggregate.commands[command.commandName];
+        const handler = aggregate.commands[command.commandType];
         const event = handler(aggregateState, command);
 
-        event.type = typeof event.type === 'function' ? event.type() : aggregate.name + event.type;
+        event.type = typeof event.type === 'function' ? event.type() : aggregate.type + event.type;
 
         return Object.assign(
             {
@@ -57,9 +57,9 @@ const executor = ({ store, bus, aggregate }) => rawCommand =>
 
 export default ({ store, bus, aggregates }) => {
     const executors = aggregates.reduce((result, aggregate) => {
-        result[aggregate.name.toLowerCase()] = executor({ store, bus, aggregate });
+        result[aggregate.type.toLowerCase()] = executor({ store, bus, aggregate });
         return result;
     }, {});
 
-    return command => executors[command.aggregate.toLowerCase()](command);
+    return command => executors[command.aggregateType.toLowerCase()](command);
 };
