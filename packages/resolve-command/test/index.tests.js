@@ -23,6 +23,8 @@ describe('command', () => {
     let testEvent;
 
     beforeEach(() => {
+        sinon.stub(Date, 'now').returns(123);
+
         testCommand = {
             aggregateId: AGGREGATE_ID,
             aggregate: AGGREGATE_NAME,
@@ -33,6 +35,7 @@ describe('command', () => {
         testEvent = {
             aggregateId: AGGREGATE_ID,
             type: BUILT_EVENT_TYPE,
+            timestamp: 123,
             payload: { name: 'Jack' }
         };
 
@@ -51,6 +54,10 @@ describe('command', () => {
         store = createStore({ driver: memoryEsDriver() });
         bus = createBus({ driver: memoryBusDriver() });
         execute = commandHandler({ store, bus, aggregates });
+    });
+
+    afterEach(() => {
+        Date.now.restore();
     });
 
     it('should save and publish event', () => {

@@ -30,14 +30,10 @@ function executeCommand(command, aggregate, store) {
         const handler = aggregate.commands[command.commandName];
         const event = handler(aggregateState, command);
 
+        event.aggregateId = command.aggregateId;
         event.type = typeof event.type === 'function' ? event.type() : aggregate.name + event.type;
-
-        return Object.assign(
-            {
-                aggregateId: command.aggregateId
-            },
-            event
-        );
+        event.timestamp = Date.now();
+        return event;
     });
 }
 
