@@ -4,15 +4,16 @@ const ENCODING = 'utf8';
 
 const loadEvents = path =>
     new Promise((resolve, reject) =>
-        fs.readFile(
-            path,
-            ENCODING,
-            (err, content) =>
-                (err && err.code !== 'ENOENT'
-                    ? reject(err)
-                    : resolve(content ? JSON.parse(`[${content.replace(/,$/, '')}]`) : []))
-        )
+        fs.readFile(path, ENCODING, (err, content) => {
+            if (err && err.code !== 'ENOENT') {
+                reject(err);
+                return;
+            }
+            resolve(content ? JSON.parse(`[${content.replace(/,$/, '')}]`) : []);
+        })
     );
+
+const compareEvents = (a, b) => a.timestamp - b.timestamp;
 
 export default ({ pathToFile }) => ({
     saveEvent: event =>
@@ -27,11 +28,11 @@ export default ({ pathToFile }) => ({
 
     loadEventsByTypes: (types, callback) =>
         loadEvents(pathToFile).then(events =>
-            events.filter(event => types.includes(event.type)).forEach(callback)
+            events.filter(event => types.includes(event.type)).sort(compareEvents).forEach(callback)
         ),
 
     loadEventsByAggregateId: (id, callback) =>
         loadEvents(pathToFile).then(events =>
-            events.filter(event => event.aggregateId === id).forEach(callback)
+            events.filter(event => event.aggregateId === id).sort(compareEvents).forEach(callback)
         )
 });

@@ -29,14 +29,10 @@ function executeCommand(command, aggregate, store) {
         const handler = aggregate.commands[command.commandType];
         const event = handler(aggregateState, command);
 
-        event.type = typeof event.type === 'function' ? event.type() : aggregate.type + event.type;
-
-        return Object.assign(
-            {
-                aggregateId: command.aggregateId
-            },
-            event
-        );
+        event.aggregateId = command.aggregateId;
+        event.type = typeof event.type === 'function' ? event.type() : aggregate.name + event.type;
+        event.timestamp = Date.now();
+        return event;
     });
 }
 
@@ -49,17 +45,17 @@ function publishEvent(event, bus) {
     return event;
 }
 
-const executor = ({ store, bus, aggregate }) => rawCommand =>
-    verifyCommand(rawCommand)
-        .then(command => executeCommand(command, aggregate, store))
+const createExecutor = ({ store, bus, aggregate }) => command =>
+    executeCommand(command, aggregate, store)
         .then(event => saveEvent(event, store))
         .then(event => publishEvent(event, bus));
 
 export default ({ store, bus, aggregates }) => {
     const executors = aggregates.reduce((result, aggregate) => {
-        result[aggregate.type.toLowerCase()] = executor({ store, bus, aggregate });
+        result[aggregate.type.toLowerCase()] = createExecutor({ store, bus, aggregate });
         return result;
     }, {});
 
-    return command => executors[command.aggregateType.toLowerCase()](command);
+    return command =>
+        verifyCommand(command).then(() => executors[command.aggregateType.toLowerCase()](command));
 };

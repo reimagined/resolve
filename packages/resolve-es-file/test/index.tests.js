@@ -5,21 +5,25 @@ import adapter from '../src/index';
 const row1 = {
     type: 'testtype_1',
     aggregateId: '1',
+    timestamp: 5,
     payload: {}
 };
 const row2 = {
     type: 'testtype_1',
     aggregateId: '2',
+    timestamp: 1,
     payload: {}
 };
 const row3 = {
     type: 'testtype_1',
     aggregateId: '3',
+    timestamp: 2,
     payload: {}
 };
 const row4 = {
     type: 'testtype_2',
-    aggregateId: '4',
+    aggregateId: '3',
+    timestamp: 1,
     payload: {}
 };
 const row5 = {
@@ -51,14 +55,20 @@ describe('es-file', () => {
                 result.push(item);
             })
             .then(() => {
-                expect(result).to.be.deep.equal([row1, row2, row3]);
+                expect(result).to.be.deep.equal([row2, row3, row1]);
             });
     });
 
-    it('load events by aggregate id', () =>
-        eventstore.loadEventsByAggregateId('4', (result) => {
-            expect(result).to.be.deep.equal(row4);
-        }));
+    it('load events by aggregate id', () => {
+        const result = [];
+        return eventstore
+            .loadEventsByAggregateId('3', (item) => {
+                result.push(item);
+            })
+            .then(() => {
+                expect(result).to.be.deep.equal([row4, row3]);
+            });
+    });
 
     it('save event', () =>
         eventstore.saveEvent(row5).then(() =>

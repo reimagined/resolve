@@ -14,7 +14,7 @@ describe('command', () => {
     const AGGREGATE_TYPE = 'testAggregate';
     const COMMAND_TYPE = 'create';
     const EVENT_TYPE = 'created';
-    const BUILDED_EVENT_TYPE = AGGREGATE_TYPE + EVENT_TYPE;
+    const BUILT_EVENT_TYPE = AGGREGATE_TYPE + EVENT_TYPE;
 
     let store;
     let bus;
@@ -24,6 +24,8 @@ describe('command', () => {
     let testEvent;
 
     beforeEach(() => {
+        sinon.stub(Date, 'now').returns(123);
+
         testCommand = {
             aggregateId: AGGREGATE_ID,
             aggregateType: AGGREGATE_TYPE,
@@ -33,7 +35,8 @@ describe('command', () => {
 
         testEvent = {
             aggregateId: AGGREGATE_ID,
-            type: EVENT_TYPE,
+            type: BUILT_EVENT_TYPE,
+            timestamp: 123,
             payload: { name: 'Jack' }
         };
 
@@ -41,7 +44,10 @@ describe('command', () => {
             {
                 type: AGGREGATE_TYPE,
                 commands: {
-                    [COMMAND_TYPE]: () => testEvent
+                    [COMMAND_TYPE]: () => ({
+                        type: EVENT_TYPE,
+                        payload: { name: 'Jack' }
+                    })
                 }
             }
         ];
@@ -51,13 +57,17 @@ describe('command', () => {
         execute = commandHandler({ store, bus, aggregates });
     });
 
+    afterEach(() => {
+        Date.now.restore();
+    });
+
     it('should save and publish event', () => {
         const eventHandlerSpy = sinon.spy();
-        bus.onEvent([BUILDED_EVENT_TYPE], eventHandlerSpy);
+        bus.onEvent([BUILT_EVENT_TYPE], eventHandlerSpy);
 
         return execute(testCommand).then(() => {
             expect(eventHandlerSpy.callCount).to.be.equal(1);
-            expect(eventHandlerSpy.lastCall.args[0]).to.be.deep.equal(testEvent);
+            expect(eventHandlerSpy.lastCall.args).to.be.deep.equal([testEvent]);
 
             const storedEvents = [];
             return store
@@ -82,8 +92,16 @@ describe('command', () => {
             .catch(err => expect(err).to.be.equal('aggregateId argument is required'));
     });
 
+    it('should reject event in case of aggregate absense', () => {
+        delete testCommand.aggregateName;
+
+        return execute(testCommand)
+            .then(() => expect(false).to.be.true)
+            .catch(err => expect(err).to.be.equal('aggregate argument is required'));
+    });
+
     it('should pass initialState and args to command handler', () => {
-        const createHandlerSpy = sinon.spy(() => testEvent);
+        const createHandlerSpy = sinon.stub().returns({});
 
         aggregates[0].commands[COMMAND_TYPE] = createHandlerSpy;
 
@@ -93,7 +111,7 @@ describe('command', () => {
     });
 
     it('should get custom initialState and args to command handler', () => {
-        const createHandlerSpy = sinon.spy(() => testEvent);
+        const createHandlerSpy = sinon.stub().returns({});
 
         aggregates[0].commands[COMMAND_TYPE] = createHandlerSpy;
         aggregates[0].initialState = () => ({
@@ -112,12 +130,12 @@ describe('command', () => {
         const events = [
             {
                 aggregateId: AGGREGATE_ID,
-                type: BUILDED_EVENT_TYPE,
+                type: BUILT_EVENT_TYPE,
                 payload: { name: 'User1' }
             },
             {
                 aggregateId: 'test-id-2',
-                type: BUILDED_EVENT_TYPE
+                type: BUILT_EVENT_TYPE
             },
             {
                 aggregateId: AGGREGATE_ID,
@@ -144,7 +162,7 @@ describe('command', () => {
         aggregates[0] = {
             type: AGGREGATE_TYPE,
             eventHandlers: {
-                [BUILDED_EVENT_TYPE]: userCreatedHandlerSpy,
+                [BUILT_EVENT_TYPE]: userCreatedHandlerSpy,
                 USER_UPDATED: userUpdatedHandlerSpy
             },
             commands: {
@@ -178,11 +196,10 @@ describe('command', () => {
             payload: { name: args.name }
         }));
 
-        const handlerName = AGGREGATE_TYPE + TEST_EVENT_TYPE;
         Object.assign(aggregates[0], {
             eventHandlers: {
-                [handlerName]: (state, event) => ({
-                    name: event.name
+                [AGGREGATE_TYPE + TEST_EVENT_TYPE]: (state, event) => ({
+                    name: event.payload.name
                 })
             },
             commands: {
@@ -202,7 +219,7 @@ describe('command', () => {
         const events = [
             {
                 aggregateId: AGGREGATE_ID,
-                type: BUILDED_EVENT_TYPE,
+                type: BUILT_EVENT_TYPE,
                 payload: { name: 'User1' }
             },
             {
@@ -228,7 +245,7 @@ describe('command', () => {
         aggregates[0] = {
             type: AGGREGATE_TYPE,
             eventHandlers: {
-                [BUILDED_EVENT_TYPE]: (_, event) => ({ name: event.payload.name })
+                [BUILT_EVENT_TYPE]: (_, event) => ({ name: event.payload.name })
             },
             commands: {
                 [COMMAND_TYPE]: createHandlerSpy
