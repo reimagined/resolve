@@ -1,6 +1,6 @@
 import { MERGE } from './actions';
 
-export default function reducer({ name, eventHandlers, initialState }) {
+export default function reducer({ name, eventHandlers }) {
     const handlers = {
         ...eventHandlers,
         [MERGE]: (state, action) => {
@@ -11,7 +11,7 @@ export default function reducer({ name, eventHandlers, initialState }) {
         }
     };
 
-    return (state = initialState(), action) => {
+    return (state, action) => {
         const eventHandler = handlers[action.type];
 
         if (eventHandler) {

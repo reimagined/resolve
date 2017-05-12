@@ -24,12 +24,9 @@ describe('reducer', () => {
     it('should return reducer by projection', () => {
         _reducer = reducer(projection);
 
-        let state = _reducer(undefined, { type: '@@INIT' });
-        expect(state).to.deep.equal(projection.initialState());
-
         const aggregateId = uuidV4();
 
-        state = _reducer(state, {
+        let state = _reducer(Immutable({}), {
             type: 'COUNTER_CREATE',
             aggregateId
         });
