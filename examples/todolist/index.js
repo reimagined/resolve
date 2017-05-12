@@ -59,7 +59,7 @@ app.get('/:card', (req, res) =>
 
 app.post('/command', (req, res) => {
     const command = Object.keys(req.body)
-        .filter(key => key !== 'aggregateType' || key !== 'returnUrl')
+        .filter(key => key !== 'aggregateName' || key !== 'returnUrl')
         .reduce((result, key) => {
             result[key] = req.body[key];
             return result;
@@ -68,7 +68,7 @@ app.post('/command', (req, res) => {
     const redirectUrl = req.body.returnUrl || '/';
 
     command.aggregateId = command.aggregateId || uuid.v4();
-    command.aggregate = req.body.aggregateType;
+    command.aggregateName = req.body.aggregateName;
 
     execute(command)
         .catch((err) => {

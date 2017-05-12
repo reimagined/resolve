@@ -15,8 +15,8 @@ include includes/header.pug
                         .col-xs-8
                             form(method='POST' action='/command')
                                 input(name='aggregateId' value=card.todoList[key].aggregateId type='hidden')
-                                input(name='aggregateType' value='todoitem' type='hidden')
-                                input(name='commandName' value='toggleCheck' type='hidden')
+                                input(name='aggregateName' value='todoitem' type='hidden')
+                                input(name='type' value='toggleCheck' type='hidden')
                                 input(name='returnUrl' value='/'+card.aggregateId type='hidden')
                                 button(style='background: none; border: none;')
                                     if card.todoList[key].checked
@@ -28,15 +28,15 @@ include includes/header.pug
                         .col-xs-4.text-right
                             form(method='POST' action='/command')
                                 input(name='aggregateId' value=card.todoList[key].aggregateId type='hidden')
-                                input(name='aggregateType' value='todoitem' type='hidden')
-                                input(name='commandName' value='remove' type='hidden')
+                                input(name='aggregateName' value='todoitem' type='hidden')
+                                input(name='type' value='remove' type='hidden')
                                 input(name='returnUrl' value='/'+card.aggregateId type='hidden')
                                 button(style='background: none; border: none;color: darkred')
                                     i.fa.fa-trash
 
         form(method='POST' action='/command')
-            input(name='commandName' value='create' type='hidden')
-            input(name='aggregateType' value='todoitem' type='hidden')
+            input(name='type' value='create' type='hidden')
+            input(name='aggregateName' value='todoitem' type='hidden')
             input(name='cardId' value=card.aggregateId type='hidden')
             input(name='returnUrl' value='/'+card.aggregateId type='hidden')
             .input-group

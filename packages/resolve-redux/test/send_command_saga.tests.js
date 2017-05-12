@@ -26,7 +26,7 @@ describe('sendCommandSaga', () => {
 
         expect(
             sendCommand.withArgs({
-                commandType: action.command.type,
+                type: action.command.type,
                 aggregateId: action.aggregateId,
                 aggregateType: action.aggregateType,
                 payload: action.payload
@@ -57,7 +57,7 @@ describe('sendCommandSaga', () => {
 
         expect(
             sendCommand.withArgs({
-                commandType: action.command.type,
+                type: action.command.type,
                 aggregateId: action.aggregateId,
                 aggregateType: action.aggregateType,
                 payload: action.payload
