@@ -92,12 +92,12 @@ describe('command', () => {
             .catch(err => expect(err).to.be.equal('aggregateId argument is required'));
     });
 
-    it('should reject event in case of aggregate absense', () => {
-        delete testCommand.aggregateName;
+    it('should reject event in case of aggregate absence', () => {
+        delete testCommand.aggregateType;
 
         return execute(testCommand)
             .then(() => expect(false).to.be.true)
-            .catch(err => expect(err).to.be.equal('aggregate argument is required'));
+            .catch(err => expect(err).to.be.equal('aggregateType argument is required'));
     });
 
     it('should pass initialState and args to command handler', () => {

@@ -1,5 +1,6 @@
 function verifyCommand(command) {
     if (!command.aggregateId) return Promise.reject('aggregateId argument is required');
+    if (!command.aggregateType) return Promise.reject('aggregateType argument is required');
     if (!command.commandType) return Promise.reject('commandType argument is required');
 
     return Promise.resolve(command);
@@ -30,7 +31,7 @@ function executeCommand(command, aggregate, store) {
         const event = handler(aggregateState, command);
 
         event.aggregateId = command.aggregateId;
-        event.type = typeof event.type === 'function' ? event.type() : aggregate.name + event.type;
+        event.type = typeof event.type === 'function' ? event.type() : aggregate.type + event.type;
         event.timestamp = Date.now();
         return event;
     });
