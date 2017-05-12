@@ -10,14 +10,14 @@ function merge(projectionName, state) {
     };
 }
 
-// TODO
-function sendCommand(/* { aggregateId, aggregateType, ...args } */) {
-    // return {
-    //     type: SEND_COMMAND,
-    //     aggregateId,
-    //     aggregateType,
-    //     ...args
-    // };
+function sendCommand({ command, aggregateId, aggregateType, payload }) {
+    return {
+        type: SEND_COMMAND,
+        command,
+        aggregateId,
+        aggregateType,
+        payload
+    };
 }
 
 function fetchMore(projectionName, query) {
