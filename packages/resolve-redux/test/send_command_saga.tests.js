@@ -2,7 +2,7 @@
 import sinon from 'sinon';
 import { take, put } from 'redux-saga/effects';
 import { expect } from 'chai';
-import sendCommandSaga from '../src/sendCommandSaga';
+import sendCommandSaga from '../src/send_command_saga';
 
 describe('sendCommandSaga', () => {
     it('works correctly with no error returned by the sendCommand function', () => {
