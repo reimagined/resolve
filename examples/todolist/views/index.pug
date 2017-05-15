@@ -11,15 +11,15 @@ include includes/header.pug
                             a(href=item.aggregateId)= item.name
                         .col-xs-4.text-right
                             form(method='POST' action='/command')
-                                input(name='commandName' value='remove' type='hidden')
-                                input(name='aggregateType' value='todocard' type='hidden')
+                                input(name='type' value='remove' type='hidden')
+                                input(name='aggregateName' value='todocard' type='hidden')
                                 input(name='aggregateId' value=item.aggregateId type='hidden')
                                 button(style='background: none; border: none;color: darkred')
                                     i.fa.fa-trash
 
         form(method='POST' action='/command')
-            input(name='commandName' value='create' type='hidden')
-            input(name='aggregateType' value='todocard' type='hidden')
+            input(name='type' value='create' type='hidden')
+            input(name='aggregateName' value='todocard' type='hidden')
             .input-group
                 input.form-control(name='name')
                 span.input-group-btn
