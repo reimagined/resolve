@@ -34,6 +34,16 @@ describe('es-mongo', () => {
                 expect(db.collection.lastCall.returnValue.insert.lastCall.args).to.deep.equal([
                     testEvent
                 ]);
+
+                expect(
+                    db.collection.lastCall.returnValue.createIndex.lastCall.args
+                ).to.be.deep.equal([
+                    {
+                        aggregateId: 1,
+                        type: 1,
+                        timestamp: 1
+                    }
+                ]);
             });
     });
 

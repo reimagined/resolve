@@ -23,9 +23,17 @@ function loadEvents(coll, query, skip, limit, callback) {
 export default function ({ url, collection }) {
     let promise;
 
+    const indexes = {
+        aggregateId: 1,
+        type: 1,
+        timestamp: 1
+    };
+
     function getCollection() {
         if (!promise) {
-            promise = MongoClient.connect(url).then(db => db.collection(collection));
+            promise = MongoClient.connect(url)
+                .then(db => db.collection(collection))
+                .then(coll => coll.createIndex(indexes).then(() => coll));
         }
 
         return promise;
