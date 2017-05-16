@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import { expect } from 'chai';
-import { MongoClient, _setToArray } from 'mongodb';
+import { MongoClient, _setFindResult } from 'mongodb';
 
 import createAdapter from '../src';
 
@@ -16,7 +16,7 @@ const testEvent = {
 
 describe('es-mongo', () => {
     afterEach(() => {
-        _setToArray(null);
+        _setFindResult(null);
         MongoClient.connect.reset();
     });
 
@@ -36,14 +36,8 @@ describe('es-mongo', () => {
                 ]);
 
                 expect(
-                    db.collection.lastCall.returnValue.createIndex.lastCall.args
-                ).to.be.deep.equal([
-                    {
-                        aggregateId: 1,
-                        type: 1,
-                        timestamp: 1
-                    }
-                ]);
+                    db.collection.lastCall.returnValue.ensureIndex.lastCall.args
+                ).to.be.deep.equal(['timestamp']);
             });
     });
 
@@ -51,18 +45,11 @@ describe('es-mongo', () => {
         const adapter = createAdapter(adapterSettings);
         const types = ['event-type-1', 'event-type-2'];
         const eventsByTypes = [
-            {
-                id: '1',
-                type: 'event-type-1'
-            },
-            {
-                id: '1',
-                type: 'event-type-2'
-            }
+            { id: '1', type: 'event-type-1' },
+            { id: '1', type: 'event-type-2' }
         ];
         const processEvent = sinon.spy();
-
-        _setToArray(() => Promise.resolve(eventsByTypes));
+        _setFindResult(eventsByTypes);
 
         return adapter
             .loadEventsByTypes(types, processEvent)
@@ -70,14 +57,9 @@ describe('es-mongo', () => {
             .then((db) => {
                 expect(db.collection.lastCall.args).to.deep.equal(['test-collection']);
                 expect(db.collection.lastCall.returnValue.find.lastCall.args).to.deep.equal([
-                    { type: { $in: types } }
+                    { type: { $in: types } },
+                    { sort: 'timestamp' }
                 ]);
-
-                const find = db.collection.lastCall.returnValue.find.lastCall.returnValue;
-
-                expect(find.sort.lastCall.args).to.deep.equal([{ timestamp: 1 }]);
-                expect(find.skip.lastCall.args).to.deep.equal([0]);
-                expect(find.limit.lastCall.args).to.deep.equal([1000]);
 
                 expect(processEvent.args).to.deep.equal([[eventsByTypes[0]], [eventsByTypes[1]]]);
             });
@@ -87,18 +69,12 @@ describe('es-mongo', () => {
         const adapter = createAdapter(adapterSettings);
         const aggregateId = 'test-aggregate-id';
         const eventsByAggregateId = [
-            {
-                id: '1',
-                aggregateId
-            },
-            {
-                id: '1',
-                aggregateId
-            }
+            { id: '1', aggregateId },
+            { id: '1', aggregateId }
         ];
 
         const processEvent = sinon.spy();
-        _setToArray(() => Promise.resolve(eventsByAggregateId));
+        _setFindResult(eventsByAggregateId);
 
         return adapter
             .loadEventsByAggregateId(aggregateId, processEvent)
@@ -106,58 +82,14 @@ describe('es-mongo', () => {
             .then((db) => {
                 expect(db.collection.lastCall.args).to.deep.equal(['test-collection']);
                 expect(db.collection.lastCall.returnValue.find.lastCall.args).to.deep.equal([
-                    { aggregateId }
+                    { aggregateId },
+                    { sort: 'timestamp' }
                 ]);
-
-                const find = db.collection.lastCall.returnValue.find.lastCall.returnValue;
-
-                expect(find.sort.lastCall.args).to.deep.equal([{ timestamp: 1 }]);
-                expect(find.skip.lastCall.args).to.deep.equal([0]);
-                expect(find.limit.lastCall.args).to.deep.equal([1000]);
 
                 expect(processEvent.args).to.deep.equal([
                     [eventsByAggregateId[0]],
                     [eventsByAggregateId[1]]
                 ]);
-            });
-    });
-
-    it('should load events using batching', () => {
-        const adapter = createAdapter(adapterSettings);
-        const types = ['event-type-1', 'event-type-2'];
-        const processEvent = sinon.spy();
-        const toArray = sinon.stub();
-        const getArray = (length) => {
-            const a = [];
-            for (let i = 0; i < length; i++) {
-                a[i] = i;
-            }
-            return a;
-        };
-
-        toArray.onCall(0).returns(Promise.resolve(getArray(1000)));
-        toArray.onCall(1).returns(Promise.resolve(getArray(1000)));
-        toArray.onCall(2).returns(Promise.resolve(getArray(200)));
-
-        _setToArray(toArray);
-
-        return adapter
-            .loadEventsByTypes(types, processEvent)
-            .then(() => MongoClient.connect.lastCall.returnValue)
-            .then((db) => {
-                const find = db.collection.lastCall.returnValue.find;
-
-                expect(find.callCount).to.equal(3);
-
-                expect(find.getCall(0).returnValue.skip.lastCall.args).to.deep.equal([0]);
-                expect(find.getCall(1).returnValue.skip.lastCall.args).to.deep.equal([1000]);
-                expect(find.getCall(2).returnValue.skip.lastCall.args).to.deep.equal([2000]);
-
-                expect(find.getCall(0).returnValue.limit.lastCall.args).to.deep.equal([1000]);
-                expect(find.getCall(1).returnValue.limit.lastCall.args).to.deep.equal([1000]);
-                expect(find.getCall(2).returnValue.limit.lastCall.args).to.deep.equal([1000]);
-
-                expect(processEvent.callCount).to.equal(2200);
             });
     });
 });

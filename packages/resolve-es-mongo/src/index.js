@@ -1,51 +1,50 @@
 import { MongoClient } from 'mongodb';
 
-const LIMIT = 1000;
+function loadEvents(coll, query, callback) {
+    let doneResolver = null;
+    const donePromise = new Promise(resolve => (doneResolver = resolve));
+    let workerPromise = Promise.resolve();
 
-function loadEvents(coll, query, skip, limit, callback) {
-    return coll
-        .find(query)
-        .sort({ timestamp: 1 })
-        .skip(skip)
-        .limit(limit)
-        .toArray()
-        .then(events =>
-            events
-                .reduce((total, event) => total.then(() => callback(event)), Promise.resolve())
-                .then(
-                    () =>
-                        events.length === limit &&
-                        loadEvents(coll, query, skip + limit, limit, callback)
-                )
-        );
+    const cursorStream = coll.find(query, { sort: 'timestamp' }).stream();
+
+    cursorStream.on('data', item =>
+        (workerPromise = workerPromise.then(() => callback(item)))
+    );
+
+    cursorStream.on('end', () =>
+        (workerPromise = workerPromise.then(doneResolver))
+    );
+
+    return donePromise;
 }
 
 export default function ({ url, collection }) {
     let promise;
 
-    const indexes = {
-        aggregateId: 1,
-        type: 1,
-        timestamp: 1
-    };
-
     function getCollection() {
         if (!promise) {
             promise = MongoClient.connect(url)
                 .then(db => db.collection(collection))
-                .then(coll => coll.createIndex(indexes).then(() => coll));
+                .then(coll => coll.ensureIndex('timestamp')
+                    .then(() => coll)
+                );
         }
 
         return promise;
     }
 
     return {
-        saveEvent: event => getCollection().then(coll => coll.insert(event)),
+        saveEvent: event =>
+            getCollection().then(coll =>
+                coll.insert(event)
+            ),
         loadEventsByTypes: (types, callback) =>
             getCollection().then(coll =>
-                loadEvents(coll, { type: { $in: types } }, 0, LIMIT, callback)
+                loadEvents(coll, { type: { $in: types } }, callback)
             ),
         loadEventsByAggregateId: (aggregateId, callback) =>
-            getCollection().then(coll => loadEvents(coll, { aggregateId }, 0, LIMIT, callback))
+            getCollection().then(coll =>
+                loadEvents(coll, { aggregateId }, callback)
+            )
     };
 }
