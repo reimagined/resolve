@@ -26,6 +26,7 @@ export default function ({ url, collection }) {
             promise = MongoClient.connect(url)
                 .then(db => db.collection(collection))
                 .then(coll => coll.ensureIndex('timestamp')
+                    .then(() => coll.ensureIndex('aggregateId'))
                     .then(() => coll)
                 );
         }
