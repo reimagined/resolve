@@ -101,7 +101,10 @@ describe('command', () => {
     });
 
     it('should pass initialState and args to command handler', () => {
-        const createHandlerSpy = sinon.stub().returns({});
+        const createHandlerSpy = sinon.stub().returns({
+            type: EVENT_TYPE,
+            payload: {}
+        });
 
         aggregates[0].commands[COMMAND_TYPE] = createHandlerSpy;
 
@@ -111,7 +114,10 @@ describe('command', () => {
     });
 
     it('should get custom initialState and args to command handler', () => {
-        const createHandlerSpy = sinon.stub().returns({});
+        const createHandlerSpy = sinon.stub().returns({
+            type: EVENT_TYPE,
+            payload: {}
+        });
 
         aggregates[0].commands[COMMAND_TYPE] = createHandlerSpy;
         aggregates[0].initialState = () => ({
@@ -193,7 +199,7 @@ describe('command', () => {
         const TEST_EVENT_TYPE = 'TEST_HANDLED';
         const createHandlerSpy = sinon.spy((state, args) => ({
             type: TEST_EVENT_TYPE,
-            payload: { name: args.name }
+            payload: { name: args.payload.name }
         }));
 
         Object.assign(aggregates[0], {
@@ -209,7 +215,7 @@ describe('command', () => {
 
         return execute(testCommand).then(() => execute(testCommand)).then(() => {
             expect(createHandlerSpy.lastCall.args).to.be.deep.equal([
-                { name: testCommand.name },
+                { name: testCommand.payload.name },
                 testCommand
             ]);
         });
@@ -268,7 +274,7 @@ describe('command', () => {
             commands: {
                 [COMMAND_TYPE]: (state, args) => ({
                     type: () => CUSTOM_EVENT_TYPE,
-                    payload: { name: args.name }
+                    payload: { name: args.payload.name }
                 })
             }
         });
@@ -276,5 +282,15 @@ describe('command', () => {
         return execute(testCommand).then((event) => {
             expect(event.type).to.be.equal(CUSTOM_EVENT_TYPE);
         });
+    });
+
+    it('should reject event in case of event.type absence', () => {
+        aggregates[0].commands[COMMAND_TYPE] = (state, args) => ({
+            payload: { name: args.payload.name }
+        });
+
+        return execute(testCommand)
+            .then(() => expect(false).to.be.true)
+            .catch(err => expect(err).to.be.equal('event type is required'));
     });
 });
