@@ -2,13 +2,16 @@
   "name": "todo-client",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:3001",
   "dependencies": {
     "bootstrap": "^3.3.7",
+    "isomorphic-fetch": "^2.2.1",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-redux": "^5.0.4",
     "react-router-dom": "^4.1.1",
     "redux": "^3.6.0",
+    "redux-saga": "^0.15.3",
     "seamless-immutable": "^7.1.2"
   },
   "devDependencies": {

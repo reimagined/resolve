@@ -2740,7 +2740,7 @@ isobject@^2.0.0:
   dependencies:
     isarray "1.0.0"
 
-isomorphic-fetch@^2.1.1:
+isomorphic-fetch@^2.1.1, isomorphic-fetch@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/isomorphic-fetch/-/isomorphic-fetch-2.2.1.tgz#611ae1acf14f5e81f729507472819fe9733558a9"
   dependencies:
@@ -4233,10 +4233,6 @@ react-router-dom@^4.1.1:
     prop-types "^15.5.4"
     react-router "^4.1.1"
 
-react-router-redux@^4.0.8:
-  version "4.0.8"
-  resolved "https://registry.yarnpkg.com/react-router-redux/-/react-router-redux-4.0.8.tgz#227403596b5151e182377dab835b5d45f0f8054e"
-
 react-router@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/react-router/-/react-router-4.1.1.tgz#d448f3b7c1b429a6fbb03395099949c606b1fe95"
@@ -4387,6 +4383,10 @@ reduce-function-call@^1.0.1:
   resolved "https://registry.yarnpkg.com/reduce-function-call/-/reduce-function-call-1.0.2.tgz#5a200bf92e0e37751752fe45b0ab330fd4b6be99"
   dependencies:
     balanced-match "^0.4.2"
+
+redux-saga@^0.15.3:
+  version "0.15.3"
+  resolved "https://registry.yarnpkg.com/redux-saga/-/redux-saga-0.15.3.tgz#be2b86b4ad46bf0d84fcfcb0ca96cfc33db91acb"
 
 redux@^3.6.0:
   version "3.6.0"
