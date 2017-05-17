@@ -35,7 +35,6 @@ function executeCommand(command, aggregate, store) {
         }
 
         event.aggregateId = command.aggregateId;
-        event.type = typeof event.type === 'function' ? event.type() : aggregate.name + event.type;
         event.timestamp = Date.now();
         return event;
     });
