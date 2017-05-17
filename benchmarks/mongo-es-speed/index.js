@@ -1,21 +1,46 @@
 import { spawn } from 'child_process';
 import rawFs from 'fs';
 import { MongoClient } from 'mongodb';
+import nyanProgress from 'nyan-progress';
 import path from 'path';
 import pify from 'pify';
 
 import prepareEvents from './prepareEvents';
 import config from './config';
 
+const POINTS = config.BENCHMARK_SERIES;
 const fs = pify(rawFs);
 
+const totalMaxValue = POINTS.reduce((acc, val) => (acc + val), 0) * 2;
+const progress = nyanProgress();
+const totalEventProcessed = { value: 0 };
+const totalEventReported = { value: 0 };
+
+const progressDonePromise = progress.start({
+    total: totalMaxValue,
+    message: {
+        downloading: ['Load testing progress'],
+        finished: 'Load testing done',
+        error: 'Load testing error'
+    }
+});
+
+const INFO_TOKEN = '-------INFO-------';
 const DONE_TOKEN = '-------DONE-------';
 const ERR_TOKEN = '-------ERR-------';
 
-const POINTS = config.BENCHMARK_SERIES;
-
 // eslint-disable-next-line no-console
 const log = console.log;
+
+setTimeout(function reporterHandler() {
+    if (totalEventReported.value !== totalEventProcessed.value) {
+        const tickSize = totalEventProcessed.value - totalEventReported.value;
+        progress.tick(tickSize);
+        totalEventReported.value = totalEventProcessed.value;
+    }
+
+    setTimeout(reporterHandler, 500);
+}, 500);
 
 function runLoadTests() {
     const initialTime = new Date();
@@ -39,6 +64,9 @@ function runLoadTests() {
         } else if (data.indexOf(ERR_TOKEN) >= 0) {
             child.kill();
             rejecter(data.substring(ERR_TOKEN.length));
+        } else if (data.indexOf(INFO_TOKEN) >= 0) {
+            const transferPayload = JSON.parse(data.substring(INFO_TOKEN.length));
+            totalEventProcessed.value += transferPayload.appendProgress;
         }
     };
 
@@ -59,6 +87,19 @@ function dropCollection() {
     );
 }
 
+function generateEvents(arr, i, storage) {
+    return dropCollection()
+        .then(() => prepareEvents(arr[i], totalEventProcessed))
+        .then(runLoadTests)
+        .then((data) => {
+            storage[arr[i]] = data;
+            if (i === arr.length - 1) {
+                return storage;
+            }
+            return generateEvents(arr, i + 1, storage);
+        });
+}
+
 function getDataString(arr, callback) {
     return arr
         .reduce((result, item) => `${result}${callback(item)},`, '')
@@ -70,19 +111,6 @@ function storeToCsv(filePath, points, data, dataGetter) {
         getDataString(points, point => `Events count: ${point}`) +
         getDataString(points, point => dataGetter(data, point))
     );
-}
-
-function generateEvents(arr, i, storage) {
-    return dropCollection()
-        .then(() => prepareEvents(arr[i]))
-        .then(runLoadTests)
-        .then((data) => {
-            storage[arr[i]] = data;
-            if (i === arr.length - 1) {
-                return storage;
-            }
-            return generateEvents(arr, i + 1, storage);
-        });
 }
 
 function storeSummaryToXML(filePath, points, data) {
@@ -102,6 +130,7 @@ function storeSummaryToXML(filePath, points, data) {
 }
 
 generateEvents(POINTS, 0, {})
+    .then(result => progress.tick(totalMaxValue) && result)
     .then(result => Promise.all([
         storeToCsv('./build-time.csv', POINTS, result, (data, point) => `${data[point].buildTime}`),
         storeToCsv('./memory-rss.csv', POINTS, result, (data, point) =>
@@ -115,6 +144,7 @@ generateEvents(POINTS, 0, {})
         ),
         storeSummaryToXML('./summary.xml', POINTS, result)
     ]))
+    .then(() => progressDonePromise)
     .then(() => process.exit(0))
     .catch((err) => {
         log(err);

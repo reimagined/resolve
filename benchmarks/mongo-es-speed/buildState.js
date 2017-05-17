@@ -13,9 +13,21 @@ const store = createEs({ driver: mongoDbDriver({
 }) });
 
 const DONE_TOKEN = '-------DONE-------';
+const INFO_TOKEN = '-------INFO-------';
 const ERR_TOKEN = '-------ERR-------';
 
-store.loadEventsByTypes(TYPES, () => null).then(() =>
+let eventCounter = 0;
+
+function eventHandler() {
+    if (++eventCounter % 5000 === 0) {
+        // eslint-disable-next-line no-console
+        console.log(INFO_TOKEN, JSON.stringify({
+            appendProgress: 5000
+        }));
+    }
+}
+
+store.loadEventsByTypes(TYPES, eventHandler).then(() =>
     // eslint-disable-next-line no-console
     console.log(DONE_TOKEN, JSON.stringify({
         memory: process.memoryUsage()

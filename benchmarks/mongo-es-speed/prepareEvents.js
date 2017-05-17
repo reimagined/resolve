@@ -20,8 +20,9 @@ function numericRandom(maxlen) {
     return value;
 }
 
-export default function (eventsCount) {
+export default function (eventsCount, reportObj) {
     let promise = Promise.resolve();
+    let processedEvents = 0;
 
     Array.from(new Array(eventsCount), () => (promise = promise.then(() =>
         store.saveEvent({
@@ -32,7 +33,10 @@ export default function (eventsCount) {
                 FieldName2: `FieldValue${numericRandom(1000)}`,
                 FieldName3: `FieldValue${numericRandom(1000)}`
             }
-        })
+        }).then(() => ((++processedEvents % 5000 === 0)
+            ? (reportObj.value += 5000)
+            : null
+        ))
     )));
 
     return promise;
