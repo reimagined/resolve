@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "reimaginate team",
   "license": "ISC",
+  "scripts": {
+    "test": "exit 0"
+  },
   "dependencies": {
     "express": "^4.15.2",
     "resolve-bus": "*",
