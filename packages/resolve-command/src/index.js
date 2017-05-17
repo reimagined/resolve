@@ -31,11 +31,11 @@ function executeCommand(command, aggregate, store) {
         const event = handler(aggregateState, command);
 
         if (!event.type) {
-            return Promise.reject('event type is required');
+            return Promise.reject("event type is required");
         }
 
         event.aggregateId = command.aggregateId;
-        event.type = typeof event.type === 'function' ? event.type() : aggregate.name + event.type;
+        event.type = event.type;
         event.timestamp = Date.now();
         return event;
     });

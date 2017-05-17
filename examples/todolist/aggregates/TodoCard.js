@@ -1,22 +1,22 @@
-import Immutable from 'seamless-immutable';
+import Immutable from "seamless-immutable";
 
 export default {
-    name: 'TodoCard',
+    name: "TodoCard",
     initialState: () => null,
 
     eventHandlers: {
         TodoCardCreated: () => Immutable({ activated: true }),
 
-        TodoCardRemoved: state => state.setIn(['activated'], false)
+        TodoCardRemoved: state => state.setIn(["activated"], false)
     },
 
     commands: {
         create: (state, args) => {
-            if (!args.name) throw new Error('no-name');
-            if (state && state.activated) throw new Error('already-exist');
+            if (!args.name) throw new Error("no-name");
+            if (state && state.activated) throw new Error("already-exist");
 
             return {
-                type: 'Created',
+                type: "TodoCardCreated",
                 payload: {
                     name: args.name
                 }
@@ -24,10 +24,10 @@ export default {
         },
 
         remove: (state) => {
-            if (!state.activated) throw new Error('no-exist');
+            if (!state.activated) throw new Error("no-exist");
 
             return {
-                type: 'Removed'
+                type: "TodoCardRemoved"
             };
         }
     }
