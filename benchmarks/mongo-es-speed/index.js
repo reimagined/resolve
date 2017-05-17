@@ -51,7 +51,7 @@ function runLoadTests() {
 function dropCollection() {
     return MongoClient.connect(config.MONGODB_CONNECTION_URL).then(db =>
         new Promise(resolve => db
-            .collection(`${config.MONGODB_COLLECTION_NAME}_test`, { strict: true }, (err, collection) => (
+            .collection(config.MONGODB_COLLECTION_NAME, { strict: true }, (err, collection) => (
                 err ? resolve() : collection.drop().then(resolve)
         )))
         .catch(err => log('Error while drop collection:', err))
