@@ -7,13 +7,9 @@ function loadEvents(coll, query, callback) {
 
     const cursorStream = coll.find(query, { sort: 'timestamp' }).stream();
 
-    cursorStream.on('data', item =>
-        (workerPromise = workerPromise.then(() => callback(item)))
-    );
+    cursorStream.on('data', item => (workerPromise = workerPromise.then(() => callback(item))));
 
-    cursorStream.on('end', () =>
-        (workerPromise = workerPromise.then(doneResolver))
-    );
+    cursorStream.on('end', () => (workerPromise = workerPromise.then(doneResolver)));
 
     return donePromise;
 }
@@ -25,9 +21,11 @@ export default function ({ url, collection }) {
         if (!promise) {
             promise = MongoClient.connect(url)
                 .then(db => db.collection(collection))
-                .then(coll => coll.ensureIndex('timestamp')
-                    .then(() => coll.ensureIndex('aggregateId'))
-                    .then(() => coll)
+                .then(coll =>
+                    coll
+                        .ensureIndex('timestamp')
+                        .then(() => coll.ensureIndex('aggregateId'))
+                        .then(() => coll)
                 );
         }
 
@@ -35,17 +33,10 @@ export default function ({ url, collection }) {
     }
 
     return {
-        saveEvent: event =>
-            getCollection().then(coll =>
-                coll.insert(event)
-            ),
+        saveEvent: event => getCollection().then(coll => coll.insert(event)),
         loadEventsByTypes: (types, callback) =>
-            getCollection().then(coll =>
-                loadEvents(coll, { type: { $in: types } }, callback)
-            ),
+            getCollection().then(coll => loadEvents(coll, { type: { $in: types } }, callback)),
         loadEventsByAggregateId: (aggregateId, callback) =>
-            getCollection().then(coll =>
-                loadEvents(coll, { aggregateId }, callback)
-            )
+            getCollection().then(coll => loadEvents(coll, { aggregateId }, callback))
     };
 }

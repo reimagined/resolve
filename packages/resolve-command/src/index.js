@@ -57,7 +57,11 @@ const createExecutor = ({ store, bus, aggregate }) => command =>
 
 export default ({ store, bus, aggregates }) => {
     const executors = aggregates.reduce((result, aggregate) => {
-        result[aggregate.name.toLowerCase()] = createExecutor({ store, bus, aggregate });
+        result[aggregate.name.toLowerCase()] = createExecutor({
+            store,
+            bus,
+            aggregate
+        });
         return result;
     }, {});
 
