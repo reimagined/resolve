@@ -1,23 +1,23 @@
-import Immutable from "seamless-immutable";
+import Immutable from 'seamless-immutable';
 
 export default {
-    name: "TodoItem",
+    name: 'TodoItem',
     initialState: () => null,
 
     eventHandlers: {
         TodoItemCreated: (state, event) => Immutable({ activated: true, cardId: event.cardId }),
 
-        TodoItemRemoved: state => state.setIn(["activated"], false)
+        TodoItemRemoved: state => state.setIn(['activated'], false)
     },
 
     commands: {
         create: (state, args) => {
-            if (!args.cardId) throw new Error("no-cardid");
-            if (!args.name) throw new Error("no-name");
-            if (state && state.activated) throw new Error("already-exist");
+            if (!args.cardId) throw new Error('no-cardid');
+            if (!args.name) throw new Error('no-name');
+            if (state && state.activated) throw new Error('already-exist');
 
             return {
-                type: "TodoItemCreated",
+                type: 'TodoItemCreated',
                 payload: {
                     name: args.name,
                     cardId: args.cardId
@@ -26,18 +26,18 @@ export default {
         },
 
         remove: (state) => {
-            if (!state.activated) throw new Error("no-exist");
+            if (!state.activated) throw new Error('no-exist');
 
             return {
-                type: "TodoItemRemoved"
+                type: 'TodoItemRemoved'
             };
         },
 
         toggleCheck: (state) => {
-            if (!state.activated) throw new Error("no-exist");
+            if (!state.activated) throw new Error('no-exist');
 
             return {
-                type: "TodoItemCheckToggled"
+                type: 'TodoItemCheckToggled'
             };
         }
     }
