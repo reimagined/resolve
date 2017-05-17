@@ -1,4 +1,4 @@
-function verifyCommand (command) {
+function verifyCommand(command) {
     if (!command.aggregateId) return Promise.reject('"aggregateId" argument is required');
     if (!command.aggregateName) return Promise.reject('"aggregateName" argument is required');
     if (!command.type) return Promise.reject('"type" argument is required');
@@ -6,7 +6,7 @@ function verifyCommand (command) {
     return Promise.resolve(command);
 }
 
-function getAggregateState (aggregate, aggregateId, store) {
+function getAggregateState(aggregate, aggregateId, store) {
     const initialStateFunc = aggregate.initialState || (() => ({}));
     const handlers = aggregate.eventHandlers;
     let aggregateState = initialStateFunc();
@@ -25,7 +25,7 @@ function getAggregateState (aggregate, aggregateId, store) {
         .then(() => aggregateState);
 }
 
-function executeCommand (command, aggregate, store) {
+function executeCommand(command, aggregate, store) {
     return getAggregateState(aggregate, command.aggregateId, store).then((aggregateState) => {
         const handler = aggregate.commands[command.type];
         const event = handler(aggregateState, command);
@@ -37,11 +37,11 @@ function executeCommand (command, aggregate, store) {
     });
 }
 
-function saveEvent (event, store) {
+function saveEvent(event, store) {
     return store.saveEvent(event).then(() => event);
 }
 
-function publishEvent (event, bus) {
+function publishEvent(event, bus) {
     bus.emitEvent(event);
     return event;
 }

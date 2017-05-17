@@ -1,4 +1,4 @@
-function updateState (projection, event, state) {
+function updateState(projection, event, state) {
     return projection.eventHandlers[event.type](state, event);
 }
 
