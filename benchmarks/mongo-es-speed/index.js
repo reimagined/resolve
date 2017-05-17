@@ -104,7 +104,6 @@ function storeSummaryToXML(filePath, points, data) {
 generateEvents(POINTS, 0, {})
     .then(result => Promise.all([
         storeToCsv('./build-time.csv', POINTS, result, (data, point) => `${data[point].buildTime}`),
-        storeToCsv('./entities-count.csv', POINTS, result, (data, point) => `${data[point].entities}`),
         storeToCsv('./memory-rss.csv', POINTS, result, (data, point) =>
             `${Math.round(data[point].memory.rss / 1024 / 1024)}`
         ),
