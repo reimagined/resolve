@@ -2,24 +2,27 @@ import React from 'react';
 
 export default function(props) {
     return (
-        <div className="container-fluid">
+        <div className={props.className}>
+            <ul className="nav nav-sidebar">
+                {props.children.map((child, index) => (
+                    <li
+                        key={index}
+                        className={props.currentCard === child.key ? 'active': null }
+                    >
+                        {child}
+                    </li>
+                ))}
+            </ul>
             <div className="row">
-                <div className="col-sm-3 col-md-2 sidebar">
-                    <form>
-                        <input
-                            type="email"
-                            className="form-control"
-                            id="exampleInputEmail1"
-                            placeholder="Add new group"
-                        />
-                    </form>
-                    <ul className="nav nav-sidebar">
-                        {props.children.map((child, index) => (
-                            <li key={index}>
-                                {child}
-                            </li>
-                        ))}
-                    </ul>
+                <div className="input-group">
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Search for..."
+                    />
+                    <span className="input-group-btn">
+                        <button className="btn btn-default" type="button">Add</button>
+                    </span>
                 </div>
             </div>
         </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default function(props) {
     return (
@@ -11,7 +12,9 @@ export default function(props) {
                         <span className="icon-bar" />
                         <span className="icon-bar" />
                     </button>
-                    <a className="navbar-brand" href="#">{props.title}</a>
+                    <Link to="/" className="navbar-brand">
+                        {props.title}
+                    </Link>
                 </div>
             </div>
         </nav>

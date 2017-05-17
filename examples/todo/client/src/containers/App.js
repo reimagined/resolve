@@ -1,9 +1,13 @@
-import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
+import { connect } from 'react-redux';
 import App from '../components/App';
 
-const mapStateToProps = state => ({
-    cards: state.cards
-});
+const mapStateToProps = (state, { match }) => {
+    return {
+        cards: state.cards,
+        cardId: match.params.cardId
+    };
+};
 
-export default connect(mapStateToProps)(App);
+export default withRouter(connect(mapStateToProps)(App));
