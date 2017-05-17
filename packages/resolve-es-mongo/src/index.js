@@ -20,7 +20,7 @@ function loadEvents(coll, query, skip, limit, callback) {
         );
 }
 
-export default function ({ url, collection }) {
+export default function({ url, collection }) {
     let promise;
 
     const indexes = {
