@@ -48,6 +48,7 @@ module.exports = {
                 named: 'never',
                 asyncArrow: 'always'
             }
-        ]
+        ],
+        quotes: ['error', 'single']
     }
 };
