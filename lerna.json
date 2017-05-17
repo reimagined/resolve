@@ -2,7 +2,8 @@
   "lerna": "2.0.0-rc.2",
   "packages": [
     "packages/*",
-    "examples/*"
+    "examples/*",
+    "benchmarks/*"
   ],
   "version": "0.0.0"
 }
