@@ -1,6 +1,6 @@
 import { MongoClient } from 'mongodb';
 
-function loadEvents(coll, query, callback) {
+function loadEvents (coll, query, callback) {
     let doneResolver = null;
     const donePromise = new Promise(resolve => (doneResolver = resolve));
     let workerPromise = Promise.resolve();
@@ -14,10 +14,10 @@ function loadEvents(coll, query, callback) {
     return donePromise;
 }
 
-export default function({ url, collection }) {
+export default function ({ url, collection }) {
     let promise;
 
-    function getCollection() {
+    function getCollection () {
         if (!promise) {
             promise = MongoClient.connect(url)
                 .then(db => db.collection(collection))

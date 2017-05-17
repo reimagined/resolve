@@ -7,7 +7,7 @@ const defaultOptions = {
     exchangeType: 'fanout'
 };
 
-function init(options, handler) {
+function init (options, handler) {
     return amqp
         .connect(options.url)
         .then(connection => connection.createChannel())
@@ -39,7 +39,7 @@ function init(options, handler) {
         );
 }
 
-export default function(options) {
+export default function (options) {
     let handler = () => {};
     const config = Object.assign(defaultOptions, options);
     const initPromise = init(config, event => handler(event));

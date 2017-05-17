@@ -1,6 +1,6 @@
 import { take, put } from 'redux-saga/effects';
 
-export default function* sendCommandSaga({ sendCommand }) {
+export default function* sendCommandSaga ({ sendCommand }) {
     while (true) {
         const action = yield take('*');
         const { command, aggregateId, aggregateType, payload } = action;

@@ -40,6 +40,7 @@ module.exports = {
             {
                 code: 100
             }
-        ]
+        ],
+        'space-before-function-paren': ['error', 'always']
     }
 };

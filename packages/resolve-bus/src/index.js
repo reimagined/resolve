@@ -1,7 +1,7 @@
-export default function({ driver }) {
+export default function ({ driver }) {
     const eventHandlersMap = new Map();
 
-    function trigger(event) {
+    function trigger (event) {
         const handlers = eventHandlersMap.get(event.type) || [];
         handlers.forEach(handler => handler(event));
     }
