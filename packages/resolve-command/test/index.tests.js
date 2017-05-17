@@ -293,14 +293,4 @@ describe('command', () => {
             .then(() => expect(false).to.be.true)
             .catch(err => expect(err).to.be.equal('event type is required'));
     });
-
-    it('should reject event in case of event.payload absence', () => {
-        aggregates[0].commands[COMMAND_TYPE] = () => ({
-            type: () => EVENT_TYPE
-        });
-
-        return execute(testCommand)
-            .then(() => expect(false).to.be.true)
-            .catch(err => expect(err).to.be.equal('event payload is required'));
-    });
 });

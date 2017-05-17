@@ -33,9 +33,6 @@ function executeCommand(command, aggregate, store) {
         if (!event.type) {
             return Promise.reject('event type is required');
         }
-        if (!event.payload) {
-            return Promise.reject('event payload is required');
-        }
 
         event.aggregateId = command.aggregateId;
         event.type = typeof event.type === 'function' ? event.type() : aggregate.name + event.type;
