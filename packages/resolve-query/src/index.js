@@ -31,5 +31,13 @@ export default ({ store, bus, projections }) => {
         return result;
     }, {});
 
-    return name => executors[name.toLowerCase()]();
+    return (name) => {
+        const executor = executors[name.toLowerCase()];
+
+        if (executor === undefined) {
+            return Promise.reject(new Error(`The '${name}' projection is not found`));
+        }
+
+        return executor();
+    };
 };

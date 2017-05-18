@@ -71,4 +71,15 @@ describe('resolve-query', () => {
             });
         });
     });
+
+    it('rejects if projection does not exist', () => {
+        const execute = createExecutor(options);
+        const projectionName = 'SomeProjection';
+
+        return execute(projectionName)
+            .then(() => expect(true).to.be.false)
+            .catch(e =>
+                expect(e.toString()).to.contain(`The '${projectionName}' projection is not found`)
+            );
+    });
 });
