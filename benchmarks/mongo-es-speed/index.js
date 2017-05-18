@@ -1,16 +1,16 @@
 import { spawn } from 'child_process';
-import rawFs from 'fs';
+import fs from 'fs';
 import { MongoClient } from 'mongodb';
 import nyanProgress from 'nyan-progress';
 import path from 'path';
-import pify from 'pify';
 
+import { INFO_TOKEN, DONE_TOKEN, ERR_TOKEN } from './constants';
 import prepareEvents from './prepareEvents';
 import config from './config';
 
+// eslint-disable-next-line no-console
+const log = console.log;
 const POINTS = config.BENCHMARK_SERIES;
-const fs = pify(rawFs);
-
 const totalMaxValue = POINTS.reduce((acc, val) => (acc + val), 0) * 2;
 const progress = nyanProgress();
 const totalEventProcessed = { value: 0 };
@@ -25,14 +25,7 @@ const progressDonePromise = progress.start({
     }
 });
 
-const INFO_TOKEN = '-------INFO-------';
-const DONE_TOKEN = '-------DONE-------';
-const ERR_TOKEN = '-------ERR-------';
-
-// eslint-disable-next-line no-console
-const log = console.log;
-
-setTimeout(function reporterHandler() {
+function reporterHandler() {
     if (totalEventReported.value !== totalEventProcessed.value) {
         const tickSize = totalEventProcessed.value - totalEventReported.value;
         progress.tick(tickSize);
@@ -40,7 +33,9 @@ setTimeout(function reporterHandler() {
     }
 
     setTimeout(reporterHandler, 500);
-}, 500);
+}
+
+setTimeout(reporterHandler, 500);
 
 function runLoadTests() {
     const initialTime = new Date();
@@ -54,7 +49,9 @@ function runLoadTests() {
         rejecter = reject;
     });
 
-    const logHandler = (data) => {
+    const logHandler = (rawData) => {
+        const data = rawData.toString('utf8');
+
         if (data.indexOf(DONE_TOKEN) >= 0) {
             const transferPayload = JSON.parse(data.substring(DONE_TOKEN.length));
             const buildTime = new Date() - initialTime;
@@ -65,13 +62,14 @@ function runLoadTests() {
             child.kill();
             rejecter(data.substring(ERR_TOKEN.length));
         } else if (data.indexOf(INFO_TOKEN) >= 0) {
-            const transferPayload = JSON.parse(data.substring(INFO_TOKEN.length));
-            totalEventProcessed.value += transferPayload.appendProgress;
+            const transferString = data.substring(INFO_TOKEN.length);
+            const progressValue = parseInt(transferString, 10);
+            totalEventProcessed.value += progressValue;
         }
     };
 
-    child.stdout.on('data', data => logHandler(data.toString('utf8')));
-    child.stderr.on('data', data => logHandler(data.toString('utf8')));
+    child.stdout.on('data', logHandler);
+    child.stderr.on('data', logHandler);
 
     return done;
 }
@@ -100,33 +98,38 @@ function generateEvents(arr, i, storage) {
         });
 }
 
-function getDataString(arr, callback) {
-    return arr
-        .reduce((result, item) => `${result}${callback(item)},`, '')
-        .replace(/,$/, '\n');
+function fsWriteFileAsync(filename, content) {
+    return new Promise((resolve, reject) =>
+        fs.writeFile(filename, content, (err, value) => (
+            !err ? resolve(value) : reject(err)
+        ))
+    );
 }
 
 function storeToCsv(filePath, points, data, dataGetter) {
-    return fs.writeFile(filePath,
-        getDataString(points, point => `Events count: ${point}`) +
-        getDataString(points, point => dataGetter(data, point))
+    return fsWriteFileAsync(filePath,
+        `${points.map(point => `Events count: ${point}`).join(',')}\n` +
+        `${points.map(point => dataGetter(data, point)).join(',')}\n`
     );
 }
 
 function storeSummaryToXML(filePath, points, data) {
-    let dataString = '<?xml version="1.0" ?>\n<tabs>';
+    return fsWriteFileAsync(filePath,
+        `<?xml version="1.0" ?>\n<tabs>
+        ${points.map((point) => {
+            const rss = Math.round(data[point].memory.rss / 1024 / 1024);
+            const heapTotal = Math.round(data[point].memory.heapTotal / 1024 / 1024);
+            const heapUsed = Math.round(data[point].memory.heapUsed / 1024 / 1024);
 
-    dataString += points.reduce((result, point) => `${result}<tab name="Events count: ${point}">`
-        + `<field name="Build time" value="${data[point].buildTime} ms" />`
-        + `<field name="Memory resident size" value="${Math.round(data[point].memory.rss / 1024 / 1024)} mb" />`
-        + `<field name="Memory heap total" value="${Math.round(data[point].memory.heapTotal / 1024 / 1024)} mb" />`
-        + `<field name="Memory heap used" value="${Math.round(data[point].memory.heapUsed / 1024 / 1024)} mb" />`
-        + '</tab>'
-    , '');
-
-    dataString += '</tabs>';
-
-    return fs.writeFile(filePath, dataString);
+            return `<tab name="Events count: ${point}">`
+                + `<field name="Build time" value="${data[point].buildTime} ms" />`
+                + `<field name="Memory resident size" value="${rss} mb" />`
+                + `<field name="Memory heap total" value="${heapTotal} mb" />`
+                + `<field name="Memory heap used" value="${heapUsed} mb" />`
+                + '</tab>';
+        }).join('')}
+        </tabs>`
+    );
 }
 
 generateEvents(POINTS, 0, {})

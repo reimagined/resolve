@@ -1,20 +1,18 @@
 {
   "name": "mongo-es-speed",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "babel-node ./index.js",
-    "test": "exit 0"
+    "start": "babel-node ./index.js"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "babel-cli": "^6.24.1",
     "mongodb": "^2.2.26",
     "nyan-progress": "^1.1.0",
     "pify": "^2.3.0",
-    "pug": "^2.0.0-beta.12",
     "resolve-es": "*",
     "resolve-es-mongo": "*"
   },
