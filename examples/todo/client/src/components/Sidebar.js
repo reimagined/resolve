@@ -27,7 +27,10 @@ export default function(props) {
                         <button
                             className="btn btn-default"
                             type="button"
-                            onClick={() => props.onCardAdd(cardNameInput.value)}
+                            onClick={() => {
+                                props.onCardAdd(cardNameInput.value);
+                                cardNameInput.value = '';
+                            }}
                         >
                             Add
                         </button>
