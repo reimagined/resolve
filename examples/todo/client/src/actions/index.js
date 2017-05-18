@@ -1,7 +1,7 @@
-export function updateCards(cards) {
+export function setState(state) {
     return {
-        type: 'CARDS_UPDATED',
-        cards
+        type: 'stateSet',
+        state
     }
 }
 

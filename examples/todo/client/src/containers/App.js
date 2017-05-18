@@ -2,7 +2,7 @@ import { withRouter } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 import App from '../components/App';
-import { createTodoCard } from '../actions/cards';
+import { createTodoCard } from '../actions';
 
 const mapStateToProps = (state, { match }) => {
     return {

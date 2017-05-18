@@ -1,22 +1,13 @@
-import fetch from 'isomorphic-fetch';
 import io from 'socket.io-client';
 import { eventChannel } from 'redux-saga';
 import { fork, put, call, all, takeEvery } from 'redux-saga/effects';
 
-import { updateCards, todoCardCreated } from '../actions/cards';
-
-function* getInitialCards() {
-    const cards = yield call(() =>
-        fetch('/api/cards').then(res => res.json())
-    );
-    yield put(updateCards(cards));
-}
+import { setState, todoCardCreated } from '../actions';
 
 function subscribeOnSocket(socket) {
     return eventChannel((emit) => {
-        socket.on('event', event =>
-            emit(todoCardCreated(event))
-        );
+        socket.on('initialState', state => emit(setState(state)));
+        socket.on('event', event => emit(todoCardCreated(event)));
 
         return () => {};
     });
@@ -46,14 +37,11 @@ function* initSocket() {
     );
 
     yield all([
-        fork(subscribeOnCommand, socket),
-        fork(getEvent, socket)
+        fork(getEvent, socket),
+        fork(subscribeOnCommand, socket)
     ]);
 }
 
 export default function*() {
-    yield all([
-        fork(getInitialCards),
-        fork(initSocket)
-    ]);
+    yield initSocket();
 }
