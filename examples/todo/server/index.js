@@ -77,6 +77,12 @@ io.on('connection', (socket) => {
         // eslint-disable-next-line no-console
         execute(command).catch(err => console.log(err));
     });
+
+    const unsubscribe = bus.onEvent(['TodoCardCreated'], event =>
+        socket.emit('event', event)
+    );
+
+    socket.on('disconnect', () => unsubscribe());
 });
 
 server.listen(PORT, () => {
