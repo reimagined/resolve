@@ -13,7 +13,9 @@ function init(options, handler) {
         .then(connection => connection.createChannel())
         .then(channel =>
             channel
-                .assertExchange(options.exchange, options.exchangeType, { durable: false })
+                .assertExchange(options.exchange, options.exchangeType, {
+                    durable: false
+                })
                 .then(() => channel)
         )
         .then(channel =>

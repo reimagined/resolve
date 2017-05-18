@@ -30,8 +30,11 @@ function executeCommand(command, aggregate, store) {
         const handler = aggregate.commands[command.type];
         const event = handler(aggregateState, command);
 
+        if (!event.type) {
+            return Promise.reject('event type is required');
+        }
+
         event.aggregateId = command.aggregateId;
-        event.type = typeof event.type === 'function' ? event.type() : aggregate.name + event.type;
         event.timestamp = Date.now();
         return event;
     });
@@ -53,7 +56,11 @@ const createExecutor = ({ store, bus, aggregate }) => command =>
 
 export default ({ store, bus, aggregates }) => {
     const executors = aggregates.reduce((result, aggregate) => {
-        result[aggregate.name.toLowerCase()] = createExecutor({ store, bus, aggregate });
+        result[aggregate.name.toLowerCase()] = createExecutor({
+            store,
+            bus,
+            aggregate
+        });
         return result;
     }, {});
 

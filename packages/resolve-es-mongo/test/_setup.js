@@ -17,22 +17,24 @@ mockery.registerMock('mongodb', {
         }
     },
     MongoClient: {
-        connect: sinon.spy(() => Promise.resolve({
-            collection: sinon.spy(() => ({
-                insert: sinon.spy(() => Promise.resolve()),
-                find: sinon.spy(() => ({
-                    stream: sinon.spy(() => ({
-                        on: (event, callback) => {
-                            if (event === 'data') {
-                                foundArray.forEach(elm => callback(elm));
-                            } else if (event === 'end') {
-                                callback();
+        connect: sinon.spy(() =>
+            Promise.resolve({
+                collection: sinon.spy(() => ({
+                    insert: sinon.spy(() => Promise.resolve()),
+                    find: sinon.spy(() => ({
+                        stream: sinon.spy(() => ({
+                            on: (event, callback) => {
+                                if (event === 'data') {
+                                    foundArray.forEach(elm => callback(elm));
+                                } else if (event === 'end') {
+                                    callback();
+                                }
                             }
-                        }
-                    }))
-                })),
-                createIndex: sinon.spy(() => Promise.resolve())
-            }))
-        }))
+                        }))
+                    })),
+                    createIndex: sinon.spy(() => Promise.resolve())
+                }))
+            })
+        )
     }
 });

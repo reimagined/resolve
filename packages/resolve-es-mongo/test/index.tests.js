@@ -72,10 +72,7 @@ describe('es-mongo', () => {
     it('should load events by aggregate id', () => {
         const adapter = createAdapter(adapterSettings);
         const aggregateId = 'test-aggregate-id';
-        const eventsByAggregateId = [
-            { id: '1', aggregateId },
-            { id: '1', aggregateId }
-        ];
+        const eventsByAggregateId = [{ id: '1', aggregateId }, { id: '1', aggregateId }];
 
         const processEvent = sinon.spy();
         _setFindResult(eventsByAggregateId);
