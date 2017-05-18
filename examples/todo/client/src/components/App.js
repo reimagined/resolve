@@ -6,7 +6,7 @@ import './App.css';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 
-export default function(props) {
+export default function (props) {
     const links = Object.keys(props.cards).map(key => (
         <Link key={key} to={`/${key}`}>{props.cards[key].name}</Link>
     ));

@@ -14,11 +14,14 @@ const target = document.querySelector('#root');
 render(
     <Provider store={store}>
         <Router>
-            <Route path="/:cardId?" render={() => (
-                <App>
-                    <TaskList />
-                </App>
-            )} />
+            <Route
+                path="/:cardId?"
+                render={() => (
+                    <App>
+                        <TaskList />
+                    </App>
+                )}
+            />
         </Router>
     </Provider>,
     target

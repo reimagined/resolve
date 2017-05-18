@@ -16,7 +16,7 @@ describe('sendCommandSaga', () => {
                 type: 'commandType'
             },
             aggregateId: 'aggregateId',
-            aggregateType: 'aggregateType',
+            aggregateName: 'aggregateName',
             payload: {
                 some: 'value'
             }
@@ -28,7 +28,7 @@ describe('sendCommandSaga', () => {
             sendCommand.withArgs({
                 type: action.command.type,
                 aggregateId: action.aggregateId,
-                aggregateType: action.aggregateType,
+                aggregateName: action.aggregateName,
                 payload: action.payload
             }).calledOnce
         ).to.be.true;
@@ -47,7 +47,7 @@ describe('sendCommandSaga', () => {
                 type: 'commandType'
             },
             aggregateId: 'aggregateId',
-            aggregateType: 'aggregateType',
+            aggregateName: 'aggregateName',
             payload: {
                 some: 'value'
             }
@@ -59,7 +59,7 @@ describe('sendCommandSaga', () => {
             sendCommand.withArgs({
                 type: action.command.type,
                 aggregateId: action.aggregateId,
-                aggregateType: action.aggregateType,
+                aggregateName: action.aggregateName,
                 payload: action.payload
             }).calledOnce
         ).to.be.true;

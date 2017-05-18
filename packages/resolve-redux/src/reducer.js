@@ -11,7 +11,7 @@ export default function reducer({ name, eventHandlers }) {
         }
     };
 
-    return (state, action) => {
+    return (state = null, action) => {
         const eventHandler = handlers[action.type];
 
         if (eventHandler) {

@@ -4,9 +4,7 @@ import { put, call } from 'redux-saga/effects';
 import { updateCards } from '../actions/cards';
 
 function* getInitialCards() {
-    const cards = yield call(() =>
-        fetch('/api/cards').then(res => res.json())
-    );
+    const cards = yield call(() => fetch('/api/cards').then(res => res.json()));
     yield put(updateCards(cards));
 }
 
