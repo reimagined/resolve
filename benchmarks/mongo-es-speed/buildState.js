@@ -12,15 +12,22 @@ const store = createEs({ driver: mongoDbDriver({
 }) });
 
 let eventCounter = 0;
+let lastReportedEvents = 0;
 
-function eventHandler() {
-    if (++eventCounter % 5000 === 0) {
+function reporterHandler() {
+    if (lastReportedEvents !== eventCounter) {
+        const tickSize = eventCounter - lastReportedEvents;
         // eslint-disable-next-line no-console
-        console.log(INFO_TOKEN, 5000);
+        console.log(INFO_TOKEN, tickSize);
+        lastReportedEvents = eventCounter;
     }
+
+    setTimeout(reporterHandler, 500);
 }
 
-store.loadEventsByTypes(TYPES, eventHandler).then(() =>
+setTimeout(reporterHandler, 500);
+
+store.loadEventsByTypes(TYPES, () => (eventCounter++)).then(() =>
     // eslint-disable-next-line no-console
     console.log(DONE_TOKEN, JSON.stringify({
         memory: process.memoryUsage()
