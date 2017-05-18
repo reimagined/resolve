@@ -4,6 +4,8 @@ import createEs from 'resolve-es';
 import config from './config';
 
 const TYPES = config.GENERATED_EVENT_TYPES;
+const PAYLOAD_COUNT = config.PAYLOAD_ELEMENTS_COUNT;
+const PAYLOAD_SIZE = config.PAYLOAD_ELEMENT_SIZE;
 
 const store = createEs({ driver: mongoDbDriver({
     url: config.MONGODB_CONNECTION_URL,
@@ -18,6 +20,14 @@ function numericRandom(maxlen) {
     return value;
 }
 
+function buildPayload() {
+    let nameCounter = 0;
+    return Array.from(new Array(PAYLOAD_COUNT)).reduce(
+        obj => (obj[`FieldName${nameCounter++}`] = `FieldValue${numericRandom(PAYLOAD_SIZE)}`),
+        Object.create(null)
+    );
+}
+
 export default function (eventsCount, reportObj) {
     let processedEvents = 0;
 
@@ -26,11 +36,7 @@ export default function (eventsCount, reportObj) {
             store.saveEvent({
                 type: TYPES[Math.floor(Math.random() * TYPES.length)],
                 aggregateId: `GUID${numericRandom(20)}`,
-                payload: {
-                    FieldName1: `FieldValue${numericRandom(1000)}`,
-                    FieldName2: `FieldValue${numericRandom(1000)}`,
-                    FieldName3: `FieldValue${numericRandom(1000)}`
-                }
+                payload: buildPayload()
             }).then(() => ((++processedEvents % 5000 === 0)
                 ? (reportObj.value += 5000)
                 : null
