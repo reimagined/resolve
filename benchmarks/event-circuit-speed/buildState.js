@@ -5,7 +5,7 @@ import createEs from 'resolve-es';
 import createExecutor from 'resolve-query';
 
 import { INFO_TOKEN, DONE_TOKEN, ERR_TOKEN } from './constants';
-import projections from './projections';
+import { projections } from './projections';
 import config from './config';
 
 const store = createEs({ driver: mongoDbDriver({
