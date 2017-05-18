@@ -21,7 +21,7 @@ function numericRandom(maxlen) {
 export default function (eventsCount, reportObj) {
     let processedEvents = 0;
 
-    return (new Array(eventsCount)).reduce(
+    return Array.from(new Array(eventsCount)).reduce(
         acc => acc.then(() =>
             store.saveEvent({
                 type: TYPES[Math.floor(Math.random() * TYPES.length)],

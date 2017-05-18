@@ -36,11 +36,11 @@ describe('es-mongo', () => {
                 ]);
 
                 expect(
-                    db.collection.lastCall.returnValue.ensureIndex.firstCall.args
+                    db.collection.lastCall.returnValue.createIndex.firstCall.args
                 ).to.be.deep.equal(['timestamp']);
 
                 expect(
-                    db.collection.lastCall.returnValue.ensureIndex.secondCall.args
+                    db.collection.lastCall.returnValue.createIndex.secondCall.args
                 ).to.be.deep.equal(['aggregateId']);
             });
     });

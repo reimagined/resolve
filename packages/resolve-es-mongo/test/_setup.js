@@ -31,7 +31,7 @@ mockery.registerMock('mongodb', {
                         }
                     }))
                 })),
-                ensureIndex: sinon.spy(() => Promise.resolve())
+                createIndex: sinon.spy(() => Promise.resolve())
             }))
         }))
     }
