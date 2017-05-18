@@ -33,11 +33,7 @@ function reporterHandler() {
 
 setTimeout(reporterHandler, 500);
 
-function executeQuery() {
-
-}
-
-store.loadEventsByTypes(TYPES, () => (eventCounter++)).then(() =>
+execute('okrState').then(() =>
     // eslint-disable-next-line no-console
     console.log(DONE_TOKEN, JSON.stringify({
         memory: process.memoryUsage()

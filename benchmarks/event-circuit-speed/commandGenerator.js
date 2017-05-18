@@ -66,7 +66,7 @@ const aggregates = [
 
 const commandExecute = createCommandExecutor({ store, bus, aggregates });
 
-function executeCommand(command, state) {
+function executeCommandByType(command, state) {
     const [aggregate, type] = command.split(/\//);
     switch (command) {
         case 'user/create': {

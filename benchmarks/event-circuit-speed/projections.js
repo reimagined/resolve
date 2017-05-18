@@ -87,7 +87,8 @@ function updateKeyResult(state, event, callback) {
     const objectiveId = event.aggregateId;
     const keyResultId = event.payload.keyResultId;
     if (!state.objectives[objectiveId].keyResults[keyResultId]) {
-        reportError(`${event.type}: key result is not found ${JSON.stringify(event.payload)} / ${objectiveId} ${state.objectives[objectiveId].title}`);
+        reportError(`${event.type}: key result is not found ${JSON.stringify(event.payload)}`
+            + `/ ${objectiveId} ${state.objectives[objectiveId].title}`);
         return state;
     }
     return state.updateIn(['objectives', objectiveId, 'keyResults', keyResultId], callback);
@@ -200,7 +201,8 @@ const originalHandlers = {
         );
         if (event.payload.userId) {
             if (!newState.users[event.payload.userId]) {
-                reportError(`ObjectiveCreated: user is not found ${event.payload.userId} / ${id} ${event.payload.title}`);
+                reportError(`ObjectiveCreated: user is not found ${event.payload.userId}` +
+                    ` / ${id} ${event.payload.title}`);
             } else {
                 newState = newState.updateIn(['users', event.payload.userId, 'objectives'],
                     list => list.set(id, true));
@@ -208,7 +210,8 @@ const originalHandlers = {
         }
         if (event.payload.orgUnitId) {
             if (!newState.orgUnits[event.payload.orgUnitId]) {
-                reportError(`ObjectiveCreated: orgUnit is not found ${event.payload.orgUnitId} / ${id} ${event.payload.title}`);
+                reportError(`ObjectiveCreated: orgUnit is not found ${event.payload.orgUnitId}` +
+                    ` / ${id} ${event.payload.title}`);
             } else {
                 newState = newState.updateIn(['orgUnits', event.payload.orgUnitId, 'objectives'],
                     list => list.set(id, true));
@@ -244,15 +247,6 @@ const originalHandlers = {
         state.setIn(['timePeriods', event.payload.name], event.payload.date)
 };
 
-const initialState = () => Immutable({
-    orgUnits: {
-        [ROOT_ORGUNIT_ID]: createOrgUnit(ROOT_ORGUNIT_ID)
-    },
-    users: {},
-    objectives: {},
-    timePeriods
-});
-
 // Allow bypass invalid events
 const eventHandlers = Object.keys(originalHandlers).reduce(
     (acc, key) => Object.assign(acc, { [key]: (state, event) => {
@@ -271,13 +265,14 @@ export const projections = [
         name: 'okrState',
         initialState: () => Immutable({
             orgUnits: {
-                root_id: {
+                [ROOT_ORGUNIT_ID]: {
                     orgUnits: [],
                     users: []
                 }
             },
             users: {},
-            objectives: {}
+            objectives: {},
+            timePeriods
         }),
         eventHandlers
     }

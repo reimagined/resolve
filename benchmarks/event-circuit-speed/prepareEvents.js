@@ -1,8 +1,4 @@
-import mongoDbDriver from 'resolve-es-mongo';
-import createEs from 'resolve-es';
-
 import commandGenerator from './commandGenerator';
-import config from './config';
 
 export default function (eventsCount, reportObj) {
     // All the constants below are empirical numbers and are derived
