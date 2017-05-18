@@ -23,8 +23,8 @@ export default function ({ url, collection }) {
                 .then(db => db.collection(collection))
                 .then(coll =>
                     coll
-                        .ensureIndex('timestamp')
-                        .then(() => coll.ensureIndex('aggregateId'))
+                        .createIndex('timestamp')
+                        .then(() => coll.createIndex('aggregateId'))
                         .then(() => coll)
                 );
         }
