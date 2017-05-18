@@ -22,10 +22,12 @@ function numericRandom(maxlen) {
 
 function buildPayload() {
     let nameCounter = 0;
-    return Array.from(new Array(PAYLOAD_COUNT)).reduce(
-        obj => (obj[`FieldName${nameCounter++}`] = `FieldValue${numericRandom(PAYLOAD_SIZE)}`),
-        Object.create(null)
-    );
+
+    return Array.from(new Array(PAYLOAD_COUNT)).reduce((obj) => {
+        const content = `FieldValue${numericRandom(PAYLOAD_SIZE)}`;
+        obj[`FieldName${nameCounter++}`] = content;
+        return obj;
+    }, Object.create(null));
 }
 
 export default function (eventsCount, reportObj) {
@@ -36,7 +38,8 @@ export default function (eventsCount, reportObj) {
             store.saveEvent({
                 type: TYPES[Math.floor(Math.random() * TYPES.length)],
                 aggregateId: `GUID${numericRandom(20)}`,
-                payload: buildPayload()
+                payload: buildPayload(),
+                timestamp: Date.now()
             }).then(() => ((++processedEvents % 5000 === 0)
                 ? (reportObj.value += 5000)
                 : null
