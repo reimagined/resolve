@@ -22,7 +22,7 @@ describe('actions', () => {
                 name: 'create'
             };
             const aggregateId = 'aggregateId';
-            const aggregateType = 'aggregateType';
+            const aggregateName = 'aggregateName';
             const payload = {
                 value: 42
             };
@@ -30,14 +30,14 @@ describe('actions', () => {
                 actions.sendCommand({
                     command,
                     aggregateId,
-                    aggregateType,
+                    aggregateName,
                     payload
                 })
             ).to.deep.equal({
                 type: SEND_COMMAND,
                 command,
                 aggregateId,
-                aggregateType,
+                aggregateName,
                 payload
             });
         });
