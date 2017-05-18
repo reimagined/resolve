@@ -2,6 +2,7 @@ import { withRouter } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 import App from '../components/App';
+import { TodoCardCreate } from '../actions/cards';
 
 const mapStateToProps = (state, { match }) => {
     return {
@@ -10,4 +11,10 @@ const mapStateToProps = (state, { match }) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps)(App));
+function mapDispatchToProps(dispatch) {
+    return {
+        onCardAdd: name => dispatch(TodoCardCreate(name))
+    };
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

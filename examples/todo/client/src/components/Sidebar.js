@@ -1,6 +1,8 @@
 import React from 'react';
 
 export default function(props) {
+    let cardNameInput;
+
     return (
         <div className={props.className}>
             <ul className="nav nav-sidebar">
@@ -19,9 +21,16 @@ export default function(props) {
                         type="text"
                         className="form-control"
                         placeholder="Search for..."
+                        ref={element => (cardNameInput = element)}
                     />
                     <span className="input-group-btn">
-                        <button className="btn btn-default" type="button">Add</button>
+                        <button
+                            className="btn btn-default"
+                            type="button"
+                            onClick={() => props.onCardAdd(cardNameInput.value)}
+                        >
+                            Add
+                        </button>
                     </span>
                 </div>
             </div>

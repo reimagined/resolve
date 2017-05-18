@@ -12,7 +12,9 @@
     "react-router-dom": "^4.1.1",
     "redux": "^3.6.0",
     "redux-saga": "^0.15.3",
-    "seamless-immutable": "^7.1.2"
+    "resolve-redux": "*",
+    "seamless-immutable": "^7.1.2",
+    "socket.io-client": "^2.0.1"
   },
   "devDependencies": {
     "react-scripts": "0.9.5"

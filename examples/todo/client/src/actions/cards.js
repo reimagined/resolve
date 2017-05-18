@@ -4,3 +4,11 @@ export function updateCards(cards) {
         cards
     }
 }
+
+export function TodoCardCreate(name) {
+    return {
+        aggregateName: 'todocard',
+        type: 'create',
+        name
+    }
+}

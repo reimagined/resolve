@@ -1,4 +1,6 @@
 import express from 'express';
+import http from 'http';
+import socketIO from 'socket.io';
 import bodyParser from 'body-parser';
 import uuid from 'uuid';
 
@@ -23,6 +25,9 @@ const setupMiddlewares = (app) => {
 };
 
 const app = express();
+const server = http.Server(app);
+const io = socketIO(server);
+
 app.use(express.static('static'));
 
 const eventStore = createStore({
@@ -65,7 +70,16 @@ app.post('/api', (req, res) => {
         .then(() => res.status(201).end());
 });
 
-app.listen(PORT, () => {
+io.on('connection', (socket) => {
+    socket.on('command', (command) => {
+        command.aggregateId = command.aggregateId || uuid.v4();
+
+        // eslint-disable-next-line no-console
+        execute(command).catch(err => console.log(err));
+    });
+});
+
+server.listen(PORT, () => {
     // eslint-disable-next-line no-console
     console.log(`Example app listening on port ${PORT}!`);
 });

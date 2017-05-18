@@ -18,7 +18,11 @@ export default function(props) {
             </Navbar>
             <div className="container-fluid">
                 <div className="row">
-                    <Sidebar currentCard={props.cardId} className="col-sm-3 col-md-2 sidebar">
+                    <Sidebar
+                        currentCard={props.cardId}
+                        className="col-sm-3 col-md-2 sidebar"
+                        onCardAdd={props.onCardAdd}
+                    >
                         {links}
                     </Sidebar>
 
