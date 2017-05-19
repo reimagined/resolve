@@ -13,3 +13,12 @@ export function removeTodoCard(id) {
         aggregateId: id
     };
 }
+
+export function createTodoItem(name, cardId) {
+    return {
+        aggregateName: 'todoitem',
+        type: 'create',
+        name,
+        cardId
+    };
+}

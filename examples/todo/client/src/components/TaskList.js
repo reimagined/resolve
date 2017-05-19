@@ -14,7 +14,11 @@ export default function (props) {
         <div className="todobody">
             <div className="todoapp">
                 <h1 className="page-header">{props.title}</h1>
-                <TodoTextInput newTodo onSave={() => {}} placeholder="What needs to be done?" />
+                <TodoTextInput
+                    newTodo
+                    onSave={name => props.onTodoItemCreate(name, props.cardId)}
+                    placeholder="What needs to be done?"
+                />
                 <ul className="todo-list">
                     {Object.keys(props.tasks).map(key => (
                         <TodoItem key={key} todo={props.tasks[key]} />

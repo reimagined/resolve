@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import TaskList from '../components/TaskList';
+import { createTodoItem } from '../actions';
 
 function getTaskList(cards, currentCardId) {
     const currentCard = cards[currentCardId];
@@ -22,9 +23,16 @@ const mapStateToProps = ({ cards }, { match }) => {
 
     return {
         doesExist: isIndexView || isCardExist,
+        cardId,
         title: isCardExist ? cards.cards[cardId].name : 'All',
         tasks: getTaskList(cards.cards, cardId)
     };
 };
 
-export default withRouter(connect(mapStateToProps)(TaskList));
+function mapDispatchToProps(dispatch) {
+    return {
+        onTodoItemCreate: (name, cardId) => dispatch(createTodoItem(name, cardId))
+    };
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(TaskList));
