@@ -1,0 +1,11 @@
+{
+  "name": "todo-common",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "reimaginate team",
+  "license": "ISC",
+  "dependencies": {
+    "seamless-immutable": "^7.1.2"
+  }
+}

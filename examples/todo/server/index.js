@@ -11,8 +11,7 @@ import query from 'resolve-query';
 
 import todoCardAggregate from './aggregates/TodoCard';
 import todoItemAggregate from './aggregates/TodoItem';
-import cardsProjection from './projections/cards';
-import cardDetailsProjection from './projections/cardDetails';
+import cardsProjection from '../common/projections/cards';
 
 const PORT = 3001;
 
@@ -30,7 +29,7 @@ const execute = commandHandler({
 const queries = query({
     store: eventStore,
     bus,
-    projections: [cardsProjection, cardDetailsProjection]
+    projections: [cardsProjection]
 });
 
 const server = http.createServer((req, res) => {
@@ -43,7 +42,7 @@ const io = socketIO(server);
 const eventNames = ['TodoCardCreated', 'TodoCardRemoved'];
 
 io.on('connection', (socket) => {
-    queries('cardDetails').then(state => socket.emit('initialState', state)).then(() => {
+    queries('cards').then(state => socket.emit('initialState', state)).then(() => {
         socket.on('command', (command) => {
             command.aggregateId = command.aggregateId || uuid.v4();
 
