@@ -1,16 +1,5 @@
-import Immutable from 'seamless-immutable';
+// TODO: use resolve-redux root path
+import reducer from 'resolve-redux/dist/reducer';
+import eventHandlers from './cards';
 
-import cardsReducer from './cards';
-
-function createReducer(handlers) {
-    const resultHandlers = Object.assign({
-        stateSet: (_, action) => Immutable(action.state)
-    }, handlers);
-
-    return (state, action) => {
-        const handler = resultHandlers[action.type];
-        return handler ? handler(state, action) : state;
-    };
-}
-
-export default createReducer(cardsReducer);
+export default reducer({ name: 'cards', eventHandlers });

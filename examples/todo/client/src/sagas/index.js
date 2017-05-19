@@ -1,21 +1,21 @@
 import io from 'socket.io-client';
 import { eventChannel } from 'redux-saga';
 import { fork, put, call, all, takeEvery } from 'redux-saga/effects';
-
-import { setState } from '../actions';
+// TODO: use resolve-redux root path
+import actions from 'resolve-redux/dist/actions';
 
 const commandTypes = ['create', 'remove'];
 
 function subscribeOnSocket(socket) {
     return eventChannel((emit) => {
-        socket.on('initialState', state => emit(setState(state)));
-        socket.on('event', event => console.log(event) & emit(event));
+        socket.on('initialState', state => emit(actions.merge('cards', state)));
+        socket.on('event', event => emit(event));
 
         return () => {};
     });
 }
 
-function* subscribeOnCommand(socket) {
+function* initCommandSender(socket) {
     yield all(
         commandTypes.map(typeName =>
             takeEvery(typeName, command => socket.emit('command', command))
@@ -23,7 +23,7 @@ function* subscribeOnCommand(socket) {
     );
 }
 
-function* getEvent(socket) {
+function* initEventGetter(socket) {
     const channel = yield call(subscribeOnSocket, socket);
 
     yield takeEvery(channel, function*(action) {
@@ -41,7 +41,7 @@ function* initSocket() {
             })
     );
 
-    yield all([fork(getEvent, socket), fork(subscribeOnCommand, socket)]);
+    yield all([fork(initEventGetter, socket), fork(initCommandSender, socket)]);
 }
 
 export default function*() {
