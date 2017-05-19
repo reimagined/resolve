@@ -1,9 +1,10 @@
 {
-  "lerna": "2.0.0-rc.4",
+  "lerna": "2.0.0-rc.2",
   "packages": [
     "packages/*",
     "examples/*",
-    "examples/todo/*"
+    "examples/todo/*",
+    "benchmarks/*"
   ],
   "version": "0.0.0"
 }
