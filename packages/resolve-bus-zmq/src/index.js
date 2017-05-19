@@ -8,20 +8,17 @@ const defaultOptions = {
 };
 
 function runBroker({ address, pubPort, subPort }) {
-    const pubListener = `tcp://${address}:${pubPort}`;
-    const subListener = `tcp://${address}:${subPort}`;
-    const hwm = 1000;
-    const verbose = 0;
-
     const subSock = zmq.socket('xsub');
     subSock.identity = `subscriber${process.pid}`;
-    subSock.bindSync(subListener);
+    subSock.bindSync(`tcp://${address}:${subPort}`);
 
     const pubSock = zmq.socket('xpub');
     pubSock.identity = `publisher${process.pid}`;
-    pubSock.setsockopt(zmq.ZMQ_SNDHWM, hwm);
-    pubSock.setsockopt(zmq.ZMQ_XPUB_VERBOSE, verbose);
-    pubSock.bindSync(pubListener);
+
+    // ZMQ parameters described here http://api.zeromq.org/3-3:zmq-setsockopt
+    pubSock.setsockopt(zmq.ZMQ_SNDHWM, 1000);
+    pubSock.setsockopt(zmq.ZMQ_XPUB_VERBOSE, 0);
+    pubSock.bindSync(`tcp://${address}:${pubPort}`);
 
     subSock.on('message', data => pubSock.send(data));
     pubSock.on('message', data => subSock.send(data));
