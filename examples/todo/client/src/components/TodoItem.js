@@ -22,7 +22,7 @@ export default class TodoItem extends Component {
                         className="toggle"
                         type="checkbox"
                         checked={todo.checked}
-                        onChange={this._handleComplete}
+                        onChange={this.props.onCheck}
                     />
                     <label htmlFor="itemContext">
                         {todo.name}

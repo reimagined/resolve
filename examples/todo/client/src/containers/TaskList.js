@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import TaskList from '../components/TaskList';
-import { createTodoItem, removeTodoItem } from '../actions';
+import { createTodoItem, removeTodoItem, toggleTodoItem } from '../actions';
 
 function getTaskList(cards, currentCardId) {
     const currentCard = cards[currentCardId];
@@ -32,7 +32,8 @@ const mapStateToProps = ({ cards }, { match }) => {
 function mapDispatchToProps(dispatch) {
     return {
         onTodoItemCreate: (name, cardId) => dispatch(createTodoItem(name, cardId)),
-        onTodoItemRemove: id => dispatch(removeTodoItem(id))
+        onTodoItemRemove: id => dispatch(removeTodoItem(id)),
+        onTodoItemToggleCheck: id => dispatch(toggleTodoItem(id))
     };
 }
 

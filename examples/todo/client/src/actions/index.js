@@ -30,3 +30,11 @@ export function removeTodoItem(id) {
         aggregateId: id
     };
 }
+
+export function toggleTodoItem(id) {
+    return {
+        aggregateName: 'todoitem',
+        type: 'toggleCheck',
+        aggregateId: id
+    };
+}

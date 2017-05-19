@@ -24,6 +24,7 @@ export default function (props) {
                         <TodoItem
                             key={key}
                             todo={props.tasks[key]}
+                            onCheck={() => props.onTodoItemToggleCheck(key)}
                             onRemove={() => props.onTodoItemRemove(key)}
                         />
                     ))}
