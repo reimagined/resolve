@@ -1,9 +1,19 @@
-import { combineReducers } from 'redux';
+import Immutable from 'seamless-immutable';
 
-import cards from './cards';
-import { reducer as burgerMenu } from 'redux-burger-menu';
+import cardsReducer from './cards';
 
-export default combineReducers({
-    cards,
-    burgerMenu
-});
+function createReducer(handlers) {
+    const resultHandlers = Object.assign(
+        {
+            stateSet: (_, action) => Immutable(action.state)
+        },
+        handlers
+    );
+
+    return (state = {}, action) => {
+        const handler = resultHandlers[action.type];
+        return handler ? handler(state, action) : state;
+    };
+}
+
+export default createReducer(cardsReducer);

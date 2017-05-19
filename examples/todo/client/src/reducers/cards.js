@@ -1,12 +1,13 @@
-import Immutable from 'seamless-immutable';
-
-export default function (state = Immutable({}), action) {
-    switch (action.type) {
-        case 'CARDS_UPDATED': {
-            return Immutable(action.cards);
-        }
-        default: {
-            return state;
-        }
+export default {
+    TodoCardCreated(state, action) {
+        return state.setIn(['cards', action.aggregateId], {
+            aggregateId: action.aggregateId,
+            activated: true,
+            name: action.payload.name,
+            todoList: {}
+        });
+    },
+    TodoCardRemoved(state, action) {
+        return state.update('cards', cards => cards.without(action.aggregateId));
     }
-}
+};

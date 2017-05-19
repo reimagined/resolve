@@ -3,6 +3,8 @@ import Menu from './BurgerMenu';
 import './Sidebar.css';
 
 export default function (props) {
+    let cardNameInput;
+
     return (
         <div>
             <Menu
@@ -22,9 +24,23 @@ export default function (props) {
                 </ul>
                 <div className="row">
                     <div className="input-group">
-                        <input type="text" className="form-control" placeholder="Search for..." />
+                        <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Search for..."
+                            ref={element => (cardNameInput = element)}
+                        />
                         <span className="input-group-btn">
-                            <button className="btn btn-default" type="button">Add</button>
+                            <button
+                                className="btn btn-default"
+                                type="button"
+                                onClick={() => {
+                                    props.onCardAdd(cardNameInput.value);
+                                    cardNameInput.value = '';
+                                }}
+                            >
+                                Add
+                            </button>
                         </span>
                     </div>
                 </div>

@@ -1,5 +1,5 @@
-import express from 'express';
-import bodyParser from 'body-parser';
+import http from 'http';
+import socketIO from 'socket.io';
 import uuid from 'uuid';
 
 import createStore from 'resolve-es';
@@ -15,15 +15,6 @@ import cardsProjection from './projections/cards';
 import cardDetailsProjection from './projections/cardDetails';
 
 const PORT = 3001;
-
-const setupMiddlewares = (app) => {
-    app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended: true }));
-    app.set('views', './views');
-};
-
-const app = express();
-app.use(express.static('static'));
 
 const eventStore = createStore({
     driver: esDriver({ pathToFile: './event_store.json' })
@@ -42,30 +33,33 @@ const queries = query({
     projections: [cardsProjection, cardDetailsProjection]
 });
 
-setupMiddlewares(app);
-
-app.get('/api/cards', (req, res) =>
-    queries('cardDetails').then(state => res.json(state.cards))
-);
-
-app.post('/api', (req, res) => {
-    const command = Object.keys(req.body)
-        .reduce((result, key) => {
-            result[key] = req.body[key];
-            return result;
-        }, {});
-
-    command.aggregateId = command.aggregateId || uuid.v4();
-
-    execute(command)
-        .catch((err) => {
-            // eslint-disable-next-line no-console
-            console.log(err);
-        })
-        .then(() => res.status(201).end());
+const server = http.createServer((req, res) => {
+    res.writeHead(404);
+    return res.end('Page not found');
 });
 
-app.listen(PORT, () => {
+const io = socketIO(server);
+
+const eventNames = ['TodoCardCreated', 'TodoCardRemoved'];
+
+io.on('connection', (socket) => {
+    queries('cardDetails').then(state => socket.emit('initialState', state)).then(() => {
+        socket.on('command', (command) => {
+            command.aggregateId = command.aggregateId || uuid.v4();
+
+            // eslint-disable-next-line no-console
+            execute(command).catch(err => console.log(err));
+        });
+
+        const unsubscribe = bus.onEvent(eventNames, event => socket.emit('event', event));
+
+        socket.on('disconnect', () => unsubscribe());
+    });
+});
+
+server.on('listening', () => {
     // eslint-disable-next-line no-console
     console.log(`Example app listening on port ${PORT}!`);
 });
+
+server.listen(PORT);

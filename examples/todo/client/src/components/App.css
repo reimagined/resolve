@@ -72,6 +72,19 @@ body {
   border-color: #428bca;
 }
 
+.nav-sidebar .card-remove {
+  float: right;
+  color: red;
+  font-size: 24px;
+  height: 24px;
+  width: 24px;
+  margin-top: -6px;
+  margin-right: -6px;
+}
+
+.nav-sidebar > .active .card-remove {
+  color: white;
+}
 
 /*
  * Main content

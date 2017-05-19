@@ -1,21 +1,26 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import Media from 'react-media';
-import { action as toggleMenu } from 'redux-burger-menu';
 import 'bootstrap/dist/css/bootstrap.css';
 import './App.css';
 import Sidebar from './Sidebar';
 
 export default class App extends Component {
     componentDidMount() {
-        this.props.dispatch(toggleMenu(true));
+        this.props.toggleMenu(true);
     }
 
     render() {
-        const links = Object.keys(this.props.cards).map(key => (
-            <Link key={key} to={`/${key}`}>
-                {this.props.cards[key].name}
-                <button className="destroy" onClick={() => {}} />
+        const links = Object.keys(this.props.cards).map(id => (
+            <Link key={id} to={`/${id}`}>
+                {this.props.cards[id].name}
+                <button
+                    className="destroy"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        this.props.onCardRemove(id);
+                    }}
+                />
             </Link>
         ));
 
@@ -26,10 +31,11 @@ export default class App extends Component {
                         <Media query="(max-width: 599px)">
                             {(matches) => {
                                 if (matches) {
-                                    this.props.dispatch(toggleMenu(false));
+                                    this.props.toggleMenu(false);
                                 }
                                 return (
                                     <Sidebar
+                                        onCardAdd={this.props.onCardAdd}
                                         dispatch={this.props.dispatch}
                                         noOverlay={!matches}
                                         currentCard={this.props.cardId}
