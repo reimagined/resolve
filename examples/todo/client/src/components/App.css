@@ -123,35 +123,3 @@ body {
   display: inline-block;
   border-radius: 50%;
 }
-
-.destroy {
-	display: none;
-	position: absolute;
-	top: 5px;
-  border-width: 0;
-  background-color: #eeeeee;
-	right: 10px;
-	bottom: 0;
-	margin: auto 0;
-	font-size: 20px;
-	color: #cc9a9a;
-	margin-bottom: 11px;
-	transition: color 0.2s ease-out;
-}
-
-.destroy:hover {
-	color: #af5b5e;
-}
-
-.destroy:after {
-	content: '×';
-}
-
-li:hover .destroy {
-	display: block;
-}
-
-li.active:hover .destroy {
-  background-color: #428bca;
-	display: block;
-}
