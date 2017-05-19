@@ -2,7 +2,7 @@ import { withRouter } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 import App from '../components/App';
-import { createTodoCard } from '../actions';
+import { createTodoCard, removeTodoCard } from '../actions';
 
 const mapStateToProps = (state, { match }) => {
     return {
@@ -13,7 +13,8 @@ const mapStateToProps = (state, { match }) => {
 
 function mapDispatchToProps(dispatch) {
     return {
-        onCardAdd: name => dispatch(createTodoCard(name))
+        onCardAdd: name => dispatch(createTodoCard(name)),
+        onCardRemove: id => dispatch(removeTodoCard(id))
     };
 }
 

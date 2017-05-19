@@ -7,8 +7,19 @@ import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 
 export default function(props) {
-    const links = Object.keys(props.cards).map(key => (
-        <Link key={key} to={`/${key}`}>{props.cards[key].name}</Link>
+    const links = Object.keys(props.cards).map(id => (
+        <Link key={id} to={`/${id}`}>
+            {props.cards[id].name}
+            <span
+                className="card-remove"
+                onClick={(e) => {
+                    e.preventDefault();
+                    props.onCardRemove(id);
+                }}
+            >
+                ×
+            </span>
+        </Link>
     ));
 
     return (

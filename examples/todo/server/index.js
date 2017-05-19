@@ -40,23 +40,21 @@ const server = http.createServer((req, res) => {
 
 const io = socketIO(server);
 
+const eventNames = ['TodoCardCreated', 'TodoCardRemoved'];
+
 io.on('connection', (socket) => {
-    queries('cardDetails')
-        .then(state => socket.emit('initialState', state))
-        .then(() => {
-            socket.on('command', (command) => {
-                command.aggregateId = command.aggregateId || uuid.v4();
+    queries('cardDetails').then(state => socket.emit('initialState', state)).then(() => {
+        socket.on('command', (command) => {
+            command.aggregateId = command.aggregateId || uuid.v4();
 
-                // eslint-disable-next-line no-console
-                execute(command).catch(err => console.log(err));
-            });
+            // eslint-disable-next-line no-console
+            execute(command).catch(err => console.log(err));
+        });
 
-            const unsubscribe = bus.onEvent(['TodoCardCreated'], event =>
-                socket.emit('event', event)
-            );
+        const unsubscribe = bus.onEvent(eventNames, event => socket.emit('event', event));
 
-            socket.on('disconnect', () => unsubscribe());
-        })
+        socket.on('disconnect', () => unsubscribe());
+    });
 });
 
 server.on('listening', () => {

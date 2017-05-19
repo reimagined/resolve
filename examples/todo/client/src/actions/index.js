@@ -2,7 +2,7 @@ export function setState(state) {
     return {
         type: 'stateSet',
         state
-    }
+    };
 }
 
 export function createTodoCard(name) {
@@ -10,12 +10,13 @@ export function createTodoCard(name) {
         aggregateName: 'todocard',
         type: 'create',
         name
-    }
+    };
 }
 
-export function todoCardCreated(event) {
+export function removeTodoCard(id) {
     return {
-        type: 'TodoCardCreated',
-        event
-    }
+        aggregateName: 'todocard',
+        type: 'remove',
+        aggregateId: id
+    };
 }
