@@ -3,8 +3,18 @@ import { eventChannel } from 'redux-saga';
 import { fork, put, call, all, takeEvery } from 'redux-saga/effects';
 // TODO: use resolve-redux root path
 import actions from 'resolve-redux/dist/actions';
+import { aggregates } from 'todo-common';
 
-const commandTypes = ['create', 'remove'];
+const allCommandTypes = Object.keys(aggregates).reduce((result, aggregateName) => {
+    const { commands } = aggregates[aggregateName];
+    const types = Object.keys(commands);
+    return result.concat(types);
+}, []);
+
+const commandTypes = allCommandTypes.reduce(
+    (result, type) => (result.indexOf(type) >= 0 ? result : result.concat(type)),
+    []
+);
 
 function subscribeOnSocket(socket) {
     return eventChannel((emit) => {

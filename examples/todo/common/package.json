@@ -6,7 +6,7 @@
   "author": "reimaginate team",
   "license": "ISC",
   "scripts": {
-    "prepublish": "babel --out-dir ./dist ./projections"
+    "prepublish": "babel --out-dir ./dist ./src"
   },
   "dependencies": {
     "seamless-immutable": "^7.1.2"

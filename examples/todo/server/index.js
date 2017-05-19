@@ -9,9 +9,11 @@ import busDriver from 'resolve-bus-memory';
 import commandHandler from 'resolve-command';
 import query from 'resolve-query';
 
-import todoCardAggregate from './aggregates/TodoCard';
-import todoItemAggregate from './aggregates/TodoItem';
-import { cards as cardsProjection } from 'todo-common';
+import { aggregates, projections } from 'todo-common';
+
+const todoCardAggregate = aggregates.TodoCard;
+const todoItemAggregate = aggregates.TodoItem;
+const cardsProjection = projections.cards;
 
 const PORT = 3001;
 
@@ -39,7 +41,7 @@ const server = http.createServer((req, res) => {
 
 const io = socketIO(server);
 
-const eventNames = ['TodoCardCreated', 'TodoCardRemoved'];
+const eventNames = Object.keys(cardsProjection.eventHandlers);
 
 io.on('connection', (socket) => {
     queries('cards').then(state => socket.emit('initialState', state)).then(() => {

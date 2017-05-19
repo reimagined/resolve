@@ -6,10 +6,6 @@ import './App.css';
 import Sidebar from './Sidebar';
 
 export default class App extends Component {
-    componentDidMount() {
-        this.props.toggleMenu(true);
-    }
-
     render() {
         const links = Object.keys(this.props.cards).map(id => (
             <Link key={id} to={`/${id}`}>

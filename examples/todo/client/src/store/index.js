@@ -1,11 +1,12 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import { reducer as burgerMenu } from 'redux-burger-menu';
-import { cards as cardsProjection } from 'todo-common';
+import { projections } from 'todo-common';
 
 import cardsReducer from '../reducers';
 import saga from '../sagas';
 
+const cardsProjection = projections.cards;
 const sagaMiddleware = createSagaMiddleware();
 
 const store = createStore(
