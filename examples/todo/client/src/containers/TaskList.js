@@ -17,8 +17,12 @@ function getTaskList(cards, currentCardId) {
 const mapStateToProps = ({ cards }, { match }) => {
     const cardId = match.params.cardId;
 
+    const isCardExist = cardId && cards.cards[cardId];
+    const isIndexView = !cardId;
+
     return {
-        title: cardId && cards.cards[cardId] ? cards.cards[cardId].name : 'All',
+        doesExist: isIndexView || isCardExist,
+        title: isCardExist ? cards.cards[cardId].name : 'All',
         tasks: getTaskList(cards.cards, cardId)
     };
 };

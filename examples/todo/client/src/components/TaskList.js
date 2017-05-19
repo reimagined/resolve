@@ -1,10 +1,15 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 import TodoItem from './TodoItem';
 import TodoTextInput from './TodoTextInput';
 
 import './TaskList.css';
 
 export default function (props) {
+    if (!props.doesExist) {
+        return <Redirect to="/" />;
+    }
+
     return (
         <div className="todobody">
             <div className="todoapp">
