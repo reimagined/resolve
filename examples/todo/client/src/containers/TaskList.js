@@ -18,8 +18,8 @@ const mapStateToProps = ({ cards }, { match }) => {
     const cardId = match.params.cardId;
 
     return {
-        title: cardId && cards[cardId] ? cards[cardId].name : 'All',
-        tasks: getTaskList(cards, cardId)
+        title: cardId && cards.cards[cardId] ? cards.cards[cardId].name : 'All',
+        tasks: getTaskList(cards.cards, cardId)
     };
 };
 
