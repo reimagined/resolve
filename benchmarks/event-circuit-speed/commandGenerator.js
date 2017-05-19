@@ -9,7 +9,7 @@ import createCommandExecutor from 'resolve-command';
 
 import config from './config';
 
-const createEvent = (name, args) => ({ ...args, type: () => name });
+const createEvent = (type, args) => ({ ...args, type });
 const orgUnitTypes = ['AAA', 'BBB', 'CCC', 'DDD'];
 const timePeriods = ['2016.1', '2016.2', '2016.3', '2016.4'];
 
@@ -67,7 +67,7 @@ const aggregates = [
 const commandExecute = createCommandExecutor({ store, bus, aggregates });
 
 function executeCommandByType(command, state) {
-    const [aggregate, type] = command.split(/\//);
+    const [aggregateName, type] = command.split(/\//);
     switch (command) {
         case 'user/create': {
             const userId = uuid.v4();
@@ -75,7 +75,7 @@ function executeCommandByType(command, state) {
 
             return commandExecute({
                 aggregateId: userId,
-                aggregateName: aggregate,
+                aggregateName,
                 type,
                 payload: {
                     displayName: uuid.v4(),
@@ -91,7 +91,7 @@ function executeCommandByType(command, state) {
 
             return commandExecute({
                 aggregateId: userId,
-                aggregateName: aggregate,
+                aggregateName,
                 type
             });
         }
@@ -102,7 +102,7 @@ function executeCommandByType(command, state) {
 
             return commandExecute({
                 aggregateId: orgUnitId,
-                aggregateName: aggregate,
+                aggregateName,
                 type,
                 payload: {
                     name: uuid.v4(),
@@ -119,7 +119,7 @@ function executeCommandByType(command, state) {
 
             return commandExecute({
                 aggregateId: orgUnitId,
-                aggregateName: aggregate,
+                aggregateName,
                 type,
                 payload: {
                     name: uuid.v4()
@@ -135,7 +135,7 @@ function executeCommandByType(command, state) {
 
             return commandExecute({
                 aggregateId: orgUnitId,
-                aggregateName: aggregate,
+                aggregateName,
                 type,
                 payload: {
                     type: orgUnitTypes[Math.floor(Math.random() * orgUnitTypes.length)]
@@ -156,7 +156,7 @@ function executeCommandByType(command, state) {
 
             return commandExecute({
                 aggregateId: orgUnitId,
-                aggregateName: aggregate,
+                aggregateName,
                 type,
                 payload: {
                     toOrgUnitId: orgUnitIdTo,
@@ -172,7 +172,7 @@ function executeCommandByType(command, state) {
 
             return commandExecute({
                 aggregateId: orgUnitId,
-                aggregateName: aggregate,
+                aggregateName,
                 type
             });
         }
@@ -188,7 +188,7 @@ function executeCommandByType(command, state) {
 
             return commandExecute({
                 aggregateId: orgUnitId,
-                aggregateName: aggregate,
+                aggregateName,
                 type,
                 payload: {
                     orgUnitId: orgUnitIdTo
@@ -207,7 +207,7 @@ function executeCommandByType(command, state) {
 
             return commandExecute({
                 aggregateId: orgUnitId,
-                aggregateName: aggregate,
+                aggregateName,
                 type,
                 payload: {
                     orgUnitId: orgUnitIdTo
@@ -227,7 +227,7 @@ function executeCommandByType(command, state) {
 
             return commandExecute({
                 aggregateId: orgUnitId,
-                aggregateName: aggregate,
+                aggregateName,
                 type,
                 payload: {
                     userId: userIdTo
@@ -247,7 +247,7 @@ function executeCommandByType(command, state) {
 
             return commandExecute({
                 aggregateId: orgUnitId,
-                aggregateName: aggregate,
+                aggregateName,
                 type,
                 payload: {
                     userId: userIdTo
@@ -267,7 +267,7 @@ function executeCommandByType(command, state) {
 
             return commandExecute({
                 aggregateId: orgUnitId,
-                aggregateName: aggregate,
+                aggregateName,
                 type,
                 payload: {
                     userId: userIdTo
@@ -289,7 +289,7 @@ function executeCommandByType(command, state) {
 
                 return commandExecute({
                     aggregateId: objective.id,
-                    aggregateName: aggregate,
+                    aggregateName,
                     type,
                     payload: {
                         title: uuid.v4(),
@@ -309,7 +309,7 @@ function executeCommandByType(command, state) {
 
             return commandExecute({
                 aggregateId: objective.id,
-                aggregateName: aggregate,
+                aggregateName,
                 type,
                 payload: {
                     title: uuid.v4(),
@@ -327,7 +327,7 @@ function executeCommandByType(command, state) {
 
             return commandExecute({
                 aggregateId: objective.id,
-                aggregateName: aggregate,
+                aggregateName,
                 type,
                 payload: {
                     title: uuid.v4()
@@ -343,7 +343,7 @@ function executeCommandByType(command, state) {
 
             return commandExecute({
                 aggregateId: objective.id,
-                aggregateName: aggregate,
+                aggregateName,
                 type,
                 payload: {
                     period: timePeriods[Math.floor(Math.random() * timePeriods.length)]
@@ -358,7 +358,7 @@ function executeCommandByType(command, state) {
 
             return commandExecute({
                 aggregateId: objective.id,
-                aggregateName: aggregate,
+                aggregateName,
                 type
             });
         }
@@ -374,7 +374,7 @@ function executeCommandByType(command, state) {
 
             return commandExecute({
                 aggregateId: objective.id,
-                aggregateName: aggregate,
+                aggregateName,
                 type,
                 payload: {
                     keyResultId,
@@ -397,7 +397,7 @@ function executeCommandByType(command, state) {
 
             return commandExecute({
                 aggregateId: objective.id,
-                aggregateName: aggregate,
+                aggregateName,
                 type,
                 payload: {
                     keyResultId,
@@ -419,7 +419,7 @@ function executeCommandByType(command, state) {
 
             return commandExecute({
                 aggregateId: objective.id,
-                aggregateName: aggregate,
+                aggregateName,
                 type,
                 payload: {
                     keyResultId

@@ -5,8 +5,11 @@ import createEs from 'resolve-es';
 import createExecutor from 'resolve-query';
 
 import { INFO_TOKEN, DONE_TOKEN, ERR_TOKEN } from './constants';
-import { projections } from './projections';
+import projectionsGenerator from './projections';
 import config from './config';
+
+const eventCounterObj = { value: 0 };
+let lastReportedEvents = 0;
 
 const store = createEs({ driver: mongoDbDriver({
     url: config.MONGODB_CONNECTION_URL,
@@ -15,17 +18,16 @@ const store = createEs({ driver: mongoDbDriver({
 
 const bus = createBus({ driver: memoryDriver() });
 
+const projections = projectionsGenerator(eventCounterObj);
+
 const execute = createExecutor({ store, bus, projections });
 
-let eventCounter = 0;
-let lastReportedEvents = 0;
-
 function reporterHandler() {
-    if (lastReportedEvents !== eventCounter) {
-        const tickSize = eventCounter - lastReportedEvents;
+    if (lastReportedEvents !== eventCounterObj.value) {
+        const tickSize = eventCounterObj.value - lastReportedEvents;
         // eslint-disable-next-line no-console
         console.log(INFO_TOKEN, tickSize);
-        lastReportedEvents = eventCounter;
+        lastReportedEvents = eventCounterObj.value;
     }
 
     setTimeout(reporterHandler, 500);
@@ -33,10 +35,13 @@ function reporterHandler() {
 
 setTimeout(reporterHandler, 500);
 
-execute('okrState').then(() =>
+execute('okrState').then(state =>
     // eslint-disable-next-line no-console
     console.log(DONE_TOKEN, JSON.stringify({
-        memory: process.memoryUsage()
+        memory: process.memoryUsage(),
+        entities: Object.keys(state.orgUnits).length
+            + Object.keys(state.users).length
+            + Object.keys(state.objectives).length
     }))
 ).catch(err =>
     // eslint-disable-next-line no-console

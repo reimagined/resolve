@@ -51,6 +51,7 @@ function runLoadTests() {
 
     const logHandler = (rawData) => {
         const data = rawData.toString('utf8');
+        console.log(data);
 
         if (data.indexOf(DONE_TOKEN) >= 0) {
             const transferPayload = JSON.parse(data.substring(DONE_TOKEN.length));
@@ -136,6 +137,7 @@ generateEvents(POINTS, 0, {})
     .then(result => progress.tick(totalMaxValue) && result)
     .then(result => Promise.all([
         storeToCsv('./build-time.csv', POINTS, result, (data, point) => `${data[point].buildTime}`),
+        storeToCsv('./entities-count.csv', POINTS, result, (data, point) => `${data[point].entities}`),
         storeToCsv('./memory-rss.csv', POINTS, result, (data, point) =>
             `${Math.round(data[point].memory.rss / 1024 / 1024)}`
         ),

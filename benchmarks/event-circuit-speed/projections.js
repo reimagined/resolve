@@ -247,33 +247,37 @@ const originalHandlers = {
         state.setIn(['timePeriods', event.payload.name], event.payload.date)
 };
 
-// Allow bypass invalid events
-const eventHandlers = Object.keys(originalHandlers).reduce(
-    (acc, key) => Object.assign(acc, { [key]: (state, event) => {
-        try {
-            return originalHandlers[key](state, event);
-        } catch (err) {
-            console.error('CAUGHT ERROR', err); // eslint-disable-line no-console
-            return state;
-        }
-    } }),
-    Object.create(null)
-);
+export default function projectionsGenerator(reportObj) {
+    // Allow bypass invalid events
+    const eventHandlers = Object.keys(originalHandlers).reduce(
+        (acc, key) => Object.assign(acc, { [key]: (state, event) => {
+            try {
+                const result = originalHandlers[key](state, event);
+                reportObj.value++;
+                return result;
+            } catch (err) {
+                console.error('CAUGHT ERROR', err); // eslint-disable-line no-console
+                return state;
+            }
+        } }),
+        Object.create(null)
+    );
 
-export const projections = [
-    {
-        name: 'okrState',
-        initialState: () => Immutable({
-            orgUnits: {
-                [ROOT_ORGUNIT_ID]: {
-                    orgUnits: [],
-                    users: []
-                }
-            },
-            users: {},
-            objectives: {},
-            timePeriods
-        }),
-        eventHandlers
-    }
-];
+    return [
+        {
+            name: 'okrState',
+            initialState: () => Immutable({
+                orgUnits: {
+                    [ROOT_ORGUNIT_ID]: {
+                        orgUnits: [],
+                        users: []
+                    }
+                },
+                users: {},
+                objectives: {},
+                timePeriods
+            }),
+            eventHandlers
+        }
+    ];
+}
