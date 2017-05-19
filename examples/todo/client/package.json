@@ -14,7 +14,8 @@
     "redux-saga": "^0.15.3",
     "resolve-redux": "*",
     "seamless-immutable": "^7.1.2",
-    "socket.io-client": "^2.0.1"
+    "socket.io-client": "^2.0.1",
+    "todo-common": "*"
   },
   "devDependencies": {
     "react-scripts": "0.9.5"

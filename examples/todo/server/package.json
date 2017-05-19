@@ -21,6 +21,7 @@
     "resolve-query": "*",
     "seamless-immutable": "^7.1.2",
     "socket.io": "^2.0.1",
+    "todo-common": "*",
     "uuid": "^3.0.1"
   },
   "devDependencies": {

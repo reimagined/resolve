@@ -11,7 +11,7 @@ import query from 'resolve-query';
 
 import todoCardAggregate from './aggregates/TodoCard';
 import todoItemAggregate from './aggregates/TodoItem';
-import cardsProjection from '../common/projections/cards';
+import { cards as cardsProjection } from 'todo-common';
 
 const PORT = 3001;
 

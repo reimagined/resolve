@@ -2,9 +2,12 @@
   "name": "todo-common",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "author": "reimaginate team",
   "license": "ISC",
+  "scripts": {
+    "prepublish": "babel --out-dir ./dist ./projections"
+  },
   "dependencies": {
     "seamless-immutable": "^7.1.2"
   }

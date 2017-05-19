@@ -1,5 +1,7 @@
 // TODO: use resolve-redux root path
 import reducer from 'resolve-redux/dist/reducer';
-import eventHandlers from './cards';
+import { cards as projection } from 'todo-common';
 
-export default reducer({ name: 'cards', eventHandlers });
+const { name, eventHandlers } = projection;
+
+export default reducer({ name, eventHandlers });
