@@ -27,7 +27,7 @@ export default class TodoItem extends Component {
                     <label htmlFor="itemContext">
                         {todo.name}
                     </label>
-                    <button className="destroy" onClick={this._handleDelete} />
+                    <button className="destroy" onClick={this.props.onRemove} />
                 </div>
             </li>
         );

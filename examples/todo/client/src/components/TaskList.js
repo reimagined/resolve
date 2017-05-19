@@ -21,7 +21,11 @@ export default function (props) {
                 />
                 <ul className="todo-list">
                     {Object.keys(props.tasks).map(key => (
-                        <TodoItem key={key} todo={props.tasks[key]} />
+                        <TodoItem
+                            key={key}
+                            todo={props.tasks[key]}
+                            onRemove={() => props.onTodoItemRemove(key)}
+                        />
                     ))}
                 </ul>
             </div>

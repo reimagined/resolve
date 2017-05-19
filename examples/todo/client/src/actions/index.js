@@ -22,3 +22,11 @@ export function createTodoItem(name, cardId) {
         cardId
     };
 }
+
+export function removeTodoItem(id) {
+    return {
+        aggregateName: 'todoitem',
+        type: 'remove',
+        aggregateId: id
+    };
+}
