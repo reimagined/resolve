@@ -46,6 +46,8 @@ body {
     overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
     background-color: #f5f5f5;
     border-right: 1px solid #eee;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2),
+	            0 25px 50px 0 rgba(0, 0, 0, 0.1);
   }
 }
 
@@ -56,14 +58,18 @@ body {
   margin-left: -20px;
 }
 .nav-sidebar > li > a {
+  background-color: #fff;
+  border-top: 1px solid #e6e6e6;
   padding-right: 20px;
   padding-left: 20px;
+  color: #444444;
 }
 .nav-sidebar > .active > a,
 .nav-sidebar > .active > a:hover,
 .nav-sidebar > .active > a:focus {
   color: #fff;
   background-color: #428bca;
+  border-color: #428bca;
 }
 
 
@@ -103,4 +109,36 @@ body {
 .placeholder img {
   display: inline-block;
   border-radius: 50%;
+}
+
+.destroy {
+	display: none;
+	position: absolute;
+	top: 5px;
+  border-width: 0;
+  background-color: #eeeeee;
+	right: 10px;
+	bottom: 0;
+	margin: auto 0;
+	font-size: 20px;
+	color: #cc9a9a;
+	margin-bottom: 11px;
+	transition: color 0.2s ease-out;
+}
+
+.destroy:hover {
+	color: #af5b5e;
+}
+
+.destroy:after {
+	content: '×';
+}
+
+li:hover .destroy {
+	display: block;
+}
+
+li.active:hover .destroy {
+  background-color: #428bca;
+	display: block;
 }

@@ -8,12 +8,15 @@ import Sidebar from './Sidebar';
 
 export default class App extends Component {
     componentDidMount() {
-        this.props.dispatch(toggleMenu({ isOpen: true }));
+        this.props.dispatch(toggleMenu(true));
     }
 
     render() {
         const links = Object.keys(this.props.cards).map(key => (
-            <Link key={key} to={`/${key}`}>{this.props.cards[key].name}</Link>
+            <Link key={key} to={`/${key}`}>
+                {this.props.cards[key].name}
+                <button className="destroy" onClick={() => {}} />
+            </Link>
         ));
 
         return (
@@ -23,7 +26,7 @@ export default class App extends Component {
                         <Media query="(max-width: 599px)">
                             {(matches) => {
                                 if (matches) {
-                                    this.props.dispatch(toggleMenu({ isOpen: false }));
+                                    this.props.dispatch(toggleMenu(false));
                                 }
                                 return (
                                     <Sidebar
