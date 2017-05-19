@@ -7,18 +7,19 @@ function getTaskList(cards, currentCardId) {
     const currentCard = cards[currentCardId];
 
     return currentCard
-        ? (currentCard.todoList || {})
-        : Object.keys(cards).reduce((result, key) =>
-            Object.assign(result, cards[key].todoList)
-        , {})
+        ? currentCard.todoList || {}
+        : Object.keys(cards).reduce(
+              (result, key) => Object.assign(result, cards[key].todoList),
+              {}
+          );
 }
 
 const mapStateToProps = ({ cards }, { match }) => {
     const cardId = match.params.cardId;
 
     return {
-        title: (cardId && cards[cardId]) ? cards[cardId].name : 'All',
-        tasks: getTaskList(cards, cardId)
+        title: cardId && cards.cards[cardId] ? cards.cards[cardId].name : 'All',
+        tasks: getTaskList(cards.cards, cardId)
     };
 };
 

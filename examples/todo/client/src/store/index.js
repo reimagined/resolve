@@ -1,15 +1,16 @@
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, combineReducers } from 'redux';
 import createSagaMiddleware from 'redux-saga';
+import { reducer as burgerMenu } from 'redux-burger-menu';
 import { cards as cardsProjection } from 'todo-common';
 
-import reducers from '../reducers';
+import cardsReducer from '../reducers';
 import saga from '../sagas';
 
 const sagaMiddleware = createSagaMiddleware();
 
 const store = createStore(
-    reducers,
-    cardsProjection.initialState(),
+    combineReducers({ cards: cardsReducer, burgerMenu }),
+    { cards: cardsProjection.initialState(), burgerMenu: { isOpen: false } },
     applyMiddleware(sagaMiddleware)
 );
 

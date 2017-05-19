@@ -40,6 +40,15 @@ module.exports = {
             {
                 code: 100
             }
-        ]
+        ],
+        'space-before-function-paren': [
+            'error',
+            {
+                anonymous: 'always',
+                named: 'never',
+                asyncArrow: 'always'
+            }
+        ],
+        quotes: ['error', 'single']
     }
 };

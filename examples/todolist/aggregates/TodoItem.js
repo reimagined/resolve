@@ -17,7 +17,7 @@ export default {
             if (state && state.activated) throw new Error('already-exist');
 
             return {
-                type: 'Created',
+                type: 'TodoItemCreated',
                 payload: {
                     name: args.name,
                     cardId: args.cardId
@@ -29,7 +29,7 @@ export default {
             if (!state.activated) throw new Error('no-exist');
 
             return {
-                type: 'Removed'
+                type: 'TodoItemRemoved'
             };
         },
 
@@ -37,7 +37,7 @@ export default {
             if (!state.activated) throw new Error('no-exist');
 
             return {
-                type: 'CheckToggled'
+                type: 'TodoItemCheckToggled'
             };
         }
     }

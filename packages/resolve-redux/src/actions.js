@@ -10,12 +10,12 @@ function merge(projectionName, state) {
     };
 }
 
-function sendCommand({ command, aggregateId, aggregateType, payload }) {
+function sendCommand({ command, aggregateId, aggregateName, payload }) {
     return {
         type: SEND_COMMAND,
         command,
         aggregateId,
-        aggregateType,
+        aggregateName,
         payload
     };
 }

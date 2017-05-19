@@ -6,32 +6,34 @@ mockery.enable({
     warnOnUnregistered: false
 });
 
-let toArray;
+let foundArray = [];
 
 mockery.registerMock('mongodb', {
-    _setToArray: (func) => {
-        toArray = func;
+    _setFindResult: (array) => {
+        if (Array.isArray(array)) {
+            foundArray = array;
+        } else {
+            foundArray = [];
+        }
     },
     MongoClient: {
         connect: sinon.spy(() =>
             Promise.resolve({
-                collection: sinon.spy(() => {
-                    const find = sinon.spy(() => {
-                        const result = {
-                            skip: sinon.spy(() => result),
-                            limit: sinon.spy(() => result),
-                            sort: sinon.spy(() => result),
-                            toArray
-                        };
-                        return result;
-                    });
-
-                    return {
-                        insert: sinon.spy(() => Promise.resolve()),
-                        find,
-                        createIndex: sinon.spy(() => Promise.resolve())
-                    };
-                })
+                collection: sinon.spy(() => ({
+                    insert: sinon.spy(() => Promise.resolve()),
+                    find: sinon.spy(() => ({
+                        stream: sinon.spy(() => ({
+                            on: (event, callback) => {
+                                if (event === 'data') {
+                                    foundArray.forEach(elm => callback(elm));
+                                } else if (event === 'end') {
+                                    callback();
+                                }
+                            }
+                        }))
+                    })),
+                    createIndex: sinon.spy(() => Promise.resolve())
+                }))
             })
         )
     }
