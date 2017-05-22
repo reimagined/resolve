@@ -1,5 +1,4 @@
-// TODO: use resolve-redux root path
-import reducer from 'resolve-redux/dist/reducer';
+import { reducer } from 'resolve-redux';
 import { projections } from 'todo-common';
 
 const projection = projections.cards;
