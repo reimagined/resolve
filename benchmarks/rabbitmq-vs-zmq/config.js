@@ -2,7 +2,7 @@ const RABBITMQ_HOST = process.env.RABBITMQ_HOST || 'localhost';
 const ZMQ_HOST = process.env.ZMQ_HOST || 'localhost';
 
 const RABBITMQ_CONNECTION_URL = process.env.RABBITMQ_CONNECTION_URL
-    || `amqp://${RABBITMQ_HOST}:5687`;
+    || `amqp://${RABBITMQ_HOST}:5672`;
 
 const ZMQ_PUB_PORT = process.env.ZMQ_PUB_PORT || 2110;
 const ZMQ_SUB_PORT = process.env.ZMQ_SUB_PORT || 2111;
