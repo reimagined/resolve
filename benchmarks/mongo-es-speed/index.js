@@ -11,7 +11,7 @@ import config from './config';
 // eslint-disable-next-line no-console
 const log = console.log;
 const POINTS = config.BENCHMARK_SERIES;
-const totalMaxValue = POINTS.reduce((acc, val) => (acc + val), 0) * 2;
+const totalMaxValue = POINTS.reduce((acc, val) => acc + val, 0) * 2;
 const progress = nyanProgress();
 const totalEventProcessed = { value: 0 };
 const totalEventReported = { value: 0 };
@@ -76,12 +76,15 @@ function runLoadTests() {
 
 function dropCollection() {
     return MongoClient.connect(config.MONGODB_CONNECTION_URL).then(db =>
-        new Promise(resolve => db
-            .collection(config.MONGODB_COLLECTION_NAME, { strict: true }, (err, collection) => (
-                err ? resolve() : collection.drop().then(resolve)
-        )))
-        .catch(err => log('Error while drop collection:', err))
-        .then(() => db.close())
+        new Promise(resolve =>
+            db.collection(
+                config.MONGODB_COLLECTION_NAME,
+                { strict: true },
+                (err, collection) => (err ? resolve() : collection.drop().then(resolve))
+            )
+        )
+            .catch(err => log('Error while drop collection:', err))
+            .then(() => db.close())
     );
 }
 
@@ -100,53 +103,71 @@ function generateEvents(arr, i, storage) {
 
 function fsWriteFileAsync(filename, content) {
     return new Promise((resolve, reject) =>
-        fs.writeFile(filename, content, (err, value) => (
-            !err ? resolve(value) : reject(err)
-        ))
+        fs.writeFile(filename, content, (err, value) => (!err ? resolve(value) : reject(err)))
     );
 }
 
 function storeToCsv(filePath, points, data, dataGetter) {
-    return fsWriteFileAsync(filePath,
+    return fsWriteFileAsync(
+        filePath,
         `${points.map(point => `Events count: ${point}`).join(',')}\n` +
-        `${points.map(point => dataGetter(data, point)).join(',')}\n`
+            `${points.map(point => dataGetter(data, point)).join(',')}\n`
     );
 }
 
 function storeSummaryToXML(filePath, points, data) {
-    return fsWriteFileAsync(filePath,
+    return fsWriteFileAsync(
+        filePath,
         `<?xml version="1.0" ?>\n<tabs>
-        ${points.map((point) => {
-            const rss = Math.round(data[point].memory.rss / 1024 / 1024);
-            const heapTotal = Math.round(data[point].memory.heapTotal / 1024 / 1024);
-            const heapUsed = Math.round(data[point].memory.heapUsed / 1024 / 1024);
+        ${points
+            .map((point) => {
+                const rss = Math.round(data[point].memory.rss / 1024 / 1024);
+                const heapTotal = Math.round(data[point].memory.heapTotal / 1024 / 1024);
+                const heapUsed = Math.round(data[point].memory.heapUsed / 1024 / 1024);
 
-            return `<tab name="Events count: ${point}">`
-                + `<field name="Build time" value="${data[point].buildTime} ms" />`
-                + `<field name="Memory resident size" value="${rss} mb" />`
-                + `<field name="Memory heap total" value="${heapTotal} mb" />`
-                + `<field name="Memory heap used" value="${heapUsed} mb" />`
-                + '</tab>';
-        }).join('')}
+                return `<tab name="Events count: ${point}">`
+                    + `<field name="Build time" value="${data[point].buildTime} ms" />`
+                    + `<field name="Memory resident size" value="${rss} mb" />`
+                    + `<field name="Memory heap total" value="${heapTotal} mb" />`
+                    + `<field name="Memory heap used" value="${heapUsed} mb" />`
+                    + '</tab>';
+            })
+            .join('')}
         </tabs>`
     );
 }
 
 generateEvents(POINTS, 0, {})
     .then(result => progress.tick(totalMaxValue) && result)
-    .then(result => Promise.all([
-        storeToCsv('./build-time.csv', POINTS, result, (data, point) => `${data[point].buildTime}`),
-        storeToCsv('./memory-rss.csv', POINTS, result, (data, point) =>
-            `${Math.round(data[point].memory.rss / 1024 / 1024)}`
-        ),
-        storeToCsv('./memory-heap-total.csv', POINTS, result, (data, point) =>
-            `${Math.round(data[point].memory.heapTotal / 1024 / 1024)}`
-        ),
-        storeToCsv('./memory-heap-used.csv', POINTS, result, (data, point) =>
-            `${Math.round(data[point].memory.heapUsed / 1024 / 1024)}`
-        ),
-        storeSummaryToXML('./summary.xml', POINTS, result)
-    ]))
+    .then(result =>
+        Promise.all([
+            storeToCsv(
+                './build-time.csv',
+                POINTS,
+                result,
+                (data, point) => `${data[point].buildTime}`
+            ),
+            storeToCsv(
+                './memory-rss.csv',
+                POINTS,
+                result,
+                (data, point) => `${Math.round(data[point].memory.rss / 1024 / 1024)}`
+            ),
+            storeToCsv(
+                './memory-heap-total.csv',
+                POINTS,
+                result,
+                (data, point) => `${Math.round(data[point].memory.heapTotal / 1024 / 1024)}`
+            ),
+            storeToCsv(
+                './memory-heap-used.csv',
+                POINTS,
+                result,
+                (data, point) => `${Math.round(data[point].memory.heapUsed / 1024 / 1024)}`
+            ),
+            storeSummaryToXML('./summary.xml', POINTS, result)
+        ])
+    )
     .then(() => progressDonePromise)
     .then(() => process.exit(0))
     .catch((err) => {
