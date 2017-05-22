@@ -5,16 +5,6 @@ export default class TodoItem extends Component {
     constructor(props) {
         super(props);
         this.state = { editing: false };
-        //     this._handleSave = (text) => {
-        //         if (text.length === 0) {
-        //             this.props.deleteTodo({ key: this.props.todo.key });
-        //         } else {
-        //             this.props.editTodo({ key: this.props.todo.key, text });
-        //         }
-        //         this.setState({ editing: false });
-        //     };
-        //     this._handleComplete = () => this.props.completeTodo({ key: this.props.todo.key });
-        //     this._handleDelete = () => this.props.deleteTodo({ key: this.props.todo.key });
     }
 
     render() {
