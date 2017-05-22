@@ -49,6 +49,7 @@ module.exports = {
                 asyncArrow: 'always'
             }
         ],
-        quotes: ['error', 'single']
+        quotes: ['error', 'single'],
+        'no-console': ['error']
     }
 };
