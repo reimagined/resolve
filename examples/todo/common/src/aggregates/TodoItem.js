@@ -3,13 +3,10 @@ import Immutable from 'seamless-immutable';
 export default {
     name: 'TodoItem',
     initialState: () => null,
-
     eventHandlers: {
         TodoItemCreated: (state, event) => Immutable({ activated: true, cardId: event.cardId }),
-
         TodoItemRemoved: state => state.setIn(['activated'], false)
     },
-
     commands: {
         create: (state, args) => {
             if (!args.cardId) throw new Error('no-cardid');
@@ -24,7 +21,6 @@ export default {
                 }
             };
         },
-
         remove: (state) => {
             if (!state.activated) throw new Error('no-exist');
 
@@ -32,7 +28,6 @@ export default {
                 type: 'TodoItemRemoved'
             };
         },
-
         toggleCheck: (state) => {
             if (!state.activated) throw new Error('no-exist');
 

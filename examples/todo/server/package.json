@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "author": "reimaginate team",
+  "author": "reimagined team",
   "license": "ISC",
   "scripts": {
     "start": "babel-node ./index.js",

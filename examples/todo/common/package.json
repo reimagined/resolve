@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "./dist/index.js",
-  "author": "reimaginate team",
+  "author": "reimagined team",
   "license": "ISC",
   "scripts": {
     "prepublish": "babel --out-dir ./dist ./src"

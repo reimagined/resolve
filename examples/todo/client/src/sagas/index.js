@@ -1,8 +1,7 @@
 import io from 'socket.io-client';
 import { eventChannel } from 'redux-saga';
 import { fork, put, call, all, takeEvery } from 'redux-saga/effects';
-// TODO: use resolve-redux root path
-import actions from 'resolve-redux/dist/actions';
+import { actions } from 'resolve-redux';
 import { aggregates } from 'todo-common';
 
 const allCommandTypes = Object.keys(aggregates).reduce((result, aggregateName) => {
