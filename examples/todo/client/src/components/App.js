@@ -7,19 +7,6 @@ import Sidebar from './Sidebar';
 
 export default class App extends Component {
     render() {
-        const links = Object.keys(this.props.cards).map(id => (
-            <Link key={id} to={`/${id}`}>
-                {this.props.cards[id].name}
-                <button
-                    className="destroy"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        this.props.onCardRemove(id);
-                    }}
-                />
-            </Link>
-        ));
-
         return (
             <div id="outer-container" className="App">
                 <div className="container-fluid">
@@ -37,7 +24,19 @@ export default class App extends Component {
                                         currentCard={this.props.cardId}
                                         className="col-sm-3 col-md-2 sidebar"
                                     >
-                                        {links}
+                                        <Link key={null} to="/">All</Link>
+                                        {Object.keys(this.props.cards).map(id => (
+                                            <Link key={id} to={`/${id}`}>
+                                                {this.props.cards[id].name}
+                                                <button
+                                                    className="destroy"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        this.props.onCardRemove(id);
+                                                    }}
+                                                />
+                                            </Link>
+                                        ))}
                                     </Sidebar>
                                 );
                             }}

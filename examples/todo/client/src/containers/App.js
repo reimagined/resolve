@@ -7,7 +7,7 @@ import { action as toggleMenu } from 'redux-burger-menu';
 const mapStateToProps = (state, { match }) => {
     return {
         cards: state.cards.cards,
-        cardId: match.params.cardId
+        cardId: match.params.cardId || null
     };
 };
 
