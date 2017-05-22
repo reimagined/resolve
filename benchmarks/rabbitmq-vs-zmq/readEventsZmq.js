@@ -11,12 +11,19 @@ const busZmq = createBus({ driver: driverZmq({
 
 let eventsLeft = process.argv[2];
 
-busZmq.onEvent(['EVENT_TYPE'], () => {
-    if(--eventsLeft === 0) {
+busZmq.onEvent(['EVENT_TYPE'], () => (eventsLeft--));
+
+function doneHandler() {
+    if(eventsLeft <= 0) {
         console.log(JSON.stringify({
             memory: process.memoryUsage()
         }));
 
         process.exit();
+        return;
     }
-});
+
+    setTimeout(doneHandler, 250);
+}
+
+setTimeout(doneHandler, 250);

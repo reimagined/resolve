@@ -9,12 +9,19 @@ const busRabbitmq = createBus({ driver: driverRabbitmq({
 
 let eventsLeft = process.argv[2];
 
-busRabbitmq.onEvent(['EVENT_TYPE'], () => {
-    if(--eventsLeft === 0) {
+busRabbitmq.onEvent(['EVENT_TYPE'], () => (--eventsLeft <= 0));
+
+function doneHandler() {
+    if(eventsLeft <= 0) {
         console.log(JSON.stringify({
             memory: process.memoryUsage()
         }));
 
         process.exit();
+        return;
     }
-});
+
+    setTimeout(doneHandler, 250);
+}
+
+setTimeout(doneHandler, 250);

@@ -11,9 +11,9 @@ import config from './config';
 const log = console.log;
 const POINTS = config.BENCHMARK_SERIES;
 
-const busRabbitmq = createBus({ driver: driverRabbitmq({
-    url: config.RABBITMQ_CONNECTION_URL
-}) });
+// const busRabbitmq = createBus({ driver: driverRabbitmq({
+//     url: config.RABBITMQ_CONNECTION_URL
+// }) });
 
 const busZmq = createBus({ driver: driverZmq({
     address: config.ZMQ_HOST,
@@ -22,8 +22,13 @@ const busZmq = createBus({ driver: driverZmq({
 }) });
 
 function runLoadTests(count) {
-    const childRabbimq = spawn('babel-node', [path.join(__dirname, './readEventsRabbit'), count]);
-    const childZmq = spawn('babel-node', [path.join(__dirname, './readEventsZmq'), count]);
+    const children = {
+        // rabbitmq: spawn('babel-node', [path.join(__dirname, './readEventsRabbit'), count]),
+        zmq: spawn('babel-node', [path.join(__dirname, './readEventsZmq'), count])
+    };
+    const initialTime = +new Date();
+    const resultInfo = {};
+    let doneCount = Object.keys(children).length;
 
     let resolver;
     const done = new Promise((resolve, reject) => (resolver = resolve));
@@ -32,23 +37,10 @@ function runLoadTests(count) {
         zmq: ''
     };
 
-    const logHandler = (store, rawData) => {
+    const logHandler = (source, rawData) => {
         const data = rawData.toString('utf8');
-        consoleInfo[store] += data;
-    };
-
-    childRabbimq.stdout.on('data', logHandler.bind(null, 'rabbitmq'));
-    childRabbimq.stderr.on('data', logHandler.bind(null, 'rabbitmq'));
-
-    childZmq.stdout.on('data', logHandler.bind(null, 'zmq'));
-    childZmq.stderr.on('data', logHandler.bind(null, 'zmq'));
-
-    const initialTime = +new Date();
-    let doneCount = 2;
-
-    const resultInfo = {
-        rabbitmq: {},
-        zmq: {}
+        console.log(source, ':', data);
+        consoleInfo[source] += data;
     };
 
     const doneHandler = (source) => {
@@ -59,30 +51,33 @@ function runLoadTests(count) {
             time: workTime
         };
 
-        if (--doneCount === 0) {
+        if (--doneCount <= 0) {
             resolver(resultInfo);
         }
     };
 
-    childRabbimq.on('exit', doneHandler.bind(null, 'rabbitmq'));
-    childZmq.on('exit', doneHandler.bind(null, 'zmq'));
+    Object.keys(children).forEach((key) => {
+        children[key].stdout.on('data', logHandler.bind(null, key));
+        children[key].stderr.on('data', logHandler.bind(null, key));
+        children[key].on('exit', doneHandler.bind(null, key));
+        resultInfo[key] = {};
+    });
 
     let leftEvents = count;
     const produceEventsAsync = () => {
-        if (--leftEvents === 0) return Promise.resolve();
+        if (--leftEvents <= 0) return;
 
-        busRabbitmq.emitEvent({
-            type: 'EVENT_TYPE',
-            payload: {}
-        });
+        // busRabbitmq.emitEvent({
+        //     type: 'EVENT_TYPE',
+        //     payload: {}
+        // });
 
         busZmq.emitEvent({
             type: 'EVENT_TYPE',
             payload: {}
         });
 
-        return Promise.resolve()
-            .then(produceEventsAsync);
+        setImmediate(produceEventsAsync);
     }
 
     produceEventsAsync(count);
