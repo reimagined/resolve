@@ -13,3 +13,28 @@ export function removeTodoCard(id) {
         aggregateId: id
     };
 }
+
+export function createTodoItem(name, cardId) {
+    return {
+        aggregateName: 'todoitem',
+        type: 'create',
+        name,
+        cardId
+    };
+}
+
+export function removeTodoItem(id) {
+    return {
+        aggregateName: 'todoitem',
+        type: 'remove',
+        aggregateId: id
+    };
+}
+
+export function toggleTodoItem(id) {
+    return {
+        aggregateName: 'todoitem',
+        type: 'toggleCheck',
+        aggregateId: id
+    };
+}

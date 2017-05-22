@@ -15,6 +15,7 @@ export default function (props) {
                 <ul className="nav nav-sidebar">
                     {props.children.map((child, index) => (
                         <li
+                            id="sidebar-list"
                             key={index}
                             className={props.currentCard === child.key ? 'active' : null}
                         >

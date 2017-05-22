@@ -69,21 +69,21 @@
 	content: '×';
 }
 
-li .destroy {
+li#sidebar-list .destroy {
 	display: block;
 }
 
-li:hover .destroy {
+li#sidebar-list:hover .destroy {
   background-color: #eeeeee;
 	display: block;
 }
 
-li.active .destroy {
+li#sidebar-list.active .destroy {
   background-color: #428bca;
 	display: block;
 }
 
-li.active:hover .destroy {
+li#sidebar-list.active:hover .destroy {
   background-color: #428bca;
 	display: block;
 }
