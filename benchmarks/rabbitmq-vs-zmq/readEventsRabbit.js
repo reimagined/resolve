@@ -9,10 +9,11 @@ const busRabbitmq = createBus({ driver: driverRabbitmq({
 
 let eventsLeft = process.argv[2];
 
-busRabbitmq.onEvent(['EVENT_TYPE'], () => (--eventsLeft <= 0));
+busRabbitmq.onEvent(['EVENT_TYPE'], () => (--eventsLeft));
 
 function doneHandler() {
     if(eventsLeft <= 0) {
+        // eslint-disable-next-line no-console
         console.log(JSON.stringify({
             memory: process.memoryUsage()
         }));

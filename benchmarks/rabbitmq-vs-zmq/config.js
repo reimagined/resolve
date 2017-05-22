@@ -1,5 +1,5 @@
-const RABBITMQ_HOST = process.env.RABBITMQ_HOST || 'localhost';
-const ZMQ_HOST = process.env.ZMQ_HOST || 'localhost';
+const RABBITMQ_HOST = process.env.RABBITMQ_HOST || '127.0.0.1';
+const ZMQ_HOST = process.env.ZMQ_HOST || '127.0.0.1';
 
 const RABBITMQ_CONNECTION_URL = process.env.RABBITMQ_CONNECTION_URL
     || `amqp://${RABBITMQ_HOST}:5672`;
@@ -7,7 +7,7 @@ const RABBITMQ_CONNECTION_URL = process.env.RABBITMQ_CONNECTION_URL
 const ZMQ_PUB_PORT = process.env.ZMQ_PUB_PORT || 2110;
 const ZMQ_SUB_PORT = process.env.ZMQ_SUB_PORT || 2111;
 
-const BENCHMARK_SERIES = [0, 10000, 30000, 100000, 300000, 1000000];
+const BENCHMARK_SERIES = [10000, 30000, 100000, 300000, 1000000];
 
 const PAYLOAD_ELEMENTS_COUNT = 3;
 const PAYLOAD_ELEMENT_SIZE = 100;

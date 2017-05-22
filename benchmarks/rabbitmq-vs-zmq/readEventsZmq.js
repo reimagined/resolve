@@ -15,6 +15,7 @@ busZmq.onEvent(['EVENT_TYPE'], () => (eventsLeft--));
 
 function doneHandler() {
     if(eventsLeft <= 0) {
+        // eslint-disable-next-line no-console
         console.log(JSON.stringify({
             memory: process.memoryUsage()
         }));

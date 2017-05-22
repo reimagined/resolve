@@ -7,13 +7,11 @@ import driverZmq from 'resolve-bus-zmq';
 
 import config from './config';
 
-// eslint-disable-next-line no-console
-const log = console.log;
 const POINTS = config.BENCHMARK_SERIES;
 
-// const busRabbitmq = createBus({ driver: driverRabbitmq({
-//     url: config.RABBITMQ_CONNECTION_URL
-// }) });
+const busRabbitmq = createBus({ driver: driverRabbitmq({
+    url: config.RABBITMQ_CONNECTION_URL
+}) });
 
 const busZmq = createBus({ driver: driverZmq({
     address: config.ZMQ_HOST,
@@ -21,9 +19,16 @@ const busZmq = createBus({ driver: driverZmq({
     subPort: config.ZMQ_SUB_PORT
 }) });
 
+function generateEvent() {
+    return {
+        type: 'EVENT_TYPE',
+        payload: {}
+    };
+}
+
 function runLoadTests(count) {
     const children = {
-        // rabbitmq: spawn('babel-node', [path.join(__dirname, './readEventsRabbit'), count]),
+        rabbitmq: spawn('babel-node', [path.join(__dirname, './readEventsRabbit'), count]),
         zmq: spawn('babel-node', [path.join(__dirname, './readEventsZmq'), count])
     };
     const initialTime = +new Date();
@@ -39,7 +44,6 @@ function runLoadTests(count) {
 
     const logHandler = (source, rawData) => {
         const data = rawData.toString('utf8');
-        console.log(source, ':', data);
         consoleInfo[source] += data;
     };
 
@@ -63,25 +67,17 @@ function runLoadTests(count) {
         resultInfo[key] = {};
     });
 
-    let leftEvents = count;
     const produceEventsAsync = () => {
-        if (--leftEvents <= 0) return;
+        const event = generateEvent();
+        busRabbitmq.emitEvent(event);
+        busZmq.emitEvent(event);
 
-        // busRabbitmq.emitEvent({
-        //     type: 'EVENT_TYPE',
-        //     payload: {}
-        // });
-
-        busZmq.emitEvent({
-            type: 'EVENT_TYPE',
-            payload: {}
-        });
-
-        setImmediate(produceEventsAsync);
+        if (doneCount > 0) {
+            setImmediate(produceEventsAsync);
+        }
     }
 
     produceEventsAsync(count);
-
     return done;
 }
 
@@ -107,6 +103,7 @@ generateEvents(POINTS, 0, {})
     .then(result => fsWriteFileAsync('./result.json', JSON.stringify(result)))
     .then(() => process.exit(0))
     .catch((err) => {
-        log(err);
+        // eslint-disable-next-line no-console
+        console.log(err);
         process.exit(1);
     });
