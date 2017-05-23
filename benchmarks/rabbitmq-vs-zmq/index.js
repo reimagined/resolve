@@ -21,14 +21,18 @@ const busZmq = createBus({ driver: driverZmq({
 
 function getRabbitmqHelper(eventCount) {
     return {
-        spawner: spawn('babel-node', [path.join(__dirname, './readEventsRabbit'), eventCount]),
+        launcher: () => spawn('babel-node', [
+            path.join(__dirname, './readEventsRabbit'), eventCount
+        ]),
         emitter: event => busRabbitmq.emitEvent(event)
     };
 }
 
 function getZmqHelper(eventCount) {
     return {
-        spawner: spawn('babel-node', [path.join(__dirname, './readEventsZmq'), eventCount]),
+        launcher: () => spawn('babel-node', [
+            path.join(__dirname, './readEventsZmq'), eventCount
+        ]),
         emitter: event => busZmq.emitEvent(event)
     };
 }
@@ -47,7 +51,7 @@ function runLoadTests(helper) {
     let isDone = false;
 
     let resolver;
-    const done = new Promise((resolve, reject) => (resolver = resolve));
+    const done = new Promise(resolve => (resolver = resolve));
 
     const logHandler = rawData => (consoleInfo += rawData.toString('utf8'));
 
