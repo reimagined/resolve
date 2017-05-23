@@ -26,58 +26,35 @@ function generateEvent() {
     };
 }
 
-function runLoadTests(count) {
-    const children = {
-        rabbitmq: spawn('babel-node', [path.join(__dirname, './readEventsRabbit'), count]),
-        zmq: spawn('babel-node', [path.join(__dirname, './readEventsZmq'), count])
-    };
+function runLoadTests(launcher, emitter) {
+    const child = launcher();
     const initialTime = +new Date();
-    const resultInfo = {};
-    let doneCount = Object.keys(children).length;
+    let consoleInfo = '';
+    let isDone = false;
 
     let resolver;
     const done = new Promise((resolve, reject) => (resolver = resolve));
-    const consoleInfo = {
-        rabbitmq: '',
-        zmq: ''
-    };
 
-    const logHandler = (source, rawData) => {
-        const data = rawData.toString('utf8');
-        consoleInfo[source] += data;
-    };
+    const logHandler = rawData => (consoleInfo += rawData.toString('utf8'));
 
     const doneHandler = (source) => {
         const workTime = +new Date() - initialTime;
-        const passedInfo = JSON.parse(consoleInfo[source]);
-        resultInfo[source] = {
-            ...passedInfo,
-            time: workTime
-        };
-
-        if (--doneCount <= 0) {
-            resolver(resultInfo);
-        }
+        const passedInfo = JSON.parse(consoleInfo);
+        resolver({ ...passedInfo, time: workTime });
+        isDone = true;
     };
 
-    Object.keys(children).forEach((key) => {
-        children[key].stdout.on('data', logHandler.bind(null, key));
-        children[key].stderr.on('data', logHandler.bind(null, key));
-        children[key].on('exit', doneHandler.bind(null, key));
-        resultInfo[key] = {};
-    });
+    child.stdout.on('data', logHandler);
+    child.stderr.on('data', logHandler);
+    child.on('exit', doneHandler);
 
     const produceEventsAsync = () => {
-        const event = generateEvent();
-        busRabbitmq.emitEvent(event);
-        busZmq.emitEvent(event);
-
-        if (doneCount > 0) {
-            setImmediate(produceEventsAsync);
-        }
+        if (isDone) return;
+        emitter(generateEvent());
+        setImmediate(produceEventsAsync);
     }
 
-    produceEventsAsync(count);
+    produceEventsAsync();
     return done;
 }
 
@@ -90,13 +67,27 @@ function fsWriteFileAsync(filename, content) {
 }
 
 function generateEvents(arr, i, storage) {
-    return runLoadTests(arr[i]).then((data) => {
-        storage[arr[i]] = data;
-        if (i === arr.length - 1) {
-            return storage;
-        }
-        return generateEvents(arr, i + 1, storage);
-    });
+    const eventCount = arr[i];
+    const result = {};
+    const rabbitmqSpawner = () =>
+        spawn('babel-node', [path.join(__dirname, './readEventsRabbit'), eventCount]);
+    const zmqSpawner = () =>
+        spawn('babel-node', [path.join(__dirname, './readEventsZmq'), eventCount]);
+
+    const rabbitEmitter = () => busRabbitmq.emitEvent(event);
+    const zmqEmitter = () => busZmq.emitEvent(event);
+
+    return runLoadTests(rabbitmqSpawner, rabbitEmitter)
+        .then(result => (result.rabbit = result))
+        .then(() => runLoadTests(zmqSpawner, zmqEmitter))
+        .then((result) => {
+            result.zmq = result;
+            storage[eventCount] = result;
+
+            return (i < arr.length - 1)
+                ? generateEvents(arr, i + 1, storage)
+                : storage;
+        });
 }
 
 generateEvents(POINTS, 0, {})
