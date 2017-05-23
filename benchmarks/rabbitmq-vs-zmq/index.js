@@ -19,6 +19,20 @@ const busZmq = createBus({ driver: driverZmq({
     subPort: config.ZMQ_SUB_PORT
 }) });
 
+function getRabbitmqHelper(eventCount) {
+    return {
+        spawner: spawn('babel-node', [path.join(__dirname, './readEventsRabbit'), eventCount]),
+        emitter: event => busRabbitmq.emitEvent(event)
+    };
+}
+
+function getZmqHelper(eventCount) {
+    return {
+        spawner: spawn('babel-node', [path.join(__dirname, './readEventsZmq'), eventCount]),
+        emitter: event => busZmq.emitEvent(event)
+    };
+}
+
 function generateEvent() {
     return {
         type: 'EVENT_TYPE',
@@ -37,7 +51,7 @@ function runLoadTests(launcher, emitter) {
 
     const logHandler = rawData => (consoleInfo += rawData.toString('utf8'));
 
-    const doneHandler = (source) => {
+    const doneHandler = () => {
         const workTime = +new Date() - initialTime;
         const passedInfo = JSON.parse(consoleInfo);
         resolver({ ...passedInfo, time: workTime });
@@ -68,26 +82,15 @@ function fsWriteFileAsync(filename, content) {
 
 function generateEvents(arr, i, storage) {
     const eventCount = arr[i];
-    const result = {};
-    const rabbitmqSpawner = () =>
-        spawn('babel-node', [path.join(__dirname, './readEventsRabbit'), eventCount]);
-    const zmqSpawner = () =>
-        spawn('babel-node', [path.join(__dirname, './readEventsZmq'), eventCount]);
 
-    const rabbitEmitter = () => busRabbitmq.emitEvent(event);
-    const zmqEmitter = () => busZmq.emitEvent(event);
-
-    return runLoadTests(rabbitmqSpawner, rabbitEmitter)
-        .then(result => (result.rabbit = result))
-        .then(() => runLoadTests(zmqSpawner, zmqEmitter))
-        .then((result) => {
-            result.zmq = result;
-            storage[eventCount] = result;
-
-            return (i < arr.length - 1)
-                ? generateEvents(arr, i + 1, storage)
-                : storage;
-        });
+    return runLoadTests(getRabbitmqHelper(eventCount))
+        .then(rabbit => runLoadTests(getZmqHelper(eventCount))
+            .then(zmq => (storage[eventCount] = { rabbit, zmq }))
+        )
+        .then(() => (i < arr.length - 1)
+            ? generateEvents(arr, i + 1, storage)
+            : storage
+        );
 }
 
 generateEvents(POINTS, 0, {})
