@@ -8,20 +8,21 @@ const busRabbitmq = createBus({ driver: driverRabbitmq({
 }) });
 
 let eventsLeft = process.argv[2];
+let lastEventsReported;
 
 busRabbitmq.onEvent(['EVENT_TYPE'], () => (--eventsLeft));
 
 function doneHandler() {
-    if(eventsLeft <= 0) {
+    if((eventsLeft <= 0) || (lastEventsReported === eventsLeft)) {
         // eslint-disable-next-line no-console
         console.log(JSON.stringify({
+            consumedEvents: process.argv[2] - eventsLeft,
             memory: process.memoryUsage()
         }));
-
         process.exit();
-        return;
     }
 
+    lastEventsReported = eventsLeft;
     setTimeout(doneHandler, 250);
 }
 

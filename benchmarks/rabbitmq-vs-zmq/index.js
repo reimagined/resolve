@@ -7,7 +7,7 @@ import driverZmq from 'resolve-bus-zmq';
 
 import config from './config';
 
-const POINTS = config.BENCHMARK_SERIES;
+const { BENCHMARK_SERIES, FREEING_TIME } = config;
 
 const busRabbitmq = createBus({ driver: driverRabbitmq({
     url: config.RABBITMQ_CONNECTION_URL
@@ -24,7 +24,8 @@ function getRabbitmqHelper(eventCount) {
         launcher: () => spawn('babel-node', [
             path.join(__dirname, './readEventsRabbit'), eventCount
         ]),
-        emitter: event => busRabbitmq.emitEvent(event)
+        emitter: event => busRabbitmq.emitEvent(event),
+        eventCount
     };
 }
 
@@ -33,7 +34,8 @@ function getZmqHelper(eventCount) {
         launcher: () => spawn('babel-node', [
             path.join(__dirname, './readEventsZmq'), eventCount
         ]),
-        emitter: event => busZmq.emitEvent(event)
+        emitter: event => busZmq.emitEvent(event),
+        eventCount
     };
 }
 
@@ -48,11 +50,11 @@ function delay(timeout) {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-function runLoadTests({ launcher, emitter }) {
+function runLoadTests({ launcher, emitter, eventCount }) {
     const child = launcher();
     const initialTime = +new Date();
+    let remainEvents = eventCount;
     let consoleInfo = '';
-    let isDone = false;
 
     let resolver;
     const done = new Promise(resolve => (resolver = resolve));
@@ -63,7 +65,6 @@ function runLoadTests({ launcher, emitter }) {
         const workTime = +new Date() - initialTime;
         const passedInfo = JSON.parse(consoleInfo);
         resolver({ ...passedInfo, time: workTime });
-        isDone = true;
     };
 
     child.stdout.on('data', logHandler);
@@ -71,7 +72,7 @@ function runLoadTests({ launcher, emitter }) {
     child.on('exit', doneHandler);
 
     const produceEventsAsync = () => {
-        if (isDone) return;
+        if (remainEvents-- <= 0) return;
         emitter(generateEvent());
         setImmediate(produceEventsAsync);
     }
@@ -92,17 +93,18 @@ function generateEvents(arr, i, storage) {
     const eventCount = arr[i];
 
     return runLoadTests(getRabbitmqHelper(eventCount))
-        .then(rabbit => delay(2000)
+        .then(rabbit => delay(FREEING_TIME)
             .then(() => runLoadTests(getZmqHelper(eventCount)))
             .then(zmq => (storage[eventCount] = { rabbit, zmq }))
         )
         .then(() => (i < arr.length - 1)
-            ? delay(2000).then(() => generateEvents(arr, i + 1, storage))
-            : storage
+            ? delay(FREEING_TIME).then(() =>
+                generateEvents(arr, i + 1, storage)
+            ) : storage
         );
 }
 
-generateEvents(POINTS, 0, {})
+generateEvents(BENCHMARK_SERIES, 0, {})
     .then(result => fsWriteFileAsync('./result.json', JSON.stringify(result)))
     .then(() => process.exit(0))
     .catch((err) => {

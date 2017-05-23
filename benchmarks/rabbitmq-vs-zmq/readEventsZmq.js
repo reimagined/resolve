@@ -10,20 +10,21 @@ const busZmq = createBus({ driver: driverZmq({
 }) });
 
 let eventsLeft = process.argv[2];
+let lastEventsReported;
 
 busZmq.onEvent(['EVENT_TYPE'], () => (eventsLeft--));
 
 function doneHandler() {
-    if(eventsLeft <= 0) {
+    if((eventsLeft <= 0) || (lastEventsReported === eventsLeft)) {
         // eslint-disable-next-line no-console
         console.log(JSON.stringify({
+            consumedEvents: process.argv[2] - eventsLeft,
             memory: process.memoryUsage()
         }));
-
         process.exit();
-        return;
     }
 
+    lastEventsReported = eventsLeft;
     setTimeout(doneHandler, 250);
 }
 
