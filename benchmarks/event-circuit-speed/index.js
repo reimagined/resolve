@@ -109,7 +109,7 @@ function fsWriteFileAsync(filename, content) {
 function storeToCsv(filePath, points, data, dataGetter) {
     return fsWriteFileAsync(filePath,
         `${points.map(point => `Events count: ${point}`).join(',')}\n` +
-        `${points.map(point => dataGetter(data, point)).join(',')}\n`
+        `${points.map(point => dataGetter(data[point])).join(',')}\n`
     );
 }
 
@@ -135,20 +135,16 @@ function storeSummaryToXML(filePath, points, data) {
 generateEvents(POINTS, 0, {})
     .then(result => progress.tick(totalMaxValue) && result)
     .then(result => Promise.all([
-        storeToCsv('./build-time.csv', POINTS, result, (data, point) =>
-            `${data[point].buildTime}`
+        storeToCsv('./build-time.csv', POINTS, result, info => `${info.buildTime}`),
+        storeToCsv('./entities-count.csv', POINTS, result, info => `${info.entities}`),
+        storeToCsv('./memory-rss.csv', POINTS, result, info =>
+            `${Math.round(info.memory.rss / 1024 / 1024)}`
         ),
-        storeToCsv('./entities-count.csv', POINTS, result, (data, point) =>
-            `${data[point].entities}`
+        storeToCsv('./memory-heap-total.csv', POINTS, result, info =>
+            `${Math.round(info.memory.heapTotal / 1024 / 1024)}`
         ),
-        storeToCsv('./memory-rss.csv', POINTS, result, (data, point) =>
-            `${Math.round(data[point].memory.rss / 1024 / 1024)}`
-        ),
-        storeToCsv('./memory-heap-total.csv', POINTS, result, (data, point) =>
-            `${Math.round(data[point].memory.heapTotal / 1024 / 1024)}`
-        ),
-        storeToCsv('./memory-heap-used.csv', POINTS, result, (data, point) =>
-            `${Math.round(data[point].memory.heapUsed / 1024 / 1024)}`
+        storeToCsv('./memory-heap-used.csv', POINTS, result, info =>
+            `${Math.round(info.memory.heapUsed / 1024 / 1024)}`
         ),
         storeSummaryToXML('./summary.xml', POINTS, result)
     ]))
