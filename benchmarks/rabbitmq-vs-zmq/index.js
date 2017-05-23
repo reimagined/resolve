@@ -44,8 +44,12 @@ function generateEvent() {
     };
 }
 
-function runLoadTests(helper) {
-    const child = helper.launcher();
+function delay(timeout) {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+}
+
+function runLoadTests({ launcher, emitter }) {
+    const child = launcher();
     const initialTime = +new Date();
     let consoleInfo = '';
     let isDone = false;
@@ -68,7 +72,7 @@ function runLoadTests(helper) {
 
     const produceEventsAsync = () => {
         if (isDone) return;
-        helper.emitter(generateEvent());
+        emitter(generateEvent());
         setImmediate(produceEventsAsync);
     }
 
@@ -88,11 +92,12 @@ function generateEvents(arr, i, storage) {
     const eventCount = arr[i];
 
     return runLoadTests(getRabbitmqHelper(eventCount))
-        .then(rabbit => runLoadTests(getZmqHelper(eventCount))
+        .then(rabbit => delay(2000)
+            .then(() => runLoadTests(getZmqHelper(eventCount)))
             .then(zmq => (storage[eventCount] = { rabbit, zmq }))
         )
         .then(() => (i < arr.length - 1)
-            ? generateEvents(arr, i + 1, storage)
+            ? delay(2000).then(() => generateEvents(arr, i + 1, storage))
             : storage
         );
 }
