@@ -2,7 +2,7 @@
 
 This package serves as a helper for Redux store creation.
 
-# Basic
+# Basic Usage
 
 ## How to create a redux store
 
@@ -95,7 +95,7 @@ store.dispatch(actions.sendCommand({
 }))
 ```
 
-# Advanced
+# Advanced Usage
 
 ## Support for Optimistic Updates
 ```js
