@@ -47,11 +47,7 @@ pipeline {
                         }
                     }
                     dir('examples/todolist') {
-                        sh 'docker-compose up --build -d'
-                        sh 'echo $(docker wait todolist_testcafe_1) > testcafe_exit_code'
-                        sh 'docker logs todolist_testcafe_1'
-                        sh 'docker-compose down'
-                        sh 'exit $(cat testcafe_exit_code)'
+                        sh 'sh integration_test.sh'
                     }
                 }
             }
