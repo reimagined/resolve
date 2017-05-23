@@ -2,7 +2,7 @@ import Immutable from 'seamless-immutable';
 import { createStore } from 'redux';
 import uuidV4 from 'uuid/v4';
 import { expect } from 'chai';
-import reducer from '../src/reducer';
+import createReducer from '../src/create_reducer';
 import ResolveActions from '../src/actions';
 
 describe('reducer', () => {
@@ -23,7 +23,7 @@ describe('reducer', () => {
     it('should return reducer by projection', () => {
         const initialState = Immutable({});
 
-        const store = createStore(reducer(projection), initialState);
+        const store = createStore(createReducer(projection), initialState);
 
         expect(store.getState()).to.deep.equal(initialState);
 
@@ -67,7 +67,7 @@ describe('reducer', () => {
             [aggregateId3]: { value: 3 }
         });
 
-        const store = createStore(reducer(projection), initialState);
+        const store = createStore(createReducer(projection), initialState);
 
         expect(store.getState()).to.deep.equal(initialState);
 
@@ -88,7 +88,7 @@ describe('reducer', () => {
     it('should throw error when initialState=undefined', () => {
         const initialState = undefined;
 
-        const store = createStore(reducer(projection), initialState);
+        const store = createStore(createReducer(projection), initialState);
 
         const aggregateId = uuidV4();
         expect(() =>
