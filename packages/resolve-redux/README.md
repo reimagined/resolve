@@ -82,9 +82,9 @@ export function sendCommandAddTodoItem(aggregateId) {
     }
 }
 
-store.dispatch(sendCommandAddTodoItem)
+store.dispatch(sendCommandAddTodoItem('aggregateId'))
 // or
-store.dispatch(sendCommand({
+store.dispatch(actions.sendCommand({
     command: {
         type: 'TodoListItemRemoved',
     }, 
