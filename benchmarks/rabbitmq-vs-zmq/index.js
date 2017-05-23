@@ -40,8 +40,8 @@ function generateEvent() {
     };
 }
 
-function runLoadTests(launcher, emitter) {
-    const child = launcher();
+function runLoadTests(helper) {
+    const child = helper.launcher();
     const initialTime = +new Date();
     let consoleInfo = '';
     let isDone = false;
@@ -64,7 +64,7 @@ function runLoadTests(launcher, emitter) {
 
     const produceEventsAsync = () => {
         if (isDone) return;
-        emitter(generateEvent());
+        helper.emitter(generateEvent());
         setImmediate(produceEventsAsync);
     }
 
