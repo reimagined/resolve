@@ -19,9 +19,7 @@ describe('sendCommandSaga', () => {
 
         const generator = sendCommandSaga({ sendCommand }, action);
 
-        const response = {
-            value: 'response'
-        };
+        const response = 'ok';
 
         expect(generator.next().value).to.be.deep.equal(
             call(sendCommand, {
@@ -32,17 +30,7 @@ describe('sendCommandSaga', () => {
             })
         );
 
-        expect(generator.next(response).value).to.be.deep.equal(
-            put({
-                aggregateId: 'aggregateId',
-                aggregateName: 'aggregateName',
-                payload: {
-                    some: 'value'
-                },
-                response,
-                status: 'success'
-            })
-        );
+        expect(generator.next(response).done).to.be.deep.equal(true);
     });
 
     it('works correctly with an error returned by the sendCommand function', () => {

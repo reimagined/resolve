@@ -56,6 +56,58 @@ describe('reducer', () => {
         expect(store.getState()).to.equal(prevState);
     });
 
+    it('should return reducer by projection and extend reducer', () => {
+        const initialState = Immutable({});
+
+        const extendReducer = (state, action) => {
+            switch (action.type) {
+                case 'SET_VALUE_42':
+                    return state.update(action.aggregateId, item => item.set('value', 42));
+                default:
+                    return state;
+            }
+        };
+
+        const store = createStore(createReducer(projection, extendReducer), initialState);
+
+        expect(store.getState()).to.deep.equal(initialState);
+
+        const aggregateId = uuidV4();
+
+        store.dispatch({
+            type: 'COUNTER_CREATE',
+            aggregateId
+        });
+        expect(store.getState()).to.deep.equal({
+            [aggregateId]: { value: 0 }
+        });
+        store.dispatch({
+            type: 'COUNTER_INCREMENT',
+            aggregateId
+        });
+        expect(store.getState()).to.deep.equal({
+            [aggregateId]: { value: 1 }
+        });
+        store.dispatch({
+            type: 'COUNTER_DECREMENT',
+            aggregateId
+        });
+        expect(store.getState()).to.deep.equal({
+            [aggregateId]: { value: 0 }
+        });
+        store.dispatch({
+            type: 'SET_VALUE_42',
+            aggregateId
+        });
+        expect(store.getState()).to.deep.equal({
+            [aggregateId]: { value: 42 }
+        });
+
+        const prevState = store.getState();
+        store.dispatch({ type: 'OTHER_EVENT' });
+        expect(store.getState()).to.equal(prevState);
+    });
+
     it('merge state', () => {
         const aggregateId1 = uuidV4();
         const aggregateId2 = uuidV4();

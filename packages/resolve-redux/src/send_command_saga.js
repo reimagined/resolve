@@ -4,20 +4,18 @@ export default function* sendCommandSaga({ sendCommand }, { ...action }) {
     const { command, aggregateId, aggregateName, payload } = action;
 
     if (command && aggregateId && aggregateName) {
-        delete action.command;
         try {
-            const response = yield call(sendCommand, {
+            yield call(sendCommand, {
                 type: command.type,
                 aggregateId,
                 aggregateName,
                 payload
             });
-            action.status = 'success';
-            action.response = response;
         } catch (error) {
+            delete action.command;
             action.status = 'error';
             action.error = error;
+            yield put(action);
         }
-        yield put(action);
     }
 }

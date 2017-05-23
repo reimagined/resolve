@@ -2,6 +2,8 @@
 
 This package serves as a helper for Redux store creation.
 
+# Basic
+
 ## How to create a redux store
 
 ```js
@@ -65,8 +67,7 @@ function getQueryString(params) {
 }
 ```
 
-## How to send the command for the server and to process result
-#### Send the command
+## How to send commands to the server
 ```js
 import { actions } from 'resolve-redux';
 
@@ -94,9 +95,53 @@ store.dispatch(actions.sendCommand({
 }))
 ```
 
-#### Process result
+# Advanced
+
+## Support for Optimistic Updates
 ```js
 
-// Problem
+const projection = {
+    name: 'TodoList',
+    initialState: [],
+    eventHandlers: {
+        TodoListItemUpdateText(state, event) {
+            return state.concat({
+                ...event.payload,
+                id: event.aggregateId
+            });
+        }
+    }
+};
+
+const reducer = createReducer(projection, (state, action) => {
+    switch (action.type) {
+        case 'SEND_COMMAND_TODO_UPDATE_TEXT': {
+            // Optimistic update
+            if(!action.error) {
+                return state.map(item => {
+                    if(item.id === event.aggregateId) {
+                        return {
+                            ...item,
+                            text: action.payload.text,
+                            textBeforeOptimisticUpdate: item.text
+                        };
+                    }
+                });
+            } else {
+            // Revert optimistic update
+                return state.map(item => {
+                    if(item.id === event.aggregateId) {
+                        return {
+                            ...item,
+                            text: item.textBeforeOptimisticUpdate
+                        };
+                    }
+                });
+            }         
+        }
+        default: 
+            return state;
+    }
+});
 
 ```
