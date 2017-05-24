@@ -17,6 +17,12 @@
   },
   "author": "reimagined team",
   "license": "MIT",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-es-file#readme",
   "devDependencies": {
     "chai": "^3.5.0",
