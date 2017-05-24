@@ -4,8 +4,7 @@ function updateState(projection, event, state) {
 
 const executor = ({ store, bus, projection }) => {
     const eventTypes = Object.keys(projection.eventHandlers);
-    const initialStateFunc = projection.initialState || (() => ({}));
-    let state = initialStateFunc();
+    let state = projection.initialState || {};
 
     const handler = event => (state = updateState(projection, event, state));
 

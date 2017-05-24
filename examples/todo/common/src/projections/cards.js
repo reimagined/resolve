@@ -2,7 +2,7 @@ import Immutable from 'seamless-immutable';
 
 export default {
     name: 'cards',
-    initialState: () => Immutable({ cards: {}, mapTodoToCard: {} }),
+    initialState: Immutable({ cards: {}, mapTodoToCard: {} }),
 
     eventHandlers: {
         TodoCardCreated: (state, event) =>
