@@ -4,7 +4,7 @@ This package serves as a helper for Redux store creation.
 
 # Basic Usage
 
-## How to create a redux store
+## How to create a Redux store
 
 ```js
 import { createStore, applyMiddleware } from 'redux';
@@ -13,7 +13,7 @@ import { createReducer, saga, actions } from 'resolve-redux';
 
 const projection = {
     name: 'TodoList',
-    initialState: [],
+    initialState: () => [],
     eventHandlers: {
         TodoListItemAdded(state, event) {
             return state.concat({
@@ -34,36 +34,39 @@ const sagaMiddleware = createSagaMiddleware();
 
 const store = createStore(
     reducer,
-    projeciton.initialState,
+    projeciton.initialState(),
     applyMiddleware(sagaMiddleware)
 );
 
-sagaMiddleware.run(saga, {
-    sendCommand: command => fetch('/api/commands', {
+function sendCommand(command) {
+    return fetch('/api/commands', {
         method: 'POST', 
         headers: { 'Content-Type': 'application/json' },
         body: command
-    }).then( res => res.json() ),
-    fetchMore: (projectionName, query) => fetch(`/api/${projectionName}?${getQueryString(query)}` , {
+    }).then( res => res.json() );
+}
+
+function fetchMore(projectionName, query) {
+    return fetch(`/api/${projectionName}?${getQueryString(query)}` , {
         method: 'GET', 
         headers: { 'Content-Type': 'application/json' },
         body: command
-    }).then( res => res.json() ),
-});
+    }).then( res => res.json() );
+}
+
+sagaMiddleware.run(saga, { sendCommand, fetchMore });
 
 function getQueryString(params) {
     return Object
-    .keys(params)
-    .map(k => {
-        if (Array.isArray(params[k])) {
-            return params[k]
-                .map(val => `${encodeURIComponent(k)}[]=${encodeURIComponent(val)}`)
-                .join('&')
-        }
-
-        return `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`
-    })
-    .join('&')
+        .keys(params)
+        .map(k => {
+            if (Array.isArray(params[k])) {
+                return params[k]
+                    .map(val => `${encodeURIComponent(k)}[]=${encodeURIComponent(val)}`)
+                    .join('&')
+            }
+            return `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`
+        }).join('&');
 }
 ```
 
@@ -80,10 +83,10 @@ export function sendCommandAddTodoItem(aggregateId) {
         command: {
             type: 'TodoListItemAdded',
         },
-    }
+    };
 }
 
-store.dispatch(sendCommandAddTodoItem('aggregateId'))
+store.dispatch(sendCommandAddTodoItem('aggregateId'));
 // or
 store.dispatch(actions.sendCommand({
     command: {
@@ -92,7 +95,7 @@ store.dispatch(actions.sendCommand({
     aggregateId: 'aggregateId', 
     aggregateName: 'TodoList', 
     payload: { name: 'todo-list' },
-}))
+}));
 ```
 
 # Advanced Usage
