@@ -35,13 +35,13 @@ function reporterHandler() {
 
 setTimeout(reporterHandler, 500);
 
-execute('okrState').then(state =>
+execute('infrastructureState').then(state =>
     // eslint-disable-next-line no-console
     console.log(DONE_TOKEN, JSON.stringify({
         memory: process.memoryUsage(),
-        entities: Object.keys(state.orgUnits).length
-            + Object.keys(state.users).length
-            + Object.keys(state.objectives).length
+        entities: Object.keys(state.groups).length
+            + Object.keys(state.members).length
+            + Object.keys(state.items).length
     }))
 ).catch(err =>
     // eslint-disable-next-line no-console

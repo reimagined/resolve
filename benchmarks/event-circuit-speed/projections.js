@@ -1,250 +1,209 @@
 import Immutable from 'seamless-immutable';
 
-const timePeriods = {
-    2015.1: { startDate: new Date(2015, 1), endDate: new Date(2015, 6) },
-    2015.2: { startDate: new Date(2015, 7), endDate: new Date(2015, 12) },
-    2016.1: { startDate: new Date(2016, 1), endDate: new Date(2016, 6) },
-    2016.2: { startDate: new Date(2016, 7), endDate: new Date(2016, 12) },
-    2017.1: { startDate: new Date(2017, 1), endDate: new Date(2017, 6) }
-};
+const ROOT_GROUP_ID = 'root_id';
 
-const ROOT_ORGUNIT_ID = 'root_id';
-
-function reportError(message) {
-    console.error(message); // eslint-disable-line no-console
+function createGroup(id) {
+    return { id, members: {}, groups: {}, items: {}, parentGroup: null };
 }
 
-function createOrgUnit(id) {
-    return { id, users: {}, orgUnits: {}, objectives: {}, parentOrgUnit: null };
-}
-
-function updateOrgUnit(state, orgUnitId, name, value) {
-    return state.orgUnits[orgUnitId]
-        ? state.setIn(['orgUnits', orgUnitId, name], value)
+function updateGroup(state, groupId, name, value) {
+    return state.groups[groupId]
+        ? state.setIn(['groups', groupId, name], value)
         : state;
 }
 
-function updateOrgUnitOrgUnits(state, orgUnitId, callback) {
-    return state.updateIn(['orgUnits', orgUnitId, 'orgUnits'], callback);
+function updateGroupGroups(state, groupId, callback) {
+    return state.updateIn(['groups', groupId, 'groups'], callback);
 }
 
-function moveOrgUnit(state, orgUnitId, nextParentId) {
-    if (!state.orgUnits[orgUnitId] || !state.orgUnits[nextParentId]) {
+function moveGroup(state, groupId, nextParentId) {
+    if (!state.groups[groupId] || !state.groups[nextParentId]) {
         return state;
     }
-    const currentParentId = state.orgUnits[orgUnitId].parentOrgUnit;
+    const currentParentId = state.groups[groupId].parentGroup;
     if (!currentParentId) {
         return state;
     }
     let next = state;
-    next = updateOrgUnitOrgUnits(next, currentParentId,
-        list => list.without(orgUnitId));
-    next = updateOrgUnitOrgUnits(next, nextParentId,
-        list => list.set(orgUnitId, true));
+    next = updateGroupGroups(next, currentParentId,
+        list => list.without(groupId));
+    next = updateGroupGroups(next, nextParentId,
+        list => list.set(groupId, true));
 
-    next = next.setIn(['orgUnits', orgUnitId, 'parentOrgUnit'], nextParentId);
+    next = next.setIn(['groups', groupId, 'parentGroup'], nextParentId);
 
     return next;
 }
 
-function updateOrgUnitUsers(state, orgUnitId, callback) {
-    return state.orgUnits[orgUnitId]
-        ? state.updateIn(['orgUnits', orgUnitId, 'users'], callback)
+function updateGroupMembers(state, groupId, callback) {
+    return state.groups[groupId]
+        ? state.updateIn(['groups', groupId, 'members'], callback)
         : state;
 }
 
-function addUserToOrgUnit(state, orgUnitId, userId) {
+function addMemberToGroup(state, groupId, memberId) {
     const next = state.setIn(
-        ['users', userId, 'parentOrgUnits'],
-        state.users[userId].parentOrgUnits.set(orgUnitId, true)
+        ['members', memberId, 'parentGroups'],
+        state.members[memberId].parentGroups.set(groupId, true)
     );
 
-    return updateOrgUnitUsers(next, orgUnitId, list =>
-        (list[userId] ? list : list.set(userId, true))
+    return updateGroupMembers(next, groupId, list =>
+        (list[memberId] ? list : list.set(memberId, true))
     );
 }
 
-function removeUserFromOrgUnit(state, orgUnitId, userId) {
+function removeMemberFromGroup(state, groupId, memberId) {
     const next = state.setIn(
-        ['users', userId, 'parentOrgUnits'],
-        state.users[userId].parentOrgUnits.without(orgUnitId)
+        ['members', memberId, 'parentGroups'],
+        state.members[memberId].parentGroups.without(groupId)
     );
 
-    return updateOrgUnitUsers(next, orgUnitId, list =>
-        list.without(userId)
+    return updateGroupMembers(next, groupId, list =>
+        list.without(memberId)
     );
 }
 
-function updateObjective(state, objectiveId, callback) {
-    return state.updateIn(['objectives', objectiveId], callback);
+function updateOuterItem(state, innerItemId, callback) {
+    return state.updateIn(['items', innerItemId], callback);
 }
 
-function updateObjectiveField(state, objectiveId, name, value) {
-    return updateObjective(state, objectiveId, obj => obj.set(name, value));
+function updateOuterItemField(state, innerItemId, name, value) {
+    return updateOuterItem(state, innerItemId, obj => obj.set(name, value));
 }
 
-function updateKeyResult(state, event, callback) {
-    const objectiveId = event.aggregateId;
-    const keyResultId = event.payload.keyResultId;
-    if (!state.objectives[objectiveId].keyResults[keyResultId]) {
-        reportError(`${event.type}: key result is not found ${JSON.stringify(event.payload)}`
-            + `/ ${objectiveId} ${state.objectives[objectiveId].title}`);
+function updateInnerItem(state, event, callback) {
+    const outerItemId = event.aggregateId;
+    const innerItemId = event.payload.innerItemId;
+    if (!state.items[outerItemId].items[innerItemId]) {
         return state;
     }
-    return state.updateIn(['objectives', objectiveId, 'keyResults', keyResultId], callback);
+    return state.updateIn(['items', outerItemId, 'items', innerItemId], callback);
 }
 
 const originalHandlers = {
-    // ORGUNIT
-    OrgUnitCreated(state, event) {
+    // GROUPS
+    GroupCreated(state, event) {
         const id = event.aggregateId;
-        const orgUnit = {
-            ...createOrgUnit(id),
+        const group = {
+            ...createGroup(id),
             name: event.payload.name,
             type: event.payload.type
         };
         return state
-            .updateIn(['orgUnits', ROOT_ORGUNIT_ID, 'orgUnits'], list =>
+            .updateIn(['groups', ROOT_GROUP_ID, 'groups'], list =>
                 (list[id] ? list : list.set(id, true))
             )
-            .setIn(['orgUnits', id], orgUnit);
+            .setIn(['groups', id], group);
     },
-    OrgUnitDeleted(state, event) {
+    GroupDeleted(state, event) {
         const id = event.aggregateId;
-        if (!state.orgUnits[id]) {
+        if (!state.groups[id]) {
             return state;
         }
-        const parentId = state.orgUnits[id].parentOrgUnit;
+        const parentId = state.groups[id].parentGroup;
         let next = state;
         if (parentId) {
-            next = updateOrgUnitOrgUnits(next, parentId, list => list.without(id));
+            next = updateGroupGroups(next, parentId, list => list.without(id));
         }
-        return next.update('orgUnits', obj => obj.without(id));
+        return next.update('groups', obj => obj.without(id));
     },
-    OrgUnitRenamed(state, event) {
-        return updateOrgUnit(state, event.aggregateId, 'name', event.payload.name);
+    GroupRenamed(state, event) {
+        return updateGroup(state, event.aggregateId, 'name', event.payload.name);
     },
-    OrgUnitChangedType(state, event) {
-        return updateOrgUnit(state, event.aggregateId, 'type', event.payload.type);
+    GroupAddedToGroup(state, event) {
+        return moveGroup(state, event.payload.groupId, event.aggregateId);
     },
-    OrgUnitAddedToOrgUnit(state, event) {
-        return moveOrgUnit(state, event.payload.orgUnitId, event.aggregateId);
+    GroupRemovedFromGroup(state, event) {
+        return moveGroup(state, event.payload.groupId, ROOT_GROUP_ID);
     },
-    OrgUnitRemovedFromOrgUnit(state, event) {
-        return moveOrgUnit(state, event.payload.orgUnitId, ROOT_ORGUNIT_ID);
+    GroupMoved(state, event) {
+        return moveGroup(state, event.aggregateId, event.payload.toGroupId);
     },
-    OrgUnitMoved(state, event) {
-        return moveOrgUnit(state, event.aggregateId, event.payload.toOrgUnitId);
+    MemberAddedToGroup(state, event) {
+        return addMemberToGroup(state, event.aggregateId, event.payload.memberId);
     },
-    UserAddedToOrgUnit(state, event) {
-        return addUserToOrgUnit(state, event.aggregateId, event.payload.userId);
+    MemberRemovedFromGroup(state, event) {
+        return removeMemberFromGroup(state, event.aggregateId, event.payload.memberId);
     },
-    UserRemovedFromOrgUnit(state, event) {
-        return removeUserFromOrgUnit(state, event.aggregateId, event.payload.userId);
-    },
-    UserMoved(state, event) {
-        const userId = event.payload.userId;
-        const toOrgUnitId = event.aggregateId;
-        const fromOrgUnitId = state.users[userId].parentOrgUnits[0];
+    MemberMoved(state, event) {
+        const memberId = event.payload.memberId;
+        const toGroupId = event.aggregateId;
+        const fromGroupId = state.members[memberId].parentGroups[0];
         let next = state;
-        if (userId && toOrgUnitId && fromOrgUnitId) {
-            next = removeUserFromOrgUnit(next, fromOrgUnitId, userId);
-            next = addUserToOrgUnit(next, toOrgUnitId, userId);
+        if (memberId && toGroupId && fromGroupId) {
+            next = removeMemberFromGroup(next, fromGroupId, memberId);
+            next = addMemberToGroup(next, toGroupId, memberId);
         }
         return next;
     },
 
-    // USERS
-    UserCreated(state, event) {
+    // MEMBERS
+    MemberCreated(state, event) {
         const id = event.aggregateId;
-        return state.setIn(['users', id], {
+        return state.setIn(['members', id], {
             id,
-            name: event.payload.displayName || event.payload.email,
-            email: event.payload.email,
-            objectives: {},
-            parentOrgUnits: {}
+            name: event.payload.name,
+            items: {},
+            parentGroups: {}
         });
     },
-    UserUpdated(state, event) {
+    MemberUpdated(state, event) {
         const id = event.aggregateId;
-        return state.users[id]
+        return state.members[id]
             ? state.merge({
-                users: {
+                members: {
                     [id]: event.payload
                 }
             }, { deep: true })
             : state;
     },
-    UserDeleted(state, event) {
+    MemberDeleted(state, event) {
         const id = event.aggregateId;
-        if (!state.users[id]) {
+        if (!state.members[id]) {
             return state;
         }
 
-        const next = Object.keys(state.users[id].parentOrgUnits).reduce(
-            (acc, orgUnitId) => removeUserFromOrgUnit(acc, orgUnitId, id),
+        const next = Object.keys(state.members[id].parentGroups).reduce(
+            (acc, groupId) => removeMemberFromGroup(acc, groupId, id),
             state
         );
 
-        return next.update('users', obj => obj.without(id));
+        return next.update('members', obj => obj.without(id));
     },
 
-    // OBJECTIVES
-    ObjectiveCreated(state, event) {
+    // ITEMS
+    OuterItemCreated(state, event) {
         const id = event.aggregateId;
         let newState = state.setIn(
-            ['objectives', id], {
-                title: event.payload.title || 'New Objective',
-                keyResults: {},
-                period: event.payload.period
+            ['items', id], {
+                name: event.payload.name || 'New OuterItem',
+                items: {}
             }
         );
-        if (event.payload.userId) {
-            if (!newState.users[event.payload.userId]) {
-                reportError(`ObjectiveCreated: user is not found ${event.payload.userId}` +
-                    ` / ${id} ${event.payload.title}`);
-            } else {
-                newState = newState.updateIn(['users', event.payload.userId, 'objectives'],
-                    list => list.set(id, true));
-            }
+        if (event.payload.memberId && newState.members[event.payload.memberId]) {
+            newState = newState.updateIn(['members', event.payload.memberId, 'items'],
+                list => list.set(id, true));
         }
-        if (event.payload.orgUnitId) {
-            if (!newState.orgUnits[event.payload.orgUnitId]) {
-                reportError(`ObjectiveCreated: orgUnit is not found ${event.payload.orgUnitId}` +
-                    ` / ${id} ${event.payload.title}`);
-            } else {
-                newState = newState.updateIn(['orgUnits', event.payload.orgUnitId, 'objectives'],
-                    list => list.set(id, true));
-            }
+        if (event.payload.groupId && newState.groups[event.payload.groupId]) {
+            newState = newState.updateIn(['groups', event.payload.groupId, 'items'],
+                list => list.set(id, true));
         }
         return newState;
     },
-    ObjectiveTitleChanged: (state, event) =>
-        updateObjectiveField(state, event.aggregateId, 'title', event.payload.title),
-    ObjectivePeriodChanged: (state, event) =>
-        updateObjectiveField(state, event.aggregateId, 'period', event.payload.period),
-    ObjectiveDeleted: (state, event) =>
-        updateObjectiveField(state, event.aggregateId, 'isDeleted', true),
-    ObjectiveRestored: (state, event) =>
-        updateObjective(state, event.aggregateId, obj => obj.without('isDeleted')),
-    KeyResultAdded: (state, event) =>
-        state.setIn(['objectives', event.aggregateId, 'keyResults', event.payload.keyResultId], {
-            title: event.payload.title || 'New key',
-            progress: event.payload.progress || 0
+    OuterItemUpdated: (state, event) =>
+        updateOuterItemField(state, event.aggregateId, 'name', event.payload.name),
+    OuterItemDeleted: (state, event) =>
+        updateOuterItemField(state, event.aggregateId, 'isDeleted', true),
+    InnerItemCreated: (state, event) =>
+        state.setIn(['items', event.aggregateId, 'items', event.payload.innerItemId], {
+            name: event.payload.name || 'New InnerItem'
         }),
-    KeyResultUpdated: (state, event) =>
-        updateKeyResult(state, event, obj => obj.merge({
-            title: event.payload.title,
-            progress: event.payload.progress
+    InnerItemUpdated: (state, event) =>
+        updateInnerItem(state, event, obj => obj.merge({
+            name: event.payload.name
         })),
-    KeyResultDeleted: (state, event) =>
-        updateKeyResult(state, event, obj => obj.set('isDeleted', true)),
-    KeyResultRestored: (state, event) =>
-        updateKeyResult(state, event, obj => obj.without('isDeleted')),
-
-    // AllObjectivesCleared: state => state.setIn(['objectives'], {}),
-    TimePeriodCreated: (state, event) =>
-        state.setIn(['timePeriods', event.payload.name], event.payload.date)
+    InnerItemDeleted: (state, event) =>
+        updateInnerItem(state, event, obj => obj.set('isDeleted', true))
 };
 
 export default function projectionsGenerator(reportObj) {
@@ -265,17 +224,16 @@ export default function projectionsGenerator(reportObj) {
 
     return [
         {
-            name: 'okrState',
-            initialState: () => Immutable({
-                orgUnits: {
-                    [ROOT_ORGUNIT_ID]: {
-                        orgUnits: [],
-                        users: []
+            name: 'infrastructureState',
+            initialState: Immutable({
+                groups: {
+                    [ROOT_GROUP_ID]: {
+                        groups: [],
+                        members: []
                     }
                 },
-                users: {},
-                objectives: {},
-                timePeriods
+                members: {},
+                items: {}
             }),
             eventHandlers
         }

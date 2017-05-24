@@ -10,8 +10,6 @@ import createCommandExecutor from 'resolve-command';
 import config from './config';
 
 const createEvent = (type, args) => ({ ...args, type });
-const orgUnitTypes = ['AAA', 'BBB', 'CCC', 'DDD'];
-const timePeriods = ['2016.1', '2016.2', '2016.3', '2016.4'];
 
 const store = createEs({ driver: mongoDbDriver({
     url: config.MONGODB_CONNECTION_URL,
@@ -22,45 +20,44 @@ const bus = createBus({ driver: memoryDriver() });
 
 const aggregates = [
     {
-        name: 'objective',
+        name: 'item',
         commands: {
-            create: (state, args) => createEvent('ObjectiveCreated', args),
-            changeTitle: (state, args) => createEvent('ObjectiveTitleChanged', args),
-            changeTimePeriod: (state, args) => createEvent('ObjectivePeriodChanged', args),
-            delete: (state, args) => createEvent('ObjectiveDeleted', args),
-            addKeyResult: (state, args) => {
-                const event = createEvent('KeyResultAdded', args);
-                event.payload.keyResultId = event.payload.keyResultId || uuid.v4();
+            createOuterItem: (state, args) => createEvent('OuterItemCreated', args),
+            updateOuterItem: (state, args) => createEvent('OuterItemUpdated', args),
+            deleteOuterItem: (state, args) => createEvent('OuterItemDeleted', args),
+            addInnerItem: (state, args) => {
+                const event = createEvent('InnerItemCreated', args);
+                event.payload.innerItemId = event.payload.innerItemId || uuid.v4();
                 return event;
             },
-            updateKeyResult: (state, args) => createEvent('KeyResultUpdated', args),
-            deleteKeyResult: (state, args) => createEvent('KeyResultDeleted', args)
+            updateInnerItem: (state, args) => createEvent('InnerItemUpdated', args),
+            deleteInnerItem: (state, args) => createEvent('InnerItemDeleted', args)
         },
         handlers: {}
     },
     {
-        name: 'user',
+        name: 'member',
         commands: {
-            create: (state, args) => createEvent('UserCreated', args),
-            delete: (state, args) => createEvent('UserDeleted', args)
+            create: (state, args) => createEvent('MemberCreated', args),
+            delete: (state, args) => createEvent('MemberDeleted', args)
         },
         handlers: {}
     },
     {
-        name: 'orgUnit',
+        name: 'group',
         commands: {
-            create: (state, args) => createEvent('OrgUnitCreated', args),
-            rename: (state, args) => createEvent('OrgUnitRenamed', args),
-            changeType: (state, args) => createEvent('OrgUnitChangedType', args),
-            delete: (state, args) => createEvent('OrgUnitDeleted', args),
-            addOrgUnit: (state, args) => createEvent('OrgUnitAddedToOrgUnit', args),
-            addUser: (state, args) => createEvent('UserAddedToOrgUnit', args),
-            removeUser: (state, args) => createEvent('UserRemovedFromOrgUnit', args),
-            moveUser: (state, args) => createEvent('UserMoved', args),
-            removeOrgUnit: (state, args) => createEvent('OrgUnitRemovedFromOrgUnit', args),
-            moveOrgUnit: (state, args) => createEvent('OrgUnitMoved', args)
+            create: (state, args) => createEvent('GroupCreated', args),
+            rename: (state, args) => createEvent('GroupRenamed', args),
+            delete: (state, args) => createEvent('GroupDeleted', args),
+            addGroup: (state, args) => createEvent('GroupAddedToGroup', args),
+            addMember: (state, args) => createEvent('MemberAddedToGroup', args),
+            removeMember: (state, args) => createEvent('MemberRemovedFromGroup', args),
+            moveMember: (state, args) => createEvent('MemberMoved', args),
+            removeGroup: (state, args) => createEvent('GroupRemovedFromGroup', args),
+            moveGroup: (state, args) => createEvent('GroupMoved', args)
         },
         handlers: {}
+
     }
 ];
 
@@ -69,56 +66,12 @@ const commandExecute = createCommandExecutor({ store, bus, aggregates });
 function executeCommandByType(command, state) {
     const [aggregateName, type] = command.split(/\//);
     switch (command) {
-        case 'user/create': {
-            const userId = uuid.v4();
-            state.users.push(userId);
+        case 'member/create': {
+            const memberId = uuid.v4();
+            state.members.push(memberId);
 
             return commandExecute({
-                aggregateId: userId,
-                aggregateName,
-                type,
-                payload: {
-                    displayName: uuid.v4(),
-                    email: `${uuid.v4()}@${uuid.v4()}.com`
-                }
-            });
-        }
-
-        case 'user/delete': {
-            if (state.users.length < 1) return Promise.resolve();
-
-            const userId = state.users.shift();
-
-            return commandExecute({
-                aggregateId: userId,
-                aggregateName,
-                type
-            });
-        }
-
-        case 'orgUnit/create': {
-            const orgUnitId = uuid.v4();
-            state.orgUnits.push(orgUnitId);
-
-            return commandExecute({
-                aggregateId: orgUnitId,
-                aggregateName,
-                type,
-                payload: {
-                    name: uuid.v4(),
-                    type: orgUnitTypes[Math.floor(Math.random() * orgUnitTypes.length)]
-                }
-            });
-        }
-
-        case 'orgUnit/rename': {
-            if (state.orgUnits.length < 1) return Promise.resolve();
-
-            const orgUnitId = state.orgUnits.shift();
-            state.orgUnits.push(orgUnitId);
-
-            return commandExecute({
-                aggregateId: orgUnitId,
+                aggregateId: memberId,
                 aggregateName,
                 type,
                 payload: {
@@ -127,302 +80,308 @@ function executeCommandByType(command, state) {
             });
         }
 
-        case 'orgUnit/changeType': {
-            if (state.orgUnits.length < 1) return Promise.resolve();
+        case 'member/delete': {
+            if (state.members.length < 1) return Promise.resolve();
 
-            const orgUnitId = state.orgUnits.shift();
-            state.orgUnits.push(orgUnitId);
-
-            return commandExecute({
-                aggregateId: orgUnitId,
-                aggregateName,
-                type,
-                payload: {
-                    type: orgUnitTypes[Math.floor(Math.random() * orgUnitTypes.length)]
-                }
-            });
-        }
-
-        case 'orgUnit/moveOrgUnit': {
-            if (state.orgUnits.length < 3) return Promise.resolve();
-
-            const orgUnitId = state.orgUnits.shift();
-            const orgUnitIdFrom = state.orgUnits.shift();
-            const orgUnitIdTo = state.orgUnits.shift();
-
-            state.orgUnits.push(orgUnitId);
-            state.orgUnits.push(orgUnitIdFrom);
-            state.orgUnits.push(orgUnitIdTo);
+            const memberId = state.members.shift();
 
             return commandExecute({
-                aggregateId: orgUnitId,
-                aggregateName,
-                type,
-                payload: {
-                    toOrgUnitId: orgUnitIdTo,
-                    fromOrgUnitId: orgUnitIdFrom
-                }
-            });
-        }
-
-        case 'orgUnit/delete': {
-            if (state.orgUnits.length < 1) return Promise.resolve();
-
-            const orgUnitId = state.orgUnits.shift();
-
-            return commandExecute({
-                aggregateId: orgUnitId,
+                aggregateId: memberId,
                 aggregateName,
                 type
             });
         }
 
-        case 'orgUnit/addOrgUnit': {
-            if (state.orgUnits.length < 2) return Promise.resolve();
-
-            const orgUnitId = state.orgUnits.shift();
-            const orgUnitIdTo = state.orgUnits.shift();
-
-            state.orgUnits.push(orgUnitId);
-            state.orgUnits.push(orgUnitIdTo);
+        case 'group/create': {
+            const groupId = uuid.v4();
+            state.groups.push(groupId);
 
             return commandExecute({
-                aggregateId: orgUnitId,
+                aggregateId: groupId,
                 aggregateName,
                 type,
                 payload: {
-                    orgUnitId: orgUnitIdTo
+                    name: uuid.v4()
                 }
             });
         }
 
-        case 'orgUnit/removeOrgUnit': {
-            if (state.orgUnits.length < 2) return Promise.resolve();
+        case 'group/rename': {
+            if (state.groups.length < 1) return Promise.resolve();
 
-            const orgUnitId = state.orgUnits.shift();
-            const orgUnitIdTo = state.orgUnits.shift();
-
-            state.orgUnits.push(orgUnitId);
-            state.orgUnits.push(orgUnitIdTo);
+            const groupId = state.groups.shift();
+            state.groups.push(groupId);
 
             return commandExecute({
-                aggregateId: orgUnitId,
+                aggregateId: groupId,
                 aggregateName,
                 type,
                 payload: {
-                    orgUnitId: orgUnitIdTo
+                    name: uuid.v4()
                 }
             });
         }
 
-        case 'orgUnit/addUser': {
-            if (state.orgUnits.length < 1) return Promise.resolve();
-            if (state.users.length < 1) return Promise.resolve();
+        case 'group/moveGroup': {
+            if (state.groups.length < 3) return Promise.resolve();
 
-            const orgUnitId = state.orgUnits.shift();
-            const userIdTo = state.users.shift();
+            const groupId = state.groups.shift();
+            const groupIdFrom = state.groups.shift();
+            const groupIdTo = state.groups.shift();
 
-            state.orgUnits.push(orgUnitId);
-            state.users.push(userIdTo);
+            state.groups.push(groupId);
+            state.groups.push(groupIdFrom);
+            state.groups.push(groupIdTo);
 
             return commandExecute({
-                aggregateId: orgUnitId,
+                aggregateId: groupId,
                 aggregateName,
                 type,
                 payload: {
-                    userId: userIdTo
+                    toGroupId: groupIdTo,
+                    fromGroupId: groupIdFrom
                 }
             });
         }
 
-        case 'orgUnit/removeUser': {
-            if (state.orgUnits.length < 1) return Promise.resolve();
-            if (state.users.length < 1) return Promise.resolve();
+        case 'group/delete': {
+            if (state.groups.length < 1) return Promise.resolve();
 
-            const orgUnitId = state.orgUnits.shift();
-            const userIdTo = state.users.shift();
-
-            state.orgUnits.push(orgUnitId);
-            state.users.push(userIdTo);
+            const groupId = state.groups.shift();
 
             return commandExecute({
-                aggregateId: orgUnitId,
+                aggregateId: groupId,
+                aggregateName,
+                type
+            });
+        }
+
+        case 'group/addGroup': {
+            if (state.groups.length < 2) return Promise.resolve();
+
+            const groupId = state.groups.shift();
+            const groupIdTo = state.groups.shift();
+
+            state.groups.push(groupId);
+            state.groups.push(groupIdTo);
+
+            return commandExecute({
+                aggregateId: groupId,
                 aggregateName,
                 type,
                 payload: {
-                    userId: userIdTo
+                    groupId: groupIdTo
                 }
             });
         }
 
-        case 'orgUnit/moveUser': {
-            if (state.orgUnits.length < 1) return Promise.resolve();
-            if (state.users.length < 1) return Promise.resolve();
+        case 'group/removeGroup': {
+            if (state.groups.length < 2) return Promise.resolve();
 
-            const orgUnitId = state.orgUnits.shift();
-            const userIdTo = state.users.shift();
+            const groupId = state.groups.shift();
+            const groupIdTo = state.groups.shift();
 
-            state.orgUnits.push(orgUnitId);
-            state.users.push(userIdTo);
+            state.groups.push(groupId);
+            state.groups.push(groupIdTo);
 
             return commandExecute({
-                aggregateId: orgUnitId,
+                aggregateId: groupId,
                 aggregateName,
                 type,
                 payload: {
-                    userId: userIdTo
+                    groupId: groupIdTo
                 }
             });
         }
 
-        case 'objective/create': {
-            const isUserObjective = !!Math.round(Math.random());
+        case 'group/addMember': {
+            if (state.groups.length < 1) return Promise.resolve();
+            if (state.members.length < 1) return Promise.resolve();
 
-            if (isUserObjective) {
-                if (state.users.length < 1) return Promise.resolve();
+            const groupId = state.groups.shift();
+            const memberIdTo = state.members.shift();
 
-                const objective = { id: uuid.v4(), keyResults: [] };
-                state.objectives.push(objective);
+            state.groups.push(groupId);
+            state.members.push(memberIdTo);
 
-                const userId = state.users.shift();
-                state.users.push(userId);
+            return commandExecute({
+                aggregateId: groupId,
+                aggregateName,
+                type,
+                payload: {
+                    memberId: memberIdTo
+                }
+            });
+        }
+
+        case 'group/removeMember': {
+            if (state.groups.length < 1) return Promise.resolve();
+            if (state.members.length < 1) return Promise.resolve();
+
+            const groupId = state.groups.shift();
+            const memberIdTo = state.members.shift();
+
+            state.groups.push(groupId);
+            state.members.push(memberIdTo);
+
+            return commandExecute({
+                aggregateId: groupId,
+                aggregateName,
+                type,
+                payload: {
+                    memberId: memberIdTo
+                }
+            });
+        }
+
+        case 'group/moveMember': {
+            if (state.groups.length < 1) return Promise.resolve();
+            if (state.members.length < 1) return Promise.resolve();
+
+            const groupId = state.groups.shift();
+            const memberIdTo = state.members.shift();
+
+            state.groups.push(groupId);
+            state.members.push(memberIdTo);
+
+            return commandExecute({
+                aggregateId: groupId,
+                aggregateName,
+                type,
+                payload: {
+                    memberId: memberIdTo
+                }
+            });
+        }
+
+        case 'item/createOuterItem': {
+            const isDirectMemberItem = !!Math.round(Math.random());
+
+            if (isDirectMemberItem) {
+                if (state.members.length < 1) return Promise.resolve();
+
+                const outerItem = { id: uuid.v4(), items: [] };
+                state.items.push(outerItem);
+
+                const memberId = state.members.shift();
+                state.members.push(memberId);
 
                 return commandExecute({
-                    aggregateId: objective.id,
+                    aggregateId: outerItem.id,
                     aggregateName,
                     type,
                     payload: {
-                        title: uuid.v4(),
-                        period: uuid.v4(),
-                        userId
+                        name: uuid.v4(),
+                        memberId
                     }
                 });
             }
 
-            if (state.orgUnits.length < 1) return Promise.resolve();
+            if (state.groups.length < 1) return Promise.resolve();
 
-            const objective = { id: uuid.v4(), keyResults: [] };
-            state.objectives.push(objective);
+            const outerItem = { id: uuid.v4(), items: [] };
+            state.items.push(outerItem);
 
-            const orgUnitId = state.orgUnits.shift();
-            state.orgUnits.push(orgUnitId);
+            const groupId = state.groups.shift();
+            state.groups.push(groupId);
 
             return commandExecute({
-                aggregateId: objective.id,
+                aggregateId: outerItem.id,
                 aggregateName,
                 type,
                 payload: {
-                    title: uuid.v4(),
-                    period: timePeriods[Math.floor(Math.random() * timePeriods.length)],
-                    orgUnitId
+                    name: uuid.v4(),
+                    groupId
                 }
             });
         }
 
-        case 'objective/changeTitle': {
-            if (state.objectives.length < 1) return Promise.resolve();
+        case 'item/updateOuterItem': {
+            if (state.items.length < 1) return Promise.resolve();
 
-            const objective = state.objectives.shift();
-            state.objectives.push(objective);
+            const outerItem = state.items.shift();
+            state.items.push(outerItem);
 
             return commandExecute({
-                aggregateId: objective.id,
+                aggregateId: outerItem.id,
                 aggregateName,
                 type,
                 payload: {
-                    title: uuid.v4()
+                    name: uuid.v4()
                 }
             });
         }
 
-        case 'objective/changeTimePeriod': {
-            if (state.objectives.length < 1) return Promise.resolve();
+        case 'item/deleteOuterItem': {
+            if (state.items.length < 1) return Promise.resolve();
 
-            const objective = state.objectives.shift();
-            state.objectives.push(objective);
-
-            return commandExecute({
-                aggregateId: objective.id,
-                aggregateName,
-                type,
-                payload: {
-                    period: timePeriods[Math.floor(Math.random() * timePeriods.length)]
-                }
-            });
-        }
-
-        case 'objective/delete': {
-            if (state.objectives.length < 1) return Promise.resolve();
-
-            const objective = state.objectives.shift();
+            const outerItem = state.items.shift();
 
             return commandExecute({
-                aggregateId: objective.id,
+                aggregateId: outerItem.id,
                 aggregateName,
                 type
             });
         }
 
-        case 'objective/addKeyResult': {
-            if (state.objectives.length < 1) return Promise.resolve();
+        case 'item/createInnerItem': {
+            if (state.items.length < 1) return Promise.resolve();
 
-            const objective = state.objectives.shift();
-            state.objectives.push(objective);
+            const outerItem = state.items.shift();
+            state.items.push(outerItem);
 
-            const keyResultId = uuid.v4();
-            objective.keyResults.push(keyResultId);
+            const innerItemId = uuid.v4();
+            outerItem.items.push(innerItemId);
 
             return commandExecute({
-                aggregateId: objective.id,
+                aggregateId: outerItem.id,
                 aggregateName,
                 type,
                 payload: {
-                    keyResultId,
-                    title: uuid.v4(),
-                    progress: Math.floor(Math.random() * 100)
+                    innerItemId,
+                    name: uuid.v4()
                 }
             });
         }
 
-        case 'objective/updateKeyResult': {
-            if (state.objectives.length < 1) return Promise.resolve();
+        case 'items/updateInnerItem': {
+            if (state.items.length < 1) return Promise.resolve();
 
-            const objective = state.objectives.shift();
-            state.objectives.push(objective);
+            const outerItem = state.items.shift();
+            state.items.push(outerItem);
 
-            if (objective.keyResults.length < 1) return Promise.resolve();
+            if (outerItem.items.length < 1) return Promise.resolve();
 
-            const keyResultId = objective.keyResults.shift();
-            objective.keyResults.push(keyResultId);
+            const innerItemId = outerItem.items.shift();
+            outerItem.items.push(innerItemId);
 
             return commandExecute({
-                aggregateId: objective.id,
+                aggregateId: outerItem.id,
                 aggregateName,
                 type,
                 payload: {
-                    keyResultId,
-                    title: uuid.v4(),
-                    progress: Math.floor(Math.random() * 100)
+                    innerItemId,
+                    name: uuid.v4()
                 }
             });
         }
 
-        case 'objective/deleteKeyResult': {
-            if (state.objectives.length < 1) return Promise.resolve();
+        case 'items/deleteInnerItem': {
+            if (state.items.length < 1) return Promise.resolve();
 
-            const objective = state.objectives.shift();
-            state.objectives.push(objective);
+            const outerItem = state.items.shift();
+            state.items.push(outerItem);
 
-            if (objective.keyResults.length < 1) return Promise.resolve();
+            if (outerItem.items.length < 1) return Promise.resolve();
 
-            const keyResultId = objective.keyResults.shift();
+            const innerItemId = outerItem.items.shift();
 
             return commandExecute({
-                aggregateId: objective.id,
+                aggregateId: outerItem.id,
                 aggregateName,
                 type,
                 payload: {
-                    keyResultId
+                    innerItemId
                 }
             });
         }
@@ -476,9 +435,9 @@ function executeCommands(state, commands, position, endCallback, reportObj) {
 export default function commandGenerator(eventsWeight, endTime, reportObj) {
     const commandMap = generateCommands(eventsWeight, endTime);
     const state = {
-        users: [],
-        orgUnits: [],
-        objectives: []
+        members: [],
+        groups: [],
+        outerItems: []
     };
 
     const commandArray = [];

@@ -1,33 +1,31 @@
 import commandGenerator from './commandGenerator';
 
 export default function (eventsCount, reportObj) {
-    // All the constants below are empirical numbers and are derived
-    // from analysis of the current production OKR database
+    // All the constants below are empirical numbers and are derived from
+    // analysis of production database of DevExpress (C) OKR product
     const eventsWeight = {
-        user: {
-            create: 48,
-            delete: 245
+        member: {
+            create: 50,
+            delete: 250
         },
-        orgUnit: {
-            create: 161,
-            rename: 294,
-            changeType: 2272,
-            delete: 531,
-            addOrgUnit: 161,
-            addUser: 10,
-            removeUser: 15,
-            moveUser: 25000,
-            removeOrgUnit: 25000,
-            moveOrgUnit: 25000
+        group: {
+            create: 150,
+            rename: 300,
+            delete: 550,
+            addGroup: 150,
+            addMember: 10,
+            removeMember: 15,
+            moveMember: 25000,
+            removeGroup: 25000,
+            moveGroup: 25000
         },
-        objective: {
-            create: 22,
-            changeTitle: 274,
-            changeTimePeriod: 274,
-            delete: 833,
-            addKeyResult: 10,
-            updateKeyResult: 55,
-            deleteKeyResult: 806
+        item: {
+            createOuterItem: 20,
+            updateOuterItem: 250,
+            deleteOuterItem: 1000,
+            createInnerItem: 10,
+            updateInnerItem: 50,
+            deleteInnerItem: 800
         }
     };
 
