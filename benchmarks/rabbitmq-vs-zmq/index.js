@@ -10,7 +10,8 @@ import config from './config';
 const { BENCHMARK_SERIES, FREEING_TIME } = config;
 
 const busRabbitmq = createBus({ driver: driverRabbitmq({
-    url: config.RABBITMQ_CONNECTION_URL
+    url: config.RABBITMQ_CONNECTION_URL,
+    messageTtl: 20000
 }) });
 
 const busZmq = createBus({ driver: driverZmq({

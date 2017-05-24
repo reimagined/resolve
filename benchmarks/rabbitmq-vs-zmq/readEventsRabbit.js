@@ -4,7 +4,8 @@ import driverRabbitmq from 'resolve-bus-rabbitmq';
 import config from './config';
 
 const busRabbitmq = createBus({ driver: driverRabbitmq({
-    url: config.RABBITMQ_CONNECTION_URL
+    url: config.RABBITMQ_CONNECTION_URL,
+    messageTtl: 20000
 }) });
 
 let eventsLeft = process.argv[2];
