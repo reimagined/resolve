@@ -3,19 +3,33 @@
   "version": "0.0.1",
   "description": "This package is a driver for resolve-bus realizing emitting events using RabbitMQ.",
   "main": "./dist/index.js",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
   "scripts": {
     "prepublish": "babel --out-dir ./dist ./src",
     "test": "mocha",
     "testw": "mocha -w"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reimagined/resolve.git"
+  },
   "author": "reimagined team",
   "license": "MIT",
-  "dependencies": {
-    "amqplib": "^0.5.1"
-  },
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-bus-rabbitmq#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
     "sinon": "^2.1.0"
+  },
+  "dependencies": {
+    "amqplib": "^0.5.1"
   }
 }
