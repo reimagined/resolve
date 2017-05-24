@@ -8,6 +8,7 @@
   },
   "author": "",
   "license": "MIT",
+  "private": true,
   "dependencies": {
     "babel-cli": "^6.24.1",
     "mongodb": "^2.2.26",

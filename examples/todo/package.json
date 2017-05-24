@@ -9,6 +9,7 @@
   },
   "author": "",
   "license": "ISC",
+  "private": true,
   "devDependencies": {
     "lerna": "^2.0.0-rc.4"
   }
