@@ -1,8 +1,13 @@
 {
   "name": "todo-client",
-  "version": "0.1.0",
+  "version": "0.0.1",
+  "author": "reimagined team",
+  "license": "MIT",
   "private": true,
-  "proxy": "http://localhost:3001",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reimagined/resolve.git"
+  },
   "dependencies": {
     "bootstrap": "^3.3.7",
     "classnames": "^2.2.5",
