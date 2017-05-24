@@ -8,8 +8,13 @@
     "test": "mocha",
     "testw": "mocha -w"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reimagined/resolve.git"
+  },
   "author": "reimagined team",
   "license": "MIT",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-command#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
