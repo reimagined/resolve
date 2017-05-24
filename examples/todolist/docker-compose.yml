@@ -6,7 +6,7 @@ services:
       dockerfile: testcafe.dockerfile
     command:
       - firefox
-      - /tests/testcafe
+      - /tests
     links:
       - todolist
     depends_on:
