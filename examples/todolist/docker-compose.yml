@@ -11,5 +11,7 @@ services:
       - todolist
     depends_on:
       - todolist
+    environment:
+      - HOST=todolist
   todolist:
     build: .

@@ -1,7 +1,8 @@
 import { expect } from 'chai';
 import { Selector } from 'testcafe';
 
-const MAIN_PAGE = 'http://todolist:3000';
+const host = process.env.HOST;
+const MAIN_PAGE = `http://${host}:3000`;
 
 // eslint-disable-next-line no-unused-expressions, no-undef
 fixture`Todo list example`.beforeEach(async (t) => {
