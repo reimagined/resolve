@@ -4,6 +4,7 @@
   "author": "reimagined team",
   "license": "MIT",
   "private": true,
+  "proxy": "http://localhost:3001",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/reimagined/resolve.git"
