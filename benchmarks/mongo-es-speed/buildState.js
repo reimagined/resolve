@@ -6,10 +6,12 @@ import config from './config';
 
 const TYPES = config.GENERATED_EVENT_TYPES;
 
-const store = createEs({ driver: mongoDbDriver({
-    url: config.MONGODB_CONNECTION_URL,
-    collection: config.MONGODB_COLLECTION_NAME
-}) });
+const store = createEs({
+    driver: mongoDbDriver({
+        url: config.MONGODB_CONNECTION_URL,
+        collection: config.MONGODB_COLLECTION_NAME
+    })
+});
 
 let eventCounter = 0;
 let lastReportedEvents = 0;
@@ -27,12 +29,18 @@ function reporterHandler() {
 
 setTimeout(reporterHandler, 500);
 
-store.loadEventsByTypes(TYPES, () => (eventCounter++)).then(() =>
-    // eslint-disable-next-line no-console
-    console.log(DONE_TOKEN, JSON.stringify({
-        memory: process.memoryUsage()
-    }))
-).catch(err =>
-    // eslint-disable-next-line no-console
-    console.log(ERR_TOKEN, err)
-);
+store
+    .loadEventsByTypes(TYPES, () => eventCounter++)
+    .then(() =>
+        // eslint-disable-next-line no-console
+        console.log(
+            DONE_TOKEN,
+            JSON.stringify({
+                memory: process.memoryUsage()
+            })
+        )
+    )
+    .catch(err =>
+        // eslint-disable-next-line no-console
+        console.log(ERR_TOKEN, err)
+    );

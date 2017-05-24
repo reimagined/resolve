@@ -3,6 +3,7 @@
   "packages": [
     "packages/*",
     "examples/*",
+    "examples/todo/*",
     "benchmarks/*"
   ],
   "version": "0.0.0"

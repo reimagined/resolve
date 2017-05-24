@@ -1,15 +1,10 @@
-/* eslint no-unused-expressions: 0 */
-import sinon from 'sinon';
-import { take, put } from 'redux-saga/effects';
+import { put, call } from 'redux-saga/effects';
 import { expect } from 'chai';
 import sendCommandSaga from '../src/send_command_saga';
 
 describe('sendCommandSaga', () => {
     it('works correctly with no error returned by the sendCommand function', () => {
-        const sendCommand = sinon.spy();
-        const generator = sendCommandSaga({ sendCommand });
-
-        expect(generator.next().value).to.be.deep.equal(take('*'));
+        const sendCommand = () => {};
 
         const action = {
             command: {
@@ -22,25 +17,24 @@ describe('sendCommandSaga', () => {
             }
         };
 
-        generator.next(action);
+        const generator = sendCommandSaga({ sendCommand }, action);
 
-        expect(
-            sendCommand.withArgs({
+        const response = 'ok';
+
+        expect(generator.next().value).to.be.deep.equal(
+            call(sendCommand, {
                 type: action.command.type,
                 aggregateId: action.aggregateId,
                 aggregateName: action.aggregateName,
                 payload: action.payload
-            }).calledOnce
-        ).to.be.true;
+            })
+        );
 
-        expect(generator.next().value).to.be.deep.equal(take('*'));
+        expect(generator.next(response).done).to.be.deep.equal(true);
     });
 
     it('works correctly with an error returned by the sendCommand function', () => {
-        const sendCommand = sinon.spy();
-        const generator = sendCommandSaga({ sendCommand });
-
-        expect(generator.next().value).to.be.deep.equal(take('*'));
+        const sendCommand = () => {};
 
         const action = {
             command: {
@@ -53,21 +47,29 @@ describe('sendCommandSaga', () => {
             }
         };
 
-        generator.next(action);
+        const generator = sendCommandSaga({ sendCommand }, action);
 
-        expect(
-            sendCommand.withArgs({
+        const error = 'Error';
+
+        expect(generator.next().value).to.be.deep.equal(
+            call(sendCommand, {
                 type: action.command.type,
                 aggregateId: action.aggregateId,
                 aggregateName: action.aggregateName,
                 payload: action.payload
-            }).calledOnce
-        ).to.be.true;
+            })
+        );
 
-        const error = {
-            type: 'failed'
-        };
-
-        expect(generator.next(error).value).to.be.deep.equal(put(error));
+        expect(generator.throw(error).value).to.be.deep.equal(
+            put({
+                aggregateId: 'aggregateId',
+                aggregateName: 'aggregateName',
+                payload: {
+                    some: 'value'
+                },
+                error,
+                status: 'error'
+            })
+        );
     });
 });
