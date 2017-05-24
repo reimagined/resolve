@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "This package is a command handler.",
   "main": "./dist/index.js",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
   "scripts": {
     "prepublish": "babel --out-dir ./dist ./src",
     "test": "mocha",
