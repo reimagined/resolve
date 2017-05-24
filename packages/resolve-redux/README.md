@@ -2,17 +2,18 @@
 
 This package serves as a helper for Redux store creation.
 
-## Usage
+# Basic Usage
+
+## How to create a Redux store
 
 ```js
 import { createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import { createReducer, saga, actions } from 'resolve-redux';
-import fetch from 'isomorphic-fetch';
 
 const projection = {
     name: 'TodoList',
-    initialState: [],
+    initialState: () => [],
     eventHandlers: {
         TodoListItemAdded(state, event) {
             return state.concat({
@@ -33,13 +34,117 @@ const sagaMiddleware = createSagaMiddleware();
 
 const store = createStore(
     reducer,
-    projeciton.initialState,
+    projeciton.initialState(),
     applyMiddleware(sagaMiddleware)
 );
 
-sagaMiddleware.run(saga);
+function sendCommand(command) {
+    return fetch('/api/commands', {
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' },
+        body: command
+    }).then( res => res.json() );
+}
 
-fetch('/initialState')
-    .then(res => res.json())
-    .then(data => store.dispatch(actions.merge(data)));
+function fetchMore(projectionName, query) {
+    return fetch(`/api/${projectionName}?${getQueryString(query)}` , {
+        method: 'GET', 
+        headers: { 'Content-Type': 'application/json' },
+        body: command
+    }).then( res => res.json() );
+}
+
+sagaMiddleware.run(saga, { sendCommand, fetchMore });
+
+function getQueryString(params) {
+    return Object
+        .keys(params)
+        .map(k => {
+            if (Array.isArray(params[k])) {
+                return params[k]
+                    .map(val => `${encodeURIComponent(k)}[]=${encodeURIComponent(val)}`)
+                    .join('&')
+            }
+            return `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`
+        }).join('&');
+}
+```
+
+## How to send commands to the server
+```js
+import { actions } from 'resolve-redux';
+
+export function sendCommandAddTodoItem(aggregateId) {
+    return {
+        type: 'SEND_COMMAND_ADD_TODO_ITEM',
+        aggregateId,
+        aggregateName: 'TodoList',
+        payload: { name: 'todo-list' },
+        command: {
+            type: 'TodoListItemAdded',
+        },
+    };
+}
+
+store.dispatch(sendCommandAddTodoItem('aggregateId'));
+// or
+store.dispatch(actions.sendCommand({
+    command: {
+        type: 'TodoListItemRemoved',
+    }, 
+    aggregateId: 'aggregateId', 
+    aggregateName: 'TodoList', 
+    payload: { name: 'todo-list' },
+}));
+```
+
+# Advanced Usage
+
+## Support for Optimistic Updates
+```js
+
+const projection = {
+    name: 'TodoList',
+    initialState: [],
+    eventHandlers: {
+        TodoListItemUpdateText(state, event) {
+            return state.concat({
+                ...event.payload,
+                id: event.aggregateId
+            });
+        }
+    }
+};
+
+const reducer = createReducer(projection, (state, action) => {
+    switch (action.type) {
+        case 'SEND_COMMAND_TODO_UPDATE_TEXT': {
+            // Optimistic update
+            if(!action.error) {
+                return state.map(item => {
+                    if(item.id === event.aggregateId) {
+                        return {
+                            ...item,
+                            text: action.payload.text,
+                            textBeforeOptimisticUpdate: item.text
+                        };
+                    }
+                });
+            } else {
+            // Revert optimistic update
+                return state.map(item => {
+                    if(item.id === event.aggregateId) {
+                        return {
+                            ...item,
+                            text: item.textBeforeOptimisticUpdate
+                        };
+                    }
+                });
+            }         
+        }
+        default: 
+            return state;
+    }
+});
+
 ```
