@@ -1,14 +1,14 @@
 {
   "name": "resolve-command",
   "version": "0.0.1",
-  "description": "",
+  "description": "This package is a command handler.",
   "main": "./dist/index.js",
   "scripts": {
     "prepublish": "babel --out-dir ./dist ./src",
     "test": "mocha",
     "testw": "mocha -w"
   },
-  "author": "",
+  "author": "reimagined team",
   "license": "MIT",
   "devDependencies": {
     "chai": "^3.5.0",
