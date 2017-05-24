@@ -21,8 +21,15 @@ describe('RabbitMQ bus', () => {
     let consumeExpectation;
     let assertExchangeExpectation;
 
-    const adapterConfig = { url: 'url' };
+    const adapterConfig = { url: 'url',  messageTtl: 'messageTtl', maxLength: 'maxLength' };
     const queue = { queue: 'queue' };
+
+    const queueConfig = {
+        arguments: {
+            messageTtl: adapterConfig.messageTtl,
+            maxLength: adapterConfig.maxLength
+        }
+    };
 
     const message = {
         content: JSON.stringify({ type: 'eventType' })
@@ -36,7 +43,7 @@ describe('RabbitMQ bus', () => {
 
         consumeExpectation = fakeChannelMock.expects('consume');
 
-        fakeChannelMock.expects('assertQueue').withArgs('').resolves(queue);
+        fakeChannelMock.expects('assertQueue').withArgs('', queueConfig).resolves(queue);
 
         fakeChannelMock.expects('bindQueue').withArgs(queue.queue, 'exchange').resolves();
 
@@ -75,16 +82,25 @@ describe('RabbitMQ bus', () => {
             const firstEvent = { message: 1 };
             const secondEvent = { message: 2 };
 
-            fakeChannelMock.expects('publish').onCall(0).callsFake((exchange, queueName, event) => {
-                expect(new Buffer(JSON.stringify(firstEvent))).to.be.deep.equal(event);
-            });
+            fakeChannelMock.expects('publish').onCall(0)
+                .callsFake((exchange, queueName, event, options) => {
+                    expect(new Buffer(JSON.stringify(firstEvent))).to.be.deep.equal(event);
+                    expect(options).to.be.deep.equal({
+                        expiration: adapterConfig.messageTtl,
+                        persistent: false
+                    });
+                });
 
-            fakeChannelMock.expects('publish').onCall(1).callsFake((exchange, queueName, event) => {
-                expect(new Buffer(JSON.stringify(secondEvent))).to.be.deep.equal(event);
-            });
+            fakeChannelMock.expects('publish').onCall(1)
+                .callsFake((exchange, queueName, event, options) => {
+                    expect(new Buffer(JSON.stringify(secondEvent))).to.be.deep.equal(event);
+                    expect(options).to.be.deep.equal({
+                        expiration: adapterConfig.messageTtl,
+                        persistent: false
+                    });
+                });
 
             return Promise.all([instance.publish(firstEvent), instance.publish(secondEvent)])
-                .then(() => {})
                 .then(() => amqplibMock.verify());
         });
     });
