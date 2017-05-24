@@ -2,7 +2,7 @@ import Immutable from 'seamless-immutable';
 import { createStore } from 'redux';
 import uuidV4 from 'uuid/v4';
 import { expect } from 'chai';
-import reducer from '../src/reducer';
+import createReducer from '../src/create_reducer';
 import ResolveActions from '../src/actions';
 
 describe('reducer', () => {
@@ -23,7 +23,7 @@ describe('reducer', () => {
     it('should return reducer by projection', () => {
         const initialState = Immutable({});
 
-        const store = createStore(reducer(projection), initialState);
+        const store = createStore(createReducer(projection), initialState);
 
         expect(store.getState()).to.deep.equal(initialState);
 
@@ -56,6 +56,58 @@ describe('reducer', () => {
         expect(store.getState()).to.equal(prevState);
     });
 
+    it('should return reducer by projection and extend reducer', () => {
+        const initialState = Immutable({});
+
+        const extendReducer = (state, action) => {
+            switch (action.type) {
+                case 'SET_VALUE_42':
+                    return state.update(action.aggregateId, item => item.set('value', 42));
+                default:
+                    return state;
+            }
+        };
+
+        const store = createStore(createReducer(projection, extendReducer), initialState);
+
+        expect(store.getState()).to.deep.equal(initialState);
+
+        const aggregateId = uuidV4();
+
+        store.dispatch({
+            type: 'COUNTER_CREATE',
+            aggregateId
+        });
+        expect(store.getState()).to.deep.equal({
+            [aggregateId]: { value: 0 }
+        });
+        store.dispatch({
+            type: 'COUNTER_INCREMENT',
+            aggregateId
+        });
+        expect(store.getState()).to.deep.equal({
+            [aggregateId]: { value: 1 }
+        });
+        store.dispatch({
+            type: 'COUNTER_DECREMENT',
+            aggregateId
+        });
+        expect(store.getState()).to.deep.equal({
+            [aggregateId]: { value: 0 }
+        });
+        store.dispatch({
+            type: 'SET_VALUE_42',
+            aggregateId
+        });
+        expect(store.getState()).to.deep.equal({
+            [aggregateId]: { value: 42 }
+        });
+
+        const prevState = store.getState();
+        store.dispatch({ type: 'OTHER_EVENT' });
+        expect(store.getState()).to.equal(prevState);
+    });
+
     it('merge state', () => {
         const aggregateId1 = uuidV4();
         const aggregateId2 = uuidV4();
@@ -67,7 +119,7 @@ describe('reducer', () => {
             [aggregateId3]: { value: 3 }
         });
 
-        const store = createStore(reducer(projection), initialState);
+        const store = createStore(createReducer(projection), initialState);
 
         expect(store.getState()).to.deep.equal(initialState);
 
@@ -88,7 +140,7 @@ describe('reducer', () => {
     it('should throw error when initialState=undefined', () => {
         const initialState = undefined;
 
-        const store = createStore(reducer(projection), initialState);
+        const store = createStore(createReducer(projection), initialState);
 
         const aggregateId = uuidV4();
         expect(() =>

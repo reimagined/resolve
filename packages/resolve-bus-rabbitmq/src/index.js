@@ -4,7 +4,9 @@ const defaultOptions = {
     exchange: 'exchange',
     queueName: '',
     channelName: '',
-    exchangeType: 'fanout'
+    exchangeType: 'fanout',
+    messageTtl: 2000,
+    maxLength: 10000
 };
 
 function init(options, handler) {
@@ -20,7 +22,14 @@ function init(options, handler) {
         )
         .then(channel =>
             channel
-                .assertQueue(options.queueName)
+                // Additional options described here:
+                // http://www.squaremobius.net/amqp.node/channel_api.html#channel_assertQueue
+                .assertQueue(options.queueName, {
+                    arguments: {
+                        messageTtl: options.messageTtl,
+                        maxLength: options.maxLength
+                    }
+                })
                 .then(queue => channel.bindQueue(queue.queue, options.exchange))
                 .then(() =>
                     channel.consume(
@@ -50,9 +59,17 @@ export default function (options) {
                 channel.publish(
                     config.exchange,
                     config.queueName,
-                    new Buffer(JSON.stringify(event))
+                    new Buffer(JSON.stringify(event)),
+                    // Additional options described here:
+                    // http://www.squaremobius.net/amqp.node/channel_api.html#channel_publish
+                    {
+                        expiration: config.messageTtl,
+                        persistent: false
+                    }
                 );
             }),
-        setTrigger: callback => initPromise.then(() => (handler = callback))
+        setTrigger: callback => initPromise.then(() =>
+            (handler = callback)
+        )
     };
 }
