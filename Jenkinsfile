@@ -47,7 +47,7 @@ pipeline {
                         }
                     }
                     dir('examples/todolist') {
-                        sh 'sh integration_test.sh'
+                        sh './integration_test.sh'
                     }
                 }
             }
