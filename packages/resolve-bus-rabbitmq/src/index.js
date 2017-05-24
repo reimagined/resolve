@@ -9,11 +9,6 @@ const defaultOptions = {
     maxLength: 10000
 };
 
-const DISABLE_PERSISTENCE = {
-    deliveryMode: 2,
-    persistent: false
-};
-
 function init(options, handler) {
     return amqp
         .connect(options.url)
@@ -27,15 +22,18 @@ function init(options, handler) {
         )
         .then(channel =>
             channel
-                .assertQueue(options.queueName)
+                // Additional options described here:
+                // http://www.squaremobius.net/amqp.node/channel_api.html#channel_assertQueue
+                .assertQueue(options.queueName, {
+                    arguments: {
+                        messageTtl: options.messageTtl,
+                        maxLength: options.maxLength
+                    }
+                })
                 .then(queue => channel.bindQueue(queue.queue, options.exchange))
                 .then(() =>
                     channel.consume(
                         options.queueName,
-                        { arguments: {
-                            messageTtl: options.messageTtl,
-                            maxLength: options.messageTtl
-                        } },
                         (msg) => {
                             if (msg) {
                                 const content = msg.content.toString();
@@ -62,9 +60,11 @@ export default function (options) {
                     config.exchange,
                     config.queueName,
                     new Buffer(JSON.stringify(event)),
+                    // Additional options described here:
+                    // http://www.squaremobius.net/amqp.node/channel_api.html#channel_publish
                     {
-                        ...DISABLE_PERSISTENCE,
-                        expiration: config.messageTtl
+                        expiration: config.messageTtl,
+                        persistent: false
                     }
                 );
             }),
