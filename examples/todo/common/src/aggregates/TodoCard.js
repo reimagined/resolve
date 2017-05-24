@@ -2,7 +2,7 @@ import Immutable from 'seamless-immutable';
 
 export default {
     name: 'TodoCard',
-    initialState: () => null,
+    initialState: null,
     eventHandlers: {
         TodoCardCreated: () => Immutable({ activated: true }),
         TodoCardRemoved: state => state.setIn(['activated'], false)
