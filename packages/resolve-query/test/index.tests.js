@@ -10,7 +10,7 @@ const events = [
     { type: 'SUM', payload: { value: 2 } }
 ];
 
-const initialState = () => ({ count: 0 });
+const initialState = { count: 0 };
 
 const eventHandlers = {
     SUM: (state, event) => ({ count: state.count + event.payload.value }),

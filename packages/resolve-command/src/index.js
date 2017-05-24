@@ -7,9 +7,8 @@ function verifyCommand(command) {
 }
 
 function getAggregateState(aggregate, aggregateId, store) {
-    const initialStateFunc = aggregate.initialState || (() => ({}));
     const handlers = aggregate.eventHandlers;
-    let aggregateState = initialStateFunc();
+    let aggregateState = aggregate.initialState || {};
 
     if (!handlers) {
         return Promise.resolve(aggregateState);

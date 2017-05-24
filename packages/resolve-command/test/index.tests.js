@@ -119,9 +119,10 @@ describe('command', () => {
         });
 
         aggregates[0].commands[COMMAND_TYPE] = createHandlerSpy;
-        aggregates[0].initialState = () => ({
+
+        aggregates[0].initialState = {
             name: 'Initial name'
-        });
+        };
 
         return execute(testCommand).then(() => {
             expect(createHandlerSpy.lastCall.args).to.be.deep.equal([
