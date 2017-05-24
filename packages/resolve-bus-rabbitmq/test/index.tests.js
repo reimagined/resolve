@@ -87,7 +87,6 @@ describe('RabbitMQ bus', () => {
                     expect(new Buffer(JSON.stringify(firstEvent))).to.be.deep.equal(event);
                     expect(options).to.be.deep.equal({
                         expiration: adapterConfig.messageTtl,
-                        deliveryMode: 2,
                         persistent: false
                     });
                 });
@@ -97,7 +96,6 @@ describe('RabbitMQ bus', () => {
                     expect(new Buffer(JSON.stringify(secondEvent))).to.be.deep.equal(event);
                     expect(options).to.be.deep.equal({
                         expiration: adapterConfig.messageTtl,
-                        deliveryMode: 2,
                         persistent: false
                     });
                 });
