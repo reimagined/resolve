@@ -4,7 +4,14 @@ const defaultOptions = {
     exchange: 'exchange',
     queueName: '',
     channelName: '',
-    exchangeType: 'fanout'
+    exchangeType: 'fanout',
+    messageTtl: 2000,
+    maxLength: 10000
+};
+
+const DISABLE_PERSISTENCE = {
+    deliveryMode: 2,
+    persistent: false
 };
 
 function init(options, handler) {
@@ -20,7 +27,12 @@ function init(options, handler) {
         )
         .then(channel =>
             channel
-                .assertQueue(options.queueName)
+                .assertQueue(options.queueName, {
+                    arguments: {
+                        messageTtl: options.messageTtl,
+                        maxLength: options.maxLength
+                    }
+                })
                 .then(queue => channel.bindQueue(queue.queue, options.exchange))
                 .then(() =>
                     channel.consume(
@@ -50,9 +62,15 @@ export default function (options) {
                 channel.publish(
                     config.exchange,
                     config.queueName,
-                    new Buffer(JSON.stringify(event))
+                    new Buffer(JSON.stringify(event)),
+                    {
+                        ...DISABLE_PERSISTENCE,
+                        expiration: config.messageTtl
+                    }
                 );
             }),
-        setTrigger: callback => initPromise.then(() => (handler = callback))
+        setTrigger: callback => initPromise.then(() =>
+            (handler = callback)
+        )
     };
 }
