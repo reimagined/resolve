@@ -15,7 +15,7 @@
     "mongodb": "^2.2.26",
     "nyan-progress": "^1.1.0",
     "pify": "^2.3.0",
-    "resolve-es": "*",
-    "resolve-es-mongo": "*"
+    "resolve-es": "^0.0.1",
+    "resolve-es-mongo": "^0.0.1"
   }
 }
