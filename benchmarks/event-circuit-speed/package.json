@@ -1,0 +1,26 @@
+{
+  "name": "event-circuit-speed",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "babel-node ./index.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "babel-cli": "^6.24.1",
+    "mongodb": "^2.2.26",
+    "nyan-progress": "^1.1.0",
+    "pify": "^2.3.0",
+    "randgen": "^0.1.0",
+    "resolve-bus": "*",
+    "resolve-bus-memory": "*",
+    "resolve-command": "*",
+    "resolve-es": "*",
+    "resolve-es-mongo": "*",
+    "resolve-query": "*",
+    "seamless-immutable": "^7.1.2",
+    "uuid": "^3.0.1"
+  }
+}
