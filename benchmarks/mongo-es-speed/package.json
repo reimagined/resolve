@@ -2,7 +2,8 @@
   "name": "mongo-es-speed",
   "version": "0.0.1",
   "scripts": {
-    "start": "babel-node ./index.js"
+    "start": "babel-node ./index.js",
+    "test": "exit 0"
   },
   "author": "reimagined team",
   "license": "MIT",

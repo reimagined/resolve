@@ -11,7 +11,8 @@
     "url": "git+https://github.com/reimagined/resolve.git"
   },
   "scripts": {
-    "prepublish": "babel --out-dir ./dist ./src"
+    "prepublish": "babel --out-dir ./dist ./src",
+    "test": "exit 0"
   },
   "dependencies": {
     "seamless-immutable": "^7.1.2"
