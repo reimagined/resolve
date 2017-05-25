@@ -1,7 +1,7 @@
 {
   "name": "resolve-bus-rabbitmq",
   "version": "0.0.1",
-  "description": "This package is a driver for resolve-bus realizing emitting events using RabbitMQ.",
+  "description": "This package is a driver for resolve-bus to emit events using RabbitMQ.",
   "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"

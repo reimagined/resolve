@@ -1,7 +1,7 @@
 {
   "name": "resolve-es-memory",
   "version": "0.0.1",
-  "description": "This package serves as a driver for event store using memory to store events.",
+  "description": "This package serves as a driver for resolve-es to store events using memory.",
   "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"

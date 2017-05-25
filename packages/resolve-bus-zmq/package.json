@@ -1,7 +1,7 @@
 {
   "name": "resolve-bus-zmq",
   "version": "0.0.1",
-  "description": "",
+  "description": "This package is a driver for resolve-bus to emit events using ZeroMQ.",
   "main": "./dist/index.js",
   "scripts": {
     "prepublish": "babel --out-dir ./dist ./src",

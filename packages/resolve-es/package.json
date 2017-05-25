@@ -1,7 +1,7 @@
 {
   "name": "resolve-es",
   "version": "0.0.1",
-  "description": "This package serves as an event store with adapter storing behavior.",
+  "description": "This package serves as an event storage with a driver specifying where to store events.",
   "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
