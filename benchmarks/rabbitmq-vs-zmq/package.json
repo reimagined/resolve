@@ -6,8 +6,12 @@
   "scripts": {
     "start": "babel-node ./index.js"
   },
-  "author": "",
   "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reimagined/resolve.git"
+  },
   "dependencies": {
     "babel-cli": "^6.24.1",
     "resolve-bus": "*",
