@@ -1,6 +1,6 @@
 # `resolve-query`
 
-This package serves as a query handler.
+This package creates a function to execute a query.
 
 ## Usage
 
