@@ -1,6 +1,6 @@
 # `resolve-bus-zmq`
 
-This package is a driver for `resolve-bus` realizing emitting events using ZeroMQ.
+This package is a driver for `resolve-bus` to emit events using ZeroMQ.
 
 ## Usage
 

@@ -1,6 +1,6 @@
 # `resolve-es-file`
 
-This package serves as a driver for event store using file to store events.
+This package serves as a driver for `resolve-es` to store events using a file.
 
 ## Usage
 

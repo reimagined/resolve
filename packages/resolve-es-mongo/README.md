@@ -1,6 +1,6 @@
 # `resolve-es-mongo`
 
-This package serves as a driver for event store using MongoDB to store events.
+This package serves as a driver for `resolve-es` to store events using MongoDB.
 
 ## Usage
 
