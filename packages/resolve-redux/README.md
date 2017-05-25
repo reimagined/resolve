@@ -1,6 +1,6 @@
 # `resolve-redux`
 
-This package serves as a helper for Redux store creation.
+This package serves as a helper for creating the Redux storage.
 
 # Basic Usage
 
