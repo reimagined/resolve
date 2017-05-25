@@ -1,8 +1,6 @@
 import commandGenerator from './commandGenerator';
 
 export default function (eventsCount, reportObj) {
-    // All the constants below are empirical numbers and are derived from
-    // analysis of production database of DevExpress (C) OKR product
     const eventsWeight = {
         member: {
             create: 50,
