@@ -25,7 +25,7 @@ const aggregates = [
             createOuterItem: (state, args) => createEvent('OuterItemCreated', args),
             updateOuterItem: (state, args) => createEvent('OuterItemUpdated', args),
             deleteOuterItem: (state, args) => createEvent('OuterItemDeleted', args),
-            addInnerItem: (state, args) => {
+            createInnerItem: (state, args) => {
                 const event = createEvent('InnerItemCreated', args);
                 event.payload.innerItemId = event.payload.innerItemId || uuid.v4();
                 return event;
@@ -344,7 +344,7 @@ function executeCommandByType(command, state) {
             });
         }
 
-        case 'items/updateInnerItem': {
+        case 'item/updateInnerItem': {
             if (state.items.length < 1) return Promise.resolve();
 
             const outerItem = state.items.shift();
@@ -366,7 +366,7 @@ function executeCommandByType(command, state) {
             });
         }
 
-        case 'items/deleteInnerItem': {
+        case 'item/deleteInnerItem': {
             if (state.items.length < 1) return Promise.resolve();
 
             const outerItem = state.items.shift();
@@ -437,7 +437,7 @@ export default function commandGenerator(eventsWeight, endTime, reportObj) {
     const state = {
         members: [],
         groups: [],
-        outerItems: []
+        items: []
     };
 
     const commandArray = [];
