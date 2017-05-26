@@ -42,14 +42,14 @@ export function prepareCsv(data, dataGetter) {
 
 export function defaultCsvReports(data) {
     return {
-        buildTime: prepareCsv(info => `${info.buildTime}`),
-        memoryRss: prepareCsv(info =>
+        buildTime: prepareCsv(data, info => `${info.buildTime}`),
+        memoryRss: prepareCsv(data, info =>
             `${Math.round(info.memory.rss / 1024 / 1024)}`
         ),
-        memoryHeapTotal: prepareCsv(info =>
+        memoryHeapTotal: prepareCsv(data, info =>
             `${Math.round(info.memory.heapTotal / 1024 / 1024)}`
         ),
-        memoryHeapUsed: prepareCsv(info =>
+        memoryHeapUsed: prepareCsv(data, info =>
             `${Math.round(info.memory.heapUsed / 1024 / 1024)}`
         )
     };
