@@ -477,7 +477,10 @@ export default function preparer(eventsCount, reportObj) {
 
     const commandExecute = createCommandExecutor({ store, bus, aggregates });
 
-    return dropCollection().then(() => commandGenerator(
+    return dropCollection(
+        config.MONGODB_CONNECTION_URL,
+        config.MONGODB_COLLECTION_NAME
+    ).then(() => commandGenerator(
         commandExecute,
         eventsWeight,
         eventsCount / entitiesFactor,

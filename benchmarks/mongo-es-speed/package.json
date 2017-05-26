@@ -9,7 +9,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "mongodb": "^2.2.26",
+    "benchmark-base": "*",
     "resolve-es": "*",
     "resolve-es-mongo": "*"
   },

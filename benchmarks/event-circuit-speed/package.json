@@ -9,6 +9,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "benchmark-base": "*",
     "mongodb": "^2.2.26",
     "randgen": "^0.1.0",
     "resolve-bus": "*",
