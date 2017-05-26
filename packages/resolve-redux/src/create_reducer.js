@@ -2,13 +2,13 @@ import { MERGE } from './actions';
 
 export default function createReducer({ name, eventHandlers }, extendReducer) {
     const handlers = {
-        ...eventHandlers,
         [MERGE]: (state, action) => {
             if (action.projectionName === name) {
                 return state.merge(action.state);
             }
             return state;
-        }
+        },
+        ...eventHandlers
     };
 
     return (state = null, action) => {
