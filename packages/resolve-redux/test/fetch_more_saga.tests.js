@@ -9,10 +9,10 @@ describe('fetchMoreSaga', () => {
 
     const state = {
         id1: {
-      /* ... */
+            /* ... */
         },
         id2: {
-      /* ... */
+            /* ... */
         }
     };
 
@@ -32,12 +32,10 @@ describe('fetchMoreSaga', () => {
 
         const generator = fetchMoreSaga({ fetchMore }, { projectionName, query });
 
-        expect(generator.next().value).to.be.deep.equal(
-      call(fetchMore, projectionName, query)
-    );
+        expect(generator.next().value).to.be.deep.equal(call(fetchMore, projectionName, query));
 
         expect(generator.next(state).value).to.be.deep.equal(
-      put(actions.merge(projectionName, state))
-    );
+            put(actions.merge(projectionName, state))
+        );
     });
 });
