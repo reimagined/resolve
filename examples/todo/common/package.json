@@ -1,12 +1,18 @@
 {
   "name": "todo-common",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "./dist/index.js",
   "author": "reimagined team",
-  "license": "ISC",
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reimagined/resolve.git"
+  },
   "scripts": {
-    "prepublish": "babel --out-dir ./dist ./src"
+    "prepublish": "babel --out-dir ./dist ./src",
+    "test": "exit 0"
   },
   "dependencies": {
     "seamless-immutable": "^7.1.2"

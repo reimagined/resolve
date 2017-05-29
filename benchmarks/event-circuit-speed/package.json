@@ -4,20 +4,26 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "babel-node ./index.js"
+    "start": "babel-node ./index.js",
+    "test": "exit 0"
   },
-  "author": "",
+  "author": "reimagined team",
   "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reimagined/resolve.git"
+  },
   "dependencies": {
     "benchmark-base": "*",
     "mongodb": "^2.2.26",
     "randgen": "^0.1.0",
-    "resolve-bus": "*",
-    "resolve-bus-memory": "*",
-    "resolve-command": "*",
-    "resolve-es": "*",
-    "resolve-es-mongo": "*",
-    "resolve-query": "*",
+    "resolve-bus": "^0.0.1",
+    "resolve-bus-memory": "^0.0.1",
+    "resolve-command": "^0.0.1",
+    "resolve-es": "^0.0.1",
+    "resolve-es-mongo": "^0.0.1",
+    "resolve-query": "^0.0.1",
     "seamless-immutable": "^7.1.2",
     "uuid": "^3.0.1"
   },

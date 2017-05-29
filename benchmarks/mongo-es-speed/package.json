@@ -1,13 +1,17 @@
 {
   "name": "mongo-es-speed",
   "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
   "scripts": {
-    "start": "babel-node ./index.js"
+    "start": "babel-node ./index.js",
+    "test": "exit 0"
   },
-  "author": "",
+  "author": "reimagined team",
   "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reimagined/resolve.git"
+  },
   "dependencies": {
     "benchmark-base": "*",
     "resolve-es": "*",

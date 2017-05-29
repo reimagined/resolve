@@ -11,7 +11,7 @@ const sagaMiddleware = createSagaMiddleware();
 
 const store = createStore(
     combineReducers({ cards: cardsReducer, burgerMenu }),
-    { cards: cardsProjection.initialState(), burgerMenu: { isOpen: false } },
+    { cards: cardsProjection.initialState, burgerMenu: { isOpen: false } },
     applyMiddleware(sagaMiddleware)
 );
 

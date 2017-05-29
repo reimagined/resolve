@@ -1,14 +1,18 @@
 {
   "name": "todo",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "author": "reimagined team",
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reimagined/resolve.git"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0",
     "start": "lerna run start --stream"
   },
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "lerna": "^2.0.0-rc.4"
   }

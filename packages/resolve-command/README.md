@@ -1,6 +1,6 @@
 # `resolve-command`
 
-This package is commands handler.
+This package creates a function to execute a command.
 
 ## Usage
 

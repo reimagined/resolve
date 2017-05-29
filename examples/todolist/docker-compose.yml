@@ -1,0 +1,17 @@
+version: '3'
+services:
+  testcafe:
+    build:
+      context: .
+      dockerfile: testcafe.dockerfile
+    command:
+      - firefox
+      - /tests
+    links:
+      - todolist
+    depends_on:
+      - todolist
+    environment:
+      - HOST=todolist
+  todolist:
+    build: .
