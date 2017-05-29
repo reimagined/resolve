@@ -8,7 +8,7 @@
     "test": "exit 0"
   },
   "license": "MIT",
-  "private": true,
+  "author": "reimagined team",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/reimagined/resolve.git"
