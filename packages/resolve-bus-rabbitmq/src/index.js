@@ -68,8 +68,6 @@ export default function (options) {
                     }
                 );
             }),
-        setTrigger: callback => initPromise.then(() =>
-            (handler = callback)
-        )
+        setTrigger: callback => initPromise.then(() => (handler = callback))
     };
 }
