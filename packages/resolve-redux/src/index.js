@@ -1,3 +1,4 @@
+import 'regenerator-runtime/runtime';
 import actions from './actions';
 import createReducer from './create_reducer';
 import saga from './saga';
