@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { call, put } from 'redux-saga/effects';
 import { expect } from 'chai';
-import { actions } from '../dist';
+import { actions } from '../src';
 import fetchMoreSaga from '../src/fetch_more_saga';
 
 describe('fetchMoreSaga', () => {
