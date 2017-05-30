@@ -14,7 +14,7 @@ function loadEvents(coll, query, callback) {
     return donePromise;
 }
 
-export default function ({ url, collection }) {
+function createDriver({ url, collection }) {
     let promise;
 
     function getCollection() {
@@ -40,3 +40,5 @@ export default function ({ url, collection }) {
             getCollection().then(coll => loadEvents(coll, { aggregateId }, callback))
     };
 }
+
+export default createDriver;

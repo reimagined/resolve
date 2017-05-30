@@ -82,4 +82,8 @@ describe('resolve-query', () => {
                 expect(e.toString()).to.contain(`The '${projectionName}' projection is not found`)
             );
     });
+
+    it('works the same way for different import types', () => {
+        expect(createExecutor).to.be.equal(require('../src'));
+    });
 });

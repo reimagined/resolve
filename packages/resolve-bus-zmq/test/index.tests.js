@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { expect } from 'chai';
 import zeromq from 'zeromq';
-import adapter from '../src';
+import driver from '../src';
 
 describe('ZeroMQ bus', () => {
     let zmqSocketStub = null;
@@ -45,12 +45,17 @@ describe('ZeroMQ bus', () => {
         trigger = sinon.spy();
 
         zmqSocketStub = sinon.stub(zeromq, 'socket').callsFake((socktype) => {
-            switch(socktype) {
-                case 'xpub': return fakeSocketXpub;
-                case 'xsub': return fakeSocketXsub;
-                case 'pub': return fakeSocketPub;
-                case 'sub': return fakeSocketSub;
-                default: return null;
+            switch (socktype) {
+                case 'xpub':
+                    return fakeSocketXpub;
+                case 'xsub':
+                    return fakeSocketXsub;
+                case 'pub':
+                    return fakeSocketPub;
+                case 'sub':
+                    return fakeSocketSub;
+                default:
+                    return null;
             }
         });
     });
@@ -71,7 +76,7 @@ describe('ZeroMQ bus', () => {
     });
 
     it('should init correctly and run new broker', () => {
-        const instance = adapter(testOptions);
+        const instance = driver(testOptions);
 
         return instance.setTrigger(trigger).then(() => {
             expect(zeromq.socket.callCount).to.be.equal(4);
@@ -89,10 +94,12 @@ describe('ZeroMQ bus', () => {
 
             expect(fakeSocketXpub.setsockopt.callCount).to.be.equal(2);
             expect(fakeSocketXpub.setsockopt.firstCall.args).to.be.deep.equal([
-                zeromq.ZMQ_SNDHWM, 1000
+                zeromq.ZMQ_SNDHWM,
+                1000
             ]);
             expect(fakeSocketXpub.setsockopt.secondCall.args).to.be.deep.equal([
-                zeromq.ZMQ_XPUB_VERBOSE, 0
+                zeromq.ZMQ_XPUB_VERBOSE,
+                0
             ]);
 
             expect(fakeSocketXpub.bindSync.firstCall.args).to.be.deep.equal([
@@ -124,9 +131,7 @@ describe('ZeroMQ bus', () => {
 
             expect(zeromq.socket.getCall(3).args).to.be.deep.equal(['sub']);
             expect(fakeSocketSub.subscribe.callCount).to.be.equal(1);
-            expect(fakeSocketSub.subscribe.firstCall.args).to.be.deep.equal([
-                testOptions.channel
-            ]);
+            expect(fakeSocketSub.subscribe.firstCall.args).to.be.deep.equal([testOptions.channel]);
 
             expect(fakeSocketSub.connect.callCount).to.be.equal(1);
             expect(fakeSocketSub.connect.firstCall.args).to.be.deep.equal([
@@ -140,15 +145,13 @@ describe('ZeroMQ bus', () => {
 
     it('should init correctly and use existing broker', () => {
         brokerActivated = { pub: true, sub: true };
-        const instance = adapter(testOptions);
+        const instance = driver(testOptions);
 
         return instance.setTrigger(trigger).then(() => {
             expect(zeromq.socket.callCount).to.be.equal(3);
 
             expect(fakeSocketXsub.bindSync.callCount).to.be.equal(1);
-            expect(fakeSocketXsub.bindSync.lastCall.exception.message).to.be.equal(
-                'Bind error'
-            );
+            expect(fakeSocketXsub.bindSync.lastCall.exception.message).to.be.equal('Bind error');
 
             expect(fakeSocketXpub.bindSync.callCount).to.be.equal(0);
             expect(fakeSocketXpub.setsockopt.callCount).to.be.equal(0);
@@ -165,9 +168,7 @@ describe('ZeroMQ bus', () => {
 
             expect(zeromq.socket.getCall(2).args).to.be.deep.equal(['sub']);
             expect(fakeSocketSub.subscribe.callCount).to.be.equal(1);
-            expect(fakeSocketSub.subscribe.firstCall.args).to.be.deep.equal([
-                testOptions.channel
-            ]);
+            expect(fakeSocketSub.subscribe.firstCall.args).to.be.deep.equal([testOptions.channel]);
 
             expect(fakeSocketSub.connect.callCount).to.be.equal(1);
             expect(fakeSocketSub.connect.firstCall.args).to.be.deep.equal([
@@ -181,7 +182,7 @@ describe('ZeroMQ bus', () => {
 
     it('should publish messages in bus', () => {
         brokerActivated = { pub: true, sub: true };
-        const instance = adapter(testOptions);
+        const instance = driver(testOptions);
 
         const originalMessage = { marker: '@@message-marker' };
         const stringMessage = JSON.stringify(originalMessage);
@@ -196,7 +197,7 @@ describe('ZeroMQ bus', () => {
 
     it('should trigger on incoming bus messages', () => {
         brokerActivated = { pub: true, sub: true };
-        const instance = adapter(testOptions);
+        const instance = driver(testOptions);
 
         const originalMessage = { marker: '@@message-marker' };
         const stringMessage = JSON.stringify(originalMessage);
@@ -206,9 +207,11 @@ describe('ZeroMQ bus', () => {
             onCallback(`${testOptions.channel} ${stringMessage}`);
 
             expect(trigger.callCount).to.be.equal(1);
-            expect(trigger.lastCall.args).to.be.deep.equal([
-                originalMessage
-            ])
+            expect(trigger.lastCall.args).to.be.deep.equal([originalMessage]);
         });
+    });
+
+    it('works the same way for different import types', () => {
+        expect(driver).to.be.equal(require('../src'));
     });
 });

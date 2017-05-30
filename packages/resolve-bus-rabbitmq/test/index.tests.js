@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { expect } from 'chai';
 import amqplib from 'amqplib';
-import adapter from '../src';
+import driver from '../src';
 
 const fakeChannel = {
     publish: () => {},
@@ -21,13 +21,13 @@ describe('RabbitMQ bus', () => {
     let consumeExpectation;
     let assertExchangeExpectation;
 
-    const adapterConfig = { url: 'url',  messageTtl: 'messageTtl', maxLength: 'maxLength' };
+    const driverConfig = { url: 'url', messageTtl: 'messageTtl', maxLength: 'maxLength' };
     const queue = { queue: 'queue' };
 
     const queueConfig = {
         arguments: {
-            messageTtl: adapterConfig.messageTtl,
-            maxLength: adapterConfig.maxLength
+            messageTtl: driverConfig.messageTtl,
+            maxLength: driverConfig.maxLength
         }
     };
 
@@ -39,7 +39,7 @@ describe('RabbitMQ bus', () => {
         amqplibMock = sinon.mock(amqplib);
         fakeChannelMock = sinon.mock(fakeChannel);
 
-        amqplibMock.expects('connect').withArgs(adapterConfig.url).resolves(fakeConnection);
+        amqplibMock.expects('connect').withArgs(driverConfig.url).resolves(fakeConnection);
 
         consumeExpectation = fakeChannelMock.expects('consume');
 
@@ -57,7 +57,7 @@ describe('RabbitMQ bus', () => {
 
     describe('publish', () => {
         it('calls amqplib connect once', () => {
-            const instance = adapter(adapterConfig);
+            const instance = driver(driverConfig);
 
             return instance
                 .publish({})
@@ -72,42 +72,48 @@ describe('RabbitMQ bus', () => {
                 .expects('publish')
                 .withArgs('exchange', '', new Buffer(JSON.stringify(event)));
 
-            const instance = adapter(adapterConfig);
+            const instance = driver(driverConfig);
 
             return instance.publish(event).then(() => fakeChannelMock.verify());
         });
 
         it('calls amqplib connect once in parallel', () => {
-            const instance = adapter(adapterConfig);
+            const instance = driver(driverConfig);
             const firstEvent = { message: 1 };
             const secondEvent = { message: 2 };
 
-            fakeChannelMock.expects('publish').onCall(0)
+            fakeChannelMock
+                .expects('publish')
+                .onCall(0)
                 .callsFake((exchange, queueName, event, options) => {
                     expect(new Buffer(JSON.stringify(firstEvent))).to.be.deep.equal(event);
                     expect(options).to.be.deep.equal({
-                        expiration: adapterConfig.messageTtl,
+                        expiration: driverConfig.messageTtl,
                         persistent: false
                     });
                 });
 
-            fakeChannelMock.expects('publish').onCall(1)
+            fakeChannelMock
+                .expects('publish')
+                .onCall(1)
                 .callsFake((exchange, queueName, event, options) => {
                     expect(new Buffer(JSON.stringify(secondEvent))).to.be.deep.equal(event);
                     expect(options).to.be.deep.equal({
-                        expiration: adapterConfig.messageTtl,
+                        expiration: driverConfig.messageTtl,
                         persistent: false
                     });
                 });
 
-            return Promise.all([instance.publish(firstEvent), instance.publish(secondEvent)])
-                .then(() => amqplibMock.verify());
+            return Promise.all([
+                instance.publish(firstEvent),
+                instance.publish(secondEvent)
+            ]).then(() => amqplibMock.verify());
         });
     });
 
     describe('onEvent', () => {
         it('calls amqplib connect only once in sequence', () => {
-            const instance = adapter(adapterConfig);
+            const instance = driver(driverConfig);
 
             return instance
                 .setTrigger(() => {})
@@ -116,7 +122,7 @@ describe('RabbitMQ bus', () => {
         });
 
         it('calls callback on message is got from amqplib', () => {
-            const instance = adapter(adapterConfig);
+            const instance = driver(driverConfig);
             let emitter;
 
             consumeExpectation.callsFake((queueName, func, options) => {
@@ -135,7 +141,7 @@ describe('RabbitMQ bus', () => {
         });
 
         it('calls amqplib bindQueue with correct arguments', () => {
-            const instance = adapter(adapterConfig);
+            const instance = driver(driverConfig);
 
             return instance
                 .setTrigger(['eventType'], () => {})
@@ -143,11 +149,15 @@ describe('RabbitMQ bus', () => {
         });
 
         it('calls amqplib assertExchange', () => {
-            const instance = adapter(adapterConfig);
+            const instance = driver(driverConfig);
 
             assertExchangeExpectation.withArgs('exchange', 'fanout', { durable: false }).resolves();
 
             return instance.setTrigger(() => {}).then(() => fakeChannelMock.verify());
         });
+    });
+
+    it('works the same way for different import types', () => {
+        expect(driver).to.be.equal(require('../src'));
     });
 });
