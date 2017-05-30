@@ -16,32 +16,33 @@ const loadEvents = path =>
 const compareEvents = (a, b) => a.timestamp - b.timestamp;
 
 function createDriver({ pathToFile }) {
-    return {
-        saveEvent: event =>
-            new Promise((resolve, reject) =>
-                fs.appendFile(
-                    pathToFile,
-                    `${JSON.stringify(event, null, 2)},`,
-                    ENCODING,
-                    err => (err ? reject(err) : resolve())
-                )
-            ),
-
-        loadEventsByTypes: (types, callback) =>
-            loadEvents(pathToFile).then(events =>
-                events
-                    .filter(event => types.includes(event.type))
-                    .sort(compareEvents)
-                    .forEach(callback)
-            ),
-
-        loadEventsByAggregateId: (id, callback) =>
-            loadEvents(pathToFile).then(events =>
-                events
-                    .filter(event => event.aggregateId === id)
-                    .sort(compareEvents)
-                    .forEach(callback)
+    function saveEvent(event) {
+        return new Promise((resolve, reject) =>
+            fs.appendFile(
+                pathToFile,
+                `${JSON.stringify(event, null, 2)},`,
+                ENCODING,
+                err => (err ? reject(err) : resolve())
             )
+        );
+    }
+
+    function loadEventsByTypes(types, callback) {
+        return loadEvents(pathToFile).then(events =>
+            events.filter(event => types.includes(event.type)).sort(compareEvents).forEach(callback)
+        );
+    }
+
+    function loadEventsByAggregateId(id, callback) {
+        return loadEvents(pathToFile).then(events =>
+            events.filter(event => event.aggregateId === id).sort(compareEvents).forEach(callback)
+        );
+    }
+
+    return {
+        saveEvent,
+        loadEventsByTypes,
+        loadEventsByAggregateId
     };
 }
 
