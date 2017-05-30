@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import mockFs from 'mock-fs';
-import adapter from '../src/index';
+import driver from '../src/index';
 
 const row1 = {
     type: 'testtype_1',
@@ -35,7 +35,7 @@ const row5 = {
 const FILE_CONTENT = [row1, row2, row3, row4].map(row => `${JSON.stringify(row)},`).join('');
 const TEST_PATH = './testpath.txt';
 
-const eventstore = adapter({ pathToFile: TEST_PATH });
+const eventstore = driver({ pathToFile: TEST_PATH });
 
 describe('es-file', () => {
     before(() => {
@@ -83,6 +83,6 @@ describe('es-file', () => {
     });
 
     it('works the same way for different import types', () => {
-        expect(adapter).to.be.equal(require('../src'));
+        expect(driver).to.be.equal(require('../src'));
     });
 });

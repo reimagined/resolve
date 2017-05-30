@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import adapter from '../src/index';
+import driver from '../src/index';
 
 const row1 = {
     type: 'testtype_1',
@@ -35,7 +35,7 @@ const rows = [row1, row2, row3, row4];
 
 describe('es-memory', () => {
     it('load events by types', () => {
-        const eventstore = adapter(rows);
+        const eventstore = driver(rows);
         const result = [];
 
         return eventstore
@@ -48,7 +48,7 @@ describe('es-memory', () => {
     });
 
     it('load events by aggregate id', () => {
-        const eventstore = adapter(rows);
+        const eventstore = driver(rows);
         const result = [];
 
         return eventstore
@@ -61,7 +61,7 @@ describe('es-memory', () => {
     });
 
     it('save event', () => {
-        const eventstore = adapter(rows);
+        const eventstore = driver(rows);
 
         return eventstore.saveEvent(row5).then(() =>
             eventstore.loadEventsByAggregateId('5', (result) => {
@@ -71,6 +71,6 @@ describe('es-memory', () => {
     });
 
     it('works the same way for different import types', () => {
-        expect(adapter).to.be.equal(require('../src'));
+        expect(driver).to.be.equal(require('../src'));
     });
 });

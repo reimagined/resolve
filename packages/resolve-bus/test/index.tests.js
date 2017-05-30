@@ -13,7 +13,7 @@ describe('resolve-bus', () => {
         };
     });
 
-    it('passes handler to adapter', () => {
+    it('passes handler to driver', () => {
         createBus({ driver });
         expect(driver.setTrigger.calledOnce).to.be.true;
         expect(driver.setTrigger.args[0][0]).to.be.a('function');
