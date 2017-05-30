@@ -69,5 +69,4 @@ function createExecutor({ store, bus, aggregates }) {
         verifyCommand(command).then(() => executors[command.aggregateName.toLowerCase()](command));
 }
 
-module.exports = createExecutor;
 export default createExecutor;

@@ -7,5 +7,4 @@ function createDriver() {
     };
 }
 
-module.exports = createDriver;
 export default createDriver;

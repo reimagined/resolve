@@ -41,5 +41,4 @@ function createDriver({ url, collection }) {
     };
 }
 
-module.exports = createDriver;
 export default createDriver;

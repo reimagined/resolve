@@ -46,5 +46,4 @@ function createDriver({ pathToFile }) {
     };
 }
 
-module.exports = createDriver;
 export default createDriver;

@@ -17,5 +17,4 @@ function createDriver({ driver }) {
     };
 }
 
-module.exports = createDriver;
 export default createDriver;

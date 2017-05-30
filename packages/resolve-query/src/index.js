@@ -41,5 +41,4 @@ function createExecutor({ store, bus, projections }) {
     };
 }
 
-module.exports = createExecutor;
 export default createExecutor;

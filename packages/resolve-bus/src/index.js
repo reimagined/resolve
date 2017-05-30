@@ -29,5 +29,4 @@ function createBus({ driver }) {
     };
 }
 
-module.exports = createBus;
 export default createBus;
