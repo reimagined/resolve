@@ -81,4 +81,8 @@ describe('resolve-bus', () => {
         expect(firstSpy.callCount).to.be.equal(1);
         expect(secondSpy.callCount).to.be.equal(0);
     });
+
+    it('works the same way for different import types', () => {
+        expect(createBus).to.be.equal(require('../src'));
+    });
 });

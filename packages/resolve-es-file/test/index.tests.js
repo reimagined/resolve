@@ -81,4 +81,8 @@ describe('es-file', () => {
         mockFs.restore();
         return eventstore.loadEventsByTypes([], () => 0);
     });
+
+    it('works the same way for different import types', () => {
+        expect(adapter).to.be.equal(require('../src'));
+    });
 });

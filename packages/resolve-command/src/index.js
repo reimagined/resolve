@@ -48,14 +48,16 @@ function publishEvent(event, bus) {
     return event;
 }
 
-const createExecutor = ({ store, bus, aggregate }) => command =>
-    executeCommand(command, aggregate, store)
-        .then(event => saveEvent(event, store))
-        .then(event => publishEvent(event, bus));
+function createAggregateExecutor({ store, bus, aggregate }) {
+    return command =>
+        executeCommand(command, aggregate, store)
+            .then(event => saveEvent(event, store))
+            .then(event => publishEvent(event, bus));
+}
 
-export default ({ store, bus, aggregates }) => {
+function createExecutor({ store, bus, aggregates }) {
     const executors = aggregates.reduce((result, aggregate) => {
-        result[aggregate.name.toLowerCase()] = createExecutor({
+        result[aggregate.name.toLowerCase()] = createAggregateExecutor({
             store,
             bus,
             aggregate
@@ -65,4 +67,7 @@ export default ({ store, bus, aggregates }) => {
 
     return command =>
         verifyCommand(command).then(() => executors[command.aggregateName.toLowerCase()](command));
-};
+}
+
+module.exports = createExecutor;
+export default createExecutor;

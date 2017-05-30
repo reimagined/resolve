@@ -20,7 +20,7 @@ const executor = ({ store, bus, projection }) => {
     };
 };
 
-export default ({ store, bus, projections }) => {
+function createExecutor({ store, bus, projections }) {
     const executors = projections.reduce((result, projection) => {
         result[projection.name.toLowerCase()] = executor({
             store,
@@ -39,4 +39,7 @@ export default ({ store, bus, projections }) => {
 
         return executor();
     };
-};
+}
+
+module.exports = createExecutor;
+export default createExecutor;

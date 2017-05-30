@@ -93,4 +93,8 @@ describe('es-mongo', () => {
                 ]);
             });
     });
+
+    it('works the same way for different import types', () => {
+        expect(createAdapter).to.be.equal(require('../src'));
+    });
 });

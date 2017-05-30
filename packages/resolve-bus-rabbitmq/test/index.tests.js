@@ -21,7 +21,7 @@ describe('RabbitMQ bus', () => {
     let consumeExpectation;
     let assertExchangeExpectation;
 
-    const adapterConfig = { url: 'url',  messageTtl: 'messageTtl', maxLength: 'maxLength' };
+    const adapterConfig = { url: 'url', messageTtl: 'messageTtl', maxLength: 'maxLength' };
     const queue = { queue: 'queue' };
 
     const queueConfig = {
@@ -82,7 +82,9 @@ describe('RabbitMQ bus', () => {
             const firstEvent = { message: 1 };
             const secondEvent = { message: 2 };
 
-            fakeChannelMock.expects('publish').onCall(0)
+            fakeChannelMock
+                .expects('publish')
+                .onCall(0)
                 .callsFake((exchange, queueName, event, options) => {
                     expect(new Buffer(JSON.stringify(firstEvent))).to.be.deep.equal(event);
                     expect(options).to.be.deep.equal({
@@ -91,7 +93,9 @@ describe('RabbitMQ bus', () => {
                     });
                 });
 
-            fakeChannelMock.expects('publish').onCall(1)
+            fakeChannelMock
+                .expects('publish')
+                .onCall(1)
                 .callsFake((exchange, queueName, event, options) => {
                     expect(new Buffer(JSON.stringify(secondEvent))).to.be.deep.equal(event);
                     expect(options).to.be.deep.equal({
@@ -100,8 +104,10 @@ describe('RabbitMQ bus', () => {
                     });
                 });
 
-            return Promise.all([instance.publish(firstEvent), instance.publish(secondEvent)])
-                .then(() => amqplibMock.verify());
+            return Promise.all([
+                instance.publish(firstEvent),
+                instance.publish(secondEvent)
+            ]).then(() => amqplibMock.verify());
         });
     });
 
@@ -149,5 +155,9 @@ describe('RabbitMQ bus', () => {
 
             return instance.setTrigger(() => {}).then(() => fakeChannelMock.verify());
         });
+    });
+
+    it('works the same way for different import types', () => {
+        expect(adapter).to.be.equal(require('../src'));
     });
 });

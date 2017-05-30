@@ -45,12 +45,17 @@ describe('ZeroMQ bus', () => {
         trigger = sinon.spy();
 
         zmqSocketStub = sinon.stub(zeromq, 'socket').callsFake((socktype) => {
-            switch(socktype) {
-                case 'xpub': return fakeSocketXpub;
-                case 'xsub': return fakeSocketXsub;
-                case 'pub': return fakeSocketPub;
-                case 'sub': return fakeSocketSub;
-                default: return null;
+            switch (socktype) {
+                case 'xpub':
+                    return fakeSocketXpub;
+                case 'xsub':
+                    return fakeSocketXsub;
+                case 'pub':
+                    return fakeSocketPub;
+                case 'sub':
+                    return fakeSocketSub;
+                default:
+                    return null;
             }
         });
     });
@@ -89,10 +94,12 @@ describe('ZeroMQ bus', () => {
 
             expect(fakeSocketXpub.setsockopt.callCount).to.be.equal(2);
             expect(fakeSocketXpub.setsockopt.firstCall.args).to.be.deep.equal([
-                zeromq.ZMQ_SNDHWM, 1000
+                zeromq.ZMQ_SNDHWM,
+                1000
             ]);
             expect(fakeSocketXpub.setsockopt.secondCall.args).to.be.deep.equal([
-                zeromq.ZMQ_XPUB_VERBOSE, 0
+                zeromq.ZMQ_XPUB_VERBOSE,
+                0
             ]);
 
             expect(fakeSocketXpub.bindSync.firstCall.args).to.be.deep.equal([
@@ -124,9 +131,7 @@ describe('ZeroMQ bus', () => {
 
             expect(zeromq.socket.getCall(3).args).to.be.deep.equal(['sub']);
             expect(fakeSocketSub.subscribe.callCount).to.be.equal(1);
-            expect(fakeSocketSub.subscribe.firstCall.args).to.be.deep.equal([
-                testOptions.channel
-            ]);
+            expect(fakeSocketSub.subscribe.firstCall.args).to.be.deep.equal([testOptions.channel]);
 
             expect(fakeSocketSub.connect.callCount).to.be.equal(1);
             expect(fakeSocketSub.connect.firstCall.args).to.be.deep.equal([
@@ -146,9 +151,7 @@ describe('ZeroMQ bus', () => {
             expect(zeromq.socket.callCount).to.be.equal(3);
 
             expect(fakeSocketXsub.bindSync.callCount).to.be.equal(1);
-            expect(fakeSocketXsub.bindSync.lastCall.exception.message).to.be.equal(
-                'Bind error'
-            );
+            expect(fakeSocketXsub.bindSync.lastCall.exception.message).to.be.equal('Bind error');
 
             expect(fakeSocketXpub.bindSync.callCount).to.be.equal(0);
             expect(fakeSocketXpub.setsockopt.callCount).to.be.equal(0);
@@ -165,9 +168,7 @@ describe('ZeroMQ bus', () => {
 
             expect(zeromq.socket.getCall(2).args).to.be.deep.equal(['sub']);
             expect(fakeSocketSub.subscribe.callCount).to.be.equal(1);
-            expect(fakeSocketSub.subscribe.firstCall.args).to.be.deep.equal([
-                testOptions.channel
-            ]);
+            expect(fakeSocketSub.subscribe.firstCall.args).to.be.deep.equal([testOptions.channel]);
 
             expect(fakeSocketSub.connect.callCount).to.be.equal(1);
             expect(fakeSocketSub.connect.firstCall.args).to.be.deep.equal([
@@ -206,9 +207,11 @@ describe('ZeroMQ bus', () => {
             onCallback(`${testOptions.channel} ${stringMessage}`);
 
             expect(trigger.callCount).to.be.equal(1);
-            expect(trigger.lastCall.args).to.be.deep.equal([
-                originalMessage
-            ])
+            expect(trigger.lastCall.args).to.be.deep.equal([originalMessage]);
         });
+    });
+
+    it('works the same way for different import types', () => {
+        expect(adapter).to.be.equal(require('../src'));
     });
 });

@@ -54,19 +54,16 @@ function init(options, trigger) {
         });
 }
 
-export default function (options) {
+function createDriver(options) {
     let handler = () => {};
     const config = Object.assign({}, defaultOptions, options);
     const initPromise = init(config, event => handler(event));
 
     return {
-        publish: event =>
-            initPromise.then(({ publisher }) =>
-                publisher(JSON.stringify(event))
-            ),
-        setTrigger: callback =>
-            initPromise.then(() =>
-                (handler = callback)
-            )
+        publish: event => initPromise.then(({ publisher }) => publisher(JSON.stringify(event))),
+        setTrigger: callback => initPromise.then(() => (handler = callback))
     };
 }
+
+module.exports = createDriver;
+export default createDriver;

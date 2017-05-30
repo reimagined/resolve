@@ -1,4 +1,4 @@
-export default function ({ driver }) {
+function createBus({ driver }) {
     const eventHandlersMap = new Map();
 
     function trigger(event) {
@@ -28,3 +28,6 @@ export default function ({ driver }) {
         }
     };
 }
+
+module.exports = createBus;
+export default createBus;
