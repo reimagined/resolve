@@ -1,4 +1,4 @@
-export default ({ driver }) => {
+function createDriver({ driver }) {
     let onEventSavedCallbacks = [];
 
     return {
@@ -15,4 +15,6 @@ export default ({ driver }) => {
                 (onEventSavedCallbacks = onEventSavedCallbacks.filter(item => item !== callback));
         }
     };
-};
+}
+
+export default createDriver;

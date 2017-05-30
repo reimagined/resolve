@@ -3,13 +3,13 @@ import { createStore } from 'redux';
 import uuidV4 from 'uuid/v4';
 import { expect } from 'chai';
 import createReducer from '../src/create_reducer';
-import ResolveActions from '../src/actions';
+import ResolveActions, { MERGE } from '../src/actions';
 
 describe('reducer', () => {
     const projection = {
         name: 'counter',
 
-        initialState: () => Immutable({}),
+        initialState: Immutable({}),
 
         eventHandlers: {
             COUNTER_CREATE: (state, event) => state.set(event.aggregateId, { value: 0 }),
@@ -135,6 +135,34 @@ describe('reducer', () => {
             [aggregateId2]: { value: 2 },
             [aggregateId3]: { value: 4 }
         });
+    });
+
+    it('merge state with custom eventHandler[MERGE]', () => {
+        const initialState = new Set();
+
+        const projection = {
+            name: 'set',
+
+            initialState,
+
+            eventHandlers: {
+                [MERGE]: (state, action) => {
+                    state.add(action.state);
+                    return state;
+                }
+            }
+        };
+
+        const store = createStore(createReducer(projection), initialState);
+
+        expect(store.getState()).to.deep.equal(initialState);
+
+        store.dispatch(ResolveActions.merge('set', 1));
+        store.dispatch(ResolveActions.merge('set', 2));
+        store.dispatch(ResolveActions.merge('set', 3));
+        store.dispatch(ResolveActions.merge('set', 2));
+
+        expect(Array.from(store.getState())).to.deep.equal([1, 2, 3]);
     });
 
     it('should throw error when initialState=undefined', () => {

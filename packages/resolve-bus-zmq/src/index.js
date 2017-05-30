@@ -54,7 +54,7 @@ function init(options, trigger) {
         });
 }
 
-export default function (options) {
+function createDriver(options) {
     let handler = () => {};
     const config = Object.assign({}, defaultOptions, options);
     const initPromise = init(config, event => handler(event));
@@ -64,3 +64,5 @@ export default function (options) {
         setTrigger: callback => initPromise.then(() => (handler = callback))
     };
 }
+
+export default createDriver;
