@@ -6,8 +6,8 @@ This package creates a function to execute a command.
 
 ```js
 import createHandler from 'resolve-command';
-import createStore from 'resolve-es';
-import createEsDriver from 'resolve-es-memory';
+import createStore from 'resolve-storage';
+import createEsDriver from 'resolve-storage-memory';
 import createBus from 'resolve-bus';
 import createBusDriver from 'resolve-bus-memory';
 

@@ -2,10 +2,12 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import uuid from 'uuid';
 
-import createStore from 'resolve-es';
-import esDriver from 'resolve-es-file';
+import createEventStore from 'resolve-es';
+import createStorage from 'resolve-storage';
+import storageDriver from 'resolve-storage-file';
 import createBus from 'resolve-bus';
 import busDriver from 'resolve-bus-memory';
+
 import commandHandler from 'resolve-command';
 import query from 'resolve-query';
 
@@ -24,38 +26,37 @@ const setupMiddlewares = (app) => {
 const app = express();
 app.use(express.static('static'));
 
-const eventStore = createStore({
-    driver: esDriver({ pathToFile: './event_store.json' })
+const storage = createStorage({
+    driver: storageDriver({ pathToFile: './event_store.json' })
 });
 const bus = createBus({ driver: busDriver() });
 
+const eventStore = createEventStore({
+    storage,
+    bus
+});
+
 const execute = commandHandler({
-    store: eventStore,
-    bus,
+    eventStore,
     aggregates: [todoCardAggregate, todoItemAggregate]
 });
 
 const queries = query({
-    store: eventStore,
-    bus,
+    eventStore,
     projections: [cardsProjection, cardDetailsProjection]
 });
 
 setupMiddlewares(app);
 
-app.get('/', (req, res) =>
-    queries('cards').then(inventoryItems =>
-        res.render('index', {
-            items: Object.values(inventoryItems)
-        })
-    )
-);
+app.get('/', (req, res) => {
+    const inventoryItems = queries('cards');
+    res.render('index', { items: Object.values(inventoryItems) });
+});
 
-app.get('/:card', (req, res) =>
-    queries('cardDetails').then(items =>
-        res.render('cardDetails', { card: items.cards[req.params.card] })
-    )
-);
+app.get('/:card', (req, res) => {
+    const items = queries('cardDetails');
+    res.render('cardDetails', { card: items.cards[req.params.card] });
+});
 
 app.post('/command', (req, res) => {
     const command = Object.keys(req.body)

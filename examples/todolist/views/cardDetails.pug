@@ -5,11 +5,11 @@ include includes/header.pug
             a(href='/')
                 i.fa.fa-arrow-circle-o-left
             text  Card Details:&nbsp;
-            text= card.name
+            text= (card && card.name) || ''
     p.lead
         h2 Todo List:
         ul.list-group
-            each key in Object.keys(card.todoList)
+            each key in Object.keys((card && card.todoList) || [])
                 li.list-group-item
                     .row
                         .col-xs-8
@@ -37,8 +37,8 @@ include includes/header.pug
         form(method='POST' action='/command')
             input(name='type' value='create' type='hidden')
             input(name='aggregateName' value='todoitem' type='hidden')
-            input(name='cardId' value=card.aggregateId type='hidden')
-            input(name='returnUrl' value='/'+card.aggregateId type='hidden')
+            input(name='cardId' value=((card && card.aggregateId) || '') type='hidden')
+            input(name='returnUrl' value='/'+((card && card.aggregateId) || '') type='hidden')
             .input-group
                 input.form-control(name='name')
                 span.input-group-btn

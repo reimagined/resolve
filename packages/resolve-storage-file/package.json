@@ -1,7 +1,7 @@
 {
-  "name": "resolve-es-file",
+  "name": "resolve-storage-file",
   "version": "0.0.1",
-  "description": "This package serves as a driver for resolve-es to store events using a file.",
+  "description": "This package serves as a driver for resolve-storage to store events using a file.",
   "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
@@ -23,7 +23,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-es-file#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-file#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.2.0",

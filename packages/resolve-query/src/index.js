@@ -2,39 +2,47 @@ function updateState(projection, event, state) {
     return projection.eventHandlers[event.type](state, event);
 }
 
-const executor = ({ store, bus, projection }) => {
+function getExecutor({ eventStore, projection }) {
     const eventTypes = Object.keys(projection.eventHandlers);
     let state = projection.initialState || {};
+    let error = null;
 
-    const handler = event => (state = updateState(projection, event, state));
+    const eventStream = eventStore.getStreamByEventTypes(eventTypes);
 
-    let result = null;
+    eventStream.on('readable', () => {
+        let event;
+        // eslint-disable-next-line no-cond-assign
+        while (null !== (event = eventStream.read())) {
+            try {
+                state = updateState(projection, event, state);
+            } catch (err) {
+                error = err;
+            }
+        }
+    });
+
+    eventStream.on('error', err => (error = err));
+
     return () => {
-        result =
-            result ||
-            store.loadEventsByTypes(eventTypes, handler).then(() => {
-                bus.onEvent(eventTypes, handler);
-            });
-
-        return result.then(() => state);
+        if (!error) return state;
+        throw error;
     };
-};
+}
 
-export default ({ store, bus, projections }) => {
+export default ({ eventStore, projections }) => {
     const executors = projections.reduce((result, projection) => {
-        result[projection.name.toLowerCase()] = executor({
-            store,
-            bus,
+        result[projection.name.toLowerCase()] = getExecutor({
+            eventStore,
             projection
         });
         return result;
     }, {});
 
-    return (name) => {
-        const executor = executors[name.toLowerCase()];
+    return (projectionName) => {
+        const executor = executors[projectionName.toLowerCase()];
 
         if (executor === undefined) {
-            return Promise.reject(new Error(`The '${name}' projection is not found`));
+            throw new Error(`The '${projectionName}' projection is not found`);
         }
 
         return executor();

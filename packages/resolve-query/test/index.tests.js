@@ -1,85 +1,95 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
-import createExecutor from '../src';
 
-const events = [
-    { type: 'SUM', payload: { value: 1 } },
-    { type: 'SUM', payload: { value: 2 } },
-    { type: 'SUB', payload: { value: 1 } },
-    { type: 'SUB', payload: { value: 1 } },
-    { type: 'SUM', payload: { value: 2 } }
-];
+import createQueryExecutor from '../src';
+const brokenStateError = new Error('Broken Error');
 
-const initialState = { count: 0 };
+describe('resolve-command', () => {
+    const PROJECTION_NAME = 'projectionName';
 
-const eventHandlers = {
-    SUM: (state, event) => ({ count: state.count + event.payload.value }),
-    SUB: (state, event) => ({ count: state.count - event.payload.value })
-};
+    let eventStore, onReadable, onError, eventList;
 
-const PROJECTION_NAME = 'prj1';
-
-let onEventCallback = null;
-
-const options = {
-    store: {
-        loadEventsByTypes: sinon.spy((types, cb) => Promise.resolve(events.forEach(cb)))
-    },
-    projections: [
+    const projections = [
         {
+            initialState: {},
             name: PROJECTION_NAME,
-            initialState,
-            eventHandlers
+            eventHandlers: {
+                SuccessEvent: (state, event) => {
+                    return { ...state, value: 42 };
+                },
+                BrokenEvent: (state, event) => {
+                    throw brokenStateError;
+                }
+            }
         }
-    ],
-    bus: {
-        emitEvent: (event) => {
-            onEventCallback(event);
-        },
-        onEvent: (eventTypes, callback) => (onEventCallback = callback)
-    }
-};
+    ];
 
-describe('resolve-query', () => {
+    beforeEach(() => {
+        eventList = [];
+
+        eventStore = {
+            getStreamByEventTypes: sinon.stub().callsFake(() => {
+                const on = sinon.stub();
+                on.withArgs('readable').callsFake((_, callback) => (onReadable = callback));
+                on.withArgs('error').callsFake((_, callback) => (onError = callback));
+
+                return {
+                    on,
+                    read: sinon.stub().callsFake(() => {
+                        const event = eventList.shift();
+                        if (event) return event;
+                        return null;
+                    })
+                };
+            })
+        };
+    });
+
     afterEach(() => {
-        options.store.loadEventsByTypes.reset();
+        eventStore = null;
+        onReadable = null;
+        onError = null;
+        eventList = null;
     });
 
-    it('execute', () => {
-        const execute = createExecutor(options);
-        return execute(PROJECTION_NAME).then((result) => {
-            expect(result).to.be.deep.equal({ count: 3 });
+    it('should build state on valid event and return it on query', () => {
+        const executeQuery = createQueryExecutor({ eventStore, projections });
+        eventList = [{ type: 'SuccessEvent' }];
+
+        onReadable();
+
+        const state = executeQuery(PROJECTION_NAME);
+
+        expect(state).to.be.deep.equal({
+            value: 42
         });
     });
 
-    it('initial call once', () => {
-        const execute = createExecutor(options);
-        return Promise.all([execute(PROJECTION_NAME), execute(PROJECTION_NAME)]).then(() => {
-            expect(options.store.loadEventsByTypes.callCount).to.be.equal(1);
-        });
+    it('should handle broken event', () => {
+        const executeQuery = createQueryExecutor({ eventStore, projections });
+        eventList = [{ type: 'BrokenEvent' }];
+
+        onReadable();
+
+        expect(() => executeQuery(PROJECTION_NAME)).to.throw(brokenStateError);
     });
 
-    it('eventbus onEvent', () => {
-        const execute = createExecutor(options);
-        return execute(PROJECTION_NAME).then(() => {
-            options.bus.emitEvent({
-                type: 'SUM',
-                payload: { value: 1 }
-            });
-            return execute(PROJECTION_NAME).then((result) => {
-                expect(result).to.be.deep.equal({ count: 4 });
-            });
-        });
+    it('should handle errors on read side', () => {
+        const readSideError = new Error('Read side error');
+        const executeQuery = createQueryExecutor({ eventStore, projections });
+        eventList = [{ type: 'BrokenEvent' }];
+
+        onError(readSideError);
+
+        expect(() => executeQuery(PROJECTION_NAME)).to.throw(readSideError);
     });
 
-    it('rejects if projection does not exist', () => {
-        const execute = createExecutor(options);
-        const projectionName = 'SomeProjection';
+    it('should handle non-existing query executor', () => {
+        const executeQuery = createQueryExecutor({ eventStore, projections });
+        eventList = [{ type: 'BrokenEvent' }];
 
-        return execute(projectionName)
-            .then(() => expect(true).to.be.false)
-            .catch(e =>
-                expect(e.toString()).to.contain(`The '${projectionName}' projection is not found`)
-            );
+        expect(() => executeQuery('WRONG_PROJECTION_NAME')).to.throw(
+            'The \'WRONG_PROJECTION_NAME\' projection is not found'
+        );
     });
 });

@@ -1,280 +1,230 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import createStore from '../../resolve-es/src';
-import memoryEsDriver from '../../resolve-es-memory/src';
+import createCommandExecutor from '../src';
 
-import createBus from '../../resolve-bus/src';
-import memoryBusDriver from '../../resolve-bus-memory/src';
+describe('resolve-command', () => {
+    const AGGREGATE_ID = 'aggregateId';
+    const AGGREGATE_NAME = 'aggregateName';
+    const brokenStateError = new Error('Broken Error');
+    const failedCommandError = new Error('Failed Error');
 
-import commandHandler from '../src';
+    let lastState, eventStore, onEnd, onReadable, onError, eventList;
 
-describe('command', () => {
-    const AGGREGATE_ID = 'test-id';
-    const AGGREGATE_NAME = 'testAggregate';
-    const COMMAND_TYPE = 'create';
-    const EVENT_TYPE = 'created';
-
-    let store;
-    let bus;
-    let execute;
-    let aggregates;
-    let testCommand;
-    let testEvent;
+    const aggregates = [
+        {
+            initialState: {},
+            name: AGGREGATE_NAME,
+            eventHandlers: {
+                SuccessEvent: (state, event) => {
+                    lastState = { ...state, value: 42 };
+                    return lastState;
+                },
+                BrokenEvent: (state, event) => {
+                    throw brokenStateError;
+                }
+            },
+            commands: {
+                emptyCommand: () => ({
+                    type: 'EmptyEvent',
+                    payload: {}
+                }),
+                brokenCommand: () => ({
+                    type: '', //broken type
+                    payload: {}
+                })
+            }
+        }
+    ];
 
     beforeEach(() => {
-        sinon.stub(Date, 'now').returns(123);
+        lastState = aggregates[0].initialState;
+        eventList = [];
 
-        testCommand = {
-            aggregateId: AGGREGATE_ID,
-            aggregateName: AGGREGATE_NAME,
-            type: COMMAND_TYPE,
-            payload: { name: 'Jack' }
-        };
+        eventStore = {
+            getStreamByAggregateId: sinon.stub().callsFake(() => {
+                const on = sinon.stub();
+                on.withArgs('readable').callsFake((_, callback) => (onReadable = callback));
+                on.withArgs('end').callsFake((_, callback) => (onEnd = callback));
+                on.withArgs('error').callsFake((_, callback) => (onError = callback));
 
-        testEvent = {
-            aggregateId: AGGREGATE_ID,
-            type: EVENT_TYPE,
-            timestamp: 123,
-            payload: { name: 'Jack' }
-        };
-
-        aggregates = [
-            {
-                name: AGGREGATE_NAME,
-                commands: {
-                    [COMMAND_TYPE]: () => ({
-                        type: EVENT_TYPE,
-                        payload: { name: 'Jack' }
+                return {
+                    on,
+                    read: sinon.stub().callsFake(() => {
+                        const event = eventList.shift();
+                        if (event) return event;
+                        return null;
                     })
-                }
-            }
-        ];
-
-        store = createStore({ driver: memoryEsDriver() });
-        bus = createBus({ driver: memoryBusDriver() });
-        execute = commandHandler({ store, bus, aggregates });
+                };
+            }),
+            getPublishStream: sinon.stub().callsFake(() => {
+                return {
+                    on: sinon.spy(),
+                    write: sinon.stub().callsFake((event, callback) => {
+                        eventList.push(event);
+                        callback();
+                    })
+                };
+            })
+        };
     });
 
     afterEach(() => {
-        Date.now.restore();
+        lastState = null;
+        eventStore = null;
+        onEnd = null;
+        onReadable = null;
+        onError = null;
+        eventList = null;
     });
 
-    it('should save and publish event', () => {
-        const eventHandlerSpy = sinon.spy();
-        bus.onEvent([EVENT_TYPE], eventHandlerSpy);
+    it('should success build aggregate state and execute commnand', async () => {
+        const executeCommand = createCommandExecutor({ eventStore, aggregates });
+        eventList = [{ type: 'SuccessEvent' }];
 
-        return execute(testCommand).then(() => {
-            expect(eventHandlerSpy.callCount).to.be.equal(1);
-            expect(eventHandlerSpy.lastCall.args).to.be.deep.equal([testEvent]);
+        const transaction = executeCommand({
+            aggregateName: AGGREGATE_NAME,
+            aggregateId: AGGREGATE_ID,
+            type: 'emptyCommand'
+        });
 
-            const storedEvents = [];
-            return store
-                .loadEventsByAggregateId(AGGREGATE_ID, event => storedEvents.push(event))
-                .then(() => expect(storedEvents).to.be.deep.equal([testEvent]));
+        await Promise.resolve();
+        onReadable();
+        onEnd();
+
+        await transaction;
+
+        expect(lastState).to.be.deep.equal({
+            value: 42
         });
     });
 
-    it('should reject event in case of command.type absence', () => {
-        delete testCommand.type;
+    it('should handle rejection on case of failure on building aggregate state', async () => {
+        const executeCommand = createCommandExecutor({ eventStore, aggregates });
+        eventList = [{ type: 'BrokenEvent' }];
 
-        return execute(testCommand)
-            .then(() => expect(false).to.be.true)
-            .catch(err => expect(err).to.be.equal('"type" argument is required'));
-    });
-
-    it('should reject event in case of command.aggregateId absence', () => {
-        delete testCommand.aggregateId;
-
-        return execute(testCommand)
-            .then(() => expect(false).to.be.true)
-            .catch(err => expect(err).to.be.equal('"aggregateId" argument is required'));
-    });
-
-    it('should reject event in case of aggregate absence', () => {
-        delete testCommand.aggregateName;
-
-        return execute(testCommand)
-            .then(() => expect(false).to.be.true)
-            .catch(err => expect(err).to.be.equal('"aggregateName" argument is required'));
-    });
-
-    it('should pass initialState and args to command handler', () => {
-        const createHandlerSpy = sinon.stub().returns({
-            type: EVENT_TYPE,
-            payload: {}
+        executeCommand({
+            aggregateName: AGGREGATE_NAME,
+            aggregateId: AGGREGATE_ID,
+            type: 'emptyCommand'
         });
 
-        aggregates[0].commands[COMMAND_TYPE] = createHandlerSpy;
+        await Promise.resolve();
 
-        return execute(testCommand).then(() => {
-            expect(createHandlerSpy.lastCall.args).to.be.deep.equal([{}, testCommand]);
-        });
+        try {
+            onReadable();
+            return Promise.reject('Test failed');
+        } catch (error) {
+            expect(error).to.equal(brokenStateError);
+        }
     });
 
-    it('should get custom initialState and args to command handler', () => {
-        const createHandlerSpy = sinon.stub().returns({
-            type: EVENT_TYPE,
-            payload: {}
+    it('should raise exception in case of read side failure', async () => {
+        const executeCommand = createCommandExecutor({ eventStore, aggregates });
+        eventList = [{ type: 'SuccessEvent' }];
+
+        const transaction = executeCommand({
+            aggregateName: AGGREGATE_NAME,
+            aggregateId: AGGREGATE_ID,
+            type: 'emptyCommand'
         });
 
-        aggregates[0].commands[COMMAND_TYPE] = createHandlerSpy;
+        await Promise.resolve();
+        onError(failedCommandError);
 
-        aggregates[0].initialState = {
-            name: 'Initial name'
-        };
-
-        return execute(testCommand).then(() => {
-            expect(createHandlerSpy.lastCall.args).to.be.deep.equal([
-                { name: 'Initial name' },
-                testCommand
-            ]);
-        });
+        try {
+            await transaction;
+            return Promise.reject('Test failed');
+        } catch (error) {
+            expect(error).to.equal(failedCommandError);
+        }
     });
 
-    it('should pass initialState and args to command handler', () => {
-        const events = [
-            {
+    it('should use initialState in case of eventHandlers absence', async () => {
+        const aggregate = { ...aggregates[0] };
+        delete aggregate.eventHandlers;
+
+        const executeCommand = createCommandExecutor({
+            eventStore,
+            aggregates: [aggregate]
+        });
+        eventList = [{ type: 'SuccessEvent' }];
+
+        executeCommand({
+            aggregateName: AGGREGATE_NAME,
+            aggregateId: AGGREGATE_ID,
+            type: 'emptyCommand'
+        });
+
+        await Promise.resolve();
+
+        expect(lastState).to.be.equal(aggregate.initialState);
+    });
+
+    it('should reject event with type absence', async () => {
+        const executeCommand = createCommandExecutor({ eventStore, aggregates });
+        eventList = [{ type: 'SuccessEvent' }];
+
+        const transaction = executeCommand({
+            aggregateName: AGGREGATE_NAME,
+            aggregateId: AGGREGATE_ID,
+            type: 'brokenCommand'
+        });
+
+        await Promise.resolve();
+        onReadable();
+        onEnd();
+
+        try {
+            await transaction;
+            return Promise.reject('Test failed');
+        } catch (error) {
+            expect(error.message).to.equal('event type is required');
+        }
+    });
+
+    it('should reject command with aggregateId absence', async () => {
+        const executeCommand = createCommandExecutor({ eventStore, aggregates });
+
+        try {
+            await executeCommand({
+                aggregateName: AGGREGATE_NAME,
+                aggregateId: null,
+                type: 'brokenCommand'
+            });
+            return Promise.reject('Test failed');
+        } catch (error) {
+            expect(error.message).to.equal('"aggregateId" argument is required');
+        }
+    });
+
+    it('should reject command with aggregateName absence', async () => {
+        const executeCommand = createCommandExecutor({ eventStore, aggregates });
+
+        try {
+            await executeCommand({
+                aggregateName: null,
                 aggregateId: AGGREGATE_ID,
-                type: EVENT_TYPE,
-                payload: { name: 'User1' }
-            },
-            {
-                aggregateId: 'test-id-2',
-                type: EVENT_TYPE
-            },
-            {
-                aggregateId: AGGREGATE_ID,
-                type: 'USER_UPDATED',
-                payload: {
-                    name: 'User1',
-                    newName: 'User2'
-                }
-            }
-        ];
-
-        store = createStore({ driver: memoryEsDriver(events) });
-
-        const createHandlerSpy = sinon.spy(() => testEvent);
-
-        const userCreatedHandlerSpy = sinon.spy((state, event) => ({
-            name: event.payload.name
-        }));
-
-        const userUpdatedHandlerSpy = sinon.spy((state, event) => ({
-            name: event.payload.newName
-        }));
-
-        aggregates[0] = {
-            name: AGGREGATE_NAME,
-            eventHandlers: {
-                [EVENT_TYPE]: userCreatedHandlerSpy,
-                USER_UPDATED: userUpdatedHandlerSpy
-            },
-            commands: {
-                [COMMAND_TYPE]: createHandlerSpy
-            }
-        };
-
-        execute = commandHandler({ store, bus, aggregates });
-
-        return execute(testCommand).then(() => {
-            expect(createHandlerSpy.lastCall.args).to.be.deep.equal([
-                { name: 'User2' },
-                testCommand
-            ]);
-
-            expect(userCreatedHandlerSpy.callCount).to.be.equal(1);
-            expect(userCreatedHandlerSpy.lastCall.args).to.be.deep.equal([{}, events[0]]);
-
-            expect(userUpdatedHandlerSpy.callCount).to.be.equal(1);
-            expect(userUpdatedHandlerSpy.lastCall.args).to.be.deep.equal([
-                { name: 'User1' },
-                events[2]
-            ]);
-        });
+                type: 'brokenCommand'
+            });
+            return Promise.reject('Test failed');
+        } catch (error) {
+            expect(error.message).to.equal('"aggregateName" argument is required');
+        }
     });
 
-    it('should return event without additional fields', () => {
-        const TEST_EVENT_TYPE = 'TEST_HANDLED';
-        const createHandlerSpy = sinon.spy((state, args) => ({
-            type: TEST_EVENT_TYPE,
-            payload: { name: args.payload.name }
-        }));
+    it('should reject command with type absence', async () => {
+        const executeCommand = createCommandExecutor({ eventStore, aggregates });
 
-        Object.assign(aggregates[0], {
-            eventHandlers: {
-                [TEST_EVENT_TYPE]: (state, event) => ({
-                    name: event.payload.name
-                })
-            },
-            commands: {
-                [COMMAND_TYPE]: createHandlerSpy
-            }
-        });
-
-        return execute(testCommand).then(() => execute(testCommand)).then(() => {
-            expect(createHandlerSpy.lastCall.args).to.be.deep.equal([
-                { name: testCommand.payload.name },
-                testCommand
-            ]);
-        });
-    });
-
-    it('should handles correctly unnecessary event', () => {
-        const events = [
-            {
+        try {
+            await executeCommand({
+                aggregateName: AGGREGATE_NAME,
                 aggregateId: AGGREGATE_ID,
-                type: EVENT_TYPE,
-                payload: { name: 'User1' }
-            },
-            {
-                aggregateId: 'test-id-2',
-                type: 'updated'
-            },
-            {
-                aggregateId: AGGREGATE_ID,
-                type: 'updated',
-                payload: { newName: 'User2' }
-            },
-            {
-                aggregateId: AGGREGATE_ID,
-                type: 'updated',
-                payload: { newName: 'User3' }
-            }
-        ];
-
-        store = createStore({ driver: memoryEsDriver(events) });
-
-        const createHandlerSpy = sinon.spy(() => testEvent);
-
-        aggregates[0] = {
-            name: AGGREGATE_NAME,
-            eventHandlers: {
-                [EVENT_TYPE]: (_, event) => ({ name: event.payload.name })
-            },
-            commands: {
-                [COMMAND_TYPE]: createHandlerSpy
-            }
-        };
-
-        execute = commandHandler({ store, bus, aggregates });
-
-        return execute(testCommand).then(() => {
-            expect(createHandlerSpy.lastCall.args).to.be.deep.equal([
-                { name: 'User1' },
-                testCommand
-            ]);
-        });
-    });
-
-    it('should reject event in case of event.type absence', () => {
-        aggregates[0].commands[COMMAND_TYPE] = (state, args) => ({
-            payload: { name: args.payload.name }
-        });
-
-        return execute(testCommand)
-            .then(() => expect(false).to.be.true)
-            .catch(err => expect(err).to.be.equal('event type is required'));
+                type: null
+            });
+            return Promise.reject('Test failed');
+        } catch (error) {
+            expect(error.message).to.equal('"type" argument is required');
+        }
     });
 });

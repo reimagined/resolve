@@ -60,13 +60,7 @@ export default function (options) {
     const initPromise = init(config, event => handler(event));
 
     return {
-        publish: event =>
-            initPromise.then(({ publisher }) =>
-                publisher(JSON.stringify(event))
-            ),
-        setTrigger: callback =>
-            initPromise.then(() =>
-                (handler = callback)
-            )
+        publish: event => initPromise.then(({ publisher }) => publisher(JSON.stringify(event))),
+        setTrigger: callback => initPromise.then(() => (handler = callback))
     };
 }

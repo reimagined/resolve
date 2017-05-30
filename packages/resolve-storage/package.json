@@ -1,7 +1,7 @@
 {
-  "name": "resolve-es-memory",
+  "name": "resolve-storage",
   "version": "0.0.1",
-  "description": "This package serves as a driver for resolve-es to store events using memory.",
+  "description": "This package serves as an event storage with a driver specifying where to store events.",
   "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
@@ -23,10 +23,10 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-es-memory#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-storage#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
-    "mock-fs": "^4.2.0"
+    "sinon": "^2.1.0"
   }
 }

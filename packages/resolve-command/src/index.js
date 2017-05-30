@@ -1,12 +1,14 @@
 function verifyCommand(command) {
-    if (!command.aggregateId) return Promise.reject('"aggregateId" argument is required');
-    if (!command.aggregateName) return Promise.reject('"aggregateName" argument is required');
-    if (!command.type) return Promise.reject('"type" argument is required');
+    if (!command.aggregateId)
+        return Promise.reject(new Error('"aggregateId" argument is required'));
+    if (!command.aggregateName)
+        return Promise.reject(new Error('"aggregateName" argument is required'));
+    if (!command.type) return Promise.reject(new Error('"type" argument is required'));
 
     return Promise.resolve(command);
 }
 
-function getAggregateState(aggregate, aggregateId, store) {
+function getAggregateState(aggregate, aggregateId, eventStore) {
     const handlers = aggregate.eventHandlers;
     let aggregateState = aggregate.initialState || {};
 
@@ -14,51 +16,62 @@ function getAggregateState(aggregate, aggregateId, store) {
         return Promise.resolve(aggregateState);
     }
 
-    return store
-        .loadEventsByAggregateId(aggregateId, (event) => {
-            const handler = handlers[event.type];
-            if (handler) {
-                aggregateState = handler(aggregateState, event);
+    return new Promise((resolve, reject) => {
+        const eventStream = eventStore.getStreamByAggregateId(aggregateId);
+
+        eventStream.on('readable', () => {
+            let event;
+            // eslint-disable-next-line no-cond-assign
+            while (null !== (event = eventStream.read())) {
+                const handler = handlers[event.type];
+                if (handler) {
+                    aggregateState = handler(aggregateState, event);
+                }
             }
-        })
-        .then(() => aggregateState);
-}
+        });
 
-function executeCommand(command, aggregate, store) {
-    return getAggregateState(aggregate, command.aggregateId, store).then((aggregateState) => {
-        const handler = aggregate.commands[command.type];
-        const event = handler(aggregateState, command);
+        eventStream.on('end', () => resolve(aggregateState));
 
-        if (!event.type) {
-            return Promise.reject('event type is required');
-        }
-
-        event.aggregateId = command.aggregateId;
-        event.timestamp = Date.now();
-        return event;
+        eventStream.on('error', reject);
     });
 }
 
-function saveEvent(event, store) {
-    return store.saveEvent(event).then(() => event);
-}
+async function executeCommand(command, aggregate, eventStore) {
+    const aggregateState = await getAggregateState(aggregate, command.aggregateId, eventStore);
 
-function publishEvent(event, bus) {
-    bus.emitEvent(event);
+    const handler = aggregate.commands[command.type];
+    const event = handler(aggregateState, command);
+
+    if (!event.type) {
+        throw new Error('event type is required');
+    }
+
+    event.aggregateId = command.aggregateId;
+    event.timestamp = Date.now();
     return event;
 }
 
-const createExecutor = ({ store, bus, aggregate }) => command =>
-    executeCommand(command, aggregate, store)
-        .then(event => saveEvent(event, store))
-        .then(event => publishEvent(event, bus));
+function propagateEvent(event, publishStream) {
+    return new Promise((resolve, reject) =>
+        publishStream.write(event, err => (err ? reject(err) : resolve(event)))
+    );
+}
 
-export default ({ store, bus, aggregates }) => {
+function createExecutor({ eventStore, aggregate, publishStream }) {
+    return async (command) => {
+        const event = await executeCommand(command, aggregate, eventStore);
+        return await propagateEvent(event, publishStream);
+    };
+}
+
+export default ({ eventStore, aggregates }) => {
+    const publishStream = eventStore.getPublishStream();
+
     const executors = aggregates.reduce((result, aggregate) => {
         result[aggregate.name.toLowerCase()] = createExecutor({
-            store,
-            bus,
-            aggregate
+            eventStore,
+            aggregate,
+            publishStream
         });
         return result;
     }, {});
