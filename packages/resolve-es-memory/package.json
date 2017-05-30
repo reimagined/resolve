@@ -1,6 +1,6 @@
 {
   "name": "resolve-es-memory",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "This package serves as a driver for resolve-es to store events using memory.",
   "main": "./dist/index.js",
   "bugs": {
