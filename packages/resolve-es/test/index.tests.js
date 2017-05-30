@@ -48,4 +48,8 @@ describe('resolve-es', () => {
         expect(driver.loadEventsByAggregateId.callCount).to.be.equal(1);
         expect(driver.loadEventsByAggregateId.firstCall.args).to.be.deep.equal(['id', cb]);
     });
+
+    it('works the same way for different import types', () => {
+        expect(createStore).to.be.equal(require('../src'));
+    });
 });

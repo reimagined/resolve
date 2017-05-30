@@ -1,4 +1,4 @@
-export default function () {
+function createDriver() {
     let handler = () => {};
 
     return {
@@ -6,3 +6,5 @@ export default function () {
         publish: event => handler(event)
     };
 }
+
+export default createDriver;

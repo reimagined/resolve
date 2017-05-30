@@ -2,9 +2,9 @@ import sinon from 'sinon';
 import { expect } from 'chai';
 import { MongoClient, _setFindResult } from 'mongodb';
 
-import createAdapter from '../src';
+import createDriver from '../src';
 
-const adapterSettings = {
+const driverSettings = {
     url: 'test-url',
     collection: 'test-collection'
 };
@@ -21,9 +21,9 @@ describe('es-mongo', () => {
     });
 
     it('should save event', () => {
-        const adapter = createAdapter(adapterSettings);
+        const driver = createDriver(driverSettings);
 
-        return adapter
+        return driver
             .saveEvent(testEvent)
             .then(() => {
                 expect(MongoClient.connect.lastCall.args).to.deep.equal(['test-url']);
@@ -46,7 +46,7 @@ describe('es-mongo', () => {
     });
 
     it('should load events by types', () => {
-        const adapter = createAdapter(adapterSettings);
+        const driver = createDriver(driverSettings);
         const types = ['event-type-1', 'event-type-2'];
         const eventsByTypes = [
             { id: '1', type: 'event-type-1' },
@@ -55,7 +55,7 @@ describe('es-mongo', () => {
         const processEvent = sinon.spy();
         _setFindResult(eventsByTypes);
 
-        return adapter
+        return driver
             .loadEventsByTypes(types, processEvent)
             .then(() => MongoClient.connect.lastCall.returnValue)
             .then((db) => {
@@ -70,14 +70,14 @@ describe('es-mongo', () => {
     });
 
     it('should load events by aggregate id', () => {
-        const adapter = createAdapter(adapterSettings);
+        const driver = createDriver(driverSettings);
         const aggregateId = 'test-aggregate-id';
         const eventsByAggregateId = [{ id: '1', aggregateId }, { id: '1', aggregateId }];
 
         const processEvent = sinon.spy();
         _setFindResult(eventsByAggregateId);
 
-        return adapter
+        return driver
             .loadEventsByAggregateId(aggregateId, processEvent)
             .then(() => MongoClient.connect.lastCall.returnValue)
             .then((db) => {
@@ -92,5 +92,9 @@ describe('es-mongo', () => {
                     [eventsByAggregateId[1]]
                 ]);
             });
+    });
+
+    it('works the same way for different import types', () => {
+        expect(createDriver).to.be.equal(require('../src'));
     });
 });

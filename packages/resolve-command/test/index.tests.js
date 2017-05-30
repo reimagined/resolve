@@ -277,4 +277,8 @@ describe('command', () => {
             .then(() => expect(false).to.be.true)
             .catch(err => expect(err).to.be.equal('event type is required'));
     });
+
+    it('works the same way for different import types', () => {
+        expect(commandHandler).to.be.equal(require('../src'));
+    });
 });

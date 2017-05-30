@@ -1,6 +1,6 @@
 # `resolve-bus`
 
-This package serves as a bus for sending events with an adapter specifying where to send events. The following drivers are available for this package:
+This package serves as a bus for sending events with a driver specifying where to send events. The following drivers are available for this package:
 - [resolve-bus-memory](https://github.com/reimagined/resolve/tree/master/packages/resolve-bus-memory) - to emit events using memory
 - [resolve-bus-rabbitmq](https://github.com/reimagined/resolve/tree/master/packages/resolve-bus-rabbitmq) - to emit events using RabbitMQ
 - [resolve-bus-zmq](https://github.com/reimagined/resolve/tree/master/packages/resolve-bus-zmq) - to emit events using ZeroMQ
