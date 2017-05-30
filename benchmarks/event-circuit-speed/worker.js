@@ -1,4 +1,10 @@
+import memoryDriver from 'resolve-bus-memory';
+import createBus from 'resolve-bus';
+import mongoDbDriver from 'resolve-es-mongo';
+import createEs from 'resolve-es';
+import createExecutor from 'resolve-query';
 import Immutable from 'seamless-immutable';
+import config from './config';
 
 const ROOT_GROUP_ID = 'root_id';
 
@@ -206,7 +212,7 @@ const originalHandlers = {
         updateInnerItem(state, event, obj => obj.set('isDeleted', true))
 };
 
-export default function projectionsGenerator(reportObj) {
+function projectionsGenerator(reportObj) {
     // Allow bypass invalid events
     const eventHandlers = Object.keys(originalHandlers).reduce(
         (acc, key) => Object.assign(acc, { [key]: (state, event) => {
@@ -238,4 +244,23 @@ export default function projectionsGenerator(reportObj) {
             eventHandlers
         }
     ];
+}
+
+export default function worker(eventsCount, reportObj) {
+    const store = createEs({ driver: mongoDbDriver({
+        url: config.MONGODB_CONNECTION_URL,
+        collection: config.MONGODB_COLLECTION_NAME
+    }) });
+
+    const bus = createBus({ driver: memoryDriver() });
+
+    const projections = projectionsGenerator(reportObj);
+
+    const execute = createExecutor({ store, bus, projections });
+
+    return execute('infrastructureState').then(state => ({
+        entities: Object.keys(state.groups).length
+            + Object.keys(state.members).length
+            + Object.keys(state.items).length
+    }));
 }
