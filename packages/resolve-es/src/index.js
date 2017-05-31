@@ -4,18 +4,28 @@ import { Readable, Writable } from 'stream';
 export default ({ storage, bus }) => ({
     getStreamByEventTypes(eventTypes) {
         const eventStream = Readable({ objectMode: true, read() {} });
-        storage
-            .loadEventsByTypes(eventTypes, event => eventStream.push(event))
-            .then(() => bus.onEvent(eventTypes, event => eventStream.push(event)))
-            .catch(error => eventStream.emit('error', error));
+        (async () => {
+            try {
+                await storage.loadEventsByTypes(eventTypes, event => eventStream.push(event));
+                bus.onEvent(eventTypes, event => eventStream.push(event));
+            } catch (error) {
+                eventStream.emit('error', error);
+            }
+        })();
         return eventStream;
     },
     getStreamByAggregateId(aggregateId) {
         const eventStream = Readable({ objectMode: true, read() {} });
-        storage
-            .loadEventsByAggregateId(aggregateId, event => eventStream.push(event))
-            .then(() => eventStream.push(null))
-            .catch(error => eventStream.emit('error', error));
+        (async () => {
+            try {
+                await storage.loadEventsByAggregateId(aggregateId, event =>
+                    eventStream.push(event)
+                );
+                eventStream.push(null);
+            } catch (error) {
+                eventStream.emit('error', error);
+            }
+        })();
         return eventStream;
     },
     getPublishStream() {

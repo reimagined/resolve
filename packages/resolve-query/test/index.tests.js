@@ -5,7 +5,7 @@ import sinon from 'sinon';
 import createQueryExecutor from '../src';
 const brokenStateError = new Error('Broken Error');
 
-describe('resolve-command', () => {
+describe('resolve-query', () => {
     const PROJECTION_NAME = 'projectionName';
 
     let eventStore, onReadable, onError, eventList;

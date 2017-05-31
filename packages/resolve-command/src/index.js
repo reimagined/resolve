@@ -26,8 +26,12 @@ function getAggregateState(aggregate, aggregateId, eventStore) {
             // eslint-disable-next-line no-cond-assign
             while (null !== (event = eventStream.read())) {
                 const handler = handlers[event.type];
-                if (handler) {
+                if (!handler) continue;
+
+                try {
                     aggregateState = handler(aggregateState, event);
+                } catch (err) {
+                    reject(err);
                 }
             }
         });

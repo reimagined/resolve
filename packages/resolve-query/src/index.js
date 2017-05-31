@@ -1,9 +1,5 @@
 import 'regenerator-runtime/runtime';
 
-function updateState(projection, event, state) {
-    return projection.eventHandlers[event.type](state, event);
-}
-
 function getExecutor({ eventStore, projection }) {
     const eventTypes = Object.keys(projection.eventHandlers);
     let state = projection.initialState || {};
@@ -15,8 +11,11 @@ function getExecutor({ eventStore, projection }) {
         let event;
         // eslint-disable-next-line no-cond-assign
         while (null !== (event = eventStream.read())) {
+            const handler = projection.eventHandlers[event.type];
+            if (!handler) continue;
+
             try {
-                state = updateState(projection, event, state);
+                state = handler(state, event);
             } catch (err) {
                 error = err;
             }
@@ -44,7 +43,7 @@ export default ({ eventStore, projections }) => {
         const executor = executors[projectionName.toLowerCase()];
 
         if (executor === undefined) {
-            throw new Error(`The '${projectionName}' projection is not found`);
+            return Promise.reject(new Error(`The '${projectionName}' projection is not found`));
         }
 
         return executor();

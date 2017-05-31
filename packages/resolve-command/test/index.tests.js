@@ -104,16 +104,17 @@ describe('resolve-command', () => {
         const executeCommand = createCommandExecutor({ eventStore, aggregates });
         eventList = [{ type: 'BrokenEvent' }];
 
-        executeCommand({
-            aggregateName: AGGREGATE_NAME,
-            aggregateId: AGGREGATE_ID,
-            type: 'emptyCommand'
-        });
-
-        await Promise.resolve();
-
         try {
+            const commnand = executeCommand({
+                aggregateName: AGGREGATE_NAME,
+                aggregateId: AGGREGATE_ID,
+                type: 'emptyCommand'
+            });
+
+            await Promise.resolve();
             onReadable();
+            await commnand;
+
             return Promise.reject('Test failed');
         } catch (error) {
             expect(error).to.equal(brokenStateError);
