@@ -10,7 +10,7 @@ function mainWorker() {
     const workerModule = process.argv[2];
     const quantity = process.argv[3];
 
-    const worker = (...args) => (require(workerModule).default)(...args);
+    const worker = (...args) => require(workerModule)(...args);
 
     function reporterHandler() {
         if (lastReported !== counterObj.value) {
@@ -27,9 +27,15 @@ function mainWorker() {
     return worker(quantity, counterObj);
 }
 
-Promise.resolve().then(mainWorker)
-    .then(report => log(DONE_TOKEN, JSON.stringify({
-        memory: process.memoryUsage(),
-        report
-    })))
+Promise.resolve()
+    .then(mainWorker)
+    .then(report =>
+        log(
+            DONE_TOKEN,
+            JSON.stringify({
+                memory: process.memoryUsage(),
+                report
+            })
+        )
+    )
     .catch(err => log(ERR_TOKEN, err));

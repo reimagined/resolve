@@ -10,8 +10,8 @@ export default function generateBenchmark(options) {
     // eslint-disable-next-line no-console
     const log = console.log;
 
-    const preparer = (...args) => (require(preparerModule).default)(...args);
-    const reporter = (...args) => (require(reporterModule).default)(...args);
+    const preparer = (...args) => require(preparerModule)(...args);
+    const reporter = (...args) => require(reporterModule)(...args);
 
     const progress = nyanProgress();
     const totalProcessed = { value: 0 };
@@ -34,64 +34,60 @@ export default function generateBenchmark(options) {
         }
 
         setTimeout(reporterHandler, 500);
-    }
+    };
 
     setTimeout(reporterHandler, 500);
 
-    const runLoadTests = series => new Promise((resolve, reject) => {
-        const initialTime = new Date();
-        const child = spawn('babel-node', [
-            path.join(__dirname, './worker'),
-            workerModule,
-            series
-        ]);
+    const runLoadTests = series =>
+        new Promise((resolve, reject) => {
+            const initialTime = new Date();
+            const child = spawn('babel-node', [
+                path.join(__dirname, './worker'),
+                workerModule,
+                series
+            ]);
 
-        const logHandler = (rawData) => {
-            const data = rawData.toString('utf8');
+            const logHandler = (rawData) => {
+                const data = rawData.toString('utf8');
 
-            if (data.indexOf(DONE_TOKEN) >= 0) {
-                const transferPayload = JSON.parse(data.substring(DONE_TOKEN.length));
-                const buildTime = new Date() - initialTime;
+                if (data.indexOf(DONE_TOKEN) >= 0) {
+                    const transferPayload = JSON.parse(data.substring(DONE_TOKEN.length));
+                    const buildTime = new Date() - initialTime;
 
-                const resolveData = Object.assign({ buildTime }, transferPayload);
-                resolve(resolveData);
+                    const resolveData = Object.assign({ buildTime }, transferPayload);
+                    resolve(resolveData);
 
-                child.kill();
-            } else if (data.indexOf(ERR_TOKEN) >= 0) {
-                const rejectData = data.substring(ERR_TOKEN.length)
-                reject(rejectData);
+                    child.kill();
+                } else if (data.indexOf(ERR_TOKEN) >= 0) {
+                    const rejectData = data.substring(ERR_TOKEN.length);
+                    reject(rejectData);
 
-                child.kill();
-            } else if (data.indexOf(INFO_TOKEN) >= 0) {
-                const transferString = data.substring(INFO_TOKEN.length);
-                const progressValue = parseInt(transferString, 10);
-                totalProcessed.value += progressValue;
-            }
-        };
-
-        child.stdout.on('data', logHandler);
-        child.stderr.on('data', logHandler);
-    });
-
-    const generateSeries = (arr, i, storage) => (
-        preparer(arr[i], totalProcessed)
-            .then(runLoadTests)
-            .then((data) => {
-                storage[arr[i]] = data;
-                if (i === arr.length - 1) {
-                    return storage;
+                    child.kill();
+                } else if (data.indexOf(INFO_TOKEN) >= 0) {
+                    const transferString = data.substring(INFO_TOKEN.length);
+                    const progressValue = parseInt(transferString, 10);
+                    totalProcessed.value += progressValue;
                 }
-                return generateSeries(arr, i + 1, storage);
-            })
-    );
+            };
+
+            child.stdout.on('data', logHandler);
+            child.stderr.on('data', logHandler);
+        });
+
+    const generateSeries = (arr, i, storage) =>
+        preparer(arr[i], totalProcessed).then(runLoadTests).then((data) => {
+            storage[arr[i]] = data;
+            if (i === arr.length - 1) {
+                return storage;
+            }
+            return generateSeries(arr, i + 1, storage);
+        });
 
     const fsWriteFileAsync = (filename, content) => {
         return new Promise((resolve, reject) =>
-            fs.writeFile(filename, content, (err, value) => (
-                !err ? resolve(value) : reject(err)
-            ))
+            fs.writeFile(filename, content, (err, value) => (!err ? resolve(value) : reject(err)))
         );
-    }
+    };
 
     generateSeries(benchmarkSeries, 0, {})
         .then(result => progress.tick(totalValue) && result)

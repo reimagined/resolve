@@ -1,6 +1,6 @@
 import { dropCollection } from 'benchmark-base/tools';
-import mongoDbDriver from 'resolve-es-mongo';
-import createEs from 'resolve-es';
+import mongoDbDriver from 'resolve-storage-mongo';
+import createStorage from 'resolve-storage';
 import config from './config';
 
 const TYPES = config.GENERATED_EVENT_TYPES;
@@ -29,32 +29,28 @@ function generateEvents(saveEvent, eventsCount, reportObj) {
     let processedEvents = 0;
 
     return Array.from(new Array(eventsCount)).reduce(
-        acc => acc.then(() => saveEvent({
-            type: TYPES[Math.floor(Math.random() * TYPES.length)],
-            aggregateId: `GUID${numericRandom(20)}`,
-            payload: buildPayload(PAYLOAD_COUNT, PAYLOAD_SIZE),
-            timestamp: Date.now()
-        }).then(() =>
-            (++processedEvents % 5000 === 0 ? (reportObj.value += 5000) : null)
-        )),
+        acc =>
+            acc.then(() =>
+                saveEvent({
+                    type: TYPES[Math.floor(Math.random() * TYPES.length)],
+                    aggregateId: `GUID${numericRandom(20)}`,
+                    payload: buildPayload(PAYLOAD_COUNT, PAYLOAD_SIZE),
+                    timestamp: Date.now()
+                }).then(() => (++processedEvents % 5000 === 0 ? (reportObj.value += 5000) : null))
+            ),
         Promise.resolve()
     );
 }
 
 export default function preparer(eventsCount, reportObj) {
-    const store = createEs({
+    const storage = createStorage({
         driver: mongoDbDriver({
             url: config.MONGODB_CONNECTION_URL,
             collection: config.MONGODB_COLLECTION_NAME
         })
     });
 
-    return dropCollection(
-        config.MONGODB_CONNECTION_URL,
-        config.MONGODB_COLLECTION_NAME
-    ).then(() => generateEvents(
-        store.saveEvent.bind(store),
-        eventsCount,
-        reportObj
-    ));
+    return dropCollection(config.MONGODB_CONNECTION_URL, config.MONGODB_COLLECTION_NAME).then(() =>
+        generateEvents(storage.saveEvent.bind(storage), eventsCount, reportObj)
+    );
 }

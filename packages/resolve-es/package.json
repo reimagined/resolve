@@ -1,7 +1,7 @@
 {
   "name": "resolve-es",
   "version": "0.0.2",
-  "description": "This package serves as an event storage with a driver specifying where to store events.",
+  "description": "This package serves as an event-store.",
   "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
@@ -27,6 +27,10 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
-    "sinon": "^2.1.0"
+    "sinon": "^2.1.0",
+    "uuid": "^3.0.1"
+  },
+  "dependencies": {
+    "regenerator-runtime": "*"
   }
 }

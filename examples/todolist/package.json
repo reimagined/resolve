@@ -18,14 +18,16 @@
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
     "pug": "^2.0.0-beta.12",
-    "resolve-bus": "^0.0.2",
-    "resolve-bus-memory": "^0.0.2",
-    "resolve-command": "^0.0.2",
-    "resolve-es": "^0.0.2",
-    "resolve-es-file": "^0.0.2",
-    "resolve-query": "^0.0.2",
+    "resolve-bus": "*",
+    "resolve-bus-memory": "*",
+    "resolve-command": "*",
+    "resolve-storage": "*",
+    "resolve-storage-file": "*",
+    "resolve-es": "*",
+    "resolve-query": "*",
     "seamless-immutable": "^7.1.2",
-    "uuid": "^3.0.1"
+    "uuid": "^3.0.1",
+    "regenerator-runtime": "*"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",

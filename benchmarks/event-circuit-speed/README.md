@@ -1,7 +1,7 @@
 # `event-circuit-speed`
 
 This package provides full-circuit speed and memory usage benchmark for `resolve-command` and `resolve-query` packages.
-Underliying store package is `resolve-es-mongo` and bus proveder is `resolve-bus-memory`.
+Underliying store package is `resolve-storage-mongo` and bus provider is `resolve-bus-memory`.
 
 It requires "live" (non-mocked, etc.) mongodb database.
 You can specify connection parameters via `MONGODB_HOST` and `MONGODB_COLLECTION_NAME` environment variables.

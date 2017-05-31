@@ -2,8 +2,9 @@ import { dropCollection } from 'benchmark-base/tools';
 import { rpoisson } from 'randgen';
 import memoryDriver from 'resolve-bus-memory';
 import createBus from 'resolve-bus';
-import mongoDbDriver from 'resolve-es-mongo';
-import createEs from 'resolve-es';
+import mongoDbDriver from 'resolve-storage-mongo';
+import createStorage from 'resolve-storage';
+import createEventStore from 'resolve-es';
 import createCommandExecutor from 'resolve-command';
 import uuid from 'uuid';
 import config from './config';
@@ -49,7 +50,6 @@ const aggregates = [
             moveGroup: (state, args) => createEvent('GroupMoved', args)
         },
         handlers: {}
-
     }
 ];
 
@@ -379,7 +379,7 @@ function executeCommandByType(command, state, commandExecute) {
         default:
             return Promise.reject(`Unknown type ${command}`);
     }
-};
+}
 
 function generateCommandsRaw(commandMap, commandName, commandLambda, endtime) {
     let currentTime = 0;
@@ -388,7 +388,7 @@ function generateCommandsRaw(commandMap, commandName, commandLambda, endtime) {
         commandMap.set(nextTime, commandName);
         currentTime = nextTime;
     }
-};
+}
 
 function generateCommands(commandsWeight, endTime) {
     const commandMap = new Map();
@@ -413,13 +413,17 @@ function executeCommands(state, commands, position, endCallback, reportObj, exec
         return endCallback();
     }
 
-    return Promise.resolve()
-        .then(() => executeCommandByType(commands[position], state, executor))
-        // eslint-disable-next-line no-console
-        .catch(err => console.log(`Error due perform command: ${err}`))
-        .then(() => setImmediate(() =>
-            executeCommands(state, commands, position + 1, endCallback, reportObj, executor)
-        ));
+    return (
+        Promise.resolve()
+            .then(() => executeCommandByType(commands[position], state, executor))
+            // eslint-disable-next-line no-console
+            .catch(err => console.log(`Error due perform command: ${err}`))
+            .then(() =>
+                setImmediate(() =>
+                    executeCommands(state, commands, position + 1, endCallback, reportObj, executor)
+                )
+            )
+    );
 }
 
 function commandGenerator(executor, eventsWeight, endTime, reportObj) {
@@ -431,9 +435,7 @@ function commandGenerator(executor, eventsWeight, endTime, reportObj) {
 
         commandMap.forEach((value, key) => unsortedArray.push(key));
 
-        unsortedArray
-            .sort((a, b) => a - b)
-            .forEach(key => commandArray.push(commandMap.get(key)));
+        unsortedArray.sort((a, b) => a - b).forEach(key => commandArray.push(commandMap.get(key)));
 
         executeCommands(state, commandArray, 0, resolve, reportObj, executor);
     });
@@ -468,22 +470,23 @@ const eventsWeight = {
 const entitiesFactor = 0.33;
 
 export default function preparer(eventsCount, reportObj) {
-    const store = createEs({ driver: mongoDbDriver({
-        url: config.MONGODB_CONNECTION_URL,
-        collection: config.MONGODB_COLLECTION_NAME
-    }) });
+    const storage = createStorage({
+        driver: mongoDbDriver({
+            url: config.MONGODB_CONNECTION_URL,
+            collection: config.MONGODB_COLLECTION_NAME
+        })
+    });
 
     const bus = createBus({ driver: memoryDriver() });
 
-    const commandExecute = createCommandExecutor({ store, bus, aggregates });
+    const eventStore = createEventStore({
+        storage,
+        bus
+    });
 
-    return dropCollection(
-        config.MONGODB_CONNECTION_URL,
-        config.MONGODB_COLLECTION_NAME
-    ).then(() => commandGenerator(
-        commandExecute,
-        eventsWeight,
-        eventsCount / entitiesFactor,
-        reportObj
-    ));
+    const commandExecute = createCommandExecutor({ eventStore, aggregates });
+
+    return dropCollection(config.MONGODB_CONNECTION_URL, config.MONGODB_COLLECTION_NAME).then(() =>
+        commandGenerator(commandExecute, eventsWeight, eventsCount / entitiesFactor, reportObj)
+    );
 }

@@ -6,8 +6,8 @@ This package creates a function to execute a query.
 
 ```js
 import createQuery from 'resolve-query';
-import createStore from 'resolve-es';
-import createEsDriver from 'resolve-es-memory';
+import createStore from 'resolve-storage';
+import createEsDriver from 'resolve-storage-memory';
 import createBus from 'resolve-bus';
 import createBusDriver from 'resolve-bus-memory';
 

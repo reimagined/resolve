@@ -1,9 +1,9 @@
 import http from 'http';
 import socketIO from 'socket.io';
 import uuid from 'uuid';
-
-import createStore from 'resolve-es';
-import esDriver from 'resolve-es-file';
+import createEventStore from 'resolve-es';
+import createStorage from 'resolve-storage';
+import storageDriver from 'resolve-storage-file';
 import createBus from 'resolve-bus';
 import busDriver from 'resolve-bus-memory';
 import commandHandler from 'resolve-command';
@@ -17,20 +17,19 @@ const cardsProjection = projections.cards;
 
 const PORT = 3001;
 
-const eventStore = createStore({
-    driver: esDriver({ pathToFile: './event_store.json' })
+const storage = createStorage({
+    driver: storageDriver({ pathToFile: './event_store.json' })
 });
 const bus = createBus({ driver: busDriver() });
+const eventStore = createEventStore({ storage, bus });
 
 const execute = commandHandler({
-    store: eventStore,
-    bus,
+    eventStore,
     aggregates: [todoCardAggregate, todoItemAggregate]
 });
 
 const queries = query({
-    store: eventStore,
-    bus,
+    eventStore,
     projections: [cardsProjection]
 });
 

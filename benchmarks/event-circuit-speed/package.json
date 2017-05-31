@@ -15,15 +15,17 @@
     "url": "git+https://github.com/reimagined/resolve.git"
   },
   "dependencies": {
+    "babel-cli": "^6.24.1",
     "benchmark-base": "^0.0.2",
     "mongodb": "^2.2.26",
     "randgen": "^0.1.0",
-    "resolve-bus": "^0.0.2",
-    "resolve-bus-memory": "^0.0.2",
-    "resolve-command": "^0.0.2",
-    "resolve-es": "^0.0.2",
-    "resolve-es-mongo": "^0.0.2",
-    "resolve-query": "^0.0.2",
+    "resolve-bus": "*",
+    "resolve-bus-memory": "*",
+    "resolve-command": "*",
+    "resolve-es": "*",
+    "resolve-storage": "*",
+    "resolve-storage-mongo": "*",
+    "resolve-query": "*",
     "seamless-immutable": "^7.1.2",
     "uuid": "^3.0.1"
   }

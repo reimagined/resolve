@@ -1,11 +1,14 @@
+import 'regenerator-runtime/runtime';
 import express from 'express';
 import bodyParser from 'body-parser';
 import uuid from 'uuid';
 
-import createStore from 'resolve-es';
-import esDriver from 'resolve-es-file';
+import createEventStore from 'resolve-es';
+import createStorage from 'resolve-storage';
+import storageDriver from 'resolve-storage-file';
 import createBus from 'resolve-bus';
 import busDriver from 'resolve-bus-memory';
+
 import commandHandler from 'resolve-command';
 import query from 'resolve-query';
 
@@ -24,40 +27,47 @@ const setupMiddlewares = (app) => {
 const app = express();
 app.use(express.static('static'));
 
-const eventStore = createStore({
-    driver: esDriver({ pathToFile: './event_store.json' })
+const storage = createStorage({
+    driver: storageDriver({ pathToFile: './event_store.json' })
 });
 const bus = createBus({ driver: busDriver() });
 
+const eventStore = createEventStore({
+    storage,
+    bus
+});
+
 const execute = commandHandler({
-    store: eventStore,
-    bus,
+    eventStore,
     aggregates: [todoCardAggregate, todoItemAggregate]
 });
 
 const queries = query({
-    store: eventStore,
-    bus,
+    eventStore,
     projections: [cardsProjection, cardDetailsProjection]
 });
 
 setupMiddlewares(app);
 
-app.get('/', (req, res) =>
-    queries('cards').then(inventoryItems =>
-        res.render('index', {
-            items: Object.values(inventoryItems)
-        })
-    )
-);
+app.get('/', async (req, res) => {
+    try {
+        const inventoryItems = await queries('cards');
+        res.render('index', { items: Object.values(inventoryItems) });
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
 
-app.get('/:card', (req, res) =>
-    queries('cardDetails').then(items =>
-        res.render('cardDetails', { card: items.cards[req.params.card] })
-    )
-);
+app.get('/:card', async (req, res) => {
+    try {
+        const items = await queries('cardDetails');
+        res.render('cardDetails', { card: items.cards[req.params.card] });
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
 
-app.post('/command', (req, res) => {
+app.post('/command', async (req, res) => {
     const command = Object.keys(req.body)
         .filter(key => key !== 'aggregateName' || key !== 'returnUrl')
         .reduce((result, key) => {
@@ -70,12 +80,12 @@ app.post('/command', (req, res) => {
     command.aggregateId = command.aggregateId || uuid.v4();
     command.aggregateName = req.body.aggregateName;
 
-    execute(command)
-        .catch((err) => {
-            // eslint-disable-next-line no-console
-            console.log(err);
-        })
-        .then(() => res.redirect(redirectUrl));
+    try {
+        await execute(command);
+        res.redirect(redirectUrl);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
 });
 
 app.listen(3000, () => {

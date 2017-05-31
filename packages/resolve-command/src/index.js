@@ -1,12 +1,12 @@
-function verifyCommand(command) {
-    if (!command.aggregateId) return Promise.reject('"aggregateId" argument is required');
-    if (!command.aggregateName) return Promise.reject('"aggregateName" argument is required');
-    if (!command.type) return Promise.reject('"type" argument is required');
+import 'regenerator-runtime/runtime';
 
-    return Promise.resolve(command);
+async function verifyCommand(command) {
+    if (!command.aggregateId) throw new Error('"aggregateId" argument is required');
+    if (!command.aggregateName) throw new Error('"aggregateName" argument is required');
+    if (!command.type) throw new Error('"type" argument is required');
 }
 
-function getAggregateState(aggregate, aggregateId, store) {
+function getAggregateState(aggregate, aggregateId, eventStore) {
     const handlers = aggregate.eventHandlers;
     let aggregateState = aggregate.initialState || {};
 
@@ -14,59 +14,72 @@ function getAggregateState(aggregate, aggregateId, store) {
         return Promise.resolve(aggregateState);
     }
 
-    return store
-        .loadEventsByAggregateId(aggregateId, (event) => {
-            const handler = handlers[event.type];
-            if (handler) {
-                aggregateState = handler(aggregateState, event);
+    return new Promise((resolve, reject) => {
+        const eventStream = eventStore.getStreamByAggregateId(aggregateId);
+
+        eventStream.on('readable', () => {
+            let event;
+            // eslint-disable-next-line no-cond-assign
+            while (null !== (event = eventStream.read())) {
+                const handler = handlers[event.type];
+                if (!handler) continue;
+
+                try {
+                    aggregateState = handler(aggregateState, event);
+                } catch (err) {
+                    reject(err);
+                }
             }
-        })
-        .then(() => aggregateState);
-}
+        });
 
-function executeCommand(command, aggregate, store) {
-    return getAggregateState(aggregate, command.aggregateId, store).then((aggregateState) => {
-        const handler = aggregate.commands[command.type];
-        const event = handler(aggregateState, command);
+        eventStream.on('end', () => resolve(aggregateState));
 
-        if (!event.type) {
-            return Promise.reject('event type is required');
-        }
-
-        event.aggregateId = command.aggregateId;
-        event.timestamp = Date.now();
-        return event;
+        eventStream.on('error', reject);
     });
 }
 
-function saveEvent(event, store) {
-    return store.saveEvent(event).then(() => event);
-}
+async function executeCommand(command, aggregate, eventStore) {
+    const aggregateState = await getAggregateState(aggregate, command.aggregateId, eventStore);
 
-function publishEvent(event, bus) {
-    bus.emitEvent(event);
+    const handler = aggregate.commands[command.type];
+    const event = handler(aggregateState, command);
+
+    if (!event.type) {
+        throw new Error('event type is required');
+    }
+
+    event.aggregateId = command.aggregateId;
+    event.timestamp = Date.now();
     return event;
 }
 
-function createAggregateExecutor({ store, bus, aggregate }) {
-    return command =>
-        executeCommand(command, aggregate, store)
-            .then(event => saveEvent(event, store))
-            .then(event => publishEvent(event, bus));
+function propagateEvent(event, publishStream) {
+    return new Promise((resolve, reject) =>
+        publishStream.write(event, err => (err ? reject(err) : resolve(event)))
+    );
 }
 
-function createExecutor({ store, bus, aggregates }) {
+function createExecutor({ eventStore, aggregate, publishStream }) {
+    return async (command) => {
+        const event = await executeCommand(command, aggregate, eventStore);
+        return await propagateEvent(event, publishStream);
+    };
+}
+
+export default ({ eventStore, aggregates }) => {
+    const publishStream = eventStore.getPublishStream();
+
     const executors = aggregates.reduce((result, aggregate) => {
-        result[aggregate.name.toLowerCase()] = createAggregateExecutor({
-            store,
-            bus,
-            aggregate
+        result[aggregate.name.toLowerCase()] = createExecutor({
+            eventStore,
+            aggregate,
+            publishStream
         });
         return result;
     }, {});
 
-    return command =>
-        verifyCommand(command).then(() => executors[command.aggregateName.toLowerCase()](command));
-}
-
-export default createExecutor;
+    return async (command) => {
+        await verifyCommand(command);
+        return executors[command.aggregateName.toLowerCase()](command);
+    };
+};
