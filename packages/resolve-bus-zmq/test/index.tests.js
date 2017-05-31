@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { expect } from 'chai';
 import zeromq from 'zeromq';
-import adapter from '../src';
+import driver from '../src';
 
 describe('ZeroMQ bus', () => {
     let zmqSocketStub = null;
@@ -76,7 +76,7 @@ describe('ZeroMQ bus', () => {
     });
 
     it('should init correctly and run new broker', () => {
-        const instance = adapter(testOptions);
+        const instance = driver(testOptions);
 
         return instance.setTrigger(trigger).then(() => {
             expect(zeromq.socket.callCount).to.be.equal(4);
@@ -145,7 +145,7 @@ describe('ZeroMQ bus', () => {
 
     it('should init correctly and use existing broker', () => {
         brokerActivated = { pub: true, sub: true };
-        const instance = adapter(testOptions);
+        const instance = driver(testOptions);
 
         return instance.setTrigger(trigger).then(() => {
             expect(zeromq.socket.callCount).to.be.equal(3);
@@ -182,7 +182,7 @@ describe('ZeroMQ bus', () => {
 
     it('should publish messages in bus', () => {
         brokerActivated = { pub: true, sub: true };
-        const instance = adapter(testOptions);
+        const instance = driver(testOptions);
 
         const originalMessage = { marker: '@@message-marker' };
         const stringMessage = JSON.stringify(originalMessage);
@@ -197,7 +197,7 @@ describe('ZeroMQ bus', () => {
 
     it('should trigger on incoming bus messages', () => {
         brokerActivated = { pub: true, sub: true };
-        const instance = adapter(testOptions);
+        const instance = driver(testOptions);
 
         const originalMessage = { marker: '@@message-marker' };
         const stringMessage = JSON.stringify(originalMessage);
@@ -209,5 +209,9 @@ describe('ZeroMQ bus', () => {
             expect(trigger.callCount).to.be.equal(1);
             expect(trigger.lastCall.args).to.be.deep.equal([originalMessage]);
         });
+    });
+
+    it('works the same way for different import types', () => {
+        expect(driver).to.be.equal(require('../src'));
     });
 });

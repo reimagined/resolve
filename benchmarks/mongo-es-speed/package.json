@@ -1,6 +1,6 @@
 {
   "name": "mongo-es-speed",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "scripts": {
     "start": "babel-node ./index.js",
     "test": "exit 0"
@@ -13,10 +13,8 @@
     "url": "git+https://github.com/reimagined/resolve.git"
   },
   "dependencies": {
-    "mongodb": "^2.2.26",
-    "nyan-progress": "^1.1.0",
-    "pify": "^2.3.0",
-    "resolve-es": "^0.0.1",
-    "resolve-es-mongo": "^0.0.1"
+    "benchmark-base": "^0.0.2",
+    "resolve-es": "^0.0.2",
+    "resolve-es-mongo": "^0.0.2"
   }
 }

@@ -1,3 +1,4 @@
+import 'regenerator-runtime/runtime';
 import { expect } from 'chai';
 import sinon from 'sinon';
 
@@ -106,5 +107,9 @@ describe('resolve-command', () => {
                 'The \'WRONG_PROJECTION_NAME\' projection is not found'
             );
         }
+    });
+
+    it('works the same way for different import types', () => {
+        expect(createQueryExecutor).to.be.equal(require('../src'));
     });
 });

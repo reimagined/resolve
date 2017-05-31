@@ -1,6 +1,6 @@
 {
   "name": "resolve-redux",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "This package serves as a helper for creating the Redux storage.",
   "main": "./dist/index.js",
   "bugs": {
@@ -33,6 +33,7 @@
     "uuid": "^3.0.1"
   },
   "dependencies": {
-    "redux-saga": "^0.15.3"
+    "redux-saga": "^0.15.3",
+    "regenerator-runtime": "*"
   }
 }

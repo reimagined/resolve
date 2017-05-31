@@ -34,4 +34,8 @@ describe('inMemoryBus', () => {
 
         expect(eventHandlerSpy.lastCall.args[0]).to.be.deep.equal(event);
     });
+
+    it('works the same way for different import types', () => {
+        expect(inMemoryBus).to.be.equal(require('../src'));
+    });
 });

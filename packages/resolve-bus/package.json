@@ -1,7 +1,7 @@
 {
   "name": "resolve-bus",
-  "version": "0.0.1",
-  "description": "This package serves as a bus for sending events with an adapter specifying where to send events.",
+  "version": "0.0.2",
+  "description": "This package serves as a bus for sending events with a driver specifying where to send events.",
   "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"

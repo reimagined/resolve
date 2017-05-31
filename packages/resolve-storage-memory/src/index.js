@@ -1,6 +1,6 @@
 const compareEvents = (a, b) => a.timestamp - b.timestamp;
 
-export default (events) => {
+function createDriver(events) {
     const store = events || [];
 
     return {
@@ -25,4 +25,6 @@ export default (events) => {
                     .forEach(callback)
             )
     };
-};
+}
+
+export default createDriver;

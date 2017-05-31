@@ -1,22 +1,15 @@
+import { dropCollection } from 'benchmark-base/tools';
 import { rpoisson } from 'randgen';
-import uuid from 'uuid';
-
 import memoryDriver from 'resolve-bus-memory';
 import createBus from 'resolve-bus';
-import mongoDbDriver from 'resolve-es-mongo';
-import createEs from 'resolve-es';
+import mongoDbDriver from 'resolve-storage-mongo';
+import createStorage from 'resolve-storage';
+import createEventStore from 'resolve-es';
 import createCommandExecutor from 'resolve-command';
-
+import uuid from 'uuid';
 import config from './config';
 
 const createEvent = (type, args) => ({ ...args, type });
-
-const store = createEs({ driver: mongoDbDriver({
-    url: config.MONGODB_CONNECTION_URL,
-    collection: config.MONGODB_COLLECTION_NAME
-}) });
-
-const bus = createBus({ driver: memoryDriver() });
 
 const aggregates = [
     {
@@ -57,13 +50,10 @@ const aggregates = [
             moveGroup: (state, args) => createEvent('GroupMoved', args)
         },
         handlers: {}
-
     }
 ];
 
-const commandExecute = createCommandExecutor({ store, bus, aggregates });
-
-function executeCommandByType(command, state) {
+function executeCommandByType(command, state, commandExecute) {
     const [aggregateName, type] = command.split(/\//);
     switch (command) {
         case 'member/create': {
@@ -417,41 +407,86 @@ function generateCommands(commandsWeight, endTime) {
     return commandMap;
 }
 
-function executeCommands(state, commands, position, endCallback, reportObj) {
+function executeCommands(state, commands, position, endCallback, reportObj, executor) {
     reportObj.value++;
     if (commands.length <= position) {
         return endCallback();
     }
 
-    return Promise.resolve()
-        .then(() => executeCommandByType(commands[position], state))
-        // eslint-disable-next-line no-console
-        .catch(err => console.log(`Error due perform command: ${err}`))
-        .then(() => setImmediate(() =>
-            executeCommands(state, commands, position + 1, endCallback, reportObj)
-        ));
+    return (
+        Promise.resolve()
+            .then(() => executeCommandByType(commands[position], state, executor))
+            // eslint-disable-next-line no-console
+            .catch(err => console.log(`Error due perform command: ${err}`))
+            .then(() =>
+                setImmediate(() =>
+                    executeCommands(state, commands, position + 1, endCallback, reportObj, executor)
+                )
+            )
+    );
 }
 
-export default function commandGenerator(eventsWeight, endTime, reportObj) {
-    const commandMap = generateCommands(eventsWeight, endTime);
-    const state = {
-        members: [],
-        groups: [],
-        items: []
-    };
+function commandGenerator(executor, eventsWeight, endTime, reportObj) {
+    return new Promise((resolve) => {
+        const commandMap = generateCommands(eventsWeight, endTime);
+        const state = { members: [], groups: [], items: [] };
+        const commandArray = [];
+        const unsortedArray = [];
 
-    const commandArray = [];
-    const unsortedArray = [];
+        commandMap.forEach((value, key) => unsortedArray.push(key));
 
-    commandMap.forEach((value, key) => unsortedArray.push(key));
+        unsortedArray.sort((a, b) => a - b).forEach(key => commandArray.push(commandMap.get(key)));
 
-    unsortedArray
-        .sort((a, b) => a - b)
-        .forEach(key => commandArray.push(commandMap.get(key)));
+        executeCommands(state, commandArray, 0, resolve, reportObj, executor);
+    });
+}
 
-    let resolver = null;
-    const promise = new Promise(resolve => (resolver = resolve));
-    executeCommands(state, commandArray, 0, resolver, reportObj);
+const eventsWeight = {
+    member: {
+        create: 50,
+        delete: 250
+    },
+    group: {
+        create: 150,
+        rename: 300,
+        delete: 550,
+        addGroup: 150,
+        addMember: 10,
+        removeMember: 15,
+        moveMember: 25000,
+        removeGroup: 25000,
+        moveGroup: 25000
+    },
+    item: {
+        createOuterItem: 20,
+        updateOuterItem: 250,
+        deleteOuterItem: 1000,
+        createInnerItem: 10,
+        updateInnerItem: 50,
+        deleteInnerItem: 800
+    }
+};
 
-    return promise;
+const entitiesFactor = 0.33;
+
+export default function preparer(eventsCount, reportObj) {
+    const storage = createStorage({
+        driver: mongoDbDriver({
+            url: config.MONGODB_CONNECTION_URL,
+            collection: config.MONGODB_COLLECTION_NAME
+        })
+    });
+
+    const bus = createBus({ driver: memoryDriver() });
+
+    const eventStore = createEventStore({
+        storage,
+        bus
+    });
+
+    const commandExecute = createCommandExecutor({ eventStore, aggregates });
+
+    return dropCollection(config.MONGODB_CONNECTION_URL, config.MONGODB_COLLECTION_NAME).then(() =>
+        commandGenerator(commandExecute, eventsWeight, eventsCount / entitiesFactor, reportObj)
+    );
 }

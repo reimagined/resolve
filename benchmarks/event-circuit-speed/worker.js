@@ -1,4 +1,11 @@
+import memoryDriver from 'resolve-bus-memory';
+import createBus from 'resolve-bus';
+import mongoDbDriver from 'resolve-storage-mongo';
+import createStorage from 'resolve-storage';
+import createEventStore from 'resolve-es';
+import createExecutor from 'resolve-query';
 import Immutable from 'seamless-immutable';
+import config from './config';
 
 const ROOT_GROUP_ID = 'root_id';
 
@@ -7,9 +14,7 @@ function createGroup(id) {
 }
 
 function updateGroup(state, groupId, name, value) {
-    return state.groups[groupId]
-        ? state.setIn(['groups', groupId, name], value)
-        : state;
+    return state.groups[groupId] ? state.setIn(['groups', groupId, name], value) : state;
 }
 
 function updateGroupGroups(state, groupId, callback) {
@@ -25,10 +30,8 @@ function moveGroup(state, groupId, nextParentId) {
         return state;
     }
     let next = state;
-    next = updateGroupGroups(next, currentParentId,
-        list => list.without(groupId));
-    next = updateGroupGroups(next, nextParentId,
-        list => list.set(groupId, true));
+    next = updateGroupGroups(next, currentParentId, list => list.without(groupId));
+    next = updateGroupGroups(next, nextParentId, list => list.set(groupId, true));
 
     next = next.setIn(['groups', groupId, 'parentGroup'], nextParentId);
 
@@ -36,9 +39,7 @@ function moveGroup(state, groupId, nextParentId) {
 }
 
 function updateGroupMembers(state, groupId, callback) {
-    return state.groups[groupId]
-        ? state.updateIn(['groups', groupId, 'members'], callback)
-        : state;
+    return state.groups[groupId] ? state.updateIn(['groups', groupId, 'members'], callback) : state;
 }
 
 function addMemberToGroup(state, groupId, memberId) {
@@ -47,8 +48,10 @@ function addMemberToGroup(state, groupId, memberId) {
         state.members[memberId].parentGroups.set(groupId, true)
     );
 
-    return updateGroupMembers(next, groupId, list =>
-        (list[memberId] ? list : list.set(memberId, true))
+    return updateGroupMembers(
+        next,
+        groupId,
+        list => (list[memberId] ? list : list.set(memberId, true))
     );
 }
 
@@ -58,9 +61,7 @@ function removeMemberFromGroup(state, groupId, memberId) {
         state.members[memberId].parentGroups.without(groupId)
     );
 
-    return updateGroupMembers(next, groupId, list =>
-        list.without(memberId)
-    );
+    return updateGroupMembers(next, groupId, list => list.without(memberId));
 }
 
 function updateOuterItem(state, innerItemId, callback) {
@@ -90,8 +91,9 @@ const originalHandlers = {
             type: event.payload.type
         };
         return state
-            .updateIn(['groups', ROOT_GROUP_ID, 'groups'], list =>
-                (list[id] ? list : list.set(id, true))
+            .updateIn(
+                ['groups', ROOT_GROUP_ID, 'groups'],
+                list => (list[id] ? list : list.set(id, true))
             )
             .setIn(['groups', id], group);
     },
@@ -150,11 +152,14 @@ const originalHandlers = {
     MemberUpdated(state, event) {
         const id = event.aggregateId;
         return state.members[id]
-            ? state.merge({
-                members: {
-                    [id]: event.payload
-                }
-            }, { deep: true })
+            ? state.merge(
+                {
+                    members: {
+                        [id]: event.payload
+                    }
+                },
+                  { deep: true }
+              )
             : state;
     },
     MemberDeleted(state, event) {
@@ -174,19 +179,19 @@ const originalHandlers = {
     // ITEMS
     OuterItemCreated(state, event) {
         const id = event.aggregateId;
-        let newState = state.setIn(
-            ['items', id], {
-                name: event.payload.name || 'New OuterItem',
-                items: {}
-            }
-        );
+        let newState = state.setIn(['items', id], {
+            name: event.payload.name || 'New OuterItem',
+            items: {}
+        });
         if (event.payload.memberId && newState.members[event.payload.memberId]) {
-            newState = newState.updateIn(['members', event.payload.memberId, 'items'],
-                list => list.set(id, true));
+            newState = newState.updateIn(['members', event.payload.memberId, 'items'], list =>
+                list.set(id, true)
+            );
         }
         if (event.payload.groupId && newState.groups[event.payload.groupId]) {
-            newState = newState.updateIn(['groups', event.payload.groupId, 'items'],
-                list => list.set(id, true));
+            newState = newState.updateIn(['groups', event.payload.groupId, 'items'], list =>
+                list.set(id, true)
+            );
         }
         return newState;
     },
@@ -199,26 +204,31 @@ const originalHandlers = {
             name: event.payload.name || 'New InnerItem'
         }),
     InnerItemUpdated: (state, event) =>
-        updateInnerItem(state, event, obj => obj.merge({
-            name: event.payload.name
-        })),
+        updateInnerItem(state, event, obj =>
+            obj.merge({
+                name: event.payload.name
+            })
+        ),
     InnerItemDeleted: (state, event) =>
         updateInnerItem(state, event, obj => obj.set('isDeleted', true))
 };
 
-export default function projectionsGenerator(reportObj) {
+function projectionsGenerator(reportObj) {
     // Allow bypass invalid events
     const eventHandlers = Object.keys(originalHandlers).reduce(
-        (acc, key) => Object.assign(acc, { [key]: (state, event) => {
-            try {
-                const result = originalHandlers[key](state, event);
-                reportObj.value++;
-                return result;
-            } catch (err) {
-                console.error('CAUGHT ERROR', err); // eslint-disable-line no-console
-                return state;
-            }
-        } }),
+        (acc, key) =>
+            Object.assign(acc, {
+                [key]: (state, event) => {
+                    try {
+                        const result = originalHandlers[key](state, event);
+                        reportObj.value++;
+                        return result;
+                    } catch (err) {
+                        console.error('CAUGHT ERROR', err); // eslint-disable-line no-console
+                        return state;
+                    }
+                }
+            }),
         Object.create(null)
     );
 
@@ -238,4 +248,49 @@ export default function projectionsGenerator(reportObj) {
             eventHandlers
         }
     ];
+}
+
+function generateSyncExecutor(storageDriver, busDriver, projections) {
+    const loadDonePromise = new Promise((resolve) => {
+        const originalLoadEventsByTypes = storageDriver.loadEventsByTypes.bind(storageDriver);
+        storageDriver.loadEventsByTypes = (...args) =>
+            originalLoadEventsByTypes(...args).then((result) => {
+                resolve();
+                return result;
+            });
+    });
+
+    const storage = createStorage({ driver: storageDriver });
+    const bus = createBus({ driver: busDriver });
+
+    const eventStore = createEventStore({
+        storage,
+        bus
+    });
+
+    const execute = createExecutor({ eventStore, projections });
+
+    return async (...args) => {
+        await loadDonePromise;
+        return execute(...args);
+    };
+}
+
+export default function worker(eventsCount, reportObj) {
+    const mongoDriver = mongoDbDriver({
+        url: config.MONGODB_CONNECTION_URL,
+        collection: config.MONGODB_COLLECTION_NAME
+    });
+
+    const busDriver = memoryDriver();
+
+    const projections = projectionsGenerator(reportObj);
+
+    const execute = generateSyncExecutor(mongoDriver, busDriver, projections);
+
+    return execute('infrastructureState').then(state => ({
+        entities: Object.keys(state.groups).length +
+            Object.keys(state.members).length +
+            Object.keys(state.items).length
+    }));
 }

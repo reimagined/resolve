@@ -1,3 +1,4 @@
+import 'regenerator-runtime/runtime';
 import { expect } from 'chai';
 import sinon from 'sinon';
 
@@ -226,5 +227,9 @@ describe('resolve-command', () => {
         } catch (error) {
             expect(error.message).to.equal('"type" argument is required');
         }
+    });
+
+    it('works the same way for different import types', () => {
+        expect(createCommandExecutor).to.be.equal(require('../src'));
     });
 });

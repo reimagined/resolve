@@ -1,6 +1,6 @@
 {
   "name": "event-circuit-speed",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -15,17 +15,15 @@
     "url": "git+https://github.com/reimagined/resolve.git"
   },
   "dependencies": {
-    "babel-cli": "^6.24.1",
+    "benchmark-base": "^0.0.2",
     "mongodb": "^2.2.26",
-    "nyan-progress": "^1.1.0",
-    "pify": "^2.3.0",
     "randgen": "^0.1.0",
-    "resolve-bus": "^0.0.1",
-    "resolve-bus-memory": "^0.0.1",
-    "resolve-command": "^0.0.1",
-    "resolve-es": "^0.0.1",
-    "resolve-es-mongo": "^0.0.1",
-    "resolve-query": "^0.0.1",
+    "resolve-bus": "^0.0.2",
+    "resolve-bus-memory": "^0.0.2",
+    "resolve-command": "^0.0.2",
+    "resolve-es": "^0.0.2",
+    "resolve-es-mongo": "^0.0.2",
+    "resolve-query": "^0.0.2",
     "seamless-immutable": "^7.1.2",
     "uuid": "^3.0.1"
   }
