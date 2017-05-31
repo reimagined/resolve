@@ -15,9 +15,9 @@
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^7.0.1",
     "lerna": "^2.0.0-rc.4",
-    "lint-staged": "^3.4.0",
+    "lint-staged": "3.4.0",
     "pre-commit": "^1.2.2",
-    "prettier-eslint-cli": "^3.4.2"
+    "prettier-eslint-cli": "3.4.2"
   },
   "engines": {
     "node": "^6.0.0",
