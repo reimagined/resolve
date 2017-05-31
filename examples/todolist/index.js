@@ -48,17 +48,25 @@ const queries = query({
 
 setupMiddlewares(app);
 
-app.get('/', (req, res) => {
-    const inventoryItems = queries('cards');
-    res.render('index', { items: Object.values(inventoryItems) });
+app.get('/', async (req, res) => {
+    try {
+        const inventoryItems = await queries('cards');
+        res.render('index', { items: Object.values(inventoryItems) });
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
 });
 
-app.get('/:card', (req, res) => {
-    const items = queries('cardDetails');
-    res.render('cardDetails', { card: items.cards[req.params.card] });
+app.get('/:card', async (req, res) => {
+    try {
+        const items = await queries('cardDetails');
+        res.render('cardDetails', { card: items.cards[req.params.card] });
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
 });
 
-app.post('/command', (req, res) => {
+app.post('/command', async (req, res) => {
     const command = Object.keys(req.body)
         .filter(key => key !== 'aggregateName' || key !== 'returnUrl')
         .reduce((result, key) => {
@@ -71,12 +79,12 @@ app.post('/command', (req, res) => {
     command.aggregateId = command.aggregateId || uuid.v4();
     command.aggregateName = req.body.aggregateName;
 
-    execute(command)
-        .catch((err) => {
-            // eslint-disable-next-line no-console
-            console.log(err);
-        })
-        .then(() => res.redirect(redirectUrl));
+    try {
+        await execute(command);
+        res.redirect(redirectUrl);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
 });
 
 app.listen(3000, () => {

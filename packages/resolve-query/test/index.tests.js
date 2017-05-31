@@ -52,44 +52,59 @@ describe('resolve-command', () => {
         eventList = null;
     });
 
-    it('should build state on valid event and return it on query', () => {
+    it('should build state on valid event and return it on query', async () => {
         const executeQuery = createQueryExecutor({ eventStore, projections });
         eventList = [{ type: 'SuccessEvent' }];
 
         onReadable();
 
-        const state = executeQuery(PROJECTION_NAME);
+        const state = await executeQuery(PROJECTION_NAME);
 
         expect(state).to.be.deep.equal({
             value: 42
         });
     });
 
-    it('should handle broken event', () => {
+    it('should handle broken event', async () => {
         const executeQuery = createQueryExecutor({ eventStore, projections });
         eventList = [{ type: 'BrokenEvent' }];
 
         onReadable();
 
-        expect(() => executeQuery(PROJECTION_NAME)).to.throw(brokenStateError);
+        try {
+            await executeQuery(PROJECTION_NAME);
+            return Promise.reject('Test failed');
+        } catch (error) {
+            expect(error).to.be.equal(brokenStateError);
+        }
     });
 
-    it('should handle errors on read side', () => {
+    it('should handle errors on read side', async () => {
         const readSideError = new Error('Read side error');
         const executeQuery = createQueryExecutor({ eventStore, projections });
         eventList = [{ type: 'BrokenEvent' }];
 
         onError(readSideError);
 
-        expect(() => executeQuery(PROJECTION_NAME)).to.throw(readSideError);
+        try {
+            await executeQuery(PROJECTION_NAME);
+            return Promise.reject('Test failed');
+        } catch (error) {
+            expect(error).to.be.equal(readSideError);
+        }
     });
 
-    it('should handle non-existing query executor', () => {
+    it('should handle non-existing query executor', async () => {
         const executeQuery = createQueryExecutor({ eventStore, projections });
         eventList = [{ type: 'BrokenEvent' }];
 
-        expect(() => executeQuery('WRONG_PROJECTION_NAME')).to.throw(
-            'The \'WRONG_PROJECTION_NAME\' projection is not found'
-        );
+        try {
+            await executeQuery('WRONG_PROJECTION_NAME');
+            return Promise.reject('Test failed');
+        } catch (error) {
+            expect(error.message).to.be.equal(
+                'The \'WRONG_PROJECTION_NAME\' projection is not found'
+            );
+        }
     });
 });

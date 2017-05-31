@@ -23,7 +23,7 @@ function getExecutor({ eventStore, projection }) {
 
     eventStream.on('error', err => (error = err));
 
-    return () => {
+    return async () => {
         if (!error) return state;
         throw error;
     };
