@@ -1,13 +1,9 @@
 import 'regenerator-runtime/runtime';
 
-function verifyCommand(command) {
-    if (!command.aggregateId)
-        return Promise.reject(new Error('"aggregateId" argument is required'));
-    if (!command.aggregateName)
-        return Promise.reject(new Error('"aggregateName" argument is required'));
-    if (!command.type) return Promise.reject(new Error('"type" argument is required'));
-
-    return Promise.resolve(command);
+async function verifyCommand(command) {
+    if (!command.aggregateId) throw new Error('"aggregateId" argument is required');
+    if (!command.aggregateName) throw new Error('"aggregateName" argument is required');
+    if (!command.type) throw new Error('"type" argument is required');
 }
 
 function getAggregateState(aggregate, aggregateId, eventStore) {
@@ -82,6 +78,8 @@ export default ({ eventStore, aggregates }) => {
         return result;
     }, {});
 
-    return command =>
-        verifyCommand(command).then(() => executors[command.aggregateName.toLowerCase()](command));
+    return async (command) => {
+        await verifyCommand(command);
+        return executors[command.aggregateName.toLowerCase()](command);
+    };
 };

@@ -39,11 +39,11 @@ export default ({ eventStore, projections }) => {
         return result;
     }, {});
 
-    return (projectionName) => {
+    return async (projectionName) => {
         const executor = executors[projectionName.toLowerCase()];
 
         if (executor === undefined) {
-            return Promise.reject(new Error(`The '${projectionName}' projection is not found`));
+            throw new Error(`The '${projectionName}' projection is not found`);
         }
 
         return executor();
