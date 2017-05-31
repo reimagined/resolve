@@ -1,3 +1,5 @@
+import 'regenerator-runtime/runtime';
+
 function verifyCommand(command) {
     if (!command.aggregateId)
         return Promise.reject(new Error('"aggregateId" argument is required'));

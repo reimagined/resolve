@@ -13,8 +13,9 @@
     "url": "git+https://github.com/reimagined/resolve.git"
   },
   "dependencies": {
+    "babel-cli": "^6.24.1",
     "benchmark-base": "^0.0.2",
-    "resolve-es": "^0.0.2",
-    "resolve-es-mongo": "^0.0.2"
+    "resolve-storage": "*",
+    "resolve-storage-mongo": "*"
   }
 }

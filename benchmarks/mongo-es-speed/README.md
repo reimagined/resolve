@@ -1,6 +1,6 @@
 # `mongo-es-speed`
 
-This package provides speed and memory usage benchmark for `resolve-es-mongo` package.
+This package provides speed and memory usage benchmark for `resolve-storage-mongo` package.
 
 It requires "live" (non-mocked, etc.) mongodb database.
 You can specify connection parameters via `MONGODB_HOST` and `MONGODB_COLLECTION_NAME` environment variables.

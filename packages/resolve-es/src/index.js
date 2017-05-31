@@ -1,3 +1,4 @@
+import 'regenerator-runtime/runtime';
 import { Readable, Writable } from 'stream';
 
 export default ({ storage, bus }) => ({
