@@ -26,7 +26,8 @@
     "resolve-es": "*",
     "resolve-query": "*",
     "seamless-immutable": "^7.1.2",
-    "uuid": "^3.0.1"
+    "uuid": "^3.0.1",
+    "regenerator-runtime": "*"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",

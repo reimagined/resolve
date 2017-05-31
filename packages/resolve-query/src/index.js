@@ -1,3 +1,5 @@
+import 'regenerator-runtime/runtime';
+
 function updateState(projection, event, state) {
     return projection.eventHandlers[event.type](state, event);
 }
