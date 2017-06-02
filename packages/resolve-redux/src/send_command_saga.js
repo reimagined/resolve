@@ -1,21 +1,33 @@
 import { put, call } from 'redux-saga/effects';
+import checkRequiredFields from './warn_util';
 
-export default function* sendCommandSaga({ sendCommand }, { ...action }) {
+export default function* sendCommandSaga({ sendCommand }, action) {
     const { command, aggregateId, aggregateName, payload } = action;
 
-    if (command && aggregateId && aggregateName) {
-        try {
-            yield call(sendCommand, {
-                type: command.type,
-                aggregateId,
-                aggregateName,
-                payload
-            });
-        } catch (error) {
-            delete action.command;
-            action.status = 'error';
-            action.error = error;
-            yield put(action);
-        }
+    if (
+        checkRequiredFields(
+            { command, aggregateId, aggregateName },
+            'Send command error:',
+            JSON.stringify(action)
+        )
+    ) {
+        return;
+    }
+
+    try {
+        yield call(sendCommand, {
+            type: command.type,
+            aggregateId,
+            aggregateName,
+            payload
+        });
+    } catch (error) {
+        const errorAction = Object.keys(action).reduce(
+            (result, field) =>
+                field === 'command' ? result : { ...result, [field]: action[field] },
+            { status: 'error', error }
+        );
+
+        yield put(errorAction);
     }
 }
