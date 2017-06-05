@@ -1,6 +1,6 @@
 /* eslint no-unused-expressions: 0 */
 import { expect } from 'chai';
-import stream from 'stream';
+import stream, { Transform } from 'stream';
 import sinon from 'sinon';
 import uuidV4 from 'uuid/v4';
 import createEventStore from '../src/index';
@@ -84,6 +84,56 @@ describe('resolve-es', () => {
                 expect(eventStream.emit.calledWith('error', error)).to.be.true;
             }
         });
+
+        it('should return eventStream with transformed events', async () => {
+            sandbox.restore();
+
+            const storageEvents = [{ type: 'FIRST_EVENT' }, { type: 'SECOND_EVENT' }];
+            const busEvents = [{ type: 'THIRD_EVENT' }, { type: 'FOURTH_EVENT' }];
+
+            const storage = {
+                loadEventsByTypes: async (_, callback) => {
+                    storageEvents.forEach(event => callback(event));
+                }
+            };
+
+            const bus = {
+                onEvent: (_, callback) => busEvents.forEach(event => callback(event))
+            };
+
+            const transforms = [
+                new Transform({
+                    objectMode: true,
+                    transform(event, encoding, callback) {
+                        event.isTransformed = true;
+                        this.push(event);
+                        callback();
+                    }
+                })
+            ];
+
+            const eventStore = createEventStore({ storage, bus, transforms });
+
+            const eventStream = eventStore.getStreamByEventTypes();
+
+            const resultEvents = [];
+            eventStream.on('readable', () => {
+                let event;
+                // eslint-disable-next-line no-cond-assign
+                while (null !== (event = eventStream.read())) {
+                    resultEvents.push(event);
+                }
+            });
+
+            await Promise.resolve();
+
+            expect(resultEvents).to.deep.equal([
+                { type: 'FIRST_EVENT', isTransformed: true },
+                { type: 'SECOND_EVENT', isTransformed: true },
+                { type: 'THIRD_EVENT', isTransformed: true },
+                { type: 'FOURTH_EVENT', isTransformed: true }
+            ]);
+        });
     });
 
     describe('getStreamByAggregateId', () => {
@@ -145,6 +195,56 @@ describe('resolve-es', () => {
                 await Promise.resolve();
                 expect(eventStream.emit.calledWith('error', error));
             }
+        });
+
+        it('should return eventStream with transformed events', async () => {
+            sandbox.restore();
+
+            const aggregateId = 'aggregateId';
+
+            const storageEvents = [
+                { type: 'FIRST_EVENT', aggregateId },
+                { type: 'SECOND_EVENT', aggregateId }
+            ];
+
+            const storage = {
+                loadEventsByAggregateId: async (_, callback) => {
+                    storageEvents.forEach(event => callback(event));
+                }
+            };
+
+            const transforms = [
+                new Transform({
+                    objectMode: true,
+                    transform(event, encoding, callback) {
+                        event.isTransformed = true;
+                        this.push(event);
+                        callback();
+                    }
+                })
+            ];
+
+            const eventStore = createEventStore({ storage, transforms });
+
+            const eventStream = eventStore.getStreamByAggregateId(aggregateId);
+
+            const resultEvents = [];
+            eventStream.on('readable', () => {
+                let event;
+                // eslint-disable-next-line no-cond-assign
+                while (null !== (event = eventStream.read())) {
+                    resultEvents.push(event);
+                }
+            });
+
+            await Promise.resolve();
+            await Promise.resolve();
+            await Promise.resolve();
+
+            expect(resultEvents).to.deep.equal([
+                { type: 'FIRST_EVENT', aggregateId, isTransformed: true },
+                { type: 'SECOND_EVENT', aggregateId, isTransformed: true }
+            ]);
         });
     });
 

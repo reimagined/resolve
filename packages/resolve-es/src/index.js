@@ -1,7 +1,7 @@
 import 'regenerator-runtime/runtime';
 import { Readable, Writable } from 'stream';
 
-export default ({ storage, bus }) => ({
+export default ({ storage, bus, transforms = [] }) => ({
     getStreamByEventTypes(eventTypes) {
         const eventStream = Readable({ objectMode: true, read() {} });
         (async () => {
@@ -12,7 +12,10 @@ export default ({ storage, bus }) => ({
                 eventStream.emit('error', error);
             }
         })();
-        return eventStream;
+        return transforms.reduce(
+            (eventStream, transform) => eventStream.pipe(transform),
+            eventStream
+        );
     },
     getStreamByAggregateId(aggregateId) {
         const eventStream = Readable({ objectMode: true, read() {} });
@@ -26,7 +29,10 @@ export default ({ storage, bus }) => ({
                 eventStream.emit('error', error);
             }
         })();
-        return eventStream;
+        return transforms.reduce(
+            (eventStream, transform) => eventStream.pipe(transform),
+            eventStream
+        );
     },
     getPublishStream() {
         return Writable({
