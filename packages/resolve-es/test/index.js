@@ -5,22 +5,36 @@ import sinon from 'sinon';
 import uuidV4 from 'uuid/v4';
 import createEventStore from '../src/index';
 
-let sandbox;
-
-beforeEach(() => {
-    sandbox = sinon.sandbox.create();
-    sandbox.stub(stream, 'Readable').returns({
-        push: sinon.spy(),
-        emit: sinon.spy()
-    });
-    sandbox.stub(stream, 'Writable').callsFake(({ write }) => ({ write }));
-});
-
-afterEach(() => {
-    sandbox.restore();
-});
-
 describe('resolve-es', () => {
+    let sandbox;
+
+    beforeEach(() => {
+        sandbox = sinon.sandbox.create();
+        sandbox.stub(stream, 'Readable').returns({
+            push: sinon.spy(),
+            emit: sinon.spy()
+        });
+        sandbox.stub(stream, 'Writable').callsFake(({ write }) => ({ write }));
+    });
+
+    afterEach(() => {
+        sandbox.restore();
+    });
+
+    async function playEvents(eventStream) {
+        const resultEvents = [];
+
+        eventStream.on('readable', () => {
+            let event;
+            // eslint-disable-next-line no-cond-assign
+            while (null !== (event = eventStream.read())) {
+                resultEvents.push(event);
+            }
+        });
+
+        return resultEvents;
+    }
+
     describe('getStreamByEventTypes', () => {
         // eslint-disable-next-line max-len
         it('should return eventStream by eventTypes with events propagated from storage and bus', async () => {
@@ -85,58 +99,53 @@ describe('resolve-es', () => {
             }
         });
 
-        it('should return eventStream with transformed events', async () => {
-            sandbox.restore();
-
-            const storageEvents = [{ type: 'FIRST_EVENT' }, { type: 'SECOND_EVENT' }];
-            const busEvents = [{ type: 'THIRD_EVENT' }, { type: 'FOURTH_EVENT' }];
-
-            const storage = {
-                loadEventsByTypes: async (_, callback) => {
-                    storageEvents.forEach(event => callback(event));
-                }
-            };
-
-            const bus = {
-                onEvent: (_, callback) => busEvents.forEach(event => callback(event))
-            };
-
-            const transforms = [
-                new Transform({
-                    objectMode: true,
-                    transform(event, encoding, callback) {
-                        event.isTransformed = true;
-                        this.push(event);
-                        callback();
-                    }
-                })
-            ];
-
-            const eventStore = createEventStore({ storage, bus, transforms });
-
-            const eventStream = eventStore.getStreamByEventTypes();
-
-            const resultEvents = [];
-            eventStream.on('readable', () => {
-                let event;
-                // eslint-disable-next-line no-cond-assign
-                while (null !== (event = eventStream.read())) {
-                    resultEvents.push(event);
-                }
+        describe('with transforms', () => {
+            beforeEach(() => {
+                sandbox.restore();
             });
 
-            await Promise.resolve();
+            it('should return eventStream with transformed events', async () => {
+                const storageEvents = [{ type: 'FIRST_EVENT' }, { type: 'SECOND_EVENT' }];
+                const busEvents = [{ type: 'THIRD_EVENT' }, { type: 'FOURTH_EVENT' }];
 
-            expect(resultEvents).to.deep.equal([
-                { type: 'FIRST_EVENT', isTransformed: true },
-                { type: 'SECOND_EVENT', isTransformed: true },
-                { type: 'THIRD_EVENT', isTransformed: true },
-                { type: 'FOURTH_EVENT', isTransformed: true }
-            ]);
+                const storage = {
+                    loadEventsByTypes: async (_, callback) => {
+                        storageEvents.forEach(event => callback(event));
+                    }
+                };
+
+                const bus = {
+                    onEvent: (_, callback) => busEvents.forEach(event => callback(event))
+                };
+
+                const transforms = [
+                    new Transform({
+                        objectMode: true,
+                        transform(event, encoding, callback) {
+                            event.isTransformed = true;
+                            this.push(event);
+                            callback();
+                        }
+                    })
+                ];
+
+                const eventStore = createEventStore({ storage, bus, transforms });
+
+                const eventStream = eventStore.getStreamByEventTypes();
+
+                const resultEvents = await playEvents(eventStream);
+
+                expect(resultEvents).to.deep.equal([
+                    { type: 'FIRST_EVENT', isTransformed: true },
+                    { type: 'SECOND_EVENT', isTransformed: true },
+                    { type: 'THIRD_EVENT', isTransformed: true },
+                    { type: 'FOURTH_EVENT', isTransformed: true }
+                ]);
+            });
         });
     });
 
-    describe('getStreamByAggregateId', () => {
+    describe('getStreamByAggregateId', async () => {
         // eslint-disable-next-line max-len
         it('should return eventStream by aggregateId with events propagated from storage', async () => {
             const resolvedPromise = Promise.resolve();
@@ -197,52 +206,47 @@ describe('resolve-es', () => {
             }
         });
 
-        it('should return eventStream with transformed events', async () => {
-            sandbox.restore();
-
-            const aggregateId = 'aggregateId';
-
-            const storageEvents = [
-                { type: 'FIRST_EVENT', aggregateId },
-                { type: 'SECOND_EVENT', aggregateId }
-            ];
-
-            const storage = {
-                loadEventsByAggregateId: async (_, callback) => {
-                    storageEvents.forEach(event => callback(event));
-                }
-            };
-
-            const transforms = [
-                new Transform({
-                    objectMode: true,
-                    transform(event, encoding, callback) {
-                        event.isTransformed = true;
-                        this.push(event);
-                        callback();
-                    }
-                })
-            ];
-
-            const eventStore = createEventStore({ storage, transforms });
-
-            const eventStream = eventStore.getStreamByAggregateId(aggregateId);
-
-            const resultEvents = [];
-            eventStream.on('readable', () => {
-                let event;
-                // eslint-disable-next-line no-cond-assign
-                while (null !== (event = eventStream.read())) {
-                    resultEvents.push(event);
-                }
+        describe('with transforms', () => {
+            beforeEach(() => {
+                sandbox.restore();
             });
 
-            await Promise.resolve();
+            it('should return eventStream with transformed events', async () => {
+                const aggregateId = 'aggregateId';
 
-            expect(resultEvents).to.deep.equal([
-                { type: 'FIRST_EVENT', aggregateId, isTransformed: true },
-                { type: 'SECOND_EVENT', aggregateId, isTransformed: true }
-            ]);
+                const storageEvents = [
+                    { type: 'FIRST_EVENT', aggregateId },
+                    { type: 'SECOND_EVENT', aggregateId }
+                ];
+
+                const storage = {
+                    loadEventsByAggregateId: async (_, callback) => {
+                        storageEvents.forEach(event => callback(event));
+                    }
+                };
+
+                const transforms = [
+                    new Transform({
+                        objectMode: true,
+                        transform(event, encoding, callback) {
+                            event.isTransformed = true;
+                            this.push(event);
+                            callback();
+                        }
+                    })
+                ];
+
+                const eventStore = createEventStore({ storage, transforms });
+
+                const eventStream = eventStore.getStreamByAggregateId(aggregateId);
+
+                const resultEvents = await playEvents(eventStream);
+
+                expect(resultEvents).to.deep.equal([
+                    { type: 'FIRST_EVENT', aggregateId, isTransformed: true },
+                    { type: 'SECOND_EVENT', aggregateId, isTransformed: true }
+                ]);
+            });
         });
     });
 
@@ -264,6 +268,7 @@ describe('resolve-es', () => {
             await eventStream.write(event, '', callback);
 
             await Promise.resolve();
+
             expect(storage.saveEvent.calledWith(event)).to.be.true;
             expect(bus.emitEvent.calledWith(event)).to.be.true;
             expect(callback.calledWith()).to.be.true;
