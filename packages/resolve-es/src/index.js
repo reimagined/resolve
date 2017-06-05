@@ -1,6 +1,10 @@
 import 'regenerator-runtime/runtime';
 import { Readable, Writable } from 'stream';
 
+function createTransformedStream(eventStream, transforms) {
+    return transforms.reduce((eventStream, transform) => eventStream.pipe(transform), eventStream);
+}
+
 export default ({ storage, bus, transforms = [] }) => ({
     getStreamByEventTypes(eventTypes) {
         const eventStream = Readable({ objectMode: true, read() {} });
@@ -12,10 +16,7 @@ export default ({ storage, bus, transforms = [] }) => ({
                 eventStream.emit('error', error);
             }
         })();
-        return transforms.reduce(
-            (eventStream, transform) => eventStream.pipe(transform),
-            eventStream
-        );
+        return createTransformedStream(eventStream, transforms);
     },
     getStreamByAggregateId(aggregateId) {
         const eventStream = Readable({ objectMode: true, read() {} });
@@ -29,10 +30,7 @@ export default ({ storage, bus, transforms = [] }) => ({
                 eventStream.emit('error', error);
             }
         })();
-        return transforms.reduce(
-            (eventStream, transform) => eventStream.pipe(transform),
-            eventStream
-        );
+        return createTransformedStream(eventStream, transforms);
     },
     getPublishStream() {
         return Writable({
