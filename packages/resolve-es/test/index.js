@@ -238,8 +238,6 @@ describe('resolve-es', () => {
             });
 
             await Promise.resolve();
-            await Promise.resolve();
-            await Promise.resolve();
 
             expect(resultEvents).to.deep.equal([
                 { type: 'FIRST_EVENT', aggregateId, isTransformed: true },
