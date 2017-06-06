@@ -8,10 +8,10 @@ services:
       - firefox
       - /tests
     links:
-      - todolist
+      - todo
     depends_on:
-      - todolist
+      - todo
     environment:
-      - HOST=todolist
-  todolist:
+      - HOST=todo
+  todo:
     build: .
