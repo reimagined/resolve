@@ -47,7 +47,16 @@ pipeline {
                         }
                     }
                     dir('examples/todo') {
-                        sh './integration_test.sh'
+                        script {
+                            sh 'docker-compose up --build -d'
+                            EXIT_CODE = sh (
+                                script: 'docker wait todo_testcafe_1',
+                                returnStdout: true
+                            ).trim()
+                            sh 'docker logs todo_testcafe_1'
+                            sh 'docker-compose down --rmi all'
+                            sh "exit ${EXIT_CODE}"
+                        }
                     }
                 }
             }

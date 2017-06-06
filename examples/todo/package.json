@@ -11,7 +11,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0",
-    "start": "node index"
+    "start": "node index",
+    "testcafe": "HOST=localhost testcafe $(testcafe -b | head -n1) ./testcafe --app 'npm start'"
   },
   "devDependencies": {
     "chai": "^4.0.1",
