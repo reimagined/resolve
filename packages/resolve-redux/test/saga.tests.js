@@ -32,7 +32,9 @@ describe('saga', () => {
 
     it('should throw error on send command if some of required fields are not defined', () => {
         const args = { sendCommand() {} };
-        const action = actions.sendCommand({});
+        const action = actions.sendCommand({
+            command: 'SOME_COMMAND'
+        });
         const generator = sendCommandSaga(args, action);
         generator.next();
 
@@ -43,7 +45,6 @@ describe('saga', () => {
         const warnArgs = console.warn.args[0];
 
         expect(warnArgs[0]).contains('Send command error:');
-        expect(warnArgs[0]).contains('The \'command\' is required');
         expect(warnArgs[0]).contains('The \'aggregateId\' is required');
         expect(warnArgs[0]).contains('The \'aggregateName\' is required');
         expect(warnArgs[0]).contains(JSON.stringify(action));

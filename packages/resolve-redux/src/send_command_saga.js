@@ -5,8 +5,9 @@ export default function* sendCommandSaga({ sendCommand }, action) {
     const { command, aggregateId, aggregateName, payload } = action;
 
     if (
+        command &&
         checkRequiredFields(
-            { command, aggregateId, aggregateName },
+            { aggregateId, aggregateName },
             'Send command error:',
             JSON.stringify(action)
         )
