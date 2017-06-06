@@ -37,20 +37,28 @@ pipeline {
                 }
             }
             stage('Integration testing') {
-                steps{
+                steps {
                     script {
                         docker.image('node:7.10').inside {
                             sh 'npm install'
                             sh 'npm run bootstrap'
-                            sh 'find examples/todolist/node_modules -maxdepth 1 -type l -delete'
-                            sh 'cp -r ./packages/* ./examples/todolist/node_modules'
+                            sh 'find examples/todo/node_modules -maxdepth 1 -type l -delete'
+                            sh 'cp -r ./packages/* ./examples/todo/node_modules'
                         }
                     }
-                    dir('examples/todolist') {
-                        sh './integration_test.sh'
+                    dir('examples/todo') {
+                        script {
+                            sh 'docker-compose up --build -d'
+                            EXIT_CODE = sh (
+                                script: 'docker wait todo_testcafe_1',
+                                returnStdout: true
+                            ).trim()
+                            sh 'docker logs todo_testcafe_1'
+                            sh 'docker-compose down --rmi all'
+                            sh "exit ${EXIT_CODE}"
+                        }
                     }
                 }
             }
         }
 }
-

@@ -11,10 +11,13 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0",
-    "start": "lerna run start --stream"
+    "start": "node index",
+    "testcafe": "HOST=localhost testcafe $(testcafe -b | head -n1) ./testcafe --app 'npm start'"
   },
   "devDependencies": {
-    "lerna": "^2.0.0-rc.4"
+    "chai": "^4.0.1",
+    "lerna": "^2.0.0-rc.4",
+    "testcafe": "^0.15.0"
   },
   "dependencies": {
     "regenerator-runtime": "*"
