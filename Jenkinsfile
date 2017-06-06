@@ -37,20 +37,19 @@ pipeline {
                 }
             }
             stage('Integration testing') {
-                steps{
+                steps {
                     script {
                         docker.image('node:7.10').inside {
                             sh 'npm install'
                             sh 'npm run bootstrap'
-                            sh 'find examples/todolist/node_modules -maxdepth 1 -type l -delete'
-                            sh 'cp -r ./packages/* ./examples/todolist/node_modules'
+                            sh 'find examples/todo/node_modules -maxdepth 1 -type l -delete'
+                            sh 'cp -r ./packages/* ./examples/todo/node_modules'
                         }
                     }
-                    dir('examples/todolist') {
+                    dir('examples/todo') {
                         sh './integration_test.sh'
                     }
                 }
             }
         }
 }
-
