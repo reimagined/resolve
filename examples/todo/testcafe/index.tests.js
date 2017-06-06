@@ -11,53 +11,66 @@ fixture`Todo list example`.beforeEach(async (t) => {
 });
 
 test('base functionality', async (t) => {
-    const openSidebarButton = await Selector('button').withText('Open Menu');
-    await t.click(openSidebarButton);
+    /* Open sidebar */ {
+        const openSidebarButton = await Selector('button').withText('Open Menu');
 
-    await t.wait(500);
+        await t.click(openSidebarButton).wait(500);
+    }
 
     const newItemInput = await Selector('.bm-menu input');
     const newItemButton = await Selector('.bm-menu button').withText('Add');
 
-    await t.typeText(newItemInput, 'First', { replace: true }).click(newItemButton);
+    /* Create the 'First' item */ {
+        await t.typeText(newItemInput, 'First', { replace: true }).click(newItemButton);
+    }
 
-    const firstItem = await Selector('.bm-menu a').withText('First');
+    /* Create the 'First todo' todo item in the 'First' item */ {
+        const firstItem = await Selector('.bm-menu a').withText('First');
 
-    await t
-        .click(firstItem)
-        .typeText(await Selector('input.new-todo'), 'First todo')
-        .pressKey('enter');
+        await t
+            .click(firstItem)
+            .typeText(await Selector('input.new-todo'), 'First todo')
+            .pressKey('enter');
 
-    const firstTodoItems = Selector('.todo-list li');
+        const firstTodoItems = Selector('.todo-list li');
 
-    expect(await firstTodoItems.count).to.be.equal(1);
-    expect(await firstTodoItems.nth(0).innerText).to.contain('First todo');
+        expect(await firstTodoItems.count).to.be.equal(1);
+        expect(await firstTodoItems.nth(0).innerText).to.contain('First todo');
+    }
 
-    await t.typeText(newItemInput, 'Second', { replace: true }).click(newItemButton);
+    /* Create the 'Second' item */ {
+        await t.typeText(newItemInput, 'Second', { replace: true }).click(newItemButton);
+    }
 
-    const secondItem = await Selector('.bm-menu a').withText('Second');
+    /* Create the 'Second todo' todo item in the 'Second' item */ {
+        const secondItem = await Selector('.bm-menu a').withText('Second');
 
-    await t
-        .click(secondItem)
-        .typeText(await Selector('input.new-todo'), 'Second todo')
-        .pressKey('enter');
+        await t
+            .click(secondItem)
+            .typeText(await Selector('input.new-todo'), 'Second todo')
+            .pressKey('enter');
 
-    const secondTodoItems = Selector('.todo-list li');
+        const secondTodoItems = Selector('.todo-list li');
 
-    expect(await secondTodoItems.count).to.be.equal(1);
-    expect(await secondTodoItems.nth(0).innerText).to.contain('Second todo');
+        expect(await secondTodoItems.count).to.be.equal(1);
+        expect(await secondTodoItems.nth(0).innerText).to.contain('Second todo');
+    }
 
-    await t.click(await Selector('#sidebar-list a').withText('All'));
+    /* Open the 'All' item */ {
+        await t.click(await Selector('#sidebar-list a').withText('All'));
 
-    const allTodoItems = Selector('.todo-list li');
+        const allTodoItems = Selector('.todo-list li');
 
-    expect(await allTodoItems.count).to.be.equal(2);
-    expect(await allTodoItems.nth(0).innerText).to.contain('First todo');
-    expect(await allTodoItems.nth(1).innerText).to.contain('Second todo');
+        expect(await allTodoItems.count).to.be.equal(2);
+        expect(await allTodoItems.nth(0).innerText).to.contain('First todo');
+        expect(await allTodoItems.nth(1).innerText).to.contain('Second todo');
+    }
 
-    await t.click(Selector('#sidebar-list .destroy').nth(0));
-    expect(await Selector('.todo-list li').count).to.be.equal(1);
+    /* Delete the 'First' and the 'Second' items */ {
+        await t.click(Selector('#sidebar-list .destroy').nth(0));
+        expect(await Selector('.todo-list li').count).to.be.equal(1);
 
-    await t.click(Selector('#sidebar-list .destroy').nth(0));
-    expect(await Selector('.todo-list li').count).to.be.equal(0);
+        await t.click(Selector('#sidebar-list .destroy').nth(0));
+        expect(await Selector('.todo-list li').count).to.be.equal(0);
+    }
 });
