@@ -11,7 +11,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0",
-    "start": "lerna run start --stream"
+    "start": "node index"
   },
   "devDependencies": {
     "chai": "^4.0.1",
