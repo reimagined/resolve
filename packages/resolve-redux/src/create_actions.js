@@ -2,14 +2,14 @@ import actions from './actions';
 
 export default function createActions({ name, commands }, extendActions) {
     const generatedActions = Object.keys(commands).reduce(
-        (result, commandName) => ({
+        (result, commandType) => ({
             ...result,
-            [commandName]: (aggregateId, payload) =>
+            [commandType]: (aggregateId, payload) =>
                 actions.sendCommand({
                     aggregateId,
                     aggregateName: name,
                     command: {
-                        type: commandName
+                        type: commandType
                     },
                     payload
                 })
