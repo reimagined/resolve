@@ -13,7 +13,7 @@ import { createReducer, saga, actions } from 'resolve-redux';
 
 const projection = {
     name: 'TodoList',
-    initialState: () => [],
+    initialState: [],
     eventHandlers: {
         TodoListItemAdded(state, event) {
             return state.concat({
@@ -34,7 +34,7 @@ const sagaMiddleware = createSagaMiddleware();
 
 const store = createStore(
     reducer,
-    projeciton.initialState(),
+    projeciton.initialState,
     applyMiddleware(sagaMiddleware)
 );
 
@@ -81,7 +81,7 @@ export function sendCommandAddTodoItem(aggregateId) {
         aggregateName: 'TodoList',
         payload: { name: 'todo-list' },
         command: {
-            type: 'TodoListItemAdded',
+            type: 'TodoListItemAdd',
         },
     };
 }
@@ -89,12 +89,12 @@ export function sendCommandAddTodoItem(aggregateId) {
 store.dispatch(sendCommandAddTodoItem('aggregateId'));
 // or
 store.dispatch(actions.sendCommand({
-    command: {
-        type: 'TodoListItemRemoved',
-    }, 
     aggregateId: 'aggregateId', 
     aggregateName: 'TodoList', 
     payload: { name: 'todo-list' },
+    command: {
+        type: 'TodoListItemRemove',
+    }, 
 }));
 ```
 
