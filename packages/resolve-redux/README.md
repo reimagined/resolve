@@ -80,7 +80,7 @@ import App from './components/App';
 export const aggregate {
     name: 'User',
     commands: {
-        createUser: ({ aggregateId, payload }) => ({
+        createUser: (state, { aggregateId, payload }) => ({
             type: 'UserCreated',
             aggregateId,
             payload
