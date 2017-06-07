@@ -28,4 +28,46 @@ describe('createActions', () => {
             payload
         });
     });
+
+    it('should create an action from an aggregate and extend it by extended actions', () => {
+        const createCommand = 'create';
+        const originalUpdateCommand = 'originalUpdate';
+        const originalDeleteCommand = 'originalDelete';
+
+        const aggregateId = 'aggregateId';
+        const aggregateName = 'aggregateName';
+        const payload = {
+            value: 42
+        };
+
+        const aggregate = {
+            name: aggregateName,
+            commands: {
+                create: () => {},
+                update: () => {}
+            }
+        };
+        const generatedActions = createActions(aggregate, {
+            update: () => ({ type: originalUpdateCommand }),
+            delete: () => ({ type: originalDeleteCommand })
+        });
+
+        expect(generatedActions.create(aggregateId, payload)).to.deep.equal({
+            type: SEND_COMMAND,
+            command: {
+                name: createCommand
+            },
+            aggregateId,
+            aggregateName,
+            payload
+        });
+
+        expect(generatedActions.update()).to.deep.equal({
+            type: originalUpdateCommand
+        });
+
+        expect(generatedActions.delete()).to.deep.equal({
+            type: originalDeleteCommand
+        });
+    });
 });
