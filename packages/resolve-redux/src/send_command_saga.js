@@ -5,7 +5,7 @@ export default function* sendCommandSaga({ sendCommand }, action) {
     const { command, aggregateId, aggregateName, payload } = action;
 
     if (
-        command &&
+        !command ||
         checkRequiredFields(
             { aggregateId, aggregateName },
             'Send command error:',
