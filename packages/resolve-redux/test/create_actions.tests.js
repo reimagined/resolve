@@ -5,7 +5,7 @@ import createActions from '../src/create_actions';
 describe('createActions', () => {
     it('should create an action from an aggregate to send command', () => {
         const command = {
-            name: 'create'
+            type: 'create'
         };
         const aggregateId = 'aggregateId';
         const aggregateName = 'aggregateName';
@@ -55,7 +55,7 @@ describe('createActions', () => {
         expect(generatedActions.create(aggregateId, payload)).to.deep.equal({
             type: SEND_COMMAND,
             command: {
-                name: createCommand
+                type: createCommand
             },
             aggregateId,
             aggregateName,

@@ -9,7 +9,7 @@ export default function createActions({ name, commands }, extendActions) {
                     aggregateId,
                     aggregateName: name,
                     command: {
-                        name: commandName
+                        type: commandName
                     },
                     payload
                 })
