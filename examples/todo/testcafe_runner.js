@@ -8,7 +8,7 @@ getInstallations()
             .then((tc) => {
                 testcafe = tc;
                 const runner = testcafe.createRunner();
-                const browser = Object.keys(browsers).slice(0,1);
+                const browser = Object.keys(browsers).slice(0, 1);
                 return runner
                     .startApp('npm start')
                     .src(['./testcafe/index.tests.js'])
