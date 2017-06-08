@@ -40,7 +40,7 @@ const store = createStore(
 
 function sendCommand(command) {
     return fetch('/api/commands', {
-        method: 'POST', 
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: command
     }).then( res => res.json() );
@@ -48,7 +48,7 @@ function sendCommand(command) {
 
 function fetchMore(projectionName, query) {
     return fetch(`/api/${projectionName}?${getQueryString(query)}` , {
-        method: 'GET', 
+        method: 'GET',
         headers: { 'Content-Type': 'application/json' },
         body: command
     }).then( res => res.json() );
@@ -68,6 +68,37 @@ function getQueryString(params) {
             return `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`
         }).join('&');
 }
+```
+
+## How to generate action from aggregate
+```js
+import { createActions } from 'resolve-redux';
+import { connect, bindActionCreators } from 'redux';
+
+import App from './components/App';
+
+export const aggregate {
+    name: 'User',
+    commands: {
+        createUser: (state, { aggregateId, payload }) => ({
+            type: 'UserCreated',
+            aggregateId,
+            payload
+        })
+    }
+};
+
+export const customActions = {
+    deleteAll: () => ({
+        type: 'DELETE_ALL'
+    })
+}
+
+function mapDispatchToProps(dispatch) {
+    actions: bindActionCreators(createActions(aggregate, customActions))
+}
+
+export default connect(() => {}, mapDispatchToProps)(App);
 ```
 
 ## How to send commands to the server
@@ -140,9 +171,9 @@ const reducer = createReducer(projection, (state, action) => {
                         };
                     }
                 });
-            }         
+            }
         }
-        default: 
+        default:
             return state;
     }
 });
