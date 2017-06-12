@@ -100,23 +100,27 @@ describe('resolve-es', () => {
         });
 
         describe('with transforms', () => {
+            let storageEvents, busEvents;
+
             beforeEach(() => {
                 sandbox.restore();
+                storageEvents = [];
+                busEvents = [];
             });
 
+            const storage = {
+                loadEventsByTypes: async (_, callback) => {
+                    storageEvents.forEach(event => callback(event));
+                }
+            };
+
+            const bus = {
+                onEvent: (_, callback) => busEvents.forEach(event => callback(event))
+            };
+
             it('should return eventStream with transformed events', async () => {
-                const storageEvents = [{ type: 'FIRST_EVENT' }, { type: 'SECOND_EVENT' }];
-                const busEvents = [{ type: 'THIRD_EVENT' }, { type: 'FOURTH_EVENT' }];
-
-                const storage = {
-                    loadEventsByTypes: async (_, callback) => {
-                        storageEvents.forEach(event => callback(event));
-                    }
-                };
-
-                const bus = {
-                    onEvent: (_, callback) => busEvents.forEach(event => callback(event))
-                };
+                storageEvents = [{ type: 'FIRST_EVENT' }, { type: 'SECOND_EVENT' }];
+                busEvents = [{ type: 'THIRD_EVENT' }, { type: 'FOURTH_EVENT' }];
 
                 const transforms = [
                     new Transform({
@@ -140,6 +144,194 @@ describe('resolve-es', () => {
                     { type: 'SECOND_EVENT', isTransformed: true },
                     { type: 'THIRD_EVENT', isTransformed: true },
                     { type: 'FOURTH_EVENT', isTransformed: true }
+                ]);
+            });
+
+            it('should return eventStream with combined events', async () => {
+                const id = uuidV4();
+                const name = 'Name';
+                const lastName = 'LastName';
+                const value = 42;
+
+                storageEvents = [
+                    { type: 'CREATE_ITEM', payload: { id } },
+                    { type: 'UPDATE_ITEM_NAME', payload: { id, name } },
+                    { type: 'UPDATE_ITEM_LAST_NAME', payload: { id, lastName } }
+                ];
+
+                busEvents = [
+                    { type: 'UPDATE_ITEM_VALUE', payload: { id, value } },
+                    { type: 'PUBLISH_ITEM', payload: { id } }
+                ];
+
+                const transforms = [
+                    ((state = {}) =>
+                        new Transform({
+                            objectMode: true,
+                            transform(event, encoding, callback) {
+                                switch (event.type) {
+                                    case 'CREATE_ITEM':
+                                        state[event.payload.id] = {
+                                            id: event.payload.id
+                                        };
+                                        break;
+                                    case 'UPDATE_ITEM_NAME':
+                                        state[event.payload.id].name = event.payload.name;
+                                        break;
+                                    case 'UPDATE_ITEM_LAST_NAME':
+                                        state[event.payload.id].lastName = event.payload.lastName;
+                                        break;
+                                    case 'UPDATE_ITEM_VALUE':
+                                        state[event.payload.id].value = event.payload.value;
+                                        break;
+                                    case 'PUBLISH_ITEM':
+                                        this.push({
+                                            type: 'CREATE_ITEM_v2',
+                                            payload: state[event.payload.id]
+                                        });
+                                        delete state[event.payload.id];
+                                        break;
+                                    default:
+                                        this.push(event);
+                                }
+                                callback();
+                            }
+                        }))()
+                ];
+
+                const eventStore = createEventStore({ storage, bus, transforms });
+
+                const eventStream = eventStore.getStreamByEventTypes();
+
+                const resultEvents = await playEvents(eventStream);
+
+                expect(resultEvents).to.deep.equal([
+                    {
+                        type: 'CREATE_ITEM_v2',
+                        payload: {
+                            id,
+                            name,
+                            lastName,
+                            value
+                        }
+                    }
+                ]);
+            });
+
+            it('should return eventStream with separated events', async () => {
+                const id = uuidV4();
+                const name = 'Name';
+                const lastName = 'LastName';
+                const value = 42;
+
+                storageEvents = [
+                    { type: 'CREATE_ITEM_v2', payload: { id, name, lastName, value } }
+                ];
+
+                const transforms = [
+                    new Transform({
+                        objectMode: true,
+                        transform(event, encoding, callback) {
+                            switch (event.type) {
+                                case 'CREATE_ITEM_v2':
+                                    this.push({
+                                        type: 'CREATE_ITEM',
+                                        payload: { id: event.payload.id }
+                                    });
+                                    this.push({
+                                        type: 'UPDATE_ITEM_NAME',
+                                        payload: { id: event.payload.id, name: event.payload.name }
+                                    });
+                                    this.push({
+                                        type: 'UPDATE_ITEM_LAST_NAME',
+                                        payload: {
+                                            id: event.payload.id,
+                                            lastName: event.payload.lastName
+                                        }
+                                    });
+                                    this.push({
+                                        type: 'UPDATE_ITEM_VALUE',
+                                        payload: {
+                                            id: event.payload.id,
+                                            value: event.payload.value
+                                        }
+                                    });
+                                    this.push({
+                                        type: 'PUBLISH_ITEM',
+                                        payload: { id: event.payload.id }
+                                    });
+                                    break;
+                                default:
+                                    this.push(event);
+                            }
+                            callback();
+                        }
+                    })
+                ];
+
+                const eventStore = createEventStore({ storage, bus, transforms });
+
+                const eventStream = eventStore.getStreamByEventTypes();
+
+                const resultEvents = await playEvents(eventStream);
+
+                expect(resultEvents).to.deep.equal([
+                    { type: 'CREATE_ITEM', payload: { id } },
+                    { type: 'UPDATE_ITEM_NAME', payload: { id, name } },
+                    { type: 'UPDATE_ITEM_LAST_NAME', payload: { id, lastName } },
+                    { type: 'UPDATE_ITEM_VALUE', payload: { id, value } },
+                    { type: 'PUBLISH_ITEM', payload: { id } }
+                ]);
+            });
+
+            it('should return eventStream with filtered events', async () => {
+                const todoId = uuidV4();
+                const userId = uuidV4();
+                const todoName = 'Some Todo';
+                const userName = 'Alice';
+                const todoChecked = true;
+                const todoValue = 42;
+
+                storageEvents = [
+                    { type: 'TODO_CREATE', payload: { id: todoId } },
+                    { type: 'TODO_UPDATE', payload: { id: todoId, name: todoName } },
+                    { type: 'USER_CREATE', payload: { id: userId } }
+                ];
+
+                busEvents = [
+                    { type: 'USER_CREATE', payload: { id: userId } },
+                    { type: 'USER_UPDATE', payload: { id: userId, name: userName } },
+                    { type: 'TODO_UPDATE', payload: { id: todoId, checked: todoChecked } },
+                    { type: 'TODO_UPDATE', payload: { id: todoId, value: todoValue } }
+                ];
+
+                const transforms = [
+                    new Transform({
+                        objectMode: true,
+                        transform(event, encoding, callback) {
+                            switch (event.type) {
+                                case 'TODO_CREATE':
+                                case 'TODO_UPDATE':
+                                    this.push(event);
+                                    break;
+                                default:
+                            }
+                            callback();
+                        }
+                    })
+                ];
+
+                const eventStore = createEventStore({ storage, bus, transforms });
+
+                const eventStream = eventStore.getStreamByEventTypes();
+
+                const todoEvents = await playEvents(eventStream);
+
+                expect(todoEvents).to.deep.equal([
+                    { type: 'TODO_CREATE', payload: { id: todoId } },
+                    { type: 'TODO_UPDATE', payload: { id: todoId, name: todoName } },
+                    { type: 'TODO_UPDATE', payload: { id: todoId, checked: todoChecked } },
+                    { type: 'TODO_UPDATE', payload: { id: todoId, value: todoValue } }
                 ]);
             });
         });
