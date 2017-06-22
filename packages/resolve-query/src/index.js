@@ -24,9 +24,7 @@ function getExecutor({ eventStore, projection }) {
 
     eventStream.on('error', err => (error = err));
 
-    const storageReadyPromise = new Promise(resolve =>
-        eventStream.on('storageDone', resolve)
-    );
+    const storageReadyPromise = new Promise(resolve => eventStream.on('storageDone', resolve));
 
     return async () => {
         if (error) throw error;
