@@ -11,6 +11,11 @@ export default ({ storage, bus, transforms = [] }) => ({
         (async () => {
             try {
                 await storage.loadEventsByTypes(eventTypes, event => eventStream.push(event));
+
+                // Custom events are allowed due ReadableStream is inherited from EventEmitter
+                // https://github.com/nodejs/node/blob/master/lib/internal/streams/legacy.js#L9
+                eventStream.emit('storageDone', true);
+
                 bus.onEvent(eventTypes, event => eventStream.push(event));
             } catch (error) {
                 eventStream.emit('error', error);
