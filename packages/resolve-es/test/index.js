@@ -64,6 +64,8 @@ describe('resolve-es', () => {
             expect(eventStream.push.calledWith(emittedEvent)).to.be.true;
 
             await Promise.resolve();
+            expect(eventStream.emit.calledWith('storageDone', true)).to.be.true;
+
             expect(bus.onEvent.calledWith(eventTypes)).to.be.true;
             expect(eventStream.push.calledWith(listenedEvent)).to.be.true;
         });

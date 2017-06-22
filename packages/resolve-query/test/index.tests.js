@@ -8,7 +8,7 @@ const brokenStateError = new Error('Broken Error');
 describe('resolve-query', () => {
     const PROJECTION_NAME = 'projectionName';
 
-    let eventStore, onReadable, onError, eventList;
+    let eventStore, onReadable, onError, onStorageDone, eventList;
 
     const projections = [
         {
@@ -32,6 +32,7 @@ describe('resolve-query', () => {
             getStreamByEventTypes: sinon.stub().callsFake(() => {
                 const on = sinon.stub();
                 on.withArgs('readable').callsFake((_, callback) => (onReadable = callback));
+                on.withArgs('storageDone').callsFake((_, callback) => (onStorageDone = callback));
                 on.withArgs('error').callsFake((_, callback) => (onError = callback));
 
                 return {
@@ -58,6 +59,7 @@ describe('resolve-query', () => {
         eventList = [{ type: 'SuccessEvent' }];
 
         onReadable();
+        onStorageDone();
 
         const state = await executeQuery(PROJECTION_NAME);
 
@@ -71,6 +73,7 @@ describe('resolve-query', () => {
         eventList = [{ type: 'BrokenEvent' }];
 
         onReadable();
+        onStorageDone();
 
         try {
             await executeQuery(PROJECTION_NAME);
