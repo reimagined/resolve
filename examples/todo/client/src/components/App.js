@@ -25,7 +25,7 @@ export default class App extends Component {
                                         className="col-sm-3 col-md-2 sidebar"
                                     >
                                         <Link key={null} to="/">All</Link>
-                                        {Object.keys(this.props.cards).map(id => (
+                                        {Object.keys(this.props.cards).map(id =>
                                             <Link key={id} to={`/${id}`}>
                                                 {this.props.cards[id].name}
                                                 <button
@@ -36,7 +36,7 @@ export default class App extends Component {
                                                     }}
                                                 />
                                             </Link>
-                                        ))}
+                                        )}
                                     </Sidebar>
                                 );
                             }}
