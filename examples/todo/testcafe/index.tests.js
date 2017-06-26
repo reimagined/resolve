@@ -21,7 +21,6 @@ test('base functionality', async (t) => {
     const newItemButton = await Selector('.bm-menu button').withText('Add');
 
     /* Create the 'First' item */
-
     await t.typeText(newItemInput, 'First', { replace: true }).click(newItemButton);
 
     /* Create the 'First todo' todo item in the 'First' item */ {
