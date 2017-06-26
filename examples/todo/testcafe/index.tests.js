@@ -20,9 +20,9 @@ test('base functionality', async (t) => {
     const newItemInput = await Selector('.bm-menu input');
     const newItemButton = await Selector('.bm-menu button').withText('Add');
 
-    /* Create the 'First' item */ {
-        await t.typeText(newItemInput, 'First', { replace: true }).click(newItemButton);
-    }
+    /* Create the 'First' item */
+
+    await t.typeText(newItemInput, 'First', { replace: true }).click(newItemButton);
 
     /* Create the 'First todo' todo item in the 'First' item */ {
         const firstItem = await Selector('.bm-menu a').withText('First');
@@ -38,9 +38,8 @@ test('base functionality', async (t) => {
         expect(await firstTodoItems.nth(0).innerText).to.contain('First todo');
     }
 
-    /* Create the 'Second' item */ {
-        await t.typeText(newItemInput, 'Second', { replace: true }).click(newItemButton);
-    }
+    /* Create the 'Second' item */
+    await t.typeText(newItemInput, 'Second', { replace: true }).click(newItemButton);
 
     /* Create the 'Second todo' todo item in the 'Second' item */ {
         const secondItem = await Selector('.bm-menu a').withText('Second');
@@ -66,11 +65,10 @@ test('base functionality', async (t) => {
         expect(await allTodoItems.nth(1).innerText).to.contain('Second todo');
     }
 
-    /* Delete the 'First' and the 'Second' items */ {
-        await t.click(Selector('#sidebar-list .destroy').nth(0));
-        expect(await Selector('.todo-list li').count).to.be.equal(1);
+    /* Delete the 'First' and the 'Second' items */
+    await t.click(Selector('#sidebar-list .destroy').nth(0));
+    expect(await Selector('.todo-list li').count).to.be.equal(1);
 
-        await t.click(Selector('#sidebar-list .destroy').nth(0));
-        expect(await Selector('.todo-list li').count).to.be.equal(0);
-    }
+    await t.click(Selector('#sidebar-list .destroy').nth(0));
+    expect(await Selector('.todo-list li').count).to.be.equal(0);
 });

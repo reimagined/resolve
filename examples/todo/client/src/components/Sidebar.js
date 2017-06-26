@@ -13,7 +13,7 @@ export default function (props) {
                 outerContainerId="outer-container"
             >
                 <ul className="nav nav-sidebar">
-                    {props.children.map((child, index) => (
+                    {props.children.map((child, index) =>
                         <li
                             id="sidebar-list"
                             key={index}
@@ -21,7 +21,7 @@ export default function (props) {
                         >
                             {child}
                         </li>
-                    ))}
+                    )}
                 </ul>
                 <div className="row">
                     <div className="input-group">

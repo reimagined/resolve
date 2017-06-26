@@ -16,11 +16,10 @@ render(
         <Router>
             <Route
                 path="/:cardId?"
-                render={() => (
+                render={() =>
                     <App>
                         <TaskList />
-                    </App>
-                )}
+                    </App>}
             />
         </Router>
     </Provider>,
