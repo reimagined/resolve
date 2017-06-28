@@ -6,24 +6,15 @@ function createTransformedStream(eventStream, transforms) {
 }
 
 export default ({ storage, bus, transforms = [] }) => ({
-    getStreamByEventTypes(eventTypes) {
-        const eventStream = Readable({ objectMode: true, read() {} });
-        (async () => {
-            try {
-                await storage.loadEventsByTypes(eventTypes, event => eventStream.push(event));
+    async subscribeByEventType(eventTypes, handler) {
+        await storage.loadEventsByTypes(eventTypes, handler);
 
-                // Custom events are allowed due ReadableStream is inherited from EventEmitter
-                // https://github.com/nodejs/node/blob/master/lib/internal/streams/legacy.js#L9
-                eventStream.emit('storageDone', true);
-
-                bus.onEvent(eventTypes, event => eventStream.push(event));
-            } catch (error) {
-                eventStream.emit('error', error);
-            }
-        })();
-        return createTransformedStream(eventStream, transforms);
+        return bus.onEvent(eventTypes, handler);
     },
-    getStreamByAggregateId(aggregateId) {
+
+    getStreamByAggregateId(aggregateId, handler) {
+        //return storage.loadEventsByAggregateId(aggregateId, handler);
+
         const eventStream = Readable({ objectMode: true, read() {} });
         (async () => {
             try {

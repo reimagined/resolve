@@ -3,32 +3,20 @@ import 'regenerator-runtime/runtime';
 function getExecutor({ eventStore, projection }) {
     const eventTypes = Object.keys(projection.eventHandlers);
     let state = projection.initialState || {};
-    let error = null;
 
-    const eventStream = eventStore.getStreamByEventTypes(eventTypes);
-
-    eventStream.on('readable', () => {
-        let event;
-        // eslint-disable-next-line no-cond-assign
-        while (null !== (event = eventStream.read())) {
-            const handler = projection.eventHandlers[event.type];
-            if (!handler) continue;
-
-            try {
-                state = handler(state, event);
-            } catch (err) {
-                error = err;
-            }
-        }
-    });
-
-    eventStream.on('error', err => (error = err));
-
-    const storageReadyPromise = new Promise(resolve => eventStream.on('storageDone', resolve));
+    let result = null;
 
     return async () => {
-        if (error) throw error;
-        await storageReadyPromise;
+        result =
+            result ||
+            eventStore.subscribeByEventType(eventTypes, (event) => {
+                const handler = projection.eventHandlers[event.type];
+                if (!handler) return;
+
+                state = handler(state, event);
+            });
+
+        await result;
         return state;
     };
 }
