@@ -8,9 +8,8 @@ describe('resolve-command', () => {
     const AGGREGATE_ID = 'aggregateId';
     const AGGREGATE_NAME = 'aggregateName';
     const brokenStateError = new Error('Broken Error');
-    const failedCommandError = new Error('Failed Error');
 
-    let lastState, eventStore, onEnd, onReadable, onError, eventList;
+    let lastState, eventStore, eventList;
 
     const aggregates = [
         {
@@ -43,21 +42,9 @@ describe('resolve-command', () => {
         eventList = [];
 
         eventStore = {
-            getStreamByAggregateId: sinon.stub().callsFake(() => {
-                const on = sinon.stub();
-                on.withArgs('readable').callsFake((_, callback) => (onReadable = callback));
-                on.withArgs('end').callsFake((_, callback) => (onEnd = callback));
-                on.withArgs('error').callsFake((_, callback) => (onError = callback));
-
-                return {
-                    on,
-                    read: sinon.stub().callsFake(() => {
-                        const event = eventList.shift();
-                        if (event) return event;
-                        return null;
-                    })
-                };
-            }),
+            getEventsByAggregateId: sinon
+                .stub()
+                .callsFake((eventTypes, handler) => handler(eventList.shift())),
             getPublishStream: sinon.stub().callsFake(() => {
                 return {
                     on: sinon.spy(),
@@ -73,9 +60,6 @@ describe('resolve-command', () => {
     afterEach(() => {
         lastState = null;
         eventStore = null;
-        onEnd = null;
-        onReadable = null;
-        onError = null;
         eventList = null;
     });
 
@@ -88,10 +72,6 @@ describe('resolve-command', () => {
             aggregateId: AGGREGATE_ID,
             type: 'emptyCommand'
         });
-
-        await Promise.resolve();
-        onReadable();
-        onEnd();
 
         await transaction;
 
@@ -111,34 +91,11 @@ describe('resolve-command', () => {
                 type: 'emptyCommand'
             });
 
-            await Promise.resolve();
-            onReadable();
             await commnand;
 
             return Promise.reject('Test failed');
         } catch (error) {
             expect(error).to.equal(brokenStateError);
-        }
-    });
-
-    it('should raise exception in case of read side failure', async () => {
-        const executeCommand = createCommandExecutor({ eventStore, aggregates });
-        eventList = [{ type: 'SuccessEvent' }];
-
-        const transaction = executeCommand({
-            aggregateName: AGGREGATE_NAME,
-            aggregateId: AGGREGATE_ID,
-            type: 'emptyCommand'
-        });
-
-        await Promise.resolve();
-        onError(failedCommandError);
-
-        try {
-            await transaction;
-            return Promise.reject('Test failed');
-        } catch (error) {
-            expect(error).to.equal(failedCommandError);
         }
     });
 
@@ -174,8 +131,6 @@ describe('resolve-command', () => {
         });
 
         await Promise.resolve();
-        onReadable();
-        onEnd();
 
         try {
             await transaction;

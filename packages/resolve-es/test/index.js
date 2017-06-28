@@ -67,9 +67,9 @@ describe('resolve-es', () => {
         });
     });
 
-    describe('getStreamByAggregateId', async () => {
+    describe('getEventsByAggregateId', async () => {
         // eslint-disable-next-line max-len
-        it('should return eventStream by aggregateId with events propagated from storage', async () => {
+        it('should handle events by aggregateId with events propagated from storage', async () => {
             const resolvedPromise = Promise.resolve();
 
             const emittedEvent = { type: 'EMITTED_EVENT' };
@@ -85,90 +85,13 @@ describe('resolve-es', () => {
             const eventStore = createEventStore({ storage, bus });
 
             const aggregateId = uuidV4();
-            const eventStream = eventStore.getStreamByAggregateId(aggregateId);
+            const handler = sinon.stub();
+            eventStore.getEventsByAggregateId(aggregateId, handler);
 
             await resolvedPromise;
 
             expect(storage.loadEventsByAggregateId.calledWith(aggregateId)).to.be.true;
-            expect(eventStream.push.calledWith(emittedEvent)).to.be.true;
-
-            await Promise.resolve();
-            expect(eventStream.push.calledWith(null)).to.be.true;
-        });
-
-        // eslint-disable-next-line max-len
-        it('should return eventStream by aggregateId with events propagated from storage', async () => {
-            const error = new Error('Error');
-            const rejectedPromise = Promise.reject(error);
-
-            const emittedEvent = { type: 'EMITTED_EVENT' };
-
-            const storage = {
-                loadEventsByAggregateId: sinon.stub().callsFake((aggregateId, callback) => {
-                    callback(emittedEvent);
-                    return rejectedPromise;
-                })
-            };
-            const bus = {};
-
-            const eventStore = createEventStore({ storage, bus });
-
-            const aggregateId = uuidV4();
-            const eventStream = eventStore.getStreamByAggregateId(aggregateId);
-
-            try {
-                await rejectedPromise;
-                return Promise.reject('Test failed');
-            } catch (err) {
-                expect(storage.loadEventsByAggregateId.calledWith(aggregateId)).to.be.true;
-                expect(eventStream.push.calledWith(emittedEvent)).to.be.true;
-
-                await Promise.resolve();
-                expect(eventStream.emit.calledWith('error', error));
-            }
-        });
-
-        describe('with transforms', () => {
-            beforeEach(() => {
-                sandbox.restore();
-            });
-
-            it('should return eventStream with transformed events', async () => {
-                const aggregateId = 'aggregateId';
-
-                const storageEvents = [
-                    { type: 'FIRST_EVENT', aggregateId },
-                    { type: 'SECOND_EVENT', aggregateId }
-                ];
-
-                const storage = {
-                    loadEventsByAggregateId: async (_, callback) => {
-                        storageEvents.forEach(event => callback(event));
-                    }
-                };
-
-                const transforms = [
-                    new Transform({
-                        objectMode: true,
-                        transform(event, encoding, callback) {
-                            event.isTransformed = true;
-                            this.push(event);
-                            callback();
-                        }
-                    })
-                ];
-
-                const eventStore = createEventStore({ storage, transforms });
-
-                const eventStream = eventStore.getStreamByAggregateId(aggregateId);
-
-                const resultEvents = await playEvents(eventStream);
-
-                expect(resultEvents).to.deep.equal([
-                    { type: 'FIRST_EVENT', aggregateId, isTransformed: true },
-                    { type: 'SECOND_EVENT', aggregateId, isTransformed: true }
-                ]);
-            });
+            expect(handler.calledWith(emittedEvent)).to.be.true;
         });
     });
 

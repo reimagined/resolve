@@ -6,7 +6,7 @@ async function verifyCommand(command) {
     if (!command.type) throw new Error('"type" argument is required');
 }
 
-function getAggregateState(aggregate, aggregateId, eventStore) {
+async function getAggregateState(aggregate, aggregateId, eventStore) {
     const handlers = aggregate.eventHandlers;
     let aggregateState = aggregate.initialState || {};
 
@@ -14,28 +14,14 @@ function getAggregateState(aggregate, aggregateId, eventStore) {
         return Promise.resolve(aggregateState);
     }
 
-    return new Promise((resolve, reject) => {
-        const eventStream = eventStore.getStreamByAggregateId(aggregateId);
+    await eventStore.getEventsByAggregateId(aggregateId, (event) => {
+        const handler = handlers[event.type];
+        if (!handler) return;
 
-        eventStream.on('readable', () => {
-            let event;
-            // eslint-disable-next-line no-cond-assign
-            while (null !== (event = eventStream.read())) {
-                const handler = handlers[event.type];
-                if (!handler) continue;
-
-                try {
-                    aggregateState = handler(aggregateState, event);
-                } catch (err) {
-                    reject(err);
-                }
-            }
-        });
-
-        eventStream.on('end', () => resolve(aggregateState));
-
-        eventStream.on('error', reject);
+        aggregateState = handler(aggregateState, event);
     });
+
+    return aggregateState;
 }
 
 async function executeCommand(command, aggregate, eventStore) {
