@@ -39,27 +39,18 @@ async function executeCommand(command, aggregate, eventStore) {
     return event;
 }
 
-function propagateEvent(event, publishStream) {
-    return new Promise((resolve, reject) =>
-        publishStream.write(event, err => (err ? reject(err) : resolve(event)))
-    );
-}
-
-function createExecutor({ eventStore, aggregate, publishStream }) {
+function createExecutor({ eventStore, aggregate }) {
     return async (command) => {
         const event = await executeCommand(command, aggregate, eventStore);
-        return await propagateEvent(event, publishStream);
+        return await eventStore.saveEvent(event);
     };
 }
 
 export default ({ eventStore, aggregates }) => {
-    const publishStream = eventStore.getPublishStream();
-
     const executors = aggregates.reduce((result, aggregate) => {
         result[aggregate.name.toLowerCase()] = createExecutor({
             eventStore,
-            aggregate,
-            publishStream
+            aggregate
         });
         return result;
     }, {});

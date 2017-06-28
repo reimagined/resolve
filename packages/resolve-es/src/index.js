@@ -1,5 +1,4 @@
 import 'regenerator-runtime/runtime';
-import { Writable } from 'stream';
 
 export default ({ storage, bus, transforms = [] }) => ({
     async subscribeByEventType(eventTypes, handler) {
@@ -12,18 +11,9 @@ export default ({ storage, bus, transforms = [] }) => ({
         return storage.loadEventsByAggregateId(aggregateId, handler);
     },
 
-    getPublishStream() {
-        return Writable({
-            objectMode: true,
-            async write(event, encoding, callback) {
-                try {
-                    await storage.saveEvent(event);
-                    await bus.emitEvent(event);
-                    callback();
-                } catch (error) {
-                    callback(error);
-                }
-            }
-        });
+    async saveEvent(event) {
+        await storage.saveEvent(event);
+        await bus.emitEvent(event);
+        return event;
     }
 });

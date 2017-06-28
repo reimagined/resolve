@@ -81,8 +81,8 @@ describe('resolve-es', () => {
         });
     });
 
-    describe('getPublishStream', () => {
-        it('should return eventStream for publish and call write and propagate event', async () => {
+    describe('saveEvent', () => {
+        it('should save and propagate event', async () => {
             const storage = {
                 saveEvent: sinon.stub().returns(Promise.resolve())
             };
@@ -91,41 +91,11 @@ describe('resolve-es', () => {
             };
 
             const eventStore = createEventStore({ storage, bus });
-            const eventStream = eventStore.getPublishStream();
-
             const event = { type: 'EVENT' };
-            const callback = sinon.spy();
-
-            await eventStream.write(event, '', callback);
-
-            await Promise.resolve();
+            await eventStore.saveEvent(event);
 
             expect(storage.saveEvent.calledWith(event)).to.be.true;
             expect(bus.emitEvent.calledWith(event)).to.be.true;
-            expect(callback.calledWith()).to.be.true;
-        });
-
-        it('should return eventStream for publish and call write and raises error', async () => {
-            const error = new Error('Error');
-
-            const storage = {
-                saveEvent: sinon.stub().callsFake(() => Promise.reject(error))
-            };
-            const bus = {
-                emitEvent: sinon.stub().callsFake(() => Promise.reject(error))
-            };
-
-            const eventStore = createEventStore({ storage, bus });
-            const eventStream = eventStore.getPublishStream();
-
-            const event = { type: 'EVENT' };
-            const callback = sinon.spy();
-
-            try {
-                await eventStream.write(event, '', callback);
-            } catch (err) {
-                expect(callback.calledWith(error)).to.be.true;
-            }
         });
     });
 });

@@ -45,14 +45,8 @@ describe('resolve-command', () => {
             getEventsByAggregateId: sinon
                 .stub()
                 .callsFake((eventTypes, handler) => handler(eventList.shift())),
-            getPublishStream: sinon.stub().callsFake(() => {
-                return {
-                    on: sinon.spy(),
-                    write: sinon.stub().callsFake((event, callback) => {
-                        eventList.push(event);
-                        callback();
-                    })
-                };
+            saveEvent: sinon.stub().callsFake((event) => {
+                eventList.push(event);
             })
         };
     });
