@@ -1,6 +1,6 @@
 /* eslint no-unused-expressions: 0 */
 import { expect } from 'chai';
-import stream, { Transform } from 'stream';
+import stream from 'stream';
 import sinon from 'sinon';
 import uuidV4 from 'uuid/v4';
 import createEventStore from '../src/index';
@@ -20,20 +20,6 @@ describe('resolve-es', () => {
     afterEach(() => {
         sandbox.restore();
     });
-
-    async function playEvents(eventStream) {
-        const resultEvents = [];
-
-        eventStream.on('readable', () => {
-            let event;
-            // eslint-disable-next-line no-cond-assign
-            while (null !== (event = eventStream.read())) {
-                resultEvents.push(event);
-            }
-        });
-
-        return resultEvents;
-    }
 
     describe('subscribeByEventType', () => {
         // eslint-disable-next-line max-len
