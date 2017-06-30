@@ -15,11 +15,12 @@ render(
     <Provider store={store}>
         <Router>
             <Route
-                path="/:cardId?"
-                render={() =>
+                path="/:cardId?/:pageNumber?"
+                render={() => (
                     <App>
                         <TaskList />
-                    </App>}
+                    </App>
+                )}
             />
         </Router>
     </Provider>,

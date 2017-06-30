@@ -1,10 +1,18 @@
-import { MERGE } from './actions';
+import { MERGE, SET_STATE } from './actions';
 
 export default function createReducer({ name, eventHandlers }, extendReducer) {
     const handlers = {
         [MERGE]: (state, action) => {
             if (action.projectionName === name) {
                 return state.merge(action.state);
+            }
+            return state;
+        },
+        [SET_STATE]: (state, action) => {
+            if (action.projectionName === name) {
+                return Object.keys(state)
+                    .reduce((acc, key) => acc.without(key), state)
+                    .merge(action.state);
             }
             return state;
         },

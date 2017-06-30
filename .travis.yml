@@ -28,7 +28,6 @@ before_script:
 
 install:
   - npm install
-  - 'if [ "$(node_modules/.bin/prettier-eslint "./**/src/**/*.js" "./**/test/**/*.js" --list-different --ignore=./node_modules/**)" ]; then exit 1; fi'
   - npm run bootstrap
 script:
   - npm run lint

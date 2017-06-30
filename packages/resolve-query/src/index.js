@@ -26,7 +26,7 @@ function getExecutor({ eventStore, projection }) {
 
     const storageReadyPromise = new Promise(resolve => eventStream.on('storageDone', resolve));
 
-    return async () => {
+    return async (filter) => {
         if (error) throw error;
         await storageReadyPromise;
         return state;
@@ -42,13 +42,13 @@ export default ({ eventStore, projections }) => {
         return result;
     }, {});
 
-    return async (projectionName) => {
+    return async (projectionName, filter) => {
         const executor = executors[projectionName.toLowerCase()];
 
         if (executor === undefined) {
             throw new Error(`The '${projectionName}' projection is not found`);
         }
 
-        return executor();
+        return executor(filter);
     };
 };

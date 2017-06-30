@@ -16,6 +16,9 @@
   "dependencies": {
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
+    "graphql": "^0.10.3",
+    "graphql-anywhere": "^3.1.0",
+    "graphql-tag": "^2.4.2",
     "resolve-bus": "^0.0.4",
     "resolve-bus-memory": "^0.0.4",
     "resolve-command": "^0.0.4",

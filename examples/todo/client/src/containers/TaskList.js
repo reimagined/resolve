@@ -1,31 +1,27 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { actions } from 'resolve-redux';
 
 import TaskList from '../components/TaskList';
 import { createTodoItem, removeTodoItem, toggleTodoItem } from '../actions';
 
-function getTaskList(cards, currentCardId) {
-    const currentCard = cards[currentCardId];
-
-    return currentCard
-        ? currentCard.todoList || {}
-        : Object.keys(cards).reduce(
-              (result, key) => Object.assign(result, cards[key].todoList),
-              {}
-          );
-}
-
-const mapStateToProps = ({ cards }, { match }) => {
+const mapStateToProps = ({ cards }, { match, history }) => {
+    const cardIds = Object.keys(cards.cards);
+    const firstCardId = (cardIds.length > 0) ? cardIds[0] : null;
     const cardId = match.params.cardId;
-
-    const isCardExist = cardId && cards.cards[cardId];
-    const isIndexView = !cardId;
+    const pageNumber = match.params.pageNumber;
+    const doesExist = cardId && cards.cards[cardId];
+    const navigateToHistory = url => history.push(url);
 
     return {
-        doesExist: isIndexView || isCardExist,
-        cardId,
-        title: isCardExist ? cards.cards[cardId].name : 'All',
-        tasks: getTaskList(cards.cards, cardId)
+        title: doesExist ? cards.cards[cardId].name : '',
+        tasks: doesExist ? cards.cards[cardId].todoList : null,
+        todoCount: doesExist ? cards.cards[cardId].todoCount : null,
+        navigateToHistory,
+        pageNumber,
+        firstCardId,
+        doesExist,
+        cardId
     };
 };
 
@@ -33,7 +29,8 @@ function mapDispatchToProps(dispatch) {
     return {
         onTodoItemCreate: (name, cardId) => dispatch(createTodoItem(name, cardId)),
         onTodoItemRemove: id => dispatch(removeTodoItem(id)),
-        onTodoItemToggleCheck: id => dispatch(toggleTodoItem(id))
+        onTodoItemToggleCheck: id => dispatch(toggleTodoItem(id)),
+        matchOrSetFilter: filter => actions.setProjectionFiltering('cards', filter)
     };
 }
 

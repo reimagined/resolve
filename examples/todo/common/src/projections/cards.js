@@ -10,7 +10,8 @@ export default {
                 aggregateId: event.aggregateId,
                 activated: true,
                 name: event.payload.name,
-                todoList: {}
+                todoList: {},
+                todoCount: 0
             }),
 
         TodoCardRemoved: (state, event) =>
@@ -23,15 +24,22 @@ export default {
                     name: event.payload.name,
                     checked: false
                 })
-                .setIn(['mapTodoToCard', event.aggregateId], event.payload.cardId),
+                .setIn(['mapTodoToCard', event.aggregateId], event.payload.cardId)
+                .setIn(['cards', event.payload.cardId, 'todoCount'],
+                    state.cards[event.payload.cardId].todoCount + 1
+                ),
 
         TodoItemRemoved: (state, event) =>
-            state.setIn(
-                ['cards', state.mapTodoToCard[event.aggregateId], 'todoList'],
-                state.cards[state.mapTodoToCard[event.aggregateId]].todoList.without(
-                    event.aggregateId
+            state
+                .setIn(
+                    ['cards', state.mapTodoToCard[event.aggregateId], 'todoList'],
+                    state.cards[state.mapTodoToCard[event.aggregateId]].todoList.without(
+                        event.aggregateId
+                    )
                 )
-            ),
+                .setIn(['cards', event.payload.cardId, 'todoCount'],
+                    state.cards[event.payload.cardId].todoCount - 1
+                ),
 
         TodoItemCheckToggled: (state, event) =>
             state.setIn(
