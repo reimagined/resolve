@@ -96,11 +96,7 @@ export default function (props) {
 
     return (
         <div className="todobody">
-            {(!props.tasks) ? (
-                <span>Loading partial state for current todo card...</span>
-            ): (
-                <TodoApp {...props} />
-            )}
+            <TodoApp {...props} />
             {(todoCount > 0) ? (
                 <TodoNavigation {...props} />
             ) : (

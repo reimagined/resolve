@@ -15,8 +15,8 @@ const mapStateToProps = ({ cards }, { match, history }) => {
 
     return {
         title: doesExist ? cards.cards[cardId].name : '',
-        tasks: doesExist ? cards.cards[cardId].todoList : null,
-        todoCount: doesExist ? cards.cards[cardId].todoCount : null,
+        tasks: doesExist ? (cards.cards[cardId].todoList || {}) : {},
+        todoCount: doesExist ? (cards.cards[cardId].todoCount || 0) : 0,
         navigateToHistory,
         pageNumber,
         firstCardId,

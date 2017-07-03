@@ -64,10 +64,11 @@ const projectionResolvers = {
                     throw new Error('Pagination should use from and limit fields mandatory');
                 }
 
+                if (todoList[todoItemId].todoCount === 0) return todoList;
                 const todoListKeys = Object.keys(itemList);
 
-                if(!(+args.limit > 0) || (+args.from >= todoListKeys.length)) { // Handle NaN too
-                    throw new Error('Pagination from index should be positive and don\'t exceed collection size');
+                if(!(+args.from >= 0) || (+args.from >= todoListKeys.length)) { // Handle NaN too
+                    throw new Error('Pagination from index should be zero or positive and don\'t exceed collection size');
                 } else if (!(+args.limit > 0)) { // Handle NaN too
                     throw new Error('Pagination limit should be positive number');
                 }
