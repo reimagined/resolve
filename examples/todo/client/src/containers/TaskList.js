@@ -30,7 +30,7 @@ function mapDispatchToProps(dispatch) {
         onTodoItemCreate: (name, cardId) => dispatch(createTodoItem(name, cardId)),
         onTodoItemRemove: id => dispatch(removeTodoItem(id)),
         onTodoItemToggleCheck: id => dispatch(toggleTodoItem(id)),
-        matchOrSetFilter: filter => actions.setProjectionFiltering('cards', filter)
+        matchOrSetFilter: filter => dispatch(actions.setProjectionFiltering('cards', filter))
     };
 }
 

@@ -7,7 +7,7 @@ import { aggregates } from 'todo-common';
 const projections = ['cards'];
 const projectionDefaultFilters = {
     cards: `{
-        cards (card: "no-card")
+        cards (card: "no-card", from: 0, limit: 10)
         mapTodoToCard(card: "no-card")
     }`
 };

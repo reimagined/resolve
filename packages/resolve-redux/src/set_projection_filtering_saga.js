@@ -3,7 +3,7 @@ import actions from './actions';
 
 const projectionFilters = {};
 
-export default function* setProjectionFilteringSaga(projectionName, filter) {
+export default function* setProjectionFilteringSaga(state, { projectionName, filter }) {
     const originalFilter = projectionFilters[projectionName];
     projectionFilters[projectionName] = filter;
 

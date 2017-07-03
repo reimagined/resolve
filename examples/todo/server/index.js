@@ -100,11 +100,11 @@ const projectionResolvers = {
 };
 
 function filteredQuery(projectionName, filter) {
-    return queries(projectionName).then(state => (graphql(
+    return queries(projectionName).then(state => graphql(
         projectionResolvers[projectionName],
         gql`${filter}`,
         state
-    ), state));
+    ));
 }
 
 const io = socketIO(server);
