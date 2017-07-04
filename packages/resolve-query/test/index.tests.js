@@ -76,6 +76,32 @@ describe('resolve-query', () => {
         }
     });
 
+    it('should handle errors on read side taking by bus', async () => {
+        let eventHandler;
+        const readSideError = new Error('Broken Error');
+
+         eventStore = {
+            subscribeByEventType: sinon
+                .stub()
+                .callsFake((eventTypes, handler) => {
+                    eventHandler = handler;
+                    return handler(eventList.shift());
+                })
+        };
+        eventList = [{ type: 'SuccessEvent' }, { type: 'SuccessEvent' }];
+        const executeQuery = createQueryExecutor({ eventStore, projections });
+        await executeQuery(PROJECTION_NAME);
+        
+        eventHandler({ type: 'BrokenEvent' })
+        
+        try {
+            await executeQuery(PROJECTION_NAME);
+            return Promise.reject('Test failed');
+        } catch (error) {
+            expect(error).to.be.deep.equal(readSideError);
+        }
+    });
+
     it('should handle non-existing query executor', async () => {
         const executeQuery = createQueryExecutor({ eventStore, projections });
         eventList = [{ type: 'BrokenEvent' }];

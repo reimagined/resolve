@@ -3,7 +3,7 @@ import 'regenerator-runtime/runtime';
 function getExecutor({ eventStore, projection }) {
     const eventTypes = Object.keys(projection.eventHandlers);
     let state = projection.initialState || {};
-
+    let error = null;
     let result = null;
 
     return async () => {
@@ -13,10 +13,16 @@ function getExecutor({ eventStore, projection }) {
                 const handler = projection.eventHandlers[event.type];
                 if (!handler) return;
 
-                state = handler(state, event);
+                try {
+                    state = handler(state, event);
+                } catch(err) {
+                    error = err;
+                }
             });
 
         await result;
+        if (error) throw error;
+
         return state;
     };
 }
