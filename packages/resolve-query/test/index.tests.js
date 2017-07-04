@@ -8,7 +8,7 @@ const brokenStateError = new Error('Broken Error');
 describe('resolve-query', () => {
     const PROJECTION_NAME = 'projectionName';
 
-    let eventStore, onReadable, onError, onStorageDone, eventList;
+    let eventStore, eventList;
 
     const projections = [
         {
@@ -29,37 +29,20 @@ describe('resolve-query', () => {
         eventList = [];
 
         eventStore = {
-            getStreamByEventTypes: sinon.stub().callsFake(() => {
-                const on = sinon.stub();
-                on.withArgs('readable').callsFake((_, callback) => (onReadable = callback));
-                on.withArgs('storageDone').callsFake((_, callback) => (onStorageDone = callback));
-                on.withArgs('error').callsFake((_, callback) => (onError = callback));
-
-                return {
-                    on,
-                    read: sinon.stub().callsFake(() => {
-                        const event = eventList.shift();
-                        if (event) return event;
-                        return null;
-                    })
-                };
-            })
+            subscribeByEventType: sinon
+                .stub()
+                .callsFake((eventTypes, handler) => handler(eventList.shift()))
         };
     });
 
     afterEach(() => {
         eventStore = null;
-        onReadable = null;
-        onError = null;
         eventList = null;
     });
 
     it('should build state on valid event and return it on query', async () => {
         const executeQuery = createQueryExecutor({ eventStore, projections });
         eventList = [{ type: 'SuccessEvent' }];
-
-        onReadable();
-        onStorageDone();
 
         const state = await executeQuery(PROJECTION_NAME);
 
@@ -72,9 +55,6 @@ describe('resolve-query', () => {
         const executeQuery = createQueryExecutor({ eventStore, projections });
         eventList = [{ type: 'BrokenEvent' }];
 
-        onReadable();
-        onStorageDone();
-
         try {
             await executeQuery(PROJECTION_NAME);
             return Promise.reject('Test failed');
@@ -84,17 +64,39 @@ describe('resolve-query', () => {
     });
 
     it('should handle errors on read side', async () => {
-        const readSideError = new Error('Read side error');
+        const readSideError = new Error('Broken Error');
         const executeQuery = createQueryExecutor({ eventStore, projections });
         eventList = [{ type: 'BrokenEvent' }];
-
-        onError(readSideError);
 
         try {
             await executeQuery(PROJECTION_NAME);
             return Promise.reject('Test failed');
         } catch (error) {
-            expect(error).to.be.equal(readSideError);
+            expect(error).to.be.deep.equal(readSideError);
+        }
+    });
+
+    it('should handle errors on read side taking by bus', async () => {
+        let eventHandler;
+        const readSideError = new Error('Broken Error');
+
+        eventStore = {
+            subscribeByEventType: sinon.stub().callsFake((eventTypes, handler) => {
+                eventHandler = handler;
+                return handler(eventList.shift());
+            })
+        };
+        eventList = [{ type: 'SuccessEvent' }, { type: 'SuccessEvent' }];
+        const executeQuery = createQueryExecutor({ eventStore, projections });
+        await executeQuery(PROJECTION_NAME);
+
+        eventHandler({ type: 'BrokenEvent' });
+
+        try {
+            await executeQuery(PROJECTION_NAME);
+            return Promise.reject('Test failed');
+        } catch (error) {
+            expect(error).to.be.deep.equal(readSideError);
         }
     });
 
