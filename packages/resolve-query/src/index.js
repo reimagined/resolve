@@ -15,7 +15,7 @@ function getExecutor({ eventStore, projection }) {
 
                 try {
                     state = handler(state, event);
-                } catch(err) {
+                } catch (err) {
                     error = err;
                 }
             });

@@ -80,20 +80,18 @@ describe('resolve-query', () => {
         let eventHandler;
         const readSideError = new Error('Broken Error');
 
-         eventStore = {
-            subscribeByEventType: sinon
-                .stub()
-                .callsFake((eventTypes, handler) => {
-                    eventHandler = handler;
-                    return handler(eventList.shift());
-                })
+        eventStore = {
+            subscribeByEventType: sinon.stub().callsFake((eventTypes, handler) => {
+                eventHandler = handler;
+                return handler(eventList.shift());
+            })
         };
         eventList = [{ type: 'SuccessEvent' }, { type: 'SuccessEvent' }];
         const executeQuery = createQueryExecutor({ eventStore, projections });
         await executeQuery(PROJECTION_NAME);
-        
-        eventHandler({ type: 'BrokenEvent' })
-        
+
+        eventHandler({ type: 'BrokenEvent' });
+
         try {
             await executeQuery(PROJECTION_NAME);
             return Promise.reject('Test failed');
