@@ -21,7 +21,5 @@
     "testcafe-browser-tools": "^1.2.1",
     "yargs": "^8.0.2"
   },
-  "dependencies": {
-    "regenerator-runtime": "*"
-  }
+  "dependencies": {}
 }
