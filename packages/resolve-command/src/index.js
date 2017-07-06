@@ -1,5 +1,3 @@
-import 'regenerator-runtime/runtime';
-
 async function verifyCommand(command) {
     if (!command.aggregateId) throw new Error('"aggregateId" argument is required');
     if (!command.aggregateName) throw new Error('"aggregateName" argument is required');
