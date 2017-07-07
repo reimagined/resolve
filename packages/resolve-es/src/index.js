@@ -1,3 +1,5 @@
+import 'regenerator-runtime/runtime';
+
 export default ({ storage, bus, transforms = [] }) => ({
     async subscribeByEventType(eventTypes, handler) {
         await storage.loadEventsByTypes(eventTypes, handler);

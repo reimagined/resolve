@@ -1,10 +1,12 @@
-async function verifyCommand(command) {
+import 'regenerator-runtime/runtime';
+
+const verifyCommand = async (command) => {
     if (!command.aggregateId) throw new Error('"aggregateId" argument is required');
     if (!command.aggregateName) throw new Error('"aggregateName" argument is required');
     if (!command.type) throw new Error('"type" argument is required');
-}
+};
 
-async function getAggregateState(aggregate, aggregateId, eventStore) {
+const getAggregateState = async (aggregate, aggregateId, eventStore) => {
     const handlers = aggregate.eventHandlers;
     let aggregateState = aggregate.initialState || {};
 
@@ -20,9 +22,9 @@ async function getAggregateState(aggregate, aggregateId, eventStore) {
     });
 
     return aggregateState;
-}
+};
 
-async function executeCommand(command, aggregate, eventStore) {
+const executeCommand = async (command, aggregate, eventStore) => {
     const aggregateState = await getAggregateState(aggregate, command.aggregateId, eventStore);
 
     const handler = aggregate.commands[command.type];
@@ -35,7 +37,7 @@ async function executeCommand(command, aggregate, eventStore) {
     event.aggregateId = command.aggregateId;
     event.timestamp = Date.now();
     return event;
-}
+};
 
 function createExecutor({ eventStore, aggregate }) {
     return async (command) => {
