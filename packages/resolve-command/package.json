@@ -30,6 +30,6 @@
     "sinon": "^2.1.0"
   },
   "dependencies": {
-    "babel-runtime": "^6.23.0"
+    "regenerator-runtime": "^0.10.5"
   }
 }

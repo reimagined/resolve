@@ -1,3 +1,5 @@
+import 'regenerator-runtime/runtime';
+
 function getExecutor({ eventStore, projection }) {
     const eventTypes = Object.keys(projection.eventHandlers);
     let state = projection.initialState || {};
