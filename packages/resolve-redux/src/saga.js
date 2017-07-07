@@ -1,3 +1,4 @@
+import 'regenerator-runtime/runtime';
 import { takeEvery } from 'redux-saga/effects';
 import sendCommandSaga from './send_command_saga';
 import fetchMoreSaga from './fetch_more_saga';
