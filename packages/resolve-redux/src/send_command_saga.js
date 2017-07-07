@@ -1,3 +1,4 @@
+import 'regenerator-runtime/runtime';
 import { put, call } from 'redux-saga/effects';
 import checkRequiredFields from './warn_util';
 
