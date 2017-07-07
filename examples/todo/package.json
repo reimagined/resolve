@@ -12,7 +12,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0",
     "start": "node index",
-    "test:e2e": "./testcafe_runner.js"
+    "test:e2e": "node ./testcafe_runner.js"
   },
   "devDependencies": {
     "chai": "^4.0.1",
