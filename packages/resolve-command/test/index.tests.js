@@ -1,4 +1,3 @@
-import 'regenerator-runtime/runtime';
 import { expect } from 'chai';
 import sinon from 'sinon';
 
