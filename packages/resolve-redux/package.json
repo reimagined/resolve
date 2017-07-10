@@ -33,7 +33,6 @@
     "uuid": "^3.0.1"
   },
   "dependencies": {
-    "redux-saga": "^0.15.3",
-    "regenerator-runtime": "^0.10.5"
+
   }
 }

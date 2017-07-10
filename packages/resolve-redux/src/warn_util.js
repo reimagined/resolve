@@ -12,5 +12,5 @@ export default function (obj, beforeWarnings, afterWarnings) {
         );
     }
 
-    return shouldWarningsBePrinted;
+    return !shouldWarningsBePrinted;
 }

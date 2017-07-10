@@ -8,8 +8,7 @@ This package serves as a helper for creating the Redux storage.
 
 ```js
 import { createStore, applyMiddleware } from 'redux';
-import createSagaMiddleware from 'redux-saga';
-import { createReducer, saga, actions } from 'resolve-redux';
+import { createReducer, sendCommandMiddleware, actions } from 'resolve-redux';
 
 const projection = {
     name: 'TodoList',
@@ -30,21 +29,18 @@ const projection = {
 };
 
 const reducer = createReducer(projection);
-const sagaMiddleware = createSagaMiddleware();
 
 const store = createStore(
     reducer,
     projeciton.initialState,
-    applyMiddleware(sagaMiddleware)
+    applyMiddleware(sendCommandMiddleware({
+        sendCommand: (command) => fetch('/api/commands', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: command
+        }).then( res => res.json() )
+    }))
 );
-
-function sendCommand(command) {
-    return fetch('/api/commands', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: command
-    }).then( res => res.json() );
-}
 
 function fetchMore(projectionName, query) {
     return fetch(`/api/${projectionName}?${getQueryString(query)}` , {
@@ -53,8 +49,6 @@ function fetchMore(projectionName, query) {
         body: command
     }).then( res => res.json() );
 }
-
-sagaMiddleware.run(saga, { sendCommand, fetchMore });
 
 function getQueryString(params) {
     return Object
@@ -120,12 +114,12 @@ export function sendCommandAddTodoItem(aggregateId) {
 store.dispatch(sendCommandAddTodoItem('aggregateId'));
 // or
 store.dispatch(actions.sendCommand({
-    aggregateId: 'aggregateId', 
-    aggregateName: 'TodoList', 
+    aggregateId: 'aggregateId',
+    aggregateName: 'TodoList',
     payload: { name: 'todo-list' },
     command: {
         type: 'TodoListItemRemove',
-    }, 
+    },
 }));
 ```
 
