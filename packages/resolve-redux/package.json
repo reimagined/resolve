@@ -1,6 +1,6 @@
 {
   "name": "resolve-redux",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "This package serves as a helper for creating the Redux storage.",
   "main": "./dist/index.js",
   "bugs": {
@@ -31,8 +31,5 @@
     "seamless-immutable": "^7.1.2",
     "sinon": "^2.1.0",
     "uuid": "^3.0.1"
-  },
-  "dependencies": {
-
   }
 }
