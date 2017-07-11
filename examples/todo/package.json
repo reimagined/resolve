@@ -1,6 +1,6 @@
 {
   "name": "todo",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "",
   "author": "reimagined team",
   "license": "MIT",
@@ -20,6 +20,5 @@
     "testcafe": "^0.15.0",
     "testcafe-browser-tools": "^1.2.1",
     "yargs": "^8.0.2"
-  },
-  "dependencies": {}
+  }
 }
