@@ -8,7 +8,7 @@ const verifyCommand = async (command) => {
 
 const getAggregateState = async (aggregate, aggregateId, eventStore) => {
     const handlers = aggregate.eventHandlers;
-    let aggregateState = aggregate.initialState || {};
+    let aggregateState = aggregate.initialState;
 
     if (!handlers) {
         return Promise.resolve(aggregateState);
