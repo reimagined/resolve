@@ -1,6 +1,6 @@
 {
   "name": "resolve-storage",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "This package serves as an event storage with a driver specifying where to store events.",
   "main": "./dist/index.js",
   "bugs": {
