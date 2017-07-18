@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const taskName = process.argv[2];
-switch(taskName) {
+switch (taskName) {
     case 'dev':
         require('../scripts/runDev');
         break;
@@ -21,8 +21,7 @@ switch(taskName) {
         require('../scripts/runTestE2e');
         break;
     default:
+        // eslint-disable-next-line no-console
         console.log('Unknown command');
         process.exit(1);
 }
-
-

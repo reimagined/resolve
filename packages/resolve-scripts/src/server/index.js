@@ -9,15 +9,16 @@ let currentApp = app;
 
 io.on('connection', connectionHandler);
 server.on('listening', () => {
-  console.log('> Ready on http://localhost:3000!!');
+    // eslint-disable-next-line no-console
+    console.log('> Ready on http://localhost:3000!!');
 });
 
 server.listen(3000);
 
 if (module.hot) {
-  module.hot.accept('./express', () => {
-    server.removeListener('request', currentApp);
-    server.on('request', app);
-    currentApp = app;
-  });
+    module.hot.accept('./express', () => {
+        server.removeListener('request', currentApp);
+        server.on('request', app);
+        currentApp = app;
+    });
 }

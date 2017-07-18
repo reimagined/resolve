@@ -2,10 +2,11 @@ import createEventStore from 'resolve-es';
 import createStorage from 'resolve-storage';
 import createBus from 'resolve-bus';
 
+// eslint-disable-next-line import/no-extraneous-dependencies
 const config = require('RESOLVE_CONFIG');
 
 const storage = createStorage({
-  driver: config.storage.driver(config.storage.params)
+    driver: config.storage.driver(config.storage.params)
 });
 
 const busDriver = config.bus.driver;
@@ -15,8 +16,6 @@ const eventStore = createEventStore({ storage, bus });
 
 const subscribe = bus.onEvent;
 
-export {
-  subscribe
-};
+export { subscribe };
 
 export default eventStore;

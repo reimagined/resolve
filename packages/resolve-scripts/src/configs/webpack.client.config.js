@@ -8,20 +8,24 @@ module.exports = env => ({
     },
     output: {
         publicPath: env ? env.publicPath : '',
-        path: path.join(process.cwd(),'./dist/static'),
+        path: path.join(process.cwd(), './dist/static'),
         filename: 'bundle.js'
     },
     module: {
-        rules: [{
-            test: /\.js$/,
-            loaders: [{
-                loader: 'babel-loader',
-                query: {
-                    presets: [['es2015', { modules: false }], 'stage-0', 'react']
-                }
-            }],
-            exclude: [/node_modules/]
-        }]
+        rules: [
+            {
+                test: /\.js$/,
+                loaders: [
+                    {
+                        loader: 'babel-loader',
+                        query: {
+                            presets: [['es2015', { modules: false }], 'stage-0', 'react']
+                        }
+                    }
+                ],
+                exclude: [/node_modules/]
+            }
+        ]
     },
 
     plugins: [

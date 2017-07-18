@@ -12,16 +12,18 @@ const clientDevServer = new WebpackDevServer(clientCompiler, {
     },
     setup: (app) => {
         app.use((req, res, next) => {
+            // eslint-disable-next-line no-console
             console.log(`Using middleware for ${req.url}`);
             next();
-        })
+        });
     }
 });
 
 webpack(devServerConfig, (err, stats) => {
     process.stdout.write(stats.toString() + '\n');
-})
+});
 
 clientDevServer.listen(3001, '127.0.0.1', () => {
+    // eslint-disable-next-line no-console
     console.log('Starting server on http://localhost:3001');
-})
+});
