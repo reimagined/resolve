@@ -1,7 +1,7 @@
 import { subscribe } from './event_store';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
-const config = require('RESOLVE_CONFIG');
+const config = require('RESOLVE_CONFIG').resolve;
 
 export default (socket) => {
     // eslint-disable-next-line no-console

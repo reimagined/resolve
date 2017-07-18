@@ -3,7 +3,7 @@ import createStorage from 'resolve-storage';
 import createBus from 'resolve-bus';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
-const config = require('RESOLVE_CONFIG');
+const config = require('RESOLVE_CONFIG').resolve;
 
 const storage = createStorage({
     driver: config.storage.driver(config.storage.params)

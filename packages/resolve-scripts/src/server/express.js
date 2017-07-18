@@ -8,7 +8,7 @@ import ssr from './render';
 import eventStore from './event_store';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
-const config = require('RESOLVE_CONFIG');
+const config = require('RESOLVE_CONFIG').resolve;
 
 const INITIAL_READ_MODEL = 'todos';
 const STATIC_PATH = '/static';
