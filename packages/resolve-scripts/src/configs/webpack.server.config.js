@@ -7,7 +7,7 @@ module.exports = env => ({
     entry: {
         server: ['regenerator-runtime/runtime', path.join(__dirname, '../server/index.js')]
     },
-    target:'node',
+    target: 'node',
     node: {
         __dirname: false,
         __filename: false
@@ -23,18 +23,22 @@ module.exports = env => ({
         filename: 'server.js'
     },
     module: {
-        rules: [{
-            test: /\.js$/,
-            loaders: [{
-                loader: 'babel-loader',
-                query: {
-                    presets: [['es2015', { modules: false }], 'stage-0', 'react']
-                }
-            }],
-            exclude: [/node_modules/]
-        }]
+        rules: [
+            {
+                test: /\.js$/,
+                loaders: [
+                    {
+                        loader: 'babel-loader',
+                        query: {
+                            presets: [['es2015', { modules: false }], 'stage-0', 'react']
+                        }
+                    }
+                ],
+                exclude: [/node_modules/]
+            }
+        ]
     },
-
+    externals: [nodeExternals()],
     plugins: [
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('production')

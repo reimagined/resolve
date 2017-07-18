@@ -56,7 +56,6 @@
     "resolve-storage": "^0.0.5",
     "resolve-storage-file": "^0.0.5",
     "socket.io": "^2.0.1",
-    "socket.io-client": "^2.0.1",
     "uuid": "^3.0.1"
   },
   "devDependencies": {
