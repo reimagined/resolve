@@ -3,6 +3,7 @@ const nodeExternals = require('webpack-node-externals');
 const path = require('path');
 
 module.exports = env => ({
+    name: 'server',
     entry: {
         server: ['regenerator-runtime/runtime', path.join(__dirname, '../server/index.js')]
     },

@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const path = require('path');
 
 module.exports = env => ({
+    name: 'client',
     entry: {
         client: ['regenerator-runtime/runtime', path.join(process.cwd(), './client/index.js')]
     },

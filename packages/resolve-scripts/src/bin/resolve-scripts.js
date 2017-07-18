@@ -1,29 +1,28 @@
 #!/usr/bin/env node
 
-import webpack from 'webpack';
-import WebpackDevServer from 'webpack-dev-server';
+const taskName = process.argv[2];
+switch(taskName) {
+    case 'dev':
+        require('../scripts/runDev');
+        break;
+    case 'build':
+        require('../scripts/runBuild');
+        break;
+    case 'start':
+        require('../scripts/runStart');
+        break;
+    case 'link':
+        require('../scripts/runLint');
+        break;
+    case 'test':
+        require('../scripts/runTest');
+        break;
+    case 'test:e2e':
+        require('../scripts/runTestE2e');
+        break;
+    default:
+        console.log('Unknown command');
+        process.exit(1);
+}
 
-import devClientConfig from '../scripts/dev.client.config';
-import devServerConfig from '../scripts/dev.server.config';
 
-const clientCompiler = webpack(devClientConfig);
-
-const clientDevServer = new WebpackDevServer(clientCompiler, {
-    stats: {
-        color: true
-    },
-    setup: (app) => {
-        app.use((req, res, next) => {
-            console.log(`Using middleware for ${req.url}`);
-            next();
-        })
-    }
-});
-
-webpack(devServerConfig, (err, stats) => {
-    process.stdout.write(stats.toString() + '\n');
-})
-
-clientDevServer.listen(3001, '127.0.0.1', () => {
-    console.log('Starting server on http://localhost:3001');
-})
