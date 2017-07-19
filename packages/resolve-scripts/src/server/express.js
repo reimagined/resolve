@@ -12,7 +12,7 @@ import config from 'RESOLVE_CONFIG';
 
 const INITIAL_READ_MODEL = 'todos';
 const STATIC_PATH = '/static';
-const rootDirectory = config.rootDirectory || '/';
+const rootDirectory = config.rootDirectory || '';
 
 const app = express();
 
@@ -56,7 +56,7 @@ app.use(
     express.static(path.join(__dirname, '../../dist/static'))
 );
 
-app.get([`${rootDirectory}/*`, `${rootDirectory}`], (req, res) =>
+app.get([`${rootDirectory}/*`, `${rootDirectory || '/'}`], (req, res) =>
     executeQuery(INITIAL_READ_MODEL).then(state => ssr(state, { req, res })).catch((err) => {
         res.status(500).end('SSR error: ' + err.message);
         // eslint-disable-next-line no-console
