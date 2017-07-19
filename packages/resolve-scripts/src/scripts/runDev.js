@@ -6,6 +6,9 @@ import devServerConfig from './dev.server.config';
 
 import buildConfig from './build-config';
 
+require('./clean');
+require('./copy');
+
 buildConfig.extendWebpack(devClientConfig, devServerConfig);
 
 const clientCompiler = webpack(devClientConfig);

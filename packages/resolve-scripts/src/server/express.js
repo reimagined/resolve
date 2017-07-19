@@ -12,6 +12,7 @@ import config from 'RESOLVE_CONFIG';
 
 const INITIAL_READ_MODEL = 'todos';
 const STATIC_PATH = '/static';
+const rootDirectory = config.rootDirectory || '/';
 
 const app = express();
 
@@ -34,7 +35,7 @@ const executeCommand = commandHandler({
     aggregates: config.aggregates
 });
 
-app.get('/api/queries/:queryName', (req, res) => {
+app.get(`${rootDirectory}/api/queries/:queryName`, (req, res) => {
     executeQuery(req.params.queryName).then(state => res.status(200).json(state)).catch((err) => {
         res.status(500).end('Query error: ' + err.message);
         // eslint-disable-next-line no-console
@@ -42,7 +43,7 @@ app.get('/api/queries/:queryName', (req, res) => {
     });
 });
 
-app.post('/api/commands', (req, res) => {
+app.post(`${rootDirectory}/api/commands`, (req, res) => {
     executeCommand(req.body).then(() => res.status(200).send('ok')).catch((err) => {
         res.status(500).end('Command error:' + err.message);
         // eslint-disable-next-line no-console
@@ -50,9 +51,12 @@ app.post('/api/commands', (req, res) => {
     });
 });
 
-app.use(STATIC_PATH, express.static(path.join(__dirname, '../../dist/static')));
+app.use(
+    `${rootDirectory}${STATIC_PATH}`,
+    express.static(path.join(__dirname, '../../dist/static'))
+);
 
-app.get('/*', (req, res) =>
+app.get([`${rootDirectory}/*`, `${rootDirectory}`], (req, res) =>
     executeQuery(INITIAL_READ_MODEL).then(state => ssr(state, { req, res })).catch((err) => {
         res.status(500).end('SSR error: ' + err.message);
         // eslint-disable-next-line no-console

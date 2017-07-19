@@ -7,6 +7,7 @@ import { Provider } from 'react-redux';
 import config from 'RESOLVE_CONFIG';
 
 const configEntries = config.entries;
+const rootDirectory = config.rootDirectory || '';
 
 export default (initialState, { req, res }) => {
     const context = {};
@@ -34,6 +35,7 @@ export default (initialState, { req, res }) => {
           ${helmet.link.toString()}
           <script>
             window.__INITIAL_STATE__=${JSON.stringify(initialState)}
+            window.__ROOT_DIRECTORY__=${JSON.stringify(rootDirectory)}
           </script>
         </head>
         <body ${helmet.bodyAttributes.toString()}>
@@ -41,7 +43,7 @@ export default (initialState, { req, res }) => {
             ${html}
           </div>
           <script src="${process.env.NODE_ENV === 'production'
-              ? '/static/bundle.js'
+              ? `${rootDirectory}/static/bundle.js`
               : 'http://localhost:3001/bundle.js'}"></script>
         </body>
       </html>
