@@ -7,8 +7,8 @@ import ssr from './render';
 
 import eventStore from './event_store';
 
-// eslint-disable-next-line import/no-extraneous-dependencies
-const config = require('RESOLVE_CONFIG');
+// eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
+import config from 'RESOLVE_CONFIG';
 
 const INITIAL_READ_MODEL = 'todos';
 const STATIC_PATH = '/static';
@@ -17,6 +17,12 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+try {
+    // eslint-disable-next-line import/no-extraneous-dependencies
+    const buildConfig = require('RESOLVE_BUILD_CONFIG');
+    buildConfig.extendExpress(app);
+} catch (err) {}
 
 const executeQuery = query({
     eventStore,
