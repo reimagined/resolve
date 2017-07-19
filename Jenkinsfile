@@ -25,7 +25,7 @@ pipeline {
                     ).trim()
 
                     dir('examples/todo') {
-                        sh 'docker-compose -p ${PROJECT_NAME} up --build --exit-code-from testcafe'
+                        sh "docker-compose -p ${PROJECT_NAME} up --build --exit-code-from testcafe"
                     }
                 }
             }
