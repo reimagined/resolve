@@ -4,6 +4,10 @@ import WebpackDevServer from 'webpack-dev-server';
 import devClientConfig from './dev.client.config';
 import devServerConfig from './dev.server.config';
 
+import buildConfig from './build-config';
+
+buildConfig.extendWebpack(devClientConfig, devServerConfig);
+
 const clientCompiler = webpack(devClientConfig);
 
 const clientDevServer = new WebpackDevServer(clientCompiler, {

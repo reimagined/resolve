@@ -2,8 +2,8 @@ import createEventStore from 'resolve-es';
 import createStorage from 'resolve-storage';
 import createBus from 'resolve-bus';
 
-// eslint-disable-next-line import/no-extraneous-dependencies
-const config = require('RESOLVE_CONFIG').resolve;
+// eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
+import config from 'RESOLVE_CONFIG';
 
 const storage = createStorage({
     driver: config.storage.driver(config.storage.params)

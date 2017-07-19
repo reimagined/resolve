@@ -3,8 +3,10 @@ import { Helmet } from 'react-helmet';
 import { renderToString } from 'react-dom/server';
 import { Provider } from 'react-redux';
 
-// eslint-disable-next-line import/no-extraneous-dependencies
-const configEntries = require('RESOLVE_CONFIG').entries;
+// eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
+import config from 'RESOLVE_CONFIG';
+
+const configEntries = config.entries;
 
 export default (initialState, { req, res }) => {
     const context = {};
