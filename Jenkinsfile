@@ -31,7 +31,8 @@ pipeline {
             }
         }
 
-        stage('Dependence applications checking') {
+
+        stage('Check dependent applications') {
             when {
                 not { branch 'master' }
             }
