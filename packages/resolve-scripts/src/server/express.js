@@ -61,10 +61,13 @@ app.get([`${rootDirectory}/*`, `${rootDirectory || '/'}`], async (req, res) => {
     try {
         const states = await Promise.all(readModels.map(readModel => executeQuery(readModel)));
 
-        ssr(readModels.reduce((result, name, index) => {
-            result[name] = states[index];
-            return result;
-        }, {}), { req, res });
+        ssr(
+            readModels.reduce((result, name, index) => {
+                result[name] = states[index];
+                return result;
+            }, {}),
+            { req, res }
+        );
     } catch (err) {
         res.status(500).end('SSR error: ' + err.message);
         // eslint-disable-next-line no-console

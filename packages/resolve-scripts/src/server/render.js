@@ -32,21 +32,21 @@ export default (initialState, { req, res }) => {
 
         res.write(
             '<!doctype html>\n' +
-            `<html ${helmet.htmlAttributes.toString()}>\n` +
+                `<html ${helmet.htmlAttributes.toString()}>\n` +
                 '<head>\n' +
                 `${helmet.title.toString()}` +
                 `${helmet.meta.toString()}` +
                 `${helmet.link.toString()}` +
                 '<script>\n' +
-                    `window.__INITIAL_STATE__=${JSON.stringify(initialState)}\n` +
-                    `window.__ROOT_DIRECTORY__=${JSON.stringify(rootDirectory)}\n` +
+                `window.__INITIAL_STATE__=${JSON.stringify(initialState)}\n` +
+                `window.__ROOT_DIRECTORY__=${JSON.stringify(rootDirectory)}\n` +
                 '</script>\n' +
                 '</head>\n' +
                 `<body ${helmet.bodyAttributes.toString()}>\n` +
                 `<div id="root">${html}</div>\n` +
                 `<script src="${bundleSource}"></script>\n` +
                 '</body>\n' +
-            '</html>\n'
+                '</html>\n'
         );
 
         res.end();
