@@ -10,7 +10,6 @@ import eventStore from './event_store';
 // eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
 import config from 'RESOLVE_CONFIG';
 
-const INITIAL_READ_MODEL = 'todos';
 const STATIC_PATH = '/static';
 const rootDirectory = config.rootDirectory || '';
 
@@ -56,12 +55,21 @@ app.use(
     express.static(path.join(__dirname, '../../dist/static'))
 );
 
-app.get([`${rootDirectory}/*`, `${rootDirectory || '/'}`], (req, res) =>
-    executeQuery(INITIAL_READ_MODEL).then(state => ssr(state, { req, res })).catch((err) => {
+app.get([`${rootDirectory}/*`, `${rootDirectory || '/'}`], async (req, res) => {
+    const readModels = config.initialReadModels || [];
+
+    try {
+        const states = await Promise.all(readModels.map(readModel => executeQuery(readModel)));
+
+        ssr(readModels.reduce((result, name, index) => {
+            result[name] = states[index];
+            return result;
+        }, {}), { req, res });
+    } catch (err) {
         res.status(500).end('SSR error: ' + err.message);
         // eslint-disable-next-line no-console
         console.log(err);
-    })
-);
+    }
+});
 
 export default app;
