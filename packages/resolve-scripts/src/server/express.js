@@ -22,7 +22,7 @@ try {
     // eslint-disable-next-line import/no-extraneous-dependencies
     const buildConfig = require('RESOLVE_BUILD_CONFIG');
     buildConfig.extendExpress(app);
-} catch (err) { }
+} catch (err) {}
 
 const executeQuery = query({
     eventStore,

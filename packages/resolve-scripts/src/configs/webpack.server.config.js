@@ -14,10 +14,14 @@ module.exports = env => ({
     },
     resolve: {
         alias: {
-            RESOLVE_CONFIG:
-                path.resolve(__dirname, path.join(process.cwd(), './resolve.config.js')),
-            RESOLVE_BUILD_CONFIG:
-                path.resolve(__dirname, path.join(process.cwd(), './resolve.build.config.js'))
+            RESOLVE_CONFIG: path.resolve(
+                __dirname,
+                path.join(process.cwd(), './resolve.config.js')
+            ),
+            RESOLVE_BUILD_CONFIG: path.resolve(
+                __dirname,
+                path.join(process.cwd(), './resolve.build.config.js')
+            )
         }
     },
     output: {

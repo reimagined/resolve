@@ -8,9 +8,9 @@ const result = {
 
 try {
     const config = require(configPath);
-    if(typeof(config.extendWebpack) === 'function') {
+    if (typeof config.extendWebpack === 'function') {
         result.extendWebpack = config.extendWebpack;
     }
-} catch (err) { }
+} catch (err) {}
 
 export default result;
