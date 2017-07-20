@@ -30,7 +30,7 @@ export default (initialState, { req, res }) => {
             ? `${rootDirectory}/static/bundle.js`
             : 'http://localhost:3001/bundle.js';
 
-        res.write(
+        res.send(
             '<!doctype html>\n' +
                 `<html ${helmet.htmlAttributes.toString()}>\n` +
                 '<head>\n' +
@@ -49,7 +49,5 @@ export default (initialState, { req, res }) => {
                 '</body>\n' +
                 '</html>\n'
         );
-
-        res.end();
     }
 };
