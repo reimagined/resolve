@@ -30,7 +30,7 @@ export default (initialState, { req, res }) => {
             ? `${rootDirectory}/static/bundle.js`
             : 'http://localhost:3001/bundle.js';
 
-        res.write(
+        res.send(
             '<!doctype html>\n' +
                 `<html ${helmet.htmlAttributes.toString()}>\n` +
                 '<head>\n' +
@@ -41,6 +41,7 @@ export default (initialState, { req, res }) => {
                 `window.__INITIAL_STATE__=${JSON.stringify(initialState)}\n` +
                 `window.__ROOT_DIRECTORY__=${JSON.stringify(rootDirectory)}\n` +
                 '</script>\n' +
+                `${helmet.script.toString()}\n` +
                 '</head>\n' +
                 `<body ${helmet.bodyAttributes.toString()}>\n` +
                 `<div id="root">${html}</div>\n` +
@@ -48,7 +49,5 @@ export default (initialState, { req, res }) => {
                 '</body>\n' +
                 '</html>\n'
         );
-
-        res.end();
     }
 };
