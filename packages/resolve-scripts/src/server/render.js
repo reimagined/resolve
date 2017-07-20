@@ -41,6 +41,7 @@ export default (initialState, { req, res }) => {
                 `window.__INITIAL_STATE__=${JSON.stringify(initialState)}\n` +
                 `window.__ROOT_DIRECTORY__=${JSON.stringify(rootDirectory)}\n` +
                 '</script>\n' +
+                `${helmet.script.toString()}\n`+
                 '</head>\n' +
                 `<body ${helmet.bodyAttributes.toString()}>\n` +
                 `<div id="root">${html}</div>\n` +
