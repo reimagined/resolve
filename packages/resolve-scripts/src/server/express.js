@@ -10,8 +10,8 @@ import eventStore from './event_store';
 // eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
 import config from 'RESOLVE_CONFIG';
 
-const INITIAL_READ_MODEL = 'todos';
 const STATIC_PATH = '/static';
+const rootDirectory = config.rootDirectory || '';
 
 const app = express();
 
@@ -34,7 +34,7 @@ const executeCommand = commandHandler({
     aggregates: config.aggregates
 });
 
-app.get('/api/queries/:queryName', (req, res) => {
+app.get(`${rootDirectory}/api/queries/:queryName`, (req, res) => {
     executeQuery(req.params.queryName).then(state => res.status(200).json(state)).catch((err) => {
         res.status(500).end('Query error: ' + err.message);
         // eslint-disable-next-line no-console
@@ -42,7 +42,7 @@ app.get('/api/queries/:queryName', (req, res) => {
     });
 });
 
-app.post('/api/commands', (req, res) => {
+app.post(`${rootDirectory}/api/commands`, (req, res) => {
     executeCommand(req.body).then(() => res.status(200).send('ok')).catch((err) => {
         res.status(500).end('Command error:' + err.message);
         // eslint-disable-next-line no-console
@@ -50,14 +50,29 @@ app.post('/api/commands', (req, res) => {
     });
 });
 
-app.use(STATIC_PATH, express.static(path.join(__dirname, '../../dist/static')));
+app.use(
+    `${rootDirectory}${STATIC_PATH}`,
+    express.static(path.join(__dirname, '../../dist/static'))
+);
 
-app.get('/*', (req, res) =>
-    executeQuery(INITIAL_READ_MODEL).then(state => ssr(state, { req, res })).catch((err) => {
+app.get([`${rootDirectory}/*`, `${rootDirectory || '/'}`], async (req, res) => {
+    const readModels = config.initialReadModels || [];
+
+    try {
+        const states = await Promise.all(readModels.map(readModel => executeQuery(readModel)));
+
+        ssr(
+            readModels.reduce((result, name, index) => {
+                result[name] = states[index];
+                return result;
+            }, {}),
+            { req, res }
+        );
+    } catch (err) {
         res.status(500).end('SSR error: ' + err.message);
         // eslint-disable-next-line no-console
         console.log(err);
-    })
-);
+    }
+});
 
 export default app;

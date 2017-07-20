@@ -2,9 +2,13 @@ import http from 'http';
 import socketIO from 'socket.io';
 import app from './express';
 import connectionHandler from './socket';
+// eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
+import config from 'RESOLVE_CONFIG';
 
 const server = http.createServer(app);
-const io = socketIO(server);
+const io = socketIO(server, {
+    path: `${config.rootDirectory || ''}/socket`
+});
 let currentApp = app;
 
 io.on('connection', connectionHandler);
