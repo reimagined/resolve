@@ -8,7 +8,7 @@ import ssr from './render';
 import eventStore from './event_store';
 
 // eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
-import config from 'RESOLVE_CONFIG';
+import config from 'RESOLVE_SERVER_CONFIG';
 
 const STATIC_PATH = '/static';
 const rootDirectory = config.rootDirectory || '';
@@ -19,9 +19,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 try {
-    // eslint-disable-next-line import/no-extraneous-dependencies
-    const buildConfig = require('RESOLVE_BUILD_CONFIG');
-    buildConfig.extendExpress(app);
+    config.extendExpress(app);
 } catch (err) {}
 
 const executeQuery = query({

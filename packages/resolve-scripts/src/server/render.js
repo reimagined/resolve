@@ -4,7 +4,7 @@ import { renderToString } from 'react-dom/server';
 import { Provider } from 'react-redux';
 
 // eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
-import config from 'RESOLVE_CONFIG';
+import config from 'RESOLVE_SERVER_CONFIG';
 
 const configEntries = config.entries;
 const rootDirectory = config.rootDirectory || '';

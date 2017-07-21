@@ -14,13 +14,9 @@ module.exports = env => ({
     },
     resolve: {
         alias: {
-            RESOLVE_CONFIG: path.resolve(
+            RESOLVE_SERVER_CONFIG: path.resolve(
                 __dirname,
-                path.join(process.cwd(), './resolve.config.js')
-            ),
-            RESOLVE_BUILD_CONFIG: path.resolve(
-                __dirname,
-                path.join(process.cwd(), './resolve.build.config.js')
+                path.join(process.cwd(), './resolve.server.config.js')
             )
         }
     },
