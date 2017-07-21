@@ -7,30 +7,29 @@ const brokenStateError = new Error('Broken Error');
 describe('resolve-gateway', () => {
     const PROJECTION_NAME = 'projectionName';
 
-    let eventStore, eventList;
-
-    const gateways = [
-        {
-            initialState: {},
-            name: PROJECTION_NAME,
-            eventHandlers: {
-                SuccessEvent: (state, event) => {
-                    return { ...state, value: 1 };
-                },
-                BrokenEvent: (state, event) => {
-                    throw brokenStateError;
-                }
-            },
-            execute: (state, emitEvent) => {
-                emitEvent({
-                    type: 'SyncStateEvent',
-                    payload: { ...state, value: state.value * 2 }
-                })
-            }
-        }
-    ];
+    let eventStore, eventList, gateways;
 
     beforeEach(() => {
+        gateways = [
+            {
+                initialState: {},
+                name: PROJECTION_NAME,
+                eventHandlers: {
+                    SuccessEvent: (state, event) => {
+                        return { ...state, value: 1 };
+                    },
+                    BrokenEvent: (state, event) => {
+                        throw brokenStateError;
+                    }
+                },
+                execute: (state, emitEvent) => {
+                    emitEvent({
+                        type: 'SyncStateEvent',
+                        payload: { ...state, value: state.value * 2 }
+                    })
+                }
+            }
+        ];
         eventList = [];
 
         eventStore = {
@@ -38,12 +37,8 @@ describe('resolve-gateway', () => {
                 new Promise(resolve => resolve(handler(eventList.shift())))
             ),
 
-            saveEvent: sinon.stub().callsFake(event => {
-                console.log('###SAVE EVENT:', event);
-                return new Promise(resolve => resolve(eventList.push(event)))
-                    .then(() => console.log('###EVENT LIST', eventList))
-            }
-
+            saveEvent: sinon.stub().callsFake(event =>
+                new Promise(resolve => resolve(eventList.push(event)))
             )
         };
     });
@@ -58,111 +53,6 @@ describe('resolve-gateway', () => {
         eventList = [{ type: 'SuccessEvent' }];
 
         await executeGateway(PROJECTION_NAME);
-
-        expect(eventList).to.be.deep.equal([
-            { type: 'SyncStateEvent', payload: { value: 2 } }
-        ]);
-    });
-
-    it.only('execute one gateway at one time', async () => {
-        let resolveGateway1;
-        const gatewayPromise1 = new Promise(resolve => (resolveGateway1 = resolve));
-        let resolveGateway2;
-        const gatewayPromise2 = new Promise(resolve => (resolveGateway2 = resolve));
-        gateways.push({
-            initialState: {},
-            name: 'Test1',
-            eventHandlers: {
-                SuccessEvent: (state, event) => {
-                    return { ...state, value: 1 };
-                }
-            },
-            execute: (state, emitEvent) => {
-                return gatewayPromise1.then(() => emitEvent({
-                    type: 'SyncTestEvent',
-                    payload: 'test event1'
-                }))
-            }
-        }, {
-            initialState: {},
-            name: 'Test2',
-            eventHandlers: {
-                SuccessEvent: (state, event) => {
-                    return { ...state, value: 1 };
-                }
-            },
-            execute: (state, emitEvent) => {
-                return gatewayPromise2.then(() => emitEvent({
-                    type: 'SyncTestEvent',
-                    payload: 'test event2'
-                }))
-            }
-        });
-
-        const executeGateway = createGatewayExecutor({ eventStore, gateways });
-        eventList = [
-            { type: 'SuccessEvent' },
-            { type: 'SuccessEvent' }
-        ];
-
-        executeGateway('Test1');
-        executeGateway('Test2');
-
-        resolveGateway2();
-        await gatewayPromise2;
-
-        await Promise.resolve();
-        await Promise.resolve();
-
-        expect(eventList).to.be.deep.equal([]);
-
-        resolveGateway1();
-        await gatewayPromise1;
-
-        await Promise.resolve();
-        await Promise.resolve();
-
-        expect(eventList).to.be.deep.equal([
-            { type: 'SyncTestEvent', payload: 'test event2' },
-            { type: 'SyncTestEvent', payload: 'test event1' }
-        ]);
-    });
-
-    it.only('sync', async () => {
-        const clock = sinon.useFakeTimers();
-
-        gateways.push({
-            initialState: {},
-            name: 'Async',
-            eventHandlers: {
-                SuccessEvent: (state, event) => {
-                    return { ...state, value: state.value + 1 };
-                },
-                SyncStateEvent: (state, event) => {
-                    return { ...state, value: 1 };
-                }
-            },
-            execute: (state, emitEvent) => {
-                return new Promise(resolve => setTimeout(() => {
-                    emitEvent({
-                        type: 'SyncStateEvent',
-                        payload: { ...state, value: state.value * 2 }
-                    }).then(resolve);
-                }, 1000))
-            }
-        })
-
-        const executeGateway = createGatewayExecutor({ eventStore, gateways });
-        eventList = [{ type: 'SuccessEvent' }];
-
-        const firstExecute = executeGateway('Async');
-        const secondExecute = executeGateway('Async');
-
-        clock.tick(2000);
-
-        await Promise.resolve();
-        await Promise.resolve();
-
 
         expect(eventList).to.be.deep.equal([
             { type: 'SyncStateEvent', payload: { value: 2 } }
@@ -229,4 +119,116 @@ describe('resolve-gateway', () => {
             );
         }
     });
+
+    describe.only('parallel execution', () => {
+        let doneAsync1, doneAsync2;
+
+        beforeEach(() => {
+            doneAsync2 = doneAsync1 = () => {};
+
+            gateways = [{
+                initialState: {},
+                name: 'Async1',
+                eventHandlers: {
+                    SuccessEvent: (state, event) => {
+                        return { ...state, value: 1 };
+                    },
+                    SyncStateEvent: (state, event) => {
+                        return { ...state, value: 1 };
+                    }
+                },
+                execute: (state, emitEvent) => {
+                    return emitEvent({
+                        type: 'SyncStateEvent',
+                        payload: { ...state, value: (state.value || 1) * 2 }
+                    }).then(doneAsync1)
+                }
+            }, {
+                initialState: {},
+                name: 'Async2',
+                eventHandlers: {
+                    SuccessEvent: (state, event) => {
+                        return { ...state, value: 1 };
+                    },
+                    SyncStateEvent: (state, event) => {
+                        return { ...state, value: 1 };
+                    }
+                },
+                execute: (state, emitEvent) => {
+                    return emitEvent({
+                        type: 'SyncStateEvent',
+                        payload: { ...state, value: 'async2' }
+                    }).then(doneAsync2)
+                }
+            }];
+
+            eventList = [{ type: 'SuccessEvent' }];
+
+            eventStore = {
+                subscribeByEventType: sinon.stub().callsFake((eventTypes, handler) =>
+                    new Promise(resolve => resolve(handler(eventList[eventList.length - 1])))
+                ),
+
+                saveEvent: sinon.stub().callsFake(event =>
+                    new Promise(resolve => resolve(eventList.push(event)))
+                )
+            };
+        });
+
+
+        it('the same gateway should execute one by one', async () => {
+            let resolveGateway1;
+            const gatewayPromise1 = new Promise(resolve => (resolveGateway1 = resolve));
+
+            let resolveGateway2;
+            const gatewayPromise2 = new Promise(resolve => (resolveGateway2 = resolve));
+
+            let isFirstExecute = true;
+
+            doneAsync1 = () => {
+                if(isFirstExecute) {
+                    isFirstExecute = false;
+                    resolveGateway1();
+                } else {
+                    resolveGateway2();
+                }
+            }
+
+            const executeGateway = createGatewayExecutor({ eventStore, gateways });
+
+            executeGateway('Async1');
+            executeGateway('Async1');
+
+            await gatewayPromise1;
+
+            expect(eventList).to.be.deep.equal([
+                { type: 'SuccessEvent' },
+                { type: 'SyncStateEvent', payload: { value: 2 } }
+            ]);
+
+            await gatewayPromise2;
+
+            expect(eventList).to.be.deep.equal([
+                { type: 'SuccessEvent' },
+                { type: 'SyncStateEvent', payload: { value: 2 } },
+                { type: 'SyncStateEvent', payload: { value: 2 } }
+            ]);
+        });
+
+        it('diferent gateways should execute parallel', async () => {
+            const gatewayPromise1 = new Promise(resolve => (doneAsync1 = resolve));
+
+            const executeGateway = createGatewayExecutor({ eventStore, gateways });
+            executeGateway('Async2');
+            executeGateway('Async1');
+
+            await gatewayPromise1;
+
+            expect(eventList).to.be.deep.equal([
+                { type: 'SuccessEvent' },
+                { type: 'SyncStateEvent', payload: { value: 'async2' } },
+                { type: 'SyncStateEvent', payload: { value: 2 } }
+            ]);
+        });
+    })
 });
