@@ -4,12 +4,20 @@ const path = require('path');
 module.exports = env => ({
     name: 'client',
     entry: {
-        client: ['regenerator-runtime/runtime', path.join(process.cwd(), './client/index.js')]
+        client: ['regenerator-runtime/runtime', path.join(__dirname, '../client-index.js')]
     },
     output: {
         publicPath: env ? env.publicPath : '',
         path: path.join(process.cwd(), './dist/static'),
         filename: 'bundle.js'
+    },
+    resolve: {
+        alias: {
+            RESOLVE_CLIENT_CONFIG: path.resolve(
+                __dirname,
+                path.join(process.cwd(), './resolve.client.config.js')
+            )
+        }
     },
     module: {
         rules: [
