@@ -1,6 +1,6 @@
 {
   "name": "benchmark-base",
-  "version": "0.0.6-alpha.6924b406",
+  "version": "0.0.6",
   "description": "",
   "main": "index.js",
   "scripts": {
