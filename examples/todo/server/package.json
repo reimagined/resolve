@@ -1,6 +1,6 @@
 {
   "name": "todo-server",
-  "version": "0.0.6",
+  "version": "0.0.6-alpha.6924b406",
   "description": "",
   "author": "reimagined team",
   "license": "MIT",
@@ -16,16 +16,16 @@
   "dependencies": {
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
-    "resolve-bus": "^0.0.6",
-    "resolve-bus-memory": "^0.0.6",
-    "resolve-command": "^0.0.6",
-    "resolve-es": "^0.0.6",
-    "resolve-query": "^0.0.6",
-    "resolve-storage": "^0.0.6",
-    "resolve-storage-file": "^0.0.6",
+    "resolve-bus": "^0.0.6-alpha.6924b406",
+    "resolve-bus-memory": "^0.0.6-alpha.6924b406",
+    "resolve-command": "^0.0.6-alpha.6924b406",
+    "resolve-es": "^0.0.6-alpha.6924b406",
+    "resolve-query": "^0.0.6-alpha.6924b406",
+    "resolve-storage": "^0.0.6-alpha.6924b406",
+    "resolve-storage-file": "^0.0.6-alpha.6924b406",
     "seamless-immutable": "^7.1.2",
     "socket.io": "^2.0.1",
-    "todo-common": "^0.0.6",
+    "todo-common": "^0.0.6-alpha.6924b406",
     "uuid": "^3.0.1"
   },
   "devDependencies": {

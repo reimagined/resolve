@@ -1,6 +1,6 @@
 {
   "name": "mongo-es-speed",
-  "version": "0.0.6",
+  "version": "0.0.6-alpha.6924b406",
   "scripts": {
     "start": "babel-node ./index.js",
     "test": "exit 0"
@@ -14,8 +14,8 @@
   },
   "dependencies": {
     "babel-cli": "^6.24.1",
-    "benchmark-base": "^0.0.6",
-    "resolve-storage": "^0.0.6",
-    "resolve-storage-mongo": "^0.0.6"
+    "benchmark-base": "^0.0.6-alpha.6924b406",
+    "resolve-storage": "^0.0.6-alpha.6924b406",
+    "resolve-storage-mongo": "^0.0.6-alpha.6924b406"
   }
 }
