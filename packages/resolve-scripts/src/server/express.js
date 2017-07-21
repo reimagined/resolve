@@ -18,12 +18,6 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-try {
-    // eslint-disable-next-line import/no-extraneous-dependencies
-    const buildConfig = require('RESOLVE_BUILD_CONFIG');
-    buildConfig.extendExpress(app);
-} catch (err) {}
-
 const executeQuery = query({
     eventStore,
     projections: config.queries
@@ -33,6 +27,25 @@ const executeCommand = commandHandler({
     eventStore,
     aggregates: config.aggregates
 });
+
+if (config.gateways) {
+    config.gateways.forEach(gateway => gateway({ executeQuery, executeCommand, eventStore }));
+}
+
+app.use((req, res, next) => {
+    req.resolve = {
+        executeQuery,
+        executeCommand,
+        eventStore
+    };
+    next();
+});
+
+try {
+    // eslint-disable-next-line import/no-extraneous-dependencies
+    const buildConfig = require('RESOLVE_BUILD_CONFIG');
+    buildConfig.extendExpress(app);
+} catch (err) {}
 
 app.get(`${rootDirectory}/api/queries/:queryName`, (req, res) => {
     executeQuery(req.params.queryName).then(state => res.status(200).json(state)).catch((err) => {
