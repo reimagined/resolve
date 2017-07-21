@@ -26,20 +26,23 @@ describe('resolve-gateway', () => {
                     emitEvent({
                         type: 'SyncStateEvent',
                         payload: { ...state, value: state.value * 2 }
-                    })
+                    });
                 }
             }
         ];
         eventList = [];
 
         eventStore = {
-            subscribeByEventType: sinon.stub().callsFake((eventTypes, handler) =>
-                new Promise(resolve => resolve(handler(eventList.shift())))
-            ),
+            subscribeByEventType: sinon
+                .stub()
+                .callsFake(
+                    (eventTypes, handler) =>
+                        new Promise(resolve => resolve(handler(eventList.shift())))
+                ),
 
-            saveEvent: sinon.stub().callsFake(event =>
-                new Promise(resolve => resolve(eventList.push(event)))
-            )
+            saveEvent: sinon
+                .stub()
+                .callsFake(event => new Promise(resolve => resolve(eventList.push(event))))
         };
     });
 
@@ -54,9 +57,7 @@ describe('resolve-gateway', () => {
 
         await executeGateway(PROJECTION_NAME);
 
-        expect(eventList).to.be.deep.equal([
-            { type: 'SyncStateEvent', payload: { value: 2 } }
-        ]);
+        expect(eventList).to.be.deep.equal([{ type: 'SyncStateEvent', payload: { value: 2 } }]);
     });
 
     it('should handle broken event', async () => {
@@ -126,55 +127,62 @@ describe('resolve-gateway', () => {
         beforeEach(() => {
             doneAsync2 = doneAsync1 = () => {};
 
-            gateways = [{
-                initialState: {},
-                name: 'Async1',
-                eventHandlers: {
-                    SuccessEvent: (state, event) => {
-                        return { ...state, value: 1 };
+            gateways = [
+                {
+                    initialState: {},
+                    name: 'Async1',
+                    eventHandlers: {
+                        SuccessEvent: (state, event) => {
+                            return { ...state, value: 1 };
+                        },
+                        SyncStateEvent: (state, event) => {
+                            return { ...state, value: 1 };
+                        }
                     },
-                    SyncStateEvent: (state, event) => {
-                        return { ...state, value: 1 };
+                    execute: (state, emitEvent) => {
+                        return emitEvent({
+                            type: 'SyncStateEvent',
+                            payload: { ...state, value: (state.value || 1) * 2 }
+                        }).then(doneAsync1);
                     }
                 },
-                execute: (state, emitEvent) => {
-                    return emitEvent({
-                        type: 'SyncStateEvent',
-                        payload: { ...state, value: (state.value || 1) * 2 }
-                    }).then(doneAsync1)
-                }
-            }, {
-                initialState: {},
-                name: 'Async2',
-                eventHandlers: {
-                    SuccessEvent: (state, event) => {
-                        return { ...state, value: 1 };
+                {
+                    initialState: {},
+                    name: 'Async2',
+                    eventHandlers: {
+                        SuccessEvent: (state, event) => {
+                            return { ...state, value: 1 };
+                        },
+                        SyncStateEvent: (state, event) => {
+                            return { ...state, value: 1 };
+                        }
                     },
-                    SyncStateEvent: (state, event) => {
-                        return { ...state, value: 1 };
+                    execute: (state, emitEvent) => {
+                        return emitEvent({
+                            type: 'SyncStateEvent',
+                            payload: { ...state, value: 'async2' }
+                        }).then(doneAsync2);
                     }
-                },
-                execute: (state, emitEvent) => {
-                    return emitEvent({
-                        type: 'SyncStateEvent',
-                        payload: { ...state, value: 'async2' }
-                    }).then(doneAsync2)
                 }
-            }];
+            ];
 
             eventList = [{ type: 'SuccessEvent' }];
 
             eventStore = {
-                subscribeByEventType: sinon.stub().callsFake((eventTypes, handler) =>
-                    new Promise(resolve => resolve(handler(eventList[eventList.length - 1])))
-                ),
+                subscribeByEventType: sinon
+                    .stub()
+                    .callsFake(
+                        (eventTypes, handler) =>
+                            new Promise(resolve =>
+                                resolve(handler(eventList[eventList.length - 1]))
+                            )
+                    ),
 
-                saveEvent: sinon.stub().callsFake(event =>
-                    new Promise(resolve => resolve(eventList.push(event)))
-                )
+                saveEvent: sinon
+                    .stub()
+                    .callsFake(event => new Promise(resolve => resolve(eventList.push(event))))
             };
         });
-
 
         it('the same gateway should execute one by one', async () => {
             let resolveGateway1;
@@ -186,13 +194,13 @@ describe('resolve-gateway', () => {
             let isFirstExecute = true;
 
             doneAsync1 = () => {
-                if(isFirstExecute) {
+                if (isFirstExecute) {
                     isFirstExecute = false;
                     resolveGateway1();
                 } else {
                     resolveGateway2();
                 }
-            }
+            };
 
             const executeGateway = createGatewayExecutor({ eventStore, gateways });
 
@@ -230,5 +238,5 @@ describe('resolve-gateway', () => {
                 { type: 'SyncStateEvent', payload: { value: 2 } }
             ]);
         });
-    })
+    });
 });
