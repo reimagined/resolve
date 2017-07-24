@@ -98,4 +98,18 @@ describe('resolve-es', () => {
             expect(bus.emitEvent.calledWith(event)).to.be.true;
         });
     });
+
+    describe('onEvent', () => {
+        it('should subscibe on bus events', async () => {
+            const noop = () => {};
+            const bus = {
+                onEvent: sinon.stub()
+            };
+
+            const eventStore = createEventStore({ bus });
+            eventStore.onEvent('event', noop);
+
+            expect(bus.onEvent.calledWith('event', noop)).to.be.true;
+        });
+    });
 });

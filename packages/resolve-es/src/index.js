@@ -11,6 +11,10 @@ export default ({ storage, bus, transforms = [] }) => ({
         return storage.loadEventsByAggregateId(aggregateId, handler);
     },
 
+    onEvent(eventTypes, callback) {
+        return bus.onEvent(eventTypes, callback);
+    },
+
     async saveEvent(event) {
         await storage.saveEvent(event);
         await bus.emitEvent(event);
