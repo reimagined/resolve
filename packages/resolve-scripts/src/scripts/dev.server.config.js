@@ -4,13 +4,13 @@ const StartServerPlugin = require('start-server-webpack-plugin');
 
 const webpackServerConfig = require('../configs/webpack.server.config');
 
-const serverConfig = webpackServerConfig();
-
-serverConfig.entry.server = ['webpack/hot/poll?1000'].concat(serverConfig.entry.server);
-serverConfig.name = 'server';
-serverConfig.watch = true;
-serverConfig.externals = [nodeExternals({ whitelist: ['webpack/hot/poll?1000'] })];
-serverConfig.plugins = [
+webpackServerConfig.entry.server = ['webpack/hot/poll?1000'].concat(
+    webpackServerConfig.entry.server
+);
+webpackServerConfig.name = 'server';
+webpackServerConfig.watch = true;
+webpackServerConfig.externals = [nodeExternals({ whitelist: ['webpack/hot/poll?1000'] })];
+webpackServerConfig.plugins = [
     new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
     }),
@@ -18,6 +18,6 @@ serverConfig.plugins = [
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin()
-].concat(serverConfig.plugins || []);
+].concat(webpackServerConfig.plugins || []);
 
-module.exports = serverConfig;
+module.exports = webpackServerConfig;

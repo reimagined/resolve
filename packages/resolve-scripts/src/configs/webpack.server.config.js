@@ -2,7 +2,7 @@ const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 const path = require('path');
 
-module.exports = env => ({
+module.exports = {
     name: 'server',
     entry: {
         server: ['regenerator-runtime/runtime', path.join(__dirname, '../server/index.js')]
@@ -21,7 +21,6 @@ module.exports = env => ({
         }
     },
     output: {
-        publicPath: env ? env.publicPath : '',
         path: path.join(process.cwd(), './dist/server'),
         filename: 'server.js'
     },
@@ -47,4 +46,4 @@ module.exports = env => ({
             'process.env.NODE_ENV': JSON.stringify('production')
         })
     ]
-});
+};
