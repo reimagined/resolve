@@ -15,7 +15,7 @@ const clientCompiler = webpack(devClientConfig);
 
 const clientDevServer = new WebpackDevServer(clientCompiler, {
     stats: {
-        color: true
+        colors: true
     },
     setup: (app) => {
         app.use((req, res, next) => {
@@ -27,7 +27,9 @@ const clientDevServer = new WebpackDevServer(clientCompiler, {
 });
 
 webpack(devServerConfig, (err, stats) => {
-    process.stdout.write(stats.toString() + '\n');
+    process.stdout.write(
+        stats.toString({ colors: true }) + '\n'
+    );
 });
 
 clientDevServer.listen(3001, '127.0.0.1', () => {
