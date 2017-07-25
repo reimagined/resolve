@@ -36,10 +36,16 @@ app.use((req, res, next) => {
     req.resolve = {
         executeQuery,
         executeCommand,
-        eventStore
+        eventStore,
+        ssr
     };
     next();
 });
+
+app.use(
+    `${rootDirectory}${STATIC_PATH}`,
+    express.static(path.join(__dirname, '../../dist/static'))
+);
 
 try {
     config.extendExpress(app);
@@ -60,11 +66,6 @@ app.post(`${rootDirectory}/api/commands`, (req, res) => {
         console.log(err);
     });
 });
-
-app.use(
-    `${rootDirectory}${STATIC_PATH}`,
-    express.static(path.join(__dirname, '../../dist/static'))
-);
 
 app.get([`${rootDirectory}/*`, `${rootDirectory || '/'}`], async (req, res) => {
     const readModels = config.initialReadModels || [];
