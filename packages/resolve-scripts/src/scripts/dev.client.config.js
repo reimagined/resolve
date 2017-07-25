@@ -2,26 +2,25 @@ const webpack = require('webpack');
 
 const webpackClientConfig = require('../configs/webpack.client.config');
 
-const clientConfig = webpackClientConfig({ publicPath: 'http://localhost:3001/' });
-
-clientConfig.devtool = 'inline-source-map';
-clientConfig.entry.client = [
+webpackClientConfig.output.publicPath = 'http://localhost:3001/';
+webpackClientConfig.devtool = 'inline-source-map';
+webpackClientConfig.entry.client = [
     'react-hot-loader/patch',
     'webpack-dev-server/client?http://localhost:3001',
     'webpack/hot/only-dev-server'
-].concat(clientConfig.entry.client);
-clientConfig.name = 'client';
+].concat(webpackClientConfig.entry.client);
+webpackClientConfig.name = 'client';
 
-clientConfig.plugins = [
+webpackClientConfig.plugins = [
     new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
     }),
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin()
-].concat(clientConfig.plugins || []);
+].concat(webpackClientConfig.plugins || []);
 
-clientConfig.devServer = {
+webpackClientConfig.devServer = {
     host: 'localhost',
     port: 3001,
     hot: true,
@@ -33,4 +32,4 @@ clientConfig.devServer = {
     }
 };
 
-module.exports = clientConfig;
+module.exports = webpackClientConfig;

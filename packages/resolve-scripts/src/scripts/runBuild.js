@@ -9,6 +9,6 @@ buildConfig.extendWebpack(prodClientConfig, prodServerConfig);
 require('./clean');
 require('./copy');
 
-webpack([prodClientConfig(), prodServerConfig()], (err, stats) => {
+webpack([prodClientConfig, prodServerConfig], (err, stats) => {
     process.stdout.write(stats.toString() + '\n');
 });

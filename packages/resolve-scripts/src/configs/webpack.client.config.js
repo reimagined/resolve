@@ -1,13 +1,12 @@
 const webpack = require('webpack');
 const path = require('path');
 
-module.exports = env => ({
+module.exports = {
     name: 'client',
     entry: {
         client: ['regenerator-runtime/runtime', path.join(__dirname, '../client-index.js')]
     },
     output: {
-        publicPath: env ? env.publicPath : '',
         path: path.join(process.cwd(), './dist/static'),
         filename: 'bundle.js'
     },
@@ -41,4 +40,4 @@ module.exports = env => ({
             'process.env.NODE_ENV': JSON.stringify('production')
         })
     ]
-});
+};
