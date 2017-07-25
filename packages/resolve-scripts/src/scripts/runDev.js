@@ -27,9 +27,7 @@ const clientDevServer = new WebpackDevServer(clientCompiler, {
 });
 
 webpack(devServerConfig, (err, stats) => {
-    process.stdout.write(
-        stats.toString({ colors: true }) + '\n'
-    );
+    process.stdout.write(stats.toString({ colors: true }) + '\n');
 });
 
 clientDevServer.listen(3001, '127.0.0.1', () => {

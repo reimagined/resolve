@@ -10,7 +10,5 @@ require('./clean');
 require('./copy');
 
 webpack([prodClientConfig, prodServerConfig], (err, stats) => {
-    process.stdout.write(
-        stats.toString({ colors: true }) + '\n'
-    );
+    process.stdout.write(stats.toString({ colors: true }) + '\n');
 });
