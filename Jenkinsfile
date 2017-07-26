@@ -75,18 +75,18 @@ pipeline {
                         def jobs = env.JOBS.split(';')
                         for (def i = 0; i < jobs.length; ++i) {
                             sh "echo '*** JOB *** ${job}'"
-                            build([
-                                job: jobs[i],
-                                parameters: [[
-                                    $class: 'StringParameterValue',
-                                    name: 'NPM_CANARY_VERSION',
-                                    value: commitHash
-                                ],[
-                                    $class: 'BooleanParameterValue',
-                                    name: 'RESOLVE_CHECK',
-                                    value: true
-                                ]]
-                            ])
+                            // build([
+                            //     job: jobs[i],
+                            //     parameters: [[
+                            //         $class: 'StringParameterValue',
+                            //         name: 'NPM_CANARY_VERSION',
+                            //         value: commitHash
+                            //     ],[
+                            //         $class: 'BooleanParameterValue',
+                            //         name: 'RESOLVE_CHECK',
+                            //         value: true
+                            //     ]]
+                            // ])
                         }
                     }
                 }
