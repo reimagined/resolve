@@ -1,12 +1,7 @@
 import React from 'react';
-import storageDriver from 'resolve-storage-memory';
-import busDriver from 'resolve-bus-memory';
 import { RouterContext, match, createRoutes } from 'react-router';
 
 import rootRoute from './index';
-import { createStore } from 'redux';
-
-const emptyStore = () => createStore(() => ({}), {});
 
 const ServerRouter = ({ url }) => {
     let jsx = null;
@@ -24,12 +19,6 @@ const ServerRouter = ({ url }) => {
 
 export default {
     entries: {
-        rootComponent: ServerRouter,
-        createStore: emptyStore
-    },
-    bus: { driver: busDriver },
-    storage: { driver: storageDriver },
-    aggregates: [],
-    events: [],
-    queries: []
+        rootComponent: ServerRouter
+    }
 };
