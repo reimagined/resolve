@@ -3,8 +3,7 @@ import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import socketIOClient from 'socket.io-client';
 
-// eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
-import clientConfig from 'RESOLVE_CLIENT_CONFIG';
+import clientConfig from './configs/client.config';
 
 const { rootComponent: RootComponent, createStore } = clientConfig;
 

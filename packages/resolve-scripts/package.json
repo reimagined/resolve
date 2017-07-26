@@ -18,12 +18,7 @@
   },
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": [
-    "cqrs",
-    "eventsourcing",
-    "es",
-    "ddd"
-  ],
+  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#readme",
   "dependencies": {
     "babel-cli": "^6.24.1",
@@ -41,10 +36,12 @@
     "react-redux": "^5.0.5",
     "redux": "^3.7.2",
     "resolve-bus": "^0.0.8",
+    "resolve-bus-memory": "0.0.8",
     "resolve-command": "^0.0.8",
     "resolve-es": "^0.0.8",
     "resolve-query": "^0.0.8",
     "resolve-storage": "^0.0.8",
+    "resolve-storage-memory": "0.0.8",
     "socket.io": "^2.0.3",
     "socket.io-client": "^2.0.3",
     "start-server-webpack-plugin": "^2.2.0",

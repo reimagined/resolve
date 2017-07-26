@@ -1,9 +1,9 @@
 import http from 'http';
 import socketIO from 'socket.io';
 import app from './express';
+
 import connectionHandler from './socket';
-// eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
-import config from 'RESOLVE_SERVER_CONFIG';
+import config from '../configs/server.config.js';
 
 const server = http.createServer(app);
 const io = socketIO(server, {
