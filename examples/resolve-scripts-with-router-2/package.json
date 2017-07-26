@@ -1,6 +1,6 @@
 {
   "name": "resolve-scripts-with-router-2",
-  "version": "1.0.0",
+  "version": "0.0.9",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -14,8 +14,8 @@
     "react": "^15.6.1",
     "react-router": "^2.0.0",
     "redux": "^3.7.2",
-    "resolve-bus-memory": "0.0.8",
-    "resolve-scripts": "0.0.8",
-    "resolve-storage-memory": "0.0.8"
+    "resolve-bus-memory": "^0.0.9",
+    "resolve-scripts": "^0.0.9",
+    "resolve-storage-memory": "^0.0.9"
   }
 }
