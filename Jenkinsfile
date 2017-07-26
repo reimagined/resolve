@@ -57,44 +57,38 @@ pipeline {
                     //     }
                     // }
 
-                    // if (isMasterBranch) {
-                    //     return
-                    // }
-
                     commitHash = sh (
                         script: 'git rev-parse HEAD | cut -c1-8',
                         returnStdout: true
                     ).trim()
 
-                    build([
-                        job: 'commit-resolve-version/orgstruct',
-                        parameters: [[
-                            $class: 'StringParameterValue',
-                            name: 'NPM_CANARY_VERSION',
-                            value: commitHash
-                        ]]
-                    ])
+                    def credentialsId = null
+                    if (isMasterBranch) {
+                        credentialsId = 'UPDATE_VERSION_JOBS'
+                    } else {
+                        credentialsId = 'DEPENDENT_JOBS_LIST'
+                    }
 
-                    // withCredentials([
-                    //     string(credentialsId: 'DEPENDENT_JOBS_LIST', variable: 'JOBS')
-                    // ]) {
-                    //     def jobs = env.JOBS.split(';')
-                    //     for (def i = 0; i < jobs.length; ++i) {
-
-                    //         build([
-                    //             job: jobs[i],
-                    //             parameters: [[
-                    //                 $class: 'StringParameterValue',
-                    //                 name: 'NPM_CANARY_VERSION',
-                    //                 value: "${GIT_HASH_COMMIT}"
-                    //             ],[
-                    //                 $class: 'BooleanParameterValue',
-                    //                 name: 'RESOLVE_CHECK',
-                    //                 value: true
-                    //             ]]
-                    //         ])
-                    //     }
-                    // }
+                    withCredentials([
+                        string(credentialsId: credentialsId, variable: 'JOBS')
+                    ]) {
+                        def jobs = env.JOBS.split(';')
+                        for (def i = 0; i < jobs.length; ++i) {
+                            sh "echo '*** JOB *** ${job}'"
+                            build([
+                                job: jobs[i],
+                                parameters: [[
+                                    $class: 'StringParameterValue',
+                                    name: 'NPM_CANARY_VERSION',
+                                    value: commitHash
+                                ],[
+                                    $class: 'BooleanParameterValue',
+                                    name: 'RESOLVE_CHECK',
+                                    value: true
+                                ]]
+                            ])
+                        }
+                    }
                 }
             }
         }
