@@ -8,6 +8,7 @@
   },
   "keywords": [],
   "author": "",
+  "private": true,
   "license": "ISC",
   "dependencies": {
     "react": "^15.6.1",

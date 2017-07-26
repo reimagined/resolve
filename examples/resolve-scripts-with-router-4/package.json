@@ -9,6 +9,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "private": true,
   "dependencies": {
     "react": "^15.6.1",
     "react-router": "^4.1.2",
