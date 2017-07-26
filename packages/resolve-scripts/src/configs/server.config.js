@@ -21,7 +21,7 @@ const defaultConfig = {
     storage: {
         driver: defaultStorageDriver
     },
-    initialReadModels: [],
+    initialState: () => Promise.resolve({}),
     aggregates: [],
     events: [],
     queries: [],

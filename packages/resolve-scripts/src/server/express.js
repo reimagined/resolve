@@ -65,18 +65,15 @@ app.use(
 );
 
 app.get([`${rootDirectory}/*`, `${rootDirectory || '/'}`], async (req, res) => {
-    const readModels = config.initialReadModels || [];
-
     try {
-        const states = await Promise.all(readModels.map(readModel => executeQuery(readModel)));
+        const state = await config.initialState(executeQuery, {
+            cookies: req.cookies,
+            hostname: req.hostname,
+            originalUrl: req.originalUrl,
+            body: req.body
+        });
 
-        ssr(
-            readModels.reduce((result, name, index) => {
-                result[name] = states[index];
-                return result;
-            }, {}),
-            { req, res }
-        );
+        ssr(state, { req, res });
     } catch (err) {
         res.status(500).end('SSR error: ' + err.message);
         // eslint-disable-next-line no-console
