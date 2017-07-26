@@ -14,7 +14,7 @@ export default (initialState, { req, res }) => {
 
     const html = renderToString(
         <Provider store={configEntries.createStore(initialState)}>
-            <configEntries.rootComponent />
+            <configEntries.rootComponent url={req.url} />
         </Provider>
     );
 
