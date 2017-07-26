@@ -3,8 +3,7 @@ import { Helmet } from 'react-helmet';
 import { renderToString } from 'react-dom/server';
 import { Provider } from 'react-redux';
 
-// eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
-import config from 'RESOLVE_SERVER_CONFIG';
+import config from '../configs/server.config.js';
 
 const configEntries = config.entries;
 const rootDirectory = config.rootDirectory || '';
