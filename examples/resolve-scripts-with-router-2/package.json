@@ -13,9 +13,6 @@
   "dependencies": {
     "react": "^15.6.1",
     "react-router": "^2.0.0",
-    "redux": "^3.7.2",
-    "resolve-bus-memory": "^0.0.9",
-    "resolve-scripts": "^0.0.9",
-    "resolve-storage-memory": "^0.0.9"
+    "resolve-scripts": "^0.0.9"
   }
 }
