@@ -30,7 +30,7 @@ const execute = commandHandler({
 
 const queries = query({
     eventStore,
-    projections: [cardsProjection]
+    readModels: [cardsProjection]
 });
 
 const server = http.createServer((req, res) => {
