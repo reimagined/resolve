@@ -1,2 +1,2 @@
-export * as projections from './projections';
+export * as readModels from './read-models';
 export * as aggregates from './aggregates';

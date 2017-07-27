@@ -10,7 +10,7 @@ This package serves as a helper for creating the Redux storage.
 import { createStore, applyMiddleware } from 'redux';
 import { createReducer, sendCommandMiddleware, actions } from 'resolve-redux';
 
-const projection = {
+const readModel = {
     name: 'TodoList',
     initialState: [],
     eventHandlers: {
@@ -28,7 +28,7 @@ const projection = {
     }
 };
 
-const reducer = createReducer(projection);
+const reducer = createReducer(readModel);
 
 const store = createStore(
     reducer,
@@ -42,8 +42,8 @@ const store = createStore(
     }))
 );
 
-function fetchMore(projectionName, query) {
-    return fetch(`/api/${projectionName}?${getQueryString(query)}` , {
+function fetchMore(readModelName, query) {
+    return fetch(`/api/${readModelName}?${getQueryString(query)}` , {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
         body: command
@@ -128,7 +128,7 @@ store.dispatch(actions.sendCommand({
 ## Support for Optimistic Updates
 ```js
 
-const projection = {
+const readModel = {
     name: 'TodoList',
     initialState: [],
     eventHandlers: {
@@ -141,7 +141,7 @@ const projection = {
     }
 };
 
-const reducer = createReducer(projection, (state, action) => {
+const reducer = createReducer(readModel, (state, action) => {
     switch (action.type) {
         case 'SEND_COMMAND_TODO_UPDATE_TEXT': {
             // Optimistic update

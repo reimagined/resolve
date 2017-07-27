@@ -1,7 +1,7 @@
 import { createReducer } from 'resolve-redux';
-import { projections } from 'todo-common';
+import { readModels } from 'todo-common';
 
-const projection = projections.cards;
-const { name, eventHandlers } = projection;
+const cards = readModels.cards;
+const { name, eventHandlers } = cards;
 
 export default createReducer({ name, eventHandlers });

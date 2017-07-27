@@ -1,11 +1,11 @@
-export const MERGE = '@@resolve/PROJECTION_STATE_MERGE';
-export const FETCH_MORE = '@@resolve/PROJECTION_FETCH_MORE';
+export const MERGE = '@@resolve/READ_MODEL_STATE_MERGE';
+export const FETCH_MORE = '@@resolve/READ_MODEL_FETCH_MORE';
 export const SEND_COMMAND = '@@resolve/SEND_COMMAND';
 
-function merge(projectionName, state) {
+function merge(readModelName, state) {
     return {
         type: MERGE,
-        projectionName,
+        readModelName,
         state
     };
 }
@@ -20,10 +20,10 @@ function sendCommand({ command, aggregateId, aggregateName, payload }) {
     };
 }
 
-function fetchMore(projectionName, query) {
+function fetchMore(readModelName, query) {
     return {
         type: FETCH_MORE,
-        projectionName,
+        readModelName,
         query
     };
 }

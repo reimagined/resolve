@@ -3,7 +3,7 @@ import { MERGE } from './actions';
 export default function createReducer({ name, eventHandlers }, extendReducer) {
     const handlers = {
         [MERGE]: (state, action) => {
-            if (action.projectionName === name) {
+            if (action.readModelName === name) {
                 return state.merge(action.state);
             }
             return state;

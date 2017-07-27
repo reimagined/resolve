@@ -29,7 +29,7 @@ const execute = commandHandler({
 
 const queries = query({
     eventStore,
-    readModels: [cardsProjection, cardDetailsProjection]
+    readModels: [cardsReadModel, cardsReadModel]
 });
 ```
 

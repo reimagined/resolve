@@ -3,14 +3,14 @@ import actions, { MERGE, SEND_COMMAND, FETCH_MORE } from '../src/actions';
 
 describe('actions', () => {
     describe('merge', () => {
-        it('should create an action to merge reducer state with projection state', () => {
-            const projectionName = 'counter';
+        it('should create an action to merge reducer state with readModel state', () => {
+            const readModelName = 'counter';
             const state = {
                 value: 10
             };
-            expect(actions.merge(projectionName, state)).to.deep.equal({
+            expect(actions.merge(readModelName, state)).to.deep.equal({
                 type: MERGE,
-                projectionName,
+                readModelName,
                 state
             });
         });
@@ -44,14 +44,14 @@ describe('actions', () => {
     });
 
     describe('fetchMore', () => {
-        it('should create an action to fetch more items from projection state', () => {
-            const projectionName = 'counter';
+        it('should create an action to fetch more items from readModel state', () => {
+            const readModelName = 'counter';
             const query = {
                 owner: 'userId-12345'
             };
-            expect(actions.fetchMore(projectionName, query)).to.deep.equal({
+            expect(actions.fetchMore(readModelName, query)).to.deep.equal({
                 type: FETCH_MORE,
-                projectionName,
+                readModelName,
                 query
             });
         });
