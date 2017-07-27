@@ -17,7 +17,7 @@ const store = createStore({ driver: esDriver });
 const busDriver = createBusDriver();
 const bus = createBus({ driver: busDriver });
 
-const projections = {
+const readModels = {
     User: {
         initialState: [],
         eventHandlers: {
@@ -28,6 +28,6 @@ const projections = {
     }
 };
 
-const query = createQuery({ store, bus, projections });
+const query = createQuery({ store, bus, readModels });
 const state = query('User');
 ```

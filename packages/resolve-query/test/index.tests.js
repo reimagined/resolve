@@ -5,14 +5,14 @@ import createQueryExecutor from '../src';
 const brokenStateError = new Error('Broken Error');
 
 describe('resolve-query', () => {
-    const PROJECTION_NAME = 'projectionName';
+    const READ_MODEL_NAME = 'readModelName';
 
     let eventStore, eventList;
 
-    const projections = [
+    const readModels = [
         {
             initialState: {},
-            name: PROJECTION_NAME,
+            name: READ_MODEL_NAME,
             eventHandlers: {
                 SuccessEvent: (state, event) => {
                     return { ...state, value: 42 };
@@ -40,10 +40,10 @@ describe('resolve-query', () => {
     });
 
     it('should build state on valid event and return it on query', async () => {
-        const executeQuery = createQueryExecutor({ eventStore, projections });
+        const executeQuery = createQueryExecutor({ eventStore, readModels });
         eventList = [{ type: 'SuccessEvent' }];
 
-        const state = await executeQuery(PROJECTION_NAME);
+        const state = await executeQuery(READ_MODEL_NAME);
 
         expect(state).to.be.deep.equal({
             value: 42
@@ -51,11 +51,11 @@ describe('resolve-query', () => {
     });
 
     it('should handle broken event', async () => {
-        const executeQuery = createQueryExecutor({ eventStore, projections });
+        const executeQuery = createQueryExecutor({ eventStore, readModels });
         eventList = [{ type: 'BrokenEvent' }];
 
         try {
-            await executeQuery(PROJECTION_NAME);
+            await executeQuery(READ_MODEL_NAME);
             return Promise.reject('Test failed');
         } catch (error) {
             expect(error).to.be.equal(brokenStateError);
@@ -64,11 +64,11 @@ describe('resolve-query', () => {
 
     it('should handle errors on read side', async () => {
         const readSideError = new Error('Broken Error');
-        const executeQuery = createQueryExecutor({ eventStore, projections });
+        const executeQuery = createQueryExecutor({ eventStore, readModels });
         eventList = [{ type: 'BrokenEvent' }];
 
         try {
-            await executeQuery(PROJECTION_NAME);
+            await executeQuery(READ_MODEL_NAME);
             return Promise.reject('Test failed');
         } catch (error) {
             expect(error).to.be.deep.equal(readSideError);
@@ -86,13 +86,13 @@ describe('resolve-query', () => {
             })
         };
         eventList = [{ type: 'SuccessEvent' }, { type: 'SuccessEvent' }];
-        const executeQuery = createQueryExecutor({ eventStore, projections });
-        await executeQuery(PROJECTION_NAME);
+        const executeQuery = createQueryExecutor({ eventStore, readModels });
+        await executeQuery(READ_MODEL_NAME);
 
         eventHandler({ type: 'BrokenEvent' });
 
         try {
-            await executeQuery(PROJECTION_NAME);
+            await executeQuery(READ_MODEL_NAME);
             return Promise.reject('Test failed');
         } catch (error) {
             expect(error).to.be.deep.equal(readSideError);
@@ -100,15 +100,15 @@ describe('resolve-query', () => {
     });
 
     it('should handle non-existing query executor', async () => {
-        const executeQuery = createQueryExecutor({ eventStore, projections });
+        const executeQuery = createQueryExecutor({ eventStore, readModels });
         eventList = [{ type: 'BrokenEvent' }];
 
         try {
-            await executeQuery('WRONG_PROJECTION_NAME');
+            await executeQuery('WRONG_READ_MODEL_NAME');
             return Promise.reject('Test failed');
         } catch (error) {
             expect(error.message).to.be.equal(
-                'The \'WRONG_PROJECTION_NAME\' projection is not found'
+                'The \'WRONG_READ_MODEL_NAME\' read model is not found'
             );
         }
     });

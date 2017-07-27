@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const executeQuery = query({
     eventStore,
-    projections: config.queries
+    readModels: config.queries
 });
 
 const executeCommand = commandHandler({

@@ -29,12 +29,12 @@ const execute = commandHandler({
 
 const queries = query({
     eventStore,
-    projections: [cardsProjection, cardDetailsProjection]
+    readModels: [cardsProjection, cardDetailsProjection]
 });
 ```
 
 ## Advanced Usage (Transform events / Plugins)
-```js 
+```js
 const transforms = [
     new Transform({
         objectMode: true,
