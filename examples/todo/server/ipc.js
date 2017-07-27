@@ -1,4 +1,5 @@
 import childProcess from 'child_process';
+import uuid from 'uuid';
 
 export default function (modulePath) {
     const ipcProcess = childProcess.fork(modulePath);
@@ -10,17 +11,17 @@ export default function (modulePath) {
     });
 
     return (payload) => {
-        const serialId = Math.floor(Math.random() * 1000000000);
+        const guid = uuid.v4();
 
-        ipcMessagesMap[serialId] = {};
-        ipcMessagesMap[serialId].promise = new Promise((resolve) => {
-            ipcMessagesMap[serialId].resolver = resolve;
+        ipcMessagesMap[guid] = {};
+        ipcMessagesMap[guid].promise = new Promise((resolve) => {
+            ipcMessagesMap[guid].resolver = resolve;
         });
 
-        ipcProcess.send({ id: serialId, payload });
+        ipcProcess.send({ id: guid, payload });
 
-        return ipcMessagesMap[serialId].promise.then((result) => {
-            delete ipcMessagesMap[serialId];
+        return ipcMessagesMap[guid].promise.then((result) => {
+            delete ipcMessagesMap[guid];
             return result;
         });
     };

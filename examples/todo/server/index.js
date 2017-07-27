@@ -6,14 +6,9 @@ import busDriver from 'resolve-bus-zmq';
 
 import { readModels } from 'todo-common';
 import makeIpc from './ipc';
+import config from './config';
 
-const bus = createBus({
-    driver: busDriver({
-        address: '127.0.0.1',
-        pubPort: 3500,
-        subPort: 3501
-    })
-});
+const bus = createBus({ driver: busDriver(config.zmq) });
 
 const cardsReadModel = readModels.cards;
 
