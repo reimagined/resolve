@@ -213,7 +213,7 @@ const originalHandlers = {
         updateInnerItem(state, event, obj => obj.set('isDeleted', true))
 };
 
-function projectionsGenerator(reportObj) {
+function readModelsGenerator(reportObj) {
     // Allow bypass invalid events
     const eventHandlers = Object.keys(originalHandlers).reduce(
         (acc, key) =>
@@ -250,7 +250,7 @@ function projectionsGenerator(reportObj) {
     ];
 }
 
-function generateSyncExecutor(storageDriver, busDriver, projections) {
+function generateSyncExecutor(storageDriver, busDriver, readModels) {
     const loadDonePromise = new Promise((resolve) => {
         const originalLoadEventsByTypes = storageDriver.loadEventsByTypes.bind(storageDriver);
         storageDriver.loadEventsByTypes = (...args) =>
@@ -268,7 +268,7 @@ function generateSyncExecutor(storageDriver, busDriver, projections) {
         bus
     });
 
-    const execute = createExecutor({ eventStore, projections });
+    const execute = createExecutor({ eventStore, readModels });
 
     return async (...args) => {
         await loadDonePromise;
@@ -284,13 +284,14 @@ export default function worker(eventsCount, reportObj) {
 
     const busDriver = memoryDriver();
 
-    const projections = projectionsGenerator(reportObj);
+    const readModels = readModelsGenerator(reportObj);
 
-    const execute = generateSyncExecutor(mongoDriver, busDriver, projections);
+    const execute = generateSyncExecutor(mongoDriver, busDriver, readModels);
 
     return execute('infrastructureState').then(state => ({
-        entities: Object.keys(state.groups).length +
-            Object.keys(state.members).length +
-            Object.keys(state.items).length
+        entities:
+            Object.keys(state.groups).length +
+                Object.keys(state.members).length +
+                Object.keys(state.items).length
     }));
 }

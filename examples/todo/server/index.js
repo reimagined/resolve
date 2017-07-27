@@ -4,7 +4,7 @@ import uuid from 'uuid';
 import createBus from 'resolve-bus';
 import busDriver from 'resolve-bus-zmq';
 
-import { projections } from 'todo-common';
+import { readModels } from 'todo-common';
 import makeIpc from './ipc';
 
 const bus = createBus({
@@ -15,7 +15,7 @@ const bus = createBus({
     })
 });
 
-const cardsProjection = projections.cards;
+const cardsReadModel = readModels.cards;
 
 const PORT = 3001;
 
@@ -26,10 +26,10 @@ const server = http.createServer((req, res) => {
 
 const io = socketIO(server);
 
-const eventNames = Object.keys(cardsProjection.eventHandlers);
+const eventNames = Object.keys(cardsReadModel.eventHandlers);
 
-const requestReadModel = makeIpc('./read-model.js');
-const requestCommand = makeIpc('./command.js');
+const requestReadModel = makeIpc('./query/index.js');
+const requestCommand = makeIpc('./command/index.js');
 
 io.on('connection', (socket) => {
     requestReadModel('cards').then(({ state }) => socket.emit('initialState', state)).then(() => {

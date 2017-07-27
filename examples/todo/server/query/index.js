@@ -5,24 +5,19 @@ import createBus from 'resolve-bus';
 import busDriver from 'resolve-bus-zmq';
 import query from 'resolve-query';
 
-import { projections } from 'todo-common';
-const cardsProjection = projections.cards;
+import { readModels } from 'todo-common';
 
-const storage = createStorage({
-    driver: storageDriver({ pathToFile: './event_store.json' })
-});
-const bus = createBus({
-    driver: busDriver({
-        address: '127.0.0.1',
-        pubPort: 3500,
-        subPort: 3501
-    })
-});
+import config from '../config';
+
+const cardsReadModel = readModels.cards;
+
+const storage = createStorage({ driver: storageDriver(config.esFile) });
+const bus = createBus({ driver: busDriver(config.zmq) });
 const eventStore = createEventStore({ storage, bus });
 
 const queries = query({
     eventStore,
-    projections: [cardsProjection]
+    readModels: [cardsReadModel]
 });
 
 process.on('message', (message) => {

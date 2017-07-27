@@ -31,7 +31,7 @@ describe('fetchMoreMiddleware', () => {
 
     it('works correctly', (done) => {
         let store = null;
-        const projectionName = 'projectionName';
+        const readModelName = 'readModelName';
         const query = { ownerId: 'userId-12345' };
         const fetchResult = { id3: {}, id4: {} };
         const fetchMore = sinon.spy(() => {
@@ -40,7 +40,7 @@ describe('fetchMoreMiddleware', () => {
                     .then(() => {
                         const newState = store.getState();
                         expect(newState).to.be.deep.equal({ ...state, ...fetchResult });
-                        expect(fetchMore.firstCall.args[0]).to.be.equal(projectionName);
+                        expect(fetchMore.firstCall.args[0]).to.be.equal(readModelName);
                         expect(fetchMore.firstCall.args[1]).to.be.deep.equal(query);
                         done();
                     })
@@ -62,7 +62,7 @@ describe('fetchMoreMiddleware', () => {
             state,
             applyMiddleware(fetchMoreMiddleware({ fetchMore }))
         );
-        const fetchAction = actions.fetchMore(projectionName, query);
+        const fetchAction = actions.fetchMore(readModelName, query);
         store.dispatch(fetchAction);
     });
 
@@ -81,7 +81,7 @@ describe('fetchMoreMiddleware', () => {
         const warnArgs = console.warn.args[0];
 
         expect(warnArgs[0]).contains('Fetch more error:');
-        expect(warnArgs[0]).contains('The \'projectionName\' is required');
+        expect(warnArgs[0]).contains('The \'readModelName\' is required');
         expect(warnArgs[0]).contains('The \'query\' is required');
     });
 });

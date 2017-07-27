@@ -7,19 +7,13 @@ import commandHandler from 'resolve-command';
 
 import { aggregates } from 'todo-common';
 
+import config from '../config';
+
 const todoCardAggregate = aggregates.TodoCard;
 const todoItemAggregate = aggregates.TodoItem;
 
-const storage = createStorage({
-    driver: storageDriver({ pathToFile: './event_store.json' })
-});
-const bus = createBus({
-    driver: busDriver({
-        address: '127.0.0.1',
-        pubPort: 3500,
-        subPort: 3501
-    })
-});
+const storage = createStorage({ driver: storageDriver(config.esFile) });
+const bus = createBus({ driver: busDriver(config.zmq) });
 
 const eventStore = createEventStore({ storage, bus });
 

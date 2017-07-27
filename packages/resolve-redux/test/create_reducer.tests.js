@@ -6,7 +6,7 @@ import createReducer from '../src/create_reducer';
 import ResolveActions, { MERGE } from '../src/actions';
 
 describe('reducer', () => {
-    const projection = {
+    const readModel = {
         name: 'counter',
 
         initialState: Immutable({}),
@@ -20,10 +20,10 @@ describe('reducer', () => {
         }
     };
 
-    it('should return reducer by projection', () => {
+    it('should return reducer by readModel', () => {
         const initialState = Immutable({});
 
-        const store = createStore(createReducer(projection), initialState);
+        const store = createStore(createReducer(readModel), initialState);
 
         expect(store.getState()).to.deep.equal(initialState);
 
@@ -56,7 +56,7 @@ describe('reducer', () => {
         expect(store.getState()).to.equal(prevState);
     });
 
-    it('should return reducer by projection and extend reducer', () => {
+    it('should return reducer by readModel and extend reducer', () => {
         const initialState = Immutable({});
 
         const extendReducer = (state, action) => {
@@ -68,7 +68,7 @@ describe('reducer', () => {
             }
         };
 
-        const store = createStore(createReducer(projection, extendReducer), initialState);
+        const store = createStore(createReducer(readModel, extendReducer), initialState);
 
         expect(store.getState()).to.deep.equal(initialState);
 
@@ -119,7 +119,7 @@ describe('reducer', () => {
             [aggregateId3]: { value: 3 }
         });
 
-        const store = createStore(createReducer(projection), initialState);
+        const store = createStore(createReducer(readModel), initialState);
 
         expect(store.getState()).to.deep.equal(initialState);
 
@@ -140,7 +140,7 @@ describe('reducer', () => {
     it('merge state with custom eventHandler[MERGE]', () => {
         const initialState = new Set();
 
-        const projection = {
+        const readModel = {
             name: 'set',
 
             initialState,
@@ -153,7 +153,7 @@ describe('reducer', () => {
             }
         };
 
-        const store = createStore(createReducer(projection), initialState);
+        const store = createStore(createReducer(readModel), initialState);
 
         expect(store.getState()).to.deep.equal(initialState);
 
@@ -168,7 +168,7 @@ describe('reducer', () => {
     it('should throw error when initialState=undefined', () => {
         const initialState = undefined;
 
-        const store = createStore(createReducer(projection), initialState);
+        const store = createStore(createReducer(readModel), initialState);
 
         const aggregateId = uuidV4();
         expect(() =>
