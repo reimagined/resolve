@@ -1,8 +1,8 @@
 import 'regenerator-runtime/runtime';
 
-function getExecutor({ eventStore, projection }) {
-    const eventTypes = Object.keys(projection.eventHandlers);
-    let state = projection.initialState || {};
+function getExecutor({ eventStore, readModel }) {
+    const eventTypes = Object.keys(readModel.eventHandlers);
+    let state = readModel.initialState || {};
     let error = null;
     let result = null;
 
@@ -10,7 +10,7 @@ function getExecutor({ eventStore, projection }) {
         result =
             result ||
             eventStore.subscribeByEventType(eventTypes, (event) => {
-                const handler = projection.eventHandlers[event.type];
+                const handler = readModel.eventHandlers[event.type];
                 if (!handler) return;
 
                 try {
@@ -27,20 +27,20 @@ function getExecutor({ eventStore, projection }) {
     };
 }
 
-export default ({ eventStore, projections }) => {
-    const executors = projections.reduce((result, projection) => {
-        result[projection.name.toLowerCase()] = getExecutor({
+export default ({ eventStore, readModels }) => {
+    const executors = readModels.reduce((result, readModel) => {
+        result[readModel.name.toLowerCase()] = getExecutor({
             eventStore,
-            projection
+            readModel
         });
         return result;
     }, {});
 
-    return async (projectionName) => {
-        const executor = executors[projectionName.toLowerCase()];
+    return async (readModelName) => {
+        const executor = executors[readModelName.toLowerCase()];
 
         if (executor === undefined) {
-            throw new Error(`The '${projectionName}' projection is not found`);
+            throw new Error(`The '${readModelName}' read model is not found`);
         }
 
         return executor();
