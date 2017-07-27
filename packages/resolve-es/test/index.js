@@ -1,26 +1,10 @@
 /* eslint no-unused-expressions: 0 */
 import { expect } from 'chai';
-import stream from 'stream';
 import sinon from 'sinon';
 import uuidV4 from 'uuid/v4';
 import createEventStore from '../src/index';
 
 describe('resolve-es', () => {
-    let sandbox;
-
-    beforeEach(() => {
-        sandbox = sinon.sandbox.create();
-        sandbox.stub(stream, 'Readable').returns({
-            push: sinon.spy(),
-            emit: sinon.spy()
-        });
-        sandbox.stub(stream, 'Writable').callsFake(({ write }) => ({ write }));
-    });
-
-    afterEach(() => {
-        sandbox.restore();
-    });
-
     describe('subscribeByEventType', () => {
         // eslint-disable-next-line max-len
         it('should handle callback by eventTypes with events propagated from storage and bus', async () => {
@@ -111,5 +95,43 @@ describe('resolve-es', () => {
 
             expect(bus.onEvent.calledWith('event', noop)).to.be.true;
         });
+    });
+
+    it('onError', async () => {
+        const loadEventsByTypesError = new Error('LoadEventsByTypes error');
+        const loadEventsByAggregateIdError = new Error('LoadEventsByAggregateId error');
+        const saveEventError = new Error('SaveEvent error');
+        const onEventError = new Error('OnEvent error');
+
+        const storage = {
+            loadEventsByTypes: () => {
+                throw loadEventsByTypesError;
+            },
+            loadEventsByAggregateId: () => {
+                throw loadEventsByAggregateIdError;
+            },
+            saveEvent: () => {
+                throw saveEventError;
+            }
+        };
+        const bus = {
+            onEvent: () => {
+                throw onEventError;
+            }
+        };
+        const errorHandler = sinon.stub();
+        const eventStore = createEventStore({ storage, bus }, errorHandler);
+
+        await eventStore.subscribeByEventType();
+        eventStore.getEventsByAggregateId();
+        eventStore.onEvent();
+        eventStore.saveEvent();
+
+        expect(errorHandler.callCount).to.be.equal(4);
+
+        expect(errorHandler.firstCall.args[0]).to.be.equal(loadEventsByTypesError);
+        expect(errorHandler.secondCall.args[0]).to.be.equal(loadEventsByAggregateIdError);
+        expect(errorHandler.thirdCall.args[0]).to.be.equal(onEventError);
+        expect(errorHandler.lastCall.args[0]).to.be.equal(saveEventError);
     });
 });
