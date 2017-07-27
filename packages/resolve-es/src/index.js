@@ -5,40 +5,37 @@ export default (
     errorHandler = (err) => {
         throw err;
     }
-) => ({
-    async subscribeByEventType(eventTypes, handler) {
-        try {
+) => {
+    const result = {
+        async subscribeByEventType(eventTypes, handler) {
             await config.storage.loadEventsByTypes(eventTypes, handler);
-
             return config.bus.onEvent(eventTypes, handler);
-        } catch (err) {
-            errorHandler(err);
-        }
-    },
+        },
 
-    getEventsByAggregateId(aggregateId, handler) {
-        try {
-            return config.storage.loadEventsByAggregateId(aggregateId, handler);
-        } catch (err) {
-            errorHandler(err);
-        }
-    },
+        async getEventsByAggregateId(aggregateId, handler) {
+            return await config.storage.loadEventsByAggregateId(aggregateId, handler);
+        },
 
-    onEvent(eventTypes, callback) {
-        try {
-            return config.bus.onEvent(eventTypes, callback);
-        } catch (err) {
-            errorHandler(err);
-        }
-    },
+        async onEvent(eventTypes, callback) {
+            return await config.bus.onEvent(eventTypes, callback);
+        },
 
-    async saveEvent(event) {
-        try {
+        async saveEvent(event) {
             await config.storage.saveEvent(event);
             await config.bus.emitEvent(event);
             return event;
-        } catch (err) {
-            errorHandler(err);
         }
-    }
-});
+    };
+
+    return Object.keys(result).reduce((acc, methodName) => {
+        acc[methodName] = async (...args) => {
+            try {
+                return await result[methodName](...args);
+            } catch (err) {
+                errorHandler(err);
+            }
+        };
+
+        return acc;
+    }, {});
+};

@@ -123,9 +123,9 @@ describe('resolve-es', () => {
         const eventStore = createEventStore({ storage, bus }, errorHandler);
 
         await eventStore.subscribeByEventType();
-        eventStore.getEventsByAggregateId();
-        eventStore.onEvent();
-        eventStore.saveEvent();
+        await eventStore.getEventsByAggregateId();
+        await eventStore.onEvent();
+        await eventStore.saveEvent();
 
         expect(errorHandler.callCount).to.be.equal(4);
 
