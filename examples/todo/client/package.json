@@ -12,6 +12,7 @@
   "dependencies": {
     "bootstrap": "^3.3.7",
     "classnames": "^2.2.5",
+    "enhanced-resolve": "^3.4.1",
     "isomorphic-fetch": "^2.2.1",
     "react": "^15.5.4",
     "react-burger-menu": "^2.0.2",

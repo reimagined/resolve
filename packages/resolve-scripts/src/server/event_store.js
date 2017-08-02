@@ -13,7 +13,7 @@ const bus = createBus({ driver: busDriver(config.bus.params) });
 
 const eventStore = createEventStore({ storage, bus });
 
-const subscribe = bus.onEvent;
+const subscribe = eventStore.onEvent;
 
 export { subscribe };
 
