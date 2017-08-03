@@ -17,9 +17,7 @@ export default (initialState, { req, res }) => {
 
     const helmet = Helmet.renderStatic();
 
-    const bundleSource = process.env.NODE_ENV === 'production'
-        ? `${rootDirectory}/static/bundle.js`
-        : 'http://localhost:3001/bundle.js';
+    const bundleSource = `${rootDirectory}/static/bundle.js`;
 
     res.send(
         '<!doctype html>\n' +

@@ -3,6 +3,7 @@ import express from 'express';
 import path from 'path';
 import query from 'resolve-query';
 import commandHandler from 'resolve-command';
+import request from 'request';
 import ssr from './render';
 
 import eventStore from './event_store';
@@ -59,10 +60,14 @@ app.post(`${rootDirectory}/api/commands`, (req, res) => {
     });
 });
 
-app.use(
-    `${rootDirectory}${STATIC_PATH}`,
-    express.static(path.join(__dirname, '../../dist/static'))
-);
+const staticMiddleware = process.env.NODE_ENV === 'production'
+    ? express.static(path.join(__dirname, '../../dist/static'))
+    : (req, res) => {
+        var newurl = 'http://localhost:3001' + req.path;
+        request(newurl).pipe(res);
+    };
+
+app.use(`${rootDirectory}${STATIC_PATH}`, staticMiddleware);
 
 app.get([`${rootDirectory}/*`, `${rootDirectory || '/'}`], async (req, res) => {
     try {
