@@ -21,6 +21,15 @@ export default (initialState, { req, res }) => {
         ? `${rootDirectory}/static/bundle.js`
         : 'http://localhost:3001/bundle.js';
 
+    const filterEnvVariablesRegex = /(^RESOLVE_)|^NODE_ENV$/;
+
+    const processEnv = Object.keys(process.env)
+        .filter(key => filterEnvVariablesRegex.test(key))
+        .reduce((result, key) => {
+            result[key] = process.env[key];
+            return result;
+        }, {});
+
     res.send(
         '<!doctype html>\n' +
             `<html ${helmet.htmlAttributes.toString()}>\n` +
@@ -29,6 +38,7 @@ export default (initialState, { req, res }) => {
             `${helmet.meta.toString()}` +
             `${helmet.link.toString()}` +
             '<script>\n' +
+            `window.__PROCESS_ENV__=${JSON.stringify(processEnv)}\n` +
             `window.__INITIAL_STATE__=${JSON.stringify(initialState)}\n` +
             `window.__ROOT_DIRECTORY__=${JSON.stringify(rootDirectory)}\n` +
             '</script>\n' +
