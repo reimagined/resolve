@@ -4,10 +4,10 @@ Create resolve application with minimal configuration.
 
 There are three configuration files. All of them must be placed in the root directory of your application.
 
-- [resolve.client.config](#resolve.client.config)
-    - [rootComponent](#*-rootComponent)
-    - [createStore](#createStore)
-- [resolve.server.config](#resolve.server.config)
+- [resolve.client.config](#resolveclientconfig)
+    - [rootComponent](#-rootComponent)
+    - [createStore](#createstore)
+- [resolve.server.config](#resolveserverconfig)
     - [aggregates](#aggregates)
     - [bus](#bus)
     - [events](#events)
@@ -16,8 +16,8 @@ There are three configuration files. All of them must be placed in the root dire
     - [initialState](#initialState)
     - [queries](#queries)
     - [storage](#storage)
-- [resolve.build.config](#resolve.build.config)
-    - [extendWebpack](#extendWebpack)
+- [resolve.build.config](#resolvebuildconfig)
+    - [extendWebpack](#extendwebpack)
 
 ## resolve.client.config
 
