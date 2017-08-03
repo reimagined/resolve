@@ -19,9 +19,6 @@ webpackServerConfig.name = 'server';
 webpackServerConfig.watch = true;
 webpackServerConfig.externals = [nodeExternals({ whitelist: ['webpack/hot/poll?1000'] })];
 webpackServerConfig.plugins = [
-    new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
-    }),
     new StartServerPlugin('server.js'),
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),

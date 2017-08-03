@@ -10,6 +10,8 @@ import outputConfig from './output-stats-config';
 require('./clean');
 require('./copy');
 
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+
 buildConfig.extendWebpack(devClientConfig, devServerConfig);
 
 const clientCompiler = webpack(devClientConfig);
