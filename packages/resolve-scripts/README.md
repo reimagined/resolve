@@ -5,7 +5,7 @@ Create resolve application with minimal configuration.
 There are three configuration files. All of them must be placed in the root directory of your application.
 
 - [resolve.client.config](#resolveclientconfig)
-    - [rootComponent](#-rootComponent)
+    - [rootComponent](#-rootcomponent)
     - [createStore](#createstore)
 - [resolve.server.config](#resolveserverconfig)
     - [aggregates](#aggregates)
