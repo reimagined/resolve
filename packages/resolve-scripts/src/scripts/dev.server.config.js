@@ -4,7 +4,7 @@ const StartServerPlugin = require('start-server-webpack-plugin');
 
 const webpackServerConfig = require('../configs/webpack.server.config');
 
-if(!webpackServerConfig.plugins) {
+if (!webpackServerConfig.plugins) {
     webpackServerConfig.plugins = [];
 }
 
