@@ -19,6 +19,10 @@ There are three configuration files. All of them must be placed in the root dire
 - [resolve.build.config](#resolvebuildconfig)
     - [extendWebpack](#extendwebpack)
 
+Additional settings are provided by environment variables.
+- [ROOT_DIR](#root_dir)
+- [ENV variables](#env-variables)
+
 ## resolve.client.config
 
 This file contains information for client side of your application.
