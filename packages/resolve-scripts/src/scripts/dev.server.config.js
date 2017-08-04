@@ -4,6 +4,10 @@ const StartServerPlugin = require('start-server-webpack-plugin');
 
 const webpackServerConfig = require('../configs/webpack.server.config');
 
+if(!webpackServerConfig.plugins) {
+    webpackServerConfig.plugins = [];
+}
+
 webpackServerConfig.plugins.push(
     new webpack.BannerPlugin({
         banner: 'require("source-map-support").install();',
