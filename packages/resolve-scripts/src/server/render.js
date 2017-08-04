@@ -21,7 +21,7 @@ export default (initialState, { req, res }) => {
         ? `${rootDirectory}/static/bundle.js`
         : 'http://localhost:3001/bundle.js';
 
-    const filterEnvVariablesRegex = /(^RESOLVE_)|^NODE_ENV$/;
+    const filterEnvVariablesRegex = /^RESOLVE_|^NODE_ENV$|^ROOT_DIR$/;
 
     const processEnv = Object.keys(process.env)
         .filter(key => filterEnvVariablesRegex.test(key))
@@ -40,7 +40,6 @@ export default (initialState, { req, res }) => {
             '<script>\n' +
             `window.__PROCESS_ENV__=${JSON.stringify(processEnv)}\n` +
             `window.__INITIAL_STATE__=${JSON.stringify(initialState)}\n` +
-            `window.__ROOT_DIRECTORY__=${JSON.stringify(rootDirectory)}\n` +
             '</script>\n' +
             `${helmet.script.toString()}\n` +
             '</head>\n' +
