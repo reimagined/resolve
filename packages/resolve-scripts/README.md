@@ -19,6 +19,10 @@ There are three configuration files. All of them must be placed in the root dire
 - [resolve.build.config](#resolvebuildconfig)
     - [extendWebpack](#extendwebpack)
 
+Additional settings are provided by environment variables.
+- [ROOT_DIR](#root_dir)
+- [ENV variables](#env-variables)
+
 ## resolve.client.config
 
 This file contains information for client side of your application.
@@ -92,3 +96,11 @@ Contains config for [resolve-storage](https://github.com/reimagined/resolve/tree
 _function(clientConfig, sererConfig)_
 
 It's a function where is possible to extend standart resolve client and server configs.
+
+## ROOT_DIR
+
+To change root directory of an application set the environment variable ROOT_DIR to needed value. For example `export ROOT_DIR=/newurl`. After that application will be available by `http://localhost:3000/newurl`. ROOT_DIR variable will be available on client side by `process.env.ROOT_DIR`.
+
+## ENV variables
+
+It is possible to pass env variable to client side. For this define variable with `RESOLVE_` prefix. After that variable will be available on client and on server side by `process.env`.
