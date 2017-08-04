@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 import config from '../configs/server.config.js';
 
 const configEntries = config.entries;
-const rootDirectory = config.rootDirectory || '';
+const rootDirectory = process.env.ROOT_DIR || '';
 
 export default (initialState, { req, res }) => {
     const html = renderToString(

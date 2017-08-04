@@ -3,11 +3,12 @@ import socketIO from 'socket.io';
 import app from './express';
 
 import connectionHandler from './socket';
-import config from '../configs/server.config.js';
 
 const server = http.createServer(app);
+const rootDirectory = process.env.ROOT_DIR || '';
+
 const io = socketIO(server, {
-    path: `${config.rootDirectory || ''}/socket`
+    path: `${rootDirectory || ''}/socket`
 });
 let currentApp = app;
 

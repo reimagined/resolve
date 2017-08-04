@@ -9,7 +9,7 @@ import eventStore from './event_store';
 import config from '../configs/server.config.js';
 
 const STATIC_PATH = '/static';
-const rootDirectory = config.rootDirectory || '';
+const rootDirectory = process.env.ROOT_DIR || '';
 
 const app = express();
 
