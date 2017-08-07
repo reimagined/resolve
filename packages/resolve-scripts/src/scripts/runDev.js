@@ -1,3 +1,5 @@
+import express from 'express';
+import path from 'path';
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 
@@ -24,6 +26,7 @@ const clientDevServer = new WebpackDevServer(clientCompiler, {
             console.log(`Using middleware for ${req.url}`);
             next();
         });
+        app.use(express.static(path.join(__dirname, '../../dist/static')))
     }
 });
 
