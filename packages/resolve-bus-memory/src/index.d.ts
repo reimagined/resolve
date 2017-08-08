@@ -1,8 +1,8 @@
 import { ResolveBusDriver } from "resolve-bus";
 
 export = CreateMemoryBusDriver;
-declare function CreateMemoryBusDriver(): CreateMemoryBusDriver.ResolveMemoryDriver
+declare function CreateMemoryBusDriver(): CreateMemoryBusDriver.ResolveMemoryBusDriver
 
 declare namespace CreateMemoryBusDriver {
-  export interface ResolveMemoryDriver extends ResolveBusDriver {}
+  export interface ResolveMemoryBusDriver extends ResolveBusDriver {}
 }

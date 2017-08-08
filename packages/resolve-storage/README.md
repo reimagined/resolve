@@ -21,9 +21,6 @@ const event = {
     }
 };
 
-storage.onEventSaved(e =>
-    console.log('Event saved', e)
-);
-
 storage.saveEvent(event);
+storage.loadEventsByTypes(['UserCreated'], event => console.log(event));
 ```

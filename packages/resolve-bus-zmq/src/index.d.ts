@@ -4,10 +4,10 @@ export = CreateZMQBusDriver;
 
 declare function CreateZMQBusDriver(
   config: CreateZMQBusDriver.ZMQBusConfig
-): CreateZMQBusDriver.ResolveZMQDriver
+): CreateZMQBusDriver.ResolveZMQBusDriver
 
 declare namespace CreateZMQBusDriver {
-  export interface ResolveZMQDriver extends ResolveBusDriver {
+  export interface ResolveZMQBusDriver extends ResolveBusDriver {
     publish: (Event) => Promise<void>;
   }
 

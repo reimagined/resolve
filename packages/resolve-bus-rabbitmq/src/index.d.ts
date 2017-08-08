@@ -3,10 +3,10 @@ import { Event, ResolveBusDriver } from "resolve-bus";
 export = CreateRabbitMQBusDriver;
 declare function CreateRabbitMQBusDriver(
   config: CreateRabbitMQBusDriver.RabbitMQBusConfig
-): CreateRabbitMQBusDriver.ResolveRabbitMQDriver
+): CreateRabbitMQBusDriver.ResolveRabbitMQBusDriver
 
 declare namespace CreateRabbitMQBusDriver {
-  export interface ResolveRabbitMQDriver extends ResolveBusDriver {
+  export interface ResolveRabbitMQBusDriver extends ResolveBusDriver {
     publish: (Event) => Promise<void>;
   }
 
