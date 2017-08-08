@@ -1,17 +1,17 @@
-import { Event, ResolveBusDriver } from "resolve-bus";
+import * as ResolveBus from "resolve-bus";
 
 export = CreateZMQBusDriver;
 
 declare function CreateZMQBusDriver(
-  config: CreateZMQBusDriver.ZMQBusConfig
-): CreateZMQBusDriver.ResolveZMQBusDriver
+  config: CreateZMQBusDriver.Config
+): CreateZMQBusDriver.Driver
 
 declare namespace CreateZMQBusDriver {
-  export interface ResolveZMQBusDriver extends ResolveBusDriver {
-    publish: (Event) => Promise<void>;
+  export interface Driver extends ResolveBus.Driver {
+    publish(event: ResolveBus.Event): Promise<void>;
   }
 
-  export interface ZMQBusConfig {
+  export interface Config {
     channel: string;
     address: string;
     pubPort: number;

@@ -1,8 +1,8 @@
 export = CreateStorage;
 
-declare function CreateStorage({
-  driver: ResolveStorageDriver
-}): CreateStorage.ResolveStorage
+declare function CreateStorage(
+  config: CreateStorage.Config
+): CreateStorage.Storage
 
 declare namespace CreateStorage {
   export type EventType = string;
@@ -14,7 +14,7 @@ declare namespace CreateStorage {
   }
   export type EventHandler = ((Event) => void);
 
-  export interface ResolveStorage {
+  export interface Storage {
     saveEvent(event: Event): Promise<void>;
 
     loadEventsByTypes(
@@ -27,6 +27,9 @@ declare namespace CreateStorage {
       callback: EventHandler
     ): Promise<Array<Event>>;
   }
+  export interface Driver extends Storage {}
 
-  export interface ResolveStorageDriver extends ResolveStorage {}
+  export interface Config {
+    driver: Driver;
+  }
 }

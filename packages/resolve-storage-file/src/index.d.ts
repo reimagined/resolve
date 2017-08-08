@@ -1,15 +1,15 @@
-import { ResolveStorageDriver } from "resolve-storage";
+import * as ResolveStorage from "resolve-storage";
 
 export = CreateFileStorageDriver;
 
 declare function CreateFileStorageDriver(
   config: CreateFileStorageDriver.Config
-): ResolveFileStorageDriver
+): CreateFileStorageDriver.Driver
 
 declare namespace CreateFileStorageDriver {
   export interface Config {
     pathToFile: string;
   }
 
-  export interface ResolveFileStorageDriver extends ResolveStorageDriver {}
+  export interface Driver extends ResolveStorage.Driver {}
 }

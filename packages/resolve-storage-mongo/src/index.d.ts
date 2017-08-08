@@ -1,10 +1,10 @@
-import { ResolveStorageDriver } from "resolve-storage";
+import * as ResolveStorage from "resolve-storage";
 
 export = CreateMongoStorageDriver;
 
 declare function CreateMongoStorageDriver(
   config: CreateMongoStorageDriver.Config
-): ResolveMongoStorageDriver
+): CreateMongoStorageDriver.Driver
 
 declare namespace CreateMongoStorageDriver {
   export interface Config {
@@ -12,5 +12,5 @@ declare namespace CreateMongoStorageDriver {
     collection: string;
   }
 
-  export interface ResolveMongoStorageDriver extends ResolveStorageDriver {}
+  export interface Driver extends ResolveStorage.Driver {}
 }
