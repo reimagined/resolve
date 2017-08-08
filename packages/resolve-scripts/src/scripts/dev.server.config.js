@@ -3,6 +3,19 @@ const nodeExternals = require('webpack-node-externals');
 const StartServerPlugin = require('start-server-webpack-plugin');
 
 const webpackServerConfig = require('../configs/webpack.server.config');
+webpackServerConfig.devtool = 'inline-source-map';
+
+if (!webpackServerConfig.plugins) {
+    webpackServerConfig.plugins = [];
+}
+
+webpackServerConfig.plugins.push(
+    new webpack.BannerPlugin({
+        banner: 'require("source-map-support").install();',
+        raw: true,
+        entryOnly: false
+    })
+);
 
 webpackServerConfig.entry.server = ['webpack/hot/poll?1000'].concat(
     webpackServerConfig.entry.server

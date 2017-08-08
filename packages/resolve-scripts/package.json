@@ -49,6 +49,7 @@
     "resolve-storage-memory": "^0.0.10",
     "socket.io": "^2.0.3",
     "socket.io-client": "^2.0.3",
+    "source-map-support": "^0.4.15",
     "start-server-webpack-plugin": "^2.2.0",
     "webpack": "^3.3.0",
     "webpack-dev-server": "^2.5.1",
