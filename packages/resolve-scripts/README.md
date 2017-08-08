@@ -33,7 +33,7 @@ _ReactElement_
 Contains root component that will be rendered on client side.
 
 ### createStore
-_function(initialState: Object): store
+_function(initialState: Object): store_
 
 Function that takes initialState and returns redux store. Initial state will be takken from server side and it defines in [resolve.server.config.js](#initialstate)
 
@@ -56,7 +56,7 @@ Contains config for [resolve-bus](https://github.com/reimagined/resolve/tree/res
 ### entries
 
 #### createStore
-_function(initialState: Object): store
+_function(initialState: Object): store_
 
 Function that takes initialState and returns redux store. Initial state will be takken from server side and it defines in [resolve.server.config.js](#initialstate)
 
