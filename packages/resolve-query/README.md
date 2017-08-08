@@ -29,5 +29,7 @@ const readModels = {
 };
 
 const query = createQuery({ store, bus, readModels });
-const state = query('User');
+query('User').then(state => {
+    ///...
+})
 ```
