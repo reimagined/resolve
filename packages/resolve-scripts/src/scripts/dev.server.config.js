@@ -3,6 +3,7 @@ const nodeExternals = require('webpack-node-externals');
 const StartServerPlugin = require('start-server-webpack-plugin');
 
 const webpackServerConfig = require('../configs/webpack.server.config');
+webpackServerConfig.devtool = 'inline-source-map';
 
 if (!webpackServerConfig.plugins) {
     webpackServerConfig.plugins = [];
