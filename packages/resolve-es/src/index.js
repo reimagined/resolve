@@ -16,8 +16,8 @@ export default (
             return await config.storage.loadEventsByAggregateId(aggregateId, handler);
         },
 
-        async onEvent(eventTypes, callback) {
-            return await config.bus.onEvent(eventTypes, callback);
+        onEvent(eventTypes, callback) {
+            return config.bus.onEvent(eventTypes, callback);
         },
 
         async saveEvent(event) {
