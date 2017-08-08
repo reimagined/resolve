@@ -34,4 +34,4 @@ And then `npm start` to run app in production mode.
 
 **App supports es6 syntaxis and hot-reload out of the box.**
 
-For more information see this [guide](https://github.com/reimagined/resolve-boilerplate)
+For more information see this [guide](https://github.com/reimagined/resolve-boilerplate).
