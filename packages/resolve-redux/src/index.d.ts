@@ -1,4 +1,6 @@
-import * as Redux from "redux";
+// typedoc --out ./docs --includeDeclarations --readme ./README.md ./src
+
+import * as Redux from "../node_modules/redux/index";
 
 export type SerializableEntiry = object | string | number | boolean;
 export type StateObject = SerializableEntiry;

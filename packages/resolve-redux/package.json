@@ -18,11 +18,13 @@
   },
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#readme",
-  "dependencies": {
-    "redux": "^3.7.2"
-  },
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
