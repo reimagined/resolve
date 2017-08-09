@@ -5,6 +5,7 @@ import devClientConfig from './dev.client.config';
 import devServerConfig from './dev.server.config';
 
 import buildConfig from './build-config';
+import outputConfig from './output-stats-config';
 
 require('./clean');
 require('./copy');
@@ -16,9 +17,7 @@ buildConfig.extendWebpack(devClientConfig, devServerConfig);
 const clientCompiler = webpack(devClientConfig);
 
 const clientDevServer = new WebpackDevServer(clientCompiler, {
-    stats: {
-        colors: true
-    },
+    stats: outputConfig,
     setup: (app) => {
         app.use((req, res, next) => {
             // eslint-disable-next-line no-console
@@ -29,7 +28,7 @@ const clientDevServer = new WebpackDevServer(clientCompiler, {
 });
 
 webpack(devServerConfig, (err, stats) => {
-    process.stdout.write(stats.toString({ colors: true }) + '\n');
+    process.stdout.write(stats.toString(outputConfig) + '\n');
 });
 
 clientDevServer.listen(3001, '127.0.0.1', () => {
