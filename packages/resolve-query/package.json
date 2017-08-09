@@ -8,7 +8,7 @@
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
-    "prepublish": "babel --out-dir ./dist ./src",
+    "prepublish": "babel --out-dir ./dist --copy-files ./src",
     "test": "mocha",
     "testw": "mocha -w"
   },
