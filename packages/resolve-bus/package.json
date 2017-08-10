@@ -1,6 +1,6 @@
 {
   "name": "resolve-bus",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "This package serves as a bus for sending events with a driver specifying where to send events.",
   "main": "./dist/index.js",
   "bugs": {
