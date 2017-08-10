@@ -27,8 +27,3 @@ bus.onEvent(['userCreated'], event =>
 
 bus.emitEvent(event);
 ```
-
-## API
-
-- `emitEvent`
-- `onEvent`

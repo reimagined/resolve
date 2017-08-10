@@ -8,10 +8,10 @@ This package serves as a helper for creating the Redux storage.
 
 ```js
 import { createStore, applyMiddleware } from 'redux';
+import axios from 'axios';
 import {
     createReducer,
-    sendCommandMiddleware,
-    fetchMoreMiddleware
+    sendCommandMiddleware
 } from 'resolve-redux';
 
 const aggregate = {
@@ -54,14 +54,7 @@ const store = createStore(
     readModel.initialState,
     applyMiddleware(
         sendCommandMiddleware({
-            sendCommand: (command) => {
-                /* post */
-            }
-        }),
-        fetchMoreMiddleware({
-            fetchMore: (readModelName, query) => {
-                /* get */
-            }
+            sendCommand: command => axios.post('/api/commands', command)
         })
     )
 );
