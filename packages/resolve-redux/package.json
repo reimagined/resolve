@@ -1,6 +1,6 @@
 {
   "name": "resolve-redux",
-  "version": "0.0.10",
+  "version": "0.0.12",
   "description": "This package serves as a helper for creating the Redux storage.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
