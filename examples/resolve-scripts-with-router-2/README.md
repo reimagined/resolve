@@ -38,9 +38,9 @@ After that open [http://localhost:3000](http://localhost:3000) in a browser to s
 
 ## Folder Structure
 
-| Path                             | Description                                                                              |
+| ​Path ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​​ ​ ​ ​ ​ ​​ ​ ​ ​ ​| Description                                                                              |
 | ---------------------------------| ---------------------------------------------------------------------------------------- |
-| `resolve-scripts-with-router-4/` | root directory as resolve-boilerplate copy                                               |
+| `resolve-scripts-with-router-2/` | root directory as resolve-boilerplate copy                                               |
 | `​ ​ ​index.js                    ` | *instance* of `<Route>` containter with view components definition for different routes  |
 | `​ ​ package.json                ` | description of current npm package                                                       |
 | `​ ​ README.md                   ` | this readme file                                                                         |

@@ -25,7 +25,7 @@ After that open [http://localhost:3000](http://localhost:3000) in a browser to s
 
 ## Folder Structure
 
-| Path                         | Description                                                                                         |
+| ​Path ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​​ ​ ​ ​ ​ ​| Description                                                                                         |
 | -----------------------------| --------------------------------------------------------------------------------------------------- |
 | `todo/                     ` | root directory of current example application, presented as lerna mono-repository                   |
 | `​ ​ ​client/                 ` | client/browser side part, based on create-react-app and presented as independent npm package [1, 2] |

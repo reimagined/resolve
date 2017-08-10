@@ -31,7 +31,7 @@ After that open [http://localhost:3000](http://localhost:3000) in a browser to s
 
 ## Folder Structure
 
-| Path                             | Description                                                                              |
+| ​Path ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​​ ​ ​ ​ ​ ​​ ​ ​ ​ ​| Description                                                                              |
 | ---------------------------------| ---------------------------------------------------------------------------------------- |
 | `resolve-scripts-with-router-4/` | root directory as resolve-boilerplate copy                                               |
 | `​ ​ ​index.js                    ` | root react component for viewing dependent on selected route, based on `<Switch>`        |
