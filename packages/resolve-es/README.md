@@ -9,11 +9,9 @@ import createStorage from 'resolve-storage';
 import storageInFileDriver from 'resolve-storage-file';
 import createBus from 'resolve-bus';
 import busInMemoryDriver from 'resolve-bus-memory';
-import commandHandler from 'resolve-command';
-import query from 'resolve-query';
 
 const storage = createStorage({
-    driver: storageInFileDriver({ pathToFile: './EventStore' })
+    driver: storageInFileDriver({ pathToFile: './event-store.json' })
 });
 const bus = createBus({ driver: busInMemoryDriver() });
 
@@ -22,33 +20,26 @@ const eventStore = createEventStore({
     bus
 });
 
-const execute = commandHandler({
-    eventStore,
-    aggregates: [todoCardAggregate, todoItemAggregate]
+eventStore.subscribeByEventType(['UserCreated'], event => {
+    console.log('Event emitted', event);
 });
 
-const queries = query({
-    eventStore,
-    readModels: [cardsReadModel, cardsReadModel]
+eventStore.onEvent(['UserCreated'], event => {
+    console.log('Event emitted from bus', event);
 });
-```
 
-## Advanced Usage (Transform events / Plugins)
-```js
-const transforms = [
-    new Transform({
-        objectMode: true,
-        transform(event, encoding, callback) {
-            event.isTransformed = true;
-            this.push(event);
-            callback();
-        }
-    })
-];
-
-const eventStore = createEventStore({
-    storage,
-    bus,
-    transforms
+eventStore.getEventsByAggregateId('1', event => {
+    console.log('Aggregate event loaded', event);
 });
+
+const event = {
+    aggregateId: '1',
+    type: 'UserCreated',
+    payload: {
+        email: 'test@user.com'
+    }
+};
+
+eventStore.saveEvent(event);
+
 ```
