@@ -22,13 +22,10 @@ const aggregates = [{
     name: 'User',
     initialState: {},
     eventHandlers: {
-        UserCreated: (state, { payload }) => {
-            console.log('UserCreated')
-            return {
-                name: payload.name,
-                email: payload.email,
-            }
-        },
+        UserCreated: (state, { payload }) => ({
+            name: payload.name,
+            email: payload.email,
+        })
     },
     commands: {
         create: (state, { aggregateId, payload }) => ({
@@ -47,7 +44,7 @@ const execute = commandHandler({
 });
 
 eventStore.onEvent(['UserCreated'], event =>
-    console.log('Event emitted', event)
+    console.log('Event emitted', event);
 );
 
 const command = {
@@ -61,6 +58,7 @@ const command = {
 };
 
 execute(command).then(event => {
-    console.log('Event saved', event)
+    console.log('Event saved', event);
 });
+
 ```
