@@ -26,7 +26,7 @@ const clientDevServer = new WebpackDevServer(clientCompiler, {
             console.log(`Using middleware for ${req.url}`);
             next();
         });
-        app.use(express.static(path.join(__dirname, '../../dist/static')));
+        app.use(express.static(path.join(process.cwd(), './dist/static')));
     }
 });
 
