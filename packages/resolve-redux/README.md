@@ -8,19 +8,38 @@ This package serves as a helper for creating the Redux storage.
 
 ```js
 import { createStore, applyMiddleware } from 'redux';
-import { createReducer, sendCommandMiddleware, actions } from 'resolve-redux';
+import {
+    createReducer,
+    sendCommandMiddleware,
+    fetchMoreMiddleware
+} from 'resolve-redux';
+
+const aggregate = {
+    name: 'User',
+    commands: {
+        createUser: (state, { aggregateId, payload }) => ({
+            type: 'UserCreated',
+            aggregateId,
+            payload
+        }),
+        removeUser: (state, { aggregateId }) => ({
+            type: 'UserRemoved',
+            aggregateId
+        })
+    }
+};
 
 const readModel = {
-    name: 'TodoList',
+    name: 'Users',
     initialState: [],
     eventHandlers: {
-        TodoListItemAdded(state, event) {
+        UserCreated(state, event) {
             return state.concat({
                 ...event.payload,
                 id: event.aggregateId
             });
         },
-        TodoListItemRemoved(state, event) {
+        UserRemoved(state, event) {
             return state.filter(item =>
                 item.id !== event.aggregateId
             );
@@ -32,36 +51,20 @@ const reducer = createReducer(readModel);
 
 const store = createStore(
     reducer,
-    projeciton.initialState,
-    applyMiddleware(sendCommandMiddleware({
-        sendCommand: (command) => fetch('/api/commands', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: command
-        }).then( res => res.json() )
-    }))
-);
-
-function fetchMore(readModelName, query) {
-    return fetch(`/api/${readModelName}?${getQueryString(query)}` , {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        body: command
-    }).then( res => res.json() );
-}
-
-function getQueryString(params) {
-    return Object
-        .keys(params)
-        .map(k => {
-            if (Array.isArray(params[k])) {
-                return params[k]
-                    .map(val => `${encodeURIComponent(k)}[]=${encodeURIComponent(val)}`)
-                    .join('&')
+    readModel.initialState,
+    applyMiddleware(
+        sendCommandMiddleware({
+            sendCommand: (command) => {
+                /* post */
             }
-            return `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`
-        }).join('&');
-}
+        }),
+        fetchMoreMiddleware({
+            fetchMore: (readModelName, query) => {
+                /* get */
+            }
+        })
+    )
+);
 ```
 
 ## How to generate action from aggregate
