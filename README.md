@@ -15,6 +15,13 @@ The toolset includes next libraries:
 - [resolve-storage-memory](https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-memory)
 - [resolve-storage-mongo](https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-mongo)
 
+Examples are available too:
+- [using react-router v2](https://github.com/reimagined/resolve/tree/master/examples/resolve-scripts-with-router-2)
+- [using react-router v4](https://github.com/reimagined/resolve/tree/master/examples/resolve-scripts-with-router-4)
+- [two-level todo list](https://github.com/reimagined/resolve/tree/master/examples/todo)
+
+
+
 ## Quick start
 
 To start, run next commands in terminal:
