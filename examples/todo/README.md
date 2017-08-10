@@ -55,8 +55,6 @@ After that open [http://localhost:3000](http://localhost:3000) in a browser to s
 | `​ ​ ​testcafe.dockerfile     ` | docker image declaration for functional tests on testcafe                                           |
 
 
-
-
 ## Available Scripts
 
 In the project directory, you can run:
@@ -65,6 +63,13 @@ In the project directory, you can run:
 
 Runs the app in the development mode.<br>
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+
+### `npm run test:e2e`
+
+Runs functiontal (E2E) tests suite by Testcafe runner on local machine.
+It's independent command, so you should not start application server or launch browser manually.
+E2E tests will be open in default system browser, or you can specify custom browser by
+**browser** command line argument.
 
 
 ## Supported Language Features and Polyfills
