@@ -9,7 +9,7 @@ This example can be useful in following cases: for writing application with seve
 The exhaustive description of the subject technologies and articles for them is provided here: [https://github.com/markerikson/react-redux-links](https://github.com/markerikson/react-redux-links).
 
 ## Quick start
-```
+```bash
 git clone https://github.com/reimagined/resolve
 cd resolve
 # If you using windows, following command should be run with Administrator privelegies - it's Lerna issue and not resolve itself
