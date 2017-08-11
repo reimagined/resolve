@@ -48,7 +48,7 @@ Aggregates and read models are located in their respective directories and defin
 - At server side aggregates and read-models applied directry in Resolve eventsoucring framework.
 
 Structure of typical aggregate:
-```
+```js
 export default {
     name: 'AggregateName', // Aggregate name for command handler, same as aggregateType
     initialState: Immutable({}), // Initial state (Bounded context) for every instance of this aggregate type
@@ -64,7 +64,7 @@ export default {
 ```
 
 Structure of typical read-model:
-```
+```js
 export default {
     name: 'ReadModelName', // Read-model name for query handler
     initialState: Immutable({}), // Initial state for instance of this read model
@@ -89,7 +89,7 @@ Stereotypical implementation of aggregate and read-model process can be found at
 Due limitation of **resolve-query** package, each one read-model can't be splitted horizontally, e.g. take some subset and/or derivative of read-model state by some arguments. Every read model can be fully located on client and/or server or not present there at all.
 
 By using two-direction web socket, resolve backend API can be exposed to client without dedicated route registration. Assuming that `requestReadModel` and `requestCommand` is functions, which provide message exchange to corresponding microservices, and `eventNames` is array of domain event that client application can understand, all interaction code can look like below.
-```
+```js
 io.on('connection', socket => requestReadModel('INITIAL_READ_MODEL_NAME') // Poll main view model for front-end initial state
     .then(({ state }) => socket.emit('initialState', state)) // Pass fetched state to client
     .then(() => {
