@@ -53,12 +53,12 @@ export default {
     name: 'AggregateName', // Aggregate name for command handler, same as aggregateType
     initialState: Immutable({}), // Initial state (Bounded context) for every instance of this aggregate type
     eventHandlers: {
-        Event1Happened: (oldState, event) => newState,  // Update functions for current aggregate instance
-        Event2Happened: (oldState, event) => newState   // for every different event types
+        Event1Happened: (state, event) => nextState,  // Update functions for current aggregate instance
+        Event2Happened: (state, event) => nextState   // for every different event types
     },
     commands: {
-        command1: (currentState, arguments) => generatedEvent, // Function which generate events dependent
-        command2: (currentState, arguments) => generatedEvent  // on current state and argument list
+        command1: (state, arguments) => generatedEvent, // Function which generate events dependent
+        command2: (state, arguments) => generatedEvent  // on current state and argument list
     }
 };
 ```
@@ -69,8 +69,8 @@ export default {
     name: 'ReadModelName', // Read-model name for query handler
     initialState: Immutable({}), // Initial state for instance of this read model
     eventHandlers: {
-        Event1Happened: (oldState, event) => newState,  // Update functions for current read-model instance
-        Event2Happened: (oldState, event) => newState   // for every different event types
+        Event1Happened: (state, event) => nextState,  // Update functions for current read-model instance
+        Event2Happened: (state, event) => nextState   // for every different event types
     }
     // This state will be the result of the request to the query handler at current moment
 ```
@@ -99,7 +99,7 @@ io.on('connection', socket => requestReadModel('INITIAL_READ_MODEL_NAME') // Pol
             ).catch(err => console.log(err))
         );
 
-        const unsubscribe = bus.onEvent( // Subscribe on supported domain events and translate them to connected client
+        const unsubscribe = eventStore.onEvent( // Subscribe on supported domain events and translate them to connected client
             eventNames, event => socket.emit('event', event)
         );
 
