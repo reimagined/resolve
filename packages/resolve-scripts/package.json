@@ -7,7 +7,7 @@
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "bin": {
-    "resolve-scripts": "./dist/bin/resolve-scripts.js"
+    "resolve-scripts": "./bin/resolve-scripts.js"
   },
   "scripts": {
     "prepublish": "babel --out-dir ./dist ./src"
@@ -18,12 +18,7 @@
   },
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": [
-    "cqrs",
-    "eventsourcing",
-    "es",
-    "ddd"
-  ],
+  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#readme",
   "dependencies": {
     "babel-cli": "^6.24.1",
