@@ -1,6 +1,6 @@
 # `resolve-storage-mongo`
 
-This package serves as a driver for `resolve-storage` to store events using MongoDB.
+This package serves as a driver for `resolve-es` to store events using MongoDB.
 
 ## Usage
 

@@ -1,12 +1,9 @@
 import createEventStore from 'resolve-es';
-import createStorage from 'resolve-storage';
 import createBus from 'resolve-bus';
 
 import config from '../configs/server.config.js';
 
-const storage = createStorage({
-    driver: config.storage.driver(config.storage.params)
-});
+const storage = config.storage.driver(config.storage.params);
 
 const busDriver = config.bus.driver;
 const bus = createBus({ driver: busDriver(config.bus.params) });

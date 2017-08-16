@@ -10,7 +10,6 @@ The toolset includes next libraries:
 - [resolve-es](https://github.com/reimagined/resolve/tree/master/packages/resolve-es)
 - [resolve-query](https://github.com/reimagined/resolve/tree/master/packages/resolve-query)
 - [resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux)
-- [resolve-storage](https://github.com/reimagined/resolve/tree/master/packages/resolve-storage)
 - [resolve-storage-file](https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-file)
 - [resolve-storage-memory](https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-memory)
 - [resolve-storage-mongo](https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-mongo)

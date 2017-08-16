@@ -88,7 +88,7 @@ Array of read models for [resolve-query](https://github.com/reimagined/resolve/t
 ### storage
 _Object_
 
-Contains config for [resolve-storage](https://github.com/reimagined/resolve/tree/resolve-scripts-readme/packages/resolve-storage).
+Contains config for resolve-storage-driver.
 
 ## resolve.build.config
 

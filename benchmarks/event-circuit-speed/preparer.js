@@ -3,7 +3,6 @@ import { rpoisson } from 'randgen';
 import memoryDriver from 'resolve-bus-memory';
 import createBus from 'resolve-bus';
 import mongoDbDriver from 'resolve-storage-mongo';
-import createStorage from 'resolve-storage';
 import createEventStore from 'resolve-es';
 import createCommandExecutor from 'resolve-command';
 import uuid from 'uuid';
@@ -470,11 +469,9 @@ const eventsWeight = {
 const entitiesFactor = 0.33;
 
 export default function preparer(eventsCount, reportObj) {
-    const storage = createStorage({
-        driver: mongoDbDriver({
-            url: config.MONGODB_CONNECTION_URL,
-            collection: config.MONGODB_COLLECTION_NAME
-        })
+    const storage = mongoDbDriver({
+        url: config.MONGODB_CONNECTION_URL,
+        collection: config.MONGODB_COLLECTION_NAME
     });
 
     const bus = createBus({ driver: memoryDriver() });

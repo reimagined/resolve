@@ -6,14 +6,12 @@ This package creates a function to execute a command.
 
 ```js
 import commandHandler from 'resolve-command';
-import createStore from 'resolve-storage';
-import createEsDriver from 'resolve-storage-memory';
+import createEsStorage from 'resolve-storage-memory';
 import createBus from 'resolve-bus';
 import createBusDriver from 'resolve-bus-memory';
 import createEventStore from 'resolve-es';
 
-const esDriver = createEsDriver();
-const storage = createStore({ driver: esDriver });
+const storage = createEsStorage();
 
 const busDriver = createBusDriver();
 const bus = createBus({ driver: busDriver });

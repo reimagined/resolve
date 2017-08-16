@@ -7,13 +7,11 @@ This package creates a function to execute a query.
 ```js
 import createQueryExecutor from 'resolve-query';
 import createEventStore from 'resolve-es';
-import createStore from 'resolve-storage';
-import createEsDriver from 'resolve-storage-memory';
+import createEsStorage from 'resolve-storage-memory';
 import createBus from 'resolve-bus';
 import createBusDriver from 'resolve-bus-memory';
 
-const esDriver = createEsDriver();
-const storage = createStore({ driver: esDriver });
+const storage = createEsStorage();
 
 const busDriver = createBusDriver();
 const bus = createBus({ driver: busDriver });
