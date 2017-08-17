@@ -1,5 +1,4 @@
 import memoryDriver from 'resolve-bus-memory';
-import createBus from 'resolve-bus';
 import mongoDbDriver from 'resolve-storage-mongo';
 import createEventStore from 'resolve-es';
 import createExecutor from 'resolve-query';
@@ -249,7 +248,7 @@ function readModelsGenerator(reportObj) {
     ];
 }
 
-function generateSyncExecutor(storage, busDriver, readModels) {
+function generateSyncExecutor(storage, bus, readModels) {
     const loadDonePromise = new Promise((resolve) => {
         const originalLoadEventsByTypes = storage.loadEventsByTypes.bind(storage);
         storage.loadEventsByTypes = (...args) =>
@@ -258,8 +257,6 @@ function generateSyncExecutor(storage, busDriver, readModels) {
                 return result;
             });
     });
-
-    const bus = createBus({ driver: busDriver });
 
     const eventStore = createEventStore({
         storage,
@@ -280,11 +277,11 @@ export default function worker(eventsCount, reportObj) {
         collection: config.MONGODB_COLLECTION_NAME
     });
 
-    const busDriver = memoryDriver();
+    const bus = memoryDriver();
 
     const readModels = readModelsGenerator(reportObj);
 
-    const execute = generateSyncExecutor(mongoDriver, busDriver, readModels);
+    const execute = generateSyncExecutor(mongoDriver, bus, readModels);
 
     return execute('infrastructureState').then(state => ({
         entities:

@@ -51,7 +51,7 @@ Array of aggregates for [resolve-command](https://github.com/reimagined/resolve/
 ### bus
 _Object_
 
-Contains config for [resolve-bus](https://github.com/reimagined/resolve/tree/resolve-scripts-readme/packages/resolve-bus).
+Contains config for resolve-bus-drivers.
 
 ### entries
 

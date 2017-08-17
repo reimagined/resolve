@@ -8,13 +8,11 @@ This package creates a function to execute a query.
 import createQueryExecutor from 'resolve-query';
 import createEventStore from 'resolve-es';
 import createEsStorage from 'resolve-storage-memory';
-import createBus from 'resolve-bus';
 import createBusDriver from 'resolve-bus-memory';
 
 const storage = createEsStorage();
 
-const busDriver = createBusDriver();
-const bus = createBus({ driver: busDriver });
+const bus = createBusDriver();
 
 const eventStore = createEventStore({ storage, bus });
 

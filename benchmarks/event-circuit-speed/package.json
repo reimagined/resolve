@@ -19,7 +19,6 @@
     "benchmark-base": "^0.0.12",
     "mongodb": "^2.2.26",
     "randgen": "^0.1.0",
-    "resolve-bus": "^0.0.12",
     "resolve-bus-memory": "^0.0.12",
     "resolve-command": "^0.0.12",
     "resolve-es": "^0.0.12",

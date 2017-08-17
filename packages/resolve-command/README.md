@@ -7,14 +7,12 @@ This package creates a function to execute a command.
 ```js
 import commandHandler from 'resolve-command';
 import createEsStorage from 'resolve-storage-memory';
-import createBus from 'resolve-bus';
 import createBusDriver from 'resolve-bus-memory';
 import createEventStore from 'resolve-es';
 
 const storage = createEsStorage();
 
-const busDriver = createBusDriver();
-const bus = createBus({ driver: busDriver });
+const bus = createBusDriver();
 
 const aggregates = [{
     name: 'User',

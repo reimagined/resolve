@@ -37,7 +37,6 @@
     "react-redux": "^5.0.5",
     "redux": "^3.7.2",
     "request": "^2.81.0",
-    "resolve-bus": "^0.0.12",
     "resolve-bus-memory": "^0.0.12",
     "resolve-command": "^0.0.12",
     "resolve-es": "^0.0.12",

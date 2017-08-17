@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "babel-cli": "^6.24.1",
-    "resolve-bus": "^0.0.12",
     "resolve-bus-rabbitmq": "^0.0.12",
     "resolve-bus-zmq": "^0.0.12"
   },

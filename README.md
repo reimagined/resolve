@@ -2,7 +2,6 @@
 Resolve is a toolset for building app based on CQRS and EventSourcing patterns.
 
 The toolset includes next libraries:
-- [resolve-bus](https://github.com/reimagined/resolve/tree/master/packages/resolve-bus)
 - [resolve-bus-memory](https://github.com/reimagined/resolve/tree/master/packages/resolve-bus-memory)
 - [resolve-bus-rabbitmq](https://github.com/reimagined/resolve/tree/master/packages/resolve-bus-rabbitmq)
 - [resolve-bus-zmq](https://github.com/reimagined/resolve/tree/master/packages/resolve-bus-zmq)
