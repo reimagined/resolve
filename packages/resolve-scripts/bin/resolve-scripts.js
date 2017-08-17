@@ -3,22 +3,22 @@
 const taskName = process.argv[2];
 switch (taskName) {
     case 'dev':
-        require('../scripts/runDev');
+        require('../dist/scripts/runDev');
         break;
     case 'build':
-        require('../scripts/runBuild');
+        require('../dist/scripts/runBuild');
         break;
     case 'start':
-        require('../scripts/runStart');
+        require('../dist/scripts/runStart');
         break;
     case 'link':
-        require('../scripts/runLint');
+        require('../dist/scripts/runLint');
         break;
     case 'test':
-        require('../scripts/runTest');
+        require('../dist/scripts/runTest');
         break;
     case 'test:e2e':
-        require('../scripts/runTestE2e');
+        require('../dist/scripts/runTestE2e');
         break;
     default:
         // eslint-disable-next-line no-console
