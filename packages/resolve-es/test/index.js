@@ -83,18 +83,22 @@ describe('resolve-es', () => {
         });
     });
     describe('onEvent', () => {
-        it('should subscibe on bus events', async () => {
-            const testEvent = {
-                type: 'TestEvent',
-                payload: true
-            };
-            const eventHandler = sinon.stub();
+        const testEvent = {
+            type: 'TestEvent',
+            payload: true
+        };
+
+        let bus;
+        beforeEach(() => {
             let busHandler;
-            const bus = {
+            bus = {
                 setTrigger: callback => (busHandler = callback),
                 publish: event => busHandler(event)
             };
+        });
 
+        it('should subscibe on bus events', async () => {
+            const eventHandler = sinon.stub();
             const eventStore = createEventStore({ bus });
             eventStore.onEvent(['TestEvent'], eventHandler);
 
@@ -103,6 +107,19 @@ describe('resolve-es', () => {
 
             expect(eventHandler.calledOnce).to.be.true;
             expect(eventHandler.lastCall.args[0]).to.be.deep.equal(testEvent);
+        });
+
+        it('should return unsubscribe function', async () => {
+            const eventHandler = sinon.stub();
+
+            const eventStore = createEventStore({ bus });
+            const unsubscribe = await eventStore.onEvent(['TestEvent'], eventHandler);
+
+            bus.publish(testEvent);
+            unsubscribe();
+            bus.publish(testEvent);
+
+            expect(eventHandler.calledOnce).to.be.true;
         });
     });
     it('onError', async () => {
