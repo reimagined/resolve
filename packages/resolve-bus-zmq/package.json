@@ -3,11 +3,12 @@
   "version": "0.0.12",
   "description": "This package is a driver for resolve-bus to emit events using ZeroMQ.",
   "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
-    "prepublish": "babel --out-dir ./dist ./src",
+    "prepublish": "babel --out-dir ./dist --copy-files ./src",
     "test": "mocha",
     "testw": "mocha -w"
   },
@@ -17,12 +18,7 @@
   },
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": [
-    "cqrs",
-    "eventsourcing",
-    "es",
-    "ddd"
-  ],
+  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-bus-rabbitmq#readme",
   "devDependencies": {
     "chai": "^3.5.0",
@@ -30,6 +26,7 @@
     "sinon": "^2.1.0"
   },
   "dependencies": {
+    "resolve-bus": "^0.0.10",
     "zeromq": "^4.2.1"
   }
 }

@@ -3,11 +3,12 @@
   "version": "0.0.12",
   "description": "This package serves as a driver for resolve-storage to store events using memory.",
   "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
-    "prepublish": "babel --out-dir ./dist ./src",
+    "prepublish": "babel --out-dir ./dist --copy-files ./src",
     "test": "mocha",
     "testw": "mocha -w"
   },
@@ -17,13 +18,11 @@
   },
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": [
-    "cqrs",
-    "eventsourcing",
-    "es",
-    "ddd"
-  ],
+  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-memory#readme",
+  "dependencies": {
+    "resolve-storage": "^0.0.10"
+  },
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
