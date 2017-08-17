@@ -1,126 +1,109 @@
-# Example: Todo
-**Todo** is demo SPA web-application representing two-level todo list with distribution todos by task cards. Application build on the principles of CQRS & EventSoucring and based on **Resolve** framework. This application does NOT use **resolve-boilerplate**, and performs interaction with resolve backend directly by **socket.io**, and provides custom API backend server.
+# **Resolve Todo Example**
+This project is a demo single page application representing a two-level todo list with todo-items grouped by task cards. The application is built on the CQRS & Event Sourcing principles and based on the Resolve framework. This application does NOT use [resolve-boilerplate](https://github.com/reimagined/resolve-boilerplate). It performs interaction with resolve backend directly by socket.io and provides a [custom API backend server](#custom-backend-api-server-for-resolve).
 
-Current example is scalable application and can use custom amount of command and query handlers in segregated node.js processes, which perform interaction by **ZMQ** bus.
+The current example is a scalable application and can use custom amount of command and query handlers in segregated node.js processes, which perform interaction by ZMQ bus.
 
-This example can be useful in following cases: for writing application with several types of the aggregates connected among themselves, or writing own application with custom and possible complex client-server interaction.
+So, this example can be useful if you:
+* develop an application with several aggregate types related to each other
+* develop an application with custom and complex client-server interaction
 
-The exhaustive description of the subject technologies and articles for them is provided here: [https://github.com/markerikson/react-redux-links](https://github.com/markerikson/react-redux-links).
+You can find detailed information on subject-related technologies and links to the corresponding resources here: [https://github.com/markerikson/react-redux-links](https://github.com/markerikson/react-redux-links).
 
-## Quick start
+## **Table of Contents**
+* [Quick Start](#quick-start)
+* [Available Scripts](#available-scripts)
+    * [npm start](#npm-start)
+    * [npm run test:e2e](#npm-run-teste2e)
+* [Project Structure Overview](#project-structure-overview)
+    * [Client](#client)
+    * [Common](#common)
+    * [Server](#server)
+    * [Testcafe](#testcafe)
+* [Aggregates and Read Models](#aggregates-and-read-models)
+* [Custom Backend API Server for Resolve](#custom-backend-api-server-for-resolve)
+
+## **Quick Start**
 ```bash
 git clone https://github.com/reimagined/resolve
 cd resolve
-# If you using windows, following command should be run with Administrator privileges - it's Lerna issue and not resolve itself
 npm install && npm run bootstrap
 cd examples/todo
 npm start
-
-```
-After that open [http://localhost:3000](http://localhost:3000) in a browser to see app.
-
-## Project Infrastructure Overview
-
-Todo example root directory is Lerna mono-repository and consists of three main packages: client, common and server, each of them linked with others by Lerna bootstrapping mechanism. Project also includes unit & E2E testing and deployment assets. All source code and the functional tests are completely written in the [ES2016](http://2ality.com/2016/01/ecmascript-2016.html) language.
-
-### Client
-Client side is represented by independent create-react-app boilerplate, and contains default structure with React + Redux + Saga based SPA web-application. This project starts with own Webpack-Dev-Server on 3001 port, and performs communication with backend through Proxying API and `resolve-redux` package.
-More information provided here: https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md
-
-### Common
-Common folder contains isomorphic application part, which represents business logic, distributed between server and client in same code. Domain logic described in **resolve**-compatible format and appears in aggregates and read-model declarations. See the details in the relevant section below.
-
-### Server
-Server side consists of manually-configured **resolve** library and custom but compatible API service for front-end. On one side, server provides HTTP/Websocket API to interact with client part by **resolve-redux** format, and on other side it manually launches and configures several instances of aggregates and read-models and involves inter-process communication between them. See the details in the relevant section below.
-
-### TestCafe
-For check of operability of system the functional tests on the basis of [TestCafe](http://devexpress.github.io/testcafe/documentation/using-testcafe/) are assembled used. The test set which start application assembled is applied to demonstration application, open in the browser and automate interaction with the interface. If you modify a code, then start of the functional tests helps to check that everything works successfully.
-
-
-## Writing aggregates and read-models
-Common business/domain logic of application is consist of two parts - aggregates and read-models:
-- The aggregate is responsible for a system behavior and encapsulation of business logic, including response to commands, check of a possibility of their application and change of a current status of system by means of generation of events.
-- The read model provides a current system state or its parts in the given format, proceeding from the analysis of the event list which brought system to such state by projection function.
-
-Aggregates and read models are located in their respective directories and defined in a special isomorphic format, which allows them to be used on the client and server side.
-- At client side aggregates are transformed into Redux action creators, and read models - into Redux reducers.
-- At server side aggregates and read-models applied directory in Resolve eventsoucring framework.
-
-Structure of typical aggregate:
-```js
-export default {
-    name: 'AggregateName', // Aggregate name for command handler, same as aggregateType
-    initialState: Immutable({}), // Initial state (Bounded context) for every instance of this aggregate type
-    eventHandlers: {
-        Event1Happened: (state, event) => nextState,  // Update functions for current aggregate instance
-        Event2Happened: (state, event) => nextState   // for every different event types
-    },
-    commands: {
-        command1: (state, arguments) => generatedEvent, // Function which generate events dependent
-        command2: (state, arguments) => generatedEvent  // on current state and argument list
-    }
-};
 ```
 
-Structure of typical read-model:
+Then open [http://localhost:3000](http://localhost:3000/) in your browser to see the app.
+
+**Note:** When using Windows, run commands above with administrative privileges.
+
+## **Available Scripts**
+In the project directory, you can run:
+
+### **npm start**
+Runs the app in the development mode.
+
+Open [http://localhost:3000](http://localhost:3000/) to view it in the browser.
+
+### **npm run test:e2e**
+Runs functional (E2E) tests suite by Testcafe runner on a local machine. It's independent command, so you should not start application server or launch browser manually. E2E tests will be open in default system browser, or you can specify custom browser by browser command line argument.
+
+## **Project Structure Overview**
+This project’s root directory is a [Lerna mono-repository](https://lernajs.io/). It consists of three main packages: client, common and server. 
+
+These packages are linked to each other by the Lerna bootstrapping mechanism. The project also includes unit & E2E testing and deployment assets. All source code and functional tests are written in the [ES2016](http://2ality.com/2016/01/ecmascript-2016.html) language.
+
+### **Client**
+The client side is built with the independent create-react-app boilerplate, and has a structure default for a [React + Redux + Saga](https://github.com/xkawi/react-universal-saga) based single-page web-application. This project starts with own [Webpack-Dev-Server](https://webpack.js.org/configuration/dev-server/) on 3001 port, and communicates with the backend through [Proxying API](https://github.com/facebookincubator/create-react-app/tree/master/packages/react-scripts/template#proxying-api-requests-in-development) and the [resolve-redux](https://www.npmjs.com/package/resolve-redux) package. For more information, see  [https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md)
+
+### **Common**
+The common/ folder contains isomorphic application part, which represents business logic distributed between server and client in the same code. Domain logic is described in a **resolve**-compatible format and appears in aggregate and read model declarations.
+
+### **Server**
+The server side consists of the manually-configured **resolve** library and custom but compatible API service for front-end. On the one side, the server provides HTTP/Websocket API to interact with the client part in the **resolve-redux** format. On the other side, it manually launches and configures several instances of aggregates and read models and involves inter-process communication between them. See the **Custom Backend API Server** section for details.
+
+### **TestCafe**
+The system operability is controlled with TestCafe functional tests. A test set builds and starts a demonstration application, opens it in a browser and automates interaction with UI. After you modify code, start functional tests  to check whether everything works successfully. 
+
+## **Aggregates and Read Models**
+The current example contains two aggregates (`TodoCard`, `TodoItem`) and one read model (`cards`), which are defined in the `common/aggregates` and `common/read-models` folders, respectively.
+
+The `TodoItem` aggregate represents a task with text description, a flag indicating the task state (‘todo’ or ‘done’), and unique identifier. The `TodoCard` aggregate  contains a list of `TodoItem`-s grouped in one logical set. 
+
+The `cards` read model assembles TodoItems grouped by TodoCards in one general associative array, and includes each task item description and state. Also, this read model builds inverse lookup table to allow fast search for the `TodoCard` container by `TodoItem`’s identifier.
+
+For more detailed information on aggregates and read models, refer to the [resolve-boilerplate](https://github.com/reimagined/resolve-boilerplate/blob/master/README.md#aggregates-and-read-models) documentation.
+
+## **Custom Backend API Server for Resolve**
+The Resolve framework provides a simple boilerplate out-of-box, which encapsulates backend API server and allows you to create an application just by declaring aggregates, read models and UI React components. Though it has some settings and opportunities for extension, it also has the known restrictions - for example, it is executed in one one-flow process. This Todo example demonstrates how to implement a custom API server. To do this, follow the steps below: 
+* initialize resolve EventStore (the **resolve-es** package)
+* start node.js processes for aggregates (the **resolve-command** package) and read models (the **resolve-query** package)
+* register URL routes for the front-end side
+* organize messaging between all spawned processes
+
+So, this example’s `server/` directory includes:
+* `command/index.js` and `query/index.js` - implementation of aggregate and read model processes	
+* `index.js` -  entry point, process manager and load balancer for processes
+* `ipc.js` -  inter-process communication channel
+
+Due limitation of resolve-query package, each one read model can't be split horizontally, e.g. take some subset and/or derivative of read model state by some arguments. Every read model can be fully located on client and/or server or not present there at all.
+
+Resolve backend API can be exposed to a client without route registration as it uses two-direction web socket. Assume that  `requestReadModel` and `requestCommand` are functions, providing message exchange between corresponding microservices, and `eventNames` is an array of domain events which the client application can understand, then all interaction code can look like this.
+
 ```js
-export default {
-    name: 'ReadModelName', // Read-model name for query handler
-    initialState: Immutable({}), // Initial state for instance of this read model
-    eventHandlers: {
-        Event1Happened: (state, event) => nextState,  // Update functions for current read-model instance
-        Event2Happened: (state, event) => nextState   // for every different event types
-    }
-    // This state will be the result of the request to the query handler at current moment
-```
-
-**Note**: For successful usage read-model declaration as Redux reducer, it *should* use some Immutable wrapper for state object.
-Recommended way is [seamless-immutable](https://github.com/rtfeldman/seamless-immutable) library.
-Remember that inaccurate handling of an immutable object can lead to serious performance issues.
-
-## Writing custom backend API server for resolve
-**Resolve** framework provides simple boilerplate out-of-box, which encapsulates backend API server and provides ability to write application just by declaration aggregates, read models and UI React components. Though it has some settings and opportunities for extension, it also has the known restrictions, for example, is executed in one one-flow process.
-
-Writing custom API server consists of following steps: initialize resolve EventStore (**resolve-es** package), start node.js processes for aggregates (**resolve-command** package) and read models (**resolve-query** package), register URL routes for front-end side, and organize message passing between all spawned processes.
-
-Stereotypical implementation of aggregate and read-model process can be found at `todo/server/command/index.js` and `todo/server/query/index.js`. Entry point, process manager and load balancer for them presented in `todo/server/index.js`, and inter-process communication channel in `todo/server/ipc.js`.
-
-Due limitation of **resolve-query** package, each one read-model can't be split horizontally, e.g. take some subset and/or derivative of read-model state by some arguments. Every read model can be fully located on client and/or server or not present there at all.
-
-By using two-direction web socket, resolve backend API can be exposed to client without dedicated route registration. Assuming that `requestReadModel` and `requestCommand` is functions, which provide message exchange to corresponding microservices, and `eventNames` is array of domain event that client application can understand, all interaction code can look like below.
-```js
-io.on('connection', socket => requestReadModel('INITIAL_READ_MODEL_NAME') // Poll main view model for front-end initial state
-    .then(({ state }) => socket.emit('initialState', state)) // Pass fetched state to client
+io.on('connection', socket => requestReadModel('INITIAL_READ_MODEL_NAME') // Poll the main view model for front-end initial state
+    .then(({ state }) => socket.emit('initialState', state)) // Pass the fetched state to the client
     .then(() => {
-        socket.on( // Subscribe on socket `command`-messages to perform passing incoming commands from client to executor microsercice
-            'command', command => requestCommand( // Send command and ensure aggregateId exists or create new for fresh aggregates
+        socket.on( // Subscribe to socket `command`-messages to pass incoming commands from the client to executor microservice
+            'command', command => requestCommand( // Send a command and ensure that aggregateId exists. Otherwise, create a new aggregate
                 Object.assign({}, command, { aggregateId: command.aggregateId || uuid.v4() })
             ).catch(err => console.log(err))
         );
 
-        const unsubscribe = eventStore.onEvent( // Subscribe on supported domain events and translate them to connected client
+        const unsubscribe = eventStore.onEvent( // Subscribe to supported domain events and translate them to the connected client
             eventNames, event => socket.emit('event', event)
         );
 
-        socket.on('disconnect', () => unsubscribe()); // Unsubscribe on client disconnect - for resource freeing
+        socket.on('disconnect', () => unsubscribe()); // Unsubscribe when client is disconnected to free resources
     })
 );
 ```
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-### `npm run test:e2e`
-
-Runs functional (E2E) tests suite by Testcafe runner on local machine.
-It's independent command, so you should not start application server or launch browser manually.
-E2E tests will be open in default system browser, or you can specify custom browser by
-**browser** command line argument.
-
 
