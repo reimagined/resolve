@@ -32,7 +32,9 @@ test('base functionality', async t => {
   /* Complete item */ {
     const todo = Selector('ul li').nth(0);
     await t.click(todo);
-    expect(await todo.getStyleProperty('text-decoration')).to.be.equal('line-through solid rgb(0, 0, 0)');
+    expect(await todo.getStyleProperty('text-decoration')).to.be.equal(
+      'line-through solid rgb(0, 0, 0)'
+    );
   }
 
   /* Filters */ {
@@ -42,7 +44,7 @@ test('base functionality', async t => {
     expect(await activeItems.count).to.be.equal(1);
     expect(await activeItems.nth(0).innerText).to.contain(SECOND_TODO);
 
-    const completedLink =  Selector('a').withText('Completed');
+    const completedLink = Selector('a').withText('Completed');
     await t.click(completedLink);
     const completedItems = Selector('ul li');
     expect(await completedItems.count).to.be.equal(1);
@@ -57,6 +59,8 @@ test('base functionality', async t => {
   /* Reset item */ {
     const todo = Selector('ul li').nth(0);
     await t.click(todo);
-    expect(await todo.getStyleProperty('text-decoration')).to.be.equal('none solid rgb(0, 0, 0)');
+    expect(await todo.getStyleProperty('text-decoration')).to.be.equal(
+      'none solid rgb(0, 0, 0)'
+    );
   }
 });

@@ -8,17 +8,13 @@ const log = console.log;
 const error = console.error;
 
 export default (appPath, appName, originalDirectory) => {
-    const ownPackageName = require(path.join(__dirname, '..', 'package.json'))
-    .name;
+    const ownPackageName = require(path.join(__dirname, '..', 'package.json')).name;
     const ownPath = path.join(appPath, 'node_modules', ownPackageName);
     const useYarn = fs.existsSync(path.join(appPath, 'yarn.lock'));
 
     const readmeExists = fs.existsSync(path.join(appPath, 'README.md'));
     if (readmeExists) {
-        fs.renameSync(
-            path.join(appPath, 'README.md'),
-            path.join(appPath, 'README.old.md')
-        );
+        fs.renameSync(path.join(appPath, 'README.md'), path.join(appPath, 'README.old.md'));
     }
 
     // Copy the files for the user
@@ -30,15 +26,11 @@ export default (appPath, appName, originalDirectory) => {
         return;
     }
 
-  // Rename gitignore after the fact to prevent npm from renaming it to .npmignore
-  // See: https://github.com/npm/npm/issues/1862
-    fs.move(
-    path.join(appPath, 'gitignore'),
-    path.join(appPath, '.gitignore'),
-    [],
-    (err) => {
+    // Rename gitignore after the fact to prevent npm from renaming it to .npmignore
+    // See: https://github.com/npm/npm/issues/1862
+    fs.move(path.join(appPath, 'gitignore'), path.join(appPath, '.gitignore'), [], (err) => {
         if (err) {
-        // Append if there's already a `.gitignore` file there
+            // Append if there's already a `.gitignore` file there
             if (err.code === 'EEXIST') {
                 const data = fs.readFileSync(path.join(appPath, 'gitignore'));
                 fs.appendFileSync(path.join(appPath, '.gitignore'), data);
@@ -47,12 +39,11 @@ export default (appPath, appName, originalDirectory) => {
                 throw err;
             }
         }
-    }
-  );
+    });
 
-  // Display the most elegant way to cd.
-  // This needs to handle an undefined originalDirectory for
-  // backward compatibility with old global-cli's.
+    // Display the most elegant way to cd.
+    // This needs to handle an undefined originalDirectory for
+    // backward compatibility with old global-cli's.
     let cdpath;
     if (originalDirectory && path.join(originalDirectory, appName) === appPath) {
         cdpath = appName;
@@ -60,7 +51,7 @@ export default (appPath, appName, originalDirectory) => {
         cdpath = appPath;
     }
 
-  // Change displayed command to yarn instead of yarnpkg
+    // Change displayed command to yarn instead of yarnpkg
     const displayedCommand = useYarn ? 'yarn' : 'npm';
 
     log();
