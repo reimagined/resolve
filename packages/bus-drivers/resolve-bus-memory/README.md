@@ -1,6 +1,6 @@
 # `resolve-bus-memory`
 
-This package is a driver for `resolve-bus` to emit events using memory.
+This package is a driver for `resolve-es` to emit events using memory.
 
 ## Usage
 

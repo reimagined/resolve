@@ -1,7 +1,5 @@
 import memoryDriver from 'resolve-bus-memory';
-import createBus from 'resolve-bus';
 import mongoDbDriver from 'resolve-storage-mongo';
-import createStorage from 'resolve-storage';
 import createEventStore from 'resolve-es';
 import createExecutor from 'resolve-query';
 import Immutable from 'seamless-immutable';
@@ -250,18 +248,15 @@ function readModelsGenerator(reportObj) {
     ];
 }
 
-function generateSyncExecutor(storageDriver, busDriver, readModels) {
+function generateSyncExecutor(storage, bus, readModels) {
     const loadDonePromise = new Promise((resolve) => {
-        const originalLoadEventsByTypes = storageDriver.loadEventsByTypes.bind(storageDriver);
-        storageDriver.loadEventsByTypes = (...args) =>
+        const originalLoadEventsByTypes = storage.loadEventsByTypes.bind(storage);
+        storage.loadEventsByTypes = (...args) =>
             originalLoadEventsByTypes(...args).then((result) => {
                 resolve();
                 return result;
             });
     });
-
-    const storage = createStorage({ driver: storageDriver });
-    const bus = createBus({ driver: busDriver });
 
     const eventStore = createEventStore({
         storage,
@@ -282,11 +277,11 @@ export default function worker(eventsCount, reportObj) {
         collection: config.MONGODB_COLLECTION_NAME
     });
 
-    const busDriver = memoryDriver();
+    const bus = memoryDriver();
 
     const readModels = readModelsGenerator(reportObj);
 
-    const execute = generateSyncExecutor(mongoDriver, busDriver, readModels);
+    const execute = generateSyncExecutor(mongoDriver, bus, readModels);
 
     return execute('infrastructureState').then(state => ({
         entities:

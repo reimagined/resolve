@@ -1,6 +1,6 @@
 # `resolve-storage-memory`
 
-This package serves as a driver for `resolve-storage` to store events using memory.
+This package serves as a driver for `resolve-es` to store events using memory.
 
 ## Usage
 

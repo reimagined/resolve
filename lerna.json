@@ -2,6 +2,8 @@
   "lerna": "2.0.0-rc.2",
   "packages": [
     "packages/*",
+    "packages/bus-drivers/*",
+    "packages/storage-drivers/*",
     "examples/*",
     "examples/todo/*",
     "benchmarks/*"

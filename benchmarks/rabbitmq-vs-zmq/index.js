@@ -1,7 +1,6 @@
 import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import createBus from 'resolve-bus';
 import driverRabbitmq from 'resolve-bus-rabbitmq';
 import driverZmq from 'resolve-bus-zmq';
 
@@ -9,22 +8,21 @@ import config from './config';
 
 const { BENCHMARK_SERIES, FREEING_TIME } = config;
 
-const busRabbitmq = createBus({ driver: driverRabbitmq({
+const busRabbitmq = driverRabbitmq({
     url: config.RABBITMQ_CONNECTION_URL,
     messageTtl: 20000
-}) });
+});
 
-const busZmq = createBus({ driver: driverZmq({
+const busZmq = driverZmq({
     address: config.ZMQ_HOST,
     pubPort: config.ZMQ_PUB_PORT,
     subPort: config.ZMQ_SUB_PORT
-}) });
+});
 
 function getRabbitmqHelper(eventCount) {
     return {
-        launcher: () => spawn('babel-node', [
-            path.join(__dirname, './readEventsRabbit'), eventCount
-        ]),
+        launcher: () =>
+            spawn('babel-node', [path.join(__dirname, './readEventsRabbit'), eventCount]),
         emitter: event => busRabbitmq.emitEvent(event),
         eventCount
     };
@@ -32,9 +30,7 @@ function getRabbitmqHelper(eventCount) {
 
 function getZmqHelper(eventCount) {
     return {
-        launcher: () => spawn('babel-node', [
-            path.join(__dirname, './readEventsZmq'), eventCount
-        ]),
+        launcher: () => spawn('babel-node', [path.join(__dirname, './readEventsZmq'), eventCount]),
         emitter: event => busZmq.emitEvent(event),
         eventCount
     };
@@ -76,7 +72,7 @@ function runLoadTests({ launcher, emitter, eventCount }) {
         if (remainEvents-- <= 0) return;
         emitter(generateEvent());
         setImmediate(produceEventsAsync);
-    }
+    };
 
     produceEventsAsync();
     return done;
@@ -84,9 +80,7 @@ function runLoadTests({ launcher, emitter, eventCount }) {
 
 function fsWriteFileAsync(filename, content) {
     return new Promise((resolve, reject) =>
-        fs.writeFile(filename, content, (err, value) => (
-            !err ? resolve(value) : reject(err)
-        ))
+        fs.writeFile(filename, content, (err, value) => (!err ? resolve(value) : reject(err)))
     );
 }
 
@@ -94,14 +88,16 @@ function generateEvents(arr, i, storage) {
     const eventCount = arr[i];
 
     return runLoadTests(getRabbitmqHelper(eventCount))
-        .then(rabbit => delay(FREEING_TIME)
-            .then(() => runLoadTests(getZmqHelper(eventCount)))
-            .then(zmq => (storage[eventCount] = { rabbit, zmq }))
+        .then(rabbit =>
+            delay(FREEING_TIME)
+                .then(() => runLoadTests(getZmqHelper(eventCount)))
+                .then(zmq => (storage[eventCount] = { rabbit, zmq }))
         )
-        .then(() => (i < arr.length - 1)
-            ? delay(FREEING_TIME).then(() =>
-                generateEvents(arr, i + 1, storage)
-            ) : storage
+        .then(
+            () =>
+                i < arr.length - 1
+                    ? delay(FREEING_TIME).then(() => generateEvents(arr, i + 1, storage))
+                    : storage
         );
 }
 

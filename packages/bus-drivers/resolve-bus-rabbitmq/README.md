@@ -1,6 +1,6 @@
 # `resolve-bus-rabbitmq`
 
-This package is a driver for `resolve-bus` to emit events using RabbitMQ.
+This package is a driver for `resolve-es` to emit events using RabbitMQ.
 
 ## Usage
 
