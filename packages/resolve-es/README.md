@@ -5,15 +5,12 @@ This package serves as an event-store.
 # Usage
 ```js
 import createEventStore from 'resolve-es';
-import createStorage from 'resolve-storage';
 import storageInFileDriver from 'resolve-storage-file';
-import createBus from 'resolve-bus';
 import busInMemoryDriver from 'resolve-bus-memory';
 
-const storage = createStorage({
-    driver: storageInFileDriver({ pathToFile: './event-store.json' })
-});
-const bus = createBus({ driver: busInMemoryDriver() });
+const storage = storageInFileDriver({ pathToFile: './event-store.json' });
+
+const bus = busInMemoryDriver();
 
 const eventStore = createEventStore({
     storage,

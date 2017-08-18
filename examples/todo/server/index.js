@@ -1,14 +1,14 @@
 import http from 'http';
 import socketIO from 'socket.io';
 import uuid from 'uuid';
-import createBus from 'resolve-bus';
+import createEventStore from 'resolve-es';
 import busDriver from 'resolve-bus-zmq';
 
 import { readModels } from 'todo-common';
 import makeIpc from './ipc';
 import config from './config';
 
-const bus = createBus({ driver: busDriver(config.zmq) });
+const eventStore = createEventStore({ bus: busDriver(config.zmq) });
 
 const cardsReadModel = readModels.cards;
 
@@ -35,7 +35,7 @@ io.on('connection', (socket) => {
             requestCommand(command).catch(err => console.log(err));
         });
 
-        const unsubscribe = bus.onEvent(eventNames, event => socket.emit('event', event));
+        const unsubscribe = eventStore.onEvent(eventNames, event => socket.emit('event', event));
 
         socket.on('disconnect', () => unsubscribe());
     });

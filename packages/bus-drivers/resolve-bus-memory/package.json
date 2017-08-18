@@ -1,0 +1,32 @@
+{
+  "name": "resolve-bus-memory",
+  "version": "0.0.13",
+  "description": "This package is a driver for resolve-bus to emit events using memory.",
+  "main": "./dist/index.js",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "scripts": {
+    "prepublish": "babel --out-dir ./dist ./src",
+    "test": "mocha",
+    "testw": "mocha -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reimagined/resolve.git"
+  },
+  "author": "reimagined team",
+  "license": "MIT",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-bus-memory#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "sinon": "^2.1.0"
+  }
+}
