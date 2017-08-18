@@ -13,7 +13,7 @@ let socketIOFailCount = 0;
 
 function initSocketIO(store) {
     const socketIO = socketIOClient(window.location.origin, {
-        path: `${window.__ROOT_DIRECTORY__}/socket/`
+        path: `${process.env.ROOT_DIR}/socket/`
     });
 
     socketIO.on('event', event => store.dispatch(JSON.parse(event)));

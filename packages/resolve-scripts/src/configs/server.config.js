@@ -18,9 +18,7 @@ const defaultConfig = {
     bus: {
         driver: defaultBusDriver
     },
-    storage: {
-        driver: defaultStorageDriver
-    },
+    storage: defaultStorageDriver,
     initialState: () => Promise.resolve({}),
     aggregates: [],
     events: [],

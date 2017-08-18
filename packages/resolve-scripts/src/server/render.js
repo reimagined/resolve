@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 import config from '../configs/server.config.js';
 
 const configEntries = config.entries;
-const rootDirectory = config.rootDirectory || '';
+const rootDirectory = process.env.ROOT_DIR || '';
 
 export default (initialState, { req, res }) => {
     const html = renderToString(
@@ -19,7 +19,7 @@ export default (initialState, { req, res }) => {
 
     const bundleSource = `${rootDirectory}/static/bundle.js`;
 
-    const filterEnvVariablesRegex = /(^RESOLVE_)|^NODE_ENV$/;
+    const filterEnvVariablesRegex = /^RESOLVE_|^NODE_ENV$|^ROOT_DIR$/;
 
     const processEnv = Object.keys(process.env)
         .filter(key => filterEnvVariablesRegex.test(key))
@@ -38,7 +38,6 @@ export default (initialState, { req, res }) => {
             '<script>\n' +
             `window.__PROCESS_ENV__=${JSON.stringify(processEnv)}\n` +
             `window.__INITIAL_STATE__=${JSON.stringify(initialState)}\n` +
-            `window.__ROOT_DIRECTORY__=${JSON.stringify(rootDirectory)}\n` +
             '</script>\n' +
             `${helmet.script.toString()}\n` +
             '</head>\n' +

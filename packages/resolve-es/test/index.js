@@ -11,7 +11,6 @@ describe('resolve-es', () => {
             const resolvedPromise = Promise.resolve();
 
             const emittedEvent = { type: 'EMITTED_EVENT' };
-            const listenedEvent = { type: 'LISTENED_EVENT' };
 
             const storage = {
                 loadEventsByTypes: sinon.stub().callsFake((eventTypes, callback) => {
@@ -20,7 +19,7 @@ describe('resolve-es', () => {
                 })
             };
             const bus = {
-                onEvent: sinon.stub().callsFake((eventTypes, callback) => callback(listenedEvent))
+                setTrigger: sinon.stub()
             };
 
             const eventStore = createEventStore({ storage, bus });
@@ -33,7 +32,7 @@ describe('resolve-es', () => {
 
             expect(storage.loadEventsByTypes.calledWith(eventTypes)).to.be.true;
             expect(eventHandler.calledWith(emittedEvent)).to.be.true;
-            expect(bus.onEvent.calledWith(eventTypes)).to.be.true;
+            expect(bus.setTrigger.calledOnce).to.be.true;
         });
     });
 
@@ -50,7 +49,7 @@ describe('resolve-es', () => {
                     return resolvedPromise;
                 })
             };
-            const bus = {};
+            const bus = { setTrigger: sinon.stub() };
 
             const eventStore = createEventStore({ storage, bus });
 
@@ -71,7 +70,8 @@ describe('resolve-es', () => {
                 saveEvent: sinon.stub().returns(Promise.resolve())
             };
             const bus = {
-                emitEvent: sinon.stub().returns(Promise.resolve())
+                setTrigger: sinon.stub(),
+                publish: sinon.stub().returns(Promise.resolve())
             };
 
             const eventStore = createEventStore({ storage, bus });
@@ -79,29 +79,53 @@ describe('resolve-es', () => {
             await eventStore.saveEvent(event);
 
             expect(storage.saveEvent.calledWith(event)).to.be.true;
-            expect(bus.emitEvent.calledWith(event)).to.be.true;
+            expect(bus.publish.calledWith(event)).to.be.true;
         });
     });
-
     describe('onEvent', () => {
-        it('should subscibe on bus events', async () => {
-            const noop = () => {};
-            const bus = {
-                onEvent: sinon.stub()
+        const testEvent = {
+            type: 'TestEvent',
+            payload: true
+        };
+
+        let bus;
+        beforeEach(() => {
+            let busHandler;
+            bus = {
+                setTrigger: callback => (busHandler = callback),
+                publish: event => busHandler(event)
             };
+        });
+
+        it('should subscibe on bus events', async () => {
+            const eventHandler = sinon.stub();
+            const eventStore = createEventStore({ bus });
+            eventStore.onEvent(['TestEvent'], eventHandler);
+
+            bus.publish({ type: 'WrongName' });
+            bus.publish(testEvent);
+
+            expect(eventHandler.calledOnce).to.be.true;
+            expect(eventHandler.lastCall.args[0]).to.be.deep.equal(testEvent);
+        });
+
+        it('should return unsubscribe function', async () => {
+            const eventHandler = sinon.stub();
 
             const eventStore = createEventStore({ bus });
-            eventStore.onEvent('event', noop);
+            const unsubscribe = await eventStore.onEvent(['TestEvent'], eventHandler);
 
-            expect(bus.onEvent.calledWith('event', noop)).to.be.true;
+            bus.publish(testEvent);
+            unsubscribe();
+            bus.publish(testEvent);
+
+            expect(eventHandler.calledOnce).to.be.true;
         });
     });
-
     it('onError', async () => {
         const loadEventsByTypesError = new Error('LoadEventsByTypes error');
         const loadEventsByAggregateIdError = new Error('LoadEventsByAggregateId error');
         const saveEventError = new Error('SaveEvent error');
-        const onEventError = new Error('OnEvent error');
 
         const storage = {
             loadEventsByTypes: () => {
@@ -115,23 +139,19 @@ describe('resolve-es', () => {
             }
         };
         const bus = {
-            onEvent: () => {
-                throw onEventError;
-            }
+            setTrigger: sinon.stub()
         };
         const errorHandler = sinon.stub();
         const eventStore = createEventStore({ storage, bus }, errorHandler);
 
         await eventStore.subscribeByEventType();
         await eventStore.getEventsByAggregateId();
-        await eventStore.onEvent();
         await eventStore.saveEvent();
 
-        expect(errorHandler.callCount).to.be.equal(4);
+        expect(errorHandler.callCount).to.be.equal(3);
 
         expect(errorHandler.firstCall.args[0]).to.be.equal(loadEventsByTypesError);
         expect(errorHandler.secondCall.args[0]).to.be.equal(loadEventsByAggregateIdError);
-        expect(errorHandler.thirdCall.args[0]).to.be.equal(onEventError);
         expect(errorHandler.lastCall.args[0]).to.be.equal(saveEventError);
     });
 });
