@@ -20,7 +20,12 @@
   },
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#readme",
   "dependencies": {
     "babel-cli": "^6.24.1",
@@ -30,6 +35,7 @@
     "babel-preset-stage-0": "^6.24.1",
     "body-parser": "^1.17.2",
     "chalk": "^2.1.0",
+    "cross-spawn": "^5.1.0",
     "enhanced-resolve": "^3.4.1",
     "express": "^4.15.3",
     "fs-extra": "^4.0.0",

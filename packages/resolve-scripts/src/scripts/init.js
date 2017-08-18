@@ -1,36 +1,35 @@
 import fs from 'fs-extra';
 import path from 'path';
 import chalk from 'chalk';
+import spawn from 'cross-spawn';
 
 // eslint-disable-next-line no-console
 const log = console.log;
 // eslint-disable-next-line no-console
 const error = console.error;
 
-export default (appPath, appName, originalDirectory) => {
-    const ownPackageName = require(path.join(__dirname, '..', 'package.json')).name;
-    const ownPath = path.join(appPath, 'node_modules', ownPackageName);
-    const useYarn = fs.existsSync(path.join(appPath, 'yarn.lock'));
+const displayCommand = (useYarn, isDefaultCmd) =>
+    useYarn ? 'yarn' : isDefaultCmd ? 'npm' : 'npm run';
 
-    const readmeExists = fs.existsSync(path.join(appPath, 'README.md'));
-    if (readmeExists) {
+const tryRenameReadme = (appPath) => {
+    const readmeIsExist = fs.existsSync(path.join(appPath, 'README.md'));
+    if (readmeIsExist) {
         fs.renameSync(path.join(appPath, 'README.md'), path.join(appPath, 'README.old.md'));
     }
+    return readmeIsExist;
+};
 
-    // Copy the files for the user
-    const templatePath = path.join(ownPath, 'dist', 'template');
-    if (fs.existsSync(templatePath)) {
+const tryCopyTemplate = (templatePath, appPath) => {
+    const templateIsExist = fs.existsSync(templatePath);
+    if (templateIsExist) {
         fs.copySync(templatePath, appPath);
-    } else {
-        error(`Could not locate supplied template: ${chalk.green(templatePath)}`);
-        return;
     }
+    return templateIsExist;
+};
 
-    // Rename gitignore after the fact to prevent npm from renaming it to .npmignore
-    // See: https://github.com/npm/npm/issues/1862
+const tryRenameGitignore = (appPath) => {
     fs.move(path.join(appPath, 'gitignore'), path.join(appPath, '.gitignore'), [], (err) => {
         if (err) {
-            // Append if there's already a `.gitignore` file there
             if (err.code === 'EEXIST') {
                 const data = fs.readFileSync(path.join(appPath, 'gitignore'));
                 fs.appendFileSync(path.join(appPath, '.gitignore'), data);
@@ -40,53 +39,87 @@ export default (appPath, appName, originalDirectory) => {
             }
         }
     });
+};
 
-    // Display the most elegant way to cd.
-    // This needs to handle an undefined originalDirectory for
-    // backward compatibility with old global-cli's.
-    let cdpath;
-    if (originalDirectory && path.join(originalDirectory, appName) === appPath) {
-        cdpath = appName;
+const installDependencies = (useYarn) => {
+    let command;
+    let args;
+    if (useYarn) {
+        command = 'yarnpkg';
+        args = ['install'];
     } else {
-        cdpath = appPath;
+        command = 'npm';
+        args = ['install', '--save'];
     }
 
-    // Change displayed command to yarn instead of yarnpkg
-    const displayedCommand = useYarn ? 'yarn' : 'npm';
+    log(`Installing dependencies using ${command}...`);
+    log();
 
+    const proc = spawn.sync(command, args, { stdio: 'inherit' });
+    if (proc.status !== 0) {
+        error(`\`${command} ${args.join(' ')}\` failed`);
+        return;
+    }
+};
+
+const printOutput = (appName, appPath, useYarn, cdpath, readmeIsExist) => {
     log();
     log(`Success! Created ${appName} at ${appPath}`);
     log('Inside that directory, you can run several commands:');
 
     log();
-    log(chalk.cyan(`  ${displayedCommand} start`));
+    log(chalk.cyan(`  ${displayCommand(useYarn, true)} start`));
     log('    Starts the production server.');
 
     log();
-    log(chalk.cyan(`  ${displayedCommand} ${useYarn ? '' : 'run '}build`));
+    log(chalk.cyan(`  ${displayCommand(useYarn, false)} build`));
     log('    Bundles the app into static files for production.');
 
     log();
-    log(chalk.cyan(`  ${displayedCommand} ${useYarn ? '' : 'run '}dev`));
+    log(chalk.cyan(`  ${displayCommand(useYarn, false)} dev`));
     log('    Starts the development server.');
 
     log();
-    log(chalk.cyan(`  ${displayedCommand} ${useYarn ? '' : 'run '}test`));
+    log(chalk.cyan(`  ${displayCommand(useYarn, false)} test`));
     log('    Starts the test runner.');
 
     log();
-    log(chalk.cyan(`  ${displayedCommand} ${useYarn ? '' : 'run '}test:e2e`));
+    log(chalk.cyan(`  ${displayCommand(useYarn, false)} test:e2e`));
     log('    Starts the functionality test runner.');
 
     log();
     log('We suggest that you begin by typing:');
     log();
     log(chalk.cyan('  cd'), cdpath);
-    log(`  ${chalk.cyan(`${displayedCommand} dev`)}`);
-    if (readmeExists) {
+    log(`  ${chalk.cyan(`${displayCommand(useYarn, false)} dev`)}`);
+    if (readmeIsExist) {
         log();
         log(chalk.yellow('You had a `README.md` file, we renamed it to `README.old.md`'));
     }
     log();
-    log('Happy hacking!');
+    log('Happy coding!');
+};
+
+export default (appPath, appName, originalDirectory) => {
+    const scriptsPackageName = require(path.join(__dirname, '../../', 'package.json')).name;
+    const scriptsPath = path.join(appPath, 'node_modules', scriptsPackageName);
+    const useYarn = fs.existsSync(path.join(appPath, 'yarn.lock'));
+
+    const templatePath = path.join(scriptsPath, 'dist', 'template');
+
+    if (!tryCopyTemplate(templatePath, appPath)) {
+        error(`Could not locate supplied template: ${chalk.green(templatePath)}`);
+        return;
+    }
+
+    installDependencies(useYarn);
+
+    tryRenameGitignore(appPath);
+
+    const readmeIsExist = tryRenameReadme(appPath);
+    const cdpath = originalDirectory && path.join(originalDirectory, appName) === appPath
+        ? appName
+        : appPath;
+
+    printOutput(appName, appPath, useYarn, cdpath, readmeIsExist);
 };
