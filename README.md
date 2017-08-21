@@ -18,21 +18,21 @@ Learn more on related concepts:
 Create a reSolve boilerplate application using the [create-resolve-app](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app) package in one of the following ways.
 use yarn:
 ```bash
-	yarn create resolve-app my-resolve-app
+yarn create resolve-app my-resolve-app
 ```
 use npx:
 ```bash
-	npx create-resolve-app my-resolve-app
+npx create-resolve-app my-resolve-app
 ```
 use npm:
 ```bash
-	npm i -g create-resolve-app
-	create-resolve-app my-resolve-app
+npm i -g create-resolve-app
+create-resolve-app my-resolve-app
 ```
 A new reSolve application will be created. Run the following commands to start it in the development mode:
 ```bash
-	cd my-resolve-app
-	npm run dev
+cd my-resolve-app
+npm run dev
 ```
 To view your application, open [http://localhost:3000](http://localhost:3000/) in your browser.
 

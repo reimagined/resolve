@@ -42,16 +42,16 @@ You can find detailed information of subject-related technologies and links to t
 Create a reSolve boilerplate application in one of the following ways.
 Use yarn:
 ```bash
-	yarn create resolve-app my-resolve-app
+yarn create resolve-app my-resolve-app
 ```
 Use npx:
 ```bash
-	npx create-resolve-app my-resolve-app
+npx create-resolve-app my-resolve-app
 ```
 Use npm:
 ```bash
-	npm i -g create-resolve-app
-	create-resolve-app my-resolve-app
+npm i -g create-resolve-app
+create-resolve-app my-resolve-app
 ```
 
 ## **Available Scripts**
