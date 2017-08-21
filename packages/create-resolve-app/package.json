@@ -1,0 +1,34 @@
+{
+  "name": "create-resolve-app",
+  "version": "0.0.14",
+  "description": "This package generates boilerplate web application based on resolve framework",
+  "bin": {
+    "create-resolve-app": "./bin/index.js"
+  },
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "scripts": {
+    "prepublish": "babel --out-dir ./dist ./src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reimagined/resolve.git"
+  },
+  "author": "reimagined team",
+  "license": "MIT",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app#readme",
+  "dependencies": {
+    "chalk": "^2.1.0",
+    "cross-spawn": "^5.1.0",
+    "fs-extra": "^4.0.1",
+    "regenerator-runtime": "^0.11.0",
+    "validate-npm-package-name": "^3.0.0"
+  }
+}
