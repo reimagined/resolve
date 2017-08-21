@@ -1,6 +1,10 @@
 # reSolve Packages
 The reSolve framework includes the following packages:
 
+App generator libraries:
+* [create-resolve-app](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app)
+Create a boilerplate application based on reSolve.
+
 Core libraries:
 * [resolve-command](https://github.com/reimagined/resolve/tree/master/packages/resolve-command)
 Creates a function to execute a command.
