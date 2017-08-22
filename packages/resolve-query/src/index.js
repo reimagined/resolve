@@ -14,17 +14,19 @@ function getExecutor({ eventStore, readModel }) {
         let queryResolvers;
 
         const queryType = schemaDeclaration.getQueryType();
-        if (queryType) {
-            const queryFields = queryType.getFields();
-            queryResolvers = Object.keys(queryFields).reduce((acc, val) => {
-                acc[val] = (obj, args, state) =>
-                    Object.keys(state[val]).map(key => state[val][key]);
-                return acc;
-            }, {});
-
-            const customQueryResolvers = readModel.gqlResolvers || {};
-            Object.assign(queryResolvers, customQueryResolvers);
+        if (!queryType) {
+            throw new Error(`GraphQL schema for '${readModel.name}' has no Query type`);
         }
+        
+        const queryFields = queryType.getFields();
+        queryResolvers = Object.keys(queryFields).reduce((acc, val) => {
+            acc[val] = (obj, args, state) =>
+                Object.keys(state[val]).map(key => state[val][key]);
+            return acc;
+        }, {});
+
+        const customQueryResolvers = readModel.gqlResolvers || {};
+        Object.assign(queryResolvers, customQueryResolvers);
 
         executableSchema = makeExecutableSchema({
             typeDefs: readModel.gqlSchema,
