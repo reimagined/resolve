@@ -1,5 +1,5 @@
 # reSolve Packages
-The reSolve framework includes the following packages:
+The reSolve framework includes the following packages.
 
 App generator libraries:
 * [create-resolve-app](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app)  

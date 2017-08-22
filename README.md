@@ -16,7 +16,8 @@ Learn more on related concepts:
 
 ## **Quick Installation**
 Create a reSolve boilerplate application using the [create-resolve-app](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app) package in one of the following ways.
-use yarn:
+
+Use yarn:
 ```bash
 yarn create resolve-app my-resolve-app
 ```
@@ -47,7 +48,7 @@ The created application supports es6 syntax and hot reloading out of the box. Fo
 
 ## **Packages**
 
-reSolve includes the following libraries which can be used independently or all together:
+reSolve includes the following libraries which can be used independently or all together.
 
 App generator libraries:
 * [create-resolve-app](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app)  
