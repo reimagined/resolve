@@ -19,7 +19,8 @@ Open [http://localhost:3000](http://localhost:3000/) in the browser to view your
 
 ## **Getting Started**
 ### Create an App
-Create a reSolve boilerplate application in one of the following ways.
+Create a reSolve boilerplate application in one of the following ways:
+
 use yarn:
 ```bash
 yarn create resolve-app my-resolve-app
