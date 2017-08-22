@@ -17,18 +17,14 @@ pipeline {
         stage('End-to-end tests') {
             steps {
                 script {
-                    sh 'find examples/todo/server/node_modules -maxdepth 1 -type l -delete'
-                    sh 'cp -r ./packages/* ./examples/todo/server/node_modules'
-                    sh 'find examples/todo/client/node_modules -maxdepth 1 -type l -delete'
-                    sh 'cp -r ./packages/* ./examples/todo/client/node_modules'
-                    sh 'cp -r ./examples/todo/common/ ./examples/todo/server/node_modules/todo-common'
-                    sh 'cp -r ./examples/todo/common/ ./examples/todo/client/node_modules/todo-common'
                     PROJECT_NAME = sh (
                         script: "/var/scripts/get-project-name.sh",
                         returnStdout: true
                     ).trim()
 
                     dir('examples/todo') {
+                        sh "cd ./server && ../resolve-symlinks.sh && cd .."
+                        sh "cd ./client && ../resolve-symlinks.sh && cd .."
                         sh "docker-compose -p ${PROJECT_NAME} up --build --exit-code-from testcafe"
                     }
                 }
