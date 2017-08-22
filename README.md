@@ -85,7 +85,7 @@ Drivers for event-store:
 
 * [resolve-scripts-with-router-2](https://github.com/reimagined/resolve/tree/master/examples/resolve-scripts-with-router-2)  
 	[resolve-scripts-with-router-4](https://github.com/reimagined/resolve/tree/master/examples/resolve-scripts-with-router-4)  
-	The following examples show how to use `resolve-scripts` with `react-router v2.x.x`  and `react-router v4.x.x`, respectively.
+	These examples show how to use `resolve-scripts` with `react-router v2.x.x`  and `react-router v4.x.x`, respectively.
 
 * [two-level todo list](https://github.com/reimagined/resolve/tree/master/examples/todo)  
 	This example is an application with several aggregate types related to each other. It also shows how to implement a custom backend API server.
