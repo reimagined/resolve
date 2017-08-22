@@ -1,157 +1,251 @@
-# Resolve boilerplate
+# **ReSolve App**
+This project is a boilerplate application created with [Create ReSolve App](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app). It is a single page application (SPA) which represents a typical Todo List. This application is built on the CQRS and Event Sourcing principles, with React+Redux on client.
 
-**Resolve boilerplate** is referent SPA web-application representing stereotypical Todo List example with React+Redux. Application build on the principles of CQRS & EventSoucring and based on **Resolve** framework.
+Boilerplate allows you to specify application blocks (aggregates, read models and UI part presented by React components) in the semi-declarative manner. With the `resolve-scripts` package, you don't need to write an API backend manually. Instead, `resolve-scripts` deploys backend and domain services to interact with the client which is wrapped into the `resolve-redux` package for automate interaction.
 
-Boilerplate provides ability for semi-declarative declaration of application blocks, including aggregates, read-models and UI part presented as React component. By using **resolve-scripts**, you don't need to write API backend manually. Instead, react-scripts will deploy backand and domain services for interact with client, which will be wrapped into **resolve-redux** package to automate interaction.
+You can find detailed information of subject-related technologies and links to the corresponding resources here: [https://github.com/markerikson/react-redux-links](https://github.com/markerikson/react-redux-links).
 
-The exhaustive description of the subject technologies and articles for them is provided here: [https://github.com/markerikson/react-redux-links](https://github.com/markerikson/react-redux-links).
 
-## Quick start
-```bash
-git clone https://github.com/reimagined/resolve-boilerplate myapp
-cd myapp
-npm install
-npm run dev
-```
-After that open [http://localhost:3000](http://localhost:3000) in a browser to see app.
+## **Table of Contents**
+* [Available Scripts](#available-scripts)
+    * [npm run dev](#npm-run-dev)
+    * [npm run build](#npm-run-build)
+    * [npm start](#npm-start)
+* [Project Structure Overview](#project-structure-overview)
+    * [Client](#client)
+    * [Common](#common)
+    * [Configuration](#configuration)
+    * [E2E-tests](#e2e-tests)
+* [Aggregates and Read Models](#aggregates-and-read-models)
+* [Configuration Files](#configuration-files)
+    * [resolve.client.config](#resolveclientconfig)
+        * [rootComponent](#rootComponent)
+        * [createStore](#createStore)
+    * [resolve.server.config](#resolveserverconfig)
+        * [aggregates](#aggregates)
+        * [bus](#bus)
+        * [entries.createStore](#entriescreateStore)
+        * [entries.rootComponent](#entriesrootComponent)
+        * [events](#events)
+        * [extendExpress](#extendExpress)
+        * [initialState](#initialState)
+        * [queries](#queries)
+        * [storage](#storage)
+    * [resolve.build.config](#resolvebuildconfig)
+        * [extendWebpack](#extendWebpack)
+* [Environment variables](#environment-variables)
+    * [ROOT_DIR](#root_dir)
+    * [Custom Environment Variables](#custom-environment-variables)
 
-## Available Scripts
 
+## **Available Scripts**
 In the project directory, you can run:
 
 ### `npm run dev`
-
 Runs the app in the development mode.
 
-Two web-servers will be started: one for frontend/UI part, based on webpack-dev-server on 3001 port by default,
-and one for API backend part, based on express on 3000 port and provides API for Resolve endpoints.
-Development servers have enough debugging capabilities, including Hot Module Replacement and source maps.
+Two web servers are  started: one - for the frontend/UI part, based on webpack-dev-server on the 3001 port by default, and another one - for the API backend part to provide API for reSolve endpoints, based on express on the 3000 port. Development servers provide all required debugging capabilities, including [Hot Module Replacement](https://webpack.js.org/concepts/hot-module-replacement/) and [source maps](https://webpack.js.org/configuration/devtool/).
 
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Open [http://localhost:3000](http://localhost:3000/) to view the app in the browser.
 
 ### `npm run build`
+Builds client and server bundles for production through Webpack.
 
-Builds client & server bundles through Webpack for production mode.
-
-Building performs in `NODE_ENV === 'production'` mode, so all available optimisation will be performed.
-No additional http server for serving client bundle & assets will be build.
+Building is performed in the `NODE_ENV === 'production'` [mode](https://webpack.js.org/guides/production/#node-environment-variable), so the build is optimized. No additional http server for serving client bundle and assets are  built.
 
 ### `npm start`
+Runs the built app in the production mode.
 
-Runs builded app in the production mode.
+Open [http://localhost:3000](http://localhost:3000/) to view it in the browser.
 
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## **Project Structure Overview**
+Boilerplate is a NPM package referenced to the latest versions of the [reSolve framework packages](https://github.com/reimagined/resolve/tree/master/packages). It consists of the common isomorphic part which describes domain business logic, and React components for the presentation part. No implicit server part is needed - it is encapsulated in `resolve-scripts`, but can be customized by [config](#configuration-files). The project also includes unit & E2E testing and deployment assets. All source code and functional tests are written in the [ES2016](http://2ality.com/2016/01/ecmascript-2016.html) language.
 
+```
+|____client
+| |____actions
+| | |____index.spec.js
+| | |____index.js
+| |____components
+| | |____App.js
+| | |____Footer.js
+| | |____Link.js
+| | |____TodoList.js
+| | |____Todo.js
+| |____containers
+| | |____AddTodo.js
+| | |____FilterLink.js
+| | |____VisibleTodoList.js
+| |____reducers
+| | |____index.js
+| | |____todos.spec.js
+| | |____todos.js
+| | |____visibilityFilter.js
+|____common
+| |____aggregates
+| | |____index.js
+| | |____todo-events.js
+| | |____todo.js
+| |____read-models
+| | |____index.js
+| | |____todos.js
+| |____store
+| | |____index.js
+|____static
+| |____favicon.ico
+|____tests
+| |____testcafe_runner.js
+| |____e2e-tests
+| | |____index.test.js
+|____.babelrc
+|____.eslintrc
+|____.flowconfig
+|____.gitignore
+|____.travis.yml
+|____LICENSE
+|____README.md
+|____package-lock.json
+|____package.json
+|____resolve.build.config.js
+|____resolve.client.config.js
+|____resolve.server.config.js
+```
 
-## Project Structure Overview
+### **Client**
+The client side is located in the `client/` folder and exports two key endpoints: root React component and Redux store creator function. These entry points to the client part must be specified in the [resolve.client.config.js](#resolveclientconfig) configuration file located in the root directory.
 
-Resolve-boilerplate presented as simple NPM package, which referenced to fresh versions of resolve framework packages.
-Boilerplate consists of common isomorphic part, which describes domain business logic, and React component for presentation part. No implicit server part is needed, due be encapsulated in resolve-scripts, but can be customised by config.
-Project also includes unit & E2E testing and deployment assets. All source code and the functional tests are completely written in the [ES2016](http://2ality.com/2016/01/ecmascript-2016.html) language.
+Any customization like adding routing or applying middleware or saga can be performed by proper wrapping original UI entry points into subsidiary entities and specifying them in an appropriate config section. The following examples show how to use a react router as UI entry point for the resolve boilerplate: 
+* [react-router-2](https://github.com/reimagined/resolve/tree/master/examples/resolve-scripts-with-router-2)  
+* [react-router-4](https://github.com/reimagined/resolve/tree/master/examples/resolve-scripts-with-router-4)
 
-### Client
-Client side located in the appropriate directory, and exported two key endpoints: root React component and Redux store creator function. These entry points to the client part must be specified in the configuration file `resolve.client.config.js`, located in root directory.
+### **Common**
+The `common/` folder contains isomorphic application part which represents business logic distributed between server and client in the same code. Domain logic is described in the reSolve-compatible format and appears in [aggregate and read model](#aggregates-and-read-models) declarations.
 
-Any customization like adding routing or applying middleware or saga can be performed by proper wrapping original UI entry points into subsidiary entities and specifying them in appropriate config section.
-Example applications using react-router as UI entry point for resolve-boilderpalte are available here: [Version 2](https://github.com/reimagined/resolve/tree/master/examples/resolve-scripts-with-router-2) and [Version 4](https://github.com/reimagined/resolve/tree/master/examples/resolve-scripts-with-router-4).
+### **Configuration**
+Resolve boilerplate provides declaration configuration instead of imperative coding server-side part. Config allows you to customize React client and server-side rendering, declare domain business logic in terms of Event Sourcing with reSolve library, and modify webpack behaviour for the development and production modes.
 
+Config for client side, server side and building phase are split into three segregated files:
+* [resolve.client.config.js](#resolveclientconfig)  
+* [resolve.server.config.js](#resolveserverconfig)  
+* [resolve.build.config.js](#resolvebuildconfig)  
 
-### Common
-Common folder contains isomorphic application part, which represents business logic, distributed between server and client in same code. Domain logic described in **resolve**-compatible format and appears in aggregates and read-model declarations.
-See the details in [TodoList example](https://github.com/reimagined/resolve/blob/master/examples/todo/README.md#writing-aggregates-and-read-models).
+This approach allows you to simplify including non-isomorphic code and third-party libraries into an application by separating dependencies, and also hold all ES5 code for building phase in only one file.
 
-### Configuration
-Resolve-boilerplate provides declaration configuration instead of imperative coding server-side part. Config provides customizing for React client & server-side rendering, declaration for domain business logic in terms of Event Soucring with Resolve library, and modify webpack behaviour for development and production modes.
+### **E2E-tests**
+The system operability is controlled with [TestCafe](http://devexpress.github.io/testcafe/documentation/using-testcafe/) functional tests. A test set builds and starts a demonstration application, opens it in a browser and automates interaction with UI. After you modify code, start functional tests to check whether everything works successfully.
 
-Config for client side, server side and building phase are splitted in three segregated files (`resolve.client.config.js`, `resolve.server.config.js` and `resolve.build.config.js` respectively). This approach allows you to simplify including non-isomorphic code and third-party libraries into application by separating dependencies, and also funnel all ES5 language code for building phase in only one file.
-See the details in the [relevant section below](#configuration-files).
+## **Aggregates and Read Models**
+Common business/domain logic of an application consists of two parts - aggregates and read models.
+* An *aggregate* is responsible for a system behavior and encapsulation of business logic. It responses to commands, checks whether they can be executed and generates events to change the current status of a system.
+* A *read model* provides the current state of a system or its part in the given format. It is built by processing all events happened to the system, through a projection function.
 
+Aggregates and read models are located in the corresponding directories and defined in a special isomorphic format, which allows them to be used on the client and server side.
+* On the client side, aggregates are transformed into Redux action creators, and read models - into Redux reducers.
+* On the server side, aggregates and read models are applied directory in the reSolve event sourcing framework.
 
-### E2E-tests
-For check of operability of system the functional tests on the basis of [TestCafe](http://devexpress.github.io/testcafe/documentation/using-testcafe/) are assembled used. The test set which start application assembled is applied to demonstration application, open in the browser and automate interaction with the interface. If you modify a code, then start of the functional tests helps to check that everything works successfully.
+A typical aggregate structure:
 
-## Configuration files
+```js
+export default {
+    name: 'AggregateName', // Aggregate name for command handler, the same as aggregateType
+    initialState: Immutable({}), // Initial state (Bounded context) for every instance of this aggregate type
+    eventHandlers: {
+        Event1Happened: (state, event) => nextState,  // Update functions for the current aggregate instance
+        Event2Happened: (state, event) => nextState   // for different event types
+    },
+    commands: {
+        command1: (state, arguments) => generatedEvent, // Function which generates events depending 
+        command2: (state, arguments) => generatedEvent  // on the current state and argument list
+    }
+};
+```
+
+A typical read model structure:
+
+```js
+export default {
+    name: 'ReadModelName', // Read model name for query handler
+    initialState: Immutable({}), // Initial state for this read model instance
+    eventHandlers: {
+        Event1Happened: (state, event) => nextState,  // Update functions for the current read model instance
+        Event2Happened: (state, event) => nextState   // for different event types
+    }
+    // This state results from the request to the query handler at the current moment
+```
+
+Note: To use read model declaration as a Redux reducer, some Immutable wrapper for a state object is required. We recommend to use the [seamless-immutable](https://github.com/rtfeldman/seamless-immutable) library. Keep in mind that incorrect handling of an immutable object may cause performance issues.
+
+## **Configuration Files**
 ### resolve.client.config
+This file contains information for the client side of your application.
 
-This file contains information for client side of your application.
+#### rootComponent 
+*ReactElement*
 
-#### rootComponent
-_ReactElement_
-
-Contains root component that will be rendered on client side.
+Root component to be rendered on the client side.
 
 #### createStore
-_function(initialState: Object): store_
+*function(initialState: Object): store*
 
-Function that takes initialState and returns redux store. Initial state will be takken from server side and it defines in [resolve.server.config.js](#initialstate)
-
+Function that takes initialState and returns a Redux store. Initial state is taken from the server side and is defined in [resolve.server.config.js](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts#initialstate)
 
 ### resolve.server.config
-
-This file contains information for SSR and resolve library.
+This file contains information for SSR and reSolve library.
 
 #### aggregates
-_Array_
+*Array*
 
-Array of aggregates for [resolve-command](https://github.com/reimagined/resolve/tree/resolve-scripts-readme/packages/resolve-command).
-
+Array of aggregates for [resolve-command](https://github.com/reimagined/resolve/tree/master/packages/resolve-command).
 
 #### bus
-_Object_
+*Object*
 
-Contains config for [resolve-bus](https://github.com/reimagined/resolve/tree/resolve-scripts-readme/packages/resolve-bus).
+Contains a [bus driver](https://github.com/reimagined/resolve/tree/master/packages/bus-drivers) and config to it.
 
-#### entries
+#### entries.createStore
+*function(initialState: Object): store*
 
-##### createStore
-_function(initialState: Object): store_
+Function that takes initialState (an object returned by the [initialState function](#initialstate)) and returns redux store. 
 
-Function that takes initialState and returns redux store. Initial state will be takken from server side and it defines in [resolve.server.config.js](#initialstate)
+#### entries.rootComponent
+*ReactElement*
 
-##### rootComponent
-_ReactElement_
-
-Contains root component that will be rendered on server side.
+Root component to be rendered on the server side.
 
 #### events
-_Object_
+*Object*
 
 List of events.
 
 #### extendExpress
-_function(req, res, next)_
+*function(req, res, next)*
 
-It's possible to define there custom routes and write express middleware.
+Allows to define custom routes and write express middleware.
 
 #### initialState
-_function(query): Promise_
+*function(query): Promise*
 
-Function that takes a [query](https://github.com/reimagined/resolve/tree/resolve-scripts-readme/packages/resolve-query) and returns a Promise. It's possible to get initial state by query to read-model and then resolve it with Promise.
+Function that takes a [query](https://github.com/reimagined/resolve/tree/master/packages/resolve-query) and returns a Promise. It's possible to get an initial state by query to read-model and then resolve it with Promise.
 
 #### queries
-_Array_
+*Array*
 
-Array of read models for [resolve-query](https://github.com/reimagined/resolve/tree/resolve-scripts-readme/packages/resolve-query).
+Array of read models for [resolve-query](https://github.com/reimagined/resolve/tree/master/packages/resolve-query).
 
 #### storage
-_Object_
+*Object*
 
-Contains config for [resolve-storage](https://github.com/reimagined/resolve/tree/resolve-scripts-readme/packages/resolve-storage).
+Contains a [storage driver](https://github.com/reimagined/resolve/tree/master/packages/storage-drivers) and config to it.
 
 ### resolve.build.config
-
 #### extendWebpack
-_function(clientConfig, sererConfig)_
+*function(clientConfig, serverConfig)*
 
-It's a function where is possible to extend standart resolve client and server configs.
-See details at [Webpack configuration guide](https://webpack.js.org/configuration/).
+Allows to extend the standard reSolve client and server configs.
 
-## Environment variables
-
+## **Environment variables**
 ### ROOT_DIR
+To change a root directory of an application, set the `ROOT_DIR` environment variable to the required value. For example, `export ROOT_DIR=/newurl`. After that the application will be available on [http://localhost:3000/newurl](http://localhost:3000/newurl).  The`ROOT_DIR` variable is available on the client side by `process.env.ROOT_DIR`.
 
-To change root directory of an application set the environment variable ROOT_DIR to needed value. For example `export ROOT_DIR=/newurl`. After that application will be available by `http://localhost:3000/newurl`. ROOT_DIR variable will be available on client side by `process.env.ROOT_DIR`.
-
-### Custom variables
-
-It is possible to pass env variable to client side. For this define variable with `RESOLVE_` prefix. After that variable will be available on client and on server side by `process.env`.
+### Custom Environment Variables
+You can pass custom env variables to the client side. To do this, name a variable starting with the `RESOLVE_` prefix. After that, this variable will be available on the client and server side via the `process.env` object .

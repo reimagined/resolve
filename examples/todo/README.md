@@ -1,4 +1,4 @@
-# **reSolve Todo Example**
+# **ReSolve Todo Example**
 This project is a demo single page application representing a two-level todo list with todo-items grouped by task cards. The application is built on the CQRS and Event Sourcing principles and based on the reSolve framework. This application does NOT use [resolve-boilerplate](https://github.com/reimagined/resolve-boilerplate). It performs interaction with reSolve backend directly by socket.io and provides a [custom API backend server](#custom-backend-api-server-for-resolve).
 
 The current example is a scalable application and can use custom amount of command and query handlers in segregated node.js processes, which perform interaction by ZMQ bus.
@@ -44,10 +44,10 @@ Runs the app in the development mode.
 Open [http://localhost:3000](http://localhost:3000/) to view it in the browser.
 
 ### `npm run test:e2e`
-Runs functional (E2E) tests suite by [Testcafe](http://devexpress.github.io/testcafe/) runner on a local machine. It's independent command, so you should not start application server or launch browser manually. E2E tests will be open in default system browser, or you can specify custom browser by browser command line argument.
+Runs functional (E2E) tests suite by Testcafe runner on a local machine. It's independent command, so you should not start application server or launch browser manually. E2E tests will be open in default system browser, or you can specify custom browser by browser command line argument.
 
 ## **Project Structure Overview**
-This project’s root directory is a [Lerna mono-repository](https://lernajs.io/). It consists of three main packages: client, common and server.
+This project’s root directory is a [Lerna mono-repository](https://lernajs.io/). It consists of three main packages: client, common and server. 
 
 These packages are linked to each other by the Lerna bootstrapping mechanism. The project also includes unit & E2E testing and deployment assets. All source code and functional tests are written in the [ES2016](http://2ality.com/2016/01/ecmascript-2016.html) language.
 
@@ -61,26 +61,26 @@ The `common/` folder contains isomorphic application part, which represents busi
 The server side consists of the manually-configured **resolve** library and custom but compatible API service for front-end. On the one side, the server provides HTTP/Websocket API to interact with the client part in the **resolve-redux** format. On the other side, it manually launches and configures several instances of aggregates and read models and involves inter-process communication between them. See the [Custom Backend API Server for reSolve](#custom-backend-api-server-for-resolve) section for details.
 
 ### **TestCafe**
-The system operability is controlled with [TestCafe](http://devexpress.github.io/testcafe/) functional tests. A test set builds and starts a demonstration application, opens it in a browser and automates interaction with UI. After you modify code, start functional tests  to check whether everything works successfully.
+The system operability is controlled with [TestCafe](http://devexpress.github.io/testcafe/) functional tests. A test set builds and starts a demonstration application, opens it in a browser and automates interaction with UI. After you modify code, start functional tests  to check whether everything works successfully. 
 
 ## **Aggregates and Read Models**
 The current example contains two aggregates (`TodoCard`, `TodoItem`) and one read model (`cards`), which are defined in the `common/aggregates` and `common/read-models` folders, respectively.
 
-The `TodoItem` aggregate represents a task with text description, a flag indicating the task state (‘todo’ or ‘done’), and unique identifier. The `TodoCard` aggregate  contains a list of `TodoItem`-s grouped in one logical set.
+The `TodoItem` aggregate represents a task with text description, a flag indicating the task state (‘todo’ or ‘done’), and unique identifier. The `TodoCard` aggregate  contains a list of `TodoItem`-s grouped in one logical set. 
 
 The `cards` read model assembles TodoItems grouped by TodoCards in one general associative array, and includes each task item description and state. Also, this read model builds inverse lookup table to allow fast search for the `TodoCard` container by `TodoItem`’s identifier.
 
 For more detailed information on aggregates and read models, refer to the [resolve-boilerplate](https://github.com/reimagined/resolve-boilerplate/blob/master/README.md#aggregates-and-read-models) documentation.
 
 ## **Custom Backend API Server for reSolve**
-The reSolve framework provides a simple boilerplate out-of-the-box, which encapsulates backend API server and allows you to create an application just by declaring aggregates, read models and UI React components. Though it has some settings and opportunities for extension, it also has the known restrictions - for example, it is executed in one one-flow process. This Todo example demonstrates how to implement a custom API server. To do this, follow the steps below:
+The reSolve framework provides a simple boilerplate out-of-the-box, which encapsulates backend API server and allows you to create an application just by declaring aggregates, read models and UI React components. Though it has some settings and opportunities for extension, it also has the known restrictions - for example, it is executed in one one-flow process. This Todo example demonstrates how to implement a custom API server. To do this, follow the steps below: 
 * initialize reSolve EventStore (the `resolve-es` package)
 * start node.js processes for aggregates (the `resolve-command` package) and read models (the `resolve-query` package)
 * register URL routes for the front-end side
 * organize messaging between all spawned processes
 
 So, this example’s `server/` directory includes:
-* `command/index.js` and `query/index.js` - implementation of aggregate and read model processes
+* `command/index.js` and `query/index.js` - implementation of aggregate and read model processes	
 * `index.js` -  entry point, process manager and load balancer for processes
 * `ipc.js` -  inter-process communication channel
 

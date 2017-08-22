@@ -7,9 +7,9 @@ Storage driver is an object that must contain three functions:
 `loadEventsByAggregateId` - gets aggregateId as the first argument, and a function for handling event as second argument. Returns a Promise object that will be resolved when all appropriate events are handled.
 
 Available drivers:
-* [resolve-storage-memory](https://github.com/reimagined/resolve/tree/master/packages/storage-drivers/resolve-storage-memory)
-Used to store events in memory.
-* [resolve-storage-file](https://github.com/reimagined/resolve/tree/master/packages/storage-drivers/resolve-storage-file)
-Used to store events in a local file.
-* [resolve-storage-mongo](https://github.com/reimagined/resolve/tree/master/packages/storage-drivers/resolve-storage-mongo)
-Used to store events in MongoDB.
+* [resolve-storage-memory](https://github.com/reimagined/resolve/tree/master/packages/storage-drivers/resolve-storage-memory)  
+	Used to store events in memory.
+* [resolve-storage-file](https://github.com/reimagined/resolve/tree/master/packages/storage-drivers/resolve-storage-file)  
+	Used to store events in a local file.
+* [resolve-storage-mongo](https://github.com/reimagined/resolve/tree/master/packages/storage-drivers/resolve-storage-mongo)  
+	Used to store events in MongoDB.
