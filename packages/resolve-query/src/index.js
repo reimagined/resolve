@@ -17,11 +17,10 @@ function getExecutor({ eventStore, readModel }) {
         if (!queryType) {
             throw new Error(`GraphQL schema for '${readModel.name}' has no Query type`);
         }
-        
+
         const queryFields = queryType.getFields();
         queryResolvers = Object.keys(queryFields).reduce((acc, val) => {
-            acc[val] = (obj, args, state) =>
-                Object.keys(state[val]).map(key => state[val][key]);
+            acc[val] = (obj, args, state) => Object.keys(state[val]).map(key => state[val][key]);
             return acc;
         }, {});
 
