@@ -21,15 +21,15 @@ Open [http://localhost:3000](http://localhost:3000/) in the browser to view your
 ### Create an App
 Create a reSolve boilerplate application in one of the following ways:
 
-use yarn:
+use yarn:  
 ```bash
 yarn create resolve-app my-resolve-app
 ```
-or use npx:
+or use npx:  
 ```bash
 npx create-resolve-app my-resolve-app
 ```
-or use npm:
+or use npm:  
 ```bash
 npm i -g create-resolve-app
 create-resolve-app my-resolve-app
