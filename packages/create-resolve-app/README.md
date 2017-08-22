@@ -85,5 +85,5 @@ The User Guide provides detailed information on an application created with Crea
 * [Project Structure Overview](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#project-structure-overview)
 * [Aggregates and Read Models](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#aggregates-and-read-models)
 * [Configuration Files](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#configuration-files)
-* 
+
 This user guide copy is added to your project folder as the `Readme.md` file.
