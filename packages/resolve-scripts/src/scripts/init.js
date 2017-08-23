@@ -105,18 +105,17 @@ export default (appPath, appName, originalDirectory) => {
     const scriptsPath = path.join(appPath, 'node_modules', scriptsPackageName);
     const useYarn = fs.existsSync(path.join(appPath, 'yarn.lock'));
 
-    const templatePath = path.join(scriptsPath, 'dist', 'template');
+    const readmeIsExist = tryRenameReadme(appPath);
 
+    const templatePath = path.join(scriptsPath, 'dist', 'template');
     if (!tryCopyTemplate(templatePath, appPath)) {
         error(`Could not locate supplied template: ${chalk.green(templatePath)}`);
         return;
     }
 
     installDependencies(useYarn);
-
     tryRenameGitignore(appPath);
 
-    const readmeIsExist = tryRenameReadme(appPath);
     const cdpath = originalDirectory && path.join(originalDirectory, appName) === appPath
         ? appName
         : appPath;
