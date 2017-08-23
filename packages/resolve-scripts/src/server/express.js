@@ -45,12 +45,15 @@ try {
 } catch (err) {}
 
 app.get(`${rootDirectory}/api/queries/:queryName`, (req, res) => {
-    const gqlQuery = req.query && req.query.graphql;
-    const result = gqlQuery
-        ? executeQuery(req.params.queryName, gqlQuery)
-        : executeQuery(req.params.queryName);
+    const queryParameters = [req.params.queryName];
+    if (req.query && req.query.graphql) {
+        queryParameters.push(req.query.graphql);
+        if (req.query.variables) {
+            queryParameters.push(req.query.variables);
+        }
+    }
 
-    result.then(state => res.status(200).json(state)).catch((err) => {
+    executeQuery(...queryParameters).then(state => res.status(200).json(state)).catch((err) => {
         res.status(500).end('Query error: ' + err.message);
         // eslint-disable-next-line no-console
         console.log(err);
