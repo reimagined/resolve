@@ -37,29 +37,29 @@ create-resolve-app my-resolve-app
 This will create the `my-resolve-app` directory in the current folder and generate the initial project structure in that directory:
 ```
 resolve-app/
-	.babelrc
-	.eslintrc
-	.flowconfig
-	.gitignore
-	.travis.yml
-	LICENSE
-	README.md
-	package-lock.json
-	package.json
-	resolve.build.config.js
-	resolve.client.config.js
-	resolve.server.config.js
-	client/
-		actions/
-		components/
-		containers/
-		reducers/
-	common/
-		aggregates/
-		read-models/
-		store/
-	static/
-	tests/
+  .babelrc
+  .eslintrc
+  .flowconfig
+  .gitignore
+  .travis.yml
+  LICENSE
+  README.md
+  package-lock.json
+  package.json
+  resolve.build.config.js
+  resolve.client.config.js
+  resolve.server.config.js
+  client/
+    actions/
+    components/
+    containers/
+    reducers/
+  common/
+    aggregates/
+    read-models/
+    store/
+  static/
+  tests/
 ```
 ### Available Scripts
 Once the installation is done, you can run the following commands in the project directory to start your app:
