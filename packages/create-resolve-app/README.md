@@ -1,9 +1,9 @@
 # **Create ReSolve App**
-This package is a generator for creating a boilerplate app based on the reSolve framework. A boilerplate  is a single page application (SPA) which represents a typical Todo List. This application is built on the CQRS and Event Sourcing principles, with React+Redux on client.
+This package creates an application based on the reSolve framework. It is a single page application (SPA) which represents a typical Todo List. The application is built on the CQRS and Event Sourcing principles, with React+Redux on client.
 
-Boilerplate allows you to specify application blocks (aggregates, read models and UI part presented by React components) in the semi-declarative manner. With the `resolve-scripts` package, you don't need to write an API backend manually. Instead, `resolve-scripts` deploys backend and domain services to interact with the client which is wrapped into the `resolve-redux` package for automate interaction.
+Create ReSolve App allows you to specify application blocks (aggregates, read models and UI part presented by React components) in the semi-declarative manner. With the `resolve-scripts` package, you don't need to write an API backend manually. Instead, `resolve-scripts` deploys backend and domain services to interact with the client which is wrapped into the `resolve-redux` package for automate interaction.
 
-You can find detailed information of subject-related technologies and links to the corresponding resources here: [https://github.com/markerikson/react-redux-links](https://github.com/markerikson/react-redux-links).
+You can find detailed information on subject-related technologies and links to the corresponding resources here: [https://github.com/markerikson/react-redux-links](https://github.com/markerikson/react-redux-links).
 
 * [Getting Started](#getting-started) - How to create a new app
 * [User Guide](#user-guide) - Information on apps created with Create ReSolve App
@@ -19,7 +19,7 @@ Open [http://localhost:3000](http://localhost:3000/) in the browser to view your
 
 ## **Getting Started**
 ### Create an App
-Create a reSolve boilerplate application in one of the following ways.
+Create a new reSolve application in one of the following ways.
 
 Use yarn:  
 ```bash
@@ -36,29 +36,30 @@ create-resolve-app my-resolve-app
 ```
 This will create the `my-resolve-app` directory in the current folder and generate the initial project structure in that directory:
 ```
-|____client
-| |____actions
-| |____components
-| |____containers
-| |____reducers
-|____common
-| |____aggregates
-| |____read-models
-| |____store
-|____static
-|____tests
-|____.babelrc
-|____.eslintrc
-|____.flowconfig
-|____.gitignore
-|____.travis.yml
-|____LICENSE
-|____README.md
-|____package-lock.json
-|____package.json
-|____resolve.build.config.js
-|____resolve.client.config.js
-|____resolve.server.config.js
+resolve-app/
+	.babelrc
+	.eslintrc
+	.flowconfig
+	.gitignore
+	.travis.yml
+	LICENSE
+	README.md
+	package-lock.json
+	package.json
+	resolve.build.config.js
+	resolve.client.config.js
+	resolve.server.config.js
+	client/
+		actions/
+		components/
+		containers/
+		reducers/
+	common/
+		aggregates/
+		read-models/
+		store/
+	static/
+	tests/
 ```
 ### Available Scripts
 Once the installation is done, you can run the following commands in the project directory to start your app:
