@@ -2,7 +2,7 @@
 
 reSolve is a toolset for building apps based on the CQRS and Event Sourcing patterns. 
 
-It allows isomorphic definitions for aggregates and read models, and provides out-of-the-box integration with [React+Redux+Saga](https://github.com/xkawi/react-universal-saga). With reSolve, you can easily overcome the differences between your domain and technical languages, and focus on your application code.
+It allows isomorphic definitions for aggregates and read models, and provides out-of-the-box integration with [React](https://github.com/facebook/react) and [Redux](https://github.com/reactjs/redux). With reSolve, you can easily overcome the differences between your domain and technical languages, and focus on your application code.
 
 Learn more on related concepts:
 
@@ -15,7 +15,7 @@ Learn more on related concepts:
 * [Blog about DDD](http://danielwhittaker.me/category/ddd/)
 
 ## **Quick Installation**
-Create a reSolve boilerplate application using the [create-resolve-app](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app) package in one of the following ways.
+Create a new reSolve application using the [create-resolve-app](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app) package in one of the following ways.
 
 Use yarn:
 ```bash
@@ -52,7 +52,7 @@ reSolve includes the following libraries which can be used independently or all 
 
 App generator libraries:
 * [create-resolve-app](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app)  
-	Create a boilerplate application based on reSolve.
+	Create a new application based on reSolve.
 
 Core libraries:
 * [resolve-command](https://github.com/reimagined/resolve/tree/master/packages/resolve-command)  
