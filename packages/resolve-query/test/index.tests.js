@@ -24,15 +24,16 @@ describe('resolve-query', () => {
             }
         },
         {
-            initialState: { Users: {} },
+            initialState: { Users: [] },
             name: GRAPHQL_READ_MODEL_NAME,
             eventHandlers: {
                 UserAdded: (state, { aggregateId: id, payload: { UserName } }) => {
-                    state.Users[id] = { id, UserName };
+                    if (state.Users.find(user => user.id === id)) return state;
+                    state.Users.push({ id, UserName });
                     return state;
                 },
                 UserDeleted: (state, { aggregateId: id }) => {
-                    delete state.Users[id];
+                    state.Users = state.Users.filter(user => user.id !== id);
                     return state;
                 }
             },
@@ -48,8 +49,8 @@ describe('resolve-query', () => {
                 }
             `,
             gqlResolvers: {
-                UserIds: (obj, args, state) => Object.keys(state.Users),
-                UserById: (obj, args, state) => state.Users[args.id]
+                UserIds: (root, args) => root.Users.map(user => user.id),
+                UserById: (root, args) => root.Users.find(user => user.id === args.id)
             }
         }
     ];
@@ -176,7 +177,7 @@ describe('resolve-query', () => {
     it('should handle graphql query on read model which does not support it', async () => {
         const executeQuery = createQueryExecutor({ eventStore, readModels });
         eventList = [{ type: 'SuccessEvent' }];
-        const graphqlQuery = 'query UsersInfo { UserIds }';
+        const graphqlQuery = 'query { UserIds }';
 
         try {
             await executeQuery(SIMPLE_READ_MODEL_NAME, graphqlQuery);
@@ -195,16 +196,7 @@ describe('resolve-query', () => {
         const state = await executeQuery(GRAPHQL_READ_MODEL_NAME);
 
         expect(state).to.be.deep.equal({
-            Users: {
-                '2': {
-                    UserName: 'User-2',
-                    id: '2'
-                },
-                '3': {
-                    UserName: 'User-3',
-                    id: '3'
-                }
-            }
+            Users: [{ UserName: 'User-2', id: '2' }, { UserName: 'User-3', id: '3' }]
         });
     });
 
@@ -212,23 +204,12 @@ describe('resolve-query', () => {
         const executeQuery = createQueryExecutor({ eventStore, readModels });
         eventList = eventListForGraphQL.slice(0);
 
-        const graphqlQuery = `query UsersInfo {
-            Users { id, UserName }
-        }`;
+        const graphqlQuery = 'query { Users { id, UserName } }';
 
         const state = await executeQuery(GRAPHQL_READ_MODEL_NAME, graphqlQuery);
 
         expect(state).to.be.deep.equal({
-            Users: [
-                {
-                    UserName: 'User-2',
-                    id: '2'
-                },
-                {
-                    UserName: 'User-3',
-                    id: '3'
-                }
-            ]
+            Users: [{ UserName: 'User-2', id: '2' }, { UserName: 'User-3', id: '3' }]
         });
     });
 
@@ -236,9 +217,7 @@ describe('resolve-query', () => {
         const executeQuery = createQueryExecutor({ eventStore, readModels });
         eventList = eventListForGraphQL.slice(0);
 
-        const graphqlQuery = `query UsersInfo {
-            UserIds
-        }`;
+        const graphqlQuery = 'query { UserIds }';
 
         const state = await executeQuery(GRAPHQL_READ_MODEL_NAME, graphqlQuery);
 
@@ -251,9 +230,7 @@ describe('resolve-query', () => {
         const executeQuery = createQueryExecutor({ eventStore, readModels });
         eventList = eventListForGraphQL.slice(0);
 
-        const graphqlQuery = `query UsersInfo {
-            UserById(id:2) { id, UserName }
-        }`;
+        const graphqlQuery = 'query { UserById(id:2) { id, UserName } }';
 
         const state = await executeQuery(GRAPHQL_READ_MODEL_NAME, graphqlQuery);
 
@@ -265,13 +242,27 @@ describe('resolve-query', () => {
         });
     });
 
+    it('should support custom defined resolver with arguments valued by variables', async () => {
+        const executeQuery = createQueryExecutor({ eventStore, readModels });
+        eventList = eventListForGraphQL.slice(0);
+
+        const graphqlQuery = 'query ($testId: ID!) { UserById(id: $testId) { id, UserName } }';
+
+        const state = await executeQuery(GRAPHQL_READ_MODEL_NAME, graphqlQuery, { testId: 3 });
+
+        expect(state).to.be.deep.equal({
+            UserById: {
+                UserName: 'User-3',
+                id: '3'
+            }
+        });
+    });
+
     it('should handle error in case of wrong arguments for custom defined resolver', async () => {
         const executeQuery = createQueryExecutor({ eventStore, readModels });
         eventList = eventListForGraphQL.slice(0);
 
-        const graphqlQuery = `query UsersInfo {
-            UserById() { id, UserName }
-        }`;
+        const graphqlQuery = 'query { UserById() { id, UserName } }';
 
         try {
             await executeQuery(GRAPHQL_READ_MODEL_NAME, graphqlQuery);
@@ -310,7 +301,7 @@ describe('resolve-query', () => {
         }
     });
 
-    it('should raise error in case of invalid GraphQL schema for read-model', async () => {
+    it('should raise error in case throwing expection into custom resolver', async () => {
         const executeQuery = createQueryExecutor({
             eventStore,
             readModels: brokenResolversReadModels

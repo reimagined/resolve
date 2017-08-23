@@ -1,5 +1,5 @@
 import 'regenerator-runtime/runtime';
-import { makeExecutableSchema, buildSchemaFromTypeDefinitions } from 'graphql-tools';
+import { makeExecutableSchema } from 'graphql-tools';
 import { parse, execute } from 'graphql';
 
 function getExecutor({ eventStore, readModel }) {
@@ -8,32 +8,14 @@ function getExecutor({ eventStore, readModel }) {
     let error = null;
     let result = null;
 
-    let executableSchema = null;
-    if (readModel.gqlSchema) {
-        const schemaDeclaration = buildSchemaFromTypeDefinitions(readModel.gqlSchema);
-        let queryResolvers;
-
-        const queryType = schemaDeclaration.getQueryType();
-        if (!queryType) {
-            throw new Error(`GraphQL schema for '${readModel.name}' has no Query type`);
-        }
-
-        const queryFields = queryType.getFields();
-        queryResolvers = Object.keys(queryFields).reduce((acc, val) => {
-            acc[val] = (obj, args, state) => Object.keys(state[val]).map(key => state[val][key]);
-            return acc;
-        }, {});
-
-        const customQueryResolvers = readModel.gqlResolvers || {};
-        Object.assign(queryResolvers, customQueryResolvers);
-
-        executableSchema = makeExecutableSchema({
-            typeDefs: readModel.gqlSchema,
-            resolvers: queryResolvers ? { Query: queryResolvers } : {}
+    const executableSchema =
+        readModel.gqlSchema &&
+        makeExecutableSchema({
+            resolvers: readModel.gqlResolvers ? { Query: readModel.gqlResolvers } : {},
+            typeDefs: readModel.gqlSchema
         });
-    }
 
-    return async (gqlQuery) => {
+    return async (gqlQuery, gqlVariables) => {
         result =
             result ||
             eventStore.subscribeByEventType(eventTypes, (event) => {
@@ -57,7 +39,14 @@ function getExecutor({ eventStore, readModel }) {
         }
 
         const parsedGqlQuery = parse(gqlQuery);
-        const gqlResponse = await execute(executableSchema, parsedGqlQuery, null, state);
+
+        const gqlResponse = await execute(
+            executableSchema,
+            parsedGqlQuery,
+            state,
+            {},
+            gqlVariables
+        );
 
         if (gqlResponse.errors) throw gqlResponse.errors;
         return gqlResponse.data;
@@ -73,13 +62,13 @@ export default ({ eventStore, readModels }) => {
         return result;
     }, {});
 
-    return async (readModelName, gqlQuery) => {
+    return async (readModelName, gqlQuery, gqlVariables) => {
         const executor = executors[readModelName.toLowerCase()];
 
         if (executor === undefined) {
             throw new Error(`The '${readModelName}' read model is not found`);
         }
 
-        return executor(gqlQuery);
+        return executor(gqlQuery, gqlVariables);
     };
 };
