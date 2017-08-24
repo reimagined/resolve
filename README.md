@@ -1,8 +1,6 @@
 # [<img src="https://user-images.githubusercontent.com/15689049/29659048-ad0d158a-88c5-11e7-9354-dbe4bb105ad7.png" height="60">](https://github.com/reimagined/resolve/)
 
-reSolve is a toolset for building apps based on the CQRS and Event Sourcing patterns. 
-
-It allows isomorphic definitions for aggregates and read models, and provides out-of-the-box integration with [React](https://github.com/facebook/react) and [Redux](https://github.com/reactjs/redux). With reSolve, you can easily overcome the differences between your domain and technical languages, and focus on your application code.
+reSolve is a framework for developing apps based on CQRS and Event Sourcing, with [React](https://github.com/facebook/react) + [Redux](https://github.com/reactjs/redux) on the client. With reSolve, you can easily overcome the differences between your domain and technical languages, and focus on your application code.
 
 Learn more on related concepts:
 
