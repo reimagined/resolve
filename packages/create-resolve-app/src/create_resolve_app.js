@@ -127,6 +127,15 @@ const runScripts = (appPath, appName, originalDirectory, scriptsPackage) => {
     init.default(appPath, appName, originalDirectory);
 };
 
+const createPackageJson = (appName, appPath) => {
+    const packageJson = {
+        name: appName,
+        version: '0.1.0',
+        private: true
+    };
+    fs.writeFileSync(path.join(appPath, 'package.json'), JSON.stringify(packageJson, null, 2));
+};
+
 export default async (name) => {
     const appPath = path.resolve(name);
     const appName = path.basename(appPath);
@@ -152,6 +161,8 @@ export default async (name) => {
 
     log(`Creating a new Resolve app in ${chalk.green(appPath)}.`);
     log();
+
+    createPackageJson(appName, appPath);
 
     const originalDirectory = process.cwd();
     process.chdir(appPath);
