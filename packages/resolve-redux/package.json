@@ -31,5 +31,8 @@
     "seamless-immutable": "^7.1.2",
     "sinon": "^2.1.0",
     "uuid": "^3.0.1"
+  },
+  "dependencies": {
+    "socket.io-client": "^2.0.3"
   }
 }
