@@ -8,7 +8,7 @@ const log = console.log;
 // eslint-disable-next-line no-console
 const error = console.error;
 
-const appDependencies = ['axious', 'prop-types', 'uuid'];
+const appDependencies = ['axios', 'prop-types', 'uuid'];
 
 const dependencies = [
     'react',
@@ -55,7 +55,7 @@ const tryRenameGitignore = (appPath) => {
     });
 };
 
-const installDependencies = (useYarn, dependencies, isDev) => {
+const installDependencies = (useYarn, dep, isDev) => {
     let command;
     let args;
     if (useYarn) {
@@ -68,7 +68,7 @@ const installDependencies = (useYarn, dependencies, isDev) => {
         command = 'npm';
         args = ['install', isDev ? '--save-dev' : '--save'];
     }
-    args = args.concat(dependencies);
+    args = args.concat(dep);
 
     const proc = spawn.sync(command, args, { stdio: 'inherit' });
     if (proc.status !== 0) {
@@ -139,10 +139,12 @@ export default (appPath, appName, originalDirectory) => {
         return;
     }
 
+    fs.unlinkSync(path.join(appPath, '.eslintrc'));
+
     log('Installing app dependencies...');
     log();
 
-    installDependencies(useYarn, appDependencies.concat(dependencies), false);
+    installDependencies(useYarn, dependencies.concat(appDependencies), false);
     installDependencies(useYarn, devDependencies, true);
     tryRenameGitignore(appPath);
 
