@@ -1,4 +1,4 @@
-# `resolve-es`
+# **:post_office: resolve-es**
 
 This package serves as an event-store.
 
