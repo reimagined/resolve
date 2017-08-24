@@ -5,8 +5,7 @@ import reducer from '../reducers';
 
 const middleware = [
     sendCommandMiddleware({
-        sendCommand: async command =>
-            axios.post(`${process.env.ROOT_DIR}/api/commands`, command)
+        sendCommand: async command => axios.post(`${process.env.ROOT_DIR}/api/commands`, command)
     })
 ];
 

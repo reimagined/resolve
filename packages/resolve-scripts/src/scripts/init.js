@@ -8,7 +8,7 @@ const log = console.log;
 // eslint-disable-next-line no-console
 const error = console.error;
 
-const appDependencies = ['axious','prop-types', 'uuid'];
+const appDependencies = ['axious', 'prop-types', 'uuid'];
 
 const dependencies = [
     'react',
@@ -20,13 +20,7 @@ const dependencies = [
     'resolve-storage-file'
 ];
 
-const devDependencies = [
-    'chai',
-    'cross-env',
-    'testcafe',
-    'testcafe-browser-tools',
-    'yargs'
-];
+const devDependencies = ['chai', 'cross-env', 'testcafe', 'testcafe-browser-tools', 'yargs'];
 
 const displayCommand = (useYarn, isDefaultCmd) =>
     useYarn ? 'yarn' : isDefaultCmd ? 'npm' : 'npm run';
@@ -147,8 +141,6 @@ export default (appPath, appName, originalDirectory) => {
 
     log('Installing app dependencies...');
     log();
-
-
 
     installDependencies(useYarn, appDependencies.concat(dependencies), false);
     installDependencies(useYarn, devDependencies, true);
