@@ -1,9 +1,6 @@
 import axios from 'axios';
 import { createStore, applyMiddleware } from 'redux';
-import {
-  sendCommandMiddleware,
-  setSubscriptionMiddleware
-} from 'resolve-redux';
+import { sendCommandMiddleware, setSubscriptionMiddleware } from 'resolve-redux';
 import reducer from '../reducers';
 
 const middleware = [
