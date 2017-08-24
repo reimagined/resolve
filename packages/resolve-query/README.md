@@ -1,4 +1,4 @@
-# `resolve-query`
+# **:mag: resolve-query**
 
 This package creates a function to execute a query.
 

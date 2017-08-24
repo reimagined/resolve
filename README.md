@@ -1,4 +1,4 @@
-# **reSolve**
+# **:rocket: reSolve**
 
 reSolve is a toolset for building apps based on the CQRS and Event Sourcing patterns. 
 
