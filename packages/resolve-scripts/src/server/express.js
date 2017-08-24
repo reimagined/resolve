@@ -83,7 +83,8 @@ app.get([`${rootDirectory}/*`, `${rootDirectory || '/'}`], async (req, res) => {
             cookies: req.cookies,
             hostname: req.hostname,
             originalUrl: req.originalUrl,
-            body: req.body
+            body: req.body,
+            query: req.query
         });
 
         ssr(state, { req, res });
