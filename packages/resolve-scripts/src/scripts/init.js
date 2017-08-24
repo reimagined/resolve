@@ -144,7 +144,6 @@ export default (appPath, appName, originalDirectory) => {
     const devDependencies = [
         'chai',
         'cross-env',
-        'jest',
         'testcafe',
         'testcafe-browser-tools',
         'yargs'
