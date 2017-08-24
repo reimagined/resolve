@@ -8,6 +8,26 @@ const log = console.log;
 // eslint-disable-next-line no-console
 const error = console.error;
 
+const appDependencies = ['axious','prop-types', 'uuid'];
+
+const dependencies = [
+    'react',
+    'react-dom',
+    'react-redux',
+    'redux',
+    'resolve-bus-memory',
+    'resolve-redux',
+    'resolve-storage-file'
+];
+
+const devDependencies = [
+    'chai',
+    'cross-env',
+    'testcafe',
+    'testcafe-browser-tools',
+    'yargs'
+];
+
 const displayCommand = (useYarn, isDefaultCmd) =>
     useYarn ? 'yarn' : isDefaultCmd ? 'npm' : 'npm run';
 
@@ -128,28 +148,9 @@ export default (appPath, appName, originalDirectory) => {
     log('Installing app dependencies...');
     log();
 
-    const dependencies = [
-        'axios',
-        'prop-types',
-        'react',
-        'react-dom',
-        'react-redux',
-        'redux',
-        'resolve-bus-memory',
-        'resolve-redux',
-        'resolve-storage-file',
-        'uuid'
-    ];
 
-    const devDependencies = [
-        'chai',
-        'cross-env',
-        'testcafe',
-        'testcafe-browser-tools',
-        'yargs'
-    ];
 
-    installDependencies(useYarn, dependencies, false);
+    installDependencies(useYarn, appDependencies.concat(dependencies), false);
     installDependencies(useYarn, devDependencies, true);
     tryRenameGitignore(appPath);
 
