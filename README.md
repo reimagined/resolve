@@ -2,7 +2,7 @@
 
 reSolve is a framework for developing apps based on CQRS and Event Sourcing, with [React](https://github.com/facebook/react) + [Redux](https://github.com/reactjs/redux) on the client. With reSolve, you can easily overcome the differences between your domain and technical languages, and focus on your application code.
 
-Learn more on related concepts:
+Learn more about related concepts:
 
 * [Why using DDD, CQRS and Event Sourcing](https://github.com/cer/event-sourcing-examples/wiki/WhyEventSourcing)
 
