@@ -133,11 +133,8 @@ const createPackageJson = (appName, appPath) => {
         version: '0.1.0',
         private: true
     };
-    fs.writeFileSync(
-        path.join(appPath, 'package.json'),
-        JSON.stringify(packageJson, null, 2)
-    );
-}
+    fs.writeFileSync(path.join(appPath, 'package.json'), JSON.stringify(packageJson, null, 2));
+};
 
 export default async (name) => {
     const appPath = path.resolve(name);

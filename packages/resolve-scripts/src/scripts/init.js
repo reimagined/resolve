@@ -46,9 +46,9 @@ const installDependencies = (useYarn, dependencies, isDev) => {
     let args;
     if (useYarn) {
         command = 'yarnpkg';
-        args = ['add', '--exact']
-        if(isDev) {
-            args.push('--dev')
+        args = ['add', '--exact'];
+        if (isDev) {
+            args.push('--dev');
         }
     } else {
         command = 'npm';
@@ -114,10 +114,7 @@ export default (appPath, appName, originalDirectory) => {
         test: 'jest',
         'test:e2e': 'cross-env NODE_ENV=tests babel-node ./tests/testcafe_runner.js'
     };
-    fs.writeFileSync(
-        path.join(appPath, 'package.json'),
-        JSON.stringify(appPackage, null, 2)
-    );
+    fs.writeFileSync(path.join(appPath, 'package.json'), JSON.stringify(appPackage, null, 2));
 
     const readmeIsExist = tryRenameReadme(appPath);
 
@@ -133,6 +130,7 @@ export default (appPath, appName, originalDirectory) => {
 
     const dependencies = [
         'axios',
+        'prop-types',
         'react',
         'react-dom',
         'react-redux',
@@ -144,10 +142,12 @@ export default (appPath, appName, originalDirectory) => {
     ];
 
     const devDependencies = [
+        'chai',
         'cross-env',
         'jest',
         'testcafe',
-        'testcafe-browser-tools'
+        'testcafe-browser-tools',
+        'yargs'
     ];
 
     installDependencies(useYarn, dependencies, false);
