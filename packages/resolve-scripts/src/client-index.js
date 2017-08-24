@@ -11,9 +11,37 @@ const store = createStore(window.__INITIAL_STATE__);
 const CRITICAL_LEVEL = 100;
 let socketIOFailCount = 0;
 
+function listenStore(store, listener) {
+    if (store.dispatch.listenFlag === listenStore) {
+        store.dispatch.setListener(listener);
+        return;
+    }
+
+    const originalDispatch = store.dispatch;
+    let currentListener = listener;
+    store.dispatch = (...args) => {
+        Promise.resolve().then(() => currentListener(...args));
+        return originalDispatch(...args);
+    };
+
+    store.dispatch.listenFlag = listenStore;
+    store.dispatch.setListener = (newListener) => {
+        currentListener = newListener;
+    };
+}
+
 function initSocketIO(store) {
     const socketIO = socketIOClient(window.location.origin, {
         path: `${process.env.ROOT_DIR}/socket/`
+    });
+
+    listenStore(store, (action) => {
+        if (action.type === 'SET_SUBSCRIPTION') {
+            socketIO.emit('setSubscription', {
+                types: action.types || [],
+                ids: action.ids || []
+            });
+        }
     });
 
     socketIO.on('event', event => store.dispatch(JSON.parse(event)));
