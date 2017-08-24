@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 import config from '../configs/server.config.js';
 
 const configEntries = config.entries;
-const rootDirectory = process.env.ROOT_DIR || '';
+process.env.ROOT_DIR = process.env.ROOT_DIR || '';
 
 export default (initialState, { req, res }) => {
     const html = renderToString(
@@ -17,7 +17,7 @@ export default (initialState, { req, res }) => {
 
     const helmet = Helmet.renderStatic();
 
-    const bundleSource = `${rootDirectory}/static/bundle.js`;
+    const bundleSource = `${process.env.ROOT_DIR}/static/bundle.js`;
 
     const filterEnvVariablesRegex = /^RESOLVE_|^NODE_ENV$|^ROOT_DIR$/;
 

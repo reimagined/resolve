@@ -41,19 +41,20 @@ const tryRenameGitignore = (appPath) => {
     });
 };
 
-const installDependencies = (useYarn) => {
+const installDependencies = (useYarn, dependencies, isDev) => {
     let command;
     let args;
     if (useYarn) {
         command = 'yarnpkg';
-        args = ['install'];
+        args = ['add', '--exact']
+        if(isDev) {
+            args.push('--dev')
+        }
     } else {
         command = 'npm';
-        args = ['install', '--save'];
+        args = ['install', isDev ? '--save-dev' : '--save'];
     }
-
-    log(`Installing dependencies using ${command}...`);
-    log();
+    args = args.concat(dependencies);
 
     const proc = spawn.sync(command, args, { stdio: 'inherit' });
     if (proc.status !== 0) {
@@ -105,15 +106,52 @@ export default (appPath, appName, originalDirectory) => {
     const scriptsPath = path.join(appPath, 'node_modules', scriptsPackageName);
     const useYarn = fs.existsSync(path.join(appPath, 'yarn.lock'));
 
+    const appPackage = require(path.join(appPath, 'package.json'));
+    appPackage.scripts = {
+        build: 'resolve-scripts build',
+        dev: 'resolve-scripts dev',
+        start: 'resolve-scripts start',
+        test: 'jest',
+        'test:e2e': 'cross-env NODE_ENV=tests babel-node ./tests/testcafe_runner.js'
+    };
+    fs.writeFileSync(
+        path.join(appPath, 'package.json'),
+        JSON.stringify(appPackage, null, 2)
+    );
+
     const readmeIsExist = tryRenameReadme(appPath);
 
     const templatePath = path.join(scriptsPath, 'dist', 'template');
+
     if (!tryCopyTemplate(templatePath, appPath)) {
         error(`Could not locate supplied template: ${chalk.green(templatePath)}`);
         return;
     }
 
-    installDependencies(useYarn);
+    log('Installing app dependencies...');
+    log();
+
+    const dependencies = [
+        'axios',
+        'react',
+        'react-dom',
+        'react-redux',
+        'redux',
+        'resolve-bus-memory',
+        'resolve-redux',
+        'resolve-storage-file',
+        'uuid'
+    ];
+
+    const devDependencies = [
+        'cross-env',
+        'jest',
+        'testcafe',
+        'testcafe-browser-tools'
+    ];
+
+    installDependencies(useYarn, dependencies, false);
+    installDependencies(useYarn, devDependencies, true);
     tryRenameGitignore(appPath);
 
     const cdpath = originalDirectory && path.join(originalDirectory, appName) === appPath
