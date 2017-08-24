@@ -1,4 +1,4 @@
-# `resolve-redux`
+# **:nut_and_bolt: resolve-redux**
 
 This package serves as a helper for creating the Redux storage.
 
@@ -167,5 +167,4 @@ const reducer = createReducer(readModel, (state, action) => {
             return state;
     }
 });
-
 ```
