@@ -1,4 +1,4 @@
-# Benchmarks
+# **:bar_chart: Benchmarks**
 This folder contains benchmarks for the reSolve framework.
 
 * [benchmark-base](https://github.com/reimagined/resolve/tree/master/benchmarks/benchmark-base)  

@@ -1,4 +1,4 @@
-# reSolve Packages
+# **:rocket: reSolve Packages**
 The reSolve framework includes the following packages.
 
 App generator libraries:

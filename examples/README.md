@@ -1,4 +1,4 @@
-# Examples
+# **:computer: Examples**
 This folder contains examples on using the reSolve framework.
 
 * [todo](https://github.com/reimagined/resolve/tree/master/examples/todo)  
