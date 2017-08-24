@@ -1,4 +1,4 @@
-# **:floppy_disk: Storage Drivers**
+# **:oil_drum: Storage Drivers**
 This folder contains storage drivers for `resolve-es`.
 
 Storage driver is an object that must contain three functions:  
