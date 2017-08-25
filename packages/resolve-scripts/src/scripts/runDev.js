@@ -18,12 +18,14 @@ buildConfig.extendWebpack(devClientConfig, devServerConfig);
 
 const clientCompiler = webpack(devClientConfig);
 
+// eslint-disable-next-line no-console
+const log = console.log;
+
 const clientDevServer = new WebpackDevServer(clientCompiler, {
     stats: outputConfig,
     setup: (app) => {
         app.use((req, res, next) => {
-            // eslint-disable-next-line no-console
-            console.log(`Using middleware for ${req.url}`);
+            log(`Using middleware for ${req.url}`);
             next();
         });
         app.use(express.static(path.join(process.cwd(), './dist/static')));
@@ -31,10 +33,9 @@ const clientDevServer = new WebpackDevServer(clientCompiler, {
 });
 
 webpack(devServerConfig, (err, stats) => {
-    process.stdout.write(stats.toString(outputConfig) + '\n');
+    // process.stdout.write(stats.toString(outputConfig) + '\n');
 });
 
 clientDevServer.listen(3001, '127.0.0.1', () => {
-    // eslint-disable-next-line no-console
-    console.log('Starting server on http://localhost:3001');
+    log('Starting webpack dev server on http://localhost:3001');
 });
