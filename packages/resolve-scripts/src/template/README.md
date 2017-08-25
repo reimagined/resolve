@@ -34,7 +34,7 @@ You can find detailed information on subject-related technologies and links to t
         * [storage](#storage)
     * [resolve.build.config](#resolvebuildconfig)
         * [extendWebpack](#extendWebpack)
-* [Environment variables](#environment-variables)
+* [Environment Variables](#environment-variables)
     * [ROOT_DIR](#root_dir)
     * [Custom Environment Variables](#custom-environment-variables)
 
@@ -177,7 +177,7 @@ export default {
 
 Note: To use read model declaration as a Redux reducer, some Immutable wrapper for a state object is required. We recommend to use the [seamless-immutable](https://github.com/rtfeldman/seamless-immutable) library. Keep in mind that incorrect handling of an immutable object may cause performance issues.
 
-## **📝 Configuration Files**
+## **🎛 Configuration Files**
 ### resolve.client.config
 This file contains information for the client side of your application.
 
@@ -245,7 +245,7 @@ Contains a [storage driver](https://github.com/reimagined/resolve/tree/master/pa
 
 Allows to extend the standard reSolve client and server configs.
 
-## **Environment variables**
+## **🛠 Environment Variables**
 ### ROOT_DIR
 To change a root directory of an application, set the `ROOT_DIR` environment variable to the required value. For example, `export ROOT_DIR=/newurl`. After that the application will be available on [http://localhost:3000/newurl](http://localhost:3000/newurl).  The`ROOT_DIR` variable is available on the client side by `process.env.ROOT_DIR`.
 
