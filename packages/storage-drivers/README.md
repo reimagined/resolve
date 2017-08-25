@@ -1,4 +1,4 @@
-# **:oil_drum: Storage Drivers**
+# **🛢 Storage Drivers**
 This folder contains storage drivers for `resolve-es`.
 
 Storage driver is an object that must contain three functions:  

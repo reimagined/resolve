@@ -1,4 +1,4 @@
-# **:wrench: resolve-scripts**
+# **🔧 resolve-scripts**
 
 This package includes scripts and configuration used by [Create Resolve App](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app).  
 Refer to its documentation:

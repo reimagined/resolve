@@ -1,4 +1,4 @@
-# **:loudspeaker: resolve-command**
+# **📢 resolve-command**
 
 This package creates a function to execute a command.
 

@@ -1,4 +1,4 @@
-# **:bar_chart: Benchmarks**
+# **📊 Benchmarks**
 This folder contains benchmarks for the reSolve framework.
 
 * [benchmark-base](https://github.com/reimagined/resolve/tree/master/benchmarks/benchmark-base)  
@@ -9,3 +9,4 @@ This folder contains benchmarks for the reSolve framework.
 	Provides a speed and memory usage benchmark for the `resolve-storage-mongo` package.
 * [rabbitmq-vs-zmq](https://github.com/reimagined/resolve/tree/master/benchmarks/rabbitmq-vs-zmq)  
 	Provides a speed benchmark for `resolve-bus-zmq` and `resolve-bus-rabbitmq`.
+

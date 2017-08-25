@@ -12,7 +12,7 @@ Learn more about related concepts:
 
 * [Blog about DDD](http://danielwhittaker.me/category/ddd/)
 
-## **:rocket: Quick Installation**
+## **🚀 Quick Installation**
 Create a new reSolve application using the [create-resolve-app](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app) package in one of the following ways.
 
 Use yarn:
@@ -44,42 +44,42 @@ npm run start
 
 The created application supports es6 syntax and hot reloading out of the box. For more information see this [guide](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app).
 
-## **:books: Packages**
+## **📚 Packages**
 
 reSolve includes the following libraries which can be used independently or all together.
 
 App generator libraries:
-* :rocket: [create-resolve-app](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app)  
+* :🚀 [create-resolve-app](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app)  
 	Create a new application based on reSolve.
 
 Core libraries:
-* :loudspeaker: [resolve-command](https://github.com/reimagined/resolve/tree/master/packages/resolve-command)  
+* 📢 [resolve-command](https://github.com/reimagined/resolve/tree/master/packages/resolve-command)  
 	Creates a function to execute a command.
 
-* :post_office: [resolve-es](https://github.com/reimagined/resolve/tree/master/packages/resolve-es)  
+* 🏣 [resolve-es](https://github.com/reimagined/resolve/tree/master/packages/resolve-es)  
 	Serves as an event-store.
 
-* :mag: [resolve-query](https://github.com/reimagined/resolve/tree/master/packages/resolve-query)  
+* 🔍 [resolve-query](https://github.com/reimagined/resolve/tree/master/packages/resolve-query)  
 	Creates a function to execute a query.
 
-* :nut_and_bolt: [resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux)  
+* 🔩 [resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux)  
 	Helper for creating the Redux storage.
 
 
 Drivers for event-store:
-* :bus: Bus drivers specifying how to send events:
+* 🚌 Bus drivers specifying how to send events:
     * [resolve-bus-memory](https://github.com/reimagined/resolve/tree/master/packages/bus-drivers/resolve-bus-memory) (recommended for debugging purposes)
     * [resolve-bus-rabbitmq](https://github.com/reimagined/resolve/tree/master/packages/bus-drivers/resolve-bus-rabbitmq)
     * [resolve-bus-zmq](https://github.com/reimagined/resolve/tree/master/packages/bus-drivers/resolve-bus-zmq) 
 
 
-* :oil_drum: Storage drivers specifying where to store events:
+* 🛢 Storage drivers specifying where to store events:
     * [resolve-storage-file](https://github.com/reimagined/resolve/tree/master/packages/storage-drivers/resolve-storage-file) (recommended for debugging purposes)
     * [resolve-storage-memory](https://github.com/reimagined/resolve/tree/master/packages/storage-drivers/resolve-storage-memory) (recommended for debugging purposes)
     * [resolve-storage-mongo](https://github.com/reimagined/resolve/tree/master/packages/storage-drivers/resolve-storage-mongo)
 
 
-## **:computer: Examples**
+## **💻 Examples**
 
 * [resolve-scripts-with-router-2](https://github.com/reimagined/resolve/tree/master/examples/resolve-scripts-with-router-2)  
 	[resolve-scripts-with-router-4](https://github.com/reimagined/resolve/tree/master/examples/resolve-scripts-with-router-4)  

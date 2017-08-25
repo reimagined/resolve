@@ -1,4 +1,4 @@
-# **:nut_and_bolt: resolve-redux**
+# **🔩 resolve-redux**
 
 This package serves as a helper for creating the Redux storage.
 
