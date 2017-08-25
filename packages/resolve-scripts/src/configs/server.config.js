@@ -21,7 +21,8 @@ const defaultConfig = {
     storage: defaultStorageDriver,
     initialState: () => Promise.resolve({}),
     aggregates: [],
-    events: [],
+    initialSubscribedEvents: { types: [], ids: [] },
+    filterSubscription: eventDescription => eventDescription,
     queries: [],
     extendExpress: () => {}
 };

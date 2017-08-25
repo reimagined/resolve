@@ -6,41 +6,62 @@ export default (
         throw err;
     }
 ) => {
-    const eventHandlersMap = new Map();
+    const eventHandlersMap = { types: new Map(), ids: new Map() };
+
     function trigger(event) {
-        const handlers = eventHandlersMap.get(event.type) || [];
-        handlers.forEach(handler => handler(event));
+        const handlersByType = eventHandlersMap.types.get(event.type) || [];
+        const handlersById = eventHandlersMap.ids.get(event.aggregateId) || [];
+        handlersByType.concat(handlersById).forEach(handler => handler(event));
     }
 
     config.bus.setTrigger(trigger);
 
-    const onEvent = (eventTypes, callback) => {
-        eventTypes.forEach((eventType) => {
-            const handlers = eventHandlersMap.get(eventType) || [];
+    const onEvent = (eventMap, eventDescriptors, callback) => {
+        eventDescriptors.forEach((eventDescriptor) => {
+            const handlers = eventMap.get(eventDescriptor) || [];
             handlers.push(callback);
-            eventHandlersMap.set(eventType, handlers);
+            eventMap.set(eventDescriptor, handlers);
         });
 
         return () => {
-            eventTypes.forEach((eventType) => {
-                const handlers = eventHandlersMap.get(eventType).filter(item => item !== callback);
-                eventHandlersMap.set(eventType, handlers);
+            eventDescriptors.forEach((eventDescriptor) => {
+                const handlers = eventMap.get(eventDescriptor).filter(item => item !== callback);
+
+                eventMap.set(eventDescriptor, handlers);
             });
         };
     };
 
+    const onEventByType = onEvent.bind(null, eventHandlersMap.types);
+    const onEventById = onEvent.bind(null, eventHandlersMap.ids);
+
     const result = {
         async subscribeByEventType(eventTypes, handler) {
             await config.storage.loadEventsByTypes(eventTypes, handler);
-            return onEvent(eventTypes, handler);
+            return onEventByType(eventTypes, handler);
         },
 
         async getEventsByAggregateId(aggregateId, handler) {
             return await config.storage.loadEventsByAggregateId(aggregateId, handler);
         },
 
-        async onEvent(eventTypes, callback) {
-            return await onEvent(eventTypes, callback);
+        async onEvent(eventDescriptors, callback) {
+            if (Array.isArray(eventDescriptors)) {
+                return await onEventByType(eventDescriptors, callback);
+            } else if (eventDescriptors.types || eventDescriptors.ids) {
+                const typeUnsub =
+                    Array.isArray(eventDescriptors.types) &&
+                    onEventByType(eventDescriptors.types, callback);
+                const idUnsub =
+                    Array.isArray(eventDescriptors.ids) &&
+                    onEventById(eventDescriptors.ids, callback);
+                return () => {
+                    typeUnsub && typeUnsub();
+                    idUnsub && idUnsub();
+                };
+            } else {
+                throw new Error('Wrong parameter for event subscription');
+            }
         },
 
         async saveEvent(event) {

@@ -26,7 +26,8 @@ You can find detailed information on subject-related technologies and links to t
         * [bus](#bus)
         * [entries.createStore](#entriescreateStore)
         * [entries.rootComponent](#entriesrootComponent)
-        * [events](#events)
+        * [initialSubscribedEvents](#initialSubscribedEvents)
+        * [filterSubscription](#filtersubscription)
         * [extendExpress](#extendExpress)
         * [initialState](#initialState)
         * [queries](#queries)
@@ -213,10 +214,23 @@ Function that takes initialState (an object returned by the [initialState functi
 
 Root component to be rendered on the server side.
 
-#### events
+#### initialSubscribedEvents
 *Object*
 
-List of events.
+Initial list of events, which should be transmitted into client side after SPA page has been loaded.
+Object `initialSubscribedEvents` is consists of two fields: `types` and `ids`, which are represented with arrays.
+Subscription by event types should be specified by `initialSubscribedEvents.types` array and include apropriate event types. 
+Subscription by aggregate identifiers is performent same way by specifing `initialSubscribedEvents.ids` array.
+
+Example of `initialSubscribedEvents` object: 
+`{ types: ['EVENT_TYPE_1', 'EVENT_TYPE_2'], ids: ['AGGREGATE_ID_1', 'AGGREGATE_ID_2'] }`
+
+#### filterSubscription
+*function(eventDescription, requestInfo)*
+
+Allows to perform filtration for requested event types and aggregate identifiers on server side.
+Can be used for security purposes to deny custom client agent to request any events.
+To segregate subscriptions by different clients, argument `requestInfo` can be used.
 
 #### extendExpress
 *function(req, res, next)*
