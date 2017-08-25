@@ -49,7 +49,7 @@ The created application supports es6 syntax and hot reloading out of the box. Fo
 reSolve includes the following libraries which can be used independently or all together.
 
 App generator libraries:
-* :🚀 [create-resolve-app](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app)  
+* 🚀 [create-resolve-app](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app)  
 	Create a new application based on reSolve.
 
 Core libraries:
