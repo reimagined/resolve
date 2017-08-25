@@ -1,4 +1,4 @@
-# **:rocket: Create ReSolve App**
+# **🚀 Create ReSolve App**
 This package creates an application based on the reSolve framework. It is a single page application (SPA) which represents a typical Todo List. The application is built on the CQRS and Event Sourcing principles, with React+Redux on client.
 
 Create ReSolve App allows you to specify application blocks (aggregates, read models and UI part presented by React components) in the semi-declarative manner. With the `resolve-scripts` package, you don't need to write an API backend manually. Instead, `resolve-scripts` deploys backend and domain services to interact with the client which is wrapped into the `resolve-redux` package for automate interaction.
@@ -8,7 +8,7 @@ You can find detailed information on subject-related technologies and links to t
 * [Getting Started](#getting-started) - How to create a new app
 * [User Guide](#user-guide) - Information on apps created with Create ReSolve App
 
-## **Quick Overview**
+## **🔎 Quick Overview**
 ```bash
 npm i -g create-resolve-app
 create-resolve-app my-resolve-app
@@ -17,8 +17,8 @@ npm run dev
 ```
 Open [http://localhost:3000](http://localhost:3000/) in the browser to view your app.
 
-## **Getting Started**
-### Create an App
+## **🏃 Getting Started**
+### 🏗 Create an App
 Create a new reSolve application in one of the following ways.
 
 Use yarn:  
@@ -61,7 +61,7 @@ resolve-app/
   static/
   tests/
 ```
-### Available Scripts
+### 📋 Available Scripts
 Once the installation is done, you can run the following commands in the project directory to start your app:
 
 ### `npm run dev`
@@ -81,7 +81,7 @@ Runs the built app in the production mode.
 
 Open [http://localhost:3000](http://localhost:3000/) to view it in the browser.
 
-## **User Guide**
+## **📋 User Guide**
 The User Guide provides detailed information on an application created with Create ReSolve App:
 * [Project Structure Overview](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#project-structure-overview)
 * [Aggregates and Read Models](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#aggregates-and-read-models)
