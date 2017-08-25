@@ -6,7 +6,7 @@ export default (socket) => {
     console.log('Socket connected');
     const emitter = event => socket.emit('event', JSON.stringify(event));
 
-    let unsubscribePromise = subscribe(config.initialEvents, emitter);
+    let unsubscribePromise = subscribe(config.initialSubscribedEvents, emitter);
     const unsubscribe = () => {
         if (unsubscribePromise) {
             unsubscribePromise.then(unsubCallback => unsubCallback());

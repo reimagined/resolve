@@ -26,7 +26,7 @@ You can find detailed information on subject-related technologies and links to t
         * [bus](#bus)
         * [entries.createStore](#entriescreateStore)
         * [entries.rootComponent](#entriesrootComponent)
-        * [initialEvents](#initialevents)
+        * [initialSubscribedEvents](#initialSubscribedEvents)
         * [filterSubscription](#filtersubscription)
         * [extendExpress](#extendExpress)
         * [initialState](#initialState)
@@ -214,15 +214,15 @@ Function that takes initialState (an object returned by the [initialState functi
 
 Root component to be rendered on the server side.
 
-#### initialEvents
+#### initialSubscribedEvents
 *Object*
 
 Initial list of events, which should be transmitted into client side after SPA page has been loaded.
-Object `initialEvents` is consists of two fields: `types` and `ids`, which are represented with arrays.
-Subscription by event types should be specified by `initialEvents.types` array and include apropriate event types. 
-Subscription by aggregate identifiers is performent same way by specifing `initialEvents.ids` array.
+Object `initialSubscribedEvents` is consists of two fields: `types` and `ids`, which are represented with arrays.
+Subscription by event types should be specified by `initialSubscribedEvents.types` array and include apropriate event types. 
+Subscription by aggregate identifiers is performent same way by specifing `initialSubscribedEvents.ids` array.
 
-Example of `initialEvents` object: 
+Example of `initialSubscribedEvents` object: 
 `{ types: ['EVENT_TYPE_1', 'EVENT_TYPE_2'], ids: ['AGGREGATE_ID_1', 'AGGREGATE_ID_2'] }`
 
 #### filterSubscription

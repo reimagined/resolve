@@ -19,7 +19,7 @@ export default {
     },
     initialState: query => query('todos').then(todos => ({ todos })),
     aggregates,
-    initialEvents: { types: eventTypes, ids: [] },
+    initialSubscribedEvents: { types: eventTypes, ids: [] },
     queries,
     extendExpress: () => {}
 };
