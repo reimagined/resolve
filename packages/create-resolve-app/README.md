@@ -17,7 +17,7 @@ npm run dev
 ```
 Open [http://localhost:3000](http://localhost:3000/) in the browser to view your app.
 
-## **🏃 Getting Started**
+## **▶️ Getting Started**
 ### 🏗 Create an App
 Create a new reSolve application in one of the following ways.
 
@@ -81,7 +81,7 @@ Runs the built app in the production mode.
 
 Open [http://localhost:3000](http://localhost:3000/) to view it in the browser.
 
-## **📋 User Guide**
+## **📖 User Guide**
 The User Guide provides detailed information on an application created with Create ReSolve App:
 * [Project Structure Overview](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#project-structure-overview)
 * [Aggregates and Read Models](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#aggregates-and-read-models)
