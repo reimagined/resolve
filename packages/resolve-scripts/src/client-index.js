@@ -6,7 +6,6 @@ import clientConfig from './configs/client.config';
 
 const { rootComponent: RootComponent, createStore } = clientConfig;
 const store = createStore(window.__INITIAL_STATE__);
-store.dispatch({ type: 'SET_SUBSCRIPTION' });
 
 render(
     <Provider store={store}>

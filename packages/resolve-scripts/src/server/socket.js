@@ -16,7 +16,11 @@ export default (socket) => {
 
     socket.on('setSubscription', (eventsDescription) => {
         unsubscribe();
-        subscribe(eventsDescription, emitter);
+        const filteredEventsDescription = config.filterSubscription(
+            eventsDescription,
+            socket.request
+        );
+        subscribe(filteredEventsDescription, emitter);
     });
 
     socket.on('disconnect', unsubscribe);

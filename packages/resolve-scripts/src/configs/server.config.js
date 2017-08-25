@@ -22,6 +22,7 @@ const defaultConfig = {
     initialState: () => Promise.resolve({}),
     aggregates: [],
     initialEvents: { types: [], ids: [] },
+    filterSubscription: eventDescription => eventDescription,
     queries: [],
     extendExpress: () => {}
 };
