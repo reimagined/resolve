@@ -1,6 +1,6 @@
 import fileDriver from 'resolve-storage-file';
 import busDriver from 'resolve-bus-memory';
-import events from './common/aggregates/todo-events';
+import eventTypes from './common/aggregates/todo-events';
 import aggregates from './common/aggregates';
 import queries from './common/read-models';
 
@@ -19,7 +19,7 @@ export default {
     },
     initialState: query => query('todos').then(todos => ({ todos })),
     aggregates,
-    events,
+    initialEvents: { types: eventTypes, ids: [] },
     queries,
     extendExpress: () => {}
 };

@@ -97,7 +97,7 @@ describe('resolve-es', () => {
             };
         });
 
-        it('should subscibe on bus events', async () => {
+        it('should subscibe on bus events by type array', async () => {
             const eventHandler = sinon.stub();
             const eventStore = createEventStore({ bus });
             eventStore.onEvent(['TestEvent'], eventHandler);
@@ -107,6 +107,30 @@ describe('resolve-es', () => {
 
             expect(eventHandler.calledOnce).to.be.true;
             expect(eventHandler.lastCall.args[0]).to.be.deep.equal(testEvent);
+        });
+
+        it('should subscibe on bus events by type and id descriptor object', async () => {
+            const eventHandler = sinon.stub();
+            const eventStore = createEventStore({ bus });
+            eventStore.onEvent({ types: ['SomeType'], ids: ['some-id'] }, eventHandler);
+
+            const events = [
+                { type: 'SomeType', aggregateId: 'some-id' },
+                { type: 'SomeType', aggregateId: 'another-id' },
+                { type: 'AnotherType', aggregateId: 'some-id' },
+                { type: 'WrongName' }
+            ];
+
+            bus.publish(events[0]);
+            bus.publish(events[1]);
+            bus.publish(events[2]);
+            bus.publish(events[3]);
+
+            expect(eventHandler.callCount).to.be.equal(4);
+            expect(eventHandler.getCall(0).args[0]).to.be.deep.equal(events[0]);
+            expect(eventHandler.getCall(1).args[0]).to.be.deep.equal(events[0]);
+            expect(eventHandler.getCall(2).args[0]).to.be.deep.equal(events[1]);
+            expect(eventHandler.getCall(3).args[0]).to.be.deep.equal(events[2]);
         });
 
         it('should return unsubscribe function', async () => {

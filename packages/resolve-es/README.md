@@ -1,4 +1,4 @@
-# `resolve-es`
+# **🏣 resolve-es**
 
 This package serves as an event-store.
 
@@ -27,6 +27,10 @@ eventStore.onEvent(['UserCreated'], event => {
 
 eventStore.getEventsByAggregateId('1', event => {
     console.log('Aggregate event loaded', event);
+});
+
+eventStore.onEvent({ types: ['UserCreated'], ids: ['1'] }, event => {
+    console.log('Event emitted from bus by event type of aggregate id', event);
 });
 
 const event = {
