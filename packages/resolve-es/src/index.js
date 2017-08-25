@@ -50,9 +50,11 @@ export default (
                 return await onEventByType(eventDescriptors, callback);
             } else if (eventDescriptors.types || eventDescriptors.ids) {
                 const typeUnsub =
-                    Array.isArray(eventDescriptors.types) && onEventByType(eventDescriptors.types);
+                    Array.isArray(eventDescriptors.types) &&
+                    onEventByType(eventDescriptors.types, callback);
                 const idUnsub =
-                    Array.isArray(eventDescriptors.ids) && onEventById(eventDescriptors.ids);
+                    Array.isArray(eventDescriptors.ids) &&
+                    onEventById(eventDescriptors.ids, callback);
                 return () => {
                     typeUnsub && typeUnsub();
                     idUnsub && idUnsub();
