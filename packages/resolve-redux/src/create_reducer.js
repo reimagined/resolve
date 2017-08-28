@@ -1,10 +1,16 @@
-import { MERGE } from './actions';
+import { MERGE, REPLACE_STATE } from './actions';
 
 export default function createReducer({ name, eventHandlers }, extendReducer) {
     const handlers = {
         [MERGE]: (state, action) => {
             if (action.readModelName === name) {
                 return state.merge(action.state);
+            }
+            return state;
+        },
+        [REPLACE_STATE]: (state, action) => {
+            if (action.readModelName === name) {
+                return action.state;
             }
             return state;
         },

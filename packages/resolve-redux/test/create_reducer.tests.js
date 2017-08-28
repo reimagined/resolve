@@ -178,4 +178,14 @@ describe('reducer', () => {
             })
         ).to.throw();
     });
+
+    it('should support replaceState action', () => {
+        const oldState = {};
+        const newState = {};
+
+        const store = createStore(createReducer(readModel), oldState);
+        store.dispatch(ResolveActions.replaceState('counter', newState));
+
+        expect(store.getState()).to.be.equal(newState);
+    });
 });
