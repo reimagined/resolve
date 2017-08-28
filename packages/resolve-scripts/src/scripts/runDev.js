@@ -12,6 +12,7 @@ import outputConfig from './output-stats-config';
 require('./clean');
 require('./copy');
 
+const PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3001;
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 buildConfig.extendWebpack(devClientConfig, devServerConfig);
@@ -32,10 +33,8 @@ const clientDevServer = new WebpackDevServer(clientCompiler, {
     }
 });
 
-webpack(devServerConfig, (err, stats) => {
-    // process.stdout.write(stats.toString(outputConfig) + '\n');
-});
+webpack(devServerConfig, (err, stats) => {});
 
-clientDevServer.listen(3001, '127.0.0.1', () => {
-    log('Starting webpack dev server on http://localhost:3001');
+clientDevServer.listen(PORT, '127.0.0.1', () => {
+    log(`Starting webpack dev server on http://localhost:${PORT}`);
 });
