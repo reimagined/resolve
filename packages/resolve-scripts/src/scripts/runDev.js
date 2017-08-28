@@ -12,7 +12,7 @@ import outputConfig from './output-stats-config';
 require('./clean');
 require('./copy');
 
-const PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3001;
+const PORT = parseInt(process.env.WEBPACK_PORT, 10) || 3001;
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 buildConfig.extendWebpack(devClientConfig, devServerConfig);
