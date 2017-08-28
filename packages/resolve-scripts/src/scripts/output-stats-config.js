@@ -1,11 +1,16 @@
 export default {
-    assets: true,
     colors: true,
-    version: false,
     hash: false,
-    timings: true,
+    version: false,
+    timings: false,
+    assets: false,
     chunks: false,
-    chunkModules: false,
+    modules: false,
+    reasons: false,
     children: false,
-    modules: false
+    source: false,
+    errors: false,
+    errorDetails: false,
+    warnings: false,
+    publicPath: false
 };
