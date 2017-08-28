@@ -11,7 +11,8 @@ import { createStore, applyMiddleware } from 'redux';
 import axios from 'axios';
 import {
     createReducer,
-    sendCommandMiddleware
+    sendCommandMiddleware,
+    setSubscriptionMiddleware
 } from 'resolve-redux';
 
 const aggregate = {
@@ -55,6 +56,9 @@ const store = createStore(
     applyMiddleware(
         sendCommandMiddleware({
             sendCommand: command => axios.post('/api/commands', command)
+        }),
+        setSubscriptionMiddleware({
+            rootDirPath: '/'
         })
     )
 );

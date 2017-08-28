@@ -21,6 +21,14 @@ const readModels = [{
     initialState: [],
     eventHandlers: {
         UserCreated: (state, { payload })  => state.concat(payload)
+    },
+    gqlSchema: `
+        type User { id: ID!, UserName: String }
+        type Query { Users: [User], UserById(id: ID!): User }
+    `,
+    gqlResolvers: {
+        Users: root => root,
+        UserById: (root, args) => root.find(user => user.id === args.id)
     }
 }, {
     name: 'usersGraphQL',
@@ -53,11 +61,23 @@ const readModels = [{
 
 const query = createQueryExecutor({ eventStore, readModels });
 
-query('usersSimple').then(state => {
+// Request whole read-model state
+query('users').then(state => {
     console.log('Read model Users', state);
 });
 
-query('usersGraphQL', 'query { Users { id, UserName } }').then(state => {
+// Request by GraphQL query without paramaters
+query('users', 'query { Users { id, UserName } }').then(state => {
     console.log('Read model Users', state);
 });
+
+// Request by GraphQL query with paramaters
+query(
+    'users',
+    'query ($testId: ID!) { UserById(id: $testId) { id, UserName } }',
+    { testId: 1 }
+).then(state => {
+    console.log('Read model Users', state);
+});
+
 ```

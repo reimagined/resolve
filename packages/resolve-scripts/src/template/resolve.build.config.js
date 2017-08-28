@@ -1,3 +1,3 @@
 module.exports = {
-  extendWebpack: (clienConfig, serverConfig) => {}
+    extendWebpack: (clienConfig, serverConfig) => {}
 };

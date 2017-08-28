@@ -1,14 +1,6 @@
 {
-    "extends": "react-app",
-    "env": {
-        "node": true,
-        "jest": true,
-        "es6": true
-    },
     "rules": {
-        "quotes": [
-            "error",
-            "single"
-        ]
+        "import/no-extraneous-dependencies": "off",
+        "import/no-unresolved": "off"
     }
 }
