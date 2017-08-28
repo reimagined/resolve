@@ -1,6 +1,6 @@
 {
   "name": "create-resolve-app",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "This package generates boilerplate web application based on resolve framework",
   "bin": {
     "create-resolve-app": "./bin/index.js"
