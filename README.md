@@ -13,6 +13,9 @@ Learn more about related concepts:
 * [Blog about DDD](http://danielwhittaker.me/category/ddd/)
 
 ## **🚀 Quick Installation**
+> Note: the package's global installation may require administrative privileges. That means you have to use the `sudo` command for unix-based systems or run terminal with administrative privileges on windows systems to install a package globally.
+
+
 Create a new reSolve application using the [create-resolve-app](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app) package in one of the following ways.
 
 Use yarn:

@@ -9,6 +9,8 @@ You can find detailed information on subject-related technologies and links to t
 * [User Guide](#user-guide) - Information on apps created with Create ReSolve App
 
 ## **🔎 Quick Overview**
+> Note: the package's global installation may require administrative privileges. That means you have to use the `sudo` command for unix-based systems or run terminal with administrative privileges on windows systems to install a package globally.
+
 ```bash
 npm i -g create-resolve-app
 create-resolve-app my-resolve-app
@@ -81,7 +83,7 @@ Runs the built app in the production mode.
 
 Open [http://localhost:3000](http://localhost:3000/) to view it in the browser.
 
-## **📖 User Guide**
+## **User Guide**
 The User Guide provides detailed information on an application created with Create ReSolve App:
 * [Project Structure Overview](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#project-structure-overview)
 * [Aggregates and Read Models](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#aggregates-and-read-models)
