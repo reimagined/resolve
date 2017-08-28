@@ -1,10 +1,8 @@
-# **reSolve**
+# [<img src="https://user-images.githubusercontent.com/15689049/29659048-ad0d158a-88c5-11e7-9354-dbe4bb105ad7.png" height="60">](https://github.com/reimagined/resolve/)
 
-reSolve is a toolset for building apps based on the CQRS and Event Sourcing patterns. 
+reSolve is a framework for developing apps based on CQRS and Event Sourcing, with [React](https://github.com/facebook/react) + [Redux](https://github.com/reactjs/redux) on the client. It can help you easily overcome the differences between your domain and technical languages, and focus on your application code.
 
-It allows isomorphic definitions for aggregates and read models, and provides out-of-the-box integration with [React](https://github.com/facebook/react) and [Redux](https://github.com/reactjs/redux). With reSolve, you can easily overcome the differences between your domain and technical languages, and focus on your application code.
-
-Learn more on related concepts:
+Learn more about related concepts:
 
 * [Why using DDD, CQRS and Event Sourcing](https://github.com/cer/event-sourcing-examples/wiki/WhyEventSourcing)
 
@@ -14,7 +12,10 @@ Learn more on related concepts:
 
 * [Blog about DDD](http://danielwhittaker.me/category/ddd/)
 
-## **Quick Installation**
+## **🚀 Quick Installation**
+> Note: the package's global installation may require administrative privileges. That means you have to use the `sudo` command for unix-based systems or run terminal with administrative privileges on windows systems to install a package globally.
+
+
 Create a new reSolve application using the [create-resolve-app](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app) package in one of the following ways.
 
 Use yarn:
@@ -46,42 +47,42 @@ npm run start
 
 The created application supports es6 syntax and hot reloading out of the box. For more information see this [guide](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app).
 
-## **Packages**
+## **📚 Packages**
 
 reSolve includes the following libraries which can be used independently or all together.
 
 App generator libraries:
-* [create-resolve-app](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app)  
+* 🚀 [create-resolve-app](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app)  
 	Create a new application based on reSolve.
 
 Core libraries:
-* [resolve-command](https://github.com/reimagined/resolve/tree/master/packages/resolve-command)  
+* 📢 [resolve-command](https://github.com/reimagined/resolve/tree/master/packages/resolve-command)  
 	Creates a function to execute a command.
 
-* [resolve-es](https://github.com/reimagined/resolve/tree/master/packages/resolve-es)  
+* 🏣 [resolve-es](https://github.com/reimagined/resolve/tree/master/packages/resolve-es)  
 	Serves as an event-store.
 
-* [resolve-query](https://github.com/reimagined/resolve/tree/master/packages/resolve-query)  
+* 🔍 [resolve-query](https://github.com/reimagined/resolve/tree/master/packages/resolve-query)  
 	Creates a function to execute a query.
 
-* [resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux)  
+* 🔩 [resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux)  
 	Helper for creating the Redux storage.
 
 
 Drivers for event-store:
-* Bus drivers specifying how to send events:
+* 🚌 Bus drivers specifying how to send events:
     * [resolve-bus-memory](https://github.com/reimagined/resolve/tree/master/packages/bus-drivers/resolve-bus-memory) (recommended for debugging purposes)
     * [resolve-bus-rabbitmq](https://github.com/reimagined/resolve/tree/master/packages/bus-drivers/resolve-bus-rabbitmq)
     * [resolve-bus-zmq](https://github.com/reimagined/resolve/tree/master/packages/bus-drivers/resolve-bus-zmq) 
 
 
-* Storage drivers specifying where to store events:
+* 🛢 Storage drivers specifying where to store events:
     * [resolve-storage-file](https://github.com/reimagined/resolve/tree/master/packages/storage-drivers/resolve-storage-file) (recommended for debugging purposes)
     * [resolve-storage-memory](https://github.com/reimagined/resolve/tree/master/packages/storage-drivers/resolve-storage-memory) (recommended for debugging purposes)
     * [resolve-storage-mongo](https://github.com/reimagined/resolve/tree/master/packages/storage-drivers/resolve-storage-mongo)
 
 
-## **Examples**
+## **💻 Examples**
 
 * [resolve-scripts-with-router-2](https://github.com/reimagined/resolve/tree/master/examples/resolve-scripts-with-router-2)  
 	[resolve-scripts-with-router-4](https://github.com/reimagined/resolve/tree/master/examples/resolve-scripts-with-router-4)  

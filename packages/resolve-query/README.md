@@ -17,7 +17,7 @@ const bus = createBusDriver();
 const eventStore = createEventStore({ storage, bus });
 
 const readModels = [{
-    name: 'users',
+    name: 'usersSimple',
     initialState: [],
     eventHandlers: {
         UserCreated: (state, { payload })  => state.concat(payload)
@@ -29,6 +29,33 @@ const readModels = [{
     gqlResolvers: {
         Users: root => root,
         UserById: (root, args) => root.find(user => user.id === args.id)
+    }
+}, {
+    name: 'usersGraphQL',
+    initialState: { Users: [] },
+    eventHandlers: {
+        UserAdded: (state, { aggregateId: id, payload: { UserName } }) => {
+            if (state.Users.find(user => user.id === id)) return state;
+            state.Users.push({ id, UserName });
+            return state;
+        },
+        UserDeleted: (state, { aggregateId: id }) => {
+            state.Users = state.Users.filter(user => user.id !== id);
+            return state;
+        }
+    },
+    gqlSchema: `
+        type User {
+            id: ID!
+            UserName: String
+        }
+        type Query {
+            Users: [User],
+            UserById(id: ID!): User
+        }
+    `,
+    gqlResolvers: {
+        UserById: (root, args) => root.Users.find(user => user.id === args.id)
     }
 }];
 

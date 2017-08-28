@@ -1,4 +1,5 @@
-# **ReSolve App**
+
+# **🚀 ReSolve App**
 This project is an application created with [Create ReSolve App](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app). It is a single page application (SPA) which represents a typical Todo List. This application is built on the CQRS and Event Sourcing principles, with React+Redux on client.
 
 Create ReSolve App allows you to specify application blocks (aggregates, read models and UI part presented by React components) in the semi-declarative manner. With the `resolve-scripts` package, you don't need to write an API backend manually. Instead, `resolve-scripts` deploys backend and domain services to interact with the client which is wrapped into the `resolve-redux` package for automate interaction.
@@ -6,7 +7,7 @@ Create ReSolve App allows you to specify application blocks (aggregates, read mo
 You can find detailed information on subject-related technologies and links to the corresponding resources here: [https://github.com/markerikson/react-redux-links](https://github.com/markerikson/react-redux-links).
 
 
-## **Table of Contents**
+## **📑 Table of Contents**
 * [Available Scripts](#available-scripts)
     * [npm run dev](#npm-run-dev)
     * [npm run build](#npm-run-build)
@@ -34,12 +35,12 @@ You can find detailed information on subject-related technologies and links to t
         * [storage](#storage)
     * [resolve.build.config](#resolvebuildconfig)
         * [extendWebpack](#extendWebpack)
-* [Environment variables](#environment-variables)
+* [Environment Variables](#environment-variables)
     * [ROOT_DIR](#root_dir)
     * [Custom Environment Variables](#custom-environment-variables)
 
 
-## **Available Scripts**
+## **📋 Available Scripts**
 In the project directory, you can run:
 
 ### `npm run dev`
@@ -59,8 +60,8 @@ Runs the built app in the production mode.
 
 Open [http://localhost:3000](http://localhost:3000/) to view it in the browser.
 
-## **Project Structure Overview**
-[Create ReSolve App](https://www.npmjs.com/package/create-resolve-app) is an NPM package referenced to the latest versions of the [reSolve framework packages](https://github.com/reimagined/resolve/tree/master/packages). It consists of the common isomorphic part which describes domain business logic, and React components for the presentation part. No implicit server part is needed - it is encapsulated in `resolve-scripts`, but can be customized by [config](#configuration-files). The project also includes unit & E2E testing and deployment assets. All source code and functional tests are written in the [ES2016](http://2ality.com/2016/01/ecmascript-2016.html) language.
+## **🗂️ Project Structure Overview**
+[Create ReSolve App](https://www.npmjs.com/package/creat-resolve-app) is an NPM package referenced to the latest versions of the [reSolve framework packages](https://github.com/reimagined/resolve/tree/master/packages). It consists of the common isomorphic part which describes domain business logic, and React components for the presentation part. No implicit server part is needed - it is encapsulated in `resolve-scripts`, but can be customized by [config](#configuration-files). The project also includes unit & E2E testing and deployment assets. All source code and functional tests are written in the [ES2016](http://2ality.com/2016/01/ecmascript-2016.html) language.
 
 ```
 resolve-app/
@@ -113,17 +114,17 @@ resolve-app/
       index.test.js
 ```
 
-### **Client**
+### **🕴 Client**
 The client side is located in the `client/` folder and exports two key endpoints: root React component and Redux store creator function. These entry points to the client part must be specified in the [resolve.client.config.js](#resolveclientconfig) configuration file located in the root directory.
 
 Any customization like adding routing or applying middleware or saga can be performed by proper wrapping original UI entry points into subsidiary entities and specifying them in an appropriate config section. The following examples show how to use a react router as UI entry point: 
 * [react-router-2](https://github.com/reimagined/resolve/tree/master/examples/resolve-scripts-with-router-2)  
 * [react-router-4](https://github.com/reimagined/resolve/tree/master/examples/resolve-scripts-with-router-4)
 
-### **Common**
+### **🔗 Common**
 The `common/` folder contains isomorphic application part which represents business logic distributed between server and client in the same code. Domain logic is described in the reSolve-compatible format and appears in [aggregate and read model](#aggregates-and-read-models) declarations.
 
-### **Configuration**
+### **📝 Configuration**
 Create ReSolve App provides declaration configuration instead of imperative coding server-side part. Config allows you to customize React client and server-side rendering, declare domain business logic in terms of Event Sourcing with reSolve library, and modify webpack behaviour for the development and production modes.
 
 Config for client side, server side and building phase are split into three segregated files:
@@ -133,10 +134,10 @@ Config for client side, server side and building phase are split into three segr
 
 This approach allows you to simplify including non-isomorphic code and third-party libraries into an application by separating dependencies, and also hold all ES5 code for building phase in only one file.
 
-### **E2E-tests**
+### **🚦 E2E-tests**
 The system operability is controlled with [TestCafe](http://devexpress.github.io/testcafe/documentation/using-testcafe/) functional tests. A test set builds and starts a demonstration application, opens it in a browser and automates interaction with UI. After you modify code, start functional tests to check whether everything works successfully.
 
-## **Aggregates and Read Models**
+## **🏗️ Aggregates and Read Models**
 Common business/domain logic of an application consists of two parts - aggregates and read models.
 * An *aggregate* is responsible for a system behavior and encapsulation of business logic. It responses to commands, checks whether they can be executed and generates events to change the current status of a system.
 * A *read model* provides the current state of a system or its part in the given format. It is built by processing all events happened to the system, through a projection function.
@@ -177,88 +178,268 @@ export default {
 
 Note: To use read model declaration as a Redux reducer, some Immutable wrapper for a state object is required. We recommend to use the [seamless-immutable](https://github.com/rtfeldman/seamless-immutable) library. Keep in mind that incorrect handling of an immutable object may cause performance issues.
 
-## **Configuration Files**
-### resolve.client.config
-This file contains information for the client side of your application.
+## **🎛 Configuration Files**
+### Client Config
+The `resolve.client.config.js` file contains information for the client side of your application. In this file you, can define an entry point component and implement a redux store creation with the initial state for the client side.
 
-#### rootComponent 
-*ReactElement*
+* #### `rootComponent `
+	Specifies a react component that will be rendered as a root component of the application.
 
-Root component to be rendered on the client side.
+	##### Example
+	In this example, we create a simple react component and set it as a root component that will be shown on the application’s home page.
 
-#### createStore
-*function(initialState: Object): store*
+	###### resolve.client.config.js
+	```js
+	import React from 'react';
 
-Function that takes initialState and returns a Redux store. Initial state is taken from the server side and is defined in [resolve.server.config.js](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts#initialstate)
+	export default {
+	  rootComponent: () => (<h1>Root Component</h1>)
+	}
+	```
 
-### resolve.server.config
-This file contains information for SSR and reSolve library.
+* #### createStore
+	Takes the initial state from the server side (InitialState defined in [resolve.server.config.js](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts#initialstate)) and returns a Redux store.
 
-#### aggregates
-*Array*
+	##### Example
+	This example shows a simple implementation of `createStore`.
 
-Array of aggregates for [resolve-command](https://github.com/reimagined/resolve/tree/master/packages/resolve-command).
+	###### resolve.client.config.js
+	```js
+	import React from 'react';
+	import { createStore } from 'redux';
 
-#### bus
-*Object*
+  import reducers from './reducers';  // standard redux reducers
 
-Contains a [bus driver](https://github.com/reimagined/resolve/tree/master/packages/bus-drivers) and config to it.
+	export default {
+	  rootComponent: () => (<h1>Root Component</h1>),
+	  createStore: initialState => createStore(reducers, initialState)
+	}
+	```
+	**Note:** It is standard redux store creation excluding that the initialState is given from the server side.
 
-#### entries.createStore
-*function(initialState: Object): store*
+### Server Config
+The `resolve.server.config.js` file contains information for reSolve library.
 
-Function that takes initialState (an object returned by the [initialState function](#initialstate)) and returns redux store. 
+* #### aggregates
+	Specifies an array of [aggregates](#aggregates-and-read-models) for [resolve-command](https://github.com/reimagined/resolve/tree/master/packages/resolve-command). Each command is addressed to a particular aggregate. When an aggregate receives a command, it performs it and as a result produces an event, or returns an error if a command cannot be executed.
 
-#### entries.rootComponent
-*ReactElement*
+	##### Example
+	In this example, we import an array of [aggregate](#aggregates-and-read-models) objects specified in the `aggregates.js` file.
 
-Root component to be rendered on the server side.
+	###### resolve.server.config.js
+	```js
+	import aggregates from './aggregates';
 
-#### initialSubscribedEvents
-*Object*
+	export default {
+	  aggregates	
+	}
+	```
 
-Initial list of events, which should be transmitted into client side after SPA page has been loaded.
-Object `initialSubscribedEvents` is consists of two fields: `types` and `ids`, which are represented with arrays.
-Subscription by event types should be specified by `initialSubscribedEvents.types` array and include apropriate event types. 
-Subscription by aggregate identifiers is performent same way by specifing `initialSubscribedEvents.ids` array.
+* #### bus
+	The bus is used for emitting events. It is an object with the following structure:
+	* `driver`: one of [bus drivers](https://github.com/reimagined/resolve/tree/master/packages/bus-drivers)
+	* `params`: config that will be passed to a driver when it is initialized
 
-Example of `initialSubscribedEvents` object: 
-`{ types: ['EVENT_TYPE_1', 'EVENT_TYPE_2'], ids: ['AGGREGATE_ID_1', 'AGGREGATE_ID_2'] }`
+	##### Example
+	###### resolve.server.config.js
+	```js
+	import busDriver from 'resolve-bus-zmq';
 
-#### filterSubscription
-*function(eventDescription, requestInfo)*
+	export default {
+	  bus: {
+	    driver: busDriver,
+	    params: {
+	      url: 'zmq_url'
+        }
+	  }
+	}
+	```
 
-Allows to perform filtration for requested event types and aggregate identifiers on server side.
-Can be used for security purposes to deny custom client agent to request any events.
-To segregate subscriptions by different clients, argument `requestInfo` can be used.
+* #### entries
 
-#### extendExpress
-*function(req, res, next)*
+	It might be the same config as in `resolve.config.client`. But it is also possible to pass different `rootComponent` or `createStore` for server and client sides. This can be helpful in some cases (for example see [resolve-scripts with react-router v4](https://github.com/reimagined/resolve/tree/master/examples/resolve-scripts-with-router-4) and  [resolve-scripts with react-router v2](https://github.com/reimagined/resolve/tree/master/examples/resolve-scripts-with-router-2)) but be  careful when using this approach - it may cause issues with SSR.
 
-Allows to define custom routes and write express middleware.
+	##### Example
+	###### resolve.server.config.js
+	```js
+	import clientConfig from './resolve.client.config';
 
-#### initialState
-*function(query): Promise*
+	export default {
+	  entries: clientConfig
+	}
+	```
 
-Function that takes a [query](https://github.com/reimagined/resolve/tree/master/packages/resolve-query) and returns a Promise. It's possible to get an initial state by query to read-model and then resolve it with Promise.
+* #### entries.createStore
 
-#### queries
-*Array*
+	Function that takes initialState and returns a Redux store. Initial state is taken from the server side and is defined in [resolve.server.config.js](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts#initialstate)
 
-Array of read models for [resolve-query](https://github.com/reimagined/resolve/tree/master/packages/resolve-query).
+	##### Example
+	This example shows a simple implementation of `createStore`.
 
-#### storage
-*Object*
+	###### resolve.server.config.js
+	```js
+	import { createStore } from 'redux';
+	
+	import reducers from './reducers'; // standard redux reducers
 
-Contains a [storage driver](https://github.com/reimagined/resolve/tree/master/packages/storage-drivers) and config to it.
+	export default {
+	  entries: {
+	    createStore: initialState => createStore(reducers, initialState)
+	  }
+	}
+	```
+	##### Notes
+	Pay attention that it is creation standard redux store excluding that the initialState will be given from the server side.
 
-### resolve.build.config
-#### extendWebpack
-*function(clientConfig, serverConfig)*
+* #### entries.rootComponent
+	
+	Specifies a react component that will be rendered as a root component of the application.
 
-Allows to extend the standard reSolve client and server configs.
+	##### Example
+	In this example, we create a simple react component and set it as a root component that will be shown on the application’s home page.
 
-## **Environment variables**
+	###### resolve.server.config.js
+	```js
+	import React from 'react';
+
+	export default {
+	  entries: {
+	    rootComponent: () => (<h1>Root Component</h1>)
+	  }
+	}
+	```
+
+* #### initialSubscribedEvents
+	
+	An initial list of events which should be transmitted into the client side after SPA page has been loaded.
+	The `initialSubscribedEvents` object consists of two fields: `types` and `ids`, which are represented with arrays.
+	Subscription by event types should be specified by `initialSubscribedEvents.types` array and include apropriate event types. 
+	Subscription by aggregate identifiers is performent same way by specifing `initialSubscribedEvents.ids` array.
+
+	##### Example
+
+	###### resolve.server.config.js
+	```js
+	export default { 
+	  initialSubscribedEvents: {
+	    types: ['EVENT_TYPE_1', 'EVENT_TYPE_2'], 
+	    ids: ['AGGREGATE_ID_1', 'AGGREGATE_ID_2']
+	  }
+	}
+	```
+
+* #### filterSubscription
+	A function that allows to filter requested event types and aggregate identifiers on the server side. It can be used for security purposes - to prevent custom client agents from sending requests to events. Use the requestInfo argument to segregate subscriptions of different clients.
+
+	##### Example
+	###### resolve.server.config.js
+	```js
+	export default { 
+	  initialSubscribedEvents: { types: ['EVENT_TYPE'], ids: ['AGGREGATE_ID'] },
+	  
+	  filterSubscription(requestedEvents, requestInfo) => {
+	    const eventTypes = requestedEvents.types.slice(0);
+	    const waryEventIdx = eventTypes.indexOf(eventTypes.find(type => type === 'WARY_EVENT_TYPE'));
+	    const cookie = requestInfo.headers && requestInfo.headers.cookie;
+	    const userPrincipial = parsePrincipial(cookie);
+	    
+	    if(userPrincipial.role !== 'admin' && waryEventIdx > -1) {
+	      eventTypes.splice(idx, 1);
+	    }
+	    
+	    return {
+	      ids: requestedEvents.ids,
+	      types: eventTypes
+	    };
+	  }
+	}
+	```
+
+* #### extendExpress
+	A function that takes an express app. It is useful to define custom routes or express middlewares.
+
+	##### Example
+	###### resolve.server.config.js 
+	```js
+	export defualt {
+	  extendExpress: (app) {
+	    app.get('/custom', (req, res) => {
+	      res.send('Custom page is rendered');
+	    })
+	  }
+	}
+	```
+
+* #### initialState
+	
+	A function that takes a [query](https://github.com/reimagined/resolve/tree/master/packages/resolve-query) and returns a Promise. It's possible to get an initial state by query to read-model and then resolve it with Promise. This state is used in the client and server `createStore` function.
+
+	##### Example
+	###### resolve.server.config.js
+	```js
+	export default {
+	  initialState: async (query) => {
+	    return await query('state');
+	  }
+	}
+	```
+
+* #### queries
+	An array of [read models](#aggregates-and-read-models) for [resolve-query](https://github.com/reimagined/resolve/tree/master/packages/resolve-query). A *read model* represents the current state of a system or its part, and is built by processing all events happened to the system. Read models are used to answer queries.
+
+	##### Example
+	In this example, we import an array of read model objects specified in the `read-models.js` file. 
+	###### resolve.server.config.js
+	```js
+	import readModels from './read-models'
+
+	export default {
+	  queries: readModels
+	}
+	```
+
+* #### storage
+	Contains an object with the following structure: 
+	* `driver`: one of [storage drivers](https://github.com/reimagined/resolve/tree/master/packages/storage-drivers) 
+	* `params`: config that will be passed to a driver when it is initialized
+
+	##### Example
+	###### resolve.server.config.js
+	```js
+	import storageDriver from 'resolve-storage-file';
+
+	export default {
+	  storage: {
+	    driver: storageDriver ,
+	    params: {
+	      pathToFile: 'db.json'
+	    }
+	  }
+	}
+	```
+
+### Build config
+The `resolve.build.config.js` file contains information for building application.
+
+* #### extendWebpack
+	
+	Allows to extend the standard reSolve client and server configs.
+
+	##### Example
+	###### resolve.build.config
+	```js
+	import webpack from 'webpack'
+
+	export default {
+	  extendWebpack: (clientConfig, serverConfig) => {
+	    clientConfig.plugins.push(new webpack.DefinePlugin({
+	      'customVarDefined': true    
+		})
+	  }
+	}
+	```
+
+## **🛠 Environment Variables**
 ### ROOT_DIR
 To change a root directory of an application, set the `ROOT_DIR` environment variable to the required value. For example, `export ROOT_DIR=/newurl`. After that the application will be available on [http://localhost:3000/newurl](http://localhost:3000/newurl).  The`ROOT_DIR` variable is available on the client side by `process.env.ROOT_DIR`.
 
