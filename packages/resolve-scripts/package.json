@@ -10,9 +10,10 @@
     "resolve-scripts": "./bin/resolve-scripts.js"
   },
   "scripts": {
-    "copy:template": "cp -r ./src/template ./dist",
+    "template:remove": "rm -rf ./dist/template",
+    "template:copy": "cp -r ./src/template ./dist",
     "build": "babel --out-dir ./dist ./src --ignore template",
-    "prepublish": "npm run build && npm run copy:template"
+    "prepublish": "npm run build && npm run template:remove && npm run template:copy"
   },
   "repository": {
     "type": "git",
