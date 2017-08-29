@@ -19,7 +19,7 @@ cd my-resolve-app
 npm run dev
 ```
 ![Terminal](https://user-images.githubusercontent.com/15689049/29822549-8513584c-8cd4-11e7-8b65-b88fdad7e4d1.png)
-Your app will be opened in the browser and will be available by [http://localhost:3000/](http://localhost:3000/).
+Your app will be opened in the browser at [http://localhost:3000/](http://localhost:3000/).
 
 ## **▶️ Getting Started**
 ### 🏗 Create an App
