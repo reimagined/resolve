@@ -1,5 +1,5 @@
 
-# **🚀 Create ReSolve App**
+# **🚀 Create ReSolve App** [![npm version](https://badge.fury.io/js/create-resolve-app.svg)](https://badge.fury.io/js/create-resolve-app)
 This package creates an application based on the reSolve framework. It is a single page application (SPA) which represents a typical Todo List. The application is built on the CQRS and Event Sourcing principles, with React+Redux on client.
 
 Create ReSolve App allows you to specify application blocks (aggregates, read models and UI part presented by React components) in the semi-declarative manner. With the `resolve-scripts` package, you don't need to write an API backend manually. Instead, `resolve-scripts` deploys backend and domain services to interact with the client which is wrapped into the `resolve-redux` package for automate interaction.

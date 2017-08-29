@@ -1,4 +1,4 @@
-# **📢 resolve-command**
+# **📢 resolve-command** [![npm version](https://badge.fury.io/js/resolve-command.svg)](https://badge.fury.io/js/resolve-command)
 
 This package creates a function to execute a command.
 
