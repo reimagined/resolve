@@ -58,7 +58,7 @@ const store = createStore(
             sendCommand: command => axios.post('/api/commands', command)
         }),
         setSubscriptionMiddleware({
-            rootDirPath: '/'
+            rootDirPath: process.env.ROOT_DIR || ''
         })
     )
 );
