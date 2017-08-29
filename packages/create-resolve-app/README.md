@@ -1,3 +1,4 @@
+
 # **🚀 Create ReSolve App**
 This package creates an application based on the reSolve framework. It is a single page application (SPA) which represents a typical Todo List. The application is built on the CQRS and Event Sourcing principles, with React+Redux on client.
 
@@ -17,7 +18,8 @@ create-resolve-app my-resolve-app
 cd my-resolve-app
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000/) in the browser to view your app.
+![Terminal](https://user-images.githubusercontent.com/15689049/29822549-8513584c-8cd4-11e7-8b65-b88fdad7e4d1.png)
+Your app will be opened in the browser and will be available by [http://localhost:3000/](http://localhost:3000/).
 
 ## **▶️ Getting Started**
 ### 🏗 Create an App
