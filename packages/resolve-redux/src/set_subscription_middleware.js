@@ -1,3 +1,4 @@
+import { SET_SUBSCRIPTION } from './actions';
 import socketIOClient from 'socket.io-client';
 
 const CRITICAL_LEVEL = 100;
@@ -26,9 +27,7 @@ function createMiddleware({ rootDirPath }) {
         initSocketIO();
 
         return next => (action) => {
-            const { type, types, ids } = action;
-
-            if (type === 'SET_SUBSCRIPTION' && Array.isArray(types) && Array.isArray(ids)) {
+            if (action.type === SET_SUBSCRIPTION) {
                 socketIO.emit('setSubscription', {
                     types: action.types || [],
                     ids: action.ids || []
