@@ -1,6 +1,6 @@
 {
   "name": "resolve-storage-file",
-  "version": "0.0.17",
+  "version": "0.0.21",
   "description": "This package serves as a driver for resolve-storage to store events using a file.",
   "main": "./dist/index.js",
   "bugs": {
