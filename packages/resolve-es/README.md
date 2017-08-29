@@ -42,5 +42,4 @@ const event = {
 };
 
 eventStore.saveEvent(event);
-
 ```

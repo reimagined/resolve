@@ -36,7 +36,7 @@ You can find detailed information on subject-related technologies and links to t
     * [Build Config](#build-config)
         * [extendWebpack](#extendwebpack)
 * [Environment Variables](#-environment-variables)
-    * [ROOT_DIR](#root_dir)
+    * [Environment Variables to Change URL](#environment-variables-to-change-url)
     * [Custom Environment Variables](#custom-environment-variables)
 
 
@@ -125,7 +125,7 @@ Any customization like adding routing or applying middleware or saga can be perf
 The `common/` folder contains isomorphic application part which represents business logic distributed between server and client in the same code. Domain logic is described in the reSolve-compatible format and appears in [aggregate and read model](#️-aggregates-and-read-models) declarations.
 
 ### **📝 Configuration**
-Create ReSolve App provides declaration configuration instead of imperative coding server-side part. Config allows you to customize React client and server-side rendering, declare domain business logic in terms of Event Sourcing with reSolve library, and modify webpack behaviour for the development and production modes.
+Create ReSolve App provides declarative configuration instead of imperative coding server-side part. Config allows you to customize React client and server-side rendering, declare domain business logic in terms of Event Sourcing with reSolve library, and modify webpack behaviour for the development and production modes.
 
 Config for client side, server side and building phase are split into three segregated files:
 * [resolve.client.config.js](#client-config)  
@@ -215,13 +215,14 @@ The `resolve.client.config.js` file contains information for the client side of 
 	  createStore: initialState => createStore(reducers, initialState)
 	}
 	```
-	**Note:** It is standard redux store creation excluding that the initialState is given from the server side.
+	
+  **Note:** Standard redux store creation excludes that the initialState is passed from the server side.
 
 ### Server Config
 The `resolve.server.config.js` file contains information for reSolve library.
 
 * #### aggregates
-	Specifies an array of [aggregates](#️-aggregates-and-read-models) for [resolve-command](https://github.com/reimagined/resolve/tree/master/packages/resolve-command). Each command is addressed to a particular aggregate. When an aggregate receives a command, it performs it and as a result produces an event, or returns an error if a command cannot be executed.
+	Specifies an array of [aggregates](#️-aggregates-and-read-models) for [resolve-command](https://github.com/reimagined/resolve/tree/master/packages/resolve-command). Each command is addressed to a particular aggregate. When an aggregate receives a command, it performs this command and as a result produces an event, or returns an error if the command cannot be executed.
 
 	##### Example
 	In this example, we import an array of aggregate objects specified in the `aggregates.js` file.
@@ -236,7 +237,7 @@ The `resolve.server.config.js` file contains information for reSolve library.
 	```
 
 * #### bus
-	The bus is used for emitting events. It is an object with the following structure:
+	The bus is used to emit events. It is an object with the following structure 
 	* `driver`: one of [bus drivers](https://github.com/reimagined/resolve/tree/master/packages/bus-drivers)
 	* `params`: config that will be passed to a driver when it is initialized
 
@@ -257,7 +258,7 @@ The `resolve.server.config.js` file contains information for reSolve library.
 
 * #### entries
 
-	It might be the same config as in `resolve.client.config`. But it is also possible to pass different `rootComponent` or `createStore` to the server and client sides. This can be helpful in some cases (for example, see [resolve-scripts with react-router v4](https://github.com/reimagined/resolve/tree/master/examples/resolve-scripts-with-router-4) and  [resolve-scripts with react-router v2](https://github.com/reimagined/resolve/tree/master/examples/resolve-scripts-with-router-2)) but be  careful when using this approach - it may cause issues with SSR.
+	It might be the same config as in `resolve.client.config.js`. But it is also possible to pass different `rootComponent` or `createStore` to server and client sides. It can be helpful in some cases (for example, see [resolve-scripts with react-router v4](https://github.com/reimagined/resolve/tree/master/examples/resolve-scripts-with-router-4) and  [resolve-scripts with react-router v2](https://github.com/reimagined/resolve/tree/master/examples/resolve-scripts-with-router-2)) but be  careful when using this approach - it may cause issues with SSR.
 
 	##### Example
 	###### resolve.server.config.js
@@ -288,7 +289,7 @@ The `resolve.server.config.js` file contains information for reSolve library.
 	  }
 	}
 	```
-	**Note:** It is standard redux store creation excluding that the initialState is given from the server side.
+  **Note:** Standard redux store creation excludes that the initialState is passed from the server side.
 
 * #### entries.rootComponent
 	
@@ -310,13 +311,12 @@ The `resolve.server.config.js` file contains information for reSolve library.
 
 * #### initialSubscribedEvents
 	
-	Initial list of events which should be transmitted into the client side after SPA page has been loaded.
-	The `initialSubscribedEvents` object consists of two fields: `types` and `ids`, which are represented with arrays.
-	Subscription by event types should be specified by `initialSubscribedEvents.types` array and include apropriate event types. 
-	Subscription by aggregate identifiers is performent same way by specifing `initialSubscribedEvents.ids` array.
+	Initial list of events which should be transmitted into the client side after an SPA page has been loaded.
+	The `initialSubscribedEvents` object consists of two fields for event subscription management: 
+	- `types`  - by event types
+	- `ids` - by aggregate identifiers
 
 	##### Example
-
 	###### resolve.server.config.js
 	```js
 	export default { 
@@ -439,8 +439,16 @@ The `resolve.build.config.js` file contains information for building application
 	```
 
 ## **🛠 Environment Variables**
-### ROOT_DIR
-To change a root directory of an application, set the `ROOT_DIR` environment variable to the required value. For example, `export ROOT_DIR=/newurl`. After that the application will be available on [http://localhost:3000/newurl](http://localhost:3000/newurl).  The`ROOT_DIR` variable is available on the client side by `process.env.ROOT_DIR`.
+
+### Environment Variables to Change URL
+You can adjust your application URL ([http://localhost:3000](http://localhost:3000/) is used by default) using the following environment variables:
+* `HOST` - Set the IP address
+* `PORT` - Set the port
+*  `HTTPS` - Set to `true` to use `https` instead of `http`
+* `ROOT_DIR` - Set the application's root directory. For example, `export ROOT_DIR=/newurl`. After that the application will be available on [http://localhost:3000/newurl](http://localhost:3000/newurl). 
+
+Environment variables are available on the client side by  `process.env.VARIABLE_NAME`.
+
 
 ### Custom Environment Variables
 You can pass custom env variables to the client side. To do this, name a variable starting with the `RESOLVE_` prefix. After that, this variable will be available on the client and server side via the `process.env` object .
