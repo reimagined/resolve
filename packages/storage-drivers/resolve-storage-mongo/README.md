@@ -1,4 +1,4 @@
-# `resolve-storage-mongo`
+# **resolve-storage-mongo** [![npm version](https://badge.fury.io/js/resolve-storage-mongo.svg)](https://badge.fury.io/js/resolve-storage-mongo)
 
 This package serves as a driver for `resolve-es` to store events using MongoDB.
 

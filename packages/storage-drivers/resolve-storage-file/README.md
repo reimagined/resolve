@@ -1,4 +1,4 @@
-# `resolve-storage-file`
+# **resolve-storage-file** [![npm version](https://badge.fury.io/js/resolve-storage-file.svg)](https://badge.fury.io/js/resolve-storage-file)
 
 This package serves as a driver for `resolve-es` to store events using a file.
 

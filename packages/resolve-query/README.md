@@ -1,4 +1,4 @@
-# **🔍 resolve-query**
+# **🔍 resolve-query** [![npm version](https://badge.fury.io/js/resolve-query.svg)](https://badge.fury.io/js/resolve-query)
 
 This package creates a function to execute a query.
 

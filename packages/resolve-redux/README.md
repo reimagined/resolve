@@ -1,4 +1,4 @@
-# **🔩 resolve-redux**
+# **🔩 resolve-redux** [![npm version](https://badge.fury.io/js/resolve-redux.svg)](https://badge.fury.io/js/resolve-redux)
 
 This package serves as a helper for creating the Redux storage.
 
@@ -58,7 +58,7 @@ const store = createStore(
             sendCommand: command => axios.post('/api/commands', command)
         }),
         setSubscriptionMiddleware({
-            rootDirPath: process.env.ROOT_DIR || ''
+            rootDirPath: process.env.ROOT_DIR
         })
     )
 );
