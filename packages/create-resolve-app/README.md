@@ -1,3 +1,4 @@
+
 # **🚀 Create ReSolve App**
 This package creates an application based on the reSolve framework. It is a single page application (SPA) which represents a typical Todo List. The application is built on the CQRS and Event Sourcing principles, with React+Redux on client.
 
@@ -5,7 +6,7 @@ Create ReSolve App allows you to specify application blocks (aggregates, read mo
 
 You can find detailed information on subject-related technologies and links to the corresponding resources here: [https://github.com/markerikson/react-redux-links](https://github.com/markerikson/react-redux-links).
 
-* [Getting Started](#getting-started) - How to create a new app
+* [Getting Started](#️-getting-started) - How to create a new app
 * [User Guide](#user-guide) - Information on apps created with Create ReSolve App
 
 ## **🔎 Quick Overview**
@@ -17,7 +18,8 @@ create-resolve-app my-resolve-app
 cd my-resolve-app
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000/) in the browser to view your app.
+![Terminal](https://user-images.githubusercontent.com/15689049/29822549-8513584c-8cd4-11e7-8b65-b88fdad7e4d1.png)
+Your app will be opened in the browser at [http://localhost:3000/](http://localhost:3000/).
 
 ## **▶️ Getting Started**
 ### 🏗 Create an App
@@ -85,8 +87,8 @@ Open [http://localhost:3000](http://localhost:3000/) to view it in the browser.
 
 ## **User Guide**
 The User Guide provides detailed information on an application created with Create ReSolve App:
-* [Project Structure Overview](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#project-structure-overview)
-* [Aggregates and Read Models](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#aggregates-and-read-models)
-* [Configuration Files](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#configuration-files)
+* [Project Structure Overview](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#️-project-structure-overview)
+* [Aggregates and Read Models](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#️-aggregates-and-read-models)
+* [Configuration Files](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#-configuration-files)
 
 This user guide copy is added to your project folder as the `Readme.md` file.
