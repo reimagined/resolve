@@ -35,6 +35,4 @@ const clientDevServer = new WebpackDevServer(clientCompiler, {
 
 webpack(devServerConfig, (err, stats) => {});
 
-clientDevServer.listen(PORT, '127.0.0.1', () => {
-    log(`Starting webpack dev server on http://localhost:${PORT}`);
-});
+clientDevServer.listen(PORT, '127.0.0.1');
