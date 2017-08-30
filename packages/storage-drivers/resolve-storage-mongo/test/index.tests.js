@@ -83,7 +83,7 @@ describe('es-mongo', () => {
             .then((db) => {
                 expect(db.collection.lastCall.args).to.deep.equal(['test-collection']);
                 expect(db.collection.lastCall.returnValue.find.lastCall.args).to.deep.equal([
-                    { aggregateId },
+                    { aggregateId: { $in: [aggregateId] } },
                     { sort: 'timestamp' }
                 ]);
 
