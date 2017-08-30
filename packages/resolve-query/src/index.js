@@ -2,12 +2,45 @@ import 'regenerator-runtime/runtime';
 import { makeExecutableSchema } from 'graphql-tools';
 import { parse, execute } from 'graphql';
 
-function getExecutor({ eventStore, readModel }) {
-    const eventTypes = Object.keys(readModel.eventHandlers);
-    let state = readModel.initialState || {};
-    let error = null;
-    let result = null;
+async function getState({ statesRepository, eventStore, readModel, aggregateIds }) {
+    const readModelName = readModel.name.toLowerCase();
 
+    const stateName = Array.isArray(aggregateIds) && aggregateIds.length > 0
+        ? `${readModelName}\u200D${aggregateIds.sort().join('\u200D')}`
+        : readModelName;
+
+    if (!statesRepository[stateName]) {
+        const eventTypes = Object.keys(readModel.eventHandlers);
+        let state = readModel.initialState || {};
+        let error = null;
+
+        const result = eventStore.subscribeByEventType(eventTypes, (event) => {
+            const handler = readModel.eventHandlers[event.type];
+            if (!handler) return;
+
+            try {
+                state = handler(state, event);
+            } catch (err) {
+                error = err;
+            }
+        });
+
+        statesRepository[stateName] = async () => {
+            await result;
+            if (error) throw error;
+            return state;
+        };
+    }
+
+    return await statesRepository[stateName]();
+}
+
+function extractAggregateIdsFromGqlQuery(parsedGqlQuery) {
+    console.log(parsedGqlQuery);
+    return [];
+}
+
+function getExecutor({ statesRepository, eventStore, readModel }) {
     const executableSchema =
         readModel.gqlSchema &&
         makeExecutableSchema({
@@ -16,29 +49,17 @@ function getExecutor({ eventStore, readModel }) {
         });
 
     return async (gqlQuery, gqlVariables) => {
-        result =
-            result ||
-            eventStore.subscribeByEventType(eventTypes, (event) => {
-                const handler = readModel.eventHandlers[event.type];
-                if (!handler) return;
-
-                try {
-                    state = handler(state, event);
-                } catch (err) {
-                    error = err;
-                }
-            });
-
-        await result;
-        if (error) throw error;
-
-        if (!gqlQuery) return state;
+        if (!gqlQuery) {
+            return await getState({ statesRepository, eventStore, readModel });
+        }
 
         if (!executableSchema) {
             throw new Error(`GraphQL schema for '${readModel.name}' read model is not found`);
         }
 
         const parsedGqlQuery = parse(gqlQuery);
+        const aggregateIds = extractAggregateIdsFromGqlQuery(parsedGqlQuery);
+        const state = await getState({ statesRepository, eventStore, readModel, aggregateIds });
 
         const gqlResponse = await execute(
             executableSchema,
@@ -54,8 +75,11 @@ function getExecutor({ eventStore, readModel }) {
 }
 
 export default ({ eventStore, readModels }) => {
+    const statesRepository = {};
+
     const executors = readModels.reduce((result, readModel) => {
         result[readModel.name.toLowerCase()] = getExecutor({
+            statesRepository,
             eventStore,
             readModel
         });
