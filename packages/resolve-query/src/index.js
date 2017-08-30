@@ -54,7 +54,12 @@ function extractAggregateIdsFromGqlQuery(parsedGqlQuery, gqlVariables) {
         if (queryObject.kind === 'Field' && Array.isArray(queryObject.arguments)) {
             queryObject.arguments
                 .filter(arg => arg.name && arg.name.value === 'aggregateId' && arg.value)
-                .map(arg => arg.value.value)
+                .map(
+                    arg =>
+                        arg.value.kind === 'Variable' && arg.value.name && arg.value.name.value
+                            ? gqlVariables[arg.value.name.value]
+                            : arg.value.value
+                )
                 .forEach(value => store.push(value));
         }
 
@@ -88,7 +93,7 @@ function getExecutor({ statesRepository, eventStore, readModel }) {
         }
 
         const parsedGqlQuery = parse(gqlQuery);
-        const aggregateIds = extractAggregateIdsFromGqlQuery(parsedGqlQuery);
+        const aggregateIds = extractAggregateIdsFromGqlQuery(parsedGqlQuery, gqlVariables);
         const state = await getState({ statesRepository, eventStore, readModel, aggregateIds });
 
         const gqlResponse = await execute(

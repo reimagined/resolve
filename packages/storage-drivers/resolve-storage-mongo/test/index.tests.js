@@ -69,7 +69,7 @@ describe('es-mongo', () => {
             });
     });
 
-    it('should load events by aggregate id', () => {
+    it('should load events by aggregate ids', () => {
         const driver = createDriver(driverSettings);
         const aggregateId = 'test-aggregate-id';
         const eventsByAggregateId = [{ id: '1', aggregateId }, { id: '1', aggregateId }];
@@ -78,7 +78,7 @@ describe('es-mongo', () => {
         _setFindResult(eventsByAggregateId);
 
         return driver
-            .loadEventsByAggregateId(aggregateId, processEvent)
+            .loadEventsByAggregateId([aggregateId], processEvent)
             .then(() => MongoClient.connect.lastCall.returnValue)
             .then((db) => {
                 expect(db.collection.lastCall.args).to.deep.equal(['test-collection']);

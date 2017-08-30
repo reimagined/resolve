@@ -59,10 +59,10 @@ describe('es-file', () => {
             });
     });
 
-    it('load events by aggregate id', () => {
+    it('load events by aggregate ids', () => {
         const result = [];
         return eventstore
-            .loadEventsByAggregateId('3', (item) => {
+            .loadEventsByAggregateId(['3'], (item) => {
                 result.push(item);
             })
             .then(() => {
@@ -72,7 +72,7 @@ describe('es-file', () => {
 
     it('save event', () =>
         eventstore.saveEvent(row5).then(() =>
-            eventstore.loadEventsByAggregateId('5', (result) => {
+            eventstore.loadEventsByAggregateId(['5'], (result) => {
                 expect(result).to.be.deep.equal(row5);
             })
         ));

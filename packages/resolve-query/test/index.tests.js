@@ -26,31 +26,24 @@ describe('resolve-query', () => {
         {
             initialState: { Users: [] },
             name: GRAPHQL_READ_MODEL_NAME,
-            eventHandlers: {
-                UserAdded: (state, { aggregateId: id, payload: { UserName } }) => {
-                    if (state.Users.find(user => user.id === id)) return state;
-                    state.Users.push({ id, UserName });
-                    return state;
-                },
-                UserDeleted: (state, { aggregateId: id }) => {
-                    state.Users = state.Users.filter(user => user.id !== id);
-                    return state;
-                }
-            },
+            eventHandlers: null,
             gqlSchema: `
                 type User {
                     id: ID!
                     UserName: String
                 }
                 type Query {
-                    Users: [User],
+                    UserByIdOnDemand(aggregateId: ID!): User,
+                    UserById(id: ID!): User,
                     UserIds: [ID!],
-                    UserById(id: ID!): User
+                    Users: [User],
                 }
             `,
             gqlResolvers: {
-                UserIds: (root, args) => root.Users.map(user => user.id),
-                UserById: (root, args) => root.Users.find(user => user.id === args.id)
+                UserByIdOnDemand: (root, args) =>
+                    root.Users.find(user => user.id === args.aggregateId),
+                UserById: (root, args) => root.Users.find(user => user.id === args.id),
+                UserIds: (root, args) => root.Users.map(user => user.id)
             }
         }
     ];
@@ -91,7 +84,32 @@ describe('resolve-query', () => {
         eventStore = {
             subscribeByEventType: sinon
                 .stub()
-                .callsFake((eventTypes, handler) => eventList.forEach(event => handler(event)))
+                .callsFake((matchList, handler) =>
+                    eventList
+                        .filter(event => matchList.includes(event.type))
+                        .forEach(event => handler(event))
+                ),
+            subscribeByAggregateId: sinon
+                .stub()
+                .callsFake((matchList, handler) =>
+                    eventList
+                        .filter(event => matchList.includes(event.aggregateId))
+                        .forEach(event => handler(event))
+                )
+        };
+
+        const graphqlReadModel = readModels.find(model => model.name === GRAPHQL_READ_MODEL_NAME);
+
+        graphqlReadModel.eventHandlers = {
+            UserAdded: (state, { aggregateId: id, payload: { UserName } }) => {
+                if (state.Users.find(user => user.id === id)) return state;
+                state.Users.push({ id, UserName });
+                return state;
+            },
+            UserDeleted: (state, { aggregateId: id }) => {
+                state.Users = state.Users.filter(user => user.id !== id);
+                return state;
+            }
         };
     });
 
@@ -226,23 +244,43 @@ describe('resolve-query', () => {
         });
     });
 
-    it.only('should support custom defined resolver with arguments', async () => {
+    it('should support custom defined resolver with arguments', async () => {
         const executeQuery = createQueryExecutor({ eventStore, readModels });
         eventList = eventListForGraphQL.slice(0);
 
-        const graphqlQuery = `query { TodoCardById(aggregateId:"aaa-bbb-ccc-ddd") {
-            CardName
-            Todos(aggregateId:"123", aggregateId:"456") {
-                TodoName
-                TodoChecked
-            }
-        } }
-        `; //'query { UserById(id:2) { id, UserName } }';
+        const graphqlQuery = 'query { UserById(id:2) { id, UserName } }';
 
         const state = await executeQuery(GRAPHQL_READ_MODEL_NAME, graphqlQuery);
 
         expect(state).to.be.deep.equal({
             UserById: {
+                UserName: 'User-2',
+                id: '2'
+            }
+        });
+    });
+
+    // eslint-disable-next-line max-len
+    it('should build small on-demand read-models if aggregateId argument specified directly', async () => {
+        const graphqlReadModel = readModels.find(model => model.name === GRAPHQL_READ_MODEL_NAME);
+
+        graphqlReadModel.eventHandlers = {
+            UserAdded: sinon.stub().callsFake(graphqlReadModel.eventHandlers.UserAdded),
+            UserDeleted: sinon.stub().callsFake(graphqlReadModel.eventHandlers.UserDeleted)
+        };
+
+        const executeQuery = createQueryExecutor({ eventStore, readModels });
+        eventList = eventListForGraphQL.slice(0);
+
+        const graphqlQuery = 'query { UserByIdOnDemand(aggregateId:2) { id, UserName } }';
+
+        const state = await executeQuery(GRAPHQL_READ_MODEL_NAME, graphqlQuery);
+
+        expect(graphqlReadModel.eventHandlers.UserAdded.callCount).to.be.equal(1);
+        expect(graphqlReadModel.eventHandlers.UserDeleted.callCount).to.be.equal(0);
+
+        expect(state).to.be.deep.equal({
+            UserByIdOnDemand: {
                 UserName: 'User-2',
                 id: '2'
             }
@@ -255,10 +293,38 @@ describe('resolve-query', () => {
 
         const graphqlQuery = 'query ($testId: ID!) { UserById(id: $testId) { id, UserName } }';
 
-        const state = await executeQuery(GRAPHQL_READ_MODEL_NAME, graphqlQuery, { testId: 3 });
+        const state = await executeQuery(GRAPHQL_READ_MODEL_NAME, graphqlQuery, { testId: '3' });
 
         expect(state).to.be.deep.equal({
             UserById: {
+                UserName: 'User-3',
+                id: '3'
+            }
+        });
+    });
+
+    // eslint-disable-next-line max-len
+    it('should build small on-demand read-models if aggregateId argument specified by variables', async () => {
+        const graphqlReadModel = readModels.find(model => model.name === GRAPHQL_READ_MODEL_NAME);
+
+        graphqlReadModel.eventHandlers = {
+            UserAdded: sinon.stub().callsFake(graphqlReadModel.eventHandlers.UserAdded),
+            UserDeleted: sinon.stub().callsFake(graphqlReadModel.eventHandlers.UserDeleted)
+        };
+
+        const executeQuery = createQueryExecutor({ eventStore, readModels });
+        eventList = eventListForGraphQL.slice(0);
+
+        const graphqlQuery =
+            'query ($testId: ID!) { UserByIdOnDemand(aggregateId: $testId) { id, UserName } }';
+
+        const state = await executeQuery(GRAPHQL_READ_MODEL_NAME, graphqlQuery, { testId: '3' });
+
+        expect(graphqlReadModel.eventHandlers.UserAdded.callCount).to.be.equal(1);
+        expect(graphqlReadModel.eventHandlers.UserDeleted.callCount).to.be.equal(0);
+
+        expect(state).to.be.deep.equal({
+            UserByIdOnDemand: {
                 UserName: 'User-3',
                 id: '3'
             }
