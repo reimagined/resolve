@@ -33,9 +33,12 @@ function createDriver({ pathToFile }) {
         );
     }
 
-    function loadEventsByAggregateId(id, callback) {
+    function loadEventsByAggregateId(ids, callback) {
         return loadEvents(pathToFile).then(events =>
-            events.filter(event => event.aggregateId === id).sort(compareEvents).forEach(callback)
+            events
+                .filter(event => ids.includes(event.aggregateId))
+                .sort(compareEvents)
+                .forEach(callback)
         );
     }
 

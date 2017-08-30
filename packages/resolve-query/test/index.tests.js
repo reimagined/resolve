@@ -226,11 +226,18 @@ describe('resolve-query', () => {
         });
     });
 
-    it('should support custom defined resolver with arguments', async () => {
+    it.only('should support custom defined resolver with arguments', async () => {
         const executeQuery = createQueryExecutor({ eventStore, readModels });
         eventList = eventListForGraphQL.slice(0);
 
-        const graphqlQuery = 'query { UserById(id:2) { id, UserName } }';
+        const graphqlQuery = `query { TodoCardById(aggregateId:"aaa-bbb-ccc-ddd") {
+            CardName
+            Todos(aggregateId:"123", aggregateId:"456") {
+                TodoName
+                TodoChecked
+            }
+        } }
+        `; //'query { UserById(id:2) { id, UserName } }';
 
         const state = await executeQuery(GRAPHQL_READ_MODEL_NAME, graphqlQuery);
 
