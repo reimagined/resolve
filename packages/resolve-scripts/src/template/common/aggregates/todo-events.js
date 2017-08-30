@@ -1,4 +1,5 @@
 /* @flow */
+/* eslint-disable no-undef */
 
 const events = {
     TODO_CREATED: 'TodoCreated',
