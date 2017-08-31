@@ -88,7 +88,6 @@ app.use(`${rootDirectory}${STATIC_PATH}`, staticMiddleware);
 app.get([`${rootDirectory}/*`, `${rootDirectory || '/'}`], async (req, res) => {
     try {
         const state = await config.initialState(executeQuery, {
-            securityContext: config.securityContextProvider(req),
             cookies: req.cookies,
             hostname: req.hostname,
             originalUrl: req.originalUrl,
