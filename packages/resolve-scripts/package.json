@@ -38,6 +38,7 @@
     "body-parser": "^1.17.2",
     "chalk": "^2.1.0",
     "classnames": "^2.2.5",
+    "cookie-parser": "^1.4.3",
     "cross-spawn": "^5.1.0",
     "css-loader": "^0.28.5",
     "enhanced-resolve": "^3.4.1",

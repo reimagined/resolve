@@ -28,6 +28,8 @@ export default (initialState, { req, res }) => {
             return result;
         }, {});
 
+    const securityContext = config.securityContextProvider(req);
+
     res.send(
         '<!doctype html>\n' +
             `<html ${helmet.htmlAttributes.toString()}>\n` +
@@ -38,6 +40,7 @@ export default (initialState, { req, res }) => {
             '<script>\n' +
             `window.__PROCESS_ENV__=${JSON.stringify(processEnv)}\n` +
             `window.__INITIAL_STATE__=${JSON.stringify(initialState)}\n` +
+            `window.__SECURITY_CONTEXT__=${JSON.stringify(securityContext)}\n` +
             '</script>\n' +
             `${helmet.script.toString()}\n` +
             '</head>\n' +

@@ -24,11 +24,11 @@ const getAggregateState = async (aggregate, aggregateId, eventStore) => {
     return aggregateState;
 };
 
-const executeCommand = async (command, aggregate, eventStore) => {
+const executeCommand = async (command, aggregate, eventStore, securityContext) => {
     const aggregateState = await getAggregateState(aggregate, command.aggregateId, eventStore);
 
     const handler = aggregate.commands[command.type];
-    const event = handler(aggregateState, command);
+    const event = handler(aggregateState, command, securityContext);
 
     if (!event.type) {
         throw new Error('event type is required');
@@ -39,9 +39,9 @@ const executeCommand = async (command, aggregate, eventStore) => {
     return event;
 };
 
-function createExecutor({ eventStore, aggregate }) {
-    return async (command) => {
-        const event = await executeCommand(command, aggregate, eventStore);
+function createExecutor({ eventStore, aggregate, securityContext }) {
+    return async (command, securityContext) => {
+        const event = await executeCommand(command, aggregate, eventStore, securityContext);
         return await eventStore.saveEvent(event);
     };
 }
@@ -55,8 +55,9 @@ export default ({ eventStore, aggregates }) => {
         return result;
     }, {});
 
-    return async (command) => {
+    return async (command, securityContext) => {
         await verifyCommand(command);
-        return executors[command.aggregateName.toLowerCase()](command);
+        const aggregateName = command.aggregateName.toLowerCase();
+        return executors[aggregateName](command, securityContext);
     };
 };
