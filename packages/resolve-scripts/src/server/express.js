@@ -48,7 +48,7 @@ try {
 
 app.get(`${rootDirectory}/api/queries/:queryName`, async (req, res) => {
     try {
-        const securityContext = config.securityContextProvider(req, res);
+        const securityContext = config.securityContextProvider(req);
         const state = await executeQuery(
             req.params.queryName,
             req.query && req.query.graphql,
@@ -66,7 +66,7 @@ app.get(`${rootDirectory}/api/queries/:queryName`, async (req, res) => {
 
 app.post(`${rootDirectory}/api/commands`, async (req, res) => {
     try {
-        const securityContext = config.securityContextProvider(req, res);
+        const securityContext = config.securityContextProvider(req);
         await executeCommand(req.body, securityContext);
         res.status(200).send('ok');
     } catch (err) {
