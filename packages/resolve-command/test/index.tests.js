@@ -14,25 +14,9 @@ describe('resolve-command', () => {
         {
             initialState: {},
             name: AGGREGATE_NAME,
-            eventHandlers: {
-                SuccessEvent: (state, event) => {
-                    lastState = { ...state, value: 42 };
-                    return lastState;
-                },
-                BrokenEvent: (state, event) => {
-                    throw brokenStateError;
-                }
-            },
-            commands: {
-                emptyCommand: () => ({
-                    type: 'EmptyEvent',
-                    payload: {}
-                }),
-                brokenCommand: () => ({
-                    type: '', //broken type
-                    payload: {}
-                })
-            }
+            // Following arguments redefined in beforeEach section
+            eventHandlers: null,
+            commands: null
         }
     ];
 
@@ -46,6 +30,29 @@ describe('resolve-command', () => {
                 .callsFake((eventTypes, handler) => handler(eventList.shift())),
             saveEvent: sinon.stub().callsFake((event) => {
                 eventList.push(event);
+            })
+        };
+
+        const aggregate = aggregates.find(aggregate => aggregate.name === AGGREGATE_NAME);
+
+        aggregate.eventHandlers = {
+            SuccessEvent: (state, event) => {
+                lastState = { ...state, value: 42 };
+                return lastState;
+            },
+            BrokenEvent: (state, event) => {
+                throw brokenStateError;
+            }
+        };
+
+        aggregate.commands = {
+            emptyCommand: () => ({
+                type: 'EmptyEvent',
+                payload: {}
+            }),
+            brokenCommand: () => ({
+                type: '', //broken type
+                payload: {}
             })
         };
     });
@@ -176,6 +183,32 @@ describe('resolve-command', () => {
         } catch (error) {
             expect(error.message).to.equal('"type" argument is required');
         }
+    });
+
+    it('should pass security context to command handler', async () => {
+        const aggregate = aggregates.find(aggregate => aggregate.name === AGGREGATE_NAME);
+        aggregate.commands.emptyCommand = sinon.stub().callsFake(aggregate.commands.emptyCommand);
+
+        const executeCommand = createCommandExecutor({ eventStore, aggregates });
+        eventList = [{ type: 'SuccessEvent' }];
+
+        const securityContext = { testField: 'testValue' };
+        const transaction = executeCommand(
+            {
+                aggregateName: AGGREGATE_NAME,
+                aggregateId: AGGREGATE_ID,
+                type: 'emptyCommand'
+            },
+            securityContext
+        );
+
+        await transaction;
+
+        expect(aggregate.commands.emptyCommand.lastCall.args[2]).to.be.equal(securityContext);
+
+        expect(lastState).to.be.deep.equal({
+            value: 42
+        });
     });
 
     it('works the same way for different import types', () => {

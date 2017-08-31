@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import express from 'express';
 import path from 'path';
 import query from 'resolve-query';
@@ -16,6 +17,7 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 const executeQuery = query({
     eventStore,
@@ -46,14 +48,14 @@ try {
 
 app.get(`${rootDirectory}/api/queries/:queryName`, async (req, res) => {
     try {
-        const queryParameters = [req.params.queryName];
-        if (req.query && req.query.graphql) {
-            queryParameters.push(req.query.graphql);
-            if (req.query.variables) {
-                queryParameters.push(JSON.parse(req.query.variables));
-            }
-        }
-        const state = await executeQuery(...queryParameters);
+        const securityContext = config.securityContextProvider(req, res);
+        const state = await executeQuery(
+            req.params.queryName,
+            req.query && req.query.graphql,
+            (req.query && req.query.graphql && req.query.variables) || {},
+            securityContext
+        );
+
         res.status(200).json(state);
     } catch (err) {
         res.status(500).end('Query error: ' + err.message);
@@ -62,12 +64,16 @@ app.get(`${rootDirectory}/api/queries/:queryName`, async (req, res) => {
     }
 });
 
-app.post(`${rootDirectory}/api/commands`, (req, res) => {
-    executeCommand(req.body).then(() => res.status(200).send('ok')).catch((err) => {
+app.post(`${rootDirectory}/api/commands`, async (req, res) => {
+    try {
+        const securityContext = config.securityContextProvider(req, res);
+        await executeCommand(req.body, securityContext);
+        res.status(200).send('ok');
+    } catch (err) {
         res.status(500).end('Command error:' + err.message);
         // eslint-disable-next-line no-console
         console.log(err);
-    });
+    }
 });
 
 const staticMiddleware = process.env.NODE_ENV === 'production'

@@ -26,7 +26,6 @@ describe('resolve-query', () => {
         {
             initialState: { Users: [] },
             name: GRAPHQL_READ_MODEL_NAME,
-            eventHandlers: null,
             gqlSchema: `
                 type User {
                     id: ID!
@@ -39,12 +38,9 @@ describe('resolve-query', () => {
                     Users: [User],
                 }
             `,
-            gqlResolvers: {
-                UserByIdOnDemand: (root, args) =>
-                    root.Users.find(user => user.id === args.aggregateId),
-                UserById: (root, args) => root.Users.find(user => user.id === args.id),
-                UserIds: (root, args) => root.Users.map(user => user.id)
-            }
+            // Following arguments redefined in beforeEach section
+            eventHandlers: null,
+            gqlResolvers: null
         }
     ];
 
@@ -99,7 +95,6 @@ describe('resolve-query', () => {
         };
 
         const graphqlReadModel = readModels.find(model => model.name === GRAPHQL_READ_MODEL_NAME);
-
         graphqlReadModel.eventHandlers = {
             UserAdded: (state, { aggregateId: id, payload: { UserName } }) => {
                 if (state.Users.find(user => user.id === id)) return state;
@@ -110,6 +105,12 @@ describe('resolve-query', () => {
                 state.Users = state.Users.filter(user => user.id !== id);
                 return state;
             }
+        };
+
+        graphqlReadModel.gqlResolvers = {
+            UserByIdOnDemand: (root, args) => root.Users.find(user => user.id === args.aggregateId),
+            UserById: (root, args) => root.Users.find(user => user.id === args.id),
+            UserIds: (root, args) => root.Users.map(user => user.id)
         };
     });
 
@@ -390,6 +391,38 @@ describe('resolve-query', () => {
             expect(error[0].message).to.have.string('GRAPHQL_READ_MODEL_NAME_BROKEN_RESOLVER');
             expect(error[0].path).to.be.deep.equal(['Broken']);
         }
+    });
+
+    it('should provide security context to event handlers', async () => {
+        const graphqlReadModel = readModels.find(model => model.name === GRAPHQL_READ_MODEL_NAME);
+
+        graphqlReadModel.gqlResolvers.UserById = sinon
+            .stub()
+            .callsFake(graphqlReadModel.gqlResolvers.UserById);
+
+        const executeQuery = createQueryExecutor({ eventStore, readModels });
+        eventList = eventListForGraphQL.slice(0);
+
+        const securityContext = { testField: 'testValue' };
+        const graphqlQuery = 'query { UserById(id:2) { id, UserName } }';
+
+        const state = await executeQuery(
+            GRAPHQL_READ_MODEL_NAME,
+            graphqlQuery,
+            {},
+            securityContext
+        );
+
+        expect(graphqlReadModel.gqlResolvers.UserById.lastCall.args[2]).to.be.deep.equal({
+            securityContext
+        });
+
+        expect(state).to.be.deep.equal({
+            UserById: {
+                UserName: 'User-2',
+                id: '2'
+            }
+        });
     });
 
     it('works the same way for different import types', () => {

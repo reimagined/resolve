@@ -83,7 +83,7 @@ function getExecutor({ statesRepository, eventStore, readModel }) {
             typeDefs: readModel.gqlSchema
         });
 
-    return async (gqlQuery, gqlVariables) => {
+    return async (gqlQuery, gqlVariables, securityContext) => {
         if (!gqlQuery) {
             return await getState({ statesRepository, eventStore, readModel });
         }
@@ -100,7 +100,7 @@ function getExecutor({ statesRepository, eventStore, readModel }) {
             executableSchema,
             parsedGqlQuery,
             state,
-            {},
+            { securityContext },
             gqlVariables
         );
 
@@ -121,13 +121,13 @@ export default ({ eventStore, readModels }) => {
         return result;
     }, {});
 
-    return async (readModelName, gqlQuery, gqlVariables) => {
+    return async (readModelName, gqlQuery, gqlVariables, securityContext) => {
         const executor = executors[readModelName.toLowerCase()];
 
         if (executor === undefined) {
             throw new Error(`The '${readModelName}' read model is not found`);
         }
 
-        return executor(gqlQuery, gqlVariables);
+        return executor(gqlQuery, gqlVariables, securityContext);
     };
 };

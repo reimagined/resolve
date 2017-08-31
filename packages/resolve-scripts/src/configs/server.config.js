@@ -23,6 +23,7 @@ const defaultConfig = {
     aggregates: [],
     initialSubscribedEvents: { types: [], ids: [] },
     filterSubscription: eventDescription => eventDescription,
+    securityContextProvider: () => null,
     queries: [],
     extendExpress: () => {}
 };
