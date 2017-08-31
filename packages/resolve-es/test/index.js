@@ -36,6 +36,66 @@ describe('resolve-es', () => {
         });
     });
 
+    describe('subscribeByAggregateId', () => {
+        // eslint-disable-next-line max-len
+        it('should handle callback by one AggragateId with events propagated from storage and bus', async () => {
+            const resolvedPromise = Promise.resolve();
+
+            const aggregateId = 'TEST-AGGREGATE-ID';
+            const emittedEvent = { aggregateId };
+
+            const storage = {
+                loadEventsByAggregateId: sinon.stub().callsFake((aggregateId, callback) => {
+                    callback(emittedEvent);
+                    return resolvedPromise;
+                })
+            };
+            const bus = {
+                setTrigger: sinon.stub()
+            };
+
+            const eventStore = createEventStore({ storage, bus });
+
+            const eventHandler = sinon.stub();
+            eventStore.subscribeByAggregateId(aggregateId, eventHandler);
+
+            await resolvedPromise;
+
+            expect(storage.loadEventsByAggregateId.lastCall.args[0][0]).to.be.equal(aggregateId);
+            expect(eventHandler.calledWith(emittedEvent)).to.be.true;
+            expect(bus.setTrigger.calledOnce).to.be.true;
+        });
+
+        // eslint-disable-next-line max-len
+        it('should handle callback by AggragateId array with events propagated from storage and bus', async () => {
+            const resolvedPromise = Promise.resolve();
+
+            const aggregateIds = ['TEST-AGGREGATE-ID-1', 'TEST-AGGREGATE-ID-2'];
+            const emittedEvent = { aggregateId: aggregateIds[0] };
+
+            const storage = {
+                loadEventsByAggregateId: sinon.stub().callsFake((aggregateId, callback) => {
+                    callback(emittedEvent);
+                    return resolvedPromise;
+                })
+            };
+            const bus = {
+                setTrigger: sinon.stub()
+            };
+
+            const eventStore = createEventStore({ storage, bus });
+
+            const eventHandler = sinon.stub();
+            eventStore.subscribeByAggregateId(aggregateIds, eventHandler);
+
+            await resolvedPromise;
+
+            expect(storage.loadEventsByAggregateId.lastCall.args[0]).to.be.equal(aggregateIds);
+            expect(eventHandler.calledWith(emittedEvent)).to.be.true;
+            expect(bus.setTrigger.calledOnce).to.be.true;
+        });
+    });
+
     describe('getEventsByAggregateId', async () => {
         // eslint-disable-next-line max-len
         it('should handle events by aggregateId with events propagated from storage', async () => {
@@ -59,7 +119,7 @@ describe('resolve-es', () => {
 
             await resolvedPromise;
 
-            expect(storage.loadEventsByAggregateId.calledWith(aggregateId)).to.be.true;
+            expect(storage.loadEventsByAggregateId.lastCall.args[0][0]).to.be.equal(aggregateId);
             expect(handler.calledWith(emittedEvent)).to.be.true;
         });
     });

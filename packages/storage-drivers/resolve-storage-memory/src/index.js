@@ -17,10 +17,10 @@ function createDriver(events) {
                     .forEach(callback)
             ),
 
-        loadEventsByAggregateId: (id, callback) =>
+        loadEventsByAggregateId: (ids, callback) =>
             Promise.resolve(
                 store
-                    .filter(event => event.aggregateId === id)
+                    .filter(event => ids.includes(event.aggregateId))
                     .sort(compareEvents)
                     .forEach(callback)
             )

@@ -41,8 +41,15 @@ export default (
             return onEventByType(eventTypes, handler);
         },
 
+        async subscribeByAggregateId(aggregateId, handler) {
+            const aggregateIds = Array.isArray(aggregateId) ? aggregateId : [aggregateId];
+            await config.storage.loadEventsByAggregateId(aggregateIds, handler);
+            return onEventById(aggregateIds, handler);
+        },
+
         async getEventsByAggregateId(aggregateId, handler) {
-            return await config.storage.loadEventsByAggregateId(aggregateId, handler);
+            const aggregateIds = Array.isArray(aggregateId) ? aggregateId : [aggregateId];
+            return await config.storage.loadEventsByAggregateId(aggregateIds, handler);
         },
 
         async onEvent(eventDescriptors, callback) {
