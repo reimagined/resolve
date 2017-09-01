@@ -14,7 +14,7 @@ export default (
         handlersByType.concat(handlersById).forEach(handler => handler(event));
     }
 
-    config.bus.setTrigger(trigger);
+    config.bus.subscribe(trigger);
 
     const onEvent = (eventMap, eventDescriptors, callback) => {
         eventDescriptors.forEach((eventDescriptor) => {

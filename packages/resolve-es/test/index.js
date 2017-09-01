@@ -19,7 +19,7 @@ describe('resolve-es', () => {
                 })
             };
             const bus = {
-                setTrigger: sinon.stub()
+                subscribe: sinon.stub()
             };
 
             const eventStore = createEventStore({ storage, bus });
@@ -32,7 +32,7 @@ describe('resolve-es', () => {
 
             expect(storage.loadEventsByTypes.calledWith(eventTypes)).to.be.true;
             expect(eventHandler.calledWith(emittedEvent)).to.be.true;
-            expect(bus.setTrigger.calledOnce).to.be.true;
+            expect(bus.subscribe.calledOnce).to.be.true;
         });
     });
 
@@ -51,7 +51,7 @@ describe('resolve-es', () => {
                 })
             };
             const bus = {
-                setTrigger: sinon.stub()
+                subscribe: sinon.stub()
             };
 
             const eventStore = createEventStore({ storage, bus });
@@ -63,7 +63,7 @@ describe('resolve-es', () => {
 
             expect(storage.loadEventsByAggregateId.lastCall.args[0][0]).to.be.equal(aggregateId);
             expect(eventHandler.calledWith(emittedEvent)).to.be.true;
-            expect(bus.setTrigger.calledOnce).to.be.true;
+            expect(bus.subscribe.calledOnce).to.be.true;
         });
 
         // eslint-disable-next-line max-len
@@ -80,7 +80,7 @@ describe('resolve-es', () => {
                 })
             };
             const bus = {
-                setTrigger: sinon.stub()
+                subscribe: sinon.stub()
             };
 
             const eventStore = createEventStore({ storage, bus });
@@ -92,7 +92,7 @@ describe('resolve-es', () => {
 
             expect(storage.loadEventsByAggregateId.lastCall.args[0]).to.be.equal(aggregateIds);
             expect(eventHandler.calledWith(emittedEvent)).to.be.true;
-            expect(bus.setTrigger.calledOnce).to.be.true;
+            expect(bus.subscribe.calledOnce).to.be.true;
         });
     });
 
@@ -109,7 +109,7 @@ describe('resolve-es', () => {
                     return resolvedPromise;
                 })
             };
-            const bus = { setTrigger: sinon.stub() };
+            const bus = { subscribe: sinon.stub() };
 
             const eventStore = createEventStore({ storage, bus });
 
@@ -130,7 +130,7 @@ describe('resolve-es', () => {
                 saveEvent: sinon.stub().returns(Promise.resolve())
             };
             const bus = {
-                setTrigger: sinon.stub(),
+                subscribe: sinon.stub(),
                 publish: sinon.stub().returns(Promise.resolve())
             };
 
@@ -152,7 +152,7 @@ describe('resolve-es', () => {
         beforeEach(() => {
             let busHandler;
             bus = {
-                setTrigger: callback => (busHandler = callback),
+                subscribe: callback => (busHandler = callback),
                 publish: event => busHandler(event)
             };
         });
@@ -223,7 +223,7 @@ describe('resolve-es', () => {
             }
         };
         const bus = {
-            setTrigger: sinon.stub()
+            subscribe: sinon.stub()
         };
         const errorHandler = sinon.stub();
         const eventStore = createEventStore({ storage, bus }, errorHandler);

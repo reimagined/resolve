@@ -68,7 +68,7 @@ function createDriver(options) {
                     }
                 );
             }),
-        setTrigger: callback => initPromise.then(() => (handler = callback))
+        subscribe: callback => initPromise.then(() => (handler = callback))
     };
 }
 
