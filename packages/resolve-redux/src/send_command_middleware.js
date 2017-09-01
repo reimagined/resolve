@@ -8,7 +8,8 @@ export default params => store => next => (action) => {
             { aggregateId, aggregateName },
             'Send command error:',
             JSON.stringify(action)
-        )
+        ) &&
+        !command.error
     ) {
         params
             .sendCommand({
@@ -18,11 +19,8 @@ export default params => store => next => (action) => {
                 payload
             })
             .catch((error) => {
-                const errorAction = Object.keys(action).reduce(
-                    (result, field) =>
-                        field === 'command' ? result : { ...result, [field]: action[field] },
-                    { status: 'error', error }
-                );
+                const errorAction = { ...action };
+                errorAction.command.error = error;
                 store.dispatch(errorAction);
             });
     }
