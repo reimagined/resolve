@@ -78,7 +78,7 @@ describe('ZeroMQ bus', () => {
     it('should init correctly and run new broker', () => {
         const instance = driver(testOptions);
 
-        return instance.setTrigger(trigger).then(() => {
+        return instance.subscribe(trigger).then(() => {
             expect(zeromq.socket.callCount).to.be.equal(4);
 
             expect(zeromq.socket.getCall(0).args).to.be.deep.equal(['xsub']);
@@ -147,7 +147,7 @@ describe('ZeroMQ bus', () => {
         brokerActivated = { pub: true, sub: true };
         const instance = driver(testOptions);
 
-        return instance.setTrigger(trigger).then(() => {
+        return instance.subscribe(trigger).then(() => {
             expect(zeromq.socket.callCount).to.be.equal(3);
 
             expect(fakeSocketXsub.bindSync.callCount).to.be.equal(1);
@@ -202,7 +202,7 @@ describe('ZeroMQ bus', () => {
         const originalMessage = { marker: '@@message-marker' };
         const stringMessage = JSON.stringify(originalMessage);
 
-        return instance.setTrigger(trigger).then(() => {
+        return instance.subscribe(trigger).then(() => {
             const onCallback = fakeSocketSub.on.firstCall.args[1];
             onCallback(`${testOptions.channel} ${stringMessage}`);
 

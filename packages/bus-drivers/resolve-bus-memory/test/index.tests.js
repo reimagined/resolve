@@ -11,7 +11,7 @@ describe('inMemoryBus', () => {
         const event2 = { type: 'TWO', payload: { data: 'BBB' } };
 
         const triggerSpy = sinon.spy();
-        busInstance.setTrigger(triggerSpy);
+        busInstance.subscribe(triggerSpy);
 
         busInstance.publish(event1);
         busInstance.publish(event2);
@@ -26,7 +26,7 @@ describe('inMemoryBus', () => {
         const event = { type: 'ONE', payload: { data: 'AAA' } };
 
         const eventHandlerSpy = sinon.spy();
-        busInstance.setTrigger(eventHandlerSpy);
+        busInstance.subscribe(eventHandlerSpy);
 
         busInstance.publish(event);
 

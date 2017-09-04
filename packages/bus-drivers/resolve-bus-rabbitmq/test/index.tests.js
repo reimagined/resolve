@@ -116,8 +116,8 @@ describe('RabbitMQ bus', () => {
             const instance = driver(driverConfig);
 
             return instance
-                .setTrigger(() => {})
-                .then(() => instance.setTrigger(['eventType'], () => {}))
+                .subscribe(() => {})
+                .then(() => instance.subscribe(['eventType'], () => {}))
                 .then(() => amqplibMock.verify());
         });
 
@@ -133,7 +133,7 @@ describe('RabbitMQ bus', () => {
             });
 
             return instance
-                .setTrigger((event) => {
+                .subscribe((event) => {
                     expect(JSON.stringify(event)).to.be.deep.equal(message.content);
                     fakeChannelMock.verify();
                 })
@@ -143,9 +143,7 @@ describe('RabbitMQ bus', () => {
         it('calls amqplib bindQueue with correct arguments', () => {
             const instance = driver(driverConfig);
 
-            return instance
-                .setTrigger(['eventType'], () => {})
-                .then(() => fakeChannelMock.verify());
+            return instance.subscribe(['eventType'], () => {}).then(() => fakeChannelMock.verify());
         });
 
         it('calls amqplib assertExchange', () => {
@@ -153,7 +151,7 @@ describe('RabbitMQ bus', () => {
 
             assertExchangeExpectation.withArgs('exchange', 'fanout', { durable: false }).resolves();
 
-            return instance.setTrigger(() => {}).then(() => fakeChannelMock.verify());
+            return instance.subscribe(() => {}).then(() => fakeChannelMock.verify());
         });
     });
 
