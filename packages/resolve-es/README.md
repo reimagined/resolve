@@ -21,17 +21,21 @@ eventStore.subscribeByEventType(['UserCreated'], event => {
     console.log('Event emitted', event);
 });
 
-eventStore.onEvent(['UserCreated'], event => {
-    console.log('Event emitted from bus', event);
-});
+eventStore.subscribeByEventType(
+    ['UserCreated'],
+    event => console.log('Event emitted from bus', event),
+    true
+);
 
-eventStore.getEventsByAggregateId('1', event => {
+eventStore.getEventsByAggregateId('aggregate-id', event => {
     console.log('Aggregate event loaded', event);
 });
 
-eventStore.onEvent({ types: ['UserCreated'], ids: ['1'] }, event => {
-    console.log('Event emitted from bus by event type of aggregate id', event);
-});
+eventStore.subscribeByAggregateId(
+    ['aggregate-id'],
+    event => console.log('Event emitted from by aggregate id', event),
+    true
+);
 
 const event = {
     aggregateId: '1',

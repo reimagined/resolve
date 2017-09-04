@@ -10,7 +10,7 @@ const busRabbitmq = driverRabbitmq({
 let eventsLeft = process.argv[2];
 let lastEventsReported;
 
-busRabbitmq.onEvent(['EVENT_TYPE'], () => --eventsLeft);
+busRabbitmq.setTrigger(() => --eventsLeft);
 
 function doneHandler() {
     if (eventsLeft <= 0 || lastEventsReported === eventsLeft) {

@@ -39,8 +39,10 @@ const execute = commandHandler({
     aggregates
 });
 
-eventStore.onEvent(['UserCreated'], event =>
-    console.log('Event emitted', event);
+eventStore.subscribeByEventType(
+    ['UserCreated'],
+    event => console.log('Event emitted', event),
+    true
 );
 
 const command = {

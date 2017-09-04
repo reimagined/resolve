@@ -36,39 +36,24 @@ export default (
     const onEventById = onEvent.bind(null, eventHandlersMap.ids);
 
     const result = {
-        async subscribeByEventType(eventTypes, handler) {
-            await config.storage.loadEventsByTypes(eventTypes, handler);
+        async subscribeByEventType(eventTypes, handler, onlyBus = false) {
+            if (!onlyBus) {
+                await config.storage.loadEventsByTypes(eventTypes, handler);
+            }
             return onEventByType(eventTypes, handler);
         },
 
-        async subscribeByAggregateId(aggregateId, handler) {
+        async subscribeByAggregateId(aggregateId, handler, onlyBus = false) {
             const aggregateIds = Array.isArray(aggregateId) ? aggregateId : [aggregateId];
-            await config.storage.loadEventsByAggregateId(aggregateIds, handler);
+            if (!onlyBus) {
+                await config.storage.loadEventsByAggregateId(aggregateIds, handler);
+            }
             return onEventById(aggregateIds, handler);
         },
 
         async getEventsByAggregateId(aggregateId, handler) {
             const aggregateIds = Array.isArray(aggregateId) ? aggregateId : [aggregateId];
             return await config.storage.loadEventsByAggregateId(aggregateIds, handler);
-        },
-
-        async onEvent(eventDescriptors, callback) {
-            if (Array.isArray(eventDescriptors)) {
-                return await onEventByType(eventDescriptors, callback);
-            } else if (eventDescriptors.types || eventDescriptors.ids) {
-                const typeUnsub =
-                    Array.isArray(eventDescriptors.types) &&
-                    onEventByType(eventDescriptors.types, callback);
-                const idUnsub =
-                    Array.isArray(eventDescriptors.ids) &&
-                    onEventById(eventDescriptors.ids, callback);
-                return () => {
-                    typeUnsub && typeUnsub();
-                    idUnsub && idUnsub();
-                };
-            } else {
-                throw new Error('Wrong parameter for event subscription');
-            }
         },
 
         async saveEvent(event) {
