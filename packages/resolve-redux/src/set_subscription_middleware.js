@@ -27,10 +27,11 @@ function createMiddleware({ rootDirPath }) {
         initSocketIO();
 
         return next => (action) => {
-            if (action.type === SET_SUBSCRIPTION) {
+            const { type, types, ids } = action;
+            if (type === SET_SUBSCRIPTION) {
                 socketIO.emit('setSubscription', {
-                    types: action.types || [],
-                    ids: action.ids || []
+                    types: types || [],
+                    ids: ids || []
                 });
             }
 
