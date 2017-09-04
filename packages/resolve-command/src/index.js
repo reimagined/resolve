@@ -1,14 +1,14 @@
 import 'regenerator-runtime/runtime';
 
-const verifyCommand = async (command) => {
-    if (!command.aggregateId) throw new Error('"aggregateId" argument is required');
-    if (!command.aggregateName) throw new Error('"aggregateName" argument is required');
-    if (!command.type) throw new Error('"type" argument is required');
+const verifyCommand = async ({ aggregateId, aggregateName, type }) => {
+    if (!aggregateId) throw new Error('"aggregateId" argument is required');
+    if (!aggregateName) throw new Error('"aggregateName" argument is required');
+    if (!type) throw new Error('"type" argument is required');
 };
 
-const getAggregateState = async (aggregate, aggregateId, eventStore) => {
-    const handlers = aggregate.eventHandlers;
-    let aggregateState = aggregate.initialState;
+const getAggregateState = async ({ eventHandlers, initialState }, aggregateId, eventStore) => {
+    const handlers = eventHandlers;
+    let aggregateState = initialState;
 
     if (!handlers) {
         return Promise.resolve(aggregateState);
@@ -25,17 +25,17 @@ const getAggregateState = async (aggregate, aggregateId, eventStore) => {
 };
 
 const executeCommand = async (command, aggregate, eventStore, securityContext) => {
-    const aggregateState = await getAggregateState(aggregate, command.aggregateId, eventStore);
+    const { aggregateId, type } = command;
+    const aggregateState = await getAggregateState(aggregate, aggregateId, eventStore);
 
-    const handler = aggregate.commands[command.type];
+    const handler = aggregate.commands[type];
     const event = handler(aggregateState, command, securityContext);
 
     if (!event.type) {
         throw new Error('event type is required');
     }
 
-    event.aggregateId = command.aggregateId;
-    event.timestamp = Date.now();
+    event.aggregateId = aggregateId;
     return event;
 };
 

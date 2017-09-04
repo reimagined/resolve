@@ -9,13 +9,13 @@ const defaultOptions = {
     maxLength: 10000
 };
 
-function init(options, handler) {
+function init({ url, exchange, exchangeType, queueName, messageTtl, maxLength }, handler) {
     return amqp
-        .connect(options.url)
+        .connect(url)
         .then(connection => connection.createChannel())
         .then(channel =>
             channel
-                .assertExchange(options.exchange, options.exchangeType, {
+                .assertExchange(exchange, exchangeType, {
                     durable: false
                 })
                 .then(() => channel)
@@ -24,16 +24,16 @@ function init(options, handler) {
             channel
                 // Additional options described here:
                 // http://www.squaremobius.net/amqp.node/channel_api.html#channel_assertQueue
-                .assertQueue(options.queueName, {
+                .assertQueue(queueName, {
                     arguments: {
-                        messageTtl: options.messageTtl,
-                        maxLength: options.maxLength
+                        messageTtl: messageTtl,
+                        maxLength: maxLength
                     }
                 })
-                .then(queue => channel.bindQueue(queue.queue, options.exchange))
+                .then(queue => channel.bindQueue(queue.queue, exchange))
                 .then(() =>
                     channel.consume(
-                        options.queueName,
+                        queueName,
                         (msg) => {
                             if (msg) {
                                 const content = msg.content.toString();
@@ -52,23 +52,24 @@ function createDriver(options) {
     let handler = () => {};
     const config = Object.assign(defaultOptions, options);
     const initPromise = init(config, event => handler(event));
+    const { exchange, queueName, messageTtl } = config;
 
     return {
         publish: event =>
             initPromise.then((channel) => {
                 channel.publish(
-                    config.exchange,
-                    config.queueName,
+                    exchange,
+                    queueName,
                     new Buffer(JSON.stringify(event)),
                     // Additional options described here:
                     // http://www.squaremobius.net/amqp.node/channel_api.html#channel_publish
                     {
-                        expiration: config.messageTtl,
+                        expiration: messageTtl,
                         persistent: false
                     }
                 );
             }),
-        setTrigger: callback => initPromise.then(() => (handler = callback))
+        subscribe: callback => initPromise.then(() => (handler = callback))
     };
 }
 

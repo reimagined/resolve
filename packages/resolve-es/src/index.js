@@ -14,7 +14,7 @@ export default (
         handlersByType.concat(handlersById).forEach(handler => handler(event));
     }
 
-    config.bus.setTrigger(trigger);
+    config.bus.subscribe(trigger);
 
     const onEvent = (eventMap, eventDescriptors, callback) => {
         eventDescriptors.forEach((eventDescriptor) => {
@@ -57,6 +57,11 @@ export default (
         },
 
         async saveEvent(event) {
+            if (!event.type || !event.aggregateId) {
+                throw new Error('Some of event mandatory fields (type, aggregateId) are missed');
+            }
+            event.timestamp = Date.now();
+
             await config.storage.saveEvent(event);
             await config.bus.publish(event);
             return event;

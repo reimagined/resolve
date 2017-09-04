@@ -10,14 +10,16 @@ const getState = async ({ statesRepository, eventStore, readModel, aggregateIds 
         ? `${readModelName}\u200D${aggregateIds.sort().join('\u200D')}`
         : readModelName;
 
+    const { eventHandlers, initialState } = readModel;
+
     if (!statesRepository[stateName]) {
-        const eventTypes = Object.keys(readModel.eventHandlers);
-        let state = readModel.initialState || {};
+        const eventTypes = Object.keys(eventHandlers);
+        let state = initialState || {};
         let error = null;
 
         const result = !isAggregateBased
             ? eventStore.subscribeByEventType(eventTypes, (event) => {
-                const handler = readModel.eventHandlers[event.type];
+                const handler = eventHandlers[event.type];
                 if (!handler) return;
 
                 try {
@@ -27,7 +29,7 @@ const getState = async ({ statesRepository, eventStore, readModel, aggregateIds 
                 }
             })
             : eventStore.subscribeByAggregateId(aggregateIds, (event) => {
-                const handler = readModel.eventHandlers[event.type];
+                const handler = eventHandlers[event.type];
                 if (!handler) return;
 
                 try {
@@ -76,11 +78,12 @@ function extractAggregateIdsFromGqlQuery(parsedGqlQuery, gqlVariables) {
 }
 
 function getExecutor({ statesRepository, eventStore, readModel }) {
+    const { gqlSchema, gqlResolvers, name } = readModel;
     const executableSchema =
-        readModel.gqlSchema &&
+        gqlSchema &&
         makeExecutableSchema({
-            resolvers: readModel.gqlResolvers ? { Query: readModel.gqlResolvers } : {},
-            typeDefs: readModel.gqlSchema
+            resolvers: gqlResolvers ? { Query: gqlResolvers } : {},
+            typeDefs: gqlSchema
         });
 
     return async (gqlQuery, gqlVariables, securityContext) => {
@@ -89,7 +92,7 @@ function getExecutor({ statesRepository, eventStore, readModel }) {
         }
 
         if (!executableSchema) {
-            throw new Error(`GraphQL schema for '${readModel.name}' read model is not found`);
+            throw new Error(`GraphQL schema for '${name}' read model is not found`);
         }
 
         const parsedGqlQuery = parse(gqlQuery);

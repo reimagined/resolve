@@ -61,7 +61,7 @@ function createDriver(options) {
 
     return {
         publish: event => initPromise.then(({ publisher }) => publisher(JSON.stringify(event))),
-        setTrigger: callback => initPromise.then(() => (handler = callback))
+        subscribe: callback => initPromise.then(() => (handler = callback))
     };
 }
 
