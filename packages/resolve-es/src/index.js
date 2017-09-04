@@ -73,7 +73,7 @@ export default (
 
         async saveEvent(event) {
             if (!event.type || !event.aggregateId) {
-                throw new Error('some of event mandatory fields (type, aggregateId) are missed');
+                throw new Error('Some of event mandatory fields (type, aggregateId) are missed');
             }
             event.timestamp = Date.now();
 
