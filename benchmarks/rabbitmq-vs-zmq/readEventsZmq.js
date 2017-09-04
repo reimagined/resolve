@@ -11,7 +11,7 @@ const busZmq = driverZmq({
 let eventsLeft = process.argv[2];
 let lastEventsReported;
 
-busZmq.setTrigger(() => eventsLeft--);
+busZmq.subscribe(() => eventsLeft--);
 
 function doneHandler() {
     if (eventsLeft <= 0 || lastEventsReported === eventsLeft) {

@@ -40,7 +40,7 @@ describe('resolve-es', () => {
             const resolvedPromise = Promise.resolve();
 
             const storage = { loadEventsByTypes: sinon.stub() };
-            const bus = { setTrigger: sinon.stub() };
+            const bus = { subscribe: sinon.stub() };
 
             const eventStore = createEventStore({ storage, bus });
 
@@ -51,7 +51,7 @@ describe('resolve-es', () => {
             await resolvedPromise;
 
             expect(storage.loadEventsByTypes.notCalled).to.be.true;
-            expect(bus.setTrigger.calledOnce).to.be.true;
+            expect(bus.subscribe.calledOnce).to.be.true;
         });
     });
 
@@ -119,7 +119,7 @@ describe('resolve-es', () => {
             const resolvedPromise = Promise.resolve();
 
             const storage = { loadEventsByAggregateId: sinon.stub() };
-            const bus = { setTrigger: sinon.stub() };
+            const bus = { subscribe: sinon.stub() };
 
             const eventStore = createEventStore({ storage, bus });
 
@@ -130,7 +130,7 @@ describe('resolve-es', () => {
             await resolvedPromise;
 
             expect(storage.loadEventsByAggregateId.notCalled).to.be.true;
-            expect(bus.setTrigger.calledOnce).to.be.true;
+            expect(bus.subscribe.calledOnce).to.be.true;
         });
     });
 
@@ -185,7 +185,7 @@ describe('resolve-es', () => {
                 saveEvent: sinon.stub().returns(Promise.resolve())
             };
             const bus = {
-                setTrigger: sinon.stub(),
+                subscribe: sinon.stub(),
                 publish: sinon.stub().returns(Promise.resolve())
             };
 
@@ -207,7 +207,7 @@ describe('resolve-es', () => {
                 saveEvent: sinon.stub().returns(Promise.resolve())
             };
             const bus = {
-                setTrigger: sinon.stub(),
+                subscribe: sinon.stub(),
                 publish: sinon.stub().returns(Promise.resolve())
             };
 
@@ -229,7 +229,7 @@ describe('resolve-es', () => {
                 saveEvent: sinon.stub().returns(Promise.resolve())
             };
             const bus = {
-                setTrigger: sinon.stub(),
+                subscribe: sinon.stub(),
                 publish: sinon.stub().returns(Promise.resolve())
             };
 
