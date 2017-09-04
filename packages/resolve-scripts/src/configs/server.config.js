@@ -23,7 +23,9 @@ const defaultConfig = {
     aggregates: [],
     initialSubscribedEvents: { types: [], ids: [] },
     filterSubscription: eventDescription => eventDescription,
-    securityContextProvider: () => null,
+    jwtCookieName: 'Jwt-Cookie',
+    jwtOptions: { maxAge: 1000 * 60 * 5 },
+    jwtSecret: 'Keyboard-Kat',
     queries: [],
     extendExpress: () => {}
 };

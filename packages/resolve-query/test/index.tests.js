@@ -403,18 +403,13 @@ describe('resolve-query', () => {
         const executeQuery = createQueryExecutor({ eventStore, readModels });
         eventList = eventListForGraphQL.slice(0);
 
-        const securityContext = { testField: 'testValue' };
+        const jwtPayload = { testField: 'testValue' };
         const graphqlQuery = 'query { UserById(id:2) { id, UserName } }';
 
-        const state = await executeQuery(
-            GRAPHQL_READ_MODEL_NAME,
-            graphqlQuery,
-            {},
-            securityContext
-        );
+        const state = await executeQuery(GRAPHQL_READ_MODEL_NAME, graphqlQuery, {}, jwtPayload);
 
         expect(graphqlReadModel.gqlResolvers.UserById.lastCall.args[2]).to.be.deep.equal({
-            securityContext
+            jwtPayload
         });
 
         expect(state).to.be.deep.equal({

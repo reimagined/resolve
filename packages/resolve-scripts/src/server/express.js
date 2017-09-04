@@ -1,13 +1,16 @@
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import express from 'express';
+import jwt from 'jsonwebtoken';
 import path from 'path';
 import query from 'resolve-query';
 import commandHandler from 'resolve-command';
 import request from 'request';
-import ssr from './render';
 
 import eventStore from './event_store';
+import ssr from './render';
+import createSimpleError from './utils/simple_error';
+
 import config from '../configs/server.config.js';
 
 const STATIC_PATH = '/static';
@@ -39,7 +42,36 @@ app.use((req, res, next) => {
         executeCommand,
         eventStore
     };
-    next();
+
+    try {
+        if (!req.cookies[config.jwtCookieName]) {
+            throw new Error(`Cookie '${config.jwtCookieName}' not found`);
+        }
+
+        jwt.verify(
+            req.cookies[config.jwtCookieName],
+            config.jwtSecret,
+            config.jwtOptions,
+            (err, result) => {
+                if (err) {
+                    const error = createSimpleError(err.message, 'JWT verification error');
+                    req.jwt = error;
+                    // eslint-disable-next-line no-console
+                    console.log(error.message);
+                    next();
+                }
+
+                req.jwt = result;
+                next();
+            }
+        );
+    } catch (err) {
+        req.jwt = createSimpleError(err.message, 'JWT read error');
+
+        // eslint-disable-next-line no-console
+        console.log(err.message);
+        next();
+    }
 });
 
 try {
@@ -48,12 +80,11 @@ try {
 
 app.get(`${rootDirectory}/api/queries/:queryName`, async (req, res) => {
     try {
-        const securityContext = config.securityContextProvider(req);
         const state = await executeQuery(
             req.params.queryName,
             req.query && req.query.graphql,
             (req.query && req.query.graphql && req.query.variables) || {},
-            securityContext
+            req.jwt
         );
 
         res.status(200).json(state);
@@ -66,8 +97,7 @@ app.get(`${rootDirectory}/api/queries/:queryName`, async (req, res) => {
 
 app.post(`${rootDirectory}/api/commands`, async (req, res) => {
     try {
-        const securityContext = config.securityContextProvider(req);
-        await executeCommand(req.body, securityContext);
+        await executeCommand(req.body, req.jwt);
         res.status(200).send('ok');
     } catch (err) {
         res.status(500).end('Command error:' + err.message);
