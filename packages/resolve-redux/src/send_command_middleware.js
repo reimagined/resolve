@@ -19,9 +19,13 @@ export default params => store => next => (action) => {
                 payload
             })
             .catch((error) => {
-                const errorAction = { ...action };
-                errorAction.command.error = error;
-                store.dispatch(errorAction);
+                store.dispatch({
+                    ...action,
+                    command: {
+                        ...action.command,
+                        error
+                    }
+                });
             });
     }
 
