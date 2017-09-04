@@ -34,6 +34,25 @@ describe('resolve-es', () => {
             expect(eventHandler.calledWith(emittedEvent)).to.be.true;
             expect(bus.subscribe.calledOnce).to.be.true;
         });
+
+        // eslint-disable-next-line max-len
+        it('should handle callback by eventTypes with events propagated only from bus', async () => {
+            const resolvedPromise = Promise.resolve();
+
+            const storage = { loadEventsByTypes: sinon.stub() };
+            const bus = { subscribe: sinon.stub() };
+
+            const eventStore = createEventStore({ storage, bus });
+
+            const eventTypes = ['CREATE_TODO', 'REMOVE_TODO'];
+            const eventHandler = sinon.stub();
+            eventStore.subscribeByEventType(eventTypes, eventHandler, true);
+
+            await resolvedPromise;
+
+            expect(storage.loadEventsByTypes.notCalled).to.be.true;
+            expect(bus.subscribe.calledOnce).to.be.true;
+        });
     });
 
     describe('subscribeByAggregateId', () => {
@@ -94,6 +113,25 @@ describe('resolve-es', () => {
             expect(eventHandler.calledWith(emittedEvent)).to.be.true;
             expect(bus.subscribe.calledOnce).to.be.true;
         });
+
+        // eslint-disable-next-line max-len
+        it('should handle callback by AggragateId array with events propagated only from bus', async () => {
+            const resolvedPromise = Promise.resolve();
+
+            const storage = { loadEventsByAggregateId: sinon.stub() };
+            const bus = { subscribe: sinon.stub() };
+
+            const eventStore = createEventStore({ storage, bus });
+
+            const eventTypes = ['CREATE_TODO', 'REMOVE_TODO'];
+            const eventHandler = sinon.stub();
+            eventStore.subscribeByAggregateId(eventTypes, eventHandler, true);
+
+            await resolvedPromise;
+
+            expect(storage.loadEventsByAggregateId.notCalled).to.be.true;
+            expect(bus.subscribe.calledOnce).to.be.true;
+        });
     });
 
     describe('getEventsByAggregateId', async () => {
@@ -147,7 +185,7 @@ describe('resolve-es', () => {
                 saveEvent: sinon.stub().returns(Promise.resolve())
             };
             const bus = {
-                setTrigger: sinon.stub(),
+                subscribe: sinon.stub(),
                 publish: sinon.stub().returns(Promise.resolve())
             };
 
@@ -169,7 +207,7 @@ describe('resolve-es', () => {
                 saveEvent: sinon.stub().returns(Promise.resolve())
             };
             const bus = {
-                setTrigger: sinon.stub(),
+                subscribe: sinon.stub(),
                 publish: sinon.stub().returns(Promise.resolve())
             };
 
@@ -191,7 +229,7 @@ describe('resolve-es', () => {
                 saveEvent: sinon.stub().returns(Promise.resolve())
             };
             const bus = {
-                setTrigger: sinon.stub(),
+                subscribe: sinon.stub(),
                 publish: sinon.stub().returns(Promise.resolve())
             };
 
@@ -207,71 +245,6 @@ describe('resolve-es', () => {
             await savingPromise;
 
             expect(event.timestamp).to.be.equal(Number.MAX_VALUE);
-        });
-    });
-
-    describe('onEvent', () => {
-        const testEvent = {
-            type: 'TestEvent',
-            payload: true
-        };
-
-        let bus;
-        beforeEach(() => {
-            let busHandler;
-            bus = {
-                subscribe: callback => (busHandler = callback),
-                publish: event => busHandler(event)
-            };
-        });
-
-        it('should subscibe on bus events by type array', async () => {
-            const eventHandler = sinon.stub();
-            const eventStore = createEventStore({ bus });
-            eventStore.onEvent(['TestEvent'], eventHandler);
-
-            bus.publish({ type: 'WrongName' });
-            bus.publish(testEvent);
-
-            expect(eventHandler.calledOnce).to.be.true;
-            expect(eventHandler.lastCall.args[0]).to.be.deep.equal(testEvent);
-        });
-
-        it('should subscibe on bus events by type and id descriptor object', async () => {
-            const eventHandler = sinon.stub();
-            const eventStore = createEventStore({ bus });
-            eventStore.onEvent({ types: ['SomeType'], ids: ['some-id'] }, eventHandler);
-
-            const events = [
-                { type: 'SomeType', aggregateId: 'some-id' },
-                { type: 'SomeType', aggregateId: 'another-id' },
-                { type: 'AnotherType', aggregateId: 'some-id' },
-                { type: 'WrongName' }
-            ];
-
-            bus.publish(events[0]);
-            bus.publish(events[1]);
-            bus.publish(events[2]);
-            bus.publish(events[3]);
-
-            expect(eventHandler.callCount).to.be.equal(4);
-            expect(eventHandler.getCall(0).args[0]).to.be.deep.equal(events[0]);
-            expect(eventHandler.getCall(1).args[0]).to.be.deep.equal(events[0]);
-            expect(eventHandler.getCall(2).args[0]).to.be.deep.equal(events[1]);
-            expect(eventHandler.getCall(3).args[0]).to.be.deep.equal(events[2]);
-        });
-
-        it('should return unsubscribe function', async () => {
-            const eventHandler = sinon.stub();
-
-            const eventStore = createEventStore({ bus });
-            const unsubscribe = await eventStore.onEvent(['TestEvent'], eventHandler);
-
-            bus.publish(testEvent);
-            unsubscribe();
-            bus.publish(testEvent);
-
-            expect(eventHandler.calledOnce).to.be.true;
         });
     });
 
