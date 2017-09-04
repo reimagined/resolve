@@ -1,45 +1,69 @@
 # **🏣 resolve-es** [![npm version](https://badge.fury.io/js/resolve-es.svg)](https://badge.fury.io/js/resolve-es)
 
-This package serves as an event-store.
+Provides an event store implementation with the capability to use different [storage](https://github.com/reimagined/resolve/tree/master/packages/storage-drivers) and [bus](https://github.com/reimagined/resolve/tree/master/packages/bus-drivers) drivers to store and emit events. 
+## Usage
+When initializing an event store, pass the following arguments:
+* `storage`  
+	Use one of  [drivers](https://github.com/reimagined/resolve/tree/master/packages/storage-drivers) which the reSolve framework provides:
+	* [resolve-storage-file](https://github.com/reimagined/resolve/tree/master/packages/storage-drivers/resolve-storage-file)
+	* [resolve-storage-memory](https://github.com/reimagined/resolve/tree/master/packages/storage-drivers/resolve-storage-memory)
+	* [resolve-storage-mongo](https://github.com/reimagined/resolve/tree/master/packages/storage-drivers/resolve-storage-mongo)
 
-# Usage
+	-- or --
+	Implement your custom storage driver. Storage driver is an object with the following fields:
+	* `saveEvent` - a function which takes an event and returns Promise that will be resolved when the event is stored in the storage.
+	* `loadEventsByTypes` - a function which takes two arguments: an array of event types  and  callback that will be called for handling each appropriate event. 
+	* `loadEventsByAggregateId` - a function which takes two arguments: an aggregate id/ array of aggregate ids and callback that will be called for handling each  appropriate event. 
+
+* `bus`  
+	Use one of [drivers](https://github.com/reimagined/resolve/tree/master/packages/bus-drivers) which the reSolve framework provides:
+	* [resolve-bus-memory](https://github.com/reimagined/resolve/tree/master/packages/bus-drivers/resolve-bus-memory)
+	* [resolve-bus-rabbitmq](https://github.com/reimagined/resolve/tree/master/packages/bus-drivers/resolve-bus-rabbitmq)
+	* [resolve-bus-zmq](https://github.com/reimagined/resolve/tree/master/packages/bus-drivers/resolve-bus-zmq)
+
+   -- or --
+	Implement a custom bus driver. Bus driver is object with the following fields:
+	* `subscribe` - a function called when any event is emitted. It takes an emitted event.
+	* `publish` - a function that takes an event and publishes it.
+
+### Example
 ```js
-import createEventStore from 'resolve-es';
-import storageInFileDriver from 'resolve-storage-file';
-import busInMemoryDriver from 'resolve-bus-memory';
-
-const storage = storageInFileDriver({ pathToFile: './event-store.json' });
-
-const bus = busInMemoryDriver();
+import createEventStore from 'resolve-es'
+import createInFileStorageDriver from 'resolve-storage-file'
+import createInMemoryBusDriver from 'resolve-bus-memory'
 
 const eventStore = createEventStore({
-    storage,
-    bus
+  storage: createInFileStorageDriver({ pathToFile: './event-store.json' }),
+  bus: createInMemoryBusDriver()
 });
 
-eventStore.subscribeByEventType(['UserCreated'], event => {
-    console.log('Event emitted', event);
-});
+eventStore.subscribeByEventType(['UserCreated'], event =>
+  console.log('Loaded or fresh event is emitted, filtered by event type', event)
+)
 
-eventStore.onEvent(['UserCreated'], event => {
-    console.log('Event emitted from bus', event);
-});
+eventStore.subscribeByAggregateId(['1', '2'], event =>
+  console.log('Loaded or fresh event is emitted, filtered by aggregate id', event)
+)
 
-eventStore.getEventsByAggregateId('1', event => {
-    console.log('Aggregate event loaded', event);
-});
+eventStore.getEventsByAggregateId('1', event =>
+  console.log('Aggregate event loaded', event)
+)
 
-eventStore.onEvent({ types: ['UserCreated'], ids: ['1'] }, event => {
-    console.log('Event emitted from bus by event type of aggregate id', event);
-});
+eventStore.subscribeByEventType(['UserCreated'], event =>
+  console.log('Fresh event emitted from bus by event type', event),
+true)
+
+eventStore.subscribeByAggregateId(['1', '2'], event =>
+  console.log('Fresh event emitted from bus by aggregate id', event),
+true)
 
 const event = {
-    aggregateId: '1',
-    type: 'UserCreated',
-    payload: {
-        email: 'test@user.com'
-    }
+  aggregateId: '1',
+  type: 'UserCreated',
+  payload: {
+    email: 'test@user.com'
+  }
 };
 
-eventStore.saveEvent(event);
+eventStore.saveEvent(event)
 ```

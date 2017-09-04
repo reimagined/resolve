@@ -101,8 +101,8 @@ io.on('connection', socket => requestReadModel('INITIAL_READ_MODEL_NAME') // Pol
             ).catch(err => console.log(err))
         );
 
-        const unsubscribe = eventStore.onEvent( // Subscribe to supported domain events and translate them to the connected client
-            eventNames, event => socket.emit('event', event)
+        const unsubscribe = eventStore.subscribeByEventType( // Subscribe to supported domain events and translate them to the connected client
+            eventNames, event => socket.emit('event', event), true
         );
 
         socket.on('disconnect', () => unsubscribe()); // Unsubscribe when the client is disconnected to free resources
