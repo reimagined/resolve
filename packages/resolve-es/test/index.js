@@ -135,13 +135,81 @@ describe('resolve-es', () => {
             };
 
             const eventStore = createEventStore({ storage, bus });
-            const event = { type: 'EVENT' };
+            const event = { type: 'EVENT', aggregateId: 'ID' };
             await eventStore.saveEvent(event);
 
             expect(storage.saveEvent.calledWith(event)).to.be.true;
             expect(bus.publish.calledWith(event)).to.be.true;
         });
+
+        it('should reject events without type', async () => {
+            const storage = {
+                saveEvent: sinon.stub().returns(Promise.resolve())
+            };
+            const bus = {
+                setTrigger: sinon.stub(),
+                publish: sinon.stub().returns(Promise.resolve())
+            };
+
+            const eventStore = createEventStore({ storage, bus });
+            const event = { aggregateId: 'ID' };
+
+            try {
+                await eventStore.saveEvent(event);
+                return Promise.reject('Test failed');
+            } catch (err) {
+                expect(err.message).to.be.equal(
+                    'Some of event mandatory fields (type, aggregateId) are missed'
+                );
+            }
+        });
+
+        it('should reject events without aggregateId', async () => {
+            const storage = {
+                saveEvent: sinon.stub().returns(Promise.resolve())
+            };
+            const bus = {
+                setTrigger: sinon.stub(),
+                publish: sinon.stub().returns(Promise.resolve())
+            };
+
+            const eventStore = createEventStore({ storage, bus });
+            const event = { type: 'EVENT_TYPE' };
+
+            try {
+                await eventStore.saveEvent(event);
+                return Promise.reject('Test failed');
+            } catch (err) {
+                expect(err.message).to.be.equal(
+                    'Some of event mandatory fields (type, aggregateId) are missed'
+                );
+            }
+        });
+
+        it('should enforce timestamp field in event with actual time', async () => {
+            const storage = {
+                saveEvent: sinon.stub().returns(Promise.resolve())
+            };
+            const bus = {
+                setTrigger: sinon.stub(),
+                publish: sinon.stub().returns(Promise.resolve())
+            };
+
+            const eventStore = createEventStore({ storage, bus });
+            const event = { type: 'EVENT_TYPE', aggregateId: 'ID' };
+
+            const originalDateNow = Date.now;
+            Date.now = () => Number.MAX_VALUE;
+
+            const savingPromise = eventStore.saveEvent(event);
+
+            Date.now = originalDateNow;
+            await savingPromise;
+
+            expect(event.timestamp).to.be.equal(Number.MAX_VALUE);
+        });
     });
+
     describe('onEvent', () => {
         const testEvent = {
             type: 'TestEvent',
@@ -206,6 +274,7 @@ describe('resolve-es', () => {
             expect(eventHandler.calledOnce).to.be.true;
         });
     });
+
     it('onError', async () => {
         const loadEventsByTypesError = new Error('LoadEventsByTypes error');
         const loadEventsByAggregateIdError = new Error('LoadEventsByAggregateId error');
@@ -230,7 +299,10 @@ describe('resolve-es', () => {
 
         await eventStore.subscribeByEventType();
         await eventStore.getEventsByAggregateId();
-        await eventStore.saveEvent();
+        await eventStore.saveEvent({
+            type: 'TestEvent',
+            aggregateId: 'id'
+        });
 
         expect(errorHandler.callCount).to.be.equal(3);
 

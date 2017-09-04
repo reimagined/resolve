@@ -36,7 +36,6 @@ const executeCommand = async (command, aggregate, eventStore, securityContext) =
     }
 
     event.aggregateId = aggregateId;
-    event.timestamp = Date.now();
     return event;
 };
 
