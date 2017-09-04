@@ -159,7 +159,7 @@ describe('resolve-es', () => {
                 return Promise.reject('Test failed');
             } catch (err) {
                 expect(err.message).to.be.equal(
-                    'some of event mandatory fields (type, aggregateId) are missed'
+                    'Some of event mandatory fields (type, aggregateId) are missed'
                 );
             }
         });
@@ -181,7 +181,7 @@ describe('resolve-es', () => {
                 return Promise.reject('Test failed');
             } catch (err) {
                 expect(err.message).to.be.equal(
-                    'some of event mandatory fields (type, aggregateId) are missed'
+                    'Some of event mandatory fields (type, aggregateId) are missed'
                 );
             }
         });
