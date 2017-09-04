@@ -45,24 +45,19 @@ describe('sendCommandMiddleware', () => {
             }
         };
 
-        const errorAction = {
-            ...action,
-            status: 'error',
-            error: 'fail_command_send'
-        };
-        delete errorAction['command'];
+        const error = 'fail_command_send';
 
         const sendCommand = () => {
             const promise = new Promise((resolve) => {
                 resolve();
             }).then((data) => {
-                promise
-                    .catch(() => {
-                        expect(reducerSpy.lastCall.args[1]).to.be.deep.equal(errorAction);
-                        done();
-                    })
-                    .catch(done);
-                throw errorAction.error;
+                promise.catch(() => {
+                    const errorAction = { ...action };
+                    errorAction.command.error = error;
+                    expect(reducerSpy.lastCall.args[1]).to.be.deep.equal(errorAction);
+                    done();
+                });
+                throw error;
             });
             return promise;
         };
