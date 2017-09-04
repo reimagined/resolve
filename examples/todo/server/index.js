@@ -35,7 +35,11 @@ io.on('connection', (socket) => {
             requestCommand(command).catch(err => console.log(err));
         });
 
-        const unsubscribe = eventStore.onEvent(eventNames, event => socket.emit('event', event));
+        const unsubscribe = eventStore.subscribeByEventType(
+            eventNames,
+            event => socket.emit('event', event),
+            true
+        );
 
         socket.on('disconnect', () => unsubscribe());
     });
