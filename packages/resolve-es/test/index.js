@@ -147,7 +147,7 @@ describe('resolve-es', () => {
                 saveEvent: sinon.stub().returns(Promise.resolve())
             };
             const bus = {
-                setTrigger: sinon.stub(),
+                subscribe: sinon.stub(),
                 publish: sinon.stub().returns(Promise.resolve())
             };
 
@@ -169,7 +169,7 @@ describe('resolve-es', () => {
                 saveEvent: sinon.stub().returns(Promise.resolve())
             };
             const bus = {
-                setTrigger: sinon.stub(),
+                subscribe: sinon.stub(),
                 publish: sinon.stub().returns(Promise.resolve())
             };
 
@@ -191,7 +191,7 @@ describe('resolve-es', () => {
                 saveEvent: sinon.stub().returns(Promise.resolve())
             };
             const bus = {
-                setTrigger: sinon.stub(),
+                subscribe: sinon.stub(),
                 publish: sinon.stub().returns(Promise.resolve())
             };
 
