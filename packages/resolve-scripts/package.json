@@ -45,6 +45,7 @@
     "express": "^4.15.3",
     "fs-extra": "^4.0.0",
     "jest": "^20.0.4",
+    "jsonwebtoken": "^7.4.3",
     "opn": "^5.1.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",

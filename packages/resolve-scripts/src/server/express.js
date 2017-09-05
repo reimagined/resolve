@@ -1,13 +1,16 @@
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import express from 'express';
+import jwt from 'jsonwebtoken';
 import path from 'path';
 import query from 'resolve-query';
 import commandHandler from 'resolve-command';
 import request from 'request';
-import ssr from './render';
 
 import eventStore from './event_store';
+import ssr from './render';
+import createSimpleError from './utils/simple_error';
+
 import config from '../configs/server.config.js';
 
 const STATIC_PATH = '/static';
@@ -34,11 +37,19 @@ if (config.gateways) {
 }
 
 app.use((req, res, next) => {
+    req.getJwt = jwt.verify.bind(
+        null,
+        req.cookies && req.cookies[config.jwt.cookieName],
+        config.jwt.secret,
+        config.jwt.options
+    );
+
     req.resolve = {
         executeQuery,
         executeCommand,
         eventStore
     };
+
     next();
 });
 
@@ -48,12 +59,12 @@ try {
 
 app.get(`${rootDirectory}/api/queries/:queryName`, async (req, res) => {
     try {
-        const securityContext = config.securityContextProvider(req);
+        const { graphql, variables } = req.query;
         const state = await executeQuery(
             req.params.queryName,
-            req.query && req.query.graphql,
-            (req.query && req.query.graphql && req.query.variables) || {},
-            securityContext
+            graphql,
+            JSON.parse(variables || '{}'),
+            req.jwt
         );
 
         res.status(200).json(state);
@@ -66,8 +77,7 @@ app.get(`${rootDirectory}/api/queries/:queryName`, async (req, res) => {
 
 app.post(`${rootDirectory}/api/commands`, async (req, res) => {
     try {
-        const securityContext = config.securityContextProvider(req);
-        await executeCommand(req.body, securityContext);
+        await executeCommand(req.body, req.jwt);
         res.status(200).send('ok');
     } catch (err) {
         res.status(500).end('Command error:' + err.message);

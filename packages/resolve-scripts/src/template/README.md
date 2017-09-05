@@ -29,6 +29,9 @@ You can find detailed information on subject-related technologies and links to t
         * [entries.rootComponent](#entriesrootcomponent)
         * [initialSubscribedEvents](#initialsubscribedevents)
         * [filterSubscription](#filtersubscription)
+        * [jwt.cookieName](#jwtcookiename)
+        * [jwt.options](#jwtoptions)
+        * [jwt.secret](#jwtsecret)
         * [extendExpress](#extendexpress)
         * [initialState](#initialstate)
         * [queries](#queries)
@@ -351,6 +354,43 @@ The `resolve.server.config.js` file contains information for reSolve library.
 	      types: eventTypes
 	    };
 	  }
+	}
+	```
+
+	* #### jwt.cookieName
+  Name of HTTP-cookie field, which does contain JWT token. This name is used to retrieve actual cookie from client agent/browser, perform validation and pass contained state into command and query side as security context.
+
+	##### Example
+	###### resolve.server.config.js
+	```js
+	export default { 
+        jwtCookieName: 'JWT-cookie'
+	}
+	```
+  
+* #### jwt.options
+  Options for customising JWT verify mechanism, including maximum allowed age for tokens to still be valid, audience configuration, etc. Options provided as object, which will be direct passed into verify function as `options` argument. 
+  See more information in [referent documentation for `jwt.verify`](https://www.npmjs.com/package/jsonwebtoken#jwtverifytoken-secretorpublickey-options-callback).
+  
+	##### Example
+	###### resolve.server.config.js
+	```js
+	export default { 
+        jwtOptions: {
+            maxAge: 1000 * 60 * 5 // 5 minutes
+        }
+	}
+	```
+
+* #### jwt.secret
+  Secret key used for signing and further verification for JWT tokens, which have been retrieved from client agent/browser. Current configuration uses HS256 algorithm to sign and verify JWT tokens. 
+  Ensure that key length is enough for safety and avoiding brute-force attacks - usually key with 32 bytes length is enough. Read about [Importance of Using Strong Keys in Signing JWTs](https://auth0.com/blog/brute-forcing-hs256-is-possible-the-importance-of-using-strong-keys-to-sign-jwts/).
+
+	##### Example
+	###### resolve.server.config.js
+	```js
+	export default { 
+        jwtSecret: 'JWT-secret-with-length-almost-32-bytes-for-enought-security'
 	}
 	```
 

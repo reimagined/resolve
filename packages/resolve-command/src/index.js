@@ -24,12 +24,12 @@ const getAggregateState = async ({ eventHandlers, initialState }, aggregateId, e
     return aggregateState;
 };
 
-const executeCommand = async (command, aggregate, eventStore, securityContext) => {
+const executeCommand = async (command, aggregate, eventStore, getJwt) => {
     const { aggregateId, type } = command;
     const aggregateState = await getAggregateState(aggregate, aggregateId, eventStore);
 
     const handler = aggregate.commands[type];
-    const event = handler(aggregateState, command, securityContext);
+    const event = handler(aggregateState, command, getJwt);
 
     if (!event.type) {
         throw new Error('event type is required');
@@ -39,9 +39,9 @@ const executeCommand = async (command, aggregate, eventStore, securityContext) =
     return event;
 };
 
-function createExecutor({ eventStore, aggregate, securityContext }) {
-    return async (command, securityContext) => {
-        const event = await executeCommand(command, aggregate, eventStore, securityContext);
+function createExecutor({ eventStore, aggregate, getJwt }) {
+    return async (command, getJwt) => {
+        const event = await executeCommand(command, aggregate, eventStore, getJwt);
         return await eventStore.saveEvent(event);
     };
 }
@@ -55,9 +55,9 @@ export default ({ eventStore, aggregates }) => {
         return result;
     }, {});
 
-    return async (command, securityContext) => {
+    return async (command, getJwt) => {
         await verifyCommand(command);
         const aggregateName = command.aggregateName.toLowerCase();
-        return executors[aggregateName](command, securityContext);
+        return executors[aggregateName](command, getJwt);
     };
 };
