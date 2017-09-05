@@ -37,41 +37,20 @@ if (config.gateways) {
 }
 
 app.use((req, res, next) => {
+    req.getJwt = jwt.verify.bind(
+        null,
+        req.cookies && req.cookies[config.jwt.cookieName],
+        config.jwt.secret,
+        config.jwt.options
+    );
+
     req.resolve = {
         executeQuery,
         executeCommand,
         eventStore
     };
 
-    try {
-        if (!req.cookies[config.jwt.cookieName]) {
-            throw new Error(`Cookie '${config.jwt.cookieName}' not found`);
-        }
-
-        jwt.verify(
-            req.cookies[config.jwt.cookieName],
-            config.jwt.secret,
-            config.jwt.options,
-            (err, result) => {
-                if (err) {
-                    const error = createSimpleError(err.message, 'JWT verification error');
-                    req.jwt = error;
-                    // eslint-disable-next-line no-console
-                    console.log(error.message);
-                    next();
-                }
-
-                req.jwt = result;
-                next();
-            }
-        );
-    } catch (err) {
-        req.jwt = createSimpleError(err.message, 'JWT read error');
-
-        // eslint-disable-next-line no-console
-        console.log(err.message);
-        next();
-    }
+    next();
 });
 
 try {
@@ -80,10 +59,11 @@ try {
 
 app.get(`${rootDirectory}/api/queries/:queryName`, async (req, res) => {
     try {
+        const { graphql, variables } = req.query;
         const state = await executeQuery(
             req.params.queryName,
-            req.query && req.query.graphql,
-            (req.query && req.query.graphql && req.query.variables) || {},
+            graphql,
+            JSON.parse(variables || '{}'),
             req.jwt
         );
 

@@ -192,19 +192,19 @@ describe('resolve-command', () => {
         const executeCommand = createCommandExecutor({ eventStore, aggregates });
         eventList = [{ type: 'SuccessEvent' }];
 
-        const jwtPayload = { testField: 'testValue' };
+        const getJwt = () => {};
         const transaction = executeCommand(
             {
                 aggregateName: AGGREGATE_NAME,
                 aggregateId: AGGREGATE_ID,
                 type: 'emptyCommand'
             },
-            jwtPayload
+            getJwt
         );
 
         await transaction;
 
-        expect(aggregate.commands.emptyCommand.lastCall.args[2]).to.be.equal(jwtPayload);
+        expect(aggregate.commands.emptyCommand.lastCall.args[2]).to.be.equal(getJwt);
 
         expect(lastState).to.be.deep.equal({
             value: 42
