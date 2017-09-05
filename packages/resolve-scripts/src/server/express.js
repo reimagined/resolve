@@ -44,14 +44,14 @@ app.use((req, res, next) => {
     };
 
     try {
-        if (!req.cookies[config.jwtCookieName]) {
-            throw new Error(`Cookie '${config.jwtCookieName}' not found`);
+        if (!req.cookies[config.jwt.cookieName]) {
+            throw new Error(`Cookie '${config.jwt.cookieName}' not found`);
         }
 
         jwt.verify(
-            req.cookies[config.jwtCookieName],
-            config.jwtSecret,
-            config.jwtOptions,
+            req.cookies[config.jwt.cookieName],
+            config.jwt.secret,
+            config.jwt.options,
             (err, result) => {
                 if (err) {
                     const error = createSimpleError(err.message, 'JWT verification error');
