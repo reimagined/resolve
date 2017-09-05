@@ -30,8 +30,6 @@ export default (initialState, { req, res }) => {
             return result;
         }, {});
 
-    const jwtPayload = config.jwtPayloadProvider(req);
-
     res.send(
         '<!doctype html>\n' +
             `<html ${helmet.htmlAttributes.toString()}>\n` +
@@ -42,7 +40,6 @@ export default (initialState, { req, res }) => {
             '<script>\n' +
             `window.__PROCESS_ENV__=${jsonUtfStringify(processEnv)}\n` +
             `window.__INITIAL_STATE__=${jsonUtfStringify(initialState)}\n` +
-            `window.__SECURITY_CONTEXT__=${jsonUtfStringify(jwtPayload)}\n` +
             '</script>\n' +
             `${helmet.script.toString()}\n` +
             '</head>\n' +
