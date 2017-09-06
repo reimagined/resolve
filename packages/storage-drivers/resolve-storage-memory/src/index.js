@@ -1,6 +1,6 @@
 const compareEvents = (a, b) => a.timestamp - b.timestamp;
 
-function createDriver(events) {
+function createDriver({ events }) {
     const store = events || [];
 
     return {
