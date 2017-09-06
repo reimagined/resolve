@@ -9,7 +9,6 @@ import request from 'request';
 
 import eventStore from './event_store';
 import ssr from './render';
-import createSimpleError from './utils/simple_error';
 
 import config from '../configs/server.config.js';
 
