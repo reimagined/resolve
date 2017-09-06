@@ -22,7 +22,6 @@ const useYarn = fs.existsSync(path.resolve(appDirectory, 'yarn.lock'));
 const io = socketIO(server, {
     path: `${rootDirectory || ''}/socket`
 });
-let currentApp = app;
 
 io.on('connection', connectionHandler);
 
@@ -53,11 +52,3 @@ server.on('listening', () => {
 });
 
 server.listen(PORT);
-
-if (module.hot) {
-    module.hot.accept('./express', () => {
-        server.removeListener('request', currentApp);
-        server.on('request', app);
-        currentApp = app;
-    });
-}
