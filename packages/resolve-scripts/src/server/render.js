@@ -11,11 +11,15 @@ const configEntries = config.entries;
 process.env.ROOT_DIR = process.env.ROOT_DIR || '';
 
 export default (initialState, { req, res }) => {
-    const html = renderToString(
-        <Provider store={configEntries.createStore(Object.assign(initialState, req.initialState))}>
-            <configEntries.rootComponent url={req.url} />
-        </Provider>
-    );
+    const html = process.env.NODE_ENV === 'production'
+        ? renderToString(
+              <Provider
+                  store={configEntries.createStore(Object.assign(initialState, req.initialState))}
+              >
+                  <configEntries.rootComponent url={req.url} />
+              </Provider>
+          )
+        : '';
 
     const helmet = Helmet.renderStatic();
 
