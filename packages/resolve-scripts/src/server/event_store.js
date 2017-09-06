@@ -30,7 +30,7 @@ const subscribe = async (eventDescriptors, callback) => {
             ? eventStore.subscribeByAggregateId(eventDescriptors.ids, trigger, true)
             : Promise.resolve(() => {});
 
-        const [typeUnsub, idUnsub] = await Promise.all(typeUnsubPromise, idUnsubPromise);
+        const [typeUnsub, idUnsub] = await Promise.all([typeUnsubPromise, idUnsubPromise]);
 
         return () => {
             typeUnsub();
