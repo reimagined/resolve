@@ -2,7 +2,6 @@ import { expect } from 'chai';
 import actions, {
     MERGE_STATE,
     SEND_COMMAND,
-    FETCH_MORE,
     SET_SUBSCRIPTION,
     REPLACE_STATE
 } from '../src/actions';
@@ -45,20 +44,6 @@ describe('actions', () => {
                 aggregateId,
                 aggregateName,
                 payload
-            });
-        });
-    });
-
-    describe('fetchMore', () => {
-        it('should create an action to fetch more items from readModel state', () => {
-            const readModelName = 'counter';
-            const query = {
-                owner: 'userId-12345'
-            };
-            expect(actions.fetchMore(readModelName, query)).to.deep.equal({
-                type: FETCH_MORE,
-                readModelName,
-                query
             });
         });
     });

@@ -1,11 +1,5 @@
 import { expect } from 'chai';
-import {
-    actions,
-    createReducer,
-    createActions,
-    sendCommandMiddleware,
-    fetchMoreMiddleware
-} from '../src';
+import { actions, createReducer, createActions, sendCommandMiddleware } from '../src';
 
 describe('resolve-redux', () => {
     it('works the same way for different import types', () => {
@@ -14,6 +8,5 @@ describe('resolve-redux', () => {
         expect(createReducer).to.be.equal(importedModule.createReducer);
         expect(createActions).to.be.equal(importedModule.createActions);
         expect(sendCommandMiddleware).to.be.equal(importedModule.sendCommandMiddleware);
-        expect(fetchMoreMiddleware).to.be.equal(importedModule.fetchMoreMiddleware);
     });
 });
