@@ -8,8 +8,8 @@ module.exports = {
     },
     target: 'node',
     node: {
-        __dirname: false,
-        __filename: false
+        __dirname: true,
+        __filename: true
     },
     resolve: {
         alias: {
@@ -17,7 +17,11 @@ module.exports = {
                 __dirname,
                 path.join(process.cwd(), './resolve.server.config.js')
             )
-        }
+        },
+        modules: ['node_modules', path.resolve(__dirname, '../../node_modules')]
+    },
+    resolveLoader: {
+        modules: ['node_modules', path.resolve(__dirname, '../../node_modules')]
     },
     output: {
         path: path.join(process.cwd(), './dist/server'),
@@ -31,7 +35,17 @@ module.exports = {
                     {
                         loader: 'babel-loader',
                         query: {
-                            presets: [['es2015', { modules: false }], 'stage-0', 'react']
+                            presets: [
+                                [
+                                    path.resolve(
+                                        __dirname,
+                                        '../../node_modules/babel-preset-es2015'
+                                    ),
+                                    { modules: false }
+                                ],
+                                path.resolve(__dirname, '../../node_modules/babel-preset-stage-0'),
+                                path.resolve(__dirname, '../../node_modules/babel-preset-react')
+                            ]
                         }
                     }
                 ],

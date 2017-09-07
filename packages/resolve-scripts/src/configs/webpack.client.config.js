@@ -16,7 +16,11 @@ module.exports = {
                 __dirname,
                 path.join(process.cwd(), './resolve.client.config.js')
             )
-        }
+        },
+        modules: ['node_modules', path.resolve(__dirname, '../../node_modules')]
+    },
+    resolveLoader: {
+        modules: ['node_modules', path.resolve(__dirname, '../../node_modules')]
     },
     module: {
         rules: [
@@ -26,7 +30,17 @@ module.exports = {
                     {
                         loader: 'babel-loader',
                         query: {
-                            presets: [['es2015', { modules: false }], 'stage-0', 'react']
+                            presets: [
+                                [
+                                    path.resolve(
+                                        __dirname,
+                                        '../../node_modules/babel-preset-es2015'
+                                    ),
+                                    { modules: false }
+                                ],
+                                path.resolve(__dirname, '../../node_modules/babel-preset-stage-0'),
+                                path.resolve(__dirname, '../../node_modules/babel-preset-react')
+                            ]
                         }
                     }
                 ],
