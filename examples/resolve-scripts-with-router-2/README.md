@@ -27,7 +27,11 @@ To start this application, run the following commands:
 ```
 git clone https://github.com/reimagined/resolve
 cd resolve
-npm install && npm run bootstrap
+npm install
+cd examples/resolve-scripts-with-router-2
+npm install
+cd ../..
+npm run bootstrap
 cd examples/resolve-scripts-with-router-2
 npm start
 
