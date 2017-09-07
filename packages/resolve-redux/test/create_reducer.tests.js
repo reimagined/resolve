@@ -3,7 +3,7 @@ import { createStore } from 'redux';
 import uuidV4 from 'uuid/v4';
 import { expect } from 'chai';
 import createReducer from '../src/create_reducer';
-import ResolveActions, { MERGE } from '../src/actions';
+import ResolveActions, { MERGE_STATE } from '../src/actions';
 
 describe('reducer', () => {
     const readModel = {
@@ -124,7 +124,7 @@ describe('reducer', () => {
         expect(store.getState()).to.deep.equal(initialState);
 
         store.dispatch(
-            ResolveActions.merge('counter', {
+            ResolveActions.mergeState('counter', {
                 [aggregateId1]: { value: 5 },
                 [aggregateId3]: { value: 4 }
             })
@@ -146,7 +146,7 @@ describe('reducer', () => {
             initialState,
 
             eventHandlers: {
-                [MERGE]: (state, action) => {
+                [MERGE_STATE]: (state, action) => {
                     state.add(action.state);
                     return state;
                 }
@@ -157,10 +157,10 @@ describe('reducer', () => {
 
         expect(store.getState()).to.deep.equal(initialState);
 
-        store.dispatch(ResolveActions.merge('set', 1));
-        store.dispatch(ResolveActions.merge('set', 2));
-        store.dispatch(ResolveActions.merge('set', 3));
-        store.dispatch(ResolveActions.merge('set', 2));
+        store.dispatch(ResolveActions.mergeState('set', 1));
+        store.dispatch(ResolveActions.mergeState('set', 2));
+        store.dispatch(ResolveActions.mergeState('set', 3));
+        store.dispatch(ResolveActions.mergeState('set', 2));
 
         expect(Array.from(store.getState())).to.deep.equal([1, 2, 3]);
     });
