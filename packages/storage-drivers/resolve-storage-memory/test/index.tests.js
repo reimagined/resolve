@@ -35,7 +35,7 @@ const rows = [row1, row2, row3, row4];
 
 describe('es-memory', () => {
     it('load events by types', () => {
-        const eventstore = driver(rows);
+        const eventstore = driver({ events: rows });
         const result = [];
 
         return eventstore
@@ -48,7 +48,7 @@ describe('es-memory', () => {
     });
 
     it('load events by aggregate ids', () => {
-        const eventstore = driver(rows);
+        const eventstore = driver({ events: rows });
         const result = [];
 
         return eventstore
@@ -61,7 +61,7 @@ describe('es-memory', () => {
     });
 
     it('save event', () => {
-        const eventstore = driver(rows);
+        const eventstore = driver({ events: rows });
 
         return eventstore.saveEvent(row5).then(() =>
             eventstore.loadEventsByAggregateId(['5'], (result) => {
