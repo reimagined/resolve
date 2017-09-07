@@ -9,8 +9,8 @@ export default {
     reasons: false,
     children: false,
     source: false,
-    errors: false,
-    errorDetails: false,
-    warnings: false,
+    errors: true,
+    errorDetails: true,
+    warnings: true,
     publicPath: false
 };
