@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import { actions } from '../src';
 import { createStore, applyMiddleware } from 'redux';
 import fetchMoreMiddleware from '../src/fetch_more_middleware';
-import { MERGE } from '../src/actions';
+import { MERGE_STATE } from '../src/actions';
 
 describe('fetchMoreMiddleware', () => {
     let originalWarn;
@@ -53,7 +53,7 @@ describe('fetchMoreMiddleware', () => {
         store = createStore(
             (state, action) => {
                 switch (action.type) {
-                    case MERGE:
+                    case MERGE_STATE:
                         return { ...state, ...action.state };
                     default:
                         return state;

@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import actions, {
-    MERGE,
+    MERGE_STATE,
     SEND_COMMAND,
     FETCH_MORE,
     SET_SUBSCRIPTION,
@@ -8,14 +8,14 @@ import actions, {
 } from '../src/actions';
 
 describe('actions', () => {
-    describe('merge', () => {
+    describe('mergeState', () => {
         it('should create an action to merge reducer state with readModel state', () => {
             const readModelName = 'counter';
             const state = {
                 value: 10
             };
-            expect(actions.merge(readModelName, state)).to.deep.equal({
-                type: MERGE,
+            expect(actions.mergeState(readModelName, state)).to.deep.equal({
+                type: MERGE_STATE,
                 readModelName,
                 state
             });

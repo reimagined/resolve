@@ -17,7 +17,7 @@ const commandTypes = allCommandTypes.reduce(
 
 function subscribeOnSocket(socket) {
     return eventChannel((emit) => {
-        socket.on('initialState', state => emit(actions.merge('cards', state)));
+        socket.on('initialState', state => emit(actions.mergeState('cards', state)));
         socket.on('event', event => emit(event));
 
         return () => {};
