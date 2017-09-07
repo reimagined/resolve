@@ -19,18 +19,9 @@ buildConfig.extendWebpack(devClientConfig, devServerConfig);
 
 const clientCompiler = webpack(devClientConfig);
 
-// eslint-disable-next-line no-console
-const log = console.log;
-
 const clientDevServer = new WebpackDevServer(clientCompiler, {
     stats: outputConfig,
-    setup: (app) => {
-        app.use((req, res, next) => {
-            log(`Using middleware for ${req.url}`);
-            next();
-        });
-        app.use(express.static(path.join(process.cwd(), './dist/static')));
-    }
+    setup: app => app.use(express.static(path.join(process.cwd(), './dist/static')))
 });
 
 webpack(devServerConfig, (err, stats) => {});
