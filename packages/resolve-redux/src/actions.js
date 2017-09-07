@@ -22,14 +22,6 @@ function sendCommand({ command, aggregateId, aggregateName, payload }) {
     };
 }
 
-function fetchMore(readModelName, query) {
-    return {
-        type: FETCH_MORE,
-        readModelName,
-        query
-    };
-}
-
 function setSubscription(eventTypes, aggregateIds) {
     return {
         type: SET_SUBSCRIPTION,
@@ -49,7 +41,6 @@ function replaceState(readModelName, state) {
 export default {
     mergeState,
     sendCommand,
-    fetchMore,
     setSubscription,
     replaceState
 };

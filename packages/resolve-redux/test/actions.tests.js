@@ -49,20 +49,6 @@ describe('actions', () => {
         });
     });
 
-    describe('fetchMore', () => {
-        it('should create an action to fetch more items from readModel state', () => {
-            const readModelName = 'counter';
-            const query = {
-                owner: 'userId-12345'
-            };
-            expect(actions.fetchMore(readModelName, query)).to.deep.equal({
-                type: FETCH_MORE,
-                readModelName,
-                query
-            });
-        });
-    });
-
     describe('setSubscription', () => {
         it('should create an action to set event subscription in socket.io connection', () => {
             const eventTypes = ['EVENT_TYPE_1', 'EVENT_TYPE_2'];
