@@ -2,7 +2,6 @@ import { expect } from 'chai';
 import actions, {
     MERGE_STATE,
     SEND_COMMAND,
-    FETCH_MORE,
     SET_SUBSCRIPTION,
     REPLACE_STATE
 } from '../src/actions';

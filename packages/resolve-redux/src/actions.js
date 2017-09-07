@@ -1,5 +1,4 @@
 export const MERGE_STATE = '@@resolve/READ_MODEL_STATE_MERGE';
-export const FETCH_MORE = '@@resolve/READ_MODEL_FETCH_MORE';
 export const SEND_COMMAND = '@@resolve/SEND_COMMAND';
 export const SET_SUBSCRIPTION = '@@resolve/SET_SUBSCRIPTION';
 export const REPLACE_STATE = '@@resolve/REPLACE_STATE';
