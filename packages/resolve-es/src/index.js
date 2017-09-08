@@ -46,14 +46,14 @@ export default (
         async subscribeByAggregateId(aggregateId, handler, onlyBus = false) {
             const aggregateIds = Array.isArray(aggregateId) ? aggregateId : [aggregateId];
             if (!onlyBus) {
-                await config.storage.loadEventsByAggregateId(aggregateIds, handler);
+                await config.storage.loadEventsByAggregateIds(aggregateIds, handler);
             }
             return onEventById(aggregateIds, handler);
         },
 
         async getEventsByAggregateId(aggregateId, handler) {
             const aggregateIds = Array.isArray(aggregateId) ? aggregateId : [aggregateId];
-            return await config.storage.loadEventsByAggregateId(aggregateIds, handler);
+            return await config.storage.loadEventsByAggregateIds(aggregateIds, handler);
         },
 
         async saveEvent(event) {

@@ -52,7 +52,7 @@ describe('es-memory', () => {
         const result = [];
 
         return eventstore
-            .loadEventsByAggregateId(['3'], (item) => {
+            .loadEventsByAggregateIds(['3'], (item) => {
                 result.push(item);
             })
             .then(() => {
@@ -64,7 +64,7 @@ describe('es-memory', () => {
         const eventstore = driver({ events: rows });
 
         return eventstore.saveEvent(row5).then(() =>
-            eventstore.loadEventsByAggregateId(['5'], (result) => {
+            eventstore.loadEventsByAggregateIds(['5'], (result) => {
                 expect(result).to.be.deep.equal(row5);
             })
         );

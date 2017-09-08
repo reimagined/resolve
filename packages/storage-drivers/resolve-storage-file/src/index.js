@@ -33,7 +33,7 @@ function createDriver({ pathToFile }) {
         );
     }
 
-    function loadEventsByAggregateId(ids, callback) {
+    function loadEventsByAggregateIds(ids, callback) {
         return loadEvents(pathToFile).then(events =>
             events
                 .filter(event => ids.includes(event.aggregateId))
@@ -45,7 +45,7 @@ function createDriver({ pathToFile }) {
     return {
         saveEvent,
         loadEventsByTypes,
-        loadEventsByAggregateId
+        loadEventsByAggregateIds
     };
 }
 

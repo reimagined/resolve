@@ -36,7 +36,7 @@ function createDriver({ url, collection }) {
         saveEvent: event => getCollection().then(coll => coll.insert(event)),
         loadEventsByTypes: (types, callback) =>
             getCollection().then(coll => loadEvents(coll, { type: { $in: types } }, callback)),
-        loadEventsByAggregateId: (aggregateIds, callback) =>
+        loadEventsByAggregateIds: (aggregateIds, callback) =>
             getCollection().then(coll =>
                 loadEvents(coll, { aggregateId: { $in: aggregateIds } }, callback)
             )
