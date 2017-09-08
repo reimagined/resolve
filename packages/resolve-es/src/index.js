@@ -65,6 +65,18 @@ export default (
             await config.storage.saveEvent(event);
             await config.bus.publish(event);
             return event;
+        },
+
+        async rawSaveEvent(event) {
+            const { type, aggregateId, timestamp } = event;
+            if (!type || !aggregateId || parseInt(timestamp, 10) !== timestamp) {
+                throw new Error(
+                    'Some of event mandatory fields (type, aggregateId, timestamp) are missed'
+                );
+            }
+            await config.storage.saveEvent(event);
+            await config.bus.publish(event);
+            return event;
         }
     };
 
