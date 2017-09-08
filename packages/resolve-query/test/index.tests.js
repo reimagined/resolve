@@ -8,41 +8,7 @@ describe('resolve-query', () => {
     const SIMPLE_READ_MODEL_NAME = 'readModelName';
     const GRAPHQL_READ_MODEL_NAME = 'graphqlReadModelName';
 
-    let eventStore, eventList;
-
-    const readModels = [
-        {
-            initialState: {},
-            name: SIMPLE_READ_MODEL_NAME,
-            eventHandlers: {
-                SuccessEvent: (state, event) => {
-                    return { ...state, value: 42 };
-                },
-                BrokenEvent: (state, event) => {
-                    throw brokenStateError;
-                }
-            }
-        },
-        {
-            initialState: { Users: [] },
-            name: GRAPHQL_READ_MODEL_NAME,
-            gqlSchema: `
-                type User {
-                    id: ID!
-                    UserName: String
-                }
-                type Query {
-                    UserByIdOnDemand(aggregateId: ID!): User,
-                    UserById(id: ID!): User,
-                    UserIds: [ID!],
-                    Users: [User],
-                }
-            `,
-            // Following arguments redefined in beforeEach section
-            eventHandlers: null,
-            gqlResolvers: null
-        }
-    ];
+    let eventStore, eventList, readModels;
 
     const brokenSchemaReadModels = [
         {
@@ -94,27 +60,73 @@ describe('resolve-query', () => {
                 )
         };
 
-        const graphqlReadModel = readModels.find(model => model.name === GRAPHQL_READ_MODEL_NAME);
-        graphqlReadModel.eventHandlers = {
-            UserAdded: (state, { aggregateId: id, payload: { UserName } }) => {
-                if (state.Users.find(user => user.id === id)) return state;
-                state.Users.push({ id, UserName });
-                return state;
+        readModels = [
+            {
+                initialState: {},
+                name: SIMPLE_READ_MODEL_NAME,
+                eventHandlers: {
+                    SuccessEvent: (state, event) => {
+                        return { ...state, value: 42 };
+                    },
+                    BrokenEvent: (state, event) => {
+                        throw brokenStateError;
+                    }
+                }
             },
-            UserDeleted: (state, { aggregateId: id }) => {
-                state.Users = state.Users.filter(user => user.id !== id);
-                return state;
+            {
+                initialState: { Users: [] },
+                name: GRAPHQL_READ_MODEL_NAME,
+                eventHandlers: {
+                    UserAdded: (state, { aggregateId: id, payload: { UserName } }) => {
+                        if (state.Users.find(user => user.id === id)) return state;
+                        state.Users.push({ id, UserName });
+                        return state;
+                    },
+                    UserDeleted: (state, { aggregateId: id }) => {
+                        state.Users = state.Users.filter(user => user.id !== id);
+                        return state;
+                    }
+                },
+                gqlSchema: `
+                type User {
+                    id: ID!
+                    UserName: String
+                }
+                type UsersAndValue {
+                    users: [User]
+                    value: Int
+                }
+                type Query {
+                    CrossReadModel(aggregateId: ID): UsersAndValue,
+                    UserByIdOnDemand(aggregateId: ID!): User,
+                    UserById(id: ID!): User,
+                    UserIds: [ID!],
+                    Users: [User]
+                }
+            `,
+                gqlResolvers: {
+                    UserByIdOnDemand: (root, args) =>
+                        root.Users.find(user => user.id === args.aggregateId),
+                    UserById: (root, args) => root.Users.find(user => user.id === args.id),
+                    UserIds: (root, args) => root.Users.map(user => user.id),
+                    CrossReadModel: async (root, args, { getReadModel }) => {
+                        const idList = args.aggregateId ? [args.aggregateId] : null;
+                        const [gqlState, simpleState] = await Promise.all([
+                            getReadModel(GRAPHQL_READ_MODEL_NAME, idList),
+                            getReadModel(SIMPLE_READ_MODEL_NAME)
+                        ]);
+                        return {
+                            value: simpleState.value,
+                            users: gqlState.Users
+                        };
+                    }
+                }
             }
-        };
-
-        graphqlReadModel.gqlResolvers = {
-            UserByIdOnDemand: (root, args) => root.Users.find(user => user.id === args.aggregateId),
-            UserById: (root, args) => root.Users.find(user => user.id === args.id),
-            UserIds: (root, args) => root.Users.map(user => user.id)
-        };
+        ];
     });
 
     afterEach(() => {
+        readModels = null;
         eventStore = null;
         eventList = null;
     });
@@ -393,6 +405,47 @@ describe('resolve-query', () => {
         }
     });
 
+    it('should provide access to regular neighbor read-models in resolver function', async () => {
+        const executeQuery = createQueryExecutor({ eventStore, readModels });
+        eventList = [
+            { type: 'UserAdded', aggregateId: '1', payload: { UserName: 'User-1' } },
+            { type: 'UserAdded', aggregateId: '2', payload: { UserName: 'User-2' } },
+            { type: 'SuccessEvent', aggregateId: '0' }
+        ];
+
+        const graphqlQuery = 'query { CrossReadModel { users { id, UserName }, value } }';
+
+        const state = await executeQuery(GRAPHQL_READ_MODEL_NAME, graphqlQuery);
+
+        expect(state).to.be.deep.equal({
+            CrossReadModel: {
+                users: [{ id: '1', UserName: 'User-1' }, { id: '2', UserName: 'User-2' }],
+                value: 42
+            }
+        });
+    });
+
+    it('should provide access to on-demand neighbor read-models in resolver function', async () => {
+        const executeQuery = createQueryExecutor({ eventStore, readModels });
+        eventList = [
+            { type: 'UserAdded', aggregateId: '1', payload: { UserName: 'User-1' } },
+            { type: 'UserAdded', aggregateId: '2', payload: { UserName: 'User-2' } },
+            { type: 'SuccessEvent', aggregateId: '0' }
+        ];
+
+        const graphqlQuery =
+            'query { CrossReadModel(aggregateId:2) { users { id, UserName }, value } }';
+
+        const state = await executeQuery(GRAPHQL_READ_MODEL_NAME, graphqlQuery);
+
+        expect(state).to.be.deep.equal({
+            CrossReadModel: {
+                users: [{ id: '2', UserName: 'User-2' }],
+                value: 42
+            }
+        });
+    });
+
     it('should provide security context to event handlers', async () => {
         const graphqlReadModel = readModels.find(model => model.name === GRAPHQL_READ_MODEL_NAME);
 
@@ -408,9 +461,7 @@ describe('resolve-query', () => {
 
         const state = await executeQuery(GRAPHQL_READ_MODEL_NAME, graphqlQuery, {}, getJwt);
 
-        expect(graphqlReadModel.gqlResolvers.UserById.lastCall.args[2]).to.be.deep.equal({
-            getJwt
-        });
+        expect(graphqlReadModel.gqlResolvers.UserById.lastCall.args[2].getJwt).to.be.equal(getJwt);
 
         expect(state).to.be.deep.equal({
             UserById: {
