@@ -1,6 +1,6 @@
 {
   "name": "todo-common",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "description": "",
   "main": "./dist/index.js",
   "author": "reimagined team",

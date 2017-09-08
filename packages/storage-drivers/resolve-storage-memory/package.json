@@ -1,6 +1,6 @@
 {
   "name": "resolve-storage-memory",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "description": "This package serves as a driver for resolve-storage to store events using memory.",
   "main": "./dist/index.js",
   "bugs": {
