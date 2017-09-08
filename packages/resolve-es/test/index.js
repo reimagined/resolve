@@ -248,6 +248,69 @@ describe('resolve-es', () => {
         });
     });
 
+    describe('rawSaveEvent', () => {
+        it('should save and propagate event', async () => {
+            const storage = {
+                saveEvent: sinon.stub().returns(Promise.resolve())
+            };
+            const bus = {
+                subscribe: sinon.stub(),
+                publish: sinon.stub().returns(Promise.resolve())
+            };
+
+            const eventStore = createEventStore({ storage, bus });
+            const event = { type: 'EVENT', aggregateId: 'ID', timestamp: 100 };
+            await eventStore.rawSaveEvent(event);
+
+            expect(storage.saveEvent.calledWith(event)).to.be.true;
+            expect(bus.publish.calledWith(event)).to.be.true;
+        });
+
+        it('should reject events without type / aggregateId / timestamp', async () => {
+            const storage = {
+                saveEvent: sinon.stub().returns(Promise.resolve())
+            };
+            const bus = {
+                subscribe: sinon.stub(),
+                publish: sinon.stub().returns(Promise.resolve())
+            };
+
+            const eventStore = createEventStore({ storage, bus });
+            const event = {};
+
+            try {
+                await eventStore.rawSaveEvent(event);
+                return Promise.reject('Test failed');
+            } catch (err) {
+                expect(err.message).to.be.equal(
+                    'Some of event mandatory fields (type, aggregateId, timestamp) are missed'
+                );
+            }
+        });
+
+        it('should reject events with malformed timestamp', async () => {
+            const storage = {
+                saveEvent: sinon.stub().returns(Promise.resolve())
+            };
+            const bus = {
+                subscribe: sinon.stub(),
+                publish: sinon.stub().returns(Promise.resolve())
+            };
+
+            const eventStore = createEventStore({ storage, bus });
+            const event = { type: 'Event_type', aggregateId: 'Id', timestamp: 'Wrong-timestamp' };
+
+            try {
+                await eventStore.rawSaveEvent(event);
+                return Promise.reject('Test failed');
+            } catch (err) {
+                expect(err.message).to.be.equal(
+                    'Some of event mandatory fields (type, aggregateId, timestamp) are missed'
+                );
+            }
+        });
+    });
+
     it('onError', async () => {
         const loadEventsByTypesError = new Error('LoadEventsByTypes error');
         const loadEventsByAggregateIdError = new Error('LoadEventsByAggregateId error');
