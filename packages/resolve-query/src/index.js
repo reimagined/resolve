@@ -77,7 +77,7 @@ function extractAggregateIdsFromGqlQuery(parsedGqlQuery, gqlVariables) {
     return findAllAggregateIds(parsedGqlQuery);
 }
 
-function getExecutor({ statesRepository, eventStore, readModel }) {
+function getExecutor({ statesRepository, eventStore, readModel, getReadModel }) {
     const { gqlSchema, gqlResolvers, name } = readModel;
     const executableSchema =
         gqlSchema &&
@@ -103,7 +103,7 @@ function getExecutor({ statesRepository, eventStore, readModel }) {
             executableSchema,
             parsedGqlQuery,
             state,
-            { getJwt },
+            { getJwt, getReadModel },
             gqlVariables
         );
 
@@ -115,9 +115,20 @@ function getExecutor({ statesRepository, eventStore, readModel }) {
 export default ({ eventStore, readModels }) => {
     const statesRepository = {};
 
+    const getReadModel = async (modelName, aggregateIds) => {
+        const readModel = readModels.find(
+            model => modelName.toLowerCase() === model.name.toLowerCase()
+        );
+        if (readModel) {
+            return await getState({ statesRepository, eventStore, readModel, aggregateIds });
+        }
+        return null;
+    };
+
     const executors = readModels.reduce((result, readModel) => {
         result[readModel.name.toLowerCase()] = getExecutor({
             statesRepository,
+            getReadModel,
             eventStore,
             readModel
         });
