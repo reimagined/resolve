@@ -67,7 +67,7 @@ describe('sendCommandMiddleware', () => {
         store.dispatch(action);
     });
 
-    it('works correctly with no error returned by the sendCommand function', () => {
+    it('dispatch works correctly', () => {
         const testAction = { type: 'testType', value: 'value2' };
         const sendCommand = sinon.spy((cmd, dispatch) => {
             dispatch(testAction);
