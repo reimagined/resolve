@@ -78,7 +78,7 @@ describe('es-mongo', () => {
         _setFindResult(eventsByAggregateId);
 
         return driver
-            .loadEventsByAggregateId([aggregateId], processEvent)
+            .loadEventsByAggregateIds([aggregateId], processEvent)
             .then(() => MongoClient.connect.lastCall.returnValue)
             .then((db) => {
                 expect(db.collection.lastCall.args).to.deep.equal(['test-collection']);

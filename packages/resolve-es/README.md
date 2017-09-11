@@ -12,7 +12,7 @@ When initializing an event store, pass the following arguments:
 	... or implement your custom storage driver. Storage driver is an object with the following fields:
 	* `saveEvent` - a function which takes an event and returns Promise that will be resolved when the event is stored in the storage.
 	* `loadEventsByTypes` - a function which takes two arguments: an array of event types  and  callback that will be called for handling each appropriate event. 
-	* `loadEventsByAggregateId` - a function which takes two arguments: an aggregate id/ array of aggregate ids and callback that will be called for handling each  appropriate event. 
+	* `loadEventsByAggregateIds` - a function which takes two arguments: an aggregate id/ array of aggregate ids and callback that will be called for handling each  appropriate event. 
 
 * `bus`  
 	Use one of [drivers](https://github.com/reimagined/resolve/tree/master/packages/bus-drivers) which the reSolve framework provides...

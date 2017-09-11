@@ -64,7 +64,7 @@ describe('resolve-es', () => {
             const emittedEvent = { aggregateId };
 
             const storage = {
-                loadEventsByAggregateId: sinon.stub().callsFake((aggregateId, callback) => {
+                loadEventsByAggregateIds: sinon.stub().callsFake((aggregateId, callback) => {
                     callback(emittedEvent);
                     return resolvedPromise;
                 })
@@ -80,7 +80,7 @@ describe('resolve-es', () => {
 
             await resolvedPromise;
 
-            expect(storage.loadEventsByAggregateId.lastCall.args[0][0]).to.be.equal(aggregateId);
+            expect(storage.loadEventsByAggregateIds.lastCall.args[0][0]).to.be.equal(aggregateId);
             expect(eventHandler.calledWith(emittedEvent)).to.be.true;
             expect(bus.subscribe.calledOnce).to.be.true;
         });
@@ -93,7 +93,7 @@ describe('resolve-es', () => {
             const emittedEvent = { aggregateId: aggregateIds[0] };
 
             const storage = {
-                loadEventsByAggregateId: sinon.stub().callsFake((aggregateId, callback) => {
+                loadEventsByAggregateIds: sinon.stub().callsFake((aggregateId, callback) => {
                     callback(emittedEvent);
                     return resolvedPromise;
                 })
@@ -109,7 +109,7 @@ describe('resolve-es', () => {
 
             await resolvedPromise;
 
-            expect(storage.loadEventsByAggregateId.lastCall.args[0]).to.be.equal(aggregateIds);
+            expect(storage.loadEventsByAggregateIds.lastCall.args[0]).to.be.equal(aggregateIds);
             expect(eventHandler.calledWith(emittedEvent)).to.be.true;
             expect(bus.subscribe.calledOnce).to.be.true;
         });
@@ -118,7 +118,7 @@ describe('resolve-es', () => {
         it('should handle callback by AggragateId array with events propagated only from bus', async () => {
             const resolvedPromise = Promise.resolve();
 
-            const storage = { loadEventsByAggregateId: sinon.stub() };
+            const storage = { loadEventsByAggregateIds: sinon.stub() };
             const bus = { subscribe: sinon.stub() };
 
             const eventStore = createEventStore({ storage, bus });
@@ -129,7 +129,7 @@ describe('resolve-es', () => {
 
             await resolvedPromise;
 
-            expect(storage.loadEventsByAggregateId.notCalled).to.be.true;
+            expect(storage.loadEventsByAggregateIds.notCalled).to.be.true;
             expect(bus.subscribe.calledOnce).to.be.true;
         });
     });
@@ -142,7 +142,7 @@ describe('resolve-es', () => {
             const emittedEvent = { type: 'EMITTED_EVENT' };
 
             const storage = {
-                loadEventsByAggregateId: sinon.stub().callsFake((aggregateId, callback) => {
+                loadEventsByAggregateIds: sinon.stub().callsFake((aggregateId, callback) => {
                     callback(emittedEvent);
                     return resolvedPromise;
                 })
@@ -157,7 +157,7 @@ describe('resolve-es', () => {
 
             await resolvedPromise;
 
-            expect(storage.loadEventsByAggregateId.lastCall.args[0][0]).to.be.equal(aggregateId);
+            expect(storage.loadEventsByAggregateIds.lastCall.args[0][0]).to.be.equal(aggregateId);
             expect(handler.calledWith(emittedEvent)).to.be.true;
         });
     });
@@ -320,7 +320,7 @@ describe('resolve-es', () => {
             loadEventsByTypes: () => {
                 throw loadEventsByTypesError;
             },
-            loadEventsByAggregateId: () => {
+            loadEventsByAggregateIds: () => {
                 throw loadEventsByAggregateIdError;
             },
             saveEvent: () => {
