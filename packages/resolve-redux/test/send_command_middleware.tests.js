@@ -66,4 +66,33 @@ describe('sendCommandMiddleware', () => {
         const store = createStore(reducerSpy, {}, applyMiddleware(middleware));
         store.dispatch(action);
     });
+
+    it('dispatch works correctly', () => {
+        const testAction = { type: 'testType', value: 'value2' };
+        const sendCommand = sinon.spy((cmd, dispatch) => {
+            dispatch(testAction);
+            return Promise.resolve();
+        });
+
+        const reducer = (state, action) =>
+            action.type === testAction.type ? { values: [...state.values, action.value] } : state;
+
+        const middleware = sendCommandMiddleware({ sendCommand });
+        const store = createStore(reducer, { values: ['value1'] }, applyMiddleware(middleware));
+
+        const command = {
+            type: 'actionType',
+            command: {
+                type: 'commandType'
+            },
+            aggregateId: 'aggregateId',
+            aggregateName: 'aggregateName',
+            payload: {
+                some: 'value'
+            }
+        };
+        store.dispatch(command);
+
+        expect(store.getState()).to.be.deep.equal({ values: ['value1', 'value2'] });
+    });
 });
