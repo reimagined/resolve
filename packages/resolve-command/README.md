@@ -24,52 +24,160 @@ After the command is initialized, you get a function that is used to send an eve
    Callback for retrieve actual client state stored in verified JWT token.
 
 ### Example
-```js
-import commandHandler from 'resolve-command'
-import createEsStorage from 'resolve-storage-memory'
-import createBusDriver from 'resolve-bus-memory'
-import createEventStore from 'resolve-es'
+Let's create a aggregate for news handling. It will handle next commands: `createNews`, `upvoteNews`, `unvoteNews`,  `deleteNews` for news and `createComment`, `updateComment`, `deleteComment` for comments. To look at a Read Model that will handle these events  see [this example](https://github.com/reimagined/resolve/tree/master/packages/resolve-query#example).
 
-const aggregates = [{
-  name: 'User',
-  initialState: {},
+```js
+import Immutable from 'seamless-immutable'
+
+export default {
+  name: 'news',
+  initialState: Immutable({}),
   eventHandlers: {
-    UserCreated: (state, { name, email}) => ({
-      ...state,
-      name,
-      email
-    })
+    NEWS_CREATED: (state, { payload: { userId } }) =>
+      state.merge({
+        createdAt: Date.now(),
+        createdBy: userId,
+        voted: [],
+        comments: {}
+      }),
+
+    NEWS_UPVOTED: (state, { payload: { userId } }) =>
+      state.update('voted', voted => voted.concat(userId)),
+
+    NEWS_UNVOTED: (state, { payload: { userId } }) =>
+      state.update('voted', voted =>
+        voted.filter(curUserId => curUserId !== userId)
+      ),
+    COMMENT_CREATED: (state, { payload: { commentId, userId } }) =>
+      state.setIn(['comments', commentId], {
+        createdAt: Date.now(),
+        createdBy: userId
+      }),
+
+    COMMENT_REMOVED: (state, { payload: { commentId } }) =>
+      state.setIn(['comments', commentId, 'removedAt'], Date.now())
   },
   commands: {
-    create: (state, { aggregateId, name, email}) => ({
-      type: 'UserCreated',
-      aggregateId,
-      name,
-      email
-    })
+    createNews: (state, { payload: { title, link, userId, text } }) => {
+      if (state.createdAt) {
+        throw new Error('Aggregate already exists')
+      }
+
+      if (!title) {
+        throw new Error('Title is required')
+      }
+
+      if (!userId) {
+        throw new Error('UserId is required')
+      }
+
+      return new Event('NEWS_CREATED', {
+        title,
+        text,
+        link,
+        userId
+      })
+    },
+
+    upvoteNews: (state, { payload: { userId } }) => {
+      if (!state.createdAt || state.removedAt) {
+        throw new Error('Aggregate is not exist')
+      }
+
+      if (state.voted.includes(userId)) {
+        throw new Error('User already voted')
+      }
+
+      if (!userId) {
+        throw new Error('UserId is required')
+      }
+
+      return new Event('NEWS_UPVOTED', {
+        userId
+      })
+    },
+
+    unvoteNews: (state, { payload: { userId } }) => {
+      if (!state.createdAt || state.removedAt) {
+        throw new Error('Aggregate is not exist')
+      }
+
+      if (!state.voted.includes(userId)) {
+        throw new Error('User has not voted')
+      }
+
+      if (!userId) {
+        throw new Error('UserId is required')
+      }
+
+      return new Event('NEWS_UNVOTED'  , {
+        userId
+      })
+    },
+
+    deleteNews: (state) => {
+        if (!state.createdAt || state.removedAt) {
+          throw new Error('Aggregate is not exist')
+        }
+
+      return new Event('NEWS_DELETED')
+    },
+
+    createComment: (state, { payload: { text, parentId, userId, commentId } }) => {
+      if (!state.createdAt || state.removedAt) {
+        throw new Error('Aggregate is not exist')
+      }
+
+      if (!text) {
+        throw new Error('Text is required')
+      }
+
+      if (!parentId) {
+        throw new Error('ParentId is required')
+      }
+
+      if (!userId) {
+        throw new Error('UserId is required')
+      }
+
+      return new Event('COMMENT_CREATED', {
+        text,
+        parentId,
+        userId,
+        commentId
+      })
+    },
+
+    updateComment: (state, { payload : { text, commentId, userId } }) => {
+      if (!state.createdAt || state.removedAt) {
+        throw new Error('Aggregate is not exist')
+      }
+
+      if (state.createdBy !== userId) {
+        throw new Error('Permission denied')
+      }
+
+      if (!text) {
+        throw new Error('Text is required')
+      }
+
+      return new Event('COMMENT_UPDATED', {
+        text,
+        commentId
+      })
+    },
+
+    removeComment: (state, { payload: { commentId, userId } }) => {
+      if (!state.createdAt || state.removedAt) {
+        throw new Error('Aggregate is not exist')
+      }
+
+      if (state.createdBy !== userId) {
+        throw new Error('Permission denied')
+      }
+
+      return new Event('COMMENT_REMOVED', { commentId })
+    }
   }
-}]
-
-const eventStore = createEventStore({ storage: createEsStorage(), bus: createBusDriver() })
-
-eventStore.onEvent(['UserCreated'], event =>
-  console.log('Event emitted', event)
-)
-
-const execute = commandHandler({
-  eventStore,
-  aggregates
-})
-
-const command = {
-  aggregateId: '1',
-  aggregateName: 'User',
-  type: 'create',
-  name: 'User Name',
-  email: 'test@user.com'
 }
-
-execute(command).then(event => {
-  console.log('Event saved', event);
-})
 ```
