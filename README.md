@@ -10,7 +10,7 @@ reSolve is a framework for developing apps based on CQRS and Event Sourcing, wit
 	* [Command and Aggregate](command-and-aggregate)
 	* [Event Store](#event-store)
 	* [Read Model and Query](#read-model-and-query)
-	* [See also](#see-also)
+	* [See Also](#see-also)
 * [Quick Installation](#-quick-installation)
 * [Packages](#-packages)
 * [Examples](#-examples)
@@ -20,14 +20,14 @@ reSolve is a set of libraries which can be used independently or all together. E
 
 
 ![CQRS schema](https://user-images.githubusercontent.com/15689049/30266212-5610826e-96e7-11e7-92d1-b3609c874903.png)  
-_*This scheme is based on the *CQRS with Event Sourcing* image from this [presentation](http://danielwestheide.com/talks/flatmap2013/slides/#/).*_
+_*This scheme is based on the "CQRS with Event Sourcing" image from this [presentation](http://danielwestheide.com/talks/flatmap2013/slides/#/).*_
 
 Let's explain basic concepts of this system.
 
 ### Command and Aggregate 
-Whenever you need to change the system state, you have to send a command by `resolve-command`. Then, an appropriate [aggregate](#aggregate) handles the sent command and produces an event. You can send a command on the client side by dispatching a redux action of the appropriate type. To do this, use [sendComand](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#sendcommand) from the [resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux) package.
+Whenever you need to change the system state, you have to send a Сommand by `resolve-command`. Then, an appropriate [Aggregate](#aggregate) handles the sent Command and produces an event. You can send a command on the client side by dispatching a redux action of the appropriate type. To do this, use [sendComand](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#sendcommand) from the [resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux) package.
 
-An *aggregate* is responsible for a system behavior and encapsulation of business logic. It responses to commands, checks whether they can be executed and generates events to change the current status of a system. After an event is produced, it is saved and emitted by [Event Store](#eventstore).
+Aggregate is responsible for a system behavior and encapsulation of business logic. It responses to commands, checks whether they can be executed and generates events to change the current status of a system. After an event is produced, it is saved and emitted by [Event Store](#eventstore).
 
 Each aggregate builds its own state based on appropriate `aggregateId`. It is possible to validate a command based on an aggregate state and reject it if necessary.
 
@@ -37,7 +37,7 @@ Aggregate Repository and chooses an appropriate aggregate to handle each command
 See an example of the `resolve-command` usage [here](https://github.com/reimagined/resolve/tree/master/packages/resolve-command#example).
 
 ### Event Store
-Event store is responsible for storing and emitting events. It handles each new event produced by an [aggregate](#aggregate). The [resolve-es](https://github.com/reimagined/resolve/tree/master/packages/resolve-es) package provides the event store implementation. Event store combines a persistent storage and message bus, so a set of 
+Event Store is responsible for storing and emitting events. It handles each new event produced by an [aggregate](#aggregate). The [resolve-es](https://github.com/reimagined/resolve/tree/master/packages/resolve-es) package provides the event store implementation. Event store combines a persistent storage and message bus, so a set of 
  [storage-drivers](https://github.com/reimagined/resolve/tree/master/packages/storage-drivers) and [bus-drivers](https://github.com/reimagined/resolve/tree/master/packages/bus-drivers) is available for `resolve-es` to store and emit events, respectively.
 
 ### Read Model and Query
