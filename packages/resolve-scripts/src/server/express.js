@@ -86,7 +86,7 @@ app.post(`${rootDirectory}/api/commands`, async (req, res) => {
 });
 
 const staticMiddleware = process.env.NODE_ENV === 'production'
-    ? express.static(path.join(__dirname, '../../dist/static'))
+    ? express.static(path.join(process.cwd(), './dist/static'))
     : (req, res) => {
         var newurl = 'http://localhost:3001' + req.path;
         request(newurl).pipe(res);
