@@ -5,18 +5,48 @@ Provides a function to execute a query and get required information from a [read
 ## Usage
 When initializing a query, pass the following arguments:
 
-* `eventStore` - configured [eventStore](https://github.com/reimagined/resolve/tree/master/packages/resolve-es) instance
-* `readModels` - array of [read models](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models)  
+* `eventStore` - configured [eventStore](https://github.com/reimagined/resolve/tree/master/packages/resolve-es) instance.
+* `readModels` - array of [read models](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models).  
 	
 After the query is initialized, you get a function that is used to get data from read models by [GraphQL](http://graphql.org/learn/) request. This function receives the following arguments:
- * `readModelName` (required) - read model name
- * `qraphQLQuery` (required) - GraphQL query to get data 
- * `graphQLVariables` - specify it, if `graphQLQuery` contains variables
- * `getJwt` - callback for retrieve actual client state stored in verified JWT token
+ * `readModelName` (required) - read model name.
+ * `qraphQLQuery` (required) - GraphQL query to get data.
+ * `graphQLVariables` - specify it, if `graphQLQuery` contains variables.
+ * `getJwt` - callback to retrieve actual client state stored in verified JWT token.
  
  ### Example
 Let's implement the Read Model for building News state with custom GraphQL resolvers. It will handle the same events that are produced in [Aggregate example](https://github.com/reimagined/resolve/tree/master/packages/resolve-command#example).
 
+Implement a read model for building News state with custom GraphQL resolvers and use the `resolve-query` library to get the first page of news. It handles events produced by an aggregate shown in the [resolve-command](https://github.com/reimagined/resolve/tree/master/packages/resolve-command#example) documentation.
+
+```js
+import createQueryExecutor from 'resolve-query'
+import createEventStore from 'resolve-es'
+import createStorageDriver from 'resolve-storage-memory'
+import createBusDriver from 'resolve-bus-memory'
+
+import newsReadModel from './news-read-model.js'
+
+const eventStore = createEventStore({ 
+    storage: createStorageDriver(), 
+    bus: createBusDriver()
+})
+
+const readModels = [newsReadModel]
+
+const query = createQueryExecutor({ eventStore, readModels })
+
+// Request by GraphQL query with paramaters
+query(
+  'news',
+  'query ($page: ID!) { news(page: $page) { title, text } }',
+  { page: 1 }
+).then(state => {
+  console.log(state)
+})
+```
+
+##### news-read-model.js
 ```js
 import Immutable from 'seamless-immutable'
 
