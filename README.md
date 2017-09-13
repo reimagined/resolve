@@ -20,77 +20,57 @@ reSolve is a set of libraries which can be used independently or all together. E
 
 
 ![CQRS schema](https://user-images.githubusercontent.com/15689049/30266212-5610826e-96e7-11e7-92d1-b3609c874903.png)  
-_*This scheme is based on the "CQRS with Event Sourcing" image from this [presentation](http://danielwestheide.com/talks/flatmap2013/slides/#/).*_
-
-Let's explain basic concepts of this system.
+_*This scheme is based on the "CQRS with Event Sourcing" image from the [Event Sourcing for Functional Programmers](http://danielwestheide.com/talks/flatmap2013/slides/#/) presentation.*_
 
 ### Command and Aggregate 
-Whenever you need to change the system state, you have to send a Сommand by `resolve-command`. Then, an appropriate [Aggregate](#aggregate) handles the sent Command and produces an event. You can send a command on the client side by dispatching a redux action of the appropriate type. To do this, use [sendComand](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#sendcommand) from the [resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux) package.
+When you need to change the system state, you send a Command. A command is addressed to a Domain Aggregate. Aggregate is a cluster of logically related objects, containing enough information to perform a command as one transaction. Aggregate handles a command, checks whether it can be executed and generates an event to change the system state. A new event is sent to [Event Store](#eventstore). 
+For more information about aggregates, refer to [DDD_Aggregates](https://martinfowler.com/bliki/DDD_Aggregate.html) or [DDD, Event Sourcing, and CQRS Tutorial: design](http://cqrs.nu/tutorial/cs/01-design).
 
-Aggregate is responsible for a system behavior and encapsulation of business logic. It responses to commands, checks whether they can be executed and generates events to change the current status of a system. After an event is produced, it is saved and emitted by [Event Store](#eventstore).
+The [resolve-command](https://github.com/reimagined/resolve/tree/master/packages/resolve-command) library allows you to handle commands and send produced events to the event store based on definitions of aggregates and their commands. All aggregates are passed to `resolve-command` as an array. The library creates an Aggregate Repository, and finds or instantiates a particular aggregate to handle each sent command.
 
-Each aggregate builds its own state based on appropriate `aggregateId`. It is possible to validate a command based on an aggregate state and reject it if necessary.
+You can send a command on the client side by dispatching a redux action of the appropriate type. To do this, use [sendComand](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#sendcommand) from the [resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux) package.
 
-All aggregates are passed to `resolve-command` as an array. This library creates an 
-Aggregate Repository and chooses an appropriate aggregate to handle each command sent by a user.
-
-See an example of the `resolve-command` usage [here](https://github.com/reimagined/resolve/tree/master/packages/resolve-command#example).
+For an example on `resolve-command` usage, refer to [package documentation](https://github.com/reimagined/resolve/tree/master/packages/resolve-command#example).
 
 ### Event Store
-Event Store is responsible for storing and emitting events. It handles each new event produced by an [aggregate](#aggregate). The [resolve-es](https://github.com/reimagined/resolve/tree/master/packages/resolve-es) package provides the event store implementation. Event store combines a persistent storage and message bus, so a set of 
- [storage-drivers](https://github.com/reimagined/resolve/tree/master/packages/storage-drivers) and [bus-drivers](https://github.com/reimagined/resolve/tree/master/packages/bus-drivers) is available for `resolve-es` to store and emit events, respectively.
+Event Store stores all events produced by aggregates and delivers them to subscribers. It combines a persistent storage and message bus. 
+
+reSolve provides the [resolve-es](https://github.com/reimagined/resolve/tree/master/packages/resolve-es) package containing the event store implementation, as well as [storage-drivers](https://github.com/reimagined/resolve/tree/master/packages/storage-drivers) and [bus-drivers](https://github.com/reimagined/resolve/tree/master/packages/bus-drivers) allowing you to specify where to store and how to send events, respectively.
 
 ### Read Model and Query
-Rread Model is built by Projection functions. All events from the beginning of times are applied to Read Model to build its current state. Queries are used to get data from Read Model. [resolve-query](https://github.com/reimagined/resolve/tree/master/packages/resolve-query) is used as a query. This package allows you to observe data from Read Model by GraphQL request.
+Read Model represents a system state or its part. Read model is built by Projection functions. All events from the beginning of time are applied to a read model to build its current state. Queries are used to get data from a read model. 
+For more information about read models, see [Event Sourcing - Projections](https://abdullin.com/post/event-sourcing-projections/) or [DDD, Event Sourcing, and CQRS Tutorial: read models](http://cqrs.nu/tutorial/cs/03-read-models).
 
-See an example of `resolve-query` usage [here](https://github.com/reimagined/resolve/tree/master/packages/resolve-query#example).
+You can use [resolve-query](https://github.com/reimagined/resolve/tree/master/packages/resolve-query)  as a query. This package allows you to obtain data from a read model by a [GraphQL](http://graphql.org/learn/) request.
+
+For an example of `resolve-query` usage, refer to [package documentation](https://github.com/reimagined/resolve/tree/master/packages/resolve-query#example).
 
 ### See Also
 Learn more about related concepts:
 
-* [Why using DDD, CQRS and Event Sourcing](https://github.com/cer/event-sourcing-examples/wiki/WhyEventSourcing)
-
+* [Why using DDD, CQRS and Event Sourcing](https://github.com/cer/event-sourcing-examples/wiki/WhyEventSourcing)  
 * [Education course for DDD (Domain Driven Design)](http://cqrs.nu/)
-
 * [Building Scalable Applications Using Event Sourcing and CQRS](https://medium.com/technology-learning/event-sourcing-and-cqrs-a-look-at-kafka-e0c1b90d17d8)
-
 * [Blog about DDD](http://danielwhittaker.me/category/ddd/)
+* [Immutability Changes Everything](http://cidrdb.org/cidr2015/Papers/CIDR15_Paper16.pdf)
 
 
 ## **🚀 Quick Installation**
 > Note: global installation of a package may require administrative privileges. That means you have to use the `sudo` command for unix-based systems or run terminal with administrative privileges on windows systems to install a package globally.
 
 
-Create a new reSolve application using the [create-resolve-app](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app) package in one of the following ways.
+Create a new reSolve application using the [create-resolve-app](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app) package.
 
-Use yarn:
-```bash
-yarn create resolve-app my-resolve-app
-```
-or use npx:
-```bash
-npx create-resolve-app my-resolve-app
-```
-or use npm:
 ```bash
 npm i -g create-resolve-app
 create-resolve-app my-resolve-app
-```
-A new reSolve application will be created. Run the following commands to start it in the development mode:
-```bash
 cd my-resolve-app
 npm run dev
 ```
-To view your application, open [http://localhost:3000](http://localhost:3000/) in your browser.
+![Terminal](https://user-images.githubusercontent.com/15689049/29822549-8513584c-8cd4-11e7-8b65-b88fdad7e4d1.png)
+The application will be opened in your browser at [http://localhost:3000/](http://localhost:3000/).
 
-To build the application for production and start it in the production mode, run:
-
-```bash
-npm run build
-npm run start
-```
-
-The created application supports es6 syntax and hot reloading out of the box. For more information see this [guide](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app).
+For detailed information on how to create a new reSolve application and all available scripts, refer to [reSolve Getting Started Guide](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app).
 
 ## **📚 Packages**
 
@@ -98,14 +78,14 @@ reSolve includes the following libraries which can be used independently or all 
 
 App generator libraries:
 * 🚀 [create-resolve-app](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app)  
-	Create a new application based on reSolve.
+	Creates a new application based on reSolve.
 
 Core libraries:
 * 📢 [resolve-command](https://github.com/reimagined/resolve/tree/master/packages/resolve-command)  
 	Creates a function to execute a command.
 
 * 🏣 [resolve-es](https://github.com/reimagined/resolve/tree/master/packages/resolve-es)  
-	Serves as an event-store.
+	Provides an event store implementation.
 
 * 🔍 [resolve-query](https://github.com/reimagined/resolve/tree/master/packages/resolve-query)  
 	Creates a function to execute a query.
@@ -114,7 +94,7 @@ Core libraries:
 	Helper for creating the Redux storage.
 
 
-Drivers for event-store:
+Drivers for event store:
 * 🚌 Bus drivers specifying how to send events:
     * [resolve-bus-memory](https://github.com/reimagined/resolve/tree/master/packages/bus-drivers/resolve-bus-memory) (recommended for debugging purposes)
     * [resolve-bus-rabbitmq](https://github.com/reimagined/resolve/tree/master/packages/bus-drivers/resolve-bus-rabbitmq)

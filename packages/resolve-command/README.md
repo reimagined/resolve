@@ -1,3 +1,4 @@
+
 # **📢 resolve-command** [![npm version](https://badge.fury.io/js/resolve-command.svg)](https://badge.fury.io/js/resolve-command)
 
 Provides a function to handle a command and send the generated event to an [event store](https://github.com/reimagined/resolve/tree/master/packages/resolve-es) based on definitions of [aggregates](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models) and their commands. 
@@ -5,27 +6,67 @@ Provides a function to handle a command and send the generated event to an [even
 ## Usage
 When initializing a command, pass the following arguments:
 
-* `eventStore`
-	Configured [eventStore](https://github.com/reimagined/resolve/tree/master/packages/resolve-es) instance
+* `eventStore`  
+	Configured [eventStore](https://github.com/reimagined/resolve/tree/master/packages/resolve-es) instance.
 	
-* `aggregates`
-	Array of [aggregates](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models)  
+* `aggregates`  
+	Array of [aggregates](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models).  
 
 After the command is initialized, you get a function that is used to send an event to the event store. It receives two arguments:
 * `command`
 	An object with the following fields:
-	* `aggregateId` - unique id of aggregate
-	* `aggregateName` - name of aggregate that has to handle command
-	* `type` - command type
+	* `aggregateId` - unique id of aggregate.
+	* `aggregateName` - name of aggregate that has to handle the command.
+	* `type` - command type.
 	
 	A command may also have some additional payload.
 
- * `getJwt` 
-   Callback for retrieve actual client state stored in verified JWT token.
+ * `getJwt`  
+   Callback to retrieve actual client state stored in verified JWT token.
 
 ### Example
-Let's create a aggregate for news handling. It will handle next commands: `createNews`, `upvoteNews`, `unvoteNews`,  `deleteNews` for news and `createComment`, `updateComment`, `deleteComment` for comments. To look at a Read Model that will handle these events  see [this example](https://github.com/reimagined/resolve/tree/master/packages/resolve-query#example).
+Define an aggregate for news handling (see the  `news-aggregate.js` file) and use the `resolve-command` library to execute the `createNews` command and send the corresponding event to the specified event store. 
+To see a read model handling events which this aggregate produces, refer to the [resolve-query](https://github.com/reimagined/resolve/tree/master/packages/resolve-query#example) package documentation.
 
+```js
+import commandHandler from 'resolve-command'
+import createEsStorage from 'resolve-storage-memory'
+import createBusDriver from 'resolve-bus-memory'
+import createEventStore from 'resolve-es'
+
+// the news-aggregate.js file is placed below
+import newsAggregate from './news-aggregate'
+
+const aggregates = [newsAggregate]
+
+const eventStore = createEventStore({ storage: createEsStorage(), bus: createBusDriver() })
+
+eventStore.onEvent(['NewsCreated'], event =>
+  console.log('Event emitted', event)
+)
+
+const execute = commandHandler({
+  eventStore,
+  aggregates
+})
+
+const command = {
+  aggregateId: '1',
+  aggregateName: 'news',
+  type: 'createNews',
+  payload: {
+    title: 'News',
+    userId: 'user-id',
+    text: 'News content'
+  }
+}
+
+execute(command).then(event => {
+  console.log('Event saved', event);
+})
+```
+
+##### news-aggregate.js
 ```js
 import Immutable from 'seamless-immutable'
 
