@@ -15,6 +15,7 @@ After the query is initialized, you get a function that is used to get data from
  * `getJwt` - callback to retrieve actual client state stored in verified JWT token.
  
  ### Example
+Let's implement the Read Model for building News state with custom GraphQL resolvers. It will handle the same events that are produced in [Aggregate example](https://github.com/reimagined/resolve/tree/master/packages/resolve-command#example).
 
 Implement a read model for building News state with custom GraphQL resolvers and use the `resolve-query` library to get the first page of news. It handles events produced by an aggregate shown in the [resolve-command](https://github.com/reimagined/resolve/tree/master/packages/resolve-command#example) documentation.
 

@@ -2,8 +2,6 @@ import { subscribe } from './event_store';
 import config from '../configs/server.config.js';
 
 export default (socket) => {
-    // eslint-disable-next-line no-console
-    console.log('Socket connected');
     const emitter = event => socket.emit('event', JSON.stringify(event));
 
     let unsubscribePromise = subscribe(config.initialSubscribedEvents, emitter);

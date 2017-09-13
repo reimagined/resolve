@@ -12,12 +12,15 @@ export default params => store => next => (action) => {
         !command.error
     ) {
         params
-            .sendCommand({
+            .sendCommand(
+            {
                 type: command.type,
                 aggregateId,
                 aggregateName,
                 payload
-            })
+            },
+                store.dispatch
+            )
             .catch((error) => {
                 store.dispatch({
                     ...action,
