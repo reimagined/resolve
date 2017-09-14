@@ -14,7 +14,8 @@ const getState = async ({ statesRepository, eventStore, readModel, aggregateIds 
 
     if (!statesRepository[stateName]) {
         const eventTypes = Object.keys(eventHandlers);
-        let state = initialState || {};
+        let state = initialState !== undefined ? initialState : {};
+
         let error = null;
 
         const result = !isAggregateBased
