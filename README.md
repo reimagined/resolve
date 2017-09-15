@@ -78,7 +78,7 @@ For detailed information on how to create a new reSolve application and all avai
 reSolve includes the following libraries which can be used independently or all together.
 
 App generator libraries:
-* 🚀 [create-resolve-app](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app)  
+* 🚀 [create-resolve-app](packages/create-resolve-app)  
 	Creates a new application based on reSolve.
 
 Core libraries:
