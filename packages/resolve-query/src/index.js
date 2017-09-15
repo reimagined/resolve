@@ -2,7 +2,48 @@ import 'regenerator-runtime/runtime';
 import { makeExecutableSchema } from 'graphql-tools';
 import { parse, execute } from 'graphql';
 
-const getState = async ({ statesRepository, eventStore, readModel, aggregateIds }) => {
+const createMemoryStorageProvider = (readModelsStateRepository = {}) => ({
+    async init({ stateName, readModel }) {
+        if (readModelsStateRepository[name]) {
+            throw new Error(`State for read-model '${stateName}' alreary initialized`);
+        }
+
+        const { initialState, eventHandlers } = readModel;
+        let state = initialState;
+        let error = null;
+
+        let flowPromise = Promise.resolve();
+        const eventWorker = event =>
+            (flowPromise = flowPromise.then(async () => {
+                const handler = eventHandlers[event.type];
+                if (!handler || error) return;
+
+                try {
+                    state = await handler(state, event);
+                } catch (err) {
+                    error = err;
+                }
+            }));
+
+        readModelsStateRepository[name] = {
+            getReadable: async () => state,
+            getError: async () => error
+        };
+
+        return {
+            stateProvider: readModelsStateRepository[name],
+            eventWorker
+        };
+    },
+    async get(stateName) {
+        return readModelsStateRepository[name] || null;
+    },
+    async reset(stateName) {
+        readModelsStateRepository[name] = null;
+    }
+});
+
+const getState = async (storageProvider, eventStore, readModel, aggregateIds) => {
     const readModelName = readModel.name.toLowerCase();
     const isAggregateBased = Array.isArray(aggregateIds) && aggregateIds.length > 0;
 
@@ -10,139 +51,74 @@ const getState = async ({ statesRepository, eventStore, readModel, aggregateIds 
         ? `${readModelName}\u200D${aggregateIds.sort().join('\u200D')}`
         : readModelName;
 
-    const { eventHandlers, initialState } = readModel;
+    let currentState = await storageProvider.get(stateName);
+    if (!currentState) {
+        const { stateProvider, eventWorker } = await storageProvider.init({ stateName, readModel });
+        currentState = stateProvider;
 
-    if (!statesRepository[stateName]) {
-        const eventTypes = Object.keys(eventHandlers);
-        let state = initialState !== undefined ? initialState : {};
-
-        let error = null;
-
-        const result = !isAggregateBased
-            ? eventStore.subscribeByEventType(eventTypes, (event) => {
-                const handler = eventHandlers[event.type];
-                if (!handler) return;
-
-                try {
-                    state = handler(state, event);
-                } catch (err) {
-                    error = err;
-                }
-            })
-            : eventStore.subscribeByAggregateId(aggregateIds, (event) => {
-                const handler = eventHandlers[event.type];
-                if (!handler) return;
-
-                try {
-                    state = handler(state, event);
-                } catch (err) {
-                    error = err;
-                }
-            });
-
-        statesRepository[stateName] = async () => {
-            await result;
-            if (error) throw error;
-            return state;
-        };
+        if (isAggregateBased) {
+            await eventStore.subscribeByAggregateId(aggregateIds, eventWorker);
+        } else {
+            await eventStore.subscribeByEventType(
+                Object.keys(readModel.eventHandlers),
+                eventWorker
+            );
+        }
     }
 
-    return await statesRepository[stateName]();
+    const readableError = await currentState.getError();
+    if (readableError) {
+        throw readableError;
+    }
+
+    return await currentState.getReadable();
 };
 
-function extractAggregateIdsFromGqlQuery(parsedGqlQuery, gqlVariables) {
-    const findAllAggregateIds = (queryObject, store = []) => {
-        if (!queryObject || typeof queryObject !== 'object') return store;
+const createExecutor = (eventStore, queryDefinition) => {
+    const {
+        graphql: { gqlSchema, gqlResolvers } = {},
+        storageProvider = createMemoryStorageProvider(),
+        readModels
+    } = queryDefinition;
 
-        if (queryObject.kind === 'Field' && Array.isArray(queryObject.arguments)) {
-            queryObject.arguments
-                .filter(arg => arg.name && arg.name.value === 'aggregateId' && arg.value)
-                .map(
-                    arg =>
-                        arg.value.kind === 'Variable' && arg.value.name && arg.value.name.value
-                            ? gqlVariables[arg.value.name.value]
-                            : arg.value.value
-                )
-                .forEach(value => store.push(value));
+    const normalizedModelMap = readModels.reduce(
+        (map, model) => normalizedModelMap.set(model.name.toLowerCase(), model),
+        new Map()
+    );
+
+    const getReadModel = async (modelName, aggregateIds) => {
+        const readModel = normalizedModelMap.get(modelName.toLowerCase());
+        if (readModel) {
+            return await getState(storageProvider, eventStore, readModel, aggregateIds);
         }
-
-        if (Object.getPrototypeOf(queryObject) === Object.prototype) {
-            Object.keys(queryObject).forEach(key => findAllAggregateIds(queryObject[key], store));
-        } else if (Array.isArray(queryObject)) {
-            queryObject.forEach(part => findAllAggregateIds(part, store));
-        }
-
-        return store;
+        return null;
     };
 
-    return findAllAggregateIds(parsedGqlQuery);
-}
-
-function getExecutor({ statesRepository, eventStore, readModel, getReadModel }) {
-    const { gqlSchema, gqlResolvers, name } = readModel;
-    const executableSchema =
-        gqlSchema &&
-        makeExecutableSchema({
-            resolvers: gqlResolvers ? { Query: gqlResolvers } : {},
-            typeDefs: gqlSchema
-        });
+    const executableSchema = makeExecutableSchema({
+        resolvers: gqlResolvers ? { Query: gqlResolvers } : {},
+        typeDefs: gqlSchema
+    });
 
     return async (gqlQuery, gqlVariables, getJwt) => {
-        if (!gqlQuery) {
-            return await getState({ statesRepository, eventStore, readModel });
-        }
-
-        if (!executableSchema) {
-            throw new Error(`GraphQL schema for '${name}' read model is not found`);
-        }
-
         const parsedGqlQuery = parse(gqlQuery);
-        const aggregateIds = extractAggregateIdsFromGqlQuery(parsedGqlQuery, gqlVariables);
-        const state = await getState({ statesRepository, eventStore, readModel, aggregateIds });
 
         const gqlResponse = await execute(
             executableSchema,
             parsedGqlQuery,
-            state,
-            { getJwt, getReadModel },
+            getReadModel,
+            { getJwt },
             gqlVariables
         );
 
         if (gqlResponse.errors) throw gqlResponse.errors;
         return gqlResponse.data;
     };
-}
+};
 
-export default ({ eventStore, readModels }) => {
-    const statesRepository = {};
-
-    const getReadModel = async (modelName, aggregateIds) => {
-        const readModel = readModels.find(
-            model => modelName.toLowerCase() === model.name.toLowerCase()
-        );
-        if (readModel) {
-            return await getState({ statesRepository, eventStore, readModel, aggregateIds });
-        }
-        return null;
-    };
-
-    const executors = readModels.reduce((result, readModel) => {
-        result[readModel.name.toLowerCase()] = getExecutor({
-            statesRepository,
-            getReadModel,
-            eventStore,
-            readModel
-        });
-        return result;
-    }, {});
-
-    return async (readModelName, gqlQuery, gqlVariables, getJwt) => {
-        const executor = executors[readModelName.toLowerCase()];
-
-        if (executor === undefined) {
-            throw new Error(`The '${readModelName}' read model is not found`);
-        }
-
-        return executor(gqlQuery, gqlVariables, getJwt);
-    };
+export default ({ eventStore, queryDefinition }) => {
+    try {
+        return createExecutor(eventStore, queryDefinition);
+    } catch (err) {
+        throw new Error(`Error ${err.description} due query-side initialization: ${err.stack}`);
+    }
 };
