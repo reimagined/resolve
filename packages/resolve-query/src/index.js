@@ -28,7 +28,7 @@ const createMemoryStorageProvider = (readModelsStateRepository = {}) => ({
     },
 
     async getEventWorker(stateName, readModel) {
-        return async () => {
+        return async (event) => {
             if (!readModelsStateRepository[stateName]) {
                 throw new Error(
                     `State for read-model ${stateName} is not initialized or been reset`
@@ -75,6 +75,7 @@ const getState = async (storageProvider, eventStore, readModel, aggregateIds) =>
         await new Promise((resolve) => {
             let persistense = { lastLoadedEvent: null, borderEvent: null };
             let flowPromise = Promise.resolve();
+            let unsubscriber = null;
 
             const synchronizedEventWorker = (event) => {
                 flowPromise = flowPromise.then(eventWorker.bind(null, event));
@@ -84,24 +85,21 @@ const getState = async (storageProvider, eventStore, readModel, aggregateIds) =>
                     flowPromise = flowPromise.then(() => {
                         if (persistense && event === persistense.borderEvent) {
                             persistense = null;
-                            resolve();
+                            resolve(unsubscriber);
                         }
                     });
                 }
             };
 
-            if (isAggregateBased) {
-                eventStore
-                    .subscribeByAggregateId(aggregateIds, synchronizedEventWorker)
-                    .then(() => (persistense.borderEvent = persistense.lastLoadedEvent));
-            } else {
-                eventStore
-                    .subscribeByEventType(
-                        Object.keys(readModel.eventHandlers),
-                        synchronizedEventWorker
-                    )
-                    .then(() => (persistense.borderEvent = persistense.lastLoadedEvent));
-            }
+            (isAggregateBased
+                ? eventStore.subscribeByAggregateId(aggregateIds, synchronizedEventWorker)
+                : eventStore.subscribeByEventType(
+                      Object.keys(readModel.eventHandlers),
+                      synchronizedEventWorker
+                  )).then((unsub) => {
+                      persistense.borderEvent = persistense.lastLoadedEvent;
+                      unsubscriber = unsub;
+                  });
         });
     }
 

@@ -24,16 +24,20 @@ describe('resolve-query', () => {
             subscribeByEventType: sinon
                 .stub()
                 .callsFake((matchList, handler) =>
-                    eventList
-                        .filter(event => matchList.includes(event.type))
-                        .forEach(event => handler(event))
+                    Promise.resolve(
+                        eventList
+                            .filter(event => matchList.includes(event.type))
+                            .forEach(event => handler(event))
+                    )
                 ),
             subscribeByAggregateId: sinon
                 .stub()
                 .callsFake((matchList, handler) =>
-                    eventList
-                        .filter(event => matchList.includes(event.aggregateId))
-                        .forEach(event => handler(event))
+                    Promise.resolve(
+                        eventList
+                            .filter(event => matchList.includes(event.aggregateId))
+                            .forEach(event => handler(event))
+                    )
                 )
         };
 
