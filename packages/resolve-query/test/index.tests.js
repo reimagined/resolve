@@ -172,7 +172,7 @@ describe('resolve-query', () => {
 
         const graphqlQuery = 'query { UserIds }';
 
-        const state = await executeQuery(GRAPHQL_READ_MODEL_NAME, graphqlQuery);
+        const state = await executeQuery(graphqlQuery);
 
         expect(state).to.be.deep.equal({
             UserIds: ['2', '3']
@@ -185,7 +185,7 @@ describe('resolve-query', () => {
 
         const graphqlQuery = 'query { UserById(id:2) { id, UserName } }';
 
-        const state = await executeQuery(GRAPHQL_READ_MODEL_NAME, graphqlQuery);
+        const state = await executeQuery(graphqlQuery);
 
         expect(state).to.be.deep.equal({
             UserById: {
@@ -211,7 +211,7 @@ describe('resolve-query', () => {
 
         const graphqlQuery = 'query { UserByIdOnDemand(aggregateId:2) { id, UserName } }';
 
-        const state = await executeQuery(GRAPHQL_READ_MODEL_NAME, graphqlQuery);
+        const state = await executeQuery(graphqlQuery);
 
         expect(graphqlReadModel.eventHandlers.UserAdded.callCount).to.be.equal(1);
         expect(graphqlReadModel.eventHandlers.UserDeleted.callCount).to.be.equal(0);
@@ -230,7 +230,7 @@ describe('resolve-query', () => {
 
         const graphqlQuery = 'query ($testId: ID!) { UserById(id: $testId) { id, UserName } }';
 
-        const state = await executeQuery(GRAPHQL_READ_MODEL_NAME, graphqlQuery, { testId: '3' });
+        const state = await executeQuery(graphqlQuery, { testId: '3' });
 
         expect(state).to.be.deep.equal({
             UserById: {
@@ -257,7 +257,7 @@ describe('resolve-query', () => {
         const graphqlQuery =
             'query ($testId: ID!) { UserByIdOnDemand(aggregateId: $testId) { id, UserName } }';
 
-        const state = await executeQuery(GRAPHQL_READ_MODEL_NAME, graphqlQuery, { testId: '3' });
+        const state = await executeQuery(graphqlQuery, { testId: '3' });
 
         expect(graphqlReadModel.eventHandlers.UserAdded.callCount).to.be.equal(1);
         expect(graphqlReadModel.eventHandlers.UserDeleted.callCount).to.be.equal(0);
@@ -277,7 +277,7 @@ describe('resolve-query', () => {
         const graphqlQuery = 'query { UserById() { id, UserName } }';
 
         try {
-            await executeQuery(GRAPHQL_READ_MODEL_NAME, graphqlQuery);
+            await executeQuery(graphqlQuery);
             return Promise.reject('Test failed');
         } catch (error) {
             expect(error.message).to.have.string('Syntax Error GraphQL request');
@@ -292,7 +292,7 @@ describe('resolve-query', () => {
         const graphqlQuery = 'WRONG_QUERY';
 
         try {
-            await executeQuery(GRAPHQL_READ_MODEL_NAME, graphqlQuery);
+            await executeQuery(graphqlQuery);
             return Promise.reject('Test failed');
         } catch (error) {
             expect(error.message).to.have.string('Syntax Error GraphQL request');
@@ -323,7 +323,7 @@ describe('resolve-query', () => {
         const graphqlQuery = 'query SomeQuery { Broken }';
 
         try {
-            await executeQuery('GRAPHQL_READ_MODEL_NAME_BROKEN_RESOLVER', graphqlQuery);
+            await executeQuery(graphqlQuery);
             return Promise.reject('Test failed');
         } catch (error) {
             expect(error[0].message).to.have.string('GRAPHQL_READ_MODEL_NAME_BROKEN_RESOLVER');
@@ -341,7 +341,7 @@ describe('resolve-query', () => {
 
         const graphqlQuery = 'query { CrossReadModel { users { id, UserName }, value } }';
 
-        const state = await executeQuery(GRAPHQL_READ_MODEL_NAME, graphqlQuery);
+        const state = await executeQuery(graphqlQuery);
 
         expect(state).to.be.deep.equal({
             CrossReadModel: {
@@ -362,7 +362,7 @@ describe('resolve-query', () => {
         const graphqlQuery =
             'query { CrossReadModel(aggregateId:2) { users { id, UserName }, value } }';
 
-        const state = await executeQuery(GRAPHQL_READ_MODEL_NAME, graphqlQuery);
+        const state = await executeQuery(graphqlQuery);
 
         expect(state).to.be.deep.equal({
             CrossReadModel: {
@@ -387,7 +387,7 @@ describe('resolve-query', () => {
         const getJwt = () => {};
         const graphqlQuery = 'query { UserById(id:2) { id, UserName } }';
 
-        const state = await executeQuery(GRAPHQL_READ_MODEL_NAME, graphqlQuery, {}, getJwt);
+        const state = await executeQuery(graphqlQuery, {}, getJwt);
 
         expect(graphqlReadModel.gqlResolvers.UserById.lastCall.args[2].getJwt).to.be.equal(getJwt);
 

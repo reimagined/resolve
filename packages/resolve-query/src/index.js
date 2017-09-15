@@ -82,7 +82,7 @@ const createExecutor = (eventStore, queryDefinition) => {
     } = queryDefinition;
 
     const normalizedModelMap = readModels.reduce(
-        (map, model) => normalizedModelMap.set(model.name.toLowerCase(), model),
+        (map, model) => map.set(model.name.toLowerCase(), model),
         new Map()
     );
 
