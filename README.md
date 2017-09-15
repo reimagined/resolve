@@ -14,6 +14,7 @@ reSolve is a framework for developing apps based on CQRS and Event Sourcing, wit
 * [Quick Installation](#-quick-installation)
 * [Packages](#-packages)
 * [Examples](#-examples)
+* [Development](#Development)
 
 ## **🏗️ Basic Concepts**
 reSolve is a set of libraries which can be used independently or all together. Each library is responsible for a particular part of a CQRS + Event Sourcing system as shown on the image below.
@@ -116,3 +117,10 @@ Drivers for event store:
 
 * [two-level todo list](https://github.com/reimagined/resolve/tree/master/examples/todo)  
 	This example is an application with several aggregate types related to each other. It also shows how to implement a custom backend API server.
+
+## Development
+
+* Report bugs and request features on our [issues page](https://github.com/reimagined/resolve/issues).
+* [See the change log](CHANGELOG).
+* Code released under the [MIT license](LICENSE).
+* reSolve is developed by Developer Express Inc. ([https://devexpress.com](https://devexpress.com))
