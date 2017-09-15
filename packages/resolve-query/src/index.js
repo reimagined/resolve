@@ -86,7 +86,7 @@ const subscribeByEventTypeAndIds = async (eventStore, callback, eventDescriptors
 };
 
 const getState = async (storageProvider, eventStore, readModel, onDemandOptions) => {
-    const { aggregateIds, limitedEventTypes } = onDemandOptions;
+    const { aggregateIds, limitedEventTypes } = onDemandOptions || {};
 
     let stateName = readModel.name.toLowerCase();
     if (Array.isArray(aggregateIds)) {
