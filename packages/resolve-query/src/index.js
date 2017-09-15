@@ -11,19 +11,20 @@ const createMemoryStorageProvider = (readModelsStateRepository = {}) => ({
         let state = readModel.initialState;
         let error = null;
 
-        const stateManager = {
-            setState: async newState => (state = newState),
-            getState: async () => state,
-            setError: async newError => (error = newError),
-            getError: async () => error
+        readModelsStateRepository[stateName] = {
+            internal: {
+                setState: newState => (state = newState),
+                getState: () => state,
+                setError: newError => (error = newError),
+                getError: () => error
+            },
+            public: {
+                getReadable: async () => state,
+                getError: async () => error
+            }
         };
 
-        readModelsStateRepository[stateName] = stateManager;
-
-        return {
-            getReadable: stateManager.getState,
-            getError: stateManager.getError
-        };
+        return readModelsStateRepository[stateName].public;
     },
 
     async getEventWorker(stateName, readModel) {
@@ -33,16 +34,16 @@ const createMemoryStorageProvider = (readModelsStateRepository = {}) => ({
                     `State for read-model ${stateName} is not initialized or been reset`
                 );
             }
-            const stateManager = readModelsStateRepository[stateName];
+            const stateManager = readModelsStateRepository[stateName].internal;
             const handler = readModel.eventHandlers[event.type];
-            if (!handler || (await stateManager.getError())) return;
+            if (!handler || stateManager.getError()) return;
 
             try {
-                const currentState = await stateManager.getWritableState();
+                const currentState = stateManager.getState();
                 const newState = await handler(currentState, event);
-                await stateManager.setState(newState);
+                stateManager.setState(newState);
             } catch (err) {
-                await stateManager.setError(err);
+                stateManager.setError(err);
             }
         };
     },
@@ -50,11 +51,7 @@ const createMemoryStorageProvider = (readModelsStateRepository = {}) => ({
     async getState(stateName) {
         const stateManager = readModelsStateRepository[stateName];
         if (!stateManager) return null;
-
-        return {
-            getReadable: stateManager.getState,
-            getError: stateManager.getError
-        };
+        return stateManager.public;
     },
 
     async resetState(stateName) {
@@ -76,28 +73,34 @@ const getState = async (storageProvider, eventStore, readModel, aggregateIds) =>
         const eventWorker = await storageProvider.getEventWorker(stateName, readModel);
 
         await new Promise((resolve) => {
+            let persistense = { lastLoadedEvent: null, borderEvent: null };
             let flowPromise = Promise.resolve();
-            let lastLoadedEvent = null;
-            let lastPersistentEvent = null;
 
             const synchronizedEventWorker = (event) => {
-                lastLoadedEvent = event;
-                flowPromise = flowPromise
-                    .then(eventWorker.bind(null, event))
-                    .then(() => event === lastPersistentEvent && resolve());
+                flowPromise = flowPromise.then(eventWorker.bind(null, event));
+
+                if (persistense) {
+                    persistense.lastLoadedEvent = event;
+                    flowPromise = flowPromise.then(() => {
+                        if (persistense && event === persistense.borderEvent) {
+                            persistense = null;
+                            resolve();
+                        }
+                    });
+                }
             };
 
             if (isAggregateBased) {
                 eventStore
                     .subscribeByAggregateId(aggregateIds, synchronizedEventWorker)
-                    .then(() => (lastPersistentEvent = lastLoadedEvent));
+                    .then(() => (persistense.borderEvent = persistense.lastLoadedEvent));
             } else {
                 eventStore
                     .subscribeByEventType(
                         Object.keys(readModel.eventHandlers),
                         synchronizedEventWorker
                     )
-                    .then(() => (lastPersistentEvent = lastLoadedEvent));
+                    .then(() => (persistense.borderEvent = persistense.lastLoadedEvent));
             }
         });
     }
