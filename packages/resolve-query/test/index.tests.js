@@ -86,18 +86,19 @@ describe('resolve-query', () => {
                 }
             `,
                 gqlResolvers: {
-                    UserByIdOnDemand: (getReadModel, args) =>
-                        getReadModel(GRAPHQL_READ_MODEL_NAME).then(state =>
-                            state.Users.find(user => user.id === args.aggregateId)
-                        ),
-                    UserById: (getReadModel, args) =>
-                        getReadModel(GRAPHQL_READ_MODEL_NAME).then(state =>
-                            state.Users.find(user => user.id === args.id)
-                        ),
-                    UserIds: (getReadModel, args) =>
-                        getReadModel(GRAPHQL_READ_MODEL_NAME).then(state =>
-                            state.Users.map(user => user.id)
-                        ),
+                    UserByIdOnDemand: async (getReadModel, args) => {
+                        const state = await getReadModel(GRAPHQL_READ_MODEL_NAME);
+                        return state.Users.find(user => user.id === args.aggregateId);
+                    },
+                    UserById: async (getReadModel, args) => {
+                        const state = await getReadModel(GRAPHQL_READ_MODEL_NAME);
+                        return state.Users.find(user => user.id === args.id);
+                    },
+                    UserIds: async (getReadModel, args) => {
+                        const state = await getReadModel(GRAPHQL_READ_MODEL_NAME);
+                        console.log('@@STATE ', state);
+                        return state.Users.map(user => user.id);
+                    },
                     CrossReadModel: async (getReadModel, args) => {
                         const idList = args.aggregateId ? [args.aggregateId] : null;
                         const [gqlState, simpleState] = await Promise.all([
@@ -153,26 +154,11 @@ describe('resolve-query', () => {
         eventList = null;
     });
 
-    it('should support default resolvers for graphql based on defined schema', async () => {
+    it.only('should support custom defined resolver without argument', async () => {
         const executeQuery = createQueryExecutor({ eventStore, queryDefinition: normalQuery });
         eventList = eventListForGraphQL.slice(0);
 
-        const graphqlQuery = 'query { Users { id, UserName } }';
-
-        const state = await executeQuery(graphqlQuery);
-
-        expect(state).to.be.deep.equal({
-            Users: [{ UserName: 'User-2', id: '2' }, { UserName: 'User-3', id: '3' }]
-        });
-    });
-
-    it('should support custom defined resolver without argument', async () => {
-        const executeQuery = createQueryExecutor({ eventStore, queryDefinition: normalQuery });
-        eventList = eventListForGraphQL.slice(0);
-
-        const graphqlQuery = 'query { UserIds }';
-
-        const state = await executeQuery(graphqlQuery);
+        const state = await executeQuery('query { UserIds }');
 
         expect(state).to.be.deep.equal({
             UserIds: ['2', '3']

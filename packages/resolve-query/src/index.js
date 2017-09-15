@@ -12,18 +12,31 @@ const createMemoryStorageProvider = (readModelsStateRepository = {}) => ({
         let state = initialState;
         let error = null;
 
+        let processDoneResolver = null;
+        const processDonePromise = new Promise(resolve => (processDoneResolver = resolve));
+        let incomingEventsCount = 0;
+        let processedEventCount = 0;
         let flowPromise = Promise.resolve();
-        const eventWorker = event =>
-            (flowPromise = flowPromise.then(async () => {
-                const handler = eventHandlers[event.type];
-                if (!handler || error) return;
 
-                try {
-                    state = await handler(state, event);
-                } catch (err) {
-                    error = err;
+        const eventWorker = (event) => {
+            incomingEventsCount++;
+
+            flowPromise = flowPromise.then(async () => {
+                const handler = eventHandlers[event.type];
+
+                if (handler || !error) {
+                    try {
+                        state = await handler(state, event);
+                    } catch (err) {
+                        error = err;
+                    }
                 }
-            }));
+
+                if (++processedEventCount === incomingEventsCount) {
+                    processDoneResolver();
+                }
+            });
+        };
 
         readModelsStateRepository[name] = {
             getReadable: async () => state,
@@ -32,7 +45,8 @@ const createMemoryStorageProvider = (readModelsStateRepository = {}) => ({
 
         return {
             stateProvider: readModelsStateRepository[name],
-            eventWorker
+            eventWorker,
+            processDonePromise
         };
     },
     async get(stateName) {
@@ -53,7 +67,14 @@ const getState = async (storageProvider, eventStore, readModel, aggregateIds) =>
 
     let currentState = await storageProvider.get(stateName);
     if (!currentState) {
-        const { stateProvider, eventWorker } = await storageProvider.init({ stateName, readModel });
+        let loadDoneResolver = null;
+        const loadDonePromise = new Promise(resolve => (loadDoneResolver = resolve));
+
+        const { stateProvider, eventWorker, processDonePromise } = await storageProvider.init({
+            stateName,
+            readModel,
+            loadDonePromise
+        });
         currentState = stateProvider;
 
         if (isAggregateBased) {
@@ -64,6 +85,9 @@ const getState = async (storageProvider, eventStore, readModel, aggregateIds) =>
                 eventWorker
             );
         }
+
+        loadDoneResolver();
+        await processDonePromise;
     }
 
     const readableError = await currentState.getError();
