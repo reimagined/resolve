@@ -59,13 +59,42 @@ const createMemoryStorageProvider = (readModelsStateRepository = {}) => ({
     }
 });
 
-const getState = async (storageProvider, eventStore, readModel, aggregateIds) => {
-    const readModelName = readModel.name.toLowerCase();
-    const isAggregateBased = Array.isArray(aggregateIds) && aggregateIds.length > 0;
+const subscribeByEventTypeAndIds = async (eventStore, callback, eventDescriptors) => {
+    const passedEventSet = new WeakSet();
 
-    const stateName = isAggregateBased
-        ? `${readModelName}\u200D${aggregateIds.sort().join('\u200D')}`
-        : readModelName;
+    const trigger = (event) => {
+        if (!passedEventSet.has(event)) {
+            passedEventSet.add(event);
+            callback(event);
+        }
+    };
+
+    const typeUnsubPromise = Array.isArray(eventDescriptors.types)
+        ? eventStore.subscribeByEventType(eventDescriptors.types, trigger, true)
+        : Promise.resolve(() => {});
+
+    const idUnsubPromise = Array.isArray(eventDescriptors.ids)
+        ? eventStore.subscribeByAggregateId(eventDescriptors.ids, trigger, true)
+        : Promise.resolve(() => {});
+
+    const [typeUnsub, idUnsub] = await Promise.all([typeUnsubPromise, idUnsubPromise]);
+
+    return () => {
+        typeUnsub();
+        idUnsub();
+    };
+};
+
+const getState = async (storageProvider, eventStore, readModel, onDemandOptions) => {
+    const { aggregateIds, limitedEventTypes } = onDemandOptions;
+
+    let stateName = readModel.name.toLowerCase();
+    if (Array.isArray(aggregateIds)) {
+        stateName = `${stateName}\u200D\u200D${aggregateIds.sort().join('\u200D')}`;
+    }
+    if (Array.isArray(limitedEventTypes)) {
+        stateName = `${stateName}\u200D\u200D${limitedEventTypes.sort().join('\u200D')}`;
+    }
 
     let currentState = await storageProvider.getState(stateName);
     if (!currentState) {
@@ -91,15 +120,15 @@ const getState = async (storageProvider, eventStore, readModel, aggregateIds) =>
                 }
             };
 
-            (isAggregateBased
-                ? eventStore.subscribeByAggregateId(aggregateIds, synchronizedEventWorker)
-                : eventStore.subscribeByEventType(
-                      Object.keys(readModel.eventHandlers),
-                      synchronizedEventWorker
-                  )).then((unsub) => {
-                      persistense.borderEvent = persistense.lastLoadedEvent;
-                      unsubscriber = unsub;
-                  });
+            subscribeByEventTypeAndIds(eventStore, synchronizedEventWorker, {
+                types: Array.isArray(limitedEventTypes)
+                    ? limitedEventTypes
+                    : Object.keys(readModel.eventHandlers),
+                ids: aggregateIds
+            }).then((unsub) => {
+                persistense.borderEvent = persistense.lastLoadedEvent;
+                unsubscriber = unsub;
+            });
         });
     }
 
@@ -111,29 +140,13 @@ const getState = async (storageProvider, eventStore, readModel, aggregateIds) =>
     return await currentState.getReadable();
 };
 
-const createExecutor = (eventStore, queryDefinition) => {
-    const {
-        graphql: { gqlSchema, gqlResolvers } = {},
-        storageProvider = createMemoryStorageProvider(),
-        readModels
-    } = queryDefinition;
-
-    const normalizedModelMap = readModels.reduce(
-        (map, model) => map.set(model.name.toLowerCase(), model),
-        new Map()
-    );
-
-    const getReadModel = async (modelName, aggregateIds) => {
-        const readModel = normalizedModelMap.get(modelName.toLowerCase());
-        if (readModel) {
-            return await getState(storageProvider, eventStore, readModel, aggregateIds);
-        }
-        return null;
-    };
+const createExecutor = (eventStore, readModel) => {
+    const storageProvider = readModel.storageProvider || createMemoryStorageProvider();
+    const readState = getState.bind(null, storageProvider, eventStore, readModel);
 
     const executableSchema = makeExecutableSchema({
-        resolvers: gqlResolvers ? { Query: gqlResolvers } : {},
-        typeDefs: gqlSchema
+        resolvers: readModel.gqlResolvers ? { Query: readModel.gqlResolvers } : {},
+        typeDefs: readModel.gqlSchema
     });
 
     return async (gqlQuery, gqlVariables, getJwt) => {
@@ -142,7 +155,7 @@ const createExecutor = (eventStore, queryDefinition) => {
         const gqlResponse = await execute(
             executableSchema,
             parsedGqlQuery,
-            getReadModel,
+            readState,
             { getJwt },
             gqlVariables
         );
@@ -152,9 +165,9 @@ const createExecutor = (eventStore, queryDefinition) => {
     };
 };
 
-export default ({ eventStore, queryDefinition }) => {
+export default ({ eventStore, readModel }) => {
     try {
-        return createExecutor(eventStore, queryDefinition);
+        return createExecutor(eventStore, readModel);
     } catch (err) {
         throw new Error(`Error ${err.description} due query-side initialization: ${err.stack}`);
     }
