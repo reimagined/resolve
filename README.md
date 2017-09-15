@@ -14,7 +14,7 @@ reSolve is a framework for developing apps based on CQRS and Event Sourcing, wit
 * [Quick Installation](#-quick-installation)
 * [Packages](#-packages)
 * [Examples](#-examples)
-* [Development](#Development)
+* [Development](#development)
 
 ## **🏗️ Basic Concepts**
 reSolve is a set of libraries which can be used independently or all together. Each library is responsible for a particular part of a CQRS + Event Sourcing system as shown on the image below.
