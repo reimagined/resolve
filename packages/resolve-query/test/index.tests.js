@@ -42,15 +42,17 @@ describe('resolve-query', () => {
             name: 'NORMAL_READ_MODEL_NAME',
             eventHandlers: {
                 UserAdded: (state, { aggregateId: id, payload: { UserName } }) => {
-                    state.Users = state.Users || [];
-                    if (state.Users.find(user => user.id === id)) return state;
-                    state.Users.push({ id, UserName });
-                    return state;
+                    const newState = state || [];
+                    newState.Users = newState.Users || [];
+                    if (newState.Users.find(user => user.id === id)) return newState;
+                    newState.Users.push({ id, UserName });
+                    return newState;
                 },
                 UserDeleted: (state, { aggregateId: id }) => {
-                    state.Users = state.Users || [];
-                    state.Users = state.Users.filter(user => user.id !== id);
-                    return state;
+                    const newState = state || [];
+                    newState.Users = newState.Users || [];
+                    newState.Users = newState.Users.filter(user => user.id !== id);
+                    return newState;
                 },
                 BrokenEvent: (state, event) => {
                     throw brokenStateError;
@@ -287,27 +289,6 @@ describe('resolve-query', () => {
         expect(state).to.be.deep.equal({
             CrossReadModel: {
                 users: [{ id: '1', UserName: 'User-1' }, { id: '2', UserName: 'User-2' }],
-                value: 42
-            }
-        });
-    });
-
-    it('should provide access to on-demand neighbor read-models in resolver function', async () => {
-        const executeQuery = createQueryExecutor({ eventStore, readModel: normalReadModel });
-        eventList = [
-            { type: 'UserAdded', aggregateId: '1', payload: { UserName: 'User-1' } },
-            { type: 'UserAdded', aggregateId: '2', payload: { UserName: 'User-2' } },
-            { type: 'SuccessEvent', aggregateId: '0' }
-        ];
-
-        const graphqlQuery =
-            'query { CrossReadModel(aggregateId:2) { users { id, UserName }, value } }';
-
-        const state = await executeQuery(graphqlQuery);
-
-        expect(state).to.be.deep.equal({
-            CrossReadModel: {
-                users: [{ id: '2', UserName: 'User-2' }],
                 value: 42
             }
         });
