@@ -121,6 +121,6 @@ Drivers for event store:
 ## Development
 
 * Report bugs and request features on our [issues page](https://github.com/reimagined/resolve/issues).
-* [See the change log](CHANGELOG).
-* Code released under the [MIT license](LICENSE).
+* [See the change log](CHANGELOG.md).
+* Code released under the [MIT license](LICENSE.md).
 * reSolve is developed by Developer Express Inc. ([https://devexpress.com](https://devexpress.com))
