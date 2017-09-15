@@ -4,7 +4,7 @@ import { parse, execute } from 'graphql';
 
 const createMemoryStorageProvider = (readModelsStateRepository = {}) => ({
     async init({ stateName, readModel }) {
-        if (readModelsStateRepository[name]) {
+        if (readModelsStateRepository[stateName]) {
             throw new Error(`State for read-model '${stateName}' alreary initialized`);
         }
 
@@ -38,22 +38,22 @@ const createMemoryStorageProvider = (readModelsStateRepository = {}) => ({
             });
         };
 
-        readModelsStateRepository[name] = {
+        readModelsStateRepository[stateName] = {
             getReadable: async () => state,
             getError: async () => error
         };
 
         return {
-            stateProvider: readModelsStateRepository[name],
+            stateProvider: readModelsStateRepository[stateName],
             eventWorker,
             processDonePromise
         };
     },
     async get(stateName) {
-        return readModelsStateRepository[name] || null;
+        return readModelsStateRepository[stateName] || null;
     },
     async reset(stateName) {
-        readModelsStateRepository[name] = null;
+        readModelsStateRepository[stateName] = null;
     }
 });
 

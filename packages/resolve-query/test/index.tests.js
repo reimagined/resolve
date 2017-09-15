@@ -96,7 +96,6 @@ describe('resolve-query', () => {
                     },
                     UserIds: async (getReadModel, args) => {
                         const state = await getReadModel(GRAPHQL_READ_MODEL_NAME);
-                        console.log('@@STATE ', state);
                         return state.Users.map(user => user.id);
                     },
                     CrossReadModel: async (getReadModel, args) => {
