@@ -87,7 +87,9 @@ describe('resolve-query', () => {
             `,
                 gqlResolvers: {
                     UserByIdOnDemand: async (getReadModel, args) => {
-                        const state = await getReadModel(GRAPHQL_READ_MODEL_NAME);
+                        const state = await getReadModel(GRAPHQL_READ_MODEL_NAME, [
+                            args.aggregateId
+                        ]);
                         return state.Users.find(user => user.id === args.aggregateId);
                     },
                     UserById: async (getReadModel, args) => {

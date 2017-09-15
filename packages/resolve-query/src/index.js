@@ -3,56 +3,61 @@ import { makeExecutableSchema } from 'graphql-tools';
 import { parse, execute } from 'graphql';
 
 const createMemoryStorageProvider = (readModelsStateRepository = {}) => ({
-    async init({ stateName, readModel }) {
+    async initState(stateName, readModel) {
         if (readModelsStateRepository[stateName]) {
             throw new Error(`State for read-model '${stateName}' alreary initialized`);
         }
 
-        const { initialState, eventHandlers } = readModel;
-        let state = initialState;
+        let state = readModel.initialState;
         let error = null;
 
-        let processDoneResolver = null;
-        const processDonePromise = new Promise(resolve => (processDoneResolver = resolve));
-        let incomingEventsCount = 0;
-        let processedEventCount = 0;
-        let flowPromise = Promise.resolve();
-
-        const eventWorker = (event) => {
-            incomingEventsCount++;
-
-            flowPromise = flowPromise.then(async () => {
-                const handler = eventHandlers[event.type];
-
-                if (handler || !error) {
-                    try {
-                        state = await handler(state, event);
-                    } catch (err) {
-                        error = err;
-                    }
-                }
-
-                if (++processedEventCount === incomingEventsCount) {
-                    processDoneResolver();
-                }
-            });
-        };
-
-        readModelsStateRepository[stateName] = {
-            getReadable: async () => state,
+        const stateManager = {
+            setState: async newState => (state = newState),
+            getState: async () => state,
+            setError: async newError => (error = newError),
             getError: async () => error
         };
 
+        readModelsStateRepository[stateName] = stateManager;
+
         return {
-            stateProvider: readModelsStateRepository[stateName],
-            eventWorker,
-            processDonePromise
+            getReadable: stateManager.getState,
+            getError: stateManager.getError
         };
     },
-    async get(stateName) {
-        return readModelsStateRepository[stateName] || null;
+
+    async getEventWorker(stateName, readModel) {
+        return async () => {
+            if (!readModelsStateRepository[stateName]) {
+                throw new Error(
+                    `State for read-model ${stateName} is not initialized or been reset`
+                );
+            }
+            const stateManager = readModelsStateRepository[stateName];
+            const handler = readModel.eventHandlers[event.type];
+            if (!handler || (await stateManager.getError())) return;
+
+            try {
+                const currentState = await stateManager.getWritableState();
+                const newState = await handler(currentState, event);
+                await stateManager.setState(newState);
+            } catch (err) {
+                await stateManager.setError(err);
+            }
+        };
     },
-    async reset(stateName) {
+
+    async getState(stateName) {
+        const stateManager = readModelsStateRepository[stateName];
+        if (!stateManager) return null;
+
+        return {
+            getReadable: stateManager.getState,
+            getError: stateManager.getError
+        };
+    },
+
+    async resetState(stateName) {
         readModelsStateRepository[stateName] = null;
     }
 });
@@ -65,29 +70,36 @@ const getState = async (storageProvider, eventStore, readModel, aggregateIds) =>
         ? `${readModelName}\u200D${aggregateIds.sort().join('\u200D')}`
         : readModelName;
 
-    let currentState = await storageProvider.get(stateName);
+    let currentState = await storageProvider.getState(stateName);
     if (!currentState) {
-        let loadDoneResolver = null;
-        const loadDonePromise = new Promise(resolve => (loadDoneResolver = resolve));
+        currentState = await storageProvider.initState(stateName, readModel);
+        const eventWorker = await storageProvider.getEventWorker(stateName, readModel);
 
-        const { stateProvider, eventWorker, processDonePromise } = await storageProvider.init({
-            stateName,
-            readModel,
-            loadDonePromise
+        await new Promise((resolve) => {
+            let flowPromise = Promise.resolve();
+            let lastLoadedEvent = null;
+            let lastPersistentEvent = null;
+
+            const synchronizedEventWorker = (event) => {
+                lastLoadedEvent = event;
+                flowPromise = flowPromise
+                    .then(eventWorker.bind(null, event))
+                    .then(() => event === lastPersistentEvent && resolve());
+            };
+
+            if (isAggregateBased) {
+                eventStore
+                    .subscribeByAggregateId(aggregateIds, synchronizedEventWorker)
+                    .then(() => (lastPersistentEvent = lastLoadedEvent));
+            } else {
+                eventStore
+                    .subscribeByEventType(
+                        Object.keys(readModel.eventHandlers),
+                        synchronizedEventWorker
+                    )
+                    .then(() => (lastPersistentEvent = lastLoadedEvent));
+            }
         });
-        currentState = stateProvider;
-
-        if (isAggregateBased) {
-            await eventStore.subscribeByAggregateId(aggregateIds, eventWorker);
-        } else {
-            await eventStore.subscribeByEventType(
-                Object.keys(readModel.eventHandlers),
-                eventWorker
-            );
-        }
-
-        loadDoneResolver();
-        await processDonePromise;
     }
 
     const readableError = await currentState.getError();
