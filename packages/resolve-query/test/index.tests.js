@@ -159,7 +159,7 @@ describe('resolve-query', () => {
         eventList = null;
     });
 
-    it.only('should support custom defined resolver without argument', async () => {
+    it('should support custom defined resolver without argument', async () => {
         const executeQuery = createQueryExecutor({ eventStore, queryDefinition: normalQuery });
         eventList = eventListForGraphQL.slice(0);
 
@@ -300,7 +300,7 @@ describe('resolve-query', () => {
             return Promise.reject('Test failed');
         } catch (error) {
             expect(error.message).to.have.string('Syntax Error GraphQL request');
-            expect(error.message).to.have.string('GRAPHQL_READ_MODEL_NAME_BROKEN_SCHEMA');
+            expect(error.message).to.have.string('BROKEN_GRAPHQL_SCHEMA_READ_MODEL_NAME');
         }
     });
 
@@ -317,7 +317,7 @@ describe('resolve-query', () => {
             await executeQuery(graphqlQuery);
             return Promise.reject('Test failed');
         } catch (error) {
-            expect(error[0].message).to.have.string('GRAPHQL_READ_MODEL_NAME_BROKEN_RESOLVER');
+            expect(error[0].message).to.have.string('BROKEN_GRAPHQL_RESOLVER_READ_MODEL_NAME');
             expect(error[0].path).to.be.deep.equal(['Broken']);
         }
     });
@@ -364,13 +364,9 @@ describe('resolve-query', () => {
     });
 
     it('should provide security context to event handlers', async () => {
-        const graphqlReadModel = normalQuery.readModels.find(
-            model => model.name === GRAPHQL_READ_MODEL_NAME
-        );
-
-        graphqlReadModel.gqlResolvers.UserById = sinon
+        normalQuery.graphql.gqlResolvers.UserById = sinon
             .stub()
-            .callsFake(graphqlReadModel.gqlResolvers.UserById);
+            .callsFake(normalQuery.graphql.gqlResolvers.UserById);
 
         const executeQuery = createQueryExecutor({ eventStore, queryDefinition: normalQuery });
         eventList = eventListForGraphQL.slice(0);
@@ -380,7 +376,9 @@ describe('resolve-query', () => {
 
         const state = await executeQuery(graphqlQuery, {}, getJwt);
 
-        expect(graphqlReadModel.gqlResolvers.UserById.lastCall.args[2].getJwt).to.be.equal(getJwt);
+        expect(normalQuery.graphql.gqlResolvers.UserById.lastCall.args[2].getJwt).to.be.equal(
+            getJwt
+        );
 
         expect(state).to.be.deep.equal({
             UserById: {
