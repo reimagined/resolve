@@ -34,6 +34,7 @@ const createMemoryStorageProvider = (readModelsStateRepository = {}) => ({
                     `State for read-model ${stateName} is not initialized or been reset`
                 );
             }
+
             const stateManager = readModelsStateRepository[stateName].internal;
             const handler = readModel.eventHandlers[event.type];
             if (!handler || stateManager.getError()) return;

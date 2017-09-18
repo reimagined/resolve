@@ -1,13 +1,15 @@
 import { expect } from 'chai';
+import Immutable from 'seamless-immutable';
+import isPlainObject from 'is-plain-object';
 import sinon from 'sinon';
 
 import createQueryExecutor from '../src';
-const brokenStateError = new Error('Broken Error');
 
 describe('resolve-query', () => {
-    let eventStore, eventList, normalReadModel, brokenSchemaReadModel, brokenResolversReadModel;
+    let eventStore, eventList, readModel, brokenSchemaModel, brokenResolversModel, viewModel;
 
     const eventListForGraphQL = [
+        { type: 'InitialEvent', aggregateId: 'INITIAL', payload: { Users: [] } },
         { type: 'UserAdded', aggregateId: '1', payload: { UserName: 'User-1' } },
         { type: 'UserAdded', aggregateId: '2', payload: { UserName: 'User-2' } },
         { type: 'UserAdded', aggregateId: '3', payload: { UserName: 'User-3' } },
@@ -38,25 +40,59 @@ describe('resolve-query', () => {
                 )
         };
 
-        normalReadModel = {
+        viewModel = {
+            name: 'NORMAL_VIEW_MODEL_NAME',
+            eventHandlers: {
+                InitialEvent: sinon
+                    .stub()
+                    .callsFake((_, { payload: initialState }) => Immutable(initialState)),
+
+                UserAdded: sinon
+                    .stub()
+                    .callsFake(
+                        (state, { aggregateId: id, payload: { UserName } }) =>
+                            state && state.Users && !state.Users.find(user => user.id === id)
+                                ? state.setIn(['Users'], state.Users.concat([{ id, UserName }]))
+                                : state
+                    ),
+
+                UserDeleted: sinon
+                    .stub()
+                    .callsFake(
+                        (state, { aggregateId: id }) =>
+                            state && state.Users
+                                ? state.setIn(['Users'], state.Users.without(id))
+                                : state
+                    )
+            }
+        };
+
+        readModel = {
             name: 'NORMAL_READ_MODEL_NAME',
             eventHandlers: {
-                UserAdded: (state, { aggregateId: id, payload: { UserName } }) => {
-                    const newState = state || [];
-                    newState.Users = newState.Users || [];
-                    if (newState.Users.find(user => user.id === id)) return newState;
-                    newState.Users.push({ id, UserName });
-                    return newState;
-                },
-                UserDeleted: (state, { aggregateId: id }) => {
-                    const newState = state || [];
-                    newState.Users = newState.Users || [];
-                    newState.Users = newState.Users.filter(user => user.id !== id);
-                    return newState;
-                },
-                BrokenEvent: (state, event) => {
-                    throw brokenStateError;
-                }
+                InitialEvent: sinon.stub().callsFake(async (_, { payload: initialState }) => {
+                    if (!isPlainObject(initialState)) {
+                        throw new Error('Initial state should be plain object');
+                    }
+                    return initialState;
+                }),
+
+                UserAdded: sinon
+                    .stub()
+                    .callsFake(async (state, { aggregateId: id, payload: { UserName } }) => {
+                        if (!await state.Users.find(user => user.id === id)) {
+                            await state.Users.push({ id, UserName });
+                        }
+                        return state;
+                    }),
+
+                UserDeleted: sinon.stub().callsFake(async (state, { aggregateId: id }) => {
+                    const userPos = await state.Users.findIndex(user => user.id === id);
+                    if (userPos > -1) {
+                        await state.Users.splice(userPos, 1);
+                    }
+                    return state;
+                })
             },
 
             gqlSchema: `
@@ -72,33 +108,33 @@ describe('resolve-query', () => {
                 }
             `,
             gqlResolvers: {
-                UserByIdOnDemand: async (read, args) => {
+                UserByIdOnDemand: sinon.stub().callsFake(async (read, args) => {
                     if (!args.aggregateId) throw new Error('aggregateId is mandatory');
-                    const { Users } = await read({ aggregateIds: [args.aggregateId] });
+                    const { Users } = await read({ aggregateIds: ['INITIAL', args.aggregateId] });
                     return Users.find(user => user.id === args.aggregateId);
-                },
-                UserById: async (read, args) => {
+                }),
+                UserById: sinon.stub().callsFake(async (read, args) => {
                     const { Users } = await read();
                     return Users.find(user => user.id === args.id);
-                },
-                UserIds: async (read, args) => {
+                }),
+                UserIds: sinon.stub().callsFake(async (read, args) => {
                     const { Users } = await read();
                     return Users.map(user => user.id);
-                },
-                Users: async (read, args) => {
+                }),
+                Users: sinon.stub().callsFake(async (read, args) => {
                     const { Users } = await read();
                     return Users;
-                }
+                })
             }
         };
 
-        brokenSchemaReadModel = {
+        brokenSchemaModel = {
             name: 'BROKEN_GRAPHQL_SCHEMA_READ_MODEL_NAME',
             eventHandlers: {},
             gqlSchema: 'BROKEN_GRAPHQL_SCHEMA_READ_MODEL_NAME'
         };
 
-        brokenResolversReadModel = {
+        brokenResolversModel = {
             name: 'BROKEN_GRAPHQL_RESOLVER_READ_MODEL_NAME',
             eventHandlers: {},
 
@@ -112,15 +148,15 @@ describe('resolve-query', () => {
     });
 
     afterEach(() => {
-        brokenResolversReadModel = null;
-        brokenSchemaReadModel = null;
-        normalReadModel = null;
+        brokenResolversModel = null;
+        brokenSchemaModel = null;
+        readModel = null;
         eventStore = null;
         eventList = null;
     });
 
     it('should support custom defined resolver without argument', async () => {
-        const executeQuery = createQueryExecutor({ eventStore, readModel: normalReadModel });
+        const executeQuery = createQueryExecutor({ eventStore, readModel: readModel });
         eventList = eventListForGraphQL.slice(0);
 
         const state = await executeQuery('query { UserIds }');
@@ -131,7 +167,7 @@ describe('resolve-query', () => {
     });
 
     it('should support custom defined resolver with arguments', async () => {
-        const executeQuery = createQueryExecutor({ eventStore, readModel: normalReadModel });
+        const executeQuery = createQueryExecutor({ eventStore, readModel: readModel });
         eventList = eventListForGraphQL.slice(0);
 
         const graphqlQuery = 'query { UserById(id:2) { id, UserName } }';
@@ -148,20 +184,15 @@ describe('resolve-query', () => {
 
     // eslint-disable-next-line max-len
     it('should build small on-demand read-models if aggregateId argument specified directly', async () => {
-        normalReadModel.eventHandlers = {
-            UserAdded: sinon.stub().callsFake(normalReadModel.eventHandlers.UserAdded),
-            UserDeleted: sinon.stub().callsFake(normalReadModel.eventHandlers.UserDeleted)
-        };
-
-        const executeQuery = createQueryExecutor({ eventStore, readModel: normalReadModel });
+        const executeQuery = createQueryExecutor({ eventStore, readModel: readModel });
         eventList = eventListForGraphQL.slice(0);
 
         const graphqlQuery = 'query { UserByIdOnDemand(aggregateId:2) { id, UserName } }';
 
         const state = await executeQuery(graphqlQuery);
 
-        expect(normalReadModel.eventHandlers.UserAdded.callCount).to.be.equal(1);
-        expect(normalReadModel.eventHandlers.UserDeleted.callCount).to.be.equal(0);
+        expect(readModel.eventHandlers.UserAdded.callCount).to.be.equal(1);
+        expect(readModel.eventHandlers.UserDeleted.callCount).to.be.equal(0);
 
         expect(state).to.be.deep.equal({
             UserByIdOnDemand: {
@@ -172,7 +203,7 @@ describe('resolve-query', () => {
     });
 
     it('should support custom defined resolver with arguments valued by variables', async () => {
-        const executeQuery = createQueryExecutor({ eventStore, readModel: normalReadModel });
+        const executeQuery = createQueryExecutor({ eventStore, readModel: readModel });
         eventList = eventListForGraphQL.slice(0);
 
         const graphqlQuery = 'query ($testId: ID!) { UserById(id: $testId) { id, UserName } }';
@@ -189,12 +220,7 @@ describe('resolve-query', () => {
 
     // eslint-disable-next-line max-len
     it('should build small on-demand read-models if aggregateId argument specified by variables', async () => {
-        normalReadModel.eventHandlers = {
-            UserAdded: sinon.stub().callsFake(normalReadModel.eventHandlers.UserAdded),
-            UserDeleted: sinon.stub().callsFake(normalReadModel.eventHandlers.UserDeleted)
-        };
-
-        const executeQuery = createQueryExecutor({ eventStore, readModel: normalReadModel });
+        const executeQuery = createQueryExecutor({ eventStore, readModel: readModel });
         eventList = eventListForGraphQL.slice(0);
 
         const graphqlQuery =
@@ -202,8 +228,8 @@ describe('resolve-query', () => {
 
         const state = await executeQuery(graphqlQuery, { testId: '3' });
 
-        expect(normalReadModel.eventHandlers.UserAdded.callCount).to.be.equal(1);
-        expect(normalReadModel.eventHandlers.UserDeleted.callCount).to.be.equal(0);
+        expect(readModel.eventHandlers.UserAdded.callCount).to.be.equal(1);
+        expect(readModel.eventHandlers.UserDeleted.callCount).to.be.equal(0);
 
         expect(state).to.be.deep.equal({
             UserByIdOnDemand: {
@@ -214,7 +240,7 @@ describe('resolve-query', () => {
     });
 
     it('should handle error in case of wrong arguments for custom defined resolver', async () => {
-        const executeQuery = createQueryExecutor({ eventStore, readModel: normalReadModel });
+        const executeQuery = createQueryExecutor({ eventStore, readModel: readModel });
         eventList = eventListForGraphQL.slice(0);
 
         const graphqlQuery = 'query { UserById() { id, UserName } }';
@@ -229,7 +255,7 @@ describe('resolve-query', () => {
     });
 
     it('should handle custom GraphQL syntax errors in query', async () => {
-        const executeQuery = createQueryExecutor({ eventStore, readModel: normalReadModel });
+        const executeQuery = createQueryExecutor({ eventStore, readModel: readModel });
         eventList = eventListForGraphQL.slice(0);
 
         const graphqlQuery = 'WRONG_QUERY';
@@ -248,7 +274,7 @@ describe('resolve-query', () => {
         eventList = [];
 
         try {
-            createQueryExecutor({ eventStore, readModel: brokenSchemaReadModel });
+            createQueryExecutor({ eventStore, readModel: brokenSchemaModel });
             return Promise.reject('Test failed');
         } catch (error) {
             expect(error.message).to.have.string('Syntax Error GraphQL request');
@@ -259,7 +285,7 @@ describe('resolve-query', () => {
     it('should raise error in case throwing expection into custom resolver', async () => {
         const executeQuery = createQueryExecutor({
             eventStore,
-            readModel: brokenResolversReadModel
+            readModel: brokenResolversModel
         });
         eventList = [];
 
@@ -275,11 +301,7 @@ describe('resolve-query', () => {
     });
 
     it('should provide security context to event handlers', async () => {
-        normalReadModel.gqlResolvers.UserById = sinon
-            .stub()
-            .callsFake(normalReadModel.gqlResolvers.UserById);
-
-        const executeQuery = createQueryExecutor({ eventStore, readModel: normalReadModel });
+        const executeQuery = createQueryExecutor({ eventStore, readModel: readModel });
         eventList = eventListForGraphQL.slice(0);
 
         const getJwt = () => {};
@@ -287,7 +309,7 @@ describe('resolve-query', () => {
 
         const state = await executeQuery(graphqlQuery, {}, getJwt);
 
-        expect(normalReadModel.gqlResolvers.UserById.lastCall.args[2].getJwt).to.be.equal(getJwt);
+        expect(readModel.gqlResolvers.UserById.lastCall.args[2].getJwt).to.be.equal(getJwt);
 
         expect(state).to.be.deep.equal({
             UserById: {

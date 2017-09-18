@@ -32,6 +32,8 @@
   "dependencies": {
     "graphql": "^0.10.5",
     "graphql-tools": "^1.2.1",
-    "regenerator-runtime": "^0.10.5"
+    "is-plain-object": "^2.0.4",
+    "regenerator-runtime": "^0.10.5",
+    "seamless-immutable": "^7.1.2"
   }
 }
