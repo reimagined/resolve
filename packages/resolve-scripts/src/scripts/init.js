@@ -22,8 +22,8 @@ const dependencies = [
 
 const devDependencies = ['chai', 'cross-env', 'testcafe', 'testcafe-browser-tools', 'yargs'];
 
-const displayCommand = (useYarn, isDefaultCmd) =>
-    useYarn ? 'yarn' : isDefaultCmd ? 'npm' : 'npm run';
+const displayCommand = isDefaultCmd =>
+    isDefaultCmd ? 'npm' : 'npm run';
 
 const tryRenameReadme = (appPath) => {
     const readmeIsExist = fs.existsSync(path.join(appPath, 'README.md'));
@@ -55,20 +55,9 @@ const tryRenameGitignore = (appPath) => {
     });
 };
 
-const installDependencies = (useYarn, dep, isDev) => {
-    let command;
-    let args;
-    if (useYarn) {
-        command = 'yarnpkg';
-        args = ['add', '--exact'];
-        if (isDev) {
-            args.push('--dev');
-        }
-    } else {
-        command = 'npm';
-        args = ['install', isDev ? '--save-dev' : '--save'];
-    }
-    args = args.concat(dep);
+const installDependencies = (dep, isDev) => {
+    const command = 'npm';
+    const args = ['install', isDev ? '--save-dev' : '--save'].concat(dep);
 
     const proc = spawn.sync(command, args, { stdio: 'inherit' });
     if (proc.status !== 0) {
@@ -77,36 +66,36 @@ const installDependencies = (useYarn, dep, isDev) => {
     }
 };
 
-const printOutput = (appName, appPath, useYarn, cdpath, readmeIsExist) => {
+const printOutput = (appName, appPath, cdpath, readmeIsExist) => {
     log();
     log(`Success! Created ${appName} at ${appPath}`);
     log('Inside that directory, you can run several commands:');
 
     log();
-    log(chalk.cyan(`  ${displayCommand(useYarn, true)} start`));
+    log(chalk.cyan(`  ${displayCommand(true)} start`));
     log('    Starts the production server.');
 
     log();
-    log(chalk.cyan(`  ${displayCommand(useYarn, false)} build`));
+    log(chalk.cyan(`  ${displayCommand(false)} build`));
     log('    Bundles the app into static files for production.');
 
     log();
-    log(chalk.cyan(`  ${displayCommand(useYarn, false)} dev`));
+    log(chalk.cyan(`  ${displayCommand(false)} dev`));
     log('    Starts the development server.');
 
     log();
-    log(chalk.cyan(`  ${displayCommand(useYarn, false)} test`));
+    log(chalk.cyan(`  ${displayCommand(false)} test`));
     log('    Starts the test runner.');
 
     log();
-    log(chalk.cyan(`  ${displayCommand(useYarn, false)} test:e2e`));
+    log(chalk.cyan(`  ${displayCommand(false)} test:e2e`));
     log('    Starts the functionality test runner.');
 
     log();
     log('We suggest that you begin by typing:');
     log();
     log(chalk.cyan('  cd'), cdpath);
-    log(`  ${chalk.cyan(`${displayCommand(useYarn, false)} dev`)}`);
+    log(`  ${chalk.cyan(`${displayCommand(false)} dev`)}`);
     if (readmeIsExist) {
         log();
         log(chalk.yellow('You had a `README.md` file, we renamed it to `README.old.md`'));
@@ -118,7 +107,6 @@ const printOutput = (appName, appPath, useYarn, cdpath, readmeIsExist) => {
 export default (appPath, appName, originalDirectory) => {
     const scriptsPackageName = require(path.join(__dirname, '../../', 'package.json')).name;
     const scriptsPath = path.join(appPath, 'node_modules', scriptsPackageName);
-    const useYarn = fs.existsSync(path.join(appPath, 'yarn.lock'));
 
     const appPackage = require(path.join(appPath, 'package.json'));
     appPackage.scripts = {
@@ -144,13 +132,13 @@ export default (appPath, appName, originalDirectory) => {
     log('Installing app dependencies...');
     log();
 
-    installDependencies(useYarn, dependencies.concat(appDependencies), false);
-    installDependencies(useYarn, devDependencies, true);
+    installDependencies(dependencies.concat(appDependencies), false);
+    installDependencies(devDependencies, true);
     tryRenameGitignore(appPath);
 
     const cdpath = originalDirectory && path.join(originalDirectory, appName) === appPath
         ? appName
         : appPath;
 
-    printOutput(appName, appPath, useYarn, cdpath, readmeIsExist);
+    printOutput(appName, appPath, cdpath, readmeIsExist);
 };

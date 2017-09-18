@@ -4,7 +4,6 @@ import path from 'path';
 import chalk from 'chalk';
 import fs from 'fs-extra';
 import validateProjectName from 'validate-npm-package-name';
-import { execSync } from 'child_process';
 import dns from 'dns';
 import url from 'url';
 
@@ -12,15 +11,6 @@ import url from 'url';
 const error = console.error;
 // eslint-disable-next-line no-console
 const log = console.log;
-
-const yarnIsInstalled = () => {
-    try {
-        execSync('yarnpkg --version', { stdio: 'ignore' });
-        return true;
-    } catch (e) {
-        return false;
-    }
-};
 
 const validateAppDir = (appPath) => {
     const validFiles = [
@@ -77,27 +67,11 @@ const checkIfOnline = () => {
     });
 };
 
-const installScripts = (useYarn, scriptsPackage, isOnline) => {
+const installScripts = (scriptsPackage) => {
     return new Promise((resolve, reject) => {
-        let command;
-        let args;
-        if (useYarn) {
-            command = 'yarnpkg';
-            args = ['add', '--exact'];
-            if (!isOnline) {
-                args.push('--offline');
-            }
-
-            if (!isOnline) {
-                log(chalk.yellow('You appear to be offline.'));
-                log(chalk.yellow('Falling back to the local Yarn cache.'));
-                log();
-            }
-        } else {
-            command = 'npm';
-            args = ['install', '--save', '--save-exact', '--loglevel', 'error'];
-        }
-        args.push(scriptsPackage);
+        const command = 'npm';
+        const args = ['install', '--save', '--save-exact', '--loglevel', 'error']
+            .push(scriptsPackage);
 
         const child = spawn(command, args, { stdio: 'inherit' });
         child.on('close', (code) => {
@@ -169,13 +143,10 @@ export default async (name) => {
 
     log('Installing packages. This might take a couple of minutes.');
 
-    const useYarn = yarnIsInstalled();
-    const isOnline = !useYarn || (await checkIfOnline());
-
     log(`Installing ${chalk.cyan(scriptsPackage)}...`);
     log();
 
-    await installScripts(useYarn, scriptsPackage, isOnline);
+    await installScripts(scriptsPackage);
 
     runScripts(appPath, appName, originalDirectory, scriptsPackage);
 };
