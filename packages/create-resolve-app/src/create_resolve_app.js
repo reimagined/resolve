@@ -4,8 +4,6 @@ import path from 'path';
 import chalk from 'chalk';
 import fs from 'fs-extra';
 import validateProjectName from 'validate-npm-package-name';
-import dns from 'dns';
-import url from 'url';
 
 // eslint-disable-next-line no-console
 const error = console.error;
@@ -53,25 +51,17 @@ const checkAppName = (appName) => {
     return result.validForNewPackages;
 };
 
-const checkIfOnline = () => {
-    return new Promise((resolve) => {
-        dns.lookup('registry.yarnpkg.com', (err) => {
-            if (err != null && process.env.https_proxy) {
-                dns.lookup(url.parse(process.env.https_proxy).hostname, (proxyErr) => {
-                    resolve(proxyErr == null);
-                });
-            } else {
-                resolve(err == null);
-            }
-        });
-    });
-};
-
 const installScripts = (scriptsPackage) => {
     return new Promise((resolve, reject) => {
         const command = 'npm';
-        const args = ['install', '--save', '--save-exact', '--loglevel', 'error']
-            .push(scriptsPackage);
+        const args = [
+            'install',
+            '--save',
+            '--save-exact',
+            '--loglevel',
+            'error',
+            'resolve-scripts@0.0.26-alpha.4670c701'
+        ];
 
         const child = spawn(command, args, { stdio: 'inherit' });
         child.on('close', (code) => {
