@@ -3,13 +3,13 @@ import { makeExecutableSchema } from 'graphql-tools';
 import { parse, execute } from 'graphql';
 
 const createMemoryStorageProvider = (readModelsStateRepository = {}) => ({
-    async initState(stateName, readModel) {
+    async initState(stateName, readModel, onDestroy = () => {}) {
         if (readModelsStateRepository[stateName]) {
             throw new Error(`State for read-model '${stateName}' alreary initialized`);
         }
 
-        let state = readModel.initialState;
-        let error = null;
+        let state = null,
+            error = null;
 
         readModelsStateRepository[stateName] = {
             internal: {
@@ -21,7 +21,8 @@ const createMemoryStorageProvider = (readModelsStateRepository = {}) => ({
             public: {
                 getReadable: async () => state,
                 getError: async () => error
-            }
+            },
+            onDestroy
         };
 
         return readModelsStateRepository[stateName].public;
@@ -56,6 +57,8 @@ const createMemoryStorageProvider = (readModelsStateRepository = {}) => ({
     },
 
     async resetState(stateName) {
+        if (!readModelsStateRepository[stateName]) return;
+        readModelsStateRepository[stateName].onDestroy();
         readModelsStateRepository[stateName] = null;
     }
 });
@@ -99,22 +102,30 @@ const getState = async (storageProvider, eventStore, readModel, onDemandOptions)
 
     let currentState = await storageProvider.getState(stateName);
     if (!currentState) {
-        currentState = await storageProvider.initState(stateName, readModel);
+        let unsubscriber = null;
+        let onDestroy = () => (unsubscriber === null ? (onDestroy = null) : unsubscriber());
+
+        currentState = await storageProvider.initState(stateName, readModel, onDestroy);
         const eventWorker = await storageProvider.getEventWorker(stateName, readModel);
 
         await new Promise((resolve) => {
-            let persistense = { lastLoadedEvent: null, borderEvent: null };
+            let persistence = { eventsFetched: 0, eventsProcessed: 0, isLoaded: false };
             let flowPromise = Promise.resolve();
-            let unsubscriber = null;
 
             const synchronizedEventWorker = (event) => {
                 flowPromise = flowPromise.then(eventWorker.bind(null, event));
 
-                if (persistense) {
-                    persistense.lastLoadedEvent = event;
+                if (persistence && !persistence.isLoaded) {
+                    persistence.eventsFetched++;
                     flowPromise = flowPromise.then(() => {
-                        if (persistense && event === persistense.borderEvent) {
-                            persistense = null;
+                        if (!persistence) return;
+                        persistence.eventsProcessed++;
+
+                        if (
+                            persistence.eventsProcessed === persistence.eventsFetched &&
+                            persistence.isLoaded
+                        ) {
+                            persistence = null;
                             resolve(unsubscriber);
                         }
                     });
@@ -127,8 +138,21 @@ const getState = async (storageProvider, eventStore, readModel, onDemandOptions)
                     : Object.keys(readModel.eventHandlers),
                 ids: aggregateIds
             }).then((unsub) => {
-                persistense.borderEvent = persistense.lastLoadedEvent;
-                unsubscriber = unsub;
+                persistence.isLoaded = true;
+
+                if (onDestroy !== null) {
+                    unsubscriber = unsub;
+                } else {
+                    unsub();
+                }
+
+                if (
+                    persistence.eventsProcessed === persistence.eventsFetched &&
+                    persistence.isLoaded
+                ) {
+                    persistence = null;
+                    resolve(unsubscriber);
+                }
             });
         });
     }
@@ -141,7 +165,64 @@ const getState = async (storageProvider, eventStore, readModel, onDemandOptions)
     return await currentState.getReadable();
 };
 
+const readModelReader = async (executableSchema, readState, gqlQuery, gqlVariables, getJwt) => {
+    const parsedGqlQuery = parse(gqlQuery);
+
+    const gqlResponse = await execute(
+        executableSchema,
+        parsedGqlQuery,
+        readState,
+        { getJwt },
+        gqlVariables
+    );
+
+    if (gqlResponse.errors) throw gqlResponse.errors;
+    return gqlResponse.data;
+};
+
+const viewModelReader = async (readState, gqlQuery, gqlVariables, getJwt) => {
+    const parsedGqlQuery = parse(gqlQuery);
+    const aggregateIds = [];
+
+    try {
+        const viewQueryError = new Error();
+        const selection = parsedGqlQuery.definitions[0].selectionSet.selections[0];
+        if (selection.name.kind !== 'Name' || selection.name.value !== 'View') {
+            throw viewQueryError;
+        }
+        if (Array.isArray(selection.arguments)) {
+            selection.arguments.forEach((arg) => {
+                if (arg.name.kind !== 'Name' || arg.name.value !== 'aggregateId') {
+                    throw viewQueryError;
+                }
+                if (arg.value.kind === 'Variable' && arg.value.name && arg.value.name.value) {
+                    aggregateIds.push(gqlVariables[arg.value.name.value]);
+                } else {
+                    aggregateIds.push(arg.value.value);
+                }
+            });
+        }
+    } catch (err) {
+        throw new Error( // eslint-disable-next-line max-len
+            'View model is queryable only by "query { Read }" or "query { Read(aggregateId: ID) }"'
+        );
+    }
+
+    return await readState({ aggregateIds });
+};
+
 const createExecutor = (eventStore, readModel) => {
+    if (readModel.viewModel) {
+        if (readModel.gqlSchema || readModel.gqlResolvers) {
+            throw new Error('View model can\'t have GraphQL schemas and resolvers');
+        } else if (readModel.storageProvider) {
+            throw new Error('View model can\'t have custom storage provider');
+        }
+
+        const readState = getState.bind(null, createMemoryStorageProvider(), eventStore, readModel);
+        return viewModelReader.bind(null, readState);
+    }
+
     const storageProvider = readModel.storageProvider || createMemoryStorageProvider();
     const readState = getState.bind(null, storageProvider, eventStore, readModel);
 
@@ -150,20 +231,7 @@ const createExecutor = (eventStore, readModel) => {
         typeDefs: readModel.gqlSchema
     });
 
-    return async (gqlQuery, gqlVariables, getJwt) => {
-        const parsedGqlQuery = parse(gqlQuery);
-
-        const gqlResponse = await execute(
-            executableSchema,
-            parsedGqlQuery,
-            readState,
-            { getJwt },
-            gqlVariables
-        );
-
-        if (gqlResponse.errors) throw gqlResponse.errors;
-        return gqlResponse.data;
-    };
+    return readModelReader.bind(null, executableSchema, readState);
 };
 
 export default ({ eventStore, readModel }) => {
