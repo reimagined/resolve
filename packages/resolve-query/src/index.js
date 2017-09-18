@@ -112,24 +112,27 @@ const getState = async (storageProvider, eventStore, readModel, onDemandOptions)
             let persistence = { eventsFetched: 0, eventsProcessed: 0, isLoaded: false };
             let flowPromise = Promise.resolve();
 
+            const persistenceChecker = (doCount) => {
+                if (!persistence) return;
+                if (doCount) {
+                    persistence.eventsProcessed++;
+                } else {
+                    persistence.isLoaded = true;
+                }
+                if (
+                    persistence.eventsProcessed === persistence.eventsFetched &&
+                    persistence.isLoaded
+                ) {
+                    persistence = null;
+                    resolve();
+                }
+            };
+
             const synchronizedEventWorker = (event) => {
                 flowPromise = flowPromise.then(eventWorker.bind(null, event));
-
-                if (persistence && !persistence.isLoaded) {
-                    persistence.eventsFetched++;
-                    flowPromise = flowPromise.then(() => {
-                        if (!persistence) return;
-                        persistence.eventsProcessed++;
-
-                        if (
-                            persistence.eventsProcessed === persistence.eventsFetched &&
-                            persistence.isLoaded
-                        ) {
-                            persistence = null;
-                            resolve(unsubscriber);
-                        }
-                    });
-                }
+                if (!persistence || persistence.isLoaded) return;
+                persistence.eventsFetched++;
+                flowPromise = flowPromise.then(persistenceChecker.bind(null, true));
             };
 
             subscribeByEventTypeAndIds(eventStore, synchronizedEventWorker, {
@@ -138,20 +141,12 @@ const getState = async (storageProvider, eventStore, readModel, onDemandOptions)
                     : Object.keys(readModel.eventHandlers),
                 ids: aggregateIds
             }).then((unsub) => {
-                persistence.isLoaded = true;
+                persistenceChecker(false);
 
                 if (onDestroy !== null) {
                     unsubscriber = unsub;
                 } else {
                     unsub();
-                }
-
-                if (
-                    persistence.eventsProcessed === persistence.eventsFetched &&
-                    persistence.isLoaded
-                ) {
-                    persistence = null;
-                    resolve(unsubscriber);
                 }
             });
         });
