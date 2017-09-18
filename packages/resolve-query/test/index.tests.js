@@ -98,7 +98,7 @@ describe('resolve-query', () => {
             gqlSchema: 'BROKEN_GRAPHQL_SCHEMA_READ_MODEL_NAME'
         };
 
-        brokenSchemaReadModel = {
+        brokenResolversReadModel = {
             name: 'BROKEN_GRAPHQL_RESOLVER_READ_MODEL_NAME',
             eventHandlers: {},
 
@@ -272,26 +272,6 @@ describe('resolve-query', () => {
             expect(error[0].message).to.have.string('BROKEN_GRAPHQL_RESOLVER_READ_MODEL_NAME');
             expect(error[0].path).to.be.deep.equal(['Broken']);
         }
-    });
-
-    it('should provide access to regular neighbor read-models in resolver function', async () => {
-        const executeQuery = createQueryExecutor({ eventStore, readModel: normalReadModel });
-        eventList = [
-            { type: 'UserAdded', aggregateId: '1', payload: { UserName: 'User-1' } },
-            { type: 'UserAdded', aggregateId: '2', payload: { UserName: 'User-2' } },
-            { type: 'SuccessEvent', aggregateId: '0' }
-        ];
-
-        const graphqlQuery = 'query { CrossReadModel { users { id, UserName }, value } }';
-
-        const state = await executeQuery(graphqlQuery);
-
-        expect(state).to.be.deep.equal({
-            CrossReadModel: {
-                users: [{ id: '1', UserName: 'User-1' }, { id: '2', UserName: 'User-2' }],
-                value: 42
-            }
-        });
     });
 
     it('should provide security context to event handlers', async () => {

@@ -121,7 +121,7 @@ const getState = async (storageProvider, eventStore, readModel, onDemandOptions)
             };
 
             subscribeByEventTypeAndIds(eventStore, synchronizedEventWorker, {
-                types: Array.isArray(limitedEventTypes)
+                types: Array.isArray(limitedEventTypes) || Array.isArray(aggregateIds)
                     ? limitedEventTypes
                     : Object.keys(readModel.eventHandlers),
                 ids: aggregateIds
