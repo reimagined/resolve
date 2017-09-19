@@ -381,7 +381,7 @@ describe('resolve-query', () => {
         it('should fail if manual graphql schema is provided', async () => {
             viewModel.gqlSchema = 'SCHEMA';
             try {
-                const executeQuery = createQueryExecutor({ eventStore, readModel: viewModel });
+                createQueryExecutor({ eventStore, readModel: viewModel });
                 return Promise.reject('TEST FAILED');
             } catch (error) {
                 expect(error.message).to.have.string(
@@ -393,7 +393,7 @@ describe('resolve-query', () => {
         it('should fail if manual graphql resolvers is provided', async () => {
             viewModel.gqlResolvers = { Resolver: () => null };
             try {
-                const executeQuery = createQueryExecutor({ eventStore, readModel: viewModel });
+                createQueryExecutor({ eventStore, readModel: viewModel });
                 return Promise.reject('TEST FAILED');
             } catch (error) {
                 expect(error.message).to.have.string(
