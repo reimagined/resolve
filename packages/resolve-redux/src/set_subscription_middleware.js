@@ -8,9 +8,15 @@ function createMiddleware() {
         let socketIOFailCount = 0;
         let socketIO = null;
 
+        const rootDir = typeof process !== 'undefined' &&
+            typeof process.env !== 'undefined' &&
+            process.env.ROOT_DIR
+            ? process.env.ROOT_DIR
+            : '';
+
         const initSocketIO = () => {
             socketIO = socketIOClient(window.location.origin, {
-                path: `${process.env.ROOT_DIR}/socket/`
+                path: `${rootDir}/socket/`
             });
 
             socketIO.on('event', event => store.dispatch(JSON.parse(event)));

@@ -1,7 +1,8 @@
+import 'regenerator-runtime/runtime';
 import fetch from 'isomorphic-fetch';
 import checkRequiredFields from './warn_util';
 
-async function sendCommandDefault(command) {
+const sendCommandDefault = async (command) => {
     const response = await fetch('/api/commands', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -17,7 +18,7 @@ async function sendCommandDefault(command) {
     // eslint-disable-next-line no-console
     console.error('Send command error:', text);
     return Promise.reject(text);
-}
+};
 
 export default params => store => next => (action) => {
     const { command, aggregateId, aggregateName, payload } = action;
