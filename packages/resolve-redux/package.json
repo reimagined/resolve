@@ -33,6 +33,7 @@
     "uuid": "^3.0.1"
   },
   "dependencies": {
+    "isomorphic-fetch": "^2.2.1",
     "socket.io-client": "^2.0.3"
   }
 }

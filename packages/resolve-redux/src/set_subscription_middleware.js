@@ -3,14 +3,14 @@ import socketIOClient from 'socket.io-client';
 
 const CRITICAL_LEVEL = 100;
 
-function createMiddleware({ rootDirPath }) {
+function createMiddleware() {
     return (store) => {
         let socketIOFailCount = 0;
         let socketIO = null;
 
         const initSocketIO = () => {
             socketIO = socketIOClient(window.location.origin, {
-                path: `${rootDirPath}/socket/`
+                path: `${process.env.ROOT_DIR}/socket/`
             });
 
             socketIO.on('event', event => store.dispatch(JSON.parse(event)));
