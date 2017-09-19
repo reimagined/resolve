@@ -3,7 +3,7 @@ import { makeExecutableSchema } from 'graphql-tools';
 import { parse, execute } from 'graphql';
 
 const createMemoryStorageProvider = (readModelsStateRepository = {}) => ({
-    async initState(stateName, readModel, onDestroy = () => {}) {
+    initState(stateName, readModel, onDestroy = () => {}) {
         if (readModelsStateRepository[stateName]) {
             throw new Error(`State for read-model '${stateName}' alreary initialized`);
         }
@@ -28,7 +28,7 @@ const createMemoryStorageProvider = (readModelsStateRepository = {}) => ({
         return readModelsStateRepository[stateName].public;
     },
 
-    async getEventWorker(stateName, readModel) {
+    getEventWorker(stateName, readModel) {
         return async (event) => {
             if (!readModelsStateRepository[stateName]) {
                 throw new Error(
@@ -50,13 +50,13 @@ const createMemoryStorageProvider = (readModelsStateRepository = {}) => ({
         };
     },
 
-    async getState(stateName) {
+    getState(stateName) {
         const stateManager = readModelsStateRepository[stateName];
         if (!stateManager) return null;
         return stateManager.public;
     },
 
-    async resetState(stateName) {
+    resetState(stateName) {
         if (!readModelsStateRepository[stateName]) return;
         readModelsStateRepository[stateName].onDestroy();
         readModelsStateRepository[stateName] = null;
@@ -92,7 +92,7 @@ const subscribeByEventTypeAndIds = async (eventStore, callback, eventDescriptors
 const getState = async (storageProvider, eventStore, readModel, onDemandOptions) => {
     const { aggregateIds, limitedEventTypes } = onDemandOptions || {};
 
-    let stateName = readModel.name.toLowerCase();
+    let stateName = readModel.name;
     if (Array.isArray(aggregateIds)) {
         stateName = `${stateName}\u200D\u200D${aggregateIds.sort().join('\u200D')}`;
     }
@@ -100,13 +100,13 @@ const getState = async (storageProvider, eventStore, readModel, onDemandOptions)
         stateName = `${stateName}\u200D\u200D${limitedEventTypes.sort().join('\u200D')}`;
     }
 
-    let currentState = await storageProvider.getState(stateName);
+    let currentState = storageProvider.getState(stateName);
     if (!currentState) {
         let unsubscriber = null;
         let onDestroy = () => (unsubscriber === null ? (onDestroy = null) : unsubscriber());
 
-        currentState = await storageProvider.initState(stateName, readModel, onDestroy);
-        const eventWorker = await storageProvider.getEventWorker(stateName, readModel);
+        currentState = storageProvider.initState(stateName, readModel, onDestroy);
+        const eventWorker = storageProvider.getEventWorker(stateName, readModel);
 
         await new Promise((resolve) => {
             let persistence = { eventsFetched: 0, eventsProcessed: 0, isLoaded: false };
