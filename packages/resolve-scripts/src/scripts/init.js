@@ -22,8 +22,7 @@ const dependencies = [
 
 const devDependencies = ['chai', 'cross-env', 'testcafe', 'testcafe-browser-tools', 'yargs'];
 
-const displayCommand = isDefaultCmd =>
-    isDefaultCmd ? 'npm' : 'npm run';
+const displayCommand = isDefaultCmd => (isDefaultCmd ? 'npm' : 'npm run');
 
 const tryRenameReadme = (appPath) => {
     const readmeIsExist = fs.existsSync(path.join(appPath, 'README.md'));
