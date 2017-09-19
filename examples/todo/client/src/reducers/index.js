@@ -1,7 +1,6 @@
 import { createReducer } from 'resolve-redux';
-import { readModels } from 'todo-common';
+import { readModel } from 'todo-common';
 
-const cards = readModels.cards;
-const { name, eventHandlers } = cards;
+const { name, eventHandlers } = readModel;
 
 export default createReducer({ name, eventHandlers });

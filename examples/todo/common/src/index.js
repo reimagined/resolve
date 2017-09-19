@@ -1,2 +1,2 @@
-export * as readModels from './read-models';
 export * as aggregates from './aggregates';
+export * as readModel from './read-model';

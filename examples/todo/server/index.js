@@ -4,13 +4,11 @@ import uuid from 'uuid';
 import createEventStore from 'resolve-es';
 import busDriver from 'resolve-bus-zmq';
 
-import { readModels } from 'todo-common';
+import { readModel } from 'todo-common';
 import makeIpc from './ipc';
 import config from './config';
 
 const eventStore = createEventStore({ bus: busDriver(config.zmq) });
-
-const cardsReadModel = readModels.cards;
 
 const PORT = 3001;
 
@@ -21,13 +19,13 @@ const server = http.createServer((req, res) => {
 
 const io = socketIO(server);
 
-const eventNames = Object.keys(cardsReadModel.eventHandlers);
+const eventNames = Object.keys(readModel.eventHandlers);
 
 const requestReadModel = makeIpc('./query/index.js');
 const requestCommand = makeIpc('./command/index.js');
 
 io.on('connection', (socket) => {
-    requestReadModel('cards').then(({ state }) => socket.emit('initialState', state)).then(() => {
+    requestReadModel().then(({ state }) => socket.emit('initialState', state)).then(() => {
         socket.on('command', (command) => {
             command.aggregateId = command.aggregateId || uuid.v4();
 
