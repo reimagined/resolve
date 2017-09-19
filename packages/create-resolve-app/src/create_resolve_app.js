@@ -60,7 +60,7 @@ const installScripts = (scriptsPackage) => {
             '--save-exact',
             '--loglevel',
             'error',
-            'resolve-scripts@0.0.26-alpha.4670c701'
+            scriptsPackage
         ];
 
         const child = spawn(command, args, { stdio: 'inherit' });
