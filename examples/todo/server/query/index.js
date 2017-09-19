@@ -2,12 +2,9 @@ import createEventStore from 'resolve-es';
 import storageDriver from 'resolve-storage-file';
 import busDriver from 'resolve-bus-zmq';
 import query from 'resolve-query';
-
-import { readModels } from 'todo-common';
+import { readModel } from 'todo-common';
 
 import config from '../config';
-
-const cardsReadModel = readModels.cards;
 
 const storage = storageDriver(config.esFile);
 const bus = busDriver(config.zmq);
@@ -15,11 +12,11 @@ const eventStore = createEventStore({ storage, bus });
 
 const queries = query({
     eventStore,
-    readModels: [cardsReadModel]
+    readModel
 });
 
 process.on('message', (message) => {
-    queries(message.payload)
+    queries('query { View }')
         .then(state =>
             process.send({
                 id: message.id,
