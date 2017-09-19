@@ -203,6 +203,7 @@ describe('resolve-query', () => {
             });
         });
 
+        // eslint-disable-next-line max-len
         it('should support custom defined resolver with arguments valued by variables', async () => {
             const executeQuery = createQueryExecutor({ eventStore, readModel });
             eventList = simulatedEventList.slice(0);
@@ -302,7 +303,7 @@ describe('resolve-query', () => {
             }
         });
 
-        it('should provide security context to event handlers', async () => {
+        it('should provide security context to graphql resolvers', async () => {
             const executeQuery = createQueryExecutor({ eventStore, readModel });
             eventList = simulatedEventList.slice(0);
 
@@ -323,7 +324,27 @@ describe('resolve-query', () => {
     });
 
     describe('View model', () => {
-        it('should support custom defined resolver without argument', async () => {
+        it('should provide whole state in View query', async () => {
+            const executeQuery = createQueryExecutor({ eventStore, readModel: viewModel });
+            eventList = simulatedEventList.slice(0);
+
+            const state = await executeQuery('query { View }');
+
+            expect(state).to.be.deep.equal({
+                Users: [
+                    {
+                        UserName: 'User-2',
+                        id: '2'
+                    },
+                    {
+                        UserName: 'User-3',
+                        id: '3'
+                    }
+                ]
+            });
+        });
+
+        it('should provide on-demain state in View query with string parameters', async () => {
             const executeQuery = createQueryExecutor({ eventStore, readModel: viewModel });
             eventList = simulatedEventList.slice(0);
 
@@ -337,6 +358,48 @@ describe('resolve-query', () => {
                     }
                 ]
             });
+        });
+
+        it('should provide on-demain state in View query with variable parameters', async () => {
+            const executeQuery = createQueryExecutor({ eventStore, readModel: viewModel });
+            eventList = simulatedEventList.slice(0);
+
+            const state = await executeQuery('query ($id: ID!) { View(aggregateId: $id) }', {
+                id: '2'
+            });
+
+            expect(state).to.be.deep.equal({
+                Users: [
+                    {
+                        UserName: 'User-2',
+                        id: '2'
+                    }
+                ]
+            });
+        });
+
+        it('should fail if manual graphql schema is provided', async () => {
+            viewModel.gqlSchema = 'SCHEMA';
+            try {
+                const executeQuery = createQueryExecutor({ eventStore, readModel: viewModel });
+                return Promise.reject('TEST FAILED');
+            } catch (error) {
+                expect(error.message).to.have.string(
+                    'View model can\'t have GraphQL schemas and resolvers'
+                );
+            }
+        });
+
+        it('should fail if manual graphql resolvers is provided', async () => {
+            viewModel.gqlResolvers = { Resolver: () => null };
+            try {
+                const executeQuery = createQueryExecutor({ eventStore, readModel: viewModel });
+                return Promise.reject('TEST FAILED');
+            } catch (error) {
+                expect(error.message).to.have.string(
+                    'View model can\'t have GraphQL schemas and resolvers'
+                );
+            }
         });
     });
 

@@ -177,7 +177,7 @@ const readModelReader = async (executableSchema, readState, gqlQuery, gqlVariabl
 
 const viewModelReader = async (readState, gqlQuery, gqlVariables, getJwt) => {
     const parsedGqlQuery = parse(gqlQuery);
-    const aggregateIds = [];
+    let aggregateIds = [];
 
     try {
         const viewQueryError = new Error();
@@ -201,6 +201,10 @@ const viewModelReader = async (readState, gqlQuery, gqlVariables, getJwt) => {
         throw new Error( // eslint-disable-next-line max-len
             'View model is queryable only by "query { Read }" or "query { Read(aggregateId: ID) }"'
         );
+    }
+
+    if (aggregateIds.length === 0) {
+        aggregateIds = null;
     }
 
     return await readState({ aggregateIds });
