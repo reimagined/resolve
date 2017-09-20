@@ -7,7 +7,7 @@ reSolve is a framework for developing apps based on CQRS and Event Sourcing, wit
 
 ## **📑 Table of Contents**
 * [Basic Concepts](#️-basic-concepts)
-	* [Command and Aggregate](command-and-aggregate)
+	* [Command and Aggregate](#command-and-aggregate)
 	* [Event Store](#event-store)
 	* [Read Model and Query](#read-model-and-query)
 	* [See Also](#see-also)
