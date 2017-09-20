@@ -17,6 +17,18 @@
 
 * **resolve-scripts:** deleting unnecessary template files ([d01e562](https://github.com/reimagined/resolve/commit/d01e562)), closes [#200](https://github.com/reimagined/resolve/issues/200)
 
+### BREAKING CHANGES
+
+* **resolve-query:** Change read-model root
+Change read-model root, implement posibility for persistent storage and async projection functions, segregate to read and view models, move graphql onto top-level of read-model, allow customize persistent storage provider
+
+Used terms / system metaphor is specified. Read-model now is abstract entity, which perform handling incoming events by specified projection functions and storage manager, and then can be retrieved from storage in custom manner in GraphQL resolvers. What used to be called read models in plural is now one particular collection in one large reading model. All event handlers should be present for whole read-model, and can manipulate with any collections.
+
+Together with this change, cross-read model GraphQL resolvers in old terms now is not needed, because in one read-side instance most likely there is only one read-model with several collections, which can be easily accessed. Also, real cross read-model GraphQL resolvers are supported, since resolver is custom asynchronous function, which can interact with any entity.
+All read-models can be queried only by GraphQL query. View-models is kind of read-models, which can be retrieved only with full state, because they fit into client's memory. View-models can be used only with synchronous storage providers, which also support "full state" term, e.g. memory provider.
+
+Custom storage provider are supported now. Every projection can be custom asynchronous function, which interacts with supplied storage provider. No custom providers goes with this change, but easily can be developed.
+* renamed method `loadEventsByAggregateId` to `loadEventsByAggregateIds` in resolve-es drivers
 
 
 <a name="0.0.26"></a>
