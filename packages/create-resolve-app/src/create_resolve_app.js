@@ -54,14 +54,7 @@ const checkAppName = (appName) => {
 const installScripts = (scriptsPackage) => {
     return new Promise((resolve, reject) => {
         const command = 'npm';
-        const args = [
-            'install',
-            '--save',
-            '--save-exact',
-            '--loglevel',
-            'error',
-            scriptsPackage
-        ];
+        const args = ['install', '--save', '--save-exact', '--loglevel', 'error', scriptsPackage];
 
         const child = spawn(command, args, { stdio: 'inherit' });
         child.on('close', (code) => {
