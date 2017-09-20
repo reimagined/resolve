@@ -24,7 +24,7 @@ reSolve is a set of libraries which can be used independently or all together. E
 _*This scheme is based on the "CQRS with Event Sourcing" image from the [Event Sourcing for Functional Programmers](http://danielwestheide.com/talks/flatmap2013/slides/#/) presentation.*_
 
 ### Command and Aggregate 
-When you need to change the system state, you send a Command. A command is addressed to a Domain Aggregate. Aggregate is a cluster of logically related objects, containing enough information to perform a command as one transaction. Aggregate handles a command, checks whether it can be executed and generates an event to change the system state. A new event is sent to [Event Store](#eventstore). 
+When you need to change the system state, you send a Command. A command is addressed to a Domain Aggregate. Aggregate is a cluster of logically related objects, containing enough information to perform a command as one transaction. Aggregate handles a command, checks whether it can be executed and generates an event to change the system state. A new event is sent to [Event Store](#event-store). 
 For more information about aggregates, refer to [DDD_Aggregates](https://martinfowler.com/bliki/DDD_Aggregate.html) or [DDD, Event Sourcing, and CQRS Tutorial: design](http://cqrs.nu/tutorial/cs/01-design).
 
 The [resolve-command](packages/resolve-command) library allows you to handle commands and send produced events to the event store based on definitions of aggregates and their commands. All aggregates are passed to `resolve-command` as an array. The library creates an Aggregate Repository, and finds or instantiates a particular aggregate to handle each sent command.
