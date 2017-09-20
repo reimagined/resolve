@@ -176,25 +176,54 @@ export default {
         Event2Happened: (state, event) => nextState   // for different event types
     }
     // This state results from the request to the query handler at the current moment
+};
 ```
+
+Note: To use view model declaration as a Redux reducer, some Immutable wrapper for a state object is required. We recommend to use the [seamless-immutable](https://github.com/rtfeldman/seamless-immutable) library. Keep in mind that incorrect handling of an immutable object may cause performance issues.
+
 
 A typical read model structure:
 
 ```js
 export default {
     name: 'ReadModelName', // Read model name
-    eventHandlers: {
+    eventHandlers: { // Projection functions
         Event1Happened: async (storage, event) => { // Let storage be mongodb adapter, for example
 					  const idList = await storage.find({ field: 'Test1' }).map(doc => doc.id);
 						await storage.update({ id: { $in: idList } }, { field: 'Test2' });
 				},  
-        Event2Happened: (state, event) => nextState   
-    }
+        Event2Happened: async (storage, event) => { // Projection can interact with custom external resources
+						const eventsourcingTweets = await fetchTweets('@gregyoung');
+						await storage.insert(eventsourcingTweets);
+				}
+    },
+		gqlSchema: // Schema for client-side QraphQL queries on read-model via Query API */
+				`type Message {
+						id: ID!
+						Header: String,
+						Content: String
+				}
+				type Query {
+						MessageById(id: ID!): Message,
+						MessageIds: [ID!]
+				}
+		`,
+    gqlResolvers: { // GraphQL resolvers functions
+				MessageById: async (getReader, args) => {
+            const db = await getReader();
+						const message = await db.find({ id: args.id });
+            return message;
+        },
+				MessageById: async (getReader, args) => {
+            const db = await getReader();
+            const idList = await db.find().map(message => message.id);
+						return idList;
+        }
+
+		}
+};
 
 ```
-
-
-Note: To use read model declaration as a Redux reducer, some Immutable wrapper for a state object is required. We recommend to use the [seamless-immutable](https://github.com/rtfeldman/seamless-immutable) library. Keep in mind that incorrect handling of an immutable object may cause performance issues.
 
 ## **🎛 Configuration Files**
 ### Client Config
