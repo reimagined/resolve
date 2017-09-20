@@ -209,12 +209,13 @@ export default {
 				}
 		`,
     gqlResolvers: { // GraphQL resolvers functions
-				MessageById: async (getReader, args) => {
-            const db = await getReader();
+				MessageById: async (getReader, args) => { // On-demand real-model state
+						if(!args.id) throw new Error('Message ID is mandatory!');
+            const db = await getReader({ aggregateIds: [args.id] });
 						const message = await db.find({ id: args.id });
             return message;
         },
-				MessageById: async (getReader, args) => {
+				MessageById: async (getReader, args) => { // Full read-model state
             const db = await getReader();
             const idList = await db.find().map(message => message.id);
 						return idList;
