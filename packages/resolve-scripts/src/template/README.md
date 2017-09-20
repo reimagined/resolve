@@ -104,9 +104,8 @@ resolve-app/
       index.js
       todo-events.js
       todo.js
-    read-models/
+    read-model/
       index.js
-      todos.js
     store/
       index.js
   static/
@@ -145,9 +144,9 @@ Common business/domain logic of an application consists of two parts - aggregate
 * An *aggregate* is responsible for a system behavior and encapsulation of business logic. It responses to commands, checks whether they can be executed and generates events to change the current status of a system.
 * A *read model* provides the current state of a system or its part in the given format. It is built by processing all events happened to the system, through a projection function.
 
-Aggregates and read models are located in the corresponding directories and defined in a special isomorphic format, which allows them to be used on the client and server side.
-* On the client side, aggregates are transformed into Redux action creators, and read models - into Redux reducers.
-* On the server side, aggregates and read models are applied directory in the reSolve event sourcing framework.
+In general case, read model is consists of two parts: asynchronous projection functions to build some state and GraphQL schema and resolvers to access it's state and transmit it for client in apropriate format.
+
+Some Read Models are sent to the client UI to be a part of Redux app state. They are small enough to fit into memory and can be kept up-to date right in the browser. We call them View Models. They are defined in a special isomorphic format, which allows them to be used on the client and server side.
 
 A typical aggregate structure:
 
@@ -166,18 +165,34 @@ export default {
 };
 ```
 
-A typical read model structure:
+A typical view model structure:
 
 ```js
 export default {
-    name: 'ReadModelName', // Read model name for query handler
-    initialState: Immutable({}), // Initial state for this read model instance
+    name: 'ViewModelName', // View model name
+		viewModel: true, // Specify that this is view model and can be used as Redux's state
     eventHandlers: {
         Event1Happened: (state, event) => nextState,  // Update functions for the current read model instance
         Event2Happened: (state, event) => nextState   // for different event types
     }
     // This state results from the request to the query handler at the current moment
 ```
+
+A typical read model structure:
+
+```js
+export default {
+    name: 'ReadModelName', // Read model name
+    eventHandlers: {
+        Event1Happened: async (storage, event) => { // Let storage be mongodb adapter, for example
+					  const idList = await storage.find({ field: 'Test1' }).map(doc => doc.id);
+						await storage.update({ id: { $in: idList } }, { field: 'Test2' });
+				},  
+        Event2Happened: (state, event) => nextState   
+    }
+
+```
+
 
 Note: To use read model declaration as a Redux reducer, some Immutable wrapper for a state object is required. We recommend to use the [seamless-immutable](https://github.com/rtfeldman/seamless-immutable) library. Keep in mind that incorrect handling of an immutable object may cause performance issues.
 

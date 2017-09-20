@@ -23,7 +23,7 @@ app.use(cookieParser());
 
 const executeQuery = query({
     eventStore,
-    readModels: config.queries
+    readModel: config.readModel
 });
 
 const executeCommand = commandHandler({
@@ -56,13 +56,11 @@ try {
     config.extendExpress(app);
 } catch (err) {}
 
-app.get(`${rootDirectory}/api/queries/:queryName`, async (req, res) => {
+app.get(`${rootDirectory}/api/query`, async (req, res) => {
     try {
-        const { graphql, variables } = req.query;
         const state = await executeQuery(
-            req.params.queryName,
-            graphql,
-            JSON.parse(variables || '{}'),
+            req.query.graphql,
+            JSON.parse(req.query.variables || '{}'),
             req.jwt
         );
 

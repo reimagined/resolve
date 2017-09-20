@@ -2,7 +2,7 @@ import fileDriver from 'resolve-storage-file';
 import busDriver from 'resolve-bus-memory';
 import eventTypes from './common/aggregates/todo-events';
 import aggregates from './common/aggregates';
-import queries from './common/read-models';
+import readModel from './common/read-model';
 import clientConfig from './resolve.client.config.js';
 
 if (module.hot) {
@@ -20,9 +20,9 @@ export default {
         driver: fileDriver,
         params: { pathToFile: dbPath }
     },
-    initialState: query => query('todos').then(todos => ({ todos })),
+    initialState: query => query('query { View }').then(todos => ({ todos })),
     aggregates,
     initialSubscribedEvents: { types: Object.values(eventTypes), ids: [] },
-    queries,
+    readModel,
     extendExpress: () => {}
 };

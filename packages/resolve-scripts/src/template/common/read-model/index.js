@@ -5,13 +5,14 @@ import events from '../aggregates/todo-events';
 
 const { TODO_CREATED, TODO_COMPLETED, TODO_RESET } = events;
 
+const checkState = state => (Array.isArray(state) ? state : []);
+
 export default {
     name: 'todos',
-    initialState: [],
-
+    viewModel: true,
     eventHandlers: {
         [TODO_CREATED]: (state: any, event: TodoCreated) =>
-            state.concat([
+            checkState(state).concat([
                 {
                     aggregateId: event.aggregateId,
                     completed: event.payload.completed,
@@ -19,12 +20,12 @@ export default {
                 }
             ]),
         [TODO_COMPLETED]: (state: any, event: TodoCompleted) =>
-            state.map(
+            checkState(state).map(
                 todo =>
                     todo.aggregateId === event.aggregateId ? { ...todo, completed: true } : todo
             ),
         [TODO_RESET]: (state: any, event: TodoReset) =>
-            state.map(
+            checkState(state).map(
                 todo =>
                     todo.aggregateId === event.aggregateId ? { ...todo, completed: false } : todo
             )
