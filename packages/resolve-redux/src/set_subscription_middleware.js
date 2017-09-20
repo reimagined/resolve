@@ -15,7 +15,7 @@ function getRootDir(params) {
         : '';
 }
 
-function createMiddleware(params) {
+function createMiddleware(params = {}) {
     return (store) => {
         let socketIOFailCount = 0;
         let socketIO = null;

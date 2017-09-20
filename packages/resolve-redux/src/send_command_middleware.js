@@ -20,7 +20,7 @@ const sendCommandDefault = async (command) => {
     return Promise.reject(text);
 };
 
-export default params => store => next => (action) => {
+export default (params = {}) => store => next => (action) => {
     const { command, aggregateId, aggregateName, payload } = action;
 
     const sendCommand = params.sendCommand ? params.sendCommand : sendCommandDefault;
