@@ -1,16 +1,16 @@
 
 # **📢 resolve-command** [![npm version](https://badge.fury.io/js/resolve-command.svg)](https://badge.fury.io/js/resolve-command)
 
-Provides a function to handle a command and send the generated event to an [event store](https://github.com/reimagined/resolve/tree/master/packages/resolve-es) based on definitions of [aggregates](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models) and their commands. 
+Provides a function to handle a command and send the generated event to an [event store](../resolve-es) based on definitions of [aggregates](../resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models) and their commands. 
 
 ## Usage
 When initializing a command, pass the following arguments:
 
 * `eventStore`  
-	Configured [eventStore](https://github.com/reimagined/resolve/tree/master/packages/resolve-es) instance.
+	Configured [eventStore](../resolve-es) instance.
 	
 * `aggregates`  
-	Array of [aggregates](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models).  
+	Array of [aggregates](../resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models).  
 
 After the command is initialized, you get a function that is used to send an event to the event store. It receives two arguments:
 * `command`
@@ -26,7 +26,7 @@ After the command is initialized, you get a function that is used to send an eve
 
 ### Example
 Define an aggregate for news handling (see the  `news-aggregate.js` file) and use the `resolve-command` library to execute the `createNews` command and send the corresponding event to the specified event store. 
-To see a read model handling events which this aggregate produces, refer to the [resolve-query](https://github.com/reimagined/resolve/tree/master/packages/resolve-query#example) package documentation.
+To see a read model handling events which this aggregate produces, refer to the [resolve-query](../resolve-query#example) package documentation.
 
 ```js
 import commandHandler from 'resolve-command'

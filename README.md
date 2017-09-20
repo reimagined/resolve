@@ -27,24 +27,24 @@ _*This scheme is based on the "CQRS with Event Sourcing" image from the [Event S
 When you need to change the system state, you send a Command. A command is addressed to a Domain Aggregate. Aggregate is a cluster of logically related objects, containing enough information to perform a command as one transaction. Aggregate handles a command, checks whether it can be executed and generates an event to change the system state. A new event is sent to [Event Store](#eventstore). 
 For more information about aggregates, refer to [DDD_Aggregates](https://martinfowler.com/bliki/DDD_Aggregate.html) or [DDD, Event Sourcing, and CQRS Tutorial: design](http://cqrs.nu/tutorial/cs/01-design).
 
-The [resolve-command](https://github.com/reimagined/resolve/tree/master/packages/resolve-command) library allows you to handle commands and send produced events to the event store based on definitions of aggregates and their commands. All aggregates are passed to `resolve-command` as an array. The library creates an Aggregate Repository, and finds or instantiates a particular aggregate to handle each sent command.
+The [resolve-command](packages/resolve-command) library allows you to handle commands and send produced events to the event store based on definitions of aggregates and their commands. All aggregates are passed to `resolve-command` as an array. The library creates an Aggregate Repository, and finds or instantiates a particular aggregate to handle each sent command.
 
-You can send a command on the client side by dispatching a redux action of the appropriate type. To do this, use [sendComand](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#sendcommand) from the [resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux) package.
+You can send a command on the client side by dispatching a redux action of the appropriate type. To do this, use [sendComand](packages/resolve-redux#sendcommand) from the [resolve-redux](packages/resolve-redux) package.
 
-For an example on `resolve-command` usage, refer to [package documentation](https://github.com/reimagined/resolve/tree/master/packages/resolve-command#example).
+For an example on `resolve-command` usage, refer to [package documentation](packages/resolve-command#example).
 
 ### Event Store
 Event Store stores all events produced by aggregates and delivers them to subscribers. It combines a persistent storage and message bus. 
 
-reSolve provides the [resolve-es](https://github.com/reimagined/resolve/tree/master/packages/resolve-es) package containing the event store implementation, as well as [storage-drivers](https://github.com/reimagined/resolve/tree/master/packages/storage-drivers) and [bus-drivers](https://github.com/reimagined/resolve/tree/master/packages/bus-drivers) allowing you to specify where to store and how to send events, respectively.
+reSolve provides the [resolve-es](packages/resolve-es) package containing the event store implementation, as well as [storage-drivers](packages/storage-drivers) and [bus-drivers](packages/bus-drivers) allowing you to specify where to store and how to send events, respectively.
 
 ### Read Model and Query
 Read Model represents a system state or its part. Read model is built by Projection functions. All events from the beginning of time are applied to a read model to build its current state. Queries are used to get data from a read model. 
 For more information about read models, see [Event Sourcing - Projections](https://abdullin.com/post/event-sourcing-projections/) or [DDD, Event Sourcing, and CQRS Tutorial: read models](http://cqrs.nu/tutorial/cs/03-read-models).
 
-You can use [resolve-query](https://github.com/reimagined/resolve/tree/master/packages/resolve-query)  as a query. This package allows you to obtain data from a read model by a [GraphQL](http://graphql.org/learn/) request.
+You can use [resolve-query](packages/resolve-query)  as a query. This package allows you to obtain data from a read model by a [GraphQL](http://graphql.org/learn/) request.
 
-For an example of `resolve-query` usage, refer to [package documentation](https://github.com/reimagined/resolve/tree/master/packages/resolve-query#example).
+For an example of `resolve-query` usage, refer to [package documentation](packages/resolve-query#example).
 
 ### See Also
 Learn more about related concepts:
@@ -61,7 +61,7 @@ Learn more about related concepts:
 > Note: global installation of a package may require administrative privileges. That means you have to use the `sudo` command for unix-based systems or run terminal with administrative privileges on windows systems to install a package globally.
 
 
-Create a new reSolve application using the [create-resolve-app](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app) package.
+Create a new reSolve application using the [create-resolve-app](packages/create-resolve-app) package.
 
 ```bash
 npm i -g create-resolve-app
@@ -72,7 +72,7 @@ npm run dev
 ![Terminal](https://user-images.githubusercontent.com/15689049/29822549-8513584c-8cd4-11e7-8b65-b88fdad7e4d1.png)
 The application will be opened in your browser at [http://localhost:3000/](http://localhost:3000/).
 
-For detailed information on how to create a new reSolve application and all available scripts, refer to [reSolve Getting Started Guide](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app).
+For detailed information on how to create a new reSolve application and all available scripts, refer to [reSolve Getting Started Guide](packages/create-resolve-app).
 
 ## **📚 Packages**
 
@@ -83,39 +83,39 @@ App generator libraries:
 	Creates a new application based on reSolve.
 
 Core libraries:
-* 📢 [resolve-command](https://github.com/reimagined/resolve/tree/master/packages/resolve-command)  
+* 📢 [resolve-command](packages/resolve-command)  
 	Creates a function to execute a command.
 
-* 🏣 [resolve-es](https://github.com/reimagined/resolve/tree/master/packages/resolve-es)  
+* 🏣 [resolve-es](packages/resolve-es)  
 	Provides an event store implementation.
 
-* 🔍 [resolve-query](https://github.com/reimagined/resolve/tree/master/packages/resolve-query)  
+* 🔍 [resolve-query](packages/resolve-query)  
 	Creates a function to execute a query.
 
-* 🔩 [resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux)  
+* 🔩 [resolve-redux](packages/resolve-redux)  
 	Helper for creating the Redux storage.
 
 
 Drivers for event store:
 * 🚌 Bus drivers specifying how to send events:
-    * [resolve-bus-memory](https://github.com/reimagined/resolve/tree/master/packages/bus-drivers/resolve-bus-memory) (recommended for debugging purposes)
-    * [resolve-bus-rabbitmq](https://github.com/reimagined/resolve/tree/master/packages/bus-drivers/resolve-bus-rabbitmq)
-    * [resolve-bus-zmq](https://github.com/reimagined/resolve/tree/master/packages/bus-drivers/resolve-bus-zmq) 
+    * [resolve-bus-memory](packages/bus-drivers/resolve-bus-memory) (recommended for debugging purposes)
+    * [resolve-bus-rabbitmq](packages/bus-drivers/resolve-bus-rabbitmq)
+    * [resolve-bus-zmq](packages/bus-drivers/resolve-bus-zmq) 
 
 
 * 🛢 Storage drivers specifying where to store events:
-    * [resolve-storage-file](https://github.com/reimagined/resolve/tree/master/packages/storage-drivers/resolve-storage-file) (recommended for debugging purposes)
-    * [resolve-storage-memory](https://github.com/reimagined/resolve/tree/master/packages/storage-drivers/resolve-storage-memory) (recommended for debugging purposes)
-    * [resolve-storage-mongo](https://github.com/reimagined/resolve/tree/master/packages/storage-drivers/resolve-storage-mongo)
+    * [resolve-storage-file](packages/storage-drivers/resolve-storage-file) (recommended for debugging purposes)
+    * [resolve-storage-memory](packages/storage-drivers/resolve-storage-memory) (recommended for debugging purposes)
+    * [resolve-storage-mongo](packages/storage-drivers/resolve-storage-mongo)
 
 
 ## **💻 Examples**
 
-* [resolve-scripts-with-router-2](https://github.com/reimagined/resolve/tree/master/examples/resolve-scripts-with-router-2)  
-	[resolve-scripts-with-router-4](https://github.com/reimagined/resolve/tree/master/examples/resolve-scripts-with-router-4)  
+* [resolve-scripts-with-router-2](examples/resolve-scripts-with-router-2)  
+	[resolve-scripts-with-router-4](examples/resolve-scripts-with-router-4)  
 	These examples show how to use `resolve-scripts` with `react-router v2.x.x`  and `react-router v4.x.x`, respectively.
 
-* [two-level todo list](https://github.com/reimagined/resolve/tree/master/examples/todo)  
+* [two-level todo list](examples/todo)  
 	This example is an application with several aggregate types related to each other. It also shows how to implement a custom backend API server.
 
 ## Development

@@ -1,12 +1,12 @@
 # **🔍 resolve-query** [![npm version](https://badge.fury.io/js/resolve-query.svg)](https://badge.fury.io/js/resolve-query)
 
-Provides a function to execute a query and get required information from a [read model](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models).
+Provides a function to execute a query and get required information from a [read model](../resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models).
 
 ## Usage
 When initializing a query, pass the following arguments:
 
-* `eventStore` - configured [eventStore](https://github.com/reimagined/resolve/tree/master/packages/resolve-es) instance.
-* `readModel` - [read model](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models) declaration.
+* `eventStore` - configured [eventStore](../resolve-es) instance.
+* `readModel` - [read model](../resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models) declaration.
 	
 After the query is initialized, you get a function that is used to get data from read models by [GraphQL](http://graphql.org/learn/) request. This function receives the following arguments:
  * `qraphQLQuery` (required) - GraphQL query to get data.
@@ -14,9 +14,9 @@ After the query is initialized, you get a function that is used to get data from
  * `getJwt` - callback to retrieve actual client state stored in verified JWT token.
  
  ### Example
-Let's implement the Read Model for building News state with custom GraphQL resolvers. It will handle the same events that are produced in [Aggregate example](https://github.com/reimagined/resolve/tree/master/packages/resolve-command#example).
+Let's implement the Read Model for building News state with custom GraphQL resolvers. It will handle the same events that are produced in [Aggregate example](../resolve-command#example).
 
-Implement a read model for building News state with custom GraphQL resolvers and use the `resolve-query` library to get the first page of news. It handles events produced by an aggregate shown in the [resolve-command](https://github.com/reimagined/resolve/tree/master/packages/resolve-command#example) documentation.
+Implement a read model for building News state with custom GraphQL resolvers and use the `resolve-query` library to get the first page of news. It handles events produced by an aggregate shown in the [resolve-command](../resolve-command#example) documentation.
 
 ```js
 import createQueryExecutor from 'resolve-query'

@@ -22,7 +22,7 @@ This package contains utils to integrate reSolve with [Redux](http://redux.js.or
 ## 🛠 Utils
 * ### `sendCommandMiddleware`   
 	It is a Redux middleware used to send a command to the server side. It takes an object with the following field:
-	* `sendCommand` - a function used to send a command to the server side. It takes `command` and returns the `Promise` object that will be resolved when the command is handled by the server.
+	* `sendCommand` - a function used to send a command to the server side. It takes `command` and returns the `Promise` object that will be resolved when the command is handled by the server. If the function is not specified, the command will be posted to `/api/commands` url.
 
 	**Example:**  
 	```js
@@ -42,7 +42,7 @@ This package contains utils to integrate reSolve with [Redux](http://redux.js.or
 
 * ### `setSubscriptionMiddleware`  
 	It is a Redux middleware used to get events from `bus`.  It is used with [`actions.setSubscription`](#setsubscription) to subscribe to required event types. It takes an object with the following field:
-	* `rootDirPath` - URL where socket is placed.
+	* `rootDirPath` - URL where socket is placed. If URL is not specified, the `process.env.ROOT_DIR` value or an empty string will be used. The `process.env.ROOT_DIR` value is [passed by resolve-scripts](https://github.com/reimagined/resolve/tree/feature/saga-default-params/packages/resolve-scripts/src/template#environment-variables-to-change-url).
 
 	**Example:**  
 	```js
@@ -53,21 +53,21 @@ This package contains utils to integrate reSolve with [Redux](http://redux.js.or
 
 	const middleware = [
 	  setSubscriptionMiddleware({
-	    rootDirPath: process.env.ROOT_DIR
+	    rootDirPath: '/my-path'
 	  })
 	]
 
 	export default initialState => createStore(reducer, initialState, applyMiddleware(...middleware))
 	```
 * ### `createReducer`  
-	Generates a standard Redux  reducer from a reSolve [read model](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models). It takes two arguments:
+	Generates a standard Redux  reducer from a reSolve [read model](../resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models). It takes two arguments:
 	* `read-model` - a reSolve read model to be converted to a Redux  reducer.
 	* `extendReducer` - another reducer to be combined with a new one.
 
 	This reducer includes handling of the reSolve's [`merge`](#merge) and [`replaceState`](#replacestate) actions.
 
 * ### `createActions`   
-	Generates Redux actions from a reSolve [aggregate](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models). This function uses the reSolve's [`sendCommand`](#sendcommand) action to pass a command from Redux to the server side. Generated actions are named as aggregate's commands. This function takes two arguments:
+	Generates Redux actions from a reSolve [aggregate](../resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models). This function uses the reSolve's [`sendCommand`](#sendcommand) action to pass a command from Redux to the server side. Generated actions are named as aggregate's commands. This function takes two arguments:
 	* `aggregate` -  reSolve aggregate. 
 	* `extendActions` - actions to extend or redefine resulting actions.
 
@@ -241,8 +241,8 @@ const readModel = {
 const reducer = createReducer(readModel, (state, action) => {
   switch (action.type) {
     case 'SEND_COMMAND_TODO_UPDATE_TEXT': {
-      // Optimistic update
-      if(!action.error) {
+      if(!action.command.error) {
+        // Optimistic update
         return state.map(item => {
           if(item.id === event.aggregateId) {
             return {
@@ -253,7 +253,7 @@ const reducer = createReducer(readModel, (state, action) => {
           }
         })
       } else {
-      // Revert optimistic update
+        // Revert optimistic update
         return state.map(item => {
           if(item.id === event.aggregateId) {
             return {
