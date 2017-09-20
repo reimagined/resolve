@@ -1,6 +1,6 @@
 # **ReSolve Todo Example**
 This project is a demo single page application representing a two-level todo list with todo-items grouped by task cards. The application is built on the CQRS and Event Sourcing principles and based on the reSolve framework. This application does NOT use [
-Create ReSolve App](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app). It performs interaction with reSolve backend directly by socket.io and provides a [custom API backend server](#custom-backend-api-server-for-resolve).
+Create ReSolve App](../../packages/create-resolve-app). It performs interaction with reSolve backend directly by socket.io and provides a [custom API backend server](#custom-backend-api-server-for-resolve).
 
 The current example is a scalable application and can use custom amount of command and query handlers in segregated node.js processes, which perform interaction by ZMQ bus.
 
@@ -71,10 +71,10 @@ The `TodoItem` aggregate represents a task with text description, a flag indicat
 
 The `cards` read model assembles TodoItems grouped by TodoCards in one general associative array, and includes each task item description and state. Also, this read model builds inverse lookup table to allow fast search for the `TodoCard` container by `TodoItem`’s identifier.
 
-For more detailed information on aggregates and read models, refer to [Create ReSolve App](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app) documentation.
+For more detailed information on aggregates and read models, refer to [Create ReSolve App](../../packages/create-resolve-app) documentation.
 
 ## **Custom Backend API Server for ReSolve**
-[Create ReSolve App](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app) provides a simple application out-of-the-box, which encapsulates backend API server and allows you to create an application just by declaring aggregates, read models and UI React components. Though it has some settings and opportunities for extension, it also has the known restrictions - for example, it is executed in one single-threaded
+[Create ReSolve App](../../packages/create-resolve-app) provides a simple application out-of-the-box, which encapsulates backend API server and allows you to create an application just by declaring aggregates, read models and UI React components. Though it has some settings and opportunities for extension, it also has the known restrictions - for example, it is executed in one single-threaded
  process. This Todo example demonstrates how to implement a custom API server. To do this, follow the steps below: 
 * initialize reSolve EventStore (the `resolve-es` package)
 * start node.js processes for aggregates (the `resolve-command` package) and read models (the `resolve-query` package)

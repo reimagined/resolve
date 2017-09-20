@@ -60,14 +60,14 @@ This package contains utils to integrate reSolve with [Redux](http://redux.js.or
 	export default initialState => createStore(reducer, initialState, applyMiddleware(...middleware))
 	```
 * ### `createReducer`  
-	Generates a standard Redux  reducer from a reSolve [read model](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models). It takes two arguments:
+	Generates a standard Redux  reducer from a reSolve [read model](../resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models). It takes two arguments:
 	* `read-model` - a reSolve read model to be converted to a Redux  reducer.
 	* `extendReducer` - another reducer to be combined with a new one.
 
 	This reducer includes handling of the reSolve's [`merge`](#merge) and [`replaceState`](#replacestate) actions.
 
 * ### `createActions`   
-	Generates Redux actions from a reSolve [aggregate](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models). This function uses the reSolve's [`sendCommand`](#sendcommand) action to pass a command from Redux to the server side. Generated actions are named as aggregate's commands. This function takes two arguments:
+	Generates Redux actions from a reSolve [aggregate](../resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models). This function uses the reSolve's [`sendCommand`](#sendcommand) action to pass a command from Redux to the server side. Generated actions are named as aggregate's commands. This function takes two arguments:
 	* `aggregate` -  reSolve aggregate. 
 	* `extendActions` - actions to extend or redefine resulting actions.
 
