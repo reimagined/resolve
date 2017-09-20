@@ -220,11 +220,13 @@ export default {
             const idList = await db.find().map(message => message.id);
 						return idList;
         }
-
 		}
 };
-
 ```
+
+Read model projection function has two arguments: storage provider and GraphQL arguments. Storage provider is abstract facade for read-only operations on read-model state. GraphQL arguments is set of variables which are passed inside GraphQL query from client side. Read more about GraphQL schema and resolvers at [GraphQL guide](http://graphql.org/learn/).
+
+
 
 ## **🎛 Configuration Files**
 ### Client Config
