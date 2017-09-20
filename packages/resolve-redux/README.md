@@ -42,7 +42,7 @@ This package contains utils to integrate reSolve with [Redux](http://redux.js.or
 
 * ### `setSubscriptionMiddleware`  
 	It is a Redux middleware used to get events from `bus`.  It is used with [`actions.setSubscription`](#setsubscription) to subscribe to required event types. It takes an object with the following field:
-	* `rootDirPath` - URL where socket is placed. If URL is not specified, the `process.env.ROOT_DIR` value or an empty string will be used.
+	* `rootDirPath` - URL where socket is placed. If URL is not specified, the `process.env.ROOT_DIR` value or an empty string will be used. The `process.env.ROOT_DIR` is [passed by resolve-scripts](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#setsubscriptionmiddleware).
 
 	**Example:**  
 	```js
@@ -53,7 +53,7 @@ This package contains utils to integrate reSolve with [Redux](http://redux.js.or
 
 	const middleware = [
 	  setSubscriptionMiddleware({
-	    rootDirPath: process.env.ROOT_DIR
+	    rootDirPath: '/my-path'
 	  })
 	]
 
@@ -241,8 +241,8 @@ const readModel = {
 const reducer = createReducer(readModel, (state, action) => {
   switch (action.type) {
     case 'SEND_COMMAND_TODO_UPDATE_TEXT': {
-      // Optimistic update
-      if(!action.error) {
+      if(!action.command.error) {
+        // Optimistic update
         return state.map(item => {
           if(item.id === event.aggregateId) {
             return {
@@ -253,7 +253,7 @@ const reducer = createReducer(readModel, (state, action) => {
           }
         })
       } else {
-      // Revert optimistic update
+        // Revert optimistic update
         return state.map(item => {
           if(item.id === event.aggregateId) {
             return {
