@@ -30,6 +30,7 @@
     "sinon": "^3.3.0"
   },
   "dependencies": {
-    "nedb": "^1.8.0"
+    "nedb": "^1.8.0",
+    "regenerator-runtime": "^0.11.0"
   }
 }
