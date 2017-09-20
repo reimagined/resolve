@@ -42,7 +42,7 @@ This package contains utils to integrate reSolve with [Redux](http://redux.js.or
 
 * ### `setSubscriptionMiddleware`  
 	It is a Redux middleware used to get events from `bus`.  It is used with [`actions.setSubscription`](#setsubscription) to subscribe to required event types. It takes an object with the following field:
-	* `rootDirPath` - URL where socket is placed. If URL is not specified, the `process.env.ROOT_DIR` value or an empty string will be used. The `process.env.ROOT_DIR` is [passed by resolve-scripts](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#setsubscriptionmiddleware).
+	* `rootDirPath` - URL where socket is placed. If URL is not specified, the `process.env.ROOT_DIR` value or an empty string will be used. The `process.env.ROOT_DIR` is [passed by resolve-scripts](https://github.com/reimagined/resolve/tree/feature/saga-default-params/packages/resolve-scripts/src/template#environment-variables-to-change-url).
 
 	**Example:**  
 	```js
