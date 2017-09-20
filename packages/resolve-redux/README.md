@@ -22,7 +22,7 @@ This package contains utils to integrate reSolve with [Redux](http://redux.js.or
 ## 🛠 Utils
 * ### `sendCommandMiddleware`   
 	It is a Redux middleware used to send a command to the server side. It takes an object with the following field:
-	* `sendCommand` - a function used to send a command to the server side. It takes `command` and returns the `Promise` object that will be resolved when the command is handled by the server. If a function is not specified, command will be posted to `/api/commands` url.
+	* `sendCommand` - a function used to send a command to the server side. It takes `command` and returns the `Promise` object that will be resolved when the command is handled by the server. If the function is not specified, the command will be posted to `/api/commands` url.
 
 	**Example:**  
 	```js
@@ -42,7 +42,7 @@ This package contains utils to integrate reSolve with [Redux](http://redux.js.or
 
 * ### `setSubscriptionMiddleware`  
 	It is a Redux middleware used to get events from `bus`.  It is used with [`actions.setSubscription`](#setsubscription) to subscribe to required event types. It takes an object with the following field:
-	* `rootDirPath` - URL where socket is placed. If URL is not specified, the `process.env.ROOT_DIR` value or an empty string will be used. The `process.env.ROOT_DIR` is [passed by resolve-scripts](https://github.com/reimagined/resolve/tree/feature/saga-default-params/packages/resolve-scripts/src/template#environment-variables-to-change-url).
+	* `rootDirPath` - URL where socket is placed. If URL is not specified, the `process.env.ROOT_DIR` value or an empty string will be used. The `process.env.ROOT_DIR` value is [passed by resolve-scripts](https://github.com/reimagined/resolve/tree/feature/saga-default-params/packages/resolve-scripts/src/template#environment-variables-to-change-url).
 
 	**Example:**  
 	```js
