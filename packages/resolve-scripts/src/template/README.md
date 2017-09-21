@@ -148,16 +148,16 @@ A typical aggregate structure:
 
 ```js
 export default {
-    name: 'AggregateName', // Aggregate name for command handler, the same as aggregateType
-    initialState: Immutable({}), // Initial state (Bounded context) for every instance of this aggregate type
-    eventHandlers: {
-        Event1Happened: (state, event) => nextState,  // Update functions for the current aggregate instance
-        Event2Happened: (state, event) => nextState   // for different event types
-    },
-    commands: {
-        command1: (state, arguments) => generatedEvent, // Function which generates events depending 
-        command2: (state, arguments) => generatedEvent  // on the current state and argument list
-    }
+  name: 'AggregateName', // Aggregate name for command handler, the same as aggregateType
+  initialState: Immutable({}), // Initial state (Bounded context) for every instance of this aggregate type
+  eventHandlers: {
+    Event1Happened: (state, event) => nextState,  // Update functions for the current aggregate instance
+    Event2Happened: (state, event) => nextState   // for different event types
+  },
+  commands: {
+    command1: (state, arguments) => generatedEvent, // Function which generates events depending 
+    command2: (state, arguments) => generatedEvent  // on the current state and argument list
+  }
 };
 ```
 
@@ -174,41 +174,41 @@ A typical read model structure:
 
 ```js
 export default {
-    name: 'ReadModelName', // Read model name
-    eventHandlers: { // Projection functions
-        Event1Happened: async (storage, event) => { // Use a storage as a mongodb adapter
-					  const idList = await storage.find({ field: 'Test1' }).map(doc => doc.id);
-						await storage.update({ id: { $in: idList } }, { field: 'Test2' });
-				},  
-        Event2Happened: async (storage, event) => { // Projection can interact with custom external resources
-						const eventsourcingTweets = await fetchTweets('@gregyoung');
-						await storage.insert(eventsourcingTweets);
-				}
+  name: 'ReadModelName', // Read model name
+  eventHandlers: { // Projection functions
+    Event1Happened: async (storage, event) => { // Use a storage as a mongodb adapter
+      const idList = await storage.find({ field: 'Test1' }).map(doc => doc.id);
+      await storage.update({ id: { $in: idList } }, { field: 'Test2' });
+    },  
+    Event2Happened: async (storage, event) => { // Projection can interact with custom external resources
+      const eventsourcingTweets = await fetchTweets('@gregyoung');
+      await storage.insert(eventsourcingTweets);
+    }
+  },
+  gqlSchema: // Specify a schema of client-side GraphQL queries to the read model via Query API */
+    `type Message {
+      id: ID!
+      Header: String,
+      Content: String
+    }
+    type Query {
+      MessageById(id: ID!): Message,
+      MessageIds: [ID!]
+    }
+  `,
+  gqlResolvers: { // GraphQL resolver functions
+    MessageById: async (getReader, args) => { // On-demand read model state
+      if(!args.id) throw new Error('Message ID is mandatory!');
+      const db = await getReader({ aggregateIds: [args.id] });
+      const message = await db.find({ id: args.id });
+      return message;
     },
-		gqlSchema: // Specify a schema of client-side GraphQL queries to the read model via Query API */
-				`type Message {
-						id: ID!
-						Header: String,
-						Content: String
-				}
-				type Query {
-						MessageById(id: ID!): Message,
-						MessageIds: [ID!]
-				}
-		`,
-    gqlResolvers: { // GraphQL resolver functions
-				MessageById: async (getReader, args) => { // On-demand read model state
-						if(!args.id) throw new Error('Message ID is mandatory!');
-            const db = await getReader({ aggregateIds: [args.id] });
-						const message = await db.find({ id: args.id });
-            return message;
-        },
-				MessageById: async (getReader, args) => { // Full read model state
-            const db = await getReader();
-            const idList = await db.find().map(message => message.id);
-						return idList;
-        }
-		}
+    MessageById: async (getReader, args) => { // Full read model state
+      const db = await getReader();
+      const idList = await db.find().map(message => message.id);
+      return idList;
+    }
+  }
 };
 ```
 
@@ -218,13 +218,13 @@ A typical view model structure:
 
 ```js
 export default {
-    name: 'ViewModelName', // View model name
-		viewModel: true, // Specify that this is a view model and it can be used as a Redux state
-    eventHandlers: {
-        Event1Happened: (state, event) => nextState,  // Update functions for the current view model instance
-        Event2Happened: (state, event) => nextState   // for different event types
-    }
-    // This state results from the request to the query handler at the current moment
+  name: 'ViewModelName', // View model name
+    viewModel: true, // Specify that this is a view model and it can be used as a Redux state
+  eventHandlers: {
+    Event1Happened: (state, event) => nextState,  // Update functions for the current view model instance
+    Event2Happened: (state, event) => nextState   // for different event types
+  }
+  // This state results from the request to the query handler at the current moment
 };
 ```
 
