@@ -7,7 +7,7 @@ export default ({ pathToFile }) => {
         saveEvent: event => prepareStorage.then(storage.saveEvent(event)),
         loadEventsByTypes: (types, callback) =>
             prepareStorage.then(storage.loadEvents({ type: { $in: types } }, callback)),
-        loadEventsByAggregateId: (ids, callback) =>
+        loadEventsByAggregateIds: (ids, callback) =>
             prepareStorage.then(storage.loadEvents({ aggregateId: { $in: ids } }, callback))
     };
 };

@@ -40,11 +40,11 @@ describe('driver', () => {
         sinon.assert.calledWith(storage.loadEvents, { type: { $in: types } }, callback);
     });
 
-    it('loadEventsByAggregateId should load events by aggregateId from storage', async () => {
+    it('loadEventsByAggregateIds should load events by aggregateId from storage', async () => {
         const ids = ['id1', 'id2', 'id3'];
         const callback = sinon.spy();
 
-        await driver({ pathToFile }).loadEventsByAggregateId(ids, callback);
+        await driver({ pathToFile }).loadEventsByAggregateIds(ids, callback);
 
         sinon.assert.calledWith(storage.prepare, pathToFile);
         sinon.assert.calledWith(storage.loadEvents, { aggregateId: { $in: ids } }, callback);
