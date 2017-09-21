@@ -1,7 +1,7 @@
 {
-  "name": "resolve-redux",
+  "name": "resolve-storage-memory",
   "version": "0.0.27",
-  "description": "This package serves as a helper for creating the Redux storage.",
+  "description": "This package serves as a driver for resolve-storage to store events using memory.",
   "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
@@ -23,18 +23,10 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-memory#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
-    "redux": "^3.6.0",
-    "seamless-immutable": "^7.1.2",
-    "sinon": "^2.1.0",
-    "uuid": "^3.0.1"
-  },
-  "dependencies": {
-    "isomorphic-fetch": "^2.2.1",
-    "regenerator-runtime": "^0.11.0",
-    "socket.io-client": "^2.0.3"
+    "mock-fs": "^4.2.0"
   }
 }

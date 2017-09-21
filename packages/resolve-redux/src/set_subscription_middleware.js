@@ -3,14 +3,28 @@ import socketIOClient from 'socket.io-client';
 
 const CRITICAL_LEVEL = 100;
 
-function createMiddleware({ rootDirPath }) {
+function getRootDir(params) {
+    if (params.rootDirPath) {
+        return params.rootDirPath;
+    }
+
+    return typeof process !== 'undefined' &&
+        typeof process.env !== 'undefined' &&
+        process.env.ROOT_DIR
+        ? process.env.ROOT_DIR
+        : '';
+}
+
+function createMiddleware(params = {}) {
     return (store) => {
         let socketIOFailCount = 0;
         let socketIO = null;
 
+        const rootDir = getRootDir(params);
+
         const initSocketIO = () => {
             socketIO = socketIOClient(window.location.origin, {
-                path: `${rootDirPath}/socket/`
+                path: `${rootDir}/socket/`
             });
 
             socketIO.on('event', event => store.dispatch(JSON.parse(event)));

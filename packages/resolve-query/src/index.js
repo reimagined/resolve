@@ -2,147 +2,241 @@ import 'regenerator-runtime/runtime';
 import { makeExecutableSchema } from 'graphql-tools';
 import { parse, execute } from 'graphql';
 
-const getState = async ({ statesRepository, eventStore, readModel, aggregateIds }) => {
-    const readModelName = readModel.name.toLowerCase();
-    const isAggregateBased = Array.isArray(aggregateIds) && aggregateIds.length > 0;
+const createMemoryStorageProvider = (readModelsStateRepository = {}) => ({
+    initState(stateName, readModel, onDestroy = () => {}) {
+        if (readModelsStateRepository[stateName]) {
+            throw new Error(`State for read-model '${stateName}' alreary initialized`);
+        }
 
-    const stateName = isAggregateBased
-        ? `${readModelName}\u200D${aggregateIds.sort().join('\u200D')}`
-        : readModelName;
+        let state = null,
+            error = null;
 
-    const { eventHandlers, initialState } = readModel;
-
-    if (!statesRepository[stateName]) {
-        const eventTypes = Object.keys(eventHandlers);
-        let state = initialState !== undefined ? initialState : {};
-
-        let error = null;
-
-        const result = !isAggregateBased
-            ? eventStore.subscribeByEventType(eventTypes, (event) => {
-                const handler = eventHandlers[event.type];
-                if (!handler) return;
-
-                try {
-                    state = handler(state, event);
-                } catch (err) {
-                    error = err;
-                }
-            })
-            : eventStore.subscribeByAggregateId(aggregateIds, (event) => {
-                const handler = eventHandlers[event.type];
-                if (!handler) return;
-
-                try {
-                    state = handler(state, event);
-                } catch (err) {
-                    error = err;
-                }
-            });
-
-        statesRepository[stateName] = async () => {
-            await result;
-            if (error) throw error;
-            return state;
+        readModelsStateRepository[stateName] = {
+            internal: {
+                setState: newState => (state = newState),
+                getState: () => state,
+                setError: newError => (error = newError),
+                getError: () => error
+            },
+            public: {
+                getReadable: async () => state,
+                getError: async () => error
+            },
+            onDestroy
         };
-    }
 
-    return await statesRepository[stateName]();
+        return readModelsStateRepository[stateName].public;
+    },
+
+    getEventWorker(stateName, readModel) {
+        return async (event) => {
+            if (!readModelsStateRepository[stateName]) {
+                throw new Error(
+                    `State for read-model ${stateName} is not initialized or been reset`
+                );
+            }
+
+            const stateManager = readModelsStateRepository[stateName].internal;
+            const handler = readModel.eventHandlers[event.type];
+            if (!handler || stateManager.getError()) return;
+
+            try {
+                const currentState = stateManager.getState();
+                const newState = await handler(currentState, event);
+                stateManager.setState(newState);
+            } catch (err) {
+                stateManager.setError(err);
+            }
+        };
+    },
+
+    getState(stateName) {
+        const stateManager = readModelsStateRepository[stateName];
+        if (!stateManager) return null;
+        return stateManager.public;
+    },
+
+    resetState(stateName) {
+        if (!readModelsStateRepository[stateName]) return;
+        readModelsStateRepository[stateName].onDestroy();
+        readModelsStateRepository[stateName] = null;
+    }
+});
+
+const subscribeByEventTypeAndIds = async (eventStore, callback, eventDescriptors) => {
+    const passedEventSet = new WeakSet();
+
+    const trigger = (event) => {
+        if (!passedEventSet.has(event)) {
+            passedEventSet.add(event);
+            callback(event);
+        }
+    };
+
+    const typeUnsubPromise = Array.isArray(eventDescriptors.types)
+        ? eventStore.subscribeByEventType(eventDescriptors.types, trigger, true)
+        : Promise.resolve(() => {});
+
+    const idUnsubPromise = Array.isArray(eventDescriptors.ids)
+        ? eventStore.subscribeByAggregateId(eventDescriptors.ids, trigger, true)
+        : Promise.resolve(() => {});
+
+    const [typeUnsub, idUnsub] = await Promise.all([typeUnsubPromise, idUnsubPromise]);
+
+    return () => {
+        typeUnsub();
+        idUnsub();
+    };
 };
 
-function extractAggregateIdsFromGqlQuery(parsedGqlQuery, gqlVariables) {
-    const findAllAggregateIds = (queryObject, store = []) => {
-        if (!queryObject || typeof queryObject !== 'object') return store;
+const getState = async (storageProvider, eventStore, readModel, onDemandOptions) => {
+    const { aggregateIds, limitedEventTypes } = onDemandOptions || {};
 
-        if (queryObject.kind === 'Field' && Array.isArray(queryObject.arguments)) {
-            queryObject.arguments
-                .filter(arg => arg.name && arg.name.value === 'aggregateId' && arg.value)
-                .map(
-                    arg =>
-                        arg.value.kind === 'Variable' && arg.value.name && arg.value.name.value
-                            ? gqlVariables[arg.value.name.value]
-                            : arg.value.value
-                )
-                .forEach(value => store.push(value));
-        }
+    let stateName = readModel.name;
+    if (Array.isArray(aggregateIds)) {
+        stateName = `${stateName}\u200D\u200D${aggregateIds.sort().join('\u200D')}`;
+    }
+    if (Array.isArray(limitedEventTypes)) {
+        stateName = `${stateName}\u200D\u200D${limitedEventTypes.sort().join('\u200D')}`;
+    }
 
-        if (Object.getPrototypeOf(queryObject) === Object.prototype) {
-            Object.keys(queryObject).forEach(key => findAllAggregateIds(queryObject[key], store));
-        } else if (Array.isArray(queryObject)) {
-            queryObject.forEach(part => findAllAggregateIds(part, store));
-        }
+    let currentState = storageProvider.getState(stateName);
+    if (!currentState) {
+        let unsubscriber = null;
+        let onDestroy = () => (unsubscriber === null ? (onDestroy = null) : unsubscriber());
 
-        return store;
-    };
+        currentState = storageProvider.initState(stateName, readModel, onDestroy);
+        const eventWorker = storageProvider.getEventWorker(stateName, readModel);
 
-    return findAllAggregateIds(parsedGqlQuery);
-}
+        await new Promise((resolve) => {
+            let persistence = { eventsFetched: 0, eventsProcessed: 0, isLoaded: false };
+            let flowPromise = Promise.resolve();
 
-function getExecutor({ statesRepository, eventStore, readModel, getReadModel }) {
-    const { gqlSchema, gqlResolvers, name } = readModel;
-    const executableSchema =
-        gqlSchema &&
-        makeExecutableSchema({
-            resolvers: gqlResolvers ? { Query: gqlResolvers } : {},
-            typeDefs: gqlSchema
+            const persistenceChecker = (doCount) => {
+                if (!persistence) return;
+                if (doCount) {
+                    persistence.eventsProcessed++;
+                } else {
+                    persistence.isLoaded = true;
+                }
+                if (
+                    persistence.eventsProcessed === persistence.eventsFetched &&
+                    persistence.isLoaded
+                ) {
+                    persistence = null;
+                    resolve();
+                }
+            };
+
+            const synchronizedEventWorker = (event) => {
+                flowPromise = flowPromise.then(eventWorker.bind(null, event));
+                if (!persistence || persistence.isLoaded) return;
+                persistence.eventsFetched++;
+                flowPromise = flowPromise.then(persistenceChecker.bind(null, true));
+            };
+
+            subscribeByEventTypeAndIds(eventStore, synchronizedEventWorker, {
+                types: Array.isArray(limitedEventTypes) || Array.isArray(aggregateIds)
+                    ? limitedEventTypes
+                    : Object.keys(readModel.eventHandlers),
+                ids: aggregateIds
+            }).then((unsub) => {
+                persistenceChecker(false);
+
+                if (onDestroy !== null) {
+                    unsubscriber = unsub;
+                } else {
+                    unsub();
+                }
+            });
         });
+    }
 
-    return async (gqlQuery, gqlVariables, getJwt) => {
-        if (!gqlQuery) {
-            return await getState({ statesRepository, eventStore, readModel });
+    const readableError = await currentState.getError();
+    if (readableError) {
+        throw readableError;
+    }
+
+    return await currentState.getReadable();
+};
+
+const readModelReader = async (executableSchema, readState, gqlQuery, gqlVariables, getJwt) => {
+    const parsedGqlQuery = parse(gqlQuery);
+
+    const gqlResponse = await execute(
+        executableSchema,
+        parsedGqlQuery,
+        readState,
+        { getJwt },
+        gqlVariables
+    );
+
+    if (gqlResponse.errors) throw gqlResponse.errors;
+    return gqlResponse.data;
+};
+
+const viewModelReader = async (readState, gqlQuery, gqlVariables, getJwt) => {
+    const parsedGqlQuery = parse(gqlQuery);
+    let aggregateIds = [];
+
+    try {
+        const viewQueryError = new Error();
+        const selection = parsedGqlQuery.definitions[0].selectionSet.selections[0];
+        if (selection.name.kind !== 'Name' || selection.name.value !== 'View') {
+            throw viewQueryError;
         }
-
-        if (!executableSchema) {
-            throw new Error(`GraphQL schema for '${name}' read model is not found`);
+        if (Array.isArray(selection.arguments)) {
+            selection.arguments.forEach((arg) => {
+                if (arg.name.kind !== 'Name' || arg.name.value !== 'aggregateId') {
+                    throw viewQueryError;
+                }
+                if (arg.value.kind === 'Variable' && arg.value.name && arg.value.name.value) {
+                    aggregateIds.push(gqlVariables[arg.value.name.value]);
+                } else {
+                    aggregateIds.push(arg.value.value);
+                }
+            });
         }
-
-        const parsedGqlQuery = parse(gqlQuery);
-        const aggregateIds = extractAggregateIdsFromGqlQuery(parsedGqlQuery, gqlVariables);
-        const state = await getState({ statesRepository, eventStore, readModel, aggregateIds });
-
-        const gqlResponse = await execute(
-            executableSchema,
-            parsedGqlQuery,
-            state,
-            { getJwt, getReadModel },
-            gqlVariables
+    } catch (err) {
+        throw new Error( // eslint-disable-next-line max-len
+            'View model is queryable only by "query { Read }" or "query { Read(aggregateId: ID) }"'
         );
+    }
 
-        if (gqlResponse.errors) throw gqlResponse.errors;
-        return gqlResponse.data;
-    };
-}
+    if (aggregateIds.length === 0) {
+        aggregateIds = null;
+    }
 
-export default ({ eventStore, readModels }) => {
-    const statesRepository = {};
+    return await readState({ aggregateIds });
+};
 
-    const getReadModel = async (modelName, aggregateIds) => {
-        const readModel = readModels.find(
-            model => modelName.toLowerCase() === model.name.toLowerCase()
-        );
-        if (readModel) {
-            return await getState({ statesRepository, eventStore, readModel, aggregateIds });
-        }
-        return null;
-    };
-
-    const executors = readModels.reduce((result, readModel) => {
-        result[readModel.name.toLowerCase()] = getExecutor({
-            statesRepository,
-            getReadModel,
-            eventStore,
-            readModel
-        });
-        return result;
-    }, {});
-
-    return async (readModelName, gqlQuery, gqlVariables, getJwt) => {
-        const executor = executors[readModelName.toLowerCase()];
-
-        if (executor === undefined) {
-            throw new Error(`The '${readModelName}' read model is not found`);
+const createExecutor = (eventStore, readModel) => {
+    if (readModel.viewModel) {
+        if (readModel.gqlSchema || readModel.gqlResolvers) {
+            throw new Error('View model can\'t have GraphQL schemas and resolvers');
+        } else if (readModel.storageProvider) {
+            throw new Error('View model can\'t have custom storage provider');
         }
 
-        return executor(gqlQuery, gqlVariables, getJwt);
-    };
+        const readState = getState.bind(null, createMemoryStorageProvider(), eventStore, readModel);
+        return viewModelReader.bind(null, readState);
+    }
+
+    const storageProvider = readModel.storageProvider || createMemoryStorageProvider();
+    const readState = getState.bind(null, storageProvider, eventStore, readModel);
+
+    const executableSchema = makeExecutableSchema({
+        resolvers: readModel.gqlResolvers ? { Query: readModel.gqlResolvers } : {},
+        typeDefs: readModel.gqlSchema
+    });
+
+    return readModelReader.bind(null, executableSchema, readState);
+};
+
+export default ({ eventStore, readModel }) => {
+    try {
+        return createExecutor(eventStore, readModel);
+    } catch (err) {
+        throw new Error(`Error ${err.description} due query-side initialization: ${err.stack}`);
+    }
 };

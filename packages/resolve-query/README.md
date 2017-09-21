@@ -1,23 +1,22 @@
 # **🔍 resolve-query** [![npm version](https://badge.fury.io/js/resolve-query.svg)](https://badge.fury.io/js/resolve-query)
 
-Provides a function to execute a query and get required information from a [read model](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models).
+Provides a function to execute a query and get required information from a [read model](../resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models).
 
 ## Usage
 When initializing a query, pass the following arguments:
 
-* `eventStore` - configured [eventStore](https://github.com/reimagined/resolve/tree/master/packages/resolve-es) instance.
-* `readModels` - array of [read models](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models).  
+* `eventStore` - configured [eventStore](../resolve-es) instance.
+* `readModel` - [read model](../resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models) declaration.
 	
 After the query is initialized, you get a function that is used to get data from read models by [GraphQL](http://graphql.org/learn/) request. This function receives the following arguments:
- * `readModelName` (required) - read model name.
  * `qraphQLQuery` (required) - GraphQL query to get data.
  * `graphQLVariables` - specify it, if `graphQLQuery` contains variables.
  * `getJwt` - callback to retrieve actual client state stored in verified JWT token.
  
  ### Example
-Let's implement the Read Model for building News state with custom GraphQL resolvers. It will handle the same events that are produced in [Aggregate example](https://github.com/reimagined/resolve/tree/master/packages/resolve-command#example).
+Let's implement the Read Model for building News state with custom GraphQL resolvers. It will handle the same events that are produced in [Aggregate example](../resolve-command#example).
 
-Implement a read model for building News state with custom GraphQL resolvers and use the `resolve-query` library to get the first page of news. It handles events produced by an aggregate shown in the [resolve-command](https://github.com/reimagined/resolve/tree/master/packages/resolve-command#example) documentation.
+Implement a read model for building News state with custom GraphQL resolvers and use the `resolve-query` library to get the first page of news. It handles events produced by an aggregate shown in the [resolve-command](../resolve-command#example) documentation.
 
 ```js
 import createQueryExecutor from 'resolve-query'
@@ -32,13 +31,12 @@ const eventStore = createEventStore({
     bus: createBusDriver()
 })
 
-const readModels = [newsReadModel]
+const readModels = newsReadModel
 
-const query = createQueryExecutor({ eventStore, readModels })
+const query = createQueryExecutor({ eventStore, readModel })
 
 // Request by GraphQL query with paramaters
 query(
-  'news',
   'query ($page: ID!) { news(page: $page) { title, text } }',
   { page: 1 }
 ).then(state => {
@@ -50,17 +48,19 @@ query(
 ```js
 import Immutable from 'seamless-immutable'
 
+const checkState = state => Immutable.isImmutable(state) ? state : Immutable([])
+
 export default {
   name: 'news',
-  initialState: Immutable([]),
   eventHandlers: {
-    NEWS_CREATED: (state, { 
+    NEWS_CREATED: (oldState, { 
         aggregateId, 
         timestamp,
         payload: { 
             title, link, userId, text 
         } 
     }) => {
+      const state = checkState(oldState)
       const type = !link ? 'ask' : /^(Show HN)/.test(title) ? 'show' : 'story'
 
       return Immutable(
@@ -81,7 +81,8 @@ export default {
       )
     },
 
-    NEWS_UPVOTED: (state, { aggregateId, payload: { userId } }) => {
+    NEWS_UPVOTED: (oldState, { aggregateId, payload: { userId } }) => {
+      const state = checkState(oldState)
       const index = state.findIndex(({ id }) => id === aggregateId)
 
       if (index < 0) {
@@ -91,7 +92,8 @@ export default {
       return state.updateIn([index, 'votes'], votes => votes.concat(userId))
     },
 
-    NEWS_UNVOTED: (state, { aggregateId, payload: { userId } }) => {
+    NEWS_UNVOTED: (oldState, { aggregateId, payload: { userId } }) => {
+      const state = checkState(oldState)
       const index = state.findIndex(({ id }) => id === aggregateId)
 
       if (index < 0) {
@@ -103,10 +105,13 @@ export default {
       )
     },
 
-    NEWS_DELETED: (state, { aggregateId }) =>
-      state.filter(({ id }) => id !== aggregateId),
+    NEWS_DELETED: (oldState, { aggregateId }) => {
+      const state = checkState(oldState)
+      return state.filter(({ id }) => id !== aggregateId)
+    },
 
-    COMMENT_CREATED: (state, { aggregateId, payload: { parentId, commentId } }) => {
+    COMMENT_CREATED: (oldState, { aggregateId, payload: { parentId, commentId } }) => {
+      const state = checkState(oldState)
       const newsIndex = state.findIndex(({ id }) => id === aggregateId)
 
       if (newsIndex < 0) {
@@ -129,7 +134,8 @@ export default {
       )
     },
 
-    COMMENT_REMOVED: (state, { aggregateId, payload: { parentId, commentId } }) => {
+    COMMENT_REMOVED: (oldState, { aggregateId, payload: { parentId, commentId } }) => {
+      const state = checkState(oldState)
       const newsIndex = state.findIndex(({ id }) => id === aggregateId)
 
       if (newsIndex < 0) {
@@ -152,6 +158,7 @@ export default {
       )
     }
   },
+
   gqlSchema: `
     type News {
       id: ID!
@@ -169,9 +176,12 @@ export default {
       news(page: Int, aggregateId: ID, type: String): [News]
     }
   `,
+
   gqlResolvers: {
-    news: (root, { page, aggregateId, type }) =>
-      aggregateId
+    news: async (read, { page, aggregateId, type }) => {
+      const root = await read(aggregateId ? { aggregateIds: [aggregateId] } : {}})
+
+      return aggregateId
         ? root
         : page
           ? (type ? root.filter(news => news.type === type) : root).slice(
@@ -179,6 +189,7 @@ export default {
               +page * NUMBER_OF_ITEMS_PER_PAGE + 1
             )
           : root
+    }
   }
 }
 ```

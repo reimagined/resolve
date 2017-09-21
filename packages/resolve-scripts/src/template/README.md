@@ -1,6 +1,6 @@
 
 # **🚀 ReSolve App**
-This project is an application created with [Create ReSolve App](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app). It is a single page application (SPA) which represents a typical Todo List. This application is built on the CQRS and Event Sourcing principles, with React+Redux on client.
+This project is an application created with [Create ReSolve App](../../../create-resolve-app). It is a single page application (SPA) which represents a typical Todo List. This application is built on the CQRS and Event Sourcing principles, with React+Redux on client.
 
 Create ReSolve App allows you to specify application blocks (aggregates, read models and UI part presented by React components) in the semi-declarative manner. With the `resolve-scripts` package, you don't need to write an API backend manually. Instead, `resolve-scripts` deploys backend and domain services to interact with the client which is wrapped into the `resolve-redux` package for automate interaction.
 
@@ -64,7 +64,7 @@ Runs the built app in the production mode.
 Open [http://localhost:3000](http://localhost:3000/) to view it in the browser.
 
 ## **🗂️ Project Structure Overview**
-[Create ReSolve App](https://www.npmjs.com/package/creat-resolve-app) is an NPM package referenced to the latest versions of the [reSolve framework packages](https://github.com/reimagined/resolve/tree/master/packages). It consists of the common isomorphic part which describes domain business logic, and React components for the presentation part. No implicit server part is needed - it is encapsulated in `resolve-scripts`, but can be customized by [config](#-configuration-files). The project also includes unit & E2E testing and deployment assets. All source code and functional tests are written in the [ES2016](http://2ality.com/2016/01/ecmascript-2016.html) language.
+[Create ReSolve App](https://www.npmjs.com/package/creat-resolve-app) is an NPM package referenced to the latest versions of the [reSolve framework packages](../../..). It consists of the common isomorphic part which describes domain business logic, and React components for the presentation part. No implicit server part is needed - it is encapsulated in `resolve-scripts`, but can be customized by [config](#-configuration-files). The project also includes unit & E2E testing and deployment assets. All source code and functional tests are written in the [ES2016](http://2ality.com/2016/01/ecmascript-2016.html) language.
 
 ```
 resolve-app/
@@ -121,8 +121,8 @@ resolve-app/
 The client side is located in the `client/` folder and exports two key endpoints: root React component and Redux store creator function. These entry points to the client part must be specified in the [resolve.client.config.js](#client-config) configuration file located in the root directory.
 
 Any customization like adding routing or applying middleware or saga can be performed by proper wrapping original UI entry points into subsidiary entities and specifying them in an appropriate config section. The following examples show how to use a react router as UI entry point: 
-* [react-router-2](https://github.com/reimagined/resolve/tree/master/examples/resolve-scripts-with-router-2)  
-* [react-router-4](https://github.com/reimagined/resolve/tree/master/examples/resolve-scripts-with-router-4)
+* [react-router-2](../../../../examples/resolve-scripts-with-router-2)  
+* [react-router-4](../../../../examples/resolve-scripts-with-router-4)
 
 ### **🔗 Common**
 The `common/` folder contains isomorphic application part which represents business logic distributed between server and client in the same code. Domain logic is described in the reSolve-compatible format and appears in [aggregate and read model](#️-aggregates-and-read-models) declarations.
@@ -225,7 +225,7 @@ The `resolve.client.config.js` file contains information for the client side of 
 The `resolve.server.config.js` file contains information for reSolve library.
 
 * #### aggregates
-	Specifies an array of [aggregates](#️-aggregates-and-read-models) for [resolve-command](https://github.com/reimagined/resolve/tree/master/packages/resolve-command). Each command is addressed to a particular aggregate. When an aggregate receives a command, it performs this command and as a result produces an event, or returns an error if the command cannot be executed.
+	Specifies an array of [aggregates](#️-aggregates-and-read-models) for [resolve-command](../../../resolve-command). Each command is addressed to a particular aggregate. When an aggregate receives a command, it performs this command and as a result produces an event, or returns an error if the command cannot be executed.
 
 	##### Example
 	In this example, we import an array of aggregate objects specified in the `aggregates.js` file.
@@ -241,7 +241,7 @@ The `resolve.server.config.js` file contains information for reSolve library.
 
 * #### bus
 	The bus is used to emit events. It is an object with the following structure 
-	* `driver`: one of [bus drivers](https://github.com/reimagined/resolve/tree/master/packages/bus-drivers)
+	* `driver`: one of [bus drivers](../../../bus-drivers)
 	* `params`: config that will be passed to a driver when it is initialized
 
 	##### Example
@@ -261,7 +261,7 @@ The `resolve.server.config.js` file contains information for reSolve library.
 
 * #### entries
 
-	It might be the same config as in `resolve.client.config.js`. But it is also possible to pass different `rootComponent` or `createStore` to server and client sides. It can be helpful in some cases (for example, see [resolve-scripts with react-router v4](https://github.com/reimagined/resolve/tree/master/examples/resolve-scripts-with-router-4) and  [resolve-scripts with react-router v2](https://github.com/reimagined/resolve/tree/master/examples/resolve-scripts-with-router-2)) but be  careful when using this approach - it may cause issues with SSR.
+	It might be the same config as in `resolve.client.config.js`. But it is also possible to pass different `rootComponent` or `createStore` to server and client sides. It can be helpful in some cases (for example, see [resolve-scripts with react-router v4](../../../../examples/resolve-scripts-with-router-4) and  [resolve-scripts with react-router v2](../../../../examples/resolve-scripts-with-router-2)) but be  careful when using this approach - it may cause issues with SSR.
 
 	##### Example
 	###### resolve.server.config.js
@@ -411,7 +411,7 @@ The `resolve.server.config.js` file contains information for reSolve library.
 
 * #### initialState
 	
-	A function that takes a [query](https://github.com/reimagined/resolve/tree/master/packages/resolve-query) and returns a Promise. It's possible to get an initial state by query to read-model and then resolve it with Promise. This state is used in the client and server `createStore` function.
+	A function that takes a [query](../../../resolve-query) and returns a Promise. It's possible to get an initial state by query to read-model and then resolve it with Promise. This state is used in the client and server `createStore` function.
 
 	##### Example
 	###### resolve.server.config.js
@@ -424,7 +424,7 @@ The `resolve.server.config.js` file contains information for reSolve library.
 	```
 
 * #### queries
-	An array of [read models](#️-aggregates-and-read-models) for [resolve-query](https://github.com/reimagined/resolve/tree/master/packages/resolve-query). A *read model* represents the current state of a system or its part, and is built by processing all events happened to the system. Read models are used to answer queries.
+	An array of [read models](#️-aggregates-and-read-models) for [resolve-query](../../../resolve-query). A *read model* represents the current state of a system or its part, and is built by processing all events happened to the system. Read models are used to answer queries.
 
 	##### Example
 	In this example, we import an array of read model objects specified in the `read-models.js` file. 
@@ -439,7 +439,7 @@ The `resolve.server.config.js` file contains information for reSolve library.
 
 * #### storage
 	Contains an object with the following structure: 
-	* `driver`: one of [storage drivers](https://github.com/reimagined/resolve/tree/master/packages/storage-drivers) 
+	* `driver`: one of [storage drivers](../../../storage-drivers) 
 	* `params`: config that will be passed to a driver when it is initialized
 
 	##### Example

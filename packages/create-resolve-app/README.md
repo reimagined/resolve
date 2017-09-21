@@ -87,8 +87,8 @@ Open [http://localhost:3000](http://localhost:3000/) to view it in the browser.
 
 ## **User Guide**
 The User Guide provides detailed information on an application created with Create ReSolve App:
-* [Project Structure Overview](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#️-project-structure-overview)
-* [Aggregates and Read Models](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#️-aggregates-and-read-models)
-* [Configuration Files](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts/src/template#-configuration-files)
+* [Project Structure Overview](../resolve-scripts/src/template#️-project-structure-overview)
+* [Aggregates and Read Models](../resolve-scripts/src/template#️-aggregates-and-read-models)
+* [Configuration Files](../resolve-scripts/src/template#-configuration-files)
 
 This user guide copy is added to your project folder as the `Readme.md` file.
