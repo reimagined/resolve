@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStore } from 'redux';
-import defaultStorageDriver from 'resolve-storage-memory';
+import defaultStorageDriver from 'resolve-storage-lite';
 import defaultBusDriver from 'resolve-bus-memory';
 
 // eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved

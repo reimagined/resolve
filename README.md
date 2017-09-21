@@ -104,9 +104,8 @@ Drivers for event store:
 
 
 * 🛢 Storage drivers specifying where to store events:
-    * [resolve-storage-file](packages/storage-drivers/resolve-storage-file) (recommended for debugging purposes)
-    * [resolve-storage-memory](packages/storage-drivers/resolve-storage-memory) (recommended for debugging purposes)
     * [resolve-storage-mongo](packages/storage-drivers/resolve-storage-mongo)
+	* [resolve-storage-lite](packages/storage-drivers/resolve-storage-lite)
 
 
 ## **💻 Examples**

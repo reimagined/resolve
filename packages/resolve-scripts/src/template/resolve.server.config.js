@@ -1,4 +1,4 @@
-import fileDriver from 'resolve-storage-file';
+import fileDriver from 'resolve-storage-lite';
 import busDriver from 'resolve-bus-memory';
 import eventTypes from './common/aggregates/todo-events';
 import aggregates from './common/aggregates';
@@ -10,8 +10,8 @@ if (module.hot) {
 }
 
 const dbPath = process.env.NODE_ENV === 'production'
-    ? './prod_db.json'
-    : process.env.NODE_ENV === 'tests' ? './__test_db__.json' : './dev_db.json';
+    ? './prod.db'
+    : process.env.NODE_ENV === 'tests' ? './__test.db' : './dev.db';
 
 export default {
     entries: clientConfig,

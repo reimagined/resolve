@@ -1,4 +1,4 @@
-# **resolve-storage-lite** [![npm version](https://badge.fury.io/js/resolve-storage-file.svg)](https://badge.fury.io/js/resolve-storage-file)
+# **resolve-storage-lite** [![npm version](https://badge.fury.io/js/resolve-storage-lite.svg)](https://badge.fury.io/js/resolve-storage-lite)
 
 This package is a driver for `resolve-es` to store events using a file or a memory. This package doesn't have binary dependencies and not require additional applications (like MongoDB or SQL server).
 
@@ -9,7 +9,7 @@ You can pass the following argument when initializing a driver:
 ## Usage
 
 ```js
-import createDriver from 'resolve-storage-file';
+import createDriver from 'resolve-storage-lite';
 
 const driver = createDriver({ pathToFile: './store.db' });
 ```

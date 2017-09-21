@@ -5,9 +5,8 @@ Provides an event store implementation with the capability to use different [sto
 When initializing an event store, pass the following arguments:
 * `storage`  
 	Use one of  [drivers](../storage-drivers) which the reSolve framework provides...
-	* [resolve-storage-file](../storage-drivers/resolve-storage-file)
-	* [resolve-storage-memory](../storage-drivers/resolve-storage-memory)
 	* [resolve-storage-mongo](../storage-drivers/resolve-storage-mongo)
+	* [resolve-storage-lite](../storage-drivers/resolve-storage-lite)
 
 	... or implement your custom storage driver. Storage driver is an object with the following fields:
 	* `saveEvent` - a function which takes an event and returns Promise that will be resolved when the event is stored in the storage.
@@ -27,11 +26,11 @@ When initializing an event store, pass the following arguments:
 ### Example
 ```js
 import createEventStore from 'resolve-es'
-import createInFileStorageDriver from 'resolve-storage-file'
+import createInFileStorageDriver from 'resolve-storage-lite'
 import createInMemoryBusDriver from 'resolve-bus-memory'
 
 const eventStore = createEventStore({
-  storage: createInFileStorageDriver({ pathToFile: './event-store.json' }),
+  storage: createInFileStorageDriver({ pathToFile: './event-store.db' }),
   bus: createInMemoryBusDriver()
 });
 

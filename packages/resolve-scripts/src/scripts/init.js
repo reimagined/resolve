@@ -17,7 +17,7 @@ const dependencies = [
     'redux',
     'resolve-bus-memory',
     'resolve-redux',
-    'resolve-storage-file'
+    'resolve-storage-lite'
 ];
 
 const devDependencies = ['chai', 'cross-env', 'testcafe', 'testcafe-browser-tools', 'yargs'];
