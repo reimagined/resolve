@@ -8,22 +8,25 @@ const createMemoryStorageAdapter = (storageRepository = {}) => ({
             throw new Error(`State for read-model '${storageName}' alreary initialized`);
         }
 
-        const stateManager = { internalState: null, internalError: null, onDestroy };
+        const storage = { internalState: null, internalError: null, onDestroy };
         const persistPromise = new Promise(resolve => onPersistDone(resolve));
-        stateManager.api = {
-            getReadable: async () => persistPromise.then(() => stateManager.internalState),
-            getError: async () => stateManager.internalError
+
+        storage.api = {
+            getReadable: async () => persistPromise.then(() => storage.internalState),
+            getError: async () => storage.internalError
         };
 
-        storageRepository[storageName] = stateManager;
-        return stateManager;
+        storageRepository[storageName] = storage;
+        return storage.api;
     },
 
     wrapEventHandlers(eventHandlers) {
         return Object.keys(eventHandlers).reduce((result, handlerName) => {
-            result[handlerName] = async (storage, event) => {
+            result[handlerName] = async (storageName, event) => {
+                const storage = storageRepository[storageName];
                 const handler = eventHandlers[handlerName];
                 if (!handler || storage.internalError) return;
+
                 try {
                     storage.internalState = await handler(storage.internalState, event);
                 } catch (error) {
@@ -35,9 +38,9 @@ const createMemoryStorageAdapter = (storageRepository = {}) => ({
     },
 
     getStorage(storageName) {
-        const stateManager = storageRepository[storageName];
-        if (!stateManager) return null;
-        return stateManager.api;
+        const storage = storageRepository[storageName];
+        if (!storage) return null;
+        return storage.api;
     },
 
     resetStorage(storageName) {
@@ -73,24 +76,24 @@ const subscribeByEventTypeAndIds = async (eventStore, callback, eventDescriptors
     };
 };
 
-const readPartition = async (storageAdapter, eventStore, eventHandlers, onDemandOptions) => {
+const readStorage = async (storageAdapter, eventStore, eventHandlers, onDemandOptions) => {
     const { aggregateIds, limitedEventTypes } = onDemandOptions || {};
 
-    const partitionName =
+    const storageName =
         'STATE' +
         (Array.isArray(aggregateIds) ? `\u200D\u200D${aggregateIds.sort().join('\u200D')}` : '') +
         (Array.isArray(limitedEventTypes)
             ? `\u200D\u200D${limitedEventTypes.sort().join('\u200D')}`
             : '');
 
-    let currentState = storageAdapter.getStorage(partitionName);
-    if (!currentState) {
+    let storage = storageAdapter.getStorage(storageName);
+    if (!storage) {
         let unsubscriber = null;
         let onDestroy = () => (unsubscriber === null ? (onDestroy = null) : unsubscriber());
         let persistenceDoneCallback = () => {};
         const onPersistDone = callback => (persistenceDoneCallback = callback || (() => {}));
 
-        currentState = storageAdapter.initStorage(partitionName, onPersistDone, onDestroy);
+        storage = storageAdapter.initStorage(storageName, onPersistDone, onDestroy);
 
         await new Promise((resolve) => {
             let persistence = { eventsFetched: 0, eventsProcessed: 0, isLoaded: false };
@@ -114,7 +117,7 @@ const readPartition = async (storageAdapter, eventStore, eventHandlers, onDemand
 
             const synchronizedEventWorker = (event) => {
                 flowPromise = flowPromise.then(
-                    eventHandlers[event.type].bind(null, currentState, event)
+                    eventHandlers[event.type].bind(null, storageName, event)
                 );
                 if (!persistence || persistence.isLoaded) return;
                 persistence.eventsFetched++;
@@ -140,18 +143,18 @@ const readPartition = async (storageAdapter, eventStore, eventHandlers, onDemand
         persistenceDoneCallback();
     }
 
-    const readableError = await currentState.getError();
+    const readableError = await storage.getError();
     if (readableError) {
         throw readableError;
     }
 
-    return await currentState.getReadable();
+    return await storage.getReadable();
 };
 
-const getReadModelExecutor = async (readModel, eventStore) => {
+const getReadModelExecutor = (readModel, eventStore) => {
     const storageAdapter = readModel.storageAdapter || createMemoryStorageAdapter();
     const eventHandlers = storageAdapter.wrapEventHandlers(readModel.eventHandlers);
-    const readState = readPartition.bind(null, storageAdapter, eventStore, eventHandlers);
+    const readState = readStorage.bind(null, storageAdapter, eventStore, eventHandlers);
 
     const executableSchema = makeExecutableSchema({
         resolvers: readModel.gqlResolvers ? { Query: readModel.gqlResolvers } : {},
@@ -201,7 +204,7 @@ const extractAggregateIdsFromGqlQuery = (parsedGqlQuery, gqlVariables) => {
     }
 };
 
-const getViewModelExecutor = async (readModel, eventStore) => {
+const getViewModelExecutor = (readModel, eventStore) => {
     if (readModel.gqlSchema || readModel.gqlResolvers) {
         throw new Error('View model can\'t have GraphQL schemas and resolvers');
     } else if (readModel.storageAdapter) {
@@ -210,7 +213,7 @@ const getViewModelExecutor = async (readModel, eventStore) => {
 
     const storageAdapter = createMemoryStorageAdapter();
     const eventHandlers = storageAdapter.wrapEventHandlers(readModel.eventHandlers);
-    const readState = readPartition.bind(null, storageAdapter, eventStore, eventHandlers);
+    const readState = readStorage.bind(null, storageAdapter, eventStore, eventHandlers);
 
     return async (gqlQuery, gqlVariables, getJwt) => {
         const parsedGqlQuery = parse(gqlQuery);
