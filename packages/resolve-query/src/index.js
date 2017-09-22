@@ -22,7 +22,7 @@ const createMemoryAdapter = () => {
         return repository[key].api;
     };
 
-    const wrapProjection = (projection) => {
+    const buildProjection = (projection) => {
         return Object.keys(projection).reduce((result, name) => {
             result[name] = async (key, event) => {
                 if (!projection[name] || repository[key].internalError) return;
@@ -51,7 +51,7 @@ const createMemoryAdapter = () => {
     };
 
     return {
-        wrapProjection,
+        buildProjection,
         init,
         get,
         reset
@@ -160,7 +160,7 @@ const read = async (adapter, eventStore, projection, onDemandOptions) => {
 
 const createReadModelExecutor = (readModel, eventStore) => {
     const adapter = readModel.adapter || createMemoryAdapter();
-    const projection = adapter.wrapProjection(readModel.projection);
+    const projection = adapter.buildProjection(readModel.projection);
 
     const executableSchema = makeExecutableSchema({
         resolvers: readModel.gqlResolvers ? { Query: readModel.gqlResolvers } : {},
@@ -218,7 +218,7 @@ const createViewModelExecutor = (readModel, eventStore) => {
     }
 
     const adapter = createMemoryAdapter();
-    const projection = adapter.wrapProjection(readModel.projection);
+    const projection = adapter.buildProjection(readModel.projection);
 
     return async (gqlQuery, gqlVariables, getJwt) => {
         const parsedGqlQuery = parse(gqlQuery);
