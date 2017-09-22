@@ -213,7 +213,7 @@ const originalHandlers = {
 
 function readModelsGenerator(reportObj) {
     // Allow bypass invalid events
-    const eventHandlers = Object.keys(originalHandlers).reduce(
+    const projection = Object.keys(originalHandlers).reduce(
         (acc, key) =>
             Object.assign(acc, {
                 [key]: (state, event) => {
@@ -243,7 +243,7 @@ function readModelsGenerator(reportObj) {
                 members: {},
                 items: {}
             }),
-            eventHandlers
+            projection
         }
     ];
 }

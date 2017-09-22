@@ -52,7 +52,7 @@ const checkState = state => Immutable.isImmutable(state) ? state : Immutable([])
 
 export default {
   name: 'news',
-  eventHandlers: {
+  projection: {
     NEWS_CREATED: (oldState, { 
         aggregateId, 
         timestamp,

@@ -19,7 +19,7 @@ const throwErrorIfNull = (state) => {
 const Aggregate = {
     name: 'Todo',
     initialState: {},
-    eventHandlers: {
+    projection: {
         [TODO_CREATED]: (state: any, event: TodoCreated) => ({ ...event.payload }),
         [TODO_COMPLETED]: (state: any, event: TodoCompleted) => {
             state.completed = true;

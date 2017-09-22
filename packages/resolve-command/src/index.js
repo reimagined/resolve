@@ -6,8 +6,8 @@ const verifyCommand = async ({ aggregateId, aggregateName, type }) => {
     if (!type) throw new Error('"type" argument is required');
 };
 
-const getAggregateState = async ({ eventHandlers, initialState }, aggregateId, eventStore) => {
-    const handlers = eventHandlers;
+const getAggregateState = async ({ projection, initialState }, aggregateId, eventStore) => {
+    const handlers = projection;
     let aggregateState = initialState;
 
     if (!handlers) {

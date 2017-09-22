@@ -1,6 +1,6 @@
 import Immutable from 'seamless-immutable';
 
-const originalEventHandlers = {
+const originalProjection = {
     TodoCardCreated: (state, event) =>
         state.setIn(['cards', event.aggregateId], {
             aggregateId: event.aggregateId,
@@ -43,12 +43,12 @@ const originalEventHandlers = {
 export default {
     name: 'cards',
     viewModel: true,
-    eventHandlers: Object.keys(originalEventHandlers).reduce((result, name) => {
+    projection: Object.keys(originalProjection).reduce((result, name) => {
         result[name] = (state, event) => {
             const checkedState = !state || !state.cards || !state.mapTodoToCard
                 ? Immutable({ cards: {}, mapTodoToCard: {} })
                 : state;
-            return originalEventHandlers[name](checkedState, event);
+            return originalProjection[name](checkedState, event);
         };
         return result;
     }, {})

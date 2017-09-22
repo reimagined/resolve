@@ -2,66 +2,61 @@ import 'regenerator-runtime/runtime';
 import { makeExecutableSchema } from 'graphql-tools';
 import { parse, execute } from 'graphql';
 
-const createMemoryStorageProvider = (readModelsStateRepository = {}) => ({
-    initState(stateName, readModel, onDestroy = () => {}) {
-        if (readModelsStateRepository[stateName]) {
-            throw new Error(`State for read-model '${stateName}' alreary initialized`);
-        }
+const createMemoryAdapter = () => {
+    const repository = {};
 
-        let state = null,
-            error = null;
+    const init = (key, onPersistDone = () => {}, onDestroy = () => {}) => {
+        if (repository[key]) throw new Error(`State for '${key}' alreary initialized`);
+        const persistPromise = new Promise(resolve => onPersistDone(resolve));
 
-        readModelsStateRepository[stateName] = {
-            internal: {
-                setState: newState => (state = newState),
-                getState: () => state,
-                setError: newError => (error = newError),
-                getError: () => error
-            },
-            public: {
-                getReadable: async () => state,
-                getError: async () => error
+        repository[key] = {
+            internalState: null,
+            internalError: null,
+            api: {
+                getReadable: async () => persistPromise.then(() => repository[key].internalState),
+                getError: async () => repository[key].internalError
             },
             onDestroy
         };
 
-        return readModelsStateRepository[stateName].public;
-    },
+        return repository[key].api;
+    };
 
-    getEventWorker(stateName, readModel) {
-        return async (event) => {
-            if (!readModelsStateRepository[stateName]) {
-                throw new Error(
-                    `State for read-model ${stateName} is not initialized or been reset`
-                );
-            }
+    const buildProjection = (projection) => {
+        return Object.keys(projection).reduce((result, name) => {
+            result[name] = async (key, event) => {
+                if (!projection[name] || repository[key].internalError) return;
 
-            const stateManager = readModelsStateRepository[stateName].internal;
-            const handler = readModel.eventHandlers[event.type];
-            if (!handler || stateManager.getError()) return;
+                try {
+                    repository[key].internalState = await projection[name](
+                        repository[key].internalState,
+                        event
+                    );
+                } catch (error) {
+                    repository[key].internalError = error;
+                }
+            };
+            return result;
+        }, {});
+    };
 
-            try {
-                const currentState = stateManager.getState();
-                const newState = await handler(currentState, event);
-                stateManager.setState(newState);
-            } catch (err) {
-                stateManager.setError(err);
-            }
-        };
-    },
+    const get = (key) => {
+        return repository[key] ? repository[key].api : null;
+    };
 
-    getState(stateName) {
-        const stateManager = readModelsStateRepository[stateName];
-        if (!stateManager) return null;
-        return stateManager.public;
-    },
+    const reset = (key) => {
+        if (!repository[key]) return;
+        repository[key].onDestroy();
+        repository[key] = null;
+    };
 
-    resetState(stateName) {
-        if (!readModelsStateRepository[stateName]) return;
-        readModelsStateRepository[stateName].onDestroy();
-        readModelsStateRepository[stateName] = null;
-    }
-});
+    return {
+        buildProjection,
+        init,
+        get,
+        reset
+    };
+};
 
 const subscribeByEventTypeAndIds = async (eventStore, callback, eventDescriptors) => {
     const passedEventSet = new WeakSet();
@@ -74,11 +69,11 @@ const subscribeByEventTypeAndIds = async (eventStore, callback, eventDescriptors
     };
 
     const typeUnsubPromise = Array.isArray(eventDescriptors.types)
-        ? eventStore.subscribeByEventType(eventDescriptors.types, trigger, true)
+        ? eventStore.subscribeByEventType(eventDescriptors.types, trigger)
         : Promise.resolve(() => {});
 
     const idUnsubPromise = Array.isArray(eventDescriptors.ids)
-        ? eventStore.subscribeByAggregateId(eventDescriptors.ids, trigger, true)
+        ? eventStore.subscribeByAggregateId(eventDescriptors.ids, trigger)
         : Promise.resolve(() => {});
 
     const [typeUnsub, idUnsub] = await Promise.all([typeUnsubPromise, idUnsubPromise]);
@@ -89,24 +84,23 @@ const subscribeByEventTypeAndIds = async (eventStore, callback, eventDescriptors
     };
 };
 
-const getState = async (storageProvider, eventStore, readModel, onDemandOptions) => {
+const read = async (adapter, eventStore, projection, onDemandOptions) => {
     const { aggregateIds, limitedEventTypes } = onDemandOptions || {};
 
-    let stateName = readModel.name;
-    if (Array.isArray(aggregateIds)) {
-        stateName = `${stateName}\u200D\u200D${aggregateIds.sort().join('\u200D')}`;
-    }
-    if (Array.isArray(limitedEventTypes)) {
-        stateName = `${stateName}\u200D\u200D${limitedEventTypes.sort().join('\u200D')}`;
-    }
+    const key =
+        'STATE' +
+        (Array.isArray(aggregateIds) ? `\u200D\u200D${aggregateIds.sort().join('\u200D')}` : '') +
+        (Array.isArray(limitedEventTypes)
+            ? `\u200D\u200D${limitedEventTypes.sort().join('\u200D')}`
+            : '');
 
-    let currentState = storageProvider.getState(stateName);
-    if (!currentState) {
+    if (!adapter.get(key)) {
         let unsubscriber = null;
         let onDestroy = () => (unsubscriber === null ? (onDestroy = null) : unsubscriber());
+        let persistenceDoneCallback = () => {};
+        const onPersistDone = callback => (persistenceDoneCallback = callback || (() => {}));
 
-        currentState = storageProvider.initState(stateName, readModel, onDestroy);
-        const eventWorker = storageProvider.getEventWorker(stateName, readModel);
+        adapter.init(key, onPersistDone, onDestroy);
 
         await new Promise((resolve) => {
             let persistence = { eventsFetched: 0, eventsProcessed: 0, isLoaded: false };
@@ -129,7 +123,7 @@ const getState = async (storageProvider, eventStore, readModel, onDemandOptions)
             };
 
             const synchronizedEventWorker = (event) => {
-                flowPromise = flowPromise.then(eventWorker.bind(null, event));
+                flowPromise = flowPromise.then(projection[event.type].bind(null, key, event));
                 if (!persistence || persistence.isLoaded) return;
                 persistence.eventsFetched++;
                 flowPromise = flowPromise.then(persistenceChecker.bind(null, true));
@@ -138,7 +132,7 @@ const getState = async (storageProvider, eventStore, readModel, onDemandOptions)
             subscribeByEventTypeAndIds(eventStore, synchronizedEventWorker, {
                 types: Array.isArray(limitedEventTypes) || Array.isArray(aggregateIds)
                     ? limitedEventTypes
-                    : Object.keys(readModel.eventHandlers),
+                    : Object.keys(projection),
                 ids: aggregateIds
             }).then((unsub) => {
                 persistenceChecker(false);
@@ -150,45 +144,56 @@ const getState = async (storageProvider, eventStore, readModel, onDemandOptions)
                 }
             });
         });
+
+        persistenceDoneCallback();
     }
 
-    const readableError = await currentState.getError();
+    const { getError, getReadable } = adapter.get(key);
+
+    const readableError = await getError();
     if (readableError) {
         throw readableError;
     }
 
-    return await currentState.getReadable();
+    return await getReadable();
 };
 
-const readModelReader = async (executableSchema, readState, gqlQuery, gqlVariables, getJwt) => {
-    const parsedGqlQuery = parse(gqlQuery);
+const createReadModelExecutor = (readModel, eventStore) => {
+    const adapter = readModel.adapter || createMemoryAdapter();
+    const projection = adapter.buildProjection(readModel.projection);
 
-    const gqlResponse = await execute(
-        executableSchema,
-        parsedGqlQuery,
-        readState,
-        { getJwt },
-        gqlVariables
-    );
+    const executableSchema = makeExecutableSchema({
+        resolvers: readModel.gqlResolvers ? { Query: readModel.gqlResolvers } : {},
+        typeDefs: readModel.gqlSchema
+    });
 
-    if (gqlResponse.errors) throw gqlResponse.errors;
-    return gqlResponse.data;
+    return async (gqlQuery, gqlVariables, getJwt) => {
+        const parsedGqlQuery = parse(gqlQuery);
+
+        const gqlResponse = await execute(
+            executableSchema,
+            parsedGqlQuery,
+            read.bind(null, adapter, eventStore, projection),
+            { getJwt },
+            gqlVariables
+        );
+
+        if (gqlResponse.errors) throw gqlResponse.errors;
+        return gqlResponse.data;
+    };
 };
 
-const viewModelReader = async (readState, gqlQuery, gqlVariables, getJwt) => {
-    const parsedGqlQuery = parse(gqlQuery);
-    let aggregateIds = [];
-
+const extractAggregateIdsFromGqlQuery = (parsedGqlQuery, gqlVariables) => {
     try {
-        const viewQueryError = new Error();
+        const aggregateIds = [];
         const selection = parsedGqlQuery.definitions[0].selectionSet.selections[0];
         if (selection.name.kind !== 'Name' || selection.name.value !== 'View') {
-            throw viewQueryError;
+            throw new Error();
         }
         if (Array.isArray(selection.arguments)) {
             selection.arguments.forEach((arg) => {
                 if (arg.name.kind !== 'Name' || arg.name.value !== 'aggregateId') {
-                    throw viewQueryError;
+                    throw new Error();
                 }
                 if (arg.value.kind === 'Variable' && arg.value.name && arg.value.name.value) {
                     aggregateIds.push(gqlVariables[arg.value.name.value]);
@@ -197,45 +202,37 @@ const viewModelReader = async (readState, gqlQuery, gqlVariables, getJwt) => {
                 }
             });
         }
+        return aggregateIds.length > 0 ? aggregateIds : null;
     } catch (err) {
         throw new Error( // eslint-disable-next-line max-len
-            'View model is queryable only by "query { Read }" or "query { Read(aggregateId: ID) }"'
+            'View model is queryable only by "query { View }" or "query { View(aggregateId: ID) }"'
         );
     }
-
-    if (aggregateIds.length === 0) {
-        aggregateIds = null;
-    }
-
-    return await readState({ aggregateIds });
 };
 
-const createExecutor = (eventStore, readModel) => {
-    if (readModel.viewModel) {
-        if (readModel.gqlSchema || readModel.gqlResolvers) {
-            throw new Error('View model can\'t have GraphQL schemas and resolvers');
-        } else if (readModel.storageProvider) {
-            throw new Error('View model can\'t have custom storage provider');
-        }
-
-        const readState = getState.bind(null, createMemoryStorageProvider(), eventStore, readModel);
-        return viewModelReader.bind(null, readState);
+const createViewModelExecutor = (readModel, eventStore) => {
+    if (readModel.gqlSchema || readModel.gqlResolvers) {
+        throw new Error('View model can\'t have GraphQL schemas and resolvers');
+    } else if (readModel.storageAdapter) {
+        throw new Error('View model can\'t have custom storage Adapter');
     }
 
-    const storageProvider = readModel.storageProvider || createMemoryStorageProvider();
-    const readState = getState.bind(null, storageProvider, eventStore, readModel);
+    const adapter = createMemoryAdapter();
+    const projection = adapter.buildProjection(readModel.projection);
 
-    const executableSchema = makeExecutableSchema({
-        resolvers: readModel.gqlResolvers ? { Query: readModel.gqlResolvers } : {},
-        typeDefs: readModel.gqlSchema
-    });
-
-    return readModelReader.bind(null, executableSchema, readState);
+    return async (gqlQuery, gqlVariables, getJwt) => {
+        const parsedGqlQuery = parse(gqlQuery);
+        return await read(adapter, eventStore, projection, {
+            aggregateIds: extractAggregateIdsFromGqlQuery(parsedGqlQuery, gqlVariables)
+        });
+    };
 };
 
-export default ({ eventStore, readModel }) => {
+export default ({ readModel, eventStore }) => {
     try {
-        return createExecutor(eventStore, readModel);
+        return readModel.viewModel
+            ? createViewModelExecutor(readModel, eventStore)
+            : createReadModelExecutor(readModel, eventStore);
     } catch (err) {
         throw new Error(`Error ${err.description} due query-side initialization: ${err.stack}`);
     }

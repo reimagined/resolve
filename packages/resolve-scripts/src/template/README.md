@@ -104,9 +104,8 @@ resolve-app/
       index.js
       todo-events.js
       todo.js
-    read-models/
+    read-model/
       index.js
-      todos.js
     store/
       index.js
   static/
@@ -142,44 +141,96 @@ The system operability is controlled with [TestCafe](http://devexpress.github.io
 
 ## **🏗️ Aggregates and Read Models**
 Common business/domain logic of an application consists of two parts - aggregates and read models.
-* An *aggregate* is responsible for a system behavior and encapsulation of business logic. It responses to commands, checks whether they can be executed and generates events to change the current status of a system.
-* A *read model* provides the current state of a system or its part in the given format. It is built by processing all events happened to the system, through a projection function.
-
-Aggregates and read models are located in the corresponding directories and defined in a special isomorphic format, which allows them to be used on the client and server side.
-* On the client side, aggregates are transformed into Redux action creators, and read models - into Redux reducers.
-* On the server side, aggregates and read models are applied directory in the reSolve event sourcing framework.
+### **Aggregates**
+An *aggregate* is responsible for a system behavior and encapsulation of business logic. It responses to commands, checks whether they can be executed and generates events to change the current status of a system.
 
 A typical aggregate structure:
 
 ```js
 export default {
-    name: 'AggregateName', // Aggregate name for command handler, the same as aggregateType
-    initialState: Immutable({}), // Initial state (Bounded context) for every instance of this aggregate type
-    eventHandlers: {
-        Event1Happened: (state, event) => nextState,  // Update functions for the current aggregate instance
-        Event2Happened: (state, event) => nextState   // for different event types
-    },
-    commands: {
-        command1: (state, arguments) => generatedEvent, // Function which generates events depending 
-        command2: (state, arguments) => generatedEvent  // on the current state and argument list
-    }
+  name: 'AggregateName', // Aggregate name for command handler, the same as aggregateType
+  initialState: Immutable({}), // Initial state (Bounded context) for every instance of this aggregate type
+  projection: {
+    Event1Happened: (state, event) => nextState,  // Update functions for the current aggregate instance
+    Event2Happened: (state, event) => nextState   // for different event types
+  },
+  commands: {
+    command1: (state, arguments) => generatedEvent, // Function which generates events depending 
+    command2: (state, arguments) => generatedEvent  // on the current state and argument list
+  }
 };
 ```
+
+### **Read Models**
+A *read model* provides the current state of a system or its part in the given format. It is built by processing all events happened to the system.
+
+In a general case, a read model consists of two parts: 
+* asynchronous projection functions to build some state
+* GraphQL schema and resolvers to access the state and transmit it to the client in the appropriate format
+
+Read model projection function has two arguments: storage provider and GraphQL arguments. Storage provider is an abstract facade for read-only operations on a read-model state. GraphQL arguments is a set of variables which are passed to a GraphQL query from the client side. Read more about GraphQL and resolvers at [GraphQL Guide](http://graphql.org/learn/).
 
 A typical read model structure:
 
 ```js
 export default {
-    name: 'ReadModelName', // Read model name for query handler
-    initialState: Immutable({}), // Initial state for this read model instance
-    eventHandlers: {
-        Event1Happened: (state, event) => nextState,  // Update functions for the current read model instance
-        Event2Happened: (state, event) => nextState   // for different event types
+  name: 'ReadModelName', // Read model name
+  projection: { // Projection functions
+    Event1Happened: async (storage, event) => { // Use a storage as a mongodb adapter
+      const idList = await storage.find({ field: 'Test1' }).map(doc => doc.id);
+      await storage.update({ id: { $in: idList } }, { field: 'Test2' });
+    },  
+    Event2Happened: async (storage, event) => { // Projection can interact with custom external resources
+      const eventsourcingTweets = await fetchTweets('@gregyoung');
+      await storage.insert(eventsourcingTweets);
     }
-    // This state results from the request to the query handler at the current moment
+  },
+  gqlSchema: // Specify a schema of client-side GraphQL queries to the read model via Query API */
+    `type Message {
+      id: ID!
+      Header: String,
+      Content: String
+    }
+    type Query {
+      MessageById(id: ID!): Message,
+      MessageIds: [ID!]
+    }
+  `,
+  gqlResolvers: { // GraphQL resolver functions
+    MessageById: async (getReader, args) => { // On-demand read model state
+      if(!args.id) throw new Error('Message ID is mandatory!');
+      const db = await getReader({ aggregateIds: [args.id] });
+      const message = await db.find({ id: args.id });
+      return message;
+    },
+    MessageById: async (getReader, args) => { // Full read model state
+      const db = await getReader();
+      const idList = await db.find().map(message => message.id);
+      return idList;
+    }
+  }
+};
 ```
 
-Note: To use read model declaration as a Redux reducer, some Immutable wrapper for a state object is required. We recommend to use the [seamless-immutable](https://github.com/rtfeldman/seamless-immutable) library. Keep in mind that incorrect handling of an immutable object may cause performance issues.
+Some read models are sent to the client UI to be a part of a Redux app state. They are small enough to fit into memory and can be kept up to date right in the browser. We call them *view models*. They are defined in a special isomorphic format, which allows them to be used on the client and server side.
+
+A typical view model structure:
+
+```js
+export default {
+  name: 'ViewModelName', // View model name
+    viewModel: true, // Specify that this is a view model and it can be used as a Redux state
+  projection: {
+    Event1Happened: (state, event) => nextState,  // Update functions for the current view model instance
+    Event2Happened: (state, event) => nextState   // for different event types
+  }
+  // This state results from the request to the query handler at the current moment
+};
+```
+
+Note: To use view model declaration as a Redux reducer, some Immutable wrapper for a state object is required. We recommend to use the [seamless-immutable](https://github.com/rtfeldman/seamless-immutable) library. Keep in mind that incorrect handling of an immutable object may cause performance issues.
+
+
 
 ## **🎛 Configuration Files**
 ### Client Config

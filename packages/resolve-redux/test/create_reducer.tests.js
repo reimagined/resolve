@@ -11,7 +11,7 @@ describe('reducer', () => {
 
         initialState: Immutable({}),
 
-        eventHandlers: {
+        projection: {
             COUNTER_CREATE: (state, event) => state.set(event.aggregateId, { value: 0 }),
             COUNTER_INCREMENT: (state, event) =>
                 state.update(event.aggregateId, counter => counter.set('value', counter.value + 1)),
@@ -145,7 +145,7 @@ describe('reducer', () => {
 
             initialState,
 
-            eventHandlers: {
+            projection: {
                 [MERGE_STATE]: (state, action) => {
                     state.add(action.state);
                     return state;

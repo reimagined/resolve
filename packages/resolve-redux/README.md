@@ -131,7 +131,7 @@ const aggregate = {
 const readModel = {
   name: 'Users',
   initialState: [],
-  eventHandlers: {
+  projection: {
     UserCreated(state, event) {
       return state.concat({
         ...event.payload,
@@ -228,7 +228,7 @@ store.dispatch(actions.sendCommand({
 const readModel = {
   name: 'TodoList',
   initialState: [],
-  eventHandlers: {
+  projection: {
     TodoListItemUpdateText(state, event) {
       return state.concat({
         ...event.payload,
