@@ -39,7 +39,6 @@ describe('resolve-query', () => {
         };
 
         viewModel = {
-            name: 'NORMAL_VIEW_MODEL_NAME',
             viewModel: true,
             projection: {
                 UserAdded: sinon.stub().callsFake((state, { aggregateId: id, payload }) => {
@@ -71,7 +70,6 @@ describe('resolve-query', () => {
         };
 
         readModel = {
-            name: 'NORMAL_READ_MODEL_NAME',
             projection: {
                 UserAdded: sinon.stub().callsFake(async (state, { aggregateId: id, payload }) => {
                     const newState = state && state.Users ? state : { Users: [] };
@@ -128,15 +126,12 @@ describe('resolve-query', () => {
         };
 
         brokenSchemaModel = {
-            name: 'BROKEN_GRAPHQL_SCHEMA_READ_MODEL_NAME',
             projection: {},
             gqlSchema: 'BROKEN_GRAPHQL_SCHEMA_READ_MODEL_NAME'
         };
 
         brokenResolversModel = {
-            name: 'BROKEN_GRAPHQL_RESOLVER_READ_MODEL_NAME',
             projection: {},
-
             gqlSchema: 'type Query { Broken: String }',
             gqlResolvers: {
                 Broken: () => {
