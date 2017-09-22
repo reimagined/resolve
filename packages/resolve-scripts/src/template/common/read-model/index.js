@@ -10,7 +10,7 @@ const checkState = state => (Array.isArray(state) ? state : []);
 export default {
     name: 'todos',
     viewModel: true,
-    eventHandlers: {
+    projection: {
         [TODO_CREATED]: (state: any, event: TodoCreated) =>
             checkState(state).concat([
                 {

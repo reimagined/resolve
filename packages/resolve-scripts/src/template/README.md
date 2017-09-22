@@ -150,7 +150,7 @@ A typical aggregate structure:
 export default {
   name: 'AggregateName', // Aggregate name for command handler, the same as aggregateType
   initialState: Immutable({}), // Initial state (Bounded context) for every instance of this aggregate type
-  eventHandlers: {
+  projection: {
     Event1Happened: (state, event) => nextState,  // Update functions for the current aggregate instance
     Event2Happened: (state, event) => nextState   // for different event types
   },
@@ -175,7 +175,7 @@ A typical read model structure:
 ```js
 export default {
   name: 'ReadModelName', // Read model name
-  eventHandlers: { // Projection functions
+  projection: { // Projection functions
     Event1Happened: async (storage, event) => { // Use a storage as a mongodb adapter
       const idList = await storage.find({ field: 'Test1' }).map(doc => doc.id);
       await storage.update({ id: { $in: idList } }, { field: 'Test2' });
@@ -220,7 +220,7 @@ A typical view model structure:
 export default {
   name: 'ViewModelName', // View model name
     viewModel: true, // Specify that this is a view model and it can be used as a Redux state
-  eventHandlers: {
+  projection: {
     Event1Happened: (state, event) => nextState,  // Update functions for the current view model instance
     Event2Happened: (state, event) => nextState   // for different event types
   }

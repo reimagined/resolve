@@ -6,11 +6,11 @@ export default (
         throw err;
     }
 ) => {
-    const eventHandlersMap = { types: new Map(), ids: new Map() };
+    const projectionMap = { types: new Map(), ids: new Map() };
 
     function trigger(event) {
-        const handlersByType = eventHandlersMap.types.get(event.type) || [];
-        const handlersById = eventHandlersMap.ids.get(event.aggregateId) || [];
+        const handlersByType = projectionMap.types.get(event.type) || [];
+        const handlersById = projectionMap.ids.get(event.aggregateId) || [];
         handlersByType.concat(handlersById).forEach(handler => handler(event));
     }
 
@@ -32,8 +32,8 @@ export default (
         };
     };
 
-    const onEventByType = onEvent.bind(null, eventHandlersMap.types);
-    const onEventById = onEvent.bind(null, eventHandlersMap.ids);
+    const onEventByType = onEvent.bind(null, projectionMap.types);
+    const onEventById = onEvent.bind(null, projectionMap.ids);
 
     const result = {
         async subscribeByEventType(eventTypes, handler, onlyBus = false) {

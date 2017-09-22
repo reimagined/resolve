@@ -12,7 +12,7 @@ const emptyCreateStore = () => createStore(() => ({}), {});
 
 const emptyReadModel = {
     name: 'emptyReadModel',
-    eventHandlers: {},
+    projection: {},
     gqlSchema: 'type Query { Default: String }',
     gqlResolvers: {
         Default: () => 'Read model is not configured! Please set it in resolve.server.config.js'

@@ -73,7 +73,7 @@ import Immutable from 'seamless-immutable'
 export default {
   name: 'news',
   initialState: Immutable({}),
-  eventHandlers: {
+  projection: {
     NEWS_CREATED: (state, { payload: { userId } }) =>
       state.merge({
         createdAt: Date.now(),

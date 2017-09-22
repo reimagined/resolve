@@ -19,7 +19,7 @@ const server = http.createServer((req, res) => {
 
 const io = socketIO(server);
 
-const eventNames = Object.keys(readModel.eventHandlers);
+const eventNames = Object.keys(readModel.projection);
 
 const requestReadModel = makeIpc('./query/index.js');
 const requestCommand = makeIpc('./command/index.js');

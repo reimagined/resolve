@@ -1,6 +1,6 @@
 import { createReducer } from 'resolve-redux';
 import { readModel } from 'todo-common';
 
-const { name, eventHandlers } = readModel;
+const { name, projection } = readModel;
 
-export default createReducer({ name, eventHandlers });
+export default createReducer({ name, projection });

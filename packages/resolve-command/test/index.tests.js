@@ -15,7 +15,7 @@ describe('resolve-command', () => {
             initialState: {},
             name: AGGREGATE_NAME,
             // Following arguments redefined in beforeEach section
-            eventHandlers: null,
+            projection: null,
             commands: null
         }
     ];
@@ -35,7 +35,7 @@ describe('resolve-command', () => {
 
         const aggregate = aggregates.find(aggregate => aggregate.name === AGGREGATE_NAME);
 
-        aggregate.eventHandlers = {
+        aggregate.projection = {
             SuccessEvent: (state, event) => {
                 lastState = { ...state, value: 42 };
                 return lastState;
@@ -99,9 +99,9 @@ describe('resolve-command', () => {
         }
     });
 
-    it('should use initialState in case of eventHandlers absence', async () => {
+    it('should use initialState in case of projection absence', async () => {
         const aggregate = { ...aggregates[0] };
-        delete aggregate.eventHandlers;
+        delete aggregate.projection;
 
         const executeCommand = createCommandExecutor({
             eventStore,
