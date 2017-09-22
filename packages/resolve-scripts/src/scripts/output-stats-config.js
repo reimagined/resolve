@@ -1,16 +1,16 @@
 export default {
     colors: true,
-    hash: false,
-    version: false,
-    timings: false,
-    assets: false,
-    chunks: false,
-    modules: false,
-    reasons: false,
-    children: false,
-    source: false,
+    hash: true,
+    version: true,
+    timings: true,
+    assets: true,
+    chunks: true,
+    modules: true,
+    reasons: true,
+    children: true,
+    source: true,
     errors: true,
     errorDetails: true,
     warnings: true,
-    publicPath: false
+    publicPath: true
 };

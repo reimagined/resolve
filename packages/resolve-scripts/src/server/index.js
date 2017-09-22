@@ -1,4 +1,4 @@
-import http from 'http';
+import http, { createServer } from 'http';
 import socketIO from 'socket.io';
 import app from './express';
 import fs from 'fs';
@@ -7,6 +7,12 @@ import chalk from 'chalk';
 import connectionHandler from './socket';
 import prepareUrls from './utils/prepare_urls';
 import openBrowser from './utils/open_browser';
+
+import { makeExecutableSchema } from 'graphql-tools';
+import { execute, subscribe } from 'graphql';
+import { SubscriptionServer } from 'subscriptions-transport-ws';
+
+import config from '../configs/server.config.js';
 
 // eslint-disable-next-line no-console
 const log = console.log;
@@ -28,6 +34,28 @@ io.on('connection', connectionHandler);
 const protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
 const appName = JSON.parse(fs.readFileSync(path.resolve(appDirectory, 'package.json'))).name;
 const urls = prepareUrls(protocol, HOST, PORT);
+
+const ws = createServer();
+
+ws.listen(3005, () => {
+    console.log(`GraphQL Server is now running on http://localhost:${PORT}`);
+    const readModel = config.readModel;
+    // Set up the WebSocket for handling GraphQL subscriptions
+    new SubscriptionServer(
+        {
+            execute,
+            subscribe,
+            schema: makeExecutableSchema({
+                resolvers: readModel.gqlResolvers ? { Query: readModel.gqlResolvers } : {},
+                typeDefs: readModel.gqlSchema
+            })
+        },
+        {
+            server: ws,
+            path: '/subscriptions'
+        }
+    );
+});
 
 server.on('listening', () => {
     log();
