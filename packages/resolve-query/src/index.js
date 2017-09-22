@@ -2,8 +2,10 @@ import 'regenerator-runtime/runtime';
 import { makeExecutableSchema } from 'graphql-tools';
 import { parse, execute } from 'graphql';
 
-const createMemoryAdapter = (repository = {}) => ({
-    init(key, onPersistDone = () => {}, onDestroy = () => {}) {
+const createMemoryAdapter = () => {
+    const repository = {};
+
+    const init = (key, onPersistDone = () => {}, onDestroy = () => {}) => {
         if (repository[key]) throw new Error(`State for '${key}' alreary initialized`);
         const persistPromise = new Promise(resolve => onPersistDone(resolve));
 
@@ -18,9 +20,9 @@ const createMemoryAdapter = (repository = {}) => ({
         };
 
         return repository[key].api;
-    },
+    };
 
-    wrapProjection(projection) {
+    const wrapProjection = (projection) => {
         return Object.keys(projection).reduce((result, name) => {
             result[name] = async (key, event) => {
                 if (!projection[name] || repository[key].internalError) return;
@@ -36,18 +38,25 @@ const createMemoryAdapter = (repository = {}) => ({
             };
             return result;
         }, {});
-    },
+    };
 
-    get(key) {
+    const get = (key) => {
         return repository[key] ? repository[key].api : null;
-    },
+    };
 
-    reset(key) {
+    const reset = (key) => {
         if (!repository[key]) return;
         repository[key].onDestroy();
         repository[key] = null;
-    }
-});
+    };
+
+    return {
+        wrapProjection,
+        init,
+        get,
+        reset
+    };
+};
 
 const subscribeByEventTypeAndIds = async (eventStore, callback, eventDescriptors) => {
     const passedEventSet = new WeakSet();
