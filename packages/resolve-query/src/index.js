@@ -2,51 +2,50 @@ import 'regenerator-runtime/runtime';
 import { makeExecutableSchema } from 'graphql-tools';
 import { parse, execute } from 'graphql';
 
-const createMemoryStorageAdapter = (storageRepository = {}) => ({
-    initStorage(storageName, onPersistDone = () => {}, onDestroy = () => {}) {
-        if (storageRepository[storageName]) {
-            throw new Error(`State for read-model '${storageName}' alreary initialized`);
-        }
-
-        const storage = { internalState: null, internalError: null, onDestroy };
+const createMemoryAdapter = (repository = {}) => ({
+    init(key, onPersistDone = () => {}, onDestroy = () => {}) {
+        if (repository[key]) throw new Error(`State for '${key}' alreary initialized`);
         const persistPromise = new Promise(resolve => onPersistDone(resolve));
 
-        storage.api = {
-            getReadable: async () => persistPromise.then(() => storage.internalState),
-            getError: async () => storage.internalError
+        repository[key] = {
+            internalState: null,
+            internalError: null,
+            api: {
+                getReadable: async () => persistPromise.then(() => repository[key].internalState),
+                getError: async () => repository[key].internalError
+            },
+            onDestroy
         };
 
-        storageRepository[storageName] = storage;
-        return storage.api;
+        return repository[key].api;
     },
 
-    wrapEventHandlers(eventHandlers) {
-        return Object.keys(eventHandlers).reduce((result, handlerName) => {
-            result[handlerName] = async (storageName, event) => {
-                const storage = storageRepository[storageName];
-                const handler = eventHandlers[handlerName];
-                if (!handler || storage.internalError) return;
+    wrapProjection(projection) {
+        return Object.keys(projection).reduce((result, name) => {
+            result[name] = async (key, event) => {
+                if (!projection[name] || repository[key].internalError) return;
 
                 try {
-                    storage.internalState = await handler(storage.internalState, event);
+                    repository[key].internalState = await projection[name](
+                        repository[key].internalState,
+                        event
+                    );
                 } catch (error) {
-                    storage.internalError = error;
+                    repository[key].internalError = error;
                 }
             };
             return result;
         }, {});
     },
 
-    getStorage(storageName) {
-        const storage = storageRepository[storageName];
-        if (!storage) return null;
-        return storage.api;
+    get(key) {
+        return repository[key] ? repository[key].api : null;
     },
 
-    resetStorage(storageName) {
-        if (!storageRepository[storageName]) return;
-        storageRepository[storageName].onDestroy();
-        storageRepository[storageName] = null;
+    reset(key) {
+        if (!repository[key]) return;
+        repository[key].onDestroy();
+        repository[key] = null;
     }
 });
 
@@ -76,24 +75,23 @@ const subscribeByEventTypeAndIds = async (eventStore, callback, eventDescriptors
     };
 };
 
-const readStorage = async (storageAdapter, eventStore, eventHandlers, onDemandOptions) => {
+const read = async (adapter, eventStore, projection, onDemandOptions) => {
     const { aggregateIds, limitedEventTypes } = onDemandOptions || {};
 
-    const storageName =
+    const key =
         'STATE' +
         (Array.isArray(aggregateIds) ? `\u200D\u200D${aggregateIds.sort().join('\u200D')}` : '') +
         (Array.isArray(limitedEventTypes)
             ? `\u200D\u200D${limitedEventTypes.sort().join('\u200D')}`
             : '');
 
-    let storage = storageAdapter.getStorage(storageName);
-    if (!storage) {
+    if (!adapter.get(key)) {
         let unsubscriber = null;
         let onDestroy = () => (unsubscriber === null ? (onDestroy = null) : unsubscriber());
         let persistenceDoneCallback = () => {};
         const onPersistDone = callback => (persistenceDoneCallback = callback || (() => {}));
 
-        storage = storageAdapter.initStorage(storageName, onPersistDone, onDestroy);
+        adapter.init(key, onPersistDone, onDestroy);
 
         await new Promise((resolve) => {
             let persistence = { eventsFetched: 0, eventsProcessed: 0, isLoaded: false };
@@ -116,9 +114,7 @@ const readStorage = async (storageAdapter, eventStore, eventHandlers, onDemandOp
             };
 
             const synchronizedEventWorker = (event) => {
-                flowPromise = flowPromise.then(
-                    eventHandlers[event.type].bind(null, storageName, event)
-                );
+                flowPromise = flowPromise.then(projection[event.type].bind(null, key, event));
                 if (!persistence || persistence.isLoaded) return;
                 persistence.eventsFetched++;
                 flowPromise = flowPromise.then(persistenceChecker.bind(null, true));
@@ -127,7 +123,7 @@ const readStorage = async (storageAdapter, eventStore, eventHandlers, onDemandOp
             subscribeByEventTypeAndIds(eventStore, synchronizedEventWorker, {
                 types: Array.isArray(limitedEventTypes) || Array.isArray(aggregateIds)
                     ? limitedEventTypes
-                    : Object.keys(eventHandlers),
+                    : Object.keys(projection),
                 ids: aggregateIds
             }).then((unsub) => {
                 persistenceChecker(false);
@@ -143,18 +139,19 @@ const readStorage = async (storageAdapter, eventStore, eventHandlers, onDemandOp
         persistenceDoneCallback();
     }
 
-    const readableError = await storage.getError();
+    const { getError, getReadable } = adapter.get(key);
+
+    const readableError = await getError();
     if (readableError) {
         throw readableError;
     }
 
-    return await storage.getReadable();
+    return await getReadable();
 };
 
-const getReadModelExecutor = (readModel, eventStore) => {
-    const storageAdapter = readModel.storageAdapter || createMemoryStorageAdapter();
-    const eventHandlers = storageAdapter.wrapEventHandlers(readModel.eventHandlers);
-    const readState = readStorage.bind(null, storageAdapter, eventStore, eventHandlers);
+const createReadModelExecutor = (readModel, eventStore) => {
+    const adapter = readModel.adapter || createMemoryAdapter();
+    const projection = adapter.wrapProjection(readModel.projection);
 
     const executableSchema = makeExecutableSchema({
         resolvers: readModel.gqlResolvers ? { Query: readModel.gqlResolvers } : {},
@@ -167,7 +164,7 @@ const getReadModelExecutor = (readModel, eventStore) => {
         const gqlResponse = await execute(
             executableSchema,
             parsedGqlQuery,
-            readState,
+            read.bind(null, adapter, eventStore, projection),
             { getJwt },
             gqlVariables
         );
@@ -204,20 +201,19 @@ const extractAggregateIdsFromGqlQuery = (parsedGqlQuery, gqlVariables) => {
     }
 };
 
-const getViewModelExecutor = (readModel, eventStore) => {
+const createViewModelExecutor = (readModel, eventStore) => {
     if (readModel.gqlSchema || readModel.gqlResolvers) {
         throw new Error('View model can\'t have GraphQL schemas and resolvers');
     } else if (readModel.storageAdapter) {
         throw new Error('View model can\'t have custom storage Adapter');
     }
 
-    const storageAdapter = createMemoryStorageAdapter();
-    const eventHandlers = storageAdapter.wrapEventHandlers(readModel.eventHandlers);
-    const readState = readStorage.bind(null, storageAdapter, eventStore, eventHandlers);
+    const adapter = createMemoryAdapter();
+    const projection = adapter.wrapProjection(readModel.projection);
 
     return async (gqlQuery, gqlVariables, getJwt) => {
         const parsedGqlQuery = parse(gqlQuery);
-        return await readState({
+        return await read(adapter, eventStore, projection, {
             aggregateIds: extractAggregateIdsFromGqlQuery(parsedGqlQuery, gqlVariables)
         });
     };
@@ -226,8 +222,8 @@ const getViewModelExecutor = (readModel, eventStore) => {
 export default ({ readModel, eventStore }) => {
     try {
         return readModel.viewModel
-            ? getViewModelExecutor(readModel, eventStore)
-            : getReadModelExecutor(readModel, eventStore);
+            ? createViewModelExecutor(readModel, eventStore)
+            : createReadModelExecutor(readModel, eventStore);
     } catch (err) {
         throw new Error(`Error ${err.description} due query-side initialization: ${err.stack}`);
     }

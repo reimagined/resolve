@@ -41,7 +41,7 @@ describe('resolve-query', () => {
         viewModel = {
             name: 'NORMAL_VIEW_MODEL_NAME',
             viewModel: true,
-            eventHandlers: {
+            projection: {
                 UserAdded: sinon.stub().callsFake((state, { aggregateId: id, payload }) => {
                     let newState = state;
                     if (!state || !state.Users) {
@@ -72,7 +72,7 @@ describe('resolve-query', () => {
 
         readModel = {
             name: 'NORMAL_READ_MODEL_NAME',
-            eventHandlers: {
+            projection: {
                 UserAdded: sinon.stub().callsFake(async (state, { aggregateId: id, payload }) => {
                     const newState = state && state.Users ? state : { Users: [] };
                     if (!await newState.Users.find(user => user.id === id)) {
@@ -129,13 +129,13 @@ describe('resolve-query', () => {
 
         brokenSchemaModel = {
             name: 'BROKEN_GRAPHQL_SCHEMA_READ_MODEL_NAME',
-            eventHandlers: {},
+            projection: {},
             gqlSchema: 'BROKEN_GRAPHQL_SCHEMA_READ_MODEL_NAME'
         };
 
         brokenResolversModel = {
             name: 'BROKEN_GRAPHQL_RESOLVER_READ_MODEL_NAME',
-            eventHandlers: {},
+            projection: {},
 
             gqlSchema: 'type Query { Broken: String }',
             gqlResolvers: {
@@ -192,8 +192,8 @@ describe('resolve-query', () => {
 
             const state = await executeQuery(graphqlQuery);
 
-            expect(readModel.eventHandlers.UserAdded.callCount).to.be.equal(1);
-            expect(readModel.eventHandlers.UserDeleted.callCount).to.be.equal(0);
+            expect(readModel.projection.UserAdded.callCount).to.be.equal(1);
+            expect(readModel.projection.UserDeleted.callCount).to.be.equal(0);
 
             expect(state).to.be.deep.equal({
                 UserByIdOnDemand: {
@@ -230,8 +230,8 @@ describe('resolve-query', () => {
 
             const state = await executeQuery(graphqlQuery, { testId: '3' });
 
-            expect(readModel.eventHandlers.UserAdded.callCount).to.be.equal(1);
-            expect(readModel.eventHandlers.UserDeleted.callCount).to.be.equal(0);
+            expect(readModel.projection.UserAdded.callCount).to.be.equal(1);
+            expect(readModel.projection.UserDeleted.callCount).to.be.equal(0);
 
             expect(state).to.be.deep.equal({
                 UserByIdOnDemand: {
