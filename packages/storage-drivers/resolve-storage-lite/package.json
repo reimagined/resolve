@@ -1,8 +1,7 @@
 {
   "name": "resolve-storage-lite",
-  "version": "0.0.27",
-  "description":
-    "This package serves as a driver for resolve-storage to store events using a file or in memory.",
+  "version": "0.0.28",
+  "description": "This package serves as a driver for resolve-storage to store events using a file or in memory.",
   "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
@@ -18,9 +17,13 @@
   },
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
-  "homepage":
-    "https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-lite#readme",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-lite#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.2.0",

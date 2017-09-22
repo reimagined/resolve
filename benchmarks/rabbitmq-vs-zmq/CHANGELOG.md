@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.0.28"></a>
+## 0.0.28 (2017-09-22)
+
+
+
+<a name="0.0.2"></a>
+## 0.0.2 (2017-05-30)
+
+
+
+
 <a name="0.0.27"></a>
 ## 0.0.27 (2017-09-20)
 
