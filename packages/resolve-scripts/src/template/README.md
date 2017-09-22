@@ -445,13 +445,13 @@ The `resolve.server.config.js` file contains information for reSolve library.
 	##### Example
 	###### resolve.server.config.js
 	```js
-	import storageDriver from 'resolve-storage-file';
+	import storageDriver from 'resolve-storage-lite';
 
 	export default {
 	  storage: {
 	    driver: storageDriver ,
 	    params: {
-	      pathToFile: 'db.json'
+	      pathToFile: 'storage.db'
 	    }
 	  }
 	}

@@ -13,7 +13,8 @@
     "template:remove": "rm -rf ./dist/template",
     "template:copy": "cp -r ./src/template ./dist",
     "build": "babel --out-dir ./dist ./src --ignore template",
-    "prepublish": "npm run build && npm run template:remove && npm run template:copy"
+    "prepublish":
+      "npm run build && npm run template:remove && npm run template:copy"
   },
   "repository": {
     "type": "git",
@@ -21,13 +22,9 @@
   },
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": [
-    "cqrs",
-    "eventsourcing",
-    "es",
-    "ddd"
-  ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#readme",
+  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
+  "homepage":
+    "https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#readme",
   "dependencies": {
     "address": "^1.0.3",
     "babel-cli": "^6.24.1",
@@ -58,7 +55,7 @@
     "resolve-command": "^0.0.27",
     "resolve-es": "^0.0.27",
     "resolve-query": "^0.0.27",
-    "resolve-storage-memory": "^0.0.27",
+    "resolve-storage-lite": "^0.0.27",
     "socket.io": "^2.0.3",
     "socket.io-client": "^2.0.3",
     "source-map-support": "^0.4.15",

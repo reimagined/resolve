@@ -20,7 +20,7 @@
     "resolve-command": "^0.0.27",
     "resolve-es": "^0.0.27",
     "resolve-query": "^0.0.27",
-    "resolve-storage-file": "^0.0.27",
+    "resolve-storage-lite": "^0.0.27",
     "seamless-immutable": "^7.1.2",
     "socket.io": "^2.0.1",
     "todo-common": "^0.0.27",

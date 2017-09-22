@@ -1,5 +1,5 @@
 import createEventStore from 'resolve-es';
-import storageDriver from 'resolve-storage-file';
+import storageDriver from 'resolve-storage-lite';
 import busDriver from 'resolve-bus-zmq';
 import commandHandler from 'resolve-command';
 

@@ -21,7 +21,7 @@ Implement a read model for building News state with custom GraphQL resolvers and
 ```js
 import createQueryExecutor from 'resolve-query'
 import createEventStore from 'resolve-es'
-import createStorageDriver from 'resolve-storage-memory'
+import createStorageDriver from 'resolve-storage-lite'
 import createBusDriver from 'resolve-bus-memory'
 
 import newsReadModel from './news-read-model.js'

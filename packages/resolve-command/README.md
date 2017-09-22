@@ -30,7 +30,7 @@ To see a read model handling events which this aggregate produces, refer to the 
 
 ```js
 import commandHandler from 'resolve-command'
-import createEsStorage from 'resolve-storage-memory'
+import createEsStorage from 'resolve-storage-lite'
 import createBusDriver from 'resolve-bus-memory'
 import createEventStore from 'resolve-es'
 
