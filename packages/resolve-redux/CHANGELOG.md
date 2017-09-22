@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.0.28"></a>
+## 0.0.28 (2017-09-22)
+
+
+### Bug Fixes
+
+* **resolve-redux:** pass store.dispatch to a sendCommand ([#250](https://github.com/reimagined/resolve/issues/250)) ([9385668](https://github.com/reimagined/resolve/commit/9385668))
+* make doc links relative ([#275](https://github.com/reimagined/resolve/issues/275)) ([bdc9ced](https://github.com/reimagined/resolve/commit/bdc9ced))
+
+
+### Features
+
+* **resolve-redux:** add default params for saga middlewares ([bba49d8](https://github.com/reimagined/resolve/commit/bba49d8))
+* Read-model API with custom adaptors for projections ([3891448](https://github.com/reimagined/resolve/commit/3891448))
+
+
+### BREAKING CHANGES
+
+* Rename all eventHandlers to projection, since it can be free-form entity, which is supported by selected read-model adapter
+* API of adaptor is changed, now it can build event handlers by input projection definition
+* In resolve-scripts, read-models in plural is renamed to read-model, which encapsulates whole read-model inside
+
+
+
+<a name="0.0.2"></a>
+## 0.0.2 (2017-05-30)
+
+
+
+
 <a name="0.0.27"></a>
 ## 0.0.27 (2017-09-20)
 
