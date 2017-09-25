@@ -37,9 +37,9 @@ const urls = prepareUrls(protocol, HOST, PORT);
 
 const ws = createServer();
 
-ws.listen(3005, () => {
-    log(`GraphQL Server is now running on http://localhost:${PORT}`);
-    // Set up the WebSocket for handling GraphQL subscriptions
+const GRAPHQL_WS_PORT = PORT + 1;
+ws.listen(GRAPHQL_WS_PORT, () => {
+    log(`GraphQL Subscription Server is now running on http://localhost:${GRAPHQL_WS_PORT}`);
     new SubscriptionServer(executeQuery.getGraphql(), {
         server: ws,
         path: '/subscriptions'
