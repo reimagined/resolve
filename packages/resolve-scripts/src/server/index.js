@@ -8,11 +8,7 @@ import connectionHandler from './socket';
 import prepareUrls from './utils/prepare_urls';
 import openBrowser from './utils/open_browser';
 
-import { makeExecutableSchema } from 'graphql-tools';
-import { execute, subscribe } from 'graphql';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
-
-import config from '../configs/server.config.js';
 
 // eslint-disable-next-line no-console
 const log = console.log;
