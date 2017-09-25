@@ -203,10 +203,7 @@ const createReadModelExecutor = (readModel, eventStore) => {
             null,
             parsedGqlQuery,
             null,
-            {
-                asyncIterator: pubsub.asyncIterator.bind(pubsub),
-                getJwt
-            },
+            { getJwt },
             gqlVariables
         );
 
