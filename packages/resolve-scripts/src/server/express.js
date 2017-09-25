@@ -110,4 +110,5 @@ app.get([`${rootDirectory}/*`, `${rootDirectory || '/'}`], async (req, res) => {
     }
 });
 
+export { executeQuery };
 export default app;

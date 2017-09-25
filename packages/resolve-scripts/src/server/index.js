@@ -1,6 +1,6 @@
 import http, { createServer } from 'http';
 import socketIO from 'socket.io';
-import app from './express';
+import app, { executeQuery } from './express';
 import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
@@ -38,23 +38,12 @@ const urls = prepareUrls(protocol, HOST, PORT);
 const ws = createServer();
 
 ws.listen(3005, () => {
-    console.log(`GraphQL Server is now running on http://localhost:${PORT}`);
-    const readModel = config.readModel;
+    log(`GraphQL Server is now running on http://localhost:${PORT}`);
     // Set up the WebSocket for handling GraphQL subscriptions
-    new SubscriptionServer(
-        {
-            execute,
-            subscribe,
-            schema: makeExecutableSchema({
-                resolvers: readModel.gqlResolvers ? { Query: readModel.gqlResolvers } : {},
-                typeDefs: readModel.gqlSchema
-            })
-        },
-        {
-            server: ws,
-            path: '/subscriptions'
-        }
-    );
+    new SubscriptionServer(executeQuery.getGraphql(), {
+        server: ws,
+        path: '/subscriptions'
+    });
 });
 
 server.on('listening', () => {

@@ -1,6 +1,8 @@
 import 'regenerator-runtime/runtime';
+import { PubSub } from 'graphql-subscriptions';
 import { makeExecutableSchema } from 'graphql-tools';
 import { parse, execute } from 'graphql';
+import { subscribe } from 'graphql/subscription';
 
 const createMemoryAdapter = () => {
     const repository = {};
@@ -24,13 +26,14 @@ const createMemoryAdapter = () => {
 
     const buildProjection = (projection) => {
         return Object.keys(projection).reduce((result, name) => {
-            result[name] = async (key, event) => {
+            result[name] = async (key, event, publish) => {
                 if (!projection[name] || repository[key].internalError) return;
 
                 try {
                     repository[key].internalState = await projection[name](
                         repository[key].internalState,
-                        event
+                        event,
+                        publish
                     );
                 } catch (error) {
                     repository[key].internalError = error;
@@ -84,7 +87,7 @@ const subscribeByEventTypeAndIds = async (eventStore, callback, eventDescriptors
     };
 };
 
-const read = async (adapter, eventStore, projection, onDemandOptions) => {
+const read = async (adapter, eventStore, projection, pubsub, onDemandOptions) => {
     const { aggregateIds, limitedEventTypes } = onDemandOptions || {};
 
     const key =
@@ -122,8 +125,16 @@ const read = async (adapter, eventStore, projection, onDemandOptions) => {
                 }
             };
 
+            const publish = pubsub && typeof pubsub.publish === 'function'
+                ? pubsub.publish.bind(pubsub)
+                : () => {
+                    throw new Error('Publishing DIFFs is not supported current model');
+                };
+
             const synchronizedEventWorker = (event) => {
-                flowPromise = flowPromise.then(projection[event.type].bind(null, key, event));
+                flowPromise = flowPromise.then(
+                    projection[event.type].bind(null, key, event, publish)
+                );
                 if (!persistence || persistence.isLoaded) return;
                 persistence.eventsFetched++;
                 flowPromise = flowPromise.then(persistenceChecker.bind(null, true));
@@ -161,26 +172,55 @@ const read = async (adapter, eventStore, projection, onDemandOptions) => {
 const createReadModelExecutor = (readModel, eventStore) => {
     const adapter = readModel.adapter || createMemoryAdapter();
     const projection = adapter.buildProjection(readModel.projection);
+    const pubsub = new PubSub();
+
+    let resolvers = {};
+    if (readModel.gqlResolvers) {
+        resolvers.Query = readModel.gqlResolvers;
+    }
+    if (readModel.gqlSubscriptionFactory) {
+        resolvers.Subscription = readModel.gqlSubscriptionFactory(pubsub);
+    }
 
     const executableSchema = makeExecutableSchema({
-        resolvers: readModel.gqlResolvers ? { Query: readModel.gqlResolvers } : {},
-        typeDefs: readModel.gqlSchema
+        typeDefs: readModel.gqlSchema,
+        resolvers
     });
 
-    return async (gqlQuery, gqlVariables, getJwt) => {
-        const parsedGqlQuery = parse(gqlQuery);
-
-        const gqlResponse = await execute(
+    const createWrappedGraphqlMethod = method => (_, parsedGqlQuery, __, options, gqlVariables) =>
+        method(
             executableSchema,
             parsedGqlQuery,
-            read.bind(null, adapter, eventStore, projection),
-            { getJwt },
+            read.bind(null, adapter, eventStore, projection, pubsub),
+            options,
+            gqlVariables
+        );
+
+    const executor = async (gqlQuery, gqlVariables, getJwt) => {
+        const parsedGqlQuery = parse(gqlQuery);
+
+        const gqlResponse = await createWrappedGraphqlMethod(execute)(
+            null,
+            parsedGqlQuery,
+            null,
+            {
+                asyncIterator: pubsub.asyncIterator.bind(pubsub),
+                getJwt
+            },
             gqlVariables
         );
 
         if (gqlResponse.errors) throw gqlResponse.errors;
         return gqlResponse.data;
     };
+
+    executor.getGraphql = () => ({
+        execute: createWrappedGraphqlMethod(execute),
+        subscribe: createWrappedGraphqlMethod(subscribe),
+        schema: executableSchema
+    });
+
+    return executor;
 };
 
 const extractAggregateIdsFromGqlQuery = (parsedGqlQuery, gqlVariables) => {
@@ -220,12 +260,18 @@ const createViewModelExecutor = (readModel, eventStore) => {
     const adapter = createMemoryAdapter();
     const projection = adapter.buildProjection(readModel.projection);
 
-    return async (gqlQuery, gqlVariables, getJwt) => {
+    const executor = async (gqlQuery, gqlVariables, getJwt) => {
         const parsedGqlQuery = parse(gqlQuery);
-        return await read(adapter, eventStore, projection, {
+        return await read(adapter, eventStore, projection, null, {
             aggregateIds: extractAggregateIdsFromGqlQuery(parsedGqlQuery, gqlVariables)
         });
     };
+
+    executor.getGraphql = () => {
+        throw new Error('View models does not support Graphql');
+    };
+
+    return executor;
 };
 
 export default ({ readModel, eventStore }) => {
