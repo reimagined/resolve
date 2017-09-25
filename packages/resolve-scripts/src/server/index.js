@@ -33,7 +33,7 @@ const urls = prepareUrls(protocol, HOST, PORT);
 
 const ws = createServer();
 
-const GRAPHQL_WS_PORT = PORT + 1;
+const GRAPHQL_WS_PORT = PORT + 5;
 ws.listen(GRAPHQL_WS_PORT, () => {
     log(`GraphQL Subscription Server is now running on http://localhost:${GRAPHQL_WS_PORT}`);
     new SubscriptionServer(executeQuery.getGraphql(), {
