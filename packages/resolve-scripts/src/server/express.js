@@ -83,6 +83,15 @@ app.post(`${rootDirectory}/api/commands`, async (req, res) => {
     }
 });
 
+app.post(
+    `${rootDirectory}/api/graphql`,
+    bodyParser.urlencoded({ extended: false }),
+    async (req, res) => {
+        const data = await executeQuery(req.body.query, req.body.variables || {}, req.jwt);
+        res.send({ data });
+    }
+);
+
 const staticMiddleware = process.env.NODE_ENV === 'production'
     ? express.static(path.join(process.cwd(), './dist/static'))
     : (req, res) => {
