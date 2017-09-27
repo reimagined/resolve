@@ -1,4 +1,4 @@
-export default function (obj, beforeWarnings, afterWarnings) {
+export function checkRequiredFields(obj, beforeWarnings, afterWarnings) {
     const warningMessages = Object.keys(obj)
         .map(fieldName => (obj[fieldName] ? null : `The '${fieldName}' is required`))
         .filter(msg => msg);
@@ -13,4 +13,14 @@ export default function (obj, beforeWarnings, afterWarnings) {
     }
 
     return !shouldWarningsBePrinted;
+}
+
+export function getRootableUrl(path) {
+    const rootDir = typeof process !== 'undefined' &&
+        typeof process.env !== 'undefined' &&
+        process.env.ROOT_DIR
+        ? process.env.ROOT_DIR
+        : '';
+
+    return `${rootDir}${path}`;
 }
