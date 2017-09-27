@@ -22,7 +22,8 @@ const appDirectory = fs.realpathSync(process.cwd());
 const useYarn = fs.existsSync(path.resolve(appDirectory, 'yarn.lock'));
 
 const io = socketIO(server, {
-    path: `${rootDirectory || ''}/socket`
+    path: `${rootDirectory || ''}/socket`,
+    serveClient: false
 });
 
 io.on('connection', connectionHandler);
