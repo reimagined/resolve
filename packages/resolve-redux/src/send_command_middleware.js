@@ -1,9 +1,9 @@
 import 'regenerator-runtime/runtime';
 import fetch from 'isomorphic-fetch';
-import checkRequiredFields from './warn_util';
+import { checkRequiredFields, getRootableUrl } from './util';
 
 const sendCommandDefault = async (command) => {
-    const response = await fetch('/api/commands', {
+    const response = await fetch(getRootableUrl('/api/commands'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'same-origin',

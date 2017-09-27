@@ -8,7 +8,7 @@ const log = console.log;
 // eslint-disable-next-line no-console
 const error = console.error;
 
-const appDependencies = ['axios', 'prop-types', 'uuid'];
+const appDependencies = ['prop-types', 'uuid'];
 
 const dependencies = [
     'react',
