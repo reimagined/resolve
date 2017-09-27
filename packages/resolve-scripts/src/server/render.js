@@ -42,8 +42,9 @@ export default (initialState, { req, res }) => {
             `${helmet.meta.toString()}` +
             `${helmet.link.toString()}` +
             '<script>\n' +
-            `window.__PROCESS_ENV__=${jsonUtfStringify(processEnv)}\n` +
             `window.__INITIAL_STATE__=${jsonUtfStringify(initialState)}\n` +
+            `window.__JWT__=${jsonUtfStringify(req.getJwt())}\n` +
+            `window.__PROCESS_ENV__=${jsonUtfStringify(processEnv)}\n` +
             '</script>\n' +
             `${helmet.script.toString()}\n` +
             '</head>\n' +
