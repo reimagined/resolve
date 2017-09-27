@@ -1,6 +1,7 @@
 import { createReducer } from 'resolve-redux';
-import todosProjection from '../../common/read-models/todos';
+import readModel from '../../common/read-model';
 
-const { name, projection } = todosProjection;
-
-export default createReducer({ name, projection });
+export default createReducer({
+    name: 'VIEW',
+    projection: readModel.projection
+});
