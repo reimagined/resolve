@@ -43,7 +43,7 @@ const createMemoryAdapter = () => {
         }, {});
     };
 
-    const wrapRead = read => (...args) => read(...args);
+    const buildRead = read => (...args) => read(...args);
 
     const get = (key) => {
         return repository[key] ? repository[key].api : null;
@@ -57,7 +57,7 @@ const createMemoryAdapter = () => {
 
     return {
         buildProjection,
-        wrapRead,
+        buildRead,
         init,
         get,
         reset
@@ -190,7 +190,7 @@ const createReadModelExecutor = (readModel, eventStore) => {
         resolvers
     });
 
-    const wrappedRead = adapter.wrapRead(read.bind(null, adapter, eventStore, projection, pubsub));
+    const wrappedRead = adapter.buildRead(read.bind(null, adapter, eventStore, projection, pubsub));
 
     const createWrappedGraphqlMethod = method => (_, parsedGqlQuery, __, options, gqlVariables) =>
         method(executableSchema, parsedGqlQuery, wrappedRead, options, gqlVariables);
@@ -256,7 +256,7 @@ const createViewModelExecutor = (readModel, eventStore) => {
     const adapter = createMemoryAdapter();
     const projection = adapter.buildProjection(readModel.projection);
 
-    const wrappedRead = adapter.wrapRead(read.bind(null, adapter, eventStore, projection, null));
+    const wrappedRead = adapter.buildRead(read.bind(null, adapter, eventStore, projection, null));
 
     const executor = async (gqlQuery, gqlVariables, getJwt) => {
         const parsedGqlQuery = parse(gqlQuery);
