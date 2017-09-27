@@ -414,8 +414,10 @@ The `resolve.server.config.js` file contains information for reSolve library.
 	##### Example
 	###### resolve.server.config.js
 	```js
-	export default { 
-        jwtCookieName: 'JWT-cookie'
+	export default {
+	    jwt: {
+                cookieName: 'JWT-cookie'
+	    }
 	}
 	```
   
@@ -426,10 +428,12 @@ The `resolve.server.config.js` file contains information for reSolve library.
 	##### Example
 	###### resolve.server.config.js
 	```js
-	export default { 
-        jwtOptions: {
-            maxAge: 1000 * 60 * 5 // 5 minutes
-        }
+	export default {
+	    jwt: {
+                options: {
+                    maxAge: 1000 * 60 * 5 // 5 minutes
+                }
+	    }
 	}
 	```
 
@@ -441,7 +445,9 @@ The `resolve.server.config.js` file contains information for reSolve library.
 	###### resolve.server.config.js
 	```js
 	export default { 
-        jwtSecret: 'JWT-secret-with-length-almost-32-bytes-for-enought-security'
+	    jwt: {
+                secret: 'JWT-secret-with-length-almost-32-bytes-for-enought-security'
+	    }
 	}
 	```
 
