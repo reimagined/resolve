@@ -248,7 +248,7 @@ describe('resolve-es', () => {
         });
     });
 
-    describe('rawSaveEvent', () => {
+    describe('saveEventRaw', () => {
         it('should save and propagate event', async () => {
             const storage = {
                 saveEvent: sinon.stub().returns(Promise.resolve())
@@ -260,7 +260,7 @@ describe('resolve-es', () => {
 
             const eventStore = createEventStore({ storage, bus });
             const event = { type: 'EVENT', aggregateId: 'ID', timestamp: 100 };
-            await eventStore.rawSaveEvent(event);
+            await eventStore.saveEventRaw(event);
 
             expect(storage.saveEvent.calledWith(event)).to.be.true;
             expect(bus.publish.calledWith(event)).to.be.true;
@@ -279,7 +279,7 @@ describe('resolve-es', () => {
             const event = {};
 
             try {
-                await eventStore.rawSaveEvent(event);
+                await eventStore.saveEventRaw(event);
                 return Promise.reject('Test failed');
             } catch (err) {
                 expect(err.message).to.be.equal(
@@ -301,7 +301,7 @@ describe('resolve-es', () => {
             const event = { type: 'Event_type', aggregateId: 'Id', timestamp: 'Wrong-timestamp' };
 
             try {
-                await eventStore.rawSaveEvent(event);
+                await eventStore.saveEventRaw(event);
                 return Promise.reject('Test failed');
             } catch (err) {
                 expect(err.message).to.be.equal(
