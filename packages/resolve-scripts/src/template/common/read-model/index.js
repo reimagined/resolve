@@ -5,7 +5,7 @@ import events from '../aggregates/todo-events';
 
 const { TODO_CREATED, TODO_COMPLETED, TODO_RESET } = events;
 
-const checkState = state => (Array.isArray(state) ? state : []);
+export const checkState = state => (Array.isArray(state) ? state : []);
 
 export default {
     name: 'todos',
