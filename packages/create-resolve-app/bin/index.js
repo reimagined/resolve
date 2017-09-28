@@ -3,4 +3,4 @@
 const moduleCreator = require('../dist/create_resolve_app');
 
 const appName = process.argv[2] || 'resolve-app';
-moduleCreator(appName);
+moduleCreator(appName, process.argv[3]);

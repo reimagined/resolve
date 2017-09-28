@@ -103,7 +103,7 @@ const printOutput = (appName, appPath, cdpath, readmeIsExist) => {
     log('Happy coding!');
 };
 
-export default (appPath, appName, originalDirectory) => {
+export default (appPath, appName, originalDirectory, packagePath) => {
     const scriptsPackageName = require(path.join(__dirname, '../../', 'package.json')).name;
     const scriptsPath = path.join(appPath, 'node_modules', scriptsPackageName);
 
@@ -119,7 +119,7 @@ export default (appPath, appName, originalDirectory) => {
 
     const readmeIsExist = tryRenameReadme(appPath);
 
-    const templatePath = path.join(scriptsPath, 'dist', 'template');
+    const templatePath = path.join(packagePath || scriptsPath, 'dist', 'template');
 
     if (!tryCopyTemplate(templatePath, appPath)) {
         error(`Could not locate supplied template: ${chalk.green(templatePath)}`);
