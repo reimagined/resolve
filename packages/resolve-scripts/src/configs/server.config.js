@@ -10,15 +10,6 @@ const emptyRootComponent = () =>
     <div>No root component provided! Please set it in resolve.server.config.js</div>;
 const emptyCreateStore = () => createStore(() => ({}), {});
 
-const emptyReadModel = {
-    name: 'emptyReadModel',
-    projection: {},
-    gqlSchema: 'type Query { Default: String }',
-    gqlResolvers: {
-        Default: () => 'Read model is not configured! Please set it in resolve.server.config.js'
-    }
-};
-
 const defaultConfig = {
     entries: {
         rootComponent: emptyRootComponent,
@@ -39,7 +30,9 @@ const defaultConfig = {
         options: { maxAge: 1000 * 60 * 5 },
         secret: 'Keyboard-Kat'
     },
-    readModel: emptyReadModel,
+    readModel: {
+        projection: {}
+    },
     extendExpress: () => {}
 };
 
