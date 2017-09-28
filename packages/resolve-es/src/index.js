@@ -67,7 +67,7 @@ export default (
             return event;
         },
 
-        async rawSaveEvent(event) {
+        async saveEventRaw(event) {
             const { type, aggregateId, timestamp } = event;
             if (!type || !aggregateId || parseInt(timestamp, 10) !== timestamp) {
                 throw new Error(
