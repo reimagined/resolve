@@ -7,20 +7,19 @@ const events = {
     TODO_RESET: 'TodoReset'
 };
 
-export type TodoCreated = {
+export type Event<Payload> = {
     aggregateId: string,
-    payload: {
-        text: string,
-        completed: boolean
-    }
+    timestamp: string,
+    payload: Payload
 };
 
-export type TodoCompleted = {
-    aggregateId: string
+export type TodoCreated = {
+    text: string,
+    completed: boolean
 };
 
-export type TodoReset = {
-    aggregateId: string
-};
+export type TodoCompleted = {};
+
+export type TodoReset = {};
 
 export default events;
