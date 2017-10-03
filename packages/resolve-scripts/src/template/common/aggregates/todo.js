@@ -1,7 +1,7 @@
 /* @flow */
 
-import type { TodoCreated, TodoCompleted, TodoReset } from './todo-events';
-import events from './todo-events';
+import events from '../events';
+import validate from '../validate';
 
 const Event = (type, payload) => ({
     type,
@@ -10,39 +10,34 @@ const Event = (type, payload) => ({
 
 const { TODO_CREATED, TODO_COMPLETED, TODO_RESET } = events;
 
-const throwErrorIfNull = (state) => {
-    if (state === null) {
-        throw new Error('The aggregate has already been removed');
-    }
-};
-
 const Aggregate = {
     name: 'Todo',
-    initialState: {},
     projection: {
-        [TODO_CREATED]: (state: any, event: TodoCreated) => ({ ...event.payload }),
-        [TODO_COMPLETED]: (state: any, event: TodoCompleted) => {
-            state.completed = true;
-            return state;
-        },
-        [TODO_RESET]: (state: any, event: TodoReset) => {
-            state.completed = false;
-            return state;
-        }
+        [TODO_CREATED]: (state, event) => ({ ...event.payload }),
+        [TODO_COMPLETED]: state => ({
+            ...state,
+            completed: true
+        }),
+        [TODO_RESET]: state => ({
+            ...state,
+            completed: false
+        })
     },
     commands: {
-        createTodo: (state: any, command: TodoCreated) =>
-            new Event(TODO_CREATED, {
+        createTodo: (state, command) => {
+            validate.throwErrorIfAlreadyExists(state, command);
+            return new Event(TODO_CREATED, {
                 completed: false,
                 text: command.payload.text
-            }),
-        completeTodo: (state: TodoCompleted, command: TodoCompleted) => {
-            throwErrorIfNull(state);
-            return state.completed ? null : new Event(TODO_COMPLETED, {});
+            });
         },
-        resetTodo: (state: TodoCompleted, command: TodoReset) => {
-            throwErrorIfNull(state);
-            return !state.completed ? null : new Event(TODO_RESET, {});
+        completeTodo: (state, command) => {
+            validate.throwErrorIfCompleted(state, command);
+            return new Event(TODO_COMPLETED);
+        },
+        resetTodo: (state, command) => {
+            validate.throwErrorIfNotCompleted(state, command);
+            return new Event(TODO_RESET);
         }
     }
 };
