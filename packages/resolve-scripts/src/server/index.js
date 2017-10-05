@@ -37,10 +37,12 @@ const ws = createServer();
 const GRAPHQL_WS_PORT = PORT + 5;
 ws.listen(GRAPHQL_WS_PORT, () => {
     log(`GraphQL Subscription Server is now running on http://localhost:${GRAPHQL_WS_PORT}`);
-    new SubscriptionServer(executeQuery.getGraphql(), {
-        server: ws,
-        path: '/subscriptions'
-    });
+    try {
+        new SubscriptionServer(executeQuery.getGraphql(), {
+            server: ws,
+            path: '/subscriptions'
+        });
+    } catch (e) {}
 });
 
 server.on('listening', () => {
