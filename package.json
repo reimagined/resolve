@@ -31,9 +31,11 @@
     "bootstrap": "lerna bootstrap",
     "lint": "eslint .",
     "lint-staged": "lint-staged",
-    "prettier":
-      "prettier-eslint --write \"./**/src/**/*.js\" \"./**/test/**/*.js\"",
+    "prettier": "prettier-eslint --write \"./**/src/**/*.js\" \"./**/test/**/*.js\"",
     "test": "lerna run test"
   },
-  "pre-commit": ["lint-staged", "lint"]
+  "pre-commit": [
+    "lint-staged",
+    "lint"
+  ]
 }

@@ -69,19 +69,13 @@ const installScripts = (scriptsPackage) => {
     });
 };
 
-const runScripts = (appPath, appName, originalDirectory, scriptsPackage) => {
-    const scriptsPath = path.resolve(
-        appPath,
-        'node_modules',
-        scriptsPackage,
-        'dist',
-        'scripts',
-        'init.js'
-    );
+const runScripts = (appPath, appName, originalDirectory, packagePath, scriptsPackage) => {
+    const scriptsPath = packagePath || path.resolve(appPath, 'node_modules', scriptsPackage);
 
-    const init = require(scriptsPath);
+    const initScriptPath = path.resolve(scriptsPath, 'dist', 'scripts', 'init.js');
 
-    init.default(appPath, appName, originalDirectory);
+    const init = require(initScriptPath);
+    init.default(appPath, appName, originalDirectory, packagePath);
 };
 
 const createPackageJson = (appName, appPath) => {
@@ -93,11 +87,10 @@ const createPackageJson = (appName, appPath) => {
     fs.writeFileSync(path.join(appPath, 'package.json'), JSON.stringify(packageJson, null, 2));
 };
 
-export default async (name) => {
+export default async (name, packagePath) => {
+    const scriptsPackage = 'resolve-scripts';
     const appPath = path.resolve(name);
     const appName = path.basename(appPath);
-
-    const scriptsPackage = 'resolve-scripts';
 
     if (!checkAppName(appName)) {
         process.exit(1);
@@ -131,5 +124,5 @@ export default async (name) => {
 
     await installScripts(scriptsPackage);
 
-    runScripts(appPath, appName, originalDirectory, scriptsPackage);
+    runScripts(appPath, appName, originalDirectory, packagePath, scriptsPackage);
 };
