@@ -38,7 +38,8 @@ script:
   - cd ../
   - node $TRAVIS_BUILD_DIR/packages/create-resolve-app/bin/index.js testapp $TRAVIS_BUILD_DIR/packages/resolve-scripts
   - cd testapp
-  - npm i ansi-styles babel-cli babel-preset-es2015 babel-preset-stage-0 babel-preset-react --save
+  - npm i ansi-styles --save
+  - npm i babel-cli babel-preset-es2015 babel-preset-stage-0 babel-preset-react -g
   - rm -rf ./node_modules
   - cd ../../
   - npm run bootstrap
