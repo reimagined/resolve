@@ -35,4 +35,12 @@ script:
   - npm test
   - cd examples/todo
   - npm run test:e2e -- --browser=chrome
-
+  - cd ../
+  - node ../packages/create-resolve-app/bin/index.js testapp ../packages/resolve-scripts
+  - node cd testapp
+  - npm i ansi-styles --save
+  - rm -rf ./node_modules
+  - cd ../../
+  - npm run bootstrap
+  - node cd examples/testapp
+  - npm run test:e2e
