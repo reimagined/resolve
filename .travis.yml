@@ -36,7 +36,7 @@ script:
   - cd examples/todo
   # - npm run test:e2e -- --browser=chrome
   - cd ../
-  - node $TRAVIS_BUILD_DIR/reimagined/resolve/packages/create-resolve-app/bin/index.js testapp $TRAVIS_BUILD_DIR/reimagined/resolve/packages/resolve-scripts
+  - node $TRAVIS_BUILD_DIR/packages/create-resolve-app/bin/index.js testapp $TRAVIS_BUILD_DIR/packages/resolve-scripts
   - ls
   - cd testapp
   - ls
