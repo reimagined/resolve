@@ -37,11 +37,12 @@ script:
   # - npm run test:e2e -- --browser=chrome
   - cd ../
   - node ../packages/create-resolve-app/bin/index.js testapp ../packages/resolve-scripts
+  - ls
   - cd testapp
+  - ls
   - npm i ansi-styles --save
-  - cd node_modules
   - rm -rf ./node_modules
-  - cd ../../../
+  - cd ../../
   - npm run bootstrap
   - cd examples/testapp
   - ls
