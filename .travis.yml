@@ -39,8 +39,9 @@ script:
   - node ../packages/create-resolve-app/bin/index.js testapp ../packages/resolve-scripts
   - cd testapp
   - npm i ansi-styles --save
+  - cd node_modules
   - rm -rf ./node_modules
-  - cd ../../
+  - cd ../../../
   - npm run bootstrap
   - cd examples/testapp
   - ls
