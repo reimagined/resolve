@@ -1,14 +1,12 @@
-import http, { createServer } from 'http';
+import http from 'http';
 import socketIO from 'socket.io';
-import app, { executeQuery } from './express';
+import app from './express';
 import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
 import connectionHandler from './socket';
 import prepareUrls from './utils/prepare_urls';
 import openBrowser from './utils/open_browser';
-
-import { SubscriptionServer } from 'subscriptions-transport-ws';
 
 // eslint-disable-next-line no-console
 const log = console.log;
@@ -31,19 +29,6 @@ io.on('connection', connectionHandler);
 const protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
 const appName = JSON.parse(fs.readFileSync(path.resolve(appDirectory, 'package.json'))).name;
 const urls = prepareUrls(protocol, HOST, PORT);
-
-const ws = createServer();
-
-const GRAPHQL_WS_PORT = PORT + 5;
-ws.listen(GRAPHQL_WS_PORT, () => {
-    log(`GraphQL Subscription Server is now running on http://localhost:${GRAPHQL_WS_PORT}`);
-    try {
-        new SubscriptionServer(executeQuery.getGraphql(), {
-            server: ws,
-            path: '/subscriptions'
-        });
-    } catch (e) {}
-});
 
 server.on('listening', () => {
     log();

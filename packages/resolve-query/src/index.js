@@ -1,42 +1,43 @@
 import 'regenerator-runtime/runtime';
-import { PubSub } from 'graphql-subscriptions';
 import { makeExecutableSchema } from 'graphql-tools';
 import { parse, execute } from 'graphql';
-import { subscribe } from 'graphql/subscription';
+import hash from 'object-hash';
 
 const createMemoryAdapter = () => {
-    const repository = {};
+    const getKey = onDemandOptions =>
+        typeof onDemandOptions !== 'undefined'
+            ? hash(onDemandOptions, { unorderedArrays: true, unorderedSets: true })
+            : hash(null, { unorderedArrays: true, unorderedSets: true });
 
-    const init = (key, onPersistDone = () => {}, onDestroy = () => {}) => {
-        if (repository[key]) throw new Error(`State for '${key}' alreary initialized`);
-        const persistPromise = new Promise(resolve => onPersistDone(resolve));
+    const repository = new Map();
 
-        repository[key] = {
+    const init = (onDemandOptions, persistDonePromise, onDestroy) => {
+        const key = getKey(onDemandOptions);
+        if (repository.has(key)) throw new Error(`State for '${key}' alreary initialized`);
+        const getState = () => repository.get(key).internalState;
+
+        repository.set(key, {
             internalState: null,
             internalError: null,
-            api: {
-                getReadable: async () => persistPromise.then(() => repository[key].internalState),
-                getError: async () => repository[key].internalError
-            },
+            getReadable: async () => persistDonePromise.then(getState),
+            getError: async () => repository.get(key).internalError,
             onDestroy
-        };
-
-        return repository[key].api;
+        });
     };
 
     const buildProjection = (projection) => {
         return Object.keys(projection).reduce((result, name) => {
-            result[name] = async (key, event, publish) => {
-                if (!projection[name] || repository[key].internalError) return;
+            result[name] = async (event, onDemandOptions) => {
+                const key = getKey(onDemandOptions);
+                if (repository.get(key).internalError) return;
 
                 try {
-                    repository[key].internalState = await projection[name](
-                        repository[key].internalState,
-                        event,
-                        publish
+                    repository.get(key).internalState = await projection[name](
+                        repository.get(key).internalState,
+                        event
                     );
                 } catch (error) {
-                    repository[key].internalError = error;
+                    repository.get(key).internalError = error;
                 }
             };
             return result;
@@ -45,14 +46,21 @@ const createMemoryAdapter = () => {
 
     const buildRead = read => (...args) => read(...args);
 
-    const get = (key) => {
-        return repository[key] ? repository[key].api : null;
+    const get = (onDemandOptions) => {
+        const key = getKey(onDemandOptions);
+        if (!repository.has(key)) return null;
+
+        return {
+            getReadable: repository.get(key).getReadable,
+            getError: repository.get(key).getError
+        };
     };
 
-    const reset = (key) => {
-        if (!repository[key]) return;
-        repository[key].onDestroy();
-        repository[key] = null;
+    const reset = (onDemandOptions) => {
+        const key = getKey(onDemandOptions);
+        if (!repository.has(key)) return;
+        repository.get(key).onDestroy();
+        repository.delete(key);
     };
 
     return {
@@ -65,105 +73,81 @@ const createMemoryAdapter = () => {
 };
 
 const subscribeByEventTypeAndIds = async (eventStore, callback, eventDescriptors) => {
-    const passedEventSet = new WeakSet();
+    const passedEvents = new WeakSet();
+    const trigger = event => !passedEvents.has(event) && passedEvents.add(event) && callback(event);
 
-    const trigger = (event) => {
-        if (!passedEventSet.has(event)) {
-            passedEventSet.add(event);
-            callback(event);
-        }
-    };
+    const conditionalSubscribe = (section, subscriber) =>
+        Array.isArray(section) ? subscriber(section, trigger) : Promise.resolve(() => {});
 
-    const typeUnsubPromise = Array.isArray(eventDescriptors.types)
-        ? eventStore.subscribeByEventType(eventDescriptors.types, trigger)
-        : Promise.resolve(() => {});
+    const unsubscribers = await Promise.all([
+        conditionalSubscribe(eventDescriptors.types, eventStore.subscribeByEventType),
+        conditionalSubscribe(eventDescriptors.ids, eventStore.subscribeByAggregateId)
+    ]);
 
-    const idUnsubPromise = Array.isArray(eventDescriptors.ids)
-        ? eventStore.subscribeByAggregateId(eventDescriptors.ids, trigger)
-        : Promise.resolve(() => {});
-
-    const [typeUnsub, idUnsub] = await Promise.all([typeUnsubPromise, idUnsubPromise]);
-
-    return () => {
-        typeUnsub();
-        idUnsub();
-    };
+    return () => unsubscribers.forEach(func => func());
 };
 
-const read = async (adapter, eventStore, projection, pubsub, onDemandOptions) => {
+const init = async (adapter, eventStore, projection, onDemandOptions) => {
     const { aggregateIds, limitedEventTypes } = onDemandOptions || {};
+    let unsubscriber = null;
+    let onDestroy = () => (unsubscriber === null ? (onDestroy = null) : unsubscriber());
 
-    const key =
-        'STATE' +
-        (Array.isArray(aggregateIds) ? `\u200D\u200D${aggregateIds.sort().join('\u200D')}` : '') +
-        (Array.isArray(limitedEventTypes)
-            ? `\u200D\u200D${limitedEventTypes.sort().join('\u200D')}`
-            : '');
+    const persistDonePromise = new Promise((resolve) => {
+        let persistence = { eventsFetched: 0, eventsProcessed: 0, isLoaded: false };
+        let flowPromise = Promise.resolve();
 
-    if (!adapter.get(key)) {
-        let unsubscriber = null;
-        let onDestroy = () => (unsubscriber === null ? (onDestroy = null) : unsubscriber());
-        let persistenceDoneCallback = () => {};
-        const onPersistDone = callback => (persistenceDoneCallback = callback || (() => {}));
+        const persistenceChecker = (doCount) => {
+            if (!persistence) return;
+            if (doCount) {
+                persistence.eventsProcessed++;
+            } else {
+                persistence.isLoaded = true;
+            }
+            if (persistence.eventsProcessed === persistence.eventsFetched && persistence.isLoaded) {
+                persistence = null;
+                resolve();
+            }
+        };
 
-        adapter.init(key, onPersistDone, onDestroy);
-
-        await new Promise((resolve) => {
-            let persistence = { eventsFetched: 0, eventsProcessed: 0, isLoaded: false };
-            let flowPromise = Promise.resolve();
-
-            const persistenceChecker = (doCount) => {
-                if (!persistence) return;
-                if (doCount) {
-                    persistence.eventsProcessed++;
-                } else {
-                    persistence.isLoaded = true;
-                }
-                if (
-                    persistence.eventsProcessed === persistence.eventsFetched &&
-                    persistence.isLoaded
-                ) {
-                    persistence = null;
-                    resolve();
-                }
-            };
-
-            const publish = pubsub && typeof pubsub.publish === 'function'
-                ? pubsub.publish.bind(pubsub)
-                : () => {
-                    throw new Error('Publishing DIFFs is not supported current model');
-                };
-
-            const synchronizedEventWorker = (event) => {
+        const synchronizedEventWorker = (event) => {
+            if (event && event.type && typeof projection[event.type] === 'function') {
                 flowPromise = flowPromise.then(
-                    projection[event.type].bind(null, key, event, publish)
+                    projection[event.type].bind(null, event, onDemandOptions)
                 );
-                if (!persistence || persistence.isLoaded) return;
-                persistence.eventsFetched++;
-                flowPromise = flowPromise.then(persistenceChecker.bind(null, true));
-            };
+            }
 
-            subscribeByEventTypeAndIds(eventStore, synchronizedEventWorker, {
-                types: Array.isArray(limitedEventTypes) || Array.isArray(aggregateIds)
-                    ? limitedEventTypes
-                    : Object.keys(projection),
-                ids: aggregateIds
-            }).then((unsub) => {
-                persistenceChecker(false);
+            if (!persistence || persistence.isLoaded) return;
+            flowPromise = flowPromise.then(persistenceChecker.bind(null, true));
 
-                if (onDestroy !== null) {
-                    unsubscriber = unsub;
-                } else {
-                    unsub();
-                }
-            });
+            persistence.eventsFetched++;
+        };
+
+        subscribeByEventTypeAndIds(eventStore, synchronizedEventWorker, {
+            types: Array.isArray(limitedEventTypes) || Array.isArray(aggregateIds)
+                ? limitedEventTypes
+                : Object.keys(projection),
+            ids: aggregateIds
+        }).then((unsub) => {
+            persistenceChecker(false);
+
+            if (onDestroy !== null) {
+                unsubscriber = unsub;
+            } else {
+                unsub();
+            }
         });
+    });
 
-        persistenceDoneCallback();
+    adapter.init(onDemandOptions, persistDonePromise, onDestroy);
+    await persistDonePromise;
+};
+
+const read = async (adapter, eventStore, projection, onDemandOptions) => {
+    if (!adapter.get(onDemandOptions)) {
+        await init(adapter, eventStore, projection, onDemandOptions);
     }
 
-    const { getError, getReadable } = adapter.get(key);
-
+    const { getError, getReadable } = adapter.get(onDemandOptions);
     const readableError = await getError();
     if (readableError) {
         throw readableError;
@@ -175,33 +159,21 @@ const read = async (adapter, eventStore, projection, pubsub, onDemandOptions) =>
 const createReadModelExecutor = (readModel, eventStore) => {
     const adapter = readModel.adapter || createMemoryAdapter();
     const projection = adapter.buildProjection(readModel.projection);
-    const pubsub = new PubSub();
-
-    let resolvers = {};
-    if (readModel.gqlResolvers) {
-        resolvers.Query = readModel.gqlResolvers;
-    }
-    if (readModel.gqlSubscriptionFactory) {
-        resolvers.Subscription = readModel.gqlSubscriptionFactory(pubsub);
-    }
 
     const executableSchema = makeExecutableSchema({
         typeDefs: readModel.gqlSchema,
-        resolvers
+        resolvers: { Query: readModel.gqlResolvers }
     });
 
-    const wrappedRead = adapter.buildRead(read.bind(null, adapter, eventStore, projection, pubsub));
+    const wrappedRead = adapter.buildRead(read.bind(null, adapter, eventStore, projection));
 
-    const createWrappedGraphqlMethod = method => (_, parsedGqlQuery, __, options, gqlVariables) =>
-        method(executableSchema, parsedGqlQuery, wrappedRead, options, gqlVariables);
-
-    const executor = async (gqlQuery, gqlVariables, getJwt) => {
+    return async (gqlQuery, gqlVariables, getJwt) => {
         const parsedGqlQuery = parse(gqlQuery);
 
-        const gqlResponse = await createWrappedGraphqlMethod(execute)(
-            null,
+        const gqlResponse = await execute(
+            executableSchema,
             parsedGqlQuery,
-            null,
+            wrappedRead,
             { getJwt },
             gqlVariables
         );
@@ -209,41 +181,27 @@ const createReadModelExecutor = (readModel, eventStore) => {
         if (gqlResponse.errors) throw gqlResponse.errors;
         return gqlResponse.data;
     };
-
-    executor.getGraphql = () => ({
-        execute: createWrappedGraphqlMethod(execute),
-        subscribe: createWrappedGraphqlMethod(subscribe),
-        schema: executableSchema
-    });
-
-    return executor;
 };
 
-const extractAggregateIdsFromGqlQuery = (parsedGqlQuery, gqlVariables) => {
-    try {
-        const aggregateIds = [];
-        const selection = parsedGqlQuery.definitions[0].selectionSet.selections[0];
-        if (selection.name.kind !== 'Name' || selection.name.value !== 'View') {
-            throw new Error();
-        }
+const extractVariablesFromGqlSelection = (selection, gqlVariables, varibaleNames) => {
+    return varibaleNames.reduce((result, { innerName, outerName }) => {
+        const values = [];
         if (Array.isArray(selection.arguments)) {
             selection.arguments.forEach((arg) => {
-                if (arg.name.kind !== 'Name' || arg.name.value !== 'aggregateId') {
-                    throw new Error();
-                }
+                if (arg.name.kind !== 'Name' || arg.name.value !== innerName) return;
                 if (arg.value.kind === 'Variable' && arg.value.name && arg.value.name.value) {
-                    aggregateIds.push(gqlVariables[arg.value.name.value]);
+                    values.push(gqlVariables[arg.value.name.value]);
                 } else {
-                    aggregateIds.push(arg.value.value);
+                    values.push(arg.value.value);
                 }
             });
         }
-        return aggregateIds.length > 0 ? aggregateIds : null;
-    } catch (err) {
-        throw new Error( // eslint-disable-next-line max-len
-            'View model is queryable only by "query { View }" or "query { View(aggregateId: ID) }"'
-        );
-    }
+        result[outerName] = null;
+        if (values.length > 0) {
+            result[outerName] = values;
+        }
+        return result;
+    }, {});
 };
 
 const createViewModelExecutor = (readModel, eventStore) => {
@@ -255,29 +213,29 @@ const createViewModelExecutor = (readModel, eventStore) => {
 
     const adapter = createMemoryAdapter();
     const projection = adapter.buildProjection(readModel.projection);
+    const wrappedRead = adapter.buildRead(read.bind(null, adapter, eventStore, projection));
 
-    const wrappedRead = adapter.buildRead(read.bind(null, adapter, eventStore, projection, null));
-
-    const executor = async (gqlQuery, gqlVariables, getJwt) => {
+    return async (gqlQuery, gqlVariables, getJwt) => {
         const parsedGqlQuery = parse(gqlQuery);
-        return await wrappedRead({
-            aggregateIds: extractAggregateIdsFromGqlQuery(parsedGqlQuery, gqlVariables)
-        });
-    };
+        const selection = parsedGqlQuery.definitions[0].selectionSet.selections[0];
+        if (selection.name.kind !== 'Name' || selection.name.value !== 'View') {
+            throw new Error(
+                'View model can be retrieved only by "query { View }" query\n' +
+                    'Allowed arguments is only "aggregateIds" and "limitedEventTypes"'
+            );
+        }
 
-    executor.getGraphql = () => {
-        throw new Error('View models does not support Graphql');
-    };
+        const fieldset = extractVariablesFromGqlSelection(selection, gqlVariables, [
+            { innerName: 'aggregateId', outerName: 'aggregateIds' },
+            { innerName: 'limitedEventType', outerName: 'limitedEventTypes' }
+        ]);
 
-    return executor;
+        return await wrappedRead(fieldset);
+    };
 };
 
 export default ({ readModel, eventStore }) => {
-    try {
-        return readModel.viewModel
-            ? createViewModelExecutor(readModel, eventStore)
-            : createReadModelExecutor(readModel, eventStore);
-    } catch (err) {
-        throw new Error(`Error ${err.description} due query-side initialization: ${err.stack}`);
-    }
+    return readModel.viewModel
+        ? createViewModelExecutor(readModel, eventStore)
+        : createReadModelExecutor(readModel, eventStore);
 };
