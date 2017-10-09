@@ -42,5 +42,5 @@ script:
   - rm -rf ./node_modules
   - cd ../../
   - npm run bootstrap
-  - node cd examples/testapp
+  - cd examples/testapp
   - npm run test:e2e
