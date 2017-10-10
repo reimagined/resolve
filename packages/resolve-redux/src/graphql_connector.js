@@ -1,9 +1,9 @@
-import ApolloClient, { createNetworkInterface } from 'apollo-client';
 import React from 'react';
+import ApolloClient, { createNetworkInterface } from 'apollo-client';
 import { ApolloProvider, graphql, gql } from 'react-apollo';
 
-const networkInterface = createNetworkInterface({ uri: '/api/graphql' });
-const client = new ApolloClient({ networkInterface });
+export const networkInterface = createNetworkInterface({ uri: '/api/graphql' });
+export const client = new ApolloClient({ networkInterface });
 
 export default (gqlQuery, matchVariables = () => {}) => Component =>
     function ResolveGraphglConnector(props) {
