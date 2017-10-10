@@ -24,6 +24,8 @@ const clientDevServer = new WebpackDevServer(clientCompiler, {
     setup: app => app.use(express.static(path.join(process.cwd(), './dist/static')))
 });
 
-webpack(devServerConfig, (err, stats) => {});
+webpack(devServerConfig, (err, stats) => {
+    process.stdout.write(stats.toString(outputConfig) + '\n');
+});
 
 clientDevServer.listen(PORT, '127.0.0.1');
