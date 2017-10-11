@@ -38,7 +38,12 @@ const defaultConfig = {
 };
 
 function extendConfig(inputConfig, defaultConfig) {
-    const config = Object.assign({}, inputConfig);
+    const config = {
+        ...inputConfig,
+        readModel: {
+            ...inputConfig.readModel
+        }
+    };
 
     Object.keys(defaultConfig).forEach((key) => {
         if (!config[key]) {

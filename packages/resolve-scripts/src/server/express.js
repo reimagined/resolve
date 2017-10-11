@@ -87,8 +87,14 @@ app.post(
     `${rootDirectory}/api/graphql`,
     bodyParser.urlencoded({ extended: false }),
     async (req, res) => {
-        const data = await executeQuery(req.body.query, req.body.variables || {}, req.jwt);
-        res.send({ data });
+        try {
+            const data = await executeQuery(req.body.query, req.body.variables || {}, req.jwt);
+            res.status(200).send({ data });
+        } catch (err) {
+            res.status(500).end('Query error: ' + err.message);
+            // eslint-disable-next-line no-console
+            console.log(err);
+        }
     }
 );
 
