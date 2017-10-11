@@ -35,4 +35,12 @@ script:
   - npm test
   - cd examples/todo
   - npm run test:e2e -- --browser=chrome
-
+  - cd ../
+  - node $TRAVIS_BUILD_DIR/packages/create-resolve-app/bin/index.js testapp $TRAVIS_BUILD_DIR/packages/resolve-scripts
+  - cd testapp
+  - npm i ansi-styles babel-cli babel-preset-es2015 babel-preset-stage-0 babel-preset-react --save
+  - rm -rf ./node_modules
+  - cd ../../
+  - npm run bootstrap
+  - cd examples/testapp
+  - npm run test:e2e
