@@ -1,6 +1,5 @@
 import React from 'react';
-import ApolloClient, { createNetworkInterface } from 'apollo-client';
-import { BaseNetworkInterface } from 'apollo-client/transport/networkInterface';
+import ApolloClient, { createNetworkInterface, HTTPFetchNetworkInterface } from 'apollo-client';
 import { ApolloProvider, graphql, gql } from 'react-apollo';
 
 const cache = new Map();
@@ -10,19 +9,15 @@ function getAppoloClientForEndpoint(endpoint = null) {
         return cache.get(endpoint);
     }
 
-    let client;
-    if (endpoint === null) {
-        client = new ApolloClient({
-            networkInterface: createNetworkInterface({ uri: '/api/graphql' })
-        });
-    } else if (endpoint instanceof String) {
-        client = new ApolloClient({ networkInterface: createNetworkInterface({ uri: endpoint }) });
-    } else if (endpoint instanceof BaseNetworkInterface) {
-        client = new ApolloClient({ networkInterface: endpoint });
-    } else {
+    const networkInterface = endpoint === null || endpoint instanceof String
+        ? createNetworkInterface({ uri: !endpoint ? '/api/graphql' : endpoint })
+        : endpoint instanceof QQQ ? endpoint : null;
+
+    if (!networkInterface) {
         throw new Error(`Unknown endpoint: ${endpoint}`);
     }
 
+    const client = new ApolloClient({ networkInterface });
     cache.set(endpoint, client);
     return client;
 }

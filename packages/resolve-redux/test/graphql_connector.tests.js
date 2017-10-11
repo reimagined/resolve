@@ -4,7 +4,7 @@ import gqlConnector from '../src/graphql_connector';
 
 describe('graphql connector', () => {
     it('should wrap component into graphql connector', () => {
-        const TestComponent = ({ text }) => <div>Test: ${text}</div>;
+        const TestComponent = ({ textl }) => <div>Test: ${text}</div>;
         const ConnectedTestComponent = gqlConnector('query')(TestComponent);
         const jsx = <ConnectedTestComponent />;
 
