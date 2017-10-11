@@ -10,10 +10,6 @@ const emptyRootComponent = () =>
     <div>No root component provided! Please set it in resolve.server.config.js</div>;
 const emptyCreateStore = () => createStore(() => ({}), {});
 
-const emptyReadModel = {
-    projection: {}
-};
-
 const defaultConfig = {
     entries: {
         rootComponent: emptyRootComponent,
@@ -34,7 +30,10 @@ const defaultConfig = {
         options: { maxAge: 1000 * 60 * 5 },
         secret: 'Keyboard-Kat'
     },
-    readModel: emptyReadModel,
+    readModel: {
+        viewModel: true,
+        projection: {}
+    },
     extendExpress: () => {}
 };
 
@@ -52,6 +51,10 @@ function extendConfig(inputConfig, defaultConfig) {
             });
         }
     });
+
+    if (inputConfig.readModel && !inputConfig.readModel.viewModel) {
+        config.readModel.viewModel = false;
+    }
 
     return config;
 }
