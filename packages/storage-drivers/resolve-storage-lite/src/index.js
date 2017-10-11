@@ -1,6 +1,6 @@
 import storage from './storage';
 
-export default ({ pathToFile }) => {
+export default ({ pathToFile } = {}) => {
     const prepareStorage = storage.prepare(pathToFile);
 
     return {
