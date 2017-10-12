@@ -1,9 +1,8 @@
-import React from 'react'
+import React from 'react';
 
-const RootComponent = () => (
-  <div>
-	<h1>Hello, world!</h1>
-  </div>
-)
+const RootComponent = () =>
+    <div>
+        <h1>Hello, world!</h1>
+    </div>;
 
-export default RootComponent
+export default RootComponent;

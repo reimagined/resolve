@@ -117,7 +117,7 @@ const deleteFolderRecursive = (path) => {
     }
 };
 
-export default (appPath, appName, originalDirectory, isEmpty , packagePath) => {
+export default (appPath, appName, originalDirectory, isEmpty, packagePath) => {
     const scriptsPackageName = require(path.join(__dirname, '../../', 'package.json')).name;
     const scriptsPath = path.join(appPath, 'node_modules', scriptsPackageName);
 
@@ -143,7 +143,7 @@ export default (appPath, appName, originalDirectory, isEmpty , packagePath) => {
         return;
     }
 
-    if(isEmpty) {
+    if (isEmpty) {
         deleteFolderRecursive(path.join(appPath, 'client'));
         deleteFolderRecursive(path.join(appPath, 'common'));
 
