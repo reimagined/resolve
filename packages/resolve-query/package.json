@@ -1,6 +1,6 @@
 {
   "name": "resolve-query",
-  "version": "0.0.34",
+  "version": "0.0.35",
   "description": "This package creates a function to execute a query.",
   "main": "./dist/index.js",
   "bugs": {
