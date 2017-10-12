@@ -103,7 +103,21 @@ const printOutput = (appName, appPath, cdpath, readmeIsExist) => {
     log('Happy coding!');
 };
 
-export default (appPath, appName, originalDirectory, packagePath) => {
+const deleteFolderRecursive = (path) => {
+    if (fs.existsSync(path)) {
+        fs.readdirSync(path).forEach((file, index) => {
+            let curPath = path + '/' + file;
+            if (fs.lstatSync(curPath).isDirectory()) {
+                deleteFolderRecursive(curPath);
+            } else {
+                fs.unlinkSync(curPath);
+            }
+        });
+        fs.rmdirSync(path);
+    }
+};
+
+export default (appPath, appName, originalDirectory, isEmpty, packagePath) => {
     const scriptsPackageName = require(path.join(__dirname, '../../', 'package.json')).name;
     const scriptsPath = path.join(appPath, 'node_modules', scriptsPackageName);
 
@@ -127,6 +141,14 @@ export default (appPath, appName, originalDirectory, packagePath) => {
     if (!tryCopyTemplate(templatePath, appPath)) {
         error(`Could not locate supplied template: ${chalk.green(templatePath)}`);
         return;
+    }
+
+    if (isEmpty) {
+        deleteFolderRecursive(path.join(appPath, 'client'));
+        deleteFolderRecursive(path.join(appPath, 'common'));
+
+        const templateEmptyPath = path.join(packagePath || scriptsPath, 'dist', 'template_empty');
+        fs.copySync(templateEmptyPath, appPath);
     }
 
     fs.unlinkSync(path.join(appPath, '.eslintrc'));
