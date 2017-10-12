@@ -4,6 +4,7 @@
     "packages/*",
     "packages/bus-drivers/*",
     "packages/storage-drivers/*",
+    "packages/readmodel-adapters/*",
     "examples/*",
     "examples/todo/*",
     "benchmarks/*"
