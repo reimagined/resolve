@@ -161,6 +161,7 @@ export default (appPath, appName, originalDirectory, isEmpty, packagePath) => {
         const templateEmptyPath = path.join(packagePath || scriptsPath, 'dist', 'template_empty');
         fs.copySync(templateEmptyPath, appPath);
         installDependencies(dependencies, false);
+        fs.unlinkSync(path.join(appPath, '.flowconfig'));
     } else {
         installDependencies(dependencies.concat(appDependencies), false);
         installDependencies(devDependencies, true);
