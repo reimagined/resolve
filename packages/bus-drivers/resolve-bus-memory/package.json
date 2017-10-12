@@ -1,6 +1,6 @@
 {
   "name": "resolve-bus-memory",
-  "version": "0.0.33",
+  "version": "0.0.34",
   "description": "This package is a driver for resolve-bus to emit events using memory.",
   "main": "./dist/index.js",
   "bugs": {
