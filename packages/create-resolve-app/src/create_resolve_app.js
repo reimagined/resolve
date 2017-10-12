@@ -75,7 +75,7 @@ const runScripts = (appPath, appName, originalDirectory, packagePath, scriptsPac
     const initScriptPath = path.resolve(scriptsPath, 'dist', 'scripts', 'init.js');
 
     const init = require(initScriptPath);
-    init.default(appPath, appName, originalDirectory, packagePath);
+    init.default(appPath, appName, originalDirectory, true, packagePath);
 };
 
 const createPackageJson = (appName, appPath) => {

@@ -12,8 +12,10 @@
   "scripts": {
     "template:remove": "rm -rf ./dist/template",
     "template:copy": "cp -r ./src/template ./dist",
+    "template_empty:remove": "rm -rf ./dist/template_empty",
+    "template_empty:copy": "cp -r ./src/template_empty ./dist",
     "build": "babel --out-dir ./dist ./src --ignore template",
-    "prepublish": "npm run build && npm run template:remove && npm run template:copy"
+    "prepublish": "npm run build && npm run template:remove && npm run template:copy && npm run template_empty:remove && npm run template_empty:copy"
   },
   "repository": {
     "type": "git",
