@@ -1,6 +1,6 @@
 {
   "name": "todo-client",
-  "version": "0.0.33",
+  "version": "0.0.34",
   "author": "reimagined team",
   "license": "MIT",
   "private": true,
@@ -22,10 +22,10 @@
     "redux": "^3.6.0",
     "redux-burger-menu": "^0.2.0",
     "redux-saga": "^0.15.3",
-    "resolve-redux": "^0.0.33",
+    "resolve-redux": "^0.0.34",
     "seamless-immutable": "^7.1.2",
     "socket.io-client": "^2.0.1",
-    "todo-common": "^0.0.33"
+    "todo-common": "^0.0.34"
   },
   "devDependencies": {
     "react-scripts": "0.9.5"
