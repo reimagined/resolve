@@ -1,4 +1,4 @@
-import hash from './hash'
+import hash from './hash';
 
 export default function reset(repository, onDemandOptions) {
     const key = hash(onDemandOptions);
@@ -7,4 +7,4 @@ export default function reset(repository, onDemandOptions) {
         repository.get(key).onDestroy();
         repository.delete(key);
     }
-};
+}

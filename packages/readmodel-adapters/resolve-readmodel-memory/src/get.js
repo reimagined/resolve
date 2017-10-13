@@ -1,11 +1,11 @@
-import hash from './hash'
+import hash from './hash';
 
-export default function get(repository, onDemandOptions){
+export default function get(repository, onDemandOptions) {
     const key = hash(onDemandOptions);
 
-    if(repository.has(key)) {
-        return repository.get(key).api
+    if (repository.has(key)) {
+        return repository.get(key).api;
     }
 
     return null;
-};
+}

@@ -1,26 +1,40 @@
-import hash from './hash'
+import clone from 'clone';
+import hash from './hash';
 
 export default function buildProjection(repository, collections) {
-    const preparedCollections = [].concat(collections)
+    let preparedCollections;
+    if (Array.isArray(collections)) {
+        preparedCollections = collections;
+    } else {
+        preparedCollections = [
+            {
+                name: 'default',
+                projection: collections,
+                initialState: []
+            }
+        ];
+    }
+
+    repository.collections = preparedCollections;
 
     const callbacks = preparedCollections.reduce(
-        (callbacks, { name = 'default', eventHandlers, initialState }) =>
-            Object.keys(eventHandlers).reduce((result, eventType) => {
+        (callbacks, { name, projection, initialState }) =>
+            Object.keys(projection).reduce((result, eventType) => {
                 result[eventType] = (result[eventType] || []).concat({
                     name,
-                    handler: eventHandlers[eventType],
-                    initialState
+                    handler: projection[eventType],
+                    initialState: clone(initialState)
                 });
                 return result;
             }, callbacks),
         {}
-      );
+    );
 
     return Object.keys(callbacks).reduce((projection, eventType) => {
-        projection[eventType] = (event, onDemandOptions) => {
+        projection[eventType] = async (event, onDemandOptions) => {
             const key = hash(onDemandOptions);
 
-            callbacks[eventType].forEach(({ name = 'default', handler, initialState }) => {
+            for (const { name, handler, initialState } of callbacks[eventType]) {
                 const state = repository.get(key).internalState;
 
                 if (!state.has(name)) {
@@ -28,11 +42,11 @@ export default function buildProjection(repository, collections) {
                 }
 
                 try {
-                    state.set(name, handler(state.get(name), event));
+                    state.set(name, await handler(state.get(name), event));
                 } catch (error) {
                     repository.get(key).internalError = error;
                 }
-            });
+            }
         };
         return projection;
     }, {});

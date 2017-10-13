@@ -1,4 +1,4 @@
-import hash from './hash'
+import hash from './hash';
 
 export default function init(repository, onDemandOptions, persistDonePromise, onDestroy) {
     const key = hash(onDemandOptions);

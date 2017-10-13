@@ -1,7 +1,7 @@
 import 'regenerator-runtime/runtime';
 import { makeExecutableSchema } from 'graphql-tools';
 import { parse, execute } from 'graphql';
-import createMemoryAdapter from 'resolve-readmodel-memory'
+import createMemoryAdapter from 'resolve-readmodel-memory';
 
 const subscribeByEventTypeAndIds = async (eventStore, callback, eventDescriptors) => {
     const passedEvents = new WeakSet();
