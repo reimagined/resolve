@@ -3,6 +3,7 @@ const nodeExternals = require('webpack-node-externals');
 const StartServerPlugin = require('start-server-webpack-plugin');
 
 const webpackServerConfig = require('../configs/webpack.server.config');
+const babelPluginObjectSource = require('./babel-object-source');
 webpackServerConfig.devtool = 'inline-source-map';
 
 if (!webpackServerConfig.plugins) {
@@ -29,5 +30,16 @@ webpackServerConfig.plugins = [
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin()
 ].concat(webpackServerConfig.plugins || []);
+
+webpackServerConfig.module.rules.forEach(rule =>
+    rule.loaders
+        .filter(({ loader }) => loader === 'babel-loader')
+        .forEach(
+            loader =>
+                (loader.query.plugins = (Array.isArray(loader.query.plugins)
+                    ? loader.query.plugins
+                    : []).concat([babelPluginObjectSource]))
+        )
+);
 
 module.exports = webpackServerConfig;

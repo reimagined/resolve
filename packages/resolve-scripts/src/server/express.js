@@ -21,19 +21,25 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-const executeQuery = query({
-    eventStore,
-    readModel: config.readModel
-});
+const readModelExecutors = config.readModels.reduce((readModel, result, index) => {
+    if (!readModel.name) {
+        throw new Error(`Name is mandatory for every read model, but ${index}-th has no name`);
+    }
+    if (!readModel.viewModel || !(readModel.gqlSchema && readModel.gqlResolvers)) {
+        return result;
+    }
+
+    result[readModel.name] = query({
+        eventStore,
+        readModel
+    });
+    return result;
+}, {});
 
 const executeCommand = commandHandler({
     eventStore,
     aggregates: config.aggregates
 });
-
-if (config.gateways) {
-    config.gateways.forEach(gateway => gateway({ executeQuery, executeCommand, eventStore }));
-}
 
 app.use((req, res, next) => {
     req.getJwt = jwt.verify.bind(
@@ -44,7 +50,7 @@ app.use((req, res, next) => {
     );
 
     req.resolve = {
-        executeQuery,
+        readModelExecutors,
         executeCommand,
         eventStore
     };
@@ -55,22 +61,6 @@ app.use((req, res, next) => {
 try {
     config.extendExpress(app);
 } catch (err) {}
-
-app.get(`${rootDirectory}/api/query`, async (req, res) => {
-    try {
-        const state = await executeQuery(
-            req.query.graphql,
-            JSON.parse(req.query.variables || '{}'),
-            req.jwt
-        );
-
-        res.status(200).json(state);
-    } catch (err) {
-        res.status(500).end('Query error: ' + err.message);
-        // eslint-disable-next-line no-console
-        console.log(err);
-    }
-});
 
 app.post(`${rootDirectory}/api/commands`, async (req, res) => {
     try {
@@ -83,20 +73,23 @@ app.post(`${rootDirectory}/api/commands`, async (req, res) => {
     }
 });
 
-app.post(
-    `${rootDirectory}/api/graphql`,
-    bodyParser.urlencoded({ extended: false }),
-    async (req, res) => {
-        try {
-            const data = await executeQuery(req.body.query, req.body.variables || {}, req.jwt);
-            res.status(200).send({ data });
-        } catch (err) {
-            res.status(500).end('Query error: ' + err.message);
-            // eslint-disable-next-line no-console
-            console.log(err);
+Object.keys(readModelExecutors).forEach((modelName) => {
+    const executor = readModelExecutors[modelName];
+    app.post(
+        `${rootDirectory}/api/query/${modelName}`,
+        bodyParser.urlencoded({ extended: false }),
+        async (req, res) => {
+            try {
+                const data = await executor(req.body.query, req.body.variables || {}, req.jwt);
+                res.status(200).send({ data });
+            } catch (err) {
+                res.status(500).end('Query error: ' + err.message);
+                // eslint-disable-next-line no-console
+                console.log(err);
+            }
         }
-    }
-);
+    );
+});
 
 const staticMiddleware = process.env.NODE_ENV === 'production'
     ? express.static(path.join(process.cwd(), './dist/static'))
@@ -109,7 +102,7 @@ app.use(`${rootDirectory}${STATIC_PATH}`, staticMiddleware);
 
 app.get([`${rootDirectory}/*`, `${rootDirectory || '/'}`], async (req, res) => {
     try {
-        const state = await config.initialState(executeQuery, {
+        const state = await config.initialState(readModelExecutors, {
             cookies: req.cookies,
             hostname: req.hostname,
             originalUrl: req.originalUrl,
