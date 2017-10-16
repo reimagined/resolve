@@ -19,6 +19,26 @@ module.exports = function ({ types: t }) {
                     if (skip) return;
                 }
 
+                const sourceInfo = {
+                    sourceCode: 'Source code is not available',
+                    filename: 'Source file name not available',
+                    startLine: NaN,
+                    startColumn: NaN,
+                    endLine: NaN,
+                    endColumn: NaN
+                };
+                try {
+                    sourceInfo.filename = path.hub.file.opts.filename;
+                    sourceInfo.sourceCode = path.hub.file.code.substring(
+                        path.node.start,
+                        path.node.end
+                    );
+                    sourceInfo.startLine = path.node.loc.start.line;
+                    sourceInfo.startColumn = path.node.loc.start.column;
+                    sourceInfo.endLine = path.node.loc.end.line;
+                    sourceInfo.endColumn = path.node.loc.end.column;
+                } catch (err) {}
+
                 path.replaceWith(
                     t.parenthesizedExpression(
                         t.callExpression(
@@ -60,32 +80,27 @@ module.exports = function ({ types: t }) {
                                 t.objectExpression([
                                     t.objectProperty(
                                         t.identifier('sourceCode'),
-                                        t.stringLiteral(
-                                            path.hub.file.code.substring(
-                                                path.node.start,
-                                                path.node.end
-                                            )
-                                        )
+                                        t.stringLiteral(sourceInfo.sourceCode)
                                     ),
                                     t.objectProperty(
                                         t.identifier('filename'),
-                                        t.stringLiteral(path.hub.file.opts.filename)
+                                        t.stringLiteral(sourceInfo.filename)
                                     ),
                                     t.objectProperty(
                                         t.identifier('startLine'),
-                                        t.numericLiteral(path.node.loc.start.line)
+                                        t.numericLiteral(sourceInfo.startLine)
                                     ),
                                     t.objectProperty(
                                         t.identifier('startColumn'),
-                                        t.numericLiteral(path.node.loc.start.column)
+                                        t.numericLiteral(sourceInfo.startColumn)
                                     ),
                                     t.objectProperty(
                                         t.identifier('endLine'),
-                                        t.numericLiteral(path.node.loc.end.line)
+                                        t.numericLiteral(sourceInfo.endLine)
                                     ),
                                     t.objectProperty(
                                         t.identifier('endColumn'),
-                                        t.numericLiteral(path.node.loc.end.column)
+                                        t.numericLiteral(sourceInfo.endColumn)
                                     )
                                 ])
                             ]
