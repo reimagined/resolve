@@ -40,7 +40,9 @@ module.exports = function ({ types: t }) {
                 } catch (err) {}
 
                 path.replaceWith(
-                    t.parenthesizedExpression(
+                    t.conditionalExpression(
+                        t.booleanLiteral(false),
+                        t.booleanLiteral(false),
                         t.callExpression(
                             t.functionExpression(
                                 t.identifier(WRAP_NAME),
