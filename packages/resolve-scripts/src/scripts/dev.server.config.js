@@ -32,14 +32,14 @@ webpackServerConfig.plugins = [
 ].concat(webpackServerConfig.plugins || []);
 
 webpackServerConfig.module.rules.forEach(rule =>
-    rule.loaders
-        .filter(({ loader }) => loader === 'babel-loader')
-        .forEach(
-            loader =>
-                (loader.query.plugins = (Array.isArray(loader.query.plugins)
-                    ? loader.query.plugins
-                    : []).concat([babelPluginObjectSource]))
-        )
+    rule.loaders.filter(({ loader }) => loader === 'babel-loader').forEach(
+        loader =>
+            (loader.query.presets = [
+                {
+                    plugins: [babelPluginObjectSource]
+                }
+            ].concat(Array.isArray(loader.query.presets) ? loader.query.presets : []))
+    )
 );
 
 module.exports = webpackServerConfig;
