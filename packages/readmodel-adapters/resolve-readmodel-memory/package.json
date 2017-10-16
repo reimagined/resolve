@@ -1,6 +1,6 @@
 {
   "name": "resolve-readmodel-memory",
-  "version": "0.0.33",
+  "version": "0.0.36",
   "description": "This package serves as a adapter for resolve-query to store a readmodel in memory.",
   "main": "./dist/index.js",
   "bugs": {
