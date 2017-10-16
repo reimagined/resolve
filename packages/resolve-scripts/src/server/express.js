@@ -36,7 +36,7 @@ if (!Array.isArray(config.readModels)) {
     throw new Error(`Read models declaration should be array ${getSourceInfo(config.readModels)}`);
 }
 
-const readModelExecutors = config.readModels.reduce((readModel, result, index) => {
+const readModelExecutors = config.readModels.reduce((result, readModel) => {
     if (!readModel.name) {
         throw new Error(`Read model name is mandatory ${getSourceInfo(readModel)}`);
     }
