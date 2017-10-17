@@ -9,12 +9,14 @@ const verifyCommand = async ({ aggregateId, aggregateName, type }) => {
 const getAggregateState = async ({ projection, initialState }, aggregateId, eventStore) => {
     const handlers = projection;
     let aggregateState = initialState;
+    aggregateState.version = 0;
 
     if (!handlers) {
         return Promise.resolve(aggregateState);
     }
 
     await eventStore.getEventsByAggregateId(aggregateId, (event) => {
+        aggregateState.version = event.aggregateVersion;
         const handler = handlers[event.type];
         if (!handler) return;
 
@@ -36,6 +38,7 @@ const executeCommand = async (command, aggregate, eventStore, getJwt) => {
     }
 
     event.aggregateId = aggregateId;
+    event.aggregateVersion = ++aggregateState.version;
     return event;
 };
 

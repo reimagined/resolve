@@ -25,6 +25,12 @@ function createDriver({ url, collection }) {
                     coll
                         .createIndex('timestamp')
                         .then(() => coll.createIndex('aggregateId'))
+                        .then(() =>
+                            coll.createIndex(
+                                { aggregateId: 1, aggregateVersion: 1 },
+                                { unique: true }
+                            )
+                        )
                         .then(() => coll)
                 );
         }

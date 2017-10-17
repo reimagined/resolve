@@ -27,9 +27,12 @@ describe('resolve-command', () => {
         eventStore = {
             getEventsByAggregateId: sinon
                 .stub()
-                .callsFake((eventTypes, handler) => handler(eventList.shift())),
+                .callsFake(
+                    (eventTypes, handler) => (eventList.length ? handler(eventList.shift()) : null)
+                ),
             saveEvent: sinon.stub().callsFake((event) => {
                 eventList.push(event);
+                return event;
             })
         };
 
@@ -63,9 +66,9 @@ describe('resolve-command', () => {
         eventList = null;
     });
 
-    it('should success build aggregate state and execute commnand', async () => {
+    it('should success build aggregate state from empty event list and execute cmd', async () => {
         const executeCommand = createCommandExecutor({ eventStore, aggregates });
-        eventList = [{ type: 'SuccessEvent' }];
+        eventList = [];
 
         const transaction = executeCommand({
             aggregateName: AGGREGATE_NAME,
@@ -73,16 +76,34 @@ describe('resolve-command', () => {
             type: 'emptyCommand'
         });
 
-        await transaction;
+        const event = await transaction;
 
+        expect(event.aggregateVersion).to.be.equal(1);
+        expect(lastState).to.be.deep.equal({ version: 1 });
+    });
+
+    it('should success build aggregate state and execute commnand', async () => {
+        const executeCommand = createCommandExecutor({ eventStore, aggregates });
+        eventList = [{ type: 'SuccessEvent', aggregateVersion: 1 }];
+
+        const transaction = executeCommand({
+            aggregateName: AGGREGATE_NAME,
+            aggregateId: AGGREGATE_ID,
+            type: 'emptyCommand'
+        });
+
+        const event = await transaction;
+
+        expect(event.aggregateVersion).to.be.equal(2);
         expect(lastState).to.be.deep.equal({
-            value: 42
+            value: 42,
+            version: 2
         });
     });
 
     it('should handle rejection on case of failure on building aggregate state', async () => {
         const executeCommand = createCommandExecutor({ eventStore, aggregates });
-        eventList = [{ type: 'BrokenEvent' }];
+        eventList = [{ type: 'BrokenEvent', aggregateVersion: 1 }];
 
         try {
             const commnand = executeCommand({
@@ -107,7 +128,7 @@ describe('resolve-command', () => {
             eventStore,
             aggregates: [aggregate]
         });
-        eventList = [{ type: 'SuccessEvent' }];
+        eventList = [{ type: 'SuccessEvent', aggregateVersion: 1 }];
 
         executeCommand({
             aggregateName: AGGREGATE_NAME,
@@ -122,7 +143,7 @@ describe('resolve-command', () => {
 
     it('should reject event with type absence', async () => {
         const executeCommand = createCommandExecutor({ eventStore, aggregates });
-        eventList = [{ type: 'SuccessEvent' }];
+        eventList = [{ type: 'SuccessEvent', aggregateVersion: 1 }];
 
         const transaction = executeCommand({
             aggregateName: AGGREGATE_NAME,
@@ -190,7 +211,7 @@ describe('resolve-command', () => {
         aggregate.commands.emptyCommand = sinon.stub().callsFake(aggregate.commands.emptyCommand);
 
         const executeCommand = createCommandExecutor({ eventStore, aggregates });
-        eventList = [{ type: 'SuccessEvent' }];
+        eventList = [{ type: 'SuccessEvent', aggregateVersion: 1 }];
 
         const getJwt = () => {};
         const transaction = executeCommand(
@@ -207,7 +228,8 @@ describe('resolve-command', () => {
         expect(aggregate.commands.emptyCommand.lastCall.args[2]).to.be.equal(getJwt);
 
         expect(lastState).to.be.deep.equal({
-            value: 42
+            value: 42,
+            version: 2
         });
     });
 
