@@ -1,3 +1,4 @@
+import path from 'path';
 import fileDriver from 'resolve-storage-lite';
 import busDriver from 'resolve-bus-memory';
 import aggregates from './common/aggregates';
@@ -8,9 +9,8 @@ if (module.hot) {
     module.hot.accept();
 }
 
-const dbPath = process.env.NODE_ENV === 'production'
-    ? './prod.db'
-    : process.env.NODE_ENV === 'tests' ? './__test.db' : './dev.db';
+const { NODE_ENV = 'development' } = process.env;
+const dbPath = path.join(__dirname, `${NODE_ENV}`.db);
 
 export default {
     entries: clientConfig,
