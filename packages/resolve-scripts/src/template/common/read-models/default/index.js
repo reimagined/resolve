@@ -1,14 +1,14 @@
 /* @flow */
 
-import type { TodoCreated, TodoCompleted, TodoReset } from '../aggregates/todo-events';
-import events from '../aggregates/todo-events';
+import type { TodoCreated, TodoCompleted, TodoReset } from '../../aggregates/todo-events';
+import events from '../../aggregates/todo-events';
 
 const { TODO_CREATED, TODO_COMPLETED, TODO_RESET } = events;
 
 export const checkState = state => (Array.isArray(state) ? state : []);
 
 export default {
-    name: 'todos',
+    name: 'default',
     viewModel: true,
     projection: {
         [TODO_CREATED]: (state: any, event: TodoCreated) =>
