@@ -20,18 +20,19 @@ module.exports = function ({ types: t }) {
                 }
 
                 const sourceInfo = {
+                    sourceCode: 'Source code is not available',
                     filename: 'Source file name not available',
                     startLine: NaN,
                     startColumn: NaN,
                     endLine: NaN,
-                    endColumn: NaN,
-                    startCode: NaN,
-                    endCode: NaN
+                    endColumn: NaN
                 };
                 try {
                     sourceInfo.filename = path.hub.file.opts.filename;
-                    sourceInfo.startCode = path.node.start;
-                    sourceInfo.endCode = path.node.end;
+                    sourceInfo.sourceCode = path.hub.file.code.substring(
+                        path.node.start,
+                        path.node.end
+                    );
                     sourceInfo.startLine = path.node.loc.start.line;
                     sourceInfo.startColumn = path.node.loc.start.column;
                     sourceInfo.endLine = path.node.loc.end.line;

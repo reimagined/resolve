@@ -7,7 +7,6 @@ import query from 'resolve-query';
 import commandHandler from 'resolve-command';
 import request from 'request';
 
-import { getSourceInfo, raiseError } from './utils/error_handling';
 import eventStore from './event_store';
 import ssr from './render';
 
@@ -22,19 +21,29 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+const getSourceInfo = (userObject) => {
+    try {
+        const sourcedecl = userObject.__SOURCE_DELCARATION__;
+        const { sourceCode, filename, startLine, startColumn, endLine, endColumn } = sourcedecl;
+        return `in ${filename} line ${startLine}:${startColumn} / ${endLine}:${endColumn}
+            """${sourceCode}"""`;
+    } catch (err) {
+        return '(Source information unavailable)';
+    }
+};
+
 if (!Array.isArray(config.readModels)) {
-    raiseError(`Read models declaration should be array ${getSourceInfo(config.readModels)}`);
+    throw new Error(`Read models declaration should be array ${getSourceInfo(config.readModels)}`);
 }
 
 const readModelExecutors = config.readModels.reduce((result, readModel) => {
     if (!readModel.name) {
-        raiseError(`Read model name is mandatory ${getSourceInfo(readModel)}`);
+        throw new Error(`Read model name is mandatory ${getSourceInfo(readModel)}`);
     }
     if (!readModel.viewModel || !(readModel.gqlSchema && readModel.gqlResolvers)) {
-        raiseError(
-            `Read model should have fields gqlSchema and gqlResolvers or be turned in view model ${getSourceInfo(
-                readModel
-            )}`
+        throw new Error(
+            `Read model should have fields gqlSchema and gqlResolvers or be turned in view model
+        ${getSourceInfo(readModel)}`
         );
     }
 
