@@ -23,9 +23,9 @@ module.exports = function ({ types: t }) {
                     filename: 'Source file name not available',
                     startLine: NaN,
                     startColumn: NaN,
-                    startCode: NaN,
                     endLine: NaN,
                     endColumn: NaN,
+                    startCode: NaN,
                     endCode: NaN
                 };
                 try {
