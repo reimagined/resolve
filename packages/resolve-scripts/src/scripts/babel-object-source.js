@@ -80,6 +80,10 @@ module.exports = function ({ types: t }) {
                                 path.node,
                                 t.objectExpression([
                                     t.objectProperty(
+                                        t.identifier('sourceCode'),
+                                        t.stringLiteral(sourceInfo.sourceCode)
+                                    ),
+                                    t.objectProperty(
                                         t.identifier('filename'),
                                         t.stringLiteral(sourceInfo.filename)
                                     ),
@@ -92,20 +96,12 @@ module.exports = function ({ types: t }) {
                                         t.numericLiteral(sourceInfo.startColumn)
                                     ),
                                     t.objectProperty(
-                                        t.identifier('startCode'),
-                                        t.numericLiteral(sourceInfo.startCode)
-                                    ),
-                                    t.objectProperty(
                                         t.identifier('endLine'),
                                         t.numericLiteral(sourceInfo.endLine)
                                     ),
                                     t.objectProperty(
                                         t.identifier('endColumn'),
                                         t.numericLiteral(sourceInfo.endColumn)
-                                    ),
-                                    t.objectProperty(
-                                        t.identifier('endCode'),
-                                        t.numericLiteral(sourceInfo.endCode)
                                     )
                                 ])
                             ]
