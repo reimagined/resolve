@@ -10,7 +10,7 @@ if (module.hot) {
 }
 
 const { NODE_ENV = 'development' } = process.env;
-const dbPath = path.join(__dirname, `${NODE_ENV}`.db);
+const dbPath = path.join(__dirname, `${NODE_ENV}.db`);
 
 export default {
     entries: clientConfig,
