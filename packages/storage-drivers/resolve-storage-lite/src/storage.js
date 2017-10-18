@@ -1,5 +1,8 @@
 import 'regenerator-runtime/runtime';
 import NeDB from 'nedb';
+import AsyncLock from 'async-lock';
+import { ConcurrentError } from 'resolve-storage-base';
+const lock = new AsyncLock();
 
 const storage = {
     init: db =>
@@ -35,8 +38,19 @@ const storage = {
         ),
 
     saveEvent: event => db =>
-        new Promise((resolve, reject) =>
-            db.insert(event, error => (error ? reject(error) : resolve()))
+        lock.acquire(
+            event.aggregateId,
+            () =>
+                new Promise((resolve, reject) => {
+                    const { aggregateId, aggregateVersion } = event;
+
+                    db.findOne({ aggregateId, aggregateVersion }, (err, doc) => {
+                        if (doc !== null) {
+                            throw new ConcurrentError();
+                        }
+                        db.insert(event, error => (error ? reject(error) : resolve()));
+                    });
+                })
         )
 };
 

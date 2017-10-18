@@ -1,7 +1,7 @@
 {
-  "name": "resolve-storage-mongo",
+  "name": "resolve-storage-base",
   "version": "0.0.36",
-  "description": "This package serves as a driver for resolve-storage to store events using MongoDB.",
+  "description": "This package contains the basic components for storage drivers",
   "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
@@ -23,15 +23,5 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-mongo#readme",
-  "devDependencies": {
-    "chai": "^3.5.0",
-    "mocha": "^3.2.0",
-    "mockery": "^2.0.0",
-    "sinon": "^2.1.0"
-  },
-  "dependencies": {
-    "mongodb": "^2.2.26",
-    "resolve-storage-base": "^0.0.36"
-  }
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-lite#readme"
 }
