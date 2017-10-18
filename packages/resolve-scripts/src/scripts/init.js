@@ -103,21 +103,42 @@ const printOutput = (appName, appPath, cdpath, readmeIsExist) => {
     log('Happy coding!');
 };
 
-export default (appPath, appName, originalDirectory, packagePath) => {
+const deleteFolderRecursive = (path) => {
+    if (fs.existsSync(path)) {
+        fs.readdirSync(path).forEach((file, index) => {
+            let curPath = path + '/' + file;
+            if (fs.lstatSync(curPath).isDirectory()) {
+                deleteFolderRecursive(curPath);
+            } else {
+                fs.unlinkSync(curPath);
+            }
+        });
+        fs.rmdirSync(path);
+    }
+};
+
+export default (appPath, appName, originalDirectory, isEmpty, packagePath) => {
     const scriptsPackageName = require(path.join(__dirname, '../../', 'package.json')).name;
     const scriptsPath = path.join(appPath, 'node_modules', scriptsPackageName);
 
     const appPackage = require(path.join(appPath, 'package.json'));
-    /* eslint-disable */
     appPackage.scripts = {
         build: 'resolve-scripts build',
         dev: 'resolve-scripts dev',
-        start: 'resolve-scripts start',
-        test: 'jest',
-        'test:e2e':
-            'cross-env NODE_ENV=tests babel-node ./tests/testcafe_runner.js --presets es2015,stage-0,react'
+        start: 'resolve-scripts start'
     };
-    /* eslint-enable */
+
+    if (!isEmpty) {
+        /* eslint-disable */
+        appPackage.scripts = {
+            ...appPackage.scripts,
+            test: 'jest',
+            'test:e2e':
+                'cross-env NODE_ENV=tests babel-node ./tests/testcafe_runner.js --presets es2015,stage-0,react'
+        };
+        /* eslint-enable */
+    }
+
     fs.writeFileSync(path.join(appPath, 'package.json'), JSON.stringify(appPackage, null, 2));
 
     const readmeIsExist = tryRenameReadme(appPath);
@@ -129,13 +150,25 @@ export default (appPath, appName, originalDirectory, packagePath) => {
         return;
     }
 
-    fs.unlinkSync(path.join(appPath, '.eslintrc'));
-
     log('Installing app dependencies...');
     log();
 
-    installDependencies(dependencies.concat(appDependencies), false);
-    installDependencies(devDependencies, true);
+    if (isEmpty) {
+        deleteFolderRecursive(path.join(appPath, 'client'));
+        deleteFolderRecursive(path.join(appPath, 'common'));
+        deleteFolderRecursive(path.join(appPath, 'tests'));
+
+        const templateEmptyPath = path.join(packagePath || scriptsPath, 'dist', 'template_empty');
+        fs.copySync(templateEmptyPath, appPath);
+        installDependencies(dependencies, false);
+        fs.unlinkSync(path.join(appPath, '.flowconfig'));
+    } else {
+        installDependencies(dependencies.concat(appDependencies), false);
+        installDependencies(devDependencies, true);
+    }
+
+    fs.unlinkSync(path.join(appPath, '.eslintrc'));
+
     tryRenameGitignore(appPath);
 
     const cdpath = originalDirectory && path.join(originalDirectory, appName) === appPath

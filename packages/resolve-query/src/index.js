@@ -1,76 +1,7 @@
 import 'regenerator-runtime/runtime';
 import { makeExecutableSchema } from 'graphql-tools';
 import { parse, execute } from 'graphql';
-import hash from 'object-hash';
-
-const createMemoryAdapter = () => {
-    const getKey = onDemandOptions =>
-        typeof onDemandOptions !== 'undefined'
-            ? hash(onDemandOptions, { unorderedArrays: true, unorderedSets: true })
-            : hash(null, { unorderedArrays: true, unorderedSets: true });
-
-    const repository = new Map();
-
-    const init = (onDemandOptions, persistDonePromise, onDestroy) => {
-        const key = getKey(onDemandOptions);
-        if (repository.has(key)) throw new Error(`State for '${key}' alreary initialized`);
-        const getState = () => repository.get(key).internalState;
-
-        repository.set(key, {
-            internalState: null,
-            internalError: null,
-            getReadable: async () => persistDonePromise.then(getState),
-            getError: async () => repository.get(key).internalError,
-            onDestroy
-        });
-    };
-
-    const buildProjection = (projection) => {
-        return Object.keys(projection).reduce((result, name) => {
-            result[name] = async (event, onDemandOptions) => {
-                const key = getKey(onDemandOptions);
-                if (repository.get(key).internalError) return;
-
-                try {
-                    repository.get(key).internalState = await projection[name](
-                        repository.get(key).internalState,
-                        event
-                    );
-                } catch (error) {
-                    repository.get(key).internalError = error;
-                }
-            };
-            return result;
-        }, {});
-    };
-
-    const buildRead = read => (...args) => read(...args);
-
-    const get = (onDemandOptions) => {
-        const key = getKey(onDemandOptions);
-        if (!repository.has(key)) return null;
-
-        return {
-            getReadable: repository.get(key).getReadable,
-            getError: repository.get(key).getError
-        };
-    };
-
-    const reset = (onDemandOptions) => {
-        const key = getKey(onDemandOptions);
-        if (!repository.has(key)) return;
-        repository.get(key).onDestroy();
-        repository.delete(key);
-    };
-
-    return {
-        buildProjection,
-        buildRead,
-        init,
-        get,
-        reset
-    };
-};
+import createMemoryAdapter from 'resolve-readmodel-memory';
 
 const subscribeByEventTypeAndIds = async (eventStore, callback, eventDescriptors) => {
     const passedEvents = new WeakSet();
