@@ -1,30 +1,11 @@
 import React from 'react';
-import ApolloClient, { createNetworkInterface, HTTPFetchNetworkInterface } from 'apollo-client';
+import ApolloClient, { createNetworkInterface } from 'apollo-client';
 import { ApolloProvider, graphql, gql } from 'react-apollo';
 
-const BaseNetworkInterfaceProto = HTTPFetchNetworkInterface.prototype.__proto__;
-const cache = new Map();
-
-function getAppoloClientForEndpoint(endpoint = null) {
-    if (cache.has(endpoint)) {
-        return cache.get(endpoint);
-    }
-
-    const networkInterface = endpoint === null || endpoint instanceof String
-        ? createNetworkInterface({ uri: !endpoint ? '/api/graphql' : endpoint })
-        : BaseNetworkInterfaceProto.isPrototypeOf(endpoint) ? endpoint : null;
-
-    if (!networkInterface) {
-        throw new Error(`Unknown endpoint: ${endpoint}`);
-    }
-
-    const client = new ApolloClient({ networkInterface });
-    cache.set(endpoint, client);
-    return client;
-}
-
 export default (gqlQuery, matchVariables = () => ({}), endpoint) => {
-    const client = getAppoloClientForEndpoint(endpoint);
+    const client = new ApolloClient({
+        networkInterface: createNetworkInterface({ uri: endpoint || '/api/graphql' })
+    });
 
     return Component =>
         function ResolveGraphglConnector(props) {
