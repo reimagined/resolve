@@ -2,6 +2,7 @@ import React from 'react';
 import ApolloClient, { createNetworkInterface, HTTPFetchNetworkInterface } from 'apollo-client';
 import { ApolloProvider, graphql, gql } from 'react-apollo';
 
+const BaseNetworkInterfaceProto = HTTPFetchNetworkInterface.prototype.__proto__;
 const cache = new Map();
 
 function getAppoloClientForEndpoint(endpoint = null) {
@@ -11,7 +12,7 @@ function getAppoloClientForEndpoint(endpoint = null) {
 
     const networkInterface = endpoint === null || endpoint instanceof String
         ? createNetworkInterface({ uri: !endpoint ? '/api/graphql' : endpoint })
-        : endpoint instanceof QQQ ? endpoint : null;
+        : BaseNetworkInterfaceProto.isPrototypeOf(endpoint) ? endpoint : null;
 
     if (!networkInterface) {
         throw new Error(`Unknown endpoint: ${endpoint}`);
@@ -22,7 +23,7 @@ function getAppoloClientForEndpoint(endpoint = null) {
     return client;
 }
 
-export default (gqlQuery, matchVariables = () => {}, endpoint) => {
+export default (gqlQuery, matchVariables = () => ({}), endpoint) => {
     const client = getAppoloClientForEndpoint(endpoint);
 
     return Component =>

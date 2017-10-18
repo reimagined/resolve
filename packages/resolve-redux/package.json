@@ -26,6 +26,8 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#readme",
   "devDependencies": {
     "chai": "^3.5.0",
+    "enzyme": "^3.1.0",
+    "enzyme-adapter-react-15": "^1.0.2",
     "mocha": "^3.2.0",
     "redux": "^3.6.0",
     "seamless-immutable": "^7.1.2",
@@ -38,9 +40,9 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "isomorphic-fetch": "^2.2.1",
-    "react": "^16.0.0",
+    "react": "^15.6.1",
     "react-apollo": "^1.4.16",
-    "react-dom": "^16.0.0",
+    "react-dom": "^15.6.1",
     "regenerator-runtime": "^0.11.0",
     "socket.io-client": "^2.0.3"
   }
