@@ -30,7 +30,7 @@ const readModelExecutors = config.readModels.reduce((result, readModel) => {
     if (!readModel.name) {
         raiseError(`Read model name is mandatory ${getSourceInfo(readModel)}`);
     }
-    if (!(readModel.viewModel ^ (readModel.gqlSchema && readModel.gqlResolvers))) {
+    if (!(!readModel.viewModel ^ !(readModel.gqlSchema && readModel.gqlResolvers))) {
         raiseError(
             // eslint-disable-next-line max-len
             `Read model should have fields gqlSchema and gqlResolvers or be turned in view model ${getSourceInfo(
