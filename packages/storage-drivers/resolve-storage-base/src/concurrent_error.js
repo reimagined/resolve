@@ -1,12 +1,16 @@
-export default class ConcurrentError extends Error {
-    constructor() {
-        const message = 'Concurrent error';
-        super(message);
-        this.name = this.constructor.name;
-        if (typeof Error.captureStackTrace === 'function') {
-            Error.captureStackTrace(this, this.constructor);
-        } else {
-            this.stack = new Error(message).stack;
-        }
+function ConcurrentError() {
+    Error.call(this);
+    this.name = 'ConcurrentError';
+
+    this.message = 'Concurrent error';
+
+    if (Error.captureStackTrace) {
+        Error.captureStackTrace(this, ConcurrentError);
+    } else {
+        this.stack = new Error().stack;
     }
 }
+
+ConcurrentError.prototype = Object.create(Error.prototype);
+
+export default ConcurrentError;

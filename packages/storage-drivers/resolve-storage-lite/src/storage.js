@@ -46,7 +46,7 @@ const storage = {
 
                     db.findOne({ aggregateId, aggregateVersion }, (err, doc) => {
                         if (doc !== null) {
-                            throw new ConcurrentError();
+                            return reject(new ConcurrentError());
                         }
                         db.insert(event, error => (error ? reject(error) : resolve()));
                     });
