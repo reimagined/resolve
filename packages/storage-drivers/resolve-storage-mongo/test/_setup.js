@@ -7,6 +7,7 @@ mockery.enable({
 });
 
 let foundArray = [];
+let isRejectInsert = false;
 
 mockery.registerMock('mongodb', {
     _setFindResult: (array) => {
@@ -16,11 +17,17 @@ mockery.registerMock('mongodb', {
             foundArray = [];
         }
     },
+    _setInsertCommandReject: (isReject) => {
+        isRejectInsert = isReject;
+    },
     MongoClient: {
         connect: sinon.spy(() =>
             Promise.resolve({
                 collection: sinon.spy(() => ({
-                    insert: sinon.spy(() => Promise.resolve()),
+                    insert: sinon.spy(
+                        () =>
+                            !isRejectInsert ? Promise.resolve() : Promise.reject({ code: 11000 })
+                    ),
                     find: sinon.spy(() => ({
                         stream: sinon.spy(() => ({
                             on: (event, callback) => {

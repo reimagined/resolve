@@ -1,6 +1,7 @@
 import sinon from 'sinon';
 import { expect } from 'chai';
-import { MongoClient, _setFindResult } from 'mongodb';
+import { MongoClient, _setFindResult, _setInsertCommandReject } from 'mongodb';
+import { ConcurrentError } from 'resolve-storage-base';
 
 import createDriver from '../src';
 
@@ -17,6 +18,7 @@ const testEvent = {
 describe('es-mongo', () => {
     afterEach(() => {
         _setFindResult(null);
+        _setInsertCommandReject(false);
         MongoClient.connect.reset();
     });
 
@@ -42,6 +44,10 @@ describe('es-mongo', () => {
                 expect(
                     db.collection.lastCall.returnValue.createIndex.secondCall.args
                 ).to.be.deep.equal(['aggregateId']);
+
+                expect(
+                    db.collection.lastCall.returnValue.createIndex.thirdCall.args
+                ).to.be.deep.equal([{ aggregateId: 1, aggregateVersion: 1 }, { unique: true }]);
             });
     });
 
@@ -96,5 +102,14 @@ describe('es-mongo', () => {
 
     it('works the same way for different import types', () => {
         expect(createDriver).to.be.equal(require('../src'));
+    });
+
+    it('works the same way for different import types', () => {
+        _setInsertCommandReject(true);
+        const driver = createDriver(driverSettings);
+
+        return driver.saveEvent(testEvent).catch((e) => {
+            expect(e).to.be.an.instanceof(ConcurrentError);
+        });
     });
 });
