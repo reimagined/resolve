@@ -30,20 +30,12 @@ const defaultConfig = {
         options: { maxAge: 1000 * 60 * 5 },
         secret: 'Keyboard-Kat'
     },
-    readModel: {
-        viewModel: true,
-        projection: {}
-    },
+    readModels: [],
     extendExpress: () => {}
 };
 
 function extendConfig(inputConfig, defaultConfig) {
-    const config = {
-        ...inputConfig,
-        readModel: {
-            ...inputConfig.readModel
-        }
-    };
+    const config = { ...inputConfig };
 
     Object.keys(defaultConfig).forEach((key) => {
         if (!config[key]) {
@@ -56,10 +48,6 @@ function extendConfig(inputConfig, defaultConfig) {
             });
         }
     });
-
-    if (inputConfig.readModel && !inputConfig.readModel.viewModel) {
-        config.readModel.viewModel = false;
-    }
 
     return config;
 }

@@ -104,7 +104,8 @@ describe('resolve-query', () => {
             gqlResolvers: {
                 UserByIdOnDemand: sinon.stub().callsFake(async (read, args) => {
                     if (!args.aggregateId) throw new Error('aggregateId is mandatory');
-                    const { Users } = await read({ aggregateIds: [args.aggregateId] });
+                    const { Users } = await read([args.aggregateId]);
+
                     return Users.find(user => user.id === args.aggregateId);
                 }),
 
