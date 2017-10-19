@@ -20,8 +20,9 @@ export default {
         driver: fileDriver,
         params: { pathToFile: dbPath }
     },
-    initialState: async (readModels) => {
-        const todos = await readModels['default']('query { View }');
+    initialState: async (readModelsExecutors) => {
+        const viewModelQuery = readModelsExecutors['default'];
+        const todos = await viewModelQuery({ limitedEventTypes: Object.values(eventTypes) });
         return { todos: Array.isArray(todos) ? todos : [] };
     },
     aggregates,

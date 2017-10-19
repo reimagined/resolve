@@ -7,11 +7,12 @@ import query from 'resolve-query';
 import commandHandler from 'resolve-command';
 import request from 'request';
 
-import { getSourceInfo, raiseError } from './utils/error_handling.js';
+import { raiseError } from './utils/error_handling.js';
 import eventStore from './event_store';
 import ssr from './render';
 
 import config from '../configs/server.config.js';
+import message from './message';
 
 const STATIC_PATH = '/static';
 const rootDirectory = process.env.ROOT_DIR || '';
@@ -23,26 +24,20 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 if (!Array.isArray(config.readModels)) {
-    raiseError(`Read models declaration should be array ${getSourceInfo(config.readModels)}`);
+    raiseError(message.readModelsArrayFormat, config.readModels);
 }
 
 const readModelExecutors = config.readModels.reduce((result, readModel) => {
     if (!readModel.name) {
-        raiseError(`Read model name is mandatory ${getSourceInfo(readModel)}`);
+        raiseError(message.readModelMandatoryName, readModel);
     }
     if (!(!readModel.viewModel ^ !(readModel.gqlSchema && readModel.gqlResolvers))) {
-        raiseError(
-            // eslint-disable-next-line max-len
-            `Read model should have fields gqlSchema and gqlResolvers or be turned in view model ${getSourceInfo(
-                readModel
-            )}`
-        );
+        raiseError(message.readModelQuerySideMandatory, readModel);
     }
 
-    result[readModel.name] = query({
-        eventStore,
-        readModel
-    });
+    result[readModel.name] = query({ eventStore, readModel });
+    result[readModel.name].viewModel = readModel.viewModel;
+
     return result;
 }, {});
 
@@ -75,9 +70,9 @@ try {
 app.post(`${rootDirectory}/api/commands`, async (req, res) => {
     try {
         await executeCommand(req.body, req.jwt);
-        res.status(200).send('ok');
+        res.status(200).send(message.commandSuccess);
     } catch (err) {
-        res.status(500).end('Command error:' + err.message);
+        res.status(500).end(`${message.commandFail}${err.message}`);
         // eslint-disable-next-line no-console
         console.log(err);
     }
@@ -85,20 +80,41 @@ app.post(`${rootDirectory}/api/commands`, async (req, res) => {
 
 Object.keys(readModelExecutors).forEach((modelName) => {
     const executor = readModelExecutors[modelName];
-    app.post(
-        `${rootDirectory}/api/query/${modelName}`,
-        bodyParser.urlencoded({ extended: false }),
-        async (req, res) => {
+    if (!executor.viewModel) {
+        app.post(
+            `${rootDirectory}/api/query/${modelName}`,
+            bodyParser.urlencoded({ extended: false }),
+            async (req, res) => {
+                try {
+                    const data = await executor(req.body.query, req.body.variables || {}, req.jwt);
+                    res.status(200).send({ data });
+                } catch (err) {
+                    res.status(500).end(`${message.readModelFail}${err.message}`);
+                    // eslint-disable-next-line no-console
+                    console.log(err);
+                }
+            }
+        );
+    } else {
+        app.get(`${rootDirectory}/api/query/${modelName}`, async (req, res) => {
             try {
-                const data = await executor(req.body.query, req.body.variables || {}, req.jwt);
-                res.status(200).send({ data });
+                const [aggregateIds, limitedEventTypes] = [
+                    req.query.aggregateIds,
+                    req.query.limitedEventTypes
+                ];
+                if (!Array.isArray(aggregateIds) && !Array.isArray(limitedEventTypes)) {
+                    throw new Error(message.viewModelOnlyOnDemand);
+                }
+
+                const result = await executor({ aggregateIds, limitedEventTypes });
+                res.status(200).json(result);
             } catch (err) {
-                res.status(500).end('Query error: ' + err.message);
+                res.status(500).end(`${message.viewModelFail}${err.message}`);
                 // eslint-disable-next-line no-console
                 console.log(err);
             }
-        }
-    );
+        });
+    }
 });
 
 const staticMiddleware = process.env.NODE_ENV === 'production'
@@ -122,7 +138,7 @@ app.get([`${rootDirectory}/*`, `${rootDirectory || '/'}`], async (req, res) => {
 
         ssr(state, { req, res });
     } catch (err) {
-        res.status(500).end('SSR error: ' + err.message);
+        res.status(500).end(`${message.ssrError}${err.message}`);
         // eslint-disable-next-line no-console
         console.log(err);
     }
