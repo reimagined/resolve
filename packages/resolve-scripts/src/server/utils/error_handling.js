@@ -9,8 +9,9 @@ export function getSourceInfo(userObject) {
     }
 }
 
-export function raiseError(errorText) {
+export function raiseError(errorText, errorObject) {
+    const errorSource = typeof errorObject !== 'undefined' ? getSourceInfo(errorObject) : '';
     // eslint-disable-next-line no-console
-    console.error('Error: ', errorText);
+    console.error('Error: ', errorText, ' ', errorSource);
     process.exit(1);
 }
