@@ -8,7 +8,7 @@ describe('resolve-command', () => {
     const AGGREGATE_NAME = 'aggregateName';
     const brokenStateError = new Error('Broken Error');
 
-    let lastState, eventStore, eventList;
+    let lastState, eventStore, eventList, aggregateVersion;
 
     const aggregates = [
         {
@@ -23,6 +23,7 @@ describe('resolve-command', () => {
     beforeEach(() => {
         lastState = aggregates[0].initialState;
         eventList = [];
+        aggregateVersion = -1;
 
         eventStore = {
             getEventsByAggregateId: sinon
@@ -49,10 +50,13 @@ describe('resolve-command', () => {
         };
 
         aggregate.commands = {
-            emptyCommand: () => ({
-                type: 'EmptyEvent',
-                payload: {}
-            }),
+            emptyCommand: (aggregateState, command, getJwt, version) => {
+                aggregateVersion = version;
+                return {
+                    type: 'EmptyEvent',
+                    payload: {}
+                };
+            },
             brokenCommand: () => ({
                 type: '', //broken type
                 payload: {}
@@ -79,7 +83,7 @@ describe('resolve-command', () => {
         const event = await transaction;
 
         expect(event.aggregateVersion).to.be.equal(1);
-        expect(lastState).to.be.deep.equal({ version: 1 });
+        expect(aggregateVersion).to.be.equal(0);
     });
 
     it('should success build aggregate state and execute commnand', async () => {
@@ -95,9 +99,9 @@ describe('resolve-command', () => {
         const event = await transaction;
 
         expect(event.aggregateVersion).to.be.equal(2);
+        expect(aggregateVersion).to.be.equal(1);
         expect(lastState).to.be.deep.equal({
-            value: 42,
-            version: 2
+            value: 42
         });
     });
 
@@ -228,8 +232,7 @@ describe('resolve-command', () => {
         expect(aggregate.commands.emptyCommand.lastCall.args[2]).to.be.equal(getJwt);
 
         expect(lastState).to.be.deep.equal({
-            value: 42,
-            version: 2
+            value: 42
         });
     });
 

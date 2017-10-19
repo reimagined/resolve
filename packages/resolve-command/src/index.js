@@ -34,21 +34,17 @@ const executeCommand = async (command, aggregate, eventStore, getJwt) => {
         eventStore
     );
 
-    aggregateVersion++;
-
     const handler = aggregate.commands[type];
-    const event = handler(aggregateState, command, getJwt);
+    const event = handler(aggregateState, command, getJwt, aggregateVersion);
 
     if (!event.type) {
         throw new Error('event type is required');
     }
 
-    if (aggregateState) {
-        aggregateState.version = aggregateVersion;
-    }
-
     event.aggregateId = aggregateId;
-    event.aggregateVersion = aggregateVersion;
+    if (!event.aggregateVersion) {
+        event.aggregateVersion = ++aggregateVersion;
+    }
     return event;
 };
 
