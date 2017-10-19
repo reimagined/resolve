@@ -1,4 +1,7 @@
 import { MongoClient } from 'mongodb';
+import { ConcurrentError } from 'resolve-storage-base';
+
+const DUPLICATE_KEY_ERROR = 11000;
 
 function loadEvents(coll, query, callback) {
     let doneResolver = null;
@@ -25,6 +28,12 @@ function createDriver({ url, collection }) {
                     coll
                         .createIndex('timestamp')
                         .then(() => coll.createIndex('aggregateId'))
+                        .then(() =>
+                            coll.createIndex(
+                                { aggregateId: 1, aggregateVersion: 1 },
+                                { unique: true }
+                            )
+                        )
                         .then(() => coll)
                 );
         }
@@ -33,7 +42,13 @@ function createDriver({ url, collection }) {
     }
 
     return {
-        saveEvent: event => getCollection().then(coll => coll.insert(event)),
+        saveEvent: event =>
+            getCollection().then(coll => coll.insert(event)).catch((e) => {
+                if (e.code === DUPLICATE_KEY_ERROR) {
+                    throw new ConcurrentError();
+                }
+                throw e;
+            }),
         loadEventsByTypes: (types, callback) =>
             getCollection().then(coll => loadEvents(coll, { type: { $in: types } }, callback)),
         loadEventsByAggregateIds: (aggregateIds, callback) =>

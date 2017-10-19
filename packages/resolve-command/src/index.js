@@ -9,33 +9,42 @@ const verifyCommand = async ({ aggregateId, aggregateName, type }) => {
 const getAggregateState = async ({ projection, initialState }, aggregateId, eventStore) => {
     const handlers = projection;
     let aggregateState = initialState;
+    let aggregateVersion = 0;
 
     if (!handlers) {
-        return Promise.resolve(aggregateState);
+        return Promise.resolve({ aggregateState, aggregateVersion });
     }
 
     await eventStore.getEventsByAggregateId(aggregateId, (event) => {
+        aggregateVersion = event.aggregateVersion;
         const handler = handlers[event.type];
         if (!handler) return;
 
         aggregateState = handler(aggregateState, event);
     });
 
-    return aggregateState;
+    return { aggregateState, aggregateVersion };
 };
 
 const executeCommand = async (command, aggregate, eventStore, getJwt) => {
     const { aggregateId, type } = command;
-    const aggregateState = await getAggregateState(aggregate, aggregateId, eventStore);
+    let { aggregateState, aggregateVersion } = await getAggregateState(
+        aggregate,
+        aggregateId,
+        eventStore
+    );
 
     const handler = aggregate.commands[type];
-    const event = handler(aggregateState, command, getJwt);
+    const event = handler(aggregateState, command, getJwt, aggregateVersion);
 
     if (!event.type) {
         throw new Error('event type is required');
     }
 
     event.aggregateId = aggregateId;
+    if (!event.aggregateVersion) {
+        event.aggregateVersion = ++aggregateVersion;
+    }
     return event;
 };
 

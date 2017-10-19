@@ -1,5 +1,7 @@
 import 'regenerator-runtime/runtime';
 import sinon from 'sinon';
+import { expect } from 'chai';
+import { ConcurrentError } from 'resolve-storage-base';
 
 import driver from '../src/index';
 import storage from '../src/storage';
@@ -48,5 +50,17 @@ describe('driver', () => {
 
         sinon.assert.calledWith(storage.prepare, pathToFile);
         sinon.assert.calledWith(storage.loadEvents, { aggregateId: { $in: ids } }, callback);
+    });
+
+    it('throw an exception if the event with the current version exists', async () => {
+        sandbox.restore();
+        const storage = await driver();
+
+        try {
+            await storage.saveEvent({ aggregateId: 1, aggregateVersion: 1 });
+            await storage.saveEvent({ aggregateId: 1, aggregateVersion: 1 });
+        } catch (e) {
+            expect(e).to.be.an.instanceof(ConcurrentError);
+        }
     });
 });

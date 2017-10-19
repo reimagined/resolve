@@ -31,6 +31,7 @@
     "sinon": "^2.1.0"
   },
   "dependencies": {
-    "mongodb": "^2.2.26"
+    "mongodb": "^2.2.26",
+    "resolve-storage-base": "^0.0.36"
   }
 }
