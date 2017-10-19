@@ -162,6 +162,7 @@ export default (appPath, appName, originalDirectory, isEmpty, packagePath) => {
         fs.copySync(templateEmptyPath, appPath);
         installDependencies(dependencies, false);
         fs.unlinkSync(path.join(appPath, '.flowconfig'));
+        fs.unlinkSync(path.join(appPath, 'resolve.build.config.js'));
     } else {
         installDependencies(dependencies.concat(appDependencies), false);
         installDependencies(devDependencies, true);
