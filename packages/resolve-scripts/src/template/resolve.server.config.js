@@ -22,7 +22,7 @@ export default {
     },
     initialState: async (readModelsExecutors) => {
         const viewModelQuery = readModelsExecutors['default'];
-        const todos = await viewModelQuery({ limitedEventTypes: Object.values(eventTypes) });
+        const todos = await viewModelQuery({ eventTypes: Object.values(eventTypes) });
         return { todos: Array.isArray(todos) ? todos : [] };
     },
     aggregates,

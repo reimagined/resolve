@@ -98,15 +98,12 @@ Object.keys(readModelExecutors).forEach((modelName) => {
     } else {
         app.get(`${rootDirectory}/api/query/${modelName}`, async (req, res) => {
             try {
-                const [aggregateIds, limitedEventTypes] = [
-                    req.query.aggregateIds,
-                    req.query.limitedEventTypes
-                ];
-                if (!Array.isArray(aggregateIds) && !Array.isArray(limitedEventTypes)) {
+                const [aggregateIds, eventTypes] = [req.query.aggregateIds, req.query.eventTypes];
+                if (!Array.isArray(aggregateIds) && !Array.isArray(eventTypes)) {
                     throw new Error(message.viewModelOnlyOnDemand);
                 }
 
-                const result = await executor({ aggregateIds, limitedEventTypes });
+                const result = await executor({ aggregateIds, eventTypes });
                 res.status(200).json(result);
             } catch (err) {
                 res.status(500).end(`${message.viewModelFail}${err.message}`);

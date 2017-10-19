@@ -7,6 +7,6 @@ export default {
     commandFail: 'Command error: ',
     readModelFail: 'Read model query error: ',
     viewModelFail: 'View model query error: ',
-    viewModelOnlyOnDemand: 'field "aggregateIds" or/and "limitedEventTypes" is mandatory',
+    viewModelOnlyOnDemand: 'field "aggregateIds" or/and "eventTypes" is mandatory',
     ssrError: 'SSR error: '
 };

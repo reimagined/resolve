@@ -24,7 +24,7 @@ const init = async (adapter, eventStore, projection, onDemandOptions) => {
         return;
     }
 
-    const { aggregateIds, limitedEventTypes } = onDemandOptions || {};
+    const { aggregateIds, eventTypes } = onDemandOptions || {};
     let unsubscriber = null;
     let onDestroy = () => (unsubscriber === null ? (onDestroy = null) : unsubscriber());
 
@@ -59,8 +59,8 @@ const init = async (adapter, eventStore, projection, onDemandOptions) => {
         };
 
         subscribeByEventTypeAndIds(eventStore, synchronizedEventWorker, {
-            types: Array.isArray(limitedEventTypes) || Array.isArray(aggregateIds)
-                ? limitedEventTypes
+            types: Array.isArray(eventTypes) || Array.isArray(aggregateIds)
+                ? eventTypes
                 : Object.keys(projection),
             ids: aggregateIds
         }).then((unsub) => {
