@@ -34,7 +34,7 @@ You can find detailed information on subject-related technologies and links to t
         * [jwt.secret](#jwtsecret)
         * [extendExpress](#extendexpress)
         * [initialState](#initialstate)
-        * [queries](#queries)
+        * [readModels](#readModels)
         * [storage](#storage)
     * [Build Config](#build-config)
         * [extendWebpack](#extendwebpack)
@@ -104,7 +104,12 @@ resolve-app/
       index.js
       todo-events.js
       todo.js
-    read-model/
+    read-models/
+      graphql/
+        collections/      
+        index.js
+        resolvers.js
+        schema.js
       index.js
     store/
       index.js
@@ -149,14 +154,14 @@ A typical aggregate structure:
 ```js
 export default {
   name: 'AggregateName', // Aggregate name for command handler, the same as aggregateType
-  initialState: Immutable({}), // Initial state (Bounded context) for every instance of this aggregate type
+  initialState: {}, // Initial state (Bounded context) for every instance of this aggregate type
   projection: {
     Event1Happened: (state, event) => nextState,  // Update functions for the current aggregate instance
     Event2Happened: (state, event) => nextState   // for different event types
   },
   commands: {
-    command1: (state, arguments) => generatedEvent, // Function which generates events depending 
-    command2: (state, arguments) => generatedEvent  // on the current state and argument list
+    command1Name: (state, command) => generatedEvent, // Function which generates events depending 
+    command2Name: (state, command) => generatedEvent  // on the current state and argument list
   }
 };
 ```
@@ -219,7 +224,7 @@ A typical view model structure:
 ```js
 export default {
   name: 'ViewModelName', // View model name
-    viewModel: true, // Specify that this is a view model and it can be used as a Redux state
+  viewModel: true, // Specify that this is a view model and it can be used as a Redux state
   projection: {
     Event1Happened: (state, event) => nextState,  // Update functions for the current view model instance
     Event2Happened: (state, event) => nextState   // for different event types
@@ -262,7 +267,7 @@ The `resolve.client.config.js` file contains information for the client side of 
 	import React from 'react';
 	import { createStore } from 'redux';
 
-  import reducers from './reducers';  // standard redux reducers
+	import reducers from './reducers';  // standard redux reducers
 
 	export default {
 	  rootComponent: () => (<h1>Root Component</h1>),
@@ -305,7 +310,7 @@ The `resolve.server.config.js` file contains information for reSolve library.
 	    driver: busDriver,
 	    params: {
 	      url: 'zmq_url'
-        }
+	    }
 	  }
 	}
 	```
@@ -408,14 +413,14 @@ The `resolve.server.config.js` file contains information for reSolve library.
 	}
 	```
 
-	* #### jwt.cookieName
+* #### jwt.cookieName
   Name of HTTP-cookie field, which does contain JWT token. This name is used to retrieve actual cookie from client agent/browser, perform validation and pass contained state into command and query side as security context.
 
 	##### Example
 	###### resolve.server.config.js
 	```js
 	export default {
-	    jwt: {
+	  jwt: {
                 cookieName: 'JWT-cookie'
 	    }
 	}
@@ -425,16 +430,16 @@ The `resolve.server.config.js` file contains information for reSolve library.
   Options for customising JWT verify mechanism, including maximum allowed age for tokens to still be valid, audience configuration, etc. Options provided as object, which will be direct passed into verify function as `options` argument. 
   See more information in [referent documentation for `jwt.verify`](https://www.npmjs.com/package/jsonwebtoken#jwtverifytoken-secretorpublickey-options-callback).
   
-	##### Example
-	###### resolve.server.config.js
-	```js
-	export default {
-	    jwt: {
-                options: {
-                    maxAge: 1000 * 60 * 5 // 5 minutes
-                }
-	    }
-	}
+    ##### Example
+    ###### resolve.server.config.js
+    ```js
+    export default {
+      jwt: {
+        options: {
+          maxAge: 1000 * 60 * 5 // 5 minutes
+        }
+      }
+    }
 	```
 
 * #### jwt.secret
@@ -443,12 +448,12 @@ The `resolve.server.config.js` file contains information for reSolve library.
 
 	##### Example
 	###### resolve.server.config.js
-	```js
-	export default { 
-	    jwt: {
-                secret: 'JWT-secret-with-length-almost-32-bytes-for-enought-security'
-	    }
-	}
+    ```js
+    export default {
+      jwt: {
+        secret: 'JWT-secret-with-length-almost-32-bytes-for-enought-security'
+      }
+    }
 	```
 
 * #### extendExpress
@@ -470,7 +475,7 @@ The `resolve.server.config.js` file contains information for reSolve library.
 	
 	A function that takes a [query](../../../resolve-query) and returns a Promise. It's possible to get an initial state by query to read-model and then resolve it with Promise. This state is used in the client and server `createStore` function.
 
-	##### Example
+    ##### Example
 	###### resolve.server.config.js
 	```js
 	export default {
@@ -480,7 +485,7 @@ The `resolve.server.config.js` file contains information for reSolve library.
 	}
 	```
 
-* #### queries
+* #### readModels
 	An array of [read models](#️-aggregates-and-read-models) for [resolve-query](../../../resolve-query). A *read model* represents the current state of a system or its part, and is built by processing all events happened to the system. Read models are used to answer queries.
 
 	##### Example
@@ -490,7 +495,7 @@ The `resolve.server.config.js` file contains information for reSolve library.
 	import readModels from './read-models'
 
 	export default {
-	  queries: readModels
+	  readModels
 	}
 	```
 
@@ -521,7 +526,7 @@ The `resolve.build.config.js` file contains information for building application
 	
 	Allows to extend the standard reSolve client and server configs.
 
-	##### Example
+    ##### Example
 	###### resolve.build.config
 	```js
 	import webpack from 'webpack'
@@ -530,7 +535,7 @@ The `resolve.build.config.js` file contains information for building application
 	  extendWebpack: (clientConfig, serverConfig) => {
 	    clientConfig.plugins.push(new webpack.DefinePlugin({
 	      'customVarDefined': true    
-		})
+	    }))
 	  }
 	}
 	```
