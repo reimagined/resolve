@@ -15,7 +15,8 @@
     "template_empty:remove": "rm -rf ./dist/template_empty",
     "template_empty:copy": "cp -r ./src/template_empty ./dist",
     "build": "babel --out-dir ./dist ./src --ignore template",
-    "prepublish": "npm run build && npm run template:remove && npm run template:copy && npm run template_empty:remove && npm run template_empty:copy"
+    "prepublish":
+      "npm run build && npm run template:remove && npm run template:copy && npm run template_empty:remove && npm run template_empty:copy"
   },
   "repository": {
     "type": "git",
@@ -23,13 +24,9 @@
   },
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": [
-    "cqrs",
-    "eventsourcing",
-    "es",
-    "ddd"
-  ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#readme",
+  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
+  "homepage":
+    "https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#readme",
   "dependencies": {
     "address": "^1.0.3",
     "babel-cli": "^6.24.1",
@@ -47,7 +44,7 @@
     "express": "^4.15.3",
     "fs-extra": "^4.0.0",
     "graphql": "^0.11.3",
-    "graphql-tools": "^1.2.3",
+    "graphql-tools": "^2.5.1",
     "jest": "^20.0.4",
     "jsonwebtoken": "^7.4.3",
     "opn": "^5.1.0",
