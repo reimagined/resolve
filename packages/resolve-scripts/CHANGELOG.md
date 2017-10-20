@@ -3,64 +3,60 @@
 All notable changes to this project will be documented in this file.
 See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-<a name="0.0.28"></a>
-## 0.0.28 (2017-09-22)
+<a name="0.0.38"></a>
+## [0.0.38](https://github.com/reimagined/resolve/compare/v0.0.27...v0.0.38) (2017-10-20)
 
 
 ### Bug Fixes
 
-* **resolve-scripts:** disable ssr in dev mode ([#233](https://github.com/reimagined/resolve/issues/233)) ([255ede1](https://github.com/reimagined/resolve/commit/255ede1))
-* **resolve-scripts:** static content serving in production mode from dist directory ([9582382](https://github.com/reimagined/resolve/commit/9582382))
-* **resolve-scripts:** use only npm for installation ([#269](https://github.com/reimagined/resolve/issues/269)) ([7397b81](https://github.com/reimagined/resolve/commit/7397b81)), closes [#211](https://github.com/reimagined/resolve/issues/211)
-* make doc links relative ([#275](https://github.com/reimagined/resolve/issues/275)) ([bdc9ced](https://github.com/reimagined/resolve/commit/bdc9ced))
+* add middlewares with empty params to create-resolve-app ([0ca16af](https://github.com/reimagined/resolve/commit/0ca16af)), closes [#279](https://github.com/reimagined/resolve/issues/279)
+* display compile-time errors from server-side in dev mode ([41c41fc](https://github.com/reimagined/resolve/commit/41c41fc)), closes [#265](https://github.com/reimagined/resolve/issues/265)
+* fix default config and error handling for graphql resolvers ([2bfd3c2](https://github.com/reimagined/resolve/commit/2bfd3c2))
+* fix template ([d70aa12](https://github.com/reimagined/resolve/commit/d70aa12))
+* fix templates issues ([f2b065a](https://github.com/reimagined/resolve/commit/f2b065a)), closes [#321](https://github.com/reimagined/resolve/issues/321) [#318](https://github.com/reimagined/resolve/issues/318) [#315](https://github.com/reimagined/resolve/issues/315)
+* fix tests ([6984880](https://github.com/reimagined/resolve/commit/6984880))
+* use server bundling without node_modules for socket.io  ([13e99ff](https://github.com/reimagined/resolve/commit/13e99ff))
 
 
 ### Features
 
-* Read-model API with custom adaptors for projections ([3891448](https://github.com/reimagined/resolve/commit/3891448))
+* add graphql endpoint ([826bf48](https://github.com/reimagined/resolve/commit/826bf48))
+* implement multiple read-models and better error handling ([aff2d5f](https://github.com/reimagined/resolve/commit/aff2d5f))
+* provide jwt on client side ([1df756d](https://github.com/reimagined/resolve/commit/1df756d)), closes [#270](https://github.com/reimagined/resolve/issues/270)
 
-
-### Performance Improvements
-
-* **resolve-scripts:** deleting unnecessary template files ([d01e562](https://github.com/reimagined/resolve/commit/d01e562)), closes [#200](https://github.com/reimagined/resolve/issues/200)
-* **resolve-storage-lite:** use nedb instead of simple file storage ([3ca48ba](https://github.com/reimagined/resolve/commit/3ca48ba))
 
 
 ### BREAKING CHANGES
 
-* Rename all eventHandlers to projection, since it can be free-form entity, which is supported by selected read-model adapter
-* API of adaptor is changed, now it can build event handlers by input projection definition
-* In resolve-scripts, read-models in plural is renamed to read-model, which encapsulates whole read-model inside
-* **resolve-storage-lite:** resolve-storage-memory and resolve-storage-file are replaced by resolve-storage-lite. This package supports two behaviors. Don't pass any arguments if you want to use it as in-memory storage and pass the path to the db file to use it as file storage.
-
+* view models are available without graphql via get-request with appropriate view-model name in format `/api/query/${read_model_name}` with mandatory eventTypes and/or aggregateIds field for on-demand query
+* read-models are provided in configuration by array instead of one element
+* any read-model has own name, which used in query API in format `/api/query/${read_model_name}`
+* rename all eventHandlers to projection, since it can be free-form entity, which is supported by selected read-model adapter
 
 
 
 <a name="0.0.27"></a>
-## 0.0.27 (2017-09-20)
+## [0.0.27](https://github.com/reimagined/resolve/compare/v0.0.26...v0.0.27) (2017-09-20)
 
 
 ### Bug Fixes
 
-* **resolve-scripts:** disable ssr in dev mode ([#233](https://github.com/reimagined/resolve/issues/233)) ([255ede1](https://github.com/reimagined/resolve/commit/255ede1))
-* **resolve-scripts:** static content serving in production mode from dist directory ([9582382](https://github.com/reimagined/resolve/commit/9582382))
-* **resolve-scripts:** use only npm for installation ([#269](https://github.com/reimagined/resolve/issues/269)) ([7397b81](https://github.com/reimagined/resolve/commit/7397b81)), closes [#211](https://github.com/reimagined/resolve/issues/211)
+* use only npm for installation ([#269](https://github.com/reimagined/resolve/issues/269)) ([7397b81](https://github.com/reimagined/resolve/commit/7397b81)), closes [#211](https://github.com/reimagined/resolve/issues/211)
 
 
 ### Performance Improvements
 
-* **resolve-scripts:** deleting unnecessary template files ([d01e562](https://github.com/reimagined/resolve/commit/d01e562)), closes [#200](https://github.com/reimagined/resolve/issues/200)
+* deleting unnecessary template files ([d01e562](https://github.com/reimagined/resolve/commit/d01e562)), closes [#200](https://github.com/reimagined/resolve/issues/200)
 
 
 
 
 <a name="0.0.26"></a>
-## 0.0.26 (2017-09-08)
+## [0.0.26](https://github.com/reimagined/resolve/compare/v0.0.25...v0.0.26) (2017-09-08)
 
 
 ### Bug Fixes
 
-* **resolve-scripts:** disable ssr in dev mode (#233) ([255ede1](https://github.com/reimagined/resolve/commit/255ede1))
 * **resolve-scripts:** static content serving in production mode from dist directory ([9582382](https://github.com/reimagined/resolve/commit/9582382))
 
 

@@ -1,5 +1,47 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+<a name="0.0.38"></a>
+## [0.0.38](https://github.com/reimagined/resolve/compare/v0.0.28...v0.0.38) (2017-10-20)
+
+### Bug Fixes
+
+* **create-resolve-app:** change creation options ([86eaeb2](https://github.com/reimagined/resolve/commit/86eaeb2))
+* **resolve-scripts:** add middlewares with empty params to create-resolve-app ([0ca16af](https://github.com/reimagined/resolve/commit/0ca16af)), closes [#279](https://github.com/reimagined/resolve/issues/279)
+* **resolve-scripts:** display compile-time errors from server-side in dev mode ([41c41fc](https://github.com/reimagined/resolve/commit/41c41fc)), closes [#265](https://github.com/reimagined/resolve/issues/265)
+* **resolve-scripts:** fix default config and error handling for graphql resolvers ([2bfd3c2](https://github.com/reimagined/resolve/commit/2bfd3c2))
+* **resolve-scripts:** fix template ([d70aa12](https://github.com/reimagined/resolve/commit/d70aa12))
+* **resolve-scripts:** fix templates issues ([f2b065a](https://github.com/reimagined/resolve/commit/f2b065a)), closes [#321](https://github.com/reimagined/resolve/issues/321) [#318](https://github.com/reimagined/resolve/issues/318) [#315](https://github.com/reimagined/resolve/issues/315)
+* **resolve-scripts:** fix tests ([6984880](https://github.com/reimagined/resolve/commit/6984880))
+* **resolve-scripts:** use server bundling without node_modules for socket.io  ([13e99ff](https://github.com/reimagined/resolve/commit/13e99ff))
+
+
+### Features
+
+* **resolve-query:** allow to pass custom params into read function and post-process result in adapters side ([34a68ff](https://github.com/reimagined/resolve/commit/34a68ff)), closes [#277](https://github.com/reimagined/resolve/issues/277)
+* **resolve-command** add aggregate versioning ([288d0d8](https://github.com/reimagined/resolve/commit/288d0d8))
+* **resolve-scripts:** add graphql endpoint ([826bf48](https://github.com/reimagined/resolve/commit/826bf48))
+* **resolve-query:** split resolve-query to projection update and read-side part, which now can be run independently ([085e42d](https://github.com/reimagined/resolve/commit/085e42d)), closes [#316](https://github.com/reimagined/resolve/issues/316)
+* **resolve-query:** implement independent default read-model memory adapter ([efaa5b2](https://github.com/reimagined/resolve/commit/efaa5b2))
+* **resolve-redux:** add support for graphql provider out-of-box ([d4941f8](https://github.com/reimagined/resolve/commit/d4941f8))
+* **resolve-scripts:** implement multiple read-models and better error handling ([aff2d5f](https://github.com/reimagined/resolve/commit/aff2d5f))
+* **resolve-scripts:** provide jwt on client side ([1df756d](https://github.com/reimagined/resolve/commit/1df756d)), closes [#270](https://github.com/reimagined/resolve/issues/270)
+
+
+
+### BREAKING CHANGES
+
+* **resolve-scripts:** view models are available without graphql via get-request with appropriate view-model name in format `/api/query/${read_model_name}` with mandatory eventTypes and/or aggregateIds field for on-demand query
+* **resolve-scripts:** read-models are provided in configuration by array instead of one element
+- **resolve-scripts:** any read-model has own name, which used in query API in format `/api/query/${read_model_name}`
+* **resolve-es:** rename rawSaveEvent to saveEventRaw
+
+
+
 <a name="0.0.28"></a>
-## [0.0.28](https://github.com/reimagined/resolve/compare/v0.0.2...v0.0.28) (2017-09-22)
+## [0.0.28](https://github.com/reimagined/resolve/compare/v0.0.27...v0.0.28) (2017-09-22)
 
 
 ### Bug Fixes
@@ -9,7 +51,7 @@
 
 ### Features
 
-* Read-model API with custom adaptors for projections ([3891448](https://github.com/reimagined/resolve/commit/3891448))
+* **resolve-query** Read-model API with custom adaptors for projections ([3891448](https://github.com/reimagined/resolve/commit/3891448))
 
 
 ### Performance Improvements
@@ -19,9 +61,9 @@
 
 ### BREAKING CHANGES
 
-* Rename all eventHandlers to projection, since it can be free-form entity, which is supported by selected read-model adapter
-* API of adaptor is changed, now it can build event handlers by input projection definition
-* In resolve-scripts, read-models in plural is renamed to read-model, which encapsulates whole read-model inside
+* **resolve-query**  Rename all eventHandlers to projection, since it can be free-form entity, which is supported by selected read-model adapter
+* **resolve-query** API of adaptor is changed, now it can build event handlers by input projection definition
+* **resolve-scripts**  read-models in plural is renamed to read-model, which encapsulates whole read-model inside
 * **resolve-storage-lite:** resolve-storage-memory and resolve-storage-file are replaced by resolve-storage-lite. This package supports two behaviors. Don't pass any arguments if you want to use it as in-memory storage and pass the path to the db file to use it as file storage.
 
 
@@ -32,7 +74,6 @@
 
 ### Bug Fixes
 
-* **resolve-redux:** pass store.dispatch to a sendCommand ([#250](https://github.com/reimagined/resolve/issues/250)) ([9385668](https://github.com/reimagined/resolve/commit/9385668))
 * **resolve-scripts:** use only npm for installation ([#269](https://github.com/reimagined/resolve/issues/269)) ([7397b81](https://github.com/reimagined/resolve/commit/7397b81)), closes [#211](https://github.com/reimagined/resolve/issues/211)
 
 
@@ -75,7 +116,7 @@ Custom storage provider are supported now. Every projection can be custom asynch
 
 
 <a name="0.0.25"></a>
-## [0.0.25](https://github.com/reimagined/resolve/compare/v0.0.25...v0.0.2) (2017-09-08)
+## 0.0.25 (2017-09-08)
 
 
 ### Bug Fixes
