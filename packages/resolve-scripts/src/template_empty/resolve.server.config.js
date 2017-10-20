@@ -2,7 +2,7 @@ import path from 'path';
 import fileDriver from 'resolve-storage-lite';
 import busDriver from 'resolve-bus-memory';
 import aggregates from './common/aggregates';
-import queries from './common/read-model';
+import readModels from './common/read-models';
 import clientConfig from './resolve.client.config.js';
 
 if (module.hot) {
@@ -22,12 +22,6 @@ export default {
     initialState: () => ({}),
     aggregates,
     initialSubscribedEvents: { types: [], ids: [] },
-    readModel: {
-        projection: queries,
-        gqlSchema: `type Query {
-            view: ID
-        }`,
-        gqlResolvers: {}
-    },
+    readModels,
     extendExpress: () => {}
 };
