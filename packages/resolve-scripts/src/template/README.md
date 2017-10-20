@@ -546,7 +546,7 @@ The `resolve.build.config.js` file contains information for building application
 You can adjust your application URL ([http://localhost:3000](http://localhost:3000/) is used by default) using the following environment variables:
 * `HOST` - Set the IP address
 * `PORT` - Set the port
-*  `HTTPS` - Set to `true` to use `https` instead of `http`
+* `HTTPS` - Set to `true` to use `https` instead of `http`
 * `ROOT_DIR` - Set the application's root directory. For example, `export ROOT_DIR=/newurl`. After that the application will be available on [http://localhost:3000/newurl](http://localhost:3000/newurl). 
 
 Environment variables are available on the client side by  `process.env.VARIABLE_NAME`.
