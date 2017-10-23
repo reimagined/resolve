@@ -1,6 +1,6 @@
 {
   "name": "resolve-storage-base",
-  "version": "0.0.39",
+  "version": "0.0.40",
   "description": "This package contains the basic components for storage drivers",
   "main": "./dist/index.js",
   "bugs": {
