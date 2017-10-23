@@ -1,6 +1,6 @@
 {
   "name": "resolve-scripts-with-router-2",
-  "version": "0.0.40",
+  "version": "0.0.41",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -13,6 +13,6 @@
   "dependencies": {
     "react": "^15.6.1",
     "react-router": "^2.0.0",
-    "resolve-scripts": "^0.0.40"
+    "resolve-scripts": "^0.0.41"
   }
 }
