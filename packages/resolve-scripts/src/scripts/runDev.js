@@ -21,7 +21,7 @@ const clientCompiler = webpack(devClientConfig);
 
 const clientDevServer = new WebpackDevServer(clientCompiler, {
     stats: outputConfig,
-    setup: app => app.use(express.static(path.join(process.cwd(), './dist/static')))
+    before: app => app.use(express.static(path.join(process.cwd(), './dist/static')))
 });
 
 webpack(devServerConfig, (err, stats) => {
