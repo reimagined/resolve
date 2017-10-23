@@ -119,7 +119,7 @@ Object.keys(readModelExecutors).forEach((modelName) => {
 const staticMiddleware = process.env.NODE_ENV === 'production'
     ? express.static(path.join(process.cwd(), './dist/static'))
     : (req, res) => {
-        var newurl = 'http://localhost:3001' + req.path;
+        const newurl = 'http://localhost:3001' + req.path;
         request(newurl).pipe(res);
     };
 
