@@ -31,8 +31,8 @@
     "sinon": "^2.1.0"
   },
   "dependencies": {
-    "graphql": "^0.11.3",
-    "graphql-tools": "^2.5.1",
+    "graphql": "^0.11.7",
+    "graphql-tools": "^2.6.1",
     "object-hash": "^1.1.8",
     "regenerator-runtime": "^0.10.5",
     "resolve-readmodel-memory": "^0.0.40"
