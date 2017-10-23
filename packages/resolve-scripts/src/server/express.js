@@ -28,8 +28,8 @@ if (!Array.isArray(config.readModels)) {
 }
 
 const readModelExecutors = config.readModels.reduce((result, readModel) => {
-    if (!readModel.name && (config.readModels.length === 1)) {
-        readModel.name = "graphql";
+    if (!readModel.name && config.readModels.length === 1) {
+        readModel.name = 'graphql';
     } else if (!readModel.name) {
         raiseError(message.readModelMandatoryName, readModel);
     }
