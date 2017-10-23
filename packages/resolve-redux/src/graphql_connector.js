@@ -4,7 +4,7 @@ import { ApolloProvider, graphql, gql } from 'react-apollo';
 
 export default (gqlQuery, matchVariables = () => ({}), endpoint) => {
     const client = new ApolloClient({
-        networkInterface: createNetworkInterface({ uri: endpoint || '/api/graphql' })
+        networkInterface: createNetworkInterface({ uri: endpoint || '/api/query/graphql' })
     });
 
     return Component =>
