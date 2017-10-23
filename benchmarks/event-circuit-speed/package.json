@@ -1,6 +1,6 @@
 {
   "name": "event-circuit-speed",
-  "version": "0.0.38",
+  "version": "0.0.39",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -16,15 +16,15 @@
   },
   "dependencies": {
     "babel-cli": "^6.24.1",
-    "benchmark-base": "^0.0.38",
+    "benchmark-base": "^0.0.39",
     "mongodb": "^2.2.26",
     "randgen": "^0.1.0",
-    "resolve-bus-memory": "^0.0.38",
-    "resolve-command": "^0.0.38",
-    "resolve-es": "^0.0.38",
-    "resolve-query": "^0.0.38",
+    "resolve-bus-memory": "^0.0.39",
+    "resolve-command": "^0.0.39",
+    "resolve-es": "^0.0.39",
+    "resolve-query": "^0.0.39",
     "resolve-storage": "^0.0.12",
-    "resolve-storage-mongo": "^0.0.38",
+    "resolve-storage-mongo": "^0.0.39",
     "seamless-immutable": "^7.1.2",
     "uuid": "^3.0.1"
   }
