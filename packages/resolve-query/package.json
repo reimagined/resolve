@@ -1,6 +1,6 @@
 {
   "name": "resolve-query",
-  "version": "0.0.38",
+  "version": "0.0.39",
   "description": "This package creates a function to execute a query.",
   "main": "./dist/index.js",
   "bugs": {
@@ -17,9 +17,13 @@
   },
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
-  "homepage":
-    "https://github.com/reimagined/resolve/tree/master/packages/resolve-query#readme",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-query#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
@@ -31,6 +35,6 @@
     "graphql-tools": "^2.5.1",
     "object-hash": "^1.1.8",
     "regenerator-runtime": "^0.10.5",
-    "resolve-readmodel-memory": "^0.0.38"
+    "resolve-readmodel-memory": "^0.0.39"
   }
 }
