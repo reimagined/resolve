@@ -88,7 +88,7 @@ Object.keys(readModelExecutors).forEach((modelName) => {
             bodyParser.urlencoded({ extended: false }),
             async (req, res) => {
                 try {
-                    const data = await executor(req.body.query, req.body.variables || {}, req.jwt);
+                    const data = await executor(req.body.query, req.body.variables || {}, req.getJwt);
                     res.status(200).send({ data });
                 } catch (err) {
                     res.status(500).end(`${message.readModelFail}${err.message}`);
