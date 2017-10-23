@@ -1,6 +1,6 @@
 {
   "name": "resolve",
-  "version": "0.0.38",
+  "version": "0.0.40",
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-eslint": "^7.2.3",
@@ -15,7 +15,7 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^7.0.1",
-    "lerna": "^2.0.0-rc.4",
+    "lerna": "^2.4.0",
     "lint-staged": "3.4.0",
     "pre-commit": "^1.2.2",
     "prettier": "1.4.4",
@@ -31,9 +31,11 @@
     "bootstrap": "lerna bootstrap",
     "lint": "eslint .",
     "lint-staged": "lint-staged",
-    "prettier":
-      "prettier-eslint --write \"./**/src/**/*.js\" \"./**/test/**/*.js\" --ignore=./**/node_modules/**",
+    "prettier": "prettier-eslint --write \"./**/src/**/*.js\" \"./**/test/**/*.js\" --ignore=./**/node_modules/**",
     "test": "lerna run test"
   },
-  "pre-commit": ["lint-staged", "lint"]
+  "pre-commit": [
+    "lint-staged",
+    "lint"
+  ]
 }
