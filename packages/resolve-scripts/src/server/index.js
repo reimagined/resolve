@@ -42,12 +42,14 @@ server.on('listening', () => {
         log(`  ${urls.localUrlForTerminal}`);
     }
 
-    log();
-    log('Note that the development build is not optimized.');
-    log('To create a production build, use:');
-    log(`  ${chalk.cyan(`${useYarn ? 'yarn build' : 'npm run build'}`)}.`);
-    log(`  ${chalk.cyan(`${useYarn ? 'yarn start' : 'npm start'}`)}.`);
-    log();
+    if (process.env.NODE_ENV !== 'production') {
+        log();
+        log('Note that the development build is not optimized.');
+        log('To create a production build, use:');
+        log(`  ${chalk.cyan(`${useYarn ? 'yarn build' : 'npm run build'}`)}.`);
+        log(`  ${chalk.cyan(`${useYarn ? 'yarn start' : 'npm start'}`)}.`);
+        log();
+    }
 
     openBrowser(urls.localUrlForBrowser);
 });
