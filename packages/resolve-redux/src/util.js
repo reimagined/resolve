@@ -1,6 +1,6 @@
 export function checkRequiredFields(obj, beforeWarnings, afterWarnings) {
     const warningMessages = Object.keys(obj)
-        .map(fieldName => (obj[fieldName] ? null : `The '${fieldName}' is required`))
+        .map(fieldName => (obj[fieldName] ? null : `The '${fieldName}' field is required`))
         .filter(msg => msg);
 
     const shouldWarningsBePrinted = warningMessages.length > 0;
