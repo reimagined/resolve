@@ -175,7 +175,7 @@ In a general case, a read model consists of two parts:
 
 Read model projection function has two arguments: storage provider and GraphQL arguments. Storage provider is an abstract facade for read-only operations on a read-model state. GraphQL arguments is a set of variables which are passed to a GraphQL query from the client side. Read more about GraphQL and resolvers at [GraphQL Guide](http://graphql.org/learn/).
 
-Read model name is used for launching API facade on web-server by following template: `/api/query/READ_MODEL_NAME`. Every read model should has own name, with one exception: if application consists of only one read model without name, it will be automatically renamed to `graphql` and will be avaiable at URL `/api/query/graphql`. Launched facade work as graphql endpoint accepting POST requests in [apropriate format](http://graphql.org/learn/serving-over-http/#post-request).
+Read model name is used for launching API facade on the web server at `/api/query/READ_MODEL_NAME`. Each read model should have its own name. If an application consists of only one read model without a name, it will be automatically renamed to `graphql` and will be avaiable at `/api/query/graphql`. Launched facade works as graphql endpoint accepting POST requests in the [apropriate format](http://graphql.org/learn/serving-over-http/#post-request).
 
 A typical read model structure:
 
@@ -183,14 +183,14 @@ A typical read model structure:
 export default {
   name: 'ReadModelName', // Read model name
   projection: { // Projection functions
-		Event1Happened: async (collection, event) => { // Use default memory collection storage
-			const idList = collection.filter(doc => doc.field === 'Test1' ).map(doc => doc.id);
-			return collection.map(doc => idList.includes(doc.id) ? { ...doc, field: 'Test2' } : doc);
-		},  
-		Event2Happened: async (collection, event) => { // Projection can interact with custom external resources
-			const eventsourcingTweets = await fetchTweets('@gregyoung');
-			return collection.concat(eventsourcingTweets);
-		}
+    Event1Happened: async (collection, event) => { // Use default memory collection storage
+      const idList = collection.filter(doc => doc.field === 'Test1' ).map(doc => doc.id);
+      return collection.map(doc => idList.includes(doc.id) ? { ...doc, field: 'Test2' } : doc);
+    },  
+    Event2Happened: async (collection, event) => { // Projection can interact with custom external resources
+      const eventsourcingTweets = await fetchTweets('@gregyoung');
+      return collection.concat(eventsourcingTweets);
+    }
   },
   gqlSchema: // Specify a schema of client-side GraphQL queries to the read model via Query API */
     `type Message {
@@ -235,7 +235,7 @@ export default {
 };
 ```
 
-View models are also available via facade on URL `/api/query/VIEW_MODEL_NAME` with simple GET-query, which supported two mandatory parameters: `aggregateIds` and `eventTypes`. Typical query to view model is `/api/query/VIEW_MODEL_NAME?aggregateIds=id1&aggregateIds=id2`, which meant to build view model state for all events, relative to aggregates with `id1` or `id2`.
+View models are also available via facade at `/api/query/VIEW_MODEL_NAME` with a simple GET-query supporting two required parameters: `aggregateIds` and `eventTypes`. Typical query to view model is `/api/query/VIEW_MODEL_NAME?aggregateIds=id1&aggregateIds=id2`. It builds a view model state for all events, relative to aggregates with `id1` or `id2`.
 
 Note: To use view model declaration as a Redux reducer, some Immutable wrapper for a state object is required. We recommend to use the [seamless-immutable](https://github.com/rtfeldman/seamless-immutable) library. Keep in mind that incorrect handling of an immutable object may cause performance issues.
 

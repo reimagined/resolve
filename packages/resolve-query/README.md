@@ -8,12 +8,12 @@ When initializing a query, pass the following arguments:
 * `eventStore` - configured [eventStore](../resolve-es) instance.
 * `readModel` - [read model](../resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models) declaration.
 
-Object `readModel` is consists of following fields:
+The `readModel` object contains the following fields:
 
-* `projection` - declaration for conversion event stream into read model storage; with default adapter projection is map of reducer functions, which describe changes default collection depent on incoming events, or projection can be array of reducers maps, which describes updating for each collection, respectively
-* `gqlSchema` - read model data schema description in terms of [GraphQL schema language](http://graphql.org/learn/schema/)
-* `gqlResolvers` - map of [resolvers](http://dev.apollodata.com/tools/graphql-tools/resolvers.html) for making reply to GraphQL query depend on defined `gqlSchema` and data in read model storage
-* `adapter` - instance of one of available read model [adapters](../readmodel-adapters); by default memory [adapter](../readmodel-adapters/resolve-readmodel-memory) with multiple collections support is used
+* `projection` - declaration for conversion event stream into read model storage. When the default adapter is used, a projection is a map of reducer functions, which describe default collection changes depending on incoming events. A projection can also be an array of reducer maps, where each map describes changes of its collection
+* `gqlSchema` - read model data schema description in terms of the [GraphQL schema language](http://graphql.org/learn/schema/)
+* `gqlResolvers` - map of [resolvers](http://dev.apollodata.com/tools/graphql-tools/resolvers.html) for replying to GraphQL query depending on defined `gqlSchema` and data in the read model storage
+* `adapter` - one of the available read model [adapters](../readmodel-adapters) instance; a memory [adapter](../readmodel-adapters/resolve-readmodel-memory) with multiple collections support is used by default
 
 After the query is initialized, you get a function that is used to get data from read models by [GraphQL](http://graphql.org/learn/) request. This function receives the following arguments:
 
@@ -21,11 +21,10 @@ After the query is initialized, you get a function that is used to get data from
 * `graphQLVariables` - specify it, if `graphQLQuery` contains variables.
 * `getJwt` - callback to retrieve actual client state stored in verified JWT token.
  
-**Note**:  Read model declaration can optionally omit `gqlSchema` and `gqlResolvers` fields, in this case read model will work in raw mode. Projection function will also be triggered on incoming events, but *query* function will be mapped on raw *read* function, which typically is used in GraphQL resolvers. Raw mode can be helpful, if selected read model storage provides it's own API for retrieving data, like [Elasticsearch](https://www.elastic.co/) or [Searchify](https://www.searchify.com/).
- 
-### Example
-Let's implement the Read Model for building News state with custom GraphQL resolvers. It will handle the same events that are produced in [Aggregate example](../resolve-command#example).
+**Note**: Read model declaration can optionally omit the `gqlSchema` and `gqlResolvers` fields. In this case, a read model works in raw mode. Projection function is triggered on incoming events, but the query function is mapped on the raw *read* function, which is typically used in GraphQL resolvers. Raw mode can be helpful, if the selected read model storage provides its own API for retrieving data, like [Elasticsearch](https://www.elastic.co/) or [Searchify](https://www.searchify.com/).
 
+
+### Example
 Implement a read model for building News state with custom GraphQL resolvers and use the `resolve-query` library to get the first page of news. It handles events produced by an aggregate shown in the [resolve-command](../resolve-command#example) documentation.
 
 ```js
