@@ -58,10 +58,10 @@ export default (
 
         async saveEvent(event) {
             if (!event.type) {
-                throw new Error('Field `type` is missed');
+                throw new Error('The `type` field is missed');
             }
             if (!event.aggregateId) {
-                throw new Error('Field `aggregateId` is missed');
+                throw new Error('The `aggregateId` field is missed');
             }
             event.timestamp = Date.now();
 
@@ -73,13 +73,13 @@ export default (
         async saveEventRaw(event) {
             const { type, aggregateId, timestamp } = event;
             if (!type) {
-                throw new Error('Field `type` is missed');
+                throw new Error('The `type` field is missed');
             }
             if (!aggregateId) {
-                throw new Error('Field `aggregateId` is missed');
+                throw new Error('The `aggregateId` field is missed');
             }
             if (parseInt(timestamp, 10) !== timestamp) {
-                throw new Error('Field `timestamp` is missed or incorrect');
+                throw new Error('The `timestamp` field is missed or incorrect');
             }
 
             await config.storage.saveEvent(event);

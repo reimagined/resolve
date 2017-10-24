@@ -5,7 +5,7 @@ export function getSourceInfo(userObject) {
         return `in ${filename} line ${startLine}:${startColumn} / ${endLine}:${endColumn}
             """${sourceCode}"""`;
     } catch (err) {
-        return '(Source information unavailable)';
+        return '(Source information is unavailable)';
     }
 }
 
