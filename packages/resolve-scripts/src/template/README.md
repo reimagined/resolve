@@ -175,20 +175,22 @@ In a general case, a read model consists of two parts:
 
 Read model projection function has two arguments: storage provider and GraphQL arguments. Storage provider is an abstract facade for read-only operations on a read-model state. GraphQL arguments is a set of variables which are passed to a GraphQL query from the client side. Read more about GraphQL and resolvers at [GraphQL Guide](http://graphql.org/learn/).
 
+Read model name is used for launching API facade on web-server by following template: `/api/query/READ_MODEL_NAME`. Every read model should has own name, with one exception: if application consists of only one read model without name, it will be automatically renamed to `graphql` and will be avaiable at URL `/api/query/graphql`. Launched facade work as graphql endpoint accepting POST requests in [apropriate format](http://graphql.org/learn/serving-over-http/#post-request).
+
 A typical read model structure:
 
 ```js
 export default {
   name: 'ReadModelName', // Read model name
   projection: { // Projection functions
-    Event1Happened: async (storage, event) => { // Use a storage as a mongodb adapter
-      const idList = await storage.find({ field: 'Test1' }).map(doc => doc.id);
-      await storage.update({ id: { $in: idList } }, { field: 'Test2' });
-    },  
-    Event2Happened: async (storage, event) => { // Projection can interact with custom external resources
-      const eventsourcingTweets = await fetchTweets('@gregyoung');
-      await storage.insert(eventsourcingTweets);
-    }
+		Event1Happened: async (collection, event) => { // Use default memory collection storage
+			const idList = collection.filter(doc => doc.field === 'Test1' ).map(doc => doc.id);
+			return collection.map(doc => idList.includes(doc.id) ? { ...doc, field: 'Test2' } : doc);
+		},  
+		Event2Happened: async (collection, event) => { // Projection can interact with custom external resources
+			const eventsourcingTweets = await fetchTweets('@gregyoung');
+			return collection.concat(eventsourcingTweets);
+		}
   },
   gqlSchema: // Specify a schema of client-side GraphQL queries to the read model via Query API */
     `type Message {
@@ -202,15 +204,15 @@ export default {
     }
   `,
   gqlResolvers: { // GraphQL resolver functions
-    MessageById: async (getReader, args) => { // On-demand read model state
+    MessageById: async (read, args) => { // On-demand read model state
       if(!args.id) throw new Error('Message ID is mandatory!');
-      const db = await getReader({ aggregateIds: [args.id] });
-      const message = await db.find({ id: args.id });
+      const collection = await read([args.id]);
+      const message = collection.find(doc => doc.id === args.id);
       return message;
     },
-    MessageById: async (getReader, args) => { // Full read model state
-      const db = await getReader();
-      const idList = await db.find().map(message => message.id);
+    MessageIds: async (read, args) => { // Full read model state
+      const collection = await read();
+      const idList = collection.map(message => message.id);
       return idList;
     }
   }
@@ -232,6 +234,8 @@ export default {
   // This state results from the request to the query handler at the current moment
 };
 ```
+
+View models are also available via facade on URL `/api/query/VIEW_MODEL_NAME` with simple GET-query, which supported two mandatory parameters: `aggregateIds` and `eventTypes`. Typical query to view model is `/api/query/VIEW_MODEL_NAME?aggregateIds=id1&aggregateIds=id2`, which meant to build view model state for all events, relative to aggregates with `id1` or `id2`.
 
 Note: To use view model declaration as a Redux reducer, some Immutable wrapper for a state object is required. We recommend to use the [seamless-immutable](https://github.com/rtfeldman/seamless-immutable) library. Keep in mind that incorrect handling of an immutable object may cause performance issues.
 
