@@ -196,7 +196,7 @@ describe('resolve-es', () => {
                 await eventStore.saveEvent(event);
                 return Promise.reject('Test failed');
             } catch (err) {
-                expect(err.message).to.be.equal('Field `type` is missed');
+                expect(err.message).to.be.equal('The `type` field is missed');
             }
         });
 
@@ -216,7 +216,7 @@ describe('resolve-es', () => {
                 await eventStore.saveEvent(event);
                 return Promise.reject('Test failed');
             } catch (err) {
-                expect(err.message).to.be.equal('Field `aggregateId` is missed');
+                expect(err.message).to.be.equal('The `aggregateId` field is missed');
             }
         });
 
@@ -278,7 +278,7 @@ describe('resolve-es', () => {
                 await eventStore.saveEventRaw(event);
                 return Promise.reject('Test failed');
             } catch (err) {
-                expect(err.message).to.be.equal('Field `type` is missed');
+                expect(err.message).to.be.equal('The `type` field is missed');
             }
         });
 
@@ -298,7 +298,7 @@ describe('resolve-es', () => {
                 await eventStore.saveEventRaw(event);
                 return Promise.reject('Test failed');
             } catch (err) {
-                expect(err.message).to.be.equal('Field `timestamp` is missed or incorrect');
+                expect(err.message).to.be.equal('The `timestamp` field is missed or incorrect');
             }
         });
     });
