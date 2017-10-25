@@ -1,16 +1,17 @@
 
+
 # **🚀 Create ReSolve App** [![npm version](https://badge.fury.io/js/create-resolve-app.svg)](https://badge.fury.io/js/create-resolve-app)
-This package creates an application based on the reSolve framework. It is a single page application (SPA) which represents a typical Todo List. The application is built on the CQRS and Event Sourcing principles, with [React](https://github.com/facebook/react) + [Redux](https://github.com/reactjs/redux) on client.
+This package creates an application based on the reSolve framework. It is a single page application (SPA) which represents a typical Todo List. The application is built on the CQRS and Event Sourcing principles using [React](https://github.com/facebook/react) + [Redux](https://github.com/reactjs/redux) on the client.
 
-Create ReSolve App allows you to specify application blocks (aggregates, read models and UI part presented by React components) in the semi-declarative manner. With the `resolve-scripts` package, you don't need to write an API backend manually. Instead, `resolve-scripts` deploys backend and domain services to interact with the client which is wrapped into the `resolve-redux` package for automate interaction.
+Create ReSolve App allows you to specify application blocks (aggregates, read models, and UI part React components present) in a semi-declarative manner. With the `resolve-scripts` package, you do not need to write an API backend manually. Instead, `resolve-scripts` deploys backend and domain services to interact with the client which is wrapped in the `resolve-redux` package for an automated interaction.
 
-For detailed information on subject-related technologies and links to the corresponding resources, refer to [https://github.com/markerikson/react-redux-links](https://github.com/markerikson/react-redux-links).
+Refer to [https://github.com/markerikson/react-redux-links](https://github.com/markerikson/react-redux-links) for detailed information on subject-related technologies and links to the corresponding resources.
 
 * [Getting Started](#️-getting-started) - How to create a new app
-* [User Guide](#user-guide) - Information on apps created with Create ReSolve App
+* [User Guide](#user-guide) - Information on apps created with the Create ReSolve App
 
 ## **🔎 Quick Overview**
-> Note: global installation of a package may require administrative privileges. That means you have to use the `sudo` command for unix-based systems or run terminal with administrative privileges on windows systems to install a package globally.
+> Note: Installing a package globally may require administrative privileges. This means you have to use the sudo command for Unix-based systems or run a terminal with administrative privileges on Windows systems.
 
 ```bash
 npm i -g create-resolve-app
@@ -23,22 +24,22 @@ Your app will be opened in the browser at [http://localhost:3000/](http://localh
 
 ## **▶️ Getting Started**
 ### 🏗 Create an App
-Create a new reSolve application in one of the following ways.
+Create a new reSolve application in one of the following ways:
 
-Use yarn:  
+using yarn...  
 ```bash
 yarn create resolve-app my-resolve-app
 ```
-or use npx:  
+...or npx:  
 ```bash
 npx create-resolve-app my-resolve-app
 ```
-or use npm:  
+...or npm:  
 ```bash
 npm i -g create-resolve-app
 create-resolve-app my-resolve-app
 ```
-This will create the `my-resolve-app` directory in the current folder and generate the initial project structure in that directory:
+This creates the `my-resolve-app` directory in the current folder and generates the initial project structure in that directory:
 ```
 resolve-app/
   .babelrc
@@ -66,19 +67,19 @@ resolve-app/
   tests/
 ```
 ### 📋 Available Scripts
-Once the installation is done, you can run the following commands in the project directory to start your app:
+Once the installation is completed, you can run the following commands in the project directory to start your app:
 
 ### `npm run dev`
 Runs the app in the development mode.
 
-Two web servers are  started: one - for the frontend/UI part, based on webpack-dev-server on port 3001 by default, and another one - for the API backend part to provide API for reSolve endpoints, based on express on port 3000. Development servers provide all required debugging capabilities, including [Hot Module Replacement](https://webpack.js.org/concepts/hot-module-replacement/) and [source maps](https://webpack.js.org/configuration/devtool/).
+Two web servers are  started: one - for the frontend/UI part, based on the webpack-dev-server on port 3001 by default, and another one - for the API backend part to provide the API for reSolve endpoints, based on express on port 3000. Development servers provide all the required debugging capabilities, including [Hot Module Replacement](https://webpack.js.org/concepts/hot-module-replacement/) and [source maps](https://webpack.js.org/configuration/devtool/).
 
 Open [http://localhost:3000](http://localhost:3000/) to view the app in the browser.
 
 ### `npm run build`
 Builds client and server bundles for production through Webpack.
 
-Building is performed in the `NODE_ENV === 'production'` [mode](https://webpack.js.org/guides/production/#node-environment-variable), so the build is optimized. No additional http server for serving client bundle and assets are  built.
+Building is performed in the `NODE_ENV === 'production'` [mode](https://webpack.js.org/guides/production/#node-environment-variable), so the build is optimized. No additional HTTP server for the serving client bundle and assets are  built.
 
 ### `npm start`
 Runs the built app in the production mode.
@@ -91,4 +92,4 @@ The User Guide provides detailed information on an application created with Crea
 * [Aggregates and Read Models](../resolve-scripts/src/template#️-aggregates-and-read-models)
 * [Configuration Files](../resolve-scripts/src/template#-configuration-files)
 
-This user guide copy is added to your project folder as the `Readme.md` file.
+A copy of the user guide is added to your project folder as the `Readme.md` file.
