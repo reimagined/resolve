@@ -1,12 +1,13 @@
 export default {
-    readModelsArrayFormat: 'Read models declaration should be array',
-    readModelMandatoryName: 'Read model name is mandatory',
+    readModelsArrayFormat: 'The readModels field should be an array.',
+    readModelMandatoryName: 'A read model name is required.',
     readModelQuerySideMandatory:
-        'Read model should have the gqlSchema and gqlResolvers fields, or be turned in view model',
+        'The gqlSchema and gqlResolvers fields are required for a read model. Otherwise, ' +
+            'the viewModel field should be set to true to specify that this is a view model.',
     commandSuccess: 'OK',
-    commandFail: 'Command error: ',
-    readModelFail: 'Read model query error: ',
-    viewModelFail: 'View model query error: ',
+    commandFail: 'A command error: ',
+    readModelFail: 'A read model query error: ',
+    viewModelFail: 'A view model query error: ',
     viewModelOnlyOnDemand: 'The "aggregateIds" and "eventTypes" fields are required',
-    ssrError: 'SSR error: '
+    ssrError: 'An SSR error: '
 };
