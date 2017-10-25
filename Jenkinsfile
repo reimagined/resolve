@@ -24,7 +24,7 @@ pipeline {
                     docker.image('node:8').inside {
                         withCredentials(credentials) {
                             env.NPM_ADDR = 'registry.npmjs.org'
-                            env.CI_BUILD_VERSION = (new Date()).format("yyyyMMddHHmmssSSS", TimeZone.getTimeZone('UTC'))
+                            env.CI_BUILD_VERSION = (new Date()).format("MMddHHmmss", TimeZone.getTimeZone('UTC'))
 
                             sh "npm config set //${env.NPM_ADDR}/:_authToken ${env.NPM_TOKEN}"
                             sh "npm whoami"
