@@ -7,91 +7,35 @@ pipeline {
                     docker.image('node:8').inside {
                         sh 'npm install'
                         sh 'npm run bootstrap'
-                        sh 'npm run lint'
-                        sh 'npm test'
                     }
                 }
             }
         }
 
-        stage('End-to-end tests') {
+
+        stage('Publish alpha') {
             steps {
                 script {
-                    PROJECT_NAME = sh (
-                        script: "/var/scripts/get-project-name.sh",
-                        returnStdout: true
-                    ).trim()
 
-                    dir('examples/todo') {
-                        sh "cd ./server && ../resolve-symlinks.sh && cd .."
-                        sh "cd ./client && ../resolve-symlinks.sh && cd .."
-                        sh "docker-compose -p ${PROJECT_NAME} up --build --exit-code-from testcafe"
-                    }
-                }
-            }
-        }
-
-        stage('Publish and trigger') {
-            steps {
-                script {
-                    def isMasterBranch = env.BRANCH_NAME == 'master'
                     def credentials = [
-                        string(credentialsId: isMasterBranch ? 'NPM_CREDENTIALS' : 'LOCAL_NPM_AUTH_TOKEN', variable: 'NPM_TOKEN')
+                        string(credentialsId: 'NPM_CREDENTIALS', variable: 'NPM_TOKEN')
                     ];
-                    if (!isMasterBranch) {
-                        credentials.push(string(credentialsId: 'LOCAL_NPM_HOST_PORT', variable: 'NPM_ADDR'))
-                    }
+
                     docker.image('node:8').inside {
                         withCredentials(credentials) {
-                            if (!isMasterBranch) {
-                                sh "npm config set registry http://${env.NPM_ADDR}"
-                            } else {
-                                env.NPM_ADDR = 'registry.npmjs.org'
-                            }
+                            env.NPM_ADDR = 'registry.npmjs.org'
+                            env.CI_BUILD_VERSION = (new Date()).format("yyyyMMddHHmmssSSS", TimeZone.getTimeZone('UTC'))
+
                             sh "npm config set //${env.NPM_ADDR}/:_authToken ${env.NPM_TOKEN}"
                             sh "npm whoami"
                             try {
-                                sh "./node_modules/.bin/lerna publish --canary --yes"
+                                sh "./node_modules/.bin/lerna publish --skip-git --force-publish=* --yes --repo-version 0.0.1-alpha.${env.CI_BUILD_VERSION}"
                             } catch(Exception e) {
                             }
                         }
                     }
-
-                    commitHash = sh (
-                        script: 'git rev-parse HEAD | cut -c1-8',
-                        returnStdout: true
-                    ).trim()
-
-                    withCredentials([
-                        string(credentialsId: isMasterBranch ? 'UPDATE_VERSION_JOBS' : 'DEPENDENT_JOBS_LIST', variable: 'JOBS')
-                    ]) {
-                        def jobs = env.JOBS.split(';')
-                        for (def i = 0; i < jobs.length; ++i) {
-                            build([
-                                job: jobs[i],
-                                parameters: [[
-                                    $class: 'StringParameterValue',
-                                    name: 'NPM_CANARY_VERSION',
-                                    value: commitHash
-                                ],[
-                                    $class: 'BooleanParameterValue',
-                                    name: 'RESOLVE_CHECK',
-                                    value: true
-                                ]]
-                            ])
-                        }
-                    }
                 }
             }
-        }
-    }
-
-    post {
-        always {
-            dir('examples/todo') {
-                sh "docker-compose -p ${PROJECT_NAME} down --rmi all"
-            }
-            deleteDir()
         }
     }
 }
