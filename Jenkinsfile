@@ -24,13 +24,15 @@ pipeline {
                         withCredentials(credentials) {
                             env.NPM_ADDR = 'registry.npmjs.org'
 
-                            sh '''
-                                echo $(node -e "const lerna = require('./lerna.json'); const version = lerna.version.split('.'); version[2] = +version[2] + 1; console.log('export NEXT_NPM_VERSION='+version.join('.'))")
-                            '''
-
-                            sh '''
-                                eval $(node -e "const lerna = require('./lerna.json'); const version = lerna.version.split('.'); version[2] = +version[2] + 1; console.log('export NEXT_NPM_VERSION='+version.join('.'))")
-                            '''
+                            import groovy.json.JsonSlurper;
+                            File f = new File('./lerna.json')
+                            def slurper = new JsonSlurper()
+                            def jsonText = f.getText()
+                            def json = slurper.parseText(jsonText)
+                            def (major, minor, patch) = json.version.toString().tokenize(".")
+                            patch = patch.toInteger() + 1
+                            def nextVersion = major + "." + minor + "." + patch
+                            env.NEXT_NPM_VERSION = nextVersion
 
                             env.CI_BUILD_VERSION = "${env.NEXT_NPM_VERSION}-alpha." + (new Date()).format("MMddHHmmss", TimeZone.getTimeZone('UTC'))
 
