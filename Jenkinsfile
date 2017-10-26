@@ -30,10 +30,9 @@ pipeline {
                             def slurper = new JsonSlurper()
                             def jsonText = f.getText()
                             def json = slurper.parseText(jsonText)
-                            def (major, minor, patch) = json.version.toString().tokenize(".")
-                            patch = patch.toInteger() + 1
-                            def nextVersion = major + "." + minor + "." + patch
-                            env.NEXT_NPM_VERSION = nextVersion
+                            def version = json.version.toString().tokenize(".")
+                            version[2] = version[2].toInteger() + 1
+                            env.NEXT_NPM_VERSION = version.join('.')
 
                             env.CI_BUILD_VERSION = "${env.NEXT_NPM_VERSION}-alpha." + (new Date()).format("MMddHHmmss", TimeZone.getTimeZone('UTC'))
 
