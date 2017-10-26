@@ -41,16 +41,16 @@ pipeline {
             steps {
                 script {
                     docker.image('node:8').inside {
-                        sh '''
-                            rm -rf ./stage
-                            mkdir stage
-                            cd ./stage
-                            pwd
-                            npm install -g create-resolve-app@${env.CI_BUILD_VERSION}
-                            create-resolve-app --version=${env.CI_BUILD_VERSION} todolist
-                            cd ./todolist
+                        sh """
+                            rm -rf ./stage \
+                            mkdir stage \
+                            cd ./stage \
+                            pwd \
+                            npm install -g create-resolve-app@${env.CI_BUILD_VERSION} \
+                            create-resolve-app --version=${env.CI_BUILD_VERSION} todolist \
+                            cd ./todolist \
                             cat ./package.json
-                        '''
+                        """
                     }
                 }
             }
