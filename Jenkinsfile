@@ -23,7 +23,12 @@ pipeline {
                     docker.image('node:8').inside {
                         withCredentials(credentials) {
                             env.NPM_ADDR = 'registry.npmjs.org'
-                            env.CI_BUILD_VERSION = "0.0.1-alpha." + (new Date()).format("MMddHHmmss", TimeZone.getTimeZone('UTC'))
+
+                            sh '''
+                                eval $(node -e "const lerna = require('./lerna.json'); let [major, minor, patch] = lerna.version.split('.'); patch = +patch + 1; console.log('export NEXT_NPM_VERSION='+[major, minor, patch].join('.'))")
+                            '''
+
+                            env.CI_BUILD_VERSION = "${env.NEXT_NPM_VERSION}-alpha." + (new Date()).format("MMddHHmmss", TimeZone.getTimeZone('UTC'))
 
                             sh "npm config set //${env.NPM_ADDR}/:_authToken ${env.NPM_TOKEN}"
                             sh "npm whoami"
