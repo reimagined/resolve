@@ -29,7 +29,7 @@ pipeline {
                             sh "npm config set //${env.NPM_ADDR}/:_authToken ${env.NPM_TOKEN}"
                             sh "npm whoami"
                             try {
-                                sh "./node_modules/.bin/lerna publish --skip-git --force-publish=* --yes --repo-version 0.0.1-alpha.${env.CI_BUILD_VERSION}"
+                                sh "./node_modules/.bin/lerna publish --skip-git --force-publish=* --yes --repo-version 0.0.1-alpha.${env.CI_BUILD_VERSION} --canary"
                             } catch(Exception e) {
                             }
                         }
