@@ -45,11 +45,11 @@ pipeline {
                             rm -rf ./stage; \
                             mkdir stage; \
                             cd ./stage; \
-                            pwd; \
                             npm install -g create-resolve-app@${env.CI_BUILD_VERSION}; \
                             create-resolve-app --version=${env.CI_BUILD_VERSION} --sample todolist; \
                             cd ./todolist; \
-                            cat ./package.json;
+                            npm run test; \
+                            npm run test:e2e;
                         """
                     }
                 }
