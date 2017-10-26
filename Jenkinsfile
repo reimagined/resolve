@@ -46,7 +46,7 @@ pipeline {
                         sh "npm install -g create-resolve-app@${env.CI_BUILD_VERSION}"
                         sh "create-resolve-app --version=${env.CI_BUILD_VERSION} todolist"
                         sh "cd todolist"
-                        sh "ls"
+                        sh "cat ./package.json"
                     }
                 }
             }
