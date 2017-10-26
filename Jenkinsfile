@@ -47,7 +47,7 @@ pipeline {
                             cd ./stage; \
                             pwd; \
                             npm install -g create-resolve-app@${env.CI_BUILD_VERSION}; \
-                            create-resolve-app --version=${env.CI_BUILD_VERSION} todolist; \
+                            create-resolve-app --version=${env.CI_BUILD_VERSION} --sample todolist; \
                             cd ./todolist; \
                             cat ./package.json;
                         """

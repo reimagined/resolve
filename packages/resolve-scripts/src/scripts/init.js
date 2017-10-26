@@ -54,9 +54,11 @@ const tryRenameGitignore = (appPath) => {
     });
 };
 
-const installDependencies = (dep, isDev) => {
+const installDependencies = (dep, isDev, version) => {
     const command = 'npm';
-    const args = ['install', isDev ? '--save-dev' : '--save'].concat(dep);
+    const args = ['install', isDev ? '--save-dev' : '--save'].concat(dep.map(
+        depName => version ? `${depName}@${version}` : depName
+    ));
 
     const proc = spawn.sync(command, args, { stdio: 'inherit' });
     if (proc.status !== 0) {
@@ -117,7 +119,7 @@ const deleteFolderRecursive = (path) => {
     }
 };
 
-export default (appPath, appName, originalDirectory, isEmpty, packagePath) => {
+export default (appPath, appName, originalDirectory, isEmpty, packagePath, version) => {
     const scriptsPackageName = require(path.join(__dirname, '../../', 'package.json')).name;
     const scriptsPath = path.join(appPath, 'node_modules', scriptsPackageName);
 
@@ -160,12 +162,12 @@ export default (appPath, appName, originalDirectory, isEmpty, packagePath) => {
 
         const templateEmptyPath = path.join(packagePath || scriptsPath, 'dist', 'template_empty');
         fs.copySync(templateEmptyPath, appPath);
-        installDependencies(dependencies, false);
+        installDependencies(dependencies, false, version);
         fs.unlinkSync(path.join(appPath, '.flowconfig'));
         fs.unlinkSync(path.join(appPath, 'resolve.build.config.js'));
     } else {
-        installDependencies(dependencies.concat(appDependencies), false);
-        installDependencies(devDependencies, true);
+        installDependencies(dependencies.concat(appDependencies), false, version);
+        installDependencies(devDependencies, true, version);
     }
 
     fs.unlinkSync(path.join(appPath, '.eslintrc'));

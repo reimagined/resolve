@@ -79,13 +79,13 @@ const installScripts = (scriptsPackage, version) => {
     });
 };
 
-const runScripts = (appPath, appName, originalDirectory, packagePath, isEmpty, scriptsPackage) => {
+const runScripts = (appPath, appName, originalDirectory, packagePath, isEmpty, scriptsPackage, version) => {
     const scriptsPath = packagePath || path.resolve(appPath, 'node_modules', scriptsPackage);
 
     const initScriptPath = path.resolve(scriptsPath, 'dist', 'scripts', 'init.js');
 
     const init = require(initScriptPath);
-    init.default(appPath, appName, originalDirectory, isEmpty, packagePath);
+    init.default(appPath, appName, originalDirectory, isEmpty, packagePath, version);
 };
 
 const createPackageJson = (appName, appPath) => {
@@ -134,5 +134,5 @@ export default async (name, packagePath, isEmpty, version) => {
 
     await installScripts(scriptsPackage, version);
 
-    runScripts(appPath, appName, originalDirectory, packagePath, isEmpty, scriptsPackage);
+    runScripts(appPath, appName, originalDirectory, packagePath, isEmpty, scriptsPackage, version);
 };
