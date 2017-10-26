@@ -16,7 +16,6 @@ pipeline {
         stage('Publish alpha') {
             steps {
                 script {
-
                     def credentials = [
                         string(credentialsId: 'NPM_CREDENTIALS', variable: 'NPM_TOKEN')
                     ];
@@ -24,16 +23,27 @@ pipeline {
                     docker.image('node:8').inside {
                         withCredentials(credentials) {
                             env.NPM_ADDR = 'registry.npmjs.org'
-                            env.CI_BUILD_VERSION = (new Date()).format("MMddHHmmss", TimeZone.getTimeZone('UTC'))
+                            env.CI_BUILD_VERSION = "0.0.1-alpha." + (new Date()).format("MMddHHmmss", TimeZone.getTimeZone('UTC'))
 
                             sh "npm config set //${env.NPM_ADDR}/:_authToken ${env.NPM_TOKEN}"
                             sh "npm whoami"
                             try {
-                                sh "./node_modules/.bin/lerna publish --skip-git --force-publish=* --yes --repo-version 0.0.1-alpha.${env.CI_BUILD_VERSION} --canary"
+                                sh "./node_modules/.bin/lerna publish --skip-git --force-publish=* --yes --repo-version ${env.CI_BUILD_VERSION} --canary"
                             } catch(Exception e) {
                             }
                         }
                     }
+                }
+            }
+        }
+
+        stage('Create resolve-app') {
+            steps {
+                script {
+                    sh "npm install -g create-resolve-app@${env.CI_BUILD_VERSION}"
+                    sh "create-resolve-app --version=${env.CI_BUILD_VERSION} todolist"
+                    sh "cd todolist"
+                    sh "ls"
                 }
             }
         }

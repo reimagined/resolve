@@ -51,10 +51,20 @@ const checkAppName = (appName) => {
     return result.validForNewPackages;
 };
 
-const installScripts = (scriptsPackage) => {
+const installScripts = (scriptsPackage, version) => {
     return new Promise((resolve, reject) => {
         const command = 'npm';
-        const args = ['install', '--save', '--save-exact', '--loglevel', 'error', scriptsPackage];
+
+        const resultScriptsPackage = version ? `${scriptsPackage}@${version}` : scriptsPackage;
+
+        const args = [
+            'install',
+            '--save',
+            '--save-exact',
+            '--loglevel',
+            'error',
+            resultScriptsPackage
+        ];
 
         const child = spawn(command, args, { stdio: 'inherit' });
         child.on('close', (code) => {
@@ -87,7 +97,7 @@ const createPackageJson = (appName, appPath) => {
     fs.writeFileSync(path.join(appPath, 'package.json'), JSON.stringify(packageJson, null, 2));
 };
 
-export default async (name, packagePath, isEmpty) => {
+export default async (name, packagePath, isEmpty, version) => {
     const scriptsPackage = 'resolve-scripts';
     const appPath = path.resolve(name);
     const appName = path.basename(appPath);
@@ -122,7 +132,7 @@ export default async (name, packagePath, isEmpty) => {
     log(`Installing ${chalk.cyan(scriptsPackage)}...`);
     log();
 
-    await installScripts(scriptsPackage);
+    await installScripts(scriptsPackage, version);
 
     runScripts(appPath, appName, originalDirectory, packagePath, isEmpty, scriptsPackage);
 };
