@@ -1,3 +1,5 @@
+import groovy.json.JsonSlurper;
+
 pipeline {
     agent any
     stages {
@@ -24,7 +26,6 @@ pipeline {
                         withCredentials(credentials) {
                             env.NPM_ADDR = 'registry.npmjs.org'
 
-                            import groovy.json.JsonSlurper;
                             File f = new File('./lerna.json')
                             def slurper = new JsonSlurper()
                             def jsonText = f.getText()
