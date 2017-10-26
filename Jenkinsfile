@@ -41,6 +41,7 @@ pipeline {
             steps {
                 script {
                     docker.image('node:8').inside {
+                        sh "rm -rf stage"
                         sh "mkdir stage"
                         sh "cd stage"
                         sh "npm install -g create-resolve-app@${env.CI_BUILD_VERSION}"
