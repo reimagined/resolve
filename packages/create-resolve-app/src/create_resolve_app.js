@@ -41,7 +41,7 @@ const checkAppName = (appName) => {
     const result = validateProjectName(appName);
     if (!result.validForNewPackages) {
         error(
-            `Could not create a application called ${chalk.red(
+            `It is impossible to create an application called ${chalk.red(
                 `"${appName}"`
             )} because of npm naming restrictions:`
         );
@@ -109,7 +109,7 @@ export default async (name, packagePath, isEmpty, version) => {
     fs.ensureDirSync(appName);
     const conflicts = validateAppDir(appPath);
     if (conflicts.length > 0) {
-        log(`The directory ${chalk.green(appName)} contains files that could conflict:`);
+        log(`The ${chalk.green(appName)} directory contains conflicting files:`);
         log();
         for (const file of conflicts) {
             log(`  ${file}`);

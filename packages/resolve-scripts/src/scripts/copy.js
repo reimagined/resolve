@@ -6,5 +6,5 @@ try {
 } catch (e) {
     if (e.code !== 'ENOENT')
         // eslint-disable-next-line no-console
-        console.log('Static directory can not be copied: ', e);
+        console.log('A static directory cannot be copied: ', e);
 }

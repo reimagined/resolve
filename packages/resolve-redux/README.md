@@ -1,6 +1,6 @@
 # **🔩 resolve-redux** [![npm version](https://badge.fury.io/js/resolve-redux.svg)](https://badge.fury.io/js/resolve-redux)
 
-This package contains utils to integrate reSolve with [Redux](http://redux.js.org/) .
+This package contains tools to integrate reSolve with [Redux](http://redux.js.org/) .
 ## **📑 Table of Contents**
 * [Utils](#-utils)
 	* [sendCommandMiddleware](#sendcommandmiddleware)

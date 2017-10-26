@@ -72,8 +72,8 @@ const installDependencies = (dep, isDev, version) => {
 
 const printOutput = (appName, appPath, cdpath, readmeIsExist) => {
     log();
-    log(`Success! Created ${appName} at ${appPath}`);
-    log('Inside that directory, you can run several commands:');
+    log(`Success! ${appName} is created at ${appPath}`);
+    log('In that directory, you can run the following commands:');
 
     log();
     log(chalk.cyan(`  ${displayCommand(true)} start`));

@@ -4,7 +4,7 @@ export default function init(repository, onDemandOptions, persistDonePromise, on
     const key = hash(onDemandOptions);
 
     if (repository.get(key)) {
-        throw new Error(`State for '${key}' already initialized`);
+        throw new Error(`The state for '${key}' is already initialized.`);
     }
 
     repository.set(key, {

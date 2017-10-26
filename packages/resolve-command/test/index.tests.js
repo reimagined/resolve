@@ -176,7 +176,7 @@ describe('resolve-command', () => {
             });
             return Promise.reject('Test failed');
         } catch (error) {
-            expect(error.message).to.equal('"aggregateId" argument is required');
+            expect(error.message).to.equal('The "aggregateId" argument is required');
         }
     });
 
@@ -191,7 +191,7 @@ describe('resolve-command', () => {
             });
             return Promise.reject('Test failed');
         } catch (error) {
-            expect(error.message).to.equal('"aggregateName" argument is required');
+            expect(error.message).to.equal('The "aggregateName" argument is required');
         }
     });
 
@@ -206,7 +206,7 @@ describe('resolve-command', () => {
             });
             return Promise.reject('Test failed');
         } catch (error) {
-            expect(error.message).to.equal('"type" argument is required');
+            expect(error.message).to.equal('The "type" argument is required');
         }
     });
 

@@ -9,5 +9,5 @@
     "examples/todo/*",
     "benchmarks/*"
   ],
-  "version": "0.0.41"
+  "version": "0.0.43"
 }

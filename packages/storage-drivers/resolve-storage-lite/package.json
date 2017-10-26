@@ -1,6 +1,6 @@
 {
   "name": "resolve-storage-lite",
-  "version": "0.0.41",
+  "version": "0.0.43",
   "description": "This package serves as a driver for resolve-storage to store events using a file or in memory.",
   "main": "./dist/index.js",
   "bugs": {
@@ -33,6 +33,6 @@
     "async-lock": "^1.1.0",
     "nedb": "^1.8.0",
     "regenerator-runtime": "^0.11.0",
-    "resolve-storage-base": "^0.0.41"
+    "resolve-storage-base": "^0.0.43"
   }
 }
