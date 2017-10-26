@@ -26,20 +26,18 @@ pipeline {
                         withCredentials(credentials) {
                             env.NPM_ADDR = 'registry.npmjs.org'
 
-                            File f = new File('./lerna.json')
-                            def slurper = new JsonSlurper()
-                            def jsonText = f.getText()
-                            def json = slurper.parseText(jsonText)
-                            def version = json.version.toString().tokenize(".")
-                            version[2] = version[2].toInteger() + 1
-                            env.NEXT_NPM_VERSION = version.join('.')
-
-                            env.CI_BUILD_VERSION = "${env.NEXT_NPM_VERSION}-alpha." + (new Date()).format("MMddHHmmss", TimeZone.getTimeZone('UTC'))
+                            env.CI_TIMESTAMP = (new Date()).format("MMddHHmmss", TimeZone.getTimeZone('UTC'))
 
                             sh "npm config set //${env.NPM_ADDR}/:_authToken ${env.NPM_TOKEN}"
                             sh "npm whoami"
                             try {
-                                sh "./node_modules/.bin/lerna publish --skip-git --force-publish=* --yes --repo-version ${env.CI_BUILD_VERSION} --canary"
+
+                                sh """
+                                     eval $(node -e "const lerna = require('./lerna.json'); let [major, minor, patch] = lerna.version.split('.'); patch = +patch + 1; console.log('export NEXT_NPM_VERSION='+[major, minor, patch].join('.'))"); \
+                                     export CI_ALPHA_VERSION=$NEXT_NPM_VERSION-alpha.${env.CI_TIMESTAMP}; \
+                                     echo $CI_ALPHA_VERSION; \
+                                    ./node_modules/.bin/lerna publish --skip-git --force-publish=* --yes --repo-version $CI_ALPHA_VERSION --canary
+                                """
                             } catch(Exception e) {
                             }
                         }
@@ -53,11 +51,14 @@ pipeline {
                 script {
                     docker.image('node:8').inside {
                         sh """
+                            eval $(node -e "const lerna = require('./lerna.json'); let [major, minor, patch] = lerna.version.split('.'); patch = +patch + 1; console.log('export NEXT_NPM_VERSION='+[major, minor, patch].join('.'))"); \
+                            export CI_ALPHA_VERSION=$NEXT_NPM_VERSION-alpha.${env.CI_TIMESTAMP}; \
+                            echo $CI_ALPHA_VERSION; \
                             rm -rf ./stage; \
                             mkdir stage; \
                             cd ./stage; \
-                            npm install -g create-resolve-app@${env.CI_BUILD_VERSION}; \
-                            create-resolve-app --version=${env.CI_BUILD_VERSION} --sample todolist; \
+                            npm install -g create-resolve-app@$CI_ALPHA_VERSION; \
+                            create-resolve-app --version=$CI_ALPHA_VERSION --sample todolist; \
                             cd ./todolist; \
                             npm run test:e2e;
                         """
