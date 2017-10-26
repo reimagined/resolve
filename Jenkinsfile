@@ -25,7 +25,12 @@ pipeline {
                             env.NPM_ADDR = 'registry.npmjs.org'
 
                             sh '''
-                                eval $(node -e "const lerna = require('./lerna.json'); let [major, minor, patch] = lerna.version.split('.'); patch = +patch + 1; console.log('export NEXT_NPM_VERSION='+[major, minor, patch].join('.'))")
+                                echo $(node -e "const lerna = require('./lerna.json'); const version = lerna.version.split('.'); version[2] = +version[2] + 1; console.log('export NEXT_NPM_VERSION='+version.join('.'))")
+                            '''
+
+
+                            sh '''
+                                eval $(node -e "const lerna = require('./lerna.json'); const version = lerna.version.split('.'); version[2] = +version[2] + 1; console.log('export NEXT_NPM_VERSION='+version.join('.'))")
                             '''
 
                             env.CI_BUILD_VERSION = "${env.NEXT_NPM_VERSION}-alpha." + (new Date()).format("MMddHHmmss", TimeZone.getTimeZone('UTC'))
