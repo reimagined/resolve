@@ -28,7 +28,6 @@ pipeline {
                                 echo $(node -e "const lerna = require('./lerna.json'); const version = lerna.version.split('.'); version[2] = +version[2] + 1; console.log('export NEXT_NPM_VERSION='+version.join('.'))")
                             '''
 
-
                             sh '''
                                 eval $(node -e "const lerna = require('./lerna.json'); const version = lerna.version.split('.'); version[2] = +version[2] + 1; console.log('export NEXT_NPM_VERSION='+version.join('.'))")
                             '''
