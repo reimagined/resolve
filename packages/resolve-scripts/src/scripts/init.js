@@ -14,11 +14,14 @@ const dependencies = [
     'react',
     'react-dom',
     'react-redux',
-    'redux',
+    'redux'
+];
+
+const resolveDependencies = [
     'resolve-bus-memory',
     'resolve-redux',
     'resolve-storage-lite'
-];
+]
 
 const devDependencies = ['chai', 'cross-env', 'testcafe', 'testcafe-browser-tools', 'yargs'];
 
@@ -162,12 +165,14 @@ export default (appPath, appName, originalDirectory, isEmpty, packagePath, versi
 
         const templateEmptyPath = path.join(packagePath || scriptsPath, 'dist', 'template_empty');
         fs.copySync(templateEmptyPath, appPath);
-        installDependencies(dependencies, false, version);
+        installDependencies(dependencies, false);
+        installDependencies(resolveDependencies, false, version);
         fs.unlinkSync(path.join(appPath, '.flowconfig'));
         fs.unlinkSync(path.join(appPath, 'resolve.build.config.js'));
     } else {
-        installDependencies(dependencies.concat(appDependencies), false, version);
-        installDependencies(devDependencies, true, version);
+        installDependencies(dependencies, false);
+        installDependencies(resolveDependencies, false, version);
+        installDependencies(devDependencies, true);
     }
 
     fs.unlinkSync(path.join(appPath, '.eslintrc'));
