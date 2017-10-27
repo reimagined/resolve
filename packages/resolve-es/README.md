@@ -4,23 +4,23 @@ Provides an event store implementation with the capability to use different [sto
 ## Usage
 When initializing an event store, pass the following arguments:
 * `storage`  
-	Use one of  [drivers](../storage-drivers) which the reSolve framework provides...
+	Use a reSolve framework  [driver](../storage-drivers)...
 	* [resolve-storage-mongo](../storage-drivers/resolve-storage-mongo)
 	* [resolve-storage-lite](../storage-drivers/resolve-storage-lite)
 
-	... or implement your custom storage driver. Storage driver is an object with the following fields:
-	* `saveEvent` - a function which takes an event and returns Promise that will be resolved when the event is stored in the storage.
-	* `loadEventsByTypes` - a function which takes two arguments: an array of event types  and  callback that will be called for handling each appropriate event. 
-	* `loadEventsByAggregateIds` - a function which takes two arguments: an aggregate id/ array of aggregate ids and callback that will be called for handling each  appropriate event. 
+	... or implement a custom storage driver. A storage driver is an object with the following fields:
+	* `saveEvent` - a function which takes an event and returns a Promise that is resolved when the event is stored.
+	* `loadEventsByTypes` - a function which takes two arguments: an array of event types  and a  callback that is called for handling each appropriate event. 
+	* `loadEventsByAggregateIds` - a function which takes two arguments: an aggregate id/ array of aggregate ids and a callback that is called for handling each  appropriate event. 
 
 * `bus`  
-	Use one of [drivers](../bus-drivers) which the reSolve framework provides...
+	Use a reSolve framework [driver](../bus-drivers)...
 	* [resolve-bus-memory](../bus-drivers/resolve-bus-memory)
 	* [resolve-bus-rabbitmq](../bus-drivers/resolve-bus-rabbitmq)
 	* [resolve-bus-zmq](../bus-drivers/resolve-bus-zmq)
 
-	... or implement a custom bus driver. Bus driver is object with the following fields:
-	* `subscribe` - a function called when any event is emitted. It takes an emitted event.
+	... or implement a custom bus driver. A bus driver is an object with the following fields:
+	* `subscribe` - a function called when an event is emitted. It takes an emitted event.
 	* `publish` - a function that takes an event and publishes it.
 
 ### Example
