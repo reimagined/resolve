@@ -22,6 +22,8 @@ pipeline {
 
                     docker.image('node:8').inside {
                         withCredentials(credentials) {
+                            sh "npm install -g next-lerna-version"
+
                             env.NPM_ADDR = 'registry.npmjs.org'
 
                             env.CI_TIMESTAMP = (new Date()).format("MMddHHmmss", TimeZone.getTimeZone('UTC'))
@@ -31,8 +33,8 @@ pipeline {
                             try {
 
                                 sh """
-                                     eval \$(node -e "const lerna = require('./lerna.json'); let [major, minor, patch] = lerna.version.split('.'); patch = +patch + 1; console.log('export NEXT_NPM_VERSION='+[major, minor, patch].join('.'))"); \
-                                     export CI_ALPHA_VERSION=\$NEXT_NPM_VERSION-alpha.${env.CI_TIMESTAMP}; \
+                                     eval \$(next-lerna-version); \
+                                     export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}; \
                                      echo \$CI_ALPHA_VERSION; \
                                     ./node_modules/.bin/lerna publish --skip-git --force-publish=* --yes --repo-version \$CI_ALPHA_VERSION --canary
                                 """
@@ -49,8 +51,6 @@ pipeline {
                 script {
                     docker.image('node:8').inside {
                         sh """
-                            eval \$(node -e "const lerna = require('./lerna.json'); let [major, minor, patch] = lerna.version.split('.'); patch = +patch + 1; console.log('export NEXT_NPM_VERSION='+[major, minor, patch].join('.'))"); \
-                            export CI_ALPHA_VERSION=\$NEXT_NPM_VERSION-alpha.${env.CI_TIMESTAMP}; \
                             echo \$CI_ALPHA_VERSION; \
                             rm -rf ./stage; \
                             mkdir stage; \
