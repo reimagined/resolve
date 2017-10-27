@@ -49,7 +49,7 @@ pipeline {
         stage('Create resolve-app') {
             steps {
                 script {
-                    docker.image('node:8').inside {
+                    docker.image('testcafe/testcafe').inside {
                         sh """
                             npm install -g next-lerna-version
                             eval \$(next-lerna-version); \
