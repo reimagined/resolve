@@ -71,14 +71,6 @@ const printOutput = (appName, appPath, cdpath, readmeIsExist) => {
     log('In that directory, you can run the following commands:');
 
     log();
-    log(chalk.cyan(`  ${displayCommand(true)} start`));
-    log('    Starts the production server.');
-
-    log();
-    log(chalk.cyan(`  ${displayCommand(false)} build`));
-    log('    Bundles the app into static files for production.');
-
-    log();
     log(chalk.cyan(`  ${displayCommand(false)} dev`));
     log('    Starts the development server.');
 
@@ -89,6 +81,14 @@ const printOutput = (appName, appPath, cdpath, readmeIsExist) => {
     log();
     log(chalk.cyan(`  ${displayCommand(false)} test:e2e`));
     log('    Starts the functionality test runner.');
+
+    log();
+    log(chalk.cyan(`  ${displayCommand(false)} build`));
+    log('    Bundles the app into static files for production.');
+
+    log();
+    log(chalk.cyan(`  ${displayCommand(true)} start`));
+    log('    Starts the production server.');
 
     log();
     log('We suggest that you begin by typing:');
