@@ -51,6 +51,8 @@ pipeline {
                 script {
                     docker.image('node:8').inside {
                         sh """
+                            eval \$(next-lerna-version); \
+                            export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}; \
                             echo \$CI_ALPHA_VERSION; \
                             rm -rf ./stage; \
                             mkdir stage; \
