@@ -51,7 +51,7 @@ pipeline {
                 script {
                     docker.image('node:8').inside {
                         sh """
-                            sh "npm install -g next-lerna-version"
+                            npm install -g next-lerna-version
                             eval \$(next-lerna-version); \
                             export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}; \
                             echo \$CI_ALPHA_VERSION; \
