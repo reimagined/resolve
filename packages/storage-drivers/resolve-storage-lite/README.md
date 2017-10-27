@@ -1,10 +1,10 @@
 # **resolve-storage-lite** [![npm version](https://badge.fury.io/js/resolve-storage-lite.svg)](https://badge.fury.io/js/resolve-storage-lite)
 
-This package is a driver for `resolve-es` to store events using a file or a memory. This package doesn't have binary dependencies and not require additional applications (like MongoDB or SQL server).
+This package is a `resolve-es` driver for storing events using a file or memory. It does not have binary dependencies and does not require additional applications (like MongoDB or SQL server).
 
 ## Available Parameters
 You can pass the following argument when initializing a driver:
-* `pathToFile` - path to a file where events will be stored. Notice, if that argument is not passed the driver will use memory to store events. In this way, when instance of application will be restarted all data will be lost.
+* `pathToFile` - the path to a file where events are stored. Notice, if that argument is not passed the driver uses memory to store events. In this case, all data is lost when an application instance is restarted.
 
 ## Usage
 

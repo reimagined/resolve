@@ -1,10 +1,10 @@
 # **🛢 Storage Drivers**
-This folder contains storage drivers for [resolve-es](../resolve-es).
+This folder contains [resolve-es](../resolve-es) storage drivers.
 
-Storage driver is an object that must contain three functions:  
-* `saveEvent` - gets an event to be saved in a storage. Returns a Promise object that will be resolved when the event is stored.
-* `loadEventsByTypes` - gets an array of event types as the first argument, and a function for handling event as the second argument. Returns a Promise object that will be resolved when all appropriate events are handled.
-* `loadEventsByAggregateIds` - gets aggregateId as the first argument, and a function for handling event as second argument. Returns a Promise object that will be resolved when all appropriate events are handled.
+A storage driver is an object that must contain the following functions:  
+* `saveEvent` - gets an event to be saved in storage. Returns a Promise object that is resolved when the event is stored.
+* `loadEventsByTypes` - gets an array of event types as the first argument and a function for handling an event as the second argument. Returns a Promise object that is resolved when all the appropriate events are handled.
+* `loadEventsByAggregateIds` - gets an aggregate id as the first argument and a function for handling an event as the second argument. Returns a Promise object that is resolved when all the appropriate events are handled.
 
 Available drivers:
 * [resolve-storage-mongo](../storage-drivers/resolve-storage-mongo)  
