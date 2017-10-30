@@ -53,19 +53,19 @@ pipeline {
                         sh """
                             npm install -g testcafe
                             npm install -g next-lerna-version
-                            eval \$(next-lerna-version); \
-                            export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}; \
-                            echo \$CI_ALPHA_VERSION; \
-                            rm -rf ./stage; \
-                            mkdir stage; \
-                            cd ./stage; \
-                            npm install -g create-resolve-app@\$CI_ALPHA_VERSION; \
-                            create-resolve-app --version=\$CI_ALPHA_VERSION --sample todolist; \
-                            cd ./todolist; \
-                            npm run test:e2e & ; \
-                            sleep 10; \
-                            ps aux; \
-                            sleep 100000;
+                            eval \$(next-lerna-version)
+                            export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}
+                            echo \$CI_ALPHA_VERSION
+                            rm -rf ./stage
+                            mkdir stage
+                            cd ./stage
+                            npm install -g create-resolve-app@\$CI_ALPHA_VERSION
+                            create-resolve-app --version=\$CI_ALPHA_VERSION --sample todolist
+                            cd ./todolist
+                            npm run test:e2e &
+                            sleep 10
+                            ps aux
+                            sleep 100000
                         """
                     }
                 }
