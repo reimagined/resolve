@@ -51,6 +51,7 @@ pipeline {
                 script {
                     docker.image('markhobson/node-chrome').inside {
                         sh """
+                            google-chrome-stable
                             npm install -g testcafe
                             npm install -g next-lerna-version
                             eval \$(next-lerna-version)
