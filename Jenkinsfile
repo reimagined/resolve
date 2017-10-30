@@ -51,7 +51,7 @@ pipeline {
                 script {
                     docker.image('pastelsky/node-chrome-headless').inside {
                         sh """
-                            /usr/bin/google-chrome-unstable --disable-gpu --headless --no-sandbox --remote-debugging-address=0.0.0.0 --remote-debugging-port=9222 --user-data-dir=/data &
+                            alias chromerunner="/usr/bin/google-chrome-unstable --disable-gpu --headless --no-sandbox --remote-debugging-address=0.0.0.0 --remote-debugging-port=9222 --user-data-dir=/data"
                             npm install -g testcafe
                             npm install -g next-lerna-version
                             eval \$(next-lerna-version)
@@ -63,7 +63,7 @@ pipeline {
                             npm install -g create-resolve-app@\$CI_ALPHA_VERSION
                             create-resolve-app --version=\$CI_ALPHA_VERSION --sample todolist
                             cd ./todolist
-                            npm run test:e2e &
+                            npm run test:e2e -- --browser=chromerunner
                             sleep 10
                             ps aux
                             sleep 100000
