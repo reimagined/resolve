@@ -51,9 +51,7 @@ pipeline {
                 script {
                     docker.image('testcafe/testcafe').inside {
                         sh """
-                            apt-get install curl bash
-                            curl -sL https://deb.nodesource.com/setup_8.x | bash -
-                            apt-get install -y nodejs
+                            apk add --update nodejs nodejs-npm
                             npm install -g next-lerna-version
                             eval \$(next-lerna-version)
                             export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}
