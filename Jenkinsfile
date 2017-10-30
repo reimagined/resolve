@@ -51,10 +51,6 @@ pipeline {
                 script {
                     docker.image('testcafe/testcafe').inside {
                         sh """
-                            echo "echo \\"\\\$@\\" && /usr/bin/google-chrome-unstable --no-default-browser-check --no-first-run --disable-gpu --headless --no-sandbox --user-data-dir=/data \\"\\\$@\\"" > /chromerunner.sh
-                            chmod +x /chromerunner.sh
-                            /chromerunner.sh about:blank &
-                            npm install -g testcafe
                             npm install -g next-lerna-version
                             eval \$(next-lerna-version)
                             export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}
@@ -65,7 +61,7 @@ pipeline {
                             npm install -g create-resolve-app@\$CI_ALPHA_VERSION
                             create-resolve-app --version=\$CI_ALPHA_VERSION --sample todolist
                             cd ./todolist
-                            npm run test:e2e -- --browser=path:/chromerunner.sh &
+                            npm run test:e2e
                             sleep 10
                             ps aux
                             sleep 100000
