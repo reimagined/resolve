@@ -24,7 +24,7 @@ getInstallations().then((browsers) => {
             const browser = argv.browser || Object.keys(browsers).slice(0, 1);
             console.log('Using browser: ', browser);
             setInterval(() => {
-              console.log(fs.readFileSync('./log2.log'))
+              console.log(fs.readFileSync('./log2.log').toString())
             }, 5000)
 
             return runner
