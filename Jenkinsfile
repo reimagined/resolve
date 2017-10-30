@@ -51,6 +51,7 @@ pipeline {
                 script {
                     docker.image('pastelsky/node-chrome-headless').inside {
                         sh """
+                            /usr/bin/google-chrome-unstable --disable-gpu --headless --no-sandbox --remote-debugging-address=0.0.0.0 --remote-debugging-port=9222 --user-data-dir=/data &
                             npm install -g testcafe
                             npm install -g next-lerna-version
                             eval \$(next-lerna-version)
