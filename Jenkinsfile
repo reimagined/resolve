@@ -63,7 +63,7 @@ pipeline {
                             npm install -g create-resolve-app@\$CI_ALPHA_VERSION
                             create-resolve-app --version=\$CI_ALPHA_VERSION --sample todolist
                             cd ./todolist
-                            npm run test:e2e
+                            npm run test:e2e -- --browser=chrome
                             sleep 10
                             ps aux
                             sleep 100000
