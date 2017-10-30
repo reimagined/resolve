@@ -57,6 +57,6 @@ test('base functionality', async (t) => {
     /* Reset item */ {
         const todo = Selector('ul li').nth(0);
         await t.click(todo);
-        expect(await todo.getStyleProperty('text-decoration')).to.be.equal('none');
+        expect(await todo.getStyleProperty('text-decoration')).to.contain('none');
     }
 });
