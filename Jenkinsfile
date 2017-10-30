@@ -51,6 +51,8 @@ pipeline {
                 script {
                     docker.image('testcafe/testcafe').inside {
                         sh """
+                            echo "http://dl-4.alpinelinux.org/alpine/latest-stable/releases" >> /etc/apk/repositories
+                            apk update
                             apk add --update nodejs nodejs-npm
                             npm install -g next-lerna-version
                             eval \$(next-lerna-version)
