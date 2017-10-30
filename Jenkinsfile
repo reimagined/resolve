@@ -51,7 +51,7 @@ pipeline {
                 script {
                     docker.image('testcafe/testcafe').inside {
                         sh """
-                            apk add --update nodejs nodejs-npm --update-cache --allow-untrusted --repository http://dl-4.alpinelinux.org/alpine/latest-stable/community
+                            apk add nodejs nodejs-npm --update-cache --allow-untrusted --repository http://dl-4.alpinelinux.org/alpine/latest-stable/community
                             npm install -g next-lerna-version
                             eval \$(next-lerna-version)
                             export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}
