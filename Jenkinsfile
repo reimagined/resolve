@@ -49,8 +49,9 @@ pipeline {
         stage('Create resolve-app') {
             steps {
                 script {
-                    docker.image('cheaterwork/testcafe-latest-node').inside {
+                    docker.image('markhobson/node-chrome').inside {
                         sh """
+                            npm install -g testcafe
                             npm install -g next-lerna-version
                             eval \$(next-lerna-version); \
                             export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}; \
