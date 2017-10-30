@@ -51,7 +51,7 @@ pipeline {
                 script {
                     docker.image('markhobson/node-chrome').inside {
                         sh """
-                            google-chrome-stable
+                            google-chrome-stable --no-sandbox --user-data-dir=/root --no-first-run --no-default-browser-check --window-size="1600,1200" &
                             npm install -g testcafe
                             npm install -g next-lerna-version
                             eval \$(next-lerna-version)
