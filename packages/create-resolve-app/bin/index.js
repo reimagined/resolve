@@ -25,7 +25,7 @@ const messages = {
         `  -V, --version    outputs the version number${EOL}` +
         `  -h, --help       outputs usage information${EOL}` +
         EOL +
-        `If you have any problems, do not hesitate to file an issue:${EOL}` +
+        `If you have any problems, you can create an issue:${EOL}` +
         `  ${chalk.cyan('https://github.com/reimagined/resolve/issues/new')}`,
 
     emptyAppNameError:
