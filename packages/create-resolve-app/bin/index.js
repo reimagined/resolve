@@ -22,6 +22,7 @@ const messages = {
         `Usage: create-resolve-app ${chalk.green('<project-directory>')} [options]${EOL}` +
         EOL +
         `Options:${EOL}` +
+        EOL +
         `  -V, --version    outputs the version number${EOL}` +
         `  -h, --help       outputs usage information${EOL}` +
         EOL +
