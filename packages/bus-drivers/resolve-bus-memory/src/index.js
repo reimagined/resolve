@@ -1,4 +1,4 @@
-function createDriver() {
+function createAdapter() {
     let handler = () => {};
 
     return {
@@ -7,4 +7,4 @@ function createDriver() {
     };
 }
 
-export default createDriver;
+export default createAdapter;

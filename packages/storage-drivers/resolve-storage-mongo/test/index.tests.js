@@ -3,9 +3,9 @@ import { expect } from 'chai';
 import { MongoClient, _setFindResult, _setInsertCommandReject } from 'mongodb';
 import { ConcurrentError } from 'resolve-storage-base';
 
-import createDriver from '../src';
+import createAdapter from '../src';
 
-const driverSettings = {
+const adapterSettings = {
     url: 'test-url',
     collection: 'test-collection'
 };
@@ -23,9 +23,9 @@ describe('es-mongo', () => {
     });
 
     it('should save event', () => {
-        const driver = createDriver(driverSettings);
+        const adapter = createAdapter(adapterSettings);
 
-        return driver
+        return adapter
             .saveEvent(testEvent)
             .then(() => {
                 expect(MongoClient.connect.lastCall.args).to.deep.equal(['test-url']);
@@ -52,7 +52,7 @@ describe('es-mongo', () => {
     });
 
     it('should load events by types', () => {
-        const driver = createDriver(driverSettings);
+        const adapter = createAdapter(adapterSettings);
         const types = ['event-type-1', 'event-type-2'];
         const eventsByTypes = [
             { id: '1', type: 'event-type-1' },
@@ -61,7 +61,7 @@ describe('es-mongo', () => {
         const processEvent = sinon.spy();
         _setFindResult(eventsByTypes);
 
-        return driver
+        return adapter
             .loadEventsByTypes(types, processEvent)
             .then(() => MongoClient.connect.lastCall.returnValue)
             .then((db) => {
@@ -76,14 +76,14 @@ describe('es-mongo', () => {
     });
 
     it('should load events by aggregate ids', () => {
-        const driver = createDriver(driverSettings);
+        const adapter = createAdapter(adapterSettings);
         const aggregateId = 'test-aggregate-id';
         const eventsByAggregateId = [{ id: '1', aggregateId }, { id: '1', aggregateId }];
 
         const processEvent = sinon.spy();
         _setFindResult(eventsByAggregateId);
 
-        return driver
+        return adapter
             .loadEventsByAggregateIds([aggregateId], processEvent)
             .then(() => MongoClient.connect.lastCall.returnValue)
             .then((db) => {
@@ -101,14 +101,14 @@ describe('es-mongo', () => {
     });
 
     it('works the same way for different import types', () => {
-        expect(createDriver).to.be.equal(require('../src'));
+        expect(createAdapter).to.be.equal(require('../src'));
     });
 
     it('works the same way for different import types', () => {
         _setInsertCommandReject(true);
-        const driver = createDriver(driverSettings);
+        const adapter = createAdapter(adapterSettings);
 
-        return driver.saveEvent(testEvent).catch((e) => {
+        return adapter.saveEvent(testEvent).catch((e) => {
             expect(e).to.be.an.instanceof(ConcurrentError);
         });
     });

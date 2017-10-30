@@ -97,7 +97,7 @@ Together with this change, cross-read model GraphQL resolvers in old terms now i
 All read-models can be queried only by GraphQL query. View-models is kind of read-models, which can be retrieved only with full state, because they fit into client's memory. View-models can be used only with synchronous storage providers, which also support "full state" term, e.g. memory provider.
 
 Custom storage provider are supported now. Every projection can be custom asynchronous function, which interacts with supplied storage provider. No custom providers goes with this change, but easily can be developed.
-* renamed method `loadEventsByAggregateId` to `loadEventsByAggregateIds` in resolve-es drivers
+* renamed method `loadEventsByAggregateId` to `loadEventsByAggregateIds` in resolve-es adapters
 
 
 <a name="0.0.26"></a>

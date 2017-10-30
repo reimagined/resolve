@@ -17,7 +17,7 @@ function loadEvents(coll, query, callback) {
     return donePromise;
 }
 
-function createDriver({ url, collection }) {
+function createAdapter({ url, collection }) {
     let promise;
 
     function getCollection() {
@@ -43,12 +43,14 @@ function createDriver({ url, collection }) {
 
     return {
         saveEvent: event =>
-            getCollection().then(coll => coll.insert(event)).catch((e) => {
-                if (e.code === DUPLICATE_KEY_ERROR) {
-                    throw new ConcurrentError();
-                }
-                throw e;
-            }),
+            getCollection()
+                .then(coll => coll.insert(event))
+                .catch((e) => {
+                    if (e.code === DUPLICATE_KEY_ERROR) {
+                        throw new ConcurrentError();
+                    }
+                    throw e;
+                }),
         loadEventsByTypes: (types, callback) =>
             getCollection().then(coll => loadEvents(coll, { type: { $in: types } }, callback)),
         loadEventsByAggregateIds: (aggregateIds, callback) =>
@@ -58,4 +60,4 @@ function createDriver({ url, collection }) {
     };
 }
 
-export default createDriver;
+export default createAdapter;

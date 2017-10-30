@@ -3,10 +3,10 @@ import sinon from 'sinon';
 import { expect } from 'chai';
 import { ConcurrentError } from 'resolve-storage-base';
 
-import driver from '../src/index';
+import adapter from '../src/index';
 import storage from '../src/storage';
 
-describe('driver', () => {
+describe('adapter', () => {
     let sandbox;
 
     const pathToFile = 'some-path';
@@ -26,7 +26,7 @@ describe('driver', () => {
     it('saveEvent should save event to storage', async () => {
         const event = { type: 'SOME_EVENT' };
 
-        await driver({ pathToFile }).saveEvent(event);
+        await adapter({ pathToFile }).saveEvent(event);
 
         sinon.assert.calledWith(storage.prepare, pathToFile);
         sinon.assert.calledWith(storage.saveEvent, event);
@@ -36,7 +36,7 @@ describe('driver', () => {
         const types = ['SOME_EVENT_ONE', 'SOME_EVENT_TWO'];
         const callback = sinon.spy();
 
-        await driver({ pathToFile }).loadEventsByTypes(types, callback);
+        await adapter({ pathToFile }).loadEventsByTypes(types, callback);
 
         sinon.assert.calledWith(storage.prepare, pathToFile);
         sinon.assert.calledWith(storage.loadEvents, { type: { $in: types } }, callback);
@@ -46,7 +46,7 @@ describe('driver', () => {
         const ids = ['id1', 'id2', 'id3'];
         const callback = sinon.spy();
 
-        await driver({ pathToFile }).loadEventsByAggregateIds(ids, callback);
+        await adapter({ pathToFile }).loadEventsByAggregateIds(ids, callback);
 
         sinon.assert.calledWith(storage.prepare, pathToFile);
         sinon.assert.calledWith(storage.loadEvents, { aggregateId: { $in: ids } }, callback);
@@ -54,7 +54,7 @@ describe('driver', () => {
 
     it('throw an exception if the event with the current version exists', async () => {
         sandbox.restore();
-        const storage = await driver();
+        const storage = await adapter();
 
         try {
             await storage.saveEvent({ aggregateId: 1, aggregateVersion: 1 });

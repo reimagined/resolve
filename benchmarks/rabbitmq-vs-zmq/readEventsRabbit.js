@@ -1,8 +1,8 @@
-import driverRabbitmq from 'resolve-bus-rabbitmq';
+import rabbitmqAdapter from 'resolve-bus-rabbitmq';
 
 import config from './config';
 
-const busRabbitmq = driverRabbitmq({
+const busRabbitmq = rabbitmqAdapter({
     url: config.RABBITMQ_CONNECTION_URL,
     messageTtl: 20000
 });

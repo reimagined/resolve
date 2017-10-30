@@ -1,8 +1,8 @@
-import driverZmq from 'resolve-bus-zmq';
+import zmqAdapter from 'resolve-bus-zmq';
 
 import config from './config';
 
-const busZmq = driverZmq({
+const busZmq = zmqAdapter({
     address: config.ZMQ_HOST,
     pubPort: config.ZMQ_PUB_PORT,
     subPort: config.ZMQ_SUB_PORT

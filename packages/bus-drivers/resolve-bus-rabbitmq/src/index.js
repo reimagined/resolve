@@ -48,7 +48,7 @@ function init({ url, exchange, exchangeType, queueName, messageTtl, maxLength },
         );
 }
 
-function createDriver(options) {
+function createAdapter(options) {
     let handler = () => {};
     const config = Object.assign(defaultOptions, options);
     const initPromise = init(config, event => handler(event));
@@ -73,4 +73,4 @@ function createDriver(options) {
     };
 }
 
-export default createDriver;
+export default createAdapter;
