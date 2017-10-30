@@ -53,7 +53,7 @@ pipeline {
                         sh """
                             echo "echo \\"\\\$@\\" && /usr/bin/google-chrome-unstable --no-default-browser-check --no-first-run --disable-gpu --headless --no-sandbox --user-data-dir=/data \\"\\\$@\\"" > /chromerunner.sh
                             chmod +x /chromerunner.sh
-                            /chromerunner.sh about:blank &
+                            /chromerunner.sh about:blank & 
                             npm install -g testcafe
                             npm install -g next-lerna-version
                             eval \$(next-lerna-version)
