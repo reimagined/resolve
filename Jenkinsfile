@@ -51,7 +51,7 @@ pipeline {
                 script {
                     docker.image('pastelsky/node-chrome-headless').inside {
                         sh """
-                            echo "/usr/bin/google-chrome-unstable --no-default-browser-check --disable-gpu --headless --no-sandbox --user-data-dir=/data \"\$@\"" > ./chromerunner.sh
+                            echo "/usr/bin/google-chrome-unstable --no-default-browser-check --disable-gpu --headless --no-sandbox --user-data-dir=/data \"\\\$@\"" > ./chromerunner.sh
                             chmod +x ./chromerunner.sh
                             cat ./chromerunner.sh
                             npm install -g testcafe
@@ -65,7 +65,7 @@ pipeline {
                             npm install -g create-resolve-app@\$CI_ALPHA_VERSION
                             create-resolve-app --version=\$CI_ALPHA_VERSION --sample todolist
                             cd ./todolist
-                            npm run test:e2e -- --browser=./chromerunner.sh &
+                            npm run test:e2e -- --browser=path:./chromerunner.sh &
                             sleep 10
                             ps aux
                             sleep 100000
