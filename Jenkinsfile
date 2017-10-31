@@ -30,7 +30,6 @@ pipeline {
                             npm whoami
                             eval \$(next-lerna-version); \
                             export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}; \
-                            echo \$CI_ALPHA_VERSION; \
                             ./node_modules/.bin/lerna publish --skip-git --force-publish=* --yes --repo-version \$CI_ALPHA_VERSION --canary
                         """
                     }
@@ -45,13 +44,20 @@ pipeline {
                     sh """
                         eval \$(next-lerna-version)
                         export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}
-                        echo \$CI_ALPHA_VERSION
 
                         rm -rf ./stage
                         mkdir stage
                         cd ./stage
 
-                        npm install -g create-resolve-app@\$CI_ALPHA_VERSION
+                        while :
+                        do
+                            if ( npm install -g create-resolve-app@\$CI_ALPHA_VERSION ); then
+                                break
+                            else
+                                sleep 5
+                            fi
+                        done
+
                         create-resolve-app --version=\$CI_ALPHA_VERSION --sample todolist
                         cd ./todolist
 
