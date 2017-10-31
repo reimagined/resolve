@@ -33,7 +33,7 @@ pipeline {
                                 export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}; \
                                 echo \$CI_ALPHA_VERSION; \
                                 ls; \
-                                lerna publish --skip-git --force-publish=* --yes --repo-version \$CI_ALPHA_VERSION --canary
+                                ./node_modules/.bin/lerna publish --skip-git --force-publish=* --yes --repo-version \$CI_ALPHA_VERSION --canary
                             """
                         }
                     }
