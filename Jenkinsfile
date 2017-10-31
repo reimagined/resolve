@@ -4,7 +4,7 @@ pipeline {
         stage('Unit tests') {
             steps {
                 script {
-                    docker.image('reimagined/node-testcafe').inside {
+                    docker.image('node:8').inside {
                         sh 'npm install'
                         sh 'npm run bootstrap'
                     }
@@ -20,7 +20,7 @@ pipeline {
                         string(credentialsId: 'NPM_CREDENTIALS', variable: 'NPM_TOKEN')
                     ];
 
-                    docker.image('reimagined/node-testcafe').inside {
+                    docker.image('node:8').inside {
                         withCredentials(credentials) {
                             env.NPM_ADDR = 'registry.npmjs.org'
 
