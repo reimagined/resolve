@@ -8,6 +8,7 @@ pipeline {
                 script {
                     sh 'npm install'
                     sh 'npm run bootstrap'
+                    sh 'ps aux'
                 }
             }
         }
