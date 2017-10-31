@@ -99,5 +99,11 @@ pipeline {
             }
         }
     }
+
+    post {
+        always {
+            deleteDir()
+        }
+    }
 }
 
