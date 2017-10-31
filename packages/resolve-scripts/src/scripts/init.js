@@ -172,6 +172,7 @@ export default (appPath, appName, originalDirectory, isEmpty, packagePath, resol
     } else {
         installDependencies(dependencies, false);
         installDependencies(resolveDependencies, false, resolveVersion);
+        installDependencies(appDependencies, false, resolveVersion);
         installDependencies(devDependencies, true);
     }
 

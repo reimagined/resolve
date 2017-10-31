@@ -55,7 +55,9 @@ const installScripts = (scriptsPackage, resolveVersion) => {
     return new Promise((resolve, reject) => {
         const command = 'npm';
 
-        const resultScriptsPackage = resolveVersion ? `${scriptsPackage}@${resolveVersion}` : scriptsPackage;
+        const resultScriptsPackage = resolveVersion ?
+          `${scriptsPackage}@${resolveVersion}` :
+          scriptsPackage;
 
         const args = [
             'install',
@@ -79,7 +81,15 @@ const installScripts = (scriptsPackage, resolveVersion) => {
     });
 };
 
-const runScripts = (appPath, appName, originalDirectory, packagePath, isEmpty, scriptsPackage, resolveVersion) => {
+const runScripts = (
+    appPath,
+    appName,
+    originalDirectory,
+    packagePath,
+    isEmpty,
+    scriptsPackage,
+    resolveVersion
+) => {
     const scriptsPath = packagePath || path.resolve(appPath, 'node_modules', scriptsPackage);
 
     const initScriptPath = path.resolve(scriptsPath, 'dist', 'scripts', 'init.js');
@@ -134,5 +144,13 @@ export default async (name, packagePath, isEmpty, resolveVersion) => {
 
     await installScripts(scriptsPackage, resolveVersion);
 
-    runScripts(appPath, appName, originalDirectory, packagePath, isEmpty, scriptsPackage, resolveVersion);
+    runScripts(
+        appPath,
+        appName,
+        originalDirectory,
+        packagePath,
+        isEmpty,
+        scriptsPackage,
+        resolveVersion
+    );
 };

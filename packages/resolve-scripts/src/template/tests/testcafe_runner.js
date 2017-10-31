@@ -22,7 +22,6 @@ getInstallations().then((browsers) => {
             testcafe = tc;
             const runner = testcafe.createRunner();
             const browser = argv.browser || Object.keys(browsers).slice(0, 1);
-            console.log('Using browser: ', browser);
             return runner
                 .startApp('npm run dev 2>&1 >log2.log', DELAY)
                 .src(['./tests/e2e-tests/index.test.js'])
