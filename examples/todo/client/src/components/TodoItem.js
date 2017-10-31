@@ -17,9 +17,7 @@ export default function TodoItem(props) {
                     checked={todo.checked}
                     onChange={props.onCheck}
                 />
-                <label htmlFor="itemContext">
-                    {todo.name}
-                </label>
+                <label htmlFor="itemContext">{todo.name}</label>
                 <button className="destroy" onClick={props.onRemove} />
             </div>
         </li>

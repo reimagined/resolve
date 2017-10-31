@@ -42,8 +42,7 @@ function createMiddleware() {
     };
 }
 
-const middleware = typeof window === 'undefined'
-    ? () => () => next => action => next(action)
-    : createMiddleware;
+const middleware =
+    typeof window === 'undefined' ? () => () => next => action => next(action) : createMiddleware;
 
 export default middleware;

@@ -1,6 +1,6 @@
 import createEventStore from 'resolve-es';
-import storageDriver from 'resolve-storage-lite';
-import busDriver from 'resolve-bus-zmq';
+import storageAdapter from 'resolve-storage-lite';
+import busAdapter from 'resolve-bus-zmq';
 import commandHandler from 'resolve-command';
 
 import { aggregates } from 'todo-common';
@@ -10,8 +10,8 @@ import config from '../config';
 const todoCardAggregate = aggregates.TodoCard;
 const todoItemAggregate = aggregates.TodoItem;
 
-const storage = storageDriver(config.esFile);
-const bus = busDriver(config.zmq);
+const storage = storageAdapter(config.esFile);
+const bus = busAdapter(config.zmq);
 
 const eventStore = createEventStore({ storage, bus });
 

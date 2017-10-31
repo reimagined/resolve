@@ -301,17 +301,17 @@ The `resolve.server.config.js` file contains information for reSolve library.
 
 * #### bus
 	The bus is used to emit events. It is an object with the following structure 
-	* `driver`: one of [bus drivers](../../../bus-drivers)
-	* `params`: config that will be passed to a driver when it is initialized
+	* `adapter`: one of [bus adapters](../../../bus-adapters)
+	* `params`: config that will be passed to an adapter when it is initialized
 
 	##### Example
 	###### resolve.server.config.js
 	```js
-	import busDriver from 'resolve-bus-zmq';
+	import busAdapter from 'resolve-bus-zmq';
 
 	export default {
 	  bus: {
-	    driver: busDriver,
+	    adapter: busAdapter,
 	    params: {
 	      url: 'zmq_url'
 	    }
@@ -505,17 +505,17 @@ The `resolve.server.config.js` file contains information for reSolve library.
 
 * #### storage
 	Contains an object with the following structure: 
-	* `driver`: one of [storage drivers](../../../storage-drivers) 
-	* `params`: config that will be passed to a driver when it is initialized
+	* `adapter`: one of [storage adapters](../../../storage-adapters) 
+	* `params`: config that will be passed to an adapter when it is initialized
 
 	##### Example
 	###### resolve.server.config.js
 	```js
-	import storageDriver from 'resolve-storage-lite';
+	import storageAdapter from 'resolve-storage-lite';
 
 	export default {
 	  storage: {
-	    driver: storageDriver ,
+	    adapter: storageAdapter,
 	    params: {
 	      pathToFile: 'storage.db'
 	    }

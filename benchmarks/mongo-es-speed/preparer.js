@@ -1,5 +1,5 @@
 import { dropCollection } from 'benchmark-base/tools';
-import mongoDbDriver from 'resolve-storage-mongo';
+import mongoDbAdapter from 'resolve-storage-mongo';
 import config from './config';
 
 const TYPES = config.GENERATED_EVENT_TYPES;
@@ -42,7 +42,7 @@ function generateEvents(saveEvent, eventsCount, reportObj) {
 }
 
 export default function preparer(eventsCount, reportObj) {
-    const storage = mongoDbDriver({
+    const storage = mongoDbAdapter({
         url: config.MONGODB_CONNECTION_URL,
         collection: config.MONGODB_COLLECTION_NAME
     });

@@ -180,9 +180,8 @@ export default (appPath, appName, originalDirectory, isEmpty, packagePath, resol
 
     tryRenameGitignore(appPath);
 
-    const cdpath = originalDirectory && path.join(originalDirectory, appName) === appPath
-        ? appName
-        : appPath;
+    const cdpath =
+        originalDirectory && path.join(originalDirectory, appName) === appPath ? appName : appPath;
 
     printOutput(appName, appPath, cdpath, readmeIsExist);
 };

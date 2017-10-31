@@ -1,5 +1,5 @@
-import fileDriver from 'resolve-storage-lite';
-import busDriver from 'resolve-bus-memory';
+import fileAdapter from 'resolve-storage-lite';
+import busAdapter from 'resolve-bus-memory';
 import eventTypes from './common/aggregates/todo-events';
 import aggregates from './common/aggregates';
 import readModels from './common/read-models';
@@ -9,15 +9,16 @@ if (module.hot) {
     module.hot.accept();
 }
 
-const dbPath = process.env.NODE_ENV === 'production'
-    ? './prod.db'
-    : process.env.NODE_ENV === 'tests' ? './__test.db' : './dev.db';
+const dbPath =
+    process.env.NODE_ENV === 'production'
+        ? './prod.db'
+        : process.env.NODE_ENV === 'tests' ? './__test.db' : './dev.db';
 
 export default {
     entries: clientConfig,
-    bus: { driver: busDriver },
+    bus: { adapter: busAdapter },
     storage: {
-        driver: fileDriver,
+        adapter: fileAdapter,
         params: { pathToFile: dbPath }
     },
     initialState: async (readModelsExecutors) => {
