@@ -4,7 +4,7 @@ pipeline {
         stage('Unit tests') {
             steps {
                 script {
-                    docker.image('node:8').inside {
+                    docker.image('reimagined/node-testcafe').inside {
                         sh 'npm install'
                         sh 'npm run bootstrap'
                     }
@@ -20,7 +20,7 @@ pipeline {
                         string(credentialsId: 'NPM_CREDENTIALS', variable: 'NPM_TOKEN')
                     ];
 
-                    docker.image('node:8').inside {
+                    docker.image('reimagined/node-testcafe').inside {
                         withCredentials(credentials) {
                             env.NPM_ADDR = 'registry.npmjs.org'
 
@@ -32,8 +32,7 @@ pipeline {
                                 eval \$(next-lerna-version); \
                                 export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}; \
                                 echo \$CI_ALPHA_VERSION; \
-                                ls; \
-                                ./node_modules/.bin/lerna publish --skip-git --force-publish=* --yes --repo-version \$CI_ALPHA_VERSION --canary
+                                ./node_modules/.bin/lerna publish --force-publish=* --yes --repo-version \$CI_ALPHA_VERSION --canary
                             """
                         }
                     }
