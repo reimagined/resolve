@@ -38,7 +38,7 @@ pipeline {
             }
         }
 
-        stage('Create resolve-app') {
+        stage('Create resolve-app [ todolist ]') {
             steps {
                 script {
                     sh """
@@ -60,7 +60,7 @@ pipeline {
                             fi
                         done
 
-                        create-resolve-app --version=\$CI_ALPHA_VERSION --sample todolist
+                        create-resolve-app --sample todolist
                         cd ./todolist
 
                         npm run test:e2e -- --browser=path:/chromium

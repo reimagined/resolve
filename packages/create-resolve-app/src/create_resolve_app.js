@@ -51,11 +51,11 @@ const checkAppName = (appName) => {
     return result.validForNewPackages;
 };
 
-const installScripts = (scriptsPackage, version) => {
+const installScripts = (scriptsPackage, resolveVersion) => {
     return new Promise((resolve, reject) => {
         const command = 'npm';
 
-        const resultScriptsPackage = version ? `${scriptsPackage}@${version}` : scriptsPackage;
+        const resultScriptsPackage = resolveVersion ? `${scriptsPackage}@${resolveVersion}` : scriptsPackage;
 
         const args = [
             'install',
@@ -79,13 +79,13 @@ const installScripts = (scriptsPackage, version) => {
     });
 };
 
-const runScripts = (appPath, appName, originalDirectory, packagePath, isEmpty, scriptsPackage, version) => {
+const runScripts = (appPath, appName, originalDirectory, packagePath, isEmpty, scriptsPackage, resolveVersion) => {
     const scriptsPath = packagePath || path.resolve(appPath, 'node_modules', scriptsPackage);
 
     const initScriptPath = path.resolve(scriptsPath, 'dist', 'scripts', 'init.js');
 
     const init = require(initScriptPath);
-    init.default(appPath, appName, originalDirectory, isEmpty, packagePath, version);
+    init.default(appPath, appName, originalDirectory, isEmpty, packagePath, resolveVersion);
 };
 
 const createPackageJson = (appName, appPath) => {
@@ -97,7 +97,7 @@ const createPackageJson = (appName, appPath) => {
     fs.writeFileSync(path.join(appPath, 'package.json'), JSON.stringify(packageJson, null, 2));
 };
 
-export default async (name, packagePath, isEmpty, version) => {
+export default async (name, packagePath, isEmpty, resolveVersion) => {
     const scriptsPackage = 'resolve-scripts';
     const appPath = path.resolve(name);
     const appName = path.basename(appPath);
@@ -132,7 +132,7 @@ export default async (name, packagePath, isEmpty, version) => {
     log(`Installing ${chalk.cyan(scriptsPackage)}...`);
     log();
 
-    await installScripts(scriptsPackage, version);
+    await installScripts(scriptsPackage, resolveVersion);
 
-    runScripts(appPath, appName, originalDirectory, packagePath, isEmpty, scriptsPackage, version);
+    runScripts(appPath, appName, originalDirectory, packagePath, isEmpty, scriptsPackage, resolveVersion);
 };

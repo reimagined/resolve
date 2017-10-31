@@ -57,10 +57,10 @@ const tryRenameGitignore = (appPath) => {
     });
 };
 
-const installDependencies = (dep, isDev, version) => {
+const installDependencies = (dep, isDev, resolveVersion) => {
     const command = 'npm';
     const args = ['install', isDev ? '--save-dev' : '--save'].concat(dep.map(
-        depName => version ? `${depName}@${version}` : depName
+        depName => resolveVersion ? `${depName}@${resolveVersion}` : depName
     ));
 
     const proc = spawn.sync(command, args, { stdio: 'inherit' });
@@ -122,7 +122,7 @@ const deleteFolderRecursive = (path) => {
     }
 };
 
-export default (appPath, appName, originalDirectory, isEmpty, packagePath, version) => {
+export default (appPath, appName, originalDirectory, isEmpty, packagePath, resolveVersion) => {
     const scriptsPackageName = require(path.join(__dirname, '../../', 'package.json')).name;
     const scriptsPath = path.join(appPath, 'node_modules', scriptsPackageName);
 
@@ -166,12 +166,12 @@ export default (appPath, appName, originalDirectory, isEmpty, packagePath, versi
         const templateEmptyPath = path.join(packagePath || scriptsPath, 'dist', 'template_empty');
         fs.copySync(templateEmptyPath, appPath);
         installDependencies(dependencies, false);
-        installDependencies(resolveDependencies, false, version);
+        installDependencies(resolveDependencies, false, resolveVersion);
         fs.unlinkSync(path.join(appPath, '.flowconfig'));
         fs.unlinkSync(path.join(appPath, 'resolve.build.config.js'));
     } else {
         installDependencies(dependencies, false);
-        installDependencies(resolveDependencies, false, version);
+        installDependencies(resolveDependencies, false, resolveVersion);
         installDependencies(devDependencies, true);
     }
 
