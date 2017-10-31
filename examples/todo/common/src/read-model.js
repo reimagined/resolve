@@ -45,9 +45,10 @@ export default {
     viewModel: true,
     projection: Object.keys(originalProjection).reduce((result, name) => {
         result[name] = (state, event) => {
-            const checkedState = !state || !state.cards || !state.mapTodoToCard
-                ? Immutable({ cards: {}, mapTodoToCard: {} })
-                : state;
+            const checkedState =
+                !state || !state.cards || !state.mapTodoToCard
+                    ? Immutable({ cards: {}, mapTodoToCard: {} })
+                    : state;
             return originalProjection[name](checkedState, event);
         };
         return result;

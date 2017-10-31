@@ -27,14 +27,17 @@ const storage = {
 
     loadEvents: (query, callback) => db =>
         new Promise((resolve, reject) =>
-            db.find(query).sort({ timestamp: 1 }).exec((error, events) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    events.forEach(callback);
-                    resolve();
-                }
-            })
+            db
+                .find(query)
+                .sort({ timestamp: 1 })
+                .exec((error, events) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        events.forEach(callback);
+                        resolve();
+                    }
+                })
         ),
 
     saveEvent: event => db =>
