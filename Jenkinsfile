@@ -76,11 +76,6 @@ pipeline {
                 script {
                     def isMasterBranch = env.BRANCH_NAME == 'master'
 
-                    commitHash = sh (
-                        script: 'git rev-parse HEAD | cut -c1-8',
-                        returnStdout: true
-                    ).trim()
-
                     withCredentials([
                         string(credentialsId: isMasterBranch ? 'UPDATE_VERSION_JOBS' : 'DEPENDENT_JOBS_LIST', variable: 'JOBS')
                     ]) {
@@ -91,7 +86,7 @@ pipeline {
                                 parameters: [[
                                     $class: 'StringParameterValue',
                                     name: 'NPM_CANARY_VERSION',
-                                    value: commitHash
+                                    value: ${env.CI_TIMESTAMP}
                                 ],[
                                     $class: 'BooleanParameterValue',
                                     name: 'RESOLVE_CHECK',
