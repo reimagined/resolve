@@ -45,7 +45,7 @@ const messages = {
 };
 
 const options = commandLineArgs(optionDefinitions, { partial: true });
-var unknownOptions = options._unknown && options._unknown.filter(x => x.startsWith('-'));
+const unknownOptions = options._unknown && options._unknown.filter(x => x.startsWith('-'));
 
 if (unknownOptions && unknownOptions.length) {
     const options = unknownOptions.join();
