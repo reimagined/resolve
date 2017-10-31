@@ -32,8 +32,7 @@
     "lint": "eslint .",
     "lint-staged": "lint-staged",
     "prettier": "prettier-eslint --write \"./**/src/**/*.js\" \"./**/test/**/*.js\" --ignore=./**/node_modules/**",
-    "test": "lerna run test",
-    "lerna:publish": "lerna publish"
+    "test": "lerna run test"
   },
   "pre-commit": [
     "lint-staged",
