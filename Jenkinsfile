@@ -86,7 +86,7 @@ pipeline {
                                 parameters: [[
                                     $class: 'StringParameterValue',
                                     name: 'NPM_CANARY_VERSION',
-                                    value: ${env.CI_TIMESTAMP}
+                                    value: env.CI_TIMESTAMP
                                 ],[
                                     $class: 'BooleanParameterValue',
                                     name: 'RESOLVE_CHECK',
