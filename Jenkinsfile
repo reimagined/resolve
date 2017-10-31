@@ -26,14 +26,15 @@ pipeline {
 
                             env.CI_TIMESTAMP = (new Date()).format("MMddHHmmss", TimeZone.getTimeZone('UTC'))
 
-                            sh "npm config set //${env.NPM_ADDR}/:_authToken ${env.NPM_TOKEN}"
-                            sh "npm whoami"
-
-                            eval \$(next-lerna-version); \
-                            export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}; \
-                            echo \$CI_ALPHA_VERSION; \
-                            ls; \
-                            lerna publish --skip-git --force-publish=* --yes --repo-version \$CI_ALPHA_VERSION --canary
+                            sh """
+                                npm config set //${env.NPM_ADDR}/:_authToken ${env.NPM_TOKEN}
+                                npm whoami
+                                eval \$(next-lerna-version); \
+                                export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}; \
+                                echo \$CI_ALPHA_VERSION; \
+                                ls; \
+                                lerna publish --skip-git --force-publish=* --yes --repo-version \$CI_ALPHA_VERSION --canary
+                            """
                         }
                     }
                 }
