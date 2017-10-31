@@ -76,14 +76,6 @@ const printOutput = (appName, appPath, cdpath, readmeIsExist) => {
     log('In that directory, you can run the following commands:');
 
     log();
-    log(chalk.cyan(`  ${displayCommand(true)} start`));
-    log('    Starts the production server.');
-
-    log();
-    log(chalk.cyan(`  ${displayCommand(false)} build`));
-    log('    Bundles the app into static files for production.');
-
-    log();
     log(chalk.cyan(`  ${displayCommand(false)} dev`));
     log('    Starts the development server.');
 
@@ -96,13 +88,21 @@ const printOutput = (appName, appPath, cdpath, readmeIsExist) => {
     log('    Starts the functionality test runner.');
 
     log();
+    log(chalk.cyan(`  ${displayCommand(false)} build`));
+    log('    Bundles the app into static files for production.');
+
+    log();
+    log(chalk.cyan(`  ${displayCommand(true)} start`));
+    log('    Starts the production server.');
+
+    log();
     log('We suggest that you begin by typing:');
     log();
     log(chalk.cyan('  cd'), cdpath);
     log(`  ${chalk.cyan(`${displayCommand(false)} dev`)}`);
     if (readmeIsExist) {
         log();
-        log(chalk.yellow('You had a `README.md` file, we renamed it to `README.old.md`'));
+        log(chalk.yellow('The README.md file you had was renamed to README.old.md'));
     }
     log();
     log('Happy coding!');

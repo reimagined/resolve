@@ -2,7 +2,7 @@ function ConcurrentError() {
     Error.call(this);
     this.name = 'ConcurrentError';
 
-    this.message = 'Concurrent error';
+    this.message = 'Concurrency error';
 
     if (Error.captureStackTrace) {
         Error.captureStackTrace(this, ConcurrentError);
