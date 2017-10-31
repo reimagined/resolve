@@ -8,10 +8,11 @@ pipeline {
                 script {
                     sh 'npm install'
                     sh 'npm run bootstrap'
+                    sh 'npm run lint'
+                    sh 'npm test'
                 }
             }
         }
-
 
         stage('Publish alpha') {
             steps {
@@ -67,6 +68,39 @@ pipeline {
                     """
                 }
 
+            }
+        }
+
+        stage('Trigger dependent jobs') {
+            steps {
+                script {
+                    def isMasterBranch = env.BRANCH_NAME == 'master'
+
+                    commitHash = sh (
+                        script: 'git rev-parse HEAD | cut -c1-8',
+                        returnStdout: true
+                    ).trim()
+
+                    withCredentials([
+                        string(credentialsId: isMasterBranch ? 'UPDATE_VERSION_JOBS' : 'DEPENDENT_JOBS_LIST', variable: 'JOBS')
+                    ]) {
+                        def jobs = env.JOBS.split(';')
+                        for (def i = 0; i < jobs.length; ++i) {
+                            build([
+                                job: jobs[i],
+                                parameters: [[
+                                    $class: 'StringParameterValue',
+                                    name: 'NPM_CANARY_VERSION',
+                                    value: commitHash
+                                ],[
+                                    $class: 'BooleanParameterValue',
+                                    name: 'RESOLVE_CHECK',
+                                    value: true
+                                ]]
+                            ])
+                        }
+                    }
+                }
             }
         }
     }
