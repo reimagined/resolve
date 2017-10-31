@@ -1,13 +1,13 @@
 pipeline {
-    agent any
+    agent {
+        docker { image 'reimagined/node-testcafe' }
+    }
     stages {
         stage('Unit tests') {
             steps {
                 script {
-                    docker.image('reimagined/node-testcafe').inside {
-                        sh 'npm install'
-                        sh 'npm run bootstrap'
-                    }
+                    sh 'npm install'
+                    sh 'npm run bootstrap'
                 }
             }
         }
@@ -20,24 +20,22 @@ pipeline {
                         string(credentialsId: 'NPM_CREDENTIALS', variable: 'NPM_TOKEN')
                     ];
 
-                    docker.image('reimagined/node-testcafe').inside {
-                        withCredentials(credentials) {
-                            env.NPM_ADDR = 'registry.npmjs.org'
+                    withCredentials(credentials) {
+                        env.NPM_ADDR = 'registry.npmjs.org'
 
-                            env.CI_TIMESTAMP = (new Date()).format("MMddHHmmss", TimeZone.getTimeZone('UTC'))
+                        env.CI_TIMESTAMP = (new Date()).format("MMddHHmmss", TimeZone.getTimeZone('UTC'))
 
-                            sh """
-                                npm config set //${env.NPM_ADDR}/:_authToken ${env.NPM_TOKEN}
-                                npm whoami
-                                eval \$(next-lerna-version); \
-                                export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}; \
-                                echo \$CI_ALPHA_VERSION; \
-                                ls; \
-                                ./node_modules/.bin/lerna init
-                                ./node_modules/.bin/lerna publish --skip-git --force-publish=* --yes --repo-version \$CI_ALPHA_VERSION --canary
-                            """
-                        }
+                        sh """
+                            npm config set //${env.NPM_ADDR}/:_authToken ${env.NPM_TOKEN}
+                            npm whoami
+                            eval \$(next-lerna-version); \
+                            export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}; \
+                            echo \$CI_ALPHA_VERSION; \
+                            ls; \
+                            ./node_modules/.bin/lerna publish --skip-git --force-publish=* --yes --repo-version \$CI_ALPHA_VERSION --canary
+                        """
                     }
+
                 }
             }
         }
@@ -45,24 +43,23 @@ pipeline {
         stage('Create resolve-app') {
             steps {
                 script {
-                    docker.image('reimagined/node-testcafe').inside {
-                        sh """
-                            eval \$(next-lerna-version)
-                            export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}
-                            echo \$CI_ALPHA_VERSION
+                    sh """
+                        eval \$(next-lerna-version)
+                        export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}
+                        echo \$CI_ALPHA_VERSION
 
-                            rm -rf ./stage
-                            mkdir stage
-                            cd ./stage
+                        rm -rf ./stage
+                        mkdir stage
+                        cd ./stage
 
-                            npm install -g create-resolve-app@\$CI_ALPHA_VERSION
-                            create-resolve-app --version=\$CI_ALPHA_VERSION --sample todolist
-                            cd ./todolist
+                        npm install -g create-resolve-app@\$CI_ALPHA_VERSION
+                        create-resolve-app --version=\$CI_ALPHA_VERSION --sample todolist
+                        cd ./todolist
 
-                            npm run test:e2e -- --browser=path:/chromium
-                        """
-                    }
+                        npm run test:e2e -- --browser=path:/chromium
+                    """
                 }
+
             }
         }
     }
