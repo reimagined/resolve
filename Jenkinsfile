@@ -8,7 +8,6 @@ pipeline {
                 script {
                     sh 'npm install'
                     sh 'npm run bootstrap'
-                    sh 'ps aux'
                 }
             }
         }
@@ -43,6 +42,8 @@ pipeline {
             steps {
                 script {
                     sh """
+                        /prepare-chromium.sh
+
                         eval \$(next-lerna-version)
                         export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}
 
