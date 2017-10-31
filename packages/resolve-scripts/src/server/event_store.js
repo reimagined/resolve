@@ -2,10 +2,10 @@ import createEventStore from 'resolve-es';
 
 import config from '../configs/server.config.js';
 
-const storage = config.storage.driver(config.storage.params);
+const storage = config.storage.adapter(config.storage.params);
 
-const busDriver = config.bus.driver;
-const bus = busDriver(config.bus.params);
+const busAdapter = config.bus.adapter;
+const bus = busAdapter(config.bus.params);
 
 const eventStore = createEventStore({ storage, bus });
 

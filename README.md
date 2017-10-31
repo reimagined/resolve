@@ -37,7 +37,7 @@ Refer to [package documentation](packages/resolve-command#example) for an exampl
 ### Event Store
 The Event Store stores all events aggregates produce and delivers them to subscribers. It combines a persistent storage and message bus. 
 
-reSolve provides the [resolve-es](packages/resolve-es) package containing the event store implementation, as well as [storage-drivers](packages/storage-drivers) and [bus-drivers](packages/bus-drivers) allowing you to specify where to store and how to send events.
+reSolve provides the [resolve-es](packages/resolve-es) package containing the event store implementation, as well as [storage-adapters](packages/storage-adapters) and [bus-adapters](packages/bus-adapters) allowing you to specify where to store and how to send events.
 
 ### Read Model and Query
 The Read Model represents a system state or its part. It is built using Projection functions. All events from the beginning of time are applied to a read model to build its current state. Queries are used to get data from a read model. 
@@ -97,16 +97,16 @@ Core libraries:
 	Helper for creating the Redux storage.
 
 
-Drivers for event store:
-* 🚌 Bus drivers specifying how to send events:
-    * [resolve-bus-memory](packages/bus-drivers/resolve-bus-memory) (recommended for debugging purposes)
-    * [resolve-bus-rabbitmq](packages/bus-drivers/resolve-bus-rabbitmq)
-    * [resolve-bus-zmq](packages/bus-drivers/resolve-bus-zmq) 
+Adapters for event store:
+* 🚌 Bus adapters specifying how to send events:
+    * [resolve-bus-memory](packages/bus-adapters/resolve-bus-memory) (recommended for debugging purposes)
+    * [resolve-bus-rabbitmq](packages/bus-adapters/resolve-bus-rabbitmq)
+    * [resolve-bus-zmq](packages/bus-adapters/resolve-bus-zmq) 
 
 
-* 🛢 Storage drivers specifying where to store events:
-    * [resolve-storage-mongo](packages/storage-drivers/resolve-storage-mongo)
-	* [resolve-storage-lite](packages/storage-drivers/resolve-storage-lite)
+* 🛢 Storage adapters specifying where to store events:
+    * [resolve-storage-mongo](packages/storage-adapters/resolve-storage-mongo)
+	* [resolve-storage-lite](packages/storage-adapters/resolve-storage-lite)
 
 
 ## **💻 Examples**

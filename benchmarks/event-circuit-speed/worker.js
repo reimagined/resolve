@@ -1,5 +1,5 @@
-import memoryDriver from 'resolve-bus-memory';
-import mongoDbDriver from 'resolve-storage-mongo';
+import memoryAdapter from 'resolve-bus-memory';
+import mongoDbAdapter from 'resolve-storage-mongo';
 import createEventStore from 'resolve-es';
 import createExecutor from 'resolve-query';
 import Immutable from 'seamless-immutable';
@@ -272,16 +272,16 @@ function generateSyncExecutor(storage, bus, readModels) {
 }
 
 export default function worker(eventsCount, reportObj) {
-    const mongoDriver = mongoDbDriver({
+    const mongoAdapter = mongoDbAdapter({
         url: config.MONGODB_CONNECTION_URL,
         collection: config.MONGODB_COLLECTION_NAME
     });
 
-    const bus = memoryDriver();
+    const bus = memoryAdapter();
 
     const readModels = readModelsGenerator(reportObj);
 
-    const execute = generateSyncExecutor(mongoDriver, bus, readModels);
+    const execute = generateSyncExecutor(mongoAdapter, bus, readModels);
 
     return execute('infrastructureState').then(state => ({
         entities:

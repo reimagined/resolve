@@ -1,7 +1,7 @@
 import { dropCollection } from 'benchmark-base/tools';
 import { rpoisson } from 'randgen';
-import memoryDriver from 'resolve-bus-memory';
-import mongoDbDriver from 'resolve-storage-mongo';
+import memoryAdapter from 'resolve-bus-memory';
+import mongoDbAdapter from 'resolve-storage-mongo';
 import createEventStore from 'resolve-es';
 import createCommandExecutor from 'resolve-command';
 import uuid from 'uuid';
@@ -468,12 +468,12 @@ const eventsWeight = {
 const entitiesFactor = 0.33;
 
 export default function preparer(eventsCount, reportObj) {
-    const storage = mongoDbDriver({
+    const storage = mongoDbAdapter({
         url: config.MONGODB_CONNECTION_URL,
         collection: config.MONGODB_COLLECTION_NAME
     });
 
-    const bus = memoryDriver();
+    const bus = memoryAdapter();
 
     const eventStore = createEventStore({
         storage,
