@@ -29,7 +29,7 @@ Define a news handling aggregate (see the  `news-aggregate.js` file), use the `r
 ```js
 import commandHandler from 'resolve-command'
 import createEsStorage from 'resolve-storage-lite'
-import createBusDriver from 'resolve-bus-memory'
+import createBusAdapter from 'resolve-bus-memory'
 import createEventStore from 'resolve-es'
 
 // the news-aggregate.js file is placed below
@@ -37,7 +37,7 @@ import newsAggregate from './news-aggregate'
 
 const aggregates = [newsAggregate]
 
-const eventStore = createEventStore({ storage: createEsStorage(), bus: createBusDriver() })
+const eventStore = createEventStore({ storage: createEsStorage(), bus: createBusAdapter() })
 
 eventStore.onEvent(['NewsCreated'], event =>
   console.log('Event emitted', event)

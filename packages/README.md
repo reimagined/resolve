@@ -21,13 +21,13 @@ Core libraries:
 	Helper for creating the Redux storage.
 
 
-Drivers for event-store:
-* 🚌 Bus drivers specifying how to send events:
-    * [resolve-bus-memory](bus-drivers/resolve-bus-memory) (recommended for debugging purposes)
-    * [resolve-bus-rabbitmq](bus-drivers/resolve-bus-rabbitmq)
-    * [resolve-bus-zmq](bus-drivers/resolve-bus-zmq) 
+Adapters for event-store:
+* 🚌 Bus adapters specifying how to send events:
+    * [resolve-bus-memory](bus-adapters/resolve-bus-memory) (recommended for debugging purposes)
+    * [resolve-bus-rabbitmq](bus-adapters/resolve-bus-rabbitmq)
+    * [resolve-bus-zmq](bus-adapters/resolve-bus-zmq) 
 
 
-* 🛢 Storage drivers specifying where to store events:
-    * [resolve-storage-mongo](storage-drivers/resolve-storage-mongo)
-    * [resolve-storage-lite](storage-drivers/resolve-storage-lite)
+* 🛢 Storage adapters specifying where to store events:
+    * [resolve-storage-mongo](storage-adapters/resolve-storage-mongo)
+    * [resolve-storage-lite](storage-adapters/resolve-storage-lite)

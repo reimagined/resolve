@@ -1,0 +1,32 @@
+{
+  "name": "resolve-bus-zmq",
+  "version": "0.0.43",
+  "description":
+    "This package is an adapter for resolve-bus to emit events using ZeroMQ.",
+  "main": "./dist/index.js",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "scripts": {
+    "prepublish": "babel --out-dir ./dist ./src",
+    "test": "mocha",
+    "testw": "mocha -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reimagined/resolve.git"
+  },
+  "author": "reimagined team",
+  "license": "MIT",
+  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
+  "homepage":
+    "https://github.com/reimagined/resolve/tree/master/packages/resolve-bus-rabbitmq#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "sinon": "^2.1.0"
+  },
+  "dependencies": {
+    "zeromq": "^4.2.1"
+  }
+}
