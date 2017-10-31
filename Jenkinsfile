@@ -28,15 +28,12 @@ pipeline {
 
                             sh "npm config set //${env.NPM_ADDR}/:_authToken ${env.NPM_TOKEN}"
                             sh "npm whoami"
-                            try {
-                                sh """
-                                     eval \$(next-lerna-version); \
-                                     export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}; \
-                                     echo \$CI_ALPHA_VERSION; \
-                                    ./node_modules/.bin/lerna publish --skip-git --force-publish=* --yes --repo-version \$CI_ALPHA_VERSION --canary
-                                """
-                            } catch(Exception e) {
-                            }
+
+                            eval \$(next-lerna-version); \
+                            export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}; \
+                            echo \$CI_ALPHA_VERSION; \
+                            ls; \
+                            lerna publish --skip-git --force-publish=* --yes --repo-version \$CI_ALPHA_VERSION --canary
                         }
                     }
                 }
