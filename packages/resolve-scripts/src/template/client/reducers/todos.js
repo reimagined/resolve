@@ -1,5 +1,5 @@
 import { createReducer } from 'resolve-redux';
-import readModel from '../../common/read-model';
+import readModel from '../../common/read-models';
 
 export default createReducer({
     name: 'VIEW',
