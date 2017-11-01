@@ -36,11 +36,21 @@ const messages = {
         `For example:${EOL}` +
         `  ${chalk.cyan('create-resolve-app')} ${chalk.green('my-resolve-app')}${EOL}` +
         EOL +
+        `Run ${chalk.cyan('create-resolve-app --help')} to see all options.`,
+
+    unknownOptions: options =>
+        `You have specified an unsupported option(s): ${chalk.red(options)}` +
+        EOL +
         `Run ${chalk.cyan('create-resolve-app --help')} to see all options.`
 };
 
 const options = commandLineArgs(optionDefinitions, { partial: true });
-if (options.help) {
+const unknownOptions = options._unknown && options._unknown.filter(x => x.startsWith('-'));
+
+if (unknownOptions && unknownOptions.length) {
+    const options = unknownOptions.join();
+    log(messages.unknownOptions(options));
+} else if (options.help) {
     log(messages.help);
 } else if (options.version) {
     const packageJson = require('../package.json');
