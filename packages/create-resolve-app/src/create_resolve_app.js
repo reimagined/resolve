@@ -55,9 +55,9 @@ const installScripts = (scriptsPackage, resolveVersion) => {
     return new Promise((resolve, reject) => {
         const command = 'npm';
 
-        const resultScriptsPackage = resolveVersion ?
-          `${scriptsPackage}@${resolveVersion}` :
-          scriptsPackage;
+        const resultScriptsPackage = resolveVersion
+            ? `${scriptsPackage}@${resolveVersion}`
+            : scriptsPackage;
 
         const args = [
             'install',
@@ -71,9 +71,7 @@ const installScripts = (scriptsPackage, resolveVersion) => {
         const child = spawn(command, args, { stdio: 'inherit' });
         child.on('close', (code) => {
             if (code !== 0) {
-                reject({
-                    command: `${command} ${args.join(' ')}`
-                });
+                reject({ command: `${command} ${args.join(' ')}` });
                 return;
             }
             resolve();
