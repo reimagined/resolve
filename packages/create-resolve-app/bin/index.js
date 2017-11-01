@@ -42,17 +42,12 @@ const messages = {
 
 const options = commandLineArgs(optionDefinitions, { partial: true });
 
-const resolveVersion = JSON.parse(
-  fs.readFileSync(
-    path.join(__dirname, '../package.json')
-  )
-).version;
+const resolveVersion = require('../package.json').version;
 
 if (options.help) {
     log(messages.help);
 } else if (options.version) {
-    const packageJson = require('../package.json');
-    log(packageJson.version);
+    log(resolveVersion);
 } else if (!options._unknown) {
     log(messages.emptyAppNameError);
 } else {
