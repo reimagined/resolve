@@ -39,7 +39,7 @@ const messages = {
         `Run ${chalk.cyan('create-resolve-app --help')} to see all options.`,
 
     unknownOptions: options =>
-        `Not provided options: ${chalk.red(options)}` +
+        `You have specified an unsupported option(s): ${chalk.red(options)}` +
         EOL +
         `Run ${chalk.cyan('create-resolve-app --help')} to see all options.`
 };
