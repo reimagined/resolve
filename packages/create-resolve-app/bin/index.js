@@ -23,6 +23,8 @@ const messages = {
         EOL +
         `Options:${EOL}` +
         EOL +
+        `  --sample         create a single page application (SPA) which represents${EOL}` +
+        `                   a typical Todo List${EOL}` +
         `  -V, --version    outputs the version number${EOL}` +
         `  -h, --help       outputs usage information${EOL}` +
         EOL +
