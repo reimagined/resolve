@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 const commandLineArgs = require('command-line-args');
-
 const chalk = require('chalk');
 const moduleCreator = require('../dist/create_resolve_app');
 

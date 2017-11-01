@@ -67,35 +67,6 @@ pipeline {
                         npm run test:e2e -- --browser=path:/chromium
                     """
                 }
-
-            }
-        }
-
-        stage('Trigger dependent jobs') {
-            steps {
-                script {
-                    def isMasterBranch = env.BRANCH_NAME == 'master'
-
-                    withCredentials([
-                        string(credentialsId: isMasterBranch ? 'UPDATE_VERSION_JOBS' : 'DEPENDENT_JOBS_LIST', variable: 'JOBS')
-                    ]) {
-                        def jobs = env.JOBS.split(';')
-                        for (def i = 0; i < jobs.length; ++i) {
-                            build([
-                                job: jobs[i],
-                                parameters: [[
-                                    $class: 'StringParameterValue',
-                                    name: 'NPM_CANARY_VERSION',
-                                    value: env.CI_TIMESTAMP
-                                ],[
-                                    $class: 'BooleanParameterValue',
-                                    name: 'RESOLVE_CHECK',
-                                    value: true
-                                ]]
-                            ])
-                        }
-                    }
-                }
             }
         }
     }
