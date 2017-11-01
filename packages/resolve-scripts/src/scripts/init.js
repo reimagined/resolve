@@ -10,18 +10,9 @@ const error = console.error;
 
 const appDependencies = ['prop-types', 'uuid'];
 
-const dependencies = [
-    'react',
-    'react-dom',
-    'react-redux',
-    'redux'
-];
+const dependencies = ['react', 'react-dom', 'react-redux', 'redux'];
 
-const resolveDependencies = [
-    'resolve-bus-memory',
-    'resolve-redux',
-    'resolve-storage-lite'
-]
+const resolveDependencies = ['resolve-bus-memory', 'resolve-redux', 'resolve-storage-lite'];
 
 const devDependencies = ['chai', 'cross-env', 'testcafe', 'testcafe-browser-tools', 'yargs'];
 
@@ -59,9 +50,9 @@ const tryRenameGitignore = (appPath) => {
 
 const installDependencies = (dep, isDev, resolveVersion) => {
     const command = 'npm';
-    const args = ['install', isDev ? '--save-dev' : '--save'].concat(dep.map(
-        depName => resolveVersion ? `${depName}@${resolveVersion}` : depName
-    ));
+    const args = ['install', isDev ? '--save-dev' : '--save'].concat(
+        dep.map(depName => (resolveVersion ? `${depName}@${resolveVersion}` : depName))
+    );
 
     const proc = spawn.sync(command, args, { stdio: 'inherit' });
     if (proc.status !== 0) {
