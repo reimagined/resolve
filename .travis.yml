@@ -3,7 +3,7 @@ node_js:
   - "8"
 
 dist: trusty
-sudo: false
+sudo: required
 
 before_install:
   - stty cols 80
@@ -12,7 +12,7 @@ install:
   - npm install
 
 script:
-  - $(node_modules/.bin/prettier-eslint "./**/src/**/*.js" "./**/test/**/*.js" --list-different --ignore=./node_modules/**)
+  - node_modules/.bin/prettier-eslint "./**/src/**/*.js" "./**/test/**/*.js" --list-different --ignore=./node_modules/**
   - 'if [ "$(node_modules/.bin/prettier-eslint "./**/src/**/*.js" "./**/test/**/*.js" --list-different --ignore=./node_modules/**)" ]; then exit 1; fi'
   - npm run bootstrap
   - npm run lint
