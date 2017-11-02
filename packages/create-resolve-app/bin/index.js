@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 const commandLineArgs = require('command-line-args');
-
 const chalk = require('chalk');
 const moduleCreator = require('../dist/create_resolve_app');
 
@@ -49,17 +48,18 @@ const messages = {
 const options = commandLineArgs(optionDefinitions, { partial: true });
 const unknownOptions = options._unknown && options._unknown.filter(x => x.startsWith('-'));
 
+const resolveVersion = require('../package.json').version;
+
 if (unknownOptions && unknownOptions.length) {
     const options = unknownOptions.join();
     log(messages.unknownOptions(options));
 } else if (options.help) {
     log(messages.help);
 } else if (options.version) {
-    const packageJson = require('../package.json');
-    log(packageJson.version);
+    log(resolveVersion);
 } else if (!options._unknown) {
     log(messages.emptyAppNameError);
 } else {
     let appName = options._unknown[0];
-    moduleCreator(appName, options.scripts, !options.sample);
+    moduleCreator(appName, options.scripts, !options.sample, resolveVersion);
 }
