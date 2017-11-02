@@ -40,7 +40,7 @@ pipeline {
             }
         }
 
-        stage('Create resolve-app [ todolist ]') {
+        stage('Create-resolve-app [ todolist ] Functional Tests') {
             steps {
                 script {
                     sh """
@@ -67,6 +67,41 @@ pipeline {
 
                         npm run test:e2e -- --browser=path:/chromium
                     """
+                }
+            }
+        }
+    }
+
+    stage('Resolve/Apps Functional Tests (only PR release/x.y.z => master)') {
+        steps {
+            script {
+                sh """
+                    eval \$(next-lerna-version)
+                    export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}
+
+                    if [ "`echo ${S}|grep release`" = "" ]; then
+                        exit 0
+                    fi
+                """
+
+                withCredentials([
+                    string(credentialsId: 'DEPENDENT_JOBS_LIST, variable: 'JOBS')
+                ]) {
+                    def jobs = env.JOBS.split(';')
+                    for (def i = 0; i < jobs.length; ++i) {
+                        build([
+                            job: jobs[i],
+                            parameters: [[
+                                $class: 'StringParameterValue',
+                                name: 'NPM_CANARY_VERSION',
+                                value: env.CI_TIMESTAMP
+                            ],[
+                                $class: 'BooleanParameterValue',
+                                name: 'RESOLVE_CHECK',
+                                value: true
+                            ]]
+                        ])
+                    }
                 }
             }
         }
