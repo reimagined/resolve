@@ -1,11 +1,10 @@
 
 # **🚀 ReSolve App**
-This project is an application created with [Create ReSolve App](../../../create-resolve-app). It is a single page application (SPA) which represents a typical Todo List. This application is built on the CQRS and Event Sourcing principles, with React+Redux on client.
+This project is an application created with [Create ReSolve App](../../../create-resolve-app). This package creates an empty single page application by default or a typical Todo List application if you use the `--sample` option. This application is built on the CQRS and Event Sourcing principles using React+Redux on the client.
 
-Create ReSolve App allows you to specify application blocks (aggregates, read models and UI part presented by React components) in the semi-declarative manner. With the `resolve-scripts` package, you don't need to write an API backend manually. Instead, `resolve-scripts` deploys backend and domain services to interact with the client which is wrapped into the `resolve-redux` package for automate interaction.
+Create ReSolve App allows you to specify application blocks (aggregates, read models, and a UI part React components present) in a semi-declarative manner. With the `resolve-scripts` package, you do not need to write an API backend manually. Instead, `resolve-scripts` deploys backend and domain services to interact with the client which is wrapped into the `resolve-redux` package for an automated interaction.
 
-You can find detailed information on subject-related technologies and links to the corresponding resources here: [https://github.com/markerikson/react-redux-links](https://github.com/markerikson/react-redux-links).
-
+Refer to [https://github.com/markerikson/react-redux-links](https://github.com/markerikson/react-redux-links) for detailed information on subject-related technologies and links to the corresponding resources.
 
 ## **📑 Table of Contents**
 * [Available Scripts](#-available-scripts)
@@ -49,14 +48,14 @@ In the project directory, you can run:
 ### `npm run dev`
 Runs the app in the development mode.
 
-Two web servers are  started: one - for the frontend/UI part, based on webpack-dev-server on the 3001 port by default, and another one - for the API backend part to provide API for reSolve endpoints, based on express on the 3000 port. Development servers provide all required debugging capabilities, including [Hot Module Replacement](https://webpack.js.org/concepts/hot-module-replacement/) and [source maps](https://webpack.js.org/configuration/devtool/).
+Two web servers are  started: one - for the frontend/UI part, based on the webpack-dev-server on the 3001 port by default, and another one - for the API backend part to provide API for reSolve endpoints, based on express on the 3000 port. Development servers provide all the required debugging capabilities, including [Hot Module Replacement](https://webpack.js.org/concepts/hot-module-replacement/) and [source maps](https://webpack.js.org/configuration/devtool/).
 
 Open [http://localhost:3000](http://localhost:3000/) to view the app in the browser.
 
 ### `npm run build`
 Builds client and server bundles for production through Webpack.
 
-Building is performed in the `NODE_ENV === 'production'` [mode](https://webpack.js.org/guides/production/#node-environment-variable), so the build is optimized. No additional http server for serving client bundle and assets are  built.
+Building is performed in the `NODE_ENV === 'production'` [mode](https://webpack.js.org/guides/production/#node-environment-variable), so the build is optimized. No additional HTTP server for the serving client bundle and assets are  built.
 
 ### `npm start`
 Runs the built app in the production mode.
@@ -64,15 +63,12 @@ Runs the built app in the production mode.
 Open [http://localhost:3000](http://localhost:3000/) to view it in the browser.
 
 ## **🗂️ Project Structure Overview**
-[Create ReSolve App](https://www.npmjs.com/package/creat-resolve-app) is an NPM package referenced to the latest versions of the [reSolve framework packages](../../..). It consists of the common isomorphic part which describes domain business logic, and React components for the presentation part. No implicit server part is needed - it is encapsulated in `resolve-scripts`, but can be customized by [config](#-configuration-files). The project also includes unit & E2E testing and deployment assets. All source code and functional tests are written in the [ES2016](http://2ality.com/2016/01/ecmascript-2016.html) language.
+[Create ReSolve App](https://www.npmjs.com/package/creat-resolve-app) is an NPM package referencing the latest [reSolve framework package](../../..) versions. It consists of the common isomorphic part which describes domain business logic and React components for the presentation. No implicit server part is needed - it is encapsulated in `resolve-scripts`, but can be customized using [config](#-configuration-files). The project also includes unit & E2E testing and deployment assets. All source code and functional tests are written in the [ES2016](http://2ality.com/2016/01/ecmascript-2016.html).
 
 ```
 resolve-app/
-  .babelrc
-  .eslintrc
   .flowconfig
   .gitignore
-  .travis.yml
   LICENSE
   README.md
   package-lock.json
@@ -82,37 +78,14 @@ resolve-app/
   resolve.server.config.js
   client/
     actions/
-      index.spec.js
-      index.js
-    components/
-      App.js
-      Footer.js
-      Link.js
-      TodoList.js
-      Todo.js
     containers/
-      AddTodo.js
-      FilterLink.js
-      VisibleTodoList.js
+    components/
+    store/
     reducers/
-      index.js
-      todos.spec.js
-      todos.js
-      visibilityFilter.js
   common/
     aggregates/
-      index.js
-      todo-events.js
-      todo.js
     read-models/
-      graphql/
-        collections/      
-        index.js
-        resolvers.js
-        schema.js
-      index.js
-    store/
-      index.js
+      default/
   static/
     favicon.ico
   tests/
@@ -122,32 +95,32 @@ resolve-app/
 ```
 
 ### **🕴 Client**
-The client side is located in the `client/` folder and exports two key endpoints: root React component and Redux store creator function. These entry points to the client part must be specified in the [resolve.client.config.js](#client-config) configuration file located in the root directory.
+The client side is located in the `client/` folder and exports two key endpoints: root React component and Redux store creator function. These client part entry points must be specified in the [resolve.client.config.js](#client-config) configuration file in the root directory.
 
-Any customization like adding routing or applying middleware or saga can be performed by proper wrapping original UI entry points into subsidiary entities and specifying them in an appropriate config section. The following examples show how to use a react router as UI entry point: 
+Any customization (for example, adding routing or applying middleware or saga) can be performed by wrapping original UI entry points into subsidiary entities and specifying them in an appropriate config section. The following examples show how to use a react router as UI entry point: 
 * [react-router-2](../../../../examples/resolve-scripts-with-router-2)  
 * [react-router-4](../../../../examples/resolve-scripts-with-router-4)
 
 ### **🔗 Common**
-The `common/` folder contains isomorphic application part which represents business logic distributed between server and client in the same code. Domain logic is described in the reSolve-compatible format and appears in [aggregate and read model](#️-aggregates-and-read-models) declarations.
+The `common/` folder contains the application's isomorphic part which represents a business logic distributed between server and client in the same code. The domain logic is described in a reSolve-compatible format and appears in [aggregate and read model](#️-aggregates-and-read-models) declarations.
 
 ### **📝 Configuration**
-Create ReSolve App provides declarative configuration instead of imperative coding server-side part. Config allows you to customize React client and server-side rendering, declare domain business logic in terms of Event Sourcing with reSolve library, and modify webpack behaviour for the development and production modes.
+Create ReSolve App provides declarative configuration instead of an imperative coding server-side part. The configuration allows you to customize the React client and server-side rendering, declare domain business logic regarding Event Sourcing with the reSolve library, and modify the development and production modes' webpack behavior.
 
-Config for client side, server side and building phase are split into three segregated files:
+The client side, server side, and building phase configuration are split into three segregated files:
 * [resolve.client.config.js](#client-config)  
 * [resolve.server.config.js](#server-config)  
 * [resolve.build.config.js](#build-config)  
 
-This approach allows you to simplify including non-isomorphic code and third-party libraries into an application by separating dependencies, and also hold all ES5 code for building phase in only one file.
+This approach allows you to simplify including non-isomorphic code and third-party libraries into an application by separating dependencies, and also store all ES5 code for the building phase in only one file.
 
 ### **🚦 E2E-tests**
-The system operability is controlled with [TestCafe](http://devexpress.github.io/testcafe/documentation/using-testcafe/) functional tests. A test set builds and starts a demonstration application, opens it in a browser and automates interaction with UI. After you modify code, start functional tests to check whether everything works successfully.
+The system's operability is controlled with [TestCafe](http://devexpress.github.io/testcafe/documentation/using-testcafe/) functional tests. A test set builds and starts a demonstration application, opens it in a browser and automates UI interaction. After you modify the code, start functional tests to check if everything works correctly.
 
 ## **🏗️ Aggregates and Read Models**
-Common business/domain logic of an application consists of two parts - aggregates and read models.
+An application's common business/domain logic consists of aggregates and read models.
 ### **Aggregates**
-An *aggregate* is responsible for a system behavior and encapsulation of business logic. It responses to commands, checks whether they can be executed and generates events to change the current status of a system.
+An *aggregate* is responsible for a system's behavior and encapsulates business logic. It responses to commands, checks whether they can be executed and generates events to change a system's current status.
 
 A typical aggregate structure:
 
@@ -167,15 +140,15 @@ export default {
 ```
 
 ### **Read Models**
-A *read model* provides the current state of a system or its part in the given format. It is built by processing all events happened to the system.
+A *read model* provides a system's current state or a part of it in the given format. It is built by processing all events happened in the system.
 
-In a general case, a read model consists of two parts: 
-* asynchronous projection functions to build some state
-* GraphQL schema and resolvers to access the state and transmit it to the client in the appropriate format
+Usually, a read model consists of two parts: 
+* Asynchronous projection functions to build some state;
+* GraphQL schema and resolvers to access the state and transmit it to the client in the appropriate format.
 
-Read model projection function has two arguments: storage provider and GraphQL arguments. Storage provider is an abstract facade for read-only operations on a read-model state. GraphQL arguments is a set of variables which are passed to a GraphQL query from the client side. Read more about GraphQL and resolvers at [GraphQL Guide](http://graphql.org/learn/).
+The read model projection function has two arguments: a storage provider and GraphQL arguments. The storage provider is an abstract facade for read-only operations on a read model state. The GraphQL arguments are a set of variables which are passed to a GraphQL query from the client side. See [GraphQL Guide](http://graphql.org/learn/) for more information.
 
-Read model name is used for launching API facade on the web server at `/api/query/READ_MODEL_NAME`. Each read model should have its own name. If an application consists of only one read model without a name, it will be automatically renamed to `graphql` and will be avaiable at `/api/query/graphql`. Launched facade works as graphql endpoint accepting POST requests in the [apropriate format](http://graphql.org/learn/serving-over-http/#post-request).
+A read model name is used for launching an API facade on the web server at `/api/query/READ_MODEL_NAME`. Each read model should have its own name. If an application consists of only one read model without a name, it will be automatically renamed to `graphql` and will be available at `/api/query/graphql`. The launched facade works as a graphql endpoint accepting POST requests in the [appropriate format](http://graphql.org/learn/serving-over-http/#post-request).
 
 A typical read model structure:
 
@@ -219,7 +192,7 @@ export default {
 };
 ```
 
-Some read models are sent to the client UI to be a part of a Redux app state. They are small enough to fit into memory and can be kept up to date right in the browser. We call them *view models*. They are defined in a special isomorphic format, which allows them to be used on the client and server side.
+Some read models, called *view models*,  are sent to the client UI to be a part of a Redux app state. They are small enough to fit into memory and can be kept up to date in the browser. They are defined in a special isomorphic format, which allows them to be used on the client and server side.
 
 A typical view model structure:
 
@@ -235,21 +208,21 @@ export default {
 };
 ```
 
-View models are also available via facade at `/api/query/VIEW_MODEL_NAME` with a simple GET-query supporting two required parameters: `aggregateIds` and `eventTypes`. Typical query to view model is `/api/query/VIEW_MODEL_NAME?aggregateIds=id1&aggregateIds=id2`. It builds a view model state for all events, relative to aggregates with `id1` or `id2`.
+View models are also available via the facade at `/api/query/VIEW_MODEL_NAME` with a simple GET-query that supports two required parameters: `aggregateIds` and `eventTypes`. A typical query to a view model is `/api/query/VIEW_MODEL_NAME?aggregateIds=id1&aggregateIds=id2`. It builds the view model state for all events that relate to aggregates with `id1` or `id2`.
 
-Note: To use view model declaration as a Redux reducer, some Immutable wrapper for a state object is required. We recommend to use the [seamless-immutable](https://github.com/rtfeldman/seamless-immutable) library. Keep in mind that incorrect handling of an immutable object may cause performance issues.
+Note: Some Immutable wrapper for a state object is required to use view model declaration as a Redux reducer. We recommend using the [seamless-immutable](https://github.com/rtfeldman/seamless-immutable) library. Keep in mind that incorrectly handling an immutable object may cause performance issues.
 
 
 
 ## **🎛 Configuration Files**
 ### Client Config
-The `resolve.client.config.js` file contains information for the client side of your application. In this file you, can define an entry point component and implement a redux store creation with the initial state for the client side.
+The `resolve.client.config.js` file contains information for your application's client side. In this file, you can define an entry point component and implement redux store creation with the client side's initial state.
 
 * #### `rootComponent `
-	Specifies a react component that will be rendered as a root component of the application.
+	Specifies a react component that is rendered as an application's root component.
 
 	##### Example
-	In this example, we create a simple react component and set it as a root component that will be shown on the application’s home page.
+	In this example, we create a simple react component and set it as a root component that is shown on the application’s home page.
 
 	###### resolve.client.config.js
 	```js
@@ -264,7 +237,7 @@ The `resolve.client.config.js` file contains information for the client side of 
 	Takes the initial state from the server side (initialState defined in [resolve.server.config.js](#initialstate)) and returns a Redux store.
 
 	##### Example
-	This example shows a simple implementation of `createStore`.
+	This example shows a simple `createStore` implementation.
 
 	###### resolve.client.config.js
 	```js
@@ -279,16 +252,16 @@ The `resolve.client.config.js` file contains information for the client side of 
 	}
 	```
 	
-  **Note:** Standard redux store creation excludes that the initialState is passed from the server side.
+  **Note:** Standard redux store creation excludes passing the initialState from the server side.
 
 ### Server Config
-The `resolve.server.config.js` file contains information for reSolve library.
+The `resolve.server.config.js` file contains information for the reSolve library.
 
 * #### aggregates
-	Specifies an array of [aggregates](#️-aggregates-and-read-models) for [resolve-command](../../../resolve-command). Each command is addressed to a particular aggregate. When an aggregate receives a command, it performs this command and as a result produces an event, or returns an error if the command cannot be executed.
+	Specifies an [aggregate](#️-aggregates-and-read-models) array for the [resolve-command](../../../resolve-command). Each command is addressed to a particular aggregate. When an aggregate receives a command, it performs this command and produces an event or returns an error if the command cannot be executed.
 
 	##### Example
-	In this example, we import an array of aggregate objects specified in the `aggregates.js` file.
+	In this example, we import an aggregate object array specified in the `aggregates.js` file.
 
 	###### resolve.server.config.js
 	```js
@@ -301,8 +274,8 @@ The `resolve.server.config.js` file contains information for reSolve library.
 
 * #### bus
 	The bus is used to emit events. It is an object with the following structure 
-	* `adapter`: one of [bus adapters](../../../bus-adapters)
-	* `params`: config that will be passed to an adapter when it is initialized
+	* `adapter`: a [bus adapter](../../../bus-adapters)
+	* `params`: a configuration that is passed to an adapter when it is initialized
 
 	##### Example
 	###### resolve.server.config.js
@@ -321,7 +294,7 @@ The `resolve.server.config.js` file contains information for reSolve library.
 
 * #### entries
 
-	It might be the same config as in `resolve.client.config.js`. But it is also possible to pass different `rootComponent` or `createStore` to server and client sides. It can be helpful in some cases (for example, see [resolve-scripts with react-router v4](../../../../examples/resolve-scripts-with-router-4) and  [resolve-scripts with react-router v2](../../../../examples/resolve-scripts-with-router-2)) but be  careful when using this approach - it may cause issues with SSR.
+	It might be the same config as in `resolve.client.config.js`. However, it is also possible to pass different `rootComponent` or `createStore` to server and client sides. It can be helpful in some cases (for example, see [resolve-scripts with react-router v4](../../../../examples/resolve-scripts-with-router-4) and  [resolve-scripts with react-router v2](../../../../examples/resolve-scripts-with-router-2)) but be  careful when using this approach - it may cause issues with SSR.
 
 	##### Example
 	###### resolve.server.config.js
@@ -338,7 +311,7 @@ The `resolve.server.config.js` file contains information for reSolve library.
 	Takes the [initialState](#initialstate) function value and returns a Redux store.
 
 	##### Example
-	This example shows a simple implementation of `createStore`.
+	This example shows a simple `createStore` implementation.
 
 	###### resolve.server.config.js
 	```js
@@ -356,10 +329,10 @@ The `resolve.server.config.js` file contains information for reSolve library.
 
 * #### entries.rootComponent
 	
-	Specifies a react component that will be rendered as a root component of the application.
+	Specifies a react component that is rendered as an application's root component.
 
 	##### Example
-	In this example, we create a simple react component and set it as a root component that will be shown on the application’s home page.
+	In this example, we create a simple react component and set it as a root component that is shown on the application’s home page.
 
 	###### resolve.server.config.js
 	```js
@@ -374,8 +347,8 @@ The `resolve.server.config.js` file contains information for reSolve library.
 
 * #### initialSubscribedEvents
 	
-	Initial list of events which should be transmitted into the client side after an SPA page has been loaded.
-	The `initialSubscribedEvents` object consists of two fields for event subscription management: 
+	An initial list of events which should be sent to the client side after an SPA page has been loaded.
+	The `initialSubscribedEvents` object consists of two event subscription management fields: 
 	- `types`  - by event types
 	- `ids` - by aggregate identifiers
 
@@ -391,7 +364,7 @@ The `resolve.server.config.js` file contains information for reSolve library.
 	```
 
 * #### filterSubscription
-	A function that allows filtering requested event types and aggregate identifiers on the server side. It can be used for security purposes - to prevent custom client agents from sending requests to events. Use the `requestInfo` argument to segregate subscriptions of different clients.
+	A function that allows filtering requested event types and aggregate identifiers on the server side. It can be used for security purposes - to prevent custom client agents from sending requests to events. Use the `requestInfo` argument to segregate different client subscriptions.
 
 	##### Example
 	###### resolve.server.config.js
@@ -418,7 +391,7 @@ The `resolve.server.config.js` file contains information for reSolve library.
 	```
 
 * #### jwt.cookieName
-  Name of HTTP-cookie field, which does contain JWT token. This name is used to retrieve actual cookie from client agent/browser, perform validation and pass contained state into command and query side as security context.
+  Name of HTTP-cookie field, which does contain JWT token. This name is used to retrieve an actual cookie from a client agent/browser, perform validation and pass the contained state to the command and query side as a security context.
 
 	##### Example
 	###### resolve.server.config.js
@@ -431,8 +404,8 @@ The `resolve.server.config.js` file contains information for reSolve library.
 	```
   
 * #### jwt.options
-  Options for customising JWT verify mechanism, including maximum allowed age for tokens to still be valid, audience configuration, etc. Options provided as object, which will be direct passed into verify function as `options` argument. 
-  See more information in [referent documentation for `jwt.verify`](https://www.npmjs.com/package/jsonwebtoken#jwtverifytoken-secretorpublickey-options-callback).
+  Options for customizing a JWT verification mechanism, including maximum allowed tokens age, audience configuration, etc. Options are provided as an object which is directly passed to a verification function as `options` argument. 
+  See the [jwt.verify reference documentation](https://www.npmjs.com/package/jsonwebtoken#jwtverifytoken-secretorpublickey-options-callback) for more information.
   
     ##### Example
     ###### resolve.server.config.js
@@ -447,8 +420,8 @@ The `resolve.server.config.js` file contains information for reSolve library.
 	```
 
 * #### jwt.secret
-  Secret key used for signing and further verification for JWT tokens, which have been retrieved from client agent/browser. Current configuration uses HS256 algorithm to sign and verify JWT tokens. 
-  Ensure that key length is enough for safety and avoiding brute-force attacks - usually key with 32 bytes length is enough. Read about [Importance of Using Strong Keys in Signing JWTs](https://auth0.com/blog/brute-forcing-hs256-is-possible-the-importance-of-using-strong-keys-to-sign-jwts/).
+  A secret key used for signing and further JWT token verification, which have been retrieved from client agent/browser. The current configuration uses an HS256 algorithm to sign and verify JWT tokens.  
+  Ensure that the key length is adequate for safety to avoid brute-force attacks - usually, a key with a 32-byte length. Read about the [Importance of Using Strong Keys in Signing JWTs](https://auth0.com/blog/brute-forcing-hs256-is-possible-the-importance-of-using-strong-keys-to-sign-jwts/).
 
 	##### Example
 	###### resolve.server.config.js
@@ -477,7 +450,7 @@ The `resolve.server.config.js` file contains information for reSolve library.
 
 * #### initialState
 	
-	A function that takes a [query](../../../resolve-query) and returns a Promise. It's possible to get an initial state by query to read-model and then resolve it with Promise. This state is used in the client and server `createStore` function.
+	A function that takes a [query](../../../resolve-query) and returns a Promise. It is possible to get an initial state by querying a read model and then resolving it with Promise. This state is used in the client and server `createStore` function.
 
     ##### Example
 	###### resolve.server.config.js
@@ -490,7 +463,7 @@ The `resolve.server.config.js` file contains information for reSolve library.
 	```
 
 * #### readModels
-	An array of [read models](#️-aggregates-and-read-models) for [resolve-query](../../../resolve-query). A *read model* represents the current state of a system or its part, and is built by processing all events happened to the system. Read models are used to answer queries.
+	A [read model](#️-aggregates-and-read-models) array for [resolve-query](../../../resolve-query). A *read model* represents the current system state or a part of it and is built by processing all events happened in the system. Read models are used to answer queries.
 
 	##### Example
 	In this example, we import an array of read model objects specified in the `read-models.js` file. 
@@ -505,8 +478,8 @@ The `resolve.server.config.js` file contains information for reSolve library.
 
 * #### storage
 	Contains an object with the following structure: 
-	* `adapter`: one of [storage adapters](../../../storage-adapters) 
-	* `params`: config that will be passed to an adapter when it is initialized
+	* `adapter`: a [storage adapter](../../../storage-adapters) 
+	* `params`: a configuration that is passed to an adapter when it is initialized
 
 	##### Example
 	###### resolve.server.config.js
@@ -524,11 +497,11 @@ The `resolve.server.config.js` file contains information for reSolve library.
 	```
 
 ### Build config
-The `resolve.build.config.js` file contains information for building application.
+The `resolve.build.config.js` file contains information for building an application.
 
 * #### extendWebpack
 	
-	Allows to extend the standard reSolve client and server configs.
+	Allows extending the standard reSolve client and server configurations.
 
     ##### Example
 	###### resolve.build.config
@@ -547,14 +520,14 @@ The `resolve.build.config.js` file contains information for building application
 ## **🛠 Environment Variables**
 
 ### Environment Variables to Change URL
-You can adjust your application URL ([http://localhost:3000](http://localhost:3000/) is used by default) using the following environment variables:
+You can adjust your application's URL ([http://localhost:3000](http://localhost:3000/) is used by default) using the following environment variables:
 * `HOST` - Set the IP address
 * `PORT` - Set the port
 * `HTTPS` - Set to `true` to use `https` instead of `http`
-* `ROOT_DIR` - Set the application's root directory. For example, `export ROOT_DIR=/newurl`. After that the application will be available on [http://localhost:3000/newurl](http://localhost:3000/newurl). 
+* `ROOT_DIR` - Set the application's root directory. For example, `export ROOT_DIR=/newurl`. After that, the application is available at [http://localhost:3000/newurl](http://localhost:3000/newurl). 
 
-Environment variables are available on the client side by  `process.env.VARIABLE_NAME`.
+Environment variables are available on the client side using  `process.env.VARIABLE_NAME`.
 
 
 ### Custom Environment Variables
-You can pass custom env variables to the client side. To do this, name a variable starting with the `RESOLVE_` prefix. After that, this variable will be available on the client and server side via the `process.env` object .
+You can pass custom env variables to the client side. To do this, use the `RESOLVE_` prefix when naming a variable. After that, this variable is available on the client and server side via the `process.env` object.
