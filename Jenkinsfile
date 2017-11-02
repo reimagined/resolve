@@ -85,7 +85,7 @@ pipeline {
                 """
 
                 withCredentials([
-                    string(credentialsId: 'DEPENDENT_JOBS_LIST, variable: 'JOBS')
+                    string(credentialsId: 'DEPENDENT_JOBS_LIST', variable: 'JOBS')
                 ]) {
                     def jobs = env.JOBS.split(';')
                     for (def i = 0; i < jobs.length; ++i) {
