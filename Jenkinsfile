@@ -1,84 +1,99 @@
 pipeline {
-    agent any
+    agent {
+        docker { image 'reimagined/node-testcafe' }
+    }
     stages {
         stage('Unit tests') {
             steps {
                 script {
-                    docker.image('node:8').inside {
-                        sh 'npm install'
-                        sh 'npm run bootstrap'
-                        sh 'npm run lint'
-                        sh 'npm test'
-                    }
+                    sh 'npm install'
+                    sh 'if [ "$(node_modules/.bin/prettier-eslint "./**/src/**/*.js" "./**/test/**/*.js" --list-different --ignore=./node_modules/**)" ]; then exit 1; fi'
+                    sh 'npm run bootstrap'
+                    sh 'npm run lint'
+                    sh 'npm test'
                 }
             }
         }
 
-        stage('End-to-end tests') {
+        stage('Publish alpha') {
             steps {
                 script {
-                    PROJECT_NAME = sh (
-                        script: "/var/scripts/get-project-name.sh",
-                        returnStdout: true
-                    ).trim()
-
-                    dir('examples/todo') {
-                        sh "cd ./server && ../resolve-symlinks.sh && cd .."
-                        sh "cd ./client && ../resolve-symlinks.sh && cd .."
-                        sh "docker-compose -p ${PROJECT_NAME} up --build --exit-code-from testcafe"
-                    }
-                }
-            }
-        }
-
-        stage('Publish and trigger') {
-            steps {
-                script {
-                    def isMasterBranch = env.BRANCH_NAME == 'master'
                     def credentials = [
-                        string(credentialsId: isMasterBranch ? 'NPM_CREDENTIALS' : 'LOCAL_NPM_AUTH_TOKEN', variable: 'NPM_TOKEN')
+                        string(credentialsId: 'NPM_CREDENTIALS', variable: 'NPM_TOKEN')
                     ];
-                    if (!isMasterBranch) {
-                        credentials.push(string(credentialsId: 'LOCAL_NPM_HOST_PORT', variable: 'NPM_ADDR'))
-                    }
-                    docker.image('node:8').inside {
-                        withCredentials(credentials) {
-                            if (!isMasterBranch) {
-                                sh "npm config set registry http://${env.NPM_ADDR}"
-                            } else {
-                                env.NPM_ADDR = 'registry.npmjs.org'
-                            }
-                            sh "npm config set //${env.NPM_ADDR}/:_authToken ${env.NPM_TOKEN}"
-                            sh "npm whoami"
-                            try {
-                                sh "./node_modules/.bin/lerna publish --canary --yes"
-                            } catch(Exception e) {
-                            }
-                        }
+
+                    withCredentials(credentials) {
+                        env.NPM_ADDR = 'registry.npmjs.org'
+
+                        env.CI_TIMESTAMP = (new Date()).format("MMddHHmmss", TimeZone.getTimeZone('UTC'))
+
+                        sh """
+                            npm config set //${env.NPM_ADDR}/:_authToken ${env.NPM_TOKEN}
+                            npm whoami
+                            eval \$(next-lerna-version); \
+                            export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}; \
+                            ./node_modules/.bin/lerna publish --skip-git --force-publish=* --yes --repo-version \$CI_ALPHA_VERSION --canary
+                        """
                     }
 
-                    commitHash = sh (
-                        script: 'git rev-parse HEAD | cut -c1-8',
-                        returnStdout: true
-                    ).trim()
+                }
+            }
+        }
 
-                    withCredentials([
-                        string(credentialsId: isMasterBranch ? 'UPDATE_VERSION_JOBS' : 'DEPENDENT_JOBS_LIST', variable: 'JOBS')
-                    ]) {
-                        def jobs = env.JOBS.split(';')
-                        for (def i = 0; i < jobs.length; ++i) {
-                            build([
-                                job: jobs[i],
-                                parameters: [[
-                                    $class: 'StringParameterValue',
-                                    name: 'NPM_CANARY_VERSION',
-                                    value: commitHash
-                                ],[
-                                    $class: 'BooleanParameterValue',
-                                    name: 'RESOLVE_CHECK',
-                                    value: true
-                                ]]
-                            ])
+        stage('Create-resolve-app [ todolist ] Functional Tests') {
+            steps {
+                script {
+                    sh """
+                        /prepare-chromium.sh
+
+                        eval \$(next-lerna-version)
+                        export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}
+
+                        rm -rf ./stage
+                        mkdir stage
+                        cd ./stage
+
+                        while :
+                        do
+                            if ( npm install -g create-resolve-app@\$CI_ALPHA_VERSION ); then
+                                break
+                            else
+                                sleep 5
+                            fi
+                        done
+
+                        create-resolve-app --sample todolist
+                        cd ./todolist
+
+                        npm run test:e2e -- --browser=path:/chromium
+                    """
+                }
+            }
+        }
+
+
+        stage('Resolve/Apps Functional Tests (only PR release/x.y.z => master)') {
+            steps {
+                script {
+                    if(env.BRANCH_NAME.contains('release')) {
+                        withCredentials([
+                            string(credentialsId: 'DEPENDENT_JOBS_LIST', variable: 'JOBS')
+                        ]) {
+                            def jobs = env.JOBS.split(';')
+                            for (def i = 0; i < jobs.length; ++i) {
+                                build([
+                                    job: jobs[i],
+                                    parameters: [[
+                                        $class: 'StringParameterValue',
+                                        name: 'NPM_CANARY_VERSION',
+                                        value: env.CI_TIMESTAMP
+                                    ],[
+                                        $class: 'BooleanParameterValue',
+                                        name: 'RESOLVE_CHECK',
+                                        value: true
+                                    ]]
+                                ])
+                            }
                         }
                     }
                 }
@@ -88,11 +103,14 @@ pipeline {
 
     post {
         always {
-            dir('examples/todo') {
-                sh "docker-compose -p ${PROJECT_NAME} down --rmi all"
-            }
             deleteDir()
         }
     }
 }
 
+// LINKS:
+
+// https://github.com/DevExpress/XAF2/tree/devops/node-testcafe
+// https://hub.docker.com/r/reimagined/node-testcafe/
+
+// https://github.com/DevExpress/XAF2/tree/devops/next-lerna-version
