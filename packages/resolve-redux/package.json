@@ -25,6 +25,9 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#readme",
   "devDependencies": {
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
     "chai": "^3.5.0",
     "enzyme": "^2.9.1",
     "mocha": "^3.2.0",
@@ -36,9 +39,6 @@
   },
   "dependencies": {
     "apollo-client": "^1.9.3",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-react": "^6.24.1",
-    "babel-preset-stage-0": "^6.24.1",
     "isomorphic-fetch": "^2.2.1",
     "react": "^15.6.1",
     "react-apollo": "^1.4.16",
