@@ -10,15 +10,9 @@ const error = console.error;
 
 const appDependencies = ['prop-types', 'uuid'];
 
-const dependencies = [
-    'react',
-    'react-dom',
-    'react-redux',
-    'redux',
-    'resolve-bus-memory',
-    'resolve-redux',
-    'resolve-storage-lite'
-];
+const dependencies = ['react', 'react-dom', 'react-redux', 'redux'];
+
+const resolveDependencies = ['resolve-bus-memory', 'resolve-redux', 'resolve-storage-lite'];
 
 const devDependencies = ['chai', 'cross-env', 'testcafe', 'testcafe-browser-tools', 'yargs'];
 
@@ -54,9 +48,11 @@ const tryRenameGitignore = (appPath) => {
     });
 };
 
-const installDependencies = (dep, isDev) => {
+const installDependencies = (dep, isDev, resolveVersion) => {
     const command = 'npm';
-    const args = ['install', isDev ? '--save-dev' : '--save'].concat(dep);
+    const args = ['install', isDev ? '--save-dev' : '--save'].concat(
+        dep.map(depName => (resolveVersion ? `${depName}@${resolveVersion}` : depName))
+    );
 
     const proc = spawn.sync(command, args, { stdio: 'inherit' });
     if (proc.status !== 0) {
@@ -117,7 +113,7 @@ const deleteFolderRecursive = (path) => {
     }
 };
 
-export default (appPath, appName, originalDirectory, isEmpty, packagePath) => {
+export default (appPath, appName, originalDirectory, isEmpty, packagePath, resolveVersion) => {
     const scriptsPackageName = require(path.join(__dirname, '../../', 'package.json')).name;
     const scriptsPath = path.join(appPath, 'node_modules', scriptsPackageName);
 
@@ -161,10 +157,13 @@ export default (appPath, appName, originalDirectory, isEmpty, packagePath) => {
         const templateEmptyPath = path.join(packagePath || scriptsPath, 'dist', 'template_empty');
         fs.copySync(templateEmptyPath, appPath);
         installDependencies(dependencies, false);
+        installDependencies(resolveDependencies, false, resolveVersion);
         fs.unlinkSync(path.join(appPath, '.flowconfig'));
         fs.unlinkSync(path.join(appPath, 'resolve.build.config.js'));
     } else {
-        installDependencies(dependencies.concat(appDependencies), false);
+        installDependencies(dependencies, false);
+        installDependencies(resolveDependencies, false, resolveVersion);
+        installDependencies(appDependencies, false);
         installDependencies(devDependencies, true);
     }
 

@@ -18,5 +18,5 @@
   "license": "MIT",
   "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
   "homepage":
-    "https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-lite#readme"
+    "https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-base#readme"
 }
