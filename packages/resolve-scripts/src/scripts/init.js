@@ -154,8 +154,8 @@ export default (appPath, appName, originalDirectory, isEmpty, packagePath, resol
         installDependencies(resolveDependencies, false, resolveVersion);
         installDependencies(devDependencies, true);
     } else {
-        const templateEmptyPath = path.join(packagePath || scriptsPath, 'dist', 'template_sample');
-        fs.copySync(templateEmptyPath, appPath);
+        const templateSamplePath = path.join(packagePath || scriptsPath, 'dist', 'template_sample');
+        fs.copySync(templateSamplePath, appPath);
 
         installDependencies([...dependencies, ...appDependencies], false);
         installDependencies(resolveDependencies, false, resolveVersion);
