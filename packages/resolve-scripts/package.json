@@ -10,13 +10,13 @@
     "resolve-scripts": "./bin/resolve-scripts.js"
   },
   "scripts": {
-    "template:remove": "rm -rf ./dist/template_sample",
-    "template:copy": "cp -r ./src/template_sample ./dist",
-    "template_empty:remove": "rm -rf ./dist/template_empty",
-    "template_empty:copy": "cp -r ./src/template_empty ./dist",
+    "template:remove": "rm -rf ./dist/template",
+    "template:copy": "cp -r ./src/template ./dist",
+    "template_sample:remove": "rm -rf ./dist/template_sample",
+    "template_sample:copy": "cp -r ./src/template_sample ./dist",
     "build": "babel --out-dir ./dist ./src --ignore template_sample",
     "prepublish":
-      "npm run build && npm run template:remove && npm run template:copy && npm run template_empty:remove && npm run template_empty:copy"
+      "npm run build && npm run template:remove && npm run template:copy && npm run template_sample:remove && npm run template_sample:copy"
   },
   "repository": {
     "type": "git",
