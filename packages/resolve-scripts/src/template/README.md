@@ -78,10 +78,10 @@ resolve-app/
   resolve.server.config.js
   client/
     actions/
-    containers/
     components/
-    store/
+    containers/
     reducers/
+    store/
   common/
     aggregates/
     read-models/

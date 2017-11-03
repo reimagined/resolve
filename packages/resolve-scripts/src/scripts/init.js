@@ -8,13 +8,15 @@ const log = console.log;
 // eslint-disable-next-line no-console
 const error = console.error;
 
-const appDependencies = ['prop-types', 'uuid'];
-
 const dependencies = ['react', 'react-dom', 'react-redux', 'redux'];
 
 const resolveDependencies = ['resolve-bus-memory', 'resolve-redux', 'resolve-storage-lite'];
 
-const devDependencies = ['chai', 'cross-env', 'testcafe', 'testcafe-browser-tools', 'yargs'];
+const devDependencies = ['cross-env', 'testcafe', 'testcafe-browser-tools', 'yargs'];
+
+const appDependencies = ['prop-types', 'uuid'];
+
+const appDevDependencies = ['chai'];
 
 const displayCommand = isDefaultCmd => (isDefaultCmd ? 'npm' : 'npm run');
 
@@ -124,16 +126,14 @@ export default (appPath, appName, originalDirectory, isEmpty, packagePath, resol
         start: 'resolve-scripts start'
     };
 
-    if (!isEmpty) {
-        /* eslint-disable */
-        appPackage.scripts = {
-            ...appPackage.scripts,
-            test: 'jest',
-            'test:e2e':
-                'cross-env NODE_ENV=tests babel-node ./tests/testcafe_runner.js --presets es2015,stage-0,react'
-        };
-        /* eslint-enable */
-    }
+    /* eslint-disable */
+    appPackage.scripts = {
+        ...appPackage.scripts,
+        test: 'jest',
+        'test:e2e':
+            'cross-env NODE_ENV=tests babel-node ./tests/testcafe_runner.js --presets es2015,stage-0,react'
+    };
+    /* eslint-enable */
 
     fs.writeFileSync(path.join(appPath, 'package.json'), JSON.stringify(appPackage, null, 2));
 
@@ -158,13 +158,11 @@ export default (appPath, appName, originalDirectory, isEmpty, packagePath, resol
         fs.copySync(templateEmptyPath, appPath);
         installDependencies(dependencies, false);
         installDependencies(resolveDependencies, false, resolveVersion);
-        fs.unlinkSync(path.join(appPath, '.flowconfig'));
-        fs.unlinkSync(path.join(appPath, 'resolve.build.config.js'));
-    } else {
-        installDependencies(dependencies, false);
-        installDependencies(resolveDependencies, false, resolveVersion);
-        installDependencies(appDependencies, false);
         installDependencies(devDependencies, true);
+    } else {
+        installDependencies([...dependencies, ...appDependencies], false);
+        installDependencies(resolveDependencies, false, resolveVersion);
+        installDependencies([...devDependencies, ...appDevDependencies], true);
     }
 
     fs.unlinkSync(path.join(appPath, '.eslintrc'));
