@@ -12,10 +12,11 @@
   "scripts": {
     "template:remove": "rm -rf ./dist/template",
     "template:copy": "cp -r ./src/template ./dist",
-    "template_empty:remove": "rm -rf ./dist/template_empty",
-    "template_empty:copy": "cp -r ./src/template_empty ./dist",
-    "build": "babel --out-dir ./dist ./src --ignore template",
-    "prepublish": "npm run build && npm run template:remove && npm run template:copy && npm run template_empty:remove && npm run template_empty:copy"
+    "template_sample:remove": "rm -rf ./dist/template_sample",
+    "template_sample:copy": "cp -r ./src/template_sample ./dist",
+    "build": "babel --out-dir ./dist ./src --ignore template_sample",
+    "prepublish":
+      "npm run build && npm run template:remove && npm run template:copy && npm run template_sample:remove && npm run template_sample:copy"
   },
   "repository": {
     "type": "git",
@@ -23,13 +24,9 @@
   },
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": [
-    "cqrs",
-    "eventsourcing",
-    "es",
-    "ddd"
-  ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#readme",
+  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
+  "homepage":
+    "https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#readme",
   "dependencies": {
     "address": "^1.0.3",
     "babel-cli": "^6.24.1",

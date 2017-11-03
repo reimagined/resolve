@@ -150,16 +150,13 @@ export default (appPath, appName, originalDirectory, isEmpty, packagePath, resol
     log();
 
     if (isEmpty) {
-        deleteFolderRecursive(path.join(appPath, 'client'));
-        deleteFolderRecursive(path.join(appPath, 'common'));
-        deleteFolderRecursive(path.join(appPath, 'tests'));
-
-        const templateEmptyPath = path.join(packagePath || scriptsPath, 'dist', 'template_empty');
-        fs.copySync(templateEmptyPath, appPath);
         installDependencies(dependencies, false);
         installDependencies(resolveDependencies, false, resolveVersion);
         installDependencies(devDependencies, true);
     } else {
+        const templateSamplePath = path.join(packagePath || scriptsPath, 'dist', 'template_sample');
+        fs.copySync(templateSamplePath, appPath);
+
         installDependencies([...dependencies, ...appDependencies], false);
         installDependencies(resolveDependencies, false, resolveVersion);
         installDependencies([...devDependencies, ...appDevDependencies], true);
