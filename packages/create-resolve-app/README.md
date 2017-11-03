@@ -47,11 +47,8 @@ create-resolve-app my-resolve-app
 This creates the `my-resolve-app` directory in the current folder and generates the initial project structure in that directory:
 ```
 resolve-app/
-  .babelrc
-  .eslintrc
   .flowconfig
   .gitignore
-  .travis.yml
   LICENSE
   README.md
   package-lock.json
@@ -64,13 +61,19 @@ resolve-app/
     components/
     containers/
     reducers/
+    store/
   common/
     aggregates/
     read-models/
-    store/
+      default/
   static/
+    favicon.ico
   tests/
+    testcafe_runner.js
+    e2e-tests/
+      index.test.js
 ```
+
 ### 📋 Available Scripts
 Once the installation is completed, you can run the following commands in the project directory to start your app:
 
