@@ -1,37 +1,37 @@
 # **🏣 resolve-es** [![npm version](https://badge.fury.io/js/resolve-es.svg)](https://badge.fury.io/js/resolve-es)
 
-Provides an event store implementation with the capability to use different [storage](../storage-drivers) and [bus](../bus-drivers) drivers to store and emit events. 
+Provides an event store implementation with the capability to use different [storage](../storage-adapters) and [bus](../bus-adapters) adapters to store and emit events. 
 ## Usage
 When initializing an event store, pass the following arguments:
 * `storage`  
-	Use one of  [drivers](../storage-drivers) which the reSolve framework provides...
-	* [resolve-storage-mongo](../storage-drivers/resolve-storage-mongo)
-	* [resolve-storage-lite](../storage-drivers/resolve-storage-lite)
+	Use a reSolve framework  [adapter](../storage-adapters)...
+	* [resolve-storage-mongo](../storage-adapters/resolve-storage-mongo)
+	* [resolve-storage-lite](../storage-adapters/resolve-storage-lite)
 
-	... or implement your custom storage driver. Storage driver is an object with the following fields:
-	* `saveEvent` - a function which takes an event and returns Promise that will be resolved when the event is stored in the storage.
-	* `loadEventsByTypes` - a function which takes two arguments: an array of event types  and  callback that will be called for handling each appropriate event. 
-	* `loadEventsByAggregateIds` - a function which takes two arguments: an aggregate id/ array of aggregate ids and callback that will be called for handling each  appropriate event. 
+	... or implement a custom storage adapter. A storage adapter is an object with the following fields:
+	* `saveEvent` - a function which takes an event and returns a Promise that is resolved when the event is stored.
+	* `loadEventsByTypes` - a function which takes two arguments: an array of event types  and a  callback that is called for handling each appropriate event. 
+	* `loadEventsByAggregateIds` - a function which takes two arguments: an aggregate id/ array of aggregate ids and a callback that is called for handling each  appropriate event. 
 
 * `bus`  
-	Use one of [drivers](../bus-drivers) which the reSolve framework provides...
-	* [resolve-bus-memory](../bus-drivers/resolve-bus-memory)
-	* [resolve-bus-rabbitmq](../bus-drivers/resolve-bus-rabbitmq)
-	* [resolve-bus-zmq](../bus-drivers/resolve-bus-zmq)
+	Use a reSolve framework [adapter](../bus-adapters)...
+	* [resolve-bus-memory](../bus-adapters/resolve-bus-memory)
+	* [resolve-bus-rabbitmq](../bus-adapters/resolve-bus-rabbitmq)
+	* [resolve-bus-zmq](../bus-adapters/resolve-bus-zmq)
 
-	... or implement a custom bus driver. Bus driver is object with the following fields:
-	* `subscribe` - a function called when any event is emitted. It takes an emitted event.
+	... or implement a custom bus adapter. A bus adapter is an object with the following fields:
+	* `subscribe` - a function called when an event is emitted. It takes an emitted event.
 	* `publish` - a function that takes an event and publishes it.
 
 ### Example
 ```js
 import createEventStore from 'resolve-es'
-import createInFileStorageDriver from 'resolve-storage-lite'
-import createInMemoryBusDriver from 'resolve-bus-memory'
+import createInFileStorageAdapter from 'resolve-storage-lite'
+import createInMemoryBusAdapter from 'resolve-bus-memory'
 
 const eventStore = createEventStore({
-  storage: createInFileStorageDriver({ pathToFile: './event-store.db' }),
-  bus: createInMemoryBusDriver()
+  storage: createInFileStorageAdapter({ pathToFile: './event-store.db' }),
+  bus: createInMemoryBusAdapter()
 });
 
 eventStore.subscribeByEventType(['UserCreated'], event =>

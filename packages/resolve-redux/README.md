@@ -1,8 +1,8 @@
 # **🔩 resolve-redux** [![npm version](https://badge.fury.io/js/resolve-redux.svg)](https://badge.fury.io/js/resolve-redux)
 
-This package contains tools to integrate reSolve with [Redux](http://redux.js.org/) .
+This package contains tools for integrating reSolve with [Redux](http://redux.js.org/) .
 ## **📑 Table of Contents**
-* [Utils](#-utils)
+* [Tools](#-tools)
 	* [sendCommandMiddleware](#sendcommandmiddleware)
 	* [setSubscriptionMiddleware](#setsubscriptionmiddleware)
 	* [createReducer](#createreducer)
@@ -19,10 +19,10 @@ This package contains tools to integrate reSolve with [Redux](http://redux.js.or
 * [Advanced Usage](#-advanced-usage)
 	* [Support for Optimistic Updates](#support-for-optimistic-updates)
 
-## 🛠 Utils
+## 🛠 Tools
 * ### `sendCommandMiddleware`   
-	It is a Redux middleware used to send a command to the server side. It takes an object with the following field:
-	* `sendCommand` - a function used to send a command to the server side. It takes `command` and returns the `Promise` object that will be resolved when the command is handled by the server. If the function is not specified, the command will be posted to `/api/commands` url.
+	Redux middleware used to send a command to the server side. It takes an object with the following field:
+	* `sendCommand` - a function used to send a command to the server side. It takes `command` and returns the `Promise` object that is resolved when the server handles the command. If the function is not specified, the command is sent to the `/api/commands` url.
 
 	**Example:**  
 	```js
@@ -41,8 +41,8 @@ This package contains tools to integrate reSolve with [Redux](http://redux.js.or
 	```
 
 * ### `setSubscriptionMiddleware`  
-	It is a Redux middleware used to get events from `bus`.  It is used with [`actions.setSubscription`](#setsubscription) to subscribe to required event types. It takes an object with the following field:
-	* `rootDirPath` - URL where socket is placed. If URL is not specified, the `process.env.ROOT_DIR` value or an empty string will be used. The `process.env.ROOT_DIR` value is [passed by resolve-scripts](https://github.com/reimagined/resolve/tree/feature/saga-default-params/packages/resolve-scripts/src/template#environment-variables-to-change-url).
+	Redux middleware used to get events from `bus`.  It is used with [`actions.setSubscription`](#setsubscription) to subscribe to the required event types. It takes an object with the following field:
+	* `rootDirPath` - the socket's URL. If it is not specified, it uses the `process.env.ROOT_DIR` value or an empty string. [resolve-scripts](../resolve-scripts/src/template/README.md#environment-variables-to-change-url) pass the `process.env.ROOT_DIR` value.
 
 	**Example:**  
 	```js
@@ -60,24 +60,24 @@ This package contains tools to integrate reSolve with [Redux](http://redux.js.or
 	export default initialState => createStore(reducer, initialState, applyMiddleware(...middleware))
 	```
 * ### `createReducer`  
-	Generates a standard Redux  reducer from a reSolve [read model](../resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models). It takes two arguments:
+	Generates a standard Redux reducer using a reSolve [read model](../resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models). It takes two arguments:
 	* `read-model` - a reSolve read model to be converted to a Redux  reducer.
 	* `extendReducer` - another reducer to be combined with a new one.
 
-	This reducer includes handling of the reSolve's [`merge`](#merge) and [`replaceState`](#replacestate) actions.
+	This reducer includes handling the reSolve's [`merge`](#merge) and [`replaceState`](#replacestate) actions.
 
 * ### `createActions`   
-	Generates Redux actions from a reSolve [aggregate](../resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models). This function uses the reSolve's [`sendCommand`](#sendcommand) action to pass a command from Redux to the server side. Generated actions are named as aggregate's commands. This function takes two arguments:
+	Generates Redux actions using a reSolve [aggregate](../resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models). This function uses the reSolve's [`sendCommand`](#sendcommand) action to pass a command from Redux to the server side. Generated actions are named as an aggregate's commands. This function takes two arguments:
 	* `aggregate` -  reSolve aggregate. 
 	* `extendActions` - actions to extend or redefine resulting actions.
 
 
 * ### `actions`  
-	A plain object used to send special actions to be handled by other utils. It implements the following functions:
+	A plain object used to send special actions to be handled by other tools. It implements the following functions:
 	* #### `merge`  
 		Produces an action handled by a reducer which the [`createReducer`](#createreducer) function generates. It takes two arguments:
-		* `readModelName` -  name of a read model whose state should be updated.  
-		* `state` - state to merge with the existing state of the specified read model.  
+		* `readModelName` -  the name of a read model whose state should be updated.  
+		* `state` - the state to be merged with the specified read model's existing state.  
 
 	* #### `sendCommand`  
 		Sends a command to the server side. It takes the object with the following required arguments:  
@@ -86,19 +86,19 @@ This package contains tools to integrate reSolve with [Redux](http://redux.js.or
 		* `aggregateName`
 		* `payload`
 				
-		This action is handled by [`sendCommandMiddleware`](#sendcommandmiddleware) automatically.
+		The [`sendCommandMiddleware`](#sendcommandmiddleware) automatically handles this action.
 
 	* #### `setSubscription`  
-		Subscribes to new events from the server side. This function takes two arguments:
-		* `eventTypes` - array of event types
-		* `aggregateIds` - array of aggregateId
+		Subscribes to new server-side events. This function takes two arguments:
+		* `eventTypes` - an array of event types
+		* `aggregateIds` - an array of aggregate ids
 
-		Returns an action handled by [`setSubscriptionMiddleware`](#setsubscriptionmiddleware). It is useful to subscribe to new events from bus in real-time. 
+		Returns an action [`setSubscriptionMiddleware`](#setsubscriptionmiddleware) handles. It is useful to subscribe to new bus events in real-time. 
 
 	* #### `replaceState`  
 		Produces an action handled by a reducer which the [`createReducer`](#createreducer) function generates. This function is very similar to [`merge`](#merge), but the specified read model state is replaced with a new state instead of merging. This function takes two arguments:
-		* `readModelName` - name of a read model whose state should be updated. 
-		* `state` - new state to replace the existing state of the specified read model.	
+		* `readModelName` - the name of a read model whose state should be updated. 
+		* `state` - the new state to replace the specified read model's existing state.	
 
 ## 💻 Basic Usage
 

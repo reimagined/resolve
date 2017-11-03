@@ -1,12 +1,12 @@
-# **🛢 ReadModel Adapters**
-This folder contains readmodel adapters for [resolve-query](../resolve-query).
+# **🛢 Read Model Adapters**
+This folder contains [resolve-query](../resolve-query) read model adapters.
 
-Readmodel adapter is an object that must contain five functions:  
+A read model adapter is an object that must contain the following functions:  
 * `buildRead` - wraps the `read` function.
 * `buildProjection` - wraps the projection.
-* `init` - creates a repository api by onDemandOptions.
-* `get` - gets a repository api by onDemandOptions.
-* `reset` - removes a repository api by onDemandOptions.
+* `init` - creates a repository API using `onDemandOptions`.
+* `get` - gets a repository API using `onDemandOptions`.
+* `reset` - removes a repository API using `onDemandOptions`.
 
 Available adapters:
 * [resolve-readmodel-memory](./resolve-readmodel-memory)  

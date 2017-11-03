@@ -8,19 +8,15 @@ const log = console.log;
 // eslint-disable-next-line no-console
 const error = console.error;
 
+const dependencies = ['react', 'react-dom', 'react-redux', 'redux'];
+
+const resolveDependencies = ['resolve-bus-memory', 'resolve-redux', 'resolve-storage-lite'];
+
+const devDependencies = ['cross-env', 'testcafe', 'testcafe-browser-tools', 'yargs'];
+
 const appDependencies = ['prop-types', 'uuid'];
 
-const dependencies = [
-    'react',
-    'react-dom',
-    'react-redux',
-    'redux',
-    'resolve-bus-memory',
-    'resolve-redux',
-    'resolve-storage-lite'
-];
-
-const devDependencies = ['chai', 'cross-env', 'testcafe', 'testcafe-browser-tools', 'yargs'];
+const appDevDependencies = ['chai'];
 
 const displayCommand = isDefaultCmd => (isDefaultCmd ? 'npm' : 'npm run');
 
@@ -54,9 +50,11 @@ const tryRenameGitignore = (appPath) => {
     });
 };
 
-const installDependencies = (dep, isDev) => {
+const installDependencies = (dep, isDev, resolveVersion) => {
     const command = 'npm';
-    const args = ['install', isDev ? '--save-dev' : '--save'].concat(dep);
+    const args = ['install', isDev ? '--save-dev' : '--save'].concat(
+        dep.map(depName => (resolveVersion ? `${depName}@${resolveVersion}` : depName))
+    );
 
     const proc = spawn.sync(command, args, { stdio: 'inherit' });
     if (proc.status !== 0) {
@@ -71,14 +69,6 @@ const printOutput = (appName, appPath, cdpath, readmeIsExist) => {
     log('In that directory, you can run the following commands:');
 
     log();
-    log(chalk.cyan(`  ${displayCommand(true)} start`));
-    log('    Starts the production server.');
-
-    log();
-    log(chalk.cyan(`  ${displayCommand(false)} build`));
-    log('    Bundles the app into static files for production.');
-
-    log();
     log(chalk.cyan(`  ${displayCommand(false)} dev`));
     log('    Starts the development server.');
 
@@ -91,13 +81,21 @@ const printOutput = (appName, appPath, cdpath, readmeIsExist) => {
     log('    Starts the functionality test runner.');
 
     log();
+    log(chalk.cyan(`  ${displayCommand(false)} build`));
+    log('    Bundles the app into static files for production.');
+
+    log();
+    log(chalk.cyan(`  ${displayCommand(true)} start`));
+    log('    Starts the production server.');
+
+    log();
     log('We suggest that you begin by typing:');
     log();
     log(chalk.cyan('  cd'), cdpath);
     log(`  ${chalk.cyan(`${displayCommand(false)} dev`)}`);
     if (readmeIsExist) {
         log();
-        log(chalk.yellow('You had a `README.md` file, we renamed it to `README.old.md`'));
+        log(chalk.yellow('The README.md file you had was renamed to README.old.md'));
     }
     log();
     log('Happy coding!');
@@ -117,7 +115,7 @@ const deleteFolderRecursive = (path) => {
     }
 };
 
-export default (appPath, appName, originalDirectory, isEmpty, packagePath) => {
+export default (appPath, appName, originalDirectory, isEmpty, packagePath, resolveVersion) => {
     const scriptsPackageName = require(path.join(__dirname, '../../', 'package.json')).name;
     const scriptsPath = path.join(appPath, 'node_modules', scriptsPackageName);
 
@@ -128,16 +126,14 @@ export default (appPath, appName, originalDirectory, isEmpty, packagePath) => {
         start: 'resolve-scripts start'
     };
 
-    if (!isEmpty) {
-        /* eslint-disable */
-        appPackage.scripts = {
-            ...appPackage.scripts,
-            test: 'jest',
-            'test:e2e':
-                'cross-env NODE_ENV=tests babel-node ./tests/testcafe_runner.js --presets es2015,stage-0,react'
-        };
-        /* eslint-enable */
-    }
+    /* eslint-disable */
+    appPackage.scripts = {
+        ...appPackage.scripts,
+        test: 'jest',
+        'test:e2e':
+            'cross-env NODE_ENV=tests babel-node ./tests/testcafe_runner.js --presets es2015,stage-0,react'
+    };
+    /* eslint-enable */
 
     fs.writeFileSync(path.join(appPath, 'package.json'), JSON.stringify(appPackage, null, 2));
 
@@ -161,20 +157,20 @@ export default (appPath, appName, originalDirectory, isEmpty, packagePath) => {
         const templateEmptyPath = path.join(packagePath || scriptsPath, 'dist', 'template_empty');
         fs.copySync(templateEmptyPath, appPath);
         installDependencies(dependencies, false);
-        fs.unlinkSync(path.join(appPath, '.flowconfig'));
-        fs.unlinkSync(path.join(appPath, 'resolve.build.config.js'));
-    } else {
-        installDependencies(dependencies.concat(appDependencies), false);
+        installDependencies(resolveDependencies, false, resolveVersion);
         installDependencies(devDependencies, true);
+    } else {
+        installDependencies([...dependencies, ...appDependencies], false);
+        installDependencies(resolveDependencies, false, resolveVersion);
+        installDependencies([...devDependencies, ...appDevDependencies], true);
     }
 
     fs.unlinkSync(path.join(appPath, '.eslintrc'));
 
     tryRenameGitignore(appPath);
 
-    const cdpath = originalDirectory && path.join(originalDirectory, appName) === appPath
-        ? appName
-        : appPath;
+    const cdpath =
+        originalDirectory && path.join(originalDirectory, appName) === appPath ? appName : appPath;
 
     printOutput(appName, appPath, cdpath, readmeIsExist);
 };

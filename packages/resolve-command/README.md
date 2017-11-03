@@ -1,4 +1,3 @@
-
 # **📢 resolve-command** [![npm version](https://badge.fury.io/js/resolve-command.svg)](https://badge.fury.io/js/resolve-command)
 
 Provides a function to handle a command and send the generated event to an [event store](../resolve-es) based on definitions of [aggregates](../resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models) and their commands. 
@@ -7,31 +6,30 @@ Provides a function to handle a command and send the generated event to an [even
 When initializing a command, pass the following arguments:
 
 * `eventStore`  
-	Configured [eventStore](../resolve-es) instance.
+	A configured [eventStore](../resolve-es) instance.
 	
 * `aggregates`  
-	Array of [aggregates](../resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models).  
+	An array of [aggregates](../resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models).  
 
 After the command is initialized, you get a function that is used to send an event to the event store. It receives two arguments:
 * `command`
 	An object with the following fields:
-	* `aggregateId` - unique id of aggregate.
-	* `aggregateName` - name of aggregate that has to handle the command.
-	* `type` - command type.
+	* `aggregateId` - a unique aggregate id.
+	* `aggregateName` - the name of aggregate that has to handle the command.
+	* `type` - the command type.
 	
 	A command may also have some additional payload.
 
  * `getJwt`  
-   Callback to retrieve actual client state stored in verified JWT token.
+   A callback to retrieve the actual client state stored in a verified JWT token.
 
 ### Example
-Define an aggregate for news handling (see the  `news-aggregate.js` file) and use the `resolve-command` library to execute the `createNews` command and send the corresponding event to the specified event store. 
-To see a read model handling events which this aggregate produces, refer to the [resolve-query](../resolve-query#example) package documentation.
+Define a news handling aggregate (see the  `news-aggregate.js` file), use the `resolve-command` library to execute the `createNews` command and send the corresponding event to the specified event store. To see a read model handling events which this aggregate produces, refer to the [resolve-query](../resolve-query#example) package documentation.
 
 ```js
 import commandHandler from 'resolve-command'
 import createEsStorage from 'resolve-storage-lite'
-import createBusDriver from 'resolve-bus-memory'
+import createBusAdapter from 'resolve-bus-memory'
 import createEventStore from 'resolve-es'
 
 // the news-aggregate.js file is placed below
@@ -39,7 +37,7 @@ import newsAggregate from './news-aggregate'
 
 const aggregates = [newsAggregate]
 
-const eventStore = createEventStore({ storage: createEsStorage(), bus: createBusDriver() })
+const eventStore = createEventStore({ storage: createEsStorage(), bus: createBusAdapter() })
 
 eventStore.onEvent(['NewsCreated'], event =>
   console.log('Event emitted', event)

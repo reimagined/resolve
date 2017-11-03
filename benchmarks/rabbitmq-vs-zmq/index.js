@@ -1,19 +1,19 @@
 import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import driverRabbitmq from 'resolve-bus-rabbitmq';
-import driverZmq from 'resolve-bus-zmq';
+import rabbitmqAdapter from 'resolve-bus-rabbitmq';
+import zmqAdapter from 'resolve-bus-zmq';
 
 import config from './config';
 
 const { BENCHMARK_SERIES, FREEING_TIME } = config;
 
-const busRabbitmq = driverRabbitmq({
+const busRabbitmq = rabbitmqAdapter({
     url: config.RABBITMQ_CONNECTION_URL,
     messageTtl: 20000
 });
 
-const busZmq = driverZmq({
+const busZmq = zmqAdapter({
     address: config.ZMQ_HOST,
     pubPort: config.ZMQ_PUB_PORT,
     subPort: config.ZMQ_SUB_PORT
