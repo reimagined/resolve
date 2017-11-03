@@ -1,8 +1,7 @@
 {
   "name": "resolve-storage-base",
-  "version": "0.0.43",
-  "description":
-    "This package contains the basic components for storage adapters",
+  "version": "0.0.44",
+  "description": "This package contains the basic components for storage adapters",
   "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
@@ -16,7 +15,11 @@
   },
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
-  "homepage":
-    "https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-base#readme"
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-base#readme"
 }
