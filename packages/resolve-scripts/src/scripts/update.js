@@ -11,12 +11,12 @@ function getResolvePackages() {
             { json: true },
             (fetchError, response, body) => {
                 if (fetchError) {
-                    reject('Error loading package list:' + fetchError.stack);
+                    reject('Package list loading error:' + fetchError.stack);
                 }
                 try {
                     resolve(body.objects.map(object => object.package.name));
                 } catch (parseError) {
-                    reject('Error loading package list:' + parseError.stack);
+                    reject('Package list loading error:' + parseError.stack);
                 }
             }
         );
@@ -56,8 +56,8 @@ async function update() {
         );
         if (badPackages.length > 0) {
             throw new Error(
-                'Please use the "update $(version)" command, ' +
-                    `because your project has dependencies with fixed versions.${EOL}` +
+                'Use the "update $(version)" command as your project ' +
+                    `contains dependencies with fixed versions.${EOL}` +
                     `List of dependencies with fixed versions: ${badPackages.join(', ')}`
             );
         }
