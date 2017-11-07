@@ -49,9 +49,6 @@ pipeline {
                         eval \$(next-lerna-version)
                         export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}
 
-                        rm -rf ./stage
-                        mkdir stage
-                        cd ./stage
 
                         while :
                         do
@@ -71,6 +68,28 @@ pipeline {
             }
         }
 
+        stage('Resolve/HackerNews Functional Tests') {
+            steps {
+                script {
+                    sh """
+                        /prepare-chromium.sh
+
+                        eval \$(next-lerna-version)
+                        export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}
+
+                        git clone https://github.com/reimagined/hacker-news-resolve.git
+
+                        cd hacker-news-resolve
+
+                        npm install -g resolve-scripts@\$CI_ALPHA_VERSION
+                        npm install
+                        resolve-scripts update \$CI_ALPHA_VERSION
+
+                        npm run test:functional
+                    """
+                }
+            }
+        }
 
         stage('Resolve/Apps Functional Tests (only PR release/x.y.z => master)') {
             steps {
