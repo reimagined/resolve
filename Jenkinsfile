@@ -59,6 +59,8 @@ pipeline {
                             fi
                         done
 
+                        sleep 3
+
                         create-resolve-app --sample todolist
                         cd ./todolist
 
