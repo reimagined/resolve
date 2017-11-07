@@ -123,7 +123,8 @@ export default (appPath, appName, originalDirectory, isEmpty, packagePath, resol
     appPackage.scripts = {
         build: 'resolve-scripts build',
         dev: 'resolve-scripts dev',
-        start: 'resolve-scripts start'
+        start: 'resolve-scripts start',
+        update: 'resolve-scripts update'
     };
 
     /* eslint-disable */
