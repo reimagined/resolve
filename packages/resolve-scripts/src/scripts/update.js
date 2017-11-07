@@ -18,7 +18,7 @@ function getResolvePackages() {
                 } catch (parseError) {
                     reject('Error loading package list:' + parseError.stack);
                 }
-            },
+            }
         );
     });
 }
@@ -52,13 +52,13 @@ async function update() {
 
     if (!version) {
         const badPackages = packages.filter(
-            name => !/\^|~|x|\*/.test(appPackages[name].replace(/-.*?$/, '')),
+            name => !/\^|~|x|\*/.test(appPackages[name].replace(/-.*?$/, ''))
         );
         if (badPackages.length > 0) {
             throw new Error(
                 'Please use the "update $(version)" command, ' +
                     `because your project has dependencies with fixed versions.${EOL}` +
-                    `List of dependencies with fixed versions: ${badPackages.join(', ')}`,
+                    `List of dependencies with fixed versions: ${badPackages.join(', ')}`
             );
         }
     }
