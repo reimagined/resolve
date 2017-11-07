@@ -85,7 +85,8 @@ pipeline {
                         npm install
                         resolve-scripts update \$CI_ALPHA_VERSION
 
-                        npm run test:functional
+                        npm run build
+                        testcafe path:/chromium ./tests/functional --app "IS_TEST=true npm run start"
                     """
                 }
             }
