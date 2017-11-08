@@ -24,7 +24,7 @@ getInstallations().then((browsers) => {
             const browser = argv.browser || Object.keys(browsers).slice(0, 1);
             return runner
                 .startApp('npm run dev 2>&1 >log2.log', DELAY)
-                .src(['./tests/e2e-tests/index.test.js'])
+                .src(['./tests/functional/e2e-tests/index.test.js'])
                 .browsers(browser)
                 .run();
         })
