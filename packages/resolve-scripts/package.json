@@ -44,7 +44,7 @@
     "express": "^4.15.3",
     "fs-extra": "^4.0.0",
     "graphql": "^0.11.7",
-    "graphql-tools": "^2.6.1",
+    "graphql-tools": "^2.7.2",
     "jest": "^20.0.4",
     "jsonwebtoken": "^7.4.3",
     "opn": "^5.1.0",
