@@ -12,7 +12,7 @@ const dependencies = ['react', 'react-dom', 'react-redux', 'redux'];
 
 const resolveDependencies = ['resolve-bus-memory', 'resolve-redux', 'resolve-storage-lite'];
 
-const devDependencies = ['cross-env', 'testcafe', 'testcafe-browser-tools', 'yargs'];
+const devDependencies = ['cross-env', 'testcafe', 'testcafe-browser-tools', 'yargs', 'flow'];
 
 const appDependencies = ['prop-types', 'uuid'];
 
@@ -124,7 +124,8 @@ export default (appPath, appName, originalDirectory, isEmpty, packagePath, resol
         build: 'resolve-scripts build',
         dev: 'resolve-scripts dev',
         start: 'resolve-scripts start',
-        update: 'resolve-scripts update'
+        update: 'resolve-scripts update',
+        flow: 'flow'
     };
 
     /* eslint-disable */

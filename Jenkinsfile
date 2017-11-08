@@ -49,7 +49,6 @@ pipeline {
                         eval \$(next-lerna-version)
                         export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}
 
-
                         while :
                         do
                             if ( npm install -g create-resolve-app@\$CI_ALPHA_VERSION ); then
