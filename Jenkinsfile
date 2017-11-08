@@ -49,9 +49,6 @@ pipeline {
                         eval \$(next-lerna-version)
                         export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}
 
-                        rm -rf ./stage
-                        mkdir stage
-                        cd ./stage
 
                         while :
                         do
@@ -62,6 +59,8 @@ pipeline {
                             fi
                         done
 
+                        sleep 3
+
                         create-resolve-app --sample todolist
                         cd ./todolist
 
@@ -71,6 +70,28 @@ pipeline {
             }
         }
 
+        stage('Resolve/HackerNews Functional Tests') {
+            steps {
+                script {
+                    sh """
+                        /prepare-chromium.sh
+
+                        eval \$(next-lerna-version)
+                        export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}
+
+                        git clone https://github.com/reimagined/hacker-news-resolve.git
+
+                        cd hacker-news-resolve
+
+                        npm install
+                        ./node_modules/.bin/resolve-scripts update \$CI_ALPHA_VERSION
+
+                        npm run build
+                        testcafe path:/chromium ./tests/functional --app "IS_TEST=true npm run start"
+                    """
+                }
+            }
+        }
 
         stage('Resolve/Apps Functional Tests (only PR release/x.y.z => master)') {
             steps {
