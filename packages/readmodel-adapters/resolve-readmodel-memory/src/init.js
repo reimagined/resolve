@@ -171,14 +171,10 @@ export default function init(repository, onDemandOptions, persistDonePromise, on
         interfaceMap: new Map(),
         readInterface: getStoreInterface(false),
         writeInterface: getStoreInterface(true),
-        initializeKey: new Promise(resolve =>
-            Promise.resolve()
-                .then(() =>
-                    repository.initHandler.bind(getStoreInterface(true), {
-                        type: INIT_EVENT
-                    })
-                )
-                .then(resolve)
+        initializeKey: Promise.resolve().then(
+            repository.initHandler.bind(null, getStoreInterface(true), {
+                type: INIT_EVENT
+            })
         ),
         collectionMap: new Map(),
         internalError: null,
