@@ -1,6 +1,8 @@
 import objectHash from 'object-hash';
 
-export default function hash(onDemandOptions = null) {
+export const INIT_EVENT = Symbol.for('INIT_EVENT');
+
+export function hash(onDemandOptions = null) {
     return objectHash(onDemandOptions, {
         unorderedArrays: true,
         unorderedSets: true

@@ -1,5 +1,3 @@
-import clone from 'clone';
-
 export default function buildRead(repository, read) {
     async function customRead(...args) {
         if (Array.isArray(args[0])) {

@@ -1,10 +1,10 @@
-import hash from './hash';
+import { INIT_EVENT, hash } from './utils';
 
 export default function buildProjection(repository, inputProjection) {
     repository.initHandler = async () => {};
 
     return Object.keys(inputProjection).reduce((projection, eventType) => {
-        if (eventType === '@@INIT') {
+        if (eventType === INIT_EVENT) {
             repository.initHandler = inputProjection[eventType];
         }
 

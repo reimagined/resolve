@@ -2,7 +2,7 @@ import fs from 'fs';
 import funcproxyAdvanced from 'funcproxy';
 import NeDB from 'nedb';
 import path from 'path';
-import hash from './hash';
+import { INIT_EVENT, hash } from './utils';
 
 const funcproxy = (target, func) => funcproxyAdvanced({ target, func });
 const NotSupportedError = (description, { method, methodArgs: { property, prop } }) =>
@@ -77,6 +77,21 @@ export default function init(repository, onDemandOptions, persistDonePromise, on
         );
         actionsMap.set('count', writeableBind(collection, 'count', true));
 
+        const execFind = (options) => {
+            if (options.requestFold) {
+                throw new Error('Find request cannot be reused after documents retrieving');
+            }
+
+            options.requestFold = options.requestChain.reduce(
+                (acc, { type, args }) => acc[type](...args),
+                collection
+            );
+
+            return new Promise((resolve, reject) =>
+                options.requestFold.exec((err, docs) => (!err ? resolve(docs) : reject(err)))
+            );
+        };
+
         const wrapFind = initialFind => (...findArgs) => {
             const resultPromise = Promise.resolve();
             const requestChain = [{ type: initialFind, args: findArgs }];
@@ -90,21 +105,13 @@ export default function init(repository, onDemandOptions, persistDonePromise, on
             );
 
             const originalThen = resultPromise.then.bind(resultPromise);
-            let flowPromise = null;
-            const execFind = () =>
-                (flowPromise =
-                    flowPromise ||
-                    new Promise((resolve, reject) =>
-                        requestChain
-                            .reduce((acc, { type, args }) => acc[type](...args), collection)
-                            .exec((err, docs) => (!err ? resolve(docs) : reject(err)))
-                    ));
+            const boundExecFind = execFind.bind(null, { requestChain });
 
             resultPromise.then = (...continuation) =>
-                originalThen(execFind()).then(...continuation);
+                originalThen(boundExecFind).then(...continuation);
 
             resultPromise.catch = (...continuation) =>
-                originalThen(execFind()).catch(...continuation);
+                originalThen(boundExecFind).catch(...continuation);
 
             return resultPromise;
         };
@@ -168,7 +175,7 @@ export default function init(repository, onDemandOptions, persistDonePromise, on
             Promise.resolve()
                 .then(() =>
                     repository.initHandler.bind(getStoreInterface(true), {
-                        type: '@@INIT'
+                        type: INIT_EVENT
                     })
                 )
                 .then(resolve)

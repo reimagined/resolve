@@ -1,4 +1,4 @@
-import hash from './hash';
+import { hash } from './utils';
 
 export default function get(repository, onDemandOptions) {
     const key = hash(onDemandOptions);
