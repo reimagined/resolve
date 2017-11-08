@@ -83,9 +83,8 @@ pipeline {
 
                         cd hacker-news-resolve
 
-                        npm install -g resolve-scripts@\$CI_ALPHA_VERSION
                         npm install
-                        resolve-scripts update \$CI_ALPHA_VERSION
+                        ./node_modules/.bin/resolve-scripts update \$CI_ALPHA_VERSION
 
                         npm run build
                         testcafe path:/chromium ./tests/functional --app "IS_TEST=true npm run start"
