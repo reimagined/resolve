@@ -4,7 +4,7 @@ import createTestCafe from 'testcafe';
 import { getInstallations } from 'testcafe-browser-tools';
 import fs from 'fs';
 import path from 'path';
-import config from '../resolve.server.config.js';
+import config from '../../resolve.server.config.js';
 
 const DELAY = 10000;
 let testcafe = null;

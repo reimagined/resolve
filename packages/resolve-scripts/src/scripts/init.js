@@ -131,9 +131,10 @@ export default (appPath, appName, originalDirectory, isEmpty, packagePath, resol
     /* eslint-disable */
     appPackage.scripts = {
         ...appPackage.scripts,
-        test: 'jest',
+        test: 'jest tests/unit',
         'test:e2e':
-            'cross-env NODE_ENV=tests babel-node ./tests/testcafe_runner.js --presets es2015,stage-0,react'
+            'cross-env NODE_ENV=tests babel-node ./tests/functional/testcafe_runner.js ' +
+            '--presets es2015,stage-0,react'
     };
     /* eslint-enable */
 
