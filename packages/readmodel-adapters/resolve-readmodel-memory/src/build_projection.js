@@ -1,51 +1,29 @@
-import clone from 'clone';
 import hash from './hash';
 
-export default function buildProjection(repository, collections) {
-    let preparedCollections;
-    if (Array.isArray(collections)) {
-        preparedCollections = collections;
-    } else {
-        preparedCollections = [
-            {
-                name: 'default',
-                projection: collections,
-                initialState: []
-            }
-        ];
-    }
+export default function buildProjection(repository, inputProjection) {
+    repository.initHandler = async () => {};
 
-    repository.collections = preparedCollections;
+    return Object.keys(inputProjection).reduce((projection, eventType) => {
+        if (eventType === '@@INIT') {
+            repository.initHandler = inputProjection[eventType];
+        }
 
-    const callbacks = preparedCollections.reduce(
-        (callbacks, { name, projection, initialState }) =>
-            Object.keys(projection).reduce((result, eventType) => {
-                result[eventType] = (result[eventType] || []).concat({
-                    name,
-                    handler: projection[eventType],
-                    initialState: clone(initialState)
-                });
-                return result;
-            }, callbacks),
-        {}
-    );
-
-    return Object.keys(callbacks).reduce((projection, eventType) => {
         projection[eventType] = async (event, onDemandOptions) => {
             const key = hash(onDemandOptions);
+            try {
+                await repository.get(key).initializeKey;
+            } catch (error) {
+                repository.get(key).internalError = error;
+                return;
+            }
 
-            for (const { name, handler, initialState } of callbacks[eventType]) {
-                const state = repository.get(key).internalState;
+            const writeInterface = repository.get(key).writeInterface;
+            const handler = inputProjection[eventType];
 
-                if (!state.has(name)) {
-                    state.set(name, initialState);
-                }
-
-                try {
-                    state.set(name, await handler(state.get(name), event));
-                } catch (error) {
-                    repository.get(key).internalError = error;
-                }
+            try {
+                await handler(writeInterface, event);
+            } catch (error) {
+                repository.get(key).internalError = error;
             }
         };
         return projection;

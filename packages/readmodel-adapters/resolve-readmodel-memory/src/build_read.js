@@ -1,7 +1,6 @@
 import clone from 'clone';
 
 export default function buildRead(repository, read) {
-    const collections = repository.collections;
     async function customRead(...args) {
         if (Array.isArray(args[0])) {
             return customRead('default', args[0]);
@@ -11,14 +10,10 @@ export default function buildRead(repository, read) {
             return customRead('default', args[0].aggregateIds);
         }
 
-        const result = await read({ aggregateIds: args[1] });
+        const loadCollection = await read({ aggregateIds: args[1] });
         const collectionName = args[0] || 'default';
 
-        let state = result.get(collectionName);
-        if (state === undefined) {
-            state = (collections.find(coll => coll.name === collectionName) || {}).initialState;
-        }
-        return clone(state);
+        return loadCollection(collectionName);
     }
 
     return customRead;
