@@ -38,10 +38,14 @@
     "uuid": "^3.0.1"
   },
   "dependencies": {
-    "apollo-client": "^1.9.3",
+    "apollo-cache-inmemory": "^1.1.0",
+    "apollo-client": "^2.0.2",
+    "apollo-link-http": "^1.1.0",
+    "graphql": "^0.11.7",
+    "graphql-tag": "^2.5.0",
     "isomorphic-fetch": "^2.2.1",
     "react": "^15.6.1",
-    "react-apollo": "^1.4.16",
+    "react-apollo": "^2.0.0",
     "react-dom": "^15.6.1",
     "regenerator-runtime": "^0.11.0",
     "socket.io-client": "^2.0.3"
