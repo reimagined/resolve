@@ -6,11 +6,8 @@ import init from './init';
 import get from './get';
 import reset from './reset';
 
-export default function createMemoryAdapter({ databaseFolder } = {}) {
+export default function createMemoryAdapter() {
     const repository = new Map();
-    repository.databaseFolder = databaseFolder && databaseFolder.constructor === String
-        ? databaseFolder
-        : null;
 
     return {
         buildRead: buildRead.bind(null, repository),

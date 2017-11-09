@@ -1,10 +1,6 @@
-import fs from 'fs';
-import funcproxyAdvanced from 'funcproxy';
 import NeDB from 'nedb';
-import path from 'path';
 import { INIT_EVENT, hash } from './utils';
 
-const funcproxy = (target, func) => funcproxyAdvanced({ target, func });
 const NotSupportedError = (description, { method, methodArgs: { property, prop } }) =>
     new Error(
         `${description} does not support queried action '${method}` +
@@ -13,13 +9,8 @@ const NotSupportedError = (description, { method, methodArgs: { property, prop }
 
 export default function init(repository, onDemandOptions, persistDonePromise, onDestroy) {
     const key = hash(onDemandOptions);
-    const databaseFolder = repository.databaseFolder;
-
     if (repository.get(key)) {
         throw new Error(`The state for '${key}' is already initialized.`);
-    }
-    if (databaseFolder !== null && !fs.existsSync(databaseFolder)) {
-        throw new Error(`Invalid persistence path '${databaseFolder}' specified `);
     }
 
     const loadCollection = (collectionName, createOnDemand = false) => {
@@ -27,19 +18,11 @@ export default function init(repository, onDemandOptions, persistDonePromise, on
         if (collectionMap.has(collectionName)) {
             return collectionMap.get(collectionName);
         }
-
         if (!createOnDemand) {
             throw new Error(`Collection ${collectionName} does not exist`);
         }
-        const collection = new NeDB(
-            Object.assign(
-                { autoload: true },
-                databaseFolder !== null
-                    ? { filename: path.join(databaseFolder, `./${key}-${collectionName}.db`) }
-                    : { inMemoryOnly: true }
-            )
-        );
 
+        const collection = new NeDB({ autoload: true, inMemoryOnly: true });
         collectionMap.set(collectionName, collection);
         return collection;
     };
@@ -53,9 +36,8 @@ export default function init(repository, onDemandOptions, persistDonePromise, on
             return interfaceMap.get(collectionKey);
         }
 
-        const collection = loadCollection(collectionName, isWriteable);
-
-        const writeableBind = (target, funcName, allowOnRead = false) => {
+        const bindCollectionMethod = (funcName, allowOnRead = false) => {
+            const collection = loadCollection(collectionName, isWriteable);
             if (!isWriteable && !allowOnRead) {
                 return async () => {
                     throw new Error(`Collection method ${funcName} is not allowed on read side`);
@@ -64,20 +46,15 @@ export default function init(repository, onDemandOptions, persistDonePromise, on
 
             return (...args) =>
                 new Promise((resolve, reject) => {
-                    target[funcName](
+                    collection[funcName](
                         ...args,
                         (err, ...result) => (!err ? resolve(result) : reject(err))
                     );
                 });
         };
 
-        const actionsMap = new Map();
-        ['insert', 'update', 'remove', 'ensureIndex', 'ensureIndex'].forEach(action =>
-            actionsMap.set(action, writeableBind(collection, action, false))
-        );
-        actionsMap.set('count', writeableBind(collection, 'count', true));
-
         const execFind = (options) => {
+            const collection = loadCollection(collectionName, isWriteable);
             if (options.requestFold) {
                 throw new Error('Find request cannot be reused after documents retrieving');
             }
@@ -116,19 +93,15 @@ export default function init(repository, onDemandOptions, persistDonePromise, on
             return resultPromise;
         };
 
-        actionsMap.set('findOne', wrapFind('findOne'));
-        actionsMap.set('find', wrapFind('find'));
-
-        const collectionIface = funcproxy({}, (options) => {
-            const { method, methodArgs: { property } } = options;
-            if (method !== 'get') {
-                throw NotSupportedError(
-                    `${isWriteable ? 'Write' : 'Read'} Collection Interface`,
-                    options
-                );
-            }
-
-            return actionsMap.get(property);
+        const collectionIface = Object.freeze({
+            insert: bindCollectionMethod('insert', false),
+            update: bindCollectionMethod('update', false),
+            remove: bindCollectionMethod('remove', false),
+            ensureIndex: bindCollectionMethod('ensureIndex', false),
+            removeIndex: bindCollectionMethod('removeIndex', false),
+            count: bindCollectionMethod('count', true),
+            findOne: wrapFind('findOne'),
+            find: wrapFind('find')
         });
 
         interfaceMap.set(collectionKey, collectionIface);
@@ -144,23 +117,9 @@ export default function init(repository, onDemandOptions, persistDonePromise, on
             return interfaceMap.get(storeKey);
         }
 
-        const storeIface = funcproxy({}, (options) => {
-            const { method, methodArgs: { property } } = options;
-            if (method !== 'get') {
-                throw NotSupportedError(
-                    `${isWriteable ? 'Write' : 'Read'} Store Interface`,
-                    options
-                );
-            }
-
-            switch (property) {
-                case 'getCollectionNames':
-                    return () => Array.from(repository.get(key).collectionMap.keys());
-                case 'getCollection':
-                    return name => getCollectionInterface(name, isWriteable);
-                default:
-                    return getCollectionInterface(property, isWriteable);
-            }
+        const storeIface = Object.freeze({
+            listCollections: () => Array.from(repository.get(key).collectionMap.keys()),
+            collection: name => getCollectionInterface(name, isWriteable)
         });
 
         interfaceMap.set(storeKey, storeIface);
