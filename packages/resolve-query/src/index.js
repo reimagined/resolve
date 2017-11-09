@@ -1,7 +1,15 @@
 import 'regenerator-runtime/runtime';
 import { makeExecutableSchema } from 'graphql-tools';
 import { parse, execute } from 'graphql';
+import objectHash from 'object-hash';
 import createMemoryAdapter from 'resolve-readmodel-memory';
+
+const hash = (onDemandOptions = null) => {
+    return objectHash(onDemandOptions, {
+        unorderedArrays: true,
+        unorderedSets: true
+    });
+};
 
 const subscribeByEventTypeAndIds = async (eventStore, callback, eventDescriptors) => {
     const passedEvents = new WeakSet();
@@ -20,13 +28,12 @@ const subscribeByEventTypeAndIds = async (eventStore, callback, eventDescriptors
 
 const init = async (adapter, eventStore, projection, onDemandOptions) => {
     if (projection === null) {
-        adapter.init(onDemandOptions, Promise.resolve(), () => {});
-        return;
+        return adapter.init(onDemandOptions);
     }
 
-    const { aggregateIds, eventTypes } = onDemandOptions || {};
+    const { aggregateIds, eventTypes } = onDemandOptions;
     let unsubscriber = null;
-    let onDestroy = () => (unsubscriber === null ? (onDestroy = null) : unsubscriber());
+    let onDispose = () => (unsubscriber === null ? (onDispose = null) : unsubscriber());
 
     const persistDonePromise = new Promise((resolve) => {
         let persistence = { eventsFetched: 0, eventsProcessed: 0, isLoaded: false };
@@ -66,7 +73,7 @@ const init = async (adapter, eventStore, projection, onDemandOptions) => {
         }).then((unsub) => {
             persistenceChecker(false);
 
-            if (onDestroy !== null) {
+            if (onDispose !== null) {
                 unsubscriber = unsub;
             } else {
                 unsub();
@@ -74,16 +81,18 @@ const init = async (adapter, eventStore, projection, onDemandOptions) => {
         });
     });
 
-    adapter.init(onDemandOptions, persistDonePromise, onDestroy);
+    const readApi = adapter.init(onDemandOptions);
     await persistDonePromise;
+    return { readApi, onDispose };
 };
 
-const read = async (adapter, eventStore, projection, onDemandOptions) => {
-    if (!adapter.get(onDemandOptions)) {
-        await init(adapter, eventStore, projection, onDemandOptions);
+const read = async (repository, adapter, eventStore, projection, onDemandOptions = {}) => {
+    const key = hash(onDemandOptions);
+    if (!repository.has(key)) {
+        repository.set(key, init(adapter, eventStore, projection, onDemandOptions));
     }
 
-    const { getError, getReadable } = adapter.get(onDemandOptions);
+    const { readApi: { getError, getReadable } } = await repository.get(key);
     const readableError = await getError();
     if (readableError) {
         throw readableError;
@@ -95,27 +104,47 @@ const read = async (adapter, eventStore, projection, onDemandOptions) => {
 export default ({ readModel, eventStore }) => {
     const adapter = readModel.adapter || createMemoryAdapter();
     const projection = readModel.projection ? adapter.buildProjection(readModel.projection) : null;
-    const wrappedRead = adapter.buildRead(read.bind(null, adapter, eventStore, projection));
+    const repository = new Map();
+    const readOnDemand = read.bind(null, repository, adapter, eventStore, projection);
 
-    if (!readModel.gqlSchema && !readModel.gqlResolvers) return wrappedRead;
+    if (!readModel.gqlSchema && !readModel.gqlResolvers) return readOnDemand;
 
     const executableSchema = makeExecutableSchema({
         typeDefs: readModel.gqlSchema,
         resolvers: { Query: readModel.gqlResolvers }
     });
 
-    return async (gqlQuery, gqlVariables, getJwt) => {
+    const executor = async (gqlQuery, gqlVariables, getJwt) => {
+        const defaultReadable = await readOnDemand({});
         const parsedGqlQuery = parse(gqlQuery);
 
         const gqlResponse = await execute(
             executableSchema,
             parsedGqlQuery,
-            wrappedRead,
-            { getJwt },
+            defaultReadable,
+            { getJwt, readOnDemand },
             gqlVariables
         );
 
         if (gqlResponse.errors) throw gqlResponse.errors;
         return gqlResponse.data;
     };
+
+    executor.dispose = (onDemandOptions) => {
+        if (!onDemandOptions) {
+            repository.forEach(storePromise => storePromise.then(({ onDispose }) => onDispose()));
+            repository.clear();
+            adapter.reset();
+            return;
+        }
+
+        const key = hash(onDemandOptions);
+        if (!repository.has(key)) return;
+
+        repository.get(key).then(({ onDispose }) => onDispose());
+        repository.delete(key);
+        adapter.reset(onDemandOptions);
+    };
+
+    return executor;
 };

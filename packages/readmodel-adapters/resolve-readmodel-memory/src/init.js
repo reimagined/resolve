@@ -1,24 +1,18 @@
 import NeDB from 'nedb';
-import { INIT_EVENT, hash } from './utils';
+import hash from './hash';
 
-const NotSupportedError = (description, { method, methodArgs: { property, prop } }) =>
-    new Error(
-        `${description} does not support queried action '${method}` +
-            (property || prop ? `' on '${property || prop}' property` : '\'')
-    );
-
-export default function init(repository, onDemandOptions, persistDonePromise, onDestroy) {
+export default function init(repository, onDemandOptions) {
     const key = hash(onDemandOptions);
     if (repository.get(key)) {
         throw new Error(`The state for '${key}' is already initialized.`);
     }
 
-    const loadCollection = (collectionName, createOnDemand = false) => {
+    const loadCollection = (collectionName, createOnWrite = false) => {
         const collectionMap = repository.get(key).collectionMap;
         if (collectionMap.has(collectionName)) {
             return collectionMap.get(collectionName);
         }
-        if (!createOnDemand) {
+        if (!createOnWrite) {
             throw new Error(`Collection ${collectionName} does not exist`);
         }
 
@@ -131,19 +125,14 @@ export default function init(repository, onDemandOptions, persistDonePromise, on
         readInterface: getStoreInterface(false),
         writeInterface: getStoreInterface(true),
         initializeKey: Promise.resolve().then(
-            repository.initHandler.bind(null, getStoreInterface(true), {
-                type: INIT_EVENT
-            })
+            repository.initHandler.bind(null, getStoreInterface(true))
         ),
         collectionMap: new Map(),
-        internalError: null,
-        readApi: {
-            getReadable: async () => {
-                await persistDonePromise;
-                return repository.get(key).readInterface;
-            },
-            getError: async () => repository.get(key).internalError
-        },
-        onDestroy
+        internalError: null
     });
+
+    return {
+        getReadable: async () => repository.get(key).readInterface,
+        getError: async () => repository.get(key).internalError
+    };
 }
