@@ -14,21 +14,22 @@ export default function (props) {
         <div className="todobody">
             <div className="todoapp">
                 <h1 className="page-header">{props.title}</h1>
-                {props.cardId &&
+                {props.cardId && (
                     <TodoTextInput
                         newTodo
                         onSave={name => props.onTodoItemCreate(name, props.cardId)}
                         placeholder="What needs to be done?"
-                    />}
+                    />
+                )}
                 <ul className="todo-list">
-                    {Object.keys(props.tasks).map(key =>
+                    {Object.keys(props.tasks).map(key => (
                         <TodoItem
                             key={key}
                             todo={props.tasks[key]}
                             onCheck={() => props.onTodoItemToggleCheck(key)}
                             onRemove={() => props.onTodoItemRemove(key)}
                         />
-                    )}
+                    ))}
                 </ul>
             </div>
         </div>

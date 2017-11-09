@@ -66,9 +66,10 @@ const init = async (adapter, eventStore, projection, onDemandOptions) => {
         };
 
         subscribeByEventTypeAndIds(eventStore, synchronizedEventWorker, {
-            types: Array.isArray(eventTypes) || Array.isArray(aggregateIds)
-                ? eventTypes
-                : Object.keys(projection),
+            types:
+                Array.isArray(eventTypes) || Array.isArray(aggregateIds)
+                    ? eventTypes
+                    : Object.keys(projection),
             ids: aggregateIds
         }).then((unsub) => {
             persistenceChecker(false);

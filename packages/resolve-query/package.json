@@ -1,6 +1,6 @@
 {
   "name": "resolve-query",
-  "version": "0.0.43",
+  "version": "0.0.44",
   "description": "This package creates a function to execute a query.",
   "main": "./dist/index.js",
   "bugs": {
@@ -32,9 +32,9 @@
   },
   "dependencies": {
     "graphql": "^0.11.7",
-    "graphql-tools": "^2.6.1",
+    "graphql-tools": "^2.7.2",
     "object-hash": "^1.1.8",
     "regenerator-runtime": "^0.10.5",
-    "resolve-readmodel-memory": "^0.0.43"
+    "resolve-readmodel-memory": "^0.0.44"
   }
 }

@@ -2,17 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Todo from './Todo';
 
-const TodoList = ({ todos, completeTodo, resetTodo }) =>
+const TodoList = ({ todos, completeTodo, resetTodo }) => (
     <ul>
-        {todos.map(todo =>
+        {todos.map(todo => (
             <Todo
                 key={todo.aggregateId}
                 {...todo}
                 onClick={() =>
                     todo.completed ? resetTodo(todo.aggregateId) : completeTodo(todo.aggregateId)}
             />
-        )}
-    </ul>;
+        ))}
+    </ul>
+);
 
 TodoList.propTypes = {
     todos: PropTypes.arrayOf(

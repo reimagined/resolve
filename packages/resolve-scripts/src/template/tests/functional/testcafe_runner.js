@@ -4,7 +4,7 @@ import createTestCafe from 'testcafe';
 import { getInstallations } from 'testcafe-browser-tools';
 import fs from 'fs';
 import path from 'path';
-import config from '../resolve.server.config.js';
+import config from '../../resolve.server.config.js';
 
 const DELAY = 10000;
 let testcafe = null;
@@ -24,7 +24,7 @@ getInstallations().then((browsers) => {
             const browser = argv.browser || Object.keys(browsers).slice(0, 1);
             return runner
                 .startApp('npm run dev 2>&1 >log2.log', DELAY)
-                .src(['./tests/e2e-tests/index.test.js'])
+                .src(['./tests/functional/index.test.js'])
                 .browsers(browser)
                 .run();
         })
