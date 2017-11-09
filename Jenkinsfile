@@ -40,7 +40,7 @@ pipeline {
             }
         }
 
-        stage('Create-resolve-app [ todolist ] Functional Tests') {
+        stage('Create-resolve-app [ empty ] Functional Tests') {
             steps {
                 script {
                     sh """
@@ -48,7 +48,6 @@ pipeline {
 
                         eval \$(next-lerna-version)
                         export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}
-
 
                         while :
                         do
@@ -61,9 +60,31 @@ pipeline {
 
                         sleep 3
 
+                        create-resolve-app empty
+                        cd ./empty
+
+                        npm run flow
+                        npm run test
+                        npm run test:e2e -- --browser=path:/chromium
+                    """
+                }
+            }
+        }
+
+        stage('Create-resolve-app [ todolist ] Functional Tests') {
+            steps {
+                script {
+                    sh """
+                        /prepare-chromium.sh
+
+                        eval \$(next-lerna-version)
+                        export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}
+
                         create-resolve-app --sample todolist
                         cd ./todolist
 
+                        npm run flow
+                        npm run test
                         npm run test:e2e -- --browser=path:/chromium
                     """
                 }
