@@ -6,18 +6,12 @@ export default function buildProjection(repository, inputProjection) {
     return Object.keys(inputProjection).reduce((projection, eventType) => {
         if (eventType === 'Init') {
             repository.initHandler = inputProjection[eventType];
+            return projection;
         }
 
         projection[eventType] = async (event, onDemandOptions) => {
             const key = hash(onDemandOptions);
-            try {
-                await repository.get(key).initializeKey;
-            } catch (error) {
-                repository.get(key).internalError = error;
-                return;
-            }
-
-            const writeInterface = repository.get(key).writeInterface;
+            const writeInterface = await repository.get(key).writeInterface;
             const handler = inputProjection[eventType];
 
             try {

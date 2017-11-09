@@ -120,13 +120,14 @@ export default function init(repository, onDemandOptions) {
         return storeIface;
     };
 
+    const initializeKey = Promise.resolve().then(() =>
+        repository.initHandler(getStoreInterface(true))
+    );
+
     repository.set(key, {
         interfaceMap: new Map(),
-        readInterface: getStoreInterface(false),
-        writeInterface: getStoreInterface(true),
-        initializeKey: Promise.resolve().then(
-            repository.initHandler.bind(null, getStoreInterface(true))
-        ),
+        readInterface: initializeKey.then(() => getStoreInterface(false)),
+        writeInterface: initializeKey.then(() => getStoreInterface(true)),
         collectionMap: new Map(),
         internalError: null
     });
