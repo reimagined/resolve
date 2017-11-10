@@ -95,7 +95,6 @@ const read = async (repository, adapter, eventStore, projection, onDemandOptions
     if (!repository.has(key)) {
         repository.set(key, init(adapter, eventStore, projection, onDemandOptions));
     }
-    console.log('@@KEY ', key, '@@VALUE', await repository.get(key));
 
     const { readApi: { getError, getReadable } } = await repository.get(key);
     const readableError = await getError();

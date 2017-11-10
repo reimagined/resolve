@@ -38,21 +38,14 @@ describe('resolve-query', () => {
         };
 
         projection = {
-            UserAdded: sinon.stub().callsFake(async (state, { aggregateId: id, payload }) => {
-                const newState = state && state.Users ? state : { Users: [] };
-                if (!await newState.Users.find(user => user.id === id)) {
-                    await newState.Users.push({ id, UserName: payload.UserName });
-                }
-                return newState;
+            UserAdded: sinon.stub().callsFake(async (db, { aggregateId: id, payload }) => {
+                if (await db.Users.findOne({ id })) return;
+                db.Users.insert({ id, UserName: payload.UserName });
             }),
 
-            UserDeleted: sinon.stub().callsFake(async (state, { aggregateId: id }) => {
-                const newState = state && state.Users ? state : { Users: [] };
-                const userPos = await newState.Users.findIndex(user => user.id === id);
-                if (userPos > -1) {
-                    await newState.Users.splice(userPos, 1);
-                }
-                return newState;
+            UserDeleted: sinon.stub().callsFake(async (db, { aggregateId: id }) => {
+                if (!await db.Users.findOne({ id })) return;
+                db.Users.remove({ id });
             })
         };
 
@@ -71,25 +64,22 @@ describe('resolve-query', () => {
                 }
             `,
             gqlResolvers: {
-                UserByIdOnDemand: sinon.stub().callsFake(async (read, args) => {
+                UserByIdOnDemand: sinon.stub().callsFake(async (_, args, { readOnDemand }) => {
                     if (!args.aggregateId) throw new Error('aggregateId is mandatory');
-                    const { Users } = await read([args.aggregateId]);
-                    return Users.find(user => user.id === args.aggregateId);
+                    const demandDb = await readOnDemand({ aggregateIds: [args.aggregateId] });
+                    return await demandDb.Users.find({ id: args.aggregateId });
                 }),
 
-                UserById: sinon.stub().callsFake(async (read, args) => {
-                    const { Users } = await read();
-                    return Users.find(user => user.id === args.id);
+                UserById: sinon.stub().callsFake(async (db, args) => {
+                    return await db.Users.find({ id: args.id });
                 }),
 
-                UserIds: sinon.stub().callsFake(async (read, args) => {
-                    const { Users } = await read();
-                    return Users.map(user => user.id);
+                UserIds: sinon.stub().callsFake(async (db) => {
+                    return await db.Users.find({}).projection(user => user.id);
                 }),
 
-                Users: sinon.stub().callsFake(async (read, args) => {
-                    const { Users } = await read();
-                    return Users;
+                Users: sinon.stub().callsFake(async (db) => {
+                    return await db.Users.find({});
                 })
             }
         };
