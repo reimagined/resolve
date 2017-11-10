@@ -151,7 +151,7 @@ describe('resolve-query', () => {
     });
 
     // eslint-disable-next-line max-len
-    it.only('should build small on-demand read-models if aggregateId argument specified directly', async () => {
+    it('should build small on-demand read-models if aggregateId argument specified directly', async () => {
         const executeQuery = createQueryExecutor({ eventStore, readModel });
         eventList = simulatedEventList.slice(0);
 

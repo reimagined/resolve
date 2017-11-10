@@ -92,8 +92,14 @@ const init = (adapter, eventStore, projection, onDemandOptions) => {
     });
 
     const originalThen = persistDonePromise.then.bind(persistDonePromise);
-    persistDonePromise.then = (...continuation) => originalThen(lazyInit).then(...continuation);
-    persistDonePromise.catch = (...continuation) => originalThen(lazyInit).catch(...continuation);
+    persistDonePromise.then = (...continuation) => {
+        lazyInit();
+        return originalThen(...continuation);
+    };
+    persistDonePromise.catch = (...continuation) => {
+        lazyInit();
+        return originalThen(() => {}, ...continuation);
+    };
 
     return {
         ...adapter.init(onDemandOptions, persistDonePromise),

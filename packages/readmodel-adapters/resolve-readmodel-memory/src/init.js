@@ -104,9 +104,9 @@ export default function init(repository, onDemandOptions, lazyInitDone) {
 
     const initProjection = (storeIface) => {
         if (!repository.get(key).initialEventPromise) {
-            repository.get(key).initialEventPromise = lazyInitDone.then(() =>
-                repository.initHandler(storeIface)
-            );
+            repository.get(key).initialEventPromise = Promise.resolve()
+                .then(() => repository.initHandler(storeIface))
+                .then(() => lazyInitDone);
         }
         return repository.get(key).initialEventPromise;
     };
@@ -125,15 +125,17 @@ export default function init(repository, onDemandOptions, lazyInitDone) {
             collection: async name => getCollectionInterface(name, isWriteable)
         });
 
-        const storeIface = Object.freeze(
-            Object.keys(pureStoreIface).reduce((result, name) => {
-                result[name] = async (...args) => {
-                    await initProjection(pureStoreIface);
-                    return await pureStoreIface[name](...args);
-                };
-                return result;
-            }, {})
-        );
+        const storeIface = isWriteable
+            ? pureStoreIface
+            : Object.freeze(
+                  Object.keys(pureStoreIface).reduce((result, name) => {
+                      result[name] = async (...args) => {
+                          await initProjection(getStoreInterface(true));
+                          return await pureStoreIface[name](...args);
+                      };
+                      return result;
+                  }, {})
+              );
 
         interfaceMap.set(storeKey, storeIface);
         return storeIface;
@@ -142,10 +144,13 @@ export default function init(repository, onDemandOptions, lazyInitDone) {
     repository.set(key, {
         interfaceMap: new Map(),
         initialEventPromise: null,
-        readInterface: getStoreInterface(false),
-        writeInterface: getStoreInterface(true),
         collectionMap: new Map(),
         internalError: null
+    });
+
+    Object.assign(repository.get(key), {
+        readInterface: getStoreInterface(false),
+        writeInterface: getStoreInterface(true)
     });
 
     return {
