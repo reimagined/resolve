@@ -73,7 +73,7 @@ describe('resolve-query', () => {
             gqlResolvers: {
                 UserByIdOnDemand: sinon.stub().callsFake(async (_, args, { readOnDemand }) => {
                     if (!args.aggregateId) throw new Error('aggregateId is mandatory');
-                    const demandDb = readOnDemand({ aggregateIds: [args.aggregateId] });
+                    const demandDb = await readOnDemand({ aggregateIds: [args.aggregateId] });
                     const users = await demandDb.collection('Users');
                     const result = await users.find({ id: args.aggregateId }).sort({ id: 1 });
                     return result.length > 0 ? result[0] : null;

@@ -26,10 +26,10 @@ const subscribeByEventTypeAndIds = async (eventStore, callback, eventDescriptors
     return () => unsubscribers.forEach(func => func());
 };
 
-const init = (adapter, eventStore, projection, onDemandOptions) => {
+const init = (adapter, eventStore, projection, updateOnly, onDemandOptions = {}) => {
     if (projection === null) {
         return {
-            ...adapter.init(onDemandOptions, Promise.resolve()),
+            ...adapter.init(onDemandOptions, Promise.resolve(), updateOnly),
             onDispose: () => {}
         };
     }
@@ -102,34 +102,36 @@ const init = (adapter, eventStore, projection, onDemandOptions) => {
     };
 
     return {
-        ...adapter.init(onDemandOptions, persistDonePromise),
+        ...adapter.init(onDemandOptions, persistDonePromise, updateOnly),
         onDispose
     };
 };
 
-const read = (repository, adapter, eventStore, projection, onDemandOptions = {}) => {
-    const key = hash(onDemandOptions);
+const read = async (repository, adapter, eventStore, projection, updateOnly, onDemandOptions) => {
+    const key = hash(onDemandOptions || {});
     if (!repository.has(key)) {
-        repository.set(key, init(adapter, eventStore, projection, onDemandOptions));
+        repository.set(key, init(adapter, eventStore, projection, updateOnly, onDemandOptions));
     }
 
     const { getError, getReadable } = repository.get(key);
-    const readableError = getError();
+    const readableError = await getError();
     if (readableError) {
         throw readableError;
     }
 
-    return getReadable();
+    return await getReadable();
 };
 
 export default ({ readModel, eventStore }) => {
     const adapter = readModel.adapter || createMemoryAdapter();
     const projection = readModel.projection ? adapter.buildProjection(readModel.projection) : null;
     const repository = new Map();
-    const readOnDemand = read.bind(null, repository, adapter, eventStore, projection);
 
-    if (!readModel.gqlSchema && !readModel.gqlResolvers) return readOnDemand;
+    if (!readModel.gqlSchema && !readModel.gqlResolvers) {
+        return read.bind(null, repository, adapter, eventStore, projection, true);
+    }
 
+    const readOnDemand = read.bind(null, repository, adapter, eventStore, projection, false);
     const executableSchema = makeExecutableSchema({
         typeDefs: readModel.gqlSchema,
         resolvers: { Query: readModel.gqlResolvers }

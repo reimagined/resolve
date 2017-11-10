@@ -1,7 +1,7 @@
 import NeDB from 'nedb';
 import hash from './hash';
 
-export default function init(repository, onDemandOptions, lazyInitDone) {
+export default function init(repository, onDemandOptions, lazyInitDone, updateOnly) {
     const key = hash(onDemandOptions);
     if (repository.get(key)) {
         throw new Error(`The state for '${key}' is already initialized.`);
@@ -154,7 +154,10 @@ export default function init(repository, onDemandOptions, lazyInitDone) {
     });
 
     return {
-        getReadable: () => repository.get(key).readInterface,
-        getError: () => repository.get(key).internalError
+        getReadable: async () => {
+            if (updateOnly) await initProjection(getStoreInterface(true));
+            return repository.get(key).readInterface;
+        },
+        getError: async () => repository.get(key).internalError
     };
 }
