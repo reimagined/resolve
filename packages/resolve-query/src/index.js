@@ -28,7 +28,10 @@ const subscribeByEventTypeAndIds = async (eventStore, callback, eventDescriptors
 
 const init = async (adapter, eventStore, projection, onDemandOptions) => {
     if (projection === null) {
-        return adapter.init(onDemandOptions);
+        return {
+            readApi: adapter.init(onDemandOptions),
+            onDispose: () => {}
+        };
     }
 
     const { aggregateIds, eventTypes } = onDemandOptions;
@@ -92,6 +95,7 @@ const read = async (repository, adapter, eventStore, projection, onDemandOptions
     if (!repository.has(key)) {
         repository.set(key, init(adapter, eventStore, projection, onDemandOptions));
     }
+    console.log('@@KEY ', key, '@@VALUE', await repository.get(key));
 
     const { readApi: { getError, getReadable } } = await repository.get(key);
     const readableError = await getError();

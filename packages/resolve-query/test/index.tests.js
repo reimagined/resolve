@@ -313,9 +313,7 @@ describe('resolve-query', () => {
             ...readModel,
             projection: null,
             adapter: {
-                init: () => {},
-                buildRead: read => read,
-                get: () => ({
+                init: () => ({
                     getReadable: async () => storedState,
                     getError: async () => null
                 })
