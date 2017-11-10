@@ -1,7 +1,7 @@
 import NeDB from 'nedb';
 import hash from './hash';
 
-export default function init(repository, onDemandOptions) {
+export default function init(repository, onDemandOptions, lazyInitDone) {
     const key = hash(onDemandOptions);
     if (repository.get(key)) {
         throw new Error(`The state for '${key}' is already initialized.`);
@@ -102,6 +102,15 @@ export default function init(repository, onDemandOptions) {
         return collectionIface;
     };
 
+    const initProjection = (storeIface) => {
+        if (!repository.get(key).initialEventPromise) {
+            repository.get(key).initialEventPromise = lazyInitDone.then(() =>
+                repository.initHandler(storeIface)
+            );
+        }
+        return repository.get(key).initialEventPromise;
+    };
+
     // Provide interface https://docs.mongodb.com/manual/reference/method/js-database/
     const getStoreInterface = (isWriteable) => {
         const storeKey = isWriteable ? 'STORE_WRITE_SIDE' : 'STORE_READ_SIDE';
@@ -111,29 +120,36 @@ export default function init(repository, onDemandOptions) {
             return interfaceMap.get(storeKey);
         }
 
-        const storeIface = Object.freeze({
-            listCollections: () => Array.from(repository.get(key).collectionMap.keys()),
-            collection: name => getCollectionInterface(name, isWriteable)
+        const pureStoreIface = Object.freeze({
+            listCollections: async () => Array.from(repository.get(key).collectionMap.keys()),
+            collection: async name => getCollectionInterface(name, isWriteable)
         });
+
+        const storeIface = Object.freeze(
+            Object.keys(pureStoreIface).reduce((result, name) => {
+                result[name] = async (...args) => {
+                    await initProjection(pureStoreIface);
+                    return await pureStoreIface[name](...args);
+                };
+                return result;
+            }, {})
+        );
 
         interfaceMap.set(storeKey, storeIface);
         return storeIface;
     };
 
-    const initializeKey = Promise.resolve().then(() =>
-        repository.initHandler(getStoreInterface(true))
-    );
-
     repository.set(key, {
         interfaceMap: new Map(),
-        readInterface: initializeKey.then(() => getStoreInterface(false)),
-        writeInterface: initializeKey.then(() => getStoreInterface(true)),
+        initialEventPromise: null,
+        readInterface: getStoreInterface(false),
+        writeInterface: getStoreInterface(true),
         collectionMap: new Map(),
         internalError: null
     });
 
     return {
-        getReadable: async () => repository.get(key).readInterface,
-        getError: async () => repository.get(key).internalError
+        getReadable: () => repository.get(key).readInterface,
+        getError: () => repository.get(key).internalError
     };
 }

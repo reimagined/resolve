@@ -39,17 +39,18 @@ describe('resolve-query', () => {
 
         projection = {
             Init: sinon.stub().callsFake(async (db) => {
-                await db.collection('Users').find({});
+                const users = await db.collection('Users');
+                await users.find({});
             }),
 
             UserAdded: sinon.stub().callsFake(async (db, { aggregateId: id, payload }) => {
-                const users = db.collection('Users');
+                const users = await db.collection('Users');
                 if ((await users.find({ id })).length !== 0) return;
                 await users.insert({ id, UserName: payload.UserName });
             }),
 
             UserDeleted: sinon.stub().callsFake(async (db, { aggregateId: id }) => {
-                const users = db.collection('Users');
+                const users = await db.collection('Users');
                 if ((await users.find({ id })).length === 0) return;
                 await users.remove({ id });
             })
@@ -72,26 +73,26 @@ describe('resolve-query', () => {
             gqlResolvers: {
                 UserByIdOnDemand: sinon.stub().callsFake(async (_, args, { readOnDemand }) => {
                     if (!args.aggregateId) throw new Error('aggregateId is mandatory');
-                    const demandDb = await readOnDemand({ aggregateIds: [args.aggregateId] });
-                    const users = demandDb.collection('Users');
+                    const demandDb = readOnDemand({ aggregateIds: [args.aggregateId] });
+                    const users = await demandDb.collection('Users');
                     const result = await users.find({ id: args.aggregateId }).sort({ id: 1 });
                     return result.length > 0 ? result[0] : null;
                 }),
 
                 UserById: sinon.stub().callsFake(async (db, args) => {
-                    const users = db.collection('Users');
+                    const users = await db.collection('Users');
                     const result = await users.find({ id: args.id }).sort({ id: 1 });
                     return result.length > 0 ? result[0] : null;
                 }),
 
                 UserIds: sinon.stub().callsFake(async (db) => {
-                    const users = db.collection('Users');
+                    const users = await db.collection('Users');
                     const result = await users.find({}, { id: 1, _id: 0 }).sort({ id: 1 });
                     return result.map(({ id }) => id);
                 }),
 
                 Users: sinon.stub().callsFake(async (db) => {
-                    const users = db.collection('Users');
+                    const users = await db.collection('Users');
                     const result = await users.find({}).sort({ id: 1 });
                     return result;
                 })
@@ -150,7 +151,7 @@ describe('resolve-query', () => {
     });
 
     // eslint-disable-next-line max-len
-    it('should build small on-demand read-models if aggregateId argument specified directly', async () => {
+    it.only('should build small on-demand read-models if aggregateId argument specified directly', async () => {
         const executeQuery = createQueryExecutor({ eventStore, readModel });
         eventList = simulatedEventList.slice(0);
 
