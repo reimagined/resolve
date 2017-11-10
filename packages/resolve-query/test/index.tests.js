@@ -38,14 +38,20 @@ describe('resolve-query', () => {
         };
 
         projection = {
+            Init: sinon.stub().callsFake(async (db) => {
+                await db.collection('Users').ensureIndex({ id: 1 });
+            }),
+
             UserAdded: sinon.stub().callsFake(async (db, { aggregateId: id, payload }) => {
-                if (await db.Users.findOne({ id })) return;
-                db.Users.insert({ id, UserName: payload.UserName });
+                const users = db.collection('Users');
+                if (await users.findOne({ id })) return;
+                await users.insert({ id, UserName: payload.UserName });
             }),
 
             UserDeleted: sinon.stub().callsFake(async (db, { aggregateId: id }) => {
-                if (!await db.Users.findOne({ id })) return;
-                db.Users.remove({ id });
+                const users = db.collection('Users');
+                if (!await users.findOne({ id })) return;
+                await users.remove({ id });
             })
         };
 
@@ -67,19 +73,23 @@ describe('resolve-query', () => {
                 UserByIdOnDemand: sinon.stub().callsFake(async (_, args, { readOnDemand }) => {
                     if (!args.aggregateId) throw new Error('aggregateId is mandatory');
                     const demandDb = await readOnDemand({ aggregateIds: [args.aggregateId] });
-                    return await demandDb.Users.find({ id: args.aggregateId });
+                    const users = demandDb.collection('Users');
+                    return await users.find({ id: args.aggregateId });
                 }),
 
                 UserById: sinon.stub().callsFake(async (db, args) => {
-                    return await db.Users.find({ id: args.id });
+                    const users = db.collection('Users');
+                    return await users.find({ id: args.id });
                 }),
 
                 UserIds: sinon.stub().callsFake(async (db) => {
-                    return await db.Users.find({}).projection(user => user.id);
+                    const users = db.collection('Users');
+                    return await users.find({}).projection(user => user.id);
                 }),
 
                 Users: sinon.stub().callsFake(async (db) => {
-                    return await db.Users.find({});
+                    const users = db.collection('Users');
+                    return await users.find({});
                 })
             }
         };
