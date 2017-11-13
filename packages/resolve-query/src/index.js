@@ -119,28 +119,56 @@ const read = async (repository, adapter, eventStore, projection, onDemandOptions
     return await getReadable();
 };
 
-const makeGqlExecutor = (readOnDemand, readModel) => async (gqlQuery, gqlVariables, getJwt) => {
+const extractFieldsFromGqlQuery = (parsedGqlQuery, gqlVariables, fieldName) => {
+    try {
+        const values = [];
+        const selection = parsedGqlQuery.definitions[0].selectionSet.selections[0];
+        if (selection.name.kind !== 'Name' || selection.name.value !== 'View') {
+            throw new Error();
+        }
+        if (Array.isArray(selection.arguments)) {
+            selection.arguments.forEach((arg) => {
+                if (arg.name.kind !== 'Name' || arg.name.value !== fieldName) {
+                    throw new Error();
+                }
+                if (arg.value.kind === 'Variable' && arg.value.name && arg.value.name.value) {
+                    values.push(gqlVariables[arg.value.name.value]);
+                } else {
+                    values.push(arg.value.value);
+                }
+            });
+        }
+        return values.length > 0 ? values : null;
+    } catch (err) {
+        return null;
+    }
+};
+
+const makeGqlExecutor = (getReadModel, readModel) => {
     const executableSchema = makeExecutableSchema({
         typeDefs: readModel.gqlSchema,
         resolvers: { Query: readModel.gqlResolvers }
     });
 
-    const defaultReadable = await readOnDemand(true, {});
-    const parsedGqlQuery = parse(gqlQuery);
+    return async (gqlQuery, gqlVariables, getJwt) => {
+        const parsedGqlQuery = parse(gqlQuery);
+        const extractFields = extractFieldsFromGqlQuery.bind(null, parsedGqlQuery, gqlVariables);
+        const aggregateIds = extractFields('aggregateId');
+        const eventTypes = extractFields('eventType');
 
-    const gqlResponse = await execute(
-        executableSchema,
-        parsedGqlQuery,
-        defaultReadable,
-        {
-            readOnDemand: readOnDemand.bind(null, false),
-            getJwt
-        },
-        gqlVariables
-    );
+        const defaultReadable = await getReadModel({ aggregateIds, eventTypes });
 
-    if (gqlResponse.errors) throw gqlResponse.errors;
-    return gqlResponse.data;
+        const gqlResponse = await execute(
+            executableSchema,
+            parsedGqlQuery,
+            defaultReadable,
+            { getJwt },
+            gqlVariables
+        );
+
+        if (gqlResponse.errors) throw gqlResponse.errors;
+        return gqlResponse.data;
+    };
 };
 
 const extendDispose = (repository, adapter, executor) => {
@@ -166,13 +194,13 @@ export default ({ readModel, eventStore }) => {
     const adapter = readModel.adapter || createMemoryAdapter();
     const projection = readModel.projection ? adapter.buildProjection(readModel.projection) : null;
     const repository = new Map();
-    const readOnDemand = read.bind(null, repository, adapter, eventStore, projection);
+    const getReadModel = read.bind(null, repository, adapter, eventStore, projection);
     const makeDisposable = extendDispose.bind(null, repository, adapter);
 
     if (!readModel.gqlSchema && !readModel.gqlResolvers) {
-        return makeDisposable(readOnDemand);
+        return makeDisposable(getReadModel);
     }
 
-    const executor = makeGqlExecutor(readOnDemand, readModel);
+    const executor = makeGqlExecutor(getReadModel, readModel);
     return makeDisposable(executor);
 };
