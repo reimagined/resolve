@@ -26,10 +26,10 @@ const subscribeByEventTypeAndIds = async (eventStore, callback, eventDescriptors
     return () => unsubscribers.forEach(func => func());
 };
 
-const init = (adapter, eventStore, projection, updateOnly, onDemandOptions = {}) => {
+const init = (adapter, eventStore, projection, onDemandOptions = {}) => {
     if (projection === null) {
         return {
-            ...adapter.init(onDemandOptions, Promise.resolve(), updateOnly),
+            ...adapter.init(onDemandOptions, Promise.resolve()),
             onDispose: () => {}
         };
     }
@@ -37,115 +37,114 @@ const init = (adapter, eventStore, projection, updateOnly, onDemandOptions = {})
     const { aggregateIds, eventTypes } = onDemandOptions;
     let unsubscriber = null;
     let onDispose = () => (unsubscriber === null ? (onDispose = null) : unsubscriber());
-    let lazyInit = () => {};
 
-    const persistDonePromise = new Promise(resolve => (lazyInit = resolve)).then(() => {
-        return new Promise((resolve) => {
-            let persistence = { eventsFetched: 0, eventsProcessed: 0, isLoaded: false };
-            let flowPromise = Promise.resolve();
+    const persistDonePromise = new Promise((resolve, reject) => {
+        let persistence = { eventsFetched: 0, eventsProcessed: 0, isLoaded: false };
+        let flowPromise = Promise.resolve();
 
-            const persistenceChecker = (doCount) => {
-                if (!persistence) return;
-                if (doCount) {
-                    persistence.eventsProcessed++;
-                } else {
-                    persistence.isLoaded = true;
-                }
-                if (
-                    persistence.eventsProcessed === persistence.eventsFetched &&
-                    persistence.isLoaded
-                ) {
-                    persistence = null;
-                    resolve();
-                }
-            };
+        const persistenceChecker = (doCount) => {
+            if (!persistence) return;
+            if (doCount) {
+                persistence.eventsProcessed++;
+            } else {
+                persistence.isLoaded = true;
+            }
+            if (persistence.eventsProcessed === persistence.eventsFetched && persistence.isLoaded) {
+                persistence = null;
+                resolve();
+            }
+        };
 
-            const synchronizedEventWorker = (event) => {
-                if (event && event.type && typeof projection[event.type] === 'function') {
-                    flowPromise = flowPromise.then(
-                        projection[event.type].bind(null, event, onDemandOptions)
-                    );
-                }
+        const forceStop = (reason) => {
+            flowPromise = flowPromise.then(reject, reject);
+            flowPromise = null;
+            onDispose && onDispose();
+            return Promise.reject(reason);
+        };
 
-                if (!persistence || persistence.isLoaded) return;
-                flowPromise = flowPromise.then(persistenceChecker.bind(null, true));
+        const synchronizedEventWorker = (event) => {
+            if (!flowPromise) return;
 
-                persistence.eventsFetched++;
-            };
+            if (event && event.type && typeof projection[event.type] === 'function') {
+                flowPromise = flowPromise
+                    .then(projection[event.type].bind(null, event, onDemandOptions))
+                    .catch(forceStop);
+            }
 
-            subscribeByEventTypeAndIds(eventStore, synchronizedEventWorker, {
-                types:
-                    Array.isArray(eventTypes) || Array.isArray(aggregateIds)
-                        ? eventTypes
-                        : Object.keys(projection),
-                ids: aggregateIds
-            }).then((unsub) => {
-                persistenceChecker(false);
+            if (!persistence || persistence.isLoaded) return;
+            flowPromise = flowPromise.then(persistenceChecker.bind(null, true));
 
-                if (onDispose !== null) {
-                    unsubscriber = unsub;
-                } else {
-                    unsub();
-                }
-            });
+            persistence.eventsFetched++;
+        };
+
+        subscribeByEventTypeAndIds(eventStore, synchronizedEventWorker, {
+            types:
+                Array.isArray(eventTypes) || Array.isArray(aggregateIds)
+                    ? eventTypes
+                    : Object.keys(projection),
+            ids: aggregateIds
+        }).then((unsub) => {
+            persistenceChecker(false);
+
+            if (onDispose !== null) {
+                unsubscriber = unsub;
+            } else {
+                unsub();
+            }
         });
     });
 
-    const originalThen = persistDonePromise.then.bind(persistDonePromise);
-    persistDonePromise.then = (...continuation) => {
-        lazyInit();
-        return originalThen(...continuation);
-    };
-    persistDonePromise.catch = (...continuation) => {
-        lazyInit();
-        return originalThen(() => {}, ...continuation);
-    };
-
     return {
-        ...adapter.init(onDemandOptions, persistDonePromise, updateOnly),
+        ...adapter.init(onDemandOptions, persistDonePromise),
+        persistDonePromise,
         onDispose
     };
 };
 
-const read = async (repository, adapter, eventStore, projection, updateOnly, onDemandOptions) => {
+const read = async (repository, adapter, eventStore, projection, preferLazy, onDemandOptions) => {
     const key = hash(onDemandOptions || {});
     if (!repository.has(key)) {
-        repository.set(key, init(adapter, eventStore, projection, updateOnly, onDemandOptions));
+        repository.set(key, init(adapter, eventStore, projection, onDemandOptions));
     }
 
-    const { getError, getReadable } = repository.get(key);
+    const { getError, getReadable, persistDonePromise } = repository.get(key);
+    await persistDonePromise;
+
     const readableError = await getError();
     if (readableError) {
         throw readableError;
     }
 
-    return await getReadable();
+    return await getReadable(preferLazy);
 };
 
 export default ({ readModel, eventStore }) => {
     const adapter = readModel.adapter || createMemoryAdapter();
     const projection = readModel.projection ? adapter.buildProjection(readModel.projection) : null;
     const repository = new Map();
+    const readOnDemand = read.bind(null, repository, adapter, eventStore, projection);
 
     if (!readModel.gqlSchema && !readModel.gqlResolvers) {
-        return read.bind(null, repository, adapter, eventStore, projection, true);
+        return readOnDemand.bind(null, false);
     }
 
-    const readOnDemand = read.bind(null, repository, adapter, eventStore, projection, false);
     const executableSchema = makeExecutableSchema({
         typeDefs: readModel.gqlSchema,
         resolvers: { Query: readModel.gqlResolvers }
     });
 
     const executor = async (gqlQuery, gqlVariables, getJwt) => {
-        const defaultReadable = await readOnDemand({});
+        const defaultReadable = await readOnDemand(true, {});
         const parsedGqlQuery = parse(gqlQuery);
 
         const gqlResponse = await execute(
             executableSchema,
             parsedGqlQuery,
             defaultReadable,
-            { getJwt, readOnDemand },
+            {
+                readOnDemand: readOnDemand.bind(null, false),
+                getJwt
+            },
             gqlVariables
         );
 

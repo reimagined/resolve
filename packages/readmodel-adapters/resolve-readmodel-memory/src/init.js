@@ -1,7 +1,7 @@
 import NeDB from 'nedb';
 import hash from './hash';
 
-export default function init(repository, onDemandOptions, lazyInitDone, updateOnly) {
+export default function init(repository, onDemandOptions) {
     const key = hash(onDemandOptions);
     if (repository.get(key)) {
         throw new Error(`The state for '${key}' is already initialized.`);
@@ -104,9 +104,9 @@ export default function init(repository, onDemandOptions, lazyInitDone, updateOn
 
     const initProjection = (storeIface) => {
         if (!repository.get(key).initialEventPromise) {
-            repository.get(key).initialEventPromise = Promise.resolve()
-                .then(() => repository.initHandler(storeIface))
-                .then(() => lazyInitDone);
+            repository.get(key).initialEventPromise = Promise.resolve().then(() =>
+                repository.initHandler(storeIface)
+            );
         }
         return repository.get(key).initialEventPromise;
     };
@@ -154,10 +154,7 @@ export default function init(repository, onDemandOptions, lazyInitDone, updateOn
     });
 
     return {
-        getReadable: async () => {
-            if (updateOnly) await initProjection(getStoreInterface(true));
-            return repository.get(key).readInterface;
-        },
+        getReadable: async () => repository.get(key).readInterface,
         getError: async () => repository.get(key).internalError
     };
 }
