@@ -1,7 +1,7 @@
 import NeDB from 'nedb';
 import hash from './hash';
 
-export default function init(repository, onDemandOptions) {
+export default function init(repository, onDemandOptions, persistDonePromise) {
     const key = hash(onDemandOptions);
     if (repository.get(key)) {
         throw new Error(`The state for '${key}' is already initialized.`);
@@ -112,30 +112,45 @@ export default function init(repository, onDemandOptions) {
     };
 
     // Provide interface https://docs.mongodb.com/manual/reference/method/js-database/
-    const getStoreInterface = (isWriteable) => {
-        const storeKey = isWriteable ? 'STORE_WRITE_SIDE' : 'STORE_READ_SIDE';
+    const getStoreInterface = async (isWriteable, isLazy) => {
+        const storeKey = !isWriteable
+            ? isLazy ? 'STORE_READ_SIDE' : 'STORE_LAZY_READ_SIDE'
+            : 'STORE_WRITE_SIDE';
         const interfaceMap = repository.get(key).interfaceMap;
 
         if (interfaceMap.has(storeKey)) {
             return interfaceMap.get(storeKey);
         }
 
-        const pureStoreIface = Object.freeze({
-            listCollections: async () => Array.from(repository.get(key).collectionMap.keys()),
-            collection: async name => getCollectionInterface(name, isWriteable)
-        });
+        let storeIface = null;
 
-        const storeIface = isWriteable
-            ? pureStoreIface
-            : Object.freeze(
-                  Object.keys(pureStoreIface).reduce((result, name) => {
-                      result[name] = async (...args) => {
-                          await initProjection(getStoreInterface(true));
-                          return await pureStoreIface[name](...args);
-                      };
-                      return result;
-                  }, {})
-              );
+        if (isWriteable || (!isWriteable && !isLazy)) {
+            storeIface = Object.freeze({
+                listCollections: async () => Array.from(repository.get(key).collectionMap.keys()),
+                collection: async name => getCollectionInterface(name, isWriteable)
+            });
+
+            if (!isWriteable) {
+                const writeStoreInterface = await getStoreInterface(true);
+                await initProjection(writeStoreInterface);
+                repository.get(key).runEventProcessing();
+            }
+        } else if (!isWriteable && isLazy) {
+            const writeStoreInterface = await getStoreInterface(true);
+            const readStoreInterface = await getStoreInterface(false);
+
+            storeIface = Object.freeze(
+                Object.keys(readStoreInterface).reduce((result, name) => {
+                    result[name] = async (...args) => {
+                        await initProjection(writeStoreInterface);
+                        repository.get(key).runEventProcessing();
+                        await persistDonePromise;
+                        return await readStoreInterface[name](...args);
+                    };
+                    return result;
+                }, {})
+            );
+        }
 
         interfaceMap.set(storeKey, storeIface);
         return storeIface;
@@ -144,17 +159,17 @@ export default function init(repository, onDemandOptions) {
     repository.set(key, {
         interfaceMap: new Map(),
         initialEventPromise: null,
+        getStoreInterface,
         collectionMap: new Map(),
         internalError: null
     });
 
-    Object.assign(repository.get(key), {
-        readInterface: getStoreInterface(false),
-        writeInterface: getStoreInterface(true)
-    });
+    repository.get(key).eventProcessingPromise = new Promise(
+        resolve => (repository.get(key).runEventProcessing = resolve)
+    );
 
     return {
-        getReadable: async () => repository.get(key).readInterface,
+        getReadable: async preferLazy => await getStoreInterface(false, preferLazy),
         getError: async () => repository.get(key).internalError
     };
 }

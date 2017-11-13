@@ -96,7 +96,6 @@ const init = (adapter, eventStore, projection, onDemandOptions = {}) => {
 
     return {
         ...adapter.init(onDemandOptions, persistDonePromise),
-        persistDonePromise,
         onDispose
     };
 };
@@ -107,9 +106,7 @@ const read = async (repository, adapter, eventStore, projection, preferLazy, onD
         repository.set(key, init(adapter, eventStore, projection, onDemandOptions));
     }
 
-    const { getError, getReadable, persistDonePromise } = repository.get(key);
-    await persistDonePromise;
-
+    const { getError, getReadable } = repository.get(key);
     const readableError = await getError();
     if (readableError) {
         throw readableError;
