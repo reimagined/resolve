@@ -135,8 +135,10 @@ export default function init(repository, onDemandOptions, persistDonePromise) {
     return {
         getReadable: async () => {
             if (!repository.get(key).initialEventPromise) {
-                repository.get(key).initialEventPromise = Promise.resolve().then(() =>
-                    repository.initHandler(repository.get(key).writeInterface)
+                repository.get(key).initialEventPromise = Promise.resolve().then(
+                    typeof repository.initHandler === 'function'
+                        ? repository.initHandler.bind(null, repository.get(key).writeInterface)
+                        : () => {}
                 );
             }
             await repository.get(key).initialEventPromise;

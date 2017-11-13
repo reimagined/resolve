@@ -315,13 +315,7 @@ describe('resolve-query', () => {
         const storedState = { Users: [{ id: '0', UserName: 'Test' }] };
         const readOnlyModel = {
             ...readModel,
-            projection: null,
-            adapter: {
-                init: () => ({
-                    getReadable: async () => storedState,
-                    getError: async () => null
-                })
-            }
+            projection: null
         };
         const executeQuery = createQueryExecutor({ eventStore, readModel: readOnlyModel });
 
