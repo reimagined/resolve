@@ -313,9 +313,22 @@ describe('resolve-query', () => {
 
     it('should support read-only models without projection function', async () => {
         const storedState = { Users: [{ id: '0', UserName: 'Test' }] };
+
         const readOnlyModel = {
             ...readModel,
-            projection: null
+            projection: null,
+            adapter: {
+                init: () => ({
+                    getReadable: async () => ({
+                        collection: async name => ({
+                            find: () => ({
+                                sort: async () => storedState[name].sort()
+                            })
+                        })
+                    }),
+                    getError: async () => null
+                })
+            }
         };
         const executeQuery = createQueryExecutor({ eventStore, readModel: readOnlyModel });
 
