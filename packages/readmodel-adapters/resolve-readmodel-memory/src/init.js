@@ -121,12 +121,15 @@ export default function init(repository, onDemandOptions, persistDonePromise) {
     };
 
     repository.set(key, {
-        readInterface: getStoreInterface(false),
-        writeInterface: getStoreInterface(true),
         interfaceMap: new Map(),
         initialEventPromise: null,
         collectionMap: new Map(),
         internalError: null
+    });
+
+    Object.assign(repository.get(key), {
+        readInterface: getStoreInterface(false),
+        writeInterface: getStoreInterface(true)
     });
 
     return {

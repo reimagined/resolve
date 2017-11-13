@@ -44,19 +44,15 @@ describe('resolve-query', () => {
             }),
 
             UserAdded: sinon.stub().callsFake(async (db, { aggregateId: id, payload }) => {
-                console.log('@@2 begin');
                 const users = await db.collection('Users');
                 if ((await users.find({ id })).length !== 0) return;
                 await users.insert({ id, UserName: payload.UserName });
-                console.log('@@2 end');
             }),
 
             UserDeleted: sinon.stub().callsFake(async (db, { aggregateId: id }) => {
                 const users = await db.collection('Users');
-                console.log('@@3 begin');
                 if ((await users.find({ id })).length === 0) return;
                 await users.remove({ id });
-                console.log('@@3 end');
             })
         };
 
