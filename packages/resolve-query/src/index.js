@@ -123,14 +123,9 @@ const extractFieldsFromGqlQuery = (parsedGqlQuery, gqlVariables, fieldName) => {
     try {
         const values = [];
         const selection = parsedGqlQuery.definitions[0].selectionSet.selections[0];
-        if (selection.name.kind !== 'Name' || selection.name.value !== 'View') {
-            throw new Error();
-        }
         if (Array.isArray(selection.arguments)) {
             selection.arguments.forEach((arg) => {
-                if (arg.name.kind !== 'Name' || arg.name.value !== fieldName) {
-                    throw new Error();
-                }
+                if (arg.name.kind !== 'Name' || arg.name.value !== fieldName) return;
                 if (arg.value.kind === 'Variable' && arg.value.name && arg.value.name.value) {
                     values.push(gqlVariables[arg.value.name.value]);
                 } else {
