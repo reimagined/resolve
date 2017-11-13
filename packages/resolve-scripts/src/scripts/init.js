@@ -14,7 +14,7 @@ const resolveDependencies = ['resolve-bus-memory', 'resolve-redux', 'resolve-sto
 
 const devDependencies = ['cross-env', 'testcafe', 'testcafe-browser-tools', 'yargs', 'flow-bin'];
 
-const appDependencies = ['prop-types', 'uuid'];
+const appDependencies = ['prop-types', 'uuid', 'styled-components'];
 
 const appDevDependencies = ['chai'];
 
