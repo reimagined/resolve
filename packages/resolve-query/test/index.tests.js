@@ -44,15 +44,19 @@ describe('resolve-query', () => {
             }),
 
             UserAdded: sinon.stub().callsFake(async (db, { aggregateId: id, payload }) => {
+                console.log('@@2 begin');
                 const users = await db.collection('Users');
                 if ((await users.find({ id })).length !== 0) return;
                 await users.insert({ id, UserName: payload.UserName });
+                console.log('@@2 end');
             }),
 
             UserDeleted: sinon.stub().callsFake(async (db, { aggregateId: id }) => {
                 const users = await db.collection('Users');
+                console.log('@@3 begin');
                 if ((await users.find({ id })).length === 0) return;
                 await users.remove({ id });
+                console.log('@@3 end');
             })
         };
 
@@ -123,7 +127,7 @@ describe('resolve-query', () => {
         eventList = null;
     });
 
-    it('should support custom defined resolver without argument', async () => {
+    it.only('should support custom defined resolver without argument', async () => {
         const executeQuery = createQueryExecutor({ eventStore, readModel });
         eventList = simulatedEventList.slice(0);
 

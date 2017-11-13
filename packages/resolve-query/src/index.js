@@ -29,7 +29,7 @@ const subscribeByEventTypeAndIds = async (eventStore, callback, eventDescriptors
 const init = (adapter, eventStore, projection, onDemandOptions = {}) => {
     if (projection === null) {
         return {
-            ...adapter.init(onDemandOptions, Promise.resolve()),
+            ...adapter.init(onDemandOptions),
             onDispose: () => {}
         };
     }
@@ -66,9 +66,10 @@ const init = (adapter, eventStore, projection, onDemandOptions = {}) => {
             if (!flowPromise) return;
 
             if (event && event.type && typeof projection[event.type] === 'function') {
-                flowPromise = flowPromise
-                    .then(projection[event.type].bind(null, event, onDemandOptions))
-                    .catch(forceStop);
+                flowPromise = flowPromise.then(
+                    projection[event.type].bind(null, event, onDemandOptions),
+                    forceStop
+                );
             }
 
             if (!persistence || persistence.isLoaded) return;
@@ -95,7 +96,8 @@ const init = (adapter, eventStore, projection, onDemandOptions = {}) => {
     });
 
     return {
-        ...adapter.init(onDemandOptions, persistDonePromise),
+        ...adapter.init(onDemandOptions),
+        persistDonePromise,
         onDispose
     };
 };
@@ -106,7 +108,9 @@ const read = async (repository, adapter, eventStore, projection, preferLazy, onD
         repository.set(key, init(adapter, eventStore, projection, onDemandOptions));
     }
 
-    const { getError, getReadable } = repository.get(key);
+    const { getError, getReadable, persistDonePromise } = repository.get(key);
+    await persistDonePromise;
+
     const readableError = await getError();
     if (readableError) {
         throw readableError;

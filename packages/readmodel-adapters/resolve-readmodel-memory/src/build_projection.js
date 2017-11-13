@@ -11,8 +11,7 @@ export default function buildProjection(repository, inputProjection) {
 
         projection[eventType] = async (event, onDemandOptions) => {
             const key = hash(onDemandOptions);
-            await repository.get(key).eventProcessingPromise;
-            const writeInterface = repository.get(key).getStoreInterface(true);
+            const writeInterface = repository.get(key).writeInterface;
             const handler = inputProjection[eventType];
 
             try {

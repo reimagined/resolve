@@ -102,75 +102,43 @@ export default function init(repository, onDemandOptions, persistDonePromise) {
         return collectionIface;
     };
 
-    const initProjection = (storeIface) => {
-        if (!repository.get(key).initialEventPromise) {
-            repository.get(key).initialEventPromise = Promise.resolve().then(() =>
-                repository.initHandler(storeIface)
-            );
-        }
-        return repository.get(key).initialEventPromise;
-    };
-
     // Provide interface https://docs.mongodb.com/manual/reference/method/js-database/
-    const getStoreInterface = async (isWriteable, isLazy) => {
-        const storeKey = !isWriteable
-            ? isLazy ? 'STORE_READ_SIDE' : 'STORE_LAZY_READ_SIDE'
-            : 'STORE_WRITE_SIDE';
+    const getStoreInterface = (isWriteable) => {
+        const storeKey = !isWriteable ? 'STORE_READ_SIDE' : 'STORE_WRITE_SIDE';
         const interfaceMap = repository.get(key).interfaceMap;
 
         if (interfaceMap.has(storeKey)) {
             return interfaceMap.get(storeKey);
         }
 
-        let storeIface = null;
-
-        if (isWriteable || (!isWriteable && !isLazy)) {
-            storeIface = Object.freeze({
-                listCollections: async () => Array.from(repository.get(key).collectionMap.keys()),
-                collection: async name => getCollectionInterface(name, isWriteable)
-            });
-
-            if (!isWriteable) {
-                const writeStoreInterface = await getStoreInterface(true);
-                await initProjection(writeStoreInterface);
-                repository.get(key).runEventProcessing();
-                await persistDonePromise;
-            }
-        } else if (!isWriteable && isLazy) {
-            const writeStoreInterface = await getStoreInterface(true);
-            const readStoreInterface = await getStoreInterface(false);
-
-            storeIface = Object.freeze(
-                Object.keys(readStoreInterface).reduce((result, name) => {
-                    result[name] = async (...args) => {
-                        await initProjection(writeStoreInterface);
-                        repository.get(key).runEventProcessing();
-                        await persistDonePromise;
-                        return await readStoreInterface[name](...args);
-                    };
-                    return result;
-                }, {})
-            );
-        }
+        let storeIface = Object.freeze({
+            listCollections: async () => Array.from(repository.get(key).collectionMap.keys()),
+            collection: async name => getCollectionInterface(name, isWriteable)
+        });
 
         interfaceMap.set(storeKey, storeIface);
         return storeIface;
     };
 
     repository.set(key, {
+        readInterface: getStoreInterface(false),
+        writeInterface: getStoreInterface(true),
         interfaceMap: new Map(),
         initialEventPromise: null,
-        getStoreInterface,
         collectionMap: new Map(),
         internalError: null
     });
 
-    repository.get(key).eventProcessingPromise = new Promise(
-        resolve => (repository.get(key).runEventProcessing = resolve)
-    );
-
     return {
-        getReadable: async preferLazy => await getStoreInterface(false, preferLazy),
+        getReadable: async () => {
+            if (!repository.get(key).initialEventPromise) {
+                repository.get(key).initialEventPromise = Promise.resolve().then(() =>
+                    repository.initHandler(repository.get(key).writeInterface)
+                );
+            }
+            await repository.get(key).initialEventPromise;
+            return repository.get(key).readInterface;
+        },
         getError: async () => repository.get(key).internalError
     };
 }
