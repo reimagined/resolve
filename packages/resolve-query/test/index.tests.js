@@ -38,21 +38,21 @@ describe('resolve-query', () => {
         };
 
         projection = {
-            UserAdded: sinon.stub().callsFake(async (state, { aggregateId: id, payload }) => {
-                const newState = state && state.Users ? state : { Users: [] };
-                if (!await newState.Users.find(user => user.id === id)) {
-                    await newState.Users.push({ id, UserName: payload.UserName });
-                }
-                return newState;
+            Init: sinon.stub().callsFake(async (db) => {
+                const users = await db.collection('Users');
+                await users.find({});
             }),
 
-            UserDeleted: sinon.stub().callsFake(async (state, { aggregateId: id }) => {
-                const newState = state && state.Users ? state : { Users: [] };
-                const userPos = await newState.Users.findIndex(user => user.id === id);
-                if (userPos > -1) {
-                    await newState.Users.splice(userPos, 1);
-                }
-                return newState;
+            UserAdded: sinon.stub().callsFake(async (db, { aggregateId: id, payload }) => {
+                const users = await db.collection('Users');
+                if ((await users.find({ id })).length !== 0) return;
+                await users.insert({ id, UserName: payload.UserName });
+            }),
+
+            UserDeleted: sinon.stub().callsFake(async (db, { aggregateId: id }) => {
+                const users = await db.collection('Users');
+                if ((await users.find({ id })).length === 0) return;
+                await users.remove({ id });
             })
         };
 
@@ -71,25 +71,29 @@ describe('resolve-query', () => {
                 }
             `,
             gqlResolvers: {
-                UserByIdOnDemand: sinon.stub().callsFake(async (read, args) => {
+                UserByIdOnDemand: sinon.stub().callsFake(async (db, args) => {
                     if (!args.aggregateId) throw new Error('aggregateId is mandatory');
-                    const { Users } = await read([args.aggregateId]);
-                    return Users.find(user => user.id === args.aggregateId);
+                    const users = await db.collection('Users');
+                    const result = await users.find({ id: args.aggregateId }).sort({ id: 1 });
+                    return result.length > 0 ? result[0] : null;
                 }),
 
-                UserById: sinon.stub().callsFake(async (read, args) => {
-                    const { Users } = await read();
-                    return Users.find(user => user.id === args.id);
+                UserById: sinon.stub().callsFake(async (db, args) => {
+                    const users = await db.collection('Users');
+                    const result = await users.find({ id: args.id }).sort({ id: 1 });
+                    return result.length > 0 ? result[0] : null;
                 }),
 
-                UserIds: sinon.stub().callsFake(async (read, args) => {
-                    const { Users } = await read();
-                    return Users.map(user => user.id);
+                UserIds: sinon.stub().callsFake(async (db) => {
+                    const users = await db.collection('Users');
+                    const result = await users.find({}, { id: 1, _id: 0 }).sort({ id: 1 });
+                    return result.map(({ id }) => id);
                 }),
 
-                Users: sinon.stub().callsFake(async (read, args) => {
-                    const { Users } = await read();
-                    return Users;
+                Users: sinon.stub().callsFake(async (db) => {
+                    const users = await db.collection('Users');
+                    const result = await users.find({}).sort({ id: 1 });
+                    return result;
                 })
             }
         };
@@ -309,14 +313,19 @@ describe('resolve-query', () => {
 
     it('should support read-only models without projection function', async () => {
         const storedState = { Users: [{ id: '0', UserName: 'Test' }] };
+
         const readOnlyModel = {
             ...readModel,
             projection: null,
             adapter: {
-                init: () => {},
-                buildRead: read => read,
-                get: () => ({
-                    getReadable: async () => storedState,
+                init: () => ({
+                    getReadable: async () => ({
+                        collection: async name => ({
+                            find: () => ({
+                                sort: async () => storedState[name].sort()
+                            })
+                        })
+                    }),
                     getError: async () => null
                 })
             }
