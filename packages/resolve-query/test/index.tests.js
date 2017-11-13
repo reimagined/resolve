@@ -123,7 +123,7 @@ describe('resolve-query', () => {
         eventList = null;
     });
 
-    it.only('should support custom defined resolver without argument', async () => {
+    it('should support custom defined resolver without argument', async () => {
         const executeQuery = createQueryExecutor({ eventStore, readModel });
         eventList = simulatedEventList.slice(0);
 
