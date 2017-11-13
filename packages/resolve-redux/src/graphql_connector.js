@@ -5,17 +5,18 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloProvider, graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
-export default (gqlQuery, matchVariables = () => ({}), endpoint) => {
+export default (gqlQuery, options = {}, endpoint) => {
     const client = new ApolloClient({
-        link: new HttpLink({ uri: endpoint || '/api/query/graphql' }),
+        link: new HttpLink({
+            uri: endpoint || '/api/query/graphql',
+            credentials: 'same-origin'
+        }),
         cache: new InMemoryCache()
     });
 
     return Component =>
         function ResolveGraphglConnector(props) {
-            const GraphQLConnector = graphql(gql(gqlQuery), {
-                options: ownProps => ({ variables: matchVariables(ownProps) })
-            })(Component);
+            const GraphQLConnector = graphql(gql(gqlQuery), options)(Component);
 
             return (
                 <ApolloProvider client={client}>
