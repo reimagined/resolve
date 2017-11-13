@@ -7,7 +7,10 @@ import gql from 'graphql-tag';
 
 export default (gqlQuery, options = {}, endpoint) => {
     const client = new ApolloClient({
-        link: new HttpLink({ uri: endpoint || '/api/query/graphql' }),
+        link: new HttpLink({
+            uri: endpoint || '/api/query/graphql',
+            credentials: 'same-origin'
+        }),
         cache: new InMemoryCache()
     });
 
