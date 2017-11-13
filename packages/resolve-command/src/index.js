@@ -7,13 +7,9 @@ const verifyCommand = async ({ aggregateId, aggregateName, type }) => {
 };
 
 const getAggregateState = async ({ projection, initialState }, aggregateId, eventStore) => {
-    const handlers = projection;
+    const handlers = projection || {};
     let aggregateState = initialState;
     let aggregateVersion = 0;
-
-    if (!handlers) {
-        return Promise.resolve({ aggregateState, aggregateVersion });
-    }
 
     await eventStore.getEventsByAggregateId(aggregateId, (event) => {
         aggregateVersion = event.aggregateVersion;
