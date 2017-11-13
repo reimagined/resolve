@@ -102,7 +102,7 @@ const init = (adapter, eventStore, projection, onDemandOptions = {}) => {
     };
 };
 
-const read = async (repository, adapter, eventStore, projection, preferLazy, onDemandOptions) => {
+const read = async (repository, adapter, eventStore, projection, onDemandOptions) => {
     const key = hash(onDemandOptions || {});
     if (!repository.has(key)) {
         repository.set(key, init(adapter, eventStore, projection, onDemandOptions));
@@ -116,43 +116,34 @@ const read = async (repository, adapter, eventStore, projection, preferLazy, onD
         throw readableError;
     }
 
-    return await getReadable(preferLazy);
+    return await getReadable();
 };
 
-export default ({ readModel, eventStore }) => {
-    const adapter = readModel.adapter || createMemoryAdapter();
-    const projection = readModel.projection ? adapter.buildProjection(readModel.projection) : null;
-    const repository = new Map();
-    const readOnDemand = read.bind(null, repository, adapter, eventStore, projection);
-
-    if (!readModel.gqlSchema && !readModel.gqlResolvers) {
-        return readOnDemand.bind(null, false);
-    }
-
+const makeGqlExecutor = (readOnDemand, readModel) => async (gqlQuery, gqlVariables, getJwt) => {
     const executableSchema = makeExecutableSchema({
         typeDefs: readModel.gqlSchema,
         resolvers: { Query: readModel.gqlResolvers }
     });
 
-    const executor = async (gqlQuery, gqlVariables, getJwt) => {
-        const defaultReadable = await readOnDemand(true, {});
-        const parsedGqlQuery = parse(gqlQuery);
+    const defaultReadable = await readOnDemand(true, {});
+    const parsedGqlQuery = parse(gqlQuery);
 
-        const gqlResponse = await execute(
-            executableSchema,
-            parsedGqlQuery,
-            defaultReadable,
-            {
-                readOnDemand: readOnDemand.bind(null, false),
-                getJwt
-            },
-            gqlVariables
-        );
+    const gqlResponse = await execute(
+        executableSchema,
+        parsedGqlQuery,
+        defaultReadable,
+        {
+            readOnDemand: readOnDemand.bind(null, false),
+            getJwt
+        },
+        gqlVariables
+    );
 
-        if (gqlResponse.errors) throw gqlResponse.errors;
-        return gqlResponse.data;
-    };
+    if (gqlResponse.errors) throw gqlResponse.errors;
+    return gqlResponse.data;
+};
 
+const extendDispose = (repository, adapter, executor) => {
     executor.dispose = (onDemandOptions) => {
         if (!onDemandOptions) {
             repository.forEach(storePromise => storePromise.then(({ onDispose }) => onDispose()));
@@ -168,6 +159,20 @@ export default ({ readModel, eventStore }) => {
         repository.delete(key);
         adapter.reset(onDemandOptions);
     };
-
     return executor;
+};
+
+export default ({ readModel, eventStore }) => {
+    const adapter = readModel.adapter || createMemoryAdapter();
+    const projection = readModel.projection ? adapter.buildProjection(readModel.projection) : null;
+    const repository = new Map();
+    const readOnDemand = read.bind(null, repository, adapter, eventStore, projection);
+    const makeDisposable = extendDispose.bind(null, repository, adapter);
+
+    if (!readModel.gqlSchema && !readModel.gqlResolvers) {
+        return makeDisposable(readOnDemand);
+    }
+
+    const executor = makeGqlExecutor(readOnDemand, readModel);
+    return makeDisposable(executor);
 };
