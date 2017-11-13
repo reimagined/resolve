@@ -134,6 +134,7 @@ export default function init(repository, onDemandOptions, persistDonePromise) {
                 const writeStoreInterface = await getStoreInterface(true);
                 await initProjection(writeStoreInterface);
                 repository.get(key).runEventProcessing();
+                await persistDonePromise;
             }
         } else if (!isWriteable && isLazy) {
             const writeStoreInterface = await getStoreInterface(true);
