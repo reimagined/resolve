@@ -250,28 +250,20 @@ describe('resolve-query', () => {
         expect(updateModel.projection.UserDeleted.callCount).to.be.equal(1);
     });
 
-    // eslint-disable-next-line max-len
-    it('should support update-only models with projection function applyed only for supplied aggregateIds', async () => {
-        const updateModel = { projection };
-        const executeQuery = createQueryExecutor({ eventStore, readModel: updateModel });
-        eventList = simulatedEventList.slice(0);
-
-        await executeQuery({ aggregateIds: ['1'] });
-
-        expect(updateModel.projection.UserAdded.callCount).to.be.equal(1);
-        expect(updateModel.projection.UserDeleted.callCount).to.be.equal(1);
-    });
-
     it('should support read-only models without projection function', async () => {
         const storedState = { Users: [{ id: '0', UserName: 'Test' }] };
         const readOnlyModel = {
             ...readModel,
             projection: null,
             adapter: {
-                init: () => {},
-                buildRead: read => read,
-                get: () => ({
-                    getReadable: async () => storedState,
+                init: () => ({
+                    getReadable: async () => ({
+                        collection: async name => ({
+                            find: () => ({
+                                sort: async () => storedState[name].sort()
+                            })
+                        })
+                    }),
                     getError: async () => null
                 })
             }

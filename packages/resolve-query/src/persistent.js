@@ -1,7 +1,7 @@
 import 'regenerator-runtime/runtime';
 import { makeExecutableSchema } from 'graphql-tools';
 import { parse, execute } from 'graphql';
-import createDefaultAdapter from 'resolve-readmodel-lite';
+import createDefaultAdapter from 'resolve-readmodel-memory';
 
 const init = (adapter, eventStore, projection) => {
     if (projection === null) {
@@ -97,28 +97,29 @@ const makePersistentExecutor = (readModel, eventStore) => {
     const repository = {};
     const getReadModel = read.bind(null, repository, adapter, eventStore, projection);
 
-    const executableSchema = makeExecutableSchema({
-        typeDefs: readModel.gqlSchema,
-        resolvers: { Query: readModel.gqlResolvers }
-    });
+    let executor = async (...args) => getReadModel(...args);
 
-    const executor =
-        readModel.gqlSchema && readModel.gqlResolvers
-            ? async (gqlQuery, gqlVariables, getJwt) => {
-                const parsedGqlQuery = parse(gqlQuery);
+    if (readModel.gqlSchema || readModel.gqlResolvers) {
+        const executableSchema = makeExecutableSchema({
+            typeDefs: readModel.gqlSchema,
+            resolvers: { Query: readModel.gqlResolvers }
+        });
 
-                const gqlResponse = await execute(
-                      executableSchema,
-                      parsedGqlQuery,
-                      await getReadModel(),
-                      { getJwt },
-                      gqlVariables
-                  );
+        executor = async (gqlQuery, gqlVariables, getJwt) => {
+            const parsedGqlQuery = parse(gqlQuery);
 
-                if (gqlResponse.errors) throw gqlResponse.errors;
-                return gqlResponse.data;
-            }
-            : async (...args) => getReadModel(...args);
+            const gqlResponse = await execute(
+                executableSchema,
+                parsedGqlQuery,
+                await getReadModel(),
+                { getJwt },
+                gqlVariables
+            );
+
+            if (gqlResponse.errors) throw gqlResponse.errors;
+            return gqlResponse.data;
+        };
+    }
 
     executor.dispose = () => {
         if (!repository.persistDonePromise) return;
