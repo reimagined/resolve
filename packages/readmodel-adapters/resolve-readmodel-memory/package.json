@@ -1,5 +1,5 @@
 {
-  "name": "resolve-readmodel-lite",
+  "name": "resolve-readmodel-memory",
   "version": "0.0.44",
   "description":
     "This package serves as a adapter for resolve-query to store a readmodel by NeDB.",
@@ -20,7 +20,7 @@
   "license": "MIT",
   "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
   "homepage":
-    "https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-lite#readme",
+    "https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-memory#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
