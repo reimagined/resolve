@@ -38,21 +38,21 @@ describe('resolve-query', () => {
         };
 
         projection = {
-            UserAdded: sinon.stub().callsFake(async (state, { aggregateId: id, payload }) => {
-                const newState = state && state.Users ? state : { Users: [] };
-                if (!await newState.Users.find(user => user.id === id)) {
-                    await newState.Users.push({ id, UserName: payload.UserName });
-                }
-                return newState;
+            Init: sinon.stub().callsFake(async (db) => {
+                const users = await db.collection('Users');
+                await users.find({});
             }),
 
-            UserDeleted: sinon.stub().callsFake(async (state, { aggregateId: id }) => {
-                const newState = state && state.Users ? state : { Users: [] };
-                const userPos = await newState.Users.findIndex(user => user.id === id);
-                if (userPos > -1) {
-                    await newState.Users.splice(userPos, 1);
-                }
-                return newState;
+            UserAdded: sinon.stub().callsFake(async (db, { aggregateId: id, payload }) => {
+                const users = await db.collection('Users');
+                if ((await users.find({ id })).length !== 0) return;
+                await users.insert({ id, UserName: payload.UserName });
+            }),
+
+            UserDeleted: sinon.stub().callsFake(async (db, { aggregateId: id }) => {
+                const users = await db.collection('Users');
+                if ((await users.find({ id })).length === 0) return;
+                await users.remove({ id });
             })
         };
 
@@ -64,32 +64,28 @@ describe('resolve-query', () => {
                     UserName: String
                 }
                 type Query {
-                    UserByIdOnDemand(aggregateId: ID!): User,
                     UserById(id: ID!): User,
                     UserIds: [ID!],
                     Users: [User]
                 }
             `,
             gqlResolvers: {
-                UserByIdOnDemand: sinon.stub().callsFake(async (read, args) => {
-                    if (!args.aggregateId) throw new Error('aggregateId is mandatory');
-                    const { Users } = await read([args.aggregateId]);
-                    return Users.find(user => user.id === args.aggregateId);
+                UserById: sinon.stub().callsFake(async (db, args) => {
+                    const users = await db.collection('Users');
+                    const result = await users.find({ id: args.id }).sort({ id: 1 });
+                    return result.length > 0 ? result[0] : null;
                 }),
 
-                UserById: sinon.stub().callsFake(async (read, args) => {
-                    const { Users } = await read();
-                    return Users.find(user => user.id === args.id);
+                UserIds: sinon.stub().callsFake(async (db) => {
+                    const users = await db.collection('Users');
+                    const result = await users.find({}, { id: 1, _id: 0 }).sort({ id: 1 });
+                    return result.map(({ id }) => id);
                 }),
 
-                UserIds: sinon.stub().callsFake(async (read, args) => {
-                    const { Users } = await read();
-                    return Users.map(user => user.id);
-                }),
-
-                Users: sinon.stub().callsFake(async (read, args) => {
-                    const { Users } = await read();
-                    return Users;
+                Users: sinon.stub().callsFake(async (db) => {
+                    const users = await db.collection('Users');
+                    const result = await users.find({}).sort({ id: 1 });
+                    return result;
                 })
             }
         };
@@ -146,26 +142,6 @@ describe('resolve-query', () => {
     });
 
     // eslint-disable-next-line max-len
-    it('should build small on-demand read-models if aggregateId argument specified directly', async () => {
-        const executeQuery = createQueryExecutor({ eventStore, readModel });
-        eventList = simulatedEventList.slice(0);
-
-        const graphqlQuery = 'query { UserByIdOnDemand(aggregateId:2) { id, UserName } }';
-
-        const state = await executeQuery(graphqlQuery);
-
-        expect(readModel.projection.UserAdded.callCount).to.be.equal(1);
-        expect(readModel.projection.UserDeleted.callCount).to.be.equal(0);
-
-        expect(state).to.be.deep.equal({
-            UserByIdOnDemand: {
-                UserName: 'User-2',
-                id: '2'
-            }
-        });
-    });
-
-    // eslint-disable-next-line max-len
     it('should support custom defined resolver with arguments valued by variables', async () => {
         const executeQuery = createQueryExecutor({ eventStore, readModel });
         eventList = simulatedEventList.slice(0);
@@ -176,27 +152,6 @@ describe('resolve-query', () => {
 
         expect(state).to.be.deep.equal({
             UserById: {
-                UserName: 'User-3',
-                id: '3'
-            }
-        });
-    });
-
-    // eslint-disable-next-line max-len
-    it('should build small on-demand read-models if aggregateId argument specified by variables', async () => {
-        const executeQuery = createQueryExecutor({ eventStore, readModel });
-        eventList = simulatedEventList.slice(0);
-
-        const graphqlQuery =
-            'query ($testId: ID!) { UserByIdOnDemand(aggregateId: $testId) { id, UserName } }';
-
-        const state = await executeQuery(graphqlQuery, { testId: '3' });
-
-        expect(readModel.projection.UserAdded.callCount).to.be.equal(1);
-        expect(readModel.projection.UserDeleted.callCount).to.be.equal(0);
-
-        expect(state).to.be.deep.equal({
-            UserByIdOnDemand: {
                 UserName: 'User-3',
                 id: '3'
             }
