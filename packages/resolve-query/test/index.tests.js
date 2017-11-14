@@ -17,24 +17,18 @@ describe('resolve-query', () => {
         eventList = [];
 
         eventStore = {
-            subscribeByEventType: sinon
-                .stub()
-                .callsFake((matchList, handler) =>
-                    Promise.resolve(
-                        eventList
-                            .filter(event => matchList.includes(event.type))
-                            .forEach(event => handler(event))
-                    )
-                ),
-            subscribeByAggregateId: sinon
-                .stub()
-                .callsFake((matchList, handler) =>
-                    Promise.resolve(
-                        eventList
-                            .filter(event => matchList.includes(event.aggregateId))
-                            .forEach(event => handler(event))
-                    )
-                )
+            subscribeByEventType: sinon.stub().callsFake((matchList, handler) => {
+                eventList
+                    .filter(event => matchList.includes(event.type))
+                    .forEach(event => handler(event));
+                return Promise.resolve(() => {});
+            }),
+            subscribeByAggregateId: sinon.stub().callsFake((matchList, handler) => {
+                eventList
+                    .filter(event => matchList.includes(event.aggregateId))
+                    .forEach(event => handler(event));
+                return Promise.resolve(() => {});
+            })
         };
 
         projection = {
@@ -273,6 +267,26 @@ describe('resolve-query', () => {
         const state = await executeQuery('query { Users { id, UserName } }');
 
         expect(state).to.be.deep.equal(storedState);
+    });
+
+    it('should support view-models with redux-like projection functions', async () => {
+        const viewProjection = {
+            Init: () => [],
+            TestEvent: (state, event) => state.push(event.payload)
+        };
+
+        const updateModel = { projection: viewProjection, adapter: 'view' };
+        const executeQuery = createQueryExecutor({ eventStore, readModel: updateModel });
+        const testEvent = {
+            type: 'TestEvent',
+            aggregateId: 'test-id',
+            payload: 'test-payload'
+        };
+        eventList = [testEvent];
+
+        const state = await executeQuery(['test-id']);
+
+        expect(state).to.be.deep.equal(['test-payload']);
     });
 
     it('works the same way for different import types', () => {
