@@ -272,11 +272,11 @@ describe('resolve-query', () => {
     it('should support view-models with redux-like projection functions', async () => {
         const viewProjection = {
             Init: () => [],
-            TestEvent: (state, event) => state.push(event.payload)
+            TestEvent: (state, event) => state.concat([event.payload])
         };
 
-        const updateModel = { projection: viewProjection, adapter: 'view' };
-        const executeQuery = createQueryExecutor({ eventStore, readModel: updateModel });
+        const viewModel = { projection: viewProjection, adapter: 'view' };
+        const executeQuery = createQueryExecutor({ eventStore, readModel: viewModel });
         const testEvent = {
             type: 'TestEvent',
             aggregateId: 'test-id',
@@ -287,6 +287,62 @@ describe('resolve-query', () => {
         const state = await executeQuery(['test-id']);
 
         expect(state).to.be.deep.equal(['test-payload']);
+    });
+
+    // eslint-disable-next-line max-len
+    it('should provide initial state for redux-like view-models if aggregateIds argument is not specified', async () => {
+        const viewProjection = {
+            Init: () => [],
+            TestEvent: (state, event) => state.concat([event.payload])
+        };
+
+        const viewModel = { projection: viewProjection, adapter: 'view' };
+        const executeQuery = createQueryExecutor({ eventStore, readModel: viewModel });
+        const testEvent = {
+            type: 'TestEvent',
+            aggregateId: 'test-id',
+            payload: 'test-payload'
+        };
+        eventList = [testEvent];
+
+        const state = await executeQuery();
+
+        expect(state).to.be.deep.equal([]);
+    });
+
+    it('should fail on view-models with non-redux-like projection functions', async () => {
+        const viewProjection = {
+            TestEvent: async () => null
+        };
+
+        const viewModel = { projection: viewProjection, adapter: 'view' };
+        const executeQuery = createQueryExecutor({ eventStore, readModel: viewModel });
+        eventList = [
+            {
+                type: 'TestEvent',
+                aggregateId: 'test-id'
+            }
+        ];
+
+        try {
+            await executeQuery(['test-id']);
+            return Promise.reject('Test failed');
+        } catch (error) {
+            expect(error.message).to.have.string(
+                'Projection function cannot be asyncronous or return Promise object'
+            );
+        }
+    });
+
+    it('should fail on view-models with supplied graphql facade', async () => {
+        const viewModel = { ...readModel, adapter: 'view', projection: {} };
+
+        try {
+            createQueryExecutor({ eventStore, readModel: viewModel });
+            return Promise.reject('Test failed');
+        } catch (error) {
+            expect(error.message).to.have.string('View models does not support GraphQL facade');
+        }
     });
 
     it('works the same way for different import types', () => {
