@@ -2,15 +2,15 @@ import 'regenerator-runtime/runtime';
 import { makeExecutableSchema } from 'graphql-tools';
 import { parse, execute } from 'graphql';
 
-const createFacade = ({ readModel, gqlSchema, gqlResolvers, customResolvers }) => {
+const createFacade = ({ model, gqlSchema, gqlResolvers, customResolvers }) => {
     const executors = Object.create(null, {
-        raw: { value: async (...args) => await readModel(...args) }
+        raw: { value: async (...args) => await model(...args) }
     });
 
     if (gqlSchema && gqlResolvers) {
         const executableSchema = makeExecutableSchema({
-            typeDefs: readModel.gqlSchema,
-            resolvers: { Query: readModel.gqlResolvers }
+            typeDefs: model.gqlSchema,
+            resolvers: { Query: model.gqlResolvers }
         });
 
         executors.graphql = async (gqlQuery, gqlVariables, getJwt) => {
@@ -19,7 +19,7 @@ const createFacade = ({ readModel, gqlSchema, gqlResolvers, customResolvers }) =
             const gqlResponse = await execute(
                 executableSchema,
                 parsedGqlQuery,
-                await readModel(),
+                await model(),
                 { getJwt },
                 gqlVariables
             );
@@ -30,12 +30,12 @@ const createFacade = ({ readModel, gqlSchema, gqlResolvers, customResolvers }) =
     }
 
     Object.defineProperty(executors, 'dispose', {
-        value: readModel.dispose.bind(readModel)
+        value: model.dispose.bind(model)
     });
 
     if (typeof customResolvers === 'object' && Object.keys(customResolvers) > 0) {
         Object.keys(customResolvers).forEach((name) => {
-            executors[name] = customResolvers[name].bind(null, readModel);
+            executors[name] = customResolvers[name].bind(null, model);
         });
     }
 

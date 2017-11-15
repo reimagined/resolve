@@ -87,7 +87,7 @@ const read = async (repository, adapter, eventStore, projection, ...args) => {
 
 const createReadModel = ({ projection, eventStore, adapter }) => {
     const currentAdapter = adapter || createDefaultAdapter();
-    const builtProjection = projection ? adapter.buildProjection(projection) : null;
+    const builtProjection = projection ? currentAdapter.buildProjection(projection) : null;
     const repository = {};
     const getReadModel = read.bind(null, repository, currentAdapter, eventStore, builtProjection);
 
