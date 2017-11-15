@@ -116,6 +116,7 @@ describe('resolve-query', () => {
         readModel = null;
         eventStore = null;
         eventList = null;
+        unsubscribe = null;
     });
 
     it('should support custom defined resolver without argument', async () => {
@@ -359,6 +360,6 @@ describe('resolve-query', () => {
         await viewModel(['test-aggregate-id']);
         viewModel.dispose();
 
-        expect(unsubscribe.callCount).to.be.equal(1);
+        expect(unsubscribe.callCount).to.be.equal(2);
     });
 });

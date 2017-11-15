@@ -42,9 +42,6 @@ const createViewModel = ({ projection, eventStore }) => {
             return await executor();
         }
 
-        let dispose = null;
-        const disposePromise = new Promise(resolve => (dispose = resolve));
-
         const executor = async () => {
             let state = typeof projection.Init === 'function' && projection.Init();
             filterAsyncResult(state);
@@ -65,13 +62,17 @@ const createViewModel = ({ projection, eventStore }) => {
                 ids: aggregateIds
             });
 
-            disposePromise.then(unsubscribe);
+            if (!executor.disposing) {
+                executor.dispose = unsubscribe;
+            } else {
+                unsubscribe();
+            }
 
             if (error) throw error;
             return state;
         };
 
-        executor.dispose = dispose;
+        executor.dispose = () => (executor.disposing = true);
 
         viewMap.set(key, executor);
         return await executor();
