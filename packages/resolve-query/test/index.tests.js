@@ -5,7 +5,7 @@ import { createFacade, createReadModel, createViewModel } from '../src';
 
 describe('resolve-query', () => {
     let eventStore, eventList, readModelProjection, readModel, viewModelProjection, viewModel;
-    let normalGqlFacade, brokenSchemaGqlFacade, brokenResolversGqlFacade;
+    let normalGqlFacade, brokenSchemaGqlFacade, brokenResolversGqlFacade, unsubscribe;
 
     const simulatedEventList = [
         { type: 'UserAdded', aggregateId: '1', payload: { UserName: 'User-1' } },
@@ -15,6 +15,7 @@ describe('resolve-query', () => {
     ];
 
     beforeEach(() => {
+        unsubscribe = sinon.stub();
         eventList = [];
 
         eventStore = {
@@ -22,13 +23,13 @@ describe('resolve-query', () => {
                 eventList
                     .filter(event => matchList.includes(event.type))
                     .forEach(event => handler(event));
-                return Promise.resolve(() => {});
+                return Promise.resolve(unsubscribe);
             }),
             subscribeByAggregateId: sinon.stub().callsFake((matchList, handler) => {
                 eventList
                     .filter(event => matchList.includes(event.aggregateId))
                     .forEach(event => handler(event));
-                return Promise.resolve(() => {});
+                return Promise.resolve(unsubscribe);
             })
         };
 
@@ -199,8 +200,6 @@ describe('resolve-query', () => {
     });
 
     it('should raise error in case of invalid GraphQL schema for read-model', async () => {
-        eventList = [];
-
         try {
             createFacade({ model: readModel, ...brokenSchemaGqlFacade });
             return Promise.reject('Test failed');
