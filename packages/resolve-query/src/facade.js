@@ -3,7 +3,9 @@ import { makeExecutableSchema } from 'graphql-tools';
 import { parse, execute } from 'graphql';
 
 const createFacade = ({ readModel, gqlSchema, gqlResolvers, customResolvers }) => {
-    let executor = async (...args) => await readModel(...args);
+    const executors = Object.create(null, {
+        raw: { value: async (...args) => await readModel(...args) }
+    });
 
     if (gqlSchema && gqlResolvers) {
         const executableSchema = makeExecutableSchema({
@@ -11,7 +13,7 @@ const createFacade = ({ readModel, gqlSchema, gqlResolvers, customResolvers }) =
             resolvers: { Query: readModel.gqlResolvers }
         });
 
-        executor.graphql = async (gqlQuery, gqlVariables, getJwt) => {
+        executors.graphql = async (gqlQuery, gqlVariables, getJwt) => {
             const parsedGqlQuery = parse(gqlQuery);
 
             const gqlResponse = await execute(
@@ -27,15 +29,17 @@ const createFacade = ({ readModel, gqlSchema, gqlResolvers, customResolvers }) =
         };
     }
 
-    executor.dispose = readModel.dispose.bind(readModel);
+    Object.defineProperty(executors, 'dispose', {
+        value: readModel.dispose.bind(readModel)
+    });
 
     if (typeof customResolvers === 'object' && Object.keys(customResolvers) > 0) {
         Object.keys(customResolvers).forEach((name) => {
-            executor[name] = customResolvers[name].bind(null, readModel);
+            executors[name] = customResolvers[name].bind(null, readModel);
         });
     }
 
-    return executor;
+    return executors;
 };
 
 export default createFacade;

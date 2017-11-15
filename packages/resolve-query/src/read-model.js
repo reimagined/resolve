@@ -69,7 +69,7 @@ const init = (adapter, eventStore, projection) => {
     };
 };
 
-const read = async (repository, adapter, eventStore, projection) => {
+const read = async (repository, adapter, eventStore, projection, ...args) => {
     if (!repository.loadDonePromise) {
         Object.assign(repository, init(adapter, eventStore, projection));
     }
@@ -82,7 +82,7 @@ const read = async (repository, adapter, eventStore, projection) => {
         throw readableError;
     }
 
-    return await getReadable();
+    return await getReadable(...args);
 };
 
 const createReadModel = ({ projection, eventStore, adapter }) => {
