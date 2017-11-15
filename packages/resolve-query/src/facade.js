@@ -7,7 +7,7 @@ const createFacade = ({ model, gqlSchema, gqlResolvers, customResolvers }) => {
         raw: { value: async (...args) => await model(...args) }
     });
 
-    if (gqlSchema && gqlResolvers) {
+    if (gqlSchema || gqlResolvers) {
         const executableSchema = makeExecutableSchema({
             typeDefs: gqlSchema,
             resolvers: { Query: gqlResolvers }

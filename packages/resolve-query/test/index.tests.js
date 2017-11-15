@@ -236,7 +236,7 @@ describe('resolve-query', () => {
 
         const state = await executeQueryGraphql(graphqlQuery, {}, getJwt);
 
-        expect(readModel.gqlResolvers.UserById.lastCall.args[2].getJwt).to.be.equal(getJwt);
+        expect(normalGqlFacade.gqlResolvers.UserById.lastCall.args[2].getJwt).to.be.equal(getJwt);
 
         expect(state).to.be.deep.equal({
             UserById: {
