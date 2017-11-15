@@ -1,19 +1,21 @@
 import 'regenerator-runtime/runtime';
 
-import buildRead from './build_read';
 import buildProjection from './build_projection';
 import init from './init';
-import get from './get';
 import reset from './reset';
 
 export default function createMemoryAdapter() {
-    const repository = new Map();
+    const repository = Object.create(null);
 
-    return {
-        buildRead: buildRead.bind(null, repository),
-        buildProjection: buildProjection.bind(null, repository),
-        init: init.bind(null, repository),
-        get: get.bind(null, repository),
-        reset: reset.bind(null, repository)
-    };
+    return Object.create(null, {
+        buildProjection: {
+            value: buildProjection.bind(null, repository)
+        },
+        init: {
+            value: init.bind(null, repository)
+        },
+        reset: {
+            value: reset.bind(null, repository)
+        }
+    });
 }

@@ -1,10 +1,12 @@
-import hash from './hash';
+export default function reset(repository) {
+    if (repository.interfaceMap) return;
 
-export default function reset(repository, onDemandOptions) {
-    const key = hash(onDemandOptions);
+    repository.collectionMap.forEach((collection) => {
+        collection.resetIndexes();
+        collection.remove({});
+    });
 
-    if (repository.has(key)) {
-        repository.get(key).onDestroy();
-        repository.delete(key);
-    }
+    Object.keys(repository).forEach((key) => {
+        delete repository[key];
+    });
 }
