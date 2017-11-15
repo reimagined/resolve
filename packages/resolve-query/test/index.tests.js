@@ -251,7 +251,7 @@ describe('resolve-query', () => {
         await readModel();
 
         expect(readModelProjection.UserAdded.callCount).to.be.equal(3);
-        expect(readModelProjection.projection.UserDeleted.callCount).to.be.equal(1);
+        expect(readModelProjection.UserDeleted.callCount).to.be.equal(1);
     });
 
     it('should support read-only models without projection function', async () => {
@@ -268,7 +268,11 @@ describe('resolve-query', () => {
                 getError: async () => null
             })
         };
-        const readOnlyModel = createReadModel({ eventStore, projection: null, localAdapter });
+        const readOnlyModel = createReadModel({
+            eventStore,
+            projection: null,
+            adapter: localAdapter
+        });
         const facade = createFacade({ model: readOnlyModel, ...normalGqlFacade });
         const executeQueryGraphql = facade.graphql;
 
