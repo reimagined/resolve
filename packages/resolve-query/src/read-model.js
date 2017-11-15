@@ -1,6 +1,4 @@
 import 'regenerator-runtime/runtime';
-import { makeExecutableSchema } from 'graphql-tools';
-import { parse, execute } from 'graphql';
 import createDefaultAdapter from 'resolve-readmodel-memory';
 
 const init = (adapter, eventStore, projection) => {
@@ -87,37 +85,15 @@ const read = async (repository, adapter, eventStore, projection) => {
     return await getReadable();
 };
 
-const makePersistentExecutor = (readModel, eventStore) => {
-    const adapter = readModel.adapter || createDefaultAdapter();
-    const projection = readModel.projection ? adapter.buildProjection(readModel.projection) : null;
+const createReadModel = ({ projection, eventStore, adapter }) => {
+    const currentAdapter = adapter || createDefaultAdapter();
+    const builtProjection = projection ? adapter.buildProjection(projection) : null;
     const repository = {};
-    const getReadModel = read.bind(null, repository, adapter, eventStore, projection);
+    const getReadModel = read.bind(null, repository, currentAdapter, eventStore, builtProjection);
 
-    let executor = async (...args) => getReadModel(...args);
+    let reader = async (...args) => getReadModel(...args);
 
-    if (readModel.gqlSchema || readModel.gqlResolvers) {
-        const executableSchema = makeExecutableSchema({
-            typeDefs: readModel.gqlSchema,
-            resolvers: { Query: readModel.gqlResolvers }
-        });
-
-        executor = async (gqlQuery, gqlVariables, getJwt) => {
-            const parsedGqlQuery = parse(gqlQuery);
-
-            const gqlResponse = await execute(
-                executableSchema,
-                parsedGqlQuery,
-                await getReadModel(),
-                { getJwt },
-                gqlVariables
-            );
-
-            if (gqlResponse.errors) throw gqlResponse.errors;
-            return gqlResponse.data;
-        };
-    }
-
-    executor.dispose = () => {
+    reader.dispose = () => {
         if (!repository.persistDonePromise) return;
         repository.onDispose();
 
@@ -125,10 +101,10 @@ const makePersistentExecutor = (readModel, eventStore) => {
             delete repository[key];
         });
 
-        adapter.reset();
+        currentAdapter.reset();
     };
 
-    return executor;
+    return reader;
 };
 
-export default makePersistentExecutor;
+export default createReadModel;
