@@ -120,8 +120,7 @@ describe('resolve-query', () => {
     });
 
     it('should support custom defined resolver without argument', async () => {
-        const facade = createFacade({ model: readModel, ...normalGqlFacade });
-        const executeQueryGraphql = facade.graphql;
+        const { executeQueryGraphql } = createFacade({ model: readModel, ...normalGqlFacade });
         eventList = simulatedEventList.slice(0);
 
         const state = await executeQueryGraphql('query { UserIds }');
@@ -132,8 +131,7 @@ describe('resolve-query', () => {
     });
 
     it('should support custom defined resolver with arguments', async () => {
-        const facade = createFacade({ model: readModel, ...normalGqlFacade });
-        const executeQueryGraphql = facade.graphql;
+        const { executeQueryGraphql } = createFacade({ model: readModel, ...normalGqlFacade });
         eventList = simulatedEventList.slice(0);
 
         const graphqlQuery = 'query { UserById(id:2) { id, UserName } }';
@@ -150,8 +148,7 @@ describe('resolve-query', () => {
 
     // eslint-disable-next-line max-len
     it('should support custom defined resolver with arguments valued by variables', async () => {
-        const facade = createFacade({ model: readModel, ...normalGqlFacade });
-        const executeQueryGraphql = facade.graphql;
+        const { executeQueryGraphql } = createFacade({ model: readModel, ...normalGqlFacade });
         eventList = simulatedEventList.slice(0);
 
         const graphqlQuery = 'query ($testId: ID!) { UserById(id: $testId) { id, UserName } }';
@@ -168,8 +165,7 @@ describe('resolve-query', () => {
 
     // eslint-disable-next-line max-len
     it('should handle error in case of wrong arguments for custom defined resolver', async () => {
-        const facade = createFacade({ model: readModel, ...normalGqlFacade });
-        const executeQueryGraphql = facade.graphql;
+        const { executeQueryGraphql } = createFacade({ model: readModel, ...normalGqlFacade });
         eventList = simulatedEventList.slice(0);
 
         const graphqlQuery = 'query { UserById() { id, UserName } }';
@@ -184,8 +180,7 @@ describe('resolve-query', () => {
     });
 
     it('should handle custom GraphQL syntax errors in query', async () => {
-        const facade = createFacade({ model: readModel, ...normalGqlFacade });
-        const executeQueryGraphql = facade.graphql;
+        const { executeQueryGraphql } = createFacade({ model: readModel, ...normalGqlFacade });
         eventList = simulatedEventList.slice(0);
 
         const graphqlQuery = 'WRONG_QUERY';
@@ -211,8 +206,10 @@ describe('resolve-query', () => {
     });
 
     it('should raise error in case throwing expection into custom resolver', async () => {
-        const facade = createFacade({ model: readModel, ...brokenResolversGqlFacade });
-        const executeQueryGraphql = facade.graphql;
+        const { executeQueryGraphql } = createFacade({
+            model: readModel,
+            ...brokenResolversGqlFacade
+        });
         eventList = [];
 
         const graphqlQuery = 'query SomeQuery { Broken }';
@@ -227,8 +224,7 @@ describe('resolve-query', () => {
     });
 
     it('should provide security context to graphql resolvers', async () => {
-        const facade = createFacade({ model: readModel, ...normalGqlFacade });
-        const executeQueryGraphql = facade.graphql;
+        const { executeQueryGraphql } = createFacade({ model: readModel, ...normalGqlFacade });
         eventList = simulatedEventList.slice(0);
 
         const getJwt = () => {};
@@ -273,8 +269,7 @@ describe('resolve-query', () => {
             projection: null,
             adapter: localAdapter
         });
-        const facade = createFacade({ model: readOnlyModel, ...normalGqlFacade });
-        const executeQueryGraphql = facade.graphql;
+        const { executeQueryGraphql } = createFacade({ model: readOnlyModel, ...normalGqlFacade });
 
         const state = await executeQueryGraphql('query { Users { id, UserName } }');
 
@@ -290,8 +285,7 @@ describe('resolve-query', () => {
     });
 
     it('should support view-models with redux-like projection functions', async () => {
-        const facade = createFacade({ model: viewModel });
-        const executeQueryState = facade.raw;
+        const { executeQueryRaw } = createFacade({ model: viewModel });
 
         const testEvent = {
             type: 'TestEvent',
@@ -300,15 +294,14 @@ describe('resolve-query', () => {
         };
         eventList = [testEvent];
 
-        const state = await executeQueryState(['test-id']);
+        const state = await executeQueryRaw(['test-id']);
 
         expect(state).to.be.deep.equal(['test-payload']);
     });
 
     // eslint-disable-next-line max-len
     it('should raise error in case of if view-model\'s aggregateIds argument absence', async () => {
-        const facade = createFacade({ model: viewModel });
-        const executeQueryState = facade.raw;
+        const { executeQueryRaw } = createFacade({ model: viewModel });
 
         const testEvent = {
             type: 'TestEvent',
@@ -318,7 +311,7 @@ describe('resolve-query', () => {
         eventList = [testEvent];
 
         try {
-            await executeQueryState();
+            await executeQueryRaw();
             return Promise.reject('Test failed');
         } catch (error) {
             expect(error.message).to.have.string(
@@ -335,8 +328,7 @@ describe('resolve-query', () => {
             }
         });
 
-        const facade = createFacade({ model: wrongViewModel });
-        const executeQueryState = facade.raw;
+        const { executeQueryRaw } = createFacade({ model: wrongViewModel });
 
         eventList = [
             {
@@ -346,7 +338,7 @@ describe('resolve-query', () => {
         ];
 
         try {
-            await executeQueryState(['test-id']);
+            await executeQueryRaw(['test-id']);
             return Promise.reject('Test failed');
         } catch (error) {
             expect(error.message).to.have.string(

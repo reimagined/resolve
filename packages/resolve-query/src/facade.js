@@ -4,7 +4,7 @@ import { parse, execute } from 'graphql';
 
 const createFacade = ({ model, gqlSchema, gqlResolvers, customResolvers }) => {
     const executors = Object.create(null, {
-        raw: { value: async (...args) => await model(...args) }
+        executeQueryRaw: { value: async (...args) => await model(...args) }
     });
 
     if (gqlSchema || gqlResolvers) {
@@ -13,7 +13,7 @@ const createFacade = ({ model, gqlSchema, gqlResolvers, customResolvers }) => {
             resolvers: { Query: gqlResolvers }
         });
 
-        executors.graphql = async (gqlQuery, gqlVariables, getJwt) => {
+        executors.executeQueryGraphql = async (gqlQuery, gqlVariables, getJwt) => {
             const parsedGqlQuery = parse(gqlQuery);
 
             const gqlResponse = await execute(
