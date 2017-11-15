@@ -276,6 +276,29 @@ describe('resolve-query', () => {
         expect(state).to.be.deep.equal(storedState);
     });
 
+    // eslint-disable-next-line max-len
+    it('should support custom resolver on facade', async () => {
+        const { executeQueryCustom } = createFacade({
+            model: readModel,
+            customResolvers: {
+                FindUser: async (model, condition) => {
+                    const users = await (await model()).collection('Users');
+                    return await users.find(condition, { _id: 0 });
+                }
+            }
+        });
+        eventList = simulatedEventList.slice(0);
+
+        const state = await executeQueryCustom('FindUser', { id: '3' });
+
+        expect(state).to.be.deep.equal([
+            {
+                UserName: 'User-3',
+                id: '3'
+            }
+        ]);
+    });
+
     it('should support read-model disposing', async () => {
         eventList = simulatedEventList.slice(0);
         await readModel();

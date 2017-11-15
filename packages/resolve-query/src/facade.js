@@ -4,7 +4,10 @@ import { parse, execute } from 'graphql';
 
 const createFacade = ({ model, gqlSchema, gqlResolvers, customResolvers }) => {
     const executors = Object.create(null, {
-        executeQueryRaw: { value: async (...args) => await model(...args) }
+        executeQueryRaw: {
+            value: async (...args) => await model(...args),
+            enumerable: true
+        }
     });
 
     if (gqlSchema || gqlResolvers) {
@@ -13,31 +16,40 @@ const createFacade = ({ model, gqlSchema, gqlResolvers, customResolvers }) => {
             resolvers: { Query: gqlResolvers }
         });
 
-        executors.executeQueryGraphql = async (gqlQuery, gqlVariables, getJwt) => {
-            const parsedGqlQuery = parse(gqlQuery);
+        Object.defineProperty(executors, 'executeQueryGraphql', {
+            value: async (gqlQuery, gqlVariables, getJwt) => {
+                const parsedGqlQuery = parse(gqlQuery);
 
-            const gqlResponse = await execute(
-                executableSchema,
-                parsedGqlQuery,
-                await model(),
-                { getJwt },
-                gqlVariables
-            );
+                const gqlResponse = await execute(
+                    executableSchema,
+                    parsedGqlQuery,
+                    await model(),
+                    { getJwt },
+                    gqlVariables
+                );
 
-            if (gqlResponse.errors) throw gqlResponse.errors;
-            return gqlResponse.data;
-        };
+                if (gqlResponse.errors) throw gqlResponse.errors;
+                return gqlResponse.data;
+            },
+            enumerable: true
+        });
     }
 
     Object.defineProperty(executors, 'dispose', {
-        value: model.dispose.bind(model)
+        value: model.dispose.bind(model),
+        enumerable: false
     });
 
-    if (typeof customResolvers === 'object' && Object.keys(customResolvers) > 0) {
-        Object.keys(customResolvers).forEach((name) => {
-            executors[name] = customResolvers[name].bind(null, model);
-        });
-    }
+    Object.defineProperty(executors, 'executeQueryCustom', {
+        value: async (name, ...args) => {
+            if (!customResolvers || !customResolvers[name]) {
+                throw new Error(`Custom resolver '${name}' is not specified`);
+            }
+
+            return await customResolvers[name](model, ...args);
+        },
+        enumerable: true
+    });
 
     return executors;
 };
