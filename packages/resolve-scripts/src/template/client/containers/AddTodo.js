@@ -3,17 +3,11 @@ import uuid from 'uuid';
 import { connect } from 'react-redux';
 import actions from '../actions';
 
-import styled from 'styled-components';
-
-const FormContent = styled.div`
-    padding: 8px 16px;
-`;
-
 let AddTodo = ({ dispatch }) => {
     let input;
 
     return (
-        <FormContent>
+        <div>
             <form
                 onSubmit={(e) => {
                     e.preventDefault();
@@ -35,7 +29,7 @@ let AddTodo = ({ dispatch }) => {
                 />
                 <button type="submit">Add Todo</button>
             </form>
-        </FormContent>
+        </div>
     );
 };
 AddTodo = connect()(AddTodo);

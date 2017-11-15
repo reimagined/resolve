@@ -1,9 +1,14 @@
 import React from 'react';
+import Footer from './Footer';
+import AddTodo from '../containers/AddTodo';
+import VisibleTodoList from '../containers/VisibleTodoList';
 
-const RootComponent = () => (
+const App = () => (
     <div>
-        <h1>Hello, world!</h1>
+        <AddTodo />
+        <VisibleTodoList />
+        <Footer />
     </div>
 );
 
-export default RootComponent;
+export default App;

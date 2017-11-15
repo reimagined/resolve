@@ -12,9 +12,9 @@ const dependencies = ['react', 'react-dom', 'react-redux', 'redux'];
 
 const resolveDependencies = ['resolve-bus-memory', 'resolve-redux', 'resolve-storage-lite'];
 
-const devDependencies = ['cross-env', 'testcafe', 'testcafe-browser-tools', 'yargs', 'flow-bin'];
+const devDependencies = ['cross-env', 'testcafe', 'testcafe-browser-tools', 'yargs'];
 
-const appDependencies = ['prop-types', 'uuid', 'styled-components'];
+const appDependencies = ['prop-types', 'uuid'];
 
 const appDevDependencies = ['chai'];
 
@@ -123,18 +123,15 @@ export default (appPath, appName, originalDirectory, isEmpty, packagePath, resol
     appPackage.scripts = {
         build: 'resolve-scripts build',
         dev: 'resolve-scripts dev',
-        start: 'resolve-scripts start',
-        update: 'resolve-scripts update',
-        flow: 'flow'
+        start: 'resolve-scripts start'
     };
 
     /* eslint-disable */
     appPackage.scripts = {
         ...appPackage.scripts,
-        test: 'jest tests/unit',
+        test: 'jest',
         'test:e2e':
-            'cross-env NODE_ENV=tests babel-node ./tests/functional/testcafe_runner.js ' +
-            '--presets es2015,stage-0,react'
+            'cross-env NODE_ENV=tests babel-node ./tests/testcafe_runner.js --presets es2015,stage-0,react'
     };
     /* eslint-enable */
 
@@ -153,13 +150,16 @@ export default (appPath, appName, originalDirectory, isEmpty, packagePath, resol
     log();
 
     if (isEmpty) {
+        deleteFolderRecursive(path.join(appPath, 'client'));
+        deleteFolderRecursive(path.join(appPath, 'common'));
+        deleteFolderRecursive(path.join(appPath, 'tests'));
+
+        const templateEmptyPath = path.join(packagePath || scriptsPath, 'dist', 'template_empty');
+        fs.copySync(templateEmptyPath, appPath);
         installDependencies(dependencies, false);
         installDependencies(resolveDependencies, false, resolveVersion);
         installDependencies(devDependencies, true);
     } else {
-        const templateSamplePath = path.join(packagePath || scriptsPath, 'dist', 'template_sample');
-        fs.copySync(templateSamplePath, appPath);
-
         installDependencies([...dependencies, ...appDependencies], false);
         installDependencies(resolveDependencies, false, resolveVersion);
         installDependencies([...devDependencies, ...appDevDependencies], true);

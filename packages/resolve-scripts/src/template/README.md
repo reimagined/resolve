@@ -62,10 +62,6 @@ Runs the built app in the production mode.
 
 Open [http://localhost:3000](http://localhost:3000/) to view it in the browser.
 
-### `npm run update [version]`
-Updates all resolve packages to the latest version according to [semver](https://docs.npmjs.com/getting-started/semantic-versioning).
-If the `version` argument is set, the command updates packages to the specified version.
-
 ## **🗂️ Project Structure Overview**
 [Create ReSolve App](https://www.npmjs.com/package/creat-resolve-app) is an NPM package referencing the latest [reSolve framework package](../../..) versions. It consists of the common isomorphic part which describes domain business logic and React components for the presentation. No implicit server part is needed - it is encapsulated in `resolve-scripts`, but can be customized using [config](#-configuration-files). The project also includes unit & E2E testing and deployment assets. All source code and functional tests are written in the [ES2016](http://2ality.com/2016/01/ecmascript-2016.html).
 

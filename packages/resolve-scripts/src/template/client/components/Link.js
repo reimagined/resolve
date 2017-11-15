@@ -1,33 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
-
-const SelectedFilter = styled.span`
-    background: #ddd;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 2px 6px;
-    color: #777;
-    margin: 0 2px;
-`;
-
-const Filter = styled.a`
-    text-decoration: none;
-    color: #333;
-    border: 1px solid #ccc;
-    padding: 2px 6px;
-    border-radius: 4px;
-    margin: 0 2px;
-`;
 
 const Link = ({ active, children, onClick }) => {
     if (active) {
-        return <SelectedFilter>{children}</SelectedFilter>;
+        return <span>{children}</span>;
     }
 
     return (
         // eslint-disable-next-line
-        <Filter
+        <a
             href="#"
             onClick={(e) => {
                 e.preventDefault();
@@ -35,7 +16,7 @@ const Link = ({ active, children, onClick }) => {
             }}
         >
             {children}
-        </Filter>
+        </a>
     );
 };
 
