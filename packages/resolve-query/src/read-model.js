@@ -94,9 +94,8 @@ const createReadModel = ({ projection, eventStore, adapter }) => {
     let reader = async (...args) => getReadModel(...args);
 
     reader.dispose = () => {
-        if (!repository.persistDonePromise) return;
+        if (!repository.loadDonePromise) return;
         repository.onDispose();
-
         Object.keys(repository).forEach((key) => {
             delete repository[key];
         });

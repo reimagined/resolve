@@ -280,6 +280,14 @@ describe('resolve-query', () => {
         expect(state).to.be.deep.equal(storedState);
     });
 
+    it('should support read-model disposing', async () => {
+        eventList = simulatedEventList.slice(0);
+        await readModel();
+        readModel.dispose();
+
+        expect(unsubscribe.callCount).to.be.equal(1);
+    });
+
     it('should support view-models with redux-like projection functions', async () => {
         const facade = createFacade({ model: viewModel });
         const executeQueryState = facade.raw;
@@ -344,5 +352,13 @@ describe('resolve-query', () => {
                 'Projection function cannot be asyncronous or return Promise object'
             );
         }
+    });
+
+    it('should support view-model disposing', async () => {
+        eventList = simulatedEventList.slice(0);
+        await viewModel(['test-aggregate-id']);
+        viewModel.dispose();
+
+        expect(unsubscribe.callCount).to.be.equal(1);
     });
 });
