@@ -38,7 +38,8 @@ const createViewModel = ({ projection, eventStore }) => {
 
         const key = getKey(aggregateIds);
         if (viewMap.has(key)) {
-            return viewMap.get(key);
+            const executor = viewMap.get(key);
+            return await executor();
         }
 
         let dispose = null;
@@ -73,7 +74,7 @@ const createViewModel = ({ projection, eventStore }) => {
         executor.dispose = dispose;
 
         viewMap.set(key, executor);
-        return executor;
+        return await executor();
     };
 
     reader.dispose = () => {

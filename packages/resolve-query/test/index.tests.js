@@ -298,7 +298,7 @@ describe('resolve-query', () => {
     });
 
     // eslint-disable-next-line max-len
-    it('should provide initial state for redux-like view-models if aggregateIds argument is not specified', async () => {
+    it('should raise error in case of if view-model\'s aggregateIds argument absence', async () => {
         const facade = createFacade({ model: viewModel });
         const executeQueryState = facade.raw;
 
@@ -309,9 +309,14 @@ describe('resolve-query', () => {
         };
         eventList = [testEvent];
 
-        const state = await executeQueryState();
-
-        expect(state).to.be.deep.equal([]);
+        try {
+            await executeQueryState();
+            return Promise.reject('Test failed');
+        } catch (error) {
+            expect(error.message).to.have.string(
+                'View models are build up only with aggregateIds array argument'
+            );
+        }
     });
 
     it('should fail on view-models with non-redux-like projection functions', async () => {
