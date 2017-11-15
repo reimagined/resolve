@@ -9,8 +9,8 @@ const createFacade = ({ model, gqlSchema, gqlResolvers, customResolvers }) => {
 
     if (gqlSchema && gqlResolvers) {
         const executableSchema = makeExecutableSchema({
-            typeDefs: model.gqlSchema,
-            resolvers: { Query: model.gqlResolvers }
+            typeDefs: gqlSchema,
+            resolvers: { Query: gqlResolvers }
         });
 
         executors.graphql = async (gqlQuery, gqlVariables, getJwt) => {
