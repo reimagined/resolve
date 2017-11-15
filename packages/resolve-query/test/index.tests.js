@@ -275,8 +275,8 @@ describe('resolve-query', () => {
             TestEvent: (state, event) => state.concat([event.payload])
         };
 
-        const viewModel = { projection: viewProjection, adapter: 'view' };
-        const executeQuery = createQueryExecutor({ eventStore, readModel: viewModel });
+        const viewModel = { projection: viewProjection };
+        const executeQuery = createQueryExecutor({ eventStore, viewModel });
         const testEvent = {
             type: 'TestEvent',
             aggregateId: 'test-id',
@@ -296,8 +296,8 @@ describe('resolve-query', () => {
             TestEvent: (state, event) => state.concat([event.payload])
         };
 
-        const viewModel = { projection: viewProjection, adapter: 'view' };
-        const executeQuery = createQueryExecutor({ eventStore, readModel: viewModel });
+        const viewModel = { projection: viewProjection };
+        const executeQuery = createQueryExecutor({ eventStore, viewModel });
         const testEvent = {
             type: 'TestEvent',
             aggregateId: 'test-id',
@@ -315,8 +315,8 @@ describe('resolve-query', () => {
             TestEvent: async () => null
         };
 
-        const viewModel = { projection: viewProjection, adapter: 'view' };
-        const executeQuery = createQueryExecutor({ eventStore, readModel: viewModel });
+        const viewModel = { projection: viewProjection };
+        const executeQuery = createQueryExecutor({ eventStore, viewModel });
         eventList = [
             {
                 type: 'TestEvent',
@@ -335,10 +335,10 @@ describe('resolve-query', () => {
     });
 
     it('should fail on view-models with supplied graphql facade', async () => {
-        const viewModel = { ...readModel, adapter: 'view', projection: {} };
+        const viewModel = { ...readModel, projection: {} };
 
         try {
-            createQueryExecutor({ eventStore, readModel: viewModel });
+            createQueryExecutor({ eventStore, viewModel });
             return Promise.reject('Test failed');
         } catch (error) {
             expect(error.message).to.have.string('View models does not support GraphQL facade');

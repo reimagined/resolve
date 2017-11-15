@@ -88,11 +88,7 @@ const read = async (repository, adapter, eventStore, projection) => {
 };
 
 const makePersistentExecutor = (readModel, eventStore) => {
-    const adapter =
-        !readModel.hasOwnProperty('adapter') || readModel.adapter === 'default'
-            ? createDefaultAdapter()
-            : readModel.adapter;
-
+    const adapter = readModel.adapter || createDefaultAdapter();
     const projection = readModel.projection ? adapter.buildProjection(readModel.projection) : null;
     const repository = {};
     const getReadModel = read.bind(null, repository, adapter, eventStore, projection);

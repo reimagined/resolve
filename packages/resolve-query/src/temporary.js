@@ -25,12 +25,12 @@ const filterAsyncResult = (result) => {
     }
 };
 
-const makeTemporaryExecutor = (readModel, eventStore) => {
-    if (readModel.gqlSchema || readModel.gqlResolvers) {
+const makeTemporaryExecutor = (viewModel, eventStore) => {
+    if (viewModel.gqlSchema || viewModel.gqlResolvers) {
         throw new Error('View models does not support GraphQL facade');
     }
 
-    const projection = readModel.projection;
+    const projection = viewModel.projection;
 
     return async (aggregateIds) => {
         let state = typeof projection.Init === 'function' && projection.Init();
