@@ -22,10 +22,7 @@ export default {
         adapter: fileAdapter,
         params: { pathToFile: dbPath }
     },
-    initialState: async (queryExecutors) => {
-        const todos = await queryExecutors['default'](['root-id']);
-        return { todos: Array.isArray(todos) ? todos : [] };
-    },
+    initialState: async queryExecutors => await queryExecutors['default'](['root-id']),
     aggregates,
     initialSubscribedEvents: { types: Object.values(eventTypes), ids: [] },
     readModels,

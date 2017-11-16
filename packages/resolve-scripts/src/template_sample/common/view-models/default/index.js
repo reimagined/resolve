@@ -29,6 +29,6 @@ export default {
                     todo.todoId === event.payload.todoId ? { ...todo, completed: false } : todo
             )
     },
-    serializeState: state => JSON.stringify(state),
+    serializeState: state => JSON.stringify({ todos: Array.isArray(state) ? state : [] }),
     deserializeState: serial => JSON.parse(serial)
 };
