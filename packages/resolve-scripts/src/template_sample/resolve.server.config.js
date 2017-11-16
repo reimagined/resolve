@@ -3,6 +3,7 @@ import busAdapter from 'resolve-bus-memory';
 import eventTypes from './common/aggregates/todo-events';
 import aggregates from './common/aggregates';
 import readModels from './common/read-models';
+import viewModels from './common/view-models';
 import clientConfig from './resolve.client.config.js';
 
 if (module.hot) {
@@ -21,13 +22,10 @@ export default {
         adapter: fileAdapter,
         params: { pathToFile: dbPath }
     },
-    initialState: async (readModelsExecutors) => {
-        const viewModelQuery = readModelsExecutors['default'];
-        const todos = await viewModelQuery({ eventTypes: Object.values(eventTypes) });
-        return { todos: Array.isArray(todos) ? todos : [] };
-    },
+    initialState: async queryExecutors => await queryExecutors['default'](['root-id']),
     aggregates,
     initialSubscribedEvents: { types: Object.values(eventTypes), ids: [] },
     readModels,
+    viewModels,
     extendExpress: () => {}
 };

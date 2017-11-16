@@ -21,7 +21,8 @@ let AddTodo = ({ dispatch }) => {
                         return;
                     }
                     dispatch(
-                        actions.createTodo(uuid.v4(), {
+                        actions.createTodo('root-id', {
+                            todoId: uuid.v4(),
                             text: input.value
                         })
                     );
