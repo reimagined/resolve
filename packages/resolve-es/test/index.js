@@ -46,7 +46,7 @@ describe('resolve-es', () => {
 
             const eventTypes = ['CREATE_TODO', 'REMOVE_TODO'];
             const eventHandler = sinon.stub();
-            eventStore.subscribeByEventType(eventTypes, eventHandler, true);
+            eventStore.subscribeByEventType(eventTypes, eventHandler, { onlyBus: true });
 
             await resolvedPromise;
 
@@ -125,7 +125,7 @@ describe('resolve-es', () => {
 
             const eventTypes = ['CREATE_TODO', 'REMOVE_TODO'];
             const eventHandler = sinon.stub();
-            eventStore.subscribeByAggregateId(eventTypes, eventHandler, true);
+            eventStore.subscribeByAggregateId(eventTypes, eventHandler, { onlyBus: true });
 
             await resolvedPromise;
 

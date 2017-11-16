@@ -36,14 +36,18 @@ export default (
     const onEventById = onEvent.bind(null, projectionMap.ids);
 
     const result = {
-        async subscribeByEventType(eventTypes, handler, { onlyBus = false, startTime = 0 }) {
+        async subscribeByEventType(eventTypes, handler, { onlyBus = false, startTime = 0 } = {}) {
             if (!onlyBus) {
                 await config.storage.loadEventsByTypes(eventTypes, handler, startTime);
             }
             return onEventByType(eventTypes, handler);
         },
 
-        async subscribeByAggregateId(aggregateId, handler, { onlyBus = false, startTime = 0 }) {
+        async subscribeByAggregateId(
+            aggregateId,
+            handler,
+            { onlyBus = false, startTime = 0 } = {}
+        ) {
             const aggregateIds = Array.isArray(aggregateId) ? aggregateId : [aggregateId];
             if (!onlyBus) {
                 await config.storage.loadEventsByAggregateIds(aggregateIds, handler, startTime);
