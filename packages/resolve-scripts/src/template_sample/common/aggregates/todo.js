@@ -10,7 +10,7 @@ const Event = (type, payload) => ({
 
 const { TODO_CREATED, TODO_COMPLETED, TODO_RESET } = events;
 
-const throwErrorIfNull = (state, todoId) => {
+const throwErrorIfNull = (state: any, todoId: string) => {
     if (!state || !state.find(todo => todo.todoId === todoId)) {
         throw new Error('The aggregate has already been removed');
     }
@@ -38,7 +38,7 @@ const Aggregate = {
                 todoId: command.payload.todoId,
                 text: command.payload.text
             }),
-        completeTodo: (state: TodoCompleted, command: TodoCompleted) => {
+        completeTodo: (state: any, command: TodoCompleted) => {
             throwErrorIfNull(state, command.payload.todoId);
             return state.find(todo => todo.todoId === command.payload.todoId).completed
                 ? null
@@ -46,7 +46,7 @@ const Aggregate = {
                     todoId: command.payload.todoId
                 });
         },
-        resetTodo: (state: TodoCompleted, command: TodoReset) => {
+        resetTodo: (state: any, command: TodoReset) => {
             throwErrorIfNull(state, command.payload.todoId);
             return !state.find(todo => todo.todoId === command.payload.todoId)
                 ? null
