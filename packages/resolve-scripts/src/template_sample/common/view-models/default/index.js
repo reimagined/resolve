@@ -28,5 +28,7 @@ export default {
                 todo =>
                     todo.todoId === event.payload.todoId ? { ...todo, completed: false } : todo
             )
-    }
+    },
+    serializeState: state => JSON.stringify(state),
+    deserializeState: serial => JSON.parse(serial)
 };
