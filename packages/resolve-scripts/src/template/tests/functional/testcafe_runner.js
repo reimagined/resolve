@@ -24,7 +24,7 @@ getInstallations()
                 const runner = testcafe.createRunner();
                 const browser = argv.browser || Object.keys(browsers).slice(0, 1);
                 return runner
-                    .startApp('npm run dev 2>&1 >log2.log', DELAY)
+                    .startApp('npm run dev', DELAY)
                     .src(['./tests/functional/index.test.js'])
                     .browsers(browser)
                     .run();
