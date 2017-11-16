@@ -124,3 +124,8 @@ Adapters for event store:
 * [See the change log](CHANGELOG.md).
 * Code released under the [MIT license](LICENSE.md).
 * reSolve is developed by Developer Express Inc. ([https://devexpress.com](https://devexpress.com))
+
+## Join us
+
+* [Twitter](https://twitter.com/resolvejs)
+* [Facebook](https://www.facebook.com/resolvejs/)

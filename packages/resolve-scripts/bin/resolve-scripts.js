@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+require('regenerator-runtime/runtime');
 
 const taskName = process.argv[2];
 switch (taskName) {
@@ -19,6 +20,9 @@ switch (taskName) {
         break;
     case 'test:e2e':
         require('../dist/scripts/runTestE2e');
+        break;
+    case 'update':
+        require('../dist/scripts/update');
         break;
     default:
         // eslint-disable-next-line no-console

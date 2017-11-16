@@ -1,6 +1,6 @@
 {
   "name": "resolve-scripts",
-  "version": "0.0.44",
+  "version": "0.1.0",
   "description": "This package create server with resolve.",
   "main": "./dist/index.js",
   "bugs": {
@@ -12,10 +12,10 @@
   "scripts": {
     "template:remove": "rm -rf ./dist/template",
     "template:copy": "cp -r ./src/template ./dist",
-    "template_empty:remove": "rm -rf ./dist/template_empty",
-    "template_empty:copy": "cp -r ./src/template_empty ./dist",
-    "build": "babel --out-dir ./dist ./src --ignore template",
-    "prepublish": "npm run build && npm run template:remove && npm run template:copy && npm run template_empty:remove && npm run template_empty:copy"
+    "template_sample:remove": "rm -rf ./dist/template_sample",
+    "template_sample:copy": "cp -r ./src/template_sample ./dist",
+    "build": "babel --out-dir ./dist ./src --ignore template_sample",
+    "prepublish": "npm run build && npm run template:remove && npm run template:copy && npm run template_sample:remove && npm run template_sample:copy"
   },
   "repository": {
     "type": "git",
@@ -47,7 +47,7 @@
     "express": "^4.15.3",
     "fs-extra": "^4.0.0",
     "graphql": "^0.11.7",
-    "graphql-tools": "^2.6.1",
+    "graphql-tools": "^2.7.2",
     "jest": "^20.0.4",
     "jsonwebtoken": "^7.4.3",
     "opn": "^5.1.0",
@@ -57,12 +57,13 @@
     "react-hot-loader": "^3.0.0-beta.7",
     "react-redux": "^5.0.5",
     "redux": "^3.7.2",
+    "regenerator-runtime": "^0.11.0",
     "request": "^2.81.0",
-    "resolve-bus-memory": "^0.0.44",
-    "resolve-command": "^0.0.44",
-    "resolve-es": "^0.0.44",
-    "resolve-query": "^0.0.44",
-    "resolve-storage-lite": "^0.0.44",
+    "resolve-bus-memory": "^0.1.0",
+    "resolve-command": "^0.1.0",
+    "resolve-es": "^0.1.0",
+    "resolve-query": "^0.1.0",
+    "resolve-storage-lite": "^0.1.0",
     "socket.io": "^2.0.3",
     "socket.io-client": "^2.0.3",
     "source-map-support": "^0.4.15",
