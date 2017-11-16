@@ -129,3 +129,4 @@ Adapters for event store:
 
 * [Twitter](https://twitter.com/resolvejs)
 * [Facebook](https://www.facebook.com/resolvejs/)
+* Learn how to make [Hacker News application](https://github.com/reimagined/hacker-news-resolve)
