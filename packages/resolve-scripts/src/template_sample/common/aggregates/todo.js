@@ -11,14 +11,14 @@ const Event = (type, payload) => ({
 const { TODO_CREATED, TODO_COMPLETED, TODO_RESET } = events;
 
 const throwErrorIfNull = (state, todoId) => {
-    if (!state || !state[todoId]) {
+    if (!state || !state.find(todo => todo.todoId === todoId)) {
         throw new Error('The aggregate has already been removed');
     }
 };
 
 const Aggregate = {
     name: 'Todo',
-    initialState: {},
+    initialState: [],
     projection: {
         [TODO_CREATED]: (state: any, event: TodoCreated) => state.concat([{ ...event.payload }]),
         [TODO_COMPLETED]: (state: any, event: TodoCompleted) =>
@@ -40,7 +40,7 @@ const Aggregate = {
             }),
         completeTodo: (state: TodoCompleted, command: TodoCompleted) => {
             throwErrorIfNull(state, command.payload.todoId);
-            return state[command.payload.todoId].completed
+            return state.find(todo => todo.todoId === command.payload.todoId).completed
                 ? null
                 : new Event(TODO_COMPLETED, {
                     todoId: command.payload.todoId
@@ -48,7 +48,7 @@ const Aggregate = {
         },
         resetTodo: (state: TodoCompleted, command: TodoReset) => {
             throwErrorIfNull(state, command.payload.todoId);
-            return !state[command.payload.todoId]
+            return !state.find(todo => todo.todoId === command.payload.todoId)
                 ? null
                 : new Event(TODO_RESET, {
                     todoId: command.payload.todoId
