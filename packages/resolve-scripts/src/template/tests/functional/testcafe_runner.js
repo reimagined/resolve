@@ -31,8 +31,14 @@ getInstallations()
             })
             .then((exitCode) => {
                 testcafe.close();
-                const targetPath = path.resolve(__dirname, '../', config.storage.params.pathToFile);
-                fs.unlinkSync(targetPath);
+                try {
+                    const targetPath = path.resolve(
+                        __dirname,
+                        '../',
+                        config.storage.params.pathToFile
+                    );
+                    fs.unlinkSync(targetPath);
+                } catch (err) {}
                 process.exit(exitCode);
             })
     )
