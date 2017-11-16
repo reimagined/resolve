@@ -55,7 +55,7 @@ function createAdapter({ url, collection }) {
                     throw e;
                 }),
         loadEventsByTypes: (types, callback, startTime = 0) =>
-            getCollection().then(coll => loadEvents(coll, { type: { $in: types }, startTime, callback)),
+            getCollection().then(coll => loadEvents(coll, { type: { $in: types }}, startTime, callback)),
         loadEventsByAggregateIds: (aggregateIds, callback, startTime = 0) =>
             getCollection().then(coll =>
                 loadEvents(coll, { aggregateId: { $in: aggregateIds } }, startTime, callback)
