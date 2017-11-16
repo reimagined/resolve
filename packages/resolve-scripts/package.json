@@ -51,6 +51,7 @@
     "jest": "^20.0.4",
     "jsonwebtoken": "^7.4.3",
     "opn": "^5.1.0",
+    "passport": "^0.4.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-helmet": "^5.1.3",
