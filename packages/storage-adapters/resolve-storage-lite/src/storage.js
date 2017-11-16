@@ -28,7 +28,7 @@ const storage = {
     loadEvents: (query, startTime, callback) => db =>
         new Promise((resolve, reject) =>
             db
-                .find({...query, timestamp: { $gt: startTime }})
+                .find({ ...query, timestamp: { $gt: startTime } })
                 .sort({ timestamp: 1 })
                 .exec((error, events) => {
                     if (error) {

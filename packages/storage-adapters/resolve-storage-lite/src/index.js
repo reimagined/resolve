@@ -8,6 +8,8 @@ export default ({ pathToFile } = {}) => {
         loadEventsByTypes: (types, callback, startTime = 0) =>
             prepareStorage.then(storage.loadEvents({ type: { $in: types } }, startTime, callback)),
         loadEventsByAggregateIds: (ids, callback, startTime = 0) =>
-            prepareStorage.then(storage.loadEvents({ aggregateId: { $in: ids } }, startTime, callback))
+            prepareStorage.then(
+                storage.loadEvents({ aggregateId: { $in: ids } }, startTime, callback)
+            )
     };
 };
