@@ -10,8 +10,8 @@ When initializing an event store, pass the following arguments:
 
 	... or implement a custom storage adapter. A storage adapter is an object with the following fields:
 	* `saveEvent` - a function which takes an event and returns a Promise that is resolved when the event is stored.
-	* `loadEventsByTypes` - a function which takes two arguments: an array of event types  and a  callback that is called for handling each appropriate event. 
-	* `loadEventsByAggregateIds` - a function which takes two arguments: an aggregate id/ array of aggregate ids and a callback that is called for handling each  appropriate event. 
+	* `loadEventsByTypes` - a function which takes three arguments: an array of event types, a callback that is called for handling each appropriate event and a timestamp specifying when to start loading events. 
+	* `loadEventsByAggregateIds` - a function which takes three arguments: an aggregate id/ array of aggregate ids, a callback that is called for handling each   appropriate event and a timestamp specifying when to start loading events. 
 
 * `bus`  
 	Use a reSolve framework [adapter](../bus-adapters)...
@@ -44,15 +44,15 @@ eventStore.subscribeByAggregateId(['1', '2'], event =>
 
 eventStore.getEventsByAggregateId('1', event =>
   console.log('Aggregate event loaded', event)
-)
+, { startTime: new Date(2017,10,30).getTime() })
 
 eventStore.subscribeByEventType(['UserCreated'], event =>
   console.log('Fresh event emitted from bus by event type', event),
-true)
+{ onlyBus: true })
 
 eventStore.subscribeByAggregateId(['1', '2'], event =>
   console.log('Fresh event emitted from bus by aggregate id', event),
-true)
+{ onlyBus: true })
 
 const event = {
   aggregateId: '1',
