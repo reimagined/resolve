@@ -10,17 +10,24 @@ const events = {
 export type TodoCreated = {
     aggregateId: string,
     payload: {
+        todoId: string,
         text: string,
         completed: boolean
     }
 };
 
 export type TodoCompleted = {
-    aggregateId: string
+    aggregateId: string,
+    payload: {
+        todoId: string
+    }
 };
 
 export type TodoReset = {
-    aggregateId: string
+    aggregateId: string,
+    payload: {
+        todoId: string
+    }
 };
 
 export default events;

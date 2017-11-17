@@ -3,7 +3,7 @@ import cookieParser from 'cookie-parser';
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import path from 'path';
-import query from 'resolve-query';
+import { createReadModel, createViewModel, createFacade } from 'resolve-query';
 import commandHandler from 'resolve-command';
 import request from 'request';
 import passport from 'passport';
@@ -28,21 +28,64 @@ if (!Array.isArray(config.readModels)) {
     raiseError(message.readModelsArrayFormat, config.readModels);
 }
 
-const readModelExecutors = config.readModels.reduce((result, readModel) => {
+if (!Array.isArray(config.viewModels)) {
+    raiseError(message.viewModelsArrayFormat, config.viewModels);
+}
+
+const queryExecutors = {};
+
+config.readModels.forEach((readModel) => {
     if (!readModel.name && config.readModels.length === 1) {
         readModel.name = 'graphql';
     } else if (!readModel.name) {
         raiseError(message.readModelMandatoryName, readModel);
+    } else if (queryExecutors[readModel.name]) {
+        raiseError(message.dublicateName, readModel);
     }
-    if (!(!readModel.viewModel ^ !(readModel.gqlSchema && readModel.gqlResolvers))) {
+
+    if (!readModel.gqlSchema || !readModel.gqlResolvers) {
         raiseError(message.readModelQuerySideMandatory, readModel);
     }
 
-    result[readModel.name] = query({ eventStore, readModel });
-    result[readModel.name].viewModel = readModel.viewModel;
+    queryExecutors[readModel.name] = createFacade({
+        model: createReadModel({
+            projection: readModel.projection,
+            adapter: readModel.adapter,
+            eventStore
+        }),
+        gqlSchema: readModel.gqlSchema,
+        gqlResolvers: readModel.gqlResolvers
+    }).executeQueryGraphql;
 
-    return result;
-}, {});
+    queryExecutors[readModel.name].mode = 'graphql';
+});
+
+config.viewModels.forEach((viewModel) => {
+    if (!viewModel.name && config.viewModels.length === 1) {
+        viewModel.name = 'reduxinitial';
+    } else if (!viewModel.name) {
+        raiseError(message.viewModelMandatoryName, viewModel);
+    } else if (queryExecutors[viewModel.name]) {
+        raiseError(message.dublicateName, viewModel);
+    }
+
+    if (!viewModel.serializeState || !viewModel.deserializeState) {
+        raiseError(message.viewModelSerializable, viewModel);
+    }
+
+    queryExecutors[viewModel.name] = createFacade({
+        model: createViewModel({
+            projection: viewModel.projection,
+            eventStore
+        }),
+        customResolvers: {
+            view: async (model, aggregateIds) =>
+                await viewModel.serializeState(await model(aggregateIds))
+        }
+    }).executeQueryCustom.bind(null, 'view');
+
+    queryExecutors[viewModel.name].mode = 'view';
+});
 
 const executeCommand = commandHandler({
     eventStore,
@@ -58,7 +101,7 @@ app.use((req, res, next) => {
     );
 
     req.resolve = {
-        readModelExecutors,
+        queryExecutors,
         executeCommand,
         eventStore
     };
@@ -97,9 +140,9 @@ app.post(`${rootDirectory}/api/commands`, async (req, res) => {
     }
 });
 
-Object.keys(readModelExecutors).forEach((modelName) => {
-    const executor = readModelExecutors[modelName];
-    if (!executor.viewModel) {
+Object.keys(queryExecutors).forEach((modelName) => {
+    const executor = queryExecutors[modelName];
+    if (executor.mode === 'graphql') {
         app.post(
             `${rootDirectory}/api/query/${modelName}`,
             bodyParser.urlencoded({ extended: false }),
@@ -118,15 +161,14 @@ Object.keys(readModelExecutors).forEach((modelName) => {
                 }
             }
         );
-    } else {
+    } else if (executor.mode === 'view') {
         app.get(`${rootDirectory}/api/query/${modelName}`, async (req, res) => {
             try {
-                const [aggregateIds, eventTypes] = [req.query.aggregateIds, req.query.eventTypes];
-                if (!Array.isArray(aggregateIds) && !Array.isArray(eventTypes)) {
+                if (!Array.isArray(req.query.aggregateIds)) {
                     throw new Error(message.viewModelOnlyOnDemand);
                 }
 
-                const result = await executor({ aggregateIds, eventTypes });
+                const result = await executor(req.query.aggregateIds);
                 res.status(200).json(result);
             } catch (err) {
                 res.status(500).end(`${message.viewModelFail}${err.message}`);
@@ -149,7 +191,7 @@ app.use(`${rootDirectory}${STATIC_PATH}`, staticMiddleware);
 
 app.get([`${rootDirectory}/*`, `${rootDirectory || '/'}`], async (req, res) => {
     try {
-        const state = await config.initialState(readModelExecutors, {
+        const state = await config.initialState(queryExecutors, {
             cookies: req.cookies,
             hostname: req.hostname,
             originalUrl: req.originalUrl,

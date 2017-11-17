@@ -37,6 +37,7 @@ const defaultConfig = {
         authRoutes: []
     },
     readModels: [],
+    viewModels: [],
     extendExpress: () => {}
 };
 
