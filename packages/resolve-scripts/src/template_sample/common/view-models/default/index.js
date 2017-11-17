@@ -5,29 +5,30 @@ import events from '../../aggregates/todo-events';
 
 const { TODO_CREATED, TODO_COMPLETED, TODO_RESET } = events;
 
-export const checkState = (state: any) => (Array.isArray(state) ? state : []);
-
 export default {
     name: 'default',
-    viewModel: true,
     projection: {
+        Init: () => [],
         [TODO_CREATED]: (state: any, event: TodoCreated) =>
-            checkState(state).concat([
+            state.concat([
                 {
-                    aggregateId: event.aggregateId,
+                    todoId: event.payload.todoId,
                     completed: event.payload.completed,
                     text: event.payload.text
                 }
             ]),
+
         [TODO_COMPLETED]: (state: any, event: TodoCompleted) =>
-            checkState(state).map(
-                todo =>
-                    todo.aggregateId === event.aggregateId ? { ...todo, completed: true } : todo
+            state.map(
+                todo => (todo.todoId === event.payload.todoId ? { ...todo, completed: true } : todo)
             ),
+
         [TODO_RESET]: (state: any, event: TodoReset) =>
-            checkState(state).map(
+            state.map(
                 todo =>
-                    todo.aggregateId === event.aggregateId ? { ...todo, completed: false } : todo
+                    todo.todoId === event.payload.todoId ? { ...todo, completed: false } : todo
             )
-    }
+    },
+    serializeState: (state: any) => JSON.stringify({ todos: Array.isArray(state) ? state : [] }),
+    deserializeState: (serial: any) => JSON.parse(serial)
 };
