@@ -70,17 +70,15 @@ config.passport.strategies.forEach(strategy => passport.use(strategy));
 
 app.use(passport.initialize());
 
-const authenticateMiddleware = (req, res, user) => {
-    const authenticationToken = jwt.sign(user, config.jwt.secret);
-    res.cookie(config.jwt.cookieName, authenticationToken, config.jwt.options);
-    res.redirect(req.query.redirect || '/');
-};
-
 config.passport.authRoutes.forEach((route) => {
-    app.post(
-        route,
-        (req, res, next) => config.passport.authMiddleware(passport, req, res, next),
-        (req, res) => authenticateMiddleware(req, res, req.user)
+    const applyJwtValue = (value, res, url) => {
+        const authenticationToken = jwt.sign(value, config.jwt.secret);
+        res.cookie(config.jwt.cookieName, authenticationToken, config.jwt.options);
+        res.redirect(url || `${rootDirectory}/`);
+    };
+
+    app.post(route, (req, res, next) =>
+        config.passport.authMiddleware(passport, applyJwtValue, req, res, next)
     );
 });
 
