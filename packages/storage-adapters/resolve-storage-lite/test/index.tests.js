@@ -39,7 +39,7 @@ describe('adapter', () => {
         await adapter({ pathToFile }).loadEventsByTypes(types, callback);
 
         sinon.assert.calledWith(storage.prepare, pathToFile);
-        sinon.assert.calledWith(storage.loadEvents, { type: { $in: types } }, callback);
+        sinon.assert.calledWith(storage.loadEvents, { type: { $in: types } }, 0, callback);
     });
 
     it('loadEventsByAggregateIds should load events by aggregateId from storage', async () => {
@@ -49,7 +49,7 @@ describe('adapter', () => {
         await adapter({ pathToFile }).loadEventsByAggregateIds(ids, callback);
 
         sinon.assert.calledWith(storage.prepare, pathToFile);
-        sinon.assert.calledWith(storage.loadEvents, { aggregateId: { $in: ids } }, callback);
+        sinon.assert.calledWith(storage.loadEvents, { aggregateId: { $in: ids } }, 0, callback);
     });
 
     it('throw an exception if the event with the current version exists', async () => {
