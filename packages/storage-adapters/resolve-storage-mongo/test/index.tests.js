@@ -67,7 +67,7 @@ describe('es-mongo', () => {
             .then((db) => {
                 expect(db.collection.lastCall.args).to.deep.equal(['test-collection']);
                 expect(db.collection.lastCall.returnValue.find.lastCall.args).to.deep.equal([
-                    { type: { $in: types } },
+                    { type: { $in: types }, timestamp: { $gt: 0 } },
                     { sort: 'timestamp' }
                 ]);
 
@@ -89,7 +89,7 @@ describe('es-mongo', () => {
             .then((db) => {
                 expect(db.collection.lastCall.args).to.deep.equal(['test-collection']);
                 expect(db.collection.lastCall.returnValue.find.lastCall.args).to.deep.equal([
-                    { aggregateId: { $in: [aggregateId] } },
+                    { aggregateId: { $in: [aggregateId] }, timestamp: { $gt: 0 } },
                     { sort: 'timestamp' }
                 ]);
 
