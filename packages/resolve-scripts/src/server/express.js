@@ -113,17 +113,24 @@ config.passport.strategies.forEach(strategy => passport.use(strategy));
 
 app.use(passport.initialize());
 
-config.passport.authRoutes.forEach((route) => {
-    const applyJwtValue = (value, res, url) => {
-        const authenticationToken = jwt.sign(value, config.jwt.secret);
-        res.cookie(config.jwt.cookieName, authenticationToken, config.jwt.options);
-        res.redirect(url || `${rootDirectory}/`);
-    };
+const applyJwtValue = (value, res, url) => {
+    const authenticationToken = jwt.sign(value, config.jwt.secret);
+    res.cookie(config.jwt.cookieName, authenticationToken, config.jwt.options);
+    res.redirect(url || `${rootDirectory}/`);
+};
 
-    app.post(route, (req, res, next) =>
-        config.passport.authMiddleware(passport, applyJwtValue, req, res, next)
-    );
-});
+const bindAuthMiddleware = (arr, method) => {
+    arr.forEach((route) => {
+        app[method](route, (req, res, next) =>
+            config.passport.authMiddleware(passport, applyJwtValue, req, res, next)
+        );
+    });
+};
+
+const authRoutes = config.passport.authRoutes;
+if (Array.isArray(authRoutes)) bindAuthMiddleware(authRoutes, 'get');
+if (authRoutes.post) bindAuthMiddleware(authRoutes.post, 'post');
+if (authRoutes.get) bindAuthMiddleware(authRoutes.get, 'get');
 
 try {
     config.extendExpress(app);
