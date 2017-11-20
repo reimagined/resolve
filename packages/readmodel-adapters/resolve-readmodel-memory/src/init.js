@@ -2,7 +2,7 @@ import NeDB from 'nedb';
 
 export default function init(repository) {
     if (repository.interfaceMap) {
-        throw new Error('The read model storage is already initialized.');
+        throw new Error('The read model storage is already initialized');
     }
 
     const loadCollection = (collectionName, createOnWrite = false) => {
@@ -11,7 +11,7 @@ export default function init(repository) {
             return collectionMap.get(collectionName);
         }
         if (!createOnWrite) {
-            throw new Error(`Collection ${collectionName} does not exist`);
+            throw new Error(`The ${collectionName} collection does not exist`);
         }
 
         const collection = new NeDB({ autoload: true, inMemoryOnly: true });
@@ -32,7 +32,9 @@ export default function init(repository) {
             const collection = loadCollection(collectionName, isWriteable);
             if (!isWriteable && !allowOnRead) {
                 return async () => {
-                    throw new Error(`Collection method ${funcName} is not allowed on read side`);
+                    throw new Error(
+                        `The collection’s ${funcName} method is not allowed on the read side`
+                    );
                 };
             }
 
