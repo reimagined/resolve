@@ -50,7 +50,10 @@ export default function init(repository) {
         const execFind = (options) => {
             const collection = loadCollection(collectionName, isWriteable);
             if (options.requestFold) {
-                throw new Error('Find request cannot be reused after documents retrieving');
+                throw new Error(
+                    'After documents are retrieved with a search request, ' +
+                        'this search request cannot be reused'
+                );
             }
 
             options.requestFold = options.requestChain.reduce(
