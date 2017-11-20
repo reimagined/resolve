@@ -32,6 +32,7 @@ const defaultConfig = {
         secret: 'Keyboard-Kat'
     },
     readModels: [],
+    viewModels: [],
     extendExpress: () => {}
 };
 

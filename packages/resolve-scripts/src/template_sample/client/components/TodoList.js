@@ -6,10 +6,12 @@ const TodoList = ({ todos, completeTodo, resetTodo }) => (
     <ul>
         {todos.map(todo => (
             <Todo
-                key={todo.aggregateId}
+                key={todo.todoId}
                 {...todo}
                 onClick={() =>
-                    todo.completed ? resetTodo(todo.aggregateId) : completeTodo(todo.aggregateId)}
+                    todo.completed
+                        ? resetTodo('root-id', { todoId: todo.todoId })
+                        : completeTodo('root-id', { todoId: todo.todoId })}
             />
         ))}
     </ul>
@@ -18,7 +20,7 @@ const TodoList = ({ todos, completeTodo, resetTodo }) => (
 TodoList.propTypes = {
     todos: PropTypes.arrayOf(
         PropTypes.shape({
-            aggregateId: PropTypes.string.isRequired,
+            todoId: PropTypes.string.isRequired,
             completed: PropTypes.bool.isRequired,
             text: PropTypes.string.isRequired
         }).isRequired

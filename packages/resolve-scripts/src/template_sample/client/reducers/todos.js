@@ -1,7 +1,7 @@
 import { createReducer } from 'resolve-redux';
-import readModel from '../../common/read-models/default';
+import viewModel from '../../common/view-models/default';
 
 export default createReducer({
     name: 'VIEW',
-    projection: readModel.projection
+    projection: viewModel.projection
 });

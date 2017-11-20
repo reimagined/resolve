@@ -3,6 +3,7 @@ import fileAdapter from 'resolve-storage-lite';
 import busAdapter from 'resolve-bus-memory';
 import aggregates from './common/aggregates';
 import readModels from './common/read-models';
+import viewModels from './common/view-models';
 import clientConfig from './resolve.client.config.js';
 
 if (module.hot) {
@@ -23,5 +24,6 @@ export default {
     aggregates,
     initialSubscribedEvents: { types: [], ids: [] },
     readModels,
+    viewModels,
     extendExpress: () => {}
 };
