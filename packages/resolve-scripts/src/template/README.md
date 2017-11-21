@@ -480,14 +480,14 @@ The `resolve.server.config.js` file contains information for the reSolve library
 	}
 	```
 
-	* #### sagas
+* #### sagas
 	An array of functions allowing you to subscribe to the specified events and then execute a command.
 
 	##### Example
 	###### resolve.server.config.js
 	```js
 	export default {
-	  sagas: [({ subscribeByEventType, subscribeByAggregateId, queryExecutors, executeCommand }) => {
+	  sagas: [({ [subscribeByEventType](../../../resolve-es), [subscribeByAggregateId](../../../resolve-es), [queryExecutors](../../../resolve-query), [executeCommand](../../../resolve-command) }) => {
 			// code
 		}]
 	}
