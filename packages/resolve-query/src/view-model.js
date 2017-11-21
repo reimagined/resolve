@@ -22,12 +22,15 @@ const filterAsyncResult = (result) => {
 };
 
 const createViewModel = ({ projection, eventStore }) => {
-    const getKey = aggregateIds => aggregateIds.sort().join(',');
+    const getKey = aggregateIds =>
+        Array.isArray(aggregateIds) ? aggregateIds.sort().join(',') : aggregateIds;
     const viewMap = new Map();
 
     const reader = async (aggregateIds) => {
-        if (!Array.isArray(aggregateIds) || aggregateIds.length === 0) {
-            throw new Error('View models are build up only with aggregateIds array argument');
+        if (aggregateIds !== '*' && (!Array.isArray(aggregateIds) || aggregateIds.length === 0)) {
+            throw new Error(
+                'View models are build up only with aggregateIds array or wildcard argument'
+            );
         }
 
         const key = getKey(aggregateIds);
@@ -52,10 +55,15 @@ const createViewModel = ({ projection, eventStore }) => {
                 }
             };
 
-            const unsubscribe = await subscribeByEventTypeAndIds(eventStore, callback, {
-                types: Object.keys(projection),
-                ids: aggregateIds
-            });
+            const eventTypes = Object.keys(projection);
+
+            const unsubscribe =
+                aggregateIds === '*'
+                    ? await eventStore.subscribeByEventType(eventTypes, callback)
+                    : await eventStore.subscribeByAggregateId(
+                          aggregateIds,
+                          event => eventTypes.includes(event.type) && callback(event)
+                      );
 
             if (!executor.disposing) {
                 executor.dispose = unsubscribe;
