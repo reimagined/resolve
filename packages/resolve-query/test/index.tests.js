@@ -322,7 +322,7 @@ describe('resolve-query', () => {
         expect(state).to.be.deep.equal(['test-payload']);
     });
 
-    it('should support many aggregate ids', async () => {
+    it('should support view-models with many aggregate ids', async () => {
         const { executeQueryRaw } = createFacade({ model: viewModel });
 
         const testEvent1 = {
@@ -342,6 +342,26 @@ describe('resolve-query', () => {
 
         expect(state1).to.be.deep.equal(['test-payload-1']);
         expect(state2).to.be.deep.equal(['test-payload-2']);
+    });
+
+    it('should support view-models with wildcard aggregate ids', async () => {
+        const { executeQueryRaw } = createFacade({ model: viewModel });
+
+        const testEvent1 = {
+            type: 'TestEvent',
+            aggregateId: 'test-id-1',
+            payload: 'test-payload-1'
+        };
+        const testEvent2 = {
+            type: 'TestEvent',
+            aggregateId: 'test-id-2',
+            payload: 'test-payload-2'
+        };
+        eventList = [testEvent1, testEvent2];
+
+        const state = await executeQueryRaw('*');
+
+        expect(state).to.be.deep.equal(['test-payload-1', 'test-payload-2']);
     });
 
     // eslint-disable-next-line max-len
