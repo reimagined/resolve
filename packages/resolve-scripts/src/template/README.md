@@ -480,6 +480,19 @@ The `resolve.server.config.js` file contains information for the reSolve library
 	}
 	```
 
+	* #### sagas
+	An array of functions allowing you to subscribe to the specified events and then execute a command.
+
+	##### Example
+	###### resolve.server.config.js
+	```js
+	export default {
+	  sagas: [({ subscribeByEventType, subscribeByAggregateId, queryExecutors, executeCommand }) => {
+			// code
+		}]
+	}
+	```
+
 * #### storage
 	Contains an object with the following structure: 
 	* `adapter`: a [storage adapter](../../../storage-adapters) 
