@@ -52,7 +52,8 @@ Custom query can be helpful in following cases:
 Implement a read model for building News state with custom GraphQL resolvers and use the `resolve-query` library to get the first page of news. It handles events produced by an aggregate shown in the [resolve-command](../resolve-command#example) documentation.
 
 ```js
-import createQueryExecutor from 'resolve-query'
+import { createReadModel, createFacade } from 'resolve-query'
+import createMemoryAdapter from 'resolve-readmodel-memory'
 import createEventStore from 'resolve-es'
 import createStorageAdapter from 'resolve-storage-lite'
 import createBusAdapter from 'resolve-bus-memory'
@@ -64,16 +65,22 @@ const eventStore = createEventStore({
     bus: createBusAdapter()
 })
 
-const readModels = newsReadModel
-
-const query = createQueryExecutor({ eventStore, readModel })
+const executeQueryGraphql = createFacade({
+  model: createReadModel({
+    eventStore,
+    projection: newsReadModel.projection,
+    adapter: createMemoryAdapter()
+  }),
+  gqlSchema: newsReadModel.gqlSchema,
+  gqlResolvers: newsReadModel.gqlResolvers
+})
 
 // Request by GraphQL query with paramaters
-query(
+executeQueryGraphql(
   'query ($page: ID!) { news(page: $page) { title, text, link } }',
   { page: 1 }
-).then(state => {
-  console.log(state)
+).then((result) => {
+  console.log(result)
 })
 ```
 
@@ -83,11 +90,15 @@ const NUMBER_OF_ITEMS_PER_PAGE = 10
 
 export default {
   projection: {
-    NewsCreated: (state, { aggregateId,  timestamp, payload: { title, link, text } }) => ([
-      { id: aggregateId, title, text, link }
-    ].concat(state)),
+    NewsCreated: async (store, { aggregateId,  timestamp, payload: { title, link, text } }) => {
+      const news = await store.collection('News')
+      await news.insert({ id: aggregateId, title, text, link })
+    },
 
-    NewsDeleted: (state, { aggregateId }) => state.filter(({ id }) => id !== aggregateId)
+    NewsDeleted: (store, { aggregateId }) => {
+      const news = await store.collection('News')
+      await news.remove({ id: aggregateId })
+    }
   },
 
   gqlSchema: `
@@ -103,15 +114,16 @@ export default {
   `,
 
   gqlResolvers: {
-    news: async (read, { page }) => {
-      const news = await read() // Retrieve default collection
+    news: async (store, { page }) => {
+      const news = await store.collection('News')
 
-      return (Number.isInteger(+page) && (+page > 0))
-        ? news.slice(
-          +page * NUMBER_OF_ITEMS_PER_PAGE - NUMBER_OF_ITEMS_PER_PAGE,
-          +page * NUMBER_OF_ITEMS_PER_PAGE + 1
-        )
-        : news
+      if(Number.isInteger(+page) && (+page > 0)) {
+        return await news.find({})
+          .skip((page - 1) * NUMBER_OF_ITEMS_PER_PAGE)
+          .limit(NUMBER_OF_ITEMS_PER_PAGE)
+      }
+        
+      return await news.find({})
     }
   }
 }
