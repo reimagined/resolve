@@ -487,7 +487,7 @@ The `resolve.server.config.js` file contains information for the reSolve library
 	###### resolve.server.config.js
 	```js
 	export default {
-	  sagas: [({ [subscribeByEventType](../../../resolve-es), [subscribeByAggregateId](../../../resolve-es), [queryExecutors](../../../resolve-query), [executeCommand](../../../resolve-command) }) => {
+	  sagas: [({ subscribeByEventType, subscribeByAggregateId, queryExecutors, executeCommand }) => {
 			// code
 		}]
 	}
