@@ -380,7 +380,7 @@ describe('resolve-query', () => {
             return Promise.reject('Test failed');
         } catch (error) {
             expect(error.message).to.have.string(
-                'View models are build up only with aggregateIds array argument'
+                'View models are build up only with aggregateIds array or wildcard argument'
             );
         }
     });

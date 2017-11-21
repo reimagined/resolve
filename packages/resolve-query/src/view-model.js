@@ -22,7 +22,8 @@ const filterAsyncResult = (result) => {
 };
 
 const createViewModel = ({ projection, eventStore }) => {
-    const getKey = aggregateIds => aggregateIds.sort().join(',');
+    const getKey = aggregateIds =>
+        Array.isArray(aggregateIds) ? aggregateIds.sort().join(',') : aggregateIds;
     const viewMap = new Map();
 
     const reader = async (aggregateIds) => {
@@ -58,7 +59,7 @@ const createViewModel = ({ projection, eventStore }) => {
 
             const unsubscribe =
                 aggregateIds === '*'
-                    ? await eventStore.subscribeByEventTypes(eventTypes, callback)
+                    ? await eventStore.subscribeByEventType(eventTypes, callback)
                     : await eventStore.subscribeByAggregateId(
                           aggregateIds,
                           event => eventTypes.includes(event.type) && callback(event)
