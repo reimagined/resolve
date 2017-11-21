@@ -1,18 +1,12 @@
 import 'regenerator-runtime/runtime';
 
 const subscribeByEventTypeAndIds = async (eventStore, callback, eventDescriptors) => {
-    const passedEvents = new WeakSet();
-    const trigger = event => !passedEvents.has(event) && passedEvents.add(event) && callback(event);
-
-    const conditionalSubscribe = (section, subscriber) =>
-        Array.isArray(section) ? subscriber(section, trigger) : Promise.resolve(() => {});
-
-    const unsubscribers = await Promise.all([
-        conditionalSubscribe(eventDescriptors.types, eventStore.subscribeByEventType),
-        conditionalSubscribe(eventDescriptors.ids, eventStore.subscribeByAggregateId)
-    ]);
-
-    return () => unsubscribers.forEach(func => func());
+    return await eventStore.subscribeByAggregateId(eventDescriptors.ids, (event) => {
+        if (!eventDescriptors.types.includes(event.type)) {
+            return;
+        }
+        callback(event);
+    });
 };
 
 const GeneratorProto = (function*() {})().__proto__.__proto__;
@@ -28,17 +22,19 @@ const filterAsyncResult = (result) => {
 };
 
 const createViewModel = ({ projection, eventStore }) => {
-    const getKey = aggregateIds => aggregateIds.sort().join(',');
+    const getKey = aggregateIds =>
+        Array.isArray(aggregateIds) ? aggregateIds.sort().join(',') : aggregateIds;
     const viewMap = new Map();
 
     const reader = async (aggregateIds) => {
-        if (!Array.isArray(aggregateIds) || aggregateIds.length === 0) {
+        if (aggregateIds !== '*' && (!Array.isArray(aggregateIds) || aggregateIds.length === 0)) {
             throw new Error(
-                'A view model can be built if an aggregateId array is specified as an argument'
+                'View models are build up only with aggregateIds array or wildcard argument'
             );
         }
 
         const key = getKey(aggregateIds);
+
         if (viewMap.has(key)) {
             const executor = viewMap.get(key);
             return await executor();
@@ -59,10 +55,15 @@ const createViewModel = ({ projection, eventStore }) => {
                 }
             };
 
-            const unsubscribe = await subscribeByEventTypeAndIds(eventStore, callback, {
-                types: Object.keys(projection),
-                ids: aggregateIds
-            });
+            const eventTypes = Object.keys(projection);
+
+            const unsubscribe =
+                aggregateIds === '*'
+                    ? await eventStore.subscribeByEventType(eventTypes, callback)
+                    : await eventStore.subscribeByAggregateId(
+                          aggregateIds,
+                          event => eventTypes.includes(event.type) && callback(event)
+                      );
 
             if (!executor.disposing) {
                 executor.dispose = unsubscribe;

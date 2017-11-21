@@ -322,6 +322,48 @@ describe('resolve-query', () => {
         expect(state).to.be.deep.equal(['test-payload']);
     });
 
+    it('should support view-models with many aggregate ids', async () => {
+        const { executeQueryRaw } = createFacade({ model: viewModel });
+
+        const testEvent1 = {
+            type: 'TestEvent',
+            aggregateId: 'test-id-1',
+            payload: 'test-payload-1'
+        };
+        const testEvent2 = {
+            type: 'TestEvent',
+            aggregateId: 'test-id-2',
+            payload: 'test-payload-2'
+        };
+        eventList = [testEvent1, testEvent2];
+
+        const state1 = await executeQueryRaw(['test-id-1']);
+        const state2 = await executeQueryRaw(['test-id-2']);
+
+        expect(state1).to.be.deep.equal(['test-payload-1']);
+        expect(state2).to.be.deep.equal(['test-payload-2']);
+    });
+
+    it('should support view-models with wildcard aggregate ids', async () => {
+        const { executeQueryRaw } = createFacade({ model: viewModel });
+
+        const testEvent1 = {
+            type: 'TestEvent',
+            aggregateId: 'test-id-1',
+            payload: 'test-payload-1'
+        };
+        const testEvent2 = {
+            type: 'TestEvent',
+            aggregateId: 'test-id-2',
+            payload: 'test-payload-2'
+        };
+        eventList = [testEvent1, testEvent2];
+
+        const state = await executeQueryRaw('*');
+
+        expect(state).to.be.deep.equal(['test-payload-1', 'test-payload-2']);
+    });
+
     // eslint-disable-next-line max-len
     it('should raise error in case of if view-model\'s aggregateIds argument absence', async () => {
         const { executeQueryRaw } = createFacade({ model: viewModel });
@@ -338,7 +380,7 @@ describe('resolve-query', () => {
             return Promise.reject('Test failed');
         } catch (error) {
             expect(error.message).to.have.string(
-                'View models are build up only with aggregateIds array argument'
+                'View models are build up only with aggregateIds array or wildcard argument'
             );
         }
     });
@@ -375,6 +417,6 @@ describe('resolve-query', () => {
         await viewModel(['test-aggregate-id']);
         viewModel.dispose();
 
-        expect(unsubscribe.callCount).to.be.equal(2);
+        expect(unsubscribe.callCount).to.be.equal(1);
     });
 });

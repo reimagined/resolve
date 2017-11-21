@@ -46,12 +46,26 @@ describe('resolve-es', () => {
 
             const eventTypes = ['CREATE_TODO', 'REMOVE_TODO'];
             const eventHandler = sinon.stub();
-            eventStore.subscribeByEventType(eventTypes, eventHandler, true);
+            eventStore.subscribeByEventType(eventTypes, eventHandler, { onlyBus: true });
 
             await resolvedPromise;
 
             expect(storage.loadEventsByTypes.notCalled).to.be.true;
             expect(bus.subscribe.calledOnce).to.be.true;
+        });
+
+        it('using timestamp', async () => {
+            const storage = { loadEventsByTypes: sinon.stub() };
+            const bus = { subscribe: () => {} };
+            const eventStore = createEventStore({ storage, bus });
+
+            const eventTypes = ['CREATE_TODO', 'REMOVE_TODO'];
+            const eventHandler = () => {};
+            const timestamp = 123;
+
+            eventStore.subscribeByEventType(eventTypes, eventHandler, { startTime: timestamp });
+
+            sinon.assert.calledWith(storage.loadEventsByTypes, eventTypes, eventHandler, timestamp);
         });
     });
 
@@ -125,12 +139,31 @@ describe('resolve-es', () => {
 
             const eventTypes = ['CREATE_TODO', 'REMOVE_TODO'];
             const eventHandler = sinon.stub();
-            eventStore.subscribeByAggregateId(eventTypes, eventHandler, true);
+            eventStore.subscribeByAggregateId(eventTypes, eventHandler, { onlyBus: true });
 
             await resolvedPromise;
 
             expect(storage.loadEventsByAggregateIds.notCalled).to.be.true;
             expect(bus.subscribe.calledOnce).to.be.true;
+        });
+
+        it('using timestamp', async () => {
+            const storage = { loadEventsByAggregateIds: sinon.stub() };
+            const bus = { subscribe: () => {} };
+            const eventStore = createEventStore({ storage, bus });
+
+            const aggregateId = 'aggregateId';
+            const eventHandler = () => {};
+            const timestamp = 123;
+
+            eventStore.subscribeByAggregateId(aggregateId, eventHandler, { startTime: timestamp });
+
+            sinon.assert.calledWith(
+                storage.loadEventsByAggregateIds,
+                [aggregateId],
+                eventHandler,
+                timestamp
+            );
         });
     });
 
@@ -159,6 +192,25 @@ describe('resolve-es', () => {
 
             expect(storage.loadEventsByAggregateIds.lastCall.args[0][0]).to.be.equal(aggregateId);
             expect(handler.calledWith(emittedEvent)).to.be.true;
+        });
+
+        it('using timestamp', async () => {
+            const storage = { loadEventsByAggregateIds: sinon.stub() };
+            const bus = { subscribe: () => {} };
+            const eventStore = createEventStore({ storage, bus });
+
+            const aggregateId = 'aggregateId';
+            const eventHandler = () => {};
+
+            const timestamp = 123;
+            eventStore.getEventsByAggregateId(aggregateId, eventHandler, timestamp);
+
+            sinon.assert.calledWith(
+                storage.loadEventsByAggregateIds,
+                [aggregateId],
+                eventHandler,
+                timestamp
+            );
         });
     });
 

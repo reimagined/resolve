@@ -6,6 +6,7 @@ import path from 'path';
 import { createReadModel, createViewModel, createFacade } from 'resolve-query';
 import commandHandler from 'resolve-command';
 import request from 'request';
+import passport from 'passport';
 
 import { raiseError } from './utils/error_handling.js';
 import eventStore from './event_store';
@@ -108,6 +109,29 @@ app.use((req, res, next) => {
     next();
 });
 
+config.passport.strategies.forEach(strategy => passport.use(strategy));
+
+app.use(passport.initialize());
+
+const applyJwtValue = (value, res, url) => {
+    const authenticationToken = jwt.sign(value, config.jwt.secret);
+    res.cookie(config.jwt.cookieName, authenticationToken, config.jwt.options);
+    res.redirect(url || `${rootDirectory}/`);
+};
+
+const bindAuthMiddleware = (arr, method) => {
+    arr.forEach((route) => {
+        app[method](route, (req, res, next) =>
+            config.passport.authMiddleware(passport, applyJwtValue, req, res, next)
+        );
+    });
+};
+
+const authRoutes = config.passport.authRoutes;
+if (Array.isArray(authRoutes)) bindAuthMiddleware(authRoutes, 'get');
+if (authRoutes.post) bindAuthMiddleware(authRoutes.post, 'post');
+if (authRoutes.get) bindAuthMiddleware(authRoutes.get, 'get');
+
 try {
     config.extendExpress(app);
 } catch (err) {}
@@ -147,7 +171,11 @@ Object.keys(queryExecutors).forEach((modelName) => {
     } else if (executor.mode === 'view') {
         app.get(`${rootDirectory}/api/query/${modelName}`, async (req, res) => {
             try {
-                if (!Array.isArray(req.query.aggregateIds)) {
+                const aggregateIds = req.query.aggregateIds;
+                if (
+                    aggregateIds !== '*' &&
+                    (!Array.isArray(aggregateIds) || aggregateIds.length === 0)
+                ) {
                     throw new Error(message.viewModelOnlyOnDemand);
                 }
 
