@@ -1,18 +1,12 @@
 import 'regenerator-runtime/runtime';
 
 const subscribeByEventTypeAndIds = async (eventStore, callback, eventDescriptors) => {
-    const passedEvents = new WeakSet();
-    const trigger = event => !passedEvents.has(event) && passedEvents.add(event) && callback(event);
-
-    const conditionalSubscribe = (section, subscriber) =>
-        Array.isArray(section) ? subscriber(section, trigger) : Promise.resolve(() => {});
-
-    const unsubscribers = await Promise.all([
-        conditionalSubscribe(eventDescriptors.types, eventStore.subscribeByEventType),
-        conditionalSubscribe(eventDescriptors.ids, eventStore.subscribeByAggregateId)
-    ]);
-
-    return () => unsubscribers.forEach(func => func());
+    return await eventStore.subscribeByAggregateId(eventDescriptors.ids, (event) => {
+        if (!eventDescriptors.types.includes(event.type)) {
+            return;
+        }
+        callback(event);
+    });
 };
 
 const GeneratorProto = (function*() {})().__proto__.__proto__;
@@ -37,6 +31,7 @@ const createViewModel = ({ projection, eventStore }) => {
         }
 
         const key = getKey(aggregateIds);
+
         if (viewMap.has(key)) {
             const executor = viewMap.get(key);
             return await executor();
