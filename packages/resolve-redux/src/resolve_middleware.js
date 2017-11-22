@@ -116,11 +116,15 @@ function createMiddleware(viewModels) {
                         )
                             .then((response) => {
                                 if (response.ok) {
-                                    return response.json();
+                                    return response.text();
                                 }
                                 throw new Error(response.text());
                             })
-                            .then((state) => {
+                            .then((rawState) => {
+                                const state = viewModels
+                                    .find(({ name }) => name === viewModel)
+                                    .deserializeState(rawState);
+
                                 if (subscribers.requests[key]) {
                                     delete requests[key];
 

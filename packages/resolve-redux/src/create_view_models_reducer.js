@@ -1,7 +1,7 @@
 import { MERGE_STATE, SUBSCRIBE, UNSUBSCRIBE, PROVIDE_VIEW_MODELS } from './actions';
 import { getKey } from './util';
 
-export default function createReducer() {
+export default function createViewModelsReducer() {
     const handlers = {};
     const initialState = {};
     const subscribers = {};
