@@ -4,10 +4,10 @@ export const SUBSCRIBE = '@@resolve/SUBSCRIBE';
 export const UNSUBSCRIBE = '@@resolve/UNSUBSCRIBE';
 export const PROVIDE_VIEW_MODELS = '@@resolve/PROVIDE_VIEW_MODELS';
 
-function mergeState(readModelName, state) {
+function mergeState(viewModel, state) {
     return {
         type: MERGE_STATE,
-        readModelName,
+        viewModel,
         state
     };
 }
