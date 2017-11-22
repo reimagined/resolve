@@ -11,12 +11,12 @@ const eventStore = createEventStore({ storage, bus });
 
 const subscribe = async (eventDescriptors, callback) => {
     if (Array.isArray(eventDescriptors)) {
-        return await eventStore.subscribeByEventType(eventDescriptors, callback, true);
+        return await eventStore.subscribeByEventType(eventDescriptors, callback, { onlyBus: true });
     } else if (eventDescriptors.types && eventDescriptors.ids) {
         return await eventStore.subscribeByAggregateId(
             eventDescriptors.ids,
             event => eventDescriptors.types.includes(event.type) && callback(event),
-            true
+            { onlyBus: true }
         );
     } else {
         throw new Error('Wrong parameter for event subscription');

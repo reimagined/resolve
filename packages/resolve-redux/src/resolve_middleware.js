@@ -116,7 +116,7 @@ function createMiddleware(viewModels) {
                         )
                             .then((response) => {
                                 if (response.ok) {
-                                    return response.text();
+                                    return response.json();
                                 }
                                 throw new Error(response.text());
                             })
