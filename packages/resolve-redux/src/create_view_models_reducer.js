@@ -95,10 +95,10 @@ export default function createViewModelsReducer() {
             };
         });
 
-        return state;
+        return initialState;
     };
 
-    return (state = initialState, action) => {
+    return (state = {}, action) => {
         const eventHandler = handlers[action.type];
 
         if (eventHandler) {

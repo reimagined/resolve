@@ -108,7 +108,7 @@ function createMiddleware(viewModels) {
                         requests[key] = true;
 
                         fetch(
-                            getRootableUrl(`/api/query/${viewModel}?aggregateIds[]=${viewModel}`),
+                            getRootableUrl(`/api/query/${viewModel}?aggregateIds[]=${aggregateId}`),
                             {
                                 method: 'GET',
                                 credentials: 'same-origin'
@@ -125,7 +125,7 @@ function createMiddleware(viewModels) {
                                     .find(({ name }) => name === viewModel)
                                     .deserializeState(rawState);
 
-                                if (subscribers.requests[key]) {
+                                if (requests[key]) {
                                     delete requests[key];
 
                                     store.dispatch({
