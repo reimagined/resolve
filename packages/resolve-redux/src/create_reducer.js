@@ -1,31 +1,108 @@
-import { MERGE_STATE, REPLACE_STATE } from './actions';
+import { MERGE_STATE, SUBSCRIBE, UNSUBSCRIBE, PROVIDE_VIEW_MODELS } from './actions';
+import { getKey } from './util';
 
-export default function createReducer({ name, projection }, extendReducer) {
-    const handlers = {
-        [MERGE_STATE]: (state, { readModelName, state: actionState }) => {
-            if (readModelName === name) {
-                return state.merge(actionState);
+export default function createReducer() {
+    const handlers = {};
+    const initialState = {};
+    const subscribers = {};
+
+    handlers[PROVIDE_VIEW_MODELS] = (state, { viewModels }) => {
+        delete handlers[PROVIDE_VIEW_MODELS];
+
+        handlers[SUBSCRIBE] = (state, { viewModel, aggregateId }) => {
+            const key = getKey(viewModel, aggregateId);
+
+            if (subscribers[key]) {
+                subscribers[key]++;
+                return state;
             }
-            return state;
-        },
-        [REPLACE_STATE]: (state, { readModelName, state: actionState }) => {
-            if (readModelName === name) {
-                return actionState;
+
+            subscribers[key] = 1;
+
+            return {
+                ...state,
+                [viewModel]: {
+                    ...state[viewModel],
+                    [aggregateId]: viewModels
+                        .find(({ name }) => viewModel === name)
+                        .projection.Init()
+                }
+            };
+        };
+
+        handlers[UNSUBSCRIBE] = (state, { viewModel, aggregateId }) => {
+            const key = getKey(viewModel, aggregateId);
+
+            if (subscribers[key] > 1) {
+                subscribers[key]--;
+                return state;
             }
-            return state;
-        },
-        ...projection
+
+            subscribers[key] = 0;
+
+            const { [aggregateId]: _, ...nextViewModel } = state[viewModel];
+
+            return {
+                ...state,
+                [viewModel]: nextViewModel
+            };
+        };
+
+        handlers[MERGE_STATE] = (state, { viewModel, aggregateId, state: actionState }) => {
+            return {
+                ...state,
+                [viewModel]: {
+                    ...state[viewModel],
+                    [aggregateId]: actionState
+                }
+            };
+        };
+
+        viewModels.forEach(({ name: viewModel }) => {
+            initialState[viewModel] = {};
+        });
+
+        const map = viewModels.reduce(
+            (acc, { name: viewModel, projection: { Init, ...projection } }) => {
+                Object.keys(projection).forEach((eventType) => {
+                    if (!acc[eventType]) {
+                        acc[eventType] = {};
+                    }
+
+                    acc[eventType][viewModel] = projection[eventType];
+                });
+                return acc;
+            },
+            {}
+        );
+
+        Object.keys(map).forEach((eventType) => {
+            handlers[eventType] = (state, action) => {
+                const nextState = { ...state };
+
+                Object.keys(map[eventType]).forEach((viewModel) => {
+                    const viewModelState = state[viewModel][action.aggregateId];
+
+                    const result = map[eventType][viewModel](viewModelState, action);
+
+                    nextState[viewModel] = {
+                        ...nextState[viewModel],
+                        [action.aggregateId]: result
+                    };
+                });
+
+                return nextState;
+            };
+        });
+
+        return state;
     };
 
-    return (state = null, action) => {
+    return (state = initialState, action) => {
         const eventHandler = handlers[action.type];
 
         if (eventHandler) {
             return eventHandler(state, action);
-        }
-
-        if (extendReducer) {
-            return extendReducer(state, action);
         }
 
         return state;

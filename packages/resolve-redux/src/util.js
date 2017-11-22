@@ -23,3 +23,7 @@ export function getRootableUrl(path) {
 
     return `${rootDir}${path}`;
 }
+
+export function getKey(viewModel, aggregateId) {
+    return `${viewModel}:${aggregateId}`;
+}

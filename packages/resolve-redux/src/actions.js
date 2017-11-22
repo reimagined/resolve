@@ -1,7 +1,8 @@
-export const MERGE_STATE = '@@resolve/READ_MODEL_STATE_MERGE';
+export const MERGE_STATE = '@@resolve/MERGE_STATE';
 export const SEND_COMMAND = '@@resolve/SEND_COMMAND';
-export const SET_SUBSCRIPTION = '@@resolve/SET_SUBSCRIPTION';
-export const REPLACE_STATE = '@@resolve/REPLACE_STATE';
+export const SUBSCRIBE = '@@resolve/SUBSCRIBE';
+export const UNSUBSCRIBE = '@@resolve/UNSUBSCRIBE';
+export const PROVIDE_VIEW_MODELS = '@@resolve/PROVIDE_VIEW_MODELS';
 
 function mergeState(readModelName, state) {
     return {
@@ -21,25 +22,33 @@ function sendCommand({ command, aggregateId, aggregateName, payload }) {
     };
 }
 
-function setSubscription(eventTypes, aggregateIds) {
+function subscribe(viewModel, aggregateId = 'root-id') {
     return {
-        type: SET_SUBSCRIPTION,
-        types: eventTypes,
-        ids: aggregateIds
+        type: SUBSCRIBE,
+        viewModel,
+        aggregateId
     };
 }
 
-function replaceState(readModelName, state) {
+function unsubscribe(viewModel, aggregateId = 'root-id') {
     return {
-        type: REPLACE_STATE,
-        readModelName,
-        state
+        type: UNSUBSCRIBE,
+        viewModel,
+        aggregateId
+    };
+}
+
+function provideViewModels(viewModels) {
+    return {
+        type: PROVIDE_VIEW_MODELS,
+        viewModels
     };
 }
 
 export default {
     mergeState,
     sendCommand,
-    setSubscription,
-    replaceState
+    subscribe,
+    unsubscribe,
+    provideViewModels
 };
