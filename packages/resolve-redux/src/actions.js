@@ -22,7 +22,7 @@ function sendCommand({ command, aggregateId, aggregateName, payload }) {
     };
 }
 
-function subscribe(viewModel, aggregateId = 'root-id') {
+function subscribe(viewModel, aggregateId) {
     return {
         type: SUBSCRIBE,
         viewModel,
@@ -30,7 +30,7 @@ function subscribe(viewModel, aggregateId = 'root-id') {
     };
 }
 
-function unsubscribe(viewModel, aggregateId = 'root-id') {
+function unsubscribe(viewModel, aggregateId) {
     return {
         type: UNSUBSCRIBE,
         viewModel,
