@@ -10,9 +10,11 @@ const bus = busAdapter(config.bus.params);
 const eventStore = createEventStore({ storage, bus });
 
 const subscribe = async (eventDescriptors, callback) => {
-    if (Array.isArray(eventDescriptors)) {
-        return await eventStore.subscribeByEventType(eventDescriptors, callback, { onlyBus: true });
-    } else if (eventDescriptors.types && eventDescriptors.ids) {
+    if (Array.isArray(eventDescriptors.types) && eventDescriptors.ids === '*') {
+        return await eventStore.subscribeByEventType(eventDescriptors.types, callback, {
+            onlyBus: true
+        });
+    } else if (Array.isArray(eventDescriptors.types) && Array.isArray(eventDescriptors.ids)) {
         return await eventStore.subscribeByAggregateId(
             eventDescriptors.ids,
             event => eventDescriptors.types.includes(event.type) && callback(event),
