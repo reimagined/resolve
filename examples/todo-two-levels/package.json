@@ -1,11 +1,13 @@
 {
-  "name": "todo",
+  "name": "todo-two-levels",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "react": "^16.1.1",
     "react-dom": "^16.1.1",
     "react-redux": "^5.0.6",
+    "react-router": "^4.2.0",
+    "react-router-dom": "^4.2.2",
     "redux": "^3.7.2",
     "resolve-bus-memory": "0.1.1-alpha.1123134652",
     "resolve-redux": "0.1.1-alpha.1123134652",

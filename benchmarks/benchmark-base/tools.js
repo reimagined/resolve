@@ -26,7 +26,15 @@ export function defaultXmlReport(data, customInfoProvider = () => '') {
                 const heapUsed = Math.round(data[point].memory.heapUsed / 1024 / 1024);
 
                 // eslint-disable-next-line max-len
-                return [`<tab name="Events count: ${point}">`, `<field name="Build time" value="${data[point].buildTime} ms" />`, `<field name="Memory resident size" value="${rss} mb" />`, `<field name="Memory heap total" value="${heapTotal} mb" />`, `<field name="Memory heap used" value="${heapUsed} mb" />`, customInfoProvider(data[point]), '</tab>'].join('');
+                return [
+                    `<tab name="Events count: ${point}">`,
+                    `<field name="Build time" value="${data[point].buildTime} ms" />`,
+                    `<field name="Memory resident size" value="${rss} mb" />`,
+                    `<field name="Memory heap total" value="${heapTotal} mb" />`,
+                    `<field name="Memory heap used" value="${heapUsed} mb" />`,
+                    customInfoProvider(data[point]),
+                    '</tab>'
+                ].join('');
             })
             .join('')}
         </tabs>`;
