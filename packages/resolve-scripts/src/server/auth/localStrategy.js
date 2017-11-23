@@ -6,22 +6,24 @@ const strategy = (options) => {
     return {
         init: (options) => {
             const registerPath = getRouteByName('register', options.routes).path;
-            const requiredOptions = { passReqToCallback: true };
-            const strategyOptions = Object.assign({}, options.strategy, requiredOptions);
-
-            return new PassportLocalStrategy(strategyOptions, (req, username, password, done) => {
+            return new PassportLocalStrategy(options.strategy, (req, username, password, done) => {
                 const url = req.url.split('?')[0];
+                const { resolve, body } = req;
                 if (url === `${rootDirectory}${registerPath}`) {
-                    options.registerCallback(req, username, password, done);
+                    options.registerCallback({ resolve, body }, username, password, done);
                 } else {
-                    options.loginCallback(req, username, password, done);
+                    options.loginCallback({ resolve, body }, username, password, done);
                 }
             });
         },
         middleware: (passport, options, applyJwtValue, req, res, next) => {
+            const { resolve, body } = req;
+            const redirect = (location) => {
+                res.redirect(location);
+            };
             const done = (err, user) => {
                 return err
-                    ? options.failureCallback(err, req, res, next)
+                    ? options.failureCallback(err, redirect, { resolve, body })
                     : applyJwtValue(user, res, options.successRedirect);
             };
             passport.authenticate('local', done)(req, res, next);
@@ -32,6 +34,10 @@ const strategy = (options) => {
 
 export default (options) => {
     const defaultOptions = {
+        strategy: {
+            usernameField: 'username',
+            passwordField: 'password'
+        },
         routes: {
             register: {
                 path: '/register',
@@ -44,5 +50,10 @@ export default (options) => {
         },
         failureCallback: defaultFailureCallback
     };
-    return strategy(Object.assign({}, defaultOptions, options));
+
+    const safeOptions = Object.assign({}, defaultOptions, options);
+    const { usernameField, passwordField } = safeOptions.strategy;
+    safeOptions.strategy = { usernameField, passwordField, passReqToCallback: true };
+
+    return strategy(safeOptions);
 };
