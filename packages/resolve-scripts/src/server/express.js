@@ -180,7 +180,11 @@ Object.keys(queryExecutors).forEach((modelName) => {
     } else if (executor.mode === 'view') {
         app.get(`${rootDirectory}/api/query/${modelName}`, async (req, res) => {
             try {
-                if (!Array.isArray(req.query.aggregateIds)) {
+                const aggregateIds = req.query.aggregateIds;
+                if (
+                    aggregateIds !== '*' &&
+                    (!Array.isArray(aggregateIds) || aggregateIds.length === 0)
+                ) {
                     throw new Error(message.viewModelOnlyOnDemand);
                 }
 
