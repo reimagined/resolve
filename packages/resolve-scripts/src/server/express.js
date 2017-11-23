@@ -92,6 +92,15 @@ const executeCommand = commandHandler({
     aggregates: config.aggregates
 });
 
+config.sagas.forEach(saga =>
+    saga({
+        subscribeByEventType: eventStore.subscribeByEventType,
+        subscribeByAggregateId: eventStore.subscribeByAggregateId,
+        queryExecutors,
+        executeCommand
+    })
+);
+
 app.use((req, res, next) => {
     req.getJwt = jwt.verify.bind(
         null,

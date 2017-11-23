@@ -36,7 +36,8 @@ const defaultConfig = {
     },
     readModels: [],
     viewModels: [],
-    extendExpress: () => {}
+    extendExpress: () => {},
+    sagas: []
 };
 
 function extendConfig(inputConfig, defaultConfig) {
