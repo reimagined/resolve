@@ -11,6 +11,7 @@ import passport from 'passport';
 import { raiseError } from './utils/error_handling.js';
 import eventStore from './event_store';
 import ssr from './render';
+import { getRouteByName } from './auth';
 
 import config from '../configs/server.config.js';
 import message from './message';
@@ -128,13 +129,6 @@ const bindAuthMiddleware = (route, method, middleware, options) => {
     app[method](route, (req, res, next) =>
         middleware(passport, options, applyJwtValue, req, res, next)
     );
-};
-
-const getRouteByName = (name, routes) => {
-    const route = routes[name];
-    const { path = route, method = 'get' } = route;
-    if (typeof path !== 'string') return null;
-    return { path, method };
 };
 
 config.auth.strategies.forEach((strategy) => {
