@@ -24,7 +24,7 @@ export default {
     },
     initialState: async queryExecutors => await queryExecutors['default'](['root-id']),
     aggregates,
-    initialSubscribedEvents: { types: Object.values(eventTypes), ids: [] },
+    initialSubscribedEvents: { types: Object.values(eventTypes), ids: ['root-id'] },
     readModels,
     viewModels,
     extendExpress: () => {}
