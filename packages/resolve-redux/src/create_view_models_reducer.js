@@ -23,9 +23,8 @@ export default function createViewModelsReducer() {
                 ...state,
                 [viewModel]: {
                     ...state[viewModel],
-                    [aggregateId]: viewModels
-                        .find(({ name }) => viewModel === name)
-                        .projection.Init()
+                    [aggregateId]: (viewModels.find(({ name }) => viewModel === name).projection
+                        .Init || (() => {}))()
                 }
             };
         };
