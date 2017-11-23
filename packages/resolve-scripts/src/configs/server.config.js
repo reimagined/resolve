@@ -31,10 +31,8 @@ const defaultConfig = {
         options: { maxAge: 1000 * 60 * 5 },
         secret: 'Keyboard-Kat'
     },
-    passport: {
-        strategies: [],
-        authMiddleware: null,
-        authRoutes: []
+    auth: {
+        strategies: []
     },
     readModels: [],
     viewModels: [],

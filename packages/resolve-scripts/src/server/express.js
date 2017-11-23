@@ -109,28 +109,36 @@ app.use((req, res, next) => {
     next();
 });
 
-config.passport.strategies.forEach(strategy => passport.use(strategy));
-
-app.use(passport.initialize());
-
 const applyJwtValue = (value, res, url) => {
     const authenticationToken = jwt.sign(value, config.jwt.secret);
     res.cookie(config.jwt.cookieName, authenticationToken, config.jwt.options);
     res.redirect(url || `${rootDirectory}/`);
 };
 
-const bindAuthMiddleware = (arr, method) => {
-    arr.forEach((route) => {
-        app[method](route, (req, res, next) =>
-            config.passport.authMiddleware(passport, applyJwtValue, req, res, next)
-        );
-    });
+const bindAuthMiddleware = (route, method, middleware, options) => {
+    app[method](route, (req, res, next) =>
+        middleware(passport, options, applyJwtValue, req, res, next)
+    );
 };
 
-const authRoutes = config.passport.authRoutes;
-if (Array.isArray(authRoutes)) bindAuthMiddleware(authRoutes, 'get');
-if (authRoutes.post) bindAuthMiddleware(authRoutes.post, 'post');
-if (authRoutes.get) bindAuthMiddleware(authRoutes.get, 'get');
+const getRouteByName = (name, routes) => {
+    const route = routes[name];
+    const { path = route, method = 'get' } = route;
+    if (typeof path !== 'string') return null;
+    return { path, method };
+};
+
+config.auth.strategies.forEach((strategy) => {
+    const options = strategy.options;
+    passport.use(strategy.init(options));
+    const routes = options.routes;
+    Object.keys(routes).forEach((key) => {
+        const route = getRouteByName(key, routes);
+        bindAuthMiddleware(route.path, route.method, strategy.middleware, options);
+    });
+});
+
+app.use(passport.initialize());
 
 try {
     config.extendExpress(app);
