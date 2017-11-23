@@ -53,6 +53,10 @@ function createMiddleware(viewModels) {
     }
 
     function getAggregateIds() {
+        if (Object.keys(subscribers.aggregateIds).indexOf('*') !== -1) {
+            return '*';
+        }
+
         const aggregateIds = [];
 
         Object.keys(subscribers.aggregateIds).forEach((aggregateId) => {
@@ -108,7 +112,11 @@ function createMiddleware(viewModels) {
                         requests[key] = true;
 
                         fetch(
-                            getRootableUrl(`/api/query/${viewModel}?aggregateIds[]=${aggregateId}`),
+                            getRootableUrl(
+                                `/api/query/${viewModel}?aggregateIds${aggregateId === '*'
+                                    ? ''
+                                    : '[]'}=${aggregateId}`
+                            ),
                             {
                                 method: 'GET',
                                 credentials: 'same-origin'
