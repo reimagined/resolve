@@ -6,7 +6,6 @@
     "packages/storage-adapters/*",
     "packages/readmodel-adapters/*",
     "examples/*",
-    "examples/todo/*",
     "benchmarks/*"
   ],
   "version": "0.1.0"

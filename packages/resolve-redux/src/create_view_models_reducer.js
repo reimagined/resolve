@@ -80,6 +80,21 @@ export default function createViewModelsReducer() {
                 const nextState = { ...state };
 
                 Object.keys(map[eventType]).forEach((viewModel) => {
+                    if (!state[viewModel]) return;
+
+                    if (state[viewModel].hasOwnProperty('*')) {
+                        const viewModelState = state[viewModel]['*'];
+
+                        const result = map[eventType][viewModel](viewModelState, action);
+
+                        nextState[viewModel] = {
+                            ...nextState[viewModel],
+                            '*': result
+                        };
+                    }
+
+                    if (!state[viewModel].hasOwnProperty(action.aggregateId)) return;
+
                     const viewModelState = state[viewModel][action.aggregateId];
 
                     const result = map[eventType][viewModel](viewModelState, action);
