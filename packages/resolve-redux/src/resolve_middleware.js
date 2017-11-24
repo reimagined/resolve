@@ -53,7 +53,7 @@ function createMiddleware(viewModels) {
     }
 
     function getAggregateIds() {
-        if (Object.keys(subscribers.aggregateIds).indexOf('*') !== -1) {
+        if (subscribers.aggregateIds['*'] > 0) {
             return '*';
         }
 
