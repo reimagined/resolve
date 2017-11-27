@@ -7,74 +7,78 @@ import fetch from 'isomorphic-fetch';
 const CRITICAL_LEVEL = 100;
 const REFRESH_TIMEOUT = 1000;
 
-export async function sendCommand(store, action) {
-    const { command, aggregateId, aggregateName, payload } = action;
+export const api = {
+    async sendCommand(store, action) {
+        const { command, aggregateId, aggregateName, payload } = action;
 
-    if (
-        !(
-            command &&
-            checkRequiredFields(
-                { aggregateId, aggregateName },
-                'Send command error:',
-                JSON.stringify(action)
-            ) &&
-            !command.error
-        )
-    ) {
-        return;
-    }
-
-    const normalizedCommand = {
-        type: command.type,
-        aggregateId,
-        aggregateName,
-        payload
-    };
-
-    try {
-        const response = await fetch(getRootableUrl('/api/commands'), {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'same-origin',
-            body: JSON.stringify(normalizedCommand)
-        });
-
-        if (response.ok) {
-            return response.blob();
+        if (
+            !(
+                command &&
+                checkRequiredFields(
+                    { aggregateId, aggregateName },
+                    'Send command error:',
+                    JSON.stringify(action)
+                ) &&
+                !command.error
+            )
+        ) {
+            return;
         }
 
-        const text = await response.text();
-        // eslint-disable-next-line no-console
-        console.error('Send command error:', text);
-        throw new Error(text);
-    } catch (error) {
-        store.dispatch({
-            ...action,
-            command: {
-                ...action.command,
-                error
+        const normalizedCommand = {
+            type: command.type,
+            aggregateId,
+            aggregateName,
+            payload
+        };
+
+        try {
+            const response = await fetch(getRootableUrl('/api/commands'), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
+                body: JSON.stringify(normalizedCommand)
+            });
+
+            if (response.ok) {
+                return response.blob();
             }
-        });
-    }
-}
 
-export async function getViewModelRawState(viewModel, aggregateId) {
-    const response = await fetch(
-        getRootableUrl(
-            `/api/query/${viewModel}?aggregateIds${aggregateId === '*' ? '' : '[]'}=${aggregateId}`
-        ),
-        {
-            method: 'GET',
-            credentials: 'same-origin'
+            const text = await response.text();
+            // eslint-disable-next-line no-console
+            console.error('Send command error:', text);
+            throw new Error(text);
+        } catch (error) {
+            store.dispatch({
+                ...action,
+                command: {
+                    ...action.command,
+                    error
+                }
+            });
         }
-    );
+    },
 
-    if (!response.ok) {
-        throw new Error(response.text());
+    async getViewModelRawState(viewModel, aggregateId) {
+        const response = await fetch(
+            getRootableUrl(
+                `/api/query/${viewModel}?aggregateIds${aggregateId === '*'
+                    ? ''
+                    : '[]'}=${aggregateId}`
+            ),
+            {
+                method: 'GET',
+                credentials: 'same-origin'
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error(response.text());
+        }
+
+        return await response.json();
     }
-
-    return await response.json();
-}
+};
 
 export function getEventTypes(viewModels, subscribers) {
     const eventTypes = {};
@@ -136,7 +140,7 @@ export async function subscribe(store, socket, viewModels, subscribers, requests
         const key = getKey(viewModel, aggregateId);
         requests[key] = true;
 
-        const rawState = await getViewModelRawState(viewModel, aggregateId);
+        const rawState = await api.getViewModelRawState(viewModel, aggregateId);
 
         const state = viewModels.find(({ name }) => name === viewModel).deserializeState(rawState);
 
@@ -206,7 +210,7 @@ export function createMiddleware(viewModels) {
                     break;
                 }
                 case SEND_COMMAND: {
-                    sendCommand(store, action);
+                    api.sendCommand(store, action);
                     break;
                 }
                 default:
