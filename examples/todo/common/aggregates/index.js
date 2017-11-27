@@ -2,16 +2,16 @@ export default [
     {
         name: 'Todo',
         commands: {
-            createTodo: (_, { payload: { id, text } }) => ({
-                type: 'TODO_CREATED',
+            createItem: (_, { payload: { id, text } }) => ({
+                type: 'ITEM_CREATED',
                 payload: { id, text }
             }),
-            toggleTodo: (_, { payload: { id } }) => ({
-                type: 'TODO_TOGGLED',
+            toggleItem: (_, { payload: { id } }) => ({
+                type: 'ITEM_TOGGLED',
                 payload: { id }
             }),
-            removeTodo: (_, { payload: { id } }) => ({
-                type: 'TODO_REMOVED',
+            removeItem: (_, { payload: { id } }) => ({
+                type: 'ITEM_REMOVED',
                 payload: { id }
             })
         }

@@ -1,14 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { withViewModels } from 'resolve-redux';
+import { withViewModel } from 'resolve-redux';
 
 import actions from '../actions';
 
 const viewModel = 'Todos';
 const aggregateId = 'root-id';
 
-const App = ({ todos, createTodo, toggleTodo, removeTodo, aggregateId }) => {
+const App = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
     let newTodo;
     return (
         <div>
@@ -20,18 +20,18 @@ const App = ({ todos, createTodo, toggleTodo, removeTodo, aggregateId }) => {
                             <input
                                 type="checkbox"
                                 checked={todos[id].checked}
-                                onChange={toggleTodo.bind(null, aggregateId, { id })}
+                                onChange={toggleItem.bind(null, aggregateId, { id })}
                             />
                             {todos[id].text}
                         </label>
-                        <span onClick={removeTodo.bind(null, aggregateId, { id })}>{' [x]'}</span>
+                        <span onClick={removeItem.bind(null, aggregateId, { id })}>{' [x]'}</span>
                     </li>
                 ))}
             </ol>
             <input ref={element => (newTodo = element)} />
             <button
                 onClick={() => {
-                    createTodo(aggregateId, {
+                    createItem(aggregateId, {
                         text: newTodo.value,
                         id: Date.now()
                     });
@@ -52,4 +52,4 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators(actions, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(withViewModels(App));
+export default connect(mapStateToProps, mapDispatchToProps)(withViewModel(App));
