@@ -5,7 +5,7 @@ import createViewModelsReducer from './create_view_models_reducer';
 import createActions from './create_actions';
 import gqlConnector from './graphql_connector';
 import resolveMiddleware from './resolve_middleware';
-import withViewModels from './with_view_models_connector';
+import withViewModel from './with_view_model_connector';
 
 export {
     actions,
@@ -13,5 +13,5 @@ export {
     createActions,
     gqlConnector,
     resolveMiddleware,
-    withViewModels
+    withViewModel
 };
