@@ -128,6 +128,7 @@ export default function createViewModelsReducer() {
     const subscribers = {};
 
     handlers[PROVIDE_VIEW_MODELS] = provideViewModelsHandler.bind(
+        null,
         initialState,
         handlers,
         subscribers
