@@ -1,9 +1,9 @@
 # **🔍 resolve-query** [![npm version](https://badge.fury.io/js/resolve-query.svg)](https://badge.fury.io/js/resolve-query)
 
-Provides an interface for creation [read and view models](../resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models) and query facade for them. 
+Provides an interface for creating [read and view models](../resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models) and query facade for them. 
 
-Queries are used to observe a state of the system. Queries are answered by Read Models. Read Model is built by Projection functions. All events from the beginning of times are applied to Read Model to build its current state (or state at particular moment in time if necessary).
-Some Read Models are sent to the client UI to be a part of Redux app state. They are small enough to fit into memory and can be kept up-to date right in the browser. We call them View Models.
+Queries are used to observe a system
+'s state. Read Models answer Queries and are built using Projection functions. All events from the beginning of time are applied to a Read Model to build its current state (or a state at a particular moment in time if necessary). Some Read Models, called View Models, are sent to the client UI to be a part of a Redux app state. They are small enough to fit into memory and can be kept up to date in the browser.
 
 ```
 import { createReadModel, createViewModel, createFacade } from 'resolve-query'
@@ -11,45 +11,46 @@ import { createReadModel, createViewModel, createFacade } from 'resolve-query'
 
 
 ## Usage
-To create **read model**, pass following arguments into `createReadModel` factory function:
-* `eventStore` - configured [eventStore](../resolve-es) instance.
-* `projection` - declaration for conversion event stream into read model storage. Projection form is dependent on used adapter; when the default adapter is used, a projection is a map of functions for each event type, which manipulates data in provided MongoDB-like store.
-* `adapter` - one of the available read model [adapters](../readmodel-adapters) instance; a memory [adapter](../readmodel-adapters/resolve-readmodel-memory) with [MongoDB](https://docs.mongodb.com/manual/reference/method/js-collection/)-like query language is used by default
+To create a **read model**, pass the following arguments to the `createReadModel` factory function:
+* `eventStore` - a configured [eventStore](../resolve-es) instance.
+* `projection` - functions converting an event stream into a read model storage. A projection form is dependent on the used adapter. When the default adapter is used, a projection is a map of functions (one function for each event type) which manipulate data in the provided MongoDB-like store.
+* `adapter` - a read model [adapter](../readmodel-adapters) instance. A memory [adapter](../readmodel-adapters/resolve-readmodel-memory) supporting the [MongoDB](https://docs.mongodb.com/manual/reference/method/js-collection/)-like query language is used by default.
 
-To create **view model**, pass following arguments into `createViewModel` factory function:
-* `eventStore` - configured [eventStore](../resolve-es) instance.
-* `projection` - map of [redux-like reducer functions](https://redux.js.org/docs/basics/Reducers.html) for each event type
+To create a **view model**, pass the following arguments to the `createViewModel` factory function:
+* `eventStore` - a configured [eventStore](../resolve-es) instance.
+* `projection` - a map of [redux-like reducer functions](https://redux.js.org/docs/basics/Reducers.html) (one function for each event type).
 
 
-To create query facade for read/view model, pass the following arguments into `createFacade` factory function:
-* `model` - read/view model resource, created by one of above factory functions
-* `gqlSchema` - read model data schema description in terms of the [GraphQL schema language](http://graphql.org/learn/schema/)
-* `gqlResolvers` - map of [resolvers](http://dev.apollodata.com/tools/graphql-tools/resolvers.html) for replying to GraphQL query depending on defined `gqlSchema` and data in the read model storage
-* `customResolvers` - optional resolvers for specific read/view models
+To create a query facade for a read/view model, pass the following arguments to the `createFacade` factory function:
+* `model` - a read/view model resource a factory function created.
+* `gqlSchema` - a read model data schema description in terms of the [GraphQL schema language](http://graphql.org/learn/schema/).
+* `gqlResolvers` - a map of [resolvers](http://dev.apollodata.com/tools/graphql-tools/resolvers.html) for replying to a GraphQL query depending on the specified `gqlSchema` and read model storage data.
+* `customResolvers` - optional resolvers for specific read/view models.
 
-Facade supports following functions to perform query on subsequent read/view model:
-* `executeQueryGraphql` - get data from read/view models by [GraphQL](http://graphql.org/learn/) request
-* `executeQueryCustom` - execute custom resolver function
-* `dispose` - remove facade and release resources
+A facade supports the following functions to send queries to a read/view model:
+* `executeQueryGraphql` - gets data from read/view models using a [GraphQL](http://graphql.org/learn/) request;
+* `executeQueryCustom` - executes a custom resolver function;
+* `dispose` - removes a facade and releases resources.
 
-Function `executeQueryGraphql` receives the following arguments:
-* `qraphQLQuery` (required) - GraphQL query to get data.
-* `graphQLVariables` - specify it, if `graphQLQuery` contains variables.
-* `getJwt` - callback to retrieve actual client state stored in verified JWT token.
+The `executeQueryGraphql` function receives the following arguments:
+* `qraphQLQuery` (required) - the GraphQL query to get data;
+* `graphQLVariables` - specify it if the `graphQLQuery` contains variables;
+* `getJwt` - a callback to retrieve the actual client state stored in a verified JWT token.
  
-Function `executeQueryCustom` receives the following arguments:
-* `name` (required) - custom resolver name to handle request
-* `customParams` - custom parameters which passed into resolver function
-* `getJwt` - callback to retrieve actual client state stored in verified JWT token.
+The `executeQueryCustom` function receives the following arguments:
+* `name` (required) - a custom resolver name to handle a request;
+* `customParams` - custom parameters passed to a resolver function;
+* `getJwt` - a callback to retrieve the actual client state stored in a verified JWT token.
 
-Custom query can be helpful in following cases:
-* if the selected read model storage provides its own API for retrieving data, like [Elasticsearch](https://www.elastic.co/) or [Searchify](https://www.searchify.com/)
-* to pass actual view model state as client-side redux initial state
-* to use internal features of selected adapter, which are not accessable via classical graphql query
+A custom query can be helpful in the following cases:
+* if the selected read model storage provides a
+n API for retrieving data, like [Elasticsearch](https://www.elastic.co/) or [Searchify](https://www.searchify.com/);
+* to pass the actual view model state as a client-side redux initial state;
+* to use the selected adapter's  internal features which are not accessible via a regular graphql query.
 
 
 ### Example
-Implement a read model for building News state with custom GraphQL resolvers and use the `resolve-query` library to get the first page of news. It handles events produced by an aggregate shown in the [resolve-command](../resolve-command#example) documentation.
+Implement a read model for building a News state with custom GraphQL resolvers and use the `resolve-query` library to get the first news page. It handles events an aggregate produces ( see the  [resolve-command](../resolve-command#example) documentation).
 
 ```js
 import { createReadModel, createFacade } from 'resolve-query'
