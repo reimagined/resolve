@@ -29,8 +29,9 @@ getInstallations()
                     .browsers(browser)
                     .run();
             })
-            .then(() => {
+            .then((exitCode) => {
                 testcafe.close();
+                process.exit(exitCode);
             })
     )
     .catch((error) => {
