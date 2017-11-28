@@ -407,7 +407,7 @@ describe('resolve-query', () => {
             return Promise.reject('Test failed');
         } catch (error) {
             expect(error.message).to.have.string(
-                'Projection function cannot be asyncronous or return Promise object'
+                'A Projection function cannot be asynchronous or return a Promise object'
             );
         }
     });
