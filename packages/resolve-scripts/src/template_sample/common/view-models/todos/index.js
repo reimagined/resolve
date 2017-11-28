@@ -6,7 +6,7 @@ import events from '../../aggregates/todo-events';
 const { TODO_CREATED, TODO_COMPLETED, TODO_RESET } = events;
 
 export default {
-    name: 'default',
+    name: 'todos',
     projection: {
         Init: () => [],
         [TODO_CREATED]: (state: any, event: TodoCreated) =>
@@ -29,6 +29,6 @@ export default {
                     todo.todoId === event.payload.todoId ? { ...todo, completed: false } : todo
             )
     },
-    serializeState: (state: any) => JSON.stringify({ todos: Array.isArray(state) ? state : [] }),
-    deserializeState: (serial: any) => JSON.parse(serial)
+    serializeState: (state: any) => JSON.stringify(state),
+    deserializeState: (state: any) => JSON.parse(state)
 };

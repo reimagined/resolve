@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import actions, { MERGE_STATE, SEND_COMMAND } from '../src/actions';
+import actions, { MERGE_STATE, SEND_COMMAND, SUBSCRIBE, UNSUBSCRIBE } from '../src/actions';
 
 describe('actions', () => {
     describe('mergeState', () => {
@@ -39,6 +39,30 @@ describe('actions', () => {
                 aggregateId,
                 aggregateName,
                 payload
+            });
+        });
+    });
+
+    describe('subscribe', () => {
+        it('should create an action to subscribe on view model by aggregateId', () => {
+            const viewModel = 'counter';
+            const aggregateId = 'aggregateId';
+            expect(actions.subscribe(viewModel, aggregateId)).to.deep.equal({
+                type: SUBSCRIBE,
+                viewModel,
+                aggregateId
+            });
+        });
+    });
+
+    describe('unsubscribe', () => {
+        it('should create an action to unsubscribe on view model by aggregateId', () => {
+            const viewModel = 'counter';
+            const aggregateId = 'aggregateId';
+            expect(actions.unsubscribe(viewModel, aggregateId)).to.deep.equal({
+                type: UNSUBSCRIBE,
+                viewModel,
+                aggregateId
             });
         });
     });
