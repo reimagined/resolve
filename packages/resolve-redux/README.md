@@ -53,7 +53,7 @@ export default connect(mapStateToProps)(withViewModel(Component));
 
 ### `actions`  
 
-  A plain object used to send special actions to be handled by other tools. It implements the following functions:
+  A plain object used to send special actions to be handled by other tools. It implements the following functions.  The [`resolveMiddleware`](#resolvemiddleware) automatically handles these actions.
   
   #### `sendCommand`  
   
@@ -63,8 +63,6 @@ export default connect(mapStateToProps)(withViewModel(Component));
   *  `aggregateName`
   *  `payload`
         
-  The [`resolveMiddleware`](#resolvemiddleware) automatically handles this action.
-
   #### `subscribe`  
   
   Subscribes to new server-side events. This function takes two arguments:

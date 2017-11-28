@@ -147,7 +147,7 @@ export async function subscribe(store, socket, viewModels, subscribers, requests
         if (requests[key]) {
             delete requests[key];
 
-            store.dispatch(action.merge(viewModel, aggregateId, state));
+            store.dispatch(actions.merge(viewModel, aggregateId, state));
 
             socket.io.emit('setSubscription', {
                 types: getEventTypes(viewModels, subscribers),
@@ -195,8 +195,19 @@ export function createMiddleware(viewModels) {
         return next => (action) => {
             switch (action.type) {
                 case SUBSCRIBE: {
-                    subscribe(store, socket, viewModels, subscribers, requests, action).catch(() =>
-                        setTimeout(() => store.dispatch(action), REFRESH_TIMEOUT)
+                    subscribe(
+                        store,
+                        socket,
+                        viewModels,
+                        subscribers,
+                        requests,
+                        action
+                    ).catch(error =>
+                        setTimeout(() => {
+                            // eslint-disable-next-line no-console
+                            console.error(error);
+                            store.dispatch(action);
+                        }, REFRESH_TIMEOUT)
                     );
                     break;
                 }
