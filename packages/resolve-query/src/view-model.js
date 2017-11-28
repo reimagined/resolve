@@ -1,14 +1,5 @@
 import 'regenerator-runtime/runtime';
 
-const subscribeByEventTypeAndIds = async (eventStore, callback, eventDescriptors) => {
-    return await eventStore.subscribeByAggregateId(eventDescriptors.ids, (event) => {
-        if (!eventDescriptors.types.includes(event.type)) {
-            return;
-        }
-        callback(event);
-    });
-};
-
 const GeneratorProto = (function*() {})().__proto__.__proto__;
 const PromiseProto = (async function () {})().__proto__;
 const filterAsyncResult = (result) => {
