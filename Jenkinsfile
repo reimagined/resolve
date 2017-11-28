@@ -40,6 +40,48 @@ pipeline {
             }
         }
 
+        stage('Examples [ todo ] Functional Tests') {
+            steps {
+                script {
+                    sh """
+                        /prepare-chromium.sh
+
+                        eval \$(next-lerna-version)
+                        export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}
+
+                        cd examples/todo
+
+                        npm install
+
+                        cat ./package.json
+
+                        npm run test:functional -- --browser=path:/chromium
+                    """
+                }
+            }
+        }
+
+        stage('Examples [ todo-two-levels ] Functional Tests') {
+            steps {
+                script {
+                    sh """
+                        /prepare-chromium.sh
+
+                        eval \$(next-lerna-version)
+                        export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}
+
+                        cd examples/todo-two-levels
+
+                        npm install
+
+                        cat ./package.json
+
+                        npm run test:functional -- --browser=path:/chromium
+                    """
+                }
+            }
+        }
+
         stage('Create-resolve-app [ empty ] Functional Tests') {
             steps {
                 script {
@@ -58,7 +100,7 @@ pipeline {
                             fi
                         done
 
-                        sleep 3
+                        sleep 10
 
                         create-resolve-app empty
                         cd ./empty
