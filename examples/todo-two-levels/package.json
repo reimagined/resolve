@@ -17,12 +17,12 @@
   "scripts": {
     "start": "resolve-scripts dev",
     "update": "resolve-scripts update",
-    "test:e2e": "cross-env NODE_ENV=tests babel-node ./tests/functional/testcafe_runner.js --presets es2015,stage-0,react"
+    "test:functional": "cross-env NODE_ENV=tests babel-node ./tests/functional/testcafe_runner.js --presets es2015,stage-0,react"
   },
   "devDependencies": {
     "cross-env": "^5.1.1",
     "testcafe": "^0.18.4",
     "testcafe-browser-tools": "^1.4.6",
-  	"yargs": "^10.0.3"
+    "yargs": "^10.0.3"
   }
 }

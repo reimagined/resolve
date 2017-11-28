@@ -28,7 +28,7 @@ const App = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
                     </li>
                 ))}
             </ol>
-            <input ref={element => (newTodo = element)} />
+            <input type="text" ref={element => (newTodo = element)} />
             <button
                 onClick={() => {
                     createItem(aggregateId, {

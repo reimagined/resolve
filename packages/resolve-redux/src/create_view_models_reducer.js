@@ -1,7 +1,7 @@
 import { MERGE_STATE, SUBSCRIBE, UNSUBSCRIBE, PROVIDE_VIEW_MODELS } from './actions';
 import { getKey } from './util';
 
-export function subscribeHandler(subscribers, viewModels, state, { viewModel, aggregateId }) {
+export function subscribeHandler({ subscribers, viewModels }, state, { viewModel, aggregateId }) {
     const key = getKey(viewModel, aggregateId);
 
     if (subscribers[key]) {
@@ -21,7 +21,7 @@ export function subscribeHandler(subscribers, viewModels, state, { viewModel, ag
     };
 }
 
-export function unsubscribeHandler(subscribers, state, { viewModel, aggregateId }) {
+export function unsubscribeHandler({ subscribers }, state, { viewModel, aggregateId }) {
     const key = getKey(viewModel, aggregateId);
 
     if (subscribers[key] > 1) {
@@ -39,7 +39,7 @@ export function unsubscribeHandler(subscribers, state, { viewModel, aggregateId 
     };
 }
 
-export function mergeStateHandler(state, { viewModel, aggregateId, state: actionState }) {
+export function mergeStateHandler(_, state, { viewModel, aggregateId, state: actionState }) {
     return {
         ...state,
         [viewModel]: {
@@ -49,20 +49,17 @@ export function mergeStateHandler(state, { viewModel, aggregateId, state: action
     };
 }
 
-export function provideViewModelsHandler(
-    initialState,
-    handlers,
-    subscribers,
-    state,
-    { viewModels }
-) {
+export function provideViewModelsHandler(context, state, { viewModels }) {
+    const { handlers, initialState } = context;
+    context.viewModels = viewModels;
+
     delete handlers[PROVIDE_VIEW_MODELS];
 
-    handlers[SUBSCRIBE] = subscribeHandler.bind(null, subscribers, viewModels);
+    handlers[SUBSCRIBE] = subscribeHandler.bind(null, context);
 
-    handlers[UNSUBSCRIBE] = unsubscribeHandler.bind(null, subscribers);
+    handlers[UNSUBSCRIBE] = unsubscribeHandler.bind(null, context);
 
-    handlers[MERGE_STATE] = mergeStateHandler;
+    handlers[MERGE_STATE] = mergeStateHandler.bind(null, context);
 
     viewModels.forEach(({ name: viewModel }) => {
         initialState[viewModel] = {};
@@ -71,7 +68,7 @@ export function provideViewModelsHandler(
     const map = createMap(viewModels);
 
     Object.keys(map).forEach((eventType) => {
-        handlers[eventType] = viewModelEventHandler.bind(null, map, eventType);
+        handlers[eventType] = viewModelEventHandler.bind(null, map[eventType]);
     });
 
     return initialState;
@@ -90,16 +87,16 @@ export function createMap(viewModels) {
     }, {});
 }
 
-export function viewModelEventHandler(map, eventType, state, action) {
+export function viewModelEventHandler(viewModels, state, action) {
     const nextState = { ...state };
 
-    Object.keys(map[eventType]).forEach((viewModel) => {
+    Object.keys(viewModels).forEach((viewModel) => {
         if (!state[viewModel]) return;
 
         if (state[viewModel].hasOwnProperty('*')) {
             const viewModelState = state[viewModel]['*'];
 
-            const result = map[eventType][viewModel](viewModelState, action);
+            const result = viewModels[viewModel](viewModelState, action);
 
             nextState[viewModel] = {
                 ...nextState[viewModel],
@@ -111,7 +108,7 @@ export function viewModelEventHandler(map, eventType, state, action) {
 
         const viewModelState = state[viewModel][action.aggregateId];
 
-        const result = map[eventType][viewModel](viewModelState, action);
+        const result = viewModels[viewModel](viewModelState, action);
 
         nextState[viewModel] = {
             ...nextState[viewModel],
@@ -123,19 +120,16 @@ export function viewModelEventHandler(map, eventType, state, action) {
 }
 
 export default function createViewModelsReducer() {
-    const initialState = {};
-    const handlers = {};
-    const subscribers = {};
+    const context = {
+        initialState: {},
+        handlers: {},
+        subscribers: {}
+    };
 
-    handlers[PROVIDE_VIEW_MODELS] = provideViewModelsHandler.bind(
-        null,
-        initialState,
-        handlers,
-        subscribers
-    );
+    context.handlers[PROVIDE_VIEW_MODELS] = provideViewModelsHandler.bind(null, context);
 
     return (state = {}, action) => {
-        const eventHandler = handlers[action.type];
+        const eventHandler = context.handlers[action.type];
 
         if (eventHandler) {
             return eventHandler(state, action);

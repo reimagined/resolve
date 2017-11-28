@@ -24,25 +24,27 @@ getInstallations()
                 const runner = testcafe.createRunner();
                 const browser = argv.browser || Object.keys(browsers).slice(0, 1);
                 return runner
-                    .startApp('npm run dev', DELAY)
+                    .startApp('npm run start', DELAY)
                     .src(['./tests/functional/index.test.js'])
                     .browsers(browser)
                     .run();
             })
-            .then((exitCode) => {
+            .then(() => {
                 testcafe.close();
-                try {
-                    const targetPath = path.resolve(
-                        __dirname,
-                        '../',
-                        config.storage.params.pathToFile
-                    );
-                    fs.unlinkSync(targetPath);
-                } catch (err) {}
-                process.exit(exitCode);
             })
     )
     .catch((error) => {
         console.log('Error: ' + error.stack); // eslint-disable-line no-console
         process.exit(1);
     });
+
+process.on('exit', () => {
+    try {
+        const targetPath = path.resolve(
+            __dirname,
+            '../',
+            config.storage.params.pathToFile
+        );
+        fs.unlinkSync(targetPath);
+    } catch (err) {}
+})

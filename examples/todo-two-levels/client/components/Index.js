@@ -21,7 +21,7 @@ const Index = ({ lists, createList, removeList }) => {
                     </li>
                 ))}
             </ol>
-            <input ref={element => (newList = element)} />
+            <input type="text" ref={element => (newList = element)} />
             <button
                 onClick={() => {
                     createList(Date.now(), {
