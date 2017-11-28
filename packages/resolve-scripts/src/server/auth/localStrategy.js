@@ -36,7 +36,8 @@ export default (options) => {
     const defaultOptions = {
         strategy: {
             usernameField: 'username',
-            passwordField: 'password'
+            passwordField: 'password',
+            successRedirect: null
         },
         routes: {
             register: {
@@ -47,6 +48,18 @@ export default (options) => {
                 path: '/login',
                 method: 'post'
             }
+        },
+        registerCallback: ({ resolve, body }, username, password, done) => {
+            done(
+                'Invalid option value when setting ' +
+                    'localStrategy: `registerCallback` should not be empty.'
+            );
+        },
+        loginCallback: ({ resolve, body }, username, password, done) => {
+            done(
+                'Invalid option value when setting ' +
+                    'localStrategy: `loginCallback` should not be empty.'
+            );
         },
         failureCallback: defaultFailureCallback
     };
