@@ -5,10 +5,10 @@ const PromiseProto = (async function () {})().__proto__;
 const filterAsyncResult = (result) => {
     if (!result || !result.__proto__) return;
     if (result.__proto__.__proto__ === GeneratorProto) {
-        throw new Error('Projection function cannot be generator or return iterable object');
+        throw new Error('A Projection function cannot be a generator or return an iterable object');
     }
     if (result.__proto__ === PromiseProto) {
-        throw new Error('Projection function cannot be asyncronous or return Promise object');
+        throw new Error('A Projection function cannot be asynchronous or return a Promise object');
     }
 };
 

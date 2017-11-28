@@ -43,7 +43,7 @@ const createFacade = ({ model, gqlSchema, gqlResolvers, customResolvers }) => {
     Object.defineProperty(executors, 'executeQueryCustom', {
         value: async (name, ...args) => {
             if (!customResolvers || !customResolvers[name]) {
-                throw new Error(`Custom resolver '${name}' is not specified`);
+                throw new Error(`The '${name}' custom resolver is not specified`);
             }
 
             return await customResolvers[name](model, ...args);

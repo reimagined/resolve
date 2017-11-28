@@ -2,7 +2,7 @@
   "name": "resolve-readmodel-memory",
   "version": "0.1.0",
   "description":
-    "This package serves as a adapter for resolve-query to store a readmodel by NeDB in memory.",
+    "This package serves as a resolve-query adapter for storing a read model in memory using NeDB",
   "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
