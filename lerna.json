@@ -5,7 +5,6 @@
     "packages/bus-adapters/*",
     "packages/storage-adapters/*",
     "packages/readmodel-adapters/*",
-    "examples/*",
     "benchmarks/*"
   ],
   "version": "0.1.0"
