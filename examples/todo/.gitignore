@@ -63,3 +63,4 @@ dist
 
 development.db
 production.db
+package-lock.json
