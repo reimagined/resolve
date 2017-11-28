@@ -1,4 +1,4 @@
-import actions, { SUBSCRIBE, UNSUBSCRIBE, SEND_COMMAND, MERGE_STATE } from './actions';
+import actions, { SUBSCRIBE, UNSUBSCRIBE, SEND_COMMAND, MERGE } from './actions';
 import socketIOClient from 'socket.io-client';
 
 import { getRootableUrl, getKey, checkRequiredFields } from './util';
@@ -147,12 +147,7 @@ export async function subscribe(store, socket, viewModels, subscribers, requests
         if (requests[key]) {
             delete requests[key];
 
-            store.dispatch({
-                type: MERGE_STATE,
-                aggregateId,
-                viewModel,
-                state
-            });
+            store.dispatch(action.merge(viewModel, aggregateId, state));
 
             socket.io.emit('setSubscription', {
                 types: getEventTypes(viewModels, subscribers),

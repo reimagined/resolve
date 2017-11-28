@@ -1,13 +1,14 @@
-export const MERGE_STATE = '@@resolve/MERGE_STATE';
+export const MERGE = '@@resolve/MERGE';
 export const SEND_COMMAND = '@@resolve/SEND_COMMAND';
 export const SUBSCRIBE = '@@resolve/SUBSCRIBE';
 export const UNSUBSCRIBE = '@@resolve/UNSUBSCRIBE';
 export const PROVIDE_VIEW_MODELS = '@@resolve/PROVIDE_VIEW_MODELS';
 
-function mergeState(viewModel, state) {
+function merge(viewModel, aggregateId, state) {
     return {
-        type: MERGE_STATE,
+        type: MERGE,
         viewModel,
+        aggregateId,
         state
     };
 }
@@ -46,7 +47,7 @@ function provideViewModels(viewModels) {
 }
 
 export default {
-    mergeState,
+    merge,
     sendCommand,
     subscribe,
     unsubscribe,

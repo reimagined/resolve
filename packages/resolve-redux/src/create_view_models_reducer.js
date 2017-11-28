@@ -1,4 +1,4 @@
-import { MERGE_STATE, SUBSCRIBE, UNSUBSCRIBE, PROVIDE_VIEW_MODELS } from './actions';
+import { MERGE, SUBSCRIBE, UNSUBSCRIBE, PROVIDE_VIEW_MODELS } from './actions';
 import { getKey } from './util';
 
 export function subscribeHandler({ subscribers, viewModels }, state, { viewModel, aggregateId }) {
@@ -39,7 +39,7 @@ export function unsubscribeHandler({ subscribers }, state, { viewModel, aggregat
     };
 }
 
-export function mergeStateHandler(_, state, { viewModel, aggregateId, state: actionState }) {
+export function mergeHandler(_, state, { viewModel, aggregateId, state: actionState }) {
     return {
         ...state,
         [viewModel]: {
@@ -59,7 +59,7 @@ export function provideViewModelsHandler(context, state, { viewModels }) {
 
     handlers[UNSUBSCRIBE] = unsubscribeHandler.bind(null, context);
 
-    handlers[MERGE_STATE] = mergeStateHandler.bind(null, context);
+    handlers[MERGE] = mergeHandler.bind(null, context);
 
     viewModels.forEach(({ name: viewModel }) => {
         initialState[viewModel] = {};
