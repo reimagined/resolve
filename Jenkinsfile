@@ -33,6 +33,8 @@ pipeline {
                             eval \$(next-lerna-version); \
                             export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}; \
                             ./node_modules/.bin/lerna publish --skip-git --force-publish=* --yes --repo-version \$CI_ALPHA_VERSION --canary
+
+                            sleep 10
                         """
                     }
 
@@ -52,6 +54,7 @@ pipeline {
                         cd examples/todo
 
                         npm install
+                        npm run update \$CI_ALPHA_VERSION
 
                         cat ./package.json
 
@@ -73,6 +76,7 @@ pipeline {
                         cd examples/todo-two-levels
 
                         npm install
+                        npm run update \$CI_ALPHA_VERSION
 
                         cat ./package.json
 
@@ -91,16 +95,7 @@ pipeline {
                         eval \$(next-lerna-version)
                         export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}
 
-                        while :
-                        do
-                            if ( npm install -g create-resolve-app@\$CI_ALPHA_VERSION ); then
-                                break
-                            else
-                                sleep 5
-                            fi
-                        done
-
-                        sleep 10
+                        npm install -g create-resolve-app@\$CI_ALPHA_VERSION
 
                         create-resolve-app empty
                         cd ./empty
