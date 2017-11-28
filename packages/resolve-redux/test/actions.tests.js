@@ -1,16 +1,16 @@
 import { expect } from 'chai';
-import actions, { MERGE_STATE, SEND_COMMAND, SUBSCRIBE, UNSUBSCRIBE } from '../src/actions';
+import actions, { MERGE, SEND_COMMAND, SUBSCRIBE, UNSUBSCRIBE } from '../src/actions';
 
 describe('actions', () => {
-    describe('mergeState', () => {
+    describe('merge', () => {
         it('should create an action to merge reducer state with viewModel state', () => {
             const aggregateId = 'aggregateId';
             const viewModel = 'counter';
             const state = {
                 value: 10
             };
-            expect(actions.mergeState(viewModel, aggregateId, state)).to.deep.equal({
-                type: MERGE_STATE,
+            expect(actions.merge(viewModel, aggregateId, state)).to.deep.equal({
+                type: MERGE,
                 aggregateId,
                 viewModel,
                 state
