@@ -15,7 +15,7 @@ module.exports = {
         indent: ['error', 4, { SwitchCase: 1 }],
         'func-names': 'off',
         'no-underscore-dangle': 'off',
-        'import/no-unresolved': ['error', { ignore: ['react'] }],
+        'import/no-unresolved': 'off',
         'comma-dangle': ['error', 'never'],
         'no-plusplus': 'off',
         'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
