@@ -55,8 +55,8 @@ describe('resolve-query', () => {
         readModel = createReadModel({ eventStore, projection: readModelProjection });
 
         viewModelProjection = {
-            Init: () => [],
-            TestEvent: (state, event) => state.concat([event.payload])
+            Init: sinon.stub().callsFake(() => []),
+            TestEvent: sinon.stub().callsFake((state, event) => state.concat([event.payload]))
         };
 
         viewModel = createViewModel({ eventStore, projection: viewModelProjection });
@@ -410,6 +410,28 @@ describe('resolve-query', () => {
                 'A Projection function cannot be asynchronous or return a Promise object'
             );
         }
+    });
+
+    it('should support view-model with caching subscribtion and last state', async () => {
+        const { executeQueryRaw } = createFacade({ model: viewModel });
+
+        const testEvent = {
+            type: 'TestEvent',
+            aggregateId: 'test-id',
+            payload: 'test-payload'
+        };
+        eventList = [testEvent];
+
+        const stateOne = await executeQueryRaw(['test-id']);
+        const stateTwo = await executeQueryRaw(['test-id']);
+
+        expect(stateOne).to.be.deep.equal(['test-payload']);
+        expect(stateTwo).to.be.deep.equal(['test-payload']);
+
+        expect(viewModelProjection.Init.callCount).to.be.equal(1);
+        expect(viewModelProjection.TestEvent.callCount).to.be.equal(1);
+
+        expect(unsubscribe.callCount).to.be.equal(0);
     });
 
     it('should support view-model disposing by aggregate-id', async () => {
