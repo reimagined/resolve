@@ -412,10 +412,31 @@ describe('resolve-query', () => {
         }
     });
 
-    it('should support view-model disposing', async () => {
+    it('should support view-model disposing by aggregate-id', async () => {
+        eventList = simulatedEventList.slice(0);
+        await viewModel(['test-aggregate-id']);
+        viewModel.dispose('test-aggregate-id');
+        viewModel.dispose('test-aggregate-wrong-id');
+        await Promise.resolve();
+
+        expect(unsubscribe.callCount).to.be.equal(1);
+    });
+
+    it('should support view-model wildcard disposing', async () => {
         eventList = simulatedEventList.slice(0);
         await viewModel(['test-aggregate-id']);
         viewModel.dispose();
+        await Promise.resolve();
+
+        expect(unsubscribe.callCount).to.be.equal(1);
+    });
+
+    it('should not dispose view-model after it disposed', async () => {
+        eventList = simulatedEventList.slice(0);
+        await viewModel(['test-aggregate-id']);
+        viewModel.dispose();
+        viewModel.dispose();
+        await Promise.resolve();
 
         expect(unsubscribe.callCount).to.be.equal(1);
     });
