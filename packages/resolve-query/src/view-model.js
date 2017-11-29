@@ -31,50 +31,64 @@ const createViewModel = ({ projection, eventStore }) => {
             return await executor();
         }
 
-        const executor = async () => {
-            let state = typeof projection.Init === 'function' && projection.Init();
-            filterAsyncResult(state);
-            let error = null;
+        let state = null;
+        let error = null;
 
-            const callback = (event) => {
-                if ((event && event.type === 'Init') || error) return;
-                try {
-                    state = projection[event.type](state, event);
-                    filterAsyncResult(state);
-                } catch (err) {
-                    error = err;
-                }
-            };
-
-            const eventTypes = Object.keys(projection);
-
-            const unsubscribe =
-                aggregateIds === '*'
-                    ? await eventStore.subscribeByEventType(eventTypes, callback)
-                    : await eventStore.subscribeByAggregateId(
-                          aggregateIds,
-                          event => eventTypes.includes(event.type) && callback(event)
-                      );
-
-            if (!executor.disposing) {
-                executor.dispose = unsubscribe;
-            } else {
-                unsubscribe();
+        try {
+            if (typeof projection.Init === 'function') {
+                state = projection.Init();
+                filterAsyncResult(state);
             }
+        } catch (err) {
+            error = err;
+        }
 
+        const callback = (event) => {
+            if ((event && event.type === 'Init') || error) return;
+            try {
+                state = projection[event.type](state, event);
+                filterAsyncResult(state);
+            } catch (err) {
+                error = err;
+            }
+        };
+
+        const eventTypes = Object.keys(projection);
+
+        const subscribePromise =
+            aggregateIds === '*'
+                ? eventStore.subscribeByEventType(eventTypes, callback)
+                : eventStore.subscribeByAggregateId(
+                      aggregateIds,
+                      event => eventTypes.includes(event.type) && callback(event)
+                  );
+
+        const executor = async () => {
+            await subscribePromise;
             if (error) throw error;
             return state;
         };
 
-        executor.dispose = () => (executor.disposing = true);
+        executor.dispose = () => subscribePromise.then(unsubscribe => unsubscribe());
 
         viewMap.set(key, executor);
         return await executor();
     };
 
-    reader.dispose = () => {
-        viewMap.forEach(executor => executor.dispose());
-        viewMap.clear();
+    reader.dispose = (aggregateIds) => {
+        if (!aggregateIds) {
+            viewMap.forEach(executor => executor.dispose());
+            viewMap.clear();
+            return;
+        }
+
+        const key = getKey(aggregateIds);
+        if (!viewMap.has(key)) {
+            return;
+        }
+
+        viewMap.get(key).dispose();
+        viewMap.delete(key);
     };
 
     return reader;

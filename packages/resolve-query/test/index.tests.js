@@ -55,8 +55,8 @@ describe('resolve-query', () => {
         readModel = createReadModel({ eventStore, projection: readModelProjection });
 
         viewModelProjection = {
-            Init: () => [],
-            TestEvent: (state, event) => state.concat([event.payload])
+            Init: sinon.stub().callsFake(() => []),
+            TestEvent: sinon.stub().callsFake((state, event) => state.concat([event.payload]))
         };
 
         viewModel = createViewModel({ eventStore, projection: viewModelProjection });
@@ -412,10 +412,53 @@ describe('resolve-query', () => {
         }
     });
 
-    it('should support view-model disposing', async () => {
+    it('should support view-model with caching subscribtion and last state', async () => {
+        const { executeQueryRaw } = createFacade({ model: viewModel });
+
+        const testEvent = {
+            type: 'TestEvent',
+            aggregateId: 'test-id',
+            payload: 'test-payload'
+        };
+        eventList = [testEvent];
+
+        const stateOne = await executeQueryRaw(['test-id']);
+        const stateTwo = await executeQueryRaw(['test-id']);
+
+        expect(stateOne).to.be.deep.equal(['test-payload']);
+        expect(stateTwo).to.be.deep.equal(['test-payload']);
+
+        expect(viewModelProjection.Init.callCount).to.be.equal(1);
+        expect(viewModelProjection.TestEvent.callCount).to.be.equal(1);
+
+        expect(unsubscribe.callCount).to.be.equal(0);
+    });
+
+    it('should support view-model disposing by aggregate-id', async () => {
+        eventList = simulatedEventList.slice(0);
+        await viewModel(['test-aggregate-id']);
+        viewModel.dispose('test-aggregate-id');
+        viewModel.dispose('test-aggregate-wrong-id');
+        await Promise.resolve();
+
+        expect(unsubscribe.callCount).to.be.equal(1);
+    });
+
+    it('should support view-model wildcard disposing', async () => {
         eventList = simulatedEventList.slice(0);
         await viewModel(['test-aggregate-id']);
         viewModel.dispose();
+        await Promise.resolve();
+
+        expect(unsubscribe.callCount).to.be.equal(1);
+    });
+
+    it('should not dispose view-model after it disposed', async () => {
+        eventList = simulatedEventList.slice(0);
+        await viewModel(['test-aggregate-id']);
+        viewModel.dispose();
+        viewModel.dispose();
+        await Promise.resolve();
 
         expect(unsubscribe.callCount).to.be.equal(1);
     });
