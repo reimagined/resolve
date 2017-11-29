@@ -36,7 +36,7 @@ const defaultConfig = {
     },
     readModels: [],
     viewModels: [],
-    extendExpress: () => {},
+    extendExpress: null,
     sagas: []
 };
 
@@ -46,7 +46,7 @@ function extendConfig(inputConfig, defaultConfig) {
     Object.keys(defaultConfig).forEach((key) => {
         if (!config[key]) {
             config[key] = defaultConfig[key];
-        } else if (defaultConfig[key].constructor === Object) {
+        } else if (defaultConfig[key] !== null && defaultConfig[key].constructor === Object) {
             Object.keys(defaultConfig[key]).forEach((innerKey) => {
                 if (!config[key][innerKey]) {
                     config[key][innerKey] = defaultConfig[key][innerKey];

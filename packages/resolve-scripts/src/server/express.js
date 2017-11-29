@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser';
+import chalk from 'chalk';
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import jwt from 'jsonwebtoken';
@@ -144,7 +145,15 @@ config.auth.strategies.forEach((strategy) => {
 app.use(passport.initialize());
 
 try {
-    config.extendExpress(app);
+    if (config.extendExpress) {
+        // eslint-disable-next-line no-console
+        console.log(
+            `${chalk.bgYellow.black('WARN')} ${chalk.magenta(
+                'deprecated'
+            )} do not use the \`extendExpress\` function in \`resolve.server.config.js\`.`
+        );
+        config.extendExpress(app);
+    }
 } catch (err) {}
 
 app.post(`${rootDirectory}/api/commands`, async (req, res) => {

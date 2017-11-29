@@ -40,11 +40,18 @@ export default (options) => {
         strategy: {
             clientID: null,
             clientSecret: null,
-            callbackURL: null
+            callbackURL: null,
+            successRedirect: null
         },
         routes: {
             auth: '/auth/google',
             callback: '/auth/google/callback'
+        },
+        authCallback: ({ resolve, body }, profile, done) => {
+            done(
+                'Invalid option value when setting ' +
+                    'googleStrategy: `authCallback` should not be empty.'
+            );
         },
         failureCallback: defaultFailureCallback
     };
