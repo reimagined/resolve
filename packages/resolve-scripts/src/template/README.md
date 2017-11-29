@@ -34,7 +34,6 @@ Refer to [https://github.com/markerikson/react-redux-links](https://github.com/m
 	        * [secret](#jwtsecret)
         * [auth](#auth)
 	        * [strategies](#authstrategies)
-        * [extendExpress](#extendexpress)
         * [initialState](#initialstate)
         * [readModels](#readModels)
         * [sagas](#sagas)
@@ -467,21 +466,6 @@ The `resolve.server.config.js` file contains information for the reSolve library
 		    }
 		 ...
        ```
-
-* #### extendExpress
-	A function that takes an express app. It is useful to define custom routes or express middlewares.
-
-	##### Example
-	###### resolve.server.config.js 
-	```js
-	export defualt {
-	  extendExpress: (app) {
-	    app.get('/custom', (req, res) => {
-	      res.send('Custom page is rendered');
-	    })
-	  }
-	}
-	```
 
 * #### initialState
 	
