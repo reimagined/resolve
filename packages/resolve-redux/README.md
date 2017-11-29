@@ -6,6 +6,7 @@ This package contains tools for integrating reSolve with [Redux](http://redux.js
   * [resolveMiddleware](#resolvemiddleware)
   * [createViewModelsReducer](#createviewmodelsreducer)
   * [withViewModel](#withviewmodel)
+  * [graphqlConnector](#graphqlconnector)
   * [createActions](#createactions)
   * [actions](#actions)
     * [merge](#merge)
@@ -20,8 +21,8 @@ This package contains tools for integrating reSolve with [Redux](http://redux.js
 ## 🛠 Tools
 ### `resolveMiddleware`  
  
-  Redux middleware used to
-: 
+  Redux middleware used to:  
+
   1) Automatically fetch a view model state and subscribe to events. 
   2) Send a command to the server side.
 
@@ -32,7 +33,7 @@ This package contains tools for integrating reSolve with [Redux](http://redux.js
   This reducer includes handling the reSolve's [`merge`](#merge) action.
 
 ### `withViewModel`  
-A higher-order component (HOC), which automatically subscribes/unsubscribes to/from a view model by aggregateId.
+  A higher-order component (HOC), which automatically subscribes/unsubscribes to/from a view model by aggregateId.
 
 ```js
 const mapStateToProps = state => ({
@@ -42,6 +43,32 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps)(withViewModel(Component));
+```
+
+### `graphqlConnector`
+  A higher-order component (HOC), which automatically delivers actual state from read model by graphql query. Connector accepts following arguments:
+  * `gqlQuery` - GraphQL query for retrieving data from read model.
+  * `options` - connector options; see details at [ApolloClient `query` method reference](https://www.apollographql.com/docs/react/reference/index.html#ApolloClient.query).
+  * `endpointUrl` - URL address with graphql endpoint for target read model.
+
+```js
+const ConnectedStoryComponent = gqlConnector(
+  `query($id: ID!) {
+    story($id: ID!) {
+      id
+      text
+    }
+  }`,
+  {
+    options: ({ storyId }) => ({
+      variables: {
+        id: storyId
+      },
+      fetchPolicy: 'network-only'
+    })
+  },
+  '/api/query/graphql'
+)(StoryComponent)
 ```
 
 ### `createActions`   
