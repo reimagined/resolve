@@ -26,6 +26,5 @@ export default {
     aggregates,
     initialSubscribedEvents: { types: Object.values(eventTypes), ids: ['root-id'] },
     readModels,
-    viewModels,
-    extendExpress: () => {}
+    viewModels
 };
