@@ -2,7 +2,6 @@
   "name": "resolve-scripts",
   "version": "0.1.0",
   "description": "This package create server with resolve.",
-  "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
@@ -52,6 +51,9 @@
     "jsonwebtoken": "^7.4.3",
     "opn": "^5.1.0",
     "passport": "^0.4.0",
+    "passport-github": "^1.1.0",
+    "passport-google-oauth20": "^1.0.0",
+    "passport-local": "^1.0.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-helmet": "^5.1.3",

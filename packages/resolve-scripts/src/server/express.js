@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser';
+import chalk from 'chalk';
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import jwt from 'jsonwebtoken';
@@ -11,6 +12,7 @@ import passport from 'passport';
 import { raiseError } from './utils/error_handling.js';
 import eventStore from './event_store';
 import ssr from './render';
+import { getRouteByName } from './auth';
 
 import config from '../configs/server.config.js';
 import message from './message';
@@ -118,31 +120,40 @@ app.use((req, res, next) => {
     next();
 });
 
-config.passport.strategies.forEach(strategy => passport.use(strategy));
-
-app.use(passport.initialize());
-
 const applyJwtValue = (value, res, url) => {
     const authenticationToken = jwt.sign(value, config.jwt.secret);
     res.cookie(config.jwt.cookieName, authenticationToken, config.jwt.options);
     res.redirect(url || `${rootDirectory}/`);
 };
 
-const bindAuthMiddleware = (arr, method) => {
-    arr.forEach((route) => {
-        app[method](route, (req, res, next) =>
-            config.passport.authMiddleware(passport, applyJwtValue, req, res, next)
-        );
-    });
+const bindAuthMiddleware = (route, method, middleware, options) => {
+    app[method](route, (req, res, next) =>
+        middleware(passport, options, applyJwtValue, req, res, next)
+    );
 };
 
-const authRoutes = config.passport.authRoutes;
-if (Array.isArray(authRoutes)) bindAuthMiddleware(authRoutes, 'get');
-if (authRoutes.post) bindAuthMiddleware(authRoutes.post, 'post');
-if (authRoutes.get) bindAuthMiddleware(authRoutes.get, 'get');
+config.auth.strategies.forEach((strategy) => {
+    const options = strategy.options;
+    passport.use(strategy.init(options));
+    const routes = options.routes;
+    Object.keys(routes).forEach((key) => {
+        const route = getRouteByName(key, routes);
+        bindAuthMiddleware(route.path, route.method, strategy.middleware, options);
+    });
+});
+
+app.use(passport.initialize());
 
 try {
-    config.extendExpress(app);
+    if (config.extendExpress) {
+        // eslint-disable-next-line no-console
+        console.log(
+            `${chalk.bgYellow.black('WARN')} ${chalk.magenta(
+                'deprecated'
+            )} do not use the \`extendExpress\` function in \`resolve.server.config.js\`.`
+        );
+        config.extendExpress(app);
+    }
 } catch (err) {}
 
 app.post(`${rootDirectory}/api/commands`, async (req, res) => {
