@@ -135,18 +135,12 @@ export default function init(repository) {
         writeInterface: getStoreInterface(true)
     });
 
+    repository.initDonePromise = Promise.resolve()
+        .then(repository.initHandler.bind(null, repository.writeInterface))
+        .catch(error => repository.internalError);
+
     return {
-        getReadable: async () => {
-            if (!repository.initialEventPromise) {
-                repository.initialEventPromise = Promise.resolve().then(
-                    typeof repository.initHandler === 'function'
-                        ? repository.initHandler.bind(null, repository.writeInterface)
-                        : () => {}
-                );
-            }
-            await repository.initialEventPromise;
-            return repository.readInterface;
-        },
+        getReadable: async () => repository.readInterface,
         getError: async () => repository.internalError
     };
 }

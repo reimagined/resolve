@@ -30,9 +30,14 @@ const init = (adapter, eventStore, projection) => {
         };
 
         const forceStop = (reason) => {
-            flowPromise = flowPromise.then(reject, reject);
-            flowPromise = null;
-            onDispose && onDispose();
+            if (flowPromise) {
+                flowPromise.then(reject, reject);
+                flowPromise = null;
+                if (onDispose) {
+                    onDispose();
+                }
+            }
+
             return Promise.reject(reason);
         };
 
@@ -91,7 +96,7 @@ const createReadModel = ({ projection, eventStore, adapter }) => {
     const repository = {};
     const getReadModel = read.bind(null, repository, currentAdapter, eventStore, builtProjection);
 
-    let reader = async (...args) => getReadModel(...args);
+    const reader = async (...args) => await getReadModel(...args);
 
     reader.dispose = () => {
         if (!repository.loadDonePromise) return;
