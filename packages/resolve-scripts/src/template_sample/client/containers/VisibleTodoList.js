@@ -1,6 +1,10 @@
 import { connect } from 'react-redux';
+import { withViewModel } from 'resolve-redux';
 import actions from '../actions';
 import TodoList from '../components/TodoList';
+
+const viewModel = 'todos';
+const aggregateId = 'root-id';
 
 const getVisibleTodos = (todos, filter) => {
     switch (filter) {
@@ -16,7 +20,9 @@ const getVisibleTodos = (todos, filter) => {
 };
 
 const mapStateToProps = state => ({
-    todos: getVisibleTodos(state.todos, state.visibilityFilter)
+    viewModel,
+    aggregateId,
+    todos: getVisibleTodos(state.viewModels[viewModel][aggregateId], state.visibilityFilter)
 });
 
 const mapDispatchToProps = {
@@ -24,6 +30,6 @@ const mapDispatchToProps = {
     resetTodo: actions.resetTodo
 };
 
-const VisibleTodoList = connect(mapStateToProps, mapDispatchToProps)(TodoList);
+const VisibleTodoList = connect(mapStateToProps, mapDispatchToProps)(withViewModel(TodoList));
 
 export default VisibleTodoList;

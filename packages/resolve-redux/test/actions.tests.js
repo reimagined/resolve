@@ -1,21 +1,18 @@
 import { expect } from 'chai';
-import actions, {
-    MERGE_STATE,
-    SEND_COMMAND,
-    SET_SUBSCRIPTION,
-    REPLACE_STATE
-} from '../src/actions';
+import actions, { MERGE, SEND_COMMAND, SUBSCRIBE, UNSUBSCRIBE } from '../src/actions';
 
 describe('actions', () => {
-    describe('mergeState', () => {
-        it('should create an action to merge reducer state with readModel state', () => {
-            const readModelName = 'counter';
+    describe('merge', () => {
+        it('should create an action to merge reducer state with viewModel state', () => {
+            const aggregateId = 'aggregateId';
+            const viewModel = 'counter';
             const state = {
                 value: 10
             };
-            expect(actions.mergeState(readModelName, state)).to.deep.equal({
-                type: MERGE_STATE,
-                readModelName,
+            expect(actions.merge(viewModel, aggregateId, state)).to.deep.equal({
+                type: MERGE,
+                aggregateId,
+                viewModel,
                 state
             });
         });
@@ -48,28 +45,26 @@ describe('actions', () => {
         });
     });
 
-    describe('setSubscription', () => {
-        it('should create an action to set event subscription in socket.io connection', () => {
-            const eventTypes = ['EVENT_TYPE_1', 'EVENT_TYPE_2'];
-            const aggregateIds = ['AGGREGATE_ID_1', 'AGGREGATE_ID_2'];
-
-            expect(actions.setSubscription(eventTypes, aggregateIds)).to.deep.equal({
-                type: SET_SUBSCRIPTION,
-                types: eventTypes,
-                ids: aggregateIds
+    describe('subscribe', () => {
+        it('should create an action to subscribe on view model by aggregateId', () => {
+            const viewModel = 'counter';
+            const aggregateId = 'aggregateId';
+            expect(actions.subscribe(viewModel, aggregateId)).to.deep.equal({
+                type: SUBSCRIBE,
+                viewModel,
+                aggregateId
             });
         });
     });
 
-    describe('replaceState', () => {
-        it('should create an action to replace reducer\'s state', () => {
-            const readModelName = 'counter';
-            const newState = { field: 'test' };
-
-            expect(actions.replaceState(readModelName, newState)).to.deep.equal({
-                type: REPLACE_STATE,
-                readModelName,
-                state: { field: 'test' }
+    describe('unsubscribe', () => {
+        it('should create an action to unsubscribe on view model by aggregateId', () => {
+            const viewModel = 'counter';
+            const aggregateId = 'aggregateId';
+            expect(actions.unsubscribe(viewModel, aggregateId)).to.deep.equal({
+                type: UNSUBSCRIBE,
+                viewModel,
+                aggregateId
             });
         });
     });

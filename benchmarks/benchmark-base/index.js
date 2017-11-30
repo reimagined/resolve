@@ -75,13 +75,15 @@ export default function generateBenchmark(options) {
         });
 
     const generateSeries = (arr, i, storage) =>
-        preparer(arr[i], totalProcessed).then(runLoadTests).then((data) => {
-            storage[arr[i]] = data;
-            if (i === arr.length - 1) {
-                return storage;
-            }
-            return generateSeries(arr, i + 1, storage);
-        });
+        preparer(arr[i], totalProcessed)
+            .then(runLoadTests)
+            .then((data) => {
+                storage[arr[i]] = data;
+                if (i === arr.length - 1) {
+                    return storage;
+                }
+                return generateSeries(arr, i + 1, storage);
+            });
 
     const fsWriteFileAsync = (filename, content) => {
         return new Promise((resolve, reject) =>

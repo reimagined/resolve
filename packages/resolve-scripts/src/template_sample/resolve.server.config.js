@@ -1,6 +1,6 @@
+import path from 'path';
 import fileAdapter from 'resolve-storage-lite';
 import busAdapter from 'resolve-bus-memory';
-import eventTypes from './common/aggregates/todo-events';
 import aggregates from './common/aggregates';
 import readModels from './common/read-models';
 import viewModels from './common/view-models';
@@ -10,10 +10,8 @@ if (module.hot) {
     module.hot.accept();
 }
 
-const dbPath =
-    process.env.NODE_ENV === 'production'
-        ? './prod.db'
-        : process.env.NODE_ENV === 'tests' ? './__test.db' : './dev.db';
+const { NODE_ENV = 'development' } = process.env;
+const dbPath = path.join(__dirname, `${NODE_ENV}.db`);
 
 export default {
     entries: clientConfig,
@@ -22,9 +20,7 @@ export default {
         adapter: fileAdapter,
         params: { pathToFile: dbPath }
     },
-    initialState: async queryExecutors => await queryExecutors['default'](['root-id']),
     aggregates,
-    initialSubscribedEvents: { types: Object.values(eventTypes), ids: ['root-id'] },
     readModels,
     viewModels
 };

@@ -31,14 +31,6 @@ getInstallations()
             })
             .then((exitCode) => {
                 testcafe.close();
-                try {
-                    const targetPath = path.resolve(
-                        __dirname,
-                        '../',
-                        config.storage.params.pathToFile
-                    );
-                    fs.unlinkSync(targetPath);
-                } catch (err) {}
                 process.exit(exitCode);
             })
     )
@@ -46,3 +38,10 @@ getInstallations()
         console.log('Error: ' + error.stack); // eslint-disable-line no-console
         process.exit(1);
     });
+
+process.on('exit', () => {
+    try {
+        const targetPath = path.resolve(__dirname, '../', config.storage.params.pathToFile);
+        fs.unlinkSync(targetPath);
+    } catch (err) {}
+});

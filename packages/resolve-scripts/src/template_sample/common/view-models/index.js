@@ -1,2 +1,2 @@
-import defaultViewModel from './default';
+import defaultViewModel from './todos';
 export default [defaultViewModel];
