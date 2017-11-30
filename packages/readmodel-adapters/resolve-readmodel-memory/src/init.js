@@ -135,6 +135,10 @@ export default function init(repository) {
         writeInterface: getStoreInterface(true)
     });
 
+    repository.initDonePromise = Promise.resolve()
+        .then(repository.initHandler.bind(null, repository.writeInterface))
+        .catch(error => repository.internalError);
+
     return {
         getReadable: async () => repository.readInterface,
         getError: async () => repository.internalError
