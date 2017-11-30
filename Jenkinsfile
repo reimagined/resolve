@@ -33,9 +33,55 @@ pipeline {
                             eval \$(next-lerna-version); \
                             export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}; \
                             ./node_modules/.bin/lerna publish --skip-git --force-publish=* --yes --repo-version \$CI_ALPHA_VERSION --canary
+
+                            sleep 10
                         """
                     }
 
+                }
+            }
+        }
+
+        stage('Examples [ todo ] Functional Tests') {
+            steps {
+                script {
+                    sh """
+                        /prepare-chromium.sh
+
+                        eval \$(next-lerna-version)
+                        export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}
+
+                        cd examples/todo
+
+                        npm install
+                        npm run update \$CI_ALPHA_VERSION
+
+                        cat ./package.json
+
+                        npm run test:functional -- --browser=path:/chromium
+                    """
+                }
+            }
+        }
+
+        stage('Examples [ todo-two-levels ] Functional Tests') {
+            steps {
+                script {
+                    sh """
+                        /prepare-chromium.sh
+
+                        eval \$(next-lerna-version)
+                        export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}
+
+                        cd examples/todo-two-levels
+
+                        npm install
+                        npm run update \$CI_ALPHA_VERSION
+
+                        cat ./package.json
+
+                        npm run test:functional -- --browser=path:/chromium
+                    """
                 }
             }
         }
@@ -49,23 +95,14 @@ pipeline {
                         eval \$(next-lerna-version)
                         export CI_ALPHA_VERSION=\$NEXT_LERNA_VERSION-alpha.${env.CI_TIMESTAMP}
 
-                        while :
-                        do
-                            if ( npm install -g create-resolve-app@\$CI_ALPHA_VERSION ); then
-                                break
-                            else
-                                sleep 5
-                            fi
-                        done
-
-                        sleep 3
+                        npm install -g create-resolve-app@\$CI_ALPHA_VERSION
 
                         create-resolve-app empty
                         cd ./empty
 
                         npm run flow
                         npm run test
-                        npm run test:e2e -- --browser=path:/chromium
+                        npm run test:functional -- --browser=path:/chromium
                     """
                 }
             }
@@ -85,7 +122,7 @@ pipeline {
 
                         npm run flow
                         npm run test
-                        npm run test:e2e -- --browser=path:/chromium
+                        npm run test:functional -- --browser=path:/chromium
                     """
                 }
             }

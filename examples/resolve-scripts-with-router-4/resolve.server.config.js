@@ -5,9 +5,10 @@ import RootComponent from './index';
 
 export default {
     entries: {
-        rootComponent: (props, context) =>
+        rootComponent: (props, context) => (
             <StaticRouter location={props.url} context={{}}>
                 <RootComponent />
             </StaticRouter>
+        )
     }
 };

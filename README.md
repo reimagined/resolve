@@ -10,7 +10,7 @@ reSolve is a framework for developing apps based on CQRS and Event Sourcing usin
 * [Basic Concepts](#️-basic-concepts)
 	* [Command and Aggregate](#command-and-aggregate)
 	* [Event Store](#event-store)
-	* [Read Model and Query](#read-model-and-query)
+	* [Read Model, View Model and Query](#read-model-view-model-and-query)
 	* [See Also](#see-also)
 * [Quick Installation](#-quick-installation)
 * [Packages](#-packages)
@@ -39,8 +39,13 @@ The Event Store stores all events aggregates produce and delivers them to subscr
 
 reSolve provides the [resolve-es](packages/resolve-es) package containing the event store implementation, as well as [storage-adapters](packages/storage-adapters) and [bus-adapters](packages/bus-adapters) allowing you to specify where to store and how to send events.
 
-### Read Model and Query
-The Read Model represents a system state or its part. It is built using Projection functions. All events from the beginning of time are applied to a read model to build its current state. Queries are used to get data from a read model. 
+### Read Model, View Model and Query
+The Read Model represents a system state or its part. It is built using Projection functions. All events from the beginning of time are applied to a read model to build its current state. 
+
+View model is a read model or part of it that represent a part of UI state and can live on client. It can be updated by Redux reducer function on the client and on the server.
+
+Queries are used to get data from a read model and view model. 
+
 See [Event Sourcing - Projections](https://abdullin.com/post/event-sourcing-projections/) or [DDD, Event Sourcing, and CQRS Tutorial: read models](http://cqrs.nu/tutorial/cs/03-read-models) for more information.
 
 You can use [resolve-query](packages/resolve-query)  as a query. This package allows you to obtain data from a read model by a [GraphQL](http://graphql.org/learn/) request.
