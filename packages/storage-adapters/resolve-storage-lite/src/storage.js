@@ -2,7 +2,7 @@ import 'regenerator-runtime/runtime';
 import NeDB from 'nedb';
 import AsyncLock from 'async-lock';
 import { ConcurrentError } from 'resolve-storage-base';
-const lock = new AsyncLock();
+const lock = new AsyncLock({ maxPending: Number.POSITIVE_INFINITY });
 
 const storage = {
     init: db =>
