@@ -46,10 +46,10 @@ export default connect(mapStateToProps)(withViewModel(Component));
 ```
 
 ### `graphqlConnector`
-  A higher-order component (HOC), which automatically delivers actual state from read model by graphql query. Connector accepts following arguments:
-  * `gqlQuery` - GraphQL query for retrieving data from read model.
-  * `options` - connector options; see details at [ApolloClient `query` method reference](https://www.apollographql.com/docs/react/reference/index.html#ApolloClient.query).
-  * `endpointUrl` - URL address with graphql endpoint for target read model.
+  A higher-order component (HOC), which automatically delivers a read model's actual state by a graphql query. A connector takes the following arguments:
+  * `gqlQuery` - a GraphQL query for retrieving data from a read model
+  * `options` - connector options (see ApolloClient's [`query`](https://www.apollographql.com/docs/react/reference/index.html#ApolloClient.query) method  for details)
+  * `endpointUrl` - a URL address with a graphql endpoint for a target read model
 
 ```js
 const ConnectedStoryComponent = gqlConnector(
