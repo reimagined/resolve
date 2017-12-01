@@ -15,33 +15,39 @@ const Todo = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
             <h1>
                 <NavLink to="/">Home</NavLink> | TODO
             </h1>
-            <ol>
-                {Object.keys(todos).map(id => (
-                    <li key={id}>
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={todos[id].checked}
-                                onChange={toggleItem.bind(null, aggregateId, { id })}
-                            />
-                            {todos[id].text}
-                        </label>
-                        <span onClick={removeItem.bind(null, aggregateId, { id })}>{' [x]'}</span>
-                    </li>
-                ))}
-            </ol>
-            <input type='text' ref={element => (newTodo = element)} />
-            <button
-                onClick={() => {
-                    createItem(aggregateId, {
-                        text: newTodo.value,
-                        id: Date.now()
-                    });
-                    newTodo.value = '';
-                }}
-            >
-                Add Item
-            </button>
+            {todos ? (
+                <div>
+                    <ol>
+                        {Object.keys(todos).map(id => (
+                            <li key={id}>
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        checked={todos[id].checked}
+                                        onChange={toggleItem.bind(null, aggregateId, { id })}
+                                    />
+                                    {todos[id].text}
+                                </label>
+                                <span onClick={removeItem.bind(null, aggregateId, { id })}>
+                                    {' [x]'}
+                                </span>
+                            </li>
+                        ))}
+                    </ol>
+                    <input type="text" ref={element => (newTodo = element)} />
+                    <button
+                        onClick={() => {
+                            createItem(aggregateId, {
+                                text: newTodo.value,
+                                id: Date.now()
+                            });
+                            newTodo.value = '';
+                        }}
+                    >
+                        Add Item
+                    </button>
+                </div>
+            ) : null}
         </div>
     );
 };
