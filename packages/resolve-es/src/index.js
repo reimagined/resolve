@@ -68,6 +68,7 @@ export default (
                 throw new Error('The `aggregateId` field is missed');
             }
             event.timestamp = Date.now();
+            event.aggregateId = String(event.aggregateId);
 
             await config.storage.saveEvent(event);
             await config.bus.publish(event);
@@ -85,6 +86,7 @@ export default (
             if (parseInt(timestamp, 10) !== timestamp) {
                 throw new Error('The `timestamp` field is missed or incorrect');
             }
+            event.aggregateId = String(event.aggregateId);
 
             await config.storage.saveEvent(event);
             await config.bus.publish(event);

@@ -21,9 +21,8 @@ export default [
     {
         name: 'Todos',
         projection: {
-            Init: () => ({}),
             LIST_CREATED: () => ({}),
-            LIST_REMOVED: () => ({}),
+            LIST_REMOVED: () => null,
             ITEM_CREATED: (state, { payload: { id, text } }) => ({
                 ...state,
                 [id]: {
