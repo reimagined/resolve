@@ -158,7 +158,7 @@ try {
 
 app.post(`${rootDirectory}/api/commands`, async (req, res) => {
     try {
-        await executeCommand(req.body, req.jwt);
+        await executeCommand(req.body, req.getJwt);
         res.status(200).send(message.commandSuccess);
     } catch (err) {
         res.status(500).end(`${message.commandFail}${err.message}`);
