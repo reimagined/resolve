@@ -11,11 +11,12 @@ Refer to [https://github.com/markerikson/react-redux-links](https://github.com/m
     * [npm run dev](#npm-run-dev)
     * [npm run build](#npm-run-build)
     * [npm start](#npm-start)
+    * [npm run update](#npm-run-update-[version])
 * [Project Structure Overview](#️-project-structure-overview)
     * [Client](#-client)
     * [Common](#-common)
     * [Configuration](#-configuration)
-    * [E2E-tests](#-e2e-tests)
+    * [Functional tests](#-functional-tests)
 * [Aggregates and Read Models](#️-aggregates-and-read-models)
 * [Configuration Files](#-configuration-files)
     * [Client Config](#client-config)
@@ -100,8 +101,10 @@ resolve-app/
   static/
     favicon.ico
   tests/
-    testcafe_runner.js
-    e2e-tests/
+    unit/
+      index.test.js
+    functional/
+      testcafe_runner.js
       index.test.js
 ```
 
@@ -125,7 +128,7 @@ The client side, server side, and building phase configuration are split into th
 
 This approach allows you to simplify including non-isomorphic code and third-party libraries into an application by separating dependencies, and also store all ES5 code for the building phase in only one file.
 
-### **🚦 E2E-tests**
+### **🚦 Functional-tests**
 The system's operability is controlled with [TestCafe](http://devexpress.github.io/testcafe/documentation/using-testcafe/) functional tests. A test set builds and starts a demonstration application, opens it in a browser and automates UI interaction. After you modify the code, start functional tests to check if everything works correctly.
 
 ## **🏗️ Aggregates and Read Models**
@@ -165,39 +168,33 @@ A typical read model structure:
 
 ```js
 export default {
-  name: 'ReadModelName', // Read model name
+  name: 'Messages', // Read model name
   projection: { // Projection functions
-    Event1Happened: async (collection, event) => { // Use default memory collection storage
-      const idList = collection.filter(doc => doc.field === 'Test1' ).map(doc => doc.id);
-      return collection.map(doc => idList.includes(doc.id) ? { ...doc, field: 'Test2' } : doc);
-    },  
-    Event2Happened: async (collection, event) => { // Projection can interact with custom external resources
-      const eventsourcingTweets = await fetchTweets('@gregyoung');
-      return collection.concat(eventsourcingTweets);
+    MessageCreated: async (store, event) => { // Use default memory collection storage
+      const messages = await store.collection('messages');
+
+      await messages.insert({
+        id: event.aggregateId,
+        title: event.payload.title,
+        content: event.payload.content
+      });
     }
   },
   gqlSchema: // Specify a schema of client-side GraphQL queries to the read model via Query API */
     `type Message {
       id: ID!
-      Header: String,
-      Content: String
+      title: String
+      content: String
     }
     type Query {
-      MessageById(id: ID!): Message,
-      MessageIds: [ID!]
+      MessageById(id: ID!): Message
     }
   `,
   gqlResolvers: { // GraphQL resolver functions
-    MessageById: async (read, args) => { // On-demand read model state
-      if(!args.id) throw new Error('Message ID is mandatory!');
-      const collection = await read([args.id]);
-      const message = collection.find(doc => doc.id === args.id);
-      return message;
-    },
-    MessageIds: async (read, args) => { // Full read model state
-      const collection = await read();
-      const idList = collection.map(message => message.id);
-      return idList;
+    MessageById: async (store, { id }) => {
+      const messages = await store.collection('messages');
+      
+      return await messages.findOne({ id });
     }
   }
 };
@@ -209,11 +206,11 @@ A typical view model structure:
 
 ```js
 export default {
-  name: 'ViewModelName', // View model name
+  name: 'Todos', // View model name
   viewModel: true, // Specify that this is a view model and it can be used as a Redux state
   projection: {
-    Event1Happened: (state, event) => nextState,  // Update functions for the current view model instance
-    Event2Happened: (state, event) => nextState   // for different event types
+    TodoCreated: (state, event) => nextState,  // Update functions for the current view model instance
+    TodoRemoved: (state, event) => nextState   // for different event types
   }
   // This state results from the request to the query handler at the current moment
 };
