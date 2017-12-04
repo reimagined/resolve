@@ -9,7 +9,10 @@ export default function init(repository) {
         repository.url,
         repository.options
     ).then(async (database) => {
-        repository.collectionList = new Set(await database.collectionNames());
+        repository.collectionList = new Set(
+            (await database.listCollections().toArray()).map(({ name }) => name)
+        );
+        return database;
     });
 
     const getCollection = async (collectionName, isWriteable) => {
