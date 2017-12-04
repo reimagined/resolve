@@ -57,13 +57,7 @@ export default function init(repository) {
 
             return async (...args) => {
                 const collection = await getCollection(collectionName, isWriteable);
-
-                return await new Promise((resolve, reject) => {
-                    collection[funcName](
-                        ...args,
-                        (err, ...result) => (!err ? resolve(result) : reject(err))
-                    );
-                });
+                return await collection[funcName](...args);
             };
         };
 
@@ -82,9 +76,7 @@ export default function init(repository) {
                 collection
             );
 
-            return await new Promise((resolve, reject) =>
-                options.requestFold.exec((err, docs) => (!err ? resolve(docs) : reject(err)))
-            );
+            return await options.requestFold.toArray();
         };
 
         const wrapFind = initialFind => (...findArgs) => {
