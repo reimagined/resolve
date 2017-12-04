@@ -25,7 +25,7 @@ export default function init(repository) {
     const getCollection = async (collectionName, isWriteable) => {
         const database = await repository.connectionPromise;
 
-        if (!repository.collectionList.has(collectionName)) {
+        if (!repository.collectionMap.has(collectionName)) {
             if (!isWriteable) {
                 throw new Error(`Collection ${collectionName} does not exist`);
             }
@@ -137,7 +137,9 @@ export default function init(repository) {
 
         let storeIface = Object.freeze({
             listCollections: async () =>
-                repository.connectionPromise.then(Array.from.bind(null, repository.collectionList)),
+                repository.connectionPromise.then(() =>
+                    Array.from(repository.collectionMap.keys())
+                ),
             collection: async name => getCollectionInterface(name, isWriteable)
         });
 
