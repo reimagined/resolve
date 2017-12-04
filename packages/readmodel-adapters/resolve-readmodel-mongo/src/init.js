@@ -9,20 +9,32 @@ export default function init(repository) {
         repository.url,
         repository.options
     ).then(async (database) => {
-        repository.collectionList = new Set(
-            (await database.listCollections().toArray()).map(({ name }) => name)
+        repository.collectionMap = new Map();
+        const collectionNames = (await database.listCollections().toArray()).map(
+            ({ name }) => name
         );
+
+        for (let collectionName of collectionNames) {
+            const collection = await database.collection(collectionName);
+            repository.collectionMap.set(collectionName, collection);
+        }
+
         return database;
     });
 
     const getCollection = async (collectionName, isWriteable) => {
         const database = await repository.connectionPromise;
-        if (!isWriteable && !repository.collectionList.has(collectionName)) {
-            throw new Error(`Collection ${collectionName} does not exist`);
+
+        if (!repository.collectionList.has(collectionName)) {
+            if (!isWriteable) {
+                throw new Error(`Collection ${collectionName} does not exist`);
+            }
+
+            const collection = await database.collection(collectionName);
+            repository.collectionMap.set(collectionName, collection);
         }
 
-        repository.collectionList.add(collectionName);
-        return await database.collection(collectionName);
+        return repository.collectionMap.get(collectionName);
     };
 
     // Provide interface https://docs.mongodb.com/manual/reference/method/js-collection/
