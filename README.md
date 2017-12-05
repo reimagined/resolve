@@ -128,3 +128,9 @@ Adapters for event store:
 * Report bugs and request features on our [issues page](https://github.com/reimagined/resolve/issues).
 * Code released under the [MIT license](LICENSE.md).
 * reSolve is developed by Developer Express Inc. ([https://devexpress.com](https://devexpress.com))
+
+## Join us
+
+* [Twitter](https://twitter.com/resolvejs)
+* [Facebook](https://www.facebook.com/resolvejs/)
+* Learn how to make [Hacker News application](https://github.com/reimagined/hacker-news-resolve)
