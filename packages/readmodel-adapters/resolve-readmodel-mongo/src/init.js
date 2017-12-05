@@ -76,7 +76,11 @@ export default function init(repository) {
                 collection
             );
 
-            return await options.requestFold.toArray();
+            if (typeof options.requestFold.toArray === 'function') {
+                return await options.requestFold.toArray();
+            }
+
+            return await options.requestFold;
         };
 
         const wrapFind = initialFind => (...findArgs) => {
