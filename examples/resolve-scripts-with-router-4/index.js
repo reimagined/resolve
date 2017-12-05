@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 const HomeComponent = () => <h1>Home</h1>;
 const AboutComponent = () => <h1>About</h1>;
 
-export default () =>
+export default () => (
     <div>
         <Link to="/">Home</Link>
         <Link to="/about">About</Link>
@@ -13,4 +13,5 @@ export default () =>
             <Route path="/about" component={AboutComponent} />
             <Route path="/" component={HomeComponent} />
         </Switch>
-    </div>;
+    </div>
+);

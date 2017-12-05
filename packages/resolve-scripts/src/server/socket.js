@@ -18,7 +18,7 @@ export default (socket) => {
             eventsDescription,
             socket.request
         );
-        subscribe(filteredEventsDescription, emitter);
+        unsubscribePromise = subscribe(filteredEventsDescription, emitter);
     });
 
     socket.on('disconnect', unsubscribe);

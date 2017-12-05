@@ -1,15 +1,18 @@
 import bodyParser from 'body-parser';
+import chalk from 'chalk';
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import path from 'path';
-import query from 'resolve-query';
+import { createReadModel, createViewModel, createFacade } from 'resolve-query';
 import commandHandler from 'resolve-command';
 import request from 'request';
+import passport from 'passport';
 
 import { raiseError } from './utils/error_handling.js';
 import eventStore from './event_store';
 import ssr from './render';
+import { getRouteByName } from './auth';
 
 import config from '../configs/server.config.js';
 import message from './message';
@@ -27,29 +30,81 @@ if (!Array.isArray(config.readModels)) {
     raiseError(message.readModelsArrayFormat, config.readModels);
 }
 
-const readModelExecutors = config.readModels.reduce((result, readModel) => {
+if (!Array.isArray(config.viewModels)) {
+    raiseError(message.viewModelsArrayFormat, config.viewModels);
+}
+
+const queryExecutors = {};
+
+config.readModels.forEach((readModel) => {
     if (!readModel.name && config.readModels.length === 1) {
         readModel.name = 'graphql';
     } else if (!readModel.name) {
         raiseError(message.readModelMandatoryName, readModel);
+    } else if (queryExecutors[readModel.name]) {
+        raiseError(message.dublicateName, readModel);
     }
-    if (!(!readModel.viewModel ^ !(readModel.gqlSchema && readModel.gqlResolvers))) {
+
+    if (!readModel.gqlSchema || !readModel.gqlResolvers) {
         raiseError(message.readModelQuerySideMandatory, readModel);
     }
 
-    result[readModel.name] = query({ eventStore, readModel });
-    result[readModel.name].viewModel = readModel.viewModel;
+    queryExecutors[readModel.name] = createFacade({
+        model: createReadModel({
+            projection: readModel.projection,
+            adapter: readModel.adapter,
+            eventStore
+        }),
+        gqlSchema: readModel.gqlSchema,
+        gqlResolvers: readModel.gqlResolvers
+    }).executeQueryGraphql;
 
-    return result;
-}, {});
+    queryExecutors[readModel.name].mode = 'graphql';
+});
+
+config.viewModels.forEach((viewModel) => {
+    if (!viewModel.name && config.viewModels.length === 1) {
+        viewModel.name = 'reduxinitial';
+    } else if (!viewModel.name) {
+        raiseError(message.viewModelMandatoryName, viewModel);
+    } else if (queryExecutors[viewModel.name]) {
+        raiseError(message.dublicateName, viewModel);
+    }
+
+    if (!viewModel.serializeState || !viewModel.deserializeState) {
+        raiseError(message.viewModelSerializable, viewModel);
+    }
+
+    queryExecutors[viewModel.name] = createFacade({
+        model: createViewModel({
+            projection: viewModel.projection,
+            eventStore
+        }),
+        customResolvers: {
+            view: async (model, aggregateIds) =>
+                await viewModel.serializeState(await model(aggregateIds))
+        }
+    }).executeQueryCustom.bind(null, 'view');
+
+    queryExecutors[viewModel.name].mode = 'view';
+});
 
 const executeCommand = commandHandler({
     eventStore,
     aggregates: config.aggregates
 });
 
+config.sagas.forEach(saga =>
+    saga({
+        subscribeByEventType: eventStore.subscribeByEventType,
+        subscribeByAggregateId: eventStore.subscribeByAggregateId,
+        queryExecutors,
+        executeCommand
+    })
+);
+
 app.use((req, res, next) => {
-    req.getJwt = jwt.verify.bind(
+    req.getJwtValue = jwt.verify.bind(
         null,
         req.cookies && req.cookies[config.jwt.cookieName],
         config.jwt.secret,
@@ -57,7 +112,7 @@ app.use((req, res, next) => {
     );
 
     req.resolve = {
-        readModelExecutors,
+        queryExecutors,
         executeCommand,
         eventStore
     };
@@ -65,13 +120,45 @@ app.use((req, res, next) => {
     next();
 });
 
+const applyJwtValue = (value, res, url) => {
+    const authenticationToken = jwt.sign(value, config.jwt.secret);
+    res.cookie(config.jwt.cookieName, authenticationToken, config.jwt.options);
+    res.redirect(url || `${rootDirectory}/`);
+};
+
+const bindAuthMiddleware = (route, method, middleware, options) => {
+    app[method](route, (req, res, next) =>
+        middleware(passport, options, applyJwtValue, req, res, next)
+    );
+};
+
+config.auth.strategies.forEach((strategy) => {
+    const options = strategy.options;
+    passport.use(strategy.init(options));
+    const routes = options.routes;
+    Object.keys(routes).forEach((key) => {
+        const route = getRouteByName(key, routes);
+        bindAuthMiddleware(route.path, route.method, strategy.middleware, options);
+    });
+});
+
+app.use(passport.initialize());
+
 try {
-    config.extendExpress(app);
+    if (config.extendExpress) {
+        // eslint-disable-next-line no-console
+        console.log(
+            `${chalk.bgYellow.black('WARN')} ${chalk.magenta(
+                'deprecated'
+            )} do not use the \`extendExpress\` function in \`resolve.server.config.js\`.`
+        );
+        config.extendExpress(app);
+    }
 } catch (err) {}
 
 app.post(`${rootDirectory}/api/commands`, async (req, res) => {
     try {
-        await executeCommand(req.body, req.jwt);
+        await executeCommand(req.body, req.getJwtValue);
         res.status(200).send(message.commandSuccess);
     } catch (err) {
         res.status(500).end(`${message.commandFail}${err.message}`);
@@ -80,9 +167,9 @@ app.post(`${rootDirectory}/api/commands`, async (req, res) => {
     }
 });
 
-Object.keys(readModelExecutors).forEach((modelName) => {
-    const executor = readModelExecutors[modelName];
-    if (!executor.viewModel) {
+Object.keys(queryExecutors).forEach((modelName) => {
+    const executor = queryExecutors[modelName];
+    if (executor.mode === 'graphql') {
         app.post(
             `${rootDirectory}/api/query/${modelName}`,
             bodyParser.urlencoded({ extended: false }),
@@ -91,7 +178,7 @@ Object.keys(readModelExecutors).forEach((modelName) => {
                     const data = await executor(
                         req.body.query,
                         req.body.variables || {},
-                        req.getJwt
+                        req.getJwtValue
                     );
                     res.status(200).send({ data });
                 } catch (err) {
@@ -101,15 +188,18 @@ Object.keys(readModelExecutors).forEach((modelName) => {
                 }
             }
         );
-    } else {
+    } else if (executor.mode === 'view') {
         app.get(`${rootDirectory}/api/query/${modelName}`, async (req, res) => {
             try {
-                const [aggregateIds, eventTypes] = [req.query.aggregateIds, req.query.eventTypes];
-                if (!Array.isArray(aggregateIds) && !Array.isArray(eventTypes)) {
+                const aggregateIds = req.query.aggregateIds;
+                if (
+                    aggregateIds !== '*' &&
+                    (!Array.isArray(aggregateIds) || aggregateIds.length === 0)
+                ) {
                     throw new Error(message.viewModelOnlyOnDemand);
                 }
 
-                const result = await executor({ aggregateIds, eventTypes });
+                const result = await executor(req.query.aggregateIds);
                 res.status(200).json(result);
             } catch (err) {
                 res.status(500).end(`${message.viewModelFail}${err.message}`);
@@ -132,7 +222,7 @@ app.use(`${rootDirectory}${STATIC_PATH}`, staticMiddleware);
 
 app.get([`${rootDirectory}/*`, `${rootDirectory || '/'}`], async (req, res) => {
     try {
-        const state = await config.initialState(readModelExecutors, {
+        const state = await config.initialState(queryExecutors, {
             cookies: req.cookies,
             hostname: req.hostname,
             originalUrl: req.originalUrl,

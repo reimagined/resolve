@@ -2,7 +2,7 @@ import 'regenerator-runtime/runtime';
 import NeDB from 'nedb';
 import AsyncLock from 'async-lock';
 import { ConcurrentError } from 'resolve-storage-base';
-const lock = new AsyncLock();
+const lock = new AsyncLock({ maxPending: Number.POSITIVE_INFINITY });
 
 const storage = {
     init: db =>
@@ -25,10 +25,10 @@ const storage = {
         return db;
     },
 
-    loadEvents: (query, callback) => db =>
+    loadEvents: (query, startTime, callback) => db =>
         new Promise((resolve, reject) =>
             db
-                .find(query)
+                .find({ ...query, timestamp: { $gt: startTime } })
                 .sort({ timestamp: 1 })
                 .exec((error, events) => {
                     if (error) {

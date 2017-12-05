@@ -50,7 +50,7 @@ describe('resolve-command', () => {
         };
 
         aggregate.commands = {
-            emptyCommand: (aggregateState, command, getJwt, version) => {
+            emptyCommand: (aggregateState, command, getJwtValue, version) => {
                 aggregateVersion = version;
                 return {
                     type: 'EmptyEvent',
@@ -217,19 +217,19 @@ describe('resolve-command', () => {
         const executeCommand = createCommandExecutor({ eventStore, aggregates });
         eventList = [{ type: 'SuccessEvent', aggregateVersion: 1 }];
 
-        const getJwt = () => {};
+        const getJwtValue = () => {};
         const transaction = executeCommand(
             {
                 aggregateName: AGGREGATE_NAME,
                 aggregateId: AGGREGATE_ID,
                 type: 'emptyCommand'
             },
-            getJwt
+            getJwtValue
         );
 
         await transaction;
 
-        expect(aggregate.commands.emptyCommand.lastCall.args[2]).to.be.equal(getJwt);
+        expect(aggregate.commands.emptyCommand.lastCall.args[2]).to.be.equal(getJwtValue);
 
         expect(lastState).to.be.deep.equal({
             value: 42

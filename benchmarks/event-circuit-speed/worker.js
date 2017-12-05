@@ -286,7 +286,7 @@ export default function worker(eventsCount, reportObj) {
     return execute('infrastructureState').then(state => ({
         entities:
             Object.keys(state.groups).length +
-                Object.keys(state.members).length +
-                Object.keys(state.items).length
+            Object.keys(state.members).length +
+            Object.keys(state.items).length
     }));
 }

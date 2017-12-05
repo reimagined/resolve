@@ -11,11 +11,12 @@ Refer to [https://github.com/markerikson/react-redux-links](https://github.com/m
     * [npm run dev](#npm-run-dev)
     * [npm run build](#npm-run-build)
     * [npm start](#npm-start)
+    * [npm run update](#npm-run-update-[version])
 * [Project Structure Overview](#️-project-structure-overview)
     * [Client](#-client)
     * [Common](#-common)
     * [Configuration](#-configuration)
-    * [E2E-tests](#-e2e-tests)
+    * [Functional tests](#-functional-tests)
 * [Aggregates and Read Models](#️-aggregates-and-read-models)
 * [Configuration Files](#-configuration-files)
     * [Client Config](#client-config)
@@ -28,13 +29,20 @@ Refer to [https://github.com/markerikson/react-redux-links](https://github.com/m
         * [entries.rootComponent](#entriesrootcomponent)
         * [initialSubscribedEvents](#initialsubscribedevents)
         * [filterSubscription](#filtersubscription)
-        * [jwt.cookieName](#jwtcookiename)
-        * [jwt.options](#jwtoptions)
-        * [jwt.secret](#jwtsecret)
-        * [extendExpress](#extendexpress)
+        * [jwt](#jwt)
+	        * [cookieName](#jwtcookiename)
+	        * [options](#jwtoptions)
+	        * [secret](#jwtsecret)
+        * [auth](#auth)
+	        * [strategies](#authstrategies)
         * [initialState](#initialstate)
         * [readModels](#readModels)
+        * [sagas](#sagas)
         * [storage](#storage)
+    * [resolve-scripts-auth](#resolve-scripts-auth)
+	    * [localStrategy](#localStrategy)
+	    * [githubStrategy](#githubStrategy)
+	    * [googleStrategy](#googleStrategy)
     * [Build Config](#build-config)
         * [extendWebpack](#extendwebpack)
 * [Environment Variables](#-environment-variables)
@@ -93,8 +101,10 @@ resolve-app/
   static/
     favicon.ico
   tests/
-    testcafe_runner.js
-    e2e-tests/
+    unit/
+      index.test.js
+    functional/
+      testcafe_runner.js
       index.test.js
 ```
 
@@ -118,7 +128,7 @@ The client side, server side, and building phase configuration are split into th
 
 This approach allows you to simplify including non-isomorphic code and third-party libraries into an application by separating dependencies, and also store all ES5 code for the building phase in only one file.
 
-### **🚦 E2E-tests**
+### **🚦 Functional-tests**
 The system's operability is controlled with [TestCafe](http://devexpress.github.io/testcafe/documentation/using-testcafe/) functional tests. A test set builds and starts a demonstration application, opens it in a browser and automates UI interaction. After you modify the code, start functional tests to check if everything works correctly.
 
 ## **🏗️ Aggregates and Read Models**
@@ -158,39 +168,33 @@ A typical read model structure:
 
 ```js
 export default {
-  name: 'ReadModelName', // Read model name
+  name: 'Messages', // Read model name
   projection: { // Projection functions
-    Event1Happened: async (collection, event) => { // Use default memory collection storage
-      const idList = collection.filter(doc => doc.field === 'Test1' ).map(doc => doc.id);
-      return collection.map(doc => idList.includes(doc.id) ? { ...doc, field: 'Test2' } : doc);
-    },  
-    Event2Happened: async (collection, event) => { // Projection can interact with custom external resources
-      const eventsourcingTweets = await fetchTweets('@gregyoung');
-      return collection.concat(eventsourcingTweets);
+    MessageCreated: async (store, event) => { // Use default memory collection storage
+      const messages = await store.collection('messages');
+
+      await messages.insert({
+        id: event.aggregateId,
+        title: event.payload.title,
+        content: event.payload.content
+      });
     }
   },
   gqlSchema: // Specify a schema of client-side GraphQL queries to the read model via Query API */
     `type Message {
       id: ID!
-      Header: String,
-      Content: String
+      title: String
+      content: String
     }
     type Query {
-      MessageById(id: ID!): Message,
-      MessageIds: [ID!]
+      MessageById(id: ID!): Message
     }
   `,
   gqlResolvers: { // GraphQL resolver functions
-    MessageById: async (read, args) => { // On-demand read model state
-      if(!args.id) throw new Error('Message ID is mandatory!');
-      const collection = await read([args.id]);
-      const message = collection.find(doc => doc.id === args.id);
-      return message;
-    },
-    MessageIds: async (read, args) => { // Full read model state
-      const collection = await read();
-      const idList = collection.map(message => message.id);
-      return idList;
+    MessageById: async (store, { id }) => {
+      const messages = await store.collection('messages');
+      
+      return await messages.findOne({ id });
     }
   }
 };
@@ -202,11 +206,11 @@ A typical view model structure:
 
 ```js
 export default {
-  name: 'ViewModelName', // View model name
+  name: 'Todos', // View model name
   viewModel: true, // Specify that this is a view model and it can be used as a Redux state
   projection: {
-    Event1Happened: (state, event) => nextState,  // Update functions for the current view model instance
-    Event2Happened: (state, event) => nextState   // for different event types
+    TodoCreated: (state, event) => nextState,  // Update functions for the current view model instance
+    TodoRemoved: (state, event) => nextState   // for different event types
   }
   // This state results from the request to the query handler at the current moment
 };
@@ -261,7 +265,7 @@ The `resolve.client.config.js` file contains information for your application's 
 ### Server Config
 The `resolve.server.config.js` file contains information for the reSolve library.
 
-* #### aggregates
+ * #### aggregates
 	Specifies an [aggregate](#️-aggregates-and-read-models) array for the [resolve-command](../../../resolve-command). Each command is addressed to a particular aggregate. When an aggregate receives a command, it performs this command and produces an event or returns an error if the command cannot be executed.
 
 	##### Example
@@ -276,7 +280,7 @@ The `resolve.server.config.js` file contains information for the reSolve library
 	}
 	```
 
-* #### bus
+ * #### bus
 	The bus is used to emit events. It is an object with the following structure 
 	* `adapter`: a [bus adapter](../../../bus-adapters)
 	* `params`: a configuration that is passed to an adapter when it is initialized
@@ -296,7 +300,7 @@ The `resolve.server.config.js` file contains information for the reSolve library
 	}
 	```
 
-* #### entries
+ * #### entries
 
 	It might be the same config as in `resolve.client.config.js`. However, it is also possible to pass different `rootComponent` or `createStore` to server and client sides. It can be helpful in some cases (for example, see [resolve-scripts with react-router v4](../../../../examples/resolve-scripts-with-router-4) and  [resolve-scripts with react-router v2](../../../../examples/resolve-scripts-with-router-2)) but be  careful when using this approach - it may cause issues with SSR.
 
@@ -310,7 +314,7 @@ The `resolve.server.config.js` file contains information for the reSolve library
 	}
 	```
 
-* #### entries.createStore
+ * #### entries.createStore
 
 	Takes the [initialState](#initialstate) function value and returns a Redux store.
 
@@ -331,7 +335,7 @@ The `resolve.server.config.js` file contains information for the reSolve library
 	```
   **Note:** Standard redux store creation excludes that the initialState is passed from the server side.
 
-* #### entries.rootComponent
+ * #### entries.rootComponent
 	
 	Specifies a react component that is rendered as an application's root component.
 
@@ -349,7 +353,7 @@ The `resolve.server.config.js` file contains information for the reSolve library
 	}
 	```
 
-* #### initialSubscribedEvents
+ * #### initialSubscribedEvents
 	
 	An initial list of events which should be sent to the client side after an SPA page has been loaded.
 	The `initialSubscribedEvents` object consists of two event subscription management fields: 
@@ -367,7 +371,7 @@ The `resolve.server.config.js` file contains information for the reSolve library
 	}
 	```
 
-* #### filterSubscription
+ * #### filterSubscription
 	A function that allows filtering requested event types and aggregate identifiers on the server side. It can be used for security purposes - to prevent custom client agents from sending requests to events. Use the `requestInfo` argument to segregate different client subscriptions.
 
 	##### Example
@@ -394,63 +398,71 @@ The `resolve.server.config.js` file contains information for the reSolve library
 	}
 	```
 
-* #### jwt.cookieName
-  Name of HTTP-cookie field, which does contain JWT token. This name is used to retrieve an actual cookie from a client agent/browser, perform validation and pass the contained state to the command and query side as a security context.
+ * #### jwt
+	* #### jwt.cookieName
+	  Name of HTTP-cookie field, which does contain JWT token. This name is used to retrieve an actual cookie from a client agent/browser, perform validation and pass the contained state to the command and query side as a security context.
 
-	##### Example
-	###### resolve.server.config.js
-	```js
-	export default {
-	  jwt: {
-                cookieName: 'JWT-cookie'
+		##### Example
+		###### resolve.server.config.js
+		```js
+		export default {
+		  jwt: {
+	                cookieName: 'JWT-cookie'
+		    }
+		}
+		```
+	  
+	* #### jwt.options
+	  Options for customizing a JWT verification mechanism, including maximum allowed tokens age, audience configuration, etc. Options are provided as an object which is directly passed to a verification function as `options` argument. 
+	  See the [jwt.verify reference documentation](https://www.npmjs.com/package/jsonwebtoken#jwtverifytoken-secretorpublickey-options-callback) for more information.
+	  
+	    ##### Example
+	    ###### resolve.server.config.js
+	    ```js
+	    export default {
+	      jwt: {
+	        options: {
+	          maxAge: 1000 * 60 * 5 // 5 minutes
+	        }
+	      }
 	    }
-	}
-	```
-  
-* #### jwt.options
-  Options for customizing a JWT verification mechanism, including maximum allowed tokens age, audience configuration, etc. Options are provided as an object which is directly passed to a verification function as `options` argument. 
-  See the [jwt.verify reference documentation](https://www.npmjs.com/package/jsonwebtoken#jwtverifytoken-secretorpublickey-options-callback) for more information.
-  
-    ##### Example
-    ###### resolve.server.config.js
-    ```js
-    export default {
-      jwt: {
-        options: {
-          maxAge: 1000 * 60 * 5 // 5 minutes
-        }
-      }
-    }
-	```
+		```
 
-* #### jwt.secret
-  A secret key used for signing and further JWT token verification, which have been retrieved from client agent/browser. The current configuration uses an HS256 algorithm to sign and verify JWT tokens.  
-  Ensure that the key length is adequate for safety to avoid brute-force attacks - usually, a key with a 32-byte length. Read about the [Importance of Using Strong Keys in Signing JWTs](https://auth0.com/blog/brute-forcing-hs256-is-possible-the-importance-of-using-strong-keys-to-sign-jwts/).
+	* #### jwt.secret
+	  A secret key used for signing and further JWT token verification, which have been retrieved from client agent/browser. The current configuration uses an HS256 algorithm to sign and verify JWT tokens.  
+	  Ensure that the key length is adequate for safety to avoid brute-force attacks - usually, a key with a 32-byte length. Read about the [Importance of Using Strong Keys in Signing JWTs](https://auth0.com/blog/brute-forcing-hs256-is-possible-the-importance-of-using-strong-keys-to-sign-jwts/).
 
-	##### Example
-	###### resolve.server.config.js
-    ```js
-    export default {
-      jwt: {
-        secret: 'JWT-secret-with-length-almost-32-bytes-for-enought-security'
-      }
-    }
-	```
-
-* #### extendExpress
-	A function that takes an express app. It is useful to define custom routes or express middlewares.
-
-	##### Example
-	###### resolve.server.config.js 
-	```js
-	export defualt {
-	  extendExpress: (app) {
-	    app.get('/custom', (req, res) => {
-	      res.send('Custom page is rendered');
-	    })
-	  }
-	}
-	```
+		##### Example
+		###### resolve.server.config.js
+	    ```js
+	    export default {
+	      jwt: {
+	        secret: 'JWT-secret-with-length-almost-32-bytes-for-enought-security'
+	      }
+	    }
+		```
+		
+ * #### auth
+	* #### auth.strategies
+	  This section contains configurations for simple authentication. You can configure a server route and other options or create a custom authentication strategy. Read [resolve-scripts-auth](#resolve-scripts-auth) for more details. 
+	  
+		##### Example
+		###### resolve.server.config.js 
+      ```js
+	    import { localStrategy, githubStrategy, googleStrategy } from 'resolve-scripts-auth'
+	    ...
+	    export default {
+	    ...
+		    auth: {
+		      strategies: [
+			    localStrategy(/* options */),
+			    githubStrategy(/* options */),
+			    googleStrategy(/* options */)
+			    // and other strategies
+		      ]
+		    }
+		 ...
+       ```
 
 * #### initialState
 	
@@ -480,6 +492,19 @@ The `resolve.server.config.js` file contains information for the reSolve library
 	}
 	```
 
+* #### sagas
+	An array of functions allowing you to subscribe to the specified events and then execute a command.
+
+	##### Example
+	###### resolve.server.config.js
+	```js
+	export default {
+	  sagas: [({ subscribeByEventType, subscribeByAggregateId, queryExecutors, executeCommand }) => {
+			// code
+		}]
+	}
+	```
+
 * #### storage
 	Contains an object with the following structure: 
 	* `adapter`: a [storage adapter](../../../storage-adapters) 
@@ -499,7 +524,92 @@ The `resolve.server.config.js` file contains information for the reSolve library
 	  }
 	}
 	```
+### resolve-scripts-auth
+This virtual package provides [localStrategy](#localStrategy), [githubStrategy](#githubStrategy) and [googleStrategy](#googleStrategy).
 
+A strategy's predefined options:
+     
+ * `strategy: {...}` - specifies strategy's options.
+ * `routes: {...}` -  configures strategy's routing.
+ * `failureCallback: (error, redirect, { resolve, body }) => {...}` - this callback is used for handling an error. The default callback redirects to the `/login?error=...` page.
+ * `done` - this callback allows you to send notifications about errors or successful operations. 
+	 * Call `done('My error message')` to notify a user about an error.
+	 * Call `done(null, myData)` to notify a user that an operation is completed successfully (it sets the 'jwt' value and redirects to the homepage).
+	
+#### Auth strategies
+
+* #### localStrategy
+    ```js
+  localStrategy({
+    strategy: {
+      usernameField: 'username', // your usernameField name in a POST request
+      passwordField: 'password', // your passwordField name in a POST request
+      successRedirect: null
+    },
+    routes: {
+      register: {
+        path: '/register',
+        method: 'post'
+      },
+      login: {
+        path: '/login',
+        method: 'post'
+      }
+    },
+    registerCallback: ({ resolve, body }, username, password, done) => {
+      // your code to register a new user
+      // you need to call the 'done' callback to notify a user about an error or successful operation
+    },
+    loginCallback: ({ resolve, body }, username, password, done) => {
+      // your code to implement a user login
+      // you need to call the 'done' callback to notify a user about an error or successful operation
+    },
+    failureCallback // default behavior
+  })
+    ```
+    
+* #### githubStrategy
+    ```js
+  githubStrategy({
+    strategy: {
+      clientID: 'MyClientID',
+      clientSecret: 'MyClientSecret',
+      callbackURL: 'http://localhost:3000/auth/github/callback',
+      successRedirect: null
+    },
+    routes: {
+      auth: '/auth/github',
+      callback: '/auth/github/callback'
+    },
+    authCallback: ({ resolve, body }, profile, done) => {
+      // your code to authenticate a user
+      // you need to call the 'done' callback to notify a user about an error or successful operation
+    },
+    failureCallback // default behavior
+  })
+    ```
+     
+* #### googleStrategy
+    ```js
+  googleStrategy({
+    strategy: {
+      clientID: 'MyClientID',
+      clientSecret: 'MyClientSecret',
+      callbackURL: 'http://localhost:3000/auth/google/callback',
+      successRedirect: null
+    },
+    routes: {
+      auth: '/auth/google',
+      callback: '/auth/google/callback'
+    },
+    authCallback: ({ resolve, body }, profile, done) => {
+      // your code to authenticate a user
+      // you need to call the 'done' callback to notify a user about an error or successful operation
+    },
+    failureCallback // default behavior
+  })
+    ```
+	 	
 ### Build config
 The `resolve.build.config.js` file contains information for building an application.
 

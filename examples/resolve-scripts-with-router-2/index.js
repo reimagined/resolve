@@ -1,23 +1,26 @@
 import React from 'react';
 import { Route, IndexRoute, Link } from 'react-router';
 
-const NavigationComponent = () =>
+const NavigationComponent = () => (
     <div>
         <Link to="/">Home</Link>
         <Link to="/about">About</Link>
-    </div>;
+    </div>
+);
 
-const HomeComponent = () =>
+const HomeComponent = () => (
     <div>
         <NavigationComponent />
         <h1>Home</h1>
-    </div>;
+    </div>
+);
 
-const AboutComponent = () =>
+const AboutComponent = () => (
     <div>
         <NavigationComponent />
         <h1>About</h1>
-    </div>;
+    </div>
+);
 
 export default (
     <Route path="/">

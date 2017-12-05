@@ -1,24 +1,26 @@
 {
   "name": "todo",
   "version": "0.1.0",
-  "description": "",
-  "author": "reimagined team",
-  "license": "MIT",
   "private": true,
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/reimagined/resolve.git"
+  "dependencies": {
+    "react": "^16.1.1",
+    "react-dom": "^16.1.1",
+    "react-redux": "^5.0.6",
+    "redux": "^3.7.2",
+    "resolve-bus-memory": "^0.1.0",
+    "resolve-redux": "^0.1.0",
+    "resolve-scripts": "^0.1.0",
+    "resolve-storage-lite": "^0.1.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0",
-    "start": "node index",
-    "test:e2e": "node ./testcafe_runner.js"
+    "start": "resolve-scripts dev",
+    "update": "resolve-scripts update",
+    "test:functional": "cross-env NODE_ENV=tests babel-node ./tests/functional/testcafe_runner.js --presets es2015,stage-0,react"
   },
   "devDependencies": {
-    "chai": "^4.0.1",
-    "lerna": "^2.0.0-rc.4",
-    "testcafe": "^0.15.0",
-    "testcafe-browser-tools": "^1.2.1",
-    "yargs": "^8.0.2"
+    "cross-env": "^5.1.1",
+    "testcafe": "^0.18.4",
+    "testcafe-browser-tools": "^1.4.6",
+    "yargs": "^10.0.3"
   }
 }
