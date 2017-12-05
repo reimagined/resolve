@@ -227,12 +227,14 @@ describe('resolve-query', () => {
         const { executeQueryGraphql } = createFacade({ model: readModel, ...normalGqlFacade });
         eventList = simulatedEventList.slice(0);
 
-        const getJwt = () => {};
+        const getJwtValue = () => {};
         const graphqlQuery = 'query { UserById(id:2) { id, UserName } }';
 
-        const state = await executeQueryGraphql(graphqlQuery, {}, getJwt);
+        const state = await executeQueryGraphql(graphqlQuery, {}, getJwtValue);
 
-        expect(normalGqlFacade.gqlResolvers.UserById.lastCall.args[2].getJwt).to.be.equal(getJwt);
+        expect(normalGqlFacade.gqlResolvers.UserById.lastCall.args[2].getJwtValue).to.be.equal(
+            getJwtValue
+        );
 
         expect(state).to.be.deep.equal({
             UserById: {
