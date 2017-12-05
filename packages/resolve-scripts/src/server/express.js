@@ -104,7 +104,7 @@ config.sagas.forEach(saga =>
 );
 
 app.use((req, res, next) => {
-    req.getJwt = jwt.verify.bind(
+    req.getJwtValue = jwt.verify.bind(
         null,
         req.cookies && req.cookies[config.jwt.cookieName],
         config.jwt.secret,
@@ -158,7 +158,7 @@ try {
 
 app.post(`${rootDirectory}/api/commands`, async (req, res) => {
     try {
-        await executeCommand(req.body, req.getJwt);
+        await executeCommand(req.body, req.getJwtValue);
         res.status(200).send(message.commandSuccess);
     } catch (err) {
         res.status(500).end(`${message.commandFail}${err.message}`);
@@ -178,7 +178,7 @@ Object.keys(queryExecutors).forEach((modelName) => {
                     const data = await executor(
                         req.body.query,
                         req.body.variables || {},
-                        req.getJwt
+                        req.getJwtValue
                     );
                     res.status(200).send({ data });
                 } catch (err) {
