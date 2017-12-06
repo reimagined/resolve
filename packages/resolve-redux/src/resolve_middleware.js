@@ -1,4 +1,5 @@
-import actions, { SUBSCRIBE, UNSUBSCRIBE, SEND_COMMAND } from './actions';
+import { SUBSCRIBE, UNSUBSCRIBE, SEND_COMMAND } from './action_types';
+import actions from './actions';
 import socketIOClient from 'socket.io-client';
 
 import { getRootableUrl, getKey, checkRequiredFields } from './util';

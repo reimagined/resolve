@@ -55,7 +55,7 @@ export default (options) => {
         },
         failureCallback: defaultFailureCallback
     };
-    const safeOptions = Object.assign({}, defaultOptions, options);
+    const safeOptions = { ...defaultOptions, ...options };
     const { clientID, clientSecret, callbackURL } = safeOptions.strategy;
     safeOptions.strategy = { clientID, clientSecret, callbackURL, passReqToCallback: true };
 

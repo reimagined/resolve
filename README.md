@@ -1,7 +1,7 @@
 
 # [<img src="https://user-images.githubusercontent.com/15689049/29659048-ad0d158a-88c5-11e7-9354-dbe4bb105ad7.png" height="60">](https://github.com/reimagined/resolve/)
 
-[![Build Status](https://travis-ci.org/reimagined/resolve.svg?branch=master)](https://travis-ci.org/reimagined/resolve) [![npm version](https://badge.fury.io/js/create-resolve-app.svg)](https://badge.fury.io/js/create-resolve-app) [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier) [![GitHub issues](https://img.shields.io/github/issues/reimagined/resolve.svg)](https://github.com/reimagined/resolve/issues) [![GitHub forks](https://img.shields.io/github/forks/reimagined/resolve.svg)](https://github.com/reimagined/resolve/network) [![GitHub stars](https://img.shields.io/github/stars/reimagined/resolve.svg)](https://github.com/reimagined/resolve/stargazers) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/reimagined/resolve/master/LICENSE)
+[![Build Status](https://travis-ci.org/reimagined/resolve.svg?branch=master)](https://travis-ci.org/reimagined/resolve) [![npm version](https://badge.fury.io/js/create-resolve-app.svg)](https://badge.fury.io/js/create-resolve-app) [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier) [![GitHub issues](https://img.shields.io/github/issues/reimagined/resolve.svg)](https://github.com/reimagined/resolve/issues) [![GitHub forks](https://img.shields.io/github/forks/reimagined/resolve.svg)](https://github.com/reimagined/resolve/network) [![GitHub stars](https://img.shields.io/github/stars/reimagined/resolve.svg)](https://github.com/reimagined/resolve/stargazers) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/reimagined/resolve/master/LICENSE) [![Join the chat at https://gitter.im/reimagined/resolve](https://badges.gitter.im/reimagined/resolve.svg)](https://gitter.im/reimagined/resolve?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 
 reSolve is a framework for developing apps based on CQRS and Event Sourcing using [React](https://github.com/facebook/react) + [Redux](https://github.com/reactjs/redux) on the client. It can help negate differences between your domain and technical languages, and focus on your application code.
@@ -128,3 +128,9 @@ Adapters for event store:
 * Report bugs and request features on our [issues page](https://github.com/reimagined/resolve/issues).
 * Code released under the [MIT license](LICENSE.md).
 * reSolve is developed by Developer Express Inc. ([https://devexpress.com](https://devexpress.com))
+
+## Join us
+
+* [Twitter](https://twitter.com/resolvejs)
+* [Facebook](https://www.facebook.com/resolvejs/)
+* Learn how to make [Hacker News application](https://github.com/reimagined/hacker-news-resolve)

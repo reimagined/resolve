@@ -26,7 +26,7 @@ pipeline {
                         env.NPM_ADDR = 'registry.npmjs.org'
 
                         env.CI_TIMESTAMP = (new Date()).format("MMddHHmmss", TimeZone.getTimeZone('UTC'))
-                        if (env.BRANCH_NAME == 'development') {
+                        if (env.BRANCH_NAME =~ '^v([0-9]+).([0-9]+).([0-9]+)$') {
                             env.CI_RELEASE_TYPE = 'beta'
                         } else {
                             env.CI_RELEASE_TYPE = 'alpha'
