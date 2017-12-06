@@ -54,7 +54,7 @@ export default function generateBenchmark(options) {
                     const transferPayload = JSON.parse(data.substring(DONE_TOKEN.length));
                     const buildTime = new Date() - initialTime;
 
-                    const resolveData = Object.assign({ buildTime }, transferPayload);
+                    const resolveData = { ...transferPayload, buildTime };
                     resolve(resolveData);
 
                     child.kill();

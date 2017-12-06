@@ -213,22 +213,19 @@ const originalHandlers = {
 
 function readModelsGenerator(reportObj) {
     // Allow bypass invalid events
-    const projection = Object.keys(originalHandlers).reduce(
-        (acc, key) =>
-            Object.assign(acc, {
-                [key]: (state, event) => {
-                    try {
-                        const result = originalHandlers[key](state, event);
-                        reportObj.value++;
-                        return result;
-                    } catch (err) {
-                        console.error('CAUGHT ERROR', err); // eslint-disable-line no-console
-                        return state;
-                    }
-                }
-            }),
-        Object.create(null)
-    );
+    const projection = Object.keys(originalHandlers).reduce((acc, key) => {
+        acc[key] = (state, event) => {
+            try {
+                const result = originalHandlers[key](state, event);
+                reportObj.value++;
+                return result;
+            } catch (err) {
+                console.error('CAUGHT ERROR', err); // eslint-disable-line no-console
+                return state;
+            }
+        };
+        return acc;
+    }, Object.create(null));
 
     return [
         {

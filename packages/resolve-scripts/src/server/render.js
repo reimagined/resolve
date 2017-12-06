@@ -39,7 +39,7 @@ export default (initialState, { req, res }) => {
 
     let jwtStr = '';
     try {
-        jwtStr = `window.__JWT__=${jsonUtfStringify(req.getJwt())}\n`;
+        jwtStr = `window.__JWT__=${jsonUtfStringify(req.getJwtValue())}\n`;
     } catch (e) {}
 
     res.send(

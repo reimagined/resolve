@@ -20,7 +20,7 @@ After the command is initialized, you get a function that is used to send an eve
 	
 	A command may also have some additional payload.
 
- * `getJwt`  
+ * `getJwtValue`  
    A callback to retrieve the actual client state stored in a verified JWT token.
 
 ### Example

@@ -1,5 +1,6 @@
 import { expect } from 'chai';
-import actions, { MERGE, SEND_COMMAND, SUBSCRIBE, UNSUBSCRIBE } from '../src/actions';
+import { MERGE, SEND_COMMAND, SUBSCRIBE, UNSUBSCRIBE } from '../src/action_types';
+import actions from '../src/actions';
 
 describe('actions', () => {
     describe('merge', () => {

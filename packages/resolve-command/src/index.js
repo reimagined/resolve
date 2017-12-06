@@ -22,7 +22,7 @@ const getAggregateState = async ({ projection, initialState }, aggregateId, even
     return { aggregateState, aggregateVersion };
 };
 
-const executeCommand = async (command, aggregate, eventStore, getJwt) => {
+const executeCommand = async (command, aggregate, eventStore, getJwtValue) => {
     const { aggregateId, type } = command;
     let { aggregateState, aggregateVersion } = await getAggregateState(
         aggregate,
@@ -31,7 +31,7 @@ const executeCommand = async (command, aggregate, eventStore, getJwt) => {
     );
 
     const handler = aggregate.commands[type];
-    const event = handler(aggregateState, command, getJwt, aggregateVersion);
+    const event = handler(aggregateState, command, getJwtValue, aggregateVersion);
 
     if (!event.type) {
         throw new Error('event type is required');
@@ -44,9 +44,9 @@ const executeCommand = async (command, aggregate, eventStore, getJwt) => {
     return event;
 };
 
-function createExecutor({ eventStore, aggregate, getJwt }) {
-    return async (command, getJwt) => {
-        const event = await executeCommand(command, aggregate, eventStore, getJwt);
+function createExecutor({ eventStore, aggregate, getJwtValue }) {
+    return async (command, getJwtValue) => {
+        const event = await executeCommand(command, aggregate, eventStore, getJwtValue);
         return await eventStore.saveEvent(event);
     };
 }
@@ -60,9 +60,9 @@ export default ({ eventStore, aggregates }) => {
         return result;
     }, {});
 
-    return async (command, getJwt) => {
+    return async (command, getJwtValue) => {
         await verifyCommand(command);
         const aggregateName = command.aggregateName.toLowerCase();
-        return executors[aggregateName](command, getJwt);
+        return executors[aggregateName](command, getJwtValue);
     };
 };
