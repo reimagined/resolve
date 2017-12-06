@@ -1,8 +1,4 @@
-export const MERGE = '@@resolve/MERGE';
-export const SEND_COMMAND = '@@resolve/SEND_COMMAND';
-export const SUBSCRIBE = '@@resolve/SUBSCRIBE';
-export const UNSUBSCRIBE = '@@resolve/UNSUBSCRIBE';
-export const PROVIDE_VIEW_MODELS = '@@resolve/PROVIDE_VIEW_MODELS';
+import { MERGE, SEND_COMMAND, SUBSCRIBE, UNSUBSCRIBE, PROVIDE_VIEW_MODELS } from './action_types';
 
 function merge(viewModel, aggregateId, state) {
     return {
