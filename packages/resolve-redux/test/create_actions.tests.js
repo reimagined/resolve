@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { SEND_COMMAND } from '../src/actions';
+import { SEND_COMMAND } from '../src/action_types';
 import createActions from '../src/create_actions';
 
 describe('createActions', () => {

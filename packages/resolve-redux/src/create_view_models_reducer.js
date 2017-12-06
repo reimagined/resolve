@@ -1,4 +1,4 @@
-import { MERGE, SUBSCRIBE, UNSUBSCRIBE, PROVIDE_VIEW_MODELS } from './actions';
+import { MERGE, SUBSCRIBE, UNSUBSCRIBE, PROVIDE_VIEW_MODELS } from './action_types';
 import { getKey } from './util';
 
 export function subscribeHandler({ subscribers, viewModels }, state, { viewModel, aggregateId }) {
