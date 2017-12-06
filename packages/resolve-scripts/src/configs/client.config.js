@@ -14,4 +14,4 @@ const defaultConfig = {
     createStore: emptyCreateStore
 };
 
-export default Object.assign({}, defaultConfig, config);
+export default { ...defaultConfig, ...config };

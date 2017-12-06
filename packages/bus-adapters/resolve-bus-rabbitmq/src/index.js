@@ -50,7 +50,7 @@ function init({ url, exchange, exchangeType, queueName, messageTtl, maxLength },
 
 function createAdapter(options) {
     let handler = () => {};
-    const config = Object.assign(defaultOptions, options);
+    const config = { ...defaultOptions, ...options };
     const initPromise = init(config, event => handler(event));
     const { exchange, queueName, messageTtl } = config;
 
