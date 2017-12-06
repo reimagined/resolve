@@ -31,7 +31,7 @@ pipeline {
                         } else {
                             env.CI_RELEASE_TYPE = 'alpha'
                         }
-                        
+
                         sh """
                             npm config set //${env.NPM_ADDR}/:_authToken ${env.NPM_TOKEN}
                             npm whoami

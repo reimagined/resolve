@@ -1,7 +1,7 @@
 {
-  "name": "resolve-readmodel-memory",
-  "version": "0.2.1",
-  "description": "This package serves as a resolve-query adapter for storing a read model in memory using NeDB",
+  "name": "resolve-readmodel-mongo",
+  "version": "0.1.0",
+  "description": "This package serves as a resolve-query adapter for storing a read model in MongoDB database with persistence",
   "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
@@ -17,18 +17,20 @@
   },
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
-  "homepage":
-    "https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-memory#readme",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-mongo#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
     "sinon": "^3.3.0"
   },
   "dependencies": {
-    "clone": "^2.1.1",
-    "nedb": "^1.8.0",
-    "object-hash": "^1.2.0",
+    "mongodb": "^2.2.33",
     "regenerator-runtime": "^0.11.0"
   }
 }
