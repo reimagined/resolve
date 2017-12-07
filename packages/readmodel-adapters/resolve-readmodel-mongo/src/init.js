@@ -186,6 +186,7 @@ export default function init(repository) {
     });
 
     repository.initDonePromise = (async () => {
+        await repository.connectionPromise;
         if (repository.lastTimestamp !== 0) return;
         repository.lastTimestamp = 1;
 
