@@ -164,7 +164,7 @@ export default function init(repository) {
             listCollections: async () =>
                 repository.connectionPromise.then(() =>
                     Array.from(repository.collectionMap.keys()).filter(
-                        name => name !== META_COLLECTION_NAME
+                        name => name !== repository.metaCollectionName
                     )
                 ),
             collection: async name => getCollectionInterface(name, isWriteable)
