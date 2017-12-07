@@ -1,12 +1,15 @@
 export default function reset(repository) {
     if (!repository.interfaceMap || !repository.connectionPromise) return;
 
-    const collectionMap = repository.collectionMap;
     repository.connectionPromise.then(async (database) => {
-        for (let [_, collection] of collectionMap) {
-            await collection.drop();
+        const metaCollection = await database.collection(repository.metaCollectionName);
+        const collectionDescriptors = await metaCollection.find({}).toArray();
+
+        for (const { collectionName } of collectionDescriptors) {
+            await database.dropCollection(collectionName);
         }
 
+        await metaCollection.drop();
         await database.close();
     });
 

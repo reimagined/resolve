@@ -1,63 +1,68 @@
 import { MongoClient } from 'mongodb';
 
 export default function init(repository) {
-    const META_COLLECTION_NAME = '__resolve_meta_collection';
-
     if (repository.interfaceMap) {
         throw new Error('The read model storage is already initialized');
     }
     repository.lastTimestamp = 0;
 
-    repository.connectionPromise = MongoClient.connect(
-        repository.url,
-        repository.options
-    ).then(async (database) => {
-        const metaCollection = await database.collection(META_COLLECTION_NAME);
-        const collectionDescriptors = await metaCollection.find({}).toArray();
-        repository.lastTimestamp = collectionDescriptors.reduce(
-            (acc, val) => Math.max(acc, val.lastTimestamp),
-            0
-        );
-
+    const syncronizeDatabase = async (database) => {
         repository.collectionMap = new Map();
-        const collectionNames = (await database.listCollections().toArray()).map(
-            ({ name }) => name
-        );
+        const metaCollection = await database.collection(repository.metaCollectionName);
+        repository.collectionMap.set(repository.metaCollectionName, metaCollection);
 
-        for (let collectionName of collectionNames) {
+        const collectionDescriptors = await metaCollection.find({}).toArray();
+        for (const { collectionName, lastTimestamp } of collectionDescriptors) {
+            repository.lastTimestamp = Math.max(repository.lastTimestamp, lastTimestamp);
             const collection = await database.collection(collectionName);
             repository.collectionMap.set(collectionName, collection);
         }
 
         return database;
-    });
+    };
 
-    const getCollection = async (collectionName, isWriteable) => {
+    repository.connectionPromise = MongoClient.connect(repository.url, repository.options).then(
+        syncronizeDatabase
+    );
+
+    const createCollection = async (collectionName) => {
         const database = await repository.connectionPromise;
 
+        if ((await database.listCollections({ name: collectionName }).toArray()).length > 0) {
+            throw new Error(
+                `Collection ${collectionName} had already been created in current database, ` +
+                    'but not with resolve read model adapter and has no required meta information'
+            );
+        }
+
+        const collection = await database.collection(collectionName);
+        repository.collectionMap.set(collectionName, collection);
+
+        const metaCollection = repository.collectionMap.get(repository.metaCollectionName);
+        await metaCollection.update(
+            { collectionName },
+            {
+                collectionName,
+                lastTimestamp: 0
+            },
+            { upsert: true }
+        );
+    };
+
+    const getCollection = async (collectionName, isWriteable) => {
         if (!repository.collectionMap.has(collectionName)) {
             if (!isWriteable) {
                 throw new Error(`Collection ${collectionName} does not exist`);
             }
-
-            const collection = await database.collection(collectionName);
-            repository.collectionMap.set(collectionName, collection);
-
-            const metaCollection = repository.collectionMap.get(META_COLLECTION_NAME);
-
-            const collectionDescriptor = (await metaCollection.findOne({
-                name: collectionName
-            })) || {
-                name: collectionName,
-                lastTimestamp: 0
-            };
-
-            await metaCollection.update({ name: collectionName }, collectionDescriptor, {
-                upsert: true
-            });
+            await createCollection(collectionName);
         }
 
         return repository.collectionMap.get(collectionName);
+    };
+
+    const setCollectionTimestamp = async (collectionName, timestamp) => {
+        const metaCollection = repository.collectionMap.get(repository.metaCollectionName);
+        await metaCollection.update({ collectionName }, { $set: { lastTimestamp: timestamp } });
     };
 
     // Provide interface https://docs.mongodb.com/manual/reference/method/js-collection/
@@ -80,13 +85,7 @@ export default function init(repository) {
 
             return async (...args) => {
                 const collection = await getCollection(collectionName, isWriteable);
-
-                const metaCollection = repository.collectionMap.get(META_COLLECTION_NAME);
-                await metaCollection.update(
-                    { name: collectionName },
-                    { $set: { lastTimestamp: repository.lastTimestamp } }
-                );
-
+                await setCollectionTimestamp(collectionName, repository.lastTimestamp);
                 return await collection[funcName](...args);
             };
         };
@@ -164,7 +163,9 @@ export default function init(repository) {
         let storeIface = Object.freeze({
             listCollections: async () =>
                 repository.connectionPromise.then(() =>
-                    Array.from(repository.collectionMap.keys())
+                    Array.from(repository.collectionMap.keys()).filter(
+                        name => name !== META_COLLECTION_NAME
+                    )
                 ),
             collection: async name => getCollectionInterface(name, isWriteable)
         });
