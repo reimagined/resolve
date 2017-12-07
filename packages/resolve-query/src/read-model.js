@@ -11,6 +11,7 @@ const init = (adapter, eventStore, projection) => {
 
     let unsubscriber = null;
     let onDispose = () => (unsubscriber === null ? (onDispose = null) : unsubscriber());
+    const { getLastAppliedTimestamp = () => 0, ...readApi } = adapter.init();
 
     const loadDonePromise = new Promise((resolve, reject) => {
         let loading = { eventsFetched: 0, eventsProcessed: 0, isLoaded: false };
@@ -54,8 +55,13 @@ const init = (adapter, eventStore, projection) => {
             loading.eventsFetched++;
         };
 
-        eventStore
-            .subscribeByEventType(Object.keys(projection), synchronizedEventWorker)
+        Promise.resolve()
+            .then(getLastAppliedTimestamp)
+            .then(startTime =>
+                eventStore.subscribeByEventType(Object.keys(projection), synchronizedEventWorker, {
+                    startTime
+                })
+            )
             .then((unsub) => {
                 loadingChecker(false);
 
@@ -68,7 +74,7 @@ const init = (adapter, eventStore, projection) => {
     });
 
     return {
-        ...adapter.init(),
+        ...readApi,
         loadDonePromise,
         onDispose
     };

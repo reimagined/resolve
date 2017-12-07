@@ -1,14 +1,24 @@
 import { MongoClient } from 'mongodb';
 
 export default function init(repository) {
+    const META_COLLECTION_NAME = '__resolve_meta_collection';
+
     if (repository.interfaceMap) {
         throw new Error('The read model storage is already initialized');
     }
+    repository.lastTimestamp = 0;
 
     repository.connectionPromise = MongoClient.connect(
         repository.url,
         repository.options
     ).then(async (database) => {
+        const metaCollection = await database.collection(META_COLLECTION_NAME);
+        const collectionDescriptors = await metaCollection.find({}).toArray();
+        repository.lastTimestamp = collectionDescriptors.reduce(
+            (acc, val) => Math.max(acc, val.lastTimestamp),
+            0
+        );
+
         repository.collectionMap = new Map();
         const collectionNames = (await database.listCollections().toArray()).map(
             ({ name }) => name
@@ -32,6 +42,19 @@ export default function init(repository) {
 
             const collection = await database.collection(collectionName);
             repository.collectionMap.set(collectionName, collection);
+
+            const metaCollection = repository.collectionMap.get(META_COLLECTION_NAME);
+
+            const collectionDescriptor = (await metaCollection.findOne({
+                name: collectionName
+            })) || {
+                name: collectionName,
+                lastTimestamp: 0
+            };
+
+            await metaCollection.update({ name: collectionName }, collectionDescriptor, {
+                upsert: true
+            });
         }
 
         return repository.collectionMap.get(collectionName);
@@ -57,6 +80,13 @@ export default function init(repository) {
 
             return async (...args) => {
                 const collection = await getCollection(collectionName, isWriteable);
+
+                const metaCollection = repository.collectionMap.get(META_COLLECTION_NAME);
+                await metaCollection.update(
+                    { name: collectionName },
+                    { $set: { lastTimestamp: repository.lastTimestamp } }
+                );
+
                 return await collection[funcName](...args);
             };
         };
@@ -154,11 +184,20 @@ export default function init(repository) {
         writeInterface: getStoreInterface(true)
     });
 
-    repository.initDonePromise = Promise.resolve()
-        .then(repository.initHandler.bind(null, repository.writeInterface))
-        .catch(error => repository.internalError);
+    repository.initDonePromise = (async () => {
+        if (repository.lastTimestamp !== 0) return;
+        repository.lastTimestamp = 1;
+
+        try {
+            await repository.initHandler(repository.writeInterface);
+        } catch (error) {
+            repository.internalError = error;
+        }
+    })();
 
     return {
+        getLastAppliedTimestamp: async () =>
+            await repository.connectionPromise.then(() => repository.lastTimestamp),
         getReadable: async () => repository.readInterface,
         getError: async () => repository.internalError
     };
