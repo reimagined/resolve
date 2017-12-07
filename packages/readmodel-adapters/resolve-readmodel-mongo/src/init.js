@@ -25,9 +25,7 @@ export default function init(repository) {
         syncronizeDatabase
     );
 
-    const createCollection = async (collectionName) => {
-        const database = await repository.connectionPromise;
-
+    const createCollection = async (database, collectionName) => {
         if ((await database.listCollections({ name: collectionName }).toArray()).length > 0) {
             throw new Error(
                 `Collection ${collectionName} had already been created in current database, ` +
@@ -50,11 +48,13 @@ export default function init(repository) {
     };
 
     const getCollection = async (collectionName, isWriteable) => {
+        const database = await repository.connectionPromise;
+
         if (!repository.collectionMap.has(collectionName)) {
             if (!isWriteable) {
                 throw new Error(`Collection ${collectionName} does not exist`);
             }
-            await createCollection(collectionName);
+            await createCollection(database, collectionName);
         }
 
         return repository.collectionMap.get(collectionName);
