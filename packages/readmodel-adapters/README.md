@@ -13,4 +13,5 @@ The read model storage API consists of the following asynchronous functions:
 Available adapters:  
 * [resolve-readmodel-memory](./resolve-readmodel-memory)  
 	Used to store a read model in memory.
-	
+* [resolve-readmodel-mongo](./resolve-readmodel-mongo)  
+	Used to store a read model in MongoDB.
