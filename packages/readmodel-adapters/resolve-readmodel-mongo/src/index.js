@@ -1,4 +1,5 @@
 import 'regenerator-runtime/runtime';
+import { MongoClient } from 'mongodb';
 
 import buildProjection from './build_projection';
 import init from './init';
@@ -20,7 +21,7 @@ export default function createMongoAdapter(url, options, metaCollectionName) {
             value: buildProjection.bind(null, repository)
         },
         init: {
-            value: init.bind(null, repository)
+            value: init.bind(null, repository, MongoClient)
         },
         reset: {
             value: reset.bind(null, repository)
