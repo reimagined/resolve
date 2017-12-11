@@ -294,15 +294,15 @@ export async function initProjection(repository) {
     }
 }
 
-export default function init(repository, MongoClient) {
+export default function init(repository) {
     if (repository.interfaceMap) {
         throw new Error('The read model storage is already initialized');
     }
     repository.lastTimestamp = 0;
 
-    repository.connectionPromise = MongoClient.connect(repository.url, repository.options).then(
-        syncronizeDatabase.bind(null, repository)
-    );
+    repository.connectionPromise = repository
+        .connectDatabase()
+        .then(syncronizeDatabase.bind(null, repository));
 
     repository.interfaceMap = new Map();
     repository.initialEventPromise = null;
