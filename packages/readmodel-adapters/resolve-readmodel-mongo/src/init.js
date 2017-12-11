@@ -1,3 +1,21 @@
+export async function getCollection(repository, collectionName, isWriteable) {
+    const database = await repository.connectionPromise;
+
+    if (!repository.collectionMap.has(collectionName)) {
+        if (!isWriteable) {
+            throw new Error(`Collection ${collectionName} does not exist`);
+        }
+        await createCollection(repository, database, collectionName);
+    }
+
+    return repository.collectionMap.get(collectionName);
+}
+
+export async function getMetaCollection(repository) {
+    await repository.connectionPromise;
+    return repository.collectionMap.get(repository.metaCollectionName);
+}
+
 export async function syncronizeDatabase(repository, database) {
     repository.collectionMap = new Map();
     const metaCollection = await database.collection(repository.metaCollectionName);
@@ -24,7 +42,7 @@ export async function createCollection(repository, database, collectionName) {
     const collection = await database.collection(collectionName);
     repository.collectionMap.set(collectionName, collection);
 
-    const metaCollection = repository.collectionMap.get(repository.metaCollectionName);
+    const metaCollection = await getMetaCollection(repository);
     await metaCollection.update(
         { collectionName },
         {
@@ -34,19 +52,6 @@ export async function createCollection(repository, database, collectionName) {
         },
         { upsert: true }
     );
-}
-
-export async function getCollection(repository, collectionName, isWriteable) {
-    const database = await repository.connectionPromise;
-
-    if (!repository.collectionMap.has(collectionName)) {
-        if (!isWriteable) {
-            throw new Error(`Collection ${collectionName} does not exist`);
-        }
-        await createCollection(repository, database, collectionName);
-    }
-
-    return repository.collectionMap.get(collectionName);
 }
 
 export function checkOptionShape(option, types, count) {
@@ -92,7 +97,7 @@ export function sanitizeUpdateExpression(updateExpression) {
 
 export async function wrapWriteFunction(funcName, repository, collectionName, ...args) {
     const collection = await getCollection(repository, collectionName, true);
-    const metaCollection = await getCollection(repository, repository.metaCollectionName, true);
+    const metaCollection = await getMetaCollection(repository);
 
     if ((funcName !== 'update' && args.length > 0) || (funcName === 'update' && args.length > 1)) {
         throw new Error(`Additional options in modify operation ${funcName} are prohibited`);
@@ -176,7 +181,7 @@ export async function execFind(options) {
 }
 
 export function wrapFind(initialFind, repository, collectionName, searchExpression) {
-    const metaCollectionPromise = getCollection(repository, repository.metaCollectionName, true);
+    const metaCollectionPromise = getMetaCollection(repository);
     const collectionPromise = getCollection(repository, collectionName);
     const resultPromise = Promise.resolve();
     const requestChain = [{ type: initialFind, args: searchExpression }];
