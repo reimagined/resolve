@@ -102,7 +102,10 @@ export async function wrapWriteFunction(funcName, repository, collectionName, ..
     );
 
     if (funcName === 'ensureIndex') {
-        if (!checkOptionShape(args[0], [Object], 1) || Math.abs(parseInt(args[0], 10)) !== 1) {
+        if (
+            !checkOptionShape(args[0], [Object], 1) ||
+            Math.abs(parseInt(Object.values(args[0])[0], 10)) !== 1
+        ) {
             throw new Error(
                 'Ensure index operation accepts only object with one key and 1/-1 value'
             );
