@@ -75,7 +75,20 @@ export function sanitizeSearchExpression(searchExpression) {
     return null;
 }
 
-export function sanitizeUpdateExpression(updateExpression) {}
+export function sanitizeUpdateExpression(updateExpression) {
+    if (!checkOptionShape(updateExpression, [Object])) {
+        return 'Update expression should be object with fields and replace values';
+    }
+
+    const allowedOperators = ['$set', '$unset', '$inc', '$push', '$pull'];
+    Object.keys(updateExpression).forEach((key) => {
+        if (key.indexOf('$') > -1 || !allowedOperators.includes(key)) {
+            return `Update operator ${key} is not permitted`;
+        }
+    });
+
+    return null;
+}
 
 export async function wrapWriteFunction(funcName, repository, collectionName, ...args) {
     const collection = await getCollection(repository, collectionName, true);
@@ -132,6 +145,7 @@ export async function wrapWriteFunction(funcName, repository, collectionName, ..
 }
 
 export async function execFind(options) {
+    const metaCollection = await options.metaCollectionPromise;
     const collection = await options.collectionPromise;
 
     if (options.requestFold) {
@@ -141,8 +155,16 @@ export async function execFind(options) {
         );
     }
 
+    const searchFields = Object.keys(options.requestChain[0].args);
+    const indexesFields =
+        (await metaCollection.findOne({ name: options.collectionName })).indexes || [];
+
+    if (!searchFields.reduce((acc, val) => acc && indexesFields.includes(val), true)) {
+        throw new Error('Search on non-indexed fields is forbidden');
+    }
+
     options.requestFold = options.requestChain.reduce(
-        (acc, { type, args }) => acc[type](...args),
+        (acc, { type, args }) => acc[type](args),
         collection
     );
 
@@ -154,6 +176,7 @@ export async function execFind(options) {
 }
 
 export function wrapFind(initialFind, repository, collectionName, searchExpression) {
+    const metaCollectionPromise = getCollection(repository, repository.metaCollectionName, true);
     const collectionPromise = getCollection(repository, collectionName);
     const resultPromise = Promise.resolve();
     const requestChain = [{ type: initialFind, args: searchExpression }];
@@ -171,7 +194,12 @@ export function wrapFind(initialFind, repository, collectionName, searchExpressi
     });
 
     const originalThen = resultPromise.then.bind(resultPromise);
-    const boundExecFind = execFind.bind(null, { requestChain, collectionPromise });
+    const boundExecFind = execFind.bind(null, {
+        requestChain,
+        collectionPromise,
+        metaCollectionPromise,
+        collectionName
+    });
 
     resultPromise.then = (...continuation) => originalThen(boundExecFind).then(...continuation);
 
