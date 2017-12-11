@@ -1,19 +1,10 @@
-export async function getCollection(repository, collectionName, isWriteable) {
-    const database = await repository.connectionPromise;
-
-    if (!repository.collectionMap.has(collectionName)) {
-        if (!isWriteable) {
-            throw new Error(`Collection ${collectionName} does not exist`);
-        }
-        await createCollection(repository, database, collectionName);
-    }
-
+export async function getCollection(repository, collectionName) {
+    await repository.connectionPromise;
     return repository.collectionMap.get(collectionName);
 }
 
 export async function getMetaCollection(repository) {
-    await repository.connectionPromise;
-    return repository.collectionMap.get(repository.metaCollectionName);
+    return await getCollection(repository.metaCollectionName);
 }
 
 export async function syncronizeDatabase(repository, database) {
@@ -214,12 +205,21 @@ export function wrapFind(initialFind, repository, collectionName, searchExpressi
 }
 
 // Provide interface https://docs.mongodb.com/manual/reference/method/js-collection/
-export async function getCollectionInterface(repository, collectionName, isWriteable) {
+export async function getCollectionInterface(repository, isWriteable, collectionName) {
     const collectionKey = `COLLECTION_${collectionName}_${isWriteable}`;
     const interfaceMap = repository.interfaceMap;
 
     if (interfaceMap.has(collectionKey)) {
         return interfaceMap.get(collectionKey);
+    }
+
+    const database = await repository.connectionPromise;
+
+    if (!repository.collectionMap.has(collectionName)) {
+        if (!isWriteable) {
+            throw new Error(`Collection ${collectionName} does not exist`);
+        }
+        await createCollection(repository, database, collectionName);
     }
 
     const countDocuments = async (searchExpression) => {
@@ -256,6 +256,14 @@ export async function getCollectionInterface(repository, collectionName, isWrite
     return interfaceMap.get(collectionKey);
 }
 
+export async function listCollections(repository) {
+    await repository.connectionPromise;
+
+    return Array.from(repository.collectionMap.keys()).filter(
+        name => name !== repository.metaCollectionName
+    );
+}
+
 // Provide interface https://docs.mongodb.com/manual/reference/method/js-database/
 export async function getStoreInterface(repository, isWriteable) {
     const storeKey = !isWriteable ? 'STORE_READ_SIDE' : 'STORE_WRITE_SIDE';
@@ -266,16 +274,8 @@ export async function getStoreInterface(repository, isWriteable) {
     }
 
     let storeIface = Object.freeze({
-        listCollections: async () =>
-            repository.connectionPromise.then(() =>
-                Array.from(repository.collectionMap.keys()).filter(
-                    name => name !== repository.metaCollectionName
-                )
-            ),
-        collection: async (name) => {
-            await getCollection(repository, name, isWriteable);
-            return getCollectionInterface(repository, name, isWriteable);
-        }
+        collection: getCollectionInterface.bind(null, repository, isWriteable),
+        listCollections: listCollections.bind(null, repository)
     });
 
     interfaceMap.set(storeKey, storeIface);
