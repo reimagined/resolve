@@ -4,7 +4,7 @@ export async function getCollection(repository, collectionName) {
 }
 
 export async function getMetaCollection(repository) {
-    return await getCollection(repository.metaCollectionName);
+    return await getCollection(repository, repository.metaCollectionName);
 }
 
 export async function syncronizeDatabase(repository, database) {
@@ -155,7 +155,7 @@ export async function execFind(options) {
 
     const searchFields = Object.keys(options.requestChain[0].args);
     const indexesFields =
-        (await metaCollection.findOne({ name: options.collectionName })).indexes || [];
+        (await metaCollection.findOne({ collectionName: options.collectionName })).indexes || [];
 
     if (!searchFields.reduce((acc, val) => acc && indexesFields.includes(val), true)) {
         throw new Error('Search on non-indexed fields is forbidden');
