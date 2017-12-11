@@ -92,7 +92,7 @@ export async function wrapWriteFunction(funcName, repository, collectionName, ..
     const collection = await getCollection(repository, collectionName, true);
     const metaCollection = await getMetaCollection(repository);
 
-    if ((funcName !== 'update' && args.length > 0) || (funcName === 'update' && args.length > 1)) {
+    if ((funcName !== 'update' && args.length > 1) || (funcName === 'update' && args.length > 2)) {
         throw new Error(`Additional options in modify operation ${funcName} are prohibited`);
     }
 
