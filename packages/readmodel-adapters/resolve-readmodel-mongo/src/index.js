@@ -20,7 +20,7 @@ export default function createMongoAdapter(url, options, metaCollectionName) {
             : DEFAULT_META_COLLECTION_NAME;
 
     repository.connectDatabase = MongoClient.connect.bind(
-        null,
+        MongoClient,
         url,
         options instanceof Object ? options : {}
     );

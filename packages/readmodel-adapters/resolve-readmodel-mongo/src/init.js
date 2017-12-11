@@ -22,7 +22,9 @@ export async function syncronizeDatabase(repository, database) {
     return database;
 }
 
-export async function createCollection(repository, database, collectionName) {
+export async function createCollection(repository, collectionName) {
+    const database = await repository.connectionPromise;
+
     if ((await database.listCollections({ name: collectionName }).toArray()).length > 0) {
         throw new Error(
             `Collection ${collectionName} had already been created in current database, ` +
@@ -213,13 +215,11 @@ export async function getCollectionInterface(repository, isWriteable, collection
         return interfaceMap.get(collectionKey);
     }
 
-    const database = await repository.connectionPromise;
-
     if (!repository.collectionMap.has(collectionName)) {
         if (!isWriteable) {
             throw new Error(`Collection ${collectionName} does not exist`);
         }
-        await createCollection(repository, database, collectionName);
+        await createCollection(repository, collectionName);
     }
 
     const countDocuments = async (searchExpression) => {
@@ -265,7 +265,7 @@ export async function listCollections(repository) {
 }
 
 // Provide interface https://docs.mongodb.com/manual/reference/method/js-database/
-export async function getStoreInterface(repository, isWriteable) {
+export function getStoreInterface(repository, isWriteable) {
     const storeKey = !isWriteable ? 'STORE_READ_SIDE' : 'STORE_WRITE_SIDE';
     const interfaceMap = repository.interfaceMap;
 
