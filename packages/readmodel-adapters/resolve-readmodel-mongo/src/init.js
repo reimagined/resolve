@@ -1,13 +1,13 @@
-export async function getCollection(repository, collectionName) {
+async function getCollection(repository, collectionName) {
     await repository.connectionPromise;
     return repository.collectionMap.get(collectionName);
 }
 
-export async function getMetaCollection(repository) {
+async function getMetaCollection(repository) {
     return await getCollection(repository, repository.metaCollectionName);
 }
 
-export async function syncronizeDatabase(repository, database) {
+async function syncronizeDatabase(repository, database) {
     repository.collectionMap = new Map();
     const metaCollection = await database.collection(repository.metaCollectionName);
     repository.collectionMap.set(repository.metaCollectionName, metaCollection);
@@ -22,7 +22,7 @@ export async function syncronizeDatabase(repository, database) {
     return database;
 }
 
-export async function createCollection(repository, collectionName) {
+async function createCollection(repository, collectionName) {
     const database = await repository.connectionPromise;
 
     if ((await database.listCollections({ name: collectionName }).toArray()).length > 0) {
@@ -47,7 +47,7 @@ export async function createCollection(repository, collectionName) {
     );
 }
 
-export function checkOptionShape(option, types, count) {
+function checkOptionShape(option, types, count) {
     return !(
         option === null ||
         option === undefined ||
@@ -57,7 +57,7 @@ export function checkOptionShape(option, types, count) {
     );
 }
 
-export function sanitizeSearchExpression(searchExpression) {
+function sanitizeSearchExpression(searchExpression) {
     if (!checkOptionShape(searchExpression, [Object])) {
         return 'Search expression should be object with fields and search values';
     }
@@ -73,7 +73,7 @@ export function sanitizeSearchExpression(searchExpression) {
     return null;
 }
 
-export function sanitizeUpdateExpression(updateExpression) {
+function sanitizeUpdateExpression(updateExpression) {
     if (!checkOptionShape(updateExpression, [Object])) {
         return 'Update expression should be object with fields and replace values';
     }
@@ -88,7 +88,7 @@ export function sanitizeUpdateExpression(updateExpression) {
     return null;
 }
 
-export async function wrapWriteFunction(funcName, repository, collectionName, ...args) {
+async function wrapWriteFunction(funcName, repository, collectionName, ...args) {
     const collection = await getCollection(repository, collectionName, true);
     const metaCollection = await getMetaCollection(repository);
 
@@ -145,7 +145,7 @@ export async function wrapWriteFunction(funcName, repository, collectionName, ..
     return await collection[funcName](...args);
 }
 
-export async function execFind(options) {
+async function execFind(options) {
     const metaCollection = await options.metaCollectionPromise;
     const collection = await options.collectionPromise;
 
@@ -176,7 +176,7 @@ export async function execFind(options) {
     return await options.requestFold;
 }
 
-export function wrapFind(initialFind, repository, collectionName, searchExpression) {
+function wrapFind(initialFind, repository, collectionName, searchExpression) {
     const metaCollectionPromise = getMetaCollection(repository);
     const collectionPromise = getCollection(repository, collectionName);
     const resultPromise = Promise.resolve();
@@ -210,7 +210,7 @@ export function wrapFind(initialFind, repository, collectionName, searchExpressi
 }
 
 // Provide interface https://docs.mongodb.com/manual/reference/method/js-collection/
-export async function getCollectionInterface(repository, isWriteable, collectionName) {
+async function getCollectionInterface(repository, isWriteable, collectionName) {
     const collectionKey = `COLLECTION_${collectionName}_${isWriteable}`;
     const interfaceMap = repository.interfaceMap;
 
@@ -259,7 +259,7 @@ export async function getCollectionInterface(repository, isWriteable, collection
     return interfaceMap.get(collectionKey);
 }
 
-export async function listCollections(repository) {
+async function listCollections(repository) {
     await repository.connectionPromise;
 
     return Array.from(repository.collectionMap.keys()).filter(
@@ -268,7 +268,7 @@ export async function listCollections(repository) {
 }
 
 // Provide interface https://docs.mongodb.com/manual/reference/method/js-database/
-export function getStoreInterface(repository, isWriteable) {
+function getStoreInterface(repository, isWriteable) {
     const storeKey = !isWriteable ? 'STORE_READ_SIDE' : 'STORE_WRITE_SIDE';
     const interfaceMap = repository.interfaceMap;
 
@@ -285,7 +285,7 @@ export function getStoreInterface(repository, isWriteable) {
     return storeIface;
 }
 
-export async function initProjection(repository) {
+async function initProjection(repository) {
     await repository.connectionPromise;
     if (repository.lastTimestamp !== 0) return;
     repository.lastTimestamp = 1;
@@ -308,7 +308,6 @@ export default function init(repository) {
         .then(syncronizeDatabase.bind(null, repository));
 
     repository.interfaceMap = new Map();
-    repository.initialEventPromise = null;
     repository.internalError = null;
 
     repository.readInterface = getStoreInterface(repository, false);
