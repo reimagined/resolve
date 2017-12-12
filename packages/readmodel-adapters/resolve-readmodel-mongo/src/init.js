@@ -305,6 +305,10 @@ export default function init(repository) {
     }
     repository.lastTimestamp = 0;
 
+    if (typeof repository.initHandler !== 'function') {
+        repository.initHandler = async () => {};
+    }
+
     repository.connectionPromise = repository
         .connectDatabase()
         .then(syncronizeDatabase.bind(null, repository));

@@ -7,6 +7,8 @@ import buildProjection from '../src/init';
 import init from '../src/init';
 import reset from '../src/init';
 
+process.on('unhandledRejection', (...args) => console.log(...args));
+
 describe('Read model MongoDB adapter', () => {
     let fakeLastReadResult;
     let fakeRepository;
@@ -76,6 +78,7 @@ describe('Read model MongoDB adapter', () => {
     describe('Init function', () => {
         let readInstance = null;
         beforeEach(() => {
+            fakeLastReadResult = [];
             readInstance = init(fakeRepository);
         });
         afterEach(() => {
@@ -84,9 +87,9 @@ describe('Read model MongoDB adapter', () => {
 
         it('should fill repository with internal fields', () => {
             expect(fakeRepository.lastTimestamp).to.be.equal(0);
+            expect(fakeRepository.initHandler).to.be.an.instanceof(Function);
             expect(fakeRepository.connectionPromise).to.be.an.instanceof(Promise);
             expect(fakeRepository.interfaceMap).to.be.an.instanceof(Map);
-            expect(fakeRepository.initialEventPromise).to.be.equal(0);
             expect(fakeRepository.internalError).to.be.equal(null);
             expect(fakeRepository.readInterface).to.be.an.instanceof(Object);
             expect(fakeRepository.writeInterface).to.be.an.instanceof(Object);
@@ -94,12 +97,13 @@ describe('Read model MongoDB adapter', () => {
         });
 
         it('should provide proper read-side interface', async () => {
+            await fakeRepository.connectionPromise;
             const lastTimestamp = await readInstance.getLastAppliedTimestamp();
             const readable = await readInstance.getReadable();
             const lastError = await readInstance.getError();
 
-            expect(lastTimestamp).to.be.equal(0);
-            expect(readable.getReadable).to.be.equal(fakeRepository.readInterface);
+            expect(lastTimestamp).to.be.equal(1);
+            expect(readable).to.be.equal(fakeRepository.readInterface);
             expect(lastError).to.be.equal(null);
         });
     });
