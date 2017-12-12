@@ -65,10 +65,10 @@ function sanitizeSearchExpression(searchExpression) {
     }
     for (let key of Object.keys(searchExpression)) {
         if (!checkOptionShape(searchExpression[key], [Number, String])) {
-            return 'Search expression values should be either number or string';
-        }
-        if (key.indexOf('$') > -1) {
-            return 'Search expression should not contain query operation';
+            return (
+                'Search expression values should be either number or string ' +
+                'and should not contain query operator'
+            );
         }
     }
 

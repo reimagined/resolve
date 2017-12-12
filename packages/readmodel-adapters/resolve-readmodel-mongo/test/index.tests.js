@@ -144,16 +144,31 @@ describe('Read model MongoDB adapter', () => {
             }
         });
 
-        it('should fail on find operation with deep search query operators', async () => {
+        it('should fail on find operation with search query operators', async () => {
             const readable = await readInstance.getReadable();
             const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
 
             try {
                 await collection.find({ id: { $gt: 1 } });
-                return Promise.reject('Search on with query operators is forbidden');
+                return Promise.reject('Search with query operators is forbidden');
             } catch (err) {
                 expect(err.message).to.be.deep.equal(
-                    'Search expression values should be either number or string'
+                    'Search expression values should be either number or string ' +
+                        'and should not contain query operator'
+                );
+            }
+        });
+
+        it('should fail on find operation with empty or non-object query', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            try {
+                await collection.find();
+                return Promise.reject('Search with non-object match is forbidden');
+            } catch (err) {
+                expect(err.message).to.be.deep.equal(
+                    'Search expression should be object with fields and search values'
                 );
             }
         });
