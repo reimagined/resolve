@@ -183,12 +183,7 @@ function wrapFind(initialFind, repository, collectionName, searchExpression) {
     const collectionPromise = getCollection(repository, collectionName);
     const resultPromise = Promise.resolve();
     const requestChain = [{ type: initialFind, args: searchExpression }];
-
     const sanitizeError = sanitizeSearchExpression(searchExpression);
-    console.log('@@@@@@@', searchExpression, sanitizeError);
-    if (sanitizeError) {
-        return Promise.reject(sanitizeError);
-    }
 
     ['skip', 'limit'].forEach((cmd) => {
         resultPromise[cmd] = (count) => {
@@ -198,7 +193,10 @@ function wrapFind(initialFind, repository, collectionName, searchExpression) {
     });
 
     const originalThen = resultPromise.then.bind(resultPromise);
-    const boundExecFind = execFind.bind(null, {
+    const boundExecFind = (!sanitizeError
+        ? execFind
+        : Promise.reject.bind(Promise, sanitizeError)
+    ).bind(null, {
         requestChain,
         collectionPromise,
         metaCollectionPromise,
