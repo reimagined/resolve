@@ -195,7 +195,7 @@ function wrapFind(initialFind, repository, collectionName, searchExpression) {
     const originalThen = resultPromise.then.bind(resultPromise);
     const boundExecFind = (!sanitizeError
         ? execFind
-        : Promise.reject.bind(Promise, sanitizeError)
+        : Promise.reject.bind(Promise, new Error(sanitizeError))
     ).bind(null, {
         requestChain,
         collectionPromise,
