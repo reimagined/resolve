@@ -63,14 +63,14 @@ function sanitizeSearchExpression(searchExpression) {
     if (!checkOptionShape(searchExpression, [Object])) {
         return 'Search expression should be object with fields and search values';
     }
-    Object.keys(searchExpression).forEach((key) => {
-        if (checkOptionShape(searchExpression[key].constructor, [Number, String])) {
+    for (let key of Object.keys(searchExpression)) {
+        if (!checkOptionShape(searchExpression[key].constructor, [Number, String])) {
             return 'Search expression values should be either number or string';
         }
         if (key.indexOf('$') > -1) {
             return 'Search expression should not contain query operation';
         }
-    });
+    }
 
     return null;
 }
@@ -81,11 +81,11 @@ function sanitizeUpdateExpression(updateExpression) {
     }
 
     const allowedOperators = ['$set', '$unset', '$inc', '$push', '$pull'];
-    Object.keys(updateExpression).forEach((key) => {
+    for (let key of Object.keys(updateExpression)) {
         if (key.indexOf('$') > -1 || !allowedOperators.includes(key)) {
             return `Update operator ${key} is not permitted`;
         }
-    });
+    }
 
     return null;
 }
@@ -185,6 +185,7 @@ function wrapFind(initialFind, repository, collectionName, searchExpression) {
     const requestChain = [{ type: initialFind, args: searchExpression }];
 
     const sanitizeError = sanitizeSearchExpression(searchExpression);
+    console.log('@@@@@@@', searchExpression, sanitizeError);
     if (sanitizeError) {
         return Promise.reject(sanitizeError);
     }

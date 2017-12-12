@@ -65,14 +65,20 @@ describe('Read model MongoDB adapter', () => {
     describe('Build Projection function', () => {});
 
     describe('Read-side interface created by adapter Init function', () => {
+        let readInstance;
+        beforeEach(() => {
+            readInstance = init(testRepository);
+        });
+        afterEach(() => {
+            readInstance = null;
+        });
+
         it('should provide last timestamp value for snapshots', async () => {
-            const readInstance = init(testRepository);
             const lastTimestamp = await readInstance.getLastAppliedTimestamp();
             expect(lastTimestamp).to.be.equal(30);
         });
 
         it('should throw error on non-existing collection access', async () => {
-            const readInstance = init(testRepository);
             const readable = await readInstance.getReadable();
 
             try {
@@ -84,7 +90,6 @@ describe('Read model MongoDB adapter', () => {
         });
 
         it('should provide simple find operation', async () => {
-            const readInstance = init(testRepository);
             const readable = await readInstance.getReadable();
             const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
 
@@ -93,7 +98,6 @@ describe('Read model MongoDB adapter', () => {
         });
 
         it('should provide find + search condition operation', async () => {
-            const readInstance = init(testRepository);
             const readable = await readInstance.getReadable();
             const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
 
@@ -102,7 +106,6 @@ describe('Read model MongoDB adapter', () => {
         });
 
         it('should provide find + skip documents operation', async () => {
-            const readInstance = init(testRepository);
             const readable = await readInstance.getReadable();
             const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
 
@@ -111,7 +114,6 @@ describe('Read model MongoDB adapter', () => {
         });
 
         it('should provide find + limit document operation', async () => {
-            const readInstance = init(testRepository);
             const readable = await readInstance.getReadable();
             const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
 
@@ -120,7 +122,6 @@ describe('Read model MongoDB adapter', () => {
         });
 
         it('should provide find + skip + limit documents operation', async () => {
-            const readInstance = init(testRepository);
             const readable = await readInstance.getReadable();
             const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
 
@@ -131,21 +132,32 @@ describe('Read model MongoDB adapter', () => {
             expect(result).to.be.deep.equal([DEFAULT_DOCUMENTS[2]]);
         });
 
-        it('should fail on operation with search on non-indexed field', async () => {
-            const readInstance = init(testRepository);
+        it('should fail on find operation with search on non-indexed field', async () => {
             const readable = await readInstance.getReadable();
             const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
 
             try {
                 await collection.find({ content: 'test-1' });
-                return Promise.reject('Search on non-indexes fields should be forbidden');
+                return Promise.reject('Search on non-indexes fields is forbidden');
+            } catch (err) {
+                expect(err.message).to.be.deep.equal('Search on non-indexed fields is forbidden');
+            }
+        });
+
+        it.only('should fail on find operation with search query operators', async () => {
+            //@@@@@@@@@@@@@
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            try {
+                await collection.find({ id: { $gt: 1 } });
+                return Promise.reject('Search on with query operators is forbidden');
             } catch (err) {
                 expect(err.message).to.be.deep.equal('Search on non-indexed fields is forbidden');
             }
         });
 
         it('should provide actual collections list in storage', async () => {
-            const readInstance = init(testRepository);
             const readable = await readInstance.getReadable();
             const collectionsList = await readable.listCollections();
 
@@ -153,7 +165,6 @@ describe('Read model MongoDB adapter', () => {
         });
 
         it('should throw error on collection create index attempt', async () => {
-            const readInstance = init(testRepository);
             const readable = await readInstance.getReadable();
             const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
 
@@ -169,7 +180,6 @@ describe('Read model MongoDB adapter', () => {
         });
 
         it('should throw error on collection remove index attempt', async () => {
-            const readInstance = init(testRepository);
             const readable = await readInstance.getReadable();
             const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
 
@@ -185,7 +195,6 @@ describe('Read model MongoDB adapter', () => {
         });
 
         it('should throw error on collection document insert attempt ', async () => {
-            const readInstance = init(testRepository);
             const readable = await readInstance.getReadable();
             const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
 
@@ -201,7 +210,6 @@ describe('Read model MongoDB adapter', () => {
         });
 
         it('should throw error on collection document update attempt', async () => {
-            const readInstance = init(testRepository);
             const readable = await readInstance.getReadable();
             const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
 
@@ -217,7 +225,6 @@ describe('Read model MongoDB adapter', () => {
         });
 
         it('should throw error on collection document remove attempt ', async () => {
-            const readInstance = init(testRepository);
             const readable = await readInstance.getReadable();
             const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
 
