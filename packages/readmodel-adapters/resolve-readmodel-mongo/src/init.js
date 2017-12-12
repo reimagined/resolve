@@ -90,7 +90,44 @@ function sanitizeUpdateExpression(updateExpression) {
     return null;
 }
 
-async function wrapWriteFunction(funcName, repository, collectionName, ...args) {
+async function applyEnsureIndex(collection, metaCollection, collectionName, indexDescriptor) {
+    if (
+        !checkOptionShape(indexDescriptor, [Object], 1) ||
+        Math.abs(parseInt(Object.values(indexDescriptor)[0], 10)) !== 1
+    ) {
+        throw new Error('Ensure index operation accepts only object with one key and 1/-1 value');
+    }
+
+    await collection.createIndex(indexDescriptor);
+    await metaCollection.update(
+        { collectionName },
+        { $push: { indexes: Object.keys(indexDescriptor)[0] } }
+    );
+}
+
+async function applyRemoveIndex(collection, metaCollection, collectionName, indexName) {
+    if (!checkOptionShape(indexName, [String])) {
+        throw new Error('Delete index operation accepts only string value');
+    }
+
+    await collection.dropIndex(indexName);
+    await metaCollection.update({ collectionName }, { $pull: { indexes: indexName } });
+}
+
+function sanitizeUpdateOrDelete(funcName, searchExpression, updateExpression) {
+    const sanitizeErrors = [
+        sanitizeSearchExpression(searchExpression),
+        funcName === 'update' ? sanitizeUpdateExpression(updateExpression) : null
+    ].filter(error => error !== null);
+
+    if (sanitizeErrors.length > 0) {
+        throw new Error(`Operation ${funcName} contains forbidden patterns:
+                ${sanitizeErrors.join(', ')}
+            `);
+    }
+}
+
+async function wrapWriteFunction(funcName, collectionName, repository, ...args) {
     const collection = await getCollection(repository, collectionName, true);
     const metaCollection = await getMetaCollection(repository);
 
@@ -103,48 +140,24 @@ async function wrapWriteFunction(funcName, repository, collectionName, ...args) 
         { $set: { lastTimestamp: repository.lastTimestamp } }
     );
 
-    if (funcName === 'ensureIndex') {
-        if (
-            !checkOptionShape(args[0], [Object], 1) ||
-            Math.abs(parseInt(Object.values(args[0])[0], 10)) !== 1
-        ) {
-            throw new Error(
-                'Ensure index operation accepts only object with one key and 1/-1 value'
-            );
-        }
+    switch (funcName) {
+        case 'ensureIndex':
+            await applyEnsureIndex(collection, metaCollection, collectionName, args[0]);
+            break;
 
-        await collection.createIndex(args[0]);
-        await metaCollection.update(
-            { collectionName },
-            { $push: { indexes: Object.keys(args[0])[0] } }
-        );
-        return;
+        case 'removeIndex':
+            await applyRemoveIndex(collection, metaCollection, collectionName, args[0]);
+            break;
+
+        case 'update':
+        case 'remove':
+            sanitizeUpdateOrDelete(funcName, args[0], args[1]);
+        // fallsthrough
+
+        default:
+            await collection[funcName](...args);
+            break;
     }
-
-    if (funcName === 'deleteIndex') {
-        if (!checkOptionShape(args[0], [String])) {
-            throw new Error('Delete index operation accepts only string value');
-        }
-
-        await collection.dropIndex(args[0]);
-        await metaCollection.update({ collectionName }, { $pull: { indexes: args[0] } });
-        return;
-    }
-
-    if (funcName === 'delete' || funcName === 'update') {
-        const sanitizeErrors = [
-            sanitizeSearchExpression(args[0]),
-            funcName === 'update' ? sanitizeUpdateExpression(args[1]) : null
-        ].filter(error => error !== null);
-
-        if (sanitizeErrors.length > 0) {
-            throw new Error(`Operation ${funcName} contains forbidden patterns:
-                ${sanitizeErrors.join(', ')}
-            `);
-        }
-    }
-
-    return await collection[funcName](...args);
 }
 
 async function execFind(options) {
@@ -210,6 +223,17 @@ function wrapFind(initialFind, repository, collectionName, searchExpression) {
     return resultPromise;
 }
 
+async function countDocuments(repository, collectionName, searchExpression) {
+    const collection = await getCollection(repository, collectionName);
+    return await collection.count(searchExpression);
+}
+
+async function exceptWriteFunction(funcName, collectionName) {
+    throw new Error(
+        `The ${collectionName} collection’s ${funcName} method is not allowed on the read side`
+    );
+}
+
 // Provide interface https://docs.mongodb.com/manual/reference/method/js-collection/
 async function getCollectionInterface(repository, isWriteable, collectionName) {
     const collectionKey = `COLLECTION_${collectionName}_${isWriteable}`;
@@ -227,21 +251,10 @@ async function getCollectionInterface(repository, isWriteable, collectionName) {
         await createCollection(repository, collectionName);
     }
 
-    const countDocuments = async (searchExpression) => {
-        const collection = await getCollection(repository, collectionName);
-        return await collection.count(searchExpression);
-    };
-
-    const exceptWriteFunction = async (funcName) => {
-        throw new Error(
-            `The ${collectionName} collection’s ${funcName} method is not allowed on the read side`
-        );
-    };
-
     const collectionIface = {
         findOne: wrapFind.bind(null, 'findOne', repository, collectionName),
         find: wrapFind.bind(null, 'find', repository, collectionName),
-        count: countDocuments
+        count: countDocuments.bind(null, repository, collectionName)
     };
 
     Object.assign(
@@ -250,8 +263,8 @@ async function getCollectionInterface(repository, isWriteable, collectionName) {
             acc[funcName] = (isWriteable ? wrapWriteFunction : exceptWriteFunction).bind(
                 null,
                 funcName,
-                repository,
-                collectionName
+                collectionName,
+                repository
             );
             return acc;
         }, {})
