@@ -3,7 +3,6 @@ import 'regenerator-runtime/runtime';
 import { expect } from 'chai';
 import mongoUnit from 'mongo-unit';
 import { MongoClient } from 'mongodb';
-import sinon from 'sinon';
 
 import buildProjection from '../src/init';
 import init from '../src/init';
@@ -23,12 +22,14 @@ describe('Read model MongoDB adapter', () => {
 
     before(async function () {
         this.timeout(0);
-        const connectionUrl = await mongoUnit.start();
+        const connectionUrl = await mongoUnit.start({ dbName: 'admin' });
         testConnection = await MongoClient.connect(connectionUrl);
     });
 
     after(async () => {
-        await mongoUnit.drop();
+        await testConnection.dropDatabase();
+        testConnection.command({ shutdown: 1 });
+        await testConnection.close();
         testConnection = null;
     });
 
@@ -53,6 +54,7 @@ describe('Read model MongoDB adapter', () => {
 
     afterEach(async () => {
         for (let { name } of await testConnection.listCollections({}).toArray()) {
+            if (name.indexOf('system.') > -1) continue;
             const collection = await testConnection.collection(name);
             await collection.drop();
         }
@@ -63,22 +65,13 @@ describe('Read model MongoDB adapter', () => {
     describe('Build Projection function', () => {});
 
     describe('Read-side interface created by adapter Init function', () => {
-        it('should provide proper storage interface', async () => {
+        it('should provide last timestamp value for snapshots', async () => {
             const readInstance = init(testRepository);
             const lastTimestamp = await readInstance.getLastAppliedTimestamp();
-            const readable = await readInstance.getReadable();
-            const lastError = await readInstance.getError();
-
             expect(lastTimestamp).to.be.equal(30);
-
-            expect(readable).to.be.an.instanceof(Object);
-            expect(readable.collection).to.be.an.instanceof(Function);
-            expect(readable.listCollections).to.be.an.instanceof(Function);
-
-            expect(lastError).to.be.equal(null);
         });
 
-        it('should throw error on non-existing collections', async () => {
+        it('should throw error on non-existing collection access', async () => {
             const readInstance = init(testRepository);
             const readable = await readInstance.getReadable();
 
