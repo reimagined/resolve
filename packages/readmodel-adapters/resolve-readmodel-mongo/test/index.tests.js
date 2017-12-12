@@ -12,23 +12,23 @@ import reset from '../src/init';
 describe('Read model MongoDB adapter', () => {
     const DEFAULT_COLLECTION_NAME = 'TestDefaultCollection';
     const META_COLLECTION_NAME = 'TestMetaCollection';
-    let fakeRepository;
-    let fakeConnection;
+    let testRepository;
+    let testConnection;
 
     before(async function () {
         this.timeout(0);
         const connectionUrl = await mongoUnit.start();
-        fakeConnection = await MongoClient.connect(connectionUrl);
+        testConnection = await MongoClient.connect(connectionUrl);
     });
 
     after(async () => {
         await mongoUnit.drop();
-        fakeConnection = null;
+        testConnection = null;
     });
 
     beforeEach(async () => {
-        fakeRepository = {
-            connectDatabase: async () => fakeConnection,
+        testRepository = {
+            connectDatabase: async () => testConnection,
             metaCollectionName: META_COLLECTION_NAME
         };
 
@@ -49,38 +49,38 @@ describe('Read model MongoDB adapter', () => {
 
     afterEach(async () => {
         //await mongoUnit.clean();
-        fakeRepository = null;
+        testRepository = null;
     });
 
     describe('Build Projection function', () => {});
 
     describe('Init function', () => {
         it('should fill repository with internal fields', () => {
-            init(fakeRepository);
+            init(testRepository);
 
-            expect(fakeRepository.lastTimestamp).to.be.equal(0);
-            expect(fakeRepository.initHandler).to.be.an.instanceof(Function);
-            expect(fakeRepository.connectionPromise).to.be.an.instanceof(Promise);
-            expect(fakeRepository.interfaceMap).to.be.an.instanceof(Map);
-            expect(fakeRepository.internalError).to.be.equal(null);
-            expect(fakeRepository.readInterface).to.be.an.instanceof(Object);
-            expect(fakeRepository.writeInterface).to.be.an.instanceof(Object);
-            expect(fakeRepository.initDonePromise).to.be.an.instanceof(Promise);
+            expect(testRepository.lastTimestamp).to.be.equal(0);
+            expect(testRepository.initHandler).to.be.an.instanceof(Function);
+            expect(testRepository.connectionPromise).to.be.an.instanceof(Promise);
+            expect(testRepository.interfaceMap).to.be.an.instanceof(Map);
+            expect(testRepository.internalError).to.be.equal(null);
+            expect(testRepository.readInterface).to.be.an.instanceof(Object);
+            expect(testRepository.writeInterface).to.be.an.instanceof(Object);
+            expect(testRepository.initDonePromise).to.be.an.instanceof(Promise);
         });
 
         it('should provide proper read-side interface', async () => {
-            const readInstance = init(fakeRepository);
+            const readInstance = init(testRepository);
             const lastTimestamp = await readInstance.getLastAppliedTimestamp();
             const readable = await readInstance.getReadable();
             const lastError = await readInstance.getError();
 
             expect(lastTimestamp).to.be.equal(20);
-            expect(readable).to.be.equal(fakeRepository.readInterface);
+            expect(readable).to.be.equal(testRepository.readInterface);
             expect(lastError).to.be.equal(null);
         });
 
         it('should provide collection API on read-side on existing collections', async () => {
-            const readInstance = init(fakeRepository);
+            const readInstance = init(testRepository);
             const readable = await readInstance.getReadable();
             const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
 
@@ -91,7 +91,7 @@ describe('Read model MongoDB adapter', () => {
         });
 
         it('should throw error on read-side on non-existing collections', async () => {
-            const readInstance = init(fakeRepository);
+            const readInstance = init(testRepository);
             const readable = await readInstance.getReadable();
 
             try {
@@ -103,7 +103,7 @@ describe('Read model MongoDB adapter', () => {
         });
 
         it('should provide actual collections list on read-side', async () => {
-            const readInstance = init(fakeRepository);
+            const readInstance = init(testRepository);
             const readable = await readInstance.getReadable();
             const collectionsList = await readable.listCollections();
 
