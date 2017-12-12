@@ -228,7 +228,7 @@ async function getCollectionInterface(repository, isWriteable, collectionName) {
     }
 
     const countDocuments = async (searchExpression) => {
-        const collection = await getCollection(collectionName, isWriteable);
+        const collection = await getCollection(repository, collectionName);
         return await collection.count(searchExpression);
     };
 

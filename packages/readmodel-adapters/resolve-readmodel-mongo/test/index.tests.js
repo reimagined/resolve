@@ -173,6 +173,47 @@ describe('Read model MongoDB adapter', () => {
             }
         });
 
+        it('should fail on find operation reuse attempt', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            const resultPromise = collection.find({});
+            await resultPromise;
+            try {
+                await resultPromise;
+                return Promise.reject('Search operator resource re-using is forbidden');
+            } catch (err) {
+                expect(err.message).to.be.deep.equal(
+                    'After documents are retrieved with a search request, ' +
+                        'this search request cannot be reused'
+                );
+            }
+        });
+
+        it('should provide findOne operation for first matched document', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            const result = await collection.findOne({ id: 2 });
+            expect(result).to.be.deep.equal(DEFAULT_DOCUMENTS[2]);
+        });
+
+        it('should provide findOne which return null when no match', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            const result = await collection.findOne({ id: 3 });
+            expect(result).to.be.deep.equal(null);
+        });
+
+        it('should provide count operation for count matched documents quantity', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            const result = await collection.count({ id: 2 });
+            expect(result).to.be.deep.equal(1);
+        });
+
         it('should provide actual collections list in storage', async () => {
             const readable = await readInstance.getReadable();
             const collectionsList = await readable.listCollections();
