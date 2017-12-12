@@ -220,6 +220,7 @@ async function getCollectionInterface(repository, isWriteable, collectionName) {
         return interfaceMap.get(collectionKey);
     }
 
+    await repository.connectionPromise;
     if (!repository.collectionMap.has(collectionName)) {
         if (!isWriteable) {
             throw new Error(`Collection ${collectionName} does not exist`);

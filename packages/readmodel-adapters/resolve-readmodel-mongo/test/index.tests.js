@@ -48,26 +48,13 @@ describe('Read model MongoDB adapter', () => {
     });
 
     afterEach(async () => {
-        //await mongoUnit.clean();
+        await mongoUnit.clean({});
         testRepository = null;
     });
 
     describe('Build Projection function', () => {});
 
     describe('Init function', () => {
-        it('should fill repository with internal fields', () => {
-            init(testRepository);
-
-            expect(testRepository.lastTimestamp).to.be.equal(0);
-            expect(testRepository.initHandler).to.be.an.instanceof(Function);
-            expect(testRepository.connectionPromise).to.be.an.instanceof(Promise);
-            expect(testRepository.interfaceMap).to.be.an.instanceof(Map);
-            expect(testRepository.internalError).to.be.equal(null);
-            expect(testRepository.readInterface).to.be.an.instanceof(Object);
-            expect(testRepository.writeInterface).to.be.an.instanceof(Object);
-            expect(testRepository.initDonePromise).to.be.an.instanceof(Promise);
-        });
-
         it('should provide proper read-side interface', async () => {
             const readInstance = init(testRepository);
             const lastTimestamp = await readInstance.getLastAppliedTimestamp();
@@ -87,7 +74,7 @@ describe('Read model MongoDB adapter', () => {
             expect(collection).to.be.an.instanceof(Object);
             expect(collection.find).to.be.an.instanceof(Function);
             expect(collection.findOne).to.be.an.instanceof(Function);
-            expect(collection.findCount).to.be.an.instanceof(Function);
+            expect(collection.count).to.be.an.instanceof(Function);
         });
 
         it('should throw error on read-side on non-existing collections', async () => {
@@ -107,7 +94,7 @@ describe('Read model MongoDB adapter', () => {
             const readable = await readInstance.getReadable();
             const collectionsList = await readable.listCollections();
 
-            expect(collectionsList).to.be.deep.equal('default');
+            expect(collectionsList).to.be.deep.equal([DEFAULT_COLLECTION_NAME]);
         });
     });
 
