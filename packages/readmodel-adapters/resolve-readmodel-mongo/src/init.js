@@ -64,7 +64,7 @@ function sanitizeSearchExpression(searchExpression) {
         return 'Search expression should be object with fields and search values';
     }
     for (let key of Object.keys(searchExpression)) {
-        if (!checkOptionShape(searchExpression[key].constructor, [Number, String])) {
+        if (!checkOptionShape(searchExpression[key], [Number, String])) {
             return 'Search expression values should be either number or string';
         }
         if (key.indexOf('$') > -1) {
