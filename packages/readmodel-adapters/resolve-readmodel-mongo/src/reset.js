@@ -1,3 +1,5 @@
+import 'regenerator-runtime/runtime';
+
 export default function reset(repository) {
     if (!repository.interfaceMap || !repository.connectionPromise) return;
 

@@ -1,3 +1,5 @@
+import 'regenerator-runtime/runtime';
+
 export default function buildProjection(repository, inputProjection) {
     repository.initHandler = async () => {};
 

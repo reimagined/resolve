@@ -1,3 +1,5 @@
+import 'regenerator-runtime/runtime';
+
 async function getCollection(repository, collectionName) {
     await repository.connectionPromise;
     return repository.collectionMap.get(collectionName);
