@@ -62,8 +62,8 @@ describe('Read model MongoDB adapter', () => {
 
     describe('Build Projection function', () => {});
 
-    describe('Init function', () => {
-        it('should provide proper read-side interface', async () => {
+    describe('Read-side interface created by adapter Init function', () => {
+        it('should provide proper storage interface', async () => {
             const readInstance = init(testRepository);
             const lastTimestamp = await readInstance.getLastAppliedTimestamp();
             const readable = await readInstance.getReadable();
@@ -78,7 +78,7 @@ describe('Read model MongoDB adapter', () => {
             expect(lastError).to.be.equal(null);
         });
 
-        it('should throw error on read-side on non-existing collections', async () => {
+        it('should throw error on non-existing collections', async () => {
             const readInstance = init(testRepository);
             const readable = await readInstance.getReadable();
 
@@ -90,7 +90,7 @@ describe('Read model MongoDB adapter', () => {
             }
         });
 
-        it('should provide simple find operation on read-side', async () => {
+        it('should provide simple find operation', async () => {
             const readInstance = init(testRepository);
             const readable = await readInstance.getReadable();
             const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
@@ -99,7 +99,7 @@ describe('Read model MongoDB adapter', () => {
             expect(result).to.be.deep.equal(DEFAULT_DOCUMENTS);
         });
 
-        it('should provide find + condition match operation on read-side', async () => {
+        it('should provide find + search condition operation', async () => {
             const readInstance = init(testRepository);
             const readable = await readInstance.getReadable();
             const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
@@ -108,7 +108,7 @@ describe('Read model MongoDB adapter', () => {
             expect(result).to.be.deep.equal([DEFAULT_DOCUMENTS[1]]);
         });
 
-        it('should provide find + skip operation with skip on read-side', async () => {
+        it('should provide find + skip documents operation', async () => {
             const readInstance = init(testRepository);
             const readable = await readInstance.getReadable();
             const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
@@ -117,7 +117,7 @@ describe('Read model MongoDB adapter', () => {
             expect(result).to.be.deep.equal(DEFAULT_DOCUMENTS.slice(1, 3));
         });
 
-        it('should provide find + limit operation with skip on read-side', async () => {
+        it('should provide find + limit document operation', async () => {
             const readInstance = init(testRepository);
             const readable = await readInstance.getReadable();
             const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
@@ -126,7 +126,7 @@ describe('Read model MongoDB adapter', () => {
             expect(result).to.be.deep.equal(DEFAULT_DOCUMENTS.slice(0, 2));
         });
 
-        it('should provide find + skip + limit operation with skip on read-side', async () => {
+        it('should provide find + skip + limit documents operation', async () => {
             const readInstance = init(testRepository);
             const readable = await readInstance.getReadable();
             const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
@@ -138,7 +138,20 @@ describe('Read model MongoDB adapter', () => {
             expect(result).to.be.deep.equal([DEFAULT_DOCUMENTS[2]]);
         });
 
-        it('should provide actual collections list on read-side', async () => {
+        it('should fail on operation with search on non-indexed field', async () => {
+            const readInstance = init(testRepository);
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            try {
+                await collection.find({ content: 'test-1' });
+                return Promise.reject('Search on non-indexes fields should be forbidden');
+            } catch (err) {
+                expect(err.message).to.be.deep.equal('Search on non-indexed fields is forbidden');
+            }
+        });
+
+        it('should provide actual collections list in storage', async () => {
             const readInstance = init(testRepository);
             const readable = await readInstance.getReadable();
             const collectionsList = await readable.listCollections();
@@ -146,16 +159,14 @@ describe('Read model MongoDB adapter', () => {
             expect(collectionsList).to.be.deep.equal([DEFAULT_COLLECTION_NAME]);
         });
 
-        it('should throw error on collection create index mutation attempt on read-side ', async () => {
+        it('should throw error on collection create index attempt', async () => {
             const readInstance = init(testRepository);
             const readable = await readInstance.getReadable();
             const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
 
             try {
                 await collection.ensureIndex({ test: 1 });
-                return Promise.reject(
-                    'Collection ensureIndex operation should fail on client side'
-                );
+                return Promise.reject('Collection ensureIndex operation should fail on read-side');
             } catch (err) {
                 expect(err.message).to.be.equal(
                     `The ${DEFAULT_COLLECTION_NAME} collection’s ensureIndex method ` +
@@ -164,16 +175,14 @@ describe('Read model MongoDB adapter', () => {
             }
         });
 
-        it('should throw error on collection remove index mutation attempt on read-side ', async () => {
+        it('should throw error on collection remove index attempt', async () => {
             const readInstance = init(testRepository);
             const readable = await readInstance.getReadable();
             const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
 
             try {
                 await collection.removeIndex('test');
-                return Promise.reject(
-                    'Collection removeIndex operation should fail on client side'
-                );
+                return Promise.reject('Collection removeIndex operation should fail on read-side');
             } catch (err) {
                 expect(err.message).to.be.equal(
                     `The ${DEFAULT_COLLECTION_NAME} collection’s removeIndex method ` +
@@ -182,14 +191,14 @@ describe('Read model MongoDB adapter', () => {
             }
         });
 
-        it('should throw error on collection insert mutation attempt on read-side ', async () => {
+        it('should throw error on collection document insert attempt ', async () => {
             const readInstance = init(testRepository);
             const readable = await readInstance.getReadable();
             const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
 
             try {
                 await collection.insert({ test: 0 });
-                return Promise.reject('Collection insert operation should fail on client side');
+                return Promise.reject('Collection insert operation should fail on read-side');
             } catch (err) {
                 expect(err.message).to.be.equal(
                     `The ${DEFAULT_COLLECTION_NAME} collection’s insert method ` +
@@ -198,14 +207,14 @@ describe('Read model MongoDB adapter', () => {
             }
         });
 
-        it('should throw error on collection update mutation attempt on read-side ', async () => {
+        it('should throw error on collection document update attempt', async () => {
             const readInstance = init(testRepository);
             const readable = await readInstance.getReadable();
             const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
 
             try {
                 await collection.update({ test: 0 }, { test: 1 });
-                return Promise.reject('Collection update operation should fail on client side');
+                return Promise.reject('Collection update operation should fail on read-side');
             } catch (err) {
                 expect(err.message).to.be.equal(
                     `The ${DEFAULT_COLLECTION_NAME} collection’s update method ` +
@@ -214,14 +223,14 @@ describe('Read model MongoDB adapter', () => {
             }
         });
 
-        it('should throw error on collection remove mutation attempt on read-side ', async () => {
+        it('should throw error on collection document remove attempt ', async () => {
             const readInstance = init(testRepository);
             const readable = await readInstance.getReadable();
             const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
 
             try {
                 await collection.remove({ test: 0 });
-                return Promise.reject('Collection remove operation should fail on client side');
+                return Promise.reject('Collection remove operation should fail on read-side');
             } catch (err) {
                 expect(err.message).to.be.equal(
                     `The ${DEFAULT_COLLECTION_NAME} collection’s remove method ` +
