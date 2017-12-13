@@ -450,10 +450,8 @@ describe('Read model MongoDB adapter', () => {
         });
 
         it('should process corrent ensureIndex operation', async () => {
-            const defaultCollection = await testConnection.collection(DEFAULT_COLLECTION_NAME);
             const metaCollection = await testConnection.collection(META_COLLECTION_NAME);
 
-            expect(await defaultCollection.count({})).to.be.equal(0);
             expect(
                 await metaCollection.findOne({ collectionName: DEFAULT_COLLECTION_NAME })
             ).to.be.equal(null);
@@ -463,7 +461,6 @@ describe('Read model MongoDB adapter', () => {
                 timestamp: 10
             });
 
-            expect(await defaultCollection.count({})).to.be.equal(0);
             const metaDescriptor = await metaCollection.findOne({
                 collectionName: DEFAULT_COLLECTION_NAME
             });
@@ -483,6 +480,40 @@ describe('Read model MongoDB adapter', () => {
             lastError = await readInstance.getError();
             expect(lastError.message).to.be.equal(
                 'Ensure index operation accepts only object with one key and 1/-1 value'
+            );
+        });
+
+        it('should process corrent removeIndex operation', async () => {
+            const metaCollection = await testConnection.collection(META_COLLECTION_NAME);
+
+            expect(
+                await metaCollection.findOne({ collectionName: DEFAULT_COLLECTION_NAME })
+            ).to.be.equal(null);
+
+            await builtTestProjection.EventCorrectRemoveIndex({
+                type: 'EventCorrectRemoveIndex',
+                timestamp: 10
+            });
+
+            const metaDescriptor = await metaCollection.findOne({
+                collectionName: DEFAULT_COLLECTION_NAME
+            });
+            expect(metaDescriptor.lastTimestamp).to.be.equal(10);
+            expect(metaDescriptor.indexes).to.be.deep.equal([]);
+        });
+
+        it('should process throw error on wrong removeIndex operation', async () => {
+            let lastError = await readInstance.getError();
+            expect(lastError).to.be.equal(null);
+
+            await builtTestProjection.EventWrongRemoveIndex({
+                type: 'EventWrongRemoveIndex',
+                timestamp: 10
+            });
+
+            lastError = await readInstance.getError();
+            expect(lastError.message).to.be.equal(
+                'Delete index operation accepts only string value'
             );
         });
     });
