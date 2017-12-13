@@ -608,6 +608,63 @@ describe('Read model MongoDB adapter', () => {
                 'Update operator $customOperator is not permitted'
             );
         });
+
+        it('should throw error on wrong update operation', async () => {
+            let lastError = await readInstance.getError();
+            expect(lastError).to.be.equal(null);
+
+            await builtTestProjection.EventWrongUpdate({
+                type: 'EventWrongUpdate',
+                timestamp: 10
+            });
+
+            lastError = await readInstance.getError();
+            expect(lastError.message).to.be.equal(
+                'Additional options in modify operation update are prohibited'
+            );
+        });
+
+        it('should process corrent remove operation', async () => {
+            const defaultCollection = await testConnection.collection(DEFAULT_COLLECTION_NAME);
+
+            await builtTestProjection.EventCorrectRemove({
+                type: 'EventCorrectRemove',
+                timestamp: 10
+            });
+
+            expect(await defaultCollection.find({}).toArray()).to.be.deep.equal([]);
+        });
+
+        it('should throw error on remove operation with malformed search pattern', async () => {
+            let lastError = await readInstance.getError();
+            expect(lastError).to.be.equal(null);
+
+            await builtTestProjection.EventMalformedSearchRemove({
+                type: 'EventMalformedSearchRemove',
+                timestamp: 10
+            });
+
+            lastError = await readInstance.getError();
+            expect(lastError.message).to.be.equal(
+                'Operation remove cannot be performed on non-indexed ' +
+                    `field ${FIELD_NAME} in search pattern`
+            );
+        });
+
+        it('should throw error on wrong remove operation', async () => {
+            let lastError = await readInstance.getError();
+            expect(lastError).to.be.equal(null);
+
+            await builtTestProjection.EventWrongRemove({
+                type: 'EventWrongRemove',
+                timestamp: 10
+            });
+
+            lastError = await readInstance.getError();
+            expect(lastError.message).to.be.equal(
+                'Additional options in modify operation remove are prohibited'
+            );
+        });
     });
 
     describe('Reset function', () => {});
