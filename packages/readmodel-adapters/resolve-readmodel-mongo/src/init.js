@@ -82,7 +82,7 @@ function sanitizeUpdateExpression(updateExpression) {
 
     const allowedOperators = ['$set', '$unset', '$inc', '$push', '$pull'];
     for (let key of Object.keys(updateExpression)) {
-        if (key.indexOf('$') > -1 || !allowedOperators.includes(key)) {
+        if (key.indexOf('$') > -1 && !allowedOperators.includes(key)) {
             return `Update operator ${key} is not permitted`;
         }
     }
@@ -114,7 +114,7 @@ async function applyRemoveIndex(collection, metaCollection, collectionName, inde
     await metaCollection.update({ collectionName }, { $pull: { indexes: indexName } });
 }
 
-function sanitizeUpdateOrDelete(funcName, searchExpression, updateExpression) {
+function sanitizeUpdateOrDelete(funcName, indexList, searchExpression, updateExpression) {
     const sanitizeErrors = [
         sanitizeSearchExpression(searchExpression),
         funcName === 'update' ? sanitizeUpdateExpression(updateExpression) : null
@@ -124,6 +124,15 @@ function sanitizeUpdateOrDelete(funcName, searchExpression, updateExpression) {
         throw new Error(`Operation ${funcName} contains forbidden patterns:
                 ${sanitizeErrors.join(', ')}
             `);
+    }
+
+    for (let key of Object.keys(searchExpression)) {
+        if (indexList.indexOf(key) < 0) {
+            throw new Error(
+                `Operation ${funcName} cannot be performed on non-indexed ` +
+                    `field ${key} in search pattern`
+            );
+        }
     }
 }
 
@@ -151,7 +160,12 @@ async function wrapWriteFunction(funcName, collectionName, repository, ...args) 
 
         case 'update':
         case 'remove':
-            sanitizeUpdateOrDelete(funcName, args[0], args[1]);
+            sanitizeUpdateOrDelete(
+                funcName,
+                (await metaCollection.findOne({ collectionName })).indexes,
+                args[0],
+                args[1]
+            );
         // fallsthrough
 
         default:

@@ -300,6 +300,7 @@ describe('Read model MongoDB adapter', () => {
     });
 
     describe('Write-side interface created by adapter buildProjection function', () => {
+        const FIELD_NAME = 'FieldName';
         let originalTestProjection;
         let builtTestProjection;
         let readInstance;
@@ -311,90 +312,93 @@ describe('Read model MongoDB adapter', () => {
 
                 EventCorrectEnsureIndex: async (store) => {
                     const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.ensureIndex({ fieldName: 1 });
+                    await collection.ensureIndex({ [FIELD_NAME]: 1 });
                 },
 
                 EventWrongEnsureIndex: async (store) => {
                     const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.ensureIndex('fieldName');
+                    await collection.ensureIndex(FIELD_NAME);
                 },
 
                 EventCorrectRemoveIndex: async (store) => {
                     const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.removeIndex('fieldName');
+                    await collection.removeIndex(FIELD_NAME);
                 },
 
                 EventWrongRemoveIndex: async (store) => {
                     const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.removeIndex({ fieldName: 1 });
+                    await collection.removeIndex({ [FIELD_NAME]: 1 });
                 },
 
                 EventCorrectInsert: async (store) => {
                     const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.insert({ fieldName: 'value' });
+                    await collection.insert({ [FIELD_NAME]: 'value' });
                 },
 
                 EventWrongInsert: async (store) => {
                     const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.insert({ fieldName: 'value' }, { option: 'value' });
+                    await collection.insert({ [FIELD_NAME]: 'value' }, { option: 'value' });
                 },
 
                 EventCorrectFullUpdate: async (store) => {
                     const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.ensureIndex({ fieldName: 1 });
-                    await collection.insert({ fieldName: 'value1', content: 'content' });
-                    await collection.update({ fieldName: 'value1' }, { fieldName: 'value2' });
+                    await collection.ensureIndex({ [FIELD_NAME]: 1 });
+                    await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
+                    await collection.update({ [FIELD_NAME]: 'value1' }, { [FIELD_NAME]: 'value2' });
                 },
 
                 EventCorrectPartialUpdate: async (store) => {
                     const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.ensureIndex({ fieldName: 1 });
-                    await collection.insert({ fieldName: 'value1', content: 'content' });
+                    await collection.ensureIndex({ [FIELD_NAME]: 1 });
+                    await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
                     await collection.update(
-                        { fieldName: 'value1' },
-                        { $set: { fieldName: 'value2' } }
+                        { [FIELD_NAME]: 'value1' },
+                        { $set: { [FIELD_NAME]: 'value2' } }
                     );
                 },
 
                 EventMalformedSearchUpdate: async (store) => {
                     const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.insert({ fieldName: 'value1', content: 'content' });
-                    await collection.update({ fieldName: 'value1' }, { fieldName: 'value2' });
+                    await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
+                    await collection.update({ [FIELD_NAME]: 'value1' }, { [FIELD_NAME]: 'value2' });
                 },
 
-                EventMalformedMutationUpdate: async (store) => {
+                EventMalformedMutationUpdate: async (store, event) => {
                     const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.ensureIndex({ fieldName: 1 });
-                    await collection.insert({ fieldName: 'value1', content: 'content' });
-                    await collection.update({ fieldName: 'value1' }, { fieldName: 'value2' });
+                    await collection.ensureIndex({ [FIELD_NAME]: 1 });
+                    await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
+                    await collection.update(
+                        { [FIELD_NAME]: 'value1' },
+                        { $customOperator: { [FIELD_NAME]: 'value2' } }
+                    );
                 },
 
                 EventWrongUpdate: async (store) => {
                     const collection = await store.collection(DEFAULT_COLLECTION_NAME);
                     await collection.update(
-                        { fieldName: 'value1' },
-                        { fieldName: 'value2' },
+                        { [FIELD_NAME]: 'value1' },
+                        { [FIELD_NAME]: 'value2' },
                         { option: 'value' }
                     );
                 },
 
                 EventCorrectRemove: async (store) => {
                     const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.ensureIndex({ fieldName: 1 });
-                    await collection.insert({ fieldName: 'value1', content: 'content' });
-                    await collection.remove({ fieldName: 'value1' });
+                    await collection.ensureIndex({ [FIELD_NAME]: 1 });
+                    await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
+                    await collection.remove({ [FIELD_NAME]: 'value1' });
                 },
 
                 EventMalformedSearchRemove: async (store) => {
                     const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.insert({ fieldName: 'value1', content: 'content' });
-                    await collection.remove({ fieldName: 'value1' });
+                    await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
+                    await collection.remove({ [FIELD_NAME]: 'value1' });
                 },
 
                 EventWrongRemove: async (store) => {
                     const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.insert({ fieldName: 'value1', content: 'content' });
-                    await collection.remove({ fieldName: 'value1' }, { option: 'value' });
+                    await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
+                    await collection.remove({ [FIELD_NAME]: 'value1' }, { option: 'value' });
                 }
             };
 
@@ -465,7 +469,7 @@ describe('Read model MongoDB adapter', () => {
                 collectionName: DEFAULT_COLLECTION_NAME
             });
             expect(metaDescriptor.lastTimestamp).to.be.equal(10);
-            expect(metaDescriptor.indexes).to.be.deep.equal(['fieldName']);
+            expect(metaDescriptor.indexes).to.be.deep.equal([FIELD_NAME]);
         });
 
         it('should throw error on wrong ensureIndex operation', async () => {
@@ -520,18 +524,14 @@ describe('Read model MongoDB adapter', () => {
         it('should process corrent insert operation', async () => {
             const defaultCollection = await testConnection.collection(DEFAULT_COLLECTION_NAME);
 
-            expect(await defaultCollection.count({})).to.be.equal(0);
-
             await builtTestProjection.EventCorrectInsert({
                 type: 'EventCorrectInsert',
                 timestamp: 10
             });
 
-            expect(await defaultCollection.count({})).to.be.equal(1);
-
             expect(
-                await defaultCollection.find({ fieldName: 'value' }, { _id: 0 }).toArray()
-            ).to.be.deep.equal([{ fieldName: 'value' }]);
+                await defaultCollection.find({ [FIELD_NAME]: 'value' }, { _id: 0 }).toArray()
+            ).to.be.deep.equal([{ [FIELD_NAME]: 'value' }]);
         });
 
         it('should throw error on wrong insert operation', async () => {
@@ -546,6 +546,66 @@ describe('Read model MongoDB adapter', () => {
             lastError = await readInstance.getError();
             expect(lastError.message).to.be.equal(
                 'Additional options in modify operation insert are prohibited'
+            );
+        });
+
+        it('should process corrent full update operation', async () => {
+            const defaultCollection = await testConnection.collection(DEFAULT_COLLECTION_NAME);
+
+            await builtTestProjection.EventCorrectFullUpdate({
+                type: 'EventCorrectFullUpdate',
+                timestamp: 10
+            });
+
+            expect(
+                await defaultCollection.find({ [FIELD_NAME]: 'value2' }, { _id: 0 }).toArray()
+            ).to.be.deep.equal([{ [FIELD_NAME]: 'value2' }]);
+        });
+
+        it('should process corrent partial set update operation', async () => {
+            const defaultCollection = await testConnection.collection(DEFAULT_COLLECTION_NAME);
+
+            await builtTestProjection.EventCorrectPartialUpdate({
+                type: 'EventCorrectPartialUpdate',
+                timestamp: 10
+            });
+
+            expect(
+                await defaultCollection.find({ [FIELD_NAME]: 'value2' }, { _id: 0 }).toArray()
+            ).to.be.deep.equal([{ [FIELD_NAME]: 'value2', content: 'content' }]);
+        });
+
+        it('should throw error on update operation with malformed search pattern', async () => {
+            let lastError = await readInstance.getError();
+            expect(lastError).to.be.equal(null);
+
+            await builtTestProjection.EventMalformedSearchUpdate({
+                type: 'EventMalformedSearchUpdate',
+                timestamp: 10
+            });
+
+            lastError = await readInstance.getError();
+            expect(lastError.message).to.be.equal(
+                'Operation update cannot be performed on non-indexed ' +
+                    `field ${FIELD_NAME} in search pattern`
+            );
+        });
+
+        it('should throw error on update operation with malformed update pattern', async () => {
+            let lastError = await readInstance.getError();
+            expect(lastError).to.be.equal(null);
+
+            await builtTestProjection.EventMalformedMutationUpdate({
+                type: 'EventMalformedMutationUpdate',
+                timestamp: 10
+            });
+
+            lastError = await readInstance.getError();
+            expect(lastError.message).to.have.string(
+                'Operation update contains forbidden patterns'
+            );
+            expect(lastError.message).to.have.string(
+                'Update operator $customOperator is not permitted'
             );
         });
     });
