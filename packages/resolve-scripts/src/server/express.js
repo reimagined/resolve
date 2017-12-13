@@ -227,7 +227,8 @@ app.get([`${rootDirectory}/*`, `${rootDirectory || '/'}`], async (req, res) => {
             hostname: req.hostname,
             originalUrl: req.originalUrl,
             body: req.body,
-            query: req.query
+            query: req.query,
+            getJwtValue: req.getJwtValue
         });
 
         ssr(state, { req, res });
