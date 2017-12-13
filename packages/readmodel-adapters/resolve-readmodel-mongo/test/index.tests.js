@@ -468,7 +468,7 @@ describe('Read model MongoDB adapter', () => {
             expect(metaDescriptor.indexes).to.be.deep.equal(['fieldName']);
         });
 
-        it('should process throw error on wrong ensureIndex operation', async () => {
+        it('should throw error on wrong ensureIndex operation', async () => {
             let lastError = await readInstance.getError();
             expect(lastError).to.be.equal(null);
 
@@ -502,7 +502,7 @@ describe('Read model MongoDB adapter', () => {
             expect(metaDescriptor.indexes).to.be.deep.equal([]);
         });
 
-        it('should process throw error on wrong removeIndex operation', async () => {
+        it('should throw error on wrong removeIndex operation', async () => {
             let lastError = await readInstance.getError();
             expect(lastError).to.be.equal(null);
 
@@ -514,6 +514,38 @@ describe('Read model MongoDB adapter', () => {
             lastError = await readInstance.getError();
             expect(lastError.message).to.be.equal(
                 'Delete index operation accepts only string value'
+            );
+        });
+
+        it('should process corrent insert operation', async () => {
+            const defaultCollection = await testConnection.collection(DEFAULT_COLLECTION_NAME);
+
+            expect(await defaultCollection.count({})).to.be.equal(0);
+
+            await builtTestProjection.EventCorrectInsert({
+                type: 'EventCorrectInsert',
+                timestamp: 10
+            });
+
+            expect(await defaultCollection.count({})).to.be.equal(1);
+
+            expect(
+                await defaultCollection.find({ fieldName: 'value' }, { _id: 0 }).toArray()
+            ).to.be.deep.equal([{ fieldName: 'value' }]);
+        });
+
+        it('should throw error on wrong insert operation', async () => {
+            let lastError = await readInstance.getError();
+            expect(lastError).to.be.equal(null);
+
+            await builtTestProjection.EventWrongInsert({
+                type: 'EventWrongInsert',
+                timestamp: 10
+            });
+
+            lastError = await readInstance.getError();
+            expect(lastError.message).to.be.equal(
+                'Additional options in modify operation insert are prohibited'
             );
         });
     });
