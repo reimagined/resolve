@@ -435,17 +435,55 @@ describe('Read model MongoDB adapter', () => {
         });
 
         it('should call Init projection function on incoming event only once', async () => {
-            const testEvent = {
-                type: 'TestEvent',
-                timestamp: 10
-            };
-
             expect(originalTestProjection.Init.callCount).to.be.equal(0);
 
-            await builtTestProjection.TestEvent(testEvent);
-            await builtTestProjection.TestEvent(testEvent);
+            await builtTestProjection.TestEvent({
+                type: 'TestEvent',
+                timestamp: 10
+            });
+            await builtTestProjection.TestEvent({
+                type: 'TestEvent',
+                timestamp: 20
+            });
 
             expect(originalTestProjection.Init.callCount).to.be.equal(1);
+        });
+
+        it('should process corrent ensureIndex operation', async () => {
+            const defaultCollection = await testConnection.collection(DEFAULT_COLLECTION_NAME);
+            const metaCollection = await testConnection.collection(META_COLLECTION_NAME);
+
+            expect(await defaultCollection.count({})).to.be.equal(0);
+            expect(
+                await metaCollection.findOne({ collectionName: DEFAULT_COLLECTION_NAME })
+            ).to.be.equal(null);
+
+            await builtTestProjection.EventCorrectEnsureIndex({
+                type: 'EventCorrectEnsureIndex',
+                timestamp: 10
+            });
+
+            expect(await defaultCollection.count({})).to.be.equal(0);
+            const metaDescriptor = await metaCollection.findOne({
+                collectionName: DEFAULT_COLLECTION_NAME
+            });
+            expect(metaDescriptor.lastTimestamp).to.be.equal(10);
+            expect(metaDescriptor.indexes).to.be.deep.equal(['fieldName']);
+        });
+
+        it('should process throw error on wrong ensureIndex operation', async () => {
+            let lastError = await readInstance.getError();
+            expect(lastError).to.be.equal(null);
+
+            await builtTestProjection.EventWrongEnsureIndex({
+                type: 'EventWrongEnsureIndex',
+                timestamp: 10
+            });
+
+            lastError = await readInstance.getError();
+            expect(lastError.message).to.be.equal(
+                'Ensure index operation accepts only object with one key and 1/-1 value'
+            );
         });
     });
 
