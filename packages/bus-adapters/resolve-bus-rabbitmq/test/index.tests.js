@@ -113,10 +113,9 @@ describe('RabbitMQ bus', () => {
                     });
                 });
 
-            return Promise.all([
-                instance.publish(firstEvent),
-                instance.publish(secondEvent)
-            ]).then(() => amqplibMock.verify());
+            return Promise.all([instance.publish(firstEvent), instance.publish(secondEvent)]).then(
+                () => amqplibMock.verify()
+            );
         });
     });
 
