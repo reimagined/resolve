@@ -11,14 +11,9 @@ import reset from '../src/init';
 describe('Read model MongoDB adapter', () => {
     const DEFAULT_COLLECTION_NAME = 'TestDefaultCollection';
     const META_COLLECTION_NAME = 'TestMetaCollection';
-    const DEFAULT_DOCUMENTS = [
-        { id: 0, content: 'test-0' },
-        { id: 1, content: 'test-1' },
-        { id: 2, content: 'test-2' }
-    ];
 
-    let testRepository;
     let testConnection;
+    let testRepository;
 
     before(async function () {
         this.timeout(0);
@@ -38,18 +33,6 @@ describe('Read model MongoDB adapter', () => {
             connectDatabase: async () => testConnection,
             metaCollectionName: META_COLLECTION_NAME
         };
-
-        const defaultCollection = await testConnection.collection(DEFAULT_COLLECTION_NAME);
-        for (let document of DEFAULT_DOCUMENTS) {
-            await defaultCollection.insert(document);
-        }
-
-        const metaCollection = await testConnection.collection(META_COLLECTION_NAME);
-        await metaCollection.insert({
-            collectionName: DEFAULT_COLLECTION_NAME,
-            lastTimestamp: 30,
-            indexes: ['id']
-        });
     });
 
     afterEach(async () => {
@@ -62,14 +45,32 @@ describe('Read model MongoDB adapter', () => {
         testRepository = null;
     });
 
-    describe('Build Projection function', () => {});
+    describe('Read-side interface created by adapter init function', () => {
+        const DEFAULT_DOCUMENTS = [
+            { id: 0, content: 'test-0' },
+            { id: 1, content: 'test-1' },
+            { id: 2, content: 'test-2' }
+        ];
 
-    describe('Read-side interface created by adapter Init function', () => {
         let readInstance;
-        beforeEach(() => {
+
+        beforeEach(async () => {
+            const defaultCollection = await testConnection.collection(DEFAULT_COLLECTION_NAME);
+            for (let document of DEFAULT_DOCUMENTS) {
+                await defaultCollection.insert(document);
+            }
+
+            const metaCollection = await testConnection.collection(META_COLLECTION_NAME);
+            await metaCollection.insert({
+                collectionName: DEFAULT_COLLECTION_NAME,
+                lastTimestamp: 30,
+                indexes: ['id']
+            });
+
             readInstance = init(testRepository);
         });
-        afterEach(() => {
+
+        afterEach(async () => {
             readInstance = null;
         });
 
@@ -296,6 +297,8 @@ describe('Read model MongoDB adapter', () => {
             }
         });
     });
+
+    describe('Write-side interface created by adapter buildProjection function', () => {});
 
     describe('Reset function', () => {});
 });
