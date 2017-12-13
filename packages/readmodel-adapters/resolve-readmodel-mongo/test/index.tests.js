@@ -3,10 +3,11 @@ import 'regenerator-runtime/runtime';
 import { expect } from 'chai';
 import mongoUnit from 'mongo-unit';
 import { MongoClient } from 'mongodb';
+import sinon from 'sinon';
 
-import buildProjection from '../src/init';
+import buildProjection from '../src/build_projection';
 import init from '../src/init';
-import reset from '../src/init';
+import reset from '../src/reset';
 
 describe('Read model MongoDB adapter', () => {
     const DEFAULT_COLLECTION_NAME = 'TestDefaultCollection';
@@ -298,7 +299,155 @@ describe('Read model MongoDB adapter', () => {
         });
     });
 
-    describe('Write-side interface created by adapter buildProjection function', () => {});
+    describe('Write-side interface created by adapter buildProjection function', () => {
+        let originalTestProjection;
+        let builtTestProjection;
+        let readInstance;
+
+        beforeEach(async () => {
+            originalTestProjection = {
+                Init: sinon.stub(),
+                TestEvent: sinon.stub(),
+
+                EventCorrectEnsureIndex: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.ensureIndex({ fieldName: 1 });
+                },
+
+                EventWrongEnsureIndex: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.ensureIndex('fieldName');
+                },
+
+                EventCorrectRemoveIndex: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.removeIndex('fieldName');
+                },
+
+                EventWrongRemoveIndex: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.removeIndex({ fieldName: 1 });
+                },
+
+                EventCorrectInsert: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.insert({ fieldName: 'value' });
+                },
+
+                EventWrongInsert: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.insert({ fieldName: 'value' }, { option: 'value' });
+                },
+
+                EventCorrectFullUpdate: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.ensureIndex({ fieldName: 1 });
+                    await collection.insert({ fieldName: 'value1', content: 'content' });
+                    await collection.update({ fieldName: 'value1' }, { fieldName: 'value2' });
+                },
+
+                EventCorrectPartialUpdate: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.ensureIndex({ fieldName: 1 });
+                    await collection.insert({ fieldName: 'value1', content: 'content' });
+                    await collection.update(
+                        { fieldName: 'value1' },
+                        { $set: { fieldName: 'value2' } }
+                    );
+                },
+
+                EventMalformedSearchUpdate: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.insert({ fieldName: 'value1', content: 'content' });
+                    await collection.update({ fieldName: 'value1' }, { fieldName: 'value2' });
+                },
+
+                EventMalformedMutationUpdate: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.ensureIndex({ fieldName: 1 });
+                    await collection.insert({ fieldName: 'value1', content: 'content' });
+                    await collection.update({ fieldName: 'value1' }, { fieldName: 'value2' });
+                },
+
+                EventWrongUpdate: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.update(
+                        { fieldName: 'value1' },
+                        { fieldName: 'value2' },
+                        { option: 'value' }
+                    );
+                },
+
+                EventCorrectRemove: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.ensureIndex({ fieldName: 1 });
+                    await collection.insert({ fieldName: 'value1', content: 'content' });
+                    await collection.remove({ fieldName: 'value1' });
+                },
+
+                EventMalformedSearchRemove: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.insert({ fieldName: 'value1', content: 'content' });
+                    await collection.remove({ fieldName: 'value1' });
+                },
+
+                EventWrongRemove: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.insert({ fieldName: 'value1', content: 'content' });
+                    await collection.remove({ fieldName: 'value1' }, { option: 'value' });
+                }
+            };
+
+            builtTestProjection = buildProjection(testRepository, originalTestProjection);
+            readInstance = init(testRepository);
+        });
+
+        afterEach(async () => {
+            originalTestProjection = null;
+            builtTestProjection = null;
+            readInstance = null;
+        });
+
+        it('should call Init projection function on read invocation', async () => {
+            expect(originalTestProjection.Init.callCount).to.be.equal(0);
+            await readInstance.getReadable();
+            expect(originalTestProjection.Init.callCount).to.be.equal(1);
+        });
+
+        it('should call Init projection function on read invocation only once', async () => {
+            expect(originalTestProjection.Init.callCount).to.be.equal(0);
+
+            await readInstance.getReadable();
+            await readInstance.getReadable();
+
+            expect(originalTestProjection.Init.callCount).to.be.equal(1);
+        });
+
+        it('should call Init projection function on incoming event', async () => {
+            expect(originalTestProjection.Init.callCount).to.be.equal(0);
+
+            await builtTestProjection.TestEvent({
+                type: 'TestEvent',
+                timestamp: 10
+            });
+
+            expect(originalTestProjection.Init.callCount).to.be.equal(1);
+        });
+
+        it('should call Init projection function on incoming event only once', async () => {
+            const testEvent = {
+                type: 'TestEvent',
+                timestamp: 10
+            };
+
+            expect(originalTestProjection.Init.callCount).to.be.equal(0);
+
+            await builtTestProjection.TestEvent(testEvent);
+            await builtTestProjection.TestEvent(testEvent);
+
+            expect(originalTestProjection.Init.callCount).to.be.equal(1);
+        });
+    });
 
     describe('Reset function', () => {});
 });

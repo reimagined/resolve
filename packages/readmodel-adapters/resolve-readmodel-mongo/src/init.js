@@ -335,9 +335,17 @@ export default function init(repository) {
     repository.initDonePromise = initProjection(repository);
 
     return {
-        getLastAppliedTimestamp: async () =>
-            await repository.connectionPromise.then(() => repository.lastTimestamp),
-        getReadable: async () => repository.readInterface,
-        getError: async () => repository.internalError
+        getLastAppliedTimestamp: async () => {
+            await repository.connectionPromise;
+            return repository.lastTimestamp;
+        },
+        getReadable: async () => {
+            await repository.initDonePromise;
+            return repository.readInterface;
+        },
+        getError: async () => {
+            await repository.initDonePromise;
+            return repository.internalError;
+        }
     };
 }
