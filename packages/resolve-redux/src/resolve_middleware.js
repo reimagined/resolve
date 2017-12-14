@@ -71,9 +71,9 @@ export const api = {
     async getViewModelRawState(viewModel, aggregateId) {
         const response = await fetch(
             getRootableUrl(
-                `/api/query/${viewModel}?aggregateIds${aggregateId === '*'
-                    ? ''
-                    : '[]'}=${aggregateId}`
+                `/api/query/${viewModel}?aggregateIds${
+                    aggregateId === '*' ? '' : '[]'
+                }=${aggregateId}`
             ),
             {
                 method: 'GET',
@@ -204,19 +204,13 @@ export function createMiddleware(viewModels) {
         return next => (action) => {
             switch (action.type) {
                 case SUBSCRIBE: {
-                    subscribe(
-                        store,
-                        socket,
-                        viewModels,
-                        subscribers,
-                        requests,
-                        action
-                    ).catch(error =>
-                        setTimeout(() => {
-                            // eslint-disable-next-line no-console
-                            console.error(error);
-                            store.dispatch(action);
-                        }, REFRESH_TIMEOUT)
+                    subscribe(store, socket, viewModels, subscribers, requests, action).catch(
+                        error =>
+                            setTimeout(() => {
+                                // eslint-disable-next-line no-console
+                                console.error(error);
+                                store.dispatch(action);
+                            }, REFRESH_TIMEOUT)
                     );
                     break;
                 }

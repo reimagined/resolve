@@ -1,4 +1,5 @@
 import 'regenerator-runtime/runtime';
+import { MongoClient } from 'mongodb';
 
 import buildProjection from './build_projection';
 import init from './init';
@@ -10,10 +11,19 @@ export default function createMongoAdapter(url, options, metaCollectionName) {
     if (url.constructor !== String) {
         throw new Error('Parameter url should be string');
     }
+
     const repository = Object.create(null);
-    repository.url = url;
-    repository.options = options instanceof Object ? options : {};
-    repository.metaCollectionName = metaCollectionName || DEFAULT_META_COLLECTION_NAME;
+
+    repository.metaCollectionName =
+        metaCollectionName && metaCollectionName.constructor === String
+            ? metaCollectionName
+            : DEFAULT_META_COLLECTION_NAME;
+
+    repository.connectDatabase = MongoClient.connect.bind(
+        MongoClient,
+        url,
+        options instanceof Object ? options : {}
+    );
 
     return Object.create(null, {
         buildProjection: {

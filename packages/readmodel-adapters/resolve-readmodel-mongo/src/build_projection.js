@@ -1,6 +1,6 @@
-export default function buildProjection(repository, inputProjection) {
-    repository.initHandler = async () => {};
+import 'regenerator-runtime/runtime';
 
+export default function buildProjection(repository, inputProjection) {
     return Object.keys(inputProjection).reduce((projection, eventType) => {
         if (eventType === 'Init' && typeof inputProjection[eventType] === 'function') {
             repository.initHandler = inputProjection[eventType];
