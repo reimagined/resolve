@@ -20,7 +20,7 @@ export const api = {
                     'Send command error:',
                     JSON.stringify(action)
                 ) &&
-                !command.error
+                !(command.ok || command.error)
             )
         ) {
             return;
@@ -42,7 +42,15 @@ export const api = {
             });
 
             if (response.ok) {
-                return response.blob();
+                store.dispatch({
+                    ...action,
+                    command: {
+                        ...action.command,
+                        ok: true
+                    }
+                });
+
+                return;
             }
 
             const text = await response.text();
