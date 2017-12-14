@@ -23,9 +23,9 @@ describe('Read model MongoDB adapter', () => {
 
     describe.only('Read-side interface created by adapter init function', () => {
         const DEFAULT_DOCUMENTS = [
-            { id: 0, content: 'test-0' },
-            { id: 1, content: 'test-1' },
-            { id: 2, content: 'test-2' }
+            { id: 0, content: 'test-0', _id: 0 },
+            { id: 1, content: 'test-1', _id: 1 },
+            { id: 2, content: 'test-2', _id: 2 }
         ];
 
         let readInstance;
@@ -37,9 +37,8 @@ describe('Read model MongoDB adapter', () => {
             }
             readInstance = init(testRepository);
 
-            testRepository.collectionMap.insert(DEFAULT_COLLECTION_NAME, defaultCollection);
-            testRepository.collectionIndexesMap.insert(DEFAULT_COLLECTION_NAME, new Set());
-            testRepository.collectionIndexesMap.add('id');
+            testRepository.collectionMap.set(DEFAULT_COLLECTION_NAME, defaultCollection);
+            testRepository.collectionIndexesMap.set(DEFAULT_COLLECTION_NAME, new Set(['id']));
         });
 
         afterEach(async () => {
