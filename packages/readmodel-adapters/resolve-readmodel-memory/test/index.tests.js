@@ -21,7 +21,7 @@ describe('Read model MongoDB adapter', () => {
         testRepository = null;
     });
 
-    describe.only('Read-side interface created by adapter init function', () => {
+    describe('Read-side interface created by adapter init function', () => {
         const DEFAULT_DOCUMENTS = [
             { id: 0, content: 'test-0', _id: 0 },
             { id: 1, content: 'test-1', _id: 1 },
@@ -269,7 +269,7 @@ describe('Read model MongoDB adapter', () => {
         });
     });
 
-    describe('Write-side interface created by adapter buildProjection function', () => {
+    describe.only('Write-side interface created by adapter buildProjection function', () => {
         const FIELD_NAME = 'FieldName';
         let originalTestProjection;
         let builtTestProjection;
@@ -383,63 +383,42 @@ describe('Read model MongoDB adapter', () => {
         });
 
         it('should call Init projection function on read invocation', async () => {
-            expect(originalTestProjection.Init.callCount).to.be.equal(0);
             await readInstance.getReadable();
             expect(originalTestProjection.Init.callCount).to.be.equal(1);
         });
 
         it('should call Init projection function on read invocation only once', async () => {
-            expect(originalTestProjection.Init.callCount).to.be.equal(0);
-
             await readInstance.getReadable();
             await readInstance.getReadable();
-
             expect(originalTestProjection.Init.callCount).to.be.equal(1);
         });
 
         it('should call Init projection function on incoming event', async () => {
-            expect(originalTestProjection.Init.callCount).to.be.equal(0);
-
-            await builtTestProjection.TestEvent({
-                type: 'TestEvent',
-                timestamp: 10
-            });
-
+            await builtTestProjection.TestEvent({ type: 'TestEvent', timestamp: 10 });
             expect(originalTestProjection.Init.callCount).to.be.equal(1);
         });
 
         it('should call Init projection function on incoming event only once', async () => {
-            expect(originalTestProjection.Init.callCount).to.be.equal(0);
-
-            await builtTestProjection.TestEvent({
-                type: 'TestEvent',
-                timestamp: 10
-            });
-            await builtTestProjection.TestEvent({
-                type: 'TestEvent',
-                timestamp: 20
-            });
-
+            await builtTestProjection.TestEvent({ type: 'TestEvent', timestamp: 10 });
+            await builtTestProjection.TestEvent({ type: 'TestEvent', timestamp: 20 });
             expect(originalTestProjection.Init.callCount).to.be.equal(1);
         });
 
-        it('should process corrent ensureIndex operation', async () => {
-            const metaCollection = await testConnection.collection(META_COLLECTION_NAME);
-
+        it.only('should process corrent ensureIndex operation', async () => {
             expect(
-                await metaCollection.findOne({ collectionName: DEFAULT_COLLECTION_NAME })
-            ).to.be.equal(null);
+                testRepository.collectionIndexesMap.get(DEFAULT_COLLECTION_NAME)
+            ).to.be.deep.equal(undefined);
 
             await builtTestProjection.EventCorrectEnsureIndex({
                 type: 'EventCorrectEnsureIndex',
                 timestamp: 10
             });
 
-            const metaDescriptor = await metaCollection.findOne({
-                collectionName: DEFAULT_COLLECTION_NAME
-            });
-            expect(metaDescriptor.lastTimestamp).to.be.equal(10);
-            expect(metaDescriptor.indexes).to.be.deep.equal([FIELD_NAME]);
+            expect(
+                Array.from(
+                    testRepository.collectionIndexesMap.get(DEFAULT_COLLECTION_NAME).values()
+                )
+            ).to.be.deep.equal([FIELD_NAME]);
         });
 
         it('should throw error on wrong ensureIndex operation', async () => {

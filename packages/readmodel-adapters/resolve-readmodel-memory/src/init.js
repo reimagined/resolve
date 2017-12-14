@@ -60,7 +60,7 @@ function sanitizeIndexExpression(indexExpression) {
 
 async function applyEnsureIndex(collection, collectionIndexes, indexDescriptor) {
     const sanitizeError = sanitizeIndexExpression(indexDescriptor);
-    if (!sanitizeError) {
+    if (sanitizeError) {
         throw new Error(sanitizeError);
     }
 
@@ -88,7 +88,7 @@ async function applyRemoveIndex(collection, collectionIndexes, indexName) {
     collectionIndexes.delete(indexName);
 }
 
-function sanitizeUpdateOrDelete(funcName, indexList, searchExpression, updateExpression) {
+function sanitizeUpdateOrDelete(funcName, collectionIndexes, searchExpression, updateExpression) {
     const sanitizeErrors = [
         sanitizeSearchExpression(searchExpression),
         funcName === 'update' ? sanitizeUpdateExpression(updateExpression) : null
@@ -101,7 +101,7 @@ function sanitizeUpdateOrDelete(funcName, indexList, searchExpression, updateExp
     }
 
     for (let key of Object.keys(searchExpression)) {
-        if (indexList.indexOf(key) < 0) {
+        if (!collectionIndexes.has(key)) {
             throw new Error(
                 `Operation ${funcName} cannot be performed on non-indexed ` +
                     `field ${key} in search pattern`
@@ -112,9 +112,7 @@ function sanitizeUpdateOrDelete(funcName, indexList, searchExpression, updateExp
 
 async function wrapWriteFunction(funcName, collectionName, repository, ...args) {
     const collection = repository.collectionMap.get(collectionName);
-    const collectionIndexes = Array.from(
-        repository.collectionIndexesMap.get(collectionName).values()
-    );
+    const collectionIndexes = repository.collectionIndexesMap.get(collectionName);
 
     if ((funcName !== 'update' && args.length > 1) || (funcName === 'update' && args.length > 2)) {
         throw new Error(`Additional options in modify operation ${funcName} are prohibited`);
@@ -162,17 +160,14 @@ async function execFind(options) {
     }
 
     const searchFields = Object.keys(options.requestChain[0].args);
-    if (!searchFields.reduce((acc, val) => acc && options.collectionIndexes.includes(val), true)) {
+    if (!searchFields.reduce((acc, val) => acc && options.collectionIndexes.has(val), true)) {
         throw new Error('Search on non-indexed fields is forbidden');
     }
 
     if (options.requestChain[1] && options.requestChain[1].type === 'sort') {
         const indexExpression = Object.keys(options.requestChain[1].args);
         if (
-            !indexExpression.reduce(
-                (acc, val) => acc && options.collectionIndexes.includes(val),
-                true
-            )
+            !indexExpression.reduce((acc, val) => acc && options.collectionIndexes.has(val), true)
         ) {
             throw new Error('Sort by non-indexed fields is forbidden');
         }
@@ -190,9 +185,7 @@ async function execFind(options) {
 
 function wrapFind(initialFind, repository, collectionName, searchExpression) {
     const collection = repository.collectionMap.get(collectionName);
-    const collectionIndexes = Array.from(
-        repository.collectionIndexesMap.get(collectionName).values()
-    );
+    const collectionIndexes = repository.collectionIndexesMap.get(collectionName);
 
     const resultPromise = Promise.resolve();
     const requestChain = [{ type: initialFind, args: searchExpression }];
@@ -233,9 +226,7 @@ function wrapFind(initialFind, repository, collectionName, searchExpression) {
 
 async function countDocuments(repository, collectionName, searchExpression) {
     const collection = repository.collectionMap.get(collectionName);
-    const collectionIndexes = Array.from(
-        repository.collectionIndexesMap.get(collectionName).values()
-    );
+    const collectionIndexes = repository.collectionIndexesMap.get(collectionName);
 
     const sanitizeError = sanitizeSearchExpression(searchExpression);
     if (sanitizeError) {
@@ -243,7 +234,7 @@ async function countDocuments(repository, collectionName, searchExpression) {
     }
 
     const searchFields = Object.keys(searchExpression);
-    if (!searchFields.reduce((acc, val) => acc && collectionIndexes.includes(val), true)) {
+    if (!searchFields.reduce((acc, val) => acc && collectionIndexes.has(val), true)) {
         throw new Error('Search on non-indexed fields is forbidden');
     }
 
