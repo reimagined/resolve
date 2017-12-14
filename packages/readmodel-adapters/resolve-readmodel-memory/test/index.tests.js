@@ -10,6 +10,12 @@ import reset from '../src/reset';
 
 describe('Read model MongoDB adapter', () => {
     const DEFAULT_COLLECTION_NAME = 'TestDefaultCollection';
+    const DEFAULT_DOCUMENTS = [
+        { id: 0, content: 'test-0', _id: 0 },
+        { id: 1, content: 'test-1', _id: 1 },
+        { id: 2, content: 'test-2', _id: 2 }
+    ];
+
     const createDatabaseCollection = () => new NeDB({ autoload: true, inMemoryOnly: true });
     let testRepository;
 
@@ -22,19 +28,20 @@ describe('Read model MongoDB adapter', () => {
     });
 
     describe('Read-side interface created by adapter init function', () => {
-        const DEFAULT_DOCUMENTS = [
-            { id: 0, content: 'test-0', _id: 0 },
-            { id: 1, content: 'test-1', _id: 1 },
-            { id: 2, content: 'test-2', _id: 2 }
-        ];
-
         let readInstance;
 
         beforeEach(async () => {
             const defaultCollection = createDatabaseCollection();
+            await new Promise((resolve, reject) =>
+                defaultCollection.ensureIndex(
+                    { fieldName: 'id' },
+                    err => (!err ? resolve() : reject(err))
+                )
+            );
             for (let document of DEFAULT_DOCUMENTS) {
                 await defaultCollection.insert(document);
             }
+
             readInstance = init(testRepository);
 
             testRepository.collectionMap.set(DEFAULT_COLLECTION_NAME, defaultCollection);
@@ -632,23 +639,30 @@ describe('Read model MongoDB adapter', () => {
 
     describe('Disposing adapter with reset function', () => {
         let readInstance;
+        let defaultCollection;
 
         beforeEach(async () => {
-            const defaultCollection = await testConnection.collection(DEFAULT_COLLECTION_NAME);
-            await defaultCollection.insert({ id: 'test' });
-
-            const metaCollection = await testConnection.collection(META_COLLECTION_NAME);
-            await metaCollection.insert({
-                collectionName: DEFAULT_COLLECTION_NAME,
-                lastTimestamp: 10,
-                indexes: ['id']
-            });
+            defaultCollection = createDatabaseCollection();
+            await new Promise((resolve, reject) =>
+                defaultCollection.ensureIndex(
+                    { fieldName: 'id' },
+                    err => (!err ? resolve() : reject(err))
+                )
+            );
+            for (let document of DEFAULT_DOCUMENTS) {
+                await defaultCollection.insert(document);
+            }
 
             readInstance = init(testRepository);
+
+            testRepository.collectionMap.set(DEFAULT_COLLECTION_NAME, defaultCollection);
+            testRepository.collectionIndexesMap.set(DEFAULT_COLLECTION_NAME, new Set(['id']));
+
             await readInstance.getReadable();
         });
 
         afterEach(async () => {
+            defaultCollection = null;
             readInstance = null;
         });
 
@@ -656,17 +670,13 @@ describe('Read model MongoDB adapter', () => {
             const disposePromise = reset(testRepository);
             await disposePromise;
 
-            expect(
-                (await testConnection.listCollections({ name: DEFAULT_COLLECTION_NAME }).toArray())
-                    .length
-            ).to.be.equal(0);
+            const findResult = await new Promise((resolve, reject) =>
+                defaultCollection
+                    .find({})
+                    .exec((err, value) => (!err ? resolve(value) : reject(err)))
+            );
 
-            expect(
-                (await testConnection.listCollections({ name: META_COLLECTION_NAME }).toArray())
-                    .length
-            ).to.be.equal(0);
-
-            expect(testConnection.close.callCount).to.be.equal(1);
+            expect(findResult).to.be.deep.equal([]);
         });
 
         it('should do nothing on second and following invocations', async () => {
@@ -676,8 +686,6 @@ describe('Read model MongoDB adapter', () => {
             await secondDisposePromise;
 
             expect(firstDisposePromise).to.be.equal(secondDisposePromise);
-
-            expect(testConnection.close.callCount).to.be.equal(1);
         });
     });
 });

@@ -3,7 +3,7 @@ import 'regenerator-runtime/runtime';
 async function disposeDatabase(collections) {
     for (let collection of collections) {
         await collection.resetIndexes();
-        await collection.remove({});
+        await collection.remove({}, { multi: true });
     }
 }
 
