@@ -269,7 +269,7 @@ describe('Read model MongoDB adapter', () => {
         });
     });
 
-    describe.only('Write-side interface created by adapter buildProjection function', () => {
+    describe('Write-side interface created by adapter buildProjection function', () => {
         const FIELD_NAME = 'FieldName';
         let originalTestProjection;
         let builtTestProjection;
@@ -404,7 +404,7 @@ describe('Read model MongoDB adapter', () => {
             expect(originalTestProjection.Init.callCount).to.be.equal(1);
         });
 
-        it.only('should process corrent ensureIndex operation', async () => {
+        it('should process corrent ensureIndex operation', async () => {
             expect(
                 testRepository.collectionIndexesMap.get(DEFAULT_COLLECTION_NAME)
             ).to.be.deep.equal(undefined);
@@ -432,27 +432,25 @@ describe('Read model MongoDB adapter', () => {
 
             lastError = await readInstance.getError();
             expect(lastError.message).to.be.equal(
-                'Ensure index operation accepts only object with one key and 1/-1 value'
+                'Index descriptor should bee object with only one name key and 1/-1 sort value'
             );
         });
 
         it('should process corrent removeIndex operation', async () => {
-            const metaCollection = await testConnection.collection(META_COLLECTION_NAME);
-
             expect(
-                await metaCollection.findOne({ collectionName: DEFAULT_COLLECTION_NAME })
-            ).to.be.equal(null);
+                testRepository.collectionIndexesMap.get(DEFAULT_COLLECTION_NAME)
+            ).to.be.deep.equal(undefined);
 
             await builtTestProjection.EventCorrectRemoveIndex({
                 type: 'EventCorrectRemoveIndex',
                 timestamp: 10
             });
 
-            const metaDescriptor = await metaCollection.findOne({
-                collectionName: DEFAULT_COLLECTION_NAME
-            });
-            expect(metaDescriptor.lastTimestamp).to.be.equal(10);
-            expect(metaDescriptor.indexes).to.be.deep.equal([]);
+            expect(
+                Array.from(
+                    testRepository.collectionIndexesMap.get(DEFAULT_COLLECTION_NAME).values()
+                )
+            ).to.be.deep.equal([]);
         });
 
         it('should throw error on wrong removeIndex operation', async () => {
@@ -471,16 +469,20 @@ describe('Read model MongoDB adapter', () => {
         });
 
         it('should process corrent insert operation', async () => {
-            const defaultCollection = await testConnection.collection(DEFAULT_COLLECTION_NAME);
-
             await builtTestProjection.EventCorrectInsert({
                 type: 'EventCorrectInsert',
                 timestamp: 10
             });
 
-            expect(
-                await defaultCollection.find({ [FIELD_NAME]: 'value' }, { _id: 0 }).toArray()
-            ).to.be.deep.equal([{ [FIELD_NAME]: 'value' }]);
+            const defaultCollection = testRepository.collectionMap.get(DEFAULT_COLLECTION_NAME);
+
+            const findResult = await new Promise((resolve, reject) =>
+                defaultCollection
+                    .find({ [FIELD_NAME]: 'value' }, { _id: 0 })
+                    .exec((err, docs) => (!err ? resolve(docs) : reject(err)))
+            );
+
+            expect(findResult).to.be.deep.equal([{ [FIELD_NAME]: 'value' }]);
         });
 
         it('should throw error on wrong insert operation', async () => {
@@ -499,29 +501,37 @@ describe('Read model MongoDB adapter', () => {
         });
 
         it('should process corrent full update operation', async () => {
-            const defaultCollection = await testConnection.collection(DEFAULT_COLLECTION_NAME);
-
             await builtTestProjection.EventCorrectFullUpdate({
                 type: 'EventCorrectFullUpdate',
                 timestamp: 10
             });
 
-            expect(
-                await defaultCollection.find({ [FIELD_NAME]: 'value2' }, { _id: 0 }).toArray()
-            ).to.be.deep.equal([{ [FIELD_NAME]: 'value2' }]);
+            const defaultCollection = testRepository.collectionMap.get(DEFAULT_COLLECTION_NAME);
+
+            const findResult = await new Promise((resolve, reject) =>
+                defaultCollection
+                    .find({ [FIELD_NAME]: 'value2' }, { _id: 0 })
+                    .exec((err, docs) => (!err ? resolve(docs) : reject(err)))
+            );
+
+            expect(findResult).to.be.deep.equal([{ [FIELD_NAME]: 'value2' }]);
         });
 
         it('should process corrent partial set update operation', async () => {
-            const defaultCollection = await testConnection.collection(DEFAULT_COLLECTION_NAME);
-
             await builtTestProjection.EventCorrectPartialUpdate({
                 type: 'EventCorrectPartialUpdate',
                 timestamp: 10
             });
 
-            expect(
-                await defaultCollection.find({ [FIELD_NAME]: 'value2' }, { _id: 0 }).toArray()
-            ).to.be.deep.equal([{ [FIELD_NAME]: 'value2', content: 'content' }]);
+            const defaultCollection = testRepository.collectionMap.get(DEFAULT_COLLECTION_NAME);
+
+            const findResult = await new Promise((resolve, reject) =>
+                defaultCollection
+                    .find({ [FIELD_NAME]: 'value2' }, { _id: 0 })
+                    .exec((err, docs) => (!err ? resolve(docs) : reject(err)))
+            );
+
+            expect(findResult).to.be.deep.equal([{ [FIELD_NAME]: 'value2', content: 'content' }]);
         });
 
         it('should throw error on update operation with malformed search pattern', async () => {
@@ -574,14 +584,18 @@ describe('Read model MongoDB adapter', () => {
         });
 
         it('should process corrent remove operation', async () => {
-            const defaultCollection = await testConnection.collection(DEFAULT_COLLECTION_NAME);
-
             await builtTestProjection.EventCorrectRemove({
                 type: 'EventCorrectRemove',
                 timestamp: 10
             });
 
-            expect(await defaultCollection.find({}).toArray()).to.be.deep.equal([]);
+            const defaultCollection = testRepository.collectionMap.get(DEFAULT_COLLECTION_NAME);
+
+            const findResult = await new Promise((resolve, reject) =>
+                defaultCollection.find({}).exec((err, docs) => (!err ? resolve(docs) : reject(err)))
+            );
+
+            expect(findResult).to.be.deep.equal([]);
         });
 
         it('should throw error on remove operation with malformed search pattern', async () => {
