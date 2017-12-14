@@ -14,22 +14,25 @@ describe('Read model MongoDB adapter', () => {
     const META_COLLECTION_NAME = 'TestMetaCollection';
 
     let testConnection;
+    let testConnectionCloser;
     let testRepository;
 
     before(async function () {
         this.timeout(0);
         const connectionUrl = await mongoUnit.start({ dbName: 'admin' });
         testConnection = await MongoClient.connect(connectionUrl);
+        testConnectionCloser = testConnection.close.bind(testConnection);
     });
 
     after(async () => {
         await testConnection.dropDatabase();
         testConnection.command({ shutdown: 1 });
-        await testConnection.close();
+        await testConnectionCloser();
         testConnection = null;
     });
 
     beforeEach(async () => {
+        testConnection.close = sinon.spy();
         testRepository = {
             connectDatabase: async () => testConnection,
             metaCollectionName: META_COLLECTION_NAME
@@ -667,5 +670,54 @@ describe('Read model MongoDB adapter', () => {
         });
     });
 
-    describe('Reset function', () => {});
+    describe('Disposing adapter with reset function', () => {
+        let readInstance;
+
+        beforeEach(async () => {
+            const defaultCollection = await testConnection.collection(DEFAULT_COLLECTION_NAME);
+            await defaultCollection.insert({ id: 'test' });
+
+            const metaCollection = await testConnection.collection(META_COLLECTION_NAME);
+            await metaCollection.insert({
+                collectionName: DEFAULT_COLLECTION_NAME,
+                lastTimestamp: 10,
+                indexes: ['id']
+            });
+
+            readInstance = init(testRepository);
+            await readInstance.getReadable();
+        });
+
+        afterEach(async () => {
+            readInstance = null;
+        });
+
+        it('should close connection and dispose target collections', async () => {
+            const disposePromise = reset(testRepository);
+            await disposePromise;
+
+            expect(
+                (await testConnection.listCollections({ name: DEFAULT_COLLECTION_NAME }).toArray())
+                    .length
+            ).to.be.equal(0);
+
+            expect(
+                (await testConnection.listCollections({ name: META_COLLECTION_NAME }).toArray())
+                    .length
+            ).to.be.equal(0);
+
+            expect(testConnection.close.callCount).to.be.equal(1);
+        });
+
+        it('should do nothing on second and following invocations', async () => {
+            const firstDisposePromise = reset(testRepository);
+            const secondDisposePromise = reset(testRepository);
+            await firstDisposePromise;
+            await secondDisposePromise;
+
+            expect(firstDisposePromise).to.be.equal(secondDisposePromise);
+
+            expect(testConnection.close.callCount).to.be.equal(1);
+        });
+    });
 });
