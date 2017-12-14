@@ -1,12 +1,23 @@
-export default function reset(repository) {
-    if (repository.interfaceMap) return;
+import 'regenerator-runtime/runtime';
 
-    repository.collectionMap.forEach((collection) => {
-        collection.resetIndexes();
-        collection.remove({});
-    });
+async function disposeDatabase(collections) {
+    for (let collection of collections) {
+        await collection.resetIndexes();
+        await collection.remove({});
+    }
+}
+
+export default function reset(repository) {
+    if (repository.disposePromise) {
+        return repository.disposePromise;
+    }
+
+    const disposePromise = disposeDatabase(repository.collectionMap.values());
 
     Object.keys(repository).forEach((key) => {
         delete repository[key];
     });
+
+    repository.disposePromise = disposePromise;
+    return disposePromise;
 }
