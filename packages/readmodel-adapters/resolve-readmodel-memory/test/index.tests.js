@@ -84,6 +84,14 @@ describe('Read model MongoDB adapter', () => {
             expect(result).to.be.deep.equal([DEFAULT_DOCUMENTS[1]]);
         });
 
+        it('should provide find + sort operation', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            const result = await collection.find({}).sort({ id: -1 });
+            expect(result).to.be.deep.equal(DEFAULT_DOCUMENTS.slice().reverse());
+        });
+
         it('should provide find + skip documents operation', async () => {
             const readable = await readInstance.getReadable();
             const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
@@ -109,6 +117,48 @@ describe('Read model MongoDB adapter', () => {
                 .skip(2)
                 .limit(1);
             expect(result).to.be.deep.equal([DEFAULT_DOCUMENTS[2]]);
+        });
+
+        it('should provide find + sort + skip documents operation', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            const result = await collection
+                .find({})
+                .sort({ id: -1 })
+                .skip(1);
+            expect(result).to.be.deep.equal(
+                DEFAULT_DOCUMENTS.slice()
+                    .reverse()
+                    .slice(1, 3)
+            );
+        });
+
+        it('should provide find + sort + limit document operation', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            const result = await collection
+                .find({})
+                .sort({ id: -1 })
+                .limit(2);
+            expect(result).to.be.deep.equal(
+                DEFAULT_DOCUMENTS.slice()
+                    .reverse()
+                    .slice(0, 2)
+            );
+        });
+
+        it('should provide find + sort + skip + limit documents operation', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            const result = await collection
+                .find({})
+                .sort({ id: -1 })
+                .skip(2)
+                .limit(1);
+            expect(result).to.be.deep.equal([DEFAULT_DOCUMENTS[0]]);
         });
 
         it('should fail on find operation with search on non-indexed field', async () => {
@@ -148,6 +198,67 @@ describe('Read model MongoDB adapter', () => {
             } catch (err) {
                 expect(err.message).to.be.deep.equal(
                     'Search expression should be object with fields and search values'
+                );
+            }
+        });
+
+        it('should fail on find + sort operation with sort on non-indexed field', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            try {
+                await collection.find({ id: 1 }).sort({ content: -1 });
+                return Promise.reject('Sorting on non-indexes fields is forbidden');
+            } catch (err) {
+                expect(err.message).to.be.deep.equal('Sort by non-indexed fields is forbidden');
+            }
+        });
+
+        it('should fail on find + sort operation with wrong sort index descriptor', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            try {
+                await collection.find({ id: 1 }).sort();
+                return Promise.reject('Sorting on non-indexes like descriptor is forbidden');
+            } catch (err) {
+                expect(err.message).to.be.deep.equal(
+                    'Index descriptor should bee object with only one name key and 1/-1 sort value'
+                );
+            }
+        });
+
+        it('should fail on sort operation after cursor range operation', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            try {
+                await collection
+                    .find({ id: 1 })
+                    .skip(1)
+                    .limit(1)
+                    .sort({ id: -1 });
+                return Promise.reject('Sorting after applying range operation is forbidden');
+            } catch (err) {
+                expect(err.message).to.be.deep.equal(
+                    'Sorting can be specified only after find immediately'
+                );
+            }
+        });
+
+        it('should fail if find chain contains duplicate operations', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            try {
+                await collection
+                    .find({ id: 1 })
+                    .skip(1)
+                    .skip(1);
+                return Promise.reject('Applying duplicate operations in find chain is forbidden');
+            } catch (err) {
+                expect(err.message).to.be.deep.equal(
+                    'Sorting can be specified only after find immediately'
                 );
             }
         });
