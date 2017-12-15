@@ -1,14 +1,14 @@
 import 'regenerator-runtime/runtime';
-import NeDB from 'nedb';
 
 import buildProjection from './build_projection';
 import init from './init';
 import reset from './reset';
+import createDatabaseCollection from './create_database_collection';
 
 export default function createMemoryAdapter() {
     const repository = Object.create(null);
 
-    repository.createDatabaseCollection = () => new NeDB({ autoload: true, inMemoryOnly: true });
+    repository.createDatabaseCollection = createDatabaseCollection;
 
     return Object.create(null, {
         buildProjection: {
