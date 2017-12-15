@@ -258,7 +258,7 @@ describe('Read model MongoDB adapter', () => {
                 return Promise.reject('Applying duplicate operations in find chain is forbidden');
             } catch (err) {
                 expect(err.message).to.be.deep.equal(
-                    'Sorting can be specified only after find immediately'
+                    'Search operation skip is already in find chain'
                 );
             }
         });

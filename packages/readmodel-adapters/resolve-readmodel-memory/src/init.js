@@ -200,7 +200,7 @@ function wrapFind(initialFind, repository, collectionName, searchExpression) {
                 }
             }
 
-            if (requestChain.indexOf(cmd) > -1) {
+            if (requestChain.find(entry => entry.type === cmd)) {
                 foundErrors.push(`Search operation ${cmd} is already in find chain`);
             }
 
