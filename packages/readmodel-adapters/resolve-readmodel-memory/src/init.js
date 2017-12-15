@@ -1,153 +1,339 @@
-import NeDB from 'nedb';
+import 'regenerator-runtime/runtime';
 
-export default function init(repository) {
-    let counter = 0;
+import messages from './messages';
 
-    if (repository.interfaceMap) {
-        throw new Error('The read model storage is already initialized');
+function createCollection(repository, collectionName) {
+    const collection = repository.createDatabaseCollection();
+    repository.collectionMap.set(collectionName, collection);
+    repository.collectionIndexesMap.set(collectionName, new Set());
+}
+
+function checkOptionShape(option, types, count) {
+    return !(
+        option === null ||
+        option === undefined ||
+        !types.reduce((acc, type) => acc || option.constructor === type, false) ||
+        (option.constructor === Object &&
+            (Number.isInteger(count) && Object.keys(option).length !== count))
+    );
+}
+
+function sanitizeSearchExpression(searchExpression) {
+    if (!checkOptionShape(searchExpression, [Object])) {
+        return messages.searchExpressionOnlyObject;
+    }
+    for (let key of Object.keys(searchExpression)) {
+        if (!checkOptionShape(searchExpression[key], [Number, String])) {
+            return messages.searchExpressionValuesOnlyPrimitive;
+        }
     }
 
-    const loadCollection = (collectionName, createOnWrite = false) => {
-        const collectionMap = repository.collectionMap;
-        if (collectionMap.has(collectionName)) {
-            return collectionMap.get(collectionName);
+    return null;
+}
+
+function sanitizeUpdateExpression(updateExpression) {
+    if (!checkOptionShape(updateExpression, [Object])) {
+        return messages.updateExpressionOnlyObject;
+    }
+
+    const allowedOperators = ['$set', '$unset', '$inc', '$push', '$pull'];
+    for (let key of Object.keys(updateExpression)) {
+        if (key.indexOf('$') > -1 && !allowedOperators.includes(key)) {
+            return messages.updateOperatorFixedSet(key);
         }
-        if (!createOnWrite) {
-            throw new Error(`The ${collectionName} collection does not exist`);
+    }
+
+    return null;
+}
+
+function sanitizeIndexExpression(indexExpression) {
+    if (
+        !checkOptionShape(indexExpression, [Object], 1) ||
+        Math.abs(parseInt(Object.values(indexExpression)[0], 10)) !== 1
+    ) {
+        return messages.indexDescriptorShape;
+    }
+
+    return null;
+}
+
+async function applyEnsureIndex(collection, collectionIndexes, indexDescriptor) {
+    const sanitizeError = sanitizeIndexExpression(indexDescriptor);
+    if (sanitizeError) {
+        throw new Error(sanitizeError);
+    }
+
+    const indexName = Object.keys(indexDescriptor)[0];
+    if (collectionIndexes.has(indexName)) return;
+
+    await new Promise((resolve, reject) =>
+        collection.ensureIndex({ fieldName: indexName }, err => (!err ? resolve() : reject(err)))
+    );
+
+    collectionIndexes.add(indexName);
+}
+
+async function applyRemoveIndex(collection, collectionIndexes, indexName) {
+    if (!checkOptionShape(indexName, [String])) {
+        throw new Error(messages.deleteIndexArgumentShape);
+    }
+
+    if (!collectionIndexes.has(indexName)) return;
+
+    await new Promise((resolve, reject) =>
+        collection.removeIndex(indexName, err => (!err ? resolve() : reject(err)))
+    );
+
+    collectionIndexes.delete(indexName);
+}
+
+function sanitizeUpdateOrDelete(operation, collectionIndexes, searchExpression, updateExpression) {
+    const sanitizeErrors = [
+        sanitizeSearchExpression(searchExpression),
+        operation === 'update' ? sanitizeUpdateExpression(updateExpression) : null
+    ].filter(error => error !== null);
+
+    if (sanitizeErrors.length > 0) {
+        throw new Error(messages.modifyOperationForbiddenPattern(operation, sanitizeErrors));
+    }
+
+    for (let key of Object.keys(searchExpression)) {
+        if (!collectionIndexes.has(key)) {
+            throw new Error(messages.mofidyOperationOnlyIndexedFiels(operation, key));
         }
+    }
+}
 
-        const collection = new NeDB({ autoload: true, inMemoryOnly: true });
-        collectionMap.set(collectionName, collection);
-        return collection;
-    };
+async function wrapWriteFunction(operation, collectionName, repository, ...args) {
+    const collection = repository.collectionMap.get(collectionName);
+    const collectionIndexes = repository.collectionIndexesMap.get(collectionName);
 
-    // Provide interface https://docs.mongodb.com/manual/reference/method/js-collection/
-    const getCollectionInterface = (collectionName, isWriteable) => {
-        const collectionKey = `COLLECTION_${collectionName}_${isWriteable}`;
-        const interfaceMap = repository.interfaceMap;
+    if (
+        (operation !== 'update' && args.length > 1) ||
+        (operation === 'update' && args.length > 2)
+    ) {
+        throw new Error(messages.mofidyOperationNoOptions(operation));
+    }
 
-        if (interfaceMap.has(collectionKey)) {
-            return interfaceMap.get(collectionKey);
+    switch (operation) { // eslint-disable-line default-case
+        case 'ensureIndex':
+            await applyEnsureIndex(collection, collectionIndexes, args[0]);
+            break;
+
+        case 'removeIndex':
+            await applyRemoveIndex(collection, collectionIndexes, args[0]);
+            break;
+
+        case 'insert':
+            await new Promise((resolve, reject) =>
+                collection.insert(
+                    { _id: repository.counter++, ...args[0] },
+                    err => (!err ? resolve() : reject(err))
+                )
+            );
+            break;
+
+        case 'update':
+        case 'remove':
+            sanitizeUpdateOrDelete(operation, collectionIndexes, args[0], args[1]);
+            await new Promise((resolve, reject) =>
+                collection[operation](...args, err => (!err ? resolve() : reject(err)))
+            );
+            break;
+    }
+}
+
+async function execFind(options) {
+    if (options.requestFold) {
+        throw new Error(messages.findOperationNoReuse);
+    }
+
+    const foundErrors = options.foundErrors.filter(value => value !== null);
+    if (foundErrors.length > 0) {
+        throw new Error(foundErrors.join(', '));
+    }
+
+    const searchFields = Object.keys(options.requestChain[0].args);
+    if (!searchFields.reduce((acc, val) => acc && options.collectionIndexes.has(val), true)) {
+        throw new Error(messages.searchOnlyIndexedFields);
+    }
+
+    if (options.requestChain[1] && options.requestChain[1].type === 'sort') {
+        const indexExpression = Object.keys(options.requestChain[1].args);
+        if (
+            !indexExpression.reduce((acc, val) => acc && options.collectionIndexes.has(val), true)
+        ) {
+            throw new Error(messages.sortOnlyIndexedFields);
         }
+    }
 
-        const bindCollectionMethod = (funcName, allowOnRead = false) => {
-            const collection = loadCollection(collectionName, isWriteable);
-            if (!isWriteable && !allowOnRead) {
-                return async () => {
-                    throw new Error(
-                        `The collection’s ${funcName} method is not allowed on the read side`
-                    );
-                };
-            }
+    options.requestFold = options.requestChain.reduce(
+        (acc, { type, args }) => acc[type](args),
+        options.collection
+    );
 
-            return (...args) => {
-                if (funcName === 'insert') {
-                    args[0]['_id'] = counter++;
+    return await new Promise((resolve, reject) =>
+        options.requestFold.exec((err, docs) => (!err ? resolve(docs) : reject(err)))
+    );
+}
+
+function wrapFind(initialFind, repository, collectionName, searchExpression) {
+    const collection = repository.collectionMap.get(collectionName);
+    const collectionIndexes = repository.collectionIndexesMap.get(collectionName);
+
+    const resultPromise = Promise.resolve();
+    const requestChain = [{ type: initialFind, args: searchExpression }];
+    const foundErrors = [sanitizeSearchExpression(searchExpression)];
+
+    ['sort', 'skip', 'limit'].forEach((cmd) => {
+        resultPromise[cmd] = (value) => {
+            if (cmd === 'sort') {
+                foundErrors.push(sanitizeIndexExpression(value));
+                if (requestChain.length > 1 || initialFind !== 'find') {
+                    foundErrors.push(messages.sortOnlyAfterFind);
                 }
-
-                return new Promise((resolve, reject) => {
-                    collection[funcName](
-                        ...args,
-                        (err, ...result) => (!err ? resolve(result) : reject(err))
-                    );
-                });
-            };
-        };
-
-        const execFind = (options) => {
-            const collection = loadCollection(collectionName, isWriteable);
-            if (options.requestFold) {
-                throw new Error(
-                    'After documents are retrieved with a search request, ' +
-                        'this search request cannot be reused'
-                );
             }
 
-            options.requestFold = options.requestChain.reduce(
-                (acc, { type, args }) => acc[type](...args),
-                collection
-            );
+            if (requestChain.find(entry => entry.type === cmd)) {
+                foundErrors.push(messages.dublicateOperation(cmd));
+            }
 
-            return new Promise((resolve, reject) =>
-                options.requestFold.exec((err, docs) => (!err ? resolve(docs) : reject(err)))
-            );
-        };
-
-        const wrapFind = initialFind => (...findArgs) => {
-            const resultPromise = Promise.resolve();
-            const requestChain = [{ type: initialFind, args: findArgs }];
-
-            ['sort', 'skip', 'limit', 'projection'].forEach(
-                cmd =>
-                    (resultPromise[cmd] = (...args) => {
-                        requestChain.push({ type: cmd, args });
-                        return resultPromise;
-                    })
-            );
-
-            const originalThen = resultPromise.then.bind(resultPromise);
-            const boundExecFind = execFind.bind(null, { requestChain });
-
-            resultPromise.then = (...continuation) =>
-                originalThen(boundExecFind).then(...continuation);
-
-            resultPromise.catch = (...continuation) =>
-                originalThen(boundExecFind).catch(...continuation);
-
+            requestChain.push({ type: cmd, args: value });
             return resultPromise;
         };
+    });
 
-        const collectionIface = Object.freeze({
-            insert: bindCollectionMethod('insert', false),
-            update: bindCollectionMethod('update', false),
-            remove: bindCollectionMethod('remove', false),
-            ensureIndex: bindCollectionMethod('ensureIndex', false),
-            removeIndex: bindCollectionMethod('removeIndex', false),
-            count: bindCollectionMethod('count', true),
-            findOne: wrapFind('findOne'),
-            find: wrapFind('find')
-        });
+    const originalThen = resultPromise.then.bind(resultPromise);
+    const boundExecFind = execFind.bind(null, {
+        requestChain,
+        collection,
+        collectionIndexes,
+        foundErrors
+    });
 
-        interfaceMap.set(collectionKey, collectionIface);
-        return collectionIface;
-    };
+    resultPromise.then = (...continuation) => originalThen(boundExecFind).then(...continuation);
 
-    // Provide interface https://docs.mongodb.com/manual/reference/method/js-database/
-    const getStoreInterface = (isWriteable) => {
-        const storeKey = !isWriteable ? 'STORE_READ_SIDE' : 'STORE_WRITE_SIDE';
-        const interfaceMap = repository.interfaceMap;
+    resultPromise.catch = (...continuation) => originalThen(boundExecFind).catch(...continuation);
 
-        if (interfaceMap.has(storeKey)) {
-            return interfaceMap.get(storeKey);
+    return resultPromise;
+}
+
+async function countDocuments(repository, collectionName, searchExpression) {
+    const collection = repository.collectionMap.get(collectionName);
+    const collectionIndexes = repository.collectionIndexesMap.get(collectionName);
+
+    const sanitizeError = sanitizeSearchExpression(searchExpression);
+    if (sanitizeError) {
+        throw new Error(sanitizeError);
+    }
+
+    const searchFields = Object.keys(searchExpression);
+    if (!searchFields.reduce((acc, val) => acc && collectionIndexes.has(val), true)) {
+        throw new Error(messages.searchOnlyIndexedFields);
+    }
+
+    return await new Promise((resolve, reject) =>
+        collection.count(searchExpression, (err, count) => (!err ? resolve(count) : reject(err)))
+    );
+}
+
+// Provide interface https://docs.mongodb.com/manual/reference/method/js-collection/
+async function getCollectionInterface(repository, isWriteable, collectionName) {
+    const collectionKey = `COLLECTION_${collectionName}_${isWriteable}`;
+    const interfaceMap = repository.interfaceMap;
+
+    if (interfaceMap.has(collectionKey)) {
+        return interfaceMap.get(collectionKey);
+    }
+
+    if (!repository.collectionMap.has(collectionName)) {
+        if (!isWriteable) {
+            throw new Error(messages.unexistingCollection(collectionName));
         }
+        await createCollection(repository, collectionName);
+    }
 
-        let storeIface = Object.freeze({
-            listCollections: async () => Array.from(repository.collectionMap.keys()),
-            collection: async name => getCollectionInterface(name, isWriteable)
-        });
-
-        interfaceMap.set(storeKey, storeIface);
-        return storeIface;
+    const collectionIface = {
+        findOne: wrapFind.bind(null, 'findOne', repository, collectionName),
+        find: wrapFind.bind(null, 'find', repository, collectionName),
+        count: countDocuments.bind(null, repository, collectionName)
     };
 
-    Object.assign(repository, {
-        interfaceMap: new Map(),
-        initialEventPromise: null,
-        collectionMap: new Map(),
-        internalError: null
+    Object.assign(
+        collectionIface,
+        ['insert', 'update', 'remove', 'ensureIndex', 'removeIndex'].reduce((acc, operation) => {
+            acc[operation] = (isWriteable
+                ? wrapWriteFunction
+                : (...args) => {
+                    throw new Error(messages.readSideForbiddenOperation(...args));
+                }
+            ).bind(null, operation, collectionName, repository);
+            return acc;
+        }, {})
+    );
+
+    interfaceMap.set(collectionKey, Object.freeze(collectionIface));
+    return interfaceMap.get(collectionKey);
+}
+
+async function listCollections(repository) {
+    return Array.from(repository.collectionMap.keys());
+}
+
+// Provide interface https://docs.mongodb.com/manual/reference/method/js-database/
+function getStoreInterface(repository, isWriteable) {
+    const storeKey = !isWriteable ? 'STORE_READ_SIDE' : 'STORE_WRITE_SIDE';
+    const interfaceMap = repository.interfaceMap;
+
+    if (interfaceMap.has(storeKey)) {
+        return interfaceMap.get(storeKey);
+    }
+
+    let storeIface = Object.freeze({
+        collection: getCollectionInterface.bind(null, repository, isWriteable),
+        listCollections: listCollections.bind(null, repository)
     });
 
-    Object.assign(repository, {
-        readInterface: getStoreInterface(false),
-        writeInterface: getStoreInterface(true)
-    });
+    interfaceMap.set(storeKey, storeIface);
+    return storeIface;
+}
 
-    repository.initDonePromise = Promise.resolve()
-        .then(repository.initHandler.bind(null, repository.writeInterface))
-        .catch(error => repository.internalError);
+async function initProjection(repository) {
+    try {
+        await repository.initHandler(repository.writeInterface);
+    } catch (error) {
+        repository.internalError = error;
+    }
+}
+
+export default function init(repository) {
+    if (repository.interfaceMap) {
+        throw new Error(messages.reinitialization);
+    }
+    if (typeof repository.initHandler !== 'function') {
+        repository.initHandler = async () => {};
+    }
+
+    repository.interfaceMap = new Map();
+    repository.collectionMap = new Map();
+    repository.collectionIndexesMap = new Map();
+    repository.internalError = null;
+    repository.counter = +Date.now();
+
+    repository.readInterface = getStoreInterface(repository, false);
+    repository.writeInterface = getStoreInterface(repository, true);
+
+    repository.initDonePromise = initProjection(repository);
 
     return {
-        getReadable: async () => repository.readInterface,
-        getError: async () => repository.internalError
+        getLastAppliedTimestamp: async () => 0,
+        getReadable: async () => {
+            await repository.initDonePromise;
+            return repository.readInterface;
+        },
+        getError: async () => {
+            await repository.initDonePromise;
+            return repository.internalError;
+        }
     };
 }

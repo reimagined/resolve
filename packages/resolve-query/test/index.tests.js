@@ -36,7 +36,7 @@ describe('resolve-query', () => {
         readModelProjection = {
             Init: sinon.stub().callsFake(async (db) => {
                 const users = await db.collection('Users');
-                await users.find({});
+                await users.ensureIndex({ id: 1 });
             }),
 
             UserAdded: sinon.stub().callsFake(async (db, { aggregateId: id, payload }) => {
@@ -285,7 +285,7 @@ describe('resolve-query', () => {
             customResolvers: {
                 FindUser: async (model, condition) => {
                     const users = await (await model()).collection('Users');
-                    return await users.find(condition, { _id: 0 });
+                    return await users.find(condition);
                 }
             }
         });
@@ -293,12 +293,8 @@ describe('resolve-query', () => {
 
         const state = await executeQueryCustom('FindUser', { id: '3' });
 
-        expect(state).to.be.deep.equal([
-            {
-                UserName: 'User-3',
-                id: '3'
-            }
-        ]);
+        expect(state[0].UserName).to.be.equal('User-3');
+        expect(state[0].id).to.be.equal('3');
     });
 
     it('should support read-model disposing', async () => {

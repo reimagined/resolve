@@ -1,75 +1,771 @@
+import 'regenerator-runtime/runtime';
+
 import { expect } from 'chai';
+import NeDB from 'nedb';
+import sinon from 'sinon';
 
-import createMemoryAdapter from '../src/index';
+import messages from '../src/messages';
+import buildProjection from '../src/build_projection';
+import init from '../src/init';
+import reset from '../src/reset';
 
-describe('Read model memory adapter', () => {
-    let projection, adapter, getReadable, getError;
+describe('Read model MongoDB adapter', () => {
+    const DEFAULT_COLLECTION_NAME = 'TestDefaultCollection';
+    const DEFAULT_DOCUMENTS = [
+        { id: 0, content: 'test-0', _id: 0 },
+        { id: 1, content: 'test-1', _id: 1 },
+        { id: 2, content: 'test-2', _id: 2 }
+    ];
+
+    const createDatabaseCollection = () => new NeDB({ autoload: true, inMemoryOnly: true });
+    let testRepository;
 
     beforeEach(async () => {
-        adapter = createMemoryAdapter();
+        testRepository = { createDatabaseCollection };
+    });
 
-        projection = adapter.buildProjection({
-            Init: async (store) => {
-                const TestCollection = await store.collection('Test');
-                await TestCollection.ensureIndex({ fieldName: 'id' });
-                await TestCollection.insert({ id: 0, text: 'Initial' });
-            },
-            TestEvent: async (store, event) => {
-                if (event.crashFlag) {
-                    throw new Error('Test crashing event');
-                }
-                const TestCollection = await store.collection('Test');
+    afterEach(async () => {
+        testRepository = null;
+    });
 
-                const lastId = (await TestCollection.find({})
-                    .sort({ id: -1 })
-                    .limit(1))[0].id;
+    describe('Read-side interface created by adapter init function', () => {
+        let readInstance;
 
-                await TestCollection.insert({
-                    id: lastId + 1,
-                    text: event.text
-                });
+        beforeEach(async () => {
+            const defaultCollection = createDatabaseCollection();
+            await new Promise((resolve, reject) =>
+                defaultCollection.ensureIndex(
+                    { fieldName: 'id' },
+                    err => (!err ? resolve() : reject(err))
+                )
+            );
+            for (let document of DEFAULT_DOCUMENTS) {
+                await defaultCollection.insert(document);
+            }
+
+            readInstance = init(testRepository);
+
+            testRepository.collectionMap.set(DEFAULT_COLLECTION_NAME, defaultCollection);
+            testRepository.collectionIndexesMap.set(DEFAULT_COLLECTION_NAME, new Set(['id']));
+        });
+
+        afterEach(async () => {
+            readInstance = null;
+        });
+
+        it('should provide last timestamp as zero value', async () => {
+            const lastTimestamp = await readInstance.getLastAppliedTimestamp();
+            expect(lastTimestamp).to.be.equal(0);
+        });
+
+        it('should throw error on non-existing collection access', async () => {
+            const readable = await readInstance.getReadable();
+
+            try {
+                await readable.collection('wrong');
+                return Promise.reject('Unexisting collection call should throw error on read side');
+            } catch (err) {
+                expect(err.message).to.be.equal(messages.unexistingCollection('wrong'));
             }
         });
 
-        const readSide = adapter.init();
-        getReadable = readSide.getReadable;
-        getError = readSide.getError;
+        it('should provide simple find operation', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
 
-        await getReadable();
+            const result = await collection.find({});
+            expect(result).to.be.deep.equal(DEFAULT_DOCUMENTS);
+        });
+
+        it('should provide find + search condition operation', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            const result = await collection.find({ id: 1 });
+            expect(result).to.be.deep.equal([DEFAULT_DOCUMENTS[1]]);
+        });
+
+        it('should provide find + sort operation', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            const result = await collection.find({}).sort({ id: -1 });
+            expect(result).to.be.deep.equal(DEFAULT_DOCUMENTS.slice().reverse());
+        });
+
+        it('should provide find + skip documents operation', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            const result = await collection.find({}).skip(1);
+            expect(result).to.be.deep.equal(DEFAULT_DOCUMENTS.slice(1, 3));
+        });
+
+        it('should provide find + limit document operation', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            const result = await collection.find({}).limit(2);
+            expect(result).to.be.deep.equal(DEFAULT_DOCUMENTS.slice(0, 2));
+        });
+
+        it('should provide find + skip + limit documents operation', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            const result = await collection
+                .find({})
+                .skip(2)
+                .limit(1);
+            expect(result).to.be.deep.equal([DEFAULT_DOCUMENTS[2]]);
+        });
+
+        it('should provide find + sort + skip documents operation', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            const result = await collection
+                .find({})
+                .sort({ id: -1 })
+                .skip(1);
+            expect(result).to.be.deep.equal(
+                DEFAULT_DOCUMENTS.slice()
+                    .reverse()
+                    .slice(1, 3)
+            );
+        });
+
+        it('should provide find + sort + limit document operation', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            const result = await collection
+                .find({})
+                .sort({ id: -1 })
+                .limit(2);
+            expect(result).to.be.deep.equal(
+                DEFAULT_DOCUMENTS.slice()
+                    .reverse()
+                    .slice(0, 2)
+            );
+        });
+
+        it('should provide find + sort + skip + limit documents operation', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            const result = await collection
+                .find({})
+                .sort({ id: -1 })
+                .skip(2)
+                .limit(1);
+            expect(result).to.be.deep.equal([DEFAULT_DOCUMENTS[0]]);
+        });
+
+        it('should fail on find operation with search on non-indexed field', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            try {
+                await collection.find({ content: 'test-1' });
+                return Promise.reject('Search on non-indexes fields is forbidden');
+            } catch (err) {
+                expect(err.message).to.be.deep.equal(messages.searchOnlyIndexedFields);
+            }
+        });
+
+        it('should fail on find operation with search query operators', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            try {
+                await collection.find({ id: { $gt: 1 } });
+                return Promise.reject('Search with query operators is forbidden');
+            } catch (err) {
+                expect(err.message).to.be.deep.equal(messages.searchExpressionValuesOnlyPrimitive);
+            }
+        });
+
+        it('should fail on find operation with empty or non-object query', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            try {
+                await collection.find();
+                return Promise.reject('Search with non-object match is forbidden');
+            } catch (err) {
+                expect(err.message).to.be.deep.equal(messages.searchExpressionOnlyObject);
+            }
+        });
+
+        it('should fail on find + sort operation with sort on non-indexed field', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            try {
+                await collection.find({ id: 1 }).sort({ content: -1 });
+                return Promise.reject('Sorting on non-indexes fields is forbidden');
+            } catch (err) {
+                expect(err.message).to.be.deep.equal(messages.sortOnlyIndexedFields);
+            }
+        });
+
+        it('should fail on find + sort operation with wrong sort index descriptor', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            try {
+                await collection.find({ id: 1 }).sort();
+                return Promise.reject('Sorting on non-indexes like descriptor is forbidden');
+            } catch (err) {
+                expect(err.message).to.be.deep.equal(messages.indexDescriptorShape);
+            }
+        });
+
+        it('should fail on sort operation after cursor range operation', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            try {
+                await collection
+                    .find({ id: 1 })
+                    .skip(1)
+                    .limit(1)
+                    .sort({ id: -1 });
+                return Promise.reject('Sorting after applying range operation is forbidden');
+            } catch (err) {
+                expect(err.message).to.be.deep.equal(messages.sortOnlyAfterFind);
+            }
+        });
+
+        it('should fail if find chain contains duplicate operations', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            try {
+                await collection
+                    .find({ id: 1 })
+                    .skip(1)
+                    .skip(1);
+                return Promise.reject('Applying duplicate operations in find chain is forbidden');
+            } catch (err) {
+                expect(err.message).to.be.deep.equal(messages.dublicateOperation('skip'));
+            }
+        });
+
+        it('should fail on find operation reuse attempt', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            const resultPromise = collection.find({});
+            await resultPromise;
+            try {
+                await resultPromise;
+                return Promise.reject('Search operator resource re-using is forbidden');
+            } catch (err) {
+                expect(err.message).to.be.deep.equal(messages.findOperationNoReuse);
+            }
+        });
+
+        it('should provide findOne operation for first matched document', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            const result = await collection.findOne({ id: 2 });
+            expect(result).to.be.deep.equal(DEFAULT_DOCUMENTS[2]);
+        });
+
+        it('should provide findOne which return null when no match', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            const result = await collection.findOne({ id: 3 });
+            expect(result).to.be.deep.equal(null);
+        });
+
+        it('should provide count operation for count matched documents quantity', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            const result = await collection.count({ id: 2 });
+            expect(result).to.be.deep.equal(1);
+        });
+
+        it('should provide actual collections list in storage', async () => {
+            const readable = await readInstance.getReadable();
+            const collectionsList = await readable.listCollections();
+
+            expect(collectionsList).to.be.deep.equal([DEFAULT_COLLECTION_NAME]);
+        });
+
+        it('should throw error on collection create index attempt', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            try {
+                await collection.ensureIndex({ test: 1 });
+                return Promise.reject('Collection ensureIndex operation should fail on read-side');
+            } catch (err) {
+                expect(err.message).to.be.equal(
+                    messages.readSideForbiddenOperation('ensureIndex', DEFAULT_COLLECTION_NAME)
+                );
+            }
+        });
+
+        it('should throw error on collection remove index attempt', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            try {
+                await collection.removeIndex('test');
+                return Promise.reject('Collection removeIndex operation should fail on read-side');
+            } catch (err) {
+                expect(err.message).to.be.equal(
+                    messages.readSideForbiddenOperation('removeIndex', DEFAULT_COLLECTION_NAME)
+                );
+            }
+        });
+
+        it('should throw error on collection document insert attempt ', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            try {
+                await collection.insert({ test: 0 });
+                return Promise.reject('Collection insert operation should fail on read-side');
+            } catch (err) {
+                expect(err.message).to.be.equal(
+                    messages.readSideForbiddenOperation('insert', DEFAULT_COLLECTION_NAME)
+                );
+            }
+        });
+
+        it('should throw error on collection document update attempt', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            try {
+                await collection.update({ test: 0 }, { test: 1 });
+                return Promise.reject('Collection update operation should fail on read-side');
+            } catch (err) {
+                expect(err.message).to.be.equal(
+                    messages.readSideForbiddenOperation('update', DEFAULT_COLLECTION_NAME)
+                );
+            }
+        });
+
+        it('should throw error on collection document remove attempt ', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            try {
+                await collection.remove({ test: 0 });
+                return Promise.reject('Collection remove operation should fail on read-side');
+            } catch (err) {
+                expect(err.message).to.be.equal(
+                    messages.readSideForbiddenOperation('remove', DEFAULT_COLLECTION_NAME)
+                );
+            }
+        });
     });
 
-    afterEach(() => {
-        projection = null;
-        adapter.reset();
-        getReadable = null;
-        getError = null;
-        adapter = null;
+    describe('Write-side interface created by adapter buildProjection function', () => {
+        const FIELD_NAME = 'FieldName';
+        let originalTestProjection;
+        let builtTestProjection;
+        let readInstance;
+
+        beforeEach(async () => {
+            originalTestProjection = {
+                Init: sinon.stub(),
+                TestEvent: sinon.stub(),
+
+                EventCorrectEnsureIndex: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.ensureIndex({ [FIELD_NAME]: 1 });
+                },
+
+                EventWrongEnsureIndex: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.ensureIndex(FIELD_NAME);
+                },
+
+                EventCorrectRemoveIndex: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.removeIndex(FIELD_NAME);
+                },
+
+                EventWrongRemoveIndex: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.removeIndex({ [FIELD_NAME]: 1 });
+                },
+
+                EventCorrectInsert: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.insert({ [FIELD_NAME]: 'value' });
+                },
+
+                EventWrongInsert: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.insert({ [FIELD_NAME]: 'value' }, { option: 'value' });
+                },
+
+                EventCorrectFullUpdate: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.ensureIndex({ [FIELD_NAME]: 1 });
+                    await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
+                    await collection.update({ [FIELD_NAME]: 'value1' }, { [FIELD_NAME]: 'value2' });
+                },
+
+                EventCorrectPartialUpdate: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.ensureIndex({ [FIELD_NAME]: 1 });
+                    await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
+                    await collection.update(
+                        { [FIELD_NAME]: 'value1' },
+                        { $set: { [FIELD_NAME]: 'value2' } }
+                    );
+                },
+
+                EventMalformedSearchUpdate: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
+                    await collection.update({ [FIELD_NAME]: 'value1' }, { [FIELD_NAME]: 'value2' });
+                },
+
+                EventMalformedMutationUpdate: async (store, event) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.ensureIndex({ [FIELD_NAME]: 1 });
+                    await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
+                    await collection.update(
+                        { [FIELD_NAME]: 'value1' },
+                        { $customOperator: { [FIELD_NAME]: 'value2' } }
+                    );
+                },
+
+                EventWrongUpdate: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.update(
+                        { [FIELD_NAME]: 'value1' },
+                        { [FIELD_NAME]: 'value2' },
+                        { option: 'value' }
+                    );
+                },
+
+                EventCorrectRemove: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.ensureIndex({ [FIELD_NAME]: 1 });
+                    await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
+                    await collection.remove({ [FIELD_NAME]: 'value1' });
+                },
+
+                EventMalformedSearchRemove: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
+                    await collection.remove({ [FIELD_NAME]: 'value1' });
+                },
+
+                EventWrongRemove: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
+                    await collection.remove({ [FIELD_NAME]: 'value1' }, { option: 'value' });
+                }
+            };
+
+            builtTestProjection = buildProjection(testRepository, originalTestProjection);
+            readInstance = init(testRepository);
+        });
+
+        afterEach(async () => {
+            originalTestProjection = null;
+            builtTestProjection = null;
+            readInstance = null;
+        });
+
+        it('should call Init projection function on read invocation', async () => {
+            await readInstance.getReadable();
+            expect(originalTestProjection.Init.callCount).to.be.equal(1);
+        });
+
+        it('should call Init projection function on read invocation only once', async () => {
+            await readInstance.getReadable();
+            await readInstance.getReadable();
+            expect(originalTestProjection.Init.callCount).to.be.equal(1);
+        });
+
+        it('should call Init projection function on incoming event', async () => {
+            await builtTestProjection.TestEvent({ type: 'TestEvent', timestamp: 10 });
+            expect(originalTestProjection.Init.callCount).to.be.equal(1);
+        });
+
+        it('should call Init projection function on incoming event only once', async () => {
+            await builtTestProjection.TestEvent({ type: 'TestEvent', timestamp: 10 });
+            await builtTestProjection.TestEvent({ type: 'TestEvent', timestamp: 20 });
+            expect(originalTestProjection.Init.callCount).to.be.equal(1);
+        });
+
+        it('should process corrent ensureIndex operation', async () => {
+            expect(
+                testRepository.collectionIndexesMap.get(DEFAULT_COLLECTION_NAME)
+            ).to.be.deep.equal(undefined);
+
+            await builtTestProjection.EventCorrectEnsureIndex({
+                type: 'EventCorrectEnsureIndex',
+                timestamp: 10
+            });
+
+            expect(
+                Array.from(
+                    testRepository.collectionIndexesMap.get(DEFAULT_COLLECTION_NAME).values()
+                )
+            ).to.be.deep.equal([FIELD_NAME]);
+        });
+
+        it('should throw error on wrong ensureIndex operation', async () => {
+            let lastError = await readInstance.getError();
+            expect(lastError).to.be.equal(null);
+
+            await builtTestProjection.EventWrongEnsureIndex({
+                type: 'EventWrongEnsureIndex',
+                timestamp: 10
+            });
+
+            lastError = await readInstance.getError();
+            expect(lastError.message).to.be.equal(messages.indexDescriptorShape);
+        });
+
+        it('should process corrent removeIndex operation', async () => {
+            expect(
+                testRepository.collectionIndexesMap.get(DEFAULT_COLLECTION_NAME)
+            ).to.be.deep.equal(undefined);
+
+            await builtTestProjection.EventCorrectRemoveIndex({
+                type: 'EventCorrectRemoveIndex',
+                timestamp: 10
+            });
+
+            expect(
+                Array.from(
+                    testRepository.collectionIndexesMap.get(DEFAULT_COLLECTION_NAME).values()
+                )
+            ).to.be.deep.equal([]);
+        });
+
+        it('should throw error on wrong removeIndex operation', async () => {
+            let lastError = await readInstance.getError();
+            expect(lastError).to.be.equal(null);
+
+            await builtTestProjection.EventWrongRemoveIndex({
+                type: 'EventWrongRemoveIndex',
+                timestamp: 10
+            });
+
+            lastError = await readInstance.getError();
+            expect(lastError.message).to.be.equal(messages.deleteIndexArgumentShape);
+        });
+
+        it('should process corrent insert operation', async () => {
+            await builtTestProjection.EventCorrectInsert({
+                type: 'EventCorrectInsert',
+                timestamp: 10
+            });
+
+            const defaultCollection = testRepository.collectionMap.get(DEFAULT_COLLECTION_NAME);
+
+            const findResult = await new Promise((resolve, reject) =>
+                defaultCollection
+                    .find({ [FIELD_NAME]: 'value' }, { _id: 0 })
+                    .exec((err, docs) => (!err ? resolve(docs) : reject(err)))
+            );
+
+            expect(findResult).to.be.deep.equal([{ [FIELD_NAME]: 'value' }]);
+        });
+
+        it('should throw error on wrong insert operation', async () => {
+            let lastError = await readInstance.getError();
+            expect(lastError).to.be.equal(null);
+
+            await builtTestProjection.EventWrongInsert({
+                type: 'EventWrongInsert',
+                timestamp: 10
+            });
+
+            lastError = await readInstance.getError();
+            expect(lastError.message).to.be.equal(messages.mofidyOperationNoOptions('insert'));
+        });
+
+        it('should process corrent full update operation', async () => {
+            await builtTestProjection.EventCorrectFullUpdate({
+                type: 'EventCorrectFullUpdate',
+                timestamp: 10
+            });
+
+            const defaultCollection = testRepository.collectionMap.get(DEFAULT_COLLECTION_NAME);
+
+            const findResult = await new Promise((resolve, reject) =>
+                defaultCollection
+                    .find({ [FIELD_NAME]: 'value2' }, { _id: 0 })
+                    .exec((err, docs) => (!err ? resolve(docs) : reject(err)))
+            );
+
+            expect(findResult).to.be.deep.equal([{ [FIELD_NAME]: 'value2' }]);
+        });
+
+        it('should process corrent partial set update operation', async () => {
+            await builtTestProjection.EventCorrectPartialUpdate({
+                type: 'EventCorrectPartialUpdate',
+                timestamp: 10
+            });
+
+            const defaultCollection = testRepository.collectionMap.get(DEFAULT_COLLECTION_NAME);
+
+            const findResult = await new Promise((resolve, reject) =>
+                defaultCollection
+                    .find({ [FIELD_NAME]: 'value2' }, { _id: 0 })
+                    .exec((err, docs) => (!err ? resolve(docs) : reject(err)))
+            );
+
+            expect(findResult).to.be.deep.equal([{ [FIELD_NAME]: 'value2', content: 'content' }]);
+        });
+
+        it('should throw error on update operation with malformed search pattern', async () => {
+            let lastError = await readInstance.getError();
+            expect(lastError).to.be.equal(null);
+
+            await builtTestProjection.EventMalformedSearchUpdate({
+                type: 'EventMalformedSearchUpdate',
+                timestamp: 10
+            });
+
+            lastError = await readInstance.getError();
+            expect(lastError.message).to.be.equal(
+                messages.mofidyOperationOnlyIndexedFiels('update', FIELD_NAME)
+            );
+        });
+
+        it('should throw error on update operation with malformed update pattern', async () => {
+            let lastError = await readInstance.getError();
+            expect(lastError).to.be.equal(null);
+
+            await builtTestProjection.EventMalformedMutationUpdate({
+                type: 'EventMalformedMutationUpdate',
+                timestamp: 10
+            });
+
+            lastError = await readInstance.getError();
+            expect(lastError.message).to.be.equal(
+                messages.modifyOperationForbiddenPattern('update', [
+                    messages.updateOperatorFixedSet('$customOperator')
+                ])
+            );
+        });
+
+        it('should throw error on wrong update operation', async () => {
+            let lastError = await readInstance.getError();
+            expect(lastError).to.be.equal(null);
+
+            await builtTestProjection.EventWrongUpdate({
+                type: 'EventWrongUpdate',
+                timestamp: 10
+            });
+
+            lastError = await readInstance.getError();
+            expect(lastError.message).to.be.equal(messages.mofidyOperationNoOptions('update'));
+        });
+
+        it('should process corrent remove operation', async () => {
+            await builtTestProjection.EventCorrectRemove({
+                type: 'EventCorrectRemove',
+                timestamp: 10
+            });
+
+            const defaultCollection = testRepository.collectionMap.get(DEFAULT_COLLECTION_NAME);
+
+            const findResult = await new Promise((resolve, reject) =>
+                defaultCollection.find({}).exec((err, docs) => (!err ? resolve(docs) : reject(err)))
+            );
+
+            expect(findResult).to.be.deep.equal([]);
+        });
+
+        it('should throw error on remove operation with malformed search pattern', async () => {
+            let lastError = await readInstance.getError();
+            expect(lastError).to.be.equal(null);
+
+            await builtTestProjection.EventMalformedSearchRemove({
+                type: 'EventMalformedSearchRemove',
+                timestamp: 10
+            });
+
+            lastError = await readInstance.getError();
+            expect(lastError.message).to.be.equal(
+                messages.mofidyOperationOnlyIndexedFiels('remove', FIELD_NAME)
+            );
+        });
+
+        it('should throw error on wrong remove operation', async () => {
+            let lastError = await readInstance.getError();
+            expect(lastError).to.be.equal(null);
+
+            await builtTestProjection.EventWrongRemove({
+                type: 'EventWrongRemove',
+                timestamp: 10
+            });
+
+            lastError = await readInstance.getError();
+            expect(lastError.message).to.be.equal(messages.mofidyOperationNoOptions('remove'));
+        });
     });
 
-    it('should have apropriate API', () => {
-        expect(adapter.buildProjection).to.be.a('function');
-        expect(adapter.init).to.be.a('function');
-        expect(adapter.reset).to.be.a('function');
-    });
+    describe('Disposing adapter with reset function', () => {
+        let readInstance;
+        let defaultCollection;
 
-    it('should fill store by incoming events', async () => {
-        await projection.TestEvent({ text: 'First text' });
-        await projection.TestEvent({ text: 'Second text' });
+        beforeEach(async () => {
+            defaultCollection = createDatabaseCollection();
+            await new Promise((resolve, reject) =>
+                defaultCollection.ensureIndex(
+                    { fieldName: 'id' },
+                    err => (!err ? resolve() : reject(err))
+                )
+            );
+            for (let document of DEFAULT_DOCUMENTS) {
+                await defaultCollection.insert(document);
+            }
 
-        const store = await getReadable();
-        const TestCollection = await store.collection('Test');
-        const records = await TestCollection.find({ id: { $gt: 0 } }).sort({ id: 1 });
+            readInstance = init(testRepository);
 
-        expect(records[0].text).to.be.equal('First text');
-        expect(records[0].id).to.be.equal(1);
-        expect(records[1].text).to.be.equal('Second text');
-        expect(records[1].id).to.be.equal(2);
-    });
+            testRepository.collectionMap.set(DEFAULT_COLLECTION_NAME, defaultCollection);
+            testRepository.collectionIndexesMap.set(DEFAULT_COLLECTION_NAME, new Set(['id']));
 
-    it('should handle projection-side errors', async () => {
-        await projection.TestEvent({ crashFlag: true });
-        const lastError = await getError();
+            await readInstance.getReadable();
+        });
 
-        expect(lastError.message).to.be.equal('Test crashing event');
+        afterEach(async () => {
+            defaultCollection = null;
+            readInstance = null;
+        });
+
+        it('should close connection and dispose target collections', async () => {
+            const disposePromise = reset(testRepository);
+            await disposePromise;
+
+            const findResult = await new Promise((resolve, reject) =>
+                defaultCollection
+                    .find({})
+                    .exec((err, value) => (!err ? resolve(value) : reject(err)))
+            );
+
+            expect(findResult).to.be.deep.equal([]);
+        });
+
+        it('should do nothing on second and following invocations', async () => {
+            const firstDisposePromise = reset(testRepository);
+            const secondDisposePromise = reset(testRepository);
+            await firstDisposePromise;
+            await secondDisposePromise;
+
+            expect(firstDisposePromise).to.be.equal(secondDisposePromise);
+        });
     });
 });
