@@ -4,6 +4,7 @@ import { expect } from 'chai';
 import NeDB from 'nedb';
 import sinon from 'sinon';
 
+import messages from '../src/messages';
 import buildProjection from '../src/build_projection';
 import init from '../src/init';
 import reset from '../src/reset';
@@ -64,7 +65,7 @@ describe('Read model MongoDB adapter', () => {
                 await readable.collection('wrong');
                 return Promise.reject('Unexisting collection call should throw error on read side');
             } catch (err) {
-                expect(err.message).to.be.equal('Collection wrong does not exist');
+                expect(err.message).to.be.equal(messages.unexistingCollection('wrong'));
             }
         });
 
@@ -169,7 +170,7 @@ describe('Read model MongoDB adapter', () => {
                 await collection.find({ content: 'test-1' });
                 return Promise.reject('Search on non-indexes fields is forbidden');
             } catch (err) {
-                expect(err.message).to.be.deep.equal('Search on non-indexed fields is forbidden');
+                expect(err.message).to.be.deep.equal(messages.searchOnlyIndexedFields);
             }
         });
 
@@ -181,10 +182,7 @@ describe('Read model MongoDB adapter', () => {
                 await collection.find({ id: { $gt: 1 } });
                 return Promise.reject('Search with query operators is forbidden');
             } catch (err) {
-                expect(err.message).to.be.deep.equal(
-                    'Search expression values should be either number or string ' +
-                        'and should not contain query operator'
-                );
+                expect(err.message).to.be.deep.equal(messages.searchExpressionValuesOnlyPrimitive);
             }
         });
 
@@ -196,9 +194,7 @@ describe('Read model MongoDB adapter', () => {
                 await collection.find();
                 return Promise.reject('Search with non-object match is forbidden');
             } catch (err) {
-                expect(err.message).to.be.deep.equal(
-                    'Search expression should be object with fields and search values'
-                );
+                expect(err.message).to.be.deep.equal(messages.searchExpressionOnlyObject);
             }
         });
 
@@ -210,7 +206,7 @@ describe('Read model MongoDB adapter', () => {
                 await collection.find({ id: 1 }).sort({ content: -1 });
                 return Promise.reject('Sorting on non-indexes fields is forbidden');
             } catch (err) {
-                expect(err.message).to.be.deep.equal('Sort by non-indexed fields is forbidden');
+                expect(err.message).to.be.deep.equal(messages.sortOnlyIndexedFields);
             }
         });
 
@@ -222,9 +218,7 @@ describe('Read model MongoDB adapter', () => {
                 await collection.find({ id: 1 }).sort();
                 return Promise.reject('Sorting on non-indexes like descriptor is forbidden');
             } catch (err) {
-                expect(err.message).to.be.deep.equal(
-                    'Index descriptor should bee object with only one name key and 1/-1 sort value'
-                );
+                expect(err.message).to.be.deep.equal(messages.indexDescriptorShape);
             }
         });
 
@@ -240,9 +234,7 @@ describe('Read model MongoDB adapter', () => {
                     .sort({ id: -1 });
                 return Promise.reject('Sorting after applying range operation is forbidden');
             } catch (err) {
-                expect(err.message).to.be.deep.equal(
-                    'Sorting can be specified only after find immediately'
-                );
+                expect(err.message).to.be.deep.equal(messages.sortOnlyAfterFind);
             }
         });
 
@@ -257,9 +249,7 @@ describe('Read model MongoDB adapter', () => {
                     .skip(1);
                 return Promise.reject('Applying duplicate operations in find chain is forbidden');
             } catch (err) {
-                expect(err.message).to.be.deep.equal(
-                    'Search operation skip is already in find chain'
-                );
+                expect(err.message).to.be.deep.equal(messages.dublicateOperation('skip'));
             }
         });
 
@@ -273,10 +263,7 @@ describe('Read model MongoDB adapter', () => {
                 await resultPromise;
                 return Promise.reject('Search operator resource re-using is forbidden');
             } catch (err) {
-                expect(err.message).to.be.deep.equal(
-                    'After documents are retrieved with a search request, ' +
-                        'this search request cannot be reused'
-                );
+                expect(err.message).to.be.deep.equal(messages.findOperationNoReuse);
             }
         });
 
@@ -320,8 +307,7 @@ describe('Read model MongoDB adapter', () => {
                 return Promise.reject('Collection ensureIndex operation should fail on read-side');
             } catch (err) {
                 expect(err.message).to.be.equal(
-                    `The ${DEFAULT_COLLECTION_NAME} collection’s ensureIndex operation ` +
-                        'is not allowed on the read side'
+                    messages.readSideForbiddenOperation('ensureIndex', DEFAULT_COLLECTION_NAME)
                 );
             }
         });
@@ -335,8 +321,7 @@ describe('Read model MongoDB adapter', () => {
                 return Promise.reject('Collection removeIndex operation should fail on read-side');
             } catch (err) {
                 expect(err.message).to.be.equal(
-                    `The ${DEFAULT_COLLECTION_NAME} collection’s removeIndex operation ` +
-                        'is not allowed on the read side'
+                    messages.readSideForbiddenOperation('removeIndex', DEFAULT_COLLECTION_NAME)
                 );
             }
         });
@@ -350,8 +335,7 @@ describe('Read model MongoDB adapter', () => {
                 return Promise.reject('Collection insert operation should fail on read-side');
             } catch (err) {
                 expect(err.message).to.be.equal(
-                    `The ${DEFAULT_COLLECTION_NAME} collection’s insert operation ` +
-                        'is not allowed on the read side'
+                    messages.readSideForbiddenOperation('insert', DEFAULT_COLLECTION_NAME)
                 );
             }
         });
@@ -365,8 +349,7 @@ describe('Read model MongoDB adapter', () => {
                 return Promise.reject('Collection update operation should fail on read-side');
             } catch (err) {
                 expect(err.message).to.be.equal(
-                    `The ${DEFAULT_COLLECTION_NAME} collection’s update operation ` +
-                        'is not allowed on the read side'
+                    messages.readSideForbiddenOperation('update', DEFAULT_COLLECTION_NAME)
                 );
             }
         });
@@ -380,8 +363,7 @@ describe('Read model MongoDB adapter', () => {
                 return Promise.reject('Collection remove operation should fail on read-side');
             } catch (err) {
                 expect(err.message).to.be.equal(
-                    `The ${DEFAULT_COLLECTION_NAME} collection’s remove operation ` +
-                        'is not allowed on the read side'
+                    messages.readSideForbiddenOperation('remove', DEFAULT_COLLECTION_NAME)
                 );
             }
         });
@@ -549,9 +531,7 @@ describe('Read model MongoDB adapter', () => {
             });
 
             lastError = await readInstance.getError();
-            expect(lastError.message).to.be.equal(
-                'Index descriptor should bee object with only one name key and 1/-1 sort value'
-            );
+            expect(lastError.message).to.be.equal(messages.indexDescriptorShape);
         });
 
         it('should process corrent removeIndex operation', async () => {
@@ -581,9 +561,7 @@ describe('Read model MongoDB adapter', () => {
             });
 
             lastError = await readInstance.getError();
-            expect(lastError.message).to.be.equal(
-                'Delete index operation accepts only string value'
-            );
+            expect(lastError.message).to.be.equal(messages.deleteIndexArgumentShape);
         });
 
         it('should process corrent insert operation', async () => {
@@ -613,9 +591,7 @@ describe('Read model MongoDB adapter', () => {
             });
 
             lastError = await readInstance.getError();
-            expect(lastError.message).to.be.equal(
-                'Additional options in modify operation insert are prohibited'
-            );
+            expect(lastError.message).to.be.equal(messages.mofidyOperationNoOptions('insert'));
         });
 
         it('should process corrent full update operation', async () => {
@@ -663,8 +639,7 @@ describe('Read model MongoDB adapter', () => {
 
             lastError = await readInstance.getError();
             expect(lastError.message).to.be.equal(
-                'Operation update cannot be performed on non-indexed ' +
-                    `field ${FIELD_NAME} in search pattern`
+                messages.mofidyOperationOnlyIndexedFiels('update', FIELD_NAME)
             );
         });
 
@@ -678,11 +653,10 @@ describe('Read model MongoDB adapter', () => {
             });
 
             lastError = await readInstance.getError();
-            expect(lastError.message).to.have.string(
-                'Operation update contains forbidden patterns'
-            );
-            expect(lastError.message).to.have.string(
-                'Update operator $customOperator is not permitted'
+            expect(lastError.message).to.be.equal(
+                messages.modifyOperationForbiddenPattern('update', [
+                    messages.updateOperatorFixedSet('$customOperator')
+                ])
             );
         });
 
@@ -696,9 +670,7 @@ describe('Read model MongoDB adapter', () => {
             });
 
             lastError = await readInstance.getError();
-            expect(lastError.message).to.be.equal(
-                'Additional options in modify operation update are prohibited'
-            );
+            expect(lastError.message).to.be.equal(messages.mofidyOperationNoOptions('update'));
         });
 
         it('should process corrent remove operation', async () => {
@@ -727,8 +699,7 @@ describe('Read model MongoDB adapter', () => {
 
             lastError = await readInstance.getError();
             expect(lastError.message).to.be.equal(
-                'Operation remove cannot be performed on non-indexed ' +
-                    `field ${FIELD_NAME} in search pattern`
+                messages.mofidyOperationOnlyIndexedFiels('remove', FIELD_NAME)
             );
         });
 
@@ -742,9 +713,7 @@ describe('Read model MongoDB adapter', () => {
             });
 
             lastError = await readInstance.getError();
-            expect(lastError.message).to.be.equal(
-                'Additional options in modify operation remove are prohibited'
-            );
+            expect(lastError.message).to.be.equal(messages.mofidyOperationNoOptions('remove'));
         });
     });
 
