@@ -1,5 +1,7 @@
 import 'regenerator-runtime/runtime';
 
+import messages from './messages';
+
 function createCollection(repository, collectionName) {
     const collection = repository.createDatabaseCollection();
     repository.collectionMap.set(collectionName, collection);
@@ -18,14 +20,11 @@ function checkOptionShape(option, types, count) {
 
 function sanitizeSearchExpression(searchExpression) {
     if (!checkOptionShape(searchExpression, [Object])) {
-        return 'Search expression should be object with fields and search values';
+        return messages.searchExpressionOnlyObject;
     }
     for (let key of Object.keys(searchExpression)) {
         if (!checkOptionShape(searchExpression[key], [Number, String])) {
-            return (
-                'Search expression values should be either number or string ' +
-                'and should not contain query operator'
-            );
+            return messages.searchExpressionValuesOnlyPrimitive;
         }
     }
 
@@ -34,13 +33,13 @@ function sanitizeSearchExpression(searchExpression) {
 
 function sanitizeUpdateExpression(updateExpression) {
     if (!checkOptionShape(updateExpression, [Object])) {
-        return 'Update expression should be object with fields and replace values';
+        return messages.updateExpressionOnlyObject;
     }
 
     const allowedOperators = ['$set', '$unset', '$inc', '$push', '$pull'];
     for (let key of Object.keys(updateExpression)) {
         if (key.indexOf('$') > -1 && !allowedOperators.includes(key)) {
-            return `Update operator ${key} is not permitted`;
+            return messages.updateOperatorFixedSet(key);
         }
     }
 
@@ -52,7 +51,7 @@ function sanitizeIndexExpression(indexExpression) {
         !checkOptionShape(indexExpression, [Object], 1) ||
         Math.abs(parseInt(Object.values(indexExpression)[0], 10)) !== 1
     ) {
-        return 'Index descriptor should bee object with only one name key and 1/-1 sort value';
+        return messages.indexDescriptorShape;
     }
 
     return null;
@@ -76,7 +75,7 @@ async function applyEnsureIndex(collection, collectionIndexes, indexDescriptor) 
 
 async function applyRemoveIndex(collection, collectionIndexes, indexName) {
     if (!checkOptionShape(indexName, [String])) {
-        throw new Error('Delete index operation accepts only string value');
+        throw new Error(messages.deleteIndexArgumentShape);
     }
 
     if (!collectionIndexes.has(indexName)) return;
@@ -88,37 +87,35 @@ async function applyRemoveIndex(collection, collectionIndexes, indexName) {
     collectionIndexes.delete(indexName);
 }
 
-function sanitizeUpdateOrDelete(funcName, collectionIndexes, searchExpression, updateExpression) {
+function sanitizeUpdateOrDelete(operation, collectionIndexes, searchExpression, updateExpression) {
     const sanitizeErrors = [
         sanitizeSearchExpression(searchExpression),
-        funcName === 'update' ? sanitizeUpdateExpression(updateExpression) : null
+        operation === 'update' ? sanitizeUpdateExpression(updateExpression) : null
     ].filter(error => error !== null);
 
     if (sanitizeErrors.length > 0) {
-        throw new Error(`Operation ${funcName} contains forbidden patterns:
-                ${sanitizeErrors.join(', ')}
-            `);
+        throw new Error(messages.modifyOperationForbiddenPattern(operation, sanitizeErrors));
     }
 
     for (let key of Object.keys(searchExpression)) {
         if (!collectionIndexes.has(key)) {
-            throw new Error(
-                `Operation ${funcName} cannot be performed on non-indexed ` +
-                    `field ${key} in search pattern`
-            );
+            throw new Error(messages.mofidyOperationOnlyIndexedFiels(operation, key));
         }
     }
 }
 
-async function wrapWriteFunction(funcName, collectionName, repository, ...args) {
+async function wrapWriteFunction(operation, collectionName, repository, ...args) {
     const collection = repository.collectionMap.get(collectionName);
     const collectionIndexes = repository.collectionIndexesMap.get(collectionName);
 
-    if ((funcName !== 'update' && args.length > 1) || (funcName === 'update' && args.length > 2)) {
-        throw new Error(`Additional options in modify operation ${funcName} are prohibited`);
+    if (
+        (operation !== 'update' && args.length > 1) ||
+        (operation === 'update' && args.length > 2)
+    ) {
+        throw new Error(messages.mofidyOperationNoOptions(operation));
     }
 
-    switch (funcName) { // eslint-disable-line default-case
+    switch (operation) { // eslint-disable-line default-case
         case 'ensureIndex':
             await applyEnsureIndex(collection, collectionIndexes, args[0]);
             break;
@@ -138,9 +135,9 @@ async function wrapWriteFunction(funcName, collectionName, repository, ...args) 
 
         case 'update':
         case 'remove':
-            sanitizeUpdateOrDelete(funcName, collectionIndexes, args[0], args[1]);
+            sanitizeUpdateOrDelete(operation, collectionIndexes, args[0], args[1]);
             await new Promise((resolve, reject) =>
-                collection[funcName](...args, err => (!err ? resolve() : reject(err)))
+                collection[operation](...args, err => (!err ? resolve() : reject(err)))
             );
             break;
     }
@@ -148,10 +145,7 @@ async function wrapWriteFunction(funcName, collectionName, repository, ...args) 
 
 async function execFind(options) {
     if (options.requestFold) {
-        throw new Error(
-            'After documents are retrieved with a search request, ' +
-                'this search request cannot be reused'
-        );
+        throw new Error(messages.findOperationNoReuse);
     }
 
     const foundErrors = options.foundErrors.filter(value => value !== null);
@@ -161,7 +155,7 @@ async function execFind(options) {
 
     const searchFields = Object.keys(options.requestChain[0].args);
     if (!searchFields.reduce((acc, val) => acc && options.collectionIndexes.has(val), true)) {
-        throw new Error('Search on non-indexed fields is forbidden');
+        throw new Error(messages.searchOnlyIndexedFields);
     }
 
     if (options.requestChain[1] && options.requestChain[1].type === 'sort') {
@@ -169,7 +163,7 @@ async function execFind(options) {
         if (
             !indexExpression.reduce((acc, val) => acc && options.collectionIndexes.has(val), true)
         ) {
-            throw new Error('Sort by non-indexed fields is forbidden');
+            throw new Error(messages.sortOnlyIndexedFields);
         }
     }
 
@@ -196,12 +190,12 @@ function wrapFind(initialFind, repository, collectionName, searchExpression) {
             if (cmd === 'sort') {
                 foundErrors.push(sanitizeIndexExpression(value));
                 if (requestChain.length > 1 || initialFind !== 'find') {
-                    foundErrors.push('Sorting can be specified only after find immediately');
+                    foundErrors.push(messages.sortOnlyAfterFind);
                 }
             }
 
             if (requestChain.find(entry => entry.type === cmd)) {
-                foundErrors.push(`Search operation ${cmd} is already in find chain`);
+                foundErrors.push(messages.dublicateOperation(cmd));
             }
 
             requestChain.push({ type: cmd, args: value });
@@ -235,17 +229,11 @@ async function countDocuments(repository, collectionName, searchExpression) {
 
     const searchFields = Object.keys(searchExpression);
     if (!searchFields.reduce((acc, val) => acc && collectionIndexes.has(val), true)) {
-        throw new Error('Search on non-indexed fields is forbidden');
+        throw new Error(messages.searchOnlyIndexedFields);
     }
 
     return await new Promise((resolve, reject) =>
         collection.count(searchExpression, (err, count) => (!err ? resolve(count) : reject(err)))
-    );
-}
-
-async function exceptWriteFunction(funcName, collectionName) {
-    throw new Error(
-        `The ${collectionName} collection’s ${funcName} method is not allowed on the read side`
     );
 }
 
@@ -260,7 +248,7 @@ async function getCollectionInterface(repository, isWriteable, collectionName) {
 
     if (!repository.collectionMap.has(collectionName)) {
         if (!isWriteable) {
-            throw new Error(`Collection ${collectionName} does not exist`);
+            throw new Error(messages.unexistingCollection(collectionName));
         }
         await createCollection(repository, collectionName);
     }
@@ -273,13 +261,13 @@ async function getCollectionInterface(repository, isWriteable, collectionName) {
 
     Object.assign(
         collectionIface,
-        ['insert', 'update', 'remove', 'ensureIndex', 'removeIndex'].reduce((acc, funcName) => {
-            acc[funcName] = (isWriteable ? wrapWriteFunction : exceptWriteFunction).bind(
-                null,
-                funcName,
-                collectionName,
-                repository
-            );
+        ['insert', 'update', 'remove', 'ensureIndex', 'removeIndex'].reduce((acc, operation) => {
+            acc[operation] = (isWriteable
+                ? wrapWriteFunction
+                : (...args) => {
+                    throw new Error(messages.readSideForbiddenOperation(...args));
+                }
+            ).bind(null, operation, collectionName, repository);
             return acc;
         }, {})
     );
@@ -320,7 +308,7 @@ async function initProjection(repository) {
 
 export default function init(repository) {
     if (repository.interfaceMap) {
-        throw new Error('The read model storage is already initialized');
+        throw new Error(messages.reinitialization);
     }
     if (typeof repository.initHandler !== 'function') {
         repository.initHandler = async () => {};

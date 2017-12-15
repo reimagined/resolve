@@ -320,7 +320,7 @@ describe('Read model MongoDB adapter', () => {
                 return Promise.reject('Collection ensureIndex operation should fail on read-side');
             } catch (err) {
                 expect(err.message).to.be.equal(
-                    `The ${DEFAULT_COLLECTION_NAME} collection’s ensureIndex method ` +
+                    `The ${DEFAULT_COLLECTION_NAME} collection’s ensureIndex operation ` +
                         'is not allowed on the read side'
                 );
             }
@@ -335,7 +335,7 @@ describe('Read model MongoDB adapter', () => {
                 return Promise.reject('Collection removeIndex operation should fail on read-side');
             } catch (err) {
                 expect(err.message).to.be.equal(
-                    `The ${DEFAULT_COLLECTION_NAME} collection’s removeIndex method ` +
+                    `The ${DEFAULT_COLLECTION_NAME} collection’s removeIndex operation ` +
                         'is not allowed on the read side'
                 );
             }
@@ -350,7 +350,7 @@ describe('Read model MongoDB adapter', () => {
                 return Promise.reject('Collection insert operation should fail on read-side');
             } catch (err) {
                 expect(err.message).to.be.equal(
-                    `The ${DEFAULT_COLLECTION_NAME} collection’s insert method ` +
+                    `The ${DEFAULT_COLLECTION_NAME} collection’s insert operation ` +
                         'is not allowed on the read side'
                 );
             }
@@ -365,7 +365,7 @@ describe('Read model MongoDB adapter', () => {
                 return Promise.reject('Collection update operation should fail on read-side');
             } catch (err) {
                 expect(err.message).to.be.equal(
-                    `The ${DEFAULT_COLLECTION_NAME} collection’s update method ` +
+                    `The ${DEFAULT_COLLECTION_NAME} collection’s update operation ` +
                         'is not allowed on the read side'
                 );
             }
@@ -380,7 +380,7 @@ describe('Read model MongoDB adapter', () => {
                 return Promise.reject('Collection remove operation should fail on read-side');
             } catch (err) {
                 expect(err.message).to.be.equal(
-                    `The ${DEFAULT_COLLECTION_NAME} collection’s remove method ` +
+                    `The ${DEFAULT_COLLECTION_NAME} collection’s remove operation ` +
                         'is not allowed on the read side'
                 );
             }
