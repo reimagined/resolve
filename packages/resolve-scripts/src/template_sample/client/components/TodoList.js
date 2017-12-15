@@ -11,7 +11,8 @@ const TodoList = ({ todos, completeTodo, resetTodo }) => (
                 onClick={() =>
                     todo.completed
                         ? resetTodo('root-id', { todoId: todo.todoId })
-                        : completeTodo('root-id', { todoId: todo.todoId })}
+                        : completeTodo('root-id', { todoId: todo.todoId })
+                }
             />
         ))}
     </ul>
