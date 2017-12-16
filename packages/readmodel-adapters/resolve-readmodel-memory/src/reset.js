@@ -2,8 +2,9 @@ import 'regenerator-runtime/runtime';
 
 async function disposeDatabase(collections) {
     for (let collection of collections) {
-        await collection.resetIndexes();
-        await collection.remove({}, { multi: true });
+        await new Promise((resolve, reject) =>
+            collection.remove({}, { multi: true }, err => (!err ? resolve() : reject(err)))
+        );
     }
 }
 

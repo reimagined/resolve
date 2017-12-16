@@ -1,13 +1,13 @@
 import 'regenerator-runtime/runtime';
 
 import { expect } from 'chai';
-import NeDB from 'nedb';
 import sinon from 'sinon';
 
 import messages from '../src/messages';
 import buildProjection from '../src/build_projection';
 import init from '../src/init';
 import reset from '../src/reset';
+import createDatabaseCollection from '../src/create_database_collection';
 
 describe('Read model MongoDB adapter', () => {
     const DEFAULT_COLLECTION_NAME = 'TestDefaultCollection';
@@ -17,7 +17,6 @@ describe('Read model MongoDB adapter', () => {
         { id: 2, content: 'test-2', _id: 2 }
     ];
 
-    const createDatabaseCollection = () => new NeDB({ autoload: true, inMemoryOnly: true });
     let testRepository;
 
     beforeEach(async () => {
@@ -40,7 +39,9 @@ describe('Read model MongoDB adapter', () => {
                 )
             );
             for (let document of DEFAULT_DOCUMENTS) {
-                await defaultCollection.insert(document);
+                await new Promise((resolve, reject) =>
+                    defaultCollection.insert(document, err => (!err ? resolve() : reject()))
+                );
             }
 
             readInstance = init(testRepository);
@@ -572,11 +573,11 @@ describe('Read model MongoDB adapter', () => {
 
             const defaultCollection = testRepository.collectionMap.get(DEFAULT_COLLECTION_NAME);
 
-            const findResult = await new Promise((resolve, reject) =>
+            const findResult = (await new Promise((resolve, reject) =>
                 defaultCollection
-                    .find({ [FIELD_NAME]: 'value' }, { _id: 0 })
+                    .find({ [FIELD_NAME]: 'value' })
                     .exec((err, docs) => (!err ? resolve(docs) : reject(err)))
-            );
+            )).map(({ _id, ...args }) => ({ ...args }));
 
             expect(findResult).to.be.deep.equal([{ [FIELD_NAME]: 'value' }]);
         });
@@ -602,11 +603,11 @@ describe('Read model MongoDB adapter', () => {
 
             const defaultCollection = testRepository.collectionMap.get(DEFAULT_COLLECTION_NAME);
 
-            const findResult = await new Promise((resolve, reject) =>
+            const findResult = (await new Promise((resolve, reject) =>
                 defaultCollection
-                    .find({ [FIELD_NAME]: 'value2' }, { _id: 0 })
+                    .find({ [FIELD_NAME]: 'value2' })
                     .exec((err, docs) => (!err ? resolve(docs) : reject(err)))
-            );
+            )).map(({ _id, ...args }) => ({ ...args }));
 
             expect(findResult).to.be.deep.equal([{ [FIELD_NAME]: 'value2' }]);
         });
@@ -619,11 +620,11 @@ describe('Read model MongoDB adapter', () => {
 
             const defaultCollection = testRepository.collectionMap.get(DEFAULT_COLLECTION_NAME);
 
-            const findResult = await new Promise((resolve, reject) =>
+            const findResult = (await new Promise((resolve, reject) =>
                 defaultCollection
-                    .find({ [FIELD_NAME]: 'value2' }, { _id: 0 })
+                    .find({ [FIELD_NAME]: 'value2' })
                     .exec((err, docs) => (!err ? resolve(docs) : reject(err)))
-            );
+            )).map(({ _id, ...args }) => ({ ...args }));
 
             expect(findResult).to.be.deep.equal([{ [FIELD_NAME]: 'value2', content: 'content' }]);
         });
@@ -730,7 +731,10 @@ describe('Read model MongoDB adapter', () => {
                 )
             );
             for (let document of DEFAULT_DOCUMENTS) {
-                await defaultCollection.insert(document);
+                // eslint-disable-next-line no-loop-func
+                await new Promise((resolve, reject) =>
+                    defaultCollection.insert(document, err => (!err ? resolve() : reject()))
+                );
             }
 
             readInstance = init(testRepository);
