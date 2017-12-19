@@ -3,25 +3,30 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "react": "^16.1.1",
-    "react-dom": "^16.1.1",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
     "react-redux": "^5.0.6",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "redux": "^3.7.2",
-    "resolve-bus-memory": "^0.1.0",
-    "resolve-redux": "^0.1.0",
-    "resolve-scripts": "^0.1.0",
-    "resolve-storage-lite": "^0.1.0"
+    "resolve-bus-memory": "^0.2.1",
+    "resolve-redux": "^0.2.1",
+    "resolve-scripts": "0.2.1",
+    "resolve-storage-lite": "^0.2.1"
   },
   "scripts": {
-    "start": "resolve-scripts dev",
+    "build": "resolve-scripts build",
+    "dev": "resolve-scripts dev",
+    "start": "resolve-scripts start",
     "update": "resolve-scripts update",
+    "flow": "flow",
+    "test": "jest tests/unit",
     "test:functional": "cross-env NODE_ENV=tests babel-node ./tests/functional/testcafe_runner.js --presets es2015,stage-0,react"
   },
   "devDependencies": {
     "cross-env": "^5.1.1",
-    "testcafe": "^0.18.4",
+    "flow-bin": "^0.61.0",
+    "testcafe": "^0.18.5",
     "testcafe-browser-tools": "^1.4.6",
     "yargs": "^10.0.3"
   }
