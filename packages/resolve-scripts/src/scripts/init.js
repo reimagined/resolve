@@ -16,7 +16,7 @@ const devDependencies = ['cross-env', 'testcafe', 'testcafe-browser-tools', 'yar
 
 const appDependencies = ['prop-types', 'uuid', 'styled-components'];
 
-const appDevDependencies = ['chai'];
+const appDevDependencies = ['chai', 'jest'];
 
 const displayCommand = isDefaultCmd => (isDefaultCmd ? 'npm' : 'npm run');
 
