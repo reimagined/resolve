@@ -62,7 +62,6 @@
     "start-server-webpack-plugin": "^2.2.0",
     "webpack": "^3.3.0",
     "webpack-dev-server": "^2.5.1",
-    "webpack-hot-middleware": "^2.18.2",
     "webpack-node-externals": "^1.6.0"
   }
 }
