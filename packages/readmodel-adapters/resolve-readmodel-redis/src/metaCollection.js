@@ -1,6 +1,6 @@
 import { hincrby, hget, hdel, hexists, hset } from './redisApi';
 
-const DEFAULT_META = { lastTimestamp: 0, indexes: [] };
+const DEFAULT_META = { lastTimestamp: 0, indexes: {} };
 
 const create = async (
     { client, metaCollectionName, autoincMetaCollectionName },
@@ -27,33 +27,40 @@ const set = async ({ client, metaCollectionName }, collectionName, meta) =>
 const getNextId = async ({ client, autoincMetaCollectionName }, collectionName) =>
     await hincrby(client, autoincMetaCollectionName, collectionName, 1);
 
-const getIndexName = (collectionName, field) => {
-    return `${collectionName}__index__${field}`;
+const getIndexName = (collectionName, fieldName) => {
+    return `${collectionName}__index__${fieldName}`;
 };
 
-const ensureIndex = async (repository, collectionName, field, order) => {
+const ensureIndex = async (repository, collectionName, { fieldName, fieldType, order }) => {
     const meta = await get(repository, collectionName);
 
-    const name = getIndexName(collectionName, field);
-    if (meta.indexes.indexOf(name) >= 0) {
+    const name = getIndexName(collectionName, fieldName);
+    if (meta.indexes[fieldName]) {
         throw new Error(`Can't 'ensureIndex': '${name}' is exists`);
     }
-    meta.indexes.push(name);
+    meta.indexes[fieldName] = {
+        fieldType,
+        order
+    };
 
     await set(repository, collectionName, meta);
 };
 
-const removeIndex = async (repository, collectionName, field, order) => {
+const removeIndex = async (repository, collectionName, fieldName) => {
     const meta = await get(repository, collectionName);
 
-    const i = meta.indexes.indexOf(name);
-    if (i < 0) {
+    if (!meta.indexes[fieldName]) {
         throw new Error(`Can't 'removeIndex': '${name}' is not exists`);
     }
-    meta.indexes.push(name);
+    delete meta.indexes[fieldName];
 
     await set(repository, collectionName, meta);
 };
+
+const getIndexes = async (repository, collectionName) => {
+    const meta = await get(repository, collectionName);
+    return meta.indexes;
+}
 
 export default (repository) => {
     return Object.freeze({
@@ -64,6 +71,7 @@ export default (repository) => {
         getIndexName: getIndexName,
         getNextId: getNextId.bind(null, repository),
         ensureIndex: ensureIndex.bind(null, repository),
-        removeIndex: removeIndex.bind(null, repository)
+        removeIndex: removeIndex.bind(null, repository),
+        getIndexes: getIndexes.bind(null, repository)
     });
 };

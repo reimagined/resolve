@@ -58,7 +58,7 @@ function wrapFind(repository, initialFind, collectionName, expression) {
 
 const insert = async ({ client, metaCollection }, collectionName, document) => {
     const _id = await metaCollection.getNextId(collectionName);
-    return await hset(client, collectionName, _id, document);
+    await hset(client, collectionName, _id, document);
 };
 
 const remove = async (repository, collectionName, criteria) => {
@@ -67,26 +67,24 @@ const remove = async (repository, collectionName, criteria) => {
 
 const update = async ({ client }, collectionName, criteria) => await hset(client, collectionName);
 
-const ensureIndex = async ({ metaCollection }, collectionName, options) => {
-    const keys = Object.keys(options);
-    if (keys.length !== 1) {
-        throw new Error('`ensureIndex` - invalid field count: you can use only one field');
+const ensureIndex = async ({ metaCollection }, collectionName, { fieldName, fieldType, order = 1 }) => {
+    if(!fieldName) {
+        throw new Error('`ensureIndex` - invalid fieldName');
     }
-    const field = keys[0];
-    const order = options[field];
-    if (order !== 1 && order !== -1) {
+
+    if(!(fieldType === 'string' || fieldType === 'number')) {
+        throw new Error('`ensureIndex` - invalid fieldType');
+    }
+
+    if (!(order === 1 || order === -1)) {
         throw new Error('`ensureIndex` - invalid order type: you can use only 1 or -1');
     }
 
-    throw new Error('TODO: implement me!');
-
-    await metaCollection.ensureIndex(collectionName, field, order);
+    await metaCollection.ensureIndex(collectionName, { fieldName, fieldType, order });
 };
 
 const removeIndex = async ({ metaCollection }, collectionName, field) => {
     await metaCollection.removeIndex(collectionName, field);
-
-    throw new Error('TODO: implement me!');
 };
 
 const collection = (repository, collectionName) => {
