@@ -17,13 +17,10 @@
     "dev": "resolve-scripts dev",
     "start": "resolve-scripts start",
     "update": "resolve-scripts update",
-    "flow": "flow",
-    "test": "jest tests/unit",
     "test:functional": "cross-env NODE_ENV=tests babel-node ./tests/functional/testcafe_runner.js --presets es2015,stage-0,react"
   },
   "devDependencies": {
     "cross-env": "^5.1.1",
-    "flow-bin": "^0.61.0",
     "testcafe": "^0.18.5",
     "testcafe-browser-tools": "^1.4.6",
     "yargs": "^10.0.3"
