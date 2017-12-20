@@ -10,7 +10,7 @@ const create = async (
 
 const del = async ({ client, metaCollectionName, autoincMetaCollectionName }, collectionName) => {
     await hdel(client, metaCollectionName, collectionName);
-    await hdel(client, metaCollectionName, autoincMetaCollectionName);
+    await hdel(client, autoincMetaCollectionName, collectionName);
 };
 
 const exists = async ({ client, metaCollectionName, autoincMetaCollectionName }, collectionName) =>
