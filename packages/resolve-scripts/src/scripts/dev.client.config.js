@@ -11,14 +11,13 @@ webpackClientConfig.entry.client = [
 ].concat(webpackClientConfig.entry.client);
 webpackClientConfig.name = 'client';
 
+const inputPlugins = (webpackClientConfig.plugins || []).filter(plug => plug && !plug.__PROD);
+
 webpackClientConfig.plugins = [
-    new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
-    }),
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin()
-].concat(webpackClientConfig.plugins || []);
+].concat(inputPlugins);
 
 webpackClientConfig.devServer = {
     host: 'localhost',

@@ -64,6 +64,7 @@
     "resolve-storage-lite": "^0.2.1",
     "socket.io": "^2.0.3",
     "start-server-webpack-plugin": "^2.2.0",
+    "uglifyjs-webpack-plugin": "^1.1.4",
     "webpack": "^3.3.0",
     "webpack-dev-server": "^2.5.1",
     "webpack-node-externals": "^1.6.0"
