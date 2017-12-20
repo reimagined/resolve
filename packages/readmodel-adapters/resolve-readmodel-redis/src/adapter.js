@@ -1,7 +1,8 @@
 import collection from './collection';
 import { exists, del } from './redisApi';
 
-export async function createCollection({ client, metaCollection }, name) {
+export async function createCollection(repository, name) {
+    const { client, metaCollection } = repository;
     if (await exists(client, name)) {
         throw new Error(`Collection ${name} is exist`);
     }
@@ -17,10 +18,12 @@ export async function createCollection({ client, metaCollection }, name) {
         );
     }
 
-    metaCollection.create(name, {
+    await metaCollection.create(name, {
         lastTimestamp: 0,
         indexes: []
     });
+    const collection = await getCollection(repository, name);
+    await collection.ensureIndex({ fieldName: '_id', fieldType: 'number' });
 }
 
 export async function dropCollection({ client, metaCollection }, name) {

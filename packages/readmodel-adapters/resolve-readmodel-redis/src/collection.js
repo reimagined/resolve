@@ -1,4 +1,28 @@
-import { hlen, hset, hvals } from './redisApi';
+import { hlen, hset, hvals, zadd } from './redisApi';
+
+const populateNumberIndex = async (client, collectionName, score, id) => {
+    await zadd(client, collectionName, score, `"${id}"` );
+};
+
+const populateStringIndex = async (client, collectionName, value, id) => {
+    await zadd(client, collectionName, 0, `${value}:${id}`);
+};
+
+const updateIndexes = async ({ client, metaCollection }, collectionName, id, document) => {
+    const indexes = await metaCollection.getIndexes(collectionName);
+    Object.keys(indexes).forEach((key) => {
+        const indexCollectionName = metaCollection.getIndexName(collectionName, key);
+        const index = indexes[key];
+        const value = document[key];
+        if (index.fieldType === 'number') {
+            if (typeof value !== 'number') {
+                throw new Error(`Can't update index '${key}' value: Value '${value}' is not number.`);
+            }
+            return populateNumberIndex(client, indexCollectionName, value, id);
+        }
+        return populateStringIndex(client, indexCollectionName, value, id)
+    });
+};
 
 const criteriaIsEmpty = criteria => !(criteria && Object.keys(criteria).length);
 
@@ -56,9 +80,12 @@ function wrapFind(repository, initialFind, collectionName, expression) {
     return resultPromise;
 }
 
-const insert = async ({ client, metaCollection }, collectionName, document) => {
+const insert = async (repository, collectionName, document) => {
+    const { client, metaCollection } = repository;
     const _id = await metaCollection.getNextId(collectionName);
-    await hset(client, collectionName, _id, document);
+    const member = { _id, ...document };
+    await hset(client, collectionName, _id, member);
+    await updateIndexes(repository, collectionName, _id, member);
 };
 
 const remove = async (repository, collectionName, criteria) => {

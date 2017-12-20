@@ -54,3 +54,5 @@ export const del = async (client, key) => await invokeCommand(client, 'DEL', key
 export const exists = async (client, key) => await invokeCommand(client, 'EXISTS', key);
 
 export const type = async (client, key) => await invokeCommand(client, 'TYPE', key);
+
+export const zadd = async (client, key, score, member) => await invokeCommand(client, 'ZADD', key, score, member);

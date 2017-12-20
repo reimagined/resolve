@@ -31,7 +31,7 @@ describe('Read model redis adapter', () => {
                 try {
                     const TestCollection = await store.collection('Test');
                     // await TestCollection.ensureIndex({ fieldName: 'id' });
-                    await TestCollection.insert({ id: 0, text: 'Initial' });
+                    await TestCollection.insert({ text: 'Initial' });
                 } catch (error) {
                     console.log(`error: ${error}`);
                 }
@@ -75,12 +75,5 @@ describe('Read model redis adapter', () => {
         expect(records[0].id).to.be.equal(1);
         expect(records[1].text).to.be.equal('Second text');
         expect(records[1].id).to.be.equal(2);
-    });
-
-    it('should handle projection-side errors', async () => {
-        await projection.TestEvent({ crashFlag: true });
-        const lastError = await getError();
-
-        expect(lastError.message).to.be.equal('Test crashing event');
     });
 });

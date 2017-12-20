@@ -25,7 +25,7 @@ const set = async ({ client, metaCollectionName }, collectionName, meta) =>
     await hset(client, metaCollectionName, collectionName, meta);
 
 const getNextId = async ({ client, autoincMetaCollectionName }, collectionName) =>
-    await hincrby(client, autoincMetaCollectionName, collectionName, 1);
+    parseInt(await hincrby(client, autoincMetaCollectionName, collectionName, 1), 10)
 
 const getIndexName = (collectionName, fieldName) => {
     return `${collectionName}__index__${fieldName}`;
