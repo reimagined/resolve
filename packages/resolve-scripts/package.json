@@ -14,7 +14,8 @@
     "template_sample:remove": "rm -rf ./dist/template_sample",
     "template_sample:copy": "cp -r ./src/template_sample ./dist",
     "build": "babel --out-dir ./dist ./src --ignore template_sample",
-    "prepublish": "npm run build && npm run template:remove && npm run template:copy && npm run template_sample:remove && npm run template_sample:copy"
+    "prepublish":
+      "npm run build && npm run template:remove && npm run template:copy && npm run template_sample:remove && npm run template_sample:copy"
   },
   "repository": {
     "type": "git",
@@ -22,32 +23,23 @@
   },
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": [
-    "cqrs",
-    "eventsourcing",
-    "es",
-    "ddd"
-  ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#readme",
+  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
+  "homepage":
+    "https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#readme",
   "dependencies": {
     "address": "^1.0.3",
     "babel-cli": "^6.24.1",
     "babel-loader": "^7.1.1",
+    "babel-plugin-object-source": "^1.0.1",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "body-parser": "^1.17.2",
     "chalk": "^2.1.0",
-    "classnames": "^2.2.5",
     "cookie-parser": "^1.4.3",
     "cross-spawn": "^5.1.0",
-    "css-loader": "^0.28.5",
-    "enhanced-resolve": "^3.4.1",
     "express": "^4.15.3",
     "fs-extra": "^4.0.0",
-    "graphql": "^0.11.7",
-    "graphql-tools": "^2.7.2",
-    "jest": "^20.0.4",
     "jsonwebtoken": "^7.4.3",
     "opn": "^5.1.0",
     "passport": "^0.4.0",
@@ -68,13 +60,10 @@
     "resolve-query": "^0.2.1",
     "resolve-storage-lite": "^0.2.1",
     "socket.io": "^2.0.3",
-    "socket.io-client": "^2.0.3",
-    "source-map-support": "^0.4.15",
     "start-server-webpack-plugin": "^2.2.0",
-    "subscriptions-transport-ws": "^0.9.0",
+    "uglifyjs-webpack-plugin": "^1.1.4",
     "webpack": "^3.3.0",
     "webpack-dev-server": "^2.5.1",
-    "webpack-hot-middleware": "^2.18.2",
     "webpack-node-externals": "^1.6.0"
   }
 }
