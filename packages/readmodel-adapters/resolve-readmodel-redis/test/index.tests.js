@@ -17,8 +17,8 @@ describe('Read model redis adapter', () => {
         repository.metaCollection = metaCollection(repository);
         nativeAdapter = nativeRedisAdapter(repository);
 
-        nativeAdapter.dropCollection('Test');
-        nativeAdapter.createCollection('Test');
+        await nativeAdapter.dropCollection('Test');
+        await nativeAdapter.createCollection('Test');
 
         adapter = createRedisAdapter(
             {},
@@ -28,9 +28,13 @@ describe('Read model redis adapter', () => {
 
         projection = adapter.buildProjection({
             Init: async (store) => {
-                const TestCollection = await store.collection('Test');
-                // await TestCollection.ensureIndex({ fieldName: 'id' });
-                await TestCollection.insert({ id: 0, text: 'Initial' });
+                try {
+                    const TestCollection = await store.collection('Test');
+                    // await TestCollection.ensureIndex({ fieldName: 'id' });
+                    await TestCollection.insert({ id: 0, text: 'Initial' });
+                } catch (error) {
+                    console.log(`error: ${error}`);
+                }
             },
             TestEvent: async (store, event) => {
                 if (event.crashFlag) {

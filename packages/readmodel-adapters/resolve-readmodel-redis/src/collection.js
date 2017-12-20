@@ -67,11 +67,25 @@ const remove = async (repository, collectionName, criteria) => {
 
 const update = async ({ client }, collectionName, criteria) => await hset(client, collectionName);
 
-const ensureIndex = async (repository, collectionName) => {
+const ensureIndex = async ({ metaCollection }, collectionName, options) => {
+    const keys = Object.keys(options);
+    if (keys.length !== 1) {
+        throw new Error('`ensureIndex` - invalid field count: you can use only one field');
+    }
+    const field = keys[0];
+    const order = options[field];
+    if (order !== 1 && order !== -1) {
+        throw new Error('`ensureIndex` - invalid order type: you can use only 1 or -1');
+    }
+
     throw new Error('TODO: implement me!');
+
+    await metaCollection.ensureIndex(collectionName, field, order);
 };
 
-const removeIndex = async (repository, collectionName) => {
+const removeIndex = async ({ metaCollection }, collectionName, field) => {
+    await metaCollection.removeIndex(collectionName, field);
+
     throw new Error('TODO: implement me!');
 };
 
