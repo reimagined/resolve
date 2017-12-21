@@ -57,8 +57,8 @@ const removeIndex = async (repository, collectionName, fieldName) => {
     await set(repository, collectionName, meta);
 };
 
-const getIndexes = async (repository, collectionName) => {
-    const meta = await get(repository, collectionName);
+const getIndexes = async ({ client, metaCollectionName }, collectionName) => {
+    const meta = await hget(client, metaCollectionName, collectionName);
     return meta.indexes;
 };
 

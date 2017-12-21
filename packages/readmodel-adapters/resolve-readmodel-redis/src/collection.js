@@ -1,5 +1,5 @@
 import util from 'util';
-import { hlen, hset, hvals, zadd, zrangebyscore } from './redisApi';
+import { hlen, hset, hvals, zadd, zrangebyscore, hdel, del } from './redisApi';
 
 const populateNumberIndex = async (client, collectionName, score, id) => {
     await zadd(client, collectionName, score, `"${id}"`);
@@ -26,6 +26,10 @@ const updateIndexes = async ({ client, metaCollection }, collectionName, id, doc
         return populateStringIndex(client, indexCollectionName, value, id);
     });
 };
+
+const removeIndexes = async ({ client, metaCollection }, collectionName, criteria) => {
+
+}
 
 const criteriaIsEmpty = criteria => !(criteria && Object.keys(criteria).length);
 
@@ -120,8 +124,27 @@ const insert = async (repository, collectionName, document) => {
     await updateIndexes(repository, collectionName, _id, member);
 };
 
+const removeAll = async ({ client, metaCollection }, collectionName) => {
+    const indexes = await metaCollection.getIndexes(collectionName);
+    Object.keys(indexes).forEach(async (key) => {
+        const { fieldName } = indexes[key];
+        const indexCollectionName = metaCollection.getIndexName(collectionName, fieldName);
+        await del(client, indexCollectionName);
+    });
+    await del(client, collectionName);
+}
+
 const remove = async (repository, collectionName, criteria) => {
-    throw new Error('TODO: implement me!');
+    const { client, metaCollection } = repository;
+    if(!criteria || !Object.keys(criteria).length) {
+        return await removeAll(repository, collectionName);
+    }
+
+    const indexes = await metaCollection.getIndexes(collectionName);
+    validateCriteriaFields(indexes, criteria);
+
+    await removeIndexes(repository, collectionName, criteria);
+    await hdel(client, collectionName);
 };
 
 const update = async ({ client }, collectionName, criteria) => await hset(client, collectionName);

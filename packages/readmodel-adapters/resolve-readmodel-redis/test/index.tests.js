@@ -17,7 +17,12 @@ describe('Read model redis adapter', () => {
         repository.metaCollection = metaCollection(repository);
         nativeAdapter = nativeRedisAdapter(repository);
 
-        await nativeAdapter.dropCollection('Test');
+        repository.client.flushall((e) => {
+            if(e) {
+                console.log(e)
+            }
+        });
+
         await nativeAdapter.createCollection('Test');
 
         adapter = createRedisAdapter(
@@ -32,6 +37,8 @@ describe('Read model redis adapter', () => {
                     const TestCollection = await store.collection('Test');
                     // await TestCollection.ensureIndex({ fieldName: 'id' });
                     await TestCollection.insert({ text: 'Initial' });
+                    await TestCollection.insert({ text: 'First text' });
+                    await TestCollection.insert({ text: 'Second text' });
                 } catch (error) {
                     console.log(`error: ${error}`);
                 }
@@ -63,17 +70,13 @@ describe('Read model redis adapter', () => {
         expect(adapter.reset).to.be.a('function');
     });
 
-    it('should fill store by incoming events', async () => {
-        await projection.TestEvent({ text: 'First text' });
-        await projection.TestEvent({ text: 'Second text' });
-
+    it('find by id', async () => {
         const store = await getReadable();
         const TestCollection = await store.collection('Test');
-        const records = await TestCollection.find(/*{ id: { $gt: 0 } }*/) /*.sort({ id: 1 })*/;
 
-        expect(records[0].text).to.be.equal('First text');
-        expect(records[0].id).to.be.equal(1);
-        expect(records[1].text).to.be.equal('Second text');
-        expect(records[1].id).to.be.equal(2);
+        const records = await TestCollection.find({ _id: 1 }) /*.sort({ id: 1 })*/;
+
+        expect(records[0].text).to.be.equal('Initial');
+        expect(records[0]._id).to.be.equal(1);
     });
 });
