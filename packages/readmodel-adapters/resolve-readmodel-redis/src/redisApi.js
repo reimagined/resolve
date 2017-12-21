@@ -58,5 +58,27 @@ export const type = async (client, key) => await invokeCommand(client, 'TYPE', k
 export const zadd = async (client, key, score, member) =>
     await invokeCommand(client, 'ZADD', key, score, member);
 
-export const zrangebyscore = async (client, key, min, max, offset = null, count = null) =>
-    await invokeCommand(client, 'ZRANGEBYSCORE', min, max, offset, count);
+export const zaddMulti = async (client, key, score, member) =>
+    await invokeCommand(client, 'ZADD', key, score, member);
+
+export const zrangebyscore = async (client, key, min, max, offset, count) => {
+    // await invokeCommand(client, 'ZRANGEBYSCORE', key, min, max, ...args);
+    if (offset === undefined && count === undefined) {
+        return await invokeCommand(client, 'ZRANGEBYSCORE', key, min, max);
+    } else if (count === undefined) {
+        return await invokeCommand(client, 'ZRANGEBYSCORE', key, min, max, offset);
+    } else {
+        return await invokeCommand(client, 'ZRANGEBYSCORE', key, min, max, offset, count);
+    }
+}
+
+export const zrangebylex = async (client, key, min, max, offset, count) => {
+    // await invokeCommand(client, 'ZRANGEBYLEX', key, min, max, ...args);
+    if (offset === undefined && count === undefined) {
+        return await invokeCommand(client, 'ZRANGEBYLEX', key, min, max);
+    } else if (count === undefined) {
+        return await invokeCommand(client, 'ZRANGEBYLEX', key, min, max, offset);
+    } else {
+        return await invokeCommand(client, 'ZRANGEBYLEX', key, min, max, offset, count);
+    }
+}

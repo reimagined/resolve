@@ -33,6 +33,7 @@
     "clone": "^2.1.1",
     "object-hash": "^1.2.0",
     "redis": "^2.8.0",
-    "regenerator-runtime": "^0.11.0"
+    "regenerator-runtime": "^0.11.0",
+    "uuid": "^3.1.0"
   }
 }

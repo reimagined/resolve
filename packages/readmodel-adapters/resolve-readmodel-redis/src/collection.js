@@ -1,12 +1,15 @@
 import util from 'util';
-import { hlen, hset, hvals, zadd, zrangebyscore, hdel, del } from './redisApi';
+import uuidV4 from 'uuid/v4';
+import { hlen, hset, hvals, zadd, zrangebyscore, zrangebylex, hdel, del } from './redisApi';
+
+const Z_VALUE_SEPARATOR = `${String.fromCharCode(0x0)}${String.fromCharCode(0x0)}`;
 
 const populateNumberIndex = async (client, collectionName, score, id) => {
     await zadd(client, collectionName, score, `"${id}"`);
 };
 
 const populateStringIndex = async (client, collectionName, value, id) => {
-    await zadd(client, collectionName, 0, `${value}:${id}`);
+    await zadd(client, collectionName, 0, `${value}${Z_VALUE_SEPARATOR}${id}`);//${String.fromCharCode(0x0)}${String.fromCharCode(0x0)}
 };
 
 const updateIndexes = async ({ client, metaCollection }, collectionName, id, document) => {
@@ -134,17 +137,36 @@ const removeAll = async ({ client, metaCollection }, collectionName) => {
     await del(client, collectionName);
 }
 
+const getIds = async ({ client, metaCollection }, collectionName, criteria) => {
+    const indexes = await metaCollection.getIndexes(collectionName);
+    validateCriteriaFields(indexes, criteria);
+    const tempPrefix = uuidV4();
+    const tempCollectionNames = {};
+    Object.keys(criteria).forEach(async (fieldName) => {
+        tempCollectionNames[fieldName] = `${tempPrefix}_${fieldName}`;
+        const fieldValue = criteria[fieldName];
+        const indexName = metaCollection.getIndexName(collectionName, fieldName);
+        const fieldType = indexes[fieldName].fieldType;
+        const ids = fieldType === 'number'
+            ? await zrangebyscore(client, indexName, fieldValue, fieldValue)
+            // todo: fix me!
+            : await zrangebylex(client, indexName, `[${fieldValue}:`, `(${fieldValue}:${String.fromCharCode(0xff)}`);
+        await zadd(client, [])
+    });
+}
+
 const remove = async (repository, collectionName, criteria) => {
     const { client, metaCollection } = repository;
     if(!criteria || !Object.keys(criteria).length) {
         return await removeAll(repository, collectionName);
     }
 
-    const indexes = await metaCollection.getIndexes(collectionName);
-    validateCriteriaFields(indexes, criteria);
+    const ids = getIds(repository, collectionName, criteria);
 
-    await removeIndexes(repository, collectionName, criteria);
-    await hdel(client, collectionName);
+    // console.log('=========================== remove', ids);
+
+    // await removeIndexes(repository, collectionName, criteria);
+    // await hdel(client, collectionName);
 };
 
 const update = async ({ client }, collectionName, criteria) => await hset(client, collectionName);

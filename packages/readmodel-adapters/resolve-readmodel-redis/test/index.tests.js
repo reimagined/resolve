@@ -35,10 +35,13 @@ describe('Read model redis adapter', () => {
             Init: async (store) => {
                 try {
                     const TestCollection = await store.collection('Test');
-                    // await TestCollection.ensureIndex({ fieldName: 'id' });
-                    await TestCollection.insert({ text: 'Initial' });
-                    await TestCollection.insert({ text: 'First text' });
-                    await TestCollection.insert({ text: 'Second text' });
+                    await TestCollection.ensureIndex({ fieldName: 'i', fieldType: 'number' });
+                    await TestCollection.ensureIndex({ fieldName: 's', fieldType: 'string' });
+                    await TestCollection.insert({ i: 100, s: 'aaa', text: 'Initial' });
+                    await TestCollection.insert({ i: 200, s: 'bbb', text: 'First text' });
+                    await TestCollection.insert({ i: 100, s: 'bbb', text: 'Second text' });
+
+                    await TestCollection.remove({ i: 100, s: 'bbb' });
                 } catch (error) {
                     console.log(`error: ${error}`);
                 }
@@ -64,11 +67,11 @@ describe('Read model redis adapter', () => {
 
     afterEach(() => {});
 
-    it('should have apropriate API', () => {
-        expect(adapter.buildProjection).to.be.a('function');
-        expect(adapter.init).to.be.a('function');
-        expect(adapter.reset).to.be.a('function');
-    });
+    // it('should have apropriate API', () => {
+    //     expect(adapter.buildProjection).to.be.a('function');
+    //     expect(adapter.init).to.be.a('function');
+    //     expect(adapter.reset).to.be.a('function');
+    // });
 
     it('find by id', async () => {
         const store = await getReadable();
