@@ -18,8 +18,8 @@ describe('Read model redis adapter', () => {
         nativeAdapter = nativeRedisAdapter(repository);
 
         repository.client.flushall((e) => {
-            if(e) {
-                console.log(e)
+            if (e) {
+                console.log(e);
             }
         });
 

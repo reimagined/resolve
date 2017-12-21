@@ -1,15 +1,28 @@
 import util from 'util';
 import uuidV4 from 'uuid/v4';
-import { hlen, hset, hvals, zadd, zrangebyscore, zrangebylex, hdel, del } from './redisApi';
+import {
+    hlen,
+    hset,
+    hvals,
+    zadd,
+    zaddMulti,
+    zrangebyscore,
+    zrangebylex,
+    hdel,
+    del,
+    zinterstore,
+    zrange
+} from './redisApi';
 
 const Z_VALUE_SEPARATOR = `${String.fromCharCode(0x0)}${String.fromCharCode(0x0)}`;
+const Z_LEX_MAX_VALUE = String.fromCharCode(0xff);
 
 const populateNumberIndex = async (client, collectionName, score, id) => {
     await zadd(client, collectionName, score, `"${id}"`);
 };
 
 const populateStringIndex = async (client, collectionName, value, id) => {
-    await zadd(client, collectionName, 0, `${value}${Z_VALUE_SEPARATOR}${id}`);//${String.fromCharCode(0x0)}${String.fromCharCode(0x0)}
+    await zadd(client, collectionName, 0, `${value}${Z_VALUE_SEPARATOR}${id}`);
 };
 
 const updateIndexes = async ({ client, metaCollection }, collectionName, id, document) => {
@@ -30,9 +43,7 @@ const updateIndexes = async ({ client, metaCollection }, collectionName, id, doc
     });
 };
 
-const removeIndexes = async ({ client, metaCollection }, collectionName, criteria) => {
-
-}
+const removeIndexes = async ({ client, metaCollection }, collectionName, criteria) => {};
 
 const criteriaIsEmpty = criteria => !(criteria && Object.keys(criteria).length);
 
@@ -87,8 +98,8 @@ const find = async (
 };
 
 const findOne = async (repository, collectionName, criteria, { skip = 0, order = 0 }) => {
-    const limit = 1
-    return find(repository, collectionName, criteria, { skip, limit, order })
+    const limit = 1;
+    return find(repository, collectionName, criteria, { skip, limit, order });
 };
 
 function wrapFind(repository, initialFind, collectionName, expression) {
@@ -135,35 +146,76 @@ const removeAll = async ({ client, metaCollection }, collectionName) => {
         await del(client, indexCollectionName);
     });
     await del(client, collectionName);
-}
+};
 
-const getIds = async ({ client, metaCollection }, collectionName, criteria) => {
+const saveIdsToCollection = async ({ client }, collectionName, ids) => {
+    const args = ids.reduce(
+        (acc, id) => {
+            // score
+            acc.push(id);
+            // value
+            acc.push(id);
+            return acc;
+        },
+        [collectionName]
+    );
+    await zaddMulti(client, args);
+};
+
+const getIds = async (repository, collectionName, criteria) => {
+    const { client, metaCollection } = repository;
+
     const indexes = await metaCollection.getIndexes(collectionName);
     validateCriteriaFields(indexes, criteria);
     const tempPrefix = uuidV4();
     const tempCollectionNames = {};
-    Object.keys(criteria).forEach(async (fieldName) => {
+
+    // todo extract function
+    const promises = Object.keys(criteria).map(async (fieldName) => {
         tempCollectionNames[fieldName] = `${tempPrefix}_${fieldName}`;
         const fieldValue = criteria[fieldName];
         const indexName = metaCollection.getIndexName(collectionName, fieldName);
         const fieldType = indexes[fieldName].fieldType;
-        const ids = fieldType === 'number'
-            ? await zrangebyscore(client, indexName, fieldValue, fieldValue)
-            // todo: fix me!
-            : await zrangebylex(client, indexName, `[${fieldValue}:`, `(${fieldValue}:${String.fromCharCode(0xff)}`);
-        await zadd(client, [])
+
+        let ids = [];
+        if (fieldType === 'number') {
+            ids = await zrangebyscore(client, indexName, fieldValue, fieldValue);
+        } else {
+            const lexIds = await zrangebylex(
+                client,
+                indexName,
+                `[${fieldValue}${Z_VALUE_SEPARATOR}`,
+                `(${fieldValue}${Z_VALUE_SEPARATOR}${Z_LEX_MAX_VALUE}`
+            );
+            ids = lexIds.map(value =>
+                value.substr(value.lastIndexOf(Z_VALUE_SEPARATOR) + Z_VALUE_SEPARATOR.length)
+            );
+        }
+        return await saveIdsToCollection(repository, tempCollectionNames[fieldName], ids);
     });
-}
+
+    await Promise.all(promises);
+
+    const keys = Object.values(tempCollectionNames);
+    await zinterstore(client, tempPrefix, keys.length, keys);
+
+    const result = await zrange(client, tempPrefix);
+
+    // cleanup
+    await del(client, ...keys.concat(tempPrefix));
+
+    return result;
+};
 
 const remove = async (repository, collectionName, criteria) => {
     const { client, metaCollection } = repository;
-    if(!criteria || !Object.keys(criteria).length) {
+    if (!criteria || !Object.keys(criteria).length) {
         return await removeAll(repository, collectionName);
     }
 
-    const ids = getIds(repository, collectionName, criteria);
+    const ids = await getIds(repository, collectionName, criteria);
 
-    // console.log('=========================== remove', ids);
+    console.log('=========================== remove', ids);
 
     // await removeIndexes(repository, collectionName, criteria);
     // await hdel(client, collectionName);
