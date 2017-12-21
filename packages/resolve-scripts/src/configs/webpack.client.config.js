@@ -6,7 +6,7 @@ const productionPlugins = [
     new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify('production')
     }),
-    UglifyJsPlugin({
+    new UglifyJsPlugin({
         sourceMap: false
     })
 ].map(plugin => Object.defineProperty(plugin, '__PROD', { value: true }));
