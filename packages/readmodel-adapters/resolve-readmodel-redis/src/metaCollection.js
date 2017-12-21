@@ -25,7 +25,7 @@ const set = async ({ client, metaCollectionName }, collectionName, meta) =>
     await hset(client, metaCollectionName, collectionName, meta);
 
 const getNextId = async ({ client, autoincMetaCollectionName }, collectionName) =>
-    parseInt(await hincrby(client, autoincMetaCollectionName, collectionName, 1), 10)
+    parseInt(await hincrby(client, autoincMetaCollectionName, collectionName, 1), 10);
 
 const getIndexName = (collectionName, fieldName) => {
     return `${collectionName}__index__${fieldName}`;
@@ -60,7 +60,7 @@ const removeIndex = async (repository, collectionName, fieldName) => {
 const getIndexes = async (repository, collectionName) => {
     const meta = await get(repository, collectionName);
     return meta.indexes;
-}
+};
 
 export default (repository) => {
     return Object.freeze({

@@ -1,7 +1,8 @@
-import { hlen, hset, hvals, zadd } from './redisApi';
+import util from 'util';
+import { hlen, hset, hvals, zadd, zrangebyscore } from './redisApi';
 
 const populateNumberIndex = async (client, collectionName, score, id) => {
-    await zadd(client, collectionName, score, `"${id}"` );
+    await zadd(client, collectionName, score, `"${id}"`);
 };
 
 const populateStringIndex = async (client, collectionName, value, id) => {
@@ -16,11 +17,13 @@ const updateIndexes = async ({ client, metaCollection }, collectionName, id, doc
         const value = document[key];
         if (index.fieldType === 'number') {
             if (typeof value !== 'number') {
-                throw new Error(`Can't update index '${key}' value: Value '${value}' is not number.`);
+                throw new Error(
+                    `Can't update index '${key}' value: Value '${value}' is not number.`
+                );
             }
             return populateNumberIndex(client, indexCollectionName, value, id);
         }
-        return populateStringIndex(client, indexCollectionName, value, id)
+        return populateStringIndex(client, indexCollectionName, value, id);
     });
 };
 
@@ -28,28 +31,57 @@ const criteriaIsEmpty = criteria => !(criteria && Object.keys(criteria).length);
 
 const count = async ({ client }, collectionName, criteria) => await hlen(client, collectionName);
 
-const find = async ({ client }, collectionName, criteria, { skip = 0, limit = 0, order = 0 }) => {
+const validateIndexes = (indexes, fieldNames, errorMessage) => {
+    fieldNames.forEach((field) => {
+        if (!indexes[field]) {
+            util.format(errorMessage, [field]);
+            throw new Error(errorMessage);
+        }
+    });
+};
+
+const validateCriteriaFields = (indexes, criteria) => {
+    if (criteria) {
+        validateIndexes(
+            indexes,
+            Object.keys(criteria),
+            'Can\'t find index for \'%s\': you can find by only indexed field'
+        );
+    }
+};
+
+const validateSortFields = (indexes, sort) => {
+    if (!sort) {
+        validateIndexes(
+            indexes,
+            Object.keys(sort),
+            'Can\'t find index for \'%s\': you can sort by only indexed field'
+        );
+    }
+};
+
+const find = async (
+    { client, metaCollection },
+    collectionName,
+    criteria,
+    { skip = null, limit = null, sort = null }
+) => {
+    const indexes = await metaCollection.getIndexes(collectionName);
+    validateCriteriaFields(indexes, criteria);
+    validateSortFields(indexes, sort);
+
     if (criteriaIsEmpty(criteria)) {
         return await hvals(client, collectionName);
     }
+
     throw new Error('TODO: implement me!');
     // // todo: do find
     // return cursorInterface(/* todo */)
 };
 
-const findOne = async (
-    { client },
-    collectionName,
-    criteria,
-    { skip = 0, limit = 0, order = 0 }
-) => {
-    if (criteriaIsEmpty(criteria)) {
-        const vals = await hvals(client, collectionName);
-        return;
-    }
-    throw new Error('TODO: implement me!');
-    // todo: do find
-    // return cursorInterface(/* todo */)
+const findOne = async (repository, collectionName, criteria, { skip = 0, order = 0 }) => {
+    const limit = 1
+    return find(repository, collectionName, criteria, { skip, limit, order })
 };
 
 function wrapFind(repository, initialFind, collectionName, expression) {
@@ -60,9 +92,9 @@ function wrapFind(repository, initialFind, collectionName, expression) {
     };
     const sanitizeError = ''; //sanitizeSearchExpression(expression);
 
-    ['skip', 'limit'].forEach((cmd) => {
-        resultPromise[cmd] = (count) => {
-            requestChain[cmd] = count;
+    ['skip', 'limit', 'sort'].forEach((cmd) => {
+        resultPromise[cmd] = (value) => {
+            requestChain[cmd] = value;
             return resultPromise;
         };
     });
@@ -94,12 +126,16 @@ const remove = async (repository, collectionName, criteria) => {
 
 const update = async ({ client }, collectionName, criteria) => await hset(client, collectionName);
 
-const ensureIndex = async ({ metaCollection }, collectionName, { fieldName, fieldType, order = 1 }) => {
-    if(!fieldName) {
+const ensureIndex = async (
+    { metaCollection },
+    collectionName,
+    { fieldName, fieldType, order = 1 }
+) => {
+    if (!fieldName) {
         throw new Error('`ensureIndex` - invalid fieldName');
     }
 
-    if(!(fieldType === 'string' || fieldType === 'number')) {
+    if (!(fieldType === 'string' || fieldType === 'number')) {
         throw new Error('`ensureIndex` - invalid fieldType');
     }
 

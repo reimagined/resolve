@@ -55,4 +55,8 @@ export const exists = async (client, key) => await invokeCommand(client, 'EXISTS
 
 export const type = async (client, key) => await invokeCommand(client, 'TYPE', key);
 
-export const zadd = async (client, key, score, member) => await invokeCommand(client, 'ZADD', key, score, member);
+export const zadd = async (client, key, score, member) =>
+    await invokeCommand(client, 'ZADD', key, score, member);
+
+export const zrangebyscore = async (client, key, min, max, offset = null, count = null) =>
+    await invokeCommand(client, 'ZRANGEBYSCORE', min, max, offset, count);
