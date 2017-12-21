@@ -25,8 +25,8 @@ const invokeCommand = (client, command, name, ...args) =>
         client[command](...params);
     });
 
-export const hdel = async (client, collectionName, field) =>
-    await invokeCommand(client, 'HDEL', collectionName, field);
+export const hdel = async (client, collectionName, ...fields) =>
+    await invokeCommand(client, 'HDEL', collectionName, ...fields);
 
 export const hexists = async (client, collectionName, field) =>
     await invokeCommand(client, 'HEXISTS', collectionName, field);

@@ -162,10 +162,9 @@ const saveIdsToCollection = async ({ client }, collectionName, ids) => {
     await zaddMulti(client, args);
 };
 
-const getIds = async (repository, collectionName, criteria) => {
+const getIds = async (repository, collectionName, indexes, criteria) => {
     const { client, metaCollection } = repository;
 
-    const indexes = await metaCollection.getIndexes(collectionName);
     validateCriteriaFields(indexes, criteria);
     const tempPrefix = uuidV4();
     const tempCollectionNames = {};
@@ -207,18 +206,26 @@ const getIds = async (repository, collectionName, criteria) => {
     return result;
 };
 
+const removeIdsFromIndexes = async ({ client, metaCollection }, collectionName, indexes, ids) => {
+    const promises = indexes.map(async ({ fieldNmae }) => {
+        const indexCollectionName = metaCollection.getIndexName(collectionName, fieldNmae);
+        throw new Error('TODO: implement `removeIdsFromIndexes`!');
+    });
+    await Promise.all(promises);
+};
+
 const remove = async (repository, collectionName, criteria) => {
     const { client, metaCollection } = repository;
     if (!criteria || !Object.keys(criteria).length) {
         return await removeAll(repository, collectionName);
     }
 
-    const ids = await getIds(repository, collectionName, criteria);
+    const indexes = await metaCollection.getIndexes(collectionName);
 
-    console.log('=========================== remove', ids);
+    const ids = await getIds(repository, collectionName, indexes, criteria);
 
-    // await removeIndexes(repository, collectionName, criteria);
-    // await hdel(client, collectionName);
+    await removeIdsFromIndexes(repository, collectionName, indexes, ids);
+    await hdel(client, collectionName, ...ids);
 };
 
 const update = async ({ client }, collectionName, criteria) => await hset(client, collectionName);
