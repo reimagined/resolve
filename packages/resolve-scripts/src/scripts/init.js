@@ -12,7 +12,14 @@ const dependencies = ['react', 'react-dom', 'react-redux', 'redux'];
 
 const resolveDependencies = ['resolve-bus-memory', 'resolve-redux', 'resolve-storage-lite'];
 
-const devDependencies = ['cross-env', 'testcafe', 'testcafe-browser-tools', 'yargs', 'flow-bin'];
+const devDependencies = [
+    'cross-env',
+    'testcafe',
+    'testcafe-browser-tools',
+    'yargs',
+    'flow-bin',
+    'jest'
+];
 
 const appDependencies = ['prop-types', 'uuid', 'styled-components'];
 

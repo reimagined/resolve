@@ -5,6 +5,7 @@ import prodServerConfig from '../configs/webpack.server.config.js';
 import buildConfig from './build-config';
 import outputConfig from './output-stats-config';
 
+process.env.NODE_ENV = process.env.NODE_ENV || 'production';
 buildConfig.extendWebpack(prodClientConfig, prodServerConfig);
 
 require('./clean');

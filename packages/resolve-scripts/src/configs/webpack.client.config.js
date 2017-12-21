@@ -1,5 +1,15 @@
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const webpack = require('webpack');
 const path = require('path');
+
+const productionPlugins = [
+    new webpack.DefinePlugin({
+        'process.env.NODE_ENV': JSON.stringify('production')
+    }),
+    new UglifyJsPlugin({
+        sourceMap: false
+    })
+].map(plugin => Object.defineProperty(plugin, '__PROD', { value: true }));
 
 module.exports = {
     name: 'client',
@@ -38,6 +48,7 @@ module.exports = {
     plugins: [
         new webpack.DefinePlugin({
             'process.env': 'window.__PROCESS_ENV__'
-        })
+        }),
+        ...productionPlugins
     ]
 };
