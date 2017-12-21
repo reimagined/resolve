@@ -11,9 +11,12 @@ webpackClientConfig.entry.client = [
 ].concat(webpackClientConfig.entry.client);
 webpackClientConfig.name = 'client';
 
-const inputPlugins = (webpackClientConfig.plugins || []).filter(plug => plug && !plug.__PROD);
+const inputPlugins = (webpackClientConfig.plugins || []).filter(plugin => plugin && !plugin.__PROD);
 
 webpackClientConfig.plugins = [
+    new webpack.DefinePlugin({
+        'process.env.NODE_ENV': JSON.stringify('development')
+    }),
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin()

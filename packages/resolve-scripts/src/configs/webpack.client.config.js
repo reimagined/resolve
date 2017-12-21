@@ -2,11 +2,14 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const webpack = require('webpack');
 const path = require('path');
 
-const uglifyJsPlugin = new UglifyJsPlugin({
-    sourceMap: false
-});
-
-Object.defineProperty(uglifyJsPlugin, '__PROD', { value: true });
+const productionPlugins = [
+    new webpack.DefinePlugin({
+        'process.env.NODE_ENV': JSON.stringify('production')
+    }),
+    UglifyJsPlugin({
+        sourceMap: false
+    })
+].map(plugin => Object.defineProperty(plugin, '__PROD', { value: true }));
 
 module.exports = {
     name: 'client',
@@ -44,9 +47,8 @@ module.exports = {
 
     plugins: [
         new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
             'process.env': 'window.__PROCESS_ENV__'
         }),
-        uglifyJsPlugin
+        ...productionPlugins
     ]
 };

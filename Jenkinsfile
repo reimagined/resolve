@@ -31,12 +31,12 @@ pipeline {
                         } else {
                             env.CI_RELEASE_TYPE = 'alpha'
                         }
-                        
+
                         sh """
                             npm config set //${env.NPM_ADDR}/:_authToken ${env.NPM_TOKEN}
                             npm whoami
                             eval \$(next-lerna-version); \
-                            export CI_CANARY_VERSION=\$NEXT_LERNA_VERSION-${env.CI_RELEASE_TYPE}.${env.CI_TIMESTAMP}; \
+                            export CI_CANARY_VERSION=\$NEXT_LERNA_VERSION-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}; \
                             ./node_modules/.bin/lerna publish --skip-git --force-publish=* --yes --repo-version \$CI_CANARY_VERSION --canary
 
                             sleep 10
@@ -54,7 +54,7 @@ pipeline {
                         /prepare-chromium.sh
 
                         eval \$(next-lerna-version)
-                        export CI_CANARY_VERSION=\$NEXT_LERNA_VERSION-${env.CI_RELEASE_TYPE}.${env.CI_TIMESTAMP}
+                        export CI_CANARY_VERSION=\$NEXT_LERNA_VERSION-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}
 
                         cd examples/todo
 
@@ -76,7 +76,7 @@ pipeline {
                         /prepare-chromium.sh
 
                         eval \$(next-lerna-version)
-                        export CI_CANARY_VERSION=\$NEXT_LERNA_VERSION-${env.CI_RELEASE_TYPE}.${env.CI_TIMESTAMP}
+                        export CI_CANARY_VERSION=\$NEXT_LERNA_VERSION-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}
 
                         cd examples/todo-two-levels
 
@@ -98,7 +98,7 @@ pipeline {
                         /prepare-chromium.sh
 
                         eval \$(next-lerna-version)
-                        export CI_CANARY_VERSION=\$NEXT_LERNA_VERSION-${env.CI_RELEASE_TYPE}.${env.CI_TIMESTAMP}
+                        export CI_CANARY_VERSION=\$NEXT_LERNA_VERSION-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}
 
                         npm install -g create-resolve-app@\$CI_CANARY_VERSION
 
@@ -120,7 +120,7 @@ pipeline {
                         /prepare-chromium.sh
 
                         eval \$(next-lerna-version)
-                        export CI_CANARY_VERSION=\$NEXT_LERNA_VERSION-${env.CI_RELEASE_TYPE}.${env.CI_TIMESTAMP}
+                        export CI_CANARY_VERSION=\$NEXT_LERNA_VERSION-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}
 
                         create-resolve-app --sample todolist
                         cd ./todolist
@@ -140,7 +140,7 @@ pipeline {
                         /prepare-chromium.sh
 
                         eval \$(next-lerna-version)
-                        export CI_CANARY_VERSION=\$NEXT_LERNA_VERSION-${env.CI_RELEASE_TYPE}.${env.CI_TIMESTAMP}
+                        export CI_CANARY_VERSION=\$NEXT_LERNA_VERSION-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}
 
                         git clone https://github.com/reimagined/hacker-news-resolve.git
 
