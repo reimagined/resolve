@@ -84,8 +84,13 @@ export const zrangebylex = async (client, key, min, max, offset, count) => {
     }
 };
 
+export const zrem = async (client, key, member) => await invokeCommand(client, 'ZREM', key, member);
+
 export const zinterstore = async (client, destination, keycount, keys) =>
     await invokeCommand(client, 'ZINTERSTORE', destination, keycount, ...keys);
 
 export const zrange = async (client, key, start = 0, stop = -1) =>
     await invokeCommand(client, 'ZRANGE', key, start, stop);
+
+export const expire = async (client, key, seconds) =>
+    await invokeCommand(client, 'EXPIRE', key, seconds);

@@ -40,6 +40,7 @@ describe('Read model redis adapter', () => {
                     await TestCollection.insert({ i: 100, s: 'aaa', text: 'Initial' });
                     await TestCollection.insert({ i: 200, s: 'bbb', text: 'First text' });
                     await TestCollection.insert({ i: 100, s: 'bbb', text: 'Second text' });
+                    await TestCollection.insert({ i: 100, s: 'bbb', text: 'Last text' });
 
                     await TestCollection.remove({ i: 100, s: 'bbb' });
                 } catch (error) {

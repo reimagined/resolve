@@ -1,24 +1,28 @@
 import util from 'util';
 import uuidV4 from 'uuid/v4';
 import {
+    del,
+    expire,
+    hdel,
     hlen,
     hset,
     hvals,
     zadd,
     zaddMulti,
-    zrangebyscore,
-    zrangebylex,
-    hdel,
-    del,
     zinterstore,
-    zrange
+    zrange,
+    zrangebylex,
+    zrangebyscore,
+    zrem,
+    hget
 } from './redisApi';
 
 const Z_VALUE_SEPARATOR = `${String.fromCharCode(0x0)}${String.fromCharCode(0x0)}`;
 const Z_LEX_MAX_VALUE = String.fromCharCode(0xff);
+const TTL_FOR_TEMP_COLLECTION = 60;
 
 const populateNumberIndex = async (client, collectionName, score, id) => {
-    await zadd(client, collectionName, score, `"${id}"`);
+    await zadd(client, collectionName, score, id);
 };
 
 const populateStringIndex = async (client, collectionName, value, id) => {
@@ -52,8 +56,7 @@ const count = async ({ client }, collectionName, criteria) => await hlen(client,
 const validateIndexes = (indexes, fieldNames, errorMessage) => {
     fieldNames.forEach((field) => {
         if (!indexes[field]) {
-            util.format(errorMessage, [field]);
-            throw new Error(errorMessage);
+            throw new Error(util.format(errorMessage, field));
         }
     });
 };
@@ -160,6 +163,7 @@ const saveIdsToCollection = async ({ client }, collectionName, ids) => {
         [collectionName]
     );
     await zaddMulti(client, args);
+    await expire(client, collectionName, TTL_FOR_TEMP_COLLECTION);
 };
 
 const getIds = async (repository, collectionName, indexes, criteria) => {
@@ -197,6 +201,7 @@ const getIds = async (repository, collectionName, indexes, criteria) => {
 
     const keys = Object.values(tempCollectionNames);
     await zinterstore(client, tempPrefix, keys.length, keys);
+    await expire(client, tempPrefix, TTL_FOR_TEMP_COLLECTION);
 
     const result = await zrange(client, tempPrefix);
 
@@ -206,10 +211,34 @@ const getIds = async (repository, collectionName, indexes, criteria) => {
     return result;
 };
 
-const removeIdsFromIndexes = async ({ client, metaCollection }, collectionName, indexes, ids) => {
-    const promises = indexes.map(async ({ fieldNmae }) => {
-        const indexCollectionName = metaCollection.getIndexName(collectionName, fieldNmae);
-        throw new Error('TODO: implement `removeIdsFromIndexes`!');
+const getDocument = async (client, collectionName, id) => {
+    await hget(client, collectionName, id);
+};
+
+const removeIdFromIndex = async (
+    { client, metaCollection },
+    collectionName,
+    document,
+    id,
+    index
+) => {
+    const { fieldName, fieldType } = index;
+    const indexCollectionName = metaCollection.getIndexName(collectionName, fieldName);
+    if (fieldType === 'number') {
+        return await zrem(client, indexCollectionName, id);
+    }
+    const value = document[fieldName];
+    console.log('### 4');
+    throw new Error('TODO: implement `removeIdsFromIndexes`!');
+};
+
+const removeIdsFromIndexes = async (repository, collectionName, indexes, ids) => {
+    const promises = ids.map(async (id) => {
+        const document = await getDocument(repository.client, collectionName, id);
+        const proms = Object.keys(indexes).map(async (index) => {
+            await removeIdFromIndex(repository, collectionName, document, id, index);
+        });
+        await Promise.all(proms);
     });
     await Promise.all(promises);
 };
@@ -223,7 +252,7 @@ const remove = async (repository, collectionName, criteria) => {
     const indexes = await metaCollection.getIndexes(collectionName);
 
     const ids = await getIds(repository, collectionName, indexes, criteria);
-
+    console.log(ids);
     await removeIdsFromIndexes(repository, collectionName, indexes, ids);
     await hdel(client, collectionName, ...ids);
 };
