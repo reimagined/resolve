@@ -30,25 +30,29 @@ const populateStringIndex = async (client, collectionName, value, id) => {
     await zadd(client, collectionName, 0, `${value}${Z_VALUE_SEPARATOR}${id}`);
 };
 
-const updateIndexes = async ({ client, metaCollection }, collectionName, id, document) => {
-    const indexes = await metaCollection.getIndexes(collectionName);
-    Object.keys(indexes).forEach((key) => {
-        const indexCollectionName = metaCollection.getIndexName(collectionName, key);
-        const index = indexes[key];
-        const value = document[key];
-        if (index.fieldType === 'number') {
-            if (typeof value !== 'number') {
-                throw new Error(
-                    `Can't update index '${key}' value: Value '${value}' is not number.`
+const updateIndex = async ({ client, metaCollection }, collectionName, id, document, { fieldName, fieldType }) => {
+    const indexCollectionName = metaCollection.getIndexName(collectionName, fieldName);
+    const value = document[fieldName];
+    if (fieldType === 'number') {
+        if (typeof value !== 'number') {
+            throw new Error(
+                    `Can't update index '${fieldName}' value: Value '${value}' is not number.`
                 );
-            }
-            return populateNumberIndex(client, indexCollectionName, value, id);
         }
-        return populateStringIndex(client, indexCollectionName, value, id);
-    });
-};
+        return populateNumberIndex(client, indexCollectionName, value, id);
+    }
+    return populateStringIndex(client, indexCollectionName, value, id);
+}
 
-const removeIndexes = async ({ client, metaCollection }, collectionName, criteria) => {};
+const updateIndexes = async (repository, collectionName, id, document) => {
+    const { metaCollection } = repository;
+    const indexes = await metaCollection.getIndexes(collectionName);
+    const promises = Object.keys(indexes).map(async (fieldName) => {
+        const index = indexes[fieldName];
+        await updateIndex(repository, collectionName, id, document, index);
+    });
+    await Promise.all(promises);
+};
 
 const criteriaIsEmpty = criteria => !(criteria && Object.keys(criteria).length);
 
@@ -83,11 +87,12 @@ const validateSortFields = (indexes, sort) => {
 };
 
 const find = async (
-    { client, metaCollection },
+    repository,
     collectionName,
     criteria,
     { skip = null, limit = null, sort = null }
 ) => {
+    const { client, metaCollection } = repository;
     const indexes = await metaCollection.getIndexes(collectionName);
     validateCriteriaFields(indexes, criteria);
     validateSortFields(indexes, sort);
@@ -95,10 +100,8 @@ const find = async (
     if (criteriaIsEmpty(criteria)) {
         return await hvals(client, collectionName);
     }
+    const ids = await getIds(repository, collectionName, indexes, criteria);
 
-    throw new Error('TODO: implement me!');
-    // // todo: do find
-    // return cursorInterface(/* todo */)
 };
 
 const findOne = async (repository, collectionName, criteria, { skip = 0, order = 0 }) => {
@@ -110,7 +113,8 @@ function wrapFind(repository, initialFind, collectionName, expression) {
     const resultPromise = Promise.resolve();
     const requestChain = {
         skip: null,
-        limit: null
+        limit: null,
+        sort: null
     };
     const sanitizeError = ''; //sanitizeSearchExpression(expression);
 
@@ -218,8 +222,8 @@ const getDocument = async (client, collectionName, id) =>
 const removeIdFromIndex = async (
     { client, metaCollection },
     collectionName,
-    document,
     id,
+    document,
     index
 ) => {
     const { fieldName, fieldType } = index;
@@ -241,14 +245,19 @@ const removeIdsFromIndexes = async (repository, collectionName, indexes, ids) =>
     const promises = ids.map(async (id) => {
         const document = await getDocument(repository.client, collectionName, id);
         const proms = Object.keys(indexes).map(async key =>
-                await removeIdFromIndex(repository, collectionName, document, id, indexes[key]));
+                await removeIdFromIndex(repository, collectionName, id, document, indexes[key]));
         await Promise.all(proms);
     });
     await Promise.all(promises);
 };
 
+const removeIds = async (repository, collectionName, indexes, ids) => {
+    await removeIdsFromIndexes(repository, collectionName, indexes, ids);
+    await hdel(repository.client, collectionName, ...ids);
+}
+
 const remove = async (repository, collectionName, criteria) => {
-    const { client, metaCollection } = repository;
+    const { metaCollection } = repository;
     if (!criteria || !Object.keys(criteria).length) {
         return await removeAll(repository, collectionName);
     }
@@ -256,11 +265,78 @@ const remove = async (repository, collectionName, criteria) => {
     const indexes = await metaCollection.getIndexes(collectionName);
 
     const ids = await getIds(repository, collectionName, indexes, criteria);
-    await removeIdsFromIndexes(repository, collectionName, indexes, ids);
-    await hdel(client, collectionName, ...ids);
+    await removeIds(repository, collectionName, indexes, ids);
 };
 
-const update = async ({ client }, collectionName, criteria) => await hset(client, collectionName);
+const updateHandlers = {
+    $unset: async (repository, collectionName, indexes, id, document, options) => {
+        const promises = Object.keys(options).map(async (fieldName) => {
+            const index = indexes[fieldName];
+            if(index) {
+                removeIdFromIndex(repository,collectionName, id, document, index);
+            }
+            delete document[fieldName];
+        });
+        await Promise.all(promises);
+    },
+    $inc: async (repository, collectionName, indexes, id, document, options) => {
+        const promises = Object.keys(options).map(async (fieldName) => {
+            const index = indexes[fieldName];
+            if(index) {
+                removeIdFromIndex(repository,collectionName, id, document, index);
+            }
+            document[fieldName] += options[fieldName];
+            if(index) {
+                updateIndex(repository, collectionName, id, document, index);
+            }
+        });
+        await Promise.all(promises);
+    },
+    $push: async (repository, collectionName, indexes, id, document, options) => {
+        const promises = Object.keys(options).map(async (fieldName) => {
+            const index = indexes[fieldName];
+            if(index) {
+                removeIdFromIndex(repository,collectionName, id, document, index);
+            }
+            document[fieldName] = options[fieldName];
+            if(index) {
+                updateIndex(repository, collectionName, id, document, index);
+            }
+        });
+        await Promise.all(promises);
+    },
+    $pull: async (repository, collectionName, indexes, id, document, options) => {
+        throw new Error('Not implemented!!!');
+    }
+}
+
+const update = async (repository, collectionName, criteria, modifications) => {
+    const { client, metaCollection } = repository;
+    const indexes = await metaCollection.getIndexes();
+    const ids = await getIds(repository, collectionName, indexes , criteria);
+    ids.forEach(async (id) => {
+        console.log('=====================', collectionName, id)
+        const document = await getDocument(client, collectionName, id);
+
+        const promises = Object.keys(modifications).map(async (modificatorName) => {
+            const handler = updateHandlers[modificatorName];
+            if(!handler) {
+                throw new Error('Invalid update modificator');
+            }
+            await handler(
+                repository,
+                collectionName,
+                indexes,
+                id,
+                document,
+                modifications[modificatorName]
+            );
+        });
+        await Promise.all(promises);
+
+        await hset(client, collectionName, id, document);
+    });
+};
 
 const ensureIndex = async (
     { metaCollection },
