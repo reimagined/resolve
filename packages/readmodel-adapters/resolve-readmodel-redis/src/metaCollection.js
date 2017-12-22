@@ -39,6 +39,7 @@ const ensureIndex = async (repository, collectionName, { fieldName, fieldType, o
         throw new Error(`Can't 'ensureIndex': '${name}' is exists`);
     }
     meta.indexes[fieldName] = {
+        fieldName,
         fieldType,
         order
     };

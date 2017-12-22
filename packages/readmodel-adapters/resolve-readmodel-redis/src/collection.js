@@ -14,6 +14,7 @@ import {
     zrangebylex,
     zrangebyscore,
     zrem,
+    zremrangebylex,
     hget
 } from './redisApi';
 
@@ -211,9 +212,8 @@ const getIds = async (repository, collectionName, indexes, criteria) => {
     return result;
 };
 
-const getDocument = async (client, collectionName, id) => {
+const getDocument = async (client, collectionName, id) =>
     await hget(client, collectionName, id);
-};
 
 const removeIdFromIndex = async (
     { client, metaCollection },
@@ -227,17 +227,21 @@ const removeIdFromIndex = async (
     if (fieldType === 'number') {
         return await zrem(client, indexCollectionName, id);
     }
-    const value = document[fieldName];
-    console.log('### 4');
-    throw new Error('TODO: implement `removeIdsFromIndexes`!');
+    const fieldValue = document[fieldName];
+
+    await zremrangebylex(
+        client,
+        indexCollectionName,
+        `[${fieldValue}${Z_VALUE_SEPARATOR}${id}`,
+        `(${fieldValue}${Z_VALUE_SEPARATOR}${id}`
+    );
 };
 
 const removeIdsFromIndexes = async (repository, collectionName, indexes, ids) => {
     const promises = ids.map(async (id) => {
         const document = await getDocument(repository.client, collectionName, id);
-        const proms = Object.keys(indexes).map(async (index) => {
-            await removeIdFromIndex(repository, collectionName, document, id, index);
-        });
+        const proms = Object.keys(indexes).map(async key =>
+                await removeIdFromIndex(repository, collectionName, document, id, indexes[key]));
         await Promise.all(proms);
     });
     await Promise.all(promises);
@@ -252,7 +256,6 @@ const remove = async (repository, collectionName, criteria) => {
     const indexes = await metaCollection.getIndexes(collectionName);
 
     const ids = await getIds(repository, collectionName, indexes, criteria);
-    console.log(ids);
     await removeIdsFromIndexes(repository, collectionName, indexes, ids);
     await hdel(client, collectionName, ...ids);
 };
