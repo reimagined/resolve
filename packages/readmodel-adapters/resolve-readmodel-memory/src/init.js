@@ -8,6 +8,18 @@ function createCollection(repository, collectionName) {
     repository.collectionIndexesMap.set(collectionName, new Set());
 }
 
+async function performCollectionOperation(resource, operationName, ...inputArgs) {
+    return await new Promise((resolve, reject) =>
+        resource[operationName](...inputArgs, (err, ...outputArgs) => {
+            if (!err) {
+                resolve(...outputArgs);
+            } else {
+                reject(err);
+            }
+        })
+    );
+}
+
 function checkOptionShape(option, types, count) {
     return !(
         option === null ||
@@ -62,14 +74,10 @@ async function applyEnsureIndex(collection, collectionIndexes, indexDescriptor) 
     if (sanitizeError) {
         throw new Error(sanitizeError);
     }
-
     const indexName = Object.keys(indexDescriptor)[0];
     if (collectionIndexes.has(indexName)) return;
 
-    await new Promise((resolve, reject) =>
-        collection.ensureIndex({ fieldName: indexName }, err => (!err ? resolve() : reject(err)))
-    );
-
+    await performCollectionOperation(collection, 'ensureIndex', { fieldName: indexName });
     collectionIndexes.add(indexName);
 }
 
@@ -77,13 +85,9 @@ async function applyRemoveIndex(collection, collectionIndexes, indexName) {
     if (!checkOptionShape(indexName, [String])) {
         throw new Error(messages.deleteIndexArgumentShape);
     }
-
     if (!collectionIndexes.has(indexName)) return;
 
-    await new Promise((resolve, reject) =>
-        collection.removeIndex(indexName, err => (!err ? resolve() : reject(err)))
-    );
-
+    await performCollectionOperation(collection, 'removeIndex', indexName);
     collectionIndexes.delete(indexName);
 }
 
@@ -125,20 +129,16 @@ async function wrapWriteFunction(operation, collectionName, repository, ...args)
             break;
 
         case 'insert':
-            await new Promise((resolve, reject) =>
-                collection.insert(
-                    { _id: repository.counter++, ...args[0] },
-                    err => (!err ? resolve() : reject(err))
-                )
-            );
+            await performCollectionOperation(collection, 'insert', {
+                _id: repository.counter++,
+                ...args[0]
+            });
             break;
 
         case 'update':
         case 'remove':
             sanitizeUpdateOrDelete(operation, collectionIndexes, args[0], args[1]);
-            await new Promise((resolve, reject) =>
-                collection[operation](...args, err => (!err ? resolve() : reject(err)))
-            );
+            await performCollectionOperation(collection, operation, ...args);
             break;
     }
 }
@@ -172,9 +172,7 @@ async function execFind(options) {
         options.collection
     );
 
-    return await new Promise((resolve, reject) =>
-        options.requestFold.exec((err, docs) => (!err ? resolve(docs) : reject(err)))
-    );
+    return await performCollectionOperation(options.requestFold, 'exec');
 }
 
 function wrapFind(initialFind, repository, collectionName, searchExpression) {
@@ -232,9 +230,7 @@ async function countDocuments(repository, collectionName, searchExpression) {
         throw new Error(messages.searchOnlyIndexedFields);
     }
 
-    return await new Promise((resolve, reject) =>
-        collection.count(searchExpression, (err, count) => (!err ? resolve(count) : reject(err)))
-    );
+    return await performCollectionOperation(collection, 'count', searchExpression);
 }
 
 // Provide interface https://docs.mongodb.com/manual/reference/method/js-collection/
@@ -282,20 +278,10 @@ async function listCollections(repository) {
 
 // Provide interface https://docs.mongodb.com/manual/reference/method/js-database/
 function getStoreInterface(repository, isWriteable) {
-    const storeKey = !isWriteable ? 'STORE_READ_SIDE' : 'STORE_WRITE_SIDE';
-    const interfaceMap = repository.interfaceMap;
-
-    if (interfaceMap.has(storeKey)) {
-        return interfaceMap.get(storeKey);
-    }
-
-    let storeIface = Object.freeze({
+    return Object.freeze({
         collection: getCollectionInterface.bind(null, repository, isWriteable),
         listCollections: listCollections.bind(null, repository)
     });
-
-    interfaceMap.set(storeKey, storeIface);
-    return storeIface;
 }
 
 async function initProjection(repository) {
