@@ -14,12 +14,14 @@ describe('Read model MongoDB adapter', () => {
     const DEFAULT_COLLECTION_NAME = 'TestDefaultCollection';
     const META_COLLECTION_NAME = 'TestMetaCollection';
     const FOREIGN_COLLECTION_NAME = 'TestForeignCollection';
+    const MAX_SAFE_TIMEOUT = Math.pow(2, 31) - 1;
 
     let testConnection;
     let testConnectionCloser;
     let testRepository;
 
     beforeAll(async () => {
+        jest.setTimeout(MAX_SAFE_TIMEOUT);
         const connectionUrl = await mongoUnit.start({ dbName: 'admin' });
         testConnection = await MongoClient.connect(connectionUrl);
         testConnectionCloser = testConnection.close.bind(testConnection);
