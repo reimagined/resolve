@@ -120,13 +120,13 @@ const updateIndex = async (
     if (fieldType === 'number') {
         if (typeof value !== 'number') {
             throw new Error(
-                    `Can't update index '${fieldName}' value: Value '${value}' is not number.`
-                );
+                `Can't update index '${fieldName}' value: Value '${value}' is not number.`
+            );
         }
         return populateNumberIndex(client, indexCollectionName, value, id);
     }
     return populateStringIndex(client, indexCollectionName, value, id);
-}
+};
 
 const updateIndexes = async (repository, collectionName, id, document) => {
     const { metaCollection } = repository;
@@ -223,8 +223,7 @@ const removeAll = async ({ client, metaCollection }, collectionName) => {
     await del(client, collectionName);
 };
 
-const getDocument = async (client, collectionName, id) =>
-    await hget(client, collectionName, id);
+const getDocument = async (client, collectionName, id) => await hget(client, collectionName, id);
 
 const removeIdFromIndex = async (
     { client, metaCollection },
@@ -251,8 +250,10 @@ const removeIdFromIndex = async (
 const removeIdsFromIndexes = async (repository, collectionName, indexes, ids) => {
     const promises = ids.map(async (id) => {
         const document = await getDocument(repository.client, collectionName, id);
-        const proms = Object.keys(indexes).map(async key =>
-                await removeIdFromIndex(repository, collectionName, id, document, indexes[key]));
+        const proms = Object.keys(indexes).map(
+            async key =>
+                await removeIdFromIndex(repository, collectionName, id, document, indexes[key])
+        );
         await Promise.all(proms);
     });
     await Promise.all(promises);
@@ -261,7 +262,7 @@ const removeIdsFromIndexes = async (repository, collectionName, indexes, ids) =>
 const removeIds = async (repository, collectionName, indexes, ids) => {
     await removeIdsFromIndexes(repository, collectionName, indexes, ids);
     await hdel(repository.client, collectionName, ...ids);
-}
+};
 
 const remove = async (repository, collectionName, criteria) => {
     const { metaCollection } = repository;
@@ -277,9 +278,9 @@ const remove = async (repository, collectionName, criteria) => {
 
 const applyDotNotation = async (document, fieldName, fieldOptions, cb) => {
     const fields = fieldName.split('.');
-    if(fields.length > 1) {
+    if (fields.length > 1) {
         fields.reduce((acc, field, currentIndex) => {
-            if(fields.length === currentIndex - 1) {
+            if (fields.length === currentIndex - 1) {
                 cb(acc, fieldName, fieldOptions, false);
             }
             return acc[fieldName];
@@ -287,60 +288,79 @@ const applyDotNotation = async (document, fieldName, fieldOptions, cb) => {
     } else {
         cb(document, fieldName, fieldOptions, true);
     }
-}
+};
 
 const applyFields = async (document, options, cb) => {
-    const promises = Object.keys(options)
-        .map(async fieldName => applyDotNotation(document, fieldName, options[fieldName], cb));
+    const promises = Object.keys(options).map(async fieldName =>
+        applyDotNotation(document, fieldName, options[fieldName], cb)
+    );
     await Promise.all(promises);
-}
+};
 
 const updateHandlers = {
     $unset: async (repository, collectionName, indexes, id, partDoc, fieldName, isRootLevel) => {
-        if(isRootLevel) {
+        if (isRootLevel) {
             const index = indexes[fieldName];
-            if(index) {
-                await removeIdFromIndex(repository,collectionName, id, partDoc, index);
+            if (index) {
+                await removeIdFromIndex(repository, collectionName, id, partDoc, index);
             }
         }
 
-        if(Array.isArray(partDoc[fieldName])) {
+        if (Array.isArray(partDoc[fieldName])) {
             partDoc[fieldName] = null;
         } else {
             delete partDoc[fieldName];
         }
     },
-    $inc: async (repository, collectionName, indexes, id, partDoc, fieldName, isRootLevel, fieldOptions) => {
-        if(isRootLevel) {
+    $inc: async (
+        repository,
+        collectionName,
+        indexes,
+        id,
+        partDoc,
+        fieldName,
+        isRootLevel,
+        fieldOptions
+    ) => {
+        if (isRootLevel) {
             const index = indexes[fieldName];
-            if(index) {
-                await removeIdFromIndex(repository,collectionName, id, partDoc, index);
+            if (index) {
+                await removeIdFromIndex(repository, collectionName, id, partDoc, index);
             }
         }
 
         partDoc[fieldName] += fieldOptions;
 
-        if(isRootLevel) {
+        if (isRootLevel) {
             const index = indexes[fieldName];
-            if(index) {
+            if (index) {
                 await updateIndex(repository, collectionName, id, document, index);
             }
         }
     },
-    $push: async (repository, collectionName, indexes, id, partDoc, fieldName, isRootLevel, fieldOptions) => {
-        if(!Array.isArray(partDoc[fieldName])) {
-            throw new Error(`The field '${fieldName}' is not array in document { _id: ${id} }`)
+    $push: async (
+        repository,
+        collectionName,
+        indexes,
+        id,
+        partDoc,
+        fieldName,
+        isRootLevel,
+        fieldOptions
+    ) => {
+        if (!Array.isArray(partDoc[fieldName])) {
+            throw new Error(`The field '${fieldName}' is not array in document { _id: ${id} }`);
         }
-        if(isRootLevel) {
+        if (isRootLevel) {
             const index = indexes[fieldName];
-            if(index) {
-                await removeIdFromIndex(repository,collectionName, id, partDoc, index);
+            if (index) {
+                await removeIdFromIndex(repository, collectionName, id, partDoc, index);
             }
         }
         document[fieldName] = fieldOptions;
-        if(isRootLevel) {
+        if (isRootLevel) {
             const index = indexes[fieldName];
-            if(index) {
+            if (index) {
                 await updateIndex(repository, collectionName, id, document, index);
             }
         }
@@ -348,24 +368,37 @@ const updateHandlers = {
     $pull: async (repository, collectionName, indexes, id, document, options) => {
         throw new Error('Not implemented!!!');
     }
-}
+};
 
 const update = async (repository, collectionName, criteria, operators) => {
     const { client, metaCollection } = repository;
     const indexes = await metaCollection.getIndexes();
-    const ids = await getIds(repository, collectionName, indexes , criteria);
+    const ids = await getIds(repository, collectionName, indexes, criteria);
     ids.forEach(async (id) => {
         const document = await getDocument(client, collectionName, id);
 
         const promises = Object.keys(operators).map(async (operatorName) => {
             const handler = updateHandlers[operatorName];
-            if(!handler) {
+            if (!handler) {
                 throw new Error('Invalid update operator');
             }
             const operatorOptions = operators[operatorName];
-            await applyFields(document, operatorOptions, (doc, fieldName, fieldOptions, isRootLevel) => {
-                handler(repository, collectionName, indexes, id, doc, fieldName, isRootLevel, fieldOptions);
-            });
+            await applyFields(
+                document,
+                operatorOptions,
+                (doc, fieldName, fieldOptions, isRootLevel) => {
+                    handler(
+                        repository,
+                        collectionName,
+                        indexes,
+                        id,
+                        doc,
+                        fieldName,
+                        isRootLevel,
+                        fieldOptions
+                    );
+                }
+            );
         });
         await Promise.all(promises);
 

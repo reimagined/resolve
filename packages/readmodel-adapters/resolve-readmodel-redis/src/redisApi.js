@@ -97,4 +97,3 @@ export const expire = async (client, key, seconds) =>
 
 export const zremrangebylex = async (client, key, min, max) =>
     await invokeCommand(client, 'ZREMRANGEBYLEX', key, min, max);
-
