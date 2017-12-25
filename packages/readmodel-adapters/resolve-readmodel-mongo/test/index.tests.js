@@ -27,8 +27,8 @@ describe('Read model MongoDB adapter', () => {
 
     afterAll(async () => {
         await testConnection.dropDatabase();
-        testConnection.command({ shutdown: 1 });
-        await testConnectionCloser();
+        await testConnection.command({ shutdown: 1 });
+        await testConnectionCloser(true);
         testConnection = null;
     });
 
