@@ -227,8 +227,6 @@ async function execFind(options) {
 }
 
 function wrapFind(initialFind, repository, collectionName, searchExpression) {
-    const metaCollectionPromise = getMetaCollection(repository);
-    const collectionPromise = getCollection(repository, collectionName);
     const resultPromise = Promise.resolve();
     const requestChain = [{ type: initialFind, args: searchExpression }];
     const foundErrors = [sanitizeSearchExpression(searchExpression)];
@@ -267,7 +265,6 @@ function wrapFind(initialFind, repository, collectionName, searchExpression) {
 }
 
 async function countDocuments(repository, collectionName, searchExpression) {
-    const metaCollection = await getMetaCollection(repository);
     const collection = await getCollection(repository, collectionName);
 
     const sanitizeError = sanitizeSearchExpression(searchExpression);
