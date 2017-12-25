@@ -1,6 +1,6 @@
 const serializeData = data => JSON.stringify(data);
 
-const unserializeData = data => JSON.parse(data);
+// const unserializeData = data => JSON.parse(data);
 
 const safeParse = (str) => {
     try {

@@ -22,6 +22,9 @@ const Z_VALUE_SEPARATOR = `${String.fromCharCode(0x0)}${String.fromCharCode(0x0)
 const Z_LEX_MAX_VALUE = String.fromCharCode(0xff);
 const TTL_FOR_TEMP_COLLECTION = 60;
 
+const getDocument = async ({ client }, collectionName, id) =>
+    await hget(client, collectionName, id);
+
 const validateIndexes = (indexes, fieldNames, errorMessage) => {
     fieldNames.forEach((field) => {
         if (!indexes[field]) {
@@ -143,7 +146,7 @@ const criteriaIsEmpty = criteria => !(criteria && Object.keys(criteria).length);
 const count = async ({ client }, collectionName, criteria) => await hlen(client, collectionName);
 
 const validateSortFields = (indexes, sort) => {
-    if (!sort) {
+    if (sort) {
         validateIndexes(
             indexes,
             Object.keys(sort),
@@ -162,13 +165,15 @@ const find = async (
     const indexes = await metaCollection.getIndexes(collectionName);
     validateCriteriaFields(indexes, criteria);
     validateSortFields(indexes, sort);
-
     if (criteriaIsEmpty(criteria)) {
         return await hvals(client, collectionName);
     }
     const ids = await getIds(repository, collectionName, indexes, criteria);
     // sort
     // get by ids
+    // promises = ids.map
+    const promises = ids.map(async id => await getDocument(repository, collectionName, id));
+    return await Promise.all(promises);
 };
 
 const findOne = async (repository, collectionName, criteria, { skip = 0, order = 0 }) => {
@@ -223,8 +228,6 @@ const removeAll = async ({ client, metaCollection }, collectionName) => {
     await del(client, collectionName);
 };
 
-const getDocument = async (client, collectionName, id) => await hget(client, collectionName, id);
-
 const removeIdFromIndex = async (
     { client, metaCollection },
     collectionName,
@@ -249,7 +252,7 @@ const removeIdFromIndex = async (
 
 const removeIdsFromIndexes = async (repository, collectionName, indexes, ids) => {
     const promises = ids.map(async (id) => {
-        const document = await getDocument(repository.client, collectionName, id);
+        const document = await getDocument(repository, collectionName, id);
         const proms = Object.keys(indexes).map(
             async key =>
                 await removeIdFromIndex(repository, collectionName, id, document, indexes[key])
@@ -372,10 +375,10 @@ const updateHandlers = {
 
 const update = async (repository, collectionName, criteria, operators) => {
     const { client, metaCollection } = repository;
-    const indexes = await metaCollection.getIndexes();
+    const indexes = await metaCollection.getIndexes(collectionName);
     const ids = await getIds(repository, collectionName, indexes, criteria);
     ids.forEach(async (id) => {
-        const document = await getDocument(client, collectionName, id);
+        const document = await getDocument(repository, collectionName, id);
 
         const promises = Object.keys(operators).map(async (operatorName) => {
             const handler = updateHandlers[operatorName];

@@ -6,7 +6,7 @@ import nativeRedisAdapter from '../src/adapter';
 import metaCollection from '../src/metaCollection';
 
 describe('Read model redis adapter', () => {
-    let repository, projection, adapter, nativeAdapter, getReadable, getError;
+    let repository, adapter, nativeAdapter, getReadable;
 
     beforeEach(async () => {
         repository = {
@@ -19,6 +19,7 @@ describe('Read model redis adapter', () => {
 
         repository.client.flushall((e) => {
             if (e) {
+                // eslint-disable-next-line no-console
                 console.log(e);
             }
         });
@@ -31,7 +32,7 @@ describe('Read model redis adapter', () => {
             repository.autoincMetaCollectionName
         );
 
-        projection = adapter.buildProjection({
+        adapter.buildProjection({
             Init: async (store) => {
                 try {
                     const TestCollection = await store.collection('Test');
@@ -44,6 +45,7 @@ describe('Read model redis adapter', () => {
 
                     await TestCollection.update({ i: 100, s: 'aaa' }, { $unset: { text: '' } });
                 } catch (error) {
+                    // eslint-disable-next-line no-console
                     console.log(`error: ${error}`);
                 }
             },
@@ -61,7 +63,6 @@ describe('Read model redis adapter', () => {
 
         const readSide = adapter.init();
         getReadable = readSide.getReadable;
-        getError = readSide.getError;
 
         await getReadable();
     });
