@@ -47,24 +47,24 @@ describe('resolve-query', () => {
         };
 
         readModelProjection = {
-            Init: sinon.stub().callsFake(async (db) => {
-                const users = await db.collection('Users');
+            Init: sinon.stub().callsFake(async (store) => {
+                const users = await store.collection('Users');
                 await users.ensureIndex({ id: 1 });
             }),
 
-            UserAdded: sinon.stub().callsFake(async (db, { aggregateId: id, payload }) => {
-                const users = await db.collection('Users');
+            UserAdded: sinon.stub().callsFake(async (store, { aggregateId: id, payload }) => {
+                const users = await store.collection('Users');
                 if ((await users.find({ id })).length !== 0) return;
                 await users.insert({ id, UserName: payload.UserName });
             }),
 
-            UserDeleted: sinon.stub().callsFake(async (db, { aggregateId: id }) => {
-                const users = await db.collection('Users');
+            UserDeleted: sinon.stub().callsFake(async (store, { aggregateId: id }) => {
+                const users = await store.collection('Users');
                 if ((await users.find({ id })).length === 0) return;
                 await users.remove({ id });
             }),
 
-            FailureEvent: sinon.stub().callsFake(async (db, { aggregateId: id }) => {
+            FailureEvent: sinon.stub().callsFake(async (store, { aggregateId: id }) => {
                 throw new Error('Failure');
             })
         };
@@ -91,20 +91,20 @@ describe('resolve-query', () => {
                 }
             `,
             gqlResolvers: {
-                UserById: sinon.stub().callsFake(async (db, args) => {
-                    const users = await db.collection('Users');
+                UserById: sinon.stub().callsFake(async (store, args) => {
+                    const users = await store.collection('Users');
                     const result = await users.find({ id: args.id }).sort({ id: 1 });
                     return result.length > 0 ? result[0] : null;
                 }),
 
-                UserIds: sinon.stub().callsFake(async (db) => {
-                    const users = await db.collection('Users');
+                UserIds: sinon.stub().callsFake(async (store) => {
+                    const users = await store.collection('Users');
                     const result = await users.find({}, { id: 1, _id: 0 }).sort({ id: 1 });
                     return result.map(({ id }) => id);
                 }),
 
-                Users: sinon.stub().callsFake(async (db) => {
-                    const users = await db.collection('Users');
+                Users: sinon.stub().callsFake(async (store) => {
+                    const users = await store.collection('Users');
                     const result = await users.find({}).sort({ id: 1 });
                     return result;
                 })
