@@ -18,14 +18,13 @@ describe('Read model MongoDB adapter', () => {
     let testConnectionCloser;
     let testRepository;
 
-    before(async function () {
-        this.timeout(0);
+    beforeAll(async () => {
         const connectionUrl = await mongoUnit.start({ dbName: 'admin' });
         testConnection = await MongoClient.connect(connectionUrl);
         testConnectionCloser = testConnection.close.bind(testConnection);
     });
 
-    after(async () => {
+    afterAll(async () => {
         await testConnection.dropDatabase();
         testConnection.command({ shutdown: 1 });
         await testConnectionCloser();
