@@ -1,7 +1,6 @@
 import 'regenerator-runtime/runtime';
 import createDefaultAdapter from 'resolve-readmodel-memory';
 
-/* istanbul ignore next */
 const emptyFunction = () => {};
 
 const init = (adapter, eventStore, projection) => {

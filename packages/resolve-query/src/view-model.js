@@ -1,8 +1,6 @@
 import 'regenerator-runtime/runtime';
 
-/* istanbul ignore next */
 const GeneratorProto = (function*() {})().__proto__.__proto__;
-/* istanbul ignore next */
 const PromiseProto = (async function () {})().__proto__;
 
 const filterAsyncResult = (result) => {
