@@ -11,6 +11,18 @@ async function getMetaCollection(repository) {
     return await getCollection(repository, repository.metaCollectionName);
 }
 
+async function getCollectionIndexes(repository, collectionName) {
+    const metaCollection = await getMetaCollection(repository);
+    const collectionDescriptor = await metaCollection.findOne({ collectionName });
+    let indexes = [];
+
+    if (collectionDescriptor && Array.isArray(collectionDescriptor.indexes)) {
+        indexes = collectionDescriptor.indexes;
+    }
+
+    return indexes;
+}
+
 async function syncronizeDatabase(repository, database) {
     repository.collectionMap = new Map();
     const metaCollection = await database.collection(repository.metaCollectionName);
@@ -103,11 +115,10 @@ async function applyEnsureIndex(collection, metaCollection, collectionName, inde
         throw new Error(sanitizeError);
     }
 
-    await collection.createIndex(indexDescriptor);
-    await metaCollection.update(
-        { collectionName },
-        { $push: { indexes: Object.keys(indexDescriptor)[0] } }
-    );
+    const indexName = Object.keys(indexDescriptor)[0];
+    await collection.createIndex(indexDescriptor, { name: indexName });
+
+    await metaCollection.update({ collectionName }, { $push: { indexes: indexName } });
 }
 
 async function applyRemoveIndex(collection, metaCollection, collectionName, indexName) {
@@ -165,7 +176,7 @@ async function wrapWriteFunction(operation, collectionName, repository, ...args)
         case 'remove':
             sanitizeUpdateOrDelete(
                 operation,
-                (await metaCollection.findOne({ collectionName })).indexes,
+                await getCollectionIndexes(repository, collectionName),
                 args[0],
                 args[1]
             );
@@ -178,8 +189,7 @@ async function wrapWriteFunction(operation, collectionName, repository, ...args)
 }
 
 async function execFind(options) {
-    const metaCollection = await options.metaCollectionPromise;
-    const collection = await options.collectionPromise;
+    const collection = await getCollection(options.repository, options.collectionName);
 
     if (options.requestFold) {
         throw new Error(messages.findOperationNoReuse);
@@ -191,8 +201,7 @@ async function execFind(options) {
     }
 
     const searchFields = Object.keys(options.requestChain[0].args);
-    const indexesFields =
-        (await metaCollection.findOne({ collectionName: options.collectionName })).indexes || [];
+    const indexesFields = await getCollectionIndexes(options.repository, options.collectionName);
 
     if (!searchFields.reduce((acc, val) => acc && indexesFields.includes(val), true)) {
         throw new Error(messages.searchOnlyIndexedFields);
@@ -218,8 +227,6 @@ async function execFind(options) {
 }
 
 function wrapFind(initialFind, repository, collectionName, searchExpression) {
-    const metaCollectionPromise = getMetaCollection(repository);
-    const collectionPromise = getCollection(repository, collectionName);
     const resultPromise = Promise.resolve();
     const requestChain = [{ type: initialFind, args: searchExpression }];
     const foundErrors = [sanitizeSearchExpression(searchExpression)];
@@ -245,10 +252,9 @@ function wrapFind(initialFind, repository, collectionName, searchExpression) {
     const originalThen = resultPromise.then.bind(resultPromise);
     const boundExecFind = execFind.bind(null, {
         requestChain,
-        collectionPromise,
-        metaCollectionPromise,
         collectionName,
-        foundErrors
+        foundErrors,
+        repository
     });
 
     resultPromise.then = (...continuation) => originalThen(boundExecFind).then(...continuation);
@@ -259,7 +265,6 @@ function wrapFind(initialFind, repository, collectionName, searchExpression) {
 }
 
 async function countDocuments(repository, collectionName, searchExpression) {
-    const metaCollection = await getMetaCollection(repository);
     const collection = await getCollection(repository, collectionName);
 
     const sanitizeError = sanitizeSearchExpression(searchExpression);
@@ -268,7 +273,7 @@ async function countDocuments(repository, collectionName, searchExpression) {
     }
 
     const searchFields = Object.keys(searchExpression);
-    const indexesFields = (await metaCollection.findOne({ collectionName })).indexes || [];
+    const indexesFields = await getCollectionIndexes(repository, collectionName);
 
     if (!searchFields.reduce((acc, val) => acc && indexesFields.includes(val), true)) {
         throw new Error(messages.searchOnlyIndexedFields);
@@ -327,20 +332,10 @@ async function listCollections(repository) {
 
 // Provide interface https://docs.mongodb.com/manual/reference/method/js-database/
 function getStoreInterface(repository, isWriteable) {
-    const storeKey = !isWriteable ? 'STORE_READ_SIDE' : 'STORE_WRITE_SIDE';
-    const interfaceMap = repository.interfaceMap;
-
-    if (interfaceMap.has(storeKey)) {
-        return interfaceMap.get(storeKey);
-    }
-
-    let storeIface = Object.freeze({
+    return Object.freeze({
         collection: getCollectionInterface.bind(null, repository, isWriteable),
         listCollections: listCollections.bind(null, repository)
     });
-
-    interfaceMap.set(storeKey, storeIface);
-    return storeIface;
 }
 
 async function initProjection(repository) {

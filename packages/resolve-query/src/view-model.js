@@ -2,12 +2,12 @@ import 'regenerator-runtime/runtime';
 
 const GeneratorProto = (function*() {})().__proto__.__proto__;
 const PromiseProto = (async function () {})().__proto__;
+
 const filterAsyncResult = (result) => {
-    if (!result || !result.__proto__) return;
-    if (result.__proto__.__proto__ === GeneratorProto) {
+    if (result && result.__proto__ && result.__proto__.__proto__ === GeneratorProto) {
         throw new Error('A Projection function cannot be a generator or return an iterable object');
     }
-    if (result.__proto__ === PromiseProto) {
+    if (result && result.__proto__ === PromiseProto) {
         throw new Error('A Projection function cannot be asynchronous or return a Promise object');
     }
 };
@@ -44,7 +44,9 @@ const createViewModel = ({ projection, eventStore }) => {
         }
 
         const callback = (event) => {
-            if ((event && event.type === 'Init') || error) return;
+            if (!event || !event.type || error) {
+                return;
+            }
             try {
                 state = projection[event.type](state, event);
                 filterAsyncResult(state);
@@ -53,7 +55,7 @@ const createViewModel = ({ projection, eventStore }) => {
             }
         };
 
-        const eventTypes = Object.keys(projection);
+        const eventTypes = Object.keys(projection).filter(eventName => eventName !== 'Init');
 
         const subscribePromise =
             aggregateIds === '*'

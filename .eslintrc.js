@@ -1,7 +1,7 @@
 module.exports = {
     env: {
         node: true,
-        mocha: true,
+        jest: true,
         es6: true
     },
     extends: 'react-app',
