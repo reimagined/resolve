@@ -1,9 +1,11 @@
 import util from 'util';
 import uuidV4 from 'uuid/v4';
+
 import {
     del,
     expire,
     hdel,
+    hget,
     hlen,
     hset,
     hvals,
@@ -14,8 +16,7 @@ import {
     zrangebylex,
     zrangebyscore,
     zrem,
-    zremrangebylex,
-    hget
+    zremrangebylex
 } from './redisApi';
 
 const Z_VALUE_SEPARATOR = `${String.fromCharCode(0x0)}${String.fromCharCode(0x0)}`;
@@ -409,11 +410,8 @@ const update = async (repository, collectionName, criteria, operators) => {
     });
 };
 
-const ensureIndex = async (
-    { metaCollection },
-    collectionName,
-    { fieldName, fieldType, order = 1 }
-) => {
+const ensureIndex = async (repository, collectionName, { fieldName, fieldType, order = 1 }) => {
+    const { metaCollection } = repository;
     if (!fieldName) {
         throw new Error('`ensureIndex` - invalid fieldName');
     }
@@ -424,6 +422,12 @@ const ensureIndex = async (
 
     if (!(order === 1 || order === -1)) {
         throw new Error('`ensureIndex` - invalid order type: you can use only 1 or -1');
+    }
+    if ((await count(repository, collectionName, {})) > 0) {
+        throw new Error(
+            `Can't create the index by '${fieldName}' field ` +
+                `when collection '${collectionName}' have documents`
+        );
     }
 
     await metaCollection.ensureIndex(collectionName, { fieldName, fieldType, order });

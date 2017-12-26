@@ -75,13 +75,13 @@ describe('Read model redis adapter', () => {
     //     expect(adapter.reset).to.be.a('function');
     // });
 
-    it('find by id', async () => {
-        const store = await getReadable();
-        const TestCollection = await store.collection('Test');
+    // it('find by id', async () => {
+    //     const store = await getReadable();
+    //     const TestCollection = await store.collection('Test');
 
-        const records = await TestCollection.find({ _id: 1 }) /*.sort({ id: 1 })*/;
+    //     const records = await TestCollection.find({ _id: 1 }) /*.sort({ id: 1 })*/;
 
-        expect(records[0].text).to.be.equal('Initial');
-        expect(records[0]._id).to.be.equal(1);
-    });
+    //     expect(records[0].text).to.be.equal('Initial');
+    //     expect(records[0]._id).to.be.equal(1);
+    // });
 });
