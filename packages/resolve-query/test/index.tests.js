@@ -49,7 +49,7 @@ describe('resolve-query', () => {
         readModelProjection = {
             Init: sinon.stub().callsFake(async (store) => {
                 const users = await store.collection('Users');
-                await users.ensureIndex({ id: 1 });
+                await users.ensureIndex({ fieldName: 'id', fieldType: 'string', order: 1 });
             }),
 
             UserAdded: sinon.stub().callsFake(async (store, { aggregateId: id, payload }) => {
