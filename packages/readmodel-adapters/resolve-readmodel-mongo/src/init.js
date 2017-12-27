@@ -64,9 +64,7 @@ function checkOptionShape(option, types, count) {
     return !(
         option === null ||
         option === undefined ||
-        !types.reduce((acc, type) => acc || option.constructor === type, false) ||
-        (option.constructor === Object &&
-            (Number.isInteger(count) && Object.keys(option).length !== count))
+        !types.reduce((acc, type) => acc || option.constructor === type, false)
     );
 }
 
@@ -98,36 +96,60 @@ function sanitizeUpdateExpression(updateExpression) {
     return null;
 }
 
-function sanitizeIndexExpression(indexExpression) {
+function sanitizeReadIndexExpression(indexExpression) {
     if (
-        !checkOptionShape(indexExpression, [Object], 1) ||
+        !checkOptionShape(indexExpression, [Object]) ||
+        Object.keys(indexExpression).length !== 1 ||
         Math.abs(parseInt(Object.values(indexExpression)[0], 10)) !== 1
     ) {
-        return messages.indexDescriptorShape;
+        return messages.indexDescriptorReadShape;
     }
 
     return null;
 }
 
-async function applyEnsureIndex(collection, metaCollection, collectionName, indexDescriptor) {
-    const sanitizeError = sanitizeIndexExpression(indexDescriptor);
-    if (sanitizeError) {
-        throw new Error(sanitizeError);
+async function applyEnsureIndex(repository, collectionName, indexDescriptor) {
+    if (!checkOptionShape(indexDescriptor, [Object])) {
+        throw new Error(messages.indexDescriptorWriteShape);
     }
 
-    const indexName = Object.keys(indexDescriptor)[0];
-    await collection.createIndex(indexDescriptor, { name: indexName });
+    const { fieldName, fieldType, order = 1, ...rest } = indexDescriptor;
+    if (
+        Object.keys(rest).length > 0 ||
+        fieldName.constructor !== String ||
+        (fieldType !== 'number' && fieldType !== 'string') ||
+        Math.abs(order) !== 1
+    ) {
+        throw new Error(messages.indexDescriptorWriteShape);
+    }
 
-    await metaCollection.update({ collectionName }, { $push: { indexes: indexName } });
+    const collectionIndexes = await getCollectionIndexes(repository, collectionName);
+    if (collectionIndexes.indexOf(fieldName) > -1) {
+        return;
+    }
+
+    const metaCollection = await getMetaCollection(repository);
+    await metaCollection.update({ collectionName }, { $push: { indexes: fieldName } });
+
+    const collection = await getCollection(repository, collectionName);
+    await collection.createIndex({ [fieldName]: order }, { name: fieldName });
 }
 
-async function applyRemoveIndex(collection, metaCollection, collectionName, indexName) {
+async function applyRemoveIndex(repository, collectionName, indexName) {
     if (!checkOptionShape(indexName, [String])) {
         throw new Error(messages.deleteIndexArgumentShape);
     }
 
-    await collection.dropIndex(indexName);
+    const collectionIndexes = await getCollectionIndexes(repository, collectionName);
+    if (collectionIndexes.indexOf(indexName) < 0) {
+        return;
+    }
+
+    const metaCollection = await getMetaCollection(repository);
     await metaCollection.update({ collectionName }, { $pull: { indexes: indexName } });
+
+    const collection = await getCollection(repository, collectionName);
+    await collection.dropIndex(indexName);
 }
 
 function sanitizeUpdateOrDelete(operation, indexList, searchExpression, updateExpression) {
@@ -148,9 +170,6 @@ function sanitizeUpdateOrDelete(operation, indexList, searchExpression, updateEx
 }
 
 async function wrapWriteFunction(operation, collectionName, repository, ...args) {
-    const collection = await getCollection(repository, collectionName, true);
-    const metaCollection = await getMetaCollection(repository);
-
     if (
         (operation !== 'update' && args.length > 1) ||
         (operation === 'update' && args.length > 2)
@@ -158,6 +177,7 @@ async function wrapWriteFunction(operation, collectionName, repository, ...args)
         throw new Error(messages.mofidyOperationNoOptions(operation));
     }
 
+    const metaCollection = await getMetaCollection(repository);
     await metaCollection.update(
         { collectionName },
         { $set: { lastTimestamp: repository.lastTimestamp } }
@@ -165,11 +185,11 @@ async function wrapWriteFunction(operation, collectionName, repository, ...args)
 
     switch (operation) {
         case 'ensureIndex':
-            await applyEnsureIndex(collection, metaCollection, collectionName, args[0]);
+            await applyEnsureIndex(repository, collectionName, args[0]);
             break;
 
         case 'removeIndex':
-            await applyRemoveIndex(collection, metaCollection, collectionName, args[0]);
+            await applyRemoveIndex(repository, collectionName, args[0]);
             break;
 
         case 'update':
@@ -183,6 +203,7 @@ async function wrapWriteFunction(operation, collectionName, repository, ...args)
         // fallsthrough
 
         default:
+            const collection = await getCollection(repository, collectionName, true);
             await collection[operation](...args);
             break;
     }
@@ -234,7 +255,7 @@ function wrapFind(initialFind, repository, collectionName, searchExpression) {
     ['sort', 'skip', 'limit'].forEach((cmd) => {
         resultPromise[cmd] = (value) => {
             if (cmd === 'sort') {
-                foundErrors.push(sanitizeIndexExpression(value));
+                foundErrors.push(sanitizeReadIndexExpression(value));
                 if (requestChain.length > 1 || initialFind !== 'find') {
                     foundErrors.push(messages.sortOnlyAfterFind);
                 }
