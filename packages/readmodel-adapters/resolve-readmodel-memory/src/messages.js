@@ -10,7 +10,6 @@ export default {
         'Index descriptor should be object with only one name key and 1/-1 sort value',
     indexDescriptorWriteShape:
         'Index descriptor should be object with fields fieldName, fieldType (number or string) and optional order',
-
     deleteIndexArgumentShape: 'Delete index operation accepts only string value',
     modifyOperationForbiddenPattern: (operation, patterns) =>
         `Operation ${operation} contains forbidden patterns: ${patterns.join(', ')}`,

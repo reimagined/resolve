@@ -251,7 +251,7 @@ describe('Read model MongoDB adapter', () => {
                 await collection.find({ id: 1 }).sort();
                 return Promise.reject('Sorting on non-indexes like descriptor is forbidden');
             } catch (err) {
-                expect(err.message).to.be.deep.equal(messages.indexDescriptorShape);
+                expect(err.message).to.be.deep.equal(messages.indexDescriptorReadShape);
             }
         });
 
@@ -468,7 +468,13 @@ describe('Read model MongoDB adapter', () => {
 
                 EventCorrectEnsureIndex: async (store) => {
                     const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.ensureIndex({ [FIELD_NAME]: 1 });
+                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
+                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
+                },
+
+                EventMalformedDescriptorEnsureIndex: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'wrong' });
                 },
 
                 EventWrongEnsureIndex: async (store) => {
@@ -478,7 +484,9 @@ describe('Read model MongoDB adapter', () => {
 
                 EventCorrectRemoveIndex: async (store) => {
                     const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.ensureIndex({ [FIELD_NAME]: 1 });
+                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
+                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
+                    await collection.removeIndex(FIELD_NAME);
                     await collection.removeIndex(FIELD_NAME);
                 },
 
@@ -499,14 +507,14 @@ describe('Read model MongoDB adapter', () => {
 
                 EventCorrectFullUpdate: async (store) => {
                     const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.ensureIndex({ [FIELD_NAME]: 1 });
+                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
                     await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
                     await collection.update({ [FIELD_NAME]: 'value1' }, { [FIELD_NAME]: 'value2' });
                 },
 
                 EventCorrectPartialUpdate: async (store) => {
                     const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.ensureIndex({ [FIELD_NAME]: 1 });
+                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
                     await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
                     await collection.update(
                         { [FIELD_NAME]: 'value1' },
@@ -522,7 +530,7 @@ describe('Read model MongoDB adapter', () => {
 
                 EventMalformedMutationUpdate: async (store, event) => {
                     const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.ensureIndex({ [FIELD_NAME]: 1 });
+                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
                     await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
                     await collection.update(
                         { [FIELD_NAME]: 'value1' },
@@ -532,7 +540,7 @@ describe('Read model MongoDB adapter', () => {
 
                 EventScalarMutationUpdate: async (store, event) => {
                     const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.ensureIndex({ [FIELD_NAME]: 1 });
+                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
                     await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
                     await collection.update({ [FIELD_NAME]: 'value1' }, 'scalar');
                 },
@@ -548,7 +556,7 @@ describe('Read model MongoDB adapter', () => {
 
                 EventCorrectRemove: async (store) => {
                     const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.ensureIndex({ [FIELD_NAME]: 1 });
+                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
                     await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
                     await collection.remove({ [FIELD_NAME]: 'value1' });
                 },
@@ -670,6 +678,19 @@ describe('Read model MongoDB adapter', () => {
             expect(metaDescriptor.indexes).to.be.deep.equal([FIELD_NAME]);
         });
 
+        it('should throw error on ensureIndex operation with malformed index object', async () => {
+            let lastError = await readInstance.getError();
+            expect(lastError).to.be.equal(null);
+
+            await builtTestProjection.EventMalformedDescriptorEnsureIndex({
+                type: 'EventMalformedDescriptorEnsureIndex',
+                timestamp: 10
+            });
+
+            lastError = await readInstance.getError();
+            expect(lastError.message).to.be.equal(messages.indexDescriptorWriteShape);
+        });
+
         it('should throw error on wrong ensureIndex operation', async () => {
             let lastError = await readInstance.getError();
             expect(lastError).to.be.equal(null);
@@ -680,7 +701,7 @@ describe('Read model MongoDB adapter', () => {
             });
 
             lastError = await readInstance.getError();
-            expect(lastError.message).to.be.equal(messages.indexDescriptorShape);
+            expect(lastError.message).to.be.equal(messages.indexDescriptorWriteShape);
         });
 
         it('should process corrent removeIndex operation', async () => {
