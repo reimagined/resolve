@@ -20,13 +20,11 @@ async function performCollectionOperation(resource, operationName, ...inputArgs)
     );
 }
 
-function checkOptionShape(option, types, count) {
+function checkOptionShape(option, types) {
     return !(
         option === null ||
         option === undefined ||
-        !types.reduce((acc, type) => acc || option.constructor === type, false) ||
-        (option.constructor === Object &&
-            (Number.isInteger(count) && Object.keys(option).length !== count))
+        !types.reduce((acc, type) => acc || option.constructor === type, false)
     );
 }
 
@@ -58,27 +56,37 @@ function sanitizeUpdateExpression(updateExpression) {
     return null;
 }
 
-function sanitizeIndexExpression(indexExpression) {
+function sanitizeReadIndexExpression(indexExpression) {
     if (
-        !checkOptionShape(indexExpression, [Object], 1) ||
+        !checkOptionShape(indexExpression, [Object]) ||
+        Object.keys(indexExpression).length !== 1 ||
         Math.abs(parseInt(Object.values(indexExpression)[0], 10)) !== 1
     ) {
-        return messages.indexDescriptorShape;
+        return messages.indexDescriptorReadShape;
     }
 
     return null;
 }
 
 async function applyEnsureIndex(collection, collectionIndexes, indexDescriptor) {
-    const sanitizeError = sanitizeIndexExpression(indexDescriptor);
-    if (sanitizeError) {
-        throw new Error(sanitizeError);
+    if (!checkOptionShape(indexDescriptor, [Object])) {
+        throw new Error(messages.indexDescriptorWriteShape);
     }
-    const indexName = Object.keys(indexDescriptor)[0];
-    if (collectionIndexes.has(indexName)) return;
 
-    await performCollectionOperation(collection, 'ensureIndex', { fieldName: indexName });
-    collectionIndexes.add(indexName);
+    const { fieldName, fieldType, order = 1, ...rest } = indexDescriptor;
+    if (
+        Object.keys(rest).length > 0 ||
+        fieldName.constructor !== String ||
+        (fieldType !== 'number' && fieldType !== 'string') ||
+        Math.abs(order) !== 1
+    ) {
+        throw new Error(messages.indexDescriptorWriteShape);
+    }
+
+    if (collectionIndexes.has(fieldName)) return;
+
+    await performCollectionOperation(collection, 'ensureIndex', { fieldName });
+    collectionIndexes.add(fieldName);
 }
 
 async function applyRemoveIndex(collection, collectionIndexes, indexName) {
@@ -186,7 +194,7 @@ function wrapFind(initialFind, repository, collectionName, searchExpression) {
     ['sort', 'skip', 'limit'].forEach((cmd) => {
         resultPromise[cmd] = (value) => {
             if (cmd === 'sort') {
-                foundErrors.push(sanitizeIndexExpression(value));
+                foundErrors.push(sanitizeReadIndexExpression(value));
                 if (requestChain.length > 1 || initialFind !== 'find') {
                     foundErrors.push(messages.sortOnlyAfterFind);
                 }

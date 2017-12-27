@@ -6,8 +6,11 @@ export default {
         'Search expression values should be either number or string and should not contain query operator',
     updateExpressionOnlyObject: 'Update expression should be object with fields and replace values',
     updateOperatorFixedSet: wrongOperator => `Update operator ${wrongOperator} is not permitted`,
-    indexDescriptorShape:
-        'Index descriptor should bee object with only one name key and 1/-1 sort value',
+    indexDescriptorReadShape:
+        'Index descriptor should be object with only one name key and 1/-1 sort value',
+    indexDescriptorWriteShape:
+        'Index descriptor should be object with fields fieldName, fieldType (number or string) and optional order',
+
     deleteIndexArgumentShape: 'Delete index operation accepts only string value',
     modifyOperationForbiddenPattern: (operation, patterns) =>
         `Operation ${operation} contains forbidden patterns: ${patterns.join(', ')}`,
