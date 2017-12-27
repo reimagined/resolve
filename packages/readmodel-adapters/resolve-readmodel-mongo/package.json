@@ -1,8 +1,7 @@
 {
   "name": "resolve-readmodel-mongo",
   "version": "0.1.0",
-  "description":
-    "This package serves as a resolve-query adapter for storing a read model in MongoDB database with persistence",
+  "description": "This package serves as a resolve-query adapter for storing a read model in MongoDB database with persistence",
   "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
@@ -18,13 +17,17 @@
   },
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
-  "homepage":
-    "https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-mongo#readme",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-mongo#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "jest": "22.0.3",
-    "mongo-unit": "^1.2.0",
+    "mongo-unit": "^1.3.0",
     "mongodb-download": "2.2.3",
     "mongodb-prebuilt": "^6.3.4",
     "sinon": "^3.3.0"

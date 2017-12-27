@@ -29,8 +29,8 @@ describe('Read model MongoDB adapter', () => {
 
     afterAll(async () => {
         await testConnection.dropDatabase();
-        await testConnection.command({ shutdown: 1 });
         await testConnectionCloser(true);
+        await mongoUnit.stop();
         testConnection = null;
     });
 
