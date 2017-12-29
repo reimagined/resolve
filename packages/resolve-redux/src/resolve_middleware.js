@@ -202,7 +202,7 @@ export function createMiddleware(viewModels) {
         let isInitialized = false;
 
         return next => (action) => {
-            if(!isInitialized) {
+            if (!isInitialized) {
                 isInitialized = true;
                 store.dispatch(actions.provideViewModels(viewModels));
             }
