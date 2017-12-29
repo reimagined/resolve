@@ -197,11 +197,15 @@ export function createMiddleware(viewModels) {
     const requests = {};
 
     return (store) => {
-        store.dispatch(actions.provideViewModels(viewModels));
-
         const socket = initSocketIO(store);
 
+        let isInitialized = false;
+
         return next => (action) => {
+            if(!isInitialized) {
+                isInitialized = true;
+                store.dispatch(actions.provideViewModels(viewModels));
+            }
             switch (action.type) {
                 case SUBSCRIBE: {
                     subscribe(
