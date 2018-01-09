@@ -8,13 +8,23 @@ function createCollection(repository, collectionName) {
     repository.collectionIndexesMap.set(collectionName, new Set());
 }
 
-function checkOptionShape(option, types, count) {
+async function performCollectionOperation(resource, operationName, ...inputArgs) {
+    return await new Promise((resolve, reject) =>
+        resource[operationName](...inputArgs, (err, ...outputArgs) => {
+            if (!err) {
+                resolve(...outputArgs);
+            } else {
+                reject(err);
+            }
+        })
+    );
+}
+
+function checkOptionShape(option, types) {
     return !(
         option === null ||
         option === undefined ||
-        !types.reduce((acc, type) => acc || option.constructor === type, false) ||
-        (option.constructor === Object &&
-            (Number.isInteger(count) && Object.keys(option).length !== count))
+        !types.reduce((acc, type) => acc || option.constructor === type, false)
     );
 }
 
@@ -46,44 +56,46 @@ function sanitizeUpdateExpression(updateExpression) {
     return null;
 }
 
-function sanitizeIndexExpression(indexExpression) {
+function sanitizeReadIndexExpression(indexExpression) {
     if (
-        !checkOptionShape(indexExpression, [Object], 1) ||
+        !checkOptionShape(indexExpression, [Object]) ||
+        Object.keys(indexExpression).length !== 1 ||
         Math.abs(parseInt(Object.values(indexExpression)[0], 10)) !== 1
     ) {
-        return messages.indexDescriptorShape;
+        return messages.indexDescriptorReadShape;
     }
 
     return null;
 }
 
 async function applyEnsureIndex(collection, collectionIndexes, indexDescriptor) {
-    const sanitizeError = sanitizeIndexExpression(indexDescriptor);
-    if (sanitizeError) {
-        throw new Error(sanitizeError);
+    if (!checkOptionShape(indexDescriptor, [Object])) {
+        throw new Error(messages.indexDescriptorWriteShape);
     }
 
-    const indexName = Object.keys(indexDescriptor)[0];
-    if (collectionIndexes.has(indexName)) return;
+    const { fieldName, fieldType, order = 1, ...rest } = indexDescriptor;
+    if (
+        Object.keys(rest).length > 0 ||
+        fieldName.constructor !== String ||
+        (fieldType !== 'number' && fieldType !== 'string') ||
+        Math.abs(order) !== 1
+    ) {
+        throw new Error(messages.indexDescriptorWriteShape);
+    }
 
-    await new Promise((resolve, reject) =>
-        collection.ensureIndex({ fieldName: indexName }, err => (!err ? resolve() : reject(err)))
-    );
+    if (collectionIndexes.has(fieldName)) return;
 
-    collectionIndexes.add(indexName);
+    await performCollectionOperation(collection, 'ensureIndex', { fieldName });
+    collectionIndexes.add(fieldName);
 }
 
 async function applyRemoveIndex(collection, collectionIndexes, indexName) {
     if (!checkOptionShape(indexName, [String])) {
         throw new Error(messages.deleteIndexArgumentShape);
     }
-
     if (!collectionIndexes.has(indexName)) return;
 
-    await new Promise((resolve, reject) =>
-        collection.removeIndex(indexName, err => (!err ? resolve() : reject(err)))
-    );
-
+    await performCollectionOperation(collection, 'removeIndex', indexName);
     collectionIndexes.delete(indexName);
 }
 
@@ -125,20 +137,16 @@ async function wrapWriteFunction(operation, collectionName, repository, ...args)
             break;
 
         case 'insert':
-            await new Promise((resolve, reject) =>
-                collection.insert(
-                    { _id: repository.counter++, ...args[0] },
-                    err => (!err ? resolve() : reject(err))
-                )
-            );
+            await performCollectionOperation(collection, 'insert', {
+                _id: repository.counter++,
+                ...args[0]
+            });
             break;
 
         case 'update':
         case 'remove':
             sanitizeUpdateOrDelete(operation, collectionIndexes, args[0], args[1]);
-            await new Promise((resolve, reject) =>
-                collection[operation](...args, err => (!err ? resolve() : reject(err)))
-            );
+            await performCollectionOperation(collection, operation, ...args);
             break;
     }
 }
@@ -172,15 +180,12 @@ async function execFind(options) {
         options.collection
     );
 
-    return await new Promise((resolve, reject) =>
-        options.requestFold.exec((err, docs) => (!err ? resolve(docs) : reject(err)))
-    );
+    return await performCollectionOperation(options.requestFold, 'exec');
 }
 
 function wrapFind(initialFind, repository, collectionName, searchExpression) {
     const collection = repository.collectionMap.get(collectionName);
     const collectionIndexes = repository.collectionIndexesMap.get(collectionName);
-
     const resultPromise = Promise.resolve();
     const requestChain = [{ type: initialFind, args: searchExpression }];
     const foundErrors = [sanitizeSearchExpression(searchExpression)];
@@ -188,7 +193,7 @@ function wrapFind(initialFind, repository, collectionName, searchExpression) {
     ['sort', 'skip', 'limit'].forEach((cmd) => {
         resultPromise[cmd] = (value) => {
             if (cmd === 'sort') {
-                foundErrors.push(sanitizeIndexExpression(value));
+                foundErrors.push(sanitizeReadIndexExpression(value));
                 if (requestChain.length > 1 || initialFind !== 'find') {
                     foundErrors.push(messages.sortOnlyAfterFind);
                 }
@@ -232,9 +237,7 @@ async function countDocuments(repository, collectionName, searchExpression) {
         throw new Error(messages.searchOnlyIndexedFields);
     }
 
-    return await new Promise((resolve, reject) =>
-        collection.count(searchExpression, (err, count) => (!err ? resolve(count) : reject(err)))
-    );
+    return await performCollectionOperation(collection, 'count', searchExpression);
 }
 
 // Provide interface https://docs.mongodb.com/manual/reference/method/js-collection/
@@ -282,20 +285,10 @@ async function listCollections(repository) {
 
 // Provide interface https://docs.mongodb.com/manual/reference/method/js-database/
 function getStoreInterface(repository, isWriteable) {
-    const storeKey = !isWriteable ? 'STORE_READ_SIDE' : 'STORE_WRITE_SIDE';
-    const interfaceMap = repository.interfaceMap;
-
-    if (interfaceMap.has(storeKey)) {
-        return interfaceMap.get(storeKey);
-    }
-
-    let storeIface = Object.freeze({
+    return Object.freeze({
         collection: getCollectionInterface.bind(null, repository, isWriteable),
         listCollections: listCollections.bind(null, repository)
     });
-
-    interfaceMap.set(storeKey, storeIface);
-    return storeIface;
 }
 
 async function initProjection(repository) {

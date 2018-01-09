@@ -13,22 +13,24 @@ import reset from '../src/reset';
 describe('Read model MongoDB adapter', () => {
     const DEFAULT_COLLECTION_NAME = 'TestDefaultCollection';
     const META_COLLECTION_NAME = 'TestMetaCollection';
+    const FOREIGN_COLLECTION_NAME = 'TestForeignCollection';
+    const MAX_SAFE_TIMEOUT = Math.pow(2, 31) - 1;
 
     let testConnection;
     let testConnectionCloser;
     let testRepository;
 
-    before(async function () {
-        this.timeout(0);
+    beforeAll(async () => {
+        jest.setTimeout(MAX_SAFE_TIMEOUT);
         const connectionUrl = await mongoUnit.start({ dbName: 'admin' });
         testConnection = await MongoClient.connect(connectionUrl);
         testConnectionCloser = testConnection.close.bind(testConnection);
     });
 
-    after(async () => {
+    afterAll(async () => {
         await testConnection.dropDatabase();
-        testConnection.command({ shutdown: 1 });
-        await testConnectionCloser();
+        await testConnectionCloser(true);
+        await mongoUnit.stop();
         testConnection = null;
     });
 
@@ -249,7 +251,7 @@ describe('Read model MongoDB adapter', () => {
                 await collection.find({ id: 1 }).sort();
                 return Promise.reject('Sorting on non-indexes like descriptor is forbidden');
             } catch (err) {
-                expect(err.message).to.be.deep.equal(messages.indexDescriptorShape);
+                expect(err.message).to.be.deep.equal(messages.indexDescriptorReadShape);
             }
         });
 
@@ -323,6 +325,46 @@ describe('Read model MongoDB adapter', () => {
 
             const result = await collection.count({ id: 2 });
             expect(result).to.be.deep.equal(1);
+        });
+
+        it('should fail on count operation with empty or non-object query', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            try {
+                await collection.count();
+                return Promise.reject('Count on empty or non-object query is forbidden');
+            } catch (err) {
+                expect(err.message).to.be.deep.equal(messages.searchExpressionOnlyObject);
+            }
+        });
+
+        it('should support then-only branch on correct read query', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            const result = await collection.find({ id: 2 }).then(result => result);
+            expect(result[0].content).to.be.equal('test-2');
+        });
+
+        it('should support catch-only branch failure on raised readable error', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            const err = await collection.find('wrong-find').catch(err => err);
+            expect(err.message).to.be.deep.equal(messages.searchExpressionOnlyObject);
+        });
+
+        it('should fail on count operation with search on non-indexed field', async () => {
+            const readable = await readInstance.getReadable();
+            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+
+            try {
+                await collection.count({ content: 'test-1' });
+                return Promise.reject('Count on non-indexes fields is forbidden');
+            } catch (err) {
+                expect(err.message).to.be.deep.equal(messages.searchOnlyIndexedFields);
+            }
         });
 
         it('should provide actual collections list in storage', async () => {
@@ -408,15 +450,31 @@ describe('Read model MongoDB adapter', () => {
         let originalTestProjection;
         let builtTestProjection;
         let readInstance;
+        let initShouldFail;
 
         beforeEach(async () => {
+            initShouldFail = false;
+
             originalTestProjection = {
-                Init: sinon.stub(),
+                Init: sinon.stub().callsFake(async () => {
+                    await new Promise((resolve, reject) =>
+                        setImmediate(
+                            () => (!initShouldFail ? resolve() : reject(new Error('Init Failure')))
+                        )
+                    );
+                }),
+
                 TestEvent: sinon.stub(),
 
                 EventCorrectEnsureIndex: async (store) => {
                     const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.ensureIndex({ [FIELD_NAME]: 1 });
+                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
+                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
+                },
+
+                EventMalformedDescriptorEnsureIndex: async (store) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'wrong' });
                 },
 
                 EventWrongEnsureIndex: async (store) => {
@@ -426,6 +484,9 @@ describe('Read model MongoDB adapter', () => {
 
                 EventCorrectRemoveIndex: async (store) => {
                     const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
+                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
+                    await collection.removeIndex(FIELD_NAME);
                     await collection.removeIndex(FIELD_NAME);
                 },
 
@@ -446,14 +507,14 @@ describe('Read model MongoDB adapter', () => {
 
                 EventCorrectFullUpdate: async (store) => {
                     const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.ensureIndex({ [FIELD_NAME]: 1 });
+                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
                     await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
                     await collection.update({ [FIELD_NAME]: 'value1' }, { [FIELD_NAME]: 'value2' });
                 },
 
                 EventCorrectPartialUpdate: async (store) => {
                     const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.ensureIndex({ [FIELD_NAME]: 1 });
+                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
                     await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
                     await collection.update(
                         { [FIELD_NAME]: 'value1' },
@@ -469,12 +530,19 @@ describe('Read model MongoDB adapter', () => {
 
                 EventMalformedMutationUpdate: async (store, event) => {
                     const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.ensureIndex({ [FIELD_NAME]: 1 });
+                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
                     await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
                     await collection.update(
                         { [FIELD_NAME]: 'value1' },
                         { $customOperator: { [FIELD_NAME]: 'value2' } }
                     );
+                },
+
+                EventScalarMutationUpdate: async (store, event) => {
+                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
+                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
+                    await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
+                    await collection.update({ [FIELD_NAME]: 'value1' }, 'scalar');
                 },
 
                 EventWrongUpdate: async (store) => {
@@ -488,7 +556,7 @@ describe('Read model MongoDB adapter', () => {
 
                 EventCorrectRemove: async (store) => {
                     const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.ensureIndex({ [FIELD_NAME]: 1 });
+                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
                     await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
                     await collection.remove({ [FIELD_NAME]: 'value1' });
                 },
@@ -503,6 +571,18 @@ describe('Read model MongoDB adapter', () => {
                     const collection = await store.collection(DEFAULT_COLLECTION_NAME);
                     await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
                     await collection.remove({ [FIELD_NAME]: 'value1' }, { option: 'value' });
+                },
+
+                EventCheckEqualCollections: async (store) => {
+                    const collectionFirst = await store.collection(DEFAULT_COLLECTION_NAME);
+                    const collectionSecond = await store.collection(DEFAULT_COLLECTION_NAME);
+                    if (collectionFirst === collectionSecond) {
+                        throw new Error('Collections is equal');
+                    }
+                },
+
+                ForeignCollection: async (store) => {
+                    await store.collection(FOREIGN_COLLECTION_NAME);
                 }
             };
 
@@ -513,7 +593,17 @@ describe('Read model MongoDB adapter', () => {
         afterEach(async () => {
             originalTestProjection = null;
             builtTestProjection = null;
+            initShouldFail = null;
             readInstance = null;
+        });
+
+        it('should raise error on read interface reinitialization', async () => {
+            try {
+                readInstance = init(testRepository);
+                return Promise.reject('Read instance can\'t be initialized twice');
+            } catch (err) {
+                expect(err.message).to.be.equal(messages.reinitialization);
+            }
         });
 
         it('should call Init projection function on read invocation', async () => {
@@ -549,6 +639,26 @@ describe('Read model MongoDB adapter', () => {
             expect(originalTestProjection.Init.callCount).to.be.equal(1);
         });
 
+        it('should handle errors in Init projection function', async () => {
+            initShouldFail = true;
+            const initError = await readInstance.getError();
+            expect(originalTestProjection.Init.callCount).to.be.equal(1);
+            expect(initError.message).to.be.equal('Init Failure');
+        });
+
+        it('should reuse collection interfaces which already initialized', async () => {
+            let lastError = await readInstance.getError();
+            expect(lastError).to.be.equal(null);
+
+            await builtTestProjection.EventCheckEqualCollections({
+                type: 'EventCheckEqualCollections',
+                timestamp: 10
+            });
+
+            lastError = await readInstance.getError();
+            expect(lastError.message).to.be.equal('Collections is equal');
+        });
+
         it('should process corrent ensureIndex operation', async () => {
             const metaCollection = await testConnection.collection(META_COLLECTION_NAME);
 
@@ -568,6 +678,19 @@ describe('Read model MongoDB adapter', () => {
             expect(metaDescriptor.indexes).to.be.deep.equal([FIELD_NAME]);
         });
 
+        it('should throw error on ensureIndex operation with malformed index object', async () => {
+            let lastError = await readInstance.getError();
+            expect(lastError).to.be.equal(null);
+
+            await builtTestProjection.EventMalformedDescriptorEnsureIndex({
+                type: 'EventMalformedDescriptorEnsureIndex',
+                timestamp: 10
+            });
+
+            lastError = await readInstance.getError();
+            expect(lastError.message).to.be.equal(messages.indexDescriptorWriteShape);
+        });
+
         it('should throw error on wrong ensureIndex operation', async () => {
             let lastError = await readInstance.getError();
             expect(lastError).to.be.equal(null);
@@ -578,7 +701,7 @@ describe('Read model MongoDB adapter', () => {
             });
 
             lastError = await readInstance.getError();
-            expect(lastError.message).to.be.equal(messages.indexDescriptorShape);
+            expect(lastError.message).to.be.equal(messages.indexDescriptorWriteShape);
         });
 
         it('should process corrent removeIndex operation', async () => {
@@ -697,6 +820,23 @@ describe('Read model MongoDB adapter', () => {
             );
         });
 
+        it('should throw error on update operation with scalar update field', async () => {
+            let lastError = await readInstance.getError();
+            expect(lastError).to.be.equal(null);
+
+            await builtTestProjection.EventScalarMutationUpdate({
+                type: 'EventScalarMutationUpdate',
+                timestamp: 10
+            });
+
+            lastError = await readInstance.getError();
+            expect(lastError.message).to.be.equal(
+                messages.modifyOperationForbiddenPattern('update', [
+                    messages.updateExpressionOnlyObject
+                ])
+            );
+        });
+
         it('should throw error on wrong update operation', async () => {
             let lastError = await readInstance.getError();
             expect(lastError).to.be.equal(null);
@@ -747,6 +887,24 @@ describe('Read model MongoDB adapter', () => {
 
             lastError = await readInstance.getError();
             expect(lastError.message).to.be.equal(messages.mofidyOperationNoOptions('remove'));
+        });
+
+        it('should fail while interact with collections with no meta information', async () => {
+            let lastError = await readInstance.getError();
+            expect(lastError).to.be.equal(null);
+
+            const defaultCollection = await testConnection.collection(FOREIGN_COLLECTION_NAME);
+            await defaultCollection.insert({ test: true });
+
+            await builtTestProjection.ForeignCollection({
+                type: 'ForeignCollection',
+                timestamp: 10
+            });
+
+            lastError = await readInstance.getError();
+            expect(lastError.message).to.be.equal(
+                messages.collectionExistsNoMeta(FOREIGN_COLLECTION_NAME)
+            );
         });
     });
 

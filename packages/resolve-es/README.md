@@ -9,9 +9,11 @@ When initializing an event store, pass the following arguments:
 	* [resolve-storage-lite](../storage-adapters/resolve-storage-lite)
 
 	... or implement a custom storage adapter. A storage adapter is an object with the following fields:
-	* `saveEvent` - a function which takes an event and returns a Promise that is resolved when the event is stored.
 	* `loadEventsByTypes` - a function which takes three arguments: an array of event types, a callback that is called for handling each appropriate event and a timestamp specifying when to start loading events. 
 	* `loadEventsByAggregateIds` - a function which takes three arguments: an aggregate id/ array of aggregate ids, a callback that is called for handling each   appropriate event and a timestamp specifying when to start loading events. 
+	* `saveEvent` - a function which takes an event and returns a Promise that is resolved when the event is stored. Event should contain following required fields: `aggregateId`, `aggregateVersion` and `type`. Using `saveEvent` function in custom code is not not recommended.
+	* `saveEventRaw` - like `saveEvent`, but event should contain custom `timestamp` field.
+
 
 * `bus`  
 	Use a reSolve framework [adapter](../bus-adapters)...
@@ -56,6 +58,7 @@ eventStore.subscribeByAggregateId(['1', '2'], event =>
 
 const event = {
   aggregateId: '1',
+	aggregateVersion: 2,
   type: 'UserCreated',
   payload: {
     email: 'test@user.com'

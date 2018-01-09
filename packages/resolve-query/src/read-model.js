@@ -1,58 +1,53 @@
 import 'regenerator-runtime/runtime';
 import createDefaultAdapter from 'resolve-readmodel-memory';
 
+const emptyFunction = () => {};
+
 const init = (adapter, eventStore, projection) => {
     if (projection === null) {
         return {
             ...adapter.init(),
-            onDispose: () => {}
+            onDispose: emptyFunction
         };
     }
 
-    let unsubscriber = null;
-    let onDispose = () => (unsubscriber === null ? (onDispose = null) : unsubscriber());
     const { getLastAppliedTimestamp = () => 0, ...readApi } = adapter.init();
+    let unsubscriber = null;
+
+    let onDispose = () => {
+        if (unsubscriber === null) {
+            onDispose = emptyFunction;
+            return;
+        }
+        unsubscriber();
+    };
 
     const loadDonePromise = new Promise((resolve, reject) => {
-        let loading = { eventsFetched: 0, eventsProcessed: 0, isLoaded: false };
         let flowPromise = Promise.resolve();
-
-        const loadingChecker = (doCount) => {
-            if (!loading) return;
-            if (doCount) {
-                loading.eventsProcessed++;
-            } else {
-                loading.isLoaded = true;
-            }
-            if (loading.eventsProcessed === loading.eventsFetched && loading.isLoaded) {
-                loading = null;
-                resolve();
-            }
-        };
 
         const forceStop = (reason) => {
             if (flowPromise) {
                 flowPromise.then(reject, reject);
                 flowPromise = null;
-                if (onDispose) {
-                    onDispose();
-                }
+                onDispose();
             }
 
             return Promise.reject(reason);
         };
 
         const synchronizedEventWorker = (event) => {
-            if (!flowPromise) return;
-
-            if (event && event.type && typeof projection[event.type] === 'function') {
-                flowPromise = flowPromise.then(projection[event.type].bind(null, event), forceStop);
+            if (
+                !flowPromise ||
+                !event ||
+                !event.type ||
+                typeof projection[event.type] !== 'function'
+            ) {
+                return;
             }
 
-            if (!loading || loading.isLoaded) return;
-            flowPromise = flowPromise.then(loadingChecker.bind(null, true));
-
-            loading.eventsFetched++;
+            flowPromise = flowPromise
+                .then(projection[event.type].bind(null, event))
+                .catch(forceStop);
         };
 
         Promise.resolve()
@@ -63,9 +58,11 @@ const init = (adapter, eventStore, projection) => {
                 })
             )
             .then((unsub) => {
-                loadingChecker(false);
+                if (flowPromise) {
+                    flowPromise = flowPromise.then(resolve).catch(forceStop);
+                }
 
-                if (onDispose !== null) {
+                if (onDispose !== emptyFunction) {
                     unsubscriber = unsub;
                 } else {
                     unsub();
@@ -105,7 +102,9 @@ const createReadModel = ({ projection, eventStore, adapter }) => {
     const reader = async (...args) => await getReadModel(...args);
 
     reader.dispose = () => {
-        if (!repository.loadDonePromise) return;
+        if (!repository.loadDonePromise) {
+            return;
+        }
         repository.onDispose();
         Object.keys(repository).forEach((key) => {
             delete repository[key];
