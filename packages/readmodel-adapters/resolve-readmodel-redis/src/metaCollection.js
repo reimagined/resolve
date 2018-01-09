@@ -27,17 +27,21 @@ const set = async ({ client, metaCollectionName }, collectionName, meta) =>
 const getNextId = async ({ client, autoincMetaCollectionName }, collectionName) =>
     parseInt(await hincrby(client, autoincMetaCollectionName, collectionName, 1), 10);
 
-const getIndexName = (collectionName, fieldName) => {
-    return `${collectionName}__index__${fieldName}`;
+const getFindIndexName = (collectionName, fieldName) => {
+    return `${collectionName}__find_index__${fieldName}`;
+};
+
+const getSortIndexName = (collectionName, fieldName) => {
+    return `${collectionName}__sort_index__${fieldName}`;
 };
 
 const ensureIndex = async (repository, collectionName, { fieldName, fieldType, order }) => {
     const meta = await get(repository, collectionName);
 
-    const name = getIndexName(collectionName, fieldName);
     if (meta.indexes[fieldName]) {
-        throw new Error(`Can't 'ensureIndex': '${name}' is exists`);
+        throw new Error(`Can't 'ensureIndex': '${fieldName}' is exists`);
     }
+
     meta.indexes[fieldName] = {
         fieldName,
         fieldType,
@@ -51,7 +55,7 @@ const removeIndex = async (repository, collectionName, fieldName) => {
     const meta = await get(repository, collectionName);
 
     if (!meta.indexes[fieldName]) {
-        throw new Error(`Can't 'removeIndex': '${name}' is not exists`);
+        throw new Error(`Can't 'removeIndex': '${fieldName}' is not exists`);
     }
     delete meta.indexes[fieldName];
 
@@ -69,7 +73,8 @@ export default (repository) => {
         del: del.bind(null, repository),
         exists: exists.bind(null, repository),
         get: get.bind(null, repository),
-        getIndexName: getIndexName,
+        getFindIndexName: getFindIndexName,
+        getSortIndexName: getSortIndexName,
         getNextId: getNextId.bind(null, repository),
         ensureIndex: ensureIndex.bind(null, repository),
         removeIndex: removeIndex.bind(null, repository),

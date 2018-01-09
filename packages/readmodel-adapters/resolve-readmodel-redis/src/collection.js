@@ -13,11 +13,13 @@ import {
     zaddMulti,
     zinterstore,
     zrange,
+    zrevrange,
     zrangebylex,
     zrangebyscore,
     zrem,
     zremrangebylex
 } from './redisApi';
+import { normalize } from 'path';
 
 const Z_VALUE_SEPARATOR = `${String.fromCharCode(0x0)}${String.fromCharCode(0x0)}`;
 const Z_LEX_MAX_VALUE = String.fromCharCode(0xff);
@@ -59,6 +61,11 @@ const saveIdsToCollection = async ({ client }, collectionName, ids) => {
     await expire(client, collectionName, TTL_FOR_TEMP_COLLECTION);
 };
 
+const normalizeIndexValues = (fieldType, values) => fieldType === 'number'
+    ? values
+    : values.map(value =>
+        value.substr(value.lastIndexOf(Z_VALUE_SEPARATOR) + Z_VALUE_SEPARATOR.length));
+
 const getIds = async (repository, collectionName, indexes, criteria) => {
     const { client, metaCollection } = repository;
 
@@ -70,23 +77,18 @@ const getIds = async (repository, collectionName, indexes, criteria) => {
     const promises = Object.keys(criteria).map(async (fieldName) => {
         tempCollectionNames[fieldName] = `${tempPrefix}_${fieldName}`;
         const fieldValue = criteria[fieldName];
-        const indexName = metaCollection.getIndexName(collectionName, fieldName);
+        const indexName = metaCollection.getFindIndexName(collectionName, fieldName);
         const fieldType = indexes[fieldName].fieldType;
 
-        let ids = [];
-        if (fieldType === 'number') {
-            ids = await zrangebyscore(client, indexName, fieldValue, fieldValue);
-        } else {
-            const lexIds = await zrangebylex(
+        let ids = fieldType === 'number'
+            ? await zrangebyscore(client, indexName, fieldValue, fieldValue)
+            : await zrangebylex(
                 client,
                 indexName,
                 `[${fieldValue}${Z_VALUE_SEPARATOR}`,
                 `(${fieldValue}${Z_VALUE_SEPARATOR}${Z_LEX_MAX_VALUE}`
             );
-            ids = lexIds.map(value =>
-                value.substr(value.lastIndexOf(Z_VALUE_SEPARATOR) + Z_VALUE_SEPARATOR.length)
-            );
-        }
+        ids = normalizeIndexValues(fieldType, ids);
         return await saveIdsToCollection(repository, tempCollectionNames[fieldName], ids);
     });
 
@@ -112,6 +114,23 @@ const populateStringIndex = async (client, collectionName, value, id) => {
     await zadd(client, collectionName, 0, `${value}${Z_VALUE_SEPARATOR}${id}`);
 };
 
+const populateFindIndex = async (client, collectionName, fieldName, fieldType, indexName, id, value) => {
+    if (fieldType === 'number') {
+        if (typeof value !== 'number') {
+            throw new Error(
+                `Can't update index '${fieldName}' value: Value '${value}' is not number.`
+            );
+        }
+        await populateNumberIndex(client, indexName, value, id);
+    } else {
+        await populateStringIndex(client, indexName, value, id);
+    }
+}
+
+const populateSortIndex = async (client, collectionName, value, id) => {
+    await hset(client, collectionName, id, value);
+}
+
 const updateIndex = async (
     { client, metaCollection },
     collectionName,
@@ -119,17 +138,13 @@ const updateIndex = async (
     document,
     { fieldName, fieldType }
 ) => {
-    const indexCollectionName = metaCollection.getIndexName(collectionName, fieldName);
     const value = document[fieldName];
-    if (fieldType === 'number') {
-        if (typeof value !== 'number') {
-            throw new Error(
-                `Can't update index '${fieldName}' value: Value '${value}' is not number.`
-            );
-        }
-        return populateNumberIndex(client, indexCollectionName, value, id);
-    }
-    return populateStringIndex(client, indexCollectionName, value, id);
+
+    const findIndexName = metaCollection.getFindIndexName(collectionName, fieldName);
+    await populateFindIndex(client, collectionName, fieldName, fieldType, findIndexName, id, value);
+
+    const sortIndexName = metaCollection.getSortIndexName(collectionName, fieldName);
+    await populateSortIndex(client, sortIndexName, value, id);
 };
 
 const updateIndexes = async (repository, collectionName, id, document) => {
@@ -148,9 +163,13 @@ const count = async ({ client }, collectionName, criteria) => await hlen(client,
 
 const validateSortFields = (indexes, sort) => {
     if (sort) {
+        const fieldNames = Object.keys(sort);
+        if(fieldNames.length > 1) {
+            throw new Error('You can sort by only one field');
+        }
         validateIndexes(
             indexes,
-            Object.keys(sort),
+            fieldNames,
             'Can\'t find index for \'%s\': you can sort by only indexed field'
         );
     }
@@ -169,10 +188,32 @@ const find = async (
     if (criteriaIsEmpty(criteria)) {
         return await hvals(client, collectionName);
     }
-    const ids = await getIds(repository, collectionName, indexes, criteria);
-    // sort
-    // get by ids
-    // promises = ids.map
+    let ids = await getIds(repository, collectionName, indexes, criteria);
+    if(sort) {
+        const sortField = Object.keys(sort)[0];
+        const order = sort[sortField];
+        const sortIndexName = metaCollection.getSortIndexName(collectionName, sortField);
+        const { fieldType } = indexes[sortIndexName];
+
+        const tempSortTable = uuidV4();
+
+        const promises = ids.map(async (id) => {
+            const value = await hget(client, sortIndexName, id);
+            await populateFindIndex(client, collectionName, sortField, fieldType, tempSortTable, id, value);
+        });
+        await Promise.all(promises);
+        await expire(client, tempSortTable, TTL_FOR_TEMP_COLLECTION);
+
+        ids = order === 1
+            ? await zrange(client, tempSortTable, skip, skip + limit - 1)
+            : await zrevrange(client, tempSortTable, skip, skip + limit - 1);
+
+        del(client, tempSortTable);
+        ids = normalizeIndexValues(fieldType, ids);
+    } else {
+        ids = ids.slice(skip, skip + limit - 1);
+    }
+
     const promises = ids.map(async id => await getDocument(repository, collectionName, id));
     return await Promise.all(promises);
 };
@@ -223,8 +264,12 @@ const removeAll = async ({ client, metaCollection }, collectionName) => {
     const indexes = await metaCollection.getIndexes(collectionName);
     Object.keys(indexes).forEach(async (key) => {
         const { fieldName } = indexes[key];
-        const indexCollectionName = metaCollection.getIndexName(collectionName, fieldName);
-        await del(client, indexCollectionName);
+
+        const findIndexName = metaCollection.getFindIndexName(collectionName, fieldName);
+        await del(client, findIndexName);
+
+        const sortIndexName = metaCollection.getSortIndexName(collectionName, fieldName);
+        await del(client, sortIndexName);
     });
     await del(client, collectionName);
 };
@@ -237,18 +282,20 @@ const removeIdFromIndex = async (
     index
 ) => {
     const { fieldName, fieldType } = index;
-    const indexCollectionName = metaCollection.getIndexName(collectionName, fieldName);
+    const findIndexName = metaCollection.getFindIndexName(collectionName, fieldName);
     if (fieldType === 'number') {
-        return await zrem(client, indexCollectionName, id);
+        await zrem(client, findIndexName, id);
+    } else {
+        const fieldValue = document[fieldName];
+        await zremrangebylex(
+            client,
+            findIndexName,
+            `[${fieldValue}${Z_VALUE_SEPARATOR}${id}`,
+            `(${fieldValue}${Z_VALUE_SEPARATOR}${id}`
+        );
     }
-    const fieldValue = document[fieldName];
 
-    await zremrangebylex(
-        client,
-        indexCollectionName,
-        `[${fieldValue}${Z_VALUE_SEPARATOR}${id}`,
-        `(${fieldValue}${Z_VALUE_SEPARATOR}${id}`
-    );
+    await hdel(client, metaCollection.getSortIndexName(collectionName, fieldName));
 };
 
 const removeIdsFromIndexes = async (repository, collectionName, indexes, ids) => {
@@ -433,8 +480,10 @@ const ensureIndex = async (repository, collectionName, { fieldName, fieldType, o
     await metaCollection.ensureIndex(collectionName, { fieldName, fieldType, order });
 };
 
-const removeIndex = async ({ metaCollection }, collectionName, field) => {
-    await metaCollection.removeIndex(collectionName, field);
+const removeIndex = async ({ client, metaCollection }, collectionName, fieldName) => {
+    await metaCollection.removeIndex(collectionName, fieldName);
+    await del(client, metaCollection.getFindIndexName(collectionName, fieldName));
+    await del(client, metaCollection.getSortIndexName(collectionName, fieldName));
 };
 
 const collection = (repository, collectionName) => {

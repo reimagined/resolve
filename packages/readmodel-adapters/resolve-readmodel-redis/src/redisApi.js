@@ -92,6 +92,9 @@ export const zinterstore = async (client, destination, keycount, keys) =>
 export const zrange = async (client, key, start = 0, stop = -1) =>
     await invokeCommand(client, 'ZRANGE', key, start, stop);
 
+export const zrevrange = async (client, key, start = 0, stop = -1) =>
+    await invokeCommand(client, 'ZREVRANGE', key, start, stop);
+
 export const expire = async (client, key, seconds) =>
     await invokeCommand(client, 'EXPIRE', key, seconds);
 
