@@ -190,21 +190,25 @@ const find = async (
     repository,
     collectionName,
     criteria,
-    { skip = null, limit = null, sort = null }
+    { skip = 0, limit = -1, sort = null }
 ) => {
     const { client, metaCollection } = repository;
     const indexes = await metaCollection.getIndexes(collectionName);
     validateCriteriaFields(indexes, criteria);
     validateSortFields(indexes, sort);
+    let ids;
     if (criteriaIsEmpty(criteria)) {
-        return await hvals(client, collectionName);
+        const indexName = metaCollection.getFindIndexName(collectionName, '_id');
+        ids = await zrange(client, indexName);
+    } else {
+        ids = await getIds(repository, collectionName, indexes, criteria);
     }
-    let ids = await getIds(repository, collectionName, indexes, criteria);
+
     if (sort) {
         const sortField = Object.keys(sort)[0];
         const order = sort[sortField];
+        const { fieldType } = indexes[sortField];
         const sortIndexName = metaCollection.getSortIndexName(collectionName, sortField);
-        const { fieldType } = indexes[sortIndexName];
 
         const tempSortTable = uuidV4();
 
@@ -222,18 +226,18 @@ const find = async (
         });
         await Promise.all(promises);
         await expire(client, tempSortTable, TTL_FOR_TEMP_COLLECTION);
-
+        const stop = limit === -1 ? -1 : skip + limit - 1;
         ids =
             order === 1
-                ? await zrange(client, tempSortTable, skip, skip + limit - 1)
-                : await zrevrange(client, tempSortTable, skip, skip + limit - 1);
+                ? await zrange(client, tempSortTable, skip, stop)
+                : await zrevrange(client, tempSortTable, skip, stop);
 
         del(client, tempSortTable);
         ids = normalizeIndexValues(fieldType, ids);
     } else {
-        ids = ids.slice(skip, skip + limit - 1);
+        const end = limit === -1 ? undefined : skip + limit;
+        ids = ids.slice(skip, end);
     }
-
     const promises = ids.map(async id => await getDocument(repository, collectionName, id));
     return await Promise.all(promises);
 };
@@ -246,8 +250,8 @@ const findOne = async (repository, collectionName, criteria, { skip = 0, order =
 function wrapFind(repository, initialFind, collectionName, expression) {
     const resultPromise = Promise.resolve();
     const requestChain = {
-        skip: null,
-        limit: null,
+        // skip: null,
+        // limit: null,
         sort: null
     };
     const sanitizeError = ''; //sanitizeSearchExpression(expression);
