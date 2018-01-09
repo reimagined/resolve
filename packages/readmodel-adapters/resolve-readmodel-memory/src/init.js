@@ -1,6 +1,8 @@
 import NeDB from 'nedb';
 
 export default function init(repository) {
+    let counter = 0;
+
     if (repository.interfaceMap) {
         throw new Error('The read model storage is already initialized');
     }
@@ -38,13 +40,18 @@ export default function init(repository) {
                 };
             }
 
-            return (...args) =>
-                new Promise((resolve, reject) => {
+            return (...args) => {
+                if (funcName === 'insert') {
+                    args[0]['_id'] = counter++;
+                }
+
+                return new Promise((resolve, reject) => {
                     collection[funcName](
                         ...args,
                         (err, ...result) => (!err ? resolve(result) : reject(err))
                     );
                 });
+            };
         };
 
         const execFind = (options) => {
