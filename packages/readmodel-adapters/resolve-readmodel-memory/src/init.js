@@ -186,7 +186,6 @@ async function execFind(options) {
 function wrapFind(initialFind, repository, collectionName, searchExpression) {
     const collection = repository.collectionMap.get(collectionName);
     const collectionIndexes = repository.collectionIndexesMap.get(collectionName);
-
     const resultPromise = Promise.resolve();
     const requestChain = [{ type: initialFind, args: searchExpression }];
     const foundErrors = [sanitizeSearchExpression(searchExpression)];

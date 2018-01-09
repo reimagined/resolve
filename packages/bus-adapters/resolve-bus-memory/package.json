@@ -1,8 +1,7 @@
 {
   "name": "resolve-bus-memory",
-  "version": "0.2.1",
-  "description":
-    "This package is an adapter for resolve-bus to emit events using memory.",
+  "version": "0.2.2",
+  "description": "This package is an adapter for resolve-bus to emit events using memory.",
   "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
