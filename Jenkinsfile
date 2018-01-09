@@ -30,7 +30,7 @@ pipeline {
 
                     sh """
                         eval \$(next-lerna-version); \
-                        export CI_CANARY_VERSION=\$NEXT_LERNA_VERSION-${env.CI_RELEASE_TYPE}.${env.CI_TIMESTAMP}; \
+                        export CI_CANARY_VERSION=\$NEXT_LERNA_VERSION-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}; \
                         echo \$CI_CANARY_VERSION > /lerna_version; \
                         echo //${env.NPM_ADDR}/:_authToken=${env.NPM_TOKEN} >> /root/.npmrc; \
                         ./node_modules/.bin/lerna publish --skip-git --force-publish=* --yes --repo-version \$(cat /lerna_version); \
