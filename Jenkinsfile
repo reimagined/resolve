@@ -1,13 +1,16 @@
 pipeline {
     agent {
-        docker { image 'reimagined/node-testcafe' }
+        docker { 
+            image 'reimagined/resolve-ci' 
+            args '-u root:root'
+        }
     }
     stages {
         stage('Unit tests') {
             steps {
                 script {
                     sh 'npm install'
-                    sh 'if [ "$(node_modules/.bin/prettier-eslint "./**/src/**/*.js" "./**/test/**/*.js" --list-different --ignore=./node_modules/**)" ]; then exit 1; fi'
+                    sh 'if [ "$(node_modules/.bin/prettier-eslint "./**/src/**/*.js" "./**/test/**/*.js" --list-different --ignore=./**/node_modules/**)" ]; then exit 1; fi'
                     sh 'npm run bootstrap'
                     sh 'npm run lint'
                     sh 'npm test'
@@ -18,51 +21,34 @@ pipeline {
         stage('Publish canary') {
             steps {
                 script {
-                    def credentials = [
-                        string(credentialsId: 'NPM_CREDENTIALS', variable: 'NPM_TOKEN')
-                    ];
-
-                    withCredentials(credentials) {
-                        env.NPM_ADDR = 'registry.npmjs.org'
-
-                        env.CI_TIMESTAMP = (new Date()).format("MMddHHmmss", TimeZone.getTimeZone('UTC'))
-                        if (env.BRANCH_NAME =~ '^v([0-9]+).([0-9]+).([0-9]+)$') {
-                            env.CI_RELEASE_TYPE = 'beta'
-                        } else {
-                            env.CI_RELEASE_TYPE = 'alpha'
-                        }
-
-                        sh """
-                            npm config set //${env.NPM_ADDR}/:_authToken ${env.NPM_TOKEN}
-                            npm whoami
-                            eval \$(next-lerna-version); \
-                            export CI_CANARY_VERSION=\$NEXT_LERNA_VERSION-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}; \
-                            ./node_modules/.bin/lerna publish --skip-git --force-publish=* --yes --repo-version \$CI_CANARY_VERSION --canary
-
-                            sleep 10
-                        """
+                    env.CI_TIMESTAMP = (new Date()).format("MMddHHmmss", TimeZone.getTimeZone('UTC'))
+                    if (env.BRANCH_NAME =~ '^v([0-9]+).([0-9]+).([0-9]+)$') {
+                        env.CI_RELEASE_TYPE = 'beta'
+                    } else {
+                        env.CI_RELEASE_TYPE = 'alpha'
                     }
 
+                    sh """
+                        eval \$(next-lerna-version); \
+                        export CI_CANARY_VERSION=\$NEXT_LERNA_VERSION-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}; \
+                        echo \$CI_CANARY_VERSION > /lerna_version; \
+                        echo //${env.NPM_ADDR}/:_authToken=${env.NPM_TOKEN} >> /root/.npmrc; \
+                        ./node_modules/.bin/lerna publish --skip-git --force-publish=* --yes --repo-version \$(cat /lerna_version); \
+                        sleep 10
+                    """
                 }
             }
         }
-
+        
         stage('Examples [ todo ] Functional Tests') {
             steps {
                 script {
                     sh """
-                        /prepare-chromium.sh
-
-                        eval \$(next-lerna-version)
-                        export CI_CANARY_VERSION=\$NEXT_LERNA_VERSION-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}
-
+                        /init.sh
                         cd examples/todo
-
                         npm install
-                        npm run update \$CI_CANARY_VERSION
-
+                        npm run update \$(cat /lerna_version)
                         cat ./package.json
-
                         npm run test:functional -- --browser=path:/chromium
                     """
                 }
@@ -73,18 +59,11 @@ pipeline {
             steps {
                 script {
                     sh """
-                        /prepare-chromium.sh
-
-                        eval \$(next-lerna-version)
-                        export CI_CANARY_VERSION=\$NEXT_LERNA_VERSION-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}
-
+                        /init.sh
                         cd examples/todo-two-levels
-
                         npm install
-                        npm run update \$CI_CANARY_VERSION
-
+                        npm run update \$(cat /lerna_version)
                         cat ./package.json
-
                         npm run test:functional -- --browser=path:/chromium
                     """
                 }
@@ -95,16 +74,10 @@ pipeline {
             steps {
                 script {
                     sh """
-                        /prepare-chromium.sh
-
-                        eval \$(next-lerna-version)
-                        export CI_CANARY_VERSION=\$NEXT_LERNA_VERSION-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}
-
-                        npm install -g create-resolve-app@\$CI_CANARY_VERSION
-
+                        /init.sh
+                        npm install -g create-resolve-app@\$(cat /lerna_version)
                         create-resolve-app empty
                         cd ./empty
-
                         npm run flow
                         npm run test
                         npm run test:functional -- --browser=path:/chromium
@@ -117,14 +90,9 @@ pipeline {
             steps {
                 script {
                     sh """
-                        /prepare-chromium.sh
-
-                        eval \$(next-lerna-version)
-                        export CI_CANARY_VERSION=\$NEXT_LERNA_VERSION-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}
-
+                        /init.sh
                         create-resolve-app --sample todolist
                         cd ./todolist
-
                         npm run flow
                         npm run test
                         npm run test:functional -- --browser=path:/chromium
@@ -137,18 +105,11 @@ pipeline {
             steps {
                 script {
                     sh """
-                        /prepare-chromium.sh
-
-                        eval \$(next-lerna-version)
-                        export CI_CANARY_VERSION=\$NEXT_LERNA_VERSION-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}
-
+                        /init.sh
                         git clone https://github.com/reimagined/hacker-news-resolve.git
-
                         cd hacker-news-resolve
-
                         npm install
-                        ./node_modules/.bin/resolve-scripts update \$CI_CANARY_VERSION
-
+                        ./node_modules/.bin/resolve-scripts update \$(cat /lerna_version)
                         npm run build
                         testcafe path:/chromium ./tests/functional --app "IS_TEST=true npm run start"
                     """
@@ -187,6 +148,10 @@ pipeline {
 
     post {
         always {
+            script {
+                sh 'rm -rf ./*'
+            }
+            
             deleteDir()
         }
     }
