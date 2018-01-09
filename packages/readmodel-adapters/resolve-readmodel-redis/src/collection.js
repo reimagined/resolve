@@ -61,10 +61,12 @@ const saveIdsToCollection = async ({ client }, collectionName, ids) => {
     await expire(client, collectionName, TTL_FOR_TEMP_COLLECTION);
 };
 
-const normalizeIndexValues = (fieldType, values) => fieldType === 'number'
-    ? values
-    : values.map(value =>
-        value.substr(value.lastIndexOf(Z_VALUE_SEPARATOR) + Z_VALUE_SEPARATOR.length));
+const normalizeIndexValues = (fieldType, values) =>
+    fieldType === 'number'
+        ? values
+        : values.map(value =>
+              value.substr(value.lastIndexOf(Z_VALUE_SEPARATOR) + Z_VALUE_SEPARATOR.length)
+          );
 
 const getIds = async (repository, collectionName, indexes, criteria) => {
     const { client, metaCollection } = repository;
@@ -80,14 +82,15 @@ const getIds = async (repository, collectionName, indexes, criteria) => {
         const indexName = metaCollection.getFindIndexName(collectionName, fieldName);
         const fieldType = indexes[fieldName].fieldType;
 
-        let ids = fieldType === 'number'
-            ? await zrangebyscore(client, indexName, fieldValue, fieldValue)
-            : await zrangebylex(
-                client,
-                indexName,
-                `[${fieldValue}${Z_VALUE_SEPARATOR}`,
-                `(${fieldValue}${Z_VALUE_SEPARATOR}${Z_LEX_MAX_VALUE}`
-            );
+        let ids =
+            fieldType === 'number'
+                ? await zrangebyscore(client, indexName, fieldValue, fieldValue)
+                : await zrangebylex(
+                      client,
+                      indexName,
+                      `[${fieldValue}${Z_VALUE_SEPARATOR}`,
+                      `(${fieldValue}${Z_VALUE_SEPARATOR}${Z_LEX_MAX_VALUE}`
+                  );
         ids = normalizeIndexValues(fieldType, ids);
         return await saveIdsToCollection(repository, tempCollectionNames[fieldName], ids);
     });
@@ -114,7 +117,15 @@ const populateStringIndex = async (client, collectionName, value, id) => {
     await zadd(client, collectionName, 0, `${value}${Z_VALUE_SEPARATOR}${id}`);
 };
 
-const populateFindIndex = async (client, collectionName, fieldName, fieldType, indexName, id, value) => {
+const populateFindIndex = async (
+    client,
+    collectionName,
+    fieldName,
+    fieldType,
+    indexName,
+    id,
+    value
+) => {
     if (fieldType === 'number') {
         if (typeof value !== 'number') {
             throw new Error(
@@ -125,11 +136,11 @@ const populateFindIndex = async (client, collectionName, fieldName, fieldType, i
     } else {
         await populateStringIndex(client, indexName, value, id);
     }
-}
+};
 
 const populateSortIndex = async (client, collectionName, value, id) => {
     await hset(client, collectionName, id, value);
-}
+};
 
 const updateIndex = async (
     { client, metaCollection },
@@ -164,7 +175,7 @@ const count = async ({ client }, collectionName, criteria) => await hlen(client,
 const validateSortFields = (indexes, sort) => {
     if (sort) {
         const fieldNames = Object.keys(sort);
-        if(fieldNames.length > 1) {
+        if (fieldNames.length > 1) {
             throw new Error('You can sort by only one field');
         }
         validateIndexes(
@@ -189,7 +200,7 @@ const find = async (
         return await hvals(client, collectionName);
     }
     let ids = await getIds(repository, collectionName, indexes, criteria);
-    if(sort) {
+    if (sort) {
         const sortField = Object.keys(sort)[0];
         const order = sort[sortField];
         const sortIndexName = metaCollection.getSortIndexName(collectionName, sortField);
@@ -199,14 +210,23 @@ const find = async (
 
         const promises = ids.map(async (id) => {
             const value = await hget(client, sortIndexName, id);
-            await populateFindIndex(client, collectionName, sortField, fieldType, tempSortTable, id, value);
+            await populateFindIndex(
+                client,
+                collectionName,
+                sortField,
+                fieldType,
+                tempSortTable,
+                id,
+                value
+            );
         });
         await Promise.all(promises);
         await expire(client, tempSortTable, TTL_FOR_TEMP_COLLECTION);
 
-        ids = order === 1
-            ? await zrange(client, tempSortTable, skip, skip + limit - 1)
-            : await zrevrange(client, tempSortTable, skip, skip + limit - 1);
+        ids =
+            order === 1
+                ? await zrange(client, tempSortTable, skip, skip + limit - 1)
+                : await zrevrange(client, tempSortTable, skip, skip + limit - 1);
 
         del(client, tempSortTable);
         ids = normalizeIndexValues(fieldType, ids);
