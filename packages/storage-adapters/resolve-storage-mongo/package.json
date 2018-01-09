@@ -1,6 +1,6 @@
 {
   "name": "resolve-storage-mongo",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "This package serves as an adapter for resolve-storage to store events using MongoDB.",
   "main": "./dist/index.js",
   "bugs": {
@@ -32,6 +32,6 @@
   },
   "dependencies": {
     "mongodb": "^2.2.26",
-    "resolve-storage-base": "^0.2.1"
+    "resolve-storage-base": "^0.2.2"
   }
 }
