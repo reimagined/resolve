@@ -35,8 +35,13 @@ const getSortIndexName = (collectionName, fieldName) => {
     return `${collectionName}__sort_index__${fieldName}`;
 };
 
-const ensureIndex = async (repository, collectionName, { fieldName, fieldType, order }) => {
+const getMeta = async (repository, collectionName) => {
     const meta = await get(repository, collectionName);
+    return meta ? meta : DEFAULT_META;
+};
+
+const createIndex = async (repository, collectionName, { fieldName, fieldType, order }) => {
+    const meta = await getMeta(repository, collectionName);
 
     if (meta.indexes[fieldName]) {
         throw new Error(`Can't 'ensureIndex': '${fieldName}' is exists`);
@@ -54,7 +59,7 @@ const ensureIndex = async (repository, collectionName, { fieldName, fieldType, o
 const removeIndex = async (repository, collectionName, fieldName) => {
     const meta = await get(repository, collectionName);
 
-    if (!meta.indexes[fieldName]) {
+    if (!meta || !meta.indexes[fieldName]) {
         throw new Error(`Can't 'removeIndex': '${fieldName}' is not exists`);
     }
     delete meta.indexes[fieldName];
@@ -76,7 +81,7 @@ export default (repository) => {
         getFindIndexName: getFindIndexName,
         getSortIndexName: getSortIndexName,
         getNextId: getNextId.bind(null, repository),
-        ensureIndex: ensureIndex.bind(null, repository),
+        createIndex: createIndex.bind(null, repository),
         removeIndex: removeIndex.bind(null, repository),
         getIndexes: getIndexes.bind(null, repository)
     });

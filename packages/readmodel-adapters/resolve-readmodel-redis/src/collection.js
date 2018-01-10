@@ -501,7 +501,7 @@ const createIndex = async (repository, collectionName, { fieldName, fieldType, o
         );
     }
 
-    await metaCollection.ensureIndex(collectionName, { fieldName, fieldType, order });
+    await metaCollection.createIndex(collectionName, { fieldName, fieldType, order });
 };
 
 const ensureIndex = async (repository, collectionName, options) => {
