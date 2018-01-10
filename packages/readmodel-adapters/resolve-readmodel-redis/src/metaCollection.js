@@ -64,7 +64,7 @@ const removeIndex = async (repository, collectionName, fieldName) => {
 
 const getIndexes = async ({ client, metaCollectionName }, collectionName) => {
     const meta = await hget(client, metaCollectionName, collectionName);
-    return meta.indexes;
+    return !meta ? DEFAULT_META.indexes : meta.indexes;
 };
 
 export default (repository) => {
