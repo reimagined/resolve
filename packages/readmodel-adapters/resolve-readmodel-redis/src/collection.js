@@ -508,10 +508,12 @@ const ensureIndex = async (repository, collectionName, options) => {
     const { metaCollection } = repository;
     const { fieldName, fieldType, order = 1 } = options;
 
-    const indexes = metaCollection.getIndexes(collectionName);
+    const indexes = await metaCollection.getIndexes(collectionName);
     if (indexes && indexes[fieldName]) {
         const idx = indexes[fieldName];
-        if (idx.fieldName !== fieldName || idx.fieldType !== fieldType || idx.order !== order) {
+        if (idx.fieldName === fieldName || idx.fieldType === fieldType || idx.order === order) {
+            return null;
+        } else {
             throw new Error(
                 `Collection '${collectionName}' has index by '${fieldName}' field ` +
                     'but fieldType or order is different'
