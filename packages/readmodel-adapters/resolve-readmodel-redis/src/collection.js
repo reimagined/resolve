@@ -481,7 +481,7 @@ const update = async (repository, collectionName, criteria, operators) => {
     });
 };
 
-const ensureIndex = async (repository, collectionName, { fieldName, fieldType, order = 1 }) => {
+const createIndex = async (repository, collectionName, { fieldName, fieldType, order = 1 }) => {
     const { metaCollection } = repository;
     if (!fieldName) {
         throw new Error('`ensureIndex` - invalid fieldName');
@@ -502,6 +502,23 @@ const ensureIndex = async (repository, collectionName, { fieldName, fieldType, o
     }
 
     await metaCollection.ensureIndex(collectionName, { fieldName, fieldType, order });
+};
+
+const ensureIndex = async (repository, collectionName, options) => {
+    const { metaCollection } = repository;
+    const { fieldName, fieldType, order = 1 } = options;
+
+    const indexes = metaCollection.getIndexes(collectionName);
+    if (indexes && indexes[fieldName]) {
+        const idx = indexes[fieldName];
+        if (idx.fieldName !== fieldName || idx.fieldType !== fieldType || idx.order !== order) {
+            throw new Error(
+                `Collection '${collectionName}' has index by '${fieldName}' field ` +
+                    'but fieldType or order is different'
+            );
+        }
+    }
+    return createIndex(repository, collectionName, options);
 };
 
 const removeIndex = async ({ client, metaCollection }, collectionName, fieldName) => {
