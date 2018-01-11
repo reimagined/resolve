@@ -57,8 +57,10 @@ const saveIdsToCollection = async ({ client }, collectionName, ids) => {
         },
         [collectionName]
     );
-    await zaddMulti(client, args);
-    await expire(client, collectionName, TTL_FOR_TEMP_COLLECTION);
+    if (args.length > 1) {
+        await zaddMulti(client, args);
+        await expire(client, collectionName, TTL_FOR_TEMP_COLLECTION);
+    }
 };
 
 const normalizeIndexValues = (fieldType, values) =>
@@ -74,6 +76,7 @@ const getIds = async (repository, collectionName, indexes, criteria) => {
     validateCriteriaFields(indexes, criteria);
     const tempPrefix = uuidV4();
     const tempCollectionNames = {};
+    let isEmptyResult = false;
 
     // todo extract function
     const promises = Object.keys(criteria).map(async (fieldName) => {
@@ -81,7 +84,9 @@ const getIds = async (repository, collectionName, indexes, criteria) => {
         const fieldValue = criteria[fieldName];
         const indexName = metaCollection.getFindIndexName(collectionName, fieldName);
         const fieldType = indexes[fieldName].fieldType;
-
+        if (isEmptyResult) {
+            return null;
+        }
         let ids =
             fieldType === 'number'
                 ? await zrangebyscore(client, indexName, fieldValue, fieldValue)
@@ -92,17 +97,23 @@ const getIds = async (repository, collectionName, indexes, criteria) => {
                       `(${fieldValue}${Z_VALUE_SEPARATOR}${Z_LEX_MAX_VALUE}`
                   );
         ids = normalizeIndexValues(fieldType, ids);
+        if (!ids) {
+            isEmptyResult = true;
+            return null;
+        }
         return await saveIdsToCollection(repository, tempCollectionNames[fieldName], ids);
     });
 
     await Promise.all(promises);
 
     const keys = Object.values(tempCollectionNames);
-    await zinterstore(client, tempPrefix, keys.length, keys);
-    await expire(client, tempPrefix, TTL_FOR_TEMP_COLLECTION);
+    let result = [];
+    if (!isEmptyResult) {
+        await zinterstore(client, tempPrefix, keys.length, keys);
+        await expire(client, tempPrefix, TTL_FOR_TEMP_COLLECTION);
 
-    const result = await zrange(client, tempPrefix);
-
+        result = await zrange(client, tempPrefix);
+    }
     // cleanup
     await del(client, ...keys.concat(tempPrefix));
 
