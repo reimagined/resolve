@@ -121,11 +121,15 @@ const getIds = async (repository, collectionName, indexes, criteria) => {
 };
 
 const populateNumberIndex = async (client, collectionName, score, id) => {
-    await zadd(client, collectionName, score, id);
+    if (score !== undefined) {
+        await zadd(client, collectionName, score, id);
+    }
 };
 
 const populateStringIndex = async (client, collectionName, value, id) => {
-    await zadd(client, collectionName, 0, `${value}${Z_VALUE_SEPARATOR}${id}`);
+    if (value !== undefined) {
+        await zadd(client, collectionName, 0, `${value}${Z_VALUE_SEPARATOR}${id}`);
+    }
 };
 
 const populateFindIndex = async (
@@ -138,7 +142,7 @@ const populateFindIndex = async (
     value
 ) => {
     if (fieldType === 'number') {
-        if (typeof value !== 'number') {
+        if (value !== undefined && typeof value !== 'number') {
             throw new Error(
                 `Can't update index '${fieldName}' value: Value '${value}' is not number.`
             );
@@ -150,7 +154,9 @@ const populateFindIndex = async (
 };
 
 const populateSortIndex = async (client, collectionName, value, id) => {
-    await hset(client, collectionName, id, value);
+    if (value !== undefined) {
+        await hset(client, collectionName, id, value);
+    }
 };
 
 const updateIndex = async (
