@@ -12,8 +12,8 @@ export default function createRedisAdapter(
     options,
     metaCollectionName,
     autoincMetaCollectionName,
-    redisClient) {
-
+    redisClient
+) {
     const repository = Object.create(null);
 
     repository.metaCollectionName =
@@ -26,9 +26,8 @@ export default function createRedisAdapter(
             ? autoincMetaCollectionName
             : DEFAULT_AUTOINC_META_COLLECTION_NAME;
 
-    repository.connectDatabase = async options => redisClient
-        ? redisClient
-        : redis.createClient(options instanceof Object ? options : {});
+    repository.connectDatabase = async options =>
+        redisClient ? redisClient : redis.createClient(options instanceof Object ? options : {});
 
     return Object.create(null, {
         buildProjection: {

@@ -28,7 +28,6 @@ const invokeCommand = (client, command, name, ...args) =>
         client[command](...params);
     });
 
-
 describe('Read model redis adapter', () => {
     let adapter, getReadable;
 
@@ -46,18 +45,24 @@ describe('Read model redis adapter', () => {
         const firstKeyIndex = 2;
         const lastKeyIndex = firstKeyIndex + numkeys;
 
-        const rangePromises = Object.values(arguments).slice(firstKeyIndex, lastKeyIndex).map(async collectionName =>
-            await invokeCommand(repository.client, 'ZRANGE', collectionName, 0, -1));
+        const rangePromises = Object.values(arguments)
+            .slice(firstKeyIndex, lastKeyIndex)
+            .map(
+                async collectionName =>
+                    await invokeCommand(repository.client, 'ZRANGE', collectionName, 0, -1)
+            );
 
         const values = await Promise.all(rangePromises);
         let result = values[0];
 
-        for(let i = 1; i < values.length; i++) {
+        for (let i = 1; i < values.length; i++) {
             result = result.filter(n => values[i].includes(n));
         }
 
-        const addPromises = result.map(async (id, index) =>
-            await invokeCommand(repository.client, 'ZADD', destination, index, id));
+        const addPromises = result.map(
+            async (id, index) =>
+                await invokeCommand(repository.client, 'ZADD', destination, index, id)
+        );
 
         await Promise.all(addPromises);
         cb(null, result);
@@ -70,12 +75,11 @@ describe('Read model redis adapter', () => {
         const cb = args[cbIndex];
         const keys = args.slice(0, cbIndex);
         del(keys, cb);
-    }
+    };
 
     let nativeAdapter = nativeRedisAdapter(repository);
 
     beforeEach(async () => {
-
         repository.client.flushall((e) => {
             if (e) {
                 // eslint-disable-next-line no-console
