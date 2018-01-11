@@ -1,21 +1,80 @@
 import { expect } from 'chai';
-import redis from 'redis';
+import redis from 'redis-mock';
 
 import createRedisAdapter from '../src/index';
 import nativeRedisAdapter from '../src/adapter';
 import metaCollection from '../src/metaCollection';
 
+const safeParse = (str) => {
+    try {
+        return JSON.parse(str);
+    } catch (e) {
+        return str;
+    }
+};
+
+const invokeCommand = (client, command, name, ...args) =>
+    new Promise((resolve, reject) => {
+        const params = [
+            name,
+            ...args,
+            (err, data) => {
+                if (err) {
+                    return reject(err);
+                }
+                return resolve(Array.isArray(data) ? data.map(safeParse) : safeParse(data));
+            }
+        ];
+        client[command](...params);
+    });
+
+
 describe('Read model redis adapter', () => {
-    let repository, adapter, nativeAdapter, getReadable;
+    let adapter, getReadable;
+
+    let repository = {
+        metaCollectionName: 'meta',
+        autoincMetaCollectionName: 'meta_autoinc',
+        client: redis.createClient()
+    };
+    repository.metaCollection = metaCollection(repository);
+
+    repository.client['ZINTERSTORE'] = async function () {
+        const destination = arguments[0];
+        const numkeys = arguments[1];
+        const cb = arguments[arguments.length - 1];
+        const firstKeyIndex = 2;
+        const lastKeyIndex = firstKeyIndex + numkeys;
+
+        const rangePromises = Object.values(arguments).slice(firstKeyIndex, lastKeyIndex).map(async collectionName =>
+            await invokeCommand(repository.client, 'ZRANGE', collectionName, 0, -1));
+
+        const values = await Promise.all(rangePromises);
+        let result = values[0];
+
+        for(let i = 1; i < values.length; i++) {
+            result = result.filter(n => values[i].includes(n));
+        }
+
+        const addPromises = result.map(async (id, index) =>
+            await invokeCommand(repository.client, 'ZADD', destination, index, id));
+
+        await Promise.all(addPromises);
+        cb(null, result);
+    };
+
+    const del = repository.client.del;
+    repository.client['DEL'] = function () {
+        const args = Object.values(arguments);
+        const cbIndex = arguments.length - 1;
+        const cb = args[cbIndex];
+        const keys = args.slice(0, cbIndex);
+        del(keys, cb);
+    }
+
+    let nativeAdapter = nativeRedisAdapter(repository);
 
     beforeEach(async () => {
-        repository = {
-            metaCollectionName: 'meta',
-            autoincMetaCollectionName: 'meta_autoinc'
-        };
-        repository.client = redis.createClient();
-        repository.metaCollection = metaCollection(repository);
-        nativeAdapter = nativeRedisAdapter(repository);
 
         repository.client.flushall((e) => {
             if (e) {
@@ -29,7 +88,8 @@ describe('Read model redis adapter', () => {
         adapter = createRedisAdapter(
             {},
             repository.metaCollectionName,
-            repository.autoincMetaCollectionName
+            repository.autoincMetaCollectionName,
+            repository.client
         );
 
         adapter.buildProjection({

@@ -27,6 +27,7 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "jest": "22.0.3",
+    "redis-mock": "^0.20.0",
     "sinon": "^3.3.0"
   },
   "dependencies": {

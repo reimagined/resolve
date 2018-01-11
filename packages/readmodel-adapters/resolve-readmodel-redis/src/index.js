@@ -8,7 +8,12 @@ import reset from './reset';
 const DEFAULT_META_COLLECTION_NAME = '__ResolveMetaCollection__';
 const DEFAULT_AUTOINC_META_COLLECTION_NAME = '__ResolveMetaCollectionAutoinc__';
 
-export default function createRedisAdapter(options, metaCollectionName, autoincMetaCollectionName) {
+export default function createRedisAdapter(
+    options,
+    metaCollectionName,
+    autoincMetaCollectionName,
+    redisClient) {
+
     const repository = Object.create(null);
 
     repository.metaCollectionName =
@@ -21,8 +26,9 @@ export default function createRedisAdapter(options, metaCollectionName, autoincM
             ? autoincMetaCollectionName
             : DEFAULT_AUTOINC_META_COLLECTION_NAME;
 
-    repository.connectDatabase = async options =>
-        redis.createClient(options instanceof Object ? options : {});
+    repository.connectDatabase = async options => redisClient
+        ? redisClient
+        : redis.createClient(options instanceof Object ? options : {});
 
     return Object.create(null, {
         buildProjection: {
