@@ -77,15 +77,17 @@ describe('Read model redis adapter', () => {
 
     repository.client['ZRANGEBYLEX'] = async function (collectionName, min, max, cb) {
         const searchValue = min.replace('[', '').replace(Z_VALUE_SEPARATOR, '');
-        const rows =  await invokeCommand(repository.client, 'ZRANGE', collectionName, 0, -1);
+        const rows = await invokeCommand(repository.client, 'ZRANGE', collectionName, 0, -1);
 
-        const ids = rows.map((row) => {
-            const values =  row.split(Z_VALUE_SEPARATOR);
-            return values[0] === searchValue ? row : null;
-        }).filter(val => val !== null);
+        const ids = rows
+            .map((row) => {
+                const values = row.split(Z_VALUE_SEPARATOR);
+                return values[0] === searchValue ? row : null;
+            })
+            .filter(val => val !== null);
 
         cb(null, ids);
-    }
+    };
 
     let nativeAdapter = nativeRedisAdapter(repository);
 
