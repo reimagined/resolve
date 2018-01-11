@@ -5,6 +5,8 @@ import createRedisAdapter from '../src/index';
 import nativeRedisAdapter from '../src/adapter';
 import metaCollection from '../src/metaCollection';
 
+const Z_VALUE_SEPARATOR = `${String.fromCharCode(0x0)}${String.fromCharCode(0x0)}`;
+
 const safeParse = (str) => {
     try {
         return JSON.parse(str);
@@ -38,15 +40,11 @@ describe('Read model redis adapter', () => {
     };
     repository.metaCollection = metaCollection(repository);
 
-    repository.client['ZINTERSTORE'] = async function () {
-        const destination = arguments[0];
-        const numkeys = arguments[1];
-        const cb = arguments[arguments.length - 1];
-        const firstKeyIndex = 2;
-        const lastKeyIndex = firstKeyIndex + numkeys;
+    repository.client['ZINTERSTORE'] = async function (destination, numkeys, ...args) {
+        const cb = args[args.length - 1];
 
-        const rangePromises = Object.values(arguments)
-            .slice(firstKeyIndex, lastKeyIndex)
+        const rangePromises = Object.values(args)
+            .slice(0, numkeys)
             .map(
                 async collectionName =>
                     await invokeCommand(repository.client, 'ZRANGE', collectionName, 0, -1)
@@ -77,16 +75,21 @@ describe('Read model redis adapter', () => {
         del(keys, cb);
     };
 
+    repository.client['ZRANGEBYLEX'] = async function (collectionName, min, max, cb) {
+        const searchValue = min.replace('[', '').replace(Z_VALUE_SEPARATOR, '');
+        const rows =  await invokeCommand(repository.client, 'ZRANGE', collectionName, 0, -1);
+
+        const ids = rows.map((row) => {
+            const values =  row.split(Z_VALUE_SEPARATOR);
+            return values[0] === searchValue ? row : null;
+        }).filter(val => val !== null);
+
+        cb(null, ids);
+    }
+
     let nativeAdapter = nativeRedisAdapter(repository);
 
     beforeEach(async () => {
-        repository.client.flushall((e) => {
-            if (e) {
-                // eslint-disable-next-line no-console
-                console.log(e);
-            }
-        });
-
         await nativeAdapter.createCollection('Test');
 
         adapter = createRedisAdapter(
@@ -130,7 +133,14 @@ describe('Read model redis adapter', () => {
         await getReadable();
     });
 
-    afterEach(() => {});
+    afterEach(() => {
+        repository.client.flushall((e) => {
+            if (e) {
+                // eslint-disable-next-line no-console
+                console.log(e);
+            }
+        });
+    });
 
     it('should have apropriate API', () => {
         expect(adapter.buildProjection).to.be.a('function');
@@ -176,6 +186,15 @@ describe('Read model redis adapter', () => {
         const records = await TestCollection.find();
 
         expect(records.length).to.be.equal(4);
+    });
+
+    it('find 3', async () => {
+        const store = await getReadable();
+        const TestCollection = await store.collection('Test');
+
+        const records = await TestCollection.find({ i: 100, s: 'bbb' });
+
+        expect(records.length).to.be.equal(2);
     });
 
     it('find by id', async () => {
