@@ -106,8 +106,8 @@ const getIds = async (repository, collectionName, indexes, criteria) => {
 
     await Promise.all(promises);
 
-    const keys = Object.values(tempCollectionNames);
     let result = [];
+    const keys = Object.values(tempCollectionNames);
     if (!isEmptyResult) {
         await zinterstore(client, tempPrefix, keys.length, keys);
         await expire(client, tempPrefix, TTL_FOR_TEMP_COLLECTION);
@@ -219,6 +219,10 @@ const find = async (
         ids = await zrange(client, indexName);
     } else {
         ids = await getIds(repository, collectionName, indexes, criteria);
+    }
+
+    if (ids.length === 0) {
+        return [];
     }
 
     if (sort) {
@@ -371,20 +375,18 @@ const remove = async (repository, collectionName, criteria) => {
 const applyDotNotation = async (document, fieldName, fieldOptions, cb) => {
     const fields = fieldName.split('.');
     if (fields.length > 1) {
-        fields.reduce((acc, field, currentIndex) => {
-            if (fields.length === currentIndex - 1) {
-                cb(acc, fieldName, fieldOptions, false);
-            }
-            return acc[fieldName];
+        const partDoc = fields.reduce((acc, field, currentIndex) => {
+            return fields.length === currentIndex - 1 ? acc : acc[fieldName];
         }, document);
+        await cb(partDoc, fieldName, fieldOptions, false);
     } else {
-        cb(document, fieldName, fieldOptions, true);
+        await cb(document, fieldName, fieldOptions, true);
     }
 };
 
 const applyFields = async (document, options, cb) => {
-    const promises = Object.keys(options).map(async fieldName =>
-        applyDotNotation(document, fieldName, options[fieldName], cb)
+    const promises = Object.keys(options).map(
+        async fieldName => await applyDotNotation(document, fieldName, options[fieldName], cb)
     );
     await Promise.all(promises);
 };
@@ -449,7 +451,7 @@ const updateHandlers = {
                 await removeIdFromIndex(repository, collectionName, id, partDoc, index);
             }
         }
-        document[fieldName] = fieldOptions;
+        partDoc[fieldName] = fieldOptions;
         if (isRootLevel) {
             const index = indexes[fieldName];
             if (index) {
@@ -478,8 +480,8 @@ const update = async (repository, collectionName, criteria, operators) => {
             await applyFields(
                 document,
                 operatorOptions,
-                (doc, fieldName, fieldOptions, isRootLevel) => {
-                    handler(
+                async (doc, fieldName, fieldOptions, isRootLevel) => {
+                    await handler(
                         repository,
                         collectionName,
                         indexes,
