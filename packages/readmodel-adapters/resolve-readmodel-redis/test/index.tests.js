@@ -15,6 +15,13 @@ const safeParse = (str) => {
     }
 };
 
+const normalizeIndexValues = (fieldType, values) =>
+    fieldType === 'number'
+        ? values
+        : values.map(value =>
+              value.substr(value.lastIndexOf(Z_VALUE_SEPARATOR) + Z_VALUE_SEPARATOR.length)
+          );
+
 const invokeCommand = (client, command, name, ...args) =>
     new Promise((resolve, reject) => {
         const params = [
@@ -31,7 +38,7 @@ const invokeCommand = (client, command, name, ...args) =>
     });
 
 describe('Read model redis adapter', () => {
-    let adapter, getReadable;
+    let adapter, getReadable, writable;
 
     let repository = {
         metaCollectionName: 'meta',
@@ -69,14 +76,14 @@ describe('Read model redis adapter', () => {
     const del = repository.client.del;
     repository.client['DEL'] = function () {
         const args = Object.values(arguments);
-        const cbIndex = arguments.length - 1;
+        const cbIndex = args.length - 1;
         const cb = args[cbIndex];
         const keys = args.slice(0, cbIndex);
         del(keys, cb);
     };
 
     repository.client['ZRANGEBYLEX'] = async function (collectionName, min, max, cb) {
-        const searchValue = min.replace('[', '').replace(Z_VALUE_SEPARATOR, '');
+        const searchValue = min.replace('[', '').split(Z_VALUE_SEPARATOR)[0];
         const rows = await invokeCommand(repository.client, 'ZRANGE', collectionName, 0, -1);
 
         const ids = rows
@@ -87,6 +94,22 @@ describe('Read model redis adapter', () => {
             .filter(val => val !== null);
 
         cb(null, ids);
+    };
+
+    repository.client['ZREMRANGEBYLEX'] = async function (collectionName, min, max, cb) {
+        const ids = await invokeCommand(repository.client, 'ZRANGEBYLEX', collectionName, min, max);
+        await invokeCommand(repository.client, 'ZREM', collectionName, ...ids);
+        cb(null, '');
+    }
+
+    const hdel = repository.client.hdel;
+    repository.client['HDEL'] = function () {
+        const args = Object.values(arguments);
+        const cbIndex = args.length - 1;
+        const cb = args[cbIndex];
+        const collectionName = args[0];
+        const ids = args.slice(1, cbIndex);
+        hdel(collectionName, ids, cb);
     };
 
     let nativeAdapter = nativeRedisAdapter(repository);
@@ -103,6 +126,7 @@ describe('Read model redis adapter', () => {
 
         adapter.buildProjection({
             Init: async (store) => {
+                writable = store;
                 try {
                     const TestCollection = await store.collection('Test');
                     await TestCollection.ensureIndex({ fieldName: 'i', fieldType: 'number' });
@@ -231,4 +255,23 @@ describe('Read model redis adapter', () => {
         expect(records[0].text).to.be.equal('Second text');
         expect(records[0]._id).to.be.equal(3);
     });
+
+    it('get count', async () => {
+        const store = await getReadable();
+        const TestCollection = await store.collection('Test');
+
+        const count = await TestCollection.count();
+
+        expect(count).to.be.equal(4);
+    });
+
+    it('remove', async () => {
+        const TestCollection = await writable.collection('Test');
+
+        await TestCollection.remove({ i: 100, s: 'bbb' });
+        const records = await TestCollection.find();
+
+        expect(records.length).to.be.equal(2);
+    });
+
 });

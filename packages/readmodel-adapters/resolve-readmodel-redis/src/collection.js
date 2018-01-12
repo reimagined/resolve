@@ -341,8 +341,6 @@ const removeIdFromIndex = async (
             `(${fieldValue}${Z_VALUE_SEPARATOR}${id}`
         );
     }
-
-    await hdel(client, metaCollection.getSortIndexName(collectionName, fieldName));
 };
 
 const removeIdsFromIndexes = async (repository, collectionName, indexes, ids) => {
