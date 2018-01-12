@@ -140,15 +140,15 @@ A typical aggregate structure:
 
 ```js
 export default {
-  name: 'AggregateName', // Aggregate name for command handler, the same as aggregateType
+  name: 'AggregateName',
   initialState: {}, // Initial state (Bounded context) for every instance of this aggregate type
   projection: {
     Event1Happened: (state, event) => nextState,  // Update functions for the current aggregate instance
     Event2Happened: (state, event) => nextState   // for different event types
   },
   commands: {
-    command1Name: (state, command) => generatedEvent, // Function which generates events depending 
-    command2Name: (state, command) => generatedEvent  // on the current state and argument list
+    command1Name: (state, command) => generatedEvent1, // Function which generates events depending 
+    command2Name: (state, command) => generatedEvent2  // on the current state and argument list
   }
 };
 ```
@@ -206,9 +206,9 @@ A typical view model structure:
 
 ```js
 export default {
-  name: 'Todos', // View model name
-  viewModel: true, // Specify that this is a view model and it can be used as a Redux state
+  name: 'ViewModelName',
   projection: {
+		Init: () => initialState,
     TodoCreated: (state, event) => nextState,  // Update functions for the current view model instance
     TodoRemoved: (state, event) => nextState   // for different event types
   }
