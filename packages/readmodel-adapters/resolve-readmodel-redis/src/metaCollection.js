@@ -1,13 +1,13 @@
-import { hincrby, hget, hdel, hexists, hset } from './redisApi';
+import { hincrby, hget, hdel, hexists, hset, hkeys } from './redisApi';
 
 const DEFAULT_META = { lastTimestamp: 0, indexes: {} };
 
 const create = async (
     { client, metaCollectionName, autoincMetaCollectionName },
-    collectionName
+    newCollectionName
 ) => {
-    await hset(client, metaCollectionName, collectionName, DEFAULT_META);
-    await hset(client, autoincMetaCollectionName, collectionName, 0);
+    await hset(client, metaCollectionName, newCollectionName, DEFAULT_META);
+    await hset(client, autoincMetaCollectionName, newCollectionName, 0);
 };
 
 const del = async ({ client, metaCollectionName, autoincMetaCollectionName }, collectionName) => {
@@ -72,6 +72,9 @@ const getIndexes = async ({ client, metaCollectionName }, collectionName) => {
     return !meta ? { ...DEFAULT_META.indexes } : meta.indexes;
 };
 
+const listCollections = async ({ client, metaCollectionName }) =>
+    await hkeys(client, metaCollectionName);
+
 export default (repository) => {
     return Object.freeze({
         create: create.bind(null, repository),
@@ -83,6 +86,7 @@ export default (repository) => {
         getNextId: getNextId.bind(null, repository),
         createIndex: createIndex.bind(null, repository),
         removeIndex: removeIndex.bind(null, repository),
-        getIndexes: getIndexes.bind(null, repository)
+        getIndexes: getIndexes.bind(null, repository),
+        listCollections: listCollections.bind(null, repository)
     });
 };

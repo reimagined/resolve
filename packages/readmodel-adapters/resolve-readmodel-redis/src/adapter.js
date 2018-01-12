@@ -18,10 +18,7 @@ export async function createCollection(repository, name) {
         );
     }
 
-    await metaCollection.create(name, {
-        lastTimestamp: 0,
-        indexes: []
-    });
+    await metaCollection.create(name);
     const collection = await getCollection(repository, name);
     await collection.ensureIndex({ fieldName: '_id', fieldType: 'number' });
 }

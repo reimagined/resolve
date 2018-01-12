@@ -37,6 +37,8 @@ async function getReadOnlyCollectionInterface(repository, collectionName) {
 }
 
 async function getCollectionInterface(repository, isWriteable, collectionName) {
+    await repository.connectionPromise;
+
     if (isWriteable) {
         return writeCollectionInterface(repository, collectionName);
     }
@@ -44,7 +46,8 @@ async function getCollectionInterface(repository, isWriteable, collectionName) {
 }
 
 async function listCollections(repository) {
-    throw new Error('todo implement me!!!');
+    await repository.connectionPromise;
+    return await repository.metaCollection.listCollections();
 }
 
 function getStoreInterface(repository, isWriteable) {
