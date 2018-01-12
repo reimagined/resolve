@@ -176,21 +176,21 @@ describe('Read model redis adapter', () => {
         const store = await getReadable();
         const TestCollection = await store.collection('Test');
 
-        const records = await TestCollection.find({});
-
-        expect(records.length).to.be.equal(4);
-    });
-
-    it('find 2', async () => {
-        const store = await getReadable();
-        const TestCollection = await store.collection('Test');
-
         const records = await TestCollection.find();
 
         expect(records.length).to.be.equal(4);
     });
 
-    it('find 3', async () => {
+    it('find with empty criteria', async () => {
+        const store = await getReadable();
+        const TestCollection = await store.collection('Test');
+
+        const records = await TestCollection.find({});
+
+        expect(records.length).to.be.equal(4);
+    });
+
+    it('find witn criteria', async () => {
         const store = await getReadable();
         const TestCollection = await store.collection('Test');
 
@@ -207,5 +207,26 @@ describe('Read model redis adapter', () => {
 
         expect(records[0].text).to.be.equal('Initial');
         expect(records[0]._id).to.be.equal(1);
+    });
+
+    it('find one', async () => {
+        const store = await getReadable();
+        const TestCollection = await store.collection('Test');
+
+        const record = await TestCollection.findOne({ s: 'bbb' });
+
+        expect(record.text).to.be.equal('First text');
+        expect(record._id).to.be.equal(2);
+    });
+
+    it('find with skip and limit', async () => {
+        const store = await getReadable();
+        const TestCollection = await store.collection('Test');
+
+        const records = await TestCollection.find({ s: 'bbb' }).skip(1).limit(1);
+
+        expect(records.length).to.be.equal(1);
+        expect(records[0].text).to.be.equal('Second text');
+        expect(records[0]._id).to.be.equal(3);
     });
 });

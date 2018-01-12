@@ -265,7 +265,8 @@ const find = async (
 
 const findOne = async (repository, collectionName, criteria, { skip = 0, order = 0 }) => {
     const limit = 1;
-    const result = find(repository, collectionName, criteria, { skip, limit, order });
+    const result = await find(repository, collectionName, criteria, { skip, limit, order });
+
     return result.length === 0 ? null : result[0];
 };
 
