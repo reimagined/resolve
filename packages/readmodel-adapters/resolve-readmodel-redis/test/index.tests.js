@@ -223,7 +223,9 @@ describe('Read model redis adapter', () => {
         const store = await getReadable();
         const TestCollection = await store.collection('Test');
 
-        const records = await TestCollection.find({ s: 'bbb' }).skip(1).limit(1);
+        const records = await TestCollection.find({ s: 'bbb' })
+            .skip(1)
+            .limit(1);
 
         expect(records.length).to.be.equal(1);
         expect(records[0].text).to.be.equal('Second text');
