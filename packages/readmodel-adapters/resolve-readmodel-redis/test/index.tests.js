@@ -5,6 +5,8 @@ import createRedisAdapter from '../src/index';
 import nativeRedisAdapter from '../src/adapter';
 import metaCollection from '../src/metaCollection';
 
+const DEFAULT_COLLECTION_NAME = 'Test';
+
 const Z_VALUE_SEPARATOR = `${String.fromCharCode(0x0)}${String.fromCharCode(0x0)}`;
 
 const safeParse = (str) => {
@@ -46,6 +48,7 @@ describe('Read model redis adapter', () => {
         client: redis.createClient()
     };
     repository.metaCollection = metaCollection(repository);
+    repository.nativeAdapter = nativeRedisAdapter(repository);
 
     repository.client['ZINTERSTORE'] = async function (destination, numkeys, ...args) {
         const cb = args[args.length - 1];
@@ -100,7 +103,7 @@ describe('Read model redis adapter', () => {
         const ids = await invokeCommand(repository.client, 'ZRANGEBYLEX', collectionName, min, max);
         await invokeCommand(repository.client, 'ZREM', collectionName, ...ids);
         cb(null, '');
-    }
+    };
 
     const hdel = repository.client.hdel;
     repository.client['HDEL'] = function () {
@@ -112,10 +115,8 @@ describe('Read model redis adapter', () => {
         hdel(collectionName, ids, cb);
     };
 
-    let nativeAdapter = nativeRedisAdapter(repository);
-
     beforeEach(async () => {
-        await nativeAdapter.createCollection('Test');
+        await repository.nativeAdapter.createCollection(DEFAULT_COLLECTION_NAME);
 
         adapter = createRedisAdapter(
             {},
@@ -128,7 +129,7 @@ describe('Read model redis adapter', () => {
             Init: async (store) => {
                 writable = store;
                 try {
-                    const TestCollection = await store.collection('Test');
+                    const TestCollection = await store.collection(DEFAULT_COLLECTION_NAME);
                     await TestCollection.ensureIndex({ fieldName: 'i', fieldType: 'number' });
                     await TestCollection.ensureIndex({ fieldName: 's', fieldType: 'string' });
 
@@ -145,7 +146,7 @@ describe('Read model redis adapter', () => {
                 if (event.crashFlag) {
                     throw new Error('Test crashing event');
                 }
-                const TestCollection = await store.collection('Test');
+                const TestCollection = await store.collection(DEFAULT_COLLECTION_NAME);
 
                 await TestCollection.insert({
                     text: event.text
@@ -174,9 +175,16 @@ describe('Read model redis adapter', () => {
         expect(adapter.reset).to.be.a('function');
     });
 
+    it('should provide actual collections list in storage', async () => {
+        const readable = await getReadable();
+        const collectionsList = await readable.listCollections();
+
+        expect(collectionsList).to.be.deep.equal([DEFAULT_COLLECTION_NAME]);
+    });
+
     it('sort asc', async () => {
         const store = await getReadable();
-        const TestCollection = await store.collection('Test');
+        const TestCollection = await store.collection(DEFAULT_COLLECTION_NAME);
 
         const records = await TestCollection.find({}).sort({ _id: 1 });
 
@@ -187,7 +195,7 @@ describe('Read model redis adapter', () => {
 
     it('sort desc', async () => {
         const store = await getReadable();
-        const TestCollection = await store.collection('Test');
+        const TestCollection = await store.collection(DEFAULT_COLLECTION_NAME);
 
         const records = await TestCollection.find({}).sort({ _id: -1 });
 
@@ -198,7 +206,7 @@ describe('Read model redis adapter', () => {
 
     it('find', async () => {
         const store = await getReadable();
-        const TestCollection = await store.collection('Test');
+        const TestCollection = await store.collection(DEFAULT_COLLECTION_NAME);
 
         const records = await TestCollection.find();
 
@@ -207,7 +215,7 @@ describe('Read model redis adapter', () => {
 
     it('find with empty criteria', async () => {
         const store = await getReadable();
-        const TestCollection = await store.collection('Test');
+        const TestCollection = await store.collection(DEFAULT_COLLECTION_NAME);
 
         const records = await TestCollection.find({});
 
@@ -216,7 +224,7 @@ describe('Read model redis adapter', () => {
 
     it('find witn criteria', async () => {
         const store = await getReadable();
-        const TestCollection = await store.collection('Test');
+        const TestCollection = await store.collection(DEFAULT_COLLECTION_NAME);
 
         const records = await TestCollection.find({ i: 100, s: 'bbb' });
 
@@ -225,7 +233,7 @@ describe('Read model redis adapter', () => {
 
     it('find by id', async () => {
         const store = await getReadable();
-        const TestCollection = await store.collection('Test');
+        const TestCollection = await store.collection(DEFAULT_COLLECTION_NAME);
 
         const records = await TestCollection.find({ _id: 1 });
 
@@ -235,7 +243,7 @@ describe('Read model redis adapter', () => {
 
     it('find one', async () => {
         const store = await getReadable();
-        const TestCollection = await store.collection('Test');
+        const TestCollection = await store.collection(DEFAULT_COLLECTION_NAME);
 
         const record = await TestCollection.findOne({ s: 'bbb' });
 
@@ -245,7 +253,7 @@ describe('Read model redis adapter', () => {
 
     it('find with skip and limit', async () => {
         const store = await getReadable();
-        const TestCollection = await store.collection('Test');
+        const TestCollection = await store.collection(DEFAULT_COLLECTION_NAME);
 
         const records = await TestCollection.find({ s: 'bbb' })
             .skip(1)
@@ -258,7 +266,7 @@ describe('Read model redis adapter', () => {
 
     it('get count', async () => {
         const store = await getReadable();
-        const TestCollection = await store.collection('Test');
+        const TestCollection = await store.collection(DEFAULT_COLLECTION_NAME);
 
         const count = await TestCollection.count();
 
@@ -266,12 +274,11 @@ describe('Read model redis adapter', () => {
     });
 
     it('remove', async () => {
-        const TestCollection = await writable.collection('Test');
+        const TestCollection = await writable.collection(DEFAULT_COLLECTION_NAME);
 
         await TestCollection.remove({ i: 100, s: 'bbb' });
         const records = await TestCollection.find();
 
         expect(records.length).to.be.equal(2);
     });
-
 });

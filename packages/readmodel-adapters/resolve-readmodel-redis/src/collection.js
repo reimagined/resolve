@@ -548,7 +548,11 @@ const removeIndex = async ({ client, metaCollection }, collectionName, fieldName
     await del(client, metaCollection.getSortIndexName(collectionName, fieldName));
 };
 
-const collection = (repository, collectionName) => {
+const collection = async (repository, collectionName) => {
+    const { nativeAdapter } = repository;
+    if (!await nativeAdapter.exist(collectionName)) {
+        throw new Error(`Collection ${collectionName} does not exist`);
+    }
     return Object.freeze({
         count: count.bind(null, repository, collectionName),
         find: wrapFind.bind(null, repository, find, collectionName),

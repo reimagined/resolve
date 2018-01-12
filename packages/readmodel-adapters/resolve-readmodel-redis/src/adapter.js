@@ -19,8 +19,8 @@ export async function createCollection(repository, name) {
     }
 
     await metaCollection.create(name);
-    const collection = await getCollection(repository, name);
-    await collection.ensureIndex({ fieldName: '_id', fieldType: 'number' });
+    const nativeCollection = await collection(repository, name);
+    await nativeCollection.ensureIndex({ fieldName: '_id', fieldType: 'number' });
 }
 
 export async function dropCollection({ client, metaCollection }, name) {
@@ -28,15 +28,16 @@ export async function dropCollection({ client, metaCollection }, name) {
     await metaCollection.del(name);
 }
 
-export async function getCollection(repository, name) {
-    return collection(repository, name);
+export async function exist({ metaCollection }, name) {
+    return await metaCollection.exists(name);
 }
 
 const adapter = repository =>
     Object.freeze({
         createCollection: createCollection.bind(null, repository),
         dropCollection: dropCollection.bind(null, repository),
-        collection: collection.bind(null, repository)
+        collection: collection.bind(null, repository),
+        exist: exist.bind(null, repository)
     });
 
 export default adapter;

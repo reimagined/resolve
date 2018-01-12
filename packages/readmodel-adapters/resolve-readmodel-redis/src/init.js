@@ -1,6 +1,8 @@
+import nativeAdapter from './adapter';
 import redisCollection from './collection';
 import metaCollection from './metaCollection';
 import writeCollectionInterface from './collection';
+import adapter from './adapter';
 
 async function initProjection(repository) {
     await repository.connectionPromise;
@@ -15,7 +17,8 @@ async function initProjection(repository) {
 }
 
 async function getReadOnlyCollectionInterface(repository, collectionName) {
-    const collection = redisCollection(repository, collectionName);
+    const { nativeAdapter } = repository;
+    const collection = await nativeAdapter.collection(collectionName);
     const inf = {
         findOne: collection.findOne,
         find: collection.find,
@@ -38,6 +41,13 @@ async function getReadOnlyCollectionInterface(repository, collectionName) {
 
 async function getCollectionInterface(repository, isWriteable, collectionName) {
     await repository.connectionPromise;
+    const { nativeAdapter } = repository;
+    if (!await nativeAdapter.exist(collectionName)) {
+        if (!isWriteable) {
+            throw new Error(`Collection ${collectionName} does not exist`);
+        }
+        await nativeAdapter.createCollection(collectionName);
+    }
 
     if (isWriteable) {
         return writeCollectionInterface(repository, collectionName);
@@ -75,6 +85,7 @@ export default function init(repository) {
     repository.interfaceMap = new Map();
     repository.internalError = null;
 
+    repository.nativeAdapter = adapter(repository);
     repository.metaCollection = metaCollection(repository);
 
     repository.readInterface = getStoreInterface(repository, false);
