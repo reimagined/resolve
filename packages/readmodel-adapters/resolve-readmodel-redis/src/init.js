@@ -1,8 +1,7 @@
-import nativeAdapter from './adapter';
+import adapter from './adapter';
 import redisCollection from './collection';
 import metaCollection from './metaCollection';
 import writeCollectionInterface from './collection';
-import adapter from './adapter';
 
 async function initProjection(repository) {
     await repository.connectionPromise;
