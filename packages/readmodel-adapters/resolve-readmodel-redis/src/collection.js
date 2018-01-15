@@ -8,7 +8,6 @@ import {
     hget,
     hlen,
     hset,
-    hvals,
     zadd,
     zaddMulti,
     zinterstore,
@@ -19,7 +18,6 @@ import {
     zrem,
     zremrangebylex
 } from './redisApi';
-import { normalize } from 'path';
 
 const Z_VALUE_SEPARATOR = `${String.fromCharCode(0x0)}${String.fromCharCode(0x0)}`;
 const Z_LEX_MAX_VALUE = String.fromCharCode(0xff);
@@ -392,6 +390,33 @@ const applyFields = async (document, options, cb) => {
 };
 
 const updateHandlers = {
+    $set: async (
+        repository,
+        collectionName,
+        indexes,
+        id,
+        partDoc,
+        fieldName,
+        isRootLevel,
+        fieldOptions
+    ) => {
+        const newValue = fieldOptions;
+        if (isRootLevel) {
+            const index = indexes[fieldName];
+            if (index) {
+                await removeIdFromIndex(repository, collectionName, id, partDoc, index);
+            }
+        }
+
+        partDoc[fieldName] = newValue;
+
+        if (isRootLevel) {
+            const index = indexes[fieldName];
+            if (index) {
+                await updateIndex(repository, collectionName, id, document, index);
+            }
+        }
+    },
     $unset: async (repository, collectionName, indexes, id, partDoc, fieldName, isRootLevel) => {
         if (isRootLevel) {
             const index = indexes[fieldName];
@@ -416,6 +441,7 @@ const updateHandlers = {
         isRootLevel,
         fieldOptions
     ) => {
+        const incValue = fieldOptions;
         if (isRootLevel) {
             const index = indexes[fieldName];
             if (index) {
@@ -423,7 +449,7 @@ const updateHandlers = {
             }
         }
 
-        partDoc[fieldName] += fieldOptions;
+        partDoc[fieldName] += incValue;
 
         if (isRootLevel) {
             const index = indexes[fieldName];
@@ -442,6 +468,7 @@ const updateHandlers = {
         isRootLevel,
         fieldOptions
     ) => {
+        const newValue = fieldOptions;
         if (!partDoc.hasOwnProperty(fieldName)) {
             partDoc[fieldName] = [];
         } else if (!Array.isArray(partDoc[fieldName])) {
@@ -450,19 +477,32 @@ const updateHandlers = {
         if (isRootLevel) {
             const index = indexes[fieldName];
             if (index) {
-                await removeIdFromIndex(repository, collectionName, id, partDoc, index);
+                throw new Error(`You can't $push to indexed field '${fieldName}'`);
             }
         }
-        partDoc[fieldName].push(fieldOptions);
+        partDoc[fieldName].push(newValue);
+    },
+    $pull: async (
+        repository,
+        collectionName,
+        indexes,
+        id,
+        partDoc,
+        fieldName,
+        isRootLevel,
+        fieldOptions
+    ) => {
+        const targetValue = fieldOptions;
+        if (!Array.isArray(partDoc[fieldName])) {
+            throw new Error(`The field '${fieldName}' is not array in document { _id: ${id} }`);
+        }
         if (isRootLevel) {
             const index = indexes[fieldName];
             if (index) {
-                await updateIndex(repository, collectionName, id, document, index);
+                throw new Error(`You can't $pull from indexed field '${fieldName}'`);
             }
         }
-    },
-    $pull: async (repository, collectionName, indexes, id, document, options) => {
-        throw new Error('Not implemented!!!');
+        partDoc[fieldName] = partDoc[fieldName].filter(val => val !== targetValue);
     }
 };
 

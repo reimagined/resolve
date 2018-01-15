@@ -130,7 +130,7 @@ describe('Read model redis adapter', () => {
                     await TestCollection.insert({ i: 100, s: 'aaa', text: 'Initial', a: [] });
                     await TestCollection.insert({ i: 200, s: 'bbb', text: 'First text', a: [] });
                     await TestCollection.insert({ i: 100, s: 'bbb', text: 'Second text', a: [] });
-                    await TestCollection.insert({ i: 100, s: 'bbb', text: 'Last text', a: [] });
+                    await TestCollection.insert({ i: 100, s: 'bbb', text: 'Last text', a: [123] });
                 } catch (error) {
                     // eslint-disable-next-line no-console
                     console.log(`error: ${error}`);
@@ -321,6 +321,30 @@ describe('Read model redis adapter', () => {
         originDoc.b = [1000];
 
         await TestCollection.update({ _id: 1 }, { $push: { b: 1000 } });
+        const updatedDoc = await TestCollection.findOne({ _id: 1 });
+
+        expect(updatedDoc).to.be.deep.equal(originDoc);
+    });
+
+    it('update $pull', async () => {
+        const TestCollection = await writable.collection('Test');
+
+        const originDoc = await TestCollection.findOne({ _id: 4 });
+        originDoc.a = [];
+
+        await TestCollection.update({ _id: 4 }, { $pull: { a: 123 } });
+        const updatedDoc = await TestCollection.findOne({ _id: 4 });
+
+        expect(updatedDoc).to.be.deep.equal(originDoc);
+    });
+
+    it('update $set', async () => {
+        const TestCollection = await writable.collection('Test');
+
+        const originDoc = await TestCollection.findOne({ _id: 1 });
+        originDoc.i = 111;
+
+        await TestCollection.update({ _id: 1 }, { $set: { i: 111 } });
         const updatedDoc = await TestCollection.findOne({ _id: 1 });
 
         expect(updatedDoc).to.be.deep.equal(originDoc);
