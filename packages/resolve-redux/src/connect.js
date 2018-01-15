@@ -16,7 +16,10 @@ export default (mapStateToProps, mapDispatchToProps, mergeProps, options) => (Co
         }
 
         componentWillMount() {
-            const { viewModel, aggregateId } = this.props;
+            const { viewModel, aggregateId } = mapStateToProps(
+                this.context.store.getState(),
+                this.props
+            );
 
             this.context.store.dispatch(actions.subscribe(viewModel, aggregateId));
         }
