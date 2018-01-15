@@ -1,6 +1,6 @@
-export default function buildProjection(repository, inputProjection) {
-    repository.initHandler = async () => {};
+import 'regenerator-runtime/runtime';
 
+export default function buildProjection(repository, inputProjection) {
     return Object.keys(inputProjection).reduce((projection, eventType) => {
         if (eventType === 'Init' && typeof inputProjection[eventType] === 'function') {
             repository.initHandler = inputProjection[eventType];
@@ -11,6 +11,7 @@ export default function buildProjection(repository, inputProjection) {
             await repository.initDonePromise;
             const writeInterface = repository.writeInterface;
             const handler = inputProjection[eventType];
+            repository.lastTimestamp = event.timestamp;
 
             try {
                 await handler(writeInterface, event);

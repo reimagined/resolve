@@ -1,5 +1,5 @@
-import collection from './collection';
 import { exists, del } from './redisApi';
+import { nativeCollection } from './collection';
 
 export async function createCollection(repository, name) {
     const { client, metaCollection } = repository;
@@ -19,8 +19,8 @@ export async function createCollection(repository, name) {
     }
 
     await metaCollection.create(name);
-    const nativeCollection = await collection(repository, name);
-    await nativeCollection.ensureIndex({ fieldName: '_id', fieldType: 'number' });
+    const collection = await nativeCollection(repository, name);
+    await collection.ensureIndex({ fieldName: '_id', fieldType: 'number' });
 }
 
 export async function dropCollection({ client, metaCollection }, name) {
@@ -36,7 +36,7 @@ const adapter = repository =>
     Object.freeze({
         createCollection: createCollection.bind(null, repository),
         dropCollection: dropCollection.bind(null, repository),
-        collection: collection.bind(null, repository),
+        collection: nativeCollection.bind(null, repository),
         exist: exist.bind(null, repository)
     });
 

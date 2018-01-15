@@ -75,6 +75,26 @@ const getIndexes = async ({ client, metaCollectionName }, collectionName) => {
 const listCollections = async ({ client, metaCollectionName }) =>
     await hkeys(client, metaCollectionName);
 
+const getLastTimestamp = async ({ client, metaCollectionName }, collectionName) => {
+    const meta = await hget(client, metaCollectionName, collectionName);
+    return meta.lastTimestamp;
+};
+
+const setLastTimestamp = async (repository, collectionName, lastTimestamp) => {
+    const meta = await getMeta(repository, collectionName);
+    meta.lastTimestamp = lastTimestamp;
+    await set(repository, collectionName, meta);
+};
+
+const getMaxLastTimestamp = async (repository) => {
+    const collections = await listCollections(repository);
+    const promises = collections.map(
+        async collectionName => await getLastTimestamp(repository, collectionName)
+    );
+    const timestamps = await Promise.all(promises);
+    return Math.max(0, ...timestamps);
+};
+
 export default (repository) => {
     return Object.freeze({
         create: create.bind(null, repository),
@@ -87,6 +107,8 @@ export default (repository) => {
         createIndex: createIndex.bind(null, repository),
         removeIndex: removeIndex.bind(null, repository),
         getIndexes: getIndexes.bind(null, repository),
+        getMaxLastTimestamp: getMaxLastTimestamp.bind(null, repository),
+        setLastTimestamp: setLastTimestamp.bind(null, repository),
         listCollections: listCollections.bind(null, repository)
     });
 };

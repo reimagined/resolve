@@ -1,7 +1,6 @@
 import adapter from './adapter';
-import redisCollection from './collection';
 import metaCollection from './metaCollection';
-import writeCollectionInterface from './collection';
+import { writeCollectionInterface } from './collection';
 
 async function initProjection(repository) {
     await repository.connectionPromise;
@@ -66,6 +65,13 @@ function getStoreInterface(repository, isWriteable) {
     });
 }
 
+async function synchronizeDatabase(repository, client) {
+    repository.lastTimestamp = Math.max(
+        repository.lastTimestamp,
+        await repository.metaCollection.getMaxLastTimestamp()
+    );
+}
+
 export default function init(repository) {
     if (repository.interfaceMap) {
         throw new Error('The read model storage is already initialized');
@@ -78,8 +84,8 @@ export default function init(repository) {
 
     repository.connectionPromise = repository
         .connectDatabase()
-        .then(client => (repository.client = client)); // todo:
-    // .then(syncronizeDatabase.bind(null, repository));
+        .then(client => (repository.client = client))
+        .then(synchronizeDatabase.bind(null, repository));
 
     repository.interfaceMap = new Map();
     repository.internalError = null;

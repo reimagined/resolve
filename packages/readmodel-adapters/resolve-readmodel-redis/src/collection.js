@@ -550,12 +550,12 @@ const removeIndex = async ({ client, metaCollection }, collectionName, fieldName
     await del(client, metaCollection.getSortIndexName(collectionName, fieldName));
 };
 
-const collection = async (repository, collectionName) => {
+const rawCollection = async (repository, collectionName) => {
     const { nativeAdapter } = repository;
     if (!await nativeAdapter.exist(collectionName)) {
         throw new Error(`Collection ${collectionName} does not exist`);
     }
-    return Object.freeze({
+    return {
         count: count.bind(null, repository, collectionName),
         find: wrapFind.bind(null, repository, find, collectionName),
         findOne: wrapFind.bind(null, repository, findOne, collectionName),
@@ -569,7 +569,22 @@ const collection = async (repository, collectionName) => {
         // promise
         // then: array => {},
         // catch: () => {}
-    });
+    };
 };
 
-export default collection;
+export const writeCollectionInterface = async (repository, collectionName) => {
+    const { metaCollection } = repository;
+    const intf = await rawCollection(repository, collectionName);
+
+    for (let key of Object.keys(intf)) {
+        const original = intf[key];
+        intf[key] = async (...args) => {
+            await metaCollection.setLastTimestamp(collectionName, repository.lastTimestamp);
+            return await original(...args);
+        };
+    }
+    return Object.freeze(intf);
+};
+
+export const nativeCollection = async (repository, collectionName) =>
+    Object.freeze(await rawCollection(repository, collectionName));

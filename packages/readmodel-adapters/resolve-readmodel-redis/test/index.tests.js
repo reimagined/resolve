@@ -38,7 +38,8 @@ describe('Read model redis adapter', () => {
     let repository = {
         metaCollectionName: 'meta',
         autoincMetaCollectionName: 'meta_autoinc',
-        client: redis.createClient()
+        client: redis.createClient(),
+        lastTimestamp: 0
     };
     repository.metaCollection = metaCollection(repository);
     repository.nativeAdapter = nativeRedisAdapter(repository);
