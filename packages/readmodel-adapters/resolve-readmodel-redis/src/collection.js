@@ -392,7 +392,16 @@ const applyFields = async (document, options, cb) => {
 };
 
 const updateHandlers = {
-    $set: async (repository, collectionName, indexes, id, partDoc, fieldName, isRootLevel, fieldOptions) => {
+    $set: async (
+        repository,
+        collectionName,
+        indexes,
+        id,
+        partDoc,
+        fieldName,
+        isRootLevel,
+        fieldOptions
+    ) => {
         const newValue = fieldOptions;
         if (isRootLevel) {
             const index = indexes[fieldName];
@@ -475,14 +484,16 @@ const updateHandlers = {
         }
         partDoc[fieldName].push(newValue);
     },
-    $pull: async (repository,
+    $pull: async (
+        repository,
         collectionName,
         indexes,
         id,
         partDoc,
         fieldName,
         isRootLevel,
-        fieldOptions) => {
+        fieldOptions
+    ) => {
         const targetValue = fieldOptions;
         if (!Array.isArray(partDoc[fieldName])) {
             throw new Error(`The field '${fieldName}' is not array in document { _id: ${id} }`);
