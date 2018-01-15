@@ -195,7 +195,7 @@ export function unsubscribe(store, socket, viewModels, subscribers, requests, ac
     }
 }
 
-export function createResolveMiddleware(viewModels) {
+export function createResolveMiddleware({ viewModels }) {
     const subscribers = {
         viewModels: {},
         aggregateIds: {}

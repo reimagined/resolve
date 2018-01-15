@@ -25,10 +25,16 @@ This package contains tools for integrating reSolve with [Redux](http://redux.js
 
   1) Automatically fetch a view model state and subscribe to events. 
   2) Send a command to the server side.
+  
+  This function takes one argument:
+
+```js
+createResolveMiddleware({ viewModels [, subscribeAdapter] [, sendCommandAdapter] [, loadInitialStateAdapter] })
+```   
 
 ### `createViewModelsReducer`  
 
-  Generates a standard Redux reducer using reSolve view models. It does not take any arguments as it receives required data from [resolve middleware](#resolvemiddleware) automatically.  
+  Generates a standard Redux reducer using reSolve view models. It does not take any arguments as it receives required data from [createResolveMiddleware](#createresolvemiddleware) automatically.  
 
   This reducer includes handling the reSolve's [`merge`](#merge) action.
 
@@ -37,12 +43,12 @@ This package contains tools for integrating reSolve with [Redux](http://redux.js
 
 ```js
 const mapStateToProps = state => ({
-	...state[viewModelName][aggregateId],
+    ...state[viewModelName][aggregateId],
     viewModelName, // required field
     aggregateId // required field
 });
 
-export default connect(mapStateToProps)(withViewModel(Component));
+export default connect(mapStateToProps)(Component);
 ```
 
 ### `graphqlConnector`

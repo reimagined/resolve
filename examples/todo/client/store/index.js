@@ -10,7 +10,7 @@ const composeEnhancers =
         ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({})
         : compose;
 
-const middleware = [createResolveMiddleware(viewModels)];
+const middleware = [createResolveMiddleware({ viewModels })];
 
 const enhancer = composeEnhancers(applyMiddleware(...middleware));
 
