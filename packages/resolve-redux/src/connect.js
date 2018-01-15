@@ -1,9 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import actions from './actions';
 
-export default (Component) => {
+export default (mapStateToProps, mapDispatchToProps, mergeProps, options) => (Component) => {
+    const ConnectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps, options)(
+        Component
+    );
+
     class WithViewModels extends React.PureComponent {
         constructor(props, context) {
             super(props, context);
@@ -16,23 +21,14 @@ export default (Component) => {
             this.context.store.dispatch(actions.subscribe(viewModel, aggregateId));
         }
 
-        componentDidMount() {
-            this.setState({ isMounted: true });
-        }
-
         componentWillUnmount() {
             const { viewModel, aggregateId } = this.props;
-
-            this.setState({ isMounted: false });
 
             this.context.store.dispatch(actions.unsubscribe(viewModel, aggregateId));
         }
 
         render() {
-            if (!this.state.isMounted) {
-                return null;
-            }
-            return <Component {...this.props} />;
+            return <ConnectedComponent {...this.props} />;
         }
     }
 

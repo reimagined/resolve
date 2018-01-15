@@ -3,7 +3,7 @@
 This package contains tools for integrating reSolve with [Redux](http://redux.js.org/) .
 ## **📑 Table of Contents**
 * [Tools](#-tools)
-  * [resolveMiddleware](#resolvemiddleware)
+  * [createResolveMiddleware](#resolvemiddleware)
   * [createViewModelsReducer](#createviewmodelsreducer)
   * [withViewModel](#withviewmodel)
   * [graphqlConnector](#graphqlconnector)
@@ -19,7 +19,7 @@ This package contains tools for integrating reSolve with [Redux](http://redux.js
   * [How to Send Commands to Server](#how-to-send-commands-to-server)
 
 ## 🛠 Tools
-### `resolveMiddleware`  
+### `createResolveMiddleware`  
  
   Redux middleware used to:  
 
@@ -79,7 +79,7 @@ const ConnectedStoryComponent = gqlConnector(
 
 ### `actions`  
 
-  A plain object used to send special actions to be automatically handled by [`resolveMiddleware`](#resolvemiddleware). It implements the following functions.
+  A plain object used to send special actions to be automatically handled by [`createResolveMiddleware`](#resolvemiddleware). It implements the following functions.
   
   * #### `sendCommand`  
     Sends a command to the server side. It takes the object with the following required arguments:  
@@ -116,11 +116,11 @@ const ConnectedStoryComponent = gqlConnector(
 
   ``` js
 import { createStore, applyMiddleware } from 'redux';
-import { resolveMiddleware } from 'resolve-redux';
+import { createResolveMiddleware } from 'resolve-redux';
 import reducer from '../reducers';
 import viewModels from '../../common/view-models';
 
-const middleware = [resolveMiddleware(viewModels)];
+const middleware = [createResolveMiddleware(viewModels)];
 
 export default initialState => createStore(reducer, initialState, applyMiddleware(...middleware));
   ```

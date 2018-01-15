@@ -13,7 +13,7 @@ pipeline {
                     sh 'if [ "$(node_modules/.bin/prettier-eslint "./**/src/**/*.js" "./**/test/**/*.js" --list-different --ignore=./**/node_modules/**)" ]; then exit 1; fi'
                     sh 'npm run bootstrap'
                     sh 'npm run lint'
-                    sh 'npm test'
+                    sh 'npm test -- --stream'
                 }
             }
         }

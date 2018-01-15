@@ -188,7 +188,7 @@ export function unsubscribe(store, socket, viewModels, subscribers, requests, ac
     }
 }
 
-export function createMiddleware(viewModels) {
+export function createResolveMiddleware(viewModels) {
     const subscribers = {
         viewModels: {},
         aggregateIds: {}
@@ -231,6 +231,8 @@ export function createMiddleware(viewModels) {
 }
 
 const middleware =
-    typeof window === 'undefined' ? () => () => next => action => next(action) : createMiddleware;
+    typeof window === 'undefined'
+        ? () => () => next => action => next(action)
+        : createResolveMiddleware;
 
 export default middleware;

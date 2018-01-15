@@ -1,5 +1,4 @@
-import { connect } from 'react-redux';
-import { withViewModel } from 'resolve-redux';
+import { connect } from 'resolve-redux';
 import actions from '../actions';
 import TodoList from '../components/TodoList';
 
@@ -30,6 +29,6 @@ const mapDispatchToProps = {
     resetTodo: actions.resetTodo
 };
 
-const VisibleTodoList = connect(mapStateToProps, mapDispatchToProps)(withViewModel(TodoList));
+const VisibleTodoList = connect(mapStateToProps, mapDispatchToProps)(TodoList);
 
 export default VisibleTodoList;

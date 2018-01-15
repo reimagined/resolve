@@ -1,5 +1,5 @@
 import { createStore, applyMiddleware, compose } from 'redux';
-import { resolveMiddleware } from 'resolve-redux';
+import { createResolveMiddleware } from 'resolve-redux';
 import reducer from '../reducers';
 import viewModels from '../../common/view-models';
 
@@ -10,7 +10,7 @@ const composeEnhancers =
         ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({})
         : compose;
 
-const middleware = [resolveMiddleware(viewModels)];
+const middleware = [createResolveMiddleware(viewModels)];
 
 const enhancer = composeEnhancers(applyMiddleware(...middleware));
 
