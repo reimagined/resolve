@@ -442,7 +442,9 @@ const updateHandlers = {
         isRootLevel,
         fieldOptions
     ) => {
-        if (!Array.isArray(partDoc[fieldName])) {
+        if (!partDoc.hasOwnProperty(fieldName)) {
+            partDoc[fieldName] = [];
+        } else if (!Array.isArray(partDoc[fieldName])) {
             throw new Error(`The field '${fieldName}' is not array in document { _id: ${id} }`);
         }
         if (isRootLevel) {
@@ -451,7 +453,7 @@ const updateHandlers = {
                 await removeIdFromIndex(repository, collectionName, id, partDoc, index);
             }
         }
-        partDoc[fieldName] = fieldOptions;
+        partDoc[fieldName].push(fieldOptions);
         if (isRootLevel) {
             const index = indexes[fieldName];
             if (index) {

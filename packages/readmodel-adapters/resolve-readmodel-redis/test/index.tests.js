@@ -17,13 +17,6 @@ const safeParse = (str) => {
     }
 };
 
-const normalizeIndexValues = (fieldType, values) =>
-    fieldType === 'number'
-        ? values
-        : values.map(value =>
-              value.substr(value.lastIndexOf(Z_VALUE_SEPARATOR) + Z_VALUE_SEPARATOR.length)
-          );
-
 const invokeCommand = (client, command, name, ...args) =>
     new Promise((resolve, reject) => {
         const params = [
@@ -133,10 +126,10 @@ describe('Read model redis adapter', () => {
                     await TestCollection.ensureIndex({ fieldName: 'i', fieldType: 'number' });
                     await TestCollection.ensureIndex({ fieldName: 's', fieldType: 'string' });
 
-                    await TestCollection.insert({ i: 100, s: 'aaa', text: 'Initial' });
-                    await TestCollection.insert({ i: 200, s: 'bbb', text: 'First text' });
-                    await TestCollection.insert({ i: 100, s: 'bbb', text: 'Second text' });
-                    await TestCollection.insert({ i: 100, s: 'bbb', text: 'Last text' });
+                    await TestCollection.insert({ i: 100, s: 'aaa', text: 'Initial', a: [] });
+                    await TestCollection.insert({ i: 200, s: 'bbb', text: 'First text', a: [] });
+                    await TestCollection.insert({ i: 100, s: 'bbb', text: 'Second text', a: [] });
+                    await TestCollection.insert({ i: 100, s: 'bbb', text: 'Last text', a: [] });
                 } catch (error) {
                     // eslint-disable-next-line no-console
                     console.log(`error: ${error}`);
@@ -280,5 +273,55 @@ describe('Read model redis adapter', () => {
         const records = await TestCollection.find();
 
         expect(records.length).to.be.equal(2);
+        expect(records[0]._id).to.be.equal(1);
+        expect(records[1]._id).to.be.equal(2);
+    });
+
+    it('update $unset', async () => {
+        const TestCollection = await writable.collection('Test');
+
+        const originDoc = await TestCollection.findOne({ _id: 1 });
+        delete originDoc['text'];
+        await TestCollection.update({ _id: 1 }, { $unset: { text: '' } });
+        const updatedDoc = await TestCollection.findOne({ _id: 1 });
+
+        expect(updatedDoc).to.be.deep.equal(originDoc);
+    });
+
+    it('update $inc', async () => {
+        const TestCollection = await writable.collection('Test');
+        const incVal = 50;
+
+        const originDoc = await TestCollection.findOne({ _id: 1 });
+        originDoc.i += incVal;
+
+        await TestCollection.update({ _id: 1 }, { $inc: { i: incVal } });
+        const updatedDoc = await TestCollection.findOne({ _id: 1 });
+
+        expect(updatedDoc).to.be.deep.equal(originDoc);
+    });
+
+    it('update $push', async () => {
+        const TestCollection = await writable.collection('Test');
+
+        const originDoc = await TestCollection.findOne({ _id: 1 });
+        originDoc.a.push(1000);
+
+        await TestCollection.update({ _id: 1 }, { $push: { a: 1000 } });
+        const updatedDoc = await TestCollection.findOne({ _id: 1 });
+
+        expect(updatedDoc).to.be.deep.equal(originDoc);
+    });
+
+    it('update $push with new field', async () => {
+        const TestCollection = await writable.collection('Test');
+
+        const originDoc = await TestCollection.findOne({ _id: 1 });
+        originDoc.b = [1000];
+
+        await TestCollection.update({ _id: 1 }, { $push: { b: 1000 } });
+        const updatedDoc = await TestCollection.findOne({ _id: 1 });
+
+        expect(updatedDoc).to.be.deep.equal(originDoc);
     });
 });
