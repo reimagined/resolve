@@ -2,7 +2,7 @@ import { connect } from 'resolve-redux';
 import actions from '../actions';
 import TodoList from '../components/TodoList';
 
-const viewModel = 'todos';
+const viewModelName = 'todos';
 const aggregateId = 'root-id';
 
 const getVisibleTodos = (todos, filter) => {
@@ -19,9 +19,9 @@ const getVisibleTodos = (todos, filter) => {
 };
 
 const mapStateToProps = state => ({
-    viewModel,
+    viewModelName,
     aggregateId,
-    todos: getVisibleTodos(state.viewModels[viewModel][aggregateId], state.visibilityFilter)
+    todos: getVisibleTodos(state.viewModels[viewModelName][aggregateId], state.visibilityFilter)
 });
 
 const mapDispatchToProps = {

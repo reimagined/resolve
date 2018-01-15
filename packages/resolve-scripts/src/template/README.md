@@ -207,7 +207,6 @@ A typical view model structure:
 ```js
 export default {
   name: 'Todos', // View model name
-  viewModel: true, // Specify that this is a view model and it can be used as a Redux state
   projection: {
     TodoCreated: (state, event) => nextState,  // Update functions for the current view model instance
     TodoRemoved: (state, event) => nextState   // for different event types

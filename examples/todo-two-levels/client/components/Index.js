@@ -5,7 +5,7 @@ import { NavLink } from 'react-router-dom';
 
 import actions from '../actions';
 
-const viewModel = 'Index';
+const viewModelName = 'Index';
 
 const Index = ({ lists, createList, removeList }) => {
     let newList;
@@ -39,9 +39,9 @@ const mapStateToProps = (state) => {
     const aggregateId = '*';
 
     return {
-        viewModel,
+        viewModelName,
         aggregateId,
-        lists: state[viewModel][aggregateId]
+        lists: state[viewModelName][aggregateId]
     };
 };
 

@@ -3,9 +3,9 @@
 This package contains tools for integrating reSolve with [Redux](http://redux.js.org/) .
 ## **📑 Table of Contents**
 * [Tools](#-tools)
-  * [createResolveMiddleware](#resolvemiddleware)
+  * [createResolveMiddleware](#createresolvemiddleware)
   * [createViewModelsReducer](#createviewmodelsreducer)
-  * [withViewModel](#withviewmodel)
+  * [connect](#connect)
   * [graphqlConnector](#graphqlconnector)
   * [createActions](#createactions)
   * [actions](#actions)
@@ -32,13 +32,13 @@ This package contains tools for integrating reSolve with [Redux](http://redux.js
 
   This reducer includes handling the reSolve's [`merge`](#merge) action.
 
-### `withViewModel`  
-  A higher-order component (HOC), which automatically subscribes/unsubscribes to/from a view model by aggregateId.
+### `connect`  
+  A higher-order component (HOC), which automatically subscribes/unsubscribes to/from a view model by aggregateId and connects a React component to a Redux store.
 
 ```js
 const mapStateToProps = state => ({
-	...state[viewModel][aggregateId],
-    viewModel, // required field
+	...state[viewModelName][aggregateId],
+    viewModelName, // required field
     aggregateId // required field
 });
 
@@ -46,7 +46,7 @@ export default connect(mapStateToProps)(withViewModel(Component));
 ```
 
 ### `graphqlConnector`
-  A higher-order component (HOC), which automatically delivers a read model's actual state by a graphql query. A connector takes the following arguments:
+  A higher-order component (HOC), which automatically delivers a view model's actual state by a graphql query. A connector takes the following arguments:
   * `gqlQuery` - a GraphQL query for retrieving data from a read model
   * `options` - connector options (see ApolloClient's [`query`](https://www.apollographql.com/docs/react/reference/index.html#ApolloClient.query) method  for details)
   * `endpointUrl` - a URL address with a graphql endpoint for a target read model
@@ -104,10 +104,10 @@ const ConnectedStoryComponent = gqlConnector(
  * #### `merge`  
     
     Produces an action handled by a reducer which the [`createViewModelsReducer`](#createviewmodelsreducer) function generates. A view model state is replaced with a new state
-. It takes two arguments:
-    *  `viewModel` -  the name of a read model whose state should be updated  
+. It takes three arguments:
+    *  `viewModelName` -  the name of a view model whose state should be updated  
     *  `aggregateId` - an aggregate id
-    *  `state` - the state to be merged with the specified read model's existing state  
+    *  `state` - the state to be merged with the specified view model's existing state  
 
 
 ## 💻 Basic Usage

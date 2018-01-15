@@ -5,7 +5,7 @@ import { NavLink } from 'react-router-dom';
 
 import actions from '../actions';
 
-const viewModel = 'Todos';
+const viewModelName = 'Todos';
 
 const Todo = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
     let newTodo;
@@ -55,9 +55,9 @@ const mapStateToProps = (state, ownProps) => {
     const aggregateId = ownProps.match.params.id;
 
     return {
-        viewModel,
+        viewModelName,
         aggregateId,
-        todos: state[viewModel][aggregateId]
+        todos: state[viewModelName][aggregateId]
     };
 };
 

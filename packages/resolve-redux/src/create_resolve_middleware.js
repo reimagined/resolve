@@ -68,10 +68,10 @@ export const api = {
         }
     },
 
-    async getViewModelRawState(viewModel, aggregateId) {
+    async getViewModelRawState(viewModelName, aggregateId) {
         const response = await fetch(
             getRootableUrl(
-                `/api/query/${viewModel}?aggregateIds${
+                `/api/query/${viewModelName}?aggregateIds${
                     aggregateId === '*' ? '' : '[]'
                 }=${aggregateId}`
             ),
@@ -92,13 +92,13 @@ export const api = {
 export function getEventTypes(viewModels, subscribers) {
     const eventTypes = {};
 
-    Object.keys(subscribers.viewModels).forEach((viewModel) => {
-        if (!subscribers.viewModels[viewModel]) {
+    Object.keys(subscribers.viewModels).forEach((viewModelName) => {
+        if (!subscribers.viewModels[viewModelName]) {
             return;
         }
 
         const { Init, ...projection } = viewModels.find(
-            ({ name }) => name === viewModel
+            ({ name }) => name === viewModelName
         ).projection;
 
         Object.keys(projection).forEach((eventType) => {
@@ -138,25 +138,28 @@ export function initSocketIO(store, socket = { failCount: 0, io: null }) {
 }
 
 export async function subscribe(store, socket, viewModels, subscribers, requests, action) {
-    const { viewModel, aggregateId } = action;
+    const { viewModelName, aggregateId } = action;
 
-    const needChange = !subscribers.viewModels[viewModel] || !subscribers.aggregateIds[aggregateId];
+    const needChange =
+        !subscribers.viewModels[viewModelName] || !subscribers.aggregateIds[aggregateId];
 
-    subscribers.viewModels[viewModel] = (subscribers.viewModels[viewModel] || 0) + 1;
+    subscribers.viewModels[viewModelName] = (subscribers.viewModels[viewModelName] || 0) + 1;
     subscribers.aggregateIds[aggregateId] = (subscribers.aggregateIds[aggregateId] || 0) + 1;
 
     if (needChange) {
-        const key = getKey(viewModel, aggregateId);
+        const key = getKey(viewModelName, aggregateId);
         requests[key] = true;
 
-        const rawState = await api.getViewModelRawState(viewModel, aggregateId);
+        const rawState = await api.getViewModelRawState(viewModelName, aggregateId);
 
-        const state = viewModels.find(({ name }) => name === viewModel).deserializeState(rawState);
+        const state = viewModels
+            .find(({ name }) => name === viewModelName)
+            .deserializeState(rawState);
 
         if (requests[key]) {
             delete requests[key];
 
-            store.dispatch(actions.merge(viewModel, aggregateId, state));
+            store.dispatch(actions.merge(viewModelName, aggregateId, state));
 
             socket.io.emit('setSubscription', {
                 types: getEventTypes(viewModels, subscribers),
@@ -167,17 +170,21 @@ export async function subscribe(store, socket, viewModels, subscribers, requests
 }
 
 export function unsubscribe(store, socket, viewModels, subscribers, requests, action) {
-    const { viewModel, aggregateId } = action;
+    const { viewModelName, aggregateId } = action;
 
-    subscribers.viewModels[viewModel] = Math.max((subscribers.viewModels[viewModel] || 0) - 1, 0);
+    subscribers.viewModels[viewModelName] = Math.max(
+        (subscribers.viewModels[viewModelName] || 0) - 1,
+        0
+    );
     subscribers.aggregateIds[aggregateId] = Math.max(
         (subscribers.aggregateIds[aggregateId] || 0) - 1,
         0
     );
 
-    const needChange = !subscribers.viewModels[viewModel] || !subscribers.aggregateIds[aggregateId];
+    const needChange =
+        !subscribers.viewModels[viewModelName] || !subscribers.aggregateIds[aggregateId];
 
-    const key = getKey(viewModel, aggregateId);
+    const key = getKey(viewModelName, aggregateId);
     delete requests[key];
 
     if (needChange) {
