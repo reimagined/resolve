@@ -1,5 +1,4 @@
 import adapter from './adapter';
-import redisCollection from './collection';
 import metaCollection from './metaCollection';
 import writeCollectionInterface from './collection';
 

@@ -8,7 +8,6 @@ import {
     hget,
     hlen,
     hset,
-    hvals,
     zadd,
     zaddMulti,
     zinterstore,
@@ -19,7 +18,6 @@ import {
     zrem,
     zremrangebylex
 } from './redisApi';
-import { normalize } from 'path';
 
 const Z_VALUE_SEPARATOR = `${String.fromCharCode(0x0)}${String.fromCharCode(0x0)}`;
 const Z_LEX_MAX_VALUE = String.fromCharCode(0xff);
