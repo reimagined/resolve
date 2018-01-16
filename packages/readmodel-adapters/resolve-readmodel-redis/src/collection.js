@@ -167,10 +167,20 @@ const updateIndex = async (
     const value = document[fieldName];
 
     const findIndexName = metaCollection.getFindIndexName(collectionName, fieldName);
-    await populateFindIndex(client, collectionName, fieldName, fieldType, findIndexName, id, value);
-
     const sortIndexName = metaCollection.getSortIndexName(collectionName, fieldName);
-    await populateSortIndex(client, sortIndexName, value, id);
+
+    await Promise.all([
+        await populateFindIndex(
+            client,
+            collectionName,
+            fieldName,
+            fieldType,
+            findIndexName,
+            id,
+            value
+        ),
+        await populateSortIndex(client, sortIndexName, value, id)
+    ]);
 };
 
 const updateIndexes = async (repository, collectionName, id, document) => {
@@ -307,15 +317,15 @@ const insert = async (repository, collectionName, document) => {
 
 const removeAll = async ({ client, metaCollection }, collectionName) => {
     const indexes = await metaCollection.getIndexes(collectionName);
-    Object.keys(indexes).forEach(async (key) => {
+    const promises = Object.keys(indexes).map(async (key) => {
         const { fieldName } = indexes[key];
 
         const findIndexName = metaCollection.getFindIndexName(collectionName, fieldName);
-        await del(client, findIndexName);
-
         const sortIndexName = metaCollection.getSortIndexName(collectionName, fieldName);
-        await del(client, sortIndexName);
+
+        await Promise.all([await del(client, findIndexName), await del(client, sortIndexName)]);
     });
+    await Promise.all(promises);
     await del(client, collectionName);
 };
 
@@ -585,9 +595,11 @@ const ensureIndex = async (repository, collectionName, options) => {
 };
 
 const removeIndex = async ({ client, metaCollection }, collectionName, fieldName) => {
-    await metaCollection.removeIndex(collectionName, fieldName);
-    await del(client, metaCollection.getFindIndexName(collectionName, fieldName));
-    await del(client, metaCollection.getSortIndexName(collectionName, fieldName));
+    await Promise.all([
+        await metaCollection.removeIndex(collectionName, fieldName),
+        await del(client, metaCollection.getFindIndexName(collectionName, fieldName)),
+        await del(client, metaCollection.getSortIndexName(collectionName, fieldName))
+    ]);
 };
 
 const rawCollection = async (repository, collectionName) => {
