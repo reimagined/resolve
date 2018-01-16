@@ -114,7 +114,7 @@ export function createResolveMiddleware({ viewModels }) {
         store.dispatch(actions.provideViewModels(viewModels));
 
         const subscribeAdapter = createSubscribeAdapter();
-        subscribeAdapter.onEvent(event => store.dispatch(JSON.parse(event)));
+        subscribeAdapter.onEvent(event => store.dispatch(event));
         subscribeAdapter.onDisconnect(error => store.dispatch(actions.disconnect(error)));
 
         return next => (action) => {
