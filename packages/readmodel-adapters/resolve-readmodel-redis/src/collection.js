@@ -604,8 +604,8 @@ const removeIndex = async ({ client, metaCollection }, collectionName, fieldName
 
 const rawCollection = async (repository, collectionName) => {
     const { nativeAdapter } = repository;
-    if (!await nativeAdapter.exist(collectionName)) {
-        throw new Error(`Collection ${collectionName} does not exist`);
+    if (!await nativeAdapter.exists(collectionName)) {
+        throw new Error(`Collection ${collectionName} does not exists`);
     }
     return {
         count: count.bind(null, repository, collectionName),

@@ -1,7 +1,8 @@
 import { exists, del } from './redisApi';
 import { nativeCollection } from './collection';
+import createMetaCollection from '../src/metaCollection';
 
-export async function createCollection(repository, name) {
+async function createCollection(repository, name) {
     const { client, metaCollection } = repository;
     if (await exists(client, name)) {
         throw new Error(`Collection ${name} is exist`);
@@ -11,7 +12,7 @@ export async function createCollection(repository, name) {
     //   throw new Error(`Meta collection ${name} is exist`)
     // }
 
-    if (await metaCollection.exists(name)) {
+    if (await collectionExists(repository, name)) {
         throw new Error(
             `Collection ${name} had already been created in current database, ` +
                 'but not with resolve read model adapter and has no required meta information'
@@ -23,21 +24,29 @@ export async function createCollection(repository, name) {
     await collection.ensureIndex({ fieldName: '_id', fieldType: 'number' });
 }
 
-export async function dropCollection({ client, metaCollection }, name) {
+async function dropCollection({ client, metaCollection }, name) {
     await del(client, name);
     await metaCollection.del(name);
 }
 
-export async function exist({ metaCollection }, name) {
+async function collectionExists({ metaCollection }, name) {
     return await metaCollection.exists(name);
 }
 
-const adapter = repository =>
-    Object.freeze({
+async function listCollections(repository) {
+    return await repository.metaCollection.listCollections(repository);
+}
+
+const adapter = (repository) => {
+    repository.metaCollection = createMetaCollection(repository);
+
+    return Object.freeze({
         createCollection: createCollection.bind(null, repository),
         dropCollection: dropCollection.bind(null, repository),
         collection: nativeCollection.bind(null, repository),
-        exist: exist.bind(null, repository)
+        exists: collectionExists.bind(null, repository),
+        listCollections: listCollections.bind(null, repository)
     });
+};
 
 export default adapter;

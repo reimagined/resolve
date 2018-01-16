@@ -3,7 +3,6 @@ import redis from 'redis-mock';
 
 import createRedisAdapter from '../src/index';
 import nativeRedisAdapter from '../src/adapter';
-import metaCollection from '../src/metaCollection';
 
 const DEFAULT_COLLECTION_NAME = 'Test';
 
@@ -36,12 +35,9 @@ describe('Read model redis adapter', () => {
     let adapter, getReadable, writable;
 
     let repository = {
-        metaCollectionName: 'meta',
-        autoincMetaCollectionName: 'meta_autoinc',
         client: redis.createClient(),
         lastTimestamp: 0
     };
-    repository.metaCollection = metaCollection(repository);
     repository.nativeAdapter = nativeRedisAdapter(repository);
 
     repository.client['ZINTERSTORE'] = async function (destination, numkeys, ...args) {
@@ -112,12 +108,7 @@ describe('Read model redis adapter', () => {
     beforeEach(async () => {
         await repository.nativeAdapter.createCollection(DEFAULT_COLLECTION_NAME);
 
-        adapter = createRedisAdapter(
-            {},
-            repository.metaCollectionName,
-            repository.autoincMetaCollectionName,
-            repository.client
-        );
+        adapter = createRedisAdapter({}, {}, repository.client);
 
         adapter.buildProjection({
             Init: async (store) => {

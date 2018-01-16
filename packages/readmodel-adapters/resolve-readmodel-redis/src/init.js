@@ -1,4 +1,4 @@
-import adapter from './adapter';
+import createNativeAdapter from './adapter';
 import metaCollection from './metaCollection';
 import { writeCollectionInterface } from './collection';
 
@@ -40,9 +40,9 @@ async function getReadOnlyCollectionInterface(repository, collectionName) {
 async function getCollectionInterface(repository, isWriteable, collectionName) {
     await repository.connectionPromise;
     const { nativeAdapter } = repository;
-    if (!await nativeAdapter.exist(collectionName)) {
+    if (!await nativeAdapter.exists(collectionName)) {
         if (!isWriteable) {
-            throw new Error(`Collection ${collectionName} does not exist`);
+            throw new Error(`Collection ${collectionName} does not exists`);
         }
         await nativeAdapter.createCollection(collectionName);
     }
@@ -55,10 +55,11 @@ async function getCollectionInterface(repository, isWriteable, collectionName) {
 
 async function listCollections(repository) {
     await repository.connectionPromise;
-    return await repository.metaCollection.listCollections();
+    return await repository.nativeAdapter.listCollections();
 }
 
 function getStoreInterface(repository, isWriteable) {
+    const { nativeAdapter } = repository;
     return Object.freeze({
         collection: getCollectionInterface.bind(null, repository, isWriteable),
         listCollections: listCollections.bind(null, repository)
@@ -90,8 +91,7 @@ export default function init(repository) {
     repository.interfaceMap = new Map();
     repository.internalError = null;
 
-    repository.nativeAdapter = adapter(repository);
-    repository.metaCollection = metaCollection(repository);
+    repository.nativeAdapter = createNativeAdapter(repository);
 
     repository.readInterface = getStoreInterface(repository, false);
     repository.writeInterface = getStoreInterface(repository, true);

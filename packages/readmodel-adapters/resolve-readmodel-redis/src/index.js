@@ -7,11 +7,11 @@ import reset from './reset';
 
 const DEFAULT_META_COLLECTION_NAME = '__ResolveMetaCollection__';
 const DEFAULT_AUTOINC_META_COLLECTION_NAME = '__ResolveMetaCollectionAutoinc__';
+const DEFAULT_LAST_TIMESTAMP_COLLECTION_NAME = '__ResolveMetaCollectionLastTimestamp__';
 
 export default function createRedisAdapter(
     options,
-    metaCollectionName,
-    autoincMetaCollectionName,
+    { metaCollectionName, autoincMetaCollectionName, lastTimestampCollectionName },
     redisClient
 ) {
     const repository = Object.create(null);
@@ -25,6 +25,11 @@ export default function createRedisAdapter(
         autoincMetaCollectionName && autoincMetaCollectionName.constructor === String
             ? autoincMetaCollectionName
             : DEFAULT_AUTOINC_META_COLLECTION_NAME;
+
+    repository.lastTimestampCollectionName =
+        lastTimestampCollectionName && lastTimestampCollectionName.constructor === String
+            ? lastTimestampCollectionName
+            : DEFAULT_LAST_TIMESTAMP_COLLECTION_NAME;
 
     repository.connectDatabase = async options =>
         redisClient ? redisClient : redis.createClient(options instanceof Object ? options : {});

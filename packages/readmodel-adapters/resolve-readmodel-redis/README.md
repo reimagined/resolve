@@ -6,7 +6,7 @@ This package is a `resolve-query` adapter for storing a read model in redis. The
 The store interface, implemented using the `resolve-readmodel-redis` adapter, provides segregated read and write access to collections. Write access is used on the update side when projection functions fill collections with data. Read access is used on the read endpoint where the client side retrieves collection data (for example, in a graphql resolver).
 
 A store has the following asynchronous methods:
-* `collection` - gets a collection by its name; if a collection does not exist, it is created in the write mode, and an error is thrown in the read mode.
+* `collection` - gets a collection by its name; if a collection does not exists, it is created in the write mode, and an error is thrown in the read mode.
 * `getCollections` - retrieves the list of actual collection names, in the read and write mode.
 
 A collection in the read mode provides the following asynchronous methods:
