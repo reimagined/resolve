@@ -6,14 +6,14 @@ describe('actions', () => {
     describe('merge', () => {
         it('should create an action to merge reducer state with viewModel state', () => {
             const aggregateId = 'aggregateId';
-            const viewModel = 'counter';
+            const viewModelName = 'counter';
             const state = {
                 value: 10
             };
-            expect(actions.merge(viewModel, aggregateId, state)).to.deep.equal({
+            expect(actions.merge(viewModelName, aggregateId, state)).to.deep.equal({
                 type: MERGE,
                 aggregateId,
-                viewModel,
+                viewModelName,
                 state
             });
         });
@@ -48,11 +48,11 @@ describe('actions', () => {
 
     describe('subscribe', () => {
         it('should create an action to subscribe on view model by aggregateId', () => {
-            const viewModel = 'counter';
+            const viewModelName = 'counter';
             const aggregateId = 'aggregateId';
-            expect(actions.subscribe(viewModel, aggregateId)).to.deep.equal({
+            expect(actions.subscribe(viewModelName, aggregateId)).to.deep.equal({
                 type: SUBSCRIBE,
-                viewModel,
+                viewModelName,
                 aggregateId
             });
         });
@@ -60,11 +60,11 @@ describe('actions', () => {
 
     describe('unsubscribe', () => {
         it('should create an action to unsubscribe on view model by aggregateId', () => {
-            const viewModel = 'counter';
+            const viewModelName = 'counter';
             const aggregateId = 'aggregateId';
-            expect(actions.unsubscribe(viewModel, aggregateId)).to.deep.equal({
+            expect(actions.unsubscribe(viewModelName, aggregateId)).to.deep.equal({
                 type: UNSUBSCRIBE,
-                viewModel,
+                viewModelName,
                 aggregateId
             });
         });
