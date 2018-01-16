@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { MERGE, SEND_COMMAND, SUBSCRIBE, UNSUBSCRIBE } from '../src/action_types';
+import { DISCONNECT, MERGE, SEND_COMMAND, SUBSCRIBE, UNSUBSCRIBE } from '../src/action_types';
 import actions from '../src/actions';
 
 describe('actions', () => {
@@ -66,6 +66,16 @@ describe('actions', () => {
                 type: UNSUBSCRIBE,
                 viewModelName,
                 aggregateId
+            });
+        });
+    });
+
+    describe('disconnect', () => {
+        it('should create an action to disconnect subscribe adapter', () => {
+            const reason = 'reason';
+            expect(actions.disconnect(reason)).to.deep.equal({
+                type: DISCONNECT,
+                reason
             });
         });
     });

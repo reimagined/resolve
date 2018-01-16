@@ -1,93 +1,11 @@
 import { SUBSCRIBE, UNSUBSCRIBE, SEND_COMMAND } from './action_types';
 import actions from './actions';
-import socketIOClient from 'socket.io-client';
+import createSubscribeAdapter from './subscribe_adapter';
+import sendCommand from './send_command';
+import loadInitialState from './load_initial_state';
+import { getKey } from './util';
 
-import { getRootableUrl, getKey, checkRequiredFields } from './util';
-import fetch from 'isomorphic-fetch';
-
-const CRITICAL_LEVEL = 100;
 const REFRESH_TIMEOUT = 1000;
-
-export const api = {
-    async sendCommand(store, action) {
-        const { command, aggregateId, aggregateName, payload } = action;
-
-        if (
-            !(
-                command &&
-                checkRequiredFields(
-                    { aggregateId, aggregateName },
-                    'Send command error:',
-                    JSON.stringify(action)
-                ) &&
-                !(command.ok || command.error)
-            )
-        ) {
-            return;
-        }
-
-        const normalizedCommand = {
-            type: command.type,
-            aggregateId,
-            aggregateName,
-            payload
-        };
-
-        try {
-            const response = await fetch(getRootableUrl('/api/commands'), {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'same-origin',
-                body: JSON.stringify(normalizedCommand)
-            });
-
-            if (response.ok) {
-                store.dispatch({
-                    ...action,
-                    command: {
-                        ...action.command,
-                        ok: true
-                    }
-                });
-
-                return;
-            }
-
-            const text = await response.text();
-            // eslint-disable-next-line no-console
-            console.error('Send command error:', text);
-            throw new Error(text);
-        } catch (error) {
-            store.dispatch({
-                ...action,
-                command: {
-                    ...action.command,
-                    error
-                }
-            });
-        }
-    },
-
-    async getViewModelRawState(viewModelName, aggregateId) {
-        const response = await fetch(
-            getRootableUrl(
-                `/api/query/${viewModelName}?aggregateIds${
-                    aggregateId === '*' ? '' : '[]'
-                }=${aggregateId}`
-            ),
-            {
-                method: 'GET',
-                credentials: 'same-origin'
-            }
-        );
-
-        if (!response.ok) {
-            throw new Error(response.text());
-        }
-
-        return await response.json();
-    }
-};
 
 export function getEventTypes(viewModels, subscribers) {
     const eventTypes = {};
@@ -119,25 +37,14 @@ export function getAggregateIds(viewModels, subscribers) {
     );
 }
 
-export function initSocketIO(store, socket = { failCount: 0, io: null }) {
-    socket.io = socketIOClient(window.location.origin, {
-        path: getRootableUrl('/socket/')
-    });
-
-    socket.io.on('event', event => store.dispatch(JSON.parse(event)));
-
-    socket.io.on('disconnect', () => {
-        socket.failCount++;
-        if (socket.failCount > CRITICAL_LEVEL) {
-            window.location.reload();
-        }
-        initSocketIO(store, socket);
-    });
-
-    return socket;
-}
-
-export async function subscribe(store, socket, viewModels, subscribers, requests, action) {
+export async function subscribe(
+    store,
+    subscribeAdapter,
+    viewModels,
+    subscribers,
+    requests,
+    action
+) {
     const { viewModelName, aggregateId } = action;
 
     const needChange =
@@ -150,7 +57,7 @@ export async function subscribe(store, socket, viewModels, subscribers, requests
         const key = getKey(viewModelName, aggregateId);
         requests[key] = true;
 
-        const rawState = await api.getViewModelRawState(viewModelName, aggregateId);
+        const rawState = await loadInitialState(viewModelName, aggregateId);
 
         const state = viewModels
             .find(({ name }) => name === viewModelName)
@@ -161,15 +68,15 @@ export async function subscribe(store, socket, viewModels, subscribers, requests
 
             store.dispatch(actions.merge(viewModelName, aggregateId, state));
 
-            socket.io.emit('setSubscription', {
+            subscribeAdapter.setSubscription({
                 types: getEventTypes(viewModels, subscribers),
-                ids: getAggregateIds(viewModels, subscribers)
+                aggregateIds: getAggregateIds(viewModels, subscribers)
             });
         }
     }
 }
 
-export function unsubscribe(store, socket, viewModels, subscribers, requests, action) {
+export function unsubscribe(store, subscribeAdapter, viewModels, subscribers, requests, action) {
     const { viewModelName, aggregateId } = action;
 
     subscribers.viewModels[viewModelName] = Math.max(
@@ -188,9 +95,9 @@ export function unsubscribe(store, socket, viewModels, subscribers, requests, ac
     delete requests[key];
 
     if (needChange) {
-        socket.io.emit('setSubscription', {
+        subscribeAdapter.setSubscription({
             types: getEventTypes(viewModels, subscribers),
-            ids: getAggregateIds(viewModels, subscribers)
+            aggregateIds: getAggregateIds(viewModels, subscribers)
         });
     }
 }
@@ -206,27 +113,35 @@ export function createResolveMiddleware({ viewModels }) {
     return (store) => {
         store.dispatch(actions.provideViewModels(viewModels));
 
-        const socket = initSocketIO(store);
+        const subscribeAdapter = createSubscribeAdapter();
+        subscribeAdapter.onEvent(event => store.dispatch(JSON.parse(event)));
+        subscribeAdapter.onDisconnect(error => store.dispatch(actions.disconnect(error)));
 
         return next => (action) => {
             switch (action.type) {
                 case SUBSCRIBE: {
-                    subscribe(store, socket, viewModels, subscribers, requests, action).catch(
-                        error =>
-                            setTimeout(() => {
-                                // eslint-disable-next-line no-console
-                                console.error(error);
-                                store.dispatch(action);
-                            }, REFRESH_TIMEOUT)
+                    subscribe(
+                        store,
+                        subscribeAdapter,
+                        viewModels,
+                        subscribers,
+                        requests,
+                        action
+                    ).catch(error =>
+                        setTimeout(() => {
+                            // eslint-disable-next-line no-console
+                            console.error(error);
+                            store.dispatch(action);
+                        }, REFRESH_TIMEOUT)
                     );
                     break;
                 }
                 case UNSUBSCRIBE: {
-                    unsubscribe(store, socket, viewModels, subscribers, requests, action);
+                    unsubscribe(store, subscribeAdapter, viewModels, subscribers, requests, action);
                     break;
                 }
                 case SEND_COMMAND: {
-                    api.sendCommand(store, action);
+                    sendCommand(store, action);
                     break;
                 }
                 default:

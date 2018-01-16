@@ -1,4 +1,11 @@
-import { MERGE, SEND_COMMAND, SUBSCRIBE, UNSUBSCRIBE, PROVIDE_VIEW_MODELS } from './action_types';
+import {
+    MERGE,
+    SEND_COMMAND,
+    SUBSCRIBE,
+    UNSUBSCRIBE,
+    PROVIDE_VIEW_MODELS,
+    DISCONNECT
+} from './action_types';
 
 function merge(viewModelName, aggregateId, state) {
     return {
@@ -42,10 +49,18 @@ function provideViewModels(viewModels) {
     };
 }
 
+function disconnect(reason) {
+    return {
+        type: DISCONNECT,
+        reason
+    };
+}
+
 export default {
     merge,
     sendCommand,
     subscribe,
     unsubscribe,
-    provideViewModels
+    provideViewModels,
+    disconnect
 };
