@@ -16,7 +16,7 @@ async function disposeDatabase(
 
     const adapter = redisAdapter(tempRepository);
 
-    const collectionNames = adapter.listCollections();
+    const collectionNames = await adapter.listCollections();
     const promises = collectionNames.map(async (collectionName) => {
         await adapter.dropCollection(collectionName);
     });
@@ -34,17 +34,22 @@ export default function reset(repository) {
     }
 
     const {
+        client,
         metaCollectionName,
         autoincMetaCollectionName,
         lastTimestampCollectionName
     } = repository;
 
     const disposePromise = repository.connectionPromise.then(
-        disposeDatabase.bind(null, {
-            metaCollectionName,
-            autoincMetaCollectionName,
-            lastTimestampCollectionName
-        })
+        disposeDatabase.bind(
+            null,
+            {
+                metaCollectionName,
+                autoincMetaCollectionName,
+                lastTimestampCollectionName
+            },
+            client
+        )
     );
 
     Object.keys(repository).forEach((key) => {

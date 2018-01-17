@@ -36,7 +36,8 @@ describe('Read model redis adapter', () => {
 
     let repository = {
         client: redis.createClient(),
-        lastTimestamp: 0
+        lastTimestamp: 0,
+        connectionPromise: Promise.resolve()
     };
     repository.nativeAdapter = nativeRedisAdapter(repository);
 

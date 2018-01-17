@@ -49,9 +49,9 @@ export const hvals = async (client, collectionName) =>
 export const hincrby = async (client, key, field, increment) =>
     await invokeCommand(client, 'HINCRBY', key, field, increment);
 
-export const del = async (client, ...keys) => {
-    await invokeCommand(client, 'DEL', ...keys);
-};
+export const del = async (client, ...keys) => await invokeCommand(client, 'DEL', ...keys);
+
+export const keys = async (client, pattern) => await invokeCommand(client, 'KEYS', pattern);
 
 export const exists = async (client, key) => await invokeCommand(client, 'EXISTS', key);
 
