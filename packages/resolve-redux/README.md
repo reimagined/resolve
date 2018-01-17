@@ -3,50 +3,56 @@
 This package contains tools for integrating reSolve with [Redux](http://redux.js.org/) .
 ## **📑 Table of Contents**
 * [Tools](#-tools)
-  * [resolveMiddleware](#resolvemiddleware)
+  * [createResolveMiddleware](#createresolvemiddleware)
   * [createViewModelsReducer](#createviewmodelsreducer)
-  * [withViewModel](#withviewmodel)
+  * [connect](#connect)
   * [graphqlConnector](#graphqlconnector)
   * [createActions](#createactions)
   * [actions](#actions)
+    * [sendCommand](#sendmommand)
+    * [subscribe](#subscribe)
+    * [unsubscribe](#unsubscribe)
     * [merge](#merge)
-    * [sendCommand](#sendcommand)
-    * [setSubscription](#setsubscription)
-    * [replaceState](#replaceState)
 * [Basic Usage](#-basic-usage)
   * [How to Create Redux Store](#how-to-create-redux-store)
   * [How to Generate Action from Aggregate](#how-to-generate-action-from-aggregate)
   * [How to Send Commands to Server](#how-to-send-commands-to-server)
 
 ## 🛠 Tools
-### `resolveMiddleware`  
+### `createResolveMiddleware`  
  
   Redux middleware used to:  
 
   1) Automatically fetch a view model state and subscribe to events. 
   2) Send a command to the server side.
+  
+  This function takes the following arguments:
+
+```js
+createResolveMiddleware({ viewModels [, subscribeAdapter] })
+```   
 
 ### `createViewModelsReducer`  
 
-  Generates a standard Redux reducer using reSolve view models. It does not take any arguments as it receives required data from [resolve middleware](#resolvemiddleware) automatically.  
+  Generates a standard Redux reducer using reSolve view models. It does not take any arguments as it receives required data from [createResolveMiddleware](#createresolvemiddleware) automatically.  
 
   This reducer includes handling the reSolve's [`merge`](#merge) action.
 
-### `withViewModel`  
-  A higher-order component (HOC), which automatically subscribes/unsubscribes to/from a view model by aggregateId.
+### `connect`  
+  A higher-order component (HOC), which automatically subscribes/unsubscribes to/from a view model by aggregateId and connects a React component to a Redux store.
 
 ```js
 const mapStateToProps = state => ({
-	...state[viewModel][aggregateId],
-    viewModel, // required field
+    ...state[viewModelName][aggregateId],
+    viewModelName, // required field
     aggregateId // required field
 });
 
-export default connect(mapStateToProps)(withViewModel(Component));
+export default connect(mapStateToProps)(Component);
 ```
 
 ### `graphqlConnector`
-  A higher-order component (HOC), which automatically delivers a read model's actual state by a graphql query. A connector takes the following arguments:
+  A higher-order component (HOC), which automatically delivers a view model's actual state by a graphql query. A connector takes the following arguments:
   * `gqlQuery` - a GraphQL query for retrieving data from a read model
   * `options` - connector options (see ApolloClient's [`query`](https://www.apollographql.com/docs/react/reference/index.html#ApolloClient.query) method  for details)
   * `endpointUrl` - a URL address with a graphql endpoint for a target read model
@@ -79,7 +85,7 @@ const ConnectedStoryComponent = gqlConnector(
 
 ### `actions`  
 
-  A plain object used to send special actions to be automatically handled by [`resolveMiddleware`](#resolvemiddleware). It implements the following functions.
+  A plain object used to send special actions to be automatically handled by [`createResolveMiddleware`](#resolvemiddleware). It implements the following functions.
   
   * #### `sendCommand`  
     Sends a command to the server side. It takes the object with the following required arguments:  
@@ -104,10 +110,10 @@ const ConnectedStoryComponent = gqlConnector(
  * #### `merge`  
     
     Produces an action handled by a reducer which the [`createViewModelsReducer`](#createviewmodelsreducer) function generates. A view model state is replaced with a new state
-. It takes two arguments:
-    *  `viewModel` -  the name of a read model whose state should be updated  
+. It takes three arguments:
+    *  `viewModelName` -  the name of a view model whose state should be updated  
     *  `aggregateId` - an aggregate id
-    *  `state` - the state to be merged with the specified read model's existing state  
+    *  `state` - the state to be merged with the specified view model's existing state  
 
 
 ## 💻 Basic Usage
@@ -116,11 +122,11 @@ const ConnectedStoryComponent = gqlConnector(
 
   ``` js
 import { createStore, applyMiddleware } from 'redux';
-import { resolveMiddleware } from 'resolve-redux';
+import { createResolveMiddleware } from 'resolve-redux';
 import reducer from '../reducers';
 import viewModels from '../../common/view-models';
 
-const middleware = [resolveMiddleware(viewModels)];
+const middleware = [createResolveMiddleware(viewModels)];
 
 export default initialState => createStore(reducer, initialState, applyMiddleware(...middleware));
   ```
