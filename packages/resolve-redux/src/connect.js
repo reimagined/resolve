@@ -11,7 +11,7 @@ export default (mapStateToProps, mapDispatchToProps, mergeProps, options) => (Co
         Component
     );
 
-    class WithViewModels extends React.PureComponent {
+    class ViewModelConnector extends React.PureComponent {
         componentWillMount() {
             const { viewModelName, aggregateId } = mapStateToProps(
                 this.context.store.getState(),
@@ -19,29 +19,29 @@ export default (mapStateToProps, mapDispatchToProps, mergeProps, options) => (Co
             );
 
             this.context.store.dispatch(actions.subscribe(viewModelName, aggregateId));
+
+            this.viewModelName = viewModelName;
+            this.aggregateId = aggregateId;
         }
 
         componentWillUnmount() {
-            const { viewModelName, aggregateId } = this.props;
-
-            this.context.store.dispatch(actions.unsubscribe(viewModelName, aggregateId));
+            this.context.store.dispatch(actions.unsubscribe(this.viewModelName, this.aggregateId));
         }
 
         render() {
-            const { viewModelName, aggregateId } = mapStateToProps(
-                this.context.store.getState(),
-                this.props
+            const loading = isLoadingViewModel(
+                this.context.store,
+                this.viewModelName,
+                this.aggregateId
             );
-
-            const loading = isLoadingViewModel(this.context.store, viewModelName, aggregateId);
 
             return <ConnectedComponent {...this.props} loading={loading} />;
         }
     }
 
-    WithViewModels.contextTypes = {
+    ViewModelConnector.contextTypes = {
         store: PropTypes.object.isRequired
     };
 
-    return WithViewModels;
+    return ViewModelConnector;
 };
