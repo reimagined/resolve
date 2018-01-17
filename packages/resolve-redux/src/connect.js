@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect, isLoadingViewModel } from 'react-redux';
+import { connect } from 'react-redux';
+
+import isLoadingViewModel from './is_loading_view_model';
 
 import actions from './actions';
 
