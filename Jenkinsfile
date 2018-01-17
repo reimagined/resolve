@@ -32,10 +32,21 @@ pipeline {
                         eval \$(next-lerna-version); \
                         export CI_CANARY_VERSION=\$NEXT_LERNA_VERSION-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}; \
                         echo \$CI_CANARY_VERSION > /lerna_version; \
-                        echo //${env.NPM_ADDR}/:_authToken=${env.NPM_TOKEN} >> /root/.npmrc; \
-                        ./node_modules/.bin/lerna publish --skip-git --force-publish=* --yes --repo-version \$(cat /lerna_version); \
-                        sleep 10
                     """
+
+                    if ( env.CI_RELEASE_TYPE == 'beta' ) {
+                        sh """
+                            echo //${env.NPM_ADDR_REMOTE}/:_authToken=${env.NPM_TOKEN_REMOTE} >> /root/.npmrc; \
+                            ./node_modules/.bin/lerna publish --canary --skip-git --force-publish=* --yes --repo-version \$(cat /lerna_version); \
+                            sleep 10
+                        """
+                    } else {
+                        sh """
+                            echo //${env.NPM_ADDR}/:_authToken=${env.NPM_TOKEN} >> /root/.npmrc; \
+                            ./node_modules/.bin/lerna publish --skip-git --force-publish=* --yes --repo-version \$(cat /lerna_version); \
+                            sleep 10
+                        """
+                    }
                 }
             }
         }
@@ -108,6 +119,7 @@ pipeline {
                         /init.sh
                         git clone https://github.com/reimagined/hacker-news-resolve.git
                         cd hacker-news-resolve
+                        git checkout ${env.BRANCH_NAME} || echo "No branch \"${env.BRANCH_NAME}\""
                         npm install
                         ./node_modules/.bin/resolve-scripts update \$(cat /lerna_version)
                         npm run build
