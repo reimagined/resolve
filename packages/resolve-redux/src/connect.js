@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { connect, isLoadingViewModel } from 'react-redux';
 
 import actions from './actions';
 
@@ -28,7 +28,7 @@ export default (mapStateToProps, mapDispatchToProps, mergeProps, options) => (Co
         render() {
             const { viewModelName, aggregateId } = this.props;
 
-            const loading = this.context.store.isLoadingViewModel(viewModelName, aggregateId);
+            const loading = isLoadingViewModel(this.context.store, viewModelName, aggregateId);
 
             return <ConnectedComponent {...this.props} loading={loading} />;
         }

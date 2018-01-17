@@ -11,6 +11,7 @@ import * as util from './util';
 import loadInitialState from './load_initial_state';
 import sendCommand from './send_command';
 import subscribeAdapter from './subscribe_adapter';
+import isLoadingViewModel from './is_loading_view_model';
 
 export {
     actions,
@@ -23,5 +24,6 @@ export {
     util,
     loadInitialState,
     sendCommand,
-    subscribeAdapter
+    subscribeAdapter,
+    isLoadingViewModel
 };

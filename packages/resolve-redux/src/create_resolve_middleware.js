@@ -120,7 +120,7 @@ export function createResolveMiddleware({
     }, {});
 
     return (store) => {
-        Object.defineProperty(store, 'isLoadingViewModel', {
+        Object.defineProperty(store.getState, 'isLoadingViewModel', {
             enumerable: false,
             configurable: false,
             writable: false,
