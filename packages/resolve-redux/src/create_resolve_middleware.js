@@ -118,8 +118,12 @@ export function createResolveMiddleware({
     }, {});
 
     return (store) => {
-        store.isLoadingViewModel = (viewModelName, aggregateId) =>
-            !!loading[viewModelName][aggregateId];
+        Object.defineProperty(store, 'isLoadingViewModel', {
+            enumerable: false,
+            configurable: false,
+            writable: false,
+            value: (viewModelName, aggregateId) => !!loading[viewModelName][aggregateId]
+        });
 
         store.dispatch(actions.provideViewModels(viewModels));
 
