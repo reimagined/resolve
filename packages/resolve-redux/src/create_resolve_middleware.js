@@ -1,6 +1,6 @@
 import { SUBSCRIBE, UNSUBSCRIBE, SEND_COMMAND } from './action_types';
 import actions from './actions';
-import createSubscribeAdapter from './subscribe_adapter';
+import defaultSubscribeAdapter from './subscribe_adapter';
 import sendCommand from './send_command';
 import loadInitialState from './load_initial_state';
 import { getKey } from './util';
@@ -102,46 +102,59 @@ export function unsubscribe(store, subscribeAdapter, viewModels, subscribers, re
     }
 }
 
-export function createResolveMiddleware({ viewModels }) {
+export function createResolveMiddleware({
+    viewModels,
+    subscribeAdapter = defaultSubscribeAdapter
+}) {
     const subscribers = {
         viewModels: {},
         aggregateIds: {}
     };
 
     const requests = {};
+    const loading = viewModels.reduce((acc, { name }) => {
+        acc[name] = {};
+        return acc;
+    }, {});
 
     return (store) => {
+        store.isLoadingViewModel = (viewModelName, aggregateId) =>
+            !!loading[viewModelName][aggregateId];
+
         store.dispatch(actions.provideViewModels(viewModels));
 
-        const subscribeAdapter = createSubscribeAdapter();
-        subscribeAdapter.onEvent(event => store.dispatch(event));
-        subscribeAdapter.onDisconnect(error => store.dispatch(actions.disconnect(error)));
+        const adapter = subscribeAdapter();
+        adapter.onEvent(event => store.dispatch(event));
+        adapter.onDisconnect(error => store.dispatch(actions.disconnect(error)));
 
         return next => (action) => {
             switch (action.type) {
                 case SUBSCRIBE: {
-                    subscribe(
-                        store,
-                        subscribeAdapter,
-                        viewModels,
-                        subscribers,
-                        requests,
-                        action
-                    ).catch(error =>
-                        setTimeout(() => {
-                            // eslint-disable-next-line no-console
-                            console.error(error);
-                            store.dispatch(action);
-                        }, REFRESH_TIMEOUT)
+                    const { viewModelName, aggregateId } = action;
+                    loading[viewModelName][aggregateId] = true;
+
+                    subscribe(store, adapter, viewModels, subscribers, requests, action).catch(
+                        error =>
+                            setTimeout(() => {
+                                // eslint-disable-next-line no-console
+                                console.error(error);
+                                store.dispatch(action);
+                            }, REFRESH_TIMEOUT)
                     );
+
                     break;
                 }
                 case UNSUBSCRIBE: {
-                    unsubscribe(store, subscribeAdapter, viewModels, subscribers, requests, action);
+                    const { viewModelName, aggregateId } = action;
+                    delete loading[viewModelName][aggregateId];
+
+                    unsubscribe(store, adapter, viewModels, subscribers, requests, action);
+
                     break;
                 }
                 case SEND_COMMAND: {
                     sendCommand(store, action);
+
                     break;
                 }
                 default:

@@ -29,7 +29,7 @@ This package contains tools for integrating reSolve with [Redux](http://redux.js
   This function takes the following arguments:
 
 ```js
-createResolveMiddleware({ viewModels [, subscribeAdapter] [, sendCommand] [, loadInitialStateAdapter] })
+createResolveMiddleware({ viewModels [, subscribeAdapter] })
 ```   
 
 ### `createViewModelsReducer`  

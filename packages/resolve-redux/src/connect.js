@@ -10,11 +10,6 @@ export default (mapStateToProps, mapDispatchToProps, mergeProps, options) => (Co
     );
 
     class WithViewModels extends React.PureComponent {
-        constructor(props, context) {
-            super(props, context);
-            this.state = { isMounted: false };
-        }
-
         componentWillMount() {
             const { viewModelName, aggregateId } = mapStateToProps(
                 this.context.store.getState(),
@@ -31,7 +26,11 @@ export default (mapStateToProps, mapDispatchToProps, mergeProps, options) => (Co
         }
 
         render() {
-            return <ConnectedComponent {...this.props} />;
+            const { viewModelName, aggregateId } = this.props;
+
+            const loading = this.context.store.isLoadingViewModel(viewModelName, aggregateId);
+
+            return <ConnectedComponent {...this.props} loading={loading} />;
         }
     }
 
