@@ -66,7 +66,9 @@ export function provideViewModelsHandler(context, state, { viewModels }) {
     handlers[MERGE] = mergeHandler.bind(null, context);
 
     viewModels.forEach(({ name: viewModelName }) => {
-        initialState[viewModelName] = {};
+        initialState[viewModelName] = {
+            ...initialState[viewModelName]
+        };
     });
 
     const map = createMap(viewModels);

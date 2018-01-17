@@ -102,6 +102,8 @@ export function unsubscribe(store, subscribeAdapter, viewModels, subscribers, re
     }
 }
 
+const isServer = typeof window === 'undefined';
+
 export function createResolveMiddleware({
     viewModels,
     subscribeAdapter = defaultSubscribeAdapter
@@ -126,6 +128,10 @@ export function createResolveMiddleware({
         });
 
         store.dispatch(actions.provideViewModels(viewModels));
+
+        if (isServer) {
+            return next => action => next(action);
+        }
 
         const adapter = subscribeAdapter();
         adapter.onEvent(event => store.dispatch(event));
@@ -169,9 +175,4 @@ export function createResolveMiddleware({
     };
 }
 
-const middleware =
-    typeof window === 'undefined'
-        ? () => () => next => action => next(action)
-        : createResolveMiddleware;
-
-export default middleware;
+export default createResolveMiddleware;
