@@ -102,7 +102,13 @@ export function unsubscribe(store, subscribeAdapter, viewModels, subscribers, re
     }
 }
 
-const isServer = typeof window === 'undefined';
+const isClient = typeof window !== 'undefined';
+
+export const mockSubscribeAdapter = {
+    onEvent() {},
+    onDisconnect() {},
+    setSubscription() {}
+};
 
 export function createResolveMiddleware({
     viewModels,
@@ -129,11 +135,7 @@ export function createResolveMiddleware({
 
         store.dispatch(actions.provideViewModels(viewModels));
 
-        if (isServer) {
-            return next => action => next(action);
-        }
-
-        const adapter = subscribeAdapter();
+        const adapter = isClient ? subscribeAdapter() : mockSubscribeAdapter;
         adapter.onEvent(event => store.dispatch(event));
         adapter.onDisconnect(error => store.dispatch(actions.disconnect(error)));
 
@@ -143,14 +145,16 @@ export function createResolveMiddleware({
                     const { viewModelName, aggregateId } = action;
                     loading[viewModelName][aggregateId] = true;
 
-                    subscribe(store, adapter, viewModels, subscribers, requests, action).catch(
-                        error =>
-                            setTimeout(() => {
-                                // eslint-disable-next-line no-console
-                                console.error(error);
-                                store.dispatch(action);
-                            }, REFRESH_TIMEOUT)
-                    );
+                    if (isClient) {
+                        subscribe(store, adapter, viewModels, subscribers, requests, action).catch(
+                            error =>
+                                setTimeout(() => {
+                                    // eslint-disable-next-line no-console
+                                    console.error(error);
+                                    store.dispatch(action);
+                                }, REFRESH_TIMEOUT)
+                        );
+                    }
 
                     break;
                 }
@@ -158,12 +162,16 @@ export function createResolveMiddleware({
                     const { viewModelName, aggregateId } = action;
                     delete loading[viewModelName][aggregateId];
 
-                    unsubscribe(store, adapter, viewModels, subscribers, requests, action);
+                    if (isClient) {
+                        unsubscribe(store, adapter, viewModels, subscribers, requests, action);
+                    }
 
                     break;
                 }
                 case SEND_COMMAND: {
-                    sendCommand(store, action);
+                    if (isClient) {
+                        sendCommand(store, action);
+                    }
 
                     break;
                 }
