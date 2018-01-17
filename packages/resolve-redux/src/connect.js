@@ -28,7 +28,10 @@ export default (mapStateToProps, mapDispatchToProps, mergeProps, options) => (Co
         }
 
         render() {
-            const { viewModelName, aggregateId } = this.props;
+            const { viewModelName, aggregateId } = mapStateToProps(
+                this.context.store.getState(),
+                this.props
+            );
 
             const loading = isLoadingViewModel(this.context.store, viewModelName, aggregateId);
 
