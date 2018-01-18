@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import React from 'react';
 
 import gqlConnector from '../src/graphql_connector';
+global.fetch = Promise.resolve();
 
 describe('graphql connector', () => {
     it('should wrap component into graphql connector', () => {

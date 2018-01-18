@@ -132,6 +132,8 @@ export default (appPath, appName, originalDirectory, isEmpty, packagePath, resol
         dev: 'resolve-scripts dev',
         start: 'resolve-scripts start',
         update: 'resolve-scripts update',
+        ios: 'react-native run-ios',
+        android: 'react-native run-android',
         flow: 'flow'
     };
 
