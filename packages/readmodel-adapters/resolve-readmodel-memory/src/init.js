@@ -78,20 +78,22 @@ async function getDictionaryInterface(repository, isWriteable, dictionaryName) {
         exists: async (key) => {
             const storage = validateAndGetStorage(repository, DICTIONARY_TYPE, dictionaryName);
             const result = await invokeNedb(storage, 'findOne', { key });
-            return !!(result && result.hasOwnProperty('payload'));
+            return !!(result && result.hasOwnProperty('value'));
         },
 
         get: async (key) => {
             const storage = validateAndGetStorage(repository, DICTIONARY_TYPE, dictionaryName);
             const result = await invokeNedb(storage, 'findOne', { key });
-            return result && result.hasOwnProperty('payload') ? result.payload : null;
+            return result && result.hasOwnProperty('value') ? result.value : null;
         },
 
         set: async () =>
             raizeError(messages.readSideForbiddenOperation(DICTIONARY_TYPE, 'set', dictionaryName)),
 
-        del: async () =>
-            raizeError(messages.readSideForbiddenOperation(DICTIONARY_TYPE, 'del', dictionaryName))
+        delete: async () =>
+            raizeError(
+                messages.readSideForbiddenOperation(DICTIONARY_TYPE, 'delete', dictionaryName)
+            )
     };
 
     if (isWriteable) {
@@ -100,7 +102,7 @@ async function getDictionaryInterface(repository, isWriteable, dictionaryName) {
             await invokeNedb(storage, 'update', { key }, { key, value }, { upsert: true });
         };
 
-        dictionaryIface.del = async (key) => {
+        dictionaryIface.delete = async (key) => {
             const storage = validateAndGetStorage(repository, DICTIONARY_TYPE, dictionaryName);
             await invokeNedb(storage, 'remove', { key });
         };
@@ -133,7 +135,7 @@ async function dropStorage(repository, isWriteable, storageName) {
     const collectionNedb = getStorageContent(repository, storageName);
     repository.storagesMap.delete(storageName);
 
-    await invokeNedb(collectionNedb, 'resetIndexes');
+    await invokeNedb(collectionNedb, 'removeIndex', 'key');
     await invokeNedb(collectionNedb, 'remove', {}, { multi: true });
 }
 
