@@ -78,7 +78,7 @@ async function getDictionaryInterface(repository, isWriteable, dictionaryName) {
         exists: async (key) => {
             const storage = validateAndGetStorage(repository, DICTIONARY_TYPE, dictionaryName);
             const result = await invokeNedb(storage, 'findOne', { key });
-            return result && result.hasOwnProperty('payload');
+            return !!(result && result.hasOwnProperty('payload'));
         },
 
         get: async (key) => {
@@ -122,14 +122,12 @@ async function existsStorage(repository, storageName) {
 }
 
 async function dropStorage(repository, isWriteable, storageName) {
-    const existingStorageType = getStorageType(repository, storageName);
-
-    if (!existingStorageType) {
-        raizeError(messages.unexistingStorage(null, storageName));
+    if (!isWriteable) {
+        raizeError(messages.readSideForbiddenOperation(null, 'drop', storageName));
     }
 
-    if (!isWriteable) {
-        raizeError(messages.readSideForbiddenOperation(existingStorageType, 'drop', storageName));
+    if (!getStorageType(repository, storageName)) {
+        raizeError(messages.unexistingStorage(null, storageName));
     }
 
     const collectionNedb = getStorageContent(repository, storageName);

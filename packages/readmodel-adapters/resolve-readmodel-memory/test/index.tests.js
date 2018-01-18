@@ -30,7 +30,7 @@ describe('Read model MongoDB adapter', () => {
         testRepository = null;
     });
 
-    describe('Read-side interface created by adapter init function', () => {
+    describe.only('Read-side interface created by adapter init function', () => {
         let readInstance;
 
         beforeEach(async () => {
@@ -68,7 +68,29 @@ describe('Read model MongoDB adapter', () => {
             expect(lastTimestamp).to.be.equal(0);
         });
 
-        it('should throw error on non-existing dictionary access', async () => {
+        it('should check storage existence', async () => {
+            const readable = await readInstance.getReadable();
+
+            const firstResult = await readable.exists(DEFAULT_DICTIONARY_NAME);
+            const secondResult = await readable.exists('wrong');
+
+            expect(firstResult).to.be.deep.equal(true);
+            expect(secondResult).to.be.deep.equal(false);
+        });
+
+        it('should enumerate actual storages list', async () => {
+            const readable = await readInstance.getReadable();
+            const dictionarysList = await readable.list();
+
+            expect(dictionarysList).to.be.deep.equal([
+                {
+                    name: DEFAULT_DICTIONARY_NAME,
+                    type: DICTIONARY_TYPE
+                }
+            ]);
+        });
+
+        it('should throw error on non-existing storage access', async () => {
             const readable = await readInstance.getReadable();
 
             try {
@@ -81,76 +103,94 @@ describe('Read model MongoDB adapter', () => {
             }
         });
 
-        it('should provide exists operation on exists item', async () => {
+        it('should throw error on storage drop attempt', async () => {
             const readable = await readInstance.getReadable();
-            const dictionary = await readable.dictionary(DEFAULT_DICTIONARY_NAME);
 
-            const result = await dictionary.exists('id0');
-            expect(result).to.be.deep.equal(true);
+            try {
+                await readable.drop(DEFAULT_DICTIONARY_NAME);
+                return Promise.reject('dictionary drop operation should fail on read-side');
+            } catch (err) {
+                expect(err.message).to.be.equal(
+                    messages.readSideForbiddenOperation(null, 'drop', DEFAULT_DICTIONARY_NAME)
+                );
+            }
         });
 
-        it('should provide exists operation on non-existing item', async () => {
-            const readable = await readInstance.getReadable();
-            const dictionary = await readable.dictionary(DEFAULT_DICTIONARY_NAME);
+        describe('Dictionary interface', () => {
+            it('should provide dictionary exists operation', async () => {
+                const readable = await readInstance.getReadable();
+                const dictionary = await readable.dictionary(DEFAULT_DICTIONARY_NAME);
 
-            const result = await dictionary.exists('id4');
-            expect(result).to.be.deep.equal(false);
-        });
+                const firstResult = await dictionary.exists('id0');
+                const secondResult = await dictionary.exists('id4');
 
-        it('should provide get operation on exists item', async () => {
-            const readable = await readInstance.getReadable();
-            const dictionary = await readable.dictionary(DEFAULT_DICTIONARY_NAME);
+                expect(firstResult).to.be.deep.equal(true);
+                expect(secondResult).to.be.deep.equal(false);
+            });
 
-            const result = await dictionary.exists('id0');
-            expect(result).to.be.deep.equal({ content: 'test0' });
-        });
+            it('should provide dictionary get operation', async () => {
+                const readable = await readInstance.getReadable();
+                const dictionary = await readable.dictionary(DEFAULT_DICTIONARY_NAME);
 
-        it('should provide get operation on non-existing item', async () => {
-            const readable = await readInstance.getReadable();
-            const dictionary = await readable.dictionary(DEFAULT_DICTIONARY_NAME);
+                const firstResult = await dictionary.get('id0');
+                const secondResult = await dictionary.get('id4');
 
-            const result = await dictionary.exists('id4');
-            expect(result).to.be.deep.equal(null);
-        });
+                expect(firstResult).to.be.deep.equal({ content: 'test0' });
+                expect(secondResult).to.be.deep.equal(null);
+            });
 
-        it('should provide actual dictionarys list in storage', async () => {
-            const readable = await readInstance.getReadable();
-            const dictionarysList = await readable.listStorages();
+            it('should throw error on dictionary create attempt', async () => {
+                const readable = await readInstance.getReadable();
 
-            expect(dictionarysList).to.be.deep.equal([
-                {
-                    name: DEFAULT_DICTIONARY_NAME,
-                    type: DICTIONARY_TYPE
+                try {
+                    await readable.createDictionary('NewDictionary');
+                    return Promise.reject('dictionary create operation should fail on read-side');
+                } catch (err) {
+                    expect(err.message).to.be.equal(
+                        messages.readSideForbiddenOperation(
+                            DICTIONARY_TYPE,
+                            'create',
+                            'NewDictionary'
+                        )
+                    );
                 }
-            ]);
-        });
+            });
 
-        it('should throw error on dictionary set attempt ', async () => {
-            const readable = await readInstance.getReadable();
-            const dictionary = await readable.dictionary(DEFAULT_DICTIONARY_NAME);
+            it('should throw error on dictionary set operation attempt', async () => {
+                const readable = await readInstance.getReadable();
+                const dictionary = await readable.dictionary(DEFAULT_DICTIONARY_NAME);
 
-            try {
-                await dictionary.set('id4', { content: 'test-4' });
-                return Promise.reject('dictionary set operation should fail on read-side');
-            } catch (err) {
-                expect(err.message).to.be.equal(
-                    messages.readSideForbiddenOperation('set', DEFAULT_DICTIONARY_NAME)
-                );
-            }
-        });
+                try {
+                    await dictionary.set('id4', { content: 'test-4' });
+                    return Promise.reject('dictionary set operation should fail on read-side');
+                } catch (err) {
+                    expect(err.message).to.be.equal(
+                        messages.readSideForbiddenOperation(
+                            DICTIONARY_TYPE,
+                            'set',
+                            DEFAULT_DICTIONARY_NAME
+                        )
+                    );
+                }
+            });
 
-        it('should throw error on dictionary del attempt ', async () => {
-            const readable = await readInstance.getReadable();
-            const dictionary = await readable.dictionary(DEFAULT_DICTIONARY_NAME);
+            it('should throw error on dictionary del operation attempt', async () => {
+                const readable = await readInstance.getReadable();
+                const dictionary = await readable.dictionary(DEFAULT_DICTIONARY_NAME);
 
-            try {
-                await dictionary.del('id3');
-                return Promise.reject('dictionary del operation should fail on read-side');
-            } catch (err) {
-                expect(err.message).to.be.equal(
-                    messages.readSideForbiddenOperation('del', DEFAULT_DICTIONARY_NAME)
-                );
-            }
+                try {
+                    await dictionary.del('id3');
+                    return Promise.reject('dictionary del operation should fail on read-side');
+                } catch (err) {
+                    expect(err.message).to.be.equal(
+                        messages.readSideForbiddenOperation(
+                            DICTIONARY_TYPE,
+                            'del',
+                            DEFAULT_DICTIONARY_NAME
+                        )
+                    );
+                }
+            });
         });
     });
 
