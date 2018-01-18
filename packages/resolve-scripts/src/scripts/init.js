@@ -159,13 +159,6 @@ export default (
 
     const readmeIsExist = tryRenameReadme(appPath);
 
-    const templatePath = path.join(packagePath || scriptsPath, 'dist', 'template');
-
-    if (!tryCopyTemplate(templatePath, appPath)) {
-        error(`Could not locate supplied template: ${chalk.green(templatePath)}`);
-        return;
-    }
-
     log('Installing app dependencies...');
     log();
 
@@ -181,6 +174,13 @@ export default (
         installDependencies(resolveDependencies, false, resolveVersion);
         installDependencies(devDependencies, true);
     } else if (isEmpty) {
+        const templatePath = path.join(packagePath || scriptsPath, 'dist', 'template');
+
+        if (!tryCopyTemplate(templatePath, appPath)) {
+            error(`Could not locate supplied template: ${chalk.green(templatePath)}`);
+            return;
+        }
+
         installDependencies(dependencies, false);
         installDependencies(resolveDependencies, false, resolveVersion);
         installDependencies(devDependencies, true);
