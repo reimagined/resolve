@@ -37,43 +37,45 @@ type EventType = String
 ## How does it work on the client side with Redux
 #### Subscribe/unsubscribe to/from a view model by aggregateId
 
-[`componentDidMount()`](https://reactjs.org/docs/react-component.html#componentdidmount) is called immediately after a component is installed.
+[`componentWillMount()`](https://reactjs.org/docs/react-component.html#componentwillmount) is invoked immediately before mounting occurs.
 Use this method to subscribe to events. If you do that, don’t forget to unsubscribe from events using [`componentWillUnmount()`](https://reactjs.org/docs/react-component.html#componentwillunmount).
 
 [`componentWillUnmount()`](https://reactjs.org/docs/react-component.html#componentwillunmount) is invoked immediately before a component is unmounted and destroyed. Use this method to unsubscribe from events.
 
-To automate this process, use the [`withViewModel`](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#withviewmodel) higher-order component (HOC).
+To automate this process, use the [`connect`](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#connect) higher-order component (HOC).
 
 ```js
+import { connect } from 'resolve-redux';
+
 const mapStateToProps = state => ({
-    ...state[viewModel][aggregateId],
-    viewModel, // required field
+    ...state[viewModelName][aggregateId],
+    viewModelName, // required field
     aggregateId // required field
 });
 
-export default connect(mapStateToProps)(withViewModel(Component));
+export default connect(mapStateToProps)(Component);
 ```
 
 #### Request for Initial State
 
-[`resolveMiddleware`](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#resolvemiddleware) handles the `SUBSCRIBE` action and requests an initial state of a view model with the specified aggregateId from the server.
+[`createResolveMiddleware`](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#resolvemiddleware) handles the `SUBSCRIBE` action and requests an initial state of a view model with the specified aggregateId from the server.
 
 #### Subscribe to Events
 
-After receiving initialState, [`resolveMiddleware`](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#resolvemiddleware) subscribes to events setting up a web socket connection.
+After receiving initialState, [`createResolveMiddleware`](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#resolvemiddleware) subscribes to events setting up a web socket connection.
 
 #### Unsubscribe from Events
 
-[`resolveMiddleware`](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#resolvemiddleware) handles the `UNSUBSCRIBE` action, removes a state of a view model with the specified aggregateId and unsubscribes from events setting up a web socket connection.
+[`createResolveMiddleware`](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#createresolvemiddleware) handles the `UNSUBSCRIBE` action, removes a state of a view model with the specified aggregateId and unsubscribes from events setting up a web socket connection.
 
-#### How to add [`resolveMiddleware`](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#resolvemiddleware) to [Store](https://redux.js.org/docs/api/createStore.html)
+#### How to add [`createResolveMiddleware`](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#resolvemiddleware) to [Store](https://redux.js.org/docs/api/createStore.html)
 ``` js
 import { createStore, applyMiddleware } from 'redux';
-import { resolveMiddleware, createViewModelsReducer } from 'resolve-redux';
+import { createResolveMiddleware, createViewModelsReducer } from 'resolve-redux';
 import viewModels from '../../common/view-models';
 
 const reducer = createViewModelsReducer();
-const middleware = [resolveMiddleware(viewModels)];
+const middleware = [createResolveMiddleware(viewModels)];
 
 export default initialState => createStore(reducer, initialState, applyMiddleware(...middleware));
 ```
