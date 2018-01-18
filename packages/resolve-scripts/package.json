@@ -13,8 +13,10 @@
     "template:copy": "cp -r ./src/template ./dist",
     "template_sample:remove": "rm -rf ./dist/template_sample",
     "template_sample:copy": "cp -r ./src/template_sample ./dist",
+    "template_reactxp:remove": "rm -rf ./dist/template_sample",
+    "template_reactxp:copy": "cp -r ./src/template_sample ./dist",
     "build": "babel --out-dir ./dist ./src --ignore template_sample",
-    "prepublish": "npm run build && npm run template:remove && npm run template:copy && npm run template_sample:remove && npm run template_sample:copy"
+    "prepublish": "npm run build && npm run template:remove && npm run template:copy && npm run template_sample:remove && npm run template_sample:copy && npm run template_reactxp:remove && npm run template_reactxp:copy"
   },
   "repository": {
     "type": "git",
