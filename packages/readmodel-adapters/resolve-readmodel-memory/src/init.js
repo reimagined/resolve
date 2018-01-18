@@ -4,15 +4,6 @@ import messages from './messages';
 
 const DICTIONARY_TYPE = 'Dictionary';
 
-async function invokeNedb(resource, operationName, ...inputArgs) {
-    return await new Promise((resolve, reject) =>
-        resource[operationName](
-            ...inputArgs,
-            (err, ...outputArgs) => (!err ? resolve(...outputArgs) : reject(err))
-        )
-    );
-}
-
 function getStorageContent(repository, storageName) {
     const storage = repository.storagesMap.get(storageName);
     if (!storage || !storage.content || !storage.type) {
@@ -29,39 +20,39 @@ function getStorageType(repository, storageName) {
     return storage.type;
 }
 
-function raizeError(errorString) {
-    throw new Error(errorString);
-}
-
 async function createStorage(repository, storageType, isWriteable, storageName) {
     if (!isWriteable) {
-        raizeError(messages.readSideForbiddenOperation(storageType, 'create', storageName));
+        throw new Error(messages.readSideForbiddenOperation(storageType, 'create', storageName));
     }
 
     const existingStorageType = getStorageType(repository, storageName);
     if (existingStorageType) {
-        raizeError(messages.storageRecreation(storageType, existingStorageType));
+        throw new Error(messages.storageRecreation(storageType, existingStorageType));
     }
 
-    const collectionNedb = repository.createNedbCollection();
-    repository.storagesMap.set(storageName, { content: collectionNedb, type: storageType });
+    const storage = { type: storageType };
+    repository.storagesMap.set(storageName, storage);
 
     if (storageType === DICTIONARY_TYPE) {
-        await invokeNedb(collectionNedb, 'ensureIndex', { fieldName: 'key' });
+        storage.content = await repository.constructStorage(DICTIONARY_TYPE);
     }
 }
 
 function validateAndGetStorage(repository, storageType, storageName) {
     const existingStorageType = getStorageType(repository, storageName);
     if (!existingStorageType) {
-        raizeError(messages.unexistingStorage(storageType, storageName));
+        throw new Error(messages.unexistingStorage(storageType, storageName));
     }
 
     if (existingStorageType !== storageType) {
-        raizeError(messages.wrongStorageType(storageName, existingStorageType, storageType));
+        throw new Error(messages.wrongStorageType(storageName, existingStorageType, storageType));
     }
 
     return getStorageContent(repository, storageName);
+}
+
+async function raiseReadOperationError(storageType, storageName, operation) {
+    throw new Error(messages.readSideForbiddenOperation(storageType, operation, storageName));
 }
 
 async function getDictionaryInterface(repository, isWriteable, dictionaryName) {
@@ -72,39 +63,26 @@ async function getDictionaryInterface(repository, isWriteable, dictionaryName) {
         return interfaceMap.get(dictionaryIfaceKey);
     }
 
+    const raizeAccessError = raiseReadOperationError.bind(null, DICTIONARY_TYPE, dictionaryName);
     validateAndGetStorage(repository, DICTIONARY_TYPE, dictionaryName);
 
     const dictionaryIface = {
-        exists: async (key) => {
-            const storage = validateAndGetStorage(repository, DICTIONARY_TYPE, dictionaryName);
-            const result = await invokeNedb(storage, 'findOne', { key });
-            return !!(result && result.hasOwnProperty('value'));
-        },
-
-        get: async (key) => {
-            const storage = validateAndGetStorage(repository, DICTIONARY_TYPE, dictionaryName);
-            const result = await invokeNedb(storage, 'findOne', { key });
-            return result && result.hasOwnProperty('value') ? result.value : null;
-        },
-
-        set: async () =>
-            raizeError(messages.readSideForbiddenOperation(DICTIONARY_TYPE, 'set', dictionaryName)),
-
-        delete: async () =>
-            raizeError(
-                messages.readSideForbiddenOperation(DICTIONARY_TYPE, 'delete', dictionaryName)
-            )
+        exists: async (storage, key) => storage.has(key),
+        get: async (storage, key) => (storage.has(key) ? storage.get(key) : null),
+        set: raizeAccessError.bind(null, 'set'),
+        delete: raizeAccessError.bind(null, 'delete')
     };
 
     if (isWriteable) {
-        dictionaryIface.set = async (key, value) => {
-            const storage = validateAndGetStorage(repository, DICTIONARY_TYPE, dictionaryName);
-            await invokeNedb(storage, 'update', { key }, { key, value }, { upsert: true });
-        };
+        dictionaryIface.set = async (storage, key, value) => storage.set(key, value);
+        dictionaryIface.delete = async (storage, key) => storage.delete(key);
+    }
 
-        dictionaryIface.delete = async (key) => {
+    for (let operation of Object.keys(dictionaryIface)) {
+        const operationHandler = dictionaryIface[operation];
+        dictionaryIface[operation] = async (...args) => {
             const storage = validateAndGetStorage(repository, DICTIONARY_TYPE, dictionaryName);
-            await invokeNedb(storage, 'remove', { key });
+            return await operationHandler(storage, ...args);
         };
     }
 
@@ -125,18 +103,20 @@ async function existsStorage(repository, storageName) {
 
 async function dropStorage(repository, isWriteable, storageName) {
     if (!isWriteable) {
-        raizeError(messages.readSideForbiddenOperation(null, 'drop', storageName));
+        throw new Error(messages.readSideForbiddenOperation(null, 'drop', storageName));
     }
 
-    if (!getStorageType(repository, storageName)) {
-        raizeError(messages.unexistingStorage(null, storageName));
+    const existingStorageType = getStorageType(repository, storageName);
+    if (!existingStorageType) {
+        throw new Error(messages.unexistingStorage(null, storageName));
     }
 
-    const collectionNedb = getStorageContent(repository, storageName);
+    const content = getStorageContent(repository, storageName);
     repository.storagesMap.delete(storageName);
 
-    await invokeNedb(collectionNedb, 'removeIndex', 'key');
-    await invokeNedb(collectionNedb, 'remove', {}, { multi: true });
+    if (existingStorageType === DICTIONARY_TYPE) {
+        content.clear();
+    }
 }
 
 function getStoreInterface(repository, isWriteable) {
@@ -159,7 +139,7 @@ async function initProjection(repository) {
 
 export default function init(repository) {
     if (repository.interfaceMap) {
-        raizeError(messages.reinitialization);
+        throw new Error(messages.reinitialization);
     }
     if (typeof repository.initHandler !== 'function') {
         repository.initHandler = async () => {};

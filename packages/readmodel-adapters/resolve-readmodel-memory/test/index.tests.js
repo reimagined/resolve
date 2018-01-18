@@ -1,7 +1,6 @@
 import 'regenerator-runtime/runtime';
 
 import { expect } from 'chai';
-import NeDB from 'nedb';
 import sinon from 'sinon';
 
 import messages from '../src/messages';
@@ -12,18 +11,26 @@ import reset from '../src/reset';
 describe('Read model MongoDB adapter', () => {
     const DICTIONARY_TYPE = 'Dictionary';
 
-    const DEFAULT_DICTIONARY_NAME = 'TestdefaultNedbCollection';
+    const DEFAULT_DICTIONARY_NAME = 'TestdefaultDictionaryStorage';
     const DEFAULT_ENTRIES = {
         id0: { content: 'test0' },
         id1: { content: 'test1' },
         id2: { content: 'test2' }
     };
 
-    const createNedbCollection = () => new NeDB({ autoload: true, inMemoryOnly: true });
+    const constructStorage = async (type) => {
+        switch (type) {
+            case 'Dictionary':
+                return new Map();
+            default:
+                throw new Error('Wrong type');
+        }
+    };
+
     let testRepository;
 
     beforeEach(async () => {
-        testRepository = { createNedbCollection };
+        testRepository = { constructStorage };
     });
 
     afterEach(async () => {
@@ -34,27 +41,15 @@ describe('Read model MongoDB adapter', () => {
         let readInstance;
 
         beforeEach(async () => {
-            const defaultNedbCollection = createNedbCollection();
-            await new Promise((resolve, reject) =>
-                defaultNedbCollection.ensureIndex(
-                    { fieldName: 'key' },
-                    err => (!err ? resolve() : reject(err))
-                )
-            );
-
+            const defaultDictionaryStorage = await constructStorage(DICTIONARY_TYPE);
             for (let key of Object.keys(DEFAULT_ENTRIES)) {
-                await new Promise((resolve, reject) =>
-                    defaultNedbCollection.insert(
-                        { key, value: DEFAULT_ENTRIES[key] },
-                        err => (!err ? resolve() : reject(err))
-                    )
-                );
+                defaultDictionaryStorage.set(key, DEFAULT_ENTRIES[key]);
             }
 
             readInstance = init(testRepository);
 
             testRepository.storagesMap.set(DEFAULT_DICTIONARY_NAME, {
-                content: defaultNedbCollection,
+                content: defaultDictionaryStorage,
                 type: DICTIONARY_TYPE
             });
         });
@@ -95,13 +90,13 @@ describe('Read model MongoDB adapter', () => {
                 const readable = await readInstance.getReadable();
 
                 try {
-                    await readable.dictionary('wrong');
+                    await readable.dictionary('wrong-dictionary');
                     return Promise.reject(
                         'Unexisting dictionary call should throw error on read side'
                     );
                 } catch (err) {
                     expect(err.message).to.be.equal(
-                        messages.unexistingStorage(DICTIONARY_TYPE, 'wrong')
+                        messages.unexistingStorage(DICTIONARY_TYPE, 'wrong-dictionary')
                     );
                 }
             });
@@ -313,63 +308,39 @@ describe('Read model MongoDB adapter', () => {
                 });
 
                 const storage = testRepository.storagesMap.get(DEFAULT_DICTIONARY_NAME).content;
+                const result = storage.get(FIELD_NAME);
 
-                const result = await new Promise((resolve, reject) =>
-                    storage.findOne(
-                        { key: FIELD_NAME },
-                        (err, document) => (!err ? resolve(document) : reject(err))
-                    )
-                );
-
-                expect(result.value).to.be.deep.equal({ test: 'ok' });
+                expect(result).to.be.deep.equal({ test: 'ok' });
             });
 
-            it('should throw error on wrong remove operation', async () => {
+            it('should process dictionary remove operation', async () => {
                 await builtTestProjection.EventDictionaryDelete({
                     type: 'EventDictionaryDelete',
                     timestamp: 10
                 });
 
                 const storage = testRepository.storagesMap.get(DEFAULT_DICTIONARY_NAME).content;
+                const result = storage.has(FIELD_NAME);
 
-                const result = await new Promise((resolve, reject) =>
-                    storage.count(
-                        { key: FIELD_NAME },
-                        (err, count) => (!err ? resolve(count) : reject(err))
-                    )
-                );
-
-                expect(result).to.be.deep.equal(0);
+                expect(result).to.be.deep.equal(false);
             });
         });
     });
 
     describe('Disposing adapter with reset function', () => {
         let readInstance;
-        let defaultNedbCollection;
+        let defaultDictionaryStorage;
 
         beforeEach(async () => {
-            defaultNedbCollection = createNedbCollection();
-            await new Promise((resolve, reject) =>
-                defaultNedbCollection.ensureIndex(
-                    { fieldName: 'key' },
-                    err => (!err ? resolve() : reject(err))
-                )
-            );
-
+            defaultDictionaryStorage = await constructStorage(DICTIONARY_TYPE);
             for (let key of Object.keys(DEFAULT_ENTRIES)) {
-                await new Promise((resolve, reject) =>
-                    defaultNedbCollection.insert(
-                        { key, value: DEFAULT_ENTRIES[key] },
-                        err => (!err ? resolve() : reject(err))
-                    )
-                );
+                defaultDictionaryStorage.set(key, DEFAULT_ENTRIES[key]);
             }
 
             readInstance = init(testRepository);
 
             testRepository.storagesMap.set(DEFAULT_DICTIONARY_NAME, {
-                content: defaultNedbCollection,
+                content: defaultDictionaryStorage,
                 type: DICTIONARY_TYPE
             });
 
@@ -377,7 +348,7 @@ describe('Read model MongoDB adapter', () => {
         });
 
         afterEach(async () => {
-            defaultNedbCollection = null;
+            defaultDictionaryStorage = null;
             readInstance = null;
         });
 
@@ -385,11 +356,7 @@ describe('Read model MongoDB adapter', () => {
             const disposePromise = reset(testRepository);
             await disposePromise;
 
-            const findResult = await new Promise((resolve, reject) =>
-                defaultNedbCollection
-                    .find({})
-                    .exec((err, value) => (!err ? resolve(value) : reject(err)))
-            );
+            const findResult = Array.from(defaultDictionaryStorage.entries());
 
             expect(findResult).to.be.deep.equal([]);
         });
