@@ -12,6 +12,7 @@ const EOL = require('os').EOL;
 const optionDefinitions = [
     { name: 'scripts', type: String },
     { name: 'sample', type: Boolean },
+    { name: 'reactxp', type: Boolean },
     { name: 'version', alias: 'V', type: Boolean },
     { name: 'help', alias: 'h', type: Boolean }
 ];
@@ -23,6 +24,9 @@ const messages = {
         `Options:${EOL}` +
         EOL +
         '  --sample         creates a single page application representing a typical Todo List' +
+        EOL +
+        '  --reactxp        creates a single page cross-platform (web, ios, android) application ' +
+        'representing a typical Todo List and using reactxp components' +
         EOL +
         `  -V, --version    outputs the version number${EOL}` +
         `  -h, --help       outputs usage information${EOL}` +
@@ -61,5 +65,5 @@ if (unknownOptions && unknownOptions.length) {
     log(messages.emptyAppNameError);
 } else {
     let appName = options._unknown[0];
-    moduleCreator(appName, options.scripts, !options.sample, resolveVersion);
+    moduleCreator(appName, options.scripts, !options.sample, options.reactxp, resolveVersion);
 }

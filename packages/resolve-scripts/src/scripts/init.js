@@ -122,7 +122,15 @@ const deleteFolderRecursive = (path) => {
     }
 };
 
-export default (appPath, appName, originalDirectory, isEmpty, packagePath, resolveVersion) => {
+export default (
+    appPath,
+    appName,
+    originalDirectory,
+    isEmpty,
+    isReactxp,
+    packagePath,
+    resolveVersion
+) => {
     const scriptsPackageName = require(path.join(__dirname, '../../', 'package.json')).name;
     const scriptsPath = path.join(appPath, 'node_modules', scriptsPackageName);
 
@@ -161,7 +169,18 @@ export default (appPath, appName, originalDirectory, isEmpty, packagePath, resol
     log('Installing app dependencies...');
     log();
 
-    if (isEmpty) {
+    if (isReactxp) {
+        const templateSamplePath = path.join(
+            packagePath || scriptsPath,
+            'dist',
+            'template_reactxp'
+        );
+        fs.copySync(templateSamplePath, appPath);
+
+        installDependencies(dependencies, false);
+        installDependencies(resolveDependencies, false, resolveVersion);
+        installDependencies(devDependencies, true);
+    } else if (isEmpty) {
         installDependencies(dependencies, false);
         installDependencies(resolveDependencies, false, resolveVersion);
         installDependencies(devDependencies, true);
