@@ -8,7 +8,7 @@ import reset from './reset';
 export default function createMemoryAdapter() {
     const repository = Object.create(null);
 
-    repository.createDatabaseCollection = () => new NeDB({ autoload: true, inMemoryOnly: true });
+    repository.createNedbCollection = () => new NeDB({ autoload: true, inMemoryOnly: true });
 
     return Object.create(null, {
         buildProjection: {

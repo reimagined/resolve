@@ -10,18 +10,20 @@ import init from '../src/init';
 import reset from '../src/reset';
 
 describe('Read model MongoDB adapter', () => {
-    const DEFAULT_COLLECTION_NAME = 'TestDefaultCollection';
-    const DEFAULT_DOCUMENTS = [
-        { id: 0, content: 'test-0', _id: 0 },
-        { id: 1, content: 'test-1', _id: 1 },
-        { id: 2, content: 'test-2', _id: 2 }
-    ];
+    const DICTIONARY_TYPE = 'Dictionary';
 
-    const createDatabaseCollection = () => new NeDB({ autoload: true, inMemoryOnly: true });
+    const DEFAULT_DICTIONARY_NAME = 'TestDefaultdictionary';
+    const DEFAULT_ENTRIES = {
+        id0: { content: 'test0' },
+        id1: { content: 'test1' },
+        id2: { content: 'test2' }
+    };
+
+    const createNedbdictionary = () => new NeDB({ autoload: true, inMemoryOnly: true });
     let testRepository;
 
     beforeEach(async () => {
-        testRepository = { createDatabaseCollection };
+        testRepository = { createNedbdictionary };
     });
 
     afterEach(async () => {
@@ -32,21 +34,29 @@ describe('Read model MongoDB adapter', () => {
         let readInstance;
 
         beforeEach(async () => {
-            const defaultCollection = createDatabaseCollection();
+            const defaultdictionary = createNedbdictionary();
             await new Promise((resolve, reject) =>
-                defaultCollection.ensureIndex(
-                    { fieldName: 'id' },
+                defaultdictionary.ensureIndex(
+                    { fieldName: 'key' },
                     err => (!err ? resolve() : reject(err))
                 )
             );
-            for (let document of DEFAULT_DOCUMENTS) {
-                await defaultCollection.insert(document);
+
+            for (let key of Object.keys(DEFAULT_ENTRIES)) {
+                await new Promise((resolve, reject) =>
+                    defaultdictionary.insert(
+                        { key, payload: DEFAULT_ENTRIES[key] },
+                        err => (!err ? resolve() : reject(err))
+                    )
+                );
             }
 
             readInstance = init(testRepository);
 
-            testRepository.collectionMap.set(DEFAULT_COLLECTION_NAME, defaultCollection);
-            testRepository.collectionIndexesMap.set(DEFAULT_COLLECTION_NAME, new Set(['id']));
+            testRepository.storagesMap.set(DEFAULT_DICTIONARY_NAME, {
+                content: defaultdictionary,
+                type: DICTIONARY_TYPE
+            });
         });
 
         afterEach(async () => {
@@ -58,352 +68,87 @@ describe('Read model MongoDB adapter', () => {
             expect(lastTimestamp).to.be.equal(0);
         });
 
-        it('should throw error on non-existing collection access', async () => {
+        it('should throw error on non-existing dictionary access', async () => {
             const readable = await readInstance.getReadable();
 
             try {
-                await readable.collection('wrong');
-                return Promise.reject('Unexisting collection call should throw error on read side');
+                await readable.dictionary('wrong');
+                return Promise.reject('Unexisting dictionary call should throw error on read side');
             } catch (err) {
-                expect(err.message).to.be.equal(messages.unexistingCollection('wrong'));
+                expect(err.message).to.be.equal(
+                    messages.unexistingStorage(DICTIONARY_TYPE, 'wrong')
+                );
             }
         });
 
-        it('should provide simple find operation', async () => {
+        it('should provide exists operation on exists item', async () => {
             const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+            const dictionary = await readable.dictionary(DEFAULT_DICTIONARY_NAME);
 
-            const result = await collection.find({});
-            expect(result).to.be.deep.equal(DEFAULT_DOCUMENTS);
+            const result = await dictionary.exists('id0');
+            expect(result).to.be.deep.equal(true);
         });
 
-        it('should provide find + search condition operation', async () => {
+        it('should provide exists operation on non-existing item', async () => {
             const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+            const dictionary = await readable.dictionary(DEFAULT_DICTIONARY_NAME);
 
-            const result = await collection.find({ id: 1 });
-            expect(result).to.be.deep.equal([DEFAULT_DOCUMENTS[1]]);
+            const result = await dictionary.exists('id4');
+            expect(result).to.be.deep.equal(false);
         });
 
-        it('should provide find + sort operation', async () => {
+        it('should provide get operation on exists item', async () => {
             const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+            const dictionary = await readable.dictionary(DEFAULT_DICTIONARY_NAME);
 
-            const result = await collection.find({}).sort({ id: -1 });
-            expect(result).to.be.deep.equal(DEFAULT_DOCUMENTS.slice().reverse());
+            const result = await dictionary.exists('id0');
+            expect(result).to.be.deep.equal({ content: 'test0' });
         });
 
-        it('should provide find + skip documents operation', async () => {
+        it('should provide get operation on non-existing item', async () => {
             const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+            const dictionary = await readable.dictionary(DEFAULT_DICTIONARY_NAME);
 
-            const result = await collection.find({}).skip(1);
-            expect(result).to.be.deep.equal(DEFAULT_DOCUMENTS.slice(1, 3));
-        });
-
-        it('should provide find + limit document operation', async () => {
-            const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
-
-            const result = await collection.find({}).limit(2);
-            expect(result).to.be.deep.equal(DEFAULT_DOCUMENTS.slice(0, 2));
-        });
-
-        it('should provide find + skip + limit documents operation', async () => {
-            const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
-
-            const result = await collection
-                .find({})
-                .skip(2)
-                .limit(1);
-            expect(result).to.be.deep.equal([DEFAULT_DOCUMENTS[2]]);
-        });
-
-        it('should provide find + sort + skip documents operation', async () => {
-            const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
-
-            const result = await collection
-                .find({})
-                .sort({ id: -1 })
-                .skip(1);
-            expect(result).to.be.deep.equal(
-                DEFAULT_DOCUMENTS.slice()
-                    .reverse()
-                    .slice(1, 3)
-            );
-        });
-
-        it('should provide find + sort + limit document operation', async () => {
-            const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
-
-            const result = await collection
-                .find({})
-                .sort({ id: -1 })
-                .limit(2);
-            expect(result).to.be.deep.equal(
-                DEFAULT_DOCUMENTS.slice()
-                    .reverse()
-                    .slice(0, 2)
-            );
-        });
-
-        it('should provide find + sort + skip + limit documents operation', async () => {
-            const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
-
-            const result = await collection
-                .find({})
-                .sort({ id: -1 })
-                .skip(2)
-                .limit(1);
-            expect(result).to.be.deep.equal([DEFAULT_DOCUMENTS[0]]);
-        });
-
-        it('should fail on find operation with search on non-indexed field', async () => {
-            const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
-
-            try {
-                await collection.find({ content: 'test-1' });
-                return Promise.reject('Search on non-indexes fields is forbidden');
-            } catch (err) {
-                expect(err.message).to.be.deep.equal(messages.searchOnlyIndexedFields);
-            }
-        });
-
-        it('should fail on find operation with search query operators', async () => {
-            const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
-
-            try {
-                await collection.find({ id: { $gt: 1 } });
-                return Promise.reject('Search with query operators is forbidden');
-            } catch (err) {
-                expect(err.message).to.be.deep.equal(messages.searchExpressionValuesOnlyPrimitive);
-            }
-        });
-
-        it('should fail on find operation with empty or non-object query', async () => {
-            const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
-
-            try {
-                await collection.find();
-                return Promise.reject('Search with non-object match is forbidden');
-            } catch (err) {
-                expect(err.message).to.be.deep.equal(messages.searchExpressionOnlyObject);
-            }
-        });
-
-        it('should fail on find + sort operation with sort on non-indexed field', async () => {
-            const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
-
-            try {
-                await collection.find({ id: 1 }).sort({ content: -1 });
-                return Promise.reject('Sorting on non-indexes fields is forbidden');
-            } catch (err) {
-                expect(err.message).to.be.deep.equal(messages.sortOnlyIndexedFields);
-            }
-        });
-
-        it('should fail on find + sort operation with wrong sort index descriptor', async () => {
-            const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
-
-            try {
-                await collection.find({ id: 1 }).sort();
-                return Promise.reject('Sorting on non-indexes like descriptor is forbidden');
-            } catch (err) {
-                expect(err.message).to.be.deep.equal(messages.indexDescriptorReadShape);
-            }
-        });
-
-        it('should fail on sort operation after cursor range operation', async () => {
-            const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
-
-            try {
-                await collection
-                    .find({ id: 1 })
-                    .skip(1)
-                    .limit(1)
-                    .sort({ id: -1 });
-                return Promise.reject('Sorting after applying range operation is forbidden');
-            } catch (err) {
-                expect(err.message).to.be.deep.equal(messages.sortOnlyAfterFind);
-            }
-        });
-
-        it('should fail if find chain contains duplicate operations', async () => {
-            const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
-
-            try {
-                await collection
-                    .find({ id: 1 })
-                    .skip(1)
-                    .skip(1);
-                return Promise.reject('Applying duplicate operations in find chain is forbidden');
-            } catch (err) {
-                expect(err.message).to.be.deep.equal(messages.dublicateOperation('skip'));
-            }
-        });
-
-        it('should fail on find operation reuse attempt', async () => {
-            const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
-
-            const resultPromise = collection.find({});
-            await resultPromise;
-            try {
-                await resultPromise;
-                return Promise.reject('Search operator resource re-using is forbidden');
-            } catch (err) {
-                expect(err.message).to.be.deep.equal(messages.findOperationNoReuse);
-            }
-        });
-
-        it('should provide findOne operation for first matched document', async () => {
-            const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
-
-            const result = await collection.findOne({ id: 2 });
-            expect(result).to.be.deep.equal(DEFAULT_DOCUMENTS[2]);
-        });
-
-        it('should provide findOne which return null when no match', async () => {
-            const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
-
-            const result = await collection.findOne({ id: 3 });
+            const result = await dictionary.exists('id4');
             expect(result).to.be.deep.equal(null);
         });
 
-        it('should provide count operation for count matched documents quantity', async () => {
+        it('should provide actual dictionarys list in storage', async () => {
             const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+            const dictionarysList = await readable.listStorages();
 
-            const result = await collection.count({ id: 2 });
-            expect(result).to.be.deep.equal(1);
+            expect(dictionarysList).to.be.deep.equal([
+                {
+                    name: DEFAULT_DICTIONARY_NAME,
+                    type: DICTIONARY_TYPE
+                }
+            ]);
         });
 
-        it('should fail on count operation with empty or non-object query', async () => {
+        it('should throw error on dictionary set attempt ', async () => {
             const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+            const dictionary = await readable.dictionary(DEFAULT_DICTIONARY_NAME);
 
             try {
-                await collection.count();
-                return Promise.reject('Count on empty or non-object query is forbidden');
-            } catch (err) {
-                expect(err.message).to.be.deep.equal(messages.searchExpressionOnlyObject);
-            }
-        });
-
-        it('should support then-only branch on correct read query', async () => {
-            const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
-
-            const result = await collection.find({ id: 2 }).then(result => result);
-            expect(result[0].content).to.be.equal('test-2');
-        });
-
-        it('should support catch-only branch failure on raised readable error', async () => {
-            const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
-
-            const err = await collection.find('wrong-find').catch(err => err);
-            expect(err.message).to.be.deep.equal(messages.searchExpressionOnlyObject);
-        });
-
-        it('should fail on count operation with search on non-indexed field', async () => {
-            const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
-
-            try {
-                await collection.count({ content: 'test-1' });
-                return Promise.reject('Count on non-indexes fields is forbidden');
-            } catch (err) {
-                expect(err.message).to.be.deep.equal(messages.searchOnlyIndexedFields);
-            }
-        });
-
-        it('should provide actual collections list in storage', async () => {
-            const readable = await readInstance.getReadable();
-            const collectionsList = await readable.listCollections();
-
-            expect(collectionsList).to.be.deep.equal([DEFAULT_COLLECTION_NAME]);
-        });
-
-        it('should throw error on collection create index attempt', async () => {
-            const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
-
-            try {
-                await collection.ensureIndex({ test: 1 });
-                return Promise.reject('Collection ensureIndex operation should fail on read-side');
+                await dictionary.set('id4', { content: 'test-4' });
+                return Promise.reject('dictionary set operation should fail on read-side');
             } catch (err) {
                 expect(err.message).to.be.equal(
-                    messages.readSideForbiddenOperation('ensureIndex', DEFAULT_COLLECTION_NAME)
+                    messages.readSideForbiddenOperation('set', DEFAULT_DICTIONARY_NAME)
                 );
             }
         });
 
-        it('should throw error on collection remove index attempt', async () => {
+        it('should throw error on dictionary del attempt ', async () => {
             const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
+            const dictionary = await readable.dictionary(DEFAULT_DICTIONARY_NAME);
 
             try {
-                await collection.removeIndex('test');
-                return Promise.reject('Collection removeIndex operation should fail on read-side');
+                await dictionary.del('id3');
+                return Promise.reject('dictionary del operation should fail on read-side');
             } catch (err) {
                 expect(err.message).to.be.equal(
-                    messages.readSideForbiddenOperation('removeIndex', DEFAULT_COLLECTION_NAME)
-                );
-            }
-        });
-
-        it('should throw error on collection document insert attempt ', async () => {
-            const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
-
-            try {
-                await collection.insert({ test: 0 });
-                return Promise.reject('Collection insert operation should fail on read-side');
-            } catch (err) {
-                expect(err.message).to.be.equal(
-                    messages.readSideForbiddenOperation('insert', DEFAULT_COLLECTION_NAME)
-                );
-            }
-        });
-
-        it('should throw error on collection document update attempt', async () => {
-            const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
-
-            try {
-                await collection.update({ test: 0 }, { test: 1 });
-                return Promise.reject('Collection update operation should fail on read-side');
-            } catch (err) {
-                expect(err.message).to.be.equal(
-                    messages.readSideForbiddenOperation('update', DEFAULT_COLLECTION_NAME)
-                );
-            }
-        });
-
-        it('should throw error on collection document remove attempt ', async () => {
-            const readable = await readInstance.getReadable();
-            const collection = await readable.collection(DEFAULT_COLLECTION_NAME);
-
-            try {
-                await collection.remove({ test: 0 });
-                return Promise.reject('Collection remove operation should fail on read-side');
-            } catch (err) {
-                expect(err.message).to.be.equal(
-                    messages.readSideForbiddenOperation('remove', DEFAULT_COLLECTION_NAME)
+                    messages.readSideForbiddenOperation('del', DEFAULT_DICTIONARY_NAME)
                 );
             }
         });
@@ -431,86 +176,86 @@ describe('Read model MongoDB adapter', () => {
                 TestEvent: sinon.stub(),
 
                 EventCorrectEnsureIndex: async (store) => {
-                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
-                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
+                    const dictionary = await store.dictionary(DEFAULT_DICTIONARY_NAME);
+                    await dictionary.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
+                    await dictionary.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
                 },
 
                 EventMalformedDescriptorEnsureIndex: async (store) => {
-                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'wrong' });
+                    const dictionary = await store.dictionary(DEFAULT_DICTIONARY_NAME);
+                    await dictionary.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'wrong' });
                 },
 
                 EventWrongEnsureIndex: async (store) => {
-                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.ensureIndex(FIELD_NAME);
+                    const dictionary = await store.dictionary(DEFAULT_DICTIONARY_NAME);
+                    await dictionary.ensureIndex(FIELD_NAME);
                 },
 
                 EventCorrectRemoveIndex: async (store) => {
-                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
-                    await collection.removeIndex(FIELD_NAME);
-                    await collection.removeIndex(FIELD_NAME);
+                    const dictionary = await store.dictionary(DEFAULT_DICTIONARY_NAME);
+                    await dictionary.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
+                    await dictionary.removeIndex(FIELD_NAME);
+                    await dictionary.removeIndex(FIELD_NAME);
                 },
 
                 EventWrongRemoveIndex: async (store) => {
-                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.removeIndex({ [FIELD_NAME]: 1 });
+                    const dictionary = await store.dictionary(DEFAULT_DICTIONARY_NAME);
+                    await dictionary.removeIndex({ [FIELD_NAME]: 1 });
                 },
 
                 EventCorrectInsert: async (store) => {
-                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.insert({ [FIELD_NAME]: 'value' });
+                    const dictionary = await store.dictionary(DEFAULT_DICTIONARY_NAME);
+                    await dictionary.insert({ [FIELD_NAME]: 'value' });
                 },
 
                 EventWrongInsert: async (store) => {
-                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.insert({ [FIELD_NAME]: 'value' }, { option: 'value' });
+                    const dictionary = await store.dictionary(DEFAULT_DICTIONARY_NAME);
+                    await dictionary.insert({ [FIELD_NAME]: 'value' }, { option: 'value' });
                 },
 
                 EventCorrectFullUpdate: async (store) => {
-                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
-                    await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
-                    await collection.update({ [FIELD_NAME]: 'value1' }, { [FIELD_NAME]: 'value2' });
+                    const dictionary = await store.dictionary(DEFAULT_DICTIONARY_NAME);
+                    await dictionary.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
+                    await dictionary.insert({ [FIELD_NAME]: 'value1', content: 'content' });
+                    await dictionary.update({ [FIELD_NAME]: 'value1' }, { [FIELD_NAME]: 'value2' });
                 },
 
                 EventCorrectPartialUpdate: async (store) => {
-                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
-                    await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
-                    await collection.update(
+                    const dictionary = await store.dictionary(DEFAULT_DICTIONARY_NAME);
+                    await dictionary.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
+                    await dictionary.insert({ [FIELD_NAME]: 'value1', content: 'content' });
+                    await dictionary.update(
                         { [FIELD_NAME]: 'value1' },
                         { $set: { [FIELD_NAME]: 'value2' } }
                     );
                 },
 
                 EventMalformedSearchUpdate: async (store) => {
-                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
-                    await collection.update({ [FIELD_NAME]: 'value1' }, { [FIELD_NAME]: 'value2' });
+                    const dictionary = await store.dictionary(DEFAULT_DICTIONARY_NAME);
+                    await dictionary.insert({ [FIELD_NAME]: 'value1', content: 'content' });
+                    await dictionary.update({ [FIELD_NAME]: 'value1' }, { [FIELD_NAME]: 'value2' });
                 },
 
                 EventMalformedMutationUpdate: async (store, event) => {
-                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
-                    await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
-                    await collection.update(
+                    const dictionary = await store.dictionary(DEFAULT_DICTIONARY_NAME);
+                    await dictionary.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
+                    await dictionary.insert({ [FIELD_NAME]: 'value1', content: 'content' });
+                    await dictionary.update(
                         { [FIELD_NAME]: 'value1' },
                         { $customOperator: { [FIELD_NAME]: 'value2' } }
                     );
                 },
 
                 EventScalarMutationUpdate: async (store, event) => {
-                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
-                    await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
-                    await collection.update({ [FIELD_NAME]: 'value1' }, 'scalar');
+                    const dictionary = await store.dictionary(DEFAULT_DICTIONARY_NAME);
+                    await dictionary.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
+                    await dictionary.insert({ [FIELD_NAME]: 'value1', content: 'content' });
+                    await dictionary.update({ [FIELD_NAME]: 'value1' }, 'scalar');
                 },
 
                 EventWrongUpdate: async (store) => {
-                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.update(
+                    const dictionary = await store.dictionary(DEFAULT_DICTIONARY_NAME);
+                    await dictionary.update(
                         { [FIELD_NAME]: 'value1' },
                         { [FIELD_NAME]: 'value2' },
                         { option: 'value' }
@@ -518,29 +263,29 @@ describe('Read model MongoDB adapter', () => {
                 },
 
                 EventCorrectRemove: async (store) => {
-                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
-                    await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
-                    await collection.remove({ [FIELD_NAME]: 'value1' });
+                    const dictionary = await store.dictionary(DEFAULT_DICTIONARY_NAME);
+                    await dictionary.ensureIndex({ fieldName: FIELD_NAME, fieldType: 'string' });
+                    await dictionary.insert({ [FIELD_NAME]: 'value1', content: 'content' });
+                    await dictionary.remove({ [FIELD_NAME]: 'value1' });
                 },
 
                 EventMalformedSearchRemove: async (store) => {
-                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
-                    await collection.remove({ [FIELD_NAME]: 'value1' });
+                    const dictionary = await store.dictionary(DEFAULT_DICTIONARY_NAME);
+                    await dictionary.insert({ [FIELD_NAME]: 'value1', content: 'content' });
+                    await dictionary.remove({ [FIELD_NAME]: 'value1' });
                 },
 
                 EventWrongRemove: async (store) => {
-                    const collection = await store.collection(DEFAULT_COLLECTION_NAME);
-                    await collection.insert({ [FIELD_NAME]: 'value1', content: 'content' });
-                    await collection.remove({ [FIELD_NAME]: 'value1' }, { option: 'value' });
+                    const dictionary = await store.dictionary(DEFAULT_DICTIONARY_NAME);
+                    await dictionary.insert({ [FIELD_NAME]: 'value1', content: 'content' });
+                    await dictionary.remove({ [FIELD_NAME]: 'value1' }, { option: 'value' });
                 },
 
-                EventCheckEqualCollections: async (store) => {
-                    const collectionFirst = await store.collection(DEFAULT_COLLECTION_NAME);
-                    const collectionSecond = await store.collection(DEFAULT_COLLECTION_NAME);
-                    if (collectionFirst === collectionSecond) {
-                        throw new Error('Collections is equal');
+                EventCheckEqualdictionarys: async (store) => {
+                    const dictionaryFirst = await store.dictionary(DEFAULT_DICTIONARY_NAME);
+                    const dictionarySecond = await store.dictionary(DEFAULT_DICTIONARY_NAME);
+                    if (dictionaryFirst === dictionarySecond) {
+                        throw new Error('dictionarys is equal');
                     }
                 }
             };
@@ -594,22 +339,22 @@ describe('Read model MongoDB adapter', () => {
             expect(initError.message).to.be.equal('Init Failure');
         });
 
-        it('should reuse collection interfaces which already initialized', async () => {
+        it('should reuse dictionary interfaces which already initialized', async () => {
             let lastError = await readInstance.getError();
             expect(lastError).to.be.equal(null);
 
-            await builtTestProjection.EventCheckEqualCollections({
-                type: 'EventCheckEqualCollections',
+            await builtTestProjection.EventCheckEqualdictionarys({
+                type: 'EventCheckEqualdictionarys',
                 timestamp: 10
             });
 
             lastError = await readInstance.getError();
-            expect(lastError.message).to.be.equal('Collections is equal');
+            expect(lastError.message).to.be.equal('dictionarys is equal');
         });
 
         it('should process corrent ensureIndex operation', async () => {
             expect(
-                testRepository.collectionIndexesMap.get(DEFAULT_COLLECTION_NAME)
+                testRepository.dictionaryIndexesMap.get(DEFAULT_DICTIONARY_NAME)
             ).to.be.deep.equal(undefined);
 
             await builtTestProjection.EventCorrectEnsureIndex({
@@ -619,7 +364,7 @@ describe('Read model MongoDB adapter', () => {
 
             expect(
                 Array.from(
-                    testRepository.collectionIndexesMap.get(DEFAULT_COLLECTION_NAME).values()
+                    testRepository.dictionaryIndexesMap.get(DEFAULT_DICTIONARY_NAME).values()
                 )
             ).to.be.deep.equal([FIELD_NAME]);
         });
@@ -652,7 +397,7 @@ describe('Read model MongoDB adapter', () => {
 
         it('should process corrent removeIndex operation', async () => {
             expect(
-                testRepository.collectionIndexesMap.get(DEFAULT_COLLECTION_NAME)
+                testRepository.dictionaryIndexesMap.get(DEFAULT_DICTIONARY_NAME)
             ).to.be.deep.equal(undefined);
 
             await builtTestProjection.EventCorrectRemoveIndex({
@@ -662,7 +407,7 @@ describe('Read model MongoDB adapter', () => {
 
             expect(
                 Array.from(
-                    testRepository.collectionIndexesMap.get(DEFAULT_COLLECTION_NAME).values()
+                    testRepository.dictionaryIndexesMap.get(DEFAULT_DICTIONARY_NAME).values()
                 )
             ).to.be.deep.equal([]);
         });
@@ -686,10 +431,10 @@ describe('Read model MongoDB adapter', () => {
                 timestamp: 10
             });
 
-            const defaultCollection = testRepository.collectionMap.get(DEFAULT_COLLECTION_NAME);
+            const defaultdictionary = testRepository.dictionaryMap.get(DEFAULT_DICTIONARY_NAME);
 
             const findResult = await new Promise((resolve, reject) =>
-                defaultCollection
+                defaultdictionary
                     .find({ [FIELD_NAME]: 'value' }, { _id: 0 })
                     .exec((err, docs) => (!err ? resolve(docs) : reject(err)))
             );
@@ -716,10 +461,10 @@ describe('Read model MongoDB adapter', () => {
                 timestamp: 10
             });
 
-            const defaultCollection = testRepository.collectionMap.get(DEFAULT_COLLECTION_NAME);
+            const defaultdictionary = testRepository.dictionaryMap.get(DEFAULT_DICTIONARY_NAME);
 
             const findResult = await new Promise((resolve, reject) =>
-                defaultCollection
+                defaultdictionary
                     .find({ [FIELD_NAME]: 'value2' }, { _id: 0 })
                     .exec((err, docs) => (!err ? resolve(docs) : reject(err)))
             );
@@ -733,10 +478,10 @@ describe('Read model MongoDB adapter', () => {
                 timestamp: 10
             });
 
-            const defaultCollection = testRepository.collectionMap.get(DEFAULT_COLLECTION_NAME);
+            const defaultdictionary = testRepository.dictionaryMap.get(DEFAULT_DICTIONARY_NAME);
 
             const findResult = await new Promise((resolve, reject) =>
-                defaultCollection
+                defaultdictionary
                     .find({ [FIELD_NAME]: 'value2' }, { _id: 0 })
                     .exec((err, docs) => (!err ? resolve(docs) : reject(err)))
             );
@@ -812,10 +557,10 @@ describe('Read model MongoDB adapter', () => {
                 timestamp: 10
             });
 
-            const defaultCollection = testRepository.collectionMap.get(DEFAULT_COLLECTION_NAME);
+            const defaultdictionary = testRepository.dictionaryMap.get(DEFAULT_DICTIONARY_NAME);
 
             const findResult = await new Promise((resolve, reject) =>
-                defaultCollection.find({}).exec((err, docs) => (!err ? resolve(docs) : reject(err)))
+                defaultdictionary.find({}).exec((err, docs) => (!err ? resolve(docs) : reject(err)))
             );
 
             expect(findResult).to.be.deep.equal([]);
@@ -852,39 +597,39 @@ describe('Read model MongoDB adapter', () => {
 
     describe('Disposing adapter with reset function', () => {
         let readInstance;
-        let defaultCollection;
+        let defaultdictionary;
 
         beforeEach(async () => {
-            defaultCollection = createDatabaseCollection();
+            defaultdictionary = createDatabasedictionary();
             await new Promise((resolve, reject) =>
-                defaultCollection.ensureIndex(
+                defaultdictionary.ensureIndex(
                     { fieldName: 'id' },
                     err => (!err ? resolve() : reject(err))
                 )
             );
-            for (let document of DEFAULT_DOCUMENTS) {
-                await defaultCollection.insert(document);
+            for (let document of DEFAULT_ENTRIES) {
+                await defaultdictionary.insert(document);
             }
 
             readInstance = init(testRepository);
 
-            testRepository.collectionMap.set(DEFAULT_COLLECTION_NAME, defaultCollection);
-            testRepository.collectionIndexesMap.set(DEFAULT_COLLECTION_NAME, new Set(['id']));
+            testRepository.dictionaryMap.set(DEFAULT_DICTIONARY_NAME, defaultdictionary);
+            testRepository.dictionaryIndexesMap.set(DEFAULT_DICTIONARY_NAME, new Set(['id']));
 
             await readInstance.getReadable();
         });
 
         afterEach(async () => {
-            defaultCollection = null;
+            defaultdictionary = null;
             readInstance = null;
         });
 
-        it('should close connection and dispose target collections', async () => {
+        it('should close connection and dispose target dictionarys', async () => {
             const disposePromise = reset(testRepository);
             await disposePromise;
 
             const findResult = await new Promise((resolve, reject) =>
-                defaultCollection
+                defaultdictionary
                     .find({})
                     .exec((err, value) => (!err ? resolve(value) : reject(err)))
             );

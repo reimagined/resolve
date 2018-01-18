@@ -1,18 +1,13 @@
 import 'regenerator-runtime/runtime';
 
-async function disposeDatabase(collections) {
-    for (let collection of collections) {
-        await collection.resetIndexes();
-        await collection.remove({}, { multi: true });
-    }
-}
-
 export default function reset(repository) {
     if (repository.disposePromise) {
         return repository.disposePromise;
     }
 
-    const disposePromise = disposeDatabase(repository.collectionMap.values());
+    const disposePromise = Promise.all(
+        Array.from(repository.storagesMap.keys()).map(repository.writeInterface.drop.bind(null))
+    );
 
     Object.keys(repository).forEach((key) => {
         delete repository[key];
