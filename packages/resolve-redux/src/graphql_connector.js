@@ -15,14 +15,13 @@ export default (gqlQuery, options = {}, endpoint) => {
         cache: new InMemoryCache()
     });
 
-    return Component =>
-        function ResolveGraphglConnector(props) {
-            const GraphQLConnector = graphql(gql(gqlQuery), options)(Component);
+    return (Component) => {
+        const GraphQLConnector = graphql(gql(gqlQuery), options)(Component);
 
-            return (
-                <ApolloProvider client={client}>
-                    <GraphQLConnector {...props} />
-                </ApolloProvider>
-            );
-        };
+        return props => (
+            <ApolloProvider client={client}>
+                <GraphQLConnector {...props} />
+            </ApolloProvider>
+        );
+    };
 };
