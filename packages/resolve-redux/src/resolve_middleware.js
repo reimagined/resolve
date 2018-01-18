@@ -3,7 +3,6 @@ import actions from './actions';
 import socketIOClient from 'socket.io-client';
 
 import { getRootableUrl, getKey, checkRequiredFields } from './util';
-import fetch from 'isomorphic-fetch';
 
 const CRITICAL_LEVEL = 100;
 const REFRESH_TIMEOUT = 1000;
@@ -34,7 +33,7 @@ export const api = {
         };
 
         try {
-            const response = await fetch(getRootableUrl('/api/commands'), {
+            const response = await fetch(getRootableUrl('http://0.0.0.0:3000/api/commands'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'same-origin',
@@ -69,17 +68,14 @@ export const api = {
     },
 
     async getViewModelRawState(viewModel, aggregateId) {
-        const response = await fetch(
-            getRootableUrl(
-                `/api/query/${viewModel}?aggregateIds${aggregateId === '*'
-                    ? ''
-                    : '[]'}=${aggregateId}`
-            ),
-            {
-                method: 'GET',
-                credentials: 'same-origin'
-            }
+        const address = getRootableUrl(
+            `http://0.0.0.0:3000/api/query/${viewModel}?aggregateIds${aggregateId === '*'
+                ? ''
+                : '[]'}=${aggregateId}`
         );
+        const response = await fetch(address, {
+            method: 'GET'
+        });
 
         if (!response.ok) {
             throw new Error(response.text());
@@ -120,7 +116,7 @@ export function getAggregateIds(viewModels, subscribers) {
 }
 
 export function initSocketIO(store, socket = { failCount: 0, io: null }) {
-    socket.io = socketIOClient(window.location.origin, {
+    socket.io = socketIOClient('http://0.0.0.0:3000', {
         path: getRootableUrl('/socket/')
     });
 

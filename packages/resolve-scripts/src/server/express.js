@@ -8,6 +8,7 @@ import { createReadModel, createViewModel, createFacade } from 'resolve-query';
 import commandHandler from 'resolve-command';
 import request from 'request';
 import passport from 'passport';
+import cors from 'cors';
 
 import { raiseError } from './utils/error_handling.js';
 import eventStore from './event_store';
@@ -22,6 +23,7 @@ const rootDirectory = process.env.ROOT_DIR || '';
 
 const app = express();
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
