@@ -173,24 +173,30 @@ export default (
         installDependencies(dependencies, false);
         installDependencies(resolveDependencies, false, resolveVersion);
         installDependencies(devDependencies, true);
-    } else if (isEmpty) {
-        const templatePath = path.join(packagePath || scriptsPath, 'dist', 'template');
-
-        if (!tryCopyTemplate(templatePath, appPath)) {
-            error(`Could not locate supplied template: ${chalk.green(templatePath)}`);
-            return;
-        }
-
-        installDependencies(dependencies, false);
-        installDependencies(resolveDependencies, false, resolveVersion);
-        installDependencies(devDependencies, true);
     } else {
-        const templateSamplePath = path.join(packagePath || scriptsPath, 'dist', 'template_sample');
-        fs.copySync(templateSamplePath, appPath);
+        if (isEmpty) {
+            const templatePath = path.join(packagePath || scriptsPath, 'dist', 'template');
 
-        installDependencies([...dependencies, ...appDependencies], false);
-        installDependencies(resolveDependencies, false, resolveVersion);
-        installDependencies([...devDependencies, ...appDevDependencies], true);
+            if (!tryCopyTemplate(templatePath, appPath)) {
+                error(`Could not locate supplied template: ${chalk.green(templatePath)}`);
+                return;
+            }
+
+            installDependencies(dependencies, false);
+            installDependencies(resolveDependencies, false, resolveVersion);
+            installDependencies(devDependencies, true);
+        } else {
+            const templateSamplePath = path.join(
+                packagePath || scriptsPath,
+                'dist',
+                'template_sample'
+            );
+            fs.copySync(templateSamplePath, appPath);
+
+            installDependencies([...dependencies, ...appDependencies], false);
+            installDependencies(resolveDependencies, false, resolveVersion);
+            installDependencies([...devDependencies, ...appDevDependencies], true);
+        }
     }
 
     fs.unlinkSync(path.join(appPath, '.eslintrc'));
