@@ -1,9 +1,16 @@
-import { MERGE, SEND_COMMAND, SUBSCRIBE, UNSUBSCRIBE, PROVIDE_VIEW_MODELS } from './action_types';
+import {
+    MERGE,
+    SEND_COMMAND,
+    SUBSCRIBE,
+    UNSUBSCRIBE,
+    PROVIDE_VIEW_MODELS,
+    DISCONNECT
+} from './action_types';
 
-function merge(viewModel, aggregateId, state) {
+function merge(viewModelName, aggregateId, state) {
     return {
         type: MERGE,
-        viewModel,
+        viewModelName,
         aggregateId,
         state
     };
@@ -19,18 +26,18 @@ function sendCommand({ command, aggregateId, aggregateName, payload }) {
     };
 }
 
-function subscribe(viewModel, aggregateId) {
+function subscribe(viewModelName, aggregateId) {
     return {
         type: SUBSCRIBE,
-        viewModel,
+        viewModelName,
         aggregateId
     };
 }
 
-function unsubscribe(viewModel, aggregateId) {
+function unsubscribe(viewModelName, aggregateId) {
     return {
         type: UNSUBSCRIBE,
-        viewModel,
+        viewModelName,
         aggregateId
     };
 }
@@ -42,10 +49,18 @@ function provideViewModels(viewModels) {
     };
 }
 
+function disconnect(reason) {
+    return {
+        type: DISCONNECT,
+        reason
+    };
+}
+
 export default {
     merge,
     sendCommand,
     subscribe,
     unsubscribe,
-    provideViewModels
+    provideViewModels,
+    disconnect
 };

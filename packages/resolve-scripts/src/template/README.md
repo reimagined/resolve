@@ -208,9 +208,10 @@ A typical view model structure:
 export default {
   name: 'ViewModelName',
   projection: {
-		Init: () => initialState,
-    TodoCreated: (state, event) => nextState,  // Update functions for the current view model instance
-    TodoRemoved: (state, event) => nextState   // for different event types
+    Init: () => initialState,
+    receivedEvent1: (state, event) => nextState,    // Update functions for the current view model instance
+    receivedEvent2: (state, event) => nextState     // for different event types
+    // ...
   }
   // This state results from the request to the query handler at the current moment
 };
