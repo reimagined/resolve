@@ -6,8 +6,9 @@ import init from './init';
 import reset from './reset';
 
 const DEFAULT_META_COLLECTION_NAME = '__ResolveMetaCollection__';
+const DEFAULT_COLLECTIONS_PREFIX = '';
 
-export default function createMongoAdapter(url, options, metaCollectionName) {
+export default function createMongoAdapter(url, options, metaCollectionName, collectionsPrefix) {
     if (url.constructor !== String) {
         throw new Error('Parameter url should be string');
     }
@@ -18,6 +19,11 @@ export default function createMongoAdapter(url, options, metaCollectionName) {
         metaCollectionName && metaCollectionName.constructor === String
             ? metaCollectionName
             : DEFAULT_META_COLLECTION_NAME;
+
+    repository.collectionsPrefix =
+        collectionsPrefix && collectionsPrefix.constructor === String
+            ? collectionsPrefix
+            : DEFAULT_COLLECTIONS_PREFIX;
 
     repository.connectDatabase = MongoClient.connect.bind(
         MongoClient,

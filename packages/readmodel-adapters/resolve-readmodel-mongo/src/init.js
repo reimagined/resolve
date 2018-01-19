@@ -3,13 +3,14 @@ import 'regenerator-runtime/runtime';
 import messages from './messages';
 
 async function syncronizeDatabase(repository, database) {
-    const metaCollection = await database.collection(repository.metaCollectionName);
-    repository.metaCollection = metaCollection;
+    repository.metaCollection = await database.collection(
+        `${repository.collectionsPrefix}${repository.metaCollectionName}`
+    );
 
-    const storageDescriptors = await metaCollection.find({}).toArray();
+    const storageDescriptors = await repository.metaCollection.find({}).toArray();
     for (const { key, lastTimestamp } of storageDescriptors) {
         repository.lastTimestamp = Math.max(repository.lastTimestamp, lastTimestamp);
-        const mongoCollection = await database.collection(key);
+        const mongoCollection = await database.collection(`${repository.collectionsPrefix}${key}`);
         repository.storagesMap.set(key, mongoCollection);
     }
 
@@ -37,7 +38,7 @@ async function createMongoCollection(repository, key) {
 function getStoreInterface(repository, isWriteable) {
     const storeIface = {
         hget: async (key, field) => {
-            let mongoCollection = null;
+            let mongoCollection = repository.storagesMap.get(key);
 
             if (!repository.storagesMap.has(key)) {
                 if (!isWriteable) {
