@@ -5,10 +5,6 @@ export default function reset(repository) {
         return repository.disposePromise;
     }
 
-    for (let key of repository.storagesMap.keys()) {
-        repository.storagesMap.get(key).clear();
-    }
-
     Object.keys(repository).forEach((key) => {
         delete repository[key];
     });

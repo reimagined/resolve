@@ -280,9 +280,7 @@ describe('Read model MongoDB adapter', () => {
             const disposePromise = reset(testRepository);
             await disposePromise;
 
-            const findResult = Array.from(defaultDictionaryStorage.entries());
-
-            expect(findResult).to.be.deep.equal([]);
+            expect(testRepository.storagesMap).to.be.deep.equal(undefined);
         });
 
         it('should do nothing on second and following invocations', async () => {

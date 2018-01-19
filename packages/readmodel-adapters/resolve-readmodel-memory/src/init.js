@@ -46,11 +46,6 @@ function getStoreInterface(repository, isWriteable) {
         };
 
         storeIface.del = async (key) => {
-            const map = repository.storagesMap.get(key);
-            if (map) {
-                map.clear();
-            }
-
             repository.storagesMap.delete(key);
         };
     }

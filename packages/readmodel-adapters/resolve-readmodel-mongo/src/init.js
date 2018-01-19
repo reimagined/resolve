@@ -2,194 +2,97 @@ import 'regenerator-runtime/runtime';
 
 import messages from './messages';
 
-const DICTIONARY_TYPE = 'Dictionary';
-
-async function getStorageType(repository, storageName) {
-    await repository.connectionPromise;
-    const storage = repository.storagesMap.get(storageName);
-    if (!storage || !storage.type) {
-        return null;
-    }
-    return storage.type;
-}
-
-async function getStorageContent(repository, storageName) {
-    await repository.connectionPromise;
-    const storage = repository.storagesMap.get(storageName);
-    if (!storage || !storage.type) {
-        return null;
-    }
-    return storage.content;
-}
-
 async function syncronizeDatabase(repository, database) {
-    repository.storagesMap = new Map();
     const metaCollection = await database.collection(repository.metaCollectionName);
     repository.metaCollection = metaCollection;
 
     const storageDescriptors = await metaCollection.find({}).toArray();
-    for (const { storageName, storageType, lastTimestamp } of storageDescriptors) {
+    for (const { key, lastTimestamp } of storageDescriptors) {
         repository.lastTimestamp = Math.max(repository.lastTimestamp, lastTimestamp);
-        const mongoCollection = await database.collection(storageName);
-
-        repository.storagesMap.set(storageName, {
-            content: mongoCollection,
-            type: storageType
-        });
+        const mongoCollection = await database.collection(key);
+        repository.storagesMap.set(key, mongoCollection);
     }
 
     return database;
 }
 
-async function createStorage(repository, storageType, isWriteable, storageName) {
-    if (!isWriteable) {
-        throw new Error(messages.readSideForbiddenOperation(storageType, 'create', storageName));
-    }
+async function setStorageTimestamp(repository, key) {
+    const lastTimestamp = repository.lastTimestamp;
+    await repository.metaCollection.update({ key }, { $set: { lastTimestamp } });
+}
 
+async function createMongoCollection(repository, key) {
     const database = await repository.connectionPromise;
+    const mongoCollection = await database.collection(key);
+    repository.storagesMap.set(key, mongoCollection);
 
-    if ((await database.listCollections({ name: storageName }).toArray()).length > 0) {
-        throw new Error(messages.collectionExistsNoMeta(storageName));
-    }
+    await mongoCollection.createIndex({ field: 1 }, { unique: true });
 
-    const existingStorageType = await getStorageType(repository, storageName);
-    if (existingStorageType) {
-        throw new Error(messages.storageRecreation(existingStorageType, storageName));
-    }
+    await repository.metaCollection.update({ key }, { key }, { upsert: true });
+    await setStorageTimestamp(repository, key);
 
-    const mongoCollection = await database.collection(storageName);
-    repository.storagesMap.set(storageName, {
-        content: mongoCollection,
-        type: storageType
-    });
-
-    switch (storageType) { // eslint-disable-line default-case
-        case DICTIONARY_TYPE: {
-            await mongoCollection.createIndex(
-                { key: 1 },
-                { name: `${DICTIONARY_TYPE}_${storageName}_key`, unique: true }
-            );
-            break;
-        }
-    }
-
-    await repository.metaCollection.update(
-        { storageName },
-        {
-            storageName,
-            lastTimestamp: 0
-        },
-        { upsert: true }
-    );
-}
-
-async function validateAndGetStorage(repository, storageType, storageName) {
-    const existingStorageType = await getStorageType(repository, storageName);
-    if (!existingStorageType) {
-        throw new Error(messages.unexistingStorage(storageType, storageName));
-    }
-
-    if (existingStorageType !== storageType) {
-        throw new Error(messages.wrongStorageType(storageName, existingStorageType, storageType));
-    }
-
-    return await getStorageContent(repository, storageName);
-}
-
-async function raiseReadOperationError(storageType, storageName, operation) {
-    throw new Error(messages.readSideForbiddenOperation(storageType, operation, storageName));
-}
-
-async function getDictionaryInterface(repository, isWriteable, dictionaryName) {
-    const dictionaryIfaceKey = `${DICTIONARY_TYPE}_${dictionaryName}_${isWriteable}`;
-    const interfaceMap = repository.interfaceMap;
-
-    if (interfaceMap.has(dictionaryIfaceKey)) {
-        return interfaceMap.get(dictionaryIfaceKey);
-    }
-
-    const raizeAccessError = raiseReadOperationError.bind(null, DICTIONARY_TYPE, dictionaryName);
-    await validateAndGetStorage(repository, DICTIONARY_TYPE, dictionaryName);
-
-    const dictionaryIface = {
-        exists: async (storage, key) => storage.has(key),
-        get: async (storage, key) => (storage.has(key) ? storage.get(key) : null),
-        set: raizeAccessError.bind(null, 'set'),
-        delete: raizeAccessError.bind(null, 'delete')
-    };
-
-    if (isWriteable) {
-        dictionaryIface.set = async (storage, key, value) => storage.set(key, value);
-        dictionaryIface.delete = async (storage, key) => storage.delete(key);
-    }
-
-    for (let operation of Object.keys(dictionaryIface)) {
-        const operationHandler = dictionaryIface[operation];
-        dictionaryIface[operation] = async (...args) => {
-            const storage = await validateAndGetStorage(
-                repository,
-                DICTIONARY_TYPE,
-                dictionaryName
-            );
-            return await operationHandler(storage, ...args);
-        };
-    }
-
-    interfaceMap.set(dictionaryIfaceKey, Object.freeze(dictionaryIface));
-    return interfaceMap.get(dictionaryIfaceKey);
-}
-
-async function listStorages(repository) {
-    const resultList = [];
-    for (let storageName of repository.storagesMap.keys()) {
-        resultList.push({
-            name: storageName,
-            type: await getStorageType(repository, storageName)
-        });
-    }
-
-    return resultList;
-}
-
-async function existsStorage(repository, storageName) {
-    return !!await getStorageType(repository, storageName);
-}
-
-async function dropStorage(repository, isWriteable, storageName) {
-    if (!isWriteable) {
-        throw new Error(messages.readSideForbiddenOperation(null, 'drop', storageName));
-    }
-
-    const existingStorageType = await getStorageType(repository, storageName);
-    const metaDescriptor = await repository.metaCollection.findOne({ storageName });
-    if (!existingStorageType || !metaDescriptor) {
-        throw new Error(messages.unexistingStorage(null, storageName));
-    }
-
-    const mongoCollection = await getStorageContent(repository, storageName);
-    repository.storagesMap.delete(storageName);
-
-    switch (existingStorageType) { // eslint-disable-line default-case
-        case DICTIONARY_TYPE: {
-            await mongoCollection.drop();
-            break;
-        }
-    }
-
-    await repository.metaCollection;
+    return mongoCollection;
 }
 
 function getStoreInterface(repository, isWriteable) {
-    return Object.freeze({
-        createDictionary: createStorage.bind(null, repository, DICTIONARY_TYPE, isWriteable),
-        dictionary: getDictionaryInterface.bind(null, repository, isWriteable),
-        list: listStorages.bind(null, repository),
-        exists: existsStorage.bind(null, repository),
-        drop: dropStorage.bind(null, repository, isWriteable)
-    });
+    const storeIface = {
+        hget: async (key, field) => {
+            let mongoCollection = null;
+
+            if (!repository.storagesMap.has(key)) {
+                if (!isWriteable) {
+                    throw new Error(messages.unexistingStorage(key));
+                }
+                mongoCollection = await createMongoCollection(repository, key);
+            }
+
+            const entry = await mongoCollection.findOne({ field });
+            return entry ? entry.value : null;
+        },
+
+        hset: async (key) => {
+            throw new Error(messages.readSideForbiddenOperation('hset', key));
+        },
+
+        del: async (key) => {
+            throw new Error(messages.readSideForbiddenOperation('del', key));
+        }
+    };
+
+    if (isWriteable) {
+        storeIface.hset = async (key, field, value) => {
+            const mongoCollection = repository.storagesMap.has(key)
+                ? repository.storagesMap.get(key)
+                : await createMongoCollection(repository, key);
+
+            if (value === null || value === undefined) {
+                await mongoCollection.remove({ field });
+                return;
+            }
+
+            await mongoCollection.update({ field }, { field, value }, { multi: true });
+
+            await setStorageTimestamp(repository, key);
+        };
+
+        storeIface.del = async (key) => {
+            const database = await repository.connectionPromise;
+            await database.dropCollection(key);
+
+            await repository.metaCollection.remove({ key: key });
+
+            repository.storagesMap.delete(key);
+        };
+    }
+
+    return Object.freeze(storeIface);
 }
 
 async function initProjection(repository) {
+    await repository.connectionPromise;
+    if (repository.lastTimestamp !== 0) return;
+    repository.lastTimestamp = 1;
+
     try {
         await repository.initHandler(repository.writeInterface);
     } catch (error) {
@@ -198,7 +101,7 @@ async function initProjection(repository) {
 }
 
 export default function init(repository) {
-    if (repository.interfaceMap) {
+    if (repository.storagesMap) {
         throw new Error(messages.reinitialization);
     }
     repository.lastTimestamp = 0;
@@ -211,7 +114,7 @@ export default function init(repository) {
         .connectDatabase()
         .then(syncronizeDatabase.bind(null, repository));
 
-    repository.interfaceMap = new Map();
+    repository.storagesMap = new Map();
     repository.internalError = null;
 
     repository.readInterface = getStoreInterface(repository, false);
