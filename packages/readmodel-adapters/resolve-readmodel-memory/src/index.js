@@ -6,15 +6,7 @@ import reset from './reset';
 
 export default function createMemoryAdapter() {
     const repository = Object.create(null);
-
-    repository.constructStorage = async (type) => {
-        switch (type) {
-            case 'Dictionary':
-                return new Map();
-            default:
-                throw new Error('Wrong type');
-        }
-    };
+    repository.constructStorage = () => new Map();
 
     return Object.create(null, {
         buildProjection: {

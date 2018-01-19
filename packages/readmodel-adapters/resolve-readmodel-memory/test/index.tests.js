@@ -9,8 +9,6 @@ import init from '../src/init';
 import reset from '../src/reset';
 
 describe('Read model MongoDB adapter', () => {
-    const DICTIONARY_TYPE = 'Dictionary';
-
     const DEFAULT_DICTIONARY_NAME = 'TestdefaultDictionaryStorage';
     const DEFAULT_ENTRIES = {
         id0: { content: 'test0' },
@@ -18,14 +16,7 @@ describe('Read model MongoDB adapter', () => {
         id2: { content: 'test2' }
     };
 
-    const constructStorage = async (type) => {
-        switch (type) {
-            case 'Dictionary':
-                return new Map();
-            default:
-                throw new Error('Wrong type');
-        }
-    };
+    const constructStorage = () => new Map();
 
     let testRepository;
 
@@ -41,155 +32,69 @@ describe('Read model MongoDB adapter', () => {
         let readInstance;
 
         beforeEach(async () => {
-            const defaultDictionaryStorage = await constructStorage(DICTIONARY_TYPE);
+            const defaultDictionaryStorage = await constructStorage();
             for (let key of Object.keys(DEFAULT_ENTRIES)) {
                 defaultDictionaryStorage.set(key, DEFAULT_ENTRIES[key]);
             }
 
             readInstance = init(testRepository);
 
-            testRepository.storagesMap.set(DEFAULT_DICTIONARY_NAME, {
-                content: defaultDictionaryStorage,
-                type: DICTIONARY_TYPE
-            });
+            testRepository.storagesMap.set(DEFAULT_DICTIONARY_NAME, defaultDictionaryStorage);
         });
 
         afterEach(async () => {
             readInstance = null;
         });
 
-        describe('Storage manager', () => {
-            it('should provide last timestamp as zero value', async () => {
-                const lastTimestamp = await readInstance.getLastAppliedTimestamp();
-                expect(lastTimestamp).to.be.equal(0);
-            });
-
-            it('should check storage existence', async () => {
-                const readable = await readInstance.getReadable();
-
-                const firstResult = await readable.exists(DEFAULT_DICTIONARY_NAME);
-                const secondResult = await readable.exists('wrong');
-
-                expect(firstResult).to.be.deep.equal(true);
-                expect(secondResult).to.be.deep.equal(false);
-            });
-
-            it('should enumerate actual storages list', async () => {
-                const readable = await readInstance.getReadable();
-                const dictionarysList = await readable.list();
-
-                expect(dictionarysList).to.be.deep.equal([
-                    {
-                        name: DEFAULT_DICTIONARY_NAME,
-                        type: DICTIONARY_TYPE
-                    }
-                ]);
-            });
-
-            it('should throw error on non-existing storage access', async () => {
-                const readable = await readInstance.getReadable();
-
-                try {
-                    await readable.dictionary('wrong-dictionary');
-                    return Promise.reject(
-                        'Unexisting dictionary call should throw error on read side'
-                    );
-                } catch (err) {
-                    expect(err.message).to.be.equal(
-                        messages.unexistingStorage(DICTIONARY_TYPE, 'wrong-dictionary')
-                    );
-                }
-            });
-
-            it('should throw error on storage drop attempt', async () => {
-                const readable = await readInstance.getReadable();
-
-                try {
-                    await readable.drop(DEFAULT_DICTIONARY_NAME);
-                    return Promise.reject('dictionary drop operation should fail on read-side');
-                } catch (err) {
-                    expect(err.message).to.be.equal(
-                        messages.readSideForbiddenOperation(null, 'drop', DEFAULT_DICTIONARY_NAME)
-                    );
-                }
-            });
+        it('should provide last timestamp as zero value', async () => {
+            const lastTimestamp = await readInstance.getLastAppliedTimestamp();
+            expect(lastTimestamp).to.be.equal(0);
         });
 
-        describe('Dictionary interface', () => {
-            it('should provide dictionary exists operation', async () => {
-                const readable = await readInstance.getReadable();
-                const dictionary = await readable.dictionary(DEFAULT_DICTIONARY_NAME);
+        it('should throw error on non-existing storage access', async () => {
+            const readable = await readInstance.getReadable();
 
-                const firstResult = await dictionary.exists('id0');
-                const secondResult = await dictionary.exists('id4');
+            try {
+                await readable.hget('wrong-dictionary', 'key');
+                return Promise.reject('Unexisting dictionary call should throw error on read side');
+            } catch (err) {
+                expect(err.message).to.be.equal(messages.unexistingStorage('wrong-dictionary'));
+            }
+        });
 
-                expect(firstResult).to.be.deep.equal(true);
-                expect(secondResult).to.be.deep.equal(false);
-            });
+        it('should throw error on storage drop attempt', async () => {
+            const readable = await readInstance.getReadable();
 
-            it('should provide dictionary get operation', async () => {
-                const readable = await readInstance.getReadable();
-                const dictionary = await readable.dictionary(DEFAULT_DICTIONARY_NAME);
+            try {
+                await readable.del(DEFAULT_DICTIONARY_NAME);
+                return Promise.reject('dictionary drop operation should fail on read-side');
+            } catch (err) {
+                expect(err.message).to.be.equal(
+                    messages.readSideForbiddenOperation('del', DEFAULT_DICTIONARY_NAME)
+                );
+            }
+        });
 
-                const firstResult = await dictionary.get('id0');
-                const secondResult = await dictionary.get('id4');
+        it('should provide dictionary get operation', async () => {
+            const readable = await readInstance.getReadable();
+            const firstResult = await readable.hget(DEFAULT_DICTIONARY_NAME, 'id0');
+            const secondResult = await readable.hget(DEFAULT_DICTIONARY_NAME, 'id4');
 
-                expect(firstResult).to.be.deep.equal({ content: 'test0' });
-                expect(secondResult).to.be.deep.equal(null);
-            });
+            expect(firstResult).to.be.deep.equal({ content: 'test0' });
+            expect(secondResult).to.be.deep.equal(null);
+        });
 
-            it('should throw error on dictionary create attempt', async () => {
-                const readable = await readInstance.getReadable();
+        it('should throw error on dictionary set operation attempt', async () => {
+            const readable = await readInstance.getReadable();
 
-                try {
-                    await readable.createDictionary('NewDictionary');
-                    return Promise.reject('dictionary create operation should fail on read-side');
-                } catch (err) {
-                    expect(err.message).to.be.equal(
-                        messages.readSideForbiddenOperation(
-                            DICTIONARY_TYPE,
-                            'create',
-                            'NewDictionary'
-                        )
-                    );
-                }
-            });
-
-            it('should throw error on dictionary set operation attempt', async () => {
-                const readable = await readInstance.getReadable();
-                const dictionary = await readable.dictionary(DEFAULT_DICTIONARY_NAME);
-
-                try {
-                    await dictionary.set('id4', { content: 'test-4' });
-                    return Promise.reject('dictionary set operation should fail on read-side');
-                } catch (err) {
-                    expect(err.message).to.be.equal(
-                        messages.readSideForbiddenOperation(
-                            DICTIONARY_TYPE,
-                            'set',
-                            DEFAULT_DICTIONARY_NAME
-                        )
-                    );
-                }
-            });
-
-            it('should throw error on dictionary delete operation attempt', async () => {
-                const readable = await readInstance.getReadable();
-                const dictionary = await readable.dictionary(DEFAULT_DICTIONARY_NAME);
-
-                try {
-                    await dictionary.delete('id3');
-                    return Promise.reject('dictionary delete operation should fail on read-side');
-                } catch (err) {
-                    expect(err.message).to.be.equal(
-                        messages.readSideForbiddenOperation(
-                            DICTIONARY_TYPE,
-                            'delete',
-                            DEFAULT_DICTIONARY_NAME
-                        )
-                    );
-                }
-            });
+            try {
+                await readable.hset(DEFAULT_DICTIONARY_NAME, 'id4', { content: 'test-4' });
+                return Promise.reject('dictionary set operation should fail on read-side');
+            } catch (err) {
+                expect(err.message).to.be.equal(
+                    messages.readSideForbiddenOperation('hset', DEFAULT_DICTIONARY_NAME)
+                );
+            }
         });
     });
 
@@ -210,41 +115,32 @@ describe('Read model MongoDB adapter', () => {
                             () => (!initShouldFail ? resolve() : reject(new Error('Init Failure')))
                         )
                     );
-                    await store.createDictionary(DEFAULT_DICTIONARY_NAME);
                 }),
 
                 TestEvent: sinon.stub(),
 
-                EventCheckEqualStorages: async (store) => {
-                    const storeFirst = await store.dictionary(DEFAULT_DICTIONARY_NAME);
-                    const storeSecond = await store.dictionary(DEFAULT_DICTIONARY_NAME);
-                    if (storeFirst === storeSecond) {
-                        throw new Error('Storages is equal');
-                    }
-                },
-
-                EventRecreateStore: async (store) => {
-                    await store.createDictionary(DEFAULT_DICTIONARY_NAME);
-                },
-
-                EventMisuseStore: async (store) => {
-                    await store.dictionary('CUSTOM_STORAGE');
-                },
-
-                EventWrongDropStore: async (store) => {
-                    await store.drop('WRONG_STORAGE');
+                EventDictionaryGet: async (store) => {
+                    await store.hget('NEW_DICTIONARY', FIELD_NAME);
                 },
 
                 EventDictionarySet: async (store) => {
-                    const dictionary = await store.dictionary(DEFAULT_DICTIONARY_NAME);
-                    await dictionary.set(FIELD_NAME, { test: 'fail' });
-                    await dictionary.set(FIELD_NAME, { test: 'ok' });
+                    await store.hset(DEFAULT_DICTIONARY_NAME, FIELD_NAME, { test: 'fail' });
+                    await store.hset(DEFAULT_DICTIONARY_NAME, FIELD_NAME, { test: 'ok' });
                 },
 
                 EventDictionaryDelete: async (store) => {
-                    const dictionary = await store.dictionary(DEFAULT_DICTIONARY_NAME);
-                    await dictionary.set(FIELD_NAME, { test: 'fail' });
-                    await dictionary.delete(FIELD_NAME);
+                    await store.hset(DEFAULT_DICTIONARY_NAME, FIELD_NAME, { test: 'fail' });
+                    await store.hset(DEFAULT_DICTIONARY_NAME, FIELD_NAME, null);
+                },
+
+                EventDictionaryDrop: async (store) => {
+                    await store.hget(DEFAULT_DICTIONARY_NAME, FIELD_NAME);
+                    await store.del(DEFAULT_DICTIONARY_NAME);
+                    await store.del(DEFAULT_DICTIONARY_NAME);
+                },
+
+                WrongEvent: async () => {
+                    throw new Error('Projection error');
                 }
             };
 
@@ -264,128 +160,97 @@ describe('Read model MongoDB adapter', () => {
             readInstance = null;
         });
 
-        describe('Read model initialization', () => {
-            it('should raise error on read interface reinitialization', async () => {
-                try {
-                    readInstance = init(testRepository);
-                    return Promise.reject('Read instance can\'t be initialized twice');
-                } catch (err) {
-                    expect(err.message).to.be.equal(messages.reinitialization);
-                }
-            });
-
-            it('should call Init projection function on read invocation', async () => {
-                await readInstance.getReadable();
-                expect(originalTestProjection.Init.callCount).to.be.equal(1);
-            });
-
-            it('should call Init projection function on read invocation only once', async () => {
-                await readInstance.getReadable();
-                await readInstance.getReadable();
-                expect(originalTestProjection.Init.callCount).to.be.equal(1);
-            });
-
-            it('should call Init projection function on incoming event', async () => {
-                await builtTestProjection.TestEvent({ type: 'TestEvent', timestamp: 10 });
-                expect(originalTestProjection.Init.callCount).to.be.equal(1);
-            });
-
-            it('should call Init projection function on incoming event only once', async () => {
-                await builtTestProjection.TestEvent({ type: 'TestEvent', timestamp: 10 });
-                await builtTestProjection.TestEvent({ type: 'TestEvent', timestamp: 20 });
-                expect(originalTestProjection.Init.callCount).to.be.equal(1);
-            });
-
-            it('should handle errors in Init projection function', async () => {
-                initShouldFail = true;
-                const initError = await readInstance.getError();
-                expect(originalTestProjection.Init.callCount).to.be.equal(1);
-                expect(initError.message).to.be.equal('Init Failure');
-            });
-
-            it('should reuse storage interfaces which already initialized', async () => {
-                let lastError = await readInstance.getError();
-                expect(lastError).to.be.equal(null);
-
-                await builtTestProjection.EventCheckEqualStorages({
-                    type: 'EventCheckEqualStorages',
-                    timestamp: 10
-                });
-
-                lastError = await readInstance.getError();
-                expect(lastError.message).to.be.equal('Storages is equal');
-            });
-
-            it('should fail on recreation storage attempt', async () => {
-                let lastError = await readInstance.getError();
-                expect(lastError).to.be.equal(null);
-
-                await builtTestProjection.EventRecreateStore({
-                    type: 'EventRecreateStore',
-                    timestamp: 10
-                });
-
-                lastError = await readInstance.getError();
-                expect(lastError.message).to.be.equal(
-                    messages.storageRecreation(DICTIONARY_TYPE, DEFAULT_DICTIONARY_NAME)
-                );
-            });
-
-            it('should fail on wrong storage use with mismatch type attempt', async () => {
-                let lastError = await readInstance.getError();
-                expect(lastError).to.be.equal(null);
-
-                await builtTestProjection.EventMisuseStore({
-                    type: 'EventMisuseStore',
-                    timestamp: 10
-                });
-
-                lastError = await readInstance.getError();
-                expect(lastError.message).to.be.equal(
-                    messages.wrongStorageType('CUSTOM_STORAGE', 'CUSTOM_TYPE', DICTIONARY_TYPE)
-                );
-            });
-
-            it('should fail on dropping unexisting storage', async () => {
-                let lastError = await readInstance.getError();
-                expect(lastError).to.be.equal(null);
-
-                await builtTestProjection.EventWrongDropStore({
-                    type: 'EventWrongDropStore',
-                    timestamp: 10
-                });
-
-                lastError = await readInstance.getError();
-                expect(lastError.message).to.be.equal(
-                    messages.unexistingStorage(null, 'WRONG_STORAGE')
-                );
-            });
+        it('should raise error on read interface reinitialization', async () => {
+            try {
+                readInstance = init(testRepository);
+                return Promise.reject('Read instance can\'t be initialized twice');
+            } catch (err) {
+                expect(err.message).to.be.equal(messages.reinitialization);
+            }
         });
 
-        describe('Dictionary interface', () => {
-            it('should process dictionary set operation', async () => {
-                await builtTestProjection.EventDictionarySet({
-                    type: 'EventDictionarySet',
-                    timestamp: 10
-                });
+        it('should call Init projection function on read invocation', async () => {
+            await readInstance.getReadable();
+            expect(originalTestProjection.Init.callCount).to.be.equal(1);
+        });
 
-                const storage = testRepository.storagesMap.get(DEFAULT_DICTIONARY_NAME).content;
-                const result = storage.get(FIELD_NAME);
+        it('should call Init projection function on read invocation only once', async () => {
+            await readInstance.getReadable();
+            await readInstance.getReadable();
+            expect(originalTestProjection.Init.callCount).to.be.equal(1);
+        });
 
-                expect(result).to.be.deep.equal({ test: 'ok' });
+        it('should call Init projection function on incoming event', async () => {
+            await builtTestProjection.TestEvent({ type: 'TestEvent', timestamp: 10 });
+            expect(originalTestProjection.Init.callCount).to.be.equal(1);
+        });
+
+        it('should call Init projection function on incoming event only once', async () => {
+            await builtTestProjection.TestEvent({ type: 'TestEvent', timestamp: 10 });
+            await builtTestProjection.TestEvent({ type: 'TestEvent', timestamp: 20 });
+            expect(originalTestProjection.Init.callCount).to.be.equal(1);
+        });
+
+        it('should handle errors in Init projection function', async () => {
+            initShouldFail = true;
+            const initError = await readInstance.getError();
+            expect(originalTestProjection.Init.callCount).to.be.equal(1);
+            expect(initError.message).to.be.equal('Init Failure');
+        });
+
+        it('should handle errors in custom projection function', async () => {
+            await builtTestProjection.WrongEvent({
+                type: 'WrongEvent',
+                timestamp: 10
             });
 
-            it('should process dictionary remove operation', async () => {
-                await builtTestProjection.EventDictionaryDelete({
-                    type: 'EventDictionaryDelete',
-                    timestamp: 10
-                });
+            const lastError = await readInstance.getError();
+            expect(lastError.message).to.be.equal('Projection error');
+        });
 
-                const storage = testRepository.storagesMap.get(DEFAULT_DICTIONARY_NAME).content;
-                const result = storage.has(FIELD_NAME);
-
-                expect(result).to.be.deep.equal(false);
+        it('should process dictionary get operation with key autocreation', async () => {
+            await builtTestProjection.EventDictionaryGet({
+                type: 'EventDictionaryGet',
+                timestamp: 10
             });
+
+            const storageExists = testRepository.storagesMap.has('NEW_DICTIONARY');
+            expect(storageExists).to.be.equal(true);
+        });
+
+        it('should process dictionary set operation', async () => {
+            await builtTestProjection.EventDictionarySet({
+                type: 'EventDictionarySet',
+                timestamp: 10
+            });
+
+            const storage = testRepository.storagesMap.get(DEFAULT_DICTIONARY_NAME);
+            const result = storage.get(FIELD_NAME);
+
+            expect(result).to.be.deep.equal({ test: 'ok' });
+        });
+
+        it('should process dictionary remove operation', async () => {
+            await builtTestProjection.EventDictionaryDelete({
+                type: 'EventDictionaryDelete',
+                timestamp: 10
+            });
+
+            const storage = testRepository.storagesMap.get(DEFAULT_DICTIONARY_NAME);
+            const result = storage.has(FIELD_NAME);
+
+            expect(result).to.be.deep.equal(false);
+        });
+
+        it('should process dropping dictionary', async () => {
+            await builtTestProjection.EventDictionaryDrop({
+                type: 'EventDictionaryDrop',
+                timestamp: 10
+            });
+
+            const storage = testRepository.storagesMap.get(DEFAULT_DICTIONARY_NAME);
+
+            expect(storage).to.be.deep.equal(undefined);
         });
     });
 
@@ -394,17 +259,14 @@ describe('Read model MongoDB adapter', () => {
         let defaultDictionaryStorage;
 
         beforeEach(async () => {
-            defaultDictionaryStorage = await constructStorage(DICTIONARY_TYPE);
+            defaultDictionaryStorage = await constructStorage();
             for (let key of Object.keys(DEFAULT_ENTRIES)) {
                 defaultDictionaryStorage.set(key, DEFAULT_ENTRIES[key]);
             }
 
             readInstance = init(testRepository);
 
-            testRepository.storagesMap.set(DEFAULT_DICTIONARY_NAME, {
-                content: defaultDictionaryStorage,
-                type: DICTIONARY_TYPE
-            });
+            testRepository.storagesMap.set(DEFAULT_DICTIONARY_NAME, defaultDictionaryStorage);
 
             await readInstance.getReadable();
         });

@@ -5,14 +5,14 @@ export default function reset(repository) {
         return repository.disposePromise;
     }
 
-    const disposePromise = Promise.all(
-        Array.from(repository.storagesMap.keys()).map(repository.writeInterface.drop.bind(null))
-    ).then(() =>
-        Object.keys(repository).forEach((key) => {
-            delete repository[key];
-        })
-    );
+    for (let key of repository.storagesMap.keys()) {
+        repository.storagesMap.get(key).clear();
+    }
 
-    repository.disposePromise = disposePromise;
-    return disposePromise;
+    Object.keys(repository).forEach((key) => {
+        delete repository[key];
+    });
+
+    repository.disposePromise = Promise.resolve();
+    return repository.disposePromise;
 }
