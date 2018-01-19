@@ -1,6 +1,6 @@
 import { Strategy as PassportLocalStrategy } from 'passport-local';
-
-import { defaultFailureCallback, getRouteByName, rootDirectory } from './helper';
+import { getRootableUrl } from '../utils/prepare_urls';
+import { defaultFailureCallback, getRouteByName } from './helper';
 
 const strategy = (options) => {
     return {
@@ -9,7 +9,7 @@ const strategy = (options) => {
             return new PassportLocalStrategy(options.strategy, (req, username, password, done) => {
                 const url = req.url.split('?')[0];
                 const { resolve, body } = req;
-                if (url === `${rootDirectory}${registerPath}`) {
+                if (url === getRootableUrl(registerPath)) {
                     options.registerCallback({ resolve, body }, username, password, done);
                 } else {
                     options.loginCallback({ resolve, body }, username, password, done);

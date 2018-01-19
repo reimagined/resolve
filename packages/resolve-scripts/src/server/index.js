@@ -5,14 +5,13 @@ import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
 import connectionHandler from './socket';
-import prepareUrls from './utils/prepare_urls';
+import prepareUrls, { getRootableUrl } from './utils/prepare_urls';
 import openBrowser from './utils/open_browser';
 
 // eslint-disable-next-line no-console
 const log = console.log;
 
 const server = http.createServer(app);
-const rootDirectory = process.env.ROOT_DIR || '';
 const PORT = parseInt(process.env.PORT, 10) || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
 
@@ -20,7 +19,7 @@ const appDirectory = fs.realpathSync(process.cwd());
 const useYarn = fs.existsSync(path.resolve(appDirectory, 'yarn.lock'));
 
 const io = socketIO(server, {
-    path: `${rootDirectory || ''}/socket`,
+    path: getRootableUrl('/socket'),
     serveClient: false
 });
 
@@ -49,9 +48,8 @@ server.on('listening', () => {
         log(`  ${chalk.cyan(`${useYarn ? 'yarn build' : 'npm run build'}`)}.`);
         log(`  ${chalk.cyan(`${useYarn ? 'yarn start' : 'npm start'}`)}.`);
         log();
+        openBrowser(urls.localUrlForBrowser);
     }
-
-    openBrowser(urls.localUrlForBrowser);
 });
 
 server.listen(PORT);
