@@ -2,20 +2,29 @@ import chalk from 'chalk';
 import url from 'url';
 import address from 'address';
 
+export function getRootableUrl(path) {
+    const rootDir =
+        typeof process !== 'undefined' && typeof process.env !== 'undefined' && process.env.ROOT_DIR
+            ? process.env.ROOT_DIR
+            : '';
+
+    return `${rootDir}${path}`;
+}
+
 export default (protocol, host, port) => {
     const formatUrl = hostname =>
         url.format({
             protocol,
             hostname,
             port,
-            pathname: '/'
+            pathname: getRootableUrl('/')
         });
     const prettyPrintUrl = hostname =>
         url.format({
             protocol,
             hostname,
             port: chalk.bold(port),
-            pathname: '/'
+            pathname: getRootableUrl('/')
         });
 
     const isUnspecifiedHost = host === '0.0.0.0' || host === '::';

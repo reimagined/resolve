@@ -1,6 +1,6 @@
 import { Strategy as PassportGitHubStrategy } from 'passport-github';
-
-import { defaultFailureCallback, getRouteByName, rootDirectory } from './helper';
+import { getRootableUrl } from '../utils/prepare_urls';
+import { defaultFailureCallback, getRouteByName } from './helper';
 
 const strategy = (options) => {
     return {
@@ -23,7 +23,7 @@ const strategy = (options) => {
                     ? options.failureCallback(err, redirect, { resolve, body })
                     : applyJwtValue(user, res, options.successRedirect);
             };
-            return url === `${rootDirectory}${authPath}`
+            return url === getRootableUrl(authPath)
                 ? passport.authenticate('github')(req, res, next)
                 : passport.authenticate('github', done)(req, res, next);
         },
@@ -40,8 +40,8 @@ export default (options) => {
             successRedirect: null
         },
         routes: {
-            auth: `${rootDirectory}/auth/github`,
-            callback: `${rootDirectory}/auth/github/callback`
+            auth: '/auth/github',
+            callback: '/auth/github/callback'
         },
         authCallback: ({ resolve, body }, profile, done) => {
             done(

@@ -1,6 +1,6 @@
 import { Strategy as PassportGoogleStrategy } from 'passport-google-oauth20';
-
-import { defaultFailureCallback, getRouteByName, rootDirectory } from './helper';
+import { getRootableUrl } from '../utils/prepare_urls';
+import { defaultFailureCallback, getRouteByName } from './helper';
 
 const strategy = (options) => {
     return {
@@ -23,7 +23,7 @@ const strategy = (options) => {
                     ? options.failureCallback(err, redirect, { resolve, body })
                     : applyJwtValue(user, res, options.successRedirect);
             };
-            return url === `${rootDirectory}${authPath}`
+            return url === getRootableUrl(authPath)
                 ? passport.authenticate('google', { scope: ['profile', 'email'] }, done)(
                       req,
                       res,
@@ -44,8 +44,8 @@ export default (options) => {
             successRedirect: null
         },
         routes: {
-            auth: `${rootDirectory}/auth/google`,
-            callback: `${rootDirectory}/auth/google/callback`
+            auth: '/auth/google',
+            callback: '/auth/google/callback'
         },
         authCallback: ({ resolve, body }, profile, done) => {
             done(

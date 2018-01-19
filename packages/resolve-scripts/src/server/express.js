@@ -10,6 +10,7 @@ import request from 'request';
 import passport from 'passport';
 
 import { raiseError } from './utils/error_handling.js';
+import { getRootableUrl } from './utils/prepare_urls';
 import eventStore from './event_store';
 import ssr from './render';
 import { getRouteByName } from './auth';
@@ -18,7 +19,6 @@ import config from '../configs/server.config.js';
 import message from './message';
 
 const STATIC_PATH = '/static';
-const rootDirectory = process.env.ROOT_DIR || '';
 
 const app = express();
 
@@ -123,7 +123,7 @@ app.use((req, res, next) => {
 const applyJwtValue = (value, res, url) => {
     const authenticationToken = jwt.sign(value, config.jwt.secret);
     res.cookie(config.jwt.cookieName, authenticationToken, config.jwt.options);
-    res.redirect(url || `${rootDirectory}/`);
+    res.redirect(url || getRootableUrl('/'));
 };
 
 const bindAuthMiddleware = (route, method, middleware, options) => {
@@ -156,7 +156,7 @@ try {
     }
 } catch (err) {}
 
-app.post(`${rootDirectory}/api/commands`, async (req, res) => {
+app.post(getRootableUrl('/api/commands'), async (req, res) => {
     try {
         await executeCommand(req.body, req.getJwtValue);
         res.status(200).send(message.commandSuccess);
@@ -171,7 +171,7 @@ Object.keys(queryExecutors).forEach((modelName) => {
     const executor = queryExecutors[modelName];
     if (executor.mode === 'graphql') {
         app.post(
-            `${rootDirectory}/api/query/${modelName}`,
+            getRootableUrl(`/api/query/${modelName}`),
             bodyParser.urlencoded({ extended: false }),
             async (req, res) => {
                 try {
@@ -189,7 +189,7 @@ Object.keys(queryExecutors).forEach((modelName) => {
             }
         );
     } else if (executor.mode === 'view') {
-        app.get(`${rootDirectory}/api/query/${modelName}`, async (req, res) => {
+        app.get(getRootableUrl(`/api/query/${modelName}`), async (req, res) => {
             try {
                 const aggregateIds = req.query.aggregateIds;
                 if (
@@ -218,9 +218,9 @@ const staticMiddleware =
             request(newurl).pipe(res);
         };
 
-app.use(`${rootDirectory}${STATIC_PATH}`, staticMiddleware);
+app.use(getRootableUrl(STATIC_PATH), staticMiddleware);
 
-app.get([`${rootDirectory}/*`, `${rootDirectory || '/'}`], async (req, res) => {
+app.get([getRootableUrl('/*'), getRootableUrl('/')], async (req, res) => {
     try {
         const state = await config.initialState(queryExecutors, {
             cookies: req.cookies,

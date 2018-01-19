@@ -1,11 +1,9 @@
 import url from 'url';
 
-export const rootDirectory = process.env.ROOT_DIR || '';
-
 export const defaultFailureCallback = (error, redirect, { resolve, body }) =>
     redirect(
         url.format({
-            pathname: `${rootDirectory}/login`,
+            pathname: '/login',
             query: { error }
         })
     );
