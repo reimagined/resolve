@@ -349,15 +349,21 @@ describe('Read model MongoDB adapter', () => {
             await disposePromise;
 
             expect(
-                (await testConnection
-                    .listCollections({ name: `${COLLECTIONS_PREFIX}${DEFAULT_DICTIONARY_NAME}` })
-                    .toArray()).length
+                (await performMongoOperation(
+                    testConnection.listCollections({
+                        name: `${COLLECTIONS_PREFIX}${DEFAULT_DICTIONARY_NAME}`
+                    }),
+                    'toArray'
+                )).length
             ).to.be.equal(0);
 
             expect(
-                (await testConnection
-                    .listCollections({ name: `${COLLECTIONS_PREFIX}${META_COLLECTION_NAME}` })
-                    .toArray()).length
+                (await performMongoOperation(
+                    testConnection.listCollections({
+                        name: `${COLLECTIONS_PREFIX}${META_COLLECTION_NAME}`
+                    }),
+                    'toArray'
+                )).length
             ).to.be.equal(0);
 
             expect(testConnection.close.callCount).to.be.equal(1);
