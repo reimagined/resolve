@@ -6,7 +6,7 @@ import fs from 'fs';
 import path from 'path';
 import config from '../../resolve.server.config.js';
 
-const DELAY = 10000;
+const TIMEOUT = 20000;
 let testcafe = null;
 
 const argv = yargs
@@ -24,13 +24,13 @@ getInstallations()
                 const runner = testcafe.createRunner();
                 const browser = argv.browser || Object.keys(browsers).slice(0, 1);
                 return runner
-                    .startApp('npm run dev', DELAY)
+                    .startApp('npm run dev', TIMEOUT)
                     .src(['./tests/functional/index.test.js'])
                     .browsers(browser)
                     .run({
-                        selectorTimeout: 20000,
-                        assertionTimeout: 10000,
-                        pageLoadTimeout: 10000
+                        selectorTimeout: TIMEOUT,
+                        assertionTimeout: TIMEOUT,
+                        pageLoadTimeout: TIMEOUT
                     });
             })
             .then((exitCode) => {
