@@ -17,7 +17,6 @@ describe('Read model MongoDB adapter', () => {
     };
 
     const constructStorage = () => new Map();
-
     let testRepository;
 
     beforeEach(async () => {
