@@ -1,15 +1,15 @@
 import 'regenerator-runtime/runtime';
-import { performMongoOperation } from './utils';
+import { invokeMongo } from './utils';
 
 async function disposeDatabase(metaCollection, collectionsPrefix, database) {
-    const collectionDescriptors = await performMongoOperation(metaCollection.find({}), 'toArray');
+    const collectionDescriptors = await invokeMongo(metaCollection.find({}), 'toArray');
 
     for (const { key } of collectionDescriptors) {
-        await performMongoOperation(database, 'dropCollection', `${collectionsPrefix}${key}`);
+        await invokeMongo(database, 'dropCollection', `${collectionsPrefix}${key}`);
     }
 
-    await performMongoOperation(metaCollection, 'drop');
-    await performMongoOperation(database, 'close');
+    await invokeMongo(metaCollection, 'drop');
+    await invokeMongo(database, 'close');
 }
 
 export default function reset(repository) {

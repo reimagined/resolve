@@ -1,4 +1,4 @@
-export function performMongoOperation(resource, operationName, ...inputArgs) {
+export function invokeMongo(resource, operationName, ...inputArgs) {
     return new Promise((resolve, reject) =>
         resource[operationName](
             ...inputArgs,

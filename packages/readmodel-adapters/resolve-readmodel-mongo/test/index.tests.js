@@ -7,7 +7,7 @@ import messages from '../src/messages';
 import buildProjection from '../src/build_projection';
 import init from '../src/init';
 import reset from '../src/reset';
-import { performMongoOperation } from '../src/utils';
+import { invokeMongo } from '../src/utils';
 
 describe('Read model MongoDB adapter', () => {
     const mongodb = require('mongo-mock');
@@ -48,15 +48,15 @@ describe('Read model MongoDB adapter', () => {
     });
 
     afterEach(async () => {
-        const existingCollections = await performMongoOperation(
+        const existingCollections = await invokeMongo(
             testConnection.listCollections({}),
             'toArray'
         );
 
         for (let { name } of existingCollections) {
             if (name.indexOf('system.') > -1) continue;
-            const collection = await performMongoOperation(testConnection, 'collection', name);
-            await performMongoOperation(collection, 'drop');
+            const collection = await invokeMongo(testConnection, 'collection', name);
+            await invokeMongo(collection, 'drop');
         }
 
         testRepository = null;
@@ -66,26 +66,26 @@ describe('Read model MongoDB adapter', () => {
         let readInstance;
 
         beforeEach(async () => {
-            const defaultCollection = await performMongoOperation(
+            const defaultCollection = await invokeMongo(
                 testConnection,
                 'collection',
                 `${COLLECTIONS_PREFIX}${DEFAULT_DICTIONARY_NAME}`
             );
 
             for (let field of Object.keys(DEFAULT_ENTRIES)) {
-                await performMongoOperation(defaultCollection, 'insert', {
+                await invokeMongo(defaultCollection, 'insert', {
                     field,
                     value: DEFAULT_ENTRIES[field]
                 });
             }
 
-            const metaCollection = await performMongoOperation(
+            const metaCollection = await invokeMongo(
                 testConnection,
                 'collection',
                 `${COLLECTIONS_PREFIX}${META_COLLECTION_NAME}`
             );
 
-            await performMongoOperation(metaCollection, 'insert', {
+            await invokeMongo(metaCollection, 'insert', {
                 key: DEFAULT_DICTIONARY_NAME,
                 lastTimestamp: 30
             });
@@ -276,9 +276,9 @@ describe('Read model MongoDB adapter', () => {
             });
 
             const storage = testRepository.storagesMap.get(DEFAULT_DICTIONARY_NAME);
-            const result = storage.get(FIELD_NAME);
+            const result = await invokeMongo(storage, 'findOne', { field: FIELD_NAME });
 
-            expect(result).to.be.deep.equal({ test: 'ok' });
+            expect(result.value).to.be.deep.equal({ test: 'ok' });
         });
 
         it('should process dictionary remove operation', async () => {
@@ -288,9 +288,9 @@ describe('Read model MongoDB adapter', () => {
             });
 
             const storage = testRepository.storagesMap.get(DEFAULT_DICTIONARY_NAME);
-            const result = storage.has(FIELD_NAME);
+            const result = await invokeMongo(storage, 'count', { field: FIELD_NAME });
 
-            expect(result).to.be.deep.equal(false);
+            expect(result).to.be.deep.equal(0);
         });
 
         it('should process dropping dictionary', async () => {
@@ -310,26 +310,26 @@ describe('Read model MongoDB adapter', () => {
         let defaultCollection;
 
         beforeEach(async () => {
-            defaultCollection = await performMongoOperation(
+            defaultCollection = await invokeMongo(
                 testConnection,
                 'collection',
                 `${COLLECTIONS_PREFIX}${DEFAULT_DICTIONARY_NAME}`
             );
 
             for (let field of Object.keys(DEFAULT_ENTRIES)) {
-                await performMongoOperation(defaultCollection, 'insert', {
+                await invokeMongo(defaultCollection, 'insert', {
                     field,
                     value: DEFAULT_ENTRIES[field]
                 });
             }
 
-            const metaCollection = await performMongoOperation(
+            const metaCollection = await invokeMongo(
                 testConnection,
                 'collection',
                 `${COLLECTIONS_PREFIX}${META_COLLECTION_NAME}`
             );
 
-            await performMongoOperation(metaCollection, 'insert', {
+            await invokeMongo(metaCollection, 'insert', {
                 key: DEFAULT_DICTIONARY_NAME,
                 lastTimestamp: 30
             });
@@ -349,7 +349,7 @@ describe('Read model MongoDB adapter', () => {
             await disposePromise;
 
             expect(
-                (await performMongoOperation(
+                (await invokeMongo(
                     testConnection.listCollections({
                         name: `${COLLECTIONS_PREFIX}${DEFAULT_DICTIONARY_NAME}`
                     }),
@@ -358,7 +358,7 @@ describe('Read model MongoDB adapter', () => {
             ).to.be.equal(0);
 
             expect(
-                (await performMongoOperation(
+                (await invokeMongo(
                     testConnection.listCollections({
                         name: `${COLLECTIONS_PREFIX}${META_COLLECTION_NAME}`
                     }),
