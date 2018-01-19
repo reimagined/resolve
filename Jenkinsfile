@@ -36,17 +36,18 @@ pipeline {
 
                     if ( env.CI_RELEASE_TYPE == 'beta' ) {
                         sh """
+                            echo registry=https://${env.NPM_ADDR_REMOTE} > /root/.npmrc; \
                             echo //${env.NPM_ADDR_REMOTE}/:_authToken=${env.NPM_TOKEN_REMOTE} >> /root/.npmrc; \
                             ./node_modules/.bin/lerna publish --canary --skip-git --force-publish=* --yes --repo-version \$(cat /lerna_version); \
-                            sleep 10
-                        """
-                    } else {
-                        sh """
-                            echo //${env.NPM_ADDR}/:_authToken=${env.NPM_TOKEN} >> /root/.npmrc; \
-                            ./node_modules/.bin/lerna publish --skip-git --force-publish=* --yes --repo-version \$(cat /lerna_version); \
-                            sleep 10
                         """
                     }
+
+                    sh """
+                        echo registry=http://${env.NPM_ADDR} > /root/.npmrc; \
+                        echo //${env.NPM_ADDR}/:_authToken=${env.NPM_TOKEN} >> /root/.npmrc; \
+                        ./node_modules/.bin/lerna publish --skip-git --force-publish=* --yes --repo-version \$(cat /lerna_version); \
+                        sleep 10
+                    """
                 }
             }
         }
