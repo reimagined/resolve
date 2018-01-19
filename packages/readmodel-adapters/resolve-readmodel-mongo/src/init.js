@@ -2,15 +2,35 @@ import 'regenerator-runtime/runtime';
 
 import messages from './messages';
 
+async function performMongoOperation(resource, operationName, ...inputArgs) {
+    return new Promise((resolve, reject) =>
+        resource[operationName](
+            ...inputArgs,
+            (err, result) => (!err ? resolve(result) : reject(err))
+        )
+    );
+}
+
+async function getMongodbCollection(repository, database, name) {
+    const fullName = `${repository.collectionsPrefix}${name}`;
+    return await performMongoOperation(database, 'collection', fullName);
+}
+
 async function syncronizeDatabase(repository, database) {
-    repository.metaCollection = await database.collection(
-        `${repository.collectionsPrefix}${repository.metaCollectionName}`
+    repository.metaCollection = await getMongodbCollection(
+        repository,
+        database,
+        repository.metaCollectionName
     );
 
-    const storageDescriptors = await repository.metaCollection.find({}).toArray();
+    const storageDescriptors = await performMongoOperation(
+        repository.metaCollection.find({}),
+        'toArray'
+    );
+
     for (const { key, lastTimestamp } of storageDescriptors) {
         repository.lastTimestamp = Math.max(repository.lastTimestamp, lastTimestamp);
-        const mongoCollection = await database.collection(`${repository.collectionsPrefix}${key}`);
+        const mongoCollection = await getMongodbCollection(repository, database, key);
         repository.storagesMap.set(key, mongoCollection);
     }
 
@@ -18,18 +38,29 @@ async function syncronizeDatabase(repository, database) {
 }
 
 async function setStorageTimestamp(repository, key) {
-    const lastTimestamp = repository.lastTimestamp;
-    await repository.metaCollection.update({ key }, { $set: { lastTimestamp } });
+    await performMongoOperation(
+        repository.metaCollection,
+        'update',
+        { key },
+        { $set: { lastTimestamp: repository.lastTimestamp } }
+    );
 }
 
 async function createMongoCollection(repository, key) {
     const database = await repository.connectionPromise;
-    const mongoCollection = await database.collection(key);
+    const mongoCollection = await getMongodbCollection(repository, database, key);
     repository.storagesMap.set(key, mongoCollection);
 
-    await mongoCollection.createIndex({ field: 1 }, { unique: true });
+    await performMongoOperation(mongoCollection, 'createIndex', { field: 1 }, { unique: true });
 
-    await repository.metaCollection.update({ key }, { key }, { upsert: true });
+    await performMongoOperation(
+        repository.metaCollection,
+        'update',
+        { key },
+        { key },
+        { upsert: true }
+    );
+
     await setStorageTimestamp(repository, key);
 
     return mongoCollection;
@@ -47,7 +78,7 @@ function getStoreInterface(repository, isWriteable) {
                 mongoCollection = await createMongoCollection(repository, key);
             }
 
-            const entry = await mongoCollection.findOne({ field });
+            const entry = await performMongoOperation(mongoCollection, 'findOne', { field });
             return entry ? entry.value : null;
         },
 
@@ -67,20 +98,26 @@ function getStoreInterface(repository, isWriteable) {
                 : await createMongoCollection(repository, key);
 
             if (value === null || value === undefined) {
-                await mongoCollection.remove({ field });
+                await performMongoOperation(mongoCollection, 'remove', { field });
                 return;
             }
 
-            await mongoCollection.update({ field }, { field, value }, { multi: true });
+            await performMongoOperation(
+                mongoCollection,
+                'update',
+                { field },
+                { field, value },
+                { multi: true }
+            );
 
             await setStorageTimestamp(repository, key);
         };
 
         storeIface.del = async (key) => {
             const database = await repository.connectionPromise;
-            await database.dropCollection(key);
+            await performMongoOperation(database, 'dropCollection', key);
 
-            await repository.metaCollection.remove({ key: key });
+            await performMongoOperation(repository.metaCollection, 'remove', { key: key });
 
             repository.storagesMap.delete(key);
         };
