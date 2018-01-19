@@ -351,6 +351,28 @@ The `resolve.server.config.js` file contains information for the reSolve library
 	  }
 	}
 	```
+	
+ * #### entries.ssrMode
+ 
+    Specifies a server-side rendering mode.
+    
+    ##### Possible values
+    
+    * `none` - disables server-side rendering. This value is used as a default value
+    * `production-only` - enables server-side rendering only if `NODE_ENV` is `production`
+    * `always` - enables server-side rendering always
+    
+    ##### Example
+    In this example, we enable a server-side rendering for production only.
+    
+    ###### resolve.server.config.js
+    ```js
+    export default {
+      entries: {
+        ssrMode: 'production-only'
+      }
+    }
+    ```
 
  * #### initialSubscribedEvents
 	
