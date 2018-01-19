@@ -27,7 +27,11 @@ getInstallations()
                     .startApp('npm run dev', DELAY)
                     .src(['./tests/functional/index.test.js'])
                     .browsers(browser)
-                    .run();
+                    .run({
+                        selectorTimeout: 20000,
+                        assertionTimeout: 10000,
+                        pageLoadTimeout: 10000
+                    });
             })
             .then((exitCode) => {
                 testcafe.close();
