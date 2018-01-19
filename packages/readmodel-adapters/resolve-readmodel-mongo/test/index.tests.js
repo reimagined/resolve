@@ -39,7 +39,7 @@ describe('Read model MongoDB adapter', () => {
     });
 
     beforeEach(async () => {
-        testConnection.close = sinon.spy();
+        testConnection.close = sinon.stub().callsFake(callback => callback(null));
         testRepository = {
             connectDatabase: async () => testConnection,
             metaCollectionName: META_COLLECTION_NAME,
