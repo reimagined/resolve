@@ -4,17 +4,9 @@ import messages from './messages';
 
 const DICTIONARY_TYPE = 'Dictionary';
 
-function getStorageContent(repository, storageName) {
-    const storage = repository.storagesMap.get(storageName);
-    if (!storage || !storage.content || !storage.type) {
-        return null;
-    }
-    return storage.content;
-}
-
 function getStorageType(repository, storageName) {
     const storage = repository.storagesMap.get(storageName);
-    if (!storage || !storage.content || !storage.type) {
+    if (!storage || !storage.type) {
         return null;
     }
     return storage.type;
@@ -27,14 +19,16 @@ async function createStorage(repository, storageType, isWriteable, storageName) 
 
     const existingStorageType = getStorageType(repository, storageName);
     if (existingStorageType) {
-        throw new Error(messages.storageRecreation(storageType, existingStorageType));
+        throw new Error(messages.storageRecreation(existingStorageType, storageName));
     }
 
     const storage = { type: storageType };
     repository.storagesMap.set(storageName, storage);
 
-    if (storageType === DICTIONARY_TYPE) {
-        storage.content = await repository.constructStorage(DICTIONARY_TYPE);
+    switch (storageType) { // eslint-disable-line default-case
+        case DICTIONARY_TYPE:
+            storage.content = await repository.constructStorage(DICTIONARY_TYPE);
+            break;
     }
 }
 
@@ -48,7 +42,7 @@ function validateAndGetStorage(repository, storageType, storageName) {
         throw new Error(messages.wrongStorageType(storageName, existingStorageType, storageType));
     }
 
-    return getStorageContent(repository, storageName);
+    return repository.storagesMap.get(storageName).content;
 }
 
 async function raiseReadOperationError(storageType, storageName, operation) {
@@ -111,11 +105,13 @@ async function dropStorage(repository, isWriteable, storageName) {
         throw new Error(messages.unexistingStorage(null, storageName));
     }
 
-    const content = getStorageContent(repository, storageName);
+    const content = repository.storagesMap.get(storageName).content;
     repository.storagesMap.delete(storageName);
 
-    if (existingStorageType === DICTIONARY_TYPE) {
-        content.clear();
+    switch (existingStorageType) { // eslint-disable-line default-case
+        case DICTIONARY_TYPE:
+            content.clear();
+            break;
     }
 }
 

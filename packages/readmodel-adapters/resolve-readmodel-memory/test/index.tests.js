@@ -223,6 +223,18 @@ describe('Read model MongoDB adapter', () => {
                     }
                 },
 
+                EventRecreateStore: async (store) => {
+                    await store.createDictionary(DEFAULT_DICTIONARY_NAME);
+                },
+
+                EventMisuseStore: async (store) => {
+                    await store.dictionary('CUSTOM_STORAGE');
+                },
+
+                EventWrongDropStore: async (store) => {
+                    await store.drop('WRONG_STORAGE');
+                },
+
                 EventDictionarySet: async (store) => {
                     const dictionary = await store.dictionary(DEFAULT_DICTIONARY_NAME);
                     await dictionary.set(FIELD_NAME, { test: 'fail' });
@@ -238,6 +250,11 @@ describe('Read model MongoDB adapter', () => {
 
             builtTestProjection = buildProjection(testRepository, originalTestProjection);
             readInstance = init(testRepository);
+
+            testRepository.storagesMap.set('CUSTOM_STORAGE', {
+                type: 'CUSTOM_TYPE',
+                content: null
+            });
         });
 
         afterEach(async () => {
@@ -297,6 +314,51 @@ describe('Read model MongoDB adapter', () => {
 
                 lastError = await readInstance.getError();
                 expect(lastError.message).to.be.equal('Storages is equal');
+            });
+
+            it('should fail on recreation storage attempt', async () => {
+                let lastError = await readInstance.getError();
+                expect(lastError).to.be.equal(null);
+
+                await builtTestProjection.EventRecreateStore({
+                    type: 'EventRecreateStore',
+                    timestamp: 10
+                });
+
+                lastError = await readInstance.getError();
+                expect(lastError.message).to.be.equal(
+                    messages.storageRecreation(DICTIONARY_TYPE, DEFAULT_DICTIONARY_NAME)
+                );
+            });
+
+            it('should fail on wrong storage use with mismatch type attempt', async () => {
+                let lastError = await readInstance.getError();
+                expect(lastError).to.be.equal(null);
+
+                await builtTestProjection.EventMisuseStore({
+                    type: 'EventMisuseStore',
+                    timestamp: 10
+                });
+
+                lastError = await readInstance.getError();
+                expect(lastError.message).to.be.equal(
+                    messages.wrongStorageType('CUSTOM_STORAGE', 'CUSTOM_TYPE', DICTIONARY_TYPE)
+                );
+            });
+
+            it('should fail on dropping unexisting storage', async () => {
+                let lastError = await readInstance.getError();
+                expect(lastError).to.be.equal(null);
+
+                await builtTestProjection.EventWrongDropStore({
+                    type: 'EventWrongDropStore',
+                    timestamp: 10
+                });
+
+                lastError = await readInstance.getError();
+                expect(lastError.message).to.be.equal(
+                    messages.unexistingStorage(null, 'WRONG_STORAGE')
+                );
             });
         });
 
