@@ -7,20 +7,12 @@ import messages from '../src/messages';
 import buildProjection from '../src/build_projection';
 import init from '../src/init';
 import reset from '../src/reset';
+import { performMongoOperation } from '../src/utils';
 
 describe('Read model MongoDB adapter', () => {
     const mongodb = require('mongo-mock');
     mongodb.max_delay = 0;
     const MongoClient = mongodb.MongoClient;
-
-    async function performMongoOperation(resource, operationName, ...inputArgs) {
-        return new Promise((resolve, reject) =>
-            resource[operationName](
-                ...inputArgs,
-                (err, result) => (!err ? resolve(result) : reject(err))
-            )
-        );
-    }
 
     const META_COLLECTION_NAME = '__MetaCollection__';
     const COLLECTIONS_PREFIX = '_Prefix_';

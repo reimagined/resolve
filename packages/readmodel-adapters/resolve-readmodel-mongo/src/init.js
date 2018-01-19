@@ -1,15 +1,6 @@
 import 'regenerator-runtime/runtime';
-
 import messages from './messages';
-
-async function performMongoOperation(resource, operationName, ...inputArgs) {
-    return new Promise((resolve, reject) =>
-        resource[operationName](
-            ...inputArgs,
-            (err, result) => (!err ? resolve(result) : reject(err))
-        )
-    );
-}
+import { performMongoOperation } from './utils';
 
 async function getMongodbCollection(repository, database, name) {
     const fullName = `${repository.collectionsPrefix}${name}`;
