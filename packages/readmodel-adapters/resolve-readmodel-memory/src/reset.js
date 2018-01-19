@@ -7,11 +7,11 @@ export default function reset(repository) {
 
     const disposePromise = Promise.all(
         Array.from(repository.storagesMap.keys()).map(repository.writeInterface.drop.bind(null))
+    ).then(() =>
+        Object.keys(repository).forEach((key) => {
+            delete repository[key];
+        })
     );
-
-    Object.keys(repository).forEach((key) => {
-        delete repository[key];
-    });
 
     repository.disposePromise = disposePromise;
     return disposePromise;

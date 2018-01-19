@@ -4,7 +4,7 @@ import messages from './messages';
 
 const DICTIONARY_TYPE = 'Dictionary';
 
-function getStorageType(repository, storageName) {
+async function getStorageType(repository, storageName) {
     const storage = repository.storagesMap.get(storageName);
     if (!storage || !storage.type) {
         return null;
@@ -12,12 +12,19 @@ function getStorageType(repository, storageName) {
     return storage.type;
 }
 
+async function getStorageContent(repository, storageName) {
+    return (
+        (await getStorageType(repository, storageName)) &&
+        repository.storagesMap.get(storageName).content
+    );
+}
+
 async function createStorage(repository, storageType, isWriteable, storageName) {
     if (!isWriteable) {
         throw new Error(messages.readSideForbiddenOperation(storageType, 'create', storageName));
     }
 
-    const existingStorageType = getStorageType(repository, storageName);
+    const existingStorageType = await getStorageType(repository, storageName);
     if (existingStorageType) {
         throw new Error(messages.storageRecreation(existingStorageType, storageName));
     }
@@ -32,8 +39,8 @@ async function createStorage(repository, storageType, isWriteable, storageName) 
     }
 }
 
-function validateAndGetStorage(repository, storageType, storageName) {
-    const existingStorageType = getStorageType(repository, storageName);
+async function validateAndGetStorage(repository, storageType, storageName) {
+    const existingStorageType = await getStorageType(repository, storageName);
     if (!existingStorageType) {
         throw new Error(messages.unexistingStorage(storageType, storageName));
     }
@@ -42,7 +49,7 @@ function validateAndGetStorage(repository, storageType, storageName) {
         throw new Error(messages.wrongStorageType(storageName, existingStorageType, storageType));
     }
 
-    return repository.storagesMap.get(storageName).content;
+    return await getStorageContent(repository, storageName);
 }
 
 async function raiseReadOperationError(storageType, storageName, operation) {
@@ -58,7 +65,7 @@ async function getDictionaryInterface(repository, isWriteable, dictionaryName) {
     }
 
     const raizeAccessError = raiseReadOperationError.bind(null, DICTIONARY_TYPE, dictionaryName);
-    validateAndGetStorage(repository, DICTIONARY_TYPE, dictionaryName);
+    await validateAndGetStorage(repository, DICTIONARY_TYPE, dictionaryName);
 
     const dictionaryIface = {
         exists: async (storage, key) => storage.has(key),
@@ -75,7 +82,11 @@ async function getDictionaryInterface(repository, isWriteable, dictionaryName) {
     for (let operation of Object.keys(dictionaryIface)) {
         const operationHandler = dictionaryIface[operation];
         dictionaryIface[operation] = async (...args) => {
-            const storage = validateAndGetStorage(repository, DICTIONARY_TYPE, dictionaryName);
+            const storage = await validateAndGetStorage(
+                repository,
+                DICTIONARY_TYPE,
+                dictionaryName
+            );
             return await operationHandler(storage, ...args);
         };
     }
@@ -85,14 +96,19 @@ async function getDictionaryInterface(repository, isWriteable, dictionaryName) {
 }
 
 async function listStorages(repository) {
-    return Array.from(repository.storagesMap.keys()).map(storageName => ({
-        name: storageName,
-        type: getStorageType(repository, storageName)
-    }));
+    const resultList = [];
+    for (let storageName of repository.storagesMap.keys()) {
+        resultList.push({
+            name: storageName,
+            type: await getStorageType(repository, storageName)
+        });
+    }
+
+    return resultList;
 }
 
 async function existsStorage(repository, storageName) {
-    return !!getStorageType(repository, storageName);
+    return !!await getStorageType(repository, storageName);
 }
 
 async function dropStorage(repository, isWriteable, storageName) {
@@ -100,12 +116,12 @@ async function dropStorage(repository, isWriteable, storageName) {
         throw new Error(messages.readSideForbiddenOperation(null, 'drop', storageName));
     }
 
-    const existingStorageType = getStorageType(repository, storageName);
+    const existingStorageType = await getStorageType(repository, storageName);
     if (!existingStorageType) {
         throw new Error(messages.unexistingStorage(null, storageName));
     }
 
-    const content = repository.storagesMap.get(storageName).content;
+    const content = await getStorageContent(repository, storageName);
     repository.storagesMap.delete(storageName);
 
     switch (existingStorageType) { // eslint-disable-line default-case
