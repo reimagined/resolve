@@ -296,6 +296,25 @@ describe('Read model MongoDB adapter', () => {
         });
 
         it('should process dictionary get operation with key autocreation', async () => {
+            const originalTimestamp = await testRepository.metaCollection.findOne(
+                {
+                    type: 'LastTimestamp'
+                },
+                { _id: 0 }
+            );
+
+            const originalDescriptor = await testRepository.metaCollection.findOne(
+                {
+                    type: 'StorageDescriptor',
+                    key: 'NEW_DICTIONARY'
+                },
+                { _id: 0 }
+            );
+
+            expect(originalTimestamp).to.be.deep.equal(null);
+
+            expect(originalDescriptor).to.be.deep.equal(null);
+
             await builtTestProjection.EventDictionaryGet({
                 type: 'EventDictionaryGet',
                 timestamp: 10
@@ -303,6 +322,31 @@ describe('Read model MongoDB adapter', () => {
 
             const storageExists = testRepository.storagesMap.has('NEW_DICTIONARY');
             expect(storageExists).to.be.equal(true);
+
+            const resultTimestamp = await testRepository.metaCollection.findOne(
+                {
+                    type: 'LastTimestamp'
+                },
+                { _id: 0 }
+            );
+
+            const resultDescriptor = await testRepository.metaCollection.findOne(
+                {
+                    type: 'StorageDescriptor',
+                    key: 'NEW_DICTIONARY'
+                },
+                { _id: 0 }
+            );
+
+            expect(resultTimestamp).to.be.deep.equal({
+                type: 'LastTimestamp',
+                value: 10
+            });
+
+            expect(resultDescriptor).to.be.deep.equal({
+                type: 'StorageDescriptor',
+                key: 'NEW_DICTIONARY'
+            });
         });
 
         it('should process dictionary set operation', async () => {
