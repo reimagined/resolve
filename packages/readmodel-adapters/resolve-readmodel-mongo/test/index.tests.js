@@ -7,12 +7,13 @@ import messages from '../src/messages';
 import buildProjection from '../src/build_projection';
 import init from '../src/init';
 import reset from '../src/reset';
-import { invokeMongo } from '../src/utils';
+
+import { MongoClient } from 'mongodb';
 
 describe('Read model MongoDB adapter', () => {
-    const mongodb = require('mongo-mock');
-    mongodb.max_delay = 0;
-    const MongoClient = mongodb.MongoClient;
+    // const mongodb = require('mongo-mock');
+    // mongodb.max_delay = 0;
+    // const MongoClient = mongodb.MongoClient;
 
     const META_COLLECTION_NAME = '__MetaCollection__';
     const COLLECTIONS_PREFIX = '_Prefix_';
@@ -29,27 +30,27 @@ describe('Read model MongoDB adapter', () => {
     let testRepository;
 
     beforeAll(async () => {
-        testConnection = await MongoClient.connect('mongodb://fake-url:27017/fake-db');
-        const originalCollection = testConnection.collection;
+        testConnection = await MongoClient.connect('mongodb://127.0.0.1:27017/MongoAdapterTest');
+        // const originalCollection = testConnection.collection;
 
-        testConnection.collection = (...args) => {
-            const collectionIface = originalCollection(...args);
-            const originalUpdate = collectionIface.update;
+        // testConnection.collection = (...args) => {
+        //     const collectionIface = originalCollection(...args);
+        //     const originalUpdate = collectionIface.update;
 
-            collectionIface.update = (...inArgs) => {
-                if (!(inArgs.length === 4 && inArgs[2].upsert)) {
-                    originalUpdate(...inArgs);
-                    return;
-                }
+        //     collectionIface.update = (...inArgs) => {
+        //         if (!(inArgs.length === 4 && inArgs[2].upsert)) {
+        //             originalUpdate(...inArgs);
+        //             return;
+        //         }
 
-                collectionIface.remove(inArgs[0], (firstError) => {
-                    collectionIface.insert(inArgs[1], (secondError) => {
-                        inArgs[3](firstError || secondError || null);
-                    });
-                });
-            };
-            return collectionIface;
-        };
+        //         collectionIface.remove(inArgs[0], (firstError) => {
+        //             collectionIface.insert(inArgs[1], (secondError) => {
+        //                 inArgs[3](firstError || secondError || null);
+        //             });
+        //         });
+        //     };
+        //     return collectionIface;
+        // };
 
         testConnectionCloser = testConnection.close.bind(testConnection);
     });
@@ -60,7 +61,7 @@ describe('Read model MongoDB adapter', () => {
     });
 
     beforeEach(async () => {
-        testConnection.close = sinon.stub().callsFake(callback => callback(null));
+        testConnection.close = sinon.stub();
         testRepository = {
             connectDatabase: async () => testConnection,
             metaCollectionName: META_COLLECTION_NAME,
@@ -69,15 +70,12 @@ describe('Read model MongoDB adapter', () => {
     });
 
     afterEach(async () => {
-        const existingCollections = await invokeMongo(
-            testConnection.listCollections({}),
-            'toArray'
-        );
+        const existingCollections = await testConnection.listCollections({}).toArray();
 
         for (let { name } of existingCollections) {
             if (name.indexOf('system.') > -1) continue;
-            const collection = await invokeMongo(testConnection, 'collection', name);
-            await invokeMongo(collection, 'drop');
+            const collection = await testConnection.collection(name);
+            await collection.drop();
         }
 
         testRepository = null;
@@ -87,26 +85,22 @@ describe('Read model MongoDB adapter', () => {
         let readInstance;
 
         beforeEach(async () => {
-            const defaultCollection = await invokeMongo(
-                testConnection,
-                'collection',
+            const defaultCollection = await testConnection.collection(
                 `${COLLECTIONS_PREFIX}${DEFAULT_DICTIONARY_NAME}`
             );
 
             for (let field of Object.keys(DEFAULT_ENTRIES)) {
-                await invokeMongo(defaultCollection, 'insert', {
+                await defaultCollection.insert({
                     field,
                     value: DEFAULT_ENTRIES[field]
                 });
             }
 
-            const metaCollection = await invokeMongo(
-                testConnection,
-                'collection',
+            const metaCollection = await testConnection.collection(
                 `${COLLECTIONS_PREFIX}${META_COLLECTION_NAME}`
             );
 
-            await invokeMongo(metaCollection, 'insert', {
+            await metaCollection.insert({
                 key: DEFAULT_DICTIONARY_NAME,
                 lastTimestamp: 30
             });
@@ -297,7 +291,7 @@ describe('Read model MongoDB adapter', () => {
             });
 
             const storage = testRepository.storagesMap.get(DEFAULT_DICTIONARY_NAME);
-            const result = await invokeMongo(storage, 'findOne', { field: FIELD_NAME });
+            const result = await storage.findOne({ field: FIELD_NAME });
 
             expect(result.value).to.be.deep.equal({ test: 'ok' });
         });
@@ -309,7 +303,7 @@ describe('Read model MongoDB adapter', () => {
             });
 
             const storage = testRepository.storagesMap.get(DEFAULT_DICTIONARY_NAME);
-            const result = await invokeMongo(storage, 'count', { field: FIELD_NAME });
+            const result = await storage.count({ field: FIELD_NAME });
 
             expect(result).to.be.deep.equal(0);
         });
@@ -331,26 +325,22 @@ describe('Read model MongoDB adapter', () => {
         let defaultCollection;
 
         beforeEach(async () => {
-            defaultCollection = await invokeMongo(
-                testConnection,
-                'collection',
+            defaultCollection = testConnection.collection(
                 `${COLLECTIONS_PREFIX}${DEFAULT_DICTIONARY_NAME}`
             );
 
             for (let field of Object.keys(DEFAULT_ENTRIES)) {
-                await invokeMongo(defaultCollection, 'insert', {
+                await defaultCollection.insert({
                     field,
                     value: DEFAULT_ENTRIES[field]
                 });
             }
 
-            const metaCollection = await invokeMongo(
-                testConnection,
-                'collection',
+            const metaCollection = await testConnection.collection(
                 `${COLLECTIONS_PREFIX}${META_COLLECTION_NAME}`
             );
 
-            await invokeMongo(metaCollection, 'insert', {
+            await metaCollection.insert({
                 key: DEFAULT_DICTIONARY_NAME,
                 lastTimestamp: 30
             });
@@ -370,21 +360,19 @@ describe('Read model MongoDB adapter', () => {
             await disposePromise;
 
             expect(
-                (await invokeMongo(
-                    testConnection.listCollections({
+                (await testConnection
+                    .listCollections({
                         name: `${COLLECTIONS_PREFIX}${DEFAULT_DICTIONARY_NAME}`
-                    }),
-                    'toArray'
-                )).length
+                    })
+                    .toArray()).length
             ).to.be.equal(0);
 
             expect(
-                (await invokeMongo(
-                    testConnection.listCollections({
+                (await testConnection
+                    .listCollections({
                         name: `${COLLECTIONS_PREFIX}${META_COLLECTION_NAME}`
-                    }),
-                    'toArray'
-                )).length
+                    })
+                    .toArray()).length
             ).to.be.equal(0);
 
             expect(testConnection.close.callCount).to.be.equal(1);

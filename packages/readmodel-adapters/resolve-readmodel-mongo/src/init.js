@@ -1,10 +1,9 @@
 import 'regenerator-runtime/runtime';
 import messages from './messages';
-import { invokeMongo } from './utils';
 
 async function getMongodbCollection(repository, database, name) {
     const fullName = `${repository.collectionsPrefix}${name}`;
-    return await invokeMongo(database, 'collection', fullName);
+    return await database.collection(fullName);
 }
 
 async function syncronizeDatabase(repository, database) {
@@ -14,7 +13,7 @@ async function syncronizeDatabase(repository, database) {
         repository.metaCollectionName
     );
 
-    const storageDescriptors = await invokeMongo(repository.metaCollection.find({}), 'toArray');
+    const storageDescriptors = await repository.metaCollection.find({}).toArray();
 
     for (const { key, lastTimestamp } of storageDescriptors) {
         repository.lastTimestamp = Math.max(repository.lastTimestamp, lastTimestamp);
@@ -26,9 +25,7 @@ async function syncronizeDatabase(repository, database) {
 }
 
 async function setStorageTimestamp(repository, key) {
-    await invokeMongo(
-        repository.metaCollection,
-        'update',
+    await repository.metaCollection.update(
         { key },
         { $set: { lastTimestamp: repository.lastTimestamp } }
     );
@@ -39,9 +36,9 @@ async function createMongoCollection(repository, key) {
     const mongoCollection = await getMongodbCollection(repository, database, key);
     repository.storagesMap.set(key, mongoCollection);
 
-    await invokeMongo(mongoCollection, 'createIndex', { field: 1 }, { unique: true });
+    await mongoCollection.createIndex({ field: 1 }, { unique: true });
 
-    await invokeMongo(repository.metaCollection, 'update', { key }, { key }, { upsert: true });
+    await repository.metaCollection.update({ key }, { key }, { upsert: true });
 
     await setStorageTimestamp(repository, key);
 
@@ -60,7 +57,7 @@ function getStoreInterface(repository, isWriteable) {
                 mongoCollection = await createMongoCollection(repository, key);
             }
 
-            const entry = await invokeMongo(mongoCollection, 'findOne', { field });
+            const entry = await mongoCollection.findOne({ field });
             return entry ? entry.value : null;
         },
 
@@ -80,17 +77,11 @@ function getStoreInterface(repository, isWriteable) {
                 : await createMongoCollection(repository, key);
 
             if (value === null || value === undefined) {
-                await invokeMongo(mongoCollection, 'remove', { field });
+                await mongoCollection.remove({ field });
                 return;
             }
 
-            await invokeMongo(
-                mongoCollection,
-                'update',
-                { field },
-                { field, value },
-                { upsert: true }
-            );
+            await mongoCollection.update({ field }, { field, value }, { upsert: true });
 
             await setStorageTimestamp(repository, key);
         };
@@ -101,8 +92,8 @@ function getStoreInterface(repository, isWriteable) {
                 return;
             }
 
-            await invokeMongo(mongoCollection, 'drop');
-            await invokeMongo(repository.metaCollection, 'remove', { key: key });
+            await mongoCollection.drop();
+            await repository.metaCollection.remove({ key: key });
 
             repository.storagesMap.delete(key);
         };
