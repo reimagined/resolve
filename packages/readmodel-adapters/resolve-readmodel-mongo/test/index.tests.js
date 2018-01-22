@@ -347,19 +347,9 @@ describe('Read model MongoDB adapter', () => {
 
     describe('Disposing adapter with reset function', () => {
         let readInstance;
-        let defaultCollection;
 
         beforeEach(async () => {
-            defaultCollection = await testConnection.collection(
-                `${COLLECTIONS_PREFIX}${DEFAULT_DICTIONARY_NAME}`
-            );
-
-            for (let field of Object.keys(DEFAULT_ENTRIES)) {
-                await defaultCollection.insert({
-                    field,
-                    value: DEFAULT_ENTRIES[field]
-                });
-            }
+            await testConnection.collection(`${COLLECTIONS_PREFIX}${DEFAULT_DICTIONARY_NAME}`);
 
             const metaCollection = await testConnection.collection(
                 `${COLLECTIONS_PREFIX}${META_COLLECTION_NAME}`
@@ -367,7 +357,7 @@ describe('Read model MongoDB adapter', () => {
 
             await metaCollection.insert({
                 key: DEFAULT_DICTIONARY_NAME,
-                lastTimestamp: 30
+                lastTimestamp: 0
             });
 
             readInstance = init(testRepository);
@@ -376,7 +366,6 @@ describe('Read model MongoDB adapter', () => {
         });
 
         afterEach(async () => {
-            defaultCollection = null;
             readInstance = null;
         });
 
