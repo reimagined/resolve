@@ -36,29 +36,15 @@ describe('Read model MongoDB adapter', () => {
             const voidExecutor = (resolve, reject, err) => (!err ? resolve() : reject(err));
             const voidWrapper = (oper, args, resolve, reject) =>
                 originalDb[oper](...args, voidExecutor.bind(null, resolve, reject));
-
+            const toArrayImpl = searchPattern =>
+                new Promise((resolve, reject) =>
+                    originalDb.find(
+                        searchPattern,
+                        (err, docs) => (!err ? resolve(docs) : reject(err))
+                    )
+                );
             return {
-                find: (...args) => {
-                    const operations = [{ oper: 'find', args }];
-                    const result = {
-                        async toArray() {
-                            const result = operations.reduce(
-                                (acc, { oper, args }) => acc[oper](...args),
-                                originalDb
-                            );
-                            return new Promise((resolve, reject) =>
-                                result.exec((err, docs) => (!err ? resolve(docs) : reject(err)))
-                            );
-                        }
-                    };
-                    ['sort', 'skip', 'limit', 'projection'].forEach((oper) => {
-                        result[oper] = (...inargs) => {
-                            operations.push({ oper, args: inargs });
-                            return result;
-                        };
-                    });
-                    return result;
-                },
+                find: searchPattern => ({ toArray: toArrayImpl.bind(null, searchPattern) }),
                 findOne: (...args) => new Promise(unaryWrapper.bind(null, 'findOne', args)),
                 count: (...args) => new Promise(unaryWrapper.bind(null, 'count', args)),
                 insert: (...args) => new Promise(voidWrapper.bind(null, 'insert', args)),
@@ -73,8 +59,15 @@ describe('Read model MongoDB adapter', () => {
                             }
                         ])
                     ),
-                removeIndex: (...args) => new Promise(voidWrapper.bind(null, 'removeIndex', args)),
+                dropIndex: (...args) => new Promise(voidWrapper.bind(null, 'removeIndex', args)),
                 drop: async () => {
+                    await new Promise((resolve, reject) =>
+                        storedCollections[collectionName].remove(
+                            {},
+                            { multi: true },
+                            err => (!err ? resolve() : reject(err))
+                        )
+                    );
                     delete storedCollections[collectionName];
                 }
             };
@@ -88,7 +81,9 @@ describe('Read model MongoDB adapter', () => {
                 return storedCollections[name];
             },
             async dropCollection(name) {
-                delete storedCollections[name];
+                if (storedCollections[name]) {
+                    await storedCollections[name].drop();
+                }
             },
             close: sinon.stub()
         };
