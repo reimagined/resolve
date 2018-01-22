@@ -63,7 +63,7 @@ function getStoreInterface(repository, isWriteable) {
 
             if (!repository.storagesMap.has(key)) {
                 if (!isWriteable) {
-                    throw new Error(messages.unexistingStorage(key));
+                    return null;
                 }
                 mongoCollection = await createMongoCollection(repository, key);
             }

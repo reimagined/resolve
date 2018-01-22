@@ -7,7 +7,7 @@ function getStoreInterface(repository, isWriteable) {
         hget: async (key, field) => {
             if (!repository.storagesMap.has(key)) {
                 if (!isWriteable) {
-                    throw new Error(messages.unexistingStorage(key));
+                    return null;
                 }
 
                 repository.storagesMap.set(key, repository.constructStorage());
