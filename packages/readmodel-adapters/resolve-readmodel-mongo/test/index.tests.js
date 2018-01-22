@@ -121,9 +121,10 @@ describe('Read model MongoDB adapter', () => {
             );
 
             await metaCollection.insert({
-                key: DEFAULT_DICTIONARY_NAME,
-                lastTimestamp: 30
+                type: 'StorageDescriptor',
+                key: DEFAULT_DICTIONARY_NAME
             });
+            await metaCollection.insert({ type: 'LastTimestamp', value: 30 });
 
             readInstance = init(testRepository);
         });
@@ -351,9 +352,10 @@ describe('Read model MongoDB adapter', () => {
             );
 
             await metaCollection.insert({
-                key: DEFAULT_DICTIONARY_NAME,
-                lastTimestamp: 0
+                type: 'StorageDescriptor',
+                key: DEFAULT_DICTIONARY_NAME
             });
+            await metaCollection.insert({ type: 'LastTimestamp', value: 0 });
 
             readInstance = init(testRepository);
 

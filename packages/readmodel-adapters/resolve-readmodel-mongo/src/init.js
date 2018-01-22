@@ -6,6 +6,14 @@ async function getMongodbCollection(repository, database, name) {
     return await database.collection(fullName);
 }
 
+async function setRepositoryTimestamp(repository, key) {
+    await repository.metaCollection.update(
+        { type: 'LastTimestamp' },
+        { type: 'LastTimestamp', value: repository.lastTimestamp },
+        { upsert: true, multi: true }
+    );
+}
+
 async function syncronizeDatabase(repository, database) {
     repository.metaCollection = await getMongodbCollection(
         repository,
@@ -13,22 +21,27 @@ async function syncronizeDatabase(repository, database) {
         repository.metaCollectionName
     );
 
-    const storageDescriptors = await repository.metaCollection.find({}).toArray();
+    const storageDescriptors = await repository.metaCollection
+        .find({ type: 'StorageDescriptor' })
+        .toArray();
 
-    for (const { key, lastTimestamp } of storageDescriptors) {
-        repository.lastTimestamp = Math.max(repository.lastTimestamp, lastTimestamp);
+    const lastTimestampDescriptor = await repository.metaCollection.findOne({
+        type: 'LastTimestamp'
+    });
+
+    for (const { key } of storageDescriptors) {
         const mongoCollection = await getMongodbCollection(repository, database, key);
         repository.storagesMap.set(key, mongoCollection);
     }
 
-    return database;
-}
+    if (lastTimestampDescriptor == null) {
+        repository.lastTimestamp = 0;
+        await setRepositoryTimestamp(repository);
+    } else {
+        repository.lastTimestamp = lastTimestampDescriptor.value;
+    }
 
-async function setStorageTimestamp(repository, key) {
-    await repository.metaCollection.update(
-        { key },
-        { $set: { lastTimestamp: repository.lastTimestamp } }
-    );
+    return database;
 }
 
 async function createMongoCollection(repository, key) {
@@ -37,10 +50,8 @@ async function createMongoCollection(repository, key) {
     repository.storagesMap.set(key, mongoCollection);
 
     await mongoCollection.createIndex({ field: 1 }, { unique: true });
-
-    await repository.metaCollection.update({ key }, { key }, { upsert: true });
-
-    await setStorageTimestamp(repository, key);
+    await repository.metaCollection.insert({ type: 'StorageDescriptor', key });
+    await setRepositoryTimestamp(repository);
 
     return mongoCollection;
 }
@@ -83,7 +94,7 @@ function getStoreInterface(repository, isWriteable) {
 
             await mongoCollection.update({ field }, { field, value }, { upsert: true });
 
-            await setStorageTimestamp(repository, key);
+            await setRepositoryTimestamp(repository);
         };
 
         storeIface.del = async (key) => {
@@ -93,7 +104,8 @@ function getStoreInterface(repository, isWriteable) {
             }
 
             await mongoCollection.drop();
-            await repository.metaCollection.remove({ key: key });
+            await repository.metaCollection.remove({ type: 'StorageDescriptor', key });
+            await setRepositoryTimestamp(repository);
 
             repository.storagesMap.delete(key);
         };
