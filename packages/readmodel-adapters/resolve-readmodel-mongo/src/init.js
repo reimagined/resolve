@@ -7,11 +7,6 @@ async function getMongodbCollection(repository, database, name) {
     return await invokeMongo(database, 'collection', fullName);
 }
 
-async function upsertReplaceMongoDocument(collection, searchCondition, newDocument) {
-    await invokeMongo(collection, 'remove', searchCondition);
-    await invokeMongo(collection, 'update', searchCondition, newDocument, { upsert: true });
-}
-
 async function syncronizeDatabase(repository, database) {
     repository.metaCollection = await getMongodbCollection(
         repository,
@@ -31,10 +26,11 @@ async function syncronizeDatabase(repository, database) {
 }
 
 async function setStorageTimestamp(repository, key) {
-    await upsertReplaceMongoDocument(
+    await invokeMongo(
         repository.metaCollection,
-        { key: `${repository.collectionsPrefix}${key}` },
-        { lastTimestamp: repository.lastTimestamp }
+        'update',
+        { key },
+        { $set: { lastTimestamp: repository.lastTimestamp } }
     );
 }
 
@@ -45,7 +41,7 @@ async function createMongoCollection(repository, key) {
 
     await invokeMongo(mongoCollection, 'createIndex', { field: 1 }, { unique: true });
 
-    await upsertReplaceMongoDocument(repository.metaCollection, { key }, { key }, { upsert: true });
+    await invokeMongo(repository.metaCollection, 'update', { key }, { key }, { upsert: true });
 
     await setStorageTimestamp(repository, key);
 
@@ -88,8 +84,9 @@ function getStoreInterface(repository, isWriteable) {
                 return;
             }
 
-            await upsertReplaceMongoDocument(
+            await invokeMongo(
                 mongoCollection,
+                'update',
                 { field },
                 { field, value },
                 { upsert: true }

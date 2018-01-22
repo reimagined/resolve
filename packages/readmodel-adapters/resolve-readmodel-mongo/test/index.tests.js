@@ -30,6 +30,27 @@ describe('Read model MongoDB adapter', () => {
 
     beforeAll(async () => {
         testConnection = await MongoClient.connect('mongodb://fake-url:27017/fake-db');
+        const originalCollection = testConnection.collection;
+
+        testConnection.collection = (...args) => {
+            const collectionIface = originalCollection(...args);
+            const originalUpdate = collectionIface.update;
+
+            collectionIface.update = (...inArgs) => {
+                if (!(inArgs.length === 4 && inArgs[2].upsert)) {
+                    originalUpdate(...inArgs);
+                    return;
+                }
+
+                collectionIface.remove(inArgs[0], (firstError) => {
+                    collectionIface.insert(inArgs[1], (secondError) => {
+                        inArgs[3](firstError || secondError || null);
+                    });
+                });
+            };
+            return collectionIface;
+        };
+
         testConnectionCloser = testConnection.close.bind(testConnection);
     });
 
