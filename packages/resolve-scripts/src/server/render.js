@@ -4,27 +4,30 @@ import { renderToString } from 'react-dom/server';
 import { Provider } from 'react-redux';
 
 import jsonUtfStringify from './utils/json_utf_stringify';
-import { getRootableUrl } from './utils/prepare_urls';
 
 import config from '../configs/server.config.js';
 
 const configEntries = config.entries;
+process.env.ROOT_DIR = process.env.ROOT_DIR || '';
+
+const isSsrEnabled = () =>
+    configEntries.ssrMode === 'always' ||
+    (configEntries.ssrMode === 'production-only' && process.env.NODE_ENV === 'production');
 
 export default (initialState, { req, res }) => {
-    const html =
-        process.env.NODE_ENV === 'production'
-            ? renderToString(
-                  <Provider
-                      store={configEntries.createStore(
-                          Object.assign(initialState, req.initialState)
-                      )}
-                  >
-                      <configEntries.rootComponent url={req.url} />
-                  </Provider>
-              )
-            : '';
+    const html = isSsrEnabled()
+        ? renderToString(
+              <Provider
+                  store={configEntries.createStore(Object.assign(initialState, req.initialState))}
+              >
+                  <configEntries.rootComponent url={req.url} />
+              </Provider>
+          )
+        : '';
 
     const helmet = Helmet.renderStatic();
+
+    const bundleSource = `${process.env.ROOT_DIR}/static/bundle.js`;
 
     const filterEnvVariablesRegex = /^RESOLVE_|^NODE_ENV$|^ROOT_DIR$/;
 
@@ -56,7 +59,7 @@ export default (initialState, { req, res }) => {
             '</head>\n' +
             `<body ${helmet.bodyAttributes.toString()}>\n` +
             `<div id="root">${html}</div>\n` +
-            `<script src="${getRootableUrl('/static/bundle.js')}"></script>\n` +
+            `<script src="${bundleSource}"></script>\n` +
             '</body>\n' +
             '</html>\n'
     );
