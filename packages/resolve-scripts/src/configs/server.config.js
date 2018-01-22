@@ -14,7 +14,8 @@ const emptyCreateStore = () => createStore(() => ({}), {});
 const defaultConfig = {
     entries: {
         rootComponent: emptyRootComponent,
-        createStore: emptyCreateStore
+        createStore: emptyCreateStore,
+        ssrMode: 'none'
     },
     bus: {
         adapter: defaultBusAdapter
