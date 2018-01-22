@@ -1,6 +1,7 @@
 import 'regenerator-runtime/runtime';
 
 import { expect } from 'chai';
+import NeDB from 'nedb';
 import sinon from 'sinon';
 
 import messages from '../src/messages';
@@ -8,13 +9,7 @@ import buildProjection from '../src/build_projection';
 import init from '../src/init';
 import reset from '../src/reset';
 
-import { MongoClient } from 'mongodb';
-
 describe('Read model MongoDB adapter', () => {
-    // const mongodb = require('mongo-mock');
-    // mongodb.max_delay = 0;
-    // const MongoClient = mongodb.MongoClient;
-
     const META_COLLECTION_NAME = '__MetaCollection__';
     const COLLECTIONS_PREFIX = '_Prefix_';
 
@@ -25,43 +20,79 @@ describe('Read model MongoDB adapter', () => {
         id2: { content: 'test2' }
     };
 
+    let storedCollections;
     let testConnection;
-    let testConnectionCloser;
     let testRepository;
 
-    beforeAll(async () => {
-        testConnection = await MongoClient.connect('mongodb://127.0.0.1:27017/MongoAdapterTest');
-        // const originalCollection = testConnection.collection;
-
-        // testConnection.collection = (...args) => {
-        //     const collectionIface = originalCollection(...args);
-        //     const originalUpdate = collectionIface.update;
-
-        //     collectionIface.update = (...inArgs) => {
-        //         if (!(inArgs.length === 4 && inArgs[2].upsert)) {
-        //             originalUpdate(...inArgs);
-        //             return;
-        //         }
-
-        //         collectionIface.remove(inArgs[0], (firstError) => {
-        //             collectionIface.insert(inArgs[1], (secondError) => {
-        //                 inArgs[3](firstError || secondError || null);
-        //             });
-        //         });
-        //     };
-        //     return collectionIface;
-        // };
-
-        testConnectionCloser = testConnection.close.bind(testConnection);
-    });
-
-    afterAll(async () => {
-        await testConnectionCloser(true);
-        testConnection = null;
-    });
-
     beforeEach(async () => {
-        testConnection.close = sinon.stub();
+        storedCollections = {};
+
+        const createCollection = async (collectionName) => {
+            const originalDb = new NeDB({ autoload: true, inMemoryOnly: true });
+            const unaryExecutor = (resolve, reject, err, value) =>
+                !err ? resolve(value) : reject(err);
+            const unaryWrapper = (oper, args, resolve, reject) =>
+                originalDb[oper](...args, unaryExecutor.bind(null, resolve, reject));
+            const voidExecutor = (resolve, reject, err) => (!err ? resolve() : reject(err));
+            const voidWrapper = (oper, args, resolve, reject) =>
+                originalDb[oper](...args, voidExecutor.bind(null, resolve, reject));
+
+            return {
+                find: (...args) => {
+                    const operations = [{ oper: 'find', args }];
+                    const result = {
+                        async toArray() {
+                            const result = operations.reduce(
+                                (acc, { oper, args }) => acc[oper](...args),
+                                originalDb
+                            );
+                            return new Promise((resolve, reject) =>
+                                result.exec((err, docs) => (!err ? resolve(docs) : reject(err)))
+                            );
+                        }
+                    };
+                    ['sort', 'skip', 'limit', 'projection'].forEach((oper) => {
+                        result[oper] = (...inargs) => {
+                            operations.push({ oper, args: inargs });
+                            return result;
+                        };
+                    });
+                    return result;
+                },
+                findOne: (...args) => new Promise(unaryWrapper.bind(null, 'findOne', args)),
+                count: (...args) => new Promise(unaryWrapper.bind(null, 'count', args)),
+                insert: (...args) => new Promise(voidWrapper.bind(null, 'insert', args)),
+                update: (...args) => new Promise(voidWrapper.bind(null, 'update', args)),
+                remove: (...args) => new Promise(voidWrapper.bind(null, 'remove', args)),
+                createIndex: (index, options) =>
+                    new Promise(
+                        voidWrapper.bind(null, 'ensureIndex', [
+                            {
+                                fieldName: Object.keys(index)[0],
+                                ...options
+                            }
+                        ])
+                    ),
+                removeIndex: (...args) => new Promise(voidWrapper.bind(null, 'removeIndex', args)),
+                drop: async () => {
+                    delete storedCollections[collectionName];
+                }
+            };
+        };
+
+        testConnection = {
+            async collection(name) {
+                if (!storedCollections[name]) {
+                    storedCollections[name] = await createCollection(name);
+                }
+                return storedCollections[name];
+            },
+            async dropCollection(name) {
+                delete storedCollections[name];
+            },
+            close: sinon.stub()
+        };
+
         testRepository = {
             connectDatabase: async () => testConnection,
             metaCollectionName: META_COLLECTION_NAME,
@@ -70,14 +101,8 @@ describe('Read model MongoDB adapter', () => {
     });
 
     afterEach(async () => {
-        const existingCollections = await testConnection.listCollections({}).toArray();
-
-        for (let { name } of existingCollections) {
-            if (name.indexOf('system.') > -1) continue;
-            const collection = await testConnection.collection(name);
-            await collection.drop();
-        }
-
+        storedCollections = null;
+        testConnection = null;
         testRepository = null;
     });
 
@@ -325,7 +350,7 @@ describe('Read model MongoDB adapter', () => {
         let defaultCollection;
 
         beforeEach(async () => {
-            defaultCollection = testConnection.collection(
+            defaultCollection = await testConnection.collection(
                 `${COLLECTIONS_PREFIX}${DEFAULT_DICTIONARY_NAME}`
             );
 
@@ -360,20 +385,12 @@ describe('Read model MongoDB adapter', () => {
             await disposePromise;
 
             expect(
-                (await testConnection
-                    .listCollections({
-                        name: `${COLLECTIONS_PREFIX}${DEFAULT_DICTIONARY_NAME}`
-                    })
-                    .toArray()).length
-            ).to.be.equal(0);
+                storedCollections[`${COLLECTIONS_PREFIX}${DEFAULT_DICTIONARY_NAME}`]
+            ).to.be.equal(undefined);
 
-            expect(
-                (await testConnection
-                    .listCollections({
-                        name: `${COLLECTIONS_PREFIX}${META_COLLECTION_NAME}`
-                    })
-                    .toArray()).length
-            ).to.be.equal(0);
+            expect(storedCollections[`${COLLECTIONS_PREFIX}${META_COLLECTION_NAME}`]).to.be.equal(
+                undefined
+            );
 
             expect(testConnection.close.callCount).to.be.equal(1);
         });
