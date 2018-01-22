@@ -5,7 +5,7 @@ export const rootDirectory = process.env.ROOT_DIR || '';
 export const defaultFailureCallback = (error, redirect, { resolve, body }) =>
     redirect(
         url.format({
-            pathname: '/login',
+            pathname: `${process.env.ROOT_DIR}/login`,
             query: { error }
         })
     );

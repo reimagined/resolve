@@ -40,8 +40,8 @@ export default (options) => {
             successRedirect: null
         },
         routes: {
-            auth: '/auth/github',
-            callback: '/auth/github/callback'
+            auth: `${process.env.ROOT_DIR}/auth/github`,
+            callback: `${process.env.ROOT_DIR}/auth/github/callback`
         },
         authCallback: ({ resolve, body }, profile, done) => {
             done(
