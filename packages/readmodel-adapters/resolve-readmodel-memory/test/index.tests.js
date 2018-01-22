@@ -52,13 +52,9 @@ describe('Read model MongoDB adapter', () => {
 
         it('should throw error on non-existing storage access', async () => {
             const readable = await readInstance.getReadable();
+            const result = await readable.hget('wrong-dictionary', 'key');
 
-            try {
-                await readable.hget('wrong-dictionary', 'key');
-                return Promise.reject('Unexisting dictionary call should throw error on read side');
-            } catch (err) {
-                expect(err.message).to.be.equal(messages.unexistingStorage('wrong-dictionary'));
-            }
+            expect(result).to.be.equal(null);
         });
 
         it('should throw error on storage drop attempt', async () => {
