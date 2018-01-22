@@ -10,7 +10,7 @@ async function setRepositoryTimestamp(repository, key) {
     await repository.metaCollection.update(
         { type: 'LastTimestamp' },
         { type: 'LastTimestamp', value: repository.lastTimestamp },
-        { upsert: true, multi: true }
+        { upsert: true }
     );
 }
 
