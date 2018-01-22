@@ -4,9 +4,9 @@ import sinon from 'sinon';
 import { createFacade, createReadModel, createViewModel } from '../src';
 
 describe('resolve-query', () => {
-    let readModelProjection, readModel, viewModelProjection, viewModel;
+    let eventStore, readModelProjection, readModel, viewModelProjection, viewModel;
     let normalGqlFacade, brokenSchemaGqlFacade, brokenResolversGqlFacade;
-    let eventStore, eventList, delayedEventList, unsubscribe;
+    let eventList, delayedEventList, unsubscribe, resolveDelayedEvents;
 
     const simulatedEventList = [
         { type: 'UserAdded', aggregateId: '1', payload: { UserName: 'User-1' } },
@@ -16,6 +16,7 @@ describe('resolve-query', () => {
     ];
 
     beforeEach(() => {
+        const delayedEventsPromise = new Promise(resolve => (resolveDelayedEvents = resolve));
         unsubscribe = sinon.stub();
         delayedEventList = [];
         eventList = [];
@@ -27,8 +28,7 @@ describe('resolve-query', () => {
                 handler(event);
             }
 
-            Promise.resolve().then(async () => {
-                await Promise.resolve();
+            delayedEventsPromise.then(async () => {
                 for (let event of delayedEventList) {
                     if (event[fieldName] && !matchList.includes(event[fieldName])) continue;
                     await Promise.resolve();
@@ -48,20 +48,36 @@ describe('resolve-query', () => {
 
         readModelProjection = {
             Init: sinon.stub().callsFake(async (store) => {
-                const users = await store.collection('Users');
-                await users.ensureIndex({ fieldName: 'id', fieldType: 'string', order: 1 });
+                await store.hset('Users', 'LIST_IDS', []);
+                await store.hset('Users', 'LIST_FULL', []);
             }),
 
             UserAdded: sinon.stub().callsFake(async (store, { aggregateId: id, payload }) => {
-                const users = await store.collection('Users');
-                if ((await users.find({ id })).length !== 0) return;
-                await users.insert({ id, UserName: payload.UserName });
+                if (await store.hget('Users', `USER_${id}`)) return;
+
+                await store.hset('Users', `USER_${id}`, { id, UserName: payload.UserName });
+
+                const listIds = await store.hget('Users', 'LIST_IDS');
+                listIds.push(id);
+                await store.hset('Users', 'LIST_IDS', listIds);
+
+                const listFull = await store.hget('Users', 'LIST_FULL');
+                listFull.push({ id, UserName: payload.UserName });
+                await store.hset('Users', 'LIST_FULL', listFull);
             }),
 
             UserDeleted: sinon.stub().callsFake(async (store, { aggregateId: id }) => {
-                const users = await store.collection('Users');
-                if ((await users.find({ id })).length === 0) return;
-                await users.remove({ id });
+                if (!await store.hget('Users', `USER_${id}`)) return;
+
+                await store.hset('Users', `USER_${id}`, null);
+
+                let listIds = await store.hget('Users', 'LIST_IDS');
+                listIds = listIds.filter(uid => uid !== id);
+                await store.hset('Users', 'LIST_IDS', listIds);
+
+                let listFull = await store.hget('Users', 'LIST_FULL');
+                listFull = listFull.filter(({ id: uid }) => uid !== id);
+                await store.hset('Users', 'LIST_FULL', listFull);
             }),
 
             FailureEvent: sinon.stub().callsFake(async (store, { aggregateId: id }) => {
@@ -92,21 +108,15 @@ describe('resolve-query', () => {
             `,
             gqlResolvers: {
                 UserById: sinon.stub().callsFake(async (store, args) => {
-                    const users = await store.collection('Users');
-                    const result = await users.find({ id: args.id }).sort({ id: 1 });
-                    return result.length > 0 ? result[0] : null;
+                    return await store.hget('Users', `USER_${args.id}`);
                 }),
 
                 UserIds: sinon.stub().callsFake(async (store) => {
-                    const users = await store.collection('Users');
-                    const result = await users.find({}, { id: 1, _id: 0 }).sort({ id: 1 });
-                    return result.map(({ id }) => id);
+                    return await store.hget('Users', 'LIST_IDS');
                 }),
 
                 Users: sinon.stub().callsFake(async (store) => {
-                    const users = await store.collection('Users');
-                    const result = await users.find({}).sort({ id: 1 });
-                    return result;
+                    return await store.hget('Users', 'LIST_FULL');
                 })
             }
         };
@@ -126,6 +136,7 @@ describe('resolve-query', () => {
     });
 
     afterEach(() => {
+        resolveDelayedEvents = null;
         normalGqlFacade = null;
         brokenSchemaGqlFacade = null;
         brokenResolversGqlFacade = null;
@@ -168,7 +179,7 @@ describe('resolve-query', () => {
         ];
 
         const firstState = await executeQueryGraphql('query { UserIds }');
-        await Promise.resolve();
+        resolveDelayedEvents();
         const secondState = await executeQueryGraphql('query { UserIds }');
 
         expect(firstState).to.be.deep.equal({
@@ -307,11 +318,7 @@ describe('resolve-query', () => {
         const localAdapter = {
             init: () => ({
                 getReadable: async () => ({
-                    collection: async name => ({
-                        find: () => ({
-                            sort: async () => storedState[name].sort()
-                        })
-                    })
+                    hget: async () => storedState.Users
                 }),
                 getError: async () => null
             })
@@ -333,9 +340,9 @@ describe('resolve-query', () => {
         const { executeQueryCustom } = createFacade({
             model: readModel,
             customResolvers: {
-                FindUser: async (model, condition) => {
-                    const users = await (await model()).collection('Users');
-                    return await users.find(condition);
+                FindUser: async (model, { id }) => {
+                    const store = await model();
+                    return await store.hget('Users', `USER_${id}`);
                 }
             }
         });
@@ -343,8 +350,8 @@ describe('resolve-query', () => {
 
         const state = await executeQueryCustom('FindUser', { id: '3' });
 
-        expect(state[0].UserName).to.be.equal('User-3');
-        expect(state[0].id).to.be.equal('3');
+        expect(state.UserName).to.be.equal('User-3');
+        expect(state.id).to.be.equal('3');
     });
 
     it('should handle exceptions in projection functions', async () => {
