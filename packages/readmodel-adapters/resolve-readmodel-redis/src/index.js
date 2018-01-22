@@ -8,7 +8,9 @@ import reset from './reset';
 const DEFAULT_META_NAME = '__ResolveMeta__';
 const DEFAULT_LAST_TIMESTAMP_KEY = '__ResolveLastTimestampKey__';
 
-const createRedisAdapter = (options, { metaName, lastTimestampKey }, redisClient) => {
+const createRedisAdapter = (options, extraOptions) => {
+    const { client, metaName, lastTimestampKey } =
+        extraOptions instanceof Object ? extraOptions : {};
     const repository = Object.create(null);
 
     repository.metaName =
@@ -20,7 +22,7 @@ const createRedisAdapter = (options, { metaName, lastTimestampKey }, redisClient
             : DEFAULT_LAST_TIMESTAMP_KEY;
 
     repository.connectDatabase = async options =>
-        redisClient ? redisClient : redis.createClient(options instanceof Object ? options : {});
+        client ? client : redis.createClient(options instanceof Object ? options : {});
 
     return Object.create(null, {
         buildProjection: {
