@@ -1,6 +1,6 @@
 {
   "name": "resolve-storage-lite",
-  "version": "0.2.2",
+  "version": "0.4.0",
   "description": "This package serves as an adapter for resolve-storage to store events using a file or in memory.",
   "main": "./dist/index.js",
   "bugs": {
@@ -17,9 +17,13 @@
   },
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
-  "homepage":
-    "https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-lite#readme",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-lite#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "jest": "22.0.3",
@@ -29,6 +33,6 @@
     "async-lock": "^1.1.0",
     "nedb": "^1.8.0",
     "regenerator-runtime": "^0.11.0",
-    "resolve-storage-base": "^0.2.2"
+    "resolve-storage-base": "^0.4.0"
   }
 }

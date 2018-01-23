@@ -1,6 +1,6 @@
 {
   "name": "resolve-readmodel-memory",
-  "version": "0.2.2",
+  "version": "0.4.0",
   "description": "This package serves as a resolve-query adapter for storing a read model in memory using NeDB",
   "main": "./dist/index.js",
   "bugs": {
@@ -17,9 +17,13 @@
   },
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
-  "homepage":
-    "https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-memory#readme",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-memory#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "jest": "22.0.3",
