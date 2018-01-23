@@ -1,11 +1,10 @@
 import 'regenerator-runtime/runtime';
 
-async function disposeDatabase(metaCollectionName, database) {
-    const metaCollection = await database.collection(metaCollectionName);
+async function disposeDatabase(metaCollection, collectionsPrefix, database) {
     const collectionDescriptors = await metaCollection.find({}).toArray();
 
-    for (const { collectionName } of collectionDescriptors) {
-        await database.dropCollection(collectionName);
+    for (const { key } of collectionDescriptors) {
+        await database.dropCollection(`${collectionsPrefix}${key}`);
     }
 
     await metaCollection.drop();
@@ -18,7 +17,7 @@ export default function reset(repository) {
     }
 
     const disposePromise = repository.connectionPromise.then(
-        disposeDatabase.bind(null, repository.metaCollectionName)
+        disposeDatabase.bind(null, repository.metaCollection, repository.collectionsPrefix)
     );
 
     Object.keys(repository).forEach((key) => {

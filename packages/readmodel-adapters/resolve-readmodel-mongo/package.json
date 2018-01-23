@@ -27,9 +27,7 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "jest": "22.0.3",
-    "mongo-unit": "^1.3.0",
-    "mongodb-download": "2.2.3",
-    "mongodb-prebuilt": "^6.3.4",
+    "nedb": "^1.8.0",
     "sinon": "^3.3.0"
   },
   "dependencies": {
