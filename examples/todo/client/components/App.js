@@ -1,11 +1,10 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect } from 'resolve-redux';
 import { bindActionCreators } from 'redux';
-import { withViewModel } from 'resolve-redux';
 
 import actions from '../actions';
 
-const viewModel = 'Todos';
+const viewModelName = 'Todos';
 const aggregateId = 'root-id';
 
 const App = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
@@ -45,11 +44,11 @@ const App = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
 };
 
 const mapStateToProps = state => ({
-    viewModel,
+    viewModelName,
     aggregateId,
-    todos: state[viewModel][aggregateId]
+    todos: state[viewModelName][aggregateId]
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(actions, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(withViewModel(App));
+export default connect(mapStateToProps, mapDispatchToProps)(App);

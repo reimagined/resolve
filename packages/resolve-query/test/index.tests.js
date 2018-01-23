@@ -4,8 +4,9 @@ import sinon from 'sinon';
 import { createFacade, createReadModel, createViewModel } from '../src';
 
 describe('resolve-query', () => {
-    let eventStore, eventList, readModelProjection, readModel, viewModelProjection, viewModel;
-    let normalGqlFacade, brokenSchemaGqlFacade, brokenResolversGqlFacade, unsubscribe;
+    let eventStore, readModelProjection, readModel, viewModelProjection, viewModel;
+    let normalGqlFacade, brokenSchemaGqlFacade, brokenResolversGqlFacade;
+    let eventList, delayedEventList, unsubscribe, resolveDelayedEvents;
 
     const simulatedEventList = [
         { type: 'UserAdded', aggregateId: '1', payload: { UserName: 'User-1' } },
@@ -15,40 +16,72 @@ describe('resolve-query', () => {
     ];
 
     beforeEach(() => {
+        const delayedEventsPromise = new Promise(resolve => (resolveDelayedEvents = resolve));
         unsubscribe = sinon.stub();
+        delayedEventList = [];
         eventList = [];
 
+        const subscribeByAnyField = async (fieldName, matchList, handler) => {
+            for (let event of eventList) {
+                if (event[fieldName] && !matchList.includes(event[fieldName])) continue;
+                await Promise.resolve();
+                handler(event);
+            }
+
+            delayedEventsPromise.then(async () => {
+                for (let event of delayedEventList) {
+                    if (event[fieldName] && !matchList.includes(event[fieldName])) continue;
+                    await Promise.resolve();
+                    handler(event);
+                }
+            });
+
+            return unsubscribe;
+        };
+
         eventStore = {
-            subscribeByEventType: sinon.stub().callsFake((matchList, handler) => {
-                eventList
-                    .filter(event => matchList.includes(event.type))
-                    .forEach(event => handler(event));
-                return Promise.resolve(unsubscribe);
-            }),
-            subscribeByAggregateId: sinon.stub().callsFake((matchList, handler) => {
-                eventList
-                    .filter(event => matchList.includes(event.aggregateId))
-                    .forEach(event => handler(event));
-                return Promise.resolve(unsubscribe);
-            })
+            subscribeByEventType: sinon.stub().callsFake(subscribeByAnyField.bind(null, 'type')),
+            subscribeByAggregateId: sinon
+                .stub()
+                .callsFake(subscribeByAnyField.bind(null, 'aggregateId'))
         };
 
         readModelProjection = {
-            Init: sinon.stub().callsFake(async (db) => {
-                const users = await db.collection('Users');
-                await users.find({});
+            Init: sinon.stub().callsFake(async (store) => {
+                await store.hset('Users', 'LIST_IDS', []);
+                await store.hset('Users', 'LIST_FULL', []);
             }),
 
-            UserAdded: sinon.stub().callsFake(async (db, { aggregateId: id, payload }) => {
-                const users = await db.collection('Users');
-                if ((await users.find({ id })).length !== 0) return;
-                await users.insert({ id, UserName: payload.UserName });
+            UserAdded: sinon.stub().callsFake(async (store, { aggregateId: id, payload }) => {
+                if (await store.hget('Users', `USER_${id}`)) return;
+
+                await store.hset('Users', `USER_${id}`, { id, UserName: payload.UserName });
+
+                const listIds = await store.hget('Users', 'LIST_IDS');
+                listIds.push(id);
+                await store.hset('Users', 'LIST_IDS', listIds);
+
+                const listFull = await store.hget('Users', 'LIST_FULL');
+                listFull.push({ id, UserName: payload.UserName });
+                await store.hset('Users', 'LIST_FULL', listFull);
             }),
 
-            UserDeleted: sinon.stub().callsFake(async (db, { aggregateId: id }) => {
-                const users = await db.collection('Users');
-                if ((await users.find({ id })).length === 0) return;
-                await users.remove({ id });
+            UserDeleted: sinon.stub().callsFake(async (store, { aggregateId: id }) => {
+                if (!await store.hget('Users', `USER_${id}`)) return;
+
+                await store.hset('Users', `USER_${id}`, null);
+
+                let listIds = await store.hget('Users', 'LIST_IDS');
+                listIds = listIds.filter(uid => uid !== id);
+                await store.hset('Users', 'LIST_IDS', listIds);
+
+                let listFull = await store.hget('Users', 'LIST_FULL');
+                listFull = listFull.filter(({ id: uid }) => uid !== id);
+                await store.hset('Users', 'LIST_FULL', listFull);
+            }),
+
+            FailureEvent: sinon.stub().callsFake(async (store, { aggregateId: id }) => {
+                throw new Error('Failure');
             })
         };
 
@@ -74,22 +107,16 @@ describe('resolve-query', () => {
                 }
             `,
             gqlResolvers: {
-                UserById: sinon.stub().callsFake(async (db, args) => {
-                    const users = await db.collection('Users');
-                    const result = await users.find({ id: args.id }).sort({ id: 1 });
-                    return result.length > 0 ? result[0] : null;
+                UserById: sinon.stub().callsFake(async (store, args) => {
+                    return await store.hget('Users', `USER_${args.id}`);
                 }),
 
-                UserIds: sinon.stub().callsFake(async (db) => {
-                    const users = await db.collection('Users');
-                    const result = await users.find({}, { id: 1, _id: 0 }).sort({ id: 1 });
-                    return result.map(({ id }) => id);
+                UserIds: sinon.stub().callsFake(async (store) => {
+                    return await store.hget('Users', 'LIST_IDS');
                 }),
 
-                Users: sinon.stub().callsFake(async (db) => {
-                    const users = await db.collection('Users');
-                    const result = await users.find({}).sort({ id: 1 });
-                    return result;
+                Users: sinon.stub().callsFake(async (store) => {
+                    return await store.hget('Users', 'LIST_FULL');
                 })
             }
         };
@@ -109,12 +136,14 @@ describe('resolve-query', () => {
     });
 
     afterEach(() => {
+        resolveDelayedEvents = null;
         normalGqlFacade = null;
         brokenSchemaGqlFacade = null;
         brokenResolversGqlFacade = null;
         viewModel = null;
         readModel = null;
         eventStore = null;
+        delayedEventList = null;
         eventList = null;
         unsubscribe = null;
     });
@@ -127,6 +156,38 @@ describe('resolve-query', () => {
 
         expect(state).to.be.deep.equal({
             UserIds: ['2', '3']
+        });
+    });
+
+    it('should support custom defined resolver without argument on subsequent call', async () => {
+        const { executeQueryGraphql } = createFacade({ model: readModel, ...normalGqlFacade });
+        eventList = simulatedEventList.slice(0);
+
+        await executeQueryGraphql('query { UserIds }');
+        const state = await executeQueryGraphql('query { UserIds }');
+
+        expect(state).to.be.deep.equal({
+            UserIds: ['2', '3']
+        });
+    });
+
+    it('should support custom defined resolver without argument for bus events', async () => {
+        const { executeQueryGraphql } = createFacade({ model: readModel, ...normalGqlFacade });
+        eventList = simulatedEventList.slice(0);
+        delayedEventList = [
+            { type: 'UserAdded', aggregateId: '4', payload: { UserName: 'User-4' } }
+        ];
+
+        const firstState = await executeQueryGraphql('query { UserIds }');
+        resolveDelayedEvents();
+        const secondState = await executeQueryGraphql('query { UserIds }');
+
+        expect(firstState).to.be.deep.equal({
+            UserIds: ['2', '3']
+        });
+
+        expect(secondState).to.be.deep.equal({
+            UserIds: ['2', '3', '4']
         });
     });
 
@@ -257,11 +318,7 @@ describe('resolve-query', () => {
         const localAdapter = {
             init: () => ({
                 getReadable: async () => ({
-                    collection: async name => ({
-                        find: () => ({
-                            sort: async () => storedState[name].sort()
-                        })
-                    })
+                    hget: async () => storedState.Users
                 }),
                 getError: async () => null
             })
@@ -283,9 +340,9 @@ describe('resolve-query', () => {
         const { executeQueryCustom } = createFacade({
             model: readModel,
             customResolvers: {
-                FindUser: async (model, condition) => {
-                    const users = await (await model()).collection('Users');
-                    return await users.find(condition, { _id: 0 });
+                FindUser: async (model, { id }) => {
+                    const store = await model();
+                    return await store.hget('Users', `USER_${id}`);
                 }
             }
         });
@@ -293,17 +350,102 @@ describe('resolve-query', () => {
 
         const state = await executeQueryCustom('FindUser', { id: '3' });
 
-        expect(state).to.be.deep.equal([
-            {
-                UserName: 'User-3',
-                id: '3'
-            }
-        ]);
+        expect(state.UserName).to.be.equal('User-3');
+        expect(state.id).to.be.equal('3');
+    });
+
+    it('should handle exceptions in projection functions', async () => {
+        const { executeQueryGraphql } = createFacade({ model: readModel, ...normalGqlFacade });
+        eventList = [{ type: 'FailureEvent', aggregateId: '1' }];
+
+        try {
+            await executeQueryGraphql('query { UserIds }');
+            return Promise.reject('Test failed');
+        } catch (error) {
+            expect(error.message).to.be.equal('Failure');
+        }
+    });
+
+    // eslint-disable-next-line max-len
+    it('should throw error in case of absence invoked custom resolver on facade', async () => {
+        const { executeQueryCustom } = createFacade({
+            model: readModel,
+            customResolvers: {}
+        });
+        eventList = simulatedEventList.slice(0);
+
+        try {
+            await executeQueryCustom('FindUser', { id: '3' });
+            return Promise.reject('Test failed');
+        } catch (error) {
+            expect(error.message).to.be.equal('The \'FindUser\' custom resolver is not specified');
+        }
+    });
+
+    it('should stop read-model building when adapter raise an error', async () => {
+        eventList = [
+            { type: 'FailureEvent', aggregateId: '1' },
+            { type: 'AfterEvent', aggregateId: '2' }
+        ];
+        delayedEventList = [{ type: 'AfterEvent', aggregateId: '3' }];
+
+        const localAdapter = {
+            init: () => ({ getReadable: () => null, getError: () => null }),
+            buildProjection: proj => proj
+        };
+
+        const localProjection = {
+            FailureEvent: sinon.stub().callsFake(() => {
+                throw new Error('Syntenic error');
+            }),
+            AfterEvent: sinon.spy()
+        };
+
+        const readOnlyModel = createReadModel({
+            eventStore,
+            projection: localProjection,
+            adapter: localAdapter
+        });
+
+        const { executeQueryRaw } = createFacade({ model: readOnlyModel });
+
+        try {
+            await executeQueryRaw();
+            return Promise.reject('Test failed');
+        } catch (error) {
+            expect(localProjection.FailureEvent.callCount).to.be.equal(1);
+            expect(localProjection.AfterEvent.callCount).to.be.equal(0);
+
+            expect(error.message).to.be.equal('Syntenic error');
+            expect(unsubscribe.callCount).to.be.equal(1);
+        }
+    });
+
+    it('should ignore wrong events in projection while buiding read-model', async () => {
+        const { executeQueryGraphql } = createFacade({ model: readModel, ...normalGqlFacade });
+        eventList = [{ noType: 'noType', noAggregateId: 'noId' }].concat(
+            simulatedEventList.slice(0)
+        );
+
+        const state = await executeQueryGraphql('query { UserIds }');
+
+        expect(state).to.be.deep.equal({
+            UserIds: ['2', '3']
+        });
     });
 
     it('should support read-model disposing', async () => {
         eventList = simulatedEventList.slice(0);
         await readModel();
+        readModel.dispose();
+
+        expect(unsubscribe.callCount).to.be.equal(1);
+    });
+
+    it('should not perform repeat read-model disposing on following calls', async () => {
+        eventList = simulatedEventList.slice(0);
+        await readModel();
+        readModel.dispose();
         readModel.dispose();
 
         expect(unsubscribe.callCount).to.be.equal(1);
@@ -387,7 +529,7 @@ describe('resolve-query', () => {
         }
     });
 
-    it('should fail on view-models with non-redux-like projection functions', async () => {
+    it('should fail on view-models with non-redux/async projection functions', async () => {
         const wrongViewModel = createViewModel({
             eventStore,
             projection: {
@@ -411,6 +553,84 @@ describe('resolve-query', () => {
             expect(error.message).to.have.string(
                 'A Projection function cannot be asynchronous or return a Promise object'
             );
+        }
+    });
+
+    it('should fail on view-models with non-redux/generator projection functions', async () => {
+        const wrongViewModel = createViewModel({
+            eventStore,
+            projection: {
+                TestEvent: function*() {}
+            }
+        });
+
+        const { executeQueryRaw } = createFacade({ model: wrongViewModel });
+
+        eventList = [
+            {
+                type: 'TestEvent',
+                aggregateId: 'test-id'
+            }
+        ];
+
+        try {
+            await executeQueryRaw(['test-id']);
+            return Promise.reject('Test failed');
+        } catch (error) {
+            expect(error.message).to.have.string(
+                'A Projection function cannot be a generator or return an iterable object'
+            );
+        }
+    });
+
+    it('should handle view-models error on Init function', async () => {
+        const wrongViewModel = createViewModel({
+            eventStore,
+            projection: {
+                Init: () => {
+                    throw new Error('InitError');
+                }
+            }
+        });
+
+        const { executeQueryRaw } = createFacade({ model: wrongViewModel });
+
+        try {
+            await executeQueryRaw('*');
+            return Promise.reject('Test failed');
+        } catch (error) {
+            expect(error.message).to.have.string('InitError');
+        }
+    });
+
+    it('should handle view-models error on custom event handler function', async () => {
+        const wrongViewModel = createViewModel({
+            eventStore,
+            projection: {
+                TestEvent: () => {
+                    throw new Error('TestEventError');
+                }
+            }
+        });
+
+        const { executeQueryRaw } = createFacade({ model: wrongViewModel });
+
+        eventList = [
+            {
+                type: 'TestEvent',
+                aggregateId: 'test-id-1'
+            },
+            {
+                type: 'TestEvent',
+                aggregateId: 'test-id-2'
+            }
+        ];
+
+        try {
+            await executeQueryRaw('*');
+            return Promise.reject('Test failed');
+        } catch (error) {
+            expect(error.message).to.have.string('TestEventError');
         }
     });
 

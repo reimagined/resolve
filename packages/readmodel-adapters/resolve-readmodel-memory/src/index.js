@@ -6,6 +6,7 @@ import reset from './reset';
 
 export default function createMemoryAdapter() {
     const repository = Object.create(null);
+    repository.constructStorage = () => new Map();
 
     return Object.create(null, {
         buildProjection: {

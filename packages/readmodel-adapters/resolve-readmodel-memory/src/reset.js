@@ -1,12 +1,14 @@
-export default function reset(repository) {
-    if (repository.interfaceMap) return;
+import 'regenerator-runtime/runtime';
 
-    repository.collectionMap.forEach((collection) => {
-        collection.resetIndexes();
-        collection.remove({});
-    });
+export default function reset(repository) {
+    if (repository.disposePromise) {
+        return repository.disposePromise;
+    }
 
     Object.keys(repository).forEach((key) => {
         delete repository[key];
     });
+
+    repository.disposePromise = Promise.resolve();
+    return repository.disposePromise;
 }

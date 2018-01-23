@@ -1,153 +1,93 @@
-import NeDB from 'nedb';
+import 'regenerator-runtime/runtime';
 
-export default function init(repository) {
-    let counter = 0;
+import messages from './messages';
 
-    if (repository.interfaceMap) {
-        throw new Error('The read model storage is already initialized');
-    }
-
-    const loadCollection = (collectionName, createOnWrite = false) => {
-        const collectionMap = repository.collectionMap;
-        if (collectionMap.has(collectionName)) {
-            return collectionMap.get(collectionName);
-        }
-        if (!createOnWrite) {
-            throw new Error(`The ${collectionName} collection does not exist`);
-        }
-
-        const collection = new NeDB({ autoload: true, inMemoryOnly: true });
-        collectionMap.set(collectionName, collection);
-        return collection;
-    };
-
-    // Provide interface https://docs.mongodb.com/manual/reference/method/js-collection/
-    const getCollectionInterface = (collectionName, isWriteable) => {
-        const collectionKey = `COLLECTION_${collectionName}_${isWriteable}`;
-        const interfaceMap = repository.interfaceMap;
-
-        if (interfaceMap.has(collectionKey)) {
-            return interfaceMap.get(collectionKey);
-        }
-
-        const bindCollectionMethod = (funcName, allowOnRead = false) => {
-            const collection = loadCollection(collectionName, isWriteable);
-            if (!isWriteable && !allowOnRead) {
-                return async () => {
-                    throw new Error(
-                        `The collection’s ${funcName} method is not allowed on the read side`
-                    );
-                };
-            }
-
-            return (...args) => {
-                if (funcName === 'insert') {
-                    args[0]['_id'] = counter++;
+function getStoreInterface(repository, isWriteable) {
+    const storeIface = {
+        hget: async (key, field) => {
+            if (!repository.storagesMap.has(key)) {
+                if (!isWriteable) {
+                    return null;
                 }
 
-                return new Promise((resolve, reject) => {
-                    collection[funcName](
-                        ...args,
-                        (err, ...result) => (!err ? resolve(result) : reject(err))
-                    );
-                });
-            };
-        };
-
-        const execFind = (options) => {
-            const collection = loadCollection(collectionName, isWriteable);
-            if (options.requestFold) {
-                throw new Error(
-                    'After documents are retrieved with a search request, ' +
-                        'this search request cannot be reused'
-                );
+                repository.storagesMap.set(key, repository.constructStorage());
             }
 
-            options.requestFold = options.requestChain.reduce(
-                (acc, { type, args }) => acc[type](...args),
-                collection
-            );
+            const map = repository.storagesMap.get(key);
+            if (map.has(field)) {
+                return map.get(field);
+            }
 
-            return new Promise((resolve, reject) =>
-                options.requestFold.exec((err, docs) => (!err ? resolve(docs) : reject(err)))
-            );
-        };
+            return null;
+        },
 
-        const wrapFind = initialFind => (...findArgs) => {
-            const resultPromise = Promise.resolve();
-            const requestChain = [{ type: initialFind, args: findArgs }];
+        hset: async (key) => {
+            throw new Error(messages.readSideForbiddenOperation('hset', key));
+        },
 
-            ['sort', 'skip', 'limit', 'projection'].forEach(
-                cmd =>
-                    (resultPromise[cmd] = (...args) => {
-                        requestChain.push({ type: cmd, args });
-                        return resultPromise;
-                    })
-            );
-
-            const originalThen = resultPromise.then.bind(resultPromise);
-            const boundExecFind = execFind.bind(null, { requestChain });
-
-            resultPromise.then = (...continuation) =>
-                originalThen(boundExecFind).then(...continuation);
-
-            resultPromise.catch = (...continuation) =>
-                originalThen(boundExecFind).catch(...continuation);
-
-            return resultPromise;
-        };
-
-        const collectionIface = Object.freeze({
-            insert: bindCollectionMethod('insert', false),
-            update: bindCollectionMethod('update', false),
-            remove: bindCollectionMethod('remove', false),
-            ensureIndex: bindCollectionMethod('ensureIndex', false),
-            removeIndex: bindCollectionMethod('removeIndex', false),
-            count: bindCollectionMethod('count', true),
-            findOne: wrapFind('findOne'),
-            find: wrapFind('find')
-        });
-
-        interfaceMap.set(collectionKey, collectionIface);
-        return collectionIface;
-    };
-
-    // Provide interface https://docs.mongodb.com/manual/reference/method/js-database/
-    const getStoreInterface = (isWriteable) => {
-        const storeKey = !isWriteable ? 'STORE_READ_SIDE' : 'STORE_WRITE_SIDE';
-        const interfaceMap = repository.interfaceMap;
-
-        if (interfaceMap.has(storeKey)) {
-            return interfaceMap.get(storeKey);
+        del: async (key) => {
+            throw new Error(messages.readSideForbiddenOperation('del', key));
         }
-
-        let storeIface = Object.freeze({
-            listCollections: async () => Array.from(repository.collectionMap.keys()),
-            collection: async name => getCollectionInterface(name, isWriteable)
-        });
-
-        interfaceMap.set(storeKey, storeIface);
-        return storeIface;
     };
 
-    Object.assign(repository, {
-        interfaceMap: new Map(),
-        initialEventPromise: null,
-        collectionMap: new Map(),
-        internalError: null
-    });
+    if (isWriteable) {
+        storeIface.hset = async (key, field, value) => {
+            if (!repository.storagesMap.has(key)) {
+                repository.storagesMap.set(key, repository.constructStorage());
+            }
 
-    Object.assign(repository, {
-        readInterface: getStoreInterface(false),
-        writeInterface: getStoreInterface(true)
-    });
+            const map = repository.storagesMap.get(key);
+            if (value === null || value === undefined) {
+                map.delete(field);
+                return;
+            }
 
-    repository.initDonePromise = Promise.resolve()
-        .then(repository.initHandler.bind(null, repository.writeInterface))
-        .catch(error => repository.internalError);
+            map.set(field, value);
+        };
+
+        storeIface.del = async (key) => {
+            repository.storagesMap.delete(key);
+        };
+    }
+
+    return Object.freeze(storeIface);
+}
+
+async function initProjection(repository) {
+    try {
+        await repository.initHandler(repository.writeInterface);
+    } catch (error) {
+        repository.internalError = error;
+    }
+}
+
+export default function init(repository) {
+    if (repository.initDonePromise) {
+        throw new Error(messages.reinitialization);
+    }
+    if (typeof repository.initHandler !== 'function') {
+        repository.initHandler = async () => {};
+    }
+
+    repository.storagesMap = new Map();
+    repository.internalError = null;
+
+    repository.readInterface = getStoreInterface(repository, false);
+    repository.writeInterface = getStoreInterface(repository, true);
+
+    repository.initDonePromise = initProjection(repository);
 
     return {
-        getReadable: async () => repository.readInterface,
-        getError: async () => repository.internalError
+        getLastAppliedTimestamp: async () => 0,
+
+        getReadable: async () => {
+            await repository.initDonePromise;
+            return repository.readInterface;
+        },
+
+        getError: async () => {
+            await repository.initDonePromise;
+            return repository.internalError;
+        }
     };
 }

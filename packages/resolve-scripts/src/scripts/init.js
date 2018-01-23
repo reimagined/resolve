@@ -8,7 +8,7 @@ const log = console.log;
 // eslint-disable-next-line no-console
 const error = console.error;
 
-const dependencies = ['react', 'react-dom', 'react-redux', 'redux'];
+const dependencies = ['react@^16.0.0', 'react-dom@^16.0.0', 'react-redux', 'redux'];
 
 const resolveDependencies = ['resolve-bus-memory', 'resolve-redux', 'resolve-storage-lite'];
 
@@ -138,7 +138,7 @@ export default (appPath, appName, originalDirectory, isEmpty, packagePath, resol
     /* eslint-disable */
     appPackage.scripts = {
         ...appPackage.scripts,
-        test: 'jest tests/unit',
+        test: 'jest tests/unit/**',
         'test:functional':
             'cross-env NODE_ENV=tests babel-node ./tests/functional/testcafe_runner.js ' +
             '--presets es2015,stage-0,react'
