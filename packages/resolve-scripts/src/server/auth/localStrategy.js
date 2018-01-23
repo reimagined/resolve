@@ -41,11 +41,11 @@ export default (options) => {
         },
         routes: {
             register: {
-                path: `${process.env.ROOT_DIR}/register`,
+                path: `${rootDirectory}/register`,
                 method: 'post'
             },
             login: {
-                path: `${process.env.ROOT_DIR}/login`,
+                path: `${rootDirectory}/login`,
                 method: 'post'
             }
         },

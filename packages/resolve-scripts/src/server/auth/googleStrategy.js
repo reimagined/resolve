@@ -44,8 +44,8 @@ export default (options) => {
             successRedirect: null
         },
         routes: {
-            auth: `${process.env.ROOT_DIR}/auth/google`,
-            callback: `${process.env.ROOT_DIR}/auth/google/callback`
+            auth: `${rootDirectory}/auth/google`,
+            callback: `${rootDirectory}/auth/google/callback`
         },
         authCallback: ({ resolve, body }, profile, done) => {
             done(
