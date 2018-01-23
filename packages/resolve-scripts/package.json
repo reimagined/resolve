@@ -2,6 +2,7 @@
   "name": "resolve-scripts",
   "version": "0.2.2",
   "description": "This package create server with resolve.",
+  "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
