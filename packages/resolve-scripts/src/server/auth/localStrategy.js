@@ -41,11 +41,11 @@ export default (options) => {
         },
         routes: {
             register: {
-                path: '/register',
+                path: `${rootDirectory}/register`,
                 method: 'post'
             },
             login: {
-                path: '/login',
+                path: `${rootDirectory}/login`,
                 method: 'post'
             }
         },
