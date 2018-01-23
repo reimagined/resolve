@@ -23,7 +23,7 @@ const strategy = (options) => {
                     ? options.failureCallback(err, redirect, { resolve, body })
                     : applyJwtValue(user, res, options.successRedirect);
             };
-            return url === `${rootDirectory}${authPath}`
+            return url === authPath
                 ? passport.authenticate('github')(req, res, next)
                 : passport.authenticate('github', done)(req, res, next);
         },
