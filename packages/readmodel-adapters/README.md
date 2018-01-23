@@ -15,3 +15,5 @@ Available adapters:
 	Used to store a read model in memory.
 * [resolve-readmodel-mongo](./resolve-readmodel-mongo)  
 	Used to store a read model in MongoDB.
+* [resolve-readmodel-redis](./resolve-readmodel-redis)
+	Used to store a read model in Redis.
