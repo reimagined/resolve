@@ -10,19 +10,20 @@ import config from '../configs/server.config.js';
 const configEntries = config.entries;
 process.env.ROOT_DIR = process.env.ROOT_DIR || '';
 
+const isSsrEnabled = () =>
+    configEntries.ssrMode === 'always' ||
+    (configEntries.ssrMode === 'production-only' && process.env.NODE_ENV === 'production');
+
 export default (initialState, { req, res }) => {
-    const html =
-        process.env.NODE_ENV === 'production'
-            ? renderToString(
-                  <Provider
-                      store={configEntries.createStore(
-                          Object.assign(initialState, req.initialState)
-                      )}
-                  >
-                      <configEntries.rootComponent url={req.url} />
-                  </Provider>
-              )
-            : '';
+    const html = isSsrEnabled()
+        ? renderToString(
+              <Provider
+                  store={configEntries.createStore(Object.assign(initialState, req.initialState))}
+              >
+                  <configEntries.rootComponent url={req.url} />
+              </Provider>
+          )
+        : '';
 
     const helmet = Helmet.renderStatic();
 
