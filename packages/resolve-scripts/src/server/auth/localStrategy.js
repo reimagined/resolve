@@ -9,7 +9,7 @@ const strategy = (options) => {
             return new PassportLocalStrategy(options.strategy, (req, username, password, done) => {
                 const url = req.url.split('?')[0];
                 const { resolve, body } = req;
-                if (url === `${rootDirectory}${registerPath}`) {
+                if (url === registerPath) {
                     options.registerCallback({ resolve, body }, username, password, done);
                 } else {
                     options.loginCallback({ resolve, body }, username, password, done);
@@ -41,11 +41,11 @@ export default (options) => {
         },
         routes: {
             register: {
-                path: '/register',
+                path: `${rootDirectory}/register`,
                 method: 'post'
             },
             login: {
-                path: '/login',
+                path: `${rootDirectory}/login`,
                 method: 'post'
             }
         },

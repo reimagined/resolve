@@ -23,7 +23,7 @@ const strategy = (options) => {
                     ? options.failureCallback(err, redirect, { resolve, body })
                     : applyJwtValue(user, res, options.successRedirect);
             };
-            return url === `${rootDirectory}${authPath}`
+            return url === authPath
                 ? passport.authenticate('google', { scope: ['profile', 'email'] }, done)(
                       req,
                       res,
@@ -44,8 +44,8 @@ export default (options) => {
             successRedirect: null
         },
         routes: {
-            auth: '/auth/google',
-            callback: '/auth/google/callback'
+            auth: `${rootDirectory}/auth/google`,
+            callback: `${rootDirectory}/auth/google/callback`
         },
         authCallback: ({ resolve, body }, profile, done) => {
             done(
