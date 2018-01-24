@@ -1,3 +1,3 @@
-import * as auth from './server/auth';
+import * as auth from './server/auth'
 
-export { auth };
+export { auth }

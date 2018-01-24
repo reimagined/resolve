@@ -1,1 +1,1 @@
-export default state => state;
+export default state => state

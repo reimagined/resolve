@@ -1,3 +1,3 @@
-import { defaultReporter } from 'benchmark-base/tools';
+import { defaultReporter } from 'benchmark-base/tools'
 
-export default defaultReporter;
+export default defaultReporter

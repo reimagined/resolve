@@ -1,6 +1,6 @@
 const Event = (type, payload) => ({
-    type,
-    payload
-});
+  type,
+  payload
+})
 
-export default Event;
+export default Event
