@@ -16,7 +16,7 @@
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^7.0.1",
     "lerna": "^2.4.0",
-    "lint-staged": "3.4.0",
+    "lint-staged": "^6.0.0",
     "pre-commit": "^1.2.2",
     "prettier": "^1.7.4",
     "prettier-eslint-cli": "^4.1.1"
@@ -31,11 +31,17 @@
     "bootstrap": "lerna bootstrap",
     "lint": "eslint .",
     "lint-staged": "lint-staged",
-    "prettier": "prettier-eslint --write \"./**/src/**/*.js\" \"./**/test/**/*.js\" --ignore=./**/node_modules/**",
+    "prettier": "prettier --single-quote --no-semi --write \"**/**.js\"",
     "test": "lerna run test"
   },
   "pre-commit": [
     "lint-staged",
     "lint"
-  ]
+  ],
+  "lint-staged": {
+    "*.{js,css}": [
+      "prettier --single-quote --no-semi --write",
+      "git add"
+    ]
+  }
 }

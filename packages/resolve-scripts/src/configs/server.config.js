@@ -1,61 +1,67 @@
-import React from 'react';
-import { createStore } from 'redux';
-import defaultStorageAdapter from 'resolve-storage-lite';
-import defaultBusAdapter from 'resolve-bus-memory';
+import React from 'react'
+import { createStore } from 'redux'
+import defaultStorageAdapter from 'resolve-storage-lite'
+import defaultBusAdapter from 'resolve-bus-memory'
 
 // eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
-import config from 'RESOLVE_SERVER_CONFIG';
+import config from 'RESOLVE_SERVER_CONFIG'
 
 const emptyRootComponent = () => (
-    <div>No root component provided! Please set it in resolve.server.config.js</div>
-);
-const emptyCreateStore = () => createStore(() => ({}), {});
+  <div>
+    No root component provided! Please set it in resolve.server.config.js
+  </div>
+)
+const emptyCreateStore = () => createStore(() => ({}), {})
 
 const defaultConfig = {
-    entries: {
-        rootComponent: emptyRootComponent,
-        createStore: emptyCreateStore
-    },
-    bus: {
-        adapter: defaultBusAdapter
-    },
-    storage: {
-        adapter: defaultStorageAdapter
-    },
-    initialState: () => Promise.resolve({}),
-    aggregates: [],
-    initialSubscribedEvents: { types: [], ids: [] },
-    filterSubscription: eventDescription => eventDescription,
-    jwt: {
-        cookieName: 'Jwt-Cookie',
-        options: { maxAge: 1000 * 60 * 5 },
-        secret: 'Keyboard-Kat'
-    },
-    auth: {
-        strategies: []
-    },
-    readModels: [],
-    viewModels: [],
-    extendExpress: null,
-    sagas: []
-};
-
-function extendConfig(inputConfig, defaultConfig) {
-    const config = { ...inputConfig };
-
-    Object.keys(defaultConfig).forEach((key) => {
-        if (!config[key]) {
-            config[key] = defaultConfig[key];
-        } else if (defaultConfig[key] !== null && defaultConfig[key].constructor === Object) {
-            Object.keys(defaultConfig[key]).forEach((innerKey) => {
-                if (!config[key][innerKey]) {
-                    config[key][innerKey] = defaultConfig[key][innerKey];
-                }
-            });
-        }
-    });
-
-    return config;
+  entries: {
+    rootComponent: emptyRootComponent,
+    createStore: emptyCreateStore,
+    ssrMode: 'none'
+  },
+  bus: {
+    adapter: defaultBusAdapter
+  },
+  storage: {
+    adapter: defaultStorageAdapter
+  },
+  initialState: () => Promise.resolve({}),
+  aggregates: [],
+  initialSubscribedEvents: { types: [], ids: [] },
+  filterSubscription: eventDescription => eventDescription,
+  jwt: {
+    cookieName: 'Jwt-Cookie',
+    options: { maxAge: 1000 * 60 * 5 },
+    secret: 'Keyboard-Kat'
+  },
+  auth: {
+    strategies: []
+  },
+  readModels: [],
+  viewModels: [],
+  extendExpress: null,
+  sagas: []
 }
 
-export default extendConfig(config, defaultConfig);
+function extendConfig(inputConfig, defaultConfig) {
+  const config = { ...inputConfig }
+
+  Object.keys(defaultConfig).forEach(key => {
+    if (!config[key]) {
+      config[key] = defaultConfig[key]
+    } else if (
+      defaultConfig[key] !== null &&
+      defaultConfig[key].constructor === Object
+    ) {
+      Object.keys(defaultConfig[key]).forEach(innerKey => {
+        if (!config[key][innerKey]) {
+          config[key][innerKey] = defaultConfig[key][innerKey]
+        }
+      })
+    }
+  })
+
+  return config
+}
+
+export default extendConfig(config, defaultConfig)

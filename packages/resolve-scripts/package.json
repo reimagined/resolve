@@ -1,7 +1,8 @@
 {
   "name": "resolve-scripts",
-  "version": "0.2.2",
+  "version": "0.4.0",
   "description": "This package create server with resolve.",
+  "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
@@ -31,6 +32,10 @@
     "ddd"
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#readme",
+  "peerDependencies": {
+    "react": "^15.3.0 || ^16.0.0",
+    "react-dom": "^15.3.0 || ^16.0.0"
+  },
   "dependencies": {
     "address": "^1.0.3",
     "babel-cli": "^6.24.1",
@@ -65,12 +70,11 @@
     "redux": "^3.7.2",
     "regenerator-runtime": "^0.11.0",
     "request": "^2.81.0",
-    "resolve-bus-memory": "^0.2.2",
-    "resolve-command": "^0.2.2",
-    "resolve-es": "^0.2.2",
-    "resolve-query": "^0.2.2",
-    "resolve-redux": "^0.2.2",
-    "resolve-storage-lite": "^0.2.2",
+    "resolve-bus-memory": "^0.4.0",
+    "resolve-command": "^0.4.0",
+    "resolve-es": "^0.4.0",
+    "resolve-query": "^0.4.0",
+    "resolve-storage-lite": "^0.4.0",
     "socket.io": "^2.0.3",
     "start-server-webpack-plugin": "^2.2.0",
     "uglifyjs-webpack-plugin": "^1.1.4",

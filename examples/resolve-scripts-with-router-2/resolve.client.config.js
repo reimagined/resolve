@@ -1,7 +1,7 @@
-import React from 'react';
-import rootRoute from './index';
-import { Router, browserHistory } from 'react-router';
+import React from 'react'
+import rootRoute from './index'
+import { Router, browserHistory } from 'react-router'
 
 export default {
-    rootComponent: () => <Router history={browserHistory}>{rootRoute}</Router>
-};
+  rootComponent: () => <Router history={browserHistory}>{rootRoute}</Router>
+}

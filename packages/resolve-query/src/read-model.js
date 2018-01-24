@@ -1,114 +1,131 @@
-import 'regenerator-runtime/runtime';
-import createDefaultAdapter from 'resolve-readmodel-memory';
+import 'regenerator-runtime/runtime'
+import createDefaultAdapter from 'resolve-readmodel-memory'
+
+const emptyFunction = () => {}
 
 const init = (adapter, eventStore, projection) => {
-    if (projection === null) {
-        return {
-            ...adapter.init(),
-            onDispose: () => {}
-        };
+  if (projection === null) {
+    return {
+      ...adapter.init(),
+      onDispose: emptyFunction
+    }
+  }
+
+  const { getLastAppliedTimestamp = () => 0, ...readApi } = adapter.init()
+  let unsubscriber = null
+
+  let onDispose = () => {
+    if (unsubscriber === null) {
+      onDispose = emptyFunction
+      return
+    }
+    unsubscriber()
+  }
+
+  const loadDonePromise = new Promise((resolve, reject) => {
+    let flowPromise = Promise.resolve()
+
+    const forceStop = reason => {
+      if (flowPromise) {
+        flowPromise.then(reject, reject)
+        flowPromise = null
+        onDispose()
+      }
+
+      return Promise.reject(reason)
     }
 
-    let unsubscriber = null;
-    let onDispose = () => (unsubscriber === null ? (onDispose = null) : unsubscriber());
+    const synchronizedEventWorker = event => {
+      if (
+        !flowPromise ||
+        !event ||
+        !event.type ||
+        typeof projection[event.type] !== 'function'
+      ) {
+        return
+      }
 
-    const loadDonePromise = new Promise((resolve, reject) => {
-        let loading = { eventsFetched: 0, eventsProcessed: 0, isLoaded: false };
-        let flowPromise = Promise.resolve();
+      flowPromise = flowPromise
+        .then(projection[event.type].bind(null, event))
+        .catch(forceStop)
+    }
 
-        const loadingChecker = (doCount) => {
-            if (!loading) return;
-            if (doCount) {
-                loading.eventsProcessed++;
-            } else {
-                loading.isLoaded = true;
-            }
-            if (loading.eventsProcessed === loading.eventsFetched && loading.isLoaded) {
-                loading = null;
-                resolve();
-            }
-        };
+    Promise.resolve()
+      .then(getLastAppliedTimestamp)
+      .then(startTime =>
+        eventStore.subscribeByEventType(
+          Object.keys(projection),
+          synchronizedEventWorker,
+          {
+            startTime
+          }
+        )
+      )
+      .then(unsub => {
+        if (flowPromise) {
+          flowPromise = flowPromise.then(resolve).catch(forceStop)
+        }
 
-        const forceStop = (reason) => {
-            if (flowPromise) {
-                flowPromise.then(reject, reject);
-                flowPromise = null;
-                if (onDispose) {
-                    onDispose();
-                }
-            }
+        if (onDispose !== emptyFunction) {
+          unsubscriber = unsub
+        } else {
+          unsub()
+        }
+      })
+  })
 
-            return Promise.reject(reason);
-        };
-
-        const synchronizedEventWorker = (event) => {
-            if (!flowPromise) return;
-
-            if (event && event.type && typeof projection[event.type] === 'function') {
-                flowPromise = flowPromise.then(projection[event.type].bind(null, event), forceStop);
-            }
-
-            if (!loading || loading.isLoaded) return;
-            flowPromise = flowPromise.then(loadingChecker.bind(null, true));
-
-            loading.eventsFetched++;
-        };
-
-        eventStore
-            .subscribeByEventType(Object.keys(projection), synchronizedEventWorker)
-            .then((unsub) => {
-                loadingChecker(false);
-
-                if (onDispose !== null) {
-                    unsubscriber = unsub;
-                } else {
-                    unsub();
-                }
-            });
-    });
-
-    return {
-        ...adapter.init(),
-        loadDonePromise,
-        onDispose
-    };
-};
+  return {
+    ...readApi,
+    loadDonePromise,
+    onDispose
+  }
+}
 
 const read = async (repository, adapter, eventStore, projection, ...args) => {
-    if (!repository.loadDonePromise) {
-        Object.assign(repository, init(adapter, eventStore, projection));
-    }
+  if (!repository.loadDonePromise) {
+    Object.assign(repository, init(adapter, eventStore, projection))
+  }
 
-    const { getError, getReadable, loadDonePromise } = repository;
-    await loadDonePromise;
+  const { getError, getReadable, loadDonePromise } = repository
+  await loadDonePromise
 
-    const readableError = await getError();
-    if (readableError) {
-        throw readableError;
-    }
+  const readableError = await getError()
+  if (readableError) {
+    throw readableError
+  }
 
-    return await getReadable(...args);
-};
+  return await getReadable(...args)
+}
 
 const createReadModel = ({ projection, eventStore, adapter }) => {
-    const currentAdapter = adapter || createDefaultAdapter();
-    const builtProjection = projection ? currentAdapter.buildProjection(projection) : null;
-    const repository = {};
-    const getReadModel = read.bind(null, repository, currentAdapter, eventStore, builtProjection);
+  const currentAdapter = adapter || createDefaultAdapter()
+  const builtProjection = projection
+    ? currentAdapter.buildProjection(projection)
+    : null
+  const repository = {}
+  const getReadModel = read.bind(
+    null,
+    repository,
+    currentAdapter,
+    eventStore,
+    builtProjection
+  )
 
-    const reader = async (...args) => await getReadModel(...args);
+  const reader = async (...args) => await getReadModel(...args)
 
-    reader.dispose = () => {
-        if (!repository.loadDonePromise) return;
-        repository.onDispose();
-        Object.keys(repository).forEach((key) => {
-            delete repository[key];
-        });
+  reader.dispose = () => {
+    if (!repository.loadDonePromise) {
+      return
+    }
+    repository.onDispose()
+    Object.keys(repository).forEach(key => {
+      delete repository[key]
+    })
 
-        currentAdapter.reset();
-    };
+    currentAdapter.reset()
+  }
 
-    return reader;
-};
+  return reader
+}
 
-export default createReadModel;
+export default createReadModel

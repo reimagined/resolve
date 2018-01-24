@@ -1,7 +1,0 @@
---reporter spec
---recursive
---check-leaks
---colors
-
---require babel-register
---require ./test/_setup

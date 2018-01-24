@@ -1,10 +1,10 @@
 function createAdapter() {
-    let handler = () => {};
+  let handler = () => {}
 
-    return {
-        subscribe: callback => (handler = callback),
-        publish: event => handler(event)
-    };
+  return {
+    subscribe: callback => (handler = callback),
+    publish: event => handler(event)
+  }
 }
 
-export default createAdapter;
+export default createAdapter

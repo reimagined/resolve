@@ -1,18 +1,18 @@
-import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import React from 'react'
+import { BrowserRouter } from 'react-router-dom'
 
-import App from './client/components/App';
-import createStore from './client/store';
+import App from './client/components/App'
+import createStore from './client/store'
 
 if (module.hot) {
-    module.hot.accept();
+  module.hot.accept()
 }
 
 export default {
-    rootComponent: () => (
-        <BrowserRouter>
-            <App />
-        </BrowserRouter>
-    ),
-    createStore
-};
+  rootComponent: () => (
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  ),
+  createStore
+}
