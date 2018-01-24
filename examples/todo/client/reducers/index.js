@@ -1,3 +1,3 @@
-import { createViewModelsReducer } from 'resolve-redux';
+import { createViewModelsReducer } from 'resolve-redux'
 
-export default createViewModelsReducer();
+export default createViewModelsReducer()

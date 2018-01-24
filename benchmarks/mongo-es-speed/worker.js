@@ -1,14 +1,14 @@
-import mongoDbAdapter from 'resolve-storage-mongo';
+import mongoDbAdapter from 'resolve-storage-mongo'
 
-import config from './config';
+import config from './config'
 
-const TYPES = config.GENERATED_EVENT_TYPES;
+const TYPES = config.GENERATED_EVENT_TYPES
 
 export default function worker(eventsCount, reportObj) {
-    const store = mongoDbAdapter({
-        url: config.MONGODB_CONNECTION_URL,
-        collection: config.MONGODB_COLLECTION_NAME
-    });
+  const store = mongoDbAdapter({
+    url: config.MONGODB_CONNECTION_URL,
+    collection: config.MONGODB_COLLECTION_NAME
+  })
 
-    return store.loadEventsByTypes(TYPES, () => reportObj.value++);
+  return store.loadEventsByTypes(TYPES, () => reportObj.value++)
 }

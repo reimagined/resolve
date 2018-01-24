@@ -1,66 +1,69 @@
-import React from 'react';
-import { Helmet } from 'react-helmet';
-import { renderToString } from 'react-dom/server';
-import { Provider } from 'react-redux';
+import React from 'react'
+import { Helmet } from 'react-helmet'
+import { renderToString } from 'react-dom/server'
+import { Provider } from 'react-redux'
 
-import jsonUtfStringify from './utils/json_utf_stringify';
+import jsonUtfStringify from './utils/json_utf_stringify'
 
-import config from '../configs/server.config.js';
+import config from '../configs/server.config.js'
 
-const configEntries = config.entries;
-process.env.ROOT_DIR = process.env.ROOT_DIR || '';
+const configEntries = config.entries
+process.env.ROOT_DIR = process.env.ROOT_DIR || ''
 
 const isSsrEnabled = () =>
-    configEntries.ssrMode === 'always' ||
-    (configEntries.ssrMode === 'production-only' && process.env.NODE_ENV === 'production');
+  configEntries.ssrMode === 'always' ||
+  (configEntries.ssrMode === 'production-only' &&
+    process.env.NODE_ENV === 'production')
 
 export default (initialState, { req, res }) => {
-    const html = isSsrEnabled()
-        ? renderToString(
-              <Provider
-                  store={configEntries.createStore(Object.assign(initialState, req.initialState))}
-              >
-                  <configEntries.rootComponent url={req.url} />
-              </Provider>
-          )
-        : '';
+  const html = isSsrEnabled()
+    ? renderToString(
+        <Provider
+          store={configEntries.createStore(
+            Object.assign(initialState, req.initialState)
+          )}
+        >
+          <configEntries.rootComponent url={req.url} />
+        </Provider>
+      )
+    : ''
 
-    const helmet = Helmet.renderStatic();
+  const helmet = Helmet.renderStatic()
 
-    const bundleSource = `${process.env.ROOT_DIR}/static/bundle.js`;
+  const bundleSource = `${process.env.ROOT_DIR}/static/bundle.js`
 
-    const filterEnvVariablesRegex = /^RESOLVE_|^NODE_ENV$|^ROOT_DIR$/;
+  const filterEnvVariablesRegex = /^RESOLVE_|^NODE_ENV$|^ROOT_DIR$/
 
-    const processEnv = Object.keys(process.env)
-        .filter(key => filterEnvVariablesRegex.test(key))
-        .reduce((result, key) => {
-            result[key] = process.env[key];
-            return result;
-        }, {});
+  const processEnv = Object.keys(process.env)
+    .filter(key => filterEnvVariablesRegex.test(key))
+    .reduce((result, key) => {
+      result[key] = process.env[key]
+      return result
+    }, {})
 
-    let jwtStr = '';
-    try {
-        jwtStr = `window.__JWT__=${jsonUtfStringify(req.getJwtValue())}\n`;
-    } catch (e) {}
+  let jwtStr = ''
+  try {
+    jwtStr = `window.__JWT__=${jsonUtfStringify(req.getJwtValue())}\n`
+  } catch (e) {}
 
-    res.send(
-        '<!doctype html>\n' +
-            `<html ${helmet.htmlAttributes.toString()}>\n` +
-            '<head>\n' +
-            `${helmet.title.toString()}` +
-            `${helmet.meta.toString()}` +
-            `${helmet.link.toString()}` +
-            '<script>\n' +
-            `window.__INITIAL_STATE__=${jsonUtfStringify(initialState)}\n` +
-            jwtStr +
-            `window.__PROCESS_ENV__=${jsonUtfStringify(processEnv)}\n` +
-            '</script>\n' +
-            `${helmet.script.toString()}\n` +
-            '</head>\n' +
-            `<body ${helmet.bodyAttributes.toString()}>\n` +
-            `<div id="root">${html}</div>\n` +
-            `<script src="${bundleSource}"></script>\n` +
-            '</body>\n' +
-            '</html>\n'
-    );
-};
+  res.send(
+    '<!doctype html>\n' +
+      `<html ${helmet.htmlAttributes.toString()}>\n` +
+      '<head>\n' +
+      `${helmet.title.toString()}` +
+      `${helmet.meta.toString()}` +
+      `${helmet.link.toString()}` +
+      '<script>\n' +
+      `window.__INITIAL_STATE__=${jsonUtfStringify(initialState)}\n` +
+      jwtStr +
+      `window.__PROCESS_ENV__=${jsonUtfStringify(processEnv)}\n` +
+      '</script>\n' +
+      `${helmet.script.toString()}\n` +
+      '</head>\n' +
+      `<body ${helmet.bodyAttributes.toString()}>\n` +
+      `<div id="root">${html}</div>\n` +
+      `<script src="${bundleSource}"></script>\n` +
+      '</body>\n' +
+      '</html>\n'
+  )
+}

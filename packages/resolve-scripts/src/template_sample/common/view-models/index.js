@@ -1,2 +1,2 @@
-import defaultViewModel from './todos';
-export default [defaultViewModel];
+import defaultViewModel from './todos'
+export default [defaultViewModel]

@@ -1,14 +1,14 @@
-import 'regenerator-runtime/runtime';
+import 'regenerator-runtime/runtime'
 
 export default function reset(repository) {
-    if (repository.disposePromise) {
-        return repository.disposePromise;
-    }
+  if (repository.disposePromise) {
+    return repository.disposePromise
+  }
 
-    Object.keys(repository).forEach((key) => {
-        delete repository[key];
-    });
+  Object.keys(repository).forEach(key => {
+    delete repository[key]
+  })
 
-    repository.disposePromise = Promise.resolve();
-    return repository.disposePromise;
+  repository.disposePromise = Promise.resolve()
+  return repository.disposePromise
 }

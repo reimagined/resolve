@@ -1,24 +1,27 @@
-import React from 'react';
-import { RouterContext, match, createRoutes } from 'react-router';
+import React from 'react'
+import { RouterContext, match, createRoutes } from 'react-router'
 
-import rootRoute from './index';
+import rootRoute from './index'
 
 const ServerRouter = ({ url }) => {
-    let jsx = null;
+  let jsx = null
 
-    match({ routes: createRoutes(rootRoute), location: url }, (error, redirect, renderProps) => {
-        if (!error && !redirect && renderProps) {
-            jsx = <RouterContext {...renderProps} />;
-        } else {
-            jsx = <div>Error {error}</div>;
-        }
-    });
+  match(
+    { routes: createRoutes(rootRoute), location: url },
+    (error, redirect, renderProps) => {
+      if (!error && !redirect && renderProps) {
+        jsx = <RouterContext {...renderProps} />
+      } else {
+        jsx = <div>Error {error}</div>
+      }
+    }
+  )
 
-    return jsx;
-};
+  return jsx
+}
 
 export default {
-    entries: {
-        rootComponent: ServerRouter
-    }
-};
+  entries: {
+    rootComponent: ServerRouter
+  }
+}
