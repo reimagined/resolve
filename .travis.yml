@@ -12,7 +12,7 @@ install:
   - npm install
 
 script:
-  - 'if [ "$(node_modules/.bin/prettier-eslint "./**/src/**/*.js" "./**/test/**/*.js" --list-different --ignore=./node_modules/**)" ]; then exit 1; fi'
+  - 'if [ "$(node_modules/.bin/prettier --no-semi --single-quote "**/*.js" --list-different --ignore=./node_modules/** ./dist/**)" ]; then exit 1; fi'
   - npm run bootstrap
   - npm run lint
   - npm test
