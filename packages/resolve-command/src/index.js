@@ -1,4 +1,9 @@
 import "regenerator-runtime/runtime";
+import jwt from "jsonwebtoken";
+
+export function jwtVerifyAndGetPayload(jwtToken) {
+  return jwt.verify(jwtToken, process.env.JWT_SECRET);
+}
 
 const verifyCommand = async ({ aggregateId, aggregateName, type }) => {
   if (!aggregateId) throw new Error('The "aggregateId" argument is required');

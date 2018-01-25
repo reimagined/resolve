@@ -30,6 +30,7 @@
     "sinon": "^2.1.0"
   },
   "dependencies": {
+    "jsonwebtoken": "^8.1.1",
     "regenerator-runtime": "^0.10.5"
   }
 }
