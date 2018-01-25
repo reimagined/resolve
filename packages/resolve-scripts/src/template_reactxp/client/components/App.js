@@ -15,7 +15,7 @@ import ToggleSwitch from './ToggleSwitch'
 
 import actions from '../actions'
 
-const viewModel = 'Todos'
+const viewModelName = 'Todos'
 const aggregateId = 'root-id'
 
 const styles = {
@@ -150,9 +150,9 @@ class App extends Component {
 }
 
 const mapStateToProps = state => ({
-  viewModel,
+  viewModelName,
   aggregateId,
-  todos: state[viewModel][aggregateId]
+  todos: state[viewModelName][aggregateId]
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators(actions, dispatch)
