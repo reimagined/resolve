@@ -2,9 +2,9 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { renderToString } from 'react-dom/server'
 import { Provider } from 'react-redux'
-
+import { StaticRouter } from 'react-router-dom'
+import ResolveRoutes from '../resolve-routes'
 import jsonUtfStringify from './utils/json_utf_stringify'
-
 import config from '../configs/server.config.js'
 
 const configEntries = config.entries
@@ -23,7 +23,13 @@ export default (initialState, { req, res }) => {
             Object.assign(initialState, req.initialState)
           )}
         >
-          <configEntries.rootComponent url={req.url} />
+          <StaticRouter
+            basename={process.env.ROOT_DIR}
+            location={req.url}
+            context={{}}
+          >
+            <ResolveRoutes routes={configEntries.routes} />
+          </StaticRouter>
         </Provider>
       )
     : ''

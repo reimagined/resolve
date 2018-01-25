@@ -1,9 +1,9 @@
 import React from 'react'
 
-const RootComponent = () => (
+const App = () => (
   <div>
     <h1>Hello, world!</h1>
   </div>
 )
 
-export default RootComponent
+export default App

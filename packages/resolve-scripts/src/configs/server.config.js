@@ -6,17 +6,19 @@ import defaultBusAdapter from 'resolve-bus-memory'
 // eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
 import config from 'RESOLVE_SERVER_CONFIG'
 
-const emptyRootComponent = () => (
-  <div>
-    No root component provided! Please set it in resolve.server.config.js
-  </div>
-)
-const emptyCreateStore = () => createStore(() => ({}), {})
-
 const defaultConfig = {
   entries: {
-    rootComponent: emptyRootComponent,
-    createStore: emptyCreateStore,
+    routes: [
+      {
+        path: '/',
+        component: () => (
+          <div>
+            Routes not provided! Please set it in resolve.client.config.js
+          </div>
+        )
+      }
+    ],
+    createStore: () => createStore(() => ({}), {}),
     ssrMode: 'none'
   },
   bus: {
