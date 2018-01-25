@@ -26,6 +26,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+let jwtSecret = process.env.JWT_SECRET || "DefaultSecret";
+
+if (!process.env.hasOwnProperty("JWT_SECRET") && process.env.NODE_ENV === "production") {
+  raiseError("Jwt secret must be specified in production mode by JWT_SECRET environment variable");
+}
+
 if (!Array.isArray(config.readModels)) {
   raiseError(message.readModelsArrayFormat, config.readModels);
 }
@@ -81,7 +87,8 @@ config.viewModels.forEach(viewModel => {
       eventStore
     }),
     customResolvers: {
-      view: async (model, aggregateIds) => await viewModel.serializeState(await model(aggregateIds))
+      view: async (model, aggregateIds, jwtToken) =>
+        await viewModel.serializeState(await model(aggregateIds), jwtToken)
     }
   }).executeQueryCustom.bind(null, "view");
 
@@ -104,7 +111,7 @@ config.sagas.forEach(saga =>
 
 app.use((req, res, next) => {
   req.jwtToken =
-    req.cookies && req.cookies[config.jwt.cookieName] ? req.cookies[config.jwt.cookieName] : null;
+    req.cookies && req.cookies[config.jwtCookieName] ? req.cookies[config.jwtCookieName] : null;
 
   req.resolve = {
     queryExecutors,
@@ -116,8 +123,8 @@ app.use((req, res, next) => {
 });
 
 const applyJwtValue = (value, res, url) => {
-  const authenticationToken = jwt.sign(value, config.jwt.secret);
-  res.cookie(config.jwt.cookieName, authenticationToken, config.jwt.options);
+  const authenticationToken = jwt.sign(value, jwtSecret);
+  res.cookie(config.jwtCookieName, authenticationToken, config.jwtCookieOptions);
   res.redirect(url || getRootableUrl("/"));
 };
 
@@ -187,7 +194,7 @@ Object.keys(queryExecutors).forEach(modelName => {
           throw new Error(message.viewModelOnlyOnDemand);
         }
 
-        const result = await executor(req.query.aggregateIds);
+        const result = await executor(req.query.aggregateIds, req.jwtToken);
         res.status(200).json(result);
       } catch (err) {
         res.status(500).end(`${message.viewModelFail}${err.message}`);

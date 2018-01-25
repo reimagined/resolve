@@ -44,7 +44,7 @@ const executeCommand = async (command, aggregate, eventStore, jwtToken) => {
   return event;
 };
 
-function createExecutor({ eventStore, aggregate, jwtToken }) {
+function createExecutor({ eventStore, aggregate }) {
   return async (command, jwtToken) => {
     const event = await executeCommand(command, aggregate, eventStore, jwtToken);
     return await eventStore.saveEvent(event);
