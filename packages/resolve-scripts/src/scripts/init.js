@@ -163,7 +163,7 @@ export default (
     dev: 'resolve-scripts dev',
     start: 'resolve-scripts start',
     update: 'resolve-scripts update',
-    ios: 'react-native run-ios',
+    ios: 'ROOT_DIR=http://0.0.0.0:3000 react-native run-ios',
     android: 'react-native run-android',
     flow: 'flow'
   }
