@@ -1,5 +1,5 @@
+import Index from './components/Index'
 import Todo from './components/Todo'
-import Index from './components/Todo'
 
 export default [
   {

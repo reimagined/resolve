@@ -7,7 +7,7 @@ import { StaticRouter } from 'react-router'
 import aggregates from './common/aggregates'
 import readModels from './common/read-models'
 import viewModels from './common/view-models'
-import App from './client/components/App'
+import routes from './client/routes'
 import createStore from './client/store'
 
 if (module.hot) {
@@ -19,11 +19,7 @@ const dbPath = path.join(__dirname, `${NODE_ENV}.db`)
 
 export default {
   entries: {
-    rootComponent: props => (
-      <StaticRouter location={props.url} context={{}}>
-        <App />
-      </StaticRouter>
-    ),
+    routes,
     createStore
   },
   bus: { adapter: busAdapter },
