@@ -17,13 +17,9 @@
   },
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": [
-    "cqrs",
-    "eventsourcing",
-    "es",
-    "ddd"
-  ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-query#readme",
+  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
+  "homepage":
+    "https://github.com/reimagined/resolve/tree/master/packages/resolve-query#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "jest": "22.0.3",
@@ -33,7 +29,6 @@
   "dependencies": {
     "graphql": "^0.11.7",
     "graphql-tools": "^2.7.2",
-    "jsonwebtoken": "^8.1.1",
     "object-hash": "^1.1.8",
     "regenerator-runtime": "^0.10.5",
     "resolve-readmodel-memory": "^0.4.0"

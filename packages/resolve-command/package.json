@@ -17,20 +17,15 @@
   },
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": [
-    "cqrs",
-    "eventsourcing",
-    "es",
-    "ddd"
-  ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-command#readme",
+  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
+  "homepage":
+    "https://github.com/reimagined/resolve/tree/master/packages/resolve-command#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "jest": "22.0.3",
     "sinon": "^2.1.0"
   },
   "dependencies": {
-    "jsonwebtoken": "^8.1.1",
     "regenerator-runtime": "^0.10.5"
   }
 }
