@@ -1,7 +1,7 @@
 pipeline {
     agent {
-        docker { 
-            image 'reimagined/resolve-ci' 
+        docker {
+            image 'reimagined/resolve-ci'
             args '-u root:root'
         }
     }
@@ -50,7 +50,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Examples [ todo ] Functional Tests') {
             steps {
                 script {
@@ -123,7 +123,7 @@ pipeline {
                         npm install
                         ./node_modules/.bin/resolve-scripts update \$(cat /lerna_version)
                         npm run build
-                        testcafe path:/chromium ./tests/functional --app "IS_TEST=true npm run start"
+                        npm run test:functional -- --browser=path:/chromium
                     """
                 }
             }
@@ -163,7 +163,7 @@ pipeline {
             script {
                 sh 'rm -rf ./*'
             }
-            
+
             deleteDir()
         }
     }
