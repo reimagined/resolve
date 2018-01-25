@@ -35,12 +35,12 @@ A facade supports the following functions to send queries to a read/view model:
 The `executeQueryGraphql` function receives the following arguments:
 * `qraphQLQuery` (required) - the GraphQL query to get data;
 * `graphQLVariables` - specify it if the `graphQLQuery` contains variables;
-* `getJwtValue` - a callback to retrieve the actual client state stored in a verified JWT token.
+* `jwtToken` - non-verified actual JWT token provided from client.
  
 The `executeQueryCustom` function receives the following arguments:
 * `name` (required) - a custom resolver name to handle a request;
 * `customParams` - custom parameters passed to a resolver function;
-* `getJwtValue` - a callback to retrieve the actual client state stored in a verified JWT token.
+* `jwtToken` - non-verified actual JWT token provided from client.
 
 A custom query can be helpful in the following cases:
 * if the selected read model storage provides a
