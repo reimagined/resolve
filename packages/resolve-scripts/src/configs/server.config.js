@@ -32,8 +32,8 @@ const defaultConfig = {
   auth: {
     strategies: []
   },
-  jwtCookieName: 'JWT-COOKIE',
-  jwtCookieOptions: {
+  jwtCookie: {
+    name: 'JWT-COOKIE',
     maxAge: 3600,
     httpOnly: true
   },

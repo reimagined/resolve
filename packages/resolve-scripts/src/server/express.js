@@ -116,8 +116,8 @@ config.sagas.forEach(saga =>
 
 app.use((req, res, next) => {
   req.jwtToken =
-    req.cookies && req.cookies[config.jwtCookieName]
-      ? req.cookies[config.jwtCookieName]
+    req.cookies && req.cookies[config.jwtCookie.name]
+      ? req.cookies[config.jwtCookie.name]
       : null
 
   req.resolve = {
@@ -130,8 +130,11 @@ app.use((req, res, next) => {
 })
 
 const applyJwtValue = (value, res, url) => {
+  const { name: cookieName, ...cookieOptions } = config.jwtCookie
   const authenticationToken = jwt.sign(value, jwtSecret)
-  res.cookie(config.jwtCookieName, authenticationToken, config.jwtCookieOptions)
+
+  res.cookie(cookieName, authenticationToken, cookieOptions)
+
   res.redirect(url || getRootableUrl('/'))
 }
 
