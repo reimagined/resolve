@@ -23,6 +23,7 @@ Refer to [https://github.com/markerikson/react-redux-links](https://github.com/m
         * [routes](#routes)
         * [createStore](#createstore)
     * [Server Config](#server-config)
+        * [ssrMode](#ssrMode)
         * [aggregates](#aggregates)
         * [bus](#bus)        
         * [initialSubscribedEvents](#initialsubscribedevents)
@@ -269,6 +270,29 @@ The *resolve.client.config.js* file contains information for your application's 
 
 ### Server Config
 The *resolve.server.config.js* file contains information for the reSolve library.
+
+* #### ssrMode
+  Specifies the server-side rendering mode.
+
+  ##### Possible values:
+
+  * `'none'` (default) - disables server-side rendering;
+  * `'production-only'` - enables server-side rendering only when `NODE_ENV` is `'production'`;
+  * `'always'` - enables server-side rendering.
+
+  ##### Example
+
+  The example below shows how to enable server-side rendering in a production environment only.
+
+  ```js
+  // resolve.server.config.js
+
+  export default {
+    entries: {
+      ssrMode: 'production-only'
+    }
+  }
+  ```
 
 * #### aggregates
   Specifies an [aggregate](#️-aggregates-and-read-models) array for the [resolve-command](../../../resolve-command). Each command is addressed to a particular aggregate. When an aggregate receives a command, it performs this command and produces an event or returns an error if the command cannot be executed.
