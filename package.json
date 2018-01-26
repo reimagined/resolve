@@ -33,7 +33,7 @@
   ],
   "scripts": {
     "cleanup": "rm -Rf node_modules packages/*/node_modules && rm -Rf node_modules packages/*/dist && rm -Rf yarn.lock packages/*/yarn.lock",
-    "bootstrap": "yarn && lerna bootstrap",
+    "bootstrap": "lerna bootstrap",
     "lint": "eslint .",
     "lint-staged": "lint-staged",
     "prettier": "prettier --single-quote --no-semi --write \"**/**.js\"",
