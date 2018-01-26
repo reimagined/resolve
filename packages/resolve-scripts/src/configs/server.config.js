@@ -1,5 +1,3 @@
-import React from 'react'
-import { createStore } from 'redux'
 import defaultStorageAdapter from 'resolve-storage-lite'
 import defaultBusAdapter from 'resolve-bus-memory'
 
@@ -7,20 +5,7 @@ import defaultBusAdapter from 'resolve-bus-memory'
 import config from 'RESOLVE_SERVER_CONFIG'
 
 const defaultConfig = {
-  entries: {
-    routes: [
-      {
-        path: '/',
-        component: () => (
-          <div>
-            Routes not provided! Please set it in resolve.client.config.js
-          </div>
-        )
-      }
-    ],
-    createStore: () => createStore(() => ({}), {}),
-    ssrMode: 'none'
-  },
+  ssrMode: 'none',
   bus: {
     adapter: defaultBusAdapter
   },

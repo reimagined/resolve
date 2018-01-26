@@ -5,21 +5,22 @@ import { Provider } from 'react-redux'
 import { StaticRouter } from 'react-router-dom'
 import ResolveRoutes from '../resolve-routes'
 import jsonUtfStringify from './utils/json_utf_stringify'
-import config from '../configs/server.config.js'
+import serverConfig from '../configs/server.config.js'
+import clientConfig from '../configs/client.config.js'
 
-const configEntries = config.entries
+// const configEntries = config.entries
 process.env.ROOT_DIR = process.env.ROOT_DIR || ''
 
 const isSsrEnabled = () =>
-  configEntries.ssrMode === 'always' ||
-  (configEntries.ssrMode === 'production-only' &&
+  serverConfig.ssrMode === 'always' ||
+  (serverConfig.ssrMode === 'production-only' &&
     process.env.NODE_ENV === 'production')
 
 export default (initialState, { req, res }) => {
   const html = isSsrEnabled()
     ? renderToString(
         <Provider
-          store={configEntries.createStore(
+          store={clientConfig.createStore(
             Object.assign(initialState, req.initialState)
           )}
         >
@@ -28,7 +29,7 @@ export default (initialState, { req, res }) => {
             location={req.url}
             context={{}}
           >
-            <ResolveRoutes routes={configEntries.routes} />
+            <ResolveRoutes routes={clientConfig.routes} />
           </StaticRouter>
         </Provider>
       )

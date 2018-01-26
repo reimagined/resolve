@@ -20,13 +20,11 @@ Refer to [https://github.com/markerikson/react-redux-links](https://github.com/m
 * [Aggregates and Read Models](#️-aggregates-and-read-models)
 * [Configuration Files](#-configuration-files)
     * [Client Config](#client-config)
-        * [rootComponent](#rootcomponent)
+        * [routes](#routes)
         * [createStore](#createstore)
     * [Server Config](#server-config)
         * [aggregates](#aggregates)
-        * [bus](#bus)
-        * [entries.createStore](#entriescreatestore)
-        * [entries.rootComponent](#entriesrootcomponent)
+        * [bus](#bus)        
         * [initialSubscribedEvents](#initialsubscribedevents)
         * [filterSubscription](#filtersubscription)
         * [jwt](#jwt)
@@ -225,11 +223,11 @@ Note: Some Immutable wrapper for a state object is required to use view model de
 ### Client Config
 The *resolve.client.config.js* file contains information for your application's client side. In this file, you can define an entry point component and implement redux store creation with the client side's initial state.
 
-* #### `rootComponent`
-  Specifies a react component that is rendered as an application's root component.
+* #### `routes`
+  Specifies application's routes.
 
   ##### Example
-  In this example, we create a simple react component and set it as a root component that is shown on the application’s home page.
+  In this example, we create home route and set a component that is shown on the application’s home page.
 
   ```js
   // resolve.client.config.js
@@ -237,7 +235,10 @@ The *resolve.client.config.js* file contains information for your application's 
   import React from 'react';
 
   export default {
-    rootComponent: () => (<h1>Root Component</h1>)
+    routes: [{
+      path: '/',
+      component: () => (<div>Root Component</div>)
+    }]
   }
   ```
 
@@ -256,7 +257,10 @@ The *resolve.client.config.js* file contains information for your application's 
   import reducers from './reducers';  // standard redux reducers
 
   export default {
-    rootComponent: () => (<h1>Root Component</h1>),
+    routes: [{
+      path: '/',
+      component: () => (<div>Root Component</div>)
+    }],
     createStore: initialState => createStore(reducers, initialState)
   }
   ```
@@ -302,86 +306,6 @@ The *resolve.server.config.js* file contains information for the reSolve library
     }
   }
   ```
-
-* #### entries
-
-  It might be the same config as in *resolve.client.config.js*. However, it is also possible to pass different `rootComponent` or `createStore` to server and client sides. It can be helpful in some cases (for example, see [resolve-scripts with react-router v4](../../../../examples/resolve-scripts-with-router-4) and  [resolve-scripts with react-router v2](../../../../examples/resolve-scripts-with-router-2)) but be  careful when using this approach - it may cause issues with SSR.
-
-  ##### Example
-  ```js
-  // resolve.server.config.js
-
-  import clientConfig from './resolve.client.config';
-
-  export default {
-    entries: clientConfig
-  }
-  ```
-
-* #### entries.createStore
-
-  Takes the [initialState](#initialstate) function value and returns a Redux store.
-
-  ##### Example
-  This example shows a simple `createStore` implementation.
-
-  ```js
-  // resolve.server.config.js
-
-  import { createStore } from 'redux';
-  
-  import reducers from './reducers'; // standard redux reducers
-
-  export default {
-    entries: {
-      createStore: initialState => createStore(reducers, initialState)
-    }
-  }
-  ```
-  **Note:** Standard redux store creation excludes that the initialState is passed from the server side.
-
-* #### entries.rootComponent
-  
-  Specifies a react component that is rendered as an application's root component.
-
-  ##### Example
-  In this example, we create a simple react component and set it as a root component that is shown on the application’s home page.
-
-  ```js
-  // resolve.server.config.js
-
-  import React from 'react';
-
-  export default {
-    entries: {
-      rootComponent: () => (<h1>Root Component</h1>)
-    }
-  }
-  ```
-  
-* #### entries.ssrMode
- 
-    Specifies the server-side rendering mode.
-    
-    ##### Possible values:
-    
-    * `'none'` (default) - disables server-side rendering;
-    * `'production-only'` - enables server-side rendering only when `NODE_ENV` is `'production'`;
-    * `'always'` - enables server-side rendering.
-    
-    ##### Example
-
-    The example below shows how to enable server-side rendering in a production environment only.
-    
-    ```js
-    // resolve.server.config.js
-
-    export default {
-      entries: {
-        ssrMode: 'production-only'
-      }
-    }
-    ```
 
 * #### initialSubscribedEvents
   
