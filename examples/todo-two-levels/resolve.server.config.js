@@ -1,8 +1,6 @@
-import React from 'react'
 import path from 'path'
 import fileAdapter from 'resolve-storage-lite'
 import busAdapter from 'resolve-bus-memory'
-import { StaticRouter } from 'react-router'
 
 import aggregates from './common/aggregates'
 import readModels from './common/read-models'
