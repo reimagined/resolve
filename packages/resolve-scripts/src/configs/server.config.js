@@ -16,13 +16,13 @@ const defaultConfig = {
   aggregates: [],
   initialSubscribedEvents: { types: [], ids: [] },
   filterSubscription: eventDescription => eventDescription,
-  jwt: {
-    cookieName: 'Jwt-Cookie',
-    options: { maxAge: 1000 * 60 * 5 },
-    secret: 'Keyboard-Kat'
-  },
   auth: {
     strategies: []
+  },
+  jwtCookie: {
+    name: 'JWT-COOKIE',
+    maxAge: 3600,
+    httpOnly: true
   },
   readModels: [],
   viewModels: [],

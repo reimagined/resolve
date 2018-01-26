@@ -48,11 +48,6 @@ export default (initialState, { req, res }) => {
       return result
     }, {})
 
-  let jwtStr = ''
-  try {
-    jwtStr = `window.__JWT__=${jsonUtfStringify(req.getJwtValue())}\n`
-  } catch (e) {}
-
   res.send(
     '<!doctype html>\n' +
       `<html ${helmet.htmlAttributes.toString()}>\n` +
@@ -62,7 +57,6 @@ export default (initialState, { req, res }) => {
       `${helmet.link.toString()}` +
       '<script>\n' +
       `window.__INITIAL_STATE__=${jsonUtfStringify(initialState)}\n` +
-      jwtStr +
       `window.__PROCESS_ENV__=${jsonUtfStringify(processEnv)}\n` +
       '</script>\n' +
       `${helmet.script.toString()}\n` +
