@@ -9,10 +9,11 @@ before_install:
   - stty cols 80
 
 install:
-  - npm install
+  - yarn install
 
 script:
   - 'if [ "$(node_modules/.bin/prettier --no-semi --single-quote "**/*.js" --list-different --ignore=./node_modules/** ./dist/**)" ]; then exit 1; fi'
-  - npm run bootstrap
-  - npm run lint
-  - npm test
+  - yarn run cleanup
+  - yarn run bootstrap
+  - yarn run lint
+  - yarn test

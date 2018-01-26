@@ -11,8 +11,8 @@ Or you can specify full `MONGODB_CONNECTION_URL` environment variable to customi
 ## Usage
 
 ```bash
-npm install
-npm start
+yarn install
+yarn start
 ```
 
 ## Configuration
