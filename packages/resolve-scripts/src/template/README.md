@@ -23,7 +23,7 @@ Refer to [https://github.com/markerikson/react-redux-links](https://github.com/m
         * [routes](#routes)
         * [createStore](#createstore)
     * [Server Config](#server-config)
-        * [ssrMode](#ssrMode)
+        * [ssrMode](#ssrmode)
         * [aggregates](#aggregates)
         * [bus](#bus)        
         * [initialSubscribedEvents](#initialsubscribedevents)
@@ -271,7 +271,7 @@ The *resolve.client.config.js* file contains information for your application's 
 ### Server Config
 The *resolve.server.config.js* file contains information for the reSolve library.
 
-* #### ssrmode
+* #### ssrMode
   Specifies the server-side rendering mode.
 
   ##### Possible values:
