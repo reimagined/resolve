@@ -271,7 +271,7 @@ The *resolve.client.config.js* file contains information for your application's 
 ### Server Config
 The *resolve.server.config.js* file contains information for the reSolve library.
 
-* #### ssrMode
+* #### ssrmode
   Specifies the server-side rendering mode.
 
   ##### Possible values:
