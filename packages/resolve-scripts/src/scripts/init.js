@@ -162,14 +162,13 @@ export default (
     dev: 'resolve-scripts dev',
     start: 'resolve-scripts start',
     update: 'resolve-scripts update',
-    android: 'react-native run-android',
     flow: 'flow'
   }
 
   /* eslint-disable */
   appPackage.scripts = {
     ...appPackage.scripts,
-    test: 'jest tests/unit',
+    test: 'jest tests/unit/**',
     'test:functional':
       'cross-env NODE_ENV=tests babel-node ./tests/functional/testcafe_runner.js ' +
       '--presets es2015,stage-0,react'
@@ -183,21 +182,17 @@ export default (
 
   const readmeIsExist = tryRenameReadme(appPath)
 
+  const templatePath = path.join(packagePath || scriptsPath, 'dist', 'template')
+
+  if (!tryCopyTemplate(templatePath, appPath)) {
+    error(`Could not locate supplied template: ${chalk.green(templatePath)}`)
+    return
+  }
+
   log('Installing app dependencies...')
   log()
 
   if (isEmpty) {
-    const templatePath = path.join(
-      packagePath || scriptsPath,
-      'dist',
-      'template'
-    )
-
-    if (!tryCopyTemplate(templatePath, appPath)) {
-      error(`Could not locate supplied template: ${chalk.green(templatePath)}`)
-      return
-    }
-
     installDependencies(dependencies, false)
     installDependencies(resolveDependencies, false, resolveVersion)
     installDependencies(devDependencies, true)
