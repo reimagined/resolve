@@ -4,8 +4,11 @@ import { getRootableUrl } from './util'
 
 export default function subscribeAdapter() {
   let onEvent, onDisconnect
-
-  const socket = socketIOClient(window.location.origin, {
+  const origin =
+    typeof navigator !== 'undefined' && navigator.product === 'ReactNative'
+      ? process.env['ROOT_DIR']
+      : window.location.origin
+  const socket = socketIOClient(origin, {
     path: getRootableUrl('/socket/')
   })
 

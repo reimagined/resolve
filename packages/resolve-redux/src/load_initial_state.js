@@ -1,13 +1,11 @@
-import fetch from 'isomorphic-fetch'
-
 import { getRootableUrl } from './util'
 
 export default async function loadInitialState(viewModelName, aggregateId) {
   const response = await fetch(
     getRootableUrl(
-      `/api/query/${viewModelName}?aggregateIds${
-        aggregateId === '*' ? '' : '[]'
-      }=${aggregateId}`
+      `/api/query/${viewModelName}?aggregateIds${aggregateId === '*'
+        ? ''
+        : '[]'}=${aggregateId}`
     ),
     {
       method: 'GET',
