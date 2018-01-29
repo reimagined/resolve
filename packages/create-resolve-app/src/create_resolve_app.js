@@ -85,7 +85,6 @@ const runScripts = (
   originalDirectory,
   packagePath,
   isEmpty,
-  isReactxp,
   scriptsPackage,
   resolveVersion
 ) => {
@@ -100,7 +99,6 @@ const runScripts = (
     appName,
     originalDirectory,
     isEmpty,
-    isReactxp,
     packagePath,
     resolveVersion
   )
@@ -118,13 +116,7 @@ const createPackageJson = (appName, appPath) => {
   )
 }
 
-export default async (
-  name,
-  packagePath,
-  isEmpty,
-  isReactxp,
-  resolveVersion
-) => {
+export default async (name, packagePath, isEmpty, resolveVersion) => {
   const scriptsPackage = 'resolve-scripts'
   const appPath = path.resolve(name)
   const appName = path.basename(appPath)
@@ -169,7 +161,6 @@ export default async (
     originalDirectory,
     packagePath,
     isEmpty,
-    isReactxp,
     scriptsPackage,
     resolveVersion
   )

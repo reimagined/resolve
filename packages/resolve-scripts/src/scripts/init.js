@@ -146,7 +146,6 @@ export default (
   appName,
   originalDirectory,
   isEmpty,
-  isReactxp,
   packagePath,
   resolveVersion
 ) => {
@@ -163,7 +162,6 @@ export default (
     dev: 'resolve-scripts dev',
     start: 'resolve-scripts start',
     update: 'resolve-scripts update',
-    ios: 'ROOT_DIR=http://0.0.0.0:3000 react-native run-ios',
     android: 'react-native run-android',
     flow: 'flow'
   }
@@ -188,47 +186,32 @@ export default (
   log('Installing app dependencies...')
   log()
 
-  if (isReactxp) {
-    const templateSamplePath = path.join(
+  if (isEmpty) {
+    const templatePath = path.join(
       packagePath || scriptsPath,
       'dist',
-      'template_reactxp'
+      'template'
     )
-    fs.copySync(templateSamplePath, appPath)
+
+    if (!tryCopyTemplate(templatePath, appPath)) {
+      error(`Could not locate supplied template: ${chalk.green(templatePath)}`)
+      return
+    }
 
     installDependencies(dependencies, false)
     installDependencies(resolveDependencies, false, resolveVersion)
     installDependencies(devDependencies, true)
   } else {
-    if (isEmpty) {
-      const templatePath = path.join(
-        packagePath || scriptsPath,
-        'dist',
-        'template'
-      )
+    const templateSamplePath = path.join(
+      packagePath || scriptsPath,
+      'dist',
+      'template_sample'
+    )
+    fs.copySync(templateSamplePath, appPath)
 
-      if (!tryCopyTemplate(templatePath, appPath)) {
-        error(
-          `Could not locate supplied template: ${chalk.green(templatePath)}`
-        )
-        return
-      }
-
-      installDependencies(dependencies, false)
-      installDependencies(resolveDependencies, false, resolveVersion)
-      installDependencies(devDependencies, true)
-    } else {
-      const templateSamplePath = path.join(
-        packagePath || scriptsPath,
-        'dist',
-        'template_sample'
-      )
-      fs.copySync(templateSamplePath, appPath)
-
-      installDependencies([...dependencies, ...appDependencies], false)
-      installDependencies(resolveDependencies, false, resolveVersion)
-      installDependencies([...devDependencies, ...appDevDependencies], true)
-    }
+    installDependencies([...dependencies, ...appDependencies], false)
+    installDependencies(resolveDependencies, false, resolveVersion)
+    installDependencies([...devDependencies, ...appDevDependencies], true)
   }
 
   fs.unlinkSync(path.join(appPath, '.eslintrc'))
