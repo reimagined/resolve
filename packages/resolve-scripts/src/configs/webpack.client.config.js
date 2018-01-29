@@ -11,15 +11,14 @@ const productionPlugins = [
   })
 ].map(plugin => Object.defineProperty(plugin, '__PROD', { value: true }))
 
-const clientPath =
-  process.env['MODE'] === 'reactxp' ? 'client-index.js' : 'reactxp-index.js'
-
 module.exports = {
   name: 'client',
   entry: {
     client: [
       'regenerator-runtime/runtime',
-      path.join(__dirname, `../${clientPath}`)
+      process.env['INDEX']
+        ? path.join(process.cwd(), process.env['INDEX'])
+        : path.join(__dirname, '../client-index.js')
     ]
   },
   output: {
