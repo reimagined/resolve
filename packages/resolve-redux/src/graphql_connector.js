@@ -1,4 +1,5 @@
 import React from 'react'
+import isomorphicFetch from 'isomorphic-fetch'
 import { ApolloClient } from 'apollo-client'
 import { HttpLink } from 'apollo-link-http'
 import { InMemoryCache } from 'apollo-cache-inmemory'
@@ -7,10 +8,14 @@ import gql from 'graphql-tag'
 import { getRootableUrl } from './util'
 
 export default (gqlQuery, options = {}, endpoint) => {
+  const isReactNative =
+    typeof navigator !== 'undefined' && navigator.product === 'ReactNative'
+
   const client = new ApolloClient({
     link: new HttpLink({
       uri: endpoint || getRootableUrl('/api/query/graphql'),
-      credentials: 'same-origin'
+      credentials: 'same-origin',
+      fetch: isReactNative ? fetch : isomorphicFetch
     }),
     cache: new InMemoryCache()
   })
