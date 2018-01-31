@@ -7,12 +7,10 @@
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
-    "prepublish": "babel --out-dir ./dist ./src"
+    "prepublish": "babel --out-dir ./dist ./src",
+    "test": "exit 0"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/reimagined/resolve.git"
-  },
+  "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
   "keywords": [

@@ -1,6 +1,6 @@
 {
   "name": "resolve",
-  "version": "0.0.40",
+  "version": "0.4.1",
   "repository": "https://github.com/reimagined/resolve.git",
   "license": "MIT",
   "private": true,
@@ -18,7 +18,6 @@
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.6.0",
-    "lerna": "^2.4.0",
     "lint-staged": "^6.1.0",
     "pre-commit": "^1.2.2",
     "prettier": "^1.10.2",
@@ -28,16 +27,15 @@
     "packages/*",
     "packages/bus-adapters/*",
     "packages/storage-adapters/*",
-    "packages/readmodel-adapters/*",
-    "benchmarks/*"
+    "packages/readmodel-adapters/*"
   ],
   "scripts": {
-    "cleanup": "rm -Rf node_modules packages/*/node_modules && rm -Rf node_modules packages/*/dist && rm -Rf yarn.lock packages/*/yarn.lock",
-    "bootstrap": "lerna bootstrap",
+    "clean": "rm -Rf node_modules packages/*/node_modules packages/*/*/node_modules packages/*/dist packages/*/*/dist yarn.lock packages/*/yarn.lock packages/*/*/yarn.lock yarn-error.log packages/*/yarn-error.log packages/*/*/yarn-error.log",
     "lint": "eslint .",
     "lint-staged": "lint-staged",
+    "prepublish": "npx oao all \"yarn run prepublish\" --parallel",
     "prettier": "prettier --single-quote --no-semi --write \"**/**.js\"",
-    "test": "lerna run test"
+    "test": "npx oao all \"yarn run test\""
   },
   "pre-commit": [
     "lint-staged",
