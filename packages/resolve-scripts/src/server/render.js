@@ -2,28 +2,35 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { renderToString } from 'react-dom/server'
 import { Provider } from 'react-redux'
-
+import { StaticRouter } from 'react-router-dom'
+import ResolveRoutes from '../resolve-routes'
 import jsonUtfStringify from './utils/json_utf_stringify'
+import serverConfig from '../configs/server.config.js'
+import clientConfig from '../configs/client.config.js'
 
-import config from '../configs/server.config.js'
-
-const configEntries = config.entries
+// const configEntries = config.entries
 process.env.ROOT_DIR = process.env.ROOT_DIR || ''
 
 const isSsrEnabled = () =>
-  configEntries.ssrMode === 'always' ||
-  (configEntries.ssrMode === 'production-only' &&
+  serverConfig.ssrMode === 'always' ||
+  (serverConfig.ssrMode === 'production-only' &&
     process.env.NODE_ENV === 'production')
 
 export default (initialState, { req, res }) => {
   const html = isSsrEnabled()
     ? renderToString(
         <Provider
-          store={configEntries.createStore(
+          store={clientConfig.createStore(
             Object.assign(initialState, req.initialState)
           )}
         >
-          <configEntries.rootComponent url={req.url} />
+          <StaticRouter
+            basename={process.env.ROOT_DIR}
+            location={req.url}
+            context={{}}
+          >
+            <ResolveRoutes routes={clientConfig.routes} />
+          </StaticRouter>
         </Provider>
       )
     : ''
@@ -41,11 +48,6 @@ export default (initialState, { req, res }) => {
       return result
     }, {})
 
-  let jwtStr = ''
-  try {
-    jwtStr = `window.__JWT__=${jsonUtfStringify(req.getJwtValue())}\n`
-  } catch (e) {}
-
   res.send(
     '<!doctype html>\n' +
       `<html ${helmet.htmlAttributes.toString()}>\n` +
@@ -60,7 +62,6 @@ export default (initialState, { req, res }) => {
       '</style>\n' +
       '<script>\n' +
       `window.__INITIAL_STATE__=${jsonUtfStringify(initialState)}\n` +
-      jwtStr +
       `window.__PROCESS_ENV__=${jsonUtfStringify(processEnv)}\n` +
       '</script>\n' +
       `${helmet.script.toString()}\n` +
