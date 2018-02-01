@@ -42,7 +42,3 @@ jspm_packages
 
 #
 dist
-
-#
-benchmarks/**/*.xml
-benchmarks/**/*.csv
