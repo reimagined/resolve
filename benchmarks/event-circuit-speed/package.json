@@ -26,6 +26,6 @@
     "resolve-storage": "^0.0.12",
     "resolve-storage-mongo": "^0.4.0",
     "seamless-immutable": "^7.1.2",
-    "uuid": "^3.0.1"
+    "uuid": "^3.1.0"
   }
 }

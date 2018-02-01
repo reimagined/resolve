@@ -32,14 +32,14 @@
     "chai": "^3.5.0",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
-    "jest": "22.0.3",
+    "jest": "^22.1.4",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-test-renderer": "^15.6.2",
     "redux": "^3.6.0",
     "seamless-immutable": "^7.1.2",
-    "sinon": "^2.1.0",
-    "uuid": "^3.0.1"
+    "sinon": "^3.3.0",
+    "uuid": "^3.1.0"
   },
   "dependencies": {
     "apollo-cache-inmemory": "^1.1.0",

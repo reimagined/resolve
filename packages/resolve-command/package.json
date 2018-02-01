@@ -23,10 +23,10 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-command#readme",
   "devDependencies": {
     "chai": "^3.5.0",
-    "jest": "22.0.3",
-    "sinon": "^2.1.0"
+    "jest": "^22.1.4",
+    "sinon": "^3.3.0"
   },
   "dependencies": {
-    "regenerator-runtime": "^0.10.5"
+    "regenerator-runtime": "^0.11.0"
   }
 }

@@ -23,7 +23,7 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-memory#readme",
   "devDependencies": {
     "chai": "^3.5.0",
-    "jest": "22.0.3",
+    "jest": "^22.1.4",
     "sinon": "^3.3.0"
   },
   "dependencies": {

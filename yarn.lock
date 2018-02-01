@@ -4242,7 +4242,7 @@ jest-changed-files@^22.1.4:
   dependencies:
     throat "^4.0.0"
 
-jest-cli@^22.0.3, jest-cli@^22.1.4:
+jest-cli@^22.1.4:
   version "22.1.4"
   resolved "https://registry.yarnpkg.com/jest-cli/-/jest-cli-22.1.4.tgz#0fe9f3ac881b0cdc00227114c58583a2ebefcc04"
   dependencies:
@@ -4492,12 +4492,6 @@ jest-worker@^22.1.0:
   resolved "https://registry.yarnpkg.com/jest-worker/-/jest-worker-22.1.0.tgz#0987832fe58fbdc205357f4c19b992446368cafb"
   dependencies:
     merge-stream "^1.0.1"
-
-jest@22.0.3:
-  version "22.0.3"
-  resolved "https://registry.yarnpkg.com/jest/-/jest-22.0.3.tgz#bbf5bb8fbae6acaf743bd1300d69bb12bae2f021"
-  dependencies:
-    jest-cli "^22.0.3"
 
 jest@^22.1.4:
   version "22.1.4"
@@ -6961,19 +6955,6 @@ simple-get@^1.4.2:
     once "^1.3.1"
     unzip-response "^1.0.0"
     xtend "^4.0.0"
-
-sinon@^2.1.0:
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/sinon/-/sinon-2.4.1.tgz#021fd64b54cb77d9d2fb0d43cdedfae7629c3a36"
-  dependencies:
-    diff "^3.1.0"
-    formatio "1.2.0"
-    lolex "^1.6.0"
-    native-promise-only "^0.8.1"
-    path-to-regexp "^1.7.0"
-    samsam "^1.1.3"
-    text-encoding "0.6.4"
-    type-detect "^4.0.0"
 
 sinon@^3.3.0:
   version "3.3.0"

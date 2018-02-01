@@ -34,9 +34,9 @@
     "clean": "npx oao all \"npx rimraf dist\" --parallel && npx rimraf yarn-error.log && npx oao clean",
     "lint": "eslint .",
     "lint-staged": "lint-staged",
-    "prepublish": "npx oao all \"yarn run prepublish\" --parallel",
+    "prepublish": "oao all \"yarn run prepublish\" --parallel",
     "prettier": "prettier --single-quote --no-semi --write \"**/**.js\"",
-    "test": "npx oao all \"yarn run test\""
+    "test": "oao all \"yarn run test\""
   },
   "pre-commit": [
     "lint-staged",

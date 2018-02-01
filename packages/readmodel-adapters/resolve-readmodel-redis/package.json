@@ -23,7 +23,7 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-redis#readme",
   "devDependencies": {
     "chai": "^3.5.0",
-    "jest": "22.0.3",
+    "jest": "^22.1.4",
     "redis-mock": "^0.20.0",
     "sinon": "^3.3.0"
   },
