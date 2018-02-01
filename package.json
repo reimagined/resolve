@@ -19,6 +19,7 @@
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.6.0",
     "lint-staged": "^6.1.0",
+    "oao": "^1.2.1",
     "pre-commit": "^1.2.2",
     "prettier": "^1.10.2",
     "prettier-eslint-cli": "^4.7.0"
@@ -30,7 +31,7 @@
     "packages/readmodel-adapters/*"
   ],
   "scripts": {
-    "clean": "rm -Rf node_modules packages/*/node_modules packages/*/*/node_modules packages/*/dist packages/*/*/dist yarn.lock packages/*/yarn.lock packages/*/*/yarn.lock yarn-error.log packages/*/yarn-error.log packages/*/*/yarn-error.log",
+    "clean": "npx oao all \"npx rimraf dist\" --parallel && npx rimraf yarn-error.log && npx oao clean",
     "lint": "eslint .",
     "lint-staged": "lint-staged",
     "prepublish": "npx oao all \"yarn run prepublish\" --parallel",
