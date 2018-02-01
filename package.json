@@ -17,7 +17,7 @@
     "eslint-plugin-flowtype": "^2.42.0",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-react": "^7.6.0",
+    "eslint-plugin-react": "^7.6.1",
     "lint-staged": "^6.1.0",
     "oao": "^1.2.1",
     "pre-commit": "^1.2.2",

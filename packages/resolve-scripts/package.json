@@ -15,6 +15,7 @@
     "template_sample:remove": "rm -rf ./dist/template_sample",
     "template_sample:copy": "cp -r ./src/template_sample ./dist",
     "test": "exit 0",
+    "testw": "exit 0",
     "build": "babel --out-dir ./dist ./src --ignore template_sample",
     "prepublish": "yarn run build && yarn run template:remove && yarn run template:copy && yarn run template_sample:remove && yarn run template_sample:copy"
   },
