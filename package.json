@@ -36,7 +36,7 @@
     "lint-staged": "lint-staged",
     "prepublish": "oao all \"yarn run prepublish\" --parallel",
     "prettier": "prettier --single-quote --no-semi --write \"**/**.js\"",
-    "test": "oao all \"yarn run test\""
+    "test": "oao all \"yarn run test --color 2>&1\""
   },
   "pre-commit": [
     "lint-staged",
