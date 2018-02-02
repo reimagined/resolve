@@ -26,6 +26,17 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
 
+let jwtSecret = process.env.JWT_SECRET || 'DefaultSecret'
+
+if (
+  !process.env.hasOwnProperty('JWT_SECRET') &&
+  process.env.NODE_ENV === 'production'
+) {
+  raiseError(
+    'Jwt secret must be specified in production mode by JWT_SECRET environment variable'
+  )
+}
+
 if (!Array.isArray(config.readModels)) {
   raiseError(message.readModelsArrayFormat, config.readModels)
 }
@@ -81,8 +92,8 @@ config.viewModels.forEach(viewModel => {
       eventStore
     }),
     customResolvers: {
-      view: async (model, aggregateIds) =>
-        await viewModel.serializeState(await model(aggregateIds))
+      view: async (model, aggregateIds, jwtToken) =>
+        await viewModel.serializeState(await model(aggregateIds), jwtToken)
     }
   }).executeQueryCustom.bind(null, 'view')
 
@@ -104,12 +115,10 @@ config.sagas.forEach(saga =>
 )
 
 app.use((req, res, next) => {
-  req.getJwtValue = jwt.verify.bind(
-    null,
-    req.cookies && req.cookies[config.jwt.cookieName],
-    config.jwt.secret,
-    config.jwt.options
-  )
+  req.jwtToken =
+    req.cookies && req.cookies[config.jwtCookie.name]
+      ? req.cookies[config.jwtCookie.name]
+      : null
 
   req.resolve = {
     queryExecutors,
@@ -121,8 +130,11 @@ app.use((req, res, next) => {
 })
 
 const applyJwtValue = (value, res, url) => {
-  const authenticationToken = jwt.sign(value, config.jwt.secret)
-  res.cookie(config.jwt.cookieName, authenticationToken, config.jwt.options)
+  const { name: cookieName, ...cookieOptions } = config.jwtCookie
+  const authenticationToken = jwt.sign(value, jwtSecret)
+
+  res.cookie(cookieName, authenticationToken, cookieOptions)
+
   res.redirect(url || getRootableUrl('/'))
 }
 
@@ -158,7 +170,7 @@ try {
 
 app.post(getRootableUrl('/api/commands'), async (req, res) => {
   try {
-    await executeCommand(req.body, req.getJwtValue)
+    await executeCommand(req.body, req.jwtToken)
     res.status(200).send(message.commandSuccess)
   } catch (err) {
     res.status(500).end(`${message.commandFail}${err.message}`)
@@ -178,7 +190,7 @@ Object.keys(queryExecutors).forEach(modelName => {
           const data = await executor(
             req.body.query,
             req.body.variables || {},
-            req.getJwtValue
+            req.jwtToken
           )
           res.status(200).send({ data })
         } catch (err) {
@@ -199,7 +211,7 @@ Object.keys(queryExecutors).forEach(modelName => {
           throw new Error(message.viewModelOnlyOnDemand)
         }
 
-        const result = await executor(req.query.aggregateIds)
+        const result = await executor(req.query.aggregateIds, req.jwtToken)
         res.status(200).json(result)
       } catch (err) {
         res.status(500).end(`${message.viewModelFail}${err.message}`)
@@ -228,7 +240,7 @@ app.get([getRootableUrl('/*'), getRootableUrl('/')], async (req, res) => {
       originalUrl: req.originalUrl,
       body: req.body,
       query: req.query,
-      getJwtValue: req.getJwtValue
+      jwtToken: req.jwtToken
     })
 
     ssr(state, { req, res })

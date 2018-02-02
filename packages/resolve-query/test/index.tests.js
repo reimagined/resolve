@@ -333,14 +333,13 @@ describe('resolve-query', () => {
     })
     eventList = simulatedEventList.slice(0)
 
-    const getJwtValue = () => {}
+    const jwtToken = 'JWT-TOKEN'
     const graphqlQuery = 'query { UserById(id:2) { id, UserName } }'
-
-    const state = await executeQueryGraphql(graphqlQuery, {}, getJwtValue)
+    const state = await executeQueryGraphql(graphqlQuery, {}, jwtToken)
 
     expect(
-      normalGqlFacade.gqlResolvers.UserById.lastCall.args[2].getJwtValue
-    ).to.be.equal(getJwtValue)
+      normalGqlFacade.gqlResolvers.UserById.lastCall.args[2].jwtToken
+    ).to.be.equal(jwtToken)
 
     expect(state).to.be.deep.equal({
       UserById: {

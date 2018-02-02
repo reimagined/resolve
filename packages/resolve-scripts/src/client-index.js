@@ -1,15 +1,18 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
-
+import { BrowserRouter } from 'react-router-dom'
 import clientConfig from './configs/client.config'
+import ResolveRoutes from './resolve-routes'
 
-const { rootComponent: RootComponent, createStore } = clientConfig
+const { routes, createStore } = clientConfig
 const store = createStore(window.__INITIAL_STATE__)
 
 render(
   <Provider store={store}>
-    <RootComponent />
+    <BrowserRouter basename={window.__PROCESS_ENV__.ROOT_DIR}>
+      <ResolveRoutes routes={routes} />
+    </BrowserRouter>
   </Provider>,
   document.getElementById('root')
 )

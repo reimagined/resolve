@@ -27,7 +27,7 @@ const getAggregateState = async (
   return { aggregateState, aggregateVersion }
 }
 
-const executeCommand = async (command, aggregate, eventStore, getJwtValue) => {
+const executeCommand = async (command, aggregate, eventStore, jwtToken) => {
   const { aggregateId, type } = command
   let { aggregateState, aggregateVersion } = await getAggregateState(
     aggregate,
@@ -36,7 +36,7 @@ const executeCommand = async (command, aggregate, eventStore, getJwtValue) => {
   )
 
   const handler = aggregate.commands[type]
-  const event = handler(aggregateState, command, getJwtValue, aggregateVersion)
+  const event = handler(aggregateState, command, jwtToken, aggregateVersion)
 
   if (!event.type) {
     throw new Error('event type is required')
@@ -49,14 +49,9 @@ const executeCommand = async (command, aggregate, eventStore, getJwtValue) => {
   return event
 }
 
-function createExecutor({ eventStore, aggregate, getJwtValue }) {
-  return async (command, getJwtValue) => {
-    const event = await executeCommand(
-      command,
-      aggregate,
-      eventStore,
-      getJwtValue
-    )
+function createExecutor({ eventStore, aggregate }) {
+  return async (command, jwtToken) => {
+    const event = await executeCommand(command, aggregate, eventStore, jwtToken)
     return await eventStore.saveEvent(event)
   }
 }
@@ -70,9 +65,9 @@ export default ({ eventStore, aggregates }) => {
     return result
   }, {})
 
-  return async (command, getJwtValue) => {
+  return async (command, jwtToken) => {
     await verifyCommand(command)
     const aggregateName = command.aggregateName.toLowerCase()
-    return executors[aggregateName](command, getJwtValue)
+    return executors[aggregateName](command, jwtToken)
   }
 }

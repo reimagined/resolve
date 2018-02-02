@@ -20,6 +20,10 @@ module.exports = {
         __dirname,
         path.join(process.cwd(), './resolve.server.config.js')
       ),
+      RESOLVE_CLIENT_CONFIG: path.resolve(
+        __dirname,
+        path.join(process.cwd(), './resolve.client.config.js')
+      ),
       'resolve-scripts-auth': path.resolve(__dirname, '../server/auth')
     }
   },
