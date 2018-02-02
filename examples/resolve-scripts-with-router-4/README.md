@@ -23,9 +23,6 @@ git clone https://github.com/reimagined/resolve
 cd resolve
 yarn install
 cd examples/resolve-scripts-with-router-4
-yarn install
-cd ../..
-cd examples/resolve-scripts-with-router-4
 yarn start
 
 ```
