@@ -12,8 +12,6 @@ install:
   - yarn install
 
 script:
-  - 'if [ "$(node_modules/.bin/prettier --no-semi --single-quote "**/*.js" --list-different --ignore=./node_modules/** ./dist/**)" ]; then exit 1; fi'
-  - yarn run cleanup
-  - yarn run bootstrap
-  - yarn run lint
+  - 'if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi'
+  - yarn lint
   - yarn test
