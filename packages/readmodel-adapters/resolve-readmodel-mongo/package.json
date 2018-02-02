@@ -11,10 +11,7 @@
     "test": "jest --testMatch=**/test/*.tests.js",
     "testw": "jest --testMatch=**/test/*.tests.js --watchAll"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/reimagined/resolve.git"
-  },
+  "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
   "keywords": [
@@ -26,7 +23,7 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-mongo#readme",
   "devDependencies": {
     "chai": "^3.5.0",
-    "jest": "22.0.3",
+    "jest": "^22.1.4",
     "nedb": "^1.8.0",
     "sinon": "^3.3.0"
   },
