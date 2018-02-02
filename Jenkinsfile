@@ -9,10 +9,9 @@ pipeline {
         stage('Unit tests') {
             steps {
                 script {
-                    sh 'npm install'
-                    sh 'npm run bootstrap'
-                    sh 'npm run lint'
-                    sh 'npm test -- --stream'
+                    sh 'yarn install'
+                    sh 'yarn lint'
+                    sh 'yarn test -- --stream'
                 }
             }
         }
@@ -57,10 +56,10 @@ pipeline {
                     sh """
                         /init.sh
                         cd examples/todo
-                        npm install
-                        npm run update \$(cat /lerna_version)
+                        yarn install
+                        yarn update \$(cat /lerna_version)
                         cat ./package.json
-                        npm run test:functional -- --browser=path:/chromium
+                        yarn test:functional -- --browser=path:/chromium
                     """
                 }
             }
@@ -72,10 +71,10 @@ pipeline {
                     sh """
                         /init.sh
                         cd examples/todo-two-levels
-                        npm install
-                        npm run update \$(cat /lerna_version)
+                        yarn install
+                        yarn update \$(cat /lerna_version)
                         cat ./package.json
-                        npm run test:functional -- --browser=path:/chromium
+                        yarn test:functional -- --browser=path:/chromium
                     """
                 }
             }
@@ -86,12 +85,12 @@ pipeline {
                 script {
                     sh """
                         /init.sh
-                        npm install -g create-resolve-app@\$(cat /lerna_version)
+                        yarn install -g create-resolve-app@\$(cat /lerna_version)
                         create-resolve-app empty
                         cd ./empty
-                        npm run flow
-                        npm run test
-                        npm run test:functional -- --browser=path:/chromium
+                        yarn flow
+                        yarn test
+                        yarn test:functional -- --browser=path:/chromium
                     """
                 }
             }
@@ -104,9 +103,9 @@ pipeline {
                         /init.sh
                         create-resolve-app --sample todolist
                         cd ./todolist
-                        npm run flow
-                        npm run test
-                        npm run test:functional -- --browser=path:/chromium
+                        yarn flow
+                        yarn test
+                        yarn test:functional -- --browser=path:/chromium
                     """
                 }
             }
@@ -120,10 +119,10 @@ pipeline {
                         git clone https://github.com/reimagined/hacker-news-resolve.git
                         cd hacker-news-resolve
                         git checkout ${env.BRANCH_NAME} || echo "No branch \"${env.BRANCH_NAME}\""
-                        npm install
+                        yarn install
                         ./node_modules/.bin/resolve-scripts update \$(cat /lerna_version)
-                        npm run build
-                        npm run test:functional -- --browser=path:/chromium
+                        yarn build
+                        yarn test:functional -- --browser=path:/chromium
                     """
                 }
             }

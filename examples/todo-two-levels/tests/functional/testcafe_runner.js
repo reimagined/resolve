@@ -24,7 +24,7 @@ getInstallations()
         const runner = testcafe.createRunner()
         const browser = argv.browser || Object.keys(browsers).slice(0, 1)
         return runner
-          .startApp('npm run dev', TIMEOUT)
+          .startApp('yarn dev', TIMEOUT)
           .src(['./tests/functional/index.test.js'])
           .browsers(browser)
           .run({
