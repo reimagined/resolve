@@ -10,8 +10,7 @@ pipeline {
             steps {
                 script {
                     sh 'yarn install'
-                    sh 'yarn run bootstrap'
-                    sh 'yarn run lint'
+                    sh 'yarn lint'
                     sh 'yarn test -- --stream'
                 }
             }
@@ -58,9 +57,9 @@ pipeline {
                         /init.sh
                         cd examples/todo
                         yarn install
-                        yarn run update \$(cat /lerna_version)
+                        yarn update \$(cat /lerna_version)
                         cat ./package.json
-                        yarn run test:functional -- --browser=path:/chromium
+                        yarn test:functional -- --browser=path:/chromium
                     """
                 }
             }
@@ -73,9 +72,9 @@ pipeline {
                         /init.sh
                         cd examples/todo-two-levels
                         yarn install
-                        yarn run update \$(cat /lerna_version)
+                        yarn update \$(cat /lerna_version)
                         cat ./package.json
-                        yarn run test:functional -- --browser=path:/chromium
+                        yarn test:functional -- --browser=path:/chromium
                     """
                 }
             }
@@ -89,9 +88,9 @@ pipeline {
                         yarn install -g create-resolve-app@\$(cat /lerna_version)
                         create-resolve-app empty
                         cd ./empty
-                        yarn run flow
-                        yarn run test
-                        yarn run test:functional -- --browser=path:/chromium
+                        yarn flow
+                        yarn test
+                        yarn test:functional -- --browser=path:/chromium
                     """
                 }
             }
@@ -104,9 +103,9 @@ pipeline {
                         /init.sh
                         create-resolve-app --sample todolist
                         cd ./todolist
-                        yarn run flow
-                        yarn run test
-                        yarn run test:functional -- --browser=path:/chromium
+                        yarn flow
+                        yarn test
+                        yarn test:functional -- --browser=path:/chromium
                     """
                 }
             }
@@ -122,8 +121,8 @@ pipeline {
                         git checkout ${env.BRANCH_NAME} || echo "No branch \"${env.BRANCH_NAME}\""
                         yarn install
                         ./node_modules/.bin/resolve-scripts update \$(cat /lerna_version)
-                        yarn run build
-                        testcafe path:/chromium ./tests/functional --app "IS_TEST=true yarn run start"
+                        yarn build
+                        testcafe path:/chromium ./tests/functional --app "IS_TEST=true yarn start"
                     """
                 }
             }

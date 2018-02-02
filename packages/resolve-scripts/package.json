@@ -17,7 +17,7 @@
     "test": "exit 0",
     "testw": "exit 0",
     "build": "babel --out-dir ./dist ./src --ignore template_sample",
-    "prepublish": "yarn run build && yarn run template:remove && yarn run template:copy && yarn run template_sample:remove && yarn run template_sample:copy"
+    "prepublish": "yarn build && yarn template:remove && yarn template:copy && yarn template_sample:remove && yarn template_sample:copy"
   },
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",

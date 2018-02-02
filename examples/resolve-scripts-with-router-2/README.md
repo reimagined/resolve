@@ -27,13 +27,12 @@ Run the following commands to start this application:
 ```
 git clone https://github.com/reimagined/resolve
 cd resolve
-npm install
+yarn install
 cd examples/resolve-scripts-with-router-2
-npm install
+yarn install
 cd ../..
-npm run bootstrap
 cd examples/resolve-scripts-with-router-2
-npm start
+yarn start
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to view the application in a browser.
