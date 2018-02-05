@@ -11,7 +11,7 @@ pipeline {
                 script {
                     sh 'yarn install'
                     sh 'yarn lint'
-                    sh 'yarn test -- --stream'
+                    sh 'yarn test'
                 }
             }
         }
@@ -36,7 +36,7 @@ pipeline {
                         echo registry=http://${env.NPM_ADDR} > /root/.npmrc; \
                         echo //${env.NPM_ADDR}/:_authToken=${env.NPM_TOKEN} >> /root/.npmrc; \
                         echo 'registry "http://${env.NPM_ADDR}"' >> /root/.yarnrc; \
-                        yarn run publish -- --no-git-commit --no-check-uncommitted --new-version \$(cat /lerna_version); \
+                        yarn run publish --no-git-commit --no-check-uncommitted --no-confirm --new-version \$(cat /lerna_version); \
                         sleep 10
                     """
                 }
@@ -52,7 +52,7 @@ pipeline {
                         yarn install
                         yarn update \$(cat /lerna_version)
                         cat ./package.json
-                        yarn test:functional -- --browser=path:/chromium
+                        yarn test:functional --browser=path:/chromium
                     """
                 }
             }
@@ -67,7 +67,7 @@ pipeline {
                         yarn install
                         yarn update \$(cat /lerna_version)
                         cat ./package.json
-                        yarn test:functional -- --browser=path:/chromium
+                        yarn test:functional --browser=path:/chromium
                     """
                 }
             }
@@ -83,7 +83,7 @@ pipeline {
                         cd ./empty
                         yarn flow
                         yarn test
-                        yarn test:functional -- --browser=path:/chromium
+                        yarn test:functional --browser=path:/chromium
                     """
                 }
             }
@@ -98,7 +98,7 @@ pipeline {
                         cd ./todolist
                         yarn flow
                         yarn test
-                        yarn test:functional -- --browser=path:/chromium
+                        yarn test:functional --browser=path:/chromium
                     """
                 }
             }
@@ -115,7 +115,7 @@ pipeline {
                         yarn install
                         ./node_modules/.bin/resolve-scripts update \$(cat /lerna_version)
                         yarn build
-                        yarn test:functional -- --browser=path:/chromium
+                        yarn test:functional --browser=path:/chromium
                     """
                 }
             }
