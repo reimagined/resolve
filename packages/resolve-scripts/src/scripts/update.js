@@ -57,7 +57,7 @@ async function update() {
 
   if (!version) {
     const badPackages = packages.filter(
-      name => !/\^|~|x|\*/.test(appPackages[name].replace(/-.*?$/, ''))
+      name => !/\^|~|x|\*/.test(appPackages[name].split('-')[0])
     )
     if (badPackages.length > 0) {
       throw new Error(

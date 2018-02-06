@@ -12,6 +12,7 @@ const EOL = require('os').EOL
 const optionDefinitions = [
   { name: 'scripts', type: String },
   { name: 'sample', type: Boolean },
+  { name: 'exact-versions', type: Boolean },
   { name: 'version', alias: 'V', type: Boolean },
   { name: 'help', alias: 'h', type: Boolean }
 ]
@@ -68,5 +69,11 @@ if (unknownOptions && unknownOptions.length) {
   log(messages.emptyAppNameError)
 } else {
   let appName = options._unknown[0]
-  moduleCreator(appName, options.scripts, !options.sample, resolveVersion)
+  moduleCreator(
+    appName,
+    options.scripts,
+    !options.sample,
+    resolveVersion,
+    options.exactVersions
+  )
 }

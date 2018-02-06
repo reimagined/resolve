@@ -78,7 +78,7 @@ pipeline {
                     sh """
                         /init.sh
                         cd examples/todo-two-levels
-                        yarn update \$(cat /lerna_version)
+                        yarn add resolve-bus-memory@\$(cat /lerna_version) resolve-redux@\$(cat /lerna_version) resolve-scripts@\$(cat /lerna_version) resolve-storage-lite@\$(cat /lerna_version) --exact
                         cat ./package.json
                         yarn test:functional --browser=path:/chromium
                     """
@@ -92,7 +92,7 @@ pipeline {
                     sh """
                         /init.sh
                         yarn install -g create-resolve-app@\$(cat /lerna_version)
-                        create-resolve-app empty
+                        create-resolve-app --exact-versions empty
                         cd ./empty
                         yarn flow
                         yarn test
@@ -107,7 +107,7 @@ pipeline {
                 script {
                     sh """
                         /init.sh
-                        create-resolve-app --sample todolist
+                        create-resolve-app --sample --exact-versions todolist
                         cd ./todolist
                         yarn flow
                         yarn test

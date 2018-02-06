@@ -116,7 +116,13 @@ const createPackageJson = (appName, appPath) => {
   )
 }
 
-export default async (name, packagePath, isEmpty, resolveVersion) => {
+export default async (
+  name,
+  packagePath,
+  isEmpty,
+  resolveVersion,
+  exactVersions
+) => {
   const scriptsPackage = 'resolve-scripts'
   const appPath = path.resolve(name)
   const appName = path.basename(appPath)
@@ -162,6 +168,7 @@ export default async (name, packagePath, isEmpty, resolveVersion) => {
     packagePath,
     isEmpty,
     scriptsPackage,
-    resolveVersion
+    resolveVersion,
+    exactVersions
   )
 }
