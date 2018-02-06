@@ -86,7 +86,8 @@ const runScripts = (
   packagePath,
   isEmpty,
   scriptsPackage,
-  resolveVersion
+  resolveVersion,
+  exactVersions
 ) => {
   const scriptsPath =
     packagePath || path.resolve(appPath, 'node_modules', scriptsPackage)
@@ -100,7 +101,8 @@ const runScripts = (
     originalDirectory,
     isEmpty,
     packagePath,
-    resolveVersion
+    resolveVersion,
+    exactVersions
   )
 }
 
