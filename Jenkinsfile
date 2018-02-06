@@ -64,7 +64,7 @@ pipeline {
                     sh """
                         /init.sh
                         cd examples/todo
-                        yarn add resolve-bus-memory@\$(cat /lerna_version) resolve-redux@\$(cat /lerna_version) resolve-scripts@\$(cat /lerna_version) resolve-storage-lite@\$(cat /lerna_version) --exact
+                        yarn update --exact-versions \$(cat /lerna_version)
                         cat ./package.json
                         yarn test:functional --browser=path:/chromium
                     """
@@ -78,7 +78,7 @@ pipeline {
                     sh """
                         /init.sh
                         cd examples/todo-two-levels
-                        yarn add resolve-bus-memory@\$(cat /lerna_version) resolve-redux@\$(cat /lerna_version) resolve-scripts@\$(cat /lerna_version) resolve-storage-lite@\$(cat /lerna_version) --exact
+                        yarn update --exact-versions \$(cat /lerna_version)
                         cat ./package.json
                         yarn test:functional --browser=path:/chromium
                     """
@@ -91,9 +91,10 @@ pipeline {
                 script {
                     sh """
                         /init.sh
-                        yarn install -g create-resolve-app@\$(cat /lerna_version)
+                        yarn global add create-resolve-app@\$(cat /lerna_version)
                         create-resolve-app --exact-versions empty
                         cd ./empty
+                        cat ./package.json
                         yarn flow
                         yarn test
                         yarn test:functional --browser=path:/chromium
@@ -109,6 +110,7 @@ pipeline {
                         /init.sh
                         create-resolve-app --sample --exact-versions todolist
                         cd ./todolist
+                        cat ./package.json
                         yarn flow
                         yarn test
                         yarn test:functional --browser=path:/chromium
@@ -126,7 +128,8 @@ pipeline {
                         cd hacker-news-resolve
                         git checkout ${env.BRANCH_NAME} || echo "No branch \"${env.BRANCH_NAME}\""
                         yarn install
-                        ./node_modules/.bin/resolve-scripts update \$(cat /lerna_version)
+                        yarn resolve-scripts update --exact-versions \$(cat /lerna_version)
+                        cat ./package.json
                         yarn build
                         yarn test:functional --browser=path:/chromium
                     """
