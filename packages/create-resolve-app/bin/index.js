@@ -74,6 +74,6 @@ if (unknownOptions && unknownOptions.length) {
     options.scripts,
     !options.sample,
     resolveVersion,
-    options.exactVersions
+    !!options['exact-versions']
   )
 }
