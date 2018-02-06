@@ -64,7 +64,7 @@ pipeline {
                     sh """
                         /init.sh
                         cd examples/todo
-                        yarn update \$(cat /lerna_version)
+                        yarn add resolve-bus-memory@\$(cat /lerna_version) resolve-redux@\$(cat /lerna_version) resolve-scripts@\$(cat /lerna_version) resolve-storage-lite@\$(cat /lerna_version) --exact
                         cat ./package.json
                         yarn test:functional --browser=path:/chromium
                     """
