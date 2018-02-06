@@ -30,8 +30,24 @@ pipeline {
                         export CI_CANARY_VERSION=\$(nodejs -e "console.log(JSON.parse(require('fs').readFileSync('./package.json')).version.split('-')[0]);")-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}; \
                         echo \$CI_CANARY_VERSION > /lerna_version; \
                     """
-
+                    
+                    writeFile file: "oao_patch.diff", text: '''
+--- publish.js	2018-02-06 12:34:28.041469452 +0300
++++ publish_2.js	2018-02-06 13:08:19.140511452 +0300
+@@ -91,8 +91,8 @@
+             return _context.abrupt('return');
+ 
+           case 10:
+-            _context.next = 12;
+-            return prepublishChecks({ master: master, checkUncommitted: checkUncommitted, checkUnpulled: checkUnpulled });
++            // _context.next = 12;
++            // return prepublishChecks({ master: master, checkUncommitted: checkUncommitted, checkUnpulled: checkUnpulled });
+ 
+           case 12:
+             _context.next = 14;
+'''
                     sh """
+                        patch node_modules/oao/lib/publish.js < oao_patch.diff
                         echo registry=http://${env.NPM_ADDR} > /root/.npmrc; \
                         echo //${env.NPM_ADDR}/:_authToken=${env.NPM_TOKEN} >> /root/.npmrc; \
                         echo 'registry "http://${env.NPM_ADDR}"' >> /root/.yarnrc; \
@@ -48,7 +64,6 @@ pipeline {
                     sh """
                         /init.sh
                         cd examples/todo
-                        yarn install
                         yarn update \$(cat /lerna_version)
                         cat ./package.json
                         yarn test:functional --browser=path:/chromium
@@ -63,7 +78,6 @@ pipeline {
                     sh """
                         /init.sh
                         cd examples/todo-two-levels
-                        yarn install
                         yarn update \$(cat /lerna_version)
                         cat ./package.json
                         yarn test:functional --browser=path:/chromium
