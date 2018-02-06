@@ -16,7 +16,6 @@
     "build": "resolve-scripts build",
     "dev": "resolve-scripts dev",
     "start": "resolve-scripts start",
-    "update": "resolve-scripts update",
     "test": "exit 0",
     "testw": "exit 0",
     "test:functional": "cross-env NODE_ENV=tests babel-node ./tests/functional/testcafe_runner.js --presets es2015,stage-0,react"

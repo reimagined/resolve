@@ -19,7 +19,7 @@ pipeline {
         stage('Publish canary') {
             steps {
                 script {
-                    env.CI_TIMESTAMP = (new Date()).format("MMddHHmmss", TimeZone.getTimeZone('UTC'))
+                    env.CI_TIMESTAMP = (new Date()).format("MddHHmmss", TimeZone.getTimeZone('UTC'))
                     if (env.BRANCH_NAME =~ '^v([0-9]+).([0-9]+).([0-9]+)$') {
                         env.CI_RELEASE_TYPE = 'beta'
                     } else {
@@ -64,8 +64,9 @@ pipeline {
                     sh """
                         /init.sh
                         cd examples/todo
-                        yarn update --exact-versions \$(cat /lerna_version)
+                        ../../node_modules/.bin/resolve-scripts update --exact-versions \$(cat /lerna_version)
                         cat ./package.json
+                        yarn install
                         yarn test:functional --browser=path:/chromium
                     """
                 }
@@ -78,8 +79,9 @@ pipeline {
                     sh """
                         /init.sh
                         cd examples/todo-two-levels
-                        yarn update --exact-versions \$(cat /lerna_version)
+                        ../../node_modules/.bin/resolve-scripts update --exact-versions \$(cat /lerna_version)
                         cat ./package.json
+                        yarn install
                         yarn test:functional --browser=path:/chromium
                     """
                 }
