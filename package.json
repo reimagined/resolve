@@ -1,6 +1,6 @@
 {
   "name": "resolve",
-  "version": "0.4.1",
+  "version": "0.4.0",
   "repository": "https://github.com/reimagined/resolve.git",
   "license": "MIT",
   "private": true,
@@ -37,6 +37,7 @@
     "lint-staged": "lint-staged",
     "prepublish": "oao run-script prepublish --parallel",
     "prettier": "prettier --single-quote --no-semi --write \"**/**.js\"",
+    "publish": "oao publish -i \"examples/*\" --no-master --no-changelog",
     "test": "oao all \"yarn test --color 2>&1\"",
     "test:functional": "oao run-script test:functional"
   },
