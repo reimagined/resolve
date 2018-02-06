@@ -130,7 +130,7 @@ pipeline {
                         cd hacker-news-resolve
                         git checkout ${env.BRANCH_NAME} || echo "No branch \"${env.BRANCH_NAME}\""
                         yarn install
-                        yarn resolve-scripts update --exact-versions \$(cat /lerna_version)
+                        ../node_modules/.bin/resolve-scripts update --exact-versions \$(cat /lerna_version)
                         cat ./package.json
                         yarn build
                         yarn test:functional --browser=path:/chromium
