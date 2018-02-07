@@ -630,7 +630,7 @@ You can adjust your application's URL ([http://localhost:3000](http://localhost:
 * `HOST` - set the IP address;
 * `PORT` - set the port;
 * `HTTPS` - set to `true` to use `https` instead of `http`;
-* `ROOT_DIR` - set the application's root directory. For example, `export ROOT_DIR=/newurl`. After that, the application is available at [http://localhost:3000/newurl](http://localhost:3000/newurl). 
+* `ROOT_PATH` - set the application's root path. For example, `export ROOT_PATH=/newurl`. After that, the application is available at [http://localhost:3000/newurl](http://localhost:3000/newurl). 
 
 Environment variables are available on the client side using  `process.env.VARIABLE_NAME`.
 
