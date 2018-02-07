@@ -55,11 +55,7 @@ export default (initialState, { req, res }) => {
       `${helmet.title.toString()}` +
       `${helmet.meta.toString()}` +
       `${helmet.link.toString()}` +
-      '<style>\n' +
-      'html, body, .app-container { width: 100%; height: 100%; padding: 0; border: none; ' +
-      'margin: 0; font-family: proxima-nova, "Helvetica Neue", Helvetica, Roboto, Arial, ' +
-      'sans-serif} *:focus { outline: 0; }' +
-      '</style>\n' +
+      `${helmet.style.toString()}` +
       '<script>\n' +
       `window.__INITIAL_STATE__=${jsonUtfStringify(initialState)}\n` +
       `window.__PROCESS_ENV__=${jsonUtfStringify(processEnv)}\n` +
