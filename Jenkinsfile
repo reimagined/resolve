@@ -19,7 +19,7 @@ pipeline {
         stage('Publish canary') {
             steps {
                 script {
-                    env.CI_TIMESTAMP = (new Date()).format("MMddHHmmss", TimeZone.getTimeZone('UTC'))
+                    env.CI_TIMESTAMP = (new Date()).format("MddHHmmss", TimeZone.getTimeZone('UTC'))
                     if (env.BRANCH_NAME =~ '^v([0-9]+).([0-9]+).([0-9]+)$') {
                         env.CI_RELEASE_TYPE = 'beta'
                     } else {
@@ -36,13 +36,11 @@ pipeline {
 +++ publish_2.js	2018-02-06 13:08:19.140511452 +0300
 @@ -91,8 +91,8 @@
              return _context.abrupt('return');
-
            case 10:
 -            _context.next = 12;
 -            return prepublishChecks({ master: master, checkUncommitted: checkUncommitted, checkUnpulled: checkUnpulled });
 +            // _context.next = 12;
 +            // return prepublishChecks({ master: master, checkUncommitted: checkUncommitted, checkUnpulled: checkUnpulled });
-
            case 12:
              _context.next = 14;
 '''
@@ -64,8 +62,9 @@ pipeline {
                     sh """
                         /init.sh
                         cd examples/todo
-                        yarn update \$(cat /lerna_version)
+                        ../../node_modules/.bin/resolve-scripts update --exact-versions \$(cat /lerna_version)
                         cat ./package.json
+                        yarn install
                         yarn test:functional --browser=path:/chromium
                     """
                 }
@@ -78,8 +77,9 @@ pipeline {
                     sh """
                         /init.sh
                         cd examples/todo-two-levels
-                        yarn update \$(cat /lerna_version)
+                        ../../node_modules/.bin/resolve-scripts update --exact-versions \$(cat /lerna_version)
                         cat ./package.json
+                        yarn install
                         yarn test:functional --browser=path:/chromium
                     """
                 }
@@ -91,9 +91,10 @@ pipeline {
                 script {
                     sh """
                         /init.sh
-                        yarn install -g create-resolve-app@\$(cat /lerna_version)
-                        create-resolve-app empty
+                        yarn global add create-resolve-app@\$(cat /lerna_version)
+                        create-resolve-app --exact-versions empty
                         cd ./empty
+                        cat ./package.json
                         yarn flow
                         yarn test
                         yarn test:functional --browser=path:/chromium
@@ -107,8 +108,9 @@ pipeline {
                 script {
                     sh """
                         /init.sh
-                        create-resolve-app --sample todolist
+                        create-resolve-app --sample --exact-versions todolist
                         cd ./todolist
+                        cat ./package.json
                         yarn flow
                         yarn test
                         yarn test:functional --browser=path:/chromium
@@ -126,7 +128,8 @@ pipeline {
                         cd hacker-news-resolve
                         git checkout ${env.BRANCH_NAME} || echo "No branch \"${env.BRANCH_NAME}\""
                         yarn install
-                        ./node_modules/.bin/resolve-scripts update \$(cat /lerna_version)
+                        ../node_modules/.bin/resolve-scripts update --exact-versions \$(cat /lerna_version)
+                        cat ./package.json
                         yarn build
                         yarn test:functional --browser=path:/chromium
                     """

@@ -23,11 +23,15 @@ function getResolvePackages() {
   })
 }
 
-function updateResolvePackages(packages, version) {
+function updateResolvePackages(packages, version, exactVersions) {
   const command = 'npm'
 
   const args = version
-    ? ['install', ...packages.map(name => `${name}@${version}`)]
+    ? [
+        'install',
+        exactVersions ? '--save-exact' : '',
+        ...packages.map(name => `${name}@${version}`)
+      ]
     : ['update', ...packages]
 
   return new Promise((resolve, reject) => {
@@ -40,7 +44,8 @@ function updateResolvePackages(packages, version) {
 }
 
 async function update() {
-  const version = process.argv[3]
+  const exactVersions = process.argv[3] === '--exact-versions'
+  const version = exactVersions ? process.argv[4] : process.argv[3]
 
   const resolvePackages = await getResolvePackages()
 
@@ -57,7 +62,7 @@ async function update() {
 
   if (!version) {
     const badPackages = packages.filter(
-      name => !/\^|~|x|\*/.test(appPackages[name].replace(/-.*?$/, ''))
+      name => !/\^|~|x|\*/.test(appPackages[name].split('-')[0])
     )
     if (badPackages.length > 0) {
       throw new Error(
@@ -68,7 +73,7 @@ async function update() {
     }
   }
 
-  await updateResolvePackages(packages, version)
+  await updateResolvePackages(packages, version, exactVersions)
 }
 
 update().catch(error => {

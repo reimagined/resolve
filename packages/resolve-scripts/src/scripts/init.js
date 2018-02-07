@@ -74,9 +74,13 @@ const tryRenameGitignore = appPath => {
   )
 }
 
-const installDependencies = (dep, isDev, resolveVersion) => {
+const installDependencies = (dep, isDev, resolveVersion, exactVersions) => {
   const command = 'npm'
-  const args = ['install', isDev ? '--save-dev' : '--save'].concat(
+  const args = [
+    'install',
+    isDev ? '--save-dev' : '--save',
+    exactVersions ? '--save-exact' : ''
+  ].concat(
     dep.map(
       depName => (resolveVersion ? `${depName}@${resolveVersion}` : depName)
     )
@@ -147,7 +151,8 @@ export default (
   originalDirectory,
   isEmpty,
   packagePath,
-  resolveVersion
+  resolveVersion,
+  exactVersions
 ) => {
   const scriptsPackageName = require(path.join(
     __dirname,
@@ -194,7 +199,12 @@ export default (
 
   if (isEmpty) {
     installDependencies(dependencies, false)
-    installDependencies(resolveDependencies, false, resolveVersion)
+    installDependencies(
+      resolveDependencies,
+      false,
+      resolveVersion,
+      exactVersions
+    )
     installDependencies(devDependencies, true)
   } else {
     const templateSamplePath = path.join(
@@ -205,7 +215,12 @@ export default (
     fs.copySync(templateSamplePath, appPath)
 
     installDependencies([...dependencies, ...appDependencies], false)
-    installDependencies(resolveDependencies, false, resolveVersion)
+    installDependencies(
+      resolveDependencies,
+      false,
+      resolveVersion,
+      exactVersions
+    )
     installDependencies([...devDependencies, ...appDevDependencies], true)
   }
 
