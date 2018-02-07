@@ -36,11 +36,13 @@ pipeline {
 +++ publish_2.js	2018-02-06 13:08:19.140511452 +0300
 @@ -91,8 +91,8 @@
              return _context.abrupt('return');
+
            case 10:
 -            _context.next = 12;
 -            return prepublishChecks({ master: master, checkUncommitted: checkUncommitted, checkUnpulled: checkUnpulled });
 +            // _context.next = 12;
 +            // return prepublishChecks({ master: master, checkUncommitted: checkUncommitted, checkUnpulled: checkUnpulled });
+
            case 12:
              _context.next = 14;
 '''
