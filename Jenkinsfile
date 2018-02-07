@@ -11,7 +11,7 @@ pipeline {
                 script {
                     sh 'yarn install'
                     sh 'yarn lint'
-                    sh 'yarn test -- --stream'
+                    sh 'yarn test'
                 }
             }
         }
@@ -19,7 +19,7 @@ pipeline {
         stage('Publish canary') {
             steps {
                 script {
-                    env.CI_TIMESTAMP = (new Date()).format("MMddHHmmss", TimeZone.getTimeZone('UTC'))
+                    env.CI_TIMESTAMP = (new Date()).format("MddHHmmss", TimeZone.getTimeZone('UTC'))
                     if (env.BRANCH_NAME =~ '^v([0-9]+).([0-9]+).([0-9]+)$') {
                         env.CI_RELEASE_TYPE = 'beta'
                     } else {
@@ -27,23 +27,31 @@ pipeline {
                     }
 
                     sh """
-                        eval \$(next-lerna-version); \
-                        export CI_CANARY_VERSION=\$NEXT_LERNA_VERSION-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}; \
+                        export CI_CANARY_VERSION=\$(nodejs -e "console.log(JSON.parse(require('fs').readFileSync('./package.json')).version.split('-')[0]);")-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}; \
                         echo \$CI_CANARY_VERSION > /lerna_version; \
                     """
-
-                    if ( env.CI_RELEASE_TYPE == 'beta' ) {
-                        sh """
-                            echo registry=https://${env.NPM_ADDR_REMOTE} > /root/.npmrc; \
-                            echo //${env.NPM_ADDR_REMOTE}/:_authToken=${env.NPM_TOKEN_REMOTE} >> /root/.npmrc; \
-                            ./node_modules/.bin/lerna publish --canary --skip-git --force-publish=* --yes --repo-version \$(cat /lerna_version); \
-                        """
-                    }
-
+                    
+                    writeFile file: "oao_patch.diff", text: '''
+--- publish.js	2018-02-06 12:34:28.041469452 +0300
++++ publish_2.js	2018-02-06 13:08:19.140511452 +0300
+@@ -91,8 +91,8 @@
+             return _context.abrupt('return');
+ 
+           case 10:
+-            _context.next = 12;
+-            return prepublishChecks({ master: master, checkUncommitted: checkUncommitted, checkUnpulled: checkUnpulled });
++            // _context.next = 12;
++            // return prepublishChecks({ master: master, checkUncommitted: checkUncommitted, checkUnpulled: checkUnpulled });
+ 
+           case 12:
+             _context.next = 14;
+'''
                     sh """
+                        patch node_modules/oao/lib/publish.js < oao_patch.diff
                         echo registry=http://${env.NPM_ADDR} > /root/.npmrc; \
                         echo //${env.NPM_ADDR}/:_authToken=${env.NPM_TOKEN} >> /root/.npmrc; \
-                        ./node_modules/.bin/lerna publish --skip-git --force-publish=* --yes --repo-version \$(cat /lerna_version); \
+                        echo 'registry "http://${env.NPM_ADDR}"' >> /root/.yarnrc; \
+                        yarn run publish --no-git-commit --no-check-uncommitted --no-confirm --new-version \$(cat /lerna_version); \
                         sleep 10
                     """
                 }
@@ -56,10 +64,10 @@ pipeline {
                     sh """
                         /init.sh
                         cd examples/todo
-                        yarn install
-                        yarn update \$(cat /lerna_version)
+                        ../../node_modules/.bin/resolve-scripts update --exact-versions \$(cat /lerna_version)
                         cat ./package.json
-                        yarn test:functional -- --browser=path:/chromium
+                        yarn install
+                        yarn test:functional --browser=path:/chromium
                     """
                 }
             }
@@ -71,10 +79,10 @@ pipeline {
                     sh """
                         /init.sh
                         cd examples/todo-two-levels
-                        yarn install
-                        yarn update \$(cat /lerna_version)
+                        ../../node_modules/.bin/resolve-scripts update --exact-versions \$(cat /lerna_version)
                         cat ./package.json
-                        yarn test:functional -- --browser=path:/chromium
+                        yarn install
+                        yarn test:functional --browser=path:/chromium
                     """
                 }
             }
@@ -85,12 +93,13 @@ pipeline {
                 script {
                     sh """
                         /init.sh
-                        yarn install -g create-resolve-app@\$(cat /lerna_version)
-                        create-resolve-app empty
+                        yarn global add create-resolve-app@\$(cat /lerna_version)
+                        create-resolve-app --exact-versions empty
                         cd ./empty
+                        cat ./package.json
                         yarn flow
                         yarn test
-                        yarn test:functional -- --browser=path:/chromium
+                        yarn test:functional --browser=path:/chromium
                     """
                 }
             }
@@ -101,11 +110,12 @@ pipeline {
                 script {
                     sh """
                         /init.sh
-                        create-resolve-app --sample todolist
+                        create-resolve-app --sample --exact-versions todolist
                         cd ./todolist
+                        cat ./package.json
                         yarn flow
                         yarn test
-                        yarn test:functional -- --browser=path:/chromium
+                        yarn test:functional --browser=path:/chromium
                     """
                 }
             }
@@ -120,9 +130,10 @@ pipeline {
                         cd hacker-news-resolve
                         git checkout ${env.BRANCH_NAME} || echo "No branch \"${env.BRANCH_NAME}\""
                         yarn install
-                        ./node_modules/.bin/resolve-scripts update \$(cat /lerna_version)
+                        ../node_modules/.bin/resolve-scripts update --exact-versions \$(cat /lerna_version)
+                        cat ./package.json
                         yarn build
-                        yarn test:functional -- --browser=path:/chromium
+                        yarn test:functional --browser=path:/chromium
                     """
                 }
             }
