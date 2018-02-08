@@ -1,6 +1,6 @@
 
 
-# **🚀 Create ReSolve App** [![npm version](https://badge.fury.io/js/create-resolve-app.svg)](https://badge.fury.io/js/create-resolve-app)
+# **Create ReSolve App** [![npm version](https://badge.fury.io/js/create-resolve-app.svg)](https://badge.fury.io/js/create-resolve-app) 🚀
 This package creates an empty application based on the reSolve framework. Use the `--sample` option to create a single page application (SPA) which represents a typical Todo List. The application is built on the CQRS and Event Sourcing principles using [React](https://github.com/facebook/react) + [Redux](https://github.com/reactjs/redux) on the client.
 
 Create ReSolve App allows you to specify application blocks (aggregates, read models, and UI part React components present) in a semi-declarative manner. With the `resolve-scripts` package, you do not need to write an API backend manually. Instead, `resolve-scripts` deploys backend and domain services to interact with the client which is wrapped in the `resolve-redux` package for an automated interaction.
@@ -15,7 +15,7 @@ Available options:
 - `--sample` creates a single page application representing a typical Todo List
 - `--version` or `-V` outputs the version number
 
-## **🔎 Quick Overview**
+## **Quick Overview** 🔎
 > Note: Installing a package globally may require administrative privileges. This means you have to use the sudo command for Unix-based systems or run a terminal with administrative privileges on Windows systems.
 
 ```bash
@@ -27,8 +27,8 @@ npm run dev
 ![Terminal](https://user-images.githubusercontent.com/15689049/29822549-8513584c-8cd4-11e7-8b65-b88fdad7e4d1.png)
 Your app will be opened in the browser at [http://localhost:3000/](http://localhost:3000/).
 
-## **▶️ Getting Started**
-### 🏗 Create an App
+## **Getting Started** ▶
+### Create an App 🏗
 Create a new reSolve application in one of the following ways:
 
 using yarn...  
@@ -74,7 +74,7 @@ resolve-app/
       index.test.js
 ```
 
-### 📋 Available Scripts
+### Available Scripts 📋
 Once the installation is completed, you can run the following commands in the project directory to start your app:
 
 ### `npm run dev`

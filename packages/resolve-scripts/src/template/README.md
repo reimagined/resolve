@@ -1,12 +1,12 @@
 
-# **🚀 ReSolve App**
+# **ReSolve App** 🚀
 This project is an application created with [Create ReSolve App](../../../create-resolve-app). This package creates an empty single page application by default or a typical Todo List application if you use the `--sample` option. This application is built on the CQRS and Event Sourcing principles using React+Redux on the client.
 
 Create ReSolve App allows you to specify application blocks (aggregates, read models, and a UI part React components present) in a semi-declarative manner. With the `resolve-scripts` package, you do not need to write an API backend manually. Instead, `resolve-scripts` deploys backend and domain services to interact with the client which is wrapped into the `resolve-redux` package for an automated interaction.
 
 Refer to [https://github.com/markerikson/react-redux-links](https://github.com/markerikson/react-redux-links) for detailed information on subject-related technologies and links to the corresponding resources.
 
-## **📑 Table of Contents**
+## **Table of Contents** 📑
 * [Available Scripts](#-available-scripts)
     * [npm run dev](#npm-run-dev)
     * [npm run build](#npm-run-build)
@@ -49,7 +49,7 @@ Refer to [https://github.com/markerikson/react-redux-links](https://github.com/m
     * [Custom Environment Variables](#custom-environment-variables)
 
 
-## **📋 Available Scripts**
+## **Available Scripts** 📋
 In the project directory, you can run:
 
 ### `npm run dev`
@@ -73,7 +73,7 @@ Open [http://localhost:3000](http://localhost:3000/) to view it in the browser.
 Updates all resolve packages to the latest version according to [semver](https://docs.npmjs.com/getting-started/semantic-versioning).
 If the `version` argument is set, the command updates packages to the specified version.
 
-## **🗂️ Project Structure Overview**
+## **Project Structure Overview** 🗂
 [Create ReSolve App](https://www.npmjs.com/package/creat-resolve-app) is an NPM package referencing the latest [reSolve framework package](../../..) versions. It consists of the common isomorphic part which describes domain business logic and React components for the presentation. No implicit server part is needed - it is encapsulated in `resolve-scripts`, but can be customized using [config](#-configuration-files). The project also includes unit & E2E testing and deployment assets. All source code and functional tests are written in the [ES2016](http://2ality.com/2016/01/ecmascript-2016.html).
 
 ```
@@ -107,17 +107,17 @@ resolve-app/
       index.test.js
 ```
 
-### **🕴 Client**
+### **Client** 🕴
 The client side is located in the `client/` folder and exports two key endpoints: root React component and Redux store creator function. These client part entry points must be specified in the [resolve.client.config.js](#client-config) configuration file in the root directory.
 
 Any customization (for example, adding routing or applying middleware or saga) can be performed by wrapping original UI entry points into subsidiary entities and specifying them in an appropriate config section. The following examples show how to use a react router as UI entry point: 
 * [react-router-2](../../../../examples/resolve-scripts-with-router-2)  
 * [react-router-4](../../../../examples/resolve-scripts-with-router-4)
 
-### **🔗 Common**
+### **Common** 🔗
 The `common/` folder contains the application's isomorphic part which represents a business logic distributed between server and client in the same code. The domain logic is described in a reSolve-compatible format and appears in [aggregate and read model](#️-aggregates-and-read-models) declarations.
 
-### **📝 Configuration**
+### **Configuration** 📝
 Create ReSolve App provides declarative configuration instead of an imperative coding server-side part. The configuration allows you to customize the React client and server-side rendering, declare domain business logic regarding Event Sourcing with the reSolve library, and modify the development and production modes' webpack behavior.
 
 The client side, server side, and building phase configuration are split into three segregated files:
@@ -127,10 +127,10 @@ The client side, server side, and building phase configuration are split into th
 
 This approach allows you to simplify including non-isomorphic code and third-party libraries into an application by separating dependencies, and also store all ES5 code for the building phase in only one file.
 
-### **🚦 Functional-tests**
+### **Functional-tests** 🚦
 The system's operability is controlled with [TestCafe](http://devexpress.github.io/testcafe/documentation/using-testcafe/) functional tests. A test set builds and starts a demonstration application, opens it in a browser and automates UI interaction. After you modify the code, start functional tests to check if everything works correctly.
 
-## **🏗️ Aggregates and Read Models**
+## **Aggregates and Read Models** 🏗
 An application's common business/domain logic consists of aggregates and read models.
 ### **Aggregates**
 An *aggregate* is responsible for a system's behavior and encapsulates business logic. It responses to commands, checks whether they can be executed and generates events to change a system's current status.
@@ -220,7 +220,7 @@ Note: Some Immutable wrapper for a state object is required to use view model de
 
 
 
-## **🎛 Configuration Files**
+## **Configuration Files** 🎛
 ### Client Config
 The *resolve.client.config.js* file contains information for your application's client side. In this file, you can define an entry point component and implement redux store creation with the client side's initial state.
 
@@ -622,7 +622,7 @@ The *resolve.build.config.js* file contains information for building an applicat
   }
   ```
 
-## **🛠 Environment Variables**
+## **Environment Variables** 🛠
 
 ### Environment Variables to Change URL
 You can adjust your application's URL ([http://localhost:3000](http://localhost:3000/) is used by default) using the following environment variables:

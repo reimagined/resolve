@@ -1,4 +1,4 @@
-# **🚌 Bus Adapters**
+# ** Bus Adapters** 🚌
 This folder contains [resolve-es](https://github.com/reimagined/resolve/tree/master/packages/resolve-es) bus adapters.
 
 A bus adapter is an object that must contain two functions:  

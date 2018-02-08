@@ -1,4 +1,4 @@
-# **🔍 resolve-query** [![npm version](https://badge.fury.io/js/resolve-query.svg)](https://badge.fury.io/js/resolve-query)
+# **resolve-query** [![npm version](https://badge.fury.io/js/resolve-query.svg)](https://badge.fury.io/js/resolve-query) 🔍
 
 Provides an interface for creating [read and view models](../resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models) and query facade for them. 
 

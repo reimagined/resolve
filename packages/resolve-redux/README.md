@@ -1,7 +1,7 @@
-# **🔩 resolve-redux** [![npm version](https://badge.fury.io/js/resolve-redux.svg)](https://badge.fury.io/js/resolve-redux)
+# **resolve-redux** [![npm version](https://badge.fury.io/js/resolve-redux.svg)](https://badge.fury.io/js/resolve-redux) 🔩
 
 This package contains tools for integrating reSolve with [Redux](http://redux.js.org/) .
-## **📑 Table of Contents**
+## **Table of Contents** 📑
 * [Tools](#-tools)
   * [createResolveMiddleware](#createresolvemiddleware)
   * [createViewModelsReducer](#createviewmodelsreducer)
@@ -18,7 +18,7 @@ This package contains tools for integrating reSolve with [Redux](http://redux.js
   * [How to Generate Action from Aggregate](#how-to-generate-action-from-aggregate)
   * [How to Send Commands to Server](#how-to-send-commands-to-server)
 
-## 🛠 Tools
+## Tools 🛠
 ### `createResolveMiddleware`  
  
   Redux middleware used to:  
@@ -116,7 +116,7 @@ const ConnectedStoryComponent = gqlConnector(
     *  `state` - the state to be merged with the specified view model's existing state  
 
 
-## 💻 Basic Usage
+## Basic Usage 💻
 
 ### How to Create Redux Store
 

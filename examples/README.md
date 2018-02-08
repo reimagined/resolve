@@ -1,4 +1,4 @@
-# **💻 Examples**
+# ** Examples** 💻
 This folder contains reSolve framework examples.
 
 * [todo](https://github.com/reimagined/resolve/tree/master/examples/todo)  

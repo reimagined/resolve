@@ -1,5 +1,5 @@
 
-# **📚 reSolve Packages**
+# **reSolve Packages** 📚
 The reSolve framework includes the following packages.
 
 
