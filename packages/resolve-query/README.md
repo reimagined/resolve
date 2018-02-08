@@ -1,6 +1,7 @@
-# **🔍 resolve-query** [![npm version](https://badge.fury.io/js/resolve-query.svg)](https://badge.fury.io/js/resolve-query)
+# **resolve-query**
+[![npm version](https://badge.fury.io/js/resolve-query.svg)](https://badge.fury.io/js/resolve-query)
 
-Provides an interface for creating [read and view models](../resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models) and query facade for them. 
+Provides an interface for creating [read and view models](../resolve-scripts/src/template#aggregates-and-read-models-) and query facade for them. 
 
 Queries are used to observe a system
 's state. Read Models answer Queries and are built using Projection functions. All events from the beginning of time are applied to a Read Model to build its current state (or a state at a particular moment in time if necessary). Some Read Models, called View Models, are sent to the client UI to be a part of a Redux app state. They are small enough to fit into memory and can be kept up to date in the browser.

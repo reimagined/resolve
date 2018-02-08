@@ -9,7 +9,7 @@ import serverConfig from '../configs/server.config.js'
 import clientConfig from '../configs/client.config.js'
 
 // const configEntries = config.entries
-process.env.ROOT_DIR = process.env.ROOT_DIR || ''
+process.env.ROOT_PATH = process.env.ROOT_PATH || ''
 
 const isSsrEnabled = () =>
   serverConfig.ssrMode === 'always' ||
@@ -25,7 +25,7 @@ export default (initialState, { req, res }) => {
           )}
         >
           <StaticRouter
-            basename={process.env.ROOT_DIR}
+            basename={process.env.ROOT_PATH}
             location={req.url}
             context={{}}
           >
@@ -37,9 +37,9 @@ export default (initialState, { req, res }) => {
 
   const helmet = Helmet.renderStatic()
 
-  const bundleSource = `${process.env.ROOT_DIR}/static/bundle.js`
+  const bundleSource = `${process.env.ROOT_PATH}/static/bundle.js`
 
-  const filterEnvVariablesRegex = /^RESOLVE_|^NODE_ENV$|^ROOT_DIR$/
+  const filterEnvVariablesRegex = /^RESOLVE_|^NODE_ENV$|^ROOT_PATH$/
 
   const processEnv = Object.keys(process.env)
     .filter(key => filterEnvVariablesRegex.test(key))

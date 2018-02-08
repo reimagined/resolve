@@ -10,7 +10,7 @@ const store = createStore(window.__INITIAL_STATE__)
 
 render(
   <Provider store={store}>
-    <BrowserRouter basename={window.__PROCESS_ENV__.ROOT_DIR}>
+    <BrowserRouter basename={window.__PROCESS_ENV__.ROOT_PATH}>
       <ResolveRoutes routes={routes} />
     </BrowserRouter>
   </Provider>,

@@ -1,6 +1,6 @@
 import url from 'url'
 
-export const rootDirectory = process.env.ROOT_DIR || ''
+export const rootDirectory = process.env.ROOT_PATH || ''
 
 export const defaultFailureCallback = (error, redirect, { resolve, body }) =>
   redirect(
