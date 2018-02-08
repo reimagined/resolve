@@ -1,4 +1,5 @@
-# **resolve-storage-mongo** [![npm version](https://badge.fury.io/js/resolve-storage-mongo.svg)](https://badge.fury.io/js/resolve-storage-mongo)
+# **resolve-storage-mongo**
+[![npm version](https://badge.fury.io/js/resolve-storage-mongo.svg)](https://badge.fury.io/js/resolve-storage-mongo)
 
 This package is a `resolve-es` adapter for storing events using [MongoDB](https://docs.mongodb.com/).
 

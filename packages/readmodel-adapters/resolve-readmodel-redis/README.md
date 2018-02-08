@@ -1,5 +1,6 @@
 
-# **resolve-readmodel-redis** [![npm version](https://badge.fury.io/js/resolve-readmodel-redis.svg)](https://badge.fury.io/js/resolve-readmodel-redis)
+# **resolve-readmodel-redis**
+[![npm version](https://badge.fury.io/js/resolve-readmodel-redis.svg)](https://badge.fury.io/js/resolve-readmodel-redis)
 
 This package is a `resolve-query` adapter for storing a read model in [Redis](https://redis.io/) store. The adapter is based on the [Redis client](https://github.com/NodeRedis/node_redis).
 

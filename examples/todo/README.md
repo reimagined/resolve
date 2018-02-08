@@ -79,7 +79,7 @@ We ignore the state and unconditionally convert the commands into events. In mor
 
 ## Read Side: View model
 
-In its basic form, the Read Side can consist of a [View Model](https://github.com/reimagined/resolve/blob/master/docs/View%20Models.md) only, which is similar to a [Read Model](https://reimagined.github.io/resolve/#read-model-view-model-and-query) and used to infer the app's state *on the client side*. The **View Model** contains **projection functions** for every event, which each receive the current state with the event arguments and return the new state.
+In its basic form, the Read Side can consist of a [View Model](../../docs/View%20Models.md) only, which is similar to a [Read Model](../../README.md#read-model-view-model-and-query) and used to infer the app's state *on the client side*. The **View Model** contains **projection functions** for every event, which each receive the current state with the event arguments and return the new state.
 
 The best way to store a ToDo list is using the key-value map: we can use a command's `id` as a key and store an object with the following structure for each event:
 
@@ -149,9 +149,9 @@ Now we have described our app's business logic.
 
 Next, create a User Interface to send commands to the aggregate. The commands are invoked by calling the functions described in the aggregate's `commands` element. You should bind these functions to your UI elements and use the `state` object to show the current state.
 
-The [resolve-redux](https://reimagined.github.io/resolve/packages/resolve-redux) package's [connect](https://reimagined.github.io/resolve/packages/resolve-redux/#connect) function provides access to the `state` and commands. Pass a React component to it and receive everything from the object passed as a parameter. Next, call the function returned from the `react-redux`'s [connect()](https://github.com/reactjs/react-redux/blob/master/docs/api.md#connectmapstatetoprops-mapdispatchtoprops-mergeprops-options) function with the `withViewModel`'s output as a parameter.
+The [resolve-redux](../../packages/resolve-redux) package's [connect](../../packages/resolve-redux/README.md#connect) function provides access to the `state` and commands. Pass a React component to it and receive everything from the object passed as a parameter. Next, call the function returned from the `react-redux`'s [connect()](https://github.com/reactjs/react-redux/blob/master/docs/api.md#connectmapstatetoprops-mapdispatchtoprops-mergeprops-options) function with the `withViewModel`'s output as a parameter.
 
-The [resolve-redux's](https://reimagined.github.io/resolve/packages/resolve-redux) [connect()](https://reimagined.github.io/resolve/packages/resolve-redux/#connect) function is similar to the react-redux's connect(), but in addition to connecting a React component to a Redux store it also uses the viewModel and aggregateId from mapStateToProps to bind the React Component (App) to the reSolve View Model (ToDoView).
+The [resolve-redux's](../../packages/resolve-redux) [connect()](../../packages/resolve-redux/README.md#connect) function is similar to the react-redux's connect(), but in addition to connecting a React component to a Redux store it also uses the viewModel and aggregateId from mapStateToProps to bind the React Component (App) to the reSolve View Model (ToDoView).
 
 The code below demonstrates this:
 
@@ -244,9 +244,9 @@ export default aggregates.reduce(
 );
 ```
 
-The [createActions](https://reimagined.github.io/resolve/packages/resolve-redux/#createactions) function generates the dispatchable **Redux Actions** from a **ReSolve Aggregate**. The module exports **Redux Actions** collected from all aggregates.
+The [createActions](../../packages/resolve-redux/README.md#createactions) function generates the dispatchable **Redux Actions** from a **reSolve Aggregate**. The module exports **Redux Actions** collected from all aggregates.
 
-The last missing element is a **Redux Reducer**. You can create a default reducer based on the reSolve view models with the [createViewModelsReducer](https://reimagined.github.io/resolve/packages/resolve-redux/#createviewmodelsreducer) method as follows:
+The last missing element is a **Redux Reducer**. You can create a default reducer based on the reSolve view models with the [createViewModelsReducer](../../packages/resolve-redux/README.md#createviewmodelsreducer) method as follows:
 
 ```jsx
 // ./client/reducers/index.js

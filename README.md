@@ -6,18 +6,18 @@
 
 reSolve is a framework for developing apps based on CQRS and Event Sourcing using [React](https://github.com/facebook/react) + [Redux](https://github.com/reactjs/redux) on the client. It can help negate differences between your domain and technical languages, and focus on your application code.
 
-## **📑 Table of Contents**
-* [Basic Concepts](#️-basic-concepts)
+## **Table of Contents** 📑
+* [Basic Concepts](#basic-concepts)
 	* [Command and Aggregate](#command-and-aggregate)
 	* [Event Store](#event-store)
 	* [Read Model, View Model and Query](#read-model-view-model-and-query)
 	* [See Also](#see-also)
-* [Quick Installation](#-quick-installation)
-* [Packages](#-packages)
-* [Examples](#-examples)
+* [Quick Installation](#quick-installation-)
+* [Packages](#packages-)
+* [Examples](#examples-)
 * [Development](#development)
 
-## **🏗️ Basic Concepts**
+## **Basic Concepts**
 reSolve is a set of libraries which can be used independently or simultaneously. Each library is responsible for a particular CQRS + Event Sourcing system part as shown in the image below.
 
 
@@ -63,7 +63,7 @@ Learn more about related concepts:
 
 
 
-## **🚀 Quick Installation**
+## **Quick Installation** 🚀
 > Note: Installing a package globally may require administrative privileges. That means you have to use the sudo command for Unix-based systems or run a terminal with administrative privileges on Windows systems.
 
 
@@ -80,7 +80,7 @@ The application will be opened in your browser at [http://localhost:3000/](http:
 
 Refer to the [reSolve Getting Started Guide](packages/create-resolve-app) for detailed information on how to create a new reSolve application and all the available scripts.
 
-## **📚 Packages**
+## **Packages** 📚
 
 reSolve includes the following libraries which can be used independently or simultaneously.
 
@@ -114,11 +114,7 @@ Adapters for event store:
 	* [resolve-storage-lite](packages/storage-adapters/resolve-storage-lite)
 
 
-## **💻 Examples**
-
-* [resolve-scripts-with-router-2](examples/resolve-scripts-with-router-2)  
-	[resolve-scripts-with-router-4](examples/resolve-scripts-with-router-4)  
-	These examples show how to use `resolve-scripts` with the `react-router v2.x.x`  and `react-router v4.x.x`.
+## **Examples** 💻
 
 * [two-level todo list](examples/todo)  
 	This example is an application with several aggregate types related to each other. It also shows how to implement a custom backend API server.

@@ -1,4 +1,4 @@
-# **🛢 Read Model Adapters**
+# **Read Model Adapters** 🛢
 This folder contains [resolve-query](../resolve-query) read model adapters.
 
 A read model adapter is an object that should contain the following functions:  

@@ -1,5 +1,6 @@
 
-# **resolve-readmodel-mongo** [![npm version](https://badge.fury.io/js/resolve-readmodel-mongo.svg)](https://badge.fury.io/js/resolve-readmodel-mongo)
+# **resolve-readmodel-mongo**
+[![npm version](https://badge.fury.io/js/resolve-readmodel-mongo.svg)](https://badge.fury.io/js/resolve-readmodel-mongo)
 
 This package is a `resolve-query` adapter for storing a read model in [MongoDB database](https://www.mongodb.com/). Provided interface and functionality is equal to [memory adapter](../resolve-readmodel-memory), but store data in MongoDB instance.
 
