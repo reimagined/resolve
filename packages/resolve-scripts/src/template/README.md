@@ -1,24 +1,26 @@
 
-# **ReSolve App** 🚀
-This project is an application created with [Create ReSolve App](../../../create-resolve-app). This package creates an empty single page application by default or a typical Todo List application if you use the `--sample` option. This application is built on the CQRS and Event Sourcing principles using React+Redux on the client.
+# **reSolve App** 🚀
+This project is an application created with [Create reSolve App](../../../create-resolve-app). This package creates an empty single page application by default or a typical Todo List application if you use the `--sample` option. This application is built on the CQRS and Event Sourcing principles using React+Redux on the client.
 
-Create ReSolve App allows you to specify application blocks (aggregates, read models, and a UI part React components present) in a semi-declarative manner. With the `resolve-scripts` package, you do not need to write an API backend manually. Instead, `resolve-scripts` deploys backend and domain services to interact with the client which is wrapped into the `resolve-redux` package for an automated interaction.
+Create reSolve App allows you to specify application blocks (aggregates, read models, and a UI part React components present) in a semi-declarative manner. With the `resolve-scripts` package, you do not need to write an API backend manually. Instead, `resolve-scripts` deploys backend and domain services to interact with the client which is wrapped into the `resolve-redux` package for an automated interaction.
 
 Refer to [https://github.com/markerikson/react-redux-links](https://github.com/markerikson/react-redux-links) for detailed information on subject-related technologies and links to the corresponding resources.
 
 ## **Table of Contents** 📑
-* [Available Scripts](#-available-scripts)
+* [Available Scripts](#available-scripts-)
     * [npm run dev](#npm-run-dev)
     * [npm run build](#npm-run-build)
     * [npm start](#npm-start)
-    * [npm run update](#npm-run-update-[version])
-* [Project Structure Overview](#️-project-structure-overview)
-    * [Client](#-client)
-    * [Common](#-common)
-    * [Configuration](#-configuration)
-    * [Functional tests](#-functional-tests)
-* [Aggregates and Read Models](#️-aggregates-and-read-models)
-* [Configuration Files](#-configuration-files)
+    * [npm run update](#npm-run-update-version)
+* [Project Structure Overview](#project-structure-overview-)
+    * [Client](#client-)
+    * [Common](#common-)
+    * [Configuration](#configuration-)
+    * [Functional tests](#functional-tests-)
+* [Aggregates and Read Models](#aggregates-and-read-models-)
+    * [Aggregates](#aggregates)
+    * [Read Models](#read-models)
+* [Configuration Files](#configuration-files-)
     * [Client Config](#client-config)
         * [routes](#routes)
         * [createStore](#createstore)
@@ -35,16 +37,16 @@ Refer to [https://github.com/markerikson/react-redux-links](https://github.com/m
         * [auth](#auth)
           * [strategies](#authstrategies)
         * [initialState](#initialstate)
-        * [readModels](#readModels)
+        * [readModels](#readmodels)
         * [sagas](#sagas)
         * [storage](#storage)
     * [resolve-scripts-auth](#resolve-scripts-auth)
-      * [localStrategy](#localStrategy)
-      * [githubStrategy](#githubStrategy)
-      * [googleStrategy](#googleStrategy)
+      * [localStrategy](#localstrategy)
+      * [githubStrategy](#githubstrategy)
+      * [googleStrategy](#googlestrategy)
     * [Build Config](#build-config)
         * [extendWebpack](#extendwebpack)
-* [Environment Variables](#-environment-variables)
+* [Environment Variables](#environment-variables-)
     * [Environment Variables to Change URL](#environment-variables-to-change-url)
     * [Custom Environment Variables](#custom-environment-variables)
 
@@ -74,7 +76,7 @@ Updates all resolve packages to the latest version according to [semver](https:/
 If the `version` argument is set, the command updates packages to the specified version.
 
 ## **Project Structure Overview** 🗂
-[Create ReSolve App](https://www.npmjs.com/package/creat-resolve-app) is an NPM package referencing the latest [reSolve framework package](../../..) versions. It consists of the common isomorphic part which describes domain business logic and React components for the presentation. No implicit server part is needed - it is encapsulated in `resolve-scripts`, but can be customized using [config](#-configuration-files). The project also includes unit & E2E testing and deployment assets. All source code and functional tests are written in the [ES2016](http://2ality.com/2016/01/ecmascript-2016.html).
+[Create reSolve App](https://www.npmjs.com/package/create-resolve-app) is an NPM package referencing the latest [reSolve framework package](../../..) versions. It consists of the common isomorphic part which describes domain business logic and React components for the presentation. No implicit server part is needed - it is encapsulated in `resolve-scripts`, but can be customized using [config](#configuration-files-). The project also includes unit & E2E testing and deployment assets. All source code and functional tests are written in the [ES2016](http://2ality.com/2016/01/ecmascript-2016.html).
 
 ```
 resolve-app/
@@ -115,10 +117,10 @@ Any customization (for example, adding routing or applying middleware or saga) c
 * [react-router-4](../../../../examples/resolve-scripts-with-router-4)
 
 ### **Common** 🔗
-The `common/` folder contains the application's isomorphic part which represents a business logic distributed between server and client in the same code. The domain logic is described in a reSolve-compatible format and appears in [aggregate and read model](#️-aggregates-and-read-models) declarations.
+The `common/` folder contains the application's isomorphic part which represents a business logic distributed between server and client in the same code. The domain logic is described in a reSolve-compatible format and appears in [aggregate and read model](#aggregates-and-read-models-) declarations.
 
 ### **Configuration** 📝
-Create ReSolve App provides declarative configuration instead of an imperative coding server-side part. The configuration allows you to customize the React client and server-side rendering, declare domain business logic regarding Event Sourcing with the reSolve library, and modify the development and production modes' webpack behavior.
+Create reSolve App provides declarative configuration instead of an imperative coding server-side part. The configuration allows you to customize the React client and server-side rendering, declare domain business logic regarding Event Sourcing with the reSolve library, and modify the development and production modes' webpack behavior.
 
 The client side, server side, and building phase configuration are split into three segregated files:
 * [resolve.client.config.js](#client-config)  
@@ -295,7 +297,7 @@ The *resolve.server.config.js* file contains information for the reSolve library
   ```
 
 * #### aggregates
-  Specifies an [aggregate](#️-aggregates-and-read-models) array for the [resolve-command](../../../resolve-command). Each command is addressed to a particular aggregate. When an aggregate receives a command, it performs this command and produces an event or returns an error if the command cannot be executed.
+  Specifies an [aggregate](#aggregates-and-read-models-) array for the [resolve-command](../../../resolve-command). Each command is addressed to a particular aggregate. When an aggregate receives a command, it performs this command and produces an event or returns an error if the command cannot be executed.
 
   ##### Example
   In this example, we import an aggregate object array specified in the *aggregates.js* file.
@@ -465,7 +467,7 @@ The *resolve.server.config.js* file contains information for the reSolve library
   ```
 
 * #### readModels
-  A [read model](#️-aggregates-and-read-models) array for [resolve-query](../../../resolve-query). A *read model* represents the current system state or a part of it and is built by processing all events happened in the system. Read models are used to answer queries.
+  A [read model](#aggregates-and-read-models-) array for [resolve-query](../../../resolve-query). A *read model* represents the current system state or a part of it and is built by processing all events happened in the system. Read models are used to answer queries.
 
   ##### Example
   In this example, we import an array of read model objects specified in the *read-models.js* file. 
@@ -515,7 +517,7 @@ The *resolve.server.config.js* file contains information for the reSolve library
   ```
 
 ### resolve-scripts-auth
-This virtual package provides [localStrategy](#localStrategy), [githubStrategy](#githubStrategy) and [googleStrategy](#googleStrategy).
+This virtual package provides [localStrategy](#localstrategy), [githubStrategy](#githubstrategy) and [googleStrategy](#googlestrategy).
 
 A strategy's predefined options:
      

@@ -1,14 +1,16 @@
 
 
-# **Create ReSolve App** [![npm version](https://badge.fury.io/js/create-resolve-app.svg)](https://badge.fury.io/js/create-resolve-app) 🚀
+# **Create reSolve App** 🚀
+[![npm version](https://badge.fury.io/js/create-resolve-app.svg)](https://badge.fury.io/js/create-resolve-app)
+
 This package creates an empty application based on the reSolve framework. Use the `--sample` option to create a single page application (SPA) which represents a typical Todo List. The application is built on the CQRS and Event Sourcing principles using [React](https://github.com/facebook/react) + [Redux](https://github.com/reactjs/redux) on the client.
 
-Create ReSolve App allows you to specify application blocks (aggregates, read models, and UI part React components present) in a semi-declarative manner. With the `resolve-scripts` package, you do not need to write an API backend manually. Instead, `resolve-scripts` deploys backend and domain services to interact with the client which is wrapped in the `resolve-redux` package for an automated interaction.
+Create reSolve App allows you to specify application blocks (aggregates, read models, and UI part React components present) in a semi-declarative manner. With the `resolve-scripts` package, you do not need to write an API backend manually. Instead, `resolve-scripts` deploys backend and domain services to interact with the client which is wrapped in the `resolve-redux` package for an automated interaction.
 
 Refer to [https://github.com/markerikson/react-redux-links](https://github.com/markerikson/react-redux-links) for detailed information on subject-related technologies and links to the corresponding resources.
 
-* [Getting Started](#️-getting-started) - How to create a new app
-* [User Guide](#user-guide) - Information on apps created with the Create ReSolve App
+* [Getting Started](#getting-started) - How to create a new app
+* [User Guide](#user-guide) - Information on apps created with the Create reSolve App
 
 Available options:
 
@@ -27,8 +29,8 @@ npm run dev
 ![Terminal](https://user-images.githubusercontent.com/15689049/29822549-8513584c-8cd4-11e7-8b65-b88fdad7e4d1.png)
 Your app will be opened in the browser at [http://localhost:3000/](http://localhost:3000/).
 
-## **Getting Started** ▶
-### Create an App 🏗
+## **Getting Started**
+### Create an App
 Create a new reSolve application in one of the following ways:
 
 using yarn...  
@@ -95,9 +97,9 @@ Runs the built app in the production mode.
 Open [http://localhost:3000](http://localhost:3000/) to view it in the browser.
 
 ## **User Guide**
-The User Guide provides detailed information on an application created with Create ReSolve App:
-* [Project Structure Overview](../resolve-scripts/src/template#️-project-structure-overview)
-* [Aggregates and Read Models](../resolve-scripts/src/template#️-aggregates-and-read-models)
-* [Configuration Files](../resolve-scripts/src/template#-configuration-files)
+The User Guide provides detailed information on an application created with Create reSolve App:
+* [Project Structure Overview](../resolve-scripts/src/template#project-structure-overview-)
+* [Aggregates and Read Models](../resolve-scripts/src/template#aggregates-and-read-models-)
+* [Configuration Files](../resolve-scripts/src/template#configuration-files-)
 
 A copy of the user guide is added to your project folder as the `Readme.md` file.

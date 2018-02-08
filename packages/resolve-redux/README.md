@@ -1,22 +1,23 @@
-# **resolve-redux** [![npm version](https://badge.fury.io/js/resolve-redux.svg)](https://badge.fury.io/js/resolve-redux) 🔩
+# **resolve-redux**
+[![npm version](https://badge.fury.io/js/resolve-redux.svg)](https://badge.fury.io/js/resolve-redux)
 
-This package contains tools for integrating reSolve with [Redux](http://redux.js.org/) .
+This package contains tools for integrating reSolve with [Redux](http://redux.js.org/).
 ## **Table of Contents** 📑
-* [Tools](#-tools)
+* [Tools](#tools-)
   * [createResolveMiddleware](#createresolvemiddleware)
   * [createViewModelsReducer](#createviewmodelsreducer)
   * [connect](#connect)
   * [graphqlConnector](#graphqlconnector)
   * [createActions](#createactions)
   * [actions](#actions)
-    * [sendCommand](#sendmommand)
+    * [sendCommand](#sendcommand)
     * [subscribe](#subscribe)
     * [unsubscribe](#unsubscribe)
     * [merge](#merge)
-* [Basic Usage](#-basic-usage)
+* [Basic Usage](#basic-usage-)
   * [How to Create Redux Store](#how-to-create-redux-store)
-  * [How to Generate Action from Aggregate](#how-to-generate-action-from-aggregate)
-  * [How to Send Commands to Server](#how-to-send-commands-to-server)
+  * [How to Generate Action from Aggregate](#how-to-generate-actions-from-aggregate)
+  * [How to Send Commands to Server](#how-to-send-command-to-server)
 
 ## Tools 🛠
 ### `createResolveMiddleware`  

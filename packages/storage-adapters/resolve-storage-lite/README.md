@@ -1,4 +1,5 @@
-# **resolve-storage-lite** [![npm version](https://badge.fury.io/js/resolve-storage-lite.svg)](https://badge.fury.io/js/resolve-storage-lite)
+# **resolve-storage-lite**
+[![npm version](https://badge.fury.io/js/resolve-storage-lite.svg)](https://badge.fury.io/js/resolve-storage-lite)
 
 This package is a `resolve-es` adapter for storing events using a file or memory. It does not have binary dependencies and does not require additional applications (like MongoDB or SQL server).
 

@@ -1,5 +1,6 @@
 
-# **resolve-readmodel-memory** [![npm version](https://badge.fury.io/js/resolve-readmodel-memory.svg)](https://badge.fury.io/js/resolve-readmodel-memory)
+# **resolve-readmodel-memory**
+[![npm version](https://badge.fury.io/js/resolve-readmodel-memory.svg)](https://badge.fury.io/js/resolve-readmodel-memory)
 
 This package is a `resolve-query` adapter for storing a read model in memory. The adapter is based on key/value ES6 `Map` interface and does not have binary dependencies.
 

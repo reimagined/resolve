@@ -1,4 +1,5 @@
-# **resolve-bus-rabbitmq** [![npm version](https://badge.fury.io/js/resolve-bus-rabbitmq.svg)](https://badge.fury.io/js/resolve-bus-rabbitmq)
+# **resolve-bus-rabbitmq**
+[![npm version](https://badge.fury.io/js/resolve-bus-rabbitmq.svg)](https://badge.fury.io/js/resolve-bus-rabbitmq)
 
 This package is a `resolve-es` adapter for emitting events using [RabbitMQ](https://www.rabbitmq.com/) (based on the [amqplib](https://www.npmjs.com/package/amqplib) package). It requires RabbitMQ to be installed on your machine. 
 

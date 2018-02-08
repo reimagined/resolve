@@ -1,4 +1,5 @@
-# **resolve-bus-zmq**  [![npm version](https://badge.fury.io/js/resolve-bus-zmq.svg)](https://badge.fury.io/js/resolve-bus-zmq)
+# **resolve-bus-zmq**
+[![npm version](https://badge.fury.io/js/resolve-bus-zmq.svg)](https://badge.fury.io/js/resolve-bus-zmq)
 
 This package is a `resolve-es` adapter for emitting events using [ZeroMQ](http://zeromq.org/) (based on the [zeromq](https://www.npmjs.com/package/zeromq) package).
 

@@ -1,6 +1,7 @@
-# **resolve-command** [![npm version](https://badge.fury.io/js/resolve-command.svg)](https://badge.fury.io/js/resolve-command) 📢
+# **resolve-command**
+[![npm version](https://badge.fury.io/js/resolve-command.svg)](https://badge.fury.io/js/resolve-command)
 
-Provides a function to handle a command and send the generated event to an [event store](../resolve-es) based on definitions of [aggregates](../resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models) and their commands. 
+Provides a function to handle a command and send the generated event to an [event store](../resolve-es) based on definitions of [aggregates](../resolve-scripts/src/template#aggregates-and-read-models-) and their commands. 
 
 ## Usage
 When initializing a command, pass the following arguments:
@@ -9,7 +10,7 @@ When initializing a command, pass the following arguments:
 	A configured [eventStore](../resolve-es) instance.
 	
 * `aggregates`  
-	An array of [aggregates](../resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models).  
+	An array of [aggregates](../resolve-scripts/src/template#aggregates-and-read-models-).  
 
 After the command is initialized, you get a function that is used to send an event to the event store. It receives two arguments:
 * `command`
