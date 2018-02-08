@@ -6,7 +6,7 @@ export default function subscribeAdapter() {
   let onEvent, onDisconnect
   const origin =
     typeof navigator !== 'undefined' && navigator.product === 'ReactNative'
-      ? process.env['ROOT_DIR']
+      ? process.env['ROOT_PATH']
       : window.location.origin
   const socket = socketIOClient(origin, {
     path: getRootableUrl('/socket/')
