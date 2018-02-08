@@ -27,6 +27,6 @@ Adapters for event-store:
     * [resolve-bus-zmq](bus-adapters/resolve-bus-zmq) 
 
 
-* 🛢️ Storage adapters specifying where to store events:
+* 🛢 Storage adapters specifying where to store events:
     * [resolve-storage-mongo](storage-adapters/resolve-storage-mongo)
     * [resolve-storage-lite](storage-adapters/resolve-storage-lite)
