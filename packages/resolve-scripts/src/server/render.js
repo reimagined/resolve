@@ -55,6 +55,7 @@ export default (initialState, { req, res }) => {
       `${helmet.title.toString()}` +
       `${helmet.meta.toString()}` +
       `${helmet.link.toString()}` +
+      `${helmet.style.toString()}` +
       '<script>\n' +
       `window.__INITIAL_STATE__=${jsonUtfStringify(initialState)}\n` +
       `window.__PROCESS_ENV__=${jsonUtfStringify(processEnv)}\n` +
@@ -62,7 +63,7 @@ export default (initialState, { req, res }) => {
       `${helmet.script.toString()}\n` +
       '</head>\n' +
       `<body ${helmet.bodyAttributes.toString()}>\n` +
-      `<div id="root">${html}</div>\n` +
+      `<div class="app-container" id="root">${html}</div>\n` +
       `<script src="${bundleSource}"></script>\n` +
       '</body>\n' +
       '</html>\n'

@@ -16,7 +16,9 @@ module.exports = {
   entry: {
     client: [
       'regenerator-runtime/runtime',
-      path.join(__dirname, '../client-index.js')
+      process.env['INDEX']
+        ? path.join(process.cwd(), process.env['INDEX'])
+        : path.join(__dirname, '../client-index.js')
     ]
   },
   output: {

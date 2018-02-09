@@ -1,5 +1,3 @@
-import fetch from 'isomorphic-fetch'
-
 import { checkRequiredFields, getRootableUrl } from './util'
 
 export default async function sendCommand(store, action) {
