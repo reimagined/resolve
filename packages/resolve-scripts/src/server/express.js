@@ -191,7 +191,11 @@ Object.keys(queryExecutors).forEach(modelName => {
   } else if (executor.mode === 'view') {
     app.get(getRootableUrl(`/api/query/${modelName}`), async (req, res) => {
       try {
-        const aggregateIds = req.query.aggregateIds
+        const aggregateIds =
+          req.query.aggregateIds === '*'
+            ? '*'
+            : JSON.parse(req.query.aggregateIds)
+
         if (
           aggregateIds !== '*' &&
           (!Array.isArray(aggregateIds) || aggregateIds.length === 0)
@@ -199,7 +203,7 @@ Object.keys(queryExecutors).forEach(modelName => {
           throw new Error(message.viewModelOnlyOnDemand)
         }
 
-        const result = await executor(req.query.aggregateIds)
+        const result = await executor(aggregateIds)
         res.status(200).json(result)
       } catch (err) {
         res.status(500).end(`${message.viewModelFail}${err.message}`)
