@@ -1,5 +1,3 @@
-// import createNativeAdapter from './adapter'
-// import storeInterface from './storeInterface'
 import messages from './messages'
 
 const initProjection = async ({ metaApi, storeApi, internalContext }) => {
