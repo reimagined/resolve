@@ -7,9 +7,6 @@ import reset from './reset'
 const DEFAULT_META_NAME = '__ResolveMeta__'
 
 /*
-  databaseApi: 
-    connect: () => ...
-
   metaApi:
     getStorageNames: () => ...
     drop: () => ...
@@ -21,7 +18,6 @@ const DEFAULT_META_NAME = '__ResolveMeta__'
     dropStorage: (dropStorage) => ...
 
   internalContext: object
-    connectionPromise
     internalError: Error
     initHandler
     initDonePromise
@@ -33,19 +29,15 @@ const createAdapter = (impl, options) => {
   const metaName =
     options instanceof Object ? options.metaName : DEFAULT_META_NAME
 
-  const { databaseApi, metaApi, storeApi } = impl({ metaName, ...options })
+  const { metaApi, storeApi } = impl({ metaName, ...options })
 
-  if (
-    !databaseApi instanceof Object ||
-    !metaApi instanceof Object ||
-    !storeApi instanceof Object
-  ) {
+  if (!metaApi instanceof Object || !storeApi instanceof Object) {
     throw new Error('Invalid api impl')
   }
 
   const internalContext = Object.create(null)
 
-  const pool = { databaseApi, metaApi, storeApi, internalContext }
+  const pool = { metaApi, storeApi, internalContext }
 
   return Object.create(null, {
     buildProjection: {

@@ -3,7 +3,6 @@
 import messages from './messages'
 
 const initProjection = async ({ metaApi, storeApi, internalContext }) => {
-  await internalContext.connectionPromise
   const lastTimestamp = await metaApi.getLastTimestamp()
   if (lastTimestamp !== 0) return
   await metaApi.setLastTimestamp(1)
@@ -15,7 +14,20 @@ const initProjection = async ({ metaApi, storeApi, internalContext }) => {
   }
 }
 
-const init = ({ databaseApi, metaApi, storeApi, internalContext }) => {
+const wrapReadInterface = storeApi => {
+  const readInterface = Object.key(storeApi).reduce((acc, functionName) => {
+    acc[functionName] = async () => {
+      throw new Error(messages.readSideForbiddenOperation(functionName))
+    }
+    return acc
+  }, {})
+
+  readInterface['find'] = storeApi.find
+
+  return Object.freeze(readInterface)
+}
+
+const init = ({ metaApi, storeApi, internalContext }) => {
   if (internalContext.isInitialized) {
     throw new Error(messages.alreadyInitialized)
   }
@@ -25,12 +37,9 @@ const init = ({ databaseApi, metaApi, storeApi, internalContext }) => {
     internalContext.initHandler = async () => {}
   }
 
-  internalContext.connectionPromise = databaseApi.connect()
-
   internalContext.internalError = null
 
-  // repository.readInterface = storeInterface(repository, false)
-  // repository.writeInterface = storeInterface(repository, true)
+  const readInterface = wrapReadInterface(storeApi)
 
   internalContext.initDonePromise = initProjection({
     metaApi,
@@ -39,13 +48,10 @@ const init = ({ databaseApi, metaApi, storeApi, internalContext }) => {
   })
 
   return {
-    getLastAppliedTimestamp: async () => {
-      await internalContext.connectionPromise
-      return await metaApi.getLastTimestamp()
-    },
+    getLastAppliedTimestamp: async () => await metaApi.getLastTimestamp(),
     getReadable: async () => {
       await internalContext.initDonePromise
-      return //repository.readInterface
+      return readInterface
     },
     getError: async () => {
       await internalContext.initDonePromise

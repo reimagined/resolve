@@ -1,6 +1,6 @@
 import 'regenerator-runtime/runtime'
 
-const disposeDatabase = async ({ databaseApi, metaApi, storeApi }) => {
+const disposeDatabase = async ({ metaApi, storeApi }) => {
   const names = await metaApi.getStorageNames()
   const promises = names.map(async name => {
     await storeApi.dropStorage(name)
@@ -9,14 +9,12 @@ const disposeDatabase = async ({ databaseApi, metaApi, storeApi }) => {
   await Promise.all([await metaApi.drop()])
 }
 
-const reset = ({ databaseApi, metaApi, storeApi, internalContext }) => {
+const reset = ({ metaApi, storeApi, internalContext }) => {
   if (internalContext.disposePromise) {
     return internalContext.disposePromise
   }
 
-  const disposePromise = internalContext.connectionPromise.then(
-    disposeDatabase.bind(null, { databaseApi, metaApi, storeApi })
-  )
+  const disposePromise = disposeDatabase({ metaApi, storeApi })
 
   Object.keys(internalContext).forEach(key => {
     delete internalContext[key]

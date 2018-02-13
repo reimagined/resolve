@@ -1,7 +1,7 @@
 import 'regenerator-runtime/runtime'
 
 const buildProjection = (
-  { databaseApi, metaApi, storeApi, internalContext },
+  { metaApi, storeApi, internalContext },
   inputProjection
 ) => {
   return Object.keys(inputProjection).reduce((projection, eventType) => {
