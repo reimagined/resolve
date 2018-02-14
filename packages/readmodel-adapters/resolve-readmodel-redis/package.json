@@ -1,7 +1,8 @@
 {
-  "name": "resolve-readmodel-redis",
+  "name": "resolve-readmodel-mysql",
   "version": "0.4.0",
-  "description": "This package serves as a resolve-query adapter for storing a read model in Redis",
+  "description":
+    "This package serves as a resolve-query adapter for storing a read model in mysql",
   "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
@@ -14,21 +15,17 @@
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": [
-    "cqrs",
-    "eventsourcing",
-    "es",
-    "ddd"
-  ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-redis#readme",
+  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
+  "homepage":
+    "https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-mysql#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "jest": "^22.1.4",
-    "redis-mock": "^0.20.0",
+    "mysql-mock": "^0.20.0",
     "sinon": "^3.3.0"
   },
   "dependencies": {
-    "redis": "^2.8.0",
+    "mysql": "^2.8.0",
     "regenerator-runtime": "^0.11.0",
     "uuid": "^3.1.0"
   }
