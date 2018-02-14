@@ -31,27 +31,12 @@ pipeline {
                         echo \$CI_CANARY_VERSION > /lerna_version; \
                     """
 
-                    writeFile file: "oao_patch.diff", text: '''
---- publish.js	2018-02-06 12:34:28.041469452 +0300
-+++ publish_2.js	2018-02-06 13:08:19.140511452 +0300
-@@ -91,8 +91,8 @@
-             return _context.abrupt('return');
-
-           case 10:
--            _context.next = 12;
--            return prepublishChecks({ master: master, checkUncommitted: checkUncommitted, checkUnpulled: checkUnpulled });
-+            // _context.next = 12;
-+            // return prepublishChecks({ master: master, checkUncommitted: checkUncommitted, checkUnpulled: checkUnpulled });
-
-           case 12:
-             _context.next = 14;
-'''
                     sh """
-                        patch node_modules/oao/lib/publish.js < oao_patch.diff
+                        yarn oao --version
                         echo registry=http://${env.NPM_ADDR} > /root/.npmrc; \
                         echo //${env.NPM_ADDR}/:_authToken=${env.NPM_TOKEN} >> /root/.npmrc; \
                         echo 'registry "http://${env.NPM_ADDR}"' >> /root/.yarnrc; \
-                        yarn run publish --no-git-commit --no-check-uncommitted --no-confirm --new-version \$(cat /lerna_version); \
+                        yarn run publish --no-checks --no-confirm --new-version \$(cat /lerna_version); \
                         sleep 10
                     """
                 }
