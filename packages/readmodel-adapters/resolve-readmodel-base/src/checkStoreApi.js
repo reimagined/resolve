@@ -1,23 +1,23 @@
 import messages from './messages'
 
-const checkFieldName = name => {
-  if ((!/^\w(?:\w|\.)*?$/, test(name))) {
-    throw new Error(messages.invalidFieldName(name))
+const checkCondition = (condition, type, ...args) => {
+  if (!condition) {
+    const message = messages.hasOwnProperty(type)
+      ? typeof messages[type] === 'function' ? messages[type](...args) : messages.type
+      : `Unknown internal error ${type}: ${args}`
+
+    throw new Error(message)
   }
 }
 
 const checkOptionShape = (option, types) => {
   return !(
-    option === null ||
-    option === undefined ||
-    !types.reduce((acc, type) => acc || option.constructor === type, false)
+    option == null || !types.reduce((acc, type) => acc || option.constructor === type, false)
   )
 }
 
 const checkStorageSchemaAndGetIndexes = storageSchema => {
-  if (!Array.isArray(storageSchema)) {
-    throw new Error(messages.invalidStorageSchema)
-  }
+  checkCondition(Array.isArray(storageSchema), 'invalidStorageSchema')
 
   const validTypes = ['number', 'string', 'datetime', 'json']
   const indexRoles = ['primary', 'secondary']
@@ -25,48 +25,45 @@ const checkStorageSchemaAndGetIndexes = storageSchema => {
   const secondaryIndexes = []
 
   for (let rowDescription of storageSchema) {
-    if (checkOptionShape(rowDescription, [Object])) {
-      throw new Error(messages.invalidStorageSchema)
-    }
-
+    checkCondition(checkOptionShape(rowDescription, [Object]), 'invalidStorageSchema')
     const { name, type, index } = rowDescription
-    checkFieldName(name)
-    if (validTypes.indexOf(type) < 0 || (index && indexRoles.indexOf(index) < 0)) {
-      throw new Error(messages.invalidStorageSchema)
-    }
+    checkCondition(/^\w+?$/.test(name), 'invalidStorageSchema')
+    checkCondition(
+      validTypes.indexOf(type) < 0 || (index && indexRoles.indexOf(index) < 0),
+      'invalidStorageSchema'
+    )
 
     if (index === 'primary') {
-      if (type !== 'number' && type !== 'string') {
-        throw new Error(messages.invalidStorageSchema)
-      }
+      checkCondition(type !== 'number' && type !== 'string', 'invalidStorageSchema')
       primaryIndex = { name, type }
     } else if (index === 'secondary') {
       secondaryIndexes.push({ name, type })
     }
   }
 
-  if (!primaryIndex) {
-    throw new Error(messages.invalidStorageSchema)
-  }
+  checkCondition(checkOptionShape(primaryIndex, [Object]), 'invalidStorageSchema')
 
   return { primaryIndex, secondaryIndexes }
 }
 
-const checkFieldList = (metaInfo, fieldList) => {
-  if (!Array.isArray(fieldList)) {
-    throw new Error(messages.fieldListNotArray)
+const checkAndGetFieldType = (metaInfo, fieldName) => {
+  if (!/^\w+?(?:\.\w+?)*?$/.test(fieldName)) return null
+
+  const [baseName, ...nestedName] = fieldName.split('.')
+  if (!metaInfo.fields[baseName]) return null
+
+  const fieldType = metaInfo.fields[baseName].type
+  if (nestedName.length > 0 && fieldType !== 'json') {
+    return null
   }
+
+  return fieldType
+}
+
+const checkFieldList = (metaInfo, fieldList) => {
+  checkCondition(Array.isArray(fieldList), 'fieldListNotArray')
   for (let fieldName of fieldList) {
-    checkFieldName(fieldName)
-    const [baseName, ...nestedName] = fieldName.split('.')
-
-    if (!metaInfo.fields[baseName]) {
-      throw new Error(messages.invalidProjectionKey(fieldName))
-    }
-
-    if (nestedName.length > 0 && metaInfo.fields[baseName].type !== 'json') {
-      throw new Error(messages.invalidProjectionKey(fieldName))
-    }
+    checkCondition(checkAndGetFieldType(metaInfo, fieldName), 'invalidProjectionKey', fieldName)
   }
 }
 
@@ -78,69 +75,108 @@ const boxingTypesMap = new Map([
   [Object, 'json']
 ])
 
-const checkDocumentShape = (metaInfo, document) => {
-  if (!checkOptionShape(document, [Object])) {
-    throw new Error(messages.invalidDocumentShape(document))
+const isFieldValueCorrect = (metaInfo, fieldName, fieldValue, isNullable = true) => {
+  try {
+    const fieldType = checkAndGetFieldType(metaInfo, fieldName)
+    if (!fieldType) return false
+
+    if (fieldValue != null) {
+      return boxingTypesMap.get(fieldValue.constructor) === fieldType
+    }
+
+    return isNullable
+  } catch (err) {
+    return false
   }
+}
+
+const checkDocumentShape = (metaInfo, document, strict = false) => {
+  checkCondition(checkOptionShape(document, [Object]), 'invalidDocumentShape', document)
   const documentKeys = Object.keys(document)
 
-  if (Object.keys(metaInfo.fields).length !== documentKeys.length) {
-    throw new Error(messages.invalidDocumentShape(document))
-  }
+  checkCondition(
+    !strict || Object.keys(metaInfo.fields).length === documentKeys.length,
+    'invalidDocumentShape',
+    document
+  )
+
+  checkFieldList(metaInfo, documentKeys)
+  const { primaryIndex, secondaryIndexes } = metaInfo
 
   for (let fieldName of documentKeys) {
     if (document[fieldName] === null && metaInfo.fields[fieldName] === 'json') continue
 
-    if (
-      !metaInfo.fields[fieldName] ||
-      document[fieldName] == null ||
-      boxingTypesMap.get(document[fieldName].constructor) !== metaInfo.fields[fieldName].type
-    ) {
-      throw new Error(messages.invalidDocumentShape(document))
-    }
+    const isNullable = !!(
+      primaryIndex.name === fieldName || secondaryIndexes.find({ name } === fieldName)
+    )
+
+    checkCondition(
+      isFieldValueCorrect(metaInfo, fieldName, documentKeys[fieldName], isNullable),
+      'invalidDocumentShape',
+      document
+    )
   }
 }
 
 const checkSearchExpression = (metaInfo, searchExpression) => {
-  if (!checkOptionShape(searchExpression, [Object])) {
-    throw new Error(messages.invalidSearchExpression(searchExpression))
+  checkCondition(
+    checkOptionShape(searchExpression, [Object]),
+    'invalidSearchExpression',
+    searchExpression
+  )
+
+  const rootOperators = ['$not', '$and', '$or']
+  const allowedOperators = [...rootOperators, '$eq', '$exists']
+
+  const operators = Object.keys(searchExpression).filter(key => key.indexOf('$') > -1)
+  if (operators.length === 0) {
+    checkDocumentShape(metaInfo, searchExpression)
+    return
   }
 
-  const allowedOperators = ['$eq', '$not', '$and', '$or', '$exists']
+  checkCondition(
+    operators.length === Object.keys(searchExpression).length,
+    'invalidSearchExpression',
+    searchExpression
+  )
 
-  for (let fieldName of searchExpression) {
-    checkFieldName(fieldName)
-    const [baseName, ...nestedName] = fieldName.split('.')
+  for (let operator of operators) {
+    checkCondition(rootOperators.includes(operator), 'invalidSearchExpression', searchExpression)
 
-    if (!metaInfo.fields[baseName]) {
-      throw new Error(messages.invalidSearchExpression(searchExpression))
+    const operatorValue = searchExpression[operator]
+    checkCondition(
+      checkOptionShape(operatorValue, [Array, Object]),
+      'invalidSearchExpression',
+      searchExpression
+    )
+
+    for (let key of Array.isArray(operatorValue)
+      ? operatorValue.map((_, idx) => idx)
+      : Object.keys(operatorValue)) {
+      if (key.indexOf('$') > -1) {
+        checkCondition(
+          allowedOperators.indexOf(key) > -1,
+          'invalidSearchExpression',
+          searchExpression
+        )
+        continue
+      }
+
+      checkCondition(
+        isFieldValueCorrect(metaInfo, key, operatorValue[key]),
+        'invalidSearchExpression',
+        searchExpression
+      )
     }
-    const fieldType = metaInfo.fields[baseName].type
-
-    if (nestedName.length > 0 && fieldType !== 'json') {
-      throw new Error(messages.invalidSearchExpression(searchExpression))
-    }
-
-    const operator = searchExpression[fieldName]
-    if (!checkOptionShape(operator, [Object]) || Object.keys(operator).length !== 1) {
-      throw new Error(messages.invalidSearchExpression(searchExpression))
-    }
-
-    const operatorName = Object.keys(operator)[0]
-    if (!allowedOperators.includes(operatorName)) {
-      throw new Error(messages.invalidSearchExpression(searchExpression))
-    }
-
-    //
-    // TODO: Check consistent operator values
-    //
   }
 }
 
 const checkUpdateExpression = (metaInfo, updateExpression) => {
-  if (!checkOptionShape(updateExpression, [Object])) {
-    throw new Error(messages.invalidUpdateExpression(updateExpression))
-  }
+  checkCondition(
+    checkOptionShape(updateExpression, [Object]),
+    'invalidUpdateExpression',
+    updateExpression
+  )
 
   const operators = Object.keys(updateExpression).filter(key => key.indexOf('$') > -1)
   if (operators.length === 0) {
@@ -148,82 +184,66 @@ const checkUpdateExpression = (metaInfo, updateExpression) => {
     return
   }
 
-  if (operators.length !== Object.keys(updateExpression).length) {
-    throw new Error(messages.invalidUpdateExpression(updateExpression))
-  }
+  checkCondition(
+    operators.length === Object.keys(updateExpression).length,
+    'invalidUpdateExpression',
+    updateExpression
+  )
 
   const allowedOperators = ['$set', '$unset', '$inc', '$push', '$pull']
 
   for (let operator of operators) {
-    if (!allowedOperators.includes(operator)) {
-      throw new Error(messages.invalidUpdateExpression(updateExpression))
-    }
+    checkCondition(allowedOperators.includes(operator), 'invalidUpdateExpression', updateExpression)
 
     const affectedFields = updateExpression[operator]
-    if (!checkOptionShape(affectedFields, [Object])) {
-      throw new Error(messages.invalidUpdateExpression(updateExpression))
-    }
+    checkCondition(
+      checkOptionShape(affectedFields, [Object]),
+      'invalidUpdateExpression',
+      updateExpression
+    )
 
     for (let fieldName of affectedFields) {
-      checkFieldName(fieldName)
-      const [baseName, ...nestedName] = fieldName.split('.')
-      if (!metaInfo.fields[baseName]) {
-        throw new Error(messages.invalidUpdateExpression(updateExpression))
-      }
-
-      const fieldType = metaInfo.fields[baseName].type
-      if (nestedName.length > 0 && fieldType !== 'json') {
-        throw new Error(messages.invalidUpdateExpression(updateExpression))
-      }
-
+      const fieldType = checkAndGetFieldType(metaInfo, fieldName)
       if (operator === '$unset') continue
 
-      if (
-        fieldType !== 'json' &&
-        (fieldType !== 'number' || operator !== '$inc') &&
-        operator !== '$set'
-      ) {
-        throw new Error(messages.invalidUpdateExpression(updateExpression))
-      }
+      checkCondition(
+        fieldType === 'json' ||
+          (fieldType === 'number' && operator === '$inc') ||
+          operator === '$set',
+        'invalidUpdateExpression',
+        updateExpression
+      )
 
       const updateValueType = boxingTypesMap.get(
         (affectedFields[fieldName] != null ? affectedFields[fieldName] : Object.create(null))
           .constructor
       )
 
-      if (
+      checkCondition(
         (operator === '$set' && updateValueType !== fieldType) ||
-        (operator === '$inc' && updateValueType !== 'number') ||
-        (operator === '$push' && updateValueType !== 'json') ||
-        (operator === '$pull' && updateValueType !== 'json')
-      ) {
-        throw new Error(messages.invalidUpdateExpression(updateExpression))
-      }
+          (operator === '$inc' && updateValueType !== 'number') ||
+          (operator === '$push' && updateValueType !== 'json') ||
+          (operator === '$pull' && updateValueType !== 'json'),
+        'invalidUpdateExpression',
+        updateExpression
+      )
     }
   }
-
-  //
-  // TODO: Implement UPDATE operator compilance with underlying type
-  //
 }
 
-const checkStorageExists = (metaApi, storageName) => {
-  if (!metaApi.storageExists(storageName)) {
-    throw new Error(messages.storageNotExist(storageName))
-  }
+const checkStorageExists = async (metaApi, storageName) => {
+  checkCondition(await metaApi.storageExists(storageName), 'storageNotExist', storageName)
 }
 
 const createStorage = async ({ metaApi, storeApi }, storageName, storageSchema) => {
-  if (metaApi.storageExists(storageName)) {
-    throw new Error(messages.storageExists(storageName))
-  }
+  checkCondition(!await metaApi.storageExists(storageName), 'storageExists', storageName)
   const indexes = checkStorageSchemaAndGetIndexes(storageSchema)
   await storeApi.createStorage(storageName, storageSchema)
   await metaApi.addStorage(storageName, indexes)
 }
 
 const dropStorage = async ({ metaApi, storeApi }, storageName) => {
-  checkStorageExists(metaApi, storageName)
+  await checkStorageExists(metaApi, storageName)
   await storeApi.dropStorage(storageName)
   await metaApi.removeStorage(storageName)
 }
@@ -237,16 +257,19 @@ const find = async (
   skip = 0,
   limit = Infinity
 ) => {
-  checkStorageExists(metaApi, storageName)
+  await checkStorageExists(metaApi, storageName)
 
   const metaInfo = await metaApi.getStorageInfo(storageName)
   checkFieldList(metaInfo, resultFieldsList)
   checkFieldList(metaInfo, sortFieldsList)
   checkSearchExpression(metaInfo, searchExpression)
 
-  if (!Number.isInteger(skip) || !(Number.isInteger(limit) || limit === Infinity)) {
-    throw new Error(messages.invalidPagination(skip, limit))
-  }
+  checkCondition(
+    Number.isInteger(skip) && (Number.isInteger(limit) || limit === Infinity),
+    'invalidPagination',
+    skip,
+    limit
+  )
 
   return await storeApi.find(
     storageName,
@@ -259,7 +282,7 @@ const find = async (
 }
 
 const insert = async ({ metaApi, storeApi }, storageName, document) => {
-  checkStorageExists(metaApi, storageName)
+  await checkStorageExists(metaApi, storageName)
 
   const metaInfo = await metaApi.getStorageInfo(storageName)
   checkDocumentShape(metaInfo, document)
@@ -268,7 +291,7 @@ const insert = async ({ metaApi, storeApi }, storageName, document) => {
 }
 
 const update = async ({ metaApi, storeApi }, storageName, searchExpression, updateExpression) => {
-  checkStorageExists(metaApi, storageName)
+  await checkStorageExists(metaApi, storageName)
 
   const metaInfo = await metaApi.getStorageInfo(storageName)
   checkSearchExpression(metaInfo, searchExpression)
@@ -278,7 +301,7 @@ const update = async ({ metaApi, storeApi }, storageName, searchExpression, upda
 }
 
 const del = async ({ metaApi, storeApi }, storageName, searchExpression) => {
-  checkStorageExists(metaApi, storageName)
+  await checkStorageExists(metaApi, storageName)
 
   const metaInfo = await metaApi.getStorageInfo(storageName)
   checkSearchExpression(metaInfo, searchExpression)

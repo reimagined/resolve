@@ -6,6 +6,7 @@ export default {
   alreadyInitialized: 'The read model storage is already initialized',
   storageExists: storageName => 'TODO: ...',
   storageNotExist: storageName => 'TODO: ...',
+  invalidStorageSchema: 'TODO: ...',
   fieldListNotArray: 'TODO: ...',
   invalidProjectionKey: key => 'TODO: ...',
   invalidFieldName: name => 'TODO: ...',
