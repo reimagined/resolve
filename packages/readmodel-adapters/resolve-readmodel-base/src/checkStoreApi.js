@@ -6,7 +6,7 @@ const checkFieldName = name => {
   }
 }
 
-const checkOptionShape = (option, types, count) => {
+const checkOptionShape = (option, types) => {
   return !(
     option === null ||
     option === undefined ||
@@ -106,7 +106,35 @@ const checkSearchExpression = (metaInfo, searchExpression) => {
     throw new Error(messages.invalidSearchExpression(searchExpression))
   }
 
-  // todo: implement me!
+  const allowedOperators = ['$eq', '$not', '$and', '$or', '$exists']
+
+  for (let fieldName of searchExpression) {
+    checkFieldName(fieldName)
+    const [baseName, ...nestedName] = fieldName.split('.')
+
+    if (!metaInfo.fields[baseName]) {
+      throw new Error(messages.invalidSearchExpression(searchExpression))
+    }
+    const fieldType = metaInfo.fields[baseName].type
+
+    if (nestedName.length > 0 && fieldType !== 'json') {
+      throw new Error(messages.invalidSearchExpression(searchExpression))
+    }
+
+    const operator = searchExpression[fieldName]
+    if (!checkOptionShape(operator, [Object]) || Object.keys(operator).length !== 1) {
+      throw new Error(messages.invalidSearchExpression(searchExpression))
+    }
+
+    const operatorName = Object.keys(operator)[0]
+    if (!allowedOperators.includes(operatorName)) {
+      throw new Error(messages.invalidSearchExpression(searchExpression))
+    }
+
+    //
+    // TODO: Check consistent operator values
+    //
+  }
 }
 
 const checkUpdateExpression = (metaInfo, updateExpression) => {
@@ -125,9 +153,52 @@ const checkUpdateExpression = (metaInfo, updateExpression) => {
   }
 
   const allowedOperators = ['$set', '$unset', '$inc', '$push', '$pull']
-  for (let key of operators) {
-    if (!allowedOperators.includes(key)) {
+
+  for (let operator of operators) {
+    if (!allowedOperators.includes(operator)) {
       throw new Error(messages.invalidUpdateExpression(updateExpression))
+    }
+
+    const affectedFields = updateExpression[operator]
+    if (!checkOptionShape(affectedFields, [Object])) {
+      throw new Error(messages.invalidUpdateExpression(updateExpression))
+    }
+
+    for (let fieldName of affectedFields) {
+      checkFieldName(fieldName)
+      const [baseName, ...nestedName] = fieldName.split('.')
+      if (!metaInfo.fields[baseName]) {
+        throw new Error(messages.invalidUpdateExpression(updateExpression))
+      }
+
+      const fieldType = metaInfo.fields[baseName].type
+      if (nestedName.length > 0 && fieldType !== 'json') {
+        throw new Error(messages.invalidUpdateExpression(updateExpression))
+      }
+
+      if (operator === '$unset') continue
+
+      if (
+        fieldType !== 'json' &&
+        (fieldType !== 'number' || operator !== '$inc') &&
+        operator !== '$set'
+      ) {
+        throw new Error(messages.invalidUpdateExpression(updateExpression))
+      }
+
+      const updateValueType = boxingTypesMap.get(
+        (affectedFields[fieldName] != null ? affectedFields[fieldName] : Object.create(null))
+          .constructor
+      )
+
+      if (
+        (operator === '$set' && updateValueType !== fieldType) ||
+        (operator === '$inc' && updateValueType !== 'number') ||
+        (operator === '$push' && updateValueType !== 'json') ||
+        (operator === '$pull' && updateValueType !== 'json')
+      ) {
+        throw new Error(messages.invalidUpdateExpression(updateExpression))
+      }
     }
   }
 
@@ -189,8 +260,10 @@ const find = async (
 
 const insert = async ({ metaApi, storeApi }, storageName, document) => {
   checkStorageExists(metaApi, storageName)
+
   const metaInfo = await metaApi.getStorageInfo(storageName)
   checkDocumentShape(metaInfo, document)
+
   await storeApi.insert(storageName, document)
 }
 
