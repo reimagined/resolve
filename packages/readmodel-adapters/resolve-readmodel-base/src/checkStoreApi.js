@@ -193,7 +193,7 @@ const checkUpdateExpression = (metaInfo, updateExpression) => {
     updateExpression
   )
 
-  const allowedOperators = ['$set', '$unset', '$inc', '$push', '$pull']
+  const allowedOperators = ['$set', '$unset', '$inc']
 
   for (let operator of operators) {
     checkCondition(allowedOperators.includes(operator), 'invalidUpdateExpression', updateExpression)
@@ -224,9 +224,7 @@ const checkUpdateExpression = (metaInfo, updateExpression) => {
 
       checkCondition(
         (operator === '$set' && updateValueType !== fieldType) ||
-          (operator === '$inc' && updateValueType !== 'number') ||
-          (operator === '$push' && updateValueType !== 'json') ||
-          (operator === '$pull' && updateValueType !== 'json'),
+          (operator === '$inc' && updateValueType !== 'number'),
         'invalidUpdateExpression',
         updateExpression
       )
@@ -288,7 +286,7 @@ const insert = async ({ metaApi, storeApi }, storageName, document) => {
   await checkStorageExists(metaApi, storageName)
 
   const metaInfo = await metaApi.getStorageInfo(storageName)
-  checkDocumentShape(metaInfo, document)
+  checkDocumentShape(metaInfo, document, true)
 
   await storeApi.insert(storageName, document)
 }

@@ -35,9 +35,81 @@ const dropStorage = async ({ connection }, storageName) => {
   await connection.execute(`DROP TABLE ${storageName}`)
 }
 
-const searchToWhereExpression = expr => {}
+const searchToWhereExpression = expr => {
+  const searchValues = []
+  let searchExpr = ''
 
-const updateToSetExpression = expr => {}
+  // TODO
+
+  return { searchExpr, searchValues }
+}
+
+const updateToSetExpression = expr => {
+  const operators = Object.keys(expr).filter(key => key.indexOf('$') > -1)
+  if (operators.length === 0) {
+    return {
+      updateExpr: Object.keys(expr)
+        .map(fieldName => `${fieldName} = ?`)
+        .join(', '),
+      updateValues: Object.values(expr)
+    }
+  }
+
+  const updateExprArray = []
+  const updateValues = []
+  for (let operatorName of operators) {
+    const fieldName = Object.keys(operators[operatorName])[0]
+    const fieldValue = operators[operatorName][fieldName]
+
+    const [baseName, ...nestedPath] = fieldName.split('.')
+    switch (operatorName) {
+      case '$unset': {
+        if (nestedPath.length === 0) {
+          updateExprArray.push(
+            `${baseName} = JSON_REMOVE(${baseName}, "$.${nestedPath.join('.')}"), `
+          )
+        } else {
+          updateExprArray.push(`${baseName} = NULL, `)
+        }
+        break
+      }
+
+      case '$set': {
+        if (nestedPath.length === 0) {
+          updateExprArray.push(
+            `${baseName} = JSON_SET(${baseName}, "$.${nestedPath.join('.')}", ?) , `
+          )
+        } else {
+          updateExprArray.push(`${baseName} = ?, `)
+        }
+        updateValues.push(fieldValue)
+        break
+      }
+
+      case '$inc': {
+        if (nestedPath.length === 0) {
+          updateExprArray.push(
+            `${baseName} = JSON_SET(${baseName}, "$.${nestedPath.join(
+              '.'
+            )}", JSON_EXTRACT(${baseName}, "$.${nestedPath.join('.')}") + ?) , `
+          )
+        } else {
+          updateExprArray.push(`${baseName} = ${baseName} + ?, `)
+        }
+        updateValues.push(fieldValue)
+        break
+      }
+
+      default:
+        break
+    }
+  }
+
+  return {
+    updateExpr: updateExprArray.join(', '),
+    updateValues
+  }
+}
 
 const find = async (
   { connection },
@@ -52,7 +124,7 @@ const find = async (
     .map(fieldName => {
       const [baseName, ...nestedPath] = fieldName.split('.')
       if (nestedPath.length === 0) return baseName
-      return `${baseName}->"$.${nestedPath.join('.')}" AS "${fieldName}"`
+      return `${baseName}->>"$.${nestedPath.join('.')}" AS "${fieldName}"`
     })
     .join(', ')
 
@@ -102,6 +174,7 @@ const del = async ({ connection }, storageName, searchExpression) => {
 export default {
   createStorage,
   dropStorage,
+  find,
   insert,
   update,
   del
