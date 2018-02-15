@@ -106,7 +106,25 @@ const drop = async ({ connection, metaName, metaInfo }) => {
   }
 }
 
-const dropStorage = async ({ connection }) => {}
+const createStorage = async ({ connection }, storageName, storageSchema) => {}
+
+const dropStorage = async ({ connection }, storageName) => {}
+
+const find = async (
+  { connection },
+  storageName,
+  searchExpression,
+  fieldList,
+  sort,
+  skip,
+  limit
+) => {}
+
+const insert = async ({ connection }, storageName, document) => {}
+
+const update = async ({ connection }, storageName, searchExpression, updateExpression) => {}
+
+const del = async ({ connection }, storageName, searchExpression) => {}
 
 const implMysql = ({ metaName, ...options }) => {
   const connectionOptions = {
@@ -140,7 +158,12 @@ const implMysql = ({ metaName, ...options }) => {
   }
 
   const storeApi = {
-    dropStorage: bindWithConnection(dropStorage)
+    createStorage: bindWithConnection(createStorage),
+    dropStorage: bindWithConnection(dropStorage),
+    find: bindWithConnection(find),
+    insert: bindWithConnection(insert),
+    update: bindWithConnection(update),
+    delete: bindWithConnection(del)
   }
 
   return { metaApi, storeApi }
