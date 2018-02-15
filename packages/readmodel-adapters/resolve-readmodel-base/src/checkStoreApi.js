@@ -16,13 +16,14 @@ const checkOptionShape = (option, types) => {
   )
 }
 
-const checkStorageSchemaAndGetIndexes = storageSchema => {
+const checkAndGetStorageMetaSchema = storageSchema => {
   checkCondition(Array.isArray(storageSchema), 'invalidStorageSchema')
 
   const validTypes = ['number', 'string', 'datetime', 'json']
   const indexRoles = ['primary', 'secondary']
   let primaryIndex = null
   const secondaryIndexes = []
+  const fieldTypes = {}
 
   for (let rowDescription of storageSchema) {
     checkCondition(checkOptionShape(rowDescription, [Object]), 'invalidStorageSchema')
@@ -39,20 +40,22 @@ const checkStorageSchemaAndGetIndexes = storageSchema => {
     } else if (index === 'secondary') {
       secondaryIndexes.push({ name, type })
     }
+
+    fieldTypes[name] = type
   }
 
   checkCondition(checkOptionShape(primaryIndex, [Object]), 'invalidStorageSchema')
 
-  return { primaryIndex, secondaryIndexes }
+  return { primaryIndex, secondaryIndexes, fieldTypes }
 }
 
 const checkAndGetFieldType = (metaInfo, fieldName) => {
   if (!/^\w+?(?:\.\w+?)*?$/.test(fieldName)) return null
 
   const [baseName, ...nestedName] = fieldName.split('.')
-  if (!metaInfo.fields[baseName]) return null
+  if (!metaInfo.fieldTypes[baseName]) return null
 
-  const fieldType = metaInfo.fields[baseName].type
+  const fieldType = metaInfo.fieldTypes[baseName]
   if (nestedName.length > 0 && fieldType !== 'json') {
     return null
   }
@@ -95,7 +98,7 @@ const checkDocumentShape = (metaInfo, document, strict = false) => {
   const documentKeys = Object.keys(document)
 
   checkCondition(
-    !strict || Object.keys(metaInfo.fields).length === documentKeys.length,
+    !strict || Object.keys(metaInfo.fieldTypes).length === documentKeys.length,
     'invalidDocumentShape',
     document
   )
@@ -104,7 +107,7 @@ const checkDocumentShape = (metaInfo, document, strict = false) => {
   const { primaryIndex, secondaryIndexes } = metaInfo
 
   for (let fieldName of documentKeys) {
-    if (document[fieldName] === null && metaInfo.fields[fieldName] === 'json') continue
+    if (document[fieldName] === null && metaInfo.fieldTypes[fieldName] === 'json') continue
 
     const isNullable = !!(
       primaryIndex.name === fieldName || secondaryIndexes.find({ name } === fieldName)
@@ -237,9 +240,9 @@ const checkStorageExists = async (metaApi, storageName) => {
 
 const createStorage = async ({ metaApi, storeApi }, storageName, storageSchema) => {
   checkCondition(!await metaApi.storageExists(storageName), 'storageExists', storageName)
-  const indexes = checkStorageSchemaAndGetIndexes(storageSchema)
+  const metaSchema = checkAndGetStorageMetaSchema(storageSchema)
   await storeApi.createStorage(storageName, storageSchema)
-  await metaApi.addStorage(storageName, indexes)
+  await metaApi.addStorage(storageName, metaSchema)
 }
 
 const dropStorage = async ({ metaApi, storeApi }, storageName) => {

@@ -16,45 +16,40 @@ const getMetaInfo = async pool => {
   pool.metaInfo = { tables: {}, timestamp: 0 }
 
   let [rows] = await connection.execute(
-    `SELECT SimpleValue FROM ${metaName} WHERE MetaKey="Timestamp" `
+    `SELECT SimpleValue AS Timestamp FROM ${metaName} WHERE MetaKey="Timestamp" `
   )
 
   if (rows.length === 0) {
     await connection.execute(`INSERT INTO ${metaName}(MetaKey, SimpleValue) VALUES("Timestamp", 0)`)
   } else {
-    pool.metaInfo.timestamp = +rows[0]['SimpleValue']
+    pool.metaInfo.timestamp = +rows[0]['Timestamp']
   }
 
   let [rows] = await connection.execute(
-    `SELECT MetaField, ComplexValue FROM ${metaName} WHERE MetaKey="Tables"`
+    `SELECT MetaField AS TableName, ComplexValue AS TableDescription
+     FROM ${metaName} WHERE MetaKey="Tables"`
   )
-  for (let { MetaField, ComplexValue } of rows) {
-    if (
-      MetaField &&
-      MetaField.constructor === String &&
-      ComplexValue &&
-      ComplexValue.constructor === Object &&
-      ComplexValue.hasOwnProperty('name') &&
-      ComplexValue.hasOwnProperty('fields') &&
-      ComplexValue.hasOwnProperty('primaryIndex') &&
-      ComplexValue.hasOwnProperty('secondaryIndexes') &&
-      ComplexValue.name &&
-      ComplexValue.name.constructor === String &&
-      ComplexValue.fields &&
-      Array.isArray(ComplexValue.fields) &&
-      ComplexValue.primaryIndex &&
-      ComplexValue.primaryIndex.constructor === String &&
-      ComplexValue.secondaryIndexes &&
-      Array.isArray(ComplexValue.secondaryIndexes)
-    ) {
-      pool.metaInfo.tables[MetaField] = ComplexValue
-      continue
-    }
+  for (let { TableName, TableDescription } of rows) {
+    try {
+      const descriptor = { fieldTypes: {}, primaryIndex: {}, secondaryIndexes: [] }
+      for (let key of Object.keys(TableDescription.fieldTypes)) {
+        descriptor.fieldTypes = TableDescription.fieldTypes[key]
+      }
 
-    await await connection.execute(
-      `DELETE FROM ${metaName} WHERE MetaKey="Tables" AND MetaField=?`,
-      [MetaField]
-    )
+      descriptor.primaryIndex.name = TableDescription.primaryIndex.name
+      descriptor.primaryIndex.type = TableDescription.primaryIndex.type
+
+      for (let { name, type } of TableDescription.secondaryIndexes) {
+        descriptor.secondaryIndexes.push({ name, type })
+      }
+
+      pool.metaInfo.tables[TableName] = descriptor
+      continue
+    } catch (err) {
+      await connection.execute(`DELETE FROM ${metaName} WHERE MetaKey="Tables" AND MetaField=?`, [
+        TableName
+      ])
+    }
   }
 }
 
@@ -78,15 +73,38 @@ const getStorageInfo = async ({ metaInfo }, storageName) => {
   return metaInfo.tables[storageName]
 }
 
-const addStorage = async ({ connection }, storageName, indexes) => {}
+const addStorage = async ({ connection, metaInfo, metaName }, storageName, metaSchema) => {
+  await connection.execute(
+    `INSERT INTO ${metaName}(MetaKey, MetaField, ComplexValue) VALUES("Tables", ?, ?)`,
+    [storageName, metaSchema]
+  )
 
-const removeStorage = async ({ connection }, storageName) => {}
+  metaInfo.tables[storageName] = metaSchema
+}
+
+const removeStorage = async ({ connection, metaInfo, metaName }, storageName) => {
+  await connection.execute(`DELETE FROM ${metaName} WHERE MetaKey="Tables" AND MetaField=?`, [
+    storageName
+  ])
+
+  delete metaInfo.tables[storageName]
+}
 
 const getStorageNames = async ({ metaInfo }) => {
   return Object.keys(metaInfo.tables)
 }
 
-const drop = async ({ connection }) => {}
+const drop = async ({ connection, metaName, metaInfo }) => {
+  for (let tableName of Object.keys(metaInfo.tables)) {
+    await connection.execute(`DROP TABLE ${tableName}`)
+  }
+
+  await connection.execute(`DROP TABLE ${metaName}`)
+
+  for (let key of Object.keys(metaInfo)) {
+    delete metaInfo[key]
+  }
+}
 
 const dropStorage = async ({ connection }) => {}
 
