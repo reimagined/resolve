@@ -106,9 +106,40 @@ const drop = async ({ connection, metaName, metaInfo }) => {
   }
 }
 
-const createStorage = async ({ connection }, storageName, storageSchema) => {}
+const castType = type => {
+  switch (type) {
+    case 'number':
+      return 'BIGINT NOT NULL'
+    case 'string':
+      return 'MEDIUMTEXT NOT NULL'
+    case 'datetime':
+      return 'DATETIME NOT NULL'
+    case 'json':
+      return 'JSON NULL'
+    default:
+      return 'MEDIUMBLOB NULL'
+  }
+}
 
-const dropStorage = async ({ connection }, storageName) => {}
+const createStorage = async ({ connection }, storageName, storageSchema) => {
+  await connection.execute(
+    `CREATE TABLE ${storageName} (\n` +
+      [
+        Object.keys(storageSchema.fieldTypes)
+          .map(fieldName => `${fieldName} ${castType(storageSchema.fieldTypes[fieldName])}`)
+          .join(',\n'),
+
+        `PRIMARY INDEX (${storageSchema.primaryIndex.name})`,
+
+        storageSchema.secondaryIndexes.map(({ name }) => `INDEX USING BTREE (${name})`).join(',\n')
+      ].join(',\n') +
+      `\n)`
+  )
+}
+
+const dropStorage = async ({ connection }, storageName) => {
+  await connection.execute(`DROP TABLE ${storageName}`)
+}
 
 const find = async (
   { connection },
