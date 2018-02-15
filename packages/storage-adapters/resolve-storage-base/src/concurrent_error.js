@@ -1,8 +1,8 @@
-function ConcurrentError() {
+function ConcurrentError(message = 'Concurrency error') {
   Error.call(this)
   this.name = 'ConcurrentError'
 
-  this.message = 'Concurrency error'
+  this.message = message
 
   if (Error.captureStackTrace) {
     Error.captureStackTrace(this, ConcurrentError)
