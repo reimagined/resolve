@@ -238,11 +238,11 @@ const checkStorageExists = async (metaApi, storageName) => {
   checkCondition(await metaApi.storageExists(storageName), 'storageNotExist', storageName)
 }
 
-const createStorage = async ({ metaApi, storeApi }, storageName, storageSchema) => {
+const createStorage = async ({ metaApi, storeApi }, storageName, inputStorageSchema) => {
   checkCondition(!await metaApi.storageExists(storageName), 'storageExists', storageName)
-  const metaSchema = checkAndGetStorageMetaSchema(storageSchema)
+  const storageSchema = checkAndGetStorageMetaSchema(inputStorageSchema)
   await storeApi.createStorage(storageName, storageSchema)
-  await metaApi.addStorage(storageName, metaSchema)
+  await metaApi.addStorage(storageName, storageSchema)
 }
 
 const dropStorage = async ({ metaApi, storeApi }, storageName) => {
