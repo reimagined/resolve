@@ -20,7 +20,6 @@ const DEFAULT_META_NAME = '__ResolveMeta__'
 
   storeApi:
     ...
-    dropStorage: async (dropStorage) => ...
 
   internalContext: object
     internalError: Error
@@ -28,11 +27,10 @@ const DEFAULT_META_NAME = '__ResolveMeta__'
     initDonePromise
     disposePromise
     isInitialized: boolean
-    
+
 */
 const createAdapter = (impl, options) => {
-  const metaName =
-    options instanceof Object ? options.metaName : DEFAULT_META_NAME
+  const metaName = options instanceof Object ? options.metaName : DEFAULT_META_NAME
 
   const { metaApi, storeApi } = impl({ metaName, ...options })
 

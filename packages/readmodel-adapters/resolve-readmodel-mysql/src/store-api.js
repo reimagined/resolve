@@ -15,7 +15,7 @@ const castType = type => {
   }
 }
 
-const createStorage = async ({ connection }, storageName, storageSchema) => {
+const defineStorage = async ({ connection }, storageName, storageSchema) => {
   await connection.execute(
     `CREATE TABLE ${storageName} (\n` +
       [
@@ -29,10 +29,6 @@ const createStorage = async ({ connection }, storageName, storageSchema) => {
       ].join(',\n') +
       `\n)`
   )
-}
-
-const dropStorage = async ({ connection }, storageName) => {
-  await connection.execute(`DROP TABLE ${storageName}`)
 }
 
 const searchToWhereExpression = expr => {
@@ -172,8 +168,7 @@ const del = async ({ connection }, storageName, searchExpression) => {
 }
 
 export default {
-  createStorage,
-  dropStorage,
+  defineStorage,
   find,
   insert,
   update,

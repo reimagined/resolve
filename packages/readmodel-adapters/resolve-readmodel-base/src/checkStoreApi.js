@@ -236,17 +236,11 @@ const checkStorageExists = async (metaApi, storageName) => {
   checkCondition(await metaApi.storageExists(storageName), 'storageNotExist', storageName)
 }
 
-const createStorage = async ({ metaApi, storeApi }, storageName, inputStorageSchema) => {
+const defineStorage = async ({ metaApi, storeApi }, storageName, inputStorageSchema) => {
   checkCondition(!await metaApi.storageExists(storageName), 'storageExists', storageName)
   const storageSchema = checkAndGetStorageMetaSchema(inputStorageSchema)
-  await storeApi.createStorage(storageName, storageSchema)
+  await storeApi.defineStorage(storageName, storageSchema)
   await metaApi.addStorage(storageName, storageSchema)
-}
-
-const dropStorage = async ({ metaApi, storeApi }, storageName) => {
-  await checkStorageExists(metaApi, storageName)
-  await storeApi.dropStorage(storageName)
-  await metaApi.removeStorage(storageName)
 }
 
 const find = async (
@@ -312,8 +306,7 @@ const del = async ({ metaApi, storeApi }, storageName, searchExpression) => {
 
 const checkStoreApi = pool => {
   return Object.freeze({
-    createStorage: createStorage.bind(null, pool),
-    dropStorage: dropStorage.bind(null, pool),
+    defineStorage: defineStorage.bind(null, pool),
     find: find.bind(null, pool),
     insert: insert.bind(null, pool),
     update: update.bind(null, pool),
