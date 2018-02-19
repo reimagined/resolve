@@ -71,21 +71,13 @@ const getStorageInfo = async ({ metaInfo }, storageName) => {
   return metaInfo.tables[storageName]
 }
 
-const addStorage = async ({ connection, metaInfo, metaName }, storageName, metaSchema) => {
+const describeStorage = async ({ connection, metaInfo, metaName }, storageName, metaSchema) => {
   await connection.execute(
     `INSERT INTO ${metaName}(MetaKey, MetaField, ComplexValue) VALUES("Tables", ?, ?)`,
     [storageName, metaSchema]
   )
 
   metaInfo.tables[storageName] = metaSchema
-}
-
-const removeStorage = async ({ connection, metaInfo, metaName }, storageName) => {
-  await connection.execute(`DELETE FROM ${metaName} WHERE MetaKey="Tables" AND MetaField=?`, [
-    storageName
-  ])
-
-  delete metaInfo.tables[storageName]
 }
 
 const getStorageNames = async ({ metaInfo }) => {
@@ -110,8 +102,7 @@ export default {
   setLastTimestamp,
   storageExists,
   getStorageInfo,
-  addStorage,
-  removeStorage,
+  describeStorage,
   getStorageNames,
   drop
 }

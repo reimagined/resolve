@@ -19,7 +19,7 @@ const checkOptionShape = (option, types) => {
 const checkAndGetStorageMetaSchema = storageSchema => {
   checkCondition(Array.isArray(storageSchema), 'invalidStorageSchema')
 
-  const validTypes = ['number', 'string', 'datetime', 'json']
+  const validTypes = ['number', 'string', 'json']
   const indexRoles = ['primary', 'secondary']
   let primaryIndex = null
   const secondaryIndexes = []
@@ -64,16 +64,23 @@ const checkAndGetFieldType = (metaInfo, fieldName) => {
 }
 
 const checkFieldList = (metaInfo, fieldList) => {
-  checkCondition(Array.isArray(fieldList), 'fieldListNotArray')
-  for (let fieldName of fieldList) {
+  checkCondition(checkOptionShape(fieldList, [Object, Array]), 'fieldListNotArray')
+  if (Array.isArray(fieldList)) {
+    for (let fieldName of fieldList) {
+      checkCondition(checkAndGetFieldType(metaInfo, fieldName), 'invalidProjectionKey', fieldName)
+    }
+    return
+  }
+
+  for (let fieldName of Object.keys(fieldList)) {
     checkCondition(checkAndGetFieldType(metaInfo, fieldName), 'invalidProjectionKey', fieldName)
+    checkCondition(Math.abs(fieldList[fieldName]) === 1, 'invalidProjectionKey', fieldName)
   }
 }
 
 const boxingTypesMap = new Map([
   [Number, 'number'],
   [String, 'string'],
-  [Date, 'datetime'],
   [Array, 'json'],
   [Object, 'json']
 ])
@@ -240,7 +247,7 @@ const defineStorage = async ({ metaApi, storeApi }, storageName, inputStorageSch
   checkCondition(!await metaApi.storageExists(storageName), 'storageExists', storageName)
   const storageSchema = checkAndGetStorageMetaSchema(inputStorageSchema)
   await storeApi.defineStorage(storageName, storageSchema)
-  await metaApi.addStorage(storageName, storageSchema)
+  await metaApi.describeStorage(storageName, storageSchema)
 }
 
 const find = async (
