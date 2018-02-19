@@ -1,5 +1,4 @@
 import React from 'react'
-import isomorphicFetch from 'isomorphic-fetch'
 import { ApolloClient } from 'apollo-client'
 import { HttpLink } from 'apollo-link-http'
 import { InMemoryCache } from 'apollo-cache-inmemory'
@@ -15,7 +14,7 @@ export default (gqlQuery, options = {}, endpoint) => {
     link: new HttpLink({
       uri: endpoint || getRootableUrl('/api/query/graphql'),
       credentials: 'same-origin',
-      fetch: isReactNative ? fetch : isomorphicFetch
+      fetch: isReactNative ? fetch : require('isomorphic-fetch')
     }),
     cache: new InMemoryCache()
   })
