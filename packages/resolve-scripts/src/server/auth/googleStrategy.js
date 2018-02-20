@@ -7,8 +7,13 @@ const strategy = options => {
     init: options => {
       return new PassportGoogleStrategy(
         options.strategy,
-        ({ resolve, body }, accessToken, refreshToken, profile, done) =>
-          options.authCallback({ resolve, body }, profile, done)
+        async ({ resolve, body }, accessToken, refreshToken, profile, done) => {
+          try {
+            done(null, await options.authCallback({ resolve, body }, profile))
+          } catch (error) {
+            done(error)
+          }
+        }
       )
     },
     middleware: (passport, options, applyJwtValue, req, res, next) => {
