@@ -8,7 +8,7 @@ reSolve is a framework for developing apps based on CQRS and Event Sourcing usin
 * 5 minutes easy [setup](#-installation)
 * Free and open source. reSolve is free to use under the [MIT license](https://github.com/reimagined/resolve/blob/master/LICENSE.md).
 
-Just [get it started](#-getting-started)!
+Just [get started](#-getting-started)!
 
 ## **📑 Table of Contents**
 * [Why reSolve](#why-resolve)
@@ -26,9 +26,9 @@ Just [get it started](#-getting-started)!
 
 ## <a name="why-resolve">**🏗️ Why reSolve**</a>
 
-### <a name="reactivity">Your **Reactivity** is our work</a>
+### <a name="reactivity">Your **Reactivity** Is Our Work</a>
 
-### <a name="distribution">Focus on Application, The **Distribution** from Us</a>
+### <a name="distribution">You Focus on Application, reSolve Provides The **Distribution**</a>
 
 ### <a name="highload">Say Hello to **Highload** System</a>
 
