@@ -524,9 +524,6 @@ A strategy's predefined options:
 * `strategy: {...}` - specifies strategy's options;
 * `routes: {...}` -  configures strategy's routing;
 * `failureCallback: (error, redirect, { resolve, body }) => {...}` - this callback is used for handling an error. The default callback redirects to the `/login?error=...` page;
-* `done` - this callback allows you to send notifications about errors or successful operations:
-   * Call `done('My error message')` to notify a user about an error.
-   * Call `done(null, myData)` to notify a user that an operation is completed successfully (it sets the 'jwt' value and redirects to the homepage).
   
 #### Auth strategies
 
@@ -548,13 +545,11 @@ A strategy's predefined options:
         method: 'post'
       }
     },
-    registerCallback: ({ resolve, body }, username, password, done) => {
+    registerCallback: async ({ resolve, body }, username, password) => {
       // your code to register a new user
-      // you need to call the 'done' callback to notify a user about an error or successful operation
     },
-    loginCallback: ({ resolve, body }, username, password, done) => {
+    loginCallback: async ({ resolve, body }, username, password) => {
       // your code to implement a user login
-      // you need to call the 'done' callback to notify a user about an error or successful operation
     },
     failureCallback // default behavior
   })
@@ -573,9 +568,8 @@ A strategy's predefined options:
       auth: '/auth/github',
       callback: '/auth/github/callback'
     },
-    authCallback: ({ resolve, body }, profile, done) => {
+    authCallback: async ({ resolve, body }, profile) => {
       // your code to authenticate a user
-      // you need to call the 'done' callback to notify a user about an error or successful operation
     },
     failureCallback // default behavior
   })
@@ -594,9 +588,8 @@ A strategy's predefined options:
       auth: '/auth/google',
       callback: '/auth/google/callback'
     },
-    authCallback: ({ resolve, body }, profile, done) => {
+    authCallback: async ({ resolve, body }, profile) => {
       // your code to authenticate a user
-      // you need to call the 'done' callback to notify a user about an error or successful operation
     },
     failureCallback // default behavior
   })
