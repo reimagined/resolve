@@ -6,7 +6,8 @@
 reSolve is a framework for developing apps based on CQRS and Event Sourcing using React + Redux on the client. It negates differences between your domain and technical languages, and allows you to focus on application code.
 
 * 5 minutes easy [setup](#-installation)
-* Free and open source. reSolve is free to use under the [MIT license](https://github.com/reimagined/resolve/blob/master/LICENSE.md).
+* Free and open source. reSolve is free to use under the [MIT license](https://github.com/reimagined/resolve/blob/master/LICENSE.md)
+* Flexibility. Great opportunities with [clear API](#-documentation)
 
 Just [get started](#-getting-started)!
 
@@ -22,9 +23,13 @@ Just [get started](#-getting-started)!
     * [First Application](#-first-application)
     * [Examples](#-examples)
 * [Documentation](#-documentation)
+    * [Bacic Concepts](#-basic-concepts)
+    * [API References](#-api-references)
 * [Get in Touch](#get-in-touch)
 
 ## <a name="why-resolve">**🏗️ Why reSolve**</a>
+
+![Why Resolve](https://github.com/reimagined/resolve/blob/master/readme-1.png)
 
 ### <a name="reactivity">Your **Reactivity** Is Our Work</a>
 
@@ -45,5 +50,9 @@ Just [get started](#-getting-started)!
 ### Examples
 
 ## **📚 Documentation **
+
+### Basic Concepts
+
+### API References
 
 ## **📢 Get in Touch**
