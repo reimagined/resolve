@@ -34,7 +34,11 @@ const getMetaInfo = async pool => {
 
   for (let { TableName, TableDescription } of rows) {
     try {
-      const descriptor = { fieldTypes: {}, primaryIndex: {}, secondaryIndexes: [] }
+      const descriptor = {
+        fieldTypes: {},
+        primaryIndex: {},
+        secondaryIndexes: []
+      }
       for (let key of Object.keys(TableDescription.fieldTypes)) {
         descriptor.fieldTypes[key] = TableDescription.fieldTypes[key]
       }
@@ -62,10 +66,14 @@ const getLastTimestamp = async ({ metaInfo }) => {
   return metaInfo.timestamp
 }
 
-const setLastTimestamp = async ({ connection, metaName, metaInfo }, timestamp) => {
-  await connection.execute(`UPDATE ${metaName} SET SimpleValue=? WHERE MetaKey="Timestamp"`, [
-    timestamp
-  ])
+const setLastTimestamp = async (
+  { connection, metaName, metaInfo },
+  timestamp
+) => {
+  await connection.execute(
+    `UPDATE ${metaName} SET SimpleValue=? WHERE MetaKey="Timestamp"`,
+    [timestamp]
+  )
 
   metaInfo.timestamp = +timestamp
 }
@@ -78,7 +86,11 @@ const getStorageInfo = async ({ metaInfo }, storageName) => {
   return metaInfo.tables[storageName]
 }
 
-const describeStorage = async ({ connection, metaInfo, metaName }, storageName, metaSchema) => {
+const describeStorage = async (
+  { connection, metaInfo, metaName },
+  storageName,
+  metaSchema
+) => {
   await connection.execute(
     `INSERT INTO ${metaName}(MetaKey, MetaField, ComplexValue) VALUES("Tables", ?, ?)`,
     [storageName, metaSchema]

@@ -20,10 +20,12 @@ const implementation = ({ metaName, ...options }) => {
 
   const bindWithConnection = func => async (...args) => {
     if (!connectionPromise) {
-      connectionPromise = mysql.createConnection(connectionOptions).then(async connection => {
-        pool.connection = connection
-        await getMetaInfo(pool)
-      })
+      connectionPromise = mysql
+        .createConnection(connectionOptions)
+        .then(async connection => {
+          pool.connection = connection
+          await getMetaInfo(pool)
+        })
     }
 
     await connectionPromise

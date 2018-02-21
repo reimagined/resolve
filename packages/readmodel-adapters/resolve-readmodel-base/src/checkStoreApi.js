@@ -3,7 +3,9 @@ import messages from './messages'
 const checkCondition = (condition, type, ...args) => {
   if (!condition) {
     const message = messages.hasOwnProperty(type)
-      ? typeof messages[type] === 'function' ? messages[type](...args) : messages[type]
+      ? typeof messages[type] === 'function'
+        ? messages[type](...args)
+        : messages[type]
       : `Unknown internal error ${type}: ${args}`
 
     throw new Error(message)
@@ -12,7 +14,8 @@ const checkCondition = (condition, type, ...args) => {
 
 const checkOptionShape = (option, types) => {
   return !(
-    option == null || !types.reduce((acc, type) => acc || option.constructor === type, false)
+    option == null ||
+    !types.reduce((acc, type) => acc || option.constructor === type, false)
   )
 }
 
@@ -26,26 +29,39 @@ const checkAndGetStorageMetaSchema = storageSchema => {
   const fieldTypes = {}
 
   for (let rowDescription of storageSchema) {
-    checkCondition(checkOptionShape(rowDescription, [Object]), 'invalidStorageSchema')
+    checkCondition(
+      checkOptionShape(rowDescription, [Object]),
+      'invalidStorageSchema'
+    )
     const { name, type, index } = rowDescription
     checkCondition(/^\w+?$/.test(name), 'invalidStorageSchema')
     checkCondition(
-      validTypes.indexOf(type) > -1 && (!index || indexRoles.indexOf(index) > -1),
+      validTypes.indexOf(type) > -1 &&
+        (!index || indexRoles.indexOf(index) > -1),
       'invalidStorageSchema'
     )
 
     if (index === 'primary') {
-      checkCondition(type === 'number' || type === 'string', 'invalidStorageSchema')
+      checkCondition(
+        type === 'number' || type === 'string',
+        'invalidStorageSchema'
+      )
       primaryIndex = { name, type }
     } else if (index === 'secondary') {
-      checkCondition(type === 'number' || type === 'string', 'invalidStorageSchema')
+      checkCondition(
+        type === 'number' || type === 'string',
+        'invalidStorageSchema'
+      )
       secondaryIndexes.push({ name, type })
     }
 
     fieldTypes[name] = type
   }
 
-  checkCondition(checkOptionShape(primaryIndex, [Object]), 'invalidStorageSchema')
+  checkCondition(
+    checkOptionShape(primaryIndex, [Object]),
+    'invalidStorageSchema'
+  )
 
   return { primaryIndex, secondaryIndexes, fieldTypes }
 }
@@ -65,16 +81,27 @@ const checkAndGetFieldType = (metaInfo, fieldName) => {
 }
 
 const checkFieldList = (metaInfo, fieldList, validProjectionValues = []) => {
-  checkCondition(checkOptionShape(fieldList, [Object, Array]), 'fieldListNotArray')
+  checkCondition(
+    checkOptionShape(fieldList, [Object, Array]),
+    'fieldListNotArray'
+  )
   if (Array.isArray(fieldList)) {
     for (let fieldName of fieldList) {
-      checkCondition(checkAndGetFieldType(metaInfo, fieldName), 'invalidProjectionKey', fieldName)
+      checkCondition(
+        checkAndGetFieldType(metaInfo, fieldName),
+        'invalidProjectionKey',
+        fieldName
+      )
     }
     return
   }
 
   for (let fieldName of Object.keys(fieldList)) {
-    checkCondition(checkAndGetFieldType(metaInfo, fieldName), 'invalidProjectionKey', fieldName)
+    checkCondition(
+      checkAndGetFieldType(metaInfo, fieldName),
+      'invalidProjectionKey',
+      fieldName
+    )
     checkCondition(
       validProjectionValues.indexOf(fieldList[fieldName]) > -1,
       'invalidProjectionKey',
@@ -83,7 +110,12 @@ const checkFieldList = (metaInfo, fieldList, validProjectionValues = []) => {
   }
 }
 
-const isFieldValueCorrect = (metaInfo, fieldName, fieldValue, isNullable = true) => {
+const isFieldValueCorrect = (
+  metaInfo,
+  fieldName,
+  fieldValue,
+  isNullable = true
+) => {
   try {
     const fieldType = checkAndGetFieldType(metaInfo, fieldName)
     if (!fieldType) return false
@@ -100,7 +132,11 @@ const isFieldValueCorrect = (metaInfo, fieldName, fieldValue, isNullable = true)
 }
 
 const checkDocumentShape = (metaInfo, document, strict = false) => {
-  checkCondition(checkOptionShape(document, [Object]), 'invalidDocumentShape', document)
+  checkCondition(
+    checkOptionShape(document, [Object]),
+    'invalidDocumentShape',
+    document
+  )
   const documentKeys = Object.keys(document)
 
   checkCondition(
@@ -113,10 +149,15 @@ const checkDocumentShape = (metaInfo, document, strict = false) => {
   const { primaryIndex, secondaryIndexes } = metaInfo
 
   for (let fieldName of documentKeys) {
-    if (document[fieldName] === null && metaInfo.fieldTypes[fieldName] === 'json') continue
+    if (
+      document[fieldName] === null &&
+      metaInfo.fieldTypes[fieldName] === 'json'
+    )
+      continue
 
     const isNullable = !!(
-      primaryIndex.name === fieldName || secondaryIndexes.find(({ name }) => name === fieldName)
+      primaryIndex.name === fieldName ||
+      secondaryIndexes.find(({ name }) => name === fieldName)
     )
 
     checkCondition(
@@ -134,10 +175,13 @@ const checkUpdateExpression = (metaInfo, updateExpression) => {
     updateExpression
   )
 
-  const operators = Object.keys(updateExpression).filter(key => key.indexOf('$') > -1)
+  const operators = Object.keys(updateExpression).filter(
+    key => key.indexOf('$') > -1
+  )
 
   checkCondition(
-    operators.length > 0 && operators.length === Object.keys(updateExpression).length,
+    operators.length > 0 &&
+      operators.length === Object.keys(updateExpression).length,
     'invalidUpdateExpression',
     updateExpression
   )
@@ -145,7 +189,11 @@ const checkUpdateExpression = (metaInfo, updateExpression) => {
   const allowedOperators = ['$set', '$unset', '$inc']
 
   for (let operator of operators) {
-    checkCondition(allowedOperators.includes(operator), 'invalidUpdateExpression', updateExpression)
+    checkCondition(
+      allowedOperators.includes(operator),
+      'invalidUpdateExpression',
+      updateExpression
+    )
 
     const affectedFields = updateExpression[operator]
     checkCondition(
@@ -163,7 +211,9 @@ const checkUpdateExpression = (metaInfo, updateExpression) => {
           ? 'null'
           : affectedFields[fieldName].constructor === Number
             ? 'number'
-            : affectedFields[fieldName].constructor === String ? 'string' : 'null'
+            : affectedFields[fieldName].constructor === String
+              ? 'string'
+              : 'null'
 
       checkCondition(
         (operator === '$set' && updateValueType === fieldType) ||
@@ -176,11 +226,23 @@ const checkUpdateExpression = (metaInfo, updateExpression) => {
 }
 
 const checkStorageExists = async (metaApi, storageName) => {
-  checkCondition(await metaApi.storageExists(storageName), 'storageNotExist', storageName)
+  checkCondition(
+    await metaApi.storageExists(storageName),
+    'storageNotExist',
+    storageName
+  )
 }
 
-const defineStorage = async ({ metaApi, storeApi }, storageName, inputStorageSchema) => {
-  checkCondition(!await metaApi.storageExists(storageName), 'storageExists', storageName)
+const defineStorage = async (
+  { metaApi, storeApi },
+  storageName,
+  inputStorageSchema
+) => {
+  checkCondition(
+    !await metaApi.storageExists(storageName),
+    'storageExists',
+    storageName
+  )
   const storageSchema = checkAndGetStorageMetaSchema(inputStorageSchema)
   await storeApi.defineStorage(storageName, storageSchema)
   await metaApi.describeStorage(storageName, storageSchema)
@@ -233,7 +295,12 @@ const insert = async ({ metaApi, storeApi }, storageName, document) => {
   await storeApi.insert(storageName, document)
 }
 
-const update = async ({ metaApi, storeApi }, storageName, searchExpression, updateExpression) => {
+const update = async (
+  { metaApi, storeApi },
+  storageName,
+  searchExpression,
+  updateExpression
+) => {
   await checkStorageExists(metaApi, storageName)
 
   const metaInfo = await metaApi.getStorageInfo(storageName)
