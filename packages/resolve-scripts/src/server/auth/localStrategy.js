@@ -8,18 +8,25 @@ const strategy = options => {
       const registerPath = getRouteByName('register', options.routes).path
       return new PassportLocalStrategy(
         options.strategy,
-        (req, username, password, done) => {
+        async (req, username, password, done) => {
           const url = req.url.split('?')[0]
           const { resolve, body } = req
-          if (url === registerPath) {
-            options.registerCallback(
-              { resolve, body },
-              username,
-              password,
-              done
-            )
-          } else {
-            options.loginCallback({ resolve, body }, username, password, done)
+          try {
+            const value =
+              url === registerPath
+                ? await options.registerCallback(
+                    { resolve, body },
+                    username,
+                    password
+                  )
+                : await options.loginCallback(
+                    { resolve, body },
+                    username,
+                    password
+                  )
+            done(null, value)
+          } catch (error) {
+            done(error)
           }
         }
       )

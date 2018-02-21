@@ -1,14 +1,20 @@
 import { Strategy as PassportGitHubStrategy } from 'passport-github'
 
 import { defaultFailureCallback, getRouteByName, rootDirectory } from './helper'
+import { raiseDeprecatedWarn } from '../utils/error_handling'
 
 const strategy = options => {
   return {
     init: options => {
       return new PassportGitHubStrategy(
         options.strategy,
-        ({ resolve, body }, accessToken, refreshToken, profile, done) =>
-          options.authCallback({ resolve, body }, profile, done)
+        async ({ resolve, body }, accessToken, refreshToken, profile, done) => {
+          try {
+            done(null, await options.authCallback({ resolve, body }, profile))
+          } catch (error) {
+            done(error)
+          }
+        }
       )
     },
     middleware: (passport, options, applyJwtValue, req, res, next) => {
@@ -43,8 +49,8 @@ export default options => {
       auth: `${rootDirectory}/auth/github`,
       callback: `${rootDirectory}/auth/github/callback`
     },
-    authCallback: ({ resolve, body }, profile, done) => {
-      done(
+    authCallback: ({ resolve, body }, profile) => {
+      throw new Error(
         'Invalid option value when setting ' +
           'githubStrategy: `authCallback` should not be empty.'
       )
