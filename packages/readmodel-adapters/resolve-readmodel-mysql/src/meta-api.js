@@ -5,33 +5,38 @@ const getMetaInfo = async pool => {
 
   await connection.execute(`CREATE TABLE IF NOT EXISTS ${metaName} (
       MetaKey VARCHAR(36) NOT NULL,
-      MetaField VARCHAR(128) NULL,
+      MetaField VARCHAR(128) NOT NULL,
       SimpleValue BIGINT NULL,
-      ComplexValue JSON NULL
+      ComplexValue JSON NULL,
       PRIMARY KEY (MetaKey, MetaField)
     )`)
 
   pool.metaInfo = { tables: {}, timestamp: 0 }
 
   let [rows] = await connection.execute(
-    `SELECT SimpleValue AS Timestamp FROM ${metaName} WHERE MetaKey="Timestamp" `
+    `SELECT SimpleValue AS Timestamp FROM ${metaName}
+     WHERE MetaKey="Timestamp" AND MetaField="Timestamp"`
   )
 
   if (rows.length === 0) {
-    await connection.execute(`INSERT INTO ${metaName}(MetaKey, SimpleValue) VALUES("Timestamp", 0)`)
+    await connection.execute(
+      `INSERT INTO ${metaName}(MetaKey, MetaField, SimpleValue)
+       VALUES("Timestamp", "Timestamp", 0)`
+    )
   } else {
     pool.metaInfo.timestamp = +rows[0]['Timestamp']
   }
 
-  let [rows] = await connection.execute(
+  void ([rows] = await connection.execute(
     `SELECT MetaField AS TableName, ComplexValue AS TableDescription
      FROM ${metaName} WHERE MetaKey="Tables"`
-  )
+  ))
+
   for (let { TableName, TableDescription } of rows) {
     try {
       const descriptor = { fieldTypes: {}, primaryIndex: {}, secondaryIndexes: [] }
       for (let key of Object.keys(TableDescription.fieldTypes)) {
-        descriptor.fieldTypes = TableDescription.fieldTypes[key]
+        descriptor.fieldTypes[key] = TableDescription.fieldTypes[key]
       }
 
       descriptor.primaryIndex.name = TableDescription.primaryIndex.name
@@ -44,9 +49,11 @@ const getMetaInfo = async pool => {
       pool.metaInfo.tables[TableName] = descriptor
       continue
     } catch (err) {
-      await connection.execute(`DELETE FROM ${metaName} WHERE MetaKey="Tables" AND MetaField=?`, [
-        TableName
-      ])
+      await connection.execute(
+        `DELETE FROM ${metaName}
+         WHERE MetaKey="Tables" AND MetaField=?`,
+        [TableName]
+      )
     }
   }
 }

@@ -16,19 +16,30 @@ const implementation = ({ metaName, ...options }) => {
   }
 
   const pool = { metaName }
-  let connectionPromise = mysql.createConnection(connectionOptions).then(async connection => {
-    pool.connection = connection
-    await getMetaInfo(pool)
-  })
+  let connectionPromise = null
 
   const bindWithConnection = func => async (...args) => {
+    if (!connectionPromise) {
+      connectionPromise = mysql.createConnection(connectionOptions).then(async connection => {
+        pool.connection = connection
+        await getMetaInfo(pool)
+      })
+    }
+
     await connectionPromise
     return await func(pool, ...args)
   }
 
   return {
-    metaApi: Object.keys(metaApi).map(key => bindWithConnection(metaApi[key])),
-    storeApi: Object.keys(storeApi).map(key => bindWithConnection(storeApi[key]))
+    metaApi: Object.keys(metaApi).reduce((acc, key) => {
+      acc[key] = bindWithConnection(metaApi[key])
+      return acc
+    }, {}),
+
+    storeApi: Object.keys(storeApi).reduce((acc, key) => {
+      acc[key] = bindWithConnection(storeApi[key])
+      return acc
+    }, {})
   }
 }
 

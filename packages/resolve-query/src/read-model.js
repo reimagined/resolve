@@ -25,41 +25,34 @@ const init = (adapter, eventStore, projection) => {
   const loadDonePromise = new Promise((resolve, reject) => {
     let flowPromise = Promise.resolve()
 
-    const forceStop = reason => {
+    const forceStop = (reason, chainable = true) => {
       if (flowPromise) {
-        flowPromise.then(reject, reject)
+        flowPromise.catch(reject)
         flowPromise = null
         onDispose()
       }
 
-      return Promise.reject(reason)
+      if (chainable) {
+        return Promise.reject(reason)
+      }
+
+      reject(reason)
     }
 
     const synchronizedEventWorker = event => {
-      if (
-        !flowPromise ||
-        !event ||
-        !event.type ||
-        typeof projection[event.type] !== 'function'
-      ) {
+      if (!flowPromise || !event || !event.type || typeof projection[event.type] !== 'function') {
         return
       }
 
-      flowPromise = flowPromise
-        .then(projection[event.type].bind(null, event))
-        .catch(forceStop)
+      flowPromise = flowPromise.then(projection[event.type].bind(null, event)).catch(forceStop)
     }
 
     Promise.resolve()
       .then(getLastAppliedTimestamp)
       .then(startTime =>
-        eventStore.subscribeByEventType(
-          Object.keys(projection),
-          synchronizedEventWorker,
-          {
-            startTime
-          }
-        )
+        eventStore.subscribeByEventType(Object.keys(projection), synchronizedEventWorker, {
+          startTime
+        })
       )
       .then(unsub => {
         if (flowPromise) {
@@ -72,6 +65,7 @@ const init = (adapter, eventStore, projection) => {
           unsub()
         }
       })
+      .catch(err => forceStop(err, false))
   })
 
   return {
@@ -99,17 +93,9 @@ const read = async (repository, adapter, eventStore, projection, ...args) => {
 
 const createReadModel = ({ projection, eventStore, adapter }) => {
   const currentAdapter = adapter || createDefaultAdapter()
-  const builtProjection = projection
-    ? currentAdapter.buildProjection(projection)
-    : null
+  const builtProjection = projection ? currentAdapter.buildProjection(projection) : null
   const repository = {}
-  const getReadModel = read.bind(
-    null,
-    repository,
-    currentAdapter,
-    eventStore,
-    builtProjection
-  )
+  const getReadModel = read.bind(null, repository, currentAdapter, eventStore, builtProjection)
 
   const reader = async (...args) => await getReadModel(...args)
 

@@ -1,14 +1,8 @@
 import 'regenerator-runtime/runtime'
 
-const buildProjection = (
-  { metaApi, storeApi, internalContext },
-  inputProjection
-) => {
+const buildProjection = ({ metaApi, storeApi, internalContext }, inputProjection) => {
   return Object.keys(inputProjection).reduce((projection, eventType) => {
-    if (
-      eventType === 'Init' &&
-      typeof inputProjection[eventType] === 'function'
-    ) {
+    if (eventType === 'Init' && typeof inputProjection[eventType] === 'function') {
       internalContext.initHandler = inputProjection[eventType]
       return projection
     }

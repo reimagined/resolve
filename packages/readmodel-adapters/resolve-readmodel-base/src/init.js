@@ -13,7 +13,7 @@ const initProjection = async ({ metaApi, storeApi, internalContext }) => {
 }
 
 const wrapReadInterface = storeApi => {
-  const readInterface = Object.key(storeApi).reduce((acc, functionName) => {
+  const readInterface = Object.keys(storeApi).reduce((acc, functionName) => {
     acc[functionName] = async () => {
       throw new Error(messages.readSideForbiddenOperation(functionName))
     }
@@ -43,16 +43,20 @@ const init = ({ metaApi, storeApi, internalContext }) => {
     metaApi,
     storeApi,
     internalContext
-  })
+  }).catch(error => error)
 
   return {
     getLastAppliedTimestamp: async () => await metaApi.getLastTimestamp(),
     getReadable: async () => {
-      await internalContext.initDonePromise
+      const initResult = await internalContext.initDonePromise
+      if (initResult instanceof Error) throw initResult
+
       return readInterface
     },
     getError: async () => {
-      await internalContext.initDonePromise
+      const initResult = await internalContext.initDonePromise
+      if (initResult instanceof Error) throw initResult
+
       return internalContext.internalError
     }
   }

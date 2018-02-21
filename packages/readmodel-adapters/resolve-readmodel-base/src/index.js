@@ -29,7 +29,10 @@ const DEFAULT_META_NAME = '__ResolveMeta__'
 
 */
 const createAdapter = (impl, options) => {
-  const metaName = options instanceof Object ? options.metaName : DEFAULT_META_NAME
+  const metaName =
+    options && options.metaName && options.metaName.constructor === String
+      ? options.metaName
+      : DEFAULT_META_NAME
 
   const { metaApi, storeApi } = impl({ metaName, ...options })
 

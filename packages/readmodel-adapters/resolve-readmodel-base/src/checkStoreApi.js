@@ -3,7 +3,7 @@ import messages from './messages'
 const checkCondition = (condition, type, ...args) => {
   if (!condition) {
     const message = messages.hasOwnProperty(type)
-      ? typeof messages[type] === 'function' ? messages[type](...args) : messages.type
+      ? typeof messages[type] === 'function' ? messages[type](...args) : messages[type]
       : `Unknown internal error ${type}: ${args}`
 
     throw new Error(message)
@@ -30,14 +30,15 @@ const checkAndGetStorageMetaSchema = storageSchema => {
     const { name, type, index } = rowDescription
     checkCondition(/^\w+?$/.test(name), 'invalidStorageSchema')
     checkCondition(
-      validTypes.indexOf(type) < 0 || (index && indexRoles.indexOf(index) < 0),
+      validTypes.indexOf(type) > -1 && (!index || indexRoles.indexOf(index) > -1),
       'invalidStorageSchema'
     )
 
     if (index === 'primary') {
-      checkCondition(type !== 'number' && type !== 'string', 'invalidStorageSchema')
+      checkCondition(type === 'number' || type === 'string', 'invalidStorageSchema')
       primaryIndex = { name, type }
     } else if (index === 'secondary') {
+      checkCondition(type === 'number' || type === 'string', 'invalidStorageSchema')
       secondaryIndexes.push({ name, type })
     }
 
@@ -50,7 +51,7 @@ const checkAndGetStorageMetaSchema = storageSchema => {
 }
 
 const checkAndGetFieldType = (metaInfo, fieldName) => {
-  if (!/^\w+?(?:\.\w+?)*?$/.test(fieldName)) return null
+  if (!/^(?:\w|\d|-)+?(?:\.(?:\w|\d|-)+?)*?$/.test(fieldName)) return null
 
   const [baseName, ...nestedName] = fieldName.split('.')
   if (!metaInfo.fieldTypes[baseName]) return null
@@ -63,7 +64,7 @@ const checkAndGetFieldType = (metaInfo, fieldName) => {
   return fieldType
 }
 
-const checkFieldList = (metaInfo, fieldList) => {
+const checkFieldList = (metaInfo, fieldList, validProjectionValues = []) => {
   checkCondition(checkOptionShape(fieldList, [Object, Array]), 'fieldListNotArray')
   if (Array.isArray(fieldList)) {
     for (let fieldName of fieldList) {
@@ -74,27 +75,25 @@ const checkFieldList = (metaInfo, fieldList) => {
 
   for (let fieldName of Object.keys(fieldList)) {
     checkCondition(checkAndGetFieldType(metaInfo, fieldName), 'invalidProjectionKey', fieldName)
-    checkCondition(Math.abs(fieldList[fieldName]) === 1, 'invalidProjectionKey', fieldName)
+    checkCondition(
+      validProjectionValues.indexOf(fieldList[fieldName]) > -1,
+      'invalidProjectionKey',
+      fieldName
+    )
   }
 }
-
-const boxingTypesMap = new Map([
-  [Number, 'number'],
-  [String, 'string'],
-  [Array, 'json'],
-  [Object, 'json']
-])
 
 const isFieldValueCorrect = (metaInfo, fieldName, fieldValue, isNullable = true) => {
   try {
     const fieldType = checkAndGetFieldType(metaInfo, fieldName)
     if (!fieldType) return false
+    if (fieldValue == null) return isNullable
+    if (fieldType === 'json') return true
 
-    if (fieldValue != null) {
-      return boxingTypesMap.get(fieldValue.constructor) === fieldType
-    }
-
-    return isNullable
+    return (
+      (fieldType === 'number' && fieldValue.constructor === Number) ||
+      (fieldType === 'string' && fieldValue.constructor === String)
+    )
   } catch (err) {
     return false
   }
@@ -117,67 +116,14 @@ const checkDocumentShape = (metaInfo, document, strict = false) => {
     if (document[fieldName] === null && metaInfo.fieldTypes[fieldName] === 'json') continue
 
     const isNullable = !!(
-      primaryIndex.name === fieldName || secondaryIndexes.find({ name } === fieldName)
+      primaryIndex.name === fieldName || secondaryIndexes.find(({ name }) => name === fieldName)
     )
 
     checkCondition(
-      isFieldValueCorrect(metaInfo, fieldName, documentKeys[fieldName], isNullable),
+      isFieldValueCorrect(metaInfo, fieldName, document[fieldName], isNullable),
       'invalidDocumentShape',
       document
     )
-  }
-}
-
-const checkSearchExpression = (metaInfo, searchExpression) => {
-  checkCondition(
-    checkOptionShape(searchExpression, [Object]),
-    'invalidSearchExpression',
-    searchExpression
-  )
-
-  const rootOperators = ['$not', '$and', '$or']
-  const allowedOperators = [...rootOperators, '$eq', '$exists']
-
-  const operators = Object.keys(searchExpression).filter(key => key.indexOf('$') > -1)
-  if (operators.length === 0) {
-    checkDocumentShape(metaInfo, searchExpression)
-    return
-  }
-
-  checkCondition(
-    operators.length === Object.keys(searchExpression).length,
-    'invalidSearchExpression',
-    searchExpression
-  )
-
-  for (let operator of operators) {
-    checkCondition(rootOperators.includes(operator), 'invalidSearchExpression', searchExpression)
-
-    const operatorValue = searchExpression[operator]
-    checkCondition(
-      checkOptionShape(operatorValue, [Array, Object]),
-      'invalidSearchExpression',
-      searchExpression
-    )
-
-    for (let key of Array.isArray(operatorValue)
-      ? operatorValue.map((_, idx) => idx)
-      : Object.keys(operatorValue)) {
-      if (key.indexOf('$') > -1) {
-        checkCondition(
-          allowedOperators.indexOf(key) > -1,
-          'invalidSearchExpression',
-          searchExpression
-        )
-        continue
-      }
-
-      checkCondition(
-        isFieldValueCorrect(metaInfo, key, operatorValue[key]),
-        'invalidSearchExpression',
-        searchExpression
-      )
-    }
   }
 }
 
@@ -189,13 +135,9 @@ const checkUpdateExpression = (metaInfo, updateExpression) => {
   )
 
   const operators = Object.keys(updateExpression).filter(key => key.indexOf('$') > -1)
-  if (operators.length === 0) {
-    checkDocumentShape(metaInfo, updateExpression)
-    return
-  }
 
   checkCondition(
-    operators.length === Object.keys(updateExpression).length,
+    operators.length > 0 && operators.length === Object.keys(updateExpression).length,
     'invalidUpdateExpression',
     updateExpression
   )
@@ -212,26 +154,20 @@ const checkUpdateExpression = (metaInfo, updateExpression) => {
       updateExpression
     )
 
-    for (let fieldName of affectedFields) {
+    for (let fieldName of Object.keys(affectedFields)) {
       const fieldType = checkAndGetFieldType(metaInfo, fieldName)
-      if (operator === '$unset') continue
+      if (operator === '$unset' || fieldType === 'json') continue
+
+      const updateValueType =
+        affectedFields[fieldName] == null
+          ? 'null'
+          : affectedFields[fieldName].constructor === Number
+            ? 'number'
+            : affectedFields[fieldName].constructor === String ? 'string' : 'null'
 
       checkCondition(
-        fieldType === 'json' ||
-          (fieldType === 'number' && operator === '$inc') ||
-          operator === '$set',
-        'invalidUpdateExpression',
-        updateExpression
-      )
-
-      const updateValueType = boxingTypesMap.get(
-        (affectedFields[fieldName] != null ? affectedFields[fieldName] : Object.create(null))
-          .constructor
-      )
-
-      checkCondition(
-        (operator === '$set' && updateValueType !== fieldType) ||
-          (operator === '$inc' && updateValueType !== 'number'),
+        (operator === '$set' && updateValueType === fieldType) ||
+          (operator === '$inc' && updateValueType === 'number'),
         'invalidUpdateExpression',
         updateExpression
       )
@@ -262,9 +198,14 @@ const find = async (
   await checkStorageExists(metaApi, storageName)
 
   const metaInfo = await metaApi.getStorageInfo(storageName)
-  checkFieldList(metaInfo, resultFieldsList)
-  checkFieldList(metaInfo, sortFieldsList)
-  checkSearchExpression(metaInfo, searchExpression)
+  if (resultFieldsList != null) {
+    checkFieldList(metaInfo, resultFieldsList, [0, 1])
+  }
+  if (sortFieldsList != null) {
+    checkFieldList(metaInfo, sortFieldsList, [-1, 1])
+  }
+
+  checkDocumentShape(metaInfo, searchExpression)
 
   checkCondition(
     Number.isInteger(skip) && (Number.isInteger(limit) || limit === Infinity),
@@ -296,7 +237,7 @@ const update = async ({ metaApi, storeApi }, storageName, searchExpression, upda
   await checkStorageExists(metaApi, storageName)
 
   const metaInfo = await metaApi.getStorageInfo(storageName)
-  checkSearchExpression(metaInfo, searchExpression)
+  checkDocumentShape(metaInfo, searchExpression)
   checkUpdateExpression(metaInfo, updateExpression)
 
   await storeApi.update(storageName, searchExpression, updateExpression)
@@ -306,7 +247,7 @@ const del = async ({ metaApi, storeApi }, storageName, searchExpression) => {
   await checkStorageExists(metaApi, storageName)
 
   const metaInfo = await metaApi.getStorageInfo(storageName)
-  checkSearchExpression(metaInfo, searchExpression)
+  checkDocumentShape(metaInfo, searchExpression)
 
   await storeApi.delete(storageName, searchExpression)
 }
