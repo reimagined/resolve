@@ -6,7 +6,7 @@ import storeApi from './store-api'
 
 const implementation = ({ metaName, ...options }) => {
   const pool = {
-    metaInfo: { tables: {}, timestamp: {} },
+    metaInfo: { tables: {}, timestamp: 0 },
     createStorage: () => new NeDB({ autoload: true }),
     storage: {}
   }

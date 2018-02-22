@@ -251,7 +251,7 @@ const del = async ({ metaApi, storeApi }, storageName, searchExpression) => {
   const metaInfo = await metaApi.getStorageInfo(storageName)
   checkDocumentShape(metaInfo, searchExpression)
 
-  await storeApi.delete(storageName, searchExpression)
+  await storeApi.del(storageName, searchExpression)
 }
 
 const checkStoreApi = pool => {

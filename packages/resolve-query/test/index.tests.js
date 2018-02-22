@@ -5,8 +5,8 @@ import { createFacade, createReadModel, createViewModel } from '../src'
 
 describe('resolve-query', () => {
   let eventStore, readModelProjection, readModel, viewModelProjection, viewModel
-  let normalGqlFacade, brokenSchemaGqlFacade, brokenResolversGqlFacade
-  let eventList, delayedEventList, unsubscribe, resolveDelayedEvents
+  let normalGqlFacade, brokenSchemaGqlFacade, brokenResolversGqlFacade, unsubscribe
+  let eventList, delayedEventList, resolveDelayedEvents, delayedHandlersPromise
 
   const simulatedEventList = [
     { type: 'UserAdded', aggregateId: '1', payload: { UserName: 'User-1' } },
@@ -17,6 +17,8 @@ describe('resolve-query', () => {
 
   beforeEach(() => {
     const delayedEventsPromise = new Promise(resolve => (resolveDelayedEvents = resolve))
+    let resolveDelayedHandlers = null
+    delayedHandlersPromise = new Promise(resolve => (resolveDelayedHandlers = resolve))
     unsubscribe = sinon.stub()
     delayedEventList = []
     eventList = []
@@ -68,6 +70,11 @@ describe('resolve-query', () => {
 
       FailureEvent: sinon.stub().callsFake(async (store, { aggregateId: id }) => {
         throw new Error('Failure')
+      }),
+
+      LastBusEvent: sinon.stub().callsFake(async (store, { aggregateId: id }) => {
+        resolveDelayedHandlers()
+        await Promise.resolve()
       })
     }
 
@@ -102,11 +109,12 @@ describe('resolve-query', () => {
         }),
 
         UserIds: sinon.stub().callsFake(async store => {
-          return await store.find('Users', {}, { id: 1 })
+          const result = await store.find('Users', {}, { id: 1 }, { id: 1 })
+          return result.map(({ id }) => id)
         }),
 
         Users: sinon.stub().callsFake(async store => {
-          return await store.find('Users', {})
+          return await store.find('Users', {}, null, { id: 1 })
         })
       }
     }
@@ -127,6 +135,7 @@ describe('resolve-query', () => {
 
   afterEach(() => {
     resolveDelayedEvents = null
+    delayedHandlersPromise = null
     normalGqlFacade = null
     brokenSchemaGqlFacade = null
     brokenResolversGqlFacade = null
@@ -173,10 +182,14 @@ describe('resolve-query', () => {
       ...normalGqlFacade
     })
     eventList = simulatedEventList.slice(0)
-    delayedEventList = [{ type: 'UserAdded', aggregateId: '4', payload: { UserName: 'User-4' } }]
+    delayedEventList = [
+      { type: 'UserAdded', aggregateId: '4', payload: { UserName: 'User-4' } },
+      { type: 'LastBusEvent', aggregateId: '0' }
+    ]
 
     const firstState = await executeQueryGraphql('query { UserIds }')
     resolveDelayedEvents()
+    await delayedHandlersPromise
     const secondState = await executeQueryGraphql('query { UserIds }')
 
     expect(firstState).to.be.deep.equal({
@@ -327,7 +340,7 @@ describe('resolve-query', () => {
     const localAdapter = {
       init: () => ({
         getReadable: async () => ({
-          hget: async () => storedState.Users
+          find: async () => storedState.Users
         }),
         getError: async () => null
       })
@@ -354,7 +367,11 @@ describe('resolve-query', () => {
       customResolvers: {
         FindUser: async (model, { id }) => {
           const store = await model()
-          return await store.hget('Users', `USER_${id}`)
+          const matchedUsers = await store.find('Users', { id })
+          if (!Array.isArray(matchedUsers) || matchedUsers.length === 0) {
+            return null
+          }
+          return matchedUsers[0]
         }
       }
     })

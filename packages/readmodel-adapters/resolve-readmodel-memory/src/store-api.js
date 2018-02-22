@@ -22,12 +22,17 @@ const find = async ({ storage }, storageName, searchExpression, fieldList, sort,
   if (sort) {
     findCursor = findCursor.sort(sort)
   }
+
   if (fieldList) {
-    findCursor = findCursor.projection(fieldList)
+    findCursor = findCursor.projection({ _id: 0, ...fieldList })
+  } else {
+    findCursor = findCursor.projection({ _id: 0 })
   }
+
   if (Number.isFinite(skip)) {
     findCursor = findCursor.skip(skip)
   }
+
   if (Number.isFinite(limit)) {
     findCursor = findCursor.limit(limit)
   }
