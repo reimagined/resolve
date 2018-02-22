@@ -1986,10 +1986,6 @@ cliui@^4.0.0:
     strip-ansi "^4.0.0"
     wrap-ansi "^2.0.0"
 
-clone@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/clone/-/clone-2.1.1.tgz#d217d1e961118e3ac9a4b8bba3285553bf647cdb"
-
 co@^4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/co/-/co-4.6.0.tgz#6ea6bdf3d853ae54ccb8e47bfa0bf3f9031fb184"
@@ -5873,7 +5869,7 @@ object-copy@^0.1.0:
     define-property "^0.2.5"
     kind-of "^3.0.3"
 
-object-hash@^1.1.8, object-hash@^1.2.0:
+object-hash@^1.1.8:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/object-hash/-/object-hash-1.2.0.tgz#e96af0e96981996a1d47f88ead8f74f1ebc4422b"
 
@@ -7090,16 +7086,6 @@ reserved-words@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/reserved-words/-/reserved-words-0.1.2.tgz#00a0940f98cd501aeaaac316411d9adc52b31ab1"
 
-resolve-bus-memory@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/resolve-bus-memory/-/resolve-bus-memory-0.4.0.tgz#c57c90a2216bb991a1ad958fda577f5508e9fd29"
-
-resolve-command@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/resolve-command/-/resolve-command-0.4.0.tgz#a3891479190e139e923935bc740b3f9e66eaacb1"
-  dependencies:
-    regenerator-runtime "^0.10.5"
-
 resolve-cwd@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/resolve-cwd/-/resolve-cwd-1.0.0.tgz#4eaeea41ed040d1702457df64a42b2b07d246f9f"
@@ -7111,12 +7097,6 @@ resolve-cwd@^2.0.0:
   resolved "https://registry.yarnpkg.com/resolve-cwd/-/resolve-cwd-2.0.0.tgz#00a9f7387556e27038eae232caa372a6a59b665a"
   dependencies:
     resolve-from "^3.0.0"
-
-resolve-es@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/resolve-es/-/resolve-es-0.4.0.tgz#6c40adbf530e190ca79456425c4f72038639a9b4"
-  dependencies:
-    regenerator-runtime "^0.10.5"
 
 resolve-from@^1.0.0:
   version "1.0.1"
@@ -7133,95 +7113,6 @@ resolve-from@^3.0.0:
 resolve-pathname@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/resolve-pathname/-/resolve-pathname-2.2.0.tgz#7e9ae21ed815fd63ab189adeee64dc831eefa879"
-
-resolve-query@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/resolve-query/-/resolve-query-0.4.0.tgz#8fda95a1f70b512d969926f5c02fa8bcea12d7ec"
-  dependencies:
-    graphql "^0.11.7"
-    graphql-tools "^2.7.2"
-    object-hash "^1.1.8"
-    regenerator-runtime "^0.10.5"
-    resolve-readmodel-memory "^0.4.0"
-
-resolve-readmodel-memory@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/resolve-readmodel-memory/-/resolve-readmodel-memory-0.4.0.tgz#a28c24e224650d3dfbababf2d1d166791ca88ab5"
-  dependencies:
-    clone "^2.1.1"
-    nedb "^1.8.0"
-    object-hash "^1.2.0"
-    regenerator-runtime "^0.11.0"
-
-resolve-redux@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/resolve-redux/-/resolve-redux-0.4.0.tgz#7a4d04347ff1e36480c0200d69cd9002e53df099"
-  dependencies:
-    apollo-cache-inmemory "^1.1.0"
-    apollo-client "^2.0.2"
-    apollo-link-http "^1.1.0"
-    graphql "^0.11.7"
-    graphql-tag "^2.5.0"
-    isomorphic-fetch "^2.2.1"
-    prop-types "^15.6.0"
-    react-apollo "^2.0.0"
-    react-redux "^5.0.6"
-    regenerator-runtime "^0.11.0"
-    socket.io-client "^2.0.3"
-
-resolve-scripts@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/resolve-scripts/-/resolve-scripts-0.4.0.tgz#00cf0368acc66ea86d3d5ffbda185fbbfabdd16f"
-  dependencies:
-    address "^1.0.3"
-    babel-cli "^6.24.1"
-    babel-loader "^7.1.1"
-    babel-plugin-object-source "^1.0.1"
-    babel-preset-es2015 "^6.24.1"
-    babel-preset-react "^6.24.1"
-    babel-preset-stage-0 "^6.24.1"
-    body-parser "^1.17.2"
-    chalk "^2.1.0"
-    cookie-parser "^1.4.3"
-    cross-spawn "^5.1.0"
-    express "^4.15.3"
-    fs-extra "^4.0.0"
-    jsonwebtoken "^7.4.3"
-    opn "^5.1.0"
-    passport "^0.4.0"
-    passport-github "^1.1.0"
-    passport-google-oauth20 "^1.0.0"
-    passport-local "^1.0.0"
-    react-helmet "^5.1.3"
-    react-hot-loader "^3.0.0-beta.7"
-    react-redux "^5.0.5"
-    redux "^3.7.2"
-    regenerator-runtime "^0.11.0"
-    request "^2.81.0"
-    resolve-bus-memory "^0.4.0"
-    resolve-command "^0.4.0"
-    resolve-es "^0.4.0"
-    resolve-query "^0.4.0"
-    resolve-storage-lite "^0.4.0"
-    socket.io "^2.0.3"
-    start-server-webpack-plugin "^2.2.0"
-    uglifyjs-webpack-plugin "^1.1.4"
-    webpack "^3.3.0"
-    webpack-dev-server "^2.5.1"
-    webpack-node-externals "^1.6.0"
-
-resolve-storage-base@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/resolve-storage-base/-/resolve-storage-base-0.4.0.tgz#bb652a971b240908e4b2df338ad522c62432b113"
-
-resolve-storage-lite@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/resolve-storage-lite/-/resolve-storage-lite-0.4.0.tgz#cb7c0e74fbbf9dcf20f1c0e07a437ed9ea6b0947"
-  dependencies:
-    async-lock "^1.1.0"
-    nedb "^1.8.0"
-    regenerator-runtime "^0.11.0"
-    resolve-storage-base "^0.4.0"
 
 resolve-url@^0.2.1, resolve-url@~0.2.1:
   version "0.2.1"

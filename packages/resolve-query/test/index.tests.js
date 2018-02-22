@@ -16,9 +16,7 @@ describe('resolve-query', () => {
   ]
 
   beforeEach(() => {
-    const delayedEventsPromise = new Promise(
-      resolve => (resolveDelayedEvents = resolve)
-    )
+    const delayedEventsPromise = new Promise(resolve => (resolveDelayedEvents = resolve))
     unsubscribe = sinon.stub()
     delayedEventList = []
     eventList = []
@@ -32,8 +30,7 @@ describe('resolve-query', () => {
 
       delayedEventsPromise.then(async () => {
         for (let event of delayedEventList) {
-          if (event[fieldName] && !matchList.includes(event[fieldName]))
-            continue
+          if (event[fieldName] && !matchList.includes(event[fieldName])) continue
           await Promise.resolve()
           handler(event)
         }
@@ -43,96 +40,73 @@ describe('resolve-query', () => {
     }
 
     eventStore = {
-      subscribeByEventType: sinon
-        .stub()
-        .callsFake(subscribeByAnyField.bind(null, 'type')),
-      subscribeByAggregateId: sinon
-        .stub()
-        .callsFake(subscribeByAnyField.bind(null, 'aggregateId'))
+      subscribeByEventType: sinon.stub().callsFake(subscribeByAnyField.bind(null, 'type')),
+      subscribeByAggregateId: sinon.stub().callsFake(subscribeByAnyField.bind(null, 'aggregateId'))
     }
 
     readModelProjection = {
       Init: sinon.stub().callsFake(async store => {
-        await store.hset('Users', 'LIST_IDS', [])
-        await store.hset('Users', 'LIST_FULL', [])
+        await store.defineStorage('Users', [
+          { name: 'id', type: 'string', index: 'primary' },
+          { name: 'UserName', type: 'string' }
+        ])
       }),
 
-      UserAdded: sinon
-        .stub()
-        .callsFake(async (store, { aggregateId: id, payload }) => {
-          if (await store.hget('Users', `USER_${id}`)) return
+      UserAdded: sinon.stub().callsFake(async (store, { aggregateId: id, payload }) => {
+        if ((await store.find('Users', { id }, {})).length > 0) {
+          return
+        }
+        await store.insert('Users', { id, UserName: payload.UserName })
+      }),
 
-          await store.hset('Users', `USER_${id}`, {
-            id,
-            UserName: payload.UserName
-          })
+      UserDeleted: sinon.stub().callsFake(async (store, { aggregateId: id }) => {
+        if ((await store.find('Users', { id }, {})).length === 0) {
+          return
+        }
+        await store.delete('Users', { id })
+      }),
 
-          const listIds = await store.hget('Users', 'LIST_IDS')
-          listIds.push(id)
-          await store.hset('Users', 'LIST_IDS', listIds)
-
-          const listFull = await store.hget('Users', 'LIST_FULL')
-          listFull.push({ id, UserName: payload.UserName })
-          await store.hset('Users', 'LIST_FULL', listFull)
-        }),
-
-      UserDeleted: sinon
-        .stub()
-        .callsFake(async (store, { aggregateId: id }) => {
-          if (!await store.hget('Users', `USER_${id}`)) return
-
-          await store.hset('Users', `USER_${id}`, null)
-
-          let listIds = await store.hget('Users', 'LIST_IDS')
-          listIds = listIds.filter(uid => uid !== id)
-          await store.hset('Users', 'LIST_IDS', listIds)
-
-          let listFull = await store.hget('Users', 'LIST_FULL')
-          listFull = listFull.filter(({ id: uid }) => uid !== id)
-          await store.hset('Users', 'LIST_FULL', listFull)
-        }),
-
-      FailureEvent: sinon
-        .stub()
-        .callsFake(async (store, { aggregateId: id }) => {
-          throw new Error('Failure')
-        })
+      FailureEvent: sinon.stub().callsFake(async (store, { aggregateId: id }) => {
+        throw new Error('Failure')
+      })
     }
 
     readModel = createReadModel({ eventStore, projection: readModelProjection })
 
     viewModelProjection = {
       Init: sinon.stub().callsFake(() => []),
-      TestEvent: sinon
-        .stub()
-        .callsFake((state, event) => state.concat([event.payload]))
+      TestEvent: sinon.stub().callsFake((state, event) => state.concat([event.payload]))
     }
 
     viewModel = createViewModel({ eventStore, projection: viewModelProjection })
 
     normalGqlFacade = {
       gqlSchema: `
-                type User {
-                    id: ID!
-                    UserName: String
-                }
-                type Query {
-                    UserById(id: ID!): User,
-                    UserIds: [ID!],
-                    Users: [User]
-                }
-            `,
+        type User {
+            id: ID!
+            UserName: String
+        }
+        type Query {
+            UserById(id: ID!): User,
+            UserIds: [ID!],
+            Users: [User]
+        }
+        `,
       gqlResolvers: {
         UserById: sinon.stub().callsFake(async (store, args) => {
-          return await store.hget('Users', `USER_${args.id}`)
+          const matchedUsers = await store.find('Users', { id: args.id })
+          if (!Array.isArray(matchedUsers) || matchedUsers.length < 1) {
+            return null
+          }
+          return matchedUsers[0]
         }),
 
         UserIds: sinon.stub().callsFake(async store => {
-          return await store.hget('Users', 'LIST_IDS')
+          return await store.find('Users', {}, { id: 1 })
         }),
 
         Users: sinon.stub().callsFake(async store => {
-          return await store.hget('Users', 'LIST_FULL')
+          return await store.find('Users', {})
         })
       }
     }
@@ -199,9 +173,7 @@ describe('resolve-query', () => {
       ...normalGqlFacade
     })
     eventList = simulatedEventList.slice(0)
-    delayedEventList = [
-      { type: 'UserAdded', aggregateId: '4', payload: { UserName: 'User-4' } }
-    ]
+    delayedEventList = [{ type: 'UserAdded', aggregateId: '4', payload: { UserName: 'User-4' } }]
 
     const firstState = await executeQueryGraphql('query { UserIds }')
     resolveDelayedEvents()
@@ -243,8 +215,7 @@ describe('resolve-query', () => {
     })
     eventList = simulatedEventList.slice(0)
 
-    const graphqlQuery =
-      'query ($testId: ID!) { UserById(id: $testId) { id, UserName } }'
+    const graphqlQuery = 'query ($testId: ID!) { UserById(id: $testId) { id, UserName } }'
 
     const state = await executeQueryGraphql(graphqlQuery, { testId: '3' })
 
@@ -300,9 +271,7 @@ describe('resolve-query', () => {
       return Promise.reject('Test failed')
     } catch (error) {
       expect(error.message).to.have.string('Syntax Error GraphQL request')
-      expect(error.message).to.have.string(
-        'BROKEN_GRAPHQL_SCHEMA_READ_MODEL_NAME'
-      )
+      expect(error.message).to.have.string('BROKEN_GRAPHQL_SCHEMA_READ_MODEL_NAME')
     }
   })
 
@@ -319,9 +288,7 @@ describe('resolve-query', () => {
       await executeQueryGraphql(graphqlQuery)
       return Promise.reject('Test failed')
     } catch (error) {
-      expect(error[0].message).to.have.string(
-        'BROKEN_GRAPHQL_RESOLVER_READ_MODEL_NAME'
-      )
+      expect(error[0].message).to.have.string('BROKEN_GRAPHQL_RESOLVER_READ_MODEL_NAME')
       expect(error[0].path).to.be.deep.equal(['Broken'])
     }
   })
@@ -337,9 +304,7 @@ describe('resolve-query', () => {
     const graphqlQuery = 'query { UserById(id:2) { id, UserName } }'
     const state = await executeQueryGraphql(graphqlQuery, {}, jwtToken)
 
-    expect(
-      normalGqlFacade.gqlResolvers.UserById.lastCall.args[2].jwtToken
-    ).to.be.equal(jwtToken)
+    expect(normalGqlFacade.gqlResolvers.UserById.lastCall.args[2].jwtToken).to.be.equal(jwtToken)
 
     expect(state).to.be.deep.equal({
       UserById: {
@@ -428,9 +393,7 @@ describe('resolve-query', () => {
       await executeQueryCustom('FindUser', { id: '3' })
       return Promise.reject('Test failed')
     } catch (error) {
-      expect(error.message).to.be.equal(
-        "The 'FindUser' custom resolver is not specified"
-      )
+      expect(error.message).to.be.equal("The 'FindUser' custom resolver is not specified")
     }
   })
 
@@ -478,9 +441,7 @@ describe('resolve-query', () => {
       model: readModel,
       ...normalGqlFacade
     })
-    eventList = [{ noType: 'noType', noAggregateId: 'noId' }].concat(
-      simulatedEventList.slice(0)
-    )
+    eventList = [{ noType: 'noType', noAggregateId: 'noId' }].concat(simulatedEventList.slice(0))
 
     const state = await executeQueryGraphql('query { UserIds }')
 

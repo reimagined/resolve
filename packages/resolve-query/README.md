@@ -15,7 +15,7 @@ import { createReadModel, createViewModel, createFacade } from 'resolve-query'
 To create a **read model**, pass the following arguments to the `createReadModel` factory function:
 * `eventStore` - a configured [eventStore](../resolve-es) instance.
 * `projection` - functions converting an event stream into a read model storage. A projection form is dependent on the used adapter. When the default adapter is used, a projection is a map of functions (one function for each event type) which manipulate data in the provided MongoDB-like store.
-* `adapter` - a read model [adapter](../readmodel-adapters) instance. A MySQL [adapter](../readmodel-adapters/resolve-readmodel-MySQL) supporting the simple universal query language is used by default.
+* `adapter` - a read model [adapter](../readmodel-adapters) instance. A memory [adapter](../readmodel-adapters/resolve-readmodel-memory) supporting the simple universal query language is used by default.
 
 To create a **view model**, pass the following arguments to the `createViewModel` factory function:
 * `eventStore` - a configured [eventStore](../resolve-es) instance.
