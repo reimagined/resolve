@@ -1,5 +1,5 @@
 import 'regenerator-runtime/runtime'
-import createDefaultAdapter from 'resolve-readmodel-memory'
+import createDefaultAdapter from 'resolve-readmodel-mysql'
 
 const emptyFunction = () => {}
 
@@ -40,30 +40,19 @@ const init = (adapter, eventStore, projection) => {
     }
 
     const synchronizedEventWorker = event => {
-      if (
-        !flowPromise ||
-        !event ||
-        !event.type ||
-        typeof projection[event.type] !== 'function'
-      ) {
+      if (!flowPromise || !event || !event.type || typeof projection[event.type] !== 'function') {
         return
       }
 
-      flowPromise = flowPromise
-        .then(projection[event.type].bind(null, event))
-        .catch(forceStop)
+      flowPromise = flowPromise.then(projection[event.type].bind(null, event)).catch(forceStop)
     }
 
     Promise.resolve()
       .then(getLastAppliedTimestamp)
       .then(startTime =>
-        eventStore.subscribeByEventType(
-          Object.keys(projection),
-          synchronizedEventWorker,
-          {
-            startTime
-          }
-        )
+        eventStore.subscribeByEventType(Object.keys(projection), synchronizedEventWorker, {
+          startTime
+        })
       )
       .then(unsub => {
         if (flowPromise) {
@@ -104,17 +93,9 @@ const read = async (repository, adapter, eventStore, projection, ...args) => {
 
 const createReadModel = ({ projection, eventStore, adapter }) => {
   const currentAdapter = adapter || createDefaultAdapter()
-  const builtProjection = projection
-    ? currentAdapter.buildProjection(projection)
-    : null
+  const builtProjection = projection ? currentAdapter.buildProjection(projection) : null
   const repository = {}
-  const getReadModel = read.bind(
-    null,
-    repository,
-    currentAdapter,
-    eventStore,
-    builtProjection
-  )
+  const getReadModel = read.bind(null, repository, currentAdapter, eventStore, builtProjection)
 
   const reader = async (...args) => await getReadModel(...args)
 
