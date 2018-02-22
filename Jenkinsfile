@@ -49,9 +49,6 @@ pipeline {
                     sh """
                         /init.sh
                         cd examples/todo
-                        ../../node_modules/.bin/resolve-scripts update --exact-versions \$(cat /lerna_version)
-                        cat ./package.json
-                        yarn install
                         yarn test:functional --browser=path:/chromium
                     """
                 }
@@ -64,9 +61,6 @@ pipeline {
                     sh """
                         /init.sh
                         cd examples/todo-two-levels
-                        ../../node_modules/.bin/resolve-scripts update --exact-versions \$(cat /lerna_version)
-                        cat ./package.json
-                        yarn install
                         yarn test:functional --browser=path:/chromium
                     """
                 }
