@@ -9,7 +9,8 @@ export default function subscribeAdapter() {
       ? process.env['ROOT_PATH']
       : window.location.origin
   const socket = socketIOClient(origin, {
-    path: getRootableUrl('/socket/')
+    path: getRootableUrl('/socket/'),
+    transports: ['websocket']
   })
 
   socket.on('event', event => onEvent(JSON.parse(event)))
