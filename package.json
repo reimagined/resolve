@@ -1,6 +1,6 @@
 {
   "name": "resolve",
-  "version": "0.5.0-beta.3",
+  "version": "0.5.0",
   "repository": "https://github.com/reimagined/resolve.git",
   "license": "MIT",
   "private": true,
@@ -32,7 +32,8 @@
     "examples/*"
   ],
   "scripts": {
-    "clean": "npx oao all \"npx rimraf dist\" --parallel && npx rimraf yarn-error.log && npx oao clean",
+    "clean":
+      "npx oao all \"npx rimraf dist\" --parallel && npx rimraf yarn-error.log && npx oao clean",
     "lint": "eslint .",
     "lint-staged": "lint-staged",
     "prepublish": "oao run-script prepublish --parallel",
@@ -41,14 +42,8 @@
     "test": "oao all \"yarn test --color 2>&1\"",
     "test:functional": "oao run-script test:functional"
   },
-  "pre-commit": [
-    "lint-staged",
-    "lint"
-  ],
+  "pre-commit": ["lint-staged", "lint"],
   "lint-staged": {
-    "*.{js,css}": [
-      "prettier --single-quote --no-semi --write",
-      "git add"
-    ]
+    "*.{js,css}": ["prettier --single-quote --no-semi --write", "git add"]
   }
 }

@@ -7,10 +7,10 @@
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
-    "resolve-bus-memory": "0.5.0-beta.3",
-    "resolve-redux": "0.5.0-beta.3",
-    "resolve-scripts": "0.5.0-beta.3",
-    "resolve-storage-lite": "0.5.0-beta.3"
+    "resolve-bus-memory": "^0.5.0",
+    "resolve-redux": "^0.5.0",
+    "resolve-scripts": "^0.5.0",
+    "resolve-storage-lite": "^0.5.0"
   },
   "scripts": {
     "build": "resolve-scripts build",
