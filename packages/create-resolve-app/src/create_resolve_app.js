@@ -59,7 +59,14 @@ const installScripts = (scriptsPackage, resolveVersion) => {
       ? `${scriptsPackage}@${resolveVersion}`
       : scriptsPackage
 
-    const args = ['install', '--save', '--save-exact', '--loglevel', 'error', resultScriptsPackage]
+    const args = [
+      'install',
+      '--save',
+      '--save-exact',
+      '--loglevel',
+      'error',
+      resultScriptsPackage
+    ]
 
     const child = spawn(command, args, { stdio: 'inherit' })
     child.on('close', code => {
@@ -82,7 +89,8 @@ const runScripts = (
   resolveVersion,
   exactVersions
 ) => {
-  const scriptsPath = packagePath || path.resolve(appPath, 'node_modules', scriptsPackage)
+  const scriptsPath =
+    packagePath || path.resolve(appPath, 'node_modules', scriptsPackage)
 
   const initScriptPath = path.resolve(scriptsPath, 'dist', 'scripts', 'init.js')
 
@@ -104,10 +112,19 @@ const createPackageJson = (appName, appPath) => {
     version: '0.1.0',
     private: true
   }
-  fs.writeFileSync(path.join(appPath, 'package.json'), JSON.stringify(packageJson, null, 2))
+  fs.writeFileSync(
+    path.join(appPath, 'package.json'),
+    JSON.stringify(packageJson, null, 2)
+  )
 }
 
-export default async (name, packagePath, isEmpty, resolveVersion, exactVersions) => {
+export default async (
+  name,
+  packagePath,
+  isEmpty,
+  resolveVersion,
+  exactVersions
+) => {
   const scriptsPackage = 'resolve-scripts'
   const appPath = path.resolve(name)
   const appName = path.basename(appPath)
@@ -125,7 +142,9 @@ export default async (name, packagePath, isEmpty, resolveVersion, exactVersions)
       log(`  ${file}`)
     }
     log()
-    log('Either try using a new directory name, or remove the files listed above.')
+    log(
+      'Either try using a new directory name, or remove the files listed above.'
+    )
     process.exit(1)
   }
 
