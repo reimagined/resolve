@@ -37,7 +37,7 @@ pipeline {
                         echo //${env.NPM_ADDR}/:_authToken=${env.NPM_TOKEN} >> /root/.npmrc; \
                         echo 'registry "http://${env.NPM_ADDR}"' >> /root/.yarnrc; \
 
-                        find . -name package.json -type f -print | grep -v node_modules | xargs -I '%' sed -i "s/^\s*\"\(resolve-[^\"]*\)\".*$/\"\1\": \"$CI_CANARY_VERSION\",/g" '%'
+                        find . -name package.json -type f -print | grep -v node_modules | xargs -I '%' sed -i "s/^\\s*\\"\\(resolve-[^\\"]*\\)\\".*$/\\"\\1\\": \\"\$CI_CANARY_VERSION\\",/g" '%'
 
                         yarn run publish --no-checks --no-confirm --new-version \$(cat /lerna_version); \
                         sleep 10
