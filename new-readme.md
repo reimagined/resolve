@@ -3,15 +3,15 @@
 
 [![Build Status](https://travis-ci.org/reimagined/resolve.svg?branch=master)](https://travis-ci.org/reimagined/resolve) [![npm version](https://badge.fury.io/js/create-resolve-app.svg)](https://badge.fury.io/js/create-resolve-app) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/reimagined/resolve/master/LICENSE)
 
-reSolve is a framework for developing apps based on CQRS and Event Sourcing using React + Redux on the client. It negates differences between your domain and technical languages, and allows you to focus on application code.
+reSolve is a framework for developing apps based on **CQRS**, **Domain-Driven Design** and **Event Sourcing** using **React + Redux** on the client. It negates differences between your domain and technical languages, and allows you to focus on application code.
 
-![Technologies](https://github.com/reimagined/resolve/blob/new_readme/technologies.png)
+<p align="center">![Technologies](https://github.com/reimagined/resolve/blob/new_readme/readme-technologies.png)</p>
 
-* 5 minutes easy [setup](#installation)
-* Free and open source. reSolve is free to use under the [MIT license](https://github.com/reimagined/resolve/blob/master/LICENSE.md)
-* Flexibility. Great opportunities with [clear API](#documentation)
+* 5 minutes **easy [setup](#installation)**
+* **Free and open source.** reSolve is free to use under the [MIT license](https://github.com/reimagined/resolve/blob/master/LICENSE.md).
+* Flexibility. Great opportunities with **[clear API](#documentation).**
 
-Just [get started](#getting-started)!
+<p align="center">[<img src="https://github.com/reimagined/resolve/blob/new_readme/readme-start-button.png">](#getting-started)<p>
 
 ## **📑 Table of Contents**
 * [Why reSolve](#why-resolve)
@@ -31,7 +31,7 @@ Just [get started](#getting-started)!
 
 ## <a name="why-resolve">**🏗️ Why reSolve**</a>
 
-![Why Resolve](https://github.com/reimagined/resolve/blob/new_readme/why-resolve.png)
+<p align="center">![Why Resolve](https://github.com/reimagined/resolve/blob/new_readme/readme-why-resolve.png)<p>
 
 
 
