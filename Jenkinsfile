@@ -74,7 +74,6 @@ pipeline {
                         create-resolve-app --exact-versions empty
                         cd ./empty
                         cat ./package.json
-                        yarn flow
                         yarn test
                         yarn test:functional --browser=path:/chromium
                     """
@@ -90,7 +89,6 @@ pipeline {
                         create-resolve-app --sample --exact-versions todolist
                         cd ./todolist
                         cat ./package.json
-                        yarn flow
                         yarn test
                         yarn test:functional --browser=path:/chromium
                     """
