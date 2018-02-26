@@ -5,13 +5,13 @@
 
 reSolve is a framework for developing apps based on **CQRS**, **Domain-Driven Design** and **Event Sourcing** using **React + Redux** on the client. It negates differences between your domain and technical languages, and allows you to focus on application code.
 
-<p align="center">![Technologies](https://github.com/reimagined/resolve/blob/new_readme/readme-technologies.png)</p>
+<p align="center"><img src="https://github.com/reimagined/resolve/blob/new_readme/readme-technologies.png"></p>
 
 * 5 minutes **easy [setup](#installation)**
 * **Free and open source.** reSolve is free to use under the [MIT license](https://github.com/reimagined/resolve/blob/master/LICENSE.md).
 * Flexibility. Great opportunities with **[clear API](#documentation).**
 
-<p align="center">[<img src="https://github.com/reimagined/resolve/blob/new_readme/readme-start-button.png">](#getting-started)<p>
+[<p align="center"><img src="https://github.com/reimagined/resolve/blob/new_readme/readme-start-button.png"></p>](#getting-started)
 
 ## **📑 Table of Contents**
 * [Why reSolve](#why-resolve)
@@ -31,8 +31,7 @@ reSolve is a framework for developing apps based on **CQRS**, **Domain-Driven De
 
 ## <a name="why-resolve">**🏗️ Why reSolve**</a>
 
-<p align="center">![Why Resolve](https://github.com/reimagined/resolve/blob/new_readme/readme-why-resolve.png)<p>
-
+<p align="center"><img src="https://github.com/reimagined/resolve/blob/new_readme/readme-why-resolve.png"></p>
 
 
 ### <a name="reactivity">Your **Reactivity** Is Our Work</a>
