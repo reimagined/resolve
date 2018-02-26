@@ -7,42 +7,43 @@ reSolve is a framework for developing apps based on **CQRS**, **Domain-Driven De
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/new_readme/readme-technologies.png"></p>
 
-* 5 minutes **easy [setup](#installation)**
+* **5 minutes** easy [setup](#installation)
 * **Free and open source.** reSolve is free to use under the [MIT license](https://github.com/reimagined/resolve/blob/master/LICENSE.md).
-* Flexibility. Great opportunities with **[clear API](#documentation).**
+* **Flexibility.** Great opportunities with [clear API](#documentation).
 
 [<p align="center"><img src="https://github.com/reimagined/resolve/blob/new_readme/readme-start-button.png"></p>](#getting-started)
 
 ## **📑 Table of Contents**
-* [Why reSolve](#why-resolve)
+* #### ️️️[🏗️ Why reSolve](#why-resolve)
     * [Reactivity](#reactivity)
     * [Distribution](#distribution)
     * [Highload](#highload)
     * [Fault Tolerance](#fault-tolerance)
     * [Unidirection Data Flow](#unidirection-data-flow)
-* [Getting Started](#getting-started)
+* #### [🚀 Getting Started](#getting-started)
     * [Installation](#installation)
     * [First Application](#first-application)
     * [Examples](#examples)
-* [Documentation](#documentation)
+* #### [📚 Documentation](#documentation)
     * [Bacic Concepts](#basic-concepts)
     * [API References](#api-references)
-* [Get in Touch](#get-in-touch)
+* #### [📢 Get in Touch](#get-in-touch)
 
 ## <a name="why-resolve">**🏗️ Why reSolve**</a>
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/new_readme/readme-why-resolve.png"></p>
 
+With reSolve you can easy and fast create different level difficulty applications. It could be applications like simple [ToDo List](#todo-list), or some reactive applications like StackOverflow, with distributed architecture, highload and cloud server part. Thanks to stack of technologies (CQRS, Event Sourcing, Domain-Driven Design, React + Redux) your application would be easy scalable, maintainable, so you can focus on application essence.
 
-### <a name="reactivity">Your **Reactivity** Is Our Work</a>
+### <a name="reactivity">Your _Reactivity_ Is Our Work</a>
 
-### <a name="distribution">You Focus on Application, reSolve Provides The **Distribution**</a>
+### <a name="distribution">You Focus on Application, reSolve Provides The _Distribution_</a>
 
-### <a name="highload">Say Hello to **Highload** System</a>
+### <a name="highload">Say Hello to _Highload_ System</a>
 
-### <a name="fault-tolerance">**Fault Tolerance** As A Default</a>
+### <a name="fault-tolerance">_Fault Tolerance_ As A Default</a>
 
-### <a name="unidirection-data-flow">Develop with **Unidirectional Data Flow**</a>
+### <a name="unidirection-data-flow">Develop with _Unidirectional Data Flow_</a>
 
 ## <a name="getting-started">**🚀 Getting Started**</a>
 
@@ -51,6 +52,8 @@ reSolve is a framework for developing apps based on **CQRS**, **Domain-Driven De
 ### <a name="first-application">First Application</a>
 
 ### <a name="examples">Examples</a>
+
+* <a name="todo-list">ToDo List</a>
 
 ## <a name="documentation">**📚 Documentation**</a>
 
