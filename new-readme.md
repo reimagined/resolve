@@ -5,13 +5,13 @@
 
 reSolve is a framework for developing apps based on CQRS and Event Sourcing using React + Redux on the client. It negates differences between your domain and technical languages, and allows you to focus on application code.
 
-![Technologies](https://github.com/reimagined/resolve/blob/master/technologies.png)
+![Technologies](https://github.com/reimagined/resolve/blob/new_readme/technologies.png)
 
-* 5 minutes easy [setup](#-installation)
+* 5 minutes easy [setup](#installation)
 * Free and open source. reSolve is free to use under the [MIT license](https://github.com/reimagined/resolve/blob/master/LICENSE.md)
-* Flexibility. Great opportunities with [clear API](#-documentation)
+* Flexibility. Great opportunities with [clear API](#documentation)
 
-Just [get started](#-getting-started)!
+Just [get started](#getting-started)!
 
 ## **📑 Table of Contents**
 * [Why reSolve](#why-resolve)
@@ -20,18 +20,18 @@ Just [get started](#-getting-started)!
     * [Highload](#highload)
     * [Fault Tolerance](#fault-tolerance)
     * [Unidirection Data Flow](#unidirection-data-flow)
-* [Getting Started](#-getting-started)
-    * [Installation](#-installation)
-    * [First Application](#-first-application)
-    * [Examples](#-examples)
-* [Documentation](#-documentation)
-    * [Bacic Concepts](#-basic-concepts)
-    * [API References](#-api-references)
+* [Getting Started](#getting-started)
+    * [Installation](#installation)
+    * [First Application](#first-application)
+    * [Examples](#examples)
+* [Documentation](#documentation)
+    * [Bacic Concepts](#basic-concepts)
+    * [API References](#api-references)
 * [Get in Touch](#get-in-touch)
 
 ## <a name="why-resolve">**🏗️ Why reSolve**</a>
 
-![Why Resolve](https://github.com/reimagined/resolve/blob/master/why-resolve.png)
+![Why Resolve](https://github.com/reimagined/resolve/blob/new_readme/why-resolve.png)
 
 
 
@@ -45,18 +45,18 @@ Just [get started](#-getting-started)!
 
 ### <a name="unidirection-data-flow">Develop with **Unidirectional Data Flow**</a>
 
-## **🚀 Getting Started**
+## <a name="getting-started">**🚀 Getting Started**</a>
 
-### Installation
+### <a name="installation">Installation</a>
 
-### First Application
+### <a name="first-application">First Application</a>
 
-### Examples
+### <a name="examples">Examples</a>
 
-## **📚 Documentation **
+## <a name="documentation">**📚 Documentation**</a>
 
-### Basic Concepts
+### <a name="basic-concepts">Basic Concepts</a>
 
-### API References
+### <a name="api-references">API References</a>
 
-## **📢 Get in Touch**
+## <a name="get-in-touch">**📢 Get in Touch**</a>
