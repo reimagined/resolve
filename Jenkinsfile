@@ -29,16 +29,11 @@ pipeline {
                     sh """
                         export CI_CANARY_VERSION=\$(nodejs -e "console.log(JSON.parse(require('fs').readFileSync('./package.json')).version.split('-')[0].split('.').map((ver, idx) => (idx < 2 ? ver : String(+ver + 1) )).join('.'));")-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}; \
                         echo \$CI_CANARY_VERSION > /lerna_version; \
-                    """
-
-                    sh """
                         yarn oao --version
                         echo registry=http://${env.NPM_ADDR} > /root/.npmrc; \
                         echo //${env.NPM_ADDR}/:_authToken=${env.NPM_TOKEN} >> /root/.npmrc; \
                         echo 'registry "http://${env.NPM_ADDR}"' >> /root/.yarnrc; \
-
-                        find . -name package.json -type f -print | grep -v node_modules | xargs -I '%' sed -i "s/^\\s*\\"\\(resolve-[^\\"]*\\)\\".*$/\\"\\1\\": \\"\$CI_CANARY_VERSION\\",/g" '%'
-
+                        find . -name package.json -type f -print | grep -v node_modules | xargs -I '%' sed -i "s/^\\s*\\"\\(resolve-[^\\"]*\\)\\".*\\(,?\\)\$/\\"\\1\\": \\"\$CI_CANARY_VERSION\\"\\2/g" '%'; \
                         yarn run publish --no-checks --no-confirm --new-version \$(cat /lerna_version); \
                         sleep 10
                     """
