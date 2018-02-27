@@ -33,9 +33,13 @@ reSolve is a framework for developing apps based on **CQRS**, **Domain-Driven De
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/new_readme/readme-why-resolve.png"></p>
 
-With reSolve you can easy and fast create different level difficulty applications. It could be applications like simple [ToDo List](#todo-list), or some reactive applications like StackOverflow, with distributed architecture, highload and cloud server part. Thanks to stack of technologies (CQRS, Event Sourcing, Domain-Driven Design, React + Redux) your application would be easy scalable, maintainable, so you can focus on application essence.
+With reSolve you can easy and fast create different level difficulty applications. It could be applications like simple [ToDo List](#todo-list), or some reactive applications like StackOverflow, with distributed, highload and serverless architecture. Thanks to stack of technologies (CQRS, Event Sourcing, Domain-Driven Design, React + Redux) your application would be easy scalable, maintainable, so you can focus on application essence.
 
-### <a name="reactivity">Your _Reactivity_ Is Our Work</a>
+### <a name="reactivity"><img src="https://user-images.githubusercontent.com/15689049/29659048-ad0d158a-88c5-11e7-9354-dbe4bb105ad7.png" height="60"> Your _Reactivity_ Is Our Work</a>
+
+Reactive app displays all changes instantly, even if they occurred in another application instance. It doesn't matter what types of instances do you have: local, on cloud, mobile, or even all together. With reSolve you can forget about any lines of code for reactivity, because we have it out of the box, so any reSolve application is reactive by default.
+
+//todo gif
 
 ### <a name="distribution">You Focus on Application, reSolve Provides The _Distribution_</a>
 
