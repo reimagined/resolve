@@ -17,6 +17,7 @@ module.exports = {
     'import/no-unresolved': 'off',
     'comma-dangle': ['error', 'never'],
     'no-plusplus': 'off',
+    'jsx-a11y/href-no-hash': 'off',
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'no-param-reassign': ['error', { props: false }],
     'new-cap': ['error', { capIsNew: false }],

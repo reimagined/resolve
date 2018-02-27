@@ -52,7 +52,12 @@ const storage = {
 
           db.findOne({ aggregateId, aggregateVersion }, (err, doc) => {
             if (doc !== null) {
-              return reject(new ConcurrentError())
+              return reject(
+                new ConcurrentError(
+                  // eslint-disable-next-line max-len
+                  `Can not save the event because aggregate '${aggregateId}' is not actual at the moment. Please retry later.`
+                )
+              )
             }
             db.insert(event, error => (error ? reject(error) : resolve()))
           })

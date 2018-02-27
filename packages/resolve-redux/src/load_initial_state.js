@@ -1,5 +1,3 @@
-import fetch from 'isomorphic-fetch'
-
 import { getRootableUrl } from './util'
 
 export default async function loadInitialState(viewModelName, aggregateId) {

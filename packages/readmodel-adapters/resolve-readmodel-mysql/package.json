@@ -1,0 +1,35 @@
+{
+  "name": "resolve-readmodel-mysql",
+  "version": "0.5.0",
+  "description": "This package serves as a resolve-query adapter for storing a read model in mysql",
+  "main": "./dist/index.js",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "scripts": {
+    "prepublish": "babel --out-dir ./dist ./src",
+    "test": "echo OK && exit 0",
+    "testw": "echo OK && exit 0"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "author": "reimagined team",
+  "license": "MIT",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-mysql#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "jest": "^22.1.4",
+    "sinon": "^3.3.0"
+  },
+  "dependencies": {
+    "mysql2": "^1.5.2",
+    "regenerator-runtime": "^0.11.0",
+    "resolve-readmodel-base": "^0.5.0",
+    "uuid": "^3.1.0"
+  }
+}

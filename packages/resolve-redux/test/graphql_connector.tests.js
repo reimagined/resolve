@@ -6,6 +6,7 @@ import React from 'react'
 import gqlConnector from '../src/graphql_connector'
 
 Enzyme.configure({ adapter: new Adapter() })
+global.fetch = Promise.resolve()
 
 describe('graphql connector', () => {
   let originalFetch = global.fetch

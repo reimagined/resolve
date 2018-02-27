@@ -12,9 +12,18 @@ const EOL = require('os').EOL
 const optionDefinitions = [
   { name: 'scripts', type: String },
   { name: 'sample', type: Boolean },
+  { name: 'exact-versions', type: Boolean },
   { name: 'version', alias: 'V', type: Boolean },
   { name: 'help', alias: 'h', type: Boolean }
 ]
+
+const optionsInfo =
+  `Options:${EOL}` +
+  EOL +
+  '  --sample         creates a single page application representing a typical Todo List' +
+  EOL +
+  `  -V, --version    outputs the version number${EOL}` +
+  `  -h, --help       outputs usage information${EOL}`
 
 const messages = {
   help:
@@ -22,12 +31,7 @@ const messages = {
       '<project-directory>'
     )} [options]${EOL}` +
     EOL +
-    `Options:${EOL}` +
-    EOL +
-    '  --sample         creates a single page application representing a typical Todo List' +
-    EOL +
-    `  -V, --version    outputs the version number${EOL}` +
-    `  -h, --help       outputs usage information${EOL}` +
+    optionsInfo +
     EOL +
     `If you have any problems, you can create an issue:${EOL}` +
     `  ${chalk.cyan('https://github.com/reimagined/resolve/issues/new')}`,
@@ -35,7 +39,7 @@ const messages = {
   emptyAppNameError:
     `Specify the project directory:${EOL}` +
     `  ${chalk.cyan('create-resolve-app')} ${chalk.green(
-      '<project-directory>'
+      '<project-directory> [options]'
     )}${EOL}` +
     EOL +
     `For example:${EOL}` +
@@ -43,10 +47,12 @@ const messages = {
       'my-resolve-app'
     )}${EOL}` +
     EOL +
+    optionsInfo +
+    EOL +
     `Run ${chalk.cyan('create-resolve-app --help')} to see all options.`,
 
   unknownOptions: options =>
-    `You have specified an unsupported option(s): ${chalk.red(options)}` +
+    `You have specified an unsupported option(s): ${chalk.red(options)}${EOL}` +
     EOL +
     `Run ${chalk.cyan('create-resolve-app --help')} to see all options.`
 }
@@ -68,5 +74,11 @@ if (unknownOptions && unknownOptions.length) {
   log(messages.emptyAppNameError)
 } else {
   let appName = options._unknown[0]
-  moduleCreator(appName, options.scripts, !options.sample, resolveVersion)
+  moduleCreator(
+    appName,
+    options.scripts,
+    !options.sample,
+    resolveVersion,
+    !!options['exact-versions']
+  )
 }

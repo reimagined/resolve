@@ -86,7 +86,8 @@ const runScripts = (
   packagePath,
   isEmpty,
   scriptsPackage,
-  resolveVersion
+  resolveVersion,
+  exactVersions
 ) => {
   const scriptsPath =
     packagePath || path.resolve(appPath, 'node_modules', scriptsPackage)
@@ -100,7 +101,8 @@ const runScripts = (
     originalDirectory,
     isEmpty,
     packagePath,
-    resolveVersion
+    resolveVersion,
+    exactVersions
   )
 }
 
@@ -116,7 +118,13 @@ const createPackageJson = (appName, appPath) => {
   )
 }
 
-export default async (name, packagePath, isEmpty, resolveVersion) => {
+export default async (
+  name,
+  packagePath,
+  isEmpty,
+  resolveVersion,
+  exactVersions
+) => {
   const scriptsPackage = 'resolve-scripts'
   const appPath = path.resolve(name)
   const appName = path.basename(appPath)
@@ -150,7 +158,7 @@ export default async (name, packagePath, isEmpty, resolveVersion) => {
 
   log('Installing packages. This might take a couple of minutes.')
 
-  log(`Installing ${chalk.cyan(scriptsPackage)}...`)
+  log(`Installing ${chalk.cyan(`${scriptsPackage}@${resolveVersion}`)}...`)
   log()
 
   await installScripts(scriptsPackage, resolveVersion)
@@ -162,6 +170,7 @@ export default async (name, packagePath, isEmpty, resolveVersion) => {
     packagePath,
     isEmpty,
     scriptsPackage,
-    resolveVersion
+    resolveVersion,
+    exactVersions
   )
 }

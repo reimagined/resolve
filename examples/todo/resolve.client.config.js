@@ -1,4 +1,4 @@
-import RootComponent from './client/components/App'
+import routes from './client/routes'
 import createStore from './client/store'
 
 if (module.hot) {
@@ -6,6 +6,6 @@ if (module.hot) {
 }
 
 export default {
-  rootComponent: RootComponent,
+  routes,
   createStore
 }

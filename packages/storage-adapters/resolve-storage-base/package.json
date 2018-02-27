@@ -1,18 +1,17 @@
 {
   "name": "resolve-storage-base",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "This package contains the basic components for storage adapters",
   "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
-    "prepublish": "babel --out-dir ./dist ./src"
+    "prepublish": "babel --out-dir ./dist ./src",
+    "test": "exit 0",
+    "testw": "exit 0"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/reimagined/resolve.git"
-  },
+  "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
   "keywords": [

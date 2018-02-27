@@ -1,24 +1,11 @@
-import React from 'react'
-import { createStore } from 'redux'
 import defaultStorageAdapter from 'resolve-storage-lite'
 import defaultBusAdapter from 'resolve-bus-memory'
 
 // eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
 import config from 'RESOLVE_SERVER_CONFIG'
 
-const emptyRootComponent = () => (
-  <div>
-    No root component provided! Please set it in resolve.server.config.js
-  </div>
-)
-const emptyCreateStore = () => createStore(() => ({}), {})
-
 const defaultConfig = {
-  entries: {
-    rootComponent: emptyRootComponent,
-    createStore: emptyCreateStore,
-    ssrMode: 'none'
-  },
+  ssrMode: 'none',
   bus: {
     adapter: defaultBusAdapter
   },
@@ -29,13 +16,13 @@ const defaultConfig = {
   aggregates: [],
   initialSubscribedEvents: { types: [], ids: [] },
   filterSubscription: eventDescription => eventDescription,
-  jwt: {
-    cookieName: 'Jwt-Cookie',
-    options: { maxAge: 1000 * 60 * 5 },
-    secret: 'Keyboard-Kat'
-  },
   auth: {
     strategies: []
+  },
+  jwtCookie: {
+    name: 'JWT-COOKIE',
+    maxAge: 3600,
+    httpOnly: true
   },
   readModels: [],
   viewModels: [],

@@ -5,8 +5,11 @@ import { createFacade, createReadModel, createViewModel } from '../src'
 
 describe('resolve-query', () => {
   let eventStore, readModelProjection, readModel, viewModelProjection, viewModel
-  let normalGqlFacade, brokenSchemaGqlFacade, brokenResolversGqlFacade
-  let eventList, delayedEventList, unsubscribe, resolveDelayedEvents
+  let normalGqlFacade,
+    brokenSchemaGqlFacade,
+    brokenResolversGqlFacade,
+    unsubscribe
+  let eventList, delayedEventList, resolveDelayedEvents, delayedHandlersPromise
 
   const simulatedEventList = [
     { type: 'UserAdded', aggregateId: '1', payload: { UserName: 'User-1' } },
@@ -18,6 +21,10 @@ describe('resolve-query', () => {
   beforeEach(() => {
     const delayedEventsPromise = new Promise(
       resolve => (resolveDelayedEvents = resolve)
+    )
+    let resolveDelayedHandlers = null
+    delayedHandlersPromise = new Promise(
+      resolve => (resolveDelayedHandlers = resolve)
     )
     unsubscribe = sinon.stub()
     delayedEventList = []
@@ -53,49 +60,41 @@ describe('resolve-query', () => {
 
     readModelProjection = {
       Init: sinon.stub().callsFake(async store => {
-        await store.hset('Users', 'LIST_IDS', [])
-        await store.hset('Users', 'LIST_FULL', [])
+        await store.defineStorage('Users', [
+          { name: 'id', type: 'string', index: 'primary' },
+          { name: 'UserName', type: 'string' }
+        ])
       }),
 
       UserAdded: sinon
         .stub()
         .callsFake(async (store, { aggregateId: id, payload }) => {
-          if (await store.hget('Users', `USER_${id}`)) return
-
-          await store.hset('Users', `USER_${id}`, {
-            id,
-            UserName: payload.UserName
-          })
-
-          const listIds = await store.hget('Users', 'LIST_IDS')
-          listIds.push(id)
-          await store.hset('Users', 'LIST_IDS', listIds)
-
-          const listFull = await store.hget('Users', 'LIST_FULL')
-          listFull.push({ id, UserName: payload.UserName })
-          await store.hset('Users', 'LIST_FULL', listFull)
+          if ((await store.find('Users', { id }, {})).length > 0) {
+            return
+          }
+          await store.insert('Users', { id, UserName: payload.UserName })
         }),
 
       UserDeleted: sinon
         .stub()
         .callsFake(async (store, { aggregateId: id }) => {
-          if (!await store.hget('Users', `USER_${id}`)) return
-
-          await store.hset('Users', `USER_${id}`, null)
-
-          let listIds = await store.hget('Users', 'LIST_IDS')
-          listIds = listIds.filter(uid => uid !== id)
-          await store.hset('Users', 'LIST_IDS', listIds)
-
-          let listFull = await store.hget('Users', 'LIST_FULL')
-          listFull = listFull.filter(({ id: uid }) => uid !== id)
-          await store.hset('Users', 'LIST_FULL', listFull)
+          if ((await store.find('Users', { id }, {})).length === 0) {
+            return
+          }
+          await store.delete('Users', { id })
         }),
 
       FailureEvent: sinon
         .stub()
         .callsFake(async (store, { aggregateId: id }) => {
           throw new Error('Failure')
+        }),
+
+      LastBusEvent: sinon
+        .stub()
+        .callsFake(async (store, { aggregateId: id }) => {
+          resolveDelayedHandlers()
+          await Promise.resolve()
         })
     }
 
@@ -112,27 +111,32 @@ describe('resolve-query', () => {
 
     normalGqlFacade = {
       gqlSchema: `
-                type User {
-                    id: ID!
-                    UserName: String
-                }
-                type Query {
-                    UserById(id: ID!): User,
-                    UserIds: [ID!],
-                    Users: [User]
-                }
-            `,
+        type User {
+            id: ID!
+            UserName: String
+        }
+        type Query {
+            UserById(id: ID!): User,
+            UserIds: [ID!],
+            Users: [User]
+        }
+        `,
       gqlResolvers: {
         UserById: sinon.stub().callsFake(async (store, args) => {
-          return await store.hget('Users', `USER_${args.id}`)
+          const matchedUsers = await store.find('Users', { id: args.id })
+          if (!Array.isArray(matchedUsers) || matchedUsers.length < 1) {
+            return null
+          }
+          return matchedUsers[0]
         }),
 
         UserIds: sinon.stub().callsFake(async store => {
-          return await store.hget('Users', 'LIST_IDS')
+          const result = await store.find('Users', {}, { id: 1 }, { id: 1 })
+          return result.map(({ id }) => id)
         }),
 
         Users: sinon.stub().callsFake(async store => {
-          return await store.hget('Users', 'LIST_FULL')
+          return await store.find('Users', {}, null, { id: 1 })
         })
       }
     }
@@ -153,6 +157,7 @@ describe('resolve-query', () => {
 
   afterEach(() => {
     resolveDelayedEvents = null
+    delayedHandlersPromise = null
     normalGqlFacade = null
     brokenSchemaGqlFacade = null
     brokenResolversGqlFacade = null
@@ -200,11 +205,13 @@ describe('resolve-query', () => {
     })
     eventList = simulatedEventList.slice(0)
     delayedEventList = [
-      { type: 'UserAdded', aggregateId: '4', payload: { UserName: 'User-4' } }
+      { type: 'UserAdded', aggregateId: '4', payload: { UserName: 'User-4' } },
+      { type: 'LastBusEvent', aggregateId: '0' }
     ]
 
     const firstState = await executeQueryGraphql('query { UserIds }')
     resolveDelayedEvents()
+    await delayedHandlersPromise
     const secondState = await executeQueryGraphql('query { UserIds }')
 
     expect(firstState).to.be.deep.equal({
@@ -333,14 +340,13 @@ describe('resolve-query', () => {
     })
     eventList = simulatedEventList.slice(0)
 
-    const getJwtValue = () => {}
+    const jwtToken = 'JWT-TOKEN'
     const graphqlQuery = 'query { UserById(id:2) { id, UserName } }'
-
-    const state = await executeQueryGraphql(graphqlQuery, {}, getJwtValue)
+    const state = await executeQueryGraphql(graphqlQuery, {}, jwtToken)
 
     expect(
-      normalGqlFacade.gqlResolvers.UserById.lastCall.args[2].getJwtValue
-    ).to.be.equal(getJwtValue)
+      normalGqlFacade.gqlResolvers.UserById.lastCall.args[2].jwtToken
+    ).to.be.equal(jwtToken)
 
     expect(state).to.be.deep.equal({
       UserById: {
@@ -363,7 +369,7 @@ describe('resolve-query', () => {
     const localAdapter = {
       init: () => ({
         getReadable: async () => ({
-          hget: async () => storedState.Users
+          find: async () => storedState.Users
         }),
         getError: async () => null
       })
@@ -390,7 +396,11 @@ describe('resolve-query', () => {
       customResolvers: {
         FindUser: async (model, { id }) => {
           const store = await model()
-          return await store.hget('Users', `USER_${id}`)
+          const matchedUsers = await store.find('Users', { id })
+          if (!Array.isArray(matchedUsers) || matchedUsers.length === 0) {
+            return null
+          }
+          return matchedUsers[0]
         }
       }
     })

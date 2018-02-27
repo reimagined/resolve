@@ -1,6 +1,6 @@
 {
   "name": "resolve-storage-lite",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "This package serves as an adapter for resolve-storage to store events using a file or in memory.",
   "main": "./dist/index.js",
   "bugs": {
@@ -11,10 +11,7 @@
     "test": "jest --testMatch=**/test/*.tests.js",
     "testw": "jest --testMatch=**/test/*.tests.js --watchAll"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/reimagined/resolve.git"
-  },
+  "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
   "keywords": [
@@ -26,13 +23,13 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-lite#readme",
   "devDependencies": {
     "chai": "^3.5.0",
-    "jest": "22.0.3",
+    "jest": "^22.1.4",
     "sinon": "^3.3.0"
   },
   "dependencies": {
     "async-lock": "^1.1.0",
     "nedb": "^1.8.0",
     "regenerator-runtime": "^0.11.0",
-    "resolve-storage-base": "^0.4.0"
+    "resolve-storage-base": "^0.5.0"
   }
 }

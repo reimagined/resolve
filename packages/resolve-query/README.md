@@ -1,6 +1,7 @@
-# **🔍 resolve-query** [![npm version](https://badge.fury.io/js/resolve-query.svg)](https://badge.fury.io/js/resolve-query)
+# **resolve-query**
+[![npm version](https://badge.fury.io/js/resolve-query.svg)](https://badge.fury.io/js/resolve-query)
 
-Provides an interface for creating [read and view models](../resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models) and query facade for them. 
+Provides an interface for creating [read and view models](../resolve-scripts/src/template#aggregates-and-read-models-) and query facade for them. 
 
 Queries are used to observe a system
 's state. Read Models answer Queries and are built using Projection functions. All events from the beginning of time are applied to a Read Model to build its current state (or a state at a particular moment in time if necessary). Some Read Models, called View Models, are sent to the client UI to be a part of a Redux app state. They are small enough to fit into memory and can be kept up to date in the browser.
@@ -14,7 +15,7 @@ import { createReadModel, createViewModel, createFacade } from 'resolve-query'
 To create a **read model**, pass the following arguments to the `createReadModel` factory function:
 * `eventStore` - a configured [eventStore](../resolve-es) instance.
 * `projection` - functions converting an event stream into a read model storage. A projection form is dependent on the used adapter. When the default adapter is used, a projection is a map of functions (one function for each event type) which manipulate data in the provided MongoDB-like store.
-* `adapter` - a read model [adapter](../readmodel-adapters) instance. A memory [adapter](../readmodel-adapters/resolve-readmodel-memory) supporting the [MongoDB](https://docs.mongodb.com/manual/reference/method/js-collection/)-like query language is used by default.
+* `adapter` - a read model [adapter](../readmodel-adapters) instance. A memory [adapter](../readmodel-adapters/resolve-readmodel-memory) supporting the simple universal query language is used by default.
 
 To create a **view model**, pass the following arguments to the `createViewModel` factory function:
 * `eventStore` - a configured [eventStore](../resolve-es) instance.
@@ -35,12 +36,12 @@ A facade supports the following functions to send queries to a read/view model:
 The `executeQueryGraphql` function receives the following arguments:
 * `qraphQLQuery` (required) - the GraphQL query to get data;
 * `graphQLVariables` - specify it if the `graphQLQuery` contains variables;
-* `getJwtValue` - a callback to retrieve the actual client state stored in a verified JWT token.
+* `jwtToken` - non-verified actual JWT token provided from client.
  
 The `executeQueryCustom` function receives the following arguments:
 * `name` (required) - a custom resolver name to handle a request;
 * `customParams` - custom parameters passed to a resolver function;
-* `getJwtValue` - a callback to retrieve the actual client state stored in a verified JWT token.
+* `jwtToken` - non-verified actual JWT token provided from client.
 
 A custom query can be helpful in the following cases:
 * if the selected read model storage provides a
@@ -54,7 +55,6 @@ Implement a read model for building a News state with custom GraphQL resolvers a
 
 ```js
 import { createReadModel, createFacade } from 'resolve-query'
-import createMemoryAdapter from 'resolve-readmodel-memory'
 import createEventStore from 'resolve-es'
 import createStorageAdapter from 'resolve-storage-lite'
 import createBusAdapter from 'resolve-bus-memory'
@@ -69,8 +69,7 @@ const eventStore = createEventStore({
 const executeQueryGraphql = createFacade({
   model: createReadModel({
     eventStore,
-    projection: newsReadModel.projection,
-    adapter: createMemoryAdapter()
+    projection: newsReadModel.projection
   }),
   gqlSchema: newsReadModel.gqlSchema,
   gqlResolvers: newsReadModel.gqlResolvers
@@ -91,40 +90,59 @@ const NUMBER_OF_ITEMS_PER_PAGE = 10
 
 export default {
   projection: {
+    Init: async (store) => {
+      await store.defineStorage('Articles', [
+        { name: 'id', type: 'string', index: 'primary' },
+        { name: 'timestamp', type: 'number', index: 'secondary' },
+        { name: 'type', type: 'string', index: 'secondary' },
+        { name: 'content', type: 'json' }
+      ])
+    },
+
     NewsCreated: async (store, { aggregateId,  timestamp, payload: { title, link, text } }) => {
-      const news = await store.collection('News')
-      await news.insert({ id: aggregateId, title, text, link })
+      await store.insert('Articles', {
+        id: aggregateId,
+        timestamp: +Date.now(),
+        type: 'news',
+        content: { title, text, link }
+      })
     },
 
     NewsDeleted: (store, { aggregateId }) => {
-      const news = await store.collection('News')
-      await news.remove({ id: aggregateId })
+      await store.delete('Articles', { id: aggregateId })
     }
   },
 
   gqlSchema: `
-    type News {
-      id: ID!
+    type NewsContent {
       title: String!
       text: String
       link: String
     }
+    type News {
+      id: ID!
+      content: NewsContent!
+    }
     type Query {
-      news(page: Int, aggregateId: ID): [News]
+      news(page: Int): [News]
     }
   `,
 
   gqlResolvers: {
     news: async (store, { page }) => {
-      const news = await store.collection('News')
-
-      if(Number.isInteger(+page) && (+page > 0)) {
-        return await news.find({})
-          .skip((page - 1) * NUMBER_OF_ITEMS_PER_PAGE)
-          .limit(NUMBER_OF_ITEMS_PER_PAGE)
-      }
+      const skip = (Number.isInteger(+page) && (+page > 0))
+        ? (page - 1) * NUMBER_OF_ITEMS_PER_PAGE
+        : 0
+      const limit = NUMBER_OF_ITEMS_PER_PAGE;
         
-      return await news.find({})
+      return await store.find(
+        'Articles',
+        { type: 'news' },
+        { id: 1, 'content.title': 1, 'content.text': 1, 'content.link': 1 },
+        { timestamp: 1 },
+        skip,
+        limit
+      )
     }
   }
 }

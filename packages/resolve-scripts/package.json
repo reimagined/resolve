@@ -1,6 +1,6 @@
 {
   "name": "resolve-scripts",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "This package create server with resolve.",
   "main": "./dist/index.js",
   "bugs": {
@@ -14,13 +14,12 @@
     "template:copy": "cp -r ./src/template ./dist",
     "template_sample:remove": "rm -rf ./dist/template_sample",
     "template_sample:copy": "cp -r ./src/template_sample ./dist",
+    "test": "exit 0",
+    "testw": "exit 0",
     "build": "babel --out-dir ./dist ./src --ignore template_sample",
-    "prepublish": "npm run build && npm run template:remove && npm run template:copy && npm run template_sample:remove && npm run template_sample:copy"
+    "prepublish": "yarn build && yarn template:remove && yarn template:copy && yarn template_sample:remove && yarn template_sample:copy"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/reimagined/resolve.git"
-  },
+  "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
   "keywords": [
@@ -54,17 +53,22 @@
     "passport-github": "^1.1.0",
     "passport-google-oauth20": "^1.0.0",
     "passport-local": "^1.0.0",
+    "react": "16.2.0",
+    "react-dom": "16.2.0",
     "react-helmet": "^5.1.3",
     "react-hot-loader": "^3.0.0-beta.7",
     "react-redux": "^5.0.5",
+    "react-router": "^4.2.0",
+    "react-router-dom": "^4.2.2",
     "redux": "^3.7.2",
     "regenerator-runtime": "^0.11.0",
     "request": "^2.81.0",
-    "resolve-bus-memory": "^0.4.0",
-    "resolve-command": "^0.4.0",
-    "resolve-es": "^0.4.0",
-    "resolve-query": "^0.4.0",
-    "resolve-storage-lite": "^0.4.0",
+    "resolve-bus-memory": "^0.5.0",
+    "resolve-command": "^0.5.0",
+    "resolve-es": "^0.5.0",
+    "resolve-query": "^0.5.0",
+    "resolve-redux": "^0.5.0",
+    "resolve-storage-lite": "^0.5.0",
     "socket.io": "^2.0.3",
     "start-server-webpack-plugin": "^2.2.0",
     "uglifyjs-webpack-plugin": "^1.1.4",

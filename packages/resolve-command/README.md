@@ -1,6 +1,7 @@
-# **📢 resolve-command** [![npm version](https://badge.fury.io/js/resolve-command.svg)](https://badge.fury.io/js/resolve-command)
+# **resolve-command**
+[![npm version](https://badge.fury.io/js/resolve-command.svg)](https://badge.fury.io/js/resolve-command)
 
-Provides a function to handle a command and send the generated event to an [event store](../resolve-es) based on definitions of [aggregates](../resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models) and their commands. 
+Provides a function to handle a command and send the generated event to an [event store](../resolve-es) based on definitions of [aggregates](../resolve-scripts/src/template#aggregates-and-read-models-) and their commands. 
 
 ## Usage
 When initializing a command, pass the following arguments:
@@ -9,7 +10,7 @@ When initializing a command, pass the following arguments:
 	A configured [eventStore](../resolve-es) instance.
 	
 * `aggregates`  
-	An array of [aggregates](../resolve-scripts/src/template#%EF%B8%8F-aggregates-and-read-models).  
+	An array of [aggregates](../resolve-scripts/src/template#aggregates-and-read-models-).  
 
 After the command is initialized, you get a function that is used to send an event to the event store. It receives two arguments:
 * `command`
@@ -20,8 +21,8 @@ After the command is initialized, you get a function that is used to send an eve
 	
 	A command may also have some additional payload.
 
- * `getJwtValue`  
-   A callback to retrieve the actual client state stored in a verified JWT token.
+ * `jwtToken`  
+   Non-verified actual JWT token provided from client.
 
 ### Example
 Define a news handling aggregate (see the  `news-aggregate.js` file), use the `resolve-command` library to execute the `createNews` command and send the corresponding event to the specified event store. To see a read model handling events which this aggregate produces, refer to the [resolve-query](../resolve-query#example) package documentation.

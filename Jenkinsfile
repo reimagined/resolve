@@ -1,7 +1,7 @@
 pipeline {
     agent {
-        docker { 
-            image 'reimagined/resolve-ci' 
+        docker {
+            image 'reimagined/resolve-ci'
             args '-u root:root'
         }
     }
@@ -9,10 +9,9 @@ pipeline {
         stage('Unit tests') {
             steps {
                 script {
-                    sh 'npm install'
-                    sh 'npm run bootstrap'
-                    sh 'npm run lint'
-                    sh 'npm test -- --stream'
+                    sh 'yarn install'
+                    sh 'yarn lint'
+                    sh 'yarn test'
                 }
             }
         }
@@ -20,7 +19,7 @@ pipeline {
         stage('Publish canary') {
             steps {
                 script {
-                    env.CI_TIMESTAMP = (new Date()).format("MMddHHmmss", TimeZone.getTimeZone('UTC'))
+                    env.CI_TIMESTAMP = (new Date()).format("MddHHmmss", TimeZone.getTimeZone('UTC'))
                     if (env.BRANCH_NAME =~ '^v([0-9]+).([0-9]+).([0-9]+)$') {
                         env.CI_RELEASE_TYPE = 'beta'
                     } else {
@@ -28,39 +27,27 @@ pipeline {
                     }
 
                     sh """
-                        eval \$(next-lerna-version); \
-                        export CI_CANARY_VERSION=\$NEXT_LERNA_VERSION-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}; \
+                        export CI_CANARY_VERSION=\$(nodejs -e "console.log(JSON.parse(require('fs').readFileSync('./package.json')).version.split('-')[0].split('.').map((ver, idx) => (idx < 2 ? ver : String(+ver + 1) )).join('.'));")-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}; \
                         echo \$CI_CANARY_VERSION > /lerna_version; \
-                    """
-
-                    if ( env.CI_RELEASE_TYPE == 'beta' ) {
-                        sh """
-                            echo registry=https://${env.NPM_ADDR_REMOTE} > /root/.npmrc; \
-                            echo //${env.NPM_ADDR_REMOTE}/:_authToken=${env.NPM_TOKEN_REMOTE} >> /root/.npmrc; \
-                            ./node_modules/.bin/lerna publish --canary --skip-git --force-publish=* --yes --repo-version \$(cat /lerna_version); \
-                        """
-                    }
-
-                    sh """
+                        yarn oao --version
                         echo registry=http://${env.NPM_ADDR} > /root/.npmrc; \
                         echo //${env.NPM_ADDR}/:_authToken=${env.NPM_TOKEN} >> /root/.npmrc; \
-                        ./node_modules/.bin/lerna publish --skip-git --force-publish=* --yes --repo-version \$(cat /lerna_version); \
+                        echo 'registry "http://${env.NPM_ADDR}"' >> /root/.yarnrc; \
+                        find . -name package.json -type f -print | grep -v node_modules | xargs -I '%' node -e 'require("fs").writeFileSync(process.argv[1], JSON.stringify((() => { const pj = require(process.argv[1]); if(pj.dependencies) Object.keys(pj.dependencies).forEach(key => { if(key.indexOf("resolve-") < 0) return; pj.dependencies[key] = process.env.CI_CANARY_VERSION  }); return pj; })(), null, 3))' '%'; \
+                        yarn run publish --no-checks --no-confirm --new-version \$(cat /lerna_version); \
                         sleep 10
                     """
                 }
             }
         }
-        
+
         stage('Examples [ todo ] Functional Tests') {
             steps {
                 script {
                     sh """
                         /init.sh
                         cd examples/todo
-                        npm install
-                        npm run update \$(cat /lerna_version)
-                        cat ./package.json
-                        npm run test:functional -- --browser=path:/chromium
+                        yarn test:functional --browser=path:/chromium
                     """
                 }
             }
@@ -72,10 +59,7 @@ pipeline {
                     sh """
                         /init.sh
                         cd examples/todo-two-levels
-                        npm install
-                        npm run update \$(cat /lerna_version)
-                        cat ./package.json
-                        npm run test:functional -- --browser=path:/chromium
+                        yarn test:functional --browser=path:/chromium
                     """
                 }
             }
@@ -86,12 +70,12 @@ pipeline {
                 script {
                     sh """
                         /init.sh
-                        npm install -g create-resolve-app@\$(cat /lerna_version)
-                        create-resolve-app empty
+                        yarn global add create-resolve-app@\$(cat /lerna_version)
+                        create-resolve-app --exact-versions empty
                         cd ./empty
-                        npm run flow
-                        npm run test
-                        npm run test:functional -- --browser=path:/chromium
+                        cat ./package.json
+                        yarn test
+                        yarn test:functional --browser=path:/chromium
                     """
                 }
             }
@@ -102,11 +86,11 @@ pipeline {
                 script {
                     sh """
                         /init.sh
-                        create-resolve-app --sample todolist
+                        create-resolve-app --sample --exact-versions todolist
                         cd ./todolist
-                        npm run flow
-                        npm run test
-                        npm run test:functional -- --browser=path:/chromium
+                        cat ./package.json
+                        yarn test
+                        yarn test:functional --browser=path:/chromium
                     """
                 }
             }
@@ -120,10 +104,12 @@ pipeline {
                         git clone https://github.com/reimagined/hacker-news-resolve.git
                         cd hacker-news-resolve
                         git checkout ${env.BRANCH_NAME} || echo "No branch \"${env.BRANCH_NAME}\""
-                        npm install
-                        ./node_modules/.bin/resolve-scripts update \$(cat /lerna_version)
-                        npm run build
-                        testcafe path:/chromium ./tests/functional --app "IS_TEST=true npm run start"
+                        yarn global add cross-env
+                        yarn install --production=false
+                        ../node_modules/.bin/resolve-scripts update --exact-versions \$(cat /lerna_version)
+                        cat ./package.json
+                        yarn build
+                        yarn test:functional --browser=path:/chromium
                     """
                 }
             }
@@ -163,7 +149,7 @@ pipeline {
             script {
                 sh 'rm -rf ./*'
             }
-            
+
             deleteDir()
         }
     }

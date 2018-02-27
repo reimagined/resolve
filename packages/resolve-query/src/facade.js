@@ -17,14 +17,14 @@ const createFacade = ({ model, gqlSchema, gqlResolvers, customResolvers }) => {
     })
 
     Object.defineProperty(executors, 'executeQueryGraphql', {
-      value: async (gqlQuery, gqlVariables, getJwtValue) => {
+      value: async (gqlQuery, gqlVariables, jwtToken) => {
         const parsedGqlQuery = parse(gqlQuery)
 
         const gqlResponse = await execute(
           executableSchema,
           parsedGqlQuery,
           await model(),
-          { getJwtValue },
+          { jwtToken },
           gqlVariables
         )
 

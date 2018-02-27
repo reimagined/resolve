@@ -21,12 +21,19 @@ export function checkRequiredFields(obj, beforeWarnings, afterWarnings) {
 }
 
 export function getRootableUrl(path) {
-  const rootDir =
+  let rootDir =
     typeof process !== 'undefined' &&
     typeof process.env !== 'undefined' &&
-    process.env.ROOT_DIR
-      ? process.env.ROOT_DIR
+    process.env['ROOT_PATH']
+      ? process.env['ROOT_PATH']
       : ''
+
+  const isReactNative =
+    typeof navigator !== 'undefined' && navigator.product === 'ReactNative'
+
+  if (isReactNative && path === '/socket/') {
+    rootDir = ''
+  }
 
   return `${rootDir}${path}`
 }

@@ -1,32 +1,33 @@
 
-# **🚀 ReSolve App**
-This project is an application created with [Create ReSolve App](../../../create-resolve-app). This package creates an empty single page application by default or a typical Todo List application if you use the `--sample` option. This application is built on the CQRS and Event Sourcing principles using React+Redux on the client.
+# **reSolve App** 🚀
+This project is an application created with [Create reSolve App](../../../create-resolve-app). This package creates an empty single page application by default or a typical Todo List application if you use the `--sample` option. This application is built on the CQRS and Event Sourcing principles using React+Redux on the client.
 
-Create ReSolve App allows you to specify application blocks (aggregates, read models, and a UI part React components present) in a semi-declarative manner. With the `resolve-scripts` package, you do not need to write an API backend manually. Instead, `resolve-scripts` deploys backend and domain services to interact with the client which is wrapped into the `resolve-redux` package for an automated interaction.
+Create reSolve App allows you to specify application blocks (aggregates, read models, and a UI part React components present) in a semi-declarative manner. With the `resolve-scripts` package, you do not need to write an API backend manually. Instead, `resolve-scripts` deploys backend and domain services to interact with the client which is wrapped into the `resolve-redux` package for an automated interaction.
 
 Refer to [https://github.com/markerikson/react-redux-links](https://github.com/markerikson/react-redux-links) for detailed information on subject-related technologies and links to the corresponding resources.
 
-## **📑 Table of Contents**
-* [Available Scripts](#-available-scripts)
+## **Table of Contents** 📑
+* [Available Scripts](#available-scripts-)
     * [npm run dev](#npm-run-dev)
     * [npm run build](#npm-run-build)
     * [npm start](#npm-start)
-    * [npm run update](#npm-run-update-[version])
-* [Project Structure Overview](#️-project-structure-overview)
-    * [Client](#-client)
-    * [Common](#-common)
-    * [Configuration](#-configuration)
-    * [Functional tests](#-functional-tests)
-* [Aggregates and Read Models](#️-aggregates-and-read-models)
-* [Configuration Files](#-configuration-files)
+    * [npm run update](#npm-run-update-version)
+* [Project Structure Overview](#project-structure-overview-)
+    * [Client](#client-)
+    * [Common](#common-)
+    * [Configuration](#configuration-)
+    * [Functional tests](#functional-tests-)
+* [Aggregates and Read Models](#aggregates-and-read-models-)
+    * [Aggregates](#aggregates)
+    * [Read Models](#read-models)
+* [Configuration Files](#configuration-files-)
     * [Client Config](#client-config)
-        * [rootComponent](#rootcomponent)
+        * [routes](#routes)
         * [createStore](#createstore)
     * [Server Config](#server-config)
+        * [ssrMode](#ssrmode)
         * [aggregates](#aggregates)
-        * [bus](#bus)
-        * [entries.createStore](#entriescreatestore)
-        * [entries.rootComponent](#entriesrootcomponent)
+        * [bus](#bus)        
         * [initialSubscribedEvents](#initialsubscribedevents)
         * [filterSubscription](#filtersubscription)
         * [jwt](#jwt)
@@ -36,21 +37,21 @@ Refer to [https://github.com/markerikson/react-redux-links](https://github.com/m
         * [auth](#auth)
           * [strategies](#authstrategies)
         * [initialState](#initialstate)
-        * [readModels](#readModels)
+        * [readModels](#readmodels)
         * [sagas](#sagas)
         * [storage](#storage)
     * [resolve-scripts-auth](#resolve-scripts-auth)
-      * [localStrategy](#localStrategy)
-      * [githubStrategy](#githubStrategy)
-      * [googleStrategy](#googleStrategy)
+      * [localStrategy](#localstrategy)
+      * [githubStrategy](#githubstrategy)
+      * [googleStrategy](#googlestrategy)
     * [Build Config](#build-config)
         * [extendWebpack](#extendwebpack)
-* [Environment Variables](#-environment-variables)
+* [Environment Variables](#environment-variables-)
     * [Environment Variables to Change URL](#environment-variables-to-change-url)
     * [Custom Environment Variables](#custom-environment-variables)
 
 
-## **📋 Available Scripts**
+## **Available Scripts** 📋
 In the project directory, you can run:
 
 ### `npm run dev`
@@ -74,8 +75,8 @@ Open [http://localhost:3000](http://localhost:3000/) to view it in the browser.
 Updates all resolve packages to the latest version according to [semver](https://docs.npmjs.com/getting-started/semantic-versioning).
 If the `version` argument is set, the command updates packages to the specified version.
 
-## **🗂️ Project Structure Overview**
-[Create ReSolve App](https://www.npmjs.com/package/creat-resolve-app) is an NPM package referencing the latest [reSolve framework package](../../..) versions. It consists of the common isomorphic part which describes domain business logic and React components for the presentation. No implicit server part is needed - it is encapsulated in `resolve-scripts`, but can be customized using [config](#-configuration-files). The project also includes unit & E2E testing and deployment assets. All source code and functional tests are written in the [ES2016](http://2ality.com/2016/01/ecmascript-2016.html).
+## **Project Structure Overview** 🗂
+[Create reSolve App](https://www.npmjs.com/package/create-resolve-app) is an NPM package referencing the latest [reSolve framework package](../../..) versions. It consists of the common isomorphic part which describes domain business logic and React components for the presentation. No implicit server part is needed - it is encapsulated in `resolve-scripts`, but can be customized using [config](#configuration-files-). The project also includes unit & E2E testing and deployment assets. All source code and functional tests are written in the [ES2016](http://2ality.com/2016/01/ecmascript-2016.html).
 
 ```
 resolve-app/
@@ -108,18 +109,18 @@ resolve-app/
       index.test.js
 ```
 
-### **🕴 Client**
+### **Client** 🕴
 The client side is located in the `client/` folder and exports two key endpoints: root React component and Redux store creator function. These client part entry points must be specified in the [resolve.client.config.js](#client-config) configuration file in the root directory.
 
 Any customization (for example, adding routing or applying middleware or saga) can be performed by wrapping original UI entry points into subsidiary entities and specifying them in an appropriate config section. The following examples show how to use a react router as UI entry point: 
 * [react-router-2](../../../../examples/resolve-scripts-with-router-2)  
 * [react-router-4](../../../../examples/resolve-scripts-with-router-4)
 
-### **🔗 Common**
-The `common/` folder contains the application's isomorphic part which represents a business logic distributed between server and client in the same code. The domain logic is described in a reSolve-compatible format and appears in [aggregate and read model](#️-aggregates-and-read-models) declarations.
+### **Common** 🔗
+The `common/` folder contains the application's isomorphic part which represents a business logic distributed between server and client in the same code. The domain logic is described in a reSolve-compatible format and appears in [aggregate and read model](#aggregates-and-read-models-) declarations.
 
-### **📝 Configuration**
-Create ReSolve App provides declarative configuration instead of an imperative coding server-side part. The configuration allows you to customize the React client and server-side rendering, declare domain business logic regarding Event Sourcing with the reSolve library, and modify the development and production modes' webpack behavior.
+### **Configuration** 📝
+Create reSolve App provides declarative configuration instead of an imperative coding server-side part. The configuration allows you to customize the React client and server-side rendering, declare domain business logic regarding Event Sourcing with the reSolve library, and modify the development and production modes' webpack behavior.
 
 The client side, server side, and building phase configuration are split into three segregated files:
 * [resolve.client.config.js](#client-config)  
@@ -128,10 +129,10 @@ The client side, server side, and building phase configuration are split into th
 
 This approach allows you to simplify including non-isomorphic code and third-party libraries into an application by separating dependencies, and also store all ES5 code for the building phase in only one file.
 
-### **🚦 Functional-tests**
+### **Functional-tests** 🚦
 The system's operability is controlled with [TestCafe](http://devexpress.github.io/testcafe/documentation/using-testcafe/) functional tests. A test set builds and starts a demonstration application, opens it in a browser and automates UI interaction. After you modify the code, start functional tests to check if everything works correctly.
 
-## **🏗️ Aggregates and Read Models**
+## **Aggregates and Read Models** 🏗
 An application's common business/domain logic consists of aggregates and read models.
 ### **Aggregates**
 An *aggregate* is responsible for a system's behavior and encapsulates business logic. It responses to commands, checks whether they can be executed and generates events to change a system's current status.
@@ -221,15 +222,15 @@ Note: Some Immutable wrapper for a state object is required to use view model de
 
 
 
-## **🎛 Configuration Files**
+## **Configuration Files** 🎛
 ### Client Config
 The *resolve.client.config.js* file contains information for your application's client side. In this file, you can define an entry point component and implement redux store creation with the client side's initial state.
 
-* #### `rootComponent`
-  Specifies a react component that is rendered as an application's root component.
+* #### `routes`
+  Specifies application's routes.
 
   ##### Example
-  In this example, we create a simple react component and set it as a root component that is shown on the application’s home page.
+  In this example, we create home route and set a component that is shown on the application’s home page.
 
   ```js
   // resolve.client.config.js
@@ -237,7 +238,10 @@ The *resolve.client.config.js* file contains information for your application's 
   import React from 'react';
 
   export default {
-    rootComponent: () => (<h1>Root Component</h1>)
+    routes: [{
+      path: '/',
+      component: () => (<div>Root Component</div>)
+    }]
   }
   ```
 
@@ -256,7 +260,10 @@ The *resolve.client.config.js* file contains information for your application's 
   import reducers from './reducers';  // standard redux reducers
 
   export default {
-    rootComponent: () => (<h1>Root Component</h1>),
+    routes: [{
+      path: '/',
+      component: () => (<div>Root Component</div>)
+    }],
     createStore: initialState => createStore(reducers, initialState)
   }
   ```
@@ -266,8 +273,31 @@ The *resolve.client.config.js* file contains information for your application's 
 ### Server Config
 The *resolve.server.config.js* file contains information for the reSolve library.
 
+* #### ssrMode
+  Specifies the server-side rendering mode.
+
+  ##### Possible values:
+
+  * `'none'` (default) - disables server-side rendering;
+  * `'production-only'` - enables server-side rendering only when `NODE_ENV` is `'production'`;
+  * `'always'` - enables server-side rendering.
+
+  ##### Example
+
+  The example below shows how to enable server-side rendering in a production environment only.
+
+  ```js
+  // resolve.server.config.js
+
+  export default {
+    entries: {
+      ssrMode: 'production-only'
+    }
+  }
+  ```
+
 * #### aggregates
-  Specifies an [aggregate](#️-aggregates-and-read-models) array for the [resolve-command](../../../resolve-command). Each command is addressed to a particular aggregate. When an aggregate receives a command, it performs this command and produces an event or returns an error if the command cannot be executed.
+  Specifies an [aggregate](#aggregates-and-read-models-) array for the [resolve-command](../../../resolve-command). Each command is addressed to a particular aggregate. When an aggregate receives a command, it performs this command and produces an event or returns an error if the command cannot be executed.
 
   ##### Example
   In this example, we import an aggregate object array specified in the *aggregates.js* file.
@@ -302,86 +332,6 @@ The *resolve.server.config.js* file contains information for the reSolve library
     }
   }
   ```
-
-* #### entries
-
-  It might be the same config as in *resolve.client.config.js*. However, it is also possible to pass different `rootComponent` or `createStore` to server and client sides. It can be helpful in some cases (for example, see [resolve-scripts with react-router v4](../../../../examples/resolve-scripts-with-router-4) and  [resolve-scripts with react-router v2](../../../../examples/resolve-scripts-with-router-2)) but be  careful when using this approach - it may cause issues with SSR.
-
-  ##### Example
-  ```js
-  // resolve.server.config.js
-
-  import clientConfig from './resolve.client.config';
-
-  export default {
-    entries: clientConfig
-  }
-  ```
-
-* #### entries.createStore
-
-  Takes the [initialState](#initialstate) function value and returns a Redux store.
-
-  ##### Example
-  This example shows a simple `createStore` implementation.
-
-  ```js
-  // resolve.server.config.js
-
-  import { createStore } from 'redux';
-  
-  import reducers from './reducers'; // standard redux reducers
-
-  export default {
-    entries: {
-      createStore: initialState => createStore(reducers, initialState)
-    }
-  }
-  ```
-  **Note:** Standard redux store creation excludes that the initialState is passed from the server side.
-
-* #### entries.rootComponent
-  
-  Specifies a react component that is rendered as an application's root component.
-
-  ##### Example
-  In this example, we create a simple react component and set it as a root component that is shown on the application’s home page.
-
-  ```js
-  // resolve.server.config.js
-
-  import React from 'react';
-
-  export default {
-    entries: {
-      rootComponent: () => (<h1>Root Component</h1>)
-    }
-  }
-  ```
-  
-* #### entries.ssrMode
- 
-    Specifies the server-side rendering mode.
-    
-    ##### Possible values:
-    
-    * `'none'` (default) - disables server-side rendering;
-    * `'production-only'` - enables server-side rendering only when `NODE_ENV` is `'production'`;
-    * `'always'` - enables server-side rendering.
-    
-    ##### Example
-
-    The example below shows how to enable server-side rendering in a production environment only.
-    
-    ```js
-    // resolve.server.config.js
-
-    export default {
-      entries: {
-        ssrMode: 'production-only'
-      }
-    }
-    ```
 
 * #### initialSubscribedEvents
   
@@ -517,7 +467,7 @@ The *resolve.server.config.js* file contains information for the reSolve library
   ```
 
 * #### readModels
-  A [read model](#️-aggregates-and-read-models) array for [resolve-query](../../../resolve-query). A *read model* represents the current system state or a part of it and is built by processing all events happened in the system. Read models are used to answer queries.
+  A [read model](#aggregates-and-read-models-) array for [resolve-query](../../../resolve-query). A *read model* represents the current system state or a part of it and is built by processing all events happened in the system. Read models are used to answer queries.
 
   ##### Example
   In this example, we import an array of read model objects specified in the *read-models.js* file. 
@@ -567,16 +517,13 @@ The *resolve.server.config.js* file contains information for the reSolve library
   ```
 
 ### resolve-scripts-auth
-This virtual package provides [localStrategy](#localStrategy), [githubStrategy](#githubStrategy) and [googleStrategy](#googleStrategy).
+This virtual package provides [localStrategy](#localstrategy), [githubStrategy](#githubstrategy) and [googleStrategy](#googlestrategy).
 
 A strategy's predefined options:
      
 * `strategy: {...}` - specifies strategy's options;
 * `routes: {...}` -  configures strategy's routing;
 * `failureCallback: (error, redirect, { resolve, body }) => {...}` - this callback is used for handling an error. The default callback redirects to the `/login?error=...` page;
-* `done` - this callback allows you to send notifications about errors or successful operations:
-   * Call `done('My error message')` to notify a user about an error.
-   * Call `done(null, myData)` to notify a user that an operation is completed successfully (it sets the 'jwt' value and redirects to the homepage).
   
 #### Auth strategies
 
@@ -598,13 +545,11 @@ A strategy's predefined options:
         method: 'post'
       }
     },
-    registerCallback: ({ resolve, body }, username, password, done) => {
+    registerCallback: async ({ resolve, body }, username, password) => {
       // your code to register a new user
-      // you need to call the 'done' callback to notify a user about an error or successful operation
     },
-    loginCallback: ({ resolve, body }, username, password, done) => {
+    loginCallback: async ({ resolve, body }, username, password) => {
       // your code to implement a user login
-      // you need to call the 'done' callback to notify a user about an error or successful operation
     },
     failureCallback // default behavior
   })
@@ -623,9 +568,8 @@ A strategy's predefined options:
       auth: '/auth/github',
       callback: '/auth/github/callback'
     },
-    authCallback: ({ resolve, body }, profile, done) => {
+    authCallback: async ({ resolve, body }, profile) => {
       // your code to authenticate a user
-      // you need to call the 'done' callback to notify a user about an error or successful operation
     },
     failureCallback // default behavior
   })
@@ -644,9 +588,8 @@ A strategy's predefined options:
       auth: '/auth/google',
       callback: '/auth/google/callback'
     },
-    authCallback: ({ resolve, body }, profile, done) => {
+    authCallback: async ({ resolve, body }, profile) => {
       // your code to authenticate a user
-      // you need to call the 'done' callback to notify a user about an error or successful operation
     },
     failureCallback // default behavior
   })
@@ -674,7 +617,7 @@ The *resolve.build.config.js* file contains information for building an applicat
   }
   ```
 
-## **🛠 Environment Variables**
+## **Environment Variables** 🛠
 
 ### Environment Variables to Change URL
 You can adjust your application's URL ([http://localhost:3000](http://localhost:3000/) is used by default) using the following environment variables:
@@ -682,7 +625,7 @@ You can adjust your application's URL ([http://localhost:3000](http://localhost:
 * `HOST` - set the IP address;
 * `PORT` - set the port;
 * `HTTPS` - set to `true` to use `https` instead of `http`;
-* `ROOT_DIR` - set the application's root directory. For example, `export ROOT_DIR=/newurl`. After that, the application is available at [http://localhost:3000/newurl](http://localhost:3000/newurl). 
+* `ROOT_PATH` - set the application's root path. For example, `export ROOT_PATH=/newurl`. After that, the application is available at [http://localhost:3000/newurl](http://localhost:3000/newurl). 
 
 Environment variables are available on the client side using  `process.env.VARIABLE_NAME`.
 

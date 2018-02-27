@@ -1,4 +1,4 @@
-# **🛢 Storage Adapters**
+# **Storage Adapters**
 This folder contains [resolve-es](../resolve-es) storage adapters.
 
 A storage adapter is an object that must contain the following functions:  
