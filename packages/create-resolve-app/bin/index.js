@@ -77,7 +77,7 @@ if (unknownOptions && unknownOptions.length) {
   moduleCreator(
     appName,
     options.scripts,
-    !options.sample,
+    !options.todo,
     resolveVersion,
     !!options['exact-versions']
   )
