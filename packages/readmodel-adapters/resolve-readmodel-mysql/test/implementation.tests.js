@@ -5,29 +5,40 @@ import implementation from '../src/implementation'
 
 describe('resolve-readmodel-memory implementation', () => {
   it('should work properly', async () => {
-    const ownStorage = {}
-    const ownMetaInfo = {}
-    const metaApi = { metaMethod: sinon.stub().callsFake(() => 10) }
+    const connection = {}
+    const metaApi = {
+      metaMethod: sinon.stub().callsFake(() => 10),
+      getMetaInfo: sinon.stub().callsFake(pool => Promise.resolve((pool.prop = 30)))
+    }
     const storeApi = { storeMethod: sinon.stub().callsFake(() => 20) }
-    const createStorage = sinon.stub()
 
-    const result = implementation(metaApi, storeApi, createStorage, {
+    const mysql = {
+      createConnection: sinon.stub().callsFake(() => Promise.resolve(connection))
+    }
+
+    const testConnectionOptions = { host: 'h', port: 1, user: 'u', password: 'p', database: 'd' }
+
+    const result = implementation(metaApi, storeApi, mysql, {
       metaName: 'META_NAME',
-      storage: ownStorage,
-      metaInfo: ownMetaInfo
+      ...testConnectionOptions
     })
 
     expect(await result.metaApi.metaMethod()).to.be.equal(10)
     expect(await result.storeApi.storeMethod()).to.be.equal(20)
 
+    expect(mysql.createConnection.firstCall.args[0]).to.be.deep.equal(testConnectionOptions)
+
     const metaMethodCallArg = metaApi.metaMethod.firstCall.args[0]
-    expect(metaMethodCallArg.createStorage).to.be.equal(createStorage)
-    expect(metaMethodCallArg.metaInfo).to.be.equal(ownMetaInfo)
-    expect(metaMethodCallArg.storage).to.be.equal(ownStorage)
+    expect(metaMethodCallArg.connection).to.be.equal(connection)
+    expect(metaMethodCallArg.metaName).to.be.equal('META_NAME')
 
     const storeMethodCallArg = storeApi.storeMethod.firstCall.args[0]
-    expect(storeMethodCallArg.createStorage).to.be.equal(createStorage)
-    expect(storeMethodCallArg.metaInfo).to.be.equal(ownMetaInfo)
-    expect(storeMethodCallArg.storage).to.be.equal(ownStorage)
+    expect(storeMethodCallArg.connection).to.be.equal(connection)
+    expect(storeMethodCallArg.metaName).to.be.equal('META_NAME')
+
+    expect(metaMethodCallArg).to.be.equal(storeMethodCallArg)
+    const pool = metaMethodCallArg
+
+    expect(pool.prop).to.be.equal(30)
   })
 })

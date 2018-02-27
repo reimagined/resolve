@@ -1,52 +1,74 @@
 import { expect } from 'chai'
+import sinon from 'sinon'
 
 import metaApi from '../src/meta-api'
 
 describe('resolve-readmodel-memory meta-api', () => {
-  it('should provide getLastTimestamp method', async () => {
-    const pool = { metaInfo: { timestamp: 10 } }
-    const result = await metaApi.getLastTimestamp(pool)
-    expect(result).to.be.equal(10)
+  const META_NAME = 'META_NAME'
+
+  it('should provide getMetaInfo method', async () => {
+    const executor = sinon.stub()
+    const pool = {
+      connection: { execute: executor },
+      metaName: META_NAME
+    }
+
+    const tableDeclarations = [
+      {
+        TableName: 'table1',
+        TableDescription: {
+          fieldTypes: { id: 'number', vol: 'string', content: 'json' },
+          primaryIndex: { name: 'id', type: 'number' },
+          secondaryIndexes: [{ name: 'vol', type: 'string' }]
+        }
+      },
+      {
+        TableName: 'table2',
+        TableDescription: {
+          fieldTypes: { id: 'number', vol: 'string', content: 'json' },
+          primaryIndex: { name: 'id', type: 'number' },
+          secondaryIndexes: [{ name: 'vol', type: 'string' }]
+        }
+      }
+    ]
+
+    executor.onCall(0).callsFake(async () => null)
+    executor.onCall(1).callsFake(async () => [[{ Timestamp: 100 }]])
+    executor.onCall(2).callsFake(async () => [tableDeclarations])
+
+    await metaApi.getMetaInfo(pool)
+    expect(pool.metaInfo.tables['table1']).to.be.deep.equal(tableDeclarations[0].TableDescription)
+    expect(pool.metaInfo.tables['table2']).to.be.deep.equal(tableDeclarations[1].TableDescription)
+    expect(pool.metaInfo.timestamp).to.be.deep.equal(100)
+
+    expect(executor.firstCall.args[0]).to.be.equal(
+      'CREATE TABLE IF NOT EXISTS META_NAME (\n      MetaKey VARCHAR(36) NOT NULL,\n' +
+        '      MetaField VARCHAR(128) NOT NULL,\n      SimpleValue BIGINT NULL,\n' +
+        '      ComplexValue JSON NULL,\n      PRIMARY KEY (MetaKey, MetaField)\n    )'
+    )
+
+    expect(executor.secondCall.args[0]).to.be.equal(
+      'SELECT SimpleValue AS Timestamp FROM META_NAME\n     ' +
+        'WHERE MetaKey="Timestamp" AND MetaField="Timestamp"'
+    )
+
+    expect(executor.thirdCall.args[0]).to.be.equal(
+      'SELECT MetaField AS TableName, ComplexValue AS TableDescription\n     ' +
+        'FROM META_NAME WHERE MetaKey="Tables"'
+    )
   })
 
-  it('should provide setLastTimestamp method', async () => {
-    const pool = { metaInfo: { timestamp: 10 } }
-    await metaApi.setLastTimestamp(pool, 20)
-    expect(pool.metaInfo.timestamp).to.be.equal(20)
-  })
+  it('should provide getLastTimestamp method', async () => {})
 
-  it('should provide storageExists method', async () => {
-    const pool = { metaInfo: { tables: { one: {} } } }
-    let result = await metaApi.storageExists(pool, 'one')
-    expect(result).to.be.equal(true)
-    result = await metaApi.storageExists(pool, 'two')
-    expect(result).to.be.equal(false)
-  })
+  it('should provide setLastTimestamp method', async () => {})
 
-  it('should provide getStorageInfo method', async () => {
-    const metaInfoOne = {}
-    const pool = { metaInfo: { tables: { one: metaInfoOne } } }
-    const result = await metaApi.getStorageInfo(pool, 'one')
-    expect(result).to.be.equal(metaInfoOne)
-  })
+  it('should provide storageExists method', async () => {})
 
-  it('should provide describeStorage method', async () => {
-    const pool = { metaInfo: { tables: {} } }
-    const metaInfoOne = {}
-    await metaApi.describeStorage(pool, 'one', metaInfoOne)
-    expect(pool.metaInfo.tables['one']).to.be.equal(metaInfoOne)
-  })
+  it('should provide getStorageInfo method', async () => {})
 
-  it('should provide getStorageNames method', async () => {
-    const pool = { metaInfo: { tables: { one: {}, two: {} } } }
-    const result = await metaApi.getStorageNames(pool)
-    expect(result).to.be.deep.equal(['one', 'two'])
-  })
+  it('should provide describeStorage method', async () => {})
 
-  it('should provide drop method', async () => {
-    const pool = { metaInfo: { tables: { one: {}, two: {} } }, storage: { one: {}, two: {} } }
-    await metaApi.drop(pool)
-    expect(Object.keys(pool.metaInfo)).to.be.deep.equal([])
-    expect(Object.keys(pool.storage)).to.be.deep.equal([])
-  })
+  it('should provide getStorageNames method', async () => {})
+
+  it('should provide drop method', async () => {})
 })
