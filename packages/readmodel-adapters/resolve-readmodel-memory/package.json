@@ -1,26 +1,23 @@
 {
   "name": "resolve-readmodel-memory",
   "version": "0.5.0",
-  "description": "This package serves as a resolve-query adapter for storing a read model in memory",
+  "description":
+    "This package serves as a resolve-query adapter for storing a read model in memory",
   "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
     "prepublish": "babel --out-dir ./dist ./src",
-    "test": "echo OK && exit 0",
-    "testw": "echo OK && exit 0"
+    "test": "jest --testMatch=**/test/*.tests.js",
+    "testw": "jest --testMatch=**/test/*.tests.js --watchAll"
   },
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": [
-    "cqrs",
-    "eventsourcing",
-    "es",
-    "ddd"
-  ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-memory#readme",
+  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
+  "homepage":
+    "https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-memory#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "jest": "^22.1.4",
