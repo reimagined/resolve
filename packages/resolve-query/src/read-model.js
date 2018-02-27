@@ -25,14 +25,18 @@ const init = (adapter, eventStore, projection) => {
   const loadDonePromise = new Promise((resolve, reject) => {
     let flowPromise = Promise.resolve()
 
-    const forceStop = reason => {
+    const forceStop = (reason, chainable = true) => {
       if (flowPromise) {
-        flowPromise.then(reject, reject)
+        flowPromise.catch(reject)
         flowPromise = null
         onDispose()
       }
 
-      return Promise.reject(reason)
+      if (chainable) {
+        return Promise.reject(reason)
+      }
+
+      reject(reason)
     }
 
     const synchronizedEventWorker = event => {
@@ -72,6 +76,7 @@ const init = (adapter, eventStore, projection) => {
           unsub()
         }
       })
+      .catch(err => forceStop(err, false))
   })
 
   return {

@@ -9,10 +9,10 @@
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "redux": "^3.7.2",
-    "resolve-bus-memory": "^0.4.0",
-    "resolve-redux": "^0.4.0",
-    "resolve-scripts": "^0.4.0",
-    "resolve-storage-lite": "^0.4.0"
+    "resolve-bus-memory": "^0.5.0",
+    "resolve-redux": "^0.5.0",
+    "resolve-scripts": "^0.5.0",
+    "resolve-storage-lite": "^0.5.0"
   },
   "scripts": {
     "build": "resolve-scripts build",
@@ -20,7 +20,8 @@
     "start": "resolve-scripts start",
     "test": "exit 0",
     "testw": "exit 0",
-    "test:functional": "cross-env NODE_ENV=tests babel-node ./tests/functional/testcafe_runner.js --presets es2015,stage-0,react"
+    "test:functional":
+      "cross-env NODE_ENV=tests babel-node ./tests/functional/testcafe_runner.js --presets es2015,stage-0,react"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",

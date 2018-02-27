@@ -158,7 +158,7 @@ export default async (
 
   log('Installing packages. This might take a couple of minutes.')
 
-  log(`Installing ${chalk.cyan(scriptsPackage)}...`)
+  log(`Installing ${chalk.cyan(`${scriptsPackage}@${resolveVersion}`)}...`)
   log()
 
   await installScripts(scriptsPackage, resolveVersion)

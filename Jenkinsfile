@@ -27,15 +27,13 @@ pipeline {
                     }
 
                     sh """
-                        export CI_CANARY_VERSION=\$(nodejs -e "console.log(JSON.parse(require('fs').readFileSync('./package.json')).version.split('-')[0]);")-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}; \
+                        export CI_CANARY_VERSION=\$(nodejs -e "console.log(JSON.parse(require('fs').readFileSync('./package.json')).version.split('-')[0].split('.').map((ver, idx) => (idx < 2 ? ver : String(+ver + 1) )).join('.'));")-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}; \
                         echo \$CI_CANARY_VERSION > /lerna_version; \
-                    """
-
-                    sh """
                         yarn oao --version
                         echo registry=http://${env.NPM_ADDR} > /root/.npmrc; \
                         echo //${env.NPM_ADDR}/:_authToken=${env.NPM_TOKEN} >> /root/.npmrc; \
                         echo 'registry "http://${env.NPM_ADDR}"' >> /root/.yarnrc; \
+                        find . -name package.json -type f -print | grep -v node_modules | xargs -I '%' node -e 'require("fs").writeFileSync(process.argv[1], JSON.stringify((() => { const pj = require(process.argv[1]); if(pj.dependencies) Object.keys(pj.dependencies).forEach(key => { if(key.indexOf("resolve-") < 0) return; pj.dependencies[key] = process.env.CI_CANARY_VERSION  }); return pj; })(), null, 3))' '%'; \
                         yarn run publish --no-checks --no-confirm --new-version \$(cat /lerna_version); \
                         sleep 10
                     """
@@ -49,9 +47,6 @@ pipeline {
                     sh """
                         /init.sh
                         cd examples/todo
-                        ../../node_modules/.bin/resolve-scripts update --exact-versions \$(cat /lerna_version)
-                        cat ./package.json
-                        yarn install
                         yarn test:functional --browser=path:/chromium
                     """
                 }
@@ -64,9 +59,6 @@ pipeline {
                     sh """
                         /init.sh
                         cd examples/todo-two-levels
-                        ../../node_modules/.bin/resolve-scripts update --exact-versions \$(cat /lerna_version)
-                        cat ./package.json
-                        yarn install
                         yarn test:functional --browser=path:/chromium
                     """
                 }
@@ -82,7 +74,6 @@ pipeline {
                         create-resolve-app --exact-versions empty
                         cd ./empty
                         cat ./package.json
-                        yarn flow
                         yarn test
                         yarn test:functional --browser=path:/chromium
                     """
@@ -98,7 +89,6 @@ pipeline {
                         create-resolve-app --sample --exact-versions todolist
                         cd ./todolist
                         cat ./package.json
-                        yarn flow
                         yarn test
                         yarn test:functional --browser=path:/chromium
                     """
@@ -114,7 +104,8 @@ pipeline {
                         git clone https://github.com/reimagined/hacker-news-resolve.git
                         cd hacker-news-resolve
                         git checkout ${env.BRANCH_NAME} || echo "No branch \"${env.BRANCH_NAME}\""
-                        yarn install
+                        yarn global add cross-env
+                        yarn install --production=false
                         ../node_modules/.bin/resolve-scripts update --exact-versions \$(cat /lerna_version)
                         cat ./package.json
                         yarn build

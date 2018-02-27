@@ -11,9 +11,7 @@ The read model storage API consists of the following asynchronous functions:
 * `getError` - returns the last internal adapter error if a failure occurred.
 
 Available adapters:  
-* [resolve-readmodel-memory](./resolve-readmodel-memory)  
-	Used to store a read model in memory.
-* [resolve-readmodel-mongo](./resolve-readmodel-mongo)  
-	Used to store a read model in MongoDB.
-* [resolve-readmodel-redis](./resolve-readmodel-redis)
-	Used to store a read model in Redis.
+* [resolve-readmodel-memory](./resolve-readmodel-memory)
+	Used to store a read model in Memory.
+* [resolve-readmodel-mysql](./resolve-readmodel-mysql)
+	Used to store a read model in MySQL.

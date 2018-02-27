@@ -1,25 +1,27 @@
 import 'regenerator-runtime/runtime'
 
-const buildProjection = (repository, inputProjection) => {
+const buildProjection = (
+  { metaApi, storeApi, internalContext },
+  inputProjection
+) => {
   return Object.keys(inputProjection).reduce((projection, eventType) => {
     if (
       eventType === 'Init' &&
       typeof inputProjection[eventType] === 'function'
     ) {
-      repository.initHandler = inputProjection[eventType]
+      internalContext.initHandler = inputProjection[eventType]
       return projection
     }
 
     projection[eventType] = async (event, onDemandOptions) => {
-      await repository.initDonePromise
-      const writeInterface = repository.writeInterface
+      await internalContext.initDonePromise
       const handler = inputProjection[eventType]
-      repository.lastTimestamp = event.timestamp
+      await metaApi.setLastTimestamp(event.timestamp)
 
       try {
-        await handler(writeInterface, event)
+        await handler(storeApi, event)
       } catch (error) {
-        repository.internalError = error
+        internalContext.internalError = error
       }
     }
     return projection
