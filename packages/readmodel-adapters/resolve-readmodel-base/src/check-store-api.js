@@ -65,7 +65,7 @@ const checkAndGetFieldType = (metaInfo, fieldName) => {
 }
 
 const checkFieldList = (metaInfo, fieldList, validProjectionValues = []) => {
-  checkCondition(checkOptionShape(fieldList, [Object, Array]), 'fieldListNotArray')
+  checkCondition(checkOptionShape(fieldList, [Object, Array]), 'invalidFieldList')
   if (Array.isArray(fieldList)) {
     for (let fieldName of fieldList) {
       checkCondition(checkAndGetFieldType(metaInfo, fieldName), 'invalidProjectionKey', fieldName)
