@@ -24,7 +24,7 @@ const getMetaInfo = async pool => {
        VALUES("Timestamp", "Timestamp", 0)`
     )
   } else {
-    pool.metaInfo.timestamp = +rows[0]['Timestamp']
+    pool.metaInfo.timestamp = Number.isInteger(+rows[0]['Timestamp']) ? +rows[0]['Timestamp'] : 0
   }
 
   void ([rows] = await connection.execute(
@@ -39,19 +39,27 @@ const getMetaInfo = async pool => {
         primaryIndex: {},
         secondaryIndexes: []
       }
+      if (TableDescription.fieldTypes.constructor !== Object) {
+        throw new Error('Malformed meta description')
+      }
       for (let key of Object.keys(TableDescription.fieldTypes)) {
         descriptor.fieldTypes[key] = TableDescription.fieldTypes[key]
       }
 
+      if (TableDescription.primaryIndex.constructor !== Object) {
+        throw new Error('Malformed meta description')
+      }
       descriptor.primaryIndex.name = TableDescription.primaryIndex.name
       descriptor.primaryIndex.type = TableDescription.primaryIndex.type
 
+      if (!Array.isArray(TableDescription.secondaryIndexes)) {
+        throw new Error('Malformed meta description')
+      }
       for (let { name, type } of TableDescription.secondaryIndexes) {
         descriptor.secondaryIndexes.push({ name, type })
       }
 
       pool.metaInfo.tables[TableName] = descriptor
-      continue
     } catch (err) {
       await connection.execute(
         `DELETE FROM ${metaName}
@@ -66,14 +74,10 @@ const getLastTimestamp = async ({ metaInfo }) => {
   return metaInfo.timestamp
 }
 
-const setLastTimestamp = async (
-  { connection, metaName, metaInfo },
-  timestamp
-) => {
-  await connection.execute(
-    `UPDATE ${metaName} SET SimpleValue=? WHERE MetaKey="Timestamp"`,
-    [timestamp]
-  )
+const setLastTimestamp = async ({ connection, metaName, metaInfo }, timestamp) => {
+  await connection.execute(`UPDATE ${metaName} SET SimpleValue=? WHERE MetaKey="Timestamp"`, [
+    timestamp
+  ])
 
   metaInfo.timestamp = +timestamp
 }
@@ -86,11 +90,7 @@ const getStorageInfo = async ({ metaInfo }, storageName) => {
   return metaInfo.tables[storageName]
 }
 
-const describeStorage = async (
-  { connection, metaInfo, metaName },
-  storageName,
-  metaSchema
-) => {
+const describeStorage = async ({ connection, metaInfo, metaName }, storageName, metaSchema) => {
   await connection.execute(
     `INSERT INTO ${metaName}(MetaKey, MetaField, ComplexValue) VALUES("Tables", ?, ?)`,
     [storageName, metaSchema]
