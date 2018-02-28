@@ -1,5 +1,6 @@
 import 'regenerator-runtime/runtime'
 
+const MAX_VALUE = 0x0fffffff | 0
 const castType = type => {
   switch (type) {
     case 'number':
@@ -50,50 +51,51 @@ const updateToSetExpression = expr => {
   const updateValues = []
 
   for (let operatorName of Object.keys(expr)) {
-    const fieldName = Object.keys(expr[operatorName])[0]
-    const fieldValue = expr[operatorName][fieldName]
-    const [baseName, ...nestedPath] = fieldName.split('.')
+    for (let fieldName of Object.keys(expr[operatorName])) {
+      const fieldValue = expr[operatorName][fieldName]
+      const [baseName, ...nestedPath] = fieldName.split('.')
 
-    switch (operatorName) {
-      case '$unset': {
-        if (nestedPath.length > 0) {
-          updateExprArray.push(
-            `${baseName} = JSON_REMOVE(${baseName}, '${makeNestedPath(nestedPath)}') `
-          )
-        } else {
-          updateExprArray.push(`${baseName} = NULL `)
+      switch (operatorName) {
+        case '$unset': {
+          if (nestedPath.length > 0) {
+            updateExprArray.push(
+              `${baseName} = JSON_REMOVE(${baseName}, '${makeNestedPath(nestedPath)}') `
+            )
+          } else {
+            updateExprArray.push(`${baseName} = NULL `)
+          }
+          break
         }
-        break
-      }
 
-      case '$set': {
-        if (nestedPath.length > 0) {
-          updateExprArray.push(
-            `${baseName} = JSON_SET(${baseName}, '${makeNestedPath(nestedPath)}', ?) `
-          )
-        } else {
-          updateExprArray.push(`${baseName} = ? `)
+        case '$set': {
+          if (nestedPath.length > 0) {
+            updateExprArray.push(
+              `${baseName} = JSON_SET(${baseName}, '${makeNestedPath(nestedPath)}', ?) `
+            )
+          } else {
+            updateExprArray.push(`${baseName} = ? `)
+          }
+          updateValues.push(fieldValue)
+          break
         }
-        updateValues.push(fieldValue)
-        break
-      }
 
-      case '$inc': {
-        if (nestedPath.length > 0) {
-          updateExprArray.push(
-            `${baseName} = JSON_SET(${baseName}, '${makeNestedPath(
-              nestedPath
-            )}', JSON_EXTRACT(${baseName}, '${makeNestedPath(nestedPath)}') + ?) `
-          )
-        } else {
-          updateExprArray.push(`${baseName} = ${baseName} + ? `)
+        case '$inc': {
+          if (nestedPath.length > 0) {
+            updateExprArray.push(
+              `${baseName} = JSON_SET(${baseName}, '${makeNestedPath(
+                nestedPath
+              )}', JSON_EXTRACT(${baseName}, '${makeNestedPath(nestedPath)}') + ?) `
+            )
+          } else {
+            updateExprArray.push(`${baseName} = ${baseName} + ? `)
+          }
+          updateValues.push(fieldValue)
+          break
         }
-        updateValues.push(fieldValue)
-        break
-      }
 
-      default:
-        break
+        default:
+          break
+      }
     }
   }
 
@@ -141,7 +143,7 @@ const find = async (
           .join(', ')
       : ''
 
-  const skipLimit = `LIMIT ${skip},${isFinite(limit) ? limit : Number.MAX_SAFE_INTEGER}`
+  const skipLimit = `LIMIT ${isFinite(skip) ? skip : 0},${isFinite(limit) ? limit : MAX_VALUE}`
 
   const { searchExpr, searchValues } = searchToWhereExpression(searchExpression)
 
