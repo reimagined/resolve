@@ -1,6 +1,6 @@
 {
   "name": "resolve-storage-lite",
-  "version": "0.5.0",
+  "version": "0.5.2",
   "description": "This package serves as an adapter for resolve-storage to store events using a file or in memory.",
   "main": "./dist/index.js",
   "bugs": {
