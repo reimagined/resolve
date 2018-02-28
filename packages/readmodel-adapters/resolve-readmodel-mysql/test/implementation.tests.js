@@ -3,7 +3,7 @@ import sinon from 'sinon'
 
 import implementation from '../src/implementation'
 
-describe('resolve-readmodel-memory implementation', () => {
+describe('resolve-readmodel-mysql implementation', () => {
   it('should work properly', async () => {
     const connection = {}
     const metaApi = {

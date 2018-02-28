@@ -8,19 +8,15 @@
   },
   "scripts": {
     "prepublish": "babel --out-dir ./dist ./src",
-    "test": "echo OK && exit 0",
-    "testw": "echo OK && exit 0"
+    "test": "jest --testMatch=**/test/*.tests.js",
+    "testw": "jest --testMatch=**/test/*.tests.js --watchAll"
   },
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": [
-    "cqrs",
-    "eventsourcing",
-    "es",
-    "ddd"
-  ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-base#readme",
+  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
+  "homepage":
+    "https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-base#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "jest": "^22.1.4",

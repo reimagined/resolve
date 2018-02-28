@@ -4,7 +4,7 @@ import sqlFormatter from 'sql-formatter'
 
 import metaApi from '../src/meta-api'
 
-describe('resolve-readmodel-memory meta-api', () => {
+describe('resolve-readmodel-mysql meta-api', () => {
   const META_NAME = 'META_NAME'
   const format = sqlFormatter.format.bind(sqlFormatter)
 

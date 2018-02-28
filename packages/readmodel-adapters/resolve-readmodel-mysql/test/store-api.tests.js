@@ -4,7 +4,7 @@ import sqlFormatter from 'sql-formatter'
 
 import storeApi from '../src/store-api'
 
-describe('resolve-readmodel-memory store-api', () => {
+describe('resolve-readmodel-mysql store-api', () => {
   const MAX_VALUE = 0x0fffffff | 0
   const format = sqlFormatter.format.bind(sqlFormatter)
 
