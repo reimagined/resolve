@@ -2,7 +2,7 @@
 
 const commandLineArgs = require('command-line-args')
 const chalk = require('chalk')
-const moduleCreator = require('../dist/create_resolve_app')
+const { exec } = require('child_process');
 
 // eslint-disable-next-line no-console
 const log = console.log
@@ -10,9 +10,7 @@ const log = console.log
 const EOL = require('os').EOL
 
 const optionDefinitions = [
-  { name: 'scripts', type: String },
-  { name: 'todo', type: Boolean },
-  { name: 'exact-versions', type: Boolean },
+  { name: 'example', alias: 'e', type: String },
   { name: 'version', alias: 'V', type: Boolean },
   { name: 'help', alias: 'h', type: Boolean }
 ]
@@ -20,8 +18,11 @@ const optionDefinitions = [
 const optionsInfo =
   `Options:${EOL}` +
   EOL +
-  '  --todo         creates a single page application representing a typical Todo List' +
-  EOL +
+  `  -e, --example    creates an example application base on application from resolve examples directory${EOL}` +
+  `                   Now you can choose one of the next examples:${EOL}` +
+  `                     todo list ${EOL}` +
+  `                     hello world ${EOL}` +
+  `                     two levels todo list ${EOL}` +
   `  -V, --version    outputs the version number${EOL}` +
   `  -h, --help       outputs usage information${EOL}`
 
@@ -74,11 +75,20 @@ if (unknownOptions && unknownOptions.length) {
   log(messages.emptyAppNameError)
 } else {
   let appName = options._unknown[0]
-  moduleCreator(
-    appName,
-    options.scripts,
-    !options.todo,
-    resolveVersion,
-    !!options['exact-versions']
-  )
+  let example = options.example;
+  let resolveRepoPath = "https://github.com/reimagined/resolve.git";
+  let examplePath = "./resolve/examples/" + example;
+
+  console.log(`Creating ${appName} in ./${appName} based on ${example} example`);
+
+  exec(`mkdir ${appName} && cd ${appName} && git clone ${resolveRepoPath} && cp -r ${examplePath}/* ./ && cp -r ${examplePath}/.[^.]* ./ && rm -rf ./resolve && npm i >> log.log`, (err, stdout, stderr) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // the *entire* stdout and stderr (buffered)
+    console.log(`stdout: ${stdout}`);
+    console.log(`stderr: ${stderr}`);
+  });
 }
