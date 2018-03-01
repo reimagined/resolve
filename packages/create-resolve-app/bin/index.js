@@ -11,6 +11,7 @@ const EOL = require('os').EOL
 
 const optionDefinitions = [
   { name: 'example', alias: 'e', type: String },
+  { name: 'branch', alias: 'b', type: String },
   { name: 'version', alias: 'V', type: Boolean },
   { name: 'help', alias: 'h', type: Boolean }
 ]
@@ -23,6 +24,7 @@ const optionsInfo =
   `                     todo list ${EOL}` +
   `                     hello world ${EOL}` +
   `                     two levels todo list ${EOL}` +
+  `  -b, --branch     branch (master is default)${EOL}` +
   `  -V, --version    outputs the version number${EOL}` +
   `  -h, --help       outputs usage information${EOL}`
 
@@ -81,7 +83,8 @@ if (unknownOptions && unknownOptions.length) {
 
   console.log(`Creating ${appName} in ./${appName} based on ${example} example`);
 
-  exec(`mkdir ${appName} && cd ${appName} && git clone ${resolveRepoPath} && cp -r ${examplePath}/* ./ && cp -r ${examplePath}/.[^.]* ./ && rm -rf ./resolve && npm i >> log.log`, (err, stdout, stderr) => {
+  let branchChangeOption = (options.branch) ? `--branch ${options.branch}` : '';
+  exec(`mkdir ${appName} && cd ${appName} && git clone ${resolveRepoPath} ${branchChangeOption} && cp -r ${examplePath}/* ./ && cp -r ${examplePath}/.[^.]* ./ && rm -rf ./resolve && npm i >> log.log`, (err, stdout, stderr) => {
     if (err) {
       console.log(err);
       return;
