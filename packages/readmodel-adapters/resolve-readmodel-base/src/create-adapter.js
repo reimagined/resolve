@@ -1,4 +1,5 @@
 import 'regenerator-runtime/runtime'
+import messages from './messages'
 
 const DEFAULT_META_NAME = '__ResolveMeta__'
 
@@ -8,10 +9,15 @@ const createAdapter = (buildProjection, checkStoreApi, init, reset, implementati
       ? options.metaName
       : DEFAULT_META_NAME
 
-  const { metaApi, storeApi } = implementation({ metaName, ...options })
+  const api = implementation({ metaName, ...options })
+  if (!api || !api instanceof Object) {
+    throw new Error(messages.invalidApiImplementation)
+  }
 
-  if (!metaApi instanceof Object || !storeApi instanceof Object) {
-    throw new Error('Invalid api impl')
+  const { metaApi, storeApi } = api
+
+  if (!metaApi || !storeApi || !metaApi instanceof Object || !storeApi instanceof Object) {
+    throw new Error(messages.invalidApiImplementation)
   }
 
   const pool = {

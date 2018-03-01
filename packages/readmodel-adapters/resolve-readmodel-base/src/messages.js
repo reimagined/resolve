@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 
 export default {
+  invalidApiImplementation: 'Invalid read-model adapter API implementation',
   readSideForbiddenOperation: operation =>
     `'${operation}' operation is not allowed on the read side`,
   alreadyInitialized: 'The read model storage is already initialized',
