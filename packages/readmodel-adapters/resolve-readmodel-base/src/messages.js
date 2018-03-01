@@ -12,9 +12,8 @@ export default {
   invalidProjectionKey: key => `Projection fields key ${key} is invalid`,
   invalidFieldName: name => `Field name ${name} is invalid`,
   invalidPagination: (skip, limit) => `Pagination range skip=${skip} and limit=${limit} is invalid`,
-  invalidSearchExpression: expr => `Search expression ${expr} is invalid`,
-  invalidUpdateExpression: expr => `Update expression ${expr} is invalid`,
-  invalidDocumentShape: doc => `Document ${doc} has invalid shape`
+  invalidUpdateExpression: expr => `Update expression ${JSON.stringify(expr)} is invalid`,
+  invalidDocumentShape: doc => `Document ${JSON.stringify(doc)} has invalid shape`
 }
 
 /* eslint-enable max-len */
