@@ -5,16 +5,27 @@ import init from '../src/init'
 import messages from '../src/messages'
 
 describe('resolve-readmodel-base init', () => {
+  let storeApi
+  beforeEach(() => {
+    storeApi = {
+      find: sinon.stub(),
+      findOne: sinon.stub(),
+      count: sinon.stub(),
+      mutate: sinon.stub()
+    }
+  })
+
+  afterEach(() => {
+    storeApi = null
+  })
+
   it('should work properly - with custom normal init handler', async () => {
     let currentTimestamp = 0
     const metaApi = {
       getLastTimestamp: sinon.stub().callsFake(async () => currentTimestamp),
       setLastTimestamp: sinon.stub().callsFake(async ts => (currentTimestamp = ts))
     }
-    const storeApi = {
-      find: sinon.stub(),
-      mutate: sinon.stub()
-    }
+
     const internalContext = {
       initHandler: sinon.stub()
     }
@@ -32,6 +43,8 @@ describe('resolve-readmodel-base init', () => {
     const readInterface = await getReadable()
     expect(internalContext.initHandler.callCount).to.be.equal(1)
     expect(readInterface.find).to.be.equal(storeApi.find)
+    expect(readInterface.findOne).to.be.equal(storeApi.findOne)
+    expect(readInterface.count).to.be.equal(storeApi.count)
 
     try {
       await readInterface.mutate()
@@ -60,10 +73,6 @@ describe('resolve-readmodel-base init', () => {
       getLastTimestamp: sinon.stub().callsFake(async () => currentTimestamp),
       setLastTimestamp: sinon.stub().callsFake(async ts => (currentTimestamp = ts))
     }
-    const storeApi = {
-      find: sinon.stub(),
-      mutate: sinon.stub()
-    }
     const internalContext = {
       initHandler: sinon.stub()
     }
@@ -81,6 +90,8 @@ describe('resolve-readmodel-base init', () => {
     const readInterface = await getReadable()
     expect(internalContext.initHandler.callCount).to.be.equal(0)
     expect(readInterface.find).to.be.equal(storeApi.find)
+    expect(readInterface.findOne).to.be.equal(storeApi.findOne)
+    expect(readInterface.count).to.be.equal(storeApi.count)
 
     try {
       await readInterface.mutate()
@@ -104,10 +115,7 @@ describe('resolve-readmodel-base init', () => {
       getLastTimestamp: sinon.stub().callsFake(async () => currentTimestamp),
       setLastTimestamp: sinon.stub().callsFake(async ts => (currentTimestamp = ts))
     }
-    const storeApi = {
-      find: sinon.stub(),
-      mutate: sinon.stub()
-    }
+
     const internalContext = {
       initHandler: sinon.stub().throws('ERR')
     }
@@ -129,10 +137,7 @@ describe('resolve-readmodel-base init', () => {
       getLastTimestamp: sinon.stub().callsFake(async () => currentTimestamp),
       setLastTimestamp: sinon.stub().callsFake(async ts => (currentTimestamp = ts))
     }
-    const storeApi = {
-      find: sinon.stub(),
-      mutate: sinon.stub()
-    }
+
     const internalContext = {}
 
     const { getLastAppliedTimestamp, getReadable, getError } = init({
@@ -170,10 +175,7 @@ describe('resolve-readmodel-base init', () => {
 
   it('should translate meta-api failure to read api functions', async () => {
     const metaApi = { getLastTimestamp: sinon.stub().throws('ERR') }
-    const storeApi = {
-      find: sinon.stub(),
-      mutate: sinon.stub()
-    }
+
     const internalContext = {}
 
     const { getReadable, getError } = init({
