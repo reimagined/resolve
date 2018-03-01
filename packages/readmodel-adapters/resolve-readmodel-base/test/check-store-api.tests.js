@@ -290,4 +290,147 @@ describe('resolve-readmodel-base check-store-api', () => {
       expect(err.message).to.be.equal(messages.invalidDocumentShape(null))
     }
   })
+
+  it('findOne should pass correct search expressions with all fields', async () => {
+    metaApi.storageExists.onCall(0).callsFake(async () => true)
+    metaApi.getStorageInfo.onCall(0).callsFake(async () => ({
+      fieldTypes: { id: 'number', volume: 'string', timestamp: 'number', content: 'json' },
+      primaryIndex: { name: 'id', type: 'number' },
+      secondaryIndexes: [{ name: 'volume', type: 'string' }, { name: 'timestamp', type: 'number' }]
+    }))
+
+    const resultValue = {}
+    storeApi.findOne.onCall(0).callsFake(async () => resultValue)
+
+    const result = await api.findOne('table', { volume: 'volume' }, { id: 1, 'content.text': 1 })
+
+    expect(storeApi.findOne.firstCall.args[0]).to.be.equal('table')
+    expect(storeApi.findOne.firstCall.args[1]).to.be.deep.equal({ volume: 'volume' })
+    expect(storeApi.findOne.firstCall.args[2]).to.be.deep.equal({ id: 1, 'content.text': 1 })
+
+    expect(result).to.be.equal(resultValue)
+  })
+
+  it('findOne should pass correct search expressions without projection key', async () => {
+    metaApi.storageExists.onCall(0).callsFake(async () => true)
+    metaApi.getStorageInfo.onCall(0).callsFake(async () => ({
+      fieldTypes: { id: 'number', volume: 'string', timestamp: 'number', content: 'json' },
+      primaryIndex: { name: 'id', type: 'number' },
+      secondaryIndexes: [{ name: 'volume', type: 'string' }, { name: 'timestamp', type: 'number' }]
+    }))
+
+    const resultValue = {}
+    storeApi.findOne.onCall(0).callsFake(async () => resultValue)
+
+    const result = await api.findOne('table', { volume: 'volume' }, null)
+
+    expect(storeApi.findOne.firstCall.args[0]).to.be.equal('table')
+    expect(storeApi.findOne.firstCall.args[1]).to.be.deep.equal({ volume: 'volume' })
+    expect(storeApi.findOne.firstCall.args[2]).to.be.deep.equal(null)
+
+    expect(result).to.be.equal(resultValue)
+  })
+
+  it('findOne should fail on unexisting fields on search fields key', async () => {
+    metaApi.storageExists.onCall(0).callsFake(async () => true)
+    metaApi.getStorageInfo.onCall(0).callsFake(async () => ({
+      fieldTypes: { id: 'number', volume: 'string', timestamp: 'number', content: 'json' },
+      primaryIndex: { name: 'id', type: 'number' },
+      secondaryIndexes: [{ name: 'volume', type: 'string' }, { name: 'timestamp', type: 'number' }]
+    }))
+
+    try {
+      await api.findOne('table', { volumeErr: 'volume' }, { id: 1, 'content.text': 1 })
+      return Promise.reject('findOne should fail on unexisting fields on search fields key')
+    } catch (err) {
+      expect(err).to.be.instanceOf(Error)
+      expect(err.message).to.be.equal(messages.invalidProjectionKey('volumeErr'))
+    }
+  })
+
+  it('findOne should fail on unexisting fields on projection fields key', async () => {
+    metaApi.storageExists.onCall(0).callsFake(async () => true)
+    metaApi.getStorageInfo.onCall(0).callsFake(async () => ({
+      fieldTypes: { id: 'number', volume: 'string', timestamp: 'number', content: 'json' },
+      primaryIndex: { name: 'id', type: 'number' },
+      secondaryIndexes: [{ name: 'volume', type: 'string' }, { name: 'timestamp', type: 'number' }]
+    }))
+
+    try {
+      await api.findOne('table', { volume: 'volume' }, { idErr: 1, 'contentErr.text': 1 })
+      return Promise.reject('findOne should fail on unexisting fields on projection fields key')
+    } catch (err) {
+      expect(err).to.be.instanceOf(Error)
+      expect(err.message).to.be.equal(messages.invalidProjectionKey('idErr'))
+    }
+  })
+
+  it('findOne should fail on bad request', async () => {
+    metaApi.storageExists.onCall(0).callsFake(async () => true)
+    metaApi.getStorageInfo.onCall(0).callsFake(async () => ({
+      fieldTypes: { id: 'number', volume: 'string', timestamp: 'number', content: 'json' },
+      primaryIndex: { name: 'id', type: 'number' },
+      secondaryIndexes: [{ name: 'volume', type: 'string' }, { name: 'timestamp', type: 'number' }]
+    }))
+
+    try {
+      await api.findOne('table', null)
+      return Promise.reject('findOne should fail on bad request')
+    } catch (err) {
+      expect(err).to.be.instanceOf(Error)
+      expect(err.message).to.be.equal(messages.invalidDocumentShape(null))
+    }
+  })
+
+  it('count should pass correct search expressions with all fields', async () => {
+    metaApi.storageExists.onCall(0).callsFake(async () => true)
+    metaApi.getStorageInfo.onCall(0).callsFake(async () => ({
+      fieldTypes: { id: 'number', volume: 'string', timestamp: 'number', content: 'json' },
+      primaryIndex: { name: 'id', type: 'number' },
+      secondaryIndexes: [{ name: 'volume', type: 'string' }, { name: 'timestamp', type: 'number' }]
+    }))
+
+    storeApi.count.onCall(0).callsFake(async () => 100)
+
+    const result = await api.count('table', { volume: 'volume' })
+
+    expect(storeApi.count.firstCall.args[0]).to.be.equal('table')
+    expect(storeApi.count.firstCall.args[1]).to.be.deep.equal({ volume: 'volume' })
+
+    expect(result).to.be.equal(100)
+  })
+
+  it('count should fail on unexisting fields on search fields key', async () => {
+    metaApi.storageExists.onCall(0).callsFake(async () => true)
+    metaApi.getStorageInfo.onCall(0).callsFake(async () => ({
+      fieldTypes: { id: 'number', volume: 'string', timestamp: 'number', content: 'json' },
+      primaryIndex: { name: 'id', type: 'number' },
+      secondaryIndexes: [{ name: 'volume', type: 'string' }, { name: 'timestamp', type: 'number' }]
+    }))
+
+    try {
+      await api.count('table', { volumeErr: 'volume' })
+      return Promise.reject('count should fail on unexisting fields on search fields key')
+    } catch (err) {
+      expect(err).to.be.instanceOf(Error)
+      expect(err.message).to.be.equal(messages.invalidProjectionKey('volumeErr'))
+    }
+  })
+
+  it('count should fail on bad request', async () => {
+    metaApi.storageExists.onCall(0).callsFake(async () => true)
+    metaApi.getStorageInfo.onCall(0).callsFake(async () => ({
+      fieldTypes: { id: 'number', volume: 'string', timestamp: 'number', content: 'json' },
+      primaryIndex: { name: 'id', type: 'number' },
+      secondaryIndexes: [{ name: 'volume', type: 'string' }, { name: 'timestamp', type: 'number' }]
+    }))
+
+    try {
+      await api.count('table', null)
+      return Promise.reject('count should fail on bad request')
+    } catch (err) {
+      expect(err).to.be.instanceOf(Error)
+      expect(err.message).to.be.equal(messages.invalidDocumentShape(null))
+    }
+  })
 })
