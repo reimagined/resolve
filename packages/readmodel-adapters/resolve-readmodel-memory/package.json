@@ -9,8 +9,8 @@
   },
   "scripts": {
     "prepublish": "babel --out-dir ./dist ./src",
-    "test": "jest --testMatch=**/test/*.tests.js",
-    "testw": "jest --testMatch=**/test/*.tests.js --watchAll"
+    "test": "jest --testMatch=**/test/*.tests.js --verbose",
+    "testw": "jest --testMatch=**/test/*.tests.js --watchAll --verbose"
   },
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
