@@ -1,12 +1,8 @@
 import 'regenerator-runtime/runtime'
-import mysql from 'mysql2/promise'
 
-import rawMetaApi from './meta-api'
-import storeApi from './store-api'
+const implementation = (rawMetaApi, storeApi, mysql, { metaName, ...options }) => {
+  const { getMetaInfo, ...metaApi } = rawMetaApi
 
-const { getMetaInfo, ...metaApi } = rawMetaApi
-
-const implementation = ({ metaName, ...options }) => {
   const connectionOptions = {
     host: options.host || '127.0.0.1',
     port: options.port || 3306,
@@ -20,12 +16,10 @@ const implementation = ({ metaName, ...options }) => {
 
   const bindWithConnection = func => async (...args) => {
     if (!connectionPromise) {
-      connectionPromise = mysql
-        .createConnection(connectionOptions)
-        .then(async connection => {
-          pool.connection = connection
-          await getMetaInfo(pool)
-        })
+      connectionPromise = mysql.createConnection(connectionOptions).then(async connection => {
+        pool.connection = connection
+        await getMetaInfo(pool)
+      })
     }
 
     await connectionPromise
