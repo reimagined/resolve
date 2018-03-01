@@ -181,6 +181,26 @@ describe('resolve-readmodel-base check-store-api', () => {
     expect(result).to.be.equal(resultSet)
   })
 
+  it('find should fail on wrong skip/limit values', async () => {
+    metaApi.storageExists.onCall(0).callsFake(async () => true)
+    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+
+    try {
+      await api.find(
+        'table',
+        { volume: 'volume' },
+        { id: 1, 'content.text': 1 },
+        { timestamp: -1 },
+        'skip',
+        'limit'
+      )
+      return Promise.reject('find should fail on wrong skip/limit values')
+    } catch (err) {
+      expect(err).to.be.instanceOf(Error)
+      expect(err.message).to.be.equal(messages.invalidPagination('skip', 'limit'))
+    }
+  })
+
   it('find should fail on unexisting fields on search fields key', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
     metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
@@ -365,7 +385,51 @@ describe('resolve-readmodel-base check-store-api', () => {
     }
   })
 
-  /// @@@@@
+  it('insert should pass correct insert expressions', async () => {
+    metaApi.storageExists.onCall(0).callsFake(async () => true)
+    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+
+    await api.insert('table', { id: 100, volume: 'volume', timestamp: 200, content: {} })
+
+    expect(storeApi.insert.firstCall.args[0]).to.be.equal('table')
+    expect(storeApi.insert.firstCall.args[1]).to.be.deep.equal({
+      id: 100,
+      volume: 'volume',
+      timestamp: 200,
+      content: {}
+    })
+  })
+
+  it('insert should fail on unexisting fields in schema', async () => {
+    metaApi.storageExists.onCall(0).callsFake(async () => true)
+    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+
+    try {
+      await api.insert('table', {
+        idErr: 100,
+        volumeErr: 'volume',
+        timestampErr: 200,
+        contentErr: {}
+      })
+      return Promise.reject('insert should fail on unexisting fields in schema')
+    } catch (err) {
+      expect(err).to.be.instanceOf(Error)
+      expect(err.message).to.be.equal(messages.invalidProjectionKey('idErr'))
+    }
+  })
+
+  it('insert should fail on bad request', async () => {
+    metaApi.storageExists.onCall(0).callsFake(async () => true)
+    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+
+    try {
+      await api.insert('table', null)
+      return Promise.reject('insert should fail on unexisting fields in schema')
+    } catch (err) {
+      expect(err).to.be.instanceOf(Error)
+      expect(err.message).to.be.equal(messages.invalidDocumentShape(null))
+    }
+  })
 
   it('update should pass correct search & update expressions', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
