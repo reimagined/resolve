@@ -1,6 +1,6 @@
 {
   "name": "resolve-scripts",
-  "version": "0.5.0",
+  "version": "0.5.2",
   "description": "This package create server with resolve.",
   "main": "./dist/index.js",
   "bugs": {

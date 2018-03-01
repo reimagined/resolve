@@ -1,6 +1,6 @@
 {
   "name": "resolve-readmodel-base",
-  "version": "0.5.0",
+  "version": "0.5.2",
   "description": "Base package for readModel adapters",
   "main": "./dist/index.js",
   "bugs": {

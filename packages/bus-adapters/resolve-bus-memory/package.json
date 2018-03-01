@@ -1,23 +1,26 @@
 {
   "name": "resolve-bus-memory",
-  "version": "0.5.0",
-  "description":
-    "This package is an adapter for resolve-bus to emit events using memory.",
+  "version": "0.5.2",
+  "description": "This package is an adapter for resolve-bus to emit events using memory.",
   "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
     "prepublish": "babel --out-dir ./dist ./src",
-    "test": "jest --testMatch=**/test/*.tests.js --verbose",
-    "testw": "jest --testMatch=**/test/*.tests.js --watchAll --verbose"
+    "test": "jest --testMatch=**/test/*.tests.js",
+    "testw": "jest --testMatch=**/test/*.tests.js --watchAll"
   },
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
-  "homepage":
-    "https://github.com/reimagined/resolve/tree/master/packages/resolve-bus-memory#readme",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-bus-memory#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "jest": "^22.1.4",
