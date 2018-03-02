@@ -17,18 +17,15 @@
     "test": "exit 0",
     "testw": "exit 0",
     "build": "babel --out-dir ./dist ./src --ignore template_sample",
-    "prepublish": "yarn build && yarn template:remove && yarn template:copy && yarn template_sample:remove && yarn template_sample:copy"
+    "prepublish":
+      "yarn build && yarn template:remove && yarn template:copy && yarn template_sample:remove && yarn template_sample:copy"
   },
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": [
-    "cqrs",
-    "eventsourcing",
-    "es",
-    "ddd"
-  ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#readme",
+  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
+  "homepage":
+    "https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#readme",
   "peerDependencies": {
     "react": "^15.3.0 || ^16.0.0",
     "react-dom": "^15.3.0 || ^16.0.0"

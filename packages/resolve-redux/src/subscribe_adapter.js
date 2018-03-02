@@ -13,9 +13,24 @@ export default function subscribeAdapter() {
     transports: ['websocket']
   })
 
+  let resolveClientId = null
+  let clientIdPromise = new Promise(resolve => (resolveClientId = resolve))
+
   socket.on('event', event => onEvent(JSON.parse(event)))
 
-  socket.on('disconnect', reason => onDisconnect(reason))
+  socket.on('connect', () => resolveClientId(socket.id))
+
+  socket.on('reconnect', () => {
+    resolveClientId = null
+    clientIdPromise = new Promise(resolve => (resolveClientId = resolve))
+    resolveClientId(socket.id)
+  })
+
+  socket.on('disconnect', reason => {
+    resolveClientId = null
+    clientIdPromise = new Promise(resolve => (resolveClientId = resolve))
+    onDisconnect(reason)
+  })
 
   return {
     onEvent(callback) {
@@ -29,6 +44,9 @@ export default function subscribeAdapter() {
         ids: aggregateIds, // TODO. Fix server-side
         types
       })
+    },
+    async getClientId() {
+      return await clientIdPromise
     }
   }
 }

@@ -24,11 +24,10 @@ const io = socketIO(server, {
 })
 
 io.on('connection', connectionHandler)
+app.socketIo = io
 
 const protocol = process.env.HTTPS === 'true' ? 'https' : 'http'
-const appName = JSON.parse(
-  fs.readFileSync(path.resolve(appDirectory, 'package.json'))
-).name
+const appName = JSON.parse(fs.readFileSync(path.resolve(appDirectory, 'package.json'))).name
 const urls = prepareUrls(protocol, HOST, PORT)
 
 server.on('listening', () => {

@@ -3,6 +3,7 @@ export default {
   viewModelsArrayFormat: 'The viewModels field should be an array',
   readModelMandatoryName: 'A read model name is required',
   viewModelMandatoryName: 'A view model name is required',
+  badSocketIoClientId: 'Supposed socket.io client identifier does not exist',
   dublicateName: 'A read/view name is not unique',
   readModelQuerySideMandatory:
     'The gqlSchema and gqlResolvers fields are required for a read model facade',

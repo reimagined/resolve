@@ -1,9 +1,4 @@
-import {
-  MERGE,
-  SUBSCRIBE,
-  UNSUBSCRIBE,
-  PROVIDE_VIEW_MODELS
-} from './action_types'
+import { MERGE, SUBSCRIBE, UNSUBSCRIBE, PROVIDE_VIEW_MODELS } from './action_types'
 import { getKey } from './util'
 
 export function subscribeHandler(
@@ -24,17 +19,13 @@ export function subscribeHandler(
     ...state,
     [viewModelName]: {
       ...state[viewModelName],
-      [aggregateId]: (viewModels.find(({ name }) => viewModelName === name)
-        .projection.Init || (() => {}))()
+      [aggregateId]: (viewModels.find(({ name }) => viewModelName === name).projection.Init ||
+        (() => {}))()
     }
   }
 }
 
-export function unsubscribeHandler(
-  { subscribers },
-  state,
-  { viewModelName, aggregateId }
-) {
+export function unsubscribeHandler({ subscribers }, state, { viewModelName, aggregateId }) {
   const key = getKey(viewModelName, aggregateId)
 
   if (subscribers[key] > 1) {
@@ -52,11 +43,7 @@ export function unsubscribeHandler(
   }
 }
 
-export function mergeHandler(
-  _,
-  state,
-  { viewModelName, aggregateId, state: actionState }
-) {
+export function mergeHandler(_, state, { viewModelName, aggregateId, state: actionState }) {
   return {
     ...state,
     [viewModelName]: {
@@ -94,19 +81,16 @@ export function provideViewModelsHandler(context, state, { viewModels }) {
 }
 
 export function createMap(viewModels) {
-  return viewModels.reduce(
-    (acc, { name: viewModelName, projection: { Init, ...projection } }) => {
-      Object.keys(projection).forEach(eventType => {
-        if (!acc[eventType]) {
-          acc[eventType] = {}
-        }
+  return viewModels.reduce((acc, { name: viewModelName, projection: { Init, ...projection } }) => {
+    Object.keys(projection).forEach(eventType => {
+      if (!acc[eventType]) {
+        acc[eventType] = {}
+      }
 
-        acc[eventType][viewModelName] = projection[eventType]
-      })
-      return acc
-    },
-    {}
-  )
+      acc[eventType][viewModelName] = projection[eventType]
+    })
+    return acc
+  }, {})
 }
 
 export function viewModelEventHandler(viewModels, state, action) {
@@ -141,6 +125,22 @@ export function viewModelEventHandler(viewModels, state, action) {
   return nextState
 }
 
+function applyReadmodelDiff(state, { readModelName, subscriptionKey, diff }) {
+  if (!state[readModelName] || !state[readModelName].hasOwnProperty(subscriptionKey)) {
+    return state
+  }
+
+  const result = applyDiff(state[readModelName][subscriptionKey], diff)
+
+  return {
+    ...state,
+    [readModelName]: {
+      ...state[readModelName],
+      [subscriptionKey]: result
+    }
+  }
+}
+
 export default function createViewModelsReducer() {
   const context = {
     initialState: {},
@@ -148,12 +148,13 @@ export default function createViewModelsReducer() {
     subscribers: {}
   }
 
-  context.handlers[PROVIDE_VIEW_MODELS] = provideViewModelsHandler.bind(
-    null,
-    context
-  )
+  context.handlers[PROVIDE_VIEW_MODELS] = provideViewModelsHandler.bind(null, context)
 
   return (state = {}, action) => {
+    if (action.type === 'READMODEL_SUBSCRIPTION_DIFF') {
+      return applyReadmodelDiff(state, action)
+    }
+
     const eventHandler = context.handlers[action.type]
 
     if (eventHandler) {
