@@ -84,7 +84,10 @@ if (unknownOptions && unknownOptions.length) {
   console.log(`Creating ${appName} in ./${appName} based on ${example} example`);
 
   let branchChangeOption = (options.branch) ? `--branch ${options.branch}` : '';
-  exec(`mkdir ${appName} && cd ${appName} && git clone ${resolveRepoPath} ${branchChangeOption} && cp -r ${examplePath}/* ./ && cp -r ${examplePath}/.[^.]* ./ && rm -rf ./resolve && npm i >> log.log`, (err, stdout, stderr) => {
+
+  console.log(`mkdir ${appName} && cd ${appName} && git clone ${resolveRepoPath} ${branchChangeOption} && cp -r ${examplePath}/* ./ && cp -r ${examplePath}/.[^.]* ./ && rm -rf ./resolve && npm i >> log.log`);
+
+  exec(`mkdir ${appName} && cd ${appName} && git clone ${resolveRepoPath} ${branchChangeOption} && cp -r ${examplePath}/* ./ && cp -r ${examplePath}/.[^.]* ./`, (err, stdout, stderr) => {
     if (err) {
       console.log(err);
       return;
