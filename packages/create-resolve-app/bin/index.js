@@ -78,7 +78,7 @@ if (unknownOptions && unknownOptions.length) {
   log(messages.emptyAppNameError)
 } else {
   let appName = options._unknown[0],
-    example = options.example,
+    example = options.example || 'hello-world',
     resolveRepoPath = 'https://github.com/reimagined/resolve.git',
     examplePath = './resolve/examples/' + example
 
