@@ -197,7 +197,7 @@ export const mockSubscribeAdapter = {
 }
 
 export function createResolveMiddleware({
-  viewModels,
+  viewModels = [],
   subscribeAdapter = defaultSubscribeAdapter
 }) {
   const subscribers = {

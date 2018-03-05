@@ -1,5 +1,5 @@
-import { createStore, applyMiddleware, compose } from 'redux'
-import { createResolveMiddleware } from 'resolve-redux'
+import { createStore, applyMiddleware, combineReducers, compose } from 'redux'
+import { createResolveMiddleware, createReadModelsReducer } from 'resolve-redux'
 
 const isClient = typeof window === 'object'
 
@@ -12,4 +12,12 @@ const middleware = [createResolveMiddleware({})]
 
 const enhancer = composeEnhancers(applyMiddleware(...middleware))
 
-export default initialState => createStore((state = {}) => state, initialState, enhancer)
+export default initialState =>
+  createStore(
+    combineReducers({
+      readModels: createReadModelsReducer(),
+      ui: (state = {}) => state
+    }),
+    initialState,
+    enhancer
+  )

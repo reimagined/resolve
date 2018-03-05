@@ -4,6 +4,7 @@ import actions from './actions'
 import * as actionTypes from './action_types'
 import createResolveMiddleware from './create_resolve_middleware'
 import createViewModelsReducer from './create_view_models_reducer'
+import createReadModelsReducer from './create_read_models_reducer'
 import createActions from './create_actions'
 import gqlConnector from './graphql_connector'
 import connect from './connect'
@@ -19,6 +20,7 @@ export {
   actionTypes,
   createResolveMiddleware,
   createViewModelsReducer,
+  createReadModelsReducer,
   createActions,
   gqlConnector,
   connect,

@@ -1,17 +1,33 @@
 import React from 'react'
 import { connectReadModel } from 'resolve-redux'
 
-const NewsViewer = ({ news }) => <ul>{news.map(item => <li>${item}</li>)}</ul>
+const NewsViewer = ({ news }) =>
+  news && news.constructor === Object ? (
+    <ul>{news.map(item => <li>${item}</li>)}</ul>
+  ) : (
+    <span>No news found</span>
+  )
 
-const NewsPager = ({ count, page, setPreviousPage, setNextPage }) => (
-  <div>
-    <button onClick={page > 0 ? setPreviousPage : () => null} disabled={!!(page > 0)} />
-    <span>
-      Page ${page + 1} from ${count}
-    </span>
-    <button onClick={page < count ? setNextPage : () => null} disabled={!!(page < count)} />
-  </div>
-)
+const NewsPager = ({ count, page, setPreviousPage, setNextPage }) =>
+  Number.isInteger(count) ? (
+    <div>
+      <button onClick={page > 0 ? setPreviousPage : () => null} disabled={!!(page > 0)} />
+      <span>
+        Page ${page + 1} from ${count}
+      </span>
+      <button onClick={page < count ? setNextPage : () => null} disabled={!!(page < count)} />
+    </div>
+  ) : (
+    <span />
+  )
+
+const getReadModel = (state, modelName, resolverName) => {
+  try {
+    return state.readModels[modelName][resolverName]
+  } catch (err) {
+    return null
+  }
+}
 
 const getFilledNewsViewer = page =>
   connectReadModel(state => ({
@@ -22,7 +38,7 @@ const getFilledNewsViewer = page =>
       }`,
     variables: { page },
     isReactive: true,
-    news: state.readModels['News']['LatestNews']
+    news: getReadModel(state, 'News', 'LatestNews')
   }))(NewsViewer)
 
 const getFilledNewsPager = (page, setPreviousPage, setNextPage) =>
@@ -32,7 +48,7 @@ const getFilledNewsPager = (page, setPreviousPage, setNextPage) =>
     query: `query { PagesCount }`,
     variables: {},
     isReactive: true,
-    count: state.readModels['News']['PagesCount'],
+    count: getReadModel(state, 'News', 'PagesCount'),
     page,
     setPreviousPage,
     setNextPage
