@@ -29,6 +29,8 @@ pipeline {
                     sh """
                         export CI_CANARY_VERSION=\$(nodejs -e "console.log(JSON.parse(require('fs').readFileSync('./package.json')).version.split('-')[0].split('.').map((ver, idx) => (idx < 2 ? ver : String(+ver + 1) )).join('.'));")-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}; \
                         echo \$CI_CANARY_VERSION > /lerna_version; \
+                        git branch | grep \\* | awk \'{ print $2 }\' > /local_branch; \
+
                         yarn oao --version
                         echo registry=http://${env.NPM_ADDR} > /root/.npmrc; \
                         echo //${env.NPM_ADDR}/:_authToken=${env.NPM_TOKEN} >> /root/.npmrc; \
@@ -101,7 +103,7 @@ pipeline {
                 script {
                     sh """
                         /init.sh
-                        create-resolve-app twolevelstodo -e todo-two-levels -b ${env.BRANCH_NAME}
+                        create-resolve-app twolevelstodo -e todo-two-levels -b \$(cat /local_branch)
                         cd ./todolist
                         cat ./package.json
                         yarn test
