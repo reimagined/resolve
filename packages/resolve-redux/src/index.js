@@ -7,6 +7,7 @@ import createViewModelsReducer from './create_view_models_reducer'
 import createActions from './create_actions'
 import gqlConnector from './graphql_connector'
 import connect from './connect'
+import connectReadModel from './connect_read_model'
 import * as util from './util'
 import loadInitialState from './load_initial_state'
 import sendCommand from './send_command'
@@ -21,6 +22,7 @@ export {
   createActions,
   gqlConnector,
   connect,
+  connectReadModel,
   util,
   loadInitialState,
   sendCommand,
