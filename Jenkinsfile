@@ -26,10 +26,11 @@ pipeline {
                         env.CI_RELEASE_TYPE = 'alpha'
                     }
 
+                    sh 'git branch | grep \\* | awk \'{ print $2 }\' > /local_branch'
+
                     sh """
-                        export CI_CANARY_VERSION=\$(nodejs -e "console.log(JSON.parse(require('fs').readFileSync('./package.json')).version.split('-')[0].split('.').map((ver, idx) => (idx < 2 ? ver : String(+ver + 1) )).join('.'));")-${env.CI_TIMESTAMP}.\${env.CI_RELEASE_TYPE}; \
+                        export CI_CANARY_VERSION=\$(nodejs -e "console.log(JSON.parse(require('fs').readFileSync('./package.json')).version.split('-')[0].split('.').map((ver, idx) => (idx < 2 ? ver : String(+ver + 1) )).join('.'));")-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}; \
                         echo \$CI_CANARY_VERSION > /lerna_version; \
-                        git branch | grep \\* | awk \'{ print $2 }\' > /local_branch; \
 
                         yarn oao --version
                         echo registry=http://${env.NPM_ADDR} > /root/.npmrc; \
