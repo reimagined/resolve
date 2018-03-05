@@ -17,7 +17,7 @@
     "dev": "resolve-scripts dev",
     "start": "resolve-scripts start",
     "update": "resolve-scripts update",
-    "test": "jest tests/unit/**",
+    "test": "jest tests/unit/*",
     "test:functional": "cross-env NODE_ENV=tests babel-node ./tests/functional/testcafe_runner.js --presets es2015,stage-0,react"
   },
   "devDependencies": {
