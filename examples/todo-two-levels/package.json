@@ -1,6 +1,6 @@
 {
   "name": "todo-two-levels",
-  "version": "0.5.3",
+  "version": "0.1.0",
   "private": true,
   "dependencies": {
     "react": "^16.2.0",
