@@ -1,6 +1,6 @@
 import 'regenerator-runtime/runtime'
 
-import buildProjection from './build_projection'
+import buildProjection from './build-projection'
 import checkStoreApi from './check-store-api'
 import createAdapter from './create-adapter'
 import init from './init'
