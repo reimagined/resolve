@@ -8,8 +8,8 @@
   },
   "scripts": {
     "prepublish": "babel --out-dir ./dist ./src",
-    "test": "echo OK && exit 0",
-    "testw": "echo OK && exit 0"
+    "test": "jest --testMatch=**/test/*.tests.js --verbose",
+    "testw": "jest --testMatch=**/test/*.tests.js --watchAll --verbose"
   },
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
@@ -24,7 +24,8 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "jest": "^22.1.4",
-    "sinon": "^3.3.0"
+    "sinon": "^3.3.0",
+    "sql-formatter": "^2.1.2"
   },
   "dependencies": {
     "mysql2": "^1.5.2",
