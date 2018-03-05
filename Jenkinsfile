@@ -9,7 +9,7 @@ pipeline {
         stage('Unit tests') {
             steps {
                 script {
-                    sh 'yarn install'
+                    sh 'yarn install --dev'
                     sh 'yarn lint'
                     sh 'yarn test'
                 }
