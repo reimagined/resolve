@@ -212,36 +212,52 @@ Object.keys(queryExecutors).forEach(modelName => {
       bodyParser.urlencoded({ extended: false }),
       async (req, res) => {
         try {
-          const socketClient = getSocketByClientId(req.body.socketId)
-          const subscriptionKey = `${req.body.socketId}:${req.body.subscriptionId}`
+          const subscriptionKey = `${req.body.socketId}:${req.body.resolverName}`
 
-          const emitter = diff =>
-            socketClient.emit({
-              type: 'READMODEL_SUBSCRIPTION_DIFF',
-              readModelName: modelName,
-              subscriptionKey,
-              diff
-            })
+          if (subscriptionProcesses.get(subscriptionKey)) return
+
+          let resolveForceStop = null
+          subscriptionProcesses.set(
+            subscriptionKey,
+            new Promise(resolve => (resolveForceStop = resolve))
+          )
+
+          getSocketByClientId(req.body.socketId)
 
           const { result, forceStop } = await makeSubscriber(
-            emitter,
+            diff => {
+              try {
+                const socketClient = getSocketByClientId(req.body.socketId)
+                socketClient.emit({
+                  type: 'READMODEL_SUBSCRIPTION_DIFF',
+                  readModelName: modelName,
+                  diff
+                })
+              } catch (sockErr) {
+                forceStop()
+              }
+            },
             req.body.query,
             req.body.variables || {},
             req.jwtToken
           )
 
-          subscriptionProcesses.set(subscriptionKey, forceStop)
+          resolveForceStop(forceStop)
+
+          res.status(200).send({
+            timeToLive: READ_MODEL_SUBSCRIPTION_TIME_TO_LIVE,
+            result
+          })
+
+          if (req.body.reactive === false) {
+            forceStop()
+            return
+          }
 
           setTimeout(() => {
             subscriptionProcesses.delete(subscriptionKey)
             forceStop()
           }, READ_MODEL_SUBSCRIPTION_TIME_TO_LIVE)
-
-          res.status(200).send({
-            timeToLive: READ_MODEL_SUBSCRIPTION_TIME_TO_LIVE,
-            subscriptionKey,
-            result
-          })
         } catch (err) {
           res.status(500).end(`${message.readModelFail}${err.message}`)
           // eslint-disable-next-line no-console
@@ -255,13 +271,14 @@ Object.keys(queryExecutors).forEach(modelName => {
       bodyParser.urlencoded({ extended: false }),
       async (req, res) => {
         try {
-          const subscriptionKey = `${req.body.socketId}:${req.body.subscriptionId}`
+          const subscriptionKey = `${req.body.socketId}:${req.body.resolverName}`
 
-          const forceStop = subscriptionProcesses.get(subscriptionKey)
-          if (typeof forceStop === 'function') {
-            subscriptionProcesses.delete(subscriptionKey)
-            forceStop()
+          const forceStopPromise = subscriptionProcesses.get(subscriptionKey)
+          if (forceStopPromise) {
+            forceStopPromise.then(stop => stop())
           }
+
+          subscriptionProcesses.delete(subscriptionKey)
 
           res.status(200).send('OK')
         } catch (err) {

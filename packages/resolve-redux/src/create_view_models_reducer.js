@@ -125,22 +125,6 @@ export function viewModelEventHandler(viewModels, state, action) {
   return nextState
 }
 
-function applyReadmodelDiff(state, { readModelName, subscriptionKey, diff }) {
-  if (!state[readModelName] || !state[readModelName].hasOwnProperty(subscriptionKey)) {
-    return state
-  }
-
-  const result = applyDiff(state[readModelName][subscriptionKey], diff)
-
-  return {
-    ...state,
-    [readModelName]: {
-      ...state[readModelName],
-      [subscriptionKey]: result
-    }
-  }
-}
-
 export default function createViewModelsReducer() {
   const context = {
     initialState: {},
@@ -151,10 +135,6 @@ export default function createViewModelsReducer() {
   context.handlers[PROVIDE_VIEW_MODELS] = provideViewModelsHandler.bind(null, context)
 
   return (state = {}, action) => {
-    if (action.type === 'READMODEL_SUBSCRIPTION_DIFF') {
-      return applyReadmodelDiff(state, action)
-    }
-
     const eventHandler = context.handlers[action.type]
 
     if (eventHandler) {

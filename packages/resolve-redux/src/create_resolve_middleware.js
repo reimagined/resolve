@@ -1,9 +1,15 @@
-import { SUBSCRIBE, UNSUBSCRIBE, SEND_COMMAND } from './action_types'
+import {
+  SUBSCRIBE,
+  UNSUBSCRIBE,
+  SEND_COMMAND,
+  SUBSCRIBE_READMODEL,
+  UNSUBSCRIBE_READMODEL
+} from './action_types'
 import actions from './actions'
 import defaultSubscribeAdapter from './subscribe_adapter'
 import sendCommand from './send_command'
 import loadInitialState from './load_initial_state'
-import { getKey } from './util'
+import { getKey, getRootableUrl, delay } from './util'
 
 const REFRESH_TIMEOUT = 1000
 
@@ -98,6 +104,87 @@ export function unsubscribe(store, subscribeAdapter, viewModels, subscribers, re
   }
 }
 
+export function subscribeReadmodel(store, readModelSubscriptions, subscribeAdapter, action) {
+  const { readModelName, resolverName, query, variables, isReactive = true } = action
+  const subscriptionKey = `${readModelName}:${resolverName}`
+  if (readModelSubscriptions.hasOwnProperty(subscriptionKey)) return
+
+  const fetchReadModel = () => {
+    const checkSelfPromise = selfPromise => {
+      return (
+        readModelSubscriptions.hasOwnProperty(subscriptionKey) &&
+        selfPromise === readModelSubscriptions[subscriptionKey].promise
+      )
+    }
+
+    const selfPromise = Promise.resolve().then(async () => {
+      try {
+        if (!checkSelfPromise(selfPromise)) return
+        const socketId = await subscribeAdapter.getClientId()
+        readModelSubscriptions[subscriptionKey].socketId = socketId
+
+        if (!checkSelfPromise(selfPromise)) return
+        const response = await fetch(getRootableUrl(`/api/createSubscription/${readModelName}`), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin',
+          body: JSON.stringify({
+            resolverName,
+            query,
+            variables,
+            isReactive,
+            socketId
+          })
+        })
+        if (!response.ok) throw new Error()
+        const { result, timeToLive } = await response.json()
+
+        if (!checkSelfPromise(selfPromise)) return
+        store.dispatch(actions.loadReadmodelInitialState(readModelName, resolverName, result))
+
+        await delay(timeToLive)
+        fetchReadModel()
+      } catch (error) {
+        await delay(1000)
+        fetchReadModel()
+      }
+    })
+
+    readModelSubscriptions[subscriptionKey].promise = selfPromise
+  }
+
+  readModelSubscriptions[subscriptionKey] = {
+    promise: Promise.resolve(),
+    refresh: fetchReadModel,
+    socketId: null
+  }
+
+  fetchReadModel()
+}
+
+export function unsubscribeReadmodel(store, readModelSubscriptions, action) {
+  const { readModelName, resolverName } = action
+  const subscriptionKey = `${readModelName}:${resolverName}`
+  if (!readModelSubscriptions.hasOwnProperty(subscriptionKey)) return
+
+  const socketId = readModelSubscriptions[subscriptionKey].socketId
+  delete readModelSubscriptions[subscriptionKey]
+
+  store.dispatch(actions.loadReadmodelInitialState(readModelName, resolverName))
+
+  if (!socketId || socketId.constructor !== String) return
+
+  fetch(getRootableUrl(`/api/removeSubscription/${readModelName}`), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'same-origin',
+    body: JSON.stringify({
+      resolverName,
+      socketId
+    })
+  }).catch(error => null)
+}
+
 const isClient = typeof window !== 'undefined'
 
 export const mockSubscribeAdapter = {
@@ -105,7 +192,7 @@ export const mockSubscribeAdapter = {
   onDisconnect() {},
   setSubscription() {},
   getClientId() {
-    return '0'
+    return Promise.resolve('0')
   }
 }
 
@@ -124,6 +211,8 @@ export function createResolveMiddleware({
     return acc
   }, {})
 
+  const readModelSubscriptions = {}
+
   return store => {
     Object.defineProperty(store.getState, 'isLoadingViewModel', {
       enumerable: false,
@@ -136,7 +225,13 @@ export function createResolveMiddleware({
 
     const adapter = isClient ? subscribeAdapter() : mockSubscribeAdapter
     adapter.onEvent(event => store.dispatch(event))
-    adapter.onDisconnect(error => store.dispatch(actions.disconnect(error)))
+    adapter.onDisconnect(error => {
+      store.dispatch(actions.disconnect(error))
+
+      Object.keys(readModelSubscriptions).forEach(subscriptionKey => {
+        readModelSubscriptions[subscriptionKey].refresh()
+      })
+    })
 
     return next => action => {
       switch (action.type) {
@@ -162,6 +257,20 @@ export function createResolveMiddleware({
 
           if (isClient) {
             unsubscribe(store, adapter, viewModels, subscribers, requests, action)
+          }
+
+          break
+        }
+        case SUBSCRIBE_READMODEL: {
+          if (isClient) {
+            subscribeReadmodel(store, readModelSubscriptions, subscribeAdapter, action)
+          }
+
+          break
+        }
+        case UNSUBSCRIBE_READMODEL: {
+          if (isClient) {
+            unsubscribeReadmodel(store, readModelSubscriptions, action)
           }
 
           break

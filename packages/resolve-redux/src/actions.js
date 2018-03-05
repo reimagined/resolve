@@ -3,6 +3,10 @@ import {
   SEND_COMMAND,
   SUBSCRIBE,
   UNSUBSCRIBE,
+  SUBSCRIBE_READMODEL,
+  UNSUBSCRIBE_READMODEL,
+  READMODEL_LOAD_INITIAL_STATE,
+  READMODEL_DROP_STATE,
   PROVIDE_VIEW_MODELS,
   DISCONNECT
 } from './action_types'
@@ -42,6 +46,42 @@ function unsubscribe(viewModelName, aggregateId) {
   }
 }
 
+function subscribeReadmodel(readModelName, resolverName, query, variables, isReactive) {
+  return {
+    type: SUBSCRIBE_READMODEL,
+    readModelName,
+    resolverName,
+    query,
+    variables,
+    isReactive
+  }
+}
+
+function unsubscribeReadmodel(readModelName, resolverName) {
+  return {
+    type: UNSUBSCRIBE_READMODEL,
+    readModelName,
+    resolverName
+  }
+}
+
+function loadReadmodelInitialState(readModelName, resolverName, initialState) {
+  return {
+    type: READMODEL_LOAD_INITIAL_STATE,
+    readModelName,
+    resolverName,
+    initialState
+  }
+}
+
+function dropReadmodelState(readModelName, resolverName) {
+  return {
+    type: READMODEL_DROP_STATE,
+    readModelName,
+    resolverName
+  }
+}
+
 function provideViewModels(viewModels) {
   return {
     type: PROVIDE_VIEW_MODELS,
@@ -62,5 +102,9 @@ export default {
   subscribe,
   unsubscribe,
   provideViewModels,
+  subscribeReadmodel,
+  unsubscribeReadmodel,
+  loadReadmodelInitialState,
+  dropReadmodelState,
   disconnect
 }
