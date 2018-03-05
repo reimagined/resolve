@@ -1,5 +1,5 @@
 {
-  "name": "myapp3",
+  "name": "hello-world",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -17,13 +17,11 @@
     "dev": "resolve-scripts dev",
     "start": "resolve-scripts start",
     "update": "resolve-scripts update",
-    "flow": "flow",
     "test": "jest tests/unit/**",
     "test:functional": "cross-env NODE_ENV=tests babel-node ./tests/functional/testcafe_runner.js --presets es2015,stage-0,react"
   },
   "devDependencies": {
     "cross-env": "^5.1.3",
-    "flow-bin": "^0.66.0",
     "jest": "^22.4.2",
     "testcafe": "^0.18.6",
     "testcafe-browser-tools": "^1.5.1",

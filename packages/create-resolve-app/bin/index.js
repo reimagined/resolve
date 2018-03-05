@@ -2,7 +2,7 @@
 
 const commandLineArgs = require('command-line-args')
 const chalk = require('chalk')
-const { exec } = require('child_process');
+const { exec } = require('child_process')
 
 // eslint-disable-next-line no-console
 const log = console.log
@@ -19,7 +19,8 @@ const optionDefinitions = [
 const optionsInfo =
   `Options:${EOL}` +
   EOL +
-  `  -e, --example    creates an example application base on application from resolve examples directory${EOL}` +
+  `  -e, --example    creates an example application base on application from resolve examples` +
+  ` directory${EOL}` +
   `                   Now you can choose one of the next examples:${EOL}` +
   `                     todo - todo list ${EOL}` +
   `                     hello-world - sinple empty example with single hello world page ${EOL}` +
@@ -76,25 +77,27 @@ if (unknownOptions && unknownOptions.length) {
 } else if (!options._unknown) {
   log(messages.emptyAppNameError)
 } else {
-  let appName = options._unknown[0]
-  let example = options.example;
-  let resolveRepoPath = "https://github.com/reimagined/resolve.git";
-  let examplePath = "./resolve/examples/" + example;
+  let appName = options._unknown[0],
+    example = options.example,
+    resolveRepoPath = 'https://github.com/reimagined/resolve.git',
+    examplePath = './resolve/examples/' + example
 
-  console.log(`Creating ${appName} in ./${appName} based on ${example} example`);
+  log(`Creating ${appName} in ./${appName} based on ${example} example`)
 
-  let branchChangeOption = (options.branch) ? `--branch ${options.branch}` : '';
+  let branchChangeOption = options.branch ? `--branch ${options.branch}` : '',
+    command =
+      `mkdir ${appName} && cd ${appName} ` +
+      `&& git clone ${resolveRepoPath} ${branchChangeOption}` +
+      ` && cp -r ${examplePath}/* ./ && cp -r ${examplePath}/.[^.]* ./`
 
-  console.log(`mkdir ${appName} && cd ${appName} && git clone ${resolveRepoPath} ${branchChangeOption} && cp -r ${examplePath}/* ./ && cp -r ${examplePath}/.[^.]* ./ && rm -rf ./resolve && npm i >> log.log`);
-
-  exec(`mkdir ${appName} && cd ${appName} && git clone ${resolveRepoPath} ${branchChangeOption} && cp -r ${examplePath}/* ./ && cp -r ${examplePath}/.[^.]* ./`, (err, stdout, stderr) => {
+  exec(command, (err, stdout, stderr) => {
     if (err) {
-      console.log(err);
-      return;
+      log(err)
+      return
     }
 
     // the *entire* stdout and stderr (buffered)
-    console.log(`stdout: ${stdout}`);
-    console.log(`stderr: ${stderr}`);
-  });
+    log(`stdout: ${stdout}`)
+    log(`stderr: ${stderr}`)
+  })
 }
