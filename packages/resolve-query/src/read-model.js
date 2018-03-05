@@ -119,17 +119,17 @@ const createReadModel = ({ projection, eventStore, adapter }) => {
     currentAdapter.reset()
   }
 
-  reader.addEventListener(callback => {
+  reader.addEventListener = callback => {
     if (typeof callback !== 'function') return
     externalEventListeners.push(callback)
-  })
+  }
 
-  reader.removeEventListener(callback => {
+  reader.removeEventListener = callback => {
     if (typeof callback !== 'function') return
     const idx = externalEventListeners.findIndex(cb => callback === cb)
     if (idx < 0) return
     externalEventListeners.splice(idx, 1)
-  })
+  }
 
   return Object.freeze(reader)
 }
