@@ -21,9 +21,9 @@ const optionsInfo =
   EOL +
   `  -e, --example    creates an example application base on application from resolve examples directory${EOL}` +
   `                   Now you can choose one of the next examples:${EOL}` +
-  `                     todo list ${EOL}` +
-  `                     hello world ${EOL}` +
-  `                     two levels todo list ${EOL}` +
+  `                     todo - todo list ${EOL}` +
+  `                     hello-world - sinple empty example with single hello world page ${EOL}` +
+  `                     todo-two-levels - two levels todo list ${EOL}` +
   `  -b, --branch     branch (master is default)${EOL}` +
   `  -V, --version    outputs the version number${EOL}` +
   `  -h, --help       outputs usage information${EOL}`

@@ -65,14 +65,14 @@ pipeline {
             }
         }
 
-        stage('Create-resolve-app [ empty ] Functional Tests') {
+        stage('Create-resolve-app [ hello-world ] Functional Tests') {
             steps {
                 script {
                     sh """
                         /init.sh
                         yarn global add create-resolve-app@\$(cat /lerna_version)
-                        create-resolve-app --exact-versions empty
-                        cd ./empty
+                        create-resolve-app myapp
+                        cd ./myapp
                         cat ./package.json
                         yarn test
                         yarn test:functional --browser=path:/chromium
@@ -86,7 +86,22 @@ pipeline {
                 script {
                     sh """
                         /init.sh
-                        create-resolve-app --sample --exact-versions todolist
+                        create-resolve-app todolist -e todo
+                        cd ./todolist
+                        cat ./package.json
+                        yarn test
+                        yarn test:functional --browser=path:/chromium
+                    """
+                }
+            }
+        }
+
+        stage('Create-resolve-app [ twolevelstodo ] Functional Tests') {
+            steps {
+                script {
+                    sh """
+                        /init.sh
+                        create-resolve-app twolevelstodo -e todo-two-levels
                         cd ./todolist
                         cat ./package.json
                         yarn test
