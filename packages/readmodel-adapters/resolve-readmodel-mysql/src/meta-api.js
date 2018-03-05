@@ -24,7 +24,9 @@ const getMetaInfo = async pool => {
        VALUES("Timestamp", "Timestamp", 0)`
     )
   } else {
-    pool.metaInfo.timestamp = Number.isInteger(+rows[0]['Timestamp']) ? +rows[0]['Timestamp'] : 0
+    pool.metaInfo.timestamp = Number.isInteger(+rows[0]['Timestamp'])
+      ? +rows[0]['Timestamp']
+      : 0
   }
 
   void ([rows] = await connection.execute(
@@ -74,10 +76,14 @@ const getLastTimestamp = async ({ metaInfo }) => {
   return metaInfo.timestamp
 }
 
-const setLastTimestamp = async ({ connection, metaName, metaInfo }, timestamp) => {
-  await connection.execute(`UPDATE ${metaName} SET SimpleValue=? WHERE MetaKey="Timestamp"`, [
-    timestamp
-  ])
+const setLastTimestamp = async (
+  { connection, metaName, metaInfo },
+  timestamp
+) => {
+  await connection.execute(
+    `UPDATE ${metaName} SET SimpleValue=? WHERE MetaKey="Timestamp"`,
+    [timestamp]
+  )
 
   metaInfo.timestamp = +timestamp
 }
@@ -90,7 +96,11 @@ const getStorageInfo = async ({ metaInfo }, storageName) => {
   return metaInfo.tables[storageName]
 }
 
-const describeStorage = async ({ connection, metaInfo, metaName }, storageName, metaSchema) => {
+const describeStorage = async (
+  { connection, metaInfo, metaName },
+  storageName,
+  metaSchema
+) => {
   await connection.execute(
     `INSERT INTO ${metaName}(MetaKey, MetaField, ComplexValue) VALUES("Tables", ?, ?)`,
     [storageName, metaSchema]

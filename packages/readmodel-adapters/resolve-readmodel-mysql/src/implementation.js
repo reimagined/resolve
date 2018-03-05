@@ -1,6 +1,11 @@
 import 'regenerator-runtime/runtime'
 
-const implementation = (rawMetaApi, storeApi, mysql, { metaName, ...options }) => {
+const implementation = (
+  rawMetaApi,
+  storeApi,
+  mysql,
+  { metaName, ...options }
+) => {
   const { getMetaInfo, ...metaApi } = rawMetaApi
 
   const connectionOptions = {
@@ -16,10 +21,12 @@ const implementation = (rawMetaApi, storeApi, mysql, { metaName, ...options }) =
 
   const bindWithConnection = func => async (...args) => {
     if (!connectionPromise) {
-      connectionPromise = mysql.createConnection(connectionOptions).then(async connection => {
-        pool.connection = connection
-        await getMetaInfo(pool)
-      })
+      connectionPromise = mysql
+        .createConnection(connectionOptions)
+        .then(async connection => {
+          pool.connection = connection
+          await getMetaInfo(pool)
+        })
     }
 
     await connectionPromise

@@ -45,9 +45,17 @@ describe('resolve-readmodel-base check-store-api', () => {
   ]
 
   const fieldsOutputDeclaration = {
-    fieldTypes: { id: 'number', volume: 'string', timestamp: 'number', content: 'json' },
+    fieldTypes: {
+      id: 'number',
+      volume: 'string',
+      timestamp: 'number',
+      content: 'json'
+    },
     primaryIndex: { name: 'id', type: 'number' },
-    secondaryIndexes: [{ name: 'volume', type: 'string' }, { name: 'timestamp', type: 'number' }]
+    secondaryIndexes: [
+      { name: 'volume', type: 'string' },
+      { name: 'timestamp', type: 'number' }
+    ]
   }
 
   it('defineStorage should pass correct storage schema', async () => {
@@ -56,10 +64,14 @@ describe('resolve-readmodel-base check-store-api', () => {
     await api.defineStorage('table', fieldsInputDeclaration)
 
     expect(metaApi.describeStorage.firstCall.args[0]).to.be.equal('table')
-    expect(metaApi.describeStorage.firstCall.args[1]).to.be.deep.equal(fieldsOutputDeclaration)
+    expect(metaApi.describeStorage.firstCall.args[1]).to.be.deep.equal(
+      fieldsOutputDeclaration
+    )
 
     expect(storeApi.defineStorage.firstCall.args[0]).to.be.equal('table')
-    expect(storeApi.defineStorage.firstCall.args[1]).to.be.deep.equal(fieldsOutputDeclaration)
+    expect(storeApi.defineStorage.firstCall.args[1]).to.be.deep.equal(
+      fieldsOutputDeclaration
+    )
   })
 
   it('defineStorage should fail on already existing storage', async () => {
@@ -67,7 +79,9 @@ describe('resolve-readmodel-base check-store-api', () => {
 
     try {
       await api.defineStorage('table', fieldsInputDeclaration)
-      return Promise.reject('defineStorage should fail on already existing storage')
+      return Promise.reject(
+        'defineStorage should fail on already existing storage'
+      )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
       expect(err.message).to.be.equal(messages.storageExists('table'))
@@ -79,7 +93,9 @@ describe('resolve-readmodel-base check-store-api', () => {
 
     try {
       await api.defineStorage('table', null)
-      return Promise.reject('defineStorage should fail on wrong storage schema format')
+      return Promise.reject(
+        'defineStorage should fail on wrong storage schema format'
+      )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
       expect(err.message).to.be.equal(messages.invalidStorageSchema)
@@ -88,7 +104,9 @@ describe('resolve-readmodel-base check-store-api', () => {
 
   it('find should pass correct search expressions with all fields', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
 
     const resultSet = []
     storeApi.find.onCall(0).callsFake(async () => resultSet)
@@ -103,8 +121,13 @@ describe('resolve-readmodel-base check-store-api', () => {
     )
 
     expect(storeApi.find.firstCall.args[0]).to.be.equal('table')
-    expect(storeApi.find.firstCall.args[1]).to.be.deep.equal({ volume: 'volume' })
-    expect(storeApi.find.firstCall.args[2]).to.be.deep.equal({ id: 1, 'content.text': 1 })
+    expect(storeApi.find.firstCall.args[1]).to.be.deep.equal({
+      volume: 'volume'
+    })
+    expect(storeApi.find.firstCall.args[2]).to.be.deep.equal({
+      id: 1,
+      'content.text': 1
+    })
     expect(storeApi.find.firstCall.args[3]).to.be.deep.equal({ timestamp: -1 })
     expect(storeApi.find.firstCall.args[4]).to.be.equal(100)
     expect(storeApi.find.firstCall.args[5]).to.be.equal(200)
@@ -114,15 +137,26 @@ describe('resolve-readmodel-base check-store-api', () => {
 
   it('find should pass correct search expressions without fields projection', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
 
     const resultSet = []
     storeApi.find.onCall(0).callsFake(async () => resultSet)
 
-    const result = await api.find('table', { volume: 'volume' }, null, { timestamp: -1 }, 100, 200)
+    const result = await api.find(
+      'table',
+      { volume: 'volume' },
+      null,
+      { timestamp: -1 },
+      100,
+      200
+    )
 
     expect(storeApi.find.firstCall.args[0]).to.be.equal('table')
-    expect(storeApi.find.firstCall.args[1]).to.be.deep.equal({ volume: 'volume' })
+    expect(storeApi.find.firstCall.args[1]).to.be.deep.equal({
+      volume: 'volume'
+    })
     expect(storeApi.find.firstCall.args[2]).to.be.deep.equal(null)
     expect(storeApi.find.firstCall.args[3]).to.be.deep.equal({ timestamp: -1 })
     expect(storeApi.find.firstCall.args[4]).to.be.equal(100)
@@ -133,7 +167,9 @@ describe('resolve-readmodel-base check-store-api', () => {
 
   it('find should pass correct search expressions without sort keys', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
 
     const resultSet = []
     storeApi.find.onCall(0).callsFake(async () => resultSet)
@@ -148,8 +184,13 @@ describe('resolve-readmodel-base check-store-api', () => {
     )
 
     expect(storeApi.find.firstCall.args[0]).to.be.equal('table')
-    expect(storeApi.find.firstCall.args[1]).to.be.deep.equal({ volume: 'volume' })
-    expect(storeApi.find.firstCall.args[2]).to.be.deep.equal({ id: 1, 'content.text': 1 })
+    expect(storeApi.find.firstCall.args[1]).to.be.deep.equal({
+      volume: 'volume'
+    })
+    expect(storeApi.find.firstCall.args[2]).to.be.deep.equal({
+      id: 1,
+      'content.text': 1
+    })
     expect(storeApi.find.firstCall.args[3]).to.be.deep.equal(null)
     expect(storeApi.find.firstCall.args[4]).to.be.equal(100)
     expect(storeApi.find.firstCall.args[5]).to.be.equal(200)
@@ -159,7 +200,9 @@ describe('resolve-readmodel-base check-store-api', () => {
 
   it('find should pass correct search expressions without skip and limit', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
 
     const resultSet = []
     storeApi.find.onCall(0).callsFake(async () => resultSet)
@@ -172,8 +215,13 @@ describe('resolve-readmodel-base check-store-api', () => {
     )
 
     expect(storeApi.find.firstCall.args[0]).to.be.equal('table')
-    expect(storeApi.find.firstCall.args[1]).to.be.deep.equal({ volume: 'volume' })
-    expect(storeApi.find.firstCall.args[2]).to.be.deep.equal({ id: 1, 'content.text': 1 })
+    expect(storeApi.find.firstCall.args[1]).to.be.deep.equal({
+      volume: 'volume'
+    })
+    expect(storeApi.find.firstCall.args[2]).to.be.deep.equal({
+      id: 1,
+      'content.text': 1
+    })
     expect(storeApi.find.firstCall.args[3]).to.be.deep.equal({ timestamp: -1 })
     expect(storeApi.find.firstCall.args[4]).to.be.equal(0)
     expect(storeApi.find.firstCall.args[5]).to.be.equal(Infinity)
@@ -183,7 +231,9 @@ describe('resolve-readmodel-base check-store-api', () => {
 
   it('find should fail on wrong skip/limit values', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
 
     try {
       await api.find(
@@ -197,13 +247,17 @@ describe('resolve-readmodel-base check-store-api', () => {
       return Promise.reject('find should fail on wrong skip/limit values')
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.be.equal(messages.invalidPagination('skip', 'limit'))
+      expect(err.message).to.be.equal(
+        messages.invalidPagination('skip', 'limit')
+      )
     }
   })
 
   it('find should fail on unexisting fields on search fields key', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
 
     try {
       await api.find(
@@ -214,16 +268,22 @@ describe('resolve-readmodel-base check-store-api', () => {
         100,
         200
       )
-      return Promise.reject('find should fail on unexisting fields on search fields key')
+      return Promise.reject(
+        'find should fail on unexisting fields on search fields key'
+      )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.be.equal(messages.invalidProjectionKey('volumeErr'))
+      expect(err.message).to.be.equal(
+        messages.invalidProjectionKey('volumeErr')
+      )
     }
   })
 
   it('find should fail on unexisting fields on projection fields key', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
 
     try {
       await api.find(
@@ -234,7 +294,9 @@ describe('resolve-readmodel-base check-store-api', () => {
         100,
         200
       )
-      return Promise.reject('find should fail on unexisting fields on projection fields key')
+      return Promise.reject(
+        'find should fail on unexisting fields on projection fields key'
+      )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
       expect(err.message).to.be.equal(messages.invalidProjectionKey('idErr'))
@@ -243,7 +305,9 @@ describe('resolve-readmodel-base check-store-api', () => {
 
   it('find should fail on unexisting fields on sort fields key', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
 
     try {
       await api.find(
@@ -254,16 +318,22 @@ describe('resolve-readmodel-base check-store-api', () => {
         100,
         200
       )
-      return Promise.reject('find should fail on unexisting fields on sort fields key')
+      return Promise.reject(
+        'find should fail on unexisting fields on sort fields key'
+      )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.be.equal(messages.invalidProjectionKey('timestampErr'))
+      expect(err.message).to.be.equal(
+        messages.invalidProjectionKey('timestampErr')
+      )
     }
   })
 
   it('find should fail on bad request', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
 
     try {
       await api.find('table', null)
@@ -276,23 +346,36 @@ describe('resolve-readmodel-base check-store-api', () => {
 
   it('findOne should pass correct search expressions with all fields', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
 
     const resultValue = {}
     storeApi.findOne.onCall(0).callsFake(async () => resultValue)
 
-    const result = await api.findOne('table', { volume: 'volume' }, { id: 1, 'content.text': 1 })
+    const result = await api.findOne(
+      'table',
+      { volume: 'volume' },
+      { id: 1, 'content.text': 1 }
+    )
 
     expect(storeApi.findOne.firstCall.args[0]).to.be.equal('table')
-    expect(storeApi.findOne.firstCall.args[1]).to.be.deep.equal({ volume: 'volume' })
-    expect(storeApi.findOne.firstCall.args[2]).to.be.deep.equal({ id: 1, 'content.text': 1 })
+    expect(storeApi.findOne.firstCall.args[1]).to.be.deep.equal({
+      volume: 'volume'
+    })
+    expect(storeApi.findOne.firstCall.args[2]).to.be.deep.equal({
+      id: 1,
+      'content.text': 1
+    })
 
     expect(result).to.be.equal(resultValue)
   })
 
   it('findOne should pass correct search expressions without projection key', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
 
     const resultValue = {}
     storeApi.findOne.onCall(0).callsFake(async () => resultValue)
@@ -300,7 +383,9 @@ describe('resolve-readmodel-base check-store-api', () => {
     const result = await api.findOne('table', { volume: 'volume' }, null)
 
     expect(storeApi.findOne.firstCall.args[0]).to.be.equal('table')
-    expect(storeApi.findOne.firstCall.args[1]).to.be.deep.equal({ volume: 'volume' })
+    expect(storeApi.findOne.firstCall.args[1]).to.be.deep.equal({
+      volume: 'volume'
+    })
     expect(storeApi.findOne.firstCall.args[2]).to.be.deep.equal(null)
 
     expect(result).to.be.equal(resultValue)
@@ -308,24 +393,42 @@ describe('resolve-readmodel-base check-store-api', () => {
 
   it('findOne should fail on unexisting fields on search fields key', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
 
     try {
-      await api.findOne('table', { volumeErr: 'volume' }, { id: 1, 'content.text': 1 })
-      return Promise.reject('findOne should fail on unexisting fields on search fields key')
+      await api.findOne(
+        'table',
+        { volumeErr: 'volume' },
+        { id: 1, 'content.text': 1 }
+      )
+      return Promise.reject(
+        'findOne should fail on unexisting fields on search fields key'
+      )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.be.equal(messages.invalidProjectionKey('volumeErr'))
+      expect(err.message).to.be.equal(
+        messages.invalidProjectionKey('volumeErr')
+      )
     }
   })
 
   it('findOne should fail on unexisting fields on projection fields key', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
 
     try {
-      await api.findOne('table', { volume: 'volume' }, { idErr: 1, 'contentErr.text': 1 })
-      return Promise.reject('findOne should fail on unexisting fields on projection fields key')
+      await api.findOne(
+        'table',
+        { volume: 'volume' },
+        { idErr: 1, 'contentErr.text': 1 }
+      )
+      return Promise.reject(
+        'findOne should fail on unexisting fields on projection fields key'
+      )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
       expect(err.message).to.be.equal(messages.invalidProjectionKey('idErr'))
@@ -334,7 +437,9 @@ describe('resolve-readmodel-base check-store-api', () => {
 
   it('findOne should fail on bad request', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
 
     try {
       await api.findOne('table', null)
@@ -347,34 +452,46 @@ describe('resolve-readmodel-base check-store-api', () => {
 
   it('count should pass correct search expressions with all fields', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
 
     storeApi.count.onCall(0).callsFake(async () => 100)
 
     const result = await api.count('table', { volume: 'volume' })
 
     expect(storeApi.count.firstCall.args[0]).to.be.equal('table')
-    expect(storeApi.count.firstCall.args[1]).to.be.deep.equal({ volume: 'volume' })
+    expect(storeApi.count.firstCall.args[1]).to.be.deep.equal({
+      volume: 'volume'
+    })
 
     expect(result).to.be.equal(100)
   })
 
   it('count should fail on unexisting fields on search fields key', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
 
     try {
       await api.count('table', { volumeErr: 'volume' })
-      return Promise.reject('count should fail on unexisting fields on search fields key')
+      return Promise.reject(
+        'count should fail on unexisting fields on search fields key'
+      )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.be.equal(messages.invalidProjectionKey('volumeErr'))
+      expect(err.message).to.be.equal(
+        messages.invalidProjectionKey('volumeErr')
+      )
     }
   })
 
   it('count should fail on bad request', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
 
     try {
       await api.count('table', null)
@@ -387,9 +504,16 @@ describe('resolve-readmodel-base check-store-api', () => {
 
   it('insert should pass correct insert expressions', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
 
-    await api.insert('table', { id: 100, volume: 'volume', timestamp: 200, content: {} })
+    await api.insert('table', {
+      id: 100,
+      volume: 'volume',
+      timestamp: 200,
+      content: {}
+    })
 
     expect(storeApi.insert.firstCall.args[0]).to.be.equal('table')
     expect(storeApi.insert.firstCall.args[1]).to.be.deep.equal({
@@ -402,7 +526,9 @@ describe('resolve-readmodel-base check-store-api', () => {
 
   it('insert should fail on unexisting fields in schema', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
 
     try {
       await api.insert('table', {
@@ -420,7 +546,9 @@ describe('resolve-readmodel-base check-store-api', () => {
 
   it('insert should fail on bad request', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
 
     try {
       await api.insert('table', null)
@@ -433,7 +561,9 @@ describe('resolve-readmodel-base check-store-api', () => {
 
   it('update should pass correct search & update expressions', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
 
     await api.update(
       'table',
@@ -446,7 +576,9 @@ describe('resolve-readmodel-base check-store-api', () => {
     )
 
     expect(storeApi.update.firstCall.args[0]).to.be.equal('table')
-    expect(storeApi.update.firstCall.args[1]).to.be.deep.equal({ volume: 'volume' })
+    expect(storeApi.update.firstCall.args[1]).to.be.deep.equal({
+      volume: 'volume'
+    })
     expect(storeApi.update.firstCall.args[2]).to.be.deep.equal({
       $set: { volume: 'vol', 'content.one': 20 },
       $unset: { volume: true, 'content.two': true },
@@ -456,7 +588,9 @@ describe('resolve-readmodel-base check-store-api', () => {
 
   it('update should fail on unexisting fields on search fields key', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
 
     try {
       await api.update(
@@ -468,16 +602,22 @@ describe('resolve-readmodel-base check-store-api', () => {
           $inc: { timestamp: 3, 'content.counter': 4 }
         }
       )
-      return Promise.reject('update should fail on unexisting fields on search fields key')
+      return Promise.reject(
+        'update should fail on unexisting fields on search fields key'
+      )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.be.equal(messages.invalidProjectionKey('volumeErr'))
+      expect(err.message).to.be.equal(
+        messages.invalidProjectionKey('volumeErr')
+      )
     }
   })
 
   it('update should fail on unexisting fields on update fields key', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
 
     try {
       await api.update(
@@ -489,7 +629,9 @@ describe('resolve-readmodel-base check-store-api', () => {
           $inc: { timestampErr: 3, 'contentErr.counter': 4 }
         }
       )
-      return Promise.reject('update should fail on unexisting fields on search fields key')
+      return Promise.reject(
+        'update should fail on unexisting fields on search fields key'
+      )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
       expect(err.message).to.be.equal(
@@ -504,7 +646,9 @@ describe('resolve-readmodel-base check-store-api', () => {
 
   it('update should fail on bad search request', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
 
     try {
       await api.update('table', null, {
@@ -521,7 +665,9 @@ describe('resolve-readmodel-base check-store-api', () => {
 
   it('update should fail on bad update request', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
 
     try {
       await api.update('table', { volume: 'volume' }, null)
@@ -534,30 +680,42 @@ describe('resolve-readmodel-base check-store-api', () => {
 
   it('delete should pass correct search & delete expressions', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
 
     await api.delete('table', { volume: 'volume' })
 
     expect(storeApi.del.firstCall.args[0]).to.be.equal('table')
-    expect(storeApi.del.firstCall.args[1]).to.be.deep.equal({ volume: 'volume' })
+    expect(storeApi.del.firstCall.args[1]).to.be.deep.equal({
+      volume: 'volume'
+    })
   })
 
   it('delete should fail on unexisting fields on search fields key', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
 
     try {
       await api.delete('table', { volumeErr: 'volume' })
-      return Promise.reject('delete should fail on unexisting fields on search fields key')
+      return Promise.reject(
+        'delete should fail on unexisting fields on search fields key'
+      )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.be.equal(messages.invalidProjectionKey('volumeErr'))
+      expect(err.message).to.be.equal(
+        messages.invalidProjectionKey('volumeErr')
+      )
     }
   })
 
   it('delete should fail on bad search request', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo.onCall(0).callsFake(async () => fieldsOutputDeclaration)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
 
     try {
       await api.delete('table', null)

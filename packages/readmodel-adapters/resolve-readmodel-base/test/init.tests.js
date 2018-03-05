@@ -23,7 +23,9 @@ describe('resolve-readmodel-base init', () => {
     let currentTimestamp = 0
     const metaApi = {
       getLastTimestamp: sinon.stub().callsFake(async () => currentTimestamp),
-      setLastTimestamp: sinon.stub().callsFake(async ts => (currentTimestamp = ts))
+      setLastTimestamp: sinon
+        .stub()
+        .callsFake(async ts => (currentTimestamp = ts))
     }
 
     const internalContext = {
@@ -48,10 +50,14 @@ describe('resolve-readmodel-base init', () => {
 
     try {
       await readInterface.mutate()
-      return Promise.reject('Mutation operator should be rejection on read side')
+      return Promise.reject(
+        'Mutation operator should be rejection on read side'
+      )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.be.equal(messages.readSideForbiddenOperation('mutate'))
+      expect(err.message).to.be.equal(
+        messages.readSideForbiddenOperation('mutate')
+      )
     }
 
     expect(internalContext.initHandler.firstCall.args[0]).to.be.equal(storeApi)
@@ -71,7 +77,9 @@ describe('resolve-readmodel-base init', () => {
     let currentTimestamp = 100
     const metaApi = {
       getLastTimestamp: sinon.stub().callsFake(async () => currentTimestamp),
-      setLastTimestamp: sinon.stub().callsFake(async ts => (currentTimestamp = ts))
+      setLastTimestamp: sinon
+        .stub()
+        .callsFake(async ts => (currentTimestamp = ts))
     }
     const internalContext = {
       initHandler: sinon.stub()
@@ -95,16 +103,22 @@ describe('resolve-readmodel-base init', () => {
 
     try {
       await readInterface.mutate()
-      return Promise.reject('Mutation operator should be rejection on read side')
+      return Promise.reject(
+        'Mutation operator should be rejection on read side'
+      )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.be.equal(messages.readSideForbiddenOperation('mutate'))
+      expect(err.message).to.be.equal(
+        messages.readSideForbiddenOperation('mutate')
+      )
     }
 
     const lastError = await getError()
     expect(lastError).to.be.equal(null)
 
-    expect(await metaApi.getLastTimestamp.firstCall.returnValue).to.be.equal(100)
+    expect(await metaApi.getLastTimestamp.firstCall.returnValue).to.be.equal(
+      100
+    )
 
     expect(await getLastAppliedTimestamp()).to.be.equal(100)
   })
@@ -113,7 +127,9 @@ describe('resolve-readmodel-base init', () => {
     let currentTimestamp = 0
     const metaApi = {
       getLastTimestamp: sinon.stub().callsFake(async () => currentTimestamp),
-      setLastTimestamp: sinon.stub().callsFake(async ts => (currentTimestamp = ts))
+      setLastTimestamp: sinon
+        .stub()
+        .callsFake(async ts => (currentTimestamp = ts))
     }
 
     const internalContext = {
@@ -135,7 +151,9 @@ describe('resolve-readmodel-base init', () => {
     let currentTimestamp = 0
     const metaApi = {
       getLastTimestamp: sinon.stub().callsFake(async () => currentTimestamp),
-      setLastTimestamp: sinon.stub().callsFake(async ts => (currentTimestamp = ts))
+      setLastTimestamp: sinon
+        .stub()
+        .callsFake(async ts => (currentTimestamp = ts))
     }
 
     const internalContext = {}
@@ -156,10 +174,14 @@ describe('resolve-readmodel-base init', () => {
 
     try {
       await readInterface.mutate()
-      return Promise.reject('Mutation operator should be rejection on read side')
+      return Promise.reject(
+        'Mutation operator should be rejection on read side'
+      )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.be.equal(messages.readSideForbiddenOperation('mutate'))
+      expect(err.message).to.be.equal(
+        messages.readSideForbiddenOperation('mutate')
+      )
     }
 
     const lastError = await getError()
@@ -186,7 +208,9 @@ describe('resolve-readmodel-base init', () => {
 
     try {
       await getReadable()
-      return Promise.reject('Init should translate meta-api failure to read api function')
+      return Promise.reject(
+        'Init should translate meta-api failure to read api function'
+      )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
       expect(err.name).to.be.equal('ERR')
@@ -194,7 +218,9 @@ describe('resolve-readmodel-base init', () => {
 
     try {
       await getError()
-      return Promise.reject('Init should translate meta-api failure to read api function')
+      return Promise.reject(
+        'Init should translate meta-api failure to read api function'
+      )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
       expect(err.name).to.be.equal('ERR')
