@@ -71,8 +71,8 @@ pipeline {
                     sh """
                         /init.sh
                         yarn global add create-resolve-app@\$(cat /lerna_version)
-                        create-resolve-app myapp
-                        cd ./myapp
+                        create-resolve-app hello-world
+                        cd ./hello-world
                         cat ./package.json
                         yarn test
                         yarn test:functional --browser=path:/chromium
