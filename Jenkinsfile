@@ -74,7 +74,7 @@ pipeline {
                     sh """
                         /init.sh
                         yarn global add create-resolve-app@\$(cat /lerna_version)
-                        create-resolve-app hello-world -b ${env.BRANCH_NAME}
+                        create-resolve-app hello-world -b \$(cat /local_branch)
                         cd ./hello-world
                         cat ./package.json
                         yarn test
@@ -89,7 +89,7 @@ pipeline {
                 script {
                     sh """
                         /init.sh
-                        create-resolve-app todolist -e todo -b ${env.BRANCH_NAME}
+                        create-resolve-app todolist -e todo -b \$(cat /local_branch)
                         cd ./todolist
                         cat ./package.json
                         yarn test
