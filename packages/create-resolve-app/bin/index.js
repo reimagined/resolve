@@ -11,7 +11,7 @@ const EOL = require('os').EOL
 
 const optionDefinitions = [
   { name: 'scripts', type: String },
-  { name: 'sample', type: Boolean },
+  { name: 'todo', type: Boolean },
   { name: 'exact-versions', type: Boolean },
   { name: 'version', alias: 'V', type: Boolean },
   { name: 'help', alias: 'h', type: Boolean }
@@ -20,7 +20,7 @@ const optionDefinitions = [
 const optionsInfo =
   `Options:${EOL}` +
   EOL +
-  '  --sample         creates a single page application representing a typical Todo List' +
+  '  --todo         creates a single page application representing a typical Todo List' +
   EOL +
   `  -V, --version    outputs the version number${EOL}` +
   `  -h, --help       outputs usage information${EOL}`
@@ -77,7 +77,7 @@ if (unknownOptions && unknownOptions.length) {
   moduleCreator(
     appName,
     options.scripts,
-    !options.sample,
+    !options.todo,
     resolveVersion,
     !!options['exact-versions']
   )
