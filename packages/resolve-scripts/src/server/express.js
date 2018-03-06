@@ -177,8 +177,8 @@ app.post(getRootableUrl('/api/commands'), async (req, res) => {
 })
 
 const getSocketByClientId = socketId => {
-  const socketIoClients = app.socketIo.engine.clients
-  const socketClient = socketIoClients[socketId]
+  const socketIoNamespace = app.socketIo.sockets
+  const socketClient = socketIoNamespace.connected[socketId]
   if (!socketClient) {
     throw new Error(message.badSocketIoClientId)
   }
@@ -235,11 +235,14 @@ Object.keys(queryExecutors).forEach(modelName => {
             diff => {
               try {
                 const socketClient = getSocketByClientId(req.body.socketId)
-                socketClient.emit({
-                  type: 'READMODEL_SUBSCRIPTION_DIFF',
-                  readModelName: modelName,
-                  diff
-                })
+                socketClient.emit(
+                  'event',
+                  JSON.stringify({
+                    type: 'READMODEL_SUBSCRIPTION_DIFF',
+                    readModelName: modelName,
+                    diff
+                  })
+                )
               } catch (sockErr) {
                 subscriptionProcesses.delete(subscriptionKey)
                 forceStop()
