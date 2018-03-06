@@ -177,11 +177,12 @@ app.post(getRootableUrl('/api/commands'), async (req, res) => {
 })
 
 const getSocketByClientId = socketId => {
-  const socketIoNamespace = app.socketIo.of(getRootableUrl('/socket'))
-  const socketClient = socketIoNamespace.connected[socketId]
+  const socketIoClients = app.socketIo.engine.clients
+  const socketClient = socketIoClients[socketId]
   if (!socketClient) {
     throw new Error(message.badSocketIoClientId)
   }
+
   return socketClient
 }
 
@@ -211,10 +212,16 @@ Object.keys(queryExecutors).forEach(modelName => {
       getRootableUrl(`/api/createSubscription/${modelName}`),
       bodyParser.urlencoded({ extended: false }),
       async (req, res) => {
+        let subscriptionKey
         try {
-          const subscriptionKey = `${req.body.socketId}:${req.body.resolverName}`
+          subscriptionKey = `${req.body.socketId}:${req.body.resolverName}`
 
-          if (subscriptionProcesses.get(subscriptionKey)) return
+          if (subscriptionProcesses.get(subscriptionKey)) {
+            res
+              .status(500)
+              .send(`Socket subscription ${modelName}:${subscriptionKey} already connected`)
+            return
+          }
 
           let resolveForceStop = null
           subscriptionProcesses.set(
@@ -234,6 +241,7 @@ Object.keys(queryExecutors).forEach(modelName => {
                   diff
                 })
               } catch (sockErr) {
+                subscriptionProcesses.delete(subscriptionKey)
                 forceStop()
               }
             },
@@ -260,6 +268,9 @@ Object.keys(queryExecutors).forEach(modelName => {
           }, READ_MODEL_SUBSCRIPTION_TIME_TO_LIVE)
         } catch (err) {
           res.status(500).end(`${message.readModelFail}${err.message}`)
+
+          subscriptionProcesses.delete(subscriptionKey)
+
           // eslint-disable-next-line no-console
           console.log(err)
         }

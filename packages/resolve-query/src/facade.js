@@ -48,14 +48,9 @@ const createFacade = ({ model, gqlSchema, gqlResolvers, customResolvers }) => {
       return gqlResponse.data
     }
 
-    const makeReactiveReader = async (publisher, timeout, ...execGqlArgs) => {
-      if (
-        typeof publisher !== 'function' ||
-        !Number.isInteger(timeout) ||
-        timeout <= 0 ||
-        timeout >= Math.pow(2, 31)
-      ) {
-        throw new Error('Publisher should be function, timeout should be integer in milliseconds')
+    const makeReactiveReader = async (publisher, ...execGqlArgs) => {
+      if (typeof publisher !== 'function') {
+        throw new Error('Publisher should be callback function (diff: Object) => void')
       }
 
       let result = await execGraphql(...execGqlArgs)
@@ -71,15 +66,15 @@ const createFacade = ({ model, gqlSchema, gqlResolvers, customResolvers }) => {
 
       const eventListener = event =>
         (flowPromise = flowPromise.then(eventHandler.bind(null, event)))
-      model.setEventListener(eventListener)
+      model.addEventListener(eventListener)
 
-      const forseStop = () => {
+      const forceStop = () => {
         if (!flowPromise) return
         model.removeEventListener(eventListener)
         flowPromise = null
       }
 
-      return { result, forseStop }
+      return { result, forceStop }
     }
 
     Object.defineProperties(executors, {

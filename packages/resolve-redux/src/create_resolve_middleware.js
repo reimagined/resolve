@@ -263,7 +263,7 @@ export function createResolveMiddleware({
         }
         case SUBSCRIBE_READMODEL: {
           if (isClient) {
-            subscribeReadmodel(store, readModelSubscriptions, subscribeAdapter, action)
+            subscribeReadmodel(store, readModelSubscriptions, adapter, action)
           }
 
           break
