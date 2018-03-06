@@ -44,7 +44,10 @@ describe('resolve-readmodel-memory meta-api', () => {
   })
 
   it('should provide drop method', async () => {
-    const pool = { metaInfo: { tables: { one: {}, two: {} } }, storage: { one: {}, two: {} } }
+    const pool = {
+      metaInfo: { tables: { one: {}, two: {} } },
+      storage: { one: {}, two: {} }
+    }
     await metaApi.drop(pool)
     expect(Object.keys(pool.metaInfo)).to.be.deep.equal([])
     expect(Object.keys(pool.storage)).to.be.deep.equal([])

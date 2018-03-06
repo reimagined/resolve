@@ -9,7 +9,7 @@ pipeline {
         stage('Unit tests') {
             steps {
                 script {
-                    sh 'yarn install'
+                    sh 'yarn install --dev'
                     sh 'yarn lint'
                     sh 'yarn test'
                 }
@@ -26,9 +26,13 @@ pipeline {
                         env.CI_RELEASE_TYPE = 'alpha'
                     }
 
+                    sh 'git log | head -1 | awk \'{ print $2 }\' > /last_commit'
+                    sh 'echo \$(cat /last_commit)'
+
                     sh """
                         export CI_CANARY_VERSION=\$(nodejs -e "console.log(JSON.parse(require('fs').readFileSync('./package.json')).version.split('-')[0].split('.').map((ver, idx) => (idx < 2 ? ver : String(+ver + 1) )).join('.'));")-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}; \
                         echo \$CI_CANARY_VERSION > /lerna_version; \
+
                         yarn oao --version
                         echo registry=http://${env.NPM_ADDR} > /root/.npmrc; \
                         echo //${env.NPM_ADDR}/:_authToken=${env.NPM_TOKEN} >> /root/.npmrc; \
@@ -65,14 +69,14 @@ pipeline {
             }
         }
 
-        stage('Create-resolve-app [ empty ] Functional Tests') {
+        stage('Create-resolve-app [ hello-world ] Functional Tests') {
             steps {
                 script {
                     sh """
                         /init.sh
                         yarn global add create-resolve-app@\$(cat /lerna_version)
-                        create-resolve-app --exact-versions empty
-                        cd ./empty
+                        create-resolve-app hello-world -c \$(cat /last_commit)
+                        cd ./hello-world
                         cat ./package.json
                         yarn test
                         yarn test:functional --browser=path:/chromium
@@ -86,7 +90,24 @@ pipeline {
                 script {
                     sh """
                         /init.sh
-                        create-resolve-app --sample --exact-versions todolist
+                        yarn global add create-resolve-app@\$(cat /lerna_version)
+                        create-resolve-app todolist -e todo -c \$(cat /last_commit)
+                        cd ./todolist
+                        cat ./package.json
+                        yarn test
+                        yarn test:functional --browser=path:/chromium
+                    """
+                }
+            }
+        }
+
+        stage('Create-resolve-app [ twolevelstodo ] Functional Tests') {
+            steps {
+                script {
+                    sh """
+                        /init.sh
+                        yarn global add create-resolve-app@\$(cat /lerna_version)
+                        create-resolve-app twolevelstodo -e todo-two-levels -c \$(cat /last_commit)
                         cd ./todolist
                         cat ./package.json
                         yarn test

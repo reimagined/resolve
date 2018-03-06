@@ -38,8 +38,12 @@ describe('resolve-readmodel-mysql meta-api', () => {
     executor.onCall(2).callsFake(async () => [tableDeclarations])
 
     await metaApi.getMetaInfo(pool)
-    expect(pool.metaInfo.tables['table1']).to.be.deep.equal(tableDeclarations[0].TableDescription)
-    expect(pool.metaInfo.tables['table2']).to.be.deep.equal(tableDeclarations[1].TableDescription)
+    expect(pool.metaInfo.tables['table1']).to.be.deep.equal(
+      tableDeclarations[0].TableDescription
+    )
+    expect(pool.metaInfo.tables['table2']).to.be.deep.equal(
+      tableDeclarations[1].TableDescription
+    )
     expect(pool.metaInfo.timestamp).to.be.equal(100)
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
@@ -233,7 +237,9 @@ describe('resolve-readmodel-mysql meta-api', () => {
     expect(pool.metaInfo.tables['one']).to.be.equal(metaInfoOne)
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
-      format(`INSERT INTO META_NAME(MetaKey, MetaField, ComplexValue) VALUES("Tables", ?, ?)`)
+      format(
+        `INSERT INTO META_NAME(MetaKey, MetaField, ComplexValue) VALUES("Tables", ?, ?)`
+      )
     )
 
     expect(executor.firstCall.args[1][0]).to.be.equal('one')
@@ -256,9 +262,15 @@ describe('resolve-readmodel-mysql meta-api', () => {
 
     await metaApi.drop(pool)
 
-    expect(format(executor.firstCall.args[0])).to.be.equal(format('DROP TABLE one'))
-    expect(format(executor.secondCall.args[0])).to.be.equal(format('DROP TABLE two'))
-    expect(format(executor.thirdCall.args[0])).to.be.equal(format('DROP TABLE META_NAME'))
+    expect(format(executor.firstCall.args[0])).to.be.equal(
+      format('DROP TABLE one')
+    )
+    expect(format(executor.secondCall.args[0])).to.be.equal(
+      format('DROP TABLE two')
+    )
+    expect(format(executor.thirdCall.args[0])).to.be.equal(
+      format('DROP TABLE META_NAME')
+    )
 
     expect(Object.keys(pool.metaInfo)).to.be.deep.equal([])
   })

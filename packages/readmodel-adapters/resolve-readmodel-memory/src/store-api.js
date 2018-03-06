@@ -1,6 +1,10 @@
 import 'regenerator-runtime/runtime'
 
-const defineStorage = async ({ createStorage, storage }, storageName, storageSchema) => {
+const defineStorage = async (
+  { createStorage, storage },
+  storageName,
+  storageSchema
+) => {
   storage[storageName] = createStorage()
 
   await new Promise((resolve, reject) =>
@@ -11,12 +15,23 @@ const defineStorage = async ({ createStorage, storage }, storageName, storageSch
   )
   for (let { name } of storageSchema.secondaryIndexes) {
     await new Promise((resolve, reject) =>
-      storage[storageName].ensureIndex({ fieldName: name }, err => (!err ? resolve() : reject(err)))
+      storage[storageName].ensureIndex(
+        { fieldName: name },
+        err => (!err ? resolve() : reject(err))
+      )
     )
   }
 }
 
-const find = async ({ storage }, storageName, searchExpression, fieldList, sort, skip, limit) => {
+const find = async (
+  { storage },
+  storageName,
+  searchExpression,
+  fieldList,
+  sort,
+  skip,
+  limit
+) => {
   let findCursor = await storage[storageName].find(searchExpression)
 
   if (sort) {
@@ -42,7 +57,12 @@ const find = async ({ storage }, storageName, searchExpression, fieldList, sort,
   )
 }
 
-const findOne = async ({ storage }, storageName, searchExpression, fieldList) => {
+const findOne = async (
+  { storage },
+  storageName,
+  searchExpression,
+  fieldList
+) => {
   let findCursor = await storage[storageName].findOne(searchExpression)
 
   if (fieldList) {
@@ -67,11 +87,19 @@ const count = async ({ storage }, storageName, searchExpression) => {
 
 const insert = async ({ storage }, storageName, document) => {
   await new Promise((resolve, reject) =>
-    storage[storageName].insert(document, err => (!err ? resolve() : reject(err)))
+    storage[storageName].insert(
+      document,
+      err => (!err ? resolve() : reject(err))
+    )
   )
 }
 
-const update = async ({ storage }, storageName, searchExpression, updateExpression) => {
+const update = async (
+  { storage },
+  storageName,
+  searchExpression,
+  updateExpression
+) => {
   await new Promise((resolve, reject) =>
     storage[storageName].update(
       searchExpression,
@@ -83,7 +111,10 @@ const update = async ({ storage }, storageName, searchExpression, updateExpressi
 
 const del = async ({ storage }, storageName, searchExpression) => {
   await new Promise((resolve, reject) =>
-    storage[storageName].remove(searchExpression, err => (!err ? resolve() : reject(err)))
+    storage[storageName].remove(
+      searchExpression,
+      err => (!err ? resolve() : reject(err))
+    )
   )
 }
 
