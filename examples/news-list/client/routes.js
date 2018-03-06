@@ -26,7 +26,7 @@ const NewsPager = ({ count, page, setPreviousPage, setNextPage }) =>
       <span>
         Page {page + 1} from {count}
       </span>
-      <button onClick={page < count ? setNextPage : () => null} disabled={!(page < count)}>
+      <button onClick={page < count ? setNextPage : () => null} disabled={!(page < count - 1)}>
         {`>>`}
       </button>
     </div>
@@ -42,30 +42,28 @@ const getReadModel = (state, modelName, resolverName) => {
   }
 }
 
-const getFilledNewsViewer = page =>
-  connectReadModel(state => ({
-    readModelName: 'News',
-    resolverName: 'LatestNews',
-    query: `query($page: Int) {
+const FilledNewsViewer = connectReadModel((state, { page }) => ({
+  readModelName: 'News',
+  resolverName: 'LatestNews',
+  query: `query($page: Int) {
         LatestNews(page: $page) { id, timestamp, content }
       }`,
-    variables: { page },
-    isReactive: true,
-    news: getReadModel(state, 'News', 'LatestNews')
-  }))(NewsViewer)
+  variables: { page },
+  isReactive: true,
+  news: getReadModel(state, 'News', 'LatestNews')
+}))(NewsViewer)
 
-const getFilledNewsPager = (page, setPreviousPage, setNextPage) =>
-  connectReadModel(state => ({
-    readModelName: 'News',
-    resolverName: 'PagesCount',
-    query: `query { PagesCount }`,
-    variables: {},
-    isReactive: true,
-    count: getReadModel(state, 'News', 'PagesCount'),
-    page,
-    setPreviousPage,
-    setNextPage
-  }))(NewsPager)
+const FilledNewsPager = connectReadModel((state, { page, setPreviousPage, setNextPage }) => ({
+  readModelName: 'News',
+  resolverName: 'PagesCount',
+  query: `query { PagesCount }`,
+  variables: {},
+  isReactive: true,
+  count: getReadModel(state, 'News', 'PagesCount'),
+  page,
+  setPreviousPage,
+  setNextPage
+}))(NewsPager)
 
 class Index extends React.Component {
   state = { page: 0 }
@@ -73,17 +71,14 @@ class Index extends React.Component {
   setNextPage = () => this.setState({ page: this.state.page + 1 })
 
   render() {
-    const FilledNewsViewer = getFilledNewsViewer(this.state.page)
-    const FilledNewsPager = getFilledNewsPager(
-      this.state.page,
-      this.setPreviousPage,
-      this.setNextPage
-    )
-
     return (
       <div>
-        <FilledNewsViewer />
-        <FilledNewsPager />
+        <FilledNewsViewer page={this.state.page} />
+        <FilledNewsPager
+          page={this.state.page}
+          setPreviousPage={this.setPreviousPage}
+          setNextPage={this.setNextPage}
+        />
       </div>
     )
   }
