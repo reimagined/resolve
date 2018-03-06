@@ -27,7 +27,7 @@ export default (mapStateToProps, mapDispatchToProps, mergeProps, options) => Com
 
       const { readModelName, resolverName, query, variables, isReactive } = mapStateToProps(
         this.context.store.getState(),
-        this.props
+        nextProps
       )
 
       this.context.store.dispatch(

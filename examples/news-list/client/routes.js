@@ -45,9 +45,7 @@ const getReadModel = (state, modelName, resolverName) => {
 const FilledNewsViewer = connectReadModel((state, { page }) => ({
   readModelName: 'News',
   resolverName: 'LatestNews',
-  query: `query($page: Int) {
-        LatestNews(page: $page) { id, timestamp, content }
-      }`,
+  query: `query($page: Int) { LatestNews(page: $page) { id, timestamp, content } }`,
   variables: { page },
   isReactive: true,
   news: getReadModel(state, 'News', 'LatestNews')
