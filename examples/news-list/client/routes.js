@@ -2,8 +2,17 @@ import React from 'react'
 import { connectReadModel } from 'resolve-redux'
 
 const NewsViewer = ({ news }) =>
-  news && news.constructor === Object ? (
-    <ul>{news.map(item => <li>${item}</li>)}</ul>
+  news && Array.isArray(news) ? (
+    <ul>
+      {news.map((item, idx) => (
+        <li key={`LI${idx}`}>
+          <div>
+            <span>{item.timestamp}</span>
+            <span>{item.content}</span>
+          </div>
+        </li>
+      ))}
+    </ul>
   ) : (
     <span>No news found</span>
   )
@@ -11,11 +20,15 @@ const NewsViewer = ({ news }) =>
 const NewsPager = ({ count, page, setPreviousPage, setNextPage }) =>
   Number.isInteger(count) && count > 0 ? (
     <div>
-      <button onClick={page > 0 ? setPreviousPage : () => null} disabled={!!(page > 0)} />
+      <button onClick={page > 0 ? setPreviousPage : () => null} disabled={!(page > 0)}>
+        {`<<`}
+      </button>
       <span>
         Page {page + 1} from {count}
       </span>
-      <button onClick={page < count ? setNextPage : () => null} disabled={!!(page < count)} />
+      <button onClick={page < count ? setNextPage : () => null} disabled={!(page < count)}>
+        {`>>`}
+      </button>
     </div>
   ) : (
     <span />
