@@ -13,7 +13,7 @@ const buildProjection = (
       return projection
     }
 
-    projection[eventType] = async (event, onDemandOptions) => {
+    projection[eventType] = async event => {
       await internalContext.initDonePromise
       const handler = inputProjection[eventType]
       await metaApi.setLastTimestamp(event.timestamp)

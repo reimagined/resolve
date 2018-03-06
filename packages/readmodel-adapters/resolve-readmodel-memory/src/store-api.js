@@ -57,6 +57,34 @@ const find = async (
   )
 }
 
+const findOne = async (
+  { storage },
+  storageName,
+  searchExpression,
+  fieldList
+) => {
+  let findCursor = await storage[storageName].findOne(searchExpression)
+
+  if (fieldList) {
+    findCursor = findCursor.projection({ _id: 0, ...fieldList })
+  } else {
+    findCursor = findCursor.projection({ _id: 0 })
+  }
+
+  return await new Promise((resolve, reject) =>
+    findCursor.exec((err, docs) => (!err ? resolve(docs) : reject(err)))
+  )
+}
+
+const count = async ({ storage }, storageName, searchExpression) => {
+  return await new Promise((resolve, reject) =>
+    storage[storageName].count(
+      searchExpression,
+      (err, count) => (!err ? resolve(count) : reject(err))
+    )
+  )
+}
+
 const insert = async ({ storage }, storageName, document) => {
   await new Promise((resolve, reject) =>
     storage[storageName].insert(
@@ -93,6 +121,8 @@ const del = async ({ storage }, storageName, searchExpression) => {
 export default {
   defineStorage,
   find,
+  findOne,
+  count,
   insert,
   update,
   del

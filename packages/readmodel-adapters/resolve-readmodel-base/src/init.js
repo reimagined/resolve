@@ -21,6 +21,8 @@ const wrapReadInterface = storeApi => {
   }, {})
 
   readInterface['find'] = storeApi.find
+  readInterface['findOne'] = storeApi.findOne
+  readInterface['count'] = storeApi.count
 
   return Object.freeze(readInterface)
 }

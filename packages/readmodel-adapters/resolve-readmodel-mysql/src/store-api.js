@@ -1,5 +1,6 @@
 import 'regenerator-runtime/runtime'
 
+const MAX_VALUE = 0x0fffffff | 0
 const castType = type => {
   switch (type) {
     case 'number':
@@ -56,56 +57,57 @@ const updateToSetExpression = expr => {
   const updateValues = []
 
   for (let operatorName of Object.keys(expr)) {
-    const fieldName = Object.keys(expr[operatorName])[0]
-    const fieldValue = expr[operatorName][fieldName]
-    const [baseName, ...nestedPath] = fieldName.split('.')
+    for (let fieldName of Object.keys(expr[operatorName])) {
+      const fieldValue = expr[operatorName][fieldName]
+      const [baseName, ...nestedPath] = fieldName.split('.')
 
-    switch (operatorName) {
-      case '$unset': {
-        if (nestedPath.length > 0) {
-          updateExprArray.push(
-            `${baseName} = JSON_REMOVE(${baseName}, '${makeNestedPath(
-              nestedPath
-            )}') `
-          )
-        } else {
-          updateExprArray.push(`${baseName} = NULL `)
+      switch (operatorName) {
+        case '$unset': {
+          if (nestedPath.length > 0) {
+            updateExprArray.push(
+              `${baseName} = JSON_REMOVE(${baseName}, '${makeNestedPath(
+                nestedPath
+              )}') `
+            )
+          } else {
+            updateExprArray.push(`${baseName} = NULL `)
+          }
+          break
         }
-        break
-      }
 
-      case '$set': {
-        if (nestedPath.length > 0) {
-          updateExprArray.push(
-            `${baseName} = JSON_SET(${baseName}, '${makeNestedPath(
-              nestedPath
-            )}', ?) `
-          )
-        } else {
-          updateExprArray.push(`${baseName} = ? `)
+        case '$set': {
+          if (nestedPath.length > 0) {
+            updateExprArray.push(
+              `${baseName} = JSON_SET(${baseName}, '${makeNestedPath(
+                nestedPath
+              )}', ?) `
+            )
+          } else {
+            updateExprArray.push(`${baseName} = ? `)
+          }
+          updateValues.push(fieldValue)
+          break
         }
-        updateValues.push(fieldValue)
-        break
-      }
 
-      case '$inc': {
-        if (nestedPath.length > 0) {
-          updateExprArray.push(
-            `${baseName} = JSON_SET(${baseName}, '${makeNestedPath(
-              nestedPath
-            )}', JSON_EXTRACT(${baseName}, '${makeNestedPath(
-              nestedPath
-            )}') + ?) `
-          )
-        } else {
-          updateExprArray.push(`${baseName} = ${baseName} + ? `)
+        case '$inc': {
+          if (nestedPath.length > 0) {
+            updateExprArray.push(
+              `${baseName} = JSON_SET(${baseName}, '${makeNestedPath(
+                nestedPath
+              )}', JSON_EXTRACT(${baseName}, '${makeNestedPath(
+                nestedPath
+              )}') + ?) `
+            )
+          } else {
+            updateExprArray.push(`${baseName} = ${baseName} + ? `)
+          }
+          updateValues.push(fieldValue)
+          break
         }
-        updateValues.push(fieldValue)
-        break
-      }
 
-      default:
-        break
+        default:
+          break
+      }
     }
   }
 
@@ -159,8 +161,8 @@ const find = async (
           .join(', ')
       : ''
 
-  const skipLimit = `LIMIT ${skip},${
-    isFinite(limit) ? limit : Number.MAX_SAFE_INTEGER
+  const skipLimit = `LIMIT ${isFinite(skip) ? skip : 0},${
+    isFinite(limit) ? limit : MAX_VALUE
   }`
 
   const { searchExpr, searchValues } = searchToWhereExpression(searchExpression)
@@ -178,6 +180,75 @@ const find = async (
   )
 
   return rows
+}
+
+const findOne = async (
+  { connection },
+  storageName,
+  searchExpression,
+  fieldList
+) => {
+  let selectExpression =
+    fieldList && Object.keys(fieldList).length > 0
+      ? Object.keys(fieldList)
+          .filter(fieldName => fieldList[fieldName] === 1)
+          .map(fieldName => {
+            const [baseName, ...nestedPath] = fieldName.split('.')
+            if (nestedPath.length === 0) return baseName
+            return `${baseName}->>'${makeNestedPath(
+              nestedPath
+            )}' AS "${fieldName}"`
+          })
+          .join(', ')
+      : '*'
+
+  if (selectExpression.trim() === '') {
+    selectExpression = 'NULL'
+  }
+
+  const { searchExpr, searchValues } = searchToWhereExpression(searchExpression)
+
+  const inlineSearchExpr =
+    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
+
+  const [rows] = await connection.execute(
+    `SELECT ${selectExpression} FROM ${storageName}
+    ${inlineSearchExpr}
+    LIMIT 0, 1
+  `,
+    searchValues
+  )
+
+  if (Array.isArray(rows) && rows.length > 0) {
+    return rows[0]
+  }
+
+  return null
+}
+
+const count = async ({ connection }, storageName, searchExpression) => {
+  const { searchExpr, searchValues } = searchToWhereExpression(searchExpression)
+
+  const inlineSearchExpr =
+    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
+
+  const [rows] = await connection.execute(
+    `SELECT Count(*) AS Count FROM ${storageName}
+    ${inlineSearchExpr}
+  `,
+    searchValues
+  )
+
+  if (
+    Array.isArray(rows) &&
+    rows.length > 0 &&
+    rows[0] &&
+    Number.isInteger(+rows[0].Count)
+  ) {
+    return +rows[0].Count
+  }
+
+  return 0
 }
 
 const insert = async ({ connection }, storageName, document) => {
@@ -224,6 +295,8 @@ const del = async ({ connection }, storageName, searchExpression) => {
 export default {
   defineStorage,
   find,
+  findOne,
+  count,
   insert,
   update,
   del

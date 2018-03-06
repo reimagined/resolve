@@ -83,7 +83,7 @@ const checkAndGetFieldType = (metaInfo, fieldName) => {
 const checkFieldList = (metaInfo, fieldList, validProjectionValues = []) => {
   checkCondition(
     checkOptionShape(fieldList, [Object, Array]),
-    'fieldListNotArray'
+    'invalidFieldList'
   )
   if (Array.isArray(fieldList)) {
     for (let fieldName of fieldList) {
@@ -288,6 +288,33 @@ const find = async (
   )
 }
 
+const findOne = async (
+  { metaApi, storeApi },
+  storageName,
+  searchExpression,
+  resultFieldsList
+) => {
+  await checkStorageExists(metaApi, storageName)
+
+  const metaInfo = await metaApi.getStorageInfo(storageName)
+  if (resultFieldsList != null) {
+    checkFieldList(metaInfo, resultFieldsList, [0, 1])
+  }
+
+  checkDocumentShape(metaInfo, searchExpression)
+
+  return await storeApi.findOne(storageName, searchExpression, resultFieldsList)
+}
+
+const count = async ({ metaApi, storeApi }, storageName, searchExpression) => {
+  await checkStorageExists(metaApi, storageName)
+
+  const metaInfo = await metaApi.getStorageInfo(storageName)
+  checkDocumentShape(metaInfo, searchExpression)
+
+  return await storeApi.count(storageName, searchExpression)
+}
+
 const insert = async ({ metaApi, storeApi }, storageName, document) => {
   await checkStorageExists(metaApi, storageName)
 
@@ -325,6 +352,8 @@ const checkStoreApi = pool => {
   return Object.freeze({
     defineStorage: defineStorage.bind(null, pool),
     find: find.bind(null, pool),
+    findOne: findOne.bind(null, pool),
+    count: count.bind(null, pool),
     insert: insert.bind(null, pool),
     update: update.bind(null, pool),
     delete: del.bind(null, pool)

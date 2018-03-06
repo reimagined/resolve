@@ -69,18 +69,14 @@ describe('resolve-query', () => {
       UserAdded: sinon
         .stub()
         .callsFake(async (store, { aggregateId: id, payload }) => {
-          if ((await store.find('Users', { id }, {})).length > 0) {
-            return
-          }
+          if ((await store.count('Users', { id })) > 0) return
           await store.insert('Users', { id, UserName: payload.UserName })
         }),
 
       UserDeleted: sinon
         .stub()
         .callsFake(async (store, { aggregateId: id }) => {
-          if ((await store.find('Users', { id }, {})).length === 0) {
-            return
-          }
+          if ((await store.count('Users', { id })) === 0) return
           await store.delete('Users', { id })
         }),
 
@@ -123,11 +119,7 @@ describe('resolve-query', () => {
         `,
       gqlResolvers: {
         UserById: sinon.stub().callsFake(async (store, args) => {
-          const matchedUsers = await store.find('Users', { id: args.id })
-          if (!Array.isArray(matchedUsers) || matchedUsers.length < 1) {
-            return null
-          }
-          return matchedUsers[0]
+          return await store.findOne('Users', { id: args.id })
         }),
 
         UserIds: sinon.stub().callsFake(async store => {
@@ -136,7 +128,7 @@ describe('resolve-query', () => {
         }),
 
         Users: sinon.stub().callsFake(async store => {
-          return await store.find('Users', {}, null, { id: 1 })
+          return await store.find('Users', {}, null, { id: 1 }, { id: 1 })
         })
       }
     }

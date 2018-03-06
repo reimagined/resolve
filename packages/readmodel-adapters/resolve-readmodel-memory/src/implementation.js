@@ -1,13 +1,14 @@
 import 'regenerator-runtime/runtime'
-import NeDB from 'nedb'
 
-import metaApi from './meta-api'
-import storeApi from './store-api'
-
-const implementation = ({ metaName, ...options }) => {
+const implementation = (
+  metaApi,
+  storeApi,
+  createStorage,
+  { metaName, ...options }
+) => {
   const pool = {
     metaInfo: { tables: {}, timestamp: 0 },
-    createStorage: () => new NeDB({ autoload: true }),
+    createStorage,
     storage: {}
   }
 
