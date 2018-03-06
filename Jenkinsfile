@@ -74,6 +74,7 @@ pipeline {
                 script {
                     sh """
                         /init.sh
+                        yarn global add create-resolve-app@\$(cat /lerna_version)
                         create-resolve-app todolist -e todo -c \$(cat /last_commit)
                         cd ./todolist
                         cat ./package.json
@@ -89,6 +90,7 @@ pipeline {
                 script {
                     sh """
                         /init.sh
+                        yarn global add create-resolve-app@\$(cat /lerna_version)
                         create-resolve-app twolevelstodo -e todo-two-levels -c \$(cat /last_commit)
                         cd ./todolist
                         cat ./package.json
