@@ -3,7 +3,7 @@ import {
   READMODEL_LOAD_INITIAL_STATE,
   READMODEL_DROP_STATE
 } from './action_types'
-import { applyChange } from 'diff-json'
+import { applyChanges } from 'diff-json'
 
 export default function createReadModelsReducer() {
   return (state = {}, action) => {
@@ -18,6 +18,7 @@ export default function createReadModelsReducer() {
           }
         }
       }
+
       case READMODEL_DROP_STATE: {
         const { readModelName, resolverName } = action
         const nextState = {
@@ -32,6 +33,7 @@ export default function createReadModelsReducer() {
 
         return nextState
       }
+
       case READMODEL_SUBSCRIPTION_DIFF: {
         const { readModelName, resolverName, diff } = action
 
@@ -39,13 +41,14 @@ export default function createReadModelsReducer() {
           return state
         }
 
-        const result = applyChange(state[readModelName][resolverName], diff)
+        const resolverState = { ...state[readModelName][resolverName] }
+        applyChanges(resolverState, diff)
 
         return {
           ...state,
           [readModelName]: {
             ...state[readModelName],
-            [resolverName]: result
+            [resolverName]: resolverState
           }
         }
       }

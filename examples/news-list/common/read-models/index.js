@@ -43,10 +43,7 @@ export default [
 
       PagesCount: async store => {
         const newsCount = await store.count('News', {})
-        if (newsCount > 0) {
-          return Math.floor((newsCount - 1) / NEWS_PER_PAGE) + 1
-        }
-        return 0
+        return newsCount > 0 ? Math.floor((newsCount - 1) / NEWS_PER_PAGE) + 1 : 0
       }
     }
   }

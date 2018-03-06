@@ -238,8 +238,9 @@ Object.keys(queryExecutors).forEach(modelName => {
                 socketClient.emit(
                   'event',
                   JSON.stringify({
-                    type: 'READMODEL_SUBSCRIPTION_DIFF',
+                    type: '@@resolve/READMODEL_SUBSCRIPTION_DIFF',
                     readModelName: modelName,
+                    resolverName: req.body.resolverName,
                     diff
                   })
                 )
