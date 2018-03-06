@@ -94,7 +94,7 @@ if (unknownOptions && unknownOptions.length) {
       `mkdir ${appName} && cd ${appName} ` +
       `&& git clone ${resolveRepoPath} ${branchChangeOption}` +
       (options.commit
-        ? ` && cd resolve && git checkout ${options.commit}`
+        ? ` && cd resolve && git checkout ${options.commit} && cd ..`
         : '') +
       ` && cp -r ${examplePath}/* ./ && cp -r ${examplePath}/.[^.]* ./`
 

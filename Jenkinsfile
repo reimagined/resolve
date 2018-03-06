@@ -69,6 +69,22 @@ pipeline {
             }
         }
 
+        stage('Create-resolve-app [ hello-world ] Functional Tests') {
+            steps {
+                script {
+                    sh """
+                        /init.sh
+                        yarn global add create-resolve-app@\$(cat /lerna_version)
+                        create-resolve-app hello-world -c \$(cat /last_commit)
+                        cd ./hello-world
+                        cat ./package.json
+                        yarn test
+                        yarn test:functional --browser=path:/chromium
+                    """
+                }
+            }
+        }
+
         stage('Create-resolve-app [ todolist ] Functional Tests') {
             steps {
                 script {
