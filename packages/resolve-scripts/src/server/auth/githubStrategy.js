@@ -1,7 +1,5 @@
 import { Strategy as PassportGitHubStrategy } from 'passport-github'
-
 import { defaultFailureCallback, getRouteByName, rootDirectory } from './helper'
-import { raiseDeprecatedWarn } from '../utils/error_handling'
 
 const strategy = options => {
   return {

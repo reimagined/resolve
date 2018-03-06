@@ -8,15 +8,25 @@ describe('resolve-readmodel-mysql implementation', () => {
     const connection = {}
     const metaApi = {
       metaMethod: sinon.stub().callsFake(() => 10),
-      getMetaInfo: sinon.stub().callsFake(pool => Promise.resolve((pool.prop = 30)))
+      getMetaInfo: sinon
+        .stub()
+        .callsFake(pool => Promise.resolve((pool.prop = 30)))
     }
     const storeApi = { storeMethod: sinon.stub().callsFake(() => 20) }
 
     const mysql = {
-      createConnection: sinon.stub().callsFake(() => Promise.resolve(connection))
+      createConnection: sinon
+        .stub()
+        .callsFake(() => Promise.resolve(connection))
     }
 
-    const testConnectionOptions = { host: 'h', port: 1, user: 'u', password: 'p', database: 'd' }
+    const testConnectionOptions = {
+      host: 'h',
+      port: 1,
+      user: 'u',
+      password: 'p',
+      database: 'd'
+    }
 
     const result = implementation(metaApi, storeApi, mysql, {
       metaName: 'META_NAME',
@@ -26,7 +36,9 @@ describe('resolve-readmodel-mysql implementation', () => {
     expect(await result.metaApi.metaMethod()).to.be.equal(10)
     expect(await result.storeApi.storeMethod()).to.be.equal(20)
 
-    expect(mysql.createConnection.firstCall.args[0]).to.be.deep.equal(testConnectionOptions)
+    expect(mysql.createConnection.firstCall.args[0]).to.be.deep.equal(
+      testConnectionOptions
+    )
 
     const metaMethodCallArg = metaApi.metaMethod.firstCall.args[0]
     expect(metaMethodCallArg.connection).to.be.equal(connection)

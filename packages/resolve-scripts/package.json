@@ -1,6 +1,6 @@
 {
   "name": "resolve-scripts",
-  "version": "0.5.2",
+  "version": "0.5.4",
   "description": "This package create server with resolve.",
   "main": "./dist/index.js",
   "bugs": {
@@ -10,15 +10,10 @@
     "resolve-scripts": "./bin/resolve-scripts.js"
   },
   "scripts": {
-    "template:remove": "rm -rf ./dist/template",
-    "template:copy": "cp -r ./src/template ./dist",
-    "template_sample:remove": "rm -rf ./dist/template_sample",
-    "template_sample:copy": "cp -r ./src/template_sample ./dist",
     "test": "exit 0",
     "testw": "exit 0",
-    "build": "babel --out-dir ./dist ./src --ignore template_sample",
-    "prepublish":
-      "yarn build && yarn template:remove && yarn template:copy && yarn template_sample:remove && yarn template_sample:copy"
+    "build": "babel --out-dir ./dist ./src --ignore template_sample,template",
+    "prepublish": "yarn build"
   },
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",

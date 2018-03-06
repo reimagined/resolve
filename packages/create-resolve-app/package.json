@@ -1,6 +1,6 @@
 {
   "name": "create-resolve-app",
-  "version": "0.5.2",
+  "version": "0.5.4",
   "description": "This package generates boilerplate web application based on resolve framework",
   "bin": {
     "create-resolve-app": "./bin/index.js"
@@ -9,7 +9,6 @@
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
-    "prepublish": "babel --out-dir ./dist ./src",
     "test": "exit 0",
     "testw": "exit 0"
   },

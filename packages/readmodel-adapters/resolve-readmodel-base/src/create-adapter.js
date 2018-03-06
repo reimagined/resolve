@@ -3,7 +3,14 @@ import messages from './messages'
 
 const DEFAULT_META_NAME = '__ResolveMeta__'
 
-const createAdapter = (buildProjection, checkStoreApi, init, reset, implementation, options) => {
+const createAdapter = (
+  buildProjection,
+  checkStoreApi,
+  init,
+  reset,
+  implementation,
+  options
+) => {
   const metaName =
     options && options.metaName && options.metaName.constructor === String
       ? options.metaName
@@ -16,7 +23,12 @@ const createAdapter = (buildProjection, checkStoreApi, init, reset, implementati
 
   const { metaApi, storeApi } = api
 
-  if (!metaApi || !storeApi || !metaApi instanceof Object || !storeApi instanceof Object) {
+  if (
+    !metaApi ||
+    !storeApi ||
+    !metaApi instanceof Object ||
+    !storeApi instanceof Object
+  ) {
     throw new Error(messages.invalidApiImplementation)
   }
 

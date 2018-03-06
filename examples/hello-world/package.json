@@ -1,0 +1,30 @@
+{
+  "name": "hello-world",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-redux": "^5.0.7",
+    "redux": "^3.7.2",
+    "resolve-bus-memory": "^0.4.0",
+    "resolve-redux": "^0.4.0",
+    "resolve-scripts": "0.4.0",
+    "resolve-storage-lite": "^0.4.0"
+  },
+  "scripts": {
+    "build": "resolve-scripts build",
+    "dev": "resolve-scripts dev",
+    "start": "resolve-scripts start",
+    "update": "resolve-scripts update",
+    "test": "jest tests/unit/*",
+    "test:functional": "cross-env NODE_ENV=tests babel-node ./tests/functional/testcafe_runner.js --presets es2015,stage-0,react"
+  },
+  "devDependencies": {
+    "cross-env": "^5.1.3",
+    "jest": "^22.4.2",
+    "testcafe": "^0.18.6",
+    "testcafe-browser-tools": "^1.5.1",
+    "yargs": "^11.0.0"
+  }
+}

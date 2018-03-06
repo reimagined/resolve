@@ -225,7 +225,12 @@ describe('resolve-readmodel-mysql store-api', () => {
     const gaugeResult = {}
     executor.onCall(0).callsFake(async () => [[gaugeResult]])
 
-    const result = await storeApi.findOne(pool, 'test', { search: 0, 'inner.search': 1 }, null)
+    const result = await storeApi.findOne(
+      pool,
+      'test',
+      { search: 0, 'inner.search': 1 },
+      null
+    )
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
@@ -246,7 +251,10 @@ describe('resolve-readmodel-mysql store-api', () => {
 
     executor.onCall(0).callsFake(async () => [[{ Count: 100 }]])
 
-    const result = await storeApi.count(pool, 'test', { search: 0, 'inner.search': 1 })
+    const result = await storeApi.count(pool, 'test', {
+      search: 0,
+      'inner.search': 1
+    })
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
