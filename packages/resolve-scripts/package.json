@@ -12,8 +12,9 @@
   "scripts": {
     "test": "exit 0",
     "testw": "exit 0",
-    "build": "babel --out-dir ./dist ./src",
-    "prepublish": "yarn build"  },
+    "build": "babel --out-dir ./dist ./src --ignore template_sample,template",
+    "prepublish": "yarn build"
+  },
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
