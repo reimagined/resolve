@@ -9,11 +9,11 @@ const NewsViewer = ({ news }) =>
   )
 
 const NewsPager = ({ count, page, setPreviousPage, setNextPage }) =>
-  Number.isInteger(count) ? (
+  Number.isInteger(count) && count > 0 ? (
     <div>
       <button onClick={page > 0 ? setPreviousPage : () => null} disabled={!!(page > 0)} />
       <span>
-        Page ${page + 1} from ${count}
+        Page {page + 1} from {count}
       </span>
       <button onClick={page < count ? setNextPage : () => null} disabled={!!(page < count)} />
     </div>
@@ -23,7 +23,7 @@ const NewsPager = ({ count, page, setPreviousPage, setNextPage }) =>
 
 const getReadModel = (state, modelName, resolverName) => {
   try {
-    return state.readModels[modelName][resolverName]
+    return state.readModels[modelName][resolverName][resolverName]
   } catch (err) {
     return null
   }

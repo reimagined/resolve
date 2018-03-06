@@ -110,6 +110,7 @@ export function subscribeReadmodel(store, readModelSubscriptions, subscribeAdapt
   if (readModelSubscriptions.hasOwnProperty(subscriptionKey)) return
 
   const fetchReadModel = () => {
+    if (!readModelSubscriptions.hasOwnProperty(subscriptionKey)) return
     const checkSelfPromise = selfPromise => {
       return (
         readModelSubscriptions.hasOwnProperty(subscriptionKey) &&
