@@ -96,7 +96,8 @@ if (unknownOptions && unknownOptions.length) {
       (options.commit
         ? ` && cd resolve && git checkout ${options.commit} && cd ..`
         : '') +
-      ` && cp -r ${examplePath}/* ./ && cp -r ${examplePath}/.[^.]* ./`
+      ` && cp -r ${examplePath}/* ./ && cp -r ${examplePath}/.[^.]* ./ ` +
+      ` && rm -rf ./resolve && npm i >> log.log`
 
   exec(command, (err, stdout, stderr) => {
     if (err) {
