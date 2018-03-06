@@ -12,6 +12,7 @@ const EOL = require('os').EOL
 const optionDefinitions = [
   { name: 'example', alias: 'e', type: String },
   { name: 'branch', alias: 'b', type: String },
+  { name: 'commit', alias: 'c', type: String },
   { name: 'version', alias: 'V', type: Boolean },
   { name: 'help', alias: 'h', type: Boolean }
 ]
@@ -25,7 +26,8 @@ const optionsInfo =
   `                     todo - todo list ${EOL}` +
   `                     hello-world - sinple empty example with single hello world page ${EOL}` +
   `                     todo-two-levels - two levels todo list ${EOL}` +
-  `  -b, --branch     branch (master is default)${EOL}` +
+  `  -b, --branch     branch (optional, master is default)${EOL}` +
+  `  -c, --commit     commit ${EOL}` +
   `  -V, --version    outputs the version number${EOL}` +
   `  -h, --help       outputs usage information${EOL}`
 
@@ -82,12 +84,18 @@ if (unknownOptions && unknownOptions.length) {
     resolveRepoPath = 'https://github.com/reimagined/resolve.git',
     examplePath = './resolve/examples/' + example
 
-  log(`Creating ${appName} in ./${appName} based on ${example} example`)
+  log(
+    `Creating ${appName} in ./${appName} based on ${example} example` +
+      (options.commit ? ` (commit SHA:${options.commit})` : '')
+  )
 
   let branchChangeOption = options.branch ? `--branch ${options.branch}` : '',
     command =
       `mkdir ${appName} && cd ${appName} ` +
       `&& git clone ${resolveRepoPath} ${branchChangeOption}` +
+      (options.commit
+        ? ` && cd resolve && git checkout ${options.commit}`
+        : '') +
       ` && cp -r ${examplePath}/* ./ && cp -r ${examplePath}/.[^.]* ./`
 
   exec(command, (err, stdout, stderr) => {

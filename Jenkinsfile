@@ -26,7 +26,8 @@ pipeline {
                         env.CI_RELEASE_TYPE = 'alpha'
                     }
 
-                    sh 'git branch | grep \\* | awk \'{ print $2 }\' > /local_branch'
+                    sh 'git log | head -1 | awk \'{ print $2 }\' > /last_commit'
+                    sh 'echo \$(cat /last_commit)'
 
                     sh """
                         export CI_CANARY_VERSION=\$(nodejs -e "console.log(JSON.parse(require('fs').readFileSync('./package.json')).version.split('-')[0].split('.').map((ver, idx) => (idx < 2 ? ver : String(+ver + 1) )).join('.'));")-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}; \
@@ -74,7 +75,7 @@ pipeline {
                     sh """
                         /init.sh
                         yarn global add create-resolve-app@\$(cat /lerna_version)
-                        create-resolve-app hello-world -b \$(cat /local_branch)
+                        create-resolve-app hello-world -c \$(cat /last_commit)
                         cd ./hello-world
                         cat ./package.json
                         yarn test
@@ -89,7 +90,7 @@ pipeline {
                 script {
                     sh """
                         /init.sh
-                        create-resolve-app todolist -e todo -b \$(cat /local_branch)
+                        create-resolve-app todolist -e todo -c \$(cat /last_commit)
                         cd ./todolist
                         cat ./package.json
                         yarn test
@@ -104,7 +105,7 @@ pipeline {
                 script {
                     sh """
                         /init.sh
-                        create-resolve-app twolevelstodo -e todo-two-levels -b \$(cat /local_branch)
+                        create-resolve-app twolevelstodo -e todo-two-levels -c \$(cat /last_commit)
                         cd ./todolist
                         cat ./package.json
                         yarn test
