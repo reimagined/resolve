@@ -104,7 +104,13 @@ export function unsubscribe(store, subscribeAdapter, viewModels, subscribers, re
   }
 }
 
-export function subscribeReadmodel(store, readModelSubscriptions, subscribeAdapter, action) {
+export function subscribeReadmodel(
+  store,
+  readModelSubscriptions,
+  subscribeAdapter,
+  orderedFetch,
+  action
+) {
   const { readModelName, resolverName, query, variables, isReactive = true } = action
   const subscriptionKey = `${readModelName}:${resolverName}`
   if (readModelSubscriptions.hasOwnProperty(subscriptionKey)) return
@@ -125,18 +131,21 @@ export function subscribeReadmodel(store, readModelSubscriptions, subscribeAdapt
         readModelSubscriptions[subscriptionKey].socketId = socketId
 
         if (!checkSelfPromise(selfPromise)) return
-        const response = await fetch(getRootableUrl(`/api/createSubscription/${readModelName}`), {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'same-origin',
-          body: JSON.stringify({
-            resolverName,
-            query,
-            variables,
-            isReactive,
-            socketId
-          })
-        })
+        const response = await orderedFetch(
+          getRootableUrl(`/api/createSubscription/${readModelName}`),
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
+            body: JSON.stringify({
+              resolverName,
+              query,
+              variables,
+              isReactive,
+              socketId
+            })
+          }
+        )
         if (!response.ok) throw new Error()
         const { result, timeToLive, serialId } = await response.json()
 
@@ -165,7 +174,7 @@ export function subscribeReadmodel(store, readModelSubscriptions, subscribeAdapt
   fetchReadModel()
 }
 
-export function unsubscribeReadmodel(store, readModelSubscriptions, action) {
+export function unsubscribeReadmodel(store, readModelSubscriptions, orderedFetch, action) {
   const { readModelName, resolverName } = action
   const subscriptionKey = `${readModelName}:${resolverName}`
   if (!readModelSubscriptions.hasOwnProperty(subscriptionKey)) return
@@ -173,11 +182,11 @@ export function unsubscribeReadmodel(store, readModelSubscriptions, action) {
   const socketId = readModelSubscriptions[subscriptionKey].socketId
   delete readModelSubscriptions[subscriptionKey]
 
-  store.dispatch(actions.loadReadmodelInitialState(readModelName, resolverName))
+  store.dispatch(actions.dropReadmodelState(readModelName, resolverName))
 
   if (!socketId || socketId.constructor !== String) return
 
-  fetch(getRootableUrl(`/api/removeSubscription/${readModelName}`), {
+  orderedFetch(getRootableUrl(`/api/removeSubscription/${readModelName}`), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'same-origin',
@@ -189,6 +198,28 @@ export function unsubscribeReadmodel(store, readModelSubscriptions, action) {
 }
 
 const isClient = typeof window !== 'undefined'
+
+export function createOrderedFetch() {
+  let orderedFetchPromise = Promise.resolve()
+  if (!isClient) {
+    return () => Promise.reject('Ordered fetch can be used only on client side')
+  }
+
+  const orderedFetch = (url, options) =>
+    new Promise(resolveResult => {
+      orderedFetchPromise = orderedFetchPromise.then(async () => {
+        while (true) {
+          try {
+            return resolveResult(await fetch(url, options))
+          } catch (err) {
+            await new Promise(resolve => setTimeout(resolve, 1000))
+          }
+        }
+      })
+    })
+
+  return orderedFetch
+}
 
 export const mockSubscribeAdapter = {
   onEvent() {},
@@ -215,6 +246,8 @@ export function createResolveMiddleware({
   }, {})
 
   const readModelSubscriptions = {}
+
+  const orderedFetch = createOrderedFetch()
 
   return store => {
     Object.defineProperty(store.getState, 'isLoadingViewModel', {
@@ -266,14 +299,14 @@ export function createResolveMiddleware({
         }
         case SUBSCRIBE_READMODEL: {
           if (isClient) {
-            subscribeReadmodel(store, readModelSubscriptions, adapter, action)
+            subscribeReadmodel(store, readModelSubscriptions, adapter, orderedFetch, action)
           }
 
           break
         }
         case UNSUBSCRIBE_READMODEL: {
           if (isClient) {
-            unsubscribeReadmodel(store, readModelSubscriptions, action)
+            unsubscribeReadmodel(store, readModelSubscriptions, orderedFetch, action)
           }
 
           break
