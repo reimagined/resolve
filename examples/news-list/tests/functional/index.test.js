@@ -9,4 +9,25 @@ fixture`News`.beforeEach(async t => {
   await t.navigateTo(MAIN_PAGE)
 })
 
-test('should work', async t => {})
+test('should be reactive', async t => {
+  await t.expect(await Selector('ol').find('li').count).eql(0)
+
+  await t.typeText(await Selector('input[type=text]'), 'List 1')
+  await t.click(await Selector('button'))
+
+  await t
+    .expect(
+      await Selector('ol')
+        .find('li')
+        .nth(0)
+        .find('a').innerText
+    )
+    .eql('List 1')
+
+  await t.expect(await Selector('ol').find('li').count).eql(1)
+
+  firstListId = (await Selector('ol')
+    .find('li')
+    .nth(0)
+    .find('a').attributes).href.slice(1)
+})

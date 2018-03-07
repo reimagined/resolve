@@ -11,9 +11,6 @@ if (module.hot) {
   module.hot.accept()
 }
 
-const { NODE_ENV = 'development' } = process.env
-const dbPath = path.join(__dirname, `${NODE_ENV}.db`)
-
 export default {
   bus: { adapter: busAdapter },
   storage: {

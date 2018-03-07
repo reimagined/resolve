@@ -6,7 +6,7 @@ function mainSaga({ executeCommand }) {
       aggregateName: 'News',
       type: 'addNews',
       payload: {
-        content: `Sample news at ${timestamp} timestamp`,
+        content: `Example news at ${timestamp} timestamp`,
         timestamp
       }
     })

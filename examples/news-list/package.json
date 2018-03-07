@@ -5,6 +5,7 @@
   "dependencies": {
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+    "react-helmet": "^5.2.0",
     "react-redux": "^5.0.6",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
@@ -20,8 +21,7 @@
     "start": "resolve-scripts start",
     "test": "exit 0",
     "testw": "exit 0",
-    "test:functional":
-      "cross-env NODE_ENV=tests babel-node ./tests/functional/testcafe_runner.js --presets es2015,stage-0,react"
+    "test:functional": "cross-env NODE_ENV=tests babel-node ./tests/functional/testcafe_runner.js --presets es2015,stage-0,react"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",

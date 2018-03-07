@@ -1,25 +1,17 @@
 import React from 'react'
+import { Helmet } from 'react-helmet'
 import { connectReadModel } from 'resolve-redux'
 
 const NewsViewer = ({ news }) =>
   news && Array.isArray(news) ? (
-    <ul>
-      {news.map((item, idx) => (
-        <li key={`LI${idx}`}>
-          <div>
-            <span>{item.timestamp}</span>
-            <span>{item.content}</span>
-          </div>
-        </li>
-      ))}
-    </ul>
+    <section>{news.map((item, idx) => <article key={`LI${idx}`}>{item.content}</article>)}</section>
   ) : (
-    <span>No news found</span>
+    <section>No news found</section>
   )
 
 const NewsPager = ({ count, page, setPreviousPage, setNextPage }) =>
   Number.isInteger(count) && count > 0 ? (
-    <div>
+    <nav>
       <button onClick={page > 0 ? setPreviousPage : () => null} disabled={!(page > 0)}>
         {`<<`}
       </button>
@@ -29,9 +21,9 @@ const NewsPager = ({ count, page, setPreviousPage, setNextPage }) =>
       <button onClick={page < count ? setNextPage : () => null} disabled={!(page < count - 1)}>
         {`>>`}
       </button>
-    </div>
+    </nav>
   ) : (
-    <span />
+    <nav />
   )
 
 const getReadModel = (state, modelName, resolverName) => {
@@ -71,6 +63,22 @@ class Index extends React.Component {
   render() {
     return (
       <div>
+        <Helmet>
+          <style>
+            {`article {
+                padding: 5px 10px;
+                margin-bottom: 5px;
+                background-color: #eeeeee;
+                max-width: 350px;
+              }
+              article:nth-child(odd) {
+                background-color: #dddddd;
+              }
+              nav {
+                padding: 5px 10px;
+              }`}
+          </style>
+        </Helmet>
         <FilledNewsViewer page={this.state.page} />
         <FilledNewsPager
           page={this.state.page}
