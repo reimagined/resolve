@@ -65,12 +65,13 @@ function unsubscribeReadmodel(readModelName, resolverName) {
   }
 }
 
-function loadReadmodelInitialState(readModelName, resolverName, initialState) {
+function loadReadmodelInitialState(readModelName, resolverName, initialState, serialId) {
   return {
     type: READMODEL_LOAD_INITIAL_STATE,
     readModelName,
     resolverName,
-    initialState
+    initialState,
+    serialId
   }
 }
 

@@ -230,6 +230,7 @@ Object.keys(queryExecutors).forEach(modelName => {
           )
 
           getSocketByClientId(req.body.socketId)
+          const serialId = Date.now()
 
           const { result, forceStop } = await makeSubscriber(
             diff => {
@@ -241,6 +242,7 @@ Object.keys(queryExecutors).forEach(modelName => {
                     type: '@@resolve/READMODEL_SUBSCRIPTION_DIFF',
                     readModelName: modelName,
                     resolverName: req.body.resolverName,
+                    serialId,
                     diff
                   })
                 )
@@ -258,6 +260,7 @@ Object.keys(queryExecutors).forEach(modelName => {
 
           res.status(200).send({
             timeToLive: READ_MODEL_SUBSCRIPTION_TIME_TO_LIVE,
+            serialId,
             result
           })
 

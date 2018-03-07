@@ -138,10 +138,12 @@ export function subscribeReadmodel(store, readModelSubscriptions, subscribeAdapt
           })
         })
         if (!response.ok) throw new Error()
-        const { result, timeToLive } = await response.json()
+        const { result, timeToLive, serialId } = await response.json()
 
         if (!checkSelfPromise(selfPromise)) return
-        store.dispatch(actions.loadReadmodelInitialState(readModelName, resolverName, result))
+        store.dispatch(
+          actions.loadReadmodelInitialState(readModelName, resolverName, result, serialId)
+        )
 
         await delay(timeToLive)
         fetchReadModel()
