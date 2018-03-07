@@ -23,6 +23,7 @@ getInstallations()
         testcafe = tc
         const runner = testcafe.createRunner()
         const browser = argv.browser || Object.keys(browsers).slice(0, 1)
+        process.env.PUSH_INTERVAL = 100
         return runner
           .startApp('yarn dev', TIMEOUT)
           .src(['./tests/functional/index.test.js'])
@@ -45,11 +46,7 @@ getInstallations()
 
 process.on('exit', () => {
   try {
-    const targetPath = path.resolve(
-      __dirname,
-      '../',
-      config.storage.params.pathToFile
-    )
+    const targetPath = path.resolve(__dirname, '../', config.storage.params.pathToFile)
     fs.unlinkSync(targetPath)
   } catch (err) {}
 })
