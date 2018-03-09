@@ -4,7 +4,11 @@ import { connectReadModel } from 'resolve-redux'
 
 const NewsViewer = ({ news }) =>
   news && Array.isArray(news) ? (
-    <section>{news.map((item, idx) => <article key={`LI${idx}`}>{item.content}</article>)}</section>
+    <section>
+      {news.map((item, idx) => (
+        <article key={`LI${idx}`}>{item.content}</article>
+      ))}
+    </section>
   ) : (
     <section>No news found</section>
   )
@@ -12,13 +16,19 @@ const NewsViewer = ({ news }) =>
 const NewsPager = ({ count, page, setPreviousPage, setNextPage }) =>
   Number.isInteger(count) && count > 0 ? (
     <nav>
-      <button onClick={page > 0 ? setPreviousPage : () => null} disabled={!(page > 0)}>
+      <button
+        onClick={page > 0 ? setPreviousPage : () => null}
+        disabled={!(page > 0)}
+      >
         {`<<`}
       </button>
       <span>
         Page {page + 1} from {count}
       </span>
-      <button onClick={page < count ? setNextPage : () => null} disabled={!(page < count - 1)}>
+      <button
+        onClick={page < count ? setNextPage : () => null}
+        disabled={!(page < count - 1)}
+      >
         {`>>`}
       </button>
     </nav>
@@ -43,17 +53,19 @@ const FilledNewsViewer = connectReadModel((state, { page }) => ({
   news: getReadModel(state, 'News', 'LatestNews')
 }))(NewsViewer)
 
-const FilledNewsPager = connectReadModel((state, { page, setPreviousPage, setNextPage }) => ({
-  readModelName: 'News',
-  resolverName: 'PagesCount',
-  query: `query { PagesCount }`,
-  variables: {},
-  isReactive: true,
-  count: getReadModel(state, 'News', 'PagesCount'),
-  page,
-  setPreviousPage,
-  setNextPage
-}))(NewsPager)
+const FilledNewsPager = connectReadModel(
+  (state, { page, setPreviousPage, setNextPage }) => ({
+    readModelName: 'News',
+    resolverName: 'PagesCount',
+    query: `query { PagesCount }`,
+    variables: {},
+    isReactive: true,
+    count: getReadModel(state, 'News', 'PagesCount'),
+    page,
+    setPreviousPage,
+    setNextPage
+  })
+)(NewsPager)
 
 class Index extends React.Component {
   state = { page: 0 }

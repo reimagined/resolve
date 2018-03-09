@@ -37,13 +37,23 @@ export default [
     gqlResolvers: {
       LatestNews: async (store, args) => {
         const skip =
-          Math.max(Number.isInteger(args && +args.page) ? +args.page : 0, 0) * NEWS_PER_PAGE
-        return await store.find('News', {}, null, { timestamp: -1 }, skip, NEWS_PER_PAGE)
+          Math.max(Number.isInteger(args && +args.page) ? +args.page : 0, 0) *
+          NEWS_PER_PAGE
+        return await store.find(
+          'News',
+          {},
+          null,
+          { timestamp: -1 },
+          skip,
+          NEWS_PER_PAGE
+        )
       },
 
       PagesCount: async store => {
         const newsCount = await store.count('News', {})
-        return newsCount > 0 ? Math.floor((newsCount - 1) / NEWS_PER_PAGE) + 1 : 0
+        return newsCount > 0
+          ? Math.floor((newsCount - 1) / NEWS_PER_PAGE) + 1
+          : 0
       }
     }
   }

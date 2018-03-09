@@ -29,8 +29,13 @@ app.use(cookieParser())
 
 let jwtSecret = process.env.JWT_SECRET || 'DefaultSecret'
 
-if (!process.env.hasOwnProperty('JWT_SECRET') && process.env.NODE_ENV === 'production') {
-  raiseError('Jwt secret must be specified in production mode by JWT_SECRET environment variable')
+if (
+  !process.env.hasOwnProperty('JWT_SECRET') &&
+  process.env.NODE_ENV === 'production'
+) {
+  raiseError(
+    'Jwt secret must be specified in production mode by JWT_SECRET environment variable'
+  )
 }
 
 if (!Array.isArray(config.readModels)) {
@@ -67,7 +72,8 @@ config.readModels.forEach(readModel => {
   })
 
   queryExecutors[readModel.name] = facade.executeQueryGraphql
-  queryExecutors[readModel.name].makeSubscriber = facade.makeReactiveGraphqlReader
+  queryExecutors[readModel.name].makeSubscriber =
+    facade.makeReactiveGraphqlReader
 
   queryExecutors[readModel.name].mode = 'graphql'
 })
@@ -115,7 +121,9 @@ config.sagas.forEach(saga =>
 
 app.use((req, res, next) => {
   req.jwtToken =
-    req.cookies && req.cookies[config.jwtCookie.name] ? req.cookies[config.jwtCookie.name] : null
+    req.cookies && req.cookies[config.jwtCookie.name]
+      ? req.cookies[config.jwtCookie.name]
+      : null
 
   req.resolve = {
     queryExecutors,
@@ -196,7 +204,11 @@ Object.keys(queryExecutors).forEach(modelName => {
       bodyParser.urlencoded({ extended: false }),
       async (req, res) => {
         try {
-          const data = await executor(req.body.query, req.body.variables || {}, req.jwtToken)
+          const data = await executor(
+            req.body.query,
+            req.body.variables || {},
+            req.jwtToken
+          )
           res.status(200).send({ data })
         } catch (err) {
           res.status(500).end(`${message.readModelFail}${err.message}`)
@@ -219,7 +231,9 @@ Object.keys(queryExecutors).forEach(modelName => {
           if (subscriptionProcesses.get(subscriptionKey)) {
             res
               .status(500)
-              .send(`Socket subscription ${modelName}:${subscriptionKey} already connected`)
+              .send(
+                `Socket subscription ${modelName}:${subscriptionKey} already connected`
+              )
             return
           }
 
@@ -289,7 +303,9 @@ Object.keys(queryExecutors).forEach(modelName => {
       bodyParser.urlencoded({ extended: false }),
       async (req, res) => {
         try {
-          const subscriptionKey = `${req.body.socketId}:${req.body.resolverName}`
+          const subscriptionKey = `${req.body.socketId}:${
+            req.body.resolverName
+          }`
 
           const forceStopPromise = subscriptionProcesses.get(subscriptionKey)
           if (forceStopPromise) {
@@ -310,7 +326,10 @@ Object.keys(queryExecutors).forEach(modelName => {
     app.get(getRootableUrl(`/api/query/${modelName}`), async (req, res) => {
       try {
         const aggregateIds = req.query.aggregateIds
-        if (aggregateIds !== '*' && (!Array.isArray(aggregateIds) || aggregateIds.length === 0)) {
+        if (
+          aggregateIds !== '*' &&
+          (!Array.isArray(aggregateIds) || aggregateIds.length === 0)
+        ) {
           throw new Error(message.viewModelOnlyOnDemand)
         }
 

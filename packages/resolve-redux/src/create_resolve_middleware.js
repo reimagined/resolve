@@ -21,7 +21,9 @@ export function getEventTypes(viewModels, subscribers) {
       return
     }
 
-    const { Init, ...projection } = viewModels.find(({ name }) => name === viewModelName).projection
+    const { Init, ...projection } = viewModels.find(
+      ({ name }) => name === viewModelName
+    ).projection
 
     Object.keys(projection).forEach(eventType => {
       eventTypes[eventType] = true
@@ -52,10 +54,13 @@ export async function subscribe(
   const { viewModelName, aggregateId } = action
 
   const needChange =
-    !subscribers.viewModels[viewModelName] || !subscribers.aggregateIds[aggregateId]
+    !subscribers.viewModels[viewModelName] ||
+    !subscribers.aggregateIds[aggregateId]
 
-  subscribers.viewModels[viewModelName] = (subscribers.viewModels[viewModelName] || 0) + 1
-  subscribers.aggregateIds[aggregateId] = (subscribers.aggregateIds[aggregateId] || 0) + 1
+  subscribers.viewModels[viewModelName] =
+    (subscribers.viewModels[viewModelName] || 0) + 1
+  subscribers.aggregateIds[aggregateId] =
+    (subscribers.aggregateIds[aggregateId] || 0) + 1
 
   if (needChange) {
     const key = getKey(viewModelName, aggregateId)
@@ -63,7 +68,9 @@ export async function subscribe(
 
     const rawState = await loadInitialState(viewModelName, aggregateId)
 
-    const state = viewModels.find(({ name }) => name === viewModelName).deserializeState(rawState)
+    const state = viewModels
+      .find(({ name }) => name === viewModelName)
+      .deserializeState(rawState)
 
     if (requests[key]) {
       delete requests[key]
@@ -78,7 +85,14 @@ export async function subscribe(
   }
 }
 
-export function unsubscribe(store, subscribeAdapter, viewModels, subscribers, requests, action) {
+export function unsubscribe(
+  store,
+  subscribeAdapter,
+  viewModels,
+  subscribers,
+  requests,
+  action
+) {
   const { viewModelName, aggregateId } = action
 
   subscribers.viewModels[viewModelName] = Math.max(
@@ -91,7 +105,8 @@ export function unsubscribe(store, subscribeAdapter, viewModels, subscribers, re
   )
 
   const needChange =
-    !subscribers.viewModels[viewModelName] || !subscribers.aggregateIds[aggregateId]
+    !subscribers.viewModels[viewModelName] ||
+    !subscribers.aggregateIds[aggregateId]
 
   const key = getKey(viewModelName, aggregateId)
   delete requests[key]
@@ -111,7 +126,13 @@ export function subscribeReadmodel(
   orderedFetch,
   action
 ) {
-  const { readModelName, resolverName, query, variables, isReactive = true } = action
+  const {
+    readModelName,
+    resolverName,
+    query,
+    variables,
+    isReactive = true
+  } = action
   const subscriptionKey = `${readModelName}:${resolverName}`
   if (readModelSubscriptions.hasOwnProperty(subscriptionKey)) return
 
@@ -151,7 +172,12 @@ export function subscribeReadmodel(
 
         if (!checkSelfPromise(selfPromise)) return
         store.dispatch(
-          actions.loadReadmodelInitialState(readModelName, resolverName, result, serialId)
+          actions.loadReadmodelInitialState(
+            readModelName,
+            resolverName,
+            result,
+            serialId
+          )
         )
 
         await delay(timeToLive)
@@ -174,7 +200,12 @@ export function subscribeReadmodel(
   fetchReadModel()
 }
 
-export function unsubscribeReadmodel(store, readModelSubscriptions, orderedFetch, action) {
+export function unsubscribeReadmodel(
+  store,
+  readModelSubscriptions,
+  orderedFetch,
+  action
+) {
   const { readModelName, resolverName } = action
   const subscriptionKey = `${readModelName}:${resolverName}`
   if (!readModelSubscriptions.hasOwnProperty(subscriptionKey)) return
@@ -254,7 +285,8 @@ export function createResolveMiddleware({
       enumerable: false,
       configurable: false,
       writable: false,
-      value: (viewModelName, aggregateId) => !!loading[viewModelName][aggregateId]
+      value: (viewModelName, aggregateId) =>
+        !!loading[viewModelName][aggregateId]
     })
 
     store.dispatch(actions.provideViewModels(viewModels))
@@ -276,7 +308,14 @@ export function createResolveMiddleware({
           loading[viewModelName][aggregateId] = true
 
           if (isClient) {
-            subscribe(store, adapter, viewModels, subscribers, requests, action).catch(error =>
+            subscribe(
+              store,
+              adapter,
+              viewModels,
+              subscribers,
+              requests,
+              action
+            ).catch(error =>
               setTimeout(() => {
                 // eslint-disable-next-line no-console
                 console.error(error)
@@ -292,21 +331,39 @@ export function createResolveMiddleware({
           delete loading[viewModelName][aggregateId]
 
           if (isClient) {
-            unsubscribe(store, adapter, viewModels, subscribers, requests, action)
+            unsubscribe(
+              store,
+              adapter,
+              viewModels,
+              subscribers,
+              requests,
+              action
+            )
           }
 
           break
         }
         case SUBSCRIBE_READMODEL: {
           if (isClient) {
-            subscribeReadmodel(store, readModelSubscriptions, adapter, orderedFetch, action)
+            subscribeReadmodel(
+              store,
+              readModelSubscriptions,
+              adapter,
+              orderedFetch,
+              action
+            )
           }
 
           break
         }
         case UNSUBSCRIBE_READMODEL: {
           if (isClient) {
-            unsubscribeReadmodel(store, readModelSubscriptions, orderedFetch, action)
+            unsubscribeReadmodel(
+              store,
+              readModelSubscriptions,
+              orderedFetch,
+              action
+            )
           }
 
           break

@@ -40,7 +40,12 @@ const init = (adapter, eventStore, projection, eventListener) => {
     }
 
     const synchronizedEventWorker = event => {
-      if (!flowPromise || !event || !event.type || typeof projection[event.type] !== 'function') {
+      if (
+        !flowPromise ||
+        !event ||
+        !event.type ||
+        typeof projection[event.type] !== 'function'
+      ) {
         return
       }
 
@@ -53,9 +58,13 @@ const init = (adapter, eventStore, projection, eventListener) => {
     Promise.resolve()
       .then(getLastAppliedTimestamp)
       .then(startTime =>
-        eventStore.subscribeByEventType(Object.keys(projection), synchronizedEventWorker, {
-          startTime
-        })
+        eventStore.subscribeByEventType(
+          Object.keys(projection),
+          synchronizedEventWorker,
+          {
+            startTime
+          }
+        )
       )
       .then(unsub => {
         if (flowPromise) {
@@ -80,7 +89,10 @@ const init = (adapter, eventStore, projection, eventListener) => {
 
 const read = async (repository, adapter, eventStore, projection, ...args) => {
   if (!repository.loadDonePromise) {
-    Object.assign(repository, init(adapter, eventStore, projection, repository.eventListener))
+    Object.assign(
+      repository,
+      init(adapter, eventStore, projection, repository.eventListener)
+    )
   }
 
   const { getError, getReadable, loadDonePromise } = repository
@@ -96,13 +108,23 @@ const read = async (repository, adapter, eventStore, projection, ...args) => {
 
 const createReadModel = ({ projection, eventStore, adapter }) => {
   const currentAdapter = adapter || createDefaultAdapter()
-  const builtProjection = projection ? currentAdapter.buildProjection(projection) : null
+  const builtProjection = projection
+    ? currentAdapter.buildProjection(projection)
+    : null
   const externalEventListeners = []
   const repository = {
     eventListener: event =>
-      externalEventListeners.forEach(callback => Promise.resolve().then(callback.bind(null, event)))
+      externalEventListeners.forEach(callback =>
+        Promise.resolve().then(callback.bind(null, event))
+      )
   }
-  const getReadModel = read.bind(null, repository, currentAdapter, eventStore, builtProjection)
+  const getReadModel = read.bind(
+    null,
+    repository,
+    currentAdapter,
+    eventStore,
+    builtProjection
+  )
 
   const reader = async (...args) => await getReadModel(...args)
 

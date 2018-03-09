@@ -46,7 +46,13 @@ function unsubscribe(viewModelName, aggregateId) {
   }
 }
 
-function subscribeReadmodel(readModelName, resolverName, query, variables, isReactive) {
+function subscribeReadmodel(
+  readModelName,
+  resolverName,
+  query,
+  variables,
+  isReactive
+) {
   return {
     type: SUBSCRIBE_READMODEL,
     readModelName,
@@ -65,7 +71,12 @@ function unsubscribeReadmodel(readModelName, resolverName) {
   }
 }
 
-function loadReadmodelInitialState(readModelName, resolverName, initialState, serialId) {
+function loadReadmodelInitialState(
+  readModelName,
+  resolverName,
+  initialState,
+  serialId
+) {
   return {
     type: READMODEL_LOAD_INITIAL_STATE,
     readModelName,

@@ -50,7 +50,9 @@ const createFacade = ({ model, gqlSchema, gqlResolvers, customResolvers }) => {
 
     const makeReactiveReader = async (publisher, ...execGqlArgs) => {
       if (typeof publisher !== 'function') {
-        throw new Error('Publisher should be callback function (diff: Object) => void')
+        throw new Error(
+          'Publisher should be callback function (diff: Object) => void'
+        )
       }
 
       let result = await execGraphql(...execGqlArgs)

@@ -46,7 +46,11 @@ getInstallations()
 
 process.on('exit', () => {
   try {
-    const targetPath = path.resolve(__dirname, '../', config.storage.params.pathToFile)
+    const targetPath = path.resolve(
+      __dirname,
+      '../',
+      config.storage.params.pathToFile
+    )
     fs.unlinkSync(targetPath)
   } catch (err) {}
 })

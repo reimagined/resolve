@@ -5,10 +5,14 @@ const MAIN_PAGE = `http://${host}:3000`
 const INSPECT_PAGE_COUNT = 5
 const INSPECT_MATCH_TIMES = 5
 
-const createSequence = count => Array.from(new Array(count)).map((_, idx) => idx)
+const createSequence = count =>
+  Array.from(new Array(count)).map((_, idx) => idx)
 
 const loopAsync = async (count, fn) =>
-  await createSequence(count).reduce((acc, val) => acc.then(fn.bind(null, val)), Promise.resolve())
+  await createSequence(count).reduce(
+    (acc, val) => acc.then(fn.bind(null, val)),
+    Promise.resolve()
+  )
 
 const isArrayPreceeding = (
   prevArr,
@@ -43,7 +47,9 @@ test('should be reactive', async t => {
         } direction`
       )
 
-      await t.expect(await Selector('nav > span').innerText).contains(`Page ${page} from`)
+      await t
+        .expect(await Selector('nav > span').innerText)
+        .contains(`Page ${page} from`)
 
       let articleTexts = null
 
@@ -55,7 +61,9 @@ test('should be reactive', async t => {
           .slice(1)
 
         if (articleTexts !== null) {
-          await t.expect(isArrayPreceeding(articleTexts, actualArticlesTexts)).eql(true)
+          await t
+            .expect(isArrayPreceeding(articleTexts, actualArticlesTexts))
+            .eql(true)
         }
 
         articleTexts = actualArticlesTexts

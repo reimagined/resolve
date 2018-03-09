@@ -1,6 +1,9 @@
 export function checkRequiredFields(obj, beforeWarnings, afterWarnings) {
   const warningMessages = Object.keys(obj)
-    .map(fieldName => (obj[fieldName] ? null : `The '${fieldName}' field is required`))
+    .map(
+      fieldName =>
+        obj[fieldName] ? null : `The '${fieldName}' field is required`
+    )
     .filter(msg => msg)
 
   const shouldWarningsBePrinted = warningMessages.length > 0
@@ -8,7 +11,9 @@ export function checkRequiredFields(obj, beforeWarnings, afterWarnings) {
   if (shouldWarningsBePrinted) {
     // eslint-disable-next-line no-console
     console.warn(
-      [beforeWarnings, ...warningMessages, afterWarnings].filter(line => line).join('\n')
+      [beforeWarnings, ...warningMessages, afterWarnings]
+        .filter(line => line)
+        .join('\n')
     )
   }
 
@@ -17,11 +22,14 @@ export function checkRequiredFields(obj, beforeWarnings, afterWarnings) {
 
 export function getRootableUrl(path) {
   let rootDir =
-    typeof process !== 'undefined' && typeof process.env !== 'undefined' && process.env['ROOT_PATH']
+    typeof process !== 'undefined' &&
+    typeof process.env !== 'undefined' &&
+    process.env['ROOT_PATH']
       ? process.env['ROOT_PATH']
       : ''
 
-  const isReactNative = typeof navigator !== 'undefined' && navigator.product === 'ReactNative'
+  const isReactNative =
+    typeof navigator !== 'undefined' && navigator.product === 'ReactNative'
 
   if (isReactNative && path === '/socket/') {
     rootDir = ''

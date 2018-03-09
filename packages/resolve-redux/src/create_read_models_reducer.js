@@ -35,12 +35,16 @@ export default function createReadModelsReducer() {
         }
 
         copyResolveSerials(state, nextState)
-        Object.defineProperty(nextState, `resolve-serial:${readModelName}:${resolverName}`, {
-          configurable: true,
-          writable: false,
-          enumerable: false,
-          value: serialId
-        })
+        Object.defineProperty(
+          nextState,
+          `resolve-serial:${readModelName}:${resolverName}`,
+          {
+            configurable: true,
+            writable: false,
+            enumerable: false,
+            value: serialId
+          }
+        )
 
         return nextState
       }
