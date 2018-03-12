@@ -1,6 +1,11 @@
 import 'regenerator-runtime/runtime'
 
-const implementation = (metaApi, storeApi, createStorage, { metaName, ...options }) => {
+const implementation = (
+  metaApi,
+  storeApi,
+  createStorage,
+  { metaName, ...options }
+) => {
   const pool = {
     metaInfo: { tables: {}, timestamp: 0 },
     createStorage,

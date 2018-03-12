@@ -7,5 +7,10 @@ import storeApi from './store-api'
 
 export default createAdapter.bind(
   null,
-  implementation.bind(null, metaApi, storeApi, () => new NeDB({ autoload: true }))
+  implementation.bind(
+    null,
+    metaApi,
+    storeApi,
+    () => new NeDB({ autoload: true })
+  )
 )

@@ -30,14 +30,24 @@ describe('resolve-readmodel-memory store-api', () => {
     }
     const storage = {}
 
-    await storeApi.defineStorage({ createStorage: () => newStorage, storage }, 'test', {
-      primaryIndex: { name: 'first' },
-      secondaryIndexes: [{ name: 'second' }, { name: 'third' }]
-    })
+    await storeApi.defineStorage(
+      { createStorage: () => newStorage, storage },
+      'test',
+      {
+        primaryIndex: { name: 'first' },
+        secondaryIndexes: [{ name: 'second' }, { name: 'third' }]
+      }
+    )
 
-    expect(newStorage.ensureIndex.firstCall.args[0].fieldName).to.be.equal('first')
-    expect(newStorage.ensureIndex.secondCall.args[0].fieldName).to.be.equal('second')
-    expect(newStorage.ensureIndex.thirdCall.args[0].fieldName).to.be.equal('third')
+    expect(newStorage.ensureIndex.firstCall.args[0].fieldName).to.be.equal(
+      'first'
+    )
+    expect(newStorage.ensureIndex.secondCall.args[0].fieldName).to.be.equal(
+      'second'
+    )
+    expect(newStorage.ensureIndex.thirdCall.args[0].fieldName).to.be.equal(
+      'third'
+    )
     expect(storage['test']).to.be.equal(newStorage)
   })
 
@@ -55,10 +65,15 @@ describe('resolve-readmodel-memory store-api', () => {
       20
     )
 
-    expect(storage['test'].find.firstCall.args[0]).to.be.deep.equal({ search: 0 })
+    expect(storage['test'].find.firstCall.args[0]).to.be.deep.equal({
+      search: 0
+    })
     const cursor = storage['test'].find.firstCall.returnValue
 
-    expect(cursor.projection.firstCall.args[0]).to.be.deep.equal({ field: 1, _id: 0 })
+    expect(cursor.projection.firstCall.args[0]).to.be.deep.equal({
+      field: 1,
+      _id: 0
+    })
     expect(cursor.sort.firstCall.args[0]).to.be.deep.equal({ sort: -1 })
     expect(cursor.skip.firstCall.args[0]).to.be.equal(10)
     expect(cursor.limit.firstCall.args[0]).to.be.equal(20)
@@ -80,7 +95,9 @@ describe('resolve-readmodel-memory store-api', () => {
       20
     )
 
-    expect(storage['test'].find.firstCall.args[0]).to.be.deep.equal({ search: 0 })
+    expect(storage['test'].find.firstCall.args[0]).to.be.deep.equal({
+      search: 0
+    })
     const cursor = storage['test'].find.firstCall.returnValue
 
     expect(cursor.projection.firstCall.args[0]).to.be.deep.equal({ _id: 0 })
@@ -105,10 +122,15 @@ describe('resolve-readmodel-memory store-api', () => {
       20
     )
 
-    expect(storage['test'].find.firstCall.args[0]).to.be.deep.equal({ search: 0 })
+    expect(storage['test'].find.firstCall.args[0]).to.be.deep.equal({
+      search: 0
+    })
     const cursor = storage['test'].find.firstCall.returnValue
 
-    expect(cursor.projection.firstCall.args[0]).to.be.deep.equal({ field: 1, _id: 0 })
+    expect(cursor.projection.firstCall.args[0]).to.be.deep.equal({
+      field: 1,
+      _id: 0
+    })
     expect(cursor.sort.callCount).to.be.equal(0)
     expect(cursor.skip.firstCall.args[0]).to.be.equal(10)
     expect(cursor.limit.firstCall.args[0]).to.be.equal(20)
@@ -130,10 +152,15 @@ describe('resolve-readmodel-memory store-api', () => {
       20
     )
 
-    expect(storage['test'].find.firstCall.args[0]).to.be.deep.equal({ search: 0 })
+    expect(storage['test'].find.firstCall.args[0]).to.be.deep.equal({
+      search: 0
+    })
     const cursor = storage['test'].find.firstCall.returnValue
 
-    expect(cursor.projection.firstCall.args[0]).to.be.deep.equal({ field: 1, _id: 0 })
+    expect(cursor.projection.firstCall.args[0]).to.be.deep.equal({
+      field: 1,
+      _id: 0
+    })
     expect(cursor.sort.firstCall.args[0]).to.be.deep.equal({ sort: -1 })
     expect(cursor.skip.callCount).to.be.equal(0)
     expect(cursor.limit.firstCall.args[0]).to.be.equal(20)
@@ -155,10 +182,15 @@ describe('resolve-readmodel-memory store-api', () => {
       Infinity
     )
 
-    expect(storage['test'].find.firstCall.args[0]).to.be.deep.equal({ search: 0 })
+    expect(storage['test'].find.firstCall.args[0]).to.be.deep.equal({
+      search: 0
+    })
     const cursor = storage['test'].find.firstCall.returnValue
 
-    expect(cursor.projection.firstCall.args[0]).to.be.deep.equal({ field: 1, _id: 0 })
+    expect(cursor.projection.firstCall.args[0]).to.be.deep.equal({
+      field: 1,
+      _id: 0
+    })
     expect(cursor.sort.firstCall.args[0]).to.be.deep.equal({ sort: -1 })
     expect(cursor.skip.firstCall.args[0]).to.be.equal(10)
     expect(cursor.limit.callCount).to.be.equal(0)
@@ -170,12 +202,22 @@ describe('resolve-readmodel-memory store-api', () => {
     const gaugeResult = {}
     const storage = makeFindStubStorage('test', gaugeResult)
 
-    const result = await storeApi.findOne({ storage }, 'test', { search: 0 }, { field: 1 })
+    const result = await storeApi.findOne(
+      { storage },
+      'test',
+      { search: 0 },
+      { field: 1 }
+    )
 
-    expect(storage['test'].findOne.firstCall.args[0]).to.be.deep.equal({ search: 0 })
+    expect(storage['test'].findOne.firstCall.args[0]).to.be.deep.equal({
+      search: 0
+    })
     const cursor = storage['test'].findOne.firstCall.returnValue
 
-    expect(cursor.projection.firstCall.args[0]).to.be.deep.equal({ field: 1, _id: 0 })
+    expect(cursor.projection.firstCall.args[0]).to.be.deep.equal({
+      field: 1,
+      _id: 0
+    })
 
     expect(result).to.be.equal(gaugeResult)
   })
@@ -186,7 +228,9 @@ describe('resolve-readmodel-memory store-api', () => {
 
     const result = await storeApi.findOne({ storage }, 'test', { search: 0 })
 
-    expect(storage['test'].findOne.firstCall.args[0]).to.be.deep.equal({ search: 0 })
+    expect(storage['test'].findOne.firstCall.args[0]).to.be.deep.equal({
+      search: 0
+    })
     const cursor = storage['test'].findOne.firstCall.returnValue
 
     expect(cursor.projection.firstCall.args[0]).to.be.deep.equal({ _id: 0 })
@@ -218,20 +262,36 @@ describe('resolve-readmodel-memory store-api', () => {
 
     await storeApi.insert({ storage }, 'test', { id: 1, value: 2 })
 
-    expect(storage.test.insert.firstCall.args[0]).to.be.deep.equal({ id: 1, value: 2 })
+    expect(storage.test.insert.firstCall.args[0]).to.be.deep.equal({
+      id: 1,
+      value: 2
+    })
   })
 
   it('should provide update method', async () => {
     const storage = {
       test: {
-        update: sinon.stub().callsFake((searchExpression, updateExpression, cb) => cb(null))
+        update: sinon
+          .stub()
+          .callsFake((searchExpression, updateExpression, cb) => cb(null))
       }
     }
 
-    await storeApi.update({ storage }, 'test', { id: 1, value: 2 }, { id: 1, value: 10 })
+    await storeApi.update(
+      { storage },
+      'test',
+      { id: 1, value: 2 },
+      { id: 1, value: 10 }
+    )
 
-    expect(storage.test.update.firstCall.args[0]).to.be.deep.equal({ id: 1, value: 2 })
-    expect(storage.test.update.firstCall.args[1]).to.be.deep.equal({ id: 1, value: 10 })
+    expect(storage.test.update.firstCall.args[0]).to.be.deep.equal({
+      id: 1,
+      value: 2
+    })
+    expect(storage.test.update.firstCall.args[1]).to.be.deep.equal({
+      id: 1,
+      value: 10
+    })
   })
 
   it('should provide del method', async () => {
@@ -243,6 +303,9 @@ describe('resolve-readmodel-memory store-api', () => {
 
     await storeApi.del({ storage }, 'test', { id: 1, value: 2 })
 
-    expect(storage.test.remove.firstCall.args[0]).to.be.deep.equal({ id: 1, value: 2 })
+    expect(storage.test.remove.firstCall.args[0]).to.be.deep.equal({
+      id: 1,
+      value: 2
+    })
   })
 })
