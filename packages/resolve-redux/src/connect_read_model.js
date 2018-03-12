@@ -4,11 +4,18 @@ import { connect } from 'react-redux'
 
 import actions from './actions'
 
-const readModelPropsNames = ['readModelName', 'resolverName', 'query', 'variables', 'isReactive']
+const readModelPropsNames = [
+  'readModelName',
+  'resolverName',
+  'query',
+  'variables',
+  'isReactive'
+]
 
 const compareReadModelProps = (nextProps, prevProps) =>
   readModelPropsNames.reduce(
-    (acc, key) => acc && JSON.stringify(nextProps[key]) === JSON.stringify(prevProps[key]),
+    (acc, key) =>
+      acc && JSON.stringify(nextProps[key]) === JSON.stringify(prevProps[key]),
     true
   )
 
@@ -18,12 +25,21 @@ const extractReadModelProps = props =>
     return acc
   }, {})
 
-const extractReadModelValues = props => readModelPropsNames.map(key => props[key])
+const extractReadModelValues = props =>
+  readModelPropsNames.map(key => props[key])
 
-export default (mapStateToProps, mapDispatchToProps, mergeProps, options) => Component => {
-  const ConnectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps, options)(
-    Component
-  )
+export default (
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps,
+  options
+) => Component => {
+  const ConnectedComponent = connect(
+    mapStateToProps,
+    mapDispatchToProps,
+    mergeProps,
+    options
+  )(Component)
 
   class ReadModelConnector extends React.PureComponent {
     componentWillReceiveProps(nextProps) {
