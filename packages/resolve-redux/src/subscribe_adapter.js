@@ -1,6 +1,6 @@
 import socketIOClient from 'socket.io-client'
 
-import { getRootableUrl } from './util'
+import { getRootableUrl, makeLateResolvingPromise } from './util'
 
 export default function subscribeAdapter() {
   let onEvent, onDisconnect
@@ -13,22 +13,18 @@ export default function subscribeAdapter() {
     transports: ['websocket']
   })
 
-  let resolveClientId = null
-  let clientIdPromise = new Promise(resolve => (resolveClientId = resolve))
+  let latePromise = makeLateResolvingPromise()
 
   socket.on('event', event => onEvent(JSON.parse(event)))
 
-  socket.on('connect', () => resolveClientId(socket.id))
+  socket.on('connect', () => latePromise(socket.id))
 
   socket.on('reconnect', () => {
-    resolveClientId = null
-    clientIdPromise = new Promise(resolve => (resolveClientId = resolve))
-    resolveClientId(socket.id)
+    latePromise = makeLateResolvingPromise(socket.id)
   })
 
   socket.on('disconnect', reason => {
-    resolveClientId = null
-    clientIdPromise = new Promise(resolve => (resolveClientId = resolve))
+    latePromise = makeLateResolvingPromise()
     onDisconnect(reason)
   })
 
@@ -46,7 +42,7 @@ export default function subscribeAdapter() {
       })
     },
     async getClientId() {
-      return await clientIdPromise
+      return await latePromise
     }
   }
 }
