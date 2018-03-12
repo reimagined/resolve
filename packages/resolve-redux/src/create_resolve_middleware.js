@@ -153,17 +153,17 @@ export function subscribeReadmodel(
 
         if (!checkSelfPromise(selfPromise)) return
         const response = await orderedFetch(
-          getRootableUrl(`/api/createSubscription/${readModelName}`),
+          getRootableUrl(
+            `/api/subscriptions/${readModelName}/${socketId}/${resolverName}`
+          ),
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'same-origin',
             body: JSON.stringify({
-              resolverName,
-              query,
-              variables,
               isReactive,
-              socketId
+              query,
+              variables
             })
           }
         )
@@ -217,15 +217,15 @@ export function unsubscribeReadmodel(
 
   if (!socketId || socketId.constructor !== String) return
 
-  orderedFetch(getRootableUrl(`/api/removeSubscription/${readModelName}`), {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'same-origin',
-    body: JSON.stringify({
-      resolverName,
-      socketId
-    })
-  }).catch(error => null)
+  orderedFetch(
+    getRootableUrl(
+      `/api/subscriptions/${readModelName}/${socketId}/${resolverName}`
+    ),
+    {
+      method: 'DELETE',
+      credentials: 'same-origin'
+    }
+  ).catch(error => null)
 }
 
 const isClient = typeof window !== 'undefined'

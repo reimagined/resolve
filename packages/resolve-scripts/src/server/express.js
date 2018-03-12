@@ -221,12 +221,12 @@ Object.keys(queryExecutors).forEach(modelName => {
     const subscriptionProcesses = new Map()
 
     app.post(
-      getRootableUrl(`/api/createSubscription/${modelName}`),
+      getRootableUrl(`/api/subscriptions/${modelName}/:socketId/:resolverName`),
       bodyParser.urlencoded({ extended: false }),
       async (req, res) => {
         let subscriptionKey
         try {
-          subscriptionKey = `${req.body.socketId}:${req.body.resolverName}`
+          subscriptionKey = `${req.params.socketId}:${req.params.resolverName}`
 
           if (subscriptionProcesses.get(subscriptionKey)) {
             res
@@ -243,19 +243,19 @@ Object.keys(queryExecutors).forEach(modelName => {
             new Promise(resolve => (resolveForceStop = resolve))
           )
 
-          getSocketByClientId(req.body.socketId)
+          getSocketByClientId(req.params.socketId)
           const serialId = Date.now()
 
           const { result, forceStop } = await makeSubscriber(
             diff => {
               try {
-                const socketClient = getSocketByClientId(req.body.socketId)
+                const socketClient = getSocketByClientId(req.params.socketId)
                 socketClient.emit(
                   'event',
                   JSON.stringify({
                     type: '@@resolve/READMODEL_SUBSCRIPTION_DIFF',
                     readModelName: modelName,
-                    resolverName: req.body.resolverName,
+                    resolverName: req.params.resolverName,
                     serialId,
                     diff
                   })
@@ -298,13 +298,13 @@ Object.keys(queryExecutors).forEach(modelName => {
       }
     )
 
-    app.post(
-      getRootableUrl(`/api/removeSubscription/${modelName}`),
+    app.delete(
+      getRootableUrl(`/api/subscriptions/${modelName}/:socketId/:resolverName`),
       bodyParser.urlencoded({ extended: false }),
       async (req, res) => {
         try {
-          const subscriptionKey = `${req.body.socketId}:${
-            req.body.resolverName
+          const subscriptionKey = `${req.params.socketId}:${
+            req.params.resolverName
           }`
 
           const forceStopPromise = subscriptionProcesses.get(subscriptionKey)
