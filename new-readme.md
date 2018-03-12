@@ -36,19 +36,19 @@ reSolve is a framework for developing apps based on **CQRS**, **Domain-Driven De
 
 With reSolve you can easy and fast create different level difficulty applications. It could be applications like simple [ToDo List](#todo-list), or some reactive applications like StackOverflow, with distributed, highload and serverless architecture. Thanks to stack of technologies (CQRS, Event Sourcing, Domain-Driven Design, React + Redux) your application would be easy scalable, maintainable, so you can focus on application essence.
 
-### <a name="reactivity"><img src="https://user-images.githubusercontent.com/15689049/29659048-ad0d158a-88c5-11e7-9354-dbe4bb105ad7.png" height="60"> Your _Reactivity_ Is Our Work</a>
+### <a name="reactivity">💎 Your _Reactivity_ Is Our Work</a>
 
 Reactive app displays all changes instantly, even if they occurred in another application instance. It doesn't matter what types of instances do you have: local, on cloud, mobile, or even all together. With reSolve you can forget about any lines of code for reactivity, because we have it out of the box, so any reSolve application is reactive by default.
 
 //todo gif
 
-### <a name="distribution">You Focus on Application, reSolve Provides The _Distribution_</a>
+### <a name="distribution">💎 You Focus on Application, reSolve Provides The _Distribution_</a>
 
-### <a name="highload">Say Hello to _Highload_ System</a>
+### <a name="highload">💎 Say Hello to _Highload_ System</a>
 
-### <a name="fault-tolerance">_Fault Tolerance_ As A Default</a>
+### <a name="fault-tolerance">💎 _Fault Tolerance_ As A Default</a>
 
-### <a name="unidirection-data-flow">Develop with _Unidirectional Data Flow_</a>
+### <a name="unidirection-data-flow">💎 Develop with _Unidirectional Data Flow_</a>
 
 ## <a name="getting-started">**🚀 Getting Started**</a>
 
@@ -58,12 +58,11 @@ We have a special package [create-resolve-app](packages/create-resolve-app) for 
 
 //todo gif installation
 
-The created application is hosted at http://localhost:3000/. We recommend you "First Application From Scratch" (//todo guid and link) tutorial to learn more about application structure and work with reSolve. Also it'd be helpfull: [documentation](#documentation), [tutorials](#tutorials) and [examples](#examples).
+The created application is hosted at http://localhost:3000/. We recommend you **First Application From Scratch** (//todo guid and link) tutorial to learn more about application structure and work with reSolve. Also it'd be helpfull: [**documentation**](#documentation), [**tutorials**](#tutorials) and [**examples**](#examples).
 
 #### Using npx
 
 > Note: Don't forget about [npx](https://www.npmjs.com/package/npx) installation.
-
 ```bash
 npx create-resolve-app hello-world-app
 cd hello-world-app
@@ -72,8 +71,7 @@ npm run dev
 
 #### Using yarn
 
-> Note: Don't forget about [yarn](https://yarnpkg.com/lang/en/) installation.
-
+> Note: Don't forget about [yarn](https://yarnpkg.com/lang/en/) installation
 ```bash
 yarn create resolve-app hello-world-app
 cd hello-world-app
@@ -81,7 +79,6 @@ yarn run dev
 ```
 
 #### Using npm
-
 > Note: Installing a package globally may require administrative privileges. That means you have to use the sudo command for Unix-based systems or run a terminal with administrative privileges on Windows systems.
 
 ```bash
@@ -102,22 +99,19 @@ Example setup is similar with new application creation, but it has `--example` o
 
 //todo gif example installation
 
-The created example is hosted at http://localhost:3000/. Also you can look at [tutorials](#tutorials) for some examples.
+The created example is hosted at http://localhost:3000/. Also you can look at [**tutorials**](#tutorials) for some examples.
 
 #### Using npx
-
 ```bash
 npx create-resolve-app todo-example -e todo
 ```
 
 #### Using yarn
-
 ```bash
 yarn create resolve-app todo-example -e todo
 ```
 
 #### Using npm
-
 ```bash
 create-resolve-app todo-example -e todo
 ```
