@@ -4,85 +4,56 @@ import { connect } from 'react-redux'
 
 import actions from './actions'
 
-export default (
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps,
-  options
-) => Component => {
-  const ConnectedComponent = connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    mergeProps,
-    options
-  )(Component)
+const readModelPropsNames = ['readModelName', 'resolverName', 'query', 'variables', 'isReactive']
+
+const compareReadModelProps = (nextProps, prevProps) =>
+  readModelPropsNames.reduce(
+    (acc, key) => acc && JSON.stringify(nextProps[key]) === JSON.stringify(prevProps[key]),
+    true
+  )
+
+const extractReadModelProps = props =>
+  readModelPropsNames.reduce((acc, key) => {
+    acc[key] = props[key]
+    return acc
+  }, {})
+
+const extractReadModelValues = props => readModelPropsNames.map(key => props[key])
+
+export default (mapStateToProps, mapDispatchToProps, mergeProps, options) => Component => {
+  const ConnectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps, options)(
+    Component
+  )
 
   class ReadModelConnector extends React.PureComponent {
     componentWillReceiveProps(nextProps) {
-      if (
-        JSON.stringify(nextProps.variables) ===
-          JSON.stringify(this.variables) &&
-        nextProps.readModelName === this.readModelName &&
-        nextProps.resolverName === this.resolverName &&
-        nextProps.isReactive === this.isReactive &&
-        nextProps.query === this.query
-      ) {
-        return
-      }
+      if (!compareReadModelProps(nextProps, this)) return
 
       this.context.store.dispatch(
         actions.unsubscribeReadmodel(this.readModelName, this.resolverName)
       )
 
-      const {
-        readModelName,
-        resolverName,
-        query,
-        variables,
-        isReactive
-      } = mapStateToProps(this.context.store.getState(), nextProps)
-
-      this.context.store.dispatch(
-        actions.subscribeReadmodel(
-          readModelName,
-          resolverName,
-          query,
-          variables,
-          isReactive
-        )
+      const readModelProps = extractReadModelProps(
+        mapStateToProps(this.context.store.getState(), nextProps)
       )
 
-      this.readModelName = readModelName
-      this.resolverName = resolverName
-      this.query = query
-      this.variables = variables
-      this.isReactive = isReactive
+      this.context.store.dispatch(
+        actions.subscribeReadmodel(...extractReadModelValues(readModelProps))
+      )
+
+      Object.assign(this, readModelProps)
     }
 
     componentWillMount() {
-      const {
-        readModelName,
-        resolverName,
-        query,
-        variables,
-        isReactive
-      } = mapStateToProps(this.context.store.getState(), this.props)
-
-      this.context.store.dispatch(
-        actions.subscribeReadmodel(
-          readModelName,
-          resolverName,
-          query,
-          variables,
-          isReactive
-        )
+      const readModelProps = extractReadModelProps(
+        mapStateToProps(this.context.store.getState(), this.props)
       )
 
-      this.readModelName = readModelName
-      this.resolverName = resolverName
-      this.query = query
-      this.variables = variables
-      this.isReactive = isReactive
+      this.context.store.dispatch(
+        actions.subscribeReadmodel(...extractReadModelValues(readModelProps))
+      )
+
+      Object.assign(this, readModelProps)
     }
 
     componentWillUnmount() {
