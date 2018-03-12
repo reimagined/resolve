@@ -1,3 +1,5 @@
+import uuidV4 from 'uuid/v4'
+
 export default [
   {
     name: 'News',
@@ -5,7 +7,7 @@ export default [
       addNews: (_, { payload: { content, timestamp } }) => ({
         type: 'NewsAdded',
         payload: {
-          id: `ID${Math.floor(Math.random() * 1000000000000)}`,
+          id: uuidV4(),
           timestamp,
           content
         }

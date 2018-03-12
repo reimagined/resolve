@@ -13,7 +13,8 @@
     "resolve-bus-memory": "^0.5.0",
     "resolve-redux": "^0.5.0",
     "resolve-scripts": "^0.5.0",
-    "resolve-storage-lite": "^0.5.0"
+    "resolve-storage-lite": "^0.5.0",
+    "uuid": "^3.2.1"
   },
   "scripts": {
     "build": "resolve-scripts build",
