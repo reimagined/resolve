@@ -5,15 +5,15 @@ export default [
     projection: {
       Init: async store => {
         await store.defineStorage('Rating', [
-          { name: 'id', type: 'number', index: 'primary' },
+          { name: 'id', type: 'string', index: 'primary' },
           { name: 'rating', type: 'number', index: 'secondary' },
           { name: 'name', type: 'string' },
-          { name: 'votes', type: 'string' }
+          { name: 'votes', type: 'json' }
         ])
       },
 
       ItemAppended: async (store, { payload: { id, name } }) => {
-        await store.insert('Rating', { id, name, votecount: 0 })
+        await store.insert('Rating', { id, name, rating: 0, votes: {} })
       },
 
       RatingIncreased: async (store, { payload: { id, userId } }) => {
@@ -66,7 +66,7 @@ export default [
         return await store.find(
           'Rating',
           {},
-          { rating: 1, name: 1 },
+          { id: 1, rating: 1, name: 1 },
           { rating: -1 },
           skipItems,
           pageLength

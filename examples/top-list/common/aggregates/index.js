@@ -8,7 +8,7 @@ export default [
       }),
       upvote: (_, { payload: { id, userId } }) => ({
         type: 'RatingIncreased',
-        payload: { id }
+        payload: { id, userId }
       }),
       downvote: (_, { payload: { id, userId } }) => ({
         type: 'RatingDecreased',
