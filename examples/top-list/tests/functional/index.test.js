@@ -14,18 +14,6 @@ const loopAsync = async (count, fn) =>
     Promise.resolve()
   )
 
-const isArrayPreceeding = (
-  prevArr,
-  nextArr,
-  mergeIdx = prevArr.findIndex(val => val === nextArr[0])
-) =>
-  mergeIdx >= 0
-    ? createSequence(prevArr.length - mergeIdx - 1).reduce(
-        (acc, idx) => acc && nextArr[idx] === prevArr[idx + mergeIdx],
-        true
-      )
-    : false
-
 const delay = timeout => new Promise(resolve => setTimeout(resolve, timeout))
 
 // eslint-disable-next-line no-unused-expressions, no-undef
@@ -47,31 +35,31 @@ test('should be reactive', async t => {
         } direction`
       )
 
-      await t
-        .expect(await Selector('nav > span').innerText)
-        .contains(`Page ${page} from`)
-
-      let articleTexts = null
-
       await loopAsync(INSPECT_MATCH_TIMES, async () => {
-        const actualArticlesTexts = (await Selector('section').innerText)
+        const actualRatings = (await Selector('section').innerText)
           .split(/\n/g)
           .map(row => row.trim())
           .reverse()
           .slice(1)
+          .map(row => row.replace(/^.*?\((\d+?)\s*?votes\s*?\).*?$/g, '$1'))
+          .map(rating => parseInt(rating, 10))
 
-        if (articleTexts !== null) {
-          await t
-            .expect(isArrayPreceeding(articleTexts, actualArticlesTexts))
-            .eql(true)
-        }
-
-        articleTexts = actualArticlesTexts
+        await t
+          .expect(
+            actualRatings
+              .slice(1)
+              .reduce((acc, val, idx) => acc && val >= actualRatings[idx], true)
+          )
+          .eql(true)
 
         await delay(100)
       })
 
-      await t.click(await Selector('button').nth(forwardDirection ? 1 : 0))
+      await t.click(
+        await Selector('button').nth(
+          forwardDirection ? pageIdx + 1 : pageIdx - 1
+        )
+      )
 
       await delay(100)
     })
