@@ -133,19 +133,19 @@ It's a simple empty example that can be used like reSolve application boilerplat
 
 * top-list (//todo link)
 
-//todo description
+This example demonstrates reactive read-models that leads to client updating without page reloads. You can learn more about read-models in documentation (//todo link to the read-model topic)
 
 //todo image
 
 * [todo](https://github.com/reimagined/resolve/tree/master/examples/todo)
 
-//todo description
+This example demonstrates simple work with view-model. You can learn more in [ToDo List App Tutorial](https://github.com/reimagined/resolve/blob/master/docs/ToDo%20List%20App%20Tutorial.md) and documentation (//todo link to the view models topic)
 
 ![ToDo Example](https://github.com/reimagined/resolve/blob/feature/new_readme/readme-todo-example.png)
 
 * [todo-two-levels](https://github.com/reimagined/resolve/tree/master/examples/todo-two-levels)
 
-//todo description
+This example demonstrates work with view-models in case of all events subscribtion. Sometimes, for example for fast application prototyping, it's necessary to have view-model on client with all server events instead of part. There's a special feature called 'Wildcard', that allows to subscribe to all events, you can learn more about that in documentation (//todo link to view models topic).
 
 ![ToDo Two Levels Example](https://github.com/reimagined/resolve/blob/feature/new_readme/readme-todo-two-levels-example.png)
 
