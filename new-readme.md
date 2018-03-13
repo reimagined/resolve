@@ -44,11 +44,19 @@ Reactive app displays all changes instantly, even if they occurred in another ap
 
 ### <a name="distribution">💎 You Focus on Application, reSolve Provides The _Distribution_</a>
 
+//todo text
+
 ### <a name="highload">💎 Say Hello to _Highload_ System</a>
+
+//todo text
 
 ### <a name="fault-tolerance">💎 _Fault Tolerance_ As A Default</a>
 
+//todo text
+
 ### <a name="unidirection-data-flow">💎 Develop with _Unidirectional Data Flow_</a>
+
+//todo text
 
 ## <a name="getting-started">**🚀 Getting Started**</a>
 
@@ -97,7 +105,7 @@ npm run dev
 
 Example setup is similar with new application creation, but it has `--example` or `-e` flag with example name.
 
-//todo gif example installation
+//todo gif
 
 The created example is hosted at http://localhost:3000/. Also you can look at [**tutorials**](#tutorials) for some examples.
 
@@ -116,17 +124,45 @@ yarn create resolve-app todo-example -e todo
 create-resolve-app todo-example -e todo
 ```
 
-Example names:
+Examples:
 * [hello-world](https://github.com/reimagined/resolve/tree/master/examples/hello-world)
+
+It's a simple empty example that can be used like reSolve application boilerplate.
+
+![Hello World Example](https://github.com/reimagined/resolve/blob/feature/new_readme/readme-hello-world-example.png)
+
+* top-list (//todo link)
+
+//todo description
+
+//todo image
+
 * [todo](https://github.com/reimagined/resolve/tree/master/examples/todo)
+
+//todo description
+
+![ToDo Example](https://github.com/reimagined/resolve/blob/feature/new_readme/readme-todo-example.png)
+
 * [todo-two-levels](https://github.com/reimagined/resolve/tree/master/examples/todo-two-levels)
+
+//todo description
+
+![ToDo Two Levels Example](https://github.com/reimagined/resolve/blob/feature/new_readme/readme-todo-two-levels-example.png)
 
 ## <a name="documentation">**📚 Documentation**</a>
 
 ### <a name="basic-concepts">Basic Concepts</a>
 
+//todo text
+
 ### <a name="compatibility">Compatibility</a>
+
+//todo text
 
 ### <a name="api-references">API References</a>
 
+//todo text
+
 ## <a name="get-in-touch">**📢 Get in Touch**</a>
+
+//todo text
