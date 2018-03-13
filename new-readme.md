@@ -1,7 +1,7 @@
 
 # [<img src="https://user-images.githubusercontent.com/15689049/29659048-ad0d158a-88c5-11e7-9354-dbe4bb105ad7.png" height="60">](https://github.com/reimagined/resolve/)
 
-[![Build Status](https://travis-ci.org/reimagined/resolve.svg?branch=master)](https://travis-ci.org/reimagined/resolve) [![npm version](https://badge.fury.io/js/create-resolve-app.svg)](https://badge.fury.io/js/create-resolve-app) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/reimagined/resolve/master/LICENSE)
+[![Build Status](https://travis-ci.org/reimagined/resolve.svg?branch=master)](https://travis-ci.org/reimagined/resolve) [![npm version](https://badge.fury.io/js/create-resolve-app.svg)](https://badge.fury.io/js/create-resolve-app) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/reimagined/resolve/master/LICENSE) [![Twitter URL](	https://img.shields.io/twitter/url/http/shields.io.svg?style=social&logo=twitter)
 
 reSolve is a framework for developing apps based on **CQRS**, **Domain-Driven Design** and **Event Sourcing** using **React + Redux** on the client. It negates differences between your domain and technical languages, and allows you to focus on application code.
 
@@ -124,7 +124,7 @@ yarn create resolve-app todo-example -e todo
 create-resolve-app todo-example -e todo
 ```
 
-Examples:
+Examples: //todo make examples in browser and mobile
 * [**hello-world**](https://github.com/reimagined/resolve/tree/master/examples/hello-world)
 
 It's a simple empty example that can be used like **reSolve application boilerplate**.
@@ -165,4 +165,11 @@ This example demonstrates work with view-models in case of **all events subscrib
 
 ## <a name="get-in-touch">**📢 Get in Touch**</a>
 
-//todo text
+Feel free to contact us if you have any questions!
+
+* ✉️ We'll glad to see your e-mails to **reimagined@devexpress.com**
+* 💬 Join us on [**Twitter**](https://twitter.com/resolvejs). We post interesting arcticles, announcements, make twitter polls about reSolve development and even have disputes about related technologies, so follow us!
+* 💻 We also have a [**Facebook**](https://www.facebook.com/resolvejs/) page, join us!
+* 📃 You can find our articles on [**Medium**](https://medium.com/resolvejs)
+* ❓ You are welcome with any your questions or enhancements in [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
+* 🔧 We'll happy if you became one of reSolve [contributors](https://github.com/reimagined/resolve/pulls)!
