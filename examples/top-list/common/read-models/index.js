@@ -17,7 +17,9 @@ export default [
       },
 
       RatingIncreased: async (store, { payload: { id, userId } }) => {
-        if (store.count('Rating', { id, [`votes.${userId}`]: true }) > 0) {
+        if (
+          (await store.count('Rating', { id, [`votes.${userId}`]: true })) > 0
+        ) {
           return
         }
         await store.update(
@@ -31,7 +33,9 @@ export default [
       },
 
       RatingDecreased: async (store, { payload: { id, userId } }) => {
-        if (store.count('Rating', { id, [`votes.${userId}`]: true }) < 1) {
+        if (
+          (await store.count('Rating', { id, [`votes.${userId}`]: true })) < 1
+        ) {
           return
         }
         await store.update(
