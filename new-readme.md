@@ -167,9 +167,14 @@ This example demonstrates work with view-models in case of **all events subscrib
 
 Feel free to contact us if you have any questions!
 
-* ✉️ We'll glad to see your e-mails to **reimagined@devexpress.com**
-* 💬 Join us on [**Twitter**](https://twitter.com/resolvejs). We post interesting arcticles, announcements, make twitter polls about reSolve development and even have disputes about related technologies, so follow us!
-* 💻 We also have a [**Facebook**](https://www.facebook.com/resolvejs/) page, join us!
-* 📃 You can find our articles on [**Medium**](https://medium.com/resolvejs)
-* ❓ You are welcome with any your questions or enhancements in [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
-* 🔧 We'll happy if you became one of reSolve [contributors](https://github.com/reimagined/resolve/pulls)!
+✉️ We'll glad to see your e-mails to **reimagined@devexpress.com**
+
+💬 Join us on [**Twitter**](https://twitter.com/resolvejs). We post interesting arcticles, announcements, make twitter polls about reSolve development and even have disputes about related technologies, so follow us!
+
+💻 We also have a [**Facebook**](https://www.facebook.com/resolvejs/) page, join us!
+
+📃 You can find our articles on [**Medium**](https://medium.com/resolvejs)
+
+❓ You are welcome with any your questions or enhancements in [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
+
+🔧 We'll happy if you became one of reSolve [**contributors**](https://github.com/reimagined/resolve/pulls)!
