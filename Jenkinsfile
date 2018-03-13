@@ -69,12 +69,12 @@ pipeline {
             }
         }
 
-        stage('Examples [ news-list ] Functional Tests') {
+        stage('Examples [ top-list ] Functional Tests') {
             steps {
                 script {
                     sh """
                         /init.sh
-                        cd examples/news-list
+                        cd examples/top-list
                         yarn test:functional --browser=path:/chromium
                     """
                 }
