@@ -1,13 +1,13 @@
 import generateCodename from 'project-name-generator'
 
-const ITEMS_COUNT = 200
+const ITEMS_COUNT = 100
 
 const delay = timeout => new Promise(resolve => setTimeout(resolve, timeout))
 
 const rand = max => Math.floor(Math.random() * max)
 
 async function mainSagaImpl(executeCommand, pushInterval) {
-  for (let idx of Array.from(Array(ITEMS_COUNT))) {
+  for (let idx of Array.from(Array(ITEMS_COUNT)).map((_, idx) => idx)) {
     await executeCommand({
       aggregateId: 'root-id',
       aggregateName: 'Rating',

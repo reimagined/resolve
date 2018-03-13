@@ -9,7 +9,7 @@ const ItemsViewer = ({ items, page }) =>
     <section>
       {items.map((item, idx) => (
         <article key={`LI${idx}`}>
-          <b>{+(ITEMS_PER_PAGE * idx) + 1}</b>: {item.content}
+          <b>{+(ITEMS_PER_PAGE * page) + idx + 1}</b>: {item.name} ({item.rating} votes)
         </article>
       ))}
     </section>
@@ -20,8 +20,8 @@ const ItemsViewer = ({ items, page }) =>
 const ItemsPager = ({ count, page, setPage }) => (
   <nav>
     {Array.from(new Array(Number.isInteger(count) && count > 0 ? +count : 0)).map((_, idx) => (
-      <button onClick={setPage.bind(null, idx)} disabled={idx === page}>
-        {`${+(ITEMS_PER_PAGE * idx) + 1} - ${(ITEMS_PER_PAGE + 1) * idx}`}
+      <button onClick={setPage.bind(null, idx)} disabled={idx === page} key={`BT${idx}`}>
+        {`${+(ITEMS_PER_PAGE * idx) + 1} - ${ITEMS_PER_PAGE * (idx + 1)}`}
       </button>
     ))}
   </nav>
@@ -38,7 +38,9 @@ const getReadModel = (state, modelName, resolverName) => {
 const FilledItemsViewer = connectReadModel((state, { page }) => ({
   readModelName: 'Rating',
   resolverName: 'TopRating',
-  query: `query($page: Int) { TopRating(page: $page) { id, rating, name } }`,
+  query: `query($page: Int, $limit: Int) {
+    TopRating(page: $page, limit: $limit) { id, rating, name }
+  }`,
   variables: { page, limit: ITEMS_PER_PAGE },
   isReactive: true,
   items: getReadModel(state, 'Rating', 'TopRating'),
@@ -48,7 +50,9 @@ const FilledItemsViewer = connectReadModel((state, { page }) => ({
 const FilledItemsPager = connectReadModel((state, { page, setPage }) => ({
   readModelName: 'Rating',
   resolverName: 'PagesCount',
-  query: `query { PagesCount }`,
+  query: `query($limit: Int) {
+    PagesCount(limit: $limit)
+  }`,
   variables: { limit: ITEMS_PER_PAGE },
   isReactive: true,
   count: getReadModel(state, 'Rating', 'PagesCount'),
