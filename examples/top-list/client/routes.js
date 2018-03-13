@@ -1,26 +1,41 @@
 import React from 'react'
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import { Helmet } from 'react-helmet'
 import { connectReadModel } from 'resolve-redux'
 
 const ITEMS_PER_PAGE = 10
 
-const ItemsViewer = ({ items, page }) =>
-  items && Array.isArray(items) ? (
-    <section>
-      {items.map((item, idx) => (
-        <article key={`LI${idx}`}>
-          <b>{+(ITEMS_PER_PAGE * page) + idx + 1}</b>: {item.name} ({item.rating} votes)
-        </article>
-      ))}
+const ItemsViewer = ({ items, page }) => (
+  <ReactCSSTransitionGroup
+    transitionName="example"
+    transitionEnterTimeout={500}
+    transitionLeaveTimeout={500}
+  >
+    <section key={`SC-${page}`}>
+      {items && Array.isArray(items)
+        ? items.map((item, idx) => (
+            <article key={`LI-${page}-${idx}`}>
+              <b>{+(ITEMS_PER_PAGE * page) + idx + 1}</b>: {item.name} ({
+                item.rating
+              }{' '}
+              votes)
+            </article>
+          ))
+        : 'No items found'}
     </section>
-  ) : (
-    <section>No items found</section>
-  )
+  </ReactCSSTransitionGroup>
+)
 
 const ItemsPager = ({ count, page, setPage }) => (
   <nav>
-    {Array.from(new Array(Number.isInteger(count) && count > 0 ? +count : 0)).map((_, idx) => (
-      <button onClick={setPage.bind(null, idx)} disabled={idx === page} key={`BT${idx}`}>
+    {Array.from(
+      new Array(Number.isInteger(count) && count > 0 ? +count : 0)
+    ).map((_, idx) => (
+      <button
+        onClick={setPage.bind(null, idx)}
+        disabled={idx === page}
+        key={`BT${idx}`}
+      >
         {`${+(ITEMS_PER_PAGE * idx) + 1} - ${ITEMS_PER_PAGE * (idx + 1)}`}
       </button>
     ))}
@@ -74,6 +89,7 @@ class Index extends React.Component {
                 margin-bottom: 5px;
                 background-color: #eeeeee;
                 max-width: 350px;
+                width: 350px;
               }
               article:nth-child(odd) {
                 background-color: #dddddd;
@@ -81,6 +97,22 @@ class Index extends React.Component {
               nav {
                 padding: 5px 10px;
                 max-width: 350px;
+
+              }
+              .example-enter {
+                position: absolute;
+                opacity: 0.01;
+              }
+              .example-enter.example-enter-active {
+                opacity: 1;
+                transition: opacity 500ms ease-in;
+              }
+              .example-leave {
+                opacity: 1;
+              }
+              .example-leave.example-leave-active {
+                opacity: 0.01;
+                transition: opacity 500ms ease-in;
               }`}
           </style>
         </Helmet>
