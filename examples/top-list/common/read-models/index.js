@@ -1,59 +1,83 @@
-const NEWS_PER_PAGE = 10
-
 export default [
   {
-    name: 'News',
+    name: 'Rating',
 
     projection: {
       Init: async store => {
-        await store.defineStorage('News', [
-          { name: 'id', type: 'string', index: 'primary' },
-          { name: 'timestamp', type: 'number', index: 'secondary' },
-          { name: 'content', type: 'string' }
+        await store.defineStorage('Rating', [
+          { name: 'id', type: 'number', index: 'primary' },
+          { name: 'rating', type: 'number', index: 'secondary' },
+          { name: 'name', type: 'string' },
+          { name: 'votes', type: 'string' }
         ])
       },
 
-      NewsAdded: async (store, event) => {
-        await store.insert('News', {
-          id: event.payload.id,
-          timestamp: event.payload.timestamp,
-          content: event.payload.content
-        })
+      ItemAppended: async (store, { payload: { id, name } }) => {
+        await store.insert('Rating', { id, name, votecount: 0 })
+      },
+
+      RatingIncreased: async (store, { payload: { id, userId } }) => {
+        if (store.count('Rating', { id, [`votes.${userId}`]: true }) > 0) {
+          return
+        }
+        await store.update(
+          'Rating',
+          { id },
+          {
+            $inc: { rating: 1 },
+            $set: { [`votes.${userId}`]: true }
+          }
+        )
+      },
+
+      RatingDecreased: async (store, { payload: { id, userId } }) => {
+        if (store.count('Rating', { id, [`votes.${userId}`]: true }) < 1) {
+          return
+        }
+        await store.update(
+          'Rating',
+          { id },
+          {
+            $inc: { rating: -1 },
+            $unset: { [`votes.${userId}`]: true }
+          }
+        )
       }
     },
 
     gqlSchema: `
-      type NewsItem {
+      type RatingItem {
         id: ID!
-        timestamp: Int!
-        content: String!
+        rating: Int!
+        name: String!
       }
       type Query {
-        LatestNews(page: Int!): [NewsItem]
+        TopRating(page: Int!): [RatingItem]
         PagesCount: Int!
       }
     `,
 
     gqlResolvers: {
-      LatestNews: async (store, args) => {
-        const skip =
-          Math.max(Number.isInteger(args && +args.page) ? +args.page : 0, 0) *
-          NEWS_PER_PAGE
+      TopRating: async (store, args) => {
+        const pageNumber = Math.max(Number.isInteger(args && +args.page) ? +args.page : 0, 0)
+        const pageLength = Math.max(Number.isInteger(args && +args.limit) ? +args.limit : 10, 0)
+        const skipItems = pageNumber * pageLength
+
         return await store.find(
-          'News',
+          'Rating',
           {},
-          null,
-          { timestamp: -1 },
-          skip,
-          NEWS_PER_PAGE
+          { rating: 1, name: 1 },
+          { rating: -1 },
+          skipItems,
+          pageLength
         )
       },
 
-      PagesCount: async store => {
-        const newsCount = await store.count('News', {})
-        return newsCount > 0
-          ? Math.floor((newsCount - 1) / NEWS_PER_PAGE) + 1
-          : 0
+      PagesCount: async (store, args) => {
+        const pageLength = Math.max(Number.isInteger(args && +args.limit) ? +args.limit : 10, 0)
+        const count = await store.count('Rating', {})
+
+        return count > 0 ? Math.floor((count - 1) / pageLength) + 1 : 0
       }
     }
   }

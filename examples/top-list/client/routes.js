@@ -2,39 +2,30 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { connectReadModel } from 'resolve-redux'
 
-const NewsViewer = ({ news }) =>
-  news && Array.isArray(news) ? (
+const ITEMS_PER_PAGE = 10
+
+const ItemsViewer = ({ items, page }) =>
+  items && Array.isArray(items) ? (
     <section>
-      {news.map((item, idx) => (
-        <article key={`LI${idx}`}>{item.content}</article>
+      {items.map((item, idx) => (
+        <article key={`LI${idx}`}>
+          <b>{+(ITEMS_PER_PAGE * idx) + 1}</b>: {item.content}
+        </article>
       ))}
     </section>
   ) : (
-    <section>No news found</section>
+    <section>No items found</section>
   )
 
-const NewsPager = ({ count, page, setPreviousPage, setNextPage }) =>
-  Number.isInteger(count) && count > 0 ? (
-    <nav>
-      <button
-        onClick={page > 0 ? setPreviousPage : () => null}
-        disabled={!(page > 0)}
-      >
-        {`<<`}
+const ItemsPager = ({ count, page, setPage }) => (
+  <nav>
+    {Array.from(new Array(Number.isInteger(count) && count > 0 ? +count : 0)).map((_, idx) => (
+      <button onClick={setPage.bind(null, idx)} disabled={idx === page}>
+        {`${+(ITEMS_PER_PAGE * idx) + 1} - ${(ITEMS_PER_PAGE + 1) * idx}`}
       </button>
-      <span>
-        Page {page + 1} from {count}
-      </span>
-      <button
-        onClick={page < count ? setNextPage : () => null}
-        disabled={!(page < count - 1)}
-      >
-        {`>>`}
-      </button>
-    </nav>
-  ) : (
-    <nav />
-  )
+    ))}
+  </nav>
+)
 
 const getReadModel = (state, modelName, resolverName) => {
   try {
@@ -44,33 +35,30 @@ const getReadModel = (state, modelName, resolverName) => {
   }
 }
 
-const FilledNewsViewer = connectReadModel((state, { page }) => ({
-  readModelName: 'News',
-  resolverName: 'LatestNews',
-  query: `query($page: Int) { LatestNews(page: $page) { id, timestamp, content } }`,
-  variables: { page },
+const FilledItemsViewer = connectReadModel((state, { page }) => ({
+  readModelName: 'Rating',
+  resolverName: 'TopRating',
+  query: `query($page: Int) { TopRating(page: $page) { id, rating, name } }`,
+  variables: { page, limit: ITEMS_PER_PAGE },
   isReactive: true,
-  news: getReadModel(state, 'News', 'LatestNews')
-}))(NewsViewer)
+  items: getReadModel(state, 'Rating', 'TopRating'),
+  page
+}))(ItemsViewer)
 
-const FilledNewsPager = connectReadModel(
-  (state, { page, setPreviousPage, setNextPage }) => ({
-    readModelName: 'News',
-    resolverName: 'PagesCount',
-    query: `query { PagesCount }`,
-    variables: {},
-    isReactive: true,
-    count: getReadModel(state, 'News', 'PagesCount'),
-    page,
-    setPreviousPage,
-    setNextPage
-  })
-)(NewsPager)
+const FilledItemsPager = connectReadModel((state, { page, setPage }) => ({
+  readModelName: 'Rating',
+  resolverName: 'PagesCount',
+  query: `query { PagesCount }`,
+  variables: { limit: ITEMS_PER_PAGE },
+  isReactive: true,
+  count: getReadModel(state, 'Rating', 'PagesCount'),
+  page,
+  setPage
+}))(ItemsPager)
 
 class Index extends React.Component {
   state = { page: 0 }
-  setPreviousPage = () => this.setState({ page: this.state.page - 1 })
-  setNextPage = () => this.setState({ page: this.state.page + 1 })
+  setPage = page => this.setState({ page })
 
   render() {
     return (
@@ -88,15 +76,14 @@ class Index extends React.Component {
               }
               nav {
                 padding: 5px 10px;
+                max-width: 350px;
               }`}
           </style>
         </Helmet>
-        <FilledNewsViewer page={this.state.page} />
-        <FilledNewsPager
-          page={this.state.page}
-          setPreviousPage={this.setPreviousPage}
-          setNextPage={this.setNextPage}
-        />
+
+        <FilledItemsViewer page={this.state.page} />
+
+        <FilledItemsPager page={this.state.page} setPage={this.setPage} />
       </div>
     )
   }
