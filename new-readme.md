@@ -157,7 +157,9 @@ This example demonstrates work with view-models in case of **all events subscrib
 
 ### <a name="compatibility">Compatibility</a>
 
-//todo text
+You can comfortably run and develop reSolve application for **Linux**, **Mac** and **Windows** operation systems using **bash** and **cmd** terminals. Also you can develop using **React Native**, but currently it's **experimental** approach.
+
+You can use any package manager, but we recommend you to look at [**npx**](https://www.npmjs.com/package/npx) and [**yarn**](https://yarnpkg.com/lang/en/) apart from **npm**. We use exactly npx manager in our tutorials like a default way.
 
 ### <a name="api-references">API References</a>
 
