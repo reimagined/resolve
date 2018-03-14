@@ -182,3 +182,9 @@ Feel free to contact us if you have any questions!
 🔧 We'll happy if you became one of reSolve [**contributors**](https://github.com/reimagined/resolve/pulls)!
 
 ⭐️ Don't forget about **GitHub Stars** if you like reSolve!
+
+
+
+<p align="center">reSolve is developed by</p>
+<p align="center"><a href="https://devexpress.com">💛Developer Express Inc💛</a></p>
+<p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-footer-logo.png"></p>
