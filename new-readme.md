@@ -179,4 +179,4 @@ Feel free to contact us if you have any questions!
 
 🔧 We'll happy if you became one of reSolve [**contributors**](https://github.com/reimagined/resolve/pulls)!
 
-⭐️ Don't forget about GitHub Stars if you like reSolve!
+⭐️ Don't forget about **GitHub Stars** if you like reSolve!
