@@ -150,12 +150,11 @@ if (unknownOptions && unknownOptions.length) {
 
     const proc = spawn.sync(command, [], { stdio: 'inherit', shell: true })
     if (proc.status !== 0) {
-      log(chalk.red(`\`${command}\` failed`))
       throw new Error(`\`${command}\` failed`)
     }
   }
 
-  const copyExampleCMD = () => {
+  const copyExampleCMD = prevErr => {
     log()
     let examplePathCMD = examplePath.split('/').join('\\')
     let command =
@@ -165,6 +164,12 @@ if (unknownOptions && unknownOptions.length) {
 
     const proc = spawn.sync(command, [], { stdio: 'inherit', shell: true })
     if (proc.status !== 0) {
+      log()
+      log('Bash error:')
+      log(chalk.red(prevErr))
+      log()
+      log(`CMD \`${command}\` failed`)
+
       throw Error(`\`${command}\` failed`)
     }
   }
