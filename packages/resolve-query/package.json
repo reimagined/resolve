@@ -28,6 +28,7 @@
     "sinon": "^3.3.0"
   },
   "dependencies": {
+    "diff-json": "^0.1.11",
     "graphql": "^0.11.7",
     "graphql-tools": "^2.7.2",
     "object-hash": "^1.1.8",
