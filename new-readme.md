@@ -40,7 +40,7 @@ With reSolve you can easy and fast create different level difficulty application
 
 Reactive app displays all changes instantly, even if they occurred in another application instance. It doesn't matter what types of instances do you have: local, on cloud, mobile, or even all together. With reSolve you can forget about any lines of code for reactivity, because we have it out of the box, so any reSolve application is reactive by default.
 
-//todo gif
+<p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-why-resolve-reactivity.gif"></p>
 
 ### <a name="distribution">💎 You Focus on Application, reSolve Provides The _Distribution_</a>
 
