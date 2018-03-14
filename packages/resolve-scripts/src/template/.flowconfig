@@ -1,5 +1,0 @@
-[ignore]
-.*/node_modules/.*
-.*\.json
-[options]
-suppress_comment= \\(.\\|\n\\)*\\$FlowIgnore
