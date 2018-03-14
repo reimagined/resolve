@@ -3,7 +3,7 @@ import createDefaultAdapter from 'resolve-readmodel-memory'
 
 const emptyFunction = () => {}
 
-const init = (adapter, eventStore, projection) => {
+const init = (adapter, eventStore, projection, eventListener) => {
   if (projection === null) {
     return {
       ...adapter.init(),
@@ -51,6 +51,7 @@ const init = (adapter, eventStore, projection) => {
 
       flowPromise = flowPromise
         .then(projection[event.type].bind(null, event))
+        .then(eventListener.bind(null, event))
         .catch(forceStop)
     }
 
@@ -88,7 +89,10 @@ const init = (adapter, eventStore, projection) => {
 
 const read = async (repository, adapter, eventStore, projection, ...args) => {
   if (!repository.loadDonePromise) {
-    Object.assign(repository, init(adapter, eventStore, projection))
+    Object.assign(
+      repository,
+      init(adapter, eventStore, projection, repository.eventListener)
+    )
   }
 
   const { getError, getReadable, loadDonePromise } = repository
@@ -107,7 +111,13 @@ const createReadModel = ({ projection, eventStore, adapter }) => {
   const builtProjection = projection
     ? currentAdapter.buildProjection(projection)
     : null
-  const repository = {}
+  const externalEventListeners = []
+  const repository = {
+    eventListener: event =>
+      externalEventListeners.forEach(callback =>
+        Promise.resolve().then(callback.bind(null, event))
+      )
+  }
   const getReadModel = read.bind(
     null,
     repository,
@@ -126,11 +136,24 @@ const createReadModel = ({ projection, eventStore, adapter }) => {
     Object.keys(repository).forEach(key => {
       delete repository[key]
     })
+    externalEventListeners.length = 0
 
     currentAdapter.reset()
   }
 
-  return reader
+  reader.addEventListener = callback => {
+    if (typeof callback !== 'function') return
+    externalEventListeners.push(callback)
+  }
+
+  reader.removeEventListener = callback => {
+    if (typeof callback !== 'function') return
+    const idx = externalEventListeners.findIndex(cb => callback === cb)
+    if (idx < 0) return
+    externalEventListeners.splice(idx, 1)
+  }
+
+  return Object.freeze(reader)
 }
 
 export default createReadModel
