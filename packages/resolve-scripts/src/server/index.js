@@ -24,6 +24,7 @@ const io = socketIO(server, {
 })
 
 io.on('connection', connectionHandler)
+app.socketIo = io
 
 const protocol = process.env.HTTPS === 'true' ? 'https' : 'http'
 const appName = JSON.parse(

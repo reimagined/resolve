@@ -41,3 +41,29 @@ export function getRootableUrl(path) {
 export function getKey(viewModel, aggregateId) {
   return `${viewModel}:${aggregateId}`
 }
+
+export function delay(timeout) {
+  return new Promise(resolve => setTimeout(resolve, timeout))
+}
+
+export function makeLateResolvingPromise(...args) {
+  if (args.length > 1) {
+    throw new Error(
+      'Make late-resolved promise accepts only zero on one argument'
+    )
+  }
+  let promiseResolver = () => null
+  const promise = new Promise(resolve => (promiseResolver = resolve))
+
+  const result = arg => promiseResolver(arg)
+  Object.setPrototypeOf(result, Promise.prototype)
+
+  result.then = (onResolve, onReject) => promise.then(onResolve, onReject)
+  result.catch = onReject => promise.catch(onReject)
+
+  if (args.length === 1) {
+    result(args[0])
+  }
+
+  return result
+}
