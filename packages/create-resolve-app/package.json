@@ -23,11 +23,13 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app#readme",
   "dependencies": {
+    "adm-zip": "^0.4.7",
     "chalk": "^2.1.0",
     "command-line-args": "^4.0.7",
     "cross-spawn": "^5.1.0",
     "fs-extra": "^4.0.1",
-    "regenerator-runtime": "^0.11.0",
+    "https": "^1.0.0",
+    "replace": "^0.3.0",
     "validate-npm-package-name": "^3.0.0"
   }
 }
