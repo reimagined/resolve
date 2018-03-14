@@ -140,13 +140,28 @@ if (unknownOptions && unknownOptions.length) {
       })
     })
 
-  const copyExample = () => {
+  const copyExampleBash = () => {
     log()
     log(chalk.green('Copy example && install dependencies'))
     let command =
       `cd ${appName} ` +
       ` && cp -r ${examplePath}/* . && cp -r ${examplePath}/.[a-zA-Z0-9]* .` +
       ` && rm -rf ./resolve-${branch} && npm i`
+
+    const proc = spawn.sync(command, [], { stdio: 'inherit', shell: true })
+    if (proc.status !== 0) {
+      log(chalk.red(`\`${command}\` failed`))
+      throw new Error(`\`${command}\` failed`)
+    }
+  }
+
+  const copyExampleCMD = () => {
+    log()
+    let examplePathCMD = examplePath.split('/').join('\\')
+    let command =
+      `cd ${appName} ` +
+      ` && xcopy ${examplePathCMD} /E /Q ` +
+      ` && rmdir /S /Q resolve-${branch} && npm i`
 
     const proc = spawn.sync(command, [], { stdio: 'inherit', shell: true })
     if (proc.status !== 0) {
@@ -206,7 +221,8 @@ if (unknownOptions && unknownOptions.length) {
   startCreatingApp()
     .then(checkAppName)
     .then(downloadRepo)
-    .then(copyExample)
+    .then(copyExampleBash)
+    .catch(copyExampleCMD)
     .then(patchPackageJson)
     .then(printFinishOutput)
     .catch(e => log(chalk.red(e)))
