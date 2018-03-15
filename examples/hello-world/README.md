@@ -1,9 +1,3 @@
-
-Here must be hello world tutorial - project structure, mandatory files/dirs, etc
-Rest of this file must be transformed into Getting started in docs
-
-
-
 # **🚀 ReSolve App**
 This project is an application created with [Create ReSolve App](../../../create-resolve-app). This package creates an empty single page application by default or a typical Todo List application if you use the `--sample` option. This application is built on the CQRS and Event Sourcing principles using React+Redux on the client.
 
