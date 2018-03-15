@@ -1,9 +1,3 @@
-
-Here must be hello world tutorial - project structure, mandatory files/dirs, etc
-Rest of this file must be transformed into Getting started in docs
-
-
-
 # **🚀 ReSolve App**
 This project is an application created with [Create ReSolve App](../../../create-resolve-app). This package creates an empty single page application by default or a typical Todo List application if you use the `--sample` option. This application is built on the CQRS and Event Sourcing principles using React+Redux on the client.
 
@@ -579,13 +573,13 @@ The *resolve.server.config.js* file contains information for the reSolve library
   ```
 
 ### resolve-scripts-auth
-The virtual package provide `resolveAuth(PassportStrategyClass, options)` function (wrapper for passport strategies).
+This virtual package provides the `resolveAuth(PassportStrategyClass, options)` function, which is a wrapper for passport strategies.
 
 Options:
      
-* `strategy: {...}` - specifies strategy's options;
-* `routes: {...}` -  configures strategy's routing;
-* `failureCallback: (error, redirect, { resolve, body }) => {...}` - this callback is used for handling an error. The default callback redirects to the `/login?error=...` page;
+* `strategy: {...}` - specifies the strategy options;
+* `routes: {...}` - configures the strategy routing;
+* `failureCallback: (error, redirect, { resolve, body }) => {...}` - used for error handling. The default callback redirects a user to the `/login?error=...` page;
   
 #### Auth strategies
 
