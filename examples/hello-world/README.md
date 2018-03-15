@@ -490,15 +490,22 @@ The *resolve.server.config.js* file contains information for the reSolve library
       ```js
       // resolve.server.config.js
 
-      import { localStrategy, githubStrategy, googleStrategy } from 'resolve-scripts-auth'
+      import resolveAuth from 'resolve-scripts/dist/server/auth'
+      
+      import { Strategy as PassportLocalStrategy } from 'passport-local'
+      import { OIDCStrategy as PassportAzureADStrategy } from 'passport-azure-ad'
+      import { Strategy as PassportGitHubStrategy } from 'passport-github'
+      import { Strategy as PassportGoogleStrategy } from 'passport-google-oauth20'
+
       // ...
       export default {
       // ...
         auth: {
           strategies: [
-            localStrategy(/* options */),
-            githubStrategy(/* options */),
-            googleStrategy(/* options */)
+            resolveAuth(PassportLocalStrategy, {/* options */}),
+            resolveAuth(PassportAzureADStrategy, {/* options */}),
+            resolveAuth(PassportGitHubStrategy, {/* options */}),
+            resolveAuth(PassportGoogleStrategy, {/* options */})
             // other strategies
           ]
         }
@@ -572,22 +579,19 @@ The *resolve.server.config.js* file contains information for the reSolve library
   ```
 
 ### resolve-scripts-auth
-This virtual package provides [localStrategy](#localStrategy), [githubStrategy](#githubStrategy) and [googleStrategy](#googleStrategy).
+The virtual package provide `resolveAuth(PassportStrategyClass, options)` function (wrapper for passport strategies).
 
-A strategy's predefined options:
-
+Options:
+     
 * `strategy: {...}` - specifies strategy's options;
 * `routes: {...}` -  configures strategy's routing;
 * `failureCallback: (error, redirect, { resolve, body }) => {...}` - this callback is used for handling an error. The default callback redirects to the `/login?error=...` page;
-* `done` - this callback allows you to send notifications about errors or successful operations:
-   * Call `done('My error message')` to notify a user about an error.
-   * Call `done(null, myData)` to notify a user that an operation is completed successfully (it sets the 'jwt' value and redirects to the homepage).
-
+  
 #### Auth strategies
 
 * #### localStrategy
   ```js
-  localStrategy({
+  resolveAuth(PassportLocalStrategy, {
     strategy: {
       usernameField: 'username', // your usernameField name in a POST request
       passwordField: 'password', // your passwordField name in a POST request
@@ -603,21 +607,19 @@ A strategy's predefined options:
         method: 'post'
       }
     },
-    registerCallback: ({ resolve, body }, username, password, done) => {
+    registerCallback: async ({ resolve, body }, username, password) => {
       // your code to register a new user
-      // you need to call the 'done' callback to notify a user about an error or successful operation
     },
-    loginCallback: ({ resolve, body }, username, password, done) => {
+    loginCallback: async ({ resolve, body }, username, password) => {
       // your code to implement a user login
-      // you need to call the 'done' callback to notify a user about an error or successful operation
     },
     failureCallback // default behavior
   })
   ```
-
+    
 * #### githubStrategy
   ```js
-  githubStrategy({
+  resolveAuth(PassportGithubStrategy, {
     strategy: {
       clientID: 'MyClientID',
       clientSecret: 'MyClientSecret',
@@ -628,17 +630,16 @@ A strategy's predefined options:
       auth: '/auth/github',
       callback: '/auth/github/callback'
     },
-    authCallback: ({ resolve, body }, profile, done) => {
+    authCallback: async ({ resolve, body }, profile) => {
       // your code to authenticate a user
-      // you need to call the 'done' callback to notify a user about an error or successful operation
     },
     failureCallback // default behavior
   })
   ```
-
+     
 * #### googleStrategy
   ```js
-  googleStrategy({
+  resolveAuth(PassportGoogleStrategy, {
     strategy: {
       clientID: 'MyClientID',
       clientSecret: 'MyClientSecret',
@@ -649,9 +650,8 @@ A strategy's predefined options:
       auth: '/auth/google',
       callback: '/auth/google/callback'
     },
-    authCallback: ({ resolve, body }, profile, done) => {
+    authCallback: async ({ resolve, body }, profile) => {
       // your code to authenticate a user
-      // you need to call the 'done' callback to notify a user about an error or successful operation
     },
     failureCallback // default behavior
   })
