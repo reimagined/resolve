@@ -144,11 +144,14 @@ app.use((req, res, next) => {
 
 config.auth.strategies.forEach(strategy => {
   strategy.forEach(({ route, callback }) => {
-    app[route.method.toLowerCase()](getRootableUrl(route.path), (req, res, next) => {
-      const safeReq = createRequest(req)
-      const safeRes = createResponse(res)
-      callback(safeReq, safeRes, createAuthOptions(safeReq, safeRes, next))
-    })
+    app[route.method.toLowerCase()](
+      getRootableUrl(route.path),
+      (req, res, next) => {
+        const safeReq = createRequest(req)
+        const safeRes = createResponse(res)
+        callback(safeReq, safeRes, createAuthOptions(safeReq, safeRes, next))
+      }
+    )
   })
 })
 
