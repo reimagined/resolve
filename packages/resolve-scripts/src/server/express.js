@@ -148,9 +148,10 @@ config.auth.strategies.forEach(strategy => {
       getRootableUrl(route.path),
       (req, res, next) => {
         const safeReq = createRequest(req)
-        const safeRes = { 
-          applyJwtValue, 
-          ...createResponse(res) }
+        const safeRes = {
+          applyJwtValue,
+          ...createResponse(res)
+        }
         callback(safeReq, safeRes, createAuthOptions(safeReq, safeRes, next))
       }
     )
