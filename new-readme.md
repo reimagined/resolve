@@ -25,9 +25,8 @@ reSolve is a framework for developing apps based on **CQRS**, **Domain-Driven De
     * [Tutorials](#tutorials)
     * [Examples](#examples)
 * #### [📚 Documentation](#documentation)
-    * [Bacic Concepts](#basic-concepts)
     * [Compatibility](#compatibility)
-    * [API References](#api-references)
+    * [Bacic Concepts](#basic-concepts)
 * #### [📢 Get in Touch](#get-in-touch)
 
 ## <a name="why-resolve">**🏗️ Why reSolve**</a>
@@ -66,7 +65,7 @@ We have a special package [create-resolve-app](packages/create-resolve-app) for 
 
 //todo gif installation
 
-The created application is hosted at http://localhost:3000/. We recommend you **First Application From Scratch** (//todo guid and link) tutorial to learn more about application structure and work with reSolve. Also it'd be helpfull: [**documentation**](#documentation), [**tutorials**](#tutorials) and [**examples**](#examples).
+The created application is hosted at http://localhost:3000/. We recommend you [**First Application From Scratch**](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/First%20Application%20From%20Scratch.md) tutorial to learn more about application structure and work with reSolve. Also it'd be helpfull: [**documentation**](#documentation), [**tutorials**](#tutorials) and [**examples**](#examples).
 
 #### Using npx
 
@@ -98,8 +97,8 @@ npm run dev
 
 ### <a name="tutorials">Tutorials</a>
 
-* First Application From Scratch (//todo guid and link)
-* [ToDo List App Tutorial](https://github.com/reimagined/resolve/blob/master/docs/ToDo%20List%20App%20Tutorial.md)
+* [First Application From Scratch](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/First%20Application%20From%20Scratch.md)
+* [ToDo List App Tutorial](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/ToDo%20List%20App%20Tutorial.md)
 
 ### <a name="examples">Examples</a>
 
@@ -139,7 +138,7 @@ This example demonstrates **reactive read-models** that leads to client updating
 
 * [**todo**](https://github.com/reimagined/resolve/tree/master/examples/todo)
 
-This example demonstrates **simple work with view-models**. You can learn more in [ToDo List App Tutorial](https://github.com/reimagined/resolve/blob/master/docs/ToDo%20List%20App%20Tutorial.md) and documentation (//todo link to the view models topic)
+This example demonstrates **simple work with view-models**. You can learn more in [ToDo List App Tutorial](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/ToDo%20List%20App%20Tutorial.md) and documentation (//todo link to the view models topic)
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-todo-example.png"></p>
 
@@ -151,17 +150,13 @@ This example demonstrates work with view-models in case of **all events subscrib
 
 ## <a name="documentation">**📚 Documentation**</a>
 
-### <a name="basic-concepts">Basic Concepts</a>
-
-//todo text
-
 ### <a name="compatibility">Compatibility</a>
 
 You can comfortably run and develop reSolve application for **Linux**, **Mac** and **Windows** operation systems using **bash** and **cmd** terminals. Also you can develop using **React Native**, but currently it's **experimental** approach.
 
 You can use any package manager, but we recommend you to look at [**npx**](https://www.npmjs.com/package/npx) and [**yarn**](https://yarnpkg.com/lang/en/) apart from **npm**. We use exactly npx manager in our tutorials like a default way.
 
-### <a name="api-references">API References</a>
+### <a name="basic-concepts">Basic Concepts</a>
 
 //todo text
 
