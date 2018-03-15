@@ -487,7 +487,6 @@ The *resolve.server.config.js* file contains information for the reSolve library
       import resolveAuth from 'resolve-scripts/dist/server/auth'
       
       import { Strategy as PassportLocalStrategy } from 'passport-local'
-      import { OIDCStrategy as PassportAzureADStrategy } from 'passport-azure-ad'
       import { Strategy as PassportGitHubStrategy } from 'passport-github'
       import { Strategy as PassportGoogleStrategy } from 'passport-google-oauth20'
 
@@ -497,10 +496,8 @@ The *resolve.server.config.js* file contains information for the reSolve library
         auth: {
           strategies: [
             resolveAuth(PassportLocalStrategy, {/* options */}),
-            resolveAuth(PassportAzureADStrategy, {/* options */}),
             resolveAuth(PassportGitHubStrategy, {/* options */}),
             resolveAuth(PassportGoogleStrategy, {/* options */})
-            // other strategies
           ]
         }
       // ...
@@ -621,8 +618,14 @@ Options:
       successRedirect: null
     },
     routes: {
-      auth: '/auth/github',
-      callback: '/auth/github/callback'
+      auth: {
+        path: '/auth/github',
+        method: 'get'
+      },
+      callback: {
+        path: '/auth/github/callback',
+        method: 'get'
+      }
     },
     authCallback: async ({ resolve, body }, profile) => {
       // your code to authenticate a user
@@ -641,8 +644,14 @@ Options:
       successRedirect: null
     },
     routes: {
-      auth: '/auth/google',
-      callback: '/auth/google/callback'
+      auth: {
+        path: '/auth/google',
+        method: 'get'
+      },
+      callback: {
+        path: '/auth/google/callback',
+        method: 'get'
+      }
     },
     authCallback: async ({ resolve, body }, profile) => {
       // your code to authenticate a user
