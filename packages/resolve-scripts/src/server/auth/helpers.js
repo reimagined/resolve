@@ -8,7 +8,8 @@ const createRequest = expressReq => ({
   params: expressReq.params,
   body: expressReq.body,
   query: expressReq.query,
-  cookies: expressReq.cookies
+  cookies: expressReq.cookies,
+  resolve: expressReq.resolve
 })
 
 const createResponse = expressRes => {

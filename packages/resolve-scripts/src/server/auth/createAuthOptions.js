@@ -1,12 +1,6 @@
 export default (authReq, authRes, next) => ({
   onSuccess: (options, user, info) => {
-    options.onSuccess(user, {
-      // TODO: use applyJwtValue
-      setCookie: (name, value, options) => authRes.cookie(name, value, options)
-    })
-    authRes.expressRes.set('Content-Type', 'application/json')
-    authRes.expressRes.status(200)
-    next()
+    authRes.applyJwtValue(user, authRes.expressRes, options.successRedirect)
   },
   onFail: (options, challenge, status) => {
     if (options.failureRedirect) {

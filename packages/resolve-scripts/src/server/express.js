@@ -134,13 +134,13 @@ app.use((req, res, next) => {
   next()
 })
 
-// const applyJwtValue = (value, res, url) => {
-//   const { name: cookieName, ...cookieOptions } = config.jwtCookie
-//   const authenticationToken = jwt.sign(value, jwtSecret)
+const applyJwtValue = (value, res, url) => {
+  const { name: cookieName, ...cookieOptions } = config.jwtCookie
+  const authenticationToken = jwt.sign(value, jwtSecret)
 
-//   res.cookie(cookieName, authenticationToken, cookieOptions)
-//   res.redirect(url || getRootableUrl('/'))
-// }
+  res.cookie(cookieName, authenticationToken, cookieOptions)
+  res.redirect(url || getRootableUrl('/'))
+}
 
 config.auth.strategies.forEach(strategy => {
   strategy.forEach(({ route, callback }) => {
@@ -148,7 +148,9 @@ config.auth.strategies.forEach(strategy => {
       getRootableUrl(route.path),
       (req, res, next) => {
         const safeReq = createRequest(req)
-        const safeRes = createResponse(res)
+        const safeRes = { 
+          applyJwtValue, 
+          ...createResponse(res) }
         callback(safeReq, safeRes, createAuthOptions(safeReq, safeRes, next))
       }
     )
