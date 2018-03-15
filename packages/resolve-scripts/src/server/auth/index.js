@@ -9,7 +9,7 @@ const strategyCallbackCreators = {
   google: oauthStrategyCallbackCreator
 }
 
-const getStarategyName = (PassportStrategy, options) => {
+const getStrategyName = (PassportStrategy, options) => {
   const strategy = new PassportStrategy(
     {
       ...options,
@@ -21,7 +21,7 @@ const getStarategyName = (PassportStrategy, options) => {
 }
 
 export default (PassportStrategy, options) => {
-  const strategyName = getStarategyName(PassportStrategy, options.strategy)
+  const strategyName = getStrategyName(PassportStrategy, options.strategy)
 
   const callbackCreator = strategyCallbackCreators[strategyName]
   if (!callbackCreator) {
