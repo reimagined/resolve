@@ -142,21 +142,27 @@ const applyJwtValue = (value, res, url) => {
   res.redirect(url || getRootableUrl('/'))
 }
 
-config.auth.strategies.forEach(strategy => {
-  strategy.forEach(({ route, callback }) => {
-    app[route.method.toLowerCase()](
-      getRootableUrl(route.path),
-      (req, res, next) => {
-        const safeReq = createRequest(req)
-        const safeRes = {
-          applyJwtValue,
-          ...createResponse(res)
+if (
+  config.auth &&
+  config.auth.strategies &&
+  Array.isArray(config.auth.strategies)
+) {
+  config.auth.strategies.forEach(strategy => {
+    strategy.forEach(({ route, callback }) => {
+      app[route.method.toLowerCase()](
+        getRootableUrl(route.path),
+        (req, res, next) => {
+          const safeReq = createRequest(req)
+          const safeRes = {
+            applyJwtValue,
+            ...createResponse(res)
+          }
+          callback(safeReq, safeRes, createAuthOptions(safeReq, safeRes, next))
         }
-        callback(safeReq, safeRes, createAuthOptions(safeReq, safeRes, next))
-      }
-    )
+      )
+    })
   })
-})
+}
 
 try {
   if (config.extendExpress) {
