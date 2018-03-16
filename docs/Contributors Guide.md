@@ -1,4 +1,4 @@
-# Contributors Guid
+# Contributors Guide
 
 -------------------------------------------------------------------------
 Sorry, this article isn't finished yet :(
