@@ -127,7 +127,7 @@ if (unknownOptions && unknownOptions.length) {
   }
 
   const downloadRepo = () =>
-    new Promise(resolve => {
+    new Promise((resolve, reject) => {
       log(chalk.green('Load example'))
       https.get(resolveRepoPath, function(response) {
         response.on('data', function(data) {
@@ -135,13 +135,37 @@ if (unknownOptions && unknownOptions.length) {
         })
 
         response.on('end', function() {
-          var zip = new AdmZip(tmpFilePath)
-          zip.extractAllTo(`./${appName}`)
-          fs.unlink(tmpFilePath)
-          resolve()
+          try {
+            var zip = new AdmZip(tmpFilePath)
+            zip.extractAllTo(`./${appName}`)
+            fs.unlink(tmpFilePath)
+            resolve()
+          } catch (e) {
+            reject(e)
+          }
         })
       })
     })
+
+  const printIfDownloadFail = errMessage => {
+    if (
+      errMessage.toLowerCase().indexOf('invalid or unsupported zip format') > -1
+    ) {
+      let buf = fs.readFileSync(tmpFilePath).toString()
+      if (buf.toLowerCase().indexOf('not found')) {
+        log(chalk.red('Referent commit does not exists in resolve repository.'))
+        log(
+          chalk.red(
+            'Maybe you forgot to merge your feature branch with dev branch'
+          )
+        )
+
+        throw new Error('Repo downloading failed')
+      }
+    }
+
+    throw new Error(errMessage)
+  }
 
   const copyExampleBash = () => {
     log()
@@ -228,9 +252,8 @@ if (unknownOptions && unknownOptions.length) {
 
   startCreatingApp()
     .then(checkAppName)
-    .then(downloadRepo)
-    .then(copyExampleBash)
-    .catch(copyExampleCMD)
+    .then(() => downloadRepo().catch(printIfDownloadFail))
+    .then(() => copyExampleBash().catch(copyExampleCMD))
     .then(patchPackageJson)
     .then(printFinishOutput)
     .catch(e => log(chalk.red(e)))
