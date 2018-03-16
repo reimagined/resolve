@@ -1,11 +1,5 @@
-
-Here must be hello world tutorial - project structure, mandatory files/dirs, etc
-Rest of this file must be transformed into Getting started in docs
-
-
-
 # **🚀 ReSolve App**
-This project is an application created with [Create ReSolve App](../../../create-resolve-app). This package creates an empty single page application by default or a typical Todo List application if you use the `--sample` option. This application is built on the CQRS and Event Sourcing principles using React+Redux on the client.
+This project is an application created with [Create ReSolve App](../../packages/create-resolve-app). This package creates an empty single page application by default or a typical Todo List application if you use the `--example` option. This application is built on the CQRS and Event Sourcing principles using React+Redux on the client.
 
 Create ReSolve App allows you to specify application blocks (aggregates, read models, and a UI part React components present) in a semi-declarative manner. With the `resolve-scripts` package, you do not need to write an API backend manually. Instead, `resolve-scripts` deploys backend and domain services to interact with the client which is wrapped into the `resolve-redux` package for an automated interaction.
 
@@ -80,7 +74,7 @@ Updates all resolve packages to the latest version according to [semver](https:/
 If the `version` argument is set, the command updates packages to the specified version.
 
 ## **🗂️ Project Structure Overview**
-[Create ReSolve App](https://www.npmjs.com/package/creat-resolve-app) is an NPM package referencing the latest [reSolve framework package](../../..) versions. It consists of the common isomorphic part which describes domain business logic and React components for the presentation. No implicit server part is needed - it is encapsulated in `resolve-scripts`, but can be customized using [config](#-configuration-files). The project also includes unit & E2E testing and deployment assets. All source code and functional tests are written in the [ES2016](http://2ality.com/2016/01/ecmascript-2016.html).
+[Create ReSolve App](https://www.npmjs.com/package/creat-resolve-app) is an NPM package referencing the latest [reSolve framework package](../..#) versions. It consists of the common isomorphic part which describes domain business logic and React components for the presentation. No implicit server part is needed - it is encapsulated in `resolve-scripts`, but can be customized using [config](#-configuration-files). The project also includes unit & E2E testing and deployment assets. All source code and functional tests are written in the [ES2016](http://2ality.com/2016/01/ecmascript-2016.html).
 
 ```
 resolve-app/
@@ -116,9 +110,7 @@ resolve-app/
 ### **🕴 Client**
 The client side is located in the `client/` folder and exports two key endpoints: root React component and Redux store creator function. These client part entry points must be specified in the [resolve.client.config.js](#client-config) configuration file in the root directory.
 
-Any customization (for example, adding routing or applying middleware or saga) can be performed by wrapping original UI entry points into subsidiary entities and specifying them in an appropriate config section. The following examples show how to use a react router as UI entry point:
-* [react-router-2](../../../../examples/resolve-scripts-with-router-2)
-* [react-router-4](../../../../examples/resolve-scripts-with-router-4)
+Any customization (for example, adding routing or applying middleware or saga) can be performed by wrapping original UI entry points into subsidiary entities and specifying them in an appropriate config section. The following examples show how to use a react router as UI entry point.
 
 ### **🔗 Common**
 The `common/` folder contains the application's isomorphic part which represents a business logic distributed between server and client in the same code. The domain logic is described in a reSolve-compatible format and appears in [aggregate and read model](#️-aggregates-and-read-models) declarations.
@@ -272,7 +264,7 @@ The *resolve.client.config.js* file contains information for your application's 
 The *resolve.server.config.js* file contains information for the reSolve library.
 
 * #### aggregates
-  Specifies an [aggregate](#️-aggregates-and-read-models) array for the [resolve-command](../../../resolve-command). Each command is addressed to a particular aggregate. When an aggregate receives a command, it performs this command and produces an event or returns an error if the command cannot be executed.
+  Specifies an [aggregate](#️-aggregates-and-read-models) array for the [resolve-command](../../packages/resolve-command). Each command is addressed to a particular aggregate. When an aggregate receives a command, it performs this command and produces an event or returns an error if the command cannot be executed.
 
   ##### Example
   In this example, we import an aggregate object array specified in the *aggregates.js* file.
@@ -289,7 +281,7 @@ The *resolve.server.config.js* file contains information for the reSolve library
 
 * #### bus
   The bus is used to emit events. It is an object with the following structure
-  * `adapter` - a [bus adapter](../../../bus-adapters)
+  * `adapter` - a [bus adapter](../../packages/bus-adapters)
   * `params` - a configuration that is passed to an adapter when it is initialized
 
   ##### Example
@@ -310,7 +302,7 @@ The *resolve.server.config.js* file contains information for the reSolve library
 
 * #### entries
 
-  It might be the same config as in *resolve.client.config.js*. However, it is also possible to pass different `rootComponent` or `createStore` to server and client sides. It can be helpful in some cases (for example, see [resolve-scripts with react-router v4](../../../../examples/resolve-scripts-with-router-4) and  [resolve-scripts with react-router v2](../../../../examples/resolve-scripts-with-router-2)) but be  careful when using this approach - it may cause issues with SSR.
+  It might be the same config as in *resolve.client.config.js*. However, it is also possible to pass different `rootComponent` or `createStore` to server and client sides but be  careful when using this approach - it may cause issues with SSR.
 
   ##### Example
   ```js
@@ -508,7 +500,7 @@ The *resolve.server.config.js* file contains information for the reSolve library
 
 * #### initialState
 
-  A function that takes a [query](../../../resolve-query) and returns a Promise. It is possible to get an initial state by querying a read model and then resolving it with Promise. This state is used in the client and server `createStore` function.
+  A function that takes a [query](../../packages/resolve-query) and returns a Promise. It is possible to get an initial state by querying a read model and then resolving it with Promise. This state is used in the client and server `createStore` function.
 
     ##### Example
   ```js
@@ -522,7 +514,7 @@ The *resolve.server.config.js* file contains information for the reSolve library
   ```
 
 * #### readModels
-  A [read model](#️-aggregates-and-read-models) array for [resolve-query](../../../resolve-query). A *read model* represents the current system state or a part of it and is built by processing all events happened in the system. Read models are used to answer queries.
+  A [read model](#️-aggregates-and-read-models) array for [resolve-query](../../packages/resolve-query). A *read model* represents the current system state or a part of it and is built by processing all events happened in the system. Read models are used to answer queries.
 
   ##### Example
   In this example, we import an array of read model objects specified in the *read-models.js* file.
@@ -552,7 +544,7 @@ The *resolve.server.config.js* file contains information for the reSolve library
 
 * #### storage
   Contains an object with the following structure:
-  * `adapter` - a [storage adapter](../../../storage-adapters);
+  * `adapter` - a [storage adapter](../../packages/storage-adapters);
   * `params` - a configuration that is passed to an adapter when it is initialized.
 
   ##### Example
