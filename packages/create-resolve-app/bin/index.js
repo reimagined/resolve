@@ -94,10 +94,13 @@ if (unknownOptions && unknownOptions.length) {
 } else {
   let appName = options._unknown[0],
     example = options.example || 'hello-world',
-    branch = options.branch ? options.branch : 'master',
-    examplePath = `./resolve-${branch}/examples/${example}`,
-    resolveRepoPath = `https://codeload.github.com/reimagined/resolve/zip/${branch}`,
-    tmpFilePath = `./resolve-${branch}.zip`
+    revision = options.branch
+      ? options.branch
+      : options.commit ? options.commit : 'master',
+    repoDirName = `resolve-${revision}`,
+    examplePath = `./${repoDirName}/examples/${example}`,
+    resolveRepoPath = `https://codeload.github.com/reimagined/resolve/zip/${revision}`,
+    tmpFilePath = `./${repoDirName}.zip`
 
   const startCreatingApp = () =>
     Promise.resolve(() =>
@@ -146,7 +149,7 @@ if (unknownOptions && unknownOptions.length) {
     let command =
       `cd ${appName} ` +
       ` && cp -r ${examplePath}/* . && cp -r ${examplePath}/.[a-zA-Z0-9]* .` +
-      ` && rm -rf ./resolve-${branch} && npm i`
+      ` && rm -rf ./${repoDirName} && npm i`
 
     const proc = spawn.sync(command, [], { stdio: 'inherit', shell: true })
     if (proc.status !== 0) {
@@ -160,7 +163,7 @@ if (unknownOptions && unknownOptions.length) {
     let command =
       `cd ${appName} ` +
       ` && xcopy ${examplePathCMD} /E /Q ` +
-      ` && rmdir /S /Q resolve-${branch} && npm i`
+      ` && rmdir /S /Q ${repoDirName} && npm i`
 
     const proc = spawn.sync(command, [], { stdio: 'inherit', shell: true })
     if (proc.status !== 0) {
