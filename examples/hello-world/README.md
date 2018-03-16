@@ -600,11 +600,15 @@ Options:
     },
     registerCallback: async ({ resolve, body }, username, password) => {
       // your code to register a new user
+      return username
     },
     loginCallback: async ({ resolve, body }, username, password) => {
       // your code to implement a user login
+      return username
     },
-    failureCallback // default behavior
+    failureCallback: (error, redirect) => {
+      // ...
+    }
   })
   ```
     
@@ -629,8 +633,11 @@ Options:
     },
     authCallback: async ({ resolve, body }, profile) => {
       // your code to authenticate a user
+      return profile
     },
-    failureCallback // default behavior
+    failureCallback: (error, redirect) => {
+      // ...
+    }
   })
   ```
      
@@ -641,6 +648,7 @@ Options:
       clientID: 'MyClientID',
       clientSecret: 'MyClientSecret',
       callbackURL: 'http://localhost:3000/auth/google/callback',
+      scope: ['profile'],
       successRedirect: null
     },
     routes: {
@@ -655,8 +663,11 @@ Options:
     },
     authCallback: async ({ resolve, body }, profile) => {
       // your code to authenticate a user
+      return profile
     },
-    failureCallback // default behavior
+    failureCallback: (error, redirect) => {
+      // ...
+    }
   })
   ```
 
