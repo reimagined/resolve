@@ -1,5 +1,3 @@
-import 'regenerator-runtime/runtime'
-
 import actions from './actions'
 import * as actionTypes from './action_types'
 import createResolveMiddleware from './create_resolve_middleware'

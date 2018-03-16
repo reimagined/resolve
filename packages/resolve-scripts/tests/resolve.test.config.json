@@ -1,0 +1,23 @@
+{
+  "index": "client/custom-index.js",
+  "viewModels": "common/customViewModels",
+  "readModels": "common/customReadModels",
+  "storage": {
+    "adapter": "custom-storage"
+  },
+  "bus": {
+    "adapter": "custom-bus"
+  },
+  "env": {
+    "development": {
+      "bus": {
+        "adapter": "custom-development-bus"
+      }
+    },
+    "production": {
+      "subscribe": {
+        "adapter": "custom-subscribe-adapter"
+      }
+    }
+  }
+}

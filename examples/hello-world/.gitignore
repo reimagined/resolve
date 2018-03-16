@@ -61,6 +61,5 @@ typings/
 
 dist
 
-dev_db.json
-
-prod_db.json
+storage.txt
+package-lock.json

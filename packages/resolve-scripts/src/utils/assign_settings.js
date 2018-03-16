@@ -1,0 +1,279 @@
+import { isV4Format } from 'ip'
+
+import deployOptionsOrigin from '../configs/deploy.options'
+
+export const extenders = []
+
+extenders.push(mode)
+export function mode({ resolveConfig, deployOptions }, argv, env) {
+  if (
+    env.NODE_ENV &&
+    ['development', 'production', 'test'].indexOf(env.NODE_ENV) !== -1
+  ) {
+    deployOptions.mode =
+      env.NODE_ENV === 'production' ? 'production' : 'development'
+  } else if (env.NODE_ENV) {
+    throw new Error(
+      'Invalid environment variables: \n' +
+        `NODE_ENV, Given: "${
+          env.NODE_ENV
+        }", Choices: "development", "production", "test"`
+    )
+  }
+  if (argv.dev || argv.test) {
+    deployOptions.mode = 'development'
+  } else if (argv.prod) {
+    deployOptions.mode = 'production'
+  }
+  env.NODE_ENV = deployOptions.mode
+  if (argv.test) {
+    env.NODE_ENV = 'test'
+  }
+}
+
+extenders.push(inspect)
+export function inspect({ resolveConfig, deployOptions }, argv, env) {
+  if (env.INSPECT_PORT && !Number.isInteger(+env.INSPECT_PORT)) {
+    return new Error(
+      'Invalid environment variables: \n' +
+        `INSPECT_PORT, Given: "${env.INSPECT_PORT}", Value must be an integer`
+    )
+  } else if (env.INSPECT_PORT) {
+    deployOptions.inspectPort = env.INSPECT_PORT
+  }
+  if (env.INSPECT_HOST && !isV4Format(env.INSPECT_HOST)) {
+    throw new Error(
+      'Invalid environment variables: \n' +
+        `INSPECT_HOST, Given: "${env.INSPECT_HOST}", Value must be an IP v4"`
+    )
+  } else if (env.INSPECT_HOST) {
+    deployOptions.inspectHost = env.INSPECT_HOST
+  }
+
+  if ((argv.inspect === '' || argv.inspect) && !argv.start) {
+    throw new Error('Implications failed:\ninspect -> start')
+  }
+
+  if (argv.inspect !== undefined) {
+    const inspectArgs = argv.inspect.split(':')
+    if (inspectArgs.length === 1) {
+      inspectArgs[1] =
+        inspectArgs[0] || env.INSPECT_PORT || deployOptionsOrigin.inspectPort
+      inspectArgs[0] = env.INSPECT_HOST || deployOptionsOrigin.inspectHost
+    }
+    const [ip, port] = inspectArgs
+    deployOptions.inspectHost = ip
+    deployOptions.inspectPort = +port
+    if (
+      !Number.isInteger(deployOptions.inspectPort) ||
+      !isV4Format(deployOptions.inspectHost)
+    ) {
+      throw new Error(
+        'Invalid options: \n' +
+          `inspect, Given: "${argv.inspect}", Value must be "[[IP v4:]PORT]"`
+      )
+    }
+  }
+  env.INSPECT_HOST = deployOptions.inspectHost
+  env.INSPECT_PORT = deployOptions.inspectPort
+}
+
+extenders.push(host)
+export function host({ resolveConfig, deployOptions }, argv, env) {
+  if (env.HOST) {
+    deployOptions.host = env.HOST
+  }
+  if (argv.host) {
+    deployOptions.host = argv.host
+  }
+  env.HOST = deployOptions.host
+}
+
+extenders.push(protocol)
+export function protocol({ resolveConfig, deployOptions }, argv, env) {
+  if (env.PROTOCOL) {
+    deployOptions.protocol = env.PROTOCOL
+  }
+  if (argv.protocol) {
+    deployOptions.protocol = argv.protocol
+  }
+  env.PROTOCOL = deployOptions.protocol
+}
+
+extenders.push(port)
+export function port({ resolveConfig, deployOptions }, argv, env) {
+  if (env.PORT) {
+    deployOptions.port = +env.PORT
+  }
+  if (argv.port) {
+    deployOptions.port = +argv.port
+  }
+  if (!Number.isInteger(deployOptions.port)) {
+    throw new Error(
+      'Invalid options: \n' +
+        `port, Given: "${argv.port}", Value must be an integer`
+    )
+  }
+  env.PORT = deployOptions.port
+}
+
+extenders.push(watch)
+export function watch({ resolveConfig, deployOptions }, argv, env) {
+  if (env.WATCH && ['false', 'true'].indexOf(env.WATCH) === -1) {
+    return new Error(
+      'Invalid environment variables: \n' +
+        `WATCH, Given: "${env.WATCH}", Choices: "false", "true"`
+    )
+  } else if (env.WATCH) {
+    deployOptions.watch = env.WATCH == 'true' // eslint-disable-line
+  }
+  if (argv.watch) {
+    deployOptions.watch = argv.watch
+  }
+  env.WATCH = deployOptions.watch
+}
+
+extenders.push(start)
+export function start({ resolveConfig, deployOptions }, argv, env) {
+  if (env.START && ['false', 'true'].indexOf(env.START) === -1) {
+    return new Error(
+      'Invalid environment variables: \n' +
+        `START, Given: "${env.START}", Choices: "false", "true"`
+    )
+  } else if (env.START) {
+    deployOptions.start = env.START == 'true' // eslint-disable-line
+  }
+  if (argv.start) {
+    deployOptions.start = argv.start
+  }
+  env.START = deployOptions.start
+}
+
+extenders.push(build)
+export function build({ resolveConfig, deployOptions }, argv, env) {
+  if (env.BUILD && ['false', 'true'].indexOf(env.BUILD) === -1) {
+    return new Error(
+      'Invalid environment variables: \n' +
+        `START, Given: "${env.BUILD}", Choices: "false", "true"`
+    )
+  } else if (env.BUILD) {
+    deployOptions.build = env.BUILD == 'true' // eslint-disable-line
+  }
+  if (argv.build) {
+    deployOptions.build = argv.build
+  }
+  env.BUILD = deployOptions.build
+}
+
+extenders.push(rootPath)
+export function rootPath({ resolveConfig, deployOptions }, argv, env) {
+  if (env.ROOT_PATH) {
+    resolveConfig.rootPath = env.ROOT_PATH
+  }
+  if (argv.rootPath) {
+    resolveConfig.rootPath = argv.rootPath
+  }
+
+  if (resolveConfig.rootPath && /^https?:\/\//.test(resolveConfig.rootPath)) {
+    return new Error('Incorrect env.ROOT_PATH or cli.rootPath')
+  }
+
+  if (!/^\//.test(resolveConfig.rootPath)) {
+    resolveConfig.rootPath = `/${resolveConfig.rootPath}`
+  }
+
+  env.ROOT_PATH = resolveConfig.rootPath
+}
+
+extenders.push(index)
+export function index({ resolveConfig, deployOptions }, argv, env) {
+  if (env.INDEX_PATH) {
+    resolveConfig.index = env.INDEX_PATH
+  }
+  if (argv.index) {
+    resolveConfig.index = argv.index
+  }
+  env.INDEX_PATH = resolveConfig.index
+}
+
+extenders.push(viewModels)
+export function viewModels({ resolveConfig, deployOptions }, argv, env) {
+  if (env.VIEW_MODELS_PATH) {
+    resolveConfig.viewModels = env.VIEW_MODELS_PATH
+  }
+  env.VIEW_MODELS_PATH = resolveConfig.viewModels
+}
+
+extenders.push(readModels)
+export function readModels({ resolveConfig, deployOptions }, argv, env) {
+  if (env.READ_MODELS_PATH) {
+    resolveConfig.readModels = env.READ_MODELS_PATH
+  }
+  env.READ_MODELS_PATH = resolveConfig.readModels
+}
+
+extenders.push(aggregates)
+export function aggregates({ resolveConfig, deployOptions }, argv, env) {
+  if (env.AGGREGATES_PATH) {
+    resolveConfig.aggregates = env.AGGREGATES_PATH
+  }
+  env.AGGREGATES_PATH = resolveConfig.aggregates
+}
+
+extenders.push(auth)
+export function auth({ resolveConfig, deployOptions }, argv, env) {
+  if (env.AUTH_PATH) {
+    resolveConfig.auth = env.AUTH_PATH
+  }
+  if (argv.auth) {
+    resolveConfig.auth = argv.auth
+  }
+  env.AUTH_PATH = resolveConfig.auth
+}
+
+extenders.push(openBrowser)
+export function openBrowser({ resolveConfig, deployOptions }, argv, env) {
+  // eslint-disable-next-line
+  if (env.OPEN_BROWSER == 'true') {
+    deployOptions.openBrowser = true
+  }
+  if (argv.openBrowser) {
+    deployOptions.openBrowser = argv.openBrowser
+  }
+  env.OPEN_BROWSER = deployOptions.openBrowser
+}
+
+extenders.push(env)
+export function env({ resolveConfig, deployOptions }, argv, env) {
+  let envKey = deployOptions.mode
+  if (argv.test) {
+    envKey = 'test'
+  }
+
+  if (resolveConfig.env && resolveConfig.env[envKey]) {
+    const envConfig = resolveConfig.env[envKey]
+    Object.assign(resolveConfig, envConfig)
+  }
+  delete resolveConfig.env
+}
+
+extenders.push(config)
+export function config({ resolveConfig, deployOptions }, argv, env) {
+  if (env.CONFIG_PATH) {
+    deployOptions.config = env.CONFIG_PATH
+  }
+  if (argv.config) {
+    deployOptions.config = argv.config
+  }
+  env.CONFIG_PATH = deployOptions.config
+}
+
+export default function assignSettings(
+  { resolveConfig, deployOptions },
+  argv,
+  env
+) {
+  for (const extender of extenders) {
+    extender({ resolveConfig, deployOptions }, argv, env)
+  }
+}

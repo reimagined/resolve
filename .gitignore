@@ -40,5 +40,6 @@ jspm_packages
 .idea
 .vscode
 
+storage.txt
 #
 dist

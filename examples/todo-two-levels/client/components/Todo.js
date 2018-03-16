@@ -3,11 +3,15 @@ import { connect } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
 import { NavLink } from 'react-router-dom'
 
-import actions from '../actions'
-
 const viewModelName = 'Todos'
 
-const Todo = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
+export const Todo = ({
+  todos,
+  createItem,
+  toggleItem,
+  removeItem,
+  aggregateId
+}) => {
   let newTodo
   return (
     <div>
@@ -57,10 +61,11 @@ const mapStateToProps = (state, ownProps) => {
   return {
     viewModelName,
     aggregateId,
-    todos: state[viewModelName][aggregateId]
+    todos: state.viewModels[viewModelName][aggregateId]
   }
 }
 
-const mapDispatchToProps = dispatch => bindActionCreators(actions, dispatch)
+const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+  bindActionCreators(aggregateActions, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Todo)

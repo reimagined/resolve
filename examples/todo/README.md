@@ -8,8 +8,9 @@ This topic describes how to create a classic [Redux](https://github.com/reactjs/
 
 Create a new reSolve application using the [create-resolve-app](https://www.npmjs.com/package/create-resolve-app) package.
 
-```bash
-npx create-resolve-app my-todo-list
+```shell
+npm i -g create-resolve-app
+create-resolve-app my-todo-list
 ```
 
 Open your app's working directory (`my-todo-list`). You can execute the `npm run dev` command in this directory to start your app.

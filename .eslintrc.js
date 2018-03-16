@@ -11,6 +11,9 @@ module.exports = {
     }
   },
   plugins: ['react', 'jsx-a11y', 'import'],
+  globals: {
+    $resolve: true
+  },
   rules: {
     'func-names': 'off',
     'no-underscore-dangle': 'off',

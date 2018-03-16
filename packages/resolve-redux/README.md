@@ -30,7 +30,7 @@ This package contains tools for integrating reSolve with [Redux](http://redux.js
   This function takes the following arguments:
 
 ```js
-createResolveMiddleware({ viewModels [, subscribeAdapter] })
+createResolveMiddleware({ [viewModels] [, readModels] [, aggregates] [, subscribeAdapter] })
 ```   
 
 ### `createViewModelsReducer`  
@@ -43,13 +43,16 @@ createResolveMiddleware({ viewModels [, subscribeAdapter] })
   A higher-order component (HOC), which automatically subscribes/unsubscribes to/from a view model by aggregateId and connects a React component to a Redux store.
 
 ```js
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
     ...state[viewModelName][aggregateId],
     viewModelName, // required field
     aggregateId // required field
 });
 
-export default connect(mapStateToProps)(Component);
+const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+    bindActionCreators(aggregateActions, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(Component);
 ```
 
 ### `graphqlConnector`

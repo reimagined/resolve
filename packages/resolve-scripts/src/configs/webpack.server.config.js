@@ -1,51 +1,55 @@
-const nodeExternals = require('webpack-node-externals')
-const path = require('path')
+import webpack from 'webpack'
+import nodeExternals from 'webpack-node-externals'
 
-module.exports = {
-  name: 'server',
-  entry: {
-    server: [
-      'regenerator-runtime/runtime',
-      path.join(__dirname, '../server/index.js')
-    ]
-  },
+import babelConfig from './babelrc'
+import modulesDirs from './modules_dirs'
+
+export default {
+  name: 'Server',
+  devtool: 'source-map',
   target: 'node',
   node: {
     __dirname: true,
     __filename: true
   },
   resolve: {
-    alias: {
-      RESOLVE_SERVER_CONFIG: path.resolve(
-        __dirname,
-        path.join(process.cwd(), './resolve.server.config.js')
-      ),
-      RESOLVE_CLIENT_CONFIG: path.resolve(
-        __dirname,
-        path.join(process.cwd(), './resolve.client.config.js')
-      ),
-      'resolve-scripts-auth': path.resolve(__dirname, '../server/auth')
-    }
+    modules: modulesDirs
   },
   output: {
-    path: path.join(process.cwd(), './dist/server'),
-    filename: 'server.js'
+    filename: 'server.js',
+    devtoolModuleFilenameTemplate: '[resource-path]',
+    devtoolFallbackModuleFilenameTemplate: '[resource-path]?[hash]'
   },
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         loaders: [
           {
             loader: 'babel-loader',
             query: {
-              presets: [['es2015', { modules: false }], 'stage-0', 'react']
+              ...babelConfig,
+              env: {
+                development: {
+                  plugins: ['babel-plugin-object-source']
+                }
+              }
             }
           }
         ],
-        exclude: [/node_modules/]
+        exclude: modulesDirs
       }
     ]
   },
-  externals: [nodeExternals()]
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`
+    }),
+    new webpack.BannerPlugin({
+      banner: 'require("source-map-support").install();',
+      raw: true,
+      entryOnly: false
+    })
+  ],
+  externals: modulesDirs.map(modulesDir => nodeExternals({ modulesDir }))
 }

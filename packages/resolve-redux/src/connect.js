@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import isLoadingViewModel from './is_loading_view_model'
+import getAggregateActions from './get_aggregate_actions'
 
 import actions from './actions'
 
@@ -26,10 +27,34 @@ export default (
         this.props
       )
 
-      this.context.store.dispatch(actions.subscribe(viewModelName, aggregateId))
-
       this.viewModelName = viewModelName
       this.aggregateId = aggregateId
+
+      this.context.store.dispatch(
+        actions.subscribe(this.viewModelName, this.aggregateId)
+      )
+    }
+
+    componentWillReceiveProps(nextProps) {
+      const { viewModelName, aggregateId } = mapStateToProps(
+        this.context.store.getState(),
+        nextProps
+      )
+
+      if (
+        viewModelName !== this.viewModelName ||
+        aggregateId !== this.aggregateId
+      ) {
+        this.context.store.dispatch(
+          actions.unsubscribe(this.viewModelName, this.aggregateId)
+        )
+        this.viewModelName = viewModelName
+        this.aggregateId = aggregateId
+
+        this.context.store.dispatch(
+          actions.subscribe(this.viewModelName, this.aggregateId)
+        )
+      }
     }
 
     componentWillUnmount() {
@@ -44,8 +69,15 @@ export default (
         this.viewModelName,
         this.aggregateId
       )
+      const aggregateActions = getAggregateActions(this.context.store)
 
-      return <ConnectedComponent {...this.props} loading={loading} />
+      return (
+        <ConnectedComponent
+          {...this.props}
+          loading={loading}
+          aggregateActions={aggregateActions}
+        />
+      )
     }
   }
 

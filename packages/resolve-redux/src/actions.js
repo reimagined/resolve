@@ -1,3 +1,5 @@
+import uuid from 'uuid/v4'
+
 import {
   MERGE,
   SEND_COMMAND,
@@ -8,7 +10,8 @@ import {
   READMODEL_LOAD_INITIAL_STATE,
   READMODEL_DROP_STATE,
   PROVIDE_VIEW_MODELS,
-  DISCONNECT
+  DISCONNECT,
+  HOT_MODULE_REPLACEMENT
 } from './action_types'
 
 function merge(viewModelName, aggregateId, state) {
@@ -108,6 +111,13 @@ function disconnect(reason) {
   }
 }
 
+function hotModuleReplacement() {
+  return {
+    type: HOT_MODULE_REPLACEMENT,
+    hotModuleReplacementId: uuid()
+  }
+}
+
 export default {
   merge,
   sendCommand,
@@ -118,5 +128,6 @@ export default {
   unsubscribeReadmodel,
   loadReadmodelInitialState,
   dropReadmodelState,
-  disconnect
+  disconnect,
+  hotModuleReplacement
 }

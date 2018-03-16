@@ -61,6 +61,5 @@ typings/
 
 dist
 
-development.db
-production.db
+storage.txt
 package-lock.json

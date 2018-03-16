@@ -2,6 +2,7 @@ import {
   SUBSCRIBE,
   UNSUBSCRIBE,
   SEND_COMMAND,
+  HOT_MODULE_REPLACEMENT,
   SUBSCRIBE_READMODEL,
   UNSUBSCRIBE_READMODEL
 } from './action_types'
@@ -10,6 +11,7 @@ import defaultSubscribeAdapter from './subscribe_adapter'
 import sendCommand from './send_command'
 import loadInitialState from './load_initial_state'
 import { getKey, getRootableUrl, delay } from './util'
+import createActions from './create_actions'
 
 const REFRESH_TIMEOUT = 1000
 
@@ -263,6 +265,8 @@ export const mockSubscribeAdapter = {
 
 export function createResolveMiddleware({
   viewModels = [],
+  aggregates = [],
+  readModels = [],
   subscribeAdapter = defaultSubscribeAdapter
 }) {
   const subscribers = {
@@ -280,6 +284,11 @@ export function createResolveMiddleware({
 
   const orderedFetch = createOrderedFetch()
 
+  const aggregateActions = aggregates.reduce(
+    (result, aggregate) => ({ ...result, ...createActions(aggregate) }),
+    {}
+  )
+
   return store => {
     Object.defineProperty(store.getState, 'isLoadingViewModel', {
       enumerable: false,
@@ -287,6 +296,12 @@ export function createResolveMiddleware({
       writable: false,
       value: (viewModelName, aggregateId) =>
         !!loading[viewModelName][aggregateId]
+    })
+    Object.defineProperty(store.getState, 'aggregateActions', {
+      enumerable: false,
+      configurable: false,
+      writable: false,
+      value: aggregateActions
     })
 
     store.dispatch(actions.provideViewModels(viewModels))
@@ -301,8 +316,19 @@ export function createResolveMiddleware({
       })
     })
 
+    let hotModuleReplacementId
+
     return next => action => {
       switch (action.type) {
+        case HOT_MODULE_REPLACEMENT: {
+          if (!hotModuleReplacementId) {
+            hotModuleReplacementId = action.hotModuleReplacementId
+          }
+          if (hotModuleReplacementId !== action.hotModuleReplacementId) {
+            window.location.reload()
+          }
+          break
+        }
         case SUBSCRIBE: {
           const { viewModelName, aggregateId } = action
           loading[viewModelName][aggregateId] = true

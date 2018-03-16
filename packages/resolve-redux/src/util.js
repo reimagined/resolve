@@ -35,7 +35,18 @@ export function getRootableUrl(path) {
     rootDir = ''
   }
 
-  return `${rootDir}${path}`
+  let rootableUrl = rootDir
+  if (!/\/$/.test(rootDir)) {
+    rootableUrl += '/'
+  }
+
+  if (/^\//.test(path)) {
+    rootableUrl += path.slice(1)
+  } else {
+    rootableUrl += path
+  }
+
+  return rootableUrl
 }
 
 export function getKey(viewModel, aggregateId) {
