@@ -1,11 +1,5 @@
-
-Here must be hello world tutorial - project structure, mandatory files/dirs, etc
-Rest of this file must be transformed into Getting started in docs
-
-
-
 # **🚀 ReSolve App**
-This project is an application created with [Create ReSolve App](../../../create-resolve-app). This package creates an empty single page application by default or a typical Todo List application if you use the `--sample` option. This application is built on the CQRS and Event Sourcing principles using React+Redux on the client.
+This project is an application created with [Create ReSolve App](../../../create-resolve-app). This package creates an empty single page application by default or a typical Todo List application if you use the `--example` option. This application is built on the CQRS and Event Sourcing principles using React+Redux on the client.
 
 Create ReSolve App allows you to specify application blocks (aggregates, read models, and a UI part React components present) in a semi-declarative manner. With the `resolve-scripts` package, you do not need to write an API backend manually. Instead, `resolve-scripts` deploys backend and domain services to interact with the client which is wrapped into the `resolve-redux` package for an automated interaction.
 
