@@ -302,7 +302,7 @@ The *resolve.server.config.js* file contains information for the reSolve library
 
 * #### entries
 
-  It might be the same config as in *resolve.client.config.js*. However, it is also possible to pass different `rootComponent` or `createStore` to server and client sides. It can be helpful in some cases (for example, see [resolve-scripts with react-router v4](../resolve-scripts-with-router-4) and  [resolve-scripts with react-router v2](../resolve-scripts-with-router-2)) but be  careful when using this approach - it may cause issues with SSR.
+  It might be the same config as in *resolve.client.config.js*. However, it is also possible to pass different `rootComponent` or `createStore` to server and client sides but be  careful when using this approach - it may cause issues with SSR.
 
   ##### Example
   ```js
