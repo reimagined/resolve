@@ -136,9 +136,9 @@ if (unknownOptions && unknownOptions.length) {
 
         response.on('end', function() {
           try {
-            var zip = new AdmZip(tmpFilePath)
+            let zip = new AdmZip(tmpFilePath)
             zip.extractAllTo(`./${appName}`)
-            fs.unlink(tmpFilePath)
+            fs.unlinkSync(tmpFilePath)
             resolve()
           } catch (e) {
             reject(e)
