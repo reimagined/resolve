@@ -53,9 +53,9 @@ export const builder = yargs =>
 
 export const handler = argv =>
   webpack({
-    ...argv,
     start: true,
-    build: true,
     watch: true,
-    openBrowser: true
+    openBrowser: true,
+    ...argv,
+    build: true
   })

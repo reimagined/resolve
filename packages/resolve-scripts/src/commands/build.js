@@ -35,7 +35,8 @@ export const builder = yargs =>
           env.HOST,
           env.PORT,
           env.INSPECT_HOST,
-          env.INSPECT_PORT
+          env.INSPECT_PORT,
+          env.OPEN_BROWSER
         ])}\n` +
         `${customEnvTitle}:\n` +
         `  ${customEnvText}\n\n` +
@@ -54,6 +55,7 @@ export const builder = yargs =>
     .option('config', cli.config)
     .option('print-config', cli.printConfig)
     .option('root-path', cli.rootPath)
+    .option('open-browser', cli.openBrowser)
     .implies('host', 'start')
     .implies('port', 'start')
     .implies('inspect', 'start')
