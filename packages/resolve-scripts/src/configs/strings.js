@@ -57,6 +57,11 @@ export const cli = {
     describe: `Sets the application's protocol`,
     type: 'string'
   },
+  openBrowser: {
+    default: undefined,
+    describe: `Open browser with the root page`,
+    type: 'boolean'
+  },
   config: {
     default: undefined,
     describe: 'Sets the path to resolve config',
@@ -116,7 +121,8 @@ export const env = {
   INSPECT_HOST: ['INSPECT_HOST', 'Sets the inspector host'],
   INSPECT_PORT: ['INSPECT_PORT', 'Sets the inspector port'],
   REGISTRY: ['REGISTRY', 'Sets the resolve registry'],
-  TOKEN: ['TOKEN', 'Sets the authorization token']
+  TOKEN: ['TOKEN', 'Sets the authorization token'],
+  OPEN_BROWSER: ['OPEN_BROWSER', 'Open browser with the root page']
 }
 
 export const customEnvTitle = 'Custom Environment Variables'

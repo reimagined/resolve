@@ -19,6 +19,7 @@ export const builder = yargs =>
     .epilogue(
       `${envTitle}:\n` +
         `${table([
+          env.NODE_ENV,
           env.CONFIG_PATH,
           env.ROUTES_PATH,
           env.INDEX_PATH,
@@ -32,7 +33,8 @@ export const builder = yargs =>
           env.HOST,
           env.PORT,
           env.INSPECT_HOST,
-          env.INSPECT_PORT
+          env.INSPECT_PORT,
+          env.OPEN_BROWSER
         ])}\n` +
         `${customEnvTitle}:\n` +
         `  ${customEnvText}\n\n` +
@@ -44,8 +46,9 @@ export const builder = yargs =>
     .option('port', cli.port)
     .option('protocol', cli.protocol)
     .option('inspect', cli.inspect)
-    .option('config', cli.config)
     .option('root-path', cli.rootPath)
+    .option('open-browser', cli.openBrowser)
+    .option('config', cli.config)
     .option('print-config', cli.printConfig)
 
 export const handler = argv =>

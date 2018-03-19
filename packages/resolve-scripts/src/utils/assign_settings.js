@@ -102,17 +102,21 @@ export function protocol({ resolveConfig, deployOptions }, argv, env) {
 
 extenders.push(port)
 export function port({ resolveConfig, deployOptions }, argv, env) {
-  if (env.PORT) {
+  if (env.PORT && !Number.isInteger(+env.PORT)) {
+    throw new Error(
+      'Invalid environment variables: \n' +
+        `PORT, Given: "${argv.port}", Value must be an integer`
+    )
+  } else if (env.PORT) {
     deployOptions.port = +env.PORT
   }
-  if (argv.port) {
-    deployOptions.port = +argv.port
-  }
-  if (!Number.isInteger(deployOptions.port)) {
+  if (argv.port && !Number.isInteger(+argv.port)) {
     throw new Error(
       'Invalid options: \n' +
         `port, Given: "${argv.port}", Value must be an integer`
     )
+  } else if (argv.port) {
+    deployOptions.port = +argv.port
   }
   env.PORT = deployOptions.port
 }
@@ -125,7 +129,7 @@ export function watch({ resolveConfig, deployOptions }, argv, env) {
         `WATCH, Given: "${env.WATCH}", Choices: "false", "true"`
     )
   } else if (env.WATCH) {
-    deployOptions.watch = env.WATCH == 'true' // eslint-disable-line
+    deployOptions.watch = env.WATCH === 'true'
   }
   if (argv.watch) {
     deployOptions.watch = argv.watch
@@ -141,7 +145,7 @@ export function start({ resolveConfig, deployOptions }, argv, env) {
         `START, Given: "${env.START}", Choices: "false", "true"`
     )
   } else if (env.START) {
-    deployOptions.start = env.START == 'true' // eslint-disable-line
+    deployOptions.start = env.START === 'true'
   }
   if (argv.start) {
     deployOptions.start = argv.start
@@ -154,10 +158,10 @@ export function build({ resolveConfig, deployOptions }, argv, env) {
   if (env.BUILD && ['false', 'true'].indexOf(env.BUILD) === -1) {
     return new Error(
       'Invalid environment variables: \n' +
-        `START, Given: "${env.BUILD}", Choices: "false", "true"`
+        `BUILD, Given: "${env.BUILD}", Choices: "false", "true"`
     )
   } else if (env.BUILD) {
-    deployOptions.build = env.BUILD == 'true' // eslint-disable-line
+    deployOptions.build = env.BUILD === 'true'
   }
   if (argv.build) {
     deployOptions.build = argv.build
@@ -225,20 +229,21 @@ export function auth({ resolveConfig, deployOptions }, argv, env) {
   if (env.AUTH_PATH) {
     resolveConfig.auth = env.AUTH_PATH
   }
-  if (argv.auth) {
-    resolveConfig.auth = argv.auth
-  }
   env.AUTH_PATH = resolveConfig.auth
 }
 
 extenders.push(openBrowser)
 export function openBrowser({ resolveConfig, deployOptions }, argv, env) {
-  // eslint-disable-next-line
-  if (env.OPEN_BROWSER == 'true') {
-    deployOptions.openBrowser = true
+  if (env.OPEN_BROWSER && ['false', 'true'].indexOf(env.OPEN_BROWSER) === -1) {
+    return new Error(
+      'Invalid environment variables: \n' +
+        `OPEN_BROWSER, Given: "${env.BUILD}", Choices: "false", "true"`
+    )
+  } else if (env.OPEN_BROWSER) {
+    deployOptions.openBrowser = env.OPEN_BROWSER === 'true'
   }
   if (argv.openBrowser) {
-    deployOptions.openBrowser = argv.openBrowser
+    deployOptions.openBrowser = true
   }
   env.OPEN_BROWSER = deployOptions.openBrowser
 }

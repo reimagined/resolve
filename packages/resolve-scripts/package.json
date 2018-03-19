@@ -3,6 +3,7 @@
   "version": "0.5.4",
   "description": "This package create server with resolve.",
   "main": "./dist/index.js",
+  "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
   "keywords": [

@@ -1,4 +1,5 @@
 import path from 'path'
+
 import exec from './exec'
 import validateСonfig from '../src/utils/validate_config'
 import resolveConfigOrigin from '../src/configs/resolve.config'
@@ -281,12 +282,12 @@ describe('validate schema (fail)', () => {
   })
 })
 
-describe('resolve-scripts build --config=resolve.test.config.json', () => {
+describe('resolve-scripts build --сonfig=resolve.test.config.json', () => {
   const resolveConfigPath = path.resolve(__dirname, 'resolve.test.config.json')
   const { env, config } = require(resolveConfigPath)
 
   test(
-    'merge options should work correctly ' +
+    'merge cli should work correctly ' +
       '[{} <- defaults <- resolve.config.json <- cli] (mode=development)',
     async () => {
       const json = await exec(
@@ -301,7 +302,7 @@ describe('resolve-scripts build --config=resolve.test.config.json', () => {
   )
 
   test(
-    'merge options should work correctly ' +
+    'merge cli should work correctly ' +
       '[{} <- defaults <- resolve.config.json <- cli] (mode=production)',
     async () => {
       const json = await exec(
