@@ -1,17 +1,9 @@
-# resolve-scripts
+# **resolve-scripts**
+[![npm version](https://badge.fury.io/js/resolve-scripts.svg)](https://badge.fury.io/js/resolve-scripts)
 
-# Basics
+This package includes scripts and a configuration the [Create reSolve App](../create-resolve-app) uses.
+Refer to its documentation:
 
-##
-
-# Advanced
-
-## Custom Reducers
-
-## Custom Middlewares
-
-## Custom Client Entry Point
-
-## Custom Configuration File
-The resolve.config.json file contains information for your application.
-
+ * [Getting started](../create-resolve-app#getting-started) - How to create a new app
+ * [User Guide](../create-resolve-app#user-guide) - Information on apps created with Create reSolve App
+ 
