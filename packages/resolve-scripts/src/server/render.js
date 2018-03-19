@@ -2,7 +2,7 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { renderToString } from 'react-dom/server'
 import { Provider } from 'react-redux'
-import { StaticRouter } from 'react-router-dom'
+import { StaticRouter, Route, Redirect, Switch } from 'react-router-dom'
 import ResolveRoutes from '../resolve-routes'
 import jsonUtfStringify from './utils/json_utf_stringify'
 import serverConfig from '../configs/server.config.js'
@@ -10,6 +10,8 @@ import clientConfig from '../configs/client.config.js'
 
 // const configEntries = config.entries
 process.env.ROOT_PATH = process.env.ROOT_PATH || ''
+
+const Routes = ResolveRoutes(clientConfig.routes, { Route, Redirect, Switch })
 
 const isSsrEnabled = () =>
   serverConfig.ssrMode === 'always' ||
@@ -29,7 +31,7 @@ export default (initialState, { req, res }) => {
             location={req.url}
             context={{}}
           >
-            <ResolveRoutes routes={clientConfig.routes} />
+            <Routes routes={clientConfig.routes} />
           </StaticRouter>
         </Provider>
       )
