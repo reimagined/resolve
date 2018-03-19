@@ -26,7 +26,7 @@ describe('resolve-scripts build', () => {
     })
 
     test('resolve-scripts build --dev --prod (fail)', async () => {
-      expect.assertions(1);
+      expect.assertions(1)
       await expect(exec('resolve-scripts build --dev --prod')).rejects.toThrow()
     })
 
@@ -58,7 +58,7 @@ describe('resolve-scripts build', () => {
     })
 
     test('NODE_ENV=INCORRECT_VALUE resolve-scripts build (fail)', async () => {
-      expect.assertions(1);
+      expect.assertions(1)
       await expect(
         exec('resolve-scripts build', { NODE_ENV: 'INCORRECT_VALUE' })
       ).rejects.toThrow()
@@ -128,7 +128,7 @@ describe('resolve-scripts build', () => {
     })
 
     test('resolve-scripts build --host=http://test.test (fail)', async () => {
-      expect.assertions(1);
+      expect.assertions(1)
       await expect(
         exec('resolve-scripts build --host=http://test.test')
       ).rejects.toThrow()
@@ -144,7 +144,7 @@ describe('resolve-scripts build', () => {
     })
 
     test('resolve-scripts build --port=1234 (fail)', async () => {
-      expect.assertions(1);
+      expect.assertions(1)
       await expect(exec('resolve-scripts build --port=1234')).rejects.toThrow()
     })
   })
@@ -174,27 +174,27 @@ describe('resolve-scripts build', () => {
     })
 
     test('resolve-scripts build --inspect=INCORRECT_PORT (fail)', async () => {
-      expect.assertions(1);
+      expect.assertions(1)
       await expect(
         exec('resolve-scripts build --inspect=INCORRECT_PORT')
       ).rejects.toThrow()
     })
 
     test('resolve-scripts build --inspect=INCORRECT_HOST (fail)', async () => {
-      expect.assertions(1);
+      expect.assertions(1)
       await expect(
         exec('resolve-scripts build --inspect=1.2.3.4.5:1234')
       ).rejects.toThrow()
     })
 
     test('resolve-scripts build --inspect (fail)', async () => {
-      expect.assertions(1);
+      expect.assertions(1)
       await expect(exec('resolve-scripts build --inspect')).rejects.toThrow()
     })
   })
 
   describe('argv.config', () => {
-    test('resolve-scripts build --сonfig=resolve.test.config.json', async () => {
+    test('resolve-scripts build --config=resolve.test.config.json', async () => {
       const json = await exec(
         `resolve-scripts build --config=${path.resolve(
           __dirname,
@@ -210,10 +210,10 @@ describe('resolve-scripts build', () => {
       })
     })
 
-    test('resolve-scripts build --сonfig=NONEXISTENT_FILE (fail)', async () => {
-      expect.assertions(1);
+    test('resolve-scripts build --config=NONEXISTENT_FILE (fail)', async () => {
+      expect.assertions(1)
       await expect(
-        exec('resolve-scripts build --сonfig=NONEXISTENT_FILE')
+        exec('resolve-scripts build --config=NONEXISTENT_FILE')
       ).rejects.toThrow()
     })
   })
@@ -271,14 +271,14 @@ describe('resolve-scripts dev', () => {
     })
 
     test('resolve-scripts dev --inspect=INCORRECT_PORT (fail)', async () => {
-      expect.assertions(1);
+      expect.assertions(1)
       await expect(
         exec('resolve-scripts dev --inspect=INCORRECT_PORT')
       ).rejects.toThrow()
     })
 
     test('resolve-scripts dev --inspect=INCORRECT_HOST (fail)', async () => {
-      expect.assertions(1);
+      expect.assertions(1)
       await expect(
         exec('resolve-scripts dev --inspect=1.2.3.4.5:1234')
       ).rejects.toThrow()
@@ -286,7 +286,7 @@ describe('resolve-scripts dev', () => {
   })
 
   describe('argv.config', () => {
-    test('resolve-scripts dev --сonfig=resolve.test.config.json', async () => {
+    test('resolve-scripts dev --config=resolve.test.config.json', async () => {
       const json = await exec(
         `resolve-scripts dev --config=${path.resolve(
           __dirname,
@@ -302,11 +302,11 @@ describe('resolve-scripts dev', () => {
       })
     })
 
-    test('resolve-scripts dev --сonfig=NONEXISTENT_FILE (fail)', async () => {
-      expect.assertions(1);
-      (await expect(
-        exec('resolve-scripts dev --сonfig=NONEXISTENT_FILE')
-      )).rejects.toThrow()
+    test('resolve-scripts dev --config=NONEXISTENT_FILE (fail)', async () => {
+      expect.assertions(1)
+      await expect(
+        exec('resolve-scripts dev --config=NONEXISTENT_FILE')
+      ).rejects.toThrow()
     })
   })
 })
@@ -335,14 +335,14 @@ describe('resolve-scripts start', () => {
     })
 
     test('resolve-scripts start --inspect=INCORRECT_PORT (fail)', async () => {
-      expect.assertions(1);
+      expect.assertions(1)
       await expect(
         exec('resolve-scripts start --inspect=INCORRECT_PORT')
       ).rejects.toThrow()
     })
 
     test('resolve-scripts start --inspect=INCORRECT_HOST (fail)', async () => {
-      expect.assertions(1);
+      expect.assertions(1)
       await expect(
         exec('resolve-scripts start --inspect=1.2.3.4.5:1234')
       ).rejects.toThrow()
