@@ -129,25 +129,6 @@ pipeline {
             }
         }
 
-        stage('Resolve/HackerNews Functional Tests') {
-            steps {
-                script {
-                    sh """
-                        /init.sh
-                        git clone https://github.com/reimagined/hacker-news-resolve.git
-                        cd hacker-news-resolve
-                        git checkout ${env.BRANCH_NAME} || echo "No branch \"${env.BRANCH_NAME}\""
-                        yarn global add cross-env
-                        yarn install --production=false
-                        ../node_modules/.bin/resolve-scripts update --exact-versions \$(cat /lerna_version)
-                        cat ./package.json
-                        yarn build
-                        yarn test:functional --browser=path:/chromium
-                    """
-                }
-            }
-        }
-
         stage('Resolve/Apps Functional Tests (only PR release/x.y.z => master)') {
             steps {
                 script {
