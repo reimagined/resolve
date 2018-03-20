@@ -3,12 +3,12 @@
     "version": "0.5.4",
     "private": true,
     "scripts": {
-        "build": "JWT_SECRET=123 resolve-scripts build",
-        "dev": "JWT_SECRET=123 resolve-scripts dev",
-        "start": "JWT_SECRET=123 resolve-scripts start",
+        "build": "resolve-scripts build",
+        "dev": "resolve-scripts dev",
+        "start": "resolve-scripts start",
         "update": "resolve-scripts update",
-        "test": "JWT_SECRET=123 jest test/unit/*",
-        "test:functional": "JWT_SECRET=123 resolve-scripts build --test && testcafe remote test/functional --app \"resolve-scripts start\" --qr-code"
+        "test": "jest test/unit/*",
+        "test:functional": "resolve-scripts build --test && testcafe remote test/functional --app \"resolve-scripts start\" --qr-code"
     },
     "dependencies": {
         "react": "^16.2.0",
@@ -24,6 +24,7 @@
         "jest": "^22.4.2",
         "react-test-renderer": "^16.2.0",
         "testcafe": "^0.19.1",
-        "testcafe-browser-tools": "^1.6.1"
+        "testcafe-browser-tools": "^1.6.1",
+        "dotenv": "^5.0.1"
     }
 }
