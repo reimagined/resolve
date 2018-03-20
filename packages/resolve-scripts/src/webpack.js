@@ -15,7 +15,9 @@ import resolveFileOrModule from './utils/resolve_file_or_module'
 import resolveFile from './utils/resolve_file'
 import { meta } from './configs/resolve.config'
 
-export default argv => {
+export default (argv, defaults) => {
+  Object.assign(process.env, Object.assign(defaults, process.env))
+
   const { resolveConfig, deployOptions } = setup(argv, process.env)
 
   if (argv.printConfig) {

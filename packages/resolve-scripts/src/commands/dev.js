@@ -52,10 +52,9 @@ export const builder = yargs =>
     .option('print-config', cli.printConfig)
 
 export const handler = argv =>
-  webpack({
-    start: true,
-    watch: true,
-    openBrowser: true,
-    ...argv,
-    build: true
+  webpack(argv, {
+    START: 'true',
+    WATCH: 'true',
+    BUILD: 'true',
+    OPEN_BROWSER: 'true'
   })

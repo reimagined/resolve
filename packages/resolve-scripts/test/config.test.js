@@ -291,7 +291,7 @@ describe('resolve-scripts build --сonfig=resolve.test.config.json', () => {
       '[{} <- defaults <- resolve.config.json <- cli] (mode=development)',
     async () => {
       const json = await exec(
-        `resolve-scripts build --config=${resolveConfigPath} --start`
+        `resolve-scripts build --config=${resolveConfigPath} --start --dev`
       )
 
       expect(json).toMatchObject({

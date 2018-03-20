@@ -81,18 +81,7 @@ export const cli = {
 
 export const defaultsTitle = 'Default config'
 
-export const defaults = JSON.stringify(
-  {
-    ...config,
-    mode: undefined,
-    build: undefined,
-    watch: undefined,
-    start: undefined,
-    registry: undefined
-  },
-  null,
-  3
-)
+export const defaults = JSON.stringify(config, null, 3)
 
 export const envTitle = 'Environment variables'
 

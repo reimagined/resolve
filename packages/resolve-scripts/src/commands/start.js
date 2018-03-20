@@ -29,9 +29,8 @@ export const builder = yargs =>
     .option('print-config', cli.printConfig)
 
 export const handler = argv =>
-  webpack({
-    ...argv,
-    build: false,
-    start: true,
-    watch: false
+  webpack(argv, {
+    START: 'true',
+    WATCH: 'false',
+    BUILD: 'false'
   })

@@ -8,7 +8,7 @@ describe('resolve-scripts build', () => {
       const json = await exec('resolve-scripts build')
 
       expect(json).toHaveProperty('build', true)
-      expect(json).toHaveProperty('mode', 'development')
+      expect(json).toHaveProperty('mode', 'production')
     })
 
     test('resolve-scripts build --dev', async () => {
@@ -50,7 +50,7 @@ describe('resolve-scripts build', () => {
 
     test('NODE_ENV=test resolve-scripts build', async () => {
       const json = await exec('resolve-scripts build', {
-        NODE_ENV: 'development'
+        NODE_ENV: 'test'
       })
 
       expect(json).toHaveProperty('build', true)
@@ -206,7 +206,7 @@ describe('resolve-scripts build', () => {
 
       expect(json).toMatchObject({
         ...config,
-        ...env.development
+        ...env.production
       })
     })
 

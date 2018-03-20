@@ -62,8 +62,7 @@ export const builder = yargs =>
     .conflicts('dev', 'prod')
 
 export const handler = argv =>
-  webpack({
-    prod: true,
-    ...argv,
-    build: true
+  webpack(argv, {
+    NODE_ENV: 'production',
+    BUILD: 'true'
   })

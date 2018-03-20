@@ -31,6 +31,54 @@ export function mode({ resolveConfig, deployOptions }, argv, env) {
   }
 }
 
+extenders.push(watch)
+export function watch({ resolveConfig, deployOptions }, argv, env) {
+  if (env.WATCH && ['false', 'true'].indexOf(env.WATCH) === -1) {
+    return new Error(
+      'Invalid environment variables: \n' +
+        `WATCH, Given: "${env.WATCH}", Choices: "false", "true"`
+    )
+  } else if (env.WATCH) {
+    deployOptions.watch = env.WATCH === 'true'
+  }
+  if (argv.watch) {
+    deployOptions.watch = argv.watch
+  }
+  env.WATCH = deployOptions.watch
+}
+
+extenders.push(start)
+export function start({ resolveConfig, deployOptions }, argv, env) {
+  if (env.START && ['false', 'true'].indexOf(env.START) === -1) {
+    return new Error(
+      'Invalid environment variables: \n' +
+        `START, Given: "${env.START}", Choices: "false", "true"`
+    )
+  } else if (env.START) {
+    deployOptions.start = env.START === 'true'
+  }
+  if (argv.start) {
+    deployOptions.start = argv.start
+  }
+  env.START = deployOptions.start
+}
+
+extenders.push(build)
+export function build({ resolveConfig, deployOptions }, argv, env) {
+  if (env.BUILD && ['false', 'true'].indexOf(env.BUILD) === -1) {
+    return new Error(
+      'Invalid environment variables: \n' +
+        `BUILD, Given: "${env.BUILD}", Choices: "false", "true"`
+    )
+  } else if (env.BUILD) {
+    deployOptions.build = env.BUILD === 'true'
+  }
+  if (argv.build) {
+    deployOptions.build = argv.build
+  }
+  env.BUILD = deployOptions.build
+}
+
 extenders.push(inspect)
 export function inspect({ resolveConfig, deployOptions }, argv, env) {
   if (env.INSPECT_PORT && !Number.isInteger(+env.INSPECT_PORT)) {
@@ -50,7 +98,7 @@ export function inspect({ resolveConfig, deployOptions }, argv, env) {
     deployOptions.inspectHost = env.INSPECT_HOST
   }
 
-  if ((argv.inspect === '' || argv.inspect) && !argv.start) {
+  if ((argv.inspect === '' || argv.inspect) && !deployOptions.start) {
     throw new Error('Implications failed:\ninspect -> start')
   }
 
@@ -119,54 +167,6 @@ export function port({ resolveConfig, deployOptions }, argv, env) {
     deployOptions.port = +argv.port
   }
   env.PORT = deployOptions.port
-}
-
-extenders.push(watch)
-export function watch({ resolveConfig, deployOptions }, argv, env) {
-  if (env.WATCH && ['false', 'true'].indexOf(env.WATCH) === -1) {
-    return new Error(
-      'Invalid environment variables: \n' +
-        `WATCH, Given: "${env.WATCH}", Choices: "false", "true"`
-    )
-  } else if (env.WATCH) {
-    deployOptions.watch = env.WATCH === 'true'
-  }
-  if (argv.watch) {
-    deployOptions.watch = argv.watch
-  }
-  env.WATCH = deployOptions.watch
-}
-
-extenders.push(start)
-export function start({ resolveConfig, deployOptions }, argv, env) {
-  if (env.START && ['false', 'true'].indexOf(env.START) === -1) {
-    return new Error(
-      'Invalid environment variables: \n' +
-        `START, Given: "${env.START}", Choices: "false", "true"`
-    )
-  } else if (env.START) {
-    deployOptions.start = env.START === 'true'
-  }
-  if (argv.start) {
-    deployOptions.start = argv.start
-  }
-  env.START = deployOptions.start
-}
-
-extenders.push(build)
-export function build({ resolveConfig, deployOptions }, argv, env) {
-  if (env.BUILD && ['false', 'true'].indexOf(env.BUILD) === -1) {
-    return new Error(
-      'Invalid environment variables: \n' +
-        `BUILD, Given: "${env.BUILD}", Choices: "false", "true"`
-    )
-  } else if (env.BUILD) {
-    deployOptions.build = env.BUILD === 'true'
-  }
-  if (argv.build) {
-    deployOptions.build = argv.build
-  }
-  env.BUILD = deployOptions.build
 }
 
 extenders.push(rootPath)
@@ -242,8 +242,8 @@ export function openBrowser({ resolveConfig, deployOptions }, argv, env) {
   } else if (env.OPEN_BROWSER) {
     deployOptions.openBrowser = env.OPEN_BROWSER === 'true'
   }
-  if (argv.openBrowser) {
-    deployOptions.openBrowser = true
+  if (argv.openBrowser !== undefined) {
+    deployOptions.openBrowser = argv.openBrowser
   }
   env.OPEN_BROWSER = deployOptions.openBrowser
 }
