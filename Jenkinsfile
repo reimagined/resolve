@@ -2,16 +2,19 @@ pipeline {
     agent {
         docker {
             image 'reimagined/resolve-ci'
-            args '-u root:root'
+            args '-u root:root -v /home/resolve/yarn_cache:/yarn_cache'
         }
     }
     stages {
         stage('Unit tests') {
             steps {
                 script {
-                    sh 'yarn install --dev'
-                    sh 'yarn lint'
-                    sh 'yarn test'
+                    sh """
+                        export YARN_CACHE_FOLDER=/yarn_cache
+                        yarn install --dev
+                        yarn lint
+                        yarn test
+                    """
                 }
             }
         }
@@ -26,10 +29,12 @@ pipeline {
                         env.CI_RELEASE_TYPE = 'alpha'
                     }
 
-                    sh 'git log | head -1 | awk \'{ print $2 }\' > /last_commit'
-                    sh 'echo \$(cat /last_commit)'
-
                     sh """
+                        export YARN_CACHE_FOLDER=/yarn_cache
+
+                        git log | head -1 | awk '{ print \$2 }' > /last_commit
+                        echo \$(cat /last_commit)
+
                         export CI_CANARY_VERSION=\$(nodejs -e "console.log(JSON.parse(require('fs').readFileSync('./package.json')).version.split('-')[0].split('.').map((ver, idx) => (idx < 2 ? ver : String(+ver + 1) )).join('.'));")-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}; \
                         echo \$CI_CANARY_VERSION > /lerna_version; \
 
@@ -49,6 +54,7 @@ pipeline {
             steps {
                 script {
                     sh """
+                        export YARN_CACHE_FOLDER=/yarn_cache
                         /init.sh
                         cd examples/todo
                         yarn test:functional --browser=path:/chromium
@@ -61,6 +67,7 @@ pipeline {
             steps {
                 script {
                     sh """
+                        export YARN_CACHE_FOLDER=/yarn_cache
                         /init.sh
                         cd examples/todo-two-levels
                         yarn test:functional --browser=path:/chromium
@@ -73,6 +80,7 @@ pipeline {
             steps {
                 script {
                     sh """
+                        export YARN_CACHE_FOLDER=/yarn_cache
                         /init.sh
                         cd examples/top-list
                         yarn test:functional --browser=path:/chromium
@@ -85,11 +93,13 @@ pipeline {
             steps {
                 script {
                     sh """
+                        export YARN_CACHE_FOLDER=/yarn_cache
                         /init.sh
                         yarn global add create-resolve-app@\$(cat /lerna_version)
                         create-resolve-app hello-world -c \$(cat /last_commit)
                         cd ./hello-world
                         cat ./package.json
+
                         yarn test
                         yarn test:functional --browser=path:/chromium
                     """
@@ -101,11 +111,13 @@ pipeline {
             steps {
                 script {
                     sh """
+                        export YARN_CACHE_FOLDER=/yarn_cache
                         /init.sh
                         yarn global add create-resolve-app@\$(cat /lerna_version)
                         create-resolve-app todolist -e todo -c \$(cat /last_commit)
                         cd ./todolist
                         cat ./package.json
+
                         yarn test
                         yarn test:functional --browser=path:/chromium
                     """
@@ -117,42 +129,16 @@ pipeline {
             steps {
                 script {
                     sh """
+                        export YARN_CACHE_FOLDER=/yarn_cache
                         /init.sh
                         yarn global add create-resolve-app@\$(cat /lerna_version)
                         create-resolve-app twolevelstodo -e todo-two-levels -c \$(cat /last_commit)
                         cd ./todolist
                         cat ./package.json
+
                         yarn test
                         yarn test:functional --browser=path:/chromium
                     """
-                }
-            }
-        }
-
-        stage('Resolve/Apps Functional Tests (only PR release/x.y.z => master)') {
-            steps {
-                script {
-                    if(env.BRANCH_NAME.contains('release')) {
-                        withCredentials([
-                            string(credentialsId: 'DEPENDENT_JOBS_LIST', variable: 'JOBS')
-                        ]) {
-                            def jobs = env.JOBS.split(';')
-                            for (def i = 0; i < jobs.length; ++i) {
-                                build([
-                                    job: jobs[i],
-                                    parameters: [[
-                                        $class: 'StringParameterValue',
-                                        name: 'NPM_CANARY_VERSION',
-                                        value: env.CI_TIMESTAMP
-                                    ],[
-                                        $class: 'BooleanParameterValue',
-                                        name: 'RESOLVE_CHECK',
-                                        value: true
-                                    ]]
-                                ])
-                            }
-                        }
-                    }
                 }
             }
         }
