@@ -29,6 +29,6 @@
     "graphql-tools": "^2.7.2",
     "object-hash": "^1.1.8",
     "regenerator-runtime": "^0.11.0",
-    "resolve-readmodel-memory": "^0.6.0"
+    "resolve-readmodel-memory": "^0.6.1"
   }
 }

@@ -25,6 +25,6 @@
   },
   "dependencies": {
     "mongodb": "^2.2.26",
-    "resolve-storage-base": "^0.6.0"
+    "resolve-storage-base": "^0.6.1"
   }
 }
