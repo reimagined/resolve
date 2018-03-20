@@ -27,6 +27,6 @@
     "async-lock": "^1.1.0",
     "nedb": "^1.8.0",
     "regenerator-runtime": "^0.11.0",
-    "resolve-storage-base": "^0.5.4"
+    "resolve-storage-base": "^0.6.0"
   }
 }

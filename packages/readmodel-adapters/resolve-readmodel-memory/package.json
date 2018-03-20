@@ -26,7 +26,7 @@
   "dependencies": {
     "nedb": "^1.8.0",
     "regenerator-runtime": "^0.11.0",
-    "resolve-readmodel-base": "^0.5.4",
+    "resolve-readmodel-base": "^0.6.0",
     "uuid": "^3.1.0"
   }
 }
