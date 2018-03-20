@@ -14,7 +14,8 @@ Refer to [https://github.com/markerikson/react-redux-links](https://github.com/m
 
 Available options:
 
-- `--sample` creates a single page application representing a typical Todo List
+- `--example <folder>` creates appropriate application from examples folder in resolve repo. `hello-world` is default
+- `--branch <branch>, --commit <sha>` - you can specify if you need example from specific brach or even commit
 - `--version` or `-V` outputs the version number
 
 ## **Quick Overview** 🔎
@@ -33,15 +34,15 @@ Your app will be opened in the browser at [http://localhost:3000/](http://localh
 ### Create an App
 Create a new reSolve application in one of the following ways:
 
-using yarn...  
+using yarn...
 ```bash
 yarn create resolve-app my-resolve-app
 ```
-...or npx:  
+...or npx:
 ```bash
 npx create-resolve-app my-resolve-app
 ```
-...or npm:  
+...or npm:
 ```bash
 npm i -g create-resolve-app
 create-resolve-app my-resolve-app
@@ -98,8 +99,8 @@ Open [http://localhost:3000](http://localhost:3000/) to view it in the browser.
 
 ## **User Guide**
 The User Guide provides detailed information on an application created with Create reSolve App:
-* [Project Structure Overview](../resolve-scripts/src/template#project-structure-overview-)
-* [Aggregates and Read Models](../resolve-scripts/src/template#aggregates-and-read-models-)
-* [Configuration Files](../resolve-scripts/src/template#configuration-files-)
+* [Project Structure Overview](../../examples/hello-world/#project-structure-overview-)
+* [Aggregates and Read Models](../../examples/hello-world#aggregates-and-read-models-)
+* [Configuration Files](../../examples/hello-world#configuration-files-)
 
 A copy of the user guide is added to your project folder as the `Readme.md` file.

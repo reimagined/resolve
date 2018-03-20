@@ -94,10 +94,13 @@ if (unknownOptions && unknownOptions.length) {
 } else {
   let appName = options._unknown[0],
     example = options.example || 'hello-world',
-    branch = options.branch ? options.branch : 'master',
-    examplePath = `./resolve-${branch}/examples/${example}`,
-    resolveRepoPath = `https://codeload.github.com/reimagined/resolve/zip/${branch}`,
-    tmpFilePath = `./resolve-${branch}.zip`
+    revision = options.branch
+      ? options.branch
+      : options.commit ? options.commit : 'master',
+    repoDirName = `resolve-${revision}`,
+    examplePath = `./${repoDirName}/examples/${example}`,
+    resolveRepoPath = `https://codeload.github.com/reimagined/resolve/zip/${revision}`,
+    tmpFilePath = `./${repoDirName}.zip`
 
   const startCreatingApp = () =>
     Promise.resolve(() =>
@@ -124,7 +127,7 @@ if (unknownOptions && unknownOptions.length) {
   }
 
   const downloadRepo = () =>
-    new Promise(resolve => {
+    new Promise((resolve, reject) => {
       log(chalk.green('Load example'))
       https.get(resolveRepoPath, function(response) {
         response.on('data', function(data) {
@@ -132,13 +135,37 @@ if (unknownOptions && unknownOptions.length) {
         })
 
         response.on('end', function() {
-          var zip = new AdmZip(tmpFilePath)
-          zip.extractAllTo(`./${appName}`)
-          fs.unlink(tmpFilePath)
-          resolve()
+          try {
+            let zip = new AdmZip(tmpFilePath)
+            zip.extractAllTo(`./${appName}`)
+            fs.unlinkSync(tmpFilePath)
+            resolve()
+          } catch (e) {
+            reject(e)
+          }
         })
       })
     })
+
+  const printIfDownloadFail = errMessage => {
+    if (
+      errMessage.toLowerCase().indexOf('invalid or unsupported zip format') > -1
+    ) {
+      let buf = fs.readFileSync(tmpFilePath).toString()
+      if (buf.toLowerCase().indexOf('not found')) {
+        log(chalk.red('Referent commit does not exists in resolve repository.'))
+        log(
+          chalk.red(
+            'Maybe you forgot to merge your feature branch with dev branch'
+          )
+        )
+
+        throw new Error('Repo downloading failed')
+      }
+    }
+
+    throw new Error(errMessage)
+  }
 
   const copyExampleBash = () => {
     log()
@@ -146,7 +173,7 @@ if (unknownOptions && unknownOptions.length) {
     let command =
       `cd ${appName} ` +
       ` && cp -r ${examplePath}/* . && cp -r ${examplePath}/.[a-zA-Z0-9]* .` +
-      ` && rm -rf ./resolve-${branch} && npm i`
+      ` && rm -rf ./${repoDirName} && npm i`
 
     const proc = spawn.sync(command, [], { stdio: 'inherit', shell: true })
     if (proc.status !== 0) {
@@ -160,7 +187,7 @@ if (unknownOptions && unknownOptions.length) {
     let command =
       `cd ${appName} ` +
       ` && xcopy ${examplePathCMD} /E /Q ` +
-      ` && rmdir /S /Q resolve-${branch} && npm i`
+      ` && rmdir /S /Q ${repoDirName} && npm i`
 
     const proc = spawn.sync(command, [], { stdio: 'inherit', shell: true })
     if (proc.status !== 0) {
@@ -225,9 +252,8 @@ if (unknownOptions && unknownOptions.length) {
 
   startCreatingApp()
     .then(checkAppName)
-    .then(downloadRepo)
-    .then(copyExampleBash)
-    .catch(copyExampleCMD)
+    .then(() => downloadRepo().catch(printIfDownloadFail))
+    .then(() => copyExampleBash().catch(copyExampleCMD))
     .then(patchPackageJson)
     .then(printFinishOutput)
     .catch(e => log(chalk.red(e)))
