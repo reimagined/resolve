@@ -2,15 +2,15 @@
 
 ## Login Page
 
-![127 0 0 1 3000 login 1](https://user-images.githubusercontent.com/5055654/37658198-09978e02-2c5e-11e8-8e67-801bbffcc628.png)
+![Login Page](https://user-images.githubusercontent.com/5055654/37658198-09978e02-2c5e-11e8-8e67-801bbffcc628.png)
 
 ## User access
 
-![127 0 0 1 3000 1](https://user-images.githubusercontent.com/5055654/37658195-0959cee6-2c5e-11e8-8960-3d7a2fe318e0.png)
+![User access](https://user-images.githubusercontent.com/5055654/37658195-0959cee6-2c5e-11e8-8960-3d7a2fe318e0.png)
 
 ## Anonymous access
 
-![127 0 0 1 3000 2](https://user-images.githubusercontent.com/5055654/37658197-09769ad0-2c5e-11e8-8ba1-1782d2ae44d8.png)
+![Anonymous access](https://user-images.githubusercontent.com/5055654/37658197-09769ad0-2c5e-11e8-8ba1-1782d2ae44d8.png)
 
 ## Passport Local Credentials
 
