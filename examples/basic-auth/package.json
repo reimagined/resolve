@@ -1,0 +1,29 @@
+{
+    "name": "basic-auth",
+    "version": "0.5.4",
+    "private": true,
+    "scripts": {
+        "build": "JWT_SECRET=123 resolve-scripts build",
+        "dev": "JWT_SECRET=123 resolve-scripts dev",
+        "start": "JWT_SECRET=123 resolve-scripts start",
+        "update": "resolve-scripts update",
+        "test": "JWT_SECRET=123 jest test/unit/*",
+        "test:functional": "JWT_SECRET=123 resolve-scripts build --test && testcafe remote test/functional --app \"resolve-scripts start\" --qr-code"
+    },
+    "dependencies": {
+        "react": "^16.2.0",
+        "redux": "^3.7.2",
+        "react-dom": "^16.2.0",
+        "react-redux": "^5.0.7",
+        "react-router-dom": "^4.2.2",
+        "resolve-scripts": "^0.5.4",
+        "resolve-redux": "^0.5.4",
+        "jsonwebtoken": "^8.2.0"
+    },
+    "devDependencies": {
+        "jest": "^22.4.2",
+        "react-test-renderer": "^16.2.0",
+        "testcafe": "^0.19.1",
+        "testcafe-browser-tools": "^1.6.1"
+    }
+}

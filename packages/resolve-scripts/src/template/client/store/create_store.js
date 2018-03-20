@@ -2,6 +2,7 @@ import { createStore, applyMiddleware, combineReducers } from 'redux'
 import {
   createViewModelsReducer,
   createReadModelsReducer,
+  createJwtReducer,
   createResolveMiddleware
 } from 'resolve-redux'
 import { routerReducer, routerMiddleware } from 'react-router-redux'
@@ -21,7 +22,8 @@ export default (initialState, history) => {
       ...reducers,
       router: routerReducer,
       viewModels: createViewModelsReducer(),
-      readModels: createReadModelsReducer()
+      readModels: createReadModelsReducer(),
+      jwt: createJwtReducer()
     }),
     initialState,
     composeWithDevTools(

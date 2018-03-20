@@ -2,6 +2,7 @@
 var path = require('path')
 
 require('babel-polyfill')
+require('dotenv').config()
 
 // eslint-disable-next-line
 require('yargs')
