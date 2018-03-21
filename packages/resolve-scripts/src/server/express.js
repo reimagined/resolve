@@ -50,15 +50,11 @@ const queryExecutors = {}
 
 config.readModels.forEach(readModel => {
   if (!readModel.name && config.readModels.length === 1) {
-    readModel.name = 'graphql'
+    readModel.name = 'default'
   } else if (!readModel.name) {
     raiseError(message.readModelMandatoryName, readModel)
   } else if (queryExecutors[readModel.name]) {
     raiseError(message.dublicateName, readModel)
-  }
-
-  if (!readModel.gqlSchema || !readModel.gqlResolvers) {
-    raiseError(message.readModelQuerySideMandatory, readModel)
   }
 
   const facade = createFacade({
@@ -67,15 +63,14 @@ config.readModels.forEach(readModel => {
       adapter: readModel.adapter,
       eventStore
     }),
-    gqlSchema: readModel.gqlSchema,
-    gqlResolvers: readModel.gqlResolvers
+    resolvers: readModel.resolvers
   })
 
-  queryExecutors[readModel.name] = facade.executeQueryGraphql
-  queryExecutors[readModel.name].makeSubscriber =
-    facade.makeReactiveGraphqlReader
+  queryExecutors[readModel.name] = facade.executeQuery
 
-  queryExecutors[readModel.name].mode = 'graphql'
+  queryExecutors[readModel.name].makeSubscriber = facade.makeReactiveReader
+
+  queryExecutors[readModel.name].mode = 'read'
 })
 
 config.viewModels.forEach(viewModel => {
@@ -91,16 +86,18 @@ config.viewModels.forEach(viewModel => {
     raiseError(message.viewModelSerializable, viewModel)
   }
 
-  queryExecutors[viewModel.name] = createFacade({
+  const facade = createFacade({
     model: createViewModel({
       projection: viewModel.projection,
       eventStore
     }),
-    customResolvers: {
-      view: async (model, aggregateIds, jwtToken) =>
-        await viewModel.serializeState(await model(aggregateIds), jwtToken)
+    resolvers: {
+      view: async (model, { jwtToken }) =>
+        await viewModel.serializeState(model, jwtToken)
     }
-  }).executeQueryCustom.bind(null, 'view')
+  })
+
+  queryExecutors[viewModel.name] = facade.executeQuery
 
   queryExecutors[viewModel.name].mode = 'view'
 })
@@ -201,109 +198,103 @@ Object.keys(queryExecutors).forEach(modelName => {
   const executor = queryExecutors[modelName]
   const makeSubscriber = queryExecutors[modelName].makeSubscriber
 
-  if (executor.mode === 'graphql') {
-    app.post(
-      getRootableUrl(`/api/query/${modelName}`),
-      bodyParser.urlencoded({ extended: false }),
-      async (req, res) => {
-        try {
-          const data = await executor(
-            req.body.query,
-            req.body.variables || {},
-            req.jwtToken
-          )
-          res.status(200).send({ data })
-        } catch (err) {
-          res.status(500).end(`${message.readModelFail}${err.message}`)
-          // eslint-disable-next-line no-console
-          console.log(err)
-        }
-      }
-    )
-
+  if (executor.mode === 'read') {
     const subscriptionProcesses = new Map()
 
     app.post(
-      getRootableUrl(`/api/subscriptions/${modelName}/:socketId/:resolverName`),
+      getRootableUrl(`/api/query/${modelName}/:resolverName`),
       bodyParser.urlencoded({ extended: false }),
       async (req, res) => {
-        let subscriptionKey
-        try {
-          subscriptionKey = `${req.params.socketId}:${req.params.resolverName}`
+        const serialId = Date.now()
+        if (!req.body.isReactive) {
+          try {
+            const result = await executor(
+              req.params.resolverName,
+              req.body.variables,
+              req.jwtToken
+            )
+            res.status(200).send({
+              serialId,
+              result
+            })
+          } catch (err) {
+            res.status(500).end(`${message.readModelFail}${err.message}`)
 
-          if (subscriptionProcesses.get(subscriptionKey)) {
-            res
-              .status(500)
-              .send(
-                `Socket subscription ${modelName}:${subscriptionKey} already connected`
-              )
-            return
+            // eslint-disable-next-line no-console
+            console.log(err)
           }
-
-          let resolveForceStop = null
-          subscriptionProcesses.set(
-            subscriptionKey,
-            new Promise(resolve => (resolveForceStop = resolve))
-          )
-
-          getSocketByClientId(req.params.socketId)
-          const serialId = Date.now()
-
-          const { result, forceStop } = await makeSubscriber(
-            diff => {
-              try {
-                const socketClient = getSocketByClientId(req.params.socketId)
-                socketClient.emit(
-                  'event',
-                  JSON.stringify({
-                    type: '@@resolve/READMODEL_SUBSCRIPTION_DIFF',
-                    readModelName: modelName,
-                    resolverName: req.params.resolverName,
-                    serialId,
-                    diff
-                  })
-                )
-              } catch (sockErr) {
-                subscriptionProcesses.delete(subscriptionKey)
-                forceStop()
-              }
-            },
-            req.body.query,
-            req.body.variables || {},
-            req.jwtToken
-          )
-
-          resolveForceStop(forceStop)
-
-          res.status(200).send({
-            timeToLive: READ_MODEL_SUBSCRIPTION_TIME_TO_LIVE,
-            serialId,
-            result
-          })
-
-          if (req.body.reactive === false) {
-            forceStop()
-            return
-          }
-
-          setTimeout(() => {
-            subscriptionProcesses.delete(subscriptionKey)
-            forceStop()
-          }, READ_MODEL_SUBSCRIPTION_TIME_TO_LIVE)
-        } catch (err) {
-          res.status(500).end(`${message.readModelFail}${err.message}`)
-
-          subscriptionProcesses.delete(subscriptionKey)
-
-          // eslint-disable-next-line no-console
-          console.log(err)
+          return
         }
+
+        const subscriptionKey = `${req.body.socketId}:${
+          req.params.resolverName
+        }`
+        if (subscriptionProcesses.get(subscriptionKey)) {
+          res
+            .status(500)
+            .send(
+              `Socket subscription ${modelName}:${subscriptionKey} already connected`
+            )
+          return
+        }
+
+        const subscriptionPromise = (async resolve => {
+          await Promise.resolve()
+          try {
+            getSocketByClientId(req.body.socketId)
+
+            const { result, forceStop } = await makeSubscriber(
+              diff => {
+                try {
+                  const socketClient = getSocketByClientId(req.body.socketId)
+                  socketClient.emit(
+                    'event',
+                    JSON.stringify({
+                      type: '@@resolve/READMODEL_SUBSCRIPTION_DIFF',
+                      readModelName: modelName,
+                      resolverName: req.params.resolverName,
+                      serialId,
+                      diff
+                    })
+                  )
+                } catch (sockErr) {
+                  subscriptionProcesses.delete(subscriptionKey)
+                  forceStop()
+                }
+              },
+              req.params.resolverName,
+              req.body.variables,
+              req.jwtToken
+            )
+
+            res.status(200).send({
+              timeToLive: READ_MODEL_SUBSCRIPTION_TIME_TO_LIVE,
+              serialId,
+              result
+            })
+
+            setTimeout(() => {
+              subscriptionProcesses.delete(subscriptionKey)
+              forceStop()
+            }, READ_MODEL_SUBSCRIPTION_TIME_TO_LIVE)
+
+            return forceStop
+          } catch (err) {
+            res.status(500).end(`${message.readModelFail}${err.message}`)
+
+            subscriptionProcesses.delete(subscriptionKey)
+
+            // eslint-disable-next-line no-console
+            console.log(err)
+          }
+        })()
+
+        subscriptionProcesses.set(subscriptionKey, subscriptionPromise)
       }
     )
 
     app.delete(
-      getRootableUrl(`/api/subscriptions/${modelName}/:socketId/:resolverName`),
-      bodyParser.urlencoded({ extended: false }),
+      getRootableUrl(`/api/query/${modelName}/:resolverName/:socketId`),
       async (req, res) => {
         try {
           const subscriptionKey = `${req.params.socketId}:${
@@ -336,7 +327,12 @@ Object.keys(queryExecutors).forEach(modelName => {
           throw new Error(message.viewModelOnlyOnDemand)
         }
 
-        const result = await executor(req.query.aggregateIds, req.jwtToken)
+        const result = await executor(
+          'view',
+          { jwtToken: req.jwtToken },
+          { aggregateIds: req.query.aggregateIds }
+        )
+
         res.status(200).json(result)
       } catch (err) {
         res.status(500).end(`${message.viewModelFail}${err.message}`)

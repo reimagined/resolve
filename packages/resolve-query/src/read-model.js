@@ -32,6 +32,7 @@ const init = (adapter, eventStore, projection, eventListener) => {
         onDispose()
       }
 
+      loadDonePromise.lateFailure = reason
       if (chainable) {
         return Promise.reject(reason)
       }
@@ -39,21 +40,15 @@ const init = (adapter, eventStore, projection, eventListener) => {
       reject(reason)
     }
 
-    const synchronizedEventWorker = event => {
-      if (
-        !flowPromise ||
-        !event ||
-        !event.type ||
-        typeof projection[event.type] !== 'function'
-      ) {
-        return
-      }
+    const projectionInvoker = async event => await projection[event.type](event)
 
-      flowPromise = flowPromise
-        .then(projection[event.type].bind(null, event))
-        .then(eventListener.bind(null, event))
-        .catch(forceStop)
-    }
+    const synchronizedEventWorker = event =>
+      (flowPromise = flowPromise
+        ? flowPromise
+            .then(projectionInvoker.bind(null, event))
+            .then(eventListener.bind(null, event))
+            .catch(forceStop)
+        : flowPromise)
 
     Promise.resolve()
       .then(getLastAppliedTimestamp)
@@ -98,6 +93,10 @@ const read = async (repository, adapter, eventStore, projection, ...args) => {
   const { getError, getReadable, loadDonePromise } = repository
   await loadDonePromise
 
+  if (loadDonePromise && loadDonePromise.hasOwnProperty('lateFailure')) {
+    throw loadDonePromise.lateFailure
+  }
+
   const readableError = await getError()
   if (readableError) {
     throw readableError
@@ -126,9 +125,7 @@ const createReadModel = ({ projection, eventStore, adapter }) => {
     builtProjection
   )
 
-  const reader = async (...args) => await getReadModel(...args)
-
-  reader.dispose = () => {
+  const dispose = () => {
     if (!repository.loadDonePromise) {
       return
     }
@@ -141,19 +138,24 @@ const createReadModel = ({ projection, eventStore, adapter }) => {
     currentAdapter.reset()
   }
 
-  reader.addEventListener = callback => {
+  const addEventListener = callback => {
     if (typeof callback !== 'function') return
     externalEventListeners.push(callback)
   }
 
-  reader.removeEventListener = callback => {
+  const removeEventListener = callback => {
     if (typeof callback !== 'function') return
     const idx = externalEventListeners.findIndex(cb => callback === cb)
     if (idx < 0) return
     externalEventListeners.splice(idx, 1)
   }
 
-  return Object.freeze(reader)
+  return Object.freeze({
+    read: async (...args) => await getReadModel(...args),
+    addEventListener,
+    removeEventListener,
+    dispose
+  })
 }
 
 export default createReadModel

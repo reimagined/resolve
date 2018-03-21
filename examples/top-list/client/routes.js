@@ -44,7 +44,7 @@ const ItemsPager = ({ count, page, setPage }) => (
 
 const getReadModel = (state, modelName, resolverName) => {
   try {
-    return state.readModels[modelName][resolverName][resolverName]
+    return state.readModels[modelName][resolverName]
   } catch (err) {
     return null
   }
@@ -53,9 +53,6 @@ const getReadModel = (state, modelName, resolverName) => {
 const FilledItemsViewer = connectReadModel((state, { page }) => ({
   readModelName: 'Rating',
   resolverName: 'TopRating',
-  query: `query($page: Int, $limit: Int) {
-    TopRating(page: $page, limit: $limit) { id, rating, name }
-  }`,
   variables: { page, limit: ITEMS_PER_PAGE },
   isReactive: true,
   items: getReadModel(state, 'Rating', 'TopRating'),
@@ -65,9 +62,6 @@ const FilledItemsViewer = connectReadModel((state, { page }) => ({
 const FilledItemsPager = connectReadModel((state, { page, setPage }) => ({
   readModelName: 'Rating',
   resolverName: 'PagesCount',
-  query: `query($limit: Int) {
-    PagesCount(limit: $limit)
-  }`,
   variables: { limit: ITEMS_PER_PAGE },
   isReactive: true,
   count: getReadModel(state, 'Rating', 'PagesCount'),

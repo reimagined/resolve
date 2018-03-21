@@ -49,19 +49,7 @@ export default [
       }
     },
 
-    gqlSchema: `
-      type RatingItem {
-        id: ID!
-        rating: Int!
-        name: String!
-      }
-      type Query {
-        TopRating(page: Int!): [RatingItem]
-        PagesCount: Int!
-      }
-    `,
-
-    gqlResolvers: {
+    resolvers: {
       TopRating: async (store, args) => {
         const pageNumber = Math.max(
           Number.isInteger(args && +args.page) ? +args.page : 0,

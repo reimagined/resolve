@@ -1,4 +1,4 @@
-# Two-levels ToDo App
+# Contributors Guide
 
 -------------------------------------------------------------------------
 Sorry, this article isn't finished yet :(

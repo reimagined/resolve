@@ -1,4 +1,4 @@
-# Two-levels ToDo App
+# First Application From Scratch
 
 -------------------------------------------------------------------------
 Sorry, this article isn't finished yet :(

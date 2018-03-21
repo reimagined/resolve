@@ -1,8 +1,8 @@
 import {
-  MERGE,
-  SUBSCRIBE,
-  UNSUBSCRIBE,
-  PROVIDE_VIEW_MODELS
+  SUBSCRIBE_VIEWMODEL,
+  UNSUBSCRIBE_VIEWMODEL,
+  PROVIDE_VIEW_MODELS,
+  MERGE
 } from './action_types'
 import { getKey } from './util'
 
@@ -72,9 +72,9 @@ export function provideViewModelsHandler(context, state, { viewModels }) {
 
   delete handlers[PROVIDE_VIEW_MODELS]
 
-  handlers[SUBSCRIBE] = subscribeHandler.bind(null, context)
+  handlers[SUBSCRIBE_VIEWMODEL] = subscribeHandler.bind(null, context)
 
-  handlers[UNSUBSCRIBE] = unsubscribeHandler.bind(null, context)
+  handlers[UNSUBSCRIBE_VIEWMODEL] = unsubscribeHandler.bind(null, context)
 
   handlers[MERGE] = mergeHandler.bind(null, context)
 
