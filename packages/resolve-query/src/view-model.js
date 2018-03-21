@@ -25,7 +25,7 @@ const createViewModel = ({ projection, eventStore }) => {
     Array.isArray(aggregateIds) ? aggregateIds.sort().join(',') : aggregateIds
   const viewMap = new Map()
 
-  const reader = async aggregateIds => {
+  const reader = async ({ aggregateIds } = { aggregateIds: null }) => {
     if (
       aggregateIds !== '*' &&
       (!Array.isArray(aggregateIds) || aggregateIds.length === 0)
@@ -90,7 +90,7 @@ const createViewModel = ({ projection, eventStore }) => {
     return await executor()
   }
 
-  reader.dispose = aggregateIds => {
+  const dispose = aggregateIds => {
     if (!aggregateIds) {
       viewMap.forEach(executor => executor.dispose())
       viewMap.clear()
@@ -106,7 +106,10 @@ const createViewModel = ({ projection, eventStore }) => {
     viewMap.delete(key)
   }
 
-  return reader
+  return Object.freeze({
+    read: reader,
+    dispose
+  })
 }
 
 export default createViewModel

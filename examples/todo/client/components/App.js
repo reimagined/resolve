@@ -1,5 +1,5 @@
 import React from 'react'
-import { connect } from 'resolve-redux'
+import { connectViewModel } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
 
 import actions from '../actions'
@@ -53,4 +53,4 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators(actions, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default connectViewModel(mapStateToProps, mapDispatchToProps)(App)

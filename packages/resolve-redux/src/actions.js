@@ -1,8 +1,8 @@
 import {
   MERGE,
   SEND_COMMAND,
-  SUBSCRIBE,
-  UNSUBSCRIBE,
+  SUBSCRIBE_VIEWMODEL,
+  UNSUBSCRIBE_VIEWMODEL,
   SUBSCRIBE_READMODEL,
   UNSUBSCRIBE_READMODEL,
   READMODEL_LOAD_INITIAL_STATE,
@@ -30,17 +30,17 @@ function sendCommand({ command, aggregateId, aggregateName, payload }) {
   }
 }
 
-function subscribe(viewModelName, aggregateId) {
+function subscribeViewmodel(viewModelName, aggregateId) {
   return {
-    type: SUBSCRIBE,
+    type: SUBSCRIBE_VIEWMODEL,
     viewModelName,
     aggregateId
   }
 }
 
-function unsubscribe(viewModelName, aggregateId) {
+function unsubscribeViewmodel(viewModelName, aggregateId) {
   return {
-    type: UNSUBSCRIBE,
+    type: UNSUBSCRIBE_VIEWMODEL,
     viewModelName,
     aggregateId
   }
@@ -49,7 +49,6 @@ function unsubscribe(viewModelName, aggregateId) {
 function subscribeReadmodel(
   readModelName,
   resolverName,
-  query,
   variables,
   isReactive
 ) {
@@ -57,7 +56,6 @@ function subscribeReadmodel(
     type: SUBSCRIBE_READMODEL,
     readModelName,
     resolverName,
-    query,
     variables,
     isReactive
   }
@@ -111,8 +109,8 @@ function disconnect(reason) {
 export default {
   merge,
   sendCommand,
-  subscribe,
-  unsubscribe,
+  subscribeViewmodel,
+  unsubscribeViewmodel,
   provideViewModels,
   subscribeReadmodel,
   unsubscribeReadmodel,
