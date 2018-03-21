@@ -5,15 +5,15 @@ import { ConcurrentError } from 'resolve-storage-base'
 
 jest.mock('mongodb', () => {
   const sinon = require('sinon')
-  let foundArray = []
+  let foundCursor = { current: 0, items: [] }
   let isRejectInsert = false
 
   return {
     _setFindResult: array => {
       if (Array.isArray(array)) {
-        foundArray = array
+        foundCursor = { current: 0, items: array }
       } else {
-        foundArray = []
+        foundCursor = { current: 0, items: [] }
       }
     },
     _setInsertCommandReject: isReject => {
@@ -22,6 +22,7 @@ jest.mock('mongodb', () => {
     MongoClient: {
       connect: sinon.spy(() =>
         Promise.resolve({
+          iterator: 0,
           collection: sinon.spy(() => ({
             insert: sinon.spy(
               () =>
@@ -30,15 +31,13 @@ jest.mock('mongodb', () => {
                   : Promise.reject({ code: 11000 })
             ),
             find: sinon.spy(() => ({
-              stream: sinon.spy(() => ({
-                on: (event, callback) => {
-                  if (event === 'data') {
-                    foundArray.forEach(elm => callback(elm))
-                  } else if (event === 'end') {
-                    callback()
-                  }
-                }
-              }))
+              next: sinon.spy(() => {
+                if (foundCursor.current < foundCursor.items.length)
+                  return Promise.resolve(
+                    foundCursor.items[foundCursor.current++]
+                  )
+                return Promise.resolve(null)
+              })
             })),
             createIndex: sinon.spy(() => Promise.resolve())
           }))
@@ -117,7 +116,7 @@ describe('es-mongo', () => {
         expect(
           db.collection.lastCall.returnValue.find.lastCall.args
         ).to.deep.equal([
-          { type: { $in: types }, timestamp: { $gt: 0 } },
+          { type: { $in: types }, timestamp: { $gte: 0 } },
           { sort: 'timestamp' }
         ])
 
@@ -147,7 +146,7 @@ describe('es-mongo', () => {
         expect(
           db.collection.lastCall.returnValue.find.lastCall.args
         ).to.deep.equal([
-          { aggregateId: { $in: [aggregateId] }, timestamp: { $gt: 0 } },
+          { aggregateId: { $in: [aggregateId] }, timestamp: { $gte: 0 } },
           { sort: 'timestamp' }
         ])
 
