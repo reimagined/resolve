@@ -5,15 +5,15 @@ import express from 'express'
 import jwt from 'jsonwebtoken'
 import path from 'path'
 import { createReadModel, createViewModel, createFacade } from 'resolve-query'
+import createAuthOptions from './auth/createAuthOptions'
+import { createRequest, createResponse } from './auth/helpers'
 import commandHandler from 'resolve-command'
 import request from 'request'
-import passport from 'passport'
 
 import { raiseError } from './utils/error_handling.js'
 import { getRootableUrl } from './utils/prepare_urls'
 import eventStore from './event_store'
 import ssr from './render'
-import { getRouteByName } from './auth'
 
 import config from '../configs/server.config.js'
 import message from './message'
@@ -136,27 +136,30 @@ const applyJwtValue = (value, res, url) => {
   const authenticationToken = jwt.sign(value, jwtSecret)
 
   res.cookie(cookieName, authenticationToken, cookieOptions)
-
   res.redirect(url || getRootableUrl('/'))
 }
 
-const bindAuthMiddleware = (route, method, middleware, options) => {
-  app[method](route, (req, res, next) =>
-    middleware(passport, options, applyJwtValue, req, res, next)
-  )
-}
-
-config.auth.strategies.forEach(strategy => {
-  const options = strategy.options
-  passport.use(strategy.init(options))
-  const routes = options.routes
-  Object.keys(routes).forEach(key => {
-    const route = getRouteByName(key, routes)
-    bindAuthMiddleware(route.path, route.method, strategy.middleware, options)
+if (
+  config.auth &&
+  config.auth.strategies &&
+  Array.isArray(config.auth.strategies)
+) {
+  config.auth.strategies.forEach(strategy => {
+    strategy.forEach(({ route, callback }) => {
+      app[route.method.toLowerCase()](
+        getRootableUrl(route.path),
+        (req, res, next) => {
+          const safeReq = createRequest(req)
+          const safeRes = {
+            applyJwtValue,
+            ...createResponse(res)
+          }
+          callback(safeReq, safeRes, createAuthOptions(safeReq, safeRes, next))
+        }
+      )
+    })
   })
-})
-
-app.use(passport.initialize())
+}
 
 try {
   if (config.extendExpress) {
