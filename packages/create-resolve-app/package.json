@@ -1,6 +1,6 @@
 {
   "name": "create-resolve-app",
-  "version": "0.5.4",
+  "version": "0.6.1",
   "description": "This package generates boilerplate web application based on resolve framework",
   "bin": {
     "create-resolve-app": "./bin/index.js"
@@ -29,7 +29,7 @@
     "cross-spawn": "^5.1.0",
     "fs-extra": "^4.0.1",
     "https": "^1.0.0",
-    "replace": "^0.3.0",
+    "request": "^2.81.0",
     "validate-npm-package-name": "^3.0.0"
   }
 }

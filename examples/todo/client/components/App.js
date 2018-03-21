@@ -1,5 +1,5 @@
 import React from 'react'
-import { connect } from 'resolve-redux'
+import { connectViewModel } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
 
 const viewModelName = 'Todos'
@@ -58,4 +58,4 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(aggregateActions, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default connectViewModel(mapStateToProps, mapDispatchToProps)(App)

@@ -1,10 +1,10 @@
 import { expect } from 'chai'
 import {
-  DISCONNECT,
-  MERGE,
+  SUBSCRIBE_VIEWMODEL,
+  UNSUBSCRIBE_VIEWMODEL,
   SEND_COMMAND,
-  SUBSCRIBE,
-  UNSUBSCRIBE
+  DISCONNECT,
+  MERGE
 } from '../src/action_types'
 import actions from '../src/actions'
 
@@ -52,24 +52,28 @@ describe('actions', () => {
     })
   })
 
-  describe('subscribe', () => {
+  describe('subscribeViewmodel', () => {
     it('should create an action to subscribe on view model by aggregateId', () => {
       const viewModelName = 'counter'
       const aggregateId = 'aggregateId'
-      expect(actions.subscribe(viewModelName, aggregateId)).to.deep.equal({
-        type: SUBSCRIBE,
+      expect(
+        actions.subscribeViewmodel(viewModelName, aggregateId)
+      ).to.deep.equal({
+        type: SUBSCRIBE_VIEWMODEL,
         viewModelName,
         aggregateId
       })
     })
   })
 
-  describe('unsubscribe', () => {
+  describe('unsubscribeViewmodel', () => {
     it('should create an action to unsubscribe on view model by aggregateId', () => {
       const viewModelName = 'counter'
       const aggregateId = 'aggregateId'
-      expect(actions.unsubscribe(viewModelName, aggregateId)).to.deep.equal({
-        type: UNSUBSCRIBE,
+      expect(
+        actions.unsubscribeViewmodel(viewModelName, aggregateId)
+      ).to.deep.equal({
+        type: UNSUBSCRIBE_VIEWMODEL,
         viewModelName,
         aggregateId
       })

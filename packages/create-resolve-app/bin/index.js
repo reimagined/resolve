@@ -5,7 +5,7 @@ const commandLineArgs = require('command-line-args')
 const chalk = require('chalk')
 const fs = require('fs')
 const https = require('https')
-const replace = require('replace')
+const request = require('request')
 const spawn = require('cross-spawn')
 const validateProjectName = require('validate-npm-package-name')
 
@@ -107,27 +107,29 @@ if (unknownOptions && unknownOptions.length) {
       log(messages.startCreatingApp(appName, example, options))
     )
 
-  const checkAppName = () => {
-    const result = validateProjectName(appName)
-    if (!result.validForNewPackages) {
-      error(
-        `It is impossible to create an application called ${chalk.red(
+  const checkAppName = () =>
+    new Promise((resolve, reject) => {
+      const result = validateProjectName(appName)
+      if (!result.validForNewPackages) {
+        let message = `It is impossible to create an application called ${chalk.red(
           `"${appName}"`
         )} because of npm naming restrictions:`
-      )
-      ;[]
-        .concat(result.errors || [])
-        .concat(result.warnings || [])
-        .forEach(error => {
-          error(chalk.red(`  *  ${error}`))
-        })
-    }
+        message += []
+          .concat(result.errors || [])
+          .concat(result.warnings || [])
+          .map(e => `  *  ${e}`)
+          .join(EOL)
 
-    return result.validForNewPackages
-  }
+        error(chalk.red(message))
+
+        return reject(message)
+      }
+
+      resolve()
+    })
 
   const downloadRepo = () =>
-    new Promise(resolve => {
+    new Promise((resolve, reject) => {
       log(chalk.green('Load example'))
       https.get(resolveRepoPath, function(response) {
         response.on('data', function(data) {
@@ -135,27 +137,53 @@ if (unknownOptions && unknownOptions.length) {
         })
 
         response.on('end', function() {
-          var zip = new AdmZip(tmpFilePath)
-          zip.extractAllTo(`./${appName}`)
-          fs.unlink(tmpFilePath)
-          resolve()
+          try {
+            let zip = new AdmZip(tmpFilePath)
+            zip.extractAllTo(`./${appName}`)
+            fs.unlinkSync(tmpFilePath)
+            resolve()
+          } catch (e) {
+            reject(e)
+          }
         })
       })
     })
 
-  const copyExampleBash = () => {
-    log()
-    log(chalk.green('Copy example && install dependencies'))
-    let command =
-      `cd ${appName} ` +
-      ` && cp -r ${examplePath}/* . && cp -r ${examplePath}/.[a-zA-Z0-9]* .` +
-      ` && rm -rf ./${repoDirName} && npm i`
+  const printIfDownloadFail = errMessage => {
+    if (
+      errMessage.toLowerCase().indexOf('invalid or unsupported zip format') > -1
+    ) {
+      let buf = fs.readFileSync(tmpFilePath).toString()
+      if (buf.toLowerCase().indexOf('not found')) {
+        log(chalk.red('Referent commit does not exists in resolve repository.'))
+        log(
+          chalk.red(
+            'Maybe you forgot to merge your feature branch with dev branch'
+          )
+        )
 
-    const proc = spawn.sync(command, [], { stdio: 'inherit', shell: true })
-    if (proc.status !== 0) {
-      throw new Error(`\`${command}\` failed`)
+        throw new Error('Repo downloading failed')
+      }
     }
+
+    throw new Error(errMessage)
   }
+
+  const copyExampleBash = () =>
+    new Promise((resolve, reject) => {
+      log()
+      log(chalk.green('Copy example'))
+      let command =
+        `cd ${appName} ` +
+        ` && cp -r ${examplePath}/* . && cp -r ${examplePath}/.[a-zA-Z0-9]* .` +
+        ` && rm -rf ./${repoDirName}`
+
+      const proc = spawn.sync(command, [], { stdio: 'inherit', shell: true })
+      if (proc.status !== 0) {
+        return reject(`\`${command}\` failed`)
+      }
+      resolve()
+    })
 
   const copyExampleCMD = prevErr => {
     log()
@@ -163,7 +191,7 @@ if (unknownOptions && unknownOptions.length) {
     let command =
       `cd ${appName} ` +
       ` && xcopy ${examplePathCMD} /E /Q ` +
-      ` && rmdir /S /Q ${repoDirName} && npm i`
+      ` && rmdir /S /Q ${repoDirName}`
 
     const proc = spawn.sync(command, [], { stdio: 'inherit', shell: true })
     if (proc.status !== 0) {
@@ -177,14 +205,57 @@ if (unknownOptions && unknownOptions.length) {
     }
   }
 
-  const patchPackageJson = () =>
-    replace({
-      regex: /^(\s*"name":\s*)".*$/,
-      replacement: /\1"${appName}"/,
-      paths: [`./${appName}/package.json`],
-      recursive: false,
-      silent: false
+  const getResolvePackages = () => {
+    return new Promise((resolve, reject) => {
+      request(
+        'https://www.npmjs.com/-/search?text=maintainer:reimagined&size=100',
+        { json: true },
+        (fetchError, response, body) => {
+          if (fetchError) {
+            reject('Package list loading error:' + fetchError.stack)
+          }
+          try {
+            resolve(body.objects.map(object => object.package.name))
+          } catch (parseError) {
+            reject('Package list loading error:' + parseError.stack)
+          }
+        }
+      )
     })
+  }
+
+  const patchPackageJson = () => {
+    log()
+    log(chalk.green('Patch package.json'))
+
+    let packageJsonPath = `${process.cwd()}/${appName}/package.json`,
+      packageJson = require(packageJsonPath)
+
+    packageJson.name = appName
+    packageJson.version = resolveVersion
+
+    return getResolvePackages()
+      .then(packages => {
+        Object.keys(packageJson.dependencies).forEach(k => {
+          if (packages.indexOf(k) > -1) {
+            packageJson.dependencies[k] = resolveVersion
+          }
+        })
+      })
+      .then(() =>
+        fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2))
+      )
+  }
+
+  const install = () => {
+    log()
+    log(chalk.green('Install dependencies'))
+    let command = `cd ./${appName} && npm i`
+    const proc = spawn.sync(command, [], { stdio: 'inherit', shell: true })
+    if (proc.status !== 0) {
+      throw Error(`\`${command}\` failed`)
+    }
+  }
 
   const printFinishOutput = () => {
     const displayCommand = (isDefaultCmd = false) =>
@@ -214,7 +285,7 @@ if (unknownOptions && unknownOptions.length) {
     log(chalk.cyan(`  ${displayCommand(1)} start`))
     log(
       '    Starts the production server. (run ' +
-        `  ${chalk.cyan(`${displayCommand(false)} build`)} before)`
+        `${chalk.cyan(`${displayCommand(false)} build`)} before)`
     )
 
     log()
@@ -228,10 +299,10 @@ if (unknownOptions && unknownOptions.length) {
 
   startCreatingApp()
     .then(checkAppName)
-    .then(downloadRepo)
-    .then(copyExampleBash)
-    .catch(copyExampleCMD)
+    .then(() => downloadRepo().catch(printIfDownloadFail))
+    .then(() => copyExampleBash().catch(copyExampleCMD))
     .then(patchPackageJson)
+    .then(install)
     .then(printFinishOutput)
     .catch(e => log(chalk.red(e)))
 }

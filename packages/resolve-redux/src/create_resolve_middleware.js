@@ -1,8 +1,8 @@
 import {
-  SUBSCRIBE,
-  UNSUBSCRIBE,
   SEND_COMMAND,
   HOT_MODULE_REPLACEMENT,
+  SUBSCRIBE_VIEWMODEL,
+  UNSUBSCRIBE_VIEWMODEL,
   SUBSCRIBE_READMODEL,
   UNSUBSCRIBE_READMODEL
 } from './action_types'
@@ -45,7 +45,7 @@ export function getAggregateIds(viewModels, subscribers) {
   )
 }
 
-export async function subscribe(
+export async function subscribeViewmodel(
   store,
   subscribeAdapter,
   viewModels,
@@ -87,7 +87,7 @@ export async function subscribe(
   }
 }
 
-export function unsubscribe(
+export function unsubscribeViewmodel(
   store,
   subscribeAdapter,
   viewModels,
@@ -128,13 +128,7 @@ export function subscribeReadmodel(
   orderedFetch,
   action
 ) {
-  const {
-    readModelName,
-    resolverName,
-    query,
-    variables,
-    isReactive = true
-  } = action
+  const { readModelName, resolverName, query, variables, isReactive } = action
   const subscriptionKey = `${readModelName}:${resolverName}`
   if (readModelSubscriptions.hasOwnProperty(subscriptionKey)) return
 
@@ -155,16 +149,14 @@ export function subscribeReadmodel(
 
         if (!checkSelfPromise(selfPromise)) return
         const response = await orderedFetch(
-          getRootableUrl(
-            `/api/subscriptions/${readModelName}/${socketId}/${resolverName}`
-          ),
+          getRootableUrl(`/api/query/${readModelName}/${resolverName}`),
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'same-origin',
             body: JSON.stringify({
               isReactive,
-              query,
+              socketId,
               variables
             })
           }
@@ -181,6 +173,8 @@ export function subscribeReadmodel(
             serialId
           )
         )
+
+        if (!isReactive) return
 
         await delay(timeToLive)
         fetchReadModel()
@@ -220,9 +214,7 @@ export function unsubscribeReadmodel(
   if (!socketId || socketId.constructor !== String) return
 
   orderedFetch(
-    getRootableUrl(
-      `/api/subscriptions/${readModelName}/${socketId}/${resolverName}`
-    ),
+    getRootableUrl(`/api/query/${readModelName}/${resolverName}/${socketId}`),
     {
       method: 'DELETE',
       credentials: 'same-origin'
@@ -329,12 +321,12 @@ export function createResolveMiddleware({
           }
           break
         }
-        case SUBSCRIBE: {
+        case SUBSCRIBE_VIEWMODEL: {
           const { viewModelName, aggregateId } = action
           loading[viewModelName][aggregateId] = true
 
           if (isClient) {
-            subscribe(
+            subscribeViewmodel(
               store,
               adapter,
               viewModels,
@@ -352,12 +344,12 @@ export function createResolveMiddleware({
 
           break
         }
-        case UNSUBSCRIBE: {
+        case UNSUBSCRIBE_VIEWMODEL: {
           const { viewModelName, aggregateId } = action
           delete loading[viewModelName][aggregateId]
 
           if (isClient) {
-            unsubscribe(
+            unsubscribeViewmodel(
               store,
               adapter,
               viewModels,
