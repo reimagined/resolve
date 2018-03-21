@@ -7,7 +7,7 @@ reSolve is a framework for developing apps based on **CQRS**, **Domain-Driven De
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-technologies.png"></p>
 
-* **1 minute** easy [setup](#installation)
+* **2 minute** easy [setup](#installation)
 * **Free and open source.** reSolve is free to use under the [MIT license](https://github.com/reimagined/resolve/blob/master/LICENSE.md).
 * **Flexibility.** Great opportunities with [clear API](#documentation).
 
@@ -15,11 +15,6 @@ reSolve is a framework for developing apps based on **CQRS**, **Domain-Driven De
 
 ## **📑 Table of Contents**
 * #### ️️️[🏗️ Why reSolve](#why-resolve)
-    * [Reactivity](#reactivity)
-    * [Distribution](#distribution)
-    * [Highload](#highload)
-    * [Fault Tolerance](#fault-tolerance)
-    * [Unidirection Data Flow](#unidirection-data-flow)
 * #### [🚀 Getting Started](#getting-started)
     * [Installation](#installation)
     * [Tutorials](#tutorials)
@@ -31,31 +26,15 @@ reSolve is a framework for developing apps based on **CQRS**, **Domain-Driven De
 
 ## <a name="why-resolve">**🏗️ Why reSolve**</a>
 
-<p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-why-resolve.png"></p>
-
 With reSolve you can easy and fast create different level difficulty applications. It could be applications like simple [ToDo List](#todo-list), or some reactive applications like StackOverflow, with distributed, highload and serverless architecture. Thanks to stack of technologies (CQRS, Event Sourcing, Domain-Driven Design, React + Redux) your application would be easy scalable, maintainable, so you can focus on application essence.
-
-### <a name="reactivity">💎 Your _Reactivity_ Is Our Work</a>
-
-Reactive app displays all changes instantly, even if they occurred in another application instance. It doesn't matter what types of instances do you have: local, on cloud, mobile, or even all together. With reSolve you can forget about any lines of code for reactivity, because we have it out of the box, so any reSolve application is reactive by default.
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-why-resolve-reactivity.gif"></p>
 
-### <a name="distribution">💎 You Focus on Application, reSolve Provides The _Distribution_</a>
-
-//todo text
-
-### <a name="highload">💎 Say Hello to _Highload_ System</a>
-
-//todo text
-
-### <a name="fault-tolerance">💎 _Fault Tolerance_ As A Default</a>
-
-//todo text
-
-### <a name="unidirection-data-flow">💎 Develop with _Unidirectional Data Flow_</a>
-
-//todo text
+💎 Reactivity
+💎 Distribution
+💎 Highload
+💎 Fault Tolerance
+💎 Unidirectional Data Flow
 
 ## <a name="getting-started">**🚀 Getting Started**</a>
 
@@ -63,7 +42,7 @@ Reactive app displays all changes instantly, even if they occurred in another ap
 
 We have a special package [create-resolve-app](packages/create-resolve-app) for creation of any reSolve based application. It can be one of the our examples, or any your application. By default `create-resolve-app` creates empty [Hello world](https://github.com/reimagined/resolve/tree/master/examples/hello-world) application.
 
-//todo gif installation
+<p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-installation.gif"></p>
 
 The created application is hosted at http://localhost:3000/. We recommend you [**First Application From Scratch**](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/First%20Application%20From%20Scratch.md) tutorial to learn more about application structure and work with reSolve. Also it'd be helpfull: [**documentation**](#documentation), [**tutorials**](#tutorials) and [**examples**](#examples).
 
