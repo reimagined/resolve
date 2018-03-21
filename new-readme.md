@@ -140,7 +140,7 @@ Minimum supported **NodeJS** version is **6.0.0**.
 
 * 📄 [**System Metaphor**](https://github.com/reimagined/resolve/blob/master/docs/System%20Metaphor.md)
 
-The [**System Metaphor**](https://github.com/reimagined/resolve/blob/master/docs/System%20Metaphor.md) contains all terms that are used while reSolve application development. It helps to speak the same technical language and makes easy to understand documentation and core concepts in code. Also in [_docs folder_](https://github.com/reimagined/resolve/tree/master/docs) you can find detailed description with code for every core concept:
+The [**System Metaphor**](https://github.com/reimagined/resolve/blob/master/docs/System%20Metaphor.md) contains all terms that are used while reSolve application development. It helps to speak the same technical language and makes easy to understand documentation and core concepts in code. Also in [**docs folder**](https://github.com/reimagined/resolve/tree/master/docs) you can find detailed description with code for every core concept:
 
 * [_Aggregate_](https://github.com/reimagined/resolve/blob/master/docs/Aggregate.md)
 * [_Command_](https://github.com/reimagined/resolve/blob/master/docs/Command.md)
@@ -158,6 +158,13 @@ The [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Ar
 
 The [**Packages**](https://github.com/reimagined/resolve/blob/master/docs/Packages.md) article contains description and basic principles of working with reSolve packages. API and detailed information are in `readme` files for every packages:
 
+* [_create-resolve-app_](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app)
+* [_resolve-command_](https://github.com/reimagined/resolve/tree/master/packages/resolve-command)
+* [_resolve-es_](https://github.com/reimagined/resolve/tree/master/packages/resolve-es)
+* [_resolve-query_](https://github.com/reimagined/resolve/tree/master/packages/resolve-query)
+* [_resolve-redux_](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux)
+* [_resolve-scripts_](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts)
+
 * [Bus Adapters](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters)
     * [_resolve-bus-memory_](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters/resolve-bus-memory)
     * [_resolve-bus-rabbit-mq_](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters/resolve-bus-rabbitmq)
@@ -172,13 +179,6 @@ The [**Packages**](https://github.com/reimagined/resolve/blob/master/docs/Packag
     * [_resolve-storage-base_](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters/resolve-storage-base)
     * [_resolve-storage-lite_](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters/resolve-storage-lite)
     * [_resolve-storage-mongo_](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters/resolve-storage-mongo)
-
-* [_create-resolve-app_](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app)
-* [_resolve-command_](https://github.com/reimagined/resolve/tree/master/packages/resolve-command)
-* [_resolve-es_](https://github.com/reimagined/resolve/tree/master/packages/resolve-es)
-* [_resolve-query_](https://github.com/reimagined/resolve/tree/master/packages/resolve-query)
-* [_resolve-redux_](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux)
-* [_resolve-scripts_](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts)
 
 * 📄 [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)
 
