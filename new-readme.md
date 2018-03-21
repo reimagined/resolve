@@ -202,7 +202,7 @@ Feel free to contact us if you have any questions!
 
 ❓ You are welcome with any your questions or enhancements in [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
 
-🔧 We'll happy if you became one of reSolve [**contributors**](https://github.com/reimagined/resolve/pulls)!
+🔧 We'll happy if you became one of reSolve [**contributors**](https://github.com/reimagined/resolve/pulls)! Please, look at our [**Contrubutors Guide**](https://github.com/reimagined/resolve/blob/master/docs/Contributors%20Guide.md).
 
 ⭐️ Don't forget about **GitHub Stars** if you like reSolve!
 
