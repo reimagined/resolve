@@ -142,13 +142,13 @@ Minimum supported **NodeJS** version is **6.0.0**.
 
 The [**System Metaphor**](https://github.com/reimagined/resolve/blob/master/docs/System%20Metaphor.md) contains all terms that are used while reSolve application development. It helps to speak the same technical language and makes easy to understand documentation and core concepts in code. Also in [_docs folder_](https://github.com/reimagined/resolve/tree/master/docs) you can find detailed description with code for every core concept:
 
-    * [**Aggregate**](https://github.com/reimagined/resolve/blob/master/docs/Aggregate.md)
-    * [**Command**](https://github.com/reimagined/resolve/blob/master/docs/Command.md)
-    * [**Event Store**](https://github.com/reimagined/resolve/blob/master/docs/Event%20Store.md)
-    * [**Projection**](https://github.com/reimagined/resolve/blob/master/docs/Projection.md)
-    * [**Query**](https://github.com/reimagined/resolve/blob/master/docs/Query.md)
-    * [**Read Model**](https://github.com/reimagined/resolve/blob/master/docs/Read%20Model.md)
-    * [**View Model**](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md)
+* [_Aggregate_](https://github.com/reimagined/resolve/blob/master/docs/Aggregate.md)
+* [_Command_](https://github.com/reimagined/resolve/blob/master/docs/Command.md)
+* [_Event Store_](https://github.com/reimagined/resolve/blob/master/docs/Event%20Store.md)
+* [_Projection_](https://github.com/reimagined/resolve/blob/master/docs/Projection.md)
+* [_Query_](https://github.com/reimagined/resolve/blob/master/docs/Query.md)
+* [_Read Model_](https://github.com/reimagined/resolve/blob/master/docs/Read%20Model.md)
+* [_View Model_](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md)
 
 * 📄 [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md)
 
@@ -158,27 +158,27 @@ The [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Ar
 
 The [**Packages**](https://github.com/reimagined/resolve/blob/master/docs/Packages.md) article contains description and basic principles of working with reSolve packages. API and detailed information are in `readme` files for every packages:
 
-    * [Bus Adapters](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters)
-        * [**resolve-bus-memory**](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters/resolve-bus-memory)
-        * [**resolve-bus-rabbit-mq**](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters/resolve-bus-rabbitmq)
-        * [**resolve-bus-zmq**](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters/resolve-bus-zmq)
+* [Bus Adapters](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters)
+    * [_resolve-bus-memory_](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters/resolve-bus-memory)
+    * [_resolve-bus-rabbit-mq_](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters/resolve-bus-rabbitmq)
+    * [_resolve-bus-zmq_](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters/resolve-bus-zmq)
     
-    * [Read Model Adapters](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters)
-        * [**resolve-readmodel-base**](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-base)
-        * [**resolve-readmodel-memory**](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-memory)
-        * [**resolve-readmodel-mysql**](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-mysql)
+* [Read Model Adapters](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters)
+    * [_resolve-readmodel-base_](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-base)
+    * [_resolve-readmodel-memory_](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-memory)
+    * [_resolve-readmodel-mysql_](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-mysql)
 
-    * [Storage Adapters](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters)
-        * [**resolve-storage-base**](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters/resolve-storage-base)
-        * [**resolve-storage-lite**](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters/resolve-storage-lite)
-        * [**resolve-storage-mongo**](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters/resolve-storage-mongo)
+* [Storage Adapters](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters)
+    * [_resolve-storage-base_](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters/resolve-storage-base)
+    * [_resolve-storage-lite_](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters/resolve-storage-lite)
+    * [_resolve-storage-mongo_](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters/resolve-storage-mongo)
 
-    * [**create-resolve-app**](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app)
-    * [**resolve-command**](https://github.com/reimagined/resolve/tree/master/packages/resolve-command)
-    * [**resolve-es**](https://github.com/reimagined/resolve/tree/master/packages/resolve-es)
-    * [**resolve-query**](https://github.com/reimagined/resolve/tree/master/packages/resolve-query)
-    * [**resolve-redux**](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux)
-    * [**resolve-scripts**](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts)
+* [_create-resolve-app_](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app)
+* [_resolve-command_](https://github.com/reimagined/resolve/tree/master/packages/resolve-command)
+* [_resolve-es_](https://github.com/reimagined/resolve/tree/master/packages/resolve-es)
+* [_resolve-query_](https://github.com/reimagined/resolve/tree/master/packages/resolve-query)
+* [_resolve-redux_](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux)
+* [_resolve-scripts_](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts)
 
 * 📄 [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)
 
