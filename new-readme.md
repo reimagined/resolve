@@ -44,7 +44,7 @@ We have a special package [create-resolve-app](packages/create-resolve-app) for 
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-installation.gif"></p>
 
-The created application is hosted at http://localhost:3000/. We recommend you [**First Application From Scratch**](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/First%20Application%20From%20Scratch.md) tutorial to learn more about application structure and work with reSolve. Also it'd be helpfull: [**documentation**](#documentation), [**tutorials**](#tutorials) and [**examples**](#examples).
+The created application is hosted at http://localhost:3000/ and http://<your_ip>:3000/ (you can [change your url settings](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)). We recommend you [**First Application From Scratch**](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/First%20Application%20From%20Scratch.md) tutorial to learn more about application structure and work with reSolve. Also it'd be helpfull: [**documentation**](#documentation), [**tutorials**](#tutorials) and [**examples**](#examples).
 
 #### Using npx
 
@@ -85,7 +85,7 @@ Example setup is similar with new application creation, but it has `--example` o
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-example-installation.gif"></p>
 
-The created example is hosted at http://localhost:3000/. Also you can look at [**tutorials**](#tutorials) for some examples.
+The created example is hosted at http://localhost:3000/ and http://<your_ip>:3000/ (you can [change your url settings](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)). Also you can look at [**tutorials**](#tutorials) for some examples.
 
 #### Using npx
 ```bash
@@ -102,28 +102,27 @@ yarn create resolve-app todo-example -e todo
 create-resolve-app todo-example -e todo
 ```
 
-Examples: //todo make examples in browser and mobile
 * [**hello-world**](https://github.com/reimagined/resolve/tree/master/examples/hello-world)
 
 It's a simple empty example that can be used like **reSolve application boilerplate**.
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-hello-world-example.png"></p>
 
-* **top-list** (//todo link)
+* [**top-list**](https://github.com/reimagined/resolve/tree/master/examples/top-list)
 
-This example demonstrates **reactive read-models** that leads to client updating without page reloads. You can learn more about read-models in documentation (//todo link to the read-model topic)
+This example demonstrates **reactive read-models** that leads to client updating without page reloads. You can learn more about [read-models in documentation](https://github.com/reimagined/resolve/blob/master/docs/Read%20Model.md)
 
-//todo image
+<p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-top-list-example.png"></p>
 
 * [**todo**](https://github.com/reimagined/resolve/tree/master/examples/todo)
 
-This example demonstrates **simple work with view-models**. You can learn more in [ToDo List App Tutorial](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/ToDo%20List%20App%20Tutorial.md) and documentation (//todo link to the view models topic)
+This example demonstrates **simple work with view-models**. You can learn more in [ToDo List App Tutorial](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/ToDo%20List%20App%20Tutorial.md) and [documentation](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md).
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-todo-example.png"></p>
 
 * [**todo-two-levels**](https://github.com/reimagined/resolve/tree/master/examples/todo-two-levels)
 
-This example demonstrates work with view-models in case of **all events subscribtion**. Sometimes, for example for fast application prototyping, it's necessary to have view-model on client with all server events instead of part. There's a special feature called **wildcard**, that allows to subscribe to all events, you can learn more about that in documentation (//todo link to view models topic).
+This example demonstrates work with view-models in case of **all events subscribtion**. Sometimes, for example for fast application prototyping, it's necessary to have view-model on client with all server events instead of part. There's a special feature called **wildcard**, that allows to subscribe to all events, you can learn more about that in [documentation](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md).
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-todo-two-levels-example.png"></p>
 
