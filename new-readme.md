@@ -138,7 +138,55 @@ Minimum supported **NodeJS** version is **6.0.0**.
 
 ### <a name="basic-concepts">Basic Concepts</a>
 
-//todo text
+* 📄 [**System Metaphor**](https://github.com/reimagined/resolve/blob/master/docs/System%20Metaphor.md)
+
+The [**System Metaphor**](https://github.com/reimagined/resolve/blob/master/docs/System%20Metaphor.md) contains all terms that are used while reSolve application development. It helps to speak the same technical language and makes easy to understand documentation and core concepts in code. Also in [_docs folder_](https://github.com/reimagined/resolve/tree/master/docs) you can find detailed description with code for every core concept:
+
+    * [**Aggregate**](https://github.com/reimagined/resolve/blob/master/docs/Aggregate.md)
+    * [**Command**](https://github.com/reimagined/resolve/blob/master/docs/Command.md)
+    * [**Event Store**](https://github.com/reimagined/resolve/blob/master/docs/Event%20Store.md)
+    * [**Projection**](https://github.com/reimagined/resolve/blob/master/docs/Projection.md)
+    * [**Query**](https://github.com/reimagined/resolve/blob/master/docs/Query.md)
+    * [**Read Model**](https://github.com/reimagined/resolve/blob/master/docs/Read%20Model.md)
+    * [**View Model**](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md)
+
+* 📄 [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md)
+
+The [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md) topic helps you to understand common building principles of reSolve application architecture. Also it contains links to best practices of using Domain-Driven Design, CQRS and Event Sourcing. 
+
+* 📄 [**Packages**](https://github.com/reimagined/resolve/blob/master/docs/Packages.md)
+
+The [**Packages**](https://github.com/reimagined/resolve/blob/master/docs/Packages.md) article contains description and basic principles of working with reSolve packages. API and detailed information are in `readme` files for every packages:
+
+    * [Bus Adapters](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters)
+        * [**resolve-bus-memory**](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters/resolve-bus-memory)
+        * [**resolve-bus-rabbit-mq**](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters/resolve-bus-rabbitmq)
+        * [**resolve-bus-zmq**](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters/resolve-bus-zmq)
+    
+    * [Read Model Adapters](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters)
+        * [**resolve-readmodel-base**](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-base)
+        * [**resolve-readmodel-memory**](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-memory)
+        * [**resolve-readmodel-mysql**](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-mysql)
+
+    * [Storage Adapters](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters)
+        * [**resolve-storage-base**](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters/resolve-storage-base)
+        * [**resolve-storage-lite**](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters/resolve-storage-lite)
+        * [**resolve-storage-mongo**](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters/resolve-storage-mongo)
+
+    * [**create-resolve-app**](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app)
+    * [**resolve-command**](https://github.com/reimagined/resolve/tree/master/packages/resolve-command)
+    * [**resolve-es**](https://github.com/reimagined/resolve/tree/master/packages/resolve-es)
+    * [**resolve-query**](https://github.com/reimagined/resolve/tree/master/packages/resolve-query)
+    * [**resolve-redux**](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux)
+    * [**resolve-scripts**](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts)
+
+* 📄 [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)
+
+The [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md) article contains options description: environment variables, configs and others. 
+
+* 📄 [**Contrubutors Guide**](https://github.com/reimagined/resolve/blob/master/docs/Contributors%20Guide.md)
+
+The [**Contrubutors Guide**](https://github.com/reimagined/resolve/blob/master/docs/Contributors%20Guide.md) contains the development flow description for any contributors, basic rules and principles of commits checks.
 
 ## <a name="get-in-touch">**📢 Get in Touch**</a>
 
