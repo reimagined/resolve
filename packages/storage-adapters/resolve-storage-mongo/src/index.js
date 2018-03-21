@@ -4,34 +4,30 @@ import { ConcurrentError } from 'resolve-storage-base'
 const DUPLICATE_KEY_ERROR = 11000
 
 function loadEvents(coll, query, startTime, callback) {
-  let doneResolver = null
-  const donePromise = new Promise(resolve => (doneResolver = resolve))
-  let workerPromise = Promise.resolve()
+  const iterate = cursor =>
+    cursor.next().then(item => {
+      if (item === null) return
+      return Promise.resolve(callback(item)).then(() => iterate(cursor))
+    })
 
-  const cursorStream = coll
-    .find({ ...query, timestamp: { $gt: startTime } }, { sort: 'timestamp' })
-    .stream()
-
-  cursorStream.on(
-    'data',
-    item => (workerPromise = workerPromise.then(() => callback(item)))
+  return iterate(
+    coll.find(
+      { ...query, timestamp: { $gte: startTime } },
+      { sort: 'timestamp' }
+    )
   )
-
-  cursorStream.on(
-    'end',
-    () => (workerPromise = workerPromise.then(doneResolver))
-  )
-
-  return donePromise
 }
 
 function createAdapter({ url, collection }) {
-  let promise
+  let promise, db
 
   function getCollection() {
     if (!promise) {
       promise = MongoClient.connect(url)
-        .then(db => db.collection(collection))
+        .then(connection => {
+          db = connection
+          return db.collection(collection)
+        })
         .then(coll =>
           coll
             .createIndex('timestamp')
@@ -45,24 +41,25 @@ function createAdapter({ url, collection }) {
             .then(() => coll)
         )
     }
-
     return promise
   }
 
   return {
     saveEvent: event =>
-      getCollection()
-        .then(coll => coll.insert(event))
-        .catch(e => {
+      getCollection().then(coll =>
+        coll.insert(event).catch(e => {
           if (e.code === DUPLICATE_KEY_ERROR) {
             throw new ConcurrentError()
           }
           throw e
-        }),
+        })
+      ),
+
     loadEventsByTypes: (types, callback, startTime = 0) =>
       getCollection().then(coll =>
         loadEvents(coll, { type: { $in: types } }, startTime, callback)
       ),
+
     loadEventsByAggregateIds: (aggregateIds, callback, startTime = 0) =>
       getCollection().then(coll =>
         loadEvents(
@@ -71,7 +68,8 @@ function createAdapter({ url, collection }) {
           startTime,
           callback
         )
-      )
+      ),
+    dispose: () => (db ? db.close() : Promise.resolve())
   }
 }
 

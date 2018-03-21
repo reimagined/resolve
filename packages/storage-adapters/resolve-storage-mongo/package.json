@@ -24,7 +24,9 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "jest": "^22.1.4",
-    "sinon": "^3.3.0"
+    "sinon": "^3.3.0",
+    "bluebird": "^2.9.34",
+    "uuid": "^3.2.1"
   },
   "dependencies": {
     "mongodb": "^2.2.26",
