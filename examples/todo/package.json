@@ -1,16 +1,16 @@
 {
   "name": "todo",
-  "version": "0.1.0",
+  "version": "0.7.1",
   "private": true,
   "dependencies": {
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
-    "resolve-bus-memory": "^0.6.1",
-    "resolve-redux": "^0.6.1",
-    "resolve-scripts": "^0.6.1",
-    "resolve-storage-lite": "^0.6.1"
+    "resolve-bus-memory": "0.7.1",
+    "resolve-redux": "0.7.1",
+    "resolve-scripts": "0.7.1",
+    "resolve-storage-lite": "0.7.1"
   },
   "scripts": {
     "build": "resolve-scripts build",
@@ -18,8 +18,7 @@
     "start": "resolve-scripts start",
     "test": "exit 0",
     "testw": "exit 0",
-    "test:functional":
-      "cross-env NODE_ENV=tests babel-node ./tests/functional/testcafe_runner.js --presets es2015,stage-0,react"
+    "test:functional": "cross-env NODE_ENV=tests babel-node ./tests/functional/testcafe_runner.js --presets es2015,stage-0,react"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
