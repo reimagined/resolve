@@ -49,11 +49,10 @@ export default (argv, defaults) => {
   const { name: applicationName } = require(resolveFile('package.json'))
   deployOptions.applicationName = applicationName
 
-  deployOptions.useYarn = false
-  try {
-    resolveFile('yarn.lock')
-    deployOptions.useYarn = true
-  } catch (error) {}
+  deployOptions.useYarn =
+    (process.env.npm_config_user_agent &&
+      process.env.npm_config_user_agent.includes('yarn')) ||
+    (process.env.npm_execpath && process.env.npm_execpath.includes('yarn'))
 
   const serverIndexPath = resolveFile('server/index.js')
   const clientIndexPath = resolveConfig.index

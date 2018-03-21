@@ -47,11 +47,13 @@
     "chalk": "^2.3.2",
     "cookie-parser": "^1.4.3",
     "cross-spawn": "^6.0.5",
+    "dotenv": "^5.0.1",
     "express": "^4.16.2",
     "flat": "^4.0.0",
     "history": "^4.7.2",
     "ip": "^1.1.5",
     "jsonschema": "^1.2.2",
+    "jsonwebtoken": "^8.2.0",
     "lodash": "^4.17.5",
     "opn": "^5.2.0",
     "prop-types": "^15.6.1",
@@ -63,6 +65,7 @@
     "react-router-redux": "^5.0.0-alpha.9",
     "redux": "^3.7.2",
     "redux-devtools-extension": "^2.13.2",
+    "request": "^2.85.0",
     "resolve-bus-memory": "^0.5.4",
     "resolve-command": "^0.5.4",
     "resolve-es": "^0.5.4",
@@ -75,9 +78,7 @@
     "table": "^4.0.3",
     "webpack": "^4.1.1",
     "webpack-node-externals": "^1.6.0",
-    "yargs": "^11.0.0",
-    "dotenv": "^5.0.1",
-    "jsonwebtoken": "^8.2.0"
+    "yargs": "^11.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
