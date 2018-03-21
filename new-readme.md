@@ -30,17 +30,17 @@ With reSolve you can easy and fast create different level difficulty application
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-why-resolve-reactivity.gif"></p>
 
-💎 Reactivity
-💎 Distribution
-💎 Highload
-💎 Fault Tolerance
-💎 Unidirectional Data Flow
+* 💎 Reactivity
+* 💎 Distribution
+* 💎 Highload
+* 💎 Fault Tolerance
+* 💎 Unidirectional Data Flow
 
 ## <a name="getting-started">**🚀 Getting Started**</a>
 
 ### <a name="installation">Installation</a>
 
-We have a special package [create-resolve-app](packages/create-resolve-app) for creation of any reSolve based application. It can be one of the our examples, or any your application. By default `create-resolve-app` creates empty [Hello world](https://github.com/reimagined/resolve/tree/master/examples/hello-world) application.
+We have a special package [create-resolve-app](packages/create-resolve-app) for creation of any reSolve based application. It can be one of the our examples, or any your application. By default `create-resolve-app` creates empty [Hello world](https://github.com/reimagined/resolve/tree/master/examples/hello-world) application. You can start working with new reSolve application just in **2 minutes**.
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-installation.gif"></p>
 
@@ -81,9 +81,9 @@ npm run dev
 
 ### <a name="examples">Examples</a>
 
-Example setup is similar with new application creation, but it has `--example` or `-e` flag with example name.
+Example setup is similar with new application creation, but it has `--example` or `-e` flag with example name. You can start working with reSolve example just in **2 minutes**.
 
-//todo gif
+<p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-example-installation.gif"></p>
 
 The created example is hosted at http://localhost:3000/. Also you can look at [**tutorials**](#tutorials) for some examples.
 
@@ -134,6 +134,8 @@ This example demonstrates work with view-models in case of **all events subscrib
 You can comfortably run and develop reSolve application for **Linux**, **Mac** and **Windows** operation systems using **bash** and **cmd** terminals. Also you can develop using **React Native**, but currently it's **experimental** approach.
 
 You can use any package manager, but we recommend you to look at [**npx**](https://www.npmjs.com/package/npx) and [**yarn**](https://yarnpkg.com/lang/en/) apart from **npm**. We use exactly npx manager in our tutorials like a default way.
+
+Minimum supported **NodeJS** version is **6.0.0**.
 
 ### <a name="basic-concepts">Basic Concepts</a>
 
