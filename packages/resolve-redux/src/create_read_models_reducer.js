@@ -77,14 +77,17 @@ export default function createReadModelsReducer() {
           return state
         }
 
-        const resolverState = { ...state[readModelName][resolverName] }
-        applyChanges(resolverState, diff)
+        const wrappedResolverState = {
+          wrap: state[readModelName][resolverName]
+        }
+
+        applyChanges(wrappedResolverState, diff)
 
         const nextState = {
           ...state,
           [readModelName]: {
             ...state[readModelName],
-            [resolverName]: resolverState
+            [resolverName]: wrappedResolverState.wrap
           }
         }
 

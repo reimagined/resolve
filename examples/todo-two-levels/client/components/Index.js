@@ -1,5 +1,5 @@
 import React from 'react'
-import { connect } from 'resolve-redux'
+import { connectViewModel } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
 import { NavLink } from 'react-router-dom'
 
@@ -47,4 +47,4 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => bindActionCreators(actions, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(Index)
+export default connectViewModel(mapStateToProps, mapDispatchToProps)(Index)
