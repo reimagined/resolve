@@ -43,7 +43,7 @@ const init = (adapter, eventStore, projection, eventListener) => {
     const projectionInvoker = async event => await projection[event.type](event)
 
     const synchronizedEventWorker = event =>
-      (flowPromise = !!flowPromise
+      (flowPromise = flowPromise
         ? flowPromise
             .then(projectionInvoker.bind(null, event))
             .then(eventListener.bind(null, event))
