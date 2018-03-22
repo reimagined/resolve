@@ -3,26 +3,29 @@
 
 [![Build Status](https://travis-ci.org/reimagined/resolve.svg?branch=master)](https://travis-ci.org/reimagined/resolve) [![npm version](https://badge.fury.io/js/create-resolve-app.svg)](https://badge.fury.io/js/create-resolve-app) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/reimagined/resolve/master/LICENSE)
 
-reSolve is a framework for developing apps based on **CQRS**, **Domain-Driven Design** and **Event Sourcing** using **React + Redux** on the client. It negates differences between your domain and technical languages, and allows you to focus on application code.
+A JavaScript framework for **CQRS**, **Domain-Driven Design** and **Event Sourcing** with good support for **React** and **Redux**. reSolve provides a new way to describe app's core logic and fully separate it from the auxiliary code.
 
+<!-- TODO: FIX BLURRY PICTURE!!! -->
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-technologies.png"></p>
 
-* **2 minute** easy [setup](#installation)
-* **Free and open source.** reSolve is free to use under the [MIT license](https://github.com/reimagined/resolve/blob/master/LICENSE.md).
-* **Flexibility.** Great opportunities with [clear API](#documentation).
+* [Installation](#installation) is fully automated and takes 2 minutes.
+* **Free and open source** ([MIT license](https://github.com/reimagined/resolve/blob/master/LICENSE.md)).
+* **Flexible** and clear [API](#documentation).
 
+<!-- TODO: FIX BLURRY PICTURE!!! -->
+<!-- TODO: text="Try it now!" -->
 [<p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-start-button.png"></p>](#getting-started)
 
 ## **📑 Table of Contents**
-* #### ️️️[🏗️ Why reSolve](#why-resolve)
-* #### [🚀 Getting Started](#getting-started)
+* **[🏗️ Why reSolve](#why-resolve)**
+* **[🚀 Getting Started](#getting-started)**
     * [Installation](#installation)
     * [Tutorials](#tutorials)
     * [Examples](#examples)
-* #### [📚 Documentation](#documentation)
+* **[📚 Documentation](#documentation)**
     * [Compatibility](#compatibility)
     * [Bacic Concepts](#basic-concepts)
-* #### [📢 Get in Touch](#get-in-touch)
+* **[📢 Get in Touch](#get-in-touch)**
 
 ## <a name="why-resolve">**🏗️ Why reSolve**</a>
 
