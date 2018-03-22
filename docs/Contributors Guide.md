@@ -14,10 +14,31 @@ We'll glad to see all your questions:
 The following is a set of guidelines for contributing to Resolve and its packages, which are hosted in the [Reimagined](https://github.com/reimagined) on GitHub. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request.
 
 #### Table Of Contents
-* [Reporting Bugs](#reporting-bugs)
 * [Pull Requests](#pull-requests)
-* [Styleguides](#styleguides)
+* [Reporting Bugs](#reporting-bugs)
 * [Issue Labels](#issue-labels)
+
+## Pull Requests
+
+Pull request is the main method to contribute `Resolve` repository. If you want to implement issue or fix code bug, read the bottom.
+
+`Resolve` follows [Git flow](https://datasift.github.io/gitflow/IntroducingGitFlow.html) branching model. The main development branch is `dev`. Branch `master` contains last stable release and hotfixes. `Resolve` repository is writeable only for maintainers, so to perform contribution - at first for own repository from `resolve`.
+
+Create the new branch in the forked repository, name it `feature/FEATURE-name` for features and `hotfix/BUG-name` for hot-fixing bugs. If you maintaining several branches, don't forget to periodically merge with upstream `dev` branch.
+
+After implementing the feature or fixing the bug, ensure that Definition of the Done list had been passed. It includes code-style conventions, successfully passing ALL existing unit/functional tests and examples in the project, additions, and fixes in the documentation if the supposed change affects it. You are free to choose how to check and cover new added code - unit or functional tests, additional examples to demo new features are welcome.
+
+`Resolve` repository has code-style conventions and toolchain. Use `EcmaScript-262 version 8` for main source code, style it with [Prettier](https://github.com/prettier/prettier-eslint). Passing `eslint` with [repo configuration](https://github.com/reimagined/resolve/blob/master/.eslintrc.js) is enough.
+
+`Resolve` repository is **monorepo** - it contains source code, integration tests and examples for multiple `npm` packages, which commonly are used together and forms library or framework. Monorepo toolchain is consists of two concepts: [yarn workspaces](https://yarnpkg.com/lang/en/docs/workspaces/) and [oao manager](https://www.npmjs.com/package/oao). 
+
+Working with monorepo begins with the bootstrap process. In `resolve` repository, it's enough to execute command `yarn` in the monorepo root. All `npm` packages will be installed, and all repository-based packages will be linked to each other. So, you can develop features without pushing packages to `npm` (Or local equivalents, aka `sinopia` or `verdaccio`).
+
+Take in mind two following aspects. Firstly, all `resolve-*` packages version should be identical due development. In another case, real npm version will be downloaded from the internet, instead of the local development package. Secondly, don't forget to re-bootstrap by `yarn` invocation, after bringing in changes into dependent `resolve-*` packages.
+
+Before creating the pull request, ensure locally that following command had been executed successfully in monorepo root: `yarn prettier`, `yarn lint`, `yarn test` and `yarn test:functional`. 
+
+Take in mind that all files should end with a newline. Avoid platform-dependent code.
 
 
 ## Reporting Bugs and Feature request
@@ -32,25 +53,11 @@ Explain the problem and include additional details to help maintainers reproduce
 
 * **Use a clear and descriptive title** for the issue to identify the problem.
 * **Describe the exact steps which reproduce the problem** in as many details as possible. 
-* **Provide specific examples to demonstrate the steps**. Include links to files or GitHub projects, or copy/pasteable snippets, which you use in those examples. If you're providing snippets in the issue, use [Markdown code blocks](https://help.github.com/articles/markdown-basics/#multiple-lines).
-* **Describe the behavior you observed after following the steps** and point out what exactly is the problem with that behavior.
-* **Explain which behavior you expected to see instead and why.**
+* **Provide specific examples to demonstrate the steps**. Include links to files or GitHub projects, or copy/pasteable snippets, which you use in those examples. If you're providing snippets on the issue, use [Markdown code blocks](https://help.github.com/articles/markdown-basics/#multiple-lines).
 * **Include screenshots and animated GIFs** which show you following the described steps and clearly demonstrate the problem. 
 * **If the problem is related to performance or memory**, include a memory & CPU profile capture with your report.
-* **If the problem wasn't triggered by a specific action**, describe what you were doing before the problem happened and share more information using the guidelines below.
 
-Equalent guidelines are applicable for Feature requests too.
-
-
-## Pull Requests
-
-* Fork `Resolve` repository, implement feature or fix bug, then create pull request to original repository.
-* `Resolve` follows [Git flow](https://datasift.github.io/gitflow/IntroducingGitFlow.html) branching model, so name your branch as `feature/FEATURE-name` for features and `hotfix/BUG-name` for hotfixing bugs.
-* Include screenshots and animated GIFs in your pull request whenever possible.
-* Use `EcmaScript-262 version 8` for main source code, style it with [Prettier](https://github.com/prettier/prettier-eslint).
-* Document new code based on the existing Documentation style
-* End all files with a newline
-* Avoid platform-dependent code
+Equivalent guidelines are applicable for Feature requests too.
 
 
 ## Issue Labels
@@ -68,7 +75,8 @@ Equalent guidelines are applicable for Feature requests too.
 
 | Label name | Description |
 | --- | --- | --- | --- |
-| `Component: readmodel-adapters` |  |
-| `Component: resolve-es` |  |
-| `Component: resolve-redux` |  |
-| `Component: resolve-scripts` |  |
+| `Component: readmodel-adapters` | Adapters for read-model provides update and read interface, and bridge between `resolve` query side and custom database/storage implementations |
+| `Component: resolve-es` | Event sourcing domain core - event store |
+| `Component: resolve-redux` | Isomorphic `resolve` library for transparent view-models, identical for server and client |
+| `Component: resolve-scripts` | Toolchain for local resolve applications development |
+
