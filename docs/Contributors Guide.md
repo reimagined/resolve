@@ -65,7 +65,7 @@ Equivalent guidelines are applicable for Feature requests too.
 ### Issue Labels by severity
 
 | Label name | Description |
-| --- | --- | --- | --- |
+| --- | --- |
 | `Type: Bug` | Confirmed bugs or reports that are very likely to be bugs |
 | `Type: Enhancement` | Feature requests |
 | `Type: Documentation` | Issues about general documentation, readmes for packages, etc |
@@ -74,7 +74,7 @@ Equivalent guidelines are applicable for Feature requests too.
 ### Issue Labels by component
 
 | Label name | Description |
-| --- | --- | --- | --- |
+| --- | --- |
 | `Component: readmodel-adapters` | Adapters for read-model provides update and read interface, and bridge between `resolve` query side and custom database/storage implementations |
 | `Component: resolve-es` | Event sourcing domain core - event store |
 | `Component: resolve-redux` | Isomorphic `resolve` library for transparent view-models, identical for server and client |
