@@ -1,4 +1,3 @@
-import 'regenerator-runtime/runtime'
 import messages from './messages'
 
 const DEFAULT_META_NAME = '__ResolveMeta__'

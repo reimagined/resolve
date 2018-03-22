@@ -42,6 +42,9 @@ const startServer = server => {
       openBrowser(urls.localUrlForBrowser)
     }
   })
+  server.on('error', err => {
+    throw err
+  })
 }
 
 export default startServer

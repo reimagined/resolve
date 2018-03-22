@@ -128,7 +128,7 @@ export function subscribeReadmodel(
   orderedFetch,
   action
 ) {
-  const { readModelName, resolverName, query, variables, isReactive } = action
+  const { readModelName, resolverName, variables, isReactive } = action
   const subscriptionKey = `${readModelName}:${resolverName}`
   if (readModelSubscriptions.hasOwnProperty(subscriptionKey)) return
 
@@ -214,7 +214,9 @@ export function unsubscribeReadmodel(
   if (!socketId || socketId.constructor !== String) return
 
   orderedFetch(
-    getRootableUrl(`/api/query/${readModelName}/${resolverName}/${socketId}`),
+    getRootableUrl(
+      `/api/query/${readModelName}/${resolverName}?socketId=${socketId}`
+    ),
     {
       method: 'DELETE',
       credentials: 'same-origin'

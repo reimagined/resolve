@@ -1,6 +1,6 @@
 {
   "name": "resolve-scripts",
-  "version": "0.5.4",
+  "version": "0.6.1",
   "description": "This package create server with resolve.",
   "main": "./dist/index.js",
   "repository": "https://github.com/reimagined/resolve.git",
@@ -16,7 +16,7 @@
     "resolve-scripts": "./bin/resolve-scripts.js"
   },
   "scripts": {
-    "test": "jest --verbose",
+    "test": "jest --testMatch=**/test/*.test.js --verbose",
     "prepublish": "yarn build",
     "build": "babel --out-dir ./dist ./src"
   },
@@ -52,6 +52,8 @@
     "flat": "^4.0.0",
     "history": "^4.7.2",
     "ip": "^1.1.5",
+    "isomorphic-fetch": "^2.2.1",
+    "jest": "^22.4.2",
     "jsonschema": "^1.2.2",
     "jsonwebtoken": "^8.2.0",
     "lodash": "^4.17.5",
@@ -66,22 +68,24 @@
     "redux": "^3.7.2",
     "redux-devtools-extension": "^2.13.2",
     "request": "^2.85.0",
-    "resolve-bus-memory": "^0.5.4",
-    "resolve-command": "^0.5.4",
-    "resolve-es": "^0.5.4",
-    "resolve-query": "^0.5.4",
-    "resolve-redux": "^0.5.4",
-    "resolve-storage-lite": "^0.5.4",
+    "resolve-bus-memory": "^0.6.1",
+    "resolve-command": "^0.6.1",
+    "resolve-es": "^0.6.1",
+    "resolve-query": "^0.6.1",
+    "resolve-redux": "^0.6.1",
+    "resolve-storage-lite": "^0.6.1",
     "respawn": "^2.5.0",
     "socket.io": "^2.0.4",
     "source-map-support": "^0.5.3",
     "table": "^4.0.3",
+    "testcafe": "^0.19.1",
+    "testcafe-browser-tools": "^1.6.1",
+    "tree-kill": "^1.2.0",
     "webpack": "^4.1.1",
     "webpack-node-externals": "^1.6.0",
     "yargs": "^11.0.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "jest": "^22.4.2"
+    "babel-cli": "^6.26.0"
   }
 }

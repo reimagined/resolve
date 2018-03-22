@@ -1,11 +1,11 @@
 {
   "name": "hello-world",
-  "version": "0.5.4",
+  "version": "0.6.1",
   "private": true,
   "dependencies": {
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "resolve-scripts": "^0.5.4"
+    "resolve-scripts": "^0.6.1"
   },
   "scripts": {
     "build": "resolve-scripts build",

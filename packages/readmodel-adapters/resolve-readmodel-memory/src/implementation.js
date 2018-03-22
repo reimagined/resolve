@@ -1,5 +1,3 @@
-import 'regenerator-runtime/runtime'
-
 const implementation = (
   metaApi,
   storeApi,

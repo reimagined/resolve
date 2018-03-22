@@ -6,7 +6,7 @@ import modulesDirs from './modules_dirs'
 
 export default {
   name: 'Server',
-  devtool: 'source-map',
+  devtool: 'inline-source-map',
   target: 'node',
   node: {
     __dirname: true,

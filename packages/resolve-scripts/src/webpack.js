@@ -2,7 +2,6 @@ import fs from 'fs'
 import path from 'path'
 import respawn from 'respawn'
 import webpack from 'webpack'
-import lodash from 'lodash'
 import flat from 'flat'
 
 import webpackClientConfig from './configs/webpack.client.config'
@@ -11,11 +10,10 @@ import showBuildInfo from './utils/show_build_info'
 import getRespawnConfig from './utils/get_respawn_config'
 import setup from './utils/setup'
 import createMockServer from './utils/create_mock_server'
-import resolveFileOrModule from './utils/resolve_file_or_module'
 import resolveFile from './utils/resolve_file'
-import { meta } from './configs/resolve.config'
+import assignConfigPaths from './utils/assign_config_paths'
 
-export default (argv, defaults) => {
+export default (argv, defaults = {}) => {
   Object.assign(process.env, Object.assign(defaults, process.env))
 
   const { resolveConfig, deployOptions } = setup(argv, process.env)
@@ -35,24 +33,7 @@ export default (argv, defaults) => {
     return
   }
 
-  for (const key of meta.files) {
-    lodash.set(resolveConfig, key, resolveFile(lodash.get(resolveConfig, key)))
-  }
-  for (const key of meta.filesOrModules) {
-    lodash.set(
-      resolveConfig,
-      key,
-      resolveFileOrModule(lodash.get(resolveConfig, key))
-    )
-  }
-
-  const { name: applicationName } = require(resolveFile('package.json'))
-  deployOptions.applicationName = applicationName
-
-  deployOptions.useYarn =
-    (process.env.npm_config_user_agent &&
-      process.env.npm_config_user_agent.includes('yarn')) ||
-    (process.env.npm_execpath && process.env.npm_execpath.includes('yarn'))
+  assignConfigPaths(resolveConfig)
 
   const serverIndexPath = resolveFile('server/index.js')
   const clientIndexPath = resolveConfig.index

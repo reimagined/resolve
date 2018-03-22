@@ -11,6 +11,10 @@ export default function setup(argv, env) {
 
   if (argv.config || env.CONFIG_PATH) {
     localConfig = fs.readFileSync(resolveFile(argv.config || env.CONFIG_PATH))
+  } else {
+    try {
+      localConfig = fs.readFileSync(resolveFile('resolve.config.json'))
+    } catch (e) {}
   }
 
   localConfig = JSON.parse(localConfig)

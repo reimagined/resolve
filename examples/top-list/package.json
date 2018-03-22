@@ -1,21 +1,19 @@
 {
   "name": "top-list",
-  "version": "0.1.0",
+  "version": "0.6.1",
   "private": true,
   "dependencies": {
     "project-name-generator": "^2.1.4",
     "react": "^16.2.0",
     "react-addons-css-transition-group": "^15.6.2",
     "react-dom": "^16.2.0",
-    "react-helmet": "^5.2.0",
     "react-redux": "^5.0.6",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "redux": "^3.7.2",
-    "resolve-bus-memory": "^0.5.0",
-    "resolve-redux": "^0.5.0",
-    "resolve-scripts": "^0.5.0",
-    "resolve-storage-lite": "^0.5.0",
+    "resolve-redux": "^0.6.1",
+    "resolve-scripts": "^0.6.1",
+    "react-helmet": "^5.2.0",
     "uuid": "^3.2.1"
   },
   "scripts": {
@@ -24,7 +22,7 @@
     "start": "resolve-scripts start",
     "test": "exit 0",
     "testw": "exit 0",
-    "test:functional": "exit 0"
+    "test:functional": "resolve-scripts test:functional"
   },
   "devDependencies": {
     "testcafe": "^0.19.1",

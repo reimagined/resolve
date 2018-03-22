@@ -1,0 +1,6 @@
+{
+    "storage": {
+        "adapter": "resolve-storage-lite",
+        "options": {}
+    }
+}

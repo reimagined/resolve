@@ -1,20 +1,20 @@
 {
   "name": "todo",
-  "version": "0.5.4",
+  "version": "0.6.1",
   "private": true,
   "dependencies": {
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "redux": "^3.7.2",
-    "resolve-redux": "^0.5.4",
-    "resolve-scripts": "^0.5.4"
+    "resolve-redux": "^0.6.1",
+    "resolve-scripts": "^0.6.1"
   },
   "scripts": {
     "build": "resolve-scripts build",
     "dev": "resolve-scripts dev",
     "start": "resolve-scripts start",
     "test": "jest test/unit/*",
-    "test:functional": "resolve-scripts build --test && testcafe remote test/functional --app \"resolve-scripts start\" --qr-code"
+    "test:functional": "resolve-scripts test:functional"
   },
   "devDependencies": {
     "jest": "^22.4.2",

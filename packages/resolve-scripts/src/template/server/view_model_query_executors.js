@@ -8,7 +8,9 @@ const viewModels = require($resolve.viewModels)
 const viewModelQueryExecutors = {}
 
 viewModels.forEach(viewModel => {
-  if (!viewModel.name) {
+  if (!viewModel.name && viewModels.length === 1) {
+    viewModel.name = 'reduxinitial'
+  } else if (!viewModel.name) {
     raiseError(message.viewModelMandatoryName, viewModel)
   } else if (viewModelQueryExecutors[viewModel.name]) {
     raiseError(message.dublicateName, viewModel)
@@ -18,16 +20,20 @@ viewModels.forEach(viewModel => {
     raiseError(message.viewModelSerializable, viewModel)
   }
 
-  viewModelQueryExecutors[viewModel.name] = createFacade({
+  const facade = createFacade({
     model: createViewModel({
       projection: viewModel.projection,
       eventStore
     }),
-    customResolvers: {
-      view: async (model, aggregateIds, jwtToken) =>
-        await viewModel.serializeState(await model(aggregateIds), jwtToken)
+    resolvers: {
+      view: async (model, { jwtToken }) =>
+        await viewModel.serializeState(model, jwtToken)
     }
-  }).executeQueryCustom.bind(null, 'view')
+  })
+
+  viewModelQueryExecutors[viewModel.name] = facade.executeQuery
+
+  viewModelQueryExecutors[viewModel.name].mode = 'view'
 })
 
 export default viewModelQueryExecutors

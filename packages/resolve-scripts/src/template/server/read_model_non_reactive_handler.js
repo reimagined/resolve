@@ -2,20 +2,23 @@ import readModelQueryExecutors from './read_model_query_executors'
 import message from './constants/message'
 import println from './utils/println'
 
-const readModelHandler = async (req, res) => {
+const readModelNonReactiveHandler = async (req, res) => {
+  const serialId = Date.now()
+
   try {
-    const executor = readModelQueryExecutors[req.params.modelName]
-    const data = await executor(
-      req.body.query,
-      req.body.variables || {},
+    const result = await readModelQueryExecutors[req.params.modelName](
+      req.params.resolverName,
+      req.body.variables,
       req.jwtToken
     )
-    res.status(200).send({ data })
+    res.status(200).send({
+      serialId,
+      result
+    })
   } catch (err) {
     res.status(500).end(`${message.readModelFail}${err.message}`)
-    // eslint-disable-next-line no-console
     println.error(err)
   }
 }
 
-export default readModelHandler
+export default readModelNonReactiveHandler

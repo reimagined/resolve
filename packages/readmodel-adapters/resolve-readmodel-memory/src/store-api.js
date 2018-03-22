@@ -1,5 +1,3 @@
-import 'regenerator-runtime/runtime'
-
 const defineStorage = async (
   { createStorage, storage },
   storageName,

@@ -1,6 +1,7 @@
 import { isV4Format } from 'ip'
 
 import deployOptionsOrigin from '../configs/deploy.options'
+import resolveFile from './resolve_file'
 
 export const extenders = []
 
@@ -248,6 +249,19 @@ export function openBrowser({ resolveConfig, deployOptions }, argv, env) {
   env.OPEN_BROWSER = deployOptions.openBrowser
 }
 
+extenders.push(useYarn)
+export function useYarn({ resolveConfig, deployOptions }, argv, env) {
+  deployOptions.useYarn =
+    (env.npm_config_user_agent && env.npm_config_user_agent.includes('yarn')) ||
+    (env.npm_execpath && env.npm_execpath.includes('yarn'))
+}
+
+extenders.push(applicationName)
+export function applicationName({ resolveConfig, deployOptions }, argv, env) {
+  const { name } = require(resolveFile('package.json'))
+  deployOptions.applicationName = name
+}
+
 extenders.push(env)
 export function env({ resolveConfig, deployOptions }, argv, env) {
   let envKey = deployOptions.mode
@@ -260,17 +274,6 @@ export function env({ resolveConfig, deployOptions }, argv, env) {
     Object.assign(resolveConfig, envConfig)
   }
   delete resolveConfig.env
-}
-
-extenders.push(config)
-export function config({ resolveConfig, deployOptions }, argv, env) {
-  if (env.CONFIG_PATH) {
-    deployOptions.config = env.CONFIG_PATH
-  }
-  if (argv.config) {
-    deployOptions.config = argv.config
-  }
-  env.CONFIG_PATH = deployOptions.config
 }
 
 export default function assignSettings(

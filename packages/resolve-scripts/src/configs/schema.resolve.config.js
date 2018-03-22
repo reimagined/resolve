@@ -73,6 +73,9 @@ export default {
         readModels: {
           type: 'string'
         },
+        sagas: {
+          type: 'string'
+        },
         bus: {
           $ref: '#/definitions/adapter'
         },

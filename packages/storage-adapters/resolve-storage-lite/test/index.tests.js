@@ -1,4 +1,3 @@
-import 'regenerator-runtime/runtime'
 import sinon from 'sinon'
 import { expect } from 'chai'
 import { ConcurrentError } from 'resolve-storage-base'

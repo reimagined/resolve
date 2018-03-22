@@ -1,5 +1,3 @@
-import 'regenerator-runtime/runtime'
-
 const MAX_VALUE = 0x0fffffff | 0
 const castType = type => {
   switch (type) {

@@ -18,6 +18,7 @@ const config = {
   /* meta */ @file('aggregates') aggregates: 'common/aggregates/index.js',
   /* meta */ @file('readModels') readModels: 'common/read-models/index.js',
   /* meta */ @file('viewModels') viewModels: 'common/view-models/index.js',
+  /* meta */ @file('sagas') sagas: 'common/sagas/index.js',
   /* meta */ @file('index') index: 'client/index.js',
   /* meta */ @file('auth') auth: 'auth/index.js',
   redux: {
