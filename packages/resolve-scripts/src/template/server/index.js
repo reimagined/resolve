@@ -41,7 +41,7 @@ app.use((req, res, next) => {
 
 app.use(getRootableUrl('/api/commands'), commandHandler)
 app.use(getRootableUrl('/api/query/:modelName/:resolverName?'), queryHandler)
-app.get(getRootableUrl('/api/status'), statusHandler)
+app.use(getRootableUrl('/api/status'), statusHandler)
 
 app.use(getRootableUrl('/'), express.static(`${distDir}/client`))
 app.use(getRootableUrl('/'), express.static(staticDir))

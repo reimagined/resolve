@@ -2,6 +2,14 @@
   "name": "top-list",
   "version": "0.6.1",
   "private": true,
+  "scripts": {
+    "build": "resolve-scripts build",
+    "dev": "resolve-scripts dev",
+    "start": "resolve-scripts start",
+    "update": "resolve-scripts update",
+    "test": "resolve-scripts test",
+    "test:functional": "resolve-scripts test:functional"
+  },
   "dependencies": {
     "project-name-generator": "^2.1.4",
     "react": "^16.2.0",
@@ -16,16 +24,7 @@
     "react-helmet": "^5.2.0",
     "uuid": "^3.2.1"
   },
-  "scripts": {
-    "build": "resolve-scripts build",
-    "dev": "resolve-scripts dev",
-    "start": "resolve-scripts start",
-    "test": "exit 0",
-    "testw": "exit 0",
-    "test:functional": "resolve-scripts test:functional"
-  },
   "devDependencies": {
-    "testcafe": "^0.19.1",
-    "testcafe-browser-tools": "^1.6.1"
+    "testcafe": "^0.19.1"
   }
 }

@@ -12,7 +12,7 @@ describe('graphql connector', () => {
   let originalFetch = global.fetch
 
   beforeAll(() => {
-    global.fetch = (...args) => {}
+    global.fetch = () => {}
   })
 
   afterAll(() => {

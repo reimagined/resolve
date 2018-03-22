@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken'
 
 export default [
   {
-    name: 'President',
+    name: 'Animal',
     commands: {
       like: (state, command, jwtToken) => {
         const { username } = jwt.verify(jwtToken, process.env.JWT_SECRET)

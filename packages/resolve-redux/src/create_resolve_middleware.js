@@ -23,9 +23,10 @@ export function getEventTypes(viewModels, subscribers) {
       return
     }
 
-    const { Init, ...projection } = viewModels.find(
-      ({ name }) => name === viewModelName
-    ).projection
+    const projection = {
+      ...viewModels.find(({ name }) => name === viewModelName).projection
+    }
+    delete projection.Init
 
     Object.keys(projection).forEach(eventType => {
       eventTypes[eventType] = true
@@ -221,7 +222,7 @@ export function unsubscribeReadmodel(
       method: 'DELETE',
       credentials: 'same-origin'
     }
-  ).catch(error => null)
+  ).catch(() => null)
 }
 
 const isClient = typeof window !== 'undefined'
@@ -260,7 +261,6 @@ export const mockSubscribeAdapter = {
 export function createResolveMiddleware({
   viewModels = [],
   aggregates = [],
-  readModels = [],
   subscribeAdapter = defaultSubscribeAdapter
 }) {
   const subscribers = {

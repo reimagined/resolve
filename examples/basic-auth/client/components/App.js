@@ -19,10 +19,10 @@ export const App = ({ username }) => (
         <tbody>
           <tr>
             <td>
-              <img src="/cat.png" />
+              <img src="/cat.png" alt="Cat" />
             </td>
             <td>
-              <img src="/dog.png" />
+              <img src="/dog.png" alt="Dog" />
             </td>
           </tr>
           <tr>

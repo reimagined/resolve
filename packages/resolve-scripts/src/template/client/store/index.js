@@ -1,1 +1,1 @@
-export default (store, middlewares) => {}
+export default () => {}

@@ -2,7 +2,7 @@ import println from './utils/println'
 import message from './constants/message'
 import executeCommand from './command_executor'
 
-const commandHandler = async (req, res, next) => {
+const commandHandler = async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).end()
   }

@@ -253,7 +253,7 @@ const insert = async ({ connection }, storageName, document) => {
   await connection.execute(
     `INSERT INTO ${storageName}(${Object.keys(document).join(', ')})
      VALUES(${Object.keys(document)
-       .map(_ => '?')
+       .map(() => '?')
        .join(', ')})
     `,
     Object.values(document)

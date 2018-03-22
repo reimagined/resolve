@@ -5,10 +5,10 @@ import aggregates from '../../common/aggregates'
 
 dotenv.config()
 
-const [presidentAggregate] = aggregates
+const [animalAggregate] = aggregates
 
 describe('aggregates', () => {
-  describe('President', () => {
+  describe('Animal', () => {
     it('command "like" should create an event to like the item', () => {
       const state = undefined
       const command = { payload: {} }
@@ -17,9 +17,7 @@ describe('aggregates', () => {
         process.env.JWT_SECRET
       )
 
-      expect(
-        presidentAggregate.commands.like(state, command, jwtToken)
-      ).toEqual({
+      expect(animalAggregate.commands.like(state, command, jwtToken)).toEqual({
         type: 'LIKE',
         payload: { username: 'Alice' }
       })
@@ -34,7 +32,7 @@ describe('aggregates', () => {
       )
 
       expect(() =>
-        presidentAggregate.commands.like(state, command, jwtToken)
+        animalAggregate.commands.like(state, command, jwtToken)
       ).toThrow()
     })
   })

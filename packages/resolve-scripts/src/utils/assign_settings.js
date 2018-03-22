@@ -6,7 +6,7 @@ import resolveFile from './resolve_file'
 export const extenders = []
 
 extenders.push(mode)
-export function mode({ resolveConfig, deployOptions }, argv, env) {
+export function mode({ deployOptions }, argv, env) {
   if (
     env.NODE_ENV &&
     ['development', 'production', 'test'].indexOf(env.NODE_ENV) !== -1
@@ -33,7 +33,7 @@ export function mode({ resolveConfig, deployOptions }, argv, env) {
 }
 
 extenders.push(watch)
-export function watch({ resolveConfig, deployOptions }, argv, env) {
+export function watch({ deployOptions }, argv, env) {
   if (env.WATCH && ['false', 'true'].indexOf(env.WATCH) === -1) {
     return new Error(
       'Invalid environment variables: \n' +
@@ -49,7 +49,7 @@ export function watch({ resolveConfig, deployOptions }, argv, env) {
 }
 
 extenders.push(start)
-export function start({ resolveConfig, deployOptions }, argv, env) {
+export function start({ deployOptions }, argv, env) {
   if (env.START && ['false', 'true'].indexOf(env.START) === -1) {
     return new Error(
       'Invalid environment variables: \n' +
@@ -65,7 +65,7 @@ export function start({ resolveConfig, deployOptions }, argv, env) {
 }
 
 extenders.push(build)
-export function build({ resolveConfig, deployOptions }, argv, env) {
+export function build({ deployOptions }, argv, env) {
   if (env.BUILD && ['false', 'true'].indexOf(env.BUILD) === -1) {
     return new Error(
       'Invalid environment variables: \n' +
@@ -81,7 +81,7 @@ export function build({ resolveConfig, deployOptions }, argv, env) {
 }
 
 extenders.push(inspect)
-export function inspect({ resolveConfig, deployOptions }, argv, env) {
+export function inspect({ deployOptions }, argv, env) {
   if (env.INSPECT_PORT && !Number.isInteger(+env.INSPECT_PORT)) {
     return new Error(
       'Invalid environment variables: \n' +
@@ -128,7 +128,7 @@ export function inspect({ resolveConfig, deployOptions }, argv, env) {
 }
 
 extenders.push(host)
-export function host({ resolveConfig, deployOptions }, argv, env) {
+export function host({ deployOptions }, argv, env) {
   if (env.HOST) {
     deployOptions.host = env.HOST
   }
@@ -139,7 +139,7 @@ export function host({ resolveConfig, deployOptions }, argv, env) {
 }
 
 extenders.push(protocol)
-export function protocol({ resolveConfig, deployOptions }, argv, env) {
+export function protocol({ deployOptions }, argv, env) {
   if (env.PROTOCOL) {
     deployOptions.protocol = env.PROTOCOL
   }
@@ -150,7 +150,7 @@ export function protocol({ resolveConfig, deployOptions }, argv, env) {
 }
 
 extenders.push(port)
-export function port({ resolveConfig, deployOptions }, argv, env) {
+export function port({ deployOptions }, argv, env) {
   if (env.PORT && !Number.isInteger(+env.PORT)) {
     throw new Error(
       'Invalid environment variables: \n' +
@@ -171,7 +171,7 @@ export function port({ resolveConfig, deployOptions }, argv, env) {
 }
 
 extenders.push(rootPath)
-export function rootPath({ resolveConfig, deployOptions }, argv, env) {
+export function rootPath({ resolveConfig }, argv, env) {
   if (env.ROOT_PATH) {
     resolveConfig.rootPath = env.ROOT_PATH
   }
@@ -191,7 +191,7 @@ export function rootPath({ resolveConfig, deployOptions }, argv, env) {
 }
 
 extenders.push(index)
-export function index({ resolveConfig, deployOptions }, argv, env) {
+export function index({ resolveConfig }, argv, env) {
   if (env.INDEX_PATH) {
     resolveConfig.index = env.INDEX_PATH
   }
@@ -202,7 +202,7 @@ export function index({ resolveConfig, deployOptions }, argv, env) {
 }
 
 extenders.push(viewModels)
-export function viewModels({ resolveConfig, deployOptions }, argv, env) {
+export function viewModels({ resolveConfig }, argv, env) {
   if (env.VIEW_MODELS_PATH) {
     resolveConfig.viewModels = env.VIEW_MODELS_PATH
   }
@@ -210,7 +210,7 @@ export function viewModels({ resolveConfig, deployOptions }, argv, env) {
 }
 
 extenders.push(readModels)
-export function readModels({ resolveConfig, deployOptions }, argv, env) {
+export function readModels({ resolveConfig }, argv, env) {
   if (env.READ_MODELS_PATH) {
     resolveConfig.readModels = env.READ_MODELS_PATH
   }
@@ -218,7 +218,7 @@ export function readModels({ resolveConfig, deployOptions }, argv, env) {
 }
 
 extenders.push(aggregates)
-export function aggregates({ resolveConfig, deployOptions }, argv, env) {
+export function aggregates({ resolveConfig }, argv, env) {
   if (env.AGGREGATES_PATH) {
     resolveConfig.aggregates = env.AGGREGATES_PATH
   }
@@ -226,7 +226,7 @@ export function aggregates({ resolveConfig, deployOptions }, argv, env) {
 }
 
 extenders.push(auth)
-export function auth({ resolveConfig, deployOptions }, argv, env) {
+export function auth({ resolveConfig }, argv, env) {
   if (env.AUTH_PATH) {
     resolveConfig.auth = env.AUTH_PATH
   }
@@ -234,7 +234,7 @@ export function auth({ resolveConfig, deployOptions }, argv, env) {
 }
 
 extenders.push(openBrowser)
-export function openBrowser({ resolveConfig, deployOptions }, argv, env) {
+export function openBrowser({ deployOptions }, argv, env) {
   if (env.OPEN_BROWSER && ['false', 'true'].indexOf(env.OPEN_BROWSER) === -1) {
     return new Error(
       'Invalid environment variables: \n' +
@@ -250,20 +250,31 @@ export function openBrowser({ resolveConfig, deployOptions }, argv, env) {
 }
 
 extenders.push(useYarn)
-export function useYarn({ resolveConfig, deployOptions }, argv, env) {
+export function useYarn({ deployOptions }, argv, env) {
   deployOptions.useYarn =
     (env.npm_config_user_agent && env.npm_config_user_agent.includes('yarn')) ||
     (env.npm_execpath && env.npm_execpath.includes('yarn'))
 }
 
 extenders.push(applicationName)
-export function applicationName({ resolveConfig, deployOptions }, argv, env) {
+export function applicationName({ deployOptions }) {
   const { name } = require(resolveFile('package.json'))
   deployOptions.applicationName = name
 }
 
+extenders.push(browser)
+export function browser({ deployOptions }, argv, env) {
+  if (env.BROWSER) {
+    deployOptions.browser = env.BROWSER
+  }
+  if (argv.browser) {
+    deployOptions.browser = argv.browser
+  }
+  env.BROWSER = deployOptions.browser
+}
+
 extenders.push(env)
-export function env({ resolveConfig, deployOptions }, argv, env) {
+export function env({ resolveConfig, deployOptions }, argv) {
   let envKey = deployOptions.mode
   if (argv.test) {
     envKey = 'test'

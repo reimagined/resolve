@@ -31,6 +31,7 @@ module.exports = {
       }
     ],
     'object-curly-spacing': ['error', 'always'],
+    'no-unused-vars': ['error', { args: 'after-used' }],
     'max-len': [
       'error',
       {

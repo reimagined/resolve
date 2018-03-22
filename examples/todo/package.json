@@ -10,11 +10,12 @@
     "resolve-scripts": "^0.6.1"
   },
   "scripts": {
-    "build": "resolve-scripts build",
-    "dev": "resolve-scripts dev",
-    "start": "resolve-scripts start",
-    "test": "jest test/unit/*",
-    "test:functional": "resolve-scripts test:functional"
+      "build": "resolve-scripts build",
+      "dev": "resolve-scripts dev",
+      "start": "resolve-scripts start",
+      "update": "resolve-scripts update",
+      "test": "resolve-scripts test",
+      "test:functional": "resolve-scripts test:functional"
   },
   "devDependencies": {
     "jest": "^22.4.2",

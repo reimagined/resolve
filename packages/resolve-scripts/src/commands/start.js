@@ -10,7 +10,7 @@ import {
   defaults,
   defaultsTitle
 } from '../configs/strings'
-import webpack from '../webpack'
+import webpack from '../utils/webpack'
 
 export const command = 'start'
 export const desc = commands.build

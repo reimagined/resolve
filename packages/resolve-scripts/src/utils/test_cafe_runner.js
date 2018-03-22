@@ -3,9 +3,9 @@ import { getInstallations } from 'testcafe-browser-tools'
 import { execSync, spawn } from 'child_process'
 import fetch from 'isomorphic-fetch'
 
-import assignConfigPaths from './utils/assign_config_paths'
-import resolveFileOrModule from './utils/resolve_file_or_module'
-import setup from './utils/setup'
+import assignConfigPaths from './assign_config_paths'
+import resolveFileOrModule from './resolve_file_or_module'
+import setup from './setup'
 
 const testCafeRunner = async argv => {
   execSync(
@@ -52,7 +52,8 @@ const testCafeRunner = async argv => {
       `--app-init-delay ${TIMEOUT}`,
       `--selector-timeout ${TIMEOUT}`,
       `--assertion-timeout ${TIMEOUT}`,
-      `--page-load-timeout ${TIMEOUT}`
+      `--page-load-timeout ${TIMEOUT}`,
+      ...(browser === 'remote' ? ['--qr-code'] : [])
     ],
     { stdio: 'inherit' }
   )

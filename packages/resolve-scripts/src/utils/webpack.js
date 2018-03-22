@@ -4,14 +4,14 @@ import respawn from 'respawn'
 import webpack from 'webpack'
 import flat from 'flat'
 
-import webpackClientConfig from './configs/webpack.client.config'
-import webpackServerConfig from './configs/webpack.server.config'
-import showBuildInfo from './utils/show_build_info'
-import getRespawnConfig from './utils/get_respawn_config'
-import setup from './utils/setup'
-import createMockServer from './utils/create_mock_server'
-import resolveFile from './utils/resolve_file'
-import assignConfigPaths from './utils/assign_config_paths'
+import webpackClientConfig from '../configs/webpack.client.config'
+import webpackServerConfig from '../configs/webpack.server.config'
+import showBuildInfo from './show_build_info'
+import getRespawnConfig from './get_respawn_config'
+import setup from './setup'
+import createMockServer from './create_mock_server'
+import resolveFile from './resolve_file'
+import assignConfigPaths from './assign_config_paths'
 
 export default (argv, defaults = {}) => {
   Object.assign(process.env, Object.assign(defaults, process.env))

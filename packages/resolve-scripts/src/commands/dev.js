@@ -1,5 +1,5 @@
 import table from '../utils/table'
-import webpack from '../webpack'
+import webpack from '../utils/webpack'
 import {
   commands,
   cli,
@@ -32,6 +32,7 @@ export const builder = yargs =>
           env.READ_MODELS_PATH,
           env.HOST,
           env.PORT,
+          env.PROTOCOL,
           env.INSPECT_HOST,
           env.INSPECT_PORT,
           env.OPEN_BROWSER

@@ -41,6 +41,9 @@ export default {
     },
     openBrowser: {
       type: 'boolean'
+    },
+    browser: {
+      type: 'boolean'
     }
   },
   additionalProperties: false
