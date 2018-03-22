@@ -6,7 +6,7 @@ export const commands = {
   start: 'Runs the app from the build directory',
   lint: 'Check the source code for syntax errors and potential issues',
   testFunctional: 'Runs functional tests with TestCafe',
-  testUnit: 'Runs unit tests with Jest',
+  test: 'Runs unit tests with Jest',
   update:
     'Updates all resolve packages to the latest version according to semver'
 }
@@ -115,7 +115,8 @@ export const env = {
   INSPECT_PORT: ['INSPECT_PORT', 'Inspector port'],
   REGISTRY: ['REGISTRY', 'Resolve registry URL'],
   TOKEN: ['TOKEN', 'Resolve registry authorization token'],
-  OPEN_BROWSER: ['OPEN_BROWSER', 'Open browser with the root page']
+  OPEN_BROWSER: ['OPEN_BROWSER', 'Open browser with the root page'],
+  TESTCAFE_BROWSER: ['TESTCAFE_BROWSER', 'Specified browser for TestCafe']
 }
 
 export const customEnvTitle = 'Custom Environment Variables'

@@ -21,12 +21,12 @@ const jwtCookie = $resolve.jwtCookie
 const app = express()
 const server = new Server(app)
 
-const socketIO = createSocketServer(server, {
+const socket = createSocketServer(server, {
   path: getRootableUrl('/socket/'),
   serveClient: false
 })
 
-socketIO.on('connection', socketHandler)
+socket.on('connection', socketHandler)
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -34,7 +34,7 @@ app.use(cookieParser())
 
 app.use((req, res, next) => {
   req.jwtToken = req.cookies[jwtCookie.name]
-  req.socket = socketIO
+  req.socket = socket
 
   next()
 })

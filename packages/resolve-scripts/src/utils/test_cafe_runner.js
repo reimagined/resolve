@@ -4,13 +4,12 @@ import { execSync, spawn } from 'child_process'
 import fetch from 'isomorphic-fetch'
 
 import assignConfigPaths from './assign_config_paths'
-import resolveFileOrModule from './resolve_file_or_module'
 import setup from './setup'
 
 const testCafeRunner = async argv => {
   execSync(
     `node ` +
-      path.resolve(__dirname, '../bin/resolve-scripts.js') +
+      path.resolve(__dirname, '../../bin/resolve-scripts.js') +
       ' build' +
       ' --test',
     { stdio: 'inherit' }
@@ -44,9 +43,9 @@ const testCafeRunner = async argv => {
   }
 
   const testcafe = spawn(
-    'node',
+    'npx',
     [
-      path.resolve(resolveFileOrModule('testcafe'), '../../bin/testcafe.js'),
+      'testcafe',
       browser,
       'test/functional',
       `--app-init-delay ${TIMEOUT}`,

@@ -264,13 +264,13 @@ export function applicationName({ deployOptions }) {
 
 extenders.push(browser)
 export function browser({ deployOptions }, argv, env) {
-  if (env.BROWSER) {
-    deployOptions.browser = env.BROWSER
+  if (env.TESTCAFE_BROWSER) {
+    deployOptions.browser = env.TESTCAFE_BROWSER
   }
   if (argv.browser) {
     deployOptions.browser = argv.browser
   }
-  env.BROWSER = deployOptions.browser
+  env.TESTCAFE_BROWSER = deployOptions.browser
 }
 
 extenders.push(env)

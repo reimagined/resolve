@@ -1,4 +1,5 @@
 import testCafeRunner from '../utils/test_cafe_runner'
+import table from '../utils/table'
 
 import {
   cli,
@@ -8,7 +9,6 @@ import {
   env,
   envTitle
 } from '../configs/strings'
-import table from '../utils/table'
 
 export const command = 'test:functional'
 export const desc = commands.testFunctional
@@ -17,7 +17,7 @@ export const builder = yargs =>
     .help('help')
     .epilogue(
       `${envTitle}:\n` +
-        `${table([env.BROWSER])}\n` +
+        `${table([env.TESTCAFE_BROWSER])}\n` +
         `${defaultsTitle}:\n` +
         `${defaults}`
     )

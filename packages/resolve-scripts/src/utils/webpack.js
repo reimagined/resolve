@@ -94,13 +94,13 @@ export default (argv, defaults = {}) => {
     server.stop()
   })
 
-  process.env.RESOLVE_SERVER_FIRST_START = true
+  process.env.RESOLVE_SERVER_FIRST_START = 'true'
   if (deployOptions.build) {
     if (deployOptions.watch) {
       const stdin = process.openStdin()
       stdin.addListener('data', data => {
         if (data.toString().indexOf('rs') !== -1) {
-          process.env.RESOLVE_SERVER_FIRST_START = false
+          process.env.RESOLVE_SERVER_FIRST_START = 'false'
           server.stop(() => server.start())
         }
       })
@@ -120,7 +120,7 @@ export default (argv, defaults = {}) => {
               server.stop()
             } else {
               if (server.status === 'running') {
-                process.env.RESOLVE_SERVER_FIRST_START = false
+                process.env.RESOLVE_SERVER_FIRST_START = 'false'
                 server.stop(() => server.start())
               } else {
                 server.start()
