@@ -9,8 +9,8 @@ A JavaScript framework for **CQRS**, **Domain-Driven Design** and **Event Sourci
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-technologies.png"></p>
 
 * [Installation](#installation) is fully automated and takes 2 minutes.
-* **Free and open source** ([MIT license](https://github.com/reimagined/resolve/blob/master/LICENSE.md)).
-* **Flexible** and clear [API](#documentation).
+* Free and open source ([MIT license](https://github.com/reimagined/resolve/blob/master/LICENSE.md)).
+* Flexible and clear [API](#documentation).
 
 <!-- TODO: FIX BLURRY PICTURE!!! -->
 <!-- TODO: text="Try it now!" -->
@@ -29,7 +29,7 @@ A JavaScript framework for **CQRS**, **Domain-Driven Design** and **Event Sourci
 
 ## <a name="why-resolve">**🏗️ Why reSolve**</a>
 
-With reSolve you can easy and fast create different level difficulty applications. It could be applications like simple [ToDo List](#todo-list), or some reactive applications like StackOverflow, with distributed, highload and serverless architecture. Thanks to stack of technologies (CQRS, Event Sourcing, Domain-Driven Design, React + Redux) your application would be easy scalable, maintainable, so you can focus on application essence.
+With reSolve you can create applications of any complexity level more efficiently. A single approach is used for a simple [ToDo List](#todo-list) and for a complicated reactive application like [Hacker News](https://github.com/reimagined/hacker-news-resolve) with distributed serverless architecture ready for high load. The technologies stack (CQRS, Event Sourcing, Domain-Driven Design, React + Redux) makes any reSolve application scalable and maintainable, so you can focus on a business logic instead of an auxiliary code.
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-why-resolve-reactivity.gif"></p>
 
