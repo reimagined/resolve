@@ -6,7 +6,6 @@
     "build": "resolve-scripts build",
     "dev": "resolve-scripts dev",
     "start": "resolve-scripts start",
-    "update": "resolve-scripts update",
     "test": "resolve-scripts test",
     "test:functional": "resolve-scripts test:functional"
   },
