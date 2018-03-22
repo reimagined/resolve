@@ -43,7 +43,7 @@ With reSolve you can create applications of any complexity level more efficientl
 
 ### <a name="installation">Installation</a>
 
-We have a special package [create-resolve-app](packages/create-resolve-app) for creation of any reSolve based application. It can be one of the our examples, or any your application. By default `create-resolve-app` creates empty [Hello world](https://github.com/reimagined/resolve/tree/master/examples/hello-world) application. You can start working with new reSolve application just in **2 minutes**.
+The [create-resolve-app](packages/create-resolve-app) package is used to create a reSolve-based application. You can use it to get one of the examples, or an empty application. By default, `create-resolve-app` creates an empty [Hello World](https://github.com/reimagined/resolve/tree/master/examples/hello-world) application. You can start working on your new reSolve application in just **2 minutes**.
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-installation.gif"></p>
 
