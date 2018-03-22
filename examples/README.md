@@ -1,5 +1,14 @@
 # **Examples**
 
+-------------------------------------------------------------------------
+Sorry, this article isn't finished yet :(
+    
+We'll glad to see all your questions:
+* [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
+* [**Twitter**](https://twitter.com/resolvejs)
+* e-mail to **reimagined@devexpress.com**
+-------------------------------------------------------------------------
+
 This folder contains reSolve framework examples.
 
 Example setup is similar with new application creation, but it has `--example` or `-e` flag with example name. You can start working with reSolve example just in **2 minutes**.

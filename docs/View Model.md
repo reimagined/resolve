@@ -1,40 +1,56 @@
-## Basic concepts
+# View Model
 
-A [view model](../README.md#read-model-view-model-and-query) is a [read model](../README.md#read-model-view-model-and-query) that represents a part of UI state and can live on the client. It can be updated by a Redux `reducer` function on the client and on the server.
+-------------------------------------------------------------------------
+Sorry, this article isn't finished yet :(
+    
+We'll glad to see all your questions:
+* [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
+* [**Twitter**](https://twitter.com/resolvejs)
+* e-mail to **reimagined@devexpress.com**
+-------------------------------------------------------------------------
 
-## ViewModel Reference Type 
+Some read models, called **view models**, are sent to the client UI to be a part of a Redux app state. They are small enough to fit into memory and can be kept up to date in the browser. They are defined in a special isomorphic format, which allows them to be used on the client and server side.
 
-```
-type ViewModel = {
-    name: String
+A typical view model structure:
+
+```js
+export default [
+  {
+    name: 'Todos',
     projection: {
-        Init: Void -> State
-        [EventType]: (State, Event) -> State
-        ...
-    }
-    serializeState: State -> String
-    deserializeState: String -> State
-}
-```
+      Init: () => ({}),
+      ITEM_CREATED: (state, { payload: { id, text } }) => ({
+        ...state,
+        [id]: {
+          text,
+          checked: false
+        }
+      }),
+      ITEM_TOGGLED: (state, { payload: { id } }) => ({
+        ...state,
+        [id]: {
+          ...state[id],
+          checked: !state[id].checked
+        }
+      }),
+      ITEM_REMOVED: (state, { payload: { id } }) => {
+        const nextState = { ...state }
+        delete nextState[id]
+        return nextState
+      }
+    },
+    serializeState: state => JSON.stringify(state),
+    deserializeState: state => JSON.parse(state)
+  }
+]
 
 ```
-type State = Immutable<Object|Array> 
-```
 
-```
-type Event = {
-    aggregateId: UUID
-    timestamp: Date
-    type: EventType
-    payload: Any
-}
-```
+View models are also available via the facade at `/api/query/VIEW_MODEL_NAME` with a simple GET-query that supports two required parameters: `aggregateIds` and `eventTypes`. A typical query to a view model is `/api/query/VIEW_MODEL_NAME?aggregateIds=id1&aggregateIds=id2`. It builds the view model state for all events that relate to aggregates with `id1` or `id2`.
 
-``` 
-type EventType = String
-```
+Note: Some Immutable wrapper for a state object is required to use view model declaration as a Redux reducer. We recommend using the [seamless-immutable](https://github.com/rtfeldman/seamless-immutable) library. Keep in mind that incorrectly handling an immutable object may cause performance issues.
 
-## How does it work on the client side with Redux
+### How does it work on the client side with Redux
 #### Subscribe/unsubscribe to/from a view model by aggregateId
 
 [`componentWillMount()`](https://reactjs.org/docs/react-component.html#componentwillmount) is invoked immediately before mounting occurs.
@@ -80,15 +96,14 @@ const middleware = [createResolveMiddleware(viewModels)];
 export default initialState => createStore(reducer, initialState, applyMiddleware(...middleware));
 ```
 
-## How does it work on the server side with reSolve
-
+### How does it work on the server side with reSolve
 #### Request for Initial State
 
-A query receives the current state of a view model with the specified aggregateId. If the specified view model's state is in the cache, it is returned on the client as initialState. Otherwise, all events from [EventStore](../README.md#event-store) that have the specified aggregateId and are handled by the view model are loaded, and the state is built based on them. The result is stored in the cache and sent to the client.
+A query receives the current state of a view model with the specified aggregateId. If the specified view model's state is in the cache, it is returned on the client as initialState. Otherwise, all events from [EventStore](https://github.com/reimagined/resolve/blob/master/docs/Event%20Store.md) that have the specified aggregateId and are handled by the view model are loaded, and the state is built based on them. The result is stored in the cache and sent to the client.
 
 #### Subscribe/Unsubscribe to/from Events
 
-All events saved to [EventStore](../README.md#event-store) are also sent to the bus in real time. The client receives events if it has an active subscription to events with the specified aggregateId and eventTypes.
+All events saved to [EventStore](https://github.com/reimagined/resolve/blob/master/docs/Event%20Store.md) are also sent to the bus in real time. The client receives events if it has an active subscription to events with the specified aggregateId and eventTypes.
 
 ## TL;DR
 * [Link to Github "ToDo App"](https://github.com/reimagined/resolve/tree/master/examples/todo-two-levels)
