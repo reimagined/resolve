@@ -1,6 +1,6 @@
 {
   "name": "resolve-es",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "This package serves as an event-store.",
   "main": "./dist/index.js",
   "bugs": {
