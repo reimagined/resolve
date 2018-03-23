@@ -9,6 +9,8 @@ We'll glad to see all your questions:
 * e-mail to **reimagined@devexpress.com**
 -------------------------------------------------------------------------
 
+<p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-hello-world-example.png"></p>
+
 ## How to start?
 
 It's a simple **empty reSolve application** that can be used like boilerplate. `create-resolve-app` package install this example like starting application by default, so you can setup this example by one of two ways:
