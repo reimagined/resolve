@@ -6,7 +6,6 @@ import createResolveMiddleware from './create_resolve_middleware'
 import createViewModelsReducer from './create_view_models_reducer'
 import createReadModelsReducer from './create_read_models_reducer'
 import createActions from './create_actions'
-import gqlConnector from './graphql_connector'
 import connectReadModel from './connect_read_model'
 import connectViewModel from './connect_view_model'
 import * as util from './util'
@@ -22,7 +21,6 @@ export {
   createViewModelsReducer,
   createReadModelsReducer,
   createActions,
-  gqlConnector,
   connectViewModel,
   connectReadModel,
   util,
