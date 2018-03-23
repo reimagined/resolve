@@ -7,7 +7,6 @@ import flat from 'flat'
 import webpackClientConfig from '../configs/webpack.client.config'
 import webpackServerConfig from '../configs/webpack.server.config'
 import showBuildInfo from './show_build_info'
-import getRespawnConfig from './get_respawn_config'
 import setup from './setup'
 import createMockServer from './create_mock_server'
 import resolveFile from './resolve_file'
@@ -83,10 +82,11 @@ export default (argv, defaults = {}) => {
   }
 
   const server = deployOptions.start
-    ? respawn(getRespawnConfig(serverPath), {
+    ? respawn([serverPath], {
         maxRestarts: 0,
         kill: 5000,
-        stdio: 'inherit'
+        stdio: 'inherit',
+        fork: true
       })
     : createMockServer()
 
