@@ -64,10 +64,14 @@ Builds client and server bundles for production through Webpack.
 
 Building is performed in the `NODE_ENV === 'production'` [mode](https://webpack.js.org/guides/production/#node-environment-variable), so the build is optimized. No additional HTTP server for the serving client bundle and assets are  built.
 
-### `npm start`
-Runs the built app in the production mode.
+### `npm run start`
+Runs the app from the build directory.
 
-Open [http://localhost:3000](http://localhost:3000/) to view it in the browser.
+### `npm run test`
+Runs unit run tests with Jest.
+
+### `npm run test:functional`
+Runs functional tests with TestCafe.
 
 ## **User Guide**
 The User Guide provides detailed information on an application created with Create reSolve App:

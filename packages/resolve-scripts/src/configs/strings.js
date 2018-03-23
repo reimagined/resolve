@@ -4,11 +4,8 @@ export const commands = {
   build: 'Builds the app to the build directory',
   dev: 'Runs the app in the development mode',
   start: 'Runs the app from the build directory',
-  lint: 'Check the source code for syntax errors and potential issues',
   testFunctional: 'Runs functional tests with TestCafe',
-  test: 'Runs unit tests with Jest',
-  update:
-    'Updates all resolve packages to the latest version according to semver'
+  test: 'Runs unit tests with Jest'
 }
 
 export const cli = {
