@@ -12,4 +12,3 @@ Refer to its documentation:
 App's configuration can be defined in the resolve.config.json file or through the --config <path/to/json> option. 
 
 Please keep in mind that the resulting configuration must match the [JSON Schema ReSolve Config](./src/configs/schema.resolve.config.js)
-
