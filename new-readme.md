@@ -3,7 +3,7 @@
 
 [![Build Status](https://travis-ci.org/reimagined/resolve.svg?branch=master)](https://travis-ci.org/reimagined/resolve) [![npm version](https://badge.fury.io/js/create-resolve-app.svg)](https://badge.fury.io/js/create-resolve-app) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/reimagined/resolve/master/LICENSE)
 
-A JavaScript framework for **CQRS**, **Domain-Driven Design** and **Event Sourcing** with good support for **React** and **Redux**. reSolve provides a new way to describe app's core logic and fully separate it from the auxiliary code.
+A JavaScript framework for **CQRS**, **Domain-Driven Design** and **Event Sourcing** with good support for **React** and **Redux**. reSolve provides a new way to describe app's core logic and fully separate it from an auxiliary code.
 
 <!-- TODO: FIX BLURRY PICTURE!!! -->
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-technologies.png"></p>
@@ -43,11 +43,11 @@ With reSolve you can create applications of any complexity level more efficientl
 
 ### <a name="installation">Installation</a>
 
-The [create-resolve-app](packages/create-resolve-app) package is used to create a reSolve-based application. You can use it to get one of the examples, or an empty application. By default, `create-resolve-app` creates an empty [Hello World](https://github.com/reimagined/resolve/tree/master/examples/hello-world) application. You can start working on your new reSolve application in just **2 minutes**.
+The [create-resolve-app](packages/create-resolve-app) package is used to create a reSolve-based application. You can use it to get one of the examples, or make an empty application. By default, `create-resolve-app` generates an empty [Hello World](https://github.com/reimagined/resolve/tree/master/examples/hello-world) application. You can start working on your new reSolve application in just **2 minutes**.
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-installation.gif"></p>
 
-The created application is hosted at http://localhost:3000/ and http://<your_ip>:3000/ (you can [change your url settings](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)). We recommend you [**First Application From Scratch**](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/First%20Application%20From%20Scratch.md) tutorial to learn more about application structure and work with reSolve. Also it'd be helpfull: [**documentation**](#documentation), [**tutorials**](#tutorials) and [**examples**](#examples).
+The created application is accessible at the http://localhost:3000/ and http://<your_ip>:3000/ URLs (you can [change your URL settings](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)). Start learning reSolve with the [**First Application From Scratch**](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/First%20Application%20From%20Scratch.md) tutorial. Use the [**documentation**](#documentation), [**tutorials**](#tutorials) and [**examples**](#examples) to learn reSolve deeper.
 
 #### Using npx
 
