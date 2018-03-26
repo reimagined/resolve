@@ -2,7 +2,7 @@ import path from 'path'
 
 import exec from './exec'
 import validateСonfig from '../src/utils/validate_config'
-import resolveConfigOrigin from '../src/configs/resolve.config'
+import resolveConfigOrigin from '../configs/resolve.config'
 
 describe('validate schema', () => {
   it('empty', () => {

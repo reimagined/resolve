@@ -4,6 +4,7 @@ import { Provider } from 'react-redux'
 import { ConnectedRouter } from 'react-router-redux'
 import createHistory from 'history/createMemoryHistory'
 import jsonwebtoken from 'jsonwebtoken'
+import Url from 'url'
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components'
 
 import createStore from '../client/store/create_store'
@@ -48,7 +49,7 @@ const serverSideRendering = (req, res) => {
 
   const env = getClientEnv()
   const initialState = store.getState()
-  const clientUrl = `${staticPath}/client.js`
+  const clientUrl = Url.resolve(staticPath, 'client.js')
 
   res.send(
     getHtmlMarkup({

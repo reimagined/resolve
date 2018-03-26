@@ -54,6 +54,7 @@
     "ip": "^1.1.5",
     "isomorphic-fetch": "^2.2.1",
     "jest": "^22.4.3",
+    "json5": "^1.0.1",
     "jsonschema": "^1.2.2",
     "jsonwebtoken": "^8.2.0",
     "lodash": "^4.17.5",
@@ -77,13 +78,13 @@
     "respawn": "^2.5.0",
     "socket.io": "^2.0.4",
     "source-map-support": "^0.5.4",
+    "styled-components": "^3.2.3",
     "table": "^4.0.3",
     "testcafe": "^0.19.1",
     "testcafe-browser-tools": "^1.6.1",
     "webpack": "^4.2.0",
     "webpack-node-externals": "^1.6.0",
-    "yargs": "^11.0.0",
-    "styled-components": "^3.2.3"
+    "yargs": "^11.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0"

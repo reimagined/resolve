@@ -2,12 +2,7 @@
     "port": 3000,
     "routes": "client/routes.js",
     "aggregates": "common/aggregates/index.js",
-    "readModels": "common/read-models/index.js",
-    "sagas": "common/sagas/index.js",
-    "storage": {
-        "adapter": "resolve-storage-lite",
-        "options": {}
-    }
+    "viewModels": "common/view-models/index.js"
 }
 
 // See the documentation for more information about available options list at

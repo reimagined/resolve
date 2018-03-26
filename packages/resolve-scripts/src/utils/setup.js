@@ -1,7 +1,7 @@
 import fs from 'fs'
+import path from 'path'
+import JSON5 from 'json5'
 
-import resolveConfigOrigin from '../configs/resolve.config'
-import deployOptionsOrigin from '../configs/deploy.options'
 import assignSettings from './assign_settings'
 import resolveFile from './resolve_file'
 import validateConfig from './validate_config'
@@ -17,14 +17,14 @@ export default function setup(argv, env) {
     } catch (e) {}
   }
 
-  localConfig = JSON.parse(localConfig)
+  localConfig = JSON5.parse(localConfig)
 
   const resolveConfig = {
-    ...JSON.parse(JSON.stringify(resolveConfigOrigin)),
+    ...JSON5.parse(fs.readFileSync(path.resolve(__dirname, '../configs/resolve.config.json'))),
     ...localConfig
   }
 
-  const deployOptions = JSON.parse(JSON.stringify(deployOptionsOrigin))
+  const deployOptions = JSON5.parse(fs.readFileSync(path.resolve(__dirname, '../configs/deploy.options.json')))
 
   assignSettings({ resolveConfig, deployOptions }, argv, env)
 

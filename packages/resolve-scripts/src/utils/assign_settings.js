@@ -1,6 +1,6 @@
 import { isV4Format } from 'ip'
 
-import deployOptionsOrigin from '../configs/deploy.options'
+import deployOptionsOrigin from '../../configs/deploy.options'
 import resolveFile from './resolve_file'
 
 export const extenders = []
@@ -128,36 +128,36 @@ export function inspect({ deployOptions }, argv, env) {
 }
 
 extenders.push(host)
-export function host({ deployOptions }, argv, env) {
+export function host({ resolveConfig }, argv, env) {
   if (env.HOST) {
-    deployOptions.host = env.HOST
+    resolveConfig.host = env.HOST
   }
   if (argv.host) {
-    deployOptions.host = argv.host
+    resolveConfig.host = argv.host
   }
-  env.HOST = deployOptions.host
+  env.HOST = resolveConfig.host
 }
 
 extenders.push(protocol)
-export function protocol({ deployOptions }, argv, env) {
+export function protocol({ resolveConfig }, argv, env) {
   if (env.PROTOCOL) {
-    deployOptions.protocol = env.PROTOCOL
+    resolveConfig.protocol = env.PROTOCOL
   }
   if (argv.protocol) {
-    deployOptions.protocol = argv.protocol
+    resolveConfig.protocol = argv.protocol
   }
-  env.PROTOCOL = deployOptions.protocol
+  env.PROTOCOL = resolveConfig.protocol
 }
 
 extenders.push(port)
-export function port({ deployOptions }, argv, env) {
+export function port({ resolveConfig }, argv, env) {
   if (env.PORT && !Number.isInteger(+env.PORT)) {
     throw new Error(
       'Invalid environment variables: \n' +
         `PORT, Given: "${argv.port}", Value must be an integer`
     )
   } else if (env.PORT) {
-    deployOptions.port = +env.PORT
+    resolveConfig.port = +env.PORT
   }
   if (argv.port && !Number.isInteger(+argv.port)) {
     throw new Error(
@@ -165,9 +165,9 @@ export function port({ deployOptions }, argv, env) {
         `port, Given: "${argv.port}", Value must be an integer`
     )
   } else if (argv.port) {
-    deployOptions.port = +argv.port
+    resolveConfig.port = +argv.port
   }
-  env.PORT = deployOptions.port
+  env.PORT = resolveConfig.port
 }
 
 extenders.push(rootPath)

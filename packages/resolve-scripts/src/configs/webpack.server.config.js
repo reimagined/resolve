@@ -1,8 +1,8 @@
 import webpack from 'webpack'
 import nodeExternals from 'webpack-node-externals'
 
-import babelConfig from './babelrc'
-import modulesDirs from './modules_dirs'
+import babelConfig from '../../configs/babelrc'
+import modulesDirs from '../../configs/modules_dirs'
 
 export default {
   name: 'Server',
