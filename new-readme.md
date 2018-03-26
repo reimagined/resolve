@@ -47,35 +47,36 @@ The [create-resolve-app](packages/create-resolve-app) package is used to create 
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-installation.gif"></p>
 
-The created application is accessible at the http://localhost:3000/ and http://<your_ip>:3000/ URLs (you can [change your URL settings](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)). Start learning reSolve with the [**First Application From Scratch**](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/First%20Application%20From%20Scratch.md) tutorial. Use the [**documentation**](#documentation), [**tutorials**](#tutorials) and [**examples**](#examples) to learn reSolve deeper.
+You can use one of the following tools to start a new reSolve aplication:
 
-#### Using npx
+* [npx](https://www.npmjs.com/package/npx)
 
-> Note: Don't forget about [npx](https://www.npmjs.com/package/npx) installation.
-```bash
-npx create-resolve-app hello-world-app
-cd hello-world-app
-npm run dev
-```
+    ```sh
+    npx create-resolve-app my-awesome-app
+    cd my-awesome-app
+    npm run dev
+    ```
 
-#### Using yarn
+* [yarn](https://yarnpkg.com/lang/en/)
 
-> Note: Don't forget about [yarn](https://yarnpkg.com/lang/en/) installation
-```bash
-yarn create resolve-app hello-world-app
-cd hello-world-app
-yarn run dev
-```
+    ```sh
+    yarn create resolve-app my-awesome-app
+    cd my-awesome-app
+    yarn run dev
+    ```
 
-#### Using npm
-> Note: Installing a package globally may require administrative privileges. That means you have to use the sudo command for Unix-based systems or run a terminal with administrative privileges on Windows systems.
+* [npm](https://www.npmjs.com/)
 
-```bash
-npm i -g create-resolve-app
-create-resolve-app hello-world-app
-cd hello-world-app
-npm run dev
-```
+    ```sh
+    npm i -g create-resolve-app
+    create-resolve-app my-awesome-app
+    cd my-awesome-app
+    npm run dev
+    ```
+
+    > Note: Installing a package globally (the first command) may require administrative privileges. That means you have to use the `sudo` prefix on Linux and MacOS, or start a terminal with administrative privileges on Windows.
+
+The created application is accessible using the http://localhost:3000/ and http://<your_ip>:3000/ URLs (you can [change your URL settings](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)). Start learning reSolve with the [**First Application From Scratch**](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/First%20Application%20From%20Scratch.md) tutorial. Use the [**documentation**](#documentation), [**tutorials**](#tutorials) and [**examples**](#examples) to learn reSolve deeper.
 
 ### <a name="tutorials">Tutorials</a>
 
@@ -84,36 +85,44 @@ npm run dev
 
 ### <a name="examples">Examples</a>
 
-Example setup is similar with new application creation, but it has `--example` or `-e` flag with example name. You can start working with reSolve example just in **2 minutes**.
+You can get a sample app using the `create-resolve-app` tool with the `-e` flag followed by an example name. Use the `create-resolve-app -h` command to list the available examples.
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-example-installation.gif"></p>
 
-The created example is hosted at http://localhost:3000/ and http://<your_ip>:3000/ (you can [change your url settings](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)). Also you can look at [**tutorials**](#tutorials) for some examples.
+The following tools are used to get a sample reSolve aplication:
 
-#### Using npx
-```bash
-npx create-resolve-app todo-example -e todo
-```
+* [npx](https://www.npmjs.com/package/npx)
 
-#### Using yarn
-```bash
-yarn create resolve-app todo-example -e todo
-```
+    ```sh
+    npx create-resolve-app todo-example -e todo
+    ```
 
-#### Using npm
-```bash
-create-resolve-app todo-example -e todo
-```
+* [yarn](https://yarnpkg.com/lang/en/)
+
+    ```sh
+    yarn create resolve-app todo-example -e todo
+    ```
+
+* [npm](https://www.npmjs.com/)
+
+    ```sh
+    npm i -g create-resolve-app
+    create-resolve-app todo-example -e todo
+    ```
+
+The created application is accessible using the http://localhost:3000/ and http://<your_ip>:3000/ URLs (you can [change your URL settings](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)).
+
+The `create-resolve-app` can is capable to create the following apps:
 
 * [**hello-world**](https://github.com/reimagined/resolve/tree/master/examples/hello-world)
 
-It's a simple empty example that can be used like **reSolve application boilerplate**.
+    An empty app that can be used as a template for any reSolve application.
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-hello-world-example.png"></p>
 
 * [**top-list**](https://github.com/reimagined/resolve/tree/master/examples/top-list)
 
-This example demonstrates **reactive read-models** that leads to client updating without page reloads. You can learn more about [read-models in documentation](https://github.com/reimagined/resolve/blob/master/docs/Read%20Model.md)
+    This example demonstrates **reactive read-models** that leads to client updating without page reloads. You can learn more about [read-models in documentation](https://github.com/reimagined/resolve/blob/master/docs/Read%20Model.md).
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-top-list-example.png"></p>
 
