@@ -54,39 +54,39 @@ If the `version` argument is set, the command updates packages to the specified 
 [Create ReSolve App](https://www.npmjs.com/package/creat-resolve-app) is an NPM package referencing the latest [reSolve framework package](../..#) versions. It consists of the common isomorphic part which describes domain business logic and React components for the presentation. No implicit server part is needed - it is encapsulated in `resolve-scripts`, but can be customized using [config](#-configuration-files). The project also includes unit & E2E testing and deployment assets. All source code and functional tests are written in the [ES2016](http://2ality.com/2016/01/ecmascript-2016.html).
 
 ```
-resolve-app/
-  .gitignore
-  .yarnrc
-  LICENSE
-  README.md
-  package-lock.json
-  package.json
-  resolve.build.config.js
-  resolve.client.config.js
-  resolve.server.config.js
-  client/
-    components/
-      App.js
-    reducers/
-      index.js
-    store/
-      index.js
-    routes.js
-  common/
-    aggregates/
-      index.js
-    read-models/
-      index.js
-    view-models/
-      index.js
-  static/
-    favicon.ico
-  tests/
-    unit/
-      index.test.js
-    functional/
-      testcafe_runner.js
-      index.test.js
+📁 resolve-app
+    📄 .gitignore
+    📄 .yarnrc
+    📄 LICENSE
+    📄 README.md
+    📄 package-lock.json
+    📄 package.json
+    📄 resolve.build.config.js
+    📄 resolve.client.config.js
+    📄 resolve.server.config.js
+    📁 client/
+        📁 components
+            📄 App.js
+        📁 reducers
+            📄 index.js
+        📁 store
+            📄 index.js
+        📄 routes.js
+    📁 common
+        📁 aggregates
+            📄 index.js
+        📁 read-models
+            📄 index.js
+        📁 view-models
+            📄 index.js
+    📁 static
+        📄 favicon.ico
+    📁 tests
+        📁 unit
+            📄 index.test.js
+        📁 functional
+            📄 testcafe_runner.js
+            📄 index.test.js
 ```
 
 ### **Client**
