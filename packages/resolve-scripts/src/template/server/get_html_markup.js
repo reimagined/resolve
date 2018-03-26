@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet'
 
 import jsonUtfStringify from './utils/json_utf_stringify'
 
-export default ({ markup, initialState, env, clientUrl }) => {
+export default ({ markup, styleTags, initialState, env, clientUrl }) => {
   const helmet = Helmet.renderStatic()
 
   return (
@@ -13,6 +13,7 @@ export default ({ markup, initialState, env, clientUrl }) => {
     `${helmet.meta.toString()}` +
     `${helmet.link.toString()}` +
     `${helmet.style.toString()}` +
+    styleTags +
     '<script>' +
     `window.__INITIAL_STATE__=${jsonUtfStringify(initialState)};` +
     `window.__PROCESS_ENV__=${jsonUtfStringify(env)};` +

@@ -31,7 +31,7 @@ const config = {
   storage: {
     /* meta */ @fileOrModule('storage.adapter') adapter: 'resolve-storage-lite',
     options: {
-      pathToFile: 'storage.txt'
+      pathToFile: 'event-storage.db'
     }
   },
   bus: {

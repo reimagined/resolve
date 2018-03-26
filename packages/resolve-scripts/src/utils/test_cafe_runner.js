@@ -8,9 +8,9 @@ import setup from './setup'
 
 const testCafeRunner = async argv => {
   execSync(
-    `node ` +
+    `node "` +
       path.resolve(__dirname, '../../bin/resolve-scripts.js') +
-      ' build' +
+      '" build' +
       ' --test',
     { stdio: 'inherit' }
   )
@@ -27,7 +27,13 @@ const testCafeRunner = async argv => {
 
   const application = spawn(
     'node',
-    [`${resolveConfig.distDir}/server/server.js`],
+    [
+      `${path.resolve(
+        process.cwd(),
+        resolveConfig.distDir,
+        'server/server.js'
+      )}`
+    ],
     { stdio: 'inherit' }
   )
 

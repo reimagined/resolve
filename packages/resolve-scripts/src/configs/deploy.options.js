@@ -5,7 +5,7 @@ export default {
   start: false,
   watch: false,
   openBrowser: false,
-  host: '127.0.0.1',
+  host: 'localhost',
   port: 3000,
   protocol: 'http',
   inspectHost: '127.0.0.1',
