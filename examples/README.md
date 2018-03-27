@@ -56,3 +56,4 @@ This example demonstrates work with view-models in case of **all events subscrib
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-todo-two-levels-example.png"></p>
 
+* [hacker-news](./hacker-news)
