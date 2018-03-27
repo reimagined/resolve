@@ -152,7 +152,7 @@ The minimum supported **NodeJS** version is **6.0.0**.
 
 * 📄 [**System Metaphor**](https://github.com/reimagined/resolve/blob/master/docs/System%20Metaphor.md)
 
-The [**System Metaphor**](https://github.com/reimagined/resolve/blob/master/docs/System%20Metaphor.md) contains all terms that are used while reSolve application development. It helps to speak the same technical language and makes easy to understand documentation and core concepts in code. Also in [**docs folder**](https://github.com/reimagined/resolve/tree/master/docs) you can find detailed description with code for every core concept:
+The [**System Metaphor**](https://github.com/reimagined/resolve/blob/master/docs/System%20Metaphor.md) is a vocabulary that describes all terms used in reSolve application development. You can also find the detailed description with code examples for every core concept in the [**docs**](https://github.com/reimagined/resolve/tree/master/docs) directory:
 
 * [_Aggregate_](https://github.com/reimagined/resolve/blob/master/docs/Aggregate.md)
 * [_Command_](https://github.com/reimagined/resolve/blob/master/docs/Command.md)
@@ -164,11 +164,11 @@ The [**System Metaphor**](https://github.com/reimagined/resolve/blob/master/docs
 
 * 📄 [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md)
 
-The [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md) topic helps you to understand common building principles of reSolve application architecture. Also it contains links to best practices of using Domain-Driven Design, CQRS and Event Sourcing. 
+The [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md) topic describes common principles of building a reSolve application. You can also find links to Domain-Driven Design, CQRS and Event Sourcing best practices there. 
 
 * 📄 [**Packages**](https://github.com/reimagined/resolve/blob/master/docs/Packages.md)
 
-The [**Packages**](https://github.com/reimagined/resolve/blob/master/docs/Packages.md) article contains description and basic principles of working with reSolve packages. API and detailed information are in `readme` files for every packages:
+The [**Packages**](https://github.com/reimagined/resolve/blob/master/docs/Packages.md) article provides the description of all reSolve packages. The API and detailed information are available in package `README` files:
 
 * [_create-resolve-app_](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app)
 * [_resolve-command_](https://github.com/reimagined/resolve/tree/master/packages/resolve-command)
@@ -194,29 +194,29 @@ The [**Packages**](https://github.com/reimagined/resolve/blob/master/docs/Packag
 
 * 📄 [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)
 
-The [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md) article contains options description: environment variables, configs and others. 
+The [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md) article describes environment variables, configs, and other options. 
 
 * 📄 [**Contrubutors Guide**](https://github.com/reimagined/resolve/blob/master/docs/Contributors%20Guide.md)
 
-The [**Contrubutors Guide**](https://github.com/reimagined/resolve/blob/master/docs/Contributors%20Guide.md) contains the development flow description for any contributors, basic rules and principles of commits checks.
+The [**Contrubutors Guide**](https://github.com/reimagined/resolve/blob/master/docs/Contributors%20Guide.md) describes the development workflow for any contributors: basic rules and commits checking principles.
 
 ## <a name="get-in-touch">**📢 Get in Touch**</a>
 
 Feel free to contact us if you have any questions!
 
-✉️ We'll glad to see your e-mails to **reimagined@devexpress.com**
+✉️ We are glad to see your e-mails sent to **reimagined@devexpress.com**.
 
-💬 Join us on [**Twitter**](https://twitter.com/resolvejs). We post interesting arcticles, announcements, make twitter polls about reSolve development and even have disputes about related technologies, so follow us!
+💬 Follow us on [**Twitter**](https://twitter.com/resolvejs). We post interesting arcticles, announcements, make polls about the reSolve development and talk about the modern web technologies!
 
 💻 We also have a [**Facebook**](https://www.facebook.com/resolvejs/) page, join us!
 
 📃 You can find our articles on [**Medium**](https://medium.com/resolvejs)
 
-❓ You are welcome with any your questions or enhancements in [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
+❓ You are welcome with any questions or suggestions in [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
 
-🔧 We'll happy if you became one of reSolve [**contributors**](https://github.com/reimagined/resolve/pulls)! Please, look at our [**Contrubutors Guide**](https://github.com/reimagined/resolve/blob/master/docs/Contributors%20Guide.md).
+🔧 Feel yourself capable to improve reSolve? Become one of our [**contributors**](https://github.com/reimagined/resolve/pulls)! Look through our [**Contrubutors Guide**](https://github.com/reimagined/resolve/blob/master/docs/Contributors%20Guide.md) and make a great Pull Request.
 
-⭐️ Don't forget about **GitHub Stars** if you like reSolve!
+⭐️ Remember to star our **GitHub** repository if you like reSolve!
 
 <br/>
 <br/>
