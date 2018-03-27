@@ -1,0 +1,1895 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Meta renders correctly 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <StoryInfo
+    commentCount={0}
+    createdAt={1970-01-01T00:00:00.000Z}
+    createdBy="user-id"
+    createdByName="user"
+    id="story-id"
+    loggedIn={true}
+    voted={true}
+    votes={
+      Array [
+        "user-id",
+      ]
+    }
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "class",
+    "props": Object {
+      "children": Array [
+        "1 point ",
+        Array [
+          "by ",
+          <Styled(Link)
+            to="/user/user-id"
+          >
+            user
+          </Styled(Link)>,
+          " ",
+        ],
+        <Unknown
+          createdAt={1970-01-01T00:00:00.000Z}
+        />,
+        <span>
+          <styled.div />
+          <styled.span
+            onClick={undefined}
+          >
+            unvote
+          </styled.span>
+           
+        </span>,
+        <styled.div />,
+        <Styled(Link)
+          to="/storyDetails/story-id"
+        >
+          discuss
+        </Styled(Link)>,
+        " ",
+      ],
+    },
+    "ref": null,
+    "rendered": Array [
+      "1 point ",
+      "by ",
+      Object {
+        "instance": null,
+        "key": "username",
+        "nodeType": "class",
+        "props": Object {
+          "children": "user",
+          "to": "/user/user-id",
+        },
+        "ref": null,
+        "rendered": "user",
+        "type": [Function],
+      },
+      " ",
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "function",
+        "props": Object {
+          "createdAt": 1970-01-01T00:00:00.000Z,
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": Array [
+            <styled.div />,
+            <styled.span
+              onClick={undefined}
+            >
+              unvote
+            </styled.span>,
+            " ",
+          ],
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "class",
+            "props": Object {},
+            "ref": null,
+            "rendered": null,
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "class",
+            "props": Object {
+              "children": "unvote",
+              "onClick": undefined,
+            },
+            "ref": null,
+            "rendered": "unvote",
+            "type": [Function],
+          },
+          " ",
+        ],
+        "type": "span",
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {},
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "children": "discuss",
+          "to": "/storyDetails/story-id",
+        },
+        "ref": null,
+        "rendered": "discuss",
+        "type": [Function],
+      },
+      " ",
+    ],
+    "type": [Function],
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "children": Array [
+          "1 point ",
+          Array [
+            "by ",
+            <Styled(Link)
+              to="/user/user-id"
+            >
+              user
+            </Styled(Link)>,
+            " ",
+          ],
+          <Unknown
+            createdAt={1970-01-01T00:00:00.000Z}
+          />,
+          <span>
+            <styled.div />
+            <styled.span
+              onClick={undefined}
+            >
+              unvote
+            </styled.span>
+             
+          </span>,
+          <styled.div />,
+          <Styled(Link)
+            to="/storyDetails/story-id"
+          >
+            discuss
+          </Styled(Link)>,
+          " ",
+        ],
+      },
+      "ref": null,
+      "rendered": Array [
+        "1 point ",
+        "by ",
+        Object {
+          "instance": null,
+          "key": "username",
+          "nodeType": "class",
+          "props": Object {
+            "children": "user",
+            "to": "/user/user-id",
+          },
+          "ref": null,
+          "rendered": "user",
+          "type": [Function],
+        },
+        " ",
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "function",
+          "props": Object {
+            "createdAt": 1970-01-01T00:00:00.000Z,
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": Array [
+              <styled.div />,
+              <styled.span
+                onClick={undefined}
+              >
+                unvote
+              </styled.span>,
+              " ",
+            ],
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {},
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "children": "unvote",
+                "onClick": undefined,
+              },
+              "ref": null,
+              "rendered": "unvote",
+              "type": [Function],
+            },
+            " ",
+          ],
+          "type": "span",
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {},
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "children": "discuss",
+            "to": "/storyDetails/story-id",
+          },
+          "ref": null,
+          "rendered": "discuss",
+          "type": [Function],
+        },
+        " ",
+      ],
+      "type": [Function],
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`Meta renders correctly 2`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <StoryInfo
+    commentCount={0}
+    createdAt={1970-01-01T00:00:00.000Z}
+    id="story-id"
+    loggedIn={true}
+    voted={true}
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "class",
+    "props": Object {
+      "children": Array [
+        null,
+        null,
+        <Unknown
+          createdAt={1970-01-01T00:00:00.000Z}
+        />,
+        <span>
+          <styled.div />
+          <styled.span
+            onClick={undefined}
+          >
+            unvote
+          </styled.span>
+           
+        </span>,
+        <styled.div />,
+        <Styled(Link)
+          to="/storyDetails/story-id"
+        >
+          discuss
+        </Styled(Link)>,
+        " ",
+      ],
+    },
+    "ref": null,
+    "rendered": Array [
+      null,
+      null,
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "function",
+        "props": Object {
+          "createdAt": 1970-01-01T00:00:00.000Z,
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": Array [
+            <styled.div />,
+            <styled.span
+              onClick={undefined}
+            >
+              unvote
+            </styled.span>,
+            " ",
+          ],
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "class",
+            "props": Object {},
+            "ref": null,
+            "rendered": null,
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "class",
+            "props": Object {
+              "children": "unvote",
+              "onClick": undefined,
+            },
+            "ref": null,
+            "rendered": "unvote",
+            "type": [Function],
+          },
+          " ",
+        ],
+        "type": "span",
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {},
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "children": "discuss",
+          "to": "/storyDetails/story-id",
+        },
+        "ref": null,
+        "rendered": "discuss",
+        "type": [Function],
+      },
+      " ",
+    ],
+    "type": [Function],
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "children": Array [
+          null,
+          null,
+          <Unknown
+            createdAt={1970-01-01T00:00:00.000Z}
+          />,
+          <span>
+            <styled.div />
+            <styled.span
+              onClick={undefined}
+            >
+              unvote
+            </styled.span>
+             
+          </span>,
+          <styled.div />,
+          <Styled(Link)
+            to="/storyDetails/story-id"
+          >
+            discuss
+          </Styled(Link)>,
+          " ",
+        ],
+      },
+      "ref": null,
+      "rendered": Array [
+        null,
+        null,
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "function",
+          "props": Object {
+            "createdAt": 1970-01-01T00:00:00.000Z,
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": Array [
+              <styled.div />,
+              <styled.span
+                onClick={undefined}
+              >
+                unvote
+              </styled.span>,
+              " ",
+            ],
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {},
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "children": "unvote",
+                "onClick": undefined,
+              },
+              "ref": null,
+              "rendered": "unvote",
+              "type": [Function],
+            },
+            " ",
+          ],
+          "type": "span",
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {},
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "children": "discuss",
+            "to": "/storyDetails/story-id",
+          },
+          "ref": null,
+          "rendered": "discuss",
+          "type": [Function],
+        },
+        " ",
+      ],
+      "type": [Function],
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`Story { commentCount: 1, text: "Text", showText: true } renders correctly 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <Story
+    loggedIn={true}
+    optimistic={
+      Object {
+        "votedStories": Object {},
+      }
+    }
+    showText={true}
+    story={
+      Object {
+        "commentCount": 1,
+        "createdAt": 1970-01-01T00:00:00.000Z,
+        "createdBy": "user-id",
+        "createdByName": "user",
+        "id": "story-id",
+        "link": "https://www.google.com",
+        "text": "Text",
+        "title": "Ask HN: Google",
+        "type": "ask",
+        "votes": Array [],
+      }
+    }
+    userId="user-id"
+    voted={0}
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "host",
+    "props": Object {
+      "children": Array [
+        <Title
+          link="https://www.google.com"
+          loggedIn={true}
+          title="Ask HN: Ask HN: Google"
+          upvoteStory={[Function]}
+          voted={false}
+        />,
+        <StoryInfo
+          commentCount={1}
+          createdAt={1970-01-01T00:00:00.000Z}
+          createdBy="user-id"
+          createdByName="user"
+          id="story-id"
+          loggedIn={true}
+          unvoteStory={[Function]}
+          voted={false}
+          votes={Array []}
+        />,
+        <styled.div
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Text",
+            }
+          }
+        />,
+      ],
+    },
+    "ref": null,
+    "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "function",
+        "props": Object {
+          "link": "https://www.google.com",
+          "loggedIn": true,
+          "title": "Ask HN: Ask HN: Google",
+          "upvoteStory": [Function],
+          "voted": false,
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "function",
+        "props": Object {
+          "commentCount": 1,
+          "createdAt": 1970-01-01T00:00:00.000Z,
+          "createdBy": "user-id",
+          "createdByName": "user",
+          "id": "story-id",
+          "loggedIn": true,
+          "unvoteStory": [Function],
+          "voted": false,
+          "votes": Array [],
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "dangerouslySetInnerHTML": Object {
+            "__html": "Text",
+          },
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+    ],
+    "type": "div",
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "children": Array [
+          <Title
+            link="https://www.google.com"
+            loggedIn={true}
+            title="Ask HN: Ask HN: Google"
+            upvoteStory={[Function]}
+            voted={false}
+          />,
+          <StoryInfo
+            commentCount={1}
+            createdAt={1970-01-01T00:00:00.000Z}
+            createdBy="user-id"
+            createdByName="user"
+            id="story-id"
+            loggedIn={true}
+            unvoteStory={[Function]}
+            voted={false}
+            votes={Array []}
+          />,
+          <styled.div
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Text",
+              }
+            }
+          />,
+        ],
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "function",
+          "props": Object {
+            "link": "https://www.google.com",
+            "loggedIn": true,
+            "title": "Ask HN: Ask HN: Google",
+            "upvoteStory": [Function],
+            "voted": false,
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "function",
+          "props": Object {
+            "commentCount": 1,
+            "createdAt": 1970-01-01T00:00:00.000Z,
+            "createdBy": "user-id",
+            "createdByName": "user",
+            "id": "story-id",
+            "loggedIn": true,
+            "unvoteStory": [Function],
+            "voted": false,
+            "votes": Array [],
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "dangerouslySetInnerHTML": Object {
+              "__html": "Text",
+            },
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+      ],
+      "type": "div",
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`Story { type: 'ask' } renders correctly 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <Story
+    loggedIn={true}
+    optimistic={
+      Object {
+        "votedStories": Object {},
+      }
+    }
+    story={
+      Object {
+        "comments": Array [],
+        "createdAt": 1970-01-01T00:00:00.000Z,
+        "createdBy": "user-id",
+        "createdByName": "user",
+        "id": "story-id",
+        "text": "Google",
+        "title": "Ask HN: Google",
+        "type": "ask",
+        "votes": Array [],
+      }
+    }
+    userId="user-id"
+    voted={0}
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "host",
+    "props": Object {
+      "children": Array [
+        <Title
+          link="/storyDetails/story-id"
+          loggedIn={true}
+          title="Ask HN: Ask HN: Google"
+          upvoteStory={[Function]}
+          voted={false}
+        />,
+        <StoryInfo
+          commentCount={0}
+          createdAt={1970-01-01T00:00:00.000Z}
+          createdBy="user-id"
+          createdByName="user"
+          id="story-id"
+          loggedIn={true}
+          unvoteStory={[Function]}
+          voted={false}
+          votes={Array []}
+        />,
+        null,
+      ],
+    },
+    "ref": null,
+    "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "function",
+        "props": Object {
+          "link": "/storyDetails/story-id",
+          "loggedIn": true,
+          "title": "Ask HN: Ask HN: Google",
+          "upvoteStory": [Function],
+          "voted": false,
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "function",
+        "props": Object {
+          "commentCount": 0,
+          "createdAt": 1970-01-01T00:00:00.000Z,
+          "createdBy": "user-id",
+          "createdByName": "user",
+          "id": "story-id",
+          "loggedIn": true,
+          "unvoteStory": [Function],
+          "voted": false,
+          "votes": Array [],
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      null,
+    ],
+    "type": "div",
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "children": Array [
+          <Title
+            link="/storyDetails/story-id"
+            loggedIn={true}
+            title="Ask HN: Ask HN: Google"
+            upvoteStory={[Function]}
+            voted={false}
+          />,
+          <StoryInfo
+            commentCount={0}
+            createdAt={1970-01-01T00:00:00.000Z}
+            createdBy="user-id"
+            createdByName="user"
+            id="story-id"
+            loggedIn={true}
+            unvoteStory={[Function]}
+            voted={false}
+            votes={Array []}
+          />,
+          null,
+        ],
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "function",
+          "props": Object {
+            "link": "/storyDetails/story-id",
+            "loggedIn": true,
+            "title": "Ask HN: Ask HN: Google",
+            "upvoteStory": [Function],
+            "voted": false,
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "function",
+          "props": Object {
+            "commentCount": 0,
+            "createdAt": 1970-01-01T00:00:00.000Z,
+            "createdBy": "user-id",
+            "createdByName": "user",
+            "id": "story-id",
+            "loggedIn": true,
+            "unvoteStory": [Function],
+            "voted": false,
+            "votes": Array [],
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        null,
+      ],
+      "type": "div",
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`Story { type: 'ask' } renders correctly 2`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <Story
+    loggedIn={true}
+    optimistic={
+      Object {
+        "votedStories": Object {},
+      }
+    }
+    story={
+      Object {
+        "comments": Array [
+          Object {
+            "createdAt": 1970-01-01T00:00:00.000Z,
+            "createdBy": "user-id",
+            "createdByNane": "user",
+            "id": "comment-id",
+            "parentId": "story-id",
+            "text": "comment",
+          },
+        ],
+        "createdAt": 1970-01-01T00:00:00.000Z,
+        "createdBy": "user-id",
+        "createdByName": "user",
+        "id": "story-id",
+        "link": "https://www.google.com",
+        "title": "Ask HN: Google",
+        "type": "ask",
+        "votes": Array [],
+      }
+    }
+    userId="user-id"
+    voted={0}
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "host",
+    "props": Object {
+      "children": Array [
+        <Title
+          link="https://www.google.com"
+          loggedIn={true}
+          title="Ask HN: Ask HN: Google"
+          upvoteStory={[Function]}
+          voted={false}
+        />,
+        <StoryInfo
+          commentCount={1}
+          createdAt={1970-01-01T00:00:00.000Z}
+          createdBy="user-id"
+          createdByName="user"
+          id="story-id"
+          loggedIn={true}
+          unvoteStory={[Function]}
+          voted={false}
+          votes={Array []}
+        />,
+        null,
+      ],
+    },
+    "ref": null,
+    "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "function",
+        "props": Object {
+          "link": "https://www.google.com",
+          "loggedIn": true,
+          "title": "Ask HN: Ask HN: Google",
+          "upvoteStory": [Function],
+          "voted": false,
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "function",
+        "props": Object {
+          "commentCount": 1,
+          "createdAt": 1970-01-01T00:00:00.000Z,
+          "createdBy": "user-id",
+          "createdByName": "user",
+          "id": "story-id",
+          "loggedIn": true,
+          "unvoteStory": [Function],
+          "voted": false,
+          "votes": Array [],
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      null,
+    ],
+    "type": "div",
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "children": Array [
+          <Title
+            link="https://www.google.com"
+            loggedIn={true}
+            title="Ask HN: Ask HN: Google"
+            upvoteStory={[Function]}
+            voted={false}
+          />,
+          <StoryInfo
+            commentCount={1}
+            createdAt={1970-01-01T00:00:00.000Z}
+            createdBy="user-id"
+            createdByName="user"
+            id="story-id"
+            loggedIn={true}
+            unvoteStory={[Function]}
+            voted={false}
+            votes={Array []}
+          />,
+          null,
+        ],
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "function",
+          "props": Object {
+            "link": "https://www.google.com",
+            "loggedIn": true,
+            "title": "Ask HN: Ask HN: Google",
+            "upvoteStory": [Function],
+            "voted": false,
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "function",
+          "props": Object {
+            "commentCount": 1,
+            "createdAt": 1970-01-01T00:00:00.000Z,
+            "createdBy": "user-id",
+            "createdByName": "user",
+            "id": "story-id",
+            "loggedIn": true,
+            "unvoteStory": [Function],
+            "voted": false,
+            "votes": Array [],
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        null,
+      ],
+      "type": "div",
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`Story { type: 'story' } renders correctly 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <Story
+    loggedIn={true}
+    optimistic={
+      Object {
+        "votedStories": Object {},
+      }
+    }
+    story={
+      Object {
+        "comments": Array [],
+        "createdAt": 1970-01-01T00:00:00.000Z,
+        "createdBy": "user-id",
+        "createdByName": "user",
+        "id": "story-id",
+        "link": "https://google.com",
+        "title": "Google",
+        "type": "story",
+        "votes": Array [],
+      }
+    }
+    voted={0}
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "host",
+    "props": Object {
+      "children": Array [
+        <Title
+          link="https://google.com"
+          loggedIn={false}
+          title="Google"
+          upvoteStory={[Function]}
+          voted={false}
+        />,
+        <StoryInfo
+          commentCount={0}
+          createdAt={1970-01-01T00:00:00.000Z}
+          createdBy="user-id"
+          createdByName="user"
+          id="story-id"
+          loggedIn={false}
+          unvoteStory={[Function]}
+          voted={false}
+          votes={Array []}
+        />,
+        null,
+      ],
+    },
+    "ref": null,
+    "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "function",
+        "props": Object {
+          "link": "https://google.com",
+          "loggedIn": false,
+          "title": "Google",
+          "upvoteStory": [Function],
+          "voted": false,
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "function",
+        "props": Object {
+          "commentCount": 0,
+          "createdAt": 1970-01-01T00:00:00.000Z,
+          "createdBy": "user-id",
+          "createdByName": "user",
+          "id": "story-id",
+          "loggedIn": false,
+          "unvoteStory": [Function],
+          "voted": false,
+          "votes": Array [],
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      null,
+    ],
+    "type": "div",
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "children": Array [
+          <Title
+            link="https://google.com"
+            loggedIn={false}
+            title="Google"
+            upvoteStory={[Function]}
+            voted={false}
+          />,
+          <StoryInfo
+            commentCount={0}
+            createdAt={1970-01-01T00:00:00.000Z}
+            createdBy="user-id"
+            createdByName="user"
+            id="story-id"
+            loggedIn={false}
+            unvoteStory={[Function]}
+            voted={false}
+            votes={Array []}
+          />,
+          null,
+        ],
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "function",
+          "props": Object {
+            "link": "https://google.com",
+            "loggedIn": false,
+            "title": "Google",
+            "upvoteStory": [Function],
+            "voted": false,
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "function",
+          "props": Object {
+            "commentCount": 0,
+            "createdAt": 1970-01-01T00:00:00.000Z,
+            "createdBy": "user-id",
+            "createdByName": "user",
+            "id": "story-id",
+            "loggedIn": false,
+            "unvoteStory": [Function],
+            "voted": false,
+            "votes": Array [],
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        null,
+      ],
+      "type": "div",
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`StyledLink 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <Styled(Link)
+    to="/"
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "class",
+    "props": Object {
+      "className": "sc-bxivhb cRaLxZ",
+      "replace": false,
+      "to": "/",
+    },
+    "ref": null,
+    "rendered": null,
+    "type": [Function],
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "className": "sc-bxivhb cRaLxZ",
+        "replace": false,
+        "to": "/",
+      },
+      "ref": null,
+      "rendered": null,
+      "type": [Function],
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`Title { external link } renders correctly 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <Title
+    link="https://google.com"
+    loggedIn={true}
+    title="Title"
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "class",
+    "props": Object {
+      "children": Array [
+        <styled.div
+          onClick={undefined}
+          title="upvote"
+        />,
+        <styled.a
+          href="https://google.com"
+        >
+          Title
+        </styled.a>,
+        " ",
+        "(google.com)",
+      ],
+    },
+    "ref": null,
+    "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "onClick": undefined,
+          "title": "upvote",
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "children": "Title",
+          "href": "https://google.com",
+        },
+        "ref": null,
+        "rendered": "Title",
+        "type": [Function],
+      },
+      " ",
+      "(google.com)",
+    ],
+    "type": [Function],
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "children": Array [
+          <styled.div
+            onClick={undefined}
+            title="upvote"
+          />,
+          <styled.a
+            href="https://google.com"
+          >
+            Title
+          </styled.a>,
+          " ",
+          "(google.com)",
+        ],
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "onClick": undefined,
+            "title": "upvote",
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "children": "Title",
+            "href": "https://google.com",
+          },
+          "ref": null,
+          "rendered": "Title",
+          "type": [Function],
+        },
+        " ",
+        "(google.com)",
+      ],
+      "type": [Function],
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`Title { external link with www } renders correctly 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <Title
+    link="https://www.google.com"
+    loggedIn={true}
+    title="Title"
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "class",
+    "props": Object {
+      "children": Array [
+        <styled.div
+          onClick={undefined}
+          title="upvote"
+        />,
+        <styled.a
+          href="https://www.google.com"
+        >
+          Title
+        </styled.a>,
+        " ",
+        "(www.google.com)",
+      ],
+    },
+    "ref": null,
+    "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "onClick": undefined,
+          "title": "upvote",
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "children": "Title",
+          "href": "https://www.google.com",
+        },
+        "ref": null,
+        "rendered": "Title",
+        "type": [Function],
+      },
+      " ",
+      "(www.google.com)",
+    ],
+    "type": [Function],
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "children": Array [
+          <styled.div
+            onClick={undefined}
+            title="upvote"
+          />,
+          <styled.a
+            href="https://www.google.com"
+          >
+            Title
+          </styled.a>,
+          " ",
+          "(www.google.com)",
+        ],
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "onClick": undefined,
+            "title": "upvote",
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "children": "Title",
+            "href": "https://www.google.com",
+          },
+          "ref": null,
+          "rendered": "Title",
+          "type": [Function],
+        },
+        " ",
+        "(www.google.com)",
+      ],
+      "type": [Function],
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`Title renders correctly 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <Title
+    link="/story/story-id"
+    loggedIn={true}
+    title="Title"
+    voted={true}
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "class",
+    "props": Object {
+      "children": Array [
+        <styled.div
+          hidden={true}
+        />,
+        <Styled(Link)
+          to="/story/story-id"
+        >
+          Title
+        </Styled(Link)>,
+        " ",
+        null,
+      ],
+    },
+    "ref": null,
+    "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "hidden": true,
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "children": "Title",
+          "to": "/story/story-id",
+        },
+        "ref": null,
+        "rendered": "Title",
+        "type": [Function],
+      },
+      " ",
+      null,
+    ],
+    "type": [Function],
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "children": Array [
+          <styled.div
+            hidden={true}
+          />,
+          <Styled(Link)
+            to="/story/story-id"
+          >
+            Title
+          </Styled(Link)>,
+          " ",
+          null,
+        ],
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "hidden": true,
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "children": "Title",
+            "to": "/story/story-id",
+          },
+          "ref": null,
+          "rendered": "Title",
+          "type": [Function],
+        },
+        " ",
+        null,
+      ],
+      "type": [Function],
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`Upvote { hidden: true} renders correctly 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <styled.div
+    Upvote={true}
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "host",
+    "props": Object {
+      "className": "sc-htoDjs iGmGRz",
+    },
+    "ref": null,
+    "rendered": null,
+    "type": "div",
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "className": "sc-htoDjs iGmGRz",
+      },
+      "ref": null,
+      "rendered": null,
+      "type": "div",
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`Upvote renders correctly 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <styled.div />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "host",
+    "props": Object {
+      "className": "sc-htoDjs iGmGRz",
+    },
+    "ref": null,
+    "rendered": null,
+    "type": "div",
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "className": "sc-htoDjs iGmGRz",
+      },
+      "ref": null,
+      "rendered": null,
+      "type": "div",
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`getHostname renders correctly 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <getHostname
+    link="http://www.google.com"
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "host",
+    "props": Object {
+      "link": "http://www.google.com",
+    },
+    "ref": null,
+    "rendered": null,
+    "type": "getHostname",
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "link": "http://www.google.com",
+      },
+      "ref": null,
+      "rendered": null,
+      "type": "getHostname",
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;

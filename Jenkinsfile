@@ -89,6 +89,19 @@ pipeline {
             }
         }
 
+        stage('Examples [ hacker-news ] Functional Tests') {
+            steps {
+                script {
+                    sh """
+                        export YARN_CACHE_FOLDER=/yarn_cache
+                        /init.sh
+                        cd examples/hacker-news
+                        yarn test:functional --browser=path:/chromium
+                    """
+                }
+            }
+        }
+
         stage('Create-resolve-app [ hello-world ] Functional Tests') {
             steps {
                 script {
