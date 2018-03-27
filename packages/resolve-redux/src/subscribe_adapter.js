@@ -17,7 +17,7 @@ export default function subscribeAdapter() {
 
   socket.on('event', event => onEvent(JSON.parse(event)))
 
-  socket.on('connect', () => latePromise(socket.id))
+  socket.on('connect', () => latePromise.resolve(socket.id))
 
   socket.on('reconnect', () => {
     latePromise = makeLateResolvingPromise(socket.id)
