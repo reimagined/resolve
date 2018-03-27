@@ -1,7 +1,7 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import uuid from 'uuid'
-import { gqlConnector, connect } from 'resolve-redux'
+import { connectReadModel, connectViewModel } from 'resolve-redux'
 import styled from 'styled-components'
 
 import viewModel from '../../common/view-models/storyDetails'
@@ -83,12 +83,17 @@ export const mapDispatchToProps = dispatch =>
     dispatch
   )
 
-export default gqlConnector(
-  `
-    query {
-      me {
-        id
-      }
-    }
-  `
-)(connect(mapStateToProps, mapDispatchToProps)(StoryDetails))
+const getReadModelData = state => {
+  try {
+    return { me: state.readModels['default']['me'] }
+  } catch (err) {
+    return { me: null }
+  }
+}
+
+export default connectReadModel(state => ({
+  readModelName: 'default',
+  resolverName: 'me',
+  variables: {},
+  data: getReadModelData(state)
+}))(connectViewModel(mapStateToProps, mapDispatchToProps)(StoryDetails))

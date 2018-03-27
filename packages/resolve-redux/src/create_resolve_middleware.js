@@ -126,7 +126,7 @@ export function subscribeReadmodel(
   orderedFetch,
   action
 ) {
-  const { readModelName, resolverName, query, variables, isReactive } = action
+  const { readModelName, resolverName, variables, isReactive } = action
   const subscriptionKey = `${readModelName}:${resolverName}`
   if (readModelSubscriptions.hasOwnProperty(subscriptionKey)) return
 

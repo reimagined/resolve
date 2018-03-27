@@ -1,5 +1,5 @@
 import React from 'react'
-import { gqlConnector } from 'resolve-redux'
+import { connectReadModel } from 'resolve-redux'
 
 import Stories from '../components/Stories'
 import { ITEMS_PER_PAGE } from '../constants'
@@ -16,32 +16,24 @@ const NewestByPage = ({
   />
 )
 
-export default gqlConnector(
-  `
-    query($first: Int, $offset: Int!) {
-      stories(first: $first, offset: $offset) {
-        id
-        type
-        title
-        link
-        commentCount
-        votes
-        createdAt
-        createdBy
-        createdByName
-      }
-      me {
-        id
-      }
+const getReadModelData = state => {
+  try {
+    return {
+      stories: state.readModels['default']['allStories'].stories,
+      me: state.readModels['default']['allStories'].me
     }
-  `,
-  {
-    options: ({ match: { params: { page = 1 } } }) => ({
-      variables: {
-        offset: ITEMS_PER_PAGE + 1,
-        first: (+page - 1) * ITEMS_PER_PAGE
-      },
-      fetchPolicy: 'network-only'
-    })
+  } catch (err) {
+    return { stories: [], me: null }
   }
-)(NewestByPage)
+}
+
+export default connectReadModel((state, { match: { params: { page } } }) => ({
+  readModelName: 'default',
+  resolverName: 'allStories',
+  variables: {
+    offset: ITEMS_PER_PAGE + 1,
+    first: (+page - 1) * ITEMS_PER_PAGE
+  },
+  data: getReadModelData(state),
+  page
+}))(NewestByPage)

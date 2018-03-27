@@ -1,13 +1,4 @@
-// @flow
 import Immutable from 'seamless-immutable'
-
-import {
-  type Event,
-  type StoryCommented,
-  type StoryCreated,
-  type StoryUnvoted,
-  type StoryUpvoted
-} from '../../flow-types/events'
 
 import {
   STORY_COMMENTED,
@@ -26,7 +17,7 @@ export default {
         aggregateId,
         timestamp,
         payload: { title, link, userId, userName, text }
-      }: Event<StoryCreated>
+      }
     ) => {
       const type = !link ? 'ask' : /^(Show HN)/.test(title) ? 'show' : 'story'
 
@@ -45,15 +36,11 @@ export default {
       })
     },
 
-    [STORY_UPVOTED]: (
-      state: any,
-      { payload: { userId } }: Event<StoryUpvoted>
-    ) => state.update('votes', votes => votes.concat(userId)),
+    [STORY_UPVOTED]: (state: any, { payload: { userId } }) =>
+      state.update('votes', votes => votes.concat(userId)),
 
-    [STORY_UNVOTED]: (
-      state: any,
-      { payload: { userId } }: Event<StoryUnvoted>
-    ) => state.update('votes', votes => votes.filter(id => id !== userId)),
+    [STORY_UNVOTED]: (state: any, { payload: { userId } }) =>
+      state.update('votes', votes => votes.filter(id => id !== userId)),
 
     [STORY_COMMENTED]: (
       state,
@@ -61,7 +48,7 @@ export default {
         aggregateId,
         timestamp,
         payload: { parentId, userId, userName, commentId, text }
-      }: Event<StoryCommented>
+      }
     ) => {
       const parentIndex =
         parentId === aggregateId

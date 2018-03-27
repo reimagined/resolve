@@ -1,19 +1,14 @@
 import path from 'path'
-import { Strategy as LocalStrategy } from 'passport-local'
 import busAdapter from 'resolve-bus-memory'
 import storageAdapter from 'resolve-storage-lite'
-import resolveAuth from 'resolve-scripts/dist/server/auth'
+import localStrategy from 'resolve-scripts/dist/server/auth/localStrategy'
 import aggregates from './common/aggregates'
 import readModels from './common/read-models'
 import viewModels from './common/view-models'
 
 import localStrategyParams from './auth/localStrategy'
 
-import {
-  authenticationSecret,
-  cookieName,
-  cookieMaxAge
-} from './auth/constants'
+import { cookieName, cookieMaxAge } from './auth/constants'
 
 process.env.JWT_SECRET = 'TEST-JWT-SECRET'
 
@@ -44,6 +39,6 @@ export default {
   viewModels,
   jwtCookie,
   auth: {
-    strategies: [resolveAuth(LocalStrategy, localStrategyParams)]
+    strategies: [localStrategy(localStrategyParams)]
   }
 }

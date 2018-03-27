@@ -1,31 +1,19 @@
-// @flow
+import jwt from 'jsonwebtoken'
+
 import {
   STORY_CREATED,
   STORY_UPVOTED,
   STORY_UNVOTED,
   STORY_COMMENTED
 } from '../events'
-import {
-  type Event,
-  type RawEvent,
-  type StoryCreated,
-  type StoryCommented,
-  type StoryUnvoted,
-  type StoryUpvoted
-} from '../../flow-types/events'
 
-import jwt from 'jsonwebtoken'
 import validate from './validation'
 
 export default {
   name: 'story',
   initialState: {},
   commands: {
-    createStory: (
-      state: any,
-      command: any,
-      jwtToken: any
-    ): RawEvent<StoryCreated> => {
+    createStory: (state, command, jwtToken) => {
       const { id: userId, name: userName } = jwt.verify(
         jwtToken,
         process.env.JWT_SECRET || 'DefaultSecret'
@@ -42,11 +30,7 @@ export default {
       }
     },
 
-    upvoteStory: (
-      state: any,
-      command: any,
-      jwtToken: any
-    ): RawEvent<StoryUpvoted> => {
+    upvoteStory: (state, command, jwtToken) => {
       const { id: userId } = jwt.verify(
         jwtToken,
         process.env.JWT_SECRET || 'DefaultSecret'
@@ -58,11 +42,7 @@ export default {
       return { type: STORY_UPVOTED, payload: { userId } }
     },
 
-    unvoteStory: (
-      state: any,
-      command: any,
-      jwtToken: any
-    ): RawEvent<StoryUnvoted> => {
+    unvoteStory: (state, command, jwtToken) => {
       const { id: userId } = jwt.verify(
         jwtToken,
         process.env.JWT_SECRET || 'DefaultSecret'
@@ -74,11 +54,7 @@ export default {
       return { type: STORY_UNVOTED, payload: { userId } }
     },
 
-    commentStory: (
-      state: any,
-      command: any,
-      jwtToken: any
-    ): RawEvent<StoryCommented> => {
+    commentStory: (state, command, jwtToken) => {
       const { id: userId, name: userName } = jwt.verify(
         jwtToken,
         process.env.JWT_SECRET || 'DefaultSecret'
@@ -108,10 +84,7 @@ export default {
     }
   },
   projection: {
-    [STORY_CREATED]: (
-      state,
-      { timestamp, payload: { userId } }: Event<StoryCreated>
-    ) => ({
+    [STORY_CREATED]: (state, { timestamp, payload: { userId } }) => ({
       ...state,
       createdAt: timestamp,
       createdBy: userId,
@@ -119,19 +92,19 @@ export default {
       comments: {}
     }),
 
-    [STORY_UPVOTED]: (state, { payload: { userId } }: Event<StoryUpvoted>) => ({
+    [STORY_UPVOTED]: (state, { payload: { userId } }) => ({
       ...state,
       voted: state.voted.concat(userId)
     }),
 
-    [STORY_UNVOTED]: (state, { payload: { userId } }: Event<StoryUnvoted>) => ({
+    [STORY_UNVOTED]: (state, { payload: { userId } }) => ({
       ...state,
       voted: state.voted.filter(curUserId => curUserId !== userId)
     }),
 
     [STORY_COMMENTED]: (
       state,
-      { timestamp, payload: { commentId, userId } }: Event<StoryCommented>
+      { timestamp, payload: { commentId, userId } }
     ) => ({
       ...state,
       comments: {

@@ -114,8 +114,8 @@ const Layout = ({ children }) => (
       </PageHeader>
       <Content>{children}</Content>
       <Footer>
-        <FooterLink href="https://github.com/reimagined/hacker-news-resolve">
-          reimagined/hacker-news-resolve
+        <FooterLink href="https://github.com/reimagined/resolve">
+          reimagined/resolve
         </FooterLink>
       </Footer>
     </ContentRoot>

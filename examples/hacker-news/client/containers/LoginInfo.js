@@ -1,5 +1,5 @@
 import React from 'react'
-import { gqlConnector } from 'resolve-redux'
+import { connectReadModel } from 'resolve-redux'
 import styled from 'styled-components'
 import { NavLink } from 'react-router-dom'
 
@@ -47,11 +47,17 @@ export const mapDispatchToProps = dispatch =>
     dispatch
   )
 
-export default gqlConnector(`
-  query {
-    me {
-      id
-      name
-    }
+const getReadModelData = state => {
+  try {
+    return { me: state.readModels['default']['me'] }
+  } catch (err) {
+    return { me: null }
   }
-`)(connect(mapStateToProps, mapDispatchToProps)(LoginInfo))
+}
+
+export default connectReadModel(state => ({
+  readModelName: 'default',
+  resolverName: 'me',
+  variables: {},
+  data: getReadModelData(state)
+}))(connect(mapStateToProps, mapDispatchToProps)(LoginInfo))

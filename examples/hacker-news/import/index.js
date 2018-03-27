@@ -12,7 +12,10 @@ start(
   total => {
     bar = new ProgressBar(
       'Data importing from news.ycombinator.com [:bar] :current/:total',
-      { width: 20, total }
+      {
+        width: 20,
+        total
+      }
     )
   },
   () => {

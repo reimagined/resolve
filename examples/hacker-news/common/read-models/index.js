@@ -1,3 +1,10 @@
-import graphqlReadModel from './graphql'
+import projection from './projection'
+import resolvers from './resolvers'
 
-export default [graphqlReadModel]
+const storiesReadModel = {
+  name: 'default',
+  projection,
+  resolvers
+}
+
+export default [storiesReadModel]

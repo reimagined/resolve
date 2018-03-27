@@ -5,7 +5,7 @@ import { Redirect } from 'react-router'
 import { bindActionCreators } from 'redux'
 import urlLib from 'url'
 import styled from 'styled-components'
-import { gqlConnector } from 'resolve-redux'
+import { connectReadModel } from 'resolve-redux'
 
 import actions from '../actions/storiesActions'
 
@@ -137,15 +137,23 @@ export const mapDispatchToProps = dispatch =>
     dispatch
   )
 
-export default gqlConnector(
-  `
-    query {
-      me {
-        id
-      }
+const getReadModelData = state => {
+  try {
+    return {
+      me: state.readModels['default']['user'].me,
+      loading: false
     }
-  `,
-  {
-    options: { fetchPolicy: 'network-only' }
+  } catch (err) {
+    return {
+      me: null,
+      loading: true
+    }
   }
-)(connect(null, mapDispatchToProps)(Submit))
+}
+
+export default connectReadModel(state => ({
+  readModelName: 'default',
+  resolverName: 'user',
+  variables: {},
+  data: getReadModelData(state)
+}))(connect(null, mapDispatchToProps)(Submit))

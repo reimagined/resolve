@@ -2,7 +2,7 @@ import { Selector } from 'testcafe'
 
 import { ROOT_URL, login } from './utils'
 
-// eslint-disable-next-line no-undef
+// eslint-disable-next-line
 fixture`User`.beforeEach(async (t /*: TestController */) => {
   await t.setNativeDialogHandler(() => true)
   await t.navigateTo(`${ROOT_URL}/login`)

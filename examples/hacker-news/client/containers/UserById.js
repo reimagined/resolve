@@ -1,5 +1,5 @@
 import React from 'react'
-import { gqlConnector } from 'resolve-redux'
+import { connectReadModel } from 'resolve-redux'
 import styled from 'styled-components'
 
 const UserInfoRoot = styled.div`
@@ -40,21 +40,20 @@ export const UserById = ({ data: { user } }) => {
   )
 }
 
-export default gqlConnector(
-  `
-    query($id: ID!) {
-      user(id: $id) {
-        id
-        name
-        createdAt
-      }
+const getReadModelData = state => {
+  try {
+    return {
+      user: state.readModels['default']['user'].user,
+      me: state.readModels['default']['user'].me
     }
-  `,
-  {
-    options: ({ match: { params: { userId } } }) => ({
-      variables: {
-        id: userId
-      }
-    })
+  } catch (err) {
+    return { user: null, me: null }
   }
-)(UserById)
+}
+
+export default connectReadModel((state, { match: { params: { userId } } }) => ({
+  readModelName: 'default',
+  resolverName: 'user',
+  variables: { id: userId },
+  data: getReadModelData(state)
+}))(UserById)

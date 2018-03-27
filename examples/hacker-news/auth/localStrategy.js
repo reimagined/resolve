@@ -3,17 +3,7 @@ import uuid from 'uuid'
 import { rootDirectory } from '../client/constants'
 
 const getUserByName = async (executeQuery, name) => {
-  const { user } = await executeQuery(
-    `query ($name: String!) {
-      user(name: $name) {
-        id,
-        name,
-        createdAt
-      }
-    }`,
-    { name: name.trim() }
-  )
-
+  const { user } = await executeQuery('user', { name: name.trim() })
   return user
 }
 
@@ -23,20 +13,11 @@ export default {
     passwordField: 'username',
     successRedirect: null
   },
-  routes: {
-    register: {
-      path: '/register',
-      method: 'POST'
-    },
-    login: {
-      path: '/login',
-      method: 'POST'
-    }
-  },
   registerCallback: async ({ resolve, body }, username, password) => {
-    const executeQuery = resolve.queryExecutors.graphql
-
-    const existingUser = await getUserByName(executeQuery, username)
+    const existingUser = await getUserByName(
+      resolve.queryExecutors.default,
+      username
+    )
 
     if (existingUser) {
       throw new Error('User already exists')
@@ -57,7 +38,7 @@ export default {
     return user
   },
   loginCallback: async ({ resolve, body }, username, password) => {
-    const user = await getUserByName(resolve.queryExecutors.graphql, username)
+    const user = await getUserByName(resolve.queryExecutors.default, username)
 
     if (!user) {
       throw new Error('No such user')

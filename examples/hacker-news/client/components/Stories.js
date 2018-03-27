@@ -21,10 +21,9 @@ const Stories = ({ items, page, type, userId }) => {
     return <Redirect push to="/error?text=No such page" />
   }
 
-  /* eslint-disable */
   return (
     <StoriesRoot>
-      <StoryList start={ITEMS_PER_PAGE * (page ? page - 1 : 0) + 1}>
+      <StoryList start={+(ITEMS_PER_PAGE * (page ? page - 1 : 0)) + 1}>
         {items.slice(0, ITEMS_PER_PAGE).map(story => (
           <StoryItem key={story.id}>
             <Story story={story} userId={userId} />
@@ -38,8 +37,6 @@ const Stories = ({ items, page, type, userId }) => {
       />
     </StoriesRoot>
   )
-
-  /* eslint-enable */
 }
 
 export default Stories

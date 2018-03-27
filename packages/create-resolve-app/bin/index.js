@@ -208,7 +208,7 @@ if (unknownOptions && unknownOptions.length) {
   const getResolvePackages = () => {
     return new Promise((resolve, reject) => {
       request(
-        'https://www.npmjs.com/-/search?text=maintainer:reimagined&size=100',
+        'https://registry.npmjs.org/-/v1/search?text=maintainer:reimagined&size=100',
         { json: true },
         (fetchError, response, body) => {
           if (fetchError) {

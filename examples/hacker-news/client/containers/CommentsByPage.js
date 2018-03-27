@@ -1,6 +1,6 @@
 import React from 'react'
 import { Redirect } from 'react-router-dom'
-import { gqlConnector } from 'resolve-redux'
+import { connectReadModel } from 'resolve-redux'
 
 import Comment from '../components/Comment'
 import { ITEMS_PER_PAGE } from '../constants'
@@ -25,27 +25,24 @@ export const CommentsByPage = ({
     </div>
   )
 
-export default gqlConnector(
-  `
-    query($first: Int, $offset: Int!) {
-      comments(first: $first, offset: $offset) {
-        id
-        parentId
-        storyId
-        text
-        createdAt
-        createdBy
-        createdByName
-      }
+const getReadModelData = state => {
+  try {
+    return {
+      comments: state.readModels['default']['comments'].comments,
+      me: state.readModels['default']['comments'].me
     }
-  `,
-  {
-    options: ({ match: { params: { page } } }) => ({
-      variables: {
-        offset: ITEMS_PER_PAGE + 1,
-        first: (+page - 1) * ITEMS_PER_PAGE
-      },
-      fetchPolicy: 'network-only'
-    })
+  } catch (err) {
+    return { comments: [], me: null }
   }
-)(CommentsByPage)
+}
+
+export default connectReadModel((state, { match: { params: { page } } }) => ({
+  readModelName: 'default',
+  resolverName: 'comments',
+  variables: {
+    offset: ITEMS_PER_PAGE + 1,
+    first: (+page - 1) * ITEMS_PER_PAGE
+  },
+  data: getReadModelData(state),
+  page
+}))(CommentsByPage)
