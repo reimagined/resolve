@@ -1,8 +1,9 @@
 import path from 'path'
 
 import exec from './exec'
-import validateСonfig from '../src/utils/validate_config'
-import resolveConfigOrigin from '../configs/resolve.config'
+import validateСonfig from '../src/core/validate_config'
+
+const resolveConfigOrigin = require('../configs/resolve.config.json')
 
 describe('validate schema', () => {
   it('empty', () => {

@@ -1,3 +1,3 @@
-import Routes from './template/client/components/Routes'
+import Routes from './runtime/client/components/Routes'
 
 export { Routes }
