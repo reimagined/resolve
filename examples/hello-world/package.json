@@ -4,7 +4,9 @@
   "private": true,
   "dependencies": {
     "react": "^16.2.0",
+    "react-bootstrap": "^0.32.1",
     "react-dom": "^16.2.0",
+    "react-helmet": "^5.2.0",
     "react-redux": "^5.0.7",
     "redux": "^3.7.2",
     "resolve-bus-memory": "0.7.2",
@@ -18,8 +20,7 @@
     "start": "resolve-scripts start",
     "update": "resolve-scripts update",
     "test": "jest tests/unit/*",
-    "test:functional":
-      "cross-env NODE_ENV=tests babel-node ./tests/functional/testcafe_runner.js --presets es2015,stage-0,react"
+    "test:functional": "cross-env NODE_ENV=tests babel-node ./tests/functional/testcafe_runner.js --presets es2015,stage-0,react"
   },
   "devDependencies": {
     "cross-env": "^5.1.3",
