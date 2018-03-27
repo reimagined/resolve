@@ -3,16 +3,14 @@
 
 [![Build Status](https://travis-ci.org/reimagined/resolve.svg?branch=master)](https://travis-ci.org/reimagined/resolve) [![npm version](https://badge.fury.io/js/create-resolve-app.svg)](https://badge.fury.io/js/create-resolve-app) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/reimagined/resolve/master/LICENSE)
 
-A JavaScript framework for **CQRS**, **Domain-Driven Design** and **Event Sourcing** with good support for **React** and **Redux**. reSolve provides a new way to describe app's core logic and fully separate it from an auxiliary code.
+A JavaScript framework for **CQRS**, **Domain-Driven Design** and **Event Sourcing** with good support for **React** and **Redux**. **reSolve** provides a new way to describe app's core logic and fully separate it from an auxiliary code.
 
-<!-- TODO: FIX BLURRY PICTURE!!! -->
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-technologies.png"></p>
 
-* [Installation](#installation) is fully automated and takes 2 minutes.
-* Free and open source ([MIT license](https://github.com/reimagined/resolve/blob/master/LICENSE.md)).
+* The [Installation](#installation) is fully automated and takes 2 minutes.
+* [Free and open source](https://github.com/reimagined/resolve/blob/master/LICENSE.md).
 * Flexible and clear [API](#documentation).
 
-<!-- TODO: FIX BLURRY PICTURE!!! -->
 <!-- TODO: text="Try it now!" -->
 [<p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-start-button.png"></p>](#getting-started)
 
@@ -29,7 +27,7 @@ A JavaScript framework for **CQRS**, **Domain-Driven Design** and **Event Sourci
 
 ## <a name="why-resolve">**🏗️ Why reSolve**</a>
 
-With reSolve you can create applications of any complexity level more efficiently. A single approach is used for a simple [ToDo List](#todo-list) and for a complicated reactive application like [Hacker News](https://github.com/reimagined/hacker-news-resolve) with distributed serverless architecture ready for high load. The technologies stack (CQRS, Event Sourcing, Domain-Driven Design, React + Redux) makes any reSolve application scalable and maintainable, so you can focus on a business logic instead of an auxiliary code.
+With **reSolve** you can create applications of any complexity level more efficiently. A single approach is used for simple [ToDo List](#todo-list) and for a complex reactive application like [Hacker News](https://github.com/reimagined/hacker-news-resolve) with distributed serverless architecture ready for high load. The technologies stack (CQRS, Event Sourcing, Domain-Driven Design, React + Redux) makes any **reSolve** application scalable and maintainable, so you can focus on business logic instead of an auxiliary code.
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-why-resolve-reactivity.gif"></p>
 
@@ -43,11 +41,11 @@ With reSolve you can create applications of any complexity level more efficientl
 
 ### <a name="installation">Installation</a>
 
-The [create-resolve-app](packages/create-resolve-app) package is used to create a reSolve-based application. You can use it to get one of the examples, or make an empty application. By default, `create-resolve-app` generates an empty [Hello World](https://github.com/reimagined/resolve/tree/master/examples/hello-world) application. You can start working on your new reSolve application in just **2 minutes**.
+The [create-resolve-app](packages/create-resolve-app) package is used to create a **reSolve**-based application. You can use it to get one of the examples, or make an empty application. By default, `create-resolve-app` generates an empty [Hello World](https://github.com/reimagined/resolve/tree/master/examples/hello-world) application. You can start working on your new **reSolve** application in **2 minutes**.
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-installation.gif"></p>
 
-You can use one of the following tools to start a new reSolve aplication:
+Use one of these tools to start a new **reSolve** aplication:
 
 * [npx](https://www.npmjs.com/package/npx)
 
@@ -74,9 +72,9 @@ You can use one of the following tools to start a new reSolve aplication:
     npm run dev
     ```
 
-    > Note: Installing a package globally (the first command) may require administrative privileges. That means you have to use the `sudo` prefix on Linux and MacOS, or start a terminal with administrative privileges on Windows.
+    > Note: Installing a package globally (the first command) may require administrative privileges. That means you have to use the `sudo` prefix on Linux and MacOS, or start a terminal with the administrative privileges on Windows.
 
-The created application is accessible using the http://localhost:3000/ and http://<your_ip>:3000/ URLs (you can [change your URL settings](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)). Start learning reSolve with the [**First Application From Scratch**](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/First%20Application%20From%20Scratch.md) tutorial. Use the [**documentation**](#documentation), [**tutorials**](#tutorials) and [**examples**](#examples) to learn reSolve deeper.
+The created application is accessible using the http://localhost:3000/ and `http://<your_ip>:3000/` URLs (you can [change the URL settings](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)). Start learning **reSolve** with the [**First Application From Scratch**](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/First%20Application%20From%20Scratch.md) tutorial. Use the [**documentation**](#documentation), [**tutorials**](#tutorials) and [**examples**](#examples) to learn **reSolve** deeper.
 
 ### <a name="tutorials">Tutorials</a>
 
@@ -89,7 +87,7 @@ You can get a sample app using the `create-resolve-app` tool with the `-e` flag 
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-example-installation.gif"></p>
 
-The following tools are used to get a sample reSolve aplication:
+The following tools are used to get a sample **reSolve** aplication:
 
 * [npx](https://www.npmjs.com/package/npx)
 
@@ -110,13 +108,13 @@ The following tools are used to get a sample reSolve aplication:
     create-resolve-app todo-example -e todo
     ```
 
-The created application is accessible using the http://localhost:3000/ and http://<your_ip>:3000/ URLs (you can [change your URL settings](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)).
+The created application is accessible using the http://localhost:3000/ and `http://<your_ip>:3000` URLs (you can [change your URL settings](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)).
 
 The `create-resolve-app` can is capable to create the following apps:
 
 * [**hello-world**](https://github.com/reimagined/resolve/tree/master/examples/hello-world)
 
-    An empty app that can be used as a template for any reSolve application.
+    An empty app that can be used as a template for any **reSolve** application (created by default).
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-hello-world-example.png"></p>
 
@@ -142,63 +140,63 @@ The `create-resolve-app` can is capable to create the following apps:
 
 ### <a name="compatibility">Compatibility</a>
 
-You can run and develop reSolve applications on **Linux**, **Mac** and **Windows** operating systems. It is also possible to integrate reSolve with the **React Native**, but this approach is currently **experimental**.
-
-You can use any package manager, but we recommend using [**npx**](https://www.npmjs.com/package/npx) and [**yarn**](https://yarnpkg.com/lang/en/) instead of **npm**<!--, because ??? -->.
+You can develop and run **reSolve** applications on **Linux**, **Mac** and **Windows** operating systems. It is also possible to integrate **reSolve** with the **React Native**, but this approach is currently experimental.
 
 The minimum supported **NodeJS** version is **6.0.0**.
+
+We recommend using [**npx**](https://www.npmjs.com/package/npx) or [**yarn**](https://yarnpkg.com/lang/en/) instead of **npm**<!--, because ??? -->.
 
 ### <a name="basic-concepts">Basic Concepts</a>
 
 * 📄 [**System Metaphor**](https://github.com/reimagined/resolve/blob/master/docs/System%20Metaphor.md)
 
-The [**System Metaphor**](https://github.com/reimagined/resolve/blob/master/docs/System%20Metaphor.md) is a vocabulary that describes all terms used in reSolve application development. You can also find the detailed description with code examples for every core concept in the [**docs**](https://github.com/reimagined/resolve/tree/master/docs) directory:
+    The [**System Metaphor**](https://github.com/reimagined/resolve/blob/master/docs/System%20Metaphor.md) is a vocabulary that describes all terms used in **reSolve** application development. You can also find the detailed description with code examples for every core concept in the [**docs**](https://github.com/reimagined/resolve/tree/master/docs) directory:
 
-* [_Aggregate_](https://github.com/reimagined/resolve/blob/master/docs/Aggregate.md)
-* [_Command_](https://github.com/reimagined/resolve/blob/master/docs/Command.md)
-* [_Event Store_](https://github.com/reimagined/resolve/blob/master/docs/Event%20Store.md)
-* [_Projection_](https://github.com/reimagined/resolve/blob/master/docs/Projection.md)
-* [_Query_](https://github.com/reimagined/resolve/blob/master/docs/Query.md)
-* [_Read Model_](https://github.com/reimagined/resolve/blob/master/docs/Read%20Model.md)
-* [_View Model_](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md)
+    * [_Aggregate_](https://github.com/reimagined/resolve/blob/master/docs/Aggregate.md)
+    * [_Command_](https://github.com/reimagined/resolve/blob/master/docs/Command.md)
+    * [_Event Store_](https://github.com/reimagined/resolve/blob/master/docs/Event%20Store.md)
+    * [_Projection_](https://github.com/reimagined/resolve/blob/master/docs/Projection.md)
+    * [_Query_](https://github.com/reimagined/resolve/blob/master/docs/Query.md)
+    * [_Read Model_](https://github.com/reimagined/resolve/blob/master/docs/Read%20Model.md)
+    * [_View Model_](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md)
 
 * 📄 [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md)
 
-The [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md) topic describes common principles of building a reSolve application. You can also find links to Domain-Driven Design, CQRS and Event Sourcing best practices there. 
+    The [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md) topic describes common principles of building a **reSolve** application. You can also find links to Domain-Driven Design, CQRS and Event Sourcing best practices there. 
 
 * 📄 [**Packages**](https://github.com/reimagined/resolve/blob/master/docs/Packages.md)
 
-The [**Packages**](https://github.com/reimagined/resolve/blob/master/docs/Packages.md) article provides the description of all reSolve packages. The API and detailed information are available in package `README` files:
+    The [**Packages**](https://github.com/reimagined/resolve/blob/master/docs/Packages.md) article provides the description of all **reSolve** packages. The API description and detailed information is available in the package `README` files:
 
-* [_create-resolve-app_](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app)
-* [_resolve-command_](https://github.com/reimagined/resolve/tree/master/packages/resolve-command)
-* [_resolve-es_](https://github.com/reimagined/resolve/tree/master/packages/resolve-es)
-* [_resolve-query_](https://github.com/reimagined/resolve/tree/master/packages/resolve-query)
-* [_resolve-redux_](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux)
-* [_resolve-scripts_](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts)
+    * [_create-resolve-app_](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app)
+    * [_resolve-command_](https://github.com/reimagined/resolve/tree/master/packages/resolve-command)
+    * [_resolve-es_](https://github.com/reimagined/resolve/tree/master/packages/resolve-es)
+    * [_resolve-query_](https://github.com/reimagined/resolve/tree/master/packages/resolve-query)
+    * [_resolve-redux_](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux)
+    * [_resolve-scripts_](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts)
 
-* [Bus Adapters](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters)
-    * [_resolve-bus-memory_](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters/resolve-bus-memory)
-    * [_resolve-bus-rabbit-mq_](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters/resolve-bus-rabbitmq)
-    * [_resolve-bus-zmq_](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters/resolve-bus-zmq)
-    
-* [Read Model Adapters](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters)
-    * [_resolve-readmodel-base_](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-base)
-    * [_resolve-readmodel-memory_](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-memory)
-    * [_resolve-readmodel-mysql_](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-mysql)
+    * [Bus Adapters](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters)
+        * [_resolve-bus-memory_](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters/resolve-bus-memory)
+        * [_resolve-bus-rabbit-mq_](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters/resolve-bus-rabbitmq)
+        * [_resolve-bus-zmq_](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters/resolve-bus-zmq)
 
-* [Storage Adapters](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters)
-    * [_resolve-storage-base_](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters/resolve-storage-base)
-    * [_resolve-storage-lite_](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters/resolve-storage-lite)
-    * [_resolve-storage-mongo_](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters/resolve-storage-mongo)
+    * [Read Model Adapters](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters)
+        * [_resolve-readmodel-base_](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-base)
+        * [_resolve-readmodel-memory_](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-memory)
+        * [_resolve-readmodel-mysql_](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-mysql)
+
+    * [Storage Adapters](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters)
+        * [_resolve-storage-base_](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters/resolve-storage-base)
+        * [_resolve-storage-lite_](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters/resolve-storage-lite)
+        * [_resolve-storage-mongo_](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters/resolve-storage-mongo)
 
 * 📄 [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)
 
-The [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md) article describes environment variables, configs, and other options. 
+    The [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md) article describes environment variables, configs, and other options. 
 
 * 📄 [**Contrubutors Guide**](https://github.com/reimagined/resolve/blob/master/docs/Contributors%20Guide.md)
 
-The [**Contrubutors Guide**](https://github.com/reimagined/resolve/blob/master/docs/Contributors%20Guide.md) describes the development workflow for any contributors: basic rules and commits checking principles.
+    The [**Contrubutors Guide**](https://github.com/reimagined/resolve/blob/master/docs/Contributors%20Guide.md) describes the development workflow for any contributors: basic rules and commits checking principles.
 
 ## <a name="get-in-touch">**📢 Get in Touch**</a>
 
@@ -206,7 +204,7 @@ Feel free to contact us if you have any questions!
 
 ✉️ We are glad to see your e-mails sent to **reimagined@devexpress.com**.
 
-💬 Follow us on [**Twitter**](https://twitter.com/resolvejs). We post interesting arcticles, announcements, make polls about the reSolve development and talk about the modern web technologies!
+💬 Follow us on [**Twitter**](https://twitter.com/resolvejs). We post interesting arcticles, announcements, make polls about the **reSolve** development and talk about the modern web technologies!
 
 💻 We also have a [**Facebook**](https://www.facebook.com/resolvejs/) page, join us!
 
@@ -214,12 +212,12 @@ Feel free to contact us if you have any questions!
 
 ❓ You are welcome with any questions or suggestions in [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
 
-🔧 Feel yourself capable to improve reSolve? Become one of our [**contributors**](https://github.com/reimagined/resolve/pulls)! Look through our [**Contrubutors Guide**](https://github.com/reimagined/resolve/blob/master/docs/Contributors%20Guide.md) and make a great Pull Request.
+🔧 Feel yourself capable to improve **reSolve**? Become one of our [**contributors**](https://github.com/reimagined/resolve/pulls)! Look through our [**Contrubutors Guide**](https://github.com/reimagined/resolve/blob/master/docs/Contributors%20Guide.md) and make a great Pull Request.
 
-⭐️ Remember to star our **GitHub** repository if you like reSolve!
+⭐️ Remember to star our **GitHub** repository if you like **reSolve**!
 
 <br/>
 <br/>
 <p align="center">reSolve is developed by</p>
-<p align="center"><a href="https://devexpress.com">💛Developer Express Inc💛</a></p>
+<p align="center"><a href="https://devexpress.com">💛Developer Express Inc.💛</a></p>
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-footer-logo.png"></p>
