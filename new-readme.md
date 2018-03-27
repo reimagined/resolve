@@ -122,19 +122,19 @@ The `create-resolve-app` can is capable to create the following apps:
 
 * [**top-list**](https://github.com/reimagined/resolve/tree/master/examples/top-list)
 
-    This example demonstrates **reactive read-models** that leads to client updating without page reloads. You can learn more about [read-models in documentation](https://github.com/reimagined/resolve/blob/master/docs/Read%20Model.md).
+    This example demonstrates how to work with the [reactive read-models](https://github.com/reimagined/resolve/blob/master/docs/Read%20Model.md) used to update information on the web page without reloading it.
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-top-list-example.png"></p>
 
 * [**todo**](https://github.com/reimagined/resolve/tree/master/examples/todo)
 
-This example demonstrates **simple work with view-models**. You can learn more in [ToDo List App Tutorial](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/ToDo%20List%20App%20Tutorial.md) and [documentation](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md).
+    This example demonstrates how to work with the [view-models](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md). The app's creation process is detailed in the [ToDo List App Tutorial](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/ToDo%20List%20App%20Tutorial.md).
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-todo-example.png"></p>
 
 * [**todo-two-levels**](https://github.com/reimagined/resolve/tree/master/examples/todo-two-levels)
 
-This example demonstrates work with view-models in case of **all events subscribtion**. Sometimes, for example for fast application prototyping, it's necessary to have view-model on client with all server events instead of part. There's a special feature called **wildcard**, that allows to subscribe to all events, you can learn more about that in [documentation](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md).
+    This example demonstrates how to work with view-models in the **all events subscribtion** case. Learn more about this case in the [View Model](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md) article. <!-- No info there -->
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-todo-two-levels-example.png"></p>
 
@@ -142,11 +142,11 @@ This example demonstrates work with view-models in case of **all events subscrib
 
 ### <a name="compatibility">Compatibility</a>
 
-You can comfortably run and develop reSolve application for **Linux**, **Mac** and **Windows** operation systems using **bash** and **cmd** terminals. Also you can develop using **React Native**, but currently it's **experimental** approach.
+You can run and develop reSolve applications on **Linux**, **Mac** and **Windows** operating systems. It is also possible to integrate reSolve with the **React Native**, but this approach is currently **experimental**.
 
-You can use any package manager, but we recommend you to look at [**npx**](https://www.npmjs.com/package/npx) and [**yarn**](https://yarnpkg.com/lang/en/) apart from **npm**. We use exactly npx manager in our tutorials like a default way.
+You can use any package manager, but we recommend using [**npx**](https://www.npmjs.com/package/npx) and [**yarn**](https://yarnpkg.com/lang/en/) instead of **npm**<!--, because ??? -->.
 
-Minimum supported **NodeJS** version is **6.0.0**.
+The minimum supported **NodeJS** version is **6.0.0**.
 
 ### <a name="basic-concepts">Basic Concepts</a>
 
