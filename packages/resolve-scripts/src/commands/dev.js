@@ -11,6 +11,8 @@ import {
   customEnvTitle
 } from '../configs/strings'
 
+import envList from '../../configs/env.list'
+
 export const command = 'dev'
 export const desc = commands.dev
 export const builder = yargs =>

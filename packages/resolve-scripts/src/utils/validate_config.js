@@ -1,8 +1,6 @@
-import fs from 'fs'
-import path from 'path'
 import { validate } from 'jsonschema'
 
-const schema = fs.readFileSync(path.resolve(__dirname, '../configs/schema.resolve.config.json'))
+import schema from '../../configs/schema.resolve.config'
 
 export default function validateConfig(config) {
   try {

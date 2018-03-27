@@ -2,13 +2,13 @@ import lodash from 'lodash'
 
 import resolveFile from './resolve_file'
 import resolveFileOrModule from './resolve_file_or_module'
-import { meta } from '../../configs/resolve.config'
+import paths from '../../configs/resolve.config.paths'
 
 const assignConfigPaths = resolveConfig => {
-  for (const key of meta.files) {
+  for (const key of paths.files) {
     lodash.set(resolveConfig, key, resolveFile(lodash.get(resolveConfig, key)))
   }
-  for (const key of meta.filesOrModules) {
+  for (const key of paths.filesOrModules) {
     lodash.set(
       resolveConfig,
       key,

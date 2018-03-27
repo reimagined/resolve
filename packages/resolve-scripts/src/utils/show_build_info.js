@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 
-import statsConfig from '../../configs/stats_config'
+import statsConfig from '../../configs/stats.config'
 
 export default function showBuildInfo({ name }, err, stats) {
   if (!stats) {

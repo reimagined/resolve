@@ -1,30 +1,24 @@
-import fs from 'fs'
-import path from 'path'
-import JSON5 from 'json5'
-
 import assignSettings from './assign_settings'
 import resolveFile from './resolve_file'
 import validateConfig from './validate_config'
+import resolveConfigOrigin from '../../configs/resolve.config'
+import deployOptions from '../../configs/deploy.options'
 
 export default function setup(argv, env) {
-  let localConfig = '{}'
+  let localConfig = {}
 
   if (argv.config || env.CONFIG_PATH) {
-    localConfig = fs.readFileSync(resolveFile(argv.config || env.CONFIG_PATH))
+    localConfig = require(resolveFile(argv.config || env.CONFIG_PATH))
   } else {
     try {
-      localConfig = fs.readFileSync(resolveFile('resolve.config.json'))
+      localConfig = require(resolveFile('resolve.config.json'))
     } catch (e) {}
   }
 
-  localConfig = JSON5.parse(localConfig)
-
   const resolveConfig = {
-    ...JSON5.parse(fs.readFileSync(path.resolve(__dirname, '../configs/resolve.config.json'))),
+    ...resolveConfigOrigin,
     ...localConfig
   }
-
-  const deployOptions = JSON5.parse(fs.readFileSync(path.resolve(__dirname, '../configs/deploy.options.json')))
 
   assignSettings({ resolveConfig, deployOptions }, argv, env)
 
