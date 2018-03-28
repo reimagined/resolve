@@ -9,7 +9,7 @@ We'll glad to see all your questions:
 * e-mail to **reimagined@devexpress.com**
 -------------------------------------------------------------------------
 
-The **view models** are sent to the client UI to be a part of a Redux app state. They are small enough to fit into memory and kept up to date in the browser. They are defined in a special isomorphic format, which allows them to be used on the client and server side.
+The **view models** are sent to the client UI to be a part of a Redux app state. They are small enough to fit into memory and are kept up to date in the browser. They are defined in a special isomorphic format, which allows them to be used on the client and server side.
 
 A typical view model structure:
 
