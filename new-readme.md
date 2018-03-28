@@ -7,7 +7,7 @@ A JavaScript framework for **CQRS**, **Domain-Driven Design** and **Event Sourci
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-technologies.png"></p>
 
-* The [Installation](#installation) is fully automated and takes just<!-- sic --> 2 minutes.
+* 2 minutes [installation](#installation).
 * [Free and open source](https://github.com/reimagined/resolve/blob/master/LICENSE.md).
 * Flexible and clear [API](#documentation).
 
@@ -144,7 +144,7 @@ You can develop and run **reSolve** applications on **Linux**, **Mac** and **Win
 
 The minimum supported **NodeJS** version is **6.0.0**.
 
-We recommend using [**npx**](https://www.npmjs.com/package/npx) or [**yarn**](https://yarnpkg.com/lang/en/) instead of **npm** because these are faster and more convenient **npm** alternatives.
+We recommend using [**npx**](https://www.npmjs.com/package/npx) or [**yarn**](https://yarnpkg.com/lang/en/) instead of **npm** because these are faster and more convenient alternatives to the **npm** command.
 
 ### <a name="basic-concepts">Basic Concepts</a>
 
