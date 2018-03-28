@@ -61,11 +61,10 @@ If the `version` argument is set, the command updates packages to the specified 
     📄 README.md
     📄 package-lock.json
     📄 package.json
-    📄 resolve.build.config.js
-    📄 resolve.client.config.js
-    📄 resolve.server.config.js
+    📄 resolve.config.js
     📁 client/
         📁 components
+        📁 containers
             📄 App.js
         📁 reducers
             📄 index.js

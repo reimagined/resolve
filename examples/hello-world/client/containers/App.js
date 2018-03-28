@@ -1,6 +1,6 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import Header from './Header.js'
+import Header from '../components/Header.js'
 
 const RootComponent = () => (
   <div>
