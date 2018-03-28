@@ -11,7 +11,7 @@ We'll glad to see all your questions:
 
 This folder contains reSolve framework examples.
 
-Example setup is similar with new application creation, but it has `--example` or `-e` flag with example name. You can start working with reSolve example just in **2 minutes**.
+Example setup is similar with new application creation, but it has `--example` or `-e` flag with example folder name. You can start working with reSolve example just in **2 minutes**.
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-example-installation.gif"></p>
 
