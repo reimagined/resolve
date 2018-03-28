@@ -61,6 +61,7 @@ const testCafeRunner = async argv => {
       (browser === 'remote' ? ' --qr-code' : ''),
     { stdio: 'inherit' }
   )
+  application.kill()
   process.exit(0)
 }
 
