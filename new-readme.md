@@ -3,7 +3,7 @@
 
 [![Build Status](https://travis-ci.org/reimagined/resolve.svg?branch=master)](https://travis-ci.org/reimagined/resolve) [![npm version](https://badge.fury.io/js/create-resolve-app.svg)](https://badge.fury.io/js/create-resolve-app) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/reimagined/resolve/master/LICENSE)
 
-A JavaScript framework for **CQRS**, **Domain-Driven Design** and **Event Sourcing** with good support for **React** and **Redux**. **reSolve** provides a new way to describe app's core logic and fully separate it from an auxiliary code.
+A JavaScript framework for **CQRS**, **Domain-Driven Design** and **Event Sourcing** with well support for **React** and **Redux**. **reSolve** provides a new way to describe app's core logic and fully separate it from an auxiliary code.
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-technologies.png"></p>
 
@@ -27,7 +27,7 @@ A JavaScript framework for **CQRS**, **Domain-Driven Design** and **Event Sourci
 
 ## <a name="why-resolve">**🏗️ Why reSolve**</a>
 
-With **reSolve** you can create applications of any complexity level more efficiently. A single approach is used for simple [ToDo List](#todo-list) and for a complex reactive application like [Hacker News](https://github.com/reimagined/hacker-news-resolve). The technologies stack (CQRS, Event Sourcing, Domain-Driven Design, React + Redux) makes any **reSolve** application scalable and maintainable, so you can focus on business logic instead of an auxiliary code.
+With **reSolve** you can create applications of any complexity level more efficiently. A single approach is used for simple [ToDo List](#todo-list) and for a complex reactive application like Stack Overflow, with distributed architecture ready for high load. The technologies stack (CQRS, Event Sourcing, Domain-Driven Design, React + Redux) makes any **reSolve** application scalable and maintainable, so you can focus on business logic instead of an auxiliary code.
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-why-resolve-reactivity.gif"></p>
 
@@ -120,7 +120,7 @@ The `create-resolve-app` can is capable to create the following apps:
 
 * [**top-list**](https://github.com/reimagined/resolve/tree/master/examples/top-list)
 
-    This example demonstrates how to work with the [reactive read-models](https://github.com/reimagined/resolve/blob/master/docs/Read%20Model.md) used to update information on the web page without reloading it.
+    This example demonstrates how to update application state on external events unrelated to user actions.
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-top-list-example.png"></p>
 
@@ -144,7 +144,7 @@ You can develop and run **reSolve** applications on **Linux**, **Mac** and **Win
 
 The minimum supported **NodeJS** version is **6.0.0**.
 
-We recommend using [**npx**](https://www.npmjs.com/package/npx) or [**yarn**](https://yarnpkg.com/lang/en/) instead of **npm** because these are faster and more convenient alternatives to the **npm** command.
+**reSolve** supports [**npx**](https://www.npmjs.com/package/npx), [**yarn**](https://yarnpkg.com/lang/en/), and [**npm**](https://www.npmjs.com/) package managers.
 
 ### <a name="basic-concepts">Basic Concepts</a>
 
