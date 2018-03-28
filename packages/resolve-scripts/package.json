@@ -18,7 +18,7 @@
   "scripts": {
     "test": "jest --testMatch=**/test/*.test.js --verbose",
     "prepublish": "yarn build",
-    "build": "babel --out-dir ./dist ./src"
+    "build": "babel --source-maps --out-dir ./dist ./src "
   },
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"

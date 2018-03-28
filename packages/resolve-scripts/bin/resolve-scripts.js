@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+require('source-map-support').install()
 const path = require('path')
 
 require('babel-polyfill')
