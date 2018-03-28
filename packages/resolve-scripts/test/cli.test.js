@@ -150,6 +150,13 @@ describe('resolve-scripts build', () => {
   })
 
   describe('argv.inspect', () => {
+    test('resolve-scripts build --start --inspect', async () => {
+      const json = await exec('resolve-scripts build --start --inspect')
+
+      expect(json).toHaveProperty('inspectHost', '127.0.0.1')
+      expect(json).toHaveProperty('inspectPort', 9229)
+    })
+
     test('resolve-scripts build --start --inspect=1234', async () => {
       const json = await exec('resolve-scripts build --start --inspect=1234')
 
@@ -178,6 +185,11 @@ describe('resolve-scripts build', () => {
       await expect(
         exec('resolve-scripts build --inspect=1.2.3.4.5:1234')
       ).rejects.toThrow()
+    })
+
+    test('resolve-scripts build --inspect (fail)', async () => {
+      expect.assertions(1)
+      await expect(exec('resolve-scripts build --inspect')).rejects.toThrow()
     })
   })
 
@@ -237,6 +249,13 @@ describe('resolve-scripts dev', () => {
   })
 
   describe('argv.inspect', () => {
+    test('resolve-scripts dev --inspect', async () => {
+      const json = await exec('resolve-scripts dev --inspect')
+
+      expect(json).toHaveProperty('inspectHost', '127.0.0.1')
+      expect(json).toHaveProperty('inspectPort', 9229)
+    })
+
     test('resolve-scripts dev --inspect=1234', async () => {
       const json = await exec('resolve-scripts dev --inspect=1234')
 
@@ -294,6 +313,13 @@ describe('resolve-scripts dev', () => {
 
 describe('resolve-scripts start', () => {
   describe('argv.inspect', () => {
+    test('resolve-scripts start --inspect', async () => {
+      const json = await exec('resolve-scripts start --inspect')
+
+      expect(json).toHaveProperty('inspectHost', '127.0.0.1')
+      expect(json).toHaveProperty('inspectPort', 9229)
+    })
+
     test('resolve-scripts start --inspect=1234', async () => {
       const json = await exec('resolve-scripts start --inspect=1234')
 

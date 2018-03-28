@@ -47,29 +47,21 @@ const testCafeRunner = async argv => {
       if ((await response.text()) === 'ok') break
     } catch (e) {}
   }
+  application.on('close', exitCode => {
+    process.exit(exitCode)
+  })
 
-  const testcafe = spawn(
-    'npx',
-    [
-      'testcafe',
-      browser,
-      'test/functional',
-      `--app-init-delay ${TIMEOUT}`,
-      `--selector-timeout ${TIMEOUT}`,
-      `--assertion-timeout ${TIMEOUT}`,
-      `--page-load-timeout ${TIMEOUT}`,
-      ...(browser === 'remote' ? ['--qr-code'] : [])
-    ],
+  execSync(
+    `npx testcafe ${browser}` +
+      ' test/functional' +
+      ` --app-init-delay ${TIMEOUT}` +
+      ` --selector-timeout ${TIMEOUT}` +
+      ` --assertion-timeout ${TIMEOUT}` +
+      ` --page-load-timeout ${TIMEOUT}` +
+      (browser === 'remote' ? ' --qr-code' : ''),
     { stdio: 'inherit' }
   )
-  testcafe.on('close', exitCode => {
-    application.kill('SIGINT')
-    process.exit(exitCode)
-  })
-  application.on('close', exitCode => {
-    testcafe.kill('SIGINT')
-    process.exit(exitCode)
-  })
+  process.exit(0)
 }
 
 export default testCafeRunner

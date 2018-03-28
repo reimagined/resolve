@@ -103,11 +103,11 @@ export function inspect({ deployOptions }, argv, env) {
     deployOptions.inspectHost = env.INSPECT_HOST
   }
 
-  if (argv.inspect && !deployOptions.start) {
+  if ((argv.inspect === '' || argv.inspect) && !deployOptions.start) {
     throw new Error('Implications failed:\ninspect -> start')
   }
 
-  if (argv.inspect) {
+  if (argv.inspect !== undefined) {
     const inspectArgs = argv.inspect.split(':')
     if (inspectArgs.length === 1) {
       inspectArgs[1] =
