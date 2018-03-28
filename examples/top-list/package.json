@@ -24,7 +24,8 @@
     "start": "resolve-scripts start",
     "test": "exit 0",
     "testw": "exit 0",
-    "test:functional": "cross-env NODE_ENV=tests babel-node ./tests/functional/testcafe_runner.js --presets es2015,stage-0,react"
+    "test:functional":
+      "cross-env NODE_ENV=tests babel-node ./tests/functional/testcafe_runner.js --presets es2015,stage-0,react"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",

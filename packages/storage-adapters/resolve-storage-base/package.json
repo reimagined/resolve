@@ -14,11 +14,7 @@
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": [
-    "cqrs",
-    "eventsourcing",
-    "es",
-    "ddd"
-  ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-base#readme"
+  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
+  "homepage":
+    "https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-base#readme"
 }
