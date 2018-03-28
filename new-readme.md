@@ -7,7 +7,7 @@ A JavaScript framework for **CQRS**, **Domain-Driven Design** and **Event Sourci
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-technologies.png"></p>
 
-* The [Installation](#installation) is fully automated and takes 2 minutes.
+* The [Installation](#installation) is fully automated and takes just<!-- sic --> 2 minutes.
 * [Free and open source](https://github.com/reimagined/resolve/blob/master/LICENSE.md).
 * Flexible and clear [API](#documentation).
 
@@ -27,7 +27,7 @@ A JavaScript framework for **CQRS**, **Domain-Driven Design** and **Event Sourci
 
 ## <a name="why-resolve">**🏗️ Why reSolve**</a>
 
-With **reSolve** you can create applications of any complexity level more efficiently. A single approach is used for simple [ToDo List](#todo-list) and for a complex reactive application like [Hacker News](https://github.com/reimagined/hacker-news-resolve) with distributed serverless architecture ready for high load. The technologies stack (CQRS, Event Sourcing, Domain-Driven Design, React + Redux) makes any **reSolve** application scalable and maintainable, so you can focus on business logic instead of an auxiliary code.
+With **reSolve** you can create applications of any complexity level more efficiently. A single approach is used for simple [ToDo List](#todo-list) and for a complex reactive application like [Hacker News](https://github.com/reimagined/hacker-news-resolve). The technologies stack (CQRS, Event Sourcing, Domain-Driven Design, React + Redux) makes any **reSolve** application scalable and maintainable, so you can focus on business logic instead of an auxiliary code.
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-why-resolve-reactivity.gif"></p>
 
@@ -41,7 +41,7 @@ With **reSolve** you can create applications of any complexity level more effici
 
 ### <a name="installation">Installation</a>
 
-The [create-resolve-app](packages/create-resolve-app) package is used to create a **reSolve**-based application. You can use it to get one of the examples, or make an empty application. By default, `create-resolve-app` generates an empty [Hello World](https://github.com/reimagined/resolve/tree/master/examples/hello-world) application. You can start working on your new **reSolve** application in **2 minutes**.
+The [create-resolve-app](packages/create-resolve-app) package is used to create a **reSolve**-based application. You can use it to get one of the examples, or make an empty application. By default, `create-resolve-app` generates an empty [Hello World](https://github.com/reimagined/resolve/tree/master/examples/hello-world) application. You can start working on your new **reSolve** application in just<!--sic--> **2 minutes**!
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-installation.gif"></p>
 
@@ -132,7 +132,7 @@ The `create-resolve-app` can is capable to create the following apps:
 
 * [**todo-two-levels**](https://github.com/reimagined/resolve/tree/master/examples/todo-two-levels)
 
-    This example demonstrates how to work with view-models in the **all events subscribtion** case. Learn more about this case in the [View Model](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md) article. <!-- No info there -->
+    This example demonstrates how to work with view-models in the **all events subscribtion** case. Learn more about this case in the [View Model](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md) article.
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-todo-two-levels-example.png"></p>
 
@@ -144,7 +144,7 @@ You can develop and run **reSolve** applications on **Linux**, **Mac** and **Win
 
 The minimum supported **NodeJS** version is **6.0.0**.
 
-We recommend using [**npx**](https://www.npmjs.com/package/npx) or [**yarn**](https://yarnpkg.com/lang/en/) instead of **npm**<!--, because ??? -->.
+We recommend using [**npx**](https://www.npmjs.com/package/npx) or [**yarn**](https://yarnpkg.com/lang/en/) instead of **npm** because these are faster and more convenient **npm** alternatives.
 
 ### <a name="basic-concepts">Basic Concepts</a>
 
