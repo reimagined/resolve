@@ -1,6 +1,6 @@
 {
   "name": "hello-world",
-  "version": "0.7.2",
+  "version": "0.7.4",
   "private": true,
   "dependencies": {
     "react": "^16.2.0",
@@ -9,10 +9,10 @@
     "react-helmet": "^5.2.0",
     "react-redux": "^5.0.7",
     "redux": "^3.7.2",
-    "resolve-bus-memory": "0.7.2",
-    "resolve-redux": "0.7.2",
-    "resolve-scripts": "0.7.2",
-    "resolve-storage-lite": "0.7.2"
+    "resolve-bus-memory": "0.7.4",
+    "resolve-redux": "0.7.4",
+    "resolve-scripts": "0.7.4",
+    "resolve-storage-lite": "0.7.4"
   },
   "scripts": {
     "build": "resolve-scripts build",
