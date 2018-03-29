@@ -1,4 +1,3 @@
-import path from 'path'
 import memoryAdapter from 'resolve-storage-lite'
 import busAdapter from 'resolve-bus-memory'
 
