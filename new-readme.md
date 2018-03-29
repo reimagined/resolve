@@ -3,7 +3,7 @@
 
 [![Build Status](https://travis-ci.org/reimagined/resolve.svg?branch=master)](https://travis-ci.org/reimagined/resolve) [![npm version](https://badge.fury.io/js/create-resolve-app.svg)](https://badge.fury.io/js/create-resolve-app) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/reimagined/resolve/master/LICENSE)
 
-A JavaScript framework for **CQRS**, **Domain-Driven Design** and **Event Sourcing** with well support for **React** and **Redux**. **reSolve** provides a new way to describe app's core logic and fully separate it from an auxiliary code.
+A JavaScript framework for **CQRS**, **Domain-Driven Design** and **Event Sourcing** with robust support for **React** and **Redux**. **reSolve** provides a new way to describe an app's core logic and fully separate it from auxiliary code.
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-technologies.png"></p>
 
@@ -27,7 +27,7 @@ A JavaScript framework for **CQRS**, **Domain-Driven Design** and **Event Sourci
 
 ## <a name="why-resolve">**🏗️ Why reSolve**</a>
 
-With **reSolve** you can create applications of any complexity level more efficiently. A single approach is used for simple [ToDo List](#todo-list) and for a complex reactive application like Stack Overflow, with distributed architecture ready for high load. The technologies stack (CQRS, Event Sourcing, Domain-Driven Design, React + Redux) makes any **reSolve** application scalable and maintainable, so you can focus on business logic instead of an auxiliary code.
+With **reSolve** you can more efficiently create applications of any complexity level. A single approach is used for simple [ToDo List](#todo-list) and for a complex reactive application like Stack Overflow, with distributed architecture that is ready for high load. The technologies stack (CQRS, Event Sourcing, Domain-Driven Design, React + Redux) makes any **reSolve** application scalable and maintainable, so you can focus on business logic instead of auxiliary code.
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-why-resolve-reactivity.gif"></p>
 
@@ -41,7 +41,7 @@ With **reSolve** you can create applications of any complexity level more effici
 
 ### <a name="installation">Installation</a>
 
-The [create-resolve-app](packages/create-resolve-app) package is used to create a **reSolve**-based application. You can use it to get one of the examples, or make an empty application. By default, `create-resolve-app` generates an empty [Hello World](https://github.com/reimagined/resolve/tree/master/examples/hello-world) application. You can start working on your new **reSolve** application in just<!--sic--> **2 minutes**!
+The [create-resolve-app](packages/create-resolve-app) package is used to create a **reSolve**-based application. You can use it to get one of the examples, or create an empty application. By default, `create-resolve-app` generates an empty [Hello World](https://github.com/reimagined/resolve/tree/master/examples/hello-world) application. You can start working on your new **reSolve** application in just<!--sic--> **2 minutes**!
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-installation.gif"></p>
 
@@ -74,7 +74,7 @@ Use one of these tools to start a new **reSolve** aplication:
 
     > Note: Installing a package globally (the first command) may require administrative privileges. That means you have to use the `sudo` prefix on Linux and MacOS, or start a terminal with the administrative privileges on Windows.
 
-The created application is accessible using the http://localhost:3000/ and `http://<your_ip>:3000/` URLs (you can [change the URL settings](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)). Start learning **reSolve** with the [**First Application From Scratch**](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/First%20Application%20From%20Scratch.md) tutorial. Use the [**documentation**](#documentation), [**tutorials**](#tutorials) and [**examples**](#examples) to learn **reSolve** deeper.
+The created application is accessible using the http://localhost:3000/ and `http://<your_ip>:3000/` URLs (you can [change the URL settings](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)). Start learning **reSolve** with the [**First Application From Scratch**](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/First%20Application%20From%20Scratch.md) tutorial. Use the [**documentation**](#documentation), [**tutorials**](#tutorials) and [**examples**](#examples) to learn **reSolve** more deeply.
 
 ### <a name="tutorials">Tutorials</a>
 
@@ -87,7 +87,7 @@ You can get a sample app using the `create-resolve-app` tool with the `-e` flag 
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-example-installation.gif"></p>
 
-The following tools are used to get a sample **reSolve** aplication:
+The following tools are used to get a sample **reSolve** application:
 
 * [npx](https://www.npmjs.com/package/npx)
 
@@ -110,7 +110,7 @@ The following tools are used to get a sample **reSolve** aplication:
 
 The created application is accessible using the http://localhost:3000/ and `http://<your_ip>:3000` URLs (you can [change your URL settings](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)).
 
-The `create-resolve-app` can is capable to create the following apps:
+The `create-resolve-app` can is capable of creating the following apps:
 
 * [**hello-world**](https://github.com/reimagined/resolve/tree/master/examples/hello-world)
 
@@ -120,7 +120,7 @@ The `create-resolve-app` can is capable to create the following apps:
 
 * [**top-list**](https://github.com/reimagined/resolve/tree/master/examples/top-list)
 
-    This example demonstrates how to update application state on external events unrelated to user actions.
+    This example demonstrates how to update the application state on external events unrelated to user actions.
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-top-list-example.png"></p>
 
@@ -170,7 +170,7 @@ The minimum supported **NodeJS** version is **6.0.0**.
 
 * 📄 [**Packages**](https://github.com/reimagined/resolve/blob/master/docs/Packages.md)
 
-    The [**Packages**](https://github.com/reimagined/resolve/blob/master/docs/Packages.md) article provides the description of all **reSolve** packages. The API description and detailed information is available in the package `README` files:
+    The [**Packages**](https://github.com/reimagined/resolve/blob/master/docs/Packages.md) article provides a description of all **reSolve** packages. The API description and detailed information is available in the package `README` files:
 
     * [_create-resolve-app_](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app)
     * [_resolve-command_](https://github.com/reimagined/resolve/tree/master/packages/resolve-command)
@@ -196,7 +196,7 @@ The minimum supported **NodeJS** version is **6.0.0**.
 
 * 📄 [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)
 
-    The [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md) article describes environment variables, configs, and other options. 
+    The [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md) article describes the environment variables, configs, and other options. 
 
 * 📄 [**Contrubutors Guide**](https://github.com/reimagined/resolve/blob/master/docs/Contributors%20Guide.md)
 
@@ -208,15 +208,15 @@ Feel free to contact us if you have any questions!
 
 ✉️ We are glad to see your e-mails sent to **reimagined@devexpress.com**.
 
-💬 Follow us on [**Twitter**](https://twitter.com/resolvejs). We post interesting arcticles, announcements, make polls about the **reSolve** development and talk about the modern web technologies!
+💬 Follow us on [**Twitter**](https://twitter.com/resolvejs). We post interesting arcticles, announcements, post polls about **reSolve** development and talk about the modern web technologies!
 
 💻 We also have a [**Facebook**](https://www.facebook.com/resolvejs/) page, join us!
 
 📃 You can find our articles on [**Medium**](https://medium.com/resolvejs)
 
-❓ You are welcome with any questions or suggestions in [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
+❓ You are welcome to post any questions or suggestions in [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
 
-🔧 Feel yourself capable to improve **reSolve**? Become one of our [**contributors**](https://github.com/reimagined/resolve/pulls)! Look through our [**Contrubutors Guide**](https://github.com/reimagined/resolve/blob/master/docs/Contributors%20Guide.md) and make a great Pull Request.
+🔧 Feel yourself capable of improving **reSolve**? Become one of our [**contributors**](https://github.com/reimagined/resolve/pulls)! Look through our [**Contrubutors Guide**](https://github.com/reimagined/resolve/blob/master/docs/Contributors%20Guide.md) and make a great Pull Request.
 
 ⭐️ Remember to star our **GitHub** repository if you like **reSolve**!
 
