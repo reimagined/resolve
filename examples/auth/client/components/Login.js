@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Login = props => {
+const Login = () => {
   return (
     <div>
       Create user and login

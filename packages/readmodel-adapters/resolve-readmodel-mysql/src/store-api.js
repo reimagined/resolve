@@ -1,5 +1,3 @@
-import 'regenerator-runtime/runtime'
-
 const MAX_VALUE = 0x0fffffff | 0
 const castType = type => {
   switch (type) {
@@ -255,7 +253,7 @@ const insert = async ({ connection }, storageName, document) => {
   await connection.execute(
     `INSERT INTO ${storageName}(${Object.keys(document).join(', ')})
      VALUES(${Object.keys(document)
-       .map(_ => '?')
+       .map(() => '?')
        .join(', ')})
     `,
     Object.values(document)

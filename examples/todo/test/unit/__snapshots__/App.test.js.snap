@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<div>
+  <h1>
+    TODO
+  </h1>
+  <ol>
+    <li>
+      <label>
+        <input
+          checked={true}
+          onChange={[Function]}
+          type="checkbox"
+        />
+        text1
+      </label>
+      <span
+        onClick={[Function]}
+      >
+         [x]
+      </span>
+    </li>
+    <li>
+      <label>
+        <input
+          checked={false}
+          onChange={[Function]}
+          type="checkbox"
+        />
+        text2
+      </label>
+      <span
+        onClick={[Function]}
+      >
+         [x]
+      </span>
+    </li>
+  </ol>
+  <input
+    type="text"
+  />
+  <button
+    onClick={[Function]}
+  >
+    Add Todo
+  </button>
+</div>
+`;

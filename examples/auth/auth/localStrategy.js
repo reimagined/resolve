@@ -17,22 +17,19 @@ const authStrategyParams = {
       method: 'POST'
     }
   },
-  registerCallback: async ({ resolve, body }, username) => {
-    console.log('registerCallback')
+  registerCallback: async (_, username) => {
     return {
       name: username,
       id: uuid.v4()
     }
   },
-  loginCallback: async ({ resolve, body }, username) => {
-    console.log('loginCallback')
+  loginCallback: async (_, username) => {
     return {
       name: username,
       id: uuid.v4()
     }
   },
   failureCallback: (error, redirect) => {
-    console.log('failCallback')
     redirect(`/error?text=${error}`)
   }
 }

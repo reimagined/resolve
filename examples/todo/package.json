@@ -2,34 +2,24 @@
   "name": "todo",
   "version": "0.7.2",
   "private": true,
+    "scripts": {
+        "build": "resolve-scripts build",
+        "dev": "resolve-scripts dev",
+        "start": "resolve-scripts start",
+        "test": "resolve-scripts test",
+        "test:functional": "resolve-scripts test:functional"
+    },
   "dependencies": {
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-redux": "^5.0.6",
     "redux": "^3.7.2",
-    "resolve-bus-memory": "0.7.2",
-    "resolve-redux": "0.7.2",
-    "resolve-scripts": "0.7.2",
-    "resolve-storage-lite": "0.7.2"
-  },
-  "scripts": {
-    "build": "resolve-scripts build",
-    "dev": "resolve-scripts dev",
-    "start": "resolve-scripts start",
-    "test": "exit 0",
-    "testw": "exit 0",
-    "test:functional":
-      "cross-env NODE_ENV=tests babel-node ./tests/functional/testcafe_runner.js --presets es2015,stage-0,react"
+        "resolve-redux": "0.7.1",
+        "resolve-scripts": "0.7.1"
   },
   "devDependencies": {
-    "babel-cli": "^6.24.1",
-    "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-stage-0": "^6.24.1",
-    "cross-env": "^5.1.1",
-    "testcafe": "^0.18.5",
-    "testcafe-browser-tools": "^1.4.6",
-    "yargs": "^10.0.3"
+        "jest": "^22.4.3",
+        "react-test-renderer": "^16.2.0",
+        "testcafe": "^0.19.1",
+        "testcafe-browser-tools": "^1.6.1"
   }
 }

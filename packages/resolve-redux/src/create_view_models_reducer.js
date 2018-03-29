@@ -44,7 +44,8 @@ export function unsubscribeHandler(
 
   subscribers[key] = 0
 
-  const { [aggregateId]: _, ...nextViewModel } = state[viewModelName]
+  const nextViewModel = { ...state[viewModelName] }
+  delete nextViewModel[aggregateId]
 
   return {
     ...state,
@@ -94,19 +95,18 @@ export function provideViewModelsHandler(context, state, { viewModels }) {
 }
 
 export function createMap(viewModels) {
-  return viewModels.reduce(
-    (acc, { name: viewModelName, projection: { Init, ...projection } }) => {
-      Object.keys(projection).forEach(eventType => {
-        if (!acc[eventType]) {
-          acc[eventType] = {}
-        }
+  return viewModels.reduce((acc, { name: viewModelName, projection }) => {
+    const handlers = { ...projection }
+    delete handlers.Init
+    Object.keys(handlers).forEach(eventType => {
+      if (!acc[eventType]) {
+        acc[eventType] = {}
+      }
 
-        acc[eventType][viewModelName] = projection[eventType]
-      })
-      return acc
-    },
-    {}
-  )
+      acc[eventType][viewModelName] = projection[eventType]
+    })
+    return acc
+  }, {})
 }
 
 export function viewModelEventHandler(viewModels, state, action) {

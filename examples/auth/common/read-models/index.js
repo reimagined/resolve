@@ -10,7 +10,6 @@ export default [
 
     resolvers: {
       me: async (store, { jwtToken }) => {
-        console.log('me')
         if (!jwtToken) {
           return null
         }
@@ -18,8 +17,6 @@ export default [
           jwtToken,
           process.env.JWT_SECRET || 'DefaultSecret'
         )
-
-        console.log(user)
 
         return user
       }

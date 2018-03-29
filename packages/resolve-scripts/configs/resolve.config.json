@@ -1,0 +1,47 @@
+{
+  "host": "0.0.0.0",
+  "port": 3000,
+  "protocol": "http",
+  "rootPath": "/",
+  "staticPath": "/",
+  "staticDir": "static",
+  "distDir": "dist",
+  "routes": "client/routes.js",
+  "aggregates": "common/aggregates/index.js",
+  "readModels": "common/read-models/index.js",
+  "viewModels": "common/view-models/index.js",
+  "sagas": "common/sagas/index.js",
+  "index": "client/index.js",
+  "auth": "auth/index.js",
+  "redux": {
+    "store": "client/store/index.js",
+    "reducers": "client/reducers/index.js",
+    "middlewares": "client/middlewares/index.js"
+  },
+  "storage": {
+    "adapter": "resolve-storage-lite",
+    "options": {
+      "pathToFile": "event-storage.db"
+    }
+  },
+  "bus": {
+    "adapter": "resolve-bus-memory",
+    "options": {}
+  },
+  "subscribe": {
+    "adapter": "resolve-redux/dist/subscribe_adapter",
+    "options": {}
+  },
+  "jwtCookie": {
+    "name": "jwt",
+    "maxAge": 31536000000
+  },
+  "env": {
+    "test": {
+      "storage": {
+        "adapter": "resolve-storage-lite",
+        "options": {}
+      }
+    }
+  }
+}

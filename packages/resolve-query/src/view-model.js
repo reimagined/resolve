@@ -1,5 +1,3 @@
-import 'regenerator-runtime/runtime'
-
 const GeneratorProto = (function*() {})().__proto__.__proto__
 const PromiseProto = (async function() {})().__proto__
 

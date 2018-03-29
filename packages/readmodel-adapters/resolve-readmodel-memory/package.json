@@ -17,15 +17,15 @@
   "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
   "homepage":
     "https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-memory#readme",
-  "devDependencies": {
-    "chai": "^3.5.0",
-    "jest": "^22.1.4",
-    "sinon": "^3.3.0"
-  },
   "dependencies": {
     "nedb": "^1.8.0",
     "regenerator-runtime": "^0.11.0",
     "resolve-readmodel-base": "0.7.2",
     "uuid": "^3.1.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "jest": "^22.1.4",
+    "sinon": "^3.3.0"
   }
 }

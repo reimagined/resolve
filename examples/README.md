@@ -20,3 +20,4 @@ This folder contains reSolve framework examples.
 * [top-list](./top-list)
 
 * [hacker-news](./hacker-news)
+* [with-styled-components](./with-styled-components)

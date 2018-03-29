@@ -1,5 +1,3 @@
-import 'regenerator-runtime/runtime'
-
 const getLastTimestamp = async ({ metaInfo }) => metaInfo.timestamp
 
 const setLastTimestamp = async ({ metaInfo }, timestamp) =>

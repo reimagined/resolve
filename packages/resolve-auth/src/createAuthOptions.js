@@ -1,8 +1,8 @@
 export default (authReq, authRes, next) => ({
-  onSuccess: (options, user, info) => {
+  onSuccess: (options, user /*, info*/) => {
     authRes.applyJwtValue(user, authRes.expressRes, options.successRedirect)
   },
-  onFail: (options, challenge, status) => {
+  onFail: (options /*, challenge , status*/) => {
     if (options.failureRedirect) {
       const res = authRes.expressRes
       res.statusCode = 302
@@ -18,7 +18,7 @@ export default (authReq, authRes, next) => ({
     res.setHeader('Content-Length', '0')
     res.end()
   },
-  onPass: options => {
+  onPass: /*options*/ () => {
     next()
   },
   onError: (options, err) => {
