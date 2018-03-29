@@ -11,7 +11,7 @@ We'll glad to see all your questions:
 
 ## How to start?
 
-This example demonstrates **simple work with view-models**. To setup:
+This example demonstrates how to work with the [view-models](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md). To setup:
 
 ```bash
 npx create-resolve-app todo-example -e todo
@@ -21,7 +21,7 @@ npx create-resolve-app todo-example -e todo
 
 ## What's next?
 
-📑 There's a [**Tutorial**](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/ToDo%20List%20App%20Tutorial.md) for this example.
+📑 The app's creation process is detailed in the [ToDo List App Tutorial](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/ToDo%20List%20App%20Tutorial.md).
 
 📑 You can learn more in [**View Model**](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md) topic.
 
