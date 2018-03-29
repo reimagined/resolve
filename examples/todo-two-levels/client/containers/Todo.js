@@ -3,6 +3,9 @@ import { connectViewModel } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
 import { NavLink } from 'react-router-dom'
 
+import { Helmet } from 'react-helmet'
+import Header from '../components/Header.js'
+
 import actions from '../actions'
 
 const viewModelName = 'Todos'
@@ -11,6 +14,17 @@ const Todo = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
   let newTodo
   return (
     <div>
+      <Helmet>
+        <link
+          rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous"
+        />
+      </Helmet>
+
+      <Header />
+
       <h1>
         <NavLink to="/">Home</NavLink> | TODO
       </h1>
