@@ -59,7 +59,7 @@ export default (
       Object.assign(this, readModelProps)
     }
 
-    componentWillMount() {
+    componentDidMount() {
       const readModelProps = extractReadModelProps(
         mapStateToProps(this.context.store.getState(), this.props)
       )

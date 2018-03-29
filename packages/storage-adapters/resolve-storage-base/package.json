@@ -1,6 +1,6 @@
 {
   "name": "resolve-storage-base",
-  "version": "0.7.1",
+  "version": "0.7.4",
   "description": "This package contains the basic components for storage adapters",
   "main": "./dist/index.js",
   "bugs": {

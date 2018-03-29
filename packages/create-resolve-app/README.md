@@ -3,7 +3,7 @@
 # **Create reSolve App** 🚀
 [![npm version](https://badge.fury.io/js/create-resolve-app.svg)](https://badge.fury.io/js/create-resolve-app)
 
-This package creates an empty application based on the reSolve framework. Use the `--sample` option to create a single page application (SPA) which represents a typical Todo List. The application is built on the CQRS and Event Sourcing principles using [React](https://github.com/facebook/react) + [Redux](https://github.com/reactjs/redux) on the client.
+This package creates an empty application based on the reSolve framework ([`hello-world` example](https://github.com/reimagined/resolve/tree/master/examples/hello-world)). Use the `--example` option to create a single page application (SPA) based on another example. The application is built on the CQRS and Event Sourcing principles using [React](https://github.com/facebook/react) + [Redux](https://github.com/reactjs/redux) on the client.
 
 Create reSolve App allows you to specify application blocks (aggregates, read models, and UI part React components present) in a semi-declarative manner. With the `resolve-scripts` package, you do not need to write an API backend manually. Instead, `resolve-scripts` deploys backend and domain services to interact with the client which is wrapped in the `resolve-redux` package for an automated interaction.
 
@@ -14,7 +14,7 @@ Refer to [https://github.com/markerikson/react-redux-links](https://github.com/m
 
 Available options:
 
-- `--example <folder>` creates appropriate application from examples folder in resolve repo. `hello-world` is default
+- `--example <folder>` creates appropriate application from examples folder in resolve repo. [`hello-world`](https://github.com/reimagined/resolve/tree/master/examples/hello-world) is default
 - `--branch <branch>, --commit <sha>` - you can specify if you need example from specific brach or even commit
 - `--version` or `-V` outputs the version number
 
@@ -47,35 +47,7 @@ npx create-resolve-app my-resolve-app
 npm i -g create-resolve-app
 create-resolve-app my-resolve-app
 ```
-This creates the `my-resolve-app` directory in the current folder and generates the initial project structure in that directory:
-```
-resolve-app/
-  .flowconfig
-  .gitignore
-  LICENSE
-  README.md
-  package-lock.json
-  package.json
-  resolve.build.config.js
-  resolve.client.config.js
-  resolve.server.config.js
-  client/
-    actions/
-    components/
-    containers/
-    reducers/
-    store/
-  common/
-    aggregates/
-    read-models/
-      default/
-  static/
-    favicon.ico
-  tests/
-    testcafe_runner.js
-    e2e-tests/
-      index.test.js
-```
+This creates the `my-resolve-app` directory in the current folder and generates the initial project from specified example.
 
 ### Available Scripts 📋
 Once the installation is completed, you can run the following commands in the project directory to start your app:

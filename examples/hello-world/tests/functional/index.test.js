@@ -11,6 +11,6 @@ fixture`Hello, world!`.beforeEach(async t => {
 
 test('home page', async t => {
   await t
-    .expect(await Selector('h1').withText('Hello, world!').exists)
+    .expect(await Selector('h1').withText('Hello, reSolve world!').exists)
     .eql(true)
 })
