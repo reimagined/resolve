@@ -5,7 +5,7 @@ const Header = () => (
   <div>
     <Navbar>
       <Navbar.Text>
-        <Image src="../../static/resolve-logo.png" /> Todo Example
+        <Image src="../../static/resolve-logo.png" /> Top List Example
       </Navbar.Text>
 
       <Navbar.Collapse>
