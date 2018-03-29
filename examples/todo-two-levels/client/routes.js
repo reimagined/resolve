@@ -1,13 +1,13 @@
-import Index from './components/Index'
-import Todo from './components/Todo'
+import App from './containers/App'
+import TodoList from './components/TodoList'
 
 export default [
   {
     path: '/:id',
-    component: Todo
+    component: TodoList
   },
   {
     path: '/',
-    component: Index
+    component: App
   }
 ]

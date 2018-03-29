@@ -2,6 +2,9 @@ import React from 'react'
 import { connectViewModel } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
 
+import { Helmet } from 'react-helmet'
+import Header from '../components/Header.js'
+
 import actions from '../actions'
 
 const viewModelName = 'Todos'
@@ -11,6 +14,18 @@ const App = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
   let newTodo
   return (
     <div>
+      <Helmet>
+        <link
+          rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous"
+        />
+        <title>reSolve Todo Example</title>
+      </Helmet>
+
+      <Header />
+
       <h1>TODO</h1>
       <ol>
         {Object.keys(todos).map(id => (
