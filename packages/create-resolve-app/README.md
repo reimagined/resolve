@@ -51,23 +51,27 @@ This creates the `my-resolve-app` directory in the current folder and generates 
 
 ### Available Scripts 📋
 Once the installation is completed, you can run the following commands in the project directory to start your app:
-
-### `npm run dev`
+ 
+### `npm run dev` or `yarn dev`
 Runs the app in the development mode.
-
-Two web servers are  started: one - for the frontend/UI part, based on the webpack-dev-server on port 3001 by default, and another one - for the API backend part to provide the API for reSolve endpoints, based on express on port 3000. Development servers provide all the required debugging capabilities, including [Hot Module Replacement](https://webpack.js.org/concepts/hot-module-replacement/) and [source maps](https://webpack.js.org/configuration/devtool/).
-
-Open [http://localhost:3000](http://localhost:3000/) to view the app in the browser.
-
-### `npm run build`
+Open http://localhost:3000 to view it in the browser.
+ 
+The page will reload if you make edits.
+You will also see any errors in the console.
+ 
+### `npm run build` or `yarn build`
 Builds client and server bundles for production through Webpack.
-
-Building is performed in the `NODE_ENV === 'production'` [mode](https://webpack.js.org/guides/production/#node-environment-variable), so the build is optimized. No additional HTTP server for the serving client bundle and assets are  built.
-
-### `npm start`
-Runs the built app in the production mode.
-
-Open [http://localhost:3000](http://localhost:3000/) to view it in the browser.
+ 
+Building is performed in the `NODE_ENV === 'production'` [mode](https://webpack.js.org/guides/production/#node-environment-variable), so the build is optimized. No additional HTTP server for the serving client bundle and assets are built.
+ 
+### `npm start` or `yarn start`
+Runs the app from the build directory.
+ 
+### `npm test` or `yarn test`
+Runs unit run tests with Jest.
+ 
+### `npm run test:functional` or `yarn test:functional`
+Runs functional tests with TestCafe.
 
 ## **User Guide**
 The User Guide provides detailed information on an application created with Create reSolve App:

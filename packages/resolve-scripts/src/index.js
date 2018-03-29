@@ -1,3 +1,3 @@
-import routes from './resolve-routes'
+import Routes from './runtime/client/components/Routes'
 
-export { routes }
+export { Routes }

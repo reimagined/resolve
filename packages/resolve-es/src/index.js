@@ -1,5 +1,3 @@
-import 'regenerator-runtime/runtime'
-
 export default (
   config,
   errorHandler = err => {

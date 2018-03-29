@@ -3,6 +3,7 @@ import App from './components/App'
 export default [
   {
     path: '/',
-    component: App
+    component: App,
+    exact: true
   }
 ]

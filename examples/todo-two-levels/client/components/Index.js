@@ -3,11 +3,9 @@ import { connectViewModel } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
 import { NavLink } from 'react-router-dom'
 
-import actions from '../actions'
+const viewModelName = 'Lists'
 
-const viewModelName = 'Index'
-
-const Index = ({ lists, createList, removeList }) => {
+export const Index = ({ lists, createList, removeList }) => {
   let newList
   return (
     <div>
@@ -41,10 +39,11 @@ const mapStateToProps = state => {
   return {
     viewModelName,
     aggregateId,
-    lists: state[viewModelName][aggregateId]
+    lists: state.viewModels[viewModelName][aggregateId]
   }
 }
 
-const mapDispatchToProps = dispatch => bindActionCreators(actions, dispatch)
+const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+  bindActionCreators(aggregateActions, dispatch)
 
 export default connectViewModel(mapStateToProps, mapDispatchToProps)(Index)
