@@ -203,13 +203,29 @@ Object.keys(queryExecutors).forEach(modelName => {
       bodyParser.urlencoded({ extended: false }),
       async (req, res) => {
         const serialId = Date.now()
+
+        if (
+          !req.body.variables ||
+          !req.params.resolverName ||
+          req.body.variables.constructor !== Object ||
+          req.params.resolverName.constructor !== String
+        ) {
+          res
+            .status(500)
+            .end(`${message.readModelFail} Malformed read-model arguments`)
+
+          // eslint-disable-next-line no-console
+          console.log('Malformed read-model arguments')
+
+          return
+        }
+
         if (!req.body.isReactive) {
           try {
-            const result = await executor(
-              req.params.resolverName,
-              req.body.variables,
-              req.jwtToken
-            )
+            const result = await executor(req.params.resolverName, {
+              jwtToken: req.jwtToken,
+              ...req.body.variables
+            })
             res.status(200).send({
               serialId,
               result
@@ -260,8 +276,10 @@ Object.keys(queryExecutors).forEach(modelName => {
                 }
               },
               req.params.resolverName,
-              req.body.variables,
-              req.jwtToken
+              {
+                jwtToken: req.jwtToken,
+                ...req.body.variables
+              }
             )
 
             res.status(200).send({
