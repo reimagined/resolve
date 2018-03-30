@@ -1,4 +1,5 @@
 import React from 'react'
+import { connectReadModel } from 'resolve-redux'
 import url from 'url'
 import { Link } from 'react-router-dom'
 import plur from 'plur'

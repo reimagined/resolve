@@ -89,7 +89,7 @@ export const mapDispatchToProps = dispatch =>
 
 const getReadModelData = state => {
   try {
-    return { me: state.readModels['default']['me'] }
+    return { me: state.readModels['default']['user'] }
   } catch (err) {
     return { me: null }
   }
@@ -97,7 +97,7 @@ const getReadModelData = state => {
 
 export default connectReadModel(state => ({
   readModelName: 'default',
-  resolverName: 'me',
+  resolverName: 'user',
   variables: {},
   data: getReadModelData(state)
 }))(connectViewModel(mapStateToProps, mapDispatchToProps)(CommentById))

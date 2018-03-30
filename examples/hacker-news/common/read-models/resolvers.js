@@ -62,5 +62,7 @@ export default {
       comments: Array.isArray(comments) ? comments : [],
       me: await getMe(jwtToken)
     }
-  }
+  },
+
+  void: async () => null
 }
