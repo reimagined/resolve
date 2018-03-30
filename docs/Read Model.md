@@ -9,42 +9,14 @@ We'll glad to see all your questions:
 * e-mail to **reimagined@devexpress.com**
 -------------------------------------------------------------------------
 
-A **read model** provides a system's current state or a part of it in the given format. It is built by processing all events happened in the system. A read model consists of asynchronous projection functions to build some state.
+The Read Model represents a system state or its part. It is built using Projection functions. All events from the beginning of time are applied to a read model to build its current state. 
 
-The read model projection function has a storage provider. The storage provider is an abstract facade for read-only operations on a read model state. 
+![image](https://user-images.githubusercontent.com/14352827/37778246-7de6ed1e-2dfa-11e8-8857-b1519e598f14.png)
 
-A read model name is used for launching an API facade on the web server at `/api/query/READ_MODEL_NAME`. Each read model should have its own name. If an application consists of only one read model without a name, it will be automatically renamed to `default` and will be available at `/api/query/default`. The launched facade works as a graphql endpoint accepting POST requests in the [appropriate format](http://graphql.org/learn/serving-over-http/#post-request).
+Read models consists of projection and resolvers side. Projection is function set, which receives domain events and performs read-model updating. Resolvers are endpoint facade functions, which receives arguments from the client, performs search and data extraction in the reading model and returns it to the client. Read model implies filling some storage via applying domain events. In each read model instance events come sequentially, and projection handler performs some reaction for them - usually, it's storage filling, but can be custom async action - for example, touching REST API of some service, saving file and etc.
 
-A typical read model structure:
+Read model meant to know, which event types and affected time period had been used for it's filling. Usually read model implies persistence, however, it can be stored in memory, but most likely it's the occasion for using *view models*. Read model usually huge, and should not re-apply events from the beginning of time, excluding case with changing projection event handlers or storage structure.
 
-```js
-export default [
-  {
-    name: 'Rating',
-    projection: {
-      Init: async store => {
-        await store.defineStorage('Rating', [
-          { name: 'id', type: 'string', index: 'primary' },
-          { name: 'rating', type: 'number', index: 'secondary' },
-          { name: 'name', type: 'string' },
-          { name: 'votes', type: 'json' }
-        ])
-      },
-      ItemAppended: async (store, { payload: { id, name } }) => {
-        await store.insert('Rating', { id, name, rating: 0, votes: {} })
-      }
-    },
-    resolvers: {
-      PagesCount: async (store, args) => {
-        const pageLength = Math.max(
-          Number.isInteger(args && +args.limit) ? +args.limit : 10,
-          0
-        )
-        const count = await store.count('Rating', {})
+Read models requires **adapter**, which provides United API for projection and resolvers. Resolve provides default adapters set, which wraps interaction with common databases as storages. Adapters in resolve packages are compatible and interchangeable and provide API wrapper for `NeDB`, `MySQL`, `MariaDB` and `AuroraDB` in AWS cloud.
 
-        return count > 0 ? Math.floor((count - 1) / pageLength) + 1 : 0
-      }
-    }
-  }
-]
-```
+End programmer can develop own adapter for support custom database, or generally, custom storage. Resolve library has API requirement, which adapter should satisfy - they listed in the appropriate documentation. If end programmer, who develops own read model adapter, wants compatibility and interchangeability with resolve adapters, it should be inherited from `resolve-read model-base`. In that case, all API verifications and internal actions will be performed automatically, and developer should only specify callbacks from target storage/database for predetermined actions set.

@@ -51,6 +51,8 @@ test('add reply', async (t /*: TestController */) => {
   await t.click(await Selector('a').withText('Ask HN: my ask'))
   await t.click(await Selector('a').withText('reply'))
 
+  await t.wait(1000) // TODO Fix reactivity
+
   await t.expect(await Selector('div').withText('my text').exists).eql(false)
 
   await t
