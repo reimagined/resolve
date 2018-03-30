@@ -1,6 +1,7 @@
 import React from 'react'
+import { connectReadModel } from 'resolve-redux'
 
-import AuthForm from './AuthForm'
+import AuthForm from '../components/AuthForm'
 import { rootDirectory } from '../constants'
 
 const Login = props => {
@@ -20,4 +21,9 @@ const Login = props => {
   )
 }
 
-export default Login
+export default connectReadModel((state, ownProps) => ({
+  readModelName: 'default',
+  resolverName: 'void',
+  variables: {},
+  ...ownProps
+}))(Login)

@@ -1,10 +1,11 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { NavLink } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 import styled from 'styled-components'
 
-import Splitter from './Splitter'
-import LoginInfo from '../containers/LoginInfo'
+import Splitter from '../components/Splitter'
+import LoginInfo from './LoginInfo'
 import { rootDirectory } from '../constants'
 
 const ContentRoot = styled.div`
@@ -69,6 +70,99 @@ const FooterLink = styled.a`
   text-decoration: underline;
 `
 
+class PageRoot extends React.Component {
+  lastReadModels = []
+  lastChildren = null
+  showProgress = true
+  unsubscribe = null
+  afterAnimate = null
+
+  handleChildChanges = () => {
+    const state = this.context.store.getState()
+    const actualReadModels = Object.keys(state.readModels).reduce(
+      (acc, modelName) => [
+        ...acc,
+        ...Object.keys(state.readModels[modelName]).map(
+          resolverName => `${modelName}:${resolverName}`
+        )
+      ],
+      []
+    )
+
+    const insertedStates = new Set(
+      actualReadModels.filter(x => !new Set(this.lastReadModels).has(x))
+    )
+
+    const removedStates = new Set(
+      this.lastReadModels.filter(x => !new Set(actualReadModels).has(x))
+    )
+
+    if (removedStates.size > 0) {
+      this.showProgress = true
+      this.forceUpdate()
+    } else if (insertedStates.size > 0) {
+      this.showProgress = false
+      this.forceUpdate()
+    }
+
+    this.lastReadModels = actualReadModels
+  }
+
+  componentWillMount() {
+    this.unsubscribe = this.context.store.subscribe(this.handleChildChanges)
+
+    this.afterAnimate =
+      typeof window !== 'undefined'
+        ? typeof window.requestAnimationFrame === 'function'
+          ? window.requestAnimationFrame.bind(window)
+          : typeof window.setImmediate === 'function'
+            ? window.setImmediate.bind(window)
+            : window.setTimeout.bind(window, 0)
+        : () => null
+  }
+
+  componentWillUnmount() {
+    this.afterAnimate = null
+
+    this.unsubscribe()
+  }
+
+  render() {
+    return (
+      <div key="loader">
+        <div
+          key="childcontent"
+          style={this.showProgress ? { display: 'none' } : {}}
+          ref={
+            !this.showProgress
+              ? ref => {
+                  if (ref == null || this.showProgress) return
+                  this.afterAnimate(() => {
+                    this.lastChildren = ref.innerHTML
+                  })
+                }
+              : ref => null
+          }
+        >
+          {this.props.children}
+        </div>
+
+        <div
+          key="loadcontent"
+          style={this.showProgress ? { opacity: 0.33 } : { display: 'none' }}
+          {...(this.showProgress
+            ? { dangerouslySetInnerHTML: { __html: this.lastChildren } }
+            : {})}
+        />
+      </div>
+    )
+  }
+}
+
+PageRoot.contextTypes = {
+  store: PropTypes.object.isRequired
+}
+
 const Layout = ({ children }) => (
   <div>
     <Helmet>
@@ -112,7 +206,9 @@ const Layout = ({ children }) => (
         <Link to="/submit">submit</Link>
         <LoginInfo />
       </PageHeader>
-      <Content>{children}</Content>
+      <Content>
+        <PageRoot>{children}</PageRoot>
+      </Content>
       <Footer>
         <FooterLink href="https://github.com/reimagined/resolve">
           reimagined/resolve
