@@ -6,17 +6,17 @@
     "build": "resolve-scripts build",
     "dev": "resolve-scripts dev",
     "start": "resolve-scripts start",
-        "test": "resolve-scripts test",
-        "test:functional": "resolve-scripts test:functional"
+    "test": "resolve-scripts test",
+    "test:functional": "resolve-scripts test:functional"
   },
-    "dependencies": {
-        "react": "^16.2.0",
-        "react-dom": "^16.2.0",
-        "resolve-scripts": "0.7.1"
-    },
+  "dependencies": {
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "resolve-scripts": "0.7.2"
+  },
   "devDependencies": {
-        "jest": "^22.4.3",
-        "react-test-renderer": "^16.2.0",
-        "testcafe": "^0.19.1"
+    "jest": "^22.4.3",
+    "react-test-renderer": "^16.2.0",
+    "testcafe": "^0.19.1"
   }
 }
