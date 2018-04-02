@@ -7,6 +7,8 @@ export default function validateConfig(config) {
     return validate(config, schema, { throwError: true })
   } catch (error) {
     // eslint-disable-next-line
-    throw `Resolve Config ${error.property} ${error.message}`
+    throw `Resolve Config validation failed:
+    property: ${error.property}
+    message: ${error.message}`
   }
 }

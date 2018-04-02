@@ -12,7 +12,9 @@
   "viewModels": "common/view-models/index.js",
   "sagas": "common/sagas/index.js",
   "index": "client/index.js",
-  "auth": "auth/index.js",
+  "auth": {
+    "strategies": "auth/index.js"
+  },
   "redux": {
     "store": "client/store/index.js",
     "reducers": "client/reducers/index.js",

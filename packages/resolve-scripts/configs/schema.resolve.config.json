@@ -1,130 +1,132 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "definitions": {
-  "adapter": {
-    "type": "object",
+    "adapter": {
+      "type": "object",
       "properties": {
-      "adapter": {
-        "type": "string"
+        "adapter": {
+          "type": "string"
+        },
+        "options": {
+          "type": "object"
+        }
       },
-      "options": {
-        "type": "object"
-      }
+      "additionalProperties": false
     },
-    "additionalProperties": false
-  },
-  "jwtCookie": {
-    "type": "object",
+    "jwtCookie": {
+      "type": "object",
       "properties": {
-      "name": {
-        "type": "string"
+        "name": {
+          "type": "string"
+        },
+        "maxAge": {
+          "type": "integer"
+        }
       },
-      "maxAge": {
-        "type": "integer"
-      }
+      "additionalProperties": false
     },
-    "additionalProperties": false
-  },
-  "redux": {
-    "type": "object",
+    "redux": {
+      "type": "object",
       "properties": {
-      "store": {
-        "type": "string"
+        "store": {
+          "type": "string"
+        },
+        "reducers": {
+          "type": "string"
+        },
+        "middlewares": {
+          "type": "string"
+        }
       },
-      "reducers": {
-        "type": "string"
-      },
-      "middlewares": {
-        "type": "string"
-      }
+      "additionalProperties": false
     },
-    "additionalProperties": false
-  },
-  "config": {
-    "type": "object",
+    "config": {
+      "type": "object",
       "properties": {
-      "host": {
-        "type": "string"
-      },
-      "port": {
-        "type": "integer"
-      },
-      "protocol": {
-        "type": "string",
+        "host": {
+          "type": "string"
+        },
+        "port": {
+          "type": "integer"
+        },
+        "protocol": {
+          "type": "string",
           "enum": [
-          "http",
-          "https"
-        ]
-      },
-      "index": {
-        "type": "string"
-      },
-      "redux": {
-        "$ref": "#/definitions/redux"
-      },
-      "routes": {
-        "type": "string"
-      },
-      "distDir": {
-        "type": "string"
-      },
-      "rootPath": {
-        "type": "string"
-      },
-      "staticDir": {
-        "type": "string"
-      },
-      "staticPath": {
-        "type": "string"
-      },
-      "aggregates": {
-        "type": "string"
-      },
-      "viewModels": {
-        "type": "string"
-      },
-      "readModels": {
-        "type": "string"
-      },
-      "sagas": {
-        "type": "string"
-      },
-      "bus": {
-        "$ref": "#/definitions/adapter"
-      },
-      "storage": {
-        "$ref": "#/definitions/adapter"
-      },
-      "subscribe": {
-        "$ref": "#/definitions/adapter"
-      },
-      "auth": {
-        "type": "string"
-      },
-      "jwtCookie": {
-        "$ref": "#/definitions/jwtCookie"
-      },
-      "registry": {
-        "type": "string"
-      },
-      "env": {
-        "type": "object",
-          "properties": {
-          "development": {
-            "$ref": "#/definitions/config"
-          },
-          "production": {
-            "$ref": "#/definitions/config"
-          },
-          "test": {
-            "$ref": "#/definitions/config"
+            "http",
+            "https"
+          ]
+        },
+        "index": {
+          "type": "string"
+        },
+        "redux": {
+          "$ref": "#/definitions/redux"
+        },
+        "routes": {
+          "type": "string"
+        },
+        "distDir": {
+          "type": "string"
+        },
+        "rootPath": {
+          "type": "string"
+        },
+        "staticDir": {
+          "type": "string"
+        },
+        "staticPath": {
+          "type": "string"
+        },
+        "aggregates": {
+          "type": "string"
+        },
+        "viewModels": {
+          "type": "string"
+        },
+        "readModels": {
+          "type": "string"
+        },
+        "sagas": {
+          "type": "string"
+        },
+        "bus": {
+          "$ref": "#/definitions/adapter"
+        },
+        "storage": {
+          "$ref": "#/definitions/adapter"
+        },
+        "subscribe": {
+          "$ref": "#/definitions/adapter"
+        },
+        "auth": {
+          "strategies": {
+            "type": "array"
           }
         },
-        "additionalProperties": false
-      }
-    },
-    "additionalProperties": false
-  }
-},
+        "jwtCookie": {
+          "$ref": "#/definitions/jwtCookie"
+        },
+        "registry": {
+          "type": "string"
+        },
+        "env": {
+          "type": "object",
+          "properties": {
+            "development": {
+              "$ref": "#/definitions/config"
+            },
+            "production": {
+              "$ref": "#/definitions/config"
+            },
+            "test": {
+              "$ref": "#/definitions/config"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
   "$ref": "#/definitions/config"
 }

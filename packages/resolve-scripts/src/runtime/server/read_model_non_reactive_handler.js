@@ -9,8 +9,10 @@ const readModelNonReactiveHandler = async (req, res) => {
   try {
     const result = await readModelQueryExecutors[req.params.modelName](
       req.params.resolverName,
-      req.body.variables,
-      req.jwtToken
+      {
+        ...req.body.variables,
+        jwtToken: req.jwtToken
+      }
     )
     res.status(200).send({
       serialId,

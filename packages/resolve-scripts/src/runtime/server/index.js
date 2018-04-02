@@ -14,6 +14,17 @@ import queryHandler from './query_handler'
 import socketHandler from './socket_handler'
 import sagaRunner from './saga_runner'
 
+import {
+  createAuthOptions,
+  createRequest,
+  createResponse,
+  resolveAuth
+} from 'resolve-auth'
+const authStrategiesConfigs = require($resolve.auth.strategies)
+const authStrategies = authStrategiesConfigs.map(({ strategy, options }) =>
+  resolveAuth(strategy, options)
+)
+
 const staticDir = $resolve.staticDir
 const distDir = $resolve.distDir
 const jwtCookie = $resolve.jwtCookie
@@ -37,6 +48,28 @@ app.use((req, res, next) => {
   req.socket = socket
 
   next()
+})
+
+const applyJwtValue = (token, res, url) => {
+  const { name: cookieName, ...cookieOptions } = jwtCookie
+  res.cookie(cookieName, token, cookieOptions)
+  res.redirect(url || getRootableUrl('/'))
+}
+
+authStrategies.forEach(strategy => {
+  strategy.forEach(({ route, callback }) => {
+    app[route.method.toLowerCase()](
+      getRootableUrl(route.path),
+      (req, res, next) => {
+        const safeReq = createRequest(req)
+        const safeRes = {
+          applyJwtValue,
+          ...createResponse(res)
+        }
+        callback(safeReq, safeRes, createAuthOptions(safeReq, safeRes, next))
+      }
+    )
+  })
 })
 
 app.use(getRootableUrl('/api/commands'), commandHandler)

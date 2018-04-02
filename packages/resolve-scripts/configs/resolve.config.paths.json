@@ -6,7 +6,7 @@
     "viewModels",
     "sagas",
     "index",
-    "auth",
+    "auth.strategies",
     "redux.store",
     "redux.reducers",
     "redux.middlewares"
