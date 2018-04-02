@@ -15,10 +15,10 @@ export default [
         }
         const user = await jwt.verify(
           jwtToken,
-          process.env.JWT_SECRET || 'DefaultSecret'
+          process.env.JWT_SECRET || 'SECRETJWT'
         )
 
-        return user
+        return user // */ return null
       }
     }
   }
