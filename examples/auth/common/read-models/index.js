@@ -18,7 +18,7 @@ export default [
           process.env.JWT_SECRET || 'SECRETJWT'
         )
 
-        return user // */ return null
+        return user
       }
     }
   }
