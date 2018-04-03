@@ -23,11 +23,14 @@ const makeCommandHandlerHash = (projection, aggregateId) =>
     .join(',') + `;${aggregateId}`
 
 const getAggregateState = async (
-  { projection, initialState },
+  {
+    projection,
+    initialState,
+    snapshotAdapter = emptySnapshotAdapter,
+    snapshotBucketSize = 100
+  },
   aggregateId,
-  eventStore,
-  snapshotAdapter,
-  snapshotBucketSize
+  eventStore
 ) => {
   const snapshotKey =
     projection && projection.constructor === Object
@@ -75,21 +78,12 @@ const getAggregateState = async (
   return { aggregateState, aggregateVersion }
 }
 
-const executeCommand = async (
-  command,
-  aggregate,
-  eventStore,
-  jwtToken,
-  snapshotAdapter,
-  snapshotBucketSize
-) => {
+const executeCommand = async (command, aggregate, eventStore, jwtToken) => {
   const { aggregateId, type } = command
   let { aggregateState, aggregateVersion } = await getAggregateState(
     aggregate,
     aggregateId,
-    eventStore,
-    snapshotAdapter,
-    snapshotBucketSize
+    eventStore
   )
 
   const handler = aggregate.commands[type]
@@ -106,37 +100,18 @@ const executeCommand = async (
   return event
 }
 
-function createExecutor({
-  eventStore,
-  aggregate,
-  snapshotAdapter,
-  snapshotBucketSize
-}) {
+function createExecutor({ eventStore, aggregate }) {
   return async (command, jwtToken) => {
-    const event = await executeCommand(
-      command,
-      aggregate,
-      eventStore,
-      jwtToken,
-      snapshotAdapter,
-      snapshotBucketSize
-    )
+    const event = await executeCommand(command, aggregate, eventStore, jwtToken)
     return await eventStore.saveEvent(event)
   }
 }
 
-export default ({
-  eventStore,
-  aggregates,
-  snapshotAdapter = emptySnapshotAdapter,
-  snapshotBucketSize = 100
-}) => {
+export default ({ eventStore, aggregates }) => {
   const executors = aggregates.reduce((result, aggregate) => {
     result[aggregate.name.toLowerCase()] = createExecutor({
       eventStore,
-      aggregate,
-      snapshotAdapter,
-      snapshotBucketSize
+      aggregate
     })
     return result
   }, {})
