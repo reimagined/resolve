@@ -35,6 +35,7 @@ const App = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
   return (
     <div>
       <Helmet>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="../../static/bootstrap.min.css" />
         <link rel="stylesheet" href="../../static/style.css" />
         <title>reSolve Todo Example</title>
@@ -44,35 +45,30 @@ const App = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
 
       <div
         style={{
-          width: '30%',
-          margin: '0 auto'
+          maxWidth: '580px',
+          margin: '0 auto',
+          paddingLeft: '10px',
+          paddingRight: '10px'
         }}
       >
         <h1>Task's List</h1>
 
         <ListGroup style={{ marginTop: '8%' }}>
           {Object.keys(todos).map(id => (
-            <ListGroupItem
-              key={id}
-              className="list-item"
-              style={{ height: '40px' }}
-            >
-              <Form inline style={{ height: '100%' }}>
-                <Col sm={1}>
-                  <Checkbox
-                    checked={todos[id].checked}
-                    onChange={toggleItem.bind(null, aggregateId, { id })}
-                  />
-                </Col>
-                <Col sm={10}>{todos[id].text}</Col>
-                <Col sm={1}>
-                  <Image
-                    src="../../static/close-button.png"
-                    onClick={removeItem.bind(null, aggregateId, { id })}
-                    style={{ cursor: 'pointer' }}
-                  />
-                </Col>
-              </Form>
+            <ListGroupItem key={id}>
+              <Checkbox
+                inline
+                checked={todos[id].checked}
+                onChange={toggleItem.bind(null, aggregateId, { id })}
+              >
+                {todos[id].text}
+              </Checkbox>
+              <Image
+                inline
+                src="../../static/close-button.png"
+                onClick={removeItem.bind(null, aggregateId, { id })}
+                style={{ cursor: 'pointer', float: 'right' }}
+              />
             </ListGroupItem>
           ))}
         </ListGroup>
@@ -82,7 +78,7 @@ const App = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
             type="text"
             placeholder="New Task"
             inputRef={element => (newTodo = element)}
-            style={{ width: '77%' }}
+            style={{ minWidth: '83%' }}
             onKeyPress={event => {
               if (event.charCode == 13) {
                 event.preventDefault()
@@ -95,7 +91,7 @@ const App = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
             onClick={() => {
               createItemFunc()
             }}
-            style={{ marginLeft: '3%', width: '20%' }}
+            style={{ float: 'right' }}
           >
             Add Task
           </Button>
