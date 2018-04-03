@@ -12,6 +12,13 @@ When initializing a command, pass the following arguments:
 * `aggregates`  
 	An array of [aggregates](../resolve-scripts/src/template#aggregates-and-read-models-).  
 
+* `snapshotAdapter`  
+	Optional, default no snapshots. Adapter for loading and saving intermediate aggregate state.
+
+* `snapshotBucketSize`  
+	Optional, default 100 events. Event count between saving aggregate snapshot.
+
+
 After the command is initialized, you get a function that is used to send an event to the event store. It receives two arguments:
 * `command`
 	An object with the following fields:
