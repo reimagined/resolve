@@ -63,18 +63,14 @@ export function makeLateResolvingPromise(...args) {
       'Make late-resolved promise accepts only zero on one argument'
     )
   }
-  let promiseResolver = () => null
-  const promise = new Promise(resolve => (promiseResolver = resolve))
 
-  const result = arg => promiseResolver(arg)
-  Object.setPrototypeOf(result, Promise.prototype)
-
-  result.then = (onResolve, onReject) => promise.then(onResolve, onReject)
-  result.catch = onReject => promise.catch(onReject)
+  let resolvePromise = null
+  const promise = new Promise(resolve => (resolvePromise = resolve))
+  Object.defineProperty(promise, 'resolve', { value: resolvePromise })
 
   if (args.length === 1) {
-    result(args[0])
+    resolvePromise(args[0])
   }
 
-  return result
+  return promise
 }

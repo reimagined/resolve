@@ -1,6 +1,6 @@
 {
   "name": "todo-two-levels",
-  "version": "0.7.2",
+  "version": "0.7.4",
   "private": true,
     "scripts": {
         "build": "resolve-scripts build",
@@ -13,11 +13,11 @@
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "redux": "^3.7.2",
-        "resolve-redux": "0.7.2",
-        "resolve-scripts": "0.7.2",
-        "react-router-dom": "^4.2.2",
-        "react-router": "^4.2.0"
-  },
+    "resolve-storage-lite": "0.7.2",
+    "resolve-redux": "0.7.4",
+    "resolve-scripts": "0.7.4",
+	"react-router-dom": "^4.2.2",
+    "react-router": "^4.2.0"  },
   "devDependencies": {
         "jest": "^22.4.3",
         "react-test-renderer": "^16.2.0",
