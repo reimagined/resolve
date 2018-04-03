@@ -7,10 +7,7 @@ import {
   ListGroup,
   ListGroupItem,
   Checkbox,
-  Col,
-  FormGroup,
   Form,
-  ControlLabel,
   Button,
   Image,
   FormControl
@@ -23,9 +20,10 @@ const viewModelName = 'Todos'
 const aggregateId = 'root-id'
 
 const App = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
+  const placeholder = 'New Task'
   const createItemFunc = () => {
     createItem(aggregateId, {
-      text: newTodo.value,
+      text: newTodo.value === '' ? placeholder : newTodo.value,
       id: Date.now()
     })
     newTodo.value = ''
@@ -43,17 +41,10 @@ const App = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
 
       <Header />
 
-      <div
-        style={{
-          maxWidth: '580px',
-          margin: '0 auto',
-          paddingLeft: '10px',
-          paddingRight: '10px'
-        }}
-      >
+      <div className="example-wrapper">
         <h1>Task's List</h1>
 
-        <ListGroup style={{ marginTop: '8%' }}>
+        <ListGroup className="example-list">
           {Object.keys(todos).map(id => (
             <ListGroupItem key={id}>
               <Checkbox
@@ -64,21 +55,20 @@ const App = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
                 {todos[id].text}
               </Checkbox>
               <Image
-                inline
+                className="example-close-button"
                 src="../../static/close-button.png"
                 onClick={removeItem.bind(null, aggregateId, { id })}
-                style={{ cursor: 'pointer', float: 'right' }}
               />
             </ListGroupItem>
           ))}
         </ListGroup>
 
-        <Form inline style={{ marginTop: '7%' }}>
+        <Form inline className="example-form">
           <FormControl
+            className="example-form-control"
             type="text"
-            placeholder="New Task"
+            placeholder={placeholder}
             inputRef={element => (newTodo = element)}
-            style={{ minWidth: '83%' }}
             onKeyPress={event => {
               if (event.charCode == 13) {
                 event.preventDefault()
@@ -87,11 +77,11 @@ const App = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
             }}
           />
           <Button
+            className="example-button"
             bsStyle="success"
             onClick={() => {
               createItemFunc()
             }}
-            style={{ float: 'right' }}
           >
             Add Task
           </Button>
