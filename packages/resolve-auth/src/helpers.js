@@ -16,7 +16,7 @@ const createResponse = expressRes => {
   const response = {
     expressRes,
     clearCookie: name => {
-      const fieldContentRegExp = /^[\u0009\u0020-\u007e\u0080-\u00ff]+$/
+      const fieldContentRegExp = /^[\u0009\u0020-\u007e\u0080-\u00ff]+$/ // eslint-disable-line
 
       if (!fieldContentRegExp.test(name)) {
         throw new TypeError('argument name is invalid')

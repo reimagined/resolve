@@ -1,3 +1,5 @@
+import { Strategy as strategy } from 'passport-local'
+import jwt from 'jsonwebtoken'
 import uuid from 'uuid'
 
 import { rootDirectory } from '../client/constants'
@@ -7,46 +9,60 @@ const getUserByName = async (executeQuery, name) => {
   return user
 }
 
-export default {
+const options = {
   strategy: {
     usernameField: 'username',
     passwordField: 'username',
     successRedirect: null
   },
-  registerCallback: async ({ resolve, body }, username, password) => {
-    const existingUser = await getUserByName(
-      resolve.queryExecutors.default,
-      username
-    )
-
-    if (existingUser) {
-      throw new Error('User already exists')
+  routes: {
+    register: {
+      path: '/register',
+      method: 'POST'
+    },
+    login: {
+      path: '/login',
+      method: 'POST'
     }
-
-    const user = {
-      name: username.trim(),
-      id: uuid.v4()
-    }
-
-    await resolve.executeCommand({
-      type: 'createUser',
-      aggregateId: user.id,
-      aggregateName: 'user',
-      payload: user
-    })
-
-    return user
   },
-  loginCallback: async ({ resolve, body }, username, password) => {
-    const user = await getUserByName(resolve.queryExecutors.default, username)
+  handlers: {
+    registerCallback: async ({ resolve }, username) => {
+      const existingUser = await getUserByName(
+        resolve.queryExecutors.default,
+        username
+      )
 
-    if (!user) {
-      throw new Error('No such user')
+      if (existingUser) {
+        throw new Error('User already exists')
+      }
+
+      const user = {
+        name: username.trim(),
+        id: uuid.v4()
+      }
+
+      await resolve.executeCommand({
+        type: 'createUser',
+        aggregateId: user.id,
+        aggregateName: 'user',
+        payload: user
+      })
+
+      return jwt.sign(user, process.env.JWT_SECRET || 'SECRETJWT')
+    },
+    loginCallback: async ({ resolve }, username) => {
+      const user = await getUserByName(resolve.queryExecutors.default, username)
+
+      if (!user) {
+        throw new Error('No such user')
+      }
+
+      return jwt.sign(user, process.env.JWT_SECRET || 'SECRETJWT')
+    },
+    failureCallback: (error, redirect) => {
+      redirect(`${rootDirectory}/error?text=${error}`)
     }
-
-    return user
-  },
-  failureCallback: (error, redirect) => {
-    redirect(`${rootDirectory}/error?text=${error}`)
   }
 }
+
+export default [{ strategy, options }]

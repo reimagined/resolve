@@ -7937,7 +7937,7 @@ testcafe-browser-tools@1.5.1:
     read-file-relative "^1.2.0"
     which-promise "^1.0.0"
 
-testcafe-browser-tools@^1.4.7, testcafe-browser-tools@^1.5.1, testcafe-browser-tools@^1.6.1:
+testcafe-browser-tools@^1.4.7, testcafe-browser-tools@^1.6.1:
   version "1.6.2"
   resolved "https://registry.yarnpkg.com/testcafe-browser-tools/-/testcafe-browser-tools-1.6.2.tgz#309fb98f1f0beb7d0e1b9160ba6ce8a81fcb7280"
   dependencies:
