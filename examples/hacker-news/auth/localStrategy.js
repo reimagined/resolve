@@ -1,7 +1,5 @@
 import uuid from 'uuid'
 
-/* eslint-disable */
-
 import { rootDirectory } from '../client/constants'
 
 const getUserByName = async (executeQuery, name) => {
@@ -52,4 +50,3 @@ export default {
     redirect(`${rootDirectory}/error?text=${error}`)
   }
 }
-/* eslint-enable */

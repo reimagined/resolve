@@ -1,7 +1,0 @@
-[ignore]
-.*/node_modules/.*
-.*\.json
-.*/dist
-
-[libs]
-flow-types/seamless-immutable.js
