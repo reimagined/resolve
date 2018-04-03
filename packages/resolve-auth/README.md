@@ -9,7 +9,8 @@ Provides an authentication mechanism with several possible variants:
 ## Usage
 
 First of all, create file with your strategy and add `auth` section into `resolve.config.json` for your application (see [`auth` example]('../../examples/auth')).
-Next, choose type of auth strategy (now we support `local`, `github` and `google`) and write code for it.
+Next, choose type of auth strategy (now we support `local`, `github` and `google`) and define options fo it - add auth `routes` that configure the strategy routing, describe `strategy` specified params  and  write code for `handlers`:
+Return array of tuples `{ strategy, options }` for every used auth algo.
 
 ## Examples
 
@@ -31,15 +32,15 @@ const options = {
       method: 'POST'
     }
   },
-  loginCallback: async (_, username) => {
-    const user = {
-      name: username
+  registerCallback: async (_, username) => { // here fake use is created
+    const user = {                           // for user storing into db see HakerNews example
+      name: username                         // https://github.com/reimagined/resolve/tree/master/examples/hacker-news
     }
 
-    return jwt.sign( user, process.env.SECRET_JWT)
+    return jwt.sign(user, process.env.SECRET_JWT)
   },
   failureCallback: (error, redirect) => {
-    redirect(`/`)
+    redirect(`/`) // in case of fail
   }
 }
 
@@ -48,5 +49,72 @@ export default [{ strategy, options }]
 ```
 
 ### Github authectication strategy example
+```javascript
+
+import { Strategy as strategy } from 'passport-github'
+import jwt from 'jsonwebtoken'
+
+const options = {
+  strategy: {
+    clientID: 'MyClientID',
+    clientSecret: 'MyClientSecret',
+    callbackURL: 'http://localhost:3000/auth/github/callback',
+    successRedirect: null
+  },
+  routes: {
+    auth: {
+      path: '/auth/github',
+      method: 'get'
+    },
+    callback: {
+      path: '/auth/github/callback',
+      method: 'get'
+    }
+  },
+  authCallback: async ({ resolve, body }, profile) => {
+    // your code to authenticate a user
+    return jwt.sign(user, process.env.SECRET_JWT)
+  },
+  (error, redirect, { resolve, body }) => {
+    // in case of fail
+  }
+}
+
+export default [{ strategy, options }]
+```
 
 ### Google authectication strategy example
+
+```javascript
+import { Strategy as strategy } from 'passport--google-oauth2'
+import jwt from 'jsonwebtoken'
+
+const options = {
+  strategy: {
+    clientID: 'MyClientID',
+    clientSecret: 'MyClientSecret',
+    callbackURL: 'http://localhost:3000/auth/google/callback',
+    successRedirect: null
+  },
+  routes: {
+    auth: {
+      path: '/auth/google',
+      method: 'get'
+    },
+    callback: {
+      path: '/auth/google/callback',
+      method: 'get'
+    }
+  },
+  authCallback: async ({ resolve, body }, profile) => {
+    // your code to authenticate a user
+  },
+  (error, redirect, { resolve, body }) => {
+    // in case of fail
+  }
+}
+
+export default [{ strategy, options }]
+
+```
+
