@@ -1,61 +1,52 @@
-# **Examples**
+The following tools are used to get a sample **reSolve** aplication:
 
--------------------------------------------------------------------------
-Sorry, this article isn't finished yet :(
-    
-We'll glad to see all your questions:
-* [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
-* [**Twitter**](https://twitter.com/resolvejs)
-* e-mail to **reimagined@devexpress.com**
--------------------------------------------------------------------------
+* [npx](https://www.npmjs.com/package/npx)
 
-This folder contains reSolve framework examples.
+    ```sh
+    npx create-resolve-app todo-example -e todo
+    ```
 
-Example setup is similar with new application creation, but it has `--example` or `-e` flag with example folder name. You can start working with reSolve example just in **2 minutes**.
+* [yarn](https://yarnpkg.com/lang/en/)
 
-<p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-example-installation.gif"></p>
+    ```sh
+    yarn create resolve-app todo-example -e todo
+    ```
 
-The created example is hosted at http://localhost:3000/ and http://<your_ip>:3000/ (you can [change your url settings](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)). Also you can look at [**tutorials**](#tutorials) for some examples.
+* [npm](https://www.npmjs.com/)
 
-#### Using npx
-```bash
-npx create-resolve-app todo-example -e todo
-```
+    ```sh
+    npm i -g create-resolve-app
+    create-resolve-app todo-example -e todo
+    ```
 
-#### Using yarn
-```bash
-yarn create resolve-app todo-example -e todo
-```
+The created application is accessible using the http://localhost:3000/ and `http://<your_ip>:3000` URLs (you can [change your URL settings](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)).
 
-#### Using npm
-```bash
-create-resolve-app todo-example -e todo
-```
+The `create-resolve-app` can is capable to create the following apps:
 
-* [**hello-world**](./hello-world)
+* [**hello-world**](https://github.com/reimagined/resolve/tree/master/examples/hello-world)
 
-It's a simple empty example that can be used like **reSolve application boilerplate**.
+    An empty app that can be used as a template for any **reSolve** application (created by default).
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-hello-world-example.png"></p>
 
-* [**top-list**](./top-list)
+* [**top-list**](https://github.com/reimagined/resolve/tree/master/examples/top-list)
 
-This example demonstrates **reactive read-models** that leads to client updating without page reloads. You can learn more about [read-models in documentation](https://github.com/reimagined/resolve/blob/master/docs/Read%20Model.md)
+    This example demonstrates how to update application state on external events unrelated to user actions.
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-top-list-example.png"></p>
 
-* [**todo**](./todo)
+* [**todo**](https://github.com/reimagined/resolve/tree/master/examples/todo)
 
-This example demonstrates **simple work with view-models**. You can learn more in [ToDo List App Tutorial](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/ToDo%20List%20App%20Tutorial.md) and [documentation](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md).
+    This example demonstrates how to work with the [view-models](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md). The app's creation process is detailed in the [ToDo List App Tutorial](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/ToDo%20List%20App%20Tutorial.md).
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-todo-example.png"></p>
 
-* [**todo-two-levels**](./todo-two-levels)
+* [**todo-two-levels**](https://github.com/reimagined/resolve/tree/master/examples/todo-two-levels)
 
-This example demonstrates work with view-models in case of **all events subscribtion**. Sometimes, for example for fast application prototyping, it's necessary to have view-model on client with all server events instead of part. There's a special feature called **wildcard**, that allows to subscribe to all events, you can learn more about that in [documentation](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md).
+    This example demonstrates how to work with view-models in the **all events subscribtion** case. Learn more about this case in the [View Model](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md) article.
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-todo-two-levels-example.png"></p>
 
-* [**hacker-news**](./hacker-news)
+* [**hacker-news**](https://github.com/reimagined/resolve/tree/master/examples/hacker-news)
 
-This example demonstrates [HackerNews](https://news.ycombinator.com/) application clone with CQRS and EventSoucring.
+    This example demonstrates a Hacker News application that is similar to [YCombinator Hacker News](https://news.ycombinator.com/). The app's creation process is detailed in the [Hacker News Tutorial](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/Hacker%20News%20Tutorial.md).

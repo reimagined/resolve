@@ -3,12 +3,22 @@ import { connectViewModel } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
 import { NavLink } from 'react-router-dom'
 
+import { Helmet } from 'react-helmet'
+import Header from '../components/Header.js'
+
 const viewModelName = 'Lists'
 
-export const Index = ({ lists, createList, removeList }) => {
+const Index = ({ lists, createList, removeList }) => {
   let newList
   return (
     <div>
+      <Helmet>
+        <link rel="stylesheet" href="/bootstrap.min.css" />
+        <title>reSolve Todo Two Levels Example</title>
+      </Helmet>
+
+      <Header />
+
       <h1>Two level TODO list</h1>
       <ol>
         {lists.map(({ id, title }) => (
@@ -43,7 +53,7 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = (dispatch, { aggregateActions }) =>
-  bindActionCreators(aggregateActions, dispatch)
+const mapDispatchToProps = (dispatch, props) =>
+  bindActionCreators(props.aggregateActions, dispatch)
 
 export default connectViewModel(mapStateToProps, mapDispatchToProps)(Index)
