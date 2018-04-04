@@ -1,3 +1,10 @@
+const rootPath =
+  typeof process !== 'undefined' &&
+  typeof process.env !== 'undefined' &&
+  process.env['ROOT_PATH']
+    ? `/${process.env['ROOT_PATH']}`
+    : ''
+
 export function checkRequiredFields(obj, beforeWarnings, afterWarnings) {
   const warningMessages = Object.keys(obj)
     .map(
@@ -21,32 +28,7 @@ export function checkRequiredFields(obj, beforeWarnings, afterWarnings) {
 }
 
 export function getRootableUrl(path) {
-  let rootDir =
-    typeof process !== 'undefined' &&
-    typeof process.env !== 'undefined' &&
-    process.env['ROOT_PATH']
-      ? process.env['ROOT_PATH']
-      : ''
-
-  const isReactNative =
-    typeof navigator !== 'undefined' && navigator.product === 'ReactNative'
-
-  if (isReactNative && path === '/socket/') {
-    rootDir = ''
-  }
-
-  let rootableUrl = rootDir
-  if (!/\/$/.test(rootDir)) {
-    rootableUrl += '/'
-  }
-
-  if (/^\//.test(path)) {
-    rootableUrl += path.slice(1)
-  } else {
-    rootableUrl += path
-  }
-
-  return rootableUrl
+  return `${rootPath}/${path.replace(/^\//, '')}`
 }
 
 export function getKey(viewModel, aggregateId) {
