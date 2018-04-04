@@ -11,7 +11,7 @@ We'll glad to see all your questions:
 
 ## How to start?
 
-This example demonstrates **reactive read-models** that leads to client updating without page reloads. To setup:
+This example demonstrates how to update application state on external events unrelated to user actions. To setup:
 
 ```bash
 npx create-resolve-app top-list-example -e top-list
