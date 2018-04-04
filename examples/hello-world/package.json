@@ -12,9 +12,9 @@
   "dependencies": {
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "resolve-scripts": "0.7.2",
-	"react-helmet": "^5.2.0",
-	"react-bootstrap": "^0.32.1"
+    "resolve-scripts": "0.7.4",
+    "react-helmet": "^5.2.0",
+    "react-bootstrap": "^0.32.1"
   },
   "devDependencies": {
     "jest": "^22.4.3",

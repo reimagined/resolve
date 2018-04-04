@@ -1,6 +1,6 @@
 {
   "name": "auth",
-  "version": "0.7.2",
+  "version": "0.7.4",
   "private": true,
   "dependencies": {
     "jsonwebtoken": "^8.2.0",
@@ -12,8 +12,8 @@
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "redux": "^3.7.2",
-    "resolve-scripts": "0.7.2",
-    "resolve-redux": "0.7.2",
+    "resolve-scripts": "0.7.4",
+    "resolve-redux": "0.7.4",
     "styled-components": "^3.2.3",
     "uuid": "^3.2.1"
   },
