@@ -183,12 +183,10 @@ export function rootPath({ resolveConfig }, argv, env) {
     resolveConfig.rootPath = argv.rootPath
   }
 
+  resolveConfig.rootPath = resolveConfig.rootPath || ''
+
   if (resolveConfig.rootPath && /^https?:\/\//.test(resolveConfig.rootPath)) {
     return new Error('Incorrect env.ROOT_PATH or cli.rootPath')
-  }
-
-  if (!/^\//.test(resolveConfig.rootPath)) {
-    resolveConfig.rootPath = `/${resolveConfig.rootPath}`
   }
 
   env.ROOT_PATH = resolveConfig.rootPath
