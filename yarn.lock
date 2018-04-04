@@ -6979,7 +6979,7 @@ react-test-renderer@^16.2.0:
     prop-types "^15.6.0"
     react-is "^16.3.0"
 
-react-transition-group@^1.2.0:
+react-transition-group@^1.2.0, react-transition-group@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-1.2.1.tgz#e11f72b257f921b213229a774df46612346c7ca6"
   dependencies:

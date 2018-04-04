@@ -21,15 +21,32 @@ const PageAuth = styled.div`
   float: right;
 `
 
-const LoginInfo = ({ data: { me }, logout }) => (
+/*
+
+        <Link to="/" onClick=() => document.getElemen
+        tById('hidden-form-for-logout').submit();>logout</Link>
+        <div onclick="document.getElementById('hidden-form-for-logout').submit();">logout</div>
+
+ */
+
+const LoginInfo = ({ data: { me } }) => (
   <PageAuth>
     {me ? (
       <div>
         <Link to={`/user/${me.id}`}>{me.name}</Link>
         <Splitter color="white" />
-        <Link to="/" onClick={logout}>
-          logout
-        </Link>
+
+        <form method="post" id="hidden-form-for-logout" action="/logout">
+          <input type="hidden" />
+          <Link
+            to="/"
+            onClick={() =>
+              document.getElementById('hidden-form-for-logout').submit()
+            }
+          >
+            logout
+          </Link>
+        </form>
       </div>
     ) : (
       <Link to="/login">login</Link>

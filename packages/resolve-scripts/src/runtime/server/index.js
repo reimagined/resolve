@@ -14,6 +14,11 @@ import queryHandler from './query_handler'
 import socketHandler from './socket_handler'
 import sagaRunner from './saga_runner'
 
+import readModelQueryExecutors from './read_model_query_executors'
+import viewModelQueryExecutors from './view_model_query_executors'
+import eventStore from './event_store'
+import executeCommand from './command_executor'
+
 import {
   createAuthOptions,
   createRequest,
@@ -62,6 +67,15 @@ authStrategies.forEach(strategy => {
       getRootableUrl(route.path),
       (req, res, next) => {
         const safeReq = createRequest(req)
+        Object.assign(safeReq, {
+          resolve: {
+            readModelQueryExecutors,
+            viewModelQueryExecutors,
+            subscribeByEventType: eventStore.subscribeByEventType,
+            subscribeByAggregateId: eventStore.subscribeByAggregateId,
+            executeCommand
+          }
+        })
         const safeRes = {
           applyJwtValue,
           ...createResponse(res)
