@@ -23,6 +23,8 @@ To create a **read model**, pass the following arguments to the `createReadModel
 To create a **view model**, pass the following arguments to the `createViewModel` factory function:
 * `eventStore` - a configured [eventStore](../resolve-es) instance.
 * `projection` - a map of [redux-like reducer functions](https://redux.js.org/docs/basics/Reducers.html) (one function for each event type).
+* `snapshotAdapter` - optional, default no snapshots; adapter for loading and saving intermediate aggregate state.
+* `snapshotBucketSize` - optional, default 100 events; event count between saving aggregate snapshot.
 
 
 To create a query facade for a read/view model, pass the following arguments to the `createFacade` factory function:
