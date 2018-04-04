@@ -10,7 +10,7 @@ fixture`Todo`.beforeEach(async t => {
 })
 
 test('should list be empty', async t => {
-  await t.expect(await Selector('ol').find('li').count).eql(0)
+  await t.expect(await Selector('ul').find('li').count).eql(0)
 })
 
 test('should add first todo', async t => {
@@ -19,7 +19,7 @@ test('should add first todo', async t => {
 
   await t
     .expect(
-      await Selector('ol')
+      await Selector('ul')
         .find('li')
         .nth(0)
         .find('label').innerText
@@ -27,18 +27,17 @@ test('should add first todo', async t => {
     .eql('Test 1')
 })
 
-test('should add second todo', async t => {
-  await t.typeText(await Selector('input[type=text]'), 'Test 2')
+test('should add second todo without text', async t => {
   await t.click(await Selector('button'))
 
   await t
     .expect(
-      await Selector('ol')
+      await Selector('ul')
         .find('li')
         .nth(1)
         .find('label').innerText
     )
-    .eql('Test 2')
+    .eql('New Task')
 })
 
 test('should toggle first todo', async t => {
@@ -54,25 +53,17 @@ test('should toggle first todo', async t => {
 })
 
 test('should remove first todo', async t => {
-  await t.expect(await Selector('ol').find('li').count).eql(2)
+  await t.expect(await Selector('ul').find('li').count).eql(2)
 
-  await t.click(
-    await Selector('span')
-      .withText('[x]')
-      .nth(0)
-  )
+  await t.click(await Selector('.example-close-button').nth(0))
 
-  await t.expect(await Selector('ol').find('li').count).eql(1)
+  await t.expect(await Selector('ul').find('li').count).eql(1)
 })
 
 test('should remove second todo', async t => {
-  await t.expect(await Selector('ol').find('li').count).eql(1)
+  await t.expect(await Selector('ul').find('li').count).eql(1)
 
-  await t.click(
-    await Selector('span')
-      .withText('[x]')
-      .nth(0)
-  )
+  await t.click(await Selector('.example-close-button').nth(0))
 
-  await t.expect(await Selector('ol').find('li').count).eql(0)
+  await t.expect(await Selector('ul').find('li').count).eql(0)
 })

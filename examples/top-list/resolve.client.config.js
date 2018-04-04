@@ -1,4 +1,4 @@
-import createStore from './client/store'
+import createStore from './client/store/index'
 import routes from './client/routes'
 
 if (module.hot) {
