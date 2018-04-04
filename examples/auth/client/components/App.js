@@ -1,6 +1,7 @@
 import React from 'react'
 import { connectReadModel } from 'resolve-redux'
 import Login from './Login'
+import Logout from './Logout'
 
 const getReadModelData = state => {
   try {
@@ -21,7 +22,12 @@ class RootComponent extends React.PureComponent {
       )
     }
 
-    return <h1>Hello, {this.props.data.me.name}!</h1>
+    return (
+      <div>
+        <h1>Hello, {this.props.data.me.name}!</h1>
+        <Logout />
+      </div>
+    )
   }
 }
 
