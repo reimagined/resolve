@@ -11,7 +11,7 @@ We'll glad to see all your questions:
 
 ## How to start?
 
-It's a simple **empty reSolve application** that can be used like boilerplate. `create-resolve-app` package install this example like starting application by default, so you can setup this example by one of two ways:
+An empty app that can be used as a template for any **reSolve** application. It's created by default so you can setup this example by one of two ways:
 1. Create a **new reSolve** application:
 ```bash
 npx create-resolve-app my-app
