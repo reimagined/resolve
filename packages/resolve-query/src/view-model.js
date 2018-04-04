@@ -1,4 +1,5 @@
 import 'regenerator-runtime/runtime'
+import invariantFunctionHash from 'invariant-function-hash'
 
 const GeneratorProto = (function*() {})().__proto__.__proto__
 const PromiseProto = (async function() {})().__proto__
@@ -20,10 +21,30 @@ const filterAsyncResult = result => {
   }
 }
 
-const createViewModel = ({ projection, eventStore }) => {
+const emptySnapshotAdapter = Object.freeze({
+  loadSnapshot: async () => ({ timestamp: 0, state: null }),
+  saveSnapshot: () => null
+})
+
+const makeViewModelHash = projection =>
+  Object.keys(projection)
+    .sort()
+    .map(
+      handlerName =>
+        `${handlerName}:${invariantFunctionHash(projection[handlerName])}`
+    )
+    .join(',')
+
+const createViewModel = ({
+  projection,
+  eventStore,
+  snapshotAdapter = emptySnapshotAdapter,
+  snapshotBucketSize = 100
+}) => {
   const getKey = aggregateIds =>
     Array.isArray(aggregateIds) ? aggregateIds.sort().join(',') : aggregateIds
   const viewMap = new Map()
+  const viewModelHash = makeViewModelHash(projection)
 
   const reader = async ({ aggregateIds } = { aggregateIds: null }) => {
     if (
@@ -36,17 +57,28 @@ const createViewModel = ({ projection, eventStore }) => {
     }
 
     const key = getKey(aggregateIds)
-
     if (viewMap.has(key)) {
       const executor = viewMap.get(key)
       return await executor()
     }
 
+    const snapshotKey = `${viewModelHash};${key}`
+    const eventTypes = Object.keys(projection).filter(
+      eventName => eventName !== 'Init'
+    )
+    let appliedEvents = 0
+    let lastTimestamp = 0
     let state = null
     let error = null
 
     try {
-      if (typeof projection.Init === 'function') {
+      const snapshot = await snapshotAdapter.loadSnapshot(snapshotKey)
+      lastTimestamp = snapshot.timestamp
+      state = snapshot.state
+    } catch (err) {}
+
+    try {
+      if (!(+lastTimestamp > 0) && typeof projection.Init === 'function') {
         state = projection.Init()
         filterAsyncResult(state)
       }
@@ -55,27 +87,30 @@ const createViewModel = ({ projection, eventStore }) => {
     }
 
     const callback = event => {
-      if (!event || !event.type || error) {
-        return
-      }
+      if (!event || !event.type || error) return
       try {
         state = projection[event.type](state, event)
         filterAsyncResult(state)
+
+        if (++appliedEvents % snapshotBucketSize === 0) {
+          lastTimestamp = Date.now()
+          snapshotAdapter.saveSnapshot(snapshotKey, { state, lastTimestamp })
+        }
       } catch (err) {
         error = err
       }
     }
 
-    const eventTypes = Object.keys(projection).filter(
-      eventName => eventName !== 'Init'
-    )
-
     const subscribePromise =
       aggregateIds === '*'
-        ? eventStore.subscribeByEventType(eventTypes, callback)
+        ? eventStore.subscribeByEventType(eventTypes, callback, {
+            onlyBus: false,
+            startTime: lastTimestamp
+          })
         : eventStore.subscribeByAggregateId(
             aggregateIds,
-            event => eventTypes.includes(event.type) && callback(event)
+            event => eventTypes.includes(event.type) && callback(event),
+            { onlyBus: false, startTime: lastTimestamp }
           )
 
     const executor = async () => {
