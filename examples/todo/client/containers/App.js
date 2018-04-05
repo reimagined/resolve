@@ -17,7 +17,13 @@ import Header from '../components/Header.js'
 const viewModelName = 'Todos'
 const aggregateId = 'root-id'
 
-const App = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
+export const App = ({
+  todos,
+  createItem,
+  toggleItem,
+  removeItem,
+  aggregateId
+}) => {
   const placeholder = 'New Task'
   const createItemFunc = () => {
     createItem(aggregateId, {

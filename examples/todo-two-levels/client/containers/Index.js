@@ -8,7 +8,7 @@ import Header from '../components/Header.js'
 
 const viewModelName = 'Lists'
 
-const Index = ({ lists, createList, removeList }) => {
+export const Index = ({ lists, createList, removeList }) => {
   let newList
   return (
     <div>

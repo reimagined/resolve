@@ -121,8 +121,8 @@ const ItemsPager = ({ count, page, setPage }) => (
       new Array(Number.isInteger(count) && count > 0 ? +count : 0)
     ).map((_, idx) => (
       <button
-        onClick={setPage.bind(null, idx)}
-        disabled={idx === page}
+        onClick={idx !== page ? setPage.bind(null, idx) : undefined}
+        style={idx !== page ? {} : { fontWeight: 'bold' }}
         key={`BT${idx}`}
       >
         {`${+(ITEMS_PER_PAGE * idx) + 1} - ${ITEMS_PER_PAGE * (idx + 1)}`}

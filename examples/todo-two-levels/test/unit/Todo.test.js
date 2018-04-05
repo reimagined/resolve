@@ -2,7 +2,7 @@ import React from 'react'
 import renderer from 'react-test-renderer'
 import { StaticRouter } from 'react-router'
 
-import { Todo } from '../../client/components/Todo'
+import { Todo } from '../../client/containers/Todo'
 
 test('renders correctly', () => {
   const tree = renderer

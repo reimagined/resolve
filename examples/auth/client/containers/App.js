@@ -14,7 +14,7 @@ const getReadModelData = state => {
   }
 }
 
-class App extends React.PureComponent {
+export class App extends React.PureComponent {
   render() {
     let isLogin = true
     let LogComponent = Logout

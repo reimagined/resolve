@@ -16,7 +16,7 @@ exports[`renders correctly 1`] = `
             className=""
             src="/resolve-logo.png"
           />
-           Todo Two Levels Example
+           Auth Example
         </p>
         <div
           aria-expanded={null}
@@ -66,58 +66,24 @@ exports[`renders correctly 1`] = `
     </nav>
   </div>
   <h1>
-    <a
-      aria-current="true"
-      className="active"
-      href="/"
-      onClick={[Function]}
-      style={Object {}}
-    >
-      Home
-    </a>
-     | TODO
+    You are not logged in
   </h1>
   <div>
-    <ol>
-      <li>
-        <label>
-          <input
-            checked={true}
-            onChange={[Function]}
-            type="checkbox"
-          />
-          text1
-        </label>
-        <span
-          onClick={[Function]}
-        >
-           [x]
-        </span>
-      </li>
-      <li>
-        <label>
-          <input
-            checked={false}
-            onChange={[Function]}
-            type="checkbox"
-          />
-          text2
-        </label>
-        <span
-          onClick={[Function]}
-        >
-           [x]
-        </span>
-      </li>
-    </ol>
-    <input
-      type="text"
-    />
-    <button
-      onClick={[Function]}
+    Create user and login
+    <form
+      action="/register"
+      method="POST"
     >
-      Add Item
-    </button>
+      username: 
+      <input
+        name="username"
+        type="text"
+      />
+      <input
+        type="submit"
+        value="create account"
+      />
+    </form>
   </div>
 </div>
 `;
