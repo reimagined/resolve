@@ -28,6 +28,9 @@ export function checkRequiredFields(obj, beforeWarnings, afterWarnings) {
 }
 
 export function getRootableUrl(path) {
+  if (/^https?:\/\//.test(path)) {
+    return path
+  }
   return `${rootPath}/${path.replace(/^\//, '')}`
 }
 

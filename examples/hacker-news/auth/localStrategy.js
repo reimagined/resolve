@@ -1,8 +1,8 @@
 import { Strategy as strategy } from 'passport-local'
 import jwt from 'jsonwebtoken'
-//import uuid from 'uuid'
+import uuid from 'uuid'
 
-import { rootDirectory } from '../client/constants'
+import { rootPath } from '../client/constants'
 
 const getUserByName = async (executeQuery, name) => {
   const { user } = await executeQuery('user', { name: name.trim() })
@@ -30,10 +30,10 @@ const options = {
     }
   },
 
-  registerCallback: async (/*req, username*/) => {
-    //    console.log(Object.keys(req))
-
-    /*
+  registerCallback: async (
+    { executeCommand, readModelQueryExecutors },
+    username
+  ) => {
     const existingUser = await getUserByName(
       readModelQueryExecutors.default,
       username
@@ -54,8 +54,7 @@ const options = {
       aggregateName: 'user',
       payload: user
     })
-*/
-    return jwt.sign('user', process.env.JWT_SECRET || 'SECRETJWT')
+    return jwt.sign(user, process.env.JWT_SECRET || 'SECRETJWT')
   },
   loginCallback: async ({ readModelQueryExecutors }, username) => {
     const user = await getUserByName(readModelQueryExecutors.default, username)
@@ -70,7 +69,7 @@ const options = {
     return ''
   },
   failureCallback: (error, redirect) => {
-    redirect(`${rootDirectory}/error?text=${error}`)
+    redirect(`${rootPath}/error?text=${error}`)
   }
 }
 

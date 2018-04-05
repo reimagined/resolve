@@ -4,7 +4,7 @@ import createEventStore from 'resolve-es'
 import createStorage from 'resolve-storage-lite'
 import createBus from 'resolve-bus-memory'
 
-const databaseFilePath = path.join(__dirname, '../storage.json')
+const databaseFilePath = path.join(__dirname, '../event-storage.db')
 
 const storage = createStorage({ pathToFile: databaseFilePath })
 const bus = createBus()
