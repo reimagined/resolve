@@ -1,6 +1,4 @@
-import 'regenerator-runtime/runtime'
 import invariantFunctionHash from 'invariant-function-hash'
-
 const verifyCommand = async ({ aggregateId, aggregateName, type }) => {
   if (!aggregateId) throw new Error('The "aggregateId" argument is required')
   if (!aggregateName)

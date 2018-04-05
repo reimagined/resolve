@@ -6,10 +6,10 @@ import storeApi from '../src/store-api'
 describe('resolve-readmodel-memory store-api', () => {
   const makeFindStubStorage = (storageName, findResult) => {
     const impl = methods =>
-      sinon.stub().callsFake(search => {
+      sinon.stub().callsFake(() => {
         const result = {}
         methods.forEach(key => {
-          result[key] = sinon.stub().callsFake(val => result)
+          result[key] = sinon.stub().callsFake(() => result)
         })
         result.exec = sinon.stub().callsFake(cb => cb(null, findResult))
         return result
@@ -26,7 +26,7 @@ describe('resolve-readmodel-memory store-api', () => {
 
   it('should provide defineStorage method', async () => {
     const newStorage = {
-      ensureIndex: sinon.stub().callsFake(({ fieldName }, cb) => cb(null))
+      ensureIndex: sinon.stub().callsFake((options, cb) => cb(null))
     }
     const storage = {}
 

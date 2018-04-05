@@ -1,6 +1,4 @@
-import 'regenerator-runtime/runtime'
 import invariantFunctionHash from 'invariant-function-hash'
-
 const GeneratorProto = (function*() {})().__proto__.__proto__
 const PromiseProto = (async function() {})().__proto__
 

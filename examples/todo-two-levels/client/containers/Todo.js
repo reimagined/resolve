@@ -6,16 +6,20 @@ import { NavLink } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 import Header from '../components/Header.js'
 
-import actions from '../actions'
-
 const viewModelName = 'Todos'
 
-const Todo = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
+export const Todo = ({
+  todos,
+  createItem,
+  toggleItem,
+  removeItem,
+  aggregateId
+}) => {
   let newTodo
   return (
     <div>
       <Helmet>
-        <link rel="stylesheet" href="../../static/bootstrap.min.css" />
+        <link rel="stylesheet" href="/bootstrap.min.css" />
       </Helmet>
 
       <Header />
@@ -66,10 +70,11 @@ const mapStateToProps = (state, ownProps) => {
   return {
     viewModelName,
     aggregateId,
-    todos: state[viewModelName][aggregateId]
+    todos: state.viewModels[viewModelName][aggregateId]
   }
 }
 
-const mapDispatchToProps = dispatch => bindActionCreators(actions, dispatch)
+const mapDispatchToProps = (dispatch, props) =>
+  bindActionCreators(props.aggregateActions, dispatch)
 
 export default connectViewModel(mapStateToProps, mapDispatchToProps)(Todo)
