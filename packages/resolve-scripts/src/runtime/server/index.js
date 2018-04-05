@@ -5,30 +5,15 @@ import createSocketServer from 'socket.io'
 import cookieParser from 'cookie-parser'
 import bodyParser from 'body-parser'
 
-import serverSideRendering from './server_side_rendering'
 import getRootableUrl from './utils/get_rootable_url'
+import serverSideRendering from './server_side_rendering'
 import startServer from './start_server'
 import commandHandler from './command_handler'
 import statusHandler from './status_handler'
 import queryHandler from './query_handler'
 import socketHandler from './socket_handler'
 import sagaRunner from './saga_runner'
-
-import readModelQueryExecutors from './read_model_query_executors'
-import viewModelQueryExecutors from './view_model_query_executors'
-import eventStore from './event_store'
-import executeCommand from './command_executor'
-
-import {
-  createAuthOptions,
-  createRequest,
-  createResponse,
-  resolveAuth
-} from 'resolve-auth'
-const authStrategiesConfigs = require($resolve.auth.strategies)
-const authStrategies = authStrategiesConfigs.map(({ strategy, options }) =>
-  resolveAuth(strategy, options)
-)
+import assignAuthRoutes from './assign_auth_routes'
 
 const staticDir = $resolve.staticDir
 const distDir = $resolve.distDir
@@ -55,36 +40,7 @@ app.use((req, res, next) => {
   next()
 })
 
-const applyJwtValue = (token, res, url) => {
-  const { name: cookieName, ...cookieOptions } = jwtCookie
-  res.cookie(cookieName, token, cookieOptions)
-  res.redirect(url || getRootableUrl('/'))
-}
-
-authStrategies.forEach(strategy => {
-  strategy.forEach(({ route, callback }) => {
-    app[route.method.toLowerCase()](
-      getRootableUrl(route.path),
-      (req, res, next) => {
-        const safeReq = createRequest(req)
-        Object.assign(safeReq, {
-          resolve: {
-            readModelQueryExecutors,
-            viewModelQueryExecutors,
-            subscribeByEventType: eventStore.subscribeByEventType,
-            subscribeByAggregateId: eventStore.subscribeByAggregateId,
-            executeCommand
-          }
-        })
-        const safeRes = {
-          applyJwtValue,
-          ...createResponse(res)
-        }
-        callback(safeReq, safeRes, createAuthOptions(safeReq, safeRes, next))
-      }
-    )
-  })
-})
+assignAuthRoutes(app)
 
 app.use(getRootableUrl('/api/commands'), commandHandler)
 app.use(getRootableUrl('/api/query/:modelName/:resolverName?'), queryHandler)

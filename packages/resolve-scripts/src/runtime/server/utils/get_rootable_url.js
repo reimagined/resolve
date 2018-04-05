@@ -1,9 +1,10 @@
-import url from 'url'
-
-const rootPath = $resolve.rootPath
+let rootPath = $resolve.rootPath ? `/${$resolve.rootPath}` : ''
 
 const getRootableUrl = path => {
-  return url.resolve(rootPath, path)
+  if (/^https?:\/\//.test(path)) {
+    return path
+  }
+  return `${rootPath}/${path.replace(/^\//, '')}`
 }
 
 export default getRootableUrl
