@@ -68,7 +68,7 @@ const options = {
     return jwt.sign(user, jwtSecret)
   },
   logoutCallback: async () => {
-    return jwt.sign({}, jwtSecret)
+    return undefined
   },
   failureCallback: (error, redirect) => {
     redirect(`${rootPath}/error?text=${error}`)

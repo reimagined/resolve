@@ -32,17 +32,6 @@ export default options => async (req, username, password, done) => {
         username,
         password
       )
-    } else if (path === getRouteByName('logout', options.routes).path) {
-      value = await options.logoutCallback(
-        {
-          readModelQueryExecutors,
-          viewModelQueryExecutors,
-          executeCommand,
-          body
-        },
-        username,
-        password
-      )
     }
 
     done(null, value)

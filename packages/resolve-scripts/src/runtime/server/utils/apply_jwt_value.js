@@ -8,14 +8,18 @@ const jwtCookie = $resolve.jwtCookie
 const applyJwtValue = (jwtToken, res, url) => {
   const { name: cookieName, ...cookieOptions } = jwtCookie
 
-  const jwt = jsonwebtoken.decode(jwtToken)
+  if (jwtToken) {
+    const jwt = jsonwebtoken.decode(jwtToken)
 
-  if (!isObject(jwt)) {
-    res.status(500).end('Incorrect JWT')
-    return
+    if (!isObject(jwt)) {
+      res.status(500).end('Incorrect JWT')
+      return
+    }
+    res.cookie(cookieName, jwtToken, cookieOptions)
+  } else {
+    res.clearCookie(cookieName)
   }
 
-  res.cookie(cookieName, jwtToken, cookieOptions)
   res.redirect(url || getRootableUrl('/'))
 }
 
