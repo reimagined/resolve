@@ -89,6 +89,8 @@ config.viewModels.forEach(viewModel => {
   const facade = createFacade({
     model: createViewModel({
       projection: viewModel.projection,
+      snapshotAdapter: viewModel.snapshotAdapter,
+      snapshotBucketSize: viewModel.snapshotBucketSize,
       eventStore
     }),
     resolvers: {
