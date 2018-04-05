@@ -4,6 +4,8 @@ import uuid from 'uuid'
 
 import { rootPath } from '../client/constants'
 
+const jwtSecret = process.env.JWT_SECRET || 'SECRETJWT'
+
 const getUserByName = async (executeQuery, name) => {
   const { user } = await executeQuery('user', { name: name.trim() })
   return user
@@ -54,7 +56,7 @@ const options = {
       aggregateName: 'user',
       payload: user
     })
-    return jwt.sign(user, process.env.JWT_SECRET || 'SECRETJWT')
+    return jwt.sign(user, jwtSecret)
   },
   loginCallback: async ({ readModelQueryExecutors }, username) => {
     const user = await getUserByName(readModelQueryExecutors.default, username)
@@ -63,10 +65,10 @@ const options = {
       throw new Error('No such user')
     }
 
-    return jwt.sign(user, process.env.JWT_SECRET || 'SECRETJWT')
+    return jwt.sign(user, jwtSecret)
   },
   logoutCallback: async () => {
-    return ''
+    return jwt.sign({}, jwtSecret)
   },
   failureCallback: (error, redirect) => {
     redirect(`${rootPath}/error?text=${error}`)

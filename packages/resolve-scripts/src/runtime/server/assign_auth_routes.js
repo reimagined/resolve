@@ -24,11 +24,9 @@ const assignAuthRoutes = app => {
         (req, res, next) => {
           const safeReq = createRequest(req)
           Object.assign(safeReq, {
-            resolve: {
-              readModelQueryExecutors,
-              viewModelQueryExecutors,
-              executeCommand
-            }
+            readModelQueryExecutors,
+            viewModelQueryExecutors,
+            executeCommand
           })
           const safeRes = {
             applyJwtValue,

@@ -9,6 +9,7 @@ const applyJwtValue = (jwtToken, res, url) => {
   const { name: cookieName, ...cookieOptions } = jwtCookie
 
   const jwt = jsonwebtoken.decode(jwtToken)
+
   if (!isObject(jwt)) {
     res.status(500).end('Incorrect JWT')
     return
