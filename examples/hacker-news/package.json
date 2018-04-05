@@ -9,7 +9,7 @@
     "dev": "resolve-scripts dev",
     "import": "babel-node ./import",
     "prettier": "prettier --single-quote --no-semi --write \"**/*.js\"",
-    "test": "resolve-scripts test",
+    "test": "jest",
     "test:update": "jest -u",
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watchAll",
