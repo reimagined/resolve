@@ -10,6 +10,7 @@ import { ServerStyleSheet, StyleSheetManager } from 'styled-components'
 import createStore from '../client/store/create_store'
 import getHtmlMarkup from './get_html_markup'
 import getClientEnv from './utils/get_client_env'
+import getRootableUrl from './utils/get_rootable_url'
 import Routes from '../client/components/Routes'
 
 const staticPath = $resolve.staticPath
@@ -49,7 +50,7 @@ const serverSideRendering = (req, res) => {
 
   const env = getClientEnv()
   const initialState = store.getState()
-  const clientUrl = Url.resolve(staticPath, 'client.js')
+  const clientUrl = getRootableUrl(Url.resolve(staticPath || '/', 'client.js'))
 
   res.send(
     getHtmlMarkup({

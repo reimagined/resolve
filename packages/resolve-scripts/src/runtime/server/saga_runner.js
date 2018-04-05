@@ -8,11 +8,13 @@ const sagas = require($resolve.sagas)
 const sagaRunner = () => {
   sagas.forEach(saga =>
     saga({
-      subscribeByEventType: eventStore.subscribeByEventType,
-      subscribeByAggregateId: eventStore.subscribeByAggregateId,
-      readModelQueryExecutors,
-      viewModelQueryExecutors,
-      executeCommand
+      resolve: {
+        subscribeByEventType: eventStore.subscribeByEventType,
+        subscribeByAggregateId: eventStore.subscribeByAggregateId,
+        readModelQueryExecutors,
+        viewModelQueryExecutors,
+        executeCommand
+      }
     })
   )
 }

@@ -122,7 +122,9 @@ describe('validate schema', () => {
     expect(
       validateСonfig({
         ...resolveConfigOrigin,
-        auth: 'custom-auth/index.js'
+        auth: {
+          strategies: 'custom-auth/index.js'
+        }
       })
     ).toBeTruthy()
   })

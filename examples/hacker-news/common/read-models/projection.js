@@ -38,6 +38,28 @@ export default {
       { name: 'createdByName', type: 'string' }
     ])
   },
+  [STORY_CREATED]: async (
+    store,
+    { aggregateId, timestamp, payload: { title, link, userId, userName, text } }
+  ) => {
+    const type = !link ? 'ask' : /^(Show HN)/.test(title) ? 'show' : 'story'
+
+    const story = {
+      id: aggregateId,
+      type,
+      title,
+      text,
+      link,
+      commentCount: 0,
+      votes: [],
+      createdAt: timestamp,
+      createdBy: userId,
+      createdByName: userName
+    }
+
+    await store.insert('Stories', story)
+  },
+
   [STORY_COMMENTED]: async (
     store,
     {
@@ -63,28 +85,6 @@ export default {
       { id: aggregateId },
       { $inc: { commentCount: 1 } }
     )
-  },
-
-  [STORY_CREATED]: async (
-    store,
-    { aggregateId, timestamp, payload: { title, link, userId, userName, text } }
-  ) => {
-    const type = !link ? 'ask' : /^(Show HN)/.test(title) ? 'show' : 'story'
-
-    const story = {
-      id: aggregateId,
-      type,
-      title,
-      text,
-      link,
-      commentCount: 0,
-      votes: [],
-      createdAt: timestamp,
-      createdBy: userId,
-      createdByName: userName
-    }
-
-    await store.insert('Stories', story)
   },
 
   [STORY_UPVOTED]: async (store, { aggregateId, payload: { userId } }) => {

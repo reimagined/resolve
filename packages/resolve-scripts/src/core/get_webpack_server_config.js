@@ -32,8 +32,8 @@ export default ({ resolveConfig, deployOptions, env }) => {
     output: {
       path: serverDistDir,
       filename: 'server.js',
-      devtoolModuleFilenameTemplate: '[resource-path]',
-      devtoolFallbackModuleFilenameTemplate: '[resource-path]?[hash]'
+      devtoolModuleFilenameTemplate: '[absolute-resource-path]',
+      devtoolFallbackModuleFilenameTemplate: '[absolute-resource-path]?[hash]'
     },
     module: {
       rules: [

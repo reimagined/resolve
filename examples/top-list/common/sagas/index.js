@@ -34,7 +34,7 @@ async function mainSagaImpl(executeCommand, pushInterval) {
   }
 }
 
-function mainSaga({ executeCommand }) {
+function mainSaga({ resolve: { executeCommand } }) {
   const pushInterval =
     Number.isSafeInteger(+process.env.PUSH_INTERVAL) &&
     +process.env.PUSH_INTERVAL > 10 &&

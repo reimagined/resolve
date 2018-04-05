@@ -33,7 +33,7 @@ const resolveAuth = (PassportStrategy, options) => {
 
   return Object.keys(options.routes).map(key => ({
     route: options.routes[key],
-    callback: (req, res, callbackOptions) => {
+    callback: async (req, res, callbackOptions) => {
       const strategy = new PassportStrategy(
         {
           ...options.strategy,

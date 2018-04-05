@@ -177,16 +177,14 @@ export function port({ resolveConfig }, argv, env) {
 extenders.push(rootPath)
 export function rootPath({ resolveConfig }, argv, env) {
   if (env.ROOT_PATH) {
-    resolveConfig.rootPath = env.ROOT_PATH
+    resolveConfig.rootPath = env.ROOT_PATH.replace(/^\//, '').replace(/\/$/, '')
   }
   if (argv.rootPath) {
-    resolveConfig.rootPath = argv.rootPath
+    resolveConfig.rootPath = argv.rootPath.replace(/^\//, '').replace(/\/$/, '')
   }
 
-  resolveConfig.rootPath = resolveConfig.rootPath || ''
-
   if (resolveConfig.rootPath && /^https?:\/\//.test(resolveConfig.rootPath)) {
-    return new Error('Incorrect env.ROOT_PATH or cli.rootPath')
+    return new Error('Incorrect env.ROOT_PATH or options.rootPath')
   }
 
   env.ROOT_PATH = resolveConfig.rootPath
