@@ -2,19 +2,19 @@ import React from 'react'
 import { connectReadModel } from 'resolve-redux'
 
 import AuthForm from '../components/AuthForm'
-import { rootPath } from '../constants'
+import { rootDirectory } from '../constants'
 
 const Login = props => {
   return (
     <div>
       <AuthForm
         buttonText="login"
-        action={`${rootPath}/login${props.location.search}`}
+        action={`${rootDirectory}/login${props.location.search}`}
         title="Login"
       />
       <AuthForm
         buttonText="create account"
-        action={`${rootPath}/register`}
+        action={`${rootDirectory}/register`}
         title="Create account"
       />
     </div>

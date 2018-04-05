@@ -1,6 +1,6 @@
 import { Strategy as strategy } from 'passport-local'
 import jwt from 'jsonwebtoken'
-//import uuid from 'uuid'
+import uuid from 'uuid'
 
 import { rootDirectory } from '../client/constants'
 
