@@ -12,8 +12,8 @@ const options = {
       path: '/register',
       method: 'POST'
     },
-    login: {
-      path: '/login',
+    logout: {
+      path: '/logout',
       method: 'POST'
     }
   },
@@ -22,21 +22,11 @@ const options = {
       {
         name: username
       },
-      'SECRETJWT'
-    ) // TODO - hide jwt Secret
+      process.env.JWT_SECRET || 'SECRETJWT'
+    )
   },
-  loginCallback: async (_, username) => {
-    return jwt.sign(
-      {
-        name: username
-      },
-      'SECRETJWT'
-    ) // TODO - hide jwt Secret
-  },
-  failureCallback: (error, redirect) => {
-    // eslint-disable-next-line no-console
-    console.log(error)
-    redirect(`/`)
+  logoutCallback: async () => {
+    return jwt.sign({}, process.env.JWT_SECRET || 'SECRETJWT')
   }
 }
 

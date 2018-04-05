@@ -17,6 +17,9 @@ export default [
           jwtToken,
           process.env.JWT_SECRET || 'SECRETJWT'
         )
+        if (!user.name) {
+          return null
+        }
 
         return user
       }

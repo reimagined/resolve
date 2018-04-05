@@ -35,7 +35,7 @@ const createResponse = expressRes => {
 }
 
 const getRouteByName = (name, routes) => {
-  const route = routes[name]
+  const route = routes[name] || {}
   const { path = route, method = 'get' } = route
   if (typeof path !== 'string') return null
   return { path, method }

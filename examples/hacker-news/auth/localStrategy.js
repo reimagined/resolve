@@ -1,10 +1,8 @@
 import { Strategy as strategy } from 'passport-local'
 import jwt from 'jsonwebtoken'
-import uuid from 'uuid'
+//import uuid from 'uuid'
 
-import { rootPath } from '../client/constants'
-
-const jwtSecret = process.env.JWT_SECRET || 'SECRETJWT'
+import { rootDirectory } from '../client/constants'
 
 const getUserByName = async (executeQuery, name) => {
   const { user } = await executeQuery('user', { name: name.trim() })
@@ -32,12 +30,9 @@ const options = {
     }
   },
 
-  registerCallback: async (
-    { executeCommand, readModelQueryExecutors },
-    username
-  ) => {
+  registerCallback: async ({ resolve }, username) => {
     const existingUser = await getUserByName(
-      readModelQueryExecutors.default,
+      resolve.readModelQueryExecutors.default,
       username
     )
 
@@ -50,28 +45,32 @@ const options = {
       id: uuid.v4()
     }
 
-    await executeCommand({
+    await resolve.executeCommand({
       type: 'createUser',
       aggregateId: user.id,
       aggregateName: 'user',
       payload: user
     })
-    return jwt.sign(user, jwtSecret)
+
+    return jwt.sign(user, process.env.JWT_SECRET || 'SECRETJWT')
   },
-  loginCallback: async ({ readModelQueryExecutors }, username) => {
-    const user = await getUserByName(readModelQueryExecutors.default, username)
+  loginCallback: async ({ resolve }, username) => {
+    const user = await getUserByName(
+      resolve.readModelQueryExecutors.default,
+      username
+    )
 
     if (!user) {
       throw new Error('No such user')
     }
 
-    return jwt.sign(user, jwtSecret)
+    return jwt.sign(user, process.env.JWT_SECRET || 'SECRETJWT')
   },
   logoutCallback: async () => {
-    return undefined
+    return jwt.sign({}, process.env.JWT_SECRET || 'SECRETJWT')
   },
   failureCallback: (error, redirect) => {
-    redirect(`${rootPath}/error?text=${error}`)
+    redirect(`${rootDirectory}/error?text=${error}`)
   }
 }
 

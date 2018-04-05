@@ -3,32 +3,28 @@ import { getRouteByName } from '../helpers'
 export default options => async (req, username, password, done) => {
   try {
     const path = req.originalUrl.split('?')[0]
-    const {
-      readModelQueryExecutors,
-      viewModelQueryExecutors,
-      executeCommand,
-      body
-    } = req
+    const { resolve, body } = req
     let value = null
-    if (path === getRouteByName('register', options.routes).path) {
+    if (
+      getRouteByName('register', options.routes) &&
+      path === getRouteByName('register', options.routes).path
+    ) {
       value = await options.registerCallback(
-        {
-          readModelQueryExecutors,
-          viewModelQueryExecutors,
-          executeCommand,
-          body
-        },
+        { resolve, body },
         username,
         password
       )
-    } else if (path === getRouteByName('login', options.routes).path) {
-      value = await options.loginCallback(
-        {
-          readModelQueryExecutors,
-          viewModelQueryExecutors,
-          executeCommand,
-          body
-        },
+    } else if (
+      getRouteByName('login', options.routes) &&
+      path === getRouteByName('login', options.routes).path
+    ) {
+      value = await options.loginCallback({ resolve, body }, username, password)
+    } else if (
+      getRouteByName('logout', options.routes) &&
+      path === getRouteByName('logout', options.routes).path
+    ) {
+      value = await options.logoutCallback(
+        { resolve, body },
         username,
         password
       )

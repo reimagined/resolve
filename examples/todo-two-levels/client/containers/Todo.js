@@ -3,18 +3,21 @@ import { connectViewModel } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
 import { NavLink } from 'react-router-dom'
 
+import { Helmet } from 'react-helmet'
+import Header from '../components/Header.js'
+
 const viewModelName = 'Todos'
 
-export const Todo = ({
-  todos,
-  createItem,
-  toggleItem,
-  removeItem,
-  aggregateId
-}) => {
+const Todo = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
   let newTodo
   return (
     <div>
+      <Helmet>
+        <link rel="stylesheet" href="/bootstrap.min.css" />
+      </Helmet>
+
+      <Header />
+
       <h1>
         <NavLink to="/">Home</NavLink> | TODO
       </h1>
@@ -65,7 +68,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = (dispatch, { aggregateActions }) =>
-  bindActionCreators(aggregateActions, dispatch)
+const mapDispatchToProps = (dispatch, props) =>
+  bindActionCreators(props.aggregateActions, dispatch)
 
 export default connectViewModel(mapStateToProps, mapDispatchToProps)(Todo)
