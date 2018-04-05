@@ -1,6 +1,6 @@
 {
   "name": "resolve-readmodel-memory",
-  "version": "0.7.4",
+  "version": "0.8.0",
   "description": "This package serves as a resolve-query adapter for storing a read model in memory",
   "main": "./dist/index.js",
   "bugs": {
@@ -24,7 +24,7 @@
   "dependencies": {
     "nedb": "^1.8.0",
     "regenerator-runtime": "^0.11.0",
-    "resolve-readmodel-base": "0.7.4",
+    "resolve-readmodel-base": "0.8.0",
     "uuid": "^3.1.0"
   },
   "devDependencies": {
