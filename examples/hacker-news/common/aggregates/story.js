@@ -16,7 +16,7 @@ export default {
     createStory: (state, command, jwtToken) => {
       const { id: userId, name: userName } = jwt.verify(
         jwtToken,
-        process.env.JWT_SECRET || 'DefaultSecret'
+        process.env.JWT_SECRET || 'SECRETJWT'
       )
       validate.stateIsAbsent(state, 'Story')
 
@@ -33,7 +33,7 @@ export default {
     upvoteStory: (state, command, jwtToken) => {
       const { id: userId } = jwt.verify(
         jwtToken,
-        process.env.JWT_SECRET || 'DefaultSecret'
+        process.env.JWT_SECRET || 'SECRETJWT'
       )
 
       validate.stateExists(state, 'Story')
@@ -45,7 +45,7 @@ export default {
     unvoteStory: (state, command, jwtToken) => {
       const { id: userId } = jwt.verify(
         jwtToken,
-        process.env.JWT_SECRET || 'DefaultSecret'
+        process.env.JWT_SECRET || 'SECRETJWT'
       )
 
       validate.stateExists(state, 'Story')
@@ -57,7 +57,7 @@ export default {
     commentStory: (state, command, jwtToken) => {
       const { id: userId, name: userName } = jwt.verify(
         jwtToken,
-        process.env.JWT_SECRET || 'DefaultSecret'
+        process.env.JWT_SECRET || 'SECRETJWT'
       )
       validate.stateExists(state, 'Story')
 

@@ -38,7 +38,18 @@
           "type": "string"
         }
       },
+      "required": ["store", "reducers", "middlewares"],
       "additionalProperties": false
+    },
+    "auth": {
+      "type": "object",
+      "properties": {
+        "strategies": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": ["strategies"]
     },
     "config": {
       "type": "object",
@@ -99,9 +110,7 @@
           "$ref": "#/definitions/adapter"
         },
         "auth": {
-          "strategies": {
-            "type": "array"
-          }
+          "$ref": "#/definitions/auth"
         },
         "jwtCookie": {
           "$ref": "#/definitions/jwtCookie"

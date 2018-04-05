@@ -49,7 +49,7 @@ const serverSideRendering = (req, res) => {
 
   const env = getClientEnv()
   const initialState = store.getState()
-  const clientUrl = Url.resolve(staticPath, 'client.js')
+  const clientUrl = Url.resolve(staticPath || '/', 'client.js')
 
   res.send(
     getHtmlMarkup({
