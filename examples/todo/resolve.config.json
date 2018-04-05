@@ -1,0 +1,9 @@
+{
+    "port": 3000,
+    "routes": "client/routes.js",
+    "aggregates": "common/aggregates/index.js",
+    "viewModels": "common/view-models/index.js"
+}
+
+// See the documentation for more information about available options list at
+// https://github.com/reimagined/resolve/blob/master/packages/resolve-scripts/configs/resolve.config.json

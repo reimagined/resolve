@@ -1,0 +1,10 @@
+{
+  "config": "resolve.config.json",
+  "mode": "development",
+  "build": false,
+  "start": false,
+  "watch": false,
+  "openBrowser": false,
+  "inspectHost": "127.0.0.1",
+  "inspectPort": 9229
+}

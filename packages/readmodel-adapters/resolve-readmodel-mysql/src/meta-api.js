@@ -1,5 +1,3 @@
-import 'regenerator-runtime/runtime'
-
 const getMetaInfo = async pool => {
   const { connection, metaName } = pool
 

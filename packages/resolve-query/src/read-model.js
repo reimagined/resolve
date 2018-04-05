@@ -1,4 +1,3 @@
-import 'regenerator-runtime/runtime'
 import createDefaultAdapter from 'resolve-readmodel-memory'
 
 const emptyFunction = () => {}

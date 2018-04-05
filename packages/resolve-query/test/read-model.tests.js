@@ -91,7 +91,7 @@ describe('resolve-query read-model', () => {
 
       init: sinon.stub().callsFake(() => ({
         getLastAppliedTimestamp: sinon.stub().callsFake(async () => INIT_TIME),
-        getReadable: sinon.stub().callsFake(async (...args) => projectionLog),
+        getReadable: sinon.stub().callsFake(async () => projectionLog),
         getError: sinon.stub().callsFake(async () => lastProjectionError)
       })),
 
@@ -102,7 +102,7 @@ describe('resolve-query read-model', () => {
       GoodEvent: sinon
         .stub()
         .callsFake(async (store, event) => await store.touch(event)),
-      BadEvent: sinon.stub().callsFake(async (store, event) => {
+      BadEvent: sinon.stub().callsFake(async () => {
         throw new Error('BadEvent')
       }),
       FailedEvent: true
@@ -284,7 +284,7 @@ describe('resolve-query read-model', () => {
     const readModel = createReadModel({ projection, eventStore, adapter })
     const builtProjection = adapter.buildProjection.firstCall.returnValue
     const appliedPromise = new Promise(resolve => {
-      projection.BadEvent.onCall(0).callsFake(async (store, event) => {
+      projection.BadEvent.onCall(0).callsFake(async () => {
         skipTicks().then(resolve)
         throw new Error('BadEvent')
       })

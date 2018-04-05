@@ -1,5 +1,3 @@
-import 'regenerator-runtime/runtime'
-
 const reset = ({ metaApi, internalContext }) => {
   if (internalContext.disposePromise) {
     return internalContext.disposePromise

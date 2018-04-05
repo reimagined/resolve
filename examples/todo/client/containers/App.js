@@ -14,12 +14,16 @@ import {
 } from 'react-bootstrap'
 import Header from '../components/Header.js'
 
-import actions from '../actions'
-
 const viewModelName = 'Todos'
 const aggregateId = 'root-id'
 
-const App = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
+export const App = ({
+  todos,
+  createItem,
+  toggleItem,
+  removeItem,
+  aggregateId
+}) => {
   const placeholder = 'New Task'
   const createItemFunc = () => {
     createItem(aggregateId, {
@@ -34,8 +38,8 @@ const App = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
     <div>
       <Helmet>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="../../static/bootstrap.min.css" />
-        <link rel="stylesheet" href="../../static/style.css" />
+        <link rel="stylesheet" href="/bootstrap.min.css" />
+        <link rel="stylesheet" href="/style.css" />
         <title>reSolve Todo Example</title>
       </Helmet>
 
@@ -56,7 +60,7 @@ const App = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
               </Checkbox>
               <Image
                 className="example-close-button"
-                src="../../static/close-button.png"
+                src="/close-button.png"
                 onClick={removeItem.bind(null, aggregateId, { id })}
               />
             </ListGroupItem>
@@ -70,7 +74,7 @@ const App = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
             placeholder={placeholder}
             inputRef={element => (newTodo = element)}
             onKeyPress={event => {
-              if (event.charCode == 13) {
+              if (event.charCode === 13) {
                 event.preventDefault()
                 createItemFunc()
               }
@@ -94,9 +98,10 @@ const App = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
 const mapStateToProps = state => ({
   viewModelName,
   aggregateId,
-  todos: state[viewModelName][aggregateId]
+  todos: state.viewModels[viewModelName][aggregateId]
 })
 
-const mapDispatchToProps = dispatch => bindActionCreators(actions, dispatch)
+const mapDispatchToProps = (dispatch, props) =>
+  bindActionCreators(props.aggregateActions, dispatch)
 
 export default connectViewModel(mapStateToProps, mapDispatchToProps)(App)

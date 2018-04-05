@@ -6,16 +6,14 @@ import { NavLink } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 import Header from '../components/Header.js'
 
-import actions from '../actions'
+const viewModelName = 'Lists'
 
-const viewModelName = 'Index'
-
-const Index = ({ lists, createList, removeList }) => {
+export const Index = ({ lists, createList, removeList }) => {
   let newList
   return (
     <div>
       <Helmet>
-        <link rel="stylesheet" href="../../static/bootstrap.min.css" />
+        <link rel="stylesheet" href="/bootstrap.min.css" />
         <title>reSolve Todo Two Levels Example</title>
       </Helmet>
 
@@ -51,10 +49,11 @@ const mapStateToProps = state => {
   return {
     viewModelName,
     aggregateId,
-    lists: state[viewModelName][aggregateId]
+    lists: state.viewModels[viewModelName][aggregateId]
   }
 }
 
-const mapDispatchToProps = dispatch => bindActionCreators(actions, dispatch)
+const mapDispatchToProps = (dispatch, props) =>
+  bindActionCreators(props.aggregateActions, dispatch)
 
 export default connectViewModel(mapStateToProps, mapDispatchToProps)(Index)

@@ -3,7 +3,7 @@ const deserializeState = state => JSON.parse(state)
 
 export default [
   {
-    name: 'Index',
+    name: 'Lists',
     projection: {
       Init: () => [],
       LIST_CREATED: (state, { aggregateId, payload: { title } }) => [
