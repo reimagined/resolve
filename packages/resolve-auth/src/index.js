@@ -34,13 +34,6 @@ const resolveAuth = (PassportStrategy, options) => {
   return Object.keys(options.routes).map(key => ({
     route: options.routes[key],
     callback: async (req, res, callbackOptions) => {
-      const path = req.originalUrl.split('?')[0]
-      if (path === getRouteByName('logout', options.routes).path) {
-        const user = await options.logoutCallback(req)
-        callbackOptions.onSuccess(options, user)
-        return
-      }
-
       const strategy = new PassportStrategy(
         {
           ...options.strategy,
