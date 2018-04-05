@@ -9,11 +9,11 @@
     "dev": "resolve-scripts dev",
     "import": "babel-node ./import",
     "prettier": "prettier --single-quote --no-semi --write \"**/*.js\"",
-    "test": "jest",
+    "test": "resolve-scripts test",
     "test:update": "jest -u",
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watchAll",
-    "test:functional": "cross-env NODE_ENV=tests babel-node ./tests/functional/testcafe_runner.js --presets es2015,stage-0,react",
+    "test:functional": "resolve-scripts test:functional",
     "lint-staged": "lint-staged"
   },
   "pre-commit": [
