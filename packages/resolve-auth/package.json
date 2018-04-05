@@ -1,6 +1,6 @@
 {
   "name": "resolve-auth",
-  "version": "0.7.4",
+  "version": "0.8.1",
   "description": "This package provide an auth to your app.",
   "main": "./dist/index.js",
   "bugs": {
