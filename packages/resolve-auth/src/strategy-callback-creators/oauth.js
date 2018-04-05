@@ -1,23 +1,12 @@
 export default options => async (
-  { readModelQueryExecutors, viewModelQueryExecutors, executeCommand, body },
+  { resolve, body },
   accessToken,
   refreshToken,
   profile,
   done
 ) => {
   try {
-    done(
-      null,
-      await options.authCallback(
-        {
-          readModelQueryExecutors,
-          viewModelQueryExecutors,
-          executeCommand,
-          body
-        },
-        profile
-      )
-    )
+    done(null, await options.authCallback({ resolve, body }, profile))
   } catch (error) {
     done(error)
   }
