@@ -4,6 +4,15 @@ import { bindActionCreators } from 'redux'
 import { NavLink } from 'react-router-dom'
 
 import { Helmet } from 'react-helmet'
+import {
+  ListGroup,
+  ListGroupItem,
+  Checkbox,
+  Form,
+  Button,
+  Image,
+  FormControl
+} from 'react-bootstrap'
 import Header from '../components/Header.js'
 
 import actions from '../actions'
@@ -11,51 +20,84 @@ import actions from '../actions'
 const viewModelName = 'Todos'
 
 const Todo = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
+  const placeholder = 'New Task'
+  const createItemFunc = () => {
+    createItem(aggregateId, {
+      text: newTodo.value === '' ? placeholder : newTodo.value,
+      id: Date.now()
+    })
+    newTodo.value = ''
+  }
+
   let newTodo
+  let todoList = todos || {}
+
   return (
     <div>
       <Helmet>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="../../static/bootstrap.min.css" />
+        <link rel="stylesheet" href="../../static/style.css" />
+        <title>reSolve Todo Two Levels Example</title>
       </Helmet>
 
       <Header />
 
-      <h1>
-        <NavLink to="/">Home</NavLink> | TODO
-      </h1>
-      {todos ? (
-        <div>
-          <ol>
-            {Object.keys(todos).map(id => (
-              <li key={id}>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={todos[id].checked}
-                    onChange={toggleItem.bind(null, aggregateId, { id })}
-                  />
-                  {todos[id].text}
-                </label>
-                <span onClick={removeItem.bind(null, aggregateId, { id })}>
-                  {' [x]'}
-                </span>
-              </li>
-            ))}
-          </ol>
-          <input type="text" ref={element => (newTodo = element)} />
-          <button
+      <div className="example-wrapper">
+        <Form inline>
+          <NavLink to="/">
+            <Image
+              className="example-arrow-button"
+              src="../../static/left-arrow-button.png"
+            />
+            <span className="example-back-label">Back</span>
+          </NavLink>
+          <div className="example-task-name">Task's List</div>
+        </Form>
+
+        <ListGroup className="example-list">
+          {Object.keys(todoList).map(id => (
+            <ListGroupItem key={id}>
+              <Checkbox
+                inline
+                checked={todoList[id].checked}
+                onChange={toggleItem.bind(null, aggregateId, { id })}
+              >
+                {todoList[id].text}
+              </Checkbox>
+              <Image
+                className="example-close-button"
+                src="../../static/close-button.png"
+                onClick={removeItem.bind(null, aggregateId, { id })}
+              />
+            </ListGroupItem>
+          ))}
+        </ListGroup>
+
+        <Form inline className="example-form">
+          <FormControl
+            className="example-form-control"
+            type="text"
+            placeholder={placeholder}
+            inputRef={element => (newTodo = element)}
+            onKeyPress={event => {
+              if (event.charCode === 13) {
+                event.preventDefault()
+                createItemFunc()
+              }
+            }}
+          />
+          <Button
+            className="example-button"
+            bsStyle="success"
             onClick={() => {
-              createItem(aggregateId, {
-                text: newTodo.value,
-                id: Date.now()
-              })
-              newTodo.value = ''
+              createItemFunc()
             }}
           >
-            Add Item
-          </button>
-        </div>
-      ) : null}
+            Add Task
+          </Button>
+        </Form>
+      </div>
     </div>
   )
 }

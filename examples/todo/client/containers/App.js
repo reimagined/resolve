@@ -70,7 +70,7 @@ const App = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
             placeholder={placeholder}
             inputRef={element => (newTodo = element)}
             onKeyPress={event => {
-              if (event.charCode == 13) {
+              if (event.charCode === 13) {
                 event.preventDefault()
                 createItemFunc()
               }
