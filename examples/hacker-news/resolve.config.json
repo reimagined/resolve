@@ -8,6 +8,10 @@
     },
     "auth": {
         "strategies": "auth/localStrategy.js"
+    },
+    "jwtCookie": {
+        "name": "jwt",
+        "maxAge": 31536000000
     }
 }
 // See the documentation for more information about available options list at
