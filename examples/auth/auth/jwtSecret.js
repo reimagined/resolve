@@ -1,6 +1,6 @@
 let jwtSecret =
   process.env.JWT_SECRET ||
-  (process.env.NODE_ENV == 'development' && 'SECRETJWT')
+  (process.env.NODE_ENV === 'development' && 'SECRETJWT')
 
 if (!jwtSecret) {
   throw new Error(
