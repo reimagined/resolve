@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<section
+  className="sc-bwzfXH gzMTbA"
+>
+  <h1
+    className="sc-bdVaJa bzmvhR"
+  >
+    Hello World, this is my first styled component!
+  </h1>
+</section>
+`;

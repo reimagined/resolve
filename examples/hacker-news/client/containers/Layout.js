@@ -141,7 +141,7 @@ class PageRoot extends React.Component {
                     this.lastChildren = ref.innerHTML
                   })
                 }
-              : ref => null
+              : ref => null // eslint-disable-line
           }
         >
           {this.props.children}
@@ -174,19 +174,19 @@ const Layout = ({ children }) => (
       <link
         rel="shortcut icon"
         type="image/x-icon"
-        href={`${rootDirectory}/static/reSolve-logo.svg`}
+        href={`${rootDirectory}/reSolve-logo.svg`}
       />
       <link
         rel="stylesheet"
         type="text/css"
-        href={`${rootDirectory}/static/style.css`}
+        href={`${rootDirectory}/style.css`}
       />
     </Helmet>
     <ContentRoot>
       <PageHeader>
         <Link to="/">
           <img
-            src={`${rootDirectory}/static/reSolve-logo.svg`}
+            src={`${rootDirectory}/reSolve-logo.svg`}
             width="18"
             height="18"
             alt=""

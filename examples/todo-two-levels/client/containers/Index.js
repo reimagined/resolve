@@ -14,9 +14,7 @@ import {
 } from 'react-bootstrap'
 import Header from '../components/Header.js'
 
-import actions from '../actions'
-
-const viewModelName = 'Index'
+const viewModelName = 'Lists'
 
 const Index = ({ lists, createList, removeList }) => {
   const placeholder = 'New List'
@@ -33,8 +31,8 @@ const Index = ({ lists, createList, removeList }) => {
     <div>
       <Helmet>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="../../static/bootstrap.min.css" />
-        <link rel="stylesheet" href="../../static/style.css" />
+        <link rel="stylesheet" href="/bootstrap.min.css" />
+        <link rel="stylesheet" href="/style.css" />
         <title>reSolve Todo Two Levels Example</title>
       </Helmet>
 
@@ -49,7 +47,7 @@ const Index = ({ lists, createList, removeList }) => {
               <NavLink to={`/${id}`}>{title}</NavLink>
               <Image
                 className="example-close-button"
-                src="../../static/close-button.png"
+                src="/close-button.png"
                 onClick={() => removeList(id)}
               />
             </ListGroupItem>
@@ -90,10 +88,11 @@ const mapStateToProps = state => {
   return {
     viewModelName,
     aggregateId,
-    lists: state[viewModelName][aggregateId]
+    lists: state.viewModels[viewModelName][aggregateId]
   }
 }
 
-const mapDispatchToProps = dispatch => bindActionCreators(actions, dispatch)
+const mapDispatchToProps = (dispatch, props) =>
+  bindActionCreators(props.aggregateActions, dispatch)
 
 export default connectViewModel(mapStateToProps, mapDispatchToProps)(Index)

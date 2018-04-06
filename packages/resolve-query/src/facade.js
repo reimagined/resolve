@@ -1,4 +1,3 @@
-import 'regenerator-runtime/runtime'
 import { diff } from 'diff-json'
 
 const [diffWrapperPrev, diffWrapperNext] = [{ wrap: null }, { wrap: null }]

@@ -1,6 +1,6 @@
 {
   "name": "resolve-command",
-  "version": "0.7.4",
+  "version": "0.8.1",
   "description": "This package creates a function to execute a command.",
   "main": "./dist/index.js",
   "bugs": {

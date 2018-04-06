@@ -43,11 +43,11 @@ describe('resolve-command', () => {
     )
 
     aggregate.projection = {
-      SuccessEvent: (state, event) => {
+      SuccessEvent: state => {
         lastState = { ...state, value: 42 }
         return lastState
       },
-      BrokenEvent: (state, event) => {
+      BrokenEvent: () => {
         throw brokenStateError
       }
     }

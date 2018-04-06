@@ -15,8 +15,6 @@ import {
 } from 'react-bootstrap'
 import Header from '../components/Header.js'
 
-import actions from '../actions'
-
 const viewModelName = 'Todos'
 
 const Todo = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
@@ -36,8 +34,8 @@ const Todo = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
     <div>
       <Helmet>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="../../static/bootstrap.min.css" />
-        <link rel="stylesheet" href="../../static/style.css" />
+        <link rel="stylesheet" href="/bootstrap.min.css" />
+        <link rel="stylesheet" href="/style.css" />
         <title>reSolve Todo Two Levels Example</title>
       </Helmet>
 
@@ -48,7 +46,7 @@ const Todo = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
           <NavLink to="/">
             <Image
               className="example-arrow-button"
-              src="../../static/left-arrow-button.png"
+              src="/left-arrow-button.png"
             />
             <span className="example-back-label">Back</span>
           </NavLink>
@@ -67,7 +65,7 @@ const Todo = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
               </Checkbox>
               <Image
                 className="example-close-button"
-                src="../../static/close-button.png"
+                src="/close-button.png"
                 onClick={removeItem.bind(null, aggregateId, { id })}
               />
             </ListGroupItem>
@@ -108,10 +106,11 @@ const mapStateToProps = (state, ownProps) => {
   return {
     viewModelName,
     aggregateId,
-    todos: state[viewModelName][aggregateId]
+    todos: state.viewModels[viewModelName][aggregateId]
   }
 }
 
-const mapDispatchToProps = dispatch => bindActionCreators(actions, dispatch)
+const mapDispatchToProps = (dispatch, props) =>
+  bindActionCreators(props.aggregateActions, dispatch)
 
 export default connectViewModel(mapStateToProps, mapDispatchToProps)(Todo)
