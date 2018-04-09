@@ -1,4 +1,4 @@
-import { createReadModel, createFacade } from 'resolve-query'
+import { createReadModel } from 'resolve-query'
 import eventStore from './event_store'
 import raiseError from './utils/raise_error'
 
@@ -17,25 +17,18 @@ readModels.forEach(readModel => {
     raiseError(message.dublicateName, readModel)
   }
 
-  const facade = createFacade({
-    model: createReadModel({
-      projection: readModel.projection,
-      adapter: readModel.adapter,
-      eventStore
-    }),
-    resolvers: readModel.resolvers
+  const facade = createReadModel({
+    projection: readModel.projection,
+    adapter: readModel.adapter,
+    resolvers: readModel.resolvers,
+    eventStore
   })
 
-  readModelQueryExecutors[readModel.name] = facade.executeQuery
-
-  readModelQueryExecutors[readModel.name].makeSubscriber =
-    facade.makeReactiveReader
-
-  readModelQueryExecutors[readModel.name].resolverNames = Object.keys(
-    readModel.resolvers
-  )
-
-  readModelQueryExecutors[readModel.name].mode = 'read'
+  readModelQueryExecutors[readModel.name] = {
+    read: facade.read,
+    makeSubscriber: facade.makeReactiveReader,
+    resolverNames: Object.keys(readModel.resolvers)
+  }
 })
 
 export default readModelQueryExecutors

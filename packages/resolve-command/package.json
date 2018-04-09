@@ -23,7 +23,6 @@
     "sinon": "^3.3.0"
   },
   "dependencies": {
-    "invariant-function-hash": "^1.0.0",
-    "regenerator-runtime": "^0.11.0"
+    "invariant-function-hash": "^1.0.0"
   }
 }

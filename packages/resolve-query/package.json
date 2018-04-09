@@ -7,7 +7,7 @@
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
-    "prepublish": "babel --out-dir ./dist ./src",
+    "prepublish": "babel --source-maps --out-dir ./dist ./src",
     "test": "jest --testMatch=**/test/*.tests.js --verbose",
     "testw": "jest --testMatch=**/test/*.tests.js --watchAll --verbose"
   },
@@ -26,7 +26,6 @@
   "dependencies": {
     "diff-json": "^0.1.11",
     "invariant-function-hash": "^1.0.0",
-    "regenerator-runtime": "^0.11.0",
     "resolve-readmodel-memory": "0.8.1"
   }
 }
