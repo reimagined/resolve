@@ -1,4 +1,4 @@
-import viewModelQueryExecutors from './view_model_query_executors'
+import executeViewModelQuery from './execute_view_model_query'
 import println from './utils/println'
 
 const message = require('../../../configs/message.json')
@@ -13,12 +13,11 @@ const viewModelHandler = async (req, res) => {
       throw new Error(message.viewModelOnlyOnDemand)
     }
 
-    const executor = viewModelQueryExecutors[req.params.modelName]
-    const result = await executor(
-      'view',
-      { jwtToken: req.jwtToken },
-      { aggregateIds: req.query.aggregateIds }
-    )
+    const result = await executeViewModelQuery({
+      modelName: req.params.modelName,
+      jwtToken: req.jwtToken,
+      aggregateIds
+    })
 
     res.status(200).json(result)
   } catch (err) {

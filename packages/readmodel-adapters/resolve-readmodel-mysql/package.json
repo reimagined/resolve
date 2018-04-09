@@ -29,7 +29,6 @@
   },
   "dependencies": {
     "mysql2": "^1.5.2",
-    "regenerator-runtime": "^0.11.0",
     "resolve-readmodel-base": "0.8.1",
     "sql-formatter": "^2.1.2",
     "uuid": "^3.1.0"
