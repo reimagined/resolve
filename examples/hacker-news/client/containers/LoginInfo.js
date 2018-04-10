@@ -35,7 +35,7 @@ const LoginInfo = ({ data: { me } }) => (
         >
           logout
         </Link>
-        <form method="post" id="hidden-form-for-logout" action="/logout">
+        <form method="post" id="hidden-form-for-logout" action="logout">
           <input type="hidden" name="username" value="null" />
           <input type="hidden" />
         </form>

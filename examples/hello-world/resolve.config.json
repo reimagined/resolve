@@ -1,6 +1,7 @@
 {
     "port": 3000,
-    "routes": "client/routes.js"
+    "routes": "client/routes.js",
+    // "rootPath": "hello-world"
 }
 
 // See the documentation for more information about available options list at

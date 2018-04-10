@@ -15,7 +15,9 @@ const applyJwtValue = (jwtToken, res, url) => {
       res.status(500).end('Incorrect JWT')
       return
     }
-    res.cookie(cookieName, jwtToken, cookieOptions)
+    res.cookie(cookieName, jwtToken, {
+      ...cookieOptions
+    })
   } else {
     res.clearCookie(cookieName)
   }

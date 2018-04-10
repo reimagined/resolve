@@ -9,8 +9,8 @@ import {
 import actions from './actions'
 import defaultSubscribeAdapter from './subscribe_adapter'
 import sendCommand from './send_command'
-import loadInitialState from './load_initial_state'
-import { getKey, getRootableUrl, delay } from './util'
+import loadViewModelInitialState from './load_view_model_initial_state'
+import { getKey, delay } from './util'
 import createActions from './create_actions'
 
 const REFRESH_TIMEOUT = 1000
@@ -47,6 +47,8 @@ export function getAggregateIds(viewModels, subscribers) {
 }
 
 export async function subscribeViewmodel(
+  origin,
+  rootPath,
   store,
   subscribeAdapter,
   viewModels,
@@ -69,7 +71,12 @@ export async function subscribeViewmodel(
     const key = getKey(viewModelName, aggregateId)
     requests[key] = true
 
-    const rawState = await loadInitialState(viewModelName, aggregateId)
+    const rawState = await loadViewModelInitialState(
+      origin,
+      rootPath,
+      viewModelName,
+      aggregateId
+    )
 
     const state = viewModels
       .find(({ name }) => name === viewModelName)
@@ -89,6 +96,8 @@ export async function subscribeViewmodel(
 }
 
 export function unsubscribeViewmodel(
+  origin,
+  rootPath,
   store,
   subscribeAdapter,
   viewModels,
@@ -123,6 +132,8 @@ export function unsubscribeViewmodel(
 }
 
 export function subscribeReadmodel(
+  origin,
+  rootPath,
   store,
   readModelSubscriptions,
   subscribeAdapter,
@@ -150,7 +161,7 @@ export function subscribeReadmodel(
 
         if (!checkSelfPromise(selfPromise)) return
         const response = await orderedFetch(
-          getRootableUrl(`/api/query/${readModelName}/${resolverName}`),
+          `${origin}${rootPath}/api/query/${readModelName}/${resolverName}`,
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -198,6 +209,8 @@ export function subscribeReadmodel(
 }
 
 export function unsubscribeReadmodel(
+  origin,
+  rootPath,
   store,
   readModelSubscriptions,
   orderedFetch,
@@ -215,9 +228,7 @@ export function unsubscribeReadmodel(
   if (!socketId || socketId.constructor !== String) return
 
   orderedFetch(
-    getRootableUrl(
-      `/api/query/${readModelName}/${resolverName}?socketId=${socketId}`
-    ),
+    `${origin}${rootPath}/api/query/${readModelName}/${resolverName}?socketId=${socketId}`,
     {
       method: 'DELETE',
       credentials: 'same-origin'
@@ -259,6 +270,8 @@ export const mockSubscribeAdapter = {
 }
 
 export function createResolveMiddleware({
+  origin,
+  rootPath,
   viewModels = [],
   aggregates = [],
   subscribeAdapter = defaultSubscribeAdapter
@@ -300,7 +313,9 @@ export function createResolveMiddleware({
 
     store.dispatch(actions.provideViewModels(viewModels))
 
-    const adapter = isClient ? subscribeAdapter() : mockSubscribeAdapter
+    const adapter = isClient
+      ? subscribeAdapter(origin, rootPath)
+      : mockSubscribeAdapter
     adapter.onEvent(event => store.dispatch(event))
     adapter.onDisconnect(error => {
       store.dispatch(actions.disconnect(error))
@@ -315,11 +330,13 @@ export function createResolveMiddleware({
     return next => action => {
       switch (action.type) {
         case HOT_MODULE_REPLACEMENT: {
-          if (!hotModuleReplacementId) {
-            hotModuleReplacementId = action.hotModuleReplacementId
-          }
-          if (hotModuleReplacementId !== action.hotModuleReplacementId) {
-            window.location.reload()
+          if (process.env.NODE_ENV !== 'production') {
+            if (!hotModuleReplacementId) {
+              hotModuleReplacementId = action.hotModuleReplacementId
+            }
+            if (hotModuleReplacementId !== action.hotModuleReplacementId) {
+              window.location.reload()
+            }
           }
           break
         }
@@ -329,6 +346,8 @@ export function createResolveMiddleware({
 
           if (isClient) {
             subscribeViewmodel(
+              origin,
+              rootPath,
               store,
               adapter,
               viewModels,
@@ -352,6 +371,8 @@ export function createResolveMiddleware({
 
           if (isClient) {
             unsubscribeViewmodel(
+              origin,
+              rootPath,
               store,
               adapter,
               viewModels,
@@ -366,6 +387,8 @@ export function createResolveMiddleware({
         case SUBSCRIBE_READMODEL: {
           if (isClient) {
             subscribeReadmodel(
+              origin,
+              rootPath,
               store,
               readModelSubscriptions,
               adapter,
@@ -379,6 +402,8 @@ export function createResolveMiddleware({
         case UNSUBSCRIBE_READMODEL: {
           if (isClient) {
             unsubscribeReadmodel(
+              origin,
+              rootPath,
               store,
               readModelSubscriptions,
               orderedFetch,
@@ -390,7 +415,7 @@ export function createResolveMiddleware({
         }
         case SEND_COMMAND: {
           if (isClient) {
-            sendCommand(store, action)
+            sendCommand(origin, rootPath, store, action)
           }
 
           break

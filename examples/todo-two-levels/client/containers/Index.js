@@ -13,7 +13,7 @@ export const Index = ({ lists, createList, removeList }) => {
   return (
     <div>
       <Helmet>
-        <link rel="stylesheet" href="/bootstrap.min.css" />
+        <link rel="stylesheet" href="bootstrap.min.css" />
         <title>reSolve Todo Two Levels Example</title>
       </Helmet>
 

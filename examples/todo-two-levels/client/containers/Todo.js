@@ -19,7 +19,7 @@ export const Todo = ({
   return (
     <div>
       <Helmet>
-        <link rel="stylesheet" href="/bootstrap.min.css" />
+        <link rel="stylesheet" href="bootstrap.min.css" />
       </Helmet>
 
       <Header />

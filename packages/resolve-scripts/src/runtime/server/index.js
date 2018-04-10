@@ -4,6 +4,7 @@ import express from 'express'
 import createSocketServer from 'socket.io'
 import cookieParser from 'cookie-parser'
 import bodyParser from 'body-parser'
+import cors from 'cors'
 
 import getRootableUrl from './utils/get_rootable_url'
 import serverSideRendering from './server_side_rendering'
@@ -24,11 +25,13 @@ const server = new Server(app)
 
 const socket = createSocketServer(server, {
   path: getRootableUrl('/socket/'),
-  serveClient: false
+  serveClient: false,
+  transports: ['polling', 'websocket']
 })
 
 socket.on('connection', socketHandler)
 
+app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())

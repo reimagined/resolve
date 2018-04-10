@@ -30,7 +30,10 @@ const getStories = async (type, store, { first, offset, jwtToken }) => {
 }
 
 export default {
-  me: async (store, { jwtToken }) => await getMe(jwtToken),
+  me: async (store, options) => {
+    console.log(options)
+    return await getMe(options.jwtToken)
+  },
 
   user: async (store, { id, name, jwtToken }) => {
     const user = id

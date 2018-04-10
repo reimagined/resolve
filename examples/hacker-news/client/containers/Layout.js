@@ -171,26 +171,13 @@ const Layout = ({ children }) => (
         name="viewport"
         content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
       />
-      <link
-        rel="shortcut icon"
-        type="image/x-icon"
-        href={`${rootDirectory}/reSolve-logo.svg`}
-      />
-      <link
-        rel="stylesheet"
-        type="text/css"
-        href={`${rootDirectory}/style.css`}
-      />
+      <link rel="shortcut icon" type="image/x-icon" href="reSolve-logo.svg" />
+      <link rel="stylesheet" type="text/css" href="style.css" />
     </Helmet>
     <ContentRoot>
       <PageHeader>
         <Link to="/">
-          <img
-            src={`${rootDirectory}/reSolve-logo.svg`}
-            width="18"
-            height="18"
-            alt=""
-          />
+          <img src="reSolve-logo.svg" width="18" height="18" alt="reSolve" />
         </Link>
         <Link to="/">
           <PageTitle>reSolve HN</PageTitle>

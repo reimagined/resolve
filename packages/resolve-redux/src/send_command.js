@@ -1,6 +1,6 @@
-import { checkRequiredFields, getRootableUrl } from './util'
+import { checkRequiredFields } from './util'
 
-export default async function sendCommand(store, action) {
+export default async function sendCommand(origin, rootPath, store, action) {
   const { command, aggregateId, aggregateName, payload } = action
 
   if (
@@ -25,7 +25,7 @@ export default async function sendCommand(store, action) {
   }
 
   try {
-    const response = await fetch(getRootableUrl('/api/commands'), {
+    const response = await fetch(`${origin}${rootPath}/api/commands`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'same-origin',

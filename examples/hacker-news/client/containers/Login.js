@@ -9,12 +9,12 @@ const Login = props => {
     <div>
       <AuthForm
         buttonText="login"
-        action={`${rootDirectory}/login${props.location.search}`}
+        action={`login${props.location.search}`}
         title="Login"
       />
       <AuthForm
         buttonText="create account"
-        action={`${rootDirectory}/register`}
+        action="register"
         title="Create account"
       />
     </div>

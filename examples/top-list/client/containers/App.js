@@ -181,7 +181,7 @@ class App extends React.Component {
                 padding: 5px 10px;
               }`}
           </style>
-          <link rel="stylesheet" href="/bootstrap.min.css" />
+          <link rel="stylesheet" href="bootstrap.min.css" />
           <title>reSolve Top List Example</title>
         </Helmet>
 

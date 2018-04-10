@@ -1,4 +1,3 @@
-import Url from 'url'
 import React from 'react'
 import ReactDOM from 'react-dom/server'
 import { Provider } from 'react-redux'
@@ -10,10 +9,8 @@ import { ServerStyleSheet, StyleSheetManager } from 'styled-components'
 import createStore from '../client/store/create_store'
 import getHtmlMarkup from './get_html_markup'
 import getClientEnv from './utils/get_client_env'
-import getRootableUrl from './utils/get_rootable_url'
 import Routes from '../client/components/Routes'
 
-const staticPath = $resolve.staticPath
 const jwtCookieName = $resolve.jwtCookie.name
 const routes = require($resolve.routes)
 
@@ -50,14 +47,12 @@ const serverSideRendering = (req, res) => {
 
   const env = getClientEnv()
   const initialState = store.getState()
-  const clientUrl = getRootableUrl(Url.resolve(staticPath || '/', 'client.js'))
 
   res.send(
     getHtmlMarkup({
       markup,
       styleTags,
       initialState,
-      clientUrl,
       env
     })
   )

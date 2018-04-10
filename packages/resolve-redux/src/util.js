@@ -1,10 +1,3 @@
-const rootPath =
-  typeof process !== 'undefined' &&
-  typeof process.env !== 'undefined' &&
-  process.env['ROOT_PATH']
-    ? `/${process.env['ROOT_PATH']}`
-    : ''
-
 export function checkRequiredFields(obj, beforeWarnings, afterWarnings) {
   const warningMessages = Object.keys(obj)
     .map(
@@ -25,13 +18,6 @@ export function checkRequiredFields(obj, beforeWarnings, afterWarnings) {
   }
 
   return !shouldWarningsBePrinted
-}
-
-export function getRootableUrl(path) {
-  if (/^https?:\/\//.test(path)) {
-    return path
-  }
-  return `${rootPath}/${path.replace(/^\//, '')}`
 }
 
 export function getKey(viewModel, aggregateId) {

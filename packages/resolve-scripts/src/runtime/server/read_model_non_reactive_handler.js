@@ -7,6 +7,8 @@ const readModelNonReactiveHandler = async (req, res) => {
   const serialId = Date.now()
 
   try {
+    console.log(req.jwtToken)
+
     const result = await executeReadModelQuery({
       jwtToken: req.jwtToken,
       modelName: req.params.modelName,

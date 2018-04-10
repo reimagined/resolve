@@ -4,10 +4,12 @@ import Todo from './containers/Todo'
 export default [
   {
     path: '/:id',
-    component: Todo
+    component: Todo,
+    exact: true
   },
   {
     path: '/',
-    component: Index
+    component: Index,
+    exact: true
   }
 ]

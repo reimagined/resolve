@@ -1,8 +1,11 @@
 import { Helmet } from 'react-helmet'
 
 import jsonUtfStringify from './utils/json_utf_stringify'
+import getRootableUrl from './utils/get_rootable_url'
 
-export default ({ markup, styleTags, initialState, env, clientUrl }) => {
+const staticPath = $resolve.staticPath
+
+export default ({ markup, styleTags, initialState, env }) => {
   const helmet = Helmet.renderStatic()
 
   return (
@@ -10,6 +13,7 @@ export default ({ markup, styleTags, initialState, env, clientUrl }) => {
     `<html ${helmet.htmlAttributes.toString()}>` +
     '<head>' +
     `${helmet.title.toString()}` +
+    `<base href="${getRootableUrl(staticPath)}"/>` +
     `${helmet.meta.toString()}` +
     `${helmet.link.toString()}` +
     `${helmet.style.toString()}` +
@@ -21,8 +25,8 @@ export default ({ markup, styleTags, initialState, env, clientUrl }) => {
     `${helmet.script.toString()}` +
     '</head>' +
     `<body ${helmet.bodyAttributes.toString()}>` +
-    `<div id="resolve-application-container">${markup}</div>` +
-    `<script src="${clientUrl}"></script>` +
+    `<span id="resolve-application-container">${markup}</span>` +
+    `<script src="client.js"></script>` +
     '</body>' +
     '</html>'
   )

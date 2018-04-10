@@ -1,7 +1,6 @@
 import React from 'react'
 import { connectViewModel } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
-
 import { Helmet } from 'react-helmet'
 import {
   ListGroup,
@@ -12,6 +11,7 @@ import {
   Image,
   FormControl
 } from 'react-bootstrap'
+
 import Header from '../components/Header.js'
 
 const viewModelName = 'Todos'
@@ -38,8 +38,8 @@ export const App = ({
     <div>
       <Helmet>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="/bootstrap.min.css" />
-        <link rel="stylesheet" href="/style.css" />
+        <link rel="stylesheet" href="bootstrap.min.css" />
+        <link rel="stylesheet" href="style.css" />
         <title>reSolve Todo Example</title>
       </Helmet>
 
@@ -60,7 +60,7 @@ export const App = ({
               </Checkbox>
               <Image
                 className="example-close-button"
-                src="/close-button.png"
+                src="close-button.png"
                 onClick={removeItem.bind(null, aggregateId, { id })}
               />
             </ListGroupItem>
