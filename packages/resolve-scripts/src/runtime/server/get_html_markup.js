@@ -2,8 +2,14 @@ import { Helmet } from 'react-helmet'
 
 import jsonUtfStringify from './utils/json_utf_stringify'
 
+const reducers = require($resolve.redux.reducers)
+
 export default ({ markup, styleTags, initialState, env, clientUrl }) => {
   const helmet = Helmet.renderStatic()
+
+  for (const reducerName of Object.keys(reducers)) {
+    delete initialState[reducerName]
+  }
 
   return (
     `<!doctype html>` +
