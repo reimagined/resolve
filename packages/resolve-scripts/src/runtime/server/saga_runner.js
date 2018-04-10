@@ -1,5 +1,5 @@
-import readModelQueryExecutors from './read_model_query_executors'
-import viewModelQueryExecutors from './view_model_query_executors'
+import executeReadModelQuery from './execute_read_model_query'
+import executeViewModelQuery from './execute_view_model_query'
 import eventStore from './event_store'
 import executeCommand from './command_executor'
 
@@ -11,8 +11,8 @@ const sagaRunner = () => {
       resolve: {
         subscribeByEventType: eventStore.subscribeByEventType,
         subscribeByAggregateId: eventStore.subscribeByAggregateId,
-        readModelQueryExecutors,
-        viewModelQueryExecutors,
+        executeReadModelQuery,
+        executeViewModelQuery,
         executeCommand
       }
     })
