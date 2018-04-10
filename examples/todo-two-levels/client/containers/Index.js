@@ -16,7 +16,7 @@ import Header from '../components/Header.js'
 
 const viewModelName = 'Lists'
 
-const Index = ({ lists, createList, removeList }) => {
+export const Index = ({ lists, createList, removeList }) => {
   const placeholder = 'New List'
   const createListFunc = () => {
     createList(Date.now(), {

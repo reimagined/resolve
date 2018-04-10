@@ -65,50 +65,71 @@ exports[`renders correctly 1`] = `
       </div>
     </nav>
   </div>
-  <h1>
-    Two level TODO list
-  </h1>
-  <ol>
-    <li>
-      <a
-        aria-current={false}
-        className={undefined}
-        href="/id1"
-        onClick={[Function]}
-        style={undefined}
-      >
-        title1
-      </a>
-      <span
-        onClick={[Function]}
-      >
-         [x]
-      </span>
-    </li>
-    <li>
-      <a
-        aria-current={false}
-        className={undefined}
-        href="/id2"
-        onClick={[Function]}
-        style={undefined}
-      >
-        title2
-      </a>
-      <span
-        onClick={[Function]}
-      >
-         [x]
-      </span>
-    </li>
-  </ol>
-  <input
-    type="text"
-  />
-  <button
-    onClick={[Function]}
+  <div
+    className="example-wrapper"
   >
-    Add List
-  </button>
+    <h1>
+      Todo's List
+    </h1>
+    <ul
+      className="example-list list-group"
+    >
+      <li
+        className="list-group-item"
+      >
+        <a
+          aria-current={false}
+          className={undefined}
+          href="/id1"
+          onClick={[Function]}
+          style={undefined}
+        >
+          title1
+        </a>
+        <img
+          className="example-close-button"
+          onClick={[Function]}
+          src="/close-button.png"
+        />
+      </li>
+      <li
+        className="list-group-item"
+      >
+        <a
+          aria-current={false}
+          className={undefined}
+          href="/id2"
+          onClick={[Function]}
+          style={undefined}
+        >
+          title2
+        </a>
+        <img
+          className="example-close-button"
+          onClick={[Function]}
+          src="/close-button.png"
+        />
+      </li>
+    </ul>
+    <form
+      className="example-form form-inline"
+    >
+      <input
+        className="example-form-control form-control"
+        id={undefined}
+        onKeyPress={[Function]}
+        placeholder="New List"
+        type="text"
+      />
+      <button
+        className="example-button btn btn-success"
+        disabled={false}
+        onClick={[Function]}
+        type="button"
+      >
+        Add List
+      </button>
+    </form>
+  </div>
 </div>
 `;
