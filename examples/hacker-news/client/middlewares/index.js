@@ -1,21 +1,10 @@
-import cookies from 'js-cookie'
 import {
-  USER_LOGOUT,
   OPTIMISTIC_STORY_UPVOTED,
   OPTIMISTIC_STORY_UNVOTED
 } from '../actions/actionTypes'
 import { rootDirectory } from '../constants'
 import { actionTypes } from 'resolve-redux'
 const { SEND_COMMAND } = actionTypes
-
-const logoutMiddleware = () => next => action => {
-  if (action.type !== USER_LOGOUT) {
-    next(action)
-    return
-  }
-  cookies.remove('authenticationToken')
-  window.location.reload()
-}
 
 const storyCreateMiddleware = () => next => action => {
   if (action.type === SEND_COMMAND) {
@@ -48,8 +37,4 @@ const optimisticVotingMiddleware = store => next => action => {
   next(action)
 }
 
-export default [
-  logoutMiddleware,
-  storyCreateMiddleware,
-  optimisticVotingMiddleware
-]
+export default [storyCreateMiddleware, optimisticVotingMiddleware]
