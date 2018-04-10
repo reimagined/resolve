@@ -5,11 +5,6 @@ import uuid from 'uuid'
 
 import { rootDirectory } from '../client/constants'
 
-const getUserByName = async (executeQuery, name) => {
-  const { user } = await executeQuery('user', { name: name.trim() })
-  return user
-}
-
 const options = {
   strategy: {
     usernameField: 'username',
@@ -32,10 +27,11 @@ const options = {
   },
 
   registerCallback: async ({ resolve }, username) => {
-    const existingUser = await getUserByName(
-      resolve.readModelQueryExecutors.default,
-      username
-    )
+    const { user: existingUser } = await resolve.executeReadModelQuery({
+      modelName: 'default',
+      resolverName: 'user',
+      resolverArgs: { name: username.trim() }
+    })
 
     if (existingUser) {
       throw new Error('User already exists')
@@ -56,10 +52,11 @@ const options = {
     return jwt.sign(user, jwtSecret)
   },
   loginCallback: async ({ resolve }, username) => {
-    const user = await getUserByName(
-      resolve.readModelQueryExecutors.default,
-      username
-    )
+    const { user } = await resolve.executeReadModelQuery({
+      modelName: 'default',
+      resolverName: 'user',
+      resolverArgs: { name: username.trim() }
+    })
 
     if (!user) {
       throw new Error('No such user')

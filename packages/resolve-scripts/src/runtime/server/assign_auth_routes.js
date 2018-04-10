@@ -7,8 +7,8 @@ import {
 
 import applyJwtValue from './utils/apply_jwt_value'
 import getRootableUrl from './utils/get_rootable_url'
-import readModelQueryExecutors from './read_model_query_executors'
-import viewModelQueryExecutors from './view_model_query_executors'
+import executeViewModelQuery from './execute_view_model_query'
+import executeReadModelQuery from './execute_read_model_query'
 import executeCommand from './command_executor'
 
 const authStrategiesConfigs = require($resolve.auth.strategies)
@@ -23,10 +23,19 @@ const assignAuthRoutes = app => {
         getRootableUrl(route.path),
         (req, res, next) => {
           const safeReq = createRequest(req)
+
           Object.assign(safeReq, {
             resolve: {
-              readModelQueryExecutors,
-              viewModelQueryExecutors,
+              executeReadModelQuery: args =>
+                executeReadModelQuery({
+                  ...args,
+                  jwtToken: req.jwtToken
+                }),
+              executeViewModelQuery: args =>
+                executeViewModelQuery({
+                  ...args,
+                  jwtToken: req.jwtToken
+                }),
               executeCommand
             }
           })
