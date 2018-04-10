@@ -1,5 +1,6 @@
 import { Strategy as strategy } from 'passport-local'
 import jwt from 'jsonwebtoken'
+import jwtSecret from './jwtSecret'
 
 const options = {
   strategy: {
@@ -22,11 +23,11 @@ const options = {
       {
         name: username
       },
-      process.env.JWT_SECRET || 'SECRETJWT'
+      jwtSecret
     )
   },
   logoutCallback: async () => {
-    return jwt.sign({}, process.env.JWT_SECRET || 'SECRETJWT')
+    return jwt.sign({}, jwtSecret)
   }
 }
 

@@ -1,8 +1,9 @@
 import jwt from 'jsonwebtoken'
+import jwtSecret from '../../auth/jwtSecret'
 
 const getMe = async jwtToken => {
   if (!jwtToken) return null
-  const user = await jwt.verify(jwtToken, process.env.JWT_SECRET || 'SECRETJWT')
+  const user = await jwt.verify(jwtToken, jwtSecret)
 
   if (!user.name) {
     return null

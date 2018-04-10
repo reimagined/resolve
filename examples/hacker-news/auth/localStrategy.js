@@ -1,5 +1,6 @@
 import { Strategy as strategy } from 'passport-local'
 import jwt from 'jsonwebtoken'
+import jwtSecret from './jwtSecret'
 import uuid from 'uuid'
 
 import { rootDirectory } from '../client/constants'
@@ -48,7 +49,7 @@ const options = {
       payload: user
     })
 
-    return jwt.sign(user, process.env.JWT_SECRET || 'SECRETJWT')
+    return jwt.sign(user, jwtSecret)
   },
   loginCallback: async ({ resolve }, username) => {
     const { user } = await resolve.executeReadModelQuery({
@@ -61,10 +62,10 @@ const options = {
       throw new Error('No such user')
     }
 
-    return jwt.sign(user, process.env.JWT_SECRET || 'SECRETJWT')
+    return jwt.sign(user, jwtSecret)
   },
   logoutCallback: async () => {
-    return jwt.sign({}, process.env.JWT_SECRET || 'SECRETJWT')
+    return jwt.sign({}, jwtSecret)
   },
   failureCallback: (error, redirect) => {
     redirect(`${rootDirectory}/error?text=${error}`)
