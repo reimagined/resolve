@@ -1,4 +1,3 @@
-import 'regenerator-runtime/runtime'
 import NeDB from 'nedb'
 import AsyncLock from 'async-lock'
 import { ConcurrentError } from 'resolve-storage-base'

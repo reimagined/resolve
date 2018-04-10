@@ -2,7 +2,7 @@
 
 -------------------------------------------------------------------------
 Sorry, this article isn't finished yet :(
-    
+
 We'll glad to see all your questions:
 * [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
 * [**Twitter**](https://twitter.com/resolvejs)
@@ -62,6 +62,8 @@ If the `version` argument is set, the command updates packages to the specified 
     📄 package-lock.json
     📄 package.json
     📄 resolve.config.js
+    📁 auth/
+        📄 index.js
     📁 client/
         📁 components
         📁 containers
@@ -87,6 +89,9 @@ If the `version` argument is set, the command updates packages to the specified 
             📄 testcafe_runner.js
             📄 index.test.js
 ```
+
+### **Auth**
+The `auth` folder contains authentitate strategies' code. You can choose this file location using `auth` section in `resolve.config.json` (see [auth example](https://github.com/reimagined/resolve/blob/master/examples/auth/resolve.config.json))
 
 ### **Client**
 The client side is located in the `client/` folder and exports two key endpoints: root React component and Redux store creator function. These client part entry points must be specified in the [resolve.client.config.js](#client-config) configuration file in the root directory.
