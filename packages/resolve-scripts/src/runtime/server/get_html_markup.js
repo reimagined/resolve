@@ -4,9 +4,14 @@ import jsonUtfStringify from './utils/json_utf_stringify'
 import getRootableUrl from './utils/get_rootable_url'
 
 const staticPath = $resolve.staticPath
+const reducers = require($resolve.redux.reducers)
 
 export default ({ markup, styleTags, initialState, env }) => {
   const helmet = Helmet.renderStatic()
+
+  for (const reducerName of Object.keys(reducers)) {
+    delete initialState[reducerName]
+  }
 
   return (
     `<!doctype html>` +
