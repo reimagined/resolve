@@ -1,4 +1,4 @@
-import { createViewModel, createFacade } from 'resolve-query'
+import { createViewModel } from 'resolve-query'
 
 import eventStore from './event_store'
 import raiseError from './utils/raise_error'
@@ -22,22 +22,17 @@ viewModels.forEach(viewModel => {
     raiseError(message.viewModelSerializable, viewModel)
   }
 
-  const facade = createFacade({
-    model: createViewModel({
-      projection: viewModel.projection,
-      snapshotAdapter: viewModel.snapshotAdapter,
-      snapshotBucketSize: viewModel.snapshotBucketSize,
-      eventStore
-    }),
-    resolvers: {
-      view: async (model, { jwtToken }) =>
-        await viewModel.serializeState(model, jwtToken)
-    }
+  const facade = createViewModel({
+    projection: viewModel.projection,
+    snapshotAdapter: viewModel.snapshotAdapter,
+    snapshotBucketSize: viewModel.snapshotBucketSize,
+    eventStore
   })
 
-  viewModelQueryExecutors[viewModel.name] = facade.executeQuery
-
-  viewModelQueryExecutors[viewModel.name].mode = 'view'
+  viewModelQueryExecutors[viewModel.name] = {
+    read: facade.read,
+    serializeState: viewModel.serializeState
+  }
 })
 
 export default viewModelQueryExecutors
