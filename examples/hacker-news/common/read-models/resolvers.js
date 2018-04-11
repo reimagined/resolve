@@ -34,9 +34,10 @@ export default {
   me: async (store, { jwtToken }) => await getMe(jwtToken),
 
   user: async (store, { id, name, jwtToken }) => {
-    const user = id
-      ? await store.findOne('Users', { id })
-      : await store.findOne('Users', { name })
+    const user =
+      name != null
+        ? await store.findOne('Users', { name })
+        : id != null ? await store.findOne('Users', { id }) : null
 
     return {
       user,

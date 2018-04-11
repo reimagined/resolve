@@ -135,6 +135,44 @@ describe('resolve-readmodel-base check-store-api', () => {
     expect(result).to.be.equal(resultSet)
   })
 
+  it('find should pass correct search expressions logical/range query operators', async () => {
+    metaApi.storageExists.onCall(0).callsFake(async () => true)
+    metaApi.getStorageInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
+
+    const resultSet = []
+    storeApi.find.onCall(0).callsFake(async () => resultSet)
+
+    const findQuery = {
+      $and: [
+        { $or: [{ timestamp: { $lt: 100 } }, { timestamp: { $gt: 1000 } }] },
+        { $not: { volume: { $eq: 'volume' } } }
+      ]
+    }
+
+    const result = await api.find(
+      'table',
+      findQuery,
+      { id: 1, 'content.text': 1 },
+      { timestamp: -1 },
+      100,
+      200
+    )
+
+    expect(storeApi.find.firstCall.args[0]).to.be.equal('table')
+    expect(storeApi.find.firstCall.args[1]).to.be.deep.equal(findQuery)
+    expect(storeApi.find.firstCall.args[2]).to.be.deep.equal({
+      id: 1,
+      'content.text': 1
+    })
+    expect(storeApi.find.firstCall.args[3]).to.be.deep.equal({ timestamp: -1 })
+    expect(storeApi.find.firstCall.args[4]).to.be.equal(100)
+    expect(storeApi.find.firstCall.args[5]).to.be.equal(200)
+
+    expect(result).to.be.equal(resultSet)
+  })
+
   it('find should pass correct search expressions without fields projection', async () => {
     metaApi.storageExists.onCall(0).callsFake(async () => true)
     metaApi.getStorageInfo
@@ -340,7 +378,7 @@ describe('resolve-readmodel-base check-store-api', () => {
       return Promise.reject('find should fail on bad request')
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.be.equal(messages.invalidDocumentShape(null))
+      expect(err.message).to.be.equal(messages.invalidSearchExpression(null))
     }
   })
 
@@ -446,7 +484,7 @@ describe('resolve-readmodel-base check-store-api', () => {
       return Promise.reject('findOne should fail on bad request')
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.be.equal(messages.invalidDocumentShape(null))
+      expect(err.message).to.be.equal(messages.invalidSearchExpression(null))
     }
   })
 
@@ -498,7 +536,7 @@ describe('resolve-readmodel-base check-store-api', () => {
       return Promise.reject('count should fail on bad request')
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.be.equal(messages.invalidDocumentShape(null))
+      expect(err.message).to.be.equal(messages.invalidSearchExpression(null))
     }
   })
 
@@ -659,7 +697,7 @@ describe('resolve-readmodel-base check-store-api', () => {
       return Promise.reject('update should fail on bad request')
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.be.equal(messages.invalidDocumentShape(null))
+      expect(err.message).to.be.equal(messages.invalidSearchExpression(null))
     }
   })
 
@@ -722,7 +760,7 @@ describe('resolve-readmodel-base check-store-api', () => {
       return Promise.reject('delete should fail on bad request')
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.be.equal(messages.invalidDocumentShape(null))
+      expect(err.message).to.be.equal(messages.invalidSearchExpression(null))
     }
   })
 })

@@ -32,6 +32,45 @@ describe('resolve-readmodel-mysql store-api', () => {
     )
   })
 
+  it.only('should provide find method - search logical/comparation operators', async () => {
+    const executor = sinon.stub()
+    const pool = { connection: { execute: executor } }
+
+    const gaugeResultSet = []
+    executor.onCall(0).callsFake(async () => [gaugeResultSet])
+
+    const result = await storeApi.find(
+      pool,
+      'test',
+      {
+        $and: [
+          {
+            $or: [{ timestamp: { $lt: 100 } }, { 'inner.value': { $gt: 1000 } }]
+          },
+          { $not: { volume: { $eq: 'volume' } } }
+        ]
+      },
+      { field: 1, 'inner.field': 1 },
+      { sort: -1, 'inner.sort': 1 },
+      10,
+      20
+    )
+
+    expect(format(executor.firstCall.args[0])).to.be.equal(
+      format(
+        `SELECT field, inner->>'$."field"' AS "inner.field"
+         FROM test
+         WHERE ((timestamp < ?) OR (inner ->> '$."value"' > ?)) AND (NOT (volume = ?))
+         ORDER BY sort DESC, inner->>'$."sort"' ASC
+         LIMIT 10, 20`
+      )
+    )
+
+    expect(executor.firstCall.args[1]).to.be.deep.equal([100, 1000, 'volume'])
+
+    expect(result).to.be.equal(gaugeResultSet)
+  })
+
   it('should provide find method - all arguments passed', async () => {
     const executor = sinon.stub()
     const pool = { connection: { execute: executor } }
