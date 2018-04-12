@@ -8,11 +8,27 @@ import Routes from './components/Routes'
 import createStore from './store/create_store'
 
 const routes = require($resolve.routes)
+const viewModels = require($resolve.viewModels)
 
 const history = createHistory({
   basename: process.env.ROOT_PATH
 })
-const store = createStore(window.__INITIAL_STATE__, history)
+
+const initialState = window.__INITIAL_STATE__
+
+for (const viewModel of viewModels) {
+  for (const aggregateId of Object.keys(
+    initialState.viewModels[viewModel.name]
+  )) {
+    initialState.viewModels[viewModel.name][
+      aggregateId
+    ] = viewModel.deserializeState(
+      initialState.viewModels[viewModel.name][aggregateId]
+    )
+  }
+}
+
+const store = createStore(initialState, history)
 
 render(
   <Provider store={store}>
