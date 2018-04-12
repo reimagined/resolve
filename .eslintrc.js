@@ -11,6 +11,9 @@ module.exports = {
     }
   },
   plugins: ['react', 'jsx-a11y', 'import'],
+  globals: {
+    $resolve: true
+  },
   rules: {
     'func-names': 'off',
     'no-underscore-dangle': 'off',
@@ -28,6 +31,7 @@ module.exports = {
       }
     ],
     'object-curly-spacing': ['error', 'always'],
+    'no-unused-vars': ['error', { args: 'after-used' }],
     'max-len': [
       'error',
       {

@@ -443,8 +443,9 @@ npm install --save jsonwebtoken
 Add the `me` resolver to pass a user to the client side.
 
 ```js
-// ./commmon/read-models/graphql/resolvers.js
+// ./commmon/read-models/resolvers.js
 import jwt from 'jsonwebtoken'
+import jwtSecret from './jwtSecret'
 
 export default {
   // user implementation
@@ -455,7 +456,7 @@ export default {
     }
     const user = await jwt.verify(
       jwtToken,
-      process.env.JWT_SECRET || 'DefaultSecret'
+      jwtSecret
     )
     return user
   }
@@ -651,7 +652,7 @@ export const USER_CREATED = 'UserCreated'
 ```
 
 ```js
-// ./common/aggregates/story.js
+import jwtSecret from '../../auth/jwtSecret'
 
 import {
   STORY_CREATED,
@@ -668,7 +669,7 @@ export default {
     createStory: (state, command, jwtToken) => {
      const { id: userId, name: userName } = jwt.verify(
         jwtToken,
-        process.env.JWT_SECRET || 'DefaultSecret'
+        jwtSecret
       )
       validate.stateIsAbsent(state, 'Story')
 
@@ -685,7 +686,7 @@ export default {
     upvoteStory: (state, command, jwtToken) => {
       const { id: userId } = jwt.verify(
         jwtToken,
-        process.env.JWT_SECRET || 'DefaultSecret'
+       jwtSecret
       )
 
       validate.stateExists(state, 'Story')
@@ -697,7 +698,7 @@ export default {
     unvoteStory: (state, command, jwtToken) => {
      const { id: userId } = jwt.verify(
         jwtToken,
-        process.env.JWT_SECRET || 'DefaultSecret'
+        jwtSecret
       )
 
       validate.stateExists(state, 'Story')
@@ -1152,6 +1153,7 @@ import {
 } from '../events'
 
 import validate from './validation'
+import jwtSecret from '../../auth/jwtSecret'
 
 export default {
   name: 'story',
@@ -1162,7 +1164,7 @@ export default {
     commentStory: (state, command, jwtToken) => {
       const { id: userId, name: userName } = jwt.verify(
         jwtToken,
-        process.env.JWT_SECRET || 'DefaultSecret'
+        jwtSecret
       )
       validate.stateExists(state, 'Story')
 

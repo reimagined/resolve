@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken'
+import jwtSecret from '../../auth/jwtSecret'
 
 import {
   STORY_CREATED,
@@ -14,10 +15,7 @@ export default {
   initialState: {},
   commands: {
     createStory: (state, command, jwtToken) => {
-      const { id: userId, name: userName } = jwt.verify(
-        jwtToken,
-        process.env.JWT_SECRET || 'DefaultSecret'
-      )
+      const { id: userId, name: userName } = jwt.verify(jwtToken, jwtSecret)
       validate.stateIsAbsent(state, 'Story')
 
       const { title, link, text } = command.payload
@@ -31,10 +29,7 @@ export default {
     },
 
     upvoteStory: (state, command, jwtToken) => {
-      const { id: userId } = jwt.verify(
-        jwtToken,
-        process.env.JWT_SECRET || 'DefaultSecret'
-      )
+      const { id: userId } = jwt.verify(jwtToken, jwtSecret)
 
       validate.stateExists(state, 'Story')
       validate.itemIsNotInArray(state.voted, userId, 'User already voted')
@@ -43,10 +38,7 @@ export default {
     },
 
     unvoteStory: (state, command, jwtToken) => {
-      const { id: userId } = jwt.verify(
-        jwtToken,
-        process.env.JWT_SECRET || 'DefaultSecret'
-      )
+      const { id: userId } = jwt.verify(jwtToken, jwtSecret)
 
       validate.stateExists(state, 'Story')
       validate.itemIsInArray(state.voted, userId, 'User did not vote')
@@ -55,10 +47,7 @@ export default {
     },
 
     commentStory: (state, command, jwtToken) => {
-      const { id: userId, name: userName } = jwt.verify(
-        jwtToken,
-        process.env.JWT_SECRET || 'DefaultSecret'
-      )
+      const { id: userId, name: userName } = jwt.verify(jwtToken, jwtSecret)
       validate.stateExists(state, 'Story')
 
       const { commentId, parentId, text } = command.payload

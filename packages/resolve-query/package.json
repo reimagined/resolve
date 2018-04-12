@@ -1,13 +1,13 @@
 {
   "name": "resolve-query",
-  "version": "0.7.4",
+  "version": "0.9.0",
   "description": "This package creates a function to execute a query.",
   "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
-    "prepublish": "babel --out-dir ./dist ./src",
+    "prepublish": "babel --source-maps --out-dir ./dist ./src",
     "test": "jest --testMatch=**/test/*.tests.js --verbose",
     "testw": "jest --testMatch=**/test/*.tests.js --watchAll --verbose"
   },
@@ -29,10 +29,7 @@
   },
   "dependencies": {
     "diff-json": "^0.1.11",
-    "graphql": "^0.11.7",
-    "graphql-tools": "^2.7.2",
-    "object-hash": "^1.1.8",
-    "regenerator-runtime": "^0.11.0",
-    "resolve-readmodel-memory": "0.7.4"
+    "invariant-function-hash": "^1.0.0",
+    "resolve-readmodel-memory": "0.9.0"
   }
 }

@@ -1,5 +1,3 @@
-import 'regenerator-runtime/runtime'
-
 const buildProjection = (
   { metaApi, storeApi, internalContext },
   inputProjection

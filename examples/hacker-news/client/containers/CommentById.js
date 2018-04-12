@@ -28,7 +28,11 @@ export class CommentById extends React.PureComponent {
   }
 
   render() {
-    const { data: { me }, story, parentId } = this.props
+    const {
+      data: { me },
+      story,
+      parentId
+    } = this.props
     const loggedIn = !!me
 
     if (!story || !story.comments) {
@@ -66,7 +70,11 @@ export class CommentById extends React.PureComponent {
 
 export const mapStateToProps = (
   state,
-  { match: { params: { storyId, commentId } } }
+  {
+    match: {
+      params: { storyId, commentId }
+    }
+  }
 ) => ({
   story: state.viewModels[viewModel.name][storyId],
   viewModelName: viewModel.name,
@@ -89,7 +97,7 @@ export const mapDispatchToProps = dispatch =>
 
 const getReadModelData = state => {
   try {
-    return { me: state.readModels['default']['me'] }
+    return { me: state.readModels['default']['user'] }
   } catch (err) {
     return { me: null }
   }
@@ -97,7 +105,7 @@ const getReadModelData = state => {
 
 export default connectReadModel(state => ({
   readModelName: 'default',
-  resolverName: 'me',
+  resolverName: 'user',
   variables: {},
   data: getReadModelData(state)
 }))(connectViewModel(mapStateToProps, mapDispatchToProps)(CommentById))

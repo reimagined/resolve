@@ -11,7 +11,7 @@ We'll glad to see all your questions:
 
 ## How to start?
 
-This example demonstrates work with view-models in case of **all events subscribtion**. Sometimes, for example for fast application prototyping, it's necessary to have view-model on client with all server events instead of part. There's a special feature called **wildcard**, that allows to subscribe to all events. To setup:
+This example demonstrates how to work with view-models in the **all events subscribtion** case. Sometimes, for example for fast application prototyping, it's necessary to have view-model on client with all server events instead of part. There's a special feature called **wildcard**, that allows to subscribe to all events. To setup:
 
 ```bash
 npx create-resolve-app todo-two-levels-example -e todo-two-levels
@@ -21,7 +21,7 @@ npx create-resolve-app todo-two-levels-example -e todo-two-levels
 
 ## What's next?
 
-📑 You can learn more about that in [**View Model**](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md) topic.
+📑 Learn more about this case in the [View Model](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md) article.
 
 📑 Available scripts, project structure overview, configuration files and much other useful information are in [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md) topic.
 

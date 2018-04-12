@@ -1,15 +1,17 @@
 import {
+  SEND_COMMAND,
+  HOT_MODULE_REPLACEMENT,
   SUBSCRIBE_VIEWMODEL,
   UNSUBSCRIBE_VIEWMODEL,
   SUBSCRIBE_READMODEL,
-  UNSUBSCRIBE_READMODEL,
-  SEND_COMMAND
+  UNSUBSCRIBE_READMODEL
 } from './action_types'
 import actions from './actions'
 import defaultSubscribeAdapter from './subscribe_adapter'
 import sendCommand from './send_command'
 import loadInitialState from './load_initial_state'
 import { getKey, getRootableUrl, delay } from './util'
+import createActions from './create_actions'
 
 const REFRESH_TIMEOUT = 1000
 
@@ -21,9 +23,10 @@ export function getEventTypes(viewModels, subscribers) {
       return
     }
 
-    const { Init, ...projection } = viewModels.find(
-      ({ name }) => name === viewModelName
-    ).projection
+    const projection = {
+      ...viewModels.find(({ name }) => name === viewModelName).projection
+    }
+    delete projection.Init
 
     Object.keys(projection).forEach(eventType => {
       eventTypes[eventType] = true
@@ -212,12 +215,14 @@ export function unsubscribeReadmodel(
   if (!socketId || socketId.constructor !== String) return
 
   orderedFetch(
-    getRootableUrl(`/api/query/${readModelName}/${resolverName}/${socketId}`),
+    getRootableUrl(
+      `/api/query/${readModelName}/${resolverName}?socketId=${socketId}`
+    ),
     {
       method: 'DELETE',
       credentials: 'same-origin'
     }
-  ).catch(error => null)
+  ).catch(() => null)
 }
 
 const isClient = typeof window !== 'undefined'
@@ -255,6 +260,7 @@ export const mockSubscribeAdapter = {
 
 export function createResolveMiddleware({
   viewModels = [],
+  aggregates = [],
   subscribeAdapter = defaultSubscribeAdapter
 }) {
   const subscribers = {
@@ -272,6 +278,11 @@ export function createResolveMiddleware({
 
   const orderedFetch = createOrderedFetch()
 
+  const aggregateActions = aggregates.reduce(
+    (result, aggregate) => ({ ...result, ...createActions(aggregate) }),
+    {}
+  )
+
   return store => {
     Object.defineProperty(store.getState, 'isLoadingViewModel', {
       enumerable: false,
@@ -279,6 +290,12 @@ export function createResolveMiddleware({
       writable: false,
       value: (viewModelName, aggregateId) =>
         !!loading[viewModelName][aggregateId]
+    })
+    Object.defineProperty(store.getState, 'aggregateActions', {
+      enumerable: false,
+      configurable: false,
+      writable: false,
+      value: aggregateActions
     })
 
     store.dispatch(actions.provideViewModels(viewModels))
@@ -293,8 +310,19 @@ export function createResolveMiddleware({
       })
     })
 
+    let hotModuleReplacementId
+
     return next => action => {
       switch (action.type) {
+        case HOT_MODULE_REPLACEMENT: {
+          if (!hotModuleReplacementId) {
+            hotModuleReplacementId = action.hotModuleReplacementId
+          }
+          if (hotModuleReplacementId !== action.hotModuleReplacementId) {
+            window.location.reload()
+          }
+          break
+        }
         case SUBSCRIBE_VIEWMODEL: {
           const { viewModelName, aggregateId } = action
           loading[viewModelName][aggregateId] = true

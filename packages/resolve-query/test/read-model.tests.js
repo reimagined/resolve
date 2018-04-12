@@ -91,7 +91,7 @@ describe('resolve-query read-model', () => {
 
       init: sinon.stub().callsFake(() => ({
         getLastAppliedTimestamp: sinon.stub().callsFake(async () => INIT_TIME),
-        getReadable: sinon.stub().callsFake(async (...args) => projectionLog),
+        getReadable: sinon.stub().callsFake(async () => projectionLog),
         getError: sinon.stub().callsFake(async () => lastProjectionError)
       })),
 
@@ -102,7 +102,7 @@ describe('resolve-query read-model', () => {
       GoodEvent: sinon
         .stub()
         .callsFake(async (store, event) => await store.touch(event)),
-      BadEvent: sinon.stub().callsFake(async (store, event) => {
+      BadEvent: sinon.stub().callsFake(async () => {
         throw new Error('BadEvent')
       }),
       FailedEvent: true
@@ -147,8 +147,6 @@ describe('resolve-query read-model', () => {
     expect(lastProjectionError.message).to.be.equal('BadEvent')
 
     expect(readModel.read).to.be.a('function')
-    expect(readModel.addEventListener).to.be.a('function')
-    expect(readModel.removeEventListener).to.be.a('function')
     expect(readModel.dispose).to.be.a('function')
   })
 
@@ -185,7 +183,7 @@ describe('resolve-query read-model', () => {
       }
     ]
 
-    const firstResult = await readModel.read()
+    const firstResult = await readModel.getReadModel()
 
     expect(firstResult.length).to.be.equal(2)
     expect(firstResult[0]).to.be.equal(primaryEvents[1])
@@ -195,7 +193,7 @@ describe('resolve-query read-model', () => {
 
     resolveSecondaryEvents()
     await appliedPromise
-    const secondResult = await readModel.read()
+    const secondResult = await readModel.getReadModel()
 
     expect(secondResult.length).to.be.equal(4)
     expect(secondResult[0]).to.be.equal(primaryEvents[1])
@@ -217,8 +215,8 @@ describe('resolve-query read-model', () => {
     ]
 
     expect(adapter.init.callCount).to.be.equal(0)
-    const firstResult = await readModel.read()
-    const secondResult = await readModel.read()
+    const firstResult = await readModel.getReadModel()
+    const secondResult = await readModel.getReadModel()
 
     expect(firstResult.length).to.be.equal(2)
     expect(firstResult[0]).to.be.equal(primaryEvents[1])
@@ -243,7 +241,7 @@ describe('resolve-query read-model', () => {
     ]
 
     const specialReadArg = {}
-    await readModel.read(specialReadArg)
+    await readModel.getReadModel(specialReadArg)
 
     const adapterApi = adapter.init.firstCall.returnValue
 
@@ -260,7 +258,7 @@ describe('resolve-query read-model', () => {
     ]
 
     try {
-      await readModel.read()
+      await readModel.getReadModel()
       return Promise.reject('Projection error should hoist to read function')
     } catch (err) {
       expect(builtProjection.BadEvent.callCount).to.be.equal(1)
@@ -284,7 +282,7 @@ describe('resolve-query read-model', () => {
     const readModel = createReadModel({ projection, eventStore, adapter })
     const builtProjection = adapter.buildProjection.firstCall.returnValue
     const appliedPromise = new Promise(resolve => {
-      projection.BadEvent.onCall(0).callsFake(async (store, event) => {
+      projection.BadEvent.onCall(0).callsFake(async () => {
         skipTicks().then(resolve)
         throw new Error('BadEvent')
       })
@@ -297,13 +295,13 @@ describe('resolve-query read-model', () => {
       { type: 'BadEvent', timestamp: INIT_TIME + 40, payload: 'SECONDARY(+40)' }
     ]
 
-    await readModel.read()
+    await readModel.getReadModel()
 
     resolveSecondaryEvents()
     await appliedPromise
 
     try {
-      await readModel.read()
+      await readModel.getReadModel()
       return Promise.reject('Projection error should hoist to read function')
     } catch (err) {
       expect(builtProjection.BadEvent.callCount).to.be.equal(1)
@@ -348,7 +346,7 @@ describe('resolve-query read-model', () => {
     ]
 
     try {
-      await readModel.read()
+      await readModel.getReadModel()
       return Promise.reject(
         'Projection flow failure should hoist to read function'
       )
@@ -382,12 +380,12 @@ describe('resolve-query read-model', () => {
       }
     ]
 
-    await readModel.read()
+    await readModel.getReadModel()
     resolveSecondaryEvents()
     await appliedPromise
 
     try {
-      await readModel.read()
+      await readModel.getReadModel()
       return Promise.reject(
         'Projection flow failure should hoist to read function'
       )
@@ -409,7 +407,7 @@ describe('resolve-query read-model', () => {
     }))
 
     try {
-      await readModel.read()
+      await readModel.getReadModel()
       return Promise.reject('Query should handle error in subscribe init phase')
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
@@ -425,7 +423,7 @@ describe('resolve-query read-model', () => {
       getError: sinon.stub()
     }))
 
-    const result = await readModel.read()
+    const result = await readModel.getReadModel()
     const adapterApi = adapter.init.firstCall.returnValue
     const readValue = await adapterApi.getReadable.firstCall.returnValue
 
@@ -445,14 +443,14 @@ describe('resolve-query read-model', () => {
     }
 
     const readModel = createReadModel({ projection, eventStore })
-    await readModel.read()
+    await readModel.getReadModel()
 
     expect(appliedEvents).to.be.deep.equal(primaryEvents)
   })
 
   it('should work fine without projection function', async () => {
     const readModel = createReadModel({ eventStore, adapter })
-    const result = await readModel.read()
+    const result = await readModel.getReadModel()
 
     const adapterApi = adapter.init.firstCall.returnValue
     const readValue = await adapterApi.getReadable.firstCall.returnValue
@@ -476,7 +474,7 @@ describe('resolve-query read-model', () => {
       { type: 'GoodEvent', timestamp: INIT_TIME + 20, payload: 'PRIMARY(+20)' }
     ]
 
-    const readPromise = readModel.read()
+    const readPromise = readModel.getReadModel()
     readModel.dispose()
 
     await readPromise
@@ -494,115 +492,10 @@ describe('resolve-query read-model', () => {
       { type: 'GoodEvent', timestamp: INIT_TIME + 20, payload: 'PRIMARY(+20)' }
     ]
 
-    await readModel.read()
+    await readModel.getReadModel()
     readModel.dispose()
 
     expect(adapter.reset.callCount).to.be.equal(1)
     expect(unsubscriber.callCount).to.be.equal(1)
-  })
-
-  it('should support external subscriptions on events - subscribe action', async () => {
-    const readModel = createReadModel({ projection, eventStore, adapter })
-    const appliedPromise = new Promise(resolve => {
-      projection.GoodEvent.onCall(3).callsFake(async (store, event) => {
-        await store.touch(event)
-        resolve()
-      })
-    })
-
-    const eventLists = []
-    readModel.addEventListener(event => eventLists.push(event))
-
-    primaryEvents = [
-      { type: 'GoodEvent', timestamp: INIT_TIME - 10, payload: 'PRIMARY(-10)' },
-      { type: 'GoodEvent', timestamp: INIT_TIME + 10, payload: 'PRIMARY(+10)' },
-      { type: 'GoodEvent', timestamp: INIT_TIME + 20, payload: 'PRIMARY(+20)' }
-    ]
-    secondaryEvents = [
-      {
-        type: 'GoodEvent',
-        timestamp: INIT_TIME - 10,
-        payload: 'SECONDARY(-10)'
-      },
-      {
-        type: 'GoodEvent',
-        timestamp: INIT_TIME + 30,
-        payload: 'SECONDARY(+30)'
-      },
-      {
-        type: 'GoodEvent',
-        timestamp: INIT_TIME + 40,
-        payload: 'SECONDARY(+40)'
-      }
-    ]
-
-    await readModel.read()
-    resolveSecondaryEvents()
-    await appliedPromise
-    await readModel.read()
-
-    expect(eventLists).to.be.deep.equal([
-      ...primaryEvents.slice(1),
-      ...secondaryEvents.slice(1)
-    ])
-  })
-
-  it('should support external subscriptions on events - unsubscribe action', async () => {
-    const readModel = createReadModel({ projection, eventStore, adapter })
-    const appliedPromise = new Promise(resolve => {
-      projection.GoodEvent.onCall(3).callsFake(async (store, event) => {
-        await store.touch(event)
-        resolve()
-      })
-    })
-
-    const eventLists = []
-    const eventListener = event => eventLists.push(event)
-    readModel.addEventListener(eventListener)
-    readModel.removeEventListener(eventListener)
-
-    primaryEvents = [
-      { type: 'GoodEvent', timestamp: INIT_TIME - 10, payload: 'PRIMARY(-10)' },
-      { type: 'GoodEvent', timestamp: INIT_TIME + 10, payload: 'PRIMARY(+10)' },
-      { type: 'GoodEvent', timestamp: INIT_TIME + 20, payload: 'PRIMARY(+20)' }
-    ]
-    secondaryEvents = [
-      {
-        type: 'GoodEvent',
-        timestamp: INIT_TIME - 10,
-        payload: 'SECONDARY(-10)'
-      },
-      {
-        type: 'GoodEvent',
-        timestamp: INIT_TIME + 30,
-        payload: 'SECONDARY(+30)'
-      },
-      {
-        type: 'GoodEvent',
-        timestamp: INIT_TIME + 40,
-        payload: 'SECONDARY(+40)'
-      }
-    ]
-
-    await readModel.read()
-    resolveSecondaryEvents()
-    await appliedPromise
-    await readModel.read()
-
-    expect(eventLists).to.be.deep.equal([])
-  })
-
-  it('should do no action on non-function or non-subscribed function', async () => {
-    const readModel = createReadModel({ projection, eventStore, adapter })
-
-    try {
-      readModel.removeEventListener(() => {})
-      readModel.addEventListener(null)
-      readModel.removeEventListener(null)
-    } catch (err) {
-      return Promise.reject(
-        'Should do no action on non-function or non-subscribed function'
-      )
-    }
   })
 })

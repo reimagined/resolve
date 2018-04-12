@@ -1,11 +1,14 @@
 import jwt from 'jsonwebtoken'
+import jwtSecret from '../../auth/jwtSecret'
 
 const getMe = async jwtToken => {
   if (!jwtToken) return null
-  const user = await jwt.verify(
-    jwtToken,
-    process.env.JWT_SECRET || 'DefaultSecret'
-  )
+  const user = await jwt.verify(jwtToken, jwtSecret)
+
+  if (!user.name) {
+    return null
+  }
+
   return user
 }
 
@@ -31,9 +34,12 @@ export default {
   me: async (store, { jwtToken }) => await getMe(jwtToken),
 
   user: async (store, { id, name, jwtToken }) => {
-    const user = id
-      ? await store.findOne('Users', { id })
-      : await store.findOne('Users', { name })
+    const user =
+      name != null
+        ? await store.findOne('Users', { name })
+        : id != null
+          ? await store.findOne('Users', { id })
+          : null
 
     return {
       user,
@@ -62,5 +68,7 @@ export default {
       comments: Array.isArray(comments) ? comments : [],
       me: await getMe(jwtToken)
     }
-  }
+  },
+
+  void: async () => null
 }

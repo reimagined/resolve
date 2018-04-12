@@ -1,0 +1,19 @@
+{
+  "files": [
+    "routes",
+    "aggregates",
+    "readModels",
+    "viewModels",
+    "sagas",
+    "index",
+    "auth.strategies",
+    "redux.store",
+    "redux.reducers",
+    "redux.middlewares"
+  ],
+  "filesOrModules": [
+    "storage.adapter",
+    "bus.adapter",
+    "subscribe.adapter"
+  ]
+}

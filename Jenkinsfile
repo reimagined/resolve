@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'reimagined/resolve-ci'
-            args '-u root:root -v /home/resolve/yarn_cache:/yarn_cache'
+            args '-u root:root -v /home/resolve/yarn_cache:/yarn_cache -p 5901:5901'
         }
     }
     stages {
@@ -96,7 +96,7 @@ pipeline {
                         export YARN_CACHE_FOLDER=/yarn_cache
                         /init.sh
                         cd examples/hacker-news
-                        yarn test:functional --browser=path:/chromium
+                        JWT_SECRET="secret" yarn test:functional --browser=path:/chromium
                     """
                 }
             }

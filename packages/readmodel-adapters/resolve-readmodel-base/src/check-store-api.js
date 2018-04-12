@@ -119,8 +119,8 @@ const isFieldValueCorrect = (
   try {
     const fieldType = checkAndGetFieldType(metaInfo, fieldName)
     if (!fieldType) return false
-    if (fieldValue == null) return isNullable
     if (fieldType === 'json') return true
+    if (fieldValue == null) return isNullable
 
     return (
       (fieldType === 'number' && fieldValue.constructor === Number) ||
@@ -149,13 +149,7 @@ const checkDocumentShape = (metaInfo, document, strict = false) => {
   const { primaryIndex, secondaryIndexes } = metaInfo
 
   for (let fieldName of documentKeys) {
-    if (
-      document[fieldName] === null &&
-      metaInfo.fieldTypes[fieldName] === 'json'
-    )
-      continue
-
-    const isNullable = !!(
+    const isNullable = !(
       primaryIndex.name === fieldName ||
       secondaryIndexes.find(({ name }) => name === fieldName)
     )
@@ -164,6 +158,103 @@ const checkDocumentShape = (metaInfo, document, strict = false) => {
       isFieldValueCorrect(metaInfo, fieldName, document[fieldName], isNullable),
       'invalidDocumentShape',
       document
+    )
+  }
+}
+
+const checkSearchExpression = (metaInfo, searchExpression) => {
+  checkCondition(
+    checkOptionShape(searchExpression, [Object]),
+    'invalidSearchExpression',
+    searchExpression
+  )
+
+  const allowedComparationOperators = [
+    '$lt',
+    '$lte',
+    '$gt',
+    '$gte',
+    '$eq',
+    '$ne'
+  ]
+  const allowedLogicalOperators = ['$and', '$or', '$not']
+
+  const operators = Object.keys(searchExpression).filter(
+    key => key.indexOf('$') > -1
+  )
+
+  checkCondition(
+    operators.length === 0 ||
+      operators.length === Object.keys(searchExpression).length,
+    'invalidSearchExpression',
+    searchExpression
+  )
+
+  if (operators.length > 0) {
+    for (let operator of operators) {
+      checkCondition(
+        allowedLogicalOperators.includes(operator),
+        'invalidSearchExpression',
+        searchExpression
+      )
+
+      if (operator === '$not') {
+        checkSearchExpression(metaInfo, searchExpression[operator])
+        return
+      }
+
+      checkCondition(
+        Array.isArray(searchExpression[operator]),
+        'invalidSearchExpression',
+        searchExpression
+      )
+
+      for (let nestedExpr of searchExpression[operator]) {
+        checkSearchExpression(metaInfo, nestedExpr)
+      }
+    }
+
+    return
+  }
+
+  const documentKeys = Object.keys(searchExpression)
+  checkFieldList(metaInfo, documentKeys)
+  const { primaryIndex, secondaryIndexes } = metaInfo
+
+  for (let fieldName of documentKeys) {
+    const isNullable = !(
+      primaryIndex.name === fieldName ||
+      secondaryIndexes.find(({ name }) => name === fieldName)
+    )
+
+    let fieldValue = searchExpression[fieldName]
+
+    if (searchExpression[fieldName] instanceof Object) {
+      const inOperators = Object.keys(searchExpression[fieldName]).filter(
+        key => key.indexOf('$') > -1
+      )
+
+      checkCondition(
+        inOperators.length === 0 || inOperators.length === 1,
+        'invalidSearchExpression',
+        searchExpression
+      )
+
+      if (inOperators.length > 0) {
+        checkCondition(
+          allowedComparationOperators.indexOf(inOperators[0]) > -1,
+          'invalidSearchExpression',
+          searchExpression
+        )
+
+        fieldValue = searchExpression[fieldName][inOperators[0]]
+      }
+    }
+
+    checkCondition(
+      isFieldValueCorrect(metaInfo, fieldName, fieldValue, isNullable),
+      'invalidSearchExpression',
+      searchExpression
     )
   }
 }
@@ -267,7 +358,7 @@ const find = async (
     checkFieldList(metaInfo, sortFieldsList, [-1, 1])
   }
 
-  checkDocumentShape(metaInfo, searchExpression)
+  checkSearchExpression(metaInfo, searchExpression)
 
   checkCondition(
     ((Number.isInteger(limit) && limit > -1) || limit === Infinity) &&
@@ -301,7 +392,7 @@ const findOne = async (
     checkFieldList(metaInfo, resultFieldsList, [0, 1])
   }
 
-  checkDocumentShape(metaInfo, searchExpression)
+  checkSearchExpression(metaInfo, searchExpression)
 
   return await storeApi.findOne(storageName, searchExpression, resultFieldsList)
 }
@@ -310,7 +401,7 @@ const count = async ({ metaApi, storeApi }, storageName, searchExpression) => {
   await checkStorageExists(metaApi, storageName)
 
   const metaInfo = await metaApi.getStorageInfo(storageName)
-  checkDocumentShape(metaInfo, searchExpression)
+  checkSearchExpression(metaInfo, searchExpression)
 
   return await storeApi.count(storageName, searchExpression)
 }
@@ -333,7 +424,7 @@ const update = async (
   await checkStorageExists(metaApi, storageName)
 
   const metaInfo = await metaApi.getStorageInfo(storageName)
-  checkDocumentShape(metaInfo, searchExpression)
+  checkSearchExpression(metaInfo, searchExpression)
   checkUpdateExpression(metaInfo, updateExpression)
 
   await storeApi.update(storageName, searchExpression, updateExpression)
@@ -343,7 +434,7 @@ const del = async ({ metaApi, storeApi }, storageName, searchExpression) => {
   await checkStorageExists(metaApi, storageName)
 
   const metaInfo = await metaApi.getStorageInfo(storageName)
-  checkDocumentShape(metaInfo, searchExpression)
+  checkSearchExpression(metaInfo, searchExpression)
 
   await storeApi.del(storageName, searchExpression)
 }

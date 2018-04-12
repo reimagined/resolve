@@ -1,5 +1,4 @@
-import 'regenerator-runtime/runtime'
-
+import invariantFunctionHash from 'invariant-function-hash'
 const verifyCommand = async ({ aggregateId, aggregateName, type }) => {
   if (!aggregateId) throw new Error('The "aggregateId" argument is required')
   if (!aggregateName)
@@ -7,22 +6,72 @@ const verifyCommand = async ({ aggregateId, aggregateName, type }) => {
   if (!type) throw new Error('The "type" argument is required')
 }
 
+const emptySnapshotAdapter = Object.freeze({
+  loadSnapshot: async () => ({ timestamp: 0, state: null, version: 0 }),
+  saveSnapshot: () => null
+})
+
+const makeCommandHandlerHash = (projection, aggregateId) =>
+  Object.keys(projection)
+    .sort()
+    .map(
+      handlerName =>
+        `${handlerName}:${invariantFunctionHash(projection[handlerName])}`
+    )
+    .join(',') + `;${aggregateId}`
+
 const getAggregateState = async (
-  { projection, initialState },
+  {
+    projection,
+    initialState,
+    snapshotAdapter = emptySnapshotAdapter,
+    snapshotBucketSize = 100
+  },
   aggregateId,
   eventStore
 ) => {
-  const handlers = projection || {}
-  let aggregateState = initialState
+  const snapshotKey =
+    projection && projection.constructor === Object
+      ? makeCommandHandlerHash(projection, aggregateId)
+      : null
+
+  let aggregateState = null
   let aggregateVersion = 0
+  let appliedEvents = 0
+  let lastTimestamp = 0
 
-  await eventStore.getEventsByAggregateId(aggregateId, event => {
-    aggregateVersion = event.aggregateVersion
-    const handler = handlers[event.type]
-    if (!handler) return
+  try {
+    if (snapshotKey == null) throw new Error()
+    const snapshot = await snapshotAdapter.loadSnapshot(snapshotKey)
+    aggregateVersion = snapshot.version
+    aggregateState = snapshot.state
+    lastTimestamp = snapshot.timestamp
+  } catch (err) {}
 
-    aggregateState = handler(aggregateState, event)
-  })
+  if (!(+lastTimestamp > 0)) {
+    aggregateState = initialState
+  }
+
+  await eventStore.getEventsByAggregateId(
+    aggregateId,
+    event => {
+      aggregateVersion = event.aggregateVersion
+      const handler = projection && projection[event.type]
+      if (typeof handler !== 'function') return
+
+      aggregateState = handler(aggregateState, event)
+
+      if (snapshotKey != null && ++appliedEvents % snapshotBucketSize === 0) {
+        lastTimestamp = Date.now()
+        snapshotAdapter.saveSnapshot(snapshotKey, {
+          state: aggregateState,
+          version: aggregateVersion,
+          timestamp: lastTimestamp
+        })
+      }
+    },
+    lastTimestamp
+  )
 
   return { aggregateState, aggregateVersion }
 }

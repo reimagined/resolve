@@ -1,6 +1,6 @@
 {
   "name": "resolve-command",
-  "version": "0.7.4",
+  "version": "0.9.0",
   "description": "This package creates a function to execute a command.",
   "main": "./dist/index.js",
   "bugs": {
@@ -27,6 +27,6 @@
     "sinon": "^3.3.0"
   },
   "dependencies": {
-    "regenerator-runtime": "^0.11.0"
+    "invariant-function-hash": "^1.0.0"
   }
 }

@@ -1,8 +1,9 @@
-import App from './components/App'
+import App from './containers/App'
 
 export default [
   {
     path: '/',
-    component: App
+    component: App,
+    exact: true
   }
 ]

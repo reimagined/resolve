@@ -52,7 +52,7 @@ const generateCommentEvents = (comment, aggregateId, parentId) => {
     payload: {
       userId,
       userName,
-      text: comment.text,
+      text: comment.text || '',
       commentId,
       parentId
     }
@@ -105,7 +105,7 @@ const generateStoryEvents = async story => {
     return
   }
 
-  const userName = story.by
+  const userName = story.by || 'anonymous'
   const aggregateId = uuid.v4()
 
   eventStore.saveEventRaw({
