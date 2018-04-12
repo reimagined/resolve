@@ -1,6 +1,6 @@
 {
   "name": "resolve-query",
-  "version": "0.8.1",
+  "version": "0.9.0",
   "description": "This package creates a function to execute a query.",
   "main": "./dist/index.js",
   "bugs": {
@@ -30,6 +30,6 @@
   "dependencies": {
     "diff-json": "^0.1.11",
     "invariant-function-hash": "^1.0.0",
-    "resolve-readmodel-memory": "0.8.1"
+    "resolve-readmodel-memory": "0.9.0"
   }
 }
