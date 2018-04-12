@@ -30,7 +30,10 @@ export class StoryDetails extends React.PureComponent {
   }
 
   render() {
-    const { data: { me }, story } = this.props
+    const {
+      data: { me },
+      story
+    } = this.props
     const loggedIn = !!me
 
     if (!story) {
@@ -64,7 +67,14 @@ export class StoryDetails extends React.PureComponent {
   }
 }
 
-export const mapStateToProps = (state, { match: { params: { storyId } } }) => ({
+export const mapStateToProps = (
+  state,
+  {
+    match: {
+      params: { storyId }
+    }
+  }
+) => ({
   story: state.viewModels[viewModel.name][storyId],
   viewModelName: viewModel.name,
   aggregateId: storyId
