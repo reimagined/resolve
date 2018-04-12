@@ -1,132 +1,224 @@
 
 # [<img src="https://user-images.githubusercontent.com/15689049/29659048-ad0d158a-88c5-11e7-9354-dbe4bb105ad7.png" height="60">](https://github.com/reimagined/resolve/)
 
-[![Build Status](https://travis-ci.org/reimagined/resolve.svg?branch=master)](https://travis-ci.org/reimagined/resolve) [![npm version](https://badge.fury.io/js/create-resolve-app.svg)](https://badge.fury.io/js/create-resolve-app) [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier) [![GitHub issues](https://img.shields.io/github/issues/reimagined/resolve.svg)](https://github.com/reimagined/resolve/issues) [![GitHub forks](https://img.shields.io/github/forks/reimagined/resolve.svg)](https://github.com/reimagined/resolve/network) [![GitHub stars](https://img.shields.io/github/stars/reimagined/resolve.svg)](https://github.com/reimagined/resolve/stargazers) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/reimagined/resolve/master/LICENSE) [![Join the chat at https://gitter.im/reimagined/resolve](https://badges.gitter.im/reimagined/resolve.svg)](https://gitter.im/reimagined/resolve?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/reimagined/resolve.svg?branch=master)](https://travis-ci.org/reimagined/resolve) [![npm version](https://badge.fury.io/js/create-resolve-app.svg)](https://badge.fury.io/js/create-resolve-app) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/reimagined/resolve/master/LICENSE)
 
+A JavaScript framework for **CQRS**, **Domain-Driven Design** and **Event Sourcing** with robust support for **React** and **Redux**. **reSolve** provides a new way to describe an app's core logic and fully separate it from auxiliary code.
 
-reSolve is a framework for developing apps based on CQRS and Event Sourcing using [React](https://github.com/facebook/react) + [Redux](https://github.com/reactjs/redux) on the client. It can help negate differences between your domain and technical languages, and focus on your application code.
+<p align="center"><img src="https://user-images.githubusercontent.com/19663260/38686546-35c6a5fe-3e7d-11e8-9942-956333801c32.png"></p>
 
-## **Table of Contents** 📑
-* [Basic Concepts](#basic-concepts)
-	* [Command and Aggregate](#command-and-aggregate)
-	* [Event Store](#event-store)
-	* [Read Model, View Model and Query](#read-model-view-model-and-query)
-	* [See Also](#see-also)
-* [Quick Installation](#quick-installation-)
-* [Packages](#packages-)
-* [Examples](#examples-)
-* [Development](#development)
+* 2 minutes [installation](#installation).
+* [Free and open source](https://github.com/reimagined/resolve/blob/master/LICENSE.md).
+* Flexible and clear [API](#documentation).
 
-## **Basic Concepts**
-reSolve is a set of libraries which can be used independently or simultaneously. Each library is responsible for a particular CQRS + Event Sourcing system part as shown in the image below.
+<!-- TODO: text="Try it now!" -->
+[<p align="center"><img src="https://user-images.githubusercontent.com/19663260/38686570-44c83d6a-3e7d-11e8-8cc6-00b6e2610036.png"></p>](#getting-started)
 
+## **📑 Table of Contents**
+* **[🏗️ Why reSolve](#why-resolve)**
+* **[🚀 Getting Started](#getting-started)**
+    * [Installation](#installation)
+    * [Tutorials](#tutorials)
+    * [Examples](#examples)
+* **[📚 Documentation](#documentation)**
+    * [Compatibility](#compatibility)
+    * [Bacic Concepts](#basic-concepts)
+* **[📢 Get in Touch](#get-in-touch)**
 
-![CQRS schema](https://user-images.githubusercontent.com/15689049/30436232-4932f952-9974-11e7-8e3d-575cc5de407e.png)
-_*This scheme is based on the "CQRS with Event Sourcing" image from the [Event Sourcing for Functional Programmers](http://danielwestheide.com/talks/flatmap2013/slides/#/) presentation.*_
+## <a name="why-resolve">**🏗️ Why reSolve**</a>
 
-### Command and Aggregate
-When you need to change the system's state, you send a Command. A command is addressed to a Domain Aggregate. An Aggregate is a cluster of logically related objects, containing enough information to perform a command as one transaction. It handles a command, checks whether it can be executed and generates an event to change the system's state. A new event is sent to [Event Store](#event-store).
-Refer to [DDD_Aggregates](https://martinfowler.com/bliki/DDD_Aggregate.html) or [DDD, Event Sourcing, and CQRS Tutorial: design](http://cqrs.nu/tutorial/cs/01-design) for more information on aggregates.
+With **reSolve** you can more efficiently create applications of any complexity level. A single approach is used for simple [ToDo List](#todo-list) and for a complex reactive application like Stack Overflow, with distributed architecture that is ready for high load. The technologies stack (CQRS, Event Sourcing, Domain-Driven Design, React + Redux) makes any **reSolve** application scalable and maintainable, so you can focus on business logic instead of auxiliary code.
 
-The [resolve-command](packages/resolve-command) library allows you to handle commands and send produced events to the event store based on aggregate definitions and their commands. All aggregates are passed to `resolve-command` as an array. The library creates an Aggregate Repository and finds or instantiates a particular aggregate to handle each command.
+* 💎 Reactivity
+* 💎 Distribution
+* 💎 Highload
+* 💎 Fault Tolerance
+* 💎 Unidirectional Data Flow
 
-You can send a command on the client side by dispatching a redux action of the appropriate type. To do this, use the [sendComand](packages/resolve-redux#sendcommand) from the [resolve-redux](packages/resolve-redux) package.
+## <a name="getting-started">**🚀 Getting Started**</a>
 
-Refer to [package documentation](packages/resolve-command#example) for an example of `resolve-command` usage.
+### <a name="installation">Installation</a>
 
-### Event Store
-The Event Store stores all events aggregates produce and delivers them to subscribers. It combines a persistent storage and message bus.
+The [create-resolve-app](packages/create-resolve-app) package is used to create a **reSolve**-based application. You can use it to get one of the examples, or create an empty application. By default, `create-resolve-app` generates an empty [Hello World](https://github.com/reimagined/resolve/tree/master/examples/hello-world) application. You can start working on your new **reSolve** application in just<!--sic--> **2 minutes**!
 
-reSolve provides the [resolve-es](packages/resolve-es) package containing the event store implementation, as well as [storage-adapters](packages/storage-adapters) and [bus-adapters](packages/bus-adapters) allowing you to specify where to store and how to send events.
+Use one of these tools to start a new **reSolve** aplication:
 
-### Read Model, View Model and Query
-The Read Model represents a system state or its part. It is built using Projection functions. All events from the beginning of time are applied to a read model to build its current state.
+* [npx](https://www.npmjs.com/package/npx)
 
-View model is a read model or part of it that represent a part of UI state and can live on client. It can be updated by Redux reducer function on the client and on the server.
+    ```sh
+    npx create-resolve-app my-awesome-app
+    cd my-awesome-app
+    npm run dev
+    ```
 
-Queries are used to get data from a read model and view model.
+* [yarn](https://yarnpkg.com/lang/en/)
 
-See [Event Sourcing - Projections](https://abdullin.com/post/event-sourcing-projections/) or [DDD, Event Sourcing, and CQRS Tutorial: read models](http://cqrs.nu/tutorial/cs/03-read-models) for more information.
+    ```sh
+    yarn create resolve-app my-awesome-app
+    cd my-awesome-app
+    yarn run dev
+    ```
 
-You can use [resolve-query](packages/resolve-query)  as a query.
+* [npm](https://www.npmjs.com/)
 
-Refer to [package documentation](packages/resolve-query#example) for an example of `resolve-query` usage.
+    ```sh
+    npm i -g create-resolve-app
+    create-resolve-app my-awesome-app
+    cd my-awesome-app
+    npm run dev
+    ```
 
-### See Also
-Learn more about related concepts:
+    > Note: Installing a package globally (the first command) may require administrative privileges. That means you have to use the `sudo` prefix on Linux and MacOS, or start a terminal with the administrative privileges on Windows.
 
-* [Why using DDD, CQRS and Event Sourcing](https://github.com/cer/event-sourcing-examples/wiki/WhyEventSourcing)
-* [Education course for DDD (Domain Driven Design)](http://cqrs.nu/)
-* [Building Scalable Applications Using Event Sourcing and CQRS](https://medium.com/technology-learning/event-sourcing-and-cqrs-a-look-at-kafka-e0c1b90d17d8)
-* [Blog about DDD](http://danielwhittaker.me/category/ddd/)
-* [Immutability Changes Everything](http://cidrdb.org/cidr2015/Papers/CIDR15_Paper16.pdf)
+The created application is accessible using the http://localhost:3000/ and `http://<your_ip>:3000/` URLs (you can [change the URL settings](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)). Start learning **reSolve** with the [**First Application From Scratch**](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/First%20Application%20From%20Scratch.md) tutorial. Use the [**documentation**](#documentation), [**tutorials**](#tutorials) and [**examples**](#examples) to learn **reSolve** more deeply.
 
+### <a name="tutorials">Tutorials</a>
 
+* [First Application From Scratch](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/First%20Application%20From%20Scratch.md)
+* [ToDo List App Tutorial](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/ToDo%20List%20App%20Tutorial.md)
 
-## **Quick Installation** 🚀
-> Note: Installing a package globally may require administrative privileges. That means you have to use the sudo command for Unix-based systems or run a terminal with administrative privileges on Windows systems.
+### <a name="examples">Examples</a>
 
+You can get a sample app using the `create-resolve-app` tool with the `-e` flag followed by an example name. Use the `create-resolve-app -h` command to list the available examples.
 
-Create a new reSolve application using the [create-resolve-app](packages/create-resolve-app) package.
+The following tools are used to get a sample **reSolve** application:
 
-```bash
-npm i -g create-resolve-app
-create-resolve-app my-resolve-app
-cd my-resolve-app
-npm run dev
-```
-![Terminal](https://user-images.githubusercontent.com/15689049/29822549-8513584c-8cd4-11e7-8b65-b88fdad7e4d1.png)
-The application will be opened in your browser at [http://localhost:3000/](http://localhost:3000/).
+* [npx](https://www.npmjs.com/package/npx)
 
-Refer to the [reSolve Getting Started Guide](packages/create-resolve-app) for detailed information on how to create a new reSolve application and all the available scripts.
+    ```sh
+    npx create-resolve-app todo-example -e todo
+    ```
 
-## **Packages** 📚
+* [yarn](https://yarnpkg.com/lang/en/)
 
-reSolve includes the following libraries which can be used independently or simultaneously.
+    ```sh
+    yarn create resolve-app todo-example -e todo
+    ```
 
-App generator libraries:
-* 🚀 [create-resolve-app](packages/create-resolve-app)
-	Creates a new application based on reSolve.
+* [npm](https://www.npmjs.com/)
 
-Core libraries:
-* 📢 [resolve-command](packages/resolve-command)
-	Creates a function to execute a command.
+    ```sh
+    npm i -g create-resolve-app
+    create-resolve-app todo-example -e todo
+    ```
 
-* 🏣 [resolve-es](packages/resolve-es)
-	Provides an event store implementation.
+The created application is accessible using the http://localhost:3000/ and `http://<your_ip>:3000` URLs (you can [change your URL settings](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)).
 
-* 🔍 [resolve-query](packages/resolve-query)
-	Creates a function to execute a query.
+The `create-resolve-app` can is capable of creating the following apps:
 
-* 🔩 [resolve-redux](packages/resolve-redux)
-	Helper for creating the Redux storage.
+* [**auth**](https://github.com/reimagined/resolve/tree/master/examples/auth)
 
+    This example demonstrates how to add an authorization to an application using the [resolve-auth package](https://github.com/reimagined/resolve/blob/master/packages/resolve-auth/README.md).
 
-Adapters for event store:
-* 🚌 Bus adapters specifying how to send events:
-    * [resolve-bus-memory](packages/bus-adapters/resolve-bus-memory) (recommended for debugging purposes)
-    * [resolve-bus-rabbitmq](packages/bus-adapters/resolve-bus-rabbitmq)
-    * [resolve-bus-zmq](packages/bus-adapters/resolve-bus-zmq)
+* [**hacker-news**](https://github.com/reimagined/resolve/tree/master/examples/hacker-news)
 
+    This example demonstrates a Hacker News application similar to [YCombinator Hacker News](https://news.ycombinator.com/). The app's creation process is detailed in the [Hacker News Tutorial](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/Hacker%20News%20Tutorial.md).
 
-* 🛢 Storage adapters specifying where to store events:
-    * [resolve-storage-mongo](packages/storage-adapters/resolve-storage-mongo)
-	* [resolve-storage-lite](packages/storage-adapters/resolve-storage-lite)
+* [**hello-world**](https://github.com/reimagined/resolve/tree/master/examples/hello-world)
 
+    An empty app that can be used as a template for any **reSolve** application (created by default).
 
-## **Examples** 💻
+* [**todo**](https://github.com/reimagined/resolve/tree/master/examples/todo)
 
-* [two-level todo list](examples/todo)
-	This example is an application with several aggregate types related to each other. It also shows how to implement a custom backend API server.
+    This example demonstrates how to work with the [view-models](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md). The app's creation process is detailed in the [ToDo List App Tutorial](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/ToDo%20List%20App%20Tutorial.md).
 
-## Development
+<p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-todo-example.png"></p>
 
-* Report bugs and request features on our [issues page](https://github.com/reimagined/resolve/issues).
-* Code released under the [MIT license](LICENSE.md).
-* reSolve is developed by Developer Express Inc. ([https://devexpress.com](https://devexpress.com))
+    This example demonstrates how to work with view-models in the **all events subscribtion** case. Learn more about this case in the [View Model](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md) article.
 
-## Join us
+<p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-todo-two-levels-example.png"></p>
 
-* [Twitter](https://twitter.com/resolvejs)
-* [Facebook](https://www.facebook.com/resolvejs/)
-* Learn how to make [Hacker News application](https://github.com/reimagined/hacker-news-resolve)
+    This example demonstrates how to update the application state on external events unrelated to user actions.
+
+<p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-top-list-example.png"></p>
+
+* [**with-styled-components**](https://github.com/reimagined/resolve/tree/master/examples/with-styled-components)
+
+    This example demonstrates how to add the 'styled-components' library to an application.
+
+## <a name="documentation">**📚 Documentation**</a>
+
+### <a name="compatibility">Compatibility</a>
+
+You can develop and run **reSolve** applications on **Linux**, **Mac** and **Windows** operating systems. It is also possible to integrate **reSolve** with the **React Native**, but this approach is currently experimental.
+
+The minimum supported **NodeJS** version is **6.0.0**.
+
+**reSolve** supports [**npx**](https://www.npmjs.com/package/npx), [**yarn**](https://yarnpkg.com/lang/en/), and [**npm**](https://www.npmjs.com/) package managers.
+
+### <a name="basic-concepts">Basic Concepts</a>
+
+* 📄 [**System Metaphor**](https://github.com/reimagined/resolve/blob/master/docs/System%20Metaphor.md)
+
+    The [**System Metaphor**](https://github.com/reimagined/resolve/blob/master/docs/System%20Metaphor.md) is a vocabulary that describes all terms used in **reSolve** application development. You can also find the detailed description with code examples for every core concept in the [**docs**](https://github.com/reimagined/resolve/tree/master/docs) directory:
+
+    * [_Aggregate_](https://github.com/reimagined/resolve/blob/master/docs/Aggregate.md)
+    * [_Command_](https://github.com/reimagined/resolve/blob/master/docs/Command.md)
+    * [_Event Store_](https://github.com/reimagined/resolve/blob/master/docs/Event%20Store.md)
+    * [_Projection_](https://github.com/reimagined/resolve/blob/master/docs/Projection.md)
+    * [_Query_](https://github.com/reimagined/resolve/blob/master/docs/Query.md)
+    * [_Read Model_](https://github.com/reimagined/resolve/blob/master/docs/Read%20Model.md)
+    * [_View Model_](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md)
+
+* 📄 [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md)
+
+    The [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md) topic describes common principles of building a **reSolve** application. You can also find links to Domain-Driven Design, CQRS and Event Sourcing best practices there. 
+
+* 📄 [**Packages**](https://github.com/reimagined/resolve/blob/master/docs/Packages.md)
+
+    The [**Packages**](https://github.com/reimagined/resolve/blob/master/docs/Packages.md) article provides a description of all **reSolve** packages. The API description and detailed information is available in the package `README` files:
+
+    * [_create-resolve-app_](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app)
+    * [_resolve-auth_](https://github.com/reimagined/resolve/tree/master/packages/resolve-auth)
+    * [_resolve-command_](https://github.com/reimagined/resolve/tree/master/packages/resolve-command)
+    * [_resolve-es_](https://github.com/reimagined/resolve/tree/master/packages/resolve-es)
+    * [_resolve-query_](https://github.com/reimagined/resolve/tree/master/packages/resolve-query)
+    * [_resolve-redux_](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux)
+    * [_resolve-scripts_](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts)
+
+    * [Bus Adapters](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters)
+        * [_resolve-bus-memory_](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters/resolve-bus-memory)
+        * [_resolve-bus-rabbit-mq_](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters/resolve-bus-rabbitmq)
+        * [_resolve-bus-zmq_](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters/resolve-bus-zmq)
+
+    * [Read Model Adapters](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters)
+        * [_resolve-readmodel-base_](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-base)
+        * [_resolve-readmodel-memory_](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-memory)
+        * [_resolve-readmodel-mysql_](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-mysql)
+
+    * [Storage Adapters](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters)
+        * [_resolve-storage-base_](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters/resolve-storage-base)
+        * [_resolve-storage-lite_](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters/resolve-storage-lite)
+        * [_resolve-storage-mongo_](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters/resolve-storage-mongo)
+
+* 📄 [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)
+
+    The [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md) article describes the environment variables, configs, and other options. 
+
+* 📄 [**Contrubutors Guide**](https://github.com/reimagined/resolve/blob/master/docs/Contributors%20Guide.md)
+
+    The [**Contrubutors Guide**](https://github.com/reimagined/resolve/blob/master/docs/Contributors%20Guide.md) describes the development workflow for any contributors: basic rules and commits checking principles.
+
+## <a name="get-in-touch">**📢 Get in Touch**</a>
+
+Feel free to contact us if you have any questions!
+
+✉️ We are glad to see your e-mails sent to **reimagined@devexpress.com**.
+
+💬 Follow us on [**Twitter**](https://twitter.com/resolvejs). We post interesting arcticles, announcements, post polls about **reSolve** development and talk about the modern web technologies!
+
+💻 We also have a [**Facebook**](https://www.facebook.com/resolvejs/) page, join us!
+
+📃 You can find our articles on [**Medium**](https://medium.com/resolvejs)
+
+❓ You are welcome to post any questions or suggestions in [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
+
+🔧 Feel yourself capable of improving **reSolve**? Become one of our [**contributors**](https://github.com/reimagined/resolve/pulls)! Look through our [**Contrubutors Guide**](https://github.com/reimagined/resolve/blob/master/docs/Contributors%20Guide.md) and make a great Pull Request.
+
+⭐️ Remember to star our **GitHub** repository if you like **reSolve**!
+
+<br/>
+<br/>
+<p align="center">reSolve is developed by</p>
+<p align="center"><a href="https://devexpress.com">💛Developer Express Inc.💛</a></p>
+<p align="center"><img src="https://user-images.githubusercontent.com/19663260/38686793-dd31fb22-3e7d-11e8-8f26-33606ad82a16.png"></p>
