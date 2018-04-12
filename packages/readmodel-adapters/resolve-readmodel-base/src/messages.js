@@ -13,6 +13,8 @@ export default {
   invalidFieldName: name => `Field name ${name} is invalid`,
   invalidPagination: (skip, limit) =>
     `Pagination range skip=${skip} and limit=${limit} is invalid`,
+  invalidSearchExpression: expr =>
+    `Search expression ${JSON.stringify(expr)} is invalid`,
   invalidUpdateExpression: expr =>
     `Update expression ${JSON.stringify(expr)} is invalid`,
   invalidDocumentShape: doc =>

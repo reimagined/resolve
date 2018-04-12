@@ -60,3 +60,5 @@ dist
 .vscode
 
 package-lock.json
+
+!event-storage.db

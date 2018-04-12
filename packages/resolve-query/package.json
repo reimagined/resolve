@@ -1,22 +1,26 @@
 {
   "name": "resolve-query",
-  "version": "0.8.1",
+  "version": "0.9.0",
   "description": "This package creates a function to execute a query.",
   "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
-    "prepublish": "babel --out-dir ./dist ./src",
+    "prepublish": "babel --source-maps --out-dir ./dist ./src",
     "test": "jest --testMatch=**/test/*.tests.js --verbose",
     "testw": "jest --testMatch=**/test/*.tests.js --watchAll --verbose"
   },
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
-  "homepage":
-    "https://github.com/reimagined/resolve/tree/master/packages/resolve-query#readme",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-query#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "jest": "^22.1.4",
@@ -26,7 +30,6 @@
   "dependencies": {
     "diff-json": "^0.1.11",
     "invariant-function-hash": "^1.0.0",
-    "regenerator-runtime": "^0.11.0",
-    "resolve-readmodel-memory": "0.8.1"
+    "resolve-readmodel-memory": "0.9.0"
   }
 }

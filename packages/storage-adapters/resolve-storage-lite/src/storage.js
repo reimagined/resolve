@@ -1,30 +1,28 @@
-import 'regenerator-runtime/runtime'
 import NeDB from 'nedb'
-import AsyncLock from 'async-lock'
 import { ConcurrentError } from 'resolve-storage-base'
-const lock = new AsyncLock({ maxPending: Number.POSITIVE_INFINITY })
 
 const storage = {
+  createDatabase: (NeDB, filename) => new NeDB({ filename }),
+
   init: db =>
     new Promise((resolve, reject) =>
       db.loadDatabase(error => (error ? reject(error) : resolve()))
     ),
 
-  createIndex: (db, fieldName) =>
+  createIndex: (db, fieldName, isUnique = false) =>
     new Promise((resolve, reject) =>
       db.ensureIndex(
-        { fieldName },
+        { fieldName, ...(isUnique ? { unique: true, sparse: true } : {}) },
         error => (error ? reject(error) : resolve())
       )
     ),
 
-  createDatabase: (NeDB, filename) => new NeDB({ filename }),
-
   prepare: async filename => {
     const db = storage.createDatabase(NeDB, filename)
     await storage.init(db)
-    await storage.createIndex(db, 'type')
+    await storage.createIndex(db, 'aggregateIdAndVersion')
     await storage.createIndex(db, 'aggregateId')
+    await storage.createIndex(db, 'type')
     return db
   },
 
@@ -33,6 +31,7 @@ const storage = {
       db
         .find({ ...query, timestamp: { $gt: startTime } })
         .sort({ timestamp: 1 })
+        .projection({ aggregateIdAndVersion: 0, _id: 0 })
         .exec((error, events) => {
           if (error) {
             reject(error)
@@ -44,24 +43,31 @@ const storage = {
     ),
 
   saveEvent: event => db =>
-    lock.acquire(
-      event.aggregateId,
-      () =>
-        new Promise((resolve, reject) => {
-          const { aggregateId, aggregateVersion } = event
-
-          db.findOne({ aggregateId, aggregateVersion }, (err, doc) => {
-            if (doc !== null) {
-              return reject(
-                new ConcurrentError(
-                  // eslint-disable-next-line max-len
-                  `Can not save the event because aggregate '${aggregateId}' is not actual at the moment. Please retry later.`
-                )
+    new Promise((resolve, reject) =>
+      db.insert(
+        {
+          ...event,
+          aggregateIdAndVersion: `${event.aggregateId}:${
+            event.aggregateVersion
+          }`
+        },
+        error => {
+          if (!error) {
+            resolve()
+          } else if (error.errorType === 'uniqueViolated') {
+            reject(
+              new ConcurrentError(
+                // eslint-disable-next-line max-len
+                `Can not save the event because aggregate '${
+                  event.aggregateId
+                }' is not actual at the moment. Please retry later.`
               )
-            }
-            db.insert(event, error => (error ? reject(error) : resolve()))
-          })
-        })
+            )
+          } else {
+            reject(error)
+          }
+        }
+      )
     )
 }
 
