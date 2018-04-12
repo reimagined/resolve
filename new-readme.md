@@ -112,17 +112,19 @@ The created application is accessible using the http://localhost:3000/ and `http
 
 The `create-resolve-app` can is capable of creating the following apps:
 
+* [**auth**](https://github.com/reimagined/resolve/tree/master/examples/auth)
+
+    This example demonstrates how to add an authorization to an application using the [resolve-auth package](https://github.com/reimagined/resolve/blob/master/packages/resolve-auth/README.md).
+
+* [**hacker-news**](https://github.com/reimagined/resolve/tree/master/examples/hacker-news)
+
+    This example demonstrates a Hacker News application similar to [YCombinator Hacker News](https://news.ycombinator.com/). The app's creation process is detailed in the [Hacker News Tutorial](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/Hacker%20News%20Tutorial.md).
+
 * [**hello-world**](https://github.com/reimagined/resolve/tree/master/examples/hello-world)
 
     An empty app that can be used as a template for any **reSolve** application (created by default).
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-hello-world-example.png"></p>
-
-* [**top-list**](https://github.com/reimagined/resolve/tree/master/examples/top-list)
-
-    This example demonstrates how to update the application state on external events unrelated to user actions.
-
-<p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-top-list-example.png"></p>
 
 * [**todo**](https://github.com/reimagined/resolve/tree/master/examples/todo)
 
@@ -136,9 +138,15 @@ The `create-resolve-app` can is capable of creating the following apps:
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-todo-two-levels-example.png"></p>
 
-* [**hacker-news**](https://github.com/reimagined/resolve/tree/master/examples/hacker-news)
+* [**top-list**](https://github.com/reimagined/resolve/tree/master/examples/top-list)
 
-    This example demonstrates a Hacker News application similar to [YCombinator Hacker News](https://news.ycombinator.com/). The app's creation process is detailed in the [Hacker News Tutorial](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/Hacker%20News%20Tutorial.md).
+    This example demonstrates how to update the application state on external events unrelated to user actions.
+
+<p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-top-list-example.png"></p>
+
+* [**with-styled-components**](https://github.com/reimagined/resolve/tree/master/examples/with-styled-components)
+
+    This example demonstrates how to add the 'styled-components' library to an application.
 
 ## <a name="documentation">**📚 Documentation**</a>
 
@@ -173,6 +181,7 @@ The minimum supported **NodeJS** version is **6.0.0**.
     The [**Packages**](https://github.com/reimagined/resolve/blob/master/docs/Packages.md) article provides a description of all **reSolve** packages. The API description and detailed information is available in the package `README` files:
 
     * [_create-resolve-app_](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app)
+    * [_resolve-auth_](https://github.com/reimagined/resolve/tree/master/packages/resolve-auth)
     * [_resolve-command_](https://github.com/reimagined/resolve/tree/master/packages/resolve-command)
     * [_resolve-es_](https://github.com/reimagined/resolve/tree/master/packages/resolve-es)
     * [_resolve-query_](https://github.com/reimagined/resolve/tree/master/packages/resolve-query)
