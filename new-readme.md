@@ -29,8 +29,6 @@ A JavaScript framework for **CQRS**, **Domain-Driven Design** and **Event Sourci
 
 With **reSolve** you can more efficiently create applications of any complexity level. A single approach is used for simple [ToDo List](#todo-list) and for a complex reactive application like Stack Overflow, with distributed architecture that is ready for high load. The technologies stack (CQRS, Event Sourcing, Domain-Driven Design, React + Redux) makes any **reSolve** application scalable and maintainable, so you can focus on business logic instead of auxiliary code.
 
-<p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-why-resolve-reactivity.gif"></p>
-
 * 💎 Reactivity
 * 💎 Distribution
 * 💎 Highload
@@ -42,8 +40,6 @@ With **reSolve** you can more efficiently create applications of any complexity 
 ### <a name="installation">Installation</a>
 
 The [create-resolve-app](packages/create-resolve-app) package is used to create a **reSolve**-based application. You can use it to get one of the examples, or create an empty application. By default, `create-resolve-app` generates an empty [Hello World](https://github.com/reimagined/resolve/tree/master/examples/hello-world) application. You can start working on your new **reSolve** application in just<!--sic--> **2 minutes**!
-
-<p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-installation.gif"></p>
 
 Use one of these tools to start a new **reSolve** aplication:
 
@@ -85,8 +81,6 @@ The created application is accessible using the http://localhost:3000/ and `http
 
 You can get a sample app using the `create-resolve-app` tool with the `-e` flag followed by an example name. Use the `create-resolve-app -h` command to list the available examples.
 
-<p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-example-installation.gif"></p>
-
 The following tools are used to get a sample **reSolve** application:
 
 * [npx](https://www.npmjs.com/package/npx)
@@ -124,21 +118,15 @@ The `create-resolve-app` can is capable of creating the following apps:
 
     An empty app that can be used as a template for any **reSolve** application (created by default).
 
-<p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-hello-world-example.png"></p>
-
 * [**todo**](https://github.com/reimagined/resolve/tree/master/examples/todo)
 
     This example demonstrates how to work with the [view-models](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md). The app's creation process is detailed in the [ToDo List App Tutorial](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/ToDo%20List%20App%20Tutorial.md).
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-todo-example.png"></p>
 
-* [**todo-two-levels**](https://github.com/reimagined/resolve/tree/master/examples/todo-two-levels)
-
     This example demonstrates how to work with view-models in the **all events subscribtion** case. Learn more about this case in the [View Model](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md) article.
 
 <p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-todo-two-levels-example.png"></p>
-
-* [**top-list**](https://github.com/reimagined/resolve/tree/master/examples/top-list)
 
     This example demonstrates how to update the application state on external events unrelated to user actions.
 
@@ -233,4 +221,4 @@ Feel free to contact us if you have any questions!
 <br/>
 <p align="center">reSolve is developed by</p>
 <p align="center"><a href="https://devexpress.com">💛Developer Express Inc.💛</a></p>
-<p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-footer-logo.png"></p>
+<p align="center"><img src="https://user-images.githubusercontent.com/19663260/38686793-dd31fb22-3e7d-11e8-8f26-33606ad82a16.png"></p>
