@@ -28,7 +28,11 @@ export class CommentById extends React.PureComponent {
   }
 
   render() {
-    const { data: { me }, story, parentId } = this.props
+    const {
+      data: { me },
+      story,
+      parentId
+    } = this.props
     const loggedIn = !!me
 
     if (!story || !story.comments) {
@@ -66,7 +70,11 @@ export class CommentById extends React.PureComponent {
 
 export const mapStateToProps = (
   state,
-  { match: { params: { storyId, commentId } } }
+  {
+    match: {
+      params: { storyId, commentId }
+    }
+  }
 ) => ({
   story: state.viewModels[viewModel.name][storyId],
   viewModelName: viewModel.name,

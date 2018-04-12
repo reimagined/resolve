@@ -6,13 +6,17 @@ import { ConnectedRouter } from 'react-router-redux'
 
 import Routes from './components/Routes'
 import createStore from './store/create_store'
+import deserializeInitialState from './store/deserialize_initial_state'
 
 const routes = require($resolve.routes)
 
 const history = createHistory({
   basename: process.env.ROOT_PATH
 })
-const store = createStore(window.__INITIAL_STATE__, history)
+
+const initialState = deserializeInitialState(window.__INITIAL_STATE__)
+
+const store = createStore(initialState, history)
 
 render(
   <Provider store={store}>

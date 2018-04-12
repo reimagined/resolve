@@ -7,7 +7,7 @@
     "start": "resolve-scripts start",
     "update": "resolve-scripts update",
     "dev": "resolve-scripts dev",
-    "import": "babel-node ./import",
+    "import": "babel-node --presets env ./import",
     "prettier": "prettier --single-quote --no-semi --write \"**/*.js\"",
     "test": "jest",
     "test:update": "jest -u",
@@ -37,6 +37,7 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "babel-preset-env": "^1.6.1",
     "express": "^4.16.2",
     "isomorphic-fetch": "^2.2.1",
     "js-cookie": "^2.2.0",
@@ -70,13 +71,12 @@
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "flow-bin": "^0.63.1",
-    "jest": "^22.0.6",
+    "jest": "^22.4.3",
     "lint-staged": "^6.0.0",
     "pre-commit": "^1.2.2",
     "prettier": "1.10.2",
     "sinon": "^4.4.2",
-    "testcafe": "^0.18.6",
-    "testcafe-browser-tools": "^1.4.7",
+    "testcafe": "^0.19.1",
     "yargs": "^10.1.1"
   },
   "jest": {

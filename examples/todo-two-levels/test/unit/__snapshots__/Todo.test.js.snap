@@ -65,59 +65,102 @@ exports[`renders correctly 1`] = `
       </div>
     </nav>
   </div>
-  <h1>
-    <a
-      aria-current="true"
-      className="active"
-      href="/"
-      onClick={[Function]}
-      style={Object {}}
+  <div
+    className="example-wrapper"
+  >
+    <form
+      className="form-inline"
     >
-      Home
-    </a>
-     | TODO
-  </h1>
-  <div>
-    <ol>
-      <li>
-        <label>
+      <a
+        aria-current="true"
+        className="active"
+        href="/"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        <img
+          className="example-arrow-button"
+          src="/left-arrow-button.png"
+        />
+        <span
+          className="example-back-label"
+        >
+          Back
+        </span>
+      </a>
+      <div
+        className="example-task-name"
+      >
+        Task's List
+      </div>
+    </form>
+    <ul
+      className="example-list list-group"
+    >
+      <li
+        className="list-group-item"
+      >
+        <label
+          className="checkbox-inline"
+          style={undefined}
+          title=""
+        >
           <input
             checked={true}
+            disabled={false}
             onChange={[Function]}
             type="checkbox"
           />
           text1
         </label>
-        <span
+        <img
+          className="example-close-button"
           onClick={[Function]}
-        >
-           [x]
-        </span>
+          src="/close-button.png"
+        />
       </li>
-      <li>
-        <label>
+      <li
+        className="list-group-item"
+      >
+        <label
+          className="checkbox-inline"
+          style={undefined}
+          title=""
+        >
           <input
             checked={false}
+            disabled={false}
             onChange={[Function]}
             type="checkbox"
           />
           text2
         </label>
-        <span
+        <img
+          className="example-close-button"
           onClick={[Function]}
-        >
-           [x]
-        </span>
+          src="/close-button.png"
+        />
       </li>
-    </ol>
-    <input
-      type="text"
-    />
-    <button
-      onClick={[Function]}
+    </ul>
+    <form
+      className="example-form form-inline"
     >
-      Add Item
-    </button>
+      <input
+        className="example-form-control form-control"
+        id={undefined}
+        onKeyPress={[Function]}
+        placeholder="New Task"
+        type="text"
+      />
+      <button
+        className="example-button btn btn-success"
+        disabled={false}
+        onClick={[Function]}
+        type="button"
+      >
+        Add Task
+      </button>
+    </form>
   </div>
 </div>
 `;
