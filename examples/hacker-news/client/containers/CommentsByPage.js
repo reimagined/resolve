@@ -8,7 +8,9 @@ import Pagination from '../components/Pagination'
 
 export const CommentsByPage = ({
   data: { comments = [] },
-  match: { params: { page } }
+  match: {
+    params: { page }
+  }
 }) =>
   page && !Number.isInteger(Number(page)) ? (
     <Redirect push to={`/error?text=No such page`} />

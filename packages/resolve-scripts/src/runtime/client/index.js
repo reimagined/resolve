@@ -6,27 +6,15 @@ import { ConnectedRouter } from 'react-router-redux'
 
 import Routes from './components/Routes'
 import createStore from './store/create_store'
+import deserializeInitialState from './store/deserialize_initial_state'
 
 const routes = require($resolve.routes)
-const viewModels = require($resolve.viewModels)
 
 const history = createHistory({
   basename: process.env.ROOT_PATH
 })
 
-const initialState = window.__INITIAL_STATE__
-
-for (const viewModel of viewModels) {
-  for (const aggregateId of Object.keys(
-    initialState.viewModels[viewModel.name]
-  )) {
-    initialState.viewModels[viewModel.name][
-      aggregateId
-    ] = viewModel.deserializeState(
-      initialState.viewModels[viewModel.name][aggregateId]
-    )
-  }
-}
+const initialState = deserializeInitialState(window.__INITIAL_STATE__)
 
 const store = createStore(initialState, history)
 
