@@ -9,9 +9,9 @@ describe('resolve-readmodel-memory implementation', () => {
     const ownMetaInfo = {}
     const metaApi = { metaMethod: sinon.stub().callsFake(() => 10) }
     const storeApi = { storeMethod: sinon.stub().callsFake(() => 20) }
-    const createStorage = sinon.stub()
+    const createTable = sinon.stub()
 
-    const result = implementation(metaApi, storeApi, createStorage, {
+    const result = implementation(metaApi, storeApi, createTable, {
       metaName: 'META_NAME',
       storage: ownStorage,
       metaInfo: ownMetaInfo
@@ -21,12 +21,12 @@ describe('resolve-readmodel-memory implementation', () => {
     expect(await result.storeApi.storeMethod()).to.be.equal(20)
 
     const metaMethodCallArg = metaApi.metaMethod.firstCall.args[0]
-    expect(metaMethodCallArg.createStorage).to.be.equal(createStorage)
+    expect(metaMethodCallArg.createTable).to.be.equal(createTable)
     expect(metaMethodCallArg.metaInfo).to.be.equal(ownMetaInfo)
     expect(metaMethodCallArg.storage).to.be.equal(ownStorage)
 
     const storeMethodCallArg = storeApi.storeMethod.firstCall.args[0]
-    expect(storeMethodCallArg.createStorage).to.be.equal(createStorage)
+    expect(storeMethodCallArg.createTable).to.be.equal(createTable)
     expect(storeMethodCallArg.metaInfo).to.be.equal(ownMetaInfo)
     expect(storeMethodCallArg.storage).to.be.equal(ownStorage)
   })

@@ -52,7 +52,7 @@ export const readModelSubscribeHandler = (req, res) => {
           }
         },
         resolverName,
-        req.body.variables,
+        req.body.parameters,
         req.jwtToken
       )
 

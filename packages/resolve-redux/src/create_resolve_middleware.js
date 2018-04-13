@@ -129,7 +129,7 @@ export function subscribeReadmodel(
   orderedFetch,
   action
 ) {
-  const { readModelName, resolverName, variables, isReactive } = action
+  const { readModelName, resolverName, parameters, isReactive } = action
   const subscriptionKey = `${readModelName}:${resolverName}`
   if (readModelSubscriptions.hasOwnProperty(subscriptionKey)) return
 
@@ -158,7 +158,7 @@ export function subscribeReadmodel(
             body: JSON.stringify({
               isReactive,
               socketId,
-              variables
+              parameters
             })
           }
         )

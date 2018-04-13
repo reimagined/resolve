@@ -1,19 +1,19 @@
-const defineStorage = async (
-  { createStorage, storage },
-  storageName,
-  storageSchema
+const defineTable = async (
+  { createTable, storage },
+  tableName,
+  tableSchema
 ) => {
-  storage[storageName] = createStorage()
+  storage[tableName] = createTable()
 
   await new Promise((resolve, reject) =>
-    storage[storageName].ensureIndex(
-      { fieldName: storageSchema.primaryIndex.name },
+    storage[tableName].ensureIndex(
+      { fieldName: tableSchema.primaryIndex.name },
       err => (!err ? resolve() : reject(err))
     )
   )
-  for (let { name } of storageSchema.secondaryIndexes) {
+  for (let { name } of tableSchema.secondaryIndexes) {
     await new Promise((resolve, reject) =>
-      storage[storageName].ensureIndex(
+      storage[tableName].ensureIndex(
         { fieldName: name },
         err => (!err ? resolve() : reject(err))
       )
@@ -23,14 +23,14 @@ const defineStorage = async (
 
 const find = async (
   { storage },
-  storageName,
+  tableName,
   searchExpression,
   fieldList,
   sort,
   skip,
   limit
 ) => {
-  let findCursor = await storage[storageName].find(searchExpression)
+  let findCursor = await storage[tableName].find(searchExpression)
 
   if (sort) {
     findCursor = findCursor.sort(sort)
@@ -55,13 +55,8 @@ const find = async (
   )
 }
 
-const findOne = async (
-  { storage },
-  storageName,
-  searchExpression,
-  fieldList
-) => {
-  let findCursor = await storage[storageName].findOne(searchExpression)
+const findOne = async ({ storage }, tableName, searchExpression, fieldList) => {
+  let findCursor = await storage[tableName].findOne(searchExpression)
 
   if (fieldList) {
     findCursor = findCursor.projection({ _id: 0, ...fieldList })
@@ -74,32 +69,29 @@ const findOne = async (
   )
 }
 
-const count = async ({ storage }, storageName, searchExpression) => {
+const count = async ({ storage }, tableName, searchExpression) => {
   return await new Promise((resolve, reject) =>
-    storage[storageName].count(
+    storage[tableName].count(
       searchExpression,
       (err, count) => (!err ? resolve(count) : reject(err))
     )
   )
 }
 
-const insert = async ({ storage }, storageName, document) => {
+const insert = async ({ storage }, tableName, document) => {
   await new Promise((resolve, reject) =>
-    storage[storageName].insert(
-      document,
-      err => (!err ? resolve() : reject(err))
-    )
+    storage[tableName].insert(document, err => (!err ? resolve() : reject(err)))
   )
 }
 
 const update = async (
   { storage },
-  storageName,
+  tableName,
   searchExpression,
   updateExpression
 ) => {
   await new Promise((resolve, reject) =>
-    storage[storageName].update(
+    storage[tableName].update(
       searchExpression,
       updateExpression,
       err => (!err ? resolve() : reject(err))
@@ -107,9 +99,9 @@ const update = async (
   )
 }
 
-const del = async ({ storage }, storageName, searchExpression) => {
+const del = async ({ storage }, tableName, searchExpression) => {
   await new Promise((resolve, reject) =>
-    storage[storageName].remove(
+    storage[tableName].remove(
       searchExpression,
       err => (!err ? resolve() : reject(err))
     )
@@ -117,7 +109,7 @@ const del = async ({ storage }, storageName, searchExpression) => {
 }
 
 export default {
-  defineStorage,
+  defineTable,
   find,
   findOne,
   count,

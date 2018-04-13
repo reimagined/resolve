@@ -24,6 +24,6 @@ const Login = props => {
 export default connectReadModel((state, ownProps) => ({
   readModelName: 'default',
   resolverName: 'void',
-  variables: {},
+  parameters: {},
   ...ownProps
 }))(Login)

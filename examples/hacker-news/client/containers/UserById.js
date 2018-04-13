@@ -54,6 +54,6 @@ const getReadModelData = state => {
 export default connectReadModel((state, { match: { params: { userId } } }) => ({
   readModelName: 'default',
   resolverName: 'user',
-  variables: { id: userId },
+  parameters: { id: userId },
   data: getReadModelData(state)
 }))(UserById)
