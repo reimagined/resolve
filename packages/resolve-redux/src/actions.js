@@ -52,14 +52,14 @@ function unsubscribeViewmodel(viewModelName, aggregateId) {
 function subscribeReadmodel(
   readModelName,
   resolverName,
-  variables,
+  parameters,
   isReactive
 ) {
   return {
     type: SUBSCRIBE_READMODEL,
     readModelName,
     resolverName,
-    variables,
+    parameters,
     isReactive
   }
 }
