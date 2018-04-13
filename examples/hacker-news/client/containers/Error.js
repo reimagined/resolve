@@ -12,6 +12,6 @@ const Error = ({ location }) => (
 export default connectReadModel((state, ownProps) => ({
   readModelName: 'default',
   resolverName: 'void',
-  variables: {},
+  parameters: {},
   ...ownProps
 }))(Error)

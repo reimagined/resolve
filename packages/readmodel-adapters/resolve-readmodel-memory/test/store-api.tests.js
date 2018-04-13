@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import storeApi from '../src/store-api'
 
 describe('resolve-readmodel-memory store-api', () => {
-  const makeFindStubStorage = (storageName, findResult) => {
+  const makeFindStubStorage = (tableName, findResult) => {
     const impl = methods =>
       sinon.stub().callsFake(() => {
         const result = {}
@@ -16,7 +16,7 @@ describe('resolve-readmodel-memory store-api', () => {
       })
 
     const storage = {
-      [storageName]: {
+      [tableName]: {
         find: impl(['sort', 'skip', 'limit', 'projection']),
         findOne: impl(['projection'])
       }
@@ -24,14 +24,14 @@ describe('resolve-readmodel-memory store-api', () => {
     return storage
   }
 
-  it('should provide defineStorage method', async () => {
+  it('should provide defineTable method', async () => {
     const newStorage = {
       ensureIndex: sinon.stub().callsFake((options, cb) => cb(null))
     }
     const storage = {}
 
-    await storeApi.defineStorage(
-      { createStorage: () => newStorage, storage },
+    await storeApi.defineTable(
+      { createTable: () => newStorage, storage },
       'test',
       {
         primaryIndex: { name: 'first' },

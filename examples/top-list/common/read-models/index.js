@@ -4,7 +4,7 @@ export default [
 
     projection: {
       Init: async store => {
-        await store.defineStorage('Rating', [
+        await store.defineTable('Rating', [
           { name: 'id', type: 'string', index: 'primary' },
           { name: 'rating', type: 'number', index: 'secondary' },
           { name: 'name', type: 'string' },

@@ -3,16 +3,16 @@ const getLastTimestamp = async ({ metaInfo }) => metaInfo.timestamp
 const setLastTimestamp = async ({ metaInfo }, timestamp) =>
   (metaInfo.timestamp = +timestamp)
 
-const storageExists = async ({ metaInfo }, storageName) =>
-  !!metaInfo.tables[storageName]
+const tableExists = async ({ metaInfo }, tableName) =>
+  !!metaInfo.tables[tableName]
 
-const getStorageInfo = async ({ metaInfo }, storageName) =>
-  metaInfo.tables[storageName]
+const getTableInfo = async ({ metaInfo }, tableName) =>
+  metaInfo.tables[tableName]
 
-const describeStorage = async ({ metaInfo }, storageName, metaSchema) =>
-  (metaInfo.tables[storageName] = metaSchema)
+const describeTable = async ({ metaInfo }, tableName, metaSchema) =>
+  (metaInfo.tables[tableName] = metaSchema)
 
-const getStorageNames = async ({ metaInfo }) => Object.keys(metaInfo.tables)
+const getTableNames = async ({ metaInfo }) => Object.keys(metaInfo.tables)
 
 const clearObjects = (...objs) =>
   objs.forEach(obj =>
@@ -24,9 +24,9 @@ const drop = async ({ storage, metaInfo }) => clearObjects(storage, metaInfo)
 export default {
   getLastTimestamp,
   setLastTimestamp,
-  storageExists,
-  getStorageInfo,
-  describeStorage,
-  getStorageNames,
+  tableExists,
+  getTableInfo,
+  describeTable,
+  getTableNames,
   drop
 }

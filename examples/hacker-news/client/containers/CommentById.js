@@ -106,6 +106,6 @@ const getReadModelData = state => {
 export default connectReadModel(state => ({
   readModelName: 'default',
   resolverName: 'user',
-  variables: {},
+  parameters: {},
   data: getReadModelData(state)
 }))(connectViewModel(mapStateToProps, mapDispatchToProps)(CommentById))
