@@ -19,8 +19,8 @@ const checkOptionShape = (option, types) => {
   )
 }
 
-const checkAndGetStorageMetaSchema = storageSchema => {
-  checkCondition(Array.isArray(storageSchema), 'invalidStorageSchema')
+const checkAndGetTableMetaSchema = tableSchema => {
+  checkCondition(Array.isArray(tableSchema), 'invalidTableSchema')
 
   const validTypes = ['number', 'string', 'json']
   const indexRoles = ['primary', 'secondary']
@@ -28,29 +28,29 @@ const checkAndGetStorageMetaSchema = storageSchema => {
   const secondaryIndexes = []
   const fieldTypes = {}
 
-  for (let rowDescription of storageSchema) {
+  for (let rowDescription of tableSchema) {
     checkCondition(
       checkOptionShape(rowDescription, [Object]),
-      'invalidStorageSchema'
+      'invalidTableSchema'
     )
     const { name, type, index } = rowDescription
-    checkCondition(/^\w+?$/.test(name), 'invalidStorageSchema')
+    checkCondition(/^\w+?$/.test(name), 'invalidTableSchema')
     checkCondition(
       validTypes.indexOf(type) > -1 &&
         (!index || indexRoles.indexOf(index) > -1),
-      'invalidStorageSchema'
+      'invalidTableSchema'
     )
 
     if (index === 'primary') {
       checkCondition(
         type === 'number' || type === 'string',
-        'invalidStorageSchema'
+        'invalidTableSchema'
       )
       primaryIndex = { name, type }
     } else if (index === 'secondary') {
       checkCondition(
         type === 'number' || type === 'string',
-        'invalidStorageSchema'
+        'invalidTableSchema'
       )
       secondaryIndexes.push({ name, type })
     }
@@ -58,10 +58,7 @@ const checkAndGetStorageMetaSchema = storageSchema => {
     fieldTypes[name] = type
   }
 
-  checkCondition(
-    checkOptionShape(primaryIndex, [Object]),
-    'invalidStorageSchema'
-  )
+  checkCondition(checkOptionShape(primaryIndex, [Object]), 'invalidTableSchema')
 
   return { primaryIndex, secondaryIndexes, fieldTypes }
 }
@@ -316,41 +313,41 @@ const checkUpdateExpression = (metaInfo, updateExpression) => {
   }
 }
 
-const checkStorageExists = async (metaApi, storageName) => {
+const checkTableExists = async (metaApi, tableName) => {
   checkCondition(
-    await metaApi.storageExists(storageName),
-    'storageNotExist',
-    storageName
+    await metaApi.tableExists(tableName),
+    'tableNotExist',
+    tableName
   )
 }
 
-const defineStorage = async (
+const defineTable = async (
   { metaApi, storeApi },
-  storageName,
-  inputStorageSchema
+  tableName,
+  inputTableSchema
 ) => {
   checkCondition(
-    !await metaApi.storageExists(storageName),
-    'storageExists',
-    storageName
+    !await metaApi.tableExists(tableName),
+    'tableExists',
+    tableName
   )
-  const storageSchema = checkAndGetStorageMetaSchema(inputStorageSchema)
-  await storeApi.defineStorage(storageName, storageSchema)
-  await metaApi.describeStorage(storageName, storageSchema)
+  const tableSchema = checkAndGetTableMetaSchema(inputTableSchema)
+  await storeApi.defineTable(tableName, tableSchema)
+  await metaApi.describeTable(tableName, tableSchema)
 }
 
 const find = async (
   { metaApi, storeApi },
-  storageName,
+  tableName,
   searchExpression,
   resultFieldsList,
   sortFieldsList,
   skip = 0,
   limit = Infinity
 ) => {
-  await checkStorageExists(metaApi, storageName)
+  await checkTableExists(metaApi, tableName)
 
-  const metaInfo = await metaApi.getStorageInfo(storageName)
+  const metaInfo = await metaApi.getTableInfo(tableName)
   if (resultFieldsList != null) {
     checkFieldList(metaInfo, resultFieldsList, [0, 1])
   }
@@ -370,7 +367,7 @@ const find = async (
   )
 
   return await storeApi.find(
-    storageName,
+    tableName,
     searchExpression,
     resultFieldsList,
     sortFieldsList,
@@ -381,67 +378,67 @@ const find = async (
 
 const findOne = async (
   { metaApi, storeApi },
-  storageName,
+  tableName,
   searchExpression,
   resultFieldsList
 ) => {
-  await checkStorageExists(metaApi, storageName)
+  await checkTableExists(metaApi, tableName)
 
-  const metaInfo = await metaApi.getStorageInfo(storageName)
+  const metaInfo = await metaApi.getTableInfo(tableName)
   if (resultFieldsList != null) {
     checkFieldList(metaInfo, resultFieldsList, [0, 1])
   }
 
   checkSearchExpression(metaInfo, searchExpression)
 
-  return await storeApi.findOne(storageName, searchExpression, resultFieldsList)
+  return await storeApi.findOne(tableName, searchExpression, resultFieldsList)
 }
 
-const count = async ({ metaApi, storeApi }, storageName, searchExpression) => {
-  await checkStorageExists(metaApi, storageName)
+const count = async ({ metaApi, storeApi }, tableName, searchExpression) => {
+  await checkTableExists(metaApi, tableName)
 
-  const metaInfo = await metaApi.getStorageInfo(storageName)
+  const metaInfo = await metaApi.getTableInfo(tableName)
   checkSearchExpression(metaInfo, searchExpression)
 
-  return await storeApi.count(storageName, searchExpression)
+  return await storeApi.count(tableName, searchExpression)
 }
 
-const insert = async ({ metaApi, storeApi }, storageName, document) => {
-  await checkStorageExists(metaApi, storageName)
+const insert = async ({ metaApi, storeApi }, tableName, document) => {
+  await checkTableExists(metaApi, tableName)
 
-  const metaInfo = await metaApi.getStorageInfo(storageName)
+  const metaInfo = await metaApi.getTableInfo(tableName)
   checkDocumentShape(metaInfo, document, true)
 
-  await storeApi.insert(storageName, document)
+  await storeApi.insert(tableName, document)
 }
 
 const update = async (
   { metaApi, storeApi },
-  storageName,
+  tableName,
   searchExpression,
   updateExpression
 ) => {
-  await checkStorageExists(metaApi, storageName)
+  await checkTableExists(metaApi, tableName)
 
-  const metaInfo = await metaApi.getStorageInfo(storageName)
+  const metaInfo = await metaApi.getTableInfo(tableName)
   checkSearchExpression(metaInfo, searchExpression)
   checkUpdateExpression(metaInfo, updateExpression)
 
-  await storeApi.update(storageName, searchExpression, updateExpression)
+  await storeApi.update(tableName, searchExpression, updateExpression)
 }
 
-const del = async ({ metaApi, storeApi }, storageName, searchExpression) => {
-  await checkStorageExists(metaApi, storageName)
+const del = async ({ metaApi, storeApi }, tableName, searchExpression) => {
+  await checkTableExists(metaApi, tableName)
 
-  const metaInfo = await metaApi.getStorageInfo(storageName)
+  const metaInfo = await metaApi.getTableInfo(tableName)
   checkSearchExpression(metaInfo, searchExpression)
 
-  await storeApi.del(storageName, searchExpression)
+  await storeApi.del(tableName, searchExpression)
 }
 
 const checkStoreApi = pool => {
   return Object.freeze({
-    defineStorage: defineStorage.bind(null, pool),
+    defineTable: defineTable.bind(null, pool),
     find: find.bind(null, pool),
     findOne: findOne.bind(null, pool),
     count: count.bind(null, pool),

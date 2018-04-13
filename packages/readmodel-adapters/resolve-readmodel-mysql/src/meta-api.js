@@ -86,28 +86,28 @@ const setLastTimestamp = async (
   metaInfo.timestamp = +timestamp
 }
 
-const storageExists = async ({ metaInfo }, storageName) => {
-  return !!metaInfo.tables[storageName]
+const tableExists = async ({ metaInfo }, tableName) => {
+  return !!metaInfo.tables[tableName]
 }
 
-const getStorageInfo = async ({ metaInfo }, storageName) => {
-  return metaInfo.tables[storageName]
+const getTableInfo = async ({ metaInfo }, tableName) => {
+  return metaInfo.tables[tableName]
 }
 
-const describeStorage = async (
+const describeTable = async (
   { connection, metaInfo, metaName },
-  storageName,
+  tableName,
   metaSchema
 ) => {
   await connection.execute(
     `INSERT INTO ${metaName}(MetaKey, MetaField, ComplexValue) VALUES("Tables", ?, ?)`,
-    [storageName, metaSchema]
+    [tableName, metaSchema]
   )
 
-  metaInfo.tables[storageName] = metaSchema
+  metaInfo.tables[tableName] = metaSchema
 }
 
-const getStorageNames = async ({ metaInfo }) => {
+const getTableNames = async ({ metaInfo }) => {
   return Object.keys(metaInfo.tables)
 }
 
@@ -127,9 +127,9 @@ export default {
   getMetaInfo,
   getLastTimestamp,
   setLastTimestamp,
-  storageExists,
-  getStorageInfo,
-  describeStorage,
-  getStorageNames,
+  tableExists,
+  getTableInfo,
+  describeTable,
+  getTableNames,
   drop
 }

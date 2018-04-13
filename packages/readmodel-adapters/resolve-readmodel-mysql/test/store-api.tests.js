@@ -8,11 +8,11 @@ describe('resolve-readmodel-mysql store-api', () => {
   const MAX_VALUE = 0x0fffffff | 0
   const format = sqlFormatter.format.bind(sqlFormatter)
 
-  it('should provide defineStorage method', async () => {
+  it('should provide defineTable method', async () => {
     const executor = sinon.stub()
     const pool = { connection: { execute: executor } }
 
-    await storeApi.defineStorage(pool, 'test', {
+    await storeApi.defineTable(pool, 'test', {
       fieldTypes: { first: 'number', second: 'string', third: 'string' },
       primaryIndex: { name: 'first' },
       secondaryIndexes: [{ name: 'second' }, { name: 'third' }]

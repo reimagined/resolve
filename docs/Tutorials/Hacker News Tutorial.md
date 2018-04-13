@@ -209,7 +209,7 @@ import {
 
 export default {
   Init: async store => {
-    await store.defineStorage('Users', [
+    await store.defineTable('Users', [
       { name: 'id', type: 'string', index: 'primary' },
       { name: 'name', type: 'string', index: 'secondary' },
       { name: 'createdAt', type: 'number' }
@@ -777,7 +777,7 @@ import {
 
 export default {
   Init: async store => {
-    await store.defineStorage('Stories', [
+    await store.defineTable('Stories', [
       { name: 'id', type: 'string', index: 'primary' },
       { name: 'type', type: 'string', index: 'secondary' },
       { name: 'title', type: 'string' },
@@ -790,7 +790,7 @@ export default {
       { name: 'createdByName', type: 'string' }
     ])
 
-    await store.defineStorage('Users', [
+    await store.defineTable('Users', [
       { name: 'id', type: 'string', index: 'primary' },
       { name: 'name', type: 'string', index: 'secondary' },
       { name: 'createdAt', type: 'number' }
@@ -1226,10 +1226,10 @@ import {
 
 export default {
   Init: async store => {
-    // Stories defineStorage implementation
-    // Users defineStorage implementation
+    // Stories defineTable implementation
+    // Users defineTable implementation
 
-    await store.defineStorage('Comments', [
+    await store.defineTable('Comments', [
       { name: 'id', type: 'string', index: 'primary' },
       { name: 'text', type: 'string' },
       { name: 'parentId', type: 'string' },

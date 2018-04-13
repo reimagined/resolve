@@ -209,22 +209,22 @@ describe('resolve-readmodel-mysql meta-api', () => {
     expect(pool.metaInfo.timestamp).to.be.equal(20)
   })
 
-  it('should provide storageExists method', async () => {
+  it('should provide tableExists method', async () => {
     const pool = { metaInfo: { tables: { one: {} } } }
-    let result = await metaApi.storageExists(pool, 'one')
+    let result = await metaApi.tableExists(pool, 'one')
     expect(result).to.be.equal(true)
-    result = await metaApi.storageExists(pool, 'two')
+    result = await metaApi.tableExists(pool, 'two')
     expect(result).to.be.equal(false)
   })
 
-  it('should provide getStorageInfo method', async () => {
+  it('should provide getTableInfo method', async () => {
     const metaInfoOne = {}
     const pool = { metaInfo: { tables: { one: metaInfoOne } } }
-    const result = await metaApi.getStorageInfo(pool, 'one')
+    const result = await metaApi.getTableInfo(pool, 'one')
     expect(result).to.be.equal(metaInfoOne)
   })
 
-  it('should provide describeStorage method', async () => {
+  it('should provide describeTable method', async () => {
     const executor = sinon.stub()
     const pool = {
       metaInfo: { tables: {} },
@@ -233,7 +233,7 @@ describe('resolve-readmodel-mysql meta-api', () => {
     }
 
     const metaInfoOne = {}
-    await metaApi.describeStorage(pool, 'one', metaInfoOne)
+    await metaApi.describeTable(pool, 'one', metaInfoOne)
     expect(pool.metaInfo.tables['one']).to.be.equal(metaInfoOne)
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
@@ -246,9 +246,9 @@ describe('resolve-readmodel-mysql meta-api', () => {
     expect(executor.firstCall.args[1][1]).to.be.equal(metaInfoOne)
   })
 
-  it('should provide getStorageNames method', async () => {
+  it('should provide getTableNames method', async () => {
     const pool = { metaInfo: { tables: { one: {}, two: {} } } }
-    const result = await metaApi.getStorageNames(pool)
+    const result = await metaApi.getTableNames(pool)
     expect(result).to.be.deep.equal(['one', 'two'])
   })
 

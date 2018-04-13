@@ -9,7 +9,7 @@ describe('resolve-readmodel-base check-store-api', () => {
 
   beforeEach(() => {
     storeApi = {
-      defineStorage: sinon.stub(),
+      defineTable: sinon.stub(),
       find: sinon.stub(),
       findOne: sinon.stub(),
       count: sinon.stub(),
@@ -21,10 +21,10 @@ describe('resolve-readmodel-base check-store-api', () => {
       getMetaInfo: sinon.stub(),
       getLastTimestamp: sinon.stub(),
       setLastTimestamp: sinon.stub(),
-      storageExists: sinon.stub(),
-      getStorageInfo: sinon.stub(),
-      describeStorage: sinon.stub(),
-      getStorageNames: sinon.stub(),
+      tableExists: sinon.stub(),
+      getTableInfo: sinon.stub(),
+      describeTable: sinon.stub(),
+      getTableNames: sinon.stub(),
       drop: sinon.stub()
     }
 
@@ -58,53 +58,51 @@ describe('resolve-readmodel-base check-store-api', () => {
     ]
   }
 
-  it('defineStorage should pass correct storage schema', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => false)
+  it('defineTable should pass correct table schema', async () => {
+    metaApi.tableExists.onCall(0).callsFake(async () => false)
 
-    await api.defineStorage('table', fieldsInputDeclaration)
+    await api.defineTable('table', fieldsInputDeclaration)
 
-    expect(metaApi.describeStorage.firstCall.args[0]).to.be.equal('table')
-    expect(metaApi.describeStorage.firstCall.args[1]).to.be.deep.equal(
+    expect(metaApi.describeTable.firstCall.args[0]).to.be.equal('table')
+    expect(metaApi.describeTable.firstCall.args[1]).to.be.deep.equal(
       fieldsOutputDeclaration
     )
 
-    expect(storeApi.defineStorage.firstCall.args[0]).to.be.equal('table')
-    expect(storeApi.defineStorage.firstCall.args[1]).to.be.deep.equal(
+    expect(storeApi.defineTable.firstCall.args[0]).to.be.equal('table')
+    expect(storeApi.defineTable.firstCall.args[1]).to.be.deep.equal(
       fieldsOutputDeclaration
     )
   })
 
-  it('defineStorage should fail on already existing storage', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
+  it('defineTable should fail on already existing table', async () => {
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
 
     try {
-      await api.defineStorage('table', fieldsInputDeclaration)
-      return Promise.reject(
-        'defineStorage should fail on already existing storage'
-      )
+      await api.defineTable('table', fieldsInputDeclaration)
+      return Promise.reject('defineTable should fail on already existing table')
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.be.equal(messages.storageExists('table'))
+      expect(err.message).to.be.equal(messages.tableExists('table'))
     }
   })
 
-  it('defineStorage should fail on wrong storage schema format', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => false)
+  it('defineTable should fail on wrong table schema format', async () => {
+    metaApi.tableExists.onCall(0).callsFake(async () => false)
 
     try {
-      await api.defineStorage('table', null)
+      await api.defineTable('table', null)
       return Promise.reject(
-        'defineStorage should fail on wrong storage schema format'
+        'defineTable should fail on wrong table schema format'
       )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.be.equal(messages.invalidStorageSchema)
+      expect(err.message).to.be.equal(messages.invalidTableSchema)
     }
   })
 
   it('find should pass correct search expressions with all fields', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
@@ -136,8 +134,8 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('find should pass correct search expressions logical/range query operators', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
@@ -174,8 +172,8 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('find should pass correct search expressions without fields projection', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
@@ -204,8 +202,8 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('find should pass correct search expressions without sort keys', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
@@ -237,8 +235,8 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('find should pass correct search expressions without skip and limit', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
@@ -268,8 +266,8 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('find should fail on wrong skip/limit values', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
@@ -292,8 +290,8 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('find should fail on unexisting fields on search fields key', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
@@ -318,8 +316,8 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('find should fail on unexisting fields on projection fields key', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
@@ -342,8 +340,8 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('find should fail on unexisting fields on sort fields key', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
@@ -368,8 +366,8 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('find should fail on bad request', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
@@ -383,8 +381,8 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('findOne should pass correct search expressions with all fields', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
@@ -410,8 +408,8 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('findOne should pass correct search expressions without projection key', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
@@ -430,8 +428,8 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('findOne should fail on unexisting fields on search fields key', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
@@ -453,8 +451,8 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('findOne should fail on unexisting fields on projection fields key', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
@@ -474,8 +472,8 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('findOne should fail on bad request', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
@@ -489,8 +487,8 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('count should pass correct search expressions with all fields', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
@@ -507,8 +505,8 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('count should fail on unexisting fields on search fields key', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
@@ -526,8 +524,8 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('count should fail on bad request', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
@@ -541,8 +539,8 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('insert should pass correct insert expressions', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
@@ -563,8 +561,8 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('insert should fail on unexisting fields in schema', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
@@ -583,8 +581,8 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('insert should fail on bad request', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
@@ -598,8 +596,8 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('update should pass correct search & update expressions', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
@@ -625,8 +623,8 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('update should fail on unexisting fields on search fields key', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
@@ -652,8 +650,8 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('update should fail on unexisting fields on update fields key', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
@@ -683,8 +681,8 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('update should fail on bad search request', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
@@ -702,8 +700,8 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('update should fail on bad update request', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
@@ -717,8 +715,8 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('delete should pass correct search & delete expressions', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
@@ -731,8 +729,8 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('delete should fail on unexisting fields on search fields key', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
@@ -750,8 +748,8 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('delete should fail on bad search request', async () => {
-    metaApi.storageExists.onCall(0).callsFake(async () => true)
-    metaApi.getStorageInfo
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 

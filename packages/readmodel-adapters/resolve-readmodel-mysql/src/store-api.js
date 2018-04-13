@@ -12,19 +12,19 @@ const castType = type => {
   }
 }
 
-const defineStorage = async ({ connection }, storageName, storageSchema) => {
+const defineTable = async ({ connection }, tableName, tableSchema) => {
   await connection.execute(
-    `CREATE TABLE ${storageName} (\n` +
+    `CREATE TABLE ${tableName} (\n` +
       [
-        Object.keys(storageSchema.fieldTypes)
+        Object.keys(tableSchema.fieldTypes)
           .map(
             fieldName =>
-              `${fieldName} ${castType(storageSchema.fieldTypes[fieldName])}`
+              `${fieldName} ${castType(tableSchema.fieldTypes[fieldName])}`
           )
           .join(',\n'),
         [
-          `PRIMARY KEY (${storageSchema.primaryIndex.name})`,
-          ...storageSchema.secondaryIndexes.map(
+          `PRIMARY KEY (${tableSchema.primaryIndex.name})`,
+          ...tableSchema.secondaryIndexes.map(
             ({ name }) => `INDEX USING BTREE (${name})`
           )
         ].join(',\n')
@@ -194,7 +194,7 @@ const updateToSetExpression = expr => {
 
 const find = async (
   { connection },
-  storageName,
+  tableName,
   searchExpression,
   fieldList,
   sort,
@@ -246,7 +246,7 @@ const find = async (
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
   const [rows] = await connection.execute(
-    `SELECT ${selectExpression} FROM ${storageName}
+    `SELECT ${selectExpression} FROM ${tableName}
     ${inlineSearchExpr}
     ${orderExpression}
     ${skipLimit}
@@ -259,7 +259,7 @@ const find = async (
 
 const findOne = async (
   { connection },
-  storageName,
+  tableName,
   searchExpression,
   fieldList
 ) => {
@@ -287,7 +287,7 @@ const findOne = async (
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
   const [rows] = await connection.execute(
-    `SELECT ${selectExpression} FROM ${storageName}
+    `SELECT ${selectExpression} FROM ${tableName}
     ${inlineSearchExpr}
     LIMIT 0, 1
   `,
@@ -301,14 +301,14 @@ const findOne = async (
   return null
 }
 
-const count = async ({ connection }, storageName, searchExpression) => {
+const count = async ({ connection }, tableName, searchExpression) => {
   const { searchExpr, searchValues } = searchToWhereExpression(searchExpression)
 
   const inlineSearchExpr =
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
   const [rows] = await connection.execute(
-    `SELECT Count(*) AS Count FROM ${storageName}
+    `SELECT Count(*) AS Count FROM ${tableName}
     ${inlineSearchExpr}
   `,
     searchValues
@@ -326,9 +326,9 @@ const count = async ({ connection }, storageName, searchExpression) => {
   return 0
 }
 
-const insert = async ({ connection }, storageName, document) => {
+const insert = async ({ connection }, tableName, document) => {
   await connection.execute(
-    `INSERT INTO ${storageName}(${Object.keys(document).join(', ')})
+    `INSERT INTO ${tableName}(${Object.keys(document).join(', ')})
      VALUES(${Object.keys(document)
        .map(() => '?')
        .join(', ')})
@@ -339,7 +339,7 @@ const insert = async ({ connection }, storageName, document) => {
 
 const update = async (
   { connection },
-  storageName,
+  tableName,
   searchExpression,
   updateExpression
 ) => {
@@ -350,25 +350,25 @@ const update = async (
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
   await connection.execute(
-    `UPDATE ${storageName} SET ${updateExpr} ${inlineSearchExpr}`,
+    `UPDATE ${tableName} SET ${updateExpr} ${inlineSearchExpr}`,
     [...updateValues, ...searchValues]
   )
 }
 
-const del = async ({ connection }, storageName, searchExpression) => {
+const del = async ({ connection }, tableName, searchExpression) => {
   const { searchExpr, searchValues } = searchToWhereExpression(searchExpression)
 
   const inlineSearchExpr =
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
   await connection.execute(
-    `DELETE FROM ${storageName} ${inlineSearchExpr}`,
+    `DELETE FROM ${tableName} ${inlineSearchExpr}`,
     searchValues
   )
 }
 
 export default {
-  defineStorage,
+  defineTable,
   find,
   findOne,
   count,
