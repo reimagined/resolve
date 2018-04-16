@@ -5,6 +5,22 @@
   padding-right: 10px;
 }
 
-.example-input {
+.example-login-input {
   margin-right: 5px;
+  min-width: 74%;
+}
+
+.example-login-wrapper {
+  border-radius: 5px;
+  border: #c9c9c9 1px solid;
+  padding: 15px;
+  min-height: 130px;
+}
+
+.example-login-label {
+  margin-top: 10px;
+}
+
+.example-login-button {
+  float: right;
 }
