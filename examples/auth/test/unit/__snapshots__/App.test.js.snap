@@ -69,23 +69,11 @@ exports[`renders correctly 1`] = `
     className="example-wrapper"
   >
     <div
-      style={
-        Object {
-          "border": "#c9c9c9 1px solid",
-          "borderRadius": "5px",
-          "minHeight": "130px",
-          "padding": "15px",
-        }
-      }
+      className="example-login-wrapper"
     >
       <label
-        className="control-label"
+        className="example-login-label control-label"
         htmlFor={undefined}
-        style={
-          Object {
-            "marginTop": "10px",
-          }
-        }
       >
         Enter your username:
       </label>
@@ -95,24 +83,14 @@ exports[`renders correctly 1`] = `
         method="POST"
       >
         <input
-          className="example-input form-control"
+          className="example-login-input form-control"
           id={undefined}
           name="username"
-          style={
-            Object {
-              "minWidth": "74%",
-            }
-          }
           type="text"
         />
         <button
-          className="btn btn-success"
+          className="example-login-button btn btn-success"
           disabled={false}
-          style={
-            Object {
-              "float": "right",
-            }
-          }
           type="submit"
         >
           Create Account
