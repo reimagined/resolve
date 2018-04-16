@@ -23,7 +23,7 @@ const getReadModelData = state => {
 export default connectReadModel((state, { match: { params: { page } } }) => ({
   readModelName: 'default',
   resolverName: 'askStories',
-  variables: {
+  parameters: {
     offset: ITEMS_PER_PAGE + 1,
     first: (+page - 1) * ITEMS_PER_PAGE
   },

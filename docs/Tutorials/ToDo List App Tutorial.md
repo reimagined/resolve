@@ -1,6 +1,8 @@
 ToDo List App Tutorial
 ====
 
+> Note: this tutorial is actual for 0.4.0 version.
+
 This topic describes how to create a classic [Redux](https://github.com/reactjs/redux) example -- the **ToDo List** app. 
 
 

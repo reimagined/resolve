@@ -46,6 +46,6 @@ export class App extends React.PureComponent {
 export default connectReadModel(state => ({
   readModelName: 'me',
   resolverName: 'me',
-  variables: {},
+  parameters: {},
   data: getReadModelData(state)
 }))(App)
