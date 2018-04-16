@@ -1,0 +1,10 @@
+.example-wrapper {
+  max-width: 580px;
+  margin: 0 auto;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.example-input {
+  margin-right: 5px;
+}

@@ -65,25 +65,60 @@ exports[`renders correctly 1`] = `
       </div>
     </nav>
   </div>
-  <h1>
-    You are not logged in
-  </h1>
-  <div>
-    Create user and login
-    <form
-      action="/register"
-      method="POST"
+  <div
+    className="example-wrapper"
+  >
+    <div
+      style={
+        Object {
+          "border": "#c9c9c9 1px solid",
+          "borderRadius": "5px",
+          "minHeight": "130px",
+          "padding": "15px",
+        }
+      }
     >
-      username: 
-      <input
-        name="username"
-        type="text"
-      />
-      <input
-        type="submit"
-        value="create account"
-      />
-    </form>
+      <label
+        className="control-label"
+        htmlFor={undefined}
+        style={
+          Object {
+            "marginTop": "10px",
+          }
+        }
+      >
+        Enter your username:
+      </label>
+      <form
+        action="/register"
+        className="form-inline"
+        method="POST"
+      >
+        <input
+          className="example-input form-control"
+          id={undefined}
+          name="username"
+          style={
+            Object {
+              "minWidth": "74%",
+            }
+          }
+          type="text"
+        />
+        <button
+          className="btn btn-success"
+          disabled={false}
+          style={
+            Object {
+              "float": "right",
+            }
+          }
+          type="submit"
+        >
+          Create Account
+        </button>
+      </form>
+    </div>
   </div>
 </div>
 `;
