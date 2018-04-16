@@ -287,7 +287,7 @@ describe('validate schema (fail)', () => {
 
 describe('resolve-scripts build --сonfig=resolve.test.config.json', () => {
   const resolveConfigPath = path.resolve(__dirname, 'resolve.test.config.json')
-  const { env, config } = require(resolveConfigPath)
+  const { env, ...config } = require(resolveConfigPath)
 
   test(
     'merge cli should work correctly ' +
@@ -297,10 +297,14 @@ describe('resolve-scripts build --сonfig=resolve.test.config.json', () => {
         `resolve-scripts build --config=${resolveConfigPath} --start --dev`
       )
 
-      expect(json).toMatchObject({
+      const resultConfig = {
+        ...resolveConfigOrigin,
         ...config,
         ...env.development
-      })
+      }
+      delete resultConfig.env
+
+      expect(json).toMatchObject(resultConfig)
     }
   )
 
@@ -309,13 +313,17 @@ describe('resolve-scripts build --сonfig=resolve.test.config.json', () => {
       '[{} <- defaults <- resolve.config.json <- cli] (mode=production)',
     async () => {
       const json = await exec(
-        `resolve-scripts build --config=${resolveConfigPath} --start --prod`
+        `resolve-scripts build --config=${resolveConfigPath} --prod`
       )
 
-      expect(json).toMatchObject({
+      const resultConfig = {
+        ...resolveConfigOrigin,
         ...config,
         ...env.production
-      })
+      }
+      delete resultConfig.env
+
+      expect(json).toMatchObject(resultConfig)
     }
   )
 })
