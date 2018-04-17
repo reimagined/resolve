@@ -37,7 +37,9 @@ export default {
     const user =
       name != null
         ? await store.findOne('Users', { name })
-        : id != null ? await store.findOne('Users', { id }) : null
+        : id != null
+          ? await store.findOne('Users', { id })
+          : null
 
     return {
       user,

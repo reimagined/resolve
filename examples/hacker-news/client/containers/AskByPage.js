@@ -5,7 +5,9 @@ import Stories from '../components/Stories'
 import { ITEMS_PER_PAGE } from '../constants'
 
 const AskByPage = ({
-  match: { params: { page } },
+  match: {
+    params: { page }
+  },
   data: { stories = [], me }
 }) => <Stories items={stories} page={page} type="ask" userId={me && me.id} />
 

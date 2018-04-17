@@ -96,7 +96,9 @@ if (unknownOptions && unknownOptions.length) {
     example = options.example || 'hello-world',
     revision = options.branch
       ? options.branch
-      : options.commit ? options.commit : 'master',
+      : options.commit
+        ? options.commit
+        : 'master',
     repoDirName = `resolve-${revision}`,
     examplePath = `./${repoDirName}/examples/${example}`,
     resolveRepoPath = `https://codeload.github.com/reimagined/resolve/zip/${revision}`,
