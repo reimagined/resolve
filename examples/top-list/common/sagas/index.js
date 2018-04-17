@@ -6,6 +6,12 @@ const delay = timeout => new Promise(resolve => setTimeout(resolve, timeout))
 
 const rand = max => Math.floor(Math.random() * max)
 
+const upFirstLetter = str => {
+  return str.replace(/\w\S*/g, function(txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+  })
+}
+
 async function mainSagaImpl(executeCommand, pushInterval) {
   for (let idx of Array.from(Array(ITEMS_COUNT)).map((_, idx) => idx)) {
     await executeCommand({
@@ -14,7 +20,7 @@ async function mainSagaImpl(executeCommand, pushInterval) {
       type: 'append',
       payload: {
         id: `Item${idx}`,
-        name: generateCodename().spaced
+        name: upFirstLetter(generateCodename().spaced)
       }
     })
   }

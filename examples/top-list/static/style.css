@@ -1,0 +1,20 @@
+article {
+  padding: 5px 10px;
+  margin-bottom: 5px;
+  background-color: #eeeeee;
+  max-width: 600px;
+  width: 600px;
+}
+article:nth-child(odd) {
+  background-color: #dddddd;
+}
+nav {
+  padding: 5px 10px;
+}
+
+.example-wrapper {
+  max-width: 650px;
+  margin: 0 auto;
+  padding-left: 10px;
+  padding-right: 10px;
+}
