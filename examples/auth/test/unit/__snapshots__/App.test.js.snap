@@ -65,25 +65,38 @@ exports[`renders correctly 1`] = `
       </div>
     </nav>
   </div>
-  <h1>
-    You are not logged in
-  </h1>
-  <div>
-    Create user and login
-    <form
-      action="/register"
-      method="POST"
+  <div
+    className="example-wrapper"
+  >
+    <div
+      className="example-login-wrapper"
     >
-      username: 
-      <input
-        name="username"
-        type="text"
-      />
-      <input
-        type="submit"
-        value="create account"
-      />
-    </form>
+      <label
+        className="example-login-label control-label"
+        htmlFor={undefined}
+      >
+        Enter your username:
+      </label>
+      <form
+        action="/register"
+        className="form-inline"
+        method="POST"
+      >
+        <input
+          className="example-login-input form-control"
+          id={undefined}
+          name="username"
+          type="text"
+        />
+        <button
+          className="example-login-button btn btn-success"
+          disabled={false}
+          type="submit"
+        >
+          Create Account
+        </button>
+      </form>
+    </div>
   </div>
 </div>
 `;

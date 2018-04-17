@@ -11,13 +11,13 @@ fixture`Before login`.beforeEach(async t => {
 
 test('should be not logged in', async t => {
   await t
-    .expect(await Selector('h1').withText('You are not logged in').exists)
+    .expect(await Selector('button').withText('Create Account').exists)
     .eql(true)
 })
 
 test('should be a login', async t => {
   await t.typeText(await Selector('input[type=text]'), 'New Name')
-  await t.click(await Selector('input[type=submit]'))
+  await t.click(await Selector('button'))
 
   await t
     .expect(await Selector('h1').withText('Hello, New Name').exists)
@@ -25,7 +25,11 @@ test('should be a login', async t => {
 })
 
 test('should be a logout', async t => {
+  await t.typeText(await Selector('input[type=text]'), 'New Name')
+  await t.click(await Selector('button'))
+  await t.click(await Selector('button'))
+
   await t
-    .expect(await Selector('h1').withText('You are not logged in').exists)
+    .expect(await Selector('button').withText('Create Account').exists)
     .eql(true)
 })

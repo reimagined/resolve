@@ -1,13 +1,27 @@
 import React from 'react'
+import { Form, FormControl, ControlLabel, Button } from 'react-bootstrap'
 
 const Login = () => {
   return (
-    <div>
-      Create user and login
-      <form method="POST" action={`/register`}>
-        username: <input type="text" name="username" />
-        <input type="submit" value="create account" />
-      </form>
+    <div className="example-login-wrapper">
+      <ControlLabel className="example-login-label">
+        Enter your username:
+      </ControlLabel>
+
+      <Form inline method="POST" action="/register">
+        <FormControl
+          className="example-login-input"
+          type="text"
+          name="username"
+        />
+        <Button
+          className="example-login-button"
+          type="submit"
+          bsStyle="success"
+        >
+          Create Account
+        </Button>
+      </Form>
     </div>
   )
 }
