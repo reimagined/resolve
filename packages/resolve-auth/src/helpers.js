@@ -41,4 +41,13 @@ const getRouteByName = (name, routes) => {
   return { path, method }
 }
 
-export { createRequest, createResponse, getRouteByName }
+const rootPath = process.env.ROOT_PATH ? `/${process.env.ROOT_PATH}` : ''
+
+const getRootableUrl = path => {
+  if (/^https?:\/\//.test(path)) {
+    throw new Error(`Absolute path not allowed: ${path}`)
+  }
+  return `${rootPath}/${path.replace(/^\//, '')}`
+}
+
+export { createRequest, createResponse, getRouteByName, getRootableUrl }
