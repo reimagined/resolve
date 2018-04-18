@@ -24,5 +24,5 @@ render(
       <Routes routes={routes} />
     </ConnectedRouter>
   </Provider>,
-  document.getElementById('resolve-application-container')
+  document.getElementsByClassName('app-container')[0]
 )
