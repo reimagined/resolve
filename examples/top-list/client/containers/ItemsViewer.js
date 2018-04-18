@@ -1,22 +1,34 @@
 import React from 'react'
 import { connectReadModel } from 'resolve-redux'
 
+import { ListGroup, ListGroupItem } from 'react-bootstrap'
+
 const viewer = ({ items, page, limit }) => {
-  let articles = []
+  let listItems = []
 
   for (let i = 0; i < limit; i++) {
     let item = items && items[i]
-    articles.push(
-      <article key={`LI-${page}-${i}`}>
-        <b>{+(limit * page) + i + 1}</b>: {item ? item.name : ''} ({item
-          ? item.rating
-          : ''}{' '}
-        votes)
-      </article>
+    listItems.push(
+      <ListGroupItem style={{ height: '45px' }} key={`LI-${page}-${i}`}>
+        <div
+          style={{
+            float: 'left',
+            width: '40px',
+            fontWeight: '600',
+            fontSize: '16px'
+          }}
+        >
+          {+(limit * page) + i + 1}
+        </div>
+        <div style={{ float: 'left' }}>{item ? item.name : ''}</div>
+        <div style={{ float: 'right', fontSize: '16px' }}>
+          {item ? item.rating : ''} votes
+        </div>
+      </ListGroupItem>
     )
   }
 
-  return <section key={`SC-${page}`}>{articles}</section>
+  return <ListGroup key={`SC-${page}`}>{listItems}</ListGroup>
 }
 
 const getReadModel = (state, modelName, resolverName) => {
