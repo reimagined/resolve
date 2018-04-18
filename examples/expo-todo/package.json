@@ -1,0 +1,37 @@
+{
+  "name": "expo-todo",
+  "version": "0.9.0",
+  "private": true,
+  "dependencies": {
+    "expo": "^25.0.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-native": "^0.52.0",
+    "react-redux": "^5.0.6",
+    "reactxp": "^0.51.0",
+    "reactxp-imagesvg": "^0.2.8",
+    "reactxp-video": "^0.2.3",
+    "redux": "^3.7.2",
+    "resolve-redux": "0.9.0",
+    "resolve-scripts": "file:../../packages/resolve-scripts/resolve-scripts.tgz"
+  },
+  "main": "./client/index.js",
+  "scripts": {
+    "expo": "react-native-scripts start",
+    "build": "resolve-scripts build",
+    "dev": "resolve-scripts dev",
+    "start": "resolve-scripts start",
+    "test": "resolve-scripts test",
+    "test:functional": "resolve-scripts test:functional"
+  },
+  "devDependencies": {
+    "testcafe": "^0.19.1",
+    "jest": "^22.4.3",
+    "react-test-renderer": "^16.2.0",
+    "react-native-scripts": "1.13.1",
+    "babel-plugin-transform-inline-environment-variables": "^0.3.0",
+    "babel-preset-expo": "^4.0.0",
+    "my-local-ip": "^1.0.0",
+    "jest-expo": "^25.1.0"
+  }
+}

@@ -1,0 +1,27 @@
+.example-wrapper {
+  max-width: 580px;
+  margin: 0 auto;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.example-list {
+  margin-top: 8%;
+}
+
+.example-close-button {
+  cursor: pointer;
+  float: right;
+}
+
+.example-form {
+  margin-top: 7%;
+}
+
+.example-form-control {
+  min-width: 83%;
+}
+
+.example-button {
+  float: right;
+}
