@@ -40,7 +40,7 @@ export default ({ markup, styleTags, initialState, env, clientUrl }) => {
     `${helmet.script.toString()}` +
     '</head>' +
     `<body ${helmet.bodyAttributes.toString()}>` +
-    `<div id="resolve-application-container">${markup}</div>` +
+    `<div id="app-container" class="app-container">${markup}</div>` +
     `<script src="${clientUrl}"></script>` +
     '</body>' +
     '</html>'
