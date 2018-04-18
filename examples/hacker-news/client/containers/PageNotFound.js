@@ -10,6 +10,6 @@ const PageNotFound = () => (
 export default connectReadModel((state, ownProps) => ({
   readModelName: 'default',
   resolverName: 'void',
-  variables: {},
+  parameters: {},
   ...ownProps
 }))(PageNotFound)

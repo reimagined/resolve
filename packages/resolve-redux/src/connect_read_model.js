@@ -7,7 +7,7 @@ import actions from './actions'
 const readModelPropsNames = [
   'readModelName',
   'resolverName',
-  'variables',
+  'parameters',
   'isReactive'
 ]
 

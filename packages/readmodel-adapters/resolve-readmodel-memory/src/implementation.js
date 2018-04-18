@@ -1,7 +1,7 @@
-const implementation = (metaApi, storeApi, createStorage, options) => {
+const implementation = (metaApi, storeApi, createTable, options) => {
   const pool = {
     metaInfo: { tables: {}, timestamp: 0 },
-    createStorage,
+    createTable,
     storage: {}
   }
 

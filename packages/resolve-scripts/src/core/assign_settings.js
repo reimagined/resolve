@@ -30,10 +30,22 @@ export function mode({ deployOptions }, argv, env) {
   } else if (argv.prod) {
     deployOptions.mode = 'production'
   }
-  env.NODE_ENV = deployOptions.mode
-  if (argv.test) {
+  if (argv.test || env.NODE_ENV === 'test') {
     env.NODE_ENV = 'test'
+  } else {
+    env.NODE_ENV = deployOptions.mode
   }
+}
+
+extenders.push(env)
+export function env({ resolveConfig }, argv, env) {
+  let envKey = env.NODE_ENV
+
+  if (resolveConfig.env && resolveConfig.env[envKey]) {
+    const envConfig = resolveConfig.env[envKey]
+    Object.assign(resolveConfig, envConfig)
+  }
+  delete resolveConfig.env
 }
 
 extenders.push(watch)
@@ -271,20 +283,6 @@ export function browser({ deployOptions }, argv, env) {
     deployOptions.browser = argv.browser
   }
   env.TESTCAFE_BROWSER = deployOptions.browser
-}
-
-extenders.push(env)
-export function env({ resolveConfig, deployOptions }, argv) {
-  let envKey = deployOptions.mode
-  if (argv.test) {
-    envKey = 'test'
-  }
-
-  if (resolveConfig.env && resolveConfig.env[envKey]) {
-    const envConfig = resolveConfig.env[envKey]
-    Object.assign(resolveConfig, envConfig)
-  }
-  delete resolveConfig.env
 }
 
 export default function assignSettings(

@@ -16,13 +16,8 @@ const getReadModelData = state => {
 
 export class App extends React.PureComponent {
   render() {
-    let isLogin = true
-    let LogComponent = Logout
-
-    if (this.props.data.loading || !this.props.data.me) {
-      isLogin = false
-      LogComponent = Login
-    }
+    let LoginComponent =
+      this.props.data.loading || !this.props.data.me ? Login : Logout
 
     return (
       <div>
@@ -32,18 +27,17 @@ export class App extends React.PureComponent {
             content="width=device-width, initial-scale=1.0"
           />
           <link rel="stylesheet" href="/bootstrap.min.css" />
+          <link rel="stylesheet" href="/style.css" />
           <title>reSolve Auth Example</title>
         </Helmet>
 
         <Header />
 
-        <h1>
-          {isLogin
-            ? `Hello, ${this.props.data.me.name}`
-            : 'You are not logged in'}
-        </h1>
-
-        <LogComponent />
+        <div className="example-wrapper">
+          <LoginComponent
+            username={this.props.data.me && this.props.data.me.name}
+          />
+        </div>
       </div>
     )
   }
@@ -52,6 +46,6 @@ export class App extends React.PureComponent {
 export default connectReadModel(state => ({
   readModelName: 'me',
   resolverName: 'me',
-  variables: {},
+  parameters: {},
   data: getReadModelData(state)
 }))(App)

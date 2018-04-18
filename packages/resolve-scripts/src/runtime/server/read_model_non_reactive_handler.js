@@ -11,7 +11,7 @@ const readModelNonReactiveHandler = async (req, res) => {
       jwtToken: req.jwtToken,
       modelName: req.params.modelName,
       resolverName: req.params.resolverName,
-      resolverArgs: req.body.variables
+      resolverArgs: req.body.parameters
     })
 
     res.status(200).send({
