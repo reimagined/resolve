@@ -43,3 +43,5 @@ jspm_packages
 event-storage.db
 #
 dist
+
+packages/resolve-scripts/resolve-scripts.tgz

@@ -17,21 +17,22 @@
   },
   "main": "./client/index.js",
   "scripts": {
-    "expo": "react-native-scripts start",
-    "build": "resolve-scripts build",
-    "dev": "resolve-scripts dev",
-    "start": "resolve-scripts start",
-    "test": "resolve-scripts test",
+    "expo": "node patch-config.js && react-native-scripts start",
+    "build": "node patch-config.js && resolve-scripts build",
+    "dev": "node patch-config.js && resolve-scripts dev",
+    "start": "node patch-config.js && resolve-scripts start",
+    "test": "node patch-config.js && resolve-scripts test",
     "test:functional": "resolve-scripts test:functional"
   },
   "devDependencies": {
-    "testcafe": "^0.19.1",
-    "jest": "^22.4.3",
-    "react-test-renderer": "^16.2.0",
-    "react-native-scripts": "1.13.1",
     "babel-plugin-transform-inline-environment-variables": "^0.3.0",
     "babel-preset-expo": "^4.0.0",
+    "jest": "^22.4.3",
+    "jest-expo": "^25.1.0",
+    "json5": "^1.0.1",
     "my-local-ip": "^1.0.0",
-    "jest-expo": "^25.1.0"
+    "react-native-scripts": "1.13.1",
+    "react-test-renderer": "^16.2.0",
+    "testcafe": "^0.19.1"
   }
 }
