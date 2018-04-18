@@ -1,5 +1,5 @@
 {
-  "name": "auth",
+  "name": "with-authentication",
   "version": "0.9.0",
   "private": true,
   "dependencies": {

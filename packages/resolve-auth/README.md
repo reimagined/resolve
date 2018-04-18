@@ -8,9 +8,9 @@ Provides an authentication mechanism with several possible variants:
 
 ## Usage
 
-First of all, create file with your strategy and add `auth` section into `resolve.config.json` for your application (see [`auth` example]('../../examples/auth')).
-Next, choose type of auth strategy (now we support `local`, `github` and `google`) and define options fo it - add auth `routes` that configure the strategy routing, describe `strategy` specified params  and  write code for `handlers`:
-Return array of tuples `{ strategy, options }` for every used auth algo.
+First of all, create file with your strategy and add `auth` section into `resolve.config.json` for your application (see [`with-authentication` example]('../../examples/with-authentication')).
+Next, choose a type of authentication strategy (now we support `local`, `github` and `google`) and define options of it - add authentication `routes` that configure the strategy routing, describe `strategy` specified params  and  write code for `handlers`:
+Return an array of tuples `{ strategy, options }` for every used authentication algorithm.
 
 ## Examples
 
