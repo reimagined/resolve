@@ -59,7 +59,6 @@ typings/
 
 # expo
 .expo/
-resolve.config.json
 
 .next
 

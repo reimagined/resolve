@@ -15,13 +15,13 @@
     "resolve-redux": "0.9.0",
     "resolve-scripts": "file:../../packages/resolve-scripts/resolve-scripts.tgz"
   },
-  "main": "./client/index.js",
+  "main": "./dist/expo.main.js",
   "scripts": {
-    "expo": "node patch-config.js && react-native-scripts start",
-    "build": "node patch-config.js && resolve-scripts build",
-    "dev": "node patch-config.js && resolve-scripts dev",
-    "start": "node patch-config.js && resolve-scripts start",
-    "test": "node patch-config.js && resolve-scripts test",
+    "expo": "node scripts/expo.js",
+    "build": "resolve-scripts build",
+    "dev": "resolve-scripts dev",
+    "start": "resolve-scripts start",
+    "test": "resolve-scripts test",
     "test:functional": "resolve-scripts test:functional"
   },
   "devDependencies": {
