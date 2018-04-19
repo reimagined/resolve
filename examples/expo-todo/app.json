@@ -1,0 +1,7 @@
+{
+  "expo": {
+    "sdkVersion": "25.0.0",
+    "appKey": "RXApp",
+    "entryPoint": "client/index.js"
+  }
+}
