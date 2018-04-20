@@ -18,36 +18,34 @@ const authStrategies = authStrategiesConfigs.map(
 )
 
 const assignAuthRoutes = app => {
-  authStrategies.forEach(strategy => {
-    strategy.forEach(({ route, callback }) => {
-      app[route.method.toLowerCase()](
-        getRootableUrl(route.path),
-        (req, res, next) => {
-          const safeReq = createRequest(req)
+  authStrategies.forEach(({ route, callback }) => {
+    app[route.method.toLowerCase()](
+      getRootableUrl(route.path),
+      (req, res, next) => {
+        const safeReq = createRequest(req)
 
-          Object.assign(safeReq, {
-            resolve: {
-              executeReadModelQuery: args =>
-                executeReadModelQuery({
-                  ...args,
-                  jwtToken: req.jwtToken
-                }),
-              executeViewModelQuery: args =>
-                executeViewModelQuery({
-                  ...args,
-                  jwtToken: req.jwtToken
-                }),
-              executeCommand
-            }
-          })
-          const safeRes = {
-            applyJwtValue,
-            ...createResponse(res)
+        Object.assign(safeReq, {
+          resolve: {
+            executeReadModelQuery: args =>
+              executeReadModelQuery({
+                ...args,
+                jwtToken: req.jwtToken
+              }),
+            executeViewModelQuery: args =>
+              executeViewModelQuery({
+                ...args,
+                jwtToken: req.jwtToken
+              }),
+            executeCommand
           }
-          callback(safeReq, safeRes, createAuthOptions(safeReq, safeRes, next))
+        })
+        const safeRes = {
+          applyJwtValue,
+          ...createResponse(res)
         }
-      )
-    })
+        callback(safeReq, safeRes, createAuthOptions(safeReq, safeRes, next))
+      }
+    )
   })
 }
 
