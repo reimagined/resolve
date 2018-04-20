@@ -12,8 +12,9 @@ import executeReadModelQuery from './execute_read_model_query'
 import executeCommand from './command_executor'
 
 const authStrategiesConfigs = require($resolve.auth.strategies)
-const authStrategies = authStrategiesConfigs.map(({ strategy, options }) =>
-  resolveAuth(strategy, options)
+const authStrategies = authStrategiesConfigs.map(
+  ({ strategyConstructor, options }) =>
+    resolveAuth(strategyConstructor, options)
 )
 
 const assignAuthRoutes = app => {
