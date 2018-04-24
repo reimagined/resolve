@@ -36,20 +36,29 @@ const testCafeRunner = async argv => {
     ],
     { stdio: 'inherit' }
   )
+  process.on('exit', () => {
+    application.kill()
+  })
+
+  const waitReadModels = setTimeout(() => {
+    // eslint-disable-next-line no-console
+    console.log(`Please wait. Building view/read models...`)
+  }, 1000 * 5)
 
   while (true) {
+    const statusUrl = `${resolveConfig.protocol}://${resolveConfig.host}:${
+      resolveConfig.port
+    }${resolveConfig.rootPath ? `/${resolveConfig.rootPath}` : ''}/api/status`
     try {
-      const response = await fetch(
-        `${resolveConfig.protocol}://${resolveConfig.host}:${
-          resolveConfig.port
-        }/api/status`
-      )
+      const response = await fetch(statusUrl)
       if ((await response.text()) === 'ok') break
     } catch (e) {}
   }
   application.on('close', exitCode => {
     process.exit(exitCode)
   })
+
+  clearTimeout(waitReadModels)
 
   execSync(
     `npx testcafe ${browser}` +
