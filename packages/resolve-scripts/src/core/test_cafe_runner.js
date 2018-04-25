@@ -40,7 +40,7 @@ const testCafeRunner = async argv => {
     application.kill()
   })
 
-  const waitReadModels = setTimeout(() => {
+  const waitBuildProjections = setTimeout(() => {
     // eslint-disable-next-line no-console
     console.log(`Please wait. Building view/read models...`)
   }, 1000 * 5)
@@ -58,7 +58,7 @@ const testCafeRunner = async argv => {
     process.exit(exitCode)
   })
 
-  clearTimeout(waitReadModels)
+  clearTimeout(waitBuildProjections)
 
   execSync(
     `npx testcafe ${browser}` +
