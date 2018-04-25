@@ -34,13 +34,4 @@ const createResponse = expressRes => {
   return response
 }
 
-const rootPath = process.env.ROOT_PATH ? `/${process.env.ROOT_PATH}` : ''
-
-const getRootableUrl = path => {
-  if (/^https?:\/\//.test(path)) {
-    throw new Error(`Absolute path not allowed: ${path}`)
-  }
-  return `${rootPath}/${path.replace(/^\//, '')}`
-}
-
-export { createRequest, createResponse, getRootableUrl }
+export { createRequest, createResponse }

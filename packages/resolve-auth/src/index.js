@@ -1,10 +1,10 @@
-import { createRequest, createResponse, getRootableUrl } from './helpers'
+import { createRequest, createResponse } from './helpers'
 import createAuthOptions from './createAuthOptions'
 
 const resolveAuth = (strategyConstructor, options) => ({
   route: options.route,
   callback: async (req, res, callbackOptions) => {
-    let strategy = strategyConstructor(options)
+    const strategy = strategyConstructor(options)
 
     strategy.success = callbackOptions.onSuccess.bind(null, options)
     strategy.fail = callbackOptions.onFail.bind(null, options)
@@ -15,10 +15,4 @@ const resolveAuth = (strategyConstructor, options) => ({
   }
 })
 
-export {
-  createAuthOptions,
-  createRequest,
-  createResponse,
-  getRootableUrl,
-  resolveAuth
-}
+export { createAuthOptions, createRequest, createResponse, resolveAuth }

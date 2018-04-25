@@ -41,8 +41,8 @@ const options = routes.map(({ path, method, callback }) => ({
   callback
 }))
 
-const strategyConstructor = options => {
-  return new Strategy(
+const strategyConstructor = options =>
+  new Strategy(
     {
       ...options.strategy,
       passReqToCallback: true
@@ -55,7 +55,6 @@ const strategyConstructor = options => {
       }
     }
   )
-}
 
 const strategies = options.map(options => ({
   options,
