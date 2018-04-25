@@ -29,7 +29,6 @@ const socket = createSocketServer(server, {
 
 socket.on('connection', socketHandler)
 
-app.set('trust proxy', true)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
