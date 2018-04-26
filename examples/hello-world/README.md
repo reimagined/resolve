@@ -1,14 +1,5 @@
 # **Hello World Example**
 
--------------------------------------------------------------------------
-Sorry, this article isn't finished yet :(
-    
-We'll glad to see all your questions:
-* [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
-* [**Twitter**](https://twitter.com/resolvejs)
-* e-mail to **reimagined@devexpress.com**
--------------------------------------------------------------------------
-
 ## How to start?
 
 An empty app that can be used as a template for any **reSolve** application. It's created by default so you can install this example by one of two ways:

@@ -1,14 +1,5 @@
 # **Todo Two Levels Example**
 
--------------------------------------------------------------------------
-Sorry, this article isn't finished yet :(
-    
-We'll glad to see all your questions:
-* [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
-* [**Twitter**](https://twitter.com/resolvejs)
-* e-mail to **reimagined@devexpress.com**
--------------------------------------------------------------------------
-
 ## How to start?
 
 This example demonstrates how to work with view-models in the **all events subscribtion** case. Sometimes, for example for fast application prototyping, it's necessary to have view-model on client with all server events instead of part. There's a special feature called **wildcard**, that allows to subscribe to all events. To setup:

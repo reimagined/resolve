@@ -1,14 +1,5 @@
 ToDo List App Tutorial
 
--------------------------------------------------------------------------
-Sorry, this article isn't finished yet :(
-    
-We'll glad to see all your questions:
-* [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
-* [**Twitter**](https://twitter.com/resolvejs)
-* e-mail to **reimagined@devexpress.com**
--------------------------------------------------------------------------
-
 ## How to start?
 
 This example demonstrates how to work with the [view-models](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md). To install:

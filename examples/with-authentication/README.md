@@ -1,14 +1,5 @@
 # **Resolve authentication example**
 
--------------------------------------------------------------------------
-Sorry, this article isn't finished yet :(
-
-We'll glad to see all your questions:
-* [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
-* [**Twitter**](https://twitter.com/resolvejs)
-* e-mail to **reimagined@devexpress.com**
--------------------------------------------------------------------------
-
 It is a simple application shows `resolve-auth` package usage.
 
 ## How to start?
