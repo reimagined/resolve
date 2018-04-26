@@ -1,7 +1,7 @@
 # With PostCSS Modules
 
 -------------------------------------------------------------------------
-**See the documentation at [postcss/postcss-loader](https://github.com/postcss/postcss-loader#css-modules)** for more information about using `postcss`!
+See the documentation at [postcss/postcss-loader](https://github.com/postcss/postcss-loader#css-modules) for more information about using `postcss`!
 
 ### Example
 
