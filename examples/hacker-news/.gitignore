@@ -61,4 +61,4 @@ dist
 
 package-lock.json
 
-!event-storage.db
+event-storage.db

@@ -327,7 +327,7 @@ const defineTable = async (
   inputTableSchema
 ) => {
   checkCondition(
-    !await metaApi.tableExists(tableName),
+    !(await metaApi.tableExists(tableName)),
     'tableExists',
     tableName
   )
