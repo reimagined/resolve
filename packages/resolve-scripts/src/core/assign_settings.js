@@ -189,17 +189,26 @@ export function port({ resolveConfig }, argv, env) {
 extenders.push(rootPath)
 export function rootPath({ resolveConfig }, argv, env) {
   if (env.ROOT_PATH) {
-    resolveConfig.rootPath = env.ROOT_PATH.replace(/^\//, '').replace(/\/$/, '')
+    resolveConfig.rootPath = env.ROOT_PATH
   }
   if (argv.rootPath) {
-    resolveConfig.rootPath = argv.rootPath.replace(/^\//, '').replace(/\/$/, '')
+    resolveConfig.rootPath = argv.rootPath
   }
 
-  if (resolveConfig.rootPath && /^https?:\/\//.test(resolveConfig.rootPath)) {
-    return new Error('Incorrect env.ROOT_PATH or options.rootPath')
-  }
+  const regExp = /^((\w|\d)(\w|\d|-)*)?$/
 
-  env.ROOT_PATH = resolveConfig.rootPath
+  if (
+    resolveConfig.rootPath === resolveConfig.rootPath.trim() &&
+    regExp.test(resolveConfig.rootPath)
+  ) {
+    env.ROOT_PATH = resolveConfig.rootPath
+  } else {
+    throw new Error(
+      `Incorrect env.ROOT_PATH or options.rootPath = "${
+        resolveConfig.rootPath
+      }"\nValue must match the regular expression ${regExp}`
+    )
+  }
 }
 
 extenders.push(index)
