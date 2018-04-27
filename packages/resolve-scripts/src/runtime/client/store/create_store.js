@@ -16,7 +16,7 @@ const readModels = require($resolve.readModels)
 const aggregates = require($resolve.aggregates)
 const subscribeAdapter = require($resolve.subscribe.adapter)
 
-export default (initialState, history) => {
+export default ({ initialState, history, origin, rootPath }) => {
   const store = createStore(
     combineReducers({
       ...reducers,
@@ -33,16 +33,16 @@ export default (initialState, history) => {
           viewModels,
           readModels,
           aggregates,
-          subscribeAdapter
+          subscribeAdapter,
+          origin,
+          rootPath
         }),
         ...middlewares
       )
     )
   )
 
-  const isClient = typeof window === 'object'
-
-  setupStore(store, middlewares, isClient)
+  setupStore(store, middlewares)
 
   return store
 }
