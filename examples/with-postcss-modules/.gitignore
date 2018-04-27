@@ -42,6 +42,9 @@ typings/
 # Optional npm cache directory
 .npm
 
+# Optional eslint cache
+.eslintcache
+
 # Optional REPL history
 .node_repl_history
 
@@ -54,11 +57,9 @@ typings/
 # dotenv environment variables file
 .env
 
+.next
+
 dist
-.idea
-
-.vscode
-
-package-lock.json
 
 event-storage.db
+package-lock.json

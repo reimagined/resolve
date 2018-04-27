@@ -71,13 +71,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(Component);
     *  `aggregateName`
     *  `payload`
 
-  * #### `subscribeViewmodel`
+  * #### `subscribeViewModel`
 
     Subscribes to new server-side events. This function takes two arguments:
      *  `eventTypes` - an array of event types
     *  `aggregateId` - an aggregate id
 
- * #### `unsubscribeViewmodel`
+ * #### `unsubscribeViewModel`
 
     Unsubscribes from provided server-side events. This function takes two arguments:
     *  `eventTypes` - an array of event types

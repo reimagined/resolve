@@ -52,12 +52,12 @@ describe('actions', () => {
     })
   })
 
-  describe('subscribeViewmodel', () => {
+  describe('subscribeViewModel', () => {
     it('should create an action to subscribe on view model by aggregateId', () => {
       const viewModelName = 'counter'
       const aggregateId = 'aggregateId'
       expect(
-        actions.subscribeViewmodel(viewModelName, aggregateId)
+        actions.subscribeViewModel(viewModelName, aggregateId)
       ).to.deep.equal({
         type: SUBSCRIBE_VIEWMODEL,
         viewModelName,
@@ -66,12 +66,12 @@ describe('actions', () => {
     })
   })
 
-  describe('unsubscribeViewmodel', () => {
+  describe('unsubscribeViewModel', () => {
     it('should create an action to unsubscribe on view model by aggregateId', () => {
       const viewModelName = 'counter'
       const aggregateId = 'aggregateId'
       expect(
-        actions.unsubscribeViewmodel(viewModelName, aggregateId)
+        actions.unsubscribeViewModel(viewModelName, aggregateId)
       ).to.deep.equal({
         type: UNSUBSCRIBE_VIEWMODEL,
         viewModelName,

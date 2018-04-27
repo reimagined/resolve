@@ -1,6 +1,6 @@
-import { checkRequiredFields, getRootableUrl } from './util'
+import { checkRequiredFields, getRootableUrl } from './utils'
 
-export default async function sendCommand(store, action) {
+const sendCommand = async ({ origin, rootPath, store }, action) => {
   const { command, aggregateId, aggregateName, payload } = action
 
   if (
@@ -25,12 +25,15 @@ export default async function sendCommand(store, action) {
   }
 
   try {
-    const response = await fetch(getRootableUrl('/api/commands'), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'same-origin',
-      body: JSON.stringify(normalizedCommand)
-    })
+    const response = await fetch(
+      getRootableUrl(origin, rootPath, '/api/commands'),
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify(normalizedCommand)
+      }
+    )
 
     if (response.ok) {
       store.dispatch({
@@ -58,3 +61,5 @@ export default async function sendCommand(store, action) {
     })
   }
 }
+
+export default sendCommand

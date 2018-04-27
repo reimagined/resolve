@@ -14,118 +14,96 @@ import {
   HOT_MODULE_REPLACEMENT
 } from './action_types'
 
-function merge(viewModelName, aggregateId, state) {
-  return {
-    type: MERGE,
-    viewModelName,
-    aggregateId,
-    state
-  }
-}
+const merge = (viewModelName, aggregateId, state) => ({
+  type: MERGE,
+  viewModelName,
+  aggregateId,
+  state
+})
 
-function sendCommand({ command, aggregateId, aggregateName, payload }) {
-  return {
-    type: SEND_COMMAND,
-    command,
-    aggregateId,
-    aggregateName,
-    payload
-  }
-}
+const sendCommand = ({ command, aggregateId, aggregateName, payload }) => ({
+  type: SEND_COMMAND,
+  command,
+  aggregateId,
+  aggregateName,
+  payload
+})
 
-function subscribeViewmodel(viewModelName, aggregateId) {
-  return {
-    type: SUBSCRIBE_VIEWMODEL,
-    viewModelName,
-    aggregateId
-  }
-}
+const subscribeViewModel = (viewModelName, aggregateId) => ({
+  type: SUBSCRIBE_VIEWMODEL,
+  viewModelName,
+  aggregateId
+})
 
-function unsubscribeViewmodel(viewModelName, aggregateId) {
-  return {
-    type: UNSUBSCRIBE_VIEWMODEL,
-    viewModelName,
-    aggregateId
-  }
-}
+const unsubscribeViewModel = (viewModelName, aggregateId) => ({
+  type: UNSUBSCRIBE_VIEWMODEL,
+  viewModelName,
+  aggregateId
+})
 
-function subscribeReadmodel(
+const subscribeReadModel = (
   readModelName,
   resolverName,
   parameters,
   isReactive
-) {
-  return {
-    type: SUBSCRIBE_READMODEL,
-    readModelName,
-    resolverName,
-    parameters,
-    isReactive
-  }
-}
+) => ({
+  type: SUBSCRIBE_READMODEL,
+  readModelName,
+  resolverName,
+  parameters,
+  isReactive
+})
 
-function unsubscribeReadmodel(readModelName, resolverName) {
-  return {
-    type: UNSUBSCRIBE_READMODEL,
-    readModelName,
-    resolverName
-  }
-}
+const unsubscribeReadModel = (readModelName, resolverName) => ({
+  type: UNSUBSCRIBE_READMODEL,
+  readModelName,
+  resolverName
+})
 
-function loadReadmodelInitialState(
+const loadReadModelInitialState = (
   readModelName,
   resolverName,
   initialState,
   serialId
-) {
-  return {
-    type: READMODEL_LOAD_INITIAL_STATE,
-    readModelName,
-    resolverName,
-    initialState,
-    serialId
-  }
-}
+) => ({
+  type: READMODEL_LOAD_INITIAL_STATE,
+  readModelName,
+  resolverName,
+  initialState,
+  serialId
+})
 
-function dropReadmodelState(readModelName, resolverName) {
-  return {
-    type: READMODEL_DROP_STATE,
-    readModelName,
-    resolverName
-  }
-}
+const dropReadModelState = (readModelName, resolverName) => ({
+  type: READMODEL_DROP_STATE,
+  readModelName,
+  resolverName
+})
 
-function provideViewModels(viewModels) {
-  return {
-    type: PROVIDE_VIEW_MODELS,
-    viewModels
-  }
-}
+const provideViewModels = viewModels => ({
+  type: PROVIDE_VIEW_MODELS,
+  viewModels
+})
 
-function disconnect(reason) {
-  return {
-    type: DISCONNECT,
-    reason
-  }
-}
+const disconnect = reason => ({
+  type: DISCONNECT,
+  reason
+})
 
-function hotModuleReplacement() {
-  return {
-    type: HOT_MODULE_REPLACEMENT,
-    hotModuleReplacementId: uuid()
-  }
-}
+const hotModuleReplacement = () => ({
+  type: HOT_MODULE_REPLACEMENT,
+  hotModuleReplacementId: uuid()
+})
 
 export default {
   merge,
   sendCommand,
-  subscribeViewmodel,
-  unsubscribeViewmodel,
+  subscribeViewModel,
+  unsubscribeViewModel,
   provideViewModels,
-  subscribeReadmodel,
-  unsubscribeReadmodel,
-  loadReadmodelInitialState,
-  dropReadmodelState,
+  subscribeReadModel,
+  unsubscribeReadModel,
+  loadReadModelInitialState,
+  dropReadModelState,
   disconnect,
   hotModuleReplacement
 }
