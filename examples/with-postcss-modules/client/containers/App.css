@@ -1,0 +1,10 @@
+.wrapper {
+  padding: 4em;
+  background: papayawhip;
+}
+
+.title {
+  font-size: 1.5em;
+  text-align: center;
+  color: palevioletred;
+}

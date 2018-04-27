@@ -147,6 +147,24 @@ pipeline {
                 }
             }
         }
+
+        stage('Create-resolve-app [ with-postcss-modules ] Functional Tests') {
+            steps {
+                script {
+                    sh """
+                        export YARN_CACHE_FOLDER=/yarn_cache
+                        /init.sh
+                        yarn global add create-resolve-app@\$(cat /lerna_version)
+                        create-resolve-app with-postcss-modules -e with-postcss-modules -c \$(cat /last_commit)
+                        cd ./with-postcss-modules
+                        cat ./package.json
+
+                        yarn test
+                        yarn test:functional --browser=path:/chromium
+                    """
+                }
+            }
+        }
     }
 
     post {
