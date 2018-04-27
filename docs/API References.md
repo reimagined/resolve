@@ -20,7 +20,7 @@ We'll glad to see all your questions:
     * [Client Config](#client-config)
     * [Server Config](#server-config)
     * [Build Config](#build-config)
-* [Authorization](#authorization)
+* [Authentication](#authentication)
 * [Environment Variables](#-environment-variables)
     * [URL Settings](#url-settings)
     * [Custom Environment Variables](#custom-environment-variables)
@@ -90,8 +90,8 @@ If the `version` argument is set, the command updates packages to the specified 
             📄 index.test.js
 ```
 
-### **Auth**
-The `auth` folder contains authentitate strategies' code. You can choose this file location using `auth` section in `resolve.config.json` (see [auth example](https://github.com/reimagined/resolve/blob/master/examples/auth/resolve.config.json))
+### **Authentication**
+The `auth` folder contains authentication strategies' code. You can choose this file location using `auth` section in `resolve.config.json` (see [auth example](https://github.com/reimagined/resolve/blob/master/examples/auth/resolve.config.json))
 
 ### **Client**
 The client side is located in the `client/` folder and exports two key endpoints: root React component and Redux store creator function. These client part entry points must be specified in the [resolve.client.config.js](#client-config) configuration file in the root directory.
@@ -177,7 +177,7 @@ module.exports = {
 }
 ```
 
-## **Authorization**
+## **Authentication**
 
 //todo
 
