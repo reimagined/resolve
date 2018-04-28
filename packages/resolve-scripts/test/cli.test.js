@@ -200,6 +200,12 @@ describe('resolve-scripts build', () => {
       expect(json).toHaveProperty('rootPath', 'test')
     })
 
+    test('resolve-scripts build --root-path=😉', async () => {
+      const json = await exec('resolve-scripts build --root-path=😉')
+
+      expect(json).toHaveProperty('rootPath', '😉')
+    })
+
     test('resolve-scripts build --root-path=/test (fail)', async () => {
       expect.assertions(1)
       await expect(
@@ -225,13 +231,6 @@ describe('resolve-scripts build', () => {
       expect.assertions(1)
       await expect(
         exec('resolve-scripts build --root-path=https://test')
-      ).rejects.toThrow()
-    })
-
-    test('resolve-scripts build --root-path=a$b (fail)', async () => {
-      expect.assertions(1)
-      await expect(
-        exec('resolve-scripts build --root-path=a$b')
       ).rejects.toThrow()
     })
   })

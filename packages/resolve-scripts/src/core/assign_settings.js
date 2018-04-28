@@ -1,3 +1,4 @@
+import Url from 'url'
 import { isV4Format } from 'ip'
 
 import resolveFile from './resolve_file'
@@ -195,20 +196,40 @@ export function rootPath({ resolveConfig }, argv, env) {
     resolveConfig.rootPath = argv.rootPath
   }
 
-  const regExp = /^((\w|\d)(\w|\d|-)*)?$/
+  const {
+    protocol,
+    slashes,
+    auth,
+    host,
+    port,
+    hostname,
+    hash,
+    search,
+    query,
+    path
+  } = Url.parse(resolveConfig.rootPath)
 
   if (
-    resolveConfig.rootPath === resolveConfig.rootPath.trim() &&
-    regExp.test(resolveConfig.rootPath)
+    protocol ||
+    slashes ||
+    auth ||
+    host ||
+    port ||
+    hostname ||
+    hash ||
+    search ||
+    query ||
+    /^\//.test(path) ||
+    /\/$/.test(path)
   ) {
-    env.ROOT_PATH = resolveConfig.rootPath
-  } else {
     throw new Error(
       `Incorrect env.ROOT_PATH or options.rootPath = "${
         resolveConfig.rootPath
-      }"\nValue must match the regular expression ${regExp}`
+      }"\nValue must be part of the path, which is the application's subdirectory`
     )
   }
+
+  env.ROOT_PATH = resolveConfig.rootPath
 }
 
 extenders.push(index)
