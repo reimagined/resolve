@@ -203,7 +203,7 @@ describe('resolve-scripts build', () => {
     test('resolve-scripts build --root-path=😉', async () => {
       const json = await exec('resolve-scripts build --root-path=😉')
 
-      expect(json).toHaveProperty('rootPath', '😉')
+      expect(json).toHaveProperty('rootPath', encodeURI('😉'))
     })
 
     test('resolve-scripts build --root-path=/test (fail)', async () => {

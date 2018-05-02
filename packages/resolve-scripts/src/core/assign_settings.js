@@ -225,9 +225,11 @@ export function rootPath({ resolveConfig }, argv, env) {
     throw new Error(
       `Incorrect env.ROOT_PATH or options.rootPath = "${
         resolveConfig.rootPath
-      }"\nValue must be part of the path, which is the application's subdirectory`
+      }"\nValue must be part of the URL, which is the application's subdirectory`
     )
   }
+
+  resolveConfig.rootPath = encodeURI(resolveConfig.rootPath)
 
   env.ROOT_PATH = resolveConfig.rootPath
 }
