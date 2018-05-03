@@ -7,12 +7,12 @@ Provides an authentication mechanism using [Passport](http://www.passportjs.org/
 
 First of all, create file with your strategy and add `auth` section into `resolve.config.json` for your application (see [`with-authentication` example]('../../examples/with-authentication')).
 Next, choose a type of authentication strategy (see [passport-local](https://github.com/jaredhanson/passport-local) or [passport-google-oauth](https://github.com/jaredhanson/passport-google-oauth for example) ) and define options of it.
-Create you strategy in `strategyConstructor` function using `options`.
+Create your strategy in `strategyConstructor` function using `options`.
 Return an array of tuples `{ strategy, options }` for every used route in your app.
 
 ## Examples
 
-Here is the simple example for `local` strategy, but you can use any other [Passport](http://www.passportjs.org/) strategy similarly.
+Here is the simple example of `local` strategy, but you can use any other [Passport](http://www.passportjs.org/) strategy similarly.
 
 ```javascript
 import { Strategy } from 'passport-local'
