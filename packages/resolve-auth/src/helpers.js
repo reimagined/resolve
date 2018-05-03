@@ -34,13 +34,6 @@ const createResponse = expressRes => {
   return response
 }
 
-const getRouteByName = (name, routes) => {
-  const route = routes[name] || {}
-  const { path = route, method = 'get' } = route
-  if (typeof path !== 'string') return null
-  return { path, method }
-}
-
 const rootPath = process.env.ROOT_PATH ? `/${process.env.ROOT_PATH}` : ''
 
 const getRootableUrl = path => {
@@ -50,4 +43,4 @@ const getRootableUrl = path => {
   return `${rootPath}/${path.replace(/^\//, '')}`
 }
 
-export { createRequest, createResponse, getRouteByName, getRootableUrl }
+export { createRequest, createResponse, getRootableUrl }

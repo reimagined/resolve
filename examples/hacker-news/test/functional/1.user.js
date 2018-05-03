@@ -31,17 +31,17 @@ test('login', async (t /*: TestController */) => {
   await t.expect(await Selector('a').withText('login').exists).eql(false)
 })
 
-// test('create: is already exists', async (t /*: TestController */) => {
-//   await t.typeText(await Selector('input[type=text]').nth(1), '123')
-//   await t.click(await Selector('input[type=submit]').nth(1))
+test('create: is already exists', async (t /*: TestController */) => {
+  await t.typeText(await Selector('input[type=text]').nth(1), '123')
+  await t.click(await Selector('input[type=submit]').nth(1))
 
-//   await t.expect(await Selector('a').withText('logout').exists).eql(false)
+  await t.expect(await Selector('a').withText('logout').exists).eql(false)
 
-//   await t.expect(await Selector('a').withText('login').exists).eql(true)
+  await t.expect(await Selector('a').withText('login').exists).eql(true)
 
-//   await t.expect(await Selector('h1').withText('Error').exists).eql(true)
+  await t.expect(await Selector('h1').withText('Error').exists).eql(true)
 
-//   await t
-//     .expect(await Selector('div').withText('User already exists').exists)
-//     .eql(true)
-// })
+  await t
+    .expect(await Selector('div').withText('User already exists').exists)
+    .eql(true)
+})

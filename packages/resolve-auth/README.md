@@ -1,120 +1,58 @@
 # **resolve-auth**
 [![npm version](https://badge.fury.io/js/resolve-auth.svg)](https://badge.fury.io/js/resolve-auth)
 
-Provides an authentication mechanism with several possible variants:
-  - local strategy
-  - github
-  - google
+Provides an authentication mechanism using [Passport](http://www.passportjs.org/) authentication strategy.
 
 ## Usage
 
 First of all, create file with your strategy and add `auth` section into `resolve.config.json` for your application (see [`with-authentication` example]('../../examples/with-authentication')).
-Next, choose a type of authentication strategy (now we support `local`, `github` and `google`) and define options of it - add authentication `routes` that configure the strategy routing, describe `strategy` specified params  and  write code for `handlers`:
-Return an array of tuples `{ strategy, options }` for every used authentication algorithm.
+Next, choose a type of authentication strategy (see [passport-local](https://github.com/jaredhanson/passport-local) or [passport-google-oauth](https://github.com/jaredhanson/passport-google-oauth for example) ) and define options of it.
+Create your strategy in `strategyConstructor` function using `options`.
+Return an array of tuples `{ strategy, options }` for every used route in your app.
 
 ## Examples
 
-### Local strategy example
+Here is the simple example of `local` strategy, but you can use any other [Passport](http://www.passportjs.org/) strategy similarly.
 
 ```javascript
-import { Strategy as strategy } from 'passport-local' // <- strategy type
+import { Strategy } from 'passport-local'
 import jwt from 'jsonwebtoken'
-import uuid from 'uuid'
+import jwtSecret from './jwtSecret'
 
-const options = {
+const options = routes.map(({ path, method, callback }) => ({
   strategy: {
     usernameField: 'username',
+    passwordField: 'username',
     successRedirect: null
   },
-  routes: {
-    register: {
-      path: '/register',
-      method: 'POST'
-    }
+  route: {
+    path: '/register',
+    method: 'POST'
   },
-  registerCallback: async (_, username) => { // here fake use is created
-    const user = {                           // for user storing into db see HakerNews example
-      name: username                         // https://github.com/reimagined/resolve/tree/master/examples/hacker-news
-    }
+  callback: async (_, username) =>
+    jwt.sign(           // here fake use is created
+      {                   // for user storing into db see HakerNews example
+        name: username    // https://github.com/reimagined/resolve/tree/master/examples/hacker-news
+      },
+      jwtSecret
+    )
+}))
 
-    return jwt.sign(user, process.env.SECRET_JWT)
-  },
-  failureCallback: (error, redirect) => {
-    redirect(`/`) // in case of fail
-  }
-}
-
-export default [{ strategy, options }]
-
-```
-
-### Github authectication strategy example
-```javascript
-
-import { Strategy as strategy } from 'passport-github'
-import jwt from 'jsonwebtoken'
-
-const options = {
-  strategy: {
-    clientID: 'MyClientID',
-    clientSecret: 'MyClientSecret',
-    callbackURL: 'http://localhost:3000/auth/github/callback',
-    successRedirect: null
-  },
-  routes: {
-    auth: {
-      path: '/auth/github',
-      method: 'get'
+const strategyConstructor = options =>
+  new Strategy(
+    {
+      ...options.strategy,
+      passReqToCallback: true
     },
-    callback: {
-      path: '/auth/github/callback',
-      method: 'get'
+    async (req, username, password, done) => {
+      try {
+        done(null, await options.callback(req, username, password))
+      } catch (error) {
+        done(error)
+      }
     }
-  },
-  authCallback: async ({ resolve, body }, profile) => {
-    // your code to authenticate a user
-    return jwt.sign(user, process.env.SECRET_JWT)
-  },
-  (error, redirect, { resolve, body }) => {
-    // in case of fail
-  }
-}
+  )
 
-export default [{ strategy, options }]
-```
-
-### Google authectication strategy example
-
-```javascript
-import { Strategy as strategy } from 'passport--google-oauth2'
-import jwt from 'jsonwebtoken'
-
-const options = {
-  strategy: {
-    clientID: 'MyClientID',
-    clientSecret: 'MyClientSecret',
-    callbackURL: 'http://localhost:3000/auth/google/callback',
-    successRedirect: null
-  },
-  routes: {
-    auth: {
-      path: '/auth/google',
-      method: 'get'
-    },
-    callback: {
-      path: '/auth/google/callback',
-      method: 'get'
-    }
-  },
-  authCallback: async ({ resolve, body }, profile) => {
-    // your code to authenticate a user
-  },
-  (error, redirect, { resolve, body }) => {
-    // in case of fail
-  }
-}
-
-export default [{ strategy, options }]
+export default [{ options, strategyConstructor }]
 
 ```
-
