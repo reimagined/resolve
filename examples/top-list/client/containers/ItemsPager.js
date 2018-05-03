@@ -1,21 +1,53 @@
 import React from 'react'
 import { connectReadModel } from 'resolve-redux'
 
-const pager = ({ count, page, setPage, limit }) => (
-  <nav>
-    {Array.from(
-      new Array(Number.isInteger(count) && count > 0 ? +count : 0)
-    ).map((_, idx) => (
-      <button
-        onClick={idx !== page ? setPage.bind(null, idx) : undefined}
-        style={idx !== page ? {} : { fontWeight: 'bold' }}
-        key={`BT${idx}`}
+import { ButtonToolbar, ToggleButtonGroup, ToggleButton } from 'react-bootstrap'
+
+const pager = ({ count, page, setPage, limit }) => {
+  const rowLength = 5
+
+  let firstRow = []
+  let secondRow = []
+  let length = Number.isInteger(count) && count > 0 ? +count : 0
+
+  for (let i = 0; i < length; i++) {
+    ;(i >= rowLength ? secondRow : firstRow).push(
+      <ToggleButton
+        onClick={i !== page ? setPage.bind(null, i) : undefined}
+        value={i}
+        key={`BT${i}`}
       >
-        {`${+(limit * idx) + 1} - ${limit * (idx + 1)}`}
-      </button>
-    ))}
-  </nav>
-)
+        {`${+(limit * i) + 1} - ${limit * (i + 1)}`}
+      </ToggleButton>
+    )
+  }
+
+  return (
+    <div>
+      <ButtonToolbar>
+        <ToggleButtonGroup
+          justified
+          type="radio"
+          name="firstRow"
+          value={page}
+          onChange={() => {}}
+        >
+          {firstRow}
+        </ToggleButtonGroup>
+
+        <ToggleButtonGroup
+          justified
+          type="radio"
+          name="secondRow"
+          value={page}
+          onChange={() => {}}
+        >
+          {secondRow}
+        </ToggleButtonGroup>
+      </ButtonToolbar>
+    </div>
+  )
+}
 
 const getReadModel = (state, modelName, resolverName) => {
   try {

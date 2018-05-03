@@ -9,19 +9,10 @@ const viewer = ({ items, page, limit }) => {
   for (let i = 0; i < limit; i++) {
     let item = items && items[i]
     listItems.push(
-      <ListGroupItem style={{ height: '45px' }} key={`LI-${page}-${i}`}>
-        <div
-          style={{
-            float: 'left',
-            width: '40px',
-            fontWeight: '600',
-            fontSize: '16px'
-          }}
-        >
-          {+(limit * page) + i + 1}
-        </div>
-        <div style={{ float: 'left' }}>{item ? item.name : ''}</div>
-        <div style={{ float: 'right', fontSize: '16px' }}>
+      <ListGroupItem className="example-list" key={`LI-${page}-${i}`}>
+        <div className="example-list-place">{+(limit * page) + i + 1}</div>
+        <div className="example-list-name">{item ? item.name : ''}</div>
+        <div className="example-list-votes">
           {item ? item.rating : ''} votes
         </div>
       </ListGroupItem>
