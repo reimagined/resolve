@@ -118,3 +118,4 @@ export default [{ strategy, options }]
 
 ```
 
+![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-resolve-auth-readme?pixel)
