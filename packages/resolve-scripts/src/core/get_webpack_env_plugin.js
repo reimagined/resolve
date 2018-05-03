@@ -12,7 +12,7 @@ const getWebpackEnvPlugin = ({ env }) => {
     ...Object.keys(envList.options)
   ]) {
     if (env[envKey] !== undefined) {
-      defineObject[envKey] = JSON.stringify(env[envKey])
+      defineObject[`process.env.${envKey}`] = JSON.stringify(env[envKey])
     }
   }
 

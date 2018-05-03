@@ -49,6 +49,7 @@
     "cookie-parser": "^1.4.3",
     "cross-spawn": "^6.0.5",
     "dotenv": "^5.0.1",
+    "env-string": "^1.0.0",
     "express": "^4.16.3",
     "flat": "^4.0.0",
     "history": "^4.7.2",

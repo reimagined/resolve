@@ -98,10 +98,6 @@
   dependencies:
     samsam "1.3.0"
 
-"@types/chalk@^0.4.31":
-  version "0.4.31"
-  resolved "https://registry.yarnpkg.com/@types/chalk/-/chalk-0.4.31.tgz#a31d74241a6b1edbb973cf36d97a2896834a51f9"
-
 "@types/error-stack-parser@^1.3.18":
   version "1.3.18"
   resolved "https://registry.yarnpkg.com/@types/error-stack-parser/-/error-stack-parser-1.3.18.tgz#e01c9f8c85ca83b610320c62258b0c9026ade0f7"
@@ -111,8 +107,8 @@
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.108.tgz#02656af3add2e5b3174f830862c47421c00ef817"
 
 "@types/node@*":
-  version "10.0.2"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.0.2.tgz#180046ebbc37de8b64777765c2486ebecb59448e"
+  version "10.0.3"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.0.3.tgz#1f89840c7aac2406cc43a2ecad98fc02a8e130e4"
 
 abab@^1.0.4:
   version "1.0.4"
@@ -1733,14 +1729,13 @@ caller-path@^0.1.0:
     callsites "^0.2.0"
 
 callsite-record@^4.0.0:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/callsite-record/-/callsite-record-4.1.1.tgz#f0b8dcc55932e64e82ebe3bffa85ebfb92d47022"
+  version "4.1.3"
+  resolved "https://registry.yarnpkg.com/callsite-record/-/callsite-record-4.1.3.tgz#3041d2a1c72aff86b00b151e47d25566520c4207"
   dependencies:
-    "@types/chalk" "^0.4.31"
     "@types/error-stack-parser" "^1.3.18"
     "@types/lodash" "^4.14.72"
     callsite "^1.0.0"
-    chalk "^1.1.1"
+    chalk "^2.4.0"
     error-stack-parser "^1.3.3"
     highlight-es "^1.0.0"
     lodash "4.6.1 || ^4.16.1"
@@ -2857,6 +2852,10 @@ enhanced-resolve@^4.0.0:
 entities@^1.1.1, entities@~1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/entities/-/entities-1.1.1.tgz#6e5c2d0a5621b5dadaecef80b90edfb5cd7772f0"
+
+env-string@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/env-string/-/env-string-1.0.0.tgz#cc6bcd5fd809b4ed53c6f161f0e93a3093b28898"
 
 enzyme-adapter-react-16@^1.1.1:
   version "1.1.1"
@@ -6050,8 +6049,8 @@ object-copy@^0.1.0:
     kind-of "^3.0.3"
 
 object-inspect@^1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/object-inspect/-/object-inspect-1.5.0.tgz#9d876c11e40f485c79215670281b767488f9bfe3"
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/object-inspect/-/object-inspect-1.6.0.tgz#c70b6cbf72f274aab4c34c0c82f5167bf82cf15b"
 
 object-is@^1.0.1:
   version "1.0.1"
