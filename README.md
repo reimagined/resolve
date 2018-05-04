@@ -35,6 +35,7 @@ The `create-resolve-app` can is capable of creating the following apps:
 * [**todo-two-levels**](https://github.com/reimagined/resolve/tree/master/examples/todo-two-levels)
 * [**top-list**](https://github.com/reimagined/resolve/tree/master/examples/top-list)
 * [**with-authentication**](https://github.com/reimagined/resolve/tree/master/examples/with-authentication)
+* [**with-postcss-modules**](https://github.com/reimagined/resolve/tree/master/examples/with-postcss-modules)
 * [**with-styled-components**](https://github.com/reimagined/resolve/tree/master/examples/with-styled-components)
 
 ### <a name="get-in-touch">**Get in Touch**</a>
