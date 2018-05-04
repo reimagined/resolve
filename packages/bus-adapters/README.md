@@ -12,3 +12,5 @@ Available adapters:
 	Used to emit and listen events using RabbitMQ.
 * [resolve-bus-zmq](./resolve-bus-zmq)  
 	Used to emit and listen events using ZeroMQ.
+
+![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-bus-adapters-readme?pixel)

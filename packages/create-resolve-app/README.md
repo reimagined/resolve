@@ -80,3 +80,5 @@ The User Guide provides detailed information on an application created with Crea
 * [Configuration Files](../../examples/hello-world#configuration-files-)
 
 A copy of the user guide is added to your project folder as the `Readme.md` file.
+
+![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-create-resolve-app-readme?pixel)

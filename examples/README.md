@@ -50,3 +50,5 @@ The `create-resolve-app` can is capable to create the following apps:
 * [**hacker-news**](https://github.com/reimagined/resolve/tree/master/examples/hacker-news)
 
     This example demonstrates a Hacker News application that is similar to [YCombinator Hacker News](https://news.ycombinator.com/). The app's creation process is detailed in the [Hacker News Tutorial](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/Hacker%20News%20Tutorial.md).
+
+![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/examples-index-readme?pixel)

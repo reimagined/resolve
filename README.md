@@ -220,3 +220,5 @@ Feel free to contact us if you have any questions!
 <p align="center">reSolve is developed by</p>
 <p align="center"><a href="https://devexpress.com">Developer Express Inc.</a></p>
 <p align="center"><img src="https://user-images.githubusercontent.com/19663260/38686793-dd31fb22-3e7d-11e8-8f26-33606ad82a16.png"></p>
+
+![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/index-readme?pixel)
