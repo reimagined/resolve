@@ -27,25 +27,17 @@ The `create-resolve-app` can is capable to create the following apps:
 
     An empty app that can be used as a template for any **reSolve** application (created by default).
 
-<p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-hello-world-example.png"></p>
-
 * [**top-list**](https://github.com/reimagined/resolve/tree/master/examples/top-list)
 
     This example demonstrates how to update application state on external events unrelated to user actions.
-
-<p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-top-list-example.png"></p>
 
 * [**todo**](https://github.com/reimagined/resolve/tree/master/examples/todo)
 
     This example demonstrates how to work with the [view-models](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md). The app's creation process is detailed in the [ToDo List App Tutorial](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/ToDo%20List%20App%20Tutorial.md).
 
-<p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-todo-example.png"></p>
-
 * [**todo-two-levels**](https://github.com/reimagined/resolve/tree/master/examples/todo-two-levels)
 
     This example demonstrates how to work with view-models in the **all events subscribtion** case. Learn more about this case in the [View Model](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md) article.
-
-<p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-todo-two-levels-example.png"></p>
 
 * [**hacker-news**](https://github.com/reimagined/resolve/tree/master/examples/hacker-news)
 
