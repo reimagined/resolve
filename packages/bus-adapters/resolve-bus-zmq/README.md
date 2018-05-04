@@ -22,3 +22,5 @@ const adapter = createAdapter({
   address: '127.0.0.1'
 })
 ```
+
+![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-resolve-bus-zmq-readme?pixel)

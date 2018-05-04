@@ -1,3 +1,4 @@
+import Url from 'url'
 import { isV4Format } from 'ip'
 
 import resolveFile from './resolve_file'
@@ -189,15 +190,46 @@ export function port({ resolveConfig }, argv, env) {
 extenders.push(rootPath)
 export function rootPath({ resolveConfig }, argv, env) {
   if (env.ROOT_PATH) {
-    resolveConfig.rootPath = env.ROOT_PATH.replace(/^\//, '').replace(/\/$/, '')
+    resolveConfig.rootPath = env.ROOT_PATH
   }
   if (argv.rootPath) {
-    resolveConfig.rootPath = argv.rootPath.replace(/^\//, '').replace(/\/$/, '')
+    resolveConfig.rootPath = argv.rootPath
   }
 
-  if (resolveConfig.rootPath && /^https?:\/\//.test(resolveConfig.rootPath)) {
-    return new Error('Incorrect env.ROOT_PATH or options.rootPath')
+  const {
+    protocol,
+    slashes,
+    auth,
+    host,
+    port,
+    hostname,
+    hash,
+    search,
+    query,
+    path
+  } = Url.parse(resolveConfig.rootPath)
+
+  if (
+    protocol ||
+    slashes ||
+    auth ||
+    host ||
+    port ||
+    hostname ||
+    hash ||
+    search ||
+    query ||
+    /^\//.test(path) ||
+    /\/$/.test(path)
+  ) {
+    throw new Error(
+      `Incorrect env.ROOT_PATH or options.rootPath = "${
+        resolveConfig.rootPath
+      }"\nValue must be part of the URL, which is the application's subdirectory`
+    )
   }
+
+  resolveConfig.rootPath = encodeURI(resolveConfig.rootPath)
 
   env.ROOT_PATH = resolveConfig.rootPath
 }

@@ -20,11 +20,4 @@ npx create-resolve-app top-list-example -e top-list
 
 📑 In [**Tutorials**](https://github.com/reimagined/resolve/tree/master/docs/Tutorials) you can find how to make some simple applications with reSolve.
 
-
-
-
-
-
-
-
-
+![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/examples-top-list-readme?pixel)

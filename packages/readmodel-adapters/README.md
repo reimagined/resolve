@@ -15,3 +15,5 @@ Available adapters:
 	Used to store a read model in Memory.
 * [resolve-readmodel-mysql](./resolve-readmodel-mysql)
 	Used to store a read model in MySQL.
+
+![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-readmodel-adapters-readme?pixel)

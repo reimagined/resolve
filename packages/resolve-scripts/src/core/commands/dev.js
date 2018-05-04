@@ -21,6 +21,7 @@ export const builder = yargs =>
           env.options.INSPECT_HOST,
           env.options.INSPECT_PORT,
           env.options.CONFIG_PATH,
+          env.options.BUILD_CONFIG_PATH,
           env.options.ROUTES_PATH,
           env.options.INDEX_PATH,
           env.options.ROOT_PATH,
@@ -43,6 +44,7 @@ export const builder = yargs =>
     .option('root-path', cli.rootPath)
     .option('open-browser', cli.openBrowser)
     .option('config', cli.config)
+    .option('build-config', cli.buildConfig)
     .option('print-config', cli.printConfig)
 
 export const handler = argv =>

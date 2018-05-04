@@ -50,7 +50,7 @@ describe('validate schema', () => {
     expect(
       validateСonfig({
         ...resolveConfigOrigin,
-        rootPath: '/my-app'
+        rootPath: 'my-app'
       })
     ).toBeTruthy()
   })

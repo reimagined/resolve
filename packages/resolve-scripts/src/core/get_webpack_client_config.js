@@ -4,8 +4,6 @@ import webpack from 'webpack'
 import getModulesDirs from './get_modules_dirs'
 import getWebpackResolveAliasPlugin from './get_webpack_resolve_alias_plugin'
 
-const babelConfig = require('../../configs/babelrc.json')
-
 export default ({ resolveConfig, deployOptions, env }) => {
   const clientIndexPath = resolveConfig.index
   const clientDistDir = path.resolve(
@@ -35,8 +33,7 @@ export default ({ resolveConfig, deployOptions, env }) => {
           test: /\.js$/,
           loaders: [
             {
-              loader: 'babel-loader',
-              query: babelConfig
+              loader: 'babel-loader'
             }
           ],
           exclude: getModulesDirs()

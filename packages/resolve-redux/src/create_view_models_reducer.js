@@ -4,7 +4,7 @@ import {
   PROVIDE_VIEW_MODELS,
   MERGE
 } from './action_types'
-import { getKey } from './util'
+import { getKey } from './utils'
 
 export function subscribeHandler(
   { subscribers, viewModels },

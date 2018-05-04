@@ -40,3 +40,5 @@ A view model facade supports the following functions to send queries to a read m
 
 ### Example
 See `examples/top-list` example
+
+![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-resolve-query-readme?pixel)

@@ -30,3 +30,5 @@ Adapters for event-store:
 * 🛢 Storage adapters specifying where to store events:
     * [resolve-storage-mongo](storage-adapters/resolve-storage-mongo)
     * [resolve-storage-lite](storage-adapters/resolve-storage-lite)
+
+![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-readme?pixel)
