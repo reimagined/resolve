@@ -14,7 +14,14 @@ export default (authReq, authRes, next) => ({
       // eslint-disable-next-line
       console.warn(error)
       res.statusCode = 302
-      res.setHeader('Location', getRootableUrl(options.failureRedirect))
+      res.setHeader(
+        'Location',
+        getRootableUrl(
+          typeof options.failureRedirect === 'function'
+            ? options.failureRedirect(error)
+            : options.failureRedirect
+        )
+      )
       res.setHeader('Content-Length', '0')
       res.end()
     } else {
@@ -33,6 +40,23 @@ export default (authReq, authRes, next) => ({
     next()
   },
   onError: (options, err) => {
-    next(err)
+    const res = authRes.expressRes
+    if (options.errorRedirect) {
+      // eslint-disable-next-line
+      console.warn(err)
+      res.statusCode = 302
+      res.setHeader(
+        'Location',
+        getRootableUrl(
+          typeof options.errorRedirect === 'function'
+            ? options.errorRedirect(err)
+            : options.errorRedirect
+        )
+      )
+      res.setHeader('Content-Length', '0')
+      res.end()
+    } else {
+      next(err)
+    }
   }
 })
