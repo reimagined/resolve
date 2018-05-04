@@ -2,8 +2,7 @@ import fs from 'fs'
 import respawn from 'respawn'
 import webpack from 'webpack'
 
-import getWebpackClientConfig from './get_webpack_client_config'
-import getWebpackServerConfig from './get_webpack_server_config'
+import getWebpackConfigs from './get_webpack_configs'
 import showBuildInfo from './show_build_info'
 import setup from './setup'
 import getMockServer from './get_mock_server'
@@ -14,7 +13,7 @@ export default (argv, defaults = {}) => {
 
   Object.assign(env, Object.assign(defaults, env))
 
-  const { resolveConfig, deployOptions } = setup(argv, env)
+  const { resolveConfig, deployOptions, resolveBuildConfig } = setup(argv, env)
 
   if (argv.printConfig) {
     // eslint-disable-next-line
@@ -33,18 +32,22 @@ export default (argv, defaults = {}) => {
 
   assignConfigPaths(resolveConfig)
 
-  const webpackClientConfig = getWebpackClientConfig({
+  const [
+    webpackClientConfig,
+    webpackServerConfig,
+    ...otherWebpackConfigs
+  ] = getWebpackConfigs({
     resolveConfig,
     deployOptions,
-    env
-  })
-  const webpackServerConfig = getWebpackServerConfig({
-    resolveConfig,
-    deployOptions,
-    env
+    env,
+    resolveBuildConfig
   })
 
-  const compiler = webpack([webpackClientConfig, webpackServerConfig])
+  const compiler = webpack([
+    webpackClientConfig,
+    webpackServerConfig,
+    ...otherWebpackConfigs
+  ])
 
   const serverPath = `${webpackServerConfig.output.path}/${
     webpackServerConfig.output.filename

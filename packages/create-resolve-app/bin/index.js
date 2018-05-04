@@ -276,7 +276,7 @@ if (unknownOptions && unknownOptions.length) {
     log('    Starts the test runner.')
 
     log()
-    log(chalk.cyan(`  ${displayCommand()} test:e2e`))
+    log(chalk.cyan(`  ${displayCommand()} test:functional`))
     log('    Starts the functionality test runner.')
 
     log()

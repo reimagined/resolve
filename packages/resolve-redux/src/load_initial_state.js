@@ -1,8 +1,14 @@
-import { getRootableUrl } from './util'
+import { getRootableUrl } from './utils'
 
-export default async function loadInitialState(viewModelName, aggregateId) {
+const loadInitialState = async (
+  { origin, rootPath },
+  viewModelName,
+  aggregateId
+) => {
   const response = await fetch(
     getRootableUrl(
+      origin,
+      rootPath,
       `/api/query/${viewModelName}?aggregateIds${
         aggregateId === '*' ? '' : '[]'
       }=${aggregateId}`
@@ -19,3 +25,5 @@ export default async function loadInitialState(viewModelName, aggregateId) {
 
   return await response.json()
 }
+
+export default loadInitialState

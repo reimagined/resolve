@@ -5,8 +5,6 @@ import nodeExternals from 'webpack-node-externals'
 import getModulesDirs from './get_modules_dirs'
 import getWebpackResolveAliasPlugin from './get_webpack_resolve_alias_plugin'
 
-const babelConfig = require('../../configs/babelrc.json')
-
 export default ({ resolveConfig, deployOptions, env }) => {
   const serverIndexPath = path.resolve(__dirname, '../runtime/server/index.js')
 
@@ -43,7 +41,6 @@ export default ({ resolveConfig, deployOptions, env }) => {
             {
               loader: 'babel-loader',
               query: {
-                ...babelConfig,
                 env: {
                   development: {
                     plugins: ['babel-plugin-object-source']

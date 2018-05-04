@@ -14,6 +14,7 @@ import getRootableUrl from './utils/get_rootable_url'
 import Routes from '../client/components/Routes'
 
 const staticPath = $resolve.staticPath
+const rootPath = $resolve.rootPath
 const jwtCookieName = $resolve.jwtCookie.name
 const routes = require($resolve.routes)
 
@@ -29,12 +30,14 @@ const serverSideRendering = (req, res) => {
     Object.assign(jwt, jsonwebtoken.decode(req.cookies[jwtCookieName]))
   } catch (e) {}
 
-  const store = createStore(
-    {
+  const store = createStore({
+    initialState: {
       jwt
     },
-    history
-  )
+    history,
+    origin: req.headers.origin,
+    rootPath
+  })
 
   const sheet = new ServerStyleSheet()
   const markup = ReactDOM.renderToStaticMarkup(

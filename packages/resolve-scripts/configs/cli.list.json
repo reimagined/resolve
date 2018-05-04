@@ -47,6 +47,10 @@
     "describe": "Path to resolve config",
     "type": "string"
   },
+  "buildConfig": {
+    "describe": "Path to resolve build config",
+    "type": "string"
+  },
   "rootPath": {
     "describe": "Application's root path",
     "type": "string"

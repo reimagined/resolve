@@ -27,7 +27,7 @@ const extractReadModelProps = props =>
 const extractReadModelValues = props =>
   readModelPropsNames.map(key => props[key])
 
-export default (
+const connectReadModel = (
   mapStateToProps,
   mapDispatchToProps,
   mergeProps,
@@ -49,11 +49,11 @@ export default (
       if (compareReadModelProps(readModelProps, this)) return
 
       this.context.store.dispatch(
-        actions.unsubscribeReadmodel(this.readModelName, this.resolverName)
+        actions.unsubscribeReadModel(this.readModelName, this.resolverName)
       )
 
       this.context.store.dispatch(
-        actions.subscribeReadmodel(...extractReadModelValues(readModelProps))
+        actions.subscribeReadModel(...extractReadModelValues(readModelProps))
       )
 
       Object.assign(this, readModelProps)
@@ -65,7 +65,7 @@ export default (
       )
 
       this.context.store.dispatch(
-        actions.subscribeReadmodel(...extractReadModelValues(readModelProps))
+        actions.subscribeReadModel(...extractReadModelValues(readModelProps))
       )
 
       Object.assign(this, readModelProps)
@@ -73,7 +73,7 @@ export default (
 
     componentWillUnmount() {
       this.context.store.dispatch(
-        actions.unsubscribeReadmodel(this.readModelName, this.resolverName)
+        actions.unsubscribeReadModel(this.readModelName, this.resolverName)
       )
     }
 
@@ -88,3 +88,5 @@ export default (
 
   return ReadModelConnector
 }
+
+export default connectReadModel

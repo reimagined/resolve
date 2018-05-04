@@ -22,7 +22,7 @@ A JavaScript framework for **CQRS**, **Domain-Driven Design** and **Event Sourci
     * [Examples](#examples)
 * **[📚 Documentation](#documentation)**
     * [Compatibility](#compatibility)
-    * [Bacic Concepts](#basic-concepts)
+    * [Basic Concepts](#basic-concepts)
 * **[📢 Get in Touch](#get-in-touch)**
 
 ## <a name="why-resolve">**🏗️ Why reSolve**</a>
@@ -106,10 +106,6 @@ The created application is accessible using the http://localhost:3000/ and `http
 
 The `create-resolve-app` can is capable of creating the following apps:
 
-* [**auth**](https://github.com/reimagined/resolve/tree/master/examples/auth)
-
-    This example demonstrates how to add an authorization to an application using the [resolve-auth package](https://github.com/reimagined/resolve/blob/master/packages/resolve-auth/README.md).
-
 * [**hacker-news**](https://github.com/reimagined/resolve/tree/master/examples/hacker-news)
 
     This example demonstrates a Hacker News application similar to [YCombinator Hacker News](https://news.ycombinator.com/). The app's creation process is detailed in the [Hacker News Tutorial](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/Hacker%20News%20Tutorial.md).
@@ -129,6 +125,10 @@ The `create-resolve-app` can is capable of creating the following apps:
 * [**top-list**](https://github.com/reimagined/resolve/tree/master/examples/top-list)
 
     This example demonstrates how to update the application state on external events unrelated to user actions.
+
+* [**with-authentication**](https://github.com/reimagined/resolve/tree/master/examples/with-authentication)
+
+    This example demonstrates how to add an authentication to an application using the [resolve-auth package](https://github.com/reimagined/resolve/blob/master/packages/resolve-auth/README.md).
 
 * [**with-styled-components**](https://github.com/reimagined/resolve/tree/master/examples/with-styled-components)
 
@@ -218,5 +218,5 @@ Feel free to contact us if you have any questions!
 <br/>
 <br/>
 <p align="center">reSolve is developed by</p>
-<p align="center"><a href="https://devexpress.com">💛Developer Express Inc.💛</a></p>
+<p align="center"><a href="https://devexpress.com">Developer Express Inc.</a></p>
 <p align="center"><img src="https://user-images.githubusercontent.com/19663260/38686793-dd31fb22-3e7d-11e8-8f26-33606ad82a16.png"></p>

@@ -7,7 +7,7 @@ import getAggregateActions from './get_aggregate_actions'
 
 import actions from './actions'
 
-export default (
+const connectViewModel = (
   mapStateToProps,
   mapDispatchToProps,
   mergeProps,
@@ -31,7 +31,7 @@ export default (
       this.aggregateId = aggregateId
 
       this.context.store.dispatch(
-        actions.subscribeViewmodel(this.viewModelName, this.aggregateId)
+        actions.subscribeViewModel(this.viewModelName, this.aggregateId)
       )
     }
 
@@ -46,20 +46,20 @@ export default (
         aggregateId !== this.aggregateId
       ) {
         this.context.store.dispatch(
-          actions.unsubscribeViewmodel(this.viewModelName, this.aggregateId)
+          actions.unsubscribeViewModel(this.viewModelName, this.aggregateId)
         )
         this.viewModelName = viewModelName
         this.aggregateId = aggregateId
 
         this.context.store.dispatch(
-          actions.subscribeViewmodel(this.viewModelName, this.aggregateId)
+          actions.subscribeViewModel(this.viewModelName, this.aggregateId)
         )
       }
     }
 
     componentWillUnmount() {
       this.context.store.dispatch(
-        actions.unsubscribeViewmodel(this.viewModelName, this.aggregateId)
+        actions.unsubscribeViewModel(this.viewModelName, this.aggregateId)
       )
     }
 
@@ -87,3 +87,5 @@ export default (
 
   return ViewModelConnector
 }
+
+export default connectViewModel

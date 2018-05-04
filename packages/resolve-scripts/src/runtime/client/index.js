@@ -9,14 +9,22 @@ import createStore from './store/create_store'
 import deserializeInitialState from './store/deserialize_initial_state'
 
 const routes = require($resolve.routes)
-
-const history = createHistory({
-  basename: process.env.ROOT_PATH
-})
+const rootPath = $resolve.rootPath
 
 const initialState = deserializeInitialState(window.__INITIAL_STATE__)
 
-const store = createStore(initialState, history)
+const origin = window.location.origin
+
+const history = createHistory({
+  basename: rootPath
+})
+
+const store = createStore({
+  initialState,
+  history,
+  origin,
+  rootPath
+})
 
 render(
   <Provider store={store}>
@@ -24,5 +32,5 @@ render(
       <Routes routes={routes} />
     </ConnectedRouter>
   </Provider>,
-  document.getElementById('resolve-application-container')
+  document.getElementsByClassName('app-container')[0]
 )
