@@ -5,7 +5,7 @@
 
 A JavaScript framework for **CQRS**, **Domain-Driven Design** and **Event Sourcing** with support for **React** and **Redux**. **reSolve** provides a new way to describe an app's core logic and fully separate it from auxiliary code.
 
-## <a name="installation">Installation</a>
+### <a name="installation">Installation</a>
 
 The [create-resolve-app](packages/create-resolve-app) package is used to create a **reSolve**-based application. You can use it to get one of the examples, or create an empty application. By default, `create-resolve-app` generates an empty [Hello World](https://github.com/reimagined/resolve/tree/master/examples/hello-world) application.
 
@@ -23,11 +23,9 @@ You can get a sample app using the `create-resolve-app` tool with the `-e` flag 
 
 The following tools are used to get a sample **reSolve** application:
 
-* [npx](https://www.npmjs.com/package/npx)
-
-    ```sh
-    npx create-resolve-app todo-example -e todo
-    ```
+```sh
+npx create-resolve-app todo-example -e todo
+```
 
 The `create-resolve-app` can is capable of creating the following apps:
 
@@ -39,35 +37,17 @@ The `create-resolve-app` can is capable of creating the following apps:
 * [**with-authentication**](https://github.com/reimagined/resolve/tree/master/examples/with-authentication)
 * [**with-styled-components**](https://github.com/reimagined/resolve/tree/master/examples/with-styled-components)
 
-## <a name="documentation">**📚 Documentation**</a>
-
-### <a name="compatibility">Compatibility</a>
-
-You can develop and run **reSolve** applications on **Linux**, **Mac** and **Windows** operating systems. It is also possible to integrate **reSolve** with the **React Native**, but this approach is currently experimental.
-
-The minimum supported **NodeJS** version is **6.0.0**.
-
-**reSolve** supports [**npx**](https://www.npmjs.com/package/npx), [**yarn**](https://yarnpkg.com/lang/en/), and [**npm**](https://www.npmjs.com/) package managers.
-
-
-
-## <a name="get-in-touch">**📢 Get in Touch**</a>
+### <a name="get-in-touch">**Get in Touch**</a>
 
 Feel free to contact us if you have any questions!
 
-✉️ We are glad to see your e-mails sent to **reimagined@devexpress.com**.
-
-💬 Follow us on [**Twitter**](https://twitter.com/resolvejs). We post interesting arcticles, announcements, post polls about **reSolve** development and talk about the modern web technologies!
-
-💻 We also have a [**Facebook**](https://www.facebook.com/resolvejs/) page, join us!
-
-📃 You can find our articles on [**Medium**](https://medium.com/resolvejs)
-
-❓ You are welcome to post any questions or suggestions in [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
-
-🔧 Feel yourself capable of improving **reSolve**? Become one of our [**contributors**](https://github.com/reimagined/resolve/pulls)! Look through our [**Contrubutors Guide**](https://github.com/reimagined/resolve/blob/master/docs/Contributors%20Guide.md) and make a great Pull Request.
-
-⭐️ Remember to star our **GitHub** repository if you like **reSolve**!
+* We are glad to see your e-mails sent to **reimagined@devexpress.com**.
+* Follow us on [**Twitter**](https://twitter.com/resolvejs). We post interesting arcticles, announcements, post polls about **reSolve** development and talk about the modern web technologies!
+* We also have a [**Facebook**](https://www.facebook.com/resolvejs/) page, join us!
+* You can find our articles on [**Medium**](https://medium.com/resolvejs)
+* You are welcome to post any questions or suggestions in [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
+* Feel yourself capable of improving **reSolve**? Become one of our [**contributors**](https://github.com/reimagined/resolve/pulls)! Look through our [**Contrubutors Guide**](https://github.com/reimagined/resolve/blob/master/docs/Contributors%20Guide.md) and make a great Pull Request.
+* Remember to star our **GitHub** repository if you like **reSolve**!
 
 <br/>
 <br/>
