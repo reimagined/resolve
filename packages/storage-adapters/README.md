@@ -11,3 +11,5 @@ Available adapters:
 	Used to store events in MongoDB.
 * [resolve-storage-lite](../storage-adapters/resolve-storage-lite)  
 	Used to store events in a local file.
+
+![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-resolve-storage-adapters-readme?pixel)

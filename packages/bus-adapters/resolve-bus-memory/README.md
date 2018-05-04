@@ -10,3 +10,5 @@ import createAdapter from 'resolve-bus-memory'
 
 const adapter = createAdapter()
 ```
+
+![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-resolve-bus-memory-readme?pixel)

@@ -81,6 +81,7 @@ const unknownOptions =
   options._unknown && options._unknown.filter(x => x.startsWith('-'))
 
 const resolveVersion = require('../package.json').version
+const analyticsUrlBase = 'https://ga-beacon.appspot.com/UA-118635726-2'
 
 if (unknownOptions && unknownOptions.length) {
   const options = unknownOptions.join()
@@ -299,6 +300,15 @@ if (unknownOptions && unknownOptions.length) {
     log('Happy coding!')
   }
 
+  const sendAnalytics = () =>
+    new Promise((resolve, reject) => {
+      const analyticsUrl = `${analyticsUrlBase}/${example}/${resolveVersion}`
+      https.get(analyticsUrl, function(response) {
+        response.on('end', resolve)
+        response.on('error', reject)
+      })
+    })
+
   startCreatingApp()
     .then(checkAppName)
     .then(() => downloadRepo().catch(printIfDownloadFail))
@@ -306,5 +316,6 @@ if (unknownOptions && unknownOptions.length) {
     .then(patchPackageJson)
     .then(install)
     .then(printFinishOutput)
+    .then(() => sendAnalytics().catch(() => null))
     .catch(e => log(chalk.red(e)))
 }
