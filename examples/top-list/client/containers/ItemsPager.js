@@ -13,6 +13,7 @@ const pager = ({ count, page, setPage, limit }) => {
   for (let i = 0; i < length; i++) {
     ;(i >= rowLength ? secondRow : firstRow).push(
       <ToggleButton
+        className="page-button"
         onClick={i !== page ? setPage.bind(null, i) : undefined}
         value={i}
         key={`BT${i}`}

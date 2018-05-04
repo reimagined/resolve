@@ -36,7 +36,7 @@ test('should be reactive', async t => {
       )
 
       await loopAsync(INSPECT_MATCH_TIMES, async () => {
-        const actualRatings = (await Selector('section').innerText)
+        const actualRatings = (await Selector('.example-list-votes').innerText)
           .split(/\n/g)
           .map(row => row.trim())
           .reverse()
@@ -56,7 +56,7 @@ test('should be reactive', async t => {
       })
 
       await t.click(
-        await Selector('button').nth(
+        await Selector('.page-button').nth(
           forwardDirection ? pageIdx + 1 : pageIdx - 1
         )
       )
