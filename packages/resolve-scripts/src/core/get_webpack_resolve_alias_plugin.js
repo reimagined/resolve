@@ -3,6 +3,7 @@ import flat from 'flat'
 
 const getWebpackResolveAliasPlugin = ({ resolveConfig, deployOptions }) => {
   const defineObject = {}
+
   for (const key of Object.keys(deployOptions)) {
     defineObject[`$resolve.${key}`] = JSON.stringify(deployOptions[key])
   }

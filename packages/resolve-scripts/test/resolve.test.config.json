@@ -3,20 +3,24 @@
   "viewModels": "common/customViewModels",
   "readModels": "common/customReadModels",
   "storage": {
-    "adapter": "custom-storage"
+    "adapter": "custom-storage",
+    "options": {}
   },
   "bus": {
-    "adapter": "custom-bus"
+    "adapter": "custom-bus",
+    "options": {}
   },
   "env": {
     "development": {
       "bus": {
-        "adapter": "custom-development-bus"
+        "adapter": "custom-development-bus",
+        "options": {}
       }
     },
     "production": {
       "subscribe": {
-        "adapter": "custom-subscribe-adapter"
+        "adapter": "custom-subscribe-adapter",
+        "options": {}
       }
     }
   }
