@@ -1,10 +1,8 @@
 import path from 'path'
-import webpack from 'webpack'
 
 import getModulesDirs from './get_modules_dirs'
+import getWebpackEnvPlugin from './get_webpack_env_plugin'
 import getWebpackResolveAliasPlugin from './get_webpack_resolve_alias_plugin'
-
-const babelConfig = require('../../configs/babelrc.json')
 
 export default ({ resolveConfig, deployOptions, env }) => {
   const clientIndexPath = resolveConfig.index
@@ -35,19 +33,15 @@ export default ({ resolveConfig, deployOptions, env }) => {
           test: /\.js$/,
           loaders: [
             {
-              loader: 'babel-loader',
-              query: babelConfig
+              loader: 'babel-loader?cacheDirectory=true'
             }
           ],
-          exclude: getModulesDirs()
+          exclude: [...getModulesDirs(), path.resolve(__dirname, '../../dist')]
         }
       ]
     },
     plugins: [
-      new webpack.DefinePlugin({
-        'process.env.NODE_ENV': `"${env.NODE_ENV}"`,
-        'process.env': 'window.__PROCESS_ENV__'
-      }),
+      getWebpackEnvPlugin({ resolveConfig, deployOptions, env }),
       getWebpackResolveAliasPlugin({ resolveConfig, deployOptions })
     ]
   }

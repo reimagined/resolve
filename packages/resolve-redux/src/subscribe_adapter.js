@@ -1,16 +1,12 @@
 import socketIOClient from 'socket.io-client'
 
-import { getRootableUrl, makeLateResolvingPromise } from './util'
+import { getRootableUrl, makeLateResolvingPromise } from './utils'
 
-export default function subscribeAdapter() {
+const subscribeAdapter = ({ origin, rootPath }) => {
   let onEvent, onDisconnect
-  const origin =
-    typeof navigator !== 'undefined' && navigator.product === 'ReactNative'
-      ? process.env['ROOT_PATH']
-      : window.location.origin
+
   const socket = socketIOClient(origin, {
-    path: getRootableUrl('/socket/'),
-    transports: ['websocket']
+    path: getRootableUrl('', rootPath, '/socket')
   })
 
   let latePromise = makeLateResolvingPromise()
@@ -46,3 +42,5 @@ export default function subscribeAdapter() {
     }
   }
 }
+
+export default subscribeAdapter

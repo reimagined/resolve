@@ -1,0 +1,35 @@
+nav {
+  padding: 5px 10px;
+}
+
+.example-wrapper {
+  max-width: 600px;
+  margin: 0 auto;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.example-titul {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.example-list {
+  height: 45px;
+}
+
+.example-list-place {
+  float: left;
+  width: 40px;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.example-list-name {
+  float: left;
+}
+
+.example-list-votes {
+  float: right;
+  font-size: 16px;
+}

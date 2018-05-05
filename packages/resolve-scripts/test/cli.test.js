@@ -193,6 +193,48 @@ describe('resolve-scripts build', () => {
     })
   })
 
+  describe('argv.rootPath', () => {
+    test('resolve-scripts build --root-path=test', async () => {
+      const json = await exec('resolve-scripts build --root-path=test')
+
+      expect(json).toHaveProperty('rootPath', 'test')
+    })
+
+    test('resolve-scripts build --root-path=😉', async () => {
+      const json = await exec('resolve-scripts build --root-path=😉')
+
+      expect(json).toHaveProperty('rootPath', encodeURI('😉'))
+    })
+
+    test('resolve-scripts build --root-path=/test (fail)', async () => {
+      expect.assertions(1)
+      await expect(
+        exec('resolve-scripts build --root-path=/test')
+      ).rejects.toThrow()
+    })
+
+    test('resolve-scripts build --root-path=test/ (fail)', async () => {
+      expect.assertions(1)
+      await expect(
+        exec('resolve-scripts build --root-path=test/')
+      ).rejects.toThrow()
+    })
+
+    test('resolve-scripts build --root-path=http://test (fail)', async () => {
+      expect.assertions(1)
+      await expect(
+        exec('resolve-scripts build --root-path=http://test')
+      ).rejects.toThrow()
+    })
+
+    test('resolve-scripts build --root-path=https://test (fail)', async () => {
+      expect.assertions(1)
+      await expect(
+        exec('resolve-scripts build --root-path=https://test')
+      ).rejects.toThrow()
+    })
+  })
+
   describe('argv.config', () => {
     test('resolve-scripts build --config=resolve.test.config.json', async () => {
       const json = await exec(
@@ -307,6 +349,32 @@ describe('resolve-scripts dev', () => {
       await expect(
         exec('resolve-scripts dev --config=NONEXISTENT_FILE')
       ).rejects.toThrow()
+    })
+  })
+
+  describe('Inlines env vars in a string works correctly', () => {
+    test('resolve-scripts dev --config=resolve.test.env.config.json', async () => {
+      const json = await exec(
+        `resolve-scripts dev --config=${path.resolve(
+          __dirname,
+          'resolve.test.env.config.json'
+        )}`,
+        {
+          PORT: 1234,
+          HOST: 'resolve.resolve',
+          STORAGE_ADAPTER: 'memory',
+          STORAGE_OPTIONS: JSON.stringify({ a: 5, b: 'xyz' })
+        }
+      )
+
+      expect(json).toMatchObject({
+        port: 1234,
+        host: 'resolve.resolve',
+        storage: {
+          adapter: 'resolve-memory',
+          options: { a: 5, b: 'xyz' }
+        }
+      })
     })
   })
 })

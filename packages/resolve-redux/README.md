@@ -71,13 +71,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(Component);
     *  `aggregateName`
     *  `payload`
 
-  * #### `subscribeViewmodel`
+  * #### `subscribeViewModel`
 
     Subscribes to new server-side events. This function takes two arguments:
      *  `eventTypes` - an array of event types
     *  `aggregateId` - an aggregate id
 
- * #### `unsubscribeViewmodel`
+ * #### `unsubscribeViewModel`
 
     Unsubscribes from provided server-side events. This function takes two arguments:
     *  `eventTypes` - an array of event types
@@ -156,3 +156,5 @@ const mapDispatchToProps = dispatch => bindActionCreators(actions, dispatch)
 export default connectViewModel(mapStateToProps, mapDispatchToProps)(App)
 
 ```
+
+![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-resolve-redux-readme?pixel)

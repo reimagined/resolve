@@ -1,3 +1,5 @@
-export default function isLoadingViewModel(store, viewModelName, aggregateId) {
+const isLoadingViewModel = (store, viewModelName, aggregateId) => {
   return store.getState.isLoadingViewModel(viewModelName, aggregateId)
 }
+
+export default isLoadingViewModel

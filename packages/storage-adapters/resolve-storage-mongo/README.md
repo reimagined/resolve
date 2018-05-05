@@ -16,3 +16,5 @@ const adapter = createAdapter({
     collection: 'events'
 });
 ```
+
+![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-resolve-storage-mongo-readme?pixel)

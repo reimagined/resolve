@@ -50,54 +50,10 @@ pipeline {
             }
         }
 
-        stage('Examples [ todo ] Functional Tests') {
+        stage('Clean before [ create-resolve-app ] testing') {
             steps {
                 script {
-                    sh """
-                        export YARN_CACHE_FOLDER=/yarn_cache
-                        /init.sh
-                        cd examples/todo
-                        yarn test:functional --browser=path:/chromium
-                    """
-                }
-            }
-        }
-
-        stage('Examples [ todo-two-levels ] Functional Tests') {
-            steps {
-                script {
-                    sh """
-                        export YARN_CACHE_FOLDER=/yarn_cache
-                        /init.sh
-                        cd examples/todo-two-levels
-                        yarn test:functional --browser=path:/chromium
-                    """
-                }
-            }
-        }
-
-        stage('Examples [ top-list ] Functional Tests') {
-            steps {
-                script {
-                    sh """
-                        export YARN_CACHE_FOLDER=/yarn_cache
-                        /init.sh
-                        cd examples/top-list
-                        yarn test:functional --browser=path:/chromium
-                    """
-                }
-            }
-        }
-
-        stage('Examples [ hacker-news ] Functional Tests') {
-            steps {
-                script {
-                    sh """
-                        export YARN_CACHE_FOLDER=/yarn_cache
-                        /init.sh
-                        cd examples/hacker-news
-                        JWT_SECRET="secret" yarn test:functional --browser=path:/chromium
-                    """
+                    sh 'rm -rf ./*'
                 }
             }
         }
@@ -146,7 +102,61 @@ pipeline {
                         /init.sh
                         yarn global add create-resolve-app@\$(cat /lerna_version)
                         create-resolve-app twolevelstodo -e todo-two-levels -c \$(cat /last_commit)
-                        cd ./todolist
+                        cd ./twolevelstodo
+                        cat ./package.json
+
+                        yarn test
+                        yarn test:functional --browser=path:/chromium
+                    """
+                }
+            }
+        }
+
+        stage('Create-resolve-app [ hacker-news ] Functional Tests') {
+            steps {
+                script {
+                    sh """
+                        export YARN_CACHE_FOLDER=/yarn_cache
+                        /init.sh
+                        yarn global add create-resolve-app@\$(cat /lerna_version)
+                        create-resolve-app hn -e hacker-news -c \$(cat /last_commit)
+                        cd ./hn
+                        cat ./package.json
+
+                        yarn test
+                        yarn test:functional --browser=path:/chromium
+                    """
+                }
+            }
+        }
+
+        stage('Create-resolve-app [ top-list ] Functional Tests') {
+            steps {
+                script {
+                    sh """
+                        export YARN_CACHE_FOLDER=/yarn_cache
+                        /init.sh
+                        yarn global add create-resolve-app@\$(cat /lerna_version)
+                        create-resolve-app toplist -e top-list -c \$(cat /last_commit)
+                        cd ./toplist
+                        cat ./package.json
+
+                        yarn test
+                        yarn test:functional --browser=path:/chromium
+                    """
+                }
+            }
+        }
+
+        stage('Create-resolve-app [ with-postcss-modules ] Functional Tests') {
+            steps {
+                script {
+                    sh """
+                        export YARN_CACHE_FOLDER=/yarn_cache
+                        /init.sh
+                        yarn global add create-resolve-app@\$(cat /lerna_version)
+                        create-resolve-app with-postcss-modules -e with-postcss-modules -c \$(cat /last_commit)
+                        cd ./with-postcss-modules
                         cat ./package.json
 
                         yarn test

@@ -29,7 +29,8 @@ describe('validate schema', () => {
       validateСonfig({
         ...resolveConfigOrigin,
         storage: {
-          adapter: 'resolve-bus-rabbitmq'
+          adapter: 'resolve-bus-rabbitmq',
+          options: {}
         }
       })
     ).toBeTruthy()
@@ -40,7 +41,8 @@ describe('validate schema', () => {
       validateСonfig({
         ...resolveConfigOrigin,
         subscribe: {
-          adapter: 'resolve-subscribe-mqtt'
+          adapter: 'resolve-subscribe-mqtt',
+          options: {}
         }
       })
     ).toBeTruthy()
@@ -50,7 +52,7 @@ describe('validate schema', () => {
     expect(
       validateСonfig({
         ...resolveConfigOrigin,
-        rootPath: '/my-app'
+        rootPath: 'my-app'
       })
     ).toBeTruthy()
   })
@@ -146,12 +148,14 @@ describe('validate schema', () => {
       validateСonfig({
         ...resolveConfigOrigin,
         subscribe: {
-          adapter: 'resolve-subscribe-socket-io'
+          adapter: 'resolve-subscribe-socket-io',
+          options: {}
         },
         env: {
           production: {
             subscribe: {
-              adapter: 'resolve-subscribe-mqtt'
+              adapter: 'resolve-subscribe-mqtt',
+              options: {}
             }
           }
         }
@@ -180,7 +184,8 @@ describe('validate schema (fail)', () => {
       validateСonfig({
         ...resolveConfigOrigin,
         storage: {
-          adapter: 123
+          adapter: 123,
+          options: {}
         }
       })
     ).toThrow()
@@ -191,7 +196,8 @@ describe('validate schema (fail)', () => {
       validateСonfig({
         ...resolveConfigOrigin,
         subscribe: {
-          adapter: 123
+          adapter: 123,
+          options: {}
         }
       })
     ).toThrow()
