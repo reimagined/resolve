@@ -1,6 +1,6 @@
 {
   "name": "top-list",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "private": true,
   "scripts": {
     "build": "resolve-scripts build",
@@ -20,8 +20,8 @@
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "redux": "^3.7.2",
-    "resolve-redux": "0.10.0",
-    "resolve-scripts": "0.10.0",
+    "resolve-redux": "0.10.1",
+    "resolve-scripts": "0.10.1",
     "uuid": "^3.2.1"
   },
   "devDependencies": {
