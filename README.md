@@ -30,7 +30,6 @@ npx create-resolve-app todo-example -e todo
 The `create-resolve-app -h` command lists all available examples:
 
 
-* [**hacker-news**](https://github.com/reimagined/resolve/tree/master/examples/hacker-news)
 * [**hello-world**](https://github.com/reimagined/resolve/tree/master/examples/hello-world)
 * [**todo**](https://github.com/reimagined/resolve/tree/master/examples/todo)
 * [**todo-two-levels**](https://github.com/reimagined/resolve/tree/master/examples/todo-two-levels)
@@ -38,6 +37,7 @@ The `create-resolve-app -h` command lists all available examples:
 * [**with-authentication**](https://github.com/reimagined/resolve/tree/master/examples/with-authentication)
 * [**with-postcss-modules**](https://github.com/reimagined/resolve/tree/master/examples/with-postcss-modules)
 * [**with-styled-components**](https://github.com/reimagined/resolve/tree/master/examples/with-styled-components)
+* [**hacker-news**](https://github.com/reimagined/resolve/tree/master/examples/hacker-news)
 
 ## Get in Touch
 
