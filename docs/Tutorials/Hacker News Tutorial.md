@@ -17,7 +17,6 @@ This tutorial shows you how to create a **Hacker News** application and consists
 * [Adding Stories](#adding-stories)
   * [Write Side](#write-side-1)
   * [Read Side](#read-side-1)
-  * [GraphQL](#graphql)
   * [Stories View](#stories-view)
   * [View Model](#view-model)
   * [Story View](#story-view)
@@ -25,7 +24,6 @@ This tutorial shows you how to create a **Hacker News** application and consists
 * [Adding Comments](#adding-comments)
   * [Write Side](#write-side-2)
   * [Read Side](#read-side-2)
-  * [GraphQL](#graphql-1)
   * [View Model](#view-model-1)
   * [Story View Extension](#story-view-extension)
   * [Comments View](#comments-view)
@@ -40,7 +38,6 @@ If you are new to these concepts, refer to the following links to learn the basi
 * [Command/Query Responsibility Segregation and Domain-Driven Design](http://cqrs.nu/)
 * [React](https://reactjs.org/)
 * [Redux](http://redux.js.org/docs/introduction/)
-* [GraphQL](http://graphql.org/learn/)
 
 You can also read the following articles for more information:
 
@@ -58,25 +55,17 @@ You can also read the following articles for more information:
 
 Use the [create-resolve-app](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app) CLI tool to create a new reSolve project.
 
-Install create-resolve-app globally.
+Create an empty reSolve project using `create-resolve-app` and run the application in the development mode.
 
 ```
-npm i -g create-resolve-app
-```
-
-Create an empty reSolve project and run the application in the development mode.
-
-```
-create-resolve-app hn-resolve
+npx create-resolve-app hn-resolve
 cd hn-resolve
 npm run dev
 ```
 
 The application opens in the browser at [http://localhost:3000/](http://localhost:3000/).
 
-After the installation is completed, your project has the default structure:
-
-![Project structure](https://user-images.githubusercontent.com/14352827/37818234-8801e944-2e8a-11e8-8d1c-550a84c06dec.png)
+After the installation is completed, your project has the default [structure](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md#%EF%B8%8F-project-structure-overview)
 
 ## Domain Model Analysis
 
@@ -233,52 +222,22 @@ export default {
 
 ```
 
-Describe a schema and implement resolvers to get data using GraphQL:
-
-```js
-// ./common/read-models/graphql/schema.js
-
-export default `
-  type User {
-    id: ID!
-    name: String
-    createdAt: String
-  }
-  type Query {
-    user(id: ID, name: String): User
-  }
-`
-```
-
 Implement resolvers:
 
 ```js
-// ./common/read-models/graphql/resolvers.js
+// ./common/read-models/resolvers.js
 
 export default {
- user: async (store, { id, name }) => {
-    const user = id
-      ? await store.find('Users', { id })
-      : await store.find('Users', { name })
+  user: async (store, { id, name, jwtToken }) => {
+    const user =
+      name != null
+        ? await store.findOne('Users', { name })
+        : id != null
+          ? await store.findOne('Users', { id })
+          : null
 
-    return user.length > 0 ? user[0] : null
+    return user
   }
-}
-```
-
-Export the read model's GraphQL parts from the `graphql` folder root:
-
-```js
-// ./common/read-models/graphql/index.js
-
-import projection from './projection'
-import gqlResolvers from './resolvers'
-import gqlSchema from './schema'
-
-export default {
-  projection,
-  gqlSchema,
-  gqlResolvers
 }
 ```
 
@@ -287,15 +246,21 @@ Update the `read-models` folder export:
 ```js
 // ./common/read-models/index.js
 
-import graphqlReadModel from './graphql'
+import projection from './projection'
+import resolvers from './resolvers'
 
-export default [graphqlReadModel]
+const storiesReadModel = {
+  name: 'default',
+  projection,
+  resolvers
+}
+
+export default [storiesReadModel]
 ```
 
 ### Authentication
 
 After adding a storage for users, create the local authentication strategy and implement the required callbacks.
-
 
 Install `uuid` package:
 ```
@@ -306,143 +271,217 @@ In the `auth/` directory, create `./auth/localStrategy.js` file. `passwordField`
 
 ```js
 // ./auth/localStrategy.js
+import { Strategy } from 'passport-local'
 
-export default {
-  strategy: {
-    usernameField: 'username',
-    passwordField: 'username',
-    successRedirect: null
-  },
-  registerCallback: async ({ resolve, body }, username, password) => {
-    // ...
-  },
-  loginCallback: async ({ resolve, body }, username, password) => {
-    // ...
-  }
-}
-
-```
-
-Implement the `getUserByName` function that uses the `executeQuery` function passed with `registerCallback` and `loginCallback`:
-
-```js
-// ./auth/localStrategy.js
-
-const getUserByName = async (executeQuery, name) => {
-  const { user } = await executeQuery(
-    `query ($name: String!) {
-      user(name: $name) {
-        id,
-        name,
-        createdAt
+const strategyConstructor = options => {
+  return new Strategy(
+    {
+      ...options.strategy,
+      passReqToCallback: true
+    },
+    async (req, username, password, done) => {
+      try {
+        done(null, await options.callback(req, username, password))
+      } catch (error) {
+        done(error)
       }
-    }`,
-    { name: name.trim() }
+    }
   )
-
-  return user
 }
 
-export default {
+const strategyOptions = {
   strategy: {
     usernameField: 'username',
     passwordField: 'username',
     successRedirect: null
-  },
-  registerCallback: async ({ resolve, body }, username, password) => {
-    // ...
-  },
-  loginCallback: async ({ resolve, body }, username, password) => {
-    // ...
   }
 }
-```
 
+const options = [
+  {
+    ...strategyOptions,
+    route: {
+      path: '/register',
+      method: 'POST'
+    },
+    callback: async ({ resolve }, username) => {
+      // ...
+    }
+  }, {
+    ...strategyOptions,
+    route: {
+      path: '/logout',
+      method: 'POST'
+    },
+    callback: async ({ resolve }, username) => {
+      // ...
+    }
+  }
+]
+
+const strategies = options.map(options => ({
+  options,
+  strategyConstructor
+}))
+
+export default strategies
+
+```
 Add the required authentication parameters:
 
 ```js
-// ./auth/constants.js
+// ./resolve.config.json
 
-export const authenticationSecret = 'auth-secret'
-export const cookieName = 'authenticationToken'
-export const cookieMaxAge = 1000 * 60 * 60 * 24 * 365
+{
+    "port": 3000,
+    // ...
+    "auth": {
+        "strategies": "auth/localStrategy.js"
+    },
+    "jwtCookie": {
+        "name": "authenticationToken",
+        "maxAge": 31536000000
+    }
+}
+
 ```
 
-Update the `registerCallback` and `loginCallback` callbacks. Use the `resolve` parameter to access the query and command executors.
+For security purpose it's recommend to store `authenticationSecret` in the environment variable.
+But it's very comfortable to get it hardcoded in `dev` stage. Implement code for this:
 
-Add `failureCallback` function to provide the redirection path in case of a failure:
+```js
+// ./auth/jwtSecret.js
+if (
+  process.env.NODE_ENV === 'production' &&
+  !process.env.hasOwnProperty('JWT_SECRET')
+) {
+  throw new Error(
+    'In production mode you must specify jwt secret key in JWT_SECRET environment variable'
+  )
+}
+
+export default process.env.JWT_SECRET || 'SECRETJWT'
+```
+
+Update `register` and `login` callbacks. Use the `resolve` parameter to access the query and command executors.
+Add `failureRedirect` and `errorRedirect` options to provide the redirection path in case of a failure:
 
 ```js
 // ./auth/localStrategy.js
-
+import { Strategy } from 'passport-local'
+import jwt from 'jsonwebtoken'
+import jwtSecret from './jwtSecret'
 import uuid from 'uuid'
 
-const getUserByName = async (executeQuery, name) => {
-  const { user } = await executeQuery(
-    `query ($name: String!) {
-      user(name: $name) {
-        id,
-        name,
-        createdAt
-      }
-    }`,
-    { name: name.trim() }
-  )
+import { rootDirectory } from '../client/constants'
 
-  return user
-}
-
-export default {
+const strategyOptions = {
   strategy: {
     usernameField: 'username',
     passwordField: 'username',
     successRedirect: null
-  },
-  registerCallback: async ({ resolve, body }, username, password) => {
-    const executeQuery = resolve.queryExecutors.graphql
-
-    const existingUser = await getUserByName(executeQuery, username)
-
-    if (existingUser) {
-      throw new Error('User already exists')
-    }
-
-    const user = {
-      name: username.trim(),
-      id: uuid.v4()
-    }
-
-    await resolve.executeCommand({
-      type: 'createUser',
-      aggregateId: user.id,
-      aggregateName: 'user',
-      payload: user
-    })
-
-    return user
-  },
-  loginCallback: async ({ resolve, body }, username, password) => {
-    const user = await getUserByName(resolve.queryExecutors.graphql, username)
-
-    if (!user) {
-      throw new Error('No such user')
-    }
-
-    return user
-  },
-  failureCallback: (error, redirect, { resolve, body }) => {
-    redirect(`/error?text=${error}`)
   }
 }
+
+const authenticateOptions = {
+  failureRedirect: error => `${rootDirectory}/error?text=${error}`,
+  errorRedirect: error => `${rootDirectory}/error?text=${error}`
+}
+
+const routes = [
+  {
+    path: '/register',
+    method: 'POST',
+    callback: async ({ resolve }, username) => {
+      const { user: existingUser } = await resolve.executeReadModelQuery({
+        modelName: 'default',
+        resolverName: 'user',
+        resolverArgs: { name: username.trim() }
+      })
+
+      if (existingUser) {
+        throw new Error('User already exists')
+      }
+
+      const user = {
+        name: username.trim(),
+        id: uuid.v4()
+      }
+
+      await resolve.executeCommand({
+        type: 'createUser',
+        aggregateId: user.id,
+        aggregateName: 'user',
+        payload: user
+      })
+
+      return jwt.sign(user, jwtSecret)
+    }
+  },
+  {
+    path: '/login',
+    method: 'POST',
+    callback: async ({ resolve }, username) => {
+      const { user } = await resolve.executeReadModelQuery({
+        modelName: 'default',
+        resolverName: 'user',
+        resolverArgs: { name: username.trim() }
+      })
+
+      if (!user) {
+        throw new Error('No such user')
+      }
+
+      return jwt.sign(user, jwtSecret)
+    }
+  },
+  {
+    path: '/logout',
+    method: 'POST',
+    callback: async () => {
+      return jwt.sign({}, jwtSecret)
+    }
+  }
+]
+
+const options = routes.map(({ path, method, callback }) => ({
+  ...strategyOptions,
+  route: {
+    path,
+    method
+  },
+  callback,
+  ...authenticateOptions
+}))
+
+const strategyConstructor = options => {
+  return new Strategy(
+    {
+      ...options.strategy,
+      passReqToCallback: true
+    },
+    async (req, username, password, done) => {
+      try {
+        done(null, await options.callback(req, username, password))
+      } catch (error) {
+        done(error)
+      }
+    }
+  )
+}
+
+const strategies = options.map(options => ({
+  options,
+  strategyConstructor
+}))
+
+export default strategies
+
 ```
 
-Install `jsonwebtoken` package in order to get user from cookies.
+Do not forget to install `jsonwebtoken` package in order to get user from cookies.
 
-```
-npm install --save jsonwebtoken
-```
-
-Add the `me` resolver to pass a user to the client side.
+Add the `me` resolver to pass current logged in user to the client side.
 
 ```js
 // ./commmon/read-models/resolvers.js
