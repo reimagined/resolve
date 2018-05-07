@@ -8,8 +8,6 @@ This example demonstrates how to update application state on external events unr
 npx create-resolve-app top-list-example -e top-list
 ```
 
-<p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-top-list-example.png"></p>
-
 ## What's next?
 
 📑 You can learn more about read-models in [**Read Model**](https://github.com/reimagined/resolve/blob/master/docs/Read%20Model.md) topic.

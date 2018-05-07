@@ -8,8 +8,6 @@ This example demonstrates how to work with view-models in the **all events subsc
 npx create-resolve-app todo-two-levels-example -e todo-two-levels
 ```
 
-<p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-todo-two-levels-example.png"></p>
-
 ## What's next?
 
 📑 Learn more about this case in the [View Model](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md) article.

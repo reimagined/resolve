@@ -12,8 +12,6 @@ npx create-resolve-app my-app
 npx create-resolve-app hello-world-example -e hello-world
 ```
 
-<p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-hello-world-example.png"></p>
-
 ## What's next?
 
 📑 Available scripts, project structure overview, configuration files and much other useful information are in [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md) topic.
