@@ -385,7 +385,7 @@ const strategyOptions = {
 
 const authenticateOptions = {
   failureRedirect: error => `${rootDirectory}/error?text=${error}`,
-  errorRedirect: error => `${rootDirectory}/error?text=${error}`
+  errorRedirect: error => `${rootDirectory}/error?text=${error}` // error page will be described below
 }
 
 const routes = [
@@ -488,86 +488,21 @@ Add the `me` resolver to pass current logged in user to the client side.
 import jwt from 'jsonwebtoken'
 import jwtSecret from './jwtSecret'
 
+const getMe = async jwtToken => {
+  if (!jwtToken) return null
+  const user = await jwt.verify(jwtToken, jwtSecret)
+
+  if (!user.name) {
+    return null
+  }
+
+  return user
+}
+
 export default {
   // user implementation
 
-   me: async (store, _, { jwtToken }) => {
-    if (!jwtToken) {
-      return null
-    }
-    const user = await jwt.verify(
-      jwtToken,
-      jwtSecret
-    )
-    return user
-  }
-}
-```
-
-Update graphql schema
-```js
-// ./common/read-models/graphql/schema.js
-
-export default `
-  type User {
-    id: ID!
-    name: String
-    createdAt: String
-  }
-  type Query {
-    user(id: ID, name: String): User
-    me: User
-  }
-`
-```
-
-Pass the authentication and JWT parameters to the server config:
-
-```js
-// ./resolve.server.config.js
-
-import path from 'path'
-import fileAdapter from 'resolve-storage-lite'
-import busAdapter from 'resolve-bus-memory'
-import { localStrategy } from 'resolve-scripts-auth'
-
-import aggregates from './common/aggregates'
-import readModels from './common/read-models'
-import clientConfig from './resolve.client.config'
-import localStrategyParams from './auth/localStrategy'
-
-import {
-  authenticationSecret,
-  cookieName,
-  cookieMaxAge
-} from './auth/constants'
-
-if (module.hot) {
-  module.hot.accept()
-}
-
-
-const { NODE_ENV = 'development' } = process.env
-const dbPath = path.join(__dirname, `${NODE_ENV}.db`)
-
-export default {
-  entries: clientConfig,
-  bus: { adapter: busAdapter },
-  storage: {
-    adapter: fileAdapter,
-    params: { pathToFile: dbPath }
-  },
-  aggregates,
-  initialSubscribedEvents: { types: [], ids: [] },
-  readModels,
-  jwtCookie: {
-    name: cookieName,
-    maxAge: cookieMaxAge,
-    httpOnly: false
-  },
-  auth: {
-    strategies: [localStrategy(localStrategyParams)]
-  }
+  me: async (store, { jwtToken }) => await getMe(jwtToken),
 }
 ```
 
@@ -683,8 +618,6 @@ Update event list by adding story event names:
 
 ```js
 // ./common/events.js
-import jwt from 'jsonwebtoken'
-
 export const STORY_CREATED = 'StoryCreated'
 export const STORY_UPVOTED = 'StoryUpvoted'
 export const STORY_UNVOTED = 'StoryUnvoted'
@@ -693,6 +626,7 @@ export const USER_CREATED = 'UserCreated'
 ```
 
 ```js
+// ./common/aggregate/story.js
 import jwtSecret from '../../auth/jwtSecret'
 
 import {
@@ -784,24 +718,6 @@ import story from './story'
 export default [user, story]
 ```
 
-Add all the event names to the server config:
-
-```js
-// ./resolve.server.config.js
-
-// import list
-import * as events from './common/events'
-
-// module hot acceptions and store initialization
-
-const eventTypes = Object.keys(events).map(key => events[key])
-
-export default {
-    // other options
-    initialSubscribedEvents: { types: eventTypes, ids: [] }
-}
-```
-
 ### Read Side
 
 Add a collection of stories as the first read side implementation step:
@@ -832,9 +748,7 @@ export default {
     ])
 
     await store.defineTable('Users', [
-      { name: 'id', type: 'string', index: 'primary' },
-      { name: 'name', type: 'string', index: 'secondary' },
-      { name: 'createdAt', type: 'number' }
+      // implementation described above TODO link
     ])
   },
 
@@ -899,68 +813,39 @@ export default {
 }
 ```
 
-### GraphQL
+### Story related resolvers
 
 The **Hacker News** application displays a list of stories without additional information.
-For this, support the GraphQL with GraphQL resolvers that works with read model collections.
-
-Add the `./common/read-models/gqlSchema.js` file.
-Describe the `Story` type and a query used to request a list of stories - the `stories` query:
-
-```js
-// ./common/read-models/graphql/schema.js
-
-export default `
-  type User {
-    id: ID!
-    name: String
-    createdAt: String
-  }
-  type Story {
-    id: ID!
-    type: String!
-    title: String!
-    link: String
-    text: String
-    commentCount: Int!
-    votes: [String]
-    createdAt: String!
-    createdBy: String!
-    createdByName: String!
-  }
-  type Query {
-    user(id: ID, name: String): User
-    me: User
-    stories(type: String, first: Int!, offset: Int): [Story]
-  }
-`
-```
-
 Add the appropriate resolvers:
 
 ```js
 // ./common/read-models/graphql/resolvers.js
-import jwt from 'jsonwebtoken'
+
+const getStories = async (type, store, { first, offset, jwtToken }) => {
+  const search = type && type.constructor === String ? { type } : {}
+  const skip = first || 0
+  const stories = await store.find(
+    'Stories',
+    search,
+    null,
+    { createdAt: -1 },
+    skip,
+    skip + offset
+  )
+
+  return {
+    stories: Array.isArray(stories) ? stories : [],
+    me: await getMe(jwtToken)
+  }
+}
 
 export default {
   // user implementation
   // me implementation
-  stories: async (store, { type, first, offset }) => {
-    const skip = first || 0
-    const params = type ? { type } : {}
-    const stories = await store.find(
-      'Stories',
-      params,
-      null,
-      { createdAt: -1 },
-      skip,
-      skip + offset
-    )
-    if (!stories) {
-      return []
-    }
-    return stories
-  }
+
+  allStories: getStories.bind(null, null),
+  askStories: getStories.bind(null, 'ask'),
+  showStories: getStories.bind(null, 'show')
 }
 ```
 
@@ -1007,9 +892,7 @@ Add the `./common/view-models/storyDetails.js` file:
 
 import Immutable from 'seamless-immutable'
 
-
 import {
-  STORY_COMMENTED,
   STORY_CREATED,
   STORY_UNVOTED,
   STORY_UPVOTED
@@ -1024,8 +907,8 @@ export default {
       {
         aggregateId,
         timestamp,
-        payload: { title, link, userId, text }
-      }: Event<StoryCreated>
+        payload: { title, link, userId, userName, text }
+      }
     ) => {
       const type = !link ? 'ask' : /^(Show HN)/.test(title) ? 'show' : 'story'
 
@@ -1039,23 +922,21 @@ export default {
         comments: [],
         votes: [],
         createdAt: timestamp,
-        createdBy: userId
+        createdBy: userId,
+        createdByName: userName
       })
     },
 
-    [STORY_UPVOTED]: (
-      state: any,
-      { payload: { userId } }: Event<StoryUpvoted>
-    ) => state.update('votes', votes => votes.concat(userId)),
+    [STORY_UPVOTED]: (state: any, { payload: { userId } }) =>
+      state.update('votes', votes => votes.concat(userId)),
 
-    [STORY_UNVOTED]: (
-      state: any,
-      { payload: { userId } }: Event<StoryUnvoted>
-    ) => state.update('votes', votes => votes.filter(id => id !== userId))
+    [STORY_UNVOTED]: (state: any, { payload: { userId } }) =>
+      state.update('votes', votes => votes.filter(id => id !== userId))
   },
   serializeState: (state: any) => JSON.stringify(state || {}),
   deserializeState: (state: any) => Immutable(JSON.parse(state))
 }
+
 ```
 
 Add view models' default export:
@@ -1066,57 +947,6 @@ Add view models' default export:
 import storyDetails from './storyDetails'
 
 export default [storyDetails]
-```
-
-Pass the view model to the server config:
-
-```js
-// ./resolve.server.config.js
-
-import path from 'path'
-import busAdapter from 'resolve-bus-memory'
-import storageAdapter from 'resolve-storage-lite'
-import { localStrategy } from 'resolve-scripts-auth'
-
-import clientConfig from './resolve.client.config'
-import aggregates from './common/aggregates'
-
-import readModels from './common/read-models'
-import viewModels from './common/view-models'
-
-import localStrategyParams from './auth/localStrategy'
-
-import {
-  authenticationSecret,
-  cookieName,
-  cookieMaxAge
-} from './auth/constants'
-
-const databaseFilePath = path.join(__dirname, './storage.json')
-
-const storageAdapterParams = process.env.IS_TEST
-  ? {}
-  : { pathToFile: databaseFilePath }
-
-export default {
-  entries: clientConfig,
-  bus: { adapter: busAdapter },
-  storage: {
-    adapter: storageAdapter,
-    params: storageAdapterParams
-  },
-  aggregates,
-  readModels,
-  viewModels,
-  jwtCookie: {
-    name: cookieName,
-    maxAge: cookieMaxAge,
-    httpOnly: false
-  },
-  auth: {
-    strategies: [localStrategy(localStrategyParams)]
-  }
-}
 ```
 
 ### Story View
@@ -1203,10 +1033,7 @@ export default {
     // the createStory,  upvoteStory and unvoteStory implementation
 
     commentStory: (state, command, jwtToken) => {
-      const { id: userId, name: userName } = jwt.verify(
-        jwtToken,
-        jwtSecret
-      )
+      const { id: userId, name: userName } = jwt.verify(jwtToken, jwtSecret)
       validate.stateExists(state, 'Story')
 
       const { commentId, parentId, text } = command.payload
@@ -1235,7 +1062,7 @@ export default {
     // the STORY_CREATED, STORY_UPVOTED and STORY_UNVOTED implementation
     [STORY_COMMENTED]: (
       state,
-      { timestamp, payload: { commentId, userId } }: StoryCommented
+      { timestamp, payload: { commentId, userId } }
     ) => ({
       ...state,
       comments: {
@@ -1316,54 +1143,6 @@ export default {
 }
 ```
 
-### GraphQL
-
-Extend the GraphQL schema file by adding the `Comment` type and queries.
-A comment contains the `replies` field which is a list of comments, and provides a tree-like structure for all the included comments.
-
-
-```js
-// ./common/read-models/graphql/schema.js
-
-export default `
-  type User {
-    id: ID!
-    name: String
-    createdAt: String
-  }
-  type Story {
-    id: ID!
-    type: String!
-    title: String!
-    link: String
-    text: String
-    commentCount: Int!
-    votes: [String]
-    createdAt: String!
-    createdBy: String!
-    createdByName: String!
-  }
-  type Comment {
-    id: ID!
-    parentId: ID!
-    storyId: ID!
-    text: String!
-    replies: [Comment]
-    createdAt: String!
-    createdBy: String!
-    createdByName: String
-    level: Int
-  }
-  type Query {
-    user(id: ID, name: String): User
-    me: User
-    stories(type: String, first: Int!, offset: Int): [Story]
-    comments(first: Int!, offset: Int): [Comment]
-    comment(id: ID!): Comment
-  }
-`
-```
-
 Implement comment resolvers and extend the stories resolver to get comments:
 
 ```js
@@ -1429,8 +1208,7 @@ export default {
     Init: () => Immutable({}),
 
     // implemented handlers
-
-    [STORY_COMMENTED]: (
+  [STORY_COMMENTED]: (
       state,
       {
         aggregateId,
@@ -1469,9 +1247,8 @@ export default {
       }
     }
   },
-  serializeState: (state: any) =>
-    JSON.stringify(state || Immutable({})),
-  deserializeState: (serial: any) => Immutable(JSON.parse(serial))
+  serializeState: (state: any) => JSON.stringify(state || {}),
+  deserializeState: (state: any) => Immutable(JSON.parse(state))
 }
 ```
 
