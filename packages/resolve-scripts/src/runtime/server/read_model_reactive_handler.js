@@ -52,8 +52,10 @@ export const readModelSubscribeHandler = (req, res) => {
           }
         },
         resolverName,
-        req.body.parameters,
-        req.jwtToken
+        {
+          ...req.body.parameters,
+          jwtToken: req.jwtToken
+        }
       )
 
       res.status(200).send({
