@@ -3,13 +3,13 @@
 
 [![Build Status](https://travis-ci.org/reimagined/resolve.svg?branch=master)](https://travis-ci.org/reimagined/resolve) [![npm version](https://badge.fury.io/js/create-resolve-app.svg)](https://badge.fury.io/js/create-resolve-app) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/reimagined/resolve/master/LICENSE)
 
-A JavaScript framework for **CQRS**, **Domain-Driven Design** and **Event Sourcing** with the **React** and **Redux** support. **reSolve** provides a new way to describe an app's core logic and completely separate it from auxiliary code.
+A JavaScript framework for **CQRS**, **Domain-Driven Design** and **Event Sourcing** with **React** and **Redux** support. **reSolve** provides a new way to describe an app's core logic and completely separate it from auxiliary code.
 
 ## Installation
 
 
 
-Use the [create-resolve-app](packages/create-resolve-app) package to create an empty or sample **reSolve**-based application. By default, `create-resolve-app` generates an empty [Hello World](https://github.com/reimagined/resolve/tree/master/examples/hello-world) application.
+Use the [create-resolve-app](packages/create-resolve-app) package to create an empty or sample **reSolve**-based application. The `create-resolve-app` generates an empty [Hello World](https://github.com/reimagined/resolve/tree/master/examples/hello-world) application by default.
 
 ```sh
 npx create-resolve-app my-awesome-app
@@ -43,8 +43,8 @@ The `create-resolve-app -h` command lists all available examples:
 
 Feel free to contact us!
 
-* We are glad to see your e-mails sent to **reimagined@devexpress.com**.
-* Follow us on [**Twitter**](https://twitter.com/resolvejs). We are tweeting interesting articles, announcements, polls about **reSolve** development, and talking about the modern web technologies!
+* We are glad to receive your e-mails sent to **reimagined@devexpress.com**.
+* Follow us on [**Twitter**](https://twitter.com/resolvejs). We are tweeting interesting articles, announcements, polls about **reSolve** development, and talking about modern web technologies!
 * We also have a [**Facebook**](https://www.facebook.com/resolvejs/) page, join us!
 * Our articles are hosted on [**Medium**](https://medium.com/resolvejs).
 * You are welcome to submit any questions or suggestions in [**GitHub Issues**](https://github.com/reimagined/resolve/issues).
