@@ -32,7 +32,7 @@ describe('resolve-readmodel-mysql store-api', () => {
     )
   })
 
-  it.only('should provide find method - search logical/comparation operators', async () => {
+  it('should provide find method - search logical/comparation operators', async () => {
     const executor = sinon.stub()
     const pool = { connection: { execute: executor } }
 

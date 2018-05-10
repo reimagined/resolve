@@ -80,6 +80,13 @@ export const readModelSubscribeHandler = (req, res) => {
   })()
 
   subscriptionProcesses.set(subscriptionKey, subscriptionPromise)
+
+  void (async () => {
+    const lastError = await readModelQueryExecutors[modelName].getLastError()
+    if (lastError != null) {
+      println.error(lastError)
+    }
+  })()
 }
 
 export const readModelUnsubscribeHandler = (req, res) => {

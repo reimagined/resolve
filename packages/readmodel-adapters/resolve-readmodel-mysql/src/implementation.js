@@ -19,15 +19,20 @@ const implementation = (
 
   const bindWithConnection = func => async (...args) => {
     if (!connectionPromise) {
-      connectionPromise = mysql
-        .createConnection(connectionOptions)
+      connectionPromise = Promise.resolve()
+        .then(() => mysql.createConnection(connectionOptions))
         .then(async connection => {
           pool.connection = connection
           await getMetaInfo(pool)
         })
+        .catch(error => error)
     }
 
-    await connectionPromise
+    const connectionResult = await connectionPromise
+    if (connectionResult instanceof Error) {
+      throw connectionResult
+    }
+
     return await func(pool, ...args)
   }
 

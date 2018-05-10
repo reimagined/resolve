@@ -1,4 +1,5 @@
 import executeReadModelQuery from './execute_read_model_query'
+import readModelQueryExecutors from './read_model_query_executors'
 import println from './utils/println'
 
 const message = require('../../../configs/message.json')
@@ -18,6 +19,13 @@ const readModelNonReactiveHandler = async (req, res) => {
       serialId,
       result
     })
+
+    const lastError = await readModelQueryExecutors[
+      req.params.modelName
+    ].getLastError()
+    if (lastError != null) {
+      println.error(lastError)
+    }
   } catch (err) {
     res.status(500).end(`${message.readModelFail}${err.message}`)
     println.error(err)
