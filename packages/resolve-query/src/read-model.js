@@ -5,15 +5,17 @@ const emptyFunction = () => {}
 
 const [diffWrapperPrev, diffWrapperNext] = [{ wrap: null }, { wrap: null }]
 
-const init = (adapter, eventStore, projection, eventListener) => {
+const init = async repository => {
+  const { adapter, eventStore, projection } = repository
   if (projection === null) {
-    return {
-      ...adapter.init(),
+    Object.assign(repository, adapter.init(), {
+      loadDonePromise: Promise.resolve(),
       onDispose: emptyFunction
-    }
+    })
+    return
   }
 
-  const { getLastAppliedTimestamp = () => 0, ...readApi } = adapter.init()
+  const { prepareProjection = () => 0, ...readApi } = adapter.init()
   let unsubscriber = null
 
   let onDispose = () => {
@@ -34,7 +36,7 @@ const init = (adapter, eventStore, projection, eventListener) => {
         onDispose()
       }
 
-      loadDonePromise.lateFailure = reason
+      repository.lateFailure = reason
       if (chainable) {
         return Promise.reject(reason)
       }
@@ -44,16 +46,21 @@ const init = (adapter, eventStore, projection, eventListener) => {
 
     const projectionInvoker = async event => await projection[event.type](event)
 
+    const eventListenerInvoker = async event =>
+      typeof repository.eventListener === 'function'
+        ? await repository.eventListener(event)
+        : null
+
     const synchronizedEventWorker = event =>
       (flowPromise = flowPromise
         ? flowPromise
             .then(projectionInvoker.bind(null, event))
-            .then(eventListener.bind(null, event))
+            .then(eventListenerInvoker.bind(null, event))
             .catch(forceStop)
         : flowPromise)
 
     Promise.resolve()
-      .then(getLastAppliedTimestamp)
+      .then(prepareProjection)
       .then(startTime =>
         eventStore.subscribeByEventType(
           Object.keys(projection),
@@ -77,139 +84,155 @@ const init = (adapter, eventStore, projection, eventListener) => {
       .catch(err => forceStop(err, false))
   })
 
-  return {
-    ...readApi,
+  Object.assign(repository, readApi, {
     loadDonePromise,
     onDispose
+  })
+}
+
+const getReadInterface = async repository => {
+  if (!repository.hasOwnProperty('loadDonePromise')) {
+    init(repository)
+  }
+
+  try {
+    await repository.loadDonePromise
+  } catch (err) {}
+
+  try {
+    return await repository.getReadInterface()
+  } catch (err) {
+    return null
   }
 }
 
-const read = async (repository, adapter, eventStore, projection, ...args) => {
-  if (!repository.loadDonePromise) {
-    Object.assign(
-      repository,
-      init(adapter, eventStore, projection, repository.eventListener)
+const getLastError = async repository => {
+  if (!repository.loadDonePromise) return null
+
+  try {
+    await repository.loadDonePromise
+  } catch (error) {
+    return error
+  }
+
+  if (repository.hasOwnProperty('lateFailure')) {
+    return repository.lateFailure
+  }
+
+  return null
+}
+
+const read = async (repository, resolverName, resolverArgs) => {
+  const resolver = (repository.resolvers || {})[resolverName]
+
+  if (typeof resolver !== 'function') {
+    throw new Error(
+      `The '${resolverName}' resolver is not specified or not function`
     )
   }
 
-  const { getError, getReadable, loadDonePromise } = repository
-  await loadDonePromise
-
-  if (loadDonePromise && loadDonePromise.hasOwnProperty('lateFailure')) {
-    throw loadDonePromise.lateFailure
-  }
-
-  const readableError = await getError()
-  if (readableError) {
-    throw readableError
-  }
-
-  return await getReadable(...args)
+  const store = await getReadInterface(repository)
+  return await resolver(store, resolverArgs)
 }
 
-const createReadModel = ({ projection, eventStore, adapter, resolvers }) => {
-  const currentAdapter = adapter || createDefaultAdapter()
-  const builtProjection = projection
-    ? currentAdapter.buildProjection(projection)
-    : null
-  const externalEventListeners = []
+const dispose = repository => {
+  if (repository.disposePromise) {
+    return repository.disposePromise
+  }
+
+  const disposePromise = Promise.resolve([
+    repository.onDispose,
+    repository.adapter.reset
+  ]).then(async ([onDispose, reset]) => {
+    await onDispose()
+    await reset()
+  })
+
+  Object.keys(repository).forEach(key => {
+    delete repository[key]
+  })
+
+  repository.disposePromise = disposePromise
+  return repository.disposePromise
+}
+
+const addEventListener = (repository, callback) => {
+  if (typeof callback !== 'function') return
+  repository.externalEventListeners.push(callback)
+}
+
+const removeEventListener = (repository, callback) => {
+  if (typeof callback !== 'function') return
+  const idx = repository.externalEventListeners.findIndex(cb => callback === cb)
+  if (idx < 0) return
+  repository.externalEventListeners.splice(idx, 1)
+}
+
+const makeReactiveReader = async (
+  repository,
+  publisher,
+  resolverName,
+  resolverArgs = {}
+) => {
+  if (typeof publisher !== 'function') {
+    throw new Error(
+      'Publisher should be callback function (diff: Object) => void'
+    )
+  }
+
+  let result = await read(repository, resolverName, resolverArgs)
+  let flowPromise = Promise.resolve()
+
+  const eventHandler = async () => {
+    if (!flowPromise) return
+
+    const actualResult = await read(repository, resolverName, resolverArgs)
+    void ([diffWrapperPrev.wrap, diffWrapperNext.wrap] = [result, actualResult])
+
+    const difference = diff(diffWrapperPrev, diffWrapperNext)
+    result = actualResult
+
+    await publisher(difference)
+  }
+
+  const eventListener = event =>
+    (flowPromise = flowPromise.then(eventHandler.bind(null, event)))
+  addEventListener(repository, eventListener)
+
+  const forceStop = () => {
+    if (!flowPromise) return
+    removeEventListener(repository, eventListener)
+    flowPromise = null
+  }
+
+  return { result, forceStop }
+}
+
+const createReadModel = ({
+  adapter = createDefaultAdapter(),
+  projection,
+  eventStore,
+  resolvers
+}) => {
   const repository = {
+    projection: projection ? adapter.buildProjection(projection) : null,
+    externalEventListeners: [],
     eventListener: event =>
-      externalEventListeners.forEach(callback =>
+      repository.externalEventListeners.forEach(callback =>
         Promise.resolve().then(callback.bind(null, event))
-      )
-  }
-
-  const getReadModel = read.bind(
-    null,
-    repository,
-    currentAdapter,
+      ),
+    onDispose: () => null,
+    adapter,
     eventStore,
-    builtProjection
-  )
-
-  const reader = async (resolverName, resolverArgs) => {
-    if (!resolvers || typeof resolvers[resolverName] !== 'function') {
-      throw new Error(
-        `The '${resolverName}' resolver is not specified or not function`
-      )
-    }
-    const store = await getReadModel()
-    return await resolvers[resolverName](store, resolverArgs)
-  }
-
-  const dispose = () => {
-    if (!repository.loadDonePromise) {
-      return
-    }
-    repository.onDispose()
-    Object.keys(repository).forEach(key => {
-      delete repository[key]
-    })
-    externalEventListeners.length = 0
-
-    currentAdapter.reset()
-  }
-
-  const addEventListener = callback => {
-    if (typeof callback !== 'function') return
-    externalEventListeners.push(callback)
-  }
-
-  const removeEventListener = callback => {
-    if (typeof callback !== 'function') return
-    const idx = externalEventListeners.findIndex(cb => callback === cb)
-    if (idx < 0) return
-    externalEventListeners.splice(idx, 1)
-  }
-
-  const makeReactiveReader = async (
-    publisher,
-    resolverName,
-    resolverArgs = {}
-  ) => {
-    if (typeof publisher !== 'function') {
-      throw new Error(
-        'Publisher should be callback function (diff: Object) => void'
-      )
-    }
-
-    let result = await reader(resolverName, resolverArgs)
-    let flowPromise = Promise.resolve()
-
-    const eventHandler = async () => {
-      if (!flowPromise) return
-
-      const actualResult = await reader(resolverName, resolverArgs)
-      void ([diffWrapperPrev.wrap, diffWrapperNext.wrap] = [
-        result,
-        actualResult
-      ])
-
-      const difference = diff(diffWrapperPrev, diffWrapperNext)
-      result = actualResult
-
-      await publisher(difference)
-    }
-
-    const eventListener = event =>
-      (flowPromise = flowPromise.then(eventHandler.bind(null, event)))
-    addEventListener(eventListener)
-
-    const forceStop = () => {
-      if (!flowPromise) return
-      removeEventListener(eventListener)
-      flowPromise = null
-    }
-
-    return { result, forceStop }
+    resolvers
   }
 
   return Object.freeze({
-    read: reader,
-    dispose,
-    makeReactiveReader,
-    getReadModel
+    makeReactiveReader: makeReactiveReader.bind(null, repository),
+    getReadInterface: getReadInterface.bind(null, repository),
+    getLastError: getLastError.bind(null, repository),
+    read: read.bind(null, repository),
+    dispose: dispose.bind(null, repository)
   })
 }
 

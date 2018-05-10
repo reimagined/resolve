@@ -24,6 +24,8 @@ To create a **read model**, pass the following arguments to the `createReadModel
 A read model supports the following functions to send queries to a read model:
 * `read` - main entry point to perform query within read model via resolvers; first argument is resolver name, second contains object with properties for resolver function;
 * `makeReactiveReader` - reactive read models entry; first argument is callback for publishing diffs changes, second and following is equialent to `read`;
+* `getLastError` - retrieve last error occured while applying events by adapter-bound projection functions;
+* `getReadInterface` - retrieve underlying read-side storage API object after it have been initialized; may be used for direct read-only interactions with read-model storage;
 * `dispose` - private function, disposes read model.
 
 
