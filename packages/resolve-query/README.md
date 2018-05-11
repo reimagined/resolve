@@ -3,15 +3,15 @@
 
 Provides an interface for creating read and view models and query facade for them. 
 
-Queries are used to observe a system's state. Read & View Models answer Queries and are built using Projection functions.
+Queries are used to observe a system's state. Read & View Models are built using Projection functions and can answer Queries.
 
-Read models can be build only on server, and current read model state can be persisted into some storage, which has apropriate adapter for it. Exctacting read model state is performed by resolver function, which can filter, aggregate and paginate state before sending it onto client browser. Resolver can support agrument, which is supposed by client browser, depend on which resolver can base it's behaviour. Read models can be reactive - in that case, client browser will recieve changes in result dataset, if such changes had been performed on server-side read model storage.
+Read models are produced and consumed only on the server. Present read model state is saved into temporary or persistent storage by using appropriate adapter. Obtaining read model state is performed by resolver function, which can filter, aggregate and paginate state before sending it onto client browser. The resolver can be parametrized by client-defined arguments, based on which it can manage its behavior. Read models can be reactive. Then client browser will receive diffs in result dataset if some changes had been performed on server-side read model storage.
 
-View Model can be build on server and client too. By definition view model can be entirely sent to client UI as part of Redux app state, and be updated by incoming events. View models can't have arguments, differs from aggregateId. Every view model is parametrized by one or several aggregateIds. 
-View model also can have wildcard aggregateId, but it's very not recommended architecture - use reactive read models instead.
+View Model can be built on server and client too. By definition, view model can be entirely sent to client UI as part of Redux app state, and be updated by incoming events. View models can't have arguments, differs from aggregateId. Every view model is parametrized by one or several aggregateIds. 
+View model also can have wildcard aggregateId, but this is highly discouraged architecture - use reactive read models instead.
 
 ```
-import { createReadModel, createViewModel, createFacade } from 'resolve-query'
+import { createReadModel, createViewModel } from 'resolve-query'
 ```
 
 ## Usage
