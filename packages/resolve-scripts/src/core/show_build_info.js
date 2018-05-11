@@ -2,7 +2,7 @@ import chalk from 'chalk'
 
 const statsConfig = require('../../configs/stats.config.json')
 
-export default function showBuildInfo({ name }, err, stats) {
+const showBuildInfo = ({ name }, err, stats) => {
   if (!stats) {
     return
   }
@@ -13,3 +13,5 @@ export default function showBuildInfo({ name }, err, stats) {
     console.error(err)
   }
 }
+
+export default showBuildInfo

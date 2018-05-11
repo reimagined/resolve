@@ -1,6 +1,6 @@
 {
   "name": "resolve-readmodel-mysql",
-  "version": "0.9.1",
+  "version": "0.10.2",
   "description": "This package serves as a resolve-query adapter for storing a read model in mysql",
   "main": "./dist/index.js",
   "bugs": {
@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "mysql2": "^1.5.2",
-    "resolve-readmodel-base": "0.9.1",
+    "resolve-readmodel-base": "0.10.2",
     "sql-formatter": "^2.1.2",
     "uuid": "^3.1.0"
   }

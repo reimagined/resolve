@@ -5,7 +5,7 @@ import jsonUtfStringify from './utils/json_utf_stringify'
 const reducers = require($resolve.redux.reducers)
 const viewModels = require($resolve.viewModels)
 
-export default ({ markup, styleTags, initialState, env, clientUrl }) => {
+export default ({ markup, styleTags, initialState, clientUrl }) => {
   const helmet = Helmet.renderStatic()
 
   for (const reducerName of Object.keys(reducers)) {
@@ -35,7 +35,6 @@ export default ({ markup, styleTags, initialState, env, clientUrl }) => {
     styleTags +
     '<script>' +
     `window.__INITIAL_STATE__=${jsonUtfStringify(initialState)};` +
-    `window.__PROCESS_ENV__=${jsonUtfStringify(env)};` +
     '</script>' +
     `${helmet.script.toString()}` +
     '</head>' +

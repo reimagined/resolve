@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import JSON5 from 'json5'
+import envString from 'env-string'
 import { transformFileSync } from 'babel-core'
 
 import assignSettings from './assign_settings'
@@ -16,12 +17,17 @@ export default function setup(argv, env) {
 
   if (argv.config || env.CONFIG_PATH) {
     localConfig = JSON5.parse(
-      fs.readFileSync(resolveFile(argv.config || env.CONFIG_PATH))
+      envString(
+        fs.readFileSync(resolveFile(argv.config || env.CONFIG_PATH)).toString(),
+        env
+      )
     )
   } else {
     const configPath = path.resolve(process.cwd(), 'resolve.config.json')
     if (fs.existsSync(configPath)) {
-      localConfig = JSON5.parse(fs.readFileSync(configPath))
+      localConfig = JSON5.parse(
+        envString(fs.readFileSync(configPath).toString(), env)
+      )
     }
   }
 

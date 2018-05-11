@@ -27,7 +27,8 @@ readModels.forEach(readModel => {
   readModelQueryExecutors[readModel.name] = {
     read: facade.read,
     makeSubscriber: facade.makeReactiveReader,
-    resolverNames: Object.keys(readModel.resolvers)
+    resolverNames: Object.keys(readModel.resolvers),
+    getLastError: facade.getLastError
   }
 })
 

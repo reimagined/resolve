@@ -3,6 +3,7 @@ import webpack from 'webpack'
 import nodeExternals from 'webpack-node-externals'
 
 import getModulesDirs from './get_modules_dirs'
+import getWebpackEnvPlugin from './get_webpack_env_plugin'
 import getWebpackResolveAliasPlugin from './get_webpack_resolve_alias_plugin'
 
 export default ({ resolveConfig, deployOptions, env }) => {
@@ -39,7 +40,7 @@ export default ({ resolveConfig, deployOptions, env }) => {
           test: /\.js$/,
           loaders: [
             {
-              loader: 'babel-loader',
+              loader: 'babel-loader?cacheDirectory=true',
               query: {
                 env: {
                   development: {
@@ -49,15 +50,13 @@ export default ({ resolveConfig, deployOptions, env }) => {
               }
             }
           ],
-          exclude: getModulesDirs()
+          exclude: [...getModulesDirs(), path.resolve(__dirname, '../../dist')]
         }
       ]
     },
     plugins: [
-      new webpack.DefinePlugin({
-        'process.env.NODE_ENV': `"${env.NODE_ENV}"`
-      }),
-      getWebpackResolveAliasPlugin({ resolveConfig, deployOptions }),
+      getWebpackEnvPlugin({ resolveConfig, deployOptions, env }),
+      getWebpackResolveAliasPlugin({ resolveConfig, deployOptions, env }),
       new webpack.BannerPlugin({
         banner: 'require("source-map-support").install();',
         raw: true,

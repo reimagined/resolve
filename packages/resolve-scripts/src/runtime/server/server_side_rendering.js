@@ -9,7 +9,6 @@ import { ServerStyleSheet, StyleSheetManager } from 'styled-components'
 
 import createStore from '../client/store/create_store'
 import getHtmlMarkup from './get_html_markup'
-import getClientEnv from './utils/get_client_env'
 import getRootableUrl from './utils/get_rootable_url'
 import Routes from '../client/components/Routes'
 
@@ -51,7 +50,6 @@ const serverSideRendering = (req, res) => {
   )
   const styleTags = sheet.getStyleTags()
 
-  const env = getClientEnv()
   const initialState = store.getState()
   const clientUrl = getRootableUrl(Url.resolve(staticPath || '/', 'client.js'))
 
@@ -60,8 +58,7 @@ const serverSideRendering = (req, res) => {
       markup,
       styleTags,
       initialState,
-      clientUrl,
-      env
+      clientUrl
     })
   )
 }

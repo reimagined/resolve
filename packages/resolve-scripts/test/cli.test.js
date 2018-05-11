@@ -351,6 +351,32 @@ describe('resolve-scripts dev', () => {
       ).rejects.toThrow()
     })
   })
+
+  describe('Inlines env vars in a string works correctly', () => {
+    test('resolve-scripts dev --config=resolve.test.env.config.json', async () => {
+      const json = await exec(
+        `resolve-scripts dev --config=${path.resolve(
+          __dirname,
+          'resolve.test.env.config.json'
+        )}`,
+        {
+          PORT: 1234,
+          HOST: 'resolve.resolve',
+          STORAGE_ADAPTER: 'memory',
+          STORAGE_OPTIONS: JSON.stringify({ a: 5, b: 'xyz' })
+        }
+      )
+
+      expect(json).toMatchObject({
+        port: 1234,
+        host: 'resolve.resolve',
+        storage: {
+          adapter: 'resolve-memory',
+          options: { a: 5, b: 'xyz' }
+        }
+      })
+    })
+  })
 })
 
 describe('resolve-scripts start', () => {

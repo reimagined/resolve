@@ -8,9 +8,8 @@ describe('resolve-readmodel-base build-projection', () => {
     const metaApi = { setLastTimestamp: sinon.stub() }
     const storeApi = {}
     const internalContext = {
-      initHandler: null,
       initDonePromise: Promise.resolve(),
-      internalError: null
+      initHandler: null
     }
 
     const inputProjection = {
@@ -31,13 +30,15 @@ describe('resolve-readmodel-base build-projection', () => {
     expect(inputProjection.CorrectEvent.firstCall.args[1]).to.be.equal(event)
     expect(metaApi.setLastTimestamp.firstCall.args[0]).to.be.equal(100)
 
-    expect(internalContext.internalError).to.be.equal(null)
+    try {
+      await wrappedProjection.WrongEvent(event)
+      return Promise.reject('Projection error should hoist')
+    } catch (error) {
+      expect(error).to.be.instanceof(Error)
+      expect(error.name).to.be.equal('ERR')
+    }
 
-    await wrappedProjection.WrongEvent(event)
     expect(inputProjection.WrongEvent.firstCall.args[0]).to.be.equal(storeApi)
     expect(inputProjection.WrongEvent.firstCall.args[1]).to.be.equal(event)
-
-    expect(internalContext.internalError).to.be.instanceof(Error)
-    expect(internalContext.internalError.name).to.be.equal('ERR')
   })
 })
