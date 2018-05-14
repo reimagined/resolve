@@ -1,6 +1,5 @@
 # With Styled Components
 
--------------------------------------------------------------------------
 **See the documentation at [styled-components.com/docs](https://www.styled-components.com/docs)** for more information about using `styled-components`!
 
 Quicklinks to some of the most-visited pages:
