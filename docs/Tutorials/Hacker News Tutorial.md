@@ -1,6 +1,6 @@
 # Reproducing Hacker News using ReSolve
 
-> Note: this tutorial is actual for 0.4.0 version.
+> Note: this tutorial is actual for 0.10.0 version.
 
 This tutorial shows you how to create a **Hacker News** application and consists of the following steps:
 
