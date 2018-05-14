@@ -16,28 +16,28 @@ import { createReadModel, createViewModel } from 'resolve-query'
 
 ## Usage
 To create a **read model**, pass the following arguments to the `createReadModel` factory function:
-* `eventStore` - a configured [eventStore](../resolve-es) instance;
-* `projection` - functions which handles incoming events and perform mutations in read model storage; 
-* `adapter` - a read model [adapter](../readmodel-adapters) instance. A memory [adapter](../readmodel-adapters/resolve-readmodel-memory) supporting the simple query & projection API is used by default;
-* `resolvers` - resolver functions for read model. First argument is reference to target read model. Second argument is object with fields which can be customly used in resolver logic for perform dataset extraction from read model storage.
+* `eventStore` - A configured [eventStore](../resolve-es) instance.
+* `projection` - Functions which handles incoming events and perform mutations in read model storage.
+* `adapter` - A read model [adapter](../readmodel-adapters) instance. A memory [adapter](../readmodel-adapters/resolve-readmodel-memory) supporting the simple query & projection API is used by default.
+* `resolvers` - Resolver functions for read model. First argument is reference to target read model. Second argument is object with fields which can be customly used in resolver logic for perform dataset extraction from read model storage.
 
 A read model supports the following functions to send queries to a read model:
-* `read` - main entry point to perform query within read model via resolvers; first argument is resolver name, second contains object with properties for resolver function;
-* `makeReactiveReader` - reactive read models entry; first argument is callback for publishing diffs changes, second and following is equialent to `read`;
-* `getLastError` - retrieve last error occured while applying events by adapter-bound projection functions;
-* `getReadInterface` - retrieve underlying read-side storage API object after it have been initialized; may be used for direct read-only interactions with read-model storage;
-* `dispose` - private function, disposes read model.
+* `read` - Main entry point to perform query within read model via resolvers. First argument is resolver name, second contains object with properties for resolver function. Returns resolver execution result.
+* `makeReactiveReader` - Entry point for creating reactive read models. First argument is callback for publishing diffs changes, second and following is equivalent  to `read` function. Returns object `{ result, forceStop }` where `result` is first resolver execution result and `forceStop` is function to stop publishing diffs.
+* `getLastError` - Retrieve last error occurred while applying events by adapter-bound projection functions.
+* `getReadInterface` - Retrieve underlying read-side storage API object after it have been initialized. May be used for direct read-only interactions with read-model storage.
+* `dispose` - Dispose read model, invoke disposing in read model adapter and stop listening Event Store bus. Disposing operation implemented in default adapters assumes disconnect with storage and drop stored tables.
 
 
 To create a **view model**, pass the following arguments to the `createViewModel` factory function:
-* `eventStore` - a configured [eventStore](../resolve-es) instance;
-* `projection` - a map of [redux-like reducer functions](https://redux.js.org/docs/basics/Reducers.html) (one function for each event type);
-* `snapshotAdapter` - optional, default no snapshots; adapter for loading and saving intermediate aggregate state;
-* `snapshotBucketSize` - optional, default 100 events; event count between saving aggregate snapshot.
+* `eventStore` - A configured [eventStore](../resolve-es) instance.
+* `projection` - A map of [redux-like reducer functions](https://redux.js.org/docs/basics/Reducers.html). One function for each event type is required.
+* `snapshotAdapter` Adapter for loading and saving intermediate aggregate state. Argument is optional, by default snapshots are not used.
+* `snapshotBucketSize` - Event count between saving aggregate snapshot. Argument is options, by default value is 100.
 
 A view model facade supports the following functions to send queries to a read model:
-* `read` - main entry point to perform query within view model via resolvers; second argument provides aggregateIds list;
-* `dispose` - private function, disposes view model.
+* `read` - Main entry point to perform query within view model via resolvers. Second argument provides aggregateIds list.
+* `dispose` - Dispose view model and stop listening Event Store bus.
 
 
 ### Example
