@@ -14,7 +14,10 @@ const implementation = (
     database: options.database || 'temp'
   }
 
-  const pool = { metaName }
+  const pool = {
+    escapeId: mysql.escapeId,
+    metaName
+  }
   let connectionPromise = null
 
   const bindWithConnection = func => async (...args) => {

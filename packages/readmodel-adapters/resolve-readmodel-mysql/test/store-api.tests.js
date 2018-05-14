@@ -8,10 +8,25 @@ describe('resolve-readmodel-mysql store-api', () => {
   const MAX_VALUE = 0x0fffffff | 0
   const format = sqlFormatter.format.bind(sqlFormatter)
 
-  it('should provide defineTable method', async () => {
-    const executor = sinon.stub()
-    const pool = { connection: { execute: executor } }
+  let executor, pool
 
+  beforeEach(() => {
+    executor = sinon.stub()
+
+    pool = {
+      escapeId: sinon
+        .stub()
+        .callsFake(value => `\`${value.replace(/`/g, '``')}\``),
+      connection: { execute: executor }
+    }
+  })
+
+  afterEach(() => {
+    executor = null
+    pool = null
+  })
+
+  it('should provide defineTable method', async () => {
     await storeApi.defineTable(pool, 'test', {
       fieldTypes: { first: 'number', second: 'string', third: 'string' },
       primaryIndex: { name: 'first' },
@@ -20,22 +35,19 @@ describe('resolve-readmodel-mysql store-api', () => {
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
-        `CREATE TABLE test (
-          first BIGINT NOT NULL,
-          second VARCHAR(255) NOT NULL,
-          third VARCHAR(255) NOT NULL,
-          PRIMARY KEY (first),
-          INDEX USING BTREE (second),
-          INDEX USING BTREE (third)
+        `CREATE TABLE \`test\` (
+          \`first\` BIGINT NOT NULL,
+          \`second\` VARCHAR(255) NOT NULL,
+          \`third\` VARCHAR(255) NOT NULL,
+          PRIMARY KEY (\`first\`),
+          INDEX USING BTREE (\`second\`),
+          INDEX USING BTREE (\`third\`)
         )`
       )
     )
   })
 
   it('should provide find method - search logical/comparation operators', async () => {
-    const executor = sinon.stub()
-    const pool = { connection: { execute: executor } }
-
     const gaugeResultSet = []
     executor.onCall(0).callsFake(async () => [gaugeResultSet])
 
@@ -58,10 +70,10 @@ describe('resolve-readmodel-mysql store-api', () => {
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
-        `SELECT field, inner->>'$."field"' AS "inner.field"
-         FROM test
-         WHERE ((timestamp < ?) OR (inner ->> '$."value"' > ?)) AND (NOT (volume = ?))
-         ORDER BY sort DESC, inner->>'$."sort"' ASC
+        `SELECT \`field\`, \`inner\`->>'$."field"' AS \`inner.field\`
+         FROM \`test\`
+         WHERE ((\`timestamp\` < ?) OR (\`inner\` ->> '$."value"' > ?)) AND (NOT (\`volume\` = ?))
+         ORDER BY \`sort\` DESC, \`inner\`->>'$."sort"' ASC
          LIMIT 10, 20`
       )
     )
@@ -72,9 +84,6 @@ describe('resolve-readmodel-mysql store-api', () => {
   })
 
   it('should provide find method - all arguments passed', async () => {
-    const executor = sinon.stub()
-    const pool = { connection: { execute: executor } }
-
     const gaugeResultSet = []
     executor.onCall(0).callsFake(async () => [gaugeResultSet])
 
@@ -90,11 +99,11 @@ describe('resolve-readmodel-mysql store-api', () => {
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
-        `SELECT field, inner->>'$."field"' AS "inner.field"
-         FROM test
-         WHERE search = ? AND inner->>'$."search"' = ?
-         ORDER BY sort DESC, inner->>'$."sort"' ASC
-         LIMIT 10,20`
+        `SELECT \`field\`, \`inner\`->>'$."field"' AS \`inner.field\`
+         FROM \`test\`
+         WHERE \`search\` = ? AND \`inner\`->>'$."search"' = ?
+         ORDER BY \`sort\` DESC, \`inner\`->>'$."sort"' ASC
+         LIMIT 10, 20`
       )
     )
 
@@ -104,9 +113,6 @@ describe('resolve-readmodel-mysql store-api', () => {
   })
 
   it('should provide find method - no projection passed', async () => {
-    const executor = sinon.stub()
-    const pool = { connection: { execute: executor } }
-
     const gaugeResultSet = []
     executor.onCall(0).callsFake(async () => [gaugeResultSet])
 
@@ -122,10 +128,10 @@ describe('resolve-readmodel-mysql store-api', () => {
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
-        `SELECT * FROM test
-         WHERE search = ? AND inner->>'$."search"' = ? \n
-         ORDER BY sort DESC, inner->>'$."sort"' ASC
-         LIMIT 10,20`
+        `SELECT * FROM \`test\`
+         WHERE \`search\` = ? AND \`inner\`->>'$."search"' = ? \n
+         ORDER BY \`sort\` DESC, \`inner\`->>'$."sort"' ASC
+         LIMIT 10, 20`
       )
     )
 
@@ -135,9 +141,6 @@ describe('resolve-readmodel-mysql store-api', () => {
   })
 
   it('should provide find method - no sort passed', async () => {
-    const executor = sinon.stub()
-    const pool = { connection: { execute: executor } }
-
     const gaugeResultSet = []
     executor.onCall(0).callsFake(async () => [gaugeResultSet])
 
@@ -153,10 +156,10 @@ describe('resolve-readmodel-mysql store-api', () => {
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
-        `SELECT field, inner->>'$."field"' AS "inner.field"
-         FROM test
-         WHERE search = ? AND inner->>'$."search"' = ?
-         LIMIT 10,20`
+        `SELECT \`field\`, \`inner\`->>'$."field"' AS \`inner.field\`
+         FROM \`test\`
+         WHERE \`search\` = ? AND \`inner\`->>'$."search"' = ?
+         LIMIT 10, 20`
       )
     )
 
@@ -166,9 +169,6 @@ describe('resolve-readmodel-mysql store-api', () => {
   })
 
   it('should provide find method - no skip passed', async () => {
-    const executor = sinon.stub()
-    const pool = { connection: { execute: executor } }
-
     const gaugeResultSet = []
     executor.onCall(0).callsFake(async () => [gaugeResultSet])
 
@@ -184,11 +184,11 @@ describe('resolve-readmodel-mysql store-api', () => {
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
-        `SELECT field, inner->>'$."field"' AS "inner.field"
-         FROM test
-         WHERE search = ? AND inner->>'$."search"' = ?
-         ORDER BY sort DESC, inner->>'$."sort"' ASC
-         LIMIT 0,20`
+        `SELECT \`field\`, \`inner\`->>'$."field"' AS \`inner.field\`
+         FROM \`test\`
+         WHERE \`search\` = ? AND \`inner\`->>'$."search"' = ?
+         ORDER BY \`sort\` DESC, \`inner\`->>'$."sort"' ASC
+         LIMIT 0, 20`
       )
     )
 
@@ -198,9 +198,6 @@ describe('resolve-readmodel-mysql store-api', () => {
   })
 
   it('should provide find method - no limit passed', async () => {
-    const executor = sinon.stub()
-    const pool = { connection: { execute: executor } }
-
     const gaugeResultSet = []
     executor.onCall(0).callsFake(async () => [gaugeResultSet])
 
@@ -216,11 +213,11 @@ describe('resolve-readmodel-mysql store-api', () => {
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
-        `SELECT field, inner->>'$."field"' AS "inner.field"
-         FROM test
-         WHERE search = ? AND inner->>'$."search"' = ?
-         ORDER BY sort DESC, inner->>'$."sort"' ASC
-         LIMIT 10,${MAX_VALUE}`
+        `SELECT \`field\`, \`inner\`->>'$."field"' AS \`inner.field\`
+         FROM \`test\`
+         WHERE \`search\` = ? AND \`inner\`->>'$."search"' = ?
+         ORDER BY \`sort\` DESC, \`inner\`->>'$."sort"' ASC
+         LIMIT 10, ${MAX_VALUE}`
       )
     )
 
@@ -230,9 +227,6 @@ describe('resolve-readmodel-mysql store-api', () => {
   })
 
   it('should provide findOne method - all arguments passed', async () => {
-    const executor = sinon.stub()
-    const pool = { connection: { execute: executor } }
-
     const gaugeResult = {}
     executor.onCall(0).callsFake(async () => [[gaugeResult]])
 
@@ -245,9 +239,9 @@ describe('resolve-readmodel-mysql store-api', () => {
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
-        `SELECT field, inner->>'$."field"' AS "inner.field"
-         FROM test
-         WHERE search = ? AND inner->>'$."search"' = ?
+        `SELECT \`field\`, \`inner\`->>'$."field"' AS \`inner.field\`
+         FROM \`test\`
+         WHERE \`search\` = ? AND \`inner\`->>'$."search"' = ?
          LIMIT 0, 1`
       )
     )
@@ -258,9 +252,6 @@ describe('resolve-readmodel-mysql store-api', () => {
   })
 
   it('should provide findOne method - no projection passed', async () => {
-    const executor = sinon.stub()
-    const pool = { connection: { execute: executor } }
-
     const gaugeResult = {}
     executor.onCall(0).callsFake(async () => [[gaugeResult]])
 
@@ -273,8 +264,8 @@ describe('resolve-readmodel-mysql store-api', () => {
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
-        `SELECT * FROM test
-         WHERE search = ? AND inner->>'$."search"' = ?
+        `SELECT * FROM \`test\`
+         WHERE \`search\` = ? AND \`inner\`->>'$."search"' = ?
          LIMIT 0, 1`
       )
     )
@@ -285,9 +276,6 @@ describe('resolve-readmodel-mysql store-api', () => {
   })
 
   it('should provide count method', async () => {
-    const executor = sinon.stub()
-    const pool = { connection: { execute: executor } }
-
     executor.onCall(0).callsFake(async () => [[{ Count: 100 }]])
 
     const result = await storeApi.count(pool, 'test', {
@@ -297,8 +285,8 @@ describe('resolve-readmodel-mysql store-api', () => {
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
-        `SELECT Count(*) AS Count FROM test
-         WHERE search = ? AND inner->>'$."search"' = ?`
+        `SELECT Count(*) AS Count FROM \`test\`
+         WHERE \`search\` = ? AND \`inner\`->>'$."search"' = ?`
       )
     )
 
@@ -308,22 +296,16 @@ describe('resolve-readmodel-mysql store-api', () => {
   })
 
   it('should provide insert method', async () => {
-    const executor = sinon.stub()
-    const pool = { connection: { execute: executor } }
-
     await storeApi.insert(pool, 'test', { id: 1, value: 2 })
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
-      format(`INSERT INTO test(id, value) VALUES(?, ?)`)
+      format(`INSERT INTO \`test\`(\`id\`, \`value\`) VALUES(?, ?)`)
     )
 
     expect(executor.firstCall.args[1]).to.be.deep.equal([1, 2])
   })
 
   it('should provide update method', async () => {
-    const executor = sinon.stub()
-    const pool = { connection: { execute: executor } }
-
     await storeApi.update(
       pool,
       'test',
@@ -337,13 +319,13 @@ describe('resolve-readmodel-mysql store-api', () => {
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
-        `UPDATE test SET one = ?, inner = JSON_SET(inner, '$."one"', ?),
-         two = NULL, inner = JSON_REMOVE(inner, '$."two"'),
-         counter = counter + ?,
-         inner = JSON_SET(inner, '$."counter"',
-           JSON_EXTRACT(inner, '$."counter"') + ?
+        `UPDATE \`test\` SET \`one\` = ?, \`inner\` = JSON_SET(\`inner\`, '$."one"', ?),
+         \`two\` = NULL, \`inner\` = JSON_REMOVE(\`inner\`, '$."two"'),
+         \`counter\` = \`counter\` + ?,
+         \`inner\` = JSON_SET(\`inner\`, '$."counter"',
+           JSON_EXTRACT(\`inner\`, '$."counter"') + ?
          )
-         WHERE id = ? AND inner->>'$."value"' = ?`
+         WHERE \`id\` = ? AND \`inner\`->>'$."value"' = ?`
       )
     )
 
@@ -351,13 +333,12 @@ describe('resolve-readmodel-mysql store-api', () => {
   })
 
   it('should provide del method', async () => {
-    const executor = sinon.stub()
-    const pool = { connection: { execute: executor } }
-
     await storeApi.del(pool, 'test', { id: 1, 'inner.value': 2 })
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
-      format(`DELETE FROM test WHERE id = ? AND inner->>'$."value"' = ?`)
+      format(
+        `DELETE FROM \`test\` WHERE \`id\`= ? AND \`inner\`->>'$."value"' = ?`
+      )
     )
 
     expect(executor.firstCall.args[1]).to.be.deep.equal([1, 2])
