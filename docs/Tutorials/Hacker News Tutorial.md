@@ -748,7 +748,7 @@ export default {
     ])
 
     await store.defineTable('Users', [
-      // implementation described above TODO link
+      // store.defineTable for Users implementation
     ])
   },
 
