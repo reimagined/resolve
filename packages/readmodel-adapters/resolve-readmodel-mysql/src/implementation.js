@@ -2,6 +2,7 @@ const implementation = (
   rawMetaApi,
   storeApi,
   mysql,
+  escapeId,
   { metaName, ...options }
 ) => {
   const { getMetaInfo, ...metaApi } = rawMetaApi
@@ -14,10 +15,7 @@ const implementation = (
     database: options.database || 'temp'
   }
 
-  const pool = {
-    escapeId: mysql.escapeId,
-    metaName
-  }
+  const pool = { escapeId, metaName }
   let connectionPromise = null
 
   const bindWithConnection = func => async (...args) => {
