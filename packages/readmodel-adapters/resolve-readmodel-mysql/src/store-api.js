@@ -61,22 +61,22 @@ const makeCompareOperator = oper => {
   }
 }
 
-const searchToWhereExpression = (expr, escapeId) => {
+const searchToWhereExpression = (expression, fieldTypes, escapeId) => {
   const searchExprArray = []
   const searchValues = []
 
   const isDocumentExpr =
-    Object.keys(expr).filter(key => key.indexOf('$') > -1).length === 0
+    Object.keys(expression).filter(key => key.indexOf('$') > -1).length === 0
 
   if (isDocumentExpr) {
-    for (let fieldName of Object.keys(expr)) {
+    for (let fieldName of Object.keys(expression)) {
       const [baseName, ...nestedPath] = fieldName.split('.')
       const resultFieldName =
         nestedPath.length > 0
-          ? `${escapeId(baseName)}->>'${makeNestedPath(nestedPath)}'`
+          ? `${escapeId(baseName)}->'${makeNestedPath(nestedPath)}'`
           : escapeId(baseName)
 
-      let fieldValue = expr[fieldName]
+      let fieldValue = expression[fieldName]
       let fieldOperator = '='
 
       if (fieldValue instanceof Object) {
@@ -86,9 +86,15 @@ const searchToWhereExpression = (expr, escapeId) => {
 
       const resultOperator = makeCompareOperator(fieldOperator)
 
-      searchExprArray.push(`${resultFieldName} ${resultOperator} ?`)
-
-      searchValues.push(fieldValue)
+      if (fieldTypes[baseName] === 'json') {
+        searchExprArray.push(
+          `${resultFieldName} ${resultOperator} CAST(? AS JSON)`
+        )
+        searchValues.push(JSON.stringify(fieldValue))
+      } else {
+        searchExprArray.push(`${resultFieldName} ${resultOperator} ?`)
+        searchValues.push(fieldValue)
+      }
     }
 
     return {
@@ -97,11 +103,15 @@ const searchToWhereExpression = (expr, escapeId) => {
     }
   }
 
-  for (let operatorName of Object.keys(expr)) {
+  for (let operatorName of Object.keys(expression)) {
     if (operatorName === '$and' || operatorName === '$or') {
       const localSearchExprArray = []
-      for (let innerExpr of expr[operatorName]) {
-        const whereExpr = searchToWhereExpression(innerExpr, escapeId)
+      for (let innerExpr of expression[operatorName]) {
+        const whereExpr = searchToWhereExpression(
+          innerExpr,
+          fieldTypes,
+          escapeId
+        )
         localSearchExprArray.push(whereExpr.searchExpr)
         whereExpr.searchValues.map(val => searchValues.push(val))
       }
@@ -118,7 +128,11 @@ const searchToWhereExpression = (expr, escapeId) => {
     }
 
     if (operatorName === '$not') {
-      const whereExpr = searchToWhereExpression(expr[operatorName], escapeId)
+      const whereExpr = searchToWhereExpression(
+        expression[operatorName],
+        fieldTypes,
+        escapeId
+      )
 
       whereExpr.searchValues.map(val => searchValues.push(val))
       searchExprArray.push(`NOT (${whereExpr.searchExpr})`)
@@ -133,13 +147,13 @@ const searchToWhereExpression = (expr, escapeId) => {
   }
 }
 
-const updateToSetExpression = (expr, escapeId) => {
+const updateToSetExpression = (expression, fieldTypes, escapeId) => {
   const updateExprArray = []
   const updateValues = []
 
-  for (let operatorName of Object.keys(expr)) {
-    for (let fieldName of Object.keys(expr[operatorName])) {
-      const fieldValue = expr[operatorName][fieldName]
+  for (let operatorName of Object.keys(expression)) {
+    for (let fieldName of Object.keys(expression[operatorName])) {
+      const fieldValue = expression[operatorName][fieldName]
       const [baseName, ...nestedPath] = fieldName.split('.')
 
       switch (operatorName) {
@@ -161,12 +175,18 @@ const updateToSetExpression = (expr, escapeId) => {
             updateExprArray.push(
               `${escapeId(baseName)} = JSON_SET(${escapeId(
                 baseName
-              )}, '${makeNestedPath(nestedPath)}', ?) `
+              )}, '${makeNestedPath(nestedPath)}', CAST(? AS JSON)) `
             )
           } else {
             updateExprArray.push(`${escapeId(baseName)} = ? `)
           }
-          updateValues.push(fieldValue)
+
+          if (fieldTypes[baseName] === 'json') {
+            updateValues.push(JSON.stringify(fieldValue))
+          } else {
+            updateValues.push(fieldValue)
+          }
+
           break
         }
 
@@ -201,7 +221,7 @@ const updateToSetExpression = (expr, escapeId) => {
 }
 
 const find = async (
-  { connection, escapeId },
+  { connection, escapeId, metaInfo },
   tableName,
   searchExpression,
   fieldList,
@@ -209,6 +229,8 @@ const find = async (
   skip,
   limit
 ) => {
+  const fieldTypes = metaInfo.tables[tableName].fieldTypes
+
   let selectExpression =
     fieldList && Object.keys(fieldList).length > 0
       ? Object.keys(fieldList)
@@ -216,7 +238,7 @@ const find = async (
           .map(fieldName => {
             const [baseName, ...nestedPath] = fieldName.split('.')
             if (nestedPath.length === 0) return escapeId(baseName)
-            return `${escapeId(baseName)}->>'${makeNestedPath(
+            return `${escapeId(baseName)}->'${makeNestedPath(
               nestedPath
             )}' AS ${escapeId(fieldName)}`
           })
@@ -236,7 +258,7 @@ const find = async (
             const provisionedName =
               nestedPath.length === 0
                 ? escapeId(baseName)
-                : `${escapeId(baseName)}->>'${makeNestedPath(nestedPath)}'`
+                : `${escapeId(baseName)}->'${makeNestedPath(nestedPath)}'`
             return sort[fieldName] > 0
               ? `${provisionedName} ASC`
               : `${provisionedName} DESC`
@@ -250,6 +272,7 @@ const find = async (
 
   const { searchExpr, searchValues } = searchToWhereExpression(
     searchExpression,
+    fieldTypes,
     escapeId
   )
 
@@ -269,11 +292,13 @@ const find = async (
 }
 
 const findOne = async (
-  { connection, escapeId },
+  { connection, escapeId, metaInfo },
   tableName,
   searchExpression,
   fieldList
 ) => {
+  const fieldTypes = metaInfo.tables[tableName].fieldTypes
+
   let selectExpression =
     fieldList && Object.keys(fieldList).length > 0
       ? Object.keys(fieldList)
@@ -281,7 +306,7 @@ const findOne = async (
           .map(fieldName => {
             const [baseName, ...nestedPath] = fieldName.split('.')
             if (nestedPath.length === 0) return escapeId(baseName)
-            return `${escapeId(baseName)}->>'${makeNestedPath(
+            return `${escapeId(baseName)}->'${makeNestedPath(
               nestedPath
             )}' AS ${escapeId(fieldName)}`
           })
@@ -294,6 +319,7 @@ const findOne = async (
 
   const { searchExpr, searchValues } = searchToWhereExpression(
     searchExpression,
+    fieldTypes,
     escapeId
   )
 
@@ -315,9 +341,16 @@ const findOne = async (
   return null
 }
 
-const count = async ({ connection, escapeId }, tableName, searchExpression) => {
+const count = async (
+  { connection, escapeId, metaInfo },
+  tableName,
+  searchExpression
+) => {
+  const fieldTypes = metaInfo.tables[tableName].fieldTypes
+
   const { searchExpr, searchValues } = searchToWhereExpression(
     searchExpression,
+    fieldTypes,
     escapeId
   )
 
@@ -343,31 +376,46 @@ const count = async ({ connection, escapeId }, tableName, searchExpression) => {
   return 0
 }
 
-const insert = async ({ connection, escapeId }, tableName, document) => {
+const insert = async (
+  { connection, escapeId, metaInfo },
+  tableName,
+  document
+) => {
+  const fieldTypes = metaInfo.tables[tableName].fieldTypes
+
   await connection.execute(
     `INSERT INTO ${escapeId(tableName)}(${Object.keys(document)
       .map(key => escapeId(key))
       .join(', ')})
      VALUES(${Object.keys(document)
-       .map(() => '?')
+       .map(key => (fieldTypes[key] === 'json' ? 'CAST(? AS JSON)' : '?'))
        .join(', ')})
     `,
-    Object.values(document)
+    Object.keys(document).map(
+      key =>
+        fieldTypes[key] === 'json'
+          ? JSON.stringify(document[key])
+          : document[key]
+    )
   )
 }
 
 const update = async (
-  { connection, escapeId },
+  { connection, escapeId, metaInfo },
   tableName,
   searchExpression,
   updateExpression
 ) => {
+  const fieldTypes = metaInfo.tables[tableName].fieldTypes
+
   const { searchExpr, searchValues } = searchToWhereExpression(
     searchExpression,
+    fieldTypes,
     escapeId
   )
   const { updateExpr, updateValues } = updateToSetExpression(
     updateExpression,
+    fieldTypes,
     escapeId
   )
 
@@ -380,9 +428,16 @@ const update = async (
   )
 }
 
-const del = async ({ connection, escapeId }, tableName, searchExpression) => {
+const del = async (
+  { connection, escapeId, metaInfo },
+  tableName,
+  searchExpression
+) => {
+  const fieldTypes = metaInfo.tables[tableName].fieldTypes
+
   const { searchExpr, searchValues } = searchToWhereExpression(
     searchExpression,
+    fieldTypes,
     escapeId
   )
 

@@ -17,7 +17,23 @@ describe('resolve-readmodel-mysql store-api', () => {
       escapeId: sinon
         .stub()
         .callsFake(value => `\`${value.replace(/`/g, '``')}\``),
-      connection: { execute: executor }
+      connection: { execute: executor },
+      metaInfo: {
+        tables: {
+          test: {
+            fieldTypes: {
+              id: 'number',
+              search: 'string',
+              sort: 'string',
+              volume: 'string',
+              one: 'string',
+              two: 'string',
+              value: 'json',
+              inner: 'json'
+            }
+          }
+        }
+      }
     }
   })
 
@@ -70,15 +86,16 @@ describe('resolve-readmodel-mysql store-api', () => {
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
-        `SELECT \`field\`, \`inner\`->>'$."field"' AS \`inner.field\`
+        `SELECT \`field\`, \`inner\`->'$."field"' AS \`inner.field\`
          FROM \`test\`
-         WHERE ((\`timestamp\` < ?) OR (\`inner\` ->> '$."value"' > ?)) AND (NOT (\`volume\` = ?))
-         ORDER BY \`sort\` DESC, \`inner\`->>'$."sort"' ASC
+         WHERE ((\`timestamp\` < ?) OR (\`inner\` -> '$."value"' > CAST(? AS JSON)))
+           AND (NOT (\`volume\` = ?))
+         ORDER BY \`sort\` DESC, \`inner\`->'$."sort"' ASC
          LIMIT 10, 20`
       )
     )
 
-    expect(executor.firstCall.args[1]).to.be.deep.equal([100, 1000, 'volume'])
+    expect(executor.firstCall.args[1]).to.be.deep.equal([100, '1000', 'volume'])
 
     expect(result).to.be.equal(gaugeResultSet)
   })
@@ -99,15 +116,15 @@ describe('resolve-readmodel-mysql store-api', () => {
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
-        `SELECT \`field\`, \`inner\`->>'$."field"' AS \`inner.field\`
+        `SELECT \`field\`, \`inner\`->'$."field"' AS \`inner.field\`
          FROM \`test\`
-         WHERE \`search\` = ? AND \`inner\`->>'$."search"' = ?
-         ORDER BY \`sort\` DESC, \`inner\`->>'$."sort"' ASC
+         WHERE \`search\` = ? AND \`inner\`->'$."search"' = CAST(? AS JSON)
+         ORDER BY \`sort\` DESC, \`inner\`->'$."sort"' ASC
          LIMIT 10, 20`
       )
     )
 
-    expect(executor.firstCall.args[1]).to.be.deep.equal([0, 1])
+    expect(executor.firstCall.args[1]).to.be.deep.equal([0, '1'])
 
     expect(result).to.be.equal(gaugeResultSet)
   })
@@ -129,13 +146,13 @@ describe('resolve-readmodel-mysql store-api', () => {
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
         `SELECT * FROM \`test\`
-         WHERE \`search\` = ? AND \`inner\`->>'$."search"' = ? \n
-         ORDER BY \`sort\` DESC, \`inner\`->>'$."sort"' ASC
+         WHERE \`search\` = ? AND \`inner\`->'$."search"' = CAST(? AS JSON)
+         ORDER BY \`sort\` DESC, \`inner\`->'$."sort"' ASC
          LIMIT 10, 20`
       )
     )
 
-    expect(executor.firstCall.args[1]).to.be.deep.equal([0, 1])
+    expect(executor.firstCall.args[1]).to.be.deep.equal([0, '1'])
 
     expect(result).to.be.equal(gaugeResultSet)
   })
@@ -156,14 +173,14 @@ describe('resolve-readmodel-mysql store-api', () => {
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
-        `SELECT \`field\`, \`inner\`->>'$."field"' AS \`inner.field\`
+        `SELECT \`field\`, \`inner\`->'$."field"' AS \`inner.field\`
          FROM \`test\`
-         WHERE \`search\` = ? AND \`inner\`->>'$."search"' = ?
+         WHERE \`search\` = ? AND \`inner\`->'$."search"' = CAST(? AS JSON)
          LIMIT 10, 20`
       )
     )
 
-    expect(executor.firstCall.args[1]).to.be.deep.equal([0, 1])
+    expect(executor.firstCall.args[1]).to.be.deep.equal([0, '1'])
 
     expect(result).to.be.equal(gaugeResultSet)
   })
@@ -184,15 +201,15 @@ describe('resolve-readmodel-mysql store-api', () => {
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
-        `SELECT \`field\`, \`inner\`->>'$."field"' AS \`inner.field\`
+        `SELECT \`field\`, \`inner\`->'$."field"' AS \`inner.field\`
          FROM \`test\`
-         WHERE \`search\` = ? AND \`inner\`->>'$."search"' = ?
-         ORDER BY \`sort\` DESC, \`inner\`->>'$."sort"' ASC
+         WHERE \`search\` = ? AND \`inner\`->'$."search"' = CAST(? AS JSON)
+         ORDER BY \`sort\` DESC, \`inner\`->'$."sort"' ASC
          LIMIT 0, 20`
       )
     )
 
-    expect(executor.firstCall.args[1]).to.be.deep.equal([0, 1])
+    expect(executor.firstCall.args[1]).to.be.deep.equal([0, '1'])
 
     expect(result).to.be.equal(gaugeResultSet)
   })
@@ -213,15 +230,15 @@ describe('resolve-readmodel-mysql store-api', () => {
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
-        `SELECT \`field\`, \`inner\`->>'$."field"' AS \`inner.field\`
+        `SELECT \`field\`, \`inner\`->'$."field"' AS \`inner.field\`
          FROM \`test\`
-         WHERE \`search\` = ? AND \`inner\`->>'$."search"' = ?
-         ORDER BY \`sort\` DESC, \`inner\`->>'$."sort"' ASC
+         WHERE \`search\` = ? AND \`inner\`->'$."search"' = CAST(? AS JSON)
+         ORDER BY \`sort\` DESC, \`inner\`->'$."sort"' ASC
          LIMIT 10, ${MAX_VALUE}`
       )
     )
 
-    expect(executor.firstCall.args[1]).to.be.deep.equal([0, 1])
+    expect(executor.firstCall.args[1]).to.be.deep.equal([0, '1'])
 
     expect(result).to.be.equal(gaugeResultSet)
   })
@@ -239,14 +256,14 @@ describe('resolve-readmodel-mysql store-api', () => {
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
-        `SELECT \`field\`, \`inner\`->>'$."field"' AS \`inner.field\`
+        `SELECT \`field\`, \`inner\`->'$."field"' AS \`inner.field\`
          FROM \`test\`
-         WHERE \`search\` = ? AND \`inner\`->>'$."search"' = ?
+         WHERE \`search\` = ? AND \`inner\`->'$."search"' = CAST(? AS JSON)
          LIMIT 0, 1`
       )
     )
 
-    expect(executor.firstCall.args[1]).to.be.deep.equal([0, 1])
+    expect(executor.firstCall.args[1]).to.be.deep.equal([0, '1'])
 
     expect(result).to.be.equal(gaugeResult)
   })
@@ -265,12 +282,12 @@ describe('resolve-readmodel-mysql store-api', () => {
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
         `SELECT * FROM \`test\`
-         WHERE \`search\` = ? AND \`inner\`->>'$."search"' = ?
+         WHERE \`search\` = ? AND \`inner\`->'$."search"' = CAST(? AS JSON)
          LIMIT 0, 1`
       )
     )
 
-    expect(executor.firstCall.args[1]).to.be.deep.equal([0, 1])
+    expect(executor.firstCall.args[1]).to.be.deep.equal([0, '1'])
 
     expect(result).to.be.equal(gaugeResult)
   })
@@ -286,11 +303,12 @@ describe('resolve-readmodel-mysql store-api', () => {
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
         `SELECT Count(*) AS Count FROM \`test\`
-         WHERE \`search\` = ? AND \`inner\`->>'$."search"' = ?`
+         WHERE \`search\` = ? AND
+           \`inner\`->'$."search"' = CAST(? AS JSON)`
       )
     )
 
-    expect(executor.firstCall.args[1]).to.be.deep.equal([0, 1])
+    expect(executor.firstCall.args[1]).to.be.deep.equal([0, '1'])
 
     expect(result).to.be.equal(100)
   })
@@ -299,10 +317,12 @@ describe('resolve-readmodel-mysql store-api', () => {
     await storeApi.insert(pool, 'test', { id: 1, value: 2 })
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
-      format(`INSERT INTO \`test\`(\`id\`, \`value\`) VALUES(?, ?)`)
+      format(
+        `INSERT INTO \`test\`(\`id\`, \`value\`) VALUES(?, CAST(? AS JSON))`
+      )
     )
 
-    expect(executor.firstCall.args[1]).to.be.deep.equal([1, 2])
+    expect(executor.firstCall.args[1]).to.be.deep.equal([1, '2'])
   })
 
   it('should provide update method', async () => {
@@ -319,17 +339,26 @@ describe('resolve-readmodel-mysql store-api', () => {
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
-        `UPDATE \`test\` SET \`one\` = ?, \`inner\` = JSON_SET(\`inner\`, '$."one"', ?),
-         \`two\` = NULL, \`inner\` = JSON_REMOVE(\`inner\`, '$."two"'),
-         \`counter\` = \`counter\` + ?,
-         \`inner\` = JSON_SET(\`inner\`, '$."counter"',
-           JSON_EXTRACT(\`inner\`, '$."counter"') + ?
-         )
-         WHERE \`id\` = ? AND \`inner\`->>'$."value"' = ?`
+        `UPDATE \`test\` SET \`one\` = ?,
+           \`inner\` = JSON_SET(\`inner\`, '$."one"', CAST(? AS JSON)),
+           \`two\` = NULL, \`inner\` = JSON_REMOVE(\`inner\`, '$."two"'),
+           \`counter\` = \`counter\` + ?,
+           \`inner\` = JSON_SET(\`inner\`, '$."counter"',
+             JSON_EXTRACT(\`inner\`, '$."counter"') + ?
+           )
+         WHERE \`id\` = ? AND
+           \`inner\`->'$."value"' = CAST(? AS JSON)`
       )
     )
 
-    expect(executor.firstCall.args[1]).to.be.deep.equal([10, 20, 3, 4, 1, 2])
+    expect(executor.firstCall.args[1]).to.be.deep.equal([
+      10,
+      '20',
+      3,
+      4,
+      1,
+      '2'
+    ])
   })
 
   it('should provide del method', async () => {
@@ -337,10 +366,12 @@ describe('resolve-readmodel-mysql store-api', () => {
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
-        `DELETE FROM \`test\` WHERE \`id\`= ? AND \`inner\`->>'$."value"' = ?`
+        `DELETE FROM \`test\`
+          WHERE \`id\`= ? AND
+          \`inner\`->'$."value"' = CAST(? AS JSON)`
       )
     )
 
-    expect(executor.firstCall.args[1]).to.be.deep.equal([1, 2])
+    expect(executor.firstCall.args[1]).to.be.deep.equal([1, '2'])
   })
 })
