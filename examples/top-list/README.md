@@ -1,14 +1,5 @@
 # **Top List Example**
 
--------------------------------------------------------------------------
-Sorry, this article isn't finished yet :(
-    
-We'll glad to see all your questions:
-* [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
-* [**Twitter**](https://twitter.com/resolvejs)
-* e-mail to **reimagined@devexpress.com**
--------------------------------------------------------------------------
-
 ## How to start?
 
 This example demonstrates how to update application state on external events unrelated to user actions. To setup:
@@ -16,8 +7,6 @@ This example demonstrates how to update application state on external events unr
 ```bash
 npx create-resolve-app top-list-example -e top-list
 ```
-
-<p align="center"><img src="https://github.com/reimagined/resolve/blob/feature/new_readme/readme-top-list-example.png"></p>
 
 ## What's next?
 
