@@ -1,6 +1,6 @@
 # Reproducing Hacker News using ReSolve
 
-> Note: this tutorial is actual for 0.10.0 version.
+> Note: This tutorial is relevant for the reSolve version 0.10.0.
 
 This tutorial shows you how to create a **Hacker News** application and consists of the following steps:
 
@@ -73,7 +73,7 @@ At this point, you need to analyze the domain.
 Event Sourcing and CQRS require identifying Domain Aggregates and their corresponding commands and events which are used to build the required read models.
 
 **Hacker News** is a social news website focusing on computer science.
-Its users can post news, ask questions, comment on news, and reply to comments.
+Its users can post news, ask questions, comment on the news, and reply to comments.
 These posts are called **Stories**.
 
 **Users** can post **Stories** and **Comments**.
@@ -110,7 +110,7 @@ If needed, you can implement hashing and storing passwords later.
 
 A user has the following fields:
 * id - a unique user ID automatically created on the server side
-* name - a unique user name which a user provides in the registration form
+* name - a unique username provided by a user in the registration form
 * createdAt - the user's registration timestamp
 
 ### Write Side
@@ -125,7 +125,7 @@ export const USER_CREATED = 'UserCreated'
 ```
 
 Add the `createUser` command that should return the `UserCreated` event.
-Validate input data to ensure that a user name exists and it is not empty.
+Validate input data to ensure that a username exists and not empty.
 Add projection handlers and an initial state to check whether a user already exists.
 
 ```js
@@ -260,14 +260,14 @@ export default [storiesReadModel]
 
 ### Authentication
 
-After adding a storage for users, create the local authentication strategy and implement the required callbacks.
+After adding storage for users, create the local authentication strategy and implement the required callbacks.
 
 Install `uuid` package:
 ```
 npm install --save uuid
 ```
 
-In the `auth/` directory, create `./auth/localStrategy.js` file. `passwordField` has same value as `usernameField` because this app does not use a password.
+In the `auth/` directory, create `./auth/localStrategy.js` file. `passwordField` has the same value as `usernameField` because this app does not use a password.
 
 ```js
 // ./auth/localStrategy.js
@@ -346,7 +346,7 @@ Add the required authentication parameters:
 
 ```
 
-It's recommend to store an `authenticationSecret` in an environment variable for security purposes.
+It's recommended to store an `authenticationSecret` in an environment variable for security purposes.
 Although, you can add a hardcoded JWT secret for using in the development environment:
 
 ```js
@@ -356,11 +356,11 @@ if (
   !process.env.hasOwnProperty('JWT_SECRET')
 ) {
   throw new Error(
-    'In production mode you must specify jwt secret key in JWT_SECRET environment variable'
+    'You must specify JWT secret key in a JWT_SECRET environment variable in the production mode'
   )
 }
 
-export default process.env.JWT_SECRET || 'SECRETJWT'
+export default process.env.JWT_SECRET || 'HARDCODED_JWT_SECRET_FOR_DEVELOPMENT_ENV'
 ```
 
 Update `register` and `login` callbacks. Use the `resolve` parameter to access the query and command executors.
@@ -521,10 +521,10 @@ Implement the [Error](./client/components/Error.js) component to display error m
 
 ### Login View
 
-The app layout contains meta information, an application header with a menu, user info and some content.
+The app layout contains meta-information, an application header with a menu, user info and some content.
 
 Install the following packages:
-* `react-helmet` - to pass meta information to the HTML header
+* `react-helmet` - to pass meta-information to the HTML header
 * `react-router` - to implement routing
 * `redux` and `react-redux` - to store data
 * `seamless-immutable` - to enforce state immutability
@@ -568,7 +568,7 @@ Implement the [UserById](./client/containers/UserById.js) container and uncommen
 
 ## Adding Stories
 
-A story is news or a question a user posts.
+A **story** is either a **news** or a **question** posted by a user.
 In **Hacker News**, stories are displayed on the following pages:
 * Newest - the newest stories
 * Ask - users’ questions (Ask HNs)
@@ -1276,9 +1276,9 @@ Note that the `/storyDetails/:storyId/comments/:commentId` path should be above 
 
 Implement the [PageNotFound](./client/components/PageNotFound.js) component to display a message indicating that the requested page was not found.
 
-Add the created container to the end of the the route list in the [routes](./client/routes.js) file.
+Add the created container to the end of the route list in the [routes](./client/routes.js) file.
 
 ## Data Importer
 
 Implement an importer in the [import](./import) folder to get data from the original **Hacker News** website.
-This importer uses the website's REST API and transforms data to events.
+This importer uses the website's REST API and transforms data into events.
