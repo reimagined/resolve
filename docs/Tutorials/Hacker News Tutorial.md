@@ -55,7 +55,7 @@ You can also read the following articles for more information:
 
 Use the [create-resolve-app](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app) CLI tool to create a new reSolve project.
 
-Create an empty reSolve project using `create-resolve-app` and run the application in the development mode.
+Create an empty reSolve project using `create-resolve-app`, and run the application in the development mode.
 
 ```
 npx create-resolve-app hn-resolve
@@ -346,8 +346,8 @@ Add the required authentication parameters:
 
 ```
 
-For security purpose it's recommend to store `authenticationSecret` in the environment variable.
-But it's very comfortable to get it hardcoded in `dev` stage. Implement code for this:
+It's recommend to store an `authenticationSecret` in an environment variable for security purposes.
+Although, you can add a hardcoded JWT secret for using in the development environment:
 
 ```js
 // ./auth/jwtSecret.js
@@ -479,9 +479,9 @@ export default strategies
 
 ```
 
-Do not forget to install `jsonwebtoken` package in order to get user from cookies.
+Remember to install the `jsonwebtoken` package to access cookies.
 
-Add the `me` resolver to pass current logged in user to the client side.
+Add `me` resolver to pass the currently logged in user to the client side.
 
 ```js
 // ./commmon/read-models/resolvers.js
@@ -813,7 +813,7 @@ export default {
 }
 ```
 
-### Story related resolvers
+### Story-Related Resolvers
 
 The **Hacker News** application displays a list of stories without additional information.
 Add the appropriate resolvers:
