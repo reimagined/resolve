@@ -1,7 +1,7 @@
 const getMetaInfo = async pool => {
-  const { connection, metaName } = pool
+  const { connection, escapeId, metaName } = pool
 
-  await connection.execute(`CREATE TABLE IF NOT EXISTS ${metaName} (
+  await connection.execute(`CREATE TABLE IF NOT EXISTS ${escapeId(metaName)} (
       MetaKey VARCHAR(36) NOT NULL,
       MetaField VARCHAR(128) NOT NULL,
       SimpleValue BIGINT NULL,
@@ -12,13 +12,13 @@ const getMetaInfo = async pool => {
   pool.metaInfo = { tables: {}, timestamp: 0 }
 
   let [rows] = await connection.execute(
-    `SELECT SimpleValue AS Timestamp FROM ${metaName}
+    `SELECT SimpleValue AS Timestamp FROM ${escapeId(metaName)}
      WHERE MetaKey="Timestamp" AND MetaField="Timestamp"`
   )
 
   if (rows.length === 0) {
     await connection.execute(
-      `INSERT INTO ${metaName}(MetaKey, MetaField, SimpleValue)
+      `INSERT INTO ${escapeId(metaName)}(MetaKey, MetaField, SimpleValue)
        VALUES("Timestamp", "Timestamp", 0)`
     )
   } else {
@@ -29,7 +29,7 @@ const getMetaInfo = async pool => {
 
   void ([rows] = await connection.execute(
     `SELECT MetaField AS TableName, ComplexValue AS TableDescription
-     FROM ${metaName} WHERE MetaKey="Tables"`
+     FROM ${escapeId(metaName)} WHERE MetaKey="Tables"`
   ))
 
   for (let { TableName, TableDescription } of rows) {
@@ -62,7 +62,7 @@ const getMetaInfo = async pool => {
       pool.metaInfo.tables[TableName] = descriptor
     } catch (err) {
       await connection.execute(
-        `DELETE FROM ${metaName}
+        `DELETE FROM ${escapeId(metaName)}
          WHERE MetaKey="Tables" AND MetaField=?`,
         [TableName]
       )
@@ -75,11 +75,11 @@ const getLastTimestamp = async ({ metaInfo }) => {
 }
 
 const setLastTimestamp = async (
-  { connection, metaName, metaInfo },
+  { connection, escapeId, metaName, metaInfo },
   timestamp
 ) => {
   await connection.execute(
-    `UPDATE ${metaName} SET SimpleValue=? WHERE MetaKey="Timestamp"`,
+    `UPDATE ${escapeId(metaName)} SET SimpleValue=? WHERE MetaKey="Timestamp"`,
     [timestamp]
   )
 
@@ -95,12 +95,14 @@ const getTableInfo = async ({ metaInfo }, tableName) => {
 }
 
 const describeTable = async (
-  { connection, metaInfo, metaName },
+  { connection, escapeId, metaInfo, metaName },
   tableName,
   metaSchema
 ) => {
   await connection.execute(
-    `INSERT INTO ${metaName}(MetaKey, MetaField, ComplexValue) VALUES("Tables", ?, ?)`,
+    `INSERT INTO ${escapeId(
+      metaName
+    )}(MetaKey, MetaField, ComplexValue) VALUES("Tables", ?, ?)`,
     [tableName, metaSchema]
   )
 
@@ -111,12 +113,12 @@ const getTableNames = async ({ metaInfo }) => {
   return Object.keys(metaInfo.tables)
 }
 
-const drop = async ({ connection, metaName, metaInfo }) => {
+const drop = async ({ connection, escapeId, metaName, metaInfo }) => {
   for (let tableName of Object.keys(metaInfo.tables)) {
-    await connection.execute(`DROP TABLE ${tableName}`)
+    await connection.execute(`DROP TABLE ${escapeId(tableName)}`)
   }
 
-  await connection.execute(`DROP TABLE ${metaName}`)
+  await connection.execute(`DROP TABLE ${escapeId(metaName)}`)
 
   for (let key of Object.keys(metaInfo)) {
     delete metaInfo[key]

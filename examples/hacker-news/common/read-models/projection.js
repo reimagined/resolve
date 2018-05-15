@@ -11,9 +11,9 @@ export default {
     await store.defineTable('Stories', [
       { name: 'id', type: 'string', index: 'primary' },
       { name: 'type', type: 'string', index: 'secondary' },
-      { name: 'title', type: 'string' },
-      { name: 'text', type: 'string' },
-      { name: 'link', type: 'string' },
+      { name: 'title', type: 'json' },
+      { name: 'text', type: 'json' },
+      { name: 'link', type: 'json' },
       { name: 'commentCount', type: 'number' },
       { name: 'votes', type: 'json' },
       { name: 'createdAt', type: 'number' },
@@ -29,7 +29,7 @@ export default {
 
     await store.defineTable('Comments', [
       { name: 'id', type: 'string', index: 'primary' },
-      { name: 'text', type: 'string' },
+      { name: 'text', type: 'json' },
       { name: 'parentId', type: 'string' },
       { name: 'comments', type: 'json' },
       { name: 'storyId', type: 'string' },

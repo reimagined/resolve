@@ -292,7 +292,11 @@ const checkUpdateExpression = (metaInfo, updateExpression) => {
 
     for (let fieldName of Object.keys(affectedFields)) {
       const fieldType = checkAndGetFieldType(metaInfo, fieldName)
-      if (operator === '$unset' || fieldType === 'json') continue
+      if (
+        operator === '$unset' ||
+        (fieldType === 'json' && operator === '$set')
+      )
+        continue
 
       const updateValueType =
         affectedFields[fieldName] == null
