@@ -67,6 +67,7 @@ pipeline {
                             sh """
                                 export YARN_CACHE_FOLDER=/yarn_cache
                                 /init.sh
+                                mkdir hw && cd hw
                                 yarn global add create-resolve-app@\$(cat /lerna_version)
                                 create-resolve-app hello-world -c \$(cat /last_commit)
                                 cd ./hello-world
@@ -86,6 +87,7 @@ pipeline {
                             sh """
                                 export YARN_CACHE_FOLDER=/yarn_cache
                                 /init.sh
+                                mkdir tl && cd tl
                                 yarn global add create-resolve-app@\$(cat /lerna_version)
                                 create-resolve-app todolist -e todo -c \$(cat /last_commit)
                                 cd ./todolist
@@ -105,6 +107,7 @@ pipeline {
                             sh """
                                 export YARN_CACHE_FOLDER=/yarn_cache
                                 /init.sh
+                                mkdir tltl && cd tltl
                                 yarn global add create-resolve-app@\$(cat /lerna_version)
                                 create-resolve-app twolevelstodo -e todo-two-levels -c \$(cat /last_commit)
                                 cd ./twolevelstodo
@@ -124,6 +127,7 @@ pipeline {
                             sh """
                                 export YARN_CACHE_FOLDER=/yarn_cache
                                 /init.sh
+                                mkdir hn && cd hn
                                 yarn global add create-resolve-app@\$(cat /lerna_version)
                                 create-resolve-app hn -e hacker-news -c \$(cat /last_commit)
                                 cd ./hn
@@ -143,6 +147,7 @@ pipeline {
                             sh """
                                 export YARN_CACHE_FOLDER=/yarn_cache
                                 /init.sh
+                                mkdir topl && cd topl
                                 yarn global add create-resolve-app@\$(cat /lerna_version)
                                 create-resolve-app toplist -e top-list -c \$(cat /last_commit)
                                 cd ./toplist
@@ -162,6 +167,7 @@ pipeline {
                             sh """
                                 export YARN_CACHE_FOLDER=/yarn_cache
                                 /init.sh
+                                mkdir wpc && cd wpc
                                 yarn global add create-resolve-app@\$(cat /lerna_version)
                                 create-resolve-app with-postcss-modules -e with-postcss-modules -c \$(cat /last_commit)
                                 cd ./with-postcss-modules
