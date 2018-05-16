@@ -71,6 +71,7 @@ pipeline {
                                 create-resolve-app hello-world -c \$(cat /last_commit)
                                 cd ./hello-world
                                 cat ./package.json
+                                sed -i 's/"port": 3000/"port": 3001/g' ./resolve.config.json
 
                                 yarn test
                                 yarn test:functional --browser=path:/chromium
@@ -89,6 +90,7 @@ pipeline {
                                 create-resolve-app todolist -e todo -c \$(cat /last_commit)
                                 cd ./todolist
                                 cat ./package.json
+                                sed -i 's/"port": 3000/"port": 3002/g' ./resolve.config.json
 
                                 yarn test
                                 yarn test:functional --browser=path:/chromium
@@ -107,6 +109,7 @@ pipeline {
                                 create-resolve-app twolevelstodo -e todo-two-levels -c \$(cat /last_commit)
                                 cd ./twolevelstodo
                                 cat ./package.json
+                                sed -i 's/"port": 3000/"port": 3003/g' ./resolve.config.json
 
                                 yarn test
                                 yarn test:functional --browser=path:/chromium
@@ -125,6 +128,7 @@ pipeline {
                                 create-resolve-app hn -e hacker-news -c \$(cat /last_commit)
                                 cd ./hn
                                 cat ./package.json
+                                sed -i 's/"port": 3000/"port": 3004/g' ./resolve.config.json
 
                                 yarn test
                                 yarn test:functional --browser=path:/chromium
@@ -143,6 +147,7 @@ pipeline {
                                 create-resolve-app toplist -e top-list -c \$(cat /last_commit)
                                 cd ./toplist
                                 cat ./package.json
+                                sed -i 's/"port": 3000/"port": 3005/g' ./resolve.config.json
 
                                 yarn test
                                 yarn test:functional --browser=path:/chromium
@@ -161,6 +166,7 @@ pipeline {
                                 create-resolve-app with-postcss-modules -e with-postcss-modules -c \$(cat /last_commit)
                                 cd ./with-postcss-modules
                                 cat ./package.json
+                                sed -i 's/"port": 3000/"port": 3006/g' ./resolve.config.json
 
                                 yarn test
                                 yarn test:functional --browser=path:/chromium
