@@ -70,6 +70,7 @@ pipeline {
                         cd ./hello-world
                         cat ./package.json
                         sed -i 's/"port": 3000/"port": 3001/g' ./resolve.config.json
+                        grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3001/g'
 
                         yarn test
                         yarn test:functional --browser=path:/chromium
@@ -93,6 +94,7 @@ pipeline {
                                 cd ./todolist
                                 cat ./package.json
                                 sed -i 's/"port": 3000/"port": 3002/g' ./resolve.config.json
+                                grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3002/g'
 
                                 yarn test
                                 yarn test:functional --browser=path:/chromium
@@ -113,6 +115,7 @@ pipeline {
                                 cd ./twolevelstodo
                                 cat ./package.json
                                 sed -i 's/"port": 3000/"port": 3003/g' ./resolve.config.json
+                                grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3003/g'
 
                                 yarn test
                                 yarn test:functional --browser=path:/chromium
@@ -133,6 +136,7 @@ pipeline {
                                 cd ./hn
                                 cat ./package.json
                                 sed -i 's/"port": 3000/"port": 3004/g' ./resolve.config.json
+                                grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3004/g'
 
                                 yarn test
                                 yarn test:functional --browser=path:/chromium
@@ -153,6 +157,8 @@ pipeline {
                                 cd ./toplist
                                 cat ./package.json
                                 sed -i 's/"port": 3000/"port": 3005/g' ./resolve.config.json
+                                grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3005/g'
+
 
                                 yarn test
                                 yarn test:functional --browser=path:/chromium
@@ -173,6 +179,7 @@ pipeline {
                                 cd ./with-postcss-modules
                                 cat ./package.json
                                 sed -i 's/"port": 3000/"port": 3006/g' ./resolve.config.json
+                                grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3006/g'
 
                                 yarn test
                                 yarn test:functional --browser=path:/chromium
