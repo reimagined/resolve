@@ -2,17 +2,15 @@ import fs from 'fs'
 import path from 'path'
 import JSON5 from 'json5'
 import envString from 'env-string'
-import { transformFileSync } from 'babel-core'
 
 import assignSettings from './assign_settings'
 import resolveFile from './resolve_file'
 import validateConfig from './validate_config'
-import getModulesDirs from './get_modules_dirs'
 
 const resolveConfigOrigin = require('../../configs/resolve.config.json')
 const deployOptions = require('../../configs/deploy.options.json')
 
-export default function setup(argv, env) {
+const setup = (argv, env) => {
   let localConfig = {}
 
   if (argv.config || env.CONFIG_PATH) {
@@ -36,31 +34,11 @@ export default function setup(argv, env) {
     ...localConfig
   }
 
-  const resolveBuildConfigPath = resolveFile(
-    argv.buildConfig || env.BUILD_CONFIG_PATH || 'resolve.build.config.js'
-  )
-
-  const resolveBuildConfigCode = transformFileSync(resolveBuildConfigPath).code
-
-  let resolveBuildConfigModule = new module.constructor()
-
-  resolveBuildConfigModule.paths = getModulesDirs()
-
-  resolveBuildConfigModule._compile(
-    resolveBuildConfigCode,
-    resolveBuildConfigPath
-  )
-
-  const resolveBuildConfig =
-    resolveBuildConfigModule.exports.default || resolveBuildConfigModule.exports
-
-  assignSettings(
-    { resolveConfig, deployOptions, resolveBuildConfig },
-    argv,
-    env
-  )
+  assignSettings({ resolveConfig, deployOptions }, argv, env)
 
   validateConfig(resolveConfig)
 
-  return { resolveConfig, deployOptions, resolveBuildConfig }
+  return { resolveConfig, deployOptions }
 }
+
+export default setup

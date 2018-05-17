@@ -22,12 +22,12 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-mongo#readme",
   "devDependencies": {
-    "chai": "^3.5.0",
-    "jest": "^22.1.4",
-    "sinon": "^3.3.0"
+    "chai": "^4.1.2",
+    "jest": "^22.4.3",
+    "sinon": "^5.0.7"
   },
   "dependencies": {
-    "mongodb": "^2.2.26",
+    "mongodb": "^2.2.35",
     "resolve-storage-base": "0.10.2"
   }
 }

@@ -4,7 +4,7 @@ import getModulesDirs from './get_modules_dirs'
 import getWebpackEnvPlugin from './get_webpack_env_plugin'
 import getWebpackResolveAliasPlugin from './get_webpack_resolve_alias_plugin'
 
-export default ({ resolveConfig, deployOptions, env }) => {
+const getClientWebpackConfig = ({ resolveConfig, deployOptions, env }) => {
   const clientIndexPath = resolveConfig.index
   const clientDistDir = path.resolve(
     process.cwd(),
@@ -31,12 +31,14 @@ export default ({ resolveConfig, deployOptions, env }) => {
       rules: [
         {
           test: /\.js$/,
-          loaders: [
-            {
-              loader: 'babel-loader?cacheDirectory=true'
-            }
-          ],
-          exclude: [...getModulesDirs(), path.resolve(__dirname, '../../dist')]
+          use: {
+            loader: 'babel-loader?cacheDirectory=true'
+          },
+          exclude: [
+            /node_modules/,
+            ...getModulesDirs(),
+            path.resolve(__dirname, '../../dist')
+          ]
         }
       ]
     },
@@ -46,3 +48,5 @@ export default ({ resolveConfig, deployOptions, env }) => {
     ]
   }
 }
+
+export default getClientWebpackConfig

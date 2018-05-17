@@ -18,7 +18,7 @@ const token = 'token'
 describe('aggregates', () => {
   beforeEach(() => {
     userId = uuid.v4()
-    sandbox = sinon.sandbox.create()
+    sandbox = sinon.createSandbox()
     jwt.verify = sandbox.stub().returns({ id: userId })
   })
   afterEach(() => {

@@ -2,6 +2,7 @@ import fs from 'fs'
 import respawn from 'respawn'
 import webpack from 'webpack'
 
+import getResolveBuildConfig from './get_resolve_build_config'
 import getWebpackConfigs from './get_webpack_configs'
 import showBuildInfo from './show_build_info'
 import setup from './setup'
@@ -13,7 +14,7 @@ export default (argv, defaults = {}) => {
 
   Object.assign(env, Object.assign(defaults, env))
 
-  const { resolveConfig, deployOptions, resolveBuildConfig } = setup(argv, env)
+  const { resolveConfig, deployOptions } = setup(argv, env)
 
   if (argv.printConfig) {
     // eslint-disable-next-line
@@ -29,6 +30,8 @@ export default (argv, defaults = {}) => {
     )
     return
   }
+
+  const resolveBuildConfig = getResolveBuildConfig(argv, env)
 
   assignConfigPaths(resolveConfig)
 

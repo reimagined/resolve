@@ -1,6 +1,6 @@
 import webpack from 'webpack'
 
-const envList = require('../../configs/env.list')
+import { env as envList } from './constants'
 
 const regExp = /^RESOLVE_/
 
