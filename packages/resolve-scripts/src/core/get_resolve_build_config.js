@@ -1,4 +1,4 @@
-import { transformFileSync } from 'babel-core'
+import { transformFileSync } from '@babel/core'
 
 import getModulesDirs from './get_modules_dirs'
 import resolveFile from './resolve_file'

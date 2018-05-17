@@ -1,58 +1,12 @@
 import sinon from 'sinon'
 import { expect } from 'chai'
 import { MongoClient, _setFindResult, _setInsertCommandReject } from 'mongodb'
-import { ConcurrentError } from 'resolve-storage-base'
-
-jest.mock('mongodb', () => {
-  const sinon = require('sinon')
-  let foundArray = []
-  let isRejectInsert = false
-
-  return {
-    _setFindResult: array => {
-      if (Array.isArray(array)) {
-        foundArray = array
-      } else {
-        foundArray = []
-      }
-    },
-    _setInsertCommandReject: isReject => {
-      isRejectInsert = isReject
-    },
-    MongoClient: {
-      connect: sinon.spy(() =>
-        Promise.resolve({
-          collection: sinon.spy(() => ({
-            insert: sinon.spy(
-              () =>
-                !isRejectInsert
-                  ? Promise.resolve()
-                  : Promise.reject({ code: 11000 })
-            ),
-            find: sinon.spy(() => ({
-              stream: sinon.spy(() => ({
-                on: (event, callback) => {
-                  if (event === 'data') {
-                    foundArray.forEach(elm => callback(elm))
-                  } else if (event === 'end') {
-                    callback()
-                  }
-                }
-              }))
-            })),
-            createIndex: sinon.spy(() => Promise.resolve())
-          }))
-        })
-      )
-    }
-  }
-})
-
-const createAdapter = require('../src')
+import createAdapter from '../src'
 
 const adapterSettings = {
   url: 'test-url',
-  collection: 'test-collection'
+  collection: 'test-collection',
+  dbName: 'test-db'
 }
 
 const testEvent = {
@@ -64,7 +18,6 @@ describe('es-mongo', () => {
   afterEach(() => {
     _setFindResult(null)
     _setInsertCommandReject(false)
-    MongoClient.connect.reset()
   })
 
   it('should save event', () => {
@@ -76,7 +29,8 @@ describe('es-mongo', () => {
         expect(MongoClient.connect.lastCall.args).to.deep.equal(['test-url'])
         return MongoClient.connect.lastCall.returnValue
       })
-      .then(db => {
+      .then(client => {
+        const db = client.db(adapterSettings.dbName)
         expect(db.collection.lastCall.args).to.deep.equal(['test-collection'])
         expect(
           db.collection.lastCall.returnValue.insert.lastCall.args
@@ -112,7 +66,8 @@ describe('es-mongo', () => {
     return adapter
       .loadEventsByTypes(types, processEvent)
       .then(() => MongoClient.connect.lastCall.returnValue)
-      .then(db => {
+      .then(client => {
+        const db = client.db(adapterSettings.dbName)
         expect(db.collection.lastCall.args).to.deep.equal(['test-collection'])
         expect(
           db.collection.lastCall.returnValue.find.lastCall.args
@@ -142,7 +97,8 @@ describe('es-mongo', () => {
     return adapter
       .loadEventsByAggregateIds([aggregateId], processEvent)
       .then(() => MongoClient.connect.lastCall.returnValue)
-      .then(db => {
+      .then(client => {
+        const db = client.db(adapterSettings.dbName)
         expect(db.collection.lastCall.args).to.deep.equal(['test-collection'])
         expect(
           db.collection.lastCall.returnValue.find.lastCall.args
@@ -156,18 +112,5 @@ describe('es-mongo', () => {
           [eventsByAggregateId[1]]
         ])
       })
-  })
-
-  it('works the same way for different import types', () => {
-    expect(createAdapter).to.be.equal(require('../src'))
-  })
-
-  it('works the same way for different import types', () => {
-    _setInsertCommandReject(true)
-    const adapter = createAdapter(adapterSettings)
-
-    return adapter.saveEvent(testEvent).catch(e => {
-      expect(e).to.be.an.instanceof(ConcurrentError)
-    })
   })
 })

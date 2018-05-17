@@ -216,8 +216,4 @@ describe('ZeroMQ bus', () => {
       expect(trigger.lastCall.args).to.be.deep.equal([originalMessage])
     })
   })
-
-  it('works the same way for different import types', () => {
-    expect(adapter).to.be.equal(require('../src'))
-  })
 })

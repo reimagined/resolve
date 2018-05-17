@@ -23,7 +23,6 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-lite#readme",
   "devDependencies": {
     "chai": "^4.1.2",
-    "jest": "^22.4.3",
     "sinon": "^5.0.7"
   },
   "dependencies": {
