@@ -1,26 +1,27 @@
 import messages from './messages'
 
-const checkCondition = (condition, type, ...args) => {
+const checkCondition = (condition, messageGenerator, ...args) => {
   if (!condition) {
-    const message = messages.hasOwnProperty(type)
-      ? typeof messages[type] === 'function'
-        ? messages[type](...args)
-        : messages[type]
-      : `Unknown internal error ${type}: ${args}`
-
-    throw new Error(message)
+    throw new Error(
+      typeof messageGenerator === 'function' ? messageGenerator(...args) : messageGenerator
+    )
   }
 }
 
 const checkOptionShape = (option, types) => {
   return !(
-    option == null ||
-    !types.reduce((acc, type) => acc || option.constructor === type, false)
+    option == null || !types.reduce((acc, type) => acc || option.constructor === type, false)
   )
 }
 
-const checkAndGetTableMetaSchema = tableSchema => {
-  checkCondition(Array.isArray(tableSchema), 'invalidTableSchema')
+const checkAndGetTableMetaSchema = (tableName, tableSchema) => {
+  checkCondition(
+    Array.isArray(tableSchema),
+    messages.invalidTableSchema,
+    tableName,
+    messages.tableDescriptorNotArray,
+    tableSchema
+  )
 
   const validTypes = ['number', 'string', 'json']
   const indexRoles = ['primary', 'secondary']
@@ -28,37 +29,55 @@ const checkAndGetTableMetaSchema = tableSchema => {
   const secondaryIndexes = []
   const fieldTypes = {}
 
-  for (let rowDescription of tableSchema) {
+  for (let columnDescription of tableSchema) {
     checkCondition(
-      checkOptionShape(rowDescription, [Object]),
-      'invalidTableSchema'
+      checkOptionShape(columnDescription, [Object]),
+      messages.invalidTableSchema,
+      tableName,
+      messages.columnDescriptorInvalidShape,
+      columnDescription
     )
-    const { name, type, index } = rowDescription
-    checkCondition(/^\w+?$/.test(name), 'invalidTableSchema')
+    const { name, type, index } = columnDescription
     checkCondition(
-      validTypes.indexOf(type) > -1 &&
-        (!index || indexRoles.indexOf(index) > -1),
-      'invalidTableSchema'
+      /^(?:\w|\d|-)+?$/.test(name),
+      messages.invalidTableSchema,
+      tableName,
+      messages.columnWrongName,
+      columnDescription
+    )
+    checkCondition(
+      validTypes.indexOf(type) > -1 && (!index || indexRoles.indexOf(index) > -1),
+      messages.invalidTableSchema,
+      tableName,
+      messages.columnWrongTypeOrIndex,
+      columnDescription
     )
 
-    if (index === 'primary') {
+    if (index) {
       checkCondition(
         type === 'number' || type === 'string',
-        'invalidTableSchema'
+        messages.invalidTableSchema,
+        tableName,
+        messages.wrongTypeForIndexedColumn,
+        columnDescription
       )
-      primaryIndex = { name, type }
-    } else if (index === 'secondary') {
-      checkCondition(
-        type === 'number' || type === 'string',
-        'invalidTableSchema'
-      )
-      secondaryIndexes.push({ name, type })
+      if (index === 'primary') {
+        primaryIndex = { name, type }
+      } else {
+        secondaryIndexes.push({ name, type })
+      }
     }
 
     fieldTypes[name] = type
   }
 
-  checkCondition(checkOptionShape(primaryIndex, [Object]), 'invalidTableSchema')
+  checkCondition(
+    checkOptionShape(primaryIndex, [Object]),
+    messages.invalidTableSchema,
+    tableName,
+    messages.tableWithoutPrimaryIndex,
+    tableSchema
+  )
 
   return { primaryIndex, secondaryIndexes, fieldTypes }
 }
@@ -78,41 +97,32 @@ const checkAndGetFieldType = (metaInfo, fieldName) => {
 }
 
 const checkFieldList = (metaInfo, fieldList, validProjectionValues = []) => {
-  checkCondition(
-    checkOptionShape(fieldList, [Object, Array]),
-    'invalidFieldList'
-  )
+  if (!checkOptionShape(fieldList, [Object, Array])) {
+    return '*'
+  }
+
   if (Array.isArray(fieldList)) {
     for (let fieldName of fieldList) {
-      checkCondition(
-        checkAndGetFieldType(metaInfo, fieldName),
-        'invalidProjectionKey',
-        fieldName
-      )
+      if (!checkAndGetFieldType(metaInfo, fieldName)) {
+        return fieldName
+      }
     }
     return
   }
 
   for (let fieldName of Object.keys(fieldList)) {
-    checkCondition(
-      checkAndGetFieldType(metaInfo, fieldName),
-      'invalidProjectionKey',
-      fieldName
-    )
-    checkCondition(
-      validProjectionValues.indexOf(fieldList[fieldName]) > -1,
-      'invalidProjectionKey',
-      fieldName
-    )
+    if (
+      !checkAndGetFieldType(metaInfo, fieldName) ||
+      !(validProjectionValues.indexOf(fieldList[fieldName]) > -1)
+    ) {
+      return fieldName
+    }
   }
+
+  return null
 }
 
-const isFieldValueCorrect = (
-  metaInfo,
-  fieldName,
-  fieldValue,
-  isNullable = true
-) => {
+const isFieldValueCorrect = (metaInfo, fieldName, fieldValue, isNullable = true) => {
   try {
     const fieldType = checkAndGetFieldType(metaInfo, fieldName)
     if (!fieldType) return false
@@ -128,86 +138,101 @@ const isFieldValueCorrect = (
   }
 }
 
-const checkDocumentShape = (metaInfo, document, strict = false) => {
-  checkCondition(
-    checkOptionShape(document, [Object]),
-    'invalidDocumentShape',
-    document
-  )
-  const documentKeys = Object.keys(document)
+const checkInsertedDocumentShape = (tableName, metaInfo, document) => {
+  const documentKeys = document instanceof Object ? Object.keys(document) : []
 
   checkCondition(
-    !strict || Object.keys(metaInfo.fieldTypes).length === documentKeys.length,
-    'invalidDocumentShape',
-    document
+    checkOptionShape(document, [Object]) &&
+      Object.keys(metaInfo.fieldTypes).length === documentKeys.length,
+    messages.invalidFieldList,
+    'insert',
+    tableName,
+    document,
+    messages.fieldListNotObject
   )
 
-  checkFieldList(metaInfo, documentKeys)
+  const checkFieldResult = checkFieldList(metaInfo, documentKeys)
+  checkCondition(
+    checkFieldResult == null,
+    messages.invalidFieldList,
+    'insert',
+    tableName,
+    document,
+    messages.unexistingField,
+    checkFieldResult
+  )
+
   const { primaryIndex, secondaryIndexes } = metaInfo
 
   for (let fieldName of documentKeys) {
     const isNullable = !(
-      primaryIndex.name === fieldName ||
-      secondaryIndexes.find(({ name }) => name === fieldName)
+      primaryIndex.name === fieldName || secondaryIndexes.find(({ name }) => name === fieldName)
     )
 
     checkCondition(
       isFieldValueCorrect(metaInfo, fieldName, document[fieldName], isNullable),
-      'invalidDocumentShape',
-      document
+      messages.invalidFieldList,
+      'insert',
+      document,
+      messages.columnTypeMismatch,
+      fieldName
     )
   }
 }
 
-const checkSearchExpression = (metaInfo, searchExpression) => {
+const checkSearchExpression = (tableName, operation, metaInfo, searchExpression) => {
   checkCondition(
     checkOptionShape(searchExpression, [Object]),
-    'invalidSearchExpression',
-    searchExpression
+    messages.invalidSearchExpression,
+    operation,
+    tableName,
+    searchExpression,
+    messages.searchExpressionNotObject
   )
 
-  const allowedComparationOperators = [
-    '$lt',
-    '$lte',
-    '$gt',
-    '$gte',
-    '$eq',
-    '$ne'
-  ]
+  const allowedComparationOperators = ['$lt', '$lte', '$gt', '$gte', '$eq', '$ne']
   const allowedLogicalOperators = ['$and', '$or', '$not']
 
-  const operators = Object.keys(searchExpression).filter(
-    key => key.indexOf('$') > -1
-  )
+  const operators = Object.keys(searchExpression).filter(key => key.indexOf('$') > -1)
 
   checkCondition(
-    operators.length === 0 ||
-      operators.length === Object.keys(searchExpression).length,
-    'invalidSearchExpression',
-    searchExpression
+    operators.length === 0 || operators.length === Object.keys(searchExpression).length,
+    messages.invalidSearchExpression,
+    operation,
+    tableName,
+    searchExpression,
+    messages.mixedSearchOperatorsAndValues
   )
 
   if (operators.length > 0) {
     for (let operator of operators) {
       checkCondition(
         allowedLogicalOperators.includes(operator),
-        'invalidSearchExpression',
-        searchExpression
+        messages.invalidSearchExpression,
+        operation,
+        tableName,
+        searchExpression,
+        messages.illegalLogicalOperator,
+        operator
       )
 
       if (operator === '$not') {
-        checkSearchExpression(metaInfo, searchExpression[operator])
+        checkSearchExpression(tableName, operation, metaInfo, searchExpression[operator])
         return
       }
 
       checkCondition(
         Array.isArray(searchExpression[operator]),
-        'invalidSearchExpression',
-        searchExpression
+        messages.invalidSearchExpression,
+        operation,
+        tableName,
+        searchExpression,
+        messages.illegalOperatorAndOrArgument,
+        searchExpression[operator]
       )
 
       for (let nestedExpr of searchExpression[operator]) {
-        checkSearchExpression(metaInfo, nestedExpr)
+        checkSearchExpression(tableName, operation, metaInfo, nestedExpr)
       }
     }
 
@@ -215,13 +240,23 @@ const checkSearchExpression = (metaInfo, searchExpression) => {
   }
 
   const documentKeys = Object.keys(searchExpression)
-  checkFieldList(metaInfo, documentKeys)
+
+  const checkFieldResult = checkFieldList(metaInfo, documentKeys)
+  checkCondition(
+    checkFieldResult == null,
+    messages.invalidFieldList,
+    operation,
+    tableName,
+    searchExpression,
+    messages.unexistingField,
+    checkFieldResult
+  )
+
   const { primaryIndex, secondaryIndexes } = metaInfo
 
   for (let fieldName of documentKeys) {
     const isNullable = !(
-      primaryIndex.name === fieldName ||
-      secondaryIndexes.find(({ name }) => name === fieldName)
+      primaryIndex.name === fieldName || secondaryIndexes.find(({ name }) => name === fieldName)
     )
 
     let fieldValue = searchExpression[fieldName]
@@ -233,15 +268,23 @@ const checkSearchExpression = (metaInfo, searchExpression) => {
 
       checkCondition(
         inOperators.length === 0 || inOperators.length === 1,
-        'invalidSearchExpression',
-        searchExpression
+        messages.invalidSearchExpression,
+        operation,
+        tableName,
+        searchExpression,
+        messages.searchValueScalarOrCompareOperator,
+        searchExpression[fieldName]
       )
 
       if (inOperators.length > 0) {
         checkCondition(
           allowedComparationOperators.indexOf(inOperators[0]) > -1,
-          'invalidSearchExpression',
-          searchExpression
+          messages.invalidSearchExpression,
+          operation,
+          tableName,
+          searchExpression,
+          messages.illegalCompareOperator,
+          searchExpression[fieldName]
         )
 
         fieldValue = searchExpression[fieldName][inOperators[0]]
@@ -250,28 +293,29 @@ const checkSearchExpression = (metaInfo, searchExpression) => {
 
     checkCondition(
       isFieldValueCorrect(metaInfo, fieldName, fieldValue, isNullable),
-      'invalidSearchExpression',
-      searchExpression
+      messages.invalidSearchExpression,
+      operation,
+      tableName,
+      searchExpression,
+      messages.incompatibleSearchField,
+      { [fieldName]: fieldValue }
     )
   }
 }
 
-const checkUpdateExpression = (metaInfo, updateExpression) => {
-  checkCondition(
-    checkOptionShape(updateExpression, [Object]),
-    'invalidUpdateExpression',
-    updateExpression
-  )
-
-  const operators = Object.keys(updateExpression).filter(
-    key => key.indexOf('$') > -1
-  )
+const checkUpdateExpression = (tableName, metaInfo, updateExpression) => {
+  const operators =
+    updateExpression instanceof Object
+      ? Object.keys(updateExpression).filter(key => key.indexOf('$') > -1)
+      : []
 
   checkCondition(
-    operators.length > 0 &&
-      operators.length === Object.keys(updateExpression).length,
-    'invalidUpdateExpression',
-    updateExpression
+    checkOptionShape(updateExpression, [Object]) &&
+      (operators.length > 0 && operators.length === Object.keys(updateExpression).length),
+    messages.invalidUpdateExpression,
+    tableName,
+    updateExpression,
+    messages.updateExpressionNotValidObject
   )
 
   const allowedOperators = ['$set', '$unset', '$inc']
@@ -279,24 +323,26 @@ const checkUpdateExpression = (metaInfo, updateExpression) => {
   for (let operator of operators) {
     checkCondition(
       allowedOperators.includes(operator),
-      'invalidUpdateExpression',
-      updateExpression
+      messages.invalidUpdateExpression,
+      tableName,
+      updateExpression,
+      messages.illegalUpdateOperator,
+      operator
     )
 
     const affectedFields = updateExpression[operator]
     checkCondition(
       checkOptionShape(affectedFields, [Object]),
-      'invalidUpdateExpression',
-      updateExpression
+      messages.invalidUpdateExpression,
+      tableName,
+      updateExpression,
+      messages.updateOperatorNotObject,
+      affectedFields
     )
 
     for (let fieldName of Object.keys(affectedFields)) {
       const fieldType = checkAndGetFieldType(metaInfo, fieldName)
-      if (
-        operator === '$unset' ||
-        (fieldType === 'json' && operator === '$set')
-      )
-        continue
+      if (operator === '$unset' || (fieldType === 'json' && operator === '$set')) continue
 
       const updateValueType =
         affectedFields[fieldName] == null
@@ -310,32 +356,23 @@ const checkUpdateExpression = (metaInfo, updateExpression) => {
       checkCondition(
         (operator === '$set' && updateValueType === fieldType) ||
           (operator === '$inc' && updateValueType === 'number'),
-        'invalidUpdateExpression',
-        updateExpression
+        messages.invalidUpdateExpression,
+        tableName,
+        updateExpression,
+        messages.uncompatibleUpdateValue,
+        fieldName
       )
     }
   }
 }
 
 const checkTableExists = async (metaApi, tableName) => {
-  checkCondition(
-    await metaApi.tableExists(tableName),
-    'tableNotExist',
-    tableName
-  )
+  checkCondition(await metaApi.tableExists(tableName), 'tableNotExist', tableName)
 }
 
-const defineTable = async (
-  { metaApi, storeApi },
-  tableName,
-  inputTableSchema
-) => {
-  checkCondition(
-    !(await metaApi.tableExists(tableName)),
-    'tableExists',
-    tableName
-  )
-  const tableSchema = checkAndGetTableMetaSchema(inputTableSchema)
+const defineTable = async ({ metaApi, storeApi }, tableName, inputTableSchema) => {
+  checkCondition(!await metaApi.tableExists(tableName), 'tableExists', tableName)
+  const tableSchema = checkAndGetTableMetaSchema(tableName, inputTableSchema)
   await storeApi.defineTable(tableName, tableSchema)
   await metaApi.describeTable(tableName, tableSchema)
 }
@@ -350,22 +387,45 @@ const find = async (
   limit = Infinity
 ) => {
   await checkTableExists(metaApi, tableName)
-
   const metaInfo = await metaApi.getTableInfo(tableName)
+
   if (resultFieldsList != null) {
-    checkFieldList(metaInfo, resultFieldsList, [0, 1])
-  }
-  if (sortFieldsList != null) {
-    checkFieldList(metaInfo, sortFieldsList, [-1, 1])
+    const checkFieldResult = checkFieldList(metaInfo, resultFieldsList, [0, 1])
+
+    checkCondition(
+      checkFieldResult == null,
+      messages.invalidFieldList,
+      'find',
+      tableName,
+      resultFieldsList,
+      ...(checkFieldResult !== '*'
+        ? [messages.illegalProjectionColumn, checkFieldResult]
+        : [messages.projectionNotObject])
+    )
   }
 
-  checkSearchExpression(metaInfo, searchExpression)
+  if (sortFieldsList != null) {
+    const checkFieldResult = checkFieldList(metaInfo, sortFieldsList, [-1, 1])
+
+    checkCondition(
+      checkFieldResult == null,
+      messages.invalidFieldList,
+      'find',
+      tableName,
+      resultFieldsList,
+      ...(checkFieldResult !== '*'
+        ? [messages.illegalSortColumn, checkFieldResult]
+        : [messages.sortNotObject])
+    )
+  }
+
+  checkSearchExpression(tableName, 'find', metaInfo, searchExpression)
 
   checkCondition(
     ((Number.isInteger(limit) && limit > -1) || limit === Infinity) &&
       Number.isInteger(skip) &&
       skip > -1,
-    'invalidPagination',
+    messages.invalidPagination,
     skip,
     limit
   )
@@ -380,20 +440,26 @@ const find = async (
   )
 }
 
-const findOne = async (
-  { metaApi, storeApi },
-  tableName,
-  searchExpression,
-  resultFieldsList
-) => {
+const findOne = async ({ metaApi, storeApi }, tableName, searchExpression, resultFieldsList) => {
   await checkTableExists(metaApi, tableName)
 
   const metaInfo = await metaApi.getTableInfo(tableName)
   if (resultFieldsList != null) {
-    checkFieldList(metaInfo, resultFieldsList, [0, 1])
+    const checkFieldResult = checkFieldList(metaInfo, resultFieldsList, [0, 1])
+
+    checkCondition(
+      checkFieldResult == null,
+      messages.invalidFieldList,
+      'findOne',
+      tableName,
+      resultFieldsList,
+      ...(checkFieldResult !== '*'
+        ? [messages.illegalProjectionColumn, checkFieldResult]
+        : [messages.projectionNotObject])
+    )
   }
 
-  checkSearchExpression(metaInfo, searchExpression)
+  checkSearchExpression(tableName, 'findOne', metaInfo, searchExpression)
 
   return await storeApi.findOne(tableName, searchExpression, resultFieldsList)
 }
@@ -402,7 +468,7 @@ const count = async ({ metaApi, storeApi }, tableName, searchExpression) => {
   await checkTableExists(metaApi, tableName)
 
   const metaInfo = await metaApi.getTableInfo(tableName)
-  checkSearchExpression(metaInfo, searchExpression)
+  checkSearchExpression(tableName, 'count', metaInfo, searchExpression)
 
   return await storeApi.count(tableName, searchExpression)
 }
@@ -411,22 +477,17 @@ const insert = async ({ metaApi, storeApi }, tableName, document) => {
   await checkTableExists(metaApi, tableName)
 
   const metaInfo = await metaApi.getTableInfo(tableName)
-  checkDocumentShape(metaInfo, document, true)
+  checkInsertedDocumentShape(tableName, metaInfo, document)
 
   await storeApi.insert(tableName, document)
 }
 
-const update = async (
-  { metaApi, storeApi },
-  tableName,
-  searchExpression,
-  updateExpression
-) => {
+const update = async ({ metaApi, storeApi }, tableName, searchExpression, updateExpression) => {
   await checkTableExists(metaApi, tableName)
 
   const metaInfo = await metaApi.getTableInfo(tableName)
-  checkSearchExpression(metaInfo, searchExpression)
-  checkUpdateExpression(metaInfo, updateExpression)
+  checkSearchExpression(tableName, 'update', metaInfo, searchExpression)
+  checkUpdateExpression(tableName, metaInfo, updateExpression)
 
   await storeApi.update(tableName, searchExpression, updateExpression)
 }
@@ -435,7 +496,7 @@ const del = async ({ metaApi, storeApi }, tableName, searchExpression) => {
   await checkTableExists(metaApi, tableName)
 
   const metaInfo = await metaApi.getTableInfo(tableName)
-  checkSearchExpression(metaInfo, searchExpression)
+  checkSearchExpression(tableName, 'delete', metaInfo, searchExpression)
 
   await storeApi.del(tableName, searchExpression)
 }
