@@ -58,28 +58,28 @@ pipeline {
             }
         }
 
+        stage('Create-resolve-app [ hello-world ] Functional Tests') {
+            steps {
+                script {
+                    sh """
+                        export YARN_CACHE_FOLDER=/yarn_cache
+                        /init.sh
+                        mkdir hw && cd hw
+                        yarn global add create-resolve-app@\$(cat /lerna_version)
+                        create-resolve-app hello-world -c \$(cat /last_commit)
+                        cd ./hello-world
+                        cat ./package.json
+                        sed -i 's/"port": 3000/"port": 3001/g' ./resolve.config.json
+
+                        yarn test
+                        yarn test:functional --browser=path:/chromium
+                    """
+                }
+            }
+        }
+
         stage('CRA tests') {
             parallel {
-
-                stage('Create-resolve-app [ hello-world ] Functional Tests') {
-                    steps {
-                        script {
-                            sh """
-                                export YARN_CACHE_FOLDER=/yarn_cache
-                                /init.sh
-                                mkdir hw && cd hw
-                                yarn global add create-resolve-app@\$(cat /lerna_version)
-                                create-resolve-app hello-world -c \$(cat /last_commit)
-                                cd ./hello-world
-                                cat ./package.json
-                                sed -i 's/"port": 3000/"port": 3001/g' ./resolve.config.json
-
-                                yarn test
-                                yarn test:functional --browser=path:/chromium
-                            """
-                        }
-                    }
-                }
 
                 stage('Create-resolve-app [ todolist ] Functional Tests') {
                     steps {
