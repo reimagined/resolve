@@ -4,6 +4,7 @@ export default {
   // General adapter exceptions
   invalidApiImplementation: 'Invalid read-model adapter API implementation',
   readSideForbiddenOperation: operation => `Operation "${operation}" is not allowed on the read side`,
+  alreadyInitialized: 'The read model table is already initialized',
   tableExists: tableName => `Table "${tableName}" already exists`,
   tableNotExist: tableName => `Table "${tableName}" does not exist`,
 
