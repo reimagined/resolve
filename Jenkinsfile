@@ -58,38 +58,43 @@ pipeline {
             }
         }
 
-        stage('Create-resolve-app [ hello-world ] Functional Tests') {
+        stage('CRA tests') {
+
             steps {
                 script {
                     sh """
                         export YARN_CACHE_FOLDER=/yarn_cache
                         /init.sh
-                        mkdir hw && cd hw
                         yarn global add create-resolve-app@\$(cat /lerna_version)
-                        create-resolve-app hello-world -c \$(cat /last_commit)
-                        cd ./hello-world
-                        cat ./package.json
-                        sed -i 's/"port": 3000/"port": 3001/g' ./resolve.config.json
-                        grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3001/g'
-
-                        yarn test
-                        yarn test:functional --browser=path:/chromium
                     """
                 }
             }
-        }
 
-        stage('CRA tests') {
             parallel {
+
+                stage('Create-resolve-app [ hello-world ] Functional Tests') {
+                    steps {
+                        script {
+                            sh """
+                                mkdir hw && cd hw
+                                yarn global add create-resolve-app@\$(cat /lerna_version)
+                                cd ./hello-world
+                                cat ./package.json
+                                sed -i 's/"port": 3000/"port": 3001/g' ./resolve.config.json
+                                grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3001/g'
+
+                                yarn test
+                                yarn test:functional --browser=path:/chromium
+                            """
+                        }
+                    }
+                }
 
                 stage('Create-resolve-app [ todolist ] Functional Tests') {
                     steps {
                         script {
                             sh """
-                                export YARN_CACHE_FOLDER=/yarn_cache
-                                /init.sh
                                 mkdir tl && cd tl
-                                yarn global add create-resolve-app@\$(cat /lerna_version)
                                 create-resolve-app todolist -e todo -c \$(cat /last_commit)
                                 cd ./todolist
                                 cat ./package.json
@@ -107,10 +112,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-                                export YARN_CACHE_FOLDER=/yarn_cache
-                                /init.sh
                                 mkdir tltl && cd tltl
-                                yarn global add create-resolve-app@\$(cat /lerna_version)
                                 create-resolve-app twolevelstodo -e todo-two-levels -c \$(cat /last_commit)
                                 cd ./twolevelstodo
                                 cat ./package.json
@@ -128,10 +130,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-                                export YARN_CACHE_FOLDER=/yarn_cache
-                                /init.sh
                                 mkdir hn && cd hn
-                                yarn global add create-resolve-app@\$(cat /lerna_version)
                                 create-resolve-app hn -e hacker-news -c \$(cat /last_commit)
                                 cd ./hn
                                 cat ./package.json
@@ -149,10 +148,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-                                export YARN_CACHE_FOLDER=/yarn_cache
-                                /init.sh
                                 mkdir topl && cd topl
-                                yarn global add create-resolve-app@\$(cat /lerna_version)
                                 create-resolve-app toplist -e top-list -c \$(cat /last_commit)
                                 cd ./toplist
                                 cat ./package.json
@@ -171,10 +167,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-                                export YARN_CACHE_FOLDER=/yarn_cache
-                                /init.sh
                                 mkdir wpc && cd wpc
-                                yarn global add create-resolve-app@\$(cat /lerna_version)
                                 create-resolve-app with-postcss-modules -e with-postcss-modules -c \$(cat /last_commit)
                                 cd ./with-postcss-modules
                                 cat ./package.json
