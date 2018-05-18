@@ -1,4 +1,4 @@
-const message = require('../../../../configs/message.json')
+import message from '../../../../configs/message.json'
 
 const getSocketByClientId = (socket, socketId) => {
   const socketIoNamespace = socket.sockets

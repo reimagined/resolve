@@ -1,20 +1,15 @@
-import webpack from 'webpack'
-import flat from 'flat'
+import getIn from 'lodash/get'
 
-const getWebpackResolveAliasPlugin = ({ resolveConfig, deployOptions }) => {
-  const defineObject = {}
+import paths from '../../configs/resolve.config.paths'
 
-  for (const key of Object.keys(deployOptions)) {
-    defineObject[`$resolve.${key}`] = JSON.stringify(deployOptions[key])
-  }
-  for (let maxDepth = 1; maxDepth < 5; maxDepth++) {
-    const flatConfig = flat(resolveConfig, { maxDepth })
-    for (const key of Object.keys(flatConfig)) {
-      defineObject[`$resolve.${key}`] = JSON.stringify(flatConfig[key])
-    }
+const getWebpackResolveAliasPlugin = ({ resolveConfig }) => {
+  const alias = {}
+
+  for (const key of [...paths.files, ...paths.filesOrModules]) {
+    alias[`$resolve.${key}`] = getIn(resolveConfig, key)
   }
 
-  return new webpack.DefinePlugin(defineObject)
+  return alias
 }
 
 export default getWebpackResolveAliasPlugin

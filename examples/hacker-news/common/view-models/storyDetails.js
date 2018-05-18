@@ -12,7 +12,7 @@ export default {
   projection: {
     Init: () => Immutable({}),
     [STORY_CREATED]: (
-      state: any,
+      state,
       {
         aggregateId,
         timestamp,
@@ -36,10 +36,10 @@ export default {
       })
     },
 
-    [STORY_UPVOTED]: (state: any, { payload: { userId } }) =>
+    [STORY_UPVOTED]: (state, { payload: { userId } }) =>
       state.update('votes', votes => votes.concat(userId)),
 
-    [STORY_UNVOTED]: (state: any, { payload: { userId } }) =>
+    [STORY_UNVOTED]: (state, { payload: { userId } }) =>
       state.update('votes', votes => votes.filter(id => id !== userId)),
 
     [STORY_COMMENTED]: (
@@ -81,6 +81,6 @@ export default {
       }
     }
   },
-  serializeState: (state: any) => JSON.stringify(state || {}),
-  deserializeState: (state: any) => Immutable(JSON.parse(state))
+  serializeState: state => JSON.stringify(state || {}),
+  deserializeState: state => Immutable(JSON.parse(state))
 }

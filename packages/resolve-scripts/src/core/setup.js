@@ -7,8 +7,8 @@ import assignSettings from './assign_settings'
 import resolveFile from './resolve_file'
 import validateConfig from './validate_config'
 
-const resolveConfigOrigin = require('../../configs/resolve.config.json')
-const deployOptions = require('../../configs/deploy.options.json')
+import resolveConfigOrigin from '../../configs/resolve.config.json'
+import deployOptions from '../../configs/deploy.options.json'
 
 const setup = (argv, env) => {
   let localConfig = {}

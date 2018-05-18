@@ -1,4 +1,4 @@
-const viewModels = require($resolve.viewModels)
+import viewModels from '$resolve.viewModels'
 
 const deserializeInitialState = serializedInitialState => {
   const initialState = {

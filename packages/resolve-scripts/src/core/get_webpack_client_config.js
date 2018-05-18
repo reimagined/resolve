@@ -2,6 +2,7 @@ import path from 'path'
 
 import getModulesDirs from './get_modules_dirs'
 import getWebpackEnvPlugin from './get_webpack_env_plugin'
+import getWebpackResolveDefinePlugin from './get_webpack_resolve_define_plugin'
 import getWebpackResolveAliasPlugin from './get_webpack_resolve_alias_plugin'
 
 const getClientWebpackConfig = ({ resolveConfig, deployOptions, env }) => {
@@ -14,7 +15,7 @@ const getClientWebpackConfig = ({ resolveConfig, deployOptions, env }) => {
 
   return {
     name: 'Client',
-    entry: ['babel-regenerator-runtime', clientIndexPath],
+    entry: ['@babel/runtime/regenerator', clientIndexPath],
     mode: deployOptions.mode,
     devtool: 'source-map',
     target: 'web',
@@ -25,7 +26,8 @@ const getClientWebpackConfig = ({ resolveConfig, deployOptions, env }) => {
       devtoolFallbackModuleFilenameTemplate: '[resource-path]?[hash]'
     },
     resolve: {
-      modules: getModulesDirs()
+      modules: getModulesDirs(),
+      alias: getWebpackResolveAliasPlugin({ resolveConfig, deployOptions, env })
     },
     module: {
       rules: [
@@ -44,7 +46,7 @@ const getClientWebpackConfig = ({ resolveConfig, deployOptions, env }) => {
     },
     plugins: [
       getWebpackEnvPlugin({ resolveConfig, deployOptions, env }),
-      getWebpackResolveAliasPlugin({ resolveConfig, deployOptions })
+      getWebpackResolveDefinePlugin({ resolveConfig, deployOptions, env })
     ]
   }
 }

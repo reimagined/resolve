@@ -3,7 +3,7 @@ import executeViewModelQuery from './execute_view_model_query'
 import eventStore from './event_store'
 import executeCommand from './command_executor'
 
-const sagas = require($resolve.sagas)
+import sagas from '$resolve.sagas'
 
 const sagaRunner = () => {
   sagas.forEach(saga =>

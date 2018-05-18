@@ -4,6 +4,7 @@ import nodeExternals from 'webpack-node-externals'
 
 import getModulesDirs from './get_modules_dirs'
 import getWebpackEnvPlugin from './get_webpack_env_plugin'
+import getWebpackResolveDefinePlugin from './get_webpack_resolve_define_plugin'
 import getWebpackResolveAliasPlugin from './get_webpack_resolve_alias_plugin'
 
 const getWebpackServerConfig = ({ resolveConfig, deployOptions, env }) => {
@@ -17,7 +18,7 @@ const getWebpackServerConfig = ({ resolveConfig, deployOptions, env }) => {
 
   return {
     name: 'Server',
-    entry: ['babel-regenerator-runtime', serverIndexPath],
+    entry: ['@babel/runtime/regenerator', serverIndexPath],
     mode: deployOptions.mode,
     devtool: 'source-map',
     target: 'node',
@@ -26,7 +27,8 @@ const getWebpackServerConfig = ({ resolveConfig, deployOptions, env }) => {
       __filename: true
     },
     resolve: {
-      modules: getModulesDirs()
+      modules: getModulesDirs(),
+      alias: getWebpackResolveAliasPlugin({ resolveConfig, deployOptions, env })
     },
     output: {
       path: serverDistDir,
@@ -58,7 +60,7 @@ const getWebpackServerConfig = ({ resolveConfig, deployOptions, env }) => {
     },
     plugins: [
       getWebpackEnvPlugin({ resolveConfig, deployOptions, env }),
-      getWebpackResolveAliasPlugin({ resolveConfig, deployOptions, env }),
+      getWebpackResolveDefinePlugin({ resolveConfig, deployOptions, env }),
       new webpack.BannerPlugin({
         banner: 'require("source-map-support").install();',
         raw: true,

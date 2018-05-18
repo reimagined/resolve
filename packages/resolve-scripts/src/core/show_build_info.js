@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 
-const statsConfig = require('../../configs/stats.config.json')
+import statsConfig from '../../configs/stats.config.json'
 
 const showBuildInfo = ({ name }, err, stats) => {
   if (!stats) {

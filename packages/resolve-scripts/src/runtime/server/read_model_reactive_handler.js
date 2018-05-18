@@ -2,7 +2,7 @@ import getSocketByClientId from './utils/get_socket_by_client_id'
 import readModelQueryExecutors from './read_model_query_executors'
 import println from './utils/println'
 
-const message = require('../../../configs/message.json')
+import message from '../../../configs/message.json'
 
 export const READ_MODEL_SUBSCRIPTION_TIME_TO_LIVE = 300000
 export const subscriptionProcesses = new Map()

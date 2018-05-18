@@ -12,10 +12,11 @@ import getHtmlMarkup from './get_html_markup'
 import getRootableUrl from './utils/get_rootable_url'
 import Routes from '../client/components/Routes'
 
+import routes from '$resolve.routes'
+
 const staticPath = $resolve.staticPath
 const rootPath = $resolve.rootPath
 const jwtCookieName = $resolve.jwtCookie.name
-const routes = require($resolve.routes)
 
 const serverSideRendering = (req, res) => {
   const url = req.params[0] || ''

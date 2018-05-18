@@ -1,6 +1,6 @@
 import { validate } from 'jsonschema'
 
-import * as schema from '../../configs/schema.resolve.config.json'
+import schema from '../../configs/schema.resolve.config.json'
 
 const validateConfig = config => {
   try {

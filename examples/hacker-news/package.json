@@ -7,7 +7,7 @@
     "start": "resolve-scripts start",
     "update": "resolve-scripts update",
     "dev": "resolve-scripts dev",
-    "import": "babel-node --presets env ./import",
+    "import": "babel-node ./import",
     "prettier": "prettier --single-quote --no-semi --write \"**/*.js\"",
     "test": "jest",
     "test:update": "jest -u",
@@ -64,7 +64,7 @@
     "uuid": "^3.2.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.0.0-beta.47",
+    "@babel/node": "^7.0.0-beta.47",
     "babel-eslint": "^8.2.3",
     "@babel/core": "^7.0.0-beta.47",
     "@babel/preset-env": "^7.0.0-beta.47",
