@@ -6,7 +6,7 @@ test('Inline env vars in a string works correctly', async () => {
   const json = await exec(
     `resolve-scripts dev --config=${path.resolve(
       __dirname,
-      '../../resolve.test.env.config.json'
+      '../../resolve.test.env.inline.config.json'
     )}`,
     {
       PORT: 1234,
