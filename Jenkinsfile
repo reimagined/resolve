@@ -50,28 +50,21 @@ pipeline {
             }
         }
 
-        stage('Clean before [ create-resolve-app ] testing') {
-            steps {
-                script {
-                    sh 'rm -rf ./*'
-                }
-            }
-        }
-
-        stage('CRA tests') {
-
+        stage('Prepare for [ create-resolve-app ] testing') {
             steps {
                 script {
                     sh """
+                        rm -rf ./*
                         export YARN_CACHE_FOLDER=/yarn_cache
                         /init.sh
                         yarn global add create-resolve-app@\$(cat /lerna_version)
                     """
                 }
             }
+        }
 
+        stage('CRA tests') {
             parallel {
-
                 stage('Create-resolve-app [ hello-world ] Functional Tests') {
                     steps {
                         script {
