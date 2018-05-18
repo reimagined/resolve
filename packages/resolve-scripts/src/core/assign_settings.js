@@ -1,9 +1,8 @@
 import Url from 'url'
 import { isV4Format } from 'ip'
 
+import { deployOptions as deployOptionsOrigin } from './constants'
 import resolveFile from './resolve_file'
-
-const deployOptionsOrigin = require('../../configs/deploy.options.json')
 
 export const extenders = []
 

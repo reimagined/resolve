@@ -6,7 +6,7 @@ import getModulesDirs from './get_modules_dirs'
 import getWebpackEnvPlugin from './get_webpack_env_plugin'
 import getWebpackResolveAliasPlugin from './get_webpack_resolve_alias_plugin'
 
-export default ({ resolveConfig, deployOptions, env }) => {
+const getWebpackServerConfig = ({ resolveConfig, deployOptions, env }) => {
   const serverIndexPath = path.resolve(__dirname, '../runtime/server/index.js')
 
   const serverDistDir = path.resolve(
@@ -38,19 +38,21 @@ export default ({ resolveConfig, deployOptions, env }) => {
       rules: [
         {
           test: /\.js$/,
-          loaders: [
-            {
-              loader: 'babel-loader?cacheDirectory=true',
-              query: {
-                env: {
-                  development: {
-                    plugins: ['babel-plugin-object-source']
-                  }
+          use: {
+            loader: 'babel-loader?cacheDirectory=true',
+            options: {
+              env: {
+                development: {
+                  plugins: ['babel-plugin-object-source']
                 }
               }
             }
-          ],
-          exclude: [...getModulesDirs(), path.resolve(__dirname, '../../dist')]
+          },
+          exclude: [
+            /node_modules/,
+            ...getModulesDirs(),
+            path.resolve(__dirname, '../../dist')
+          ]
         }
       ]
     },
@@ -66,3 +68,5 @@ export default ({ resolveConfig, deployOptions, env }) => {
     externals: getModulesDirs().map(modulesDir => nodeExternals({ modulesDir }))
   }
 }
+
+export default getWebpackServerConfig

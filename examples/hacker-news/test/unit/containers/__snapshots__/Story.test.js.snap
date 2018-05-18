@@ -41,7 +41,7 @@ ShallowWrapper {
           </Styled(Link)>,
           " ",
         ],
-        <Unknown
+        <_default
           createdAt={1970-01-01T00:00:00.000Z}
         />,
         <span>
@@ -174,7 +174,7 @@ ShallowWrapper {
             </Styled(Link)>,
             " ",
           ],
-          <Unknown
+          <_default
             createdAt={1970-01-01T00:00:00.000Z}
           />,
           <span>
@@ -327,7 +327,7 @@ ShallowWrapper {
       "children": Array [
         null,
         null,
-        <Unknown
+        <_default
           createdAt={1970-01-01T00:00:00.000Z}
         />,
         <span>
@@ -439,7 +439,7 @@ ShallowWrapper {
         "children": Array [
           null,
           null,
-          <Unknown
+          <_default
             createdAt={1970-01-01T00:00:00.000Z}
           />,
           <span>

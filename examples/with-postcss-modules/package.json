@@ -16,13 +16,13 @@
     }
   },
   "dependencies": {
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
     "react-helmet": "^5.2.0",
     "resolve-scripts": "0.10.2"
   },
   "devDependencies": {
-    "autoprefixer": "^8.3.0",
+    "autoprefixer": "^8.5.0",
     "babel-jest": "^22.4.3",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-transform-class-properties": "^6.24.1",
@@ -30,16 +30,16 @@
     "babel-plugin-transform-export-default": "^7.0.0-alpha.20",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.6.1",
+    "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "css-loader": "^0.28.11",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "jest": "^22.4.3",
-    "jest-css-modules-transform": "^1.1.0",
+    "jest-css-modules-transform": "^2.0.0",
     "postcss-import": "^11.1.0",
-    "postcss-loader": "^2.1.4",
-    "react-test-renderer": "^16.2.0",
+    "postcss-loader": "^2.1.5",
+    "react-test-renderer": "^16.3.2",
     "style-loader": "^0.21.0",
-    "testcafe": "^0.19.1"
+    "testcafe": "^0.19.2"
   }
 }

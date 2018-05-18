@@ -22,9 +22,8 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-auth#readme",
   "devDependencies": {
-    "chai": "^3.5.0",
-    "jest": "^22.1.4",
-    "sinon": "^3.3.0"
+    "chai": "^4.1.2",
+    "sinon": "^5.0.7"
   },
   "dependencies": {
     "cookie": "^0.3.1"

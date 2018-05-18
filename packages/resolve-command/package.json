@@ -22,9 +22,8 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-command#readme",
   "devDependencies": {
-    "chai": "^3.5.0",
-    "jest": "^22.1.4",
-    "sinon": "^3.3.0"
+    "chai": "^4.1.2",
+    "sinon": "^5.0.7"
   },
   "dependencies": {
     "invariant-function-hash": "^1.0.0"

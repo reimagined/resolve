@@ -16,7 +16,7 @@
     "resolve-scripts": "./bin/resolve-scripts.js"
   },
   "scripts": {
-    "test": "jest --testMatch=**/test/*.test.js --verbose",
+    "test": "jest --testMatch=**/test/**.test.js --verbose",
     "prepublish": "yarn build",
     "build": "babel --source-maps --out-dir ./dist ./src "
   },
@@ -24,27 +24,14 @@
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts#readme",
-  "peerDependencies": {
-    "react": ">=15",
-    "react-dom": ">=15"
-  },
   "dependencies": {
+    "@babel/core": "^7.0.0-beta.47",
+    "@babel/runtime": "^7.0.0-beta.47",
     "address": "^1.0.3",
-    "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.4",
-    "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-plugin-object-source": "^1.0.1",
-    "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-plugin-transform-decorators-legacy": "^1.3.4",
-    "babel-plugin-transform-export-default": "^7.0.0-alpha.20",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-polyfill": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-react": "^6.24.1",
-    "babel-regenerator-runtime": "^6.5.0",
+    "babel-loader": "^8.0.0-beta.2",
+    "babel-plugin-object-source": "^1.0.2",
     "body-parser": "^1.18.2",
-    "chalk": "^2.3.2",
+    "chalk": "^2.4.1",
     "cookie": "^0.3.1",
     "cookie-parser": "^1.4.3",
     "cross-spawn": "^6.0.5",
@@ -57,18 +44,15 @@
     "isomorphic-fetch": "^2.2.1",
     "jest": "^22.4.3",
     "json5": "^1.0.1",
-    "jsonschema": "^1.2.2",
-    "jsonwebtoken": "^8.2.0",
-    "lodash": "^4.17.5",
+    "jsonschema": "^1.2.4",
+    "jsonwebtoken": "^8.2.1",
+    "lodash": "^4.17.10",
     "opn": "^5.3.0",
     "prop-types": "^15.6.1",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
     "react-helmet": "^5.2.0",
     "react-redux": "^5.0.7",
     "react-router": "^4.2.0",
     "react-router-redux": "^5.0.0-alpha.9",
-    "redux": "^3.7.2",
     "redux-devtools-extension": "^2.13.2",
     "resolve-auth": "0.10.2",
     "resolve-bus-memory": "0.10.2",
@@ -78,17 +62,19 @@
     "resolve-redux": "0.10.2",
     "resolve-storage-lite": "0.10.2",
     "respawn": "^2.5.0",
-    "socket.io": "^2.0.4",
-    "source-map-support": "^0.5.4",
-    "styled-components": "^3.2.3",
+    "socket.io": "^2.1.0",
+    "source-map-support": "^0.5.5",
+    "styled-components": "^3.2.6",
     "table": "^4.0.3",
-    "testcafe": "^0.19.1",
-    "testcafe-browser-tools": "^1.6.1",
-    "webpack": "^4.3.0",
-    "webpack-node-externals": "^1.6.0",
+    "testcafe": "^0.19.2",
+    "testcafe-browser-tools": "^1.6.2",
+    "webpack": "^4.8.3",
+    "webpack-node-externals": "^1.7.2",
     "yargs": "^11.0.0"
   },
-  "devDependencies": {
-    "babel-cli": "^6.26.0"
+  "peerDependencies": {
+    "react": ">=16.3.0",
+    "react-dom": ">=16.3.0",
+    "redux": ">=3.7.2"
   }
 }

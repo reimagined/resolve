@@ -244,8 +244,4 @@ describe('resolve-command', () => {
       value: 42
     })
   })
-
-  it('works the same way for different import types', () => {
-    expect(createCommandExecutor).to.be.equal(require('../src'))
-  })
 })
