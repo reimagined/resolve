@@ -79,7 +79,9 @@ export default [
         const count = await store.count('Rating', {})
 
         return count > 0 ? Math.floor((count - 1) / pageLength) + 1 : 0
-      }
+      },
+
+      RatingCount: async store => store.count('Rating', {})
     }
   }
 ]

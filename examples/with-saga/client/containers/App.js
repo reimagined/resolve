@@ -6,92 +6,145 @@ import uuid from 'uuid'
 import actions from '../../actions'
 import Header from '../components/Header'
 
-const App = props => {
-  let emailInput
+class App extends React.Component {
+  state = {
+    errorMessage: null,
+    isFormDisabled: false
+  }
 
-  return (
-    <div>
-      <Helmet>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="/bootstrap.min.css" />
-        <title>reSolve Hello World</title>
-      </Helmet>
+  componentWillReceiveProps(nextProps) {
+    if (!this.props.users) {
+      return
+    }
 
-      <Header />
+    if (this.props.users.length !== nextProps.users.length) {
+      this.setState({
+        errorMessage: null,
+        isFormDisabled: false
+      })
+      this.refs.email.value = ''
+    } else if (this.props.errors.length !== nextProps.errors.length) {
+      const lastError = nextProps.errors[nextProps.errors.length - 1]
 
-      <div className="container">
-        <form
-          onSubmit={event => {
-            event.preventDefault()
-            props.createUser({ email: emailInput.value })
-          }}
-        >
-          <div className="form-group row">
-            <label
-              className="col-sm-2 col-form-label"
-              htmlFor="exampleInputEmail1"
-            >
-              Email
-            </label>
+      this.setState({
+        errorMessage: lastError.message,
+        isFormDisabled: false
+      })
+    }
+  }
 
-            <div className="col-sm-10">
-              <input
-                ref={element => (emailInput = element)}
-                type="email"
-                className="form-control"
-                id="exampleInputEmail1"
-                placeholder="Enter email"
-              />
+  handleFormSubmit = event => {
+    event.preventDefault()
+    this.props.createUser({ email: this.refs.email.value })
+    this.setState({ isFormDisabled: true })
+  }
+
+  render() {
+    const { props } = this
+
+    return (
+      <div>
+        <Helmet>
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+          />
+          <link rel="stylesheet" href="/bootstrap.min.css" />
+          <title>reSolve App With Saga</title>
+        </Helmet>
+
+        <Header />
+
+        <div className="container">
+          <form onSubmit={this.handleFormSubmit}>
+            <div className="form-group row">
+              <label
+                className="col-sm-2 col-form-label"
+                htmlFor="exampleInputEmail1"
+              >
+                Email
+              </label>
+
+              <div className="col-sm-10">
+                <input
+                  ref="email"
+                  type="email"
+                  className={[
+                    'form-control',
+                    this.state.errorMessage ? 'is-invalid' : ''
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
+                  id="exampleInputEmail1"
+                  placeholder="Enter email"
+                  disabled={this.state.isFormDisabled}
+                />
+                {this.state.errorMessage && (
+                  <div className="invalid-feedback">
+                    {this.state.errorMessage}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
 
-          <button type="submit" className="btn btn-primary">
-            Create
-          </button>
-        </form>
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={this.state.isFormDisabled}
+            >
+              Create
+            </button>
+          </form>
 
-        <div className="mt-4">
-          <h5>Created users</h5>
+          <div className="mt-4">
+            <h5>Created users</h5>
 
-          {(() => {
-            if (!props.users) {
-              return <span>Data loading...</span>
-            }
+            {(() => {
+              if (!props.users) {
+                return <span>Data loading...</span>
+              }
 
-            if (props.users.length === 0) {
-              return <span>No users</span>
-            }
+              if (props.users.length === 0) {
+                return <span>No users</span>
+              }
 
-            return (
-              <ul className="list-group">
-                {props.users.map(user => (
-                  <li
-                    key={user.email}
-                    className="list-group-item d-flex align-items-center"
-                  >
-                    <div className="flex-grow-1">
+              return (
+                <ul className="list-group">
+                  {props.users.map(user => (
+                    <li key={user.email} className="list-group-item">
                       <div>{user.email}</div>
-                      <small>{new Date(user.creationTime).toString()}</small>
-                    </div>
-                    <button className="btn btn-primary">Delete</button>
-                  </li>
-                ))}
-              </ul>
-            )
-          })()}
+                      <small>{new Date(user.timestamp).toString()}</small>
+                    </li>
+                  ))}
+                </ul>
+              )
+            })()}
+          </div>
         </div>
       </div>
-    </div>
-  )
+    )
+  }
+}
+
+const getStateDate = state => {
+  if (!state || !state.readModels || !state.readModels.default) {
+    return {}
+  }
+
+  const { users, errors } = state.readModels.default.default
+
+  return {
+    users: [...users],
+    errors: [...errors]
+  }
 }
 
 const mapStateToProps = state => ({
+  ...getStateDate(state),
   readModelName: 'default',
-  resolverName: 'users',
-  users:
-    state && state.readModels && state.readModels.default
-      ? state.readModels.default.users
-      : null
+  resolverName: 'default',
+  parameters: { timestamp: Date.now() },
+  isReactive: true
 })
 
 const mapDispatchToProps = dispatch => ({

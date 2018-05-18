@@ -1,27 +1,4 @@
-import { CronJob } from 'cron'
-
-const createSaga = (config = {}) => {
-  return context => {
-    const { eventHandlers = {}, cronHandlers = {} } = config
-
-    Object.keys(eventHandlers).map(eventName =>
-      context.resolve.subscribeByEventType([eventName], event =>
-        eventHandlers[eventName](event, context)
-      )
-    )
-
-    Object.keys(cronHandlers).map(
-      cronTime =>
-        new CronJob({
-          cronTime,
-          onTick: cronHandlers[cronTime],
-          start: true
-        })
-    )
-  }
-}
-
-const outdatePeriod = 1000 * 60 * 60
+const outdatePeriod = 1000 * 60 * 10
 
 const saga = {
   eventHandlers: {
@@ -54,7 +31,7 @@ const saga = {
     }
   },
   cronHandlers: {
-    '0 0 * * * *': async (_, { resolve }) => {
+    '0 */10 * * * *': async (_, { resolve }) => {
       const users = await resolve.executeReadModelQuery({
         modelName: 'default',
         resolverName: 'users'
@@ -75,4 +52,4 @@ const saga = {
   }
 }
 
-export default createSaga(saga)
+export default saga

@@ -2,8 +2,6 @@ import generateCodename from 'project-name-generator'
 
 const ITEMS_COUNT = 100
 
-const delay = timeout => new Promise(resolve => setTimeout(resolve, timeout))
-
 const rand = max => Math.floor(Math.random() * max)
 
 const upFirstLetter = str => {
@@ -12,46 +10,37 @@ const upFirstLetter = str => {
   })
 }
 
-async function mainSagaImpl(executeCommand, pushInterval) {
-  for (let idx of Array.from(Array(ITEMS_COUNT)).map((_, idx) => idx)) {
-    await executeCommand({
-      aggregateId: 'root-id',
-      aggregateName: 'Rating',
-      type: 'append',
-      payload: {
-        id: `Item${idx}`,
-        name: upFirstLetter(generateCodename().spaced)
+const mainSaga = {
+  cronHandlers: {
+    '* * * * * *': async (_, { resolve }) => {
+      const ratingCount = await resolve.executeReadModelQuery({
+        modelName: 'Rating',
+        resolverName: 'RatingCount'
+      })
+
+      if (ratingCount < ITEMS_COUNT) {
+        await resolve.executeCommand({
+          aggregateId: 'root-id',
+          aggregateName: 'Rating',
+          type: 'append',
+          payload: {
+            id: `Item${ratingCount}`,
+            name: upFirstLetter(generateCodename().spaced)
+          }
+        })
       }
-    })
+
+      await resolve.executeCommand({
+        aggregateId: 'root-id',
+        aggregateName: 'Rating',
+        type: rand(2) === 0 ? 'upvote' : 'downvote',
+        payload: {
+          id: `Item${rand(ratingCount)}`,
+          userId: `User${rand(ratingCount)}`
+        }
+      })
+    }
   }
-
-  while (true) {
-    await executeCommand({
-      aggregateId: 'root-id',
-      aggregateName: 'Rating',
-      type: rand(2) === 0 ? 'upvote' : 'downvote',
-      payload: {
-        id: `Item${rand(ITEMS_COUNT)}`,
-        userId: `User${rand(ITEMS_COUNT)}`
-      }
-    })
-
-    await delay(pushInterval)
-  }
-}
-
-function mainSaga({ resolve: { executeCommand } }) {
-  const pushInterval =
-    Number.isSafeInteger(+process.env.PUSH_INTERVAL) &&
-    +process.env.PUSH_INTERVAL > 10 &&
-    +process.env.PUSH_INTERVAL < 3000
-      ? +process.env.PUSH_INTERVAL
-      : 300
-
-  mainSagaImpl(executeCommand, pushInterval).catch(error => {
-    // eslint-disable-next-line no-console
-    console.log('Saga error:', error)
-  })
 }
 
 export default [mainSaga]
