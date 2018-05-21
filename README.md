@@ -11,10 +11,7 @@ A JavaScript framework for **CQRS**, **Domain-Driven Design** and **Event Sourci
 * [Free and open source](https://github.com/reimagined/resolve/blob/master/LICENSE.md).
 * Flexible and clear [API](#documentation).
 
-[<img src="https://user-images.githubusercontent.com/19663260/38686570-44c83d6a-3e7d-11e8-8cc6-00b6e2610036.png">](#getting-started)
-
 ## **📑 Table of Contents**
-* **[🏗️ Why reSolve](#why-resolve)**
 * **[🚀 Getting Started](#getting-started)**
 * **[📚 Documentation](#documentation)**
 * **[📢 Get in Touch](#get-in-touch)**
