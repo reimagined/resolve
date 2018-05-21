@@ -56,7 +56,7 @@ class App extends React.Component {
         <Header />
 
         <div className="container">
-          <form onSubmit={this.handleFormSubmit}>
+          <form onSubmit={this.handleFormSubmit} className="mt-4">
             <div className="form-group row">
               <label
                 className="col-sm-2 col-form-label"

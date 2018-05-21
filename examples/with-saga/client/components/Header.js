@@ -1,33 +1,35 @@
 import React from 'react'
-import { Navbar, Image } from 'react-bootstrap'
 
 const Header = () => (
   <div>
     <nav className="navbar navbar-light bg-light">
       <div className="container">
-        <Navbar.Text>
-          <Image src="/resolve-logo.png" />
-          {' Saga example'}
-        </Navbar.Text>
+        <p className="navbar-text mb-0">
+          <img className="mr-1" src="/resolve-logo.png" />
+          Saga example
+        </p>
 
-        <div className="navbar-collapse">
-          <Navbar.Text pullRight>
-            <Navbar.Link href="https://facebook.com/resolvejs/">
-              <Image src="/fb-logo.png" />
-            </Navbar.Link>
-          </Navbar.Text>
+        <div className="navbar-nav flex-row">
+          <p className="navbar-text navbar-right mb-0">
+            <a className="navbar-link" href="https://facebook.com/resolvejs/">
+              <img className="mr-1" src="/fb-logo.png" />
+            </a>
+          </p>
 
-          <Navbar.Text pullRight>
-            <Navbar.Link href="https://twitter.com/resolvejs">
-              <Image src="/twitter-logo.png" />
-            </Navbar.Link>
-          </Navbar.Text>
+          <p className="navbar-text navbar-right mb-0">
+            <a className="navbar-link" href="https://twitter.com/resolvejs">
+              <img className="mr-1" src="/twitter-logo.png" />
+            </a>
+          </p>
 
-          <Navbar.Text pullRight>
-            <Navbar.Link href="https://github.com/reimagined/resolve">
-              <Image src="/github-logo.png" />
-            </Navbar.Link>
-          </Navbar.Text>
+          <p className="navbar-text navbar-right mb-0">
+            <a
+              className="navbar-link"
+              href="https://github.com/reimagined/resolve"
+            >
+              <img src="/github-logo.png" />
+            </a>
+          </p>
         </div>
       </div>
     </nav>

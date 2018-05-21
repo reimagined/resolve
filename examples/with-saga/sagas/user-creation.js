@@ -40,7 +40,7 @@ const saga = {
       const now = Date.now()
 
       users.forEach(user => {
-        if (user.creationTime + outdatePeriod < now) {
+        if (user.timestamp + outdatePeriod < now) {
           resolve.executeCommand({
             type: 'deleteOutdatedUser',
             aggregateName: 'User',
