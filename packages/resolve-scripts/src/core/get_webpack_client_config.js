@@ -12,6 +12,7 @@ const getClientWebpackConfig = ({ resolveConfig, deployOptions, env }) => {
     resolveConfig.distDir,
     'client'
   )
+  const isClient = true
 
   return {
     name: 'Client',
@@ -34,7 +35,10 @@ const getClientWebpackConfig = ({ resolveConfig, deployOptions, env }) => {
         {
           test: /\.js$/,
           use: {
-            loader: 'babel-loader?cacheDirectory=true'
+            loader: 'babel-loader',
+            options: {
+              cacheDirectory: true
+            }
           },
           exclude: [
             /node_modules/,
@@ -45,8 +49,13 @@ const getClientWebpackConfig = ({ resolveConfig, deployOptions, env }) => {
       ]
     },
     plugins: [
-      getWebpackEnvPlugin({ resolveConfig, deployOptions, env }),
-      getWebpackResolveDefinePlugin({ resolveConfig, deployOptions, env })
+      getWebpackEnvPlugin({ resolveConfig, deployOptions, env, isClient }),
+      getWebpackResolveDefinePlugin({
+        resolveConfig,
+        deployOptions,
+        env,
+        isClient
+      })
     ]
   }
 }

@@ -1,39 +1,12 @@
 import { env, cli, commands } from '../constants'
 import webpack from '../webpack'
-import table from '../table'
 
 export const command = 'build'
 export const desc = commands.build
 export const builder = yargs =>
   yargs
     .help('help')
-    .epilogue(
-      `${env.title}:\n` +
-        `${table([
-          env.options.NODE_ENV,
-          env.options.WATCH,
-          env.options.START,
-          env.options.HOST,
-          env.options.PORT,
-          env.options.PROTOCOL,
-          env.options.INSPECT_HOST,
-          env.options.INSPECT_PORT,
-          env.options.CONFIG_PATH,
-          env.options.BUILD_CONFIG_PATH,
-          env.options.ROUTES_PATH,
-          env.options.INDEX_PATH,
-          env.options.ROOT_PATH,
-          env.options.DIST_DIR,
-          env.options.STATIC_DIR,
-          env.options.STATIC_PATH,
-          env.options.AGGREGATES_PATH,
-          env.options.VIEW_MODELS_PATH,
-          env.options.READ_MODELS_PATH,
-          env.options.OPEN_BROWSER
-        ])}\n` +
-        `${env.custom.title}:\n` +
-        `  ${env.custom.text}`
-    )
+    .epilogue(`${env.title}:\n` + `  ${env.text}`)
     .option('dev', cli.dev)
     .option('prod', cli.prod)
     .option('test', cli.test)

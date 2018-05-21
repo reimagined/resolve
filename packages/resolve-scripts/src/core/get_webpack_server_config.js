@@ -9,12 +9,12 @@ import getWebpackResolveAliasPlugin from './get_webpack_resolve_alias_plugin'
 
 const getWebpackServerConfig = ({ resolveConfig, deployOptions, env }) => {
   const serverIndexPath = path.resolve(__dirname, '../runtime/server/index.js')
-
   const serverDistDir = path.resolve(
     process.cwd(),
     resolveConfig.distDir,
     'server'
   )
+  const isClient = false
 
   return {
     name: 'Server',
@@ -41,8 +41,9 @@ const getWebpackServerConfig = ({ resolveConfig, deployOptions, env }) => {
         {
           test: /\.js$/,
           use: {
-            loader: 'babel-loader?cacheDirectory=true',
+            loader: 'babel-loader',
             options: {
+              cacheDirectory: true,
               env: {
                 development: {
                   plugins: ['babel-plugin-object-source']
@@ -59,15 +60,24 @@ const getWebpackServerConfig = ({ resolveConfig, deployOptions, env }) => {
       ]
     },
     plugins: [
-      getWebpackEnvPlugin({ resolveConfig, deployOptions, env }),
-      getWebpackResolveDefinePlugin({ resolveConfig, deployOptions, env }),
+      getWebpackEnvPlugin({ resolveConfig, deployOptions, env, isClient }),
+      getWebpackResolveDefinePlugin({
+        resolveConfig,
+        deployOptions,
+        env,
+        isClient
+      }),
       new webpack.BannerPlugin({
         banner: 'require("source-map-support").install();',
         raw: true,
         entryOnly: false
       })
     ],
-    externals: getModulesDirs().map(modulesDir => nodeExternals({ modulesDir }))
+    externals: [
+      /node_modules/,
+      nodeExternals(),
+      ...getModulesDirs().map(modulesDir => nodeExternals({ modulesDir }))
+    ]
   }
 }
 

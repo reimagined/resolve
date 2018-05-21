@@ -1,16 +1,11 @@
 import webpack from 'webpack'
 
-import { env as envList } from './constants'
-
 const regExp = /^RESOLVE_/
 
 const getWebpackEnvPlugin = ({ env }) => {
   const defineObject = {}
 
-  for (const envKey of [
-    ...Object.keys(env).filter(envKey => regExp.test(envKey)),
-    ...Object.keys(envList.options)
-  ]) {
+  for (const envKey of Object.keys(env).filter(envKey => regExp.test(envKey))) {
     if (env[envKey] !== undefined) {
       defineObject[`process.env.${envKey}`] = JSON.stringify(env[envKey])
     }

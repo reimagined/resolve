@@ -9,12 +9,8 @@ import setup from './setup'
 import getMockServer from './get_mock_server'
 import assignConfigPaths from './assign_config_paths'
 
-export default (argv, defaults = {}) => {
-  const env = process.env
-
-  Object.assign(env, Object.assign(defaults, env))
-
-  const { resolveConfig, deployOptions } = setup(argv, env)
+export default (argv, envDefaults = {}) => {
+  const { resolveConfig, deployOptions, env } = setup(argv, envDefaults)
 
   if (argv.printConfig) {
     // eslint-disable-next-line
@@ -22,7 +18,7 @@ export default (argv, defaults = {}) => {
       JSON.stringify(
         {
           ...resolveConfig,
-          ...deployOptions
+          deployOptions
         },
         null,
         3
