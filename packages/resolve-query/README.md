@@ -3,9 +3,9 @@
 
 Provides an interface for creating and querying Read- and View-Models.
 
-A **Read Model** is an application state built from the Event Log and used to reply to Queries. **Read Models** can be saved into a server-side Storage with the help of an appropriate [Storage Adapter](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters). A Read Model is built by Resolver Functions, which can filter, aggregate and/or paginate data before sending it to the client side. You can manage a Resolver behavior using client-defined arguments. Read Models can be reactive. In this case, the server-side changes trigger the client-side updates.
+A **Read Model** is an application state built from the Event Log and used to reply to Queries. It can be saved into a server-side Storage using an appropriate [Storage Adapter](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters). A Read Model is built by Resolver Functions, which can filter, aggregate and/or paginate data before sending it to the client side. You can manage a Resolver behavior using client-defined arguments. Read Models can be reactive. In this case, the server-side changes trigger the client-side updates.
 
-A **View Model** is built on the client side and used to keep UI up to date with the current application state. It is built in real time by Reducers based on the Event Log and incoming Events. Aggregates whose events should participate in the View Model construction are defined by the `aggregateId` (in most cases, one aggregate corresponds to one view model, although, a wildcard `aggregateId` is possible).
+A **View Model** is built on the client side and used to keep UI up to the current application state. It is built in real time by Reducers based on the Event Log and incoming Events. Aggregates whose events should participate in the View Model construction are defined by the `aggregateId` (in most cases, one aggregate corresponds to one view model, although, a wildcard `aggregateId` is possible).
 
 
 ```
