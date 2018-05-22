@@ -1,9 +1,9 @@
 import exec from '../../exec'
 
 test('resolve-scripts dev', async () => {
-  const json = await exec('resolve-scripts dev')
+  const { deployOptions } = await exec('resolve-scripts dev')
 
-  expect(json).toHaveProperty('build', true)
-  expect(json).toHaveProperty('start', true)
-  expect(json).toHaveProperty('mode', 'development')
+  expect(deployOptions).toHaveProperty('build', true)
+  expect(deployOptions).toHaveProperty('start', true)
+  expect(deployOptions).toHaveProperty('mode', 'development')
 })

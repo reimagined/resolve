@@ -1,12 +1,12 @@
 import exec from '../../exec'
 
 test('resolve-scripts build --start --host=http://test.test', async () => {
-  const json = await exec(
+  const { host, deployOptions } = await exec(
     'resolve-scripts build --start --host=http://test.test'
   )
 
-  expect(json).toHaveProperty('start', true)
-  expect(json).toHaveProperty('host', 'http://test.test')
+  expect(deployOptions).toHaveProperty('start', true)
+  expect(host).toEqual('http://test.test')
 })
 
 test('resolve-scripts build --host=http://test.test (fail)', async () => {

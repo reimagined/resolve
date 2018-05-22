@@ -2,15 +2,15 @@ import fs from 'fs'
 import respawn from 'respawn'
 import webpack from 'webpack'
 
-import getResolveBuildConfig from './get_resolve_build_config'
-import getWebpackConfigs from './get_webpack_configs'
-import showBuildInfo from './show_build_info'
 import setup from './setup'
 import getMockServer from './get_mock_server'
+import showBuildInfo from './show_build_info'
+import getWebpackConfigs from './get_webpack_configs'
 import assignConfigPaths from './assign_config_paths'
+import getResolveBuildConfig from './get_resolve_build_config'
 
-export default (argv, envDefaults = {}) => {
-  const { resolveConfig, deployOptions, env } = setup(argv, envDefaults)
+export default argv => {
+  const { resolveConfig, deployOptions, env } = setup(argv)
 
   if (argv.printConfig) {
     // eslint-disable-next-line

@@ -6,6 +6,7 @@ import getModulesDirs from './get_modules_dirs'
 import getWebpackEnvPlugin from './get_webpack_env_plugin'
 import getWebpackResolveDefinePlugin from './get_webpack_resolve_define_plugin'
 import getWebpackResolveAliasPlugin from './get_webpack_resolve_alias_plugin'
+import getWebpackExternalsPlugin from './get_webpack_externals_plugin'
 
 const getWebpackServerConfig = ({ resolveConfig, deployOptions, env }) => {
   const serverIndexPath = path.resolve(__dirname, '../runtime/server/index.js')
@@ -28,7 +29,12 @@ const getWebpackServerConfig = ({ resolveConfig, deployOptions, env }) => {
     },
     resolve: {
       modules: getModulesDirs(),
-      alias: getWebpackResolveAliasPlugin({ resolveConfig, deployOptions, env })
+      alias: getWebpackResolveAliasPlugin({
+        resolveConfig,
+        deployOptions,
+        env,
+        isClient
+      })
     },
     output: {
       path: serverDistDir,
@@ -76,7 +82,8 @@ const getWebpackServerConfig = ({ resolveConfig, deployOptions, env }) => {
     externals: [
       /node_modules/,
       nodeExternals(),
-      ...getModulesDirs().map(modulesDir => nodeExternals({ modulesDir }))
+      ...getModulesDirs().map(modulesDir => nodeExternals({ modulesDir })),
+      getWebpackExternalsPlugin({ resolveConfig, deployOptions, env, isClient })
     ]
   }
 }

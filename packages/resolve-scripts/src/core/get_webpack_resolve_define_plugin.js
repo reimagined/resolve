@@ -18,8 +18,16 @@ const getWebpackResolveDefinePlugin = ({
       let value = flatConfig[key]
       if (value in deployOptions.env) {
         if (isClient) {
-          defineObject[`$resolve.${key}`] =
-            '@DO_NOT_USE_ENVIRONMENT_VARIABLES_IN_CLIENT_CODE@'
+          // TODO crash on compile-time
+          defineObject[`$resolve.${key}`] = `
+            (function() {
+              var error = new Error("Don't use environment variables \\"${
+                deployOptions.env[value]
+              }\\" in the client code");
+              setTimeout(function() { document.write("<pre>" +error.stack + "</pre>"); }, 0)
+              throw error;
+            })()
+            `
         } else {
           defineObject[`$resolve.${key}`] = deployOptions.env[value]
         }

@@ -1,24 +1,26 @@
 import exec from '../../exec'
 
 test('resolve-scripts dev --inspect', async () => {
-  const json = await exec('resolve-scripts dev --inspect')
+  const { deployOptions } = await exec('resolve-scripts dev --inspect')
 
-  expect(json).toHaveProperty('inspectHost', '127.0.0.1')
-  expect(json).toHaveProperty('inspectPort', 9229)
+  expect(deployOptions).toHaveProperty('inspectHost', '127.0.0.1')
+  expect(deployOptions).toHaveProperty('inspectPort', 9229)
 })
 
 test('resolve-scripts dev --inspect=1234', async () => {
-  const json = await exec('resolve-scripts dev --inspect=1234')
+  const { deployOptions } = await exec('resolve-scripts dev --inspect=1234')
 
-  expect(json).toHaveProperty('inspectHost', '127.0.0.1')
-  expect(json).toHaveProperty('inspectPort', 1234)
+  expect(deployOptions).toHaveProperty('inspectHost', '127.0.0.1')
+  expect(deployOptions).toHaveProperty('inspectPort', 1234)
 })
 
 test('resolve-scripts dev --inspect=0.0.0.0:1234', async () => {
-  const json = await exec('resolve-scripts dev --inspect=0.0.0.0:1234')
+  const { deployOptions } = await exec(
+    'resolve-scripts dev --inspect=0.0.0.0:1234'
+  )
 
-  expect(json).toHaveProperty('inspectHost', '0.0.0.0')
-  expect(json).toHaveProperty('inspectPort', 1234)
+  expect(deployOptions).toHaveProperty('inspectHost', '0.0.0.0')
+  expect(deployOptions).toHaveProperty('inspectPort', 1234)
 })
 
 test('resolve-scripts dev --inspect=INCORRECT_PORT (fail)', async () => {

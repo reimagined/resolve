@@ -1,4 +1,5 @@
 import { env, cli, commands } from '../constants'
+import mergeArguments from '../merge_arguments'
 import webpack from '../webpack'
 
 export const command = 'dev'
@@ -6,7 +7,7 @@ export const desc = commands.dev
 export const builder = yargs =>
   yargs
     .help('help')
-    .epilogue(`${env.title}:\r\n` + `  ${env.text}`)
+    .epilogue(`${env.title}:\r\n  ${env.text}`)
     .option('test', cli.test)
     .option('host', cli.host)
     .option('port', cli.port)
@@ -17,11 +18,14 @@ export const builder = yargs =>
     .option('config', cli.config)
     .option('build-config', cli.buildConfig)
     .option('print-config', cli.printConfig)
+    .conflicts('dev', 'prod')
 
 export const handler = argv =>
-  webpack(argv, {
-    START: 'true',
-    WATCH: 'true',
-    BUILD: 'true',
-    OPEN_BROWSER: 'true'
-  })
+  webpack(
+    mergeArguments(argv, {
+      start: true,
+      watch: true,
+      build: true,
+      openBrowser: true
+    })
+  )

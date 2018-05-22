@@ -1,11 +1,47 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "definitions": {
+    "env": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "env"
+        },
+        "name": {
+          "type": "string"
+        },
+        "ref": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": ["type", "name", "ref"]
+    },
+    "stringOrEnv": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "#/definitions/env"
+        }
+      ]
+    },
+    "integerOrEnv": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "$ref": "#/definitions/env"
+        }
+      ]
+    },
     "adapter": {
       "type": "object",
       "properties": {
         "adapter": {
-          "type": "string"
+          "$ref": "#/definitions/stringOrEnv"
         },
         "options": {
           "type": "object"
@@ -18,10 +54,10 @@
       "type": "object",
       "properties": {
         "name": {
-          "type": "string"
+          "$ref": "#/definitions/stringOrEnv"
         },
         "maxAge": {
-          "type": "integer"
+          "$ref": "#/definitions/integerOrEnv"
         }
       },
       "required": ["name", "maxAge"]
@@ -30,13 +66,13 @@
       "type": "object",
       "properties": {
         "store": {
-          "type": "string"
+          "$ref": "#/definitions/stringOrEnv"
         },
         "reducers": {
-          "type": "string"
+          "$ref": "#/definitions/stringOrEnv"
         },
         "middlewares": {
-          "type": "string"
+          "$ref": "#/definitions/stringOrEnv"
         }
       },
       "required": ["store", "reducers", "middlewares"],
@@ -46,7 +82,7 @@
       "type": "object",
       "properties": {
         "strategies": {
-          "type": "string"
+          "$ref": "#/definitions/stringOrEnv"
         }
       },
       "additionalProperties": false,
@@ -56,50 +92,50 @@
       "type": "object",
       "properties": {
         "host": {
-          "type": "string"
+          "$ref": "#/definitions/stringOrEnv"
         },
         "port": {
-          "type": "integer"
+          "$ref": "#/definitions/integerOrEnv"
         },
         "protocol": {
-          "type": "string",
+          "$ref": "#/definitions/stringOrEnv",
           "enum": [
             "http",
             "https"
           ]
         },
         "index": {
-          "type": "string"
+          "$ref": "#/definitions/stringOrEnv"
         },
         "redux": {
           "$ref": "#/definitions/redux"
         },
         "routes": {
-          "type": "string"
+          "$ref": "#/definitions/stringOrEnv"
         },
         "distDir": {
-          "type": "string"
+          "$ref": "#/definitions/stringOrEnv"
         },
         "rootPath": {
-          "type": "string"
+          "$ref": "#/definitions/stringOrEnv"
         },
         "staticDir": {
-          "type": "string"
+          "$ref": "#/definitions/stringOrEnv"
         },
         "staticPath": {
-          "type": "string"
+          "$ref": "#/definitions/stringOrEnv"
         },
         "aggregates": {
-          "type": "string"
+          "$ref": "#/definitions/stringOrEnv"
         },
         "viewModels": {
-          "type": "string"
+          "$ref": "#/definitions/stringOrEnv"
         },
         "readModels": {
-          "type": "string"
+          "$ref": "#/definitions/stringOrEnv"
         },
         "sagas": {
-          "type": "string"
+          "$ref": "#/definitions/stringOrEnv"
         },
         "bus": {
           "$ref": "#/definitions/adapter"
@@ -117,7 +153,7 @@
           "$ref": "#/definitions/jwtCookie"
         },
         "registry": {
-          "type": "string"
+          "$ref": "#/definitions/stringOrEnv"
         },
         "env": {
           "type": "object",

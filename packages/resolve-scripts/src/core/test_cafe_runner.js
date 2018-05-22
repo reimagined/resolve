@@ -11,7 +11,7 @@ const testCafeRunner = async argv => {
     `node "` +
       path.resolve(__dirname, '../../bin/resolve-scripts.js') +
       '" build' +
-      ' --test',
+      ' --test --dev',
     { stdio: 'inherit' }
   )
 
@@ -34,7 +34,9 @@ const testCafeRunner = async argv => {
         'server/server.js'
       )}`
     ],
-    { stdio: 'inherit' }
+    {
+      stdio: 'inherit'
+    }
   )
   process.on('exit', () => {
     application.kill()
