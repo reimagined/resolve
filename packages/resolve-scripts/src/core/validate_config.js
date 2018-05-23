@@ -1,19 +1,19 @@
-import { validate } from 'jsonschema'
+import Ajv from 'ajv'
+// import jsonSchemaDraft07 from 'ajv/lib/refs/json-schema-draft-07.json'
 
 import { schemaResolveConfig } from './constants'
 
-const validateConfig = config => {
-  try {
-    return validate(config, schemaResolveConfig, { throwError: true })
-  } catch (error) {
-    if (typeof error.property === 'string') {
-      error.property = error.property.replace('instance.', '')
-    }
+const ajv = new Ajv()
+// ajv.addMetaSchema(jsonSchemaDraft07);
 
-    // eslint-disable-next-line no-throw-literal
-    throw `Resolve Config validation failed:
-property: ${error.property}
-message: ${error.message}`
+const validateConfig = config => {
+  const valid = ajv.validate(schemaResolveConfig, config)
+
+  if (!valid) {
+    console.error('Resolve Config validation failed:')
+    console.error(ajv.errors)
+
+    process.exit(1)
   }
 }
 

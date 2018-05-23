@@ -29,6 +29,7 @@
     "@babel/core": "^7.0.0-beta.47",
     "@babel/runtime": "^7.0.0-beta.47",
     "address": "^1.0.3",
+    "ajv": "^6.5.0",
     "babel-core": "^7.0.0-0",
     "babel-loader": "^8.0.0-beta.2",
     "babel-plugin-object-source": "^1.0.4",

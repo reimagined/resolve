@@ -1,47 +1,15 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "definitions": {
-    "env": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "const": "env"
-        },
-        "name": {
-          "type": "string"
-        },
-        "ref": {
-          "type": "string"
-        }
-      },
-      "additionalProperties": false,
-      "required": ["type", "name", "ref"]
-    },
-    "stringOrEnv": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "#/definitions/env"
-        }
-      ]
-    },
-    "integerOrEnv": {
-      "oneOf": [
-        {
-          "type": "integer"
-        },
-        {
-          "$ref": "#/definitions/env"
-        }
-      ]
-    },
     "adapter": {
       "type": "object",
       "properties": {
         "adapter": {
-          "$ref": "#/definitions/stringOrEnv"
+          "type": "string",
+          "constraints": {
+            "env": true,
+            "fileOrModule": true
+          }
         },
         "options": {
           "type": "object"
@@ -50,14 +18,101 @@
       "required": ["adapter", "options"],
       "additionalProperties": false
     },
+    "aggregate": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "commands": {
+          "type": "string",
+          "constraints": {
+            "file": true
+          }
+        },
+        "projection": {
+          "type": "string",
+          "constraints": {
+            "file": true
+          }
+        },
+        "snapshot": {
+          "$ref": "#/definitions/adapter"
+        }
+      },
+      "required": ["name", "commands"],
+      "additionalProperties": false
+    },
+    "viewModel": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "projection": {
+          "type": "string",
+          "constraints": {
+            "file": true
+          }
+        },
+        "serializeState": {
+          "type": "string",
+          "constraints": {
+            "file": true
+          }
+        },
+        "deserializeState": {
+          "type": "string",
+          "constraints": {
+            "file": true
+          }
+        },
+        "validator": {
+          "type": "string",
+          "constraints": {
+            "file": true
+          }
+        },
+        "snapshot": {
+          "$ref": "#/definitions/adapter"
+        }
+      },
+      "required": ["name", "projection"],
+      "additionalProperties": false
+    },
+    "readModel": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "projection": {
+          "type": "string",
+          "constraints": {
+            "file": true
+          }
+        },
+        "resolvers": {
+          "type": "string",
+          "constraints": {
+            "file": true
+          }
+        },
+        "storage": {
+          "$ref": "#/definitions/adapter"
+        }
+      },
+      "required": ["name", "projection", "resolvers"],
+      "additionalProperties": false
+    },
     "jwtCookie": {
       "type": "object",
       "properties": {
         "name": {
-          "$ref": "#/definitions/stringOrEnv"
+          "type": "string"
         },
         "maxAge": {
-          "$ref": "#/definitions/integerOrEnv"
+          "type": "integer"
         }
       },
       "required": ["name", "maxAge"]
@@ -66,13 +121,22 @@
       "type": "object",
       "properties": {
         "store": {
-          "$ref": "#/definitions/stringOrEnv"
+          "type": "string",
+          "constraints": {
+            "file": true
+          }
         },
         "reducers": {
-          "$ref": "#/definitions/stringOrEnv"
+          "type": "string",
+          "constraints": {
+            "file": true
+          }
         },
         "middlewares": {
-          "$ref": "#/definitions/stringOrEnv"
+          "type": "string",
+          "constraints": {
+            "file": true
+          }
         }
       },
       "required": ["store", "reducers", "middlewares"],
@@ -82,7 +146,10 @@
       "type": "object",
       "properties": {
         "strategies": {
-          "$ref": "#/definitions/stringOrEnv"
+          "type": "string",
+          "constraints": {
+            "file": true
+          }
         }
       },
       "additionalProperties": false,
@@ -91,51 +158,69 @@
     "config": {
       "type": "object",
       "properties": {
-        "host": {
-          "$ref": "#/definitions/stringOrEnv"
-        },
         "port": {
-          "$ref": "#/definitions/integerOrEnv"
-        },
-        "protocol": {
-          "$ref": "#/definitions/stringOrEnv",
-          "enum": [
-            "http",
-            "https"
-          ]
+          "type": ["integer", "string"],
+          "constraints": {
+            "env": true
+          }
         },
         "index": {
-          "$ref": "#/definitions/stringOrEnv"
+          "type": "string",
+          "constraints": {
+            "file": true
+          }
+        },
+        "routes": {
+          "type": "string",
+          "constraints": {
+            "file": true
+          }
+        },
+        "distDir": {
+          "type": "string",
+          "constraints": {
+            "directory": true
+          }
+        },
+        "rootPath": {
+          "type": "string"
+        },
+        "staticDir": {
+          "type": "string",
+          "constraints": {
+            "directory": true
+          }
+        },
+        "staticPath": {
+          "type": "string"
         },
         "redux": {
           "$ref": "#/definitions/redux"
         },
-        "routes": {
-          "$ref": "#/definitions/stringOrEnv"
-        },
-        "distDir": {
-          "$ref": "#/definitions/stringOrEnv"
-        },
-        "rootPath": {
-          "$ref": "#/definitions/stringOrEnv"
-        },
-        "staticDir": {
-          "$ref": "#/definitions/stringOrEnv"
-        },
-        "staticPath": {
-          "$ref": "#/definitions/stringOrEnv"
-        },
         "aggregates": {
-          "$ref": "#/definitions/stringOrEnv"
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/aggregate"
+          }
         },
         "viewModels": {
-          "$ref": "#/definitions/stringOrEnv"
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/viewModel"
+          }
         },
         "readModels": {
-          "$ref": "#/definitions/stringOrEnv"
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/readModel"
+          }
         },
         "sagas": {
-          "$ref": "#/definitions/stringOrEnv"
+          "type": "string",
+          "constraints": {
+            "file": true,
+            "env": true
+          }
         },
         "bus": {
           "$ref": "#/definitions/adapter"
@@ -153,7 +238,10 @@
           "$ref": "#/definitions/jwtCookie"
         },
         "registry": {
-          "$ref": "#/definitions/stringOrEnv"
+          "type": "string",
+          "constraints": {
+            "env": true
+          }
         },
         "env": {
           "type": "object",
@@ -171,7 +259,8 @@
           "additionalProperties": false
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "required": ["aggregates", "view-models", "read-models"]
     }
   },
   "$ref": "#/definitions/config"
