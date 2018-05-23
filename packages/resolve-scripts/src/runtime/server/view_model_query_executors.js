@@ -3,9 +3,9 @@ import { createViewModel } from 'resolve-query'
 import eventStore from './event_store'
 import raiseError from './utils/raise_error'
 
-import message from '../../../configs/message.json'
-
 import viewModels from '$resolve.viewModels'
+
+const message = require('../../../configs/message.json')
 
 const viewModelQueryExecutors = {}
 

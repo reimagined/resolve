@@ -2,7 +2,7 @@ import executeReadModelQuery from './execute_read_model_query'
 import readModelQueryExecutors from './read_model_query_executors'
 import println from './utils/println'
 
-import message from '../../../configs/message.json'
+const message = require('../../../configs/message.json')
 
 const readModelNonReactiveHandler = async (req, res) => {
   const serialId = Date.now()

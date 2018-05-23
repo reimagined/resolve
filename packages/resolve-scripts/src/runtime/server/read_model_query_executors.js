@@ -2,9 +2,9 @@ import { createReadModel } from 'resolve-query'
 import eventStore from './event_store'
 import raiseError from './utils/raise_error'
 
-import message from '../../../configs/message.json'
-
 import readModels from '$resolve.readModels'
+
+const message = require('../../../configs/message.json')
 
 const readModelQueryExecutors = {}
 

@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 
-import statsConfig from '../../configs/stats.config.json'
+import { statsConfig } from './constants'
 
 const showBuildInfo = ({ name }, err, stats) => {
   if (!stats) {

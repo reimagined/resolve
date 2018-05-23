@@ -5,8 +5,8 @@ import createAdapter from '../src'
 
 const adapterSettings = {
   url: 'test-url',
-  collection: 'test-collection',
-  dbName: 'test-db'
+  collectionName: 'test-collection',
+  databaseName: 'test-db'
 }
 
 const testEvent = {

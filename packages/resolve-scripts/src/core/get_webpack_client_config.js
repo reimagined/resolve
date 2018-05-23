@@ -5,7 +5,6 @@ import getWebpackEnvPlugin from './get_webpack_env_plugin'
 import getWebpackResolveDefinePlugin from './get_webpack_resolve_define_plugin'
 import getWebpackResolveAliasPlugin from './get_webpack_resolve_alias_plugin'
 import getWebpackExternalsPlugin from './get_webpack_externals_plugin'
-
 import resolveFile from './resolve_file'
 
 const getClientWebpackConfig = ({ resolveConfig, deployOptions, env }) => {

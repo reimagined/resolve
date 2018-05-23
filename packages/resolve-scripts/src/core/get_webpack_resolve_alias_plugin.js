@@ -1,6 +1,6 @@
 import getIn from 'lodash/get'
 
-import paths from '../../configs/resolve.config.paths'
+import { paths } from './constants'
 
 const getWebpackResolveAliasPlugin = ({ resolveConfig, deployOptions }) => {
   const alias = {}

@@ -2,7 +2,7 @@ import executeViewModelQuery from './execute_view_model_query'
 import println from './utils/println'
 import viewModelQueryExecutors from './view_model_query_executors'
 
-import message from '../../../configs/message.json'
+const message = require('../../../configs/message.json')
 
 const viewModelHandler = async (req, res) => {
   try {

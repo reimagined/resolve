@@ -1,7 +1,7 @@
 import println from './utils/println'
 import executeCommand from './command_executor'
 
-import message from '../../../configs/message.json'
+const message = require('../../../configs/message.json')
 
 const commandHandler = async (req, res) => {
   if (req.method !== 'POST') {

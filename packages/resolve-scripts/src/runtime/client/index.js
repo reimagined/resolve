@@ -9,6 +9,7 @@ import createStore from './store/create_store'
 import deserializeInitialState from './store/deserialize_initial_state'
 
 import routes from '$resolve.routes'
+
 const rootPath = $resolve.rootPath
 
 const initialState = deserializeInitialState(window.__INITIAL_STATE__)

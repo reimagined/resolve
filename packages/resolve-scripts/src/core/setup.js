@@ -7,8 +7,10 @@ import validateConfig from './validate_config'
 import parseResolveConfigJson from './parse_resolve_config_json'
 import flatEnvVariables from './flat_env_variables'
 
-import resolveConfigOrigin from '../../configs/resolve.config.json'
-import deployOptions from '../../configs/deploy.options.json'
+import {
+  resolveConfig as resolveConfigOrigin,
+  deployOptions
+} from './constants'
 
 const setup = argv => {
   const env = process.env

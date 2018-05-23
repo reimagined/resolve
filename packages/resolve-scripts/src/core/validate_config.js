@@ -1,10 +1,10 @@
 import { validate } from 'jsonschema'
 
-import schema from '../../configs/schema.resolve.config.json'
+import { schemaResolveConfig } from './constants'
 
 const validateConfig = config => {
   try {
-    return validate(config, schema, { throwError: true })
+    return validate(config, schemaResolveConfig, { throwError: true })
   } catch (error) {
     if (typeof error.property === 'string') {
       error.property = error.property.replace('instance.', '')
