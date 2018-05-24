@@ -1,18 +1,18 @@
-import React from 'react'
+import React from 'react';
 
-import Comment from './Comment'
-import ReplyLink from './ReplyLink'
+import Comment from './Comment';
+import ReplyLink from './ReplyLink';
 
 const ChildrenComments = ({ storyId, parentId, comments, loggedIn }) => {
   if (!comments || !comments.length) {
-    return null
+    return null;
   }
 
   return (
     <div>
       {comments.map(comment => {
         if (comment.parentId !== parentId) {
-          return null
+          return null;
         }
         return (
           <Comment key={comment.id} storyId={storyId} {...comment}>
@@ -26,10 +26,10 @@ const ChildrenComments = ({ storyId, parentId, comments, loggedIn }) => {
               loggedIn={loggedIn}
             />
           </Comment>
-        )
+        );
       })}
     </div>
-  )
-}
+  );
+};
 
-export default ChildrenComments
+export default ChildrenComments;

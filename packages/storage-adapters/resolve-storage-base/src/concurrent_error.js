@@ -1,16 +1,16 @@
 function ConcurrentError(message = 'Concurrency error') {
-  Error.call(this)
-  this.name = 'ConcurrentError'
+  Error.call(this);
+  this.name = 'ConcurrentError';
 
-  this.message = message
+  this.message = message;
 
   if (Error.captureStackTrace) {
-    Error.captureStackTrace(this, ConcurrentError)
+    Error.captureStackTrace(this, ConcurrentError);
   } else {
-    this.stack = new Error().stack
+    this.stack = new Error().stack;
   }
 }
 
-ConcurrentError.prototype = Object.create(Error.prototype)
+ConcurrentError.prototype = Object.create(Error.prototype);
 
-export default ConcurrentError
+export default ConcurrentError;

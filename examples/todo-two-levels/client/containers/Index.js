@@ -1,9 +1,9 @@
-import React from 'react'
-import { connectViewModel } from 'resolve-redux'
-import { bindActionCreators } from 'redux'
-import { NavLink } from 'react-router-dom'
+import React from 'react';
+import { connectViewModel } from 'resolve-redux';
+import { bindActionCreators } from 'redux';
+import { NavLink } from 'react-router-dom';
 
-import { Helmet } from 'react-helmet'
+import { Helmet } from 'react-helmet';
 import {
   ListGroup,
   ListGroupItem,
@@ -11,21 +11,21 @@ import {
   Button,
   Image,
   FormControl
-} from 'react-bootstrap'
-import Header from '../components/Header.js'
+} from 'react-bootstrap';
+import Header from '../components/Header.js';
 
-const viewModelName = 'Lists'
+const viewModelName = 'Lists';
 
 export const Index = ({ lists, createList, removeList }) => {
-  const placeholder = 'New List'
+  const placeholder = 'New List';
   const createListFunc = () => {
     createList(Date.now(), {
       title: newList.value === '' ? placeholder : newList.value
-    })
-    newList.value = ''
-  }
+    });
+    newList.value = '';
+  };
 
-  let newList
+  let newList;
 
   return (
     <div>
@@ -62,8 +62,8 @@ export const Index = ({ lists, createList, removeList }) => {
             inputRef={element => (newList = element)}
             onKeyPress={event => {
               if (event.charCode === 13) {
-                event.preventDefault()
-                createListFunc()
+                event.preventDefault();
+                createListFunc();
               }
             }}
           />
@@ -71,7 +71,7 @@ export const Index = ({ lists, createList, removeList }) => {
             className="example-button"
             bsStyle="success"
             onClick={() => {
-              createListFunc()
+              createListFunc();
             }}
           >
             Add List
@@ -79,20 +79,20 @@ export const Index = ({ lists, createList, removeList }) => {
         </Form>
       </div>
     </div>
-  )
-}
+  );
+};
 
 const mapStateToProps = state => {
-  const aggregateId = '*'
+  const aggregateId = '*';
 
   return {
     viewModelName,
     aggregateId,
     lists: state.viewModels[viewModelName][aggregateId]
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch, props) =>
-  bindActionCreators(props.aggregateActions, dispatch)
+  bindActionCreators(props.aggregateActions, dispatch);
 
-export default connectViewModel(mapStateToProps, mapDispatchToProps)(Index)
+export default connectViewModel(mapStateToProps, mapDispatchToProps)(Index);

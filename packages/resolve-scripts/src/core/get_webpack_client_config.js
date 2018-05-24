@@ -1,16 +1,16 @@
-import path from 'path'
+import path from 'path';
 
-import getModulesDirs from './get_modules_dirs'
-import getWebpackEnvPlugin from './get_webpack_env_plugin'
-import getWebpackResolveAliasPlugin from './get_webpack_resolve_alias_plugin'
+import getModulesDirs from './get_modules_dirs';
+import getWebpackEnvPlugin from './get_webpack_env_plugin';
+import getWebpackResolveAliasPlugin from './get_webpack_resolve_alias_plugin';
 
 export default ({ resolveConfig, deployOptions, env }) => {
-  const clientIndexPath = resolveConfig.index
+  const clientIndexPath = resolveConfig.index;
   const clientDistDir = path.resolve(
     process.cwd(),
     resolveConfig.distDir,
     'client'
-  )
+  );
 
   return {
     name: 'Client',
@@ -44,5 +44,5 @@ export default ({ resolveConfig, deployOptions, env }) => {
       getWebpackEnvPlugin({ resolveConfig, deployOptions, env }),
       getWebpackResolveAliasPlugin({ resolveConfig, deployOptions })
     ]
-  }
-}
+  };
+};

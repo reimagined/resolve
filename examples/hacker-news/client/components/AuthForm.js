@@ -1,12 +1,12 @@
-import React from 'react'
-import styled from 'styled-components'
+import React from 'react';
+import styled from 'styled-components';
 
 const AuthFormRoot = styled.div`
   padding-left: 3em;
   padding-right: 1.25em;
   margin-top: 1em;
   margin-bottom: 0.83em;
-`
+`;
 
 const AuthFormTitle = styled.div`
   display: block;
@@ -16,12 +16,12 @@ const AuthFormTitle = styled.div`
   margin-left: 0px;
   margin-right: 0px;
   font-weight: bold;
-`
+`;
 
 const AuthFormContent = styled.div`
   display: block;
   margin-bottom: 0.83em;
-`
+`;
 
 const AuthForm = ({ title, action, buttonText }) => (
   <AuthFormRoot>
@@ -33,6 +33,6 @@ const AuthForm = ({ title, action, buttonText }) => (
       <input type="submit" value={buttonText} />
     </form>
   </AuthFormRoot>
-)
+);
 
-export default AuthForm
+export default AuthForm;

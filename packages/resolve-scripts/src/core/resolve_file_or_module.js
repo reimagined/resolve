@@ -1,13 +1,13 @@
-import fs from 'fs'
-import path from 'path'
+import fs from 'fs';
+import path from 'path';
 
-import getMonorepoNodeModules from './get_monorepo_node_modules'
+import getMonorepoNodeModules from './get_monorepo_node_modules';
 
 export default function resolveFileOrModule(query) {
-  const customFilePath = path.resolve(process.cwd(), query)
+  const customFilePath = path.resolve(process.cwd(), query);
 
   if (fs.existsSync(customFilePath)) {
-    return customFilePath
+    return customFilePath;
   }
 
   try {
@@ -17,8 +17,8 @@ export default function resolveFileOrModule(query) {
         path.resolve(__dirname, '../../node_modules'),
         ...getMonorepoNodeModules()
       ]
-    })
+    });
   } catch (e) {}
 
-  throw new Error(`File/module "${query}" does not exist`)
+  throw new Error(`File/module "${query}" does not exist`);
 }

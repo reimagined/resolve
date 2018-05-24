@@ -1,5 +1,5 @@
-import React from 'react'
-import { Form, FormControl, ControlLabel, Button } from 'react-bootstrap'
+import React from 'react';
+import { Form, FormControl, ControlLabel, Button } from 'react-bootstrap';
 
 const Login = () => {
   return (
@@ -23,7 +23,7 @@ const Login = () => {
         </Button>
       </Form>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

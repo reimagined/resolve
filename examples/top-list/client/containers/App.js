@@ -1,15 +1,15 @@
-import React from 'react'
-import { Helmet } from 'react-helmet'
+import React from 'react';
+import { Helmet } from 'react-helmet';
 
-import Header from '../components/Header.js'
-import ItemsViewer from '../containers/ItemsViewer.js'
-import ItemsPager from '../containers/ItemsPager.js'
+import Header from '../components/Header.js';
+import ItemsViewer from '../containers/ItemsViewer.js';
+import ItemsPager from '../containers/ItemsPager.js';
 
-const ITEMS_PER_PAGE = 10
+const ITEMS_PER_PAGE = 10;
 
 class App extends React.Component {
-  state = { page: 0 }
-  setPage = page => this.setState({ page })
+  state = { page: 0 };
+  setPage = page => this.setState({ page });
 
   render() {
     return (
@@ -38,8 +38,8 @@ class App extends React.Component {
           />
         </div>
       </div>
-    )
+    );
   }
 }
 
-export default App
+export default App;

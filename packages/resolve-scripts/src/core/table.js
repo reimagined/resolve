@@ -1,4 +1,4 @@
-import { table, getBorderCharacters } from 'table'
+import { table, getBorderCharacters } from 'table';
 
 const config = {
   border: getBorderCharacters('void'),
@@ -17,6 +17,6 @@ const config = {
     }
   },
   drawHorizontalLine: () => false
-}
+};
 
-export default data => table(data, config)
+export default data => table(data, config);

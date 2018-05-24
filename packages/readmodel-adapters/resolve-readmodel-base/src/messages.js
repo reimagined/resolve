@@ -19,6 +19,6 @@ export default {
     `Update expression ${JSON.stringify(expr)} is invalid`,
   invalidDocumentShape: doc =>
     `Document ${JSON.stringify(doc)} has invalid shape`
-}
+};
 
 /* eslint-enable max-len */

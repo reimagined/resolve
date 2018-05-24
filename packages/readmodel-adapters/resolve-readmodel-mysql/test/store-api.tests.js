@@ -1,17 +1,17 @@
-import { expect } from 'chai'
-import sinon from 'sinon'
-import sqlFormatter from 'sql-formatter'
+import { expect } from 'chai';
+import sinon from 'sinon';
+import sqlFormatter from 'sql-formatter';
 
-import storeApi from '../src/store-api'
+import storeApi from '../src/store-api';
 
 describe('resolve-readmodel-mysql store-api', () => {
-  const MAX_VALUE = 0x0fffffff | 0
-  const format = sqlFormatter.format.bind(sqlFormatter)
+  const MAX_VALUE = 0x0fffffff | 0;
+  const format = sqlFormatter.format.bind(sqlFormatter);
 
-  let executor, pool
+  let executor, pool;
 
   beforeEach(() => {
-    executor = sinon.stub()
+    executor = sinon.stub();
 
     pool = {
       escapeId: sinon
@@ -34,20 +34,20 @@ describe('resolve-readmodel-mysql store-api', () => {
           }
         }
       }
-    }
-  })
+    };
+  });
 
   afterEach(() => {
-    executor = null
-    pool = null
-  })
+    executor = null;
+    pool = null;
+  });
 
   it('should provide defineTable method', async () => {
     await storeApi.defineTable(pool, 'test', {
       fieldTypes: { first: 'number', second: 'string', third: 'string' },
       primaryIndex: { name: 'first' },
       secondaryIndexes: [{ name: 'second' }, { name: 'third' }]
-    })
+    });
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
@@ -60,12 +60,12 @@ describe('resolve-readmodel-mysql store-api', () => {
           INDEX USING BTREE (\`third\`)
         )`
       )
-    )
-  })
+    );
+  });
 
   it('should provide find method - search logical/comparation operators', async () => {
-    const gaugeResultSet = []
-    executor.onCall(0).callsFake(async () => [gaugeResultSet])
+    const gaugeResultSet = [];
+    executor.onCall(0).callsFake(async () => [gaugeResultSet]);
 
     const result = await storeApi.find(
       pool,
@@ -82,7 +82,7 @@ describe('resolve-readmodel-mysql store-api', () => {
       { sort: -1, 'inner.sort': 1 },
       10,
       20
-    )
+    );
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
@@ -93,16 +93,20 @@ describe('resolve-readmodel-mysql store-api', () => {
          ORDER BY \`sort\` DESC, \`inner\`->'$."sort"' ASC
          LIMIT 10, 20`
       )
-    )
+    );
 
-    expect(executor.firstCall.args[1]).to.be.deep.equal([100, '1000', 'volume'])
+    expect(executor.firstCall.args[1]).to.be.deep.equal([
+      100,
+      '1000',
+      'volume'
+    ]);
 
-    expect(result).to.be.equal(gaugeResultSet)
-  })
+    expect(result).to.be.equal(gaugeResultSet);
+  });
 
   it('should provide find method - all arguments passed', async () => {
-    const gaugeResultSet = []
-    executor.onCall(0).callsFake(async () => [gaugeResultSet])
+    const gaugeResultSet = [];
+    executor.onCall(0).callsFake(async () => [gaugeResultSet]);
 
     const result = await storeApi.find(
       pool,
@@ -112,7 +116,7 @@ describe('resolve-readmodel-mysql store-api', () => {
       { sort: -1, 'inner.sort': 1 },
       10,
       20
-    )
+    );
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
@@ -122,16 +126,16 @@ describe('resolve-readmodel-mysql store-api', () => {
          ORDER BY \`sort\` DESC, \`inner\`->'$."sort"' ASC
          LIMIT 10, 20`
       )
-    )
+    );
 
-    expect(executor.firstCall.args[1]).to.be.deep.equal([0, '1'])
+    expect(executor.firstCall.args[1]).to.be.deep.equal([0, '1']);
 
-    expect(result).to.be.equal(gaugeResultSet)
-  })
+    expect(result).to.be.equal(gaugeResultSet);
+  });
 
   it('should provide find method - no projection passed', async () => {
-    const gaugeResultSet = []
-    executor.onCall(0).callsFake(async () => [gaugeResultSet])
+    const gaugeResultSet = [];
+    executor.onCall(0).callsFake(async () => [gaugeResultSet]);
 
     const result = await storeApi.find(
       pool,
@@ -141,7 +145,7 @@ describe('resolve-readmodel-mysql store-api', () => {
       { sort: -1, 'inner.sort': 1 },
       10,
       20
-    )
+    );
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
@@ -150,16 +154,16 @@ describe('resolve-readmodel-mysql store-api', () => {
          ORDER BY \`sort\` DESC, \`inner\`->'$."sort"' ASC
          LIMIT 10, 20`
       )
-    )
+    );
 
-    expect(executor.firstCall.args[1]).to.be.deep.equal([0, '1'])
+    expect(executor.firstCall.args[1]).to.be.deep.equal([0, '1']);
 
-    expect(result).to.be.equal(gaugeResultSet)
-  })
+    expect(result).to.be.equal(gaugeResultSet);
+  });
 
   it('should provide find method - no sort passed', async () => {
-    const gaugeResultSet = []
-    executor.onCall(0).callsFake(async () => [gaugeResultSet])
+    const gaugeResultSet = [];
+    executor.onCall(0).callsFake(async () => [gaugeResultSet]);
 
     const result = await storeApi.find(
       pool,
@@ -169,7 +173,7 @@ describe('resolve-readmodel-mysql store-api', () => {
       null,
       10,
       20
-    )
+    );
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
@@ -178,16 +182,16 @@ describe('resolve-readmodel-mysql store-api', () => {
          WHERE \`search\` = ? AND \`inner\`->'$."search"' = CAST(? AS JSON)
          LIMIT 10, 20`
       )
-    )
+    );
 
-    expect(executor.firstCall.args[1]).to.be.deep.equal([0, '1'])
+    expect(executor.firstCall.args[1]).to.be.deep.equal([0, '1']);
 
-    expect(result).to.be.equal(gaugeResultSet)
-  })
+    expect(result).to.be.equal(gaugeResultSet);
+  });
 
   it('should provide find method - no skip passed', async () => {
-    const gaugeResultSet = []
-    executor.onCall(0).callsFake(async () => [gaugeResultSet])
+    const gaugeResultSet = [];
+    executor.onCall(0).callsFake(async () => [gaugeResultSet]);
 
     const result = await storeApi.find(
       pool,
@@ -197,7 +201,7 @@ describe('resolve-readmodel-mysql store-api', () => {
       { sort: -1, 'inner.sort': 1 },
       Infinity,
       20
-    )
+    );
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
@@ -207,16 +211,16 @@ describe('resolve-readmodel-mysql store-api', () => {
          ORDER BY \`sort\` DESC, \`inner\`->'$."sort"' ASC
          LIMIT 0, 20`
       )
-    )
+    );
 
-    expect(executor.firstCall.args[1]).to.be.deep.equal([0, '1'])
+    expect(executor.firstCall.args[1]).to.be.deep.equal([0, '1']);
 
-    expect(result).to.be.equal(gaugeResultSet)
-  })
+    expect(result).to.be.equal(gaugeResultSet);
+  });
 
   it('should provide find method - no limit passed', async () => {
-    const gaugeResultSet = []
-    executor.onCall(0).callsFake(async () => [gaugeResultSet])
+    const gaugeResultSet = [];
+    executor.onCall(0).callsFake(async () => [gaugeResultSet]);
 
     const result = await storeApi.find(
       pool,
@@ -226,7 +230,7 @@ describe('resolve-readmodel-mysql store-api', () => {
       { sort: -1, 'inner.sort': 1 },
       10,
       Infinity
-    )
+    );
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
@@ -236,23 +240,23 @@ describe('resolve-readmodel-mysql store-api', () => {
          ORDER BY \`sort\` DESC, \`inner\`->'$."sort"' ASC
          LIMIT 10, ${MAX_VALUE}`
       )
-    )
+    );
 
-    expect(executor.firstCall.args[1]).to.be.deep.equal([0, '1'])
+    expect(executor.firstCall.args[1]).to.be.deep.equal([0, '1']);
 
-    expect(result).to.be.equal(gaugeResultSet)
-  })
+    expect(result).to.be.equal(gaugeResultSet);
+  });
 
   it('should provide findOne method - all arguments passed', async () => {
-    const gaugeResult = {}
-    executor.onCall(0).callsFake(async () => [[gaugeResult]])
+    const gaugeResult = {};
+    executor.onCall(0).callsFake(async () => [[gaugeResult]]);
 
     const result = await storeApi.findOne(
       pool,
       'test',
       { search: 0, 'inner.search': 1 },
       { field: 1, 'inner.field': 1 }
-    )
+    );
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
@@ -261,23 +265,23 @@ describe('resolve-readmodel-mysql store-api', () => {
          WHERE \`search\` = ? AND \`inner\`->'$."search"' = CAST(? AS JSON)
          LIMIT 0, 1`
       )
-    )
+    );
 
-    expect(executor.firstCall.args[1]).to.be.deep.equal([0, '1'])
+    expect(executor.firstCall.args[1]).to.be.deep.equal([0, '1']);
 
-    expect(result).to.be.equal(gaugeResult)
-  })
+    expect(result).to.be.equal(gaugeResult);
+  });
 
   it('should provide findOne method - no projection passed', async () => {
-    const gaugeResult = {}
-    executor.onCall(0).callsFake(async () => [[gaugeResult]])
+    const gaugeResult = {};
+    executor.onCall(0).callsFake(async () => [[gaugeResult]]);
 
     const result = await storeApi.findOne(
       pool,
       'test',
       { search: 0, 'inner.search': 1 },
       null
-    )
+    );
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
@@ -285,20 +289,20 @@ describe('resolve-readmodel-mysql store-api', () => {
          WHERE \`search\` = ? AND \`inner\`->'$."search"' = CAST(? AS JSON)
          LIMIT 0, 1`
       )
-    )
+    );
 
-    expect(executor.firstCall.args[1]).to.be.deep.equal([0, '1'])
+    expect(executor.firstCall.args[1]).to.be.deep.equal([0, '1']);
 
-    expect(result).to.be.equal(gaugeResult)
-  })
+    expect(result).to.be.equal(gaugeResult);
+  });
 
   it('should provide count method', async () => {
-    executor.onCall(0).callsFake(async () => [[{ Count: 100 }]])
+    executor.onCall(0).callsFake(async () => [[{ Count: 100 }]]);
 
     const result = await storeApi.count(pool, 'test', {
       search: 0,
       'inner.search': 1
-    })
+    });
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
@@ -306,24 +310,24 @@ describe('resolve-readmodel-mysql store-api', () => {
          WHERE \`search\` = ? AND
            \`inner\`->'$."search"' = CAST(? AS JSON)`
       )
-    )
+    );
 
-    expect(executor.firstCall.args[1]).to.be.deep.equal([0, '1'])
+    expect(executor.firstCall.args[1]).to.be.deep.equal([0, '1']);
 
-    expect(result).to.be.equal(100)
-  })
+    expect(result).to.be.equal(100);
+  });
 
   it('should provide insert method', async () => {
-    await storeApi.insert(pool, 'test', { id: 1, value: 2 })
+    await storeApi.insert(pool, 'test', { id: 1, value: 2 });
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
         `INSERT INTO \`test\`(\`id\`, \`value\`) VALUES(?, CAST(? AS JSON))`
       )
-    )
+    );
 
-    expect(executor.firstCall.args[1]).to.be.deep.equal([1, '2'])
-  })
+    expect(executor.firstCall.args[1]).to.be.deep.equal([1, '2']);
+  });
 
   it('should provide update method', async () => {
     await storeApi.update(
@@ -335,7 +339,7 @@ describe('resolve-readmodel-mysql store-api', () => {
         $unset: { two: true, 'inner.two': true },
         $inc: { counter: 3, 'inner.counter': 4 }
       }
-    )
+    );
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
@@ -349,7 +353,7 @@ describe('resolve-readmodel-mysql store-api', () => {
          WHERE \`id\` = ? AND
            \`inner\`->'$."value"' = CAST(? AS JSON)`
       )
-    )
+    );
 
     expect(executor.firstCall.args[1]).to.be.deep.equal([
       10,
@@ -358,11 +362,11 @@ describe('resolve-readmodel-mysql store-api', () => {
       4,
       1,
       '2'
-    ])
-  })
+    ]);
+  });
 
   it('should provide del method', async () => {
-    await storeApi.del(pool, 'test', { id: 1, 'inner.value': 2 })
+    await storeApi.del(pool, 'test', { id: 1, 'inner.value': 2 });
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
@@ -370,8 +374,8 @@ describe('resolve-readmodel-mysql store-api', () => {
           WHERE \`id\`= ? AND
           \`inner\`->'$."value"' = CAST(? AS JSON)`
       )
-    )
+    );
 
-    expect(executor.firstCall.args[1]).to.be.deep.equal([1, '2'])
-  })
-})
+    expect(executor.firstCall.args[1]).to.be.deep.equal([1, '2']);
+  });
+});

@@ -1,7 +1,7 @@
-import { checkRequiredFields, getRootableUrl } from './utils'
+import { checkRequiredFields, getRootableUrl } from './utils';
 
 const sendCommand = async ({ origin, rootPath, store }, action) => {
-  const { command, aggregateId, aggregateName, payload } = action
+  const { command, aggregateId, aggregateName, payload } = action;
 
   if (
     !(
@@ -14,7 +14,7 @@ const sendCommand = async ({ origin, rootPath, store }, action) => {
       !(command.ok || command.error)
     )
   ) {
-    return
+    return;
   }
 
   const normalizedCommand = {
@@ -22,7 +22,7 @@ const sendCommand = async ({ origin, rootPath, store }, action) => {
     aggregateId,
     aggregateName,
     payload
-  }
+  };
 
   try {
     const response = await fetch(
@@ -33,7 +33,7 @@ const sendCommand = async ({ origin, rootPath, store }, action) => {
         credentials: 'same-origin',
         body: JSON.stringify(normalizedCommand)
       }
-    )
+    );
 
     if (response.ok) {
       store.dispatch({
@@ -42,15 +42,15 @@ const sendCommand = async ({ origin, rootPath, store }, action) => {
           ...action.command,
           ok: true
         }
-      })
+      });
 
-      return
+      return;
     }
 
-    const text = await response.text()
+    const text = await response.text();
     // eslint-disable-next-line no-console
-    console.error('Send command error:', text)
-    throw new Error(text)
+    console.error('Send command error:', text);
+    throw new Error(text);
   } catch (error) {
     store.dispatch({
       ...action,
@@ -58,8 +58,8 @@ const sendCommand = async ({ origin, rootPath, store }, action) => {
         ...action.command,
         error
       }
-    })
+    });
   }
-}
+};
 
-export default sendCommand
+export default sendCommand;

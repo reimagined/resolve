@@ -1,42 +1,42 @@
-import React from 'react'
-import { bindActionCreators } from 'redux'
-import uuid from 'uuid'
-import { connectReadModel, connectViewModel } from 'resolve-redux'
-import styled from 'styled-components'
+import React from 'react';
+import { bindActionCreators } from 'redux';
+import uuid from 'uuid';
+import { connectReadModel, connectViewModel } from 'resolve-redux';
+import styled from 'styled-components';
 
-import viewModel from '../../common/view-models/storyDetails'
-import actions from '../actions/storiesActions'
-import Comment from '../components/Comment'
-import ChildrenComments from '../components/ChildrenComments'
+import viewModel from '../../common/view-models/storyDetails';
+import actions from '../actions/storiesActions';
+import Comment from '../components/Comment';
+import ChildrenComments from '../components/ChildrenComments';
 
 const Reply = styled.div`
   padding: 1em 1.25em 0 1.25em;
   margin-bottom: 1em;
-`
+`;
 
 export class CommentById extends React.PureComponent {
   saveComment = () => {
-    const { parentId, aggregateId } = this.props
+    const { parentId, aggregateId } = this.props;
 
     this.props.commentStory({
       aggregateId,
       parentId,
       text: this.textarea.value
-    })
+    });
 
-    this.textarea.value = ''
-  }
+    this.textarea.value = '';
+  };
 
   render() {
     const {
       data: { me },
       story,
       parentId
-    } = this.props
-    const loggedIn = !!me
+    } = this.props;
+    const loggedIn = !!me;
 
     if (!story || !story.comments) {
-      return null
+      return null;
     }
 
     return (
@@ -64,7 +64,7 @@ export class CommentById extends React.PureComponent {
           loggedIn={loggedIn}
         />
       </Comment>
-    )
+    );
   }
 }
 
@@ -80,7 +80,7 @@ export const mapStateToProps = (
   viewModelName: viewModel.name,
   aggregateId: storyId,
   parentId: commentId
-})
+});
 
 export const mapDispatchToProps = dispatch =>
   bindActionCreators(
@@ -93,19 +93,19 @@ export const mapDispatchToProps = dispatch =>
         })
     },
     dispatch
-  )
+  );
 
 const getReadModelData = state => {
   try {
-    return { me: state.readModels['default']['user'] }
+    return { me: state.readModels['default']['user'] };
   } catch (err) {
-    return { me: null }
+    return { me: null };
   }
-}
+};
 
 export default connectReadModel(state => ({
   readModelName: 'default',
   resolverName: 'user',
   parameters: {},
   data: getReadModelData(state)
-}))(connectViewModel(mapStateToProps, mapDispatchToProps)(CommentById))
+}))(connectViewModel(mapStateToProps, mapDispatchToProps)(CommentById));

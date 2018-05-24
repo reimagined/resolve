@@ -1,8 +1,8 @@
-import React from 'react'
-import renderer from 'react-test-renderer'
-import { StaticRouter } from 'react-router'
+import React from 'react';
+import renderer from 'react-test-renderer';
+import { StaticRouter } from 'react-router';
 
-import { Index } from '../../client/containers/Index'
+import { Index } from '../../client/containers/Index';
 
 test('renders correctly', () => {
   const tree = renderer
@@ -18,6 +18,6 @@ test('renders correctly', () => {
         />
       </StaticRouter>
     )
-    .toJSON()
-  expect(tree).toMatchSnapshot()
-})
+    .toJSON();
+  expect(tree).toMatchSnapshot();
+});

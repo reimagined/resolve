@@ -1,5 +1,5 @@
-import React from 'react'
-import { Form, FormControl, Button } from 'react-bootstrap'
+import React from 'react';
+import { Form, FormControl, Button } from 'react-bootstrap';
 
 const Logout = props => {
   return (
@@ -12,7 +12,7 @@ const Logout = props => {
         </Button>
       </Form>
     </div>
-  )
-}
+  );
+};
 
-export default Logout
+export default Logout;

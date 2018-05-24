@@ -1,5 +1,5 @@
-import React from 'react'
-import { Navbar, Image } from 'react-bootstrap'
+import React from 'react';
+import { Navbar, Image } from 'react-bootstrap';
 
 const Header = () => (
   <div>
@@ -29,6 +29,6 @@ const Header = () => (
       </Navbar.Collapse>
     </Navbar>
   </div>
-)
+);
 
-export default Header
+export default Header;

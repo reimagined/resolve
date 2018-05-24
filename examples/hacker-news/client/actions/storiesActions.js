@@ -1,4 +1,4 @@
-import { createActions } from 'resolve-redux'
-import aggregate from '../../common/aggregates/story'
+import { createActions } from 'resolve-redux';
+import aggregate from '../../common/aggregates/story';
 
-export default createActions(aggregate)
+export default createActions(aggregate);

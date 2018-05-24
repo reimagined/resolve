@@ -1,5 +1,5 @@
-const serializeState = state => JSON.stringify(state)
-const deserializeState = state => JSON.parse(state)
+const serializeState = state => JSON.stringify(state);
+const deserializeState = state => JSON.parse(state);
 
 export default [
   {
@@ -39,12 +39,12 @@ export default [
         }
       }),
       ITEM_REMOVED: (state, { payload: { id } }) => {
-        const nextState = { ...state }
-        delete nextState[id]
-        return nextState
+        const nextState = { ...state };
+        delete nextState[id];
+        return nextState;
       }
     },
     serializeState,
     deserializeState
   }
-]
+];

@@ -1,9 +1,9 @@
-import jestRunner from '../jest_runner'
+import jestRunner from '../jest_runner';
 
-const commands = require('../../../configs/command.list.json')
+const commands = require('../../../configs/command.list.json');
 
-export const command = 'test'
-export const desc = commands.test
-export const builder = () => {}
+export const command = 'test';
+export const desc = commands.test;
+export const builder = () => {};
 
-export const handler = () => jestRunner()
+export const handler = () => jestRunner();

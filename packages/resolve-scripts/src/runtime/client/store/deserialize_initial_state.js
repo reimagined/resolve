@@ -1,4 +1,4 @@
-const viewModels = require($resolve.viewModels)
+const viewModels = require($resolve.viewModels);
 
 const deserializeInitialState = serializedInitialState => {
   const initialState = {
@@ -6,25 +6,27 @@ const deserializeInitialState = serializedInitialState => {
     viewModels: {
       ...serializedInitialState.viewModels
     }
-  }
+  };
 
   for (
     let viewModelIndex = 0;
     viewModelIndex < viewModels.length;
     viewModelIndex++
   ) {
-    const { name: viewModelName, deserializeState } = viewModels[viewModelIndex]
-    const viewModelInitialState = initialState.viewModels[viewModelName]
+    const { name: viewModelName, deserializeState } = viewModels[
+      viewModelIndex
+    ];
+    const viewModelInitialState = initialState.viewModels[viewModelName];
     for (let aggregateId in viewModelInitialState) {
       if (viewModelInitialState.hasOwnProperty(aggregateId)) {
         viewModelInitialState[aggregateId] = deserializeState(
           viewModelInitialState[aggregateId]
-        )
+        );
       }
     }
   }
 
-  return initialState
-}
+  return initialState;
+};
 
-export default deserializeInitialState
+export default deserializeInitialState;

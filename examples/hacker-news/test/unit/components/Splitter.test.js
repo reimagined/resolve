@@ -1,16 +1,16 @@
-import React from 'react'
-import { shallow } from 'enzyme'
+import React from 'react';
+import { shallow } from 'enzyme';
 
-import Splitter from '../../../client/components/Splitter'
+import Splitter from '../../../client/components/Splitter';
 
 it('Splitter renders correctly', () => {
-  const wrapper = shallow(<Splitter />)
+  const wrapper = shallow(<Splitter />);
 
-  expect(wrapper).toMatchSnapshot()
-})
+  expect(wrapper).toMatchSnapshot();
+});
 
 it('Splitter white renders correctly', () => {
-  const wrapper = shallow(<Splitter color="#fff" />)
+  const wrapper = shallow(<Splitter color="#fff" />);
 
-  expect(wrapper).toMatchSnapshot()
-})
+  expect(wrapper).toMatchSnapshot();
+});

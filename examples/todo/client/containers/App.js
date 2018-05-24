@@ -1,8 +1,8 @@
-import React from 'react'
-import { connectViewModel } from 'resolve-redux'
-import { bindActionCreators } from 'redux'
+import React from 'react';
+import { connectViewModel } from 'resolve-redux';
+import { bindActionCreators } from 'redux';
 
-import { Helmet } from 'react-helmet'
+import { Helmet } from 'react-helmet';
 import {
   ListGroup,
   ListGroupItem,
@@ -11,11 +11,11 @@ import {
   Button,
   Image,
   FormControl
-} from 'react-bootstrap'
-import Header from '../components/Header.js'
+} from 'react-bootstrap';
+import Header from '../components/Header.js';
 
-const viewModelName = 'Todos'
-const aggregateId = 'root-id'
+const viewModelName = 'Todos';
+const aggregateId = 'root-id';
 
 export const App = ({
   todos,
@@ -24,16 +24,16 @@ export const App = ({
   removeItem,
   aggregateId
 }) => {
-  const placeholder = 'New Task'
+  const placeholder = 'New Task';
   const createItemFunc = () => {
     createItem(aggregateId, {
       text: newTodo.value === '' ? placeholder : newTodo.value,
       id: Date.now()
-    })
-    newTodo.value = ''
-  }
+    });
+    newTodo.value = '';
+  };
 
-  let newTodo
+  let newTodo;
   return (
     <div>
       <Helmet>
@@ -75,8 +75,8 @@ export const App = ({
             inputRef={element => (newTodo = element)}
             onKeyPress={event => {
               if (event.charCode === 13) {
-                event.preventDefault()
-                createItemFunc()
+                event.preventDefault();
+                createItemFunc();
               }
             }}
           />
@@ -84,7 +84,7 @@ export const App = ({
             className="example-button"
             bsStyle="success"
             onClick={() => {
-              createItemFunc()
+              createItemFunc();
             }}
           >
             Add Task
@@ -92,16 +92,16 @@ export const App = ({
         </Form>
       </div>
     </div>
-  )
-}
+  );
+};
 
 const mapStateToProps = state => ({
   viewModelName,
   aggregateId,
   todos: state.viewModels[viewModelName][aggregateId]
-})
+});
 
 const mapDispatchToProps = (dispatch, props) =>
-  bindActionCreators(props.aggregateActions, dispatch)
+  bindActionCreators(props.aggregateActions, dispatch);
 
-export default connectViewModel(mapStateToProps, mapDispatchToProps)(App)
+export default connectViewModel(mapStateToProps, mapDispatchToProps)(App);

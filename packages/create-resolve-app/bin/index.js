@@ -1,21 +1,21 @@
 #!/usr/bin/env node
 
-const AdmZip = require('adm-zip')
-const commandLineArgs = require('command-line-args')
-const chalk = require('chalk')
-const fs = require('fs')
-const https = require('https')
-const request = require('request')
-const spawn = require('cross-spawn')
-const validateProjectName = require('validate-npm-package-name')
+const AdmZip = require('adm-zip');
+const commandLineArgs = require('command-line-args');
+const chalk = require('chalk');
+const fs = require('fs');
+const https = require('https');
+const request = require('request');
+const spawn = require('cross-spawn');
+const validateProjectName = require('validate-npm-package-name');
 
 // eslint-disable-next-line no-console
-const log = console.log
+const log = console.log;
 
 // eslint-disable-next-line no-console
-const error = console.error
+const error = console.error;
 
-const EOL = require('os').EOL
+const EOL = require('os').EOL;
 
 const optionDefinitions = [
   { name: 'example', alias: 'e', type: String },
@@ -23,7 +23,7 @@ const optionDefinitions = [
   { name: 'commit', alias: 'c', type: String },
   { name: 'version', alias: 'V', type: Boolean },
   { name: 'help', alias: 'h', type: Boolean }
-]
+];
 
 const optionsInfo =
   `Options:${EOL}` +
@@ -37,7 +37,7 @@ const optionsInfo =
   `  -b, --branch     branch (optional, master is default)${EOL}` +
   `  -c, --commit     commit ${EOL}` +
   `  -V, --version    outputs the version number${EOL}` +
-  `  -h, --help       outputs usage information${EOL}`
+  `  -h, --help       outputs usage information${EOL}`;
 
 const messages = {
   help:
@@ -74,24 +74,24 @@ const messages = {
     `You have specified an unsupported option(s): ${chalk.red(options)}${EOL}` +
     EOL +
     `Run ${chalk.cyan('create-resolve-app --help')} to see all options.`
-}
+};
 
-const options = commandLineArgs(optionDefinitions, { partial: true })
+const options = commandLineArgs(optionDefinitions, { partial: true });
 const unknownOptions =
-  options._unknown && options._unknown.filter(x => x.startsWith('-'))
+  options._unknown && options._unknown.filter(x => x.startsWith('-'));
 
-const resolveVersion = require('../package.json').version
-const analyticsUrlBase = 'https://ga-beacon.appspot.com/UA-118635726-2'
+const resolveVersion = require('../package.json').version;
+const analyticsUrlBase = 'https://ga-beacon.appspot.com/UA-118635726-2';
 
 if (unknownOptions && unknownOptions.length) {
-  const options = unknownOptions.join()
-  log(messages.unknownOptions(options))
+  const options = unknownOptions.join();
+  log(messages.unknownOptions(options));
 } else if (options.help) {
-  log(messages.help)
+  log(messages.help);
 } else if (options.version) {
-  log(resolveVersion)
+  log(resolveVersion);
 } else if (!options._unknown) {
-  log(messages.emptyAppNameError)
+  log(messages.emptyAppNameError);
 } else {
   let appName = options._unknown[0],
     example = options.example || 'hello-world',
@@ -103,110 +103,112 @@ if (unknownOptions && unknownOptions.length) {
     repoDirName = `resolve-${revision}`,
     examplePath = `./${repoDirName}/examples/${example}`,
     resolveRepoPath = `https://codeload.github.com/reimagined/resolve/zip/${revision}`,
-    tmpFilePath = `./${repoDirName}.zip`
+    tmpFilePath = `./${repoDirName}.zip`;
 
   const startCreatingApp = () =>
     Promise.resolve(() =>
       log(messages.startCreatingApp(appName, example, options))
-    )
+    );
 
   const checkAppName = () =>
     new Promise((resolve, reject) => {
-      const result = validateProjectName(appName)
+      const result = validateProjectName(appName);
       if (!result.validForNewPackages) {
         let message = `It is impossible to create an application called ${chalk.red(
           `"${appName}"`
-        )} because of npm naming restrictions:`
+        )} because of npm naming restrictions:`;
         message += []
           .concat(result.errors || [])
           .concat(result.warnings || [])
           .map(e => `  *  ${e}`)
-          .join(EOL)
+          .join(EOL);
 
-        error(chalk.red(message))
+        error(chalk.red(message));
 
-        return reject(message)
+        return reject(message);
       }
 
-      resolve()
-    })
+      resolve();
+    });
 
   const downloadRepo = () =>
     new Promise((resolve, reject) => {
-      log(chalk.green('Load example'))
+      log(chalk.green('Load example'));
       https.get(resolveRepoPath, function(response) {
         response.on('data', function(data) {
-          fs.appendFileSync(tmpFilePath, data)
-        })
+          fs.appendFileSync(tmpFilePath, data);
+        });
 
         response.on('end', function() {
           try {
-            let zip = new AdmZip(tmpFilePath)
-            zip.extractAllTo(`./${appName}`)
-            fs.unlinkSync(tmpFilePath)
-            resolve()
+            let zip = new AdmZip(tmpFilePath);
+            zip.extractAllTo(`./${appName}`);
+            fs.unlinkSync(tmpFilePath);
+            resolve();
           } catch (e) {
-            reject(e)
+            reject(e);
           }
-        })
-      })
-    })
+        });
+      });
+    });
 
   const printIfDownloadFail = errMessage => {
     if (
       errMessage.toLowerCase().indexOf('invalid or unsupported zip format') > -1
     ) {
-      let buf = fs.readFileSync(tmpFilePath).toString()
+      let buf = fs.readFileSync(tmpFilePath).toString();
       if (buf.toLowerCase().indexOf('not found')) {
-        log(chalk.red('Referent commit does not exists in resolve repository.'))
+        log(
+          chalk.red('Referent commit does not exists in resolve repository.')
+        );
         log(
           chalk.red(
             'Maybe you forgot to merge your feature branch with dev branch'
           )
-        )
+        );
 
-        throw new Error('Repo downloading failed')
+        throw new Error('Repo downloading failed');
       }
     }
 
-    throw new Error(errMessage)
-  }
+    throw new Error(errMessage);
+  };
 
   const copyExampleBash = () =>
     new Promise((resolve, reject) => {
-      log()
-      log(chalk.green('Copy example'))
+      log();
+      log(chalk.green('Copy example'));
       let command =
         `cd ${appName} ` +
         ` && cp -r ${examplePath}/* . && cp -r ${examplePath}/.[a-zA-Z0-9]* .` +
-        ` && rm -rf ./${repoDirName}`
+        ` && rm -rf ./${repoDirName}`;
 
-      const proc = spawn.sync(command, [], { stdio: 'inherit', shell: true })
+      const proc = spawn.sync(command, [], { stdio: 'inherit', shell: true });
       if (proc.status !== 0) {
-        return reject(`\`${command}\` failed`)
+        return reject(`\`${command}\` failed`);
       }
-      resolve()
-    })
+      resolve();
+    });
 
   const copyExampleCMD = prevErr => {
-    log()
-    let examplePathCMD = examplePath.split('/').join('\\')
+    log();
+    let examplePathCMD = examplePath.split('/').join('\\');
     let command =
       `cd ${appName} ` +
       ` && xcopy ${examplePathCMD} /E /Q ` +
-      ` && rmdir /S /Q ${repoDirName}`
+      ` && rmdir /S /Q ${repoDirName}`;
 
-    const proc = spawn.sync(command, [], { stdio: 'inherit', shell: true })
+    const proc = spawn.sync(command, [], { stdio: 'inherit', shell: true });
     if (proc.status !== 0) {
-      log()
-      log('Bash error:')
-      log(chalk.red(prevErr))
-      log()
-      log(`CMD \`${command}\` failed`)
+      log();
+      log('Bash error:');
+      log(chalk.red(prevErr));
+      log();
+      log(`CMD \`${command}\` failed`);
 
-      throw Error(`\`${command}\` failed`)
+      throw Error(`\`${command}\` failed`);
     }
-  }
+  };
 
   const getResolvePackages = () => {
     return new Promise((resolve, reject) => {
@@ -215,99 +217,99 @@ if (unknownOptions && unknownOptions.length) {
         { json: true },
         (fetchError, response, body) => {
           if (fetchError) {
-            reject('Package list loading error:' + fetchError.stack)
+            reject('Package list loading error:' + fetchError.stack);
           }
           try {
-            resolve(body.objects.map(object => object.package.name))
+            resolve(body.objects.map(object => object.package.name));
           } catch (parseError) {
-            reject('Package list loading error:' + parseError.stack)
+            reject('Package list loading error:' + parseError.stack);
           }
         }
-      )
-    })
-  }
+      );
+    });
+  };
 
   const patchPackageJson = () => {
-    log()
-    log(chalk.green('Patch package.json'))
+    log();
+    log(chalk.green('Patch package.json'));
 
     let packageJsonPath = `${process.cwd()}/${appName}/package.json`,
-      packageJson = require(packageJsonPath)
+      packageJson = require(packageJsonPath);
 
-    packageJson.name = appName
-    packageJson.version = resolveVersion
+    packageJson.name = appName;
+    packageJson.version = resolveVersion;
 
     return getResolvePackages()
       .then(packages => {
         Object.keys(packageJson.dependencies).forEach(k => {
           if (packages.indexOf(k) > -1) {
-            packageJson.dependencies[k] = resolveVersion
+            packageJson.dependencies[k] = resolveVersion;
           }
-        })
+        });
       })
       .then(() =>
         fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2))
-      )
-  }
+      );
+  };
 
   const install = () => {
-    log()
-    log(chalk.green('Install dependencies'))
-    let command = `cd ./${appName} && npm i`
-    const proc = spawn.sync(command, [], { stdio: 'inherit', shell: true })
+    log();
+    log(chalk.green('Install dependencies'));
+    let command = `cd ./${appName} && npm i`;
+    const proc = spawn.sync(command, [], { stdio: 'inherit', shell: true });
     if (proc.status !== 0) {
-      throw Error(`\`${command}\` failed`)
+      throw Error(`\`${command}\` failed`);
     }
-  }
+  };
 
   const printFinishOutput = () => {
     const displayCommand = (isDefaultCmd = false) =>
-      isDefaultCmd ? 'npm' : 'npm run'
+      isDefaultCmd ? 'npm' : 'npm run';
 
-    log()
-    log(`Success! ${appName} is created `)
-    log('In that directory, you can run the following commands:')
+    log();
+    log(`Success! ${appName} is created `);
+    log('In that directory, you can run the following commands:');
 
-    log()
-    log(chalk.cyan(`  ${displayCommand()} dev`))
-    log('    Starts the development server.')
+    log();
+    log(chalk.cyan(`  ${displayCommand()} dev`));
+    log('    Starts the development server.');
 
-    log()
-    log(chalk.cyan(`  ${displayCommand()} test`))
-    log('    Starts the test runner.')
+    log();
+    log(chalk.cyan(`  ${displayCommand()} test`));
+    log('    Starts the test runner.');
 
-    log()
-    log(chalk.cyan(`  ${displayCommand()} test:functional`))
-    log('    Starts the functionality test runner.')
+    log();
+    log(chalk.cyan(`  ${displayCommand()} test:functional`));
+    log('    Starts the functionality test runner.');
 
-    log()
-    log(chalk.cyan(`  ${displayCommand()} build`))
-    log('    Bundles the app into static files for production.')
+    log();
+    log(chalk.cyan(`  ${displayCommand()} build`));
+    log('    Bundles the app into static files for production.');
 
-    log()
-    log(chalk.cyan(`  ${displayCommand(1)} start`))
+    log();
+    log(chalk.cyan(`  ${displayCommand(1)} start`));
     log(
       '    Starts the production server. (run ' +
         `${chalk.cyan(`${displayCommand(false)} build`)} before)`
-    )
+    );
 
-    log()
-    log('We suggest that you begin by typing:')
-    log()
-    log(chalk.cyan('  cd'), `./${appName}`)
-    log(`  ${chalk.cyan(`${displayCommand(false)} dev`)}`)
-    log()
-    log('Happy coding!')
-  }
+    log();
+    log('We suggest that you begin by typing:');
+    log();
+    log(chalk.cyan('  cd'), `./${appName}`);
+    log(`  ${chalk.cyan(`${displayCommand(false)} dev`)}`);
+    log();
+    log('Happy coding!');
+  };
 
   const sendAnalytics = () =>
     new Promise((resolve, reject) => {
-      const analyticsUrl = `${analyticsUrlBase}/${example}/${resolveVersion}`
+      const analyticsUrl = `${analyticsUrlBase}/${example}/${resolveVersion}`;
       https.get(analyticsUrl, function(response) {
-        response.on('end', resolve)
-        response.on('error', reject)
-      })
-    })
+        response.on('end', resolve);
+        response.on('error', reject);
+      });
+    });
 
   startCreatingApp()
     .then(checkAppName)
@@ -317,5 +319,5 @@ if (unknownOptions && unknownOptions.length) {
     .then(install)
     .then(printFinishOutput)
     .then(() => sendAnalytics().catch(() => null))
-    .catch(e => log(chalk.red(e)))
+    .catch(e => log(chalk.red(e)));
 }

@@ -1,38 +1,38 @@
-import { delay, getRootableUrl } from './utils'
-import actions from './actions'
+import { delay, getRootableUrl } from './utils';
+import actions from './actions';
 
 const subscribeReadModel = (
   { origin, rootPath, store, readModelSubscriptions, adapter, orderedFetch },
   action
 ) => {
-  const { readModelName, resolverName, parameters, isReactive } = action
+  const { readModelName, resolverName, parameters, isReactive } = action;
 
-  const subscriptionKey = `${readModelName}:${resolverName}`
+  const subscriptionKey = `${readModelName}:${resolverName}`;
   if (readModelSubscriptions.hasOwnProperty(subscriptionKey)) {
-    return
+    return;
   }
 
   const fetchReadModel = () => {
     if (!readModelSubscriptions.hasOwnProperty(subscriptionKey)) {
-      return
+      return;
     }
     const checkSelfPromise = selfPromise => {
       return (
         readModelSubscriptions.hasOwnProperty(subscriptionKey) &&
         selfPromise === readModelSubscriptions[subscriptionKey].promise
-      )
-    }
+      );
+    };
 
     const selfPromise = Promise.resolve().then(async () => {
       try {
         if (!checkSelfPromise(selfPromise)) {
-          return
+          return;
         }
-        const socketId = await adapter.getClientId()
-        readModelSubscriptions[subscriptionKey].socketId = socketId
+        const socketId = await adapter.getClientId();
+        readModelSubscriptions[subscriptionKey].socketId = socketId;
 
         if (!checkSelfPromise(selfPromise)) {
-          return
+          return;
         }
 
         const response = await orderedFetch(
@@ -51,13 +51,13 @@ const subscribeReadModel = (
               parameters
             })
           }
-        )
+        );
         if (!response.ok) {
-          throw new Error()
+          throw new Error();
         }
-        const { result, timeToLive, serialId } = await response.json()
+        const { result, timeToLive, serialId } = await response.json();
 
-        if (!checkSelfPromise(selfPromise)) return
+        if (!checkSelfPromise(selfPromise)) return;
         store.dispatch(
           actions.loadReadModelInitialState(
             readModelName,
@@ -65,30 +65,30 @@ const subscribeReadModel = (
             result,
             serialId
           )
-        )
+        );
 
         if (!isReactive) {
-          return
+          return;
         }
 
-        await delay(timeToLive)
-        fetchReadModel()
+        await delay(timeToLive);
+        fetchReadModel();
       } catch (error) {
-        await delay(1000)
-        fetchReadModel()
+        await delay(1000);
+        fetchReadModel();
       }
-    })
+    });
 
-    readModelSubscriptions[subscriptionKey].promise = selfPromise
-  }
+    readModelSubscriptions[subscriptionKey].promise = selfPromise;
+  };
 
   readModelSubscriptions[subscriptionKey] = {
     promise: Promise.resolve(),
     refresh: fetchReadModel,
     socketId: null
-  }
+  };
 
-  fetchReadModel()
-}
+  fetchReadModel();
+};
 
-export default subscribeReadModel
+export default subscribeReadModel;

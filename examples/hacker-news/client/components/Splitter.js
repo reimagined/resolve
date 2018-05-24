@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components'
+import styled, { css } from 'styled-components';
 
 const Splitter = styled.div`
   display: inline-block;
@@ -13,6 +13,6 @@ const Splitter = styled.div`
     css`
       border-left-color: ${props.color};
     `};
-`
+`;
 
-export default Splitter
+export default Splitter;

@@ -7,17 +7,17 @@ const buildProjection = (
       eventType === 'Init' &&
       typeof inputProjection[eventType] === 'function'
     ) {
-      internalContext.initHandler = inputProjection[eventType]
-      return projection
+      internalContext.initHandler = inputProjection[eventType];
+      return projection;
     }
 
     projection[eventType] = async event => {
-      await metaApi.setLastTimestamp(event.timestamp)
-      await inputProjection[eventType](storeApi, event)
-    }
+      await metaApi.setLastTimestamp(event.timestamp);
+      await inputProjection[eventType](storeApi, event);
+    };
 
-    return projection
-  }, {})
-}
+    return projection;
+  }, {});
+};
 
-export default buildProjection
+export default buildProjection;

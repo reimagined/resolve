@@ -1,1 +1,1 @@
-module.exports = require('jest-css-modules-transform')
+module.exports = require('jest-css-modules-transform');

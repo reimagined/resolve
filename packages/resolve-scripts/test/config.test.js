@@ -1,14 +1,14 @@
-import path from 'path'
+import path from 'path';
 
-import exec from './exec'
-import validateСonfig from '../src/core/validate_config'
+import exec from './exec';
+import validateСonfig from '../src/core/validate_config';
 
-const resolveConfigOrigin = require('../configs/resolve.config.json')
+const resolveConfigOrigin = require('../configs/resolve.config.json');
 
 describe('validate schema', () => {
   it('empty', () => {
-    expect(validateСonfig(resolveConfigOrigin)).toBeTruthy()
-  })
+    expect(validateСonfig(resolveConfigOrigin)).toBeTruthy();
+  });
 
   it('custom storage adapter', () => {
     expect(
@@ -21,8 +21,8 @@ describe('validate schema', () => {
           }
         }
       })
-    ).toBeTruthy()
-  })
+    ).toBeTruthy();
+  });
 
   it('custom bus adapter', () => {
     expect(
@@ -33,8 +33,8 @@ describe('validate schema', () => {
           options: {}
         }
       })
-    ).toBeTruthy()
-  })
+    ).toBeTruthy();
+  });
 
   it('custom subscribe adapter', () => {
     expect(
@@ -45,8 +45,8 @@ describe('validate schema', () => {
           options: {}
         }
       })
-    ).toBeTruthy()
-  })
+    ).toBeTruthy();
+  });
 
   it('custom root path', () => {
     expect(
@@ -54,8 +54,8 @@ describe('validate schema', () => {
         ...resolveConfigOrigin,
         rootPath: 'my-app'
       })
-    ).toBeTruthy()
-  })
+    ).toBeTruthy();
+  });
 
   it('custom static path', () => {
     expect(
@@ -63,8 +63,8 @@ describe('validate schema', () => {
         ...resolveConfigOrigin,
         staticPath: 'https://my-cdn'
       })
-    ).toBeTruthy()
-  })
+    ).toBeTruthy();
+  });
 
   it('custom routes path', () => {
     expect(
@@ -72,8 +72,8 @@ describe('validate schema', () => {
         ...resolveConfigOrigin,
         routes: 'src/client/entryPoint.js'
       })
-    ).toBeTruthy()
-  })
+    ).toBeTruthy();
+  });
 
   it('custom index path', () => {
     expect(
@@ -81,8 +81,8 @@ describe('validate schema', () => {
         ...resolveConfigOrigin,
         index: 'src/client/index.js'
       })
-    ).toBeTruthy()
-  })
+    ).toBeTruthy();
+  });
 
   it('custom aggregates dir', () => {
     expect(
@@ -90,8 +90,8 @@ describe('validate schema', () => {
         ...resolveConfigOrigin,
         aggregates: 'my-aggregates'
       })
-    ).toBeTruthy()
-  })
+    ).toBeTruthy();
+  });
 
   it('custom view models dir', () => {
     expect(
@@ -99,8 +99,8 @@ describe('validate schema', () => {
         ...resolveConfigOrigin,
         viewModels: 'my-view-models'
       })
-    ).toBeTruthy()
-  })
+    ).toBeTruthy();
+  });
 
   it('custom read models dir', () => {
     expect(
@@ -108,8 +108,8 @@ describe('validate schema', () => {
         ...resolveConfigOrigin,
         readModels: 'my-read-models'
       })
-    ).toBeTruthy()
-  })
+    ).toBeTruthy();
+  });
 
   it('custom static dir', () => {
     expect(
@@ -117,8 +117,8 @@ describe('validate schema', () => {
         ...resolveConfigOrigin,
         staticDir: 'my-static-dir'
       })
-    ).toBeTruthy()
-  })
+    ).toBeTruthy();
+  });
 
   it('custom auth', () => {
     expect(
@@ -128,8 +128,8 @@ describe('validate schema', () => {
           strategies: 'custom-auth/index.js'
         }
       })
-    ).toBeTruthy()
-  })
+    ).toBeTruthy();
+  });
 
   it('custom jwt', () => {
     expect(
@@ -140,8 +140,8 @@ describe('validate schema', () => {
           maxAge: 1000 * 60 * 60 * 24 * 365
         }
       })
-    ).toBeTruthy()
-  })
+    ).toBeTruthy();
+  });
 
   it('custom env', () => {
     expect(
@@ -160,9 +160,9 @@ describe('validate schema', () => {
           }
         }
       })
-    ).toBeTruthy()
-  })
-})
+    ).toBeTruthy();
+  });
+});
 
 describe('validate schema (fail)', () => {
   it('incorrect storage adapter', () => {
@@ -176,8 +176,8 @@ describe('validate schema (fail)', () => {
           }
         }
       })
-    ).toThrow()
-  })
+    ).toThrow();
+  });
 
   it('incorrect bus adapter', () => {
     expect(() =>
@@ -188,8 +188,8 @@ describe('validate schema (fail)', () => {
           options: {}
         }
       })
-    ).toThrow()
-  })
+    ).toThrow();
+  });
 
   it('incorrect subscribe adapter', () => {
     expect(() =>
@@ -200,8 +200,8 @@ describe('validate schema (fail)', () => {
           options: {}
         }
       })
-    ).toThrow()
-  })
+    ).toThrow();
+  });
 
   it('incorrect root path', () => {
     expect(() =>
@@ -209,8 +209,8 @@ describe('validate schema (fail)', () => {
         ...resolveConfigOrigin,
         rootPath: 123
       })
-    ).toThrow()
-  })
+    ).toThrow();
+  });
 
   it('incorrect static path', () => {
     expect(() =>
@@ -218,8 +218,8 @@ describe('validate schema (fail)', () => {
         ...resolveConfigOrigin,
         staticPath: 123
       })
-    ).toThrow()
-  })
+    ).toThrow();
+  });
 
   it('incorrect routes path', () => {
     expect(() =>
@@ -227,8 +227,8 @@ describe('validate schema (fail)', () => {
         ...resolveConfigOrigin,
         routes: 123
       })
-    ).toThrow()
-  })
+    ).toThrow();
+  });
 
   it('incorrect aggregates dir', () => {
     expect(() =>
@@ -236,8 +236,8 @@ describe('validate schema (fail)', () => {
         ...resolveConfigOrigin,
         aggregates: 123
       })
-    ).toThrow()
-  })
+    ).toThrow();
+  });
 
   it('incorrect view models dir', () => {
     expect(() =>
@@ -245,8 +245,8 @@ describe('validate schema (fail)', () => {
         ...resolveConfigOrigin,
         viewModels: 123
       })
-    ).toThrow()
-  })
+    ).toThrow();
+  });
 
   it('incorrect read models dir', () => {
     expect(() =>
@@ -254,8 +254,8 @@ describe('validate schema (fail)', () => {
         ...resolveConfigOrigin,
         readModels: 123
       })
-    ).toThrow()
-  })
+    ).toThrow();
+  });
 
   it('incorrect static dir', () => {
     expect(() =>
@@ -263,8 +263,8 @@ describe('validate schema (fail)', () => {
         ...resolveConfigOrigin,
         staticDir: 123
       })
-    ).toThrow()
-  })
+    ).toThrow();
+  });
 
   it('incorrect auth', () => {
     expect(() =>
@@ -272,8 +272,8 @@ describe('validate schema (fail)', () => {
         ...resolveConfigOrigin,
         auth: 123
       })
-    ).toThrow()
-  })
+    ).toThrow();
+  });
 
   it('incorrect jwt', () => {
     expect(() =>
@@ -287,13 +287,13 @@ describe('validate schema (fail)', () => {
           }
         }
       })
-    ).toThrow()
-  })
-})
+    ).toThrow();
+  });
+});
 
 describe('resolve-scripts build --сonfig=resolve.test.config.json', () => {
-  const resolveConfigPath = path.resolve(__dirname, 'resolve.test.config.json')
-  const { env, ...config } = require(resolveConfigPath)
+  const resolveConfigPath = path.resolve(__dirname, 'resolve.test.config.json');
+  const { env, ...config } = require(resolveConfigPath);
 
   test(
     'merge cli should work correctly ' +
@@ -301,18 +301,18 @@ describe('resolve-scripts build --сonfig=resolve.test.config.json', () => {
     async () => {
       const json = await exec(
         `resolve-scripts build --config=${resolveConfigPath} --start --dev`
-      )
+      );
 
       const resultConfig = {
         ...resolveConfigOrigin,
         ...config,
         ...env.development
-      }
-      delete resultConfig.env
+      };
+      delete resultConfig.env;
 
-      expect(json).toMatchObject(resultConfig)
+      expect(json).toMatchObject(resultConfig);
     }
-  )
+  );
 
   test(
     'merge cli should work correctly ' +
@@ -320,16 +320,16 @@ describe('resolve-scripts build --сonfig=resolve.test.config.json', () => {
     async () => {
       const json = await exec(
         `resolve-scripts build --config=${resolveConfigPath} --prod`
-      )
+      );
 
       const resultConfig = {
         ...resolveConfigOrigin,
         ...config,
         ...env.production
-      }
-      delete resultConfig.env
+      };
+      delete resultConfig.env;
 
-      expect(json).toMatchObject(resultConfig)
+      expect(json).toMatchObject(resultConfig);
     }
-  )
-})
+  );
+});

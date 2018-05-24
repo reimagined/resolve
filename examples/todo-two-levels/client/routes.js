@@ -1,5 +1,5 @@
-import Index from './containers/Index'
-import Todo from './containers/Todo'
+import Index from './containers/Index';
+import Todo from './containers/Todo';
 
 export default [
   {
@@ -10,4 +10,4 @@ export default [
     path: '/',
     component: Index
   }
-]
+];

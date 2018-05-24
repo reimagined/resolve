@@ -1,16 +1,16 @@
-const MAX_VALUE = 0x0fffffff | 0
+const MAX_VALUE = 0x0fffffff | 0;
 const castType = type => {
   switch (type) {
     case 'number':
-      return 'BIGINT NOT NULL'
+      return 'BIGINT NOT NULL';
     case 'string':
-      return 'VARCHAR(255) NOT NULL'
+      return 'VARCHAR(255) NOT NULL';
     case 'json':
-      return 'JSON NULL'
+      return 'JSON NULL';
     default:
-      return 'VARCHAR(255) NOT NULL'
+      return 'VARCHAR(255) NOT NULL';
   }
-}
+};
 
 const defineTable = async (
   { connection, escapeId },
@@ -36,95 +36,95 @@ const defineTable = async (
         ].join(',\n')
       ].join(',\n') +
       `\n)`
-  )
-}
+  );
+};
 
 const makeNestedPath = nestedPath =>
-  `$.${nestedPath.map(JSON.stringify).join('.')}`
+  `$.${nestedPath.map(JSON.stringify).join('.')}`;
 
 const makeCompareOperator = oper => {
   switch (oper) {
     case '$eq':
-      return '='
+      return '=';
     case '$ne':
-      return '<>'
+      return '<>';
     case '$lte':
-      return '<='
+      return '<=';
     case '$gte':
-      return '>='
+      return '>=';
     case '$lt':
-      return '<'
+      return '<';
     case '$gt':
-      return '>'
+      return '>';
     default:
-      return '='
+      return '=';
   }
-}
+};
 
 const searchToWhereExpression = (expression, fieldTypes, escapeId) => {
-  const searchExprArray = []
-  const searchValues = []
+  const searchExprArray = [];
+  const searchValues = [];
 
   const isDocumentExpr =
-    Object.keys(expression).filter(key => key.indexOf('$') > -1).length === 0
+    Object.keys(expression).filter(key => key.indexOf('$') > -1).length === 0;
 
   if (isDocumentExpr) {
     for (let fieldName of Object.keys(expression)) {
-      const [baseName, ...nestedPath] = fieldName.split('.')
+      const [baseName, ...nestedPath] = fieldName.split('.');
       const resultFieldName =
         nestedPath.length > 0
           ? `${escapeId(baseName)}->'${makeNestedPath(nestedPath)}'`
-          : escapeId(baseName)
+          : escapeId(baseName);
 
-      let fieldValue = expression[fieldName]
-      let fieldOperator = '='
+      let fieldValue = expression[fieldName];
+      let fieldOperator = '=';
 
       if (fieldValue instanceof Object) {
-        fieldOperator = Object.keys(fieldValue)[0]
-        fieldValue = fieldValue[fieldOperator]
+        fieldOperator = Object.keys(fieldValue)[0];
+        fieldValue = fieldValue[fieldOperator];
       }
 
-      const resultOperator = makeCompareOperator(fieldOperator)
+      const resultOperator = makeCompareOperator(fieldOperator);
 
       if (fieldTypes[baseName] === 'json') {
         searchExprArray.push(
           `${resultFieldName} ${resultOperator} CAST(? AS JSON)`
-        )
-        searchValues.push(JSON.stringify(fieldValue))
+        );
+        searchValues.push(JSON.stringify(fieldValue));
       } else {
-        searchExprArray.push(`${resultFieldName} ${resultOperator} ?`)
-        searchValues.push(fieldValue)
+        searchExprArray.push(`${resultFieldName} ${resultOperator} ?`);
+        searchValues.push(fieldValue);
       }
     }
 
     return {
       searchExpr: searchExprArray.join(' AND '),
       searchValues
-    }
+    };
   }
 
   for (let operatorName of Object.keys(expression)) {
     if (operatorName === '$and' || operatorName === '$or') {
-      const localSearchExprArray = []
+      const localSearchExprArray = [];
       for (let innerExpr of expression[operatorName]) {
         const whereExpr = searchToWhereExpression(
           innerExpr,
           fieldTypes,
           escapeId
-        )
-        localSearchExprArray.push(whereExpr.searchExpr)
-        whereExpr.searchValues.map(val => searchValues.push(val))
+        );
+        localSearchExprArray.push(whereExpr.searchExpr);
+        whereExpr.searchValues.map(val => searchValues.push(val));
       }
 
-      const joiner = operatorName === '$and' ? ' AND ' : ' OR '
+      const joiner = operatorName === '$and' ? ' AND ' : ' OR ';
       if (localSearchExprArray.length > 1) {
         searchExprArray.push(
           localSearchExprArray.map(val => `(${val})`).join(joiner)
-        )
+        );
       } else {
-        searchExprArray.push(localSearchExprArray[0])
+        searchExprArray.push(localSearchExprArray[0]);
       }
-      break
+      break;
     }
 
     if (operatorName === '$not') {
@@ -132,29 +132,29 @@ const searchToWhereExpression = (expression, fieldTypes, escapeId) => {
         expression[operatorName],
         fieldTypes,
         escapeId
-      )
+      );
 
-      whereExpr.searchValues.map(val => searchValues.push(val))
-      searchExprArray.push(`NOT (${whereExpr.searchExpr})`)
+      whereExpr.searchValues.map(val => searchValues.push(val));
+      searchExprArray.push(`NOT (${whereExpr.searchExpr})`);
 
-      break
+      break;
     }
   }
 
   return {
     searchExpr: searchExprArray.join(' AND '),
     searchValues
-  }
-}
+  };
+};
 
 const updateToSetExpression = (expression, fieldTypes, escapeId) => {
-  const updateExprArray = []
-  const updateValues = []
+  const updateExprArray = [];
+  const updateValues = [];
 
   for (let operatorName of Object.keys(expression)) {
     for (let fieldName of Object.keys(expression[operatorName])) {
-      const fieldValue = expression[operatorName][fieldName]
-      const [baseName, ...nestedPath] = fieldName.split('.')
+      const fieldValue = expression[operatorName][fieldName];
+      const [baseName, ...nestedPath] = fieldName.split('.');
 
       switch (operatorName) {
         case '$unset': {
@@ -163,11 +163,11 @@ const updateToSetExpression = (expression, fieldTypes, escapeId) => {
               `${escapeId(baseName)} = JSON_REMOVE(${escapeId(
                 baseName
               )}, '${makeNestedPath(nestedPath)}') `
-            )
+            );
           } else {
-            updateExprArray.push(`${escapeId(baseName)} = NULL `)
+            updateExprArray.push(`${escapeId(baseName)} = NULL `);
           }
-          break
+          break;
         }
 
         case '$set': {
@@ -176,18 +176,18 @@ const updateToSetExpression = (expression, fieldTypes, escapeId) => {
               `${escapeId(baseName)} = JSON_SET(${escapeId(
                 baseName
               )}, '${makeNestedPath(nestedPath)}', CAST(? AS JSON)) `
-            )
+            );
           } else {
-            updateExprArray.push(`${escapeId(baseName)} = ? `)
+            updateExprArray.push(`${escapeId(baseName)} = ? `);
           }
 
           if (fieldTypes[baseName] === 'json') {
-            updateValues.push(JSON.stringify(fieldValue))
+            updateValues.push(JSON.stringify(fieldValue));
           } else {
-            updateValues.push(fieldValue)
+            updateValues.push(fieldValue);
           }
 
-          break
+          break;
         }
 
         case '$inc': {
@@ -198,18 +198,18 @@ const updateToSetExpression = (expression, fieldTypes, escapeId) => {
               )}, '${makeNestedPath(nestedPath)}', JSON_EXTRACT(${escapeId(
                 baseName
               )}, '${makeNestedPath(nestedPath)}') + ?) `
-            )
+            );
           } else {
             updateExprArray.push(
               `${escapeId(baseName)} = ${escapeId(baseName)} + ? `
-            )
+            );
           }
-          updateValues.push(fieldValue)
-          break
+          updateValues.push(fieldValue);
+          break;
         }
 
         default:
-          break
+          break;
       }
     }
   }
@@ -217,8 +217,8 @@ const updateToSetExpression = (expression, fieldTypes, escapeId) => {
   return {
     updateExpr: updateExprArray.join(', '),
     updateValues
-  }
-}
+  };
+};
 
 const find = async (
   { connection, escapeId, metaInfo },
@@ -229,24 +229,24 @@ const find = async (
   skip,
   limit
 ) => {
-  const fieldTypes = metaInfo.tables[tableName].fieldTypes
+  const fieldTypes = metaInfo.tables[tableName].fieldTypes;
 
   let selectExpression =
     fieldList && Object.keys(fieldList).length > 0
       ? Object.keys(fieldList)
           .filter(fieldName => fieldList[fieldName] === 1)
           .map(fieldName => {
-            const [baseName, ...nestedPath] = fieldName.split('.')
-            if (nestedPath.length === 0) return escapeId(baseName)
+            const [baseName, ...nestedPath] = fieldName.split('.');
+            if (nestedPath.length === 0) return escapeId(baseName);
             return `${escapeId(baseName)}->'${makeNestedPath(
               nestedPath
-            )}' AS ${escapeId(fieldName)}`
+            )}' AS ${escapeId(fieldName)}`;
           })
           .join(', ')
-      : '*'
+      : '*';
 
   if (selectExpression.trim() === '') {
-    selectExpression = 'NULL'
+    selectExpression = 'NULL';
   }
 
   const orderExpression =
@@ -254,30 +254,30 @@ const find = async (
       ? 'ORDER BY ' +
         Object.keys(sort)
           .map(fieldName => {
-            const [baseName, ...nestedPath] = fieldName.split('.')
+            const [baseName, ...nestedPath] = fieldName.split('.');
             const provisionedName =
               nestedPath.length === 0
                 ? escapeId(baseName)
-                : `${escapeId(baseName)}->'${makeNestedPath(nestedPath)}'`
+                : `${escapeId(baseName)}->'${makeNestedPath(nestedPath)}'`;
             return sort[fieldName] > 0
               ? `${provisionedName} ASC`
-              : `${provisionedName} DESC`
+              : `${provisionedName} DESC`;
           })
           .join(', ')
-      : ''
+      : '';
 
   const skipLimit = `LIMIT ${isFinite(skip) ? skip : 0},${
     isFinite(limit) ? limit : MAX_VALUE
-  }`
+  }`;
 
   const { searchExpr, searchValues } = searchToWhereExpression(
     searchExpression,
     fieldTypes,
     escapeId
-  )
+  );
 
   const inlineSearchExpr =
-    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
+    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : '';
 
   const [rows] = await connection.execute(
     `SELECT ${selectExpression} FROM ${escapeId(tableName)}
@@ -286,10 +286,10 @@ const find = async (
     ${skipLimit}
   `,
     searchValues
-  )
+  );
 
-  return rows
-}
+  return rows;
+};
 
 const findOne = async (
   { connection, escapeId, metaInfo },
@@ -297,34 +297,34 @@ const findOne = async (
   searchExpression,
   fieldList
 ) => {
-  const fieldTypes = metaInfo.tables[tableName].fieldTypes
+  const fieldTypes = metaInfo.tables[tableName].fieldTypes;
 
   let selectExpression =
     fieldList && Object.keys(fieldList).length > 0
       ? Object.keys(fieldList)
           .filter(fieldName => fieldList[fieldName] === 1)
           .map(fieldName => {
-            const [baseName, ...nestedPath] = fieldName.split('.')
-            if (nestedPath.length === 0) return escapeId(baseName)
+            const [baseName, ...nestedPath] = fieldName.split('.');
+            if (nestedPath.length === 0) return escapeId(baseName);
             return `${escapeId(baseName)}->'${makeNestedPath(
               nestedPath
-            )}' AS ${escapeId(fieldName)}`
+            )}' AS ${escapeId(fieldName)}`;
           })
           .join(', ')
-      : '*'
+      : '*';
 
   if (selectExpression.trim() === '') {
-    selectExpression = 'NULL'
+    selectExpression = 'NULL';
   }
 
   const { searchExpr, searchValues } = searchToWhereExpression(
     searchExpression,
     fieldTypes,
     escapeId
-  )
+  );
 
   const inlineSearchExpr =
-    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
+    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : '';
 
   const [rows] = await connection.execute(
     `SELECT ${selectExpression} FROM ${escapeId(tableName)}
@@ -332,37 +332,37 @@ const findOne = async (
     LIMIT 0, 1
   `,
     searchValues
-  )
+  );
 
   if (Array.isArray(rows) && rows.length > 0) {
-    return rows[0]
+    return rows[0];
   }
 
-  return null
-}
+  return null;
+};
 
 const count = async (
   { connection, escapeId, metaInfo },
   tableName,
   searchExpression
 ) => {
-  const fieldTypes = metaInfo.tables[tableName].fieldTypes
+  const fieldTypes = metaInfo.tables[tableName].fieldTypes;
 
   const { searchExpr, searchValues } = searchToWhereExpression(
     searchExpression,
     fieldTypes,
     escapeId
-  )
+  );
 
   const inlineSearchExpr =
-    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
+    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : '';
 
   const [rows] = await connection.execute(
     `SELECT Count(*) AS Count FROM ${escapeId(tableName)}
     ${inlineSearchExpr}
   `,
     searchValues
-  )
+  );
 
   if (
     Array.isArray(rows) &&
@@ -370,18 +370,18 @@ const count = async (
     rows[0] &&
     Number.isInteger(+rows[0].Count)
   ) {
-    return +rows[0].Count
+    return +rows[0].Count;
   }
 
-  return 0
-}
+  return 0;
+};
 
 const insert = async (
   { connection, escapeId, metaInfo },
   tableName,
   document
 ) => {
-  const fieldTypes = metaInfo.tables[tableName].fieldTypes
+  const fieldTypes = metaInfo.tables[tableName].fieldTypes;
 
   await connection.execute(
     `INSERT INTO ${escapeId(tableName)}(${Object.keys(document)
@@ -397,8 +397,8 @@ const insert = async (
           ? JSON.stringify(document[key])
           : document[key]
     )
-  )
-}
+  );
+};
 
 const update = async (
   { connection, escapeId, metaInfo },
@@ -406,49 +406,49 @@ const update = async (
   searchExpression,
   updateExpression
 ) => {
-  const fieldTypes = metaInfo.tables[tableName].fieldTypes
+  const fieldTypes = metaInfo.tables[tableName].fieldTypes;
 
   const { searchExpr, searchValues } = searchToWhereExpression(
     searchExpression,
     fieldTypes,
     escapeId
-  )
+  );
   const { updateExpr, updateValues } = updateToSetExpression(
     updateExpression,
     fieldTypes,
     escapeId
-  )
+  );
 
   const inlineSearchExpr =
-    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
+    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : '';
 
   await connection.execute(
     `UPDATE ${escapeId(tableName)} SET ${updateExpr} ${inlineSearchExpr}`,
     [...updateValues, ...searchValues]
-  )
-}
+  );
+};
 
 const del = async (
   { connection, escapeId, metaInfo },
   tableName,
   searchExpression
 ) => {
-  const fieldTypes = metaInfo.tables[tableName].fieldTypes
+  const fieldTypes = metaInfo.tables[tableName].fieldTypes;
 
   const { searchExpr, searchValues } = searchToWhereExpression(
     searchExpression,
     fieldTypes,
     escapeId
-  )
+  );
 
   const inlineSearchExpr =
-    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
+    searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : '';
 
   await connection.execute(
     `DELETE FROM ${escapeId(tableName)} ${inlineSearchExpr}`,
     searchValues
-  )
-}
+  );
+};
 
 export default {
   defineTable,
@@ -458,4 +458,4 @@ export default {
   insert,
   update,
   del
-}
+};

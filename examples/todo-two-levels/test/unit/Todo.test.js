@@ -1,8 +1,8 @@
-import React from 'react'
-import renderer from 'react-test-renderer'
-import { StaticRouter } from 'react-router'
+import React from 'react';
+import renderer from 'react-test-renderer';
+import { StaticRouter } from 'react-router';
 
-import { Todo } from '../../client/containers/Todo'
+import { Todo } from '../../client/containers/Todo';
 
 test('renders correctly', () => {
   const tree = renderer
@@ -26,6 +26,6 @@ test('renders correctly', () => {
         />
       </StaticRouter>
     )
-    .toJSON()
-  expect(tree).toMatchSnapshot()
-})
+    .toJSON();
+  expect(tree).toMatchSnapshot();
+});

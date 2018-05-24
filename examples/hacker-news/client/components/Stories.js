@@ -1,24 +1,24 @@
-import React from 'react'
-import { Redirect } from 'react-router-dom'
-import styled from 'styled-components'
+import React from 'react';
+import { Redirect } from 'react-router-dom';
+import styled from 'styled-components';
 
-import Story from '../containers/Story'
-import Pagination from './Pagination'
-import { ITEMS_PER_PAGE } from '../constants'
+import Story from '../containers/Story';
+import Pagination from './Pagination';
+import { ITEMS_PER_PAGE } from '../constants';
 
 const StoriesRoot = styled.div`
   padding: 0 0.5em;
-`
+`;
 
-const StoryList = 'ol'
+const StoryList = 'ol';
 
 const StoryItem = styled.li`
   margin-bottom: 12px;
-`
+`;
 
 const Stories = ({ items, page, type, userId }) => {
   if (page && !Number.isInteger(Number(page))) {
-    return <Redirect push to="/error?text=No such page" />
+    return <Redirect push to="/error?text=No such page" />;
   }
 
   return (
@@ -36,7 +36,7 @@ const Stories = ({ items, page, type, userId }) => {
         location={`/${type}`}
       />
     </StoriesRoot>
-  )
-}
+  );
+};
 
-export default Stories
+export default Stories;

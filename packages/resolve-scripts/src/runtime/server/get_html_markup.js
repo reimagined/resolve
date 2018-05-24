@@ -1,15 +1,15 @@
-import { Helmet } from 'react-helmet'
+import { Helmet } from 'react-helmet';
 
-import jsonUtfStringify from './utils/json_utf_stringify'
+import jsonUtfStringify from './utils/json_utf_stringify';
 
-const reducers = require($resolve.redux.reducers)
-const viewModels = require($resolve.viewModels)
+const reducers = require($resolve.redux.reducers);
+const viewModels = require($resolve.viewModels);
 
 export default ({ markup, styleTags, initialState, clientUrl }) => {
-  const helmet = Helmet.renderStatic()
+  const helmet = Helmet.renderStatic();
 
   for (const reducerName of Object.keys(reducers)) {
-    delete initialState[reducerName]
+    delete initialState[reducerName];
   }
 
   for (const viewModel of viewModels) {
@@ -20,7 +20,7 @@ export default ({ markup, styleTags, initialState, clientUrl }) => {
         aggregateId
       ] = viewModel.serializeState(
         initialState.viewModels[viewModel.name][aggregateId]
-      )
+      );
     }
   }
 
@@ -43,5 +43,5 @@ export default ({ markup, styleTags, initialState, clientUrl }) => {
     `<script src="${clientUrl}"></script>` +
     '</body>' +
     '</html>'
-  )
-}
+  );
+};

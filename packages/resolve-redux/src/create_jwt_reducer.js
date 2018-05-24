@@ -1,3 +1,3 @@
-const createJwtReducer = () => (state = {}) => state
+const createJwtReducer = () => (state = {}) => state;
 
-export default createJwtReducer
+export default createJwtReducer;

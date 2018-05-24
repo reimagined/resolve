@@ -1,13 +1,13 @@
-import React from 'react'
-import { connectReadModel } from 'resolve-redux'
+import React from 'react';
+import { connectReadModel } from 'resolve-redux';
 
-import { ListGroup, ListGroupItem } from 'react-bootstrap'
+import { ListGroup, ListGroupItem } from 'react-bootstrap';
 
 const viewer = ({ items, page, limit }) => {
-  let listItems = []
+  let listItems = [];
 
   for (let i = 0; i < limit; i++) {
-    let item = items && items[i]
+    let item = items && items[i];
     listItems.push(
       <ListGroupItem className="example-list" key={`LI-${page}-${i}`}>
         <div className="example-list-place">{+(limit * page) + i + 1}</div>
@@ -16,19 +16,19 @@ const viewer = ({ items, page, limit }) => {
           {item ? item.rating : ''} votes
         </div>
       </ListGroupItem>
-    )
+    );
   }
 
-  return <ListGroup key={`SC-${page}`}>{listItems}</ListGroup>
-}
+  return <ListGroup key={`SC-${page}`}>{listItems}</ListGroup>;
+};
 
 const getReadModel = (state, modelName, resolverName) => {
   try {
-    return state.readModels[modelName][resolverName]
+    return state.readModels[modelName][resolverName];
   } catch (err) {
-    return null
+    return null;
   }
-}
+};
 
 const FilledItemsViewer = connectReadModel((state, { limit, page }) => ({
   readModelName: 'Rating',
@@ -37,7 +37,7 @@ const FilledItemsViewer = connectReadModel((state, { limit, page }) => ({
   isReactive: true,
   items: getReadModel(state, 'Rating', 'TopRating'),
   page
-}))(viewer)
+}))(viewer);
 
 class ItemsViewer extends React.Component {
   render() {
@@ -45,8 +45,8 @@ class ItemsViewer extends React.Component {
       <div>
         <FilledItemsViewer limit={this.props.count} page={this.props.page} />
       </div>
-    )
+    );
   }
 }
 
-export default ItemsViewer
+export default ItemsViewer;

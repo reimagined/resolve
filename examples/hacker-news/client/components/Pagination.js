@@ -1,13 +1,13 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import styled, { css } from 'styled-components'
+import React from 'react';
+import { Link } from 'react-router-dom';
+import styled, { css } from 'styled-components';
 
-import Splitter from './Splitter'
+import Splitter from './Splitter';
 
 export const PaginationRoot = styled.div`
   margin-left: 3em;
   padding: 0.5em 0;
-`
+`;
 
 export const StyledLink = styled(Link)`
   display: inline;
@@ -28,15 +28,15 @@ export const StyledLink = styled(Link)`
       : css`
           color: #000;
         `};
-`
+`;
 
 const Pagination = ({ page, hasNext, location }) => {
   if (page === 1 && !hasNext) {
-    return null
+    return null;
   }
 
-  const prevDisabled = page <= 1
-  const nextDisabled = !hasNext
+  const prevDisabled = page <= 1;
+  const nextDisabled = !hasNext;
 
   return (
     <PaginationRoot>
@@ -56,11 +56,11 @@ const Pagination = ({ page, hasNext, location }) => {
         More
       </StyledLink>
     </PaginationRoot>
-  )
-}
+  );
+};
 
 Pagination.defaultProps = {
   page: 1
-}
+};
 
-export default Pagination
+export default Pagination;

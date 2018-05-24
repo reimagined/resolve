@@ -1,4 +1,4 @@
-import readModelQueryExecutors from './read_model_query_executors'
+import readModelQueryExecutors from './read_model_query_executors';
 
 const executeReadModelQuery = async ({
   jwtToken,
@@ -9,7 +9,7 @@ const executeReadModelQuery = async ({
   return await readModelQueryExecutors[modelName].read(resolverName, {
     ...resolverArgs,
     jwtToken
-  })
-}
+  });
+};
 
-export default executeReadModelQuery
+export default executeReadModelQuery;

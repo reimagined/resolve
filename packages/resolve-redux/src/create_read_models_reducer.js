@@ -2,39 +2,39 @@ import {
   READMODEL_SUBSCRIPTION_DIFF,
   READMODEL_LOAD_INITIAL_STATE,
   READMODEL_DROP_STATE
-} from './action_types'
-import { applyChanges } from 'diff-json'
+} from './action_types';
+import { applyChanges } from 'diff-json';
 
 function copyResolveSerials(oldState, newState) {
   Object.getOwnPropertyNames(oldState).forEach(key => {
-    const propertyDescriptor = Object.getOwnPropertyDescriptor(oldState, key)
+    const propertyDescriptor = Object.getOwnPropertyDescriptor(oldState, key);
 
     if (
       key.indexOf('resolve-serial:') !== 0 ||
       propertyDescriptor.enumerable ||
       propertyDescriptor.writable
     ) {
-      return
+      return;
     }
 
-    Object.defineProperty(newState, key, propertyDescriptor)
-  })
+    Object.defineProperty(newState, key, propertyDescriptor);
+  });
 }
 
 export default function createReadModelsReducer() {
   return (state = {}, action) => {
     switch (action.type) {
       case READMODEL_LOAD_INITIAL_STATE: {
-        const { readModelName, resolverName, initialState, serialId } = action
+        const { readModelName, resolverName, initialState, serialId } = action;
         const nextState = {
           ...state,
           [readModelName]: {
             ...(state[readModelName] || {}),
             [resolverName]: initialState
           }
-        }
+        };
 
-        copyResolveSerials(state, nextState)
+        copyResolveSerials(state, nextState);
         Object.defineProperty(
           nextState,
           `resolve-serial:${readModelName}:${resolverName}`,
@@ -44,44 +44,44 @@ export default function createReadModelsReducer() {
             enumerable: false,
             value: serialId
           }
-        )
+        );
 
-        return nextState
+        return nextState;
       }
 
       case READMODEL_DROP_STATE: {
-        const { readModelName, resolverName } = action
+        const { readModelName, resolverName } = action;
         const nextState = {
           ...state,
           [readModelName]: {
             ...(state[readModelName] || {}),
             [resolverName]: null
           }
-        }
+        };
 
-        copyResolveSerials(state, nextState)
-        delete nextState[`resolve-serial:${readModelName}:${resolverName}`]
-        delete nextState[readModelName][resolverName]
+        copyResolveSerials(state, nextState);
+        delete nextState[`resolve-serial:${readModelName}:${resolverName}`];
+        delete nextState[readModelName][resolverName];
 
-        return nextState
+        return nextState;
       }
 
       case READMODEL_SUBSCRIPTION_DIFF: {
-        const { readModelName, resolverName, serialId, diff } = action
+        const { readModelName, resolverName, serialId, diff } = action;
 
         if (
           !state[readModelName] ||
           !state[readModelName].hasOwnProperty(resolverName) ||
           state[`resolve-serial:${readModelName}:${resolverName}`] !== serialId
         ) {
-          return state
+          return state;
         }
 
         const wrappedResolverState = {
           wrap: state[readModelName][resolverName]
-        }
+        };
 
-        applyChanges(wrappedResolverState, diff)
+        applyChanges(wrappedResolverState, diff);
 
         const nextState = {
           ...state,
@@ -89,15 +89,15 @@ export default function createReadModelsReducer() {
             ...state[readModelName],
             [resolverName]: wrappedResolverState.wrap
           }
-        }
+        };
 
-        copyResolveSerials(state, nextState)
+        copyResolveSerials(state, nextState);
 
-        return nextState
+        return nextState;
       }
 
       default:
-        return state
+        return state;
     }
-  }
+  };
 }

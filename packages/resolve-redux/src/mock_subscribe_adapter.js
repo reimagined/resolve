@@ -3,8 +3,8 @@ const mockSubscribeAdapter = () => ({
   onDisconnect() {},
   setSubscription() {},
   getClientId() {
-    return Promise.resolve('0')
+    return Promise.resolve('0');
   }
-})
+});
 
-export default mockSubscribeAdapter
+export default mockSubscribeAdapter;

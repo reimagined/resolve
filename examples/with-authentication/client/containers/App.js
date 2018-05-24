@@ -1,23 +1,23 @@
-import React from 'react'
-import { connectReadModel } from 'resolve-redux'
-import { Helmet } from 'react-helmet'
+import React from 'react';
+import { connectReadModel } from 'resolve-redux';
+import { Helmet } from 'react-helmet';
 
-import Login from '../components/Login'
-import Logout from '../components/Logout'
-import Header from '../components/Header'
+import Login from '../components/Login';
+import Logout from '../components/Logout';
+import Header from '../components/Header';
 
 const getReadModelData = state => {
   try {
-    return { me: state.readModels['me']['me'] }
+    return { me: state.readModels['me']['me'] };
   } catch (err) {
-    return { me: null, loading: true }
+    return { me: null, loading: true };
   }
-}
+};
 
 export class App extends React.PureComponent {
   render() {
     let LoginComponent =
-      this.props.data.loading || !this.props.data.me ? Login : Logout
+      this.props.data.loading || !this.props.data.me ? Login : Logout;
 
     return (
       <div>
@@ -39,7 +39,7 @@ export class App extends React.PureComponent {
           />
         </div>
       </div>
-    )
+    );
   }
 }
 
@@ -48,4 +48,4 @@ export default connectReadModel(state => ({
   resolverName: 'me',
   parameters: {},
   data: getReadModelData(state)
-}))(App)
+}))(App);

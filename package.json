@@ -30,7 +30,7 @@
     "lint": "eslint .",
     "lint-staged": "lint-staged",
     "prepublish": "npx oao all \"npx rimraf dist\" --parallel && oao run-script prepublish --parallel",
-    "prettier": "prettier --single-quote --no-semi --write \"**/**.js\"",
+    "prettier": "prettier --write \"**/**.js\"",
     "publish": "oao publish -i \"examples/*\" --no-git-commit --no-changelog",
     "test": "oao all \"yarn test --color 2>&1\"",
     "test:functional": "oao run-script test:functional"
@@ -41,7 +41,7 @@
   ],
   "lint-staged": {
     "*.{js,css}": [
-      "prettier --single-quote --no-semi --write",
+      "prettier --write",
       "git add"
     ]
   }

@@ -1,4 +1,4 @@
-import { getRootableUrl } from './helpers'
+import { getRootableUrl } from './helpers';
 
 export default (authReq, authRes, next) => ({
   onSuccess: (options, user /*, info*/) => {
@@ -6,14 +6,14 @@ export default (authReq, authRes, next) => ({
       user,
       authRes.expressRes,
       getRootableUrl(options.successRedirect || '/')
-    )
+    );
   },
   onFail: (options, error, status) => {
-    const res = authRes.expressRes
+    const res = authRes.expressRes;
     if (options.failureRedirect) {
       // eslint-disable-next-line
-      console.warn(error)
-      res.statusCode = 302
+      console.warn(error);
+      res.statusCode = 302;
       res.setHeader(
         'Location',
         getRootableUrl(
@@ -21,30 +21,30 @@ export default (authReq, authRes, next) => ({
             ? options.failureRedirect(error)
             : options.failureRedirect
         )
-      )
-      res.setHeader('Content-Length', '0')
-      res.end()
+      );
+      res.setHeader('Content-Length', '0');
+      res.end();
     } else {
-      res.statusCode = status
-      res.end(JSON.stringify(error))
+      res.statusCode = status;
+      res.end(JSON.stringify(error));
     }
   },
   onRedirect: (options, url, status) => {
-    const res = authRes.expressRes
-    res.statusCode = status || 302
-    res.setHeader('Location', url)
-    res.setHeader('Content-Length', '0')
-    res.end()
+    const res = authRes.expressRes;
+    res.statusCode = status || 302;
+    res.setHeader('Location', url);
+    res.setHeader('Content-Length', '0');
+    res.end();
   },
   onPass: /*options*/ () => {
-    next()
+    next();
   },
   onError: (options, err) => {
-    const res = authRes.expressRes
+    const res = authRes.expressRes;
     if (options.errorRedirect) {
       // eslint-disable-next-line
-      console.warn(err)
-      res.statusCode = 302
+      console.warn(err);
+      res.statusCode = 302;
       res.setHeader(
         'Location',
         getRootableUrl(
@@ -52,11 +52,11 @@ export default (authReq, authRes, next) => ({
             ? options.errorRedirect(err)
             : options.errorRedirect
         )
-      )
-      res.setHeader('Content-Length', '0')
-      res.end()
+      );
+      res.setHeader('Content-Length', '0');
+      res.end();
     } else {
-      next(err)
+      next(err);
     }
   }
-})
+});

@@ -1,19 +1,19 @@
-import fs from 'fs'
-import respawn from 'respawn'
-import webpack from 'webpack'
+import fs from 'fs';
+import respawn from 'respawn';
+import webpack from 'webpack';
 
-import getWebpackConfigs from './get_webpack_configs'
-import showBuildInfo from './show_build_info'
-import setup from './setup'
-import getMockServer from './get_mock_server'
-import assignConfigPaths from './assign_config_paths'
+import getWebpackConfigs from './get_webpack_configs';
+import showBuildInfo from './show_build_info';
+import setup from './setup';
+import getMockServer from './get_mock_server';
+import assignConfigPaths from './assign_config_paths';
 
 export default (argv, defaults = {}) => {
-  const env = process.env
+  const env = process.env;
 
-  Object.assign(env, Object.assign(defaults, env))
+  Object.assign(env, Object.assign(defaults, env));
 
-  const { resolveConfig, deployOptions, resolveBuildConfig } = setup(argv, env)
+  const { resolveConfig, deployOptions, resolveBuildConfig } = setup(argv, env);
 
   if (argv.printConfig) {
     // eslint-disable-next-line
@@ -26,11 +26,11 @@ export default (argv, defaults = {}) => {
         null,
         3
       )
-    )
-    return
+    );
+    return;
   }
 
-  assignConfigPaths(resolveConfig)
+  assignConfigPaths(resolveConfig);
 
   const [
     webpackClientConfig,
@@ -41,20 +41,20 @@ export default (argv, defaults = {}) => {
     deployOptions,
     env,
     resolveBuildConfig
-  })
+  });
 
   const compiler = webpack([
     webpackClientConfig,
     webpackServerConfig,
     ...otherWebpackConfigs
-  ])
+  ]);
 
   const serverPath = `${webpackServerConfig.output.path}/${
     webpackServerConfig.output.filename
-  }`
+  }`;
 
   if (deployOptions.start && !fs.existsSync(serverPath)) {
-    deployOptions.build = true
+    deployOptions.build = true;
   }
 
   const server = deployOptions.start
@@ -64,51 +64,51 @@ export default (argv, defaults = {}) => {
         stdio: 'inherit',
         fork: true
       })
-    : getMockServer()
+    : getMockServer();
 
   process.on('exit', () => {
-    server.stop()
-  })
+    server.stop();
+  });
 
-  process.env.RESOLVE_SERVER_FIRST_START = 'true'
+  process.env.RESOLVE_SERVER_FIRST_START = 'true';
   if (deployOptions.build) {
     if (deployOptions.watch) {
-      const stdin = process.openStdin()
+      const stdin = process.openStdin();
       stdin.addListener('data', data => {
         if (data.toString().indexOf('rs') !== -1) {
-          process.env.RESOLVE_SERVER_FIRST_START = 'false'
-          server.stop(() => server.start())
+          process.env.RESOLVE_SERVER_FIRST_START = 'false';
+          server.stop(() => server.start());
         }
-      })
+      });
       compiler.watch(
         {
           aggregateTimeout: 1000,
           poll: 1000
         },
         (err, { stats: [clientStats, serverStats] }) => {
-          showBuildInfo(webpackClientConfig, err, clientStats)
-          showBuildInfo(webpackServerConfig, err, serverStats)
+          showBuildInfo(webpackClientConfig, err, clientStats);
+          showBuildInfo(webpackServerConfig, err, serverStats);
           if (deployOptions.start) {
             if (
               (serverStats && serverStats.hasErrors()) ||
               (clientStats && clientStats.hasErrors())
             ) {
-              server.stop()
+              server.stop();
             } else {
               if (server.status === 'running') {
-                process.env.RESOLVE_SERVER_FIRST_START = 'false'
-                server.stop(() => server.start())
+                process.env.RESOLVE_SERVER_FIRST_START = 'false';
+                server.stop(() => server.start());
               } else {
-                server.start()
+                server.start();
               }
             }
           }
         }
-      )
+      );
     } else {
       compiler.run((err, { stats: [clientStats, serverStats] }) => {
-        showBuildInfo(webpackClientConfig, err, clientStats)
-        showBuildInfo(webpackServerConfig, err, serverStats)
+        showBuildInfo(webpackClientConfig, err, clientStats);
+        showBuildInfo(webpackServerConfig, err, serverStats);
         if (deployOptions.start) {
           if (
             serverStats &&
@@ -116,12 +116,12 @@ export default (argv, defaults = {}) => {
             !serverStats.hasErrors() &&
             !clientStats.hasErrors()
           ) {
-            server.start()
+            server.start();
           }
         }
-      })
+      });
     }
   } else {
-    server.start()
+    server.start();
   }
-}
+};

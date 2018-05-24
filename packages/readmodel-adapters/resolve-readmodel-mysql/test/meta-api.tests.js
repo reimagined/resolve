@@ -1,17 +1,17 @@
-import { expect } from 'chai'
-import sinon from 'sinon'
-import sqlFormatter from 'sql-formatter'
+import { expect } from 'chai';
+import sinon from 'sinon';
+import sqlFormatter from 'sql-formatter';
 
-import metaApi from '../src/meta-api'
+import metaApi from '../src/meta-api';
 
 describe('resolve-readmodel-mysql meta-api', () => {
-  const META_NAME = 'META_NAME'
-  const format = sqlFormatter.format.bind(sqlFormatter)
+  const META_NAME = 'META_NAME';
+  const format = sqlFormatter.format.bind(sqlFormatter);
 
-  let executor, pool
+  let executor, pool;
 
   beforeEach(() => {
-    executor = sinon.stub()
+    executor = sinon.stub();
 
     pool = {
       escapeId: sinon
@@ -19,13 +19,13 @@ describe('resolve-readmodel-mysql meta-api', () => {
         .callsFake(value => `\`${value.replace(/`/g, '``')}\``),
       connection: { execute: executor },
       metaName: META_NAME
-    }
-  })
+    };
+  });
 
   afterEach(() => {
-    executor = null
-    pool = null
-  })
+    executor = null;
+    pool = null;
+  });
 
   it('should provide getMetaInfo method - for initialized meta table', async () => {
     const tableDeclarations = [
@@ -45,19 +45,19 @@ describe('resolve-readmodel-mysql meta-api', () => {
           secondaryIndexes: [{ name: 'vol', type: 'string' }]
         }
       }
-    ]
+    ];
 
-    executor.onCall(1).callsFake(async () => [[{ Timestamp: 100 }]])
-    executor.onCall(2).callsFake(async () => [tableDeclarations])
+    executor.onCall(1).callsFake(async () => [[{ Timestamp: 100 }]]);
+    executor.onCall(2).callsFake(async () => [tableDeclarations]);
 
-    await metaApi.getMetaInfo(pool)
+    await metaApi.getMetaInfo(pool);
     expect(pool.metaInfo.tables['table1']).to.be.deep.equal(
       tableDeclarations[0].TableDescription
-    )
+    );
     expect(pool.metaInfo.tables['table2']).to.be.deep.equal(
       tableDeclarations[1].TableDescription
-    )
-    expect(pool.metaInfo.timestamp).to.be.equal(100)
+    );
+    expect(pool.metaInfo.timestamp).to.be.equal(100);
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
@@ -69,7 +69,7 @@ describe('resolve-readmodel-mysql meta-api', () => {
           PRIMARY KEY (MetaKey, MetaField)
         )`
       )
-    )
+    );
 
     expect(format(executor.secondCall.args[0])).to.be.equal(
       format(
@@ -77,7 +77,7 @@ describe('resolve-readmodel-mysql meta-api', () => {
          FROM \`META_NAME\`
          WHERE MetaKey="Timestamp" AND MetaField="Timestamp"`
       )
-    )
+    );
 
     expect(format(executor.thirdCall.args[0])).to.be.equal(
       format(
@@ -85,16 +85,16 @@ describe('resolve-readmodel-mysql meta-api', () => {
          FROM \`META_NAME\`
          WHERE MetaKey="Tables"`
       )
-    )
-  })
+    );
+  });
 
   it('should provide getMetaInfo method - for empty meta table', async () => {
-    executor.onCall(1).callsFake(async () => [[]])
-    executor.onCall(3).callsFake(async () => [[]])
+    executor.onCall(1).callsFake(async () => [[]]);
+    executor.onCall(3).callsFake(async () => [[]]);
 
-    await metaApi.getMetaInfo(pool)
-    expect(pool.metaInfo.tables).to.be.deep.equal({})
-    expect(pool.metaInfo.timestamp).to.be.equal(0)
+    await metaApi.getMetaInfo(pool);
+    expect(pool.metaInfo.tables).to.be.deep.equal({});
+    expect(pool.metaInfo.timestamp).to.be.equal(0);
 
     expect(format(executor.getCall(0).args[0])).to.be.equal(
       format(
@@ -106,7 +106,7 @@ describe('resolve-readmodel-mysql meta-api', () => {
           PRIMARY KEY (MetaKey, MetaField)
         )`
       )
-    )
+    );
 
     expect(format(executor.getCall(1).args[0])).to.be.equal(
       format(
@@ -114,14 +114,14 @@ describe('resolve-readmodel-mysql meta-api', () => {
          FROM \`META_NAME\`
          WHERE MetaKey="Timestamp" AND MetaField="Timestamp"`
       )
-    )
+    );
 
     expect(format(executor.getCall(2).args[0])).to.be.equal(
       format(
         `INSERT INTO \`META_NAME\`(MetaKey, MetaField, SimpleValue)
          VALUES("Timestamp", "Timestamp", 0)`
       )
-    )
+    );
 
     expect(format(executor.getCall(3).args[0])).to.be.equal(
       format(
@@ -129,8 +129,8 @@ describe('resolve-readmodel-mysql meta-api', () => {
          FROM \`META_NAME\`
          WHERE MetaKey="Tables"`
       )
-    )
-  })
+    );
+  });
 
   it('should provide getMetaInfo method - for malformed meta table', async () => {
     const tableDeclarations = [
@@ -142,14 +142,14 @@ describe('resolve-readmodel-mysql meta-api', () => {
           secondaryIndexes: 'error'
         }
       }
-    ]
+    ];
 
-    executor.onCall(1).callsFake(async () => [[{ Timestamp: 'NaN' }]])
-    executor.onCall(2).callsFake(async () => [tableDeclarations])
+    executor.onCall(1).callsFake(async () => [[{ Timestamp: 'NaN' }]]);
+    executor.onCall(2).callsFake(async () => [tableDeclarations]);
 
-    await metaApi.getMetaInfo(pool)
-    expect(pool.metaInfo.tables).to.be.deep.equal({})
-    expect(pool.metaInfo.timestamp).to.be.equal(0)
+    await metaApi.getMetaInfo(pool);
+    expect(pool.metaInfo.tables).to.be.deep.equal({});
+    expect(pool.metaInfo.timestamp).to.be.equal(0);
 
     expect(format(executor.getCall(0).args[0])).to.be.equal(
       format(
@@ -161,7 +161,7 @@ describe('resolve-readmodel-mysql meta-api', () => {
           PRIMARY KEY (MetaKey, MetaField)
         )`
       )
-    )
+    );
 
     expect(format(executor.getCall(1).args[0])).to.be.equal(
       format(
@@ -169,7 +169,7 @@ describe('resolve-readmodel-mysql meta-api', () => {
          FROM \`META_NAME\`
          WHERE MetaKey="Timestamp" AND MetaField="Timestamp"`
       )
-    )
+    );
 
     expect(format(executor.getCall(2).args[0])).to.be.equal(
       format(
@@ -177,95 +177,95 @@ describe('resolve-readmodel-mysql meta-api', () => {
          FROM \`META_NAME\`
          WHERE MetaKey="Tables"`
       )
-    )
+    );
 
     expect(format(executor.getCall(3).args[0])).to.be.equal(
       format(`DELETE FROM \`META_NAME\` WHERE MetaKey="Tables" AND MetaField=?`)
-    )
+    );
 
-    expect(executor.getCall(3).args[1]).to.be.deep.equal(['table'])
-  })
+    expect(executor.getCall(3).args[1]).to.be.deep.equal(['table']);
+  });
 
   it('should provide getLastTimestamp method', async () => {
-    pool = { metaInfo: { timestamp: 10 } }
+    pool = { metaInfo: { timestamp: 10 } };
 
-    const result = await metaApi.getLastTimestamp(pool)
+    const result = await metaApi.getLastTimestamp(pool);
 
-    expect(result).to.be.equal(10)
-  })
+    expect(result).to.be.equal(10);
+  });
 
   it('should provide setLastTimestamp method', async () => {
-    executor.onCall(0).callsFake(async () => null)
-    pool.metaInfo = { timestamp: 10 }
+    executor.onCall(0).callsFake(async () => null);
+    pool.metaInfo = { timestamp: 10 };
 
-    await metaApi.setLastTimestamp(pool, 20)
+    await metaApi.setLastTimestamp(pool, 20);
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(`UPDATE \`META_NAME\` SET SimpleValue=? WHERE MetaKey="Timestamp"`)
-    )
-    expect(executor.firstCall.args[1]).to.be.deep.equal([20])
+    );
+    expect(executor.firstCall.args[1]).to.be.deep.equal([20]);
 
-    expect(pool.metaInfo.timestamp).to.be.equal(20)
-  })
+    expect(pool.metaInfo.timestamp).to.be.equal(20);
+  });
 
   it('should provide tableExists method', async () => {
-    pool = { metaInfo: { tables: { one: {} } } }
+    pool = { metaInfo: { tables: { one: {} } } };
 
-    let result = await metaApi.tableExists(pool, 'one')
-    expect(result).to.be.equal(true)
+    let result = await metaApi.tableExists(pool, 'one');
+    expect(result).to.be.equal(true);
 
-    result = await metaApi.tableExists(pool, 'two')
-    expect(result).to.be.equal(false)
-  })
+    result = await metaApi.tableExists(pool, 'two');
+    expect(result).to.be.equal(false);
+  });
 
   it('should provide getTableInfo method', async () => {
-    const metaInfoOne = {}
-    pool = { metaInfo: { tables: { one: metaInfoOne } } }
+    const metaInfoOne = {};
+    pool = { metaInfo: { tables: { one: metaInfoOne } } };
 
-    const result = await metaApi.getTableInfo(pool, 'one')
+    const result = await metaApi.getTableInfo(pool, 'one');
 
-    expect(result).to.be.equal(metaInfoOne)
-  })
+    expect(result).to.be.equal(metaInfoOne);
+  });
 
   it('should provide describeTable method', async () => {
-    pool.metaInfo = { tables: {} }
-    const metaInfoOne = {}
+    pool.metaInfo = { tables: {} };
+    const metaInfoOne = {};
 
-    await metaApi.describeTable(pool, 'one', metaInfoOne)
-    expect(pool.metaInfo.tables['one']).to.be.equal(metaInfoOne)
+    await metaApi.describeTable(pool, 'one', metaInfoOne);
+    expect(pool.metaInfo.tables['one']).to.be.equal(metaInfoOne);
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
         `INSERT INTO \`META_NAME\`(MetaKey, MetaField, ComplexValue) VALUES("Tables", ?, ?)`
       )
-    )
+    );
 
-    expect(executor.firstCall.args[1][0]).to.be.equal('one')
-    expect(executor.firstCall.args[1][1]).to.be.equal(metaInfoOne)
-  })
+    expect(executor.firstCall.args[1][0]).to.be.equal('one');
+    expect(executor.firstCall.args[1][1]).to.be.equal(metaInfoOne);
+  });
 
   it('should provide getTableNames method', async () => {
-    pool.metaInfo = { tables: { one: {}, two: {} } }
+    pool.metaInfo = { tables: { one: {}, two: {} } };
 
-    const result = await metaApi.getTableNames(pool)
+    const result = await metaApi.getTableNames(pool);
 
-    expect(result).to.be.deep.equal(['one', 'two'])
-  })
+    expect(result).to.be.deep.equal(['one', 'two']);
+  });
 
   it('should provide drop method', async () => {
-    pool.metaInfo = { tables: { one: {}, two: {} } }
+    pool.metaInfo = { tables: { one: {}, two: {} } };
 
-    await metaApi.drop(pool)
+    await metaApi.drop(pool);
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format('DROP TABLE `one`')
-    )
+    );
     expect(format(executor.secondCall.args[0])).to.be.equal(
       format('DROP TABLE `two`')
-    )
+    );
     expect(format(executor.thirdCall.args[0])).to.be.equal(
       format('DROP TABLE `META_NAME`')
-    )
+    );
 
-    expect(Object.keys(pool.metaInfo)).to.be.deep.equal([])
-  })
-})
+    expect(Object.keys(pool.metaInfo)).to.be.deep.equal([]);
+  });
+});

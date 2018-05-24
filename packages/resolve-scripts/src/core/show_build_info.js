@@ -1,17 +1,17 @@
-import chalk from 'chalk'
+import chalk from 'chalk';
 
-const statsConfig = require('../../configs/stats.config.json')
+const statsConfig = require('../../configs/stats.config.json');
 
 const showBuildInfo = ({ name }, err, stats) => {
   if (!stats) {
-    return
+    return;
   }
   // eslint-disable-next-line
-  console.log('[', chalk.green(name), ']', stats.toString(statsConfig))
+  console.log('[', chalk.green(name), ']', stats.toString(statsConfig));
   if (err) {
     // eslint-disable-next-line
-    console.error(err)
+    console.error(err);
   }
-}
+};
 
-export default showBuildInfo
+export default showBuildInfo;

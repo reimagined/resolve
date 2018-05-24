@@ -1,12 +1,12 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { NavLink } from 'react-router-dom'
-import { Helmet } from 'react-helmet'
-import styled from 'styled-components'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { NavLink } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
+import styled from 'styled-components';
 
-import Splitter from '../components/Splitter'
-import LoginInfo from './LoginInfo'
-import { rootDirectory } from '../constants'
+import Splitter from '../components/Splitter';
+import LoginInfo from './LoginInfo';
+import { rootDirectory } from '../constants';
 
 const ContentRoot = styled.div`
   width: 90%;
@@ -21,7 +21,7 @@ const ContentRoot = styled.div`
     width: 100%;
     margin: 0px auto;
   }
-`
+`;
 
 const PageHeader = styled.div`
   color: #fff;
@@ -30,7 +30,7 @@ const PageHeader = styled.div`
   line-height: 18px;
   vertical-align: middle;
   position: relative;
-`
+`;
 
 const Link = styled(NavLink)`
   color: white;
@@ -39,7 +39,7 @@ const Link = styled(NavLink)`
     font-weight: bold;
     text-decoration: underline;
   }
-`
+`;
 
 const PageTitle = styled.div`
   display: inline-block;
@@ -51,34 +51,34 @@ const PageTitle = styled.div`
   @media only screen and (max-width: 750px) and (min-width: 300px) {
     display: none;
   }
-`
+`;
 
 const Content = styled.div`
   overflow-wrap: break-word;
   word-wrap: break-word;
-`
+`;
 
 const Footer = styled.div`
   margin-top: 1em;
   border-top: 1px solid #e7e7e7;
   text-align: center;
   padding: 6px 0;
-`
+`;
 
 const FooterLink = styled.a`
   color: #333;
   text-decoration: underline;
-`
+`;
 
 class PageRoot extends React.Component {
-  lastReadModels = []
-  lastChildren = null
-  showProgress = true
-  unsubscribe = null
-  afterAnimate = null
+  lastReadModels = [];
+  lastChildren = null;
+  showProgress = true;
+  unsubscribe = null;
+  afterAnimate = null;
 
   handleChildChanges = () => {
-    const state = this.context.store.getState()
+    const state = this.context.store.getState();
     const actualReadModels = Object.keys(state.readModels).reduce(
       (acc, modelName) => [
         ...acc,
@@ -87,29 +87,29 @@ class PageRoot extends React.Component {
         )
       ],
       []
-    )
+    );
 
     const insertedStates = new Set(
       actualReadModels.filter(x => !new Set(this.lastReadModels).has(x))
-    )
+    );
 
     const removedStates = new Set(
       this.lastReadModels.filter(x => !new Set(actualReadModels).has(x))
-    )
+    );
 
     if (removedStates.size > 0) {
-      this.showProgress = true
-      this.forceUpdate()
+      this.showProgress = true;
+      this.forceUpdate();
     } else if (insertedStates.size > 0) {
-      this.showProgress = false
-      this.forceUpdate()
+      this.showProgress = false;
+      this.forceUpdate();
     }
 
-    this.lastReadModels = actualReadModels
-  }
+    this.lastReadModels = actualReadModels;
+  };
 
   componentWillMount() {
-    this.unsubscribe = this.context.store.subscribe(this.handleChildChanges)
+    this.unsubscribe = this.context.store.subscribe(this.handleChildChanges);
 
     this.afterAnimate =
       typeof window !== 'undefined'
@@ -118,13 +118,13 @@ class PageRoot extends React.Component {
           : typeof window.setImmediate === 'function'
             ? window.setImmediate.bind(window)
             : window.setTimeout.bind(window, 0)
-        : () => null
+        : () => null;
   }
 
   componentWillUnmount() {
-    this.afterAnimate = null
+    this.afterAnimate = null;
 
-    this.unsubscribe()
+    this.unsubscribe();
   }
 
   render() {
@@ -136,10 +136,10 @@ class PageRoot extends React.Component {
           ref={
             !this.showProgress
               ? ref => {
-                  if (ref == null || this.showProgress) return
+                  if (ref == null || this.showProgress) return;
                   this.afterAnimate(() => {
-                    this.lastChildren = ref.innerHTML
-                  })
+                    this.lastChildren = ref.innerHTML;
+                  });
                 }
               : ref => null // eslint-disable-line
           }
@@ -155,13 +155,13 @@ class PageRoot extends React.Component {
             : {})}
         />
       </div>
-    )
+    );
   }
 }
 
 PageRoot.contextTypes = {
   store: PropTypes.object.isRequired
-}
+};
 
 const Layout = ({ children }) => (
   <div>
@@ -216,6 +216,6 @@ const Layout = ({ children }) => (
       </Footer>
     </ContentRoot>
   </div>
-)
+);
 
-export default Layout
+export default Layout;

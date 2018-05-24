@@ -1,12 +1,12 @@
-import ProgressBar from 'progress'
-import { EOL } from 'os'
+import ProgressBar from 'progress';
+import { EOL } from 'os';
 
-import { start } from './importer'
+import { start } from './importer';
 
-let bar
+let bar;
 
 // eslint-disable-next-line no-console
-console.log('Import has been started. Press Crtl+C to stop import')
+console.log('Import has been started. Press Crtl+C to stop import');
 
 start(
   total => {
@@ -16,21 +16,21 @@ start(
         width: 20,
         total
       }
-    )
+    );
   },
   () => {
-    bar.tick()
+    bar.tick();
     if (bar.complete) {
       // eslint-disable-next-line no-console
-      console.log(EOL)
-      process.exit()
+      console.log(EOL);
+      process.exit();
     }
   }
-)
+);
 
-process.stdin.resume()
+process.stdin.resume();
 process.on('SIGINT', () => {
   // eslint-disable-next-line no-console
-  console.log(EOL)
-  process.exit()
-})
+  console.log(EOL);
+  process.exit();
+});

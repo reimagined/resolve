@@ -1,7 +1,7 @@
-import React from 'react'
-import { shallow } from 'enzyme'
+import React from 'react';
+import { shallow } from 'enzyme';
 
-import Stories from '../../../client/components/Stories'
+import Stories from '../../../client/components/Stories';
 
 it('Stories first page renders correctly', () => {
   const items = [
@@ -16,14 +16,14 @@ it('Stories first page renders correctly', () => {
       createdBy: 'user-id',
       createdByName: 'user'
     }
-  ]
-  const wrapper = shallow(<Stories items={items} type={'story'} />)
+  ];
+  const wrapper = shallow(<Stories items={items} type={'story'} />);
 
-  expect(wrapper).toMatchSnapshot()
-})
+  expect(wrapper).toMatchSnapshot();
+});
 
 it('Stories second page renders correctly', () => {
-  const stories = []
+  const stories = [];
   for (let i = 0; i < 50; i++) {
     stories.push({
       id: 'story-id' + i,
@@ -35,19 +35,19 @@ it('Stories second page renders correctly', () => {
       createdAt: new Date(0),
       createdBy: 'user-id',
       createdByName: 'user'
-    })
+    });
   }
-  const wrapper = shallow(<Stories items={stories} page={2} type={'story'} />)
+  const wrapper = shallow(<Stories items={stories} page={2} type={'story'} />);
 
-  expect(wrapper).toMatchSnapshot()
-})
+  expect(wrapper).toMatchSnapshot();
+});
 
 it('Stories page renders with error', () => {
-  const stories = []
+  const stories = [];
 
   const wrapper = shallow(
     <Stories items={stories} page="text" type={'story'} />
-  )
+  );
 
-  expect(wrapper).toMatchSnapshot()
-})
+  expect(wrapper).toMatchSnapshot();
+});

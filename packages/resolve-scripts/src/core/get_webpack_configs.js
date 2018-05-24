@@ -1,5 +1,5 @@
-import getWebpackClientConfig from './get_webpack_client_config'
-import getWebpackServerConfig from './get_webpack_server_config'
+import getWebpackClientConfig from './get_webpack_client_config';
+import getWebpackServerConfig from './get_webpack_server_config';
 
 const getWebpackConfigs = ({
   resolveConfig,
@@ -11,19 +11,19 @@ const getWebpackConfigs = ({
     resolveConfig,
     deployOptions,
     env
-  })
+  });
 
   const webpackServerConfig = getWebpackServerConfig({
     resolveConfig,
     deployOptions,
     env
-  })
+  });
 
-  const configs = [webpackClientConfig, webpackServerConfig]
+  const configs = [webpackClientConfig, webpackServerConfig];
 
-  resolveBuildConfig(configs, { resolveConfig, deployOptions, env })
+  resolveBuildConfig(configs, { resolveConfig, deployOptions, env });
 
-  return configs
-}
+  return configs;
+};
 
-export default getWebpackConfigs
+export default getWebpackConfigs;

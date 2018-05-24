@@ -3,22 +3,22 @@ import {
   UNSUBSCRIBE_VIEWMODEL,
   PROVIDE_VIEW_MODELS,
   MERGE
-} from './action_types'
-import { getKey } from './utils'
+} from './action_types';
+import { getKey } from './utils';
 
 export function subscribeHandler(
   { subscribers, viewModels },
   state,
   { viewModelName, aggregateId }
 ) {
-  const key = getKey(viewModelName, aggregateId)
+  const key = getKey(viewModelName, aggregateId);
 
   if (subscribers[key]) {
-    subscribers[key]++
-    return state
+    subscribers[key]++;
+    return state;
   }
 
-  subscribers[key] = 1
+  subscribers[key] = 1;
 
   return {
     ...state,
@@ -27,7 +27,7 @@ export function subscribeHandler(
       [aggregateId]: (viewModels.find(({ name }) => viewModelName === name)
         .projection.Init || (() => {}))()
     }
-  }
+  };
 }
 
 export function unsubscribeHandler(
@@ -35,22 +35,22 @@ export function unsubscribeHandler(
   state,
   { viewModelName, aggregateId }
 ) {
-  const key = getKey(viewModelName, aggregateId)
+  const key = getKey(viewModelName, aggregateId);
 
   if (subscribers[key] > 1) {
-    subscribers[key]--
-    return state
+    subscribers[key]--;
+    return state;
   }
 
-  subscribers[key] = 0
+  subscribers[key] = 0;
 
-  const nextViewModel = { ...state[viewModelName] }
-  delete nextViewModel[aggregateId]
+  const nextViewModel = { ...state[viewModelName] };
+  delete nextViewModel[aggregateId];
 
   return {
     ...state,
     [viewModelName]: nextViewModel
-  }
+  };
 }
 
 export function mergeHandler(
@@ -64,81 +64,81 @@ export function mergeHandler(
       ...state[viewModelName],
       [aggregateId]: actionState
     }
-  }
+  };
 }
 
 export function provideViewModelsHandler(context, state, { viewModels }) {
-  const { handlers, initialState } = context
-  context.viewModels = viewModels
+  const { handlers, initialState } = context;
+  context.viewModels = viewModels;
 
-  delete handlers[PROVIDE_VIEW_MODELS]
+  delete handlers[PROVIDE_VIEW_MODELS];
 
-  handlers[SUBSCRIBE_VIEWMODEL] = subscribeHandler.bind(null, context)
+  handlers[SUBSCRIBE_VIEWMODEL] = subscribeHandler.bind(null, context);
 
-  handlers[UNSUBSCRIBE_VIEWMODEL] = unsubscribeHandler.bind(null, context)
+  handlers[UNSUBSCRIBE_VIEWMODEL] = unsubscribeHandler.bind(null, context);
 
-  handlers[MERGE] = mergeHandler.bind(null, context)
+  handlers[MERGE] = mergeHandler.bind(null, context);
 
   viewModels.forEach(({ name: viewModelName }) => {
     initialState[viewModelName] = {
       ...initialState[viewModelName]
-    }
-  })
+    };
+  });
 
-  const map = createMap(viewModels)
+  const map = createMap(viewModels);
 
   Object.keys(map).forEach(eventType => {
-    handlers[eventType] = viewModelEventHandler.bind(null, map[eventType])
-  })
+    handlers[eventType] = viewModelEventHandler.bind(null, map[eventType]);
+  });
 
-  return initialState
+  return initialState;
 }
 
 export function createMap(viewModels) {
   return viewModels.reduce((acc, { name: viewModelName, projection }) => {
-    const handlers = { ...projection }
-    delete handlers.Init
+    const handlers = { ...projection };
+    delete handlers.Init;
     Object.keys(handlers).forEach(eventType => {
       if (!acc[eventType]) {
-        acc[eventType] = {}
+        acc[eventType] = {};
       }
 
-      acc[eventType][viewModelName] = projection[eventType]
-    })
-    return acc
-  }, {})
+      acc[eventType][viewModelName] = projection[eventType];
+    });
+    return acc;
+  }, {});
 }
 
 export function viewModelEventHandler(viewModels, state, action) {
-  const nextState = { ...state }
+  const nextState = { ...state };
 
   Object.keys(viewModels).forEach(viewModelName => {
-    if (!state[viewModelName]) return
+    if (!state[viewModelName]) return;
 
     if (state[viewModelName].hasOwnProperty('*')) {
-      const viewModelState = state[viewModelName]['*']
+      const viewModelState = state[viewModelName]['*'];
 
-      const result = viewModels[viewModelName](viewModelState, action)
+      const result = viewModels[viewModelName](viewModelState, action);
 
       nextState[viewModelName] = {
         ...nextState[viewModelName],
         '*': result
-      }
+      };
     }
 
-    if (!state[viewModelName].hasOwnProperty(action.aggregateId)) return
+    if (!state[viewModelName].hasOwnProperty(action.aggregateId)) return;
 
-    const viewModelState = state[viewModelName][action.aggregateId]
+    const viewModelState = state[viewModelName][action.aggregateId];
 
-    const result = viewModels[viewModelName](viewModelState, action)
+    const result = viewModels[viewModelName](viewModelState, action);
 
     nextState[viewModelName] = {
       ...nextState[viewModelName],
       [action.aggregateId]: result
-    }
-  })
+    };
+  });
 
-  return nextState
+  return nextState;
 }
 
 export default function createViewModelsReducer() {
@@ -146,20 +146,20 @@ export default function createViewModelsReducer() {
     initialState: {},
     handlers: {},
     subscribers: {}
-  }
+  };
 
   context.handlers[PROVIDE_VIEW_MODELS] = provideViewModelsHandler.bind(
     null,
     context
-  )
+  );
 
   return (state = {}, action) => {
-    const eventHandler = context.handlers[action.type]
+    const eventHandler = context.handlers[action.type];
 
     if (eventHandler) {
-      return eventHandler(state, action)
+      return eventHandler(state, action);
     }
 
-    return state
-  }
+    return state;
+  };
 }

@@ -1,4 +1,4 @@
-import actions from './actions'
+import actions from './actions';
 
 export default function createActions({ name, commands }, extendActions) {
   const generatedActions = Object.keys(commands).reduce(
@@ -15,7 +15,7 @@ export default function createActions({ name, commands }, extendActions) {
         })
     }),
     {}
-  )
+  );
 
-  return { ...generatedActions, ...extendActions }
+  return { ...generatedActions, ...extendActions };
 }

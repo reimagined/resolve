@@ -1,4 +1,4 @@
-import { getRootableUrl } from './utils'
+import { getRootableUrl } from './utils';
 
 const loadInitialState = async (
   { origin, rootPath },
@@ -17,13 +17,13 @@ const loadInitialState = async (
       method: 'GET',
       credentials: 'same-origin'
     }
-  )
+  );
 
   if (!response.ok) {
-    throw new Error(response.text())
+    throw new Error(response.text());
   }
 
-  return await response.json()
-}
+  return await response.json();
+};
 
-export default loadInitialState
+export default loadInitialState;
