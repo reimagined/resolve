@@ -16,6 +16,7 @@ const getWebpackResolveDefinePlugin = ({
     const flatConfig = flat(resolveConfig, { maxDepth })
     for (const key of Object.keys(flatConfig)) {
       let value = flatConfig[key]
+
       if (value in deployOptions.env) {
         if (isClient) {
           // TODO crash on compile-time

@@ -5,10 +5,10 @@ import getWebpackEnvPlugin from './get_webpack_env_plugin'
 import getWebpackResolveDefinePlugin from './get_webpack_resolve_define_plugin'
 import getWebpackResolveAliasPlugin from './get_webpack_resolve_alias_plugin'
 import getWebpackExternalsPlugin from './get_webpack_externals_plugin'
-import resolveFile from './resolve_file'
+import getExternals from './get_externals'
 
 const getClientWebpackConfig = ({ resolveConfig, deployOptions, env }) => {
-  const clientIndexPath = resolveFile(resolveConfig.index)
+  //const clientIndexPath = resolveFile(resolveConfig.index)
   const clientDistDir = path.resolve(
     process.cwd(),
     resolveConfig.distDir,
@@ -18,7 +18,12 @@ const getClientWebpackConfig = ({ resolveConfig, deployOptions, env }) => {
 
   return {
     name: 'Client',
-    entry: ['@babel/runtime/regenerator', clientIndexPath],
+    entry: [
+      '@babel/runtime/regenerator',
+      resolveConfig.index,
+      ...getExternals(resolveConfig)
+    ],
+    context: path.resolve(process.cwd()),
     mode: deployOptions.mode,
     devtool: 'source-map',
     target: 'web',

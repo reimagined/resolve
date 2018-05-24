@@ -5,6 +5,9 @@
   "staticDir": "static",
   "distDir": "dist",
   "routes": "client/routes.js",
+  "aggregates": [],
+  "readModels": [],
+  "viewModels": [],
   "sagas": "common/sagas/index.js",
   "index": "client/index.js",
   "auth": {

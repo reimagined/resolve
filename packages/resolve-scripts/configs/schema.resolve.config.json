@@ -8,6 +8,29 @@
           "type": "string",
           "constraints": {
             "env": true,
+            "fileOrModule": true,
+            "serverOnly": true
+          }
+        },
+        "options": {
+          "type": "object",
+          "constraints": {
+            "serverOnly": true
+          }
+        }
+      },
+      "constraints": {
+        "serverOnly": true
+      },
+      "required": ["adapter", "options"],
+      "additionalProperties": false
+    },
+    "clientAdapter": {
+      "type": "object",
+      "properties": {
+        "adapter": {
+          "type": "string",
+          "constraints": {
             "fileOrModule": true
           }
         },
@@ -148,7 +171,8 @@
         "strategies": {
           "type": "string",
           "constraints": {
-            "file": true
+            "file": true,
+            "serverOnly": true
           }
         }
       },
@@ -179,7 +203,8 @@
         "distDir": {
           "type": "string",
           "constraints": {
-            "directory": true
+            "directory": true,
+            "serverOnly": true
           }
         },
         "rootPath": {
@@ -192,7 +217,10 @@
           }
         },
         "staticPath": {
-          "type": "string"
+          "type": "string",
+          "constraints": {
+            "url": true
+          }
         },
         "redux": {
           "$ref": "#/definitions/redux"
@@ -201,25 +229,34 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/aggregate"
+          },
+          "constraints": {
+            "external": true
           }
         },
         "viewModels": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/viewModel"
+          },
+          "constraints": {
+            "external": true
           }
         },
         "readModels": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/readModel"
+          },
+          "constraints": {
+            "external": true
           }
         },
         "sagas": {
           "type": "string",
           "constraints": {
             "file": true,
-            "env": true
+            "serverOnly": true
           }
         },
         "bus": {
@@ -229,7 +266,7 @@
           "$ref": "#/definitions/adapter"
         },
         "subscribe": {
-          "$ref": "#/definitions/adapter"
+          "$ref": "#/definitions/clientAdapter"
         },
         "auth": {
           "$ref": "#/definitions/auth"
@@ -240,7 +277,8 @@
         "registry": {
           "type": "string",
           "constraints": {
-            "env": true
+            "env": true,
+            "serverOnly": true
           }
         },
         "env": {
@@ -259,8 +297,7 @@
           "additionalProperties": false
         }
       },
-      "additionalProperties": false,
-      "required": ["aggregates", "view-models", "read-models"]
+      "additionalProperties": false
     }
   },
   "$ref": "#/definitions/config"

@@ -7,6 +7,7 @@ import getWebpackEnvPlugin from './get_webpack_env_plugin'
 import getWebpackResolveDefinePlugin from './get_webpack_resolve_define_plugin'
 import getWebpackResolveAliasPlugin from './get_webpack_resolve_alias_plugin'
 import getWebpackExternalsPlugin from './get_webpack_externals_plugin'
+import getExternals from './get_externals'
 
 const getWebpackServerConfig = ({ resolveConfig, deployOptions, env }) => {
   const serverIndexPath = path.resolve(__dirname, '../runtime/server/index.js')
@@ -19,7 +20,12 @@ const getWebpackServerConfig = ({ resolveConfig, deployOptions, env }) => {
 
   return {
     name: 'Server',
-    entry: ['@babel/runtime/regenerator', serverIndexPath],
+    entry: [
+      '@babel/runtime/regenerator',
+      serverIndexPath,
+      ...getExternals(resolveConfig)
+    ],
+    context: path.resolve(process.cwd()),
     mode: deployOptions.mode,
     devtool: 'source-map',
     target: 'node',

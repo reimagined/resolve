@@ -5,8 +5,8 @@ import println from './utils/println'
 import prepareUrls from './utils/prepare_urls'
 
 const port = $resolve.port
-const host = $resolve.host
-const protocol = $resolve.protocol
+const host = '0.0.0.0'
+const protocol = 'http'
 const applicationName = $resolve.applicationName
 const useYarn = $resolve.useYarn
 const isOpenBrowser =

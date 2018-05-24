@@ -12,8 +12,7 @@
             "name": "Todos",
             "projection": "common/view-models/todos/projection.js"
         }
-    ],
-    "readModels": []
+    ]
 }
 
 // See the documentation for more information about available options list at
