@@ -1,8 +1,8 @@
-import React from 'react'
-import { connectReadModel } from 'resolve-redux'
+import React from 'react';
+import { connectReadModel } from 'resolve-redux';
 
-import Stories from '../components/Stories'
-import { ITEMS_PER_PAGE } from '../constants'
+import Stories from '../components/Stories';
+import { ITEMS_PER_PAGE } from '../constants';
 
 const NewestByPage = ({
   match: {
@@ -16,18 +16,18 @@ const NewestByPage = ({
     type="newest"
     userId={me && me.id}
   />
-)
+);
 
 const getReadModelData = state => {
   try {
     return {
       stories: state.readModels['default']['allStories'].stories,
       me: state.readModels['default']['allStories'].me
-    }
+    };
   } catch (err) {
-    return { stories: [], me: null }
+    return { stories: [], me: null };
   }
-}
+};
 
 export default connectReadModel((state, { match: { params: { page } } }) => ({
   readModelName: 'default',
@@ -38,4 +38,4 @@ export default connectReadModel((state, { match: { params: { page } } }) => ({
   },
   data: getReadModelData(state),
   page
-}))(NewestByPage)
+}))(NewestByPage);

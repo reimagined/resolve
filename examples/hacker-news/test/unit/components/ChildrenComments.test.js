@@ -1,7 +1,7 @@
-import React from 'react'
-import { shallow } from 'enzyme'
+import React from 'react';
+import { shallow } from 'enzyme';
 
-import ChildrenComments from '../../../client/components/ChildrenComments'
+import ChildrenComments from '../../../client/components/ChildrenComments';
 
 it('ChildrenComments renders correctly [loggedIn = true]', () => {
   const story = {
@@ -24,7 +24,7 @@ it('ChildrenComments renders correctly [loggedIn = true]', () => {
         createdByName: 'SomeUser'
       }
     ]
-  }
+  };
 
   const markup = shallow(
     <ChildrenComments
@@ -33,12 +33,12 @@ it('ChildrenComments renders correctly [loggedIn = true]', () => {
       comments={story.comments}
       loggedIn={true}
     />
-  )
+  );
 
-  expect(markup).toMatchSnapshot()
+  expect(markup).toMatchSnapshot();
 
-  expect(markup.find(ChildrenComments).shallow()).toMatchSnapshot()
-})
+  expect(markup.find(ChildrenComments).shallow()).toMatchSnapshot();
+});
 
 it('ChildrenComments renders correctly [loggedIn = false]', () => {
   const story = {
@@ -61,7 +61,7 @@ it('ChildrenComments renders correctly [loggedIn = false]', () => {
         createdByName: 'SomeUser'
       }
     ]
-  }
+  };
 
   const markup = shallow(
     <ChildrenComments
@@ -70,18 +70,18 @@ it('ChildrenComments renders correctly [loggedIn = false]', () => {
       comments={story.comments}
       loggedIn={false}
     />
-  )
+  );
 
-  expect(markup).toMatchSnapshot()
+  expect(markup).toMatchSnapshot();
 
-  expect(markup.find(ChildrenComments).shallow()).toMatchSnapshot()
-})
+  expect(markup.find(ChildrenComments).shallow()).toMatchSnapshot();
+});
 
 it('Empty renders correctly', () => {
   const story = {
     id: 'story-id',
     comments: []
-  }
+  };
 
   const markup = shallow(
     <ChildrenComments
@@ -90,6 +90,6 @@ it('Empty renders correctly', () => {
       comments={story.comments}
       loggedIn={false}
     />
-  )
-  expect(markup).toMatchSnapshot()
-})
+  );
+  expect(markup).toMatchSnapshot();
+});

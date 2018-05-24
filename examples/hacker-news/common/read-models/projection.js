@@ -4,7 +4,7 @@ import {
   STORY_UNVOTED,
   STORY_UPVOTED,
   USER_CREATED
-} from '../events'
+} from '../events';
 
 export default {
   Init: async store => {
@@ -19,13 +19,13 @@ export default {
       { name: 'createdAt', type: 'number' },
       { name: 'createdBy', type: 'string' },
       { name: 'createdByName', type: 'string' }
-    ])
+    ]);
 
     await store.defineTable('Users', [
       { name: 'id', type: 'string', index: 'primary' },
       { name: 'name', type: 'string', index: 'secondary' },
       { name: 'createdAt', type: 'number' }
-    ])
+    ]);
 
     await store.defineTable('Comments', [
       { name: 'id', type: 'string', index: 'primary' },
@@ -36,13 +36,13 @@ export default {
       { name: 'createdAt', type: 'number' },
       { name: 'createdBy', type: 'string' },
       { name: 'createdByName', type: 'string' }
-    ])
+    ]);
   },
   [STORY_CREATED]: async (
     store,
     { aggregateId, timestamp, payload: { title, link, userId, userName, text } }
   ) => {
-    const type = !link ? 'ask' : /^(Show HN)/.test(title) ? 'show' : 'story'
+    const type = !link ? 'ask' : /^(Show HN)/.test(title) ? 'show' : 'story';
 
     const story = {
       id: aggregateId,
@@ -55,9 +55,9 @@ export default {
       createdAt: timestamp,
       createdBy: userId,
       createdByName: userName
-    }
+    };
 
-    await store.insert('Stories', story)
+    await store.insert('Stories', story);
   },
 
   [STORY_COMMENTED]: async (
@@ -77,14 +77,14 @@ export default {
       createdAt: timestamp,
       createdBy: userId,
       createdByName: userName
-    }
+    };
 
-    await store.insert('Comments', comment)
+    await store.insert('Comments', comment);
     await store.update(
       'Stories',
       { id: aggregateId },
       { $inc: { commentCount: 1 } }
-    )
+    );
   },
 
   [STORY_UPVOTED]: async (store, { aggregateId, payload: { userId } }) => {
@@ -92,12 +92,12 @@ export default {
       'Stories',
       { id: aggregateId },
       { votes: 1 }
-    )
+    );
     await store.update(
       'Stories',
       { id: aggregateId },
       { $set: { votes: story.votes.concat(userId) } }
-    )
+    );
   },
 
   [STORY_UNVOTED]: async (store, { aggregateId, payload: { userId } }) => {
@@ -105,12 +105,12 @@ export default {
       'Stories',
       { id: aggregateId },
       { votes: 1 }
-    )
+    );
     await store.update(
       'Stories',
       { id: aggregateId },
       { $set: { votes: story.votes.filter(vote => vote !== userId) } }
-    )
+    );
   },
 
   [USER_CREATED]: async (
@@ -121,7 +121,7 @@ export default {
       id: aggregateId,
       name,
       createdAt: timestamp
-    }
-    await store.insert('Users', user)
+    };
+    await store.insert('Users', user);
   }
-}
+};

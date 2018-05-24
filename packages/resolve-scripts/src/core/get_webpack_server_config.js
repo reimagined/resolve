@@ -1,19 +1,19 @@
-import path from 'path'
-import webpack from 'webpack'
-import nodeExternals from 'webpack-node-externals'
+import path from 'path';
+import webpack from 'webpack';
+import nodeExternals from 'webpack-node-externals';
 
-import getModulesDirs from './get_modules_dirs'
-import getWebpackEnvPlugin from './get_webpack_env_plugin'
-import getWebpackResolveAliasPlugin from './get_webpack_resolve_alias_plugin'
+import getModulesDirs from './get_modules_dirs';
+import getWebpackEnvPlugin from './get_webpack_env_plugin';
+import getWebpackResolveAliasPlugin from './get_webpack_resolve_alias_plugin';
 
 export default ({ resolveConfig, deployOptions, env }) => {
-  const serverIndexPath = path.resolve(__dirname, '../runtime/server/index.js')
+  const serverIndexPath = path.resolve(__dirname, '../runtime/server/index.js');
 
   const serverDistDir = path.resolve(
     process.cwd(),
     resolveConfig.distDir,
     'server'
-  )
+  );
 
   return {
     name: 'Server',
@@ -64,5 +64,5 @@ export default ({ resolveConfig, deployOptions, env }) => {
       })
     ],
     externals: getModulesDirs().map(modulesDir => nodeExternals({ modulesDir }))
-  }
-}
+  };
+};

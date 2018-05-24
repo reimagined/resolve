@@ -1,9 +1,9 @@
-import React from 'react'
-import { connectViewModel } from 'resolve-redux'
-import { bindActionCreators } from 'redux'
-import { NavLink } from 'react-router-dom'
+import React from 'react';
+import { connectViewModel } from 'resolve-redux';
+import { bindActionCreators } from 'redux';
+import { NavLink } from 'react-router-dom';
 
-import { Helmet } from 'react-helmet'
+import { Helmet } from 'react-helmet';
 import {
   ListGroup,
   ListGroupItem,
@@ -12,10 +12,10 @@ import {
   Button,
   Image,
   FormControl
-} from 'react-bootstrap'
-import Header from '../components/Header.js'
+} from 'react-bootstrap';
+import Header from '../components/Header.js';
 
-const viewModelName = 'Todos'
+const viewModelName = 'Todos';
 
 export const Todo = ({
   todos,
@@ -24,17 +24,17 @@ export const Todo = ({
   removeItem,
   aggregateId
 }) => {
-  const placeholder = 'New Task'
+  const placeholder = 'New Task';
   const createItemFunc = () => {
     createItem(aggregateId, {
       text: newTodo.value === '' ? placeholder : newTodo.value,
       id: Date.now()
-    })
-    newTodo.value = ''
-  }
+    });
+    newTodo.value = '';
+  };
 
-  let newTodo
-  let todoList = todos || {}
+  let newTodo;
+  let todoList = todos || {};
 
   return (
     <div>
@@ -86,8 +86,8 @@ export const Todo = ({
             inputRef={element => (newTodo = element)}
             onKeyPress={event => {
               if (event.charCode === 13) {
-                event.preventDefault()
-                createItemFunc()
+                event.preventDefault();
+                createItemFunc();
               }
             }}
           />
@@ -95,7 +95,7 @@ export const Todo = ({
             className="example-button"
             bsStyle="success"
             onClick={() => {
-              createItemFunc()
+              createItemFunc();
             }}
           >
             Add Task
@@ -103,20 +103,20 @@ export const Todo = ({
         </Form>
       </div>
     </div>
-  )
-}
+  );
+};
 
 const mapStateToProps = (state, ownProps) => {
-  const aggregateId = ownProps.match.params.id
+  const aggregateId = ownProps.match.params.id;
 
   return {
     viewModelName,
     aggregateId,
     todos: state.viewModels[viewModelName][aggregateId]
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch, props) =>
-  bindActionCreators(props.aggregateActions, dispatch)
+  bindActionCreators(props.aggregateActions, dispatch);
 
-export default connectViewModel(mapStateToProps, mapDispatchToProps)(Todo)
+export default connectViewModel(mapStateToProps, mapDispatchToProps)(Todo);

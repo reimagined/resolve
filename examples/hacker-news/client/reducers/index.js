@@ -1,3 +1,3 @@
-import optimistic from './optimistic'
+import optimistic from './optimistic';
 
-export default { optimistic }
+export default { optimistic };

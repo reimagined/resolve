@@ -1,11 +1,11 @@
-import Immutable from 'seamless-immutable'
+import Immutable from 'seamless-immutable';
 
 import {
   STORY_COMMENTED,
   STORY_CREATED,
   STORY_UNVOTED,
   STORY_UPVOTED
-} from '../events'
+} from '../events';
 
 export default {
   name: 'storyDetails',
@@ -19,7 +19,7 @@ export default {
         payload: { title, link, userId, userName, text }
       }
     ) => {
-      const type = !link ? 'ask' : /^(Show HN)/.test(title) ? 'show' : 'story'
+      const type = !link ? 'ask' : /^(Show HN)/.test(title) ? 'show' : 'story';
 
       return Immutable({
         id: aggregateId,
@@ -33,7 +33,7 @@ export default {
         createdAt: timestamp,
         createdBy: userId,
         createdByName: userName
-      })
+      });
     },
 
     [STORY_UPVOTED]: (state: any, { payload: { userId } }) =>
@@ -53,10 +53,10 @@ export default {
       const parentIndex =
         parentId === aggregateId
           ? -1
-          : state.comments.findIndex(({ id }) => id === parentId)
+          : state.comments.findIndex(({ id }) => id === parentId);
 
       const level =
-        parentIndex === -1 ? 0 : state.comments[parentIndex].level + 1
+        parentIndex === -1 ? 0 : state.comments[parentIndex].level + 1;
 
       const comment = {
         id: commentId,
@@ -66,21 +66,23 @@ export default {
         createdAt: timestamp,
         createdBy: userId,
         createdByName: userName
-      }
+      };
 
-      const newState = state.update('commentCount', count => count + 1)
+      const newState = state.update('commentCount', count => count + 1);
 
       if (parentIndex === -1) {
-        return newState.update('comments', comments => comments.concat(comment))
+        return newState.update('comments', comments =>
+          comments.concat(comment)
+        );
       } else {
         return newState.update('comments', comments =>
           comments
             .slice(0, parentIndex + 1)
             .concat(comment, comments.slice(parentIndex + 1))
-        )
+        );
       }
     }
   },
   serializeState: (state: any) => JSON.stringify(state || {}),
   deserializeState: (state: any) => Immutable(JSON.parse(state))
-}
+};

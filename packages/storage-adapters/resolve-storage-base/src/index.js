@@ -1,1 +1,1 @@
-export ConcurrentError from './concurrent_error'
+export ConcurrentError from './concurrent_error';

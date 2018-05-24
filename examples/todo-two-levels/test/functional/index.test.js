@@ -1,21 +1,21 @@
-import { Selector } from 'testcafe'
+import { Selector } from 'testcafe';
 
-const host = process.env.HOST || 'localhost'
-const MAIN_PAGE = `http://${host}:3000`
+const host = process.env.HOST || 'localhost';
+const MAIN_PAGE = `http://${host}:3000`;
 
-let todulistId, firstListId, secondListId
+let todulistId, firstListId, secondListId;
 
 // eslint-disable-next-line no-unused-expressions, no-undef
 fixture`Two Level Todo`.beforeEach(async t => {
-  await t.setNativeDialogHandler(() => true)
-  await t.navigateTo(`${MAIN_PAGE}${todulistId ? `/${todulistId}` : ''}`)
-})
+  await t.setNativeDialogHandler(() => true);
+  await t.navigateTo(`${MAIN_PAGE}${todulistId ? `/${todulistId}` : ''}`);
+});
 
 test('should add first list', async t => {
-  await t.expect(await Selector('ul').find('li').count).eql(0)
+  await t.expect(await Selector('ul').find('li').count).eql(0);
 
-  await t.typeText(await Selector('input[type=text]'), 'List 1')
-  await t.click(await Selector('button'))
+  await t.typeText(await Selector('input[type=text]'), 'List 1');
+  await t.click(await Selector('button'));
 
   await t
     .expect(
@@ -24,21 +24,21 @@ test('should add first list', async t => {
         .nth(0)
         .find('a').innerText
     )
-    .eql('List 1')
+    .eql('List 1');
 
-  await t.expect(await Selector('ul').find('li').count).eql(1)
+  await t.expect(await Selector('ul').find('li').count).eql(1);
 
   firstListId = (await Selector('ul')
     .find('li')
     .nth(0)
-    .find('a').attributes).href.slice(1)
-})
+    .find('a').attributes).href.slice(1);
+});
 
 test('should add second list', async t => {
-  await t.expect(await Selector('ul').find('li').count).eql(1)
+  await t.expect(await Selector('ul').find('li').count).eql(1);
 
-  await t.typeText(await Selector('input[type=text]'), 'List 2')
-  await t.click(await Selector('button'))
+  await t.typeText(await Selector('input[type=text]'), 'List 2');
+  await t.click(await Selector('button'));
 
   await t
     .expect(
@@ -47,26 +47,26 @@ test('should add second list', async t => {
         .nth(1)
         .find('a').innerText
     )
-    .eql('List 2')
+    .eql('List 2');
 
-  await t.expect(await Selector('ul').find('li').count).eql(2)
+  await t.expect(await Selector('ul').find('li').count).eql(2);
 
   secondListId = (await Selector('ul')
     .find('li')
     .nth(1)
-    .find('a').attributes).href.slice(1)
+    .find('a').attributes).href.slice(1);
 
-  todulistId = firstListId
-})
+  todulistId = firstListId;
+});
 
 // First List
 test('should list be empty', async t => {
-  await t.expect(await Selector('ul').find('li').count).eql(0)
-})
+  await t.expect(await Selector('ul').find('li').count).eql(0);
+});
 
 test('should add first todo', async t => {
-  await t.typeText(await Selector('input[type=text]'), 'Test 1')
-  await t.click(await Selector('button'))
+  await t.typeText(await Selector('input[type=text]'), 'Test 1');
+  await t.click(await Selector('button'));
 
   await t
     .expect(
@@ -75,12 +75,12 @@ test('should add first todo', async t => {
         .nth(0)
         .find('label').innerText
     )
-    .eql('Test 1')
-})
+    .eql('Test 1');
+});
 
 test('should add second todo', async t => {
-  await t.typeText(await Selector('input[type=text]'), 'Test 2')
-  await t.click(await Selector('button'))
+  await t.typeText(await Selector('input[type=text]'), 'Test 2');
+  await t.click(await Selector('button'));
 
   await t
     .expect(
@@ -89,47 +89,47 @@ test('should add second todo', async t => {
         .nth(1)
         .find('label').innerText
     )
-    .eql('Test 2')
-})
+    .eql('Test 2');
+});
 
 test('should toggle first todo', async t => {
   await t
     .expect(await Selector('input[type=checkbox]').nth(0).checked)
-    .eql(false)
+    .eql(false);
 
-  await t.click(await Selector('input[type=checkbox]').nth(0))
+  await t.click(await Selector('input[type=checkbox]').nth(0));
 
   await t
     .expect(await Selector('input[type=checkbox]').nth(0).checked)
-    .eql(true)
-})
+    .eql(true);
+});
 
 test('should remove first todo', async t => {
-  await t.expect(await Selector('ul').find('li').count).eql(2)
+  await t.expect(await Selector('ul').find('li').count).eql(2);
 
-  await t.click(await Selector('.example-close-button').nth(0))
+  await t.click(await Selector('.example-close-button').nth(0));
 
-  await t.expect(await Selector('ul').find('li').count).eql(1)
-})
+  await t.expect(await Selector('ul').find('li').count).eql(1);
+});
 
 test('should remove second todo', async t => {
-  await t.expect(await Selector('ul').find('li').count).eql(1)
+  await t.expect(await Selector('ul').find('li').count).eql(1);
 
-  await t.click(await Selector('.example-close-button').nth(0))
+  await t.click(await Selector('.example-close-button').nth(0));
 
-  await t.expect(await Selector('ul').find('li').count).eql(0)
+  await t.expect(await Selector('ul').find('li').count).eql(0);
 
-  todulistId = secondListId
-})
+  todulistId = secondListId;
+});
 
 // Second List
 test('should list be empty', async t => {
-  await t.expect(await Selector('ul').find('li').count).eql(0)
-})
+  await t.expect(await Selector('ul').find('li').count).eql(0);
+});
 
 test('should add first todo', async t => {
-  await t.typeText(await Selector('input[type=text]'), 'Test 1')
-  await t.click(await Selector('button'))
+  await t.typeText(await Selector('input[type=text]'), 'Test 1');
+  await t.click(await Selector('button'));
 
   await t
     .expect(
@@ -138,12 +138,12 @@ test('should add first todo', async t => {
         .nth(0)
         .find('label').innerText
     )
-    .eql('Test 1')
-})
+    .eql('Test 1');
+});
 
 test('should add second todo', async t => {
-  await t.typeText(await Selector('input[type=text]'), 'Test 2')
-  await t.click(await Selector('button'))
+  await t.typeText(await Selector('input[type=text]'), 'Test 2');
+  await t.click(await Selector('button'));
 
   await t
     .expect(
@@ -152,51 +152,51 @@ test('should add second todo', async t => {
         .nth(1)
         .find('label').innerText
     )
-    .eql('Test 2')
-})
+    .eql('Test 2');
+});
 
 test('should toggle first todo', async t => {
   await t
     .expect(await Selector('input[type=checkbox]').nth(0).checked)
-    .eql(false)
+    .eql(false);
 
-  await t.click(await Selector('input[type=checkbox]').nth(0))
+  await t.click(await Selector('input[type=checkbox]').nth(0));
 
   await t
     .expect(await Selector('input[type=checkbox]').nth(0).checked)
-    .eql(true)
-})
+    .eql(true);
+});
 
 test('should remove first todo', async t => {
-  await t.expect(await Selector('ul').find('li').count).eql(2)
+  await t.expect(await Selector('ul').find('li').count).eql(2);
 
-  await t.click(await Selector('.example-close-button').nth(0))
+  await t.click(await Selector('.example-close-button').nth(0));
 
-  await t.expect(await Selector('ul').find('li').count).eql(1)
-})
+  await t.expect(await Selector('ul').find('li').count).eql(1);
+});
 
 test('should remove second todo', async t => {
-  await t.expect(await Selector('ul').find('li').count).eql(1)
+  await t.expect(await Selector('ul').find('li').count).eql(1);
 
-  await t.click(await Selector('.example-close-button').nth(0))
+  await t.click(await Selector('.example-close-button').nth(0));
 
-  await t.expect(await Selector('ul').find('li').count).eql(0)
+  await t.expect(await Selector('ul').find('li').count).eql(0);
 
-  todulistId = null
-})
+  todulistId = null;
+});
 
 test('should remove first list', async t => {
-  await t.expect(await Selector('ul').find('li').count).eql(2)
+  await t.expect(await Selector('ul').find('li').count).eql(2);
 
-  await t.click(await Selector('.example-close-button').nth(0))
+  await t.click(await Selector('.example-close-button').nth(0));
 
-  await t.expect(await Selector('ul').find('li').count).eql(1)
-})
+  await t.expect(await Selector('ul').find('li').count).eql(1);
+});
 
 test('should remove second list', async t => {
-  await t.expect(await Selector('ul').find('li').count).eql(1)
+  await t.expect(await Selector('ul').find('li').count).eql(1);
 
-  await t.click(await Selector('.example-close-button').nth(0))
+  await t.click(await Selector('.example-close-button').nth(0));
 
-  await t.expect(await Selector('ul').find('li').count).eql(0)
-})
+  await t.expect(await Selector('ul').find('li').count).eql(0);
+});

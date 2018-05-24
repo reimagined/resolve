@@ -1,8 +1,8 @@
-import chalk from 'chalk'
-import url from 'url'
-import address from 'address'
+import chalk from 'chalk';
+import url from 'url';
+import address from 'address';
 
-import getRootableUrl from './get_rootable_url'
+import getRootableUrl from './get_rootable_url';
 
 const prepareUrls = (protocol, host, port) => {
   const formatUrl = hostname =>
@@ -11,22 +11,22 @@ const prepareUrls = (protocol, host, port) => {
       hostname,
       port,
       pathname: getRootableUrl('/')
-    })
+    });
   const prettyPrintUrl = hostname =>
     url.format({
       protocol,
       hostname,
       port: chalk.bold(port),
       pathname: getRootableUrl('/')
-    })
+    });
 
-  const isUnspecifiedHost = host === '0.0.0.0' || host === '::'
-  let prettyHost, lanUrlForConfig, lanUrlForTerminal
+  const isUnspecifiedHost = host === '0.0.0.0' || host === '::';
+  let prettyHost, lanUrlForConfig, lanUrlForTerminal;
   if (isUnspecifiedHost) {
-    prettyHost = 'localhost'
+    prettyHost = 'localhost';
     try {
       // This can only return an IPv4 address
-      lanUrlForConfig = address.ip()
+      lanUrlForConfig = address.ip();
       if (lanUrlForConfig) {
         // Check if the address is a private ip
         // https://en.wikipedia.org/wiki/Private_network#Private_IPv4_address_spaces
@@ -36,26 +36,26 @@ const prepareUrls = (protocol, host, port) => {
           )
         ) {
           // Address is private, format it for later use
-          lanUrlForTerminal = prettyPrintUrl(lanUrlForConfig)
+          lanUrlForTerminal = prettyPrintUrl(lanUrlForConfig);
         } else {
           // Address is not private, so we will discard it
-          lanUrlForConfig = undefined
+          lanUrlForConfig = undefined;
         }
       }
     } catch (_e) {
       // ignored
     }
   } else {
-    prettyHost = host
+    prettyHost = host;
   }
-  const localUrlForTerminal = prettyPrintUrl(prettyHost)
-  const localUrlForBrowser = formatUrl(prettyHost)
+  const localUrlForTerminal = prettyPrintUrl(prettyHost);
+  const localUrlForBrowser = formatUrl(prettyHost);
   return {
     lanUrlForConfig,
     lanUrlForTerminal,
     localUrlForTerminal,
     localUrlForBrowser
-  }
-}
+  };
+};
 
-export default prepareUrls
+export default prepareUrls;

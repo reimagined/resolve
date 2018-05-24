@@ -1,47 +1,47 @@
-import { Selector } from 'testcafe'
+import { Selector } from 'testcafe';
 
-import { ROOT_URL, login } from './utils'
+import { ROOT_URL, login } from './utils';
 
 // eslint-disable-next-line
 fixture`User`.beforeEach(async (t /*: TestController */) => {
-  await t.setNativeDialogHandler(() => true)
-  await t.navigateTo(`${ROOT_URL}/login`)
-})
+  await t.setNativeDialogHandler(() => true);
+  await t.navigateTo(`${ROOT_URL}/login`);
+});
 
 test('create', async (t /*: TestController */) => {
-  await t.expect(await Selector('a').withText('login').exists).eql(true)
+  await t.expect(await Selector('a').withText('login').exists).eql(true);
 
-  await t.typeText(await Selector('input[type=text]').nth(1), '123')
-  await t.click(await Selector('input[type=submit]').nth(1))
+  await t.typeText(await Selector('input[type=text]').nth(1), '123');
+  await t.click(await Selector('input[type=submit]').nth(1));
 
-  await t.expect(await Selector('a').withText('123').exists).eql(true)
+  await t.expect(await Selector('a').withText('123').exists).eql(true);
 
-  await t.expect(await Selector('a').withText('logout').exists).eql(true)
+  await t.expect(await Selector('a').withText('logout').exists).eql(true);
 
-  await t.expect(await Selector('a').withText('login').exists).eql(false)
-})
+  await t.expect(await Selector('a').withText('login').exists).eql(false);
+});
 
 test('login', async (t /*: TestController */) => {
-  await t.expect(await Selector('a').withText('login').exists).eql(true)
+  await t.expect(await Selector('a').withText('login').exists).eql(true);
 
-  await login(t)
+  await login(t);
 
-  await t.expect(await Selector('a').withText('123').exists).eql(true)
-  await t.expect(await Selector('a').withText('logout').exists).eql(true)
-  await t.expect(await Selector('a').withText('login').exists).eql(false)
-})
+  await t.expect(await Selector('a').withText('123').exists).eql(true);
+  await t.expect(await Selector('a').withText('logout').exists).eql(true);
+  await t.expect(await Selector('a').withText('login').exists).eql(false);
+});
 
 test('create: is already exists', async (t /*: TestController */) => {
-  await t.typeText(await Selector('input[type=text]').nth(1), '123')
-  await t.click(await Selector('input[type=submit]').nth(1))
+  await t.typeText(await Selector('input[type=text]').nth(1), '123');
+  await t.click(await Selector('input[type=submit]').nth(1));
 
-  await t.expect(await Selector('a').withText('logout').exists).eql(false)
+  await t.expect(await Selector('a').withText('logout').exists).eql(false);
 
-  await t.expect(await Selector('a').withText('login').exists).eql(true)
+  await t.expect(await Selector('a').withText('login').exists).eql(true);
 
-  await t.expect(await Selector('h1').withText('Error').exists).eql(true)
+  await t.expect(await Selector('h1').withText('Error').exists).eql(true);
 
   await t
     .expect(await Selector('div').withText('User already exists').exists)
-    .eql(true)
-})
+    .eql(true);
+});

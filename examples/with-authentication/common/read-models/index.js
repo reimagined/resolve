@@ -1,5 +1,5 @@
-import jwt from 'jsonwebtoken'
-import jwtSecret from '../../auth/jwtSecret'
+import jwt from 'jsonwebtoken';
+import jwtSecret from '../../auth/jwtSecret';
 
 export default [
   {
@@ -12,15 +12,15 @@ export default [
     resolvers: {
       me: async (store, { jwtToken }) => {
         if (!jwtToken) {
-          return null
+          return null;
         }
-        const user = await jwt.verify(jwtToken, jwtSecret)
+        const user = await jwt.verify(jwtToken, jwtSecret);
         if (!user.name) {
-          return null
+          return null;
         }
 
-        return user
+        return user;
       }
     }
   }
-]
+];

@@ -1,10 +1,10 @@
-import React from 'react'
-import { Redirect } from 'react-router-dom'
-import { connectReadModel } from 'resolve-redux'
+import React from 'react';
+import { Redirect } from 'react-router-dom';
+import { connectReadModel } from 'resolve-redux';
 
-import Comment from '../components/Comment'
-import { ITEMS_PER_PAGE } from '../constants'
-import Pagination from '../components/Pagination'
+import Comment from '../components/Comment';
+import { ITEMS_PER_PAGE } from '../constants';
+import Pagination from '../components/Pagination';
 
 export const CommentsByPage = ({
   data: { comments = [] },
@@ -25,18 +25,18 @@ export const CommentsByPage = ({
         location="/comments"
       />
     </div>
-  )
+  );
 
 const getReadModelData = state => {
   try {
     return {
       comments: state.readModels['default']['comments'].comments,
       me: state.readModels['default']['comments'].me
-    }
+    };
   } catch (err) {
-    return { comments: [], me: null }
+    return { comments: [], me: null };
   }
-}
+};
 
 export default connectReadModel((state, { match: { params: { page } } }) => ({
   readModelName: 'default',
@@ -47,4 +47,4 @@ export default connectReadModel((state, { match: { params: { page } } }) => ({
   },
   data: getReadModelData(state),
   page
-}))(CommentsByPage)
+}))(CommentsByPage);

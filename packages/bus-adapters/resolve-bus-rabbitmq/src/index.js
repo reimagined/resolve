@@ -1,4 +1,4 @@
-import amqp from 'amqplib'
+import amqp from 'amqplib';
 
 const defaultOptions = {
   exchange: 'exchange',
@@ -7,7 +7,7 @@ const defaultOptions = {
   exchangeType: 'fanout',
   messageTtl: 2000,
   maxLength: 10000
-}
+};
 
 function init(
   { url, exchange, exchangeType, queueName, messageTtl, maxLength },
@@ -39,23 +39,23 @@ function init(
             queueName,
             msg => {
               if (msg) {
-                const content = msg.content.toString()
-                const message = JSON.parse(content)
-                handler(message)
+                const content = msg.content.toString();
+                const message = JSON.parse(content);
+                handler(message);
               }
             },
             { noAck: true }
           )
         )
         .then(() => channel)
-    )
+    );
 }
 
 function createAdapter(options) {
-  let handler = () => {}
-  const config = { ...defaultOptions, ...options }
-  const initPromise = init(config, event => handler(event))
-  const { exchange, queueName, messageTtl } = config
+  let handler = () => {};
+  const config = { ...defaultOptions, ...options };
+  const initPromise = init(config, event => handler(event));
+  const { exchange, queueName, messageTtl } = config;
 
   return {
     publish: event =>
@@ -70,10 +70,10 @@ function createAdapter(options) {
             expiration: messageTtl,
             persistent: false
           }
-        )
+        );
       }),
     subscribe: callback => initPromise.then(() => (handler = callback))
-  }
+  };
 }
 
-export default createAdapter
+export default createAdapter;

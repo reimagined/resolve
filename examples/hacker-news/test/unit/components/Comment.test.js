@@ -1,17 +1,17 @@
-import React from 'react'
-import { shallow } from 'enzyme'
+import React from 'react';
+import { shallow } from 'enzyme';
 
-import Comment from '../../../client/components/Comment'
+import Comment from '../../../client/components/Comment';
 
-let originalNow = Date.now
+let originalNow = Date.now;
 
 beforeAll(() => {
-  Date.now = () => new Date(2017, 9, 30, 8, 0).getTime()
-})
+  Date.now = () => new Date(2017, 9, 30, 8, 0).getTime();
+});
 
 afterAll(() => {
-  Date.now = originalNow
-})
+  Date.now = originalNow;
+});
 
 it('Comment Level 0 renders correctly', () => {
   const markup = shallow(
@@ -25,10 +25,10 @@ it('Comment Level 0 renders correctly', () => {
       parentId="story-id"
       root={{ id: 'SomeId', title: 'SomeTitle' }}
     />
-  )
+  );
 
-  expect(markup).toMatchSnapshot()
-})
+  expect(markup).toMatchSnapshot();
+});
 
 it('Comment Level 1 renders correctly', () => {
   const markup = shallow(
@@ -42,26 +42,10 @@ it('Comment Level 1 renders correctly', () => {
       parentId="parent-id"
       root={{ id: 'SomeId', title: 'SomeTitle' }}
     />
-  )
+  );
 
-  expect(markup).toMatchSnapshot()
-})
-
-it('Comment Level 20 renders correctly', () => {
-  const markup = shallow(
-    <Comment
-      id="SomeId"
-      level={20}
-      text="SomeContent"
-      createdBy="SomeUser"
-      createdAt={0}
-      storyId="story-id"
-      parentId="parent-id"
-    />
-  )
-
-  expect(markup).toMatchSnapshot()
-})
+  expect(markup).toMatchSnapshot();
+});
 
 it('Comment Level 20 renders correctly', () => {
   const markup = shallow(
@@ -74,10 +58,26 @@ it('Comment Level 20 renders correctly', () => {
       storyId="story-id"
       parentId="parent-id"
     />
-  )
+  );
 
-  expect(markup).toMatchSnapshot()
-})
+  expect(markup).toMatchSnapshot();
+});
+
+it('Comment Level 20 renders correctly', () => {
+  const markup = shallow(
+    <Comment
+      id="SomeId"
+      level={20}
+      text="SomeContent"
+      createdBy="SomeUser"
+      createdAt={0}
+      storyId="story-id"
+      parentId="parent-id"
+    />
+  );
+
+  expect(markup).toMatchSnapshot();
+});
 
 it('Comment with state.expanded=false renders correctly', () => {
   const markup = shallow(
@@ -90,11 +90,11 @@ it('Comment with state.expanded=false renders correctly', () => {
       storyId="story-id"
       parentId="parent-id"
     />
-  )
-  markup.instance().expand()
+  );
+  markup.instance().expand();
 
-  expect(markup).toMatchSnapshot()
-})
+  expect(markup).toMatchSnapshot();
+});
 
 it('Comment without childrens renders correctly', () => {
   const markup = shallow(
@@ -107,13 +107,13 @@ it('Comment without childrens renders correctly', () => {
       storyId="story-id"
       parentId="parent-id"
     />
-  )
+  );
 
-  expect(markup).toMatchSnapshot()
-})
+  expect(markup).toMatchSnapshot();
+});
 
 it('Invalid comment renders correctly', () => {
-  const markup = shallow(<Comment />)
+  const markup = shallow(<Comment />);
 
-  expect(markup).toMatchSnapshot()
-})
+  expect(markup).toMatchSnapshot();
+});

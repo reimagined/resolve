@@ -1,16 +1,16 @@
-import generateCodename from 'project-name-generator'
+import generateCodename from 'project-name-generator';
 
-const ITEMS_COUNT = 100
+const ITEMS_COUNT = 100;
 
-const delay = timeout => new Promise(resolve => setTimeout(resolve, timeout))
+const delay = timeout => new Promise(resolve => setTimeout(resolve, timeout));
 
-const rand = max => Math.floor(Math.random() * max)
+const rand = max => Math.floor(Math.random() * max);
 
 const upFirstLetter = str => {
   return str.replace(/\w\S*/g, function(txt) {
-    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-  })
-}
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
+};
 
 async function mainSagaImpl(executeCommand, pushInterval) {
   for (let idx of Array.from(Array(ITEMS_COUNT)).map((_, idx) => idx)) {
@@ -22,7 +22,7 @@ async function mainSagaImpl(executeCommand, pushInterval) {
         id: `Item${idx}`,
         name: upFirstLetter(generateCodename().spaced)
       }
-    })
+    });
   }
 
   while (true) {
@@ -34,9 +34,9 @@ async function mainSagaImpl(executeCommand, pushInterval) {
         id: `Item${rand(ITEMS_COUNT)}`,
         userId: `User${rand(ITEMS_COUNT)}`
       }
-    })
+    });
 
-    await delay(pushInterval)
+    await delay(pushInterval);
   }
 }
 
@@ -46,12 +46,12 @@ function mainSaga({ resolve: { executeCommand } }) {
     +process.env.PUSH_INTERVAL > 10 &&
     +process.env.PUSH_INTERVAL < 3000
       ? +process.env.PUSH_INTERVAL
-      : 300
+      : 300;
 
   mainSagaImpl(executeCommand, pushInterval).catch(error => {
     // eslint-disable-next-line no-console
-    console.log('Saga error:', error)
-  })
+    console.log('Saga error:', error);
+  });
 }
 
-export default [mainSaga]
+export default [mainSaga];

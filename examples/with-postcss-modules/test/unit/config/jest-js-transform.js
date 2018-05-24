@@ -1,1 +1,1 @@
-module.exports = require('babel-jest').createTransformer()
+module.exports = require('babel-jest').createTransformer();

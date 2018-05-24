@@ -1,46 +1,46 @@
-import socketIOClient from 'socket.io-client'
+import socketIOClient from 'socket.io-client';
 
-import { getRootableUrl, makeLateResolvingPromise } from './utils'
+import { getRootableUrl, makeLateResolvingPromise } from './utils';
 
 const subscribeAdapter = ({ origin, rootPath }) => {
-  let onEvent, onDisconnect
+  let onEvent, onDisconnect;
 
   const socket = socketIOClient(origin, {
     path: getRootableUrl('', rootPath, '/socket')
-  })
+  });
 
-  let latePromise = makeLateResolvingPromise()
+  let latePromise = makeLateResolvingPromise();
 
-  socket.on('event', event => onEvent(JSON.parse(event)))
+  socket.on('event', event => onEvent(JSON.parse(event)));
 
-  socket.on('connect', () => latePromise.resolve(socket.id))
+  socket.on('connect', () => latePromise.resolve(socket.id));
 
   socket.on('reconnect', () => {
-    latePromise = makeLateResolvingPromise(socket.id)
-  })
+    latePromise = makeLateResolvingPromise(socket.id);
+  });
 
   socket.on('disconnect', reason => {
-    latePromise = makeLateResolvingPromise()
-    onDisconnect(reason)
-  })
+    latePromise = makeLateResolvingPromise();
+    onDisconnect(reason);
+  });
 
   return {
     onEvent(callback) {
-      onEvent = callback
+      onEvent = callback;
     },
     onDisconnect(callback) {
-      onDisconnect = callback
+      onDisconnect = callback;
     },
     setSubscription({ aggregateIds, types }) {
       socket.emit('setSubscription', {
         ids: aggregateIds, // TODO. Fix server-side
         types
-      })
+      });
     },
     async getClientId() {
-      return await latePromise
+      return await latePromise;
     }
-  }
-}
+  };
+};
 
-export default subscribeAdapter
+export default subscribeAdapter;

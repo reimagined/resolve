@@ -1,7 +1,7 @@
-import React from 'react'
-import renderer from 'react-test-renderer'
+import React from 'react';
+import renderer from 'react-test-renderer';
 
-import { App } from '../../client/containers/App'
+import { App } from '../../client/containers/App';
 
 test('renders correctly', () => {
   const tree = renderer
@@ -23,6 +23,6 @@ test('renders correctly', () => {
         aggregateId={() => {}}
       />
     )
-    .toJSON()
-  expect(tree).toMatchSnapshot()
-})
+    .toJSON();
+  expect(tree).toMatchSnapshot();
+});

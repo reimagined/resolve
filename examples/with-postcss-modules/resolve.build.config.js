@@ -1,6 +1,6 @@
-import ExtractTextPlugin from 'extract-text-webpack-plugin'
-import postcssImport from 'postcss-import'
-import autoprefixer from 'autoprefixer'
+import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import postcssImport from 'postcss-import';
+import autoprefixer from 'autoprefixer';
 
 export default ([webpackClientConfig, webpackServerConfig]) => {
   for (const webpackConfig of [webpackClientConfig, webpackServerConfig]) {
@@ -24,13 +24,13 @@ export default ([webpackClientConfig, webpackServerConfig]) => {
           }
         ]
       })
-    })
+    });
 
     webpackConfig.plugins.push(
       new ExtractTextPlugin({
         filename: 'styles/bundle.css',
         allChunks: true
       })
-    )
+    );
   }
-}
+};

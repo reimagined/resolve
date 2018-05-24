@@ -1,5 +1,5 @@
-import NeDB from 'nedb'
-import { ConcurrentError } from 'resolve-storage-base'
+import NeDB from 'nedb';
+import { ConcurrentError } from 'resolve-storage-base';
 
 const storage = {
   createDatabase: (NeDB, filename) => new NeDB({ filename }),
@@ -18,12 +18,12 @@ const storage = {
     ),
 
   prepare: async filename => {
-    const db = storage.createDatabase(NeDB, filename)
-    await storage.init(db)
-    await storage.createIndex(db, 'aggregateIdAndVersion')
-    await storage.createIndex(db, 'aggregateId')
-    await storage.createIndex(db, 'type')
-    return db
+    const db = storage.createDatabase(NeDB, filename);
+    await storage.init(db);
+    await storage.createIndex(db, 'aggregateIdAndVersion');
+    await storage.createIndex(db, 'aggregateId');
+    await storage.createIndex(db, 'type');
+    return db;
   },
 
   loadEvents: (query, startTime, callback) => db =>
@@ -34,10 +34,10 @@ const storage = {
         .projection({ aggregateIdAndVersion: 0, _id: 0 })
         .exec((error, events) => {
           if (error) {
-            reject(error)
+            reject(error);
           } else {
-            events.forEach(callback)
-            resolve()
+            events.forEach(callback);
+            resolve();
           }
         })
     ),
@@ -53,7 +53,7 @@ const storage = {
         },
         error => {
           if (!error) {
-            resolve()
+            resolve();
           } else if (error.errorType === 'uniqueViolated') {
             reject(
               new ConcurrentError(
@@ -62,13 +62,13 @@ const storage = {
                   event.aggregateId
                 }' is not actual at the moment. Please retry later.`
               )
-            )
+            );
           } else {
-            reject(error)
+            reject(error);
           }
         }
       )
     )
-}
+};
 
-export default storage
+export default storage;

@@ -1,7 +1,7 @@
-import storage from './storage'
+import storage from './storage';
 
 export default ({ pathToFile } = {}) => {
-  const prepareStorage = storage.prepare(pathToFile)
+  const prepareStorage = storage.prepare(pathToFile);
 
   return {
     saveEvent: event => prepareStorage.then(storage.saveEvent(event)),
@@ -13,5 +13,5 @@ export default ({ pathToFile } = {}) => {
       prepareStorage.then(
         storage.loadEvents({ aggregateId: { $in: ids } }, startTime, callback)
       )
-  }
-}
+  };
+};

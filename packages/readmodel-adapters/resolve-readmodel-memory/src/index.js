@@ -1,9 +1,9 @@
-import NeDB from 'nedb'
-import createAdapter from 'resolve-readmodel-base'
+import NeDB from 'nedb';
+import createAdapter from 'resolve-readmodel-base';
 
-import implementation from './implementation'
-import metaApi from './meta-api'
-import storeApi from './store-api'
+import implementation from './implementation';
+import metaApi from './meta-api';
+import storeApi from './store-api';
 
 export default createAdapter.bind(
   null,
@@ -13,4 +13,4 @@ export default createAdapter.bind(
     storeApi,
     () => new NeDB({ autoload: true })
   )
-)
+);

@@ -1,49 +1,49 @@
-import uuid from 'uuid'
+import uuid from 'uuid';
 
 import {
   USER_CREATED,
   STORY_CREATED,
   STORY_UPVOTED,
   STORY_COMMENTED
-} from '../common/events'
+} from '../common/events';
 
-import api from './api'
-import eventStore, { dropStore } from './eventStore'
+import api from './api';
+import eventStore, { dropStore } from './eventStore';
 
-const USER_CREATED_TIMESTAMP = new Date(2007, 1, 19).getTime()
+const USER_CREATED_TIMESTAMP = new Date(2007, 1, 19).getTime();
 
-const users = {}
+const users = {};
 
 const generateUserEvents = name => {
-  const aggregateId = uuid.v4()
+  const aggregateId = uuid.v4();
 
   eventStore.saveEventRaw({
     type: USER_CREATED,
     aggregateId,
     timestamp: USER_CREATED_TIMESTAMP,
     payload: { name }
-  })
+  });
 
-  users[name] = aggregateId
-  return aggregateId
-}
+  users[name] = aggregateId;
+  return aggregateId;
+};
 
 const getUserId = userName => {
-  const user = users[userName]
+  const user = users[userName];
 
   if (user) {
-    return user
+    return user;
   }
 
-  const aggregateId = generateUserEvents(userName)
-  users[userName] = aggregateId
-  return aggregateId
-}
+  const aggregateId = generateUserEvents(userName);
+  users[userName] = aggregateId;
+  return aggregateId;
+};
 
 const generateCommentEvents = (comment, aggregateId, parentId) => {
-  const userName = comment.by
-  const userId = getUserId(userName)
-  const commentId = uuid.v4()
+  const userName = comment.by;
+  const userId = getUserId(userName);
+  const commentId = uuid.v4();
 
   eventStore.saveEventRaw({
     type: STORY_COMMENTED,
@@ -56,23 +56,23 @@ const generateCommentEvents = (comment, aggregateId, parentId) => {
       commentId,
       parentId
     }
-  })
+  });
 
-  return commentId
-}
+  return commentId;
+};
 
 const generateComment = async (comment, aggregateId, parentId) => {
-  const commentId = generateCommentEvents(comment, aggregateId, parentId)
+  const commentId = generateCommentEvents(comment, aggregateId, parentId);
 
   if (comment.kids) {
-    await generateComments(comment.kids, aggregateId, commentId)
+    await generateComments(comment.kids, aggregateId, commentId);
   }
 
-  return aggregateId
-}
+  return aggregateId;
+};
 
 async function generateComments(ids, aggregateId, parentId) {
-  const comments = await api.fetchItems(ids)
+  const comments = await api.fetchItems(ids);
   return comments.reduce(
     (promise, comment) =>
       promise.then(
@@ -81,12 +81,12 @@ async function generateComments(ids, aggregateId, parentId) {
           : null
       ),
     Promise.resolve()
-  )
+  );
 }
 
 const generatePointEvents = (aggregateId, pointCount) => {
-  const keys = Object.keys(users)
-  const count = Math.min(keys.length, pointCount)
+  const keys = Object.keys(users);
+  const count = Math.min(keys.length, pointCount);
 
   for (let i = 0; i < count; i++) {
     eventStore.saveEventRaw({
@@ -96,17 +96,17 @@ const generatePointEvents = (aggregateId, pointCount) => {
       payload: {
         userId: users[keys[i]]
       }
-    })
+    });
   }
-}
+};
 
 const generateStoryEvents = async story => {
   if (!story || !story.by) {
-    return
+    return;
   }
 
-  const userName = story.by || 'anonymous'
-  const aggregateId = uuid.v4()
+  const userName = story.by || 'anonymous';
+  const aggregateId = uuid.v4();
 
   eventStore.saveEventRaw({
     type: STORY_CREATED,
@@ -119,64 +119,64 @@ const generateStoryEvents = async story => {
       userName,
       link: story.url || ''
     }
-  })
+  });
 
   if (story.score) {
-    generatePointEvents(aggregateId, story.score)
+    generatePointEvents(aggregateId, story.score);
   }
 
   if (story.kids) {
-    await generateComments(story.kids, aggregateId, aggregateId)
+    await generateComments(story.kids, aggregateId, aggregateId);
   }
 
-  return aggregateId
-}
+  return aggregateId;
+};
 
 const getUniqueStoryIds = categories => {
   const result = categories.reduce((set, ids = []) => {
-    ids.forEach(id => set.add(id))
-    return set
-  }, new Set())
+    ids.forEach(id => set.add(id));
+    return set;
+  }, new Set());
 
-  return [...result]
-}
+  return [...result];
+};
 
 const fetchStoryIds = async () => {
   const categories = await Promise.all(
     ['topstories', 'newstories', 'showstories', 'askstories'].map(category =>
       api.fetchStoryIds(category)
     )
-  )
+  );
 
-  return getUniqueStoryIds(categories)
-}
+  return getUniqueStoryIds(categories);
+};
 
 const fetchStories = async (ids, tickCallback) => {
-  const stories = await api.fetchItems(ids)
+  const stories = await api.fetchItems(ids);
 
   return stories.reduce(
     (promise, story) =>
       promise.then(() => {
-        tickCallback()
+        tickCallback();
 
         return story && !story.deleted && story.by
           ? generateStoryEvents(story)
-          : null
+          : null;
       }),
     Promise.resolve()
-  )
-}
+  );
+};
 
 export const start = async (countCallback, tickCallback) => {
   try {
-    const storyIds = await fetchStoryIds()
-    countCallback(storyIds.length)
-    dropStore()
-    return await fetchStories(storyIds, tickCallback)
+    const storyIds = await fetchStoryIds();
+    countCallback(storyIds.length);
+    dropStore();
+    return await fetchStories(storyIds, tickCallback);
   } catch (e) {
     // eslint-disable-next-line no-console
-    console.error(e)
+    console.error(e);
   }
 
-  return null
-}
+  return null;
+};

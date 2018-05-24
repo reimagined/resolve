@@ -1,29 +1,29 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import sanitizer from 'sanitizer'
-import styled from 'styled-components'
+import React from 'react';
+import { Link } from 'react-router-dom';
+import sanitizer from 'sanitizer';
+import styled from 'styled-components';
 
-import Splitter from './Splitter'
-import TimeAgo from './TimeAgo'
+import Splitter from './Splitter';
+import TimeAgo from './TimeAgo';
 
 const CommentRoot = styled.div`
   margin-bottom: 0.75em;
   padding-right: 1.25em;
   padding-top: 0.65em;
   padding-left: ${2.5}em;
-`
+`;
 
 const CommentInfo = styled.div`
   color: #666;
   margin-bottom: 0.5em;
-`
+`;
 
 const Collapse = styled.div`
   display: inline-block;
   vertical-align: middle;
   margin-right: 0.33em;
   cursor: pointer;
-`
+`;
 
 const linkStyles = `
   vertical-align: middle;
@@ -31,27 +31,27 @@ const linkStyles = `
   &:hover {
     text-decoration: underline;
   }
-`
+`;
 
 const StyledLink = styled(Link)`
   ${linkStyles};
-`
+`;
 
 const StyledUserLink = styled(Link)`
   ${linkStyles} font-weight: bold;
-`
+`;
 
 const StyledTimeAgo = styled(TimeAgo)`
   vertical-align: middle;
   margin-left: 0.33em;
-`
+`;
 
 class Comment extends React.PureComponent {
   state = {
     expanded: true
-  }
+  };
 
-  expand = () => this.setState({ expanded: !this.state.expanded })
+  expand = () => this.setState({ expanded: !this.state.expanded });
 
   render() {
     const {
@@ -63,16 +63,16 @@ class Comment extends React.PureComponent {
       createdAt,
       parentId,
       children
-    } = this.props
+    } = this.props;
 
     if (!id) {
-      return null
+      return null;
     }
 
     const parent =
       parentId === storyId
         ? `/storyDetails/${storyId}`
-        : `/storyDetails/${storyId}/comments/${parentId}`
+        : `/storyDetails/${storyId}/comments/${parentId}`;
 
     return (
       <CommentRoot>
@@ -102,8 +102,8 @@ class Comment extends React.PureComponent {
         ) : null}
         {this.state.expanded ? children : null}
       </CommentRoot>
-    )
+    );
   }
 }
 
-export default Comment
+export default Comment;

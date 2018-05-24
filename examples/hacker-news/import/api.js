@@ -1,19 +1,19 @@
-import fetch from 'isomorphic-fetch'
-import dns from 'dns'
+import fetch from 'isomorphic-fetch';
+import dns from 'dns';
 
-const timeout = 15000
+const timeout = 15000;
 
 const firebaseIP = new Promise((resolve, reject) => {
   dns.resolve4('hacker-news.firebaseio.com', (err, addresses) => {
     if (err) {
-      return reject(err)
+      return reject(err);
     }
-    resolve(addresses[0])
-  })
-})
+    resolve(addresses[0]);
+  });
+});
 
 const wait = (time, result) =>
-  new Promise(resolve => setTimeout(() => resolve(result), time))
+  new Promise(resolve => setTimeout(() => resolve(result), time));
 
 const fetchSingle = url =>
   firebaseIP
@@ -28,37 +28,37 @@ const fetchSingle = url =>
     )
     .then(response => {
       if (!response.ok) {
-        throw new Error(response.text())
+        throw new Error(response.text());
       }
-      return response.json()
-    })
+      return response.json();
+    });
 
 const fetchWithRetry = url => {
   return Promise.race([
     new Promise(async (resolve, reject) => {
-      let error
+      let error;
       for (let retry = 0; retry <= 5; retry++) {
         try {
-          resolve(await fetchSingle(url))
+          resolve(await fetchSingle(url));
         } catch (err) {
-          error = err
+          error = err;
         }
       }
-      reject(error)
+      reject(error);
     }),
     wait(timeout)
-  ])
-}
+  ]);
+};
 
-const fetchStoryIds = path => fetchWithRetry(`${path}.json`)
+const fetchStoryIds = path => fetchWithRetry(`${path}.json`);
 
-const fetchItem = id => fetchWithRetry(`item/${id}.json`)
+const fetchItem = id => fetchWithRetry(`item/${id}.json`);
 
 const fetchItems = ids => {
-  return Promise.all(ids.map(fetchItem))
-}
+  return Promise.all(ids.map(fetchItem));
+};
 
 export default {
   fetchStoryIds,
   fetchItems
-}
+};

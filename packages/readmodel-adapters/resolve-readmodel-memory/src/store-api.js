@@ -3,23 +3,23 @@ const defineTable = async (
   tableName,
   tableSchema
 ) => {
-  storage[tableName] = createTable()
+  storage[tableName] = createTable();
 
   await new Promise((resolve, reject) =>
     storage[tableName].ensureIndex(
       { fieldName: tableSchema.primaryIndex.name },
       err => (!err ? resolve() : reject(err))
     )
-  )
+  );
   for (let { name } of tableSchema.secondaryIndexes) {
     await new Promise((resolve, reject) =>
       storage[tableName].ensureIndex(
         { fieldName: name },
         err => (!err ? resolve() : reject(err))
       )
-    )
+    );
   }
-}
+};
 
 const find = async (
   { storage },
@@ -30,44 +30,44 @@ const find = async (
   skip,
   limit
 ) => {
-  let findCursor = await storage[tableName].find(searchExpression)
+  let findCursor = await storage[tableName].find(searchExpression);
 
   if (sort) {
-    findCursor = findCursor.sort(sort)
+    findCursor = findCursor.sort(sort);
   }
 
   if (fieldList) {
-    findCursor = findCursor.projection({ _id: 0, ...fieldList })
+    findCursor = findCursor.projection({ _id: 0, ...fieldList });
   } else {
-    findCursor = findCursor.projection({ _id: 0 })
+    findCursor = findCursor.projection({ _id: 0 });
   }
 
   if (Number.isFinite(skip)) {
-    findCursor = findCursor.skip(skip)
+    findCursor = findCursor.skip(skip);
   }
 
   if (Number.isFinite(limit)) {
-    findCursor = findCursor.limit(limit)
+    findCursor = findCursor.limit(limit);
   }
 
   return await new Promise((resolve, reject) =>
     findCursor.exec((err, docs) => (!err ? resolve(docs) : reject(err)))
-  )
-}
+  );
+};
 
 const findOne = async ({ storage }, tableName, searchExpression, fieldList) => {
-  let findCursor = await storage[tableName].findOne(searchExpression)
+  let findCursor = await storage[tableName].findOne(searchExpression);
 
   if (fieldList) {
-    findCursor = findCursor.projection({ _id: 0, ...fieldList })
+    findCursor = findCursor.projection({ _id: 0, ...fieldList });
   } else {
-    findCursor = findCursor.projection({ _id: 0 })
+    findCursor = findCursor.projection({ _id: 0 });
   }
 
   return await new Promise((resolve, reject) =>
     findCursor.exec((err, docs) => (!err ? resolve(docs) : reject(err)))
-  )
-}
+  );
+};
 
 const count = async ({ storage }, tableName, searchExpression) => {
   return await new Promise((resolve, reject) =>
@@ -75,14 +75,14 @@ const count = async ({ storage }, tableName, searchExpression) => {
       searchExpression,
       (err, count) => (!err ? resolve(count) : reject(err))
     )
-  )
-}
+  );
+};
 
 const insert = async ({ storage }, tableName, document) => {
   await new Promise((resolve, reject) =>
     storage[tableName].insert(document, err => (!err ? resolve() : reject(err)))
-  )
-}
+  );
+};
 
 const update = async (
   { storage },
@@ -96,8 +96,8 @@ const update = async (
       updateExpression,
       err => (!err ? resolve() : reject(err))
     )
-  )
-}
+  );
+};
 
 const del = async ({ storage }, tableName, searchExpression) => {
   await new Promise((resolve, reject) =>
@@ -105,8 +105,8 @@ const del = async ({ storage }, tableName, searchExpression) => {
       searchExpression,
       err => (!err ? resolve() : reject(err))
     )
-  )
-}
+  );
+};
 
 export default {
   defineTable,
@@ -116,4 +116,4 @@ export default {
   insert,
   update,
   del
-}
+};

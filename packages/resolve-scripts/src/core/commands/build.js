@@ -1,13 +1,13 @@
-import webpack from '../webpack'
-import table from '../table'
+import webpack from '../webpack';
+import table from '../table';
 
-const env = require('../../../configs/env.list.json')
-const commands = require('../../../configs/command.list.json')
-const cli = require('../../../configs/cli.list.json')
-Object.keys(cli).forEach(key => (cli[key].default = undefined))
+const env = require('../../../configs/env.list.json');
+const commands = require('../../../configs/command.list.json');
+const cli = require('../../../configs/cli.list.json');
+Object.keys(cli).forEach(key => (cli[key].default = undefined));
 
-export const command = 'build'
-export const desc = commands.build
+export const command = 'build';
+export const desc = commands.build;
 export const builder = yargs =>
   yargs
     .help('help')
@@ -54,10 +54,10 @@ export const builder = yargs =>
     .option('open-browser', cli.openBrowser)
     .implies('host', 'start')
     .implies('port', 'start')
-    .implies('inspect', 'start')
+    .implies('inspect', 'start');
 
 export const handler = argv =>
   webpack(argv, {
     NODE_ENV: 'production',
     BUILD: 'true'
-  })
+  });

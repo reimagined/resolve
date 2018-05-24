@@ -1,7 +1,7 @@
-import React from 'react'
-import { Helmet } from 'react-helmet'
+import React from 'react';
+import { Helmet } from 'react-helmet';
 
-import styles from './App.css'
+import styles from './App.css';
 
 export const App = () => (
   <div className={styles.wrapper}>
@@ -13,6 +13,6 @@ export const App = () => (
       Hello World, this is my first component with postcss-modules!
     </div>
   </div>
-)
+);
 
-export default App
+export default App;

@@ -1,6 +1,6 @@
 const getSourceInfo = userObject => {
   try {
-    const sourceDeclaration = userObject.__SOURCE_DELCARATION__
+    const sourceDeclaration = userObject.__SOURCE_DELCARATION__;
     const {
       sourceCode,
       filename,
@@ -8,14 +8,14 @@ const getSourceInfo = userObject => {
       startColumn,
       endLine,
       endColumn
-    } = sourceDeclaration
+    } = sourceDeclaration;
     return (
       `in ${filename} at ${startLine}:${startColumn} / ${endLine}:${endColumn} ` +
       `"""${sourceCode}"""`
-    )
+    );
   } catch (err) {
-    return '(Source information is unavailable)'
+    return '(Source information is unavailable)';
   }
-}
+};
 
-export default getSourceInfo
+export default getSourceInfo;

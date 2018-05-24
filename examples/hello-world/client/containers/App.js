@@ -1,6 +1,6 @@
-import React from 'react'
-import { Helmet } from 'react-helmet'
-import Header from '../components/Header.js'
+import React from 'react';
+import { Helmet } from 'react-helmet';
+import Header from '../components/Header.js';
 
 const App = () => (
   <div>
@@ -14,6 +14,6 @@ const App = () => (
 
     <h1 align="center">Hello, reSolve world!</h1>
   </div>
-)
+);
 
-export default App
+export default App;

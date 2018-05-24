@@ -1,9 +1,9 @@
-import { Strategy } from 'passport-local'
-import jwt from 'jsonwebtoken'
-import jwtSecret from './jwtSecret'
-import uuid from 'uuid'
+import { Strategy } from 'passport-local';
+import jwt from 'jsonwebtoken';
+import jwtSecret from './jwtSecret';
+import uuid from 'uuid';
 
-import { rootDirectory } from '../client/constants'
+import { rootDirectory } from '../client/constants';
 
 const strategyOptions = {
   strategy: {
@@ -11,12 +11,12 @@ const strategyOptions = {
     passwordField: 'username',
     successRedirect: null
   }
-}
+};
 
 const authenticateOptions = {
   failureRedirect: error => `${rootDirectory}/error?text=${error}`,
   errorRedirect: error => `${rootDirectory}/error?text=${error}`
-}
+};
 
 const routes = [
   {
@@ -27,25 +27,25 @@ const routes = [
         modelName: 'default',
         resolverName: 'user',
         resolverArgs: { name: username.trim() }
-      })
+      });
 
       if (existingUser) {
-        throw new Error('User already exists')
+        throw new Error('User already exists');
       }
 
       const user = {
         name: username.trim(),
         id: uuid.v4()
-      }
+      };
 
       await resolve.executeCommand({
         type: 'createUser',
         aggregateId: user.id,
         aggregateName: 'user',
         payload: user
-      })
+      });
 
-      return jwt.sign(user, jwtSecret)
+      return jwt.sign(user, jwtSecret);
     }
   },
   {
@@ -56,23 +56,23 @@ const routes = [
         modelName: 'default',
         resolverName: 'user',
         resolverArgs: { name: username.trim() }
-      })
+      });
 
       if (!user) {
-        throw new Error('No such user')
+        throw new Error('No such user');
       }
 
-      return jwt.sign(user, jwtSecret)
+      return jwt.sign(user, jwtSecret);
     }
   },
   {
     path: '/logout',
     method: 'POST',
     callback: async () => {
-      return jwt.sign({}, jwtSecret)
+      return jwt.sign({}, jwtSecret);
     }
   }
-]
+];
 
 const options = routes.map(({ path, method, callback }) => ({
   ...strategyOptions,
@@ -82,7 +82,7 @@ const options = routes.map(({ path, method, callback }) => ({
   },
   callback,
   ...authenticateOptions
-}))
+}));
 
 const strategyConstructor = options => {
   return new Strategy(
@@ -92,17 +92,17 @@ const strategyConstructor = options => {
     },
     async (req, username, password, done) => {
       try {
-        done(null, await options.callback(req, username, password))
+        done(null, await options.callback(req, username, password));
       } catch (error) {
-        done(error)
+        done(error);
       }
     }
-  )
-}
+  );
+};
 
 const strategies = options.map(options => ({
   options,
   strategyConstructor
-}))
+}));
 
-export default strategies
+export default strategies;

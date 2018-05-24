@@ -1,5 +1,5 @@
 const getAggregateActions = store => {
-  return store.getState.aggregateActions
-}
+  return store.getState.aggregateActions;
+};
 
-export default getAggregateActions
+export default getAggregateActions;

@@ -1,4 +1,4 @@
-import App from './containers/App'
+import App from './containers/App';
 
 export default [
   {
@@ -6,4 +6,4 @@ export default [
     component: App,
     exact: true
   }
-]
+];
