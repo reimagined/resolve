@@ -50,6 +50,20 @@ const getWebpackServerConfig = ({ resolveConfig, deployOptions, env }) => {
     },
     module: {
       rules: [
+       {
+          test: path.resolve(__dirname, './alias/$resolve.viewModels.js'),
+          use: [{
+            loader: 'val-loader',
+            options: {
+              resolveConfig, isClient
+            }
+          }, {
+            loader: 'babel-loader',
+            options: {
+              cacheDirectory: true
+            }
+          }]
+        },
         {
           test: /\.js$/,
           use: {

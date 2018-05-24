@@ -16,35 +16,6 @@ const getWebpackExternalsPlugin = ({
     const value = getIn(resolveConfig, key)
 
     switch (key) {
-      case 'viewModels': {
-        return callback(
-          null,
-          getVirtualModule(`[
-          ${resolveConfig.viewModels
-            .map(
-              ({ name, projection, serializeState, deserializeState }) => `{
-            name: "${name}",
-            projection: ${
-              projection
-                ? `require("${resolveRelativePath(projection)}")`
-                : '{}'
-            },
-            serializeState: ${
-              !isClient && serializeState
-                ? `require("${resolveRelativePath(serializeState)}")`
-                : 'function(state){return JSON.stringify(state)}'
-            },
-            deserializeState: ${
-              deserializeState
-                ? `require("${resolveRelativePath(deserializeState)}")`
-                : 'function(state){return JSON.parse(state)}'
-            }
-          }`
-            )
-            .join(',')}
-        ]`)
-        )
-      }
       case 'readModels': {
         return callback(
           null,

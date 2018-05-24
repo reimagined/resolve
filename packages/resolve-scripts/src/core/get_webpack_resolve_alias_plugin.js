@@ -1,3 +1,4 @@
+import path from 'path'
 import getIn from 'lodash/get'
 
 const getWebpackResolveAliasPlugin = ({ resolveConfig, deployOptions }) => {
@@ -17,6 +18,8 @@ const getWebpackResolveAliasPlugin = ({ resolveConfig, deployOptions }) => {
     }
     alias[`$resolve.${key}`] = value
   }
+
+  alias['$resolve.viewModels'] = path.resolve(__dirname, './alias/$resolve.viewModels.js')
 
   return alias
 }

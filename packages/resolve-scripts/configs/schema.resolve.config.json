@@ -238,9 +238,6 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/viewModel"
-          },
-          "constraints": {
-            "external": true
           }
         },
         "readModels": {
