@@ -45,33 +45,33 @@ const getWebpackExternalsPlugin = ({
         ]`)
         )
       }
-      case 'aggregates': {
-        return callback(
-          null,
-          getVirtualModule(`[
-          ${resolveConfig.aggregates
-            .map(
-              ({ name, commands, projection, snapshot }) => `{
-            name: "${name}",
-            commands: ${
-              commands ? `require("${resolveRelativePath(commands)}")` : '{}'
-            },
-            projection: ${
-              !isClient && projection
-                ? `require("${resolveRelativePath(projection)}")`
-                : '{}'
-            },
-            snapshot: ${
-              !isClient && snapshot
-                ? `require("${resolveRelativePath(snapshot)}")`
-                : 'undefined'
-            }
-          }`
-            )
-            .join(',')}
-        ]`)
-        )
-      }
+      // case 'aggregates': {
+      //   return callback(
+      //     null,
+      //     getVirtualModule(`[
+      //     ${resolveConfig.aggregates
+      //       .map(
+      //         ({ name, commands, projection, snapshot }) => `{
+      //       name: "${name}",
+      //       commands: ${
+      //         commands ? `require("${resolveRelativePath(commands)}")` : '{}'
+      //       },
+      //       projection: ${
+      //         !isClient && projection
+      //           ? `require("${resolveRelativePath(projection)}")`
+      //           : '{}'
+      //       },
+      //       snapshot: ${
+      //         !isClient && snapshot
+      //           ? `require("${resolveRelativePath(snapshot)}")`
+      //           : 'undefined'
+      //       }
+      //     }`
+      //       )
+      //       .join(',')}
+      //   ]`)
+      //   )
+      // }
       default:
     }
 

@@ -5,8 +5,6 @@ import raiseError from './utils/raise_error'
 
 import viewModels from '$resolve.viewModels'
 
-console.log(viewModels)
-
 const message = require('../../../configs/message.json')
 
 const viewModelQueryExecutors = {}

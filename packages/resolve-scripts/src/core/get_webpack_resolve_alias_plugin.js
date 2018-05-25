@@ -19,7 +19,15 @@ const getWebpackResolveAliasPlugin = ({ resolveConfig, deployOptions }) => {
     alias[`$resolve.${key}`] = value
   }
 
-  alias['$resolve.viewModels'] = path.resolve(__dirname, './alias/$resolve.viewModels.js')
+  alias['$resolve.viewModels'] = path.resolve(
+    __dirname,
+    './alias/$resolve.viewModels.js'
+  )
+
+  alias['$resolve.aggregates'] = path.resolve(
+    __dirname,
+    './alias/$resolve.aggregates.js'
+  )
 
   return alias
 }

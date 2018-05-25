@@ -101,6 +101,10 @@
         }
       },
       "required": ["name", "projection"],
+      "dependencies": {
+        "serializeState": ["deserializeState"],
+        "deserializeState": ["serializeState"]
+      },
       "additionalProperties": false
     },
     "readModel": {

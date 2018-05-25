@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`base config works correctly [client] 1`] = `
+"
+const name_0 = \\"Todo\\"
+const commands_0 = {
+  create() {},
+  update() {},
+  remove() {}
+}
+
+const aggregates = []
+
+aggregates.push({
+  name: name_0
+, commands: commands_0
+})
+
+export default aggregates
+"
+`;
+
+exports[`base config works correctly [server] 1`] = `
+"
+import commands_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/testCommands.js\\"
+const name_0 = \\"Todo\\"
+
+const aggregates = []
+
+aggregates.push({
+  name: name_0
+, commands: commands_0
+})
+
+export default aggregates
+"
+`;
