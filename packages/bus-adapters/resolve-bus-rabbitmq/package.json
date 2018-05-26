@@ -21,11 +21,21 @@
     "ddd"
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-bus-rabbitmq#readme",
-  "devDependencies": {
-    "chai": "^4.1.2",
-    "sinon": "^5.0.7"
-  },
   "dependencies": {
     "amqplib": "^0.5.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.0.0-beta.49",
+    "@babel/core": "^7.0.0-beta.49",
+    "@babel/plugin-transform-runtime": "^7.0.0-beta.49",
+    "@babel/preset-env": "^7.0.0-beta.49",
+    "@babel/preset-react": "^7.0.0-beta.49",
+    "@babel/preset-stage-0": "^7.0.0-beta.49",
+    "babel-core": "^7.0.0-0",
+    "babel-jest": "^23.0.0",
+    "regenerator-runtime": "^0.11.1",
+    "jest": "^23.0.0",
+    "chai": "^4.1.2",
+    "sinon": "^5.0.10"
   }
 }

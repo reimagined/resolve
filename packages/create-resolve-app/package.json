@@ -29,7 +29,19 @@
     "cross-spawn": "^6.0.5",
     "fs-extra": "^6.0.1",
     "https": "^1.0.0",
-    "request": "^2.85.0",
+    "request": "^2.87.0",
     "validate-npm-package-name": "^3.0.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.0.0-beta.49",
+    "@babel/core": "^7.0.0-beta.49",
+    "@babel/plugin-transform-runtime": "^7.0.0-beta.49",
+    "@babel/preset-env": "^7.0.0-beta.49",
+    "@babel/preset-react": "^7.0.0-beta.49",
+    "@babel/preset-stage-0": "^7.0.0-beta.49",
+    "babel-core": "^7.0.0-0",
+    "babel-jest": "^23.0.0",
+    "regenerator-runtime": "^0.11.1",
+    "jest": "^23.0.0"
   }
 }

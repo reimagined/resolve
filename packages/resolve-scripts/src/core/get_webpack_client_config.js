@@ -25,6 +25,7 @@ const getClientWebpackConfig = ({ resolveConfig, deployOptions, env }) => {
     ],
     context: path.resolve(process.cwd()),
     mode: deployOptions.mode,
+    performance: false,
     devtool: 'source-map',
     target: 'web',
     output: {
