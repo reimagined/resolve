@@ -58,6 +58,7 @@ const getWebpackServerConfig = ({ resolveConfig, deployOptions, env }) => {
               loader: 'val-loader',
               options: {
                 resolveConfig,
+                deployOptions,
                 isClient
               }
             },

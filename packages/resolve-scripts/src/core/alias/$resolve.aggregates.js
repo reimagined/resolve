@@ -4,8 +4,8 @@ import importBabel from '../import_babel'
 
 export default ({ resolveConfig, isClient }) => {
   const imports = []
-  const consts = [``]
-  const aggregates = [``, `const aggregates = []`, ``]
+  const constants = [``]
+  const exports = [``, `const aggregates = []`, ``]
 
   for (let index = 0; index < resolveConfig.aggregates.length; index++) {
     const aggregate = resolveConfig.aggregates[index]
@@ -38,12 +38,12 @@ export default ({ resolveConfig, isClient }) => {
       imports.push(`import snapshotAdapter_${index} from "${snapshotAdapter}"`)
     }
 
-    consts.push(`const name_${index} = ${JSON.stringify(name)}`)
+    constants.push(`const name_${index} = ${JSON.stringify(name)}`)
 
     if (isClient) {
       const clientCommands = Object.keys(importBabel(commands))
 
-      consts.push(
+      constants.push(
         `const commands_${index} = {`,
         clientCommands
           .map(commandName => `  ${commandName}() {}`)
@@ -53,31 +53,31 @@ export default ({ resolveConfig, isClient }) => {
     }
 
     if (!isClient && aggregate.snapshot) {
-      consts.push(
+      constants.push(
         `const snapshotOptions_${index} = ${JSON.stringify(snapshotOptions)}`
       )
     }
 
-    aggregates.push(`aggregates.push({`)
-    aggregates.push(`  name: name_${index}`)
-    aggregates.push(`, commands: commands_${index}`)
+    exports.push(`aggregates.push({`)
+    exports.push(`  name: name_${index}`)
+    exports.push(`, commands: commands_${index}`)
     if (!isClient && aggregate.projection) {
-      aggregates.push(`, projection: ${JSON.stringify(projection)}`)
+      exports.push(`, projection: ${JSON.stringify(projection)}`)
     }
     if (!isClient && aggregate.snapshot) {
-      aggregates.push(
+      exports.push(
         `, snapshot: {`,
         `    adapter: snapshotAdapter_${index},`,
         `    options: snapshotOptions_${index}`,
         `  }`
       )
     }
-    aggregates.push(`})`, ``)
+    exports.push(`})`, ``)
   }
 
-  aggregates.push(`export default aggregates`)
+  exports.push(`export default aggregates`)
 
   return {
-    code: [...imports, ...consts, ...aggregates].join('\r\n')
+    code: [...imports, ...constants, ...exports].join('\r\n')
   }
 }

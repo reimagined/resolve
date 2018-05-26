@@ -6,9 +6,11 @@ import getWebpackResolveDefinePlugin from './get_webpack_resolve_define_plugin'
 import getWebpackResolveAliasPlugin from './get_webpack_resolve_alias_plugin'
 import getWebpackExternalsPlugin from './get_webpack_externals_plugin'
 import getExternals from './get_externals'
+import resolveFile from './resolve_file'
 
 const getClientWebpackConfig = ({ resolveConfig, deployOptions, env }) => {
-  //const clientIndexPath = resolveFile(resolveConfig.index)
+  const clientIndexPath = resolveFile(resolveConfig.index)
+
   const clientDistDir = path.resolve(
     process.cwd(),
     resolveConfig.distDir,
@@ -20,7 +22,7 @@ const getClientWebpackConfig = ({ resolveConfig, deployOptions, env }) => {
     name: 'Client',
     entry: [
       '@babel/runtime/regenerator',
-      resolveConfig.index,
+      clientIndexPath,
       ...getExternals(resolveConfig)
     ],
     context: path.resolve(process.cwd()),
@@ -70,6 +72,7 @@ const getClientWebpackConfig = ({ resolveConfig, deployOptions, env }) => {
               loader: 'val-loader',
               options: {
                 resolveConfig,
+                deployOptions,
                 isClient
               }
             },

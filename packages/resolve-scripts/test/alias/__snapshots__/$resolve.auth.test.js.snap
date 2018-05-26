@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`works correctly [server] 1`] = `
+"
+import strategies from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testStrategies.js\\"
+
+const auth = {
+  strategies
+}
+
+export default auth
+"
+`;
