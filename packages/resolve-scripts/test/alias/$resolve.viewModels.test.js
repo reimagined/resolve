@@ -7,7 +7,7 @@ describe('base config works correctly', () => {
     viewModels: [
       {
         name: 'Todos',
-        projection: path.resolve(__dirname, 'testProjection.js')
+        projection: path.resolve(__dirname, 'files/testProjection.js')
       }
     ]
   }
@@ -40,11 +40,11 @@ describe('base(v2) config works correctly', () => {
     viewModels: [
       {
         name: 'Todos',
-        projection: path.resolve(__dirname, 'testProjection.js')
+        projection: path.resolve(__dirname, 'files/testProjection.js')
       },
       {
         name: 'Items',
-        projection: path.resolve(__dirname, 'testProjection.js')
+        projection: path.resolve(__dirname, 'files/testProjection.js')
       }
     ]
   }
@@ -77,9 +77,12 @@ describe('config with serializeState/deserialzeState works correctly', () => {
     viewModels: [
       {
         name: 'Todos',
-        projection: path.resolve(__dirname, 'testProjection.js'),
-        serializeState: path.resolve(__dirname, 'testSerializeState.js'),
-        deserializeState: path.resolve(__dirname, 'testDeserializeState.js')
+        projection: path.resolve(__dirname, 'files/testProjection.js'),
+        serializeState: path.resolve(__dirname, 'files/testSerializeState.js'),
+        deserializeState: path.resolve(
+          __dirname,
+          'files/testDeserializeState.js'
+        )
       }
     ]
   }
@@ -112,9 +115,9 @@ describe('config with snapshot works correctly', () => {
     viewModels: [
       {
         name: 'Todos',
-        projection: path.resolve(__dirname, 'testProjection.js'),
+        projection: path.resolve(__dirname, 'files/testProjection.js'),
         snapshot: {
-          adapter: path.resolve(__dirname, 'testSnapshotAdapter.js'),
+          adapter: path.resolve(__dirname, 'files/testSnapshotAdapter.js'),
           options: {
             size: 100
           }
@@ -151,8 +154,8 @@ describe('config with validator works correctly', () => {
     viewModels: [
       {
         name: 'Todos',
-        projection: path.resolve(__dirname, 'testProjection.js'),
-        validator: path.resolve(__dirname, 'testValidator.js')
+        projection: path.resolve(__dirname, 'files/testProjection.js'),
+        validator: path.resolve(__dirname, 'files/testValidator.js')
       }
     ]
   }

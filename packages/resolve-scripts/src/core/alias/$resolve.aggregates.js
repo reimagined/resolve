@@ -4,7 +4,7 @@ import importBabel from '../import_babel'
 
 export default ({ resolveConfig, isClient }) => {
   const imports = []
-  const consts = []
+  const consts = [``]
   const aggregates = [``, `const aggregates = []`, ``]
 
   for (let index = 0; index < resolveConfig.aggregates.length; index++) {
@@ -23,15 +23,11 @@ export default ({ resolveConfig, isClient }) => {
       : undefined
 
     const snapshotOptions = aggregate.snapshot
-      ? JSON.stringify(aggregate.snapshot.options)
+      ? aggregate.snapshot.options
       : undefined
 
     if (!isClient) {
       imports.push(`import commands_${index} from "${commands}"`)
-    }
-
-    if (!isClient && aggregate.projection) {
-      imports.push(`import projection_${index} from "${projection}"`)
     }
 
     if (!isClient && aggregate.projection) {
@@ -71,7 +67,7 @@ export default ({ resolveConfig, isClient }) => {
     if (!isClient && aggregate.snapshot) {
       aggregates.push(
         `, snapshot: {`,
-        `    adapter: snapshotAdapter_${index}`,
+        `    adapter: snapshotAdapter_${index},`,
         `    options: snapshotOptions_${index}`,
         `  }`
       )

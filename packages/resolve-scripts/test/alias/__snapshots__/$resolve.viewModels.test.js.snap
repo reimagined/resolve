@@ -2,7 +2,7 @@
 
 exports[`base config works correctly [client] 1`] = `
 "
-import projection_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/testProjection.js\\"
+import projection_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testProjection.js\\"
 import deserializeState_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/src/runtime/common/view-models/deserialize_state.js\\"
 
 const name_0 = \\"Todos\\"
@@ -21,7 +21,7 @@ export default viewModels
 
 exports[`base config works correctly [server] 1`] = `
 "
-import projection_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/testProjection.js\\"
+import projection_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testProjection.js\\"
 import serializeState_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/src/runtime/common/view-models/serialize_state.js\\"
 import deserializeState_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/src/runtime/common/view-models/deserialize_state.js\\"
 
@@ -42,10 +42,9 @@ export default viewModels
 
 exports[`base(v2) config works correctly [client] 1`] = `
 "
-import projection_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/testProjection.js\\"
+import projection_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testProjection.js\\"
 import deserializeState_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/src/runtime/common/view-models/deserialize_state.js\\"
-
-import projection_1 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/testProjection.js\\"
+import projection_1 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testProjection.js\\"
 import deserializeState_1 from \\"/home/mrcheater/resolve/packages/resolve-scripts/src/runtime/common/view-models/deserialize_state.js\\"
 
 const name_0 = \\"Todos\\"
@@ -71,11 +70,10 @@ export default viewModels
 
 exports[`base(v2) config works correctly [server] 1`] = `
 "
-import projection_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/testProjection.js\\"
+import projection_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testProjection.js\\"
 import serializeState_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/src/runtime/common/view-models/serialize_state.js\\"
 import deserializeState_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/src/runtime/common/view-models/deserialize_state.js\\"
-
-import projection_1 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/testProjection.js\\"
+import projection_1 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testProjection.js\\"
 import serializeState_1 from \\"/home/mrcheater/resolve/packages/resolve-scripts/src/runtime/common/view-models/serialize_state.js\\"
 import deserializeState_1 from \\"/home/mrcheater/resolve/packages/resolve-scripts/src/runtime/common/view-models/deserialize_state.js\\"
 
@@ -104,8 +102,8 @@ export default viewModels
 
 exports[`config with serializeState/deserialzeState works correctly [client] 1`] = `
 "
-import projection_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/testProjection.js\\"
-import deserializeState_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/testDeserializeState.js\\"
+import projection_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testProjection.js\\"
+import deserializeState_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testDeserializeState.js\\"
 
 const name_0 = \\"Todos\\"
 
@@ -123,9 +121,9 @@ export default viewModels
 
 exports[`config with serializeState/deserialzeState works correctly [server] 1`] = `
 "
-import projection_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/testProjection.js\\"
-import serializeState_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/testSerializeState.js\\"
-import deserializeState_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/testDeserializeState.js\\"
+import projection_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testProjection.js\\"
+import serializeState_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testSerializeState.js\\"
+import deserializeState_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testDeserializeState.js\\"
 
 const name_0 = \\"Todos\\"
 
@@ -144,7 +142,7 @@ export default viewModels
 
 exports[`config with snapshot works correctly [client] 1`] = `
 "
-import projection_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/testProjection.js\\"
+import projection_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testProjection.js\\"
 import deserializeState_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/src/runtime/common/view-models/deserialize_state.js\\"
 
 const name_0 = \\"Todos\\"
@@ -163,10 +161,10 @@ export default viewModels
 
 exports[`config with snapshot works correctly [server] 1`] = `
 "
-import projection_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/testProjection.js\\"
+import projection_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testProjection.js\\"
 import serializeState_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/src/runtime/common/view-models/serialize_state.js\\"
 import deserializeState_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/src/runtime/common/view-models/deserialize_state.js\\"
-import snapshotAdapter_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/testSnapshotAdapter.js\\"
+import snapshotAdapter_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testSnapshotAdapter.js\\"
 
 const name_0 = \\"Todos\\"
 const snapshotOptions_0 = {\\"size\\":100}
@@ -190,7 +188,7 @@ export default viewModels
 
 exports[`config with validator works correctly [client] 1`] = `
 "
-import projection_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/testProjection.js\\"
+import projection_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testProjection.js\\"
 import deserializeState_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/src/runtime/common/view-models/deserialize_state.js\\"
 
 const name_0 = \\"Todos\\"
@@ -209,10 +207,10 @@ export default viewModels
 
 exports[`config with validator works correctly [server] 1`] = `
 "
-import projection_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/testProjection.js\\"
+import projection_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testProjection.js\\"
 import serializeState_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/src/runtime/common/view-models/serialize_state.js\\"
 import deserializeState_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/src/runtime/common/view-models/deserialize_state.js\\"
-import validator_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/testValidator.js\\"
+import validator_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testValidator.js\\"
 
 const name_0 = \\"Todos\\"
 

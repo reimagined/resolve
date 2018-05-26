@@ -4,7 +4,7 @@ import resolveFileOrModule from '../resolve_file_or_module'
 
 export default ({ resolveConfig, isClient }) => {
   const imports = []
-  const consts = []
+  const consts = [``]
   const viewModels = [``, `const viewModels = []`, ``]
 
   for (let index = 0; index < resolveConfig.viewModels.length; index++) {
@@ -61,8 +61,6 @@ export default ({ resolveConfig, isClient }) => {
     if (!isClient && viewModel.snapshot) {
       imports.push(`import snapshotAdapter_${index} from "${snapshotAdapter}"`)
     }
-
-    imports.push(``)
 
     consts.push(`const name_${index} = ${JSON.stringify(name)}`)
 

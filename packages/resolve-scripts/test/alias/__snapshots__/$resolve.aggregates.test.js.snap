@@ -2,6 +2,7 @@
 
 exports[`base config works correctly [client] 1`] = `
 "
+
 const name_0 = \\"Todo\\"
 const commands_0 = {
   create() {},
@@ -22,7 +23,8 @@ export default aggregates
 
 exports[`base config works correctly [server] 1`] = `
 "
-import commands_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/testCommands.js\\"
+import commands_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testCommands.js\\"
+
 const name_0 = \\"Todo\\"
 
 const aggregates = []
@@ -30,6 +32,146 @@ const aggregates = []
 aggregates.push({
   name: name_0
 , commands: commands_0
+})
+
+export default aggregates
+"
+`;
+
+exports[`base(v2) config works correctly [client] 1`] = `
+"
+
+const name_0 = \\"Todo\\"
+const commands_0 = {
+  create() {},
+  update() {},
+  remove() {}
+}
+const name_1 = \\"Item\\"
+const commands_1 = {
+  create() {},
+  update() {},
+  remove() {}
+}
+
+const aggregates = []
+
+aggregates.push({
+  name: name_0
+, commands: commands_0
+})
+
+aggregates.push({
+  name: name_1
+, commands: commands_1
+})
+
+export default aggregates
+"
+`;
+
+exports[`base(v2) config works correctly [server] 1`] = `
+"
+import commands_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testCommands.js\\"
+import commands_1 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testCommands.js\\"
+
+const name_0 = \\"Todo\\"
+const name_1 = \\"Item\\"
+
+const aggregates = []
+
+aggregates.push({
+  name: name_0
+, commands: commands_0
+})
+
+aggregates.push({
+  name: name_1
+, commands: commands_1
+})
+
+export default aggregates
+"
+`;
+
+exports[`config with projection works correctly [client] 1`] = `
+"
+
+const name_0 = \\"Todo\\"
+const commands_0 = {
+  create() {},
+  update() {},
+  remove() {}
+}
+
+const aggregates = []
+
+aggregates.push({
+  name: name_0
+, commands: commands_0
+})
+
+export default aggregates
+"
+`;
+
+exports[`config with projection works correctly [server] 1`] = `
+"
+import commands_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testCommands.js\\"
+import projection_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testProjection.js\\"
+
+const name_0 = \\"Todo\\"
+
+const aggregates = []
+
+aggregates.push({
+  name: name_0
+, commands: commands_0
+, projection: \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testProjection.js\\"
+})
+
+export default aggregates
+"
+`;
+
+exports[`config with snapshot works correctly [client] 1`] = `
+"
+
+const name_0 = \\"Todo\\"
+const commands_0 = {
+  create() {},
+  update() {},
+  remove() {}
+}
+
+const aggregates = []
+
+aggregates.push({
+  name: name_0
+, commands: commands_0
+})
+
+export default aggregates
+"
+`;
+
+exports[`config with snapshot works correctly [server] 1`] = `
+"
+import commands_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testCommands.js\\"
+import snapshotAdapter_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testSnapshotAdapter.js\\"
+
+const name_0 = \\"Todo\\"
+const snapshotOptions_0 = {\\"size\\":100}
+
+const aggregates = []
+
+aggregates.push({
+  name: name_0
+, commands: commands_0
+, snapshot: {
+    adapter: snapshotAdapter_0,
+    options: snapshotOptions_0
+  }
 })
 
 export default aggregates
