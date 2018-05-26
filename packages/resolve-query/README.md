@@ -5,9 +5,7 @@ Provides an interface for creating and querying Read- and View-Models.
 
 A **Read Model** is an application state built from the Event Log by Projection Functions and used to reply to Queries. It can be saved into a server-side Storage using an appropriate [Storage Adapter](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters). Queries to a Read Model are processed by Resolver Functions, which can filter, aggregate and/or paginate data before sending it to the client side. You can manage a Resolver behavior using client-defined arguments. Read Models can be reactive. In this case, the server-side changes trigger the client-side updates.
 
-A **View Model** is built on the client side and used to keep UI up to the current application state. It is built and updated by Reducers. Aggregates whose events should participate in the View Model construction are defined by the `aggregateId` (in most cases, one aggregate corresponds to one view model, although, a wildcard `aggregateId` is possible). The **View Model**'s life cycle is detailed on the diagram below.
-
-![](ViewModel.svg)
+A **View Model** is built on the client side and used to keep UI up to the current application state. It is built and updated by Reducers. Aggregates whose events should participate in the View Model construction are defined by the `aggregateId` (in most cases, one aggregate corresponds to one view model, although, a wildcard `aggregateId` is possible).
 
 
 ```
