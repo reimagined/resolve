@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`base config works correctly [client] 1`] = `
+"
+import store from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testStore.js\\"
+import reducers from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testReducers.js\\"
+import middlewares from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testMiddlewares.js\\"
+
+export default {
+  store, reducers, middlewares
+}
+"
+`;
+
+exports[`base config works correctly [server] 1`] = `
+"
+import store from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testStore.js\\"
+import reducers from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testReducers.js\\"
+import middlewares from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testMiddlewares.js\\"
+
+export default {
+  store, reducers, middlewares
+}
+"
+`;

@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`base config works correctly [server] 1`] = `
+"
+import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
+
+const bus = {
+  \\"adapter\\": \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testAdapter.js\\",
+  \\"options\\": {
+    \\"url\\": \\"http://test.test\\"
+  }
+}
+const adapter = interopRequireDefault(require(bus.adapter)).default
+const options = bus.options
+
+export default { adapter, options }
+"
+`;
+
+exports[`config with process.env works correctly 1`] = `
+"
+import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
+
+const bus = {
+  \\"adapter\\": process.env.BUS_ADAPTER,
+  \\"options\\": {
+    \\"url\\": process.env.BUS_OPTIONS_URL
+  }
+}
+const adapter = interopRequireDefault(require(bus.adapter)).default
+const options = bus.options
+
+export default { adapter, options }
+"
+`;

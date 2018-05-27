@@ -1,14 +1,15 @@
 import path from 'path'
 import { extractEnv } from 'json-env-extract'
 
-import alias from '../../src/core/alias/$resolve.aggregates'
+import alias from '../../src/core/alias/$resolve.readModels'
 
 describe('base config works correctly', () => {
   const resolveConfig = {
-    aggregates: [
+    readModels: [
       {
-        name: 'Todo',
-        commands: path.resolve(__dirname, 'files/testCommands.js')
+        name: 'Todos',
+        projection: path.resolve(__dirname, 'files/testProjection.js'),
+        resolvers: path.resolve(__dirname, 'files/testResolvers.js')
       }
     ]
   }
@@ -38,14 +39,16 @@ describe('base config works correctly', () => {
 
 describe('base(v2) config works correctly', () => {
   const resolveConfig = {
-    aggregates: [
+    readModels: [
       {
-        name: 'Todo',
-        commands: path.resolve(__dirname, 'files/testCommands.js')
+        name: 'Todos',
+        projection: path.resolve(__dirname, 'files/testProjection.js'),
+        resolvers: path.resolve(__dirname, 'files/testResolvers.js')
       },
       {
-        name: 'Item',
-        commands: path.resolve(__dirname, 'files/testCommands.js')
+        name: 'Items',
+        projection: path.resolve(__dirname, 'files/testProjection.js'),
+        resolvers: path.resolve(__dirname, 'files/testResolvers.js')
       }
     ]
   }
@@ -73,47 +76,14 @@ describe('base(v2) config works correctly', () => {
   })
 })
 
-describe('config with projection works correctly', () => {
+describe('config with storage works correctly', () => {
   const resolveConfig = {
-    aggregates: [
+    readModels: [
       {
-        name: 'Todo',
-        commands: path.resolve(__dirname, 'files/testCommands.js'),
-        projection: path.resolve(__dirname, 'files/testProjection.js')
-      }
-    ]
-  }
-
-  test('[client]', () => {
-    expect(
-      '\r\n' +
-        alias({
-          resolveConfig,
-          isClient: true
-        }).code +
-        '\r\n'
-    ).toMatchSnapshot()
-  })
-
-  test('[server]', () => {
-    expect(
-      '\r\n' +
-        alias({
-          resolveConfig,
-          isClient: false
-        }).code +
-        '\r\n'
-    ).toMatchSnapshot()
-  })
-})
-
-describe('config with snapshot works correctly', () => {
-  const resolveConfig = {
-    aggregates: [
-      {
-        name: 'Todo',
-        commands: path.resolve(__dirname, 'files/testCommands.js'),
-        snapshot: {
+        name: 'Todos',
+        projection: path.resolve(__dirname, 'files/testProjection.js'),
+        resolvers: path.resolve(__dirname, 'files/testResolvers.js'),
+        storage: {
           adapter: path.resolve(__dirname, 'files/testSnapshotAdapter.js'),
           options: {
             size: 100
@@ -146,16 +116,17 @@ describe('config with snapshot works correctly', () => {
   })
 })
 
-describe('config with snapshot + process.env works correctly', () => {
+describe('config with storage + process.env works correctly', () => {
   const resolveConfig = extractEnv(`{
-    aggregates: [
+    readModels: [
       {
-        name: 'Todo',
-        commands: "${path.resolve(__dirname, 'files/testCommands.js')}",
-        snapshot: {
-          adapter: process.env.AGGREGATE_TODO_SNAPSHOT_ADAPTER,
+        name: 'Todos',
+        projection: "${path.resolve(__dirname, 'files/testProjection.js')}",
+        resolvers: "${path.resolve(__dirname, 'files/testResolvers.js')}",
+        storage: {
+          adapter: process.env.READ_MODEL_TODOS_ADAPTER,
           options: {
-            size: process.env.AGGREGATE_TODO_SNAPSHOT_OPTIONS_SIZE
+            size: process.env.READ_MODEL_TODOS_OPTIONS_SIZE
           }
         }
       }
@@ -184,24 +155,3 @@ describe('config with snapshot + process.env works correctly', () => {
     ).toMatchSnapshot()
   })
 })
-
-/*
-"name": {
-  "type": "string"
-},
-"commands": {
-  "type": "string",
-  "constraints": {
-    "file": true
-  }
-},
-"projection": {
-  "type": "string",
-  "constraints": {
-    "file": true
-  }
-},
-"snapshot": {
-  "$ref": "#/definitions/adapter"
-}
- */

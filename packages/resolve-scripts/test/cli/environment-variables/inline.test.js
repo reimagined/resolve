@@ -10,7 +10,7 @@ test('Inline env vars in a string works correctly', async () => {
     )}`,
     {
       PORT: 1234,
-      HOST: 'resolve.resolve',
+      JWT_COOKIE_NAME: 'test-jwt',
       STORAGE_ADAPTER: 'memory',
       STORAGE_OPTIONS: JSON.stringify({ a: 5, b: 'xyz' })
     }
@@ -18,10 +18,13 @@ test('Inline env vars in a string works correctly', async () => {
 
   expect(json).toMatchObject({
     port: 1234,
-    host: 'resolve.resolve',
     storage: {
       adapter: 'resolve-memory',
       options: { a: 5, b: 'xyz' }
+    },
+    jwtCookie: {
+      name: 'test-jwt',
+      maxAge: 123
     }
   })
 })

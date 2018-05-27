@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`base config works correctly [server] 1`] = `
+"
+import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
+
+const storage = {
+  \\"adapter\\": \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testAdapter.js\\",
+  \\"options\\": {
+    \\"url\\": \\"http://test.test\\"
+  }
+}
+const adapter = interopRequireDefault(require(storage.adapter)).default
+const options = storage.options
+
+export default { adapter, options }
+"
+`;
+
+exports[`config with process.env works correctly 1`] = `
+"
+import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
+
+const storage = {
+  \\"adapter\\": process.env.STORAGE_ADAPTER,
+  \\"options\\": {
+    \\"url\\": process.env.STORAGE_OPTIONS_URL
+  }
+}
+const adapter = interopRequireDefault(require(storage.adapter)).default
+const options = storage.options
+
+export default { adapter, options }
+"
+`;

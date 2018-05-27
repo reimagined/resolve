@@ -2,10 +2,10 @@ import { message } from '../constants'
 
 export default ({ resolveConfig, isClient }) => {
   if (isClient) {
-    throw new Error(`${message.clientAliasError}$resolve.auth`)
+    throw new Error(`${message.serverAliasInClientCodeError}$resolve.auth`)
   }
 
-  if (!resolveConfig.auth.strategies) {
+  if (!resolveConfig.auth) {
     throw new Error(`${message.configNotContainSectionError}.auth`)
   }
 

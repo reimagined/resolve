@@ -1,37 +1,35 @@
 import Ajv from 'ajv'
+import { envKey } from 'json-env-extract'
 
 import { schemaResolveConfig } from './constants'
-import isResolveConfigEnv from './is_resolve_config_env'
 
 const ajv = new Ajv()
 
 ajv.addKeyword('constraints', {
   validate(...args) {
-    const [schema, value, , rawKey, , , config] = args
+    const [schema, value, , rawKey, , , resolveConfig] = args
 
     const key = rawKey.substr(1)
 
-    if (!config.hasOwnProperty('meta')) {
-      Object.defineProperty(config, 'meta', {
+    if (!resolveConfig.hasOwnProperty('meta')) {
+      Object.defineProperty(resolveConfig, 'meta', {
         value: {
           env: [],
           directory: [],
           file: [],
           fileOrModule: [],
-          url: [],
-          serverOnly: [],
-          external: []
+          url: []
         }
       })
     }
 
     for (const schemaKey of Object.keys(schema)) {
-      if (Array.isArray(config.meta[schemaKey])) {
-        config.meta[schemaKey].push(key)
+      if (Array.isArray(resolveConfig.meta[schemaKey])) {
+        resolveConfig.meta[schemaKey].push(key)
       }
     }
 
-    if (isResolveConfigEnv(value)) {
+    if (resolveConfig[envKey][value]) {
       return schema.env
     }
 
@@ -49,16 +47,10 @@ ajv.addKeyword('constraints', {
       fileOrModule: {
         type: 'boolean'
       },
-      serverOnly: {
-        type: 'boolean'
-      },
       directory: {
         type: 'boolean'
       },
       url: {
-        type: 'boolean'
-      },
-      external: {
         type: 'boolean'
       }
     },

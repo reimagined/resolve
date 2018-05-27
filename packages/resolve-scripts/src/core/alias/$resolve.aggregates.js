@@ -1,10 +1,19 @@
+import { injectEnv } from 'json-env-extract'
+
+import { message } from '../constants'
 import resolveFile from '../resolve_file'
-import resolveFileOrModule from '../resolve_file_or_module'
 import importBabel from '../import_babel'
 
 export default ({ resolveConfig, isClient }) => {
-  const imports = []
-  const constants = [``]
+  if (!resolveConfig.aggregates) {
+    throw new Error(`${message.configNotContainSectionError}.aggregates`)
+  }
+
+  const imports = [
+    `import interopRequireDefault from "@babel/runtime/helpers/interopRequireDefault"`,
+    ``
+  ]
+  const constants = []
   const exports = [``, `const aggregates = []`, ``]
 
   for (let index = 0; index < resolveConfig.aggregates.length; index++) {
@@ -18,25 +27,19 @@ export default ({ resolveConfig, isClient }) => {
       ? resolveFile(aggregate.projection)
       : undefined
 
-    const snapshotAdapter = aggregate.snapshot
-      ? resolveFileOrModule(aggregate.snapshot.adapter)
-      : undefined
-
-    const snapshotOptions = aggregate.snapshot
-      ? aggregate.snapshot.options
-      : undefined
+    const snapshot = aggregate.snapshot
 
     if (!isClient) {
-      imports.push(`import commands_${index} from "${commands}"`)
+      imports.push(`import commands_${index} from ${JSON.stringify(commands)}`)
     }
 
     if (!isClient && aggregate.projection) {
-      imports.push(`import projection_${index} from "${projection}"`)
+      imports.push(
+        `import projection_${index} from ${JSON.stringify(projection)}`
+      )
     }
 
-    if (!isClient && aggregate.snapshot) {
-      imports.push(`import snapshotAdapter_${index} from "${snapshotAdapter}"`)
-    }
+    imports.push(``)
 
     constants.push(`const name_${index} = ${JSON.stringify(name)}`)
 
@@ -54,7 +57,11 @@ export default ({ resolveConfig, isClient }) => {
 
     if (!isClient && aggregate.snapshot) {
       constants.push(
-        `const snapshotOptions_${index} = ${JSON.stringify(snapshotOptions)}`
+        `const snapshot_${index} = ${injectEnv(snapshot)}`,
+        `const snapshotAdapter_${index} = interopRequireDefault(`,
+        `  require(snapshot_${index}.adapter)`,
+        `).default`,
+        `const snapshotOptions_${index} = snapshot_${index}.options`
       )
     }
 
@@ -62,7 +69,7 @@ export default ({ resolveConfig, isClient }) => {
     exports.push(`  name: name_${index}`)
     exports.push(`, commands: commands_${index}`)
     if (!isClient && aggregate.projection) {
-      exports.push(`, projection: ${JSON.stringify(projection)}`)
+      exports.push(`, projection: projection_${index}`)
     }
     if (!isClient && aggregate.snapshot) {
       exports.push(

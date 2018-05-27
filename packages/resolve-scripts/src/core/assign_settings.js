@@ -77,20 +77,6 @@ export function inspect({ deployOptions }, argv) {
   }
 }
 
-extenders.push(host)
-export function host({ resolveConfig }, argv) {
-  if (argv.host) {
-    resolveConfig.host = argv.host
-  }
-}
-
-extenders.push(protocol)
-export function protocol({ resolveConfig }, argv) {
-  if (argv.protocol) {
-    resolveConfig.protocol = argv.protocol
-  }
-}
-
 extenders.push(port)
 export function port({ resolveConfig }, argv) {
   if (argv.port && !Number.isInteger(+argv.port)) {

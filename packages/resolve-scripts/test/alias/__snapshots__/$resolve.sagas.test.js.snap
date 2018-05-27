@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`base config works correctly [server] 1`] = `
+"
+import sagas from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testSagas.js\\"
+
+export default sagas
+"
+`;

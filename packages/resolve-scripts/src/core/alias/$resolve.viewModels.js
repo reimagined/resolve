@@ -1,11 +1,20 @@
+import { injectEnv } from 'json-env-extract'
 import path from 'path'
+
+import { message } from '../constants'
 import resolveFile from '../resolve_file'
-import resolveFileOrModule from '../resolve_file_or_module'
 
 export default ({ resolveConfig, isClient }) => {
-  const imports = []
-  const constants = [``]
-  const exports = [``, `const viewModels = []`, ``]
+  if (!resolveConfig.viewModels) {
+    throw new Error(`${message.configNotContainSectionError}.viewModels`)
+  }
+
+  const imports = [
+    `import interopRequireDefault from "@babel/runtime/helpers/interopRequireDefault"`,
+    ``
+  ]
+  const constants = []
+  const exports = [`const viewModels = []`, ``]
 
   for (let index = 0; index < resolveConfig.viewModels.length; index++) {
     const viewModel = resolveConfig.viewModels[index]
@@ -14,59 +23,59 @@ export default ({ resolveConfig, isClient }) => {
 
     const projection = resolveFile(viewModel.projection)
 
-    let serializeState = path.resolve(
-      __dirname,
-      '../../runtime/common/view-models/serialize_state.js'
+    const serializeState = viewModel.serializeState
+      ? resolveFile(viewModel.serializeState)
+      : path.resolve(
+          __dirname,
+          '../../runtime/common/view-models/serialize_state.js'
+        )
+
+    const deserializeState = viewModel.deserializeState
+      ? resolveFile(viewModel.deserializeState)
+      : path.resolve(
+          __dirname,
+          '../../runtime/common/view-models/deserialize_state.js'
+        )
+
+    const validator = viewModel.validator
+      ? resolveFile(viewModel.validator)
+      : path.resolve(__dirname, '../../runtime/common/view-models/validator.js')
+
+    const snapshot = viewModel.snapshot
+
+    imports.push(
+      `import projection_${index} from ${JSON.stringify(projection)}`
     )
-    if (viewModel.serializeState) {
-      serializeState = resolveFile(viewModel.serializeState)
-    }
-
-    let deserializeState = path.resolve(
-      __dirname,
-      '../../runtime/common/view-models/deserialize_state.js'
-    )
-    if (viewModel.deserializeState) {
-      deserializeState = resolveFile(viewModel.deserializeState)
-    }
-
-    let validator = path.resolve(
-      __dirname,
-      '../../runtime/common/view-models/validator.js'
-    )
-    if (viewModel.validator) {
-      validator = resolveFile(viewModel.validator)
-    }
-
-    const snapshotAdapter = viewModel.snapshot
-      ? resolveFileOrModule(viewModel.snapshot.adapter)
-      : undefined
-
-    const snapshotOptions = viewModel.snapshot
-      ? viewModel.snapshot.options
-      : undefined
-
-    imports.push(`import projection_${index} from "${projection}"`)
 
     if (!isClient) {
-      imports.push(`import serializeState_${index} from "${serializeState}"`)
+      imports.push(
+        `import serializeState_${index} from ${JSON.stringify(serializeState)}`
+      )
     }
 
-    imports.push(`import deserializeState_${index} from "${deserializeState}"`)
+    imports.push(
+      `import deserializeState_${index} from ${JSON.stringify(
+        deserializeState
+      )}`
+    )
 
     if (!isClient && viewModel.validator) {
-      imports.push(`import validator_${index} from "${validator}"`)
+      imports.push(
+        `import validator_${index} from ${JSON.stringify(validator)}`
+      )
     }
 
-    if (!isClient && viewModel.snapshot) {
-      imports.push(`import snapshotAdapter_${index} from "${snapshotAdapter}"`)
-    }
+    imports.push(``)
 
     constants.push(`const name_${index} = ${JSON.stringify(name)}`)
 
     if (!isClient && viewModel.snapshot) {
       constants.push(
-        `const snapshotOptions_${index} = ${JSON.stringify(snapshotOptions)}`
+        `const snapshot_${index} = ${injectEnv(snapshot)}`,
+        `const snapshotAdapter_${index} = interopRequireDefault(`,
+        `  require(snapshot_${index}.adapter)`,
+        `).default`,
+        `const snapshotOptions_${index} = snapshot_${index}.options`
       )
     }
 

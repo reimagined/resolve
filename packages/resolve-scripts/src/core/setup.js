@@ -1,11 +1,11 @@
 import fs from 'fs'
 import path from 'path'
+import envString from 'env-string'
+import { extractEnv, envKey } from 'json-env-extract'
 
 import assignSettings from './assign_settings'
 import resolveFile from './resolve_file'
 import validateConfig from './validate_config'
-import parseResolveConfigJson from './parse_resolve_config_json'
-import flatEnvVariables from './flat_env_variables'
 
 import {
   resolveConfig as resolveConfigOrigin,
@@ -17,17 +17,15 @@ const setup = argv => {
 
   let localConfig = {}
 
-  if (argv.config || env.CONFIG_PATH) {
-    localConfig = parseResolveConfigJson(
-      fs.readFileSync(resolveFile(argv.config)).toString(),
-      { env, deployOptions }
+  if (argv.config) {
+    localConfig = extractEnv(
+      envString(fs.readFileSync(resolveFile(argv.config)).toString(), env)
     )
   } else {
     const configPath = path.resolve(process.cwd(), 'resolve.config.json')
     if (fs.existsSync(configPath)) {
-      localConfig = parseResolveConfigJson(
-        fs.readFileSync(resolveFile(configPath)).toString(),
-        { env, deployOptions }
+      localConfig = extractEnv(
+        envString(fs.readFileSync(resolveFile(configPath)).toString(), env)
       )
     }
   }
@@ -37,11 +35,11 @@ const setup = argv => {
     ...localConfig
   }
 
+  Object.defineProperty(resolveConfig, envKey, { value: localConfig[envKey] })
+
   assignSettings({ resolveConfig, deployOptions }, argv, env)
 
   validateConfig(resolveConfig)
-
-  flatEnvVariables(resolveConfig)
 
   return { resolveConfig, deployOptions, env }
 }

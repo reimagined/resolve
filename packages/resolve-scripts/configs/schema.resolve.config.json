@@ -8,29 +8,6 @@
           "type": "string",
           "constraints": {
             "env": true,
-            "fileOrModule": true,
-            "serverOnly": true
-          }
-        },
-        "options": {
-          "type": "object",
-          "constraints": {
-            "serverOnly": true
-          }
-        }
-      },
-      "constraints": {
-        "serverOnly": true
-      },
-      "required": ["adapter", "options"],
-      "additionalProperties": false
-    },
-    "clientAdapter": {
-      "type": "object",
-      "properties": {
-        "adapter": {
-          "type": "string",
-          "constraints": {
             "fileOrModule": true
           }
         },
@@ -175,8 +152,7 @@
         "strategies": {
           "type": "string",
           "constraints": {
-            "file": true,
-            "serverOnly": true
+            "file": true
           }
         }
       },
@@ -204,15 +180,14 @@
             "file": true
           }
         },
+        "rootPath": {
+          "type": "string"
+        },
         "distDir": {
           "type": "string",
           "constraints": {
-            "directory": true,
-            "serverOnly": true
+            "directory": true
           }
-        },
-        "rootPath": {
-          "type": "string"
         },
         "staticDir": {
           "type": "string",
@@ -233,9 +208,6 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/aggregate"
-          },
-          "constraints": {
-            "external": true
           }
         },
         "viewModels": {
@@ -248,16 +220,12 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/readModel"
-          },
-          "constraints": {
-            "external": true
           }
         },
         "sagas": {
           "type": "string",
           "constraints": {
-            "file": true,
-            "serverOnly": true
+            "file": true
           }
         },
         "bus": {
@@ -267,7 +235,7 @@
           "$ref": "#/definitions/adapter"
         },
         "subscribe": {
-          "$ref": "#/definitions/clientAdapter"
+          "$ref": "#/definitions/adapter"
         },
         "auth": {
           "$ref": "#/definitions/auth"
@@ -276,11 +244,7 @@
           "$ref": "#/definitions/jwtCookie"
         },
         "registry": {
-          "type": "string",
-          "constraints": {
-            "env": true,
-            "serverOnly": true
-          }
+          "type": "string"
         },
         "env": {
           "type": "object",
@@ -298,6 +262,7 @@
           "additionalProperties": false
         }
       },
+      "required": ["port", "index", "routes", "rootPath", "distDir", "staticDir", "staticPath", "redux", "aggregates", "viewModels", "readModels", "bus", "storage"],
       "additionalProperties": false
     }
   },
