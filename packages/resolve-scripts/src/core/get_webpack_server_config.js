@@ -7,24 +7,21 @@ import getWebpackEnvPlugin from './get_webpack_env_plugin'
 import getWebpackResolveDefinePlugin from './get_webpack_resolve_define_plugin'
 import getWebpackResolveAliasPlugin from './get_webpack_resolve_alias_plugin'
 import getWebpackExternalsPlugin from './get_webpack_externals_plugin'
-import getExternals from './get_externals'
 
 const getWebpackServerConfig = ({ resolveConfig, deployOptions, env }) => {
   const serverIndexPath = path.resolve(__dirname, '../runtime/server/index.js')
+
   const serverDistDir = path.resolve(
     process.cwd(),
     resolveConfig.distDir,
     'server'
   )
+
   const isClient = false
 
   return {
     name: 'Server',
-    entry: [
-      '@babel/runtime/regenerator',
-      serverIndexPath,
-      ...getExternals(resolveConfig)
-    ],
+    entry: ['@babel/runtime/regenerator', serverIndexPath],
     context: path.resolve(process.cwd()),
     mode: deployOptions.mode,
     performance: false,
@@ -35,13 +32,13 @@ const getWebpackServerConfig = ({ resolveConfig, deployOptions, env }) => {
       __filename: true
     },
     resolve: {
-      modules: getModulesDirs(),
-      alias: getWebpackResolveAliasPlugin({
-        resolveConfig,
-        deployOptions,
-        env,
-        isClient
-      })
+      modules: getModulesDirs()
+      // alias: getWebpackResolveAliasPlugin({
+      //   resolveConfig,
+      //   deployOptions,
+      //   env,
+      //   isClient
+      // })
     },
     output: {
       path: serverDistDir,
@@ -52,26 +49,7 @@ const getWebpackServerConfig = ({ resolveConfig, deployOptions, env }) => {
     module: {
       rules: [
         {
-          test: path.resolve(__dirname, './alias/$resolve.viewModels.js'),
-          use: [
-            {
-              loader: 'val-loader',
-              options: {
-                resolveConfig,
-                deployOptions,
-                isClient
-              }
-            },
-            {
-              loader: 'babel-loader',
-              options: {
-                cacheDirectory: true
-              }
-            }
-          ]
-        },
-        {
-          test: path.resolve(__dirname, './alias/$resolve.aggregates.js'),
+          test: /\$resolve.\w+\.js/,
           use: [
             {
               loader: 'val-loader',
@@ -111,12 +89,12 @@ const getWebpackServerConfig = ({ resolveConfig, deployOptions, env }) => {
     },
     plugins: [
       getWebpackEnvPlugin({ resolveConfig, deployOptions, env, isClient }),
-      getWebpackResolveDefinePlugin({
-        resolveConfig,
-        deployOptions,
-        env,
-        isClient
-      }),
+      // getWebpackResolveDefinePlugin({
+      //   resolveConfig,
+      //   deployOptions,
+      //   env,
+      //   isClient
+      // }),
       new webpack.BannerPlugin({
         banner: 'require("source-map-support").install();',
         raw: true,
@@ -126,8 +104,8 @@ const getWebpackServerConfig = ({ resolveConfig, deployOptions, env }) => {
     externals: [
       /node_modules/,
       nodeExternals(),
-      ...getModulesDirs().map(modulesDir => nodeExternals({ modulesDir })),
-      getWebpackExternalsPlugin({ resolveConfig, deployOptions, env, isClient })
+      ...getModulesDirs().map(modulesDir => nodeExternals({ modulesDir }))
+      //getWebpackExternalsPlugin({ resolveConfig, deployOptions, env, isClient })
     ]
   }
 }

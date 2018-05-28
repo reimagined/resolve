@@ -11,7 +11,10 @@ import executeViewModelQuery from './execute_view_model_query'
 import executeReadModelQuery from './execute_read_model_query'
 import executeCommand from './command_executor'
 
-import authStrategiesConfigs from '$resolve.auth.strategies'
+import auth from '$resolve.auth'
+
+const authStrategiesConfigs = auth.strategies
+
 const authStrategies = authStrategiesConfigs.map(
   ({ strategyConstructor, options }) =>
     resolveAuth(strategyConstructor, options)

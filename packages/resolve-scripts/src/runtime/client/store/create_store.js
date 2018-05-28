@@ -8,14 +8,15 @@ import {
 import { routerReducer, routerMiddleware } from 'react-router-redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
 
-import reducers from '$resolve.redux.reducers'
-import middlewares from '$resolve.redux.middlewares'
-import setupStore from '$resolve.redux.store'
-
+import redux from '$resolve.redux'
 import viewModels from '$resolve.viewModels'
 import readModels from '$resolve.readModels'
 import aggregates from '$resolve.aggregates'
-import subscribeAdapter from '$resolve.subscribe.adapter'
+import subscribe from '$resolve.subscribe'
+
+const subscribeAdapter = subscribe.adapter
+
+const { reducers, middlewares, store: setupStore } = redux
 
 export default ({ initialState, history, origin, rootPath }) => {
   const store = createStore(

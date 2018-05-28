@@ -2,8 +2,10 @@ import { Helmet } from 'react-helmet'
 
 import jsonUtfStringify from './utils/json_utf_stringify'
 
-import reducers from '$resolve.redux.reducers'
+import redux from '$resolve.redux'
 import viewModels from '$resolve.viewModels'
+
+const reducers = redux.reducers
 
 export default ({ markup, styleTags, initialState, clientUrl }) => {
   const helmet = Helmet.renderStatic()

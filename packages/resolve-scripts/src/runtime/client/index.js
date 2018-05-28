@@ -10,7 +10,7 @@ import deserializeInitialState from './store/deserialize_initial_state'
 
 import routes from '$resolve.routes'
 
-const rootPath = $resolve.rootPath
+import rootPath from '$resolve.rootPath'
 
 const initialState = deserializeInitialState(window.__INITIAL_STATE__)
 

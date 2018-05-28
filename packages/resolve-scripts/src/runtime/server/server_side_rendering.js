@@ -13,10 +13,9 @@ import getRootableUrl from './utils/get_rootable_url'
 import Routes from '../client/components/Routes'
 
 import routes from '$resolve.routes'
-
-const staticPath = $resolve.staticPath
-const rootPath = $resolve.rootPath
-const jwtCookieName = $resolve.jwtCookie.name
+import staticPath from '$resolve.staticPath'
+import rootPath from '$resolve.rootPath'
+import jwtCookieName from '$resolve.jwtCookie.name'
 
 const serverSideRendering = (req, res) => {
   const url = req.params[0] || ''
