@@ -16,14 +16,9 @@
     "test:functional": "resolve-scripts test:functional",
     "lint-staged": "lint-staged"
   },
-  "pre-commit": [
-    "lint-staged"
-  ],
+  "pre-commit": ["lint-staged"],
   "lint-staged": {
-    "*.{js,css}": [
-      "prettier --single-quote --no-semi --write",
-      "git add"
-    ]
+    "*.{js,css}": ["prettier --single-quote --no-semi --write", "git add"]
   },
   "keywords": [
     "react",
@@ -89,13 +84,7 @@
     "yargs": "^10.1.1"
   },
   "jest": {
-    "setupFiles": [
-      "raf/polyfill",
-      "<rootDir>/test/unit/jest-setup.js"
-    ],
-    "transform": {
-      "\\.js$": "<rootDir>/test/unit/transform.js"
-    },
+    "setupFiles": ["raf/polyfill", "<rootDir>/test/unit/jest-setup.js"],
     "coveragePathIgnorePatterns": [
       "node_modules/",
       "dist/",

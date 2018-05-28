@@ -21,6 +21,45 @@ function copyResolveSerials(oldState, newState) {
   })
 }
 
+function refreshUpdatedObjects(updatedObject, changes, embededKey = '$index') {
+  for (const {
+    key,
+    changes: nextChanges,
+    embededKey: nextEmbededKey
+  } of changes) {
+    const calcKey =
+      embededKey !== '$index' && Array.isArray(updatedObject)
+        ? updatedObject.reduce(
+            (result, value, idx) => (value[embededKey] === key ? idx : result),
+            0
+          )
+        : key
+
+    if (
+      updatedObject[calcKey] == null ||
+      updatedObject[calcKey].constructor === String ||
+      updatedObject[calcKey].constructor === Number ||
+      updatedObject[calcKey].constructor === Date
+    ) {
+      continue
+    }
+
+    if (Array.isArray(updatedObject[calcKey])) {
+      updatedObject[calcKey] = [...updatedObject[calcKey]]
+    } else {
+      const nextObject = Object.create(
+        Object.getPrototypeOf(updatedObject[calcKey])
+      )
+      Object.assign(nextObject, updatedObject[calcKey])
+      updatedObject[calcKey] = nextObject
+    }
+
+    if (Array.isArray(nextChanges)) {
+      refreshUpdatedObjects(updatedObject[calcKey], nextChanges, nextEmbededKey)
+    }
+  }
+}
+
 export default function createReadModelsReducer() {
   return (state = {}, action) => {
     switch (action.type) {
@@ -82,6 +121,8 @@ export default function createReadModelsReducer() {
         }
 
         applyChanges(wrappedResolverState, diff)
+
+        refreshUpdatedObjects(wrappedResolverState, diff)
 
         const nextState = {
           ...state,

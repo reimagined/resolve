@@ -1,6 +1,6 @@
 # Reproducing Hacker News using ReSolve
 
-> Note: This tutorial is relevant for the reSolve version 0.4.0.
+> Note: This tutorial is relevant for the reSolve version 0.10.0.
 
 This tutorial shows you how to create a **Hacker News** application and consists of the following steps:
 
@@ -17,7 +17,6 @@ This tutorial shows you how to create a **Hacker News** application and consists
 * [Adding Stories](#adding-stories)
   * [Write Side](#write-side-1)
   * [Read Side](#read-side-1)
-  * [GraphQL](#graphql)
   * [Stories View](#stories-view)
   * [View Model](#view-model)
   * [Story View](#story-view)
@@ -25,7 +24,6 @@ This tutorial shows you how to create a **Hacker News** application and consists
 * [Adding Comments](#adding-comments)
   * [Write Side](#write-side-2)
   * [Read Side](#read-side-2)
-  * [GraphQL](#graphql-1)
   * [View Model](#view-model-1)
   * [Story View Extension](#story-view-extension)
   * [Comments View](#comments-view)
@@ -40,7 +38,6 @@ If you are new to these concepts, refer to the following links to learn the basi
 * [Command/Query Responsibility Segregation and Domain-Driven Design](http://cqrs.nu/)
 * [React](https://reactjs.org/)
 * [Redux](http://redux.js.org/docs/introduction/)
-* [GraphQL](http://graphql.org/learn/)
 
 You can also read the following articles for more information:
 
@@ -58,25 +55,17 @@ You can also read the following articles for more information:
 
 Use the [create-resolve-app](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app) CLI tool to create a new reSolve project.
 
-Install create-resolve-app globally.
+Create an empty reSolve project using `create-resolve-app`, and run the application in the development mode.
 
 ```
-npm i -g create-resolve-app
-```
-
-Create an empty reSolve project and run the application in the development mode.
-
-```
-create-resolve-app hn-resolve
+npx create-resolve-app hn-resolve
 cd hn-resolve
 npm run dev
 ```
 
 The application opens in the browser at [http://localhost:3000/](http://localhost:3000/).
 
-After the installation is completed, your project has the default structure:
-
-![Project structure](https://user-images.githubusercontent.com/14352827/37818234-8801e944-2e8a-11e8-8d1c-550a84c06dec.png)
+After the installation is completed, your project has the default [structure](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md#%EF%B8%8F-project-structure-overview)
 
 ## Domain Model Analysis
 
@@ -84,7 +73,7 @@ At this point, you need to analyze the domain.
 Event Sourcing and CQRS require identifying Domain Aggregates and their corresponding commands and events which are used to build the required read models.
 
 **Hacker News** is a social news website focusing on computer science.
-Its users can post news, ask questions, comment on news, and reply to comments.
+Its users can post news, ask questions, comment on the news, and reply to comments.
 These posts are called **Stories**.
 
 **Users** can post **Stories** and **Comments**.
@@ -121,7 +110,7 @@ If needed, you can implement hashing and storing passwords later.
 
 A user has the following fields:
 * id - a unique user ID automatically created on the server side
-* name - a unique user name which a user provides in the registration form
+* name - a unique username provided by a user in the registration form
 * createdAt - the user's registration timestamp
 
 ### Write Side
@@ -136,7 +125,7 @@ export const USER_CREATED = 'UserCreated'
 ```
 
 Add the `createUser` command that should return the `UserCreated` event.
-Validate input data to ensure that a user name exists and it is not empty.
+Validate input data to ensure that a username exists and not empty.
 Add projection handlers and an initial state to check whether a user already exists.
 
 ```js
@@ -233,52 +222,22 @@ export default {
 
 ```
 
-Describe a schema and implement resolvers to get data using GraphQL:
-
-```js
-// ./common/read-models/graphql/schema.js
-
-export default `
-  type User {
-    id: ID!
-    name: String
-    createdAt: String
-  }
-  type Query {
-    user(id: ID, name: String): User
-  }
-`
-```
-
 Implement resolvers:
 
 ```js
-// ./common/read-models/graphql/resolvers.js
+// ./common/read-models/resolvers.js
 
 export default {
- user: async (store, { id, name }) => {
-    const user = id
-      ? await store.find('Users', { id })
-      : await store.find('Users', { name })
+  user: async (store, { id, name, jwtToken }) => {
+    const user =
+      name != null
+        ? await store.findOne('Users', { name })
+        : id != null
+          ? await store.findOne('Users', { id })
+          : null
 
-    return user.length > 0 ? user[0] : null
+    return user
   }
-}
-```
-
-Export the read model's GraphQL parts from the `graphql` folder root:
-
-```js
-// ./common/read-models/graphql/index.js
-
-import projection from './projection'
-import gqlResolvers from './resolvers'
-import gqlSchema from './schema'
-
-export default {
-  projection,
-  gqlSchema,
-  gqlResolvers
 }
 ```
 
@@ -287,248 +246,263 @@ Update the `read-models` folder export:
 ```js
 // ./common/read-models/index.js
 
-import graphqlReadModel from './graphql'
+import projection from './projection'
+import resolvers from './resolvers'
 
-export default [graphqlReadModel]
+const storiesReadModel = {
+  name: 'default',
+  projection,
+  resolvers
+}
+
+export default [storiesReadModel]
 ```
 
 ### Authentication
 
-After adding a storage for users, create the local authentication strategy and implement the required callbacks.
-
+After adding storage for users, create the local authentication strategy and implement the required callbacks.
 
 Install `uuid` package:
 ```
 npm install --save uuid
 ```
 
-In the `auth/` directory, create `./auth/localStrategy.js` file. `passwordField` has same value as `usernameField` because this app does not use a password.
+In the `auth/` directory, create `./auth/localStrategy.js` file. `passwordField` has the same value as `usernameField` because this app does not use a password.
 
 ```js
 // ./auth/localStrategy.js
+import { Strategy } from 'passport-local'
 
-export default {
-  strategy: {
-    usernameField: 'username',
-    passwordField: 'username',
-    successRedirect: null
-  },
-  registerCallback: async ({ resolve, body }, username, password) => {
-    // ...
-  },
-  loginCallback: async ({ resolve, body }, username, password) => {
-    // ...
-  }
-}
-
-```
-
-Implement the `getUserByName` function that uses the `executeQuery` function passed with `registerCallback` and `loginCallback`:
-
-```js
-// ./auth/localStrategy.js
-
-const getUserByName = async (executeQuery, name) => {
-  const { user } = await executeQuery(
-    `query ($name: String!) {
-      user(name: $name) {
-        id,
-        name,
-        createdAt
+const strategyConstructor = options => {
+  return new Strategy(
+    {
+      ...options.strategy,
+      passReqToCallback: true
+    },
+    async (req, username, password, done) => {
+      try {
+        done(null, await options.callback(req, username, password))
+      } catch (error) {
+        done(error)
       }
-    }`,
-    { name: name.trim() }
+    }
   )
-
-  return user
 }
 
-export default {
+const strategyOptions = {
   strategy: {
     usernameField: 'username',
     passwordField: 'username',
     successRedirect: null
-  },
-  registerCallback: async ({ resolve, body }, username, password) => {
-    // ...
-  },
-  loginCallback: async ({ resolve, body }, username, password) => {
-    // ...
   }
 }
-```
 
+const options = [
+  {
+    ...strategyOptions,
+    route: {
+      path: '/register',
+      method: 'POST'
+    },
+    callback: async ({ resolve }, username) => {
+      // ...
+    }
+  }, {
+    ...strategyOptions,
+    route: {
+      path: '/logout',
+      method: 'POST'
+    },
+    callback: async ({ resolve }, username) => {
+      // ...
+    }
+  }
+]
+
+const strategies = options.map(options => ({
+  options,
+  strategyConstructor
+}))
+
+export default strategies
+
+```
 Add the required authentication parameters:
 
 ```js
-// ./auth/constants.js
+// ./resolve.config.json
 
-export const authenticationSecret = 'auth-secret'
-export const cookieName = 'authenticationToken'
-export const cookieMaxAge = 1000 * 60 * 60 * 24 * 365
+{
+    "port": 3000,
+    // ...
+    "auth": {
+        "strategies": "auth/localStrategy.js"
+    },
+    "jwtCookie": {
+        "name": "authenticationToken",
+        "maxAge": 31536000000
+    }
+}
+
 ```
 
-Update the `registerCallback` and `loginCallback` callbacks. Use the `resolve` parameter to access the query and command executors.
+It's recommended to store an `authenticationSecret` in an environment variable for security purposes.
+Although, you can add a hardcoded JWT secret for using in the development environment:
 
-Add `failureCallback` function to provide the redirection path in case of a failure:
+```js
+// ./auth/jwtSecret.js
+if (
+  process.env.NODE_ENV === 'production' &&
+  !process.env.hasOwnProperty('JWT_SECRET')
+) {
+  throw new Error(
+    'You must specify JWT secret key in a JWT_SECRET environment variable in the production mode'
+  )
+}
+
+export default process.env.JWT_SECRET || 'HARDCODED_JWT_SECRET_FOR_DEVELOPMENT_ENV'
+```
+
+Update `register` and `login` callbacks. Use the `resolve` parameter to access the query and command executors.
+Add `failureRedirect` and `errorRedirect` options to provide the redirection path in case of a failure:
 
 ```js
 // ./auth/localStrategy.js
-
+import { Strategy } from 'passport-local'
+import jwt from 'jsonwebtoken'
+import jwtSecret from './jwtSecret'
 import uuid from 'uuid'
 
-const getUserByName = async (executeQuery, name) => {
-  const { user } = await executeQuery(
-    `query ($name: String!) {
-      user(name: $name) {
-        id,
-        name,
-        createdAt
-      }
-    }`,
-    { name: name.trim() }
-  )
+import { rootDirectory } from '../client/constants'
 
-  return user
-}
-
-export default {
+const strategyOptions = {
   strategy: {
     usernameField: 'username',
     passwordField: 'username',
     successRedirect: null
-  },
-  registerCallback: async ({ resolve, body }, username, password) => {
-    const executeQuery = resolve.queryExecutors.graphql
-
-    const existingUser = await getUserByName(executeQuery, username)
-
-    if (existingUser) {
-      throw new Error('User already exists')
-    }
-
-    const user = {
-      name: username.trim(),
-      id: uuid.v4()
-    }
-
-    await resolve.executeCommand({
-      type: 'createUser',
-      aggregateId: user.id,
-      aggregateName: 'user',
-      payload: user
-    })
-
-    return user
-  },
-  loginCallback: async ({ resolve, body }, username, password) => {
-    const user = await getUserByName(resolve.queryExecutors.graphql, username)
-
-    if (!user) {
-      throw new Error('No such user')
-    }
-
-    return user
-  },
-  failureCallback: (error, redirect, { resolve, body }) => {
-    redirect(`/error?text=${error}`)
   }
 }
+
+const authenticateOptions = {
+  failureRedirect: error => `${rootDirectory}/error?text=${error}`,
+  errorRedirect: error => `${rootDirectory}/error?text=${error}` // error page will be described below
+}
+
+const routes = [
+  {
+    path: '/register',
+    method: 'POST',
+    callback: async ({ resolve }, username) => {
+      const { user: existingUser } = await resolve.executeReadModelQuery({
+        modelName: 'default',
+        resolverName: 'user',
+        resolverArgs: { name: username.trim() }
+      })
+
+      if (existingUser) {
+        throw new Error('User already exists')
+      }
+
+      const user = {
+        name: username.trim(),
+        id: uuid.v4()
+      }
+
+      await resolve.executeCommand({
+        type: 'createUser',
+        aggregateId: user.id,
+        aggregateName: 'user',
+        payload: user
+      })
+
+      return jwt.sign(user, jwtSecret)
+    }
+  },
+  {
+    path: '/login',
+    method: 'POST',
+    callback: async ({ resolve }, username) => {
+      const { user } = await resolve.executeReadModelQuery({
+        modelName: 'default',
+        resolverName: 'user',
+        resolverArgs: { name: username.trim() }
+      })
+
+      if (!user) {
+        throw new Error('No such user')
+      }
+
+      return jwt.sign(user, jwtSecret)
+    }
+  },
+  {
+    path: '/logout',
+    method: 'POST',
+    callback: async () => {
+      return jwt.sign({}, jwtSecret)
+    }
+  }
+]
+
+const options = routes.map(({ path, method, callback }) => ({
+  ...strategyOptions,
+  route: {
+    path,
+    method
+  },
+  callback,
+  ...authenticateOptions
+}))
+
+const strategyConstructor = options => {
+  return new Strategy(
+    {
+      ...options.strategy,
+      passReqToCallback: true
+    },
+    async (req, username, password, done) => {
+      try {
+        done(null, await options.callback(req, username, password))
+      } catch (error) {
+        done(error)
+      }
+    }
+  )
+}
+
+const strategies = options.map(options => ({
+  options,
+  strategyConstructor
+}))
+
+export default strategies
+
 ```
 
-Install `jsonwebtoken` package in order to get user from cookies.
+Remember to install the `jsonwebtoken` package to access cookies.
 
-```
-npm install --save jsonwebtoken
-```
-
-Add the `me` resolver to pass a user to the client side.
+Add `me` resolver to pass the currently logged in user to the client side.
 
 ```js
 // ./commmon/read-models/resolvers.js
 import jwt from 'jsonwebtoken'
 import jwtSecret from './jwtSecret'
 
+const getMe = async jwtToken => {
+  if (!jwtToken) return null
+  const user = await jwt.verify(jwtToken, jwtSecret)
+
+  if (!user.name) {
+    return null
+  }
+
+  return user
+}
+
 export default {
   // user implementation
 
-   me: async (store, _, { jwtToken }) => {
-    if (!jwtToken) {
-      return null
-    }
-    const user = await jwt.verify(
-      jwtToken,
-      jwtSecret
-    )
-    return user
-  }
-}
-```
-
-Update graphql schema
-```js
-// ./common/read-models/graphql/schema.js
-
-export default `
-  type User {
-    id: ID!
-    name: String
-    createdAt: String
-  }
-  type Query {
-    user(id: ID, name: String): User
-    me: User
-  }
-`
-```
-
-Pass the authentication and JWT parameters to the server config:
-
-```js
-// ./resolve.server.config.js
-
-import path from 'path'
-import fileAdapter from 'resolve-storage-lite'
-import busAdapter from 'resolve-bus-memory'
-import { localStrategy } from 'resolve-scripts-auth'
-
-import aggregates from './common/aggregates'
-import readModels from './common/read-models'
-import clientConfig from './resolve.client.config'
-import localStrategyParams from './auth/localStrategy'
-
-import {
-  authenticationSecret,
-  cookieName,
-  cookieMaxAge
-} from './auth/constants'
-
-if (module.hot) {
-  module.hot.accept()
-}
-
-
-const { NODE_ENV = 'development' } = process.env
-const dbPath = path.join(__dirname, `${NODE_ENV}.db`)
-
-export default {
-  entries: clientConfig,
-  bus: { adapter: busAdapter },
-  storage: {
-    adapter: fileAdapter,
-    params: { pathToFile: dbPath }
-  },
-  aggregates,
-  initialSubscribedEvents: { types: [], ids: [] },
-  readModels,
-  jwtCookie: {
-    name: cookieName,
-    maxAge: cookieMaxAge,
-    httpOnly: false
-  },
-  auth: {
-    strategies: [localStrategy(localStrategyParams)]
-  }
+  me: async (store, { jwtToken }) => await getMe(jwtToken),
 }
 ```
 
@@ -547,10 +521,10 @@ Implement the [Error](./client/components/Error.js) component to display error m
 
 ### Login View
 
-The app layout contains meta information, an application header with a menu, user info and some content.
+The app layout contains meta-information, an application header with a menu, user info and some content.
 
 Install the following packages:
-* `react-helmet` - to pass meta information to the HTML header
+* `react-helmet` - to pass meta-information to the HTML header
 * `react-router` - to implement routing
 * `redux` and `react-redux` - to store data
 * `seamless-immutable` - to enforce state immutability
@@ -594,7 +568,7 @@ Implement the [UserById](./client/containers/UserById.js) container and uncommen
 
 ## Adding Stories
 
-A story is news or a question a user posts.
+A **story** is either a **news** or a **question** posted by a user.
 In **Hacker News**, stories are displayed on the following pages:
 * Newest - the newest stories
 * Ask - users’ questions (Ask HNs)
@@ -644,8 +618,6 @@ Update event list by adding story event names:
 
 ```js
 // ./common/events.js
-import jwt from 'jsonwebtoken'
-
 export const STORY_CREATED = 'StoryCreated'
 export const STORY_UPVOTED = 'StoryUpvoted'
 export const STORY_UNVOTED = 'StoryUnvoted'
@@ -654,6 +626,7 @@ export const USER_CREATED = 'UserCreated'
 ```
 
 ```js
+// ./common/aggregate/story.js
 import jwtSecret from '../../auth/jwtSecret'
 
 import {
@@ -745,24 +718,6 @@ import story from './story'
 export default [user, story]
 ```
 
-Add all the event names to the server config:
-
-```js
-// ./resolve.server.config.js
-
-// import list
-import * as events from './common/events'
-
-// module hot acceptions and store initialization
-
-const eventTypes = Object.keys(events).map(key => events[key])
-
-export default {
-    // other options
-    initialSubscribedEvents: { types: eventTypes, ids: [] }
-}
-```
-
 ### Read Side
 
 Add a collection of stories as the first read side implementation step:
@@ -793,9 +748,7 @@ export default {
     ])
 
     await store.defineTable('Users', [
-      { name: 'id', type: 'string', index: 'primary' },
-      { name: 'name', type: 'string', index: 'secondary' },
-      { name: 'createdAt', type: 'number' }
+      // store.defineTable for Users implementation
     ])
   },
 
@@ -860,68 +813,39 @@ export default {
 }
 ```
 
-### GraphQL
+### Story-Related Resolvers
 
 The **Hacker News** application displays a list of stories without additional information.
-For this, support the GraphQL with GraphQL resolvers that works with read model collections.
-
-Add the `./common/read-models/gqlSchema.js` file.
-Describe the `Story` type and a query used to request a list of stories - the `stories` query:
-
-```js
-// ./common/read-models/graphql/schema.js
-
-export default `
-  type User {
-    id: ID!
-    name: String
-    createdAt: String
-  }
-  type Story {
-    id: ID!
-    type: String!
-    title: String!
-    link: String
-    text: String
-    commentCount: Int!
-    votes: [String]
-    createdAt: String!
-    createdBy: String!
-    createdByName: String!
-  }
-  type Query {
-    user(id: ID, name: String): User
-    me: User
-    stories(type: String, first: Int!, offset: Int): [Story]
-  }
-`
-```
-
 Add the appropriate resolvers:
 
 ```js
 // ./common/read-models/graphql/resolvers.js
-import jwt from 'jsonwebtoken'
+
+const getStories = async (type, store, { first, offset, jwtToken }) => {
+  const search = type && type.constructor === String ? { type } : {}
+  const skip = first || 0
+  const stories = await store.find(
+    'Stories',
+    search,
+    null,
+    { createdAt: -1 },
+    skip,
+    skip + offset
+  )
+
+  return {
+    stories: Array.isArray(stories) ? stories : [],
+    me: await getMe(jwtToken)
+  }
+}
 
 export default {
   // user implementation
   // me implementation
-  stories: async (store, { type, first, offset }) => {
-    const skip = first || 0
-    const params = type ? { type } : {}
-    const stories = await store.find(
-      'Stories',
-      params,
-      null,
-      { createdAt: -1 },
-      skip,
-      skip + offset
-    )
-    if (!stories) {
-      return []
-    }
-    return stories
-  }
+
+  allStories: getStories.bind(null, null),
+  askStories: getStories.bind(null, 'ask'),
+  showStories: getStories.bind(null, 'show')
 }
 ```
 
@@ -968,9 +892,7 @@ Add the `./common/view-models/storyDetails.js` file:
 
 import Immutable from 'seamless-immutable'
 
-
 import {
-  STORY_COMMENTED,
   STORY_CREATED,
   STORY_UNVOTED,
   STORY_UPVOTED
@@ -985,8 +907,8 @@ export default {
       {
         aggregateId,
         timestamp,
-        payload: { title, link, userId, text }
-      }: Event<StoryCreated>
+        payload: { title, link, userId, userName, text }
+      }
     ) => {
       const type = !link ? 'ask' : /^(Show HN)/.test(title) ? 'show' : 'story'
 
@@ -1000,23 +922,21 @@ export default {
         comments: [],
         votes: [],
         createdAt: timestamp,
-        createdBy: userId
+        createdBy: userId,
+        createdByName: userName
       })
     },
 
-    [STORY_UPVOTED]: (
-      state: any,
-      { payload: { userId } }: Event<StoryUpvoted>
-    ) => state.update('votes', votes => votes.concat(userId)),
+    [STORY_UPVOTED]: (state: any, { payload: { userId } }) =>
+      state.update('votes', votes => votes.concat(userId)),
 
-    [STORY_UNVOTED]: (
-      state: any,
-      { payload: { userId } }: Event<StoryUnvoted>
-    ) => state.update('votes', votes => votes.filter(id => id !== userId))
+    [STORY_UNVOTED]: (state: any, { payload: { userId } }) =>
+      state.update('votes', votes => votes.filter(id => id !== userId))
   },
   serializeState: (state: any) => JSON.stringify(state || {}),
   deserializeState: (state: any) => Immutable(JSON.parse(state))
 }
+
 ```
 
 Add view models' default export:
@@ -1027,57 +947,6 @@ Add view models' default export:
 import storyDetails from './storyDetails'
 
 export default [storyDetails]
-```
-
-Pass the view model to the server config:
-
-```js
-// ./resolve.server.config.js
-
-import path from 'path'
-import busAdapter from 'resolve-bus-memory'
-import storageAdapter from 'resolve-storage-lite'
-import { localStrategy } from 'resolve-scripts-auth'
-
-import clientConfig from './resolve.client.config'
-import aggregates from './common/aggregates'
-
-import readModels from './common/read-models'
-import viewModels from './common/view-models'
-
-import localStrategyParams from './auth/localStrategy'
-
-import {
-  authenticationSecret,
-  cookieName,
-  cookieMaxAge
-} from './auth/constants'
-
-const databaseFilePath = path.join(__dirname, './storage.json')
-
-const storageAdapterParams = process.env.IS_TEST
-  ? {}
-  : { pathToFile: databaseFilePath }
-
-export default {
-  entries: clientConfig,
-  bus: { adapter: busAdapter },
-  storage: {
-    adapter: storageAdapter,
-    params: storageAdapterParams
-  },
-  aggregates,
-  readModels,
-  viewModels,
-  jwtCookie: {
-    name: cookieName,
-    maxAge: cookieMaxAge,
-    httpOnly: false
-  },
-  auth: {
-    strategies: [localStrategy(localStrategyParams)]
-  }
-}
 ```
 
 ### Story View
@@ -1164,10 +1033,7 @@ export default {
     // the createStory,  upvoteStory and unvoteStory implementation
 
     commentStory: (state, command, jwtToken) => {
-      const { id: userId, name: userName } = jwt.verify(
-        jwtToken,
-        jwtSecret
-      )
+      const { id: userId, name: userName } = jwt.verify(jwtToken, jwtSecret)
       validate.stateExists(state, 'Story')
 
       const { commentId, parentId, text } = command.payload
@@ -1196,7 +1062,7 @@ export default {
     // the STORY_CREATED, STORY_UPVOTED and STORY_UNVOTED implementation
     [STORY_COMMENTED]: (
       state,
-      { timestamp, payload: { commentId, userId } }: StoryCommented
+      { timestamp, payload: { commentId, userId } }
     ) => ({
       ...state,
       comments: {
@@ -1277,54 +1143,6 @@ export default {
 }
 ```
 
-### GraphQL
-
-Extend the GraphQL schema file by adding the `Comment` type and queries.
-A comment contains the `replies` field which is a list of comments, and provides a tree-like structure for all the included comments.
-
-
-```js
-// ./common/read-models/graphql/schema.js
-
-export default `
-  type User {
-    id: ID!
-    name: String
-    createdAt: String
-  }
-  type Story {
-    id: ID!
-    type: String!
-    title: String!
-    link: String
-    text: String
-    commentCount: Int!
-    votes: [String]
-    createdAt: String!
-    createdBy: String!
-    createdByName: String!
-  }
-  type Comment {
-    id: ID!
-    parentId: ID!
-    storyId: ID!
-    text: String!
-    replies: [Comment]
-    createdAt: String!
-    createdBy: String!
-    createdByName: String
-    level: Int
-  }
-  type Query {
-    user(id: ID, name: String): User
-    me: User
-    stories(type: String, first: Int!, offset: Int): [Story]
-    comments(first: Int!, offset: Int): [Comment]
-    comment(id: ID!): Comment
-  }
-`
-```
-
 Implement comment resolvers and extend the stories resolver to get comments:
 
 ```js
@@ -1390,8 +1208,7 @@ export default {
     Init: () => Immutable({}),
 
     // implemented handlers
-
-    [STORY_COMMENTED]: (
+  [STORY_COMMENTED]: (
       state,
       {
         aggregateId,
@@ -1430,9 +1247,8 @@ export default {
       }
     }
   },
-  serializeState: (state: any) =>
-    JSON.stringify(state || Immutable({})),
-  deserializeState: (serial: any) => Immutable(JSON.parse(serial))
+  serializeState: (state: any) => JSON.stringify(state || {}),
+  deserializeState: (state: any) => Immutable(JSON.parse(state))
 }
 ```
 
@@ -1460,9 +1276,9 @@ Note that the `/storyDetails/:storyId/comments/:commentId` path should be above 
 
 Implement the [PageNotFound](./client/components/PageNotFound.js) component to display a message indicating that the requested page was not found.
 
-Add the created container to the end of the the route list in the [routes](./client/routes.js) file.
+Add the created container to the end of the route list in the [routes](./client/routes.js) file.
 
 ## Data Importer
 
 Implement an importer in the [import](./import) folder to get data from the original **Hacker News** website.
-This importer uses the website's REST API and transforms data to events.
+This importer uses the website's REST API and transforms data into events.

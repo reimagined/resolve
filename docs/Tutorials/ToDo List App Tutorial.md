@@ -1,9 +1,9 @@
 ToDo List App Tutorial
 ====
 
-> Note: This tutorial is relevant for the reSolve version 0.4.0.
+> Note: this tutorial is actual for 0.10.0 version.
 
-This topic describes how to create a classic [Redux](https://github.com/reactjs/redux) example -- the **ToDo List** app. 
+This topic describes how to create a classic [Redux](https://github.com/reactjs/redux) example -- the **ToDo List** app.
 
 
 # Environment
@@ -11,8 +11,7 @@ This topic describes how to create a classic [Redux](https://github.com/reactjs/
 Create a new reSolve application using the [create-resolve-app](https://www.npmjs.com/package/create-resolve-app) package.
 
 ```shell
-npm i -g create-resolve-app
-create-resolve-app my-todo-list
+npx create-resolve-app my-todo-list
 ```
 
 Open your app's working directory (`my-todo-list`). You can execute the `npm run dev` command in this directory to start your app.
@@ -43,7 +42,7 @@ A **reSolve Aggregate** is an object with the following structure:
         // ...
     },
     commands: {
-        command1Name: (state, command) => generatedEvent1, // Function which generates events depending 
+        command1Name: (state, command) => generatedEvent1, // Function which generates events depending
         command2Name: (state, command) => generatedEvent2  // on the current state and argument list
         // ...
     }
@@ -156,63 +155,116 @@ The [resolve-redux](https://reimagined.github.io/resolve/packages/resolve-redux)
 The code below demonstrates this:
 
 ```jsx
-// ./client/components/App.js
+// ./client/containers/App.js
 
-import React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'resolve-redux';
+import React from 'react'
+import { connectViewModel } from 'resolve-redux'
+import { bindActionCreators } from 'redux'
 
-import actions from '../actions';
+import { Helmet } from 'react-helmet'
+import {
+  ListGroup,
+  ListGroupItem,
+  Checkbox,
+  Form,
+  Button,
+  Image,
+  FormControl
+} from 'react-bootstrap'
+import Header from '../components/Header.js'
 
-const App = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
-    let newToDo;
-    return (
-        <div>
-            <h1>To Do</h1>
-            <ol>
-                {Object.keys(todos).map(id => (
-                    <li key={id}>
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={todos[id].checked}
-                                onChange={toggleItem.bind(null, aggregateId, { id })}
-                            />
-                            {todos[id].text}
-                        </label>
-                        <span onClick={removeItem.bind(null, aggregateId, { id })}>{' [x]'}</span>
-                    </li>
-                ))}
-            </ol>
-            <input type="text" ref={element => (newToDo = element)} />
-            <button
-                onClick={() => {
-                    createItem(aggregateId, {
-                        text: newToDo.value,
-                        id: Date.now()
-                    });
-                    newToDo.value = '';
-                }}
-            >
-                Add Item
-            </button>
-        </div>
-    );
-};
+const viewModelName = 'Todos'
+const aggregateId = 'root-id'
 
-const mapStateToProps = (state) => {
-    const aggregateId = 'root-id';
-    const viewModel = 'ToDoView';
-    return {
-        viewModel,
-        aggregateId,
-        todos: state[viewModel][aggregateId]
-    };
-};
+export const App = ({
+  todos,
+  createItem,
+  toggleItem,
+  removeItem,
+  aggregateId
+}) => {
+  const placeholder = 'New Task'
+  const createItemFunc = () => {
+    createItem(aggregateId, {
+      text: newTodo.value === '' ? placeholder : newTodo.value,
+      id: Date.now()
+    })
+    newTodo.value = ''
+  }
 
-const mapDispatchToProps = dispatch => bindActionCreators(actions, dispatch);
+  let newTodo
+  return (
+    <div>
+      <Helmet>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/bootstrap.min.css" />
+        <link rel="stylesheet" href="/style.css" />
+        <title>reSolve Todo Example</title>
+      </Helmet>
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+      <Header />
+
+      <div className="example-wrapper">
+        <h1>Task's List</h1>
+
+        <ListGroup className="example-list">
+          {Object.keys(todos).map(id => (
+            <ListGroupItem key={id}>
+              <Checkbox
+                inline
+                checked={todos[id].checked}
+                onChange={toggleItem.bind(null, aggregateId, { id })}
+              >
+                {todos[id].text}
+              </Checkbox>
+              <Image
+                className="example-close-button"
+                src="/close-button.png"
+                onClick={removeItem.bind(null, aggregateId, { id })}
+              />
+            </ListGroupItem>
+          ))}
+        </ListGroup>
+
+        <Form inline className="example-form">
+          <FormControl
+            className="example-form-control"
+            type="text"
+            placeholder={placeholder}
+            inputRef={element => (newTodo = element)}
+            onKeyPress={event => {
+              if (event.charCode === 13) {
+                event.preventDefault()
+                createItemFunc()
+              }
+            }}
+          />
+          <Button
+            className="example-button"
+            bsStyle="success"
+            onClick={() => {
+              createItemFunc()
+            }}
+          >
+            Add Task
+          </Button>
+        </Form>
+      </div>
+    </div>
+  )
+}
+
+const mapStateToProps = state => ({
+  viewModelName,
+  aggregateId,
+  todos: state.viewModels[viewModelName][aggregateId]
+})
+
+const mapDispatchToProps = (dispatch, props) =>
+  bindActionCreators(props.aggregateActions, dispatch)
+
+export default connectViewModel(mapStateToProps, mapDispatchToProps)(App)
+
 ```
 
 We use the current date in milliseconds as a ToDo item's **id**. This can be any unique data, for instance, GUID.
@@ -230,31 +282,6 @@ The `aggregateId` is equal to the default `'root-id'` because we have only one a
 The `viewModel` is the name of the read model whose state should be updated. Note that this string supports wildcards for updating several view models.
 
 The [bindActionCreators](https://redux.js.org/docs/api/bindActionCreators.html) Redux function requires the `actions` object, which is described as follows and imported in the **App.js** file:
-
-```jsx
-// ./client/actions/index.js
-
-import { createActions } from 'resolve-redux';
-
-import aggregates from '../../common/aggregates';
-
-export default aggregates.reduce(
-    (result, aggregate) => ({ ...result, ...createActions(aggregate) }),
-    {}
-);
-```
-
-The [createActions](https://reimagined.github.io/resolve/packages/resolve-redux/#createactions) function generates the dispatchable **Redux Actions** from a **ReSolve Aggregate**. The module exports **Redux Actions** collected from all aggregates.
-
-The last missing element is a **Redux Reducer**. You can create a default reducer based on the reSolve view models with the [createViewModelsReducer](https://reimagined.github.io/resolve/packages/resolve-redux/#createviewmodelsreducer) method as follows:
-
-```jsx
-// ./client/reducers/index.js
-
-import { createViewModelsReducer } from 'resolve-redux';
-
-export default createViewModelsReducer();
-```
 
 
 # Running the app
