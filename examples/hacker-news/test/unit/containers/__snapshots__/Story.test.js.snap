@@ -51,7 +51,7 @@ ShallowWrapper {
           >
             unvote
           </styled.span>
-
+           
         </span>,
         <styled.div />,
         <Styled(Link)
@@ -184,7 +184,7 @@ ShallowWrapper {
             >
               unvote
             </styled.span>
-
+             
           </span>,
           <styled.div />,
           <Styled(Link)
@@ -337,7 +337,7 @@ ShallowWrapper {
           >
             unvote
           </styled.span>
-
+           
         </span>,
         <styled.div />,
         <Styled(Link)
@@ -449,7 +449,7 @@ ShallowWrapper {
             >
               unvote
             </styled.span>
-
+             
           </span>,
           <styled.div />,
           <Styled(Link)
