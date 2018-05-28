@@ -1,5 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`base config works correctly [client] 1`] = `
+"
+const jwtCookie = {
+  \\"name\\": \\"test-jwt\\",
+  \\"maxAge\\": 123
+}
+
+export default jwtCookie
+"
+`;
+
 exports[`base config works correctly [server] 1`] = `
 "
 const jwtCookie = {

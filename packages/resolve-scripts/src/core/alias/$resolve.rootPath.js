@@ -1,3 +1,5 @@
+import { envKey } from 'json-env-extract'
+
 import { message } from '../constants'
 
 export default ({ resolveConfig }) => {
@@ -5,10 +7,15 @@ export default ({ resolveConfig }) => {
     throw new Error(`${message.configNotContainSectionError}.rootPath`)
   }
 
+  if (resolveConfig.rootPath in resolveConfig[envKey]) {
+    throw new Error(`${message.clientEnvError}.rootPath`)
+  }
+  const rootPath = resolveConfig.rootPath
+
   const exports = []
 
   exports.push(
-    `const rootPath = ${JSON.stringify(resolveConfig.rootPath)}`,
+    `const rootPath = ${JSON.stringify(rootPath)}`,
     ``,
     `export default rootPath`
   )

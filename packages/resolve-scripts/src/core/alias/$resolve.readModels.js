@@ -1,7 +1,8 @@
-import { injectEnv } from 'json-env-extract'
+import { injectEnv, envKey } from 'json-env-extract'
 
 import { message } from '../constants'
 import resolveFile from '../resolve_file'
+import resolveFileOrModule from '../resolve_file_or_module'
 import importBabel from '../import_babel'
 
 export default ({ resolveConfig, isClient }) => {
@@ -19,13 +20,37 @@ export default ({ resolveConfig, isClient }) => {
   for (let index = 0; index < resolveConfig.readModels.length; index++) {
     const readModel = resolveConfig.readModels[index]
 
+    if (readModel.name in resolveConfig[envKey]) {
+      throw new Error(`${message.clientEnvError}.readModels[${index}].name`)
+    }
     const name = readModel.name
 
+    if (readModel.projection in resolveConfig[envKey]) {
+      throw new Error(
+        `${message.clientEnvError}.readModels[${index}].projection`
+      )
+    }
     const projection = resolveFile(readModel.projection)
 
+    if (readModel.resolvers in resolveConfig[envKey]) {
+      throw new Error(
+        `${message.clientEnvError}.readModels[${index}].resolvers`
+      )
+    }
     const resolvers = resolveFile(readModel.resolvers)
 
     const storage = readModel.storage
+      ? {
+          adapter:
+            readModel.storage.adapter in resolveConfig[envKey]
+              ? readModel.storage.adapter
+              : resolveFileOrModule(readModel.storage.adapter),
+          options: {
+            ...readModel.storage.options
+          }
+        }
+      : {}
+    Object.defineProperty(storage, envKey, { value: resolveConfig[envKey] })
 
     constants.push(`const name_${index} = ${JSON.stringify(name)}`)
 

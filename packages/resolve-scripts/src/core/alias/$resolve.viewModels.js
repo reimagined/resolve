@@ -1,8 +1,9 @@
-import { injectEnv } from 'json-env-extract'
 import path from 'path'
+import { injectEnv, envKey } from 'json-env-extract'
 
 import { message } from '../constants'
 import resolveFile from '../resolve_file'
+import resolveFileOrModule from '../resolve_file_or_module'
 
 export default ({ resolveConfig, isClient }) => {
   if (!resolveConfig.viewModels) {
@@ -19,10 +20,23 @@ export default ({ resolveConfig, isClient }) => {
   for (let index = 0; index < resolveConfig.viewModels.length; index++) {
     const viewModel = resolveConfig.viewModels[index]
 
+    if (viewModel.name in resolveConfig[envKey]) {
+      throw new Error(`${message.clientEnvError}.viewModels[${index}].name`)
+    }
     const name = viewModel.name
 
+    if (viewModel.projection in resolveConfig[envKey]) {
+      throw new Error(
+        `${message.clientEnvError}.viewModels[${index}].projection`
+      )
+    }
     const projection = resolveFile(viewModel.projection)
 
+    if (viewModel.serializeState in resolveConfig[envKey]) {
+      throw new Error(
+        `${message.clientEnvError}.viewModels[${index}].serializeState`
+      )
+    }
     const serializeState = viewModel.serializeState
       ? resolveFile(viewModel.serializeState)
       : path.resolve(
@@ -30,6 +44,11 @@ export default ({ resolveConfig, isClient }) => {
           '../../runtime/common/view-models/serialize_state.js'
         )
 
+    if (viewModel.deserializeState in resolveConfig[envKey]) {
+      throw new Error(
+        `${message.clientEnvError}.viewModels[${index}].deserializeState`
+      )
+    }
     const deserializeState = viewModel.deserializeState
       ? resolveFile(viewModel.deserializeState)
       : path.resolve(
@@ -37,11 +56,27 @@ export default ({ resolveConfig, isClient }) => {
           '../../runtime/common/view-models/deserialize_state.js'
         )
 
+    if (viewModel.validator in resolveConfig[envKey]) {
+      throw new Error(
+        `${message.clientEnvError}.viewModels[${index}].validator`
+      )
+    }
     const validator = viewModel.validator
       ? resolveFile(viewModel.validator)
       : path.resolve(__dirname, '../../runtime/common/view-models/validator.js')
 
     const snapshot = viewModel.snapshot
+      ? {
+          adapter:
+            viewModel.snapshot.adapter in resolveConfig[envKey]
+              ? viewModel.snapshot.adapter
+              : resolveFileOrModule(viewModel.snapshot.adapter),
+          options: {
+            ...viewModel.snapshot.options
+          }
+        }
+      : {}
+    Object.defineProperty(snapshot, envKey, { value: resolveConfig[envKey] })
 
     imports.push(
       `import projection_${index} from ${JSON.stringify(projection)}`

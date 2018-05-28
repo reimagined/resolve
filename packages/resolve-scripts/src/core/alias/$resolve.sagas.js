@@ -1,4 +1,8 @@
+import { envKey } from 'json-env-extract'
+
 import { message } from '../constants'
+
+import resolveFile from '../resolve_file'
 
 export default ({ resolveConfig, isClient }) => {
   if (isClient) {
@@ -9,10 +13,15 @@ export default ({ resolveConfig, isClient }) => {
     throw new Error(`${message.configNotContainSectionError}.sagas`)
   }
 
+  if (resolveConfig.sagas in resolveConfig[envKey]) {
+    throw new Error(`${message.clientEnvError}.sagas`)
+  }
+  const sagas = resolveFile(resolveConfig.sagas)
+
   const exports = []
 
   exports.push(
-    `import sagas from ${JSON.stringify(resolveConfig.sagas)}`,
+    `import sagas from ${JSON.stringify(sagas)}`,
     ``,
     `export default sagas`
   )

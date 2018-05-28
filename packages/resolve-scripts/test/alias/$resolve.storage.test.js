@@ -4,14 +4,16 @@ import { extractEnv } from 'json-env-extract'
 import alias from '../../src/core/alias/$resolve.storage'
 
 describe('base config works correctly', () => {
-  const resolveConfig = {
-    storage: {
-      adapter: path.resolve(__dirname, 'files/testAdapter.js'),
-      options: {
-        url: 'http://test.test'
+  const resolveConfig = extractEnv(`
+    {
+      storage: {
+        adapter: "${path.resolve(__dirname, 'files/testAdapter.js')}",
+        options: {
+          url: 'http://test.test'
+        }
       }
     }
-  }
+  `)
 
   test('[client]', () => {
     expect(

@@ -4,15 +4,17 @@ import { extractEnv } from 'json-env-extract'
 import alias from '../../src/core/alias/$resolve.readModels'
 
 describe('base config works correctly', () => {
-  const resolveConfig = {
-    readModels: [
-      {
-        name: 'Todos',
-        projection: path.resolve(__dirname, 'files/testProjection.js'),
-        resolvers: path.resolve(__dirname, 'files/testResolvers.js')
-      }
-    ]
-  }
+  const resolveConfig = extractEnv(`
+    {
+      readModels: [
+        {
+          name: 'Todos',
+          projection: "${path.resolve(__dirname, 'files/testProjection.js')}",
+          resolvers: "${path.resolve(__dirname, 'files/testResolvers.js')}"
+        }
+      ]
+    }
+  `)
 
   test('[client]', () => {
     expect(
@@ -38,20 +40,22 @@ describe('base config works correctly', () => {
 })
 
 describe('base(v2) config works correctly', () => {
-  const resolveConfig = {
-    readModels: [
-      {
-        name: 'Todos',
-        projection: path.resolve(__dirname, 'files/testProjection.js'),
-        resolvers: path.resolve(__dirname, 'files/testResolvers.js')
-      },
-      {
-        name: 'Items',
-        projection: path.resolve(__dirname, 'files/testProjection.js'),
-        resolvers: path.resolve(__dirname, 'files/testResolvers.js')
-      }
-    ]
-  }
+  const resolveConfig = extractEnv(`
+    {
+      readModels: [
+        {
+          name: 'Todos',
+          projection: "${path.resolve(__dirname, 'files/testProjection.js')}",
+          resolvers: "${path.resolve(__dirname, 'files/testResolvers.js')}"
+        },
+        {
+          name: 'Items',
+          projection: "${path.resolve(__dirname, 'files/testProjection.js')}",
+          resolvers: "${path.resolve(__dirname, 'files/testResolvers.js')}"
+        }
+      ]
+    }
+  `)
 
   test('[client]', () => {
     expect(
@@ -77,21 +81,26 @@ describe('base(v2) config works correctly', () => {
 })
 
 describe('config with storage works correctly', () => {
-  const resolveConfig = {
-    readModels: [
-      {
-        name: 'Todos',
-        projection: path.resolve(__dirname, 'files/testProjection.js'),
-        resolvers: path.resolve(__dirname, 'files/testResolvers.js'),
-        storage: {
-          adapter: path.resolve(__dirname, 'files/testSnapshotAdapter.js'),
-          options: {
-            size: 100
+  const resolveConfig = extractEnv(`
+    {
+      readModels: [
+        {
+          name: 'Todos',
+          projection: "${path.resolve(__dirname, 'files/testProjection.js')}",
+          resolvers: "${path.resolve(__dirname, 'files/testResolvers.js')}",
+          storage: {
+            adapter: "${path.resolve(
+              __dirname,
+              'files/testSnapshotAdapter.js'
+            )}",
+            options: {
+              size: 100
+            }
           }
         }
-      }
-    ]
-  }
+      ]
+    }
+  `)
 
   test('[client]', () => {
     expect(

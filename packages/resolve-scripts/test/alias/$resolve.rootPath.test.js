@@ -1,9 +1,13 @@
+import { extractEnv } from 'json-env-extract'
+
 import alias from '../../src/core/alias/$resolve.rootPath'
 
 describe('base config works correctly', () => {
-  const resolveConfig = {
-    rootPath: ''
-  }
+  const resolveConfig = extractEnv(`
+    {
+      rootPath: ''
+    }
+  `)
 
   test('[client]', () => {
     expect(
@@ -29,9 +33,11 @@ describe('base config works correctly', () => {
 })
 
 describe('base config (v2) works correctly', () => {
-  const resolveConfig = {
-    rootPath: 'test'
-  }
+  const resolveConfig = extractEnv(`
+    {
+      rootPath: 'test'
+    }
+  `)
 
   test('[client]', () => {
     expect(

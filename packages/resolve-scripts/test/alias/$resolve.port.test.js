@@ -3,9 +3,11 @@ import { extractEnv } from 'json-env-extract'
 import alias from '../../src/core/alias/$resolve.port'
 
 describe('base config works correctly', () => {
-  const resolveConfig = {
-    port: 1234
-  }
+  const resolveConfig = extractEnv(`
+    {
+      port: 1234
+    }
+  `)
 
   test('[client]', () => {
     expect(

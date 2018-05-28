@@ -1,7 +1,8 @@
-import { injectEnv } from 'json-env-extract'
+import { injectEnv, envKey } from 'json-env-extract'
 
 import { message } from '../constants'
 import resolveFile from '../resolve_file'
+import resolveFileOrModule from '../resolve_file_or_module'
 import importBabel from '../import_babel'
 
 export default ({ resolveConfig, isClient }) => {
@@ -19,15 +20,37 @@ export default ({ resolveConfig, isClient }) => {
   for (let index = 0; index < resolveConfig.aggregates.length; index++) {
     const aggregate = resolveConfig.aggregates[index]
 
+    if (aggregate.name in resolveConfig[envKey]) {
+      throw new Error(`${message.clientEnvError}.aggregates[${index}].name`)
+    }
     const name = aggregate.name
 
+    if (aggregate.commands in resolveConfig[envKey]) {
+      throw new Error(`${message.clientEnvError}.aggregates[${index}].commands`)
+    }
     const commands = resolveFile(aggregate.commands)
 
+    if (aggregate.projection && aggregate.projection in resolveConfig[envKey]) {
+      throw new Error(
+        `${message.clientEnvError}.aggregates[${index}].projection`
+      )
+    }
     const projection = aggregate.projection
       ? resolveFile(aggregate.projection)
       : undefined
 
     const snapshot = aggregate.snapshot
+      ? {
+          adapter:
+            aggregate.snapshot.adapter in resolveConfig[envKey]
+              ? aggregate.snapshot.adapter
+              : resolveFileOrModule(aggregate.snapshot.adapter),
+          options: {
+            ...aggregate.snapshot.options
+          }
+        }
+      : {}
+    Object.defineProperty(snapshot, envKey, { value: resolveConfig[envKey] })
 
     if (!isClient) {
       imports.push(`import commands_${index} from ${JSON.stringify(commands)}`)

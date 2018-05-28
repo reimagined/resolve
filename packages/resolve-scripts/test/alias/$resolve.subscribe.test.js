@@ -4,14 +4,16 @@ import { extractEnv } from 'json-env-extract'
 import alias from '../../src/core/alias/$resolve.subscribe'
 
 describe('base config works correctly', () => {
-  const resolveConfig = {
-    subscribe: {
-      adapter: path.resolve(__dirname, 'files/testAdapter.js'),
-      options: {
-        url: 'http://test.test'
+  const resolveConfig = extractEnv(`
+    {
+      subscribe: {
+        adapter: "${path.resolve(__dirname, 'files/testAdapter.js')}",
+        options: {
+          url: 'http://test.test'
+        }
       }
     }
-  }
+  `)
 
   test('[client]', () => {
     expect(

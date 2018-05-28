@@ -1,11 +1,15 @@
+import { extractEnv } from 'json-env-extract'
+
 import path from 'path'
 
 import alias from '../../src/core/alias/$resolve.sagas'
 
 describe('base config works correctly', () => {
-  const resolveConfig = {
-    sagas: path.resolve(__dirname, 'files/testSagas.js')
-  }
+  const resolveConfig = extractEnv(`
+    {
+      sagas: "${path.resolve(__dirname, 'files/testSagas.js')}"
+    }
+  `)
 
   test('[client]', () => {
     expect(

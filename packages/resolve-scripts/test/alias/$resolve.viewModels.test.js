@@ -4,14 +4,16 @@ import { extractEnv } from 'json-env-extract'
 import alias from '../../src/core/alias/$resolve.viewModels'
 
 describe('base config works correctly', () => {
-  const resolveConfig = {
-    viewModels: [
-      {
-        name: 'Todos',
-        projection: path.resolve(__dirname, 'files/testProjection.js')
-      }
-    ]
-  }
+  const resolveConfig = extractEnv(`
+    {
+      viewModels: [
+        {
+          name: 'Todos',
+          projection: "${path.resolve(__dirname, 'files/testProjection.js')}"
+        }
+      ]
+    }
+  `)
 
   test('[client]', () => {
     expect(
@@ -37,18 +39,20 @@ describe('base config works correctly', () => {
 })
 
 describe('base(v2) config works correctly', () => {
-  const resolveConfig = {
-    viewModels: [
-      {
-        name: 'Todos',
-        projection: path.resolve(__dirname, 'files/testProjection.js')
-      },
-      {
-        name: 'Items',
-        projection: path.resolve(__dirname, 'files/testProjection.js')
-      }
-    ]
-  }
+  const resolveConfig = extractEnv(`
+    {
+      viewModels: [
+        {
+          name: 'Todos',
+          projection: "${path.resolve(__dirname, 'files/testProjection.js')}"
+        },
+        {
+          name: 'Items',
+          projection: "${path.resolve(__dirname, 'files/testProjection.js')}"
+        }
+      ]
+    }
+  `)
 
   test('[client]', () => {
     expect(
@@ -74,19 +78,24 @@ describe('base(v2) config works correctly', () => {
 })
 
 describe('config with serializeState/deserialzeState works correctly', () => {
-  const resolveConfig = {
-    viewModels: [
-      {
-        name: 'Todos',
-        projection: path.resolve(__dirname, 'files/testProjection.js'),
-        serializeState: path.resolve(__dirname, 'files/testSerializeState.js'),
-        deserializeState: path.resolve(
-          __dirname,
-          'files/testDeserializeState.js'
-        )
-      }
-    ]
-  }
+  const resolveConfig = extractEnv(`
+    {
+      viewModels: [
+        {
+          name: 'Todos',
+          projection: "${path.resolve(__dirname, 'files/testProjection.js')}",
+          serializeState: "${path.resolve(
+            __dirname,
+            'files/testSerializeState.js'
+          )}",
+          deserializeState: "${path.resolve(
+            __dirname,
+            'files/testDeserializeState.js'
+          )}"
+        }
+      ]
+    }
+  `)
 
   test('[client]', () => {
     expect(
@@ -112,15 +121,17 @@ describe('config with serializeState/deserialzeState works correctly', () => {
 })
 
 describe('config with validator works correctly', () => {
-  const resolveConfig = {
-    viewModels: [
-      {
-        name: 'Todos',
-        projection: path.resolve(__dirname, 'files/testProjection.js'),
-        validator: path.resolve(__dirname, 'files/testValidator.js')
-      }
-    ]
-  }
+  const resolveConfig = extractEnv(`
+    {
+      viewModels: [
+        {
+          name: 'Todos',
+          projection: "${path.resolve(__dirname, 'files/testProjection.js')}",
+          validator: "${path.resolve(__dirname, 'files/testValidator.js')}"
+        }
+      ]
+    }
+  `)
 
   test('[client]', () => {
     expect(
@@ -146,20 +157,25 @@ describe('config with validator works correctly', () => {
 })
 
 describe('config with snapshot works correctly', () => {
-  const resolveConfig = {
-    viewModels: [
-      {
-        name: 'Todos',
-        projection: path.resolve(__dirname, 'files/testProjection.js'),
-        snapshot: {
-          adapter: path.resolve(__dirname, 'files/testSnapshotAdapter.js'),
-          options: {
-            size: 100
+  const resolveConfig = extractEnv(`
+    {
+      viewModels: [
+        {
+          name: 'Todos',
+          projection: "${path.resolve(__dirname, 'files/testProjection.js')}",
+          snapshot: {
+            adapter: "${path.resolve(
+              __dirname,
+              'files/testSnapshotAdapter.js'
+            )}",
+            options: {
+              size: 100
+            }
           }
         }
-      }
-    ]
-  }
+      ]
+    }
+  `)
 
   test('[client]', () => {
     expect(

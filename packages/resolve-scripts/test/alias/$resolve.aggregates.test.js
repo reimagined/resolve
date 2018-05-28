@@ -4,14 +4,16 @@ import { extractEnv } from 'json-env-extract'
 import alias from '../../src/core/alias/$resolve.aggregates'
 
 describe('base config works correctly', () => {
-  const resolveConfig = {
-    aggregates: [
-      {
-        name: 'Todo',
-        commands: path.resolve(__dirname, 'files/testCommands.js')
-      }
-    ]
-  }
+  const resolveConfig = extractEnv(`
+    {
+      aggregates: [
+        {
+          name: 'Todo',
+          commands: "${path.resolve(__dirname, 'files/testCommands.js')}"
+        }
+      ]
+    }
+  `)
 
   test('[client]', () => {
     expect(
@@ -37,18 +39,20 @@ describe('base config works correctly', () => {
 })
 
 describe('base(v2) config works correctly', () => {
-  const resolveConfig = {
-    aggregates: [
-      {
-        name: 'Todo',
-        commands: path.resolve(__dirname, 'files/testCommands.js')
-      },
-      {
-        name: 'Item',
-        commands: path.resolve(__dirname, 'files/testCommands.js')
-      }
-    ]
-  }
+  const resolveConfig = extractEnv(`
+    {
+      aggregates: [
+        {
+          name: 'Todo',
+          commands: "${path.resolve(__dirname, 'files/testCommands.js')}"
+        },
+        {
+          name: 'Item',
+          commands: "${path.resolve(__dirname, 'files/testCommands.js')}"
+        }
+      ]
+    }
+  `)
 
   test('[client]', () => {
     expect(
@@ -74,15 +78,17 @@ describe('base(v2) config works correctly', () => {
 })
 
 describe('config with projection works correctly', () => {
-  const resolveConfig = {
-    aggregates: [
-      {
-        name: 'Todo',
-        commands: path.resolve(__dirname, 'files/testCommands.js'),
-        projection: path.resolve(__dirname, 'files/testProjection.js')
-      }
-    ]
-  }
+  const resolveConfig = extractEnv(`
+    {
+      aggregates: [
+        {
+          name: 'Todo',
+          commands: "${path.resolve(__dirname, 'files/testCommands.js')}",
+          projection: "${path.resolve(__dirname, 'files/testProjection.js')}"
+        }
+      ]
+    }
+  `)
 
   test('[client]', () => {
     expect(
@@ -108,20 +114,25 @@ describe('config with projection works correctly', () => {
 })
 
 describe('config with snapshot works correctly', () => {
-  const resolveConfig = {
-    aggregates: [
-      {
-        name: 'Todo',
-        commands: path.resolve(__dirname, 'files/testCommands.js'),
-        snapshot: {
-          adapter: path.resolve(__dirname, 'files/testSnapshotAdapter.js'),
-          options: {
-            size: 100
+  const resolveConfig = extractEnv(`
+    {
+      aggregates: [
+        {
+          name: 'Todo',
+          commands: "${path.resolve(__dirname, 'files/testCommands.js')}",
+          snapshot: {
+            adapter: "${path.resolve(
+              __dirname,
+              'files/testSnapshotAdapter.js'
+            )}",
+            options: {
+              size: 100
+            }
           }
         }
-      }
-    ]
-  }
+      ]
+    }
+  `)
 
   test('[client]', () => {
     expect(
@@ -184,24 +195,3 @@ describe('config with snapshot + process.env works correctly', () => {
     ).toMatchSnapshot()
   })
 })
-
-/*
-"name": {
-  "type": "string"
-},
-"commands": {
-  "type": "string",
-  "constraints": {
-    "file": true
-  }
-},
-"projection": {
-  "type": "string",
-  "constraints": {
-    "file": true
-  }
-},
-"snapshot": {
-  "$ref": "#/definitions/adapter"
-}
- */

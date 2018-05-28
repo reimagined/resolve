@@ -7,18 +7,14 @@ export default ({ resolveConfig }) => {
     throw new Error(`${message.configNotContainSectionError}.subscribe`)
   }
 
-  if (resolveConfig[envKey]) {
-    if (resolveConfig.subscribe.adapter in resolveConfig[envKey]) {
-      throw new Error(`${message.clientEnvError}.subscribe.adapter`)
-    }
-    for (const optionsKey of Object.keys(resolveConfig.subscribe.options)) {
-      if (
-        resolveConfig.subscribe.options[optionsKey] in resolveConfig[envKey]
-      ) {
-        throw new Error(
-          `${message.clientEnvError}.subscribe.options.${optionsKey}`
-        )
-      }
+  if (resolveConfig.subscribe.adapter in resolveConfig[envKey]) {
+    throw new Error(`${message.clientEnvError}.subscribe.adapter`)
+  }
+  for (const optionsKey of Object.keys(resolveConfig.subscribe.options)) {
+    if (resolveConfig.subscribe.options[optionsKey] in resolveConfig[envKey]) {
+      throw new Error(
+        `${message.clientEnvError}.subscribe.options.${optionsKey}`
+      )
     }
   }
 
