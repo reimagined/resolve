@@ -5,7 +5,7 @@ import createSocketServer from 'socket.io'
 import cookieParser from 'cookie-parser'
 import bodyParser from 'body-parser'
 
-import getRootableUrl from './utils/get_rootable_url'
+import getRootBasedUrl from './utils/get_root_based_url'
 import serverSideRendering from './server_side_rendering'
 import startServer from './start_server'
 import commandHandler from './command_handler'
@@ -23,7 +23,7 @@ const app = express()
 const server = new Server(app)
 
 const socket = createSocketServer(server, {
-  path: getRootableUrl('/socket/'),
+  path: getRootBasedUrl('/socket/'),
   serveClient: false
 })
 
@@ -42,18 +42,15 @@ app.use((req, res, next) => {
 
 assignAuthRoutes(app)
 
-app.use(getRootableUrl('/api/commands'), commandHandler)
-app.use(getRootableUrl('/api/query/:modelName/:resolverName?'), queryHandler)
-app.use(getRootableUrl('/api/status'), statusHandler)
+app.use(getRootBasedUrl('/api/commands'), commandHandler)
+app.use(getRootBasedUrl('/api/query/:modelName/:resolverName?'), queryHandler)
+app.use(getRootBasedUrl('/api/status'), statusHandler)
 
-app.use(getRootableUrl('/'), express.static(`${distDir}/client`))
-app.use(getRootableUrl('/'), express.static(staticDir))
-app.use(
-  getRootableUrl('/'),
-  express.static(path.resolve(__dirname, '../static'))
-)
+app.use(getRootBasedUrl('/'), express.static(`${distDir}/client`))
+app.use(getRootBasedUrl('/'), express.static(staticDir))
+app.use(getRootBasedUrl('/'), express.static(path.resolve(__dirname, '../static')))
 
-app.get([getRootableUrl('/'), getRootableUrl('/*')], serverSideRendering)
+app.get([getRootBasedUrl('/'), getRootBasedUrl('/*')], serverSideRendering)
 
 sagaRunner()
 

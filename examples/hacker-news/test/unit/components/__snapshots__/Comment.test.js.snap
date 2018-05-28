@@ -2052,7 +2052,7 @@ ShallowWrapper {
 }
 `;
 
-exports[`Comment without childrens renders correctly 1`] = `
+exports[`Comment without children renders correctly 1`] = `
 ShallowWrapper {
   "length": 1,
   Symbol(enzyme.__root__): [Circular],

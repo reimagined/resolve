@@ -14,7 +14,7 @@ readModels.forEach(readModel => {
   } else if (!readModel.name) {
     raiseError(message.readModelMandatoryName, readModel)
   } else if (readModelQueryExecutors[readModel.name]) {
-    raiseError(message.dublicateName, readModel)
+    raiseError(message.duplicateName, readModel)
   }
 
   const facade = createReadModel({

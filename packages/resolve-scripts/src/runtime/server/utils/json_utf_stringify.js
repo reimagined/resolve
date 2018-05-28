@@ -11,7 +11,7 @@ export const unicodeSymbolsForEscape = `
     \\u09E4\\u09E5\\u09FC-\\u0A00\\u0A04\\u0A0B-\\u0A0E\\u0A11\\u0A12\\u0A29\\u0A31\\u0A34
     \\u0A37\\u0A3A\\u0A3B\\u0A3D\\u0A43-\\u0A46\\u0A49\\u0A4A\\u0A4E-\\u0A50\\u0A52-\\u0A58
     \\u0A5D\\u0A5F-\\u0A65\\u0A76-\\u0A80\\u0A84\\u0A8E\\u0A92\\u0AA9\\u0AB1\\u0AB4\\u0ABA
-    \\u0ABB\\u0AC6\\u0ACA\\u0ACE\\u0ACF\\u0AD1-\\u0ADF\\u0AE4\\u0AE5\\u0AF2-\\u0B00\\u0B04
+    \\u0ABB\\u0AC6\\u0ACA\\u0ACE\\u0ACF\\u0AD1-\\u0ADF\\u0AE4\\u0AE5\\u0AF2-\\u0B00\\u0B04l
     \\u0B0D\\u0B0E\\u0B11\\u0B12\\u0B29\\u0B31\\u0B34\\u0B3A\\u0B3B\\u0B45\\u0B46\\u0B49
     \\u0B4A\\u0B4E-\\u0B55\\u0B58-\\u0B5B\\u0B5E\\u0B64\\u0B65\\u0B78-\\u0B81\\u0B84\\u0B8B-
     \\u0B8D\\u0B91\\u0B96-\\u0B98\\u0B9B\\u0B9D\\u0BA0-\\u0BA2\\u0BA5-\\u0BA7\\u0BAB-\\u0BAD
@@ -55,18 +55,12 @@ export const unicodeSymbolsForEscape = `
     \\uFFC1\\uFFC8\\uFFC9\\uFFD0\\uFFD1\\uFFD8\\uFFD9\\uFFDD-\\uFFDF\\uFFE7\\uFFEF-
     \\uFFFB\\u038D\\uFFFE\\uFFFF]`
 
-export const unicodeEscapeRegex = new RegExp(
-  unicodeSymbolsForEscape.replace(/\s/g, ''),
-  'g'
-)
+export const unicodeEscapeRegex = new RegExp(unicodeSymbolsForEscape.replace(/\s/g, ''), 'g')
 
 export function unicodeSymbolEscaper(match) {
   return `\\u${(+match.codePointAt(0)).toString(16).padStart(4, '0')}`
 }
 
 export default function jsonUtfStringify(inputObject) {
-  return JSON.stringify(inputObject).replace(
-    unicodeEscapeRegex,
-    unicodeSymbolEscaper
-  )
+  return JSON.stringify(inputObject).replace(unicodeEscapeRegex, unicodeSymbolEscaper)
 }

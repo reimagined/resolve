@@ -131,7 +131,7 @@ class PageRoot extends React.Component {
     return (
       <div key="loader">
         <div
-          key="childcontent"
+          key="childContent"
           style={this.showProgress ? { display: 'none' } : {}}
           ref={
             !this.showProgress
@@ -148,11 +148,9 @@ class PageRoot extends React.Component {
         </div>
 
         <div
-          key="loadcontent"
+          key="loadContent"
           style={this.showProgress ? { opacity: 0.33 } : { display: 'none' }}
-          {...(this.showProgress
-            ? { dangerouslySetInnerHTML: { __html: this.lastChildren } }
-            : {})}
+          {...(this.showProgress ? { dangerouslySetInnerHTML: { __html: this.lastChildren } } : {})}
         />
       </div>
     )
@@ -167,30 +165,14 @@ const Layout = ({ children }) => (
   <div>
     <Helmet>
       <title>reSolve Hacker News</title>
-      <meta
-        name="viewport"
-        content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-      />
-      <link
-        rel="shortcut icon"
-        type="image/x-icon"
-        href={`${rootDirectory}/reSolve-logo.svg`}
-      />
-      <link
-        rel="stylesheet"
-        type="text/css"
-        href={`${rootDirectory}/style.css`}
-      />
+      <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+      <link rel="shortcut icon" type="image/x-icon" href={`${rootDirectory}/reSolve-logo.svg`} />
+      <link rel="stylesheet" type="text/css" href={`${rootDirectory}/style.css`} />
     </Helmet>
     <ContentRoot>
       <PageHeader>
         <Link to="/">
-          <img
-            src={`${rootDirectory}/reSolve-logo.svg`}
-            width="18"
-            height="18"
-            alt=""
-          />
+          <img src={`${rootDirectory}/reSolve-logo.svg`} width="18" height="18" alt="" />
         </Link>
         <Link to="/">
           <PageTitle>reSolve HN</PageTitle>
@@ -210,9 +192,7 @@ const Layout = ({ children }) => (
         <PageRoot>{children}</PageRoot>
       </Content>
       <Footer>
-        <FooterLink href="https://github.com/reimagined/resolve">
-          reimagined/resolve
-        </FooterLink>
+        <FooterLink href="https://github.com/reimagined/resolve">reimagined/resolve</FooterLink>
       </Footer>
     </ContentRoot>
   </div>

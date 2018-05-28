@@ -1,4 +1,4 @@
-import generateCodename from 'project-name-generator'
+import generateCodeName from 'project-name-generator'
 
 const ITEMS_COUNT = 100
 
@@ -6,9 +6,9 @@ const delay = timeout => new Promise(resolve => setTimeout(resolve, timeout))
 
 const rand = max => Math.floor(Math.random() * max)
 
-const upFirstLetter = str => {
-  return str.replace(/\w\S*/g, function(txt) {
-    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+const upFirstLetter = string => {
+  return string.replace(/\w\S*/g, function(text) {
+    return text.charAt(0).toUpperCase() + text.substr(1).toLowerCase()
   })
 }
 
@@ -20,7 +20,7 @@ async function mainSagaImpl(executeCommand, pushInterval) {
       type: 'append',
       payload: {
         id: `Item${idx}`,
-        name: upFirstLetter(generateCodename().spaced)
+        name: upFirstLetter(generateCodeName().spaced)
       }
     })
   }

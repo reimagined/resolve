@@ -3,17 +3,14 @@ import messages from './messages'
 const checkCondition = (condition, messageGenerator, ...args) => {
   if (!condition) {
     throw new Error(
-      typeof messageGenerator === 'function'
-        ? messageGenerator(...args)
-        : messageGenerator
+      typeof messageGenerator === 'function' ? messageGenerator(...args) : messageGenerator
     )
   }
 }
 
 const checkOptionShape = (option, types) => {
   return !(
-    option == null ||
-    !types.reduce((acc, type) => acc || option.constructor === type, false)
+    option == null || !types.reduce((acc, type) => acc || option.constructor === type, false)
   )
 }
 
@@ -49,8 +46,7 @@ const checkAndGetTableMetaSchema = (tableName, tableSchema) => {
       columnDescription
     )
     checkCondition(
-      validTypes.indexOf(type) > -1 &&
-        (!index || indexRoles.indexOf(index) > -1),
+      validTypes.indexOf(type) > -1 && (!index || indexRoles.indexOf(index) > -1),
       messages.invalidTableSchema,
       tableName,
       messages.columnWrongTypeOrIndex,
@@ -126,12 +122,7 @@ const checkFieldList = (metaInfo, fieldList, validProjectionValues = []) => {
   return null
 }
 
-const isFieldValueCorrect = (
-  metaInfo,
-  fieldName,
-  fieldValue,
-  isNullable = true
-) => {
+const isFieldValueCorrect = (metaInfo, fieldName, fieldValue, isNullable = true) => {
   try {
     const fieldType = checkAndGetFieldType(metaInfo, fieldName)
     if (!fieldType) return false
@@ -167,7 +158,7 @@ const checkInsertedDocumentShape = (tableName, metaInfo, document) => {
     'insert',
     tableName,
     document,
-    messages.unexistingField,
+    messages.nonExistingField,
     checkFieldResult
   )
 
@@ -175,8 +166,7 @@ const checkInsertedDocumentShape = (tableName, metaInfo, document) => {
 
   for (let fieldName of documentKeys) {
     const isNullable = !(
-      primaryIndex.name === fieldName ||
-      secondaryIndexes.find(({ name }) => name === fieldName)
+      primaryIndex.name === fieldName || secondaryIndexes.find(({ name }) => name === fieldName)
     )
 
     checkCondition(
@@ -190,12 +180,7 @@ const checkInsertedDocumentShape = (tableName, metaInfo, document) => {
   }
 }
 
-const checkSearchExpression = (
-  tableName,
-  operation,
-  metaInfo,
-  searchExpression
-) => {
+const checkSearchExpression = (tableName, operation, metaInfo, searchExpression) => {
   checkCondition(
     checkOptionShape(searchExpression, [Object]),
     messages.invalidSearchExpression,
@@ -205,23 +190,13 @@ const checkSearchExpression = (
     messages.searchExpressionNotObject
   )
 
-  const allowedComparationOperators = [
-    '$lt',
-    '$lte',
-    '$gt',
-    '$gte',
-    '$eq',
-    '$ne'
-  ]
+  const allowedComparisonOperators = ['$lt', '$lte', '$gt', '$gte', '$eq', '$ne']
   const allowedLogicalOperators = ['$and', '$or', '$not']
 
-  const operators = Object.keys(searchExpression).filter(
-    key => key.indexOf('$') > -1
-  )
+  const operators = Object.keys(searchExpression).filter(key => key.indexOf('$') > -1)
 
   checkCondition(
-    operators.length === 0 ||
-      operators.length === Object.keys(searchExpression).length,
+    operators.length === 0 || operators.length === Object.keys(searchExpression).length,
     messages.invalidSearchExpression,
     operation,
     tableName,
@@ -242,12 +217,7 @@ const checkSearchExpression = (
       )
 
       if (operator === '$not') {
-        checkSearchExpression(
-          tableName,
-          operation,
-          metaInfo,
-          searchExpression[operator]
-        )
+        checkSearchExpression(tableName, operation, metaInfo, searchExpression[operator])
         return
       }
 
@@ -278,7 +248,7 @@ const checkSearchExpression = (
     operation,
     tableName,
     searchExpression,
-    messages.unexistingField,
+    messages.nonExistingField,
     checkFieldResult
   )
 
@@ -286,8 +256,7 @@ const checkSearchExpression = (
 
   for (let fieldName of documentKeys) {
     const isNullable = !(
-      primaryIndex.name === fieldName ||
-      secondaryIndexes.find(({ name }) => name === fieldName)
+      primaryIndex.name === fieldName || secondaryIndexes.find(({ name }) => name === fieldName)
     )
 
     let fieldValue = searchExpression[fieldName]
@@ -309,7 +278,7 @@ const checkSearchExpression = (
 
       if (inOperators.length > 0) {
         checkCondition(
-          allowedComparationOperators.indexOf(inOperators[0]) > -1,
+          allowedComparisonOperators.indexOf(inOperators[0]) > -1,
           messages.invalidSearchExpression,
           operation,
           tableName,
@@ -342,8 +311,7 @@ const checkUpdateExpression = (tableName, metaInfo, updateExpression) => {
 
   checkCondition(
     checkOptionShape(updateExpression, [Object]) &&
-      (operators.length > 0 &&
-        operators.length === Object.keys(updateExpression).length),
+      (operators.length > 0 && operators.length === Object.keys(updateExpression).length),
     messages.invalidUpdateExpression,
     tableName,
     updateExpression,
@@ -374,11 +342,7 @@ const checkUpdateExpression = (tableName, metaInfo, updateExpression) => {
 
     for (let fieldName of Object.keys(affectedFields)) {
       const fieldType = checkAndGetFieldType(metaInfo, fieldName)
-      if (
-        operator === '$unset' ||
-        (fieldType === 'json' && operator === '$set')
-      )
-        continue
+      if (operator === '$unset' || (fieldType === 'json' && operator === '$set')) continue
 
       const updateValueType =
         affectedFields[fieldName] == null
@@ -395,7 +359,7 @@ const checkUpdateExpression = (tableName, metaInfo, updateExpression) => {
         messages.invalidUpdateExpression,
         tableName,
         updateExpression,
-        messages.uncompatibleUpdateValue,
+        messages.incompatibleUpdateValue,
         fieldName
       )
     }
@@ -403,23 +367,11 @@ const checkUpdateExpression = (tableName, metaInfo, updateExpression) => {
 }
 
 const checkTableExists = async (metaApi, tableName) => {
-  checkCondition(
-    await metaApi.tableExists(tableName),
-    messages.tableNotExist,
-    tableName
-  )
+  checkCondition(await metaApi.tableExists(tableName), messages.tableNotExist, tableName)
 }
 
-const defineTable = async (
-  { metaApi, storeApi },
-  tableName,
-  inputTableSchema
-) => {
-  checkCondition(
-    !(await metaApi.tableExists(tableName)),
-    messages.tableExists,
-    tableName
-  )
+const defineTable = async ({ metaApi, storeApi }, tableName, inputTableSchema) => {
+  checkCondition(!(await metaApi.tableExists(tableName)), messages.tableExists, tableName)
   const tableSchema = checkAndGetTableMetaSchema(tableName, inputTableSchema)
   await storeApi.defineTable(tableName, tableSchema)
   await metaApi.describeTable(tableName, tableSchema)
@@ -488,12 +440,7 @@ const find = async (
   )
 }
 
-const findOne = async (
-  { metaApi, storeApi },
-  tableName,
-  searchExpression,
-  resultFieldsList
-) => {
+const findOne = async ({ metaApi, storeApi }, tableName, searchExpression, resultFieldsList) => {
   await checkTableExists(metaApi, tableName)
 
   const metaInfo = await metaApi.getTableInfo(tableName)
@@ -535,12 +482,7 @@ const insert = async ({ metaApi, storeApi }, tableName, document) => {
   await storeApi.insert(tableName, document)
 }
 
-const update = async (
-  { metaApi, storeApi },
-  tableName,
-  searchExpression,
-  updateExpression
-) => {
+const update = async ({ metaApi, storeApi }, tableName, searchExpression, updateExpression) => {
   await checkTableExists(metaApi, tableName)
 
   const metaInfo = await metaApi.getTableInfo(tableName)

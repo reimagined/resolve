@@ -21,16 +21,12 @@ function copyResolveSerials(oldState, newState) {
   })
 }
 
-function refreshUpdatedObjects(updatedObject, changes, embededKey = '$index') {
-  for (const {
-    key,
-    changes: nextChanges,
-    embededKey: nextEmbededKey
-  } of changes) {
+function refreshUpdatedObjects(updatedObject, changes, embeddedKey = '$index') {
+  for (const { key, changes: nextChanges, embeddedKey: nextEmbeddedKey } of changes) {
     const calcKey =
-      embededKey !== '$index' && Array.isArray(updatedObject)
+      embeddedKey !== '$index' && Array.isArray(updatedObject)
         ? updatedObject.reduce(
-            (result, value, idx) => (value[embededKey] === key ? idx : result),
+            (result, value, idx) => (value[embeddedKey] === key ? idx : result),
             0
           )
         : key
@@ -47,15 +43,13 @@ function refreshUpdatedObjects(updatedObject, changes, embededKey = '$index') {
     if (Array.isArray(updatedObject[calcKey])) {
       updatedObject[calcKey] = [...updatedObject[calcKey]]
     } else {
-      const nextObject = Object.create(
-        Object.getPrototypeOf(updatedObject[calcKey])
-      )
+      const nextObject = Object.create(Object.getPrototypeOf(updatedObject[calcKey]))
       Object.assign(nextObject, updatedObject[calcKey])
       updatedObject[calcKey] = nextObject
     }
 
     if (Array.isArray(nextChanges)) {
-      refreshUpdatedObjects(updatedObject[calcKey], nextChanges, nextEmbededKey)
+      refreshUpdatedObjects(updatedObject[calcKey], nextChanges, nextEmbeddedKey)
     }
   }
 }
@@ -74,16 +68,12 @@ export default function createReadModelsReducer() {
         }
 
         copyResolveSerials(state, nextState)
-        Object.defineProperty(
-          nextState,
-          `resolve-serial:${readModelName}:${resolverName}`,
-          {
-            configurable: true,
-            writable: false,
-            enumerable: false,
-            value: serialId
-          }
-        )
+        Object.defineProperty(nextState, `resolve-serial:${readModelName}:${resolverName}`, {
+          configurable: true,
+          writable: false,
+          enumerable: false,
+          value: serialId
+        })
 
         return nextState
       }

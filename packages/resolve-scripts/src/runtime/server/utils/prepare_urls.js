@@ -2,7 +2,7 @@ import chalk from 'chalk'
 import url from 'url'
 import address from 'address'
 
-import getRootableUrl from './get_rootable_url'
+import getRootBasedUrl from './get_root_based_url'
 
 const prepareUrls = (protocol, host, port) => {
   const formatUrl = hostname =>
@@ -10,14 +10,14 @@ const prepareUrls = (protocol, host, port) => {
       protocol,
       hostname,
       port,
-      pathname: getRootableUrl('/')
+      pathname: getRootBasedUrl('/')
     })
   const prettyPrintUrl = hostname =>
     url.format({
       protocol,
       hostname,
       port: chalk.bold(port),
-      pathname: getRootableUrl('/')
+      pathname: getRootBasedUrl('/')
     })
 
   const isUnspecifiedHost = host === '0.0.0.0' || host === '::'
@@ -25,16 +25,12 @@ const prepareUrls = (protocol, host, port) => {
   if (isUnspecifiedHost) {
     prettyHost = 'localhost'
     try {
-      // This can only return an IPv4 address
+      // This can only return an IP version 4 address
       lanUrlForConfig = address.ip()
       if (lanUrlForConfig) {
         // Check if the address is a private ip
-        // https://en.wikipedia.org/wiki/Private_network#Private_IPv4_address_spaces
-        if (
-          /^10[.]|^172[.](1[6-9]|2[0-9]|3[0-1])[.]|^192[.]168[.]/.test(
-            lanUrlForConfig
-          )
-        ) {
+        // https://en.wikipedia.org/wiki/Private_network#Private_IP version 4_address_spaces
+        if (/^10[.]|^172[.](1[6-9]|2[0-9]|3[0-1])[.]|^192[.]168[.]/.test(lanUrlForConfig)) {
           // Address is private, format it for later use
           lanUrlForTerminal = prettyPrintUrl(lanUrlForConfig)
         } else {

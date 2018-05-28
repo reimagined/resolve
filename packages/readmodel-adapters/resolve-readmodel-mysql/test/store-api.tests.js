@@ -14,9 +14,7 @@ describe('resolve-readmodel-mysql store-api', () => {
     executor = sinon.stub()
 
     pool = {
-      escapeId: sinon
-        .stub()
-        .callsFake(value => `\`${value.replace(/`/g, '``')}\``),
+      escapeId: sinon.stub().callsFake(value => `\`${value.replace(/`/g, '``')}\``),
       connection: { execute: executor },
       metaInfo: {
         tables: {
@@ -63,7 +61,7 @@ describe('resolve-readmodel-mysql store-api', () => {
     )
   })
 
-  it('should provide find method - search logical/comparation operators', async () => {
+  it('should provide find method - search logical/comparison operators', async () => {
     const gaugeResultSet = []
     executor.onCall(0).callsFake(async () => [gaugeResultSet])
 
@@ -272,12 +270,7 @@ describe('resolve-readmodel-mysql store-api', () => {
     const gaugeResult = {}
     executor.onCall(0).callsFake(async () => [[gaugeResult]])
 
-    const result = await storeApi.findOne(
-      pool,
-      'test',
-      { search: 0, 'inner.search': 1 },
-      null
-    )
+    const result = await storeApi.findOne(pool, 'test', { search: 0, 'inner.search': 1 }, null)
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
@@ -317,9 +310,7 @@ describe('resolve-readmodel-mysql store-api', () => {
     await storeApi.insert(pool, 'test', { id: 1, value: 2 })
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
-      format(
-        `INSERT INTO \`test\`(\`id\`, \`value\`) VALUES(?, CAST(? AS JSON))`
-      )
+      format(`INSERT INTO \`test\`(\`id\`, \`value\`) VALUES(?, CAST(? AS JSON))`)
     )
 
     expect(executor.firstCall.args[1]).to.be.deep.equal([1, '2'])
@@ -351,14 +342,7 @@ describe('resolve-readmodel-mysql store-api', () => {
       )
     )
 
-    expect(executor.firstCall.args[1]).to.be.deep.equal([
-      10,
-      '20',
-      3,
-      4,
-      1,
-      '2'
-    ])
+    expect(executor.firstCall.args[1]).to.be.deep.equal([10, '20', 3, 4, 1, '2'])
   })
 
   it('should provide del method', async () => {

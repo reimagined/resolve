@@ -28,19 +28,14 @@ describe('resolve-command', () => {
     eventStore = {
       getEventsByAggregateId: sinon
         .stub()
-        .callsFake(
-          (eventTypes, handler) =>
-            eventList.length ? handler(eventList.shift()) : null
-        ),
+        .callsFake((eventTypes, handler) => (eventList.length ? handler(eventList.shift()) : null)),
       saveEvent: sinon.stub().callsFake(event => {
         eventList.push(event)
         return event
       })
     }
 
-    const aggregate = aggregates.find(
-      aggregate => aggregate.name === AGGREGATE_NAME
-    )
+    const aggregate = aggregates.find(aggregate => aggregate.name === AGGREGATE_NAME)
 
     aggregate.projection = {
       SuccessEvent: state => {
@@ -89,7 +84,7 @@ describe('resolve-command', () => {
     expect(aggregateVersion).to.be.equal(0)
   })
 
-  it('should success build aggregate state and execute commnand', async () => {
+  it('should success build aggregate state and execute command', async () => {
     const executeCommand = createCommandExecutor({ eventStore, aggregates })
     eventList = [{ type: 'SuccessEvent', aggregateVersion: 1 }]
 
@@ -113,13 +108,13 @@ describe('resolve-command', () => {
     eventList = [{ type: 'BrokenEvent', aggregateVersion: 1 }]
 
     try {
-      const commnand = executeCommand({
+      const command = executeCommand({
         aggregateName: AGGREGATE_NAME,
         aggregateId: AGGREGATE_ID,
         type: 'emptyCommand'
       })
 
-      await commnand
+      await command
 
       return Promise.reject('Test failed')
     } catch (error) {
@@ -214,12 +209,8 @@ describe('resolve-command', () => {
   })
 
   it('should pass security context to command handler', async () => {
-    const aggregate = aggregates.find(
-      aggregate => aggregate.name === AGGREGATE_NAME
-    )
-    aggregate.commands.emptyCommand = sinon
-      .stub()
-      .callsFake(aggregate.commands.emptyCommand)
+    const aggregate = aggregates.find(aggregate => aggregate.name === AGGREGATE_NAME)
+    aggregate.commands.emptyCommand = sinon.stub().callsFake(aggregate.commands.emptyCommand)
 
     const executeCommand = createCommandExecutor({ eventStore, aggregates })
     eventList = [{ type: 'SuccessEvent', aggregateVersion: 1 }]
@@ -236,9 +227,7 @@ describe('resolve-command', () => {
 
     await transaction
 
-    expect(aggregate.commands.emptyCommand.lastCall.args[2]).to.be.equal(
-      jwtToken
-    )
+    expect(aggregate.commands.emptyCommand.lastCall.args[2]).to.be.equal(jwtToken)
 
     expect(lastState).to.be.deep.equal({
       value: 42

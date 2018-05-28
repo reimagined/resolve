@@ -93,7 +93,7 @@ it("Story { type: 'ask' } renders correctly", () => {
         text: 'comment',
         createdAt: new Date(0),
         createdBy: 'user-id',
-        createdByNane: 'user'
+        createdByName: 'user'
       }
     ],
     votes: [],

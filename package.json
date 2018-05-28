@@ -8,6 +8,7 @@
     "babel-eslint": "^8.2.2",
     "eslint": "^4.19.1",
     "eslint-config-react-app": "^3.0.0-next.b2fd8db8",
+    "eslint-plugin-spellcheck": "^0.0.10",
     "eslint-plugin-flowtype": "^2.46.1",
     "eslint-plugin-import": "^2.9.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
@@ -26,23 +27,19 @@
     "examples/*"
   ],
   "scripts": {
-    "clean": "npx oao all \"npx rimraf dist\" --parallel && npx rimraf yarn-error.log && npx oao clean",
+    "clean":
+      "npx oao all \"npx rimraf dist\" --parallel && npx rimraf yarn-error.log && npx oao clean",
     "lint": "eslint .",
     "lint-staged": "lint-staged",
-    "prepublish": "npx oao all \"npx rimraf dist\" --parallel && oao run-script prepublish --parallel",
+    "prepublish":
+      "npx oao all \"npx rimraf dist\" --parallel && oao run-script prepublish --parallel",
     "prettier": "prettier --single-quote --no-semi --write \"**/**.js\"",
     "publish": "oao publish -i \"examples/*\" --no-git-commit --no-changelog",
     "test": "oao all \"yarn test --color 2>&1\"",
     "test:functional": "oao run-script test:functional"
   },
-  "pre-commit": [
-    "lint-staged",
-    "lint"
-  ],
+  "pre-commit": ["lint-staged", "lint"],
   "lint-staged": {
-    "*.{js,css}": [
-      "prettier --single-quote --no-semi --write",
-      "git add"
-    ]
+    "*.{js,css}": ["prettier --single-quote --no-semi --write", "git add"]
   }
 }
