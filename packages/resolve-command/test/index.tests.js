@@ -28,14 +28,19 @@ describe('resolve-command', () => {
     eventStore = {
       getEventsByAggregateId: sinon
         .stub()
-        .callsFake((eventTypes, handler) => (eventList.length ? handler(eventList.shift()) : null)),
+        .callsFake(
+          (eventTypes, handler) =>
+            eventList.length ? handler(eventList.shift()) : null
+        ),
       saveEvent: sinon.stub().callsFake(event => {
         eventList.push(event)
         return event
       })
     }
 
-    const aggregate = aggregates.find(aggregate => aggregate.name === AGGREGATE_NAME)
+    const aggregate = aggregates.find(
+      aggregate => aggregate.name === AGGREGATE_NAME
+    )
 
     aggregate.projection = {
       SuccessEvent: state => {
@@ -209,8 +214,12 @@ describe('resolve-command', () => {
   })
 
   it('should pass security context to command handler', async () => {
-    const aggregate = aggregates.find(aggregate => aggregate.name === AGGREGATE_NAME)
-    aggregate.commands.emptyCommand = sinon.stub().callsFake(aggregate.commands.emptyCommand)
+    const aggregate = aggregates.find(
+      aggregate => aggregate.name === AGGREGATE_NAME
+    )
+    aggregate.commands.emptyCommand = sinon
+      .stub()
+      .callsFake(aggregate.commands.emptyCommand)
 
     const executeCommand = createCommandExecutor({ eventStore, aggregates })
     eventList = [{ type: 'SuccessEvent', aggregateVersion: 1 }]
@@ -227,7 +236,9 @@ describe('resolve-command', () => {
 
     await transaction
 
-    expect(aggregate.commands.emptyCommand.lastCall.args[2]).to.be.equal(jwtToken)
+    expect(aggregate.commands.emptyCommand.lastCall.args[2]).to.be.equal(
+      jwtToken
+    )
 
     expect(lastState).to.be.deep.equal({
       value: 42

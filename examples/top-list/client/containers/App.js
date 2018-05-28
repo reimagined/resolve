@@ -15,7 +15,10 @@ class App extends React.Component {
     return (
       <div>
         <Helmet>
-          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+          />
           <link rel="stylesheet" href="/bootstrap.min.css" />
           <link rel="stylesheet" href="/style.css" />
           <title>reSolve Top List Example</title>
@@ -28,7 +31,11 @@ class App extends React.Component {
 
           <ItemsViewer count={ITEMS_PER_PAGE} page={this.state.page} />
 
-          <ItemsPager count={ITEMS_PER_PAGE} page={this.state.page} setPage={this.setPage} />
+          <ItemsPager
+            count={ITEMS_PER_PAGE}
+            page={this.state.page}
+            setPage={this.setPage}
+          />
         </div>
       </div>
     )

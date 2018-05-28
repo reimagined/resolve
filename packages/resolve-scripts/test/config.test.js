@@ -299,7 +299,9 @@ describe('resolve-scripts build --config=resolve.test.config.json', () => {
     'merge cli should work correctly ' +
       '[{} <- defaults <- resolve.config.json <- cli] (mode=development)',
     async () => {
-      const json = await exec(`resolve-scripts build --config=${resolveConfigPath} --start --dev`)
+      const json = await exec(
+        `resolve-scripts build --config=${resolveConfigPath} --start --dev`
+      )
 
       const resultConfig = {
         ...resolveConfigOrigin,
@@ -316,7 +318,9 @@ describe('resolve-scripts build --config=resolve.test.config.json', () => {
     'merge cli should work correctly ' +
       '[{} <- defaults <- resolve.config.json <- cli] (mode=production)',
     async () => {
-      const json = await exec(`resolve-scripts build --config=${resolveConfigPath} --prod`)
+      const json = await exec(
+        `resolve-scripts build --config=${resolveConfigPath} --prod`
+      )
 
       const resultConfig = {
         ...resolveConfigOrigin,

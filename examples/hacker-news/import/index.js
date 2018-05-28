@@ -10,10 +10,13 @@ console.log('Import has been started. Press Control+C to stop import')
 
 start(
   total => {
-    bar = new ProgressBar('Data importing from news.ycombinator.com [:bar] :current/:total', {
-      width: 20,
-      total
-    })
+    bar = new ProgressBar(
+      'Data importing from news.ycombinator.com [:bar] :current/:total',
+      {
+        width: 20,
+        total
+      }
+    )
   },
   () => {
     bar.tick()

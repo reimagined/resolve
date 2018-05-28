@@ -640,7 +640,9 @@ describe('resolve-readmodel-base check-store-api', () => {
         timestampErr: 200,
         contentErr: {}
       })
-      return Promise.reject('insert should fail on nonExisting fields in schema')
+      return Promise.reject(
+        'insert should fail on nonExisting fields in schema'
+      )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
       expect(err.message).to.be.equal(
@@ -668,7 +670,9 @@ describe('resolve-readmodel-base check-store-api', () => {
 
     try {
       await api.insert('table', null)
-      return Promise.reject('insert should fail on nonExisting fields in schema')
+      return Promise.reject(
+        'insert should fail on nonExisting fields in schema'
+      )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
       expect(err.message).to.be.equal(

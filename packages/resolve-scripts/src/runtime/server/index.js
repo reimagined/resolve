@@ -48,7 +48,10 @@ app.use(getRootBasedUrl('/api/status'), statusHandler)
 
 app.use(getRootBasedUrl('/'), express.static(`${distDir}/client`))
 app.use(getRootBasedUrl('/'), express.static(staticDir))
-app.use(getRootBasedUrl('/'), express.static(path.resolve(__dirname, '../static')))
+app.use(
+  getRootBasedUrl('/'),
+  express.static(path.resolve(__dirname, '../static'))
+)
 
 app.get([getRootBasedUrl('/'), getRootBasedUrl('/*')], serverSideRendering)
 

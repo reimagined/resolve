@@ -55,12 +55,18 @@ export const unicodeSymbolsForEscape = `
     \\uFFC1\\uFFC8\\uFFC9\\uFFD0\\uFFD1\\uFFD8\\uFFD9\\uFFDD-\\uFFDF\\uFFE7\\uFFEF-
     \\uFFFB\\u038D\\uFFFE\\uFFFF]`
 
-export const unicodeEscapeRegex = new RegExp(unicodeSymbolsForEscape.replace(/\s/g, ''), 'g')
+export const unicodeEscapeRegex = new RegExp(
+  unicodeSymbolsForEscape.replace(/\s/g, ''),
+  'g'
+)
 
 export function unicodeSymbolEscaper(match) {
   return `\\u${(+match.codePointAt(0)).toString(16).padStart(4, '0')}`
 }
 
 export default function jsonUtfStringify(inputObject) {
-  return JSON.stringify(inputObject).replace(unicodeEscapeRegex, unicodeSymbolEscaper)
+  return JSON.stringify(inputObject).replace(
+    unicodeEscapeRegex,
+    unicodeSymbolEscaper
+  )
 }

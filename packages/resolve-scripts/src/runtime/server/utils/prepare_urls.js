@@ -30,7 +30,11 @@ const prepareUrls = (protocol, host, port) => {
       if (lanUrlForConfig) {
         // Check if the address is a private ip
         // https://en.wikipedia.org/wiki/Private_network#Private_IP version 4_address_spaces
-        if (/^10[.]|^172[.](1[6-9]|2[0-9]|3[0-1])[.]|^192[.]168[.]/.test(lanUrlForConfig)) {
+        if (
+          /^10[.]|^172[.](1[6-9]|2[0-9]|3[0-1])[.]|^192[.]168[.]/.test(
+            lanUrlForConfig
+          )
+        ) {
           // Address is private, format it for later use
           lanUrlForTerminal = prettyPrintUrl(lanUrlForConfig)
         } else {

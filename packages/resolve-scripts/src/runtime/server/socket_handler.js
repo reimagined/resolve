@@ -11,7 +11,10 @@ const socketHandler = socket => {
 
   const emitter = event => socket.emit('event', JSON.stringify(event))
 
-  let unsubscribePromise = eventStore.subscribeOnBus({ types: [], ids: [] }, emitter)
+  let unsubscribePromise = eventStore.subscribeOnBus(
+    { types: [], ids: [] },
+    emitter
+  )
   const unsubscribe = () => {
     if (unsubscribePromise) {
       unsubscribePromise.then(unsubscribeCallback => unsubscribeCallback())

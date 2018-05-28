@@ -13,7 +13,11 @@ describe('resolve-redux', () => {
     expect(actions).to.be.equal(importedModule.actions)
     expect(createReducer).to.be.equal(importedModule.createReducer)
     expect(createActions).to.be.equal(importedModule.createActions)
-    expect(sendCommandMiddleware).to.be.equal(importedModule.sendCommandMiddleware)
-    expect(setSubscriptionMiddleware).to.be.equal(importedModule.setSubscriptionMiddleware)
+    expect(sendCommandMiddleware).to.be.equal(
+      importedModule.sendCommandMiddleware
+    )
+    expect(setSubscriptionMiddleware).to.be.equal(
+      importedModule.setSubscriptionMiddleware
+    )
   })
 })
