@@ -31,7 +31,7 @@ export default ({ resolveConfig, isClient }) => {
     `import interopRequireDefault from "@babel/runtime/helpers/interopRequireDefault"`,
     ``,
     `const bus = ${injectEnv(bus)}`,
-    `const adapter = interopRequireDefault(require(bus.adapter)).default`,
+    `const adapter = interopRequireDefault(eval('require(bus.adapter)')).default`,
     `const options = bus.options`,
     ``,
     `export default { adapter, options }`

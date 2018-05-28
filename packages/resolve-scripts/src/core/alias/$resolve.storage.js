@@ -31,7 +31,7 @@ export default ({ resolveConfig, isClient }) => {
     `import interopRequireDefault from "@babel/runtime/helpers/interopRequireDefault"`,
     ``,
     `const storage = ${injectEnv(storage)}`,
-    `const adapter = interopRequireDefault(require(storage.adapter)).default`,
+    `const adapter = interopRequireDefault(eval('require(storage.adapter)')).default`,
     `const options = storage.options`,
     ``,
     `export default { adapter, options }`

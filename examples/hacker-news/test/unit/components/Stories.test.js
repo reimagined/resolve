@@ -14,7 +14,9 @@ it('Stories first page renders correctly', () => {
       votes: [],
       createdAt: new Date(0),
       createdBy: 'user-id',
-      createdByName: 'user'
+      createdByName: 'user',
+      upvoteStory: ()=>{},
+      unvoteStory: ()=>{}
     }
   ]
   const wrapper = shallow(<Stories items={items} type={'story'} />)
@@ -34,7 +36,9 @@ it('Stories second page renders correctly', () => {
       votes: [],
       createdAt: new Date(0),
       createdBy: 'user-id',
-      createdByName: 'user'
+      createdByName: 'user',
+      upvoteStory: ()=>{},
+      unvoteStory: ()=>{}
     })
   }
   const wrapper = shallow(<Stories items={stories} page={2} type={'story'} />)
@@ -46,7 +50,13 @@ it('Stories page renders with error', () => {
   const stories = []
 
   const wrapper = shallow(
-    <Stories items={stories} page="text" type={'story'} />
+    <Stories
+      items={stories}
+      page="text"
+      type={'story'}
+      upvoteStory={()=>{}}
+      unvoteStory={()=>{}}
+    />
   )
 
   expect(wrapper).toMatchSnapshot()

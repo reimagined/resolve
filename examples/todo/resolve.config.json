@@ -4,13 +4,13 @@
     "aggregates": [
         {
             "name": "Todo",
-            "commands": "common/aggregates/todo/commands.js"
+            "commands": "common/aggregates/todo.commands.js"
         }
     ],
     "viewModels": [
         {
             "name": "Todos",
-            "projection": "common/view-models/todos/projection.js"
+            "projection": "common/view-models/todos.projection.js"
         }
     ]
 }

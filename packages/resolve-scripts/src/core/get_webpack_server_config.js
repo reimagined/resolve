@@ -8,7 +8,7 @@ import getWebpackResolveDefinePlugin from './get_webpack_resolve_define_plugin'
 import getWebpackResolveAliasPlugin from './get_webpack_resolve_alias_plugin'
 import getWebpackExternalsPlugin from './get_webpack_externals_plugin'
 
-const getWebpackServerConfig = ({ resolveConfig, deployOptions, env }) => {
+const getWebpackServerConfig = ({ resolveConfig, deployOptions, env, alias }) => {
   const serverIndexPath = path.resolve(__dirname, '../runtime/server/index.js')
 
   const serverDistDir = path.resolve(
@@ -32,7 +32,8 @@ const getWebpackServerConfig = ({ resolveConfig, deployOptions, env }) => {
       __filename: true
     },
     resolve: {
-      modules: getModulesDirs()
+      modules: getModulesDirs(),
+      alias
       // alias: getWebpackResolveAliasPlugin({
       //   resolveConfig,
       //   deployOptions,
@@ -49,12 +50,13 @@ const getWebpackServerConfig = ({ resolveConfig, deployOptions, env }) => {
     module: {
       rules: [
         {
-          test: /\$resolve.\w+\.js/,
+          test: /core\/alias\/\$resolve.\w+\.js/,
           use: [
             {
               loader: 'val-loader',
               options: {
                 resolveConfig,
+                deployOptions,
                 isClient
               }
             },

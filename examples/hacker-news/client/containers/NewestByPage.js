@@ -8,13 +8,17 @@ const NewestByPage = ({
   match: {
     params: { page }
   },
-  data: { stories = [], me }
+  data: { stories = [], me },
+  upvoteStory,
+  unvoteStory
 }) => (
   <Stories
     items={stories}
     page={page || '1'}
     type="newest"
     userId={me && me.id}
+    upvoteStory={upvoteStory}
+    unvoteStory={unvoteStory}
   />
 )
 
@@ -29,7 +33,7 @@ const getReadModelData = state => {
   }
 }
 
-export default connectReadModel((state, { match: { params: { page } } }) => ({
+export default connectReadModel((state, { aggregateActions, match: { params: { page } } }) => ({
   readModelName: 'default',
   resolverName: 'allStories',
   parameters: {
@@ -37,5 +41,7 @@ export default connectReadModel((state, { match: { params: { page } } }) => ({
     first: (+page - 1) * ITEMS_PER_PAGE
   },
   data: getReadModelData(state),
-  page
+  page,
+  upvoteStory: aggregateActions.upvoteStory,
+  unvoteStory: aggregateActions.unvoteStory
 }))(NewestByPage)

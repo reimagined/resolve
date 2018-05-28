@@ -8,8 +8,17 @@ const AskByPage = ({
   match: {
     params: { page }
   },
-  data: { stories = [], me }
-}) => <Stories items={stories} page={page} type="ask" userId={me && me.id} />
+  data: { stories = [], me },
+  upvoteStory,
+  unvoteStory
+}) => <Stories
+  items={stories}
+  page={page}
+  type="ask"
+  userId={me && me.id}
+  upvoteStory={upvoteStory}
+  unvoteStory={unvoteStory}
+/>
 
 const getReadModelData = state => {
   try {
@@ -22,7 +31,7 @@ const getReadModelData = state => {
   }
 }
 
-export default connectReadModel((state, { match: { params: { page } } }) => ({
+export default connectReadModel((state, { aggregateActions, match: { params: { page } } }) => ({
   readModelName: 'default',
   resolverName: 'askStories',
   parameters: {
@@ -30,5 +39,7 @@ export default connectReadModel((state, { match: { params: { page } } }) => ({
     first: (+page - 1) * ITEMS_PER_PAGE
   },
   data: getReadModelData(state),
-  page
+  page,
+  upvoteStory: aggregateActions.upvoteStory,
+  unvoteStory: aggregateActions.unvoteStory
 }))(AskByPage)

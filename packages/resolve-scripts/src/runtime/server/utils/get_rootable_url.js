@@ -1,10 +1,12 @@
-let rootPath = $resolve.rootPath ? `/${$resolve.rootPath}` : ''
+import rootPath from '$resolve.rootPath'
+
+const basename = rootPath ? `/${rootPath}` : ''
 
 const getRootableUrl = path => {
   if (/^https?:\/\//.test(path)) {
     return path
   }
-  return `${rootPath}/${path.replace(/^\//, '')}`
+  return `${basename}/${path.replace(/^\//, '')}`
 }
 
 export default getRootableUrl

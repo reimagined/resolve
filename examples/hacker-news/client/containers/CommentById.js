@@ -4,8 +4,6 @@ import uuid from 'uuid'
 import { connectReadModel, connectViewModel } from 'resolve-redux'
 import styled from 'styled-components'
 
-import viewModel from '../../common/view-models/storyDetails'
-import actions from '../actions/storiesActions'
 import Comment from '../components/Comment'
 import ChildrenComments from '../components/ChildrenComments'
 
@@ -76,17 +74,17 @@ export const mapStateToProps = (
     }
   }
 ) => ({
-  story: state.viewModels[viewModel.name][storyId],
-  viewModelName: viewModel.name,
+  story: state.viewModels['storyDetails'][storyId],
+  viewModelName: 'storyDetails',
   aggregateId: storyId,
   parentId: commentId
 })
 
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(
     {
       commentStory: ({ aggregateId, parentId, text }) =>
-        actions.commentStory(aggregateId, {
+        aggregateActions.commentStory(aggregateId, {
           text,
           parentId,
           commentId: uuid.v4()
@@ -103,9 +101,11 @@ const getReadModelData = state => {
   }
 }
 
-export default connectReadModel(state => ({
+export default connectReadModel((state, { aggregateActions }) => ({
   readModelName: 'default',
   resolverName: 'user',
   parameters: {},
-  data: getReadModelData(state)
+  data: getReadModelData(state),
+  upvoteStory: aggregateActions.upvoteStory,
+  unvoteStory: aggregateActions.unvoteStory
 }))(connectViewModel(mapStateToProps, mapDispatchToProps)(CommentById))

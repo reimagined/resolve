@@ -14,7 +14,12 @@ import {
   UpvoteArrow
 } from '../../../client/containers/Story'
 
-import actions from '../../../client/actions/storiesActions'
+const actions = {
+  createStory: () => {},
+  upvoteStory: () => {},
+  unvoteStory: () => {},
+  commentStory: () => {}
+}
 
 let originalUuidV4 = uuid.v4
 let originalNow = Date.now()

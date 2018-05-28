@@ -8,7 +8,6 @@ import sanitizer from 'sanitizer'
 import styled, { css } from 'styled-components'
 
 import Splitter from '../components/Splitter'
-import actions from '../actions/storiesActions'
 import TimeAgo from '../components/TimeAgo'
 
 export const StoryText = styled.div`
@@ -213,7 +212,4 @@ export class Story extends React.PureComponent {
 
 export const mapStateToProps = ({ optimistic }) => ({ optimistic })
 
-export const mapDispatchToProps = dispatch =>
-  bindActionCreators(actions, dispatch)
-
-export default connect(mapStateToProps, mapDispatchToProps)(Story)
+export default connect(mapStateToProps)(Story)

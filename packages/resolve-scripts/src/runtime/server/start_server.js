@@ -6,9 +6,8 @@ import prepareUrls from './utils/prepare_urls'
 
 import port from '$resolve.port'
 import isOpenBrowser from '$resolve.openBrowser'
-
-const applicationName = $resolve.applicationName
-const useYarn = $resolve.useYarn
+import applicationName from '$resolve.applicationName'
+import useYarn from '$resolve.useYarn'
 
 const host = '0.0.0.0'
 const protocol = 'http'

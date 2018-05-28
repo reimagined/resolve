@@ -3,7 +3,7 @@ import jsonwebtoken from 'jsonwebtoken'
 import getRootableUrl from './get_rootable_url'
 import isObject from './is_object'
 
-const jwtCookie = $resolve.jwtCookie
+import jwtCookie from '$resolve.jwtCookie'
 
 const applyJwtValue = (jwtToken, res, url) => {
   const { name: cookieName, ...cookieOptions } = jwtCookie

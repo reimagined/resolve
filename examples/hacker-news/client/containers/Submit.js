@@ -7,8 +7,6 @@ import urlLib from 'url'
 import styled from 'styled-components'
 import { connectReadModel } from 'resolve-redux'
 
-import actions from '../actions/storiesActions'
-
 const labelWidth = '30px'
 
 const SubmitRoot = styled.div`
@@ -124,11 +122,11 @@ export class Submit extends React.PureComponent {
   }
 }
 
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(
     {
       createStory: ({ id, title, text, link }) =>
-        actions.createStory(id, {
+        aggregateActions.createStory(id, {
           title,
           text,
           link

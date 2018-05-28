@@ -76,7 +76,7 @@ export default ({ resolveConfig, isClient }) => {
       constants.push(
         `const storage_${index} = ${injectEnv(storage)}`,
         `const storageAdapter_${index} = interopRequireDefault(`,
-        `  require(storage_${index}.adapter)`,
+        `  eval('require(storage_${index}.adapter)')`,
         `).default`,
         `const storageOptions_${index} = storage_${index}.options`
       )

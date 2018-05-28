@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken'
+
 import jwtSecret from '../../auth/jwtSecret'
 
 const getMe = async jwtToken => {

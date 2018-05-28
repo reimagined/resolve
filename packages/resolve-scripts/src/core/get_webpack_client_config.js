@@ -7,7 +7,7 @@ import getWebpackResolveAliasPlugin from './get_webpack_resolve_alias_plugin'
 import getWebpackExternalsPlugin from './get_webpack_externals_plugin'
 import resolveFile from './resolve_file'
 
-const getClientWebpackConfig = ({ resolveConfig, deployOptions, env }) => {
+const getClientWebpackConfig = ({ resolveConfig, deployOptions, env, alias }) => {
   const clientIndexPath = resolveFile(resolveConfig.index)
 
   const clientDistDir = path.resolve(
@@ -33,23 +33,19 @@ const getClientWebpackConfig = ({ resolveConfig, deployOptions, env }) => {
       devtoolFallbackModuleFilenameTemplate: '[resource-path]?[hash]'
     },
     resolve: {
-      modules: getModulesDirs()
-      // alias: getWebpackResolveAliasPlugin({
-      //   resolveConfig,
-      //   deployOptions,
-      //   env,
-      //   isClient
-      // })
+      modules: getModulesDirs(),
+      alias
     },
     module: {
       rules: [
         {
-          test: /\$resolve.\w+\.js/,
+          test: /core\/alias\/\$resolve.\w+\.js/,
           use: [
             {
               loader: 'val-loader',
               options: {
                 resolveConfig,
+                deployOptions,
                 isClient
               }
             },

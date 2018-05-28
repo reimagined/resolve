@@ -1,7 +1,7 @@
 import createEventStore from 'resolve-es'
 
 import resolveStorage from '$resolve.storage'
-import resolveBus from '$resolve.storage'
+import resolveBus from '$resolve.bus'
 
 const storageAdapter = resolveStorage.adapter
 const storageOptions = resolveStorage.options

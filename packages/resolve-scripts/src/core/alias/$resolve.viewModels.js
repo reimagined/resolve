@@ -108,7 +108,7 @@ export default ({ resolveConfig, isClient }) => {
       constants.push(
         `const snapshot_${index} = ${injectEnv(snapshot)}`,
         `const snapshotAdapter_${index} = interopRequireDefault(`,
-        `  require(snapshot_${index}.adapter)`,
+        `  eval('require(snapshot_${index}.adapter)')`,
         `).default`,
         `const snapshotOptions_${index} = snapshot_${index}.options`
       )
