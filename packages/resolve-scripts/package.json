@@ -16,7 +16,7 @@
     "resolve-scripts": "./bin/resolve-scripts.js"
   },
   "scripts": {
-    "test": "jest --testMatch=**/test/alias/**.test.js --verbose",
+    "test": "jest --testMatch=**/test/**.test.js --verbose",
     "prepublish": "yarn build",
     "build": "babel --source-maps --out-dir ./dist ./src"
   },

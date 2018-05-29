@@ -1,13 +1,13 @@
 import path from 'path'
 import { extractEnv } from 'json-env-extract'
 
-import alias from '../../src/core/alias/$resolve.subscribe'
+import alias from '../../src/core/alias/$resolve.subscribeAdapter'
 
 describe('base config works correctly', () => {
   const resolveConfig = extractEnv(`
     {
-      subscribe: {
-        adapter: "${path.resolve(__dirname, 'files/testAdapter.js')}",
+      subscribeAdapter: {
+        module: "${path.resolve(__dirname, 'files/testAdapter.js')}",
         options: {
           url: 'http://test.test'
         }
@@ -41,8 +41,8 @@ describe('base config works correctly', () => {
 test('config with process.env failed', () => {
   const resolveConfig = extractEnv(`
     {
-      subscribe: {
-        adapter: process.env.SUBSCRIBE_ADAPTER,
+      subscribeAdapter: {
+        module: process.env.SUBSCRIBE_ADAPTER,
         options: {
           url: process.env.SUBSCRIBE_OPTIONS_URL
         }
@@ -64,8 +64,8 @@ test('config with process.env failed', () => {
 test('config with process.env (v2) failed', () => {
   const resolveConfig = extractEnv(`
     {
-      subscribe: {
-        adapter: "${path.resolve(__dirname, 'files/testAdapter.js')}",
+      subscribeAdapter: {
+        module: "${path.resolve(__dirname, 'files/testAdapter.js')}",
         options: {
           url: process.env.SUBSCRIBE_OPTIONS_URL
         }

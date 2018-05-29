@@ -139,16 +139,6 @@ import resolvers_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test
 
 
 const name_0 = \\"Todos\\"
-const storage_0 = {
-  \\"adapter\\": process.env.READ_MODEL_TODOS_ADAPTER,
-  \\"options\\": {
-    \\"size\\": process.env.READ_MODEL_TODOS_OPTIONS_SIZE
-  }
-}
-const storageAdapter_0 = interopRequireDefault(
-  require(storage_0.adapter)
-).default
-const storageOptions_0 = storage_0.options
 
 const readModels = []
 
@@ -156,10 +146,6 @@ readModels.push({
   name: name_0
 , projection: projection_0
 , resolvers: resolvers_0
-, snapshot: {
-    adapter: storageAdapter_0,
-    options: storageOptions_0
-  }
 })
 
 export default readModels
@@ -197,16 +183,6 @@ import resolvers_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test
 
 
 const name_0 = \\"Todos\\"
-const storage_0 = {
-  \\"adapter\\": \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testSnapshotAdapter.js\\",
-  \\"options\\": {
-    \\"size\\": 100
-  }
-}
-const storageAdapter_0 = interopRequireDefault(
-  require(storage_0.adapter)
-).default
-const storageOptions_0 = storage_0.options
 
 const readModels = []
 
@@ -214,10 +190,6 @@ readModels.push({
   name: name_0
 , projection: projection_0
 , resolvers: resolvers_0
-, snapshot: {
-    adapter: storageAdapter_0,
-    options: storageOptions_0
-  }
 })
 
 export default readModels

@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`base config works correctly [server] 1`] = `
+"
+import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
+
+const busAdapter = {
+  \\"module\\": \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testAdapter.js\\",
+  \\"options\\": {
+    \\"url\\": \\"http://test.test\\"
+  }
+}
+const busAdapterModule = interopRequireDefault(
+  eval('require(busAdapter.module)')
+).default
+const busAdapterOptions = busAdapter.options
+
+export default {
+  module: busAdapterModule,
+  options: busAdapterOptions
+}
+"
+`;
+
+exports[`config with process.env works correctly 1`] = `
+"
+import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
+
+const busAdapter = {
+  \\"module\\": process.env.BUS_ADAPTER,
+  \\"options\\": {
+    \\"url\\": process.env.BUS_OPTIONS_URL
+  }
+}
+const busAdapterModule = interopRequireDefault(
+  eval('require(busAdapter.module)')
+).default
+const busAdapterOptions = busAdapter.options
+
+export default {
+  module: busAdapterModule,
+  options: busAdapterOptions
+}
+"
+`;

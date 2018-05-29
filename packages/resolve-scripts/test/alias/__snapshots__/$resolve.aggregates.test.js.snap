@@ -178,26 +178,12 @@ import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefaul
 import commands_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testCommands.js\\"
 
 const name_0 = \\"Todo\\"
-const snapshot_0 = {
-  \\"adapter\\": process.env.AGGREGATE_TODO_SNAPSHOT_ADAPTER,
-  \\"options\\": {
-    \\"size\\": process.env.AGGREGATE_TODO_SNAPSHOT_OPTIONS_SIZE
-  }
-}
-const snapshotAdapter_0 = interopRequireDefault(
-  require(snapshot_0.adapter)
-).default
-const snapshotOptions_0 = snapshot_0.options
 
 const aggregates = []
 
 aggregates.push({
   name: name_0
 , commands: commands_0
-, snapshot: {
-    adapter: snapshotAdapter_0,
-    options: snapshotOptions_0
-  }
 })
 
 export default aggregates
@@ -234,26 +220,12 @@ import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefaul
 import commands_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testCommands.js\\"
 
 const name_0 = \\"Todo\\"
-const snapshot_0 = {
-  \\"adapter\\": \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testSnapshotAdapter.js\\",
-  \\"options\\": {
-    \\"size\\": 100
-  }
-}
-const snapshotAdapter_0 = interopRequireDefault(
-  require(snapshot_0.adapter)
-).default
-const snapshotOptions_0 = snapshot_0.options
 
 const aggregates = []
 
 aggregates.push({
   name: name_0
 , commands: commands_0
-, snapshot: {
-    adapter: snapshotAdapter_0,
-    options: snapshotOptions_0
-  }
 })
 
 export default aggregates

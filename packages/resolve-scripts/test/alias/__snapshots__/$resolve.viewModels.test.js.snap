@@ -177,16 +177,6 @@ import serializeState_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts
 import deserializeState_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/src/runtime/common/view-models/deserialize_state.js\\"
 
 const name_0 = \\"Todos\\"
-const snapshot_0 = {
-  \\"adapter\\": process.env.VIEW_MODEL_TODOS_ADAPTER,
-  \\"options\\": {
-    \\"size\\": process.env.VIEW_MODEL_TODOS_OPTIONS_SIZE
-  }
-}
-const snapshotAdapter_0 = interopRequireDefault(
-  require(snapshot_0.adapter)
-).default
-const snapshotOptions_0 = snapshot_0.options
 const viewModels = []
 
 viewModels.push({
@@ -194,10 +184,6 @@ viewModels.push({
 , projection: projection_0
 , serializeState: serializeState_0
 , deserializeState: deserializeState_0
-, snapshot: {
-    adapter: snapshotAdapter_0,
-    options: snapshotOptions_0 
-  }
 })
 
 export default viewModels
@@ -233,16 +219,6 @@ import serializeState_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts
 import deserializeState_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/src/runtime/common/view-models/deserialize_state.js\\"
 
 const name_0 = \\"Todos\\"
-const snapshot_0 = {
-  \\"adapter\\": \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testSnapshotAdapter.js\\",
-  \\"options\\": {
-    \\"size\\": 100
-  }
-}
-const snapshotAdapter_0 = interopRequireDefault(
-  require(snapshot_0.adapter)
-).default
-const snapshotOptions_0 = snapshot_0.options
 const viewModels = []
 
 viewModels.push({
@@ -250,10 +226,6 @@ viewModels.push({
 , projection: projection_0
 , serializeState: serializeState_0
 , deserializeState: deserializeState_0
-, snapshot: {
-    adapter: snapshotAdapter_0,
-    options: snapshotOptions_0 
-  }
 })
 
 export default viewModels

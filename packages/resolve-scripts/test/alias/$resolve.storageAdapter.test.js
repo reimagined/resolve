@@ -1,13 +1,13 @@
 import path from 'path'
 import { extractEnv } from 'json-env-extract'
 
-import alias from '../../src/core/alias/$resolve.bus'
+import alias from '../../src/core/alias/$resolve.storageAdapter'
 
 describe('base config works correctly', () => {
   const resolveConfig = extractEnv(`
     {
-      bus: {
-        adapter: "${path.resolve(__dirname, 'files/testAdapter.js')}",
+      storageAdapter: {
+        module: "${path.resolve(__dirname, 'files/testAdapter.js')}",
         options: {
           url: 'http://test.test'
         }
@@ -42,10 +42,10 @@ describe('base config works correctly', () => {
 test('config with process.env works correctly', () => {
   const resolveConfig = extractEnv(`
     {
-      bus: {
-        adapter: process.env.BUS_ADAPTER,
+      storageAdapter: {
+        module: process.env.STORAGE_ADAPTER,
         options: {
-          url: process.env.BUS_OPTIONS_URL
+          url: process.env.STORAGE_OPTIONS_URL
         }
       }
     }
