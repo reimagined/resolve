@@ -107,13 +107,26 @@ export default ({ resolveConfig, isClient }) => {
     constants.push(`const name_${index} = ${JSON.stringify(name)}`)
 
     if (!isClient && viewModel.snapshotAdapter) {
-      constants.push(
-        `const snapshotAdapter_${index} = ${injectEnv(snapshotAdapter)}`,
-        `const snapshotAdapterModule_${index} = interopRequireDefault(`,
-        `  eval('require(snapshotAdapter_${index}.module)')`,
-        `).default`,
-        `const snapshotAdapterOptions_${index} = snapshotAdapter_${index}.options`
-      )
+      if (viewModel.snapshotAdapter.module in resolveConfig[envKey]) {
+        constants.push(
+          `const snapshotAdapter_${index} = ${injectEnv(snapshotAdapter)}`,
+          `const snapshotAdapterModule_${index} = interopRequireDefault(`,
+          `  eval('require(snapshotAdapter_${index}.module)')`,
+          `).default`,
+          `const snapshotAdapterOptions_${index} = snapshotAdapter_${index}.options`
+        )
+      } else {
+        imports.push(
+          `import snapshotAdapterModule_${index} from ${JSON.stringify(
+            snapshotAdapter.module
+          )}`
+        )
+        constants.push(
+          `const snapshotAdapterOptions_${index} = ${injectEnv(
+            snapshotAdapter.options
+          )}`
+        )
+      }
     }
 
     exports.push(

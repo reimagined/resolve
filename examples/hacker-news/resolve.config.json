@@ -23,7 +23,14 @@
       "name": "storyDetails",
       "projection": "common/view-models/story_details.projection.js",
       "serializeState": "common/view-models/story_details.serialize_state.js",
-      "deserializeState": "common/view-models/story_details.deserialize_state.js"
+      "deserializeState": "common/view-models/story_details.deserialize_state.js",
+      "snapshotAdapter": {
+        "module": "common/view-models/snapshot_adapter.module.js",
+        "options": {
+          "pathToFile": "snapshot.db",
+          "bucketSize": 1
+        }
+      }
     }
   ],
   "readModels": [
