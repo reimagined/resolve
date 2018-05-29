@@ -1,14 +1,5 @@
 # Contributors Guide
 
--------------------------------------------------------------------------
-Sorry, this article isn't finished yet :(
-    
-We'll glad to see all your questions:
-* [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
-* [**Twitter**](https://twitter.com/resolvejs)
-* e-mail to **reimagined@devexpress.com**
--------------------------------------------------------------------------
-
 :+1::tada: First off, thanks for taking the time to contribute! :tada::+1:
 
 The following is a set of guidelines for contributing to Resolve and its packages, which are hosted in the [Reimagined](https://github.com/reimagined) on GitHub. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request.

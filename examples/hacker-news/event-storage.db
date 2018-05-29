@@ -2,4 +2,4 @@
 {"type":"UserCreated","payload":{"name":"resolve"},"aggregateId":"f6118edd-aeca-46a7-99fa-56ca72555543","aggregateVersion":1,"timestamp":1522141501439,"_id":"Ti9D060izHZRTDLq"}
 {"$$indexCreated":{"fieldName":"type","unique":false,"sparse":false}}
 {"$$indexCreated":{"fieldName":"aggregateId","unique":false,"sparse":false}}
-{"$$indexCreated":{"fieldName":"aggregateIdAndVersion","unique":false,"sparse":false}}
+{"$$indexCreated":{"fieldName":"aggregateIdAndVersion"}}

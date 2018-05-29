@@ -28,7 +28,7 @@ describe('resolve-readmodel-mysql implementation', () => {
       database: 'd'
     }
 
-    const result = implementation(metaApi, storeApi, mysql, {
+    const result = implementation(metaApi, storeApi, mysql, sinon.stub(), {
       metaName: 'META_NAME',
       ...testConnectionOptions
     })
