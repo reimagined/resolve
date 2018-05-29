@@ -50,7 +50,7 @@ export default {
     await store.insert('Errors', {
       id: uuid.v4(),
       timestamp,
-      message: `User the '${user.email}' email already exists`
+      message: `User with the '${user.email}' email already exists`
     })
   },
   [OUTDATED_USER_DELETED]: async (store, { aggregateId }) => {
