@@ -1,6 +1,6 @@
 {
   "name": "resolve-query",
-  "version": "0.10.2",
+  "version": "0.11.0",
   "description": "This package creates a function to execute a query.",
   "main": "./dist/index.js",
   "bugs": {
@@ -24,7 +24,7 @@
   "dependencies": {
     "diff-json": "^0.1.11",
     "invariant-function-hash": "^1.0.1",
-    "resolve-readmodel-memory": "0.10.2"
+    "resolve-readmodel-memory": "0.11.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.49",

@@ -201,7 +201,22 @@
           "additionalProperties": false
         }
       },
-      "required": ["port", "index", "routes", "rootPath", "distDir", "staticDir", "staticPath", "redux", "aggregates", "viewModels", "readModels", "busAdapter", "storageAdapter", "subscribeAdapter"],
+      "required": [
+        "port",
+        "index",
+        "routes",
+        "rootPath",
+        "distDir",
+        "staticDir",
+        "staticPath",
+        "redux",
+        "aggregates",
+        "viewModels",
+        "readModels",
+        "busAdapter",
+        "storageAdapter",
+        "subscribeAdapter"
+      ],
       "additionalProperties": false
     }
   },
