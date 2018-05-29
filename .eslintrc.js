@@ -49,6 +49,7 @@ module.exports = {
         skipWordIfMatch: ['^[^A-Za-z_]'],
         skipWords: [
           'acc',
+          'ack',
           'adm',
           'amqp',
           'amqplib',
