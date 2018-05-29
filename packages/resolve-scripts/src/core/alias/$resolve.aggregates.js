@@ -39,18 +39,20 @@ export default ({ resolveConfig, isClient }) => {
       ? resolveFile(aggregate.projection)
       : undefined
 
-    const snapshot = aggregate.snapshot
+    const snapshotAdapter = aggregate.snapshotAdapter
       ? {
-          adapter:
-            aggregate.snapshot.adapter in resolveConfig[envKey]
-              ? aggregate.snapshot.adapter
-              : resolveFileOrModule(aggregate.snapshot.adapter),
+          module:
+            aggregate.snapshotAdapter.module in resolveConfig[envKey]
+              ? aggregate.snapshotAdapter.module
+              : resolveFileOrModule(aggregate.snapshotAdapter.module),
           options: {
-            ...aggregate.snapshot.options
+            ...aggregate.snapshotAdapter.options
           }
         }
       : {}
-    Object.defineProperty(snapshot, envKey, { value: resolveConfig[envKey] })
+    Object.defineProperty(snapshotAdapter, envKey, {
+      value: resolveConfig[envKey]
+    })
 
     if (!isClient) {
       imports.push(`import commands_${index} from ${JSON.stringify(commands)}`)
@@ -78,13 +80,13 @@ export default ({ resolveConfig, isClient }) => {
       )
     }
 
-    if (!isClient && aggregate.snapshot) {
+    if (!isClient && aggregate.snapshotAdapter) {
       constants.push(
-        `const snapshot_${index} = ${injectEnv(snapshot)}`,
-        `const snapshotAdapter_${index} = interopRequireDefault(`,
-        `  eval('require(snapshot_${index}.adapter)')`,
+        `const snapshotAdapter_${index} = ${injectEnv(snapshotAdapter)}`,
+        `const snapshotAdapterModule_${index} = interopRequireDefault(`,
+        `  eval('require(snapshotAdapter_${index}.module)')`,
         `).default`,
-        `const snapshotOptions_${index} = snapshot_${index}.options`
+        `const snapshotAdapterOptions_${index} = snapshotAdapter_${index}.options`
       )
     }
 
@@ -94,11 +96,11 @@ export default ({ resolveConfig, isClient }) => {
     if (!isClient && aggregate.projection) {
       exports.push(`, projection: projection_${index}`)
     }
-    if (!isClient && aggregate.snapshot) {
+    if (!isClient && aggregate.snapshotAdapter) {
       exports.push(
-        `, snapshot: {`,
-        `    adapter: snapshotAdapter_${index},`,
-        `    options: snapshotOptions_${index}`,
+        `, snapshotAdapter: {`,
+        `    module: snapshotAdapterModule_${index},`,
+        `    options: snapshotAdapterOptions_${index}`,
         `  }`
       )
     }

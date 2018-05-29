@@ -4,7 +4,12 @@ import getModulesDirs from './get_modules_dirs'
 import getWebpackEnvPlugin from './get_webpack_env_plugin'
 import resolveFile from './resolve_file'
 
-const getClientWebpackConfig = ({ resolveConfig, deployOptions, env, alias }) => {
+const getClientWebpackConfig = ({
+  resolveConfig,
+  deployOptions,
+  env,
+  alias
+}) => {
   const clientIndexPath = resolveFile(resolveConfig.index)
 
   const clientDistDir = path.resolve(

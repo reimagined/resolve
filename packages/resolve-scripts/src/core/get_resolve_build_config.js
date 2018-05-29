@@ -5,7 +5,7 @@ const getResolveBuildConfig = (argv, env) => {
   const path = resolveFile(
     argv.buildConfig || env.BUILD_CONFIG_PATH || 'resolve.build.config.js'
   )
-  
+
   return importBabel(path)
 }
 

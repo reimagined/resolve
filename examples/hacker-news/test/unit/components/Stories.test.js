@@ -15,8 +15,8 @@ it('Stories first page renders correctly', () => {
       createdAt: new Date(0),
       createdBy: 'user-id',
       createdByName: 'user',
-      upvoteStory: ()=>{},
-      unvoteStory: ()=>{}
+      upvoteStory: () => {},
+      unvoteStory: () => {}
     }
   ]
   const wrapper = shallow(<Stories items={items} type={'story'} />)
@@ -37,8 +37,8 @@ it('Stories second page renders correctly', () => {
       createdAt: new Date(0),
       createdBy: 'user-id',
       createdByName: 'user',
-      upvoteStory: ()=>{},
-      unvoteStory: ()=>{}
+      upvoteStory: () => {},
+      unvoteStory: () => {}
     })
   }
   const wrapper = shallow(<Stories items={stories} page={2} type={'story'} />)
@@ -54,8 +54,8 @@ it('Stories page renders with error', () => {
       items={stories}
       page="text"
       type={'story'}
-      upvoteStory={()=>{}}
-      unvoteStory={()=>{}}
+      upvoteStory={() => {}}
+      unvoteStory={() => {}}
     />
   )
 

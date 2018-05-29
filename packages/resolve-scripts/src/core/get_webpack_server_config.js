@@ -5,7 +5,12 @@ import nodeExternals from 'webpack-node-externals'
 import getModulesDirs from './get_modules_dirs'
 import getWebpackEnvPlugin from './get_webpack_env_plugin'
 
-const getWebpackServerConfig = ({ resolveConfig, deployOptions, env, alias }) => {
+const getWebpackServerConfig = ({
+  resolveConfig,
+  deployOptions,
+  env,
+  alias
+}) => {
   const serverIndexPath = path.resolve(__dirname, '../runtime/server/index.js')
 
   const serverDistDir = path.resolve(

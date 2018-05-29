@@ -1,4 +1,4 @@
-import interopRequireDefault from "@babel/runtime/helpers/interopRequireDefault"
+import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 
 const importBabel = pathToModule => {
   require('@babel/register')

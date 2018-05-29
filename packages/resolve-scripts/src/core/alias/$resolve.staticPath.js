@@ -8,23 +8,23 @@ export default ({ resolveConfig, isClient }) => {
       `${message.serverAliasInClientCodeError}$resolve.staticPath`
     )
   }
-  
+
   if (resolveConfig.staticPath == null) {
     throw new Error(`${message.configNotContainSectionError}.staticPath`)
   }
-  
+
   if (resolveConfig.staticPath in resolveConfig[envKey]) {
     throw new Error(`${message.clientEnvError}.staticPath`)
   }
-  
+
   const exports = []
-  
+
   exports.push(
     `const staticPath = ${JSON.stringify(resolveConfig.staticPath, null, 2)}`,
     ``,
     `export default staticPath`
   )
-  
+
   return {
     code: exports.join('\r\n')
   }

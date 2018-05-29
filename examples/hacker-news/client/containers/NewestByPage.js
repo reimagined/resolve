@@ -33,15 +33,25 @@ const getReadModelData = state => {
   }
 }
 
-export default connectReadModel((state, { aggregateActions, match: { params: { page } } }) => ({
-  readModelName: 'default',
-  resolverName: 'allStories',
-  parameters: {
-    offset: ITEMS_PER_PAGE + 1,
-    first: (+page - 1) * ITEMS_PER_PAGE
-  },
-  data: getReadModelData(state),
-  page,
-  upvoteStory: aggregateActions.upvoteStory,
-  unvoteStory: aggregateActions.unvoteStory
-}))(NewestByPage)
+export default connectReadModel(
+  (
+    state,
+    {
+      aggregateActions,
+      match: {
+        params: { page }
+      }
+    }
+  ) => ({
+    readModelName: 'default',
+    resolverName: 'allStories',
+    parameters: {
+      offset: ITEMS_PER_PAGE + 1,
+      first: (+page - 1) * ITEMS_PER_PAGE
+    },
+    data: getReadModelData(state),
+    page,
+    upvoteStory: aggregateActions.upvoteStory,
+    unvoteStory: aggregateActions.unvoteStory
+  })
+)(NewestByPage)

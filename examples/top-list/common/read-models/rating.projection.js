@@ -7,15 +7,13 @@ export default {
       { name: 'votes', type: 'json' }
     ])
   },
-  
+
   ItemAppended: async (store, { payload: { id, name } }) => {
     await store.insert('Rating', { id, name, rating: 0, votes: {} })
   },
-  
+
   RatingIncreased: async (store, { payload: { id, userId } }) => {
-    if (
-      (await store.count('Rating', { id, [`votes.${userId}`]: true })) > 0
-    ) {
+    if ((await store.count('Rating', { id, [`votes.${userId}`]: true })) > 0) {
       return
     }
     await store.update(
@@ -27,11 +25,9 @@ export default {
       }
     )
   },
-  
+
   RatingDecreased: async (store, { payload: { id, userId } }) => {
-    if (
-      (await store.count('Rating', { id, [`votes.${userId}`]: true })) < 1
-    ) {
+    if ((await store.count('Rating', { id, [`votes.${userId}`]: true })) < 1) {
       return
     }
     await store.update(

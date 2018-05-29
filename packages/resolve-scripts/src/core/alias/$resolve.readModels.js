@@ -39,18 +39,18 @@ export default ({ resolveConfig, isClient }) => {
     }
     const resolvers = resolveFile(readModel.resolvers)
 
-    const storage = readModel.storage
+    const adapter = readModel.adapter
       ? {
-          adapter:
-            readModel.storage.adapter in resolveConfig[envKey]
-              ? readModel.storage.adapter
-              : resolveFileOrModule(readModel.storage.adapter),
+          module:
+            readModel.adapter.module in resolveConfig[envKey]
+              ? readModel.adapter.module
+              : resolveFileOrModule(readModel.adapter.module),
           options: {
-            ...readModel.storage.options
+            ...readModel.adapter.options
           }
         }
       : {}
-    Object.defineProperty(storage, envKey, { value: resolveConfig[envKey] })
+    Object.defineProperty(adapter, envKey, { value: resolveConfig[envKey] })
 
     constants.push(`const name_${index} = ${JSON.stringify(name)}`)
 
@@ -72,13 +72,13 @@ export default ({ resolveConfig, isClient }) => {
       )
     }
 
-    if (!isClient && readModel.storage) {
+    if (!isClient && readModel.adapter) {
       constants.push(
-        `const storage_${index} = ${injectEnv(storage)}`,
-        `const storageAdapter_${index} = interopRequireDefault(`,
-        `  eval('require(storage_${index}.adapter)')`,
+        `const adapter_${index} = ${injectEnv(adapter)}`,
+        `const adapterModule_${index} = interopRequireDefault(`,
+        `  eval('require(adapter_${index}.module)')`,
         `).default`,
-        `const storageOptions_${index} = storage_${index}.options`
+        `const adapterOptions_${index} = adapter_${index}.options`
       )
     }
 
@@ -87,11 +87,11 @@ export default ({ resolveConfig, isClient }) => {
       exports.push(`, projection: projection_${index}`)
     }
     exports.push(`, resolvers: resolvers_${index}`)
-    if (!isClient && readModel.storage) {
+    if (!isClient && readModel.adapter) {
       exports.push(
-        `, snapshot: {`,
-        `    adapter: storageAdapter_${index},`,
-        `    options: storageOptions_${index}`,
+        `, adapter: {`,
+        `    module: adapterModule_${index},`,
+        `    options: adapterOptions_${index}`,
         `  }`
       )
     }

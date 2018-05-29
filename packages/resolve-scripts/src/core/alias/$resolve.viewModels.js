@@ -65,18 +65,20 @@ export default ({ resolveConfig, isClient }) => {
       ? resolveFile(viewModel.validator)
       : path.resolve(__dirname, '../../runtime/common/view-models/validator.js')
 
-    const snapshot = viewModel.snapshot
+    const snapshotAdapter = viewModel.snapshotAdapter
       ? {
-          adapter:
-            viewModel.snapshot.adapter in resolveConfig[envKey]
-              ? viewModel.snapshot.adapter
-              : resolveFileOrModule(viewModel.snapshot.adapter),
+          module:
+            viewModel.snapshotAdapter.module in resolveConfig[envKey]
+              ? viewModel.snapshotAdapter.module
+              : resolveFileOrModule(viewModel.snapshotAdapter.module),
           options: {
-            ...viewModel.snapshot.options
+            ...viewModel.snapshotAdapter.options
           }
         }
       : {}
-    Object.defineProperty(snapshot, envKey, { value: resolveConfig[envKey] })
+    Object.defineProperty(snapshotAdapter, envKey, {
+      value: resolveConfig[envKey]
+    })
 
     imports.push(
       `import projection_${index} from ${JSON.stringify(projection)}`
@@ -104,13 +106,13 @@ export default ({ resolveConfig, isClient }) => {
 
     constants.push(`const name_${index} = ${JSON.stringify(name)}`)
 
-    if (!isClient && viewModel.snapshot) {
+    if (!isClient && viewModel.snapshotAdapter) {
       constants.push(
-        `const snapshot_${index} = ${injectEnv(snapshot)}`,
-        `const snapshotAdapter_${index} = interopRequireDefault(`,
-        `  eval('require(snapshot_${index}.adapter)')`,
+        `const snapshotAdapter_${index} = ${injectEnv(snapshotAdapter)}`,
+        `const snapshotAdapterModule_${index} = interopRequireDefault(`,
+        `  eval('require(snapshotAdapter_${index}.module)')`,
         `).default`,
-        `const snapshotOptions_${index} = snapshot_${index}.options`
+        `const snapshotAdapterOptions_${index} = snapshotAdapter_${index}.options`
       )
     }
 
@@ -129,11 +131,11 @@ export default ({ resolveConfig, isClient }) => {
     if (!isClient && viewModel.validator) {
       exports.push(`, validator: validator_${index}`)
     }
-    if (!isClient && viewModel.snapshot) {
+    if (!isClient && viewModel.snapshotAdapter) {
       exports.push(
-        `, snapshot: {`,
-        `    adapter: snapshotAdapter_${index},`,
-        `    options: snapshotOptions_${index} `,
+        `, snapshotAdapter: {`,
+        `    module: snapshotAdapterModule_${index},`,
+        `    options: snapshotAdapterOptions_${index} `,
         `  }`
       )
     }

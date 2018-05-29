@@ -12,9 +12,9 @@ import redux from '$resolve.redux'
 import viewModels from '$resolve.viewModels'
 import readModels from '$resolve.readModels'
 import aggregates from '$resolve.aggregates'
-import subscribe from '$resolve.subscribe'
+import subscribe from '$resolve.subscribeAdapter'
 
-const subscribeAdapter = subscribe.adapter
+const subscribeAdapter = subscribe.module
 
 const { reducers, middlewares, store: setupStore } = redux
 

@@ -4,18 +4,14 @@
     "adapter": {
       "type": "object",
       "properties": {
-        "adapter": {
-          "type": "string",
-          "constraints": {
-            "env": true,
-            "fileOrModule": true
-          }
+        "module": {
+          "type": "string"
         },
         "options": {
           "type": "object"
         }
       },
-      "required": ["adapter", "options"],
+      "required": ["module", "options"],
       "additionalProperties": false
     },
     "aggregate": {
@@ -25,18 +21,12 @@
           "type": "string"
         },
         "commands": {
-          "type": "string",
-          "constraints": {
-            "file": true
-          }
+          "type": "string"
         },
         "projection": {
-          "type": "string",
-          "constraints": {
-            "file": true
-          }
+          "type": "string"
         },
-        "snapshot": {
+        "snapshotAdapter": {
           "$ref": "#/definitions/adapter"
         }
       },
@@ -50,30 +40,18 @@
           "type": "string"
         },
         "projection": {
-          "type": "string",
-          "constraints": {
-            "file": true
-          }
+          "type": "string"
         },
         "serializeState": {
-          "type": "string",
-          "constraints": {
-            "file": true
-          }
+          "type": "string"
         },
         "deserializeState": {
-          "type": "string",
-          "constraints": {
-            "file": true
-          }
+          "type": "string"
         },
         "validator": {
-          "type": "string",
-          "constraints": {
-            "file": true
-          }
+          "type": "string"
         },
-        "snapshot": {
+        "snapshotAdapter": {
           "$ref": "#/definitions/adapter"
         }
       },
@@ -91,18 +69,12 @@
           "type": "string"
         },
         "projection": {
-          "type": "string",
-          "constraints": {
-            "file": true
-          }
+          "type": "string"
         },
         "resolvers": {
-          "type": "string",
-          "constraints": {
-            "file": true
-          }
+          "type": "string"
         },
-        "storage": {
+        "adapter": {
           "$ref": "#/definitions/adapter"
         }
       },
@@ -125,22 +97,13 @@
       "type": "object",
       "properties": {
         "store": {
-          "type": "string",
-          "constraints": {
-            "file": true
-          }
+          "type": "string"
         },
         "reducers": {
-          "type": "string",
-          "constraints": {
-            "file": true
-          }
+          "type": "string"
         },
         "middlewares": {
-          "type": "string",
-          "constraints": {
-            "file": true
-          }
+          "type": "string"
         }
       },
       "required": ["store", "reducers", "middlewares"],
@@ -150,10 +113,7 @@
       "type": "object",
       "properties": {
         "strategies": {
-          "type": "string",
-          "constraints": {
-            "file": true
-          }
+          "type": "string"
         }
       },
       "additionalProperties": false,
@@ -163,43 +123,25 @@
       "type": "object",
       "properties": {
         "port": {
-          "type": ["integer", "string"],
-          "constraints": {
-            "env": true
-          }
+          "type": ["integer", "string"]
         },
         "index": {
-          "type": "string",
-          "constraints": {
-            "file": true
-          }
+          "type": "string"
         },
         "routes": {
-          "type": "string",
-          "constraints": {
-            "file": true
-          }
+          "type": "string"
         },
         "rootPath": {
           "type": "string"
         },
         "distDir": {
-          "type": "string",
-          "constraints": {
-            "directory": true
-          }
+          "type": "string"
         },
         "staticDir": {
-          "type": "string",
-          "constraints": {
-            "directory": true
-          }
+          "type": "string"
         },
         "staticPath": {
-          "type": "string",
-          "constraints": {
-            "url": true
-          }
+          "type": "string"
         },
         "redux": {
           "$ref": "#/definitions/redux"
@@ -223,18 +165,15 @@
           }
         },
         "sagas": {
-          "type": "string",
-          "constraints": {
-            "file": true
-          }
+          "type": "string"
         },
-        "bus": {
+        "busAdapter": {
           "$ref": "#/definitions/adapter"
         },
-        "storage": {
+        "storageAdapter": {
           "$ref": "#/definitions/adapter"
         },
-        "subscribe": {
+        "subscribeAdapter": {
           "$ref": "#/definitions/adapter"
         },
         "auth": {
@@ -262,7 +201,7 @@
           "additionalProperties": false
         }
       },
-      "required": ["port", "index", "routes", "rootPath", "distDir", "staticDir", "staticPath", "redux", "aggregates", "viewModels", "readModels", "bus", "storage"],
+      "required": ["port", "index", "routes", "rootPath", "distDir", "staticDir", "staticPath", "redux", "aggregates", "viewModels", "readModels", "busAdapter", "storageAdapter", "subscribeAdapter"],
       "additionalProperties": false
     }
   },

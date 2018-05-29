@@ -18,18 +18,18 @@
     "reducers": "client/reducers/index.js",
     "middlewares": "client/middlewares/index.js"
   },
-  "storage": {
-    "adapter": "resolve-storage-lite",
+  "storageAdapter": {
+    "module": "resolve-storage-lite",
     "options": {
       "pathToFile": "event-storage.db"
     }
   },
-  "bus": {
-    "adapter": "resolve-bus-memory",
+  "busAdapter": {
+    "module": "resolve-bus-memory",
     "options": {}
   },
-  "subscribe": {
-    "adapter": "resolve-redux/dist/subscribe_adapter",
+  "subscribeAdapter": {
+    "module": "resolve-redux/dist/subscribe_adapter",
     "options": {}
   },
   "jwtCookie": {

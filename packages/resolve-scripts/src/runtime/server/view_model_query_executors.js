@@ -22,10 +22,19 @@ viewModels.forEach(viewModel => {
     raiseError(message.viewModelSerializable, viewModel)
   }
 
+  let snapshotAdapter, snapshotBucketSize
+  if (viewModel.snapshotAdapter) {
+    const createSnapshotAdapter = viewModel.snapshotAdapter.module
+    const snapshotAdapterOptions = viewModel.snapshotAdapter.options
+
+    snapshotAdapter = createSnapshotAdapter(snapshotAdapterOptions)
+    snapshotBucketSize = snapshotAdapterOptions.bucketSize
+  }
+
   const facade = createViewModel({
     projection: viewModel.projection,
-    snapshotAdapter: viewModel.snapshotAdapter,
-    snapshotBucketSize: viewModel.snapshotBucketSize,
+    snapshotAdapter,
+    snapshotBucketSize,
     eventStore
   })
 

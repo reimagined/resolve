@@ -9,7 +9,7 @@ const getWebpackConfigs = ({
   resolveBuildConfig
 }) => {
   const alias = getWebpackAlias()
-  
+
   const webpackClientConfig = getWebpackClientConfig({
     resolveConfig,
     deployOptions,

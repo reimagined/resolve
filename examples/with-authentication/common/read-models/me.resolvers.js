@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import jwtSecret from "../../auth/jwtSecret";
+import jwtSecret from '../../auth/jwtSecret'
 
 export default {
   me: async (store, { jwtToken }) => {
@@ -10,7 +10,7 @@ export default {
     if (!user.name) {
       return null
     }
-    
+
     return user
   }
 }
