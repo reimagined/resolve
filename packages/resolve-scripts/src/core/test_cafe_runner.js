@@ -3,7 +3,6 @@ import { getInstallations } from 'testcafe-browser-tools'
 import { execSync, spawn } from 'child_process'
 import fetch from 'isomorphic-fetch'
 
-import assignConfigPaths from './assign_config_paths'
 import setup from './setup'
 
 const testCafeRunner = async argv => {
@@ -16,8 +15,6 @@ const testCafeRunner = async argv => {
   )
 
   const { resolveConfig } = setup(argv, process.env)
-
-  assignConfigPaths(resolveConfig)
 
   const TIMEOUT = 20000
 

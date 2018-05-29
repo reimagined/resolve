@@ -3,6 +3,7 @@ import chalk from 'chalk'
 import { statsConfig } from './constants'
 
 const showBuildInfo = ({ name }, err, stats) => {
+  // TODO
   if (!stats) {
     return
   }

@@ -6,7 +6,6 @@ import setup from './setup'
 import getMockServer from './get_mock_server'
 import showBuildInfo from './show_build_info'
 import getWebpackConfigs from './get_webpack_configs'
-import assignConfigPaths from './assign_config_paths'
 import getResolveBuildConfig from './get_resolve_build_config'
 
 export default argv => {
@@ -28,8 +27,6 @@ export default argv => {
   }
 
   const resolveBuildConfig = getResolveBuildConfig(argv, env)
-
-  assignConfigPaths(resolveConfig)
 
   const [
     webpackClientConfig,

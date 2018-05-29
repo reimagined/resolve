@@ -22,7 +22,7 @@ const makeCommandHandlerHash = (projection, aggregateId) =>
 
 const getAggregateState = async (
   {
-    projection: { Init, ...projection },
+    projection: { Init, ...projection } = {},
     snapshotAdapter = emptySnapshotAdapter,
     snapshotBucketSize = 100
   },

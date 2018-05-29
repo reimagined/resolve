@@ -2,9 +2,6 @@ import path from 'path'
 
 import getModulesDirs from './get_modules_dirs'
 import getWebpackEnvPlugin from './get_webpack_env_plugin'
-import getWebpackResolveDefinePlugin from './get_webpack_resolve_define_plugin'
-import getWebpackResolveAliasPlugin from './get_webpack_resolve_alias_plugin'
-import getWebpackExternalsPlugin from './get_webpack_externals_plugin'
 import resolveFile from './resolve_file'
 
 const getClientWebpackConfig = ({ resolveConfig, deployOptions, env, alias }) => {
@@ -75,16 +72,7 @@ const getClientWebpackConfig = ({ resolveConfig, deployOptions, env, alias }) =>
     },
     plugins: [
       getWebpackEnvPlugin({ resolveConfig, deployOptions, env, isClient })
-      // getWebpackResolveDefinePlugin({
-      //   resolveConfig,
-      //   deployOptions,
-      //   env,
-      //   isClient
-      // })
     ]
-    // externals: [
-    //   getWebpackExternalsPlugin({ resolveConfig, deployOptions, env, isClient })
-    // ]
   }
 }
 

@@ -1,8 +1,6 @@
-import fs from 'fs'
-import path from 'path'
-
 import getWebpackClientConfig from './get_webpack_client_config'
 import getWebpackServerConfig from './get_webpack_server_config'
+import getWebpackAlias from './get_webpack_alias'
 
 const getWebpackConfigs = ({
   resolveConfig,
@@ -10,14 +8,7 @@ const getWebpackConfigs = ({
   env,
   resolveBuildConfig
 }) => {
-  const alias = {}
-  
-  for(const filename of fs.readdirSync(path.resolve(__dirname, 'alias'))) {
-    if(path.extname(filename) !== '.js') {
-      continue
-    }
-    alias[path.basename(filename, '.js')] = path.resolve(__dirname, 'alias', filename)
-  }
+  const alias = getWebpackAlias()
   
   const webpackClientConfig = getWebpackClientConfig({
     resolveConfig,
