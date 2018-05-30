@@ -15,8 +15,8 @@
         }
     ],
     "sagas": "common/sagas/index.js",
-    "storage": {
-        "adapter": "resolve-storage-lite",
+    "storageAdapter": {
+        "module": "resolve-storage-lite",
         "options": {}
     }
 }

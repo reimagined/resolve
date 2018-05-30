@@ -12,7 +12,15 @@
             "name": "Todos",
             "projection": "common/view-models/todos.projection.js"
         }
-    ]
+    ],
+    "env": {
+        "test": {
+            "storageAdapter": {
+                "module": "resolve-storage-lite",
+                "options": {}
+            }
+        }
+    }
 }
 
 // See the documentation for more information about available options list at

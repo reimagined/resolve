@@ -106,7 +106,7 @@ export default viewModels
 "
 `;
 
-exports[`config with serializeState/deserialzeState works correctly [client] 1`] = `
+exports[`config with serializeState/deserializeState works correctly [client] 1`] = `
 "
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
@@ -126,7 +126,7 @@ export default viewModels
 "
 `;
 
-exports[`config with serializeState/deserialzeState works correctly [server] 1`] = `
+exports[`config with serializeState/deserializeState works correctly [server] 1`] = `
 "
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 

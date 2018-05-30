@@ -1,4 +1,5 @@
 import React from 'react'
+import { bindActionCreators } from 'redux'
 import { connectReadModel } from 'resolve-redux'
 
 import Stories from '../components/Stories'
@@ -37,7 +38,6 @@ export default connectReadModel(
   (
     state,
     {
-      aggregateActions,
       match: {
         params: { page }
       }
@@ -50,8 +50,14 @@ export default connectReadModel(
       first: (+page - 1) * ITEMS_PER_PAGE
     },
     data: getReadModelData(state),
-    page,
-    upvoteStory: aggregateActions.upvoteStory,
-    unvoteStory: aggregateActions.unvoteStory
-  })
+    page
+  }),
+  (dispatch, { aggregateActions }) =>
+    bindActionCreators(
+      {
+        upvoteStory: aggregateActions.upvoteStory,
+        unvoteStory: aggregateActions.unvoteStory
+      },
+      dispatch
+    )
 )(ShowByPage)

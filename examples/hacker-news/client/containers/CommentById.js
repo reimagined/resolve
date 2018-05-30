@@ -101,11 +101,19 @@ const getReadModelData = state => {
   }
 }
 
-export default connectReadModel((state, { aggregateActions }) => ({
-  readModelName: 'default',
-  resolverName: 'user',
-  parameters: {},
-  data: getReadModelData(state),
-  upvoteStory: aggregateActions.upvoteStory,
-  unvoteStory: aggregateActions.unvoteStory
-}))(connectViewModel(mapStateToProps, mapDispatchToProps)(CommentById))
+export default connectReadModel(
+  state => ({
+    readModelName: 'default',
+    resolverName: 'user',
+    parameters: {},
+    data: getReadModelData(state)
+  }),
+  (dispatch, { aggregateActions }) =>
+    bindActionCreators(
+      {
+        upvoteStory: aggregateActions.upvoteStory,
+        unvoteStory: aggregateActions.unvoteStory
+      },
+      dispatch
+    )
+)(connectViewModel(mapStateToProps, mapDispatchToProps)(CommentById))

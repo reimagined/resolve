@@ -77,7 +77,7 @@ describe('base(v2) config works correctly', () => {
   })
 })
 
-describe('config with serializeState/deserialzeState works correctly', () => {
+describe('config with serializeState/deserializeState works correctly', () => {
   const resolveConfig = extractEnv(`
     {
       viewModels: [

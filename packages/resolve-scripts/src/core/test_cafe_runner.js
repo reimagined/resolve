@@ -45,9 +45,9 @@ const testCafeRunner = async argv => {
   }, 1000 * 5)
 
   while (true) {
-    const statusUrl = `${resolveConfig.protocol}://${resolveConfig.host}:${
-      resolveConfig.port
-    }${resolveConfig.rootPath ? `/${resolveConfig.rootPath}` : ''}/api/status`
+    const statusUrl = `http://localhost:${resolveConfig.port}${
+      resolveConfig.rootPath ? `/${resolveConfig.rootPath}` : ''
+    }/api/status`
     try {
       const response = await fetch(statusUrl)
       if ((await response.text()) === 'ok') break

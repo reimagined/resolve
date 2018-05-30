@@ -10,6 +10,14 @@
   ],
   "auth": {
     "strategies": "auth/index.js"
+  },
+  "env": {
+    "test": {
+      "storageAdapter": {
+        "module": "resolve-storage-lite",
+        "options": {}
+      }
+    }
   }
 }
 
