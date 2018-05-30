@@ -2,7 +2,7 @@
 
 ## How to start?
 
-This example demonstrates how to work with view-models in the **all events subscribtion** case. Sometimes, for example for fast application prototyping, it's necessary to have view-model on client with all server events instead of part. There's a special feature called **wildcard**, that allows to subscribe to all events. To setup:
+This example demonstrates how to work with view-models in the **all events subscription** case. Sometimes, for example for fast application prototyping, it's necessary to have view-model on client with all server events instead of part. There's a special feature called **wildcard**, that allows to subscribe to all events. To setup:
 
 ```bash
 npx create-resolve-app todo-two-levels-example -e todo-two-levels

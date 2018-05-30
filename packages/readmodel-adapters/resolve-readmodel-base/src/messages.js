@@ -28,11 +28,11 @@ export default {
   searchExpressionNotObject: 'Object with search fields and/or operators expected',
   mixedSearchOperatorsAndValues: 'Nor fields values and search operators allowed in one search query at once',
   illegalLogicalOperator: 'Illegal logical operator',
-  illegalOperatorAndOrArgument: 'Logical operators $and/$or accepts only array of subexpressions',
+  illegalOperatorAndOrArgument: 'Logical operators $and/$or accepts only array of sub-expressions',
   searchValueScalarOrCompareOperator: `Search field should be scalar value or compare operator
     as object with only one key like { "$lt" : "value" }`,
   illegalCompareOperator: 'Illegal compare operator',
-  incompatibleSearchField: 'Search field value is incompatible with apropriate table column type',
+  incompatibleSearchField: 'Search field value is incompatible with appropriate table column type',
   invalidPagination: (skip, limit) => `Pagination range skip=${skip} and limit=${limit} is invalid`,
 
   // Fields and projection keys
@@ -40,8 +40,8 @@ export default {
     `Fields list in operation "${operation}" for table "${tableName}"
     provisioned "${JSON.stringify(fieldList)}" is invalid:
     ${reason}${fragment ? ` at "${fragment}"` : ''}`,
-  fieldListNotObject: 'Object with values for every column declated in table description expected',
-  unexistingField: 'Unexisting table column or wrong nested field invocation',
+  fieldListNotObject: 'Object with values for every column declared in table description expected',
+  nonExistingField: 'Non existing table column or wrong nested field invocation',
   columnTypeMismatch: 'Column type mismatch or indexed column value is null',
   illegalProjectionColumn: 'Enumerated result projection column should present in table schema and set to 0 or 1',
   projectionNotObject: 'Result projection columns should be object like { "field1": 1, "field2": 0 }',
@@ -56,7 +56,7 @@ export default {
   updateExpressionNotValidObject: 'Object with keys as only allowed update operators expected like { $set: {...} }',
   illegalUpdateOperator: 'Illegal update operator',
   updateOperatorNotObject: 'Update operator value only as object expected',
-  uncompatibleUpdateValue: 'Value in update operator is incompatible with table column or operator requirement'
+  incompatibleUpdateValue: 'Value in update operator is incompatible with table column or operator requirement'
 
 
 }

@@ -1,4 +1,4 @@
-import { delay, getRootableUrl } from './utils'
+import { delay, getRootBasedUrl } from './utils'
 import actions from './actions'
 
 const subscribeReadModel = (
@@ -36,7 +36,7 @@ const subscribeReadModel = (
         }
 
         const response = await orderedFetch(
-          getRootableUrl(
+          getRootBasedUrl(
             origin,
             rootPath,
             `/api/query/${readModelName}/${resolverName}`

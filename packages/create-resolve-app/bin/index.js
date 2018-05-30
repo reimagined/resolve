@@ -32,7 +32,7 @@ const optionsInfo =
   ` directory${EOL}` +
   `                   Now you can choose one of the next examples:${EOL}` +
   `                     todo - todo list ${EOL}` +
-  `                     hello-world - sinple empty example with single hello world page ${EOL}` +
+  `                     hello-world - simple empty example with single hello world page ${EOL}` +
   `                     todo-two-levels - two levels todo list ${EOL}` +
   `  -b, --branch     branch (optional, master is default)${EOL}` +
   `  -c, --commit     commit ${EOL}` +
