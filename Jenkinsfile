@@ -6,19 +6,6 @@ pipeline {
         }
     }
     stages {
-        stage('Unit tests') {
-            steps {
-                script {
-                    sh """
-                        export YARN_CACHE_FOLDER=/yarn_cache
-                        yarn install --dev
-                        yarn lint
-                        yarn test
-                    """
-                }
-            }
-        }
-
         stage('Publish canary') {
             steps {
                 script {
