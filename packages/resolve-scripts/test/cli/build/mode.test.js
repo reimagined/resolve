@@ -39,5 +39,8 @@ test('resolve-scripts build --dev --test', async () => {
 
 test('resolve-scripts build --dev --prod (fail)', async () => {
   expect.assertions(1)
-  await expect(exec('resolve-scripts build --dev --prod')).rejects.toThrow()
+
+  await expect(
+    exec('resolve-scripts build --dev --prod')
+  ).rejects.not.toBeUndefined()
 })

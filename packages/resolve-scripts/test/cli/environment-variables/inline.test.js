@@ -18,8 +18,8 @@ test('Inline env vars in a string works correctly', async () => {
 
   expect(json).toMatchObject({
     port: 1234,
-    storage: {
-      adapter: 'resolve-memory',
+    storageAdapter: {
+      module: 'resolve-memory',
       options: { a: 5, b: 'xyz' }
     },
     jwtCookie: {

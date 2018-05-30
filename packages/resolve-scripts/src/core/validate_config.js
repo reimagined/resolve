@@ -8,13 +8,12 @@ const validateConfig = config => {
   const valid = ajv.validate(schemaResolveConfig, config)
 
   if (!valid) {
-    // eslint-disable-next-line
-    console.error('Resolve Config validation failed:')
-    // eslint-disable-next-line
-    console.error(ajv.errors)
-
-    process.exit(1)
+    throw new Error(
+      'Resolve Config validation failed: ' + JSON.stringify(ajv.errors, null, 2)
+    )
   }
+
+  return true
 }
 
 export default validateConfig

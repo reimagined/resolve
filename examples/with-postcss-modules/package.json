@@ -33,7 +33,7 @@
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "babel-jest": "^23.0.0",
     "regenerator-runtime": "^0.11.1",
-    "jest": "^23.0.0",
+    "jest": "^23.0.1",
     "jest-css-modules-transform": "^2.0.0",
     "postcss-import": "^11.1.0",
     "postcss-loader": "^2.1.5",

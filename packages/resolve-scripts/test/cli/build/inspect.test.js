@@ -31,17 +31,19 @@ test('resolve-scripts build --inspect=INCORRECT_PORT (fail)', async () => {
   expect.assertions(1)
   await expect(
     exec('resolve-scripts build --inspect=INCORRECT_PORT')
-  ).rejects.toThrow()
+  ).rejects.not.toBeUndefined()
 })
 
 test('resolve-scripts build --inspect=INCORRECT_HOST (fail)', async () => {
   expect.assertions(1)
   await expect(
     exec('resolve-scripts build --inspect=1.2.3.4.5:1234')
-  ).rejects.toThrow()
+  ).rejects.not.toBeUndefined()
 })
 
 test('resolve-scripts build --inspect (fail)', async () => {
   expect.assertions(1)
-  await expect(exec('resolve-scripts build --inspect')).rejects.toThrow()
+  await expect(
+    exec('resolve-scripts build --inspect')
+  ).rejects.not.toBeUndefined()
 })

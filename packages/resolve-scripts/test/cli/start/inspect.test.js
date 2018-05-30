@@ -27,12 +27,12 @@ test('resolve-scripts start --inspect=INCORRECT_PORT (fail)', async () => {
   expect.assertions(1)
   await expect(
     exec('resolve-scripts start --inspect=INCORRECT_PORT')
-  ).rejects.toThrow()
+  ).rejects.not.toBeUndefined()
 })
 
 test('resolve-scripts start --inspect=INCORRECT_HOST (fail)', async () => {
   expect.assertions(1)
   await expect(
     exec('resolve-scripts start --inspect=1.2.3.4.5:1234')
-  ).rejects.toThrow()
+  ).rejects.not.toBeUndefined()
 })

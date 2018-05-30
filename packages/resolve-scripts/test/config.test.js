@@ -14,8 +14,8 @@ describe('validate schema', () => {
     expect(
       validateСonfig({
         ...resolveConfigOrigin,
-        storage: {
-          adapter: 'resolve-storage-mongo',
+        storageAdapter: {
+          module: 'resolve-storage-mongo',
           options: {
             collectionName: 'MyEvents'
           }
@@ -28,8 +28,8 @@ describe('validate schema', () => {
     expect(
       validateСonfig({
         ...resolveConfigOrigin,
-        storage: {
-          adapter: 'resolve-bus-rabbitmq',
+        storageAdapter: {
+          module: 'resolve-bus-rabbitmq',
           options: {}
         }
       })
@@ -40,8 +40,8 @@ describe('validate schema', () => {
     expect(
       validateСonfig({
         ...resolveConfigOrigin,
-        subscribe: {
-          adapter: 'resolve-subscribe-mqtt',
+        subscribeAdapter: {
+          module: 'resolve-subscribe-mqtt',
           options: {}
         }
       })
@@ -88,7 +88,7 @@ describe('validate schema', () => {
     expect(
       validateСonfig({
         ...resolveConfigOrigin,
-        aggregates: 'my-aggregates'
+        aggregates: []
       })
     ).toBeTruthy()
   })
@@ -97,7 +97,7 @@ describe('validate schema', () => {
     expect(
       validateСonfig({
         ...resolveConfigOrigin,
-        viewModels: 'my-view-models'
+        viewModels: []
       })
     ).toBeTruthy()
   })
@@ -106,7 +106,7 @@ describe('validate schema', () => {
     expect(
       validateСonfig({
         ...resolveConfigOrigin,
-        readModels: 'my-read-models'
+        readModels: []
       })
     ).toBeTruthy()
   })
@@ -147,14 +147,14 @@ describe('validate schema', () => {
     expect(
       validateСonfig({
         ...resolveConfigOrigin,
-        subscribe: {
-          adapter: 'resolve-subscribe-socket-io',
+        subscribeAdapter: {
+          module: 'resolve-subscribe-socket-io',
           options: {}
         },
         env: {
           production: {
-            subscribe: {
-              adapter: 'resolve-subscribe-mqtt',
+            subscribeAdapter: {
+              module: 'resolve-subscribe-mqtt',
               options: {}
             }
           }
@@ -169,8 +169,8 @@ describe('validate schema (fail)', () => {
     expect(() =>
       validateСonfig({
         ...resolveConfigOrigin,
-        storage: {
-          adapter: 123,
+        storageAdapter: {
+          module: 123,
           options: {
             collectionName: 'MyEvents'
           }
@@ -183,8 +183,8 @@ describe('validate schema (fail)', () => {
     expect(() =>
       validateСonfig({
         ...resolveConfigOrigin,
-        storage: {
-          adapter: 123,
+        storageAdapter: {
+          module: 123,
           options: {}
         }
       })
@@ -195,8 +195,8 @@ describe('validate schema (fail)', () => {
     expect(() =>
       validateСonfig({
         ...resolveConfigOrigin,
-        subscribe: {
-          adapter: 123,
+        subscribeAdapter: {
+          module: 123,
           options: {}
         }
       })
@@ -275,12 +275,12 @@ describe('validate schema (fail)', () => {
     ).toThrow()
   })
 
-  it('incorrect jwt', () => {
+  it('incorrect jwtCookie', () => {
     expect(() =>
       validateСonfig({
         ...resolveConfigOrigin,
-        jwt: {
-          cookieName: 123,
+        jwtCookie: {
+          name: 123,
           secret: 'some-secret',
           options: {
             maxAge: 1000 * 60 * 60 * 24 * 365

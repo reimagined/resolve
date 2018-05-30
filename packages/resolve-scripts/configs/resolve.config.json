@@ -35,13 +35,5 @@
   "jwtCookie": {
     "name": "jwt",
     "maxAge": 31536000000
-  },
-  "env": {
-    "test": {
-      "storage": {
-        "adapter": "resolve-storage-lite",
-        "options": {}
-      }
-    }
   }
 }

@@ -30,7 +30,10 @@ export default ({ pathToFile } = {}) => {
               )
             )
         )
-        .catch(err => console.error('Save snapshot error: ', err))
+        .catch(err => {
+          // eslint-disable-next-line
+          console.error('Save snapshot error: ', err)
+        })
     }
   })
 }

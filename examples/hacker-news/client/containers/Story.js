@@ -3,7 +3,6 @@ import url from 'url'
 import { Link } from 'react-router-dom'
 import plur from 'plur'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import sanitizer from 'sanitizer'
 import styled, { css } from 'styled-components'
 

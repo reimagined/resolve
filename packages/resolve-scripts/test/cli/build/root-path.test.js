@@ -16,26 +16,26 @@ test('resolve-scripts build --root-path=/test (fail)', async () => {
   expect.assertions(1)
   await expect(
     exec('resolve-scripts build --root-path=/test')
-  ).rejects.toThrow()
+  ).rejects.not.toBeUndefined()
 })
 
 test('resolve-scripts build --root-path=test/ (fail)', async () => {
   expect.assertions(1)
   await expect(
     exec('resolve-scripts build --root-path=test/')
-  ).rejects.toThrow()
+  ).rejects.not.toBeUndefined()
 })
 
 test('resolve-scripts build --root-path=http://test (fail)', async () => {
   expect.assertions(1)
   await expect(
     exec('resolve-scripts build --root-path=http://test')
-  ).rejects.toThrow()
+  ).rejects.not.toBeUndefined()
 })
 
 test('resolve-scripts build --root-path=https://test (fail)', async () => {
   expect.assertions(1)
   await expect(
     exec('resolve-scripts build --root-path=https://test')
-  ).rejects.toThrow()
+  ).rejects.not.toBeUndefined()
 })

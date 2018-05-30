@@ -22,5 +22,5 @@ test('resolve-scripts dev --config=NONEXISTENT_FILE (fail)', async () => {
   expect.assertions(1)
   await expect(
     exec('resolve-scripts dev --config=NONEXISTENT_FILE')
-  ).rejects.toThrow()
+  ).rejects.not.toBeUndefined()
 })

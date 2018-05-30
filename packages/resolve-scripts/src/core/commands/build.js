@@ -20,8 +20,6 @@ export const builder = yargs =>
     .option('print-config', cli.printConfig)
     .option('root-path', cli.rootPath)
     .option('open-browser', cli.openBrowser)
-    .implies('host', 'start')
-    .implies('port', 'start')
     .implies('inspect', 'start')
     .conflicts('dev', 'prod')
 
