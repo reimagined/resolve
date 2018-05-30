@@ -17,7 +17,7 @@ const socketHandler = socket => {
   )
   const unsubscribe = () => {
     if (unsubscribePromise) {
-      unsubscribePromise.then(unsubcribeCallback => unsubcribeCallback())
+      unsubscribePromise.then(unsubscribeCallback => unsubscribeCallback())
       unsubscribePromise = null
     }
   }

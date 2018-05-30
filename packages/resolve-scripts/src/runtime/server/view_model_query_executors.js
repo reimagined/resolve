@@ -11,7 +11,7 @@ const viewModelQueryExecutors = {}
 
 viewModels.forEach(viewModel => {
   if (!viewModel.name && viewModels.length === 1) {
-    viewModel.name = 'reduxinitial'
+    viewModel.name = 'reduxInitial'
   } else if (!viewModel.name) {
     raiseError(message.viewModelMandatoryName, viewModel)
   } else if (viewModelQueryExecutors[viewModel.name]) {

@@ -21,16 +21,16 @@ function copyResolveSerials(oldState, newState) {
   })
 }
 
-function refreshUpdatedObjects(updatedObject, changes, embededKey = '$index') {
+function refreshUpdatedObjects(updatedObject, changes, embeddedKey = '$index') {
   for (const {
     key,
     changes: nextChanges,
-    embededKey: nextEmbededKey
+    embeddedKey: nextEmbeddedKey
   } of changes) {
     const calcKey =
-      embededKey !== '$index' && Array.isArray(updatedObject)
+      embeddedKey !== '$index' && Array.isArray(updatedObject)
         ? updatedObject.reduce(
-            (result, value, idx) => (value[embededKey] === key ? idx : result),
+            (result, value, idx) => (value[embeddedKey] === key ? idx : result),
             0
           )
         : key
@@ -55,7 +55,11 @@ function refreshUpdatedObjects(updatedObject, changes, embededKey = '$index') {
     }
 
     if (Array.isArray(nextChanges)) {
-      refreshUpdatedObjects(updatedObject[calcKey], nextChanges, nextEmbededKey)
+      refreshUpdatedObjects(
+        updatedObject[calcKey],
+        nextChanges,
+        nextEmbeddedKey
+      )
     }
   }
 }

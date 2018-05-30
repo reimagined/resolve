@@ -952,7 +952,7 @@ ShallowWrapper {
           Object {
             "createdAt": 1970-01-01T00:00:00.000Z,
             "createdBy": "user-id",
-            "createdByNane": "user",
+            "createdByName": "user",
             "id": "comment-id",
             "parentId": "story-id",
             "text": "comment",

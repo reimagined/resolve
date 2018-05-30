@@ -1,6 +1,6 @@
 import jsonwebtoken from 'jsonwebtoken'
 
-import getRootableUrl from './get_rootable_url'
+import getRootBasedUrl from './get_root_based_url'
 import isObject from './is_object'
 
 import jwtCookie from '$resolve.jwtCookie'
@@ -20,7 +20,7 @@ const applyJwtValue = (jwtToken, res, url) => {
     res.clearCookie(cookieName)
   }
 
-  res.redirect(url || getRootableUrl('/'))
+  res.redirect(url || getRootBasedUrl('/'))
 }
 
 export default applyJwtValue

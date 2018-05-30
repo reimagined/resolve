@@ -167,7 +167,7 @@ const checkInsertedDocumentShape = (tableName, metaInfo, document) => {
     'insert',
     tableName,
     document,
-    messages.unexistingField,
+    messages.nonExistingField,
     checkFieldResult
   )
 
@@ -205,7 +205,7 @@ const checkSearchExpression = (
     messages.searchExpressionNotObject
   )
 
-  const allowedComparationOperators = [
+  const allowedComparisonOperators = [
     '$lt',
     '$lte',
     '$gt',
@@ -278,7 +278,7 @@ const checkSearchExpression = (
     operation,
     tableName,
     searchExpression,
-    messages.unexistingField,
+    messages.nonExistingField,
     checkFieldResult
   )
 
@@ -309,7 +309,7 @@ const checkSearchExpression = (
 
       if (inOperators.length > 0) {
         checkCondition(
-          allowedComparationOperators.indexOf(inOperators[0]) > -1,
+          allowedComparisonOperators.indexOf(inOperators[0]) > -1,
           messages.invalidSearchExpression,
           operation,
           tableName,
@@ -395,7 +395,7 @@ const checkUpdateExpression = (tableName, metaInfo, updateExpression) => {
         messages.invalidUpdateExpression,
         tableName,
         updateExpression,
-        messages.uncompatibleUpdateValue,
+        messages.incompatibleUpdateValue,
         fieldName
       )
     }

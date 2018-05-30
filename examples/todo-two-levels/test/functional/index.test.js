@@ -3,12 +3,12 @@ import { Selector } from 'testcafe'
 const host = process.env.HOST || 'localhost'
 const MAIN_PAGE = `http://${host}:3000`
 
-let todulistId, firstListId, secondListId
+let todolistId, firstListId, secondListId
 
 // eslint-disable-next-line no-unused-expressions, no-undef
 fixture`Two Level Todo`.beforeEach(async t => {
   await t.setNativeDialogHandler(() => true)
-  await t.navigateTo(`${MAIN_PAGE}${todulistId ? `/${todulistId}` : ''}`)
+  await t.navigateTo(`${MAIN_PAGE}${todolistId ? `/${todolistId}` : ''}`)
 })
 
 test('should add first list', async t => {
@@ -56,7 +56,7 @@ test('should add second list', async t => {
     .nth(1)
     .find('a').attributes).href.slice(1)
 
-  todulistId = firstListId
+  todolistId = firstListId
 })
 
 // First List
@@ -119,7 +119,7 @@ test('should remove second todo', async t => {
 
   await t.expect(await Selector('ul').find('li').count).eql(0)
 
-  todulistId = secondListId
+  todolistId = secondListId
 })
 
 // Second List
@@ -182,7 +182,7 @@ test('should remove second todo', async t => {
 
   await t.expect(await Selector('ul').find('li').count).eql(0)
 
-  todulistId = null
+  todolistId = null
 })
 
 test('should remove first list', async t => {
