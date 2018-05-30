@@ -40,7 +40,6 @@ pipeline {
 
                         yarn oao --version
                         echo registry=http://${env.NPM_ADDR} > /root/.npmrc; \
-                        echo //${env.NPM_ADDR}/:_authToken=${env.NPM_TOKEN} >> /root/.npmrc; \
                         echo 'registry "http://${env.NPM_ADDR}"' >> /root/.yarnrc; \
                         cat /root/.yarnrc; \
                         cat /root/.npmrc; \
