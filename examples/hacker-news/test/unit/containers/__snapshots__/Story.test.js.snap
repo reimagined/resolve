@@ -46,9 +46,7 @@ ShallowWrapper {
         />,
         <span>
           <styled.div />
-          <styled.span
-            onClick={undefined}
-          >
+          <styled.span>
             unvote
           </styled.span>
            
@@ -97,9 +95,7 @@ ShallowWrapper {
         "props": Object {
           "children": Array [
             <styled.div />,
-            <styled.span
-              onClick={undefined}
-            >
+            <styled.span>
               unvote
             </styled.span>,
             " ",
@@ -179,9 +175,7 @@ ShallowWrapper {
           />,
           <span>
             <styled.div />
-            <styled.span
-              onClick={undefined}
-            >
+            <styled.span>
               unvote
             </styled.span>
              
@@ -230,9 +224,7 @@ ShallowWrapper {
           "props": Object {
             "children": Array [
               <styled.div />,
-              <styled.span
-                onClick={undefined}
-              >
+              <styled.span>
                 unvote
               </styled.span>,
               " ",
@@ -332,9 +324,7 @@ ShallowWrapper {
         />,
         <span>
           <styled.div />
-          <styled.span
-            onClick={undefined}
-          >
+          <styled.span>
             unvote
           </styled.span>
            
@@ -370,9 +360,7 @@ ShallowWrapper {
         "props": Object {
           "children": Array [
             <styled.div />,
-            <styled.span
-              onClick={undefined}
-            >
+            <styled.span>
               unvote
             </styled.span>,
             " ",
@@ -444,9 +432,7 @@ ShallowWrapper {
           />,
           <span>
             <styled.div />
-            <styled.span
-              onClick={undefined}
-            >
+            <styled.span>
               unvote
             </styled.span>
              
@@ -482,9 +468,7 @@ ShallowWrapper {
           "props": Object {
             "children": Array [
               <styled.div />,
-              <styled.span
-                onClick={undefined}
-              >
+              <styled.span>
                 unvote
               </styled.span>,
               " ",
@@ -1394,7 +1378,6 @@ ShallowWrapper {
     "props": Object {
       "children": Array [
         <styled.div
-          onClick={undefined}
           title="upvote"
         />,
         <styled.a
@@ -1445,7 +1428,6 @@ ShallowWrapper {
       "props": Object {
         "children": Array [
           <styled.div
-            onClick={undefined}
             title="upvote"
           />,
           <styled.a
@@ -1522,7 +1504,6 @@ ShallowWrapper {
     "props": Object {
       "children": Array [
         <styled.div
-          onClick={undefined}
           title="upvote"
         />,
         <styled.a
@@ -1573,7 +1554,6 @@ ShallowWrapper {
       "props": Object {
         "children": Array [
           <styled.div
-            onClick={undefined}
             title="upvote"
           />,
           <styled.a

@@ -9,17 +9,9 @@ import {
   UnvoteLink,
   StoryInfo,
   mapStateToProps,
-  mapDispatchToProps,
   Story,
   UpvoteArrow
 } from '../../../client/containers/Story'
-
-const actions = {
-  createStory: () => {},
-  upvoteStory: () => {},
-  unvoteStory: () => {},
-  commentStory: () => {}
-}
 
 let originalUuidV4 = uuid.v4
 let originalNow = Date.now()
@@ -303,18 +295,6 @@ it('mapStateToProps', () => {
   const props = mapStateToProps({ optimistic })
 
   expect(props).toEqual({ optimistic })
-})
-
-it('mapDispatchToProps upvoteStory', () => {
-  const props = mapDispatchToProps(value => value)
-
-  expect(props.upvoteStory('id')).toEqual(actions.upvoteStory('id'))
-})
-
-it('mapDispatchToProps unvoteStory', () => {
-  const props = mapDispatchToProps(value => value)
-
-  expect(props.unvoteStory('id')).toEqual(actions.unvoteStory('id'))
 })
 
 it('StyledLink', () => {
