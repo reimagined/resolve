@@ -57,16 +57,6 @@ pipeline {
                         rm -rf ./*
                         export YARN_CACHE_FOLDER=/yarn_cache
 
-                        export DISPLAY=:1.0
-                        mkdir -p /var/run/dbus
-                        chown messagebus:messagebus /var/run/dbus
-                        exec dbus-uuidgen --ensure &
-                        sleep 3
-                        dbus-daemon --system --fork
-                        Xvfb :1 -screen 0 "1280x720x24" >/dev/null 2>&1 &
-                        fluxbox >/dev/null 2>&1 &
-                        sleep 3
-
                         yarn global add create-resolve-app@\$(cat /lerna_version)
                     """
                 }
@@ -87,7 +77,7 @@ pipeline {
                                 grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3001/g'
 
                                 yarn test
-                                yarn test:functional --browser=path:/chromium
+                                yarn test:functional --browser=firefox
                             """
                         }
                     }
@@ -105,7 +95,7 @@ pipeline {
                                 grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3002/g'
 
                                 yarn test
-                                yarn test:functional --browser=path:/chromium
+                                yarn test:functional --browser=firefox
                             """
                         }
                     }
@@ -123,7 +113,7 @@ pipeline {
                                 grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3003/g'
 
                                 yarn test
-                                yarn test:functional --browser=path:/chromium
+                                yarn test:functional --browser=firefox
                             """
                         }
                     }
@@ -141,7 +131,7 @@ pipeline {
                                 grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3004/g'
 
                                 yarn test
-                                yarn test:functional --browser=path:/chromium
+                                yarn test:functional --browser=firefox
                             """
                         }
                     }
@@ -160,7 +150,7 @@ pipeline {
 
 
                                 yarn test
-                                yarn test:functional --browser=path:/chromium
+                                yarn test:functional --browser=firefox
                             """
                         }
                     }
@@ -178,7 +168,7 @@ pipeline {
                                 grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3006/g'
 
                                 yarn test
-                                yarn test:functional --browser=path:/chromium
+                                yarn test:functional --browser=firefox
                             """
                         }
                     }
