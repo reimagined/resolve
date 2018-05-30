@@ -19,7 +19,7 @@ describe('resolve-readmodel-base reset', () => {
     await disposePromise
   })
 
-  it('should dont dispose on second and following calls', async () => {
+  it('should not dispose on second and following calls', async () => {
     const disposePromise = Promise.resolve()
     const result = reset({ internalContext: { disposePromise } })
 

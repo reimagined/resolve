@@ -1,11 +1,11 @@
-import { getRootableUrl } from './helpers'
+import { getRootBasedUrl } from './helpers'
 
 export default (authReq, authRes, next) => ({
   onSuccess: (options, user /*, info*/) => {
     authRes.applyJwtValue(
       user,
       authRes.expressRes,
-      getRootableUrl(options.successRedirect || '/')
+      getRootBasedUrl(options.successRedirect || '/')
     )
   },
   onFail: (options, error, status) => {
@@ -16,7 +16,7 @@ export default (authReq, authRes, next) => ({
       res.statusCode = 302
       res.setHeader(
         'Location',
-        getRootableUrl(
+        getRootBasedUrl(
           typeof options.failureRedirect === 'function'
             ? options.failureRedirect(error)
             : options.failureRedirect
@@ -47,7 +47,7 @@ export default (authReq, authRes, next) => ({
       res.statusCode = 302
       res.setHeader(
         'Location',
-        getRootableUrl(
+        getRootBasedUrl(
           typeof options.errorRedirect === 'function'
             ? options.errorRedirect(err)
             : options.errorRedirect
