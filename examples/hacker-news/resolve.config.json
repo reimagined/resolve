@@ -23,7 +23,8 @@
       "name": "storyDetails",
       "projection": "common/view-models/story_details.projection.js",
       "serializeState": "common/view-models/story_details.serialize_state.js",
-      "deserializeState": "common/view-models/story_details.deserialize_state.js",
+      "deserializeState":
+        "common/view-models/story_details.deserialize_state.js",
       "snapshotAdapter": {
         "module": "common/view-models/snapshot_adapter.module.js",
         "options": {
@@ -55,7 +56,7 @@
       }
     }
   }
-}
 
-// See the documentation for more information about available options list at
-// https://github.com/reimagined/resolve/blob/master/packages/resolve-scripts/configs/resolve.config.json
+  // See the documentation for more information about available options list at
+  // https://github.com/reimagined/resolve/blob/master/packages/resolve-scripts/configs/schema.deploy.options.json
+}

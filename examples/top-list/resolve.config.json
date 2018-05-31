@@ -1,25 +1,25 @@
 {
-    "port": 3000,
-    "routes": "client/routes.js",
-    "aggregates": [
-        {
-            "name": "Rating",
-            "commands": "common/aggregates/rating.commands.js"
-        }
-    ],
-    "readModels": [
-        {
-            "name": "Rating",
-            "projection": "common/read-models/rating.projection.js",
-            "resolvers": "common/read-models/rating.resolvers.js"
-        }
-    ],
-    "sagas": "common/sagas/index.js",
-    "storageAdapter": {
-        "module": "resolve-storage-lite",
-        "options": {}
+  "port": 3000,
+  "routes": "client/routes.js",
+  "aggregates": [
+    {
+      "name": "Rating",
+      "commands": "common/aggregates/rating.commands.js"
     }
-}
+  ],
+  "readModels": [
+    {
+      "name": "Rating",
+      "projection": "common/read-models/rating.projection.js",
+      "resolvers": "common/read-models/rating.resolvers.js"
+    }
+  ],
+  "sagas": "common/sagas/index.js",
+  "storageAdapter": {
+    "module": "resolve-storage-lite",
+    "options": {}
+  }
 
-// See the documentation for more information about available options list at
-// https://github.com/reimagined/resolve/blob/master/packages/resolve-scripts/configs/resolve.config.json
+  // See the documentation for more information about available options list at
+  // https://github.com/reimagined/resolve/blob/master/packages/resolve-scripts/configs/schema.deploy.options.json
+}

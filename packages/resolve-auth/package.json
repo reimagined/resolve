@@ -21,7 +21,6 @@
     "ddd"
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-auth#readme",
-
   "dependencies": {
     "cookie": "^0.3.1"
   },

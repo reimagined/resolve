@@ -29,19 +29,24 @@
     ]
   },
   "scripts": {
-    "clean":
-      "npx oao all \"npx rimraf dist\" --parallel && npx rimraf yarn-error.log && npx oao clean",
+    "clean": "npx oao all \"npx rimraf dist\" --parallel && npx rimraf yarn-error.log && npx oao clean",
     "lint": "eslint .",
     "lint-staged": "lint-staged",
-    "prepublish":
-      "npx oao all \"npx rimraf dist\" --parallel && oao run-script prepublish --parallel",
+    "prepublish": "npx oao all \"npx rimraf dist\" --parallel && oao run-script prepublish --parallel",
     "prettier": "prettier --single-quote --no-semi --write \"**/**.js\"",
+    "prettier-json": "prettier --write \"**/**.json\"",
     "publish": "oao publish -i \"examples/*\" --no-git-commit --no-changelog",
     "test": "oao all \"yarn test --color 2>&1\"",
     "test:functional": "oao run-script test:functional"
   },
-  "pre-commit": ["lint-staged", "lint"],
+  "pre-commit": [
+    "lint-staged",
+    "lint"
+  ],
   "lint-staged": {
-    "*.{js,css}": ["prettier --single-quote --no-semi --write", "git add"]
+    "*.{js,css}": [
+      "prettier --single-quote --no-semi --write",
+      "git add"
+    ]
   }
 }

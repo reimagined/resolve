@@ -35,6 +35,7 @@ module.exports = {
         code: 100
       }
     ],
+    'eol-last': ['error', 'always'],
     'no-console': ['error'],
     'spellcheck/spell-checker': [
       1,
