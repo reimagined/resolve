@@ -5,7 +5,6 @@
 * [Project Structure Overview](#️project-structure-overview)
     * [Client](#client)
     * [Common](#common)
-    * [Configuration](#configuration)
     * [Functional tests](#functional-tests)
 * [Configuration Files](#configuration-files)
     * [Client Config](#client-config)
