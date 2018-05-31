@@ -93,11 +93,7 @@ const getWebpackServerConfig = ({
         entryOnly: false
       })
     ],
-    externals: [
-      /node_modules/,
-      nodeExternals(),
-      ...getModulesDirs().map(modulesDir => nodeExternals({ modulesDir }))
-    ]
+    externals: getModulesDirs().map(modulesDir => nodeExternals({ modulesDir }))
   }
 }
 

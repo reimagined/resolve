@@ -82,8 +82,8 @@ export default argv => {
           poll: 1000
         },
         (err, { stats: [clientStats, serverStats] }) => {
-          showBuildInfo(webpackClientConfig, err, clientStats)
-          showBuildInfo(webpackServerConfig, err, serverStats)
+          showBuildInfo(err, clientStats)
+          showBuildInfo(err, serverStats)
           if (deployOptions.start) {
             if (
               (serverStats && serverStats.hasErrors()) ||
@@ -103,8 +103,8 @@ export default argv => {
       )
     } else {
       compiler.run((err, { stats: [clientStats, serverStats] }) => {
-        showBuildInfo(webpackClientConfig, err, clientStats)
-        showBuildInfo(webpackServerConfig, err, serverStats)
+        showBuildInfo(err, clientStats)
+        showBuildInfo(err, serverStats)
         if (deployOptions.start) {
           if (
             serverStats &&
