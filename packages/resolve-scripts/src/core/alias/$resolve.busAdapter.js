@@ -29,14 +29,25 @@ export default ({ resolveConfig, isClient }) => {
 
   const exports = []
 
+  if (busAdapter.module in resolveConfig[envKey]) {
+    exports.push(
+      `import interopRequireDefault from "@babel/runtime/helpers/interopRequireDefault"`,
+      ``,
+      `const busAdapter = ${injectEnv(busAdapter)}`,
+      `const busAdapterModule = interopRequireDefault(`,
+      `  eval('require(busAdapter.module)')`,
+      `).default`,
+      `const busAdapterOptions = busAdapter.options`
+    )
+  } else {
+    exports.push(
+      `import busAdapterModule from ${JSON.stringify(busAdapter.module)}`,
+      ``,
+      `const busAdapterOptions = ${injectEnv(busAdapter.options)}`
+    )
+  }
+
   exports.push(
-    `import interopRequireDefault from "@babel/runtime/helpers/interopRequireDefault"`,
-    ``,
-    `const busAdapter = ${injectEnv(busAdapter)}`,
-    `const busAdapterModule = interopRequireDefault(`,
-    `  eval('require(busAdapter.module)')`,
-    `).default`,
-    `const busAdapterOptions = busAdapter.options`,
     ``,
     `export default {`,
     `  module: busAdapterModule,`,

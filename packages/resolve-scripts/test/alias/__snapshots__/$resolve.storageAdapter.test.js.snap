@@ -2,18 +2,11 @@
 
 exports[`base config works correctly [server] 1`] = `
 "
-import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
+import storageAdapterModule from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testAdapter.js\\"
 
-const storageAdapter = {
-  \\"module\\": \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testAdapter.js\\",
-  \\"options\\": {
-    \\"url\\": \\"http://test.test\\"
-  }
+const storageAdapterOptions = {
+  \\"url\\": \\"http://test.test\\"
 }
-const storageAdapterModule = interopRequireDefault(
-  eval('require(storageAdapter.module)')
-).default
-const storageAdapterOptions = storageAdapter.options
 
 export default {
   module: storageAdapterModule,

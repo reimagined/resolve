@@ -73,13 +73,22 @@ export default ({ resolveConfig, isClient }) => {
     }
 
     if (!isClient && readModel.adapter) {
-      constants.push(
-        `const adapter_${index} = ${injectEnv(adapter)}`,
-        `const adapterModule_${index} = interopRequireDefault(`,
-        `  eval('require(adapter_${index}.module)')`,
-        `).default`,
-        `const adapterOptions_${index} = adapter_${index}.options`
-      )
+      if (readModel.adapter.module in resolveConfig[envKey]) {
+        constants.push(
+          `const adapter_${index} = ${injectEnv(adapter)}`,
+          `const adapterModule_${index} = interopRequireDefault(`,
+          `  eval('require(adapter_${index}.module)')`,
+          `).default`,
+          `const adapterOptions_${index} = adapter_${index}.options`
+        )
+      } else {
+        imports.push(
+          `import adapterModule_${index} from ${JSON.stringify(adapter.module)}`
+        )
+        constants.push(
+          `const adapterOptions_${index} = ${injectEnv(adapter.options)}`
+        )
+      }
     }
 
     exports.push(`readModels.push({`, `  name: name_${index}`)

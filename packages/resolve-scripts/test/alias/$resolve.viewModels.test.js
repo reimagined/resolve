@@ -163,8 +163,8 @@ describe('config with snapshot works correctly', () => {
         {
           name: 'Todos',
           projection: "${path.resolve(__dirname, 'files/testProjection.js')}",
-          snapshot: {
-            adapter: "${path.resolve(
+          snapshotAdapter: {
+            module: "${path.resolve(
               __dirname,
               'files/testSnapshotAdapter.js'
             )}",
@@ -206,8 +206,8 @@ describe('config with snapshot + process.env works correctly', () => {
       {
         name: 'Todos',
         projection: "${path.resolve(__dirname, 'files/testProjection.js')}",
-        snapshot: {
-          adapter: process.env.VIEW_MODEL_TODOS_ADAPTER,
+        snapshotAdapter: {
+          module: process.env.VIEW_MODEL_TODOS_ADAPTER,
           options: {
             size: process.env.VIEW_MODEL_TODOS_OPTIONS_SIZE
           }

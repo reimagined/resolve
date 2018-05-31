@@ -2,18 +2,11 @@
 
 exports[`base config works correctly [server] 1`] = `
 "
-import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
+import busAdapterModule from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testAdapter.js\\"
 
-const busAdapter = {
-  \\"module\\": \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testAdapter.js\\",
-  \\"options\\": {
-    \\"url\\": \\"http://test.test\\"
-  }
+const busAdapterOptions = {
+  \\"url\\": \\"http://test.test\\"
 }
-const busAdapterModule = interopRequireDefault(
-  eval('require(busAdapter.module)')
-).default
-const busAdapterOptions = busAdapter.options
 
 export default {
   module: busAdapterModule,

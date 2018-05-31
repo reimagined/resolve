@@ -31,14 +31,27 @@ export default ({ resolveConfig, isClient }) => {
 
   const exports = []
 
+  if (storageAdapter.module in resolveConfig[envKey]) {
+    exports.push(
+      `import interopRequireDefault from "@babel/runtime/helpers/interopRequireDefault"`,
+      ``,
+      `const storageAdapter = ${injectEnv(storageAdapter)}`,
+      `const storageAdapterModule = interopRequireDefault(`,
+      `  eval('require(storageAdapter.module)')`,
+      `).default`,
+      `const storageAdapterOptions = storageAdapter.options`
+    )
+  } else {
+    exports.push(
+      `import storageAdapterModule from ${JSON.stringify(
+        storageAdapter.module
+      )}`,
+      ``,
+      `const storageAdapterOptions = ${injectEnv(storageAdapter.options)}`
+    )
+  }
+
   exports.push(
-    `import interopRequireDefault from "@babel/runtime/helpers/interopRequireDefault"`,
-    ``,
-    `const storageAdapter = ${injectEnv(storageAdapter)}`,
-    `const storageAdapterModule = interopRequireDefault(`,
-    `  eval('require(storageAdapter.module)')`,
-    `).default`,
-    `const storageAdapterOptions = storageAdapter.options`,
     ``,
     `export default {`,
     `  module: storageAdapterModule,`,

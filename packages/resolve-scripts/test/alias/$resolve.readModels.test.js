@@ -88,8 +88,8 @@ describe('config with storage works correctly', () => {
           name: 'Todos',
           projection: "${path.resolve(__dirname, 'files/testProjection.js')}",
           resolvers: "${path.resolve(__dirname, 'files/testResolvers.js')}",
-          storage: {
-            adapter: "${path.resolve(
+          adapter: {
+            module: "${path.resolve(
               __dirname,
               'files/testSnapshotAdapter.js'
             )}",
@@ -132,8 +132,8 @@ describe('config with storage + process.env works correctly', () => {
         name: 'Todos',
         projection: "${path.resolve(__dirname, 'files/testProjection.js')}",
         resolvers: "${path.resolve(__dirname, 'files/testResolvers.js')}",
-        storage: {
-          adapter: process.env.READ_MODEL_TODOS_ADAPTER,
+        adapter: {
+          module: process.env.READ_MODEL_TODOS_ADAPTER,
           options: {
             size: process.env.READ_MODEL_TODOS_OPTIONS_SIZE
           }

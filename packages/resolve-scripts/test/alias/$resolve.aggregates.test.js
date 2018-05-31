@@ -120,8 +120,8 @@ describe('config with snapshot works correctly', () => {
         {
           name: 'Todo',
           commands: "${path.resolve(__dirname, 'files/testCommands.js')}",
-          snapshot: {
-            adapter: "${path.resolve(
+          snapshotAdapter: {
+            module: "${path.resolve(
               __dirname,
               'files/testSnapshotAdapter.js'
             )}",
@@ -163,8 +163,8 @@ describe('config with snapshot + process.env works correctly', () => {
       {
         name: 'Todo',
         commands: "${path.resolve(__dirname, 'files/testCommands.js')}",
-        snapshot: {
-          adapter: process.env.AGGREGATE_TODO_SNAPSHOT_ADAPTER,
+        snapshotAdapter: {
+          module: process.env.AGGREGATE_TODO_SNAPSHOT_ADAPTER,
           options: {
             size: process.env.AGGREGATE_TODO_SNAPSHOT_OPTIONS_SIZE
           }
