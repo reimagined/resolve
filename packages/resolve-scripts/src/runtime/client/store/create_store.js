@@ -12,13 +12,20 @@ import redux from '$resolve.redux'
 import viewModels from '$resolve.viewModels'
 import readModels from '$resolve.readModels'
 import aggregates from '$resolve.aggregates'
-import subscribe from '$resolve.subscribeAdapter'
-
-const subscribeAdapter = subscribe.module
 
 const { reducers, middlewares, store: setupStore } = redux
 
-export default ({ initialState, history, origin, rootPath }) => {
+export default ({ initialState, history, origin, rootPath, mqttUrl }) => {
+  const resolveMiddleware = createResolveMiddleware({
+    viewModels,
+    readModels,
+    aggregates,
+    origin,
+    rootPath,
+    mqttUrl,
+    mqttQoS: 3 // TODO
+  })
+
   const store = createStore(
     combineReducers({
       ...reducers,
@@ -31,18 +38,13 @@ export default ({ initialState, history, origin, rootPath }) => {
     composeWithDevTools(
       applyMiddleware(
         routerMiddleware(history),
-        createResolveMiddleware({
-          viewModels,
-          readModels,
-          aggregates,
-          subscribeAdapter,
-          origin,
-          rootPath
-        }),
+        resolveMiddleware,
         ...middlewares
       )
     )
   )
+
+  resolveMiddleware.run(store)
 
   setupStore(store, middlewares)
 

@@ -1,104 +1,91 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-
+import { bindActionCreators } from 'redux'
 import actions from './actions'
-import getAggregateActions from './get_aggregate_actions'
 
-const readModelPropsNames = [
-  'readModelName',
-  'resolverName',
-  'parameters',
-  'isReactive'
-]
-
-const compareReadModelProps = (nextProps, prevProps) =>
-  readModelPropsNames.reduce(
-    (acc, key) =>
-      acc && JSON.stringify(nextProps[key]) === JSON.stringify(prevProps[key]),
-    true
-  )
-
-const extractReadModelProps = props =>
-  readModelPropsNames.reduce((acc, key) => {
-    acc[key] = props[key]
-    return acc
-  }, {})
-
-const extractReadModelValues = props =>
-  readModelPropsNames.map(key => props[key])
-
-const connectReadModel = (
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps,
-  options
-) => Component => {
-  const ConnectedComponent = connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    mergeProps,
-    options
-  )(Component)
-
-  class ReadModelConnector extends React.PureComponent {
-    aggregateActions = getAggregateActions(this.context.store)
-
-    componentWillReceiveProps(nextProps) {
-      const readModelProps = extractReadModelProps(
-        mapStateToProps(this.context.store.getState(), {
-          ...nextProps,
-          aggregateActions: this.aggregateActions
-        })
-      )
-
-      if (compareReadModelProps(readModelProps, this)) return
-
-      this.context.store.dispatch(
-        actions.unsubscribeReadModel(this.readModelName, this.resolverName)
-      )
-
-      this.context.store.dispatch(
-        actions.subscribeReadModel(...extractReadModelValues(readModelProps))
-      )
-
-      Object.assign(this, readModelProps)
-    }
-
+const connectReadModel = mapStateToOptions => Component => {
+  class ReadModelContainer extends React.PureComponent {
     componentDidMount() {
-      const readModelProps = extractReadModelProps(
-        mapStateToProps(this.context.store.getState(), {
-          ...this.props,
-          aggregateActions: this.aggregateActions
-        })
-      )
+      // TODO placeholder
+      const {
+        readModelName,
+        resolverName,
+        resolverArgs,
+        isReactive,
+        placeholder,
+        placeholderTimeout
+      } = this.props.connectorOptions
 
-      this.context.store.dispatch(
-        actions.subscribeReadModel(...extractReadModelValues(readModelProps))
+      this.props.connectReadModel(
+        readModelName,
+        resolverName,
+        resolverArgs,
+        isReactive
       )
-
-      Object.assign(this, readModelProps)
     }
 
     componentWillUnmount() {
-      this.context.store.dispatch(
-        actions.unsubscribeReadModel(this.readModelName, this.resolverName)
+      // TODO placeholder
+      const {
+        readModelName,
+        resolverName,
+        resolverArgs,
+        isReactive,
+        placeholder,
+        placeholderTimeout
+      } = this.props.connectorOptions
+
+      this.props.disconnectReadModel(
+        readModelName,
+        resolverName,
+        resolverArgs,
+        isReactive
       )
     }
 
     render() {
-      return (
-        <ConnectedComponent
-          {...this.props}
-          aggregateActions={this.aggregateActions}
-        />
-      )
+      const { ownProps, isLoading, data } = this.props
+
+      return <Component {...ownProps} isLoading={isLoading} data={data} />
     }
   }
 
-  ReadModelConnector.contextTypes = {
-    store: PropTypes.object.isRequired
+  const mapStateToConnectorProps = (state, ownProps) => {
+    const connectorOptions = mapStateToOptions(state, ownProps)
+
+    const {
+      readModels: {
+        [`resolve-loading-${connectorOptions.readModelName}-${
+          connectorOptions.resolverName
+        }`]: isLoading,
+        [connectorOptions.readModelName]: {
+          [connectorOptions.resolverName]: data
+        }
+      }
+    } = state
+
+    return {
+      ownProps,
+      connectorOptions,
+      isLoading,
+      data
+    }
   }
+
+  const mapDispatchToConnectorProps = dispatch =>
+    bindActionCreators(
+      {
+        connectReadModel: actions.connectReadModel,
+        disconnectReadModel: actions.disconnectReadModel
+      },
+      dispatch
+    )
+
+  const ReadModelConnector = connect(
+    mapStateToConnectorProps,
+    mapDispatchToConnectorProps
+  )(ReadModelContainer)
+  ReadModelConnector.mapStateToOptions = mapStateToOptions
 
   return ReadModelConnector
 }

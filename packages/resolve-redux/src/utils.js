@@ -20,7 +20,7 @@ export const checkRequiredFields = (obj, beforeWarnings, afterWarnings) => {
   return !shouldWarningsBePrinted
 }
 
-export const getRootBasedUrl = (origin, rootPath, url) => {
+export const getRootableUrl = (origin, rootPath, url) => {
   return `${origin}${rootPath ? `/${rootPath}` : ''}${url}`
 }
 

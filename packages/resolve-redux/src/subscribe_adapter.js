@@ -1,12 +1,12 @@
 import socketIOClient from 'socket.io-client'
 
-import { getRootBasedUrl, makeLateResolvingPromise } from './utils'
+import { getRootableUrl, makeLateResolvingPromise } from './utils'
 
 const subscribeAdapter = ({ origin, rootPath }) => {
   let onEvent, onDisconnect
 
   const socket = socketIOClient(origin, {
-    path: getRootBasedUrl('', rootPath, '/socket')
+    path: getRootableUrl('', rootPath, '/socket')
   })
 
   let latePromise = makeLateResolvingPromise()

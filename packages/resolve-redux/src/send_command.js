@@ -1,4 +1,4 @@
-import { checkRequiredFields, getRootBasedUrl } from './utils'
+import { checkRequiredFields, getRootableUrl } from './utils'
 
 const sendCommand = async ({ origin, rootPath, store }, action) => {
   const { command, aggregateId, aggregateName, payload } = action
@@ -26,7 +26,7 @@ const sendCommand = async ({ origin, rootPath, store }, action) => {
 
   try {
     const response = await fetch(
-      getRootBasedUrl(origin, rootPath, '/api/commands'),
+      getRootableUrl(origin, rootPath, '/api/commands'),
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

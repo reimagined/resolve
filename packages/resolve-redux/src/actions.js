@@ -1,109 +1,256 @@
 import uuid from 'uuid/v4'
 
 import {
-  MERGE,
-  SEND_COMMAND,
-  SUBSCRIBE_VIEWMODEL,
-  UNSUBSCRIBE_VIEWMODEL,
-  SUBSCRIBE_READMODEL,
-  UNSUBSCRIBE_READMODEL,
-  READMODEL_LOAD_INITIAL_STATE,
-  READMODEL_DROP_STATE,
-  PROVIDE_VIEW_MODELS,
-  DISCONNECT,
-  HOT_MODULE_REPLACEMENT
+  SEND_COMMAND_REQUEST,
+  SEND_COMMAND_SUCCESS,
+  SEND_COMMAND_FAILURE,
+  SUBSCRIBE_TOPIC_REQUEST,
+  SUBSCRIBE_TOPIC_SUCCESS,
+  SUBSCRIBE_TOPIC_FAILURE,
+  UNSUBSCRIBE_TOPIC_REQUEST,
+  UNSUBSCRIBE_TOPIC_SUCCESS,
+  UNSUBSCRIBE_TOPIC_FAILURE,
+  CONNECT_VIEWMODEL,
+  DISCONNECT_VIEWMODEL,
+  LOAD_VIEWMODEL_STATE_REQUEST,
+  LOAD_VIEWMODEL_STATE_SUCCESS,
+  LOAD_VIEWMODEL_STATE_FAILURE,
+  DROP_VIEWMODEL_STATE,
+  CONNECT_READMODEL,
+  DISCONNECT_READMODEL,
+  LOAD_READMODEL_STATE_REQUEST,
+  LOAD_READMODEL_STATE_SUCCESS,
+  LOAD_READMODEL_STATE_FAILURE,
+  APPLY_READMODEL_DIFF,
+  DROP_READMODEL_STATE,
+  DISPATCH_MQTT_EVENT,
+  HOT_MODULE_REPLACEMENT,
+  DISPATCH_MQTT_EVENT
 } from './action_types'
 
-const merge = (viewModelName, aggregateId, state) => ({
-  type: MERGE,
-  viewModelName,
+export const sendCommandRequest = (
+  command,
   aggregateId,
-  state
-})
-
-const sendCommand = ({ command, aggregateId, aggregateName, payload }) => ({
-  type: SEND_COMMAND,
+  aggregateName,
+  payload
+) => ({
+  type: SEND_COMMAND_REQUEST,
   command,
   aggregateId,
   aggregateName,
   payload
 })
 
-const subscribeViewModel = (viewModelName, aggregateId) => ({
-  type: SUBSCRIBE_VIEWMODEL,
-  viewModelName,
-  aggregateId
+export const sendCommandSuccess = (
+  command,
+  aggregateId,
+  aggregateName,
+  payload
+) => ({
+  type: SEND_COMMAND_SUCCESS,
+  command,
+  aggregateId,
+  aggregateName,
+  payload
 })
 
-const unsubscribeViewModel = (viewModelName, aggregateId) => ({
-  type: UNSUBSCRIBE_VIEWMODEL,
-  viewModelName,
-  aggregateId
+export const sendCommandFailure = (
+  command,
+  aggregateId,
+  aggregateName,
+  payload,
+  error
+) => ({
+  type: SEND_COMMAND_FAILURE,
+  command,
+  aggregateId,
+  aggregateName,
+  payload,
+  error
 })
 
-const subscribeReadModel = (
+export const subscibeTopicRequest = (appId, topicName, topicId) => ({
+  type: SUBSCRIBE_TOPIC_REQUEST,
+  appId,
+  topicName,
+  topicId
+})
+
+export const subscibeTopicSuccess = (appId, topicName, topicId) => ({
+  type: SUBSCRIBE_TOPIC_SUCCESS,
+  appId,
+  topicName,
+  topicId
+})
+
+export const subscibeTopicFailure = (appId, topicName, topicId, error) => ({
+  type: SUBSCRIBE_TOPIC_FAILURE,
+  appId,
+  topicName,
+  topicId,
+  error
+})
+
+export const unsubscibeTopicRequest = (appId, topicName, topicId) => ({
+  type: UNSUBSCRIBE_TOPIC_REQUEST,
+  appId,
+  topicName,
+  topicId
+})
+
+export const unsubscibeTopicSuccess = (appId, topicName, topicId) => ({
+  type: UNSUBSCRIBE_TOPIC_SUCCESS,
+  appId,
+  topicName,
+  topicId
+})
+
+export const unsubscibeTopicFailure = (appId, topicName, topicId) => ({
+  type: UNSUBSCRIBE_TOPIC_FAILURE,
+  appId,
+  topicName,
+  topicId
+})
+
+export const connectViewModel = (viewModelName, aggregateIds) => ({
+  type: CONNECT_VIEWMODEL,
+  viewModelName,
+  aggregateIds
+})
+
+export const disconnectViewModel = (viewModelName, aggregateIds) => ({
+  type: DISCONNECT_VIEWMODEL,
+  viewModelName,
+  aggregateIds
+})
+
+export const loadViewModelStateRequest = (viewModelName, aggregateIds) => ({
+  type: LOAD_VIEWMODEL_STATE_REQUEST,
+  viewModelName,
+  aggregateIds
+})
+
+export const loadViewModelStateSuccess = (
+  viewModelName,
+  aggregateIds,
+  state
+) => ({
+  type: LOAD_VIEWMODEL_STATE_SUCCESS,
+  viewModelName,
+  aggregateIds,
+  state
+})
+
+export const loadViewModelStateFailure = (
+  viewModelName,
+  aggregateIds,
+  error
+) => ({
+  type: LOAD_VIEWMODEL_STATE_FAILURE,
+  viewModelName,
+  aggregateIds,
+  error
+})
+
+export const dropViewModelState = (viewModelName, aggregateIds) => ({
+  type: DROP_VIEWMODEL_STATE,
+  viewModelName,
+  aggregateIds
+})
+
+export const connectReadModel = (
   readModelName,
   resolverName,
-  parameters,
+  resolverArgs,
   isReactive
 ) => ({
-  type: SUBSCRIBE_READMODEL,
+  type: CONNECT_READMODEL,
   readModelName,
   resolverName,
-  parameters,
+  resolverArgs,
   isReactive
 })
 
-const unsubscribeReadModel = (readModelName, resolverName) => ({
-  type: UNSUBSCRIBE_READMODEL,
-  readModelName,
-  resolverName
-})
-
-const loadReadModelInitialState = (
+export const disconnectReadModel = (
   readModelName,
   resolverName,
-  initialState,
-  serialId
+  resolverArgs,
+  isReactive
 ) => ({
-  type: READMODEL_LOAD_INITIAL_STATE,
+  type: DISCONNECT_READMODEL,
   readModelName,
   resolverName,
-  initialState,
-  serialId
+  resolverArgs,
+  isReactive
 })
 
-const dropReadModelState = (readModelName, resolverName) => ({
-  type: READMODEL_DROP_STATE,
+export const loadReadModelStateRequest = (
   readModelName,
-  resolverName
+  resolverName,
+  resolverArgs
+) => ({
+  type: LOAD_READMODEL_STATE_REQUEST,
+  readModelName,
+  resolverName,
+  resolverArgs
 })
 
-const provideViewModels = viewModels => ({
-  type: PROVIDE_VIEW_MODELS,
-  viewModels
+export const loadReadModelStateSuccess = (
+  readModelName,
+  resolverName,
+  resolverArgs,
+  state
+) => ({
+  type: LOAD_READMODEL_STATE_SUCCESS,
+  readModelName,
+  resolverName,
+  resolverArgs,
+  state
 })
 
-const disconnect = reason => ({
-  type: DISCONNECT,
-  reason
+export const loadReadModelStateFailure = (
+  readModelName,
+  resolverName,
+  resolverArgs,
+  error
+) => ({
+  type: LOAD_READMODEL_STATE_FAILURE,
+  readModelName,
+  resolverName,
+  resolverArgs,
+  error
 })
 
-const hotModuleReplacement = () => ({
+export const applyReadModelDiff = (
+  readModelName,
+  resolverName,
+  resolverArgs,
+  diff
+) => ({
+  type: APPLY_READMODEL_DIFF,
+  readModelName,
+  resolverName,
+  resolverArgs,
+  diff
+})
+
+export const dropReadModelState = (
+  readModelName,
+  resolverName,
+  resolverArgs
+) => ({
+  type: DROP_READMODEL_STATE,
+  readModelName,
+  resolverName,
+  resolverArgs
+})
+
+export const dispatchMqttEvent = event => ({
+  type: DISPATCH_MQTT_EVENT,
+  event
+})
+
+export const hotModuleReplacement = () => ({
   type: HOT_MODULE_REPLACEMENT,
   hotModuleReplacementId: uuid()
 })
-
-export default {
-  merge,
-  sendCommand,
-  subscribeViewModel,
-  unsubscribeViewModel,
-  provideViewModels,
-  subscribeReadModel,
-  unsubscribeReadModel,
-  loadReadModelInitialState,
-  dropReadModelState,
-  disconnect,
-  hotModuleReplacement
-}

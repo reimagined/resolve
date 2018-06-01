@@ -1,89 +1,77 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-
-import isLoadingViewModel from './is_loading_view_model'
-import getAggregateActions from './get_aggregate_actions'
-
+import { bindActionCreators } from 'redux'
 import actions from './actions'
 
-const connectViewModel = (
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps,
-  options
-) => Component => {
-  const ConnectedComponent = connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    mergeProps,
-    options
-  )(Component)
+const connectViewModel = mapStateToOptions => Component => {
+  class ViewModelContainer extends React.PureComponent {
+    componentDidMount() {
+      // TODO placeholder
+      const {
+        viewModelName,
+        aggregateIds,
+        placeholder,
+        placeholderTimeout
+      } = this.props.connectorOptions
 
-  class ViewModelConnector extends React.PureComponent {
-    componentWillMount() {
-      const { viewModelName, aggregateId } = mapStateToProps(
-        this.context.store.getState(),
-        this.props
-      )
-
-      this.viewModelName = viewModelName
-      this.aggregateId = aggregateId
-
-      this.context.store.dispatch(
-        actions.subscribeViewModel(this.viewModelName, this.aggregateId)
-      )
-    }
-
-    componentWillReceiveProps(nextProps) {
-      const { viewModelName, aggregateId } = mapStateToProps(
-        this.context.store.getState(),
-        nextProps
-      )
-
-      if (
-        viewModelName !== this.viewModelName ||
-        aggregateId !== this.aggregateId
-      ) {
-        this.context.store.dispatch(
-          actions.unsubscribeViewModel(this.viewModelName, this.aggregateId)
-        )
-        this.viewModelName = viewModelName
-        this.aggregateId = aggregateId
-
-        this.context.store.dispatch(
-          actions.subscribeViewModel(this.viewModelName, this.aggregateId)
-        )
-      }
+      this.props.connectViewModel(viewModelName, aggregateIds)
     }
 
     componentWillUnmount() {
-      this.context.store.dispatch(
-        actions.unsubscribeViewModel(this.viewModelName, this.aggregateId)
-      )
+      // TODO placeholder
+      const {
+        viewModelName,
+        aggregateIds,
+        placeholder,
+        placeholderTimeout
+      } = this.props.connectorOptions
+
+      this.props.disconnectViewModel(viewModelName, aggregateIds)
     }
 
     render() {
-      const loading = isLoadingViewModel(
-        this.context.store,
-        this.viewModelName,
-        this.aggregateId
-      )
-      const aggregateActions = getAggregateActions(this.context.store)
+      const { ownProps, isLoading, data } = this.props
 
-      return (
-        <ConnectedComponent
-          {...this.props}
-          loading={loading}
-          aggregateActions={aggregateActions}
-        />
-      )
+      return <Component {...ownProps} isLoading={isLoading} data={data} />
     }
   }
 
-  ViewModelConnector.contextTypes = {
-    store: PropTypes.object.isRequired
+  const mapStateToConnectorProps = (state, ownProps) => {
+    const connectorOptions = mapStateToOptions(state, ownProps)
+
+    const aggregateIdsKey = connectorOptions.aggregateIds.sort().join(',')
+
+    const {
+      viewModels: {
+        [`resolve-loading-${
+          connectorOptions.viewModelName
+        }-${aggregateIdsKey}`]: isLoading,
+        [connectorOptions.viewModelName]: { [aggregateIdsKey]: data }
+      }
+    } = state
+
+    return {
+      ownProps,
+      connectorOptions,
+      isLoading,
+      data
+    }
   }
+
+  const mapDispatchToConnectorProps = dispatch =>
+    bindActionCreators(
+      {
+        connectViewModel: actions.connectViewModel,
+        disconnectViewModel: actions.disconnectViewModel
+      },
+      dispatch
+    )
+
+  const ViewModelConnector = connect(
+    mapStateToConnectorProps,
+    mapDispatchToConnectorProps
+  )(ViewModelContainer)
+  ViewModelConnector.mapStateToOptions = mapStateToOptions
 
   return ViewModelConnector
 }

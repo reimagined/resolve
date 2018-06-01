@@ -156,5 +156,3 @@ const mapDispatchToProps = dispatch => bindActionCreators(actions, dispatch)
 export default connectViewModel(mapStateToProps, mapDispatchToProps)(App)
 
 ```
-
-![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-resolve-redux-readme?pixel)

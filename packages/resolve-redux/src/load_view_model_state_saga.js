@@ -1,0 +1,3 @@
+loadViewModelState
+
+export default loadViewModelState
