@@ -111,6 +111,7 @@ const connectViewModelSaga = function*(
     aggregateArgs
   })}`
 
+  // TODO check undefined
   const aggregateVersionByAggregateId = viewModelsState[key]
 
   while (true) {
