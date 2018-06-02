@@ -36,10 +36,9 @@ pipeline {
                         export CI_CANARY_VERSION=\$(nodejs -e "console.log(JSON.parse(require('fs').readFileSync('./package.json')).version.split('-')[0].split('.').map((ver, idx) => (idx < 2 ? ver : String(+ver + 1) )).join('.'));")-${env.CI_TIMESTAMP}.${env.CI_RELEASE_TYPE}; \
                         echo \$CI_CANARY_VERSION > /lerna_version; \
 
-                        yarn oao --version
+                        yarn oao --version;
 
                         echo "#!/usr/bin/expect" > /npmlogin.sh; \
-                        echo 'set timeout 1;set user [lindex $argv 0 ];set password [lindex $argv 1];set email [lindex $argv 2];;spawn npm login;;expect "Username: ";send "$user\r";;;expect "Password: (<default hidden>)";send "$password\r";;;expect "Email: (this IS public)";send "$email\r";interact ' >> /npmlogin.sh; \
                         echo 'registry "http://${env.NPM_ADDR}"' >> /root/.yarnrc; \
                         cat /root/.yarnrc; \
                         cat /ver.ver; \
