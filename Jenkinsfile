@@ -40,7 +40,7 @@ pipeline {
 
                         echo "#!/usr/bin/expect" > /npmlogin.sh; \
                         echo 'registry "http://${env.NPM_ADDR}"' >> /root/.yarnrc; \
-                        echo 'set timeout 1;set user [lindex $argv 0 ];set password [lindex $argv 1];set email [lindex $argv 2];;spawn npm login;expect "Username: ";send "$user\r";expect "Password: (<default hidden>)";send "$password\r";expect "Email: (this IS public)";send "$email\r";interact ' >> /npmlogin.sh; \
+                        echo 'set timeout 1;spawn npm login;expect "Username: ";send "${env.NPM_USER}\r";expect "Password: (<default hidden>)";send "1\r";expect "Email: (this IS public)";send "${env.NPM_EMAIL}\r";interact ' >> /npmlogin.sh; \
                         cat /root/.yarnrc; \
                         cat /ver.ver; \
                         cat /npmlogin.sh; \
