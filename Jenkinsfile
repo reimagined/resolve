@@ -40,9 +40,10 @@ pipeline {
 
                         echo "#!/usr/bin/expect" > /npmlogin.sh; \
                         echo 'registry "http://${env.NPM_ADDR}"' >> /root/.yarnrc; \
-                        echo "set timeout 1;set user [lindex $argv 0 ];set password [lindex $argv 1];set email [lindex $argv 2];;spawn npm login;expect 'Username: ';send '$user\r';expect 'Password: (<default hidden>)';send '$password\r';expect 'Email: (this IS public)';send '$email\r';interact " >> /npmlogin.sh; \
+                        echo 'set timeout 1;set user [lindex $argv 0 ];set password [lindex $argv 1];set email [lindex $argv 2];;spawn npm login;expect "Username: ";send "$user\r";expect "Password: (<default hidden>)";send "$password\r";expect "Email: (this IS public)";send "$email\r";interact ' >> /npmlogin.sh; \
                         cat /root/.yarnrc; \
                         cat /ver.ver; \
+                        cat /npmlogin.sh; \
                         bash /npmlogin.sh ${env.NPM_USER} 1 ${env.NPM_EMAIL};
                         find . -name package.json -type f -print | grep -v node_modules | xargs -I '%' node -e 'require("fs").writeFileSync(process.argv[1], JSON.stringify((() => { const pj = require(process.argv[1]); if(pj.dependencies) Object.keys(pj.dependencies).forEach(key => { if(key.indexOf("resolve-") < 0) return; pj.dependencies[key] = process.env.CI_CANARY_VERSION  }); return pj; })(), null, 3))' '%'; \
                         yarn run publish --no-checks --no-confirm --new-version \$(cat /lerna_version); \
