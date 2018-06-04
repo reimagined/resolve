@@ -85,6 +85,7 @@ Equivalent guidelines are applicable for Feature requests too.
 | `Component: Documentation` | Issues related to package descriptions, docs folder topics, and README files |
 | `Component: Examples` | Issues related to reSolve examples |
 | `Component: readmodel-adapters` | Issues related to Read Model adapters packages |
+| `Component: storage-adapters` | Issues related to storage adapters packages |
 | `Component: resolve-auth` | Issues related to the resolve-auth package |
 | `Component: resolve-es` | Issues related to the resolve-es package |
 | `Component: resolve-query` | Issues related to the resolve-query package |
