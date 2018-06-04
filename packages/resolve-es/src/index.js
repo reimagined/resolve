@@ -36,6 +36,10 @@ export default (
   const onEventById = onEvent.bind(null, projectionMap.ids)
 
   const result = {
+    async init() {
+      await config.bus.init()
+    },
+
     async subscribeByEventType(
       eventTypes,
       handler,

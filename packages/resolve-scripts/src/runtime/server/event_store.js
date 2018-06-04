@@ -10,6 +10,15 @@ const storage = storageAdapter(storageOptions)
 const bus = busAdapter(busOptions)
 
 const eventStore = createEventStore({ storage, bus })
+;(async () => {
+  try {
+    await eventStore.init()
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(e)
+    process.exit(1)
+  }
+})()
 
 // TODO. Remove. Use MQTT-Server
 eventStore.subscribeOnBus = async ({ types, ids }, callback) => {
