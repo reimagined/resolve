@@ -1,60 +1,51 @@
-import { fork, cancel, takeLatest } from 'redux-saga/effects'
-import createConnectionManager from './connection_manager'
-import takeLatestConditional from './take_latest_conditional'
+import { take } from 'redux-saga/effects'
+import createConnectionManager from './create_connection_manager'
+import createSagaManager from './create_saga_manager'
 import stringify from 'json-stable-stringify'
 
 import {
   CONNECT_VIEWMODEL,
-  DISCONNECT_VIEWMODEL,
-  SUBSCRIBE_TOPIC_FAILURE,
-  SUBSCRIBE_TOPIC_SUCCESS
+  DISCONNECT_VIEWMODEL
 } from './action_types'
 import connectViewModelSaga from './connect_view_model_saga'
 import disconnectViewModelSaga from './disconnect_view_model_saga'
-import { loadViewModelStateRequest } from './actions'
-
-/*
-type: CONNECT_VIEWMODEL,
-viewModelName,
-aggregateIds
- */
 
 const viewModelsSaga = function*(sagaArgs) {
   const connectionManager = createConnectionManager({ wildcardSymbol: null })
-  const connectionSagas = {}
-  const disconnectionSagas = {}
+  const sagaManager = createSagaManager()
 
   while (true) {
     const action = yield take([CONNECT_VIEWMODEL, DISCONNECT_VIEWMODEL])
 
     switch (action.type) {
       case CONNECT_VIEWMODEL: {
-        const sagaOptions = {
-          connectionSagas,
-          disconnectionSagas,
-          connectionManager,
-          ...sagaArgs
-        }
-        const boundConnectViewModelSaga = connectViewModelSaga.bind(
-          null,
-          sagaOptions
+        const { viewModelName, aggregateIds, aggregateArgs } = action
+        const sagaKey = stringify({ viewModelName, aggregateIds, aggregateArgs })
+        yield* sagaManager.start(
+          `${CONNECT_VIEWMODEL}${sagaKey}`,
+          connectViewModelSaga,
+          {
+            ...sagaArgs,
+            connectionManager,
+            sagaManager,
+            sagaKey
+          }
         )
-        sagaOptions.sagaId = yield fork(boundConnectViewModelSaga)
         break
       }
       case DISCONNECT_VIEWMODEL: {
-        const sagaOptions = {
-          connectionSagas,
-          disconnectionSagas,
-          connectionManager,
-          ...sagaArgs
-        }
-        //TODO
-        const boundDisconnectViewModelSaga = disconnectViewModelSaga.bind(
-          null,
-          sagaOptions
+        const { viewModelName, aggregateIds, aggregateArgs } = action
+        const sagaKey = stringify({ viewModelName, aggregateIds, aggregateArgs })
+        yield* sagaManager.start(
+          `${DISCONNECT_VIEWMODEL}${sagaKey}`,
+          disconnectViewModelSaga,
+          {
+            ...sagaArgs,
+            connectionManager,
+            sagaManager,
+            sagaKey
+          }
         )
-        sagaOptions.sagaId = yield fork(boundDisconnectViewModelSaga)
         break
       }
       default:

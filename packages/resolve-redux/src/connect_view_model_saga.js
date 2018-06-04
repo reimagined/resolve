@@ -1,8 +1,11 @@
-import { take, put, cancel } from 'redux-saga/effects'
+import { take, put, select, fork } from 'redux-saga/effects'
+import { delay } from 'redux-saga'
 import stringify from 'json-stable-stringify'
 
 import { subscibeTopicRequest, loadViewModelStateRequest } from './actions'
 import {
+  CONNECT_VIEWMODEL,
+  DISCONNECT_VIEWMODEL,
   SUBSCRIBE_TOPIC_SUCCESS,
   SUBSCRIBE_TOPIC_FAILURE,
   LOAD_VIEWMODEL_STATE_FAILURE,
@@ -10,17 +13,84 @@ import {
   DISPATCH_MQTT_EVENT
 } from './action_types'
 
+const eventListenerSaga = function*(connectAction, {
+    sagaKey,
+    sagaManager,
+    eventTypes,
+    aggregateIds
+  }) {
+  let eventQueue = []
+  
+  while (true) {
+    const { event } = yield take(
+      action =>
+        action.type === DISPATCH_MQTT_EVENT &&
+        (eventTypes.indexOf(action.event.type) > -1 &&
+          aggregateIds.indexOf(action.event.agggregateId))
+    )
+    
+    eventQueue.push(event)
+    
+    //
+    const { viewModels: viewModelsState } = yield select()
+    
+    const key = `aggregateVersionByAggregateId${sagaKey})}`
+    
+    const aggregateVersionByAggregateId = viewModelsState[key]
+    
+    if(!aggregateVersionByAggregateId) {
+      continue
+    }
+    
+    let lastAppliedAggregateVersion =
+      aggregateVersionByAggregateId[event.aggregateId]
+    
+    eventQueue = eventQueue.filter((savedEvent) =>
+      !((savedEvent.aggregateVersion <= lastAppliedAggregateVersion) &&
+        (savedEvent.aggregateId === event.aggregateId))
+    )
+    
+    const nextEventsForAggregate = eventQueue.filter((savedEvent) =>
+      (savedEvent.aggregateId === event.aggregateId)
+    ).sort(
+      (a, b) => a.aggregateVersion - b.aggregateVersion
+    )
+    
+    while (
+      nextEventsForAggregate.length > 0 &&
+      (nextEventsForAggregate[0].aggregateVersion === lastAppliedAggregateVersion + 1)
+    ) {
+      yield put(nextEventsForAggregate[0])
+      nextEventsForAggregate.splice(0, 1)
+      lastAppliedAggregateVersion++
+    }
+  
+    aggregateVersionByAggregateId[event.aggregateId] = lastAppliedAggregateVersion
+    
+    if (nextEventsForAggregate.length > 10) {
+      //TODO maybe fork fork die
+      yield fork(function*() {
+        yield delay(100)
+        yield put(connectAction)
+      })
+      yield* sagaManager.stop(`${CONNECT_VIEWMODEL}${sagaKey}`)
+    }
+    
+  }
+}
+
 const connectViewModelSaga = function*(
-  {
-    appId,
-    viewModels,
-    connectionSagas,
-    disconnectionSagas,
-    connectionManager,
-    sagaId
-  },
-  { viewModelName, aggregateIds, aggregateArgs }
+  action,
+  sagaArgs
 ) {
+  const {
+    appId,
+      viewModels,
+      connectionManager,
+      sagaManager,
+      sagaKey
+  } = sagaArgs
+  const { viewModelName, aggregateIds, aggregateArgs } = action
   const connectionId = stringify({ aggregateIds, aggregateArgs })
 
   const { addedConnections } = connectionManager.addConnection({
@@ -31,20 +101,17 @@ const connectViewModelSaga = function*(
   if (addedConnections.length !== 1) {
     return
   }
-
-  const sagaKey = stringify({ viewModelName, aggregateIds, aggregateArgs })
-  connectionSagas[sagaKey] = sagaId
-
-  if (disconnectionSagas[sagaKey]) {
-    yield cancel(disconnectionSagas[sagaKey])
-    delete disconnectionSagas[sagaKey]
-  }
+  
+  yield* sagaManager.stop(`${DISCONNECT_VIEWMODEL}${sagaKey}`)
 
   const eventTypes = Object.keys(viewModels[viewModelName].projection)
 
+  // viewModelName + aggregateIds => Array<{ aggregateId, eventType }>
   let subscriptionKeys = eventTypes.map(eventType =>
     aggregateIds.map(aggregateId => ({ aggregateId, eventType }))
   )
+
+  yield* sagaManager.start(`${CONNECT_VIEWMODEL}${sagaKey}`, eventListenerSaga, action, sagaArgs)
 
   while (subscriptionKeys.length > 0) {
     let counter = subscriptionKeys.length
@@ -83,7 +150,7 @@ const connectViewModelSaga = function*(
     yield put(
       loadViewModelStateRequest(viewModelName, aggregateIds, aggregateArgs)
     )
-
+    
     const loadViewModelStateResultAction = yield take(
       action =>
         (action.type === LOAD_VIEWMODEL_STATE_SUCCESS ||
@@ -95,42 +162,12 @@ const connectViewModelSaga = function*(
           }) === connectionId)
     )
 
-    if (loadViewModelStateResultAction.type === SUBSCRIBE_TOPIC_SUCCESS) {
+    if (loadViewModelStateResultAction.type === LOAD_VIEWMODEL_STATE_SUCCESS) {
       break
     }
   }
-
-  // const aggregateVersionByAggregateId = {}
-  //
-  const { viewModels: viewModelsState } = yield select()
-
-  // TODO
-  const key = `aggregateVersionByAggregateId${stringify({
-    viewModelName,
-    aggregateIds,
-    aggregateArgs
-  })}`
-
-  // TODO check undefined
-  const aggregateVersionByAggregateId = viewModelsState[key]
-
-  while (true) {
-    const { event } = yield take(
-      action =>
-        action.type === DISPATCH_MQTT_EVENT &&
-        (eventTypes.indexOf(action.event.type) > -1 &&
-          aggregateIds.indexOf(action.event.agggregateId))
-    )
-
-    const prevAggregateVersion =
-      aggregateVersionByAggregateId[event.aggregateId]
-    const nextAggregateVersion = event.aggregateVersion
-
-    if (nextAggregateVersion === prevAggregateVersion + 1) {
-      aggregateVersionByAggregateId[event.aggregateId]++
-      yield put(event)
-    }
-  }
+  
+  
 }
 
 export default connectViewModelSaga

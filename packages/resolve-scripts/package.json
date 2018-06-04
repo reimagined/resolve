@@ -34,6 +34,7 @@
     "@babel/register": "^7.0.0-beta.49",
     "@babel/runtime": "^7.0.0-beta.49",
     "address": "^1.0.3",
+    "aedes": "^0.34.1",
     "ajv": "^6.5.0",
     "babel-core": "^7.0.0-0",
     "babel-jest": "^23.0.0",

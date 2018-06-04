@@ -1,7 +1,7 @@
 import mqtt from 'async-mqtt'
 import { put, takeEvery } from 'redux-saga/effects'
 
-import createConnectionManager from './connection_manager'
+import createConnectionManager from './create_connection_manager'
 
 import {
   SUBSCRIBE_TOPIC_REQUEST,

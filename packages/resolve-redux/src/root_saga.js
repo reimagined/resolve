@@ -1,9 +1,12 @@
-import { fork } from 'redux-saga/effects'
+import { fork, takeEvery } from 'redux-saga/effects'
 
+import { LOAD_VIEWMODEL_STATE_REQUEST } from './action_types'
+import loadViewModelStateSaga from './load_view_model_state_saga'
 import viewModelSaga from './view_models_saga'
 import mqttSaga from './mqtt_saga'
 
 function* rootSaga(sagaArgs) {
+  yield takeEvery(LOAD_READMODEL_STATE_REQUEST, loadViewModelStateSaga, sagaArgs)
   yield fork(viewModelSaga, sagaArgs)
   yield fork(mqttSaga, sagaArgs)
 }

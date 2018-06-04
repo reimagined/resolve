@@ -5,21 +5,21 @@ import { unsubscibeTopicRequest, dropViewModelState } from './actions'
 import {
   UNSUBSCRIBE_TOPIC_SUCCESS,
   UNSUBSCRIBE_TOPIC_FAILURE,
-  SUBSCRIBE_TOPIC_FAILURE,
-  SUBSCRIBE_TOPIC_SUCCESS
-} from './action_types'
+  CONNECT_VIEWMODEL
+} from "./action_types";
 
 const disconnectViewModelSaga = function*(
-  {
+  { viewModelName, aggregateIds, aggregateArgs },
+  sagaArgs
+) {
+  const {
     appId,
     viewModels,
-    connectionSagas,
-    disconnectionSagas,
     connectionManager,
-    sagaId
-  },
-  { viewModelName, aggregateIds, aggregateArgs }
-) {
+    sagaManager,
+    sagaKey
+  } = sagaArgs
+
   const connectionId = stringify({ aggregateIds, aggregateArgs })
 
   const { removedConnections } = connectionManager.removeConnection({
@@ -29,14 +29,8 @@ const disconnectViewModelSaga = function*(
   if (removedConnections.length !== 1) {
     return
   }
-
-  const sagaKey = stringify({ viewModelName, aggregateIds, aggregateArgs })
-  disconnectionSagas[sagaKey] = sagaId
-
-  if (connectionSagas[sagaKey]) {
-    yield cancel(connectionSagas[sagaKey])
-    delete connectionSagas[sagaKey]
-  }
+  
+  yield* sagaManager.stop(`${CONNECT_VIEWMODEL}${sagaKey}`)
 
   let subscriptionKeys = Object.keys(viewModels[viewModelName].projection).map(
     eventType => aggregateIds.map(aggregateId => ({ aggregateId, eventType }))

@@ -112,50 +112,58 @@ export const unsubscibeTopicFailure = (appId, topicName, topicId) => ({
   topicId
 })
 
-export const connectViewModel = (viewModelName, aggregateIds) => ({
+export const connectViewModel = (viewModelName, aggregateIds, aggregateArgs) => ({
   type: CONNECT_VIEWMODEL,
   viewModelName,
-  aggregateIds
+  aggregateIds,
+  aggregateArgs
 })
 
-export const disconnectViewModel = (viewModelName, aggregateIds) => ({
+export const disconnectViewModel = (viewModelName, aggregateIds, aggregateArgs) => ({
   type: DISCONNECT_VIEWMODEL,
   viewModelName,
-  aggregateIds
+  aggregateIds,
+  aggregateArgs
 })
 
-export const loadViewModelStateRequest = (viewModelName, aggregateIds) => ({
+export const loadViewModelStateRequest = (viewModelName, aggregateIds, aggregateArgs) => ({
   type: LOAD_VIEWMODEL_STATE_REQUEST,
   viewModelName,
-  aggregateIds
+  aggregateIds,
+  aggregateArgs
 })
 
 export const loadViewModelStateSuccess = (
   viewModelName,
   aggregateIds,
+  aggregateArgs,
   state
 ) => ({
   type: LOAD_VIEWMODEL_STATE_SUCCESS,
   viewModelName,
   aggregateIds,
+  aggregateArgs,
   state
 })
 
 export const loadViewModelStateFailure = (
   viewModelName,
   aggregateIds,
+  aggregateArgs,
   error
 ) => ({
   type: LOAD_VIEWMODEL_STATE_FAILURE,
   viewModelName,
   aggregateIds,
+  aggregateArgs,
   error
 })
 
-export const dropViewModelState = (viewModelName, aggregateIds) => ({
+export const dropViewModelState = (viewModelName, aggregateIds, aggregateArgs) => ({
   type: DROP_VIEWMODEL_STATE,
   viewModelName,
-  aggregateIds
+  aggregateIds,
+  aggregateArgs
 })
 
 export const connectReadModel = (

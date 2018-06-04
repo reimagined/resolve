@@ -18,7 +18,7 @@ const getRemovedConnections = (prevConnections, nextConnections) =>
       )
   )
 
-const connectionManager = ({ wildcardSymbol = '*' } = {}) => {
+const createConnectionManager = ({ wildcardSymbol = '*' } = {}) => {
   const connections = Object.create(null)
 
   const getConnections = () => {
@@ -101,4 +101,4 @@ const connectionManager = ({ wildcardSymbol = '*' } = {}) => {
   }
 }
 
-export default connectionManager
+export default createConnectionManager
