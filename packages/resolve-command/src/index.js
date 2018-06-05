@@ -1,6 +1,8 @@
 import invariantFunctionHash from 'invariant-function-hash'
 const verifyCommand = async ({ aggregateId, aggregateName, type }) => {
   if (!aggregateId) throw new Error('The "aggregateId" argument is required')
+  if (typeof aggregateId !== 'string')
+    throw new Error('The "aggregateId" argument must be a string')
   if (!aggregateName)
     throw new Error('The "aggregateName" argument is required')
   if (!type) throw new Error('The "type" argument is required')
