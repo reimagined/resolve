@@ -9,6 +9,15 @@ const defaultOptions = {
   maxLength: 10000
 }
 
+class RabbitMQBusError extends Error {
+  constructor({ message, cause }) {
+    super()
+    this.name = 'RabbitMQ Bus Error'
+    this.message = message
+    this.cause = cause
+  }
+}
+
 const init = async (
   { url, exchange, exchangeType, queueName, messageTtl, maxLength },
   handler
@@ -44,8 +53,7 @@ const init = async (
 
     return channel
   } catch (e) {
-    e.name = `RabbitMQ message bus error`
-    throw e
+    throw new RabbitMQBusError(e)
   }
 }
 
@@ -56,9 +64,17 @@ function createAdapter(options) {
   const { exchange, queueName, messageTtl } = config
 
   return {
-    init: () => {
-      initPromise = init(config, event => handler(event))
-      return initPromise
+    init: async () => {
+      if (!initPromise) {
+        initPromise = init(config, event => handler(event))
+      }
+
+      try {
+        return initPromise
+      } catch (e) {
+        initPromise = null
+        throw e
+      }
     },
     publish: async event => {
       const channel = await initPromise
