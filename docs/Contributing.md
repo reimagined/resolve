@@ -15,7 +15,7 @@ This is a set of guidelines for contributing to reSolve and its packages hosted 
 
 Pull Request is the primary method to contribute to the `ReSolve` repository. Use Pull Requests to implement an issue or fix a bug.
 
-**reSolve** team follows the [Git Flow](https://datasift.github.io/gitflow/IntroducingGitFlow.html) branching model. The main development branch is `dev`. The `master` branch contains the most recent stable release and hotfixes. The `reSolve` repository is writeable only for maintainers, so you should fork it make the required changes and [create a Pull Request](https://github.com/reimagined/resolve/compare) from your fork to the `dev` branch. Although, if you feel that some other branch is better suited, free to create a Pull Request there.
+**reSolve** team follows the [Git Flow](https://datasift.github.io/gitflow/IntroducingGitFlow.html) branching model. The main development branch is `dev`. The `master` branch contains the most recent stable release and hotfixes. The `reSolve` repository is writeable only for maintainers. Fork the repository, make the required changes, and [create a Pull Request](https://github.com/reimagined/resolve/compare) from your fork to the `dev` branch to change something. Although, if you feel that some other branch is better suited, free to create a Pull Request there.
 
 ### Naming Conventions
 
@@ -40,7 +40,7 @@ Unit tests, functional tests, and additional examples are highly appreciated.
 
 ### Code Style
 
-Write JavaScript using the `ECMAScript-262 version 8` standard with the [Prettier](https://github.com/prettier/prettier-eslint) tool. The `eslint` command should not show any errors with the [repo configuration](https://github.com/reimagined/resolve/blob/master/.eslintrc.js).
+Write JavaScript following the `ECMAScript-262 version 8` standard and use the [Prettier](https://github.com/prettier/prettier-eslint) tool. The `eslint` command should not show any errors with the [repo configuration](https://github.com/reimagined/resolve/blob/master/.eslintrc.js).
 
 #### Tips:
 * Line break is required at the end of all text files.
@@ -48,7 +48,7 @@ Write JavaScript using the `ECMAScript-262 version 8` standard with the [Prettie
 
 ### Working in Monorepo
 
-`ReSolve` repository is a **monorepo**: it contains source code, integration tests and examples for multiple `npm` packages commonly used together. Monorepo toolchain consists of two concepts: [yarn workspaces](https://yarnpkg.com/lang/en/docs/workspaces/) and [oao manager](https://www.npmjs.com/package/oao). 
+`ReSolve` repository is a **monorepo**: it contains source code, integration tests and examples for multiple `npm` packages commonly used together. Monorepo toolchain consists of two concepts: [yarn workspaces](https://yarnpkg.com/lang/en/docs/workspaces/) and [oao manager](https://www.npmjs.com/package/oao).
 
 The monorepo workflow begins with the bootstrapping process. In the `reSolve` repository, you should execute `yarn` command in the repository root. This command installs all `npm` packages and links all local packages to each other. With these tools, you can develop features without using `npm` (or local equivalents like `sinopia` or `verdaccio`).
 
