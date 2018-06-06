@@ -43,8 +43,10 @@ pipeline {
                         echo 'set timeout 1;spawn npm login;expect "Username: ";send "${env.NPM_USER}\r";expect "Password: (<default hidden>)";send "1\r";expect "Email: (this IS public)";send "${env.NPM_EMAIL}\r";interact ' >> /npmlogin.sh; \
                         cat /root/.yarnrc; \
                         cat /ver.ver; \
-                        cat /npmlogin.sh; \
+                        cat /npmlogin.sh;
                         expect /npmlogin.sh;
+                        timeout 5;
+                        npm whoami;
                         find . -name package.json -type f -print | grep -v node_modules | xargs -I '%' node -e 'require("fs").writeFileSync(process.argv[1], JSON.stringify((() => { const pj = require(process.argv[1]); if(pj.dependencies) Object.keys(pj.dependencies).forEach(key => { if(key.indexOf("resolve-") < 0) return; pj.dependencies[key] = process.env.CI_CANARY_VERSION  }); return pj; })(), null, 3))' '%'; \
                         yarn run publish --no-checks --no-confirm --new-version \$(cat /lerna_version); \
                         sleep 10
