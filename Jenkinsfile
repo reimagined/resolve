@@ -39,7 +39,7 @@ pipeline {
                         yarn oao --version;
 
                         echo "#!/usr/bin/expect" > /npmlogin.sh; \
-                        echo 'set timeout 1;spawn npm login;expect "Username: ";send "${env.NPM_USER}\r";expect "Password: (<default hidden>)";send "1\r";send "${env.NPM_EMAIL}\r";send "1\r";interact ' >> /npmlogin.sh;
+                        echo 'set timeout 1;spawn npm login;expect "Username: ";send "${env.NPM_USER}\\r";expect "Password: (<default hidden>)";send "1\\r";send "${env.NPM_EMAIL}\\r";send "1\\r";interact ' >> /npmlogin.sh;
 
                         echo 'registry "http://${env.NPM_ADDR}"' >> /root/.yarnrc; \
                         cat /root/.yarnrc; \
