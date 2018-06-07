@@ -44,10 +44,6 @@ pipeline {
                         echo 'registry "http://${env.NPM_ADDR}"' >> /root/.yarnrc; \
                         cat /root/.yarnrc; \
                         cat /ver.ver; \
-                        cat /npmlogin.sh;
-                        expect /npmlogin.sh;
-                        timeout 5;
-                        npm whoami;
                         find . -name package.json -type f -print | grep -v node_modules | xargs -I '%' node -e 'require("fs").writeFileSync(process.argv[1], JSON.stringify((() => { const pj = require(process.argv[1]); if(pj.dependencies) Object.keys(pj.dependencies).forEach(key => { if(key.indexOf("resolve-") < 0) return; pj.dependencies[key] = process.env.CI_CANARY_VERSION  }); return pj; })(), null, 3))' '%'; \
                         yarn run publish --no-checks --no-confirm --new-version \$(cat /lerna_version); \
                         sleep 10
