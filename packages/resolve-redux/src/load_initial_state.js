@@ -1,4 +1,4 @@
-import { getRootableUrl } from './utils'
+import { getRootBasedUrl } from './utils'
 
 const loadInitialState = async (
   { origin, rootPath },
@@ -6,7 +6,7 @@ const loadInitialState = async (
   aggregateId
 ) => {
   const response = await fetch(
-    getRootableUrl(
+    getRootBasedUrl(
       origin,
       rootPath,
       `/api/query/${viewModelName}?aggregateIds${

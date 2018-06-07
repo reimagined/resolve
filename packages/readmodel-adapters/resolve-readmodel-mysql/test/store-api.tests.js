@@ -63,7 +63,7 @@ describe('resolve-readmodel-mysql store-api', () => {
     )
   })
 
-  it('should provide find method - search logical/comparation operators', async () => {
+  it('should provide find method - search logical/comparison operators', async () => {
     const gaugeResultSet = []
     executor.onCall(0).callsFake(async () => [gaugeResultSet])
 

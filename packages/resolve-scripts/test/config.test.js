@@ -1,18 +1,18 @@
 import path from 'path'
 
 import exec from './exec'
-import validateСonfig from '../src/core/validate_config'
+import validateConfig from '../src/core/validate_config'
 
 const resolveConfigOrigin = require('../configs/resolve.config.json')
 
 describe('validate schema', () => {
   it('empty', () => {
-    expect(validateСonfig(resolveConfigOrigin)).toBeTruthy()
+    expect(validateConfig(resolveConfigOrigin)).toBeTruthy()
   })
 
   it('custom storage adapter', () => {
     expect(
-      validateСonfig({
+      validateConfig({
         ...resolveConfigOrigin,
         storage: {
           adapter: 'resolve-storage-mongo',
@@ -26,7 +26,7 @@ describe('validate schema', () => {
 
   it('custom bus adapter', () => {
     expect(
-      validateСonfig({
+      validateConfig({
         ...resolveConfigOrigin,
         storage: {
           adapter: 'resolve-bus-rabbitmq',
@@ -38,7 +38,7 @@ describe('validate schema', () => {
 
   it('custom subscribe adapter', () => {
     expect(
-      validateСonfig({
+      validateConfig({
         ...resolveConfigOrigin,
         subscribe: {
           adapter: 'resolve-subscribe-mqtt',
@@ -50,7 +50,7 @@ describe('validate schema', () => {
 
   it('custom root path', () => {
     expect(
-      validateСonfig({
+      validateConfig({
         ...resolveConfigOrigin,
         rootPath: 'my-app'
       })
@@ -59,7 +59,7 @@ describe('validate schema', () => {
 
   it('custom static path', () => {
     expect(
-      validateСonfig({
+      validateConfig({
         ...resolveConfigOrigin,
         staticPath: 'https://my-cdn'
       })
@@ -68,7 +68,7 @@ describe('validate schema', () => {
 
   it('custom routes path', () => {
     expect(
-      validateСonfig({
+      validateConfig({
         ...resolveConfigOrigin,
         routes: 'src/client/entryPoint.js'
       })
@@ -77,7 +77,7 @@ describe('validate schema', () => {
 
   it('custom index path', () => {
     expect(
-      validateСonfig({
+      validateConfig({
         ...resolveConfigOrigin,
         index: 'src/client/index.js'
       })
@@ -86,7 +86,7 @@ describe('validate schema', () => {
 
   it('custom aggregates dir', () => {
     expect(
-      validateСonfig({
+      validateConfig({
         ...resolveConfigOrigin,
         aggregates: 'my-aggregates'
       })
@@ -95,7 +95,7 @@ describe('validate schema', () => {
 
   it('custom view models dir', () => {
     expect(
-      validateСonfig({
+      validateConfig({
         ...resolveConfigOrigin,
         viewModels: 'my-view-models'
       })
@@ -104,7 +104,7 @@ describe('validate schema', () => {
 
   it('custom read models dir', () => {
     expect(
-      validateСonfig({
+      validateConfig({
         ...resolveConfigOrigin,
         readModels: 'my-read-models'
       })
@@ -113,7 +113,7 @@ describe('validate schema', () => {
 
   it('custom static dir', () => {
     expect(
-      validateСonfig({
+      validateConfig({
         ...resolveConfigOrigin,
         staticDir: 'my-static-dir'
       })
@@ -122,7 +122,7 @@ describe('validate schema', () => {
 
   it('custom auth', () => {
     expect(
-      validateСonfig({
+      validateConfig({
         ...resolveConfigOrigin,
         auth: {
           strategies: 'custom-auth/index.js'
@@ -133,7 +133,7 @@ describe('validate schema', () => {
 
   it('custom jwt', () => {
     expect(
-      validateСonfig({
+      validateConfig({
         ...resolveConfigOrigin,
         jwtCookie: {
           name: 'authToken',
@@ -145,7 +145,7 @@ describe('validate schema', () => {
 
   it('custom env', () => {
     expect(
-      validateСonfig({
+      validateConfig({
         ...resolveConfigOrigin,
         subscribe: {
           adapter: 'resolve-subscribe-socket-io',
@@ -167,7 +167,7 @@ describe('validate schema', () => {
 describe('validate schema (fail)', () => {
   it('incorrect storage adapter', () => {
     expect(() =>
-      validateСonfig({
+      validateConfig({
         ...resolveConfigOrigin,
         storage: {
           adapter: 123,
@@ -181,7 +181,7 @@ describe('validate schema (fail)', () => {
 
   it('incorrect bus adapter', () => {
     expect(() =>
-      validateСonfig({
+      validateConfig({
         ...resolveConfigOrigin,
         storage: {
           adapter: 123,
@@ -193,7 +193,7 @@ describe('validate schema (fail)', () => {
 
   it('incorrect subscribe adapter', () => {
     expect(() =>
-      validateСonfig({
+      validateConfig({
         ...resolveConfigOrigin,
         subscribe: {
           adapter: 123,
@@ -205,7 +205,7 @@ describe('validate schema (fail)', () => {
 
   it('incorrect root path', () => {
     expect(() =>
-      validateСonfig({
+      validateConfig({
         ...resolveConfigOrigin,
         rootPath: 123
       })
@@ -214,7 +214,7 @@ describe('validate schema (fail)', () => {
 
   it('incorrect static path', () => {
     expect(() =>
-      validateСonfig({
+      validateConfig({
         ...resolveConfigOrigin,
         staticPath: 123
       })
@@ -223,7 +223,7 @@ describe('validate schema (fail)', () => {
 
   it('incorrect routes path', () => {
     expect(() =>
-      validateСonfig({
+      validateConfig({
         ...resolveConfigOrigin,
         routes: 123
       })
@@ -232,7 +232,7 @@ describe('validate schema (fail)', () => {
 
   it('incorrect aggregates dir', () => {
     expect(() =>
-      validateСonfig({
+      validateConfig({
         ...resolveConfigOrigin,
         aggregates: 123
       })
@@ -241,7 +241,7 @@ describe('validate schema (fail)', () => {
 
   it('incorrect view models dir', () => {
     expect(() =>
-      validateСonfig({
+      validateConfig({
         ...resolveConfigOrigin,
         viewModels: 123
       })
@@ -250,7 +250,7 @@ describe('validate schema (fail)', () => {
 
   it('incorrect read models dir', () => {
     expect(() =>
-      validateСonfig({
+      validateConfig({
         ...resolveConfigOrigin,
         readModels: 123
       })
@@ -259,7 +259,7 @@ describe('validate schema (fail)', () => {
 
   it('incorrect static dir', () => {
     expect(() =>
-      validateСonfig({
+      validateConfig({
         ...resolveConfigOrigin,
         staticDir: 123
       })
@@ -268,7 +268,7 @@ describe('validate schema (fail)', () => {
 
   it('incorrect auth', () => {
     expect(() =>
-      validateСonfig({
+      validateConfig({
         ...resolveConfigOrigin,
         auth: 123
       })
@@ -277,7 +277,7 @@ describe('validate schema (fail)', () => {
 
   it('incorrect jwt', () => {
     expect(() =>
-      validateСonfig({
+      validateConfig({
         ...resolveConfigOrigin,
         jwt: {
           cookieName: 123,
@@ -291,7 +291,7 @@ describe('validate schema (fail)', () => {
   })
 })
 
-describe('resolve-scripts build --сonfig=resolve.test.config.json', () => {
+describe('resolve-scripts build --config=resolve.test.config.json', () => {
   const resolveConfigPath = path.resolve(__dirname, 'resolve.test.config.json')
   const { env, ...config } = require(resolveConfigPath)
 

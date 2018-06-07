@@ -27,7 +27,7 @@ class App extends React.Component {
         <Header />
 
         <div className="example-wrapper">
-          <h2 className="example-titul">Team's Rating Top 100</h2>
+          <h2 className="example-title">Team's Rating Top 100</h2>
 
           <ItemsViewer count={ITEMS_PER_PAGE} page={this.state.page} />
 

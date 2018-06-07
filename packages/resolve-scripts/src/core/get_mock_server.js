@@ -1,4 +1,4 @@
-import emptyFunction from './emtpy_function'
+import emptyFunction from './empty_function'
 
 export default function getMockServer() {
   return {

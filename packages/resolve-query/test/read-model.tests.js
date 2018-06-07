@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import createReadModel from '../src/read-model'
 
 describe('resolve-query read-model', () => {
-  let eventStore, readStore, adapter, projection, unsubscriber
+  let eventStore, readStore, adapter, projection, subscriptionCanceler
   let primaryEvents, secondaryEvents, resolveSecondaryEvents
 
   const INIT_TIME = 1000
@@ -20,7 +20,7 @@ describe('resolve-query read-model', () => {
       resolve => (resolveSecondaryEvents = resolve)
     )
     const projectionLog = []
-    unsubscriber = sinon.stub()
+    subscriptionCanceler = sinon.stub()
 
     const processEvents = async (
       eventsList,
@@ -63,7 +63,7 @@ describe('resolve-query read-model', () => {
               )
             )
 
-          return primaryEventPromise.then(() => unsubscriber)
+          return primaryEventPromise.then(() => subscriptionCanceler)
         })
     }
 
@@ -105,7 +105,7 @@ describe('resolve-query read-model', () => {
     secondaryEvents = null
     resolveSecondaryEvents = null
     eventStore = null
-    unsubscriber = null
+    subscriptionCanceler = null
     readStore = null
     adapter = null
     projection = null
@@ -141,7 +141,7 @@ describe('resolve-query read-model', () => {
     expect(readModel.dispose).to.be.a('function')
   })
 
-  it('should provide read API witn on-demand build with success', async () => {
+  it('should provide read API with on-demand build with success', async () => {
     const readModel = createReadModel({ projection, eventStore, adapter })
     const builtProjection = adapter.buildProjection.firstCall.returnValue
     const appliedPromise = new Promise(resolve => {
@@ -417,7 +417,7 @@ describe('resolve-query read-model', () => {
     await readPromise
 
     expect(adapter.reset.callCount).to.be.equal(1)
-    expect(unsubscriber.callCount).to.be.equal(1)
+    expect(subscriptionCanceler.callCount).to.be.equal(1)
   })
 
   it('should support dispose after store events loading phase', async () => {
@@ -433,6 +433,6 @@ describe('resolve-query read-model', () => {
     await readModel.dispose()
 
     expect(adapter.reset.callCount).to.be.equal(1)
-    expect(unsubscriber.callCount).to.be.equal(1)
+    expect(subscriptionCanceler.callCount).to.be.equal(1)
   })
 })

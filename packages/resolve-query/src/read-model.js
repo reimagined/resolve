@@ -16,14 +16,14 @@ const init = async repository => {
   }
 
   const { prepareProjection = () => 0, ...readApi } = adapter.init()
-  let unsubscriber = null
+  let subscriptionCanceler = null
 
   let onDispose = () => {
-    if (unsubscriber === null) {
+    if (subscriptionCanceler === null) {
       onDispose = emptyFunction
       return
     }
-    unsubscriber()
+    subscriptionCanceler()
   }
 
   const loadDonePromise = new Promise((resolve, reject) => {
@@ -70,15 +70,14 @@ const init = async repository => {
           }
         )
       )
-      .then(unsub => {
+      .then(cancelSubscription => {
         if (flowPromise) {
           flowPromise = flowPromise.then(resolve).catch(forceStop)
         }
-
         if (onDispose !== emptyFunction) {
-          unsubscriber = unsub
+          subscriptionCanceler = cancelSubscription
         } else {
-          unsub()
+          cancelSubscription()
         }
       })
       .catch(err => forceStop(err, false))

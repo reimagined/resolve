@@ -1,4 +1,4 @@
-import { getRootableUrl } from './utils'
+import { getRootBasedUrl } from './utils'
 import actions from './actions'
 
 const unsubscribeReadModel = (
@@ -17,7 +17,7 @@ const unsubscribeReadModel = (
   if (!socketId || socketId.constructor !== String) return
 
   orderedFetch(
-    getRootableUrl(
+    getRootBasedUrl(
       origin,
       rootPath,
       `/api/query/${readModelName}/${resolverName}?socketId=${socketId}`
