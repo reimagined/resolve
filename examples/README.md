@@ -28,16 +28,17 @@ create-resolve-app todo-example -e todo
 
 The `create-resolve-app` can is capable of creating the following apps, that are sorted by complexity:
 
-* ️️️️⚪️⚫️⚫️ [**hello-world**](https://github.com/reimagined/resolve/tree/master/examples/hello-world)
-* ️️️️⚪️⚫️⚫️ [**todo**](https://github.com/reimagined/resolve/tree/master/examples/todo)
-* ️️️️⚪️⚫️⚫️ [**with-postcss-modules**](https://github.com/reimagined/resolve/tree/master/examples/with-postcss-modules)
-* ️️️️⚪️⚫️⚫️ [**with-styled-components**](https://github.com/reimagined/resolve/tree/master/examples/with-styled-components)
+* ️️️️[**hello-world**](https://github.com/reimagined/resolve/tree/master/examples/hello-world) ⭐️
+* ️️️️[**todo**](https://github.com/reimagined/resolve/tree/master/examples/todo) ⭐️
+* ️️️️[**with-postcss-modules**](https://github.com/reimagined/resolve/tree/master/examples/with-postcss-modules) ⭐️
+* ️️️️[**with-styled-components**](https://github.com/reimagined/resolve/tree/master/examples/with-styled-components) ⭐️
 
-* ⚪️⚪️⚫️ [**todo-two-levels**](https://github.com/reimagined/resolve/tree/master/examples/todo-two-levels)
-* ️️️️️️⚪️⚪️⚫️ [**top-list**](https://github.com/reimagined/resolve/tree/master/examples/top-list)
-* ⚪️⚪️⚫️ [**with-authentication**](https://github.com/reimagined/resolve/tree/master/examples/with-authentication)
 
-* ⚪️⚪️⚪️ [**hacker-news**](https://github.com/reimagined/resolve/tree/master/examples/hacker-news)
+* [**todo-two-levels**](https://github.com/reimagined/resolve/tree/master/examples/todo-two-levels) ⭐️⭐️
+* ️️[**top-list**](https://github.com/reimagined/resolve/tree/master/examples/top-list) ⭐️⭐️
+* [**with-authentication**](https://github.com/reimagined/resolve/tree/master/examples/with-authentication) ⭐️⭐️
+
+* [**hacker-news**](https://github.com/reimagined/resolve/tree/master/examples/hacker-news) ⭐️⭐️⭐️
 
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/examples-index-readme?pixel)
