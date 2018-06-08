@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'reimagined/resolve-ci'
-            args '-u root:root -v /home/resolve/yarn_cache:/yarn_cache' -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix
+            args '-u root:root -v /home/resolve/yarn_cache:/yarn_cache' -e DISPLAY=${DISPLAY} -v /tmp/.X11-unix:/tmp/.X11-unix
         }
     }
     stages {
