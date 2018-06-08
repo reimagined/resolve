@@ -26,18 +26,16 @@ create-resolve-app todo-example -e todo
 
 ## List of Examples
 
-The `create-resolve-app` can is capable of creating the following apps:
-
 | Example name | Description | Complexity |
 | --- | --- | --- |
 | [hello-world](https://github.com/reimagined/resolve/tree/master/examples/hello-world) | An empty app that can be used as a template for any reSolve application. | ⭐️ |
-| [todo](https://github.com/reimagined/resolve/tree/master/examples/todo) | This example demonstrates how to work with the view-models. | ⭐️ |
-| [with-postcss-modules](https://github.com/reimagined/resolve/tree/master/examples/with-postcss-modules) | This example demonstrates how to work with the postCSS. | ⭐️ |
-| [with-styled-components](https://github.com/reimagined/resolve/tree/master/examples/with-styled-components) | This example demonstrates how to work with the styled-components | ⭐️ |
+| [todo](https://github.com/reimagined/resolve/tree/master/examples/todo) | This example demonstrates how to work with the [view-models](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md). | ⭐️ |
+| [with-postcss-modules](https://github.com/reimagined/resolve/tree/master/examples/with-postcss-modules) | This example demonstrates how to work with the [postCSS](https://github.com/postcss/postcss-loader#css-modules). | ⭐️ |
+| [with-styled-components](https://github.com/reimagined/resolve/tree/master/examples/with-styled-components) | This example demonstrates how to work with the [styled-components](https://www.styled-components.com/docs). | ⭐️ |
 | [todo-two-levels](https://github.com/reimagined/resolve/tree/master/examples/todo-two-levels) | This example demonstrates how to work with view-models in the all events subscription case | ⭐️⭐️ |
 | [top-list](https://github.com/reimagined/resolve/tree/master/examples/top-list) | This example demonstrates how to update application state on external events unrelated to user actions. | ⭐️⭐️ |
-| [with-authentication](https://github.com/reimagined/resolve/tree/master/examples/with-authentication) | It is a simple application shows resolve-auth package usage. | ⭐️⭐️ |
-| [**hacker-news**](https://github.com/reimagined/resolve/tree/master/examples/hacker-news) | This example demonstrates HackerNews application clone with CQRS and EventSoucring. | ⭐️⭐️ |
+| [with-authentication](https://github.com/reimagined/resolve/tree/master/examples/with-authentication) | It is a simple application shows [resolve-auth](https://github.com/reimagined/resolve/tree/master/packages/resolve-auth) package usage. | ⭐️⭐️ |
+| [hacker-news](https://github.com/reimagined/resolve/tree/master/examples/hacker-news) | This example demonstrates [HackerNews](https://news.ycombinator.com/) application clone with CQRS and EventSoucring. | ⭐️⭐️️️️⭐️️️️ |
 
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/examples-index-readme?pixel)
