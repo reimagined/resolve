@@ -70,11 +70,11 @@ pipeline {
                     steps {
                         script {
                             sh """
-                                mkdir hw && cd hw
-                                yarn global add create-resolve-app@\$(cat /lerna_version)
-                                cd ./hello-world
-                                cat ./package.json
-                                sed -i 's/"port": 3000/"port": 3001/g' ./resolve.config.json
+                                mkdir hw && cd hw; \
+                                create-resolve-app hello-world -c \$(cat /last_commit)
+                                cd ./hello-world; \
+                                cat ./package.json; \
+                                sed -i 's/"port": 3000/"port": 3001/g' ./resolve.config.json;
                                 grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3001/g'
 
                                 yarn test
