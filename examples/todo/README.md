@@ -1,5 +1,7 @@
 ToDo List App Tutorial
 
+![todo](https://user-images.githubusercontent.com/19663260/41163516-88101fca-6b41-11e8-879a-ffa36d61602a.png)
+
 ## How to start?
 
 This example demonstrates how to work with the [view-models](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md). To install:

@@ -1,5 +1,7 @@
 # **Hello World Example**
 
+![hello-world](https://user-images.githubusercontent.com/19663260/41163411-3d174d54-6b41-11e8-84d8-4844624d76de.png)
+
 ## How to start?
 
 An empty app that can be used as a template for any **reSolve** application. It's created by default so you can install this example by one of two ways:
