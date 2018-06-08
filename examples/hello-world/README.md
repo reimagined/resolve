@@ -1,12 +1,15 @@
 # **Hello World Example**
 
+![hello-world](https://user-images.githubusercontent.com/19663260/41165078-617d223c-6b45-11e8-8f9f-ffdc02e068ae.png)
+
+## How to start?
+
+An empty app that can be used as a template for any **reSolve** application. It's created by default so you can install this example by one of two ways:
+1. Create a **new reSolve** application:
 ```bash
 npx create-resolve-app my-app
 ```
-
-![hello-world](https://user-images.githubusercontent.com/19663260/41165078-617d223c-6b45-11e8-8f9f-ffdc02e068ae.png)
-
-An empty app that can be used as a template for any **reSolve** application. It's created by default but you can install this example by the second way:
+2. Create a **reSolve example**:
 ```bash
 npx create-resolve-app hello-world-example -e hello-world
 ```
