@@ -68,6 +68,8 @@ pipeline {
                     steps {
                         script {
                             sh """
+                                firefox;
+
                                 mkdir hw && cd hw; \
                                 create-resolve-app hello-world -c \$(cat /last_commit)
                                 cd ./hello-world; \
