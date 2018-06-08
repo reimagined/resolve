@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'reimagined/resolve-ci'
-            args '-u root:root -v /home/resolve/yarn_cache:/yarn_cache'
+            args '-u root:root -v /home/resolve/yarn_cache:/yarn_cache' -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix
         }
     }
     stages {
@@ -65,8 +65,7 @@ pipeline {
             }
         }
 
-        stage('CRA tests') {
-            parallel {
+
                 stage('Create-resolve-app [ hello-world ] Functional Tests') {
                     steps {
                         script {
@@ -175,8 +174,7 @@ pipeline {
                         }
                     }
                 }
-            }
-        }
+
     }
 
     post {
