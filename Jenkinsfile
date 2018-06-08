@@ -38,10 +38,8 @@ pipeline {
 
                         yarn oao --version;
 
-                        echo "#!/usr/bin/expect" > /npmlogin.sh; \
-                        echo 'set timeout 1;spawn npm login;expect "Username: ";send "${env.NPM_USER}\\\\r";expect "Password: (<default hidden>)";send "1\\\\r";send "${env.NPM_EMAIL}\\\\r";send "1\\\\r";interact ' >> /npmlogin.sh;
-
                         echo 'registry "http://${env.NPM_ADDR}"' >> /root/.yarnrc; \
+                        npm set registry=http://${env.NPM_ADDR}; \
                         cat /root/.yarnrc; \
                         cat /ver.ver; \
                         find . -name package.json -type f -print | grep -v node_modules | xargs -I '%' node -e 'require("fs").writeFileSync(process.argv[1], JSON.stringify((() => { const pj = require(process.argv[1]); if(pj.dependencies) Object.keys(pj.dependencies).forEach(key => { if(key.indexOf("resolve-") < 0) return; pj.dependencies[key] = process.env.CI_CANARY_VERSION  }); return pj; })(), null, 3))' '%'; \
