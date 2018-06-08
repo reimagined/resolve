@@ -99,6 +99,7 @@ Follow these guidelines to help maintainers and the community understand your re
 | `Component: Documentation` | Issues related to package descriptions, [docs folder topics](https://github.com/reimagined/resolve/tree/master/docs), and README files |
 | `Component: Examples` | Issues related to [reSolve examples](https://github.com/reimagined/resolve/tree/master/examples) |
 | `Component: readmodel-adapters` | Issues related to [Read Model adapters](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters) packages |
+| `Component: storage-adapters` | Issues related to [storage adapters](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters) packages |
 | `Component: resolve-auth` | Issues related to the [resolve-auth](https://github.com/reimagined/resolve/tree/master/packages/resolve-auth) package |
 | `Component: resolve-es` | Issues related to the [resolve-es](https://github.com/reimagined/resolve/tree/master/packages/resolve-es) package |
 | `Component: resolve-query` | Issues related to the [resolve-query](https://github.com/reimagined/resolve/tree/master/packages/resolve-query) package |
