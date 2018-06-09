@@ -105,4 +105,5 @@ Follow these guidelines to help maintainers and the community understand your re
 | `Component: resolve-query` | Issues related to the [resolve-query](https://github.com/reimagined/resolve/tree/master/packages/resolve-query) package |
 | `Component: resolve-redux` | Issues related to the [resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux) package |
 | `Component: resolve-scripts` | Issues related to the [resolve-scripts](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts) package |
+| `Component: resolve-command` | Issues related to the [resolve-command](https://github.com/reimagined/resolve/tree/master/packages/resolve-command) package |
 
