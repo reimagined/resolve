@@ -2,10 +2,10 @@
 
 ![top-list](https://user-images.githubusercontent.com/19663260/41165263-da21823c-6b45-11e8-9af4-f81b797d0b52.png)
 
-This example demonstrates how to update application state on external events unrelated to user actions. To install:
+This example demonstrates how to update application state on external events unrelated to user actions. Get the example using this command:
 
 ```bash
-npx create-resolve-app top-list-example -e top-list
+npx create-resolve-app resolve-top-list-example -e top-list
 ```
 
 ## What's next?

@@ -1,11 +1,11 @@
-# **Todo Two Levels Example**
+# **Two Levels ToDo List Example**
 
 ![todo-two](https://user-images.githubusercontent.com/19663260/41165183-af6e4f02-6b45-11e8-9494-38aace0c518e.png)
 
-This example demonstrates how to work with view-models in the **all events subscription** case. Sometimes, for example for fast application prototyping, it's necessary to have view-model on client with all server events instead of part. There's a special feature called **wildcard**, that allows to subscribe to all events. To install:
+This example shows how to work with [View Models](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md) in **all events subscription** case. Sometimes, for example for fast application prototyping, it's useful to have a View Model subscribed to all events. There's a **wildcard** feature for this shown in the example. Get it using this command:
 
-```bash
-npx create-resolve-app todo-two-levels-example -e todo-two-levels
+```sh
+npx create-resolve-app resolve-two-levels-todo-example -e todo-two-levels
 ```
 
 ## What's next?

@@ -4,14 +4,15 @@
 
 ## How to start?
 
-An empty app that can be used as a template for any **reSolve** application. It's created by default so you can install this example by one of two ways:
-1. Create a **new reSolve** application:
-```bash
+This is an empty app used as a template for new **reSolve** applications. The `create-resolve-app` script started without arguments creates this app:
+
+```sh
 npx create-resolve-app my-app
 ```
-2. Create a **reSolve example**:
-```bash
-npx create-resolve-app hello-world-example -e hello-world
+You can also create it using the example-creation syntax:
+
+```sh
+npx create-resolve-app resolve-hello-world-example -e hello-world
 ```
 
 ## What's next?

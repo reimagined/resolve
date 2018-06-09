@@ -2,10 +2,10 @@
 
 ![todo](https://user-images.githubusercontent.com/19663260/41163516-88101fca-6b41-11e8-879a-ffa36d61602a.png)
 
-This example demonstrates how to work with the [view-models](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md). To install:
+This example shows how to work with the [View Models](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md). Get the example using this command:
 
-```bash
-npx create-resolve-app todo-example -e todo
+```sh
+npx create-resolve-app resolve-todo-example -e todo
 ```
 
 ## What's next?
