@@ -106,4 +106,5 @@ Follow these guidelines to help maintainers and the community understand your re
 | `Component: resolve-redux` | Issues related to the [resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux) package |
 | `Component: resolve-scripts` | Issues related to the [resolve-scripts](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts) package |
 | `Component: resolve-command` | Issues related to the [resolve-command](https://github.com/reimagined/resolve/tree/master/packages/resolve-command) package |
+| `Component: bus-adapters` | Issues related to the [bus adapters](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters) packages |
 
