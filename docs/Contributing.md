@@ -97,6 +97,7 @@ Follow these guidelines to help maintainers and the community understand your re
 | Label name | Description |
 | --- | --- |
 | `Component: Documentation` | Issues related to package descriptions, [docs folder topics](https://github.com/reimagined/resolve/tree/master/docs), and README files |
+| `Component: Core` | Issues related to a core part of the framework, installation, etc. |
 | `Component: Examples` | Issues related to [reSolve examples](https://github.com/reimagined/resolve/tree/master/examples) |
 | `Component: readmodel-adapters` | Issues related to [Read Model adapters](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters) packages |
 | `Component: storage-adapters` | Issues related to [storage adapters](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters) packages |
