@@ -117,7 +117,6 @@ pipeline {
                                 sed -i 's/"port": 3000/"port": 3003/g' ./resolve.config.json
                                 grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3003/g'
 
-                                yarn test
                                 yarn test:functional --browser=firefox
                             """
                         }
