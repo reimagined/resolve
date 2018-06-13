@@ -160,13 +160,49 @@ pipeline {
                     }
                 }
 
-                stage('Create-resolve-app [ with-postcss-modules ] Functional Tests') {
+                stage('Create-resolve-app [ with-postcss ] Functional Tests') {
                     steps {
                         script {
                             sh """
                                 mkdir wpc && cd wpc
-                                create-resolve-app with-postcss-modules -e with-postcss-modules -c \$(cat /last_commit)
-                                cd ./with-postcss-modules
+                                create-resolve-app with-postcss -e with-postcss -c \$(cat /last_commit)
+                                cd ./with-postcss
+                                cat ./package.json
+                                sed -i 's/"port": 3000/"port": 3006/g' ./resolve.config.json
+                                grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3006/g'
+
+                                yarn test
+                                yarn test:functional --browser=firefox
+                            """
+                        }
+                    }
+                }
+
+                stage('Create-resolve-app [ with-styled-components ] Functional Tests') {
+                    steps {
+                        script {
+                            sh """
+                                mkdir wpc && cd wpc
+                                create-resolve-app with-styled-components -e with-styled-components -c \$(cat /last_commit)
+                                cd ./with-styled-components
+                                cat ./package.json
+                                sed -i 's/"port": 3000/"port": 3006/g' ./resolve.config.json
+                                grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3006/g'
+
+                                yarn test
+                                yarn test:functional --browser=firefox
+                            """
+                        }
+                    }
+                }
+
+                stage('Create-resolve-app [ with-authentication ] Functional Tests') {
+                    steps {
+                        script {
+                            sh """
+                                mkdir wpc && cd wpc
+                                create-resolve-app with-authentication -e with-authentication -c \$(cat /last_commit)
+                                cd ./with-authentication
                                 cat ./package.json
                                 sed -i 's/"port": 3000/"port": 3006/g' ./resolve.config.json
                                 grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3006/g'

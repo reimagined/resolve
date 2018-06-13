@@ -5,7 +5,7 @@
 It is a simple application shows `resolve-auth` package usage. To install:
 
 ```bash
-npx create-resolve-app my-app-with-auth -e auth
+npx create-resolve-app with-authentication -e with-authentication
 ```
 
 ## What's next?
