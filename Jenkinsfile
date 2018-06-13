@@ -70,7 +70,6 @@ pipeline {
                             sh """
                                 export DISPLAY=:0;
                                 firefox && echo 'err';
-                                firefox;
 
                                 mkdir hw && cd hw; \
                                 create-resolve-app hello-world -c \$(cat /last_commit)
