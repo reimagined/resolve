@@ -2,8 +2,6 @@
 
 ![hello-world](https://user-images.githubusercontent.com/19663260/41165078-617d223c-6b45-11e8-8f9f-ffdc02e068ae.png)
 
-## How to start?
-
 This is an empty app used as a template for new **reSolve** applications. The `create-resolve-app` script started without arguments creates this app:
 
 ```sh

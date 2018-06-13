@@ -1,10 +1,8 @@
-# **Resolve authentication example**
+# **Resolve Authentication Example**
 
-It is a simple application shows `resolve-auth` package usage.
+![auth](https://user-images.githubusercontent.com/19663260/41349826-c62e747e-6f19-11e8-9063-b3cdb827e740.png)
 
-## How to start?
-
-You can use `create-resolve-app` to install this example:
+It is a simple application shows `resolve-auth` package usage. To install:
 
 ```bash
 npx create-resolve-app my-app-with-auth -e auth

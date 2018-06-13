@@ -8,6 +8,7 @@ export const App = () => (
     <Helmet>
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="stylesheet" href="/styles/bundle.css" />
+      <title>reSolve With PostCSS Example</title>
     </Helmet>
     <div className={styles.title}>
       Hello World, this is my first component with postcss-modules!

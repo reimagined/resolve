@@ -148,15 +148,33 @@ pipeline {
             }
         }
 
-        stage('Create-resolve-app [ with-postcss-modules ] Functional Tests') {
+        stage('Create-resolve-app [ with-postcss ] Functional Tests') {
             steps {
                 script {
                     sh """
                         export YARN_CACHE_FOLDER=/yarn_cache
                         /init.sh
                         yarn global add create-resolve-app@\$(cat /lerna_version)
-                        create-resolve-app with-postcss-modules -e with-postcss-modules -c \$(cat /last_commit)
-                        cd ./with-postcss-modules
+                        create-resolve-app with-postcss -e with-postcss -c \$(cat /last_commit)
+                        cd ./with-postcss
+                        cat ./package.json
+
+                        yarn test
+                        yarn test:functional --browser=path:/chromium
+                    """
+                }
+            }
+        }
+
+        stage('Create-resolve-app [ with-styled-components ] Functional Tests') {
+            steps {
+                script {
+                    sh """
+                        export YARN_CACHE_FOLDER=/yarn_cache
+                        /init.sh
+                        yarn global add create-resolve-app@\$(cat /lerna_version)
+                        create-resolve-app with-styled-components -e with-styled-components -c \$(cat /last_commit)
+                        cd ./with-styled-components
                         cat ./package.json
 
                         yarn test

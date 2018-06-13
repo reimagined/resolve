@@ -1,5 +1,5 @@
 {
-  "name": "with-postcss-modules",
+  "name": "with-postcss",
   "version": "0.11.0",
   "private": true,
   "scripts": {
