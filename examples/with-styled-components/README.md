@@ -1,16 +1,14 @@
-# With Styled Components
+# With Styled Components Example
 
-**See the documentation at [styled-components.com/docs](https://www.styled-components.com/docs)** for more information about using `styled-components`!
+![Styled Components](https://camo.githubusercontent.com/640c2142e506d4b61bdd29513cb2cdbddbd4aa2f/687474703a2f2f692e696d6775722e636f6d2f77554a70636a592e6a7067)
 
-Quicklinks to some of the most-visited pages:
+This example demonstrates how to work with [styled-components](https://www.styled-components.com/docs). To install:
 
-* [**Getting started**](https://www.styled-components.com/docs/basics)
-* [API Reference](https://styled-components.com/docs/api)
-* [Theming](https://www.styled-components.com/docs/advanced#theming)
-* [Server-side rendering](https://www.styled-components.com/docs/advanced#server-side-rendering)
-* [Tagged Template Literals explained](https://www.styled-components.com/docs/advanced#tagged-template-literals)
+```bash
+npx create-resolve-app with-styled-components -e with-styled-components
+```
 
-### Example
+## How to Use
 
 ```jsx
 import React from 'react';
@@ -38,8 +36,20 @@ const Wrapper = styled.section`
 </Wrapper>
 ```
 
-This is what you'll see in your browser:
+## What's next?
 
-![Styled Components](https://camo.githubusercontent.com/640c2142e506d4b61bdd29513cb2cdbddbd4aa2f/687474703a2f2f692e696d6775722e636f6d2f77554a70636a592e6a7067)
+📑 [**Getting started**](https://www.styled-components.com/docs/basics) for styled-components.
+
+📑 [**Theming**](https://www.styled-components.com/docs/advanced#theming) for styled-components.
+
+📑 [**Server-side rendering**](https://www.styled-components.com/docs/advanced#server-side-rendering) for styled-components.
+
+📑 [**Tagged Template Literals explaination**](https://www.styled-components.com/docs/advanced#tagged-template-literals) for styled-components.
+
+📑 Available scripts, project structure overview, configuration files and much other useful information are in [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md) topic.
+
+📑 To learn more about common building principles of architecture, please look at [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md) documentation topic.
+
+📑 In [**Tutorials**](https://github.com/reimagined/resolve/tree/master/docs/Tutorials) you can find how to make some simple applications with reSolve.
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/examples-with-styled-components-readme?pixel)
