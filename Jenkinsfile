@@ -69,8 +69,7 @@ pipeline {
                         script {
                             sh """
                                 export DISPLAY=:0;
-                                firefox;
-                                firefox;
+                                firefox && echo 'err';
                                 firefox;
 
                                 mkdir hw && cd hw; \
