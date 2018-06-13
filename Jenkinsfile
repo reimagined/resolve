@@ -12,6 +12,8 @@ pipeline {
                     sh """
                         export YARN_CACHE_FOLDER=/yarn_cache
                         yarn install --dev
+                        yarn lint
+                        yarn test
                     """
                 }
             }
@@ -89,6 +91,9 @@ pipeline {
                     steps {
                         script {
                             sh """
+                                export DISPLAY=:0;
+                                firefox && echo 'err';
+
                                 mkdir tl && cd tl
                                 create-resolve-app todolist -e todo -c \$(cat /last_commit)
                                 cd ./todolist
@@ -107,6 +112,9 @@ pipeline {
                     steps {
                         script {
                             sh """
+                                export DISPLAY=:0;
+                                firefox && echo 'err';
+
                                 mkdir tltl && cd tltl
                                 create-resolve-app twolevelstodo -e todo-two-levels -c \$(cat /last_commit)
                                 cd ./twolevelstodo
@@ -125,6 +133,9 @@ pipeline {
                     steps {
                         script {
                             sh """
+                                export DISPLAY=:0;
+                                firefox && echo 'err';
+
                                 mkdir hn && cd hn
                                 create-resolve-app hn -e hacker-news -c \$(cat /last_commit)
                                 cd ./hn
@@ -143,6 +154,9 @@ pipeline {
                     steps {
                         script {
                             sh """
+                                export DISPLAY=:0;
+                                firefox && echo 'err';
+
                                 mkdir topl && cd topl
                                 create-resolve-app toplist -e top-list -c \$(cat /last_commit)
                                 cd ./toplist
@@ -162,6 +176,9 @@ pipeline {
                     steps {
                         script {
                             sh """
+                                export DISPLAY=:0;
+                                firefox && echo 'err';
+
                                 mkdir wpc && cd wpc
                                 create-resolve-app with-postcss-modules -e with-postcss-modules -c \$(cat /last_commit)
                                 cd ./with-postcss-modules
