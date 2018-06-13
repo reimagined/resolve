@@ -31,7 +31,7 @@ create-resolve-app resolve-todo-example -e todo
 | --- | --- | --- |
 | [hello-world](https://github.com/reimagined/resolve/tree/master/examples/hello-world) | An empty app used as a template for a reSolve application. | ⭐️ |
 | [todo](https://github.com/reimagined/resolve/tree/master/examples/todo) | Shows how to work with [View Models](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md). | ⭐️ |
-| [with-postcss-modules](https://github.com/reimagined/resolve/tree/master/examples/with-postcss-modules) | Shows how to work with [postCSS](https://github.com/postcss/postcss-loader#css-modules). | ⭐️ |
+| [with-postcss](https://github.com/reimagined/resolve/tree/master/examples/with-postcss) | Shows how to work with [postCSS](https://github.com/postcss/postcss-loader#css-modules). | ⭐️ |
 | [with-styled-components](https://github.com/reimagined/resolve/tree/master/examples/with-styled-components) | Shows how to work with [Styled Components](https://www.styled-components.com/docs). | ⭐️ |
 | [todo-two-levels](https://github.com/reimagined/resolve/tree/master/examples/todo-two-levels) | Shows how to work with View Models in the **all events subscription** case | ⭐️⭐️ |
 | [top-list](https://github.com/reimagined/resolve/tree/master/examples/top-list) | Shows how to update application state on external events unrelated to user actions. | ⭐️⭐️ |
