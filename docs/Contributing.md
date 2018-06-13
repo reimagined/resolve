@@ -97,6 +97,7 @@ Follow these guidelines to help maintainers and the community understand your re
 | Label name | Description |
 | --- | --- |
 | `Component: Documentation` | Issues related to package descriptions, [docs folder topics](https://github.com/reimagined/resolve/tree/master/docs), and README files |
+| `Component: Core` | Issues related to a core part of the framework, installation, etc. |
 | `Component: Examples` | Issues related to [reSolve examples](https://github.com/reimagined/resolve/tree/master/examples) |
 | `Component: readmodel-adapters` | Issues related to [Read Model adapters](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters) packages |
 | `Component: storage-adapters` | Issues related to [storage adapters](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters) packages |
@@ -105,4 +106,6 @@ Follow these guidelines to help maintainers and the community understand your re
 | `Component: resolve-query` | Issues related to the [resolve-query](https://github.com/reimagined/resolve/tree/master/packages/resolve-query) package |
 | `Component: resolve-redux` | Issues related to the [resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux) package |
 | `Component: resolve-scripts` | Issues related to the [resolve-scripts](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts) package |
+| `Component: resolve-command` | Issues related to the [resolve-command](https://github.com/reimagined/resolve/tree/master/packages/resolve-command) package |
+| `Component: bus-adapters` | Issues related to the [bus adapters](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters) packages |
 
