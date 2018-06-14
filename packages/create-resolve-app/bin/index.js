@@ -134,6 +134,9 @@ if (unknownOptions && unknownOptions.length) {
   const downloadRepo = () =>
     new Promise((resolve, reject) => {
       log(chalk.green('Load example'))
+      try {
+        fs.unlinkSync(tmpFilePath)
+      } catch (e) {}
       https.get(resolveRepoPath, function(response) {
         response.on('data', function(data) {
           fs.appendFileSync(tmpFilePath, data)
@@ -170,6 +173,21 @@ if (unknownOptions && unknownOptions.length) {
     }
 
     throw new Error(errMessage)
+  }
+
+  const testExampleExists = () => {
+    var examplesDirs = fs
+      .readdirSync(`./${appName}/${repoDirName}/examples`)
+      .filter(d =>
+        fs.statSync(`./${appName}/${repoDirName}/examples/${d}`).isDirectory()
+      )
+      .map(e => ' * ' + e)
+    if (!fs.existsSync(`./${appName}/${examplePath}`)) {
+      throw new Error(
+        `No such example, ${example}. Available examples are: ${EOL}` +
+          examplesDirs.join(EOL)
+      )
+    }
   }
 
   const copyExampleBash = () =>
@@ -312,6 +330,7 @@ if (unknownOptions && unknownOptions.length) {
   startCreatingApp()
     .then(checkAppName)
     .then(() => downloadRepo().catch(printIfDownloadFail))
+    .then(testExampleExists)
     .then(() => copyExampleBash().catch(copyExampleCMD))
     .then(patchPackageJson)
     .then(install)
