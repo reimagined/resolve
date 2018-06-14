@@ -12,6 +12,7 @@
   "dependencies": {
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
+    "redux": "^3.7.2",
     "resolve-scripts": "0.11.0",
     "react-helmet": "^5.2.0",
     "react-bootstrap": "^0.32.1"
