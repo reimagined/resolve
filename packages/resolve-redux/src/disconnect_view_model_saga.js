@@ -6,7 +6,7 @@ import {
   UNSUBSCRIBE_TOPIC_SUCCESS,
   UNSUBSCRIBE_TOPIC_FAILURE,
   CONNECT_VIEWMODEL
-} from "./action_types";
+} from './action_types'
 
 const disconnectViewModelSaga = function*(
   { viewModelName, aggregateIds, aggregateArgs },
@@ -29,7 +29,7 @@ const disconnectViewModelSaga = function*(
   if (removedConnections.length !== 1) {
     return
   }
-  
+
   yield* sagaManager.stop(`${CONNECT_VIEWMODEL}${sagaKey}`)
 
   let subscriptionKeys = Object.keys(viewModels[viewModelName].projection).map(

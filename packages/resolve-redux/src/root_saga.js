@@ -6,7 +6,11 @@ import viewModelSaga from './view_models_saga'
 import mqttSaga from './mqtt_saga'
 
 function* rootSaga(sagaArgs) {
-  yield takeEvery(LOAD_READMODEL_STATE_REQUEST, loadViewModelStateSaga, sagaArgs)
+  yield takeEvery(
+    LOAD_VIEWMODEL_STATE_REQUEST,
+    loadViewModelStateSaga,
+    sagaArgs
+  )
   yield fork(viewModelSaga, sagaArgs)
   yield fork(mqttSaga, sagaArgs)
 }

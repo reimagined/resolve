@@ -8,10 +8,10 @@ import {
   UNSUBSCRIBE_TOPIC_REQUEST
 } from './action_types'
 import {
-  subscibeTopicSuccess,
-  subscibeTopicFailure,
-  unsubscibeTopicSuccess,
-  unsubscibeTopicFailure,
+  subscribeTopicSuccess,
+  subscribeTopicFailure,
+  unsubscribeTopicSuccess,
+  unsubscribeTopicFailure,
   dispatchMqttEvent
 } from './actions'
 
@@ -58,9 +58,9 @@ const mqttSaga = function*({ store, appId, mqttUrl, mqttQoS }) {
           }
         )
       ])
-      yield put(subscibeTopicSuccess(appId, topicName, topicId))
+      yield put(subscribeTopicSuccess(appId, topicName, topicId))
     } catch (error) {
-      yield put(subscibeTopicFailure(appId, topicName, topicId, error))
+      yield put(subscribeTopicFailure(appId, topicName, topicId, error))
     }
   })
 
@@ -98,9 +98,9 @@ const mqttSaga = function*({ store, appId, mqttUrl, mqttQoS }) {
           }
         )
       ])
-      yield put(unsubscibeTopicSuccess(appId, topicName, topicId))
+      yield put(unsubscribeTopicSuccess(appId, topicName, topicId))
     } catch (error) {
-      yield put(unsubscibeTopicFailure(appId, topicName, topicId, error))
+      yield put(unsubscribeTopicFailure(appId, topicName, topicId, error))
     }
   })
 }

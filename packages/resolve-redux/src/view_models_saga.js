@@ -3,10 +3,7 @@ import createConnectionManager from './create_connection_manager'
 import createSagaManager from './create_saga_manager'
 import stringify from 'json-stable-stringify'
 
-import {
-  CONNECT_VIEWMODEL,
-  DISCONNECT_VIEWMODEL
-} from './action_types'
+import { CONNECT_VIEWMODEL, DISCONNECT_VIEWMODEL } from './action_types'
 import connectViewModelSaga from './connect_view_model_saga'
 import disconnectViewModelSaga from './disconnect_view_model_saga'
 
@@ -20,7 +17,11 @@ const viewModelsSaga = function*(sagaArgs) {
     switch (action.type) {
       case CONNECT_VIEWMODEL: {
         const { viewModelName, aggregateIds, aggregateArgs } = action
-        const sagaKey = stringify({ viewModelName, aggregateIds, aggregateArgs })
+        const sagaKey = stringify({
+          viewModelName,
+          aggregateIds,
+          aggregateArgs
+        })
         yield* sagaManager.start(
           `${CONNECT_VIEWMODEL}${sagaKey}`,
           connectViewModelSaga,
@@ -35,7 +36,11 @@ const viewModelsSaga = function*(sagaArgs) {
       }
       case DISCONNECT_VIEWMODEL: {
         const { viewModelName, aggregateIds, aggregateArgs } = action
-        const sagaKey = stringify({ viewModelName, aggregateIds, aggregateArgs })
+        const sagaKey = stringify({
+          viewModelName,
+          aggregateIds,
+          aggregateArgs
+        })
         yield* sagaManager.start(
           `${DISCONNECT_VIEWMODEL}${sagaKey}`,
           disconnectViewModelSaga,

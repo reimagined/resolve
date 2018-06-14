@@ -24,8 +24,7 @@ import {
   APPLY_READMODEL_DIFF,
   DROP_READMODEL_STATE,
   DISPATCH_MQTT_EVENT,
-  HOT_MODULE_REPLACEMENT,
-  DISPATCH_MQTT_EVENT
+  HOT_MODULE_REPLACEMENT
 } from './action_types'
 
 export const sendCommandRequest = (
@@ -69,21 +68,21 @@ export const sendCommandFailure = (
   error
 })
 
-export const subscibeTopicRequest = (appId, topicName, topicId) => ({
+export const subscribeTopicRequest = (appId, topicName, topicId) => ({
   type: SUBSCRIBE_TOPIC_REQUEST,
   appId,
   topicName,
   topicId
 })
 
-export const subscibeTopicSuccess = (appId, topicName, topicId) => ({
+export const subscribeTopicSuccess = (appId, topicName, topicId) => ({
   type: SUBSCRIBE_TOPIC_SUCCESS,
   appId,
   topicName,
   topicId
 })
 
-export const subscibeTopicFailure = (appId, topicName, topicId, error) => ({
+export const subscribeTopicFailure = (appId, topicName, topicId, error) => ({
   type: SUBSCRIBE_TOPIC_FAILURE,
   appId,
   topicName,
@@ -98,35 +97,47 @@ export const unsubscibeTopicRequest = (appId, topicName, topicId) => ({
   topicId
 })
 
-export const unsubscibeTopicSuccess = (appId, topicName, topicId) => ({
+export const unsubscribeTopicSuccess = (appId, topicName, topicId) => ({
   type: UNSUBSCRIBE_TOPIC_SUCCESS,
   appId,
   topicName,
   topicId
 })
 
-export const unsubscibeTopicFailure = (appId, topicName, topicId) => ({
+export const unsubscribeTopicFailure = (appId, topicName, topicId) => ({
   type: UNSUBSCRIBE_TOPIC_FAILURE,
   appId,
   topicName,
   topicId
 })
 
-export const connectViewModel = (viewModelName, aggregateIds, aggregateArgs) => ({
+export const connectViewModel = (
+  viewModelName,
+  aggregateIds,
+  aggregateArgs
+) => ({
   type: CONNECT_VIEWMODEL,
   viewModelName,
   aggregateIds,
   aggregateArgs
 })
 
-export const disconnectViewModel = (viewModelName, aggregateIds, aggregateArgs) => ({
+export const disconnectViewModel = (
+  viewModelName,
+  aggregateIds,
+  aggregateArgs
+) => ({
   type: DISCONNECT_VIEWMODEL,
   viewModelName,
   aggregateIds,
   aggregateArgs
 })
 
-export const loadViewModelStateRequest = (viewModelName, aggregateIds, aggregateArgs) => ({
+export const loadViewModelStateRequest = (
+  viewModelName,
+  aggregateIds,
+  aggregateArgs
+) => ({
   type: LOAD_VIEWMODEL_STATE_REQUEST,
   viewModelName,
   aggregateIds,
@@ -159,7 +170,11 @@ export const loadViewModelStateFailure = (
   error
 })
 
-export const dropViewModelState = (viewModelName, aggregateIds, aggregateArgs) => ({
+export const dropViewModelState = (
+  viewModelName,
+  aggregateIds,
+  aggregateArgs
+) => ({
   type: DROP_VIEWMODEL_STATE,
   viewModelName,
   aggregateIds,
