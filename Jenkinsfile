@@ -30,7 +30,7 @@ pipeline {
                         export DISPLAY=:0;
                         firefox && echo 'err';
 
-                        yarn test:functional --browser=firefox
+                        npx oao run-script test:functional --browser=firefox
                     """
                 }
             }
