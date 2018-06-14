@@ -16,3 +16,5 @@ Learn more about common app parts:
 * [Query](./Query.md)
 * [Read Model](./Read%20Model.md)
 * [View Model](./View%20Model.md)
+
+![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/docs-index-readme?pixel)
