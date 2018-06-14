@@ -22,7 +22,7 @@ pipeline {
 
         stage('Functional tests (dev mode)') {
             when {
-                expression { CHANGE_TARGET == 'master' }
+                expression { CHANGE_TARGET != 'master' }
             }
             steps {
                 script {
