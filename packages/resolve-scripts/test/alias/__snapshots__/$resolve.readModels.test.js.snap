@@ -26,8 +26,8 @@ exports[`base config works correctly [server] 1`] = `
 "
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
-import projection_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testProjection.js\\"
-import resolvers_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testResolvers.js\\"
+import projection_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testProjection.js\\"
+import resolvers_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testResolvers.js\\"
 
 
 const name_0 = \\"Todos\\"
@@ -80,11 +80,11 @@ exports[`base(v2) config works correctly [server] 1`] = `
 "
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
-import projection_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testProjection.js\\"
-import resolvers_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testResolvers.js\\"
+import projection_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testProjection.js\\"
+import resolvers_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testResolvers.js\\"
 
-import projection_1 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testProjection.js\\"
-import resolvers_1 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testResolvers.js\\"
+import projection_1 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testProjection.js\\"
+import resolvers_1 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testResolvers.js\\"
 
 
 const name_0 = \\"Todos\\"
@@ -134,8 +134,8 @@ exports[`config with storage + process.env works correctly [server] 1`] = `
 "
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
-import projection_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testProjection.js\\"
-import resolvers_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testResolvers.js\\"
+import projection_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testProjection.js\\"
+import resolvers_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testResolvers.js\\"
 
 
 const name_0 = \\"Todos\\"
@@ -192,10 +192,10 @@ exports[`config with storage works correctly [server] 1`] = `
 "
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
-import projection_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testProjection.js\\"
-import resolvers_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testResolvers.js\\"
+import projection_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testProjection.js\\"
+import resolvers_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testResolvers.js\\"
 
-import adapterModule_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testSnapshotAdapter.js\\"
+import adapterModule_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testSnapshotAdapter.js\\"
 
 const name_0 = \\"Todos\\"
 const adapterOptions_0 = {
