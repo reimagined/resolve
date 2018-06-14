@@ -96,7 +96,7 @@ it('Comment with state.expanded=false renders correctly', () => {
   expect(markup).toMatchSnapshot()
 })
 
-it('Comment without childrens renders correctly', () => {
+it('Comment without children renders correctly', () => {
   const markup = shallow(
     <Comment
       id="SomeId"

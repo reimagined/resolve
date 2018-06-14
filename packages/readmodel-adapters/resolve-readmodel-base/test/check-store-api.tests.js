@@ -96,7 +96,13 @@ describe('resolve-readmodel-base check-store-api', () => {
       )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.be.equal(messages.invalidTableSchema)
+      expect(err.message).to.be.equal(
+        messages.invalidTableSchema(
+          'table',
+          messages.tableDescriptorNotArray,
+          null
+        )
+      )
     }
   })
 
@@ -289,7 +295,7 @@ describe('resolve-readmodel-base check-store-api', () => {
     }
   })
 
-  it('find should fail on unexisting fields on search fields key', async () => {
+  it('find should fail on nonExisting fields on search fields key', async () => {
     metaApi.tableExists.onCall(0).callsFake(async () => true)
     metaApi.getTableInfo
       .onCall(0)
@@ -305,17 +311,23 @@ describe('resolve-readmodel-base check-store-api', () => {
         200
       )
       return Promise.reject(
-        'find should fail on unexisting fields on search fields key'
+        'find should fail on nonExisting fields on search fields key'
       )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
       expect(err.message).to.be.equal(
-        messages.invalidProjectionKey('volumeErr')
+        messages.invalidFieldList(
+          'find',
+          'table',
+          { volumeErr: 'volume' },
+          messages.nonExistingField,
+          'volumeErr'
+        )
       )
     }
   })
 
-  it('find should fail on unexisting fields on projection fields key', async () => {
+  it('find should fail on nonExisting fields on projection fields key', async () => {
     metaApi.tableExists.onCall(0).callsFake(async () => true)
     metaApi.getTableInfo
       .onCall(0)
@@ -331,15 +343,23 @@ describe('resolve-readmodel-base check-store-api', () => {
         200
       )
       return Promise.reject(
-        'find should fail on unexisting fields on projection fields key'
+        'find should fail on nonExisting fields on projection fields key'
       )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.be.equal(messages.invalidProjectionKey('idErr'))
+      expect(err.message).to.be.equal(
+        messages.invalidFieldList(
+          'find',
+          'table',
+          { idErr: 1, 'contentErr.text': 1 },
+          messages.illegalProjectionColumn,
+          'idErr'
+        )
+      )
     }
   })
 
-  it('find should fail on unexisting fields on sort fields key', async () => {
+  it('find should fail on nonExisting fields on sort fields key', async () => {
     metaApi.tableExists.onCall(0).callsFake(async () => true)
     metaApi.getTableInfo
       .onCall(0)
@@ -355,12 +375,18 @@ describe('resolve-readmodel-base check-store-api', () => {
         200
       )
       return Promise.reject(
-        'find should fail on unexisting fields on sort fields key'
+        'find should fail on nonExisting fields on sort fields key'
       )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
       expect(err.message).to.be.equal(
-        messages.invalidProjectionKey('timestampErr')
+        messages.invalidFieldList(
+          'find',
+          'table',
+          { id: 1, 'content.text': 1 },
+          messages.illegalSortColumn,
+          'timestampErr'
+        )
       )
     }
   })
@@ -376,7 +402,14 @@ describe('resolve-readmodel-base check-store-api', () => {
       return Promise.reject('find should fail on bad request')
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.be.equal(messages.invalidSearchExpression(null))
+      expect(err.message).to.be.equal(
+        messages.invalidSearchExpression(
+          'find',
+          'table',
+          null,
+          messages.searchExpressionNotObject
+        )
+      )
     }
   })
 
@@ -427,7 +460,7 @@ describe('resolve-readmodel-base check-store-api', () => {
     expect(result).to.be.equal(resultValue)
   })
 
-  it('findOne should fail on unexisting fields on search fields key', async () => {
+  it('findOne should fail on nonExisting fields on search fields key', async () => {
     metaApi.tableExists.onCall(0).callsFake(async () => true)
     metaApi.getTableInfo
       .onCall(0)
@@ -440,17 +473,23 @@ describe('resolve-readmodel-base check-store-api', () => {
         { id: 1, 'content.text': 1 }
       )
       return Promise.reject(
-        'findOne should fail on unexisting fields on search fields key'
+        'findOne should fail on nonExisting fields on search fields key'
       )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
       expect(err.message).to.be.equal(
-        messages.invalidProjectionKey('volumeErr')
+        messages.invalidFieldList(
+          'findOne',
+          'table',
+          { volumeErr: 'volume' },
+          messages.nonExistingField,
+          'volumeErr'
+        )
       )
     }
   })
 
-  it('findOne should fail on unexisting fields on projection fields key', async () => {
+  it('findOne should fail on nonExisting fields on projection fields key', async () => {
     metaApi.tableExists.onCall(0).callsFake(async () => true)
     metaApi.getTableInfo
       .onCall(0)
@@ -463,11 +502,19 @@ describe('resolve-readmodel-base check-store-api', () => {
         { idErr: 1, 'contentErr.text': 1 }
       )
       return Promise.reject(
-        'findOne should fail on unexisting fields on projection fields key'
+        'findOne should fail on nonExisting fields on projection fields key'
       )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.be.equal(messages.invalidProjectionKey('idErr'))
+      expect(err.message).to.be.equal(
+        messages.invalidFieldList(
+          'findOne',
+          'table',
+          { idErr: 1, 'contentErr.text': 1 },
+          messages.illegalProjectionColumn,
+          'idErr'
+        )
+      )
     }
   })
 
@@ -482,7 +529,14 @@ describe('resolve-readmodel-base check-store-api', () => {
       return Promise.reject('findOne should fail on bad request')
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.be.equal(messages.invalidSearchExpression(null))
+      expect(err.message).to.be.equal(
+        messages.invalidSearchExpression(
+          'findOne',
+          'table',
+          null,
+          messages.searchExpressionNotObject
+        )
+      )
     }
   })
 
@@ -504,7 +558,7 @@ describe('resolve-readmodel-base check-store-api', () => {
     expect(result).to.be.equal(100)
   })
 
-  it('count should fail on unexisting fields on search fields key', async () => {
+  it('count should fail on nonExisting fields on search fields key', async () => {
     metaApi.tableExists.onCall(0).callsFake(async () => true)
     metaApi.getTableInfo
       .onCall(0)
@@ -513,12 +567,18 @@ describe('resolve-readmodel-base check-store-api', () => {
     try {
       await api.count('table', { volumeErr: 'volume' })
       return Promise.reject(
-        'count should fail on unexisting fields on search fields key'
+        'count should fail on nonExisting fields on search fields key'
       )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
       expect(err.message).to.be.equal(
-        messages.invalidProjectionKey('volumeErr')
+        messages.invalidFieldList(
+          'count',
+          'table',
+          { volumeErr: 'volume' },
+          messages.nonExistingField,
+          'volumeErr'
+        )
       )
     }
   })
@@ -534,7 +594,14 @@ describe('resolve-readmodel-base check-store-api', () => {
       return Promise.reject('count should fail on bad request')
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.be.equal(messages.invalidSearchExpression(null))
+      expect(err.message).to.be.equal(
+        messages.invalidSearchExpression(
+          'count',
+          'table',
+          null,
+          messages.searchExpressionNotObject
+        )
+      )
     }
   })
 
@@ -560,7 +627,7 @@ describe('resolve-readmodel-base check-store-api', () => {
     })
   })
 
-  it('insert should fail on unexisting fields in schema', async () => {
+  it('insert should fail on nonExisting fields in schema', async () => {
     metaApi.tableExists.onCall(0).callsFake(async () => true)
     metaApi.getTableInfo
       .onCall(0)
@@ -573,10 +640,25 @@ describe('resolve-readmodel-base check-store-api', () => {
         timestampErr: 200,
         contentErr: {}
       })
-      return Promise.reject('insert should fail on unexisting fields in schema')
+      return Promise.reject(
+        'insert should fail on nonExisting fields in schema'
+      )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.be.equal(messages.invalidProjectionKey('idErr'))
+      expect(err.message).to.be.equal(
+        messages.invalidFieldList(
+          'insert',
+          'table',
+          {
+            idErr: 100,
+            volumeErr: 'volume',
+            timestampErr: 200,
+            contentErr: {}
+          },
+          messages.nonExistingField,
+          'idErr'
+        )
+      )
     }
   })
 
@@ -588,10 +670,19 @@ describe('resolve-readmodel-base check-store-api', () => {
 
     try {
       await api.insert('table', null)
-      return Promise.reject('insert should fail on unexisting fields in schema')
+      return Promise.reject(
+        'insert should fail on nonExisting fields in schema'
+      )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.be.equal(messages.invalidDocumentShape(null))
+      expect(err.message).to.be.equal(
+        messages.invalidFieldList(
+          'insert',
+          'table',
+          null,
+          messages.fieldListNotObject
+        )
+      )
     }
   })
 
@@ -622,7 +713,7 @@ describe('resolve-readmodel-base check-store-api', () => {
     })
   })
 
-  it('update should fail on unexisting fields on search fields key', async () => {
+  it('update should fail on nonExisting fields on search fields key', async () => {
     metaApi.tableExists.onCall(0).callsFake(async () => true)
     metaApi.getTableInfo
       .onCall(0)
@@ -639,17 +730,23 @@ describe('resolve-readmodel-base check-store-api', () => {
         }
       )
       return Promise.reject(
-        'update should fail on unexisting fields on search fields key'
+        'update should fail on nonExisting fields on search fields key'
       )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
       expect(err.message).to.be.equal(
-        messages.invalidProjectionKey('volumeErr')
+        messages.invalidFieldList(
+          'update',
+          'table',
+          { volumeErr: 'volume' },
+          messages.nonExistingField,
+          'volumeErr'
+        )
       )
     }
   })
 
-  it('update should fail on unexisting fields on update fields key', async () => {
+  it('update should fail on nonExisting fields on update fields key', async () => {
     metaApi.tableExists.onCall(0).callsFake(async () => true)
     metaApi.getTableInfo
       .onCall(0)
@@ -666,16 +763,21 @@ describe('resolve-readmodel-base check-store-api', () => {
         }
       )
       return Promise.reject(
-        'update should fail on unexisting fields on search fields key'
+        'update should fail on nonExisting fields on search fields key'
       )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
       expect(err.message).to.be.equal(
-        messages.invalidUpdateExpression({
-          $set: { volumeErr: 'vol', 'contentErr.one': 20 },
-          $unset: { volumeErr: true, 'contentErr.two': true },
-          $inc: { timestampErr: 3, 'contentErr.counter': 4 }
-        })
+        messages.invalidUpdateExpression(
+          'table',
+          {
+            $set: { volumeErr: 'vol', 'contentErr.one': 20 },
+            $unset: { volumeErr: true, 'contentErr.two': true },
+            $inc: { timestampErr: 3, 'contentErr.counter': 4 }
+          },
+          messages.incompatibleUpdateValue,
+          'volumeErr'
+        )
       )
     }
   })
@@ -695,7 +797,14 @@ describe('resolve-readmodel-base check-store-api', () => {
       return Promise.reject('update should fail on bad request')
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.be.equal(messages.invalidSearchExpression(null))
+      expect(err.message).to.be.equal(
+        messages.invalidSearchExpression(
+          'update',
+          'table',
+          null,
+          messages.searchExpressionNotObject
+        )
+      )
     }
   })
 
@@ -710,7 +819,13 @@ describe('resolve-readmodel-base check-store-api', () => {
       return Promise.reject('update should fail on bad request')
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.be.equal(messages.invalidUpdateExpression(null))
+      expect(err.message).to.be.equal(
+        messages.invalidUpdateExpression(
+          'table',
+          null,
+          messages.updateExpressionNotValidObject
+        )
+      )
     }
   })
 
@@ -728,7 +843,7 @@ describe('resolve-readmodel-base check-store-api', () => {
     })
   })
 
-  it('delete should fail on unexisting fields on search fields key', async () => {
+  it('delete should fail on nonExisting fields on search fields key', async () => {
     metaApi.tableExists.onCall(0).callsFake(async () => true)
     metaApi.getTableInfo
       .onCall(0)
@@ -737,12 +852,18 @@ describe('resolve-readmodel-base check-store-api', () => {
     try {
       await api.delete('table', { volumeErr: 'volume' })
       return Promise.reject(
-        'delete should fail on unexisting fields on search fields key'
+        'delete should fail on nonExisting fields on search fields key'
       )
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
       expect(err.message).to.be.equal(
-        messages.invalidProjectionKey('volumeErr')
+        messages.invalidFieldList(
+          'delete',
+          'table',
+          { volumeErr: 'volume' },
+          messages.nonExistingField,
+          'volumeErr'
+        )
       )
     }
   })
@@ -758,7 +879,14 @@ describe('resolve-readmodel-base check-store-api', () => {
       return Promise.reject('delete should fail on bad request')
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
-      expect(err.message).to.be.equal(messages.invalidSearchExpression(null))
+      expect(err.message).to.be.equal(
+        messages.invalidSearchExpression(
+          'delete',
+          'table',
+          null,
+          messages.searchExpressionNotObject
+        )
+      )
     }
   })
 })

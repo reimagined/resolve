@@ -33,7 +33,7 @@ npm run import
 ```
 
 Imports data (up to 500 stories with comments) from [HackerNews](https://news.ycombinator.com/).
-Press `Crtl-C` to stop importing or wait until it is finished.
+Press `Control-C` to stop importing or wait until it is finished.
 
 ## What's next?
 

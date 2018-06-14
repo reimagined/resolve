@@ -5,7 +5,7 @@ import createAdapter from '../src/create-adapter'
 import messages from '../src/messages'
 
 describe('resolve-readmodel-base create-adapter', () => {
-  it('should work properly - on apropriate storeApi and metaApi', async () => {
+  it('should work properly - on appropriate storeApi and metaApi', async () => {
     const [buildProjection, init, reset] = [
       sinon.stub(),
       sinon.stub(),

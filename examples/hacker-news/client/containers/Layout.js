@@ -131,7 +131,7 @@ class PageRoot extends React.Component {
     return (
       <div key="loader">
         <div
-          key="childcontent"
+          key="childContent"
           style={this.showProgress ? { display: 'none' } : {}}
           ref={
             !this.showProgress
@@ -148,7 +148,7 @@ class PageRoot extends React.Component {
         </div>
 
         <div
-          key="loadcontent"
+          key="loadContent"
           style={this.showProgress ? { opacity: 0.33 } : { display: 'none' }}
           {...(this.showProgress
             ? { dangerouslySetInnerHTML: { __html: this.lastChildren } }
