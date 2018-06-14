@@ -2,8 +2,8 @@ import uuid from 'uuid'
 import jwt from 'jsonwebtoken'
 import sinon from 'sinon'
 
-import '../../../common/aggregates'
-import story from '../../../common/aggregates/story'
+import commands from '../../../common/aggregates/story.commands'
+import projection from '../../../common/aggregates/story.projection'
 import {
   STORY_CREATED,
   STORY_UPVOTED,
@@ -18,7 +18,7 @@ const token = 'token'
 describe('aggregates', () => {
   beforeEach(() => {
     userId = uuid.v4()
-    sandbox = sinon.sandbox.create()
+    sandbox = sinon.createSandbox()
     jwt.verify = sandbox.stub().returns({ id: userId })
   })
   afterEach(() => {
@@ -40,7 +40,7 @@ describe('aggregates', () => {
         }
       }
 
-      const event = story.commands.createStory(state, command, token)
+      const event = commands.createStory(state, command, token)
 
       expect(event).toEqual({
         type: STORY_CREATED,
@@ -66,9 +66,9 @@ describe('aggregates', () => {
         }
       }
 
-      expect(() =>
-        story.commands.createStory(state, command, token)
-      ).toThrowError('Story already exists')
+      expect(() => commands.createStory(state, command, token)).toThrowError(
+        'Story already exists'
+      )
     })
 
     it('command "createStory" should throw Error "The title field is required"', () => {
@@ -86,9 +86,9 @@ describe('aggregates', () => {
         }
       }
 
-      expect(() =>
-        story.commands.createStory(state, command, token)
-      ).toThrowError('The "title" field is required')
+      expect(() => commands.createStory(state, command, token)).toThrowError(
+        'The "title" field is required'
+      )
     })
 
     it('command "createStory" should throw Error "The userId field is required"', () => {
@@ -111,7 +111,7 @@ describe('aggregates', () => {
         }
       }
 
-      expect(() => story.commands.createStory(state, command, token)).toThrow(
+      expect(() => commands.createStory(state, command, token)).toThrow(
         /The "userId" field is required/
       )
     })
@@ -128,7 +128,7 @@ describe('aggregates', () => {
         }
       }
 
-      const event = story.commands.upvoteStory(state, command, token)
+      const event = commands.upvoteStory(state, command, token)
 
       expect(event).toEqual({ type: STORY_UPVOTED, payload: { userId } })
     })
@@ -145,9 +145,9 @@ describe('aggregates', () => {
         }
       }
 
-      expect(() =>
-        story.commands.upvoteStory(state, command, token)
-      ).toThrowError('User already voted')
+      expect(() => commands.upvoteStory(state, command, token)).toThrowError(
+        'User already voted'
+      )
     })
 
     it('command "upvoteStory" should throw Error "Story does not exist"', () => {
@@ -158,9 +158,9 @@ describe('aggregates', () => {
         }
       }
 
-      expect(() =>
-        story.commands.upvoteStory(state, command, token)
-      ).toThrowError('Story does not exist')
+      expect(() => commands.upvoteStory(state, command, token)).toThrowError(
+        'Story does not exist'
+      )
     })
 
     it('command "upvoteStory" should throw Error "The userId field is required"', () => {
@@ -180,9 +180,9 @@ describe('aggregates', () => {
         }
       }
 
-      expect(() =>
-        story.commands.upvoteStory(state, command, token)
-      ).toThrowError(/The "userId" field is required/)
+      expect(() => commands.upvoteStory(state, command, token)).toThrowError(
+        /The "userId" field is required/
+      )
     })
 
     it('command "unvoteStory" should create an event to unvote the story', () => {
@@ -197,7 +197,7 @@ describe('aggregates', () => {
         }
       }
 
-      const event = story.commands.unvoteStory(state, command, token)
+      const event = commands.unvoteStory(state, command, token)
 
       expect(event).toEqual({ type: STORY_UNVOTED, payload: { userId } })
     })
@@ -214,9 +214,9 @@ describe('aggregates', () => {
         }
       }
 
-      expect(() =>
-        story.commands.unvoteStory(state, command, token)
-      ).toThrowError('User did not vote')
+      expect(() => commands.unvoteStory(state, command, token)).toThrowError(
+        'User did not vote'
+      )
     })
 
     it('command "unvoteStory" should throw Error "Story does not exist"', () => {
@@ -227,9 +227,9 @@ describe('aggregates', () => {
         }
       }
 
-      expect(() =>
-        story.commands.unvoteStory(state, command, token)
-      ).toThrowError('Story does not exist')
+      expect(() => commands.unvoteStory(state, command, token)).toThrowError(
+        'Story does not exist'
+      )
     })
 
     it('command "unvoteStory" should throw Error "The userId field is required"', () => {
@@ -249,9 +249,9 @@ describe('aggregates', () => {
         }
       }
 
-      expect(() =>
-        story.commands.unvoteStory(state, command, token)
-      ).toThrowError('The "userId" field is required')
+      expect(() => commands.unvoteStory(state, command, token)).toThrowError(
+        'The "userId" field is required'
+      )
     })
 
     it('eventHandler "STORY_CREATED" should set createdAt, createdBy and voted to state', () => {
@@ -271,7 +271,7 @@ describe('aggregates', () => {
         comments: {}
       }
 
-      expect(story.projection[STORY_CREATED](state, event)).toEqual(nextState)
+      expect(projection[STORY_CREATED](state, event)).toEqual(nextState)
     })
 
     it('eventHandler "STORY_UPVOTED" should add userId to state.voted', () => {
@@ -293,7 +293,7 @@ describe('aggregates', () => {
         voted: [userId]
       }
 
-      expect(story.projection[STORY_UPVOTED](state, event)).toEqual(nextState)
+      expect(projection[STORY_UPVOTED](state, event)).toEqual(nextState)
     })
 
     it('eventHandler "STORY_UNVOTED" should remove userId from state.voted', () => {
@@ -315,7 +315,7 @@ describe('aggregates', () => {
         voted: []
       }
 
-      expect(story.projection[STORY_UNVOTED](state, event)).toEqual(nextState)
+      expect(projection[STORY_UNVOTED](state, event)).toEqual(nextState)
     })
   })
 
@@ -337,7 +337,7 @@ describe('aggregates', () => {
         }
       }
 
-      const event = story.commands.commentStory(state, command, () => ({
+      const event = commands.commentStory(state, command, () => ({
         id: userId
       }))
 
@@ -368,9 +368,9 @@ describe('aggregates', () => {
         }
       }
 
-      expect(() =>
-        story.commands.commentStory(state, command, token)
-      ).toThrowError('Comment already exists')
+      expect(() => commands.commentStory(state, command, token)).toThrowError(
+        'Comment already exists'
+      )
     })
 
     it('command "commentStory" should throw Error "The text field is required"', () => {
@@ -389,9 +389,9 @@ describe('aggregates', () => {
         }
       }
 
-      expect(() =>
-        story.commands.commentStory(state, command, token)
-      ).toThrowError('The "text" field is required')
+      expect(() => commands.commentStory(state, command, token)).toThrowError(
+        'The "text" field is required'
+      )
     })
 
     it('command "commentStory" should throw Error "The parentId field is required"', () => {
@@ -410,9 +410,9 @@ describe('aggregates', () => {
         }
       }
 
-      expect(() =>
-        story.commands.commentStory(state, command, token)
-      ).toThrowError('The "parentId" field is required')
+      expect(() => commands.commentStory(state, command, token)).toThrowError(
+        'The "parentId" field is required'
+      )
     })
 
     it('command "commentStory" should throw Error "The userId field is required"', () => {
@@ -435,16 +435,16 @@ describe('aggregates', () => {
         }
       }
 
-      expect(() =>
-        story.commands.commentStory(state, command, token)
-      ).toThrowError('The "userId" field is required')
+      expect(() => commands.commentStory(state, command, token)).toThrowError(
+        'The "userId" field is required'
+      )
     })
 
     it('eventHandler "STORY_COMMENTED" should set new comment to state', () => {
       const createdAt = Date.now()
       const commentId = uuid.v4()
 
-      const state = story.initialState
+      const state = projection.Init()
       const event = {
         timestamp: createdAt,
         payload: {
@@ -461,7 +461,7 @@ describe('aggregates', () => {
         }
       }
 
-      expect(story.projection[STORY_COMMENTED](state, event)).toEqual(nextState)
+      expect(projection[STORY_COMMENTED](state, event)).toEqual(nextState)
     })
   })
 })

@@ -2,7 +2,7 @@ import { actions } from 'resolve-redux'
 
 import eventStore from './event_store'
 
-const isOpenBrowser = $resolve.openBrowser
+import isOpenBrowser from '$resolve.openBrowser'
 
 const socketHandler = socket => {
   if (isOpenBrowser) {

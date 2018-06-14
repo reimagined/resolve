@@ -44,7 +44,7 @@ ShallowWrapper {
           <Styled(Link)
             to="/user/SomeUser"
           />
-          <Styled(Component)
+          <Styled(_default)
             createdAt={0}
           />
           <styled.div />
@@ -89,7 +89,7 @@ ShallowWrapper {
             <Styled(Link)
               to="/user/SomeUser"
             />,
-            <Styled(Component)
+            <Styled(_default)
               createdAt={0}
             />,
             <styled.div />,
@@ -233,7 +233,7 @@ ShallowWrapper {
             <Styled(Link)
               to="/user/SomeUser"
             />
-            <Styled(Component)
+            <Styled(_default)
               createdAt={0}
             />
             <styled.div />
@@ -278,7 +278,7 @@ ShallowWrapper {
               <Styled(Link)
                 to="/user/SomeUser"
               />,
-              <Styled(Component)
+              <Styled(_default)
                 createdAt={0}
               />,
               <styled.div />,
@@ -458,7 +458,7 @@ ShallowWrapper {
           <Styled(Link)
             to="/user/SomeUser"
           />
-          <Styled(Component)
+          <Styled(_default)
             createdAt={0}
           />
           <styled.div />
@@ -503,7 +503,7 @@ ShallowWrapper {
             <Styled(Link)
               to="/user/SomeUser"
             />,
-            <Styled(Component)
+            <Styled(_default)
               createdAt={0}
             />,
             <styled.div />,
@@ -647,7 +647,7 @@ ShallowWrapper {
             <Styled(Link)
               to="/user/SomeUser"
             />
-            <Styled(Component)
+            <Styled(_default)
               createdAt={0}
             />
             <styled.div />
@@ -692,7 +692,7 @@ ShallowWrapper {
               <Styled(Link)
                 to="/user/SomeUser"
               />,
-              <Styled(Component)
+              <Styled(_default)
                 createdAt={0}
               />,
               <styled.div />,
@@ -866,7 +866,7 @@ ShallowWrapper {
           <Styled(Link)
             to="/user/SomeUser"
           />
-          <Styled(Component)
+          <Styled(_default)
             createdAt={0}
           />
           <styled.div />
@@ -911,7 +911,7 @@ ShallowWrapper {
             <Styled(Link)
               to="/user/SomeUser"
             />,
-            <Styled(Component)
+            <Styled(_default)
               createdAt={0}
             />,
             <styled.div />,
@@ -1055,7 +1055,7 @@ ShallowWrapper {
             <Styled(Link)
               to="/user/SomeUser"
             />
-            <Styled(Component)
+            <Styled(_default)
               createdAt={0}
             />
             <styled.div />
@@ -1100,7 +1100,7 @@ ShallowWrapper {
               <Styled(Link)
                 to="/user/SomeUser"
               />,
-              <Styled(Component)
+              <Styled(_default)
                 createdAt={0}
               />,
               <styled.div />,
@@ -1274,7 +1274,7 @@ ShallowWrapper {
           <Styled(Link)
             to="/user/SomeUser"
           />
-          <Styled(Component)
+          <Styled(_default)
             createdAt={0}
           />
           <styled.div />
@@ -1319,7 +1319,7 @@ ShallowWrapper {
             <Styled(Link)
               to="/user/SomeUser"
             />,
-            <Styled(Component)
+            <Styled(_default)
               createdAt={0}
             />,
             <styled.div />,
@@ -1463,7 +1463,7 @@ ShallowWrapper {
             <Styled(Link)
               to="/user/SomeUser"
             />
-            <Styled(Component)
+            <Styled(_default)
               createdAt={0}
             />
             <styled.div />
@@ -1508,7 +1508,7 @@ ShallowWrapper {
               <Styled(Link)
                 to="/user/SomeUser"
               />,
-              <Styled(Component)
+              <Styled(_default)
                 createdAt={0}
               />,
               <styled.div />,
@@ -1682,7 +1682,7 @@ ShallowWrapper {
           <Styled(Link)
             to="/user/SomeUser"
           />
-          <Styled(Component)
+          <Styled(_default)
             createdAt={0}
           />
           <styled.div />
@@ -1727,7 +1727,7 @@ ShallowWrapper {
             <Styled(Link)
               to="/user/SomeUser"
             />,
-            <Styled(Component)
+            <Styled(_default)
               createdAt={0}
             />,
             <styled.div />,
@@ -1871,7 +1871,7 @@ ShallowWrapper {
             <Styled(Link)
               to="/user/SomeUser"
             />
-            <Styled(Component)
+            <Styled(_default)
               createdAt={0}
             />
             <styled.div />
@@ -1916,7 +1916,7 @@ ShallowWrapper {
               <Styled(Link)
                 to="/user/SomeUser"
               />,
-              <Styled(Component)
+              <Styled(_default)
                 createdAt={0}
               />,
               <styled.div />,
@@ -2090,7 +2090,7 @@ ShallowWrapper {
           <Styled(Link)
             to="/user/SomeUser"
           />
-          <Styled(Component)
+          <Styled(_default)
             createdAt={0}
           />
           <styled.div />
@@ -2135,7 +2135,7 @@ ShallowWrapper {
             <Styled(Link)
               to="/user/SomeUser"
             />,
-            <Styled(Component)
+            <Styled(_default)
               createdAt={0}
             />,
             <styled.div />,
@@ -2279,7 +2279,7 @@ ShallowWrapper {
             <Styled(Link)
               to="/user/SomeUser"
             />
-            <Styled(Component)
+            <Styled(_default)
               createdAt={0}
             />
             <styled.div />
@@ -2324,7 +2324,7 @@ ShallowWrapper {
               <Styled(Link)
                 to="/user/SomeUser"
               />,
-              <Styled(Component)
+              <Styled(_default)
                 createdAt={0}
               />,
               <styled.div />,

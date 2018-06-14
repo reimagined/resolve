@@ -4,9 +4,8 @@ import uuid from 'uuid'
 import { connectReadModel, connectViewModel } from 'resolve-redux'
 import styled from 'styled-components'
 
-import viewModel from '../../common/view-models/storyDetails'
 import Story from '../containers/Story'
-import actions from '../actions/storiesActions'
+
 import ChildrenComments from '../components/ChildrenComments'
 
 const StoryDetailsRoot = styled.div`
@@ -32,7 +31,9 @@ export class StoryDetails extends React.PureComponent {
   render() {
     const {
       data: { me },
-      story
+      story,
+      upvoteStory,
+      unvoteStory
     } = this.props
     const loggedIn = !!me
 
@@ -42,7 +43,13 @@ export class StoryDetails extends React.PureComponent {
 
     return (
       <StoryDetailsRoot>
-        <Story showText story={story} userId={me && me.id} />
+        <Story
+          showText
+          story={story}
+          userId={me && me.id}
+          upvoteStory={upvoteStory}
+          unvoteStory={unvoteStory}
+        />
         {loggedIn ? (
           <Reply>
             <textarea
@@ -75,16 +82,18 @@ export const mapStateToProps = (
     }
   }
 ) => ({
-  story: state.viewModels[viewModel.name][storyId],
-  viewModelName: viewModel.name,
+  story: state.viewModels['storyDetails'][storyId],
+  viewModelName: 'storyDetails',
   aggregateId: storyId
 })
 
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(
     {
+      upvoteStory: aggregateActions.upvoteStory,
+      unvoteStory: aggregateActions.unvoteStory,
       commentStory: ({ parentId, text }) =>
-        actions.commentStory(parentId, {
+        aggregateActions.commentStory(parentId, {
           text,
           parentId,
           commentId: uuid.v4()

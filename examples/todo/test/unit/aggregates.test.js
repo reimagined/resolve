@@ -1,6 +1,4 @@
-import aggregates from '../../common/aggregates'
-
-const [todoAggregate] = aggregates
+import commands from '../../common/aggregates/todo.commands'
 
 describe('aggregates', () => {
   describe('Todo', () => {
@@ -8,7 +6,7 @@ describe('aggregates', () => {
       const state = undefined
       const command = { payload: { id: 'id', text: 'text' } }
 
-      expect(todoAggregate.commands.createItem(state, command)).toEqual({
+      expect(commands.createItem(state, command)).toEqual({
         type: 'ITEM_CREATED',
         payload: { id: command.payload.id, text: command.payload.text }
       })
@@ -18,7 +16,7 @@ describe('aggregates', () => {
       const state = undefined
       const command = { payload: { id: 'id' } }
 
-      expect(todoAggregate.commands.toggleItem(state, command)).toEqual({
+      expect(commands.toggleItem(state, command)).toEqual({
         type: 'ITEM_TOGGLED',
         payload: { id: command.payload.id }
       })
@@ -28,7 +26,7 @@ describe('aggregates', () => {
       const state = undefined
       const command = { payload: { id: 'id' } }
 
-      expect(todoAggregate.commands.removeItem(state, command)).toEqual({
+      expect(commands.removeItem(state, command)).toEqual({
         type: 'ITEM_REMOVED',
         payload: { id: command.payload.id }
       })
