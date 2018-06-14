@@ -12,7 +12,7 @@ pipeline {
                     sh """
                         export YARN_CACHE_FOLDER=/yarn_cache
                         yarn
-                        if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
+                        if [ "\$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
                         yarn lint
                         yarn test
                     """
@@ -20,15 +20,30 @@ pipeline {
             }
         }
 
+        stage('Functional tests (dev mode)') {
+            when {
+                expression { CHANGE_TARGET == 'master' }
+            }
+            steps {
+                script {
+                    sh """
+                        export DISPLAY=:0;
+                        firefox && echo 'err';
+
+                        yarn test:functional --browser=firefox
+                    """
+                }
+            }
+        }
+
         stage('Publish canary') {
+            when {
+                expression { CHANGE_TARGET == 'master' }
+            }
             steps {
                 script {
                     env.CI_TIMESTAMP = (new Date()).format("MddHHmmss", TimeZone.getTimeZone('UTC'))
-                    if (env.BRANCH_NAME =~ '^v([0-9]+).([0-9]+).([0-9]+)$') {
-                        env.CI_RELEASE_TYPE = 'beta'
-                    } else {
-                        env.CI_RELEASE_TYPE = 'alpha'
-                    }
+                    env.CI_RELEASE_TYPE = 'alpha'
 
                     sh """
                         export YARN_CACHE_FOLDER=/yarn_cache
