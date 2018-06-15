@@ -1,113 +1,96 @@
 import messages from './messages'
 
+const COLUMN_NAME_REGEXP = /^(?:\w|\d|-)+?$/
+const FIELD_NAME_REGEXP = /^(?:\w|\d|-)+?(?:\.(?:\w|\d|-)+?)*?$/
+
 const checkCondition = (condition, messageGenerator, ...args) => {
   if (!condition) {
     throw new Error(
-      typeof messageGenerator === 'function'
-        ? messageGenerator(...args)
-        : messageGenerator
+      typeof messageGenerator === 'function' ? messageGenerator(...args) : messageGenerator
     )
   }
 }
 
-const checkOptionShape = (option, types) => {
-  return !(
-    option == null ||
-    !types.reduce((acc, type) => acc || option.constructor === type, false)
-  )
-}
+const checkOptionShape = (option, types) =>
+  !(option == null || !types.reduce((acc, type) => acc || option.constructor === type, false))
 
 const checkAndGetTableMetaSchema = (tableName, tableSchema) => {
   checkCondition(
-    Array.isArray(tableSchema),
+    checkOptionShape(tableSchema, [Object]) &&
+      Array.isArray(tableSchema.columns) &&
+      Array.isArray(tableSchema.indexes),
     messages.invalidTableSchema,
     tableName,
-    messages.tableDescriptorNotArray,
+    messages.tableDescriptorNotObject,
     tableSchema
   )
 
-  const validTypes = ['number', 'string', 'json']
-  const indexRoles = ['primary', 'secondary']
-  let primaryIndex = null
-  const secondaryIndexes = []
-  const fieldTypes = {}
-
-  for (let columnDescription of tableSchema) {
+  const { columns, indexes } = tableSchema
+  for (let column of columns) {
     checkCondition(
-      checkOptionShape(columnDescription, [Object]),
-      messages.invalidTableSchema,
-      tableName,
-      messages.columnDescriptorInvalidShape,
-      columnDescription
-    )
-    const { name, type, index } = columnDescription
-    checkCondition(
-      /^(?:\w|\d|-)+?$/.test(name),
+      COLUMN_NAME_REGEXP.test(column),
       messages.invalidTableSchema,
       tableName,
       messages.columnWrongName,
-      columnDescription
+      column
     )
-    checkCondition(
-      validTypes.indexOf(type) > -1 &&
-        (!index || indexRoles.indexOf(index) > -1),
-      messages.invalidTableSchema,
-      tableName,
-      messages.columnWrongTypeOrIndex,
-      columnDescription
-    )
-
-    if (index) {
-      checkCondition(
-        type === 'number' || type === 'string',
-        messages.invalidTableSchema,
-        tableName,
-        messages.wrongTypeForIndexedColumn,
-        columnDescription
-      )
-      if (index === 'primary') {
-        primaryIndex = { name, type }
-      } else {
-        secondaryIndexes.push({ name, type })
-      }
-    }
-
-    fieldTypes[name] = type
   }
 
   checkCondition(
-    checkOptionShape(primaryIndex, [Object]),
+    indexes.length > 0,
     messages.invalidTableSchema,
     tableName,
     messages.tableWithoutPrimaryIndex,
-    tableSchema
+    indexes
   )
 
-  return { primaryIndex, secondaryIndexes, fieldTypes }
+  for (let index of indexes) {
+    checkCondition(
+      columns.indexOf(index) >= 0,
+      messages.invalidTableSchema,
+      tableName,
+      messages.columnWrongIndex,
+      index
+    )
+  }
+
+  const schema = columns.reduce((acc, column) => {
+    const indexPosition = indexes.indexOf(column)
+    if (indexPosition > 0) {
+      acc[column] = 'secondary'
+    } else if (indexPosition === 0) {
+      acc[column] = 'primary'
+    } else {
+      acc[column] = 'regular'
+    }
+    return acc
+  }, {})
+
+  return schema
 }
 
-const checkAndGetFieldType = (metaInfo, fieldName) => {
-  if (!/^(?:\w|\d|-)+?(?:\.(?:\w|\d|-)+?)*?$/.test(fieldName)) return null
+const checkAndGetColumnStatus = (metaInfo, fieldName, allowNested) => {
+  if (!FIELD_NAME_REGEXP.test(fieldName)) return null
 
   const [baseName, ...nestedName] = fieldName.split('.')
-  if (!metaInfo.fieldTypes[baseName]) return null
-
-  const fieldType = metaInfo.fieldTypes[baseName]
-  if (nestedName.length > 0 && fieldType !== 'json') {
+  if (
+    !metaInfo[baseName] ||
+    (nestedName.length > 0 && (metaInfo[baseName] !== 'regular' || !allowNested))
+  ) {
     return null
   }
 
-  return fieldType
+  return metaInfo[baseName]
 }
 
-const checkFieldList = (metaInfo, fieldList, validProjectionValues = []) => {
+const checkFieldList = (metaInfo, fieldList, allowNested, validProjectionValues = []) => {
   if (!checkOptionShape(fieldList, [Object, Array])) {
     return '*'
   }
 
   if (Array.isArray(fieldList)) {
     for (let fieldName of fieldList) {
-      if (!checkAndGetFieldType(metaInfo, fieldName)) {
+      if (!checkAndGetColumnStatus(metaInfo, fieldName, allowNested)) {
         return fieldName
       }
     }
@@ -116,7 +99,7 @@ const checkFieldList = (metaInfo, fieldList, validProjectionValues = []) => {
 
   for (let fieldName of Object.keys(fieldList)) {
     if (
-      !checkAndGetFieldType(metaInfo, fieldName) ||
+      !checkAndGetColumnStatus(metaInfo, fieldName, allowNested) ||
       !(validProjectionValues.indexOf(fieldList[fieldName]) > -1)
     ) {
       return fieldName
@@ -126,21 +109,13 @@ const checkFieldList = (metaInfo, fieldList, validProjectionValues = []) => {
   return null
 }
 
-const isFieldValueCorrect = (
-  metaInfo,
-  fieldName,
-  fieldValue,
-  isNullable = true
-) => {
+const isFieldValueCorrect = (metaInfo, fieldName, fieldValue, allowNested) => {
   try {
-    const fieldType = checkAndGetFieldType(metaInfo, fieldName)
-    if (!fieldType) return false
-    if (fieldType === 'json') return true
-    if (fieldValue == null) return isNullable
-
+    const columnType = checkAndGetColumnStatus(metaInfo, fieldName, allowNested)
     return (
-      (fieldType === 'number' && fieldValue.constructor === Number) ||
-      (fieldType === 'string' && fieldValue.constructor === String)
+      columnType &&
+      (fieldValue != null || columnType !== 'primary') &&
+      (columnType === 'regular' || fieldValue == null || fieldValue.constructor === String)
     )
   } catch (err) {
     return false
@@ -151,8 +126,7 @@ const checkInsertedDocumentShape = (tableName, metaInfo, document) => {
   const documentKeys = document instanceof Object ? Object.keys(document) : []
 
   checkCondition(
-    checkOptionShape(document, [Object]) &&
-      Object.keys(metaInfo.fieldTypes).length === documentKeys.length,
+    checkOptionShape(document, [Object]) && Object.keys(metaInfo).length === documentKeys.length,
     messages.invalidFieldList,
     'insert',
     tableName,
@@ -160,7 +134,7 @@ const checkInsertedDocumentShape = (tableName, metaInfo, document) => {
     messages.fieldListNotObject
   )
 
-  const checkFieldResult = checkFieldList(metaInfo, documentKeys)
+  const checkFieldResult = checkFieldList(metaInfo, documentKeys, false)
   checkCondition(
     checkFieldResult == null,
     messages.invalidFieldList,
@@ -171,18 +145,12 @@ const checkInsertedDocumentShape = (tableName, metaInfo, document) => {
     checkFieldResult
   )
 
-  const { primaryIndex, secondaryIndexes } = metaInfo
-
   for (let fieldName of documentKeys) {
-    const isNullable = !(
-      primaryIndex.name === fieldName ||
-      secondaryIndexes.find(({ name }) => name === fieldName)
-    )
-
     checkCondition(
-      isFieldValueCorrect(metaInfo, fieldName, document[fieldName], isNullable),
+      isFieldValueCorrect(metaInfo, fieldName, document[fieldName], false),
       messages.invalidFieldList,
       'insert',
+      tableName,
       document,
       messages.columnTypeMismatch,
       fieldName
@@ -190,12 +158,7 @@ const checkInsertedDocumentShape = (tableName, metaInfo, document) => {
   }
 }
 
-const checkSearchExpression = (
-  tableName,
-  operation,
-  metaInfo,
-  searchExpression
-) => {
+const checkSearchExpression = (tableName, operation, metaInfo, searchExpression) => {
   checkCondition(
     checkOptionShape(searchExpression, [Object]),
     messages.invalidSearchExpression,
@@ -205,23 +168,13 @@ const checkSearchExpression = (
     messages.searchExpressionNotObject
   )
 
-  const allowedComparisonOperators = [
-    '$lt',
-    '$lte',
-    '$gt',
-    '$gte',
-    '$eq',
-    '$ne'
-  ]
+  const allowedComparisonOperators = ['$lt', '$lte', '$gt', '$gte', '$eq', '$ne']
   const allowedLogicalOperators = ['$and', '$or', '$not']
 
-  const operators = Object.keys(searchExpression).filter(
-    key => key.indexOf('$') > -1
-  )
+  const operators = Object.keys(searchExpression).filter(key => key.indexOf('$') > -1)
 
   checkCondition(
-    operators.length === 0 ||
-      operators.length === Object.keys(searchExpression).length,
+    operators.length === 0 || operators.length === Object.keys(searchExpression).length,
     messages.invalidSearchExpression,
     operation,
     tableName,
@@ -242,12 +195,7 @@ const checkSearchExpression = (
       )
 
       if (operator === '$not') {
-        checkSearchExpression(
-          tableName,
-          operation,
-          metaInfo,
-          searchExpression[operator]
-        )
+        checkSearchExpression(tableName, operation, metaInfo, searchExpression[operator])
         return
       }
 
@@ -271,7 +219,7 @@ const checkSearchExpression = (
 
   const documentKeys = Object.keys(searchExpression)
 
-  const checkFieldResult = checkFieldList(metaInfo, documentKeys)
+  const checkFieldResult = checkFieldList(metaInfo, documentKeys, true)
   checkCondition(
     checkFieldResult == null,
     messages.invalidFieldList,
@@ -282,14 +230,7 @@ const checkSearchExpression = (
     checkFieldResult
   )
 
-  const { primaryIndex, secondaryIndexes } = metaInfo
-
   for (let fieldName of documentKeys) {
-    const isNullable = !(
-      primaryIndex.name === fieldName ||
-      secondaryIndexes.find(({ name }) => name === fieldName)
-    )
-
     let fieldValue = searchExpression[fieldName]
 
     if (searchExpression[fieldName] instanceof Object) {
@@ -323,7 +264,7 @@ const checkSearchExpression = (
     }
 
     checkCondition(
-      isFieldValueCorrect(metaInfo, fieldName, fieldValue, isNullable),
+      isFieldValueCorrect(metaInfo, fieldName, fieldValue, true),
       messages.invalidSearchExpression,
       operation,
       tableName,
@@ -342,8 +283,7 @@ const checkUpdateExpression = (tableName, metaInfo, updateExpression) => {
 
   checkCondition(
     checkOptionShape(updateExpression, [Object]) &&
-      (operators.length > 0 &&
-        operators.length === Object.keys(updateExpression).length),
+      (operators.length > 0 && operators.length === Object.keys(updateExpression).length),
     messages.invalidUpdateExpression,
     tableName,
     updateExpression,
@@ -373,25 +313,14 @@ const checkUpdateExpression = (tableName, metaInfo, updateExpression) => {
     )
 
     for (let fieldName of Object.keys(affectedFields)) {
-      const fieldType = checkAndGetFieldType(metaInfo, fieldName)
-      if (
-        operator === '$unset' ||
-        (fieldType === 'json' && operator === '$set')
-      )
-        continue
-
-      const updateValueType =
-        affectedFields[fieldName] == null
-          ? 'null'
-          : affectedFields[fieldName].constructor === Number
-            ? 'number'
-            : affectedFields[fieldName].constructor === String
-              ? 'string'
-              : 'null'
-
       checkCondition(
-        (operator === '$set' && updateValueType === fieldType) ||
-          (operator === '$inc' && updateValueType === 'number'),
+        operator === '$set'
+          ? isFieldValueCorrect(metaInfo, fieldName, affectedFields[fieldName], true)
+          : checkAndGetColumnStatus(metaInfo, fieldName, true) &&
+            (operator === '$unset' ||
+              (operator === '$inc' &&
+                affectedFields[fieldName] != null &&
+                affectedFields[fieldName].constructor === Number)),
         messages.invalidUpdateExpression,
         tableName,
         updateExpression,
@@ -403,23 +332,11 @@ const checkUpdateExpression = (tableName, metaInfo, updateExpression) => {
 }
 
 const checkTableExists = async (metaApi, tableName) => {
-  checkCondition(
-    await metaApi.tableExists(tableName),
-    messages.tableNotExist,
-    tableName
-  )
+  checkCondition(await metaApi.tableExists(tableName), messages.tableNotExist, tableName)
 }
 
-const defineTable = async (
-  { metaApi, storeApi },
-  tableName,
-  inputTableSchema
-) => {
-  checkCondition(
-    !(await metaApi.tableExists(tableName)),
-    messages.tableExists,
-    tableName
-  )
+const defineTable = async ({ metaApi, storeApi }, tableName, inputTableSchema) => {
+  checkCondition(!(await metaApi.tableExists(tableName)), messages.tableExists, tableName)
   const tableSchema = checkAndGetTableMetaSchema(tableName, inputTableSchema)
   await storeApi.defineTable(tableName, tableSchema)
   await metaApi.describeTable(tableName, tableSchema)
@@ -438,7 +355,7 @@ const find = async (
   const metaInfo = await metaApi.getTableInfo(tableName)
 
   if (resultFieldsList != null) {
-    const checkFieldResult = checkFieldList(metaInfo, resultFieldsList, [0, 1])
+    const checkFieldResult = checkFieldList(metaInfo, resultFieldsList, true, [0, 1])
 
     checkCondition(
       checkFieldResult == null,
@@ -453,7 +370,7 @@ const find = async (
   }
 
   if (sortFieldsList != null) {
-    const checkFieldResult = checkFieldList(metaInfo, sortFieldsList, [-1, 1])
+    const checkFieldResult = checkFieldList(metaInfo, sortFieldsList, true, [-1, 1])
 
     checkCondition(
       checkFieldResult == null,
@@ -488,17 +405,12 @@ const find = async (
   )
 }
 
-const findOne = async (
-  { metaApi, storeApi },
-  tableName,
-  searchExpression,
-  resultFieldsList
-) => {
+const findOne = async ({ metaApi, storeApi }, tableName, searchExpression, resultFieldsList) => {
   await checkTableExists(metaApi, tableName)
 
   const metaInfo = await metaApi.getTableInfo(tableName)
   if (resultFieldsList != null) {
-    const checkFieldResult = checkFieldList(metaInfo, resultFieldsList, [0, 1])
+    const checkFieldResult = checkFieldList(metaInfo, resultFieldsList, true, [0, 1])
 
     checkCondition(
       checkFieldResult == null,
@@ -535,12 +447,7 @@ const insert = async ({ metaApi, storeApi }, tableName, document) => {
   await storeApi.insert(tableName, document)
 }
 
-const update = async (
-  { metaApi, storeApi },
-  tableName,
-  searchExpression,
-  updateExpression
-) => {
+const update = async ({ metaApi, storeApi }, tableName, searchExpression, updateExpression) => {
   await checkTableExists(metaApi, tableName)
 
   const metaInfo = await metaApi.getTableInfo(tableName)

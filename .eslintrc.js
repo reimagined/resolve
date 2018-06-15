@@ -220,6 +220,7 @@ module.exports = {
           'unvoted',
           'upvote',
           'upvoted',
+          'utf8mb4',
           'url',
           'urlencoded',
           'urls',

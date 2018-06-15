@@ -12,12 +12,9 @@ export default {
   invalidTableSchema: (tableName, reason, fragment) =>
     `Provided table schema for "${tableName}" is invalid:
     ${reason} at "${fragment}"`,
-  tableDescriptorNotArray: 'Array with table columns descriptors expected',
-  columnDescriptorInvalidShape: 'Table column descriptor should be object with "name", "type" and optional "index" fields',
+  tableDescriptorNotObject: 'Table columns descriptors and index lists expected like { columns: [], indexes: [] }',
   columnWrongName: 'Table column name should be an alphanumeric identifier',
-  columnWrongTypeOrIndex: `Column type should be one of "number", "string" or "json",
-    and index should be "primary" or "secondary" if present`,
-  wrongTypeForIndexedColumn: 'Primary or secondary index column must have "number" or "string" column type',
+  columnWrongIndex: `Indexed table column should be set in columns list`,
   tableWithoutPrimaryIndex: 'Primary index should be set',
 
   // Search-alike expressions
