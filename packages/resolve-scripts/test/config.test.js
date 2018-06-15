@@ -5,6 +5,8 @@ import validateConfig from '../src/core/validate_config'
 
 const resolveConfigOrigin = require('../configs/resolve.config.json')
 
+jest.setTimeout(30000);
+
 describe('validate schema', () => {
   it('empty', () => {
     expect(validateConfig(resolveConfigOrigin)).toBeTruthy()

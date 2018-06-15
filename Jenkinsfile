@@ -6,21 +6,50 @@ pipeline {
         }
     }
     stages {
-        stage('Unit tests') {
+        stage('Install') {
             steps {
                 script {
                     sh """
                         export YARN_CACHE_FOLDER=/yarn_cache
                         yarn
-                        if [ "\$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
-                        yarn lint
-                        yarn test
                     """
                 }
             }
         }
 
-        stage('Functional tests (dev mode)') {
+        stage('Checks') {
+            parallel {
+                stage('Prettier') {
+                    steps {
+                        script {
+                            sh """
+                                if [ "\$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
+                            """
+                        }
+                    }
+                }
+                stage('Lint') {
+                    steps {
+                        script {
+                            sh """
+                                yarn lint
+                            """
+                        }
+                    }
+                }
+                stage('Unit tests') {
+                    steps {
+                        script {
+                            sh """
+                                yarn test
+                            """
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Functional tests') {
             when {
                 expression { CHANGE_TARGET != 'master' }
             }
