@@ -30,24 +30,14 @@ describe('resolve-readmodel-memory store-api', () => {
     }
     const storage = {}
 
-    await storeApi.defineTable(
-      { createTable: () => newStorage, storage },
-      'test',
-      {
-        primaryIndex: { name: 'first' },
-        secondaryIndexes: [{ name: 'second' }, { name: 'third' }]
-      }
-    )
+    await storeApi.defineTable({ createTable: () => newStorage, storage }, 'test', {
+      columns: ['first', 'second', 'third'],
+      indexes: ['first', 'second', 'third']
+    })
 
-    expect(newStorage.ensureIndex.firstCall.args[0].fieldName).to.be.equal(
-      'first'
-    )
-    expect(newStorage.ensureIndex.secondCall.args[0].fieldName).to.be.equal(
-      'second'
-    )
-    expect(newStorage.ensureIndex.thirdCall.args[0].fieldName).to.be.equal(
-      'third'
-    )
+    expect(newStorage.ensureIndex.firstCall.args[0].fieldName).to.be.equal('first')
+    expect(newStorage.ensureIndex.secondCall.args[0].fieldName).to.be.equal('second')
+    expect(newStorage.ensureIndex.thirdCall.args[0].fieldName).to.be.equal('third')
     expect(storage['test']).to.be.equal(newStorage)
   })
 
@@ -202,12 +192,7 @@ describe('resolve-readmodel-memory store-api', () => {
     const gaugeResult = {}
     const storage = makeFindStubStorage('test', gaugeResult)
 
-    const result = await storeApi.findOne(
-      { storage },
-      'test',
-      { search: 0 },
-      { field: 1 }
-    )
+    const result = await storeApi.findOne({ storage }, 'test', { search: 0 }, { field: 1 })
 
     expect(storage['test'].findOne.firstCall.args[0]).to.be.deep.equal({
       search: 0
@@ -271,18 +256,11 @@ describe('resolve-readmodel-memory store-api', () => {
   it('should provide update method', async () => {
     const storage = {
       test: {
-        update: sinon
-          .stub()
-          .callsFake((searchExpression, updateExpression, cb) => cb(null))
+        update: sinon.stub().callsFake((searchExpression, updateExpression, cb) => cb(null))
       }
     }
 
-    await storeApi.update(
-      { storage },
-      'test',
-      { id: 1, value: 2 },
-      { id: 1, value: 10 }
-    )
+    await storeApi.update({ storage }, 'test', { id: 1, value: 2 }, { id: 1, value: 10 })
 
     expect(storage.test.update.firstCall.args[0]).to.be.deep.equal({
       id: 1,

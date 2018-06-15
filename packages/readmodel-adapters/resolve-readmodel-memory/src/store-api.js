@@ -1,35 +1,14 @@
-const defineTable = async (
-  { createTable, storage },
-  tableName,
-  tableSchema
-) => {
+const defineTable = async ({ createTable, storage }, tableName, { indexes }) => {
   storage[tableName] = createTable()
 
-  await new Promise((resolve, reject) =>
-    storage[tableName].ensureIndex(
-      { fieldName: tableSchema.primaryIndex.name },
-      err => (!err ? resolve() : reject(err))
-    )
-  )
-  for (let { name } of tableSchema.secondaryIndexes) {
+  for (let fieldName of indexes) {
     await new Promise((resolve, reject) =>
-      storage[tableName].ensureIndex(
-        { fieldName: name },
-        err => (!err ? resolve() : reject(err))
-      )
+      storage[tableName].ensureIndex({ fieldName }, err => (!err ? resolve() : reject(err)))
     )
   }
 }
 
-const find = async (
-  { storage },
-  tableName,
-  searchExpression,
-  fieldList,
-  sort,
-  skip,
-  limit
-) => {
+const find = async ({ storage }, tableName, searchExpression, fieldList, sort, skip, limit) => {
   let findCursor = await storage[tableName].find(searchExpression)
 
   if (sort) {
@@ -84,12 +63,7 @@ const insert = async ({ storage }, tableName, document) => {
   )
 }
 
-const update = async (
-  { storage },
-  tableName,
-  searchExpression,
-  updateExpression
-) => {
+const update = async ({ storage }, tableName, searchExpression, updateExpression) => {
   await new Promise((resolve, reject) =>
     storage[tableName].update(
       searchExpression,
@@ -101,10 +75,7 @@ const update = async (
 
 const del = async ({ storage }, tableName, searchExpression) => {
   await new Promise((resolve, reject) =>
-    storage[tableName].remove(
-      searchExpression,
-      err => (!err ? resolve() : reject(err))
-    )
+    storage[tableName].remove(searchExpression, err => (!err ? resolve() : reject(err)))
   )
 }
 

@@ -1,19 +1,22 @@
 const MAX_LIMIT_VALUE = 0x0fffffff | 0
 
-const castType = fieldType =>
-  fieldType !== 'regular'
-    ? 'VARCHAR(16383) CHARACTER SET utf8mb4 COLLATE utf8_general_ci NOT NULL '
-    : 'JSON NULL '
-
-const defineTable = async ({ connection, escapeId }, tableName, tableSchema) => {
+const defineTable = async ({ connection, escapeId }, tableName, { columns, indexes }) => {
   await connection.execute(
     `CREATE TABLE ${escapeId(tableName)} (\n` +
       [
-        Object.keys(tableSchema)
-          .map(columnName => `${escapeId(columnName)} ${castType(tableSchema[columnName])}`)
+        columns
+          .map(
+            columnName =>
+              `${escapeId(columnName)} ${
+                indexes.indexOf(columnName) > -1
+                  ? `VARCHAR(16383) CHARACTER SET utf8mb4 COLLATE utf8_general_ci ${
+                      indexes.indexOf(columnName) === 0 ? 'NOT' : ''
+                    } NULL `
+                  : 'JSON NULL '
+              }`
+          )
           .join(',\n'),
-        Object.keys(tableSchema)
-          .filter(columnName => tableSchema[columnName] !== 'regular')
+        indexes
           .map(
             (columnName, idx) =>
               idx === 0

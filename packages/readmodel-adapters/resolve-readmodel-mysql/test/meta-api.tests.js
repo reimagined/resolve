@@ -14,9 +14,7 @@ describe('resolve-readmodel-mysql meta-api', () => {
     executor = sinon.stub()
 
     pool = {
-      escapeId: sinon
-        .stub()
-        .callsFake(value => `\`${value.replace(/`/g, '``')}\``),
+      escapeId: sinon.stub().callsFake(value => `\`${value.replace(/`/g, '``')}\``),
       connection: { execute: executor },
       metaName: META_NAME
     }
@@ -32,17 +30,15 @@ describe('resolve-readmodel-mysql meta-api', () => {
       {
         TableName: 'table1',
         TableDescription: {
-          fieldTypes: { id: 'number', vol: 'string', content: 'json' },
-          primaryIndex: { name: 'id', type: 'number' },
-          secondaryIndexes: [{ name: 'vol', type: 'string' }]
+          columns: ['id', 'vol', 'content'],
+          indexes: ['id', 'vol']
         }
       },
       {
         TableName: 'table2',
         TableDescription: {
-          fieldTypes: { id: 'number', vol: 'string', content: 'json' },
-          primaryIndex: { name: 'id', type: 'number' },
-          secondaryIndexes: [{ name: 'vol', type: 'string' }]
+          columns: ['id', 'vol', 'content'],
+          indexes: ['id', 'vol']
         }
       }
     ]
@@ -51,39 +47,30 @@ describe('resolve-readmodel-mysql meta-api', () => {
     executor.onCall(2).callsFake(async () => [tableDeclarations])
 
     await metaApi.getMetaInfo(pool)
-    expect(pool.metaInfo.tables['table1']).to.be.deep.equal(
-      tableDeclarations[0].TableDescription
-    )
-    expect(pool.metaInfo.tables['table2']).to.be.deep.equal(
-      tableDeclarations[1].TableDescription
-    )
+    expect(pool.metaInfo.tables['table1']).to.be.deep.equal(tableDeclarations[0].TableDescription)
+    expect(pool.metaInfo.tables['table2']).to.be.deep.equal(tableDeclarations[1].TableDescription)
     expect(pool.metaInfo.timestamp).to.be.equal(100)
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
         `CREATE TABLE IF NOT EXISTS \`META_NAME\` (
-          MetaKey VARCHAR(36) NOT NULL,
-          MetaField VARCHAR(128) NOT NULL,
-          SimpleValue BIGINT NULL,
-          ComplexValue JSON NULL,
-          PRIMARY KEY (MetaKey, MetaField)
+          FirstKey VARCHAR(128) NOT NULL,
+          SecondKey VARCHAR(128) NULL,
+          Value JSON NULL,
+          PRIMARY KEY (FirstKey)
         )`
       )
     )
 
     expect(format(executor.secondCall.args[0])).to.be.equal(
-      format(
-        `SELECT SimpleValue AS Timestamp
-         FROM \`META_NAME\`
-         WHERE MetaKey="Timestamp" AND MetaField="Timestamp"`
-      )
+      format(`SELECT Value AS Timestamp FROM \`META_NAME\` WHERE FirstKey="Timestamp"`)
     )
 
     expect(format(executor.thirdCall.args[0])).to.be.equal(
       format(
-        `SELECT MetaField AS TableName, ComplexValue AS TableDescription
+        `SELECT SecondKey AS TableName, Value AS TableDescription
          FROM \`META_NAME\`
-         WHERE MetaKey="Tables"`
+         WHERE FirstKey="TableDescriptor"`
       )
     )
   })
@@ -99,35 +86,30 @@ describe('resolve-readmodel-mysql meta-api', () => {
     expect(format(executor.getCall(0).args[0])).to.be.equal(
       format(
         `CREATE TABLE IF NOT EXISTS \`META_NAME\` (
-          MetaKey VARCHAR(36) NOT NULL,
-          MetaField VARCHAR(128) NOT NULL,
-          SimpleValue BIGINT NULL,
-          ComplexValue JSON NULL,
-          PRIMARY KEY (MetaKey, MetaField)
+          FirstKey VARCHAR(128) NOT NULL,
+          SecondKey VARCHAR(128) NULL,
+          Value JSON NULL,
+          PRIMARY KEY (FirstKey)
         )`
       )
     )
 
     expect(format(executor.getCall(1).args[0])).to.be.equal(
-      format(
-        `SELECT SimpleValue AS Timestamp
-         FROM \`META_NAME\`
-         WHERE MetaKey="Timestamp" AND MetaField="Timestamp"`
-      )
+      format(`SELECT Value AS Timestamp FROM \`META_NAME\` WHERE FirstKey="Timestamp"`)
     )
 
     expect(format(executor.getCall(2).args[0])).to.be.equal(
       format(
-        `INSERT INTO \`META_NAME\`(MetaKey, MetaField, SimpleValue)
-         VALUES("Timestamp", "Timestamp", 0)`
+        `INSERT INTO \`META_NAME\`(FirstKey, Value)
+         VALUES("Timestamp", 0)`
       )
     )
 
     expect(format(executor.getCall(3).args[0])).to.be.equal(
       format(
-        `SELECT MetaField AS TableName, ComplexValue AS TableDescription
+        `SELECT SecondKey AS TableName, Value AS TableDescription
          FROM \`META_NAME\`
-         WHERE MetaKey="Tables"`
+         WHERE FirstKey="TableDescriptor"`
       )
     )
   })
@@ -154,33 +136,28 @@ describe('resolve-readmodel-mysql meta-api', () => {
     expect(format(executor.getCall(0).args[0])).to.be.equal(
       format(
         `CREATE TABLE IF NOT EXISTS \`META_NAME\` (
-          MetaKey VARCHAR(36) NOT NULL,
-          MetaField VARCHAR(128) NOT NULL,
-          SimpleValue BIGINT NULL,
-          ComplexValue JSON NULL,
-          PRIMARY KEY (MetaKey, MetaField)
+          FirstKey VARCHAR(128) NOT NULL,
+          SecondKey VARCHAR(128) NULL,
+          Value JSON NULL,
+          PRIMARY KEY (FirstKey)
         )`
       )
     )
 
     expect(format(executor.getCall(1).args[0])).to.be.equal(
-      format(
-        `SELECT SimpleValue AS Timestamp
-         FROM \`META_NAME\`
-         WHERE MetaKey="Timestamp" AND MetaField="Timestamp"`
-      )
+      format(`SELECT Value AS Timestamp FROM \`META_NAME\` WHERE FirstKey="Timestamp"`)
     )
 
     expect(format(executor.getCall(2).args[0])).to.be.equal(
       format(
-        `SELECT MetaField AS TableName, ComplexValue AS TableDescription
+        `SELECT SecondKey AS TableName, Value AS TableDescription
          FROM \`META_NAME\`
-         WHERE MetaKey="Tables"`
+         WHERE FirstKey="TableDescriptor"`
       )
     )
 
     expect(format(executor.getCall(3).args[0])).to.be.equal(
-      format(`DELETE FROM \`META_NAME\` WHERE MetaKey="Tables" AND MetaField=?`)
+      format(`DELETE FROM \`META_NAME\` WHERE FirstKey="TableDescriptor" AND SecondKey = ?`)
     )
 
     expect(executor.getCall(3).args[1]).to.be.deep.equal(['table'])
@@ -200,7 +177,7 @@ describe('resolve-readmodel-mysql meta-api', () => {
 
     await metaApi.setLastTimestamp(pool, 20)
     expect(format(executor.firstCall.args[0])).to.be.equal(
-      format(`UPDATE \`META_NAME\` SET SimpleValue=? WHERE MetaKey="Timestamp"`)
+      format(`UPDATE \`META_NAME\` SET Value=? WHERE FirstKey="Timestamp"`)
     )
     expect(executor.firstCall.args[1]).to.be.deep.equal([20])
 
@@ -235,7 +212,7 @@ describe('resolve-readmodel-mysql meta-api', () => {
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
-        `INSERT INTO \`META_NAME\`(MetaKey, MetaField, ComplexValue) VALUES("Tables", ?, ?)`
+        `INSERT INTO \`META_NAME\`(FirstKey, SecondKey, Value) VALUES("TableDescriptor", ?, ?)`
       )
     )
 
@@ -256,15 +233,9 @@ describe('resolve-readmodel-mysql meta-api', () => {
 
     await metaApi.drop(pool)
 
-    expect(format(executor.firstCall.args[0])).to.be.equal(
-      format('DROP TABLE `one`')
-    )
-    expect(format(executor.secondCall.args[0])).to.be.equal(
-      format('DROP TABLE `two`')
-    )
-    expect(format(executor.thirdCall.args[0])).to.be.equal(
-      format('DROP TABLE `META_NAME`')
-    )
+    expect(format(executor.firstCall.args[0])).to.be.equal(format('DROP TABLE `one`'))
+    expect(format(executor.secondCall.args[0])).to.be.equal(format('DROP TABLE `two`'))
+    expect(format(executor.thirdCall.args[0])).to.be.equal(format('DROP TABLE `META_NAME`'))
 
     expect(Object.keys(pool.metaInfo)).to.be.deep.equal([])
   })

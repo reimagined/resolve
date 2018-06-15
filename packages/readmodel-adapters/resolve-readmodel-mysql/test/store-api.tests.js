@@ -14,23 +14,19 @@ describe('resolve-readmodel-mysql store-api', () => {
     executor = sinon.stub()
 
     pool = {
-      escapeId: sinon
-        .stub()
-        .callsFake(value => `\`${value.replace(/`/g, '``')}\``),
+      escapeId: sinon.stub().callsFake(value => `\`${value.replace(/`/g, '``')}\``),
       connection: { execute: executor },
       metaInfo: {
         tables: {
           test: {
-            fieldTypes: {
-              id: 'number',
-              search: 'string',
-              sort: 'string',
-              volume: 'string',
-              one: 'string',
-              two: 'string',
-              value: 'json',
-              inner: 'json'
-            }
+            id: 'primary',
+            search: 'secondary',
+            sort: 'secondary',
+            volume: 'secondary',
+            one: 'secondary',
+            two: 'secondary',
+            value: 'regular',
+            inner: 'regular'
           }
         }
       }
@@ -44,17 +40,16 @@ describe('resolve-readmodel-mysql store-api', () => {
 
   it('should provide defineTable method', async () => {
     await storeApi.defineTable(pool, 'test', {
-      fieldTypes: { first: 'number', second: 'string', third: 'string' },
-      primaryIndex: { name: 'first' },
-      secondaryIndexes: [{ name: 'second' }, { name: 'third' }]
+      columns: ['first', 'second', 'third'],
+      indexes: ['first', 'second', 'third']
     })
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
         `CREATE TABLE \`test\` (
-          \`first\` BIGINT NOT NULL,
-          \`second\` VARCHAR(255) NOT NULL,
-          \`third\` VARCHAR(255) NOT NULL,
+          \`first\` VARCHAR(16383) CHARACTER SET utf8mb4 COLLATE utf8_general_ci NOT NULL,
+          \`second\` VARCHAR(16383) CHARACTER SET utf8mb4 COLLATE utf8_general_ci NULL,
+          \`third\` VARCHAR(16383) CHARACTER SET utf8mb4 COLLATE utf8_general_ci NULL,
           PRIMARY KEY (\`first\`),
           INDEX USING BTREE (\`second\`),
           INDEX USING BTREE (\`third\`)
@@ -272,12 +267,7 @@ describe('resolve-readmodel-mysql store-api', () => {
     const gaugeResult = {}
     executor.onCall(0).callsFake(async () => [[gaugeResult]])
 
-    const result = await storeApi.findOne(
-      pool,
-      'test',
-      { search: 0, 'inner.search': 1 },
-      null
-    )
+    const result = await storeApi.findOne(pool, 'test', { search: 0, 'inner.search': 1 }, null)
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
@@ -317,9 +307,7 @@ describe('resolve-readmodel-mysql store-api', () => {
     await storeApi.insert(pool, 'test', { id: 1, value: 2 })
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
-      format(
-        `INSERT INTO \`test\`(\`id\`, \`value\`) VALUES(?, CAST(? AS JSON))`
-      )
+      format(`INSERT INTO \`test\`(\`id\`, \`value\`) VALUES(?, CAST(? AS JSON))`)
     )
 
     expect(executor.firstCall.args[1]).to.be.deep.equal([1, '2'])
@@ -351,14 +339,7 @@ describe('resolve-readmodel-mysql store-api', () => {
       )
     )
 
-    expect(executor.firstCall.args[1]).to.be.deep.equal([
-      10,
-      '20',
-      3,
-      4,
-      1,
-      '2'
-    ])
+    expect(executor.firstCall.args[1]).to.be.deep.equal([10, '20', 3, 4, 1, '2'])
   })
 
   it('should provide del method', async () => {
