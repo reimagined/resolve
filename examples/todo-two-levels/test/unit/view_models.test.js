@@ -1,6 +1,5 @@
-import viewModels from '../../common/view-models'
-
-const [listViewModel, todosViewModel] = viewModels
+import todosProjection from '../../common/view-models/todos.projection'
+import listsProjection from '../../common/view-models/lists.projection'
 
 describe('view-models', () => {
   describe('Lists', () => {
@@ -13,7 +12,7 @@ describe('view-models', () => {
       ]
       const event = { aggregateId: 'id2', payload: { title: 'title2' } }
 
-      expect(listViewModel.projection['LIST_CREATED'](state, event)).toEqual([
+      expect(listsProjection['LIST_CREATED'](state, event)).toEqual([
         {
           id: 'id1',
           title: 'title1'
@@ -34,7 +33,7 @@ describe('view-models', () => {
       ]
       const event = { aggregateId: 'id1' }
 
-      expect(listViewModel.projection['LIST_REMOVED'](state, event)).toEqual([])
+      expect(listsProjection['LIST_REMOVED'](state, event)).toEqual([])
     })
   })
 
@@ -48,7 +47,7 @@ describe('view-models', () => {
       }
       const event = { payload: { id: 'id2', text: 'text2' } }
 
-      expect(todosViewModel.projection['ITEM_CREATED'](state, event)).toEqual({
+      expect(todosProjection['ITEM_CREATED'](state, event)).toEqual({
         id1: {
           text: 'text1',
           checked: false
@@ -69,7 +68,7 @@ describe('view-models', () => {
       }
       const event = { payload: { id: 'id1' } }
 
-      expect(todosViewModel.projection['ITEM_TOGGLED'](state, event)).toEqual({
+      expect(todosProjection['ITEM_TOGGLED'](state, event)).toEqual({
         id1: {
           text: 'text1',
           checked: true
@@ -86,9 +85,7 @@ describe('view-models', () => {
       }
       const event = { payload: { id: 'id1' } }
 
-      expect(todosViewModel.projection['ITEM_REMOVED'](state, event)).toEqual(
-        {}
-      )
+      expect(todosProjection['ITEM_REMOVED'](state, event)).toEqual({})
     })
   })
 })

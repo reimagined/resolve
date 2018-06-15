@@ -4,14 +4,81 @@
     "adapter": {
       "type": "object",
       "properties": {
-        "adapter": {
+        "module": {
           "type": "string"
         },
         "options": {
           "type": "object"
         }
       },
-      "required": ["adapter", "options"],
+      "required": ["module", "options"],
+      "additionalProperties": false
+    },
+    "aggregate": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "commands": {
+          "type": "string"
+        },
+        "projection": {
+          "type": "string"
+        },
+        "snapshotAdapter": {
+          "$ref": "#/definitions/adapter"
+        }
+      },
+      "required": ["name", "commands"],
+      "additionalProperties": false
+    },
+    "viewModel": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "projection": {
+          "type": "string"
+        },
+        "serializeState": {
+          "type": "string"
+        },
+        "deserializeState": {
+          "type": "string"
+        },
+        "validator": {
+          "type": "string"
+        },
+        "snapshotAdapter": {
+          "$ref": "#/definitions/adapter"
+        }
+      },
+      "required": ["name", "projection"],
+      "dependencies": {
+        "serializeState": ["deserializeState"],
+        "deserializeState": ["serializeState"]
+      },
+      "additionalProperties": false
+    },
+    "readModel": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "projection": {
+          "type": "string"
+        },
+        "resolvers": {
+          "type": "string"
+        },
+        "adapter": {
+          "$ref": "#/definitions/adapter"
+        }
+      },
+      "required": ["name", "projection", "resolvers"],
       "additionalProperties": false
     },
     "jwtCookie": {
@@ -52,35 +119,22 @@
       "additionalProperties": false,
       "required": ["strategies"]
     },
-    "config": {
+    "subConfig": {
       "type": "object",
       "properties": {
-        "host": {
-          "type": "string"
-        },
         "port": {
-          "type": "integer"
-        },
-        "protocol": {
-          "type": "string",
-          "enum": [
-            "http",
-            "https"
-          ]
+          "type": ["integer", "string"]
         },
         "index": {
           "type": "string"
         },
-        "redux": {
-          "$ref": "#/definitions/redux"
-        },
         "routes": {
           "type": "string"
         },
-        "distDir": {
+        "rootPath": {
           "type": "string"
         },
-        "rootPath": {
+        "distDir": {
           "type": "string"
         },
         "staticDir": {
@@ -89,25 +143,37 @@
         "staticPath": {
           "type": "string"
         },
+        "redux": {
+          "$ref": "#/definitions/redux"
+        },
         "aggregates": {
-          "type": "string"
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/aggregate"
+          }
         },
         "viewModels": {
-          "type": "string"
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/viewModel"
+          }
         },
         "readModels": {
-          "type": "string"
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/readModel"
+          }
         },
         "sagas": {
           "type": "string"
         },
-        "bus": {
+        "busAdapter": {
           "$ref": "#/definitions/adapter"
         },
-        "storage": {
+        "storageAdapter": {
           "$ref": "#/definitions/adapter"
         },
-        "subscribe": {
+        "subscribeAdapter": {
           "$ref": "#/definitions/adapter"
         },
         "auth": {
@@ -118,23 +184,47 @@
         },
         "registry": {
           "type": "string"
-        },
+        }
+      }
+    },
+    "config": {
+      "$ref": "#/definitions/subConfig",
+      "properties": {
         "env": {
           "type": "object",
           "properties": {
             "development": {
-              "$ref": "#/definitions/config"
+              "$ref": "#/definitions/subConfig",
+              "additionalProperties": false
             },
             "production": {
-              "$ref": "#/definitions/config"
+              "$ref": "#/definitions/subConfig",
+              "additionalProperties": false
             },
             "test": {
-              "$ref": "#/definitions/config"
+              "$ref": "#/definitions/subConfig",
+              "additionalProperties": false
             }
           },
           "additionalProperties": false
         }
       },
+      "required": [
+        "port",
+        "index",
+        "routes",
+        "rootPath",
+        "distDir",
+        "staticDir",
+        "staticPath",
+        "redux",
+        "aggregates",
+        "viewModels",
+        "readModels",
+        "busAdapter",
+        "storageAdapter",
+        "subscribeAdapter"
+      ],
       "additionalProperties": false
     }
   },

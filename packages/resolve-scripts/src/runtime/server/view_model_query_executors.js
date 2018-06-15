@@ -3,9 +3,9 @@ import { createViewModel } from 'resolve-query'
 import eventStore from './event_store'
 import raiseError from './utils/raise_error'
 
-const message = require('../../../configs/message.json')
+import viewModels from '$resolve.viewModels'
 
-const viewModels = require($resolve.viewModels)
+const message = require('../../../configs/message.json')
 
 const viewModelQueryExecutors = {}
 
@@ -22,10 +22,19 @@ viewModels.forEach(viewModel => {
     raiseError(message.viewModelSerializable, viewModel)
   }
 
+  let snapshotAdapter, snapshotBucketSize
+  if (viewModel.snapshotAdapter) {
+    const createSnapshotAdapter = viewModel.snapshotAdapter.module
+    const snapshotAdapterOptions = viewModel.snapshotAdapter.options
+
+    snapshotAdapter = createSnapshotAdapter(snapshotAdapterOptions)
+    snapshotBucketSize = snapshotAdapterOptions.bucketSize
+  }
+
   const facade = createViewModel({
     projection: viewModel.projection,
-    snapshotAdapter: viewModel.snapshotAdapter,
-    snapshotBucketSize: viewModel.snapshotBucketSize,
+    snapshotAdapter,
+    snapshotBucketSize,
     eventStore
   })
 

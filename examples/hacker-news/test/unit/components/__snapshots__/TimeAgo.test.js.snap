@@ -4,7 +4,7 @@ exports[`TimeAgo greater than a day 1`] = `
 ShallowWrapper {
   "length": 1,
   Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <Unknown
+  Symbol(enzyme.__unrendered__): <_default
     createdAt={1509580800000}
   />,
   Symbol(enzyme.__renderer__): Object {
@@ -54,7 +54,7 @@ exports[`TimeAgo greater than a minute and less than an hour 1`] = `
 ShallowWrapper {
   "length": 1,
   Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <Unknown
+  Symbol(enzyme.__unrendered__): <_default
     createdAt={1509667140000}
   />,
   Symbol(enzyme.__renderer__): Object {
@@ -104,7 +104,7 @@ exports[`TimeAgo greater than an hour and less than a day 1`] = `
 ShallowWrapper {
   "length": 1,
   Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <Unknown
+  Symbol(enzyme.__unrendered__): <_default
     createdAt={1509663600000}
   />,
   Symbol(enzyme.__renderer__): Object {
@@ -154,7 +154,7 @@ exports[`TimeAgo less than a minute 1`] = `
 ShallowWrapper {
   "length": 1,
   Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <Unknown
+  Symbol(enzyme.__unrendered__): <_default
     createdAt={1509667199000}
   />,
   Symbol(enzyme.__renderer__): Object {

@@ -75,9 +75,11 @@ Runs functional tests with TestCafe.
 
 ## **User Guide**
 The User Guide provides detailed information on an application created with Create reSolve App:
-* [Project Structure Overview](../../examples/hello-world/#project-structure-overview-)
-* [Aggregates and Read Models](../../examples/hello-world#aggregates-and-read-models-)
-* [Configuration Files](../../examples/hello-world#configuration-files-)
+* [Project Structure Overview](../../docs/API%20References.md/#project-structure-overview)
+* [JSON Schema ReSolve Config](../resolve-scripts/configs/schema.resolve.config.json)
+* [Aggregate](../../docs/Aggregate.md)
+* [View Model](../../docs/View%20Model.md)
+* [Read Model](../../docs/Read%20Model.md)
 
 A copy of the user guide is added to your project folder as the `Readme.md` file.
 
