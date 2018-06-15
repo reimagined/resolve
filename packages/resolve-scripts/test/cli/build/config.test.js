@@ -2,6 +2,8 @@ import path from 'path'
 
 import exec from '../../exec'
 
+jest.setTimeout(30000)
+
 test('resolve-scripts build --config=resolve.test.config.json', async () => {
   const json = await exec(
     `resolve-scripts build --config=${path.resolve(

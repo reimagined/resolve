@@ -6,28 +6,73 @@ pipeline {
         }
     }
     stages {
-        stage('Unit tests') {
+        stage('Install') {
             steps {
                 script {
                     sh """
                         export YARN_CACHE_FOLDER=/yarn_cache
-                        yarn install --dev
-                        yarn lint
-                        yarn test
+                        yarn
+                    """
+                }
+            }
+        }
+
+        stage('Checks') {
+            parallel {
+                stage('Prettier') {
+                    steps {
+                        script {
+                            sh """
+                                if [ "\$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
+                            """
+                        }
+                    }
+                }
+                stage('Lint') {
+                    steps {
+                        script {
+                            sh """
+                                yarn lint
+                            """
+                        }
+                    }
+                }
+                stage('Unit tests') {
+                    steps {
+                        script {
+                            sh """
+                                yarn test
+                            """
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Functional tests') {
+            when {
+                expression { CHANGE_TARGET != 'master' }
+            }
+            steps {
+                script {
+                    sh """
+                        export DISPLAY=:0;
+                        firefox && echo 'err';
+
+                        npx oao run-script test:functional -- --browser=firefox
                     """
                 }
             }
         }
 
         stage('Publish canary') {
+            when {
+                expression { CHANGE_TARGET == 'master' }
+            }
             steps {
                 script {
                     env.CI_TIMESTAMP = (new Date()).format("MddHHmmss", TimeZone.getTimeZone('UTC'))
-                    if (env.BRANCH_NAME =~ '^v([0-9]+).([0-9]+).([0-9]+)$') {
-                        env.CI_RELEASE_TYPE = 'beta'
-                    } else {
-                        env.CI_RELEASE_TYPE = 'alpha'
-                    }
+                    env.CI_RELEASE_TYPE = 'alpha'
 
                     sh """
                         export YARN_CACHE_FOLDER=/yarn_cache
@@ -53,6 +98,9 @@ pipeline {
         }
 
         stage('Prepare for [ create-resolve-app ] testing') {
+            when {
+                expression { CHANGE_TARGET == 'master' }
+            }
             steps {
                 script {
                     sh """
@@ -66,6 +114,9 @@ pipeline {
         }
 
         stage('CRA tests') {
+            when {
+                expression { CHANGE_TARGET == 'master' }
+            }
             parallel {
                 stage('Create-resolve-app [ hello-world ] Functional Tests') {
                     steps {
@@ -74,7 +125,6 @@ pipeline {
                                 export DISPLAY=:0;
                                 firefox && echo 'err';
 
-                                mkdir hw && cd hw; \
                                 create-resolve-app hello-world -c \$(cat /last_commit)
                                 cd ./hello-world; \
                                 cat ./package.json; \
@@ -92,7 +142,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-                                mkdir tl && cd tl
+
                                 create-resolve-app todolist -e todo -c \$(cat /last_commit)
                                 cd ./todolist
                                 cat ./package.json
@@ -110,7 +160,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-                                mkdir tltl && cd tltl
+
                                 create-resolve-app twolevelstodo -e todo-two-levels -c \$(cat /last_commit)
                                 cd ./twolevelstodo
                                 cat ./package.json
@@ -127,7 +177,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-                                mkdir hn && cd hn
+
                                 create-resolve-app hn -e hacker-news -c \$(cat /last_commit)
                                 cd ./hn
                                 cat ./package.json
@@ -145,7 +195,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-                                mkdir topl && cd topl
+
                                 create-resolve-app toplist -e top-list -c \$(cat /last_commit)
                                 cd ./toplist
                                 cat ./package.json
@@ -164,7 +214,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-                                mkdir wpc && cd wpc
+
                                 create-resolve-app with-postcss-modules -e with-postcss-modules -c \$(cat /last_commit)
                                 cd ./with-postcss-modules
                                 cat ./package.json
