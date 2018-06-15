@@ -5,7 +5,7 @@
 
 A JavaScript framework for **CQRS**, **Domain-Driven Design** and **Event Sourcing** with robust support for **React** and **Redux**. **reSolve** provides a new way to describe an app's core logic and fully separate it from auxiliary code.
 
-<p align="center"><img src="https://user-images.githubusercontent.com/19663260/38686546-35c6a5fe-3e7d-11e8-9942-956333801c32.png"></p>
+<p align="center"><img src="https://user-images.githubusercontent.com/19663260/41475089-73b9620e-70c6-11e8-9ca9-633f3857626b.png"></p>
 
 * 2 minutes [installation](#installation).
 * [Free and open source](https://github.com/reimagined/resolve/blob/master/LICENSE.md).
