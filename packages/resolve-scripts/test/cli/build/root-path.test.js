@@ -1,6 +1,6 @@
 import exec from '../../exec'
 
-jest.setTimeout(30000);
+jest.setTimeout(30000)
 
 test('resolve-scripts build --root-path=test', async () => {
   const json = await exec('resolve-scripts build --root-path=test')

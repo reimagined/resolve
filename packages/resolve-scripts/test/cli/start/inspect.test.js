@@ -1,6 +1,6 @@
 import exec from '../../exec'
 
-jest.setTimeout(30000);
+jest.setTimeout(30000)
 
 test('resolve-scripts start --inspect', async () => {
   const { deployOptions } = await exec('resolve-scripts start --inspect')
