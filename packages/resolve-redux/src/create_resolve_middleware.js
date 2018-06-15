@@ -1,18 +1,14 @@
 import createSagaMiddleware from 'redux-saga'
 
 import rootSaga from './root_saga'
+import emptySaga from './empty_saga'
 
-const createResolveMiddleware = ({ isClient, ...sagaArgs }) => {
-  const saga = isClient ? rootSaga : function*() {}
-
+const createResolveMiddleware = () => {
   const sagaMiddleware = createSagaMiddleware()
 
   const sagaMiddlewareRun = sagaMiddleware.run.bind(sagaMiddleware)
-  sagaMiddleware.run = (...args) => {
-    sagaMiddlewareRun(saga, {
-      ...args,
-      sagaArgs
-    })
+  sagaMiddleware.run = (sagaArgs) => {
+    sagaMiddlewareRun(sagaArgs.isClient ? rootSaga : emptySaga, sagaArgs)
   }
 
   return sagaMiddleware

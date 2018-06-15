@@ -35,7 +35,8 @@ const serverSideRendering = (req, res) => {
     },
     history,
     origin: req.headers.origin,
-    rootPath
+    rootPath,
+    isClient: false
   })
 
   const sheet = new ServerStyleSheet()

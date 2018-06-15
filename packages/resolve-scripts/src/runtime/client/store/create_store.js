@@ -14,19 +14,18 @@ import readModels from '$resolve.readModels'
 import aggregates from '$resolve.aggregates'
 import subscribe from '$resolve.subscribeAdapter'
 
-const subscribeAdapter = subscribe.module
+
 
 const { reducers, middlewares, store: setupStore } = redux
 
-export default ({ initialState, history, origin, rootPath, mqttUrl }) => {
-  const resolveMiddleware = createResolveMiddleware({
-    viewModels,
-    readModels,
-    aggregates,
-    origin,
-    rootPath,
-    mqttUrl,
-    mqttQoS: 3 // TODO
+export default ({ initialState, history, origin, rootPath, isClient = true }) => {
+  const resolveMiddleware = createResolveMiddleware()
+  
+  const api = createApi()
+  
+  const subscribeAdapter = subscribe.module({
+    ...subscribe.options,
+    api
   })
 
   const store = createStore(
@@ -47,7 +46,16 @@ export default ({ initialState, history, origin, rootPath, mqttUrl }) => {
     )
   )
 
-  resolveMiddleware.run(store)
+  resolveMiddleware.run({
+    store,
+    viewModels,
+    readModels,
+    aggregates,
+    origin,
+    rootPath,
+    subscribeAdapter,
+    isClient
+  })
 
   setupStore(store, middlewares)
 
