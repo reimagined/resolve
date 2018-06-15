@@ -38,14 +38,18 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   const fieldsInputDeclaration = {
-    columns: ['id', 'volume', 'timestamp', 'content'],
-    indexes: ['id', 'volume', 'timestamp']
+    indexes: {
+      id: 'string',
+      volume: 'number',
+      timestamp: 'number'
+    },
+    fields: ['content']
   }
 
   const fieldsOutputDeclaration = {
-    id: 'primary',
-    volume: 'secondary',
-    timestamp: 'secondary',
+    id: 'primary-string',
+    volume: 'secondary-number',
+    timestamp: 'secondary-number',
     content: 'regular'
   }
 

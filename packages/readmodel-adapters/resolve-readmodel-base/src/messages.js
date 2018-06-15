@@ -11,10 +11,10 @@ export default {
   // Define table schema
   invalidTableSchema: (tableName, reason, fragment) =>
     `Provided table schema for "${tableName}" is invalid:
-    ${reason} at "${fragment}"`,
-  tableDescriptorNotObject: 'Table columns descriptors and index lists expected like { columns: [], indexes: [] }',
+    ${reason} at "${JSON.stringify(fragment)}"`,
+  tableDescriptorNotObject: 'Table columns descriptors and index lists expected like { indexes: {}, fields: [] }',
   columnWrongName: 'Table column name should be an alphanumeric identifier',
-  columnWrongIndex: `Indexed table column should be set in columns list`,
+  columnWrongIndex: `Table index should meet field naming rules and be one of "string" or "number"`,
   tableWithoutPrimaryIndex: 'Primary index should be set',
 
   // Search-alike expressions

@@ -17,54 +17,49 @@ const checkOptionShape = (option, types) =>
 const checkAndGetTableMetaSchema = (tableName, tableSchema) => {
   checkCondition(
     checkOptionShape(tableSchema, [Object]) &&
-      Array.isArray(tableSchema.columns) &&
-      Array.isArray(tableSchema.indexes),
+      Array.isArray(tableSchema.fields) &&
+      checkOptionShape(tableSchema.indexes, [Object]),
     messages.invalidTableSchema,
     tableName,
     messages.tableDescriptorNotObject,
     tableSchema
   )
 
-  const { columns, indexes } = tableSchema
-  for (let column of columns) {
+  const { fields, indexes } = tableSchema
+  const schema = {}
+
+  for (let columnName of fields) {
     checkCondition(
-      COLUMN_NAME_REGEXP.test(column),
+      COLUMN_NAME_REGEXP.test(columnName),
       messages.invalidTableSchema,
       tableName,
       messages.columnWrongName,
-      column
+      columnName
     )
+
+    schema[columnName] = 'regular'
   }
 
   checkCondition(
-    indexes.length > 0,
+    Object.keys(indexes).length > 0,
     messages.invalidTableSchema,
     tableName,
     messages.tableWithoutPrimaryIndex,
     indexes
   )
 
-  for (let index of indexes) {
+  for (let [idx, indexName] of Object.keys(indexes).entries()) {
+    const indexType = indexes[indexName]
     checkCondition(
-      columns.indexOf(index) >= 0,
+      COLUMN_NAME_REGEXP.test(indexName) && (indexType === 'number' || indexType === 'string'),
       messages.invalidTableSchema,
       tableName,
       messages.columnWrongIndex,
-      index
+      indexName
     )
-  }
 
-  const schema = columns.reduce((acc, column) => {
-    const indexPosition = indexes.indexOf(column)
-    if (indexPosition > 0) {
-      acc[column] = 'secondary'
-    } else if (indexPosition === 0) {
-      acc[column] = 'primary'
-    } else {
-      acc[column] = 'regular'
-    }
-    return acc
-  }, {})
+    schema[indexName] = `${idx === 0 ? 'primary' : 'secondary'}-${indexType}`
+  }
 
   return schema
 }
@@ -113,9 +108,10 @@ const isFieldValueCorrect = (metaInfo, fieldName, fieldValue, allowNested) => {
   try {
     const columnType = checkAndGetColumnStatus(metaInfo, fieldName, allowNested)
     return (
-      columnType &&
-      (fieldValue != null || columnType !== 'primary') &&
-      (columnType === 'regular' || fieldValue == null || fieldValue.constructor === String)
+      !!columnType &&
+      (fieldValue != null ||
+        (columnType !== 'primary-string' && columnType !== 'primary-number')) &&
+      (columnType === 'regular' || (fieldValue == null || fieldValue.constructor === String))
     )
   } catch (err) {
     return false
