@@ -78,7 +78,7 @@ exports[`renders correctly 1`] = `
         className="list-group-item"
       >
         <a
-          aria-current={false}
+          aria-current={null}
           href="/id1"
           onClick={[Function]}
         >
@@ -94,7 +94,7 @@ exports[`renders correctly 1`] = `
         className="list-group-item"
       >
         <a
-          aria-current={false}
+          aria-current={null}
           href="/id2"
           onClick={[Function]}
         >
