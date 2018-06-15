@@ -11,9 +11,6 @@ module.exports = {
     }
   },
   plugins: ['react', 'jsx-a11y', 'import', 'spellcheck'],
-  globals: {
-    $resolve: true
-  },
   rules: {
     'func-names': 'off',
     'no-underscore-dangle': 'off',
@@ -38,6 +35,7 @@ module.exports = {
         code: 100
       }
     ],
+    'eol-last': ['error', 'always'],
     'no-console': ['error'],
     'spellcheck/spell-checker': [
       1,
@@ -51,6 +49,7 @@ module.exports = {
           'acc',
           'ack',
           'adm',
+          'ajv',
           'amqp',
           'amqplib',
           'analytics',
@@ -78,6 +77,7 @@ module.exports = {
           'codeload',
           'config',
           'configs',
+          'const',
           'cwd',
           'darwin',
           'dev',
@@ -97,6 +97,7 @@ module.exports = {
           'escaper',
           'execpath',
           'expr',
+          'extname',
           'facebook',
           'fanout',
           'filename',
@@ -118,6 +119,7 @@ module.exports = {
           'inline',
           'inlines',
           'instanceof',
+          'interop',
           'invoker',
           'iterable',
           'jsonschema',
@@ -167,6 +169,7 @@ module.exports = {
           'rabbitmq',
           'react',
           'reactivity',
+          'readdir',
           'readmodel',
           'redux',
           'regenerator',
@@ -218,6 +221,7 @@ module.exports = {
           'unmount',
           'unvote',
           'unvoted',
+          'upsert',
           'upvote',
           'upvoted',
           'utf8mb4',
@@ -229,6 +233,7 @@ module.exports = {
           'utils',
           'utf',
           'uuid',
+          'validator',
           'webpack',
           'wikipedia',
           'wildcard',

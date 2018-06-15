@@ -73,7 +73,6 @@ exports[`renders correctly 1`] = `
     >
       <label
         className="example-login-label control-label"
-        htmlFor={undefined}
       >
         Enter your username:
       </label>
@@ -84,7 +83,6 @@ exports[`renders correctly 1`] = `
       >
         <input
           className="example-login-input form-control"
-          id={undefined}
           name="username"
           type="text"
         />

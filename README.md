@@ -28,7 +28,7 @@ cd my-awesome-app
 npm run dev
 ```
 
-The created application is accessible using the http://localhost:3000/ and `http://<your_ip>:3000/` URLs (you can [change the URL settings](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)). Start learning **reSolve** with the [**First Application From Scratch**](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/First%20Application%20From%20Scratch.md) tutorial. Use the [**documentation**](#documentation), [**tutorials**](#tutorials) and [**examples**](#examples) to learn **reSolve** more deeply.
+The created application is accessible using the http://localhost:3000/ and `http://<your_ip>:3000/` URLs (you can [change the URL settings](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)). Start learning **reSolve** with the [**ToDo List App Tutorial**](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/ToDo%20List%20App%20Tutorial.md) tutorial. Use the [**documentation**](#documentation), [**tutorials**](#tutorials) and [**examples**](#examples) to learn **reSolve** more deeply.
 
 Instead of npx you can also use npm or yarn tools:
 

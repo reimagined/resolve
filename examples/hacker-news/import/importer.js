@@ -14,10 +14,22 @@ const USER_CREATED_TIMESTAMP = new Date(2007, 1, 19).getTime()
 
 const users = {}
 
-const generateUserEvents = name => {
+const aggregateVersionByAggregateId = {}
+
+const saveEventRaw = async event => {
+  aggregateVersionByAggregateId[event.aggregateId] =
+    ++aggregateVersionByAggregateId[event.aggregateId] || 1
+
+  await eventStore.saveEventRaw({
+    ...event,
+    aggregateVersion: aggregateVersionByAggregateId[event.aggregateId]
+  })
+}
+
+const generateUserEvents = async name => {
   const aggregateId = uuid.v4()
 
-  eventStore.saveEventRaw({
+  await saveEventRaw({
     type: USER_CREATED,
     aggregateId,
     timestamp: USER_CREATED_TIMESTAMP,
@@ -28,24 +40,24 @@ const generateUserEvents = name => {
   return aggregateId
 }
 
-const getUserId = userName => {
+const getUserId = async userName => {
   const user = users[userName]
 
   if (user) {
     return user
   }
 
-  const aggregateId = generateUserEvents(userName)
+  const aggregateId = await generateUserEvents(userName)
   users[userName] = aggregateId
   return aggregateId
 }
 
-const generateCommentEvents = (comment, aggregateId, parentId) => {
+const generateCommentEvents = async (comment, aggregateId, parentId) => {
   const userName = comment.by
-  const userId = getUserId(userName)
+  const userId = await getUserId(userName)
   const commentId = uuid.v4()
 
-  eventStore.saveEventRaw({
+  await saveEventRaw({
     type: STORY_COMMENTED,
     aggregateId,
     timestamp: comment.time * 1000,
@@ -61,35 +73,37 @@ const generateCommentEvents = (comment, aggregateId, parentId) => {
   return commentId
 }
 
-const generateComment = async (comment, aggregateId, parentId) => {
-  const commentId = generateCommentEvents(comment, aggregateId, parentId)
-
-  if (comment.kids) {
-    await generateComments(comment.kids, aggregateId, commentId)
+async function generateComments(ids, aggregateId, parentId, options) {
+  if (options.count-- <= 0) {
+    return Promise.resolve()
   }
-
-  return aggregateId
-}
-
-async function generateComments(ids, aggregateId, parentId) {
   const comments = await api.fetchItems(ids)
-  return comments.reduce(
-    (promise, comment) =>
-      promise.then(
-        comment && comment.by
-          ? generateComment(comment, aggregateId, parentId)
-          : null
-      ),
-    Promise.resolve()
-  )
+  const promises = []
+  for (const comment of comments) {
+    if (!comment || !comment.by) {
+      continue
+    }
+    if (options.count-- <= 0) {
+      break
+    }
+
+    promises.push(
+      generateCommentEvents(comment, aggregateId, parentId).then(commentId => {
+        if (Array.isArray(comment.kids)) {
+          return generateComments(comment.kids, aggregateId, commentId, options)
+        }
+      })
+    )
+  }
+  return await Promise.all(promises)
 }
 
-const generatePointEvents = (aggregateId, pointCount) => {
+const generatePointEvents = async (aggregateId, pointCount) => {
   const keys = Object.keys(users)
   const count = Math.min(keys.length, pointCount)
 
   for (let i = 0; i < count; i++) {
-    eventStore.saveEventRaw({
+    await saveEventRaw({
       type: STORY_UPVOTED,
       aggregateId,
       timestamp: Date.now(),
@@ -108,35 +122,40 @@ const generateStoryEvents = async story => {
   const userName = story.by || 'anonymous'
   const aggregateId = uuid.v4()
 
-  eventStore.saveEventRaw({
+  await saveEventRaw({
     type: STORY_CREATED,
     aggregateId,
     timestamp: story.time * 1000,
     payload: {
       title: story.title || '',
       text: story.text || '',
-      userId: getUserId(userName),
+      userId: await getUserId(userName),
       userName,
       link: story.url || ''
     }
   })
 
   if (story.score) {
-    generatePointEvents(aggregateId, story.score)
+    await generatePointEvents(aggregateId, story.score)
   }
 
   if (story.kids) {
-    await generateComments(story.kids, aggregateId, aggregateId)
+    await generateComments(story.kids, aggregateId, aggregateId, {
+      count: Math.floor(Math.random() * 100)
+    })
   }
 
   return aggregateId
 }
 
-const getUniqueStoryIds = categories => {
-  const result = categories.reduce((set, ids = []) => {
-    ids.forEach(id => set.add(id))
-    return set
-  }, new Set())
+const getUniqueStoryIds = async categories => {
+  const result = new Set()
+
+  for (const ids of categories) {
+    if (Array.isArray(ids)) {
+      ids.forEach(id => result.add(id))
+    }
+  }
 
   return [...result]
 }
@@ -148,23 +167,41 @@ const fetchStoryIds = async () => {
     )
   )
 
-  return getUniqueStoryIds(categories)
+  return await getUniqueStoryIds(categories)
 }
 
 const fetchStories = async (ids, tickCallback) => {
   const stories = await api.fetchItems(ids)
 
-  return stories.reduce(
-    (promise, story) =>
-      promise.then(() => {
-        tickCallback()
+  const storiesSlice = []
+  for (let sliceIndex = 0; sliceIndex < stories.length / 20; sliceIndex++) {
+    storiesSlice[sliceIndex] = []
+    for (let index = 0; index < 20; index++) {
+      const story = stories[+(sliceIndex * 20) + index]
+      if (story) {
+        storiesSlice[sliceIndex][index] = story
+      }
+    }
+  }
 
-        return story && !story.deleted && story.by
-          ? generateStoryEvents(story)
-          : null
-      }),
-    Promise.resolve()
-  )
+  for (const storySlice of storiesSlice) {
+    const promises = []
+    for (const story of storySlice) {
+      promises.push(
+        (async () => {
+          if (!(story && !story.deleted && story.by)) {
+            return
+          }
+
+          await generateStoryEvents(story)
+
+          tickCallback()
+        })()
+      )
+    }
+
+    await Promise.all(promises)
+  }
 }
 
 export const start = async (countCallback, tickCallback) => {
@@ -172,7 +209,7 @@ export const start = async (countCallback, tickCallback) => {
     const storyIds = await fetchStoryIds()
     countCallback(storyIds.length)
     dropStore()
-    return await fetchStories(storyIds, tickCallback)
+    await fetchStories(storyIds, tickCallback)
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error(e)

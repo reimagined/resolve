@@ -12,10 +12,10 @@ import getHtmlMarkup from './get_html_markup'
 import getRootBasedUrl from './utils/get_root_based_url'
 import Routes from '../client/components/Routes'
 
-const staticPath = $resolve.staticPath
-const rootPath = $resolve.rootPath
-const jwtCookieName = $resolve.jwtCookie.name
-const routes = require($resolve.routes)
+import routes from '$resolve.routes'
+import staticPath from '$resolve.staticPath'
+import rootPath from '$resolve.rootPath'
+import jwtCookie from '$resolve.jwtCookie'
 
 const serverSideRendering = (req, res) => {
   const url = req.params[0] || ''
@@ -26,7 +26,7 @@ const serverSideRendering = (req, res) => {
 
   const jwt = {}
   try {
-    Object.assign(jwt, jsonwebtoken.decode(req.cookies[jwtCookieName]))
+    Object.assign(jwt, jsonwebtoken.decode(req.cookies[jwtCookie.name]))
   } catch (e) {}
 
   const store = createStore({

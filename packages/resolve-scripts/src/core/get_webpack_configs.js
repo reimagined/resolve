@@ -1,5 +1,6 @@
 import getWebpackClientConfig from './get_webpack_client_config'
 import getWebpackServerConfig from './get_webpack_server_config'
+import getWebpackAlias from './get_webpack_alias'
 
 const getWebpackConfigs = ({
   resolveConfig,
@@ -7,16 +8,20 @@ const getWebpackConfigs = ({
   env,
   resolveBuildConfig
 }) => {
+  const alias = getWebpackAlias()
+
   const webpackClientConfig = getWebpackClientConfig({
     resolveConfig,
     deployOptions,
-    env
+    env,
+    alias
   })
 
   const webpackServerConfig = getWebpackServerConfig({
     resolveConfig,
     deployOptions,
-    env
+    env,
+    alias
   })
 
   const configs = [webpackClientConfig, webpackServerConfig]

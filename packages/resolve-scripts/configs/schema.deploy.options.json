@@ -6,10 +6,7 @@
     },
     "mode": {
       "type": "string",
-      "enum": [
-        "development",
-        "production"
-      ]
+      "enum": ["development", "production"]
     },
     "build": {
       "type": "boolean"

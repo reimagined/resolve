@@ -2,18 +2,14 @@ import fs from 'fs'
 import respawn from 'respawn'
 import webpack from 'webpack'
 
-import getWebpackConfigs from './get_webpack_configs'
-import showBuildInfo from './show_build_info'
 import setup from './setup'
 import getMockServer from './get_mock_server'
-import assignConfigPaths from './assign_config_paths'
+import showBuildInfo from './show_build_info'
+import getWebpackConfigs from './get_webpack_configs'
+import getResolveBuildConfig from './get_resolve_build_config'
 
-export default (argv, defaults = {}) => {
-  const env = process.env
-
-  Object.assign(env, Object.assign(defaults, env))
-
-  const { resolveConfig, deployOptions, resolveBuildConfig } = setup(argv, env)
+export default argv => {
+  const { resolveConfig, deployOptions, env } = setup(argv)
 
   if (argv.printConfig) {
     // eslint-disable-next-line
@@ -21,7 +17,7 @@ export default (argv, defaults = {}) => {
       JSON.stringify(
         {
           ...resolveConfig,
-          ...deployOptions
+          deployOptions
         },
         null,
         3
@@ -30,7 +26,7 @@ export default (argv, defaults = {}) => {
     return
   }
 
-  assignConfigPaths(resolveConfig)
+  const resolveBuildConfig = getResolveBuildConfig(argv, env)
 
   const [
     webpackClientConfig,
@@ -86,8 +82,8 @@ export default (argv, defaults = {}) => {
           poll: 1000
         },
         (err, { stats: [clientStats, serverStats] }) => {
-          showBuildInfo(webpackClientConfig, err, clientStats)
-          showBuildInfo(webpackServerConfig, err, serverStats)
+          showBuildInfo(err, clientStats)
+          showBuildInfo(err, serverStats)
           if (deployOptions.start) {
             if (
               (serverStats && serverStats.hasErrors()) ||
@@ -107,8 +103,8 @@ export default (argv, defaults = {}) => {
       )
     } else {
       compiler.run((err, { stats: [clientStats, serverStats] }) => {
-        showBuildInfo(webpackClientConfig, err, clientStats)
-        showBuildInfo(webpackServerConfig, err, serverStats)
+        showBuildInfo(err, clientStats)
+        showBuildInfo(err, serverStats)
         if (deployOptions.start) {
           if (
             serverStats &&

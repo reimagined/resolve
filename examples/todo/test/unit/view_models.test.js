@@ -1,6 +1,4 @@
-import viewModels from '../../common/view-models'
-
-const [todosViewModel] = viewModels
+import projection from '../../common/view-models/todos.projection'
 
 describe('view-models', () => {
   describe('Todos', () => {
@@ -13,7 +11,7 @@ describe('view-models', () => {
       }
       const event = { payload: { id: 'id2', text: 'text2' } }
 
-      expect(todosViewModel.projection['ITEM_CREATED'](state, event)).toEqual({
+      expect(projection['ITEM_CREATED'](state, event)).toEqual({
         id1: {
           text: 'text1',
           checked: false
@@ -34,7 +32,7 @@ describe('view-models', () => {
       }
       const event = { payload: { id: 'id1' } }
 
-      expect(todosViewModel.projection['ITEM_TOGGLED'](state, event)).toEqual({
+      expect(projection['ITEM_TOGGLED'](state, event)).toEqual({
         id1: {
           text: 'text1',
           checked: true
@@ -51,9 +49,7 @@ describe('view-models', () => {
       }
       const event = { payload: { id: 'id1' } }
 
-      expect(todosViewModel.projection['ITEM_REMOVED'](state, event)).toEqual(
-        {}
-      )
+      expect(projection['ITEM_REMOVED'](state, event)).toEqual({})
     })
   })
 })

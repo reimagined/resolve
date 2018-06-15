@@ -1,14 +1,19 @@
-import { validate } from 'jsonschema'
+import Ajv from 'ajv'
 
-const schema = require('../../configs/schema.resolve.config.json')
+import { schemaResolveConfig } from './constants'
 
-export default function validateConfig(config) {
-  try {
-    return validate(config, schema, { throwError: true })
-  } catch (error) {
-    // eslint-disable-next-line
-    throw `Resolve Config validation failed:
-    property: ${error.property}
-    message: ${error.message}`
+const ajv = new Ajv()
+
+const validateConfig = config => {
+  const valid = ajv.validate(schemaResolveConfig, config)
+
+  if (!valid) {
+    throw new Error(
+      'Resolve Config validation failed: ' + JSON.stringify(ajv.errors, null, 2)
+    )
   }
+
+  return true
 }
+
+export default validateConfig
