@@ -2,7 +2,7 @@
 
 exports[`base config works correctly [client] 1`] = `
 "
-import module from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testAdapter.js\\"
+import module from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testAdapter.js\\"
 
 const options = {
   \\"url\\": \\"http://test.test\\"
@@ -14,7 +14,7 @@ export default { module, options }
 
 exports[`base config works correctly [server] 1`] = `
 "
-import module from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testAdapter.js\\"
+import module from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testAdapter.js\\"
 
 const options = {
   \\"url\\": \\"http://test.test\\"

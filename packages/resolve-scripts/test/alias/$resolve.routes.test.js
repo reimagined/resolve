@@ -3,6 +3,7 @@ import { extractEnv } from 'json-env-extract'
 import path from 'path'
 
 import alias from '../../src/core/alias/$resolve.routes'
+import normalizePaths from './normalize_paths'
 
 describe('base config works correctly', () => {
   const resolveConfig = extractEnv(`
@@ -13,23 +14,27 @@ describe('base config works correctly', () => {
 
   test('[client]', () => {
     expect(
-      '\r\n' +
-        alias({
-          resolveConfig,
-          isClient: true
-        }).code +
-        '\r\n'
+      normalizePaths(
+        '\r\n' +
+          alias({
+            resolveConfig,
+            isClient: true
+          }).code +
+          '\r\n'
+      )
     ).toMatchSnapshot()
   })
 
   test('[server]', () => {
     expect(
-      '\r\n' +
-        alias({
-          resolveConfig,
-          isClient: false
-        }).code +
-        '\r\n'
+      normalizePaths(
+        '\r\n' +
+          alias({
+            resolveConfig,
+            isClient: false
+          }).code +
+          '\r\n'
+      )
     ).toMatchSnapshot()
   })
 })

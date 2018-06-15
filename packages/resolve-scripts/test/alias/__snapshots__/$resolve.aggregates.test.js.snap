@@ -27,7 +27,7 @@ exports[`base config works correctly [server] 1`] = `
 "
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
-import commands_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testCommands.js\\"
+import commands_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testCommands.js\\"
 
 const name_0 = \\"Todo\\"
 
@@ -81,9 +81,9 @@ exports[`base(v2) config works correctly [server] 1`] = `
 "
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
-import commands_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testCommands.js\\"
+import commands_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testCommands.js\\"
 
-import commands_1 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testCommands.js\\"
+import commands_1 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testCommands.js\\"
 
 const name_0 = \\"Todo\\"
 const name_1 = \\"Item\\"
@@ -131,8 +131,8 @@ exports[`config with projection works correctly [server] 1`] = `
 "
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
-import commands_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testCommands.js\\"
-import projection_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testProjection.js\\"
+import commands_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testCommands.js\\"
+import projection_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testProjection.js\\"
 
 const name_0 = \\"Todo\\"
 
@@ -175,7 +175,7 @@ exports[`config with snapshot + process.env works correctly [server] 1`] = `
 "
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
-import commands_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testCommands.js\\"
+import commands_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testCommands.js\\"
 
 const name_0 = \\"Todo\\"
 const snapshotAdapter_0 = {
@@ -231,9 +231,9 @@ exports[`config with snapshot works correctly [server] 1`] = `
 "
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
-import commands_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testCommands.js\\"
+import commands_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testCommands.js\\"
 
-import snapshotAdapterModule_0 from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testSnapshotAdapter.js\\"
+import snapshotAdapterModule_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testSnapshotAdapter.js\\"
 const name_0 = \\"Todo\\"
 const snapshotAdapterOptions_0 = {
   \\"size\\": 100

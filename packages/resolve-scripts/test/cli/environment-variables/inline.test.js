@@ -2,6 +2,8 @@ import path from 'path'
 
 import exec from '../../exec'
 
+jest.setTimeout(30000)
+
 test('Inline env vars in a string works correctly', async () => {
   const json = await exec(
     `resolve-scripts dev --config=${path.resolve(

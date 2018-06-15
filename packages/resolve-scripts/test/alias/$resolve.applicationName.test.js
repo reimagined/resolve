@@ -1,4 +1,5 @@
 import alias from '../../src/core/alias/$resolve.applicationName'
+import normalizePaths from './normalize_paths'
 
 test('works correctly', () => {
   const deployOptions = {
@@ -6,10 +7,12 @@ test('works correctly', () => {
   }
 
   expect(
-    '\r\n' +
-      alias({
-        deployOptions
-      }).code +
-      '\r\n'
+    normalizePaths(
+      '\r\n' +
+        alias({
+          deployOptions
+        }).code +
+        '\r\n'
+    )
   ).toMatchSnapshot()
 })

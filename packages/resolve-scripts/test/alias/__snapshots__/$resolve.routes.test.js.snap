@@ -2,7 +2,7 @@
 
 exports[`base config works correctly [client] 1`] = `
 "
-import routes from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testRoutes.js\\"
+import routes from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testRoutes.js\\"
 
 export default routes
 "
@@ -10,7 +10,7 @@ export default routes
 
 exports[`base config works correctly [server] 1`] = `
 "
-import routes from \\"/home/mrcheater/resolve/packages/resolve-scripts/test/alias/files/testRoutes.js\\"
+import routes from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testRoutes.js\\"
 
 export default routes
 "

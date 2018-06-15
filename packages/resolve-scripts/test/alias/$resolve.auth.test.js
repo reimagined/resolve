@@ -2,6 +2,7 @@ import path from 'path'
 import { extractEnv } from 'json-env-extract'
 
 import alias from '../../src/core/alias/$resolve.auth'
+import normalizePaths from './normalize_paths'
 
 describe('works correctly', () => {
   const resolveConfig = extractEnv(`
@@ -13,25 +14,28 @@ describe('works correctly', () => {
   `)
 
   test('[client]', () => {
-    expect(
-      () =>
+    expect(() =>
+      normalizePaths(
         '\r\n' +
-        alias({
-          resolveConfig,
-          isClient: true
-        }).code +
-        '\r\n'
+          alias({
+            resolveConfig,
+            isClient: true
+          }).code +
+          '\r\n'
+      )
     ).toThrow()
   })
 
   test('[server]', () => {
     expect(
-      '\r\n' +
-        alias({
-          resolveConfig,
-          isClient: false
-        }).code +
-        '\r\n'
+      normalizePaths(
+        '\r\n' +
+          alias({
+            resolveConfig,
+            isClient: false
+          }).code +
+          '\r\n'
+      )
     ).toMatchSnapshot()
   })
 })
