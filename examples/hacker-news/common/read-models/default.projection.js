@@ -8,35 +8,29 @@ import {
 
 export default {
   Init: async store => {
-    await store.defineTable('Stories', [
-      { name: 'id', type: 'string', index: 'primary' },
-      { name: 'type', type: 'string', index: 'secondary' },
-      { name: 'title', type: 'json' },
-      { name: 'text', type: 'json' },
-      { name: 'link', type: 'json' },
-      { name: 'commentCount', type: 'number' },
-      { name: 'votes', type: 'json' },
-      { name: 'createdAt', type: 'number' },
-      { name: 'createdBy', type: 'string' },
-      { name: 'createdByName', type: 'string' }
-    ])
+    await store.defineTable('Stories', {
+      indexes: { id: 'string', type: 'string' },
+      fields: [
+        'title',
+        'text',
+        'link',
+        'commentCount',
+        'votes',
+        'createdAt',
+        'createdBy',
+        'createdByName'
+      ]
+    })
 
-    await store.defineTable('Users', [
-      { name: 'id', type: 'string', index: 'primary' },
-      { name: 'name', type: 'string', index: 'secondary' },
-      { name: 'createdAt', type: 'number' }
-    ])
+    await store.defineTable('Users', {
+      indexes: { id: 'string', name: 'string' },
+      fields: ['createdAt']
+    })
 
-    await store.defineTable('Comments', [
-      { name: 'id', type: 'string', index: 'primary' },
-      { name: 'text', type: 'json' },
-      { name: 'parentId', type: 'string' },
-      { name: 'comments', type: 'json' },
-      { name: 'storyId', type: 'string' },
-      { name: 'createdAt', type: 'number' },
-      { name: 'createdBy', type: 'string' },
-      { name: 'createdByName', type: 'string' }
-    ])
+    await store.defineTable('Comments', {
+      indexes: { id: 'string' },
+      fields: ['text', 'parentId', 'comments', 'storyId', 'createdAt', 'createdBy', 'createdByName']
+    })
   },
   [STORY_CREATED]: async (
     store,
@@ -62,11 +56,7 @@ export default {
 
   [STORY_COMMENTED]: async (
     store,
-    {
-      aggregateId,
-      timestamp,
-      payload: { parentId, userId, userName, commentId, text }
-    }
+    { aggregateId, timestamp, payload: { parentId, userId, userName, commentId, text } }
   ) => {
     const comment = {
       id: commentId,
@@ -80,19 +70,11 @@ export default {
     }
 
     await store.insert('Comments', comment)
-    await store.update(
-      'Stories',
-      { id: aggregateId },
-      { $inc: { commentCount: 1 } }
-    )
+    await store.update('Stories', { id: aggregateId }, { $inc: { commentCount: 1 } })
   },
 
   [STORY_UPVOTED]: async (store, { aggregateId, payload: { userId } }) => {
-    const story = await store.findOne(
-      'Stories',
-      { id: aggregateId },
-      { votes: 1 }
-    )
+    const story = await store.findOne('Stories', { id: aggregateId }, { votes: 1 })
     await store.update(
       'Stories',
       { id: aggregateId },
@@ -101,11 +83,7 @@ export default {
   },
 
   [STORY_UNVOTED]: async (store, { aggregateId, payload: { userId } }) => {
-    const story = await store.findOne(
-      'Stories',
-      { id: aggregateId },
-      { votes: 1 }
-    )
+    const story = await store.findOne('Stories', { id: aggregateId }, { votes: 1 })
     await store.update(
       'Stories',
       { id: aggregateId },
@@ -113,10 +91,7 @@ export default {
     )
   },
 
-  [USER_CREATED]: async (
-    store,
-    { aggregateId, timestamp, payload: { name } }
-  ) => {
+  [USER_CREATED]: async (store, { aggregateId, timestamp, payload: { name } }) => {
     const user = {
       id: aggregateId,
       name,
