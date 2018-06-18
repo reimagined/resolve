@@ -334,13 +334,13 @@ const checkUpdateExpression = (tableName, metaInfo, updateExpression) => {
 
     for (let fieldName of Object.keys(affectedFields)) {
       checkCondition(
-        operator === '$set'
-          ? isFieldValueCorrect(metaInfo, fieldName, affectedFields[fieldName], true)
-          : checkAndGetColumnStatus(metaInfo, fieldName, true) &&
-            (operator === '$unset' ||
+        operator !== '$unset'
+          ? isFieldValueCorrect(metaInfo, fieldName, affectedFields[fieldName], true) &&
+            (operator === '$set' ||
               (operator === '$inc' &&
                 affectedFields[fieldName] != null &&
-                affectedFields[fieldName].constructor === Number)),
+                affectedFields[fieldName].constructor === Number))
+          : checkAndGetColumnStatus(metaInfo, fieldName, true),
         messages.invalidUpdateExpression,
         tableName,
         updateExpression,

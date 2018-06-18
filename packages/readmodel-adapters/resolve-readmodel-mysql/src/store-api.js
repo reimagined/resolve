@@ -1,22 +1,34 @@
+const STRING_INDEX_TYPE = 'VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'
+const NUMBER_INDEX_TYPE = 'BIGINT'
 const MAX_LIMIT_VALUE = 0x0fffffff | 0
 
-const defineTable = async ({ connection, escapeId }, tableName, { columns, indexes }) => {
+const getTypeDefinitionForColumn = columnType => {
+  switch (columnType) {
+    case 'primary-string':
+      return `${STRING_INDEX_TYPE} NOT NULL`
+    case 'primary-number':
+      return `${NUMBER_INDEX_TYPE} NOT NULL`
+    case 'secondary-string':
+      return `${STRING_INDEX_TYPE} NULL`
+    case 'secondary-number':
+      return `${NUMBER_INDEX_TYPE} NULL`
+    default:
+      return 'JSON'
+  }
+}
+
+const defineTable = async ({ connection, escapeId }, tableName, tableDescription) => {
   await connection.execute(
     `CREATE TABLE ${escapeId(tableName)} (\n` +
       [
-        columns
+        Object.keys(tableDescription)
           .map(
             columnName =>
-              `${escapeId(columnName)} ${
-                indexes.indexOf(columnName) > -1
-                  ? `VARCHAR(16383) CHARACTER SET utf8mb4 COLLATE utf8_general_ci ${
-                      indexes.indexOf(columnName) === 0 ? 'NOT' : ''
-                    } NULL `
-                  : 'JSON NULL '
-              }`
+              `${escapeId(columnName)} ${getTypeDefinitionForColumn(tableDescription[columnName])}`
           )
           .join(',\n'),
-        indexes
+        Object.keys(tableDescription)
+          .filter(columnName => tableDescription[columnName] !== 'regular')
           .map(
             (columnName, idx) =>
               idx === 0
@@ -174,7 +186,13 @@ const updateToSetExpression = (expression, fieldTypes, escapeId) => {
               )}', JSON_EXTRACT(${escapeId(baseName)}, '${makeNestedPath(nestedPath)}') + ?) `
             )
           } else {
-            updateExprArray.push(`${escapeId(baseName)} = ${escapeId(baseName)} + ? `)
+            if (fieldTypes[baseName] === 'regular') {
+              updateExprArray.push(
+                `${escapeId(baseName)} = CAST((${escapeId(baseName)} + ?) AS JSON) `
+              )
+            } else {
+              updateExprArray.push(`${escapeId(baseName)} = ${escapeId(baseName)} + ? `)
+            }
           }
           updateValues.push(fieldValue)
           break
@@ -191,6 +209,8 @@ const updateToSetExpression = (expression, fieldTypes, escapeId) => {
     updateValues
   }
 }
+
+const convertBinaryRow = row => Object.setPrototypeOf(row, Object.prototype)
 
 const find = async (
   { connection, escapeId, metaInfo },
@@ -257,7 +277,7 @@ const find = async (
     searchValues
   )
 
-  return rows
+  return rows.map(convertBinaryRow)
 }
 
 const findOne = async (
@@ -303,7 +323,7 @@ const findOne = async (
   )
 
   if (Array.isArray(rows) && rows.length > 0) {
-    return rows[0]
+    return convertBinaryRow(rows[0])
   }
 
   return null

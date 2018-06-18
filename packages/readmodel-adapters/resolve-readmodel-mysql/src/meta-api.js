@@ -27,8 +27,7 @@ const getMetaInfo = async pool => {
   await connection.execute(`CREATE TABLE IF NOT EXISTS ${escapeId(metaName)} (
       FirstKey VARCHAR(128) NOT NULL,
       SecondKey VARCHAR(128) NULL,
-      Value JSON NULL,
-      PRIMARY KEY (FirstKey)
+      Value JSON NULL
     )`)
 
   pool.metaInfo = { tables: {}, timestamp: 0 }
@@ -41,7 +40,7 @@ const getMetaInfo = async pool => {
   if (rows.length === 0) {
     await connection.execute(
       `INSERT INTO ${escapeId(metaName)}(FirstKey, Value)
-       VALUES("Timestamp", 0)`
+       VALUES("Timestamp", CAST("0" AS JSON))`
     )
   } else {
     pool.metaInfo.timestamp = Number.isInteger(+rows[0]['Timestamp']) ? +rows[0]['Timestamp'] : 0
@@ -79,9 +78,10 @@ const getLastTimestamp = async ({ metaInfo }) => {
 }
 
 const setLastTimestamp = async ({ connection, escapeId, metaName, metaInfo }, timestamp) => {
-  await connection.execute(`UPDATE ${escapeId(metaName)} SET Value=? WHERE FirstKey="Timestamp"`, [
-    timestamp
-  ])
+  await connection.execute(
+    `UPDATE ${escapeId(metaName)} SET Value=CAST(? AS JSON) WHERE FirstKey="Timestamp"`,
+    [JSON.stringify(timestamp)]
+  )
 
   metaInfo.timestamp = +timestamp
 }
@@ -100,8 +100,10 @@ const describeTable = async (
   metaSchema
 ) => {
   await connection.execute(
-    `INSERT INTO ${escapeId(metaName)}(FirstKey, SecondKey, Value) VALUES("TableDescriptor", ?, ?)`,
-    [tableName, metaSchema]
+    `INSERT INTO ${escapeId(
+      metaName
+    )}(FirstKey, SecondKey, Value) VALUES("TableDescriptor", ?, CAST(? AS JSON))`,
+    [tableName, JSON.stringify(metaSchema)]
   )
 
   metaInfo.tables[tableName] = metaSchema
