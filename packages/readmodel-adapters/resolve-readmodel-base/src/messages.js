@@ -21,7 +21,7 @@ export default {
   invalidSearchExpression: (operation, tableName, searchExpression, reason, fragment) =>
     `Search expression in operation "${operation}" for table "${tableName}"
     provisioned "${JSON.stringify(searchExpression)}" is invalid:
-    ${reason}${fragment ? ` at "${fragment}"` : ''}`,
+    ${reason}${fragment ? ` at "${JSON.stringify(fragment)}"` : ''}`,
   searchExpressionNotObject: 'Object with search fields and/or operators expected',
   mixedSearchOperatorsAndValues: 'Nor fields values and search operators allowed in one search query at once',
   illegalLogicalOperator: 'Illegal logical operator',
@@ -36,7 +36,7 @@ export default {
   invalidFieldList: (operation, tableName, fieldList, reason, fragment) =>
     `Fields list in operation "${operation}" for table "${tableName}"
     provisioned "${JSON.stringify(fieldList)}" is invalid:
-    ${reason}${fragment ? ` at "${fragment}"` : ''}`,
+    ${reason}${fragment ? ` at "${JSON.stringify(fragment)}"` : ''}`,
   fieldListNotObject: 'Object with values for every column declared in table description expected',
   nonExistingField: 'Non existing table column or wrong nested field invocation',
   columnTypeMismatch: 'Column type mismatch or indexed column value is null',
@@ -49,7 +49,7 @@ export default {
   invalidUpdateExpression: (tableName, updateExpression, reason, fragment) =>
     `Update expression for updating table "${tableName}"
     provisioned "${JSON.stringify(updateExpression)}" is invalid:
-    ${reason}${fragment ? ` at "${fragment}"` : ''}`,
+    ${reason}${fragment ? ` at "${JSON.stringify(fragment)}"` : ''}`,
   updateExpressionNotValidObject: 'Object with keys as only allowed update operators expected like { $set: {...} }',
   illegalUpdateOperator: 'Illegal update operator',
   updateOperatorNotObject: 'Update operator value only as object expected',
