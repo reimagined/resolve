@@ -1,5 +1,26 @@
 const PROPER_NAME_REGEXP = /^(?:\w|\d|-)+?$/
 
+const PRIMARY_INDEX_TYPES = ['primary-number', 'primary-string']
+const SECONDARY_INDEX_TYPES = ['secondary-number', 'secondary-string']
+const FIELD_TYPES = [...PRIMARY_INDEX_TYPES, ...SECONDARY_INDEX_TYPES, 'regular']
+
+const checkStoredTableSchema = (tableName, tableDescription) =>
+  PROPER_NAME_REGEXP.test(tableName) &&
+  tableDescription != null &&
+  tableDescription.constructor === Object &&
+  Object.keys(tableDescription).reduce(
+    (result, fieldName) =>
+      result &&
+      PROPER_NAME_REGEXP.test(fieldName) &&
+      FIELD_TYPES.indexOf(tableDescription[fieldName]) > -1,
+    true
+  ) &&
+  Object.keys(tableDescription).reduce(
+    (result, fieldName) =>
+      result + (PRIMARY_INDEX_TYPES.indexOf(tableDescription[fieldName]) > -1 ? 1 : 0),
+    0
+  ) === 1
+
 const getMetaInfo = async pool => {
   const { connection, escapeId, metaName } = pool
 
@@ -33,37 +54,23 @@ const getMetaInfo = async pool => {
   ))
 
   for (let { TableName, TableDescription } of rows) {
-    try {
-      if (
-        !PROPER_NAME_REGEXP.test(TableName) ||
-        !Array.isArray(TableDescription.columns) ||
-        !Array.isArray(TableDescription.indexes) ||
-        TableDescription.indexes.length < 1 ||
-        !TableDescription.indexes.reduce(
-          (result, index) => result && TableDescription.columns.indexOf(index) >= 0,
-          true
-        ) ||
-        !TableDescription.columns.reduce(
-          (result, column) => result && PROPER_NAME_REGEXP.test(column),
-          true
-        )
-      ) {
-        throw new Error(
-          `Can't table "${TableName}" meta information due invalid schema: ${TableDescription}`
-        )
-      }
-
-      pool.metaInfo.tables[TableName] = {
-        columns: TableDescription.columns,
-        indexes: TableDescription.indexes
-      }
-    } catch (err) {
-      await connection.execute(
-        `DELETE FROM ${escapeId(metaName)}
-         WHERE FirstKey="TableDescriptor" AND SecondKey=?`,
-        [TableName]
-      )
+    if (checkStoredTableSchema(TableName, TableDescription)) {
+      pool.metaInfo.tables[TableName] = TableDescription
+      continue
     }
+
+    // eslint-disable-next-line no-console
+    console.log(
+      `Can't table "${TableName}" meta information due invalid schema: ${JSON.stringify(
+        TableDescription
+      )}`
+    )
+
+    await connection.execute(
+      `DELETE FROM ${escapeId(metaName)}
+         WHERE FirstKey="TableDescriptor" AND SecondKey=?`,
+      [TableName]
+    )
   }
 }
 

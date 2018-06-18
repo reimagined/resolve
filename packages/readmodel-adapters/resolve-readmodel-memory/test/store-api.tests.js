@@ -31,8 +31,9 @@ describe('resolve-readmodel-memory store-api', () => {
     const storage = {}
 
     await storeApi.defineTable({ createTable: () => newStorage, storage }, 'test', {
-      columns: ['first', 'second', 'third'],
-      indexes: ['first', 'second', 'third']
+      first: 'primary-string',
+      second: 'secondary-number',
+      third: 'secondary-string'
     })
 
     expect(newStorage.ensureIndex.firstCall.args[0].fieldName).to.be.equal('first')

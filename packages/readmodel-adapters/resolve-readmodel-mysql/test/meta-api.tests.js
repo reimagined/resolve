@@ -30,15 +30,17 @@ describe('resolve-readmodel-mysql meta-api', () => {
       {
         TableName: 'table1',
         TableDescription: {
-          columns: ['id', 'vol', 'content'],
-          indexes: ['id', 'vol']
+          id: 'primary-string',
+          vol: 'secondary-number',
+          content: 'regular'
         }
       },
       {
         TableName: 'table2',
         TableDescription: {
-          columns: ['id', 'vol', 'content'],
-          indexes: ['id', 'vol']
+          id: 'primary-string',
+          vol: 'secondary-number',
+          content: 'regular'
         }
       }
     ]
@@ -119,9 +121,7 @@ describe('resolve-readmodel-mysql meta-api', () => {
       {
         TableName: 'table',
         TableDescription: {
-          fieldTypes: 'error',
-          primaryIndex: 'error',
-          secondaryIndexes: 'error'
+          field: 'error'
         }
       }
     ]

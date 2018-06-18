@@ -1,7 +1,7 @@
 const defineTable = async ({ createTable, storage }, tableName, { indexes }) => {
   storage[tableName] = createTable()
 
-  for (let fieldName of indexes) {
+  for (let fieldName of Object.keys(indexes)) {
     await new Promise((resolve, reject) =>
       storage[tableName].ensureIndex({ fieldName }, err => (!err ? resolve() : reject(err)))
     )
