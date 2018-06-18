@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
-export default function resolveFile(query) {
+const resolveFile = query => {
   try {
     const customFilePath = path.resolve(process.cwd(), query)
 
@@ -20,3 +20,5 @@ export default function resolveFile(query) {
 
   throw new Error(`File "${query}" does not exist`)
 }
+
+export default resolveFile

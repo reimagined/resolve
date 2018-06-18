@@ -79,10 +79,8 @@ exports[`renders correctly 1`] = `
       >
         <a
           aria-current={false}
-          className={undefined}
           href="/id1"
           onClick={[Function]}
-          style={undefined}
         >
           title1
         </a>
@@ -97,10 +95,8 @@ exports[`renders correctly 1`] = `
       >
         <a
           aria-current={false}
-          className={undefined}
           href="/id2"
           onClick={[Function]}
-          style={undefined}
         >
           title2
         </a>
@@ -116,7 +112,6 @@ exports[`renders correctly 1`] = `
     >
       <input
         className="example-form-control form-control"
-        id={undefined}
         onKeyPress={[Function]}
         placeholder="New List"
         type="text"

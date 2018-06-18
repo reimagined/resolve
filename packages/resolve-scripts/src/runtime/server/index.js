@@ -15,9 +15,9 @@ import socketHandler from './socket_handler'
 import sagaRunner from './saga_runner'
 import assignAuthRoutes from './assign_auth_routes'
 
-const staticDir = $resolve.staticDir
-const distDir = $resolve.distDir
-const jwtCookie = $resolve.jwtCookie
+import staticDir from '$resolve.staticDir'
+import distDir from '$resolve.distDir'
+import jwtCookie from '$resolve.jwtCookie'
 
 const app = express()
 const server = new Server(app)

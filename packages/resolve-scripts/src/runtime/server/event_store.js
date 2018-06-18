@@ -1,13 +1,17 @@
 import createEventStore from 'resolve-es'
 
-const storageAdapter = require($resolve.storage.adapter)
-const storageOptions = $resolve.storage.options
-const busAdapter = require($resolve.bus.adapter)
-const busOptions = $resolve.bus.options
+import storageAdapter from '$resolve.storageAdapter'
+import busAdapter from '$resolve.busAdapter'
 
-const storage = storageAdapter(storageOptions)
+const createStorageAdapter = storageAdapter.module
+const storageAdapterOptions = storageAdapter.options
 
-const bus = busAdapter(busOptions)
+const createBusAdapter = busAdapter.module
+const busAdapterOptions = busAdapter.options
+
+const storage = createStorageAdapter(storageAdapterOptions)
+
+const bus = createBusAdapter(busAdapterOptions)
 
 const eventStore = createEventStore({ storage, bus })
 

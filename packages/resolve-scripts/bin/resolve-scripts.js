@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 require('source-map-support').install()
-const path = require('path')
 
-require('babel-polyfill')
 require('dotenv').config()
 
-// eslint-disable-next-line
+// eslint-disable-next-line no-unused-expressions
 require('yargs')
   .usage('resolve-scripts <command> [options]')
-  .commandDir(path.resolve(__dirname, '..', 'dist/core/commands'))
+  .command(require('../dist/core/commands/build'))
+  .command(require('../dist/core/commands/start'))
+  .command(require('../dist/core/commands/dev'))
+  .command(require('../dist/core/commands/test'))
+  .command(require('../dist/core/commands/test_functional'))
   .help('help').argv

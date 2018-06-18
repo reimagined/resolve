@@ -1,6 +1,8 @@
 import invariantFunctionHash from 'invariant-function-hash'
 const verifyCommand = async ({ aggregateId, aggregateName, type }) => {
   if (!aggregateId) throw new Error('The "aggregateId" argument is required')
+  if (aggregateId.constructor !== String)
+    throw new Error('The "aggregateId" argument must be a string')
   if (!aggregateName)
     throw new Error('The "aggregateName" argument is required')
   if (!type) throw new Error('The "type" argument is required')
@@ -22,8 +24,7 @@ const makeCommandHandlerHash = (projection, aggregateId) =>
 
 const getAggregateState = async (
   {
-    projection,
-    initialState,
+    projection: { Init, ...projection } = {},
     snapshotAdapter = emptySnapshotAdapter,
     snapshotBucketSize = 100
   },
@@ -49,7 +50,7 @@ const getAggregateState = async (
   } catch (err) {}
 
   if (!(+lastTimestamp > 0)) {
-    aggregateState = initialState
+    aggregateState = typeof Init === 'function' ? Init() : null
   }
 
   await eventStore.getEventsByAggregateId(
@@ -107,7 +108,7 @@ function createExecutor({ eventStore, aggregate }) {
 
 export default ({ eventStore, aggregates }) => {
   const executors = aggregates.reduce((result, aggregate) => {
-    result[aggregate.name.toLowerCase()] = createExecutor({
+    result[aggregate.name] = createExecutor({
       eventStore,
       aggregate
     })
@@ -116,7 +117,7 @@ export default ({ eventStore, aggregates }) => {
 
   return async (command, jwtToken) => {
     await verifyCommand(command)
-    const aggregateName = command.aggregateName.toLowerCase()
+    const aggregateName = command.aggregateName
     return executors[aggregateName](command, jwtToken)
   }
 }
