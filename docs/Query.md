@@ -4,7 +4,7 @@
 
 **Query** are used to get data from a Read Model and View Model. 
 
-Refer to [DDD_Aggregates](https://martinfowler.com/bliki/DDD_Aggregate.html) or [DDD, Event Sourcing, and CQRS Tutorial: design](http://cqrs.nu/tutorial/cs/01-design) for more information on aggregates.
+Refer to [DDD, Event Sourcing, and CQRS Tutorial: design](http://cqrs.nu/tutorial/cs/01-design) for more information on queries.
 
 ## How to Use?
 
