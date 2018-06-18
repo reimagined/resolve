@@ -58,8 +58,7 @@ describe('resolve-readmodel-mysql meta-api', () => {
         `CREATE TABLE IF NOT EXISTS \`META_NAME\` (
           FirstKey VARCHAR(128) NOT NULL,
           SecondKey VARCHAR(128) NULL,
-          Value JSON NULL,
-          PRIMARY KEY (FirstKey)
+          Value JSON NULL
         )`
       )
     )
@@ -90,8 +89,7 @@ describe('resolve-readmodel-mysql meta-api', () => {
         `CREATE TABLE IF NOT EXISTS \`META_NAME\` (
           FirstKey VARCHAR(128) NOT NULL,
           SecondKey VARCHAR(128) NULL,
-          Value JSON NULL,
-          PRIMARY KEY (FirstKey)
+          Value JSON NULL
         )`
       )
     )
@@ -103,7 +101,7 @@ describe('resolve-readmodel-mysql meta-api', () => {
     expect(format(executor.getCall(2).args[0])).to.be.equal(
       format(
         `INSERT INTO \`META_NAME\`(FirstKey, Value)
-         VALUES("Timestamp", 0)`
+         VALUES("Timestamp", CAST("0" AS JSON))`
       )
     )
 
@@ -138,8 +136,7 @@ describe('resolve-readmodel-mysql meta-api', () => {
         `CREATE TABLE IF NOT EXISTS \`META_NAME\` (
           FirstKey VARCHAR(128) NOT NULL,
           SecondKey VARCHAR(128) NULL,
-          Value JSON NULL,
-          PRIMARY KEY (FirstKey)
+          Value JSON NULL
         )`
       )
     )
@@ -177,9 +174,9 @@ describe('resolve-readmodel-mysql meta-api', () => {
 
     await metaApi.setLastTimestamp(pool, 20)
     expect(format(executor.firstCall.args[0])).to.be.equal(
-      format(`UPDATE \`META_NAME\` SET Value=? WHERE FirstKey="Timestamp"`)
+      format(`UPDATE \`META_NAME\` SET Value=CAST(? AS JSON) WHERE FirstKey="Timestamp"`)
     )
-    expect(executor.firstCall.args[1]).to.be.deep.equal([20])
+    expect(executor.firstCall.args[1]).to.be.deep.equal(['20'])
 
     expect(pool.metaInfo.timestamp).to.be.equal(20)
   })
@@ -212,12 +209,13 @@ describe('resolve-readmodel-mysql meta-api', () => {
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
-        `INSERT INTO \`META_NAME\`(FirstKey, SecondKey, Value) VALUES("TableDescriptor", ?, ?)`
+        `INSERT INTO \`META_NAME\`(FirstKey, SecondKey, Value)
+         VALUES("TableDescriptor", ?, CAST(? AS JSON))`
       )
     )
 
     expect(executor.firstCall.args[1][0]).to.be.equal('one')
-    expect(executor.firstCall.args[1][1]).to.be.equal(metaInfoOne)
+    expect(executor.firstCall.args[1][1]).to.be.equal(JSON.stringify(metaInfoOne))
   })
 
   it('should provide getTableNames method', async () => {

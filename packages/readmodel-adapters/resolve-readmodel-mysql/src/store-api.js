@@ -277,7 +277,11 @@ const find = async (
     searchValues
   )
 
-  return rows.map(convertBinaryRow)
+  for (let idx = 0; idx < rows.length; idx++) {
+    rows[idx] = convertBinaryRow(idx)
+  }
+
+  return rows
 }
 
 const findOne = async (

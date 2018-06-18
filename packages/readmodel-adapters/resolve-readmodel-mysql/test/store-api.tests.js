@@ -40,16 +40,17 @@ describe('resolve-readmodel-mysql store-api', () => {
 
   it('should provide defineTable method', async () => {
     await storeApi.defineTable(pool, 'test', {
-      columns: ['first', 'second', 'third'],
-      indexes: ['first', 'second', 'third']
+      first: 'primary-string',
+      second: 'secondary-number',
+      third: 'secondary-string'
     })
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
         `CREATE TABLE \`test\` (
-          \`first\` VARCHAR(16383) CHARACTER SET utf8mb4 COLLATE utf8_general_ci NOT NULL,
-          \`second\` VARCHAR(16383) CHARACTER SET utf8mb4 COLLATE utf8_general_ci NULL,
-          \`third\` VARCHAR(16383) CHARACTER SET utf8mb4 COLLATE utf8_general_ci NULL,
+          \`first\` VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+          \`second\` BIGINT NULL,
+          \`third\` VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
           PRIMARY KEY (\`first\`),
           INDEX USING BTREE (\`second\`),
           INDEX USING BTREE (\`third\`)
