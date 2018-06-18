@@ -107,12 +107,36 @@ const checkFieldList = (metaInfo, fieldList, allowNested, validProjectionValues 
 const isFieldValueCorrect = (metaInfo, fieldName, fieldValue, allowNested) => {
   try {
     const columnType = checkAndGetColumnStatus(metaInfo, fieldName, allowNested)
-    return (
-      !!columnType &&
-      (fieldValue != null ||
-        (columnType !== 'primary-string' && columnType !== 'primary-number')) &&
-      (columnType === 'regular' || (fieldValue == null || fieldValue.constructor === String))
-    )
+    if (!columnType) {
+      return false
+    }
+    if (
+      columnType === 'primary-string' &&
+      (fieldValue == null || fieldValue.constructor !== String)
+    ) {
+      return false
+    }
+    if (
+      columnType === 'primary-number' &&
+      (fieldValue == null || fieldValue.constructor !== Number)
+    ) {
+      return false
+    }
+
+    if (
+      columnType === 'secondary-string' &&
+      (fieldValue != null && fieldValue.constructor !== String)
+    ) {
+      return false
+    }
+    if (
+      columnType === 'secondary-number' &&
+      (fieldValue != null && fieldValue.constructor !== Number)
+    ) {
+      return false
+    }
+
+    return true
   } catch (err) {
     return false
   }
