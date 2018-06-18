@@ -3,7 +3,6 @@ import { getInstallations } from 'testcafe-browser-tools'
 import { execSync, spawn } from 'child_process'
 import fetch from 'isomorphic-fetch'
 
-import assignConfigPaths from './assign_config_paths'
 import setup from './setup'
 
 const testCafeRunner = async argv => {
@@ -11,13 +10,11 @@ const testCafeRunner = async argv => {
     `node "` +
       path.resolve(__dirname, '../../bin/resolve-scripts.js') +
       '" build' +
-      ' --test',
+      ' --test --dev',
     { stdio: 'inherit' }
   )
 
   const { resolveConfig } = setup(argv, process.env)
-
-  assignConfigPaths(resolveConfig)
 
   const TIMEOUT = 20000
 
@@ -34,7 +31,9 @@ const testCafeRunner = async argv => {
         'server/server.js'
       )}`
     ],
-    { stdio: 'inherit' }
+    {
+      stdio: 'inherit'
+    }
   )
   process.on('exit', () => {
     application.kill()
@@ -46,9 +45,9 @@ const testCafeRunner = async argv => {
   }, 1000 * 5)
 
   while (true) {
-    const statusUrl = `${resolveConfig.protocol}://${resolveConfig.host}:${
-      resolveConfig.port
-    }${resolveConfig.rootPath ? `/${resolveConfig.rootPath}` : ''}/api/status`
+    const statusUrl = `http://localhost:${resolveConfig.port}${
+      resolveConfig.rootPath ? `/${resolveConfig.rootPath}` : ''
+    }/api/status`
     try {
       const response = await fetch(statusUrl)
       if ((await response.text()) === 'ok') break

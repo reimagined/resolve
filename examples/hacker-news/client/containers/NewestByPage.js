@@ -1,4 +1,5 @@
 import React from 'react'
+import { bindActionCreators } from 'redux'
 import { connectReadModel } from 'resolve-redux'
 
 import Stories from '../components/Stories'
@@ -8,13 +9,17 @@ const NewestByPage = ({
   match: {
     params: { page }
   },
-  data: { stories = [], me }
+  data: { stories = [], me },
+  upvoteStory,
+  unvoteStory
 }) => (
   <Stories
     items={stories}
     page={page || '1'}
     type="newest"
     userId={me && me.id}
+    upvoteStory={upvoteStory}
+    unvoteStory={unvoteStory}
   />
 )
 
@@ -29,13 +34,30 @@ const getReadModelData = state => {
   }
 }
 
-export default connectReadModel((state, { match: { params: { page } } }) => ({
-  readModelName: 'default',
-  resolverName: 'allStories',
-  parameters: {
-    offset: ITEMS_PER_PAGE + 1,
-    first: (+page - 1) * ITEMS_PER_PAGE
-  },
-  data: getReadModelData(state),
-  page
-}))(NewestByPage)
+export default connectReadModel(
+  (
+    state,
+    {
+      match: {
+        params: { page }
+      }
+    }
+  ) => ({
+    readModelName: 'default',
+    resolverName: 'allStories',
+    parameters: {
+      offset: ITEMS_PER_PAGE + 1,
+      first: (+page - 1) * ITEMS_PER_PAGE
+    },
+    data: getReadModelData(state),
+    page
+  }),
+  (dispatch, { aggregateActions }) =>
+    bindActionCreators(
+      {
+        upvoteStory: aggregateActions.upvoteStory,
+        unvoteStory: aggregateActions.unvoteStory
+      },
+      dispatch
+    )
+)(NewestByPage)

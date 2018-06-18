@@ -4,13 +4,15 @@ import openBrowser from './utils/open_browser'
 import println from './utils/println'
 import prepareUrls from './utils/prepare_urls'
 
-const port = $resolve.port
-const host = $resolve.host
-const protocol = $resolve.protocol
-const applicationName = $resolve.applicationName
-const useYarn = $resolve.useYarn
-const isOpenBrowser =
-  $resolve.openBrowser && process.env.RESOLVE_SERVER_FIRST_START === 'true'
+import port from '$resolve.port'
+import isOpenBrowser from '$resolve.openBrowser'
+import applicationName from '$resolve.applicationName'
+import useYarn from '$resolve.useYarn'
+
+const host = '0.0.0.0'
+const protocol = 'http'
+
+const serverFirstStart = process.env.RESOLVE_SERVER_FIRST_START === 'true'
 
 const urls = prepareUrls(protocol, host, port)
 
@@ -38,7 +40,7 @@ const startServer = server => {
       println()
     }
 
-    if (isOpenBrowser) {
+    if (isOpenBrowser && serverFirstStart) {
       openBrowser(urls.localUrlForBrowser)
     }
   })

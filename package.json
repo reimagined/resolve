@@ -5,41 +5,48 @@
   "license": "MIT",
   "private": true,
   "devDependencies": {
-    "babel-eslint": "^8.2.2",
+    "babel-eslint": "^8.2.3",
     "eslint": "^4.19.1",
-    "eslint-config-react-app": "^3.0.0-next.b2fd8db8",
+    "eslint-config-react-app": "^3.0.0-next.66cc7a90",
+    "eslint-plugin-flowtype": "^2.48.0",
     "eslint-plugin-spellcheck": "^0.0.10",
-    "eslint-plugin-flowtype": "^2.46.1",
-    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-import": "^2.12.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-react": "^7.7.0",
-    "lint-staged": "^7.0.0",
+    "eslint-plugin-react": "^7.8.2",
+    "lint-staged": "^7.1.2",
     "oao": "=1.4.1",
     "pre-commit": "^1.2.2",
-    "prettier": "^1.11.1",
+    "prettier": "^1.12.1",
     "prettier-eslint-cli": "^4.7.1"
   },
-  "workspaces": [
-    "packages/*",
-    "packages/bus-adapters/*",
-    "packages/storage-adapters/*",
-    "packages/readmodel-adapters/*",
-    "examples/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "packages/bus-adapters/*",
+      "packages/storage-adapters/*",
+      "packages/readmodel-adapters/*",
+      "examples/*"
+    ]
+  },
   "scripts": {
-    "clean":
-      "npx oao all \"npx rimraf dist\" --parallel && npx rimraf yarn-error.log && npx oao clean",
+    "clean": "npx oao all \"npx rimraf dist\" --parallel && npx rimraf yarn-error.log && npx oao clean",
     "lint": "eslint .",
     "lint-staged": "lint-staged",
-    "prepublish":
-      "npx oao all \"npx rimraf dist\" --parallel && oao run-script prepublish --parallel",
+    "prepublish": "npx oao all \"npx rimraf dist\" --parallel && oao run-script prepublish --parallel",
     "prettier": "prettier --single-quote --no-semi --write \"**/**.js\"",
+    "prettier-json": "prettier --write \"**/**.json\"",
     "publish": "oao publish -i \"examples/*\" --no-git-commit --no-changelog",
     "test": "oao all \"yarn test --color 2>&1\"",
     "test:functional": "oao run-script test:functional"
   },
-  "pre-commit": ["lint-staged", "lint"],
+  "pre-commit": [
+    "lint-staged",
+    "lint"
+  ],
   "lint-staged": {
-    "*.{js,css}": ["prettier --single-quote --no-semi --write", "git add"]
+    "*.{js,css}": [
+      "prettier --single-quote --no-semi --write",
+      "git add"
+    ]
   }
 }
