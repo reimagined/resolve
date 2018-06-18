@@ -20,7 +20,7 @@ You can describe Queries for Read Model in commmon/read-models/resolvers.js file
 
 A typical Query structure:
 
-```jsx
+```js
 export default {
   user: async (store, { id, name }) => {
     const user =
