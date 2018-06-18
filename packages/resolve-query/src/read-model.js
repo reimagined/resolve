@@ -47,7 +47,9 @@ const init = async repository => {
     const projectionInvoker = async event => await projection[event.type](event)
 
     const eventListenerInvoker = async event =>
-      typeof repository.eventListener === 'function' ? await repository.eventListener(event) : null
+      typeof repository.eventListener === 'function'
+        ? await repository.eventListener(event)
+        : null
 
     const synchronizedEventWorker = event =>
       (flowPromise = flowPromise
@@ -60,9 +62,13 @@ const init = async repository => {
     Promise.resolve()
       .then(prepareProjection)
       .then(startTime =>
-        eventStore.subscribeByEventType(Object.keys(projection), synchronizedEventWorker, {
-          startTime
-        })
+        eventStore.subscribeByEventType(
+          Object.keys(projection),
+          synchronizedEventWorker,
+          {
+            startTime
+          }
+        )
       )
       .then(cancelSubscription => {
         if (flowPromise) {
@@ -119,7 +125,9 @@ const read = async (repository, resolverName, resolverArgs) => {
   const resolver = (repository.resolvers || {})[resolverName]
 
   if (typeof resolver !== 'function') {
-    throw new Error(`The '${resolverName}' resolver is not specified or not function`)
+    throw new Error(
+      `The '${resolverName}' resolver is not specified or not function`
+    )
   }
 
   const store = await getReadInterface(repository)
@@ -131,12 +139,13 @@ const dispose = repository => {
     return repository.disposePromise
   }
 
-  const disposePromise = Promise.resolve([repository.onDispose, repository.adapter.reset]).then(
-    async ([onDispose, reset]) => {
-      await onDispose()
-      await reset()
-    }
-  )
+  const disposePromise = Promise.resolve([
+    repository.onDispose,
+    repository.adapter.reset
+  ]).then(async ([onDispose, reset]) => {
+    await onDispose()
+    await reset()
+  })
 
   Object.keys(repository).forEach(key => {
     delete repository[key]
@@ -158,9 +167,16 @@ const removeEventListener = (repository, callback) => {
   repository.externalEventListeners.splice(idx, 1)
 }
 
-const makeReactiveReader = async (repository, publisher, resolverName, resolverArgs = {}) => {
+const makeReactiveReader = async (
+  repository,
+  publisher,
+  resolverName,
+  resolverArgs = {}
+) => {
   if (typeof publisher !== 'function') {
-    throw new Error('Publisher should be callback function (diff: Object) => void')
+    throw new Error(
+      'Publisher should be callback function (diff: Object) => void'
+    )
   }
 
   let result = await read(repository, resolverName, resolverArgs)
@@ -178,7 +194,8 @@ const makeReactiveReader = async (repository, publisher, resolverName, resolverA
     await publisher(difference)
   }
 
-  const eventListener = event => (flowPromise = flowPromise.then(eventHandler.bind(null, event)))
+  const eventListener = event =>
+    (flowPromise = flowPromise.then(eventHandler.bind(null, event)))
   addEventListener(repository, eventListener)
 
   const forceStop = () => {

@@ -1,16 +1,31 @@
-const defineTable = async ({ createTable, storage }, tableName, tableDescription) => {
+const defineTable = async (
+  { createTable, storage },
+  tableName,
+  tableDescription
+) => {
   storage[tableName] = createTable()
 
   for (let fieldName of Object.keys(tableDescription)) {
     if (tableDescription[fieldName] === 'regular') continue
 
     await new Promise((resolve, reject) =>
-      storage[tableName].ensureIndex({ fieldName }, err => (!err ? resolve() : reject(err)))
+      storage[tableName].ensureIndex(
+        { fieldName },
+        err => (!err ? resolve() : reject(err))
+      )
     )
   }
 }
 
-const find = async ({ storage }, tableName, searchExpression, fieldList, sort, skip, limit) => {
+const find = async (
+  { storage },
+  tableName,
+  searchExpression,
+  fieldList,
+  sort,
+  skip,
+  limit
+) => {
   let findCursor = await storage[tableName].find(searchExpression)
 
   if (sort) {
@@ -65,7 +80,12 @@ const insert = async ({ storage }, tableName, document) => {
   )
 }
 
-const update = async ({ storage }, tableName, searchExpression, updateExpression) => {
+const update = async (
+  { storage },
+  tableName,
+  searchExpression,
+  updateExpression
+) => {
   await new Promise((resolve, reject) =>
     storage[tableName].update(
       searchExpression,
@@ -77,7 +97,10 @@ const update = async ({ storage }, tableName, searchExpression, updateExpression
 
 const del = async ({ storage }, tableName, searchExpression) => {
   await new Promise((resolve, reject) =>
-    storage[tableName].remove(searchExpression, err => (!err ? resolve() : reject(err)))
+    storage[tableName].remove(
+      searchExpression,
+      err => (!err ? resolve() : reject(err))
+    )
   )
 }
 

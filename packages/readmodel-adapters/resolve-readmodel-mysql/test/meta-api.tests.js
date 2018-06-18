@@ -14,7 +14,9 @@ describe('resolve-readmodel-mysql meta-api', () => {
     executor = sinon.stub()
 
     pool = {
-      escapeId: sinon.stub().callsFake(value => `\`${value.replace(/`/g, '``')}\``),
+      escapeId: sinon
+        .stub()
+        .callsFake(value => `\`${value.replace(/`/g, '``')}\``),
       connection: { execute: executor },
       metaName: META_NAME
     }
@@ -49,8 +51,12 @@ describe('resolve-readmodel-mysql meta-api', () => {
     executor.onCall(2).callsFake(async () => [tableDeclarations])
 
     await metaApi.getMetaInfo(pool)
-    expect(pool.metaInfo.tables['table1']).to.be.deep.equal(tableDeclarations[0].TableDescription)
-    expect(pool.metaInfo.tables['table2']).to.be.deep.equal(tableDeclarations[1].TableDescription)
+    expect(pool.metaInfo.tables['table1']).to.be.deep.equal(
+      tableDeclarations[0].TableDescription
+    )
+    expect(pool.metaInfo.tables['table2']).to.be.deep.equal(
+      tableDeclarations[1].TableDescription
+    )
     expect(pool.metaInfo.timestamp).to.be.equal(100)
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
@@ -64,7 +70,9 @@ describe('resolve-readmodel-mysql meta-api', () => {
     )
 
     expect(format(executor.secondCall.args[0])).to.be.equal(
-      format(`SELECT Value AS Timestamp FROM \`META_NAME\` WHERE FirstKey="Timestamp"`)
+      format(
+        `SELECT Value AS Timestamp FROM \`META_NAME\` WHERE FirstKey="Timestamp"`
+      )
     )
 
     expect(format(executor.thirdCall.args[0])).to.be.equal(
@@ -95,7 +103,9 @@ describe('resolve-readmodel-mysql meta-api', () => {
     )
 
     expect(format(executor.getCall(1).args[0])).to.be.equal(
-      format(`SELECT Value AS Timestamp FROM \`META_NAME\` WHERE FirstKey="Timestamp"`)
+      format(
+        `SELECT Value AS Timestamp FROM \`META_NAME\` WHERE FirstKey="Timestamp"`
+      )
     )
 
     expect(format(executor.getCall(2).args[0])).to.be.equal(
@@ -142,7 +152,9 @@ describe('resolve-readmodel-mysql meta-api', () => {
     )
 
     expect(format(executor.getCall(1).args[0])).to.be.equal(
-      format(`SELECT Value AS Timestamp FROM \`META_NAME\` WHERE FirstKey="Timestamp"`)
+      format(
+        `SELECT Value AS Timestamp FROM \`META_NAME\` WHERE FirstKey="Timestamp"`
+      )
     )
 
     expect(format(executor.getCall(2).args[0])).to.be.equal(
@@ -154,7 +166,9 @@ describe('resolve-readmodel-mysql meta-api', () => {
     )
 
     expect(format(executor.getCall(3).args[0])).to.be.equal(
-      format(`DELETE FROM \`META_NAME\` WHERE FirstKey="TableDescriptor" AND SecondKey = ?`)
+      format(
+        `DELETE FROM \`META_NAME\` WHERE FirstKey="TableDescriptor" AND SecondKey = ?`
+      )
     )
 
     expect(executor.getCall(3).args[1]).to.be.deep.equal(['table'])
@@ -174,7 +188,9 @@ describe('resolve-readmodel-mysql meta-api', () => {
 
     await metaApi.setLastTimestamp(pool, 20)
     expect(format(executor.firstCall.args[0])).to.be.equal(
-      format(`UPDATE \`META_NAME\` SET Value=CAST(? AS JSON) WHERE FirstKey="Timestamp"`)
+      format(
+        `UPDATE \`META_NAME\` SET Value=CAST(? AS JSON) WHERE FirstKey="Timestamp"`
+      )
     )
     expect(executor.firstCall.args[1]).to.be.deep.equal(['20'])
 
@@ -215,7 +231,9 @@ describe('resolve-readmodel-mysql meta-api', () => {
     )
 
     expect(executor.firstCall.args[1][0]).to.be.equal('one')
-    expect(executor.firstCall.args[1][1]).to.be.equal(JSON.stringify(metaInfoOne))
+    expect(executor.firstCall.args[1][1]).to.be.equal(
+      JSON.stringify(metaInfoOne)
+    )
   })
 
   it('should provide getTableNames method', async () => {
@@ -231,9 +249,15 @@ describe('resolve-readmodel-mysql meta-api', () => {
 
     await metaApi.drop(pool)
 
-    expect(format(executor.firstCall.args[0])).to.be.equal(format('DROP TABLE `one`'))
-    expect(format(executor.secondCall.args[0])).to.be.equal(format('DROP TABLE `two`'))
-    expect(format(executor.thirdCall.args[0])).to.be.equal(format('DROP TABLE `META_NAME`'))
+    expect(format(executor.firstCall.args[0])).to.be.equal(
+      format('DROP TABLE `one`')
+    )
+    expect(format(executor.secondCall.args[0])).to.be.equal(
+      format('DROP TABLE `two`')
+    )
+    expect(format(executor.thirdCall.args[0])).to.be.equal(
+      format('DROP TABLE `META_NAME`')
+    )
 
     expect(Object.keys(pool.metaInfo)).to.be.deep.equal([])
   })

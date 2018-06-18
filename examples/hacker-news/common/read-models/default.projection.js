@@ -29,7 +29,15 @@ export default {
 
     await store.defineTable('Comments', {
       indexes: { id: 'string' },
-      fields: ['text', 'parentId', 'comments', 'storyId', 'createdAt', 'createdBy', 'createdByName']
+      fields: [
+        'text',
+        'parentId',
+        'comments',
+        'storyId',
+        'createdAt',
+        'createdBy',
+        'createdByName'
+      ]
     })
   },
   [STORY_CREATED]: async (
@@ -56,7 +64,11 @@ export default {
 
   [STORY_COMMENTED]: async (
     store,
-    { aggregateId, timestamp, payload: { parentId, userId, userName, commentId, text } }
+    {
+      aggregateId,
+      timestamp,
+      payload: { parentId, userId, userName, commentId, text }
+    }
   ) => {
     const comment = {
       id: commentId,
@@ -70,11 +82,19 @@ export default {
     }
 
     await store.insert('Comments', comment)
-    await store.update('Stories', { id: aggregateId }, { $inc: { commentCount: 1 } })
+    await store.update(
+      'Stories',
+      { id: aggregateId },
+      { $inc: { commentCount: 1 } }
+    )
   },
 
   [STORY_UPVOTED]: async (store, { aggregateId, payload: { userId } }) => {
-    const story = await store.findOne('Stories', { id: aggregateId }, { votes: 1 })
+    const story = await store.findOne(
+      'Stories',
+      { id: aggregateId },
+      { votes: 1 }
+    )
     await store.update(
       'Stories',
       { id: aggregateId },
@@ -83,7 +103,11 @@ export default {
   },
 
   [STORY_UNVOTED]: async (store, { aggregateId, payload: { userId } }) => {
-    const story = await store.findOne('Stories', { id: aggregateId }, { votes: 1 })
+    const story = await store.findOne(
+      'Stories',
+      { id: aggregateId },
+      { votes: 1 }
+    )
     await store.update(
       'Stories',
       { id: aggregateId },
@@ -91,7 +115,10 @@ export default {
     )
   },
 
-  [USER_CREATED]: async (store, { aggregateId, timestamp, payload: { name } }) => {
+  [USER_CREATED]: async (
+    store,
+    { aggregateId, timestamp, payload: { name } }
+  ) => {
     const user = {
       id: aggregateId,
       name,

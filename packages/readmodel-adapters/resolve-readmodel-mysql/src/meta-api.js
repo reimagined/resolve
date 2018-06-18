@@ -2,7 +2,11 @@ const PROPER_NAME_REGEXP = /^(?:\w|\d|-)+?$/
 
 const PRIMARY_INDEX_TYPES = ['primary-number', 'primary-string']
 const SECONDARY_INDEX_TYPES = ['secondary-number', 'secondary-string']
-const FIELD_TYPES = [...PRIMARY_INDEX_TYPES, ...SECONDARY_INDEX_TYPES, 'regular']
+const FIELD_TYPES = [
+  ...PRIMARY_INDEX_TYPES,
+  ...SECONDARY_INDEX_TYPES,
+  'regular'
+]
 
 const checkStoredTableSchema = (tableName, tableDescription) =>
   PROPER_NAME_REGEXP.test(tableName) &&
@@ -17,7 +21,8 @@ const checkStoredTableSchema = (tableName, tableDescription) =>
   ) &&
   Object.keys(tableDescription).reduce(
     (result, fieldName) =>
-      result + (PRIMARY_INDEX_TYPES.indexOf(tableDescription[fieldName]) > -1 ? 1 : 0),
+      result +
+      (PRIMARY_INDEX_TYPES.indexOf(tableDescription[fieldName]) > -1 ? 1 : 0),
     0
   ) === 1
 
@@ -43,7 +48,9 @@ const getMetaInfo = async pool => {
        VALUES("Timestamp", CAST("0" AS JSON))`
     )
   } else {
-    pool.metaInfo.timestamp = Number.isInteger(+rows[0]['Timestamp']) ? +rows[0]['Timestamp'] : 0
+    pool.metaInfo.timestamp = Number.isInteger(+rows[0]['Timestamp'])
+      ? +rows[0]['Timestamp']
+      : 0
   }
 
   void ([rows] = await connection.execute(
@@ -77,9 +84,14 @@ const getLastTimestamp = async ({ metaInfo }) => {
   return metaInfo.timestamp
 }
 
-const setLastTimestamp = async ({ connection, escapeId, metaName, metaInfo }, timestamp) => {
+const setLastTimestamp = async (
+  { connection, escapeId, metaName, metaInfo },
+  timestamp
+) => {
   await connection.execute(
-    `UPDATE ${escapeId(metaName)} SET Value=CAST(? AS JSON) WHERE FirstKey="Timestamp"`,
+    `UPDATE ${escapeId(
+      metaName
+    )} SET Value=CAST(? AS JSON) WHERE FirstKey="Timestamp"`,
     [JSON.stringify(timestamp)]
   )
 
