@@ -69,4 +69,9 @@ export default connectReadModel(state => ({
   resolverName: 'me',
   parameters: {},
   data: getReadModelData(state)
-}))(connect(mapStateToProps, mapDispatchToProps)(LoginInfo))
+}))(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(LoginInfo)
+)
