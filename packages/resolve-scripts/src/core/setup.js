@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import envString from 'env-string'
+import envString from './env_string'
 import { extractEnv, envKey } from 'json-env-extract'
 
 import assignSettings from './assign_settings'
