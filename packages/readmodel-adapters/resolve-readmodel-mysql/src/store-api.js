@@ -308,7 +308,7 @@ const find = async (
   )
 
   for (let idx = 0; idx < rows.length; idx++) {
-    rows[idx] = convertBinaryRow(idx)
+    rows[idx] = convertBinaryRow(rows[idx])
   }
 
   return rows
