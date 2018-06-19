@@ -41,7 +41,7 @@ const getClientWebpackConfig = ({
     module: {
       rules: [
         {
-          test: /core\/alias\/\$resolve.\w+\.js/,
+          test: /core(\/|\\)alias(\/|\\)\$resolve.\w+\.js/,
           use: [
             {
               loader: 'val-loader',
