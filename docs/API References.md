@@ -7,7 +7,7 @@
     * [Common](#common)
     * [Functional tests](#functional-tests)
 * [Configuration Files](#configuration-files)
-    * [Server Config](#server-config)
+    * [Resolve Config](#resolve-config)
     * [Build Config](#build-config)
 * [Authentication](#authentication)
 * [Environment Variables](#environment-variables)
