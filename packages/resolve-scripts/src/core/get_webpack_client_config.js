@@ -44,17 +44,24 @@ const getClientWebpackConfig = ({
           test: /core(\/|\\)alias(\/|\\)\$resolve.\w+\.js/,
           use: [
             {
+              loader: 'babel-loader',
+              options: {
+                cacheDirectory: true,
+                babelrc: false,
+                presets: [
+                  '@babel/preset-env',
+                  ['@babel/preset-stage-0', { decoratorsLegacy: true }],
+                  '@babel/preset-react'
+                ],
+                plugins: ['@babel/plugin-transform-runtime']
+              }
+            },
+            {
               loader: 'val-loader',
               options: {
                 resolveConfig,
                 deployOptions,
                 isClient
-              }
-            },
-            {
-              loader: 'babel-loader',
-              options: {
-                cacheDirectory: true
               }
             }
           ]
