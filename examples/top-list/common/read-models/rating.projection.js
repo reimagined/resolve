@@ -1,11 +1,9 @@
 export default {
   Init: async store => {
-    await store.defineTable('Rating', [
-      { name: 'id', type: 'string', index: 'primary' },
-      { name: 'rating', type: 'number', index: 'secondary' },
-      { name: 'name', type: 'string' },
-      { name: 'votes', type: 'json' }
-    ])
+    await store.defineTable('Rating', {
+      indexes: { id: 'string', rating: 'number' },
+      fields: ['name', 'votes']
+    })
   },
 
   ItemAppended: async (store, { payload: { id, name } }) => {

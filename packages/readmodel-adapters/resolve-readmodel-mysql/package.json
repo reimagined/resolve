@@ -1,7 +1,8 @@
 {
   "name": "resolve-readmodel-mysql",
   "version": "0.11.0",
-  "description": "This package serves as a resolve-query adapter for storing a read model in mysql",
+  "description":
+    "This package serves as a resolve-query adapter for storing a read model in mysql",
   "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
