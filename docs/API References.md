@@ -2,7 +2,7 @@
 
 ## 📑 **Table Of Contents**
 * [Available Scripts](#available-scripts)
-* [Project Structure Overview](#️project-structure-overview)
+* [Project Structure Overview](#project-structure-overview)
     * [Client](#client)
     * [Common](#common)
     * [Functional tests](#functional-tests)
