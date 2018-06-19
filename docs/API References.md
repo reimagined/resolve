@@ -31,7 +31,7 @@ Building is performed in the `NODE_ENV === 'production'` [mode](https://webpack.
 ### `npm start`
 Runs the built app in the production mode.
 
-Open [http://localhost:3000](http://localhost:3000/) or http://<your_ip>:3000 to view it in the browser (you can change your [url settings](#url-settings).
+Open [http://localhost:3000](http://localhost:3000/) or http://<your_ip>:3000 to view it in the browser (you can change your [url settings](#configuration-files).
 
 ## **Project Structure Overview**
 
