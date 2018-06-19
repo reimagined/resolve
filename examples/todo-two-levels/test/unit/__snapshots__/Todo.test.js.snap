@@ -72,7 +72,7 @@ exports[`renders correctly 1`] = `
       className="form-inline"
     >
       <a
-        aria-current="true"
+        aria-current="page"
         className="active"
         href="/"
         onClick={[Function]}
