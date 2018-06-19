@@ -1,31 +1,31 @@
 # Documentation
 
-Welcome to reSolve documentation! There're articles that help you understand common concepts of reSolve frameworks, learn how to develop your application from scratch, find necessary API and parts for customization.
+Welcome to the reSolve documentation! Here you can find articles that help you understand common concepts of the reSolve framework, start making an application from scratch, find the right API methods, and customize your application.
 
 ## How to Start
 
-| Name of Topic | Description |
+| Topic Name | Description |
 | --- | --- |
 | [ToDo List App Tutorial](./Tutorials/ToDo%20List%20App%20Tutorial.md) | This topic describes how to create a classic Redux example -- the **ToDo List** app. |
-| [Hacker News Tutorial](./Tutorials/Hacker%20News%20Tutorial.md) | This tutorial shows you how to create a **Hacker News** application. |
+| [Hacker News Tutorial](./Tutorials/Hacker%20News%20Tutorial.md) | This tutorial describes how to create a **Hacker News** application clone. |
 
 ## Common Concepts
 
-| Name of Topic | Description |
+| Topic Name | Description |
 | --- | --- |
-| [System Metaphor](./System%20Metaphor.md) | This is a [shared story](http://c2.com/xp/SystemMetaphor.html) that let the team speak the same language. |
-| [Architecture](./Architecture.md) | This topic helps to understand common approach for building the application architecture. |
-| [API References](./API%20References.md) | This topic shows common settings for reSolve application. |
-| [Contributing](./Contributing.md) | This is a set of guidelines for contributing to reSolve and its packages. |
+| [System Metaphor](./System%20Metaphor.md) | An Extreme Programming concept: a [shared story](http://c2.com/xp/SystemMetaphor.html) on the common patterns an terms that shape the core flow of the system being built. |
+| [Architecture](./Architecture.md) | This topic helps you understand the common approach for building an application architecture. |
+| [API References](./API%20References.md) | This topic describes the reSolve API. |
+| [Contributing](./Contributing.md) | Guidelines that help you contribute to reSolve and its packages. |
 
-## Common Application Parts
+## reSolve Concepts
 
-| Name of Topic | Description |
+| Topic Name | Short Description |
 | --- | --- |
-| [Packages](./Packages.md) | This folder contains all reSolve libraries and its description. |
-| [Aggregate](./Aggregate.md) | This topic describes how to work with [Aggregate](https://martinfowler.com/bliki/DDD_Aggregate.html). |
-| [Event Store](./Event%20Store.md) | This topic describes how to work with Event Store that stores all events aggregates produce and delivers them to subscribers. |
-| [Projection](./Projection.md) | This topic describes how to work with [Projection](https://abdullin.com/post/event-sourcing-projections/). |
-| [Query](./Query.md) | This topic describes how to work with Query that is used to get data from a Read Model and View Model. |
-| [Read Model](./Read%20Model.md) | This topic describes how to work with Read Model that represents a system state or its part. |
-| [View Model](./View%20Model.md) | This topic describes how to work with View Model that is sent to the client UI to be a part of a Redux app state. |
+| [Packages](./Packages.md) | Lists and describes the reSolve libraries. |
+| [Aggregate](./Aggregate.md) | A **Domain-Driven Design** concept: a cluster of domain objects that can be treated as a single unit. |
+| [Event Store](./Event%20Store.md) | An **Event Sourcing** concept: a database that stores all events aggregates produce and delivers them to subscribers. |
+| [Projection](./Projection.md) | An **Event Sourcing** concept: a function that derives the current state from the events stream. |
+| [Query](./Query.md) | A **reSolve** concept: an interface used to get data from [read](./Read%20Model.md) and [view](./View%20Model.md) models.  |
+| [Read Model](./Read%20Model.md) | A **reSolve** concept: a data structure that represents the current system state |
+| [View Model](./View%20Model.md) | A **reSolve** concept: a read model designed to be maintained on the client-side (used for UI) |
