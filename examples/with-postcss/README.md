@@ -1,10 +1,10 @@
-# With PostCSS Example
+# ReSolve PostCSS Example
 
 ![Styled Components](https://user-images.githubusercontent.com/5055654/39309673-413535aa-4971-11e8-933f-5c0a8ed1a2ea.png)
 
-This example demonstrates how to work with [postCSS](https://github.com/postcss/postcss-loader#css-modules). To install:
+This example demonstrates how to work with [postCSS](https://github.com/postcss/postcss-loader#css-modules). Get the example using this command:
 
-```bash
+```sh
 npx create-resolve-app with-postcss -e with-postcss
 ```
 
@@ -28,10 +28,10 @@ export default App
 
 ## What's next?
 
-📑 Available scripts, project structure overview, configuration files and much other useful information are in [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md) topic.
+📑 Available scripts, project structure overview, configuration files, and more useful information can be found in the [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md) topic.
 
-📑 To learn more about common building principles of architecture, please look at [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md) documentation topic.
+📑 Refer to the [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md) documentation topic to learn more about common architecture building principles.
 
-📑 In [**Tutorials**](https://github.com/reimagined/resolve/tree/master/docs/Tutorials) you can find how to make some simple applications with reSolve.
+📑 You can find how to create simple applications with reSolve in the [**Tutorials**](https://github.com/reimagined/resolve/tree/master/docs/Tutorials) section.
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/examples-with-postcss-modules-readme?pixel)

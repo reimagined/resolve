@@ -2,9 +2,9 @@
 
 ![Styled Components](https://camo.githubusercontent.com/640c2142e506d4b61bdd29513cb2cdbddbd4aa2f/687474703a2f2f692e696d6775722e636f6d2f77554a70636a592e6a7067)
 
-This example demonstrates how to work with [styled-components](https://www.styled-components.com/docs). To install:
+This example demonstrates how to work with [Styled Components](https://www.styled-components.com/docs). Get the example using this command:
 
-```bash
+```sh
 npx create-resolve-app with-styled-components -e with-styled-components
 ```
 
@@ -16,7 +16,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 // Create a <Title> react component that renders an <h1> which is
-// centered, palevioletred and sized at 1.5em
+// centered, colored in palevioletred and sized at 1.5em
 const Title = styled.h1`
   font-size: 1.5em;
   text-align: center;
@@ -44,12 +44,12 @@ const Wrapper = styled.section`
 
 📑 [**Server-side rendering**](https://www.styled-components.com/docs/advanced#server-side-rendering) for styled-components.
 
-📑 [**Tagged Template Literals explaination**](https://www.styled-components.com/docs/advanced#tagged-template-literals) for styled-components.
+📑 [**Tagged Template Literals**](https://www.styled-components.com/docs/advanced#tagged-template-literals) for styled-components.
 
-📑 Available scripts, project structure overview, configuration files and much other useful information are in [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md) topic.
+📑 Available scripts, project structure overview, configuration files, and more useful information can be found in the [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md) topic.
 
-📑 To learn more about common building principles of architecture, please look at [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md) documentation topic.
+📑 Refer to the [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md) documentation topic to learn more about common architecture building principles.
 
-📑 In [**Tutorials**](https://github.com/reimagined/resolve/tree/master/docs/Tutorials) you can find how to make some simple applications with reSolve.
+📑 You can find how to create simple applications with reSolve in the [**Tutorials**](https://github.com/reimagined/resolve/tree/master/docs/Tutorials) section.
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/examples-with-styled-components-readme?pixel)
