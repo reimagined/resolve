@@ -8,7 +8,7 @@ This is a set of guidelines for contributing to reSolve and its packages hosted 
     * [Definition of the Done](#definition-of-the-done)
     * [Code Style](#code-style)
     * [Working in Monorepo](#working-in-monorepo)
-* [Reporting Bugs](#reporting-bugs)
+* [Reporting Bugs and Requesting Features](#reporting-bugs-and-requesting-features)
 * [Issue Labels](#issue-labels)
 
 ## Pull Requests
