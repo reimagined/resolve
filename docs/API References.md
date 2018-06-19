@@ -35,7 +35,7 @@ Open [http://localhost:3000](http://localhost:3000/) or http://<your_ip>:3000 to
 
 ## **Project Structure Overview**
 
-[Create ReSolve App](https://www.npmjs.com/package/create-resolve-app) is an NPM package referencing the latest [reSolve framework package](https://github.com/reimagined/resolve/) versions. It consists of the common isomorphic part which describes domain business logic and React components for the presentation. No implicit server part is needed - it is encapsulated in `resolve-scripts`, but can be customized using [config](#-configuration-files). The project also includes unit & E2E testing and deployment assets. All source code and functional tests are written in the [ES2016](http://2ality.com/2016/01/ecmascript-2016.html).
+[Create ReSolve App](https://www.npmjs.com/package/create-resolve-app) is an NPM package referencing the latest [reSolve framework package](https://github.com/reimagined/resolve/) versions. It consists of the common isomorphic part which describes domain business logic and React components for the presentation. No implicit server part is needed - it is encapsulated in `resolve-scripts`, but can be customized using [config](#configuration-files). The project also includes unit & E2E testing and deployment assets. All source code and functional tests are written in the [ES2016](http://2ality.com/2016/01/ecmascript-2016.html).
 
 ```
 📁 resolve-app
