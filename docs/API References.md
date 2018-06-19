@@ -74,7 +74,7 @@ Open [http://localhost:3000](http://localhost:3000/) or http://<your_ip>:3000 to
 ```
 
 ### **Authentication**
-The `auth` folder contains authentication strategies' code. You can choose this file location using `auth` section in `resolve.config.json` (see [auth example](../examples/with-authentication/resolve.config.json))
+The `auth` folder contains authentication strategies' code. You can choose this file location using `auth` section in `resolve.config.json` (see [with-authentication example](../examples/with-authentication/resolve.config.json))
 
 ### **Client**
 The client side is located in the `client/` folder. File `routes.js` contains route configuration according to the specifications of [Route Configuration Shape](https://github.com/reacttraining/react-router/tree/master/packages/react-router-config#route-configuration-shape).
