@@ -11,8 +11,6 @@
     * [Resolve Config](#resolve-config)
     * [Build Config](#build-config)
 * [Environment Variables](#environment-variables)
-    * [URL Settings](#url-settings)
-    * [Custom Environment Variables](#custom-environment-variables)
 
 ## **Available Scripts**
 
