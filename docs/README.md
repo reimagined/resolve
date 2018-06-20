@@ -6,7 +6,7 @@ Welcome to the reSolve documentation! Here you can find articles that help you u
 
 | Topic Name | Description |
 | --- | --- |
-| [ToDo List App Tutorial](./Tutorials/ToDo%20List%20App%20Tutorial.md) | This topic describes how to create a classic Redux example -- the **ToDo List** app. |
+| [ToDo List App Tutorial](./Tutorials/ToDo%20List%20App%20Tutorial.md) | This topic describes how to create a classic Redux example - the **ToDo List** app. |
 | [Hacker News Tutorial](./Tutorials/Hacker%20News%20Tutorial.md) | This tutorial describes how to create a **Hacker News** application clone. |
 
 ## Common Concepts
