@@ -1,4 +1,4 @@
-# ReSolve Authentication Example
+# reSolve Authentication Example
 
 ![auth](https://user-images.githubusercontent.com/19663260/41349826-c62e747e-6f19-11e8-9063-b3cdb827e740.png)
 

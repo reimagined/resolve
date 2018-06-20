@@ -1,16 +1,16 @@
-# reSolve Authentication Example
+# Top List Example
 
-![auth](https://user-images.githubusercontent.com/19663260/41349826-c62e747e-6f19-11e8-9063-b3cdb827e740.png)
+![top-list](https://user-images.githubusercontent.com/19663260/41165263-da21823c-6b45-11e8-9af4-f81b797d0b52.png)
 
-This example shows the `resolve-auth` package usage. Get the example using this command:
+This example demonstrates how to update the application state on external events regardless of user actions. Get the example using this command:
 
 ```sh
-npx create-resolve-app with-authentication -e with-authentication
+npx create-resolve-app resolve-top-list-example -e top-list
 ```
 
 ## What's next?
 
-📑 Learn more about the [**resolve-auth** package](https://github.com/reimagined/resolve/blob/master/packages/resolve-auth) and [**Read Model**](https://github.com/reimagined/resolve/blob/master/docs/Read%20Model.md).
+📑 You can learn more about read-models in the [**Read Model**](https://github.com/reimagined/resolve/blob/master/docs/Read%20Model.md) topic.
 
 📑 Available scripts, project structure overview, configuration files, and more useful information can be found in the [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md) topic.
 
@@ -18,4 +18,5 @@ npx create-resolve-app with-authentication -e with-authentication
 
 📑 You can learn how to create simple applications with reSolve in the [**Tutorials**](https://github.com/reimagined/resolve/tree/master/docs/Tutorials) section.
 
-![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/examples-with-authentication-readme?pixel)
+![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/examples-top-list-readme?pixel)
+
