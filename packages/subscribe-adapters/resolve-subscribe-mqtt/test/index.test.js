@@ -1,13 +1,14 @@
 import createSubscribeAdapter, { errorMessage } from '../src'
-import mqtt from "mqtt";
-import getMqttTopics from "../src/get_mqtt_topics";
+import mqtt from 'mqtt'
+import getMqttTopics from '../src/get_mqtt_topics'
 
-const delay = (timeout) => new Promise((resolve) => {
-  setTimeout(resolve, timeout)
-})
+const delay = timeout =>
+  new Promise(resolve => {
+    setTimeout(resolve, timeout)
+  })
 
 const api = {
-  getSubscribeAdapterOptions: ()=>({
+  getSubscribeAdapterOptions: () => ({
     qos: 2,
     url: 'mqtt://test.test',
     appId: '123456'
@@ -16,7 +17,7 @@ const api = {
 
 test('createSubscribeAdapter should return subscribeAdapter', () => {
   const subscribeAdapter = createSubscribeAdapter({ api })
-  
+
   expect(typeof subscribeAdapter.init).toBe('function')
   expect(typeof subscribeAdapter.close).toBe('function')
   expect(typeof subscribeAdapter.subscribeToTopics).toBe('function')
@@ -25,28 +26,28 @@ test('createSubscribeAdapter should return subscribeAdapter', () => {
 
 test('subscribeAdapter.init should works correctly', async () => {
   const subscribeAdapter = createSubscribeAdapter({ api })
-  
+
   const result = subscribeAdapter.init()
-  
+
   await delay(10)
-  
-  mqtt.Client._onConnect();
-  
+
+  mqtt.Client._onConnect()
+
   expect.assertions(1)
   expect(await result).toBeUndefined()
 })
 
 test('subscribeAdapter.init should fail', async () => {
   const subscribeAdapter = createSubscribeAdapter({ api })
-  
+
   const result = subscribeAdapter.init()
-  
+
   await delay(10)
-  
+
   const error = new Error('Test')
-  
+
   mqtt.Client._onError(error)
-  
+
   expect.assertions(1)
   try {
     await result
@@ -57,22 +58,22 @@ test('subscribeAdapter.init should fail', async () => {
 
 test('subscribeAdapter.init (double) should fail', async () => {
   const subscribeAdapter = createSubscribeAdapter({ api })
-  
+
   let result = subscribeAdapter.init()
-  
+
   await delay(10)
-  
-  mqtt.Client._onConnect();
-  
+
+  mqtt.Client._onConnect()
+
   expect.assertions(2)
   expect(await result).toBeUndefined()
-  
+
   result = subscribeAdapter.init()
-  
+
   await delay(10)
-  
-  mqtt.Client._onConnect();
-  
+
+  mqtt.Client._onConnect()
+
   expect.assertions(1)
   try {
     await result
@@ -83,15 +84,15 @@ test('subscribeAdapter.init (double) should fail', async () => {
 
 test('subscribeAdapter.subscribeToTopics should works correctly', async () => {
   const subscribeAdapter = createSubscribeAdapter({ api })
-  
+
   const initResult = subscribeAdapter.init()
-  
+
   await delay(10)
-  
-  mqtt.Client._onConnect();
-  
+
+  mqtt.Client._onConnect()
+
   await initResult
-  
+
   expect.assertions(1)
   const result = await subscribeAdapter.subscribeToTopics([
     {
@@ -103,25 +104,25 @@ test('subscribeAdapter.subscribeToTopics should works correctly', async () => {
       topicId: 'testId-2'
     }
   ])
-  
+
   expect(result).toBeUndefined()
 })
 
 test('subscribeAdapter.subscribeToTopics should fail', async () => {
   const subscribeAdapter = createSubscribeAdapter({ api })
-  
+
   const initResult = subscribeAdapter.init()
-  
+
   await delay(10)
-  
-  mqtt.Client._onConnect();
-  
+
+  mqtt.Client._onConnect()
+
   await initResult
-  
+
   const error = new Error('Test')
-  
+
   mqtt.Client._error = error
-  
+
   expect.assertions(1)
   try {
     await subscribeAdapter.subscribeToTopics([
@@ -141,15 +142,15 @@ test('subscribeAdapter.subscribeToTopics should fail', async () => {
 
 test('subscribeAdapter.unsubscribeFromTopics should works correctly', async () => {
   const subscribeAdapter = createSubscribeAdapter({ api })
-  
+
   const initResult = subscribeAdapter.init()
-  
+
   await delay(10)
-  
-  mqtt.Client._onConnect();
-  
+
+  mqtt.Client._onConnect()
+
   await initResult
-  
+
   expect.assertions(1)
   const result = await subscribeAdapter.unsubscribeFromTopics([
     {
@@ -161,25 +162,25 @@ test('subscribeAdapter.unsubscribeFromTopics should works correctly', async () =
       topicId: 'testId-2'
     }
   ])
-  
+
   expect(result).toBeUndefined()
 })
 
 test('subscribeAdapter.unsubscribeFromTopics should fail', async () => {
   const subscribeAdapter = createSubscribeAdapter({ api })
-  
+
   const initResult = subscribeAdapter.init()
-  
+
   await delay(10)
-  
-  mqtt.Client._onConnect();
-  
+
+  mqtt.Client._onConnect()
+
   await initResult
-  
+
   const error = new Error('Test')
-  
+
   mqtt.Client._error = error
-  
+
   expect.assertions(1)
   try {
     await subscribeAdapter.unsubscribeFromTopics([
@@ -196,4 +197,3 @@ test('subscribeAdapter.unsubscribeFromTopics should fail', async () => {
     expect(error).toBe(error)
   }
 })
-

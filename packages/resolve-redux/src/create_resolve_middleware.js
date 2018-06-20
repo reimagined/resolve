@@ -7,7 +7,7 @@ const createResolveMiddleware = () => {
   const sagaMiddleware = createSagaMiddleware()
 
   const sagaMiddlewareRun = sagaMiddleware.run.bind(sagaMiddleware)
-  sagaMiddleware.run = (sagaArgs) => {
+  sagaMiddleware.run = sagaArgs => {
     sagaMiddlewareRun(sagaArgs.isClient ? rootSaga : emptySaga, sagaArgs)
   }
 

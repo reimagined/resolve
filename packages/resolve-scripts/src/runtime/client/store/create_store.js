@@ -14,15 +14,19 @@ import readModels from '$resolve.readModels'
 import aggregates from '$resolve.aggregates'
 import subscribe from '$resolve.subscribeAdapter'
 
-
-
 const { reducers, middlewares, store: setupStore } = redux
 
-export default ({ initialState, history, origin, rootPath, isClient = true }) => {
+export default ({
+  initialState,
+  history,
+  origin,
+  rootPath,
+  isClient = true
+}) => {
   const resolveMiddleware = createResolveMiddleware()
-  
+
   const api = createApi()
-  
+
   const subscribeAdapter = subscribe.module({
     ...subscribe.options,
     api

@@ -1,5 +1,3 @@
-const emptySaga = function* () {
-
-}
+const emptySaga = function*() {}
 
 export default emptySaga

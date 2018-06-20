@@ -1,17 +1,15 @@
-# **resolve-storage-mongo**
-[![npm version](https://badge.fury.io/js/resolve-storage-mongo.svg)](https://badge.fury.io/js/resolve-storage-mongo)
+# **resolve-subscribe-mqtt**
+[![npm version](https://badge.fury.io/js/resolve-subscribe-mqtt.svg)](https://badge.fury.io/js/resolve-subscribe-mqtt)
 
-This package is a `resolve-es` adapter for storing events using [MongoDB](https://docs.mongodb.com/).
+This package is a `resolve-redux` adapter for subscribe to events using [MQTT](https://github.com/mqttjs/MQTT.js).
 
 ## Available Parameters
-* `url` - a MongoDB connection string. Refer to [Connection String URI Format](https://docs.mongodb.com/manual/reference/connection-string/) for more information.
-* `collection` - a name of a collection storing events.
-## Usage
+* `api` - Refer to [resolve-redux API](../../resolve-redux/README.md#api) for more information.
 
 ```js
 import createSubscribeAdapter from 'resolve-subscribe-mqtt';
 
-const adapter = createAdapter({ api });
+const adapter = createSubscribeAdapter({ api });
 ```
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-resolve-subscribe-mqtt-readme?pixel)
