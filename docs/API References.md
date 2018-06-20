@@ -119,11 +119,11 @@ Example can be found in [`with-postcss-modules`](../examples/with-postcss-module
 
 | Name              | Description                           |
 |-------------------|---------------------------------------|
-| `build`           | Builds the app to the build directory |
-| `start`           | Runs the app from the build directory |
-| `dev`             | Runs the app in the development mode  |
-| `test`            | Runs unit tests with Jest             |
-| `test:functional` | Runs functional tests with TestCafe   |
+| `build`           | Compile the app into the build directory |
+| `start`           | Run the app from the build directory |
+| `dev`             | Run the app in the development mode |
+| `test`            | Run unit tests with Jest |
+| `test:functional` | Run functional tests with TestCafe |
 
 #### command "build"
 
@@ -131,18 +131,18 @@ Example can be found in [`with-postcss-modules`](../examples/with-postcss-module
 |------------------|-----------------------------------------------------------------------|-----------|
 | `--version`      | Show version number                                                   | [boolean] |
 | `--help`         | Show help                                                             | [boolean] |
-| `--dev`          | Sets webpack.mode and process.env.NODE_ENV to 'development'           | [boolean] |
-| `--prod`         | Sets webpack.mode and process.env.NODE_ENV to 'production'            | [boolean] |
-| `--test`         | Sets webpack.mode to 'development' and process.env.NODE_ENV to 'test' | [boolean] |
-| `--watch`        | Watch the filesystem for changes                                      | [boolean] |
-| `--start`        | Automatically start your server once Webpack's build completes        | [boolean] |
-| `--port`         | Application's port                                                    | [number]  |
-| `--inspect`      | Activate inspector on [host:]port                                     | [string]  |
-| `--config`       | Path to resolve config                                                | [string]  |
-| `--build-config` | Path to resolve build config                                          | [string]  |
-| `--print-config` | Print the full configuration                                          | [boolean] |
-| `--root-path`    | Application's root path                                               | [string]  |
-| `--open-browser` | Open browser with the root page                                       | [boolean] |
+| `--dev`          | Set webpack.mode and process.env.NODE_ENV to 'development'            | [boolean] |
+| `--prod`         | Set webpack.mode and process.env.NODE_ENV to 'production'             | [boolean] |
+| `--test`         | Set webpack.mode to 'development' and process.env.NODE_ENV to 'test'  | [boolean] |
+| `--watch`        | Watch the filesystem for changes and update the app using Webpack HMR | [boolean] |
+| `--start`        | Automatically start your server once Webpack build completes          | [boolean] |
+| `--port`         | Application port                                                      | [number]  |
+| `--inspect`      | Start Node.js inspector on [host:]port                                | [string]  |
+| `--config`       | Path to reSolve config                                                | [string]  |
+| `--build-config` | Path to reSolve build config                                          | [string]  |
+| `--print-config` | Show the current configuration                                        | [boolean] |
+| `--root-path`    | Application root path                                                 | [string]  |
+| `--open-browser` | Open the root page in the default browser                             | [boolean] |
 
 #### command "start"
 
@@ -150,8 +150,8 @@ Example can be found in [`with-postcss-modules`](../examples/with-postcss-module
 |------------------|-----------------------------------------------------------------------|-----------|
 | `--version`      | Show version number                                                   | [boolean] |
 | `--help`         | Show help                                                             | [boolean] |
-| `--inspect`      | Activate inspector on [host:]port                                     | [string]  |
-| `--print-config` | Print the full configuration                                          | [boolean] |
+| `--inspect`      | Start Node.js inspector on [host:]port                                | [string]  |
+| `--print-config` | Show the current configuration                                        | [boolean] |
 
 #### command "dev"
 
@@ -159,14 +159,14 @@ Example can be found in [`with-postcss-modules`](../examples/with-postcss-module
 |------------------|-----------------------------------------------------------------------|-----------|
 | `--version`      | Show version number                                                   | [boolean] |
 | `--help`         | Show help                                                             | [boolean] |
-| `--test`         | Sets webpack.mode to 'development' and process.env.NODE_ENV to 'test' | [boolean] |
-| `--port`         | Application's port                                                    | [number]  |
-| `--inspect`      | Activate inspector on [host:]port                                     | [string]  |
-| `--root-path`    | Application's root path                                               | [string]  |
-| `--open-browser` | Open browser with the root page                                       | [boolean] |
-| `--config`       | Path to resolve config                                                | [string]  |
-| `--build-config` | Path to resolve build config                                          | [string]  |
-| `--print-config` | Print the full configuration                                          | [boolean] |
+| `--test`         | Set webpack.mode to 'development' and process.env.NODE_ENV to 'test'  | [boolean] |
+| `--port`         | Application port                                                      | [number]  |
+| `--inspect`      | Start Node.js inspector on [host:]port                                | [string]  |
+| `--root-path`    | Application root path                                                 | [string]  |
+| `--open-browser` | Open the root page in the default browser                             | [boolean] |
+| `--config`       | Path to reSolve config                                                | [string]  |
+| `--build-config` | Path to reSolve build config                                          | [string]  |
+| `--print-config` | Show the current configuration                                        | [boolean] |
 
 ## Environment Variables
 You can pass env variables to the client side. To do this, use the `RESOLVE_` prefix when naming a variable. After that, this variable is available on the client and server side via the `process.env` object.
