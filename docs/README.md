@@ -13,7 +13,7 @@ Welcome to the reSolve documentation! Here you can find articles that help you u
 
 | Topic Name | Description |
 | --- | --- |
-| [System Metaphor](./System%20Metaphor.md) | An Extreme Programming concept: a [shared story](http://c2.com/xp/SystemMetaphor.html) on the common patterns an terms that shape the core flow of the system being built. |
+| [System Metaphor](./System%20Metaphor.md) | An Extreme Programming concept: a [shared story](http://c2.com/xp/SystemMetaphor.html) on the common patterns and terms that shape the core flow of the system being built. |
 | [Architecture](./Architecture.md) | This topic helps you understand the common approach for building an application architecture. |
 | [API References](./API%20References.md) | This topic describes the reSolve API. |
 | [Contributing](./Contributing.md) | Guidelines that help you contribute to reSolve and its packages. |
@@ -24,7 +24,7 @@ Welcome to the reSolve documentation! Here you can find articles that help you u
 | --- | --- |
 | [Packages](./Packages.md) | Lists and describes the reSolve libraries. |
 | [Aggregate](./Aggregate.md) | A **Domain-Driven Design** concept: a cluster of domain objects that can be treated as a single unit. |
-| [Event Store](./Event%20Store.md) | An **Event Sourcing** concept: a database that stores all events aggregates produce and delivers them to subscribers. |
+| [Event Store](./Event%20Store.md) | An **Event Sourcing** concept: a database that stores all Events and delivers them to subscribers. |
 | [Projection](./Projection.md) | An **Event Sourcing** concept: a function that derives the current state from the events stream. |
 | [Query](./Query.md) | A **reSolve** concept: an interface used to get data from [read](./Read%20Model.md) and [view](./View%20Model.md) models.  |
 | [Read Model](./Read%20Model.md) | A **reSolve** concept: a data structure that represents the current system state |
