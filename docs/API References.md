@@ -10,6 +10,7 @@
 * [Configuration Files](#configuration-files)
     * [Resolve Config](#resolve-config)
     * [Build Config](#build-config)
+* [Command Line Interface](#command-line-interface)
 * [Environment Variables](#environment-variables)
 
 ## **Available Scripts**
