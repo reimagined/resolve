@@ -16,6 +16,6 @@ npx create-resolve-app with-authentication -e with-authentication
 
 📑 Refer to the [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md) documentation topic to learn more about common architecture building principles.
 
-📑 You can find how to create simple applications with reSolve in the [**Tutorials**](https://github.com/reimagined/resolve/tree/master/docs/Tutorials) section.
+📑 You can learn how to create simple applications with reSolve in the [**Tutorials**](https://github.com/reimagined/resolve/tree/master/docs/Tutorials) section.
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/examples-with-authentication-readme?pixel)

@@ -12,10 +12,10 @@ npx create-resolve-app resolve-todo-example -e todo
 
 📑 The app's creation process is detailed in the [ToDo List App Tutorial](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/ToDo%20List%20App%20Tutorial.md).
 
-📑 You can learn more in [**View Model**](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md) topic.
+📑 You can learn more in the [**View Model**](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md) topic.
 
-📑 Available scripts, project structure overview, configuration files and more useful information are in [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md) topic.
+📑 Available scripts, project structure overview, configuration files and more useful information can be found in the [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md) topic.
 
-📑 To learn more about common building principles of architecture, please look at [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md) documentation topic.
+📑 Refer to the [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md) documentation topic to learn more about common architecture building principles.
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/examples-todo-readme?pixel)

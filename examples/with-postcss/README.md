@@ -1,4 +1,4 @@
-# ReSolve PostCSS Example
+# reSolve PostCSS Example
 
 ![Styled Components](https://user-images.githubusercontent.com/5055654/39309673-413535aa-4971-11e8-933f-5c0a8ed1a2ea.png)
 
@@ -32,6 +32,7 @@ export default App
 
 📑 Refer to the [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md) documentation topic to learn more about common architecture building principles.
 
-📑 You can find how to create simple applications with reSolve in the [**Tutorials**](https://github.com/reimagined/resolve/tree/master/docs/Tutorials) section.
+📑 You can learn how to create simple applications with reSolve in the [**Tutorials**](https://github.com/reimagined/resolve/tree/master/docs/Tutorials) section.
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/examples-with-postcss-modules-readme?pixel)
+
