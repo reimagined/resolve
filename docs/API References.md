@@ -117,13 +117,13 @@ Example can be found in [`with-postcss-modules`](../examples/with-postcss-module
 
 ### Commands:
 
-| Name              | Description                           |
-|-------------------|---------------------------------------|
+| Name              | Description                              |
+|-------------------|------------------------------------------|
 | `build`           | Compile the app into the build directory |
-| `start`           | Run the app from the build directory |
-| `dev`             | Run the app in the development mode |
-| `test`            | Run unit tests with Jest |
-| `test:functional` | Run functional tests with TestCafe |
+| `start`           | Run the app from the build directory     |
+| `dev`             | Run the app in the development mode      |
+| `test`            | Run unit tests with Jest                 |
+| `test:functional` | Run functional tests with TestCafe       |
 
 #### command "build"
 
