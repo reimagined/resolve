@@ -225,6 +225,42 @@ pipeline {
                         }
                     }
                 }
+
+                stage('Create-resolve-app [ with-authentication ] Functional Tests') {
+                    steps {
+                        script {
+                            sh """
+                                mkdir with-authentication && cd with-authentication;
+                                create-resolve-app with-authentication -e with-authentication -c \$(cat /last_commit)
+                                cd ./with-authentication
+                                cat ./package.json
+                                sed -i 's/"port": 3000/"port": 3006/g' ./resolve.config.json
+                                grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3006/g'
+
+                                yarn test
+                                yarn test:functional --browser=path:/chromium
+                            """
+                        }
+                    }
+                }
+
+                stage('Create-resolve-app [ with-styled-components ] Functional Tests') {
+                    steps {
+                        script {
+                            sh """
+                                mkdir with-styled-components && cd with-styled-components;
+                                create-resolve-app with-styled-components -e with-styled-components -c \$(cat /last_commit)
+                                cd ./with-styled-components
+                                cat ./package.json
+                                sed -i 's/"port": 3000/"port": 3006/g' ./resolve.config.json
+                                grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3006/g'
+
+                                yarn test
+                                yarn test:functional --browser=path:/chromium
+                            """
+                        }
+                    }
+                }
             }
         }
     }
