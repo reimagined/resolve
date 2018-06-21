@@ -3,29 +3,38 @@ import { createViewModel } from 'resolve-query'
 import eventStore from './event_store'
 import raiseError from './utils/raise_error'
 
-const message = require('../../../configs/message.json')
+import viewModels from '$resolve.viewModels'
 
-const viewModels = require($resolve.viewModels)
+const message = require('../../../configs/message.json')
 
 const viewModelQueryExecutors = {}
 
 viewModels.forEach(viewModel => {
   if (!viewModel.name && viewModels.length === 1) {
-    viewModel.name = 'reduxinitial'
+    viewModel.name = 'reduxInitial'
   } else if (!viewModel.name) {
     raiseError(message.viewModelMandatoryName, viewModel)
   } else if (viewModelQueryExecutors[viewModel.name]) {
-    raiseError(message.dublicateName, viewModel)
+    raiseError(message.duplicateName, viewModel)
   }
 
   if (!viewModel.serializeState || !viewModel.deserializeState) {
     raiseError(message.viewModelSerializable, viewModel)
   }
 
+  let snapshotAdapter, snapshotBucketSize
+  if (viewModel.snapshotAdapter) {
+    const createSnapshotAdapter = viewModel.snapshotAdapter.module
+    const snapshotAdapterOptions = viewModel.snapshotAdapter.options
+
+    snapshotAdapter = createSnapshotAdapter(snapshotAdapterOptions)
+    snapshotBucketSize = snapshotAdapterOptions.bucketSize
+  }
+
   const facade = createViewModel({
     projection: viewModel.projection,
-    snapshotAdapter: viewModel.snapshotAdapter,
-    snapshotBucketSize: viewModel.snapshotBucketSize,
+    snapshotAdapter,
+    snapshotBucketSize,
     eventStore
   })
 

@@ -11,7 +11,7 @@ describe('adapter', () => {
   const pathToFile = 'some-path'
 
   beforeEach(() => {
-    sandbox = sinon.sandbox.create()
+    sandbox = sinon.createSandbox()
 
     sandbox.stub(storage, 'prepare').returns(Promise.resolve())
     sandbox.stub(storage, 'saveEvent')

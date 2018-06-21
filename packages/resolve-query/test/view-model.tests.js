@@ -215,7 +215,7 @@ describe('resolve-query view-model', () => {
     }
   })
 
-  it('should support view-model with caching subscribtion and last state', async () => {
+  it('should support view-model with caching subscription and last state', async () => {
     const testEvent = {
       type: 'TestEvent',
       aggregateId: 'test-id',

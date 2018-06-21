@@ -8,8 +8,9 @@ import Routes from './components/Routes'
 import createStore from './store/create_store'
 import deserializeInitialState from './store/deserialize_initial_state'
 
-const routes = require($resolve.routes)
-const rootPath = $resolve.rootPath
+import routes from '$resolve.routes'
+
+import rootPath from '$resolve.rootPath'
 
 const initialState = deserializeInitialState(window.__INITIAL_STATE__)
 

@@ -3,7 +3,7 @@ import path from 'path'
 
 import getMonorepoNodeModules from './get_monorepo_node_modules'
 
-export default function resolveFileOrModule(query) {
+const resolveFileOrModule = query => {
   const customFilePath = path.resolve(process.cwd(), query)
 
   if (fs.existsSync(customFilePath)) {
@@ -22,3 +22,5 @@ export default function resolveFileOrModule(query) {
 
   throw new Error(`File/module "${query}" does not exist`)
 }
+
+export default resolveFileOrModule

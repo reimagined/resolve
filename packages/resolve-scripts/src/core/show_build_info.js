@@ -1,13 +1,19 @@
 import chalk from 'chalk'
 
-const statsConfig = require('../../configs/stats.config.json')
+import { statsConfig } from './constants'
 
-const showBuildInfo = ({ name }, err, stats) => {
+const showBuildInfo = (err, stats) => {
+  // TODO
   if (!stats) {
     return
   }
   // eslint-disable-next-line
-  console.log('[', chalk.green(name), ']', stats.toString(statsConfig))
+  console.log(
+    '[',
+    chalk.green(stats.compilation.name),
+    ']',
+    stats.toString(statsConfig)
+  )
   if (err) {
     // eslint-disable-next-line
     console.error(err)

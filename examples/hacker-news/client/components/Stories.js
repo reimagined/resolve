@@ -16,7 +16,7 @@ const StoryItem = styled.li`
   margin-bottom: 12px;
 `
 
-const Stories = ({ items, page, type, userId }) => {
+const Stories = ({ items, page, type, userId, upvoteStory, unvoteStory }) => {
   if (page && !Number.isInteger(Number(page))) {
     return <Redirect push to="/error?text=No such page" />
   }
@@ -26,7 +26,12 @@ const Stories = ({ items, page, type, userId }) => {
       <StoryList start={+(ITEMS_PER_PAGE * (page ? page - 1 : 0)) + 1}>
         {items.slice(0, ITEMS_PER_PAGE).map(story => (
           <StoryItem key={story.id}>
-            <Story story={story} userId={userId} />
+            <Story
+              story={story}
+              userId={userId}
+              upvoteStory={upvoteStory}
+              unvoteStory={unvoteStory}
+            />
           </StoryItem>
         ))}
       </StoryList>

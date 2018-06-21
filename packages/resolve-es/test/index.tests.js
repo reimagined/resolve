@@ -80,7 +80,7 @@ describe('resolve-es', () => {
 
   describe('subscribeByAggregateId', () => {
     // eslint-disable-next-line max-len
-    it('should handle callback by one AggragateId with events propagated from storage and bus', async () => {
+    it('should handle callback by one AggregateId with events propagated from storage and bus', async () => {
       const resolvedPromise = Promise.resolve()
 
       const aggregateId = 'TEST-AGGREGATE-ID'
@@ -113,7 +113,7 @@ describe('resolve-es', () => {
     })
 
     // eslint-disable-next-line max-len
-    it('should handle callback by AggragateId array with events propagated from storage and bus', async () => {
+    it('should handle callback by AggregateId array with events propagated from storage and bus', async () => {
       const resolvedPromise = Promise.resolve()
 
       const aggregateIds = ['TEST-AGGREGATE-ID-1', 'TEST-AGGREGATE-ID-2']
@@ -146,7 +146,7 @@ describe('resolve-es', () => {
     })
 
     // eslint-disable-next-line max-len
-    it('should handle callback by AggragateId array with events propagated only from bus', async () => {
+    it('should handle callback by AggregateId array with events propagated only from bus', async () => {
       const resolvedPromise = Promise.resolve()
 
       const storage = { loadEventsByAggregateIds: sinon.stub() }

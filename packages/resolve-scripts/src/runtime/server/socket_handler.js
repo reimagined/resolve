@@ -2,7 +2,7 @@ import { actions } from 'resolve-redux'
 
 import eventStore from './event_store'
 
-const isOpenBrowser = $resolve.openBrowser
+import isOpenBrowser from '$resolve.openBrowser'
 
 const socketHandler = socket => {
   if (isOpenBrowser) {
@@ -17,7 +17,7 @@ const socketHandler = socket => {
   )
   const unsubscribe = () => {
     if (unsubscribePromise) {
-      unsubscribePromise.then(unsubcribeCallback => unsubcribeCallback())
+      unsubscribePromise.then(unsubscribeCallback => unsubscribeCallback())
       unsubscribePromise = null
     }
   }

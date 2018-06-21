@@ -1,20 +1,16 @@
 const defineTable = async (
   { createTable, storage },
   tableName,
-  tableSchema
+  tableDescription
 ) => {
   storage[tableName] = createTable()
 
-  await new Promise((resolve, reject) =>
-    storage[tableName].ensureIndex(
-      { fieldName: tableSchema.primaryIndex.name },
-      err => (!err ? resolve() : reject(err))
-    )
-  )
-  for (let { name } of tableSchema.secondaryIndexes) {
+  for (let fieldName of Object.keys(tableDescription)) {
+    if (tableDescription[fieldName] === 'regular') continue
+
     await new Promise((resolve, reject) =>
       storage[tableName].ensureIndex(
-        { fieldName: name },
+        { fieldName },
         err => (!err ? resolve() : reject(err))
       )
     )

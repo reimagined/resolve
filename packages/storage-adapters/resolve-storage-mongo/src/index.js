@@ -25,13 +25,16 @@ function loadEvents(coll, query, startTime, callback) {
   return donePromise
 }
 
-function createAdapter({ url, collection }) {
+function createAdapter({ url, collectionName, databaseName }) {
   let promise
 
   function getCollection() {
     if (!promise) {
       promise = MongoClient.connect(url)
-        .then(db => db.collection(collection))
+        .then(client => {
+          const db = client.db(databaseName)
+          return db.collection(collectionName)
+        })
         .then(coll =>
           coll
             .createIndex('timestamp')

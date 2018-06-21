@@ -89,7 +89,7 @@ describe('resolve-command', () => {
     expect(aggregateVersion).to.be.equal(0)
   })
 
-  it('should success build aggregate state and execute commnand', async () => {
+  it('should success build aggregate state and execute command', async () => {
     const executeCommand = createCommandExecutor({ eventStore, aggregates })
     eventList = [{ type: 'SuccessEvent', aggregateVersion: 1 }]
 
@@ -113,13 +113,13 @@ describe('resolve-command', () => {
     eventList = [{ type: 'BrokenEvent', aggregateVersion: 1 }]
 
     try {
-      const commnand = executeCommand({
+      const command = executeCommand({
         aggregateName: AGGREGATE_NAME,
         aggregateId: AGGREGATE_ID,
         type: 'emptyCommand'
       })
 
-      await commnand
+      await command
 
       return Promise.reject('Test failed')
     } catch (error) {
@@ -243,9 +243,5 @@ describe('resolve-command', () => {
     expect(lastState).to.be.deep.equal({
       value: 42
     })
-  })
-
-  it('works the same way for different import types', () => {
-    expect(createCommandExecutor).to.be.equal(require('../src'))
   })
 })

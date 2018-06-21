@@ -9,13 +9,13 @@ import { ServerStyleSheet, StyleSheetManager } from 'styled-components'
 
 import createStore from '../client/store/create_store'
 import getHtmlMarkup from './get_html_markup'
-import getRootableUrl from './utils/get_rootable_url'
+import getRootBasedUrl from './utils/get_root_based_url'
 import Routes from '../client/components/Routes'
 
-const staticPath = $resolve.staticPath
-const rootPath = $resolve.rootPath
-const jwtCookieName = $resolve.jwtCookie.name
-const routes = require($resolve.routes)
+import routes from '$resolve.routes'
+import staticPath from '$resolve.staticPath'
+import rootPath from '$resolve.rootPath'
+import jwtCookie from '$resolve.jwtCookie'
 
 const serverSideRendering = (req, res) => {
   const url = req.params[0] || ''
@@ -26,7 +26,7 @@ const serverSideRendering = (req, res) => {
 
   const jwt = {}
   try {
-    Object.assign(jwt, jsonwebtoken.decode(req.cookies[jwtCookieName]))
+    Object.assign(jwt, jsonwebtoken.decode(req.cookies[jwtCookie.name]))
   } catch (e) {}
 
   const store = createStore({
@@ -51,7 +51,7 @@ const serverSideRendering = (req, res) => {
   const styleTags = sheet.getStyleTags()
 
   const initialState = store.getState()
-  const clientUrl = getRootableUrl(Url.resolve(staticPath || '/', 'client.js'))
+  const clientUrl = getRootBasedUrl(Url.resolve(staticPath || '/', 'client.js'))
 
   res.send(
     getHtmlMarkup({
