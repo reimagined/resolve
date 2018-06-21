@@ -234,8 +234,8 @@ pipeline {
                                 create-resolve-app with-authentication -e with-authentication -c \$(cat /last_commit)
                                 cd ./with-authentication
                                 cat ./package.json
-                                sed -i 's/"port": 3000/"port": 3006/g' ./resolve.config.json
-                                grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3006/g'
+                                sed -i 's/"port": 3000/"port": 3007/g' ./resolve.config.json
+                                grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3007/g'
 
                                 yarn test
                                 yarn test:functional --browser=path:/chromium
@@ -252,8 +252,8 @@ pipeline {
                                 create-resolve-app with-styled-components -e with-styled-components -c \$(cat /last_commit)
                                 cd ./with-styled-components
                                 cat ./package.json
-                                sed -i 's/"port": 3000/"port": 3006/g' ./resolve.config.json
-                                grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3006/g'
+                                sed -i 's/"port": 3000/"port": 3008/g' ./resolve.config.json
+                                grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3008/g'
 
                                 yarn test
                                 yarn test:functional --browser=path:/chromium
