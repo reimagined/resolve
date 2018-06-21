@@ -1,15 +1,15 @@
 {
   "dev": {
-    "describe": "Set webpack.mode and process.env.NODE_ENV to 'development'",
+    "describe": "Set `webpack.mode` and `process.env.NODE_ENV` to 'development'",
     "type": "boolean"
   },
   "prod": {
-    "describe": "Set webpack.mode and process.env.NODE_ENV to 'production'",
+    "describe": "Set `webpack.mode` and `process.env.NODE_ENV` to 'production'",
     "type": "boolean"
   },
   "test": {
     "describe":
-      "Set webpack.mode to 'development' and process.env.NODE_ENV to 'test'",
+      "Set `webpack.mode` to 'development' and process.env.NODE_ENV to 'test'",
     "type": "boolean"
   },
   "watch": {
@@ -18,7 +18,7 @@
   },
   "start": {
     "describe":
-      "Automatically start your server once Webpack build completes",
+      "Automatically start your server once the Webpack build completes",
     "type": "boolean"
   },
   "inspect": {
