@@ -1,6 +1,6 @@
 {
   "name": "todo-two-levels",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "private": true,
   "scripts": {
     "build": "resolve-scripts build",
@@ -18,8 +18,8 @@
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "redux": "^3.7.2",
-    "resolve-redux": "0.11.0",
-    "resolve-scripts": "0.11.0"
+    "resolve-redux": "0.12.0",
+    "resolve-scripts": "0.12.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0-beta.49",
