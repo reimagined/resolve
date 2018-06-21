@@ -2,36 +2,36 @@ import mqtt from 'mqtt'
 
 import getMqttTopics from './get_mqtt_topics'
 
-export const errorMessage = 'Subscribe adapter not initialized'
+export const errorMessageNotInitialized = 'Subscribe adapter not initialized'
+export const errorMessageAlreadyInitialized = 'Subscribe adapter already initialized'
 
-const createSubscribeAdapter = ({ api }) => {
+const createSubscribeAdapter = ({ subscribeId, api }) => {
   let client, qos, url, appId
   let isInitialized
 
-  let onError
-
   return {
     async init() {
-      onError = () => {}
-
+      if (isInitialized) {
+        throw new Error(errorMessageAlreadyInitialized)
+      }
+    
       const options = await api.getSubscribeAdapterOptions()
       qos = options.qos
       url = options.url
       appId = options.appId
 
       return await new Promise((resolve, reject) => {
-        client = mqtt.connect(url)
-
-        onError = reject
-
+        client = mqtt.connect(url, {
+          clientId: subscribeId
+        })
+        
         client.on('connect', () => {
           isInitialized = true
-          onError = () => {}
           resolve()
         })
 
         client.on('error', err => {
-          onError(err)
+          reject(err)
         })
       })
     },
@@ -44,12 +44,11 @@ const createSubscribeAdapter = ({ api }) => {
       qos = undefined
       url = undefined
       appId = undefined
-      onError = undefined
     },
 
     async subscribeToTopics(topics) {
       if (!isInitialized) {
-        throw new Error(errorMessage)
+        throw new Error(errorMessageNotInitialized)
       }
 
       return await new Promise((resolve, reject) => {
@@ -64,7 +63,7 @@ const createSubscribeAdapter = ({ api }) => {
 
     async unsubscribeFromTopics(topics) {
       if (!isInitialized) {
-        throw new Error(errorMessage)
+        throw new Error(errorMessageNotInitialized)
       }
 
       return await new Promise((resolve, reject) => {
@@ -75,6 +74,14 @@ const createSubscribeAdapter = ({ api }) => {
           resolve()
         })
       })
+    },
+    
+    isConnected() {
+      if (!isInitialized) {
+        throw new Error(errorMessageNotInitialized)
+      }
+      
+      return client.connected
     }
   }
 }
