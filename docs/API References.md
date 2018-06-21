@@ -10,6 +10,7 @@
 * [Configuration Files](#configuration-files)
     * [Resolve Config](#resolve-config)
     * [Build Config](#build-config)
+* [Command Line Interface](#command-line-interface)
 * [Environment Variables](#environment-variables)
 
 ## **Available Scripts**
@@ -112,6 +113,61 @@ export default (webpackConfigs, { resolveConfig, deployOptions, env }) => {
 ```
 
 Example can be found in [`with-postcss-modules`](../examples/with-postcss-modules) example
+
+## **Command Line Interface**
+
+### Commands:
+
+| Name              | Description                              |
+|-------------------|------------------------------------------|
+| `build`           | Compile the app into the build directory |
+| `start`           | Run the app from the build directory     |
+| `dev`             | Run the app in the development mode      |
+| `test`            | Run unit tests with Jest                 |
+| `test:functional` | Run functional tests with TestCafe       |
+
+#### command "build"
+
+| Options          | Description                                                           | Type      |
+|------------------|-----------------------------------------------------------------------|-----------|
+| `--version`      | Show version number                                                   | [boolean] |
+| `--help`         | Show help                                                             | [boolean] |
+| `--dev`          | Set webpack.mode and process.env.NODE_ENV to 'development'            | [boolean] |
+| `--prod`         | Set webpack.mode and process.env.NODE_ENV to 'production'             | [boolean] |
+| `--test`         | Set webpack.mode to 'development' and process.env.NODE_ENV to 'test'  | [boolean] |
+| `--watch`        | Watch the filesystem for changes and update the app using Webpack HMR | [boolean] |
+| `--start`        | Automatically start your server once Webpack build completes          | [boolean] |
+| `--port`         | Application port                                                      | [number]  |
+| `--inspect`      | Start Node.js inspector on [host:]port                                | [string]  |
+| `--config`       | Path to reSolve config                                                | [string]  |
+| `--build-config` | Path to reSolve build config                                          | [string]  |
+| `--print-config` | Show the current configuration                                        | [boolean] |
+| `--root-path`    | Application root path                                                 | [string]  |
+| `--open-browser` | Open the root page in the default browser                             | [boolean] |
+
+#### command "start"
+
+| Options          | Description                                                           | Type      |
+|------------------|-----------------------------------------------------------------------|-----------|
+| `--version`      | Show version number                                                   | [boolean] |
+| `--help`         | Show help                                                             | [boolean] |
+| `--inspect`      | Start Node.js inspector on [host:]port                                | [string]  |
+| `--print-config` | Show the current configuration                                        | [boolean] |
+
+#### command "dev"
+
+| Options          | Description                                                           | Type      |
+|------------------|-----------------------------------------------------------------------|-----------|
+| `--version`      | Show version number                                                   | [boolean] |
+| `--help`         | Show help                                                             | [boolean] |
+| `--test`         | Set webpack.mode to 'development' and process.env.NODE_ENV to 'test'  | [boolean] |
+| `--port`         | Application port                                                      | [number]  |
+| `--inspect`      | Start Node.js inspector on [host:]port                                | [string]  |
+| `--root-path`    | Application root path                                                 | [string]  |
+| `--open-browser` | Open the root page in the default browser                             | [boolean] |
+| `--config`       | Path to reSolve config                                                | [string]  |
+| `--build-config` | Path to reSolve build config                                          | [string]  |
+| `--print-config` | Show the current configuration                                        | [boolean] |
 
 ## Environment Variables
 You can pass env variables to the client side. To do this, use the `RESOLVE_` prefix when naming a variable. After that, this variable is available on the client and server side via the `process.env` object.
