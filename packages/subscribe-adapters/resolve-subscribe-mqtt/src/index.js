@@ -5,7 +5,7 @@ import getMqttTopics from './get_mqtt_topics'
 export const errorMessageNotInitialized = 'Subscribe adapter not initialized'
 export const errorMessageAlreadyInitialized = 'Subscribe adapter already initialized'
 
-const createSubscribeAdapter = ({ subscribeId, api }) => {
+const createSubscribeAdapter = ({ subscribeId, onEvent, api }) => {
   let client, qos, url, appId
   let isInitialized
 
@@ -32,6 +32,16 @@ const createSubscribeAdapter = ({ subscribeId, api }) => {
 
         client.on('error', err => {
           reject(err)
+        })
+  
+        client.on('message', (topic, message) => {
+          try {
+            const event = JSON.parse(message.toString('utf8'));
+            onEvent(event)
+          } catch (error) {
+            // eslint-disable-next-line no-console
+            console.warn(topic, message, error)
+          }
         })
       })
     },
