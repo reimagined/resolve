@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'reimagined/resolve-ci'
-            args '-u root:root -v /home/resolve/yarn_cache:/yarn_cache -v /tmp/.X11-unix:/tmp/.X11-unix'
+            args '-u root:root -v /home/resolve/yarn_cache:/yarn_cache -v /tmp/.X11-unix:/tmp/.X11-unix --tmpfs /wdir/:rw,exec,nosuid,size=1G '
         }
     }
     stages {
@@ -56,9 +56,6 @@ pipeline {
             steps {
                 script {
                     sh """
-                        export DISPLAY=:0;
-                        firefox && echo 'err';
-
                         npx oao run-script test:functional -- --browser=path:/chromium
                     """
                 }
@@ -122,7 +119,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-                                mkdir hello-world && cd hello-world;
+                                mkdir /wdir/hello-world && cd /wdir/hello-world;
                                 create-resolve-app hello-world -c \$(cat /last_commit)
                                 cd ./hello-world; \
                                 cat ./package.json; \
@@ -140,7 +137,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-                                mkdir todolist && cd todolist;
+                                mkdir /wdir/todolist && cd /wdir/todolist;
                                 create-resolve-app todolist -e todo -c \$(cat /last_commit)
                                 cd ./todolist
                                 cat ./package.json
@@ -158,7 +155,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-                                mkdir twolevelstodo && cd twolevelstodo;
+                                mkdir /wdir/twolevelstodo && cd /wdir/twolevelstodo;
                                 create-resolve-app twolevelstodo -e todo-two-levels -c \$(cat /last_commit)
                                 cd ./twolevelstodo
                                 cat ./package.json
@@ -175,7 +172,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-                                mkdir hacker-news && cd hacker-news;
+                                mkdir /wdir/hacker-news && cd /wdir/hacker-news;
                                 create-resolve-app hn -e hacker-news -c \$(cat /last_commit)
                                 cd ./hn
                                 cat ./package.json
@@ -193,7 +190,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-                                mkdir top-list && cd top-list;
+                                mkdir /wdir/top-list && cd /wdir/top-list;
                                 create-resolve-app toplist -e top-list -c \$(cat /last_commit)
                                 cd ./toplist
                                 cat ./package.json
@@ -212,7 +209,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-                                mkdir with-postcss-modules && cd with-postcss-modules;
+                                mkdir /wdir/with-postcss-modules && cd /wdir/with-postcss-modules;
                                 create-resolve-app with-postcss-modules -e with-postcss-modules -c \$(cat /last_commit)
                                 cd ./with-postcss-modules
                                 cat ./package.json
@@ -230,7 +227,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-                                mkdir with-authentication && cd with-authentication;
+                                mkdir /wdir/with-authentication && cd /wdir/with-authentication;
                                 create-resolve-app with-authentication -e with-authentication -c \$(cat /last_commit)
                                 cd ./with-authentication
                                 cat ./package.json
@@ -248,7 +245,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-                                mkdir with-styled-components && cd with-styled-components;
+                                mkdir /wdir/with-styled-components && cd /wdir/with-styled-components;
                                 create-resolve-app with-styled-components -e with-styled-components -c \$(cat /last_commit)
                                 cd ./with-styled-components
                                 cat ./package.json
