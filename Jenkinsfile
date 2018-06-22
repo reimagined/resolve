@@ -50,22 +50,21 @@ pipeline {
         }
 
         stage('Functional tests') {
-            when {
-                expression { CHANGE_TARGET != 'master' }
-            }
+
             steps {
                 script {
                     sh """
-                        npx oao run-script test:functional -- --browser=path:/chromium
+                        export DISPLAY=:0;
+                        firefox && echo 'err';
+
+                        npx oao run-script test:functional
                     """
                 }
             }
         }
 
         stage('Publish canary') {
-            when {
-                expression { CHANGE_TARGET == 'master' }
-            }
+
             steps {
                 script {
                     env.CI_TIMESTAMP = (new Date()).format("MddHHmmss", TimeZone.getTimeZone('UTC'))
@@ -95,9 +94,7 @@ pipeline {
         }
 
         stage('Prepare for [ create-resolve-app ] testing') {
-            when {
-                expression { CHANGE_TARGET == 'master' }
-            }
+
             steps {
                 script {
                     sh """
@@ -111,9 +108,7 @@ pipeline {
         }
 
         stage('CRA tests') {
-            when {
-                expression { CHANGE_TARGET == 'master' }
-            }
+
             parallel {
                 stage('Create-resolve-app [ hello-world ] Functional Tests') {
                     steps {
