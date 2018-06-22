@@ -5,11 +5,13 @@ export default (
   }
 ) => {
   const projectionMap = { types: new Map(), ids: new Map() }
+  const busListeners = new Map()
 
   function trigger(event) {
     const handlersByType = projectionMap.types.get(event.type) || []
     const handlersById = projectionMap.ids.get(event.aggregateId) || []
     handlersByType.concat(handlersById).forEach(handler => handler(event))
+    busListeners.forEach(handler => handler(event))
   }
 
   config.bus.subscribe(trigger)
@@ -63,6 +65,14 @@ export default (
         )
       }
       return onEventById(aggregateIds, handler)
+    },
+
+    async subscribeOnBus(handler) {
+      const key = Date.now() + Math.random()
+      busListeners.set(key, handler)
+      return () => {
+        busListeners.delete(key)
+      }
     },
 
     async getEventsByAggregateId(aggregateId, handler, startTime = 0) {

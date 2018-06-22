@@ -3,7 +3,8 @@ import mqtt from 'mqtt'
 import getMqttTopics from './get_mqtt_topics'
 
 export const errorMessageNotInitialized = 'Subscribe adapter not initialized'
-export const errorMessageAlreadyInitialized = 'Subscribe adapter already initialized'
+export const errorMessageAlreadyInitialized =
+  'Subscribe adapter already initialized'
 
 const createSubscribeAdapter = ({ subscribeId, onEvent, api }) => {
   let client, qos, url, appId
@@ -14,17 +15,20 @@ const createSubscribeAdapter = ({ subscribeId, onEvent, api }) => {
       if (isInitialized) {
         throw new Error(errorMessageAlreadyInitialized)
       }
-    
+
       const options = await api.getSubscribeAdapterOptions()
       qos = options.qos
       url = options.url
       appId = options.appId
 
       return await new Promise((resolve, reject) => {
-        client = mqtt.connect(url, {
-          clientId: subscribeId
-        })
-        
+        client = mqtt.connect(
+          url,
+          {
+            clientId: subscribeId
+          }
+        )
+
         client.on('connect', () => {
           isInitialized = true
           resolve()
@@ -33,10 +37,10 @@ const createSubscribeAdapter = ({ subscribeId, onEvent, api }) => {
         client.on('error', err => {
           reject(err)
         })
-  
+
         client.on('message', (topic, message) => {
           try {
-            const event = JSON.parse(message.toString('utf8'));
+            const event = JSON.parse(message.toString('utf8'))
             onEvent(event)
           } catch (error) {
             // eslint-disable-next-line no-console
@@ -85,12 +89,12 @@ const createSubscribeAdapter = ({ subscribeId, onEvent, api }) => {
         })
       })
     },
-    
+
     isConnected() {
       if (!isInitialized) {
         throw new Error(errorMessageNotInitialized)
       }
-      
+
       return client.connected
     }
   }
