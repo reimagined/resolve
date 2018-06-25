@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'reimagined/resolve-ci'
-            args '-u root:root -v /home/resolve/yarn_cache:/yarn_cache -v /tmp/.X11-unix:/tmp/.X11-unix --tmpfs /wdir/:rw,exec,nosuid,size=1G '
+            args '-u root:root -v /home/resolve/yarn_cache:/yarn_cache -v /tmp/.X11-unix:/tmp/.X11-unix'
         }
     }
     stages {
@@ -50,21 +50,25 @@ pipeline {
         }
 
         stage('Functional tests') {
-
+            when {
+                expression { CHANGE_TARGET != 'master' }
+            }
             steps {
                 script {
                     sh """
                         export DISPLAY=:0;
                         firefox && echo 'err';
 
-                        npx oao run-script test:functional
+                        npx oao run-script test:functional -- --browser=path:/chromium
                     """
                 }
             }
         }
 
         stage('Publish canary') {
-
+            when {
+                expression { CHANGE_TARGET == 'master' }
+            }
             steps {
                 script {
                     env.CI_TIMESTAMP = (new Date()).format("MddHHmmss", TimeZone.getTimeZone('UTC'))
@@ -94,7 +98,9 @@ pipeline {
         }
 
         stage('Prepare for [ create-resolve-app ] testing') {
-
+            when {
+                expression { CHANGE_TARGET == 'master' }
+            }
             steps {
                 script {
                     sh """
@@ -108,13 +114,15 @@ pipeline {
         }
 
         stage('CRA tests') {
-
+            when {
+                expression { CHANGE_TARGET == 'master' }
+            }
             parallel {
                 stage('Create-resolve-app [ hello-world ] Functional Tests') {
                     steps {
                         script {
                             sh """
-                                mkdir /wdir/hello-world && cd /wdir/hello-world;
+                                mkdir hello-world && cd hello-world;
                                 create-resolve-app hello-world -c \$(cat /last_commit)
                                 cd ./hello-world; \
                                 cat ./package.json; \
@@ -132,7 +140,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-                                mkdir /wdir/todolist && cd /wdir/todolist;
+                                mkdir todolist && cd todolist;
                                 create-resolve-app todolist -e todo -c \$(cat /last_commit)
                                 cd ./todolist
                                 cat ./package.json
@@ -150,7 +158,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-                                mkdir /wdir/twolevelstodo && cd /wdir/twolevelstodo;
+                                mkdir twolevelstodo && cd twolevelstodo;
                                 create-resolve-app twolevelstodo -e todo-two-levels -c \$(cat /last_commit)
                                 cd ./twolevelstodo
                                 cat ./package.json
@@ -167,7 +175,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-                                mkdir /wdir/hacker-news && cd /wdir/hacker-news;
+                                mkdir hacker-news && cd hacker-news;
                                 create-resolve-app hn -e hacker-news -c \$(cat /last_commit)
                                 cd ./hn
                                 cat ./package.json
@@ -185,7 +193,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-                                mkdir /wdir/top-list && cd /wdir/top-list;
+                                mkdir top-list && cd top-list;
                                 create-resolve-app toplist -e top-list -c \$(cat /last_commit)
                                 cd ./toplist
                                 cat ./package.json
@@ -200,13 +208,13 @@ pipeline {
                     }
                 }
 
-                stage('Create-resolve-app [ with-postcss-modules ] Functional Tests') {
+                stage('Create-resolve-app [ with-postcss ] Functional Tests') {
                     steps {
                         script {
                             sh """
-                                mkdir /wdir/with-postcss-modules && cd /wdir/with-postcss-modules;
-                                create-resolve-app with-postcss-modules -e with-postcss-modules -c \$(cat /last_commit)
-                                cd ./with-postcss-modules
+                                mkdir with-postcss && cd with-postcss;
+                                create-resolve-app with-postcss -e with-postcss -c \$(cat /last_commit)
+                                cd ./with-postcss
                                 cat ./package.json
                                 sed -i 's/"port": 3000/"port": 3006/g' ./resolve.config.json
                                 grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3006/g'
@@ -222,7 +230,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-                                mkdir /wdir/with-authentication && cd /wdir/with-authentication;
+                                mkdir with-authentication && cd with-authentication;
                                 create-resolve-app with-authentication -e with-authentication -c \$(cat /last_commit)
                                 cd ./with-authentication
                                 cat ./package.json
@@ -240,7 +248,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-                                mkdir /wdir/with-styled-components && cd /wdir/with-styled-components;
+                                mkdir with-styled-components && cd with-styled-components;
                                 create-resolve-app with-styled-components -e with-styled-components -c \$(cat /last_commit)
                                 cd ./with-styled-components
                                 cat ./package.json
