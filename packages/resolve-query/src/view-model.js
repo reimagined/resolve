@@ -43,7 +43,7 @@ const createViewModel = ({
     Array.isArray(aggregateIds) ? aggregateIds.sort().join(',') : aggregateIds
   const viewMap = new Map()
   const viewModelHash = makeViewModelHash(projection)
-  
+
   const reader = async ({ aggregateIds } = { aggregateIds: null }) => {
     if (
       aggregateIds !== '*' &&
@@ -64,7 +64,7 @@ const createViewModel = ({
     const eventTypes = Object.keys(projection).filter(
       eventName => eventName !== 'Init'
     )
-    
+
     let aggregateVersionsMap = {}
     let appliedEvents = 0
     let lastTimestamp = 0
@@ -92,16 +92,20 @@ const createViewModel = ({
       try {
         state = projection[event.type](state, event)
         filterAsyncResult(state)
-        
-        if(!aggregateVersionsMap.hasOwnProperty(event.aggregateId)) {
+
+        if (!aggregateVersionsMap.hasOwnProperty(event.aggregateId)) {
           aggregateVersionsMap[event.aggregateId] = 0
         }
-  
+
         aggregateVersionsMap[event.aggregateId] = event.aggregateVersion
 
         if (++appliedEvents % snapshotBucketSize === 0) {
           lastTimestamp = Date.now()
-          snapshotAdapter.saveSnapshot(snapshotKey, { state, lastTimestamp, aggregateVersionsMap })
+          snapshotAdapter.saveSnapshot(snapshotKey, {
+            state,
+            lastTimestamp,
+            aggregateVersionsMap
+          })
         }
       } catch (err) {
         error = err

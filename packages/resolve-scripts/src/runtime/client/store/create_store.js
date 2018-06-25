@@ -12,7 +12,7 @@ import redux from '$resolve.redux'
 import viewModels from '$resolve.viewModels'
 import readModels from '$resolve.readModels'
 import aggregates from '$resolve.aggregates'
-import subscribe from '$resolve.subscribeAdapter'
+import subscribeAdapter from '$resolve.subscribeAdapter'
 
 const { reducers, middlewares, store: setupStore } = redux
 
@@ -24,13 +24,6 @@ export default ({
   isClient = true
 }) => {
   const resolveMiddleware = createResolveMiddleware()
-
-  const api = createApi()
-
-  const subscribeAdapter = subscribe.module({
-    ...subscribe.options,
-    api
-  })
 
   const store = createStore(
     combineReducers({

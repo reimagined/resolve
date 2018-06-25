@@ -20,7 +20,10 @@
     "ddd"
   ],
   "dependencies": {
-    "mqtt": "^2.18.1"
+    "mqtt": "^2.18.1",
+    "ws": "^5.2.1",
+    "websocket-stream": "^5.1.2",
+    "mqtt-connection": "^4.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.51",

@@ -10,37 +10,31 @@ export default ({ resolveConfig, isClient }) => {
   if (resolveConfig.subscribeAdapter.module in resolveConfig[envKey]) {
     throw new Error(`${message.clientEnvError}.subscribeAdapter.module`)
   }
-  
+
   const options = {
     client: resolveConfig.subscribeAdapter.options.client || {},
     server: resolveConfig.subscribeAdapter.options.server || {}
   }
-  
-  for (const optionsKey of Object.keys(
-    options.client
-  )) {
-    if (
-      options.client[optionsKey] in resolveConfig[envKey]
-    ) {
+
+  for (const optionsKey of Object.keys(options.client)) {
+    if (options.client[optionsKey] in resolveConfig[envKey]) {
       throw new Error(
-        `${message.clientEnvError}.subscribeAdapter.options.client.${optionsKey}`
+        `${
+          message.clientEnvError
+        }.subscribeAdapter.options.client.${optionsKey}`
       )
     }
   }
-  
+
   const exports = []
-  
-  if(isClient) {
+
+  if (isClient) {
     exports.push(
       `import module from ${JSON.stringify(
         `${resolveConfig.subscribeAdapter.module}/dist/create_client_adapter`
       )}`,
       ``,
-      `const options = ${JSON.stringify(
-        options.client,
-        null,
-        2
-      )}`,
+      `const options = ${JSON.stringify(options.client, null, 2)}`,
       ``,
       `export default { module, options }`
     )
@@ -50,11 +44,7 @@ export default ({ resolveConfig, isClient }) => {
         `${resolveConfig.subscribeAdapter.module}/dist/create_server_adapter`
       )}`,
       ``,
-      `const options = ${injectEnv(
-        options.server,
-        null,
-        2
-      )}`,
+      `const options = ${injectEnv(options.server, null, 2)}`,
       ``,
       `export default { module, options }`
     )

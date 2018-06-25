@@ -2,10 +2,15 @@ import mqtt from 'mqtt'
 
 import getMqttTopics from './get_mqtt_topics'
 
-import { errorMessageNotInitialized, errorMessageAlreadyInitialized } from './constants'
+import {
+  errorMessageNotInitialized,
+  errorMessageAlreadyInitialized
+} from './constants'
 
-const createClientAdapter = ({ subscribeId, onEvent, api }) => {
-  let client, qos, url, appId
+const qos = 2
+
+const createClientAdapter = ({ url, appId, onEvent }) => {
+  let client
   let isInitialized
 
   return {
@@ -14,18 +19,8 @@ const createClientAdapter = ({ subscribeId, onEvent, api }) => {
         throw new Error(errorMessageAlreadyInitialized)
       }
 
-      const options = await api.getSubscribeAdapterOptions()
-      qos = options.qos
-      url = options.url
-      appId = options.appId
-
       return await new Promise((resolve, reject) => {
-        client = mqtt.connect(
-          url,
-          {
-            clientId: subscribeId
-          }
-        )
+        client = mqtt.connect(url)
 
         client.on('connect', () => {
           isInitialized = true
@@ -56,9 +51,6 @@ const createClientAdapter = ({ subscribeId, onEvent, api }) => {
       client.end()
 
       client = undefined
-      qos = undefined
-      url = undefined
-      appId = undefined
     },
 
     async subscribeToTopics(topics) {

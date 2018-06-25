@@ -12,6 +12,7 @@ import loadInitialState from './load_initial_state'
 import sendCommand from './send_command'
 import subscribeAdapter from './subscribe_adapter'
 import isLoadingViewModel from './is_loading_view_model'
+import createApi from './create_api'
 
 export {
   actions,
@@ -27,5 +28,6 @@ export {
   loadInitialState,
   sendCommand,
   subscribeAdapter,
-  isLoadingViewModel
+  isLoadingViewModel,
+  createApi
 }

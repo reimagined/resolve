@@ -1,4 +1,3 @@
-import mqtt from 'async-mqtt'
 import { put, takeEvery } from 'redux-saga/effects'
 
 import createConnectionManager from './create_connection_manager'
@@ -15,13 +14,25 @@ import {
   dispatchMqttEvent
 } from './actions'
 
-const mqttSaga = function*({ store, appId, mqttUrl, mqttQoS }) {
-  const client = mqtt.connect(mqttUrl)
-
+const subscribeSaga = function*({
+  api,
+  store,
+  subscribeAdapter: {
+    module: createSubscribeAdapter,
+    options: subscribeAdapterOptions
+  }
+}) {
   const connectionManager = createConnectionManager()
 
-  client.on('message', function(topic, message) {
-    store.dispatch(dispatchMqttEvent(JSON.parse(message.toString())))
+  const { appId, url } = yield api.getSubscribeAdapterOptions()
+
+  const onEvent = event => store.dispatch(dispatchMqttEvent(event))
+
+  const subscribeAdapter = createSubscribeAdapter({
+    ...subscribeAdapterOptions,
+    appId,
+    url,
+    onEvent
   })
 
   yield takeEvery(SUBSCRIBE_TOPIC_REQUEST, function*({
@@ -39,23 +50,17 @@ const mqttSaga = function*({ store, appId, mqttUrl, mqttQoS }) {
 
     try {
       yield Promise.all([
-        client.subscribe(
-          addedConnections.map(
-            ({ connectionName, connectionId }) =>
-              `${appId}/${connectionName}/${connectionId}`
-          ),
-          {
-            qos: mqttQoS
-          }
+        subscribeAdapter.subscribeToTopics(
+          addedConnections.map(({ connectionName, connectionId }) => ({
+            topicName: connectionName,
+            topicId: connectionId
+          }))
         ),
-        client.unsubscribe(
-          removedConnections.map(
-            ({ connectionName, connectionId }) =>
-              `${appId}/${connectionName}/${connectionId}`
-          ),
-          {
-            qos: mqttQoS
-          }
+        subscribeAdapter.unsubscribeFromTopics(
+          removedConnections.map(({ connectionName, connectionId }) => ({
+            topicName: connectionName,
+            topicId: connectionId
+          }))
         )
       ])
       yield put(subscribeTopicSuccess(appId, topicName, topicId))
@@ -79,23 +84,17 @@ const mqttSaga = function*({ store, appId, mqttUrl, mqttQoS }) {
 
     try {
       yield Promise.all([
-        client.subscribe(
-          addedConnections.map(
-            ({ connectionName, connectionId }) =>
-              `${appId}/${connectionName}/${connectionId}`
-          ),
-          {
-            qos: mqttQoS
-          }
+        subscribeAdapter.subscribeToTopics(
+          addedConnections.map(({ connectionName, connectionId }) => ({
+            topicName: connectionName,
+            topicId: connectionId
+          }))
         ),
-        client.unsubscribe(
-          removedConnections.map(
-            ({ connectionName, connectionId }) =>
-              `${appId}/${connectionName}/${connectionId}`
-          ),
-          {
-            qos: mqttQoS
-          }
+        subscribeAdapter.unsubscribeFromTopics(
+          removedConnections.map(({ connectionName, connectionId }) => ({
+            topicName: connectionName,
+            topicId: connectionId
+          }))
         )
       ])
       yield put(unsubscribeTopicSuccess(appId, topicName, topicId))
@@ -105,4 +104,4 @@ const mqttSaga = function*({ store, appId, mqttUrl, mqttQoS }) {
   })
 }
 
-export default mqttSaga
+export default subscribeSaga

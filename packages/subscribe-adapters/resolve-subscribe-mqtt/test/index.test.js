@@ -1,4 +1,6 @@
-import createSubscribeAdapter, { errorMessage } from '../src/create_client_adapter'
+import createSubscribeAdapter, {
+  errorMessage
+} from '../src/create_client_adapter'
 import mqtt from 'mqtt'
 import getMqttTopics from '../src/get_mqtt_topics'
 

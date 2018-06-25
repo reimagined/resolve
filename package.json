@@ -25,6 +25,7 @@
       "packages/bus-adapters/*",
       "packages/storage-adapters/*",
       "packages/readmodel-adapters/*",
+      "packages/subscribe-adapters/*",
       "examples/*"
     ]
   },

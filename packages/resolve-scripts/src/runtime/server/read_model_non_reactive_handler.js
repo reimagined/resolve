@@ -5,14 +5,14 @@ import println from './utils/println'
 const message = require('../../../configs/message.json')
 
 const readModelNonReactiveHandler = async (req, res) => {
-  const queryId = req.query.queryId
+  const { readModelName, resolverName, queryId, resolverArgs } = req.body
 
   try {
     const result = await executeReadModelQuery({
       jwtToken: req.jwtToken,
-      modelName: req.params.modelName,
-      resolverName: req.params.resolverName,
-      resolverArgs: req.body.parameters
+      modelName: readModelName,
+      resolverName,
+      resolverArgs
     })
 
     res.status(200).send({
@@ -21,7 +21,7 @@ const readModelNonReactiveHandler = async (req, res) => {
     })
 
     const lastError = await readModelQueryExecutors[
-      req.params.modelName
+      readModelName
     ].getLastError()
     if (lastError != null) {
       println.error(lastError)

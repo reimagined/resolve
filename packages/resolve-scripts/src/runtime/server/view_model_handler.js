@@ -6,8 +6,7 @@ const message = require('../../../configs/message.json')
 
 const viewModelHandler = async (req, res) => {
   try {
-    const aggregateIds = req.query.aggregateIds
-    const aggregateArgs = req.query.aggregateArgs
+    const { viewModelName, aggregateIds, aggregateArgs } = req.body
     if (
       aggregateIds !== '*' &&
       (!Array.isArray(aggregateIds) || aggregateIds.length === 0)
@@ -15,17 +14,14 @@ const viewModelHandler = async (req, res) => {
       throw new Error(message.viewModelOnlyOnDemand)
     }
 
-    const {
-      state,
-      aggregateVersionsMap
-    } = await executeViewModelQuery({
-      modelName: req.params.modelName,
+    const { state, aggregateVersionsMap } = await executeViewModelQuery({
+      modelName: viewModelName,
       aggregateIds,
       aggregateArgs
     })
 
     const serializedState = viewModelQueryExecutors[
-      req.params.modelName
+      viewModelName
     ].serializeState(state, req.jwtToken)
 
     res.status(200).json({
