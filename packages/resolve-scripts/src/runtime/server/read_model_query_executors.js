@@ -2,9 +2,9 @@ import { createReadModel } from 'resolve-query'
 import eventStore from './event_store'
 import raiseError from './utils/raise_error'
 
-const message = require('../../../configs/message.json')
+import readModels from '$resolve.readModels'
 
-const readModels = require($resolve.readModels)
+const message = require('../../../configs/message.json')
 
 const readModelQueryExecutors = {}
 
@@ -19,8 +19,12 @@ readModels.forEach(readModel => {
 
   const facade = createReadModel({
     projection: readModel.projection,
-    adapter: readModel.adapter,
     resolvers: readModel.resolvers,
+    ...(readModel.hasOwnProperty('adapter')
+      ? {
+          adapter: readModel.adapter.module(readModel.adapter.options)
+        }
+      : {}),
     eventStore
   })
 

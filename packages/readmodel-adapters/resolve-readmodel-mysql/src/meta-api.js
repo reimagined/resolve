@@ -1,25 +1,51 @@
+const PROPER_NAME_REGEXP = /^(?:\w|\d|-)+?$/
+
+const PRIMARY_INDEX_TYPES = ['primary-number', 'primary-string']
+const SECONDARY_INDEX_TYPES = ['secondary-number', 'secondary-string']
+const FIELD_TYPES = [
+  ...PRIMARY_INDEX_TYPES,
+  ...SECONDARY_INDEX_TYPES,
+  'regular'
+]
+
+const checkStoredTableSchema = (tableName, tableDescription) =>
+  PROPER_NAME_REGEXP.test(tableName) &&
+  tableDescription != null &&
+  tableDescription.constructor === Object &&
+  Object.keys(tableDescription).reduce(
+    (result, fieldName) =>
+      result &&
+      PROPER_NAME_REGEXP.test(fieldName) &&
+      FIELD_TYPES.indexOf(tableDescription[fieldName]) > -1,
+    true
+  ) &&
+  Object.keys(tableDescription).reduce(
+    (result, fieldName) =>
+      result +
+      (PRIMARY_INDEX_TYPES.indexOf(tableDescription[fieldName]) > -1 ? 1 : 0),
+    0
+  ) === 1
+
 const getMetaInfo = async pool => {
   const { connection, escapeId, metaName } = pool
 
   await connection.execute(`CREATE TABLE IF NOT EXISTS ${escapeId(metaName)} (
-      MetaKey VARCHAR(36) NOT NULL,
-      MetaField VARCHAR(128) NOT NULL,
-      SimpleValue BIGINT NULL,
-      ComplexValue JSON NULL,
-      PRIMARY KEY (MetaKey, MetaField)
+      FirstKey VARCHAR(128) NOT NULL,
+      SecondKey VARCHAR(128) NULL,
+      Value JSON NULL
     )`)
 
   pool.metaInfo = { tables: {}, timestamp: 0 }
 
   let [rows] = await connection.execute(
-    `SELECT SimpleValue AS Timestamp FROM ${escapeId(metaName)}
-     WHERE MetaKey="Timestamp" AND MetaField="Timestamp"`
+    `SELECT Value AS Timestamp FROM ${escapeId(metaName)}
+     WHERE FirstKey="Timestamp"`
   )
 
   if (rows.length === 0) {
     await connection.execute(
-      `INSERT INTO ${escapeId(metaName)}(MetaKey, MetaField, SimpleValue)
-       VALUES("Timestamp", "Timestamp", 0)`
+      `INSERT INTO ${escapeId(metaName)}(FirstKey, Value)
+       VALUES("Timestamp", CAST("0" AS JSON))`
     )
   } else {
     pool.metaInfo.timestamp = Number.isInteger(+rows[0]['Timestamp'])
@@ -28,45 +54,29 @@ const getMetaInfo = async pool => {
   }
 
   void ([rows] = await connection.execute(
-    `SELECT MetaField AS TableName, ComplexValue AS TableDescription
-     FROM ${escapeId(metaName)} WHERE MetaKey="Tables"`
+    `SELECT SecondKey AS TableName, Value AS TableDescription
+     FROM ${escapeId(metaName)}
+     WHERE FirstKey="TableDescriptor"`
   ))
 
   for (let { TableName, TableDescription } of rows) {
-    try {
-      const descriptor = {
-        fieldTypes: {},
-        primaryIndex: {},
-        secondaryIndexes: []
-      }
-      if (TableDescription.fieldTypes.constructor !== Object) {
-        throw new Error('Malformed meta description')
-      }
-      for (let key of Object.keys(TableDescription.fieldTypes)) {
-        descriptor.fieldTypes[key] = TableDescription.fieldTypes[key]
-      }
-
-      if (TableDescription.primaryIndex.constructor !== Object) {
-        throw new Error('Malformed meta description')
-      }
-      descriptor.primaryIndex.name = TableDescription.primaryIndex.name
-      descriptor.primaryIndex.type = TableDescription.primaryIndex.type
-
-      if (!Array.isArray(TableDescription.secondaryIndexes)) {
-        throw new Error('Malformed meta description')
-      }
-      for (let { name, type } of TableDescription.secondaryIndexes) {
-        descriptor.secondaryIndexes.push({ name, type })
-      }
-
-      pool.metaInfo.tables[TableName] = descriptor
-    } catch (err) {
-      await connection.execute(
-        `DELETE FROM ${escapeId(metaName)}
-         WHERE MetaKey="Tables" AND MetaField=?`,
-        [TableName]
-      )
+    if (checkStoredTableSchema(TableName, TableDescription)) {
+      pool.metaInfo.tables[TableName] = TableDescription
+      continue
     }
+
+    // eslint-disable-next-line no-console
+    console.log(
+      `Can't table "${TableName}" meta information due invalid schema: ${JSON.stringify(
+        TableDescription
+      )}`
+    )
+
+    await connection.execute(
+      `DELETE FROM ${escapeId(metaName)}
+         WHERE FirstKey="TableDescriptor" AND SecondKey=?`,
+      [TableName]
+    )
   }
 }
 
@@ -79,8 +89,10 @@ const setLastTimestamp = async (
   timestamp
 ) => {
   await connection.execute(
-    `UPDATE ${escapeId(metaName)} SET SimpleValue=? WHERE MetaKey="Timestamp"`,
-    [timestamp]
+    `UPDATE ${escapeId(
+      metaName
+    )} SET Value=CAST(? AS JSON) WHERE FirstKey="Timestamp"`,
+    [JSON.stringify(timestamp)]
   )
 
   metaInfo.timestamp = +timestamp
@@ -102,8 +114,8 @@ const describeTable = async (
   await connection.execute(
     `INSERT INTO ${escapeId(
       metaName
-    )}(MetaKey, MetaField, ComplexValue) VALUES("Tables", ?, ?)`,
-    [tableName, metaSchema]
+    )}(FirstKey, SecondKey, Value) VALUES("TableDescriptor", ?, CAST(? AS JSON))`,
+    [tableName, JSON.stringify(metaSchema)]
   )
 
   metaInfo.tables[tableName] = metaSchema

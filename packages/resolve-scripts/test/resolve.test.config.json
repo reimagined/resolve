@@ -1,25 +1,25 @@
 {
   "index": "client/custom-index.js",
-  "viewModels": "common/customViewModels",
-  "readModels": "common/customReadModels",
-  "storage": {
-    "adapter": "custom-storage",
+  "viewModels": [],
+  "readModels": [],
+  "storageAdapter": {
+    "module": "custom-storage",
     "options": {}
   },
-  "bus": {
-    "adapter": "custom-bus",
+  "busAdapter": {
+    "module": "custom-bus",
     "options": {}
   },
   "env": {
     "development": {
-      "bus": {
-        "adapter": "custom-development-bus",
+      "busAdapter": {
+        "module": "custom-development-bus",
         "options": {}
       }
     },
     "production": {
-      "subscribe": {
-        "adapter": "custom-subscribe-adapter",
+      "subscribeAdapter": {
+        "module": "custom-subscribe-adapter",
         "options": {}
       }
     }
