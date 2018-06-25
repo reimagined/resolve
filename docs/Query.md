@@ -2,13 +2,13 @@
 
 ## What is a Query?
 
-**Query** are used to get data from a Read Model and View Model. 
+A **Query** is a function used to fetch data from a Read Model or View Model.
 
-Refer to [DDD, Event Sourcing, and CQRS Tutorial: design](http://cqrs.nu/tutorial/cs/01-design) for more information on queries.
+Refer to the [Edument CQRS Starter Kit Tutorial](http://cqrs.nu/tutorial/cs/01-design) for details.
 
 ## How to Use?
 
-You can describe Queries for Read Model in commmon/read-models/resolvers.js file:
+**Read Model Queries** are defined in the *commmon/read-models/resolvers.js* file:
 
 ```
 📁 resolve-app
@@ -18,7 +18,7 @@ You can describe Queries for Read Model in commmon/read-models/resolvers.js file
             📄 resolvers.js
 ```
 
-A typical Query structure:
+A sample Query:
 
 ```js
 export default {
@@ -37,10 +37,10 @@ export default {
 
 ## What's Next?
 
-📑 Available scripts, project structure overview, configuration files and much other useful information are in [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md) topic.
+📑 Available scripts, project structure overview, configuration files, and more useful information can be found in the [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md) topic.
 
-📑 To learn more about common building principles of architecture, please look at [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md) documentation topic.
+📑 Refer to the [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md) documentation topic to learn more about common architecture building principles.
 
-📑 In [**Tutorials**](https://github.com/reimagined/resolve/tree/master/docs/Tutorials) you can find how to make some simple applications with reSolve.
+📑 You can learn how to create simple applications with reSolve in the [**Tutorials**](https://github.com/reimagined/resolve/tree/master/docs/Tutorials) section.
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/docs-query?pixel)
