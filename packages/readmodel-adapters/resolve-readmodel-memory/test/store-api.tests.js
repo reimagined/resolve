@@ -34,8 +34,9 @@ describe('resolve-readmodel-memory store-api', () => {
       { createTable: () => newStorage, storage },
       'test',
       {
-        primaryIndex: { name: 'first' },
-        secondaryIndexes: [{ name: 'second' }, { name: 'third' }]
+        first: 'primary-string',
+        second: 'secondary-number',
+        third: 'secondary-string'
       }
     )
 

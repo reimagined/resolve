@@ -1,5 +1,8 @@
 import messages from './messages'
 
+const COLUMN_NAME_REGEXP = /^(?:\w|\d|-)+?$/
+const FIELD_NAME_REGEXP = /^(?:\w|\d|-)+?(?:\.(?:\w|\d|-)+?)*?$/
+
 const checkCondition = (condition, messageGenerator, ...args) => {
   if (!condition) {
     throw new Error(
@@ -10,104 +13,92 @@ const checkCondition = (condition, messageGenerator, ...args) => {
   }
 }
 
-const checkOptionShape = (option, types) => {
-  return !(
+const checkOptionShape = (option, types, nullable = false) =>
+  (nullable && option == null) ||
+  !(
     option == null ||
     !types.reduce((acc, type) => acc || option.constructor === type, false)
   )
-}
 
 const checkAndGetTableMetaSchema = (tableName, tableSchema) => {
   checkCondition(
-    Array.isArray(tableSchema),
+    checkOptionShape(tableSchema, [Object]) &&
+      Array.isArray(tableSchema.fields) &&
+      checkOptionShape(tableSchema.indexes, [Object]),
     messages.invalidTableSchema,
     tableName,
-    messages.tableDescriptorNotArray,
+    messages.tableDescriptorNotObject,
     tableSchema
   )
 
-  const validTypes = ['number', 'string', 'json']
-  const indexRoles = ['primary', 'secondary']
-  let primaryIndex = null
-  const secondaryIndexes = []
-  const fieldTypes = {}
+  const { fields, indexes } = tableSchema
+  const schema = {}
 
-  for (let columnDescription of tableSchema) {
+  for (let columnName of fields) {
     checkCondition(
-      checkOptionShape(columnDescription, [Object]),
-      messages.invalidTableSchema,
-      tableName,
-      messages.columnDescriptorInvalidShape,
-      columnDescription
-    )
-    const { name, type, index } = columnDescription
-    checkCondition(
-      /^(?:\w|\d|-)+?$/.test(name),
+      COLUMN_NAME_REGEXP.test(columnName),
       messages.invalidTableSchema,
       tableName,
       messages.columnWrongName,
-      columnDescription
-    )
-    checkCondition(
-      validTypes.indexOf(type) > -1 &&
-        (!index || indexRoles.indexOf(index) > -1),
-      messages.invalidTableSchema,
-      tableName,
-      messages.columnWrongTypeOrIndex,
-      columnDescription
+      columnName
     )
 
-    if (index) {
-      checkCondition(
-        type === 'number' || type === 'string',
-        messages.invalidTableSchema,
-        tableName,
-        messages.wrongTypeForIndexedColumn,
-        columnDescription
-      )
-      if (index === 'primary') {
-        primaryIndex = { name, type }
-      } else {
-        secondaryIndexes.push({ name, type })
-      }
-    }
-
-    fieldTypes[name] = type
+    schema[columnName] = 'regular'
   }
 
   checkCondition(
-    checkOptionShape(primaryIndex, [Object]),
+    Object.keys(indexes).length > 0,
     messages.invalidTableSchema,
     tableName,
     messages.tableWithoutPrimaryIndex,
-    tableSchema
+    indexes
   )
 
-  return { primaryIndex, secondaryIndexes, fieldTypes }
+  for (let [idx, indexName] of Object.keys(indexes).entries()) {
+    const indexType = indexes[indexName]
+    checkCondition(
+      COLUMN_NAME_REGEXP.test(indexName) &&
+        (indexType === 'number' || indexType === 'string'),
+      messages.invalidTableSchema,
+      tableName,
+      messages.columnWrongIndex,
+      indexName
+    )
+
+    schema[indexName] = `${idx === 0 ? 'primary' : 'secondary'}-${indexType}`
+  }
+
+  return schema
 }
 
-const checkAndGetFieldType = (metaInfo, fieldName) => {
-  if (!/^(?:\w|\d|-)+?(?:\.(?:\w|\d|-)+?)*?$/.test(fieldName)) return null
+const checkAndGetColumnStatus = (metaInfo, fieldName, allowNested) => {
+  if (!FIELD_NAME_REGEXP.test(fieldName)) return null
 
   const [baseName, ...nestedName] = fieldName.split('.')
-  if (!metaInfo.fieldTypes[baseName]) return null
-
-  const fieldType = metaInfo.fieldTypes[baseName]
-  if (nestedName.length > 0 && fieldType !== 'json') {
+  if (
+    !metaInfo[baseName] ||
+    (nestedName.length > 0 &&
+      (metaInfo[baseName] !== 'regular' || !allowNested))
+  ) {
     return null
   }
 
-  return fieldType
+  return metaInfo[baseName]
 }
 
-const checkFieldList = (metaInfo, fieldList, validProjectionValues = []) => {
+const checkFieldList = (
+  metaInfo,
+  fieldList,
+  allowNested,
+  validProjectionValues = []
+) => {
   if (!checkOptionShape(fieldList, [Object, Array])) {
     return '*'
   }
 
   if (Array.isArray(fieldList)) {
     for (let fieldName of fieldList) {
-      if (!checkAndGetFieldType(metaInfo, fieldName)) {
+      if (!checkAndGetColumnStatus(metaInfo, fieldName, allowNested)) {
         return fieldName
       }
     }
@@ -116,7 +107,7 @@ const checkFieldList = (metaInfo, fieldList, validProjectionValues = []) => {
 
   for (let fieldName of Object.keys(fieldList)) {
     if (
-      !checkAndGetFieldType(metaInfo, fieldName) ||
+      !checkAndGetColumnStatus(metaInfo, fieldName, allowNested) ||
       !(validProjectionValues.indexOf(fieldList[fieldName]) > -1)
     ) {
       return fieldName
@@ -126,22 +117,24 @@ const checkFieldList = (metaInfo, fieldList, validProjectionValues = []) => {
   return null
 }
 
-const isFieldValueCorrect = (
-  metaInfo,
-  fieldName,
-  fieldValue,
-  isNullable = true
-) => {
+const isFieldValueCorrect = (metaInfo, fieldName, fieldValue, allowNested) => {
   try {
-    const fieldType = checkAndGetFieldType(metaInfo, fieldName)
-    if (!fieldType) return false
-    if (fieldType === 'json') return true
-    if (fieldValue == null) return isNullable
+    const columnType = checkAndGetColumnStatus(metaInfo, fieldName, allowNested)
 
-    return (
-      (fieldType === 'number' && fieldValue.constructor === Number) ||
-      (fieldType === 'string' && fieldValue.constructor === String)
-    )
+    switch (columnType) {
+      case 'primary-string':
+        return checkOptionShape(fieldValue, [String])
+      case 'primary-number':
+        return checkOptionShape(fieldValue, [Number])
+      case 'secondary-string':
+        return checkOptionShape(fieldValue, [String], true)
+      case 'secondary-number':
+        return checkOptionShape(fieldValue, [Number], true)
+      case 'regular':
+        return true
+      default:
+        return false
+    }
   } catch (err) {
     return false
   }
@@ -152,7 +145,7 @@ const checkInsertedDocumentShape = (tableName, metaInfo, document) => {
 
   checkCondition(
     checkOptionShape(document, [Object]) &&
-      Object.keys(metaInfo.fieldTypes).length === documentKeys.length,
+      Object.keys(metaInfo).length === documentKeys.length,
     messages.invalidFieldList,
     'insert',
     tableName,
@@ -160,7 +153,7 @@ const checkInsertedDocumentShape = (tableName, metaInfo, document) => {
     messages.fieldListNotObject
   )
 
-  const checkFieldResult = checkFieldList(metaInfo, documentKeys)
+  const checkFieldResult = checkFieldList(metaInfo, documentKeys, false)
   checkCondition(
     checkFieldResult == null,
     messages.invalidFieldList,
@@ -171,18 +164,12 @@ const checkInsertedDocumentShape = (tableName, metaInfo, document) => {
     checkFieldResult
   )
 
-  const { primaryIndex, secondaryIndexes } = metaInfo
-
   for (let fieldName of documentKeys) {
-    const isNullable = !(
-      primaryIndex.name === fieldName ||
-      secondaryIndexes.find(({ name }) => name === fieldName)
-    )
-
     checkCondition(
-      isFieldValueCorrect(metaInfo, fieldName, document[fieldName], isNullable),
+      isFieldValueCorrect(metaInfo, fieldName, document[fieldName], false),
       messages.invalidFieldList,
       'insert',
+      tableName,
       document,
       messages.columnTypeMismatch,
       fieldName
@@ -271,7 +258,7 @@ const checkSearchExpression = (
 
   const documentKeys = Object.keys(searchExpression)
 
-  const checkFieldResult = checkFieldList(metaInfo, documentKeys)
+  const checkFieldResult = checkFieldList(metaInfo, documentKeys, true)
   checkCondition(
     checkFieldResult == null,
     messages.invalidFieldList,
@@ -282,14 +269,7 @@ const checkSearchExpression = (
     checkFieldResult
   )
 
-  const { primaryIndex, secondaryIndexes } = metaInfo
-
   for (let fieldName of documentKeys) {
-    const isNullable = !(
-      primaryIndex.name === fieldName ||
-      secondaryIndexes.find(({ name }) => name === fieldName)
-    )
-
     let fieldValue = searchExpression[fieldName]
 
     if (searchExpression[fieldName] instanceof Object) {
@@ -323,7 +303,7 @@ const checkSearchExpression = (
     }
 
     checkCondition(
-      isFieldValueCorrect(metaInfo, fieldName, fieldValue, isNullable),
+      isFieldValueCorrect(metaInfo, fieldName, fieldValue, true),
       messages.invalidSearchExpression,
       operation,
       tableName,
@@ -373,25 +353,19 @@ const checkUpdateExpression = (tableName, metaInfo, updateExpression) => {
     )
 
     for (let fieldName of Object.keys(affectedFields)) {
-      const fieldType = checkAndGetFieldType(metaInfo, fieldName)
-      if (
-        operator === '$unset' ||
-        (fieldType === 'json' && operator === '$set')
-      )
-        continue
-
-      const updateValueType =
-        affectedFields[fieldName] == null
-          ? 'null'
-          : affectedFields[fieldName].constructor === Number
-            ? 'number'
-            : affectedFields[fieldName].constructor === String
-              ? 'string'
-              : 'null'
-
       checkCondition(
-        (operator === '$set' && updateValueType === fieldType) ||
-          (operator === '$inc' && updateValueType === 'number'),
+        operator !== '$unset'
+          ? isFieldValueCorrect(
+              metaInfo,
+              fieldName,
+              affectedFields[fieldName],
+              true
+            ) &&
+            (operator === '$set' ||
+              (operator === '$inc' &&
+                affectedFields[fieldName] != null &&
+                affectedFields[fieldName].constructor === Number))
+          : checkAndGetColumnStatus(metaInfo, fieldName, true),
         messages.invalidUpdateExpression,
         tableName,
         updateExpression,
@@ -438,7 +412,10 @@ const find = async (
   const metaInfo = await metaApi.getTableInfo(tableName)
 
   if (resultFieldsList != null) {
-    const checkFieldResult = checkFieldList(metaInfo, resultFieldsList, [0, 1])
+    const checkFieldResult = checkFieldList(metaInfo, resultFieldsList, true, [
+      0,
+      1
+    ])
 
     checkCondition(
       checkFieldResult == null,
@@ -453,7 +430,10 @@ const find = async (
   }
 
   if (sortFieldsList != null) {
-    const checkFieldResult = checkFieldList(metaInfo, sortFieldsList, [-1, 1])
+    const checkFieldResult = checkFieldList(metaInfo, sortFieldsList, true, [
+      -1,
+      1
+    ])
 
     checkCondition(
       checkFieldResult == null,
@@ -498,7 +478,10 @@ const findOne = async (
 
   const metaInfo = await metaApi.getTableInfo(tableName)
   if (resultFieldsList != null) {
-    const checkFieldResult = checkFieldList(metaInfo, resultFieldsList, [0, 1])
+    const checkFieldResult = checkFieldList(metaInfo, resultFieldsList, true, [
+      0,
+      1
+    ])
 
     checkCondition(
       checkFieldResult == null,
