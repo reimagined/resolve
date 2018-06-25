@@ -1,4 +1,4 @@
-# ToDo List App Tutorial
+# ToDo List App Example
 
 ![todo](https://user-images.githubusercontent.com/19663260/41163516-88101fca-6b41-11e8-879a-ffa36d61602a.png)
 
