@@ -1,6 +1,7 @@
-import getSocketByClientId from './utils/get_socket_by_client_id'
 import readModelQueryExecutors from './read_model_query_executors'
 import println from './utils/println'
+import stringify from 'json-stable-stringify'
+import pubsubManager from './pubsub_manager'
 
 const message = require('../../../configs/message.json')
 
@@ -8,11 +9,9 @@ export const READ_MODEL_SUBSCRIPTION_TIME_TO_LIVE = 300000
 export const subscriptionProcesses = new Map()
 
 export const readModelSubscribeHandler = (req, res) => {
-  const serialId = Date.now()
-
-  const { modelName, resolverName } = req.params
-
-  const subscriptionKey = `${req.body.socketId}:${resolverName}`
+  const { queryId, modelName, resolverName, resolverArgs } = req.params
+  
+  const subscriptionKey = `${queryId}:${modelName}:${resolverName}:${stringify(resolverArgs)}`
   if (subscriptionProcesses.get(subscriptionKey)) {
     res
       .status(500)
@@ -24,28 +23,25 @@ export const readModelSubscribeHandler = (req, res) => {
 
   const subscriptionPromise = (async () => {
     await Promise.resolve()
+    
+    let queryDiffVersion = 1
+    
     try {
-      getSocketByClientId(req.socket, req.body.socketId)
-
       const { result, forceStop } = await readModelQueryExecutors[
         modelName
       ].makeSubscriber(
         diff => {
           try {
-            const socketClient = getSocketByClientId(
-              req.socket,
-              req.body.socketId
-            )
-            socketClient.emit(
-              'event',
-              JSON.stringify({
+            pubsubManager.dispatch({
+              topicName: 'READ_MODEL_DIFFS',
+              topicId: queryId,
+              message: {
                 type: '@@resolve/READMODEL_SUBSCRIPTION_DIFF',
-                readModelName: modelName,
-                resolverName,
-                serialId,
+                queryId,
+                queryDiffVersion: queryDiffVersion++,
                 diff
-              })
-            )
+              }
+            })
           } catch (sockErr) {
             subscriptionProcesses.delete(subscriptionKey)
             forceStop()
@@ -53,14 +49,14 @@ export const readModelSubscribeHandler = (req, res) => {
         },
         resolverName,
         {
-          ...req.body.parameters,
+          ...resolverArgs,
           jwtToken: req.jwtToken
         }
       )
 
       res.status(200).send({
         timeToLive: READ_MODEL_SUBSCRIPTION_TIME_TO_LIVE,
-        serialId,
+        queryId,
         result
       })
 
@@ -80,7 +76,7 @@ export const readModelSubscribeHandler = (req, res) => {
   })()
 
   subscriptionProcesses.set(subscriptionKey, subscriptionPromise)
-
+  
   void (async () => {
     const lastError = await readModelQueryExecutors[modelName].getLastError()
     if (lastError != null) {
@@ -91,7 +87,8 @@ export const readModelSubscribeHandler = (req, res) => {
 
 export const readModelUnsubscribeHandler = (req, res) => {
   try {
-    const subscriptionKey = `${req.query.socketId}:${req.params.resolverName}`
+    const { queryId, modelName, resolverName, resolverArgs } = req.query
+    const subscriptionKey = `${queryId}:${modelName}:${resolverName}:${stringify(resolverArgs)}`
 
     const forceStopPromise = subscriptionProcesses.get(subscriptionKey)
     if (forceStopPromise) {

@@ -2,9 +2,7 @@ import mqtt from 'mqtt'
 
 import getMqttTopics from './get_mqtt_topics'
 
-export const errorMessageNotInitialized = 'Subscribe adapter not initialized'
-export const errorMessageAlreadyInitialized =
-  'Subscribe adapter already initialized'
+import { errorMessageNotInitialized, errorMessageAlreadyInitialized } from './constants'
 
 const createClientAdapter = ({ subscribeId, onEvent, api }) => {
   let client, qos, url, appId
@@ -51,6 +49,9 @@ const createClientAdapter = ({ subscribeId, onEvent, api }) => {
     },
 
     async close() {
+      if (!isInitialized) {
+        throw new Error(errorMessageNotInitialized)
+      }
       isInitialized = false
       client.end()
 

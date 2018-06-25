@@ -5,7 +5,7 @@ import println from './utils/println'
 const message = require('../../../configs/message.json')
 
 const readModelNonReactiveHandler = async (req, res) => {
-  const serialId = Date.now()
+  const queryId = req.query.queryId
 
   try {
     const result = await executeReadModelQuery({
@@ -16,7 +16,7 @@ const readModelNonReactiveHandler = async (req, res) => {
     })
 
     res.status(200).send({
-      serialId,
+      queryId,
       result
     })
 

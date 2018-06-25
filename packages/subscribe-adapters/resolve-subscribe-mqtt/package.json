@@ -2,7 +2,6 @@
   "name": "resolve-subscribe-mqtt",
   "version": "0.11.0",
   "description": "This package serves as an adapter for resolve-redux to subscribe to events.",
-  "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },

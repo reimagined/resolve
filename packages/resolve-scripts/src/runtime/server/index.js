@@ -1,10 +1,10 @@
 import path from 'path'
 import { Server } from 'http'
 import express from 'express'
-import createSocketServer from 'socket.io'
+//import createSocketServer from 'socket.io'
 import cookieParser from 'cookie-parser'
 import bodyParser from 'body-parser'
-import { Server as WebSocketServer } from 'ws'
+//import { Server as WebSocketServer } from 'ws'
 
 import getRootBasedUrl from './utils/get_root_based_url'
 import serverSideRendering from './server_side_rendering'
@@ -12,8 +12,8 @@ import startServer from './start_server'
 import commandHandler from './command_handler'
 import statusHandler from './status_handler'
 import queryHandler from './query_handler'
-import socketHandler from './socket_handler'
-import mqttHandler from './mqtt_handler';
+// import socketHandler from './socket_handler'
+// import mqttHandler from './mqtt_handler';
 import sagaRunner from './saga_runner'
 import assignAuthRoutes from './assign_auth_routes'
 import eventStore from './event_store'
@@ -40,7 +40,7 @@ const createSubscribeAdapter = serverSubscribeAdapter.module
 const subscribeAdapter = createSubscribeAdapter({
   pubsubManager,
   server,
-  path: getRootBasedUrl('/mqtt'),
+  getRootBasedUrl,
   ...serverSubscribeAdapter.options
 })
 
@@ -56,16 +56,12 @@ subscribeAdapter.init().then(
   }
 )
 
-
-
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
 
 app.use((req, res, next) => {
   req.jwtToken = req.cookies[jwtCookie.name]
-  // req.socketIOServer = socketIOServer
-  // req.socketMqttServer = socketMqttServer
 
   next()
 })
