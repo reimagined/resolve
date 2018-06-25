@@ -21,16 +21,14 @@ describe('resolve-readmodel-mysql store-api', () => {
       metaInfo: {
         tables: {
           test: {
-            fieldTypes: {
-              id: 'number',
-              search: 'string',
-              sort: 'string',
-              volume: 'string',
-              one: 'string',
-              two: 'string',
-              value: 'json',
-              inner: 'json'
-            }
+            id: 'primary',
+            search: 'secondary',
+            sort: 'secondary',
+            volume: 'secondary',
+            one: 'secondary',
+            two: 'secondary',
+            value: 'regular',
+            inner: 'regular'
           }
         }
       }
@@ -44,17 +42,17 @@ describe('resolve-readmodel-mysql store-api', () => {
 
   it('should provide defineTable method', async () => {
     await storeApi.defineTable(pool, 'test', {
-      fieldTypes: { first: 'number', second: 'string', third: 'string' },
-      primaryIndex: { name: 'first' },
-      secondaryIndexes: [{ name: 'second' }, { name: 'third' }]
+      first: 'primary-string',
+      second: 'secondary-number',
+      third: 'secondary-string'
     })
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
         `CREATE TABLE \`test\` (
-          \`first\` BIGINT NOT NULL,
-          \`second\` VARCHAR(255) NOT NULL,
-          \`third\` VARCHAR(255) NOT NULL,
+          \`first\` VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+          \`second\` BIGINT NULL,
+          \`third\` VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
           PRIMARY KEY (\`first\`),
           INDEX USING BTREE (\`second\`),
           INDEX USING BTREE (\`third\`)

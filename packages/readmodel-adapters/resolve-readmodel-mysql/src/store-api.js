@@ -1,39 +1,48 @@
-const MAX_VALUE = 0x0fffffff | 0
-const castType = type => {
-  switch (type) {
-    case 'number':
-      return 'BIGINT NOT NULL'
-    case 'string':
-      return 'VARCHAR(255) NOT NULL'
-    case 'json':
-      return 'JSON NULL'
+const STRING_INDEX_TYPE =
+  'VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'
+const NUMBER_INDEX_TYPE = 'BIGINT'
+const MAX_LIMIT_VALUE = 0x0fffffff | 0
+
+const getTypeDefinitionForColumn = columnType => {
+  switch (columnType) {
+    case 'primary-string':
+      return `${STRING_INDEX_TYPE} NOT NULL`
+    case 'primary-number':
+      return `${NUMBER_INDEX_TYPE} NOT NULL`
+    case 'secondary-string':
+      return `${STRING_INDEX_TYPE} NULL`
+    case 'secondary-number':
+      return `${NUMBER_INDEX_TYPE} NULL`
     default:
-      return 'VARCHAR(255) NOT NULL'
+      return 'JSON'
   }
 }
 
 const defineTable = async (
   { connection, escapeId },
   tableName,
-  tableSchema
+  tableDescription
 ) => {
   await connection.execute(
     `CREATE TABLE ${escapeId(tableName)} (\n` +
       [
-        Object.keys(tableSchema.fieldTypes)
+        Object.keys(tableDescription)
           .map(
-            fieldName =>
-              `${escapeId(fieldName)} ${castType(
-                tableSchema.fieldTypes[fieldName]
+            columnName =>
+              `${escapeId(columnName)} ${getTypeDefinitionForColumn(
+                tableDescription[columnName]
               )}`
           )
           .join(',\n'),
-        [
-          `PRIMARY KEY (${escapeId(tableSchema.primaryIndex.name)})`,
-          ...tableSchema.secondaryIndexes.map(
-            ({ name }) => `INDEX USING BTREE (${escapeId(name)})`
+        Object.keys(tableDescription)
+          .filter(columnName => tableDescription[columnName] !== 'regular')
+          .map(
+            (columnName, idx) =>
+              idx === 0
+                ? `PRIMARY KEY (${escapeId(columnName)})`
+                : `INDEX USING BTREE (${escapeId(columnName)})`
           )
-        ].join(',\n')
+          .join(',\n')
       ].join(',\n') +
       `\n)`
   )
@@ -86,7 +95,7 @@ const searchToWhereExpression = (expression, fieldTypes, escapeId) => {
 
       const resultOperator = makeCompareOperator(fieldOperator)
 
-      if (fieldTypes[baseName] === 'json') {
+      if (fieldTypes[baseName] === 'regular') {
         searchExprArray.push(
           `${resultFieldName} ${resultOperator} CAST(? AS JSON)`
         )
@@ -181,7 +190,7 @@ const updateToSetExpression = (expression, fieldTypes, escapeId) => {
             updateExprArray.push(`${escapeId(baseName)} = ? `)
           }
 
-          if (fieldTypes[baseName] === 'json') {
+          if (fieldTypes[baseName] === 'regular') {
             updateValues.push(JSON.stringify(fieldValue))
           } else {
             updateValues.push(fieldValue)
@@ -200,9 +209,17 @@ const updateToSetExpression = (expression, fieldTypes, escapeId) => {
               )}, '${makeNestedPath(nestedPath)}') + ?) `
             )
           } else {
-            updateExprArray.push(
-              `${escapeId(baseName)} = ${escapeId(baseName)} + ? `
-            )
+            if (fieldTypes[baseName] === 'regular') {
+              updateExprArray.push(
+                `${escapeId(baseName)} = CAST((${escapeId(
+                  baseName
+                )} + ?) AS JSON) `
+              )
+            } else {
+              updateExprArray.push(
+                `${escapeId(baseName)} = ${escapeId(baseName)} + ? `
+              )
+            }
           }
           updateValues.push(fieldValue)
           break
@@ -220,6 +237,8 @@ const updateToSetExpression = (expression, fieldTypes, escapeId) => {
   }
 }
 
+const convertBinaryRow = row => Object.setPrototypeOf(row, Object.prototype)
+
 const find = async (
   { connection, escapeId, metaInfo },
   tableName,
@@ -229,7 +248,7 @@ const find = async (
   skip,
   limit
 ) => {
-  const fieldTypes = metaInfo.tables[tableName].fieldTypes
+  const fieldTypes = metaInfo.tables[tableName]
 
   let selectExpression =
     fieldList && Object.keys(fieldList).length > 0
@@ -267,7 +286,7 @@ const find = async (
       : ''
 
   const skipLimit = `LIMIT ${isFinite(skip) ? skip : 0},${
-    isFinite(limit) ? limit : MAX_VALUE
+    isFinite(limit) ? limit : MAX_LIMIT_VALUE
   }`
 
   const { searchExpr, searchValues } = searchToWhereExpression(
@@ -288,6 +307,10 @@ const find = async (
     searchValues
   )
 
+  for (let idx = 0; idx < rows.length; idx++) {
+    rows[idx] = convertBinaryRow(rows[idx])
+  }
+
   return rows
 }
 
@@ -297,7 +320,7 @@ const findOne = async (
   searchExpression,
   fieldList
 ) => {
-  const fieldTypes = metaInfo.tables[tableName].fieldTypes
+  const fieldTypes = metaInfo.tables[tableName]
 
   let selectExpression =
     fieldList && Object.keys(fieldList).length > 0
@@ -335,7 +358,7 @@ const findOne = async (
   )
 
   if (Array.isArray(rows) && rows.length > 0) {
-    return rows[0]
+    return convertBinaryRow(rows[0])
   }
 
   return null
@@ -346,7 +369,7 @@ const count = async (
   tableName,
   searchExpression
 ) => {
-  const fieldTypes = metaInfo.tables[tableName].fieldTypes
+  const fieldTypes = metaInfo.tables[tableName]
 
   const { searchExpr, searchValues } = searchToWhereExpression(
     searchExpression,
@@ -381,19 +404,19 @@ const insert = async (
   tableName,
   document
 ) => {
-  const fieldTypes = metaInfo.tables[tableName].fieldTypes
+  const fieldTypes = metaInfo.tables[tableName]
 
   await connection.execute(
     `INSERT INTO ${escapeId(tableName)}(${Object.keys(document)
       .map(key => escapeId(key))
       .join(', ')})
      VALUES(${Object.keys(document)
-       .map(key => (fieldTypes[key] === 'json' ? 'CAST(? AS JSON)' : '?'))
+       .map(key => (fieldTypes[key] === 'regular' ? 'CAST(? AS JSON)' : '?'))
        .join(', ')})
     `,
     Object.keys(document).map(
       key =>
-        fieldTypes[key] === 'json'
+        fieldTypes[key] === 'regular'
           ? JSON.stringify(document[key])
           : document[key]
     )
@@ -406,7 +429,7 @@ const update = async (
   searchExpression,
   updateExpression
 ) => {
-  const fieldTypes = metaInfo.tables[tableName].fieldTypes
+  const fieldTypes = metaInfo.tables[tableName]
 
   const { searchExpr, searchValues } = searchToWhereExpression(
     searchExpression,
@@ -433,7 +456,7 @@ const del = async (
   tableName,
   searchExpression
 ) => {
-  const fieldTypes = metaInfo.tables[tableName].fieldTypes
+  const fieldTypes = metaInfo.tables[tableName]
 
   const { searchExpr, searchValues } = searchToWhereExpression(
     searchExpression,

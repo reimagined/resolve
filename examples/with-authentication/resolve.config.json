@@ -19,7 +19,4 @@
       }
     }
   }
-
-  // See the documentation for more information about available options list at
-  // https://github.com/reimagined/resolve/blob/master/packages/resolve-scripts/configs/schema.deploy.options.json
 }

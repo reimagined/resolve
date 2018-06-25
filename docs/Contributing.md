@@ -8,7 +8,7 @@ This is a set of guidelines for contributing to reSolve and its packages hosted 
     * [Definition of the Done](#definition-of-the-done)
     * [Code Style](#code-style)
     * [Working in Monorepo](#working-in-monorepo)
-* [Reporting Bugs](#reporting-bugs)
+* [Reporting Bugs and Requesting Features](#reporting-bugs-and-requesting-features)
 * [Issue Labels](#issue-labels)
 
 ## Pull Requests
@@ -65,7 +65,7 @@ Follow these guidelines to help maintainers and the community understand your re
 
 * Before creating an issue, search for the related issues and add links to all issues that seem relevant, even to Closed ones.
 
-* Bugs and suggestions are tracked using [GitHub Issues](https://guides.github.com/features/issues/). After you've determined [which package](../Packages) your issue is related to, create an Issue and provide the complete description.
+* Bugs and suggestions are tracked using [GitHub Issues](https://guides.github.com/features/issues/). After you've determined [which package](../packages) your issue is related to, create an Issue and provide the complete description.
 
 * Explain the problem and include additional details to help maintainers reproduce it:
 

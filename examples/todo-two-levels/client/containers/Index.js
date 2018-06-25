@@ -19,7 +19,7 @@ const viewModelName = 'Lists'
 export const Index = ({ lists, createList, removeList }) => {
   const placeholder = 'New List'
   const createListFunc = () => {
-    createList(Date.now(), {
+    createList(`${Date.now()}`, {
       title: newList.value === '' ? placeholder : newList.value
     })
     newList.value = ''
