@@ -2,8 +2,8 @@ import { Server as WebSocketServer } from 'ws'
 
 import createServerHandler from './create_server_handler'
 import {
-  errorMessageNotInitialized,
-  errorMessageAlreadyInitialized
+  subscribeAdapterNotInitialized,
+  subscribeAdapterAlreadyInitialized
 } from './constants'
 
 const createServerAdapter = ({ server, getRootBasedUrl, pubsubManager }) => {
@@ -13,7 +13,7 @@ const createServerAdapter = ({ server, getRootBasedUrl, pubsubManager }) => {
   return {
     async init() {
       if (isInitialized) {
-        throw new Error(errorMessageAlreadyInitialized)
+        throw new Error(subscribeAdapterAlreadyInitialized)
       }
 
       isInitialized = true
@@ -35,7 +35,7 @@ const createServerAdapter = ({ server, getRootBasedUrl, pubsubManager }) => {
 
     async close() {
       if (!isInitialized) {
-        throw new Error(errorMessageNotInitialized)
+        throw new Error(subscribeAdapterNotInitialized)
       }
 
       return new Promise((resolve, reject) => {

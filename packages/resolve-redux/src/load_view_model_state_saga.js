@@ -1,13 +1,13 @@
 import { put } from 'redux-saga/effects'
-import fetch from 'isomorphic-fetch'
 
 import { loadViewModelStateSuccess, loadViewModelStateFailure } from './actions'
 
 const loadViewModelStateSaga = function*(
   { viewModelName, aggregateIds, aggregateArgs },
-  { rootPath }
+  { api }
 ) {
   try {
+    // TODO use api
     const request = yield fetch(
       `/${rootPath}/api/query/${viewModelName}?aggregateIds=${JSON.stringify(
         aggregateIds

@@ -1,7 +1,8 @@
 import { take } from 'redux-saga/effects'
+import stringify from 'json-stable-stringify'
+
 import createConnectionManager from './create_connection_manager'
 import createSagaManager from './create_saga_manager'
-import stringify from 'json-stable-stringify'
 
 import { CONNECT_VIEWMODEL, DISCONNECT_VIEWMODEL } from './action_types'
 import connectViewModelSaga from './connect_view_model_saga'
