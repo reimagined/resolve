@@ -80,14 +80,8 @@ const eventListenerSaga = function*(
   }
 }
 
-const connectViewModelSaga = function*(action, sagaArgs) {
-  const {
-    appId,
-    viewModels,
-    connectionManager,
-    sagaManager,
-    sagaKey
-  } = sagaArgs
+const connectViewModelSaga = function*(sagaArgs, action) {
+  const { viewModels, connectionManager, sagaManager, sagaKey } = sagaArgs
   const viewModelName = action.viewModelName
   const aggregateIds = stringify(action.aggregateIds)
   const aggregateArgs = stringify(action.aggregateArgs)
@@ -105,12 +99,19 @@ const connectViewModelSaga = function*(action, sagaArgs) {
 
   yield* sagaManager.stop(`${DISCONNECT_VIEWMODEL}${sagaKey}`)
 
-  const eventTypes = Object.keys(viewModels[viewModelName].projection)
+  const viewModel = viewModels.find(({ name }) => name === viewModelName)
+
+  const eventTypes = Object.keys(viewModel.projection)
 
   // viewModelName + aggregateIds => Array<{ aggregateId, eventType }>
-  let subscriptionKeys = eventTypes.map(eventType =>
-    action.aggregateIds.map(aggregateId => ({ aggregateId, eventType }))
-  )
+  let subscriptionKeys = eventTypes.reduce((acc, eventType) => {
+    acc.push(
+      ...action.aggregateIds.map(aggregateId => ({ aggregateId, eventType }))
+    )
+    return acc
+  }, [])
+
+  console.log(subscriptionKeys)
 
   yield* sagaManager.start(
     `${CONNECT_VIEWMODEL}${sagaKey}`,
@@ -120,30 +121,33 @@ const connectViewModelSaga = function*(action, sagaArgs) {
   )
 
   while (subscriptionKeys.length > 0) {
+    console.log('subscriptionKeys', subscriptionKeys)
+    console.log('subscriptionKeys.length', subscriptionKeys.length)
     let counter = subscriptionKeys.length
     for (const { aggregateId, eventType } of subscriptionKeys) {
-      yield put(subscribeTopicRequest(appId, aggregateId, eventType))
+      yield put(subscribeTopicRequest(aggregateId, eventType))
     }
 
     while (counter > 0) {
-      const subscribeResultAction = yield take(
-        action =>
+      const subscribeResultAction = yield take(action => {
+        console.log(action)
+        return (
           (action.type === SUBSCRIBE_TOPIC_SUCCESS ||
             action.type === SUBSCRIBE_TOPIC_FAILURE) &&
-          (action.appId === appId &&
-            subscriptionKeys.find(
-              key =>
-                key.aggregateId === action.aggregateId &&
-                key.eventType === action.eventType
-            ))
-      )
+          subscriptionKeys.find(
+            key =>
+              key.aggregateId === action.topicName &&
+              key.eventType === action.topicId
+          )
+        )
+      })
 
       if (subscribeResultAction.type === SUBSCRIBE_TOPIC_SUCCESS) {
         subscriptionKeys = subscriptionKeys.filter(
           key =>
             !(
-              key.aggregateId === subscribeResultAction.aggregateId &&
-              key.eventType === subscribeResultAction.eventType
+              key.aggregateId === subscribeResultAction.topicName &&
+              key.eventType === subscribeResultAction.topicId
             )
         )
       }
@@ -151,6 +155,8 @@ const connectViewModelSaga = function*(action, sagaArgs) {
       counter--
     }
   }
+
+  console.log('loadViewModelStateRequest!!!!!!!!!!!!')
 
   while (true) {
     yield put(

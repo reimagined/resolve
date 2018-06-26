@@ -68,45 +68,39 @@ export const sendCommandFailure = (
   error
 })
 
-export const subscribeTopicRequest = (appId, topicName, topicId) => ({
+export const subscribeTopicRequest = (topicName, topicId) => ({
   type: SUBSCRIBE_TOPIC_REQUEST,
-  appId,
   topicName,
   topicId
 })
 
-export const subscribeTopicSuccess = (appId, topicName, topicId) => ({
+export const subscribeTopicSuccess = (topicName, topicId) => ({
   type: SUBSCRIBE_TOPIC_SUCCESS,
-  appId,
   topicName,
   topicId
 })
 
-export const subscribeTopicFailure = (appId, topicName, topicId, error) => ({
+export const subscribeTopicFailure = (topicName, topicId, error) => ({
   type: SUBSCRIBE_TOPIC_FAILURE,
-  appId,
   topicName,
   topicId,
   error
 })
 
-export const unsubscibeTopicRequest = (appId, topicName, topicId) => ({
+export const unsubscibeTopicRequest = (topicName, topicId) => ({
   type: UNSUBSCRIBE_TOPIC_REQUEST,
-  appId,
   topicName,
   topicId
 })
 
-export const unsubscribeTopicSuccess = (appId, topicName, topicId) => ({
+export const unsubscribeTopicSuccess = (topicName, topicId) => ({
   type: UNSUBSCRIBE_TOPIC_SUCCESS,
-  appId,
   topicName,
   topicId
 })
 
-export const unsubscribeTopicFailure = (appId, topicName, topicId) => ({
+export const unsubscribeTopicFailure = (topicName, topicId) => ({
   type: UNSUBSCRIBE_TOPIC_FAILURE,
-  appId,
   topicName,
   topicId
 })

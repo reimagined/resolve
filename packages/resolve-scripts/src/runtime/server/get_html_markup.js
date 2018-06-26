@@ -14,17 +14,18 @@ export default ({ markup, styleTags, initialState, clientUrl }) => {
     delete initialState[reducerName]
   }
 
-  for (const viewModel of viewModels) {
-    for (const aggregateId of Object.keys(
-      initialState.viewModels[viewModel.name]
-    )) {
-      initialState.viewModels[viewModel.name][
-        aggregateId
-      ] = viewModel.serializeState(
-        initialState.viewModels[viewModel.name][aggregateId]
-      )
-    }
-  }
+  // TODO revert
+  // for (const viewModel of viewModels) {
+  //   for (const aggregateId of Object.keys(
+  //     initialState.viewModels[viewModel.name]
+  //   )) {
+  //     initialState.viewModels[viewModel.name][
+  //       aggregateId
+  //     ] = viewModel.serializeState(
+  //       initialState.viewModels[viewModel.name][aggregateId]
+  //     )
+  //   }
+  // }
 
   return (
     `<!doctype html>` +

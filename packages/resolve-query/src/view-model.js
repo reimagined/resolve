@@ -78,6 +78,10 @@ const createViewModel = ({
       state = snapshot.state
     } catch (err) {}
 
+    if (typeof aggregateVersionsMap !== 'object') {
+      aggregateVersionsMap = {}
+    }
+
     try {
       if (!(+lastTimestamp > 0) && typeof projection.Init === 'function') {
         state = projection.Init()

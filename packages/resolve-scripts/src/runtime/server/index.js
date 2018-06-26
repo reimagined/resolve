@@ -47,8 +47,8 @@ const subscribeAdapter = createSubscribeAdapter({
 subscribeAdapter.init().then(() => {
   eventStore.subscribeOnBus(event => {
     pubsubManager.dispatch({
-      topicName: event.type,
-      topicId: event.aggregateId,
+      topicName: event.aggregateId,
+      topicId: event.type,
       message: event
     })
   })

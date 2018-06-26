@@ -22,7 +22,8 @@ export default function createViewModelsReducer() {
       [connectorMetaMap]: {},
       [aggregateVersionsMap]: {}
     },
-    handlers: {}
+    handlers: {},
+    isInitialized: false
   }
 
   context.handlers[LOAD_VIEWMODEL_STATE_REQUEST] = (
@@ -114,7 +115,16 @@ export default function createViewModelsReducer() {
     }
   }
 
-  return (state = {}, action) => {
+  return (prevState = {}, action) => {
+    let state = prevState
+    if (!context.isInitialized) {
+      state = {
+        ...state,
+        ...context.initialState
+      }
+      context.isInitialized = true
+    }
+
     const eventHandler = context.handlers[action.type]
 
     if (eventHandler) {

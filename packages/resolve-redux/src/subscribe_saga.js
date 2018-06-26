@@ -24,22 +24,28 @@ const subscribeSaga = function*({
 }) {
   const connectionManager = createConnectionManager()
 
-  const { appId, url } = yield api.getSubscribeAdapterOptions()
+  const subscribeAdapterPromise = (async () => {
+    const { appId, url } = await api.getSubscribeAdapterOptions()
 
-  const onEvent = event => store.dispatch(dispatchMqttEvent(event))
+    const onEvent = event => store.dispatch(dispatchMqttEvent(event))
 
-  const subscribeAdapter = createSubscribeAdapter({
-    ...subscribeAdapterOptions,
-    appId,
-    url,
-    onEvent
-  })
+    const subscribeAdapter = createSubscribeAdapter({
+      ...subscribeAdapterOptions,
+      appId,
+      url,
+      onEvent
+    })
 
-  yield takeEvery(SUBSCRIBE_TOPIC_REQUEST, function*({
-    appId,
-    topicName,
-    topicId
-  }) {
+    await subscribeAdapter.init()
+
+    return subscribeAdapter
+  })()
+
+  console.log('yield takeEvery(SUBSCRIBE_TOPIC_REQUEST, function*({')
+  yield takeEvery(SUBSCRIBE_TOPIC_REQUEST, function*({ topicName, topicId }) {
+    const subscribeAdapter = yield subscribeAdapterPromise
+    console.log('SUBSCRIBE_TOPIC_REQUEST', topicName, topicId)
+
     const {
       addedConnections,
       removedConnections
@@ -63,17 +69,15 @@ const subscribeSaga = function*({
           }))
         )
       ])
-      yield put(subscribeTopicSuccess(appId, topicName, topicId))
+      yield put(subscribeTopicSuccess(topicName, topicId))
     } catch (error) {
-      yield put(subscribeTopicFailure(appId, topicName, topicId, error))
+      yield put(subscribeTopicFailure(topicName, topicId, error))
     }
   })
 
-  yield takeEvery(UNSUBSCRIBE_TOPIC_REQUEST, function*({
-    appId,
-    topicName,
-    topicId
-  }) {
+  yield takeEvery(UNSUBSCRIBE_TOPIC_REQUEST, function*({ topicName, topicId }) {
+    const subscribeAdapter = yield subscribeAdapterPromise
+
     const {
       addedConnections,
       removedConnections
@@ -97,9 +101,9 @@ const subscribeSaga = function*({
           }))
         )
       ])
-      yield put(unsubscribeTopicSuccess(appId, topicName, topicId))
+      yield put(unsubscribeTopicSuccess(topicName, topicId))
     } catch (error) {
-      yield put(unsubscribeTopicFailure(appId, topicName, topicId, error))
+      yield put(unsubscribeTopicFailure(topicName, topicId, error))
     }
   })
 }

@@ -6,13 +6,13 @@ import viewModelSaga from './view_models_saga'
 import subscribeSaga from './subscribe_saga'
 
 function* rootSaga(sagaArgs) {
+  yield fork(subscribeSaga, sagaArgs)
   yield takeEvery(
     LOAD_VIEWMODEL_STATE_REQUEST,
     loadViewModelStateSaga,
     sagaArgs
   )
   yield fork(viewModelSaga, sagaArgs)
-  yield fork(subscribeSaga, sagaArgs)
 }
 
 export default rootSaga

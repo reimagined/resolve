@@ -1,6 +1,6 @@
 import createSubscribeAdapter from '../src/create_client_adapter'
 import mqtt from 'mqtt'
-import getMqttTopics from '../src/get_mqtt_topics'
+import getMqttTopics from '../src/get_mqtt_topic'
 
 const delay = timeout =>
   new Promise(resolve => {

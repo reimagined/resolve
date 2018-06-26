@@ -2,14 +2,26 @@ import createSagaMiddleware from 'redux-saga'
 
 import rootSaga from './root_saga'
 import emptySaga from './empty_saga'
+import createApi from './create_api'
 
 const createResolveMiddleware = () => {
   const sagaMiddleware = createSagaMiddleware()
 
-  const sagaMiddlewareRun = sagaMiddleware.run.bind(sagaMiddleware)
-  sagaMiddleware.run = sagaArgs => {
-    sagaMiddlewareRun(sagaArgs.isClient ? rootSaga : emptySaga, sagaArgs)
+  let sagaMiddlewareRun = sagaMiddleware.run.bind(sagaMiddleware)
+
+  const sagaRunInternal = sagaArgs => {
+    const api = createApi(sagaArgs)
+
+    sagaMiddlewareRun(sagaArgs.isClient ? rootSaga : emptySaga, {
+      ...sagaArgs,
+      api
+    })
   }
+
+  Object.defineProperty(sagaMiddleware, 'run', {
+    get: () => sagaRunInternal,
+    set: value => (sagaMiddlewareRun = value.bind(sagaMiddleware))
+  })
 
   return sagaMiddleware
 }

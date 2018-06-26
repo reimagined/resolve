@@ -1,6 +1,6 @@
 import mqtt from 'mqtt'
 
-import getMqttTopics from './get_mqtt_topics'
+import getMqttTopic from './get_mqtt_topic'
 
 import {
   subscribeAdapterNotInitialized,
@@ -58,14 +58,27 @@ const createClientAdapter = ({ url, appId, onEvent }) => {
         throw new Error(subscribeAdapterNotInitialized)
       }
 
-      return await new Promise((resolve, reject) => {
-        client.subscribe(getMqttTopics(appId, topics), { qos }, err => {
-          if (err) {
-            return reject(err)
-          }
-          resolve()
-        })
-      })
+      // return await new Promise((resolve, reject) => {
+      //   client.subscribe(getMqttTopic(appId, topics), { qos }, err => {
+      //     if (err) {
+      //       return reject(err)
+      //     }
+      //     resolve()
+      //   })
+      // })
+
+      return await Promise.all(
+        topics.map(
+          topic =>
+            new Promise((resolve, reject) =>
+              client.subscribe(
+                getMqttTopic(appId, topic),
+                { qos },
+                err => (err ? reject(err) : resolve())
+              )
+            )
+        )
+      )
     },
 
     async unsubscribeFromTopics(topics) {
@@ -73,14 +86,27 @@ const createClientAdapter = ({ url, appId, onEvent }) => {
         throw new Error(subscribeAdapterNotInitialized)
       }
 
-      return await new Promise((resolve, reject) => {
-        client.unsubscribe(getMqttTopics(appId, topics), { qos }, err => {
-          if (err) {
-            return reject(err)
-          }
-          resolve()
-        })
-      })
+      // return await new Promise((resolve, reject) => {
+      //   client.unsubscribe(getMqttTopic(appId, topics), { qos }, err => {
+      //     if (err) {
+      //       return reject(err)
+      //     }
+      //     resolve()
+      //   })
+      // })
+
+      return await Promise.all(
+        topics.map(
+          topic =>
+            new Promise((resolve, reject) =>
+              client.unsubscribe(
+                getMqttTopic(appId, topic),
+                { qos },
+                err => (err ? reject(err) : resolve())
+              )
+            )
+        )
+      )
     },
 
     isConnected() {

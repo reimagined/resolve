@@ -1,7 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import actions from './actions'
+import * as actions from './actions'
+
+// TODO
+const aggregateArgs = {}
 
 const connectViewModel = mapStateToOptions => Component => {
   class ViewModelContainer extends React.PureComponent {
@@ -14,7 +17,7 @@ const connectViewModel = mapStateToOptions => Component => {
         placeholderTimeout
       } = this.props.connectorOptions
 
-      this.props.connectViewModel(viewModelName, aggregateIds)
+      this.props.connectViewModel(viewModelName, aggregateIds, aggregateArgs)
     }
 
     componentWillUnmount() {
@@ -26,7 +29,7 @@ const connectViewModel = mapStateToOptions => Component => {
         placeholderTimeout
       } = this.props.connectorOptions
 
-      this.props.disconnectViewModel(viewModelName, aggregateIds)
+      this.props.disconnectViewModel(viewModelName, aggregateIds, aggregateArgs)
     }
 
     render() {
@@ -37,18 +40,23 @@ const connectViewModel = mapStateToOptions => Component => {
   }
 
   const mapStateToConnectorProps = (state, ownProps) => {
+    const isLoading = false
+
+    const data = false
+
+    console.log(state, ownProps)
     const connectorOptions = mapStateToOptions(state, ownProps)
+    //
+    // const aggregateIdsKey = connectorOptions.aggregateIds.sort().join(',')
 
-    const aggregateIdsKey = connectorOptions.aggregateIds.sort().join(',')
-
-    const {
-      viewModels: {
-        [`resolve-loading-${
-          connectorOptions.viewModelName
-        }-${aggregateIdsKey}`]: isLoading,
-        [connectorOptions.viewModelName]: { [aggregateIdsKey]: data }
-      }
-    } = state
+    // const {
+    //   viewModels: {
+    //     [`resolve-loading-${
+    //       connectorOptions.viewModelName
+    //     }-${aggregateIdsKey}`]: isLoading,
+    //     [connectorOptions.viewModelName]: { [aggregateIdsKey]: data }
+    //   }
+    // } = state
 
     return {
       ownProps,

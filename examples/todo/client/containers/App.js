@@ -109,8 +109,9 @@ const mapDispatchToProps = (dispatch, props) =>
   bindActionCreators(props.aggregateActions, dispatch)
 
 export default connectViewModel(mapStateToOptions)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(App)
+  props => <div>Hello{JSON.stringify(props)}</div>
+  // connect(
+  //   mapStateToProps,
+  //   mapDispatchToProps
+  //)(App)
 )

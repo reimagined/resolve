@@ -49,6 +49,14 @@ const pubsubManager = {
       clients.push(...map.get(topicName).get('#'))
     }
 
+    if (map.has('#') && map.get('#').has(topicId)) {
+      clients.push(...map.get('#').get(topicId))
+    }
+
+    if (map.has('#') && map.get('#').has('#')) {
+      clients.push(...map.get('#').get('#'))
+    }
+
     clients.forEach(client => client(message).catch(() => {}))
   }
 }

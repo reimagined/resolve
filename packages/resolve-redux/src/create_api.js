@@ -2,6 +2,8 @@ import { getRootBasedUrl } from './utils'
 
 const createApi = ({ origin, rootPath }) => ({
   async loadViewModelState({ viewModelName, aggregateIds, aggregateArgs }) {
+    console.log('loadViewModelState request')
+
     const response = await fetch(
       getRootBasedUrl(origin, rootPath, '/api/query'),
       {
@@ -17,10 +19,17 @@ const createApi = ({ origin, rootPath }) => ({
     )
 
     if (!response.ok) {
+      console.log('loadViewModelState ne ok')
       throw new Error(response.text())
     }
 
-    return await response.json()
+    const result = await response.json()
+
+    console.log('loadViewModelState json')
+
+    return result
+
+    //return await response.json()
   },
 
   async loadReadModelState({
@@ -92,7 +101,7 @@ const createApi = ({ origin, rootPath }) => ({
     // TODO
     return {
       appId: '1234',
-      url: '/mqtt'
+      url: 'ws://localhost:3000/mqtt'
     }
   }
 })

@@ -3,9 +3,11 @@ import { put } from 'redux-saga/effects'
 import { loadViewModelStateSuccess, loadViewModelStateFailure } from './actions'
 
 const loadViewModelStateSaga = function*(
-  { viewModelName, aggregateIds, aggregateArgs },
-  { api, viewModels }
+  { api, viewModels },
+  { viewModelName, aggregateIds, aggregateArgs }
 ) {
+  console.log({ viewModelName, aggregateIds, aggregateArgs })
+  console.log({ api, viewModels })
   try {
     // TODO use api
     const {
@@ -16,6 +18,7 @@ const loadViewModelStateSaga = function*(
       aggregateIds,
       aggregateArgs
     })
+    console.log('TAKE')
 
     const { deserializeState } = viewModels.find(
       ({ name }) => name === viewModelName

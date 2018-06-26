@@ -8,19 +8,14 @@ import {
   CONNECT_VIEWMODEL
 } from './action_types'
 
-const disconnectViewModelSaga = function*(
-  { viewModelName, aggregateIds, aggregateArgs },
-  sagaArgs
-) {
-  const {
-    appId,
-    viewModels,
-    connectionManager,
-    sagaManager,
-    sagaKey
-  } = sagaArgs
+const disconnectViewModelSaga = function*(sagaArgs, action) {
+  const { viewModels, connectionManager, sagaManager, sagaKey } = sagaArgs
 
-  const connectionId = stringify({ aggregateIds, aggregateArgs })
+  const viewModelName = action.viewModelName
+  const aggregateIds = stringify(action.aggregateIds)
+  const aggregateArgs = stringify(action.aggregateArgs)
+
+  const connectionId = `${aggregateIds}${aggregateArgs}`
 
   const { removedConnections } = connectionManager.removeConnection({
     connectionName: viewModelName,
@@ -33,7 +28,8 @@ const disconnectViewModelSaga = function*(
   yield* sagaManager.stop(`${CONNECT_VIEWMODEL}${sagaKey}`)
 
   let subscriptionKeys = Object.keys(viewModels[viewModelName].projection).map(
-    eventType => aggregateIds.map(aggregateId => ({ aggregateId, eventType }))
+    eventType =>
+      action.aggregateIds.map(aggregateId => ({ aggregateId, eventType }))
   )
 
   yield put(dropViewModelState(viewModelName, aggregateIds, aggregateArgs))
@@ -41,7 +37,7 @@ const disconnectViewModelSaga = function*(
   while (subscriptionKeys.length > 0) {
     let counter = subscriptionKeys.length
     for (const { aggregateId, eventType } of subscriptionKeys) {
-      yield put(unsubscibeTopicRequest(appId, aggregateId, eventType))
+      yield put(unsubscibeTopicRequest(aggregateId, eventType))
     }
 
     while (counter > 0) {
@@ -49,12 +45,11 @@ const disconnectViewModelSaga = function*(
         action =>
           (action.type === UNSUBSCRIBE_TOPIC_SUCCESS ||
             action.type === UNSUBSCRIBE_TOPIC_FAILURE) &&
-          (action.appId === appId &&
-            subscriptionKeys.find(
-              key =>
-                key.aggregateId === action.aggregateId &&
-                key.eventType === action.eventType
-            ))
+          subscriptionKeys.find(
+            key =>
+              key.aggregateId === action.aggregateId &&
+              key.eventType === action.eventType
+          )
       )
 
       if (unsubscribeResultAction.type === UNSUBSCRIBE_TOPIC_SUCCESS) {

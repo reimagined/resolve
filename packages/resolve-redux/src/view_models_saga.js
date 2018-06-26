@@ -31,7 +31,8 @@ const viewModelsSaga = function*(sagaArgs) {
             connectionManager,
             sagaManager,
             sagaKey
-          }
+          },
+          action
         )
         break
       }
@@ -50,7 +51,8 @@ const viewModelsSaga = function*(sagaArgs) {
             connectionManager,
             sagaManager,
             sagaKey
-          }
+          },
+          action
         )
         break
       }

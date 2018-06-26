@@ -7,10 +7,8 @@ import createJwtReducer from './create_jwt_reducer'
 import createActions from './create_actions'
 import connectReadModel from './connect_read_model'
 import connectViewModel from './connect_view_model'
-import * as util from './utils'
+import * as utils from './utils'
 import loadInitialState from './load_initial_state'
-import sendCommand from './send_command'
-import subscribeAdapter from './subscribe_adapter'
 import isLoadingViewModel from './is_loading_view_model'
 import createApi from './create_api'
 
@@ -24,10 +22,8 @@ export {
   createActions,
   connectViewModel,
   connectReadModel,
-  util,
+  utils,
   loadInitialState,
-  sendCommand,
-  subscribeAdapter,
   isLoadingViewModel,
   createApi
 }
