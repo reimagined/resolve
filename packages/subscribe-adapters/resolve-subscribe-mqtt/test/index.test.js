@@ -11,7 +11,7 @@ const appId = '123456'
 const url = 'mqtt://test.test'
 const events = []
 
-const onEvent = (event) => {
+const onEvent = event => {
   events.push(event)
 }
 

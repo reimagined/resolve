@@ -10,8 +10,8 @@ const createApi = ({ origin, rootPath }) => ({
         credentials: 'same-origin',
         body: JSON.stringify({
           viewModelName,
-          aggregateIds,
-          aggregateArgs
+          aggregateIds: JSON.parse(aggregateIds),
+          aggregateArgs: JSON.parse(aggregateArgs)
         })
       }
     )

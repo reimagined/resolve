@@ -1,157 +1,118 @@
 import {
-  SUBSCRIBE_VIEWMODEL,
-  UNSUBSCRIBE_VIEWMODEL,
-  PROVIDE_VIEW_MODELS,
-  MERGE
+  LOAD_VIEWMODEL_STATE_REQUEST,
+  LOAD_VIEWMODEL_STATE_SUCCESS,
+  LOAD_VIEWMODEL_STATE_FAILURE,
+  DROP_VIEWMODEL_STATE
 } from './action_types'
+
+import { aggregateVersionsMap, connectorMetaMap } from './constants'
+
 import { getKey } from './utils'
 
-export function subscribeHandler(
-  { subscribers, viewModels },
-  state,
-  { viewModelName, aggregateId }
-) {
-  const key = getKey(viewModelName, aggregateId)
-
-  if (subscribers[key]) {
-    subscribers[key]++
-    return state
-  }
-
-  subscribers[key] = 1
-
-  return {
-    ...state,
-    [viewModelName]: {
-      ...state[viewModelName],
-      [aggregateId]: (viewModels.find(({ name }) => viewModelName === name)
-        .projection.Init || (() => {}))()
-    }
-  }
-}
-
-export function unsubscribeHandler(
-  { subscribers },
-  state,
-  { viewModelName, aggregateId }
-) {
-  const key = getKey(viewModelName, aggregateId)
-
-  if (subscribers[key] > 1) {
-    subscribers[key]--
-    return state
-  }
-
-  subscribers[key] = 0
-
-  const nextViewModel = { ...state[viewModelName] }
-  delete nextViewModel[aggregateId]
-
-  return {
-    ...state,
-    [viewModelName]: nextViewModel
-  }
-}
-
-export function mergeHandler(
-  _,
-  state,
-  { viewModelName, aggregateId, state: actionState }
-) {
-  return {
-    ...state,
-    [viewModelName]: {
-      ...state[viewModelName],
-      [aggregateId]: actionState
-    }
-  }
-}
-
-export function provideViewModelsHandler(context, state, { viewModels }) {
-  const { handlers, initialState } = context
-  context.viewModels = viewModels
-
-  delete handlers[PROVIDE_VIEW_MODELS]
-
-  handlers[SUBSCRIBE_VIEWMODEL] = subscribeHandler.bind(null, context)
-
-  handlers[UNSUBSCRIBE_VIEWMODEL] = unsubscribeHandler.bind(null, context)
-
-  handlers[MERGE] = mergeHandler.bind(null, context)
-
-  viewModels.forEach(({ name: viewModelName }) => {
-    initialState[viewModelName] = {
-      ...initialState[viewModelName]
-    }
-  })
-
-  const map = createMap(viewModels)
-
-  Object.keys(map).forEach(eventType => {
-    handlers[eventType] = viewModelEventHandler.bind(null, map[eventType])
-  })
-
-  return initialState
-}
-
-export function createMap(viewModels) {
-  return viewModels.reduce((acc, { name: viewModelName, projection }) => {
-    const handlers = { ...projection }
-    delete handlers.Init
-    Object.keys(handlers).forEach(eventType => {
-      if (!acc[eventType]) {
-        acc[eventType] = {}
-      }
-
-      acc[eventType][viewModelName] = projection[eventType]
-    })
-    return acc
-  }, {})
-}
-
-export function viewModelEventHandler(viewModels, state, action) {
+const dropKey = (state, key) => {
   const nextState = { ...state }
-
-  Object.keys(viewModels).forEach(viewModelName => {
-    if (!state[viewModelName]) return
-
-    if (state[viewModelName].hasOwnProperty('*')) {
-      const viewModelState = state[viewModelName]['*']
-
-      const result = viewModels[viewModelName](viewModelState, action)
-
-      nextState[viewModelName] = {
-        ...nextState[viewModelName],
-        '*': result
-      }
-    }
-
-    if (!state[viewModelName].hasOwnProperty(action.aggregateId)) return
-
-    const viewModelState = state[viewModelName][action.aggregateId]
-
-    const result = viewModels[viewModelName](viewModelState, action)
-
-    nextState[viewModelName] = {
-      ...nextState[viewModelName],
-      [action.aggregateId]: result
-    }
-  })
+  delete nextState[key]
 
   return nextState
 }
 
 export default function createViewModelsReducer() {
   const context = {
-    initialState: {},
-    handlers: {},
-    subscribers: {}
+    initialState: {
+      [connectorMetaMap]: {},
+      [aggregateVersionsMap]: {}
+    },
+    handlers: {}
   }
 
-  context.handlers[PROVIDE_VIEW_MODELS] = provideViewModelsHandler.bind(
-    null,
-    context
-  )
+  context.handlers[LOAD_VIEWMODEL_STATE_REQUEST] = (
+    state,
+    { viewModelName, aggregateIds, aggregateArgs }
+  ) => {
+    return {
+      ...state,
+      [connectorMetaMap]: {
+        ...state[connectorMetaMap],
+        [`${viewModelName}${aggregateIds}${aggregateArgs}`]: {
+          isLoading: true,
+          isFailure: false
+        }
+      }
+    }
+  }
+
+  context.handlers[LOAD_VIEWMODEL_STATE_SUCCESS] = (
+    state,
+    {
+      viewModelName,
+      aggregateIds,
+      aggregateArgs,
+      state: viewModelState,
+      aggregateVersionsMap: viewModelAggregateVersionsMap
+    }
+  ) => {
+    const key = `${viewModelName}${aggregateIds}${aggregateArgs}`
+
+    return {
+      ...state,
+      [viewModelName]: {
+        ...state[viewModelName],
+        [aggregateIds]: {
+          ...state[viewModelName][aggregateIds],
+          [aggregateArgs]: viewModelState
+        }
+      },
+      [connectorMetaMap]: {
+        ...state[connectorMetaMap],
+        [key]: {
+          isLoading: false,
+          isFailure: false
+        }
+      },
+      [aggregateVersionsMap]: {
+        ...state[aggregateVersionsMap],
+        [key]: viewModelAggregateVersionsMap
+      }
+    }
+  }
+
+  context.handlers[LOAD_VIEWMODEL_STATE_FAILURE] = (
+    state,
+    { viewModelName, aggregateIds, aggregateArgs }
+  ) => {
+    const key = `${viewModelName}${aggregateIds}${aggregateArgs}`
+
+    return {
+      ...state,
+      [connectorMetaMap]: {
+        ...state[connectorMetaMap],
+        [key]: {
+          isLoading: false,
+          isFailure: true
+        }
+      }
+    }
+  }
+
+  context.handlers[DROP_VIEWMODEL_STATE] = (
+    state,
+    { viewModelName, aggregateIds, aggregateArgs }
+  ) => {
+    const key = `${viewModelName}${aggregateIds}${aggregateArgs}`
+
+    return {
+      ...state,
+      [viewModelName]: {
+        ...state[viewModelName],
+        [aggregateIds]: dropKey(
+          state[viewModelName][aggregateIds],
+          aggregateArgs
+        )
+      },
+      [connectorMetaMap]: dropKey(state[connectorMetaMap], key),
+      [aggregateVersionsMap]: dropKey(state[aggregateVersionsMap], key)
+    }
+  }
 
   return (state = {}, action) => {
     const eventHandler = context.handlers[action.type]

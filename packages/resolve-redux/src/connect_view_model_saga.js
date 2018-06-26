@@ -88,8 +88,11 @@ const connectViewModelSaga = function*(action, sagaArgs) {
     sagaManager,
     sagaKey
   } = sagaArgs
-  const { viewModelName, aggregateIds, aggregateArgs } = action
-  const connectionId = stringify({ aggregateIds, aggregateArgs })
+  const viewModelName = action.viewModelName
+  const aggregateIds = stringify(action.aggregateIds)
+  const aggregateArgs = stringify(action.aggregateArgs)
+
+  const connectionId = `${aggregateIds}${aggregateArgs}`
 
   const { addedConnections } = connectionManager.addConnection({
     connectionName: viewModelName,
@@ -106,7 +109,7 @@ const connectViewModelSaga = function*(action, sagaArgs) {
 
   // viewModelName + aggregateIds => Array<{ aggregateId, eventType }>
   let subscriptionKeys = eventTypes.map(eventType =>
-    aggregateIds.map(aggregateId => ({ aggregateId, eventType }))
+    action.aggregateIds.map(aggregateId => ({ aggregateId, eventType }))
   )
 
   yield* sagaManager.start(
@@ -159,10 +162,7 @@ const connectViewModelSaga = function*(action, sagaArgs) {
         (action.type === LOAD_VIEWMODEL_STATE_SUCCESS ||
           action.type === LOAD_VIEWMODEL_STATE_FAILURE) &&
         (action.viewModelName === viewModelName &&
-          stringify({
-            aggregateIds: action.aggregateIds,
-            aggregateArgs: action.aggregateArgs
-          }) === connectionId)
+          `${action.aggregateIds}${action.aggregateArgs}` === connectionId)
     )
 
     if (loadViewModelStateResultAction.type === LOAD_VIEWMODEL_STATE_SUCCESS) {

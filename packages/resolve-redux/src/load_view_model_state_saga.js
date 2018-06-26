@@ -4,26 +4,32 @@ import { loadViewModelStateSuccess, loadViewModelStateFailure } from './actions'
 
 const loadViewModelStateSaga = function*(
   { viewModelName, aggregateIds, aggregateArgs },
-  { api }
+  { api, viewModels }
 ) {
   try {
     // TODO use api
-    const request = yield fetch(
-      `/${rootPath}/api/query/${viewModelName}?aggregateIds=${JSON.stringify(
-        aggregateIds
-      )}`
+    const {
+      serializedState,
+      aggregateVersionsMap
+    } = yield api.loadViewModelState({
+      viewModelName,
+      aggregateIds,
+      aggregateArgs
+    })
+
+    const { deserializeState } = viewModels.find(
+      ({ name }) => name === viewModelName
     )
-    if (!request.ok) {
-      const error = yield request.text()
-      throw new Error(error)
-    }
-    const state = yield request.json()
+
+    const state = deserializeState(serializedState)
+
     yield put(
       loadViewModelStateSuccess(
         viewModelName,
         aggregateIds,
         aggregateArgs,
-        state
+        state,
+        aggregateVersionsMap
       )
     )
   } catch (error) {

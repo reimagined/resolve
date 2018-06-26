@@ -148,13 +148,15 @@ export const loadViewModelStateSuccess = (
   viewModelName,
   aggregateIds,
   aggregateArgs,
-  state
+  state,
+  aggregateVersionsMap
 ) => ({
   type: LOAD_VIEWMODEL_STATE_SUCCESS,
   viewModelName,
   aggregateIds,
   aggregateArgs,
-  state
+  state,
+  aggregateVersionsMap
 })
 
 export const loadViewModelStateFailure = (
