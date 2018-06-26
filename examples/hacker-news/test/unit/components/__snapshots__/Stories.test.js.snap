@@ -16,6 +16,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
       ]
@@ -50,10 +52,11 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 }
               }
-              userId={undefined}
             />
           </styled.li>
         </ol>,
@@ -84,10 +87,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>,
           ],
@@ -111,10 +115,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />,
             },
             "ref": null,
@@ -132,8 +137,12 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 },
+                "unvoteStory": undefined,
+                "upvoteStory": undefined,
                 "userId": undefined,
               },
               "ref": null,
@@ -183,10 +192,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>
           </ol>,
@@ -217,10 +227,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />
               </styled.li>,
             ],
@@ -244,10 +255,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />,
               },
               "ref": null,
@@ -265,8 +277,12 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   },
+                  "unvoteStory": undefined,
+                  "upvoteStory": undefined,
                   "userId": undefined,
                 },
                 "ref": null,
@@ -313,6 +329,8 @@ ShallowWrapper {
     items={Array []}
     page="text"
     type="story"
+    unvoteStory={[Function]}
+    upvoteStory={[Function]}
   />,
   Symbol(enzyme.__renderer__): Object {
     "batchedUpdates": [Function],
@@ -373,6 +391,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title0",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -384,6 +404,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title1",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -395,6 +417,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title2",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -406,6 +430,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title3",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -417,6 +443,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title4",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -428,6 +456,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title5",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -439,6 +469,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title6",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -450,6 +482,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title7",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -461,6 +495,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title8",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -472,6 +508,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title9",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -483,6 +521,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title10",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -494,6 +534,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title11",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -505,6 +547,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title12",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -516,6 +560,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title13",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -527,6 +573,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title14",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -538,6 +586,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title15",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -549,6 +599,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title16",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -560,6 +612,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title17",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -571,6 +625,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title18",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -582,6 +638,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title19",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -593,6 +651,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title20",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -604,6 +664,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title21",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -615,6 +677,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title22",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -626,6 +690,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title23",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -637,6 +703,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title24",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -648,6 +716,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title25",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -659,6 +729,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title26",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -670,6 +742,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title27",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -681,6 +755,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title28",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -692,6 +768,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title29",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -703,6 +781,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title30",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -714,6 +794,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title31",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -725,6 +807,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title32",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -736,6 +820,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title33",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -747,6 +833,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title34",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -758,6 +846,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title35",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -769,6 +859,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title36",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -780,6 +872,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title37",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -791,6 +885,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title38",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -802,6 +898,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title39",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -813,6 +911,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title40",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -824,6 +924,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title41",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -835,6 +937,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title42",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -846,6 +950,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title43",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -857,6 +963,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title44",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -868,6 +976,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title45",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -879,6 +989,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title46",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -890,6 +1002,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title47",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -901,6 +1015,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title48",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
         Object {
@@ -912,6 +1028,8 @@ ShallowWrapper {
           "link": "https://google.com",
           "title": "title49",
           "type": "story",
+          "unvoteStory": [Function],
+          "upvoteStory": [Function],
           "votes": Array [],
         },
       ]
@@ -947,10 +1065,11 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title0",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 }
               }
-              userId={undefined}
             />
           </styled.li>
           <styled.li>
@@ -965,10 +1084,11 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title1",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 }
               }
-              userId={undefined}
             />
           </styled.li>
           <styled.li>
@@ -983,10 +1103,11 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title2",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 }
               }
-              userId={undefined}
             />
           </styled.li>
           <styled.li>
@@ -1001,10 +1122,11 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title3",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 }
               }
-              userId={undefined}
             />
           </styled.li>
           <styled.li>
@@ -1019,10 +1141,11 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title4",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 }
               }
-              userId={undefined}
             />
           </styled.li>
           <styled.li>
@@ -1037,10 +1160,11 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title5",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 }
               }
-              userId={undefined}
             />
           </styled.li>
           <styled.li>
@@ -1055,10 +1179,11 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title6",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 }
               }
-              userId={undefined}
             />
           </styled.li>
           <styled.li>
@@ -1073,10 +1198,11 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title7",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 }
               }
-              userId={undefined}
             />
           </styled.li>
           <styled.li>
@@ -1091,10 +1217,11 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title8",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 }
               }
-              userId={undefined}
             />
           </styled.li>
           <styled.li>
@@ -1109,10 +1236,11 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title9",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 }
               }
-              userId={undefined}
             />
           </styled.li>
           <styled.li>
@@ -1127,10 +1255,11 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title10",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 }
               }
-              userId={undefined}
             />
           </styled.li>
           <styled.li>
@@ -1145,10 +1274,11 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title11",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 }
               }
-              userId={undefined}
             />
           </styled.li>
           <styled.li>
@@ -1163,10 +1293,11 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title12",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 }
               }
-              userId={undefined}
             />
           </styled.li>
           <styled.li>
@@ -1181,10 +1312,11 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title13",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 }
               }
-              userId={undefined}
             />
           </styled.li>
           <styled.li>
@@ -1199,10 +1331,11 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title14",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 }
               }
-              userId={undefined}
             />
           </styled.li>
           <styled.li>
@@ -1217,10 +1350,11 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title15",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 }
               }
-              userId={undefined}
             />
           </styled.li>
           <styled.li>
@@ -1235,10 +1369,11 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title16",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 }
               }
-              userId={undefined}
             />
           </styled.li>
           <styled.li>
@@ -1253,10 +1388,11 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title17",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 }
               }
-              userId={undefined}
             />
           </styled.li>
           <styled.li>
@@ -1271,10 +1407,11 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title18",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 }
               }
-              userId={undefined}
             />
           </styled.li>
           <styled.li>
@@ -1289,10 +1426,11 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title19",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 }
               }
-              userId={undefined}
             />
           </styled.li>
         </ol>,
@@ -1323,10 +1461,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title0",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>,
             <styled.li>
@@ -1341,10 +1480,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title1",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>,
             <styled.li>
@@ -1359,10 +1499,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title2",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>,
             <styled.li>
@@ -1377,10 +1518,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title3",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>,
             <styled.li>
@@ -1395,10 +1537,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title4",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>,
             <styled.li>
@@ -1413,10 +1556,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title5",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>,
             <styled.li>
@@ -1431,10 +1575,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title6",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>,
             <styled.li>
@@ -1449,10 +1594,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title7",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>,
             <styled.li>
@@ -1467,10 +1613,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title8",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>,
             <styled.li>
@@ -1485,10 +1632,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title9",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>,
             <styled.li>
@@ -1503,10 +1651,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title10",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>,
             <styled.li>
@@ -1521,10 +1670,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title11",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>,
             <styled.li>
@@ -1539,10 +1689,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title12",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>,
             <styled.li>
@@ -1557,10 +1708,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title13",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>,
             <styled.li>
@@ -1575,10 +1727,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title14",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>,
             <styled.li>
@@ -1593,10 +1746,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title15",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>,
             <styled.li>
@@ -1611,10 +1765,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title16",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>,
             <styled.li>
@@ -1629,10 +1784,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title17",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>,
             <styled.li>
@@ -1647,10 +1803,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title18",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>,
             <styled.li>
@@ -1665,10 +1822,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title19",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>,
           ],
@@ -1692,10 +1850,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title0",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />,
             },
             "ref": null,
@@ -1713,8 +1872,12 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title0",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 },
+                "unvoteStory": undefined,
+                "upvoteStory": undefined,
                 "userId": undefined,
               },
               "ref": null,
@@ -1739,10 +1902,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title1",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />,
             },
             "ref": null,
@@ -1760,8 +1924,12 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title1",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 },
+                "unvoteStory": undefined,
+                "upvoteStory": undefined,
                 "userId": undefined,
               },
               "ref": null,
@@ -1786,10 +1954,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title2",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />,
             },
             "ref": null,
@@ -1807,8 +1976,12 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title2",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 },
+                "unvoteStory": undefined,
+                "upvoteStory": undefined,
                 "userId": undefined,
               },
               "ref": null,
@@ -1833,10 +2006,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title3",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />,
             },
             "ref": null,
@@ -1854,8 +2028,12 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title3",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 },
+                "unvoteStory": undefined,
+                "upvoteStory": undefined,
                 "userId": undefined,
               },
               "ref": null,
@@ -1880,10 +2058,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title4",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />,
             },
             "ref": null,
@@ -1901,8 +2080,12 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title4",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 },
+                "unvoteStory": undefined,
+                "upvoteStory": undefined,
                 "userId": undefined,
               },
               "ref": null,
@@ -1927,10 +2110,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title5",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />,
             },
             "ref": null,
@@ -1948,8 +2132,12 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title5",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 },
+                "unvoteStory": undefined,
+                "upvoteStory": undefined,
                 "userId": undefined,
               },
               "ref": null,
@@ -1974,10 +2162,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title6",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />,
             },
             "ref": null,
@@ -1995,8 +2184,12 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title6",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 },
+                "unvoteStory": undefined,
+                "upvoteStory": undefined,
                 "userId": undefined,
               },
               "ref": null,
@@ -2021,10 +2214,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title7",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />,
             },
             "ref": null,
@@ -2042,8 +2236,12 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title7",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 },
+                "unvoteStory": undefined,
+                "upvoteStory": undefined,
                 "userId": undefined,
               },
               "ref": null,
@@ -2068,10 +2266,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title8",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />,
             },
             "ref": null,
@@ -2089,8 +2288,12 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title8",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 },
+                "unvoteStory": undefined,
+                "upvoteStory": undefined,
                 "userId": undefined,
               },
               "ref": null,
@@ -2115,10 +2318,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title9",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />,
             },
             "ref": null,
@@ -2136,8 +2340,12 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title9",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 },
+                "unvoteStory": undefined,
+                "upvoteStory": undefined,
                 "userId": undefined,
               },
               "ref": null,
@@ -2162,10 +2370,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title10",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />,
             },
             "ref": null,
@@ -2183,8 +2392,12 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title10",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 },
+                "unvoteStory": undefined,
+                "upvoteStory": undefined,
                 "userId": undefined,
               },
               "ref": null,
@@ -2209,10 +2422,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title11",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />,
             },
             "ref": null,
@@ -2230,8 +2444,12 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title11",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 },
+                "unvoteStory": undefined,
+                "upvoteStory": undefined,
                 "userId": undefined,
               },
               "ref": null,
@@ -2256,10 +2474,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title12",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />,
             },
             "ref": null,
@@ -2277,8 +2496,12 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title12",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 },
+                "unvoteStory": undefined,
+                "upvoteStory": undefined,
                 "userId": undefined,
               },
               "ref": null,
@@ -2303,10 +2526,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title13",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />,
             },
             "ref": null,
@@ -2324,8 +2548,12 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title13",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 },
+                "unvoteStory": undefined,
+                "upvoteStory": undefined,
                 "userId": undefined,
               },
               "ref": null,
@@ -2350,10 +2578,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title14",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />,
             },
             "ref": null,
@@ -2371,8 +2600,12 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title14",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 },
+                "unvoteStory": undefined,
+                "upvoteStory": undefined,
                 "userId": undefined,
               },
               "ref": null,
@@ -2397,10 +2630,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title15",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />,
             },
             "ref": null,
@@ -2418,8 +2652,12 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title15",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 },
+                "unvoteStory": undefined,
+                "upvoteStory": undefined,
                 "userId": undefined,
               },
               "ref": null,
@@ -2444,10 +2682,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title16",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />,
             },
             "ref": null,
@@ -2465,8 +2704,12 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title16",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 },
+                "unvoteStory": undefined,
+                "upvoteStory": undefined,
                 "userId": undefined,
               },
               "ref": null,
@@ -2491,10 +2734,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title17",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />,
             },
             "ref": null,
@@ -2512,8 +2756,12 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title17",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 },
+                "unvoteStory": undefined,
+                "upvoteStory": undefined,
                 "userId": undefined,
               },
               "ref": null,
@@ -2538,10 +2786,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title18",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />,
             },
             "ref": null,
@@ -2559,8 +2808,12 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title18",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 },
+                "unvoteStory": undefined,
+                "upvoteStory": undefined,
                 "userId": undefined,
               },
               "ref": null,
@@ -2585,10 +2838,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title19",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />,
             },
             "ref": null,
@@ -2606,8 +2860,12 @@ ShallowWrapper {
                   "link": "https://google.com",
                   "title": "title19",
                   "type": "story",
+                  "unvoteStory": [Function],
+                  "upvoteStory": [Function],
                   "votes": Array [],
                 },
+                "unvoteStory": undefined,
+                "upvoteStory": undefined,
                 "userId": undefined,
               },
               "ref": null,
@@ -2657,10 +2915,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title0",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>
             <styled.li>
@@ -2675,10 +2934,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title1",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>
             <styled.li>
@@ -2693,10 +2953,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title2",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>
             <styled.li>
@@ -2711,10 +2972,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title3",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>
             <styled.li>
@@ -2729,10 +2991,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title4",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>
             <styled.li>
@@ -2747,10 +3010,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title5",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>
             <styled.li>
@@ -2765,10 +3029,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title6",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>
             <styled.li>
@@ -2783,10 +3048,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title7",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>
             <styled.li>
@@ -2801,10 +3067,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title8",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>
             <styled.li>
@@ -2819,10 +3086,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title9",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>
             <styled.li>
@@ -2837,10 +3105,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title10",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>
             <styled.li>
@@ -2855,10 +3124,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title11",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>
             <styled.li>
@@ -2873,10 +3143,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title12",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>
             <styled.li>
@@ -2891,10 +3162,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title13",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>
             <styled.li>
@@ -2909,10 +3181,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title14",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>
             <styled.li>
@@ -2927,10 +3200,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title15",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>
             <styled.li>
@@ -2945,10 +3219,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title16",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>
             <styled.li>
@@ -2963,10 +3238,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title17",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>
             <styled.li>
@@ -2981,10 +3257,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title18",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>
             <styled.li>
@@ -2999,10 +3276,11 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title19",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   }
                 }
-                userId={undefined}
               />
             </styled.li>
           </ol>,
@@ -3033,10 +3311,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title0",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />
               </styled.li>,
               <styled.li>
@@ -3051,10 +3330,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title1",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />
               </styled.li>,
               <styled.li>
@@ -3069,10 +3349,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title2",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />
               </styled.li>,
               <styled.li>
@@ -3087,10 +3368,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title3",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />
               </styled.li>,
               <styled.li>
@@ -3105,10 +3387,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title4",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />
               </styled.li>,
               <styled.li>
@@ -3123,10 +3406,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title5",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />
               </styled.li>,
               <styled.li>
@@ -3141,10 +3425,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title6",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />
               </styled.li>,
               <styled.li>
@@ -3159,10 +3444,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title7",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />
               </styled.li>,
               <styled.li>
@@ -3177,10 +3463,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title8",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />
               </styled.li>,
               <styled.li>
@@ -3195,10 +3482,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title9",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />
               </styled.li>,
               <styled.li>
@@ -3213,10 +3501,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title10",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />
               </styled.li>,
               <styled.li>
@@ -3231,10 +3520,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title11",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />
               </styled.li>,
               <styled.li>
@@ -3249,10 +3539,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title12",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />
               </styled.li>,
               <styled.li>
@@ -3267,10 +3558,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title13",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />
               </styled.li>,
               <styled.li>
@@ -3285,10 +3577,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title14",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />
               </styled.li>,
               <styled.li>
@@ -3303,10 +3596,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title15",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />
               </styled.li>,
               <styled.li>
@@ -3321,10 +3615,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title16",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />
               </styled.li>,
               <styled.li>
@@ -3339,10 +3634,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title17",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />
               </styled.li>,
               <styled.li>
@@ -3357,10 +3653,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title18",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />
               </styled.li>,
               <styled.li>
@@ -3375,10 +3672,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title19",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />
               </styled.li>,
             ],
@@ -3402,10 +3700,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title0",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />,
               },
               "ref": null,
@@ -3423,8 +3722,12 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title0",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   },
+                  "unvoteStory": undefined,
+                  "upvoteStory": undefined,
                   "userId": undefined,
                 },
                 "ref": null,
@@ -3449,10 +3752,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title1",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />,
               },
               "ref": null,
@@ -3470,8 +3774,12 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title1",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   },
+                  "unvoteStory": undefined,
+                  "upvoteStory": undefined,
                   "userId": undefined,
                 },
                 "ref": null,
@@ -3496,10 +3804,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title2",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />,
               },
               "ref": null,
@@ -3517,8 +3826,12 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title2",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   },
+                  "unvoteStory": undefined,
+                  "upvoteStory": undefined,
                   "userId": undefined,
                 },
                 "ref": null,
@@ -3543,10 +3856,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title3",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />,
               },
               "ref": null,
@@ -3564,8 +3878,12 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title3",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   },
+                  "unvoteStory": undefined,
+                  "upvoteStory": undefined,
                   "userId": undefined,
                 },
                 "ref": null,
@@ -3590,10 +3908,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title4",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />,
               },
               "ref": null,
@@ -3611,8 +3930,12 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title4",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   },
+                  "unvoteStory": undefined,
+                  "upvoteStory": undefined,
                   "userId": undefined,
                 },
                 "ref": null,
@@ -3637,10 +3960,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title5",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />,
               },
               "ref": null,
@@ -3658,8 +3982,12 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title5",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   },
+                  "unvoteStory": undefined,
+                  "upvoteStory": undefined,
                   "userId": undefined,
                 },
                 "ref": null,
@@ -3684,10 +4012,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title6",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />,
               },
               "ref": null,
@@ -3705,8 +4034,12 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title6",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   },
+                  "unvoteStory": undefined,
+                  "upvoteStory": undefined,
                   "userId": undefined,
                 },
                 "ref": null,
@@ -3731,10 +4064,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title7",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />,
               },
               "ref": null,
@@ -3752,8 +4086,12 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title7",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   },
+                  "unvoteStory": undefined,
+                  "upvoteStory": undefined,
                   "userId": undefined,
                 },
                 "ref": null,
@@ -3778,10 +4116,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title8",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />,
               },
               "ref": null,
@@ -3799,8 +4138,12 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title8",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   },
+                  "unvoteStory": undefined,
+                  "upvoteStory": undefined,
                   "userId": undefined,
                 },
                 "ref": null,
@@ -3825,10 +4168,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title9",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />,
               },
               "ref": null,
@@ -3846,8 +4190,12 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title9",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   },
+                  "unvoteStory": undefined,
+                  "upvoteStory": undefined,
                   "userId": undefined,
                 },
                 "ref": null,
@@ -3872,10 +4220,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title10",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />,
               },
               "ref": null,
@@ -3893,8 +4242,12 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title10",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   },
+                  "unvoteStory": undefined,
+                  "upvoteStory": undefined,
                   "userId": undefined,
                 },
                 "ref": null,
@@ -3919,10 +4272,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title11",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />,
               },
               "ref": null,
@@ -3940,8 +4294,12 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title11",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   },
+                  "unvoteStory": undefined,
+                  "upvoteStory": undefined,
                   "userId": undefined,
                 },
                 "ref": null,
@@ -3966,10 +4324,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title12",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />,
               },
               "ref": null,
@@ -3987,8 +4346,12 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title12",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   },
+                  "unvoteStory": undefined,
+                  "upvoteStory": undefined,
                   "userId": undefined,
                 },
                 "ref": null,
@@ -4013,10 +4376,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title13",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />,
               },
               "ref": null,
@@ -4034,8 +4398,12 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title13",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   },
+                  "unvoteStory": undefined,
+                  "upvoteStory": undefined,
                   "userId": undefined,
                 },
                 "ref": null,
@@ -4060,10 +4428,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title14",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />,
               },
               "ref": null,
@@ -4081,8 +4450,12 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title14",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   },
+                  "unvoteStory": undefined,
+                  "upvoteStory": undefined,
                   "userId": undefined,
                 },
                 "ref": null,
@@ -4107,10 +4480,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title15",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />,
               },
               "ref": null,
@@ -4128,8 +4502,12 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title15",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   },
+                  "unvoteStory": undefined,
+                  "upvoteStory": undefined,
                   "userId": undefined,
                 },
                 "ref": null,
@@ -4154,10 +4532,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title16",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />,
               },
               "ref": null,
@@ -4175,8 +4554,12 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title16",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   },
+                  "unvoteStory": undefined,
+                  "upvoteStory": undefined,
                   "userId": undefined,
                 },
                 "ref": null,
@@ -4201,10 +4584,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title17",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />,
               },
               "ref": null,
@@ -4222,8 +4606,12 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title17",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   },
+                  "unvoteStory": undefined,
+                  "upvoteStory": undefined,
                   "userId": undefined,
                 },
                 "ref": null,
@@ -4248,10 +4636,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title18",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />,
               },
               "ref": null,
@@ -4269,8 +4658,12 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title18",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   },
+                  "unvoteStory": undefined,
+                  "upvoteStory": undefined,
                   "userId": undefined,
                 },
                 "ref": null,
@@ -4295,10 +4688,11 @@ ShallowWrapper {
                       "link": "https://google.com",
                       "title": "title19",
                       "type": "story",
+                      "unvoteStory": [Function],
+                      "upvoteStory": [Function],
                       "votes": Array [],
                     }
                   }
-                  userId={undefined}
                 />,
               },
               "ref": null,
@@ -4316,8 +4710,12 @@ ShallowWrapper {
                     "link": "https://google.com",
                     "title": "title19",
                     "type": "story",
+                    "unvoteStory": [Function],
+                    "upvoteStory": [Function],
                     "votes": Array [],
                   },
+                  "unvoteStory": undefined,
+                  "upvoteStory": undefined,
                   "userId": undefined,
                 },
                 "ref": null,

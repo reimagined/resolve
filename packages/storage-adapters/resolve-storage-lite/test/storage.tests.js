@@ -8,7 +8,7 @@ describe('storage', () => {
   let sandbox
 
   beforeEach(() => {
-    sandbox = sinon.sandbox.create()
+    sandbox = sinon.createSandbox()
 
     sandbox.stub(storage, 'prepare').returns(Promise.resolve())
     sandbox.stub(storage, 'saveEvent')
@@ -91,7 +91,7 @@ describe('storage', () => {
     }
 
     sandbox.restore()
-    sandbox = sinon.sandbox.create()
+    sandbox = sinon.createSandbox()
     sandbox.stub(storage, 'init').returns(Promise.resolve())
     sandbox.stub(storage, 'createIndex').returns(Promise.resolve())
     sandbox.stub(storage, 'createDatabase').returns(db)

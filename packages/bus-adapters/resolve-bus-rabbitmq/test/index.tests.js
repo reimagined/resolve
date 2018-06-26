@@ -175,8 +175,4 @@ describe('RabbitMQ bus', () => {
       return instance.subscribe(() => {}).then(() => fakeChannelMock.verify())
     })
   })
-
-  it('works the same way for different import types', () => {
-    expect(adapter).to.be.equal(require('../src'))
-  })
 })

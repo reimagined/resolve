@@ -1,6 +1,4 @@
-import aggregates from '../../common/aggregates'
-
-const [ratingAggregate] = aggregates
+import commands from '../../common/aggregates/rating.commands'
 
 describe('aggregates', () => {
   describe('Rating', () => {
@@ -8,7 +6,7 @@ describe('aggregates', () => {
       const state = undefined
       const command = { payload: { id: 'id1', name: 'name1' } }
 
-      expect(ratingAggregate.commands.append(state, command)).toEqual({
+      expect(commands.append(state, command)).toEqual({
         type: 'ItemAppended',
         payload: { id: command.payload.id, name: command.payload.name }
       })
@@ -18,7 +16,7 @@ describe('aggregates', () => {
       const state = undefined
       const command = { payload: { id: 'id1', userId: 'userId1' } }
 
-      expect(ratingAggregate.commands.upvote(state, command)).toEqual({
+      expect(commands.upvote(state, command)).toEqual({
         type: 'RatingIncreased',
         payload: { id: command.payload.id, userId: command.payload.userId }
       })
@@ -28,7 +26,7 @@ describe('aggregates', () => {
       const state = undefined
       const command = { payload: { id: 'id1', userId: 'userId1' } }
 
-      expect(ratingAggregate.commands.downvote(state, command)).toEqual({
+      expect(commands.downvote(state, command)).toEqual({
         type: 'RatingDecreased',
         payload: { id: command.payload.id, userId: command.payload.userId }
       })

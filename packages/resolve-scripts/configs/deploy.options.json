@@ -4,6 +4,7 @@
   "build": false,
   "start": false,
   "watch": false,
+  "test": false,
   "openBrowser": false,
   "inspectHost": "127.0.0.1",
   "inspectPort": 9229

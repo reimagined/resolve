@@ -72,7 +72,7 @@ exports[`renders correctly 1`] = `
       className="form-inline"
     >
       <a
-        aria-current="true"
+        aria-current="page"
         className="active"
         href="/"
         onClick={[Function]}
@@ -102,7 +102,6 @@ exports[`renders correctly 1`] = `
       >
         <label
           className="checkbox-inline"
-          style={undefined}
           title=""
         >
           <input
@@ -124,7 +123,6 @@ exports[`renders correctly 1`] = `
       >
         <label
           className="checkbox-inline"
-          style={undefined}
           title=""
         >
           <input
@@ -147,7 +145,6 @@ exports[`renders correctly 1`] = `
     >
       <input
         className="example-form-control form-control"
-        id={undefined}
         onKeyPress={[Function]}
         placeholder="New Task"
         type="text"

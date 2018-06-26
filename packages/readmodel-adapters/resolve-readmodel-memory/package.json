@@ -1,6 +1,6 @@
 {
   "name": "resolve-readmodel-memory",
-  "version": "0.11.0",
+  "version": "0.12.1",
   "description": "This package serves as a resolve-query adapter for storing a read model in memory",
   "main": "./dist/index.js",
   "bugs": {
@@ -23,12 +23,21 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-memory#readme",
   "dependencies": {
     "nedb": "^1.8.0",
-    "resolve-readmodel-base": "0.11.0",
-    "uuid": "^3.1.0"
+    "resolve-readmodel-base": "0.12.1",
+    "uuid": "^3.2.1"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "jest": "^22.1.4",
-    "sinon": "^3.3.0"
+    "@babel/cli": "^7.0.0-beta.49",
+    "@babel/core": "^7.0.0-beta.49",
+    "@babel/plugin-transform-runtime": "^7.0.0-beta.49",
+    "@babel/preset-env": "^7.0.0-beta.49",
+    "@babel/preset-react": "^7.0.0-beta.49",
+    "@babel/preset-stage-0": "^7.0.0-beta.49",
+    "babel-core": "^7.0.0-0",
+    "babel-jest": "^23.0.0",
+    "regenerator-runtime": "^0.11.1",
+    "jest": "^23.0.1",
+    "chai": "^4.1.2",
+    "sinon": "^5.0.10"
   }
 }

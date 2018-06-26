@@ -4,9 +4,13 @@ import nodeExternals from 'webpack-node-externals'
 
 import getModulesDirs from './get_modules_dirs'
 import getWebpackEnvPlugin from './get_webpack_env_plugin'
-import getWebpackResolveAliasPlugin from './get_webpack_resolve_alias_plugin'
 
-export default ({ resolveConfig, deployOptions, env }) => {
+const getWebpackServerConfig = ({
+  resolveConfig,
+  deployOptions,
+  env,
+  alias
+}) => {
   const serverIndexPath = path.resolve(__dirname, '../runtime/server/index.js')
 
   const serverDistDir = path.resolve(
@@ -15,10 +19,14 @@ export default ({ resolveConfig, deployOptions, env }) => {
     'server'
   )
 
+  const isClient = false
+
   return {
     name: 'Server',
-    entry: ['babel-regenerator-runtime', serverIndexPath],
+    entry: ['@babel/runtime/regenerator', serverIndexPath],
+    context: path.resolve(process.cwd()),
     mode: deployOptions.mode,
+    performance: false,
     devtool: 'source-map',
     target: 'node',
     node: {
@@ -26,7 +34,8 @@ export default ({ resolveConfig, deployOptions, env }) => {
       __filename: true
     },
     resolve: {
-      modules: getModulesDirs()
+      modules: getModulesDirs(),
+      alias
     },
     output: {
       path: serverDistDir,
@@ -37,26 +46,54 @@ export default ({ resolveConfig, deployOptions, env }) => {
     module: {
       rules: [
         {
-          test: /\.js$/,
-          loaders: [
+          test: /core(\/|\\)alias(\/|\\)\$resolve.\w+\.js/,
+          use: [
             {
-              loader: 'babel-loader?cacheDirectory=true',
-              query: {
-                env: {
-                  development: {
-                    plugins: ['babel-plugin-object-source']
-                  }
+              loader: 'babel-loader',
+              options: {
+                cacheDirectory: true,
+                babelrc: false,
+                presets: [
+                  '@babel/preset-env',
+                  ['@babel/preset-stage-0', { decoratorsLegacy: true }],
+                  '@babel/preset-react'
+                ],
+                plugins: ['@babel/plugin-transform-runtime']
+              }
+            },
+            {
+              loader: 'val-loader',
+              options: {
+                resolveConfig,
+                deployOptions,
+                isClient
+              }
+            }
+          ]
+        },
+        {
+          test: /\.js$/,
+          use: {
+            loader: 'babel-loader',
+            options: {
+              cacheDirectory: true,
+              env: {
+                development: {
+                  plugins: ['babel-plugin-object-source']
                 }
               }
             }
-          ],
-          exclude: [...getModulesDirs(), path.resolve(__dirname, '../../dist')]
+          },
+          exclude: [
+            /node_modules/,
+            ...getModulesDirs(),
+            path.resolve(__dirname, '../../dist')
+          ]
         }
       ]
     },
     plugins: [
-      getWebpackEnvPlugin({ resolveConfig, deployOptions, env }),
-      getWebpackResolveAliasPlugin({ resolveConfig, deployOptions, env }),
+      getWebpackEnvPlugin({ resolveConfig, deployOptions, env, isClient }),
       new webpack.BannerPlugin({
         banner: 'require("source-map-support").install();',
         raw: true,
@@ -66,3 +103,5 @@ export default ({ resolveConfig, deployOptions, env }) => {
     externals: getModulesDirs().map(modulesDir => nodeExternals({ modulesDir }))
   }
 }
+
+export default getWebpackServerConfig

@@ -2,20 +2,30 @@ import path from 'path'
 
 import getModulesDirs from './get_modules_dirs'
 import getWebpackEnvPlugin from './get_webpack_env_plugin'
-import getWebpackResolveAliasPlugin from './get_webpack_resolve_alias_plugin'
+import resolveFile from './resolve_file'
 
-export default ({ resolveConfig, deployOptions, env }) => {
-  const clientIndexPath = resolveConfig.index
+const getClientWebpackConfig = ({
+  resolveConfig,
+  deployOptions,
+  env,
+  alias
+}) => {
+  const clientIndexPath = resolveFile(resolveConfig.index)
+
   const clientDistDir = path.resolve(
     process.cwd(),
     resolveConfig.distDir,
     'client'
   )
 
+  const isClient = true
+
   return {
     name: 'Client',
-    entry: ['babel-regenerator-runtime', clientIndexPath],
+    entry: ['@babel/runtime/regenerator', clientIndexPath],
+    context: path.resolve(process.cwd()),
     mode: deployOptions.mode,
+    performance: false,
     devtool: 'source-map',
     target: 'web',
     output: {
@@ -25,24 +35,57 @@ export default ({ resolveConfig, deployOptions, env }) => {
       devtoolFallbackModuleFilenameTemplate: '[resource-path]?[hash]'
     },
     resolve: {
-      modules: getModulesDirs()
+      modules: getModulesDirs(),
+      alias
     },
     module: {
       rules: [
         {
-          test: /\.js$/,
-          loaders: [
+          test: /core(\/|\\)alias(\/|\\)\$resolve.\w+\.js/,
+          use: [
             {
-              loader: 'babel-loader?cacheDirectory=true'
+              loader: 'babel-loader',
+              options: {
+                cacheDirectory: true,
+                babelrc: false,
+                presets: [
+                  '@babel/preset-env',
+                  ['@babel/preset-stage-0', { decoratorsLegacy: true }],
+                  '@babel/preset-react'
+                ],
+                plugins: ['@babel/plugin-transform-runtime']
+              }
+            },
+            {
+              loader: 'val-loader',
+              options: {
+                resolveConfig,
+                deployOptions,
+                isClient
+              }
             }
-          ],
-          exclude: [...getModulesDirs(), path.resolve(__dirname, '../../dist')]
+          ]
+        },
+        {
+          test: /\.js$/,
+          use: {
+            loader: 'babel-loader',
+            options: {
+              cacheDirectory: true
+            }
+          },
+          exclude: [
+            /node_modules/,
+            ...getModulesDirs(),
+            path.resolve(__dirname, '../../dist')
+          ]
         }
       ]
     },
     plugins: [
-      getWebpackEnvPlugin({ resolveConfig, deployOptions, env }),
-      getWebpackResolveAliasPlugin({ resolveConfig, deployOptions })
+      getWebpackEnvPlugin({ resolveConfig, deployOptions, env, isClient })
     ]
   }
 }
+
+export default getClientWebpackConfig
