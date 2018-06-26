@@ -6,11 +6,11 @@ An **Aggregate** is responsible for a system's behavior and encapsulates busines
 
 When you need to change the system's state, you send a [**Command**](./Command.md). A command is addressed to a [**Domain Aggregate**](./System%20Metaphor.md). An **Aggregate** is a cluster of logically related objects, containing enough information to perform a command as one transaction. It handles a command, checks whether it can be executed and generates an event to change the system's state. A new event is sent to [**Event Store**](./Event%20Store.md). 
 
-Refer to [DDD_Aggregates](https://martinfowler.com/bliki/DDD_Aggregate.html) or [DDD, Event Sourcing, and CQRS Tutorial: design](http://cqrs.nu/tutorial/cs/01-design) for more information on aggregates.
+Refer to [DDD_Aggregates](https://martinfowler.com/bliki/DDD_Aggregate.html) or [DDD, Event Sourcing, and CQRS Tutorial: design](http://cqrs.nu/Faq#what-is-an-aggregate) for more information on aggregates.
 
 ## How to Use?
 
-Usually, an Aggregate is described for reSolve application in `commmon/aggregates/index.js` file. You can have any aggregates as you need for application:
+Usually, an Aggregate contains two parts: a **Command** and a state model that we can call a **Projection**. They are described for reSolve application in `commmon/aggregates/` folder. You can have any aggregates, commands and projections as you need for application:
 
 ```
 📁 resolve-app
@@ -18,34 +18,41 @@ Usually, an Aggregate is described for reSolve application in `commmon/aggregate
     📁 common
         ...
         📁 aggregates
-            📄 aggregate1.js
-            📄 aggregate2.js
-            📄 aggregate3.js
+            📄 aggregate1.commands.js
+            📄 aggregate1.projection.js
+            📄 aggregate2.commands.js
+            📄 aggregate2.projection.js
             ...
 ```
 
-A typical an Aggregate structure:
+A typical a **Command** structure:
 
 ```js
-export default [
-  {
-    name: 'Todo',
-    commands: {
-      createItem: (state, { payload: { id, text } }) => ({
-        type: 'ITEM_CREATED',
-        payload: { id, text }
-      }),
-      toggleItem: (state, { payload: { id } }) => ({
-        type: 'ITEM_TOGGLED',
-        payload: { id }
-      }),
-      removeItem: (state, { payload: { id } }) => ({
-        type: 'ITEM_REMOVED',
-        payload: { id }
-      })
+export default {
+  createStory: (state, command) => {
+    const { title, link, text } = command.payload
+
+    return {
+      type: 'StoryCreated',
+      payload: { title, text, link, userId, userName }
     }
   }
-]
+}
+```
+
+A typical a **Projection** structure:
+
+```js
+export default {
+  Init: () => ({}),
+  'StoryCreated': (state, { timestamp, payload: { userId } }) => ({
+    ...state,
+    createdAt: timestamp,
+    createdBy: userId,
+    voted: [],
+    comments: {}
+  })
+}
 ```
 
 ## What's Next?
