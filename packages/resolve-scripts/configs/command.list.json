@@ -1,7 +1,7 @@
 {
-  "build": "Builds the app to the build directory",
-  "dev": "Runs the app in the development mode",
-  "start": "Runs the app from the build directory",
-  "testFunctional": "Runs functional tests with TestCafe",
-  "test": "Runs unit tests with Jest"
+  "build": "Compile the app into the build directory",
+  "dev": "Run the app in the development mode",
+  "start": "Run the app from the build directory",
+  "testFunctional": "Run functional tests with TestCafe",
+  "test": "Run unit tests with Jest"
 }

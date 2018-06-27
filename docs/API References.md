@@ -2,18 +2,16 @@
 
 ## 📑 **Table Of Contents**
 * [Available Scripts](#available-scripts)
-* [Project Structure Overview](#️project-structure-overview)
+* [Project Structure Overview](#project-structure-overview)
+    * [Authentication](#authentication)
     * [Client](#client)
     * [Common](#common)
     * [Functional tests](#functional-tests)
 * [Configuration Files](#configuration-files)
-    * [Client Config](#client-config)
-    * [Server Config](#server-config)
+    * [Resolve Config](#resolve-config)
     * [Build Config](#build-config)
-* [Authentication](#authentication)
+* [Command Line Interface](#command-line-interface)
 * [Environment Variables](#environment-variables)
-    * [URL Settings](#url-settings)
-    * [Custom Environment Variables](#custom-environment-variables)
 
 ## **Available Scripts**
 
@@ -24,7 +22,7 @@ Runs the app in the development mode.
 
 Two web servers are  started: one - for the frontend/UI part, based on the webpack-dev-server on the 3001 port by default, and another one - for the API backend part to provide API for reSolve endpoints, based on express on the 3000 port. Development servers provide all the required debugging capabilities, including [Hot Module Replacement](https://webpack.js.org/concepts/hot-module-replacement/) and [source maps](https://webpack.js.org/configuration/devtool/).
 
-Open [http://localhost:3000](http://localhost:3000/) or http://<your_ip>:3000 to view the app in the browser (you can change your [url settings](#url-settings)).
+Open [http://localhost:3000](http://localhost:3000/) or http://<your_ip>:3000 to view the app in the browser (you can change your [url settings](#configuration-files)).
 
 ### `npm run build`
 Builds client and server bundles for production through Webpack.
@@ -34,10 +32,11 @@ Building is performed in the `NODE_ENV === 'production'` [mode](https://webpack.
 ### `npm start`
 Runs the built app in the production mode.
 
-Open [http://localhost:3000](http://localhost:3000/) or http://<your_ip>:3000 to view it in the browser (you can change your [url settings](#url-settings).
+Open [http://localhost:3000](http://localhost:3000/) or http://<your_ip>:3000 to view it in the browser (you can change your [url settings](#configuration-files)).
 
 ## **Project Structure Overview**
-[Create ReSolve App](https://www.npmjs.com/package/creat-resolve-app) is an NPM package referencing the latest [reSolve framework package](../..#) versions. It consists of the common isomorphic part which describes domain business logic and React components for the presentation. No implicit server part is needed - it is encapsulated in `resolve-scripts`, but can be customized using [config](#-configuration-files). The project also includes unit & E2E testing and deployment assets. All source code and functional tests are written in the [ES2016](http://2ality.com/2016/01/ecmascript-2016.html).
+
+[Create ReSolve App](https://www.npmjs.com/package/create-resolve-app) is an NPM package referencing the latest [reSolve framework package](https://github.com/reimagined/resolve/) versions. It consists of the common isomorphic part which describes domain business logic and React components for the presentation. No implicit server part is needed - it is encapsulated in `resolve-scripts`, but can be customized using [config](#configuration-files). The project also includes unit & E2E testing and deployment assets. All source code and functional tests are written in the [ES2016](http://2ality.com/2016/01/ecmascript-2016.html).
 
 ```
 📁 resolve-app
@@ -76,7 +75,7 @@ Open [http://localhost:3000](http://localhost:3000/) or http://<your_ip>:3000 to
 ```
 
 ### **Authentication**
-The `auth` folder contains authentication strategies' code. You can choose this file location using `auth` section in `resolve.config.json` (see [auth example](../examples/with-authentication/resolve.config.json))
+The `auth` folder contains authentication strategies' code. You can choose this file location using `auth` section in `resolve.config.json` (see [with-authentication example](../examples/with-authentication/resolve.config.json))
 
 ### **Client**
 The client side is located in the `client/` folder. File `routes.js` contains route configuration according to the specifications of [Route Configuration Shape](https://github.com/reacttraining/react-router/tree/master/packages/react-router-config#route-configuration-shape).
@@ -114,6 +113,61 @@ export default (webpackConfigs, { resolveConfig, deployOptions, env }) => {
 ```
 
 Example can be found in [`with-postcss-modules`](../examples/with-postcss-modules) example
+
+## **Command Line Interface**
+
+### Commands:
+
+| Name              | Description                              |
+|-------------------|------------------------------------------|
+| `build`           | Compile the app into the build directory |
+| `start`           | Run the app from the build directory     |
+| `dev`             | Run the app in the development mode      |
+| `test`            | Run unit tests with Jest                 |
+| `test:functional` | Run functional tests with TestCafe       |
+
+#### command "build"
+
+| Options          | Description                                                            | Type      |
+|------------------|------------------------------------------------------------------------|-----------|
+| `--version`      | Show version number                                                    | [boolean] |
+| `--help`         | Show help                                                              | [boolean] |
+| `--dev`          | Set `webpack.mode` and `process.env.NODE_ENV` to 'development'         | [boolean] |
+| `--prod`         | Set `webpack.mode` and `process.env.NODE_ENV` to 'production'          | [boolean] |
+| `--test`         | Set `webpack.mode` to 'development' and process.env.NODE_ENV to 'test' | [boolean] |
+| `--watch`        | Watch the filesystem for changes and update the app using Webpack HMR  | [boolean] |
+| `--start`        | Automatically start your server once the Webpack build completes       | [boolean] |
+| `--port`         | Application port                                                       | [number]  |
+| `--inspect`      | Start Node.js inspector on [host:]port                                 | [string]  |
+| `--config`       | Path to reSolve config                                                 | [string]  |
+| `--build-config` | Path to reSolve build config                                           | [string]  |
+| `--print-config` | Show the current configuration                                         | [boolean] |
+| `--root-path`    | Application root path                                                  | [string]  |
+| `--open-browser` | Open the root page in the default browser                              | [boolean] |
+
+#### command "start"
+
+| Options          | Description                                                            | Type      |
+|------------------|------------------------------------------------------------------------|-----------|
+| `--version`      | Show version number                                                    | [boolean] |
+| `--help`         | Show help                                                              | [boolean] |
+| `--inspect`      | Start Node.js inspector on [host:]port                                 | [string]  |
+| `--print-config` | Show the current configuration                                         | [boolean] |
+
+#### command "dev"
+
+| Options          | Description                                                            | Type      |
+|------------------|------------------------------------------------------------------------|-----------|
+| `--version`      | Show version number                                                    | [boolean] |
+| `--help`         | Show help                                                              | [boolean] |
+| `--test`         | Set `webpack.mode` to 'development' and process.env.NODE_ENV to 'test' | [boolean] |
+| `--port`         | Application port                                                       | [number]  |
+| `--inspect`      | Start Node.js inspector on [host:]port                                 | [string]  |
+| `--root-path`    | Application root path                                                  | [string]  |
+| `--open-browser` | Open the root page in the default browser                              | [boolean] |
+| `--config`       | Path to reSolve config                                                 | [string]  |
+| `--build-config` | Path to reSolve build config                                           | [string]  |
+| `--print-config` | Show the current configuration                                         | [boolean] |
 
 ## Environment Variables
 You can pass env variables to the client side. To do this, use the `RESOLVE_` prefix when naming a variable. After that, this variable is available on the client and server side via the `process.env` object.

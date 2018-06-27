@@ -37,25 +37,20 @@ describe('resolve-readmodel-base check-store-api', () => {
     api = null
   })
 
-  const fieldsInputDeclaration = [
-    { name: 'id', type: 'number', index: 'primary' },
-    { name: 'volume', type: 'string', index: 'secondary' },
-    { name: 'timestamp', type: 'number', index: 'secondary' },
-    { name: 'content', type: 'json' }
-  ]
+  const fieldsInputDeclaration = {
+    indexes: {
+      id: 'string',
+      volume: 'number',
+      timestamp: 'number'
+    },
+    fields: ['content']
+  }
 
   const fieldsOutputDeclaration = {
-    fieldTypes: {
-      id: 'number',
-      volume: 'string',
-      timestamp: 'number',
-      content: 'json'
-    },
-    primaryIndex: { name: 'id', type: 'number' },
-    secondaryIndexes: [
-      { name: 'volume', type: 'string' },
-      { name: 'timestamp', type: 'number' }
-    ]
+    id: 'primary-string',
+    volume: 'secondary-number',
+    timestamp: 'secondary-number',
+    content: 'regular'
   }
 
   it('defineTable should pass correct table schema', async () => {
@@ -99,7 +94,7 @@ describe('resolve-readmodel-base check-store-api', () => {
       expect(err.message).to.be.equal(
         messages.invalidTableSchema(
           'table',
-          messages.tableDescriptorNotArray,
+          messages.tableDescriptorNotObject,
           null
         )
       )
@@ -117,7 +112,7 @@ describe('resolve-readmodel-base check-store-api', () => {
 
     const result = await api.find(
       'table',
-      { volume: 'volume' },
+      { volume: 100 },
       { id: 1, 'content.text': 1 },
       { timestamp: -1 },
       100,
@@ -126,7 +121,7 @@ describe('resolve-readmodel-base check-store-api', () => {
 
     expect(storeApi.find.firstCall.args[0]).to.be.equal('table')
     expect(storeApi.find.firstCall.args[1]).to.be.deep.equal({
-      volume: 'volume'
+      volume: 100
     })
     expect(storeApi.find.firstCall.args[2]).to.be.deep.equal({
       id: 1,
@@ -151,7 +146,7 @@ describe('resolve-readmodel-base check-store-api', () => {
     const findQuery = {
       $and: [
         { $or: [{ timestamp: { $lt: 100 } }, { timestamp: { $gt: 1000 } }] },
-        { $not: { volume: { $eq: 'volume' } } }
+        { $not: { volume: { $eq: 100 } } }
       ]
     }
 
@@ -188,7 +183,7 @@ describe('resolve-readmodel-base check-store-api', () => {
 
     const result = await api.find(
       'table',
-      { volume: 'volume' },
+      { volume: 100 },
       null,
       { timestamp: -1 },
       100,
@@ -197,7 +192,7 @@ describe('resolve-readmodel-base check-store-api', () => {
 
     expect(storeApi.find.firstCall.args[0]).to.be.equal('table')
     expect(storeApi.find.firstCall.args[1]).to.be.deep.equal({
-      volume: 'volume'
+      volume: 100
     })
     expect(storeApi.find.firstCall.args[2]).to.be.deep.equal(null)
     expect(storeApi.find.firstCall.args[3]).to.be.deep.equal({ timestamp: -1 })
@@ -218,7 +213,7 @@ describe('resolve-readmodel-base check-store-api', () => {
 
     const result = await api.find(
       'table',
-      { volume: 'volume' },
+      { volume: 100 },
       { id: 1, 'content.text': 1 },
       null,
       100,
@@ -227,7 +222,7 @@ describe('resolve-readmodel-base check-store-api', () => {
 
     expect(storeApi.find.firstCall.args[0]).to.be.equal('table')
     expect(storeApi.find.firstCall.args[1]).to.be.deep.equal({
-      volume: 'volume'
+      volume: 100
     })
     expect(storeApi.find.firstCall.args[2]).to.be.deep.equal({
       id: 1,
@@ -251,14 +246,14 @@ describe('resolve-readmodel-base check-store-api', () => {
 
     const result = await api.find(
       'table',
-      { volume: 'volume' },
+      { volume: 100 },
       { id: 1, 'content.text': 1 },
       { timestamp: -1 }
     )
 
     expect(storeApi.find.firstCall.args[0]).to.be.equal('table')
     expect(storeApi.find.firstCall.args[1]).to.be.deep.equal({
-      volume: 'volume'
+      volume: 100
     })
     expect(storeApi.find.firstCall.args[2]).to.be.deep.equal({
       id: 1,
@@ -280,7 +275,7 @@ describe('resolve-readmodel-base check-store-api', () => {
     try {
       await api.find(
         'table',
-        { volume: 'volume' },
+        { volume: 100 },
         { id: 1, 'content.text': 1 },
         { timestamp: -1 },
         'skip',
@@ -304,7 +299,7 @@ describe('resolve-readmodel-base check-store-api', () => {
     try {
       await api.find(
         'table',
-        { volumeErr: 'volume' },
+        { volumeErr: 100 },
         { id: 1, 'content.text': 1 },
         { timestamp: -1 },
         100,
@@ -319,7 +314,7 @@ describe('resolve-readmodel-base check-store-api', () => {
         messages.invalidFieldList(
           'find',
           'table',
-          { volumeErr: 'volume' },
+          { volumeErr: 100 },
           messages.nonExistingField,
           'volumeErr'
         )
@@ -336,7 +331,7 @@ describe('resolve-readmodel-base check-store-api', () => {
     try {
       await api.find(
         'table',
-        { volume: 'volume' },
+        { volume: 100 },
         { idErr: 1, 'contentErr.text': 1 },
         { timestamp: -1 },
         100,
@@ -368,7 +363,7 @@ describe('resolve-readmodel-base check-store-api', () => {
     try {
       await api.find(
         'table',
-        { volume: 'volume' },
+        { volume: 100 },
         { id: 1, 'content.text': 1 },
         { timestampErr: -1 },
         100,
@@ -424,13 +419,13 @@ describe('resolve-readmodel-base check-store-api', () => {
 
     const result = await api.findOne(
       'table',
-      { volume: 'volume' },
+      { volume: 100 },
       { id: 1, 'content.text': 1 }
     )
 
     expect(storeApi.findOne.firstCall.args[0]).to.be.equal('table')
     expect(storeApi.findOne.firstCall.args[1]).to.be.deep.equal({
-      volume: 'volume'
+      volume: 100
     })
     expect(storeApi.findOne.firstCall.args[2]).to.be.deep.equal({
       id: 1,
@@ -449,11 +444,11 @@ describe('resolve-readmodel-base check-store-api', () => {
     const resultValue = {}
     storeApi.findOne.onCall(0).callsFake(async () => resultValue)
 
-    const result = await api.findOne('table', { volume: 'volume' }, null)
+    const result = await api.findOne('table', { volume: 100 }, null)
 
     expect(storeApi.findOne.firstCall.args[0]).to.be.equal('table')
     expect(storeApi.findOne.firstCall.args[1]).to.be.deep.equal({
-      volume: 'volume'
+      volume: 100
     })
     expect(storeApi.findOne.firstCall.args[2]).to.be.deep.equal(null)
 
@@ -469,7 +464,7 @@ describe('resolve-readmodel-base check-store-api', () => {
     try {
       await api.findOne(
         'table',
-        { volumeErr: 'volume' },
+        { volumeErr: 100 },
         { id: 1, 'content.text': 1 }
       )
       return Promise.reject(
@@ -481,7 +476,7 @@ describe('resolve-readmodel-base check-store-api', () => {
         messages.invalidFieldList(
           'findOne',
           'table',
-          { volumeErr: 'volume' },
+          { volumeErr: 100 },
           messages.nonExistingField,
           'volumeErr'
         )
@@ -498,7 +493,7 @@ describe('resolve-readmodel-base check-store-api', () => {
     try {
       await api.findOne(
         'table',
-        { volume: 'volume' },
+        { volume: 100 },
         { idErr: 1, 'contentErr.text': 1 }
       )
       return Promise.reject(
@@ -548,11 +543,11 @@ describe('resolve-readmodel-base check-store-api', () => {
 
     storeApi.count.onCall(0).callsFake(async () => 100)
 
-    const result = await api.count('table', { volume: 'volume' })
+    const result = await api.count('table', { volume: 100 })
 
     expect(storeApi.count.firstCall.args[0]).to.be.equal('table')
     expect(storeApi.count.firstCall.args[1]).to.be.deep.equal({
-      volume: 'volume'
+      volume: 100
     })
 
     expect(result).to.be.equal(100)
@@ -565,7 +560,7 @@ describe('resolve-readmodel-base check-store-api', () => {
       .callsFake(async () => fieldsOutputDeclaration)
 
     try {
-      await api.count('table', { volumeErr: 'volume' })
+      await api.count('table', { volumeErr: 100 })
       return Promise.reject(
         'count should fail on nonExisting fields on search fields key'
       )
@@ -575,7 +570,7 @@ describe('resolve-readmodel-base check-store-api', () => {
         messages.invalidFieldList(
           'count',
           'table',
-          { volumeErr: 'volume' },
+          { volumeErr: 100 },
           messages.nonExistingField,
           'volumeErr'
         )
@@ -612,16 +607,16 @@ describe('resolve-readmodel-base check-store-api', () => {
       .callsFake(async () => fieldsOutputDeclaration)
 
     await api.insert('table', {
-      id: 100,
-      volume: 'volume',
+      id: '100',
+      volume: 100,
       timestamp: 200,
       content: {}
     })
 
     expect(storeApi.insert.firstCall.args[0]).to.be.equal('table')
     expect(storeApi.insert.firstCall.args[1]).to.be.deep.equal({
-      id: 100,
-      volume: 'volume',
+      id: '100',
+      volume: 100,
       timestamp: 200,
       content: {}
     })
@@ -635,8 +630,8 @@ describe('resolve-readmodel-base check-store-api', () => {
 
     try {
       await api.insert('table', {
-        idErr: 100,
-        volumeErr: 'volume',
+        idErr: '100',
+        volumeErr: 100,
         timestampErr: 200,
         contentErr: {}
       })
@@ -650,8 +645,8 @@ describe('resolve-readmodel-base check-store-api', () => {
           'insert',
           'table',
           {
-            idErr: 100,
-            volumeErr: 'volume',
+            idErr: '100',
+            volumeErr: 100,
             timestampErr: 200,
             contentErr: {}
           },
@@ -694,9 +689,9 @@ describe('resolve-readmodel-base check-store-api', () => {
 
     await api.update(
       'table',
-      { volume: 'volume' },
+      { volume: 100 },
       {
-        $set: { volume: 'vol', 'content.one': 20 },
+        $set: { volume: 1000, 'content.one': 20 },
         $unset: { volume: true, 'content.two': true },
         $inc: { timestamp: 3, 'content.counter': 4 }
       }
@@ -704,10 +699,10 @@ describe('resolve-readmodel-base check-store-api', () => {
 
     expect(storeApi.update.firstCall.args[0]).to.be.equal('table')
     expect(storeApi.update.firstCall.args[1]).to.be.deep.equal({
-      volume: 'volume'
+      volume: 100
     })
     expect(storeApi.update.firstCall.args[2]).to.be.deep.equal({
-      $set: { volume: 'vol', 'content.one': 20 },
+      $set: { volume: 1000, 'content.one': 20 },
       $unset: { volume: true, 'content.two': true },
       $inc: { timestamp: 3, 'content.counter': 4 }
     })
@@ -722,7 +717,7 @@ describe('resolve-readmodel-base check-store-api', () => {
     try {
       await api.update(
         'table',
-        { volumeErr: 'volume' },
+        { volumeErr: 100 },
         {
           $set: { volume: 'vol', 'content.one': 20 },
           $unset: { volume: true, 'content.two': true },
@@ -738,7 +733,7 @@ describe('resolve-readmodel-base check-store-api', () => {
         messages.invalidFieldList(
           'update',
           'table',
-          { volumeErr: 'volume' },
+          { volumeErr: 100 },
           messages.nonExistingField,
           'volumeErr'
         )
@@ -755,7 +750,7 @@ describe('resolve-readmodel-base check-store-api', () => {
     try {
       await api.update(
         'table',
-        { volume: 'volume' },
+        { volume: 100 },
         {
           $set: { volumeErr: 'vol', 'contentErr.one': 20 },
           $unset: { volumeErr: true, 'contentErr.two': true },
@@ -815,7 +810,7 @@ describe('resolve-readmodel-base check-store-api', () => {
       .callsFake(async () => fieldsOutputDeclaration)
 
     try {
-      await api.update('table', { volume: 'volume' }, null)
+      await api.update('table', { volume: 100 }, null)
       return Promise.reject('update should fail on bad request')
     } catch (err) {
       expect(err).to.be.instanceOf(Error)
@@ -835,11 +830,11 @@ describe('resolve-readmodel-base check-store-api', () => {
       .onCall(0)
       .callsFake(async () => fieldsOutputDeclaration)
 
-    await api.delete('table', { volume: 'volume' })
+    await api.delete('table', { volume: 100 })
 
     expect(storeApi.del.firstCall.args[0]).to.be.equal('table')
     expect(storeApi.del.firstCall.args[1]).to.be.deep.equal({
-      volume: 'volume'
+      volume: 100
     })
   })
 
@@ -850,7 +845,7 @@ describe('resolve-readmodel-base check-store-api', () => {
       .callsFake(async () => fieldsOutputDeclaration)
 
     try {
-      await api.delete('table', { volumeErr: 'volume' })
+      await api.delete('table', { volumeErr: 100 })
       return Promise.reject(
         'delete should fail on nonExisting fields on search fields key'
       )
@@ -860,7 +855,7 @@ describe('resolve-readmodel-base check-store-api', () => {
         messages.invalidFieldList(
           'delete',
           'table',
-          { volumeErr: 'volume' },
+          { volumeErr: 100 },
           messages.nonExistingField,
           'volumeErr'
         )

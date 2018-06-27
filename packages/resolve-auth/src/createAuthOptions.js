@@ -25,7 +25,7 @@ export default (authReq, authRes, next) => ({
       res.setHeader('Content-Length', '0')
       res.end()
     } else {
-      res.statusCode = status
+      res.statusCode = status || 401
       res.end(JSON.stringify(error))
     }
   },

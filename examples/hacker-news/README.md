@@ -1,8 +1,8 @@
 # Hacker News App
 
-## How to start?
+![hn](https://user-images.githubusercontent.com/19663260/41345723-23bce79a-6f0d-11e8-891a-ceb39c86db62.png)
 
-This example demonstrates [HackerNews](https://news.ycombinator.com/) application clone with CQRS and EventSoucring. To setup:
+This example demonstrates [HackerNews](https://news.ycombinator.com/) application clone with CQRS and EventSoucring. To install:
 
 ```bash
 npx create-resolve-app hacker-news-example -e hacker-news
@@ -39,12 +39,12 @@ Press `Control-C` to stop importing or wait until it is finished.
 
 📑 The app's creation process is detailed in the [Hacker News Tutorial](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/Hacker%20News%20Tutorial.md).
 
-📑 You can learn more about read-models in [**Read Model**](https://github.com/reimagined/resolve/blob/master/docs/Read%20Model.md) topic.
+📑 You can learn more about read-models in a [**Read Model**](https://github.com/reimagined/resolve/blob/master/docs/Read%20Model.md) topic.
 
-📑 Available scripts, project structure overview, configuration files and much other useful information are in [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md) topic.
+📑 Available scripts, project structure overview, configuration files, and more useful information can be found in the [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md) topic.
 
-📑 To learn more about common building principles of architecture, please look at [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md) documentation topic.
+📑 Refer to the [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md) documentation topic to learn more about common architecture building principles.
 
-📑 In [**Tutorials**](https://github.com/reimagined/resolve/tree/master/docs/Tutorials) you can find how to make some simple applications with reSolve.
+📑 You can learn how to create simple applications with reSolve in the [**Tutorials**](https://github.com/reimagined/resolve/tree/master/docs/Tutorials) section.
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/examples-hacker-news-readme?pixel)

@@ -17,6 +17,7 @@ export const builder = yargs =>
     .option('build-config', cli.buildConfig)
     .option('print-config', cli.printConfig)
     .conflicts('dev', 'prod')
+    .strict()
 
 export const handler = argv =>
   webpack(

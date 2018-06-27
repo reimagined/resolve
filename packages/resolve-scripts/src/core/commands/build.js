@@ -22,6 +22,7 @@ export const builder = yargs =>
     .option('open-browser', cli.openBrowser)
     .implies('inspect', 'start')
     .conflicts('dev', 'prod')
+    .strict()
 
 export const handler = argv =>
   webpack(

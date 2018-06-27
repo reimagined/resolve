@@ -1,24 +1,22 @@
-# With Styled Components
+# reSolve Styled Components Example
 
-**See the documentation at [styled-components.com/docs](https://www.styled-components.com/docs)** for more information about using `styled-components`!
+![Styled Components](https://camo.githubusercontent.com/640c2142e506d4b61bdd29513cb2cdbddbd4aa2f/687474703a2f2f692e696d6775722e636f6d2f77554a70636a592e6a7067)
 
-Quicklinks to some of the most-visited pages:
+This example demonstrates how to work with [Styled Components](https://www.styled-components.com/docs). Get the example using this command:
 
-* [**Getting started**](https://www.styled-components.com/docs/basics)
-* [API Reference](https://styled-components.com/docs/api)
-* [Theming](https://www.styled-components.com/docs/advanced#theming)
-* [Server-side rendering](https://www.styled-components.com/docs/advanced#server-side-rendering)
-* [Tagged Template Literals explained](https://www.styled-components.com/docs/advanced#tagged-template-literals)
+```sh
+npx create-resolve-app with-styled-components -e with-styled-components
+```
 
-### Example
+## How to Use
 
 ```jsx
 import React from 'react';
 
 import styled from 'styled-components';
 
-// Create a <Title> react component that renders an <h1> which is
-// centered, palevioletred and sized at 1.5em
+// Create a <Title> react component that renders a <h1> which is
+// centered, colored in palevioletred and sized at 1.5em
 const Title = styled.h1`
   font-size: 1.5em;
   text-align: center;
@@ -38,8 +36,20 @@ const Wrapper = styled.section`
 </Wrapper>
 ```
 
-This is what you'll see in your browser:
+## What's next?
 
-![Styled Components](https://camo.githubusercontent.com/640c2142e506d4b61bdd29513cb2cdbddbd4aa2f/687474703a2f2f692e696d6775722e636f6d2f77554a70636a592e6a7067)
+📑 [**Getting started**](https://www.styled-components.com/docs/basics) for styled-components.
+
+📑 [**Theming**](https://www.styled-components.com/docs/advanced#theming) for styled-components.
+
+📑 [**Server-side rendering**](https://www.styled-components.com/docs/advanced#server-side-rendering) for styled-components.
+
+📑 [**Tagged Template Literals**](https://www.styled-components.com/docs/advanced#tagged-template-literals) for styled-components.
+
+📑 Available scripts, project structure overview, configuration files, and more useful information can be found in the [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md) topic.
+
+📑 Refer to the [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md) documentation topic to learn more about common architecture building principles.
+
+📑 You can learn how to create simple applications with reSolve in the [**Tutorials**](https://github.com/reimagined/resolve/tree/master/docs/Tutorials) section.
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/examples-with-styled-components-readme?pixel)

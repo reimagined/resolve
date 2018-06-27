@@ -19,8 +19,12 @@ readModels.forEach(readModel => {
 
   const facade = createReadModel({
     projection: readModel.projection,
-    adapter: readModel.adapter,
     resolvers: readModel.resolvers,
+    ...(readModel.hasOwnProperty('adapter')
+      ? {
+          adapter: readModel.adapter.module(readModel.adapter.options)
+        }
+      : {}),
     eventStore
   })
 

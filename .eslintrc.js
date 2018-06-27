@@ -224,6 +224,7 @@ module.exports = {
           'upsert',
           'upvote',
           'upvoted',
+          'utf8mb4',
           'url',
           'urlencoded',
           'urls',
