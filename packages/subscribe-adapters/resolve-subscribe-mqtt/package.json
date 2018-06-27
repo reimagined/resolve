@@ -6,7 +6,7 @@
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
-    "prepublish": "babel --out-dir ./dist ./src",
+    "prepublish": "babel --source-maps --out-dir ./dist ./src",
     "test": "jest --testMatch=**/test/*.test.js",
     "testw": "jest --testMatch=**/test/*.test.js --watchAll"
   },

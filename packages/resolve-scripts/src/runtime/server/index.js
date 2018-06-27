@@ -41,15 +41,19 @@ const subscribeAdapter = createSubscribeAdapter({
   pubsubManager,
   server,
   getRootBasedUrl,
+  qos: 2,
+  appId: '1234',
   ...serverSubscribeAdapter.options
 })
 
 subscribeAdapter.init().then(() => {
+  console.log('subscribeAdapter.init()')
   eventStore.subscribeOnBus(event => {
+    console.log('event', event)
     pubsubManager.dispatch({
       topicName: event.aggregateId,
       topicId: event.type,
-      message: event
+      event
     })
   })
 })

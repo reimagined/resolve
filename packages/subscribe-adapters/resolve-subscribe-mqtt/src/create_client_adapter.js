@@ -25,15 +25,18 @@ const createClientAdapter = ({ url, appId, onEvent }) => {
         client.on('connect', () => {
           isInitialized = true
           resolve()
+          console.log('@@@@ MQTT HAS BEEN CONNECTED @@@@')
         })
 
         client.on('error', err => {
+          console.log('@@@@ MQTT HAS RAIZED ERROR @@@@', err)
           reject(err)
         })
 
         client.on('message', (topic, message) => {
           try {
             const event = JSON.parse(message.toString('utf8'))
+            console.log('@@MESSAGE', event)
             onEvent(event)
           } catch (error) {
             // eslint-disable-next-line no-console

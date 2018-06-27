@@ -6,7 +6,13 @@ import {
   subscribeAdapterAlreadyInitialized
 } from './constants'
 
-const createServerAdapter = ({ server, getRootBasedUrl, pubsubManager }) => {
+const createServerAdapter = ({
+  server,
+  getRootBasedUrl,
+  pubsubManager,
+  appId,
+  qos
+}) => {
   let isInitialized = false
   let socketMqttServer = null
 
@@ -27,7 +33,7 @@ const createServerAdapter = ({ server, getRootBasedUrl, pubsubManager }) => {
           error => (error ? reject(error) : resolve())
         )
 
-        const handler = createServerHandler({ pubsubManager })
+        const handler = createServerHandler(pubsubManager, resolve, appId, qos)
 
         socketMqttServer.on('connection', handler)
       })

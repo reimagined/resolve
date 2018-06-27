@@ -28,40 +28,40 @@ import {
 } from './action_types'
 
 export const sendCommandRequest = (
-  command,
+  commandType,
   aggregateId,
   aggregateName,
   payload
 ) => ({
   type: SEND_COMMAND_REQUEST,
-  command,
+  commandType,
   aggregateId,
   aggregateName,
   payload
 })
 
 export const sendCommandSuccess = (
-  command,
+  commandType,
   aggregateId,
   aggregateName,
   payload
 ) => ({
   type: SEND_COMMAND_SUCCESS,
-  command,
+  commandType,
   aggregateId,
   aggregateName,
   payload
 })
 
 export const sendCommandFailure = (
-  command,
+  commandType,
   aggregateId,
   aggregateName,
   payload,
   error
 ) => ({
   type: SEND_COMMAND_FAILURE,
-  command,
+  commandType,
   aggregateId,
   aggregateName,
   payload,

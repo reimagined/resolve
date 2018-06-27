@@ -38,7 +38,24 @@ const pubsubManager = {
     }
   },
 
-  dispatch({ topicName, topicId, message }) {
+  unsubscribeClient(client) {
+    let rc = 0
+    for (const topicName of map.keys()) {
+      for (const topicId of map.get(topicName).keys()) {
+        const clients = map.get(topicName).get(topicId)
+
+        const idx = clients.findIndex(cl => client === cl)
+        if (idx >= 0) {
+          clients.splice(idx, 1)
+          rc++
+        }
+      }
+    }
+
+    console.log('REMOVED CLIENTS: ', rc)
+  },
+
+  dispatch({ topicName, topicId, event }) {
     const clients = []
 
     if (map.has(topicName) && map.get(topicName).has(topicId)) {
@@ -57,7 +74,11 @@ const pubsubManager = {
       clients.push(...map.get('#').get('#'))
     }
 
-    clients.forEach(client => client(message).catch(() => {}))
+    clients.forEach(client =>
+      client(topicName, topicId, event).catch(warning => {
+        console.warn(warning)
+      })
+    )
   }
 }
 

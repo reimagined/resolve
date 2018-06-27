@@ -1,4 +1,4 @@
-const getMqttTopics = (appId, { topicName, topicId }) =>
+const getMqttTopic = (appId, { topicName, topicId }) =>
   `${appId}/${topicName}/${topicId}`
 
-export default getMqttTopics
+export default getMqttTopic

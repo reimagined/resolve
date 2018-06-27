@@ -1,12 +1,34 @@
 import getWebSocketStream from 'websocket-stream'
 import MqttConnection from 'mqtt-connection'
 
-const createServerHandler = ({ pubsubManager }) => ws => {
+import getMqttTopic from './get_mqtt_topic'
+
+const createServerHandler = (pubsubManager, callback, appId, qos) => ws => {
   const stream = getWebSocketStream(ws)
   const client = new MqttConnection(stream)
-  const publisher = client.publish.bind(client)
+  let messageId = 1
 
-  client.on('connect', () => client.connack({ returnCode: 0 }))
+  const publisher = (topicName, topicId, event) =>
+    new Promise((resolve, reject) => {
+      console.log(topicName, topicId)
+      console.log(event)
+      console.log(typeof event)
+
+      client.publish(
+        {
+          topic: getMqttTopic(appId, { topicName, topicId }),
+          payload: JSON.stringify(event),
+          messageId: messageId++,
+          qos
+        },
+        error => (error ? reject(error) : resolve())
+      )
+    })
+
+  client.on('connect', () => {
+    client.connack({ returnCode: 0 })
+    callback()
+  })
   client.on('pingreq', () => client.pingresp())
 
   client.on('subscribe', packet => {
@@ -25,9 +47,14 @@ const createServerHandler = ({ pubsubManager }) => ws => {
     client.unsuback({ granted: [packet.qos], messageId: packet.messageId })
   })
 
-  client.on('close', () => client.destroy())
-  client.on('error', () => client.destroy())
-  client.on('disconnect', () => client.destroy())
+  const dispose = () => {
+    pubsubManager.unsubscribeClient(publisher)
+    client.destroy()
+  }
+
+  client.on('close', dispose)
+  client.on('error', dispose)
+  client.on('disconnect', dispose)
 }
 
 export default createServerHandler

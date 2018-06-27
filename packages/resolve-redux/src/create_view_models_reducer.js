@@ -18,12 +18,7 @@ const dropKey = (state, key) => {
 
 export default function createViewModelsReducer() {
   const context = {
-    initialState: {
-      [connectorMetaMap]: {},
-      [aggregateVersionsMap]: {}
-    },
-    handlers: {},
-    isInitialized: false
+    handlers: {}
   }
 
   context.handlers[LOAD_VIEWMODEL_STATE_REQUEST] = (
@@ -57,9 +52,9 @@ export default function createViewModelsReducer() {
     return {
       ...state,
       [viewModelName]: {
-        ...state[viewModelName],
+        ...(state[viewModelName] || {}),
         [aggregateIds]: {
-          ...state[viewModelName][aggregateIds],
+          ...((state[viewModelName] || {})[aggregateIds] || {}),
           [aggregateArgs]: viewModelState
         }
       },
@@ -79,7 +74,7 @@ export default function createViewModelsReducer() {
 
   context.handlers[LOAD_VIEWMODEL_STATE_FAILURE] = (
     state,
-    { viewModelName, aggregateIds, aggregateArgs }
+    { viewModelName, aggregateIds, aggregateArgs, error }
   ) => {
     const key = `${viewModelName}${aggregateIds}${aggregateArgs}`
 
@@ -89,7 +84,8 @@ export default function createViewModelsReducer() {
         ...state[connectorMetaMap],
         [key]: {
           isLoading: false,
-          isFailure: true
+          isFailure: true,
+          error
         }
       }
     }
@@ -115,20 +111,15 @@ export default function createViewModelsReducer() {
     }
   }
 
-  return (prevState = {}, action) => {
-    let state = prevState
-    if (!context.isInitialized) {
-      state = {
-        ...state,
-        ...context.initialState
-      }
-      context.isInitialized = true
-    }
+  let state = {
+    [connectorMetaMap]: {},
+    [aggregateVersionsMap]: {}
+  }
 
+  return (_, action) => {
     const eventHandler = context.handlers[action.type]
-
     if (eventHandler) {
-      return eventHandler(state, action)
+      state = eventHandler(state, action)
     }
 
     return state

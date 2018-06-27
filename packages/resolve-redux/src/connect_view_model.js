@@ -2,9 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as actions from './actions'
-
-// TODO
-const aggregateArgs = {}
+import { connectorMetaMap } from './constants'
+import stringify from 'json-stable-stringify'
 
 const connectViewModel = mapStateToOptions => Component => {
   class ViewModelContainer extends React.PureComponent {
@@ -13,6 +12,7 @@ const connectViewModel = mapStateToOptions => Component => {
       const {
         viewModelName,
         aggregateIds,
+        aggregateArgs,
         placeholder,
         placeholderTimeout
       } = this.props.connectorOptions
@@ -25,6 +25,7 @@ const connectViewModel = mapStateToOptions => Component => {
       const {
         viewModelName,
         aggregateIds,
+        aggregateArgs,
         placeholder,
         placeholderTimeout
       } = this.props.connectorOptions
@@ -35,34 +36,53 @@ const connectViewModel = mapStateToOptions => Component => {
     render() {
       const { ownProps, isLoading, data } = this.props
 
+      // TODO
+      if (isLoading !== false) {
+        return null
+      }
+
       return <Component {...ownProps} isLoading={isLoading} data={data} />
     }
   }
 
   const mapStateToConnectorProps = (state, ownProps) => {
-    const isLoading = false
-
-    const data = false
-
-    console.log(state, ownProps)
     const connectorOptions = mapStateToOptions(state, ownProps)
-    //
-    // const aggregateIdsKey = connectorOptions.aggregateIds.sort().join(',')
+    if (!connectorOptions.hasOwnProperty('aggregateArgs')) {
+      connectorOptions.aggregateArgs = {}
+    }
 
-    // const {
-    //   viewModels: {
-    //     [`resolve-loading-${
-    //       connectorOptions.viewModelName
-    //     }-${aggregateIdsKey}`]: isLoading,
-    //     [connectorOptions.viewModelName]: { [aggregateIdsKey]: data }
-    //   }
-    // } = state
+    const viewModelName = connectorOptions.viewModelName
+    const aggregateIds = stringify(connectorOptions.aggregateIds)
+    const aggregateArgs = stringify(connectorOptions.aggregateArgs)
+
+    const connectorMeta =
+      state.viewModels &&
+      state.viewModels[connectorMetaMap] &&
+      state.viewModels[connectorMetaMap][
+        `${viewModelName}${aggregateIds}${aggregateArgs}`
+      ]
+        ? state.viewModels[connectorMetaMap][
+            `${viewModelName}${aggregateIds}${aggregateArgs}`
+          ]
+        : {}
+
+    const { isLoading, isFailure } = connectorMeta
+
+    const data =
+      isLoading === false && isFailure === false
+        ? state.viewModels[viewModelName][aggregateIds][aggregateArgs]
+        : null
+
+    const error =
+      isLoading === false && isFailure === true ? connectorMeta.error : null
 
     return {
       ownProps,
       connectorOptions,
       isLoading,
-      data
+      isFailure,
+      data,
+      error
     }
   }
 

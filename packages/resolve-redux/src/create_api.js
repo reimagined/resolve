@@ -81,14 +81,19 @@ const createApi = ({ origin, rootPath }) => ({
     }
   },
 
-  async sendCommand({ command, aggregateId, aggregateName }) {
+  async sendCommand({ commandType, aggregateId, aggregateName, payload }) {
     const response = await fetch(
       getRootBasedUrl(origin, rootPath, '/api/commands'),
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'same-origin',
-        body: JSON.stringify(command)
+        body: JSON.stringify({
+          type: commandType,
+          aggregateId,
+          aggregateName,
+          payload
+        })
       }
     )
 
