@@ -43,7 +43,7 @@ const disconnectViewModelSaga = function*(sagaArgs, action) {
   while (subscriptionKeys.length > 0) {
     let counter = subscriptionKeys.length
     for (const { aggregateId, eventType } of subscriptionKeys) {
-      yield put(unsubscibeTopicRequest(aggregateId, eventType))
+      yield put(unsubscibeTopicRequest(eventType, aggregateId))
     }
 
     while (counter > 0) {
@@ -53,8 +53,8 @@ const disconnectViewModelSaga = function*(sagaArgs, action) {
             action.type === UNSUBSCRIBE_TOPIC_FAILURE) &&
           subscriptionKeys.find(
             key =>
-              key.aggregateId === action.aggregateId &&
-              key.eventType === action.eventType
+              key.aggregateId === action.topicId &&
+              key.eventType === action.topicName
           )
       )
 
@@ -62,8 +62,8 @@ const disconnectViewModelSaga = function*(sagaArgs, action) {
         subscriptionKeys = subscriptionKeys.filter(
           key =>
             !(
-              key.aggregateId === unsubscribeResultAction.aggregateId &&
-              key.eventType === unsubscribeResultAction.eventType
+              key.aggregateId === unsubscribeResultAction.topicId &&
+              key.eventType === unsubscribeResultAction.topicName
             )
         )
       }

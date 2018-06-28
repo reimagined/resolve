@@ -26,7 +26,8 @@ const eventListenerSaga = function*(
       action =>
         action.type === DISPATCH_MQTT_EVENT &&
         (eventTypes.indexOf(action.event.type) > -1 &&
-          connectAction.aggregateIds.indexOf(action.event.agggregateId))
+          (connectAction.aggregateIds === '*' ||
+            connectAction.aggregateIds.indexOf(action.event.agggregateId)))
     )
 
     eventQueue.push(event)
@@ -44,6 +45,14 @@ const eventListenerSaga = function*(
 
     if (!aggregateVersionByAggregateId) {
       continue
+    }
+
+    if (
+      connectAction.aggregateIds === '*' &&
+      !aggregateVersionByAggregateId.hasOwnProperty(event.aggregateId)
+    ) {
+      aggregateVersionByAggregateId[event.aggregateId] =
+        event.aggregateVersion - 1
     }
 
     let lastAppliedAggregateVersion =
@@ -132,7 +141,7 @@ const connectViewModelSaga = function*(sagaArgs, action) {
   while (subscriptionKeys.length > 0) {
     let counter = subscriptionKeys.length
     for (const { aggregateId, eventType } of subscriptionKeys) {
-      yield put(subscribeTopicRequest(aggregateId, eventType))
+      yield put(subscribeTopicRequest(eventType, aggregateId))
     }
 
     while (counter > 0) {
@@ -142,8 +151,8 @@ const connectViewModelSaga = function*(sagaArgs, action) {
             action.type === SUBSCRIBE_TOPIC_FAILURE) &&
           subscriptionKeys.find(
             key =>
-              key.aggregateId === action.topicName &&
-              key.eventType === action.topicId
+              key.aggregateId === action.topicId &&
+              key.eventType === action.topicName
           )
         )
       })
@@ -152,8 +161,8 @@ const connectViewModelSaga = function*(sagaArgs, action) {
         subscriptionKeys = subscriptionKeys.filter(
           key =>
             !(
-              key.aggregateId === subscribeResultAction.topicName &&
-              key.eventType === subscribeResultAction.topicId
+              key.aggregateId === subscribeResultAction.topicId &&
+              key.eventType === subscribeResultAction.topicName
             )
         )
       }

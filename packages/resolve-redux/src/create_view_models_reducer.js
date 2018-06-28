@@ -161,19 +161,20 @@ export default function createViewModelsReducer(viewModels) {
         const handler = viewModel.projection[action.type]
 
         const aggregateKeys = aggregateHash.get(action.aggregateId)
+        if (aggregateKeys) {
+          for (const aggregateKey of aggregateKeys) {
+            for (const aggregateArgs of Object.keys(
+              state[viewModel.name][aggregateKey]
+            )) {
+              state[viewModel.name][aggregateKey][aggregateArgs] = handler(
+                state[viewModel.name][aggregateKey][aggregateArgs],
+                action
+              )
+            }
 
-        for (const aggregateKey of aggregateKeys) {
-          for (const aggregateArgs of Object.keys(
-            state[viewModel.name][aggregateKey]
-          )) {
-            state[viewModel.name][aggregateKey][aggregateArgs] = handler(
-              state[viewModel.name][aggregateKey][aggregateArgs],
-              action
-            )
-          }
-
-          state[viewModel.name][aggregateKey] = {
-            ...state[viewModel.name][aggregateKey]
+            state[viewModel.name][aggregateKey] = {
+              ...state[viewModel.name][aggregateKey]
+            }
           }
         }
 
