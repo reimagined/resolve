@@ -41,10 +41,8 @@ const subscribeSaga = function*({
     return subscribeAdapter
   })()
 
-  console.log('yield takeEvery(SUBSCRIBE_TOPIC_REQUEST, function*({')
   yield takeEvery(SUBSCRIBE_TOPIC_REQUEST, function*({ topicName, topicId }) {
     const subscribeAdapter = yield subscribeAdapterPromise
-    console.log('SUBSCRIBE_TOPIC_REQUEST', topicName, topicId)
 
     const {
       addedConnections,

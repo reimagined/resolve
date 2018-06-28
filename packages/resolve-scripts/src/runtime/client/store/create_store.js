@@ -29,8 +29,8 @@ export default ({
     combineReducers({
       ...reducers,
       router: routerReducer,
-      viewModels: createViewModelsReducer(),
-      readModels: createReadModelsReducer(),
+      viewModels: createViewModelsReducer(viewModels),
+      readModels: createReadModelsReducer(readModels),
       jwt: createJwtReducer()
     }),
     initialState,

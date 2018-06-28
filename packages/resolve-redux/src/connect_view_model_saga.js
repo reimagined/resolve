@@ -2,6 +2,8 @@ import { take, put, select, fork } from 'redux-saga/effects'
 import { delay } from 'redux-saga'
 import stringify from 'json-stable-stringify'
 
+import { aggregateVersionsMap } from './constants'
+
 import { subscribeTopicRequest, loadViewModelStateRequest } from './actions'
 import {
   CONNECT_VIEWMODEL,
@@ -15,7 +17,7 @@ import {
 
 const eventListenerSaga = function*(
   connectAction,
-  { sagaKey, sagaManager, eventTypes, aggregateIds }
+  { sagaKey, sagaManager, eventTypes }
 ) {
   let eventQueue = []
 
@@ -24,17 +26,21 @@ const eventListenerSaga = function*(
       action =>
         action.type === DISPATCH_MQTT_EVENT &&
         (eventTypes.indexOf(action.event.type) > -1 &&
-          aggregateIds.indexOf(action.event.agggregateId))
+          connectAction.aggregateIds.indexOf(action.event.agggregateId))
     )
 
     eventQueue.push(event)
 
     //
-    const { viewModels: viewModelsState } = yield select()
+    const {
+      viewModels: { [aggregateVersionsMap]: viewModelsAggregateVersionsMap }
+    } = yield select()
 
-    const key = `aggregateVersionByAggregateId${sagaKey})}`
+    const key = `${connectAction.viewModelName}${stringify(
+      connectAction.aggregateIds
+    )}${stringify(connectAction.aggregateArgs)}`
 
-    const aggregateVersionByAggregateId = viewModelsState[key]
+    const aggregateVersionByAggregateId = viewModelsAggregateVersionsMap[key]
 
     if (!aggregateVersionByAggregateId) {
       continue
@@ -82,11 +88,11 @@ const eventListenerSaga = function*(
 
 const connectViewModelSaga = function*(sagaArgs, action) {
   const { viewModels, connectionManager, sagaManager, sagaKey } = sagaArgs
-  const viewModelName = action.viewModelName
-  const aggregateIds = stringify(action.aggregateIds)
-  const aggregateArgs = stringify(action.aggregateArgs)
+  const { viewModelName, aggregateIds, aggregateArgs } = action
 
-  const connectionId = `${aggregateIds}${aggregateArgs}`
+  const connectionId = `${stringify(action.aggregateIds)}${stringify(
+    action.aggregateArgs
+  )}`
 
   const { addedConnections } = connectionManager.addConnection({
     connectionName: viewModelName,
@@ -105,24 +111,21 @@ const connectViewModelSaga = function*(sagaArgs, action) {
 
   // viewModelName + aggregateIds => Array<{ aggregateId, eventType }>
   let subscriptionKeys = eventTypes.reduce((acc, eventType) => {
-    acc.push(
-      ...action.aggregateIds.map(aggregateId => ({ aggregateId, eventType }))
-    )
+    acc.push(...aggregateIds.map(aggregateId => ({ aggregateId, eventType })))
     return acc
   }, [])
-
-  console.log(subscriptionKeys)
 
   yield* sagaManager.start(
     `${CONNECT_VIEWMODEL}${sagaKey}`,
     eventListenerSaga,
     action,
-    sagaArgs
+    {
+      ...sagaArgs,
+      eventTypes
+    }
   )
 
   while (subscriptionKeys.length > 0) {
-    console.log('subscriptionKeys', subscriptionKeys)
-    console.log('subscriptionKeys.length', subscriptionKeys.length)
     let counter = subscriptionKeys.length
     for (const { aggregateId, eventType } of subscriptionKeys) {
       yield put(subscribeTopicRequest(aggregateId, eventType))
@@ -130,7 +133,6 @@ const connectViewModelSaga = function*(sagaArgs, action) {
 
     while (counter > 0) {
       const subscribeResultAction = yield take(action => {
-        console.log(action)
         return (
           (action.type === SUBSCRIBE_TOPIC_SUCCESS ||
             action.type === SUBSCRIBE_TOPIC_FAILURE) &&
@@ -155,8 +157,6 @@ const connectViewModelSaga = function*(sagaArgs, action) {
       counter--
     }
   }
-
-  console.log('loadViewModelStateRequest!!!!!!!!!!!!')
 
   while (true) {
     yield put(

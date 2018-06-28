@@ -1,8 +1,12 @@
+import stringify from 'json-stable-stringify'
+
 import {
   LOAD_VIEWMODEL_STATE_REQUEST,
   LOAD_VIEWMODEL_STATE_SUCCESS,
   LOAD_VIEWMODEL_STATE_FAILURE,
-  DROP_VIEWMODEL_STATE
+  DROP_VIEWMODEL_STATE,
+  CONNECT_VIEWMODEL,
+  DISCONNECT_VIEWMODEL
 } from './action_types'
 
 import { aggregateVersionsMap, connectorMetaMap } from './constants'
@@ -16,15 +20,14 @@ const dropKey = (state, key) => {
   return nextState
 }
 
-export default function createViewModelsReducer() {
-  const context = {
-    handlers: {}
-  }
+export default function createViewModelsReducer(viewModels) {
+  const handlers = {}
 
-  context.handlers[LOAD_VIEWMODEL_STATE_REQUEST] = (
-    state,
-    { viewModelName, aggregateIds, aggregateArgs }
-  ) => {
+  handlers[LOAD_VIEWMODEL_STATE_REQUEST] = (state, action) => {
+    const viewModelName = action.viewModelName
+    const aggregateIds = stringify(action.aggregateIds)
+    const aggregateArgs = stringify(action.aggregateArgs)
+
     return {
       ...state,
       [connectorMetaMap]: {
@@ -37,16 +40,13 @@ export default function createViewModelsReducer() {
     }
   }
 
-  context.handlers[LOAD_VIEWMODEL_STATE_SUCCESS] = (
-    state,
-    {
-      viewModelName,
-      aggregateIds,
-      aggregateArgs,
-      state: viewModelState,
-      aggregateVersionsMap: viewModelAggregateVersionsMap
-    }
-  ) => {
+  handlers[LOAD_VIEWMODEL_STATE_SUCCESS] = (state, action) => {
+    const viewModelName = action.viewModelName
+    const aggregateIds = stringify(action.aggregateIds)
+    const aggregateArgs = stringify(action.aggregateArgs)
+    const viewModelState = action.state
+    const viewModelAggregateVersionsMap = action.aggregateVersionsMap
+
     const key = `${viewModelName}${aggregateIds}${aggregateArgs}`
 
     return {
@@ -72,10 +72,12 @@ export default function createViewModelsReducer() {
     }
   }
 
-  context.handlers[LOAD_VIEWMODEL_STATE_FAILURE] = (
-    state,
-    { viewModelName, aggregateIds, aggregateArgs, error }
-  ) => {
+  handlers[LOAD_VIEWMODEL_STATE_FAILURE] = (state, action) => {
+    const viewModelName = action.viewModelName
+    const aggregateIds = stringify(action.aggregateIds)
+    const aggregateArgs = stringify(action.aggregateArgs)
+    const error = action.error
+
     const key = `${viewModelName}${aggregateIds}${aggregateArgs}`
 
     return {
@@ -91,10 +93,11 @@ export default function createViewModelsReducer() {
     }
   }
 
-  context.handlers[DROP_VIEWMODEL_STATE] = (
-    state,
-    { viewModelName, aggregateIds, aggregateArgs }
-  ) => {
+  handlers[DROP_VIEWMODEL_STATE] = (state, action) => {
+    const viewModelName = action.viewModelName
+    const aggregateIds = stringify(action.aggregateIds)
+    const aggregateArgs = stringify(action.aggregateArgs)
+
     const key = `${viewModelName}${aggregateIds}${aggregateArgs}`
 
     return {
@@ -111,13 +114,124 @@ export default function createViewModelsReducer() {
     }
   }
 
+  const aggregateHash = new Map()
+
+  handlers[CONNECT_VIEWMODEL] = (state, action) => {
+    if (action.aggregateIds !== '*') {
+      const aggregatesKey = stringify(action.aggregateIds)
+      for (const aggregateId of action.aggregateIds) {
+        if (!aggregateHash.has(aggregateId)) {
+          aggregateHash.set(aggregateId, [])
+        }
+        aggregateHash.get(aggregateId).push(aggregatesKey)
+      }
+    }
+    return state
+  }
+
+  handlers[DISCONNECT_VIEWMODEL] = (state, action) => {
+    if (action.aggregateIds !== '*') {
+      const aggregatesKey = stringify(action.aggregateIds)
+      for (const aggregateId of action.aggregateIds) {
+        const aggregateKeys = aggregateHash.get(aggregateId)
+        const idx = aggregateKeys.indexOf(aggregatesKey)
+        if (idx >= 0) {
+          aggregateKeys.splice(idx, 1)
+        }
+        if (aggregateKeys.length === 0) {
+          aggregateHash.delete(aggregateId)
+        }
+      }
+    }
+    return state
+  }
+
+  const uniqueListeners = new Map()
+
+  for (const viewModel of viewModels) {
+    for (const eventType of Object.keys(viewModel.projection)) {
+      if (!uniqueListeners.has(eventType)) {
+        uniqueListeners.set(eventType, [])
+      }
+      uniqueListeners.get(eventType).push(viewModel)
+    }
+  }
+
+  for (const [eventType, viewModels] of uniqueListeners.entries()) {
+    handlers[eventType] = (state, action) => {
+      console.log('state')
+      console.log({ ...state })
+
+      for (const viewModel of viewModels) {
+        const handler = viewModel.projection[action.type]
+
+        const aggregateKeys = aggregateHash.get(action.aggregateId)
+
+        for (const aggregateKey of aggregateKeys) {
+          for (const aggregateArgs of Object.keys(
+            state[viewModel.name][aggregateKey]
+          )) {
+            state[viewModel.name][aggregateKey][aggregateArgs] = handler(
+              state[viewModel.name][aggregateKey][aggregateArgs],
+              action
+            )
+          }
+
+          state[viewModel.name][aggregateKey] = {
+            ...state[viewModel.name][aggregateKey]
+          }
+        }
+
+        if (state[viewModel.name]['*']) {
+          for (const aggregateArgs of Object.keys(state[viewModel.name]['*'])) {
+            state[viewModel.name]['*'][aggregateArgs] = handler(
+              state[viewModel.name]['*'][aggregateArgs],
+              action
+            )
+          }
+
+          state[viewModel.name]['*'] = { ...state[viewModel.name]['*'] }
+        }
+
+        state[viewModel.name] = { ...state[viewModel.name] }
+      }
+
+      console.log('next state')
+      console.log({ ...state })
+      return { ...state }
+    }
+  }
+
+  // for(const [] of uniqueListeners) {
+  //   for(const eventType of Object.keys(uniqueListener)) {
+  //     uniqueListener
+  //   }
+
+  // for(const eventType of Object.keys(viewModel.projection)) {
+  //   const mmmmap = new Map()
+  //
+  //   handlers[eventType] = (state, action) => {
+  //     const viewModelName = action.viewModelName
+  //     const aggregateIds = stringify(action.aggregateIds)
+  //     const aggregateArgs = stringify(action.aggregateArgs)
+  //
+  //     let nextState = state
+  //
+  //     for(const aggregateId of
+  //
+  //     //state[viewModelName][aggregateIds][aggregateArgs]
+  //
+  //   }
+  // }
+  // }
+
   let state = {
     [connectorMetaMap]: {},
     [aggregateVersionsMap]: {}
   }
 
   return (_, action) => {
-    const eventHandler = context.handlers[action.type]
+    const eventHandler = handlers[action.type]
     if (eventHandler) {
       state = eventHandler(state, action)
     }

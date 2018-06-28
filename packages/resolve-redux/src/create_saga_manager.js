@@ -5,8 +5,6 @@ const createSagaManager = () => {
 
   return {
     *start(key, saga, ...sagaArgs) {
-      console.log(key, saga, ...sagaArgs)
-
       if (!Array.isArray(sagas[key])) {
         sagas[key] = []
       }

@@ -6,8 +6,6 @@ const loadViewModelStateSaga = function*(
   { api, viewModels },
   { viewModelName, aggregateIds, aggregateArgs }
 ) {
-  console.log({ viewModelName, aggregateIds, aggregateArgs })
-  console.log({ api, viewModels })
   try {
     // TODO use api
     const {
@@ -18,7 +16,6 @@ const loadViewModelStateSaga = function*(
       aggregateIds,
       aggregateArgs
     })
-    console.log('TAKE')
 
     const { deserializeState } = viewModels.find(
       ({ name }) => name === viewModelName

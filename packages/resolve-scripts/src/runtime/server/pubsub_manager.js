@@ -39,7 +39,6 @@ const pubsubManager = {
   },
 
   unsubscribeClient(client) {
-    let rc = 0
     for (const topicName of map.keys()) {
       for (const topicId of map.get(topicName).keys()) {
         const clients = map.get(topicName).get(topicId)
@@ -47,12 +46,9 @@ const pubsubManager = {
         const idx = clients.findIndex(cl => client === cl)
         if (idx >= 0) {
           clients.splice(idx, 1)
-          rc++
         }
       }
     }
-
-    console.log('REMOVED CLIENTS: ', rc)
   },
 
   dispatch({ topicName, topicId, event }) {

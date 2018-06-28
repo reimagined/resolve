@@ -2,8 +2,6 @@ import { getRootBasedUrl } from './utils'
 
 const createApi = ({ origin, rootPath }) => ({
   async loadViewModelState({ viewModelName, aggregateIds, aggregateArgs }) {
-    console.log('loadViewModelState request')
-
     const response = await fetch(
       getRootBasedUrl(origin, rootPath, '/api/query'),
       {
@@ -12,24 +10,19 @@ const createApi = ({ origin, rootPath }) => ({
         credentials: 'same-origin',
         body: JSON.stringify({
           viewModelName,
-          aggregateIds: JSON.parse(aggregateIds),
-          aggregateArgs: JSON.parse(aggregateArgs)
+          aggregateIds,
+          aggregateArgs
         })
       }
     )
 
     if (!response.ok) {
-      console.log('loadViewModelState ne ok')
       throw new Error(response.text())
     }
 
     const result = await response.json()
 
-    console.log('loadViewModelState json')
-
     return result
-
-    //return await response.json()
   },
 
   async loadReadModelState({

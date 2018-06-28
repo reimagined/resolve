@@ -10,10 +10,6 @@ const createServerHandler = (pubsubManager, callback, appId, qos) => ws => {
 
   const publisher = (topicName, topicId, event) =>
     new Promise((resolve, reject) => {
-      console.log(topicName, topicId)
-      console.log(event)
-      console.log(typeof event)
-
       client.publish(
         {
           topic: getMqttTopic(appId, { topicName, topicId }),

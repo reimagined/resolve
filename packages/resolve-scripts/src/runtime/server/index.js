@@ -41,7 +41,7 @@ const subscribeAdapter = createSubscribeAdapter({
   pubsubManager,
   server,
   getRootBasedUrl,
-  qos: 2,
+  qos: 1,
   appId: '1234',
   ...serverSubscribeAdapter.options
 })
