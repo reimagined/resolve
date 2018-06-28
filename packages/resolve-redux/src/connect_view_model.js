@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as actions from './actions'
 import { connectorMetaMap } from './constants'
-import stringify from 'json-stable-stringify'
+import getHash from './get_hash'
 
 const connectViewModel = mapStateToOptions => Component => {
   class ViewModelContainer extends React.PureComponent {
@@ -52,8 +52,8 @@ const connectViewModel = mapStateToOptions => Component => {
     }
 
     const viewModelName = connectorOptions.viewModelName
-    const aggregateIds = stringify(connectorOptions.aggregateIds)
-    const aggregateArgs = stringify(connectorOptions.aggregateArgs)
+    const aggregateIds = getHash(connectorOptions.aggregateIds)
+    const aggregateArgs = getHash(connectorOptions.aggregateArgs)
 
     const connectorMeta =
       state.viewModels &&

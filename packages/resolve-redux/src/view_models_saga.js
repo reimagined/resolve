@@ -1,5 +1,5 @@
 import { take } from 'redux-saga/effects'
-import stringify from 'json-stable-stringify'
+import getHash from './get_hash'
 
 import createConnectionManager from './create_connection_manager'
 import createSagaManager from './create_saga_manager'
@@ -18,7 +18,7 @@ const viewModelsSaga = function*(sagaArgs) {
     switch (action.type) {
       case CONNECT_VIEWMODEL: {
         const { viewModelName, aggregateIds, aggregateArgs } = action
-        const sagaKey = stringify({
+        const sagaKey = getHash({
           viewModelName,
           aggregateIds,
           aggregateArgs
@@ -38,7 +38,7 @@ const viewModelsSaga = function*(sagaArgs) {
       }
       case DISCONNECT_VIEWMODEL: {
         const { viewModelName, aggregateIds, aggregateArgs } = action
-        const sagaKey = stringify({
+        const sagaKey = getHash({
           viewModelName,
           aggregateIds,
           aggregateArgs

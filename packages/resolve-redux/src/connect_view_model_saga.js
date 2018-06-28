@@ -1,6 +1,6 @@
 import { take, put, select, fork } from 'redux-saga/effects'
 import { delay } from 'redux-saga'
-import stringify from 'json-stable-stringify'
+import getHash from './get_hash'
 
 import { aggregateVersionsMap } from './constants'
 
@@ -37,9 +37,9 @@ const eventListenerSaga = function*(
       viewModels: { [aggregateVersionsMap]: viewModelsAggregateVersionsMap }
     } = yield select()
 
-    const key = `${connectAction.viewModelName}${stringify(
+    const key = `${connectAction.viewModelName}${getHash(
       connectAction.aggregateIds
-    )}${stringify(connectAction.aggregateArgs)}`
+    )}${getHash(connectAction.aggregateArgs)}`
 
     const aggregateVersionByAggregateId = viewModelsAggregateVersionsMap[key]
 
@@ -99,7 +99,7 @@ const connectViewModelSaga = function*(sagaArgs, action) {
   const { viewModels, connectionManager, sagaManager, sagaKey } = sagaArgs
   const { viewModelName, aggregateIds, aggregateArgs } = action
 
-  const connectionId = `${stringify(action.aggregateIds)}${stringify(
+  const connectionId = `${getHash(action.aggregateIds)}${getHash(
     action.aggregateArgs
   )}`
 

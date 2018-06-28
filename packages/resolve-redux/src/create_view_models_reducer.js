@@ -1,4 +1,4 @@
-import stringify from 'json-stable-stringify'
+import getHash from './get_hash'
 
 import {
   LOAD_VIEWMODEL_STATE_REQUEST,
@@ -23,8 +23,8 @@ export default function createViewModelsReducer(viewModels) {
 
   handlers[LOAD_VIEWMODEL_STATE_REQUEST] = (state, action) => {
     const viewModelName = action.viewModelName
-    const aggregateIds = stringify(action.aggregateIds)
-    const aggregateArgs = stringify(action.aggregateArgs)
+    const aggregateIds = getHash(action.aggregateIds)
+    const aggregateArgs = getHash(action.aggregateArgs)
 
     return {
       ...state,
@@ -40,8 +40,8 @@ export default function createViewModelsReducer(viewModels) {
 
   handlers[LOAD_VIEWMODEL_STATE_SUCCESS] = (state, action) => {
     const viewModelName = action.viewModelName
-    const aggregateIds = stringify(action.aggregateIds)
-    const aggregateArgs = stringify(action.aggregateArgs)
+    const aggregateIds = getHash(action.aggregateIds)
+    const aggregateArgs = getHash(action.aggregateArgs)
     const viewModelState = action.state
     const viewModelAggregateVersionsMap = action.aggregateVersionsMap
 
@@ -72,8 +72,8 @@ export default function createViewModelsReducer(viewModels) {
 
   handlers[LOAD_VIEWMODEL_STATE_FAILURE] = (state, action) => {
     const viewModelName = action.viewModelName
-    const aggregateIds = stringify(action.aggregateIds)
-    const aggregateArgs = stringify(action.aggregateArgs)
+    const aggregateIds = getHash(action.aggregateIds)
+    const aggregateArgs = getHash(action.aggregateArgs)
     const error = action.error
 
     const key = `${viewModelName}${aggregateIds}${aggregateArgs}`
@@ -93,8 +93,8 @@ export default function createViewModelsReducer(viewModels) {
 
   handlers[DROP_VIEWMODEL_STATE] = (state, action) => {
     const viewModelName = action.viewModelName
-    const aggregateIds = stringify(action.aggregateIds)
-    const aggregateArgs = stringify(action.aggregateArgs)
+    const aggregateIds = getHash(action.aggregateIds)
+    const aggregateArgs = getHash(action.aggregateArgs)
 
     const key = `${viewModelName}${aggregateIds}${aggregateArgs}`
 
@@ -116,7 +116,7 @@ export default function createViewModelsReducer(viewModels) {
 
   handlers[CONNECT_VIEWMODEL] = (state, action) => {
     if (action.aggregateIds !== '*') {
-      const aggregatesKey = stringify(action.aggregateIds)
+      const aggregatesKey = getHash(action.aggregateIds)
       for (const aggregateId of action.aggregateIds) {
         if (!aggregateHash.has(aggregateId)) {
           aggregateHash.set(aggregateId, [])
@@ -129,7 +129,7 @@ export default function createViewModelsReducer(viewModels) {
 
   handlers[DISCONNECT_VIEWMODEL] = (state, action) => {
     if (action.aggregateIds !== '*') {
-      const aggregatesKey = stringify(action.aggregateIds)
+      const aggregatesKey = getHash(action.aggregateIds)
       for (const aggregateId of action.aggregateIds) {
         const aggregateKeys = aggregateHash.get(aggregateId)
         const idx = aggregateKeys.indexOf(aggregatesKey)
@@ -178,7 +178,7 @@ export default function createViewModelsReducer(viewModels) {
           }
         }
 
-        if (state[viewModel.name]['*']) {
+        if (state[viewModel.name] && state[viewModel.name]['*']) {
           for (const aggregateArgs of Object.keys(state[viewModel.name]['*'])) {
             state[viewModel.name]['*'][aggregateArgs] = handler(
               state[viewModel.name]['*'][aggregateArgs],

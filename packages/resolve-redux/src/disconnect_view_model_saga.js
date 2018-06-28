@@ -1,5 +1,5 @@
-import { take, put, cancel } from 'redux-saga/effects'
-import stringify from 'json-stable-stringify'
+import { take, put } from 'redux-saga/effects'
+import getHash from './get_hash'
 
 import { unsubscibeTopicRequest, dropViewModelState } from './actions'
 import {
@@ -13,7 +13,7 @@ const disconnectViewModelSaga = function*(sagaArgs, action) {
 
   const { viewModelName, aggregateIds, aggregateArgs } = action
 
-  const connectionId = `${stringify(aggregateIds)}${stringify(aggregateArgs)}`
+  const connectionId = `${getHash(aggregateIds)}${getHash(aggregateArgs)}`
 
   const { removedConnections } = connectionManager.removeConnection({
     connectionName: viewModelName,
