@@ -25,9 +25,18 @@ const disconnectViewModelSaga = function*(sagaArgs, action) {
 
   yield* sagaManager.stop(`${CONNECT_VIEWMODEL}${sagaKey}`)
 
-  let subscriptionKeys = Object.keys(viewModels[viewModelName].projection).map(
-    eventType => aggregateIds.map(aggregateId => ({ aggregateId, eventType }))
-  )
+  const viewModel = viewModels.find(({ name }) => name === viewModelName)
+
+  const eventTypes = Object.keys(viewModel.projection)
+
+  let subscriptionKeys = eventTypes.reduce((acc, eventType) => {
+    if (Array.isArray(aggregateIds)) {
+      acc.push(...aggregateIds.map(aggregateId => ({ aggregateId, eventType })))
+    } else if (aggregateIds === '*') {
+      acc.push({ aggregateId: '*', eventType })
+    }
+    return acc
+  }, [])
 
   yield put(dropViewModelState(viewModelName, aggregateIds, aggregateArgs))
 

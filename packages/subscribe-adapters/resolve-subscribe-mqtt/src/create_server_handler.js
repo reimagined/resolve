@@ -10,6 +10,7 @@ const createServerHandler = (pubsubManager, callback, appId, qos) => ws => {
 
   const publisher = (topicName, topicId, event) =>
     new Promise((resolve, reject) => {
+      console.log({ topicName, topicId, event })
       client.publish(
         {
           topic: getMqttTopic(appId, { topicName, topicId }),
@@ -30,6 +31,7 @@ const createServerHandler = (pubsubManager, callback, appId, qos) => ws => {
   client.on('subscribe', packet => {
     for (const subscription of packet.subscriptions) {
       const [appId, topicName, topicId] = subscription.topic.split('/')
+      console.log(' topicName, topicId', topicName, topicId)
       pubsubManager.subscribe({ client: publisher, topicName, topicId })
     }
     client.suback({ granted: [packet.qos], messageId: packet.messageId })

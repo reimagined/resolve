@@ -47,7 +47,6 @@ const subscribeAdapter = createSubscribeAdapter({
 })
 
 subscribeAdapter.init().then(() => {
-  console.log('subscribeAdapter.init()')
   eventStore.subscribeOnBus(event => {
     console.log('event', event)
     pubsubManager.dispatch({

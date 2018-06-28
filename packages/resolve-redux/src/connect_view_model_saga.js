@@ -16,8 +16,8 @@ import {
 } from './action_types'
 
 const eventListenerSaga = function*(
-  connectAction,
-  { sagaKey, sagaManager, eventTypes }
+  { sagaKey, sagaManager, eventTypes },
+  connectAction
 ) {
   let eventQueue = []
 
@@ -111,18 +111,22 @@ const connectViewModelSaga = function*(sagaArgs, action) {
 
   // viewModelName + aggregateIds => Array<{ aggregateId, eventType }>
   let subscriptionKeys = eventTypes.reduce((acc, eventType) => {
-    acc.push(...aggregateIds.map(aggregateId => ({ aggregateId, eventType })))
+    if (Array.isArray(aggregateIds)) {
+      acc.push(...aggregateIds.map(aggregateId => ({ aggregateId, eventType })))
+    } else if (aggregateIds === '*') {
+      acc.push({ aggregateId: '*', eventType })
+    }
     return acc
   }, [])
 
   yield* sagaManager.start(
     `${CONNECT_VIEWMODEL}${sagaKey}`,
     eventListenerSaga,
-    action,
     {
       ...sagaArgs,
       eventTypes
-    }
+    },
+    action
   )
 
   while (subscriptionKeys.length > 0) {

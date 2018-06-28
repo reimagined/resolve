@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { connectViewModel } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
 import { NavLink } from 'react-router-dom'
@@ -14,6 +15,14 @@ import {
   FormControl
 } from 'react-bootstrap'
 import Header from '../components/Header.js'
+
+// TODO remove
+import commands from '../../common/aggregates/todo.commands'
+import { createActions } from 'resolve-redux'
+const aggregateActions = createActions({
+  name: 'Todo',
+  commands
+})
 
 const viewModelName = 'Todos'
 
@@ -106,17 +115,28 @@ export const Todo = ({
   )
 }
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToOptions = (state, ownProps) => {
   const aggregateId = ownProps.match.params.id
 
   return {
     viewModelName,
-    aggregateId,
-    todos: state.viewModels[viewModelName][aggregateId]
+    aggregateIds: [aggregateId]
   }
 }
 
-const mapDispatchToProps = (dispatch, props) =>
-  bindActionCreators(props.aggregateActions, dispatch)
+const mapStateToProps = (state, ownProps) => {
+  return {
+    aggregateId: ownProps.match.params.id,
+    todos: ownProps.data
+  }
+}
 
-export default connectViewModel(mapStateToProps, mapDispatchToProps)(Todo)
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(aggregateActions, dispatch)
+
+export default connectViewModel(mapStateToOptions)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Todo)
+)

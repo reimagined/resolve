@@ -58,15 +58,6 @@ const createClientAdapter = ({ url, appId, onEvent }) => {
         throw new Error(subscribeAdapterNotInitialized)
       }
 
-      // return await new Promise((resolve, reject) => {
-      //   client.subscribe(getMqttTopic(appId, topics), { qos }, err => {
-      //     if (err) {
-      //       return reject(err)
-      //     }
-      //     resolve()
-      //   })
-      // })
-
       return await Promise.all(
         topics.map(
           topic =>
@@ -85,15 +76,6 @@ const createClientAdapter = ({ url, appId, onEvent }) => {
       if (!isInitialized) {
         throw new Error(subscribeAdapterNotInitialized)
       }
-
-      // return await new Promise((resolve, reject) => {
-      //   client.unsubscribe(getMqttTopic(appId, topics), { qos }, err => {
-      //     if (err) {
-      //       return reject(err)
-      //     }
-      //     resolve()
-      //   })
-      // })
 
       return await Promise.all(
         topics.map(

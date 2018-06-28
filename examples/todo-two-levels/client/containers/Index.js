@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { connectViewModel } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
 import { NavLink } from 'react-router-dom'
@@ -13,6 +14,14 @@ import {
   FormControl
 } from 'react-bootstrap'
 import Header from '../components/Header.js'
+
+// TODO remove
+import commands from '../../common/aggregates/todo.commands'
+import { createActions } from 'resolve-redux'
+const aggregateActions = createActions({
+  name: 'Todo',
+  commands
+})
 
 const viewModelName = 'Lists'
 
@@ -82,17 +91,25 @@ export const Index = ({ lists, createList, removeList }) => {
   )
 }
 
-const mapStateToProps = state => {
-  const aggregateId = '*'
-
+const mapStateToOptions = () => {
   return {
     viewModelName,
-    aggregateId,
-    lists: state.viewModels[viewModelName][aggregateId]
+    aggregateIds: '*'
   }
 }
 
-const mapDispatchToProps = (dispatch, props) =>
-  bindActionCreators(props.aggregateActions, dispatch)
+const mapStateToProps = (state, { data }) => {
+  return {
+    lists: data
+  }
+}
 
-export default connectViewModel(mapStateToProps, mapDispatchToProps)(Index)
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(aggregateActions, dispatch)
+
+export default connectViewModel(mapStateToOptions)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Index)
+)

@@ -11,8 +11,6 @@ import {
 
 import { aggregateVersionsMap, connectorMetaMap } from './constants'
 
-import { getKey } from './utils'
-
 const dropKey = (state, key) => {
   const nextState = { ...state }
   delete nextState[key]
@@ -159,9 +157,6 @@ export default function createViewModelsReducer(viewModels) {
 
   for (const [eventType, viewModels] of uniqueListeners.entries()) {
     handlers[eventType] = (state, action) => {
-      console.log('state')
-      console.log({ ...state })
-
       for (const viewModel of viewModels) {
         const handler = viewModel.projection[action.type]
 
@@ -196,34 +191,9 @@ export default function createViewModelsReducer(viewModels) {
         state[viewModel.name] = { ...state[viewModel.name] }
       }
 
-      console.log('next state')
-      console.log({ ...state })
       return { ...state }
     }
   }
-
-  // for(const [] of uniqueListeners) {
-  //   for(const eventType of Object.keys(uniqueListener)) {
-  //     uniqueListener
-  //   }
-
-  // for(const eventType of Object.keys(viewModel.projection)) {
-  //   const mmmmap = new Map()
-  //
-  //   handlers[eventType] = (state, action) => {
-  //     const viewModelName = action.viewModelName
-  //     const aggregateIds = stringify(action.aggregateIds)
-  //     const aggregateArgs = stringify(action.aggregateArgs)
-  //
-  //     let nextState = state
-  //
-  //     for(const aggregateId of
-  //
-  //     //state[viewModelName][aggregateIds][aggregateArgs]
-  //
-  //   }
-  // }
-  // }
 
   let state = {
     [connectorMetaMap]: {},
