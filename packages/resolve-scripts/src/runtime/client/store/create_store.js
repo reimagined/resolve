@@ -21,7 +21,8 @@ export default ({
   history,
   origin,
   rootPath,
-  isClient = true
+  sessionId,
+  isClient
 }) => {
   const resolveMiddleware = createResolveMiddleware()
 
@@ -51,6 +52,7 @@ export default ({
     origin,
     rootPath,
     subscribeAdapter,
+    sessionId,
     isClient
   })
 

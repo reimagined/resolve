@@ -1,10 +1,8 @@
 import path from 'path'
 import { Server } from 'http'
 import express from 'express'
-//import createSocketServer from 'socket.io'
 import cookieParser from 'cookie-parser'
 import bodyParser from 'body-parser'
-//import { Server as WebSocketServer } from 'ws'
 
 import getRootBasedUrl from './utils/get_root_based_url'
 import serverSideRendering from './server_side_rendering'
@@ -12,8 +10,6 @@ import startServer from './start_server'
 import commandHandler from './command_handler'
 import statusHandler from './status_handler'
 import queryHandler from './query_handler'
-// import socketHandler from './socket_handler'
-// import mqttHandler from './mqtt_handler';
 import sagaRunner from './saga_runner'
 import assignAuthRoutes from './assign_auth_routes'
 import eventStore from './event_store'
@@ -27,13 +23,6 @@ import serverSubscribeAdapter from '$resolve.subscribeAdapter'
 const app = express()
 const server = new Server(app)
 
-// const socketIOServer = createSocketServer(server, {
-//   path: getRootBasedUrl('/socket/'),
-//   serveClient: false
-// })
-//
-// socketIOServer.on('connection', socketHandler)
-
 const createSubscribeAdapter = serverSubscribeAdapter.module
 
 // TODO !!!!
@@ -42,13 +31,12 @@ const subscribeAdapter = createSubscribeAdapter({
   server,
   getRootBasedUrl,
   qos: 1,
-  appId: '1234',
+  appId: 'resolve',
   ...serverSubscribeAdapter.options
 })
 
 subscribeAdapter.init().then(() => {
   eventStore.subscribeOnBus(event => {
-    console.log('event', event)
     pubsubManager.dispatch({
       topicName: event.type,
       topicId: event.aggregateId,

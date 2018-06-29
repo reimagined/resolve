@@ -29,12 +29,12 @@ export const readModelSubscribeHandler = (req, res) => {
         diff => {
           try {
             pubsubManager.dispatch({
-              topicName: 'READ_MODEL_DIFFS',
+              topicName: 'RESOLVE_READMODEL_DIFF_TOPIC',
               topicId: queryId,
               message: {
                 type: '@@resolve/READMODEL_SUBSCRIPTION_DIFF',
                 queryId,
-                queryDiffVersion: queryDiffVersion++,
+                diffVersion: queryDiffVersion++,
                 diff
               }
             })

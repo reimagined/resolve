@@ -90,7 +90,7 @@ export default function createReadModelsReducer(readModels) {
     const readModelName = action.readModelName
     const resolverName = getHash(action.resolverName)
     const resolverArgs = getHash(action.resolverArgs)
-    const readModelState = action.state
+    const readModelState = action.result
 
     const key = `${readModelName}${resolverName}${resolverArgs}`
 

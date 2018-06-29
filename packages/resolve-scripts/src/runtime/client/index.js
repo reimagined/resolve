@@ -3,6 +3,7 @@ import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import createHistory from 'history/createBrowserHistory'
 import { ConnectedRouter } from 'react-router-redux'
+import uuid from 'uuid/v4'
 
 import Routes from './components/Routes'
 import createStore from './store/create_store'
@@ -20,11 +21,17 @@ const history = createHistory({
   basename: rootPath
 })
 
+const sessionId = uuid()
+
+const isClient = true
+
 const store = createStore({
   initialState,
   history,
   origin,
-  rootPath
+  rootPath,
+  sessionId,
+  isClient
 })
 
 render(

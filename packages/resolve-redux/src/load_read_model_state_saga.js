@@ -7,7 +7,11 @@ const loadReadModelStateSaga = function*(
   { readModelName, resolverName, resolverArgs, isReactive, queryId }
 ) {
   try {
-    const state = yield api.loadReadModelState({
+    const {
+      timeToLive,
+      queryId,
+      result
+    } = yield api.loadReadModelState({
       readModelName,
       resolverName,
       resolverArgs,
@@ -22,7 +26,8 @@ const loadReadModelStateSaga = function*(
         resolverArgs,
         isReactive,
         queryId,
-        state
+        result,
+        timeToLive
       )
     )
   } catch (error) {

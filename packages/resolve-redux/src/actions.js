@@ -184,30 +184,26 @@ export const connectReadModel = (
   readModelName,
   resolverName,
   resolverArgs,
-  isReactive,
-  connectorId
+  isReactive
 ) => ({
   type: CONNECT_READMODEL,
   readModelName,
   resolverName,
   resolverArgs,
-  isReactive,
-  connectorId
+  isReactive
 })
 
 export const disconnectReadModel = (
   readModelName,
   resolverName,
   resolverArgs,
-  isReactive,
-  connectorId
+  isReactive
 ) => ({
   type: DISCONNECT_READMODEL,
   readModelName,
   resolverName,
   resolverArgs,
-  isReactive,
-  connectorId
+  isReactive
 })
 
 export const loadReadModelStateRequest = (
@@ -231,7 +227,8 @@ export const loadReadModelStateSuccess = (
   resolverArgs,
   isReactive,
   queryId,
-  state
+  result,
+  timeToLive
 ) => ({
   type: LOAD_READMODEL_STATE_SUCCESS,
   readModelName,
@@ -239,7 +236,8 @@ export const loadReadModelStateSuccess = (
   resolverArgs,
   isReactive,
   queryId,
-  state
+  result,
+  timeToLive
 })
 
 export const loadReadModelStateFailure = (

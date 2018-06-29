@@ -1,5 +1,4 @@
 import createSagaMiddleware from 'redux-saga'
-import uuid from 'uuid/v4'
 
 import rootSaga from './root_saga'
 import emptySaga from './empty_saga'
@@ -17,7 +16,6 @@ const createResolveMiddleware = () => {
     sagaMiddlewareRun(sagaArgs.isClient ? rootSaga : emptySaga, {
       ...sagaArgs,
       queryIdMap,
-      sessionId: uuid(),
       api
     })
   }

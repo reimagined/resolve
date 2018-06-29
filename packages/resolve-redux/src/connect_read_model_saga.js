@@ -1,4 +1,5 @@
-import { take, put } from 'redux-saga/effects'
+import { take, put, fork } from 'redux-saga/effects'
+import { delay } from 'redux-saga'
 import hash from 'uuid'
 
 import getHash from './get_hash'
@@ -95,6 +96,13 @@ const connectReadModelSaga = function*(sagaArgs, action) {
     )
 
     if (loadReadModelStateResultAction.type === LOAD_READMODEL_STATE_SUCCESS) {
+      yield fork(function*() {
+        yield delay(action.timeToLive)
+        yield* sagaManager.stop(`${CONNECT_READMODEL}${sagaKey}`)
+        yield put(action)
+      })
+      
+ 
       break
     }
   }

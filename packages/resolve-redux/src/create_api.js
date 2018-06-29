@@ -98,7 +98,7 @@ const createApi = ({ origin, rootPath }) => ({
   async getSubscribeAdapterOptions() {
     // TODO
     return {
-      appId: '1234',
+      appId: 'resolve',
       url: 'ws://localhost:3000/mqtt'
     }
   }
