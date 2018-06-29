@@ -1,6 +1,6 @@
 import { take, put } from 'redux-saga/effects'
-import getHash from './get_hash'
 
+import getHash from './get_hash'
 import { unsubscibeTopicRequest, dropViewModelState } from './actions'
 import {
   UNSUBSCRIBE_TOPIC_SUCCESS,

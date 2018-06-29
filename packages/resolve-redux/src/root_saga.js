@@ -21,10 +21,3 @@ function* rootSaga(sagaArgs) {
 }
 
 export default rootSaga
-
-// viewModels,
-// readModels,
-// aggregates,
-// subscribeAdapter,
-// origin,
-// rootPath

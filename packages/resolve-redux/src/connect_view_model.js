@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+
 import * as actions from './actions'
 import { connectorMetaMap } from './constants'
 import getHash from './get_hash'

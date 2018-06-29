@@ -1,4 +1,4 @@
-import { getRootBasedUrl } from './utils'
+import getRootBasedUrl from './get_root_based_url'
 
 const createApi = ({ origin, rootPath }) => ({
   async loadViewModelState({ viewModelName, aggregateIds, aggregateArgs }) {

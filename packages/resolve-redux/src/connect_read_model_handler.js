@@ -1,5 +1,7 @@
-import { delay, getRootBasedUrl } from './utils'
 import actions from './actions'
+import getRootBasedUrl from './get_root_based_url'
+
+const delay = () => Promise.resolve()
 
 const connectReadModelHandler = (
   { origin, rootPath, store, readModelSubscriptions, adapter, orderedFetch },

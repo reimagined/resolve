@@ -7,23 +7,25 @@ import createJwtReducer from './create_jwt_reducer'
 import createActions from './create_actions'
 import connectReadModel from './connect_read_model'
 import connectViewModel from './connect_view_model'
-import * as utils from './utils'
-import loadInitialState from './load_initial_state'
-import isLoadingViewModel from './is_loading_view_model'
 import createApi from './create_api'
+import createConnectionManager from './create_connection_manager'
+import createSagaManager from './create_saga_manager'
+import getHash from './get_hash'
+import getRootBasedUrl from './get_root_based_url'
 
 export {
   actions,
   actionTypes,
-  createResolveMiddleware,
   createViewModelsReducer,
   createReadModelsReducer,
   createJwtReducer,
+  createResolveMiddleware,
   createActions,
   connectViewModel,
   connectReadModel,
-  utils,
-  loadInitialState,
-  isLoadingViewModel,
-  createApi
+  createApi,
+  createConnectionManager,
+  createSagaManager,
+  getHash,
+  getRootBasedUrl
 }

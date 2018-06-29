@@ -11,7 +11,7 @@ import {
 
 import { aggregateVersionsMap, connectorMetaMap } from './constants'
 
-const dropKey = (state, key) => {
+export const dropKey = (state, key) => {
   const nextState = { ...state }
   delete nextState[key]
 
