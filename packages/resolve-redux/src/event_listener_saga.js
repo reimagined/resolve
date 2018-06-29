@@ -3,7 +3,7 @@ import { delay } from 'redux-saga'
 
 import getHash from './get_hash'
 import { aggregateVersionsMap } from './constants'
-import { CONNECT_VIEWMODEL, DISPATCH_MQTT_EVENT } from './action_types'
+import { CONNECT_VIEWMODEL, DISPATCH_MQTT_MESSAGE } from './action_types'
 
 const eventListenerSaga = function*(
   { sagaKey, sagaManager, eventTypes },
@@ -12,12 +12,12 @@ const eventListenerSaga = function*(
   let eventQueue = []
 
   while (true) {
-    const { event } = yield take(
+    const { message: event } = yield take(
       action =>
-        action.type === DISPATCH_MQTT_EVENT &&
-        (eventTypes.indexOf(action.event.type) > -1 &&
+        action.type === DISPATCH_MQTT_MESSAGE &&
+        (eventTypes.indexOf(action.message.type) > -1 &&
           (connectAction.aggregateIds === '*' ||
-            connectAction.aggregateIds.indexOf(action.event.agggregateId)))
+            connectAction.aggregateIds.indexOf(action.message.agggregateId)))
     )
 
     eventQueue.push(event)

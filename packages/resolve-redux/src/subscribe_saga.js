@@ -11,7 +11,7 @@ import {
   subscribeTopicFailure,
   unsubscribeTopicSuccess,
   unsubscribeTopicFailure,
-  dispatchMqttEvent
+  dispatchMqttMessage
 } from './actions'
 
 const subscribeSaga = function*({
@@ -27,7 +27,7 @@ const subscribeSaga = function*({
   const subscribeAdapterPromise = (async () => {
     const { appId, url } = await api.getSubscribeAdapterOptions()
 
-    const onEvent = event => store.dispatch(dispatchMqttEvent(event))
+    const onEvent = event => store.dispatch(dispatchMqttMessage(event))
 
     const subscribeAdapter = createSubscribeAdapter({
       ...subscribeAdapterOptions,

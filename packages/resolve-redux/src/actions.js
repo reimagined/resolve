@@ -23,8 +23,11 @@ import {
   LOAD_READMODEL_STATE_FAILURE,
   APPLY_READMODEL_DIFF,
   DROP_READMODEL_STATE,
-  DISPATCH_MQTT_EVENT,
-  HOT_MODULE_REPLACEMENT
+  DISPATCH_MQTT_MESSAGE,
+  HOT_MODULE_REPLACEMENT,
+  STOP_READ_MODEL_SUBSCRIPTION_REQUEST,
+  STOP_READ_MODEL_SUBSCRIPTION_SUCCESS,
+  STOP_READ_MODEL_SUBSCRIPTION_FAILURE
 } from './action_types'
 
 export const sendCommandRequest = (
@@ -181,49 +184,61 @@ export const connectReadModel = (
   readModelName,
   resolverName,
   resolverArgs,
-  isReactive
+  isReactive,
+  connectorId
 ) => ({
   type: CONNECT_READMODEL,
   readModelName,
   resolverName,
   resolverArgs,
-  isReactive
+  isReactive,
+  connectorId
 })
 
 export const disconnectReadModel = (
   readModelName,
   resolverName,
   resolverArgs,
-  isReactive
+  isReactive,
+  connectorId
 ) => ({
   type: DISCONNECT_READMODEL,
   readModelName,
   resolverName,
   resolverArgs,
-  isReactive
+  isReactive,
+  connectorId
 })
 
 export const loadReadModelStateRequest = (
   readModelName,
   resolverName,
-  resolverArgs
+  resolverArgs,
+  isReactive,
+  queryId
 ) => ({
   type: LOAD_READMODEL_STATE_REQUEST,
   readModelName,
   resolverName,
-  resolverArgs
+  resolverArgs,
+  isReactive,
+  queryId
 })
 
 export const loadReadModelStateSuccess = (
   readModelName,
   resolverName,
   resolverArgs,
+  isReactive,
+  queryId,
   state
 ) => ({
   type: LOAD_READMODEL_STATE_SUCCESS,
   readModelName,
   resolverName,
   resolverArgs,
+  isReactive,
+  queryId,
   state
 })
 
@@ -231,12 +246,16 @@ export const loadReadModelStateFailure = (
   readModelName,
   resolverName,
   resolverArgs,
+  isReactive,
+  queryId,
   error
 ) => ({
   type: LOAD_READMODEL_STATE_FAILURE,
   readModelName,
   resolverName,
   resolverArgs,
+  isReactive,
+  queryId,
   error
 })
 
@@ -264,9 +283,25 @@ export const dropReadModelState = (
   resolverArgs
 })
 
-export const dispatchMqttEvent = event => ({
-  type: DISPATCH_MQTT_EVENT,
-  event
+export const stopReadModelSubscriptionRequest = queryId => ({
+  type: STOP_READ_MODEL_SUBSCRIPTION_REQUEST,
+  queryId
+})
+
+export const stopReadModelSubscriptionSuccess = queryId => ({
+  type: STOP_READ_MODEL_SUBSCRIPTION_SUCCESS,
+  queryId
+})
+
+export const stopReadModelSubscriptionFailure = (queryId, error) => ({
+  type: STOP_READ_MODEL_SUBSCRIPTION_FAILURE,
+  queryId,
+  error
+})
+
+export const dispatchMqttMessage = message => ({
+  type: DISPATCH_MQTT_MESSAGE,
+  message
 })
 
 export const hotModuleReplacement = () => ({

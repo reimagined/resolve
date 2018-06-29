@@ -29,8 +29,8 @@ const createApi = ({ origin, rootPath }) => ({
     readModelName,
     resolverName,
     resolverArgs,
-    queryId,
-    isReactive
+    isReactive,
+    queryId
   }) {
     const response = await fetch(
       getRootBasedUrl(origin, rootPath, '/api/query'),

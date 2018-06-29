@@ -7,7 +7,6 @@ const loadViewModelStateSaga = function*(
   { viewModelName, aggregateIds, aggregateArgs }
 ) {
   try {
-    // TODO use api
     const {
       serializedState,
       aggregateVersionsMap
