@@ -59,7 +59,7 @@ pipeline {
                         export DISPLAY=:0;
                         firefox && echo 'err';
 
-                        npx oao run-script test:functional -- --browser=firefox
+                        npx oao run-script test:functional -- --browser=path:/chromium
                     """
                 }
             }
@@ -122,9 +122,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-                                export DISPLAY=:0;
-                                firefox && echo 'err';
-
+                                mkdir hello-world && cd hello-world;
                                 create-resolve-app hello-world -c \$(cat /last_commit)
                                 cd ./hello-world; \
                                 cat ./package.json; \
@@ -132,7 +130,7 @@ pipeline {
                                 grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3001/g'
 
                                 yarn test
-                                yarn test:functional --browser=firefox
+                                yarn test:functional --browser=path:/chromium
                             """
                         }
                     }
@@ -142,7 +140,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-
+                                mkdir todolist && cd todolist;
                                 create-resolve-app todolist -e todo -c \$(cat /last_commit)
                                 cd ./todolist
                                 cat ./package.json
@@ -150,7 +148,7 @@ pipeline {
                                 grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3002/g'
 
                                 yarn test
-                                yarn test:functional --browser=firefox
+                                yarn test:functional --browser=path:/chromium
                             """
                         }
                     }
@@ -160,14 +158,14 @@ pipeline {
                     steps {
                         script {
                             sh """
-
+                                mkdir twolevelstodo && cd twolevelstodo;
                                 create-resolve-app twolevelstodo -e todo-two-levels -c \$(cat /last_commit)
                                 cd ./twolevelstodo
                                 cat ./package.json
                                 sed -i 's/"port": 3000/"port": 3003/g' ./resolve.config.json
                                 grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3003/g'
 
-                                yarn test:functional --browser=firefox
+                                yarn test:functional --browser=path:/chromium
                             """
                         }
                     }
@@ -177,7 +175,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-
+                                mkdir hacker-news && cd hacker-news;
                                 create-resolve-app hn -e hacker-news -c \$(cat /last_commit)
                                 cd ./hn
                                 cat ./package.json
@@ -185,7 +183,7 @@ pipeline {
                                 grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3004/g'
 
                                 yarn test
-                                yarn test:functional --browser=firefox
+                                yarn test:functional --browser=path:/chromium
                             """
                         }
                     }
@@ -195,7 +193,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-
+                                mkdir top-list && cd top-list;
                                 create-resolve-app toplist -e top-list -c \$(cat /last_commit)
                                 cd ./toplist
                                 cat ./package.json
@@ -204,25 +202,61 @@ pipeline {
 
 
                                 yarn test
-                                yarn test:functional --browser=firefox
+                                yarn test:functional --browser=path:/chromium
                             """
                         }
                     }
                 }
 
-                stage('Create-resolve-app [ with-postcss-modules ] Functional Tests') {
+                stage('Create-resolve-app [ with-postcss ] Functional Tests') {
                     steps {
                         script {
                             sh """
-
-                                create-resolve-app with-postcss-modules -e with-postcss-modules -c \$(cat /last_commit)
-                                cd ./with-postcss-modules
+                                mkdir with-postcss && cd with-postcss;
+                                create-resolve-app with-postcss -e with-postcss -c \$(cat /last_commit)
+                                cd ./with-postcss
                                 cat ./package.json
                                 sed -i 's/"port": 3000/"port": 3006/g' ./resolve.config.json
                                 grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3006/g'
 
                                 yarn test
-                                yarn test:functional --browser=firefox
+                                yarn test:functional --browser=path:/chromium
+                            """
+                        }
+                    }
+                }
+
+                stage('Create-resolve-app [ with-authentication ] Functional Tests') {
+                    steps {
+                        script {
+                            sh """
+                                mkdir with-authentication && cd with-authentication;
+                                create-resolve-app with-authentication -e with-authentication -c \$(cat /last_commit)
+                                cd ./with-authentication
+                                cat ./package.json
+                                sed -i 's/"port": 3000/"port": 3007/g' ./resolve.config.json
+                                grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3007/g'
+
+                                yarn test
+                                yarn test:functional --browser=path:/chromium
+                            """
+                        }
+                    }
+                }
+
+                stage('Create-resolve-app [ with-styled-components ] Functional Tests') {
+                    steps {
+                        script {
+                            sh """
+                                mkdir with-styled-components && cd with-styled-components;
+                                create-resolve-app with-styled-components -e with-styled-components -c \$(cat /last_commit)
+                                cd ./with-styled-components
+                                cat ./package.json
+                                sed -i 's/"port": 3000/"port": 3008/g' ./resolve.config.json
+                                grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3008/g'
+
+                                yarn test
+                                yarn test:functional --browser=path:/chromium
                             """
                         }
                     }
