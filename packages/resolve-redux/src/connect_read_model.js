@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 
 import actions from './actions'
 import { connectorMetaMap } from './constants'
-import getHash from "./get_hash";
+import getHash from './get_hash'
 
 const connectReadModel = mapStateToOptions => Component => {
   class ReadModelContainer extends React.PureComponent {
@@ -48,45 +48,44 @@ const connectReadModel = mapStateToOptions => Component => {
 
     render() {
       const { ownProps, isLoading, data } = this.props
-  
+
       // TODO
       if (isLoading !== false) {
         return null
       }
-  
-  
+
       return <Component {...ownProps} isLoading={isLoading} data={data} />
     }
   }
 
   const mapStateToConnectorProps = (state, ownProps) => {
     const connectorOptions = mapStateToOptions(state, ownProps)
-  
+
     const readModelName = connectorOptions.readModelName
     const resolverName = getHash(connectorOptions.resolverName)
     const resolverArgs = getHash(connectorOptions.resolverArgs)
-    
+
     const connectorMeta =
       state.readModels &&
       state.readModels[connectorMetaMap] &&
       state.readModels[connectorMetaMap][
         `${readModelName}${resolverName}${resolverArgs}`
-        ]
+      ]
         ? state.readModels[connectorMetaMap][
-          `${readModelName}${resolverName}${resolverArgs}`
+            `${readModelName}${resolverName}${resolverArgs}`
           ]
         : {}
-  
+
     const { isLoading, isFailure } = connectorMeta
-  
+
     const data =
       isLoading === false && isFailure === false
         ? state.readModels[readModelName][resolverName][resolverArgs]
         : null
-  
+
     const error =
       isLoading === false && isFailure === true ? connectorMeta.error : null
-  
+
     return {
       ownProps,
       connectorOptions,

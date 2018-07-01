@@ -8,8 +8,8 @@
   },
   "scripts": {
     "prepublish": "babel --source-maps --out-dir ./dist ./src",
-    "test": "jest --testMatch=**/test/*.tests.js --verbose",
-    "testw": "jest --testMatch=**/test/*.tests.js --watchAll"
+    "test": "jest --testMatch=**/test/*.test.js --verbose",
+    "testw": "jest --testMatch=**/test/*.test.js --watchAll"
   },
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",

@@ -102,10 +102,11 @@ export const unsubscribeTopicSuccess = (topicName, topicId) => ({
   topicId
 })
 
-export const unsubscribeTopicFailure = (topicName, topicId) => ({
+export const unsubscribeTopicFailure = (topicName, topicId, error) => ({
   type: UNSUBSCRIBE_TOPIC_FAILURE,
   topicName,
-  topicId
+  topicId,
+  error
 })
 
 export const connectViewModel = (
@@ -302,7 +303,7 @@ export const dispatchMqttMessage = message => ({
   message
 })
 
-export const hotModuleReplacement = () => ({
+export const hotModuleReplacement = hotModuleReplacementId => ({
   type: HOT_MODULE_REPLACEMENT,
-  hotModuleReplacementId: uuid()
+  hotModuleReplacementId
 })

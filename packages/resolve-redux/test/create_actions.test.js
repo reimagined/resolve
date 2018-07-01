@@ -1,12 +1,9 @@
-import { expect } from 'chai'
-import { SEND_COMMAND } from '../src/action_types'
+import { SEND_COMMAND_REQUEST } from '../src/action_types'
 import createActions from '../src/create_actions'
 
 describe('createActions', () => {
   it('should create an action from an aggregate to send command', () => {
-    const command = {
-      type: 'create'
-    }
+    const commandType = 'create'
     const aggregateId = 'aggregateId'
     const aggregateName = 'aggregateName'
     const payload = {
@@ -20,9 +17,9 @@ describe('createActions', () => {
       }
     }
     const generatedActions = createActions(aggregate)
-    expect(generatedActions.create(aggregateId, payload)).to.deep.equal({
-      type: SEND_COMMAND,
-      command,
+    expect(generatedActions.create(aggregateId, payload)).toEqual({
+      type: SEND_COMMAND_REQUEST,
+      commandType,
       aggregateId,
       aggregateName,
       payload
@@ -30,7 +27,7 @@ describe('createActions', () => {
   })
 
   it('should create an action from an aggregate and extend it by extended actions', () => {
-    const createCommand = 'create'
+    const commandType = 'create'
     const originalUpdateCommand = 'originalUpdate'
     const originalDeleteCommand = 'originalDelete'
 
@@ -52,21 +49,19 @@ describe('createActions', () => {
       delete: () => ({ type: originalDeleteCommand })
     })
 
-    expect(generatedActions.create(aggregateId, payload)).to.deep.equal({
-      type: SEND_COMMAND,
-      command: {
-        type: createCommand
-      },
+    expect(generatedActions.create(aggregateId, payload)).toEqual({
+      type: SEND_COMMAND_REQUEST,
+      commandType,
       aggregateId,
       aggregateName,
       payload
     })
 
-    expect(generatedActions.update()).to.deep.equal({
+    expect(generatedActions.update()).toEqual({
       type: originalUpdateCommand
     })
 
-    expect(generatedActions.delete()).to.deep.equal({
+    expect(generatedActions.delete()).toEqual({
       type: originalDeleteCommand
     })
   })

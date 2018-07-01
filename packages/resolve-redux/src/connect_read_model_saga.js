@@ -101,8 +101,7 @@ const connectReadModelSaga = function*(sagaArgs, action) {
         yield* sagaManager.stop(`${CONNECT_READMODEL}${sagaKey}`)
         yield put(action)
       })
-      
- 
+
       break
     }
   }

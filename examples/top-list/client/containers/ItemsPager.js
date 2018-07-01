@@ -12,7 +12,7 @@ const Pager = ({ count, page, setPage, limit }) => {
   let length = Number.isInteger(count) && count > 0 ? +count : 0
 
   for (let i = 0; i < length; i++) {
-    const row = (i >= rowLength ? secondRow : firstRow)
+    const row = i >= rowLength ? secondRow : firstRow
     row.push(
       <ToggleButton
         className="page-button"
@@ -69,9 +69,9 @@ const mapStateToProps = (state, { data, page, setPage }) => {
   }
 }
 
-const FilledItemsPager = connectReadModel(
-  mapStateToOptions
-)(connect(mapStateToProps)(Pager))
+const FilledItemsPager = connectReadModel(mapStateToOptions)(
+  connect(mapStateToProps)(Pager)
+)
 
 class ItemsPager extends React.Component {
   render() {
