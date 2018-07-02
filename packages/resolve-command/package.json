@@ -1,6 +1,6 @@
 {
   "name": "resolve-command",
-  "version": "0.12.1",
+  "version": "0.12.2",
   "description": "This package creates a function to execute a command.",
   "main": "./dist/index.js",
   "bugs": {
@@ -14,13 +14,9 @@
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": [
-    "cqrs",
-    "eventsourcing",
-    "es",
-    "ddd"
-  ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-command#readme",
+  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
+  "homepage":
+    "https://github.com/reimagined/resolve/tree/master/packages/resolve-command#readme",
   "dependencies": {
     "invariant-function-hash": "^1.0.1"
   },

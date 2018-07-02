@@ -1,6 +1,6 @@
 {
   "name": "todo",
-  "version": "0.12.1",
+  "version": "0.12.2",
   "private": true,
   "scripts": {
     "build": "resolve-scripts build",
@@ -16,8 +16,8 @@
     "react-helmet": "^5.2.0",
     "react-redux": "^5.0.7",
     "redux": "^3.7.2",
-    "resolve-redux": "0.12.1",
-    "resolve-scripts": "0.12.1"
+    "resolve-redux": "0.12.2",
+    "resolve-scripts": "0.12.2"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0-beta.49",
