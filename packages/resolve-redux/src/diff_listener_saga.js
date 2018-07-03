@@ -1,13 +1,16 @@
-import { take, put, select, fork } from 'redux-saga/effects'
-import { delay } from 'redux-saga'
+import { take, put, select } from 'redux-saga/effects'
 
 import { diffMessageType, diffVersionsMap } from "./constants";
-import { CONNECT_READMODEL, DISPATCH_MQTT_MESSAGE } from './action_types'
-import { applyReadModelDiff } from './actions'
+import {
+  CONNECT_READMODEL,
+  DISPATCH_MQTT_MESSAGE
+} from "./action_types";
+import { applyReadModelDiff } from "./actions";
 import getHash from "./get_hash";
+import unsubscribeReadModelTopicsSaga from "./unsubscribe_read_model_topics_saga";
 
 const diffListenerSaga = function*(
-  { sagaKey, sagaManager, queryId },
+  { sagaKey, sagaManager, queryId, store },
   connectAction
 ) {
   let diffQueue = []
@@ -27,7 +30,6 @@ const diffListenerSaga = function*(
     const {
       readModels: { [diffVersionsMap]: readModelsDiffVersionsMap }
     } = yield select()
-    console.log('select')
   
     const readModelName = connectAction.readModelName
     const resolverName = getHash(connectAction.resolverName)
@@ -37,7 +39,6 @@ const diffListenerSaga = function*(
     if (!readModelsDiffVersionsMap.hasOwnProperty(key)) {
       continue
     }
-    console.log('continue')
 
     let lastDiffVersionByKey = readModelsDiffVersionsMap[key]
 
@@ -63,19 +64,17 @@ const diffListenerSaga = function*(
       nextDiffs.splice(0, 1)
       lastDiffVersionByKey++
     }
-    console.log('while')
 
     readModelsDiffVersionsMap[key] = lastDiffVersionByKey
 
     if (nextDiffs.length > 10) {
-      //TODO maybe fork fork die
-      yield fork(function*() {
-        yield delay(100)
-        yield put(connectAction)
-      })
-      yield* sagaManager.stop(`${CONNECT_READMODEL}${sagaKey}`)
+      yield* unsubscribeReadModelTopicsSaga({ queryId })
+
+      yield* sagaManager.stop(`${CONNECT_READMODEL}${sagaKey}`, () => store.dispatch({
+        ...connectAction,
+        skipConnectionManager: true
+      }))
     }
-    console.log('if')
   }
 }
 

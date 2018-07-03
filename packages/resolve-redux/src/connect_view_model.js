@@ -33,6 +33,33 @@ const connectViewModel = mapStateToOptions => Component => {
 
       this.props.disconnectViewModel(viewModelName, aggregateIds, aggregateArgs)
     }
+  
+    componentDidUpdate(prevProps) {
+      const connectorOptions = this.props.connectorOptions;
+      const prevConnectorOptions = prevProps.connectorOptions;
+      if(
+        connectorOptions &&
+        prevConnectorOptions &&
+        ((prevConnectorOptions.viewModelName !== connectorOptions.viewModelName) ||
+        (prevConnectorOptions.aggregateIds !== connectorOptions.aggregateIds) ||
+        (prevConnectorOptions.aggregateArgs !== connectorOptions.aggregateArgs)) && (
+          (prevConnectorOptions.viewModelName !==connectorOptions.viewModelName) ||
+          (getHash(prevConnectorOptions.aggregateIds) !== getHash(connectorOptions.aggregateIds)) ||
+          (getHash(prevConnectorOptions.aggregateArgs) !== getHash(connectorOptions.aggregateArgs))
+        )
+      ) {
+        this.props.disconnectViewModel(
+          prevConnectorOptions.viewModelName,
+          prevConnectorOptions.aggregateIds,
+          prevConnectorOptions.aggregateArgs
+        )
+        this.props.connectViewModel(
+          connectorOptions.viewModelName,
+          connectorOptions.aggregateIds,
+          connectorOptions.aggregateArgs
+        )
+      }
+    }
 
     render() {
       const { ownProps, isLoading, data } = this.props

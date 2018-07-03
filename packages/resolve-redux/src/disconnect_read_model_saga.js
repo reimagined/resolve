@@ -3,19 +3,17 @@ import hash from 'uuid/v3'
 
 import getHash from './get_hash'
 import {
-  unsubscibeTopicRequest,
   dropReadModelState,
   stopReadModelSubscriptionRequest
 } from './actions'
 import {
-  UNSUBSCRIBE_TOPIC_SUCCESS,
-  UNSUBSCRIBE_TOPIC_FAILURE,
   CONNECT_READMODEL,
   STOP_READ_MODEL_SUBSCRIPTION_SUCCESS,
   STOP_READ_MODEL_SUBSCRIPTION_FAILURE
 } from './action_types'
 
-import { diffTopicName, namespace } from './constants'
+import { namespace } from './constants'
+import unsubscribeReadModelTopicsSaga from "./unsubscribe_read_model_topics_saga";
 
 const disconnectReadModelSaga = function*(sagaArgs, action) {
   const {
@@ -51,22 +49,8 @@ const disconnectReadModelSaga = function*(sagaArgs, action) {
   if (!isReactive) {
     return
   }
-
-  while (true) {
-    yield put(unsubscibeTopicRequest(diffTopicName, queryId))
-
-    const unsubscribeResultAction = yield take(
-      action =>
-        (action.type === UNSUBSCRIBE_TOPIC_SUCCESS ||
-          action.type === UNSUBSCRIBE_TOPIC_FAILURE) &&
-        diffTopicName === action.topicName &&
-        queryId === action.topicId
-    )
-
-    if (unsubscribeResultAction.type === UNSUBSCRIBE_TOPIC_SUCCESS) {
-      break
-    }
-  }
+  
+  yield* unsubscribeReadModelTopicsSaga({ queryId })
 
   while (true) {
     yield put(stopReadModelSubscriptionRequest(queryId))

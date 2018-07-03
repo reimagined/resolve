@@ -1,12 +1,15 @@
-import { take, put, select, fork } from 'redux-saga/effects'
-import { delay } from 'redux-saga'
+import { take, put, select } from 'redux-saga/effects'
 
 import getHash from './get_hash'
 import { aggregateVersionsMap } from './constants'
-import { CONNECT_VIEWMODEL, DISPATCH_MQTT_MESSAGE } from './action_types'
+import {
+  CONNECT_VIEWMODEL,
+  DISPATCH_MQTT_MESSAGE
+} from "./action_types";
+import unsubscribeViewModelTopicsSaga from './unsubscribe_view_model_topics_saga'
 
 const eventListenerSaga = function*(
-  { sagaKey, sagaManager, eventTypes },
+  { viewModels, sagaKey, sagaManager, eventTypes, store },
   connectAction
 ) {
   let eventQueue = []
@@ -74,12 +77,16 @@ const eventListenerSaga = function*(
     ] = lastAppliedAggregateVersion
 
     if (nextEventsForAggregate.length > 10) {
-      //TODO maybe fork fork die
-      yield fork(function*() {
-        yield delay(100)
-        yield put(connectAction)
+      yield* unsubscribeViewModelTopicsSaga({
+        viewModels,
+        viewModelName: connectAction.viewModelName,
+        aggregateIds: connectAction.aggregateIds
       })
-      yield* sagaManager.stop(`${CONNECT_VIEWMODEL}${sagaKey}`)
+      
+      yield* sagaManager.stop(`${CONNECT_VIEWMODEL}${sagaKey}`, () => store.dispatch({
+        ...connectAction,
+        skipConnectionManager: true
+      }))
     }
   }
 }

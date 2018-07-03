@@ -14,9 +14,7 @@ const createSagaManager = () => {
 
       return sagaId
     },
-    *stop(key, stopper) {
-      console.log('Saga ' + key + ' by stopper: ', stopper)
-      
+    *stop(key, callback) {
       if (Array.isArray(sagas[key])) {
         for (const sagaId of sagas[key]) {
           yield cancel(sagaId)
@@ -24,6 +22,9 @@ const createSagaManager = () => {
       }
 
       delete sagas[key]
+      if(typeof callback === 'function') {
+        callback()
+      }
     }
   }
 }

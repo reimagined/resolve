@@ -4,15 +4,16 @@ import hash from 'uuid'
 
 import getHash from './get_hash'
 import diffListenerSaga from './diff_listener_saga'
-import { subscribeTopicRequest, loadReadModelStateRequest } from './actions'
+import unsubscribeReadModelTopicsSaga from './unsubscribe_read_model_topics_saga'
+import { subscribeTopicRequest, loadReadModelStateRequest, unsubscibeTopicRequest } from "./actions";
 import {
   CONNECT_READMODEL,
   DISCONNECT_READMODEL,
   SUBSCRIBE_TOPIC_SUCCESS,
   SUBSCRIBE_TOPIC_FAILURE,
   LOAD_READMODEL_STATE_FAILURE,
-  LOAD_READMODEL_STATE_SUCCESS
-} from './action_types'
+  LOAD_READMODEL_STATE_SUCCESS, UNSUBSCRIBE_TOPIC_FAILURE, UNSUBSCRIBE_TOPIC_SUCCESS
+} from "./action_types";
 
 import { diffTopicName, namespace } from './constants'
 
@@ -102,13 +103,13 @@ const connectReadModelSaga = function*(sagaArgs, action) {
     if (loadReadModelStateResultAction.type === LOAD_READMODEL_STATE_SUCCESS) {
       yield fork(function*() {
         yield delay(loadReadModelStateResultAction.timeToLive)
+
+        yield* unsubscribeReadModelTopicsSaga({ queryId })
         
-        setTimeout(() => store.dispatch({
-           ...action,
+        yield* sagaManager.stop(`${CONNECT_READMODEL}${sagaKey}`, () => store.dispatch({
+          ...action,
           skipConnectionManager: true
-        }), 100)
-        
-        yield* sagaManager.stop(`${CONNECT_READMODEL}${sagaKey}`)
+        }))
       })
 
       break
