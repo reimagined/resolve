@@ -7,7 +7,7 @@ const loadReadModelStateSaga = function*(
   { readModelName, resolverName, resolverArgs, isReactive, queryId }
 ) {
   try {
-    const { timeToLive, queryId, result } = yield api.loadReadModelState({
+    const { timeToLive, result } = yield api.loadReadModelState({
       readModelName,
       resolverName,
       resolverArgs,

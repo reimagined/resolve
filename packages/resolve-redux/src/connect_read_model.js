@@ -2,8 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
-import actions from './actions'
-import { connectorMetaMap } from './constants'
+import * as actions from './actions'
+import { connectorMetaMap, isReactiveArg } from './constants'
 import getHash from './get_hash'
 
 const connectReadModel = mapStateToOptions => Component => {
@@ -18,7 +18,7 @@ const connectReadModel = mapStateToOptions => Component => {
         placeholder,
         placeholderTimeout
       } = this.props.connectorOptions
-
+      
       this.props.connectReadModel(
         readModelName,
         resolverName,
@@ -37,7 +37,7 @@ const connectReadModel = mapStateToOptions => Component => {
         placeholder,
         placeholderTimeout
       } = this.props.connectorOptions
-
+  
       this.props.disconnectReadModel(
         readModelName,
         resolverName,
@@ -60,10 +60,20 @@ const connectReadModel = mapStateToOptions => Component => {
 
   const mapStateToConnectorProps = (state, ownProps) => {
     const connectorOptions = mapStateToOptions(state, ownProps)
-
+  
+    if(connectorOptions.isReactive) {
+      Object.assign(connectorOptions.resolverArgs, { [isReactiveArg]: true })
+    }
     const readModelName = connectorOptions.readModelName
     const resolverName = getHash(connectorOptions.resolverName)
     const resolverArgs = getHash(connectorOptions.resolverArgs)
+    const isReactive = connectorOptions.isReactive
+  
+   
+  
+    if(isReactive) {
+      Object.assign(resolverArgs, { [isReactiveArg]: true })
+    }
 
     const connectorMeta =
       state.readModels &&

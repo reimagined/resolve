@@ -22,19 +22,22 @@ const connectReadModelSaga = function*(sagaArgs, action) {
     sagaManager,
     sagaKey,
     queryIdMap,
-    sessionId
+    sessionId,
+    store
   } = sagaArgs
-  const { readModelName, resolverName, resolverArgs, isReactive } = action
+  const { readModelName, resolverName, resolverArgs, isReactive, skipConnectionManager } = action
 
-  const { addedConnections } = connectionManager.addConnection({
-    connectionName: readModelName,
-    connectionId: `${getHash(action.resolverName)}${getHash(
-      action.resolverArgs
-    )}`
-  })
-
-  if (addedConnections.length !== 1) {
-    return
+  if(!skipConnectionManager) {
+    const { addedConnections } = connectionManager.addConnection({
+      connectionName: readModelName,
+      connectionId: `${getHash(action.resolverName)}${getHash(
+        action.resolverArgs
+      )}`
+    })
+  
+    if (addedConnections.length !== 1) {
+      return
+    }
   }
 
   yield* sagaManager.stop(`${DISCONNECT_READMODEL}${sagaKey}`)
@@ -84,6 +87,7 @@ const connectReadModelSaga = function*(sagaArgs, action) {
         readModelName,
         resolverName,
         resolverArgs,
+        isReactive,
         queryId
       )
     )
@@ -97,9 +101,14 @@ const connectReadModelSaga = function*(sagaArgs, action) {
 
     if (loadReadModelStateResultAction.type === LOAD_READMODEL_STATE_SUCCESS) {
       yield fork(function*() {
-        yield delay(action.timeToLive)
+        yield delay(loadReadModelStateResultAction.timeToLive)
+        
+        setTimeout(() => store.dispatch({
+           ...action,
+          skipConnectionManager: true
+        }), 100)
+        
         yield* sagaManager.stop(`${CONNECT_READMODEL}${sagaKey}`)
-        yield put(action)
       })
 
       break

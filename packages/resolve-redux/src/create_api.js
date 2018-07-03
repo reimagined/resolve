@@ -1,4 +1,5 @@
 import getRootBasedUrl from './get_root_based_url'
+import { isReactiveArg } from './constants'
 
 const createApi = ({ origin, rootPath }) => ({
   async loadViewModelState({ viewModelName, aggregateIds, aggregateArgs }) {
@@ -32,6 +33,9 @@ const createApi = ({ origin, rootPath }) => ({
     isReactive,
     queryId
   }) {
+    const pureResolverArgs = { ...resolverArgs }
+    delete pureResolverArgs[isReactiveArg]
+  
     const response = await fetch(
       getRootBasedUrl(origin, rootPath, '/api/query'),
       {
@@ -41,9 +45,9 @@ const createApi = ({ origin, rootPath }) => ({
         body: JSON.stringify({
           readModelName,
           resolverName,
-          resolverArgs,
-          queryId,
-          isReactive
+          resolverArgs: pureResolverArgs,
+          isReactive,
+          queryId
         })
       }
     )

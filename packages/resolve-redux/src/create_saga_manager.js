@@ -14,7 +14,9 @@ const createSagaManager = () => {
 
       return sagaId
     },
-    *stop(key) {
+    *stop(key, stopper) {
+      console.log('Saga ' + key + ' by stopper: ', stopper)
+      
       if (Array.isArray(sagas[key])) {
         for (const sagaId of sagas[key]) {
           yield cancel(sagaId)

@@ -19,14 +19,12 @@ const readModelsSaga = function*(sagaArgs) {
         const {
           readModelName,
           resolverName,
-          resolverArgs,
-          connectorId
+          resolverArgs
         } = action
         const sagaKey = getHash({
           readModelName,
           resolverName,
-          resolverArgs,
-          connectorId
+          resolverArgs
         })
         yield* sagaManager.start(
           `${CONNECT_READMODEL}${sagaKey}`,
@@ -45,14 +43,12 @@ const readModelsSaga = function*(sagaArgs) {
         const {
           readModelName,
           resolverName,
-          resolverArgs,
-          connectorId
+          resolverArgs
         } = action
         const sagaKey = getHash({
           readModelName,
           resolverName,
-          resolverArgs,
-          connectorId
+          resolverArgs
         })
         yield* sagaManager.start(
           `${DISCONNECT_READMODEL}${sagaKey}`,
