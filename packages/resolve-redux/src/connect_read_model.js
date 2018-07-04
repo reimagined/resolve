@@ -18,7 +18,7 @@ const connectReadModel = mapStateToOptions => Component => {
         placeholder,
         placeholderTimeout
       } = this.props.connectorOptions
-      
+
       this.props.connectReadModel(
         readModelName,
         resolverName,
@@ -37,13 +37,45 @@ const connectReadModel = mapStateToOptions => Component => {
         placeholder,
         placeholderTimeout
       } = this.props.connectorOptions
-  
+
       this.props.disconnectReadModel(
         readModelName,
         resolverName,
         resolverArgs,
         isReactive
       )
+    }
+
+    componentDidUpdate(prevProps) {
+      const connectorOptions = this.props.connectorOptions
+      const prevConnectorOptions = prevProps.connectorOptions
+      if (
+        connectorOptions &&
+        prevConnectorOptions &&
+        (prevConnectorOptions.readModelName !==
+          connectorOptions.readModelName ||
+          prevConnectorOptions.resolverName !== connectorOptions.resolverName ||
+          prevConnectorOptions.resolverArgs !==
+            connectorOptions.resolverArgs) &&
+        (prevConnectorOptions.readModelName !==
+          connectorOptions.readModelName ||
+          prevConnectorOptions.resolverName !== connectorOptions.resolverName ||
+          getHash(prevConnectorOptions.resolverArgs) !==
+            getHash(connectorOptions.resolverArgs))
+      ) {
+        this.props.disconnectReadModel(
+          prevConnectorOptions.readModelName,
+          prevConnectorOptions.resolverName,
+          prevConnectorOptions.resolverArgs,
+          prevConnectorOptions.isReactive
+        )
+        this.props.connectReadModel(
+          connectorOptions.readModelName,
+          connectorOptions.resolverName,
+          connectorOptions.resolverArgs,
+          connectorOptions.isReactive
+        )
+      }
     }
 
     render() {
@@ -60,18 +92,16 @@ const connectReadModel = mapStateToOptions => Component => {
 
   const mapStateToConnectorProps = (state, ownProps) => {
     const connectorOptions = mapStateToOptions(state, ownProps)
-  
-    if(connectorOptions.isReactive) {
+
+    if (connectorOptions.isReactive) {
       Object.assign(connectorOptions.resolverArgs, { [isReactiveArg]: true })
     }
     const readModelName = connectorOptions.readModelName
     const resolverName = getHash(connectorOptions.resolverName)
     const resolverArgs = getHash(connectorOptions.resolverArgs)
     const isReactive = connectorOptions.isReactive
-  
-   
-  
-    if(isReactive) {
+
+    if (isReactive) {
       Object.assign(resolverArgs, { [isReactiveArg]: true })
     }
 

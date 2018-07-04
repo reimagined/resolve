@@ -13,19 +13,25 @@ import {
 } from './action_types'
 
 const connectViewModelSaga = function*(sagaArgs, action) {
-  const { viewModels, connectionManager, sagaManager, sagaKey, skipConnectionManager } = sagaArgs
+  const {
+    viewModels,
+    connectionManager,
+    sagaManager,
+    sagaKey,
+    skipConnectionManager
+  } = sagaArgs
   const { viewModelName, aggregateIds, aggregateArgs } = action
-  
+
   const connectionId = `${getHash(action.aggregateIds)}${getHash(
     action.aggregateArgs
   )}`
-  
-  if(!skipConnectionManager) {
+
+  if (!skipConnectionManager) {
     const { addedConnections } = connectionManager.addConnection({
       connectionName: viewModelName,
       connectionId
     })
-  
+
     if (addedConnections.length !== 1) {
       return
     }

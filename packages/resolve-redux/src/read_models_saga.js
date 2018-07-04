@@ -16,11 +16,7 @@ const readModelsSaga = function*(sagaArgs) {
 
     switch (action.type) {
       case CONNECT_READMODEL: {
-        const {
-          readModelName,
-          resolverName,
-          resolverArgs
-        } = action
+        const { readModelName, resolverName, resolverArgs } = action
         const sagaKey = getHash({
           readModelName,
           resolverName,
@@ -40,11 +36,7 @@ const readModelsSaga = function*(sagaArgs) {
         break
       }
       case DISCONNECT_READMODEL: {
-        const {
-          readModelName,
-          resolverName,
-          resolverArgs
-        } = action
+        const { readModelName, resolverName, resolverArgs } = action
         const sagaKey = getHash({
           readModelName,
           resolverName,

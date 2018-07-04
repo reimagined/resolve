@@ -4,7 +4,7 @@ import pubsubManager from './pubsub_manager'
 
 const message = require('../../../configs/message.json')
 
-export const READ_MODEL_SUBSCRIPTION_TIME_TO_LIVE = 10 *1000//300000
+export const READ_MODEL_SUBSCRIPTION_TIME_TO_LIVE = 300000
 export const subscriptionProcesses = new Map()
 
 export const readModelSubscribeHandler = (req, res) => {

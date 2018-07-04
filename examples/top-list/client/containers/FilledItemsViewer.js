@@ -5,7 +5,7 @@ import { ListGroup, ListGroupItem } from 'react-bootstrap'
 
 const FilledItemsViewer = ({ items, page, limit }) => {
   let listItems = []
-  
+
   for (let i = 0; i < limit; i++) {
     let item = items && items[i]
     listItems.push(
@@ -18,7 +18,7 @@ const FilledItemsViewer = ({ items, page, limit }) => {
       </ListGroupItem>
     )
   }
-  
+
   return <ListGroup key={`SC-${page}`}>{listItems}</ListGroup>
 }
 

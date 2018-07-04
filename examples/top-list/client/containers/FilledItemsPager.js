@@ -6,11 +6,11 @@ import { ButtonToolbar, ToggleButtonGroup, ToggleButton } from 'react-bootstrap'
 
 const Pager = ({ count, page, setPage, limit }) => {
   const rowLength = 5
-  
+
   let firstRow = []
   let secondRow = []
   let length = Number.isInteger(count) && count > 0 ? +count : 0
-  
+
   for (let i = 0; i < length; i++) {
     const row = i >= rowLength ? secondRow : firstRow
     row.push(
@@ -24,7 +24,7 @@ const Pager = ({ count, page, setPage, limit }) => {
       </ToggleButton>
     )
   }
-  
+
   return (
     <div>
       <ButtonToolbar>
@@ -37,7 +37,7 @@ const Pager = ({ count, page, setPage, limit }) => {
         >
           {firstRow}
         </ToggleButtonGroup>
-        
+
         <ToggleButtonGroup
           justified
           type="radio"

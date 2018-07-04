@@ -35,7 +35,7 @@ const createApi = ({ origin, rootPath }) => ({
   }) {
     const pureResolverArgs = { ...resolverArgs }
     delete pureResolverArgs[isReactiveArg]
-  
+
     const response = await fetch(
       getRootBasedUrl(origin, rootPath, '/api/query'),
       {

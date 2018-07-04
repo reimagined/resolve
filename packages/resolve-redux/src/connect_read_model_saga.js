@@ -5,15 +5,18 @@ import hash from 'uuid'
 import getHash from './get_hash'
 import diffListenerSaga from './diff_listener_saga'
 import unsubscribeReadModelTopicsSaga from './unsubscribe_read_model_topics_saga'
-import { subscribeTopicRequest, loadReadModelStateRequest, unsubscibeTopicRequest } from "./actions";
+import {
+  subscribeTopicRequest,
+  loadReadModelStateRequest
+} from './actions'
 import {
   CONNECT_READMODEL,
   DISCONNECT_READMODEL,
   SUBSCRIBE_TOPIC_SUCCESS,
   SUBSCRIBE_TOPIC_FAILURE,
   LOAD_READMODEL_STATE_FAILURE,
-  LOAD_READMODEL_STATE_SUCCESS, UNSUBSCRIBE_TOPIC_FAILURE, UNSUBSCRIBE_TOPIC_SUCCESS
-} from "./action_types";
+  LOAD_READMODEL_STATE_SUCCESS
+} from './action_types'
 
 import { diffTopicName, namespace } from './constants'
 
@@ -26,16 +29,22 @@ const connectReadModelSaga = function*(sagaArgs, action) {
     sessionId,
     store
   } = sagaArgs
-  const { readModelName, resolverName, resolverArgs, isReactive, skipConnectionManager } = action
+  const {
+    readModelName,
+    resolverName,
+    resolverArgs,
+    isReactive,
+    skipConnectionManager
+  } = action
 
-  if(!skipConnectionManager) {
+  if (!skipConnectionManager) {
     const { addedConnections } = connectionManager.addConnection({
       connectionName: readModelName,
       connectionId: `${getHash(action.resolverName)}${getHash(
         action.resolverArgs
       )}`
     })
-  
+
     if (addedConnections.length !== 1) {
       return
     }
@@ -105,11 +114,13 @@ const connectReadModelSaga = function*(sagaArgs, action) {
         yield delay(loadReadModelStateResultAction.timeToLive)
 
         yield* unsubscribeReadModelTopicsSaga({ queryId })
-        
-        yield* sagaManager.stop(`${CONNECT_READMODEL}${sagaKey}`, () => store.dispatch({
-          ...action,
-          skipConnectionManager: true
-        }))
+
+        yield* sagaManager.stop(`${CONNECT_READMODEL}${sagaKey}`, () =>
+          store.dispatch({
+            ...action,
+            skipConnectionManager: true
+          })
+        )
       })
 
       break

@@ -22,7 +22,7 @@ const createSagaManager = () => {
       }
 
       delete sagas[key]
-      if(typeof callback === 'function') {
+      if (typeof callback === 'function') {
         callback()
       }
     }

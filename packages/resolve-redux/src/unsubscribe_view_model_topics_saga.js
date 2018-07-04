@@ -1,12 +1,19 @@
 import { take, put } from 'redux-saga/effects'
 
-import { unsubscibeTopicRequest } from "./actions";
-import { UNSUBSCRIBE_TOPIC_FAILURE, UNSUBSCRIBE_TOPIC_SUCCESS } from "./action_types";
+import { unsubscibeTopicRequest } from './actions'
+import {
+  UNSUBSCRIBE_TOPIC_FAILURE,
+  UNSUBSCRIBE_TOPIC_SUCCESS
+} from './action_types'
 
-const unsubscribeViewModelTopicsSaga = function* ({ viewModels, viewModelName, aggregateIds }) {
+const unsubscribeViewModelTopicsSaga = function*({
+  viewModels,
+  viewModelName,
+  aggregateIds
+}) {
   const viewModel = viewModels.find(({ name }) => name === viewModelName)
   const eventTypes = Object.keys(viewModel.projection)
-  
+
   let subscriptionKeys = eventTypes.reduce((acc, eventType) => {
     if (Array.isArray(aggregateIds)) {
       acc.push(...aggregateIds.map(aggregateId => ({ aggregateId, eventType })))
@@ -15,13 +22,13 @@ const unsubscribeViewModelTopicsSaga = function* ({ viewModels, viewModelName, a
     }
     return acc
   }, [])
-  
+
   while (subscriptionKeys.length > 0) {
     let counter = subscriptionKeys.length
     for (const { aggregateId, eventType } of subscriptionKeys) {
       yield put(unsubscibeTopicRequest(eventType, aggregateId))
     }
-    
+
     while (counter > 0) {
       const unsubscribeResultAction = yield take(
         action =>
@@ -33,7 +40,7 @@ const unsubscribeViewModelTopicsSaga = function* ({ viewModels, viewModelName, a
               key.eventType === action.topicName
           )
       )
-      
+
       if (unsubscribeResultAction.type === UNSUBSCRIBE_TOPIC_SUCCESS) {
         subscriptionKeys = subscriptionKeys.filter(
           key =>
@@ -43,7 +50,7 @@ const unsubscribeViewModelTopicsSaga = function* ({ viewModels, viewModelName, a
             )
         )
       }
-      
+
       counter--
     }
   }

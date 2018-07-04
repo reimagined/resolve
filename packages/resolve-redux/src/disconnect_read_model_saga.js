@@ -2,10 +2,7 @@ import { take, put } from 'redux-saga/effects'
 import hash from 'uuid/v3'
 
 import getHash from './get_hash'
-import {
-  dropReadModelState,
-  stopReadModelSubscriptionRequest
-} from './actions'
+import { dropReadModelState, stopReadModelSubscriptionRequest } from './actions'
 import {
   CONNECT_READMODEL,
   STOP_READ_MODEL_SUBSCRIPTION_SUCCESS,
@@ -13,7 +10,7 @@ import {
 } from './action_types'
 
 import { namespace } from './constants'
-import unsubscribeReadModelTopicsSaga from "./unsubscribe_read_model_topics_saga";
+import unsubscribeReadModelTopicsSaga from './unsubscribe_read_model_topics_saga'
 
 const disconnectReadModelSaga = function*(sagaArgs, action) {
   const {
@@ -49,7 +46,7 @@ const disconnectReadModelSaga = function*(sagaArgs, action) {
   if (!isReactive) {
     return
   }
-  
+
   yield* unsubscribeReadModelTopicsSaga({ queryId })
 
   while (true) {

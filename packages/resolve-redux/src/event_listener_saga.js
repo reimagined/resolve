@@ -2,10 +2,7 @@ import { take, put, select } from 'redux-saga/effects'
 
 import getHash from './get_hash'
 import { aggregateVersionsMap } from './constants'
-import {
-  CONNECT_VIEWMODEL,
-  DISPATCH_MQTT_MESSAGE
-} from "./action_types";
+import { CONNECT_VIEWMODEL, DISPATCH_MQTT_MESSAGE } from './action_types'
 import unsubscribeViewModelTopicsSaga from './unsubscribe_view_model_topics_saga'
 
 const eventListenerSaga = function*(
@@ -82,11 +79,13 @@ const eventListenerSaga = function*(
         viewModelName: connectAction.viewModelName,
         aggregateIds: connectAction.aggregateIds
       })
-      
-      yield* sagaManager.stop(`${CONNECT_VIEWMODEL}${sagaKey}`, () => store.dispatch({
-        ...connectAction,
-        skipConnectionManager: true
-      }))
+
+      yield* sagaManager.stop(`${CONNECT_VIEWMODEL}${sagaKey}`, () =>
+        store.dispatch({
+          ...connectAction,
+          skipConnectionManager: true
+        })
+      )
     }
   }
 }
