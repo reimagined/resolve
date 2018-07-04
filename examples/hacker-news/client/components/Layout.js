@@ -4,8 +4,8 @@ import { NavLink } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 import styled from 'styled-components'
 
-import Splitter from '../components/Splitter'
-import LoginInfo from './LoginInfo'
+import Splitter from './Splitter'
+import LoginInfo from '../containers/LoginInfo'
 import { rootDirectory } from '../constants'
 
 const ContentRoot = styled.div`
@@ -70,6 +70,7 @@ const FooterLink = styled.a`
   text-decoration: underline;
 `
 
+/*
 class PageRoot extends React.Component {
   lastReadModels = []
   lastChildren = null
@@ -162,6 +163,7 @@ class PageRoot extends React.Component {
 PageRoot.contextTypes = {
   store: PropTypes.object.isRequired
 }
+*/
 
 const Layout = ({ children }) => (
   <div>
@@ -207,7 +209,8 @@ const Layout = ({ children }) => (
         <LoginInfo />
       </PageHeader>
       <Content>
-        <PageRoot>{children}</PageRoot>
+        {/*<PageRoot>{children}</PageRoot>*/}
+        {children}
       </Content>
       <Footer>
         <FooterLink href="https://github.com/reimagined/resolve">

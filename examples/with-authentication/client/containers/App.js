@@ -1,23 +1,15 @@
 import React from 'react'
 import { connectReadModel } from 'resolve-redux'
+import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 
 import Login from '../components/Login'
 import Logout from '../components/Logout'
 import Header from '../components/Header'
 
-const getReadModelData = state => {
-  try {
-    return { me: state.readModels['me']['me'] }
-  } catch (err) {
-    return { me: null, loading: true }
-  }
-}
-
 export class App extends React.PureComponent {
   render() {
-    let LoginComponent =
-      this.props.data.loading || !this.props.data.me ? Login : Logout
+    let LoginComponent = !this.props.me.name ? Login : Logout
 
     return (
       <div>
@@ -34,18 +26,23 @@ export class App extends React.PureComponent {
         <Header />
 
         <div className="example-wrapper">
-          <LoginComponent
-            username={this.props.data.me && this.props.data.me.name}
-          />
+          <LoginComponent username={this.props.me && this.props.me.name} />
         </div>
       </div>
     )
   }
 }
 
-export default connectReadModel(state => ({
+const mapStateToOptions = () => ({
   readModelName: 'me',
   resolverName: 'me',
-  parameters: {},
-  data: getReadModelData(state)
-}))(App)
+  resolverArgs: {}
+})
+
+const mapStateToProps = (state, { data }) => ({
+  me: data || {}
+})
+
+export default connectReadModel(mapStateToOptions)(
+  connect(mapStateToProps)(App)
+)

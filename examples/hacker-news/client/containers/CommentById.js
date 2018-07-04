@@ -1,11 +1,27 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import uuid from 'uuid'
-import { connectReadModel, connectViewModel } from 'resolve-redux'
+import { connectViewModel } from 'resolve-redux'
+import { connect } from 'react-redux'
 import styled from 'styled-components'
 
 import Comment from '../components/Comment'
 import ChildrenComments from '../components/ChildrenComments'
+
+// TODO remove
+import { createActions } from 'resolve-redux'
+import userCommands from '../../common/aggregates/user.commands'
+import storyCommands from '../../common/aggregates/story.commands'
+const aggregateActions = {
+  ...createActions({
+    name: 'user',
+    commands: userCommands
+  }),
+  ...createActions({
+    name: 'story',
+    commands: storyCommands
+  })
+}
 
 const Reply = styled.div`
   padding: 1em 1.25em 0 1.25em;
@@ -14,10 +30,10 @@ const Reply = styled.div`
 
 export class CommentById extends React.PureComponent {
   saveComment = () => {
-    const { parentId, aggregateId } = this.props
+    const { parentId, story } = this.props
 
     this.props.commentStory({
-      aggregateId,
+      aggregateId: story.id,
       parentId,
       text: this.textarea.value
     })
@@ -26,11 +42,8 @@ export class CommentById extends React.PureComponent {
   }
 
   render() {
-    const {
-      data: { me },
-      story,
-      parentId
-    } = this.props
+    const { me, story, parentId } = this.props
+
     const loggedIn = !!me
 
     if (!story || !story.comments) {
@@ -66,21 +79,34 @@ export class CommentById extends React.PureComponent {
   }
 }
 
+export const mapStateToOptions = (
+  state,
+  {
+    match: {
+      params: { storyId }
+    }
+  }
+) => ({
+  viewModelName: 'storyDetails',
+  aggregateIds: [storyId]
+})
+
 export const mapStateToProps = (
   state,
   {
     match: {
-      params: { storyId, commentId }
-    }
+      params: { commentId }
+    },
+    data
   }
 ) => ({
-  story: state.viewModels['storyDetails'][storyId],
-  viewModelName: 'storyDetails',
-  aggregateId: storyId,
-  parentId: commentId
+  story: data,
+  parentId: commentId,
+  me: state.jwt
 })
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+// TODO: magic aggregateActions
+export const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       commentStory: ({ aggregateId, parentId, text }) =>
@@ -93,27 +119,9 @@ export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
     dispatch
   )
 
-const getReadModelData = state => {
-  try {
-    return { me: state.readModels['default']['user'] }
-  } catch (err) {
-    return { me: null }
-  }
-}
-
-export default connectReadModel(
-  state => ({
-    readModelName: 'default',
-    resolverName: 'user',
-    parameters: {},
-    data: getReadModelData(state)
-  }),
-  (dispatch, { aggregateActions }) =>
-    bindActionCreators(
-      {
-        upvoteStory: aggregateActions.upvoteStory,
-        unvoteStory: aggregateActions.unvoteStory
-      },
-      dispatch
-    )
-)(connectViewModel(mapStateToProps, mapDispatchToProps)(CommentById))
+export default connectViewModel(mapStateToOptions)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(CommentById)
+)

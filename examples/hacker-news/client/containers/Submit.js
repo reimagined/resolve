@@ -5,7 +5,21 @@ import { Redirect } from 'react-router'
 import { bindActionCreators } from 'redux'
 import urlLib from 'url'
 import styled from 'styled-components'
-import { connectReadModel } from 'resolve-redux'
+
+// TODO remove
+import { createActions } from 'resolve-redux'
+import userCommands from '../../common/aggregates/user.commands'
+import storyCommands from '../../common/aggregates/story.commands'
+const aggregateActions = {
+  ...createActions({
+    name: 'user',
+    commands: userCommands
+  }),
+  ...createActions({
+    name: 'story',
+    commands: storyCommands
+  })
+}
 
 const labelWidth = '30px'
 
@@ -77,7 +91,7 @@ export class Submit extends React.PureComponent {
   }
 
   render() {
-    if (!this.props.data.loading && !this.props.data.me) {
+    if (!this.props.me) {
       return <Redirect to="/login?redirect=/submit" />
     }
 
@@ -122,7 +136,11 @@ export class Submit extends React.PureComponent {
   }
 }
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+export const mapStateToProps = state => ({
+  me: state.jwt
+})
+
+export const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       createStory: ({ id, title, text, link }) =>
@@ -135,28 +153,7 @@ export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
     dispatch
   )
 
-const getReadModelData = state => {
-  try {
-    return {
-      me: state.readModels['default']['user'].me,
-      loading: false
-    }
-  } catch (err) {
-    return {
-      me: null,
-      loading: true
-    }
-  }
-}
-
-export default connectReadModel(state => ({
-  readModelName: 'default',
-  resolverName: 'user',
-  parameters: {},
-  data: getReadModelData(state)
-}))(
-  connect(
-    null,
-    mapDispatchToProps
-  )(Submit)
-)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Submit)
