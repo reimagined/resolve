@@ -1,6 +1,6 @@
 {
   "name": "with-postcss-modules",
-  "version": "0.12.1",
+  "version": "0.12.3",
   "private": true,
   "scripts": {
     "build": "resolve-scripts build",
@@ -20,7 +20,7 @@
     "react-dom": "^16.4.0",
     "redux": "^3.7.2",
     "react-helmet": "^5.2.0",
-    "resolve-scripts": "0.12.1"
+    "resolve-scripts": "0.12.3"
   },
   "devDependencies": {
     "autoprefixer": "^8.5.1",
