@@ -1,6 +1,6 @@
 {
-  "name": "resolve-subscribe-mqtt",
-  "version": "0.12.1",
+  "name": "resolve-subscribe-socket.io",
+  "version": "0.12.2",
   "description": "This package serves as an adapter for resolve-redux subscribe to events.",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
@@ -20,10 +20,8 @@
     "ddd"
   ],
   "dependencies": {
-    "mqtt": "^2.18.1",
-    "ws": "^5.2.1",
-    "websocket-stream": "^5.1.2",
-    "mqtt-connection": "^4.0.0"
+    "socket.io": "^2.1.1",
+    "socket.io-client": "^2.1.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.51",
@@ -37,5 +35,5 @@
     "regenerator-runtime": "^0.12.0",
     "jest": "^23.3.0"
   },
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/subscribe-adapters/resolve-subscribe-mqtt#readme"
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/subscribe-adapters/resolve-subscribe-socket.io#readme"
 }
