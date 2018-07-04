@@ -92,6 +92,8 @@ import { connect } from 'react-redux'
 import { connectViewModel } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
 
+const MyComponent = () => { /* React component implementation */ }
+
 const mapStateToOptions = (state, ownProps) => ({
   viewModelName,
   aggregateIds
@@ -117,8 +119,10 @@ export default connectViewModel(mapStateToOptions)(
 
 ```js
 import { connect } from 'react-redux'
-import { connectViewModel } from 'resolve-redux'
+import { connectReadModel } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
+
+const MyComponent = () => { /* React component implementation */ }
 
 const mapStateToOptions = (state, ownProps) => {
   return {
