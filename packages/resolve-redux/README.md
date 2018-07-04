@@ -7,8 +7,8 @@ This package contains tools for integrating reSolve with [Redux](http://redux.js
 * [createReadModelsReducer](#createreadmodelsreducer)
 * [createJwtReducer](#createjwtreducer)
 * [createResolveMiddleware](#createresolvemiddleware)
-* [connectViewModel](#connectViewModel)
-* [connectReadModel](#connectReadModel)
+* [connectViewModel](#connectviewmodel)
+* [connectReadModel](#connectreadmodel)
 * [createActions](#createactions)
 * [action creators](#actioncreators)
 
