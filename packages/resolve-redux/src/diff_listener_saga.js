@@ -1,7 +1,7 @@
 import { take, put, select } from 'redux-saga/effects'
 
 import { diffMessageType, diffVersionsMap } from './constants'
-import { CONNECT_READMODEL, DISPATCH_MQTT_MESSAGE } from './action_types'
+import { CONNECT_READMODEL, DISPATCH_TOPIC_MESSAGE } from './action_types'
 import { applyReadModelDiff } from './actions'
 import getHash from './get_hash'
 import unsubscribeReadModelTopicsSaga from './unsubscribe_read_model_topics_saga'
@@ -15,7 +15,7 @@ const diffListenerSaga = function*(
   while (true) {
     const { message } = yield take(action => {
       return (
-        action.type === DISPATCH_MQTT_MESSAGE &&
+        action.type === DISPATCH_TOPIC_MESSAGE &&
         action.message.type === diffMessageType &&
         action.message.queryId === queryId
       )

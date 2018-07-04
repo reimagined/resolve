@@ -5,10 +5,7 @@ import hash from 'uuid'
 import getHash from './get_hash'
 import diffListenerSaga from './diff_listener_saga'
 import unsubscribeReadModelTopicsSaga from './unsubscribe_read_model_topics_saga'
-import {
-  subscribeTopicRequest,
-  loadReadModelStateRequest
-} from './actions'
+import { subscribeTopicRequest, loadReadModelStateRequest } from './actions'
 import {
   CONNECT_READMODEL,
   DISCONNECT_READMODEL,

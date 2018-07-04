@@ -2,7 +2,7 @@ import { take, put, select } from 'redux-saga/effects'
 
 import getHash from './get_hash'
 import { aggregateVersionsMap } from './constants'
-import { CONNECT_VIEWMODEL, DISPATCH_MQTT_MESSAGE } from './action_types'
+import { CONNECT_VIEWMODEL, DISPATCH_TOPIC_MESSAGE } from './action_types'
 import unsubscribeViewModelTopicsSaga from './unsubscribe_view_model_topics_saga'
 
 const eventListenerSaga = function*(
@@ -14,7 +14,7 @@ const eventListenerSaga = function*(
   while (true) {
     const { message: event } = yield take(
       action =>
-        action.type === DISPATCH_MQTT_MESSAGE &&
+        action.type === DISPATCH_TOPIC_MESSAGE &&
         (eventTypes.indexOf(action.message.type) > -1 &&
           (connectAction.aggregateIds === '*' ||
             connectAction.aggregateIds.indexOf(action.message.agggregateId)))

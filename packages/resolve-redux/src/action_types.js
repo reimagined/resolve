@@ -4,7 +4,7 @@ export const SEND_COMMAND_FAILURE = '@@resolve/SEND_COMMAND_FAILURE'
 
 //
 
-export const DISPATCH_MQTT_MESSAGE = '@@resolve/DISPATCH_MQTT_MESSAGE'
+export const DISPATCH_TOPIC_MESSAGE = '@@resolve/DISPATCH_TOPIC_MESSAGE'
 
 //
 

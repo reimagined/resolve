@@ -4,7 +4,7 @@ import {
   CONNECT_VIEWMODEL,
   DISCONNECT_READMODEL,
   DISCONNECT_VIEWMODEL,
-  DISPATCH_MQTT_MESSAGE,
+  DISPATCH_TOPIC_MESSAGE,
   DROP_READMODEL_STATE,
   DROP_VIEWMODEL_STATE,
   HOT_MODULE_REPLACEMENT,
@@ -34,7 +34,7 @@ import {
   connectViewModel,
   disconnectReadModel,
   disconnectViewModel,
-  dispatchMqttMessage,
+  dispatchTopicMessage,
   dropReadModelState,
   dropViewModelState,
   hotModuleReplacement,
@@ -150,11 +150,11 @@ describe('actions', () => {
     })
   })
 
-  describe('dispatchMqttMessage', () => {
+  describe('dispatchTopicMessage', () => {
     test('should create an action to dispatch mqtt message', () => {
       const message = { payload: {} }
-      expect(dispatchMqttMessage(message)).toEqual({
-        type: DISPATCH_MQTT_MESSAGE,
+      expect(dispatchTopicMessage(message)).toEqual({
+        type: DISPATCH_TOPIC_MESSAGE,
         message
       })
     })

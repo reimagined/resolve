@@ -1,5 +1,3 @@
-import uuid from 'uuid/v4'
-
 import {
   SEND_COMMAND_REQUEST,
   SEND_COMMAND_SUCCESS,
@@ -23,7 +21,7 @@ import {
   LOAD_READMODEL_STATE_FAILURE,
   APPLY_READMODEL_DIFF,
   DROP_READMODEL_STATE,
-  DISPATCH_MQTT_MESSAGE,
+  DISPATCH_TOPIC_MESSAGE,
   HOT_MODULE_REPLACEMENT,
   STOP_READ_MODEL_SUBSCRIPTION_REQUEST,
   STOP_READ_MODEL_SUBSCRIPTION_SUCCESS,
@@ -298,8 +296,8 @@ export const stopReadModelSubscriptionFailure = (queryId, error) => ({
   error
 })
 
-export const dispatchMqttMessage = message => ({
-  type: DISPATCH_MQTT_MESSAGE,
+export const dispatchTopicMessage = message => ({
+  type: DISPATCH_TOPIC_MESSAGE,
   message
 })
 
