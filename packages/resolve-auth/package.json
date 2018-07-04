@@ -1,6 +1,6 @@
 {
   "name": "resolve-auth",
-  "version": "0.12.2",
+  "version": "0.12.3",
   "description": "This package provide an auth to your app.",
   "main": "./dist/index.js",
   "bugs": {
@@ -14,9 +14,13 @@
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
-  "homepage":
-    "https://github.com/reimagined/resolve/tree/master/packages/resolve-auth#readme",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-auth#readme",
   "dependencies": {
     "cookie": "^0.3.1"
   },

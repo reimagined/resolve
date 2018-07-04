@@ -1,6 +1,6 @@
 {
   "name": "resolve-es",
-  "version": "0.12.2",
+  "version": "0.12.3",
   "description": "This package serves as an event-store.",
   "main": "./dist/index.js",
   "bugs": {
@@ -14,9 +14,13 @@
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
-  "homepage":
-    "https://github.com/reimagined/resolve/tree/master/packages/resolve-es#readme",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-es#readme",
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.49",
     "@babel/core": "^7.0.0-beta.49",
