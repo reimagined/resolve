@@ -10,7 +10,7 @@ This package contains tools for integrating reSolve with [Redux](http://redux.js
 * [connectViewModel](#connectviewmodel)
 * [connectReadModel](#connectreadmodel)
 * [createActions](#createactions)
-* [action creators](#actioncreators)
+* [action creators](#action-creators)
 
 ### `createViewModelsReducer`
 
@@ -152,7 +152,7 @@ export default connectReadModel(mapStateToOptions)(
   * `aggregate` -  reSolve aggregate
   * `extendActions` - actions to extend or redefine resulting actions
 
-### `actionCreators`
+### `action creators`
 
   * #### `sendCommandRequest`
     Request sending command to the server side. It takes the object with the following required arguments:
