@@ -9,8 +9,8 @@
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
-    "test": "exit 0",
-    "testw": "exit 0"
+    "test": "echo || exit 0",
+    "testw": "echo || exit 0"
   },
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
