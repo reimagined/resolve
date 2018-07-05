@@ -45,8 +45,7 @@ export const mapStateToOptions = (
   resolverArgs: {
     offset: ITEMS_PER_PAGE + 1,
     first: (+page - 1) * ITEMS_PER_PAGE
-  },
-  isReactive: false
+  }
 })
 
 export const mapStateToProps = (
