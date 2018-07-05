@@ -8396,22 +8396,6 @@ reserved-words@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/reserved-words/-/reserved-words-0.1.2.tgz#00a0940f98cd501aeaaac316411d9adc52b31ab1"
 
-resolve-auth@0.12.3:
-  version "0.12.3"
-  resolved "https://registry.yarnpkg.com/resolve-auth/-/resolve-auth-0.12.3.tgz#fb81d8ed098270a460cc3ce6a64e414f3d47dab4"
-  dependencies:
-    cookie "^0.3.1"
-
-resolve-bus-memory@0.12.3:
-  version "0.12.3"
-  resolved "https://registry.yarnpkg.com/resolve-bus-memory/-/resolve-bus-memory-0.12.3.tgz#733c2d6300e15344bf5b7edcaa05deb412a26bb3"
-
-resolve-command@0.12.3:
-  version "0.12.3"
-  resolved "https://registry.yarnpkg.com/resolve-command/-/resolve-command-0.12.3.tgz#335521fb28c1033a7168559056e43c7b6ea0c557"
-  dependencies:
-    invariant-function-hash "^1.0.1"
-
 resolve-cwd@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/resolve-cwd/-/resolve-cwd-1.0.0.tgz#4eaeea41ed040d1702457df64a42b2b07d246f9f"
@@ -8423,10 +8407,6 @@ resolve-cwd@^2.0.0:
   resolved "https://registry.yarnpkg.com/resolve-cwd/-/resolve-cwd-2.0.0.tgz#00a9f7387556e27038eae232caa372a6a59b665a"
   dependencies:
     resolve-from "^3.0.0"
-
-resolve-es@0.12.3:
-  version "0.12.3"
-  resolved "https://registry.yarnpkg.com/resolve-es/-/resolve-es-0.12.3.tgz#f7cf3fadea928cc504299a280c60a034d7e39a3e"
 
 resolve-from@^1.0.0:
   version "1.0.1"
@@ -8447,49 +8427,6 @@ resolve-from@^4.0.0:
 resolve-pathname@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/resolve-pathname/-/resolve-pathname-2.2.0.tgz#7e9ae21ed815fd63ab189adeee64dc831eefa879"
-
-resolve-query@0.12.3:
-  version "0.12.3"
-  resolved "https://registry.yarnpkg.com/resolve-query/-/resolve-query-0.12.3.tgz#8c2447647ce46c1e7a542b10c8d0d234e9dcf6cc"
-  dependencies:
-    diff-json "^0.1.11"
-    invariant-function-hash "^1.0.1"
-    resolve-readmodel-memory "0.12.3"
-
-resolve-readmodel-base@0.12.3:
-  version "0.12.3"
-  resolved "https://registry.yarnpkg.com/resolve-readmodel-base/-/resolve-readmodel-base-0.12.3.tgz#885ef391d069c242176f821dea503c62f50c5e68"
-  dependencies:
-    uuid "^3.2.1"
-
-resolve-readmodel-memory@0.12.3:
-  version "0.12.3"
-  resolved "https://registry.yarnpkg.com/resolve-readmodel-memory/-/resolve-readmodel-memory-0.12.3.tgz#007e79e4ff23bdf3d81059475607b3b21fdcb6b2"
-  dependencies:
-    nedb "^1.8.0"
-    resolve-readmodel-base "0.12.3"
-    uuid "^3.2.1"
-
-resolve-redux@0.12.3:
-  version "0.12.3"
-  resolved "https://registry.yarnpkg.com/resolve-redux/-/resolve-redux-0.12.3.tgz#3cd9620449799f5cfc72fb25a85b2c3da797ef80"
-  dependencies:
-    diff-json "^0.1.11"
-    isomorphic-fetch "^2.2.1"
-    prop-types "^15.6.1"
-    react-redux "^5.0.7"
-    socket.io-client "^2.1.1"
-
-resolve-storage-base@0.12.3:
-  version "0.12.3"
-  resolved "https://registry.yarnpkg.com/resolve-storage-base/-/resolve-storage-base-0.12.3.tgz#951358259632593fe3ae4828c7b7eb9d3cee9bc7"
-
-resolve-storage-lite@0.12.3:
-  version "0.12.3"
-  resolved "https://registry.yarnpkg.com/resolve-storage-lite/-/resolve-storage-lite-0.12.3.tgz#34aea20087276b1d9ba23b7c7d10e358f43af145"
-  dependencies:
-    nedb "^1.8.0"
-    resolve-storage-base "0.12.3"
 
 resolve-url@^0.2.1:
   version "0.2.1"
