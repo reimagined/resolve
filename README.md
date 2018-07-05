@@ -84,7 +84,7 @@ You can develop and run **reSolve** applications on **Linux**, **Mac** and **Win
 
 The minimum supported **NodeJS** version is **8.0.0**.
 
-**reSolve** supports [**npx**](https://www.npmjs.com/package/npx), [**yarn**](https://yarnpkg.com/lang/en/), and [**npm**](https://www.npmjs.com/) package tools.
+**reSolve** supports [**npx**](https://www.npmjs.com/package/npx), [**yarn**](https://yarnpkg.com/lang/en/), and [**npm**](https://www.npmjs.com/).
 
 Learn more in [documentation topics](https://github.com/reimagined/resolve/tree/master/docs).
 
