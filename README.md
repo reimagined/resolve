@@ -82,7 +82,7 @@ Instead of npx you can also use npm or yarn tools:
 
 You can develop and run **reSolve** applications on **Linux**, **Mac** and **Windows** operating systems. It is also possible to integrate **reSolve** with the **React Native**, but this approach is currently experimental.
 
-The minimum supported **NodeJS** version is **6.0.0**.
+The minimum supported **NodeJS** version is **8.0.0**.
 
 **reSolve** supports [**npx**](https://www.npmjs.com/package/npx), [**yarn**](https://yarnpkg.com/lang/en/), and [**npm**](https://www.npmjs.com/) package managers.
 
