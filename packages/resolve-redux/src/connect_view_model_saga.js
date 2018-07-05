@@ -1,4 +1,5 @@
 import { take, put } from 'redux-saga/effects'
+import { delay } from 'redux-saga'
 
 import getHash from './get_hash'
 import eventListenerSaga from './event_listener_saga'
@@ -11,6 +12,7 @@ import {
   LOAD_VIEWMODEL_STATE_FAILURE,
   LOAD_VIEWMODEL_STATE_SUCCESS
 } from './action_types'
+import { HttpError } from './create_api'
 
 const connectViewModelSaga = function*(sagaArgs, action) {
   const {
@@ -106,12 +108,23 @@ const connectViewModelSaga = function*(sagaArgs, action) {
         (action.type === LOAD_VIEWMODEL_STATE_SUCCESS ||
           action.type === LOAD_VIEWMODEL_STATE_FAILURE) &&
         (action.viewModelName === viewModelName &&
-          `${action.aggregateIds}${action.aggregateArgs}` === connectionId)
+          `${getHash(action.aggregateIds)}${getHash(action.aggregateArgs)}` ===
+            connectionId)
     )
 
     if (loadViewModelStateResultAction.type === LOAD_VIEWMODEL_STATE_SUCCESS) {
       break
     }
+
+    if (
+      loadViewModelStateResultAction.type === LOAD_VIEWMODEL_STATE_FAILURE &&
+      loadViewModelStateResultAction.error instanceof HttpError
+    ) {
+      console.warn('Http error: ', loadViewModelStateResultAction.error)
+      return
+    }
+
+    yield delay(500)
   }
 }
 

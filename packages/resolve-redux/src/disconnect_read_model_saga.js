@@ -1,4 +1,5 @@
 import { take, put } from 'redux-saga/effects'
+import { delay } from 'redux-saga'
 import hash from 'uuid/v3'
 
 import getHash from './get_hash'
@@ -11,6 +12,7 @@ import {
 
 import { namespace } from './constants'
 import unsubscribeReadModelTopicsSaga from './unsubscribe_read_model_topics_saga'
+import { HttpError } from './create_api'
 
 const disconnectReadModelSaga = function*(sagaArgs, action) {
   const {
@@ -64,6 +66,17 @@ const disconnectReadModelSaga = function*(sagaArgs, action) {
     ) {
       break
     }
+
+    if (
+      stopSubscriptionResultAction.type ===
+        STOP_READ_MODEL_SUBSCRIPTION_FAILURE &&
+      stopSubscriptionResultAction.error instanceof HttpError
+    ) {
+      console.warn('Http error: ', stopSubscriptionResultAction.error)
+      return
+    }
+
+    yield delay(500)
   }
 }
 

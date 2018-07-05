@@ -1,11 +1,15 @@
 import getRootBasedUrl from './get_root_based_url'
 import { isReactiveArg } from './constants'
 
+export class FetchError extends Error {}
+
+export class HttpError extends Error {}
+
 const createApi = ({ origin, rootPath }) => ({
   async loadViewModelState({ viewModelName, aggregateIds, aggregateArgs }) {
-    const response = await fetch(
-      getRootBasedUrl(origin, rootPath, '/api/query'),
-      {
+    let response, result
+    try {
+      response = await fetch(getRootBasedUrl(origin, rootPath, '/api/query'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'same-origin',
@@ -14,14 +18,20 @@ const createApi = ({ origin, rootPath }) => ({
           aggregateIds,
           aggregateArgs
         })
-      }
-    )
-
-    if (!response.ok) {
-      throw new Error(response.text())
+      })
+    } catch (error) {
+      throw new FetchError(error.message)
     }
 
-    const result = await response.json()
+    if (!response.ok) {
+      throw new HttpError(response.text())
+    }
+
+    try {
+      result = await response.json()
+    } catch (error) {
+      throw new HttpError(error.message)
+    }
 
     return result
   },
@@ -33,12 +43,12 @@ const createApi = ({ origin, rootPath }) => ({
     isReactive,
     queryId
   }) {
-    const pureResolverArgs = { ...resolverArgs }
-    delete pureResolverArgs[isReactiveArg]
+    let response, result
+    try {
+      const pureResolverArgs = { ...resolverArgs }
+      delete pureResolverArgs[isReactiveArg]
 
-    const response = await fetch(
-      getRootBasedUrl(origin, rootPath, '/api/query'),
-      {
+      response = await fetch(getRootBasedUrl(origin, rootPath, '/api/query'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'same-origin',
@@ -49,20 +59,28 @@ const createApi = ({ origin, rootPath }) => ({
           isReactive,
           queryId
         })
-      }
-    )
-
-    if (!response.ok) {
-      throw new Error(response.text())
+      })
+    } catch (error) {
+      throw new FetchError(error.message)
     }
 
-    return await response.json()
+    if (!response.ok) {
+      throw new HttpError(response.text())
+    }
+
+    try {
+      result = await response.json()
+    } catch (error) {
+      throw new HttpError(error.message)
+    }
+
+    return result
   },
 
   async stopReadModelSubscription({ queryId }) {
-    const response = await fetch(
-      getRootBasedUrl(origin, rootPath, '/api/query'),
-      {
+    let response
+    try {
+      response = await fetch(getRootBasedUrl(origin, rootPath, '/api/query'), {
         method: 'POST',
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
@@ -70,32 +88,39 @@ const createApi = ({ origin, rootPath }) => ({
           queryId,
           stopReadModelSubscription: true
         })
-      }
-    )
+      })
+    } catch (error) {
+      throw new FetchError(error.message)
+    }
 
     if (!response.ok) {
-      throw new Error(response.text())
+      throw new HttpError(response.text())
     }
   },
 
   async sendCommand({ commandType, aggregateId, aggregateName, payload }) {
-    const response = await fetch(
-      getRootBasedUrl(origin, rootPath, '/api/commands'),
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'same-origin',
-        body: JSON.stringify({
-          type: commandType,
-          aggregateId,
-          aggregateName,
-          payload
-        })
-      }
-    )
+    let response
+    try {
+      response = await fetch(
+        getRootBasedUrl(origin, rootPath, '/api/commands'),
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin',
+          body: JSON.stringify({
+            type: commandType,
+            aggregateId,
+            aggregateName,
+            payload
+          })
+        }
+      )
+    } catch (error) {
+      throw new FetchError(error.message)
+    }
 
     if (!response.ok) {
-      throw new Error(response.text())
+      throw new HttpError(response.text())
     }
   },
 

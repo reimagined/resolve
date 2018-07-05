@@ -10,9 +10,12 @@ const Link = ({ to, children, className, style, pushRoute }) => (
     href={to}
     onClick={event => {
       event.preventDefault()
-      event.cancelBubble = true
-      event.returnValue = false
-      setTimeout(() => pushRoute(to), 0)
+      event.stopPropagation()
+      setTimeout(() => {
+        if (pushRoute) {
+          pushRoute(to)
+        }
+      }, 0)
       return false
     }}
   >

@@ -14,6 +14,7 @@ const createSagaManager = () => {
 
       return sagaId
     },
+
     *stop(key, callback) {
       if (Array.isArray(sagas[key])) {
         for (const sagaId of sagas[key]) {

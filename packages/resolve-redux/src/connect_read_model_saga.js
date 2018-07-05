@@ -16,6 +16,7 @@ import {
 } from './action_types'
 
 import { diffTopicName, namespace } from './constants'
+import { HttpError } from './create_api'
 
 const connectReadModelSaga = function*(sagaArgs, action) {
   const {
@@ -122,6 +123,16 @@ const connectReadModelSaga = function*(sagaArgs, action) {
 
       break
     }
+
+    if (
+      loadReadModelStateResultAction.type === LOAD_READMODEL_STATE_FAILURE &&
+      loadReadModelStateResultAction.error instanceof HttpError
+    ) {
+      console.warn('Http error: ', loadReadModelStateResultAction.error)
+      return
+    }
+
+    yield delay(500)
   }
 }
 
