@@ -1,12 +1,19 @@
 import { actionTypes } from 'resolve-redux'
+import { routerActions } from 'react-router-redux'
 
 import {
   OPTIMISTIC_STORY_UPVOTED,
-  OPTIMISTIC_STORY_UNVOTED
+  OPTIMISTIC_STORY_UNVOTED,
+  ROUTE_CHANGED
 } from '../actions/actionTypes'
 import { rootDirectory } from '../constants'
 
-const { SEND_COMMAND_SUCCESS, SEND_COMMAND_FAILURE } = actionTypes
+const {
+  SEND_COMMAND_SUCCESS,
+  SEND_COMMAND_FAILURE,
+  LOAD_VIEWMODEL_STATE_SUCCESS,
+  LOAD_READMODEL_STATE_SUCCESS
+} = actionTypes
 
 const storyCreateMiddleware = () => next => action => {
   if (
@@ -47,4 +54,22 @@ const optimisticVotingMiddleware = store => next => action => {
   next(action)
 }
 
-export default [storyCreateMiddleware, optimisticVotingMiddleware]
+const routeChangeMiddleware = store => next => action => {
+  if (
+    action.type === LOAD_VIEWMODEL_STATE_SUCCESS ||
+    action.type === LOAD_READMODEL_STATE_SUCCESS
+  ) {
+    const route = store.getState().prefetchRoute
+    if (route) {
+      store.dispatch(routerActions.push(route))
+    }
+  }
+
+  next(action)
+}
+
+export default [
+  storyCreateMiddleware,
+  optimisticVotingMiddleware,
+  routeChangeMiddleware
+]

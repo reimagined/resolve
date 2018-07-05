@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import Link from '../containers/Link'
 import styled, { css } from 'styled-components'
 
 import Splitter from './Splitter'

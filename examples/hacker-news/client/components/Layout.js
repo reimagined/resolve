@@ -1,11 +1,11 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import { NavLink } from 'react-router-dom'
+import NavLink from '../containers/Link'
 import { Helmet } from 'react-helmet'
 import styled from 'styled-components'
 
 import Splitter from './Splitter'
 import LoginInfo from '../containers/LoginInfo'
+import PagePreloader from '../containers/PagePreloader'
 import { rootDirectory } from '../constants'
 
 const ContentRoot = styled.div`
@@ -184,6 +184,7 @@ const Layout = ({ children }) => (
         href={`${rootDirectory}/style.css`}
       />
     </Helmet>
+    <PagePreloader />
     <ContentRoot>
       <PageHeader>
         <Link to="/">
@@ -194,7 +195,7 @@ const Layout = ({ children }) => (
             alt=""
           />
         </Link>
-        <Link to="/">
+        <Link to="/newest">
           <PageTitle>reSolve HN</PageTitle>
         </Link>{' '}
         <Link to="/newest">new</Link>

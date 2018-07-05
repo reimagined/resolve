@@ -83,12 +83,17 @@ export const mapStateToOptions = (
   state,
   {
     match: {
-      params: { storyId }
+      params: { storyId, commentId }
     }
   }
 ) => ({
   viewModelName: 'storyDetails',
-  aggregateIds: [storyId]
+  aggregateIds: [storyId],
+  aggregateArgs: {
+    page: 'CommentById',
+    storyId,
+    commentId
+  }
 })
 
 export const mapStateToProps = (

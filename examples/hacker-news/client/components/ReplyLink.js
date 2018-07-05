@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import Link from '../containers/Link'
 import styled from 'styled-components'
 
 const StyledLink = styled(Link)`
