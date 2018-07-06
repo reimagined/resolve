@@ -4,6 +4,7 @@ import express from 'express'
 import cookieParser from 'cookie-parser'
 import bodyParser from 'body-parser'
 
+import { app, server } from './server'
 import getRootBasedUrl from './utils/get_root_based_url'
 import serverSideRendering from './server_side_rendering'
 import startServer from './start_server'
@@ -14,26 +15,12 @@ import sagaRunner from './saga_runner'
 import assignAuthRoutes from './assign_auth_routes'
 import eventStore from './event_store'
 import pubsubManager from './pubsub_manager'
+import subscribeHandler from './subscribe_handler'
+import subscribeAdapter from './subscribe_adapter'
 
 import staticDir from '$resolve.staticDir'
 import distDir from '$resolve.distDir'
 import jwtCookie from '$resolve.jwtCookie'
-import serverSubscribeAdapter from '$resolve.subscribeAdapter'
-
-const app = express()
-const server = new Server(app)
-
-const createSubscribeAdapter = serverSubscribeAdapter.module
-
-// TODO !!!!
-const subscribeAdapter = createSubscribeAdapter({
-  pubsubManager,
-  server,
-  getRootBasedUrl,
-  qos: 1,
-  appId: 'resolve',
-  ...serverSubscribeAdapter.options
-})
 
 subscribeAdapter.init().then(() => {
   eventStore.subscribeOnBus(event => {
@@ -60,6 +47,7 @@ assignAuthRoutes(app)
 app.use(getRootBasedUrl('/api/commands'), commandHandler)
 app.use(getRootBasedUrl('/api/query'), queryHandler)
 app.use(getRootBasedUrl('/api/status'), statusHandler)
+app.use(getRootBasedUrl('/api/subscribe'), subscribeHandler)
 
 app.use(getRootBasedUrl('/'), express.static(`${distDir}/client`))
 app.use(getRootBasedUrl('/'), express.static(staticDir))

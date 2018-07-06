@@ -1,17 +1,20 @@
 import { Server as WebSocketServer } from 'ws'
 
+import Url from 'url'
+
 import createServerHandler from './create_server_handler'
 import {
   subscribeAdapterNotInitialized,
   subscribeAdapterAlreadyInitialized
 } from './constants'
 
+const qos = 1
+
 const createServerAdapter = ({
   server,
   getRootBasedUrl,
   pubsubManager,
-  appId,
-  qos
+  appId
 }) => {
   let isInitialized = false
   let socketMqttServer = null
@@ -28,7 +31,7 @@ const createServerAdapter = ({
         socketMqttServer = new WebSocketServer(
           {
             server,
-            path: getRootBasedUrl('/mqtt')
+            path: getRootBasedUrl('/api/mqtt')
           },
           error => (error ? reject(error) : resolve())
         )
@@ -51,6 +54,25 @@ const createServerAdapter = ({
 
         isInitialized = false
       })
+    },
+
+    async getOptions(origin) {
+      if (!isInitialized) {
+        throw new Error(subscribeAdapterNotInitialized)
+      }
+
+      const { protocol, hostname, port } = Url.parse(origin)
+
+      const wsProtocol = /^https/.test(protocol) ? 'wss' : 'ws'
+
+      const url = `${wsProtocol}://${hostname}:${port}${getRootBasedUrl(
+        '/api/mqtt'
+      )}`
+
+      return {
+        appId,
+        url
+      }
     }
   }
 }

@@ -125,11 +125,35 @@ const createApi = ({ origin, rootPath }) => ({
   },
 
   async getSubscribeAdapterOptions() {
-    // TODO
-    return {
-      appId: 'resolve',
-      url: 'ws://localhost:3000/mqtt'
+    let response, result
+    try {
+      response = await fetch(
+        getRootBasedUrl(origin, rootPath, '/api/subscribe'),
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin',
+          body: JSON.stringify({
+            origin,
+            rootPath
+          })
+        }
+      )
+    } catch (error) {
+      throw new FetchError(error.message)
     }
+
+    if (!response.ok) {
+      throw new HttpError(response.text())
+    }
+
+    try {
+      result = await response.json()
+    } catch (error) {
+      throw new HttpError(error.message)
+    }
+
+    return result
   }
 })
 
