@@ -12,6 +12,9 @@ import deserializeInitialState from './store/deserialize_initial_state'
 import routes from '$resolve.routes'
 
 import rootPath from '$resolve.rootPath'
+// TODO
+import aggregateActions from '$resolve.aggregateActions'
+console.log(aggregateActions)
 
 const initialState = deserializeInitialState(window.__INITIAL_STATE__)
 
