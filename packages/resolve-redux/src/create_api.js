@@ -1,5 +1,5 @@
 import getRootBasedUrl from './get_root_based_url'
-import { isReactiveArg } from './constants'
+import { isReactiveArg, queryIdArg, stopSubscriptionArg } from './constants'
 
 export class FetchError extends Error {}
 
@@ -9,16 +9,22 @@ const createApi = ({ origin, rootPath }) => ({
   async loadViewModelState({ viewModelName, aggregateIds, aggregateArgs }) {
     let response, result
     try {
-      response = await fetch(getRootBasedUrl(origin, rootPath, '/api/query'), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'same-origin',
-        body: JSON.stringify({
-          viewModelName,
-          aggregateIds,
-          aggregateArgs
-        })
-      })
+      const queryAggregateIds =
+        aggregateIds === '*' ? aggregateIds : aggregateIds.join(',')
+
+      response = await fetch(
+        getRootBasedUrl(
+          origin,
+          rootPath,
+          `/api/query/${viewModelName}/${queryAggregateIds}`
+        ),
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin',
+          body: JSON.stringify(aggregateArgs)
+        }
+      )
     } catch (error) {
       throw new FetchError(error.message)
     }
@@ -45,21 +51,23 @@ const createApi = ({ origin, rootPath }) => ({
   }) {
     let response, result
     try {
-      const pureResolverArgs = { ...resolverArgs }
-      delete pureResolverArgs[isReactiveArg]
-
-      response = await fetch(getRootBasedUrl(origin, rootPath, '/api/query'), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'same-origin',
-        body: JSON.stringify({
-          readModelName,
-          resolverName,
-          resolverArgs: pureResolverArgs,
-          isReactive,
-          queryId
-        })
-      })
+      response = await fetch(
+        getRootBasedUrl(
+          origin,
+          rootPath,
+          `/api/query/${readModelName}/${resolverName}`
+        ),
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin',
+          body: JSON.stringify({
+            ...resolverArgs,
+            ...(isReactive ? { [isReactiveArg]: isReactive } : {}),
+            [queryIdArg]: queryId
+          })
+        }
+      )
     } catch (error) {
       throw new FetchError(error.message)
     }
@@ -77,18 +85,25 @@ const createApi = ({ origin, rootPath }) => ({
     return result
   },
 
-  async stopReadModelSubscription({ queryId }) {
+  async stopReadModelSubscription({ readModelName, resolverName, queryId }) {
     let response
     try {
-      response = await fetch(getRootBasedUrl(origin, rootPath, '/api/query'), {
-        method: 'POST',
-        credentials: 'same-origin',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          queryId,
-          stopReadModelSubscription: true
-        })
-      })
+      response = await fetch(
+        getRootBasedUrl(
+          origin,
+          rootPath,
+          `/api/query/${readModelName}/${resolverName}`
+        ),
+        {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            [stopSubscriptionArg]: true,
+            [queryIdArg]: queryId
+          })
+        }
+      )
     } catch (error) {
       throw new FetchError(error.message)
     }

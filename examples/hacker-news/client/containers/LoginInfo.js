@@ -2,12 +2,12 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import styled from 'styled-components'
-import NavLink from './Link'
+import { Link as NormalLink } from 'react-router-dom'
 
 import Splitter from '../components/Splitter'
 import * as userActions from '../actions/userActions'
 
-const Link = styled(NavLink)`
+const Link = styled(NormalLink)`
   color: white;
 
   &.active {
@@ -27,7 +27,7 @@ const LoginInfo = ({ me }) => (
         <Link to={`/user/${me.id}`}>{me.name}</Link>
         <Splitter color="white" />
         <Link
-          to="/"
+          to="/newest"
           onClick={() =>
             document.getElementById('hidden-form-for-logout').submit()
           }

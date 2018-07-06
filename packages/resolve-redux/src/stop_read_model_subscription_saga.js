@@ -5,15 +5,29 @@ import {
   stopReadModelSubscriptionFailure
 } from './actions'
 
-const stopReadModelSubscriptionSaga = function*({ api }, { queryId }) {
+const stopReadModelSubscriptionSaga = function*(
+  { api },
+  { readModelName, resolverName, queryId }
+) {
   try {
     yield api.stopReadModelSubscription({
+      readModelName,
+      resolverName,
       queryId
     })
 
-    yield put(stopReadModelSubscriptionSuccess(queryId))
+    yield put(
+      stopReadModelSubscriptionSuccess(readModelName, resolverName, queryId)
+    )
   } catch (error) {
-    yield put(stopReadModelSubscriptionFailure(queryId, error))
+    yield put(
+      stopReadModelSubscriptionFailure(
+        readModelName,
+        resolverName,
+        queryId,
+        error
+      )
+    )
   }
 }
 

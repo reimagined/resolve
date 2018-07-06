@@ -280,18 +280,37 @@ export const dropReadModelState = (
   resolverArgs
 })
 
-export const stopReadModelSubscriptionRequest = queryId => ({
+export const stopReadModelSubscriptionRequest = (
+  readModelName,
+  resolverName,
+  queryId
+) => ({
   type: STOP_READ_MODEL_SUBSCRIPTION_REQUEST,
+  readModelName,
+  resolverName,
   queryId
 })
 
-export const stopReadModelSubscriptionSuccess = queryId => ({
+export const stopReadModelSubscriptionSuccess = (
+  readModelName,
+  resolverName,
+  queryId
+) => ({
   type: STOP_READ_MODEL_SUBSCRIPTION_SUCCESS,
+  readModelName,
+  resolverName,
   queryId
 })
 
-export const stopReadModelSubscriptionFailure = (queryId, error) => ({
+export const stopReadModelSubscriptionFailure = (
+  readModelName,
+  resolverName,
+  queryId,
+  error
+) => ({
   type: STOP_READ_MODEL_SUBSCRIPTION_FAILURE,
+  readModelName,
+  resolverName,
   queryId,
   error
 })

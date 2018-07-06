@@ -6,6 +6,8 @@ export const diffMessageType = '@@resolve/READMODEL_SUBSCRIPTION_DIFF'
 
 export const diffVersionsMap = '@@resolve/diffVersionsMap'
 
+export const queryIdArg = '@@resolve/queryId'
 export const isReactiveArg = '@@resolve/isReactive'
+export const stopSubscriptionArg = '@@resolve/stopSubscription'
 
 export const namespace = '00000000-0000-0000-0000-000000000000'

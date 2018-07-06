@@ -6,7 +6,11 @@ const message = require('../../../configs/message.json')
 
 const viewModelHandler = async (req, res) => {
   try {
-    const { viewModelName, aggregateIds, aggregateArgs } = req.body
+    const viewModelName = req.params.modelName
+    const aggregateIds =
+      req.params.modelOptions !== '*' ? req.params.modelOptions.split(/,/) : '*'
+    const aggregateArgs = req.arguments
+
     if (
       aggregateIds !== '*' &&
       (!Array.isArray(aggregateIds) || aggregateIds.length === 0)

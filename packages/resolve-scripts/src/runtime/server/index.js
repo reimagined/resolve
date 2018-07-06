@@ -17,6 +17,7 @@ import eventStore from './event_store'
 import pubsubManager from './pubsub_manager'
 import subscribeHandler from './subscribe_handler'
 import subscribeAdapter from './subscribe_adapter'
+import argumentsParser from './arguments_parser'
 
 import staticDir from '$resolve.staticDir'
 import distDir from '$resolve.distDir'
@@ -44,10 +45,15 @@ app.use((req, res, next) => {
 
 assignAuthRoutes(app)
 
+app.use(
+  getRootBasedUrl('/api/query/:modelName/:modelOptions'),
+  argumentsParser,
+  queryHandler
+)
+app.use(getRootBasedUrl('/api/status'), argumentsParser, statusHandler)
+app.use(getRootBasedUrl('/api/subscribe'), argumentsParser, subscribeHandler)
+
 app.use(getRootBasedUrl('/api/commands'), commandHandler)
-app.use(getRootBasedUrl('/api/query'), queryHandler)
-app.use(getRootBasedUrl('/api/status'), statusHandler)
-app.use(getRootBasedUrl('/api/subscribe'), subscribeHandler)
 
 app.use(getRootBasedUrl('/'), express.static(`${distDir}/client`))
 app.use(getRootBasedUrl('/'), express.static(staticDir))

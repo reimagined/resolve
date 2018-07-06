@@ -52,7 +52,9 @@ const disconnectReadModelSaga = function*(sagaArgs, action) {
   yield* unsubscribeReadModelTopicsSaga({ queryId })
 
   while (true) {
-    yield put(stopReadModelSubscriptionRequest(queryId))
+    yield put(
+      stopReadModelSubscriptionRequest(readModelName, resolverName, queryId)
+    )
 
     const stopSubscriptionResultAction = yield take(
       action =>

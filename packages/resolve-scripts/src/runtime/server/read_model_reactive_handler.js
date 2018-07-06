@@ -1,14 +1,20 @@
 import readModelQueryExecutors from './read_model_query_executors'
 import println from './utils/println'
 import pubsubManager from './pubsub_manager'
+import {
+  queryIdArg,
+  diffTopicName,
+  diffMessageType,
+  readModelSubscriptionTimeToLive
+} from './constants'
 
 const message = require('../../../configs/message.json')
 
-export const READ_MODEL_SUBSCRIPTION_TIME_TO_LIVE = 300000
 export const subscriptionProcesses = new Map()
 
 export const readModelSubscribeHandler = (req, res) => {
-  const { readModelName, resolverName, queryId, resolverArgs } = req.body
+  const { modelName: readModelName, modelOptions: resolverName } = req.params
+  const { [queryIdArg]: queryId, ...resolverArgs } = req.arguments
 
   if (subscriptionProcesses.get(queryId)) {
     res
@@ -29,10 +35,10 @@ export const readModelSubscribeHandler = (req, res) => {
         diff => {
           try {
             pubsubManager.dispatch({
-              topicName: 'RESOLVE_READMODEL_DIFF_TOPIC',
+              topicName: diffTopicName,
               topicId: queryId,
               event: {
-                type: '@@resolve/READMODEL_SUBSCRIPTION_DIFF',
+                type: diffMessageType,
                 queryId,
                 diffVersion: queryDiffVersion++,
                 diff
@@ -51,7 +57,7 @@ export const readModelSubscribeHandler = (req, res) => {
       )
 
       res.status(200).send({
-        timeToLive: READ_MODEL_SUBSCRIPTION_TIME_TO_LIVE,
+        timeToLive: readModelSubscriptionTimeToLive,
         queryId,
         result
       })
@@ -59,7 +65,7 @@ export const readModelSubscribeHandler = (req, res) => {
       setTimeout(() => {
         subscriptionProcesses.delete(queryId)
         forceStop()
-      }, READ_MODEL_SUBSCRIPTION_TIME_TO_LIVE)
+      }, readModelSubscriptionTimeToLive)
 
       return forceStop
     } catch (err) {
@@ -85,7 +91,7 @@ export const readModelSubscribeHandler = (req, res) => {
 
 export const readModelUnsubscribeHandler = (req, res) => {
   try {
-    const { queryId } = req.body
+    const { [queryIdArg]: queryId } = req.arguments
 
     const forceStopPromise = subscriptionProcesses.get(queryId)
     if (forceStopPromise) {

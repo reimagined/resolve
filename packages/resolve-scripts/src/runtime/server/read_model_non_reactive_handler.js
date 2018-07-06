@@ -1,11 +1,13 @@
 import executeReadModelQuery from './execute_read_model_query'
 import readModelQueryExecutors from './read_model_query_executors'
+import { queryIdArg } from './constants'
 import println from './utils/println'
 
 const message = require('../../../configs/message.json')
 
 const readModelNonReactiveHandler = async (req, res) => {
-  const { readModelName, resolverName, queryId, resolverArgs } = req.body
+  const { modelName: readModelName, modelOptions: resolverName } = req.params
+  const { [queryIdArg]: queryId, ...resolverArgs } = req.arguments
 
   try {
     const result = await executeReadModelQuery({
