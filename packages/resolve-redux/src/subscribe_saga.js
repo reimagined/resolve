@@ -16,6 +16,8 @@ import {
 
 const subscribeSaga = function*({
   api,
+  origin,
+  rootPath,
   store,
   subscribeAdapter: {
     module: createSubscribeAdapter,
@@ -32,6 +34,8 @@ const subscribeSaga = function*({
     const subscribeAdapter = createSubscribeAdapter({
       ...subscribeAdapterOptions,
       appId,
+      origin,
+      rootPath,
       url,
       onEvent
     })
