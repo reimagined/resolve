@@ -51,6 +51,7 @@ Create a new reSolve application in one of the following ways:
     npm i -g create-resolve-app
     create-resolve-app my-resolve-app
     ```
+
 This creates the `my-resolve-app` directory in the current directory and places your new app into it.
 
 ### Available Scripts 📋
@@ -60,10 +61,10 @@ This creates the `my-resolve-app` directory in the current directory and places 
 Once the installation completes, you can start your app by running `npm run dev` or `yarn dev` in your application directory.
 
 This runs the app in the development mode.
-Open the http://localhost:3000 URL to view it in the browser.
+Open the http://localhost:3000 URL to view it in your default browser.
  
 The page reloads as you edit source code files.
-All errors appears in the console.
+All errors appear in the console.
  
 #### Build and Optimize for Production
 
@@ -81,7 +82,7 @@ The HTTP server for the serving client bundle and assets is not included.
 
 `npm test` or `yarn test`
 
-#### Runs Functional Tests with TestCafe
+#### Run Functional Tests with TestCafe
 
 `npm run test:functional` or `yarn test:functional`
 
