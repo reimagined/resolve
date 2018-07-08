@@ -58,18 +58,22 @@ const subscribeSaga = function*({
 
     try {
       yield Promise.all([
-        subscribeAdapter.subscribeToTopics(
-          addedConnections.map(({ connectionName, connectionId }) => ({
-            topicName: connectionName,
-            topicId: connectionId
-          }))
-        ),
-        subscribeAdapter.unsubscribeFromTopics(
-          removedConnections.map(({ connectionName, connectionId }) => ({
-            topicName: connectionName,
-            topicId: connectionId
-          }))
-        )
+        addedConnections.length > 0
+          ? subscribeAdapter.subscribeToTopics(
+              addedConnections.map(({ connectionName, connectionId }) => ({
+                topicName: connectionName,
+                topicId: connectionId
+              }))
+            )
+          : Promise.resolve(),
+        removedConnections.length > 0
+          ? subscribeAdapter.unsubscribeFromTopics(
+              removedConnections.map(({ connectionName, connectionId }) => ({
+                topicName: connectionName,
+                topicId: connectionId
+              }))
+            )
+          : Promise.resolve()
       ])
       yield put(subscribeTopicSuccess(topicName, topicId))
     } catch (error) {
@@ -90,18 +94,22 @@ const subscribeSaga = function*({
 
     try {
       yield Promise.all([
-        subscribeAdapter.subscribeToTopics(
-          addedConnections.map(({ connectionName, connectionId }) => ({
-            topicName: connectionName,
-            topicId: connectionId
-          }))
-        ),
-        subscribeAdapter.unsubscribeFromTopics(
-          removedConnections.map(({ connectionName, connectionId }) => ({
-            topicName: connectionName,
-            topicId: connectionId
-          }))
-        )
+        addedConnections.length > 0
+          ? subscribeAdapter.subscribeToTopics(
+              addedConnections.map(({ connectionName, connectionId }) => ({
+                topicName: connectionName,
+                topicId: connectionId
+              }))
+            )
+          : Promise.resolve(),
+        removedConnections.length > 0
+          ? subscribeAdapter.unsubscribeFromTopics(
+              removedConnections.map(({ connectionName, connectionId }) => ({
+                topicName: connectionName,
+                topicId: connectionId
+              }))
+            )
+          : Promise.resolve()
       ])
       yield put(unsubscribeTopicSuccess(topicName, topicId))
     } catch (error) {

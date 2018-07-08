@@ -29,7 +29,7 @@
     "options": {}
   },
   "subscribeAdapter": {
-    "module": "resolve-subscribe-mqtt",
+    "module": "resolve-subscribe-socket.io",
     "options": {}
   },
   "jwtCookie": {

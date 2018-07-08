@@ -1,4 +1,5 @@
-import { Server as WebSocketServer } from 'ws'
+import createSocketServer from 'socket.io'
+import Url from 'url'
 
 import createServerHandler from './create_server_handler'
 import {
@@ -6,13 +7,7 @@ import {
   subscribeAdapterAlreadyInitialized
 } from './constants'
 
-const createServerAdapter = ({
-  server,
-  getRootBasedUrl,
-  pubsubManager,
-  appId,
-  qos
-}) => {
+const createServerAdapter = ({ server, getRootBasedUrl, pubsubManager }) => {
   let isInitialized = false
   let socketMqttServer = null
 
@@ -24,19 +19,16 @@ const createServerAdapter = ({
 
       isInitialized = true
 
-      return new Promise((resolve, reject) => {
-        socketMqttServer = new WebSocketServer(
-          {
-            server,
-            path: getRootBasedUrl('/mqtt')
-          },
-          error => (error ? reject(error) : resolve())
-        )
+      const handler = createServerHandler(pubsubManager)
 
-        const handler = createServerHandler(pubsubManager, resolve, appId, qos)
-
-        socketMqttServer.on('connection', handler)
+      socketMqttServer = createSocketServer(server, {
+        path: getRootBasedUrl('/api/socket-io/'),
+        serveClient: false
       })
+
+      socketMqttServer.on('connection', handler)
+
+      return Promise.resolve()
     },
 
     async close() {
@@ -51,6 +43,16 @@ const createServerAdapter = ({
 
         isInitialized = false
       })
+    },
+
+    async getOptions() {
+      if (!isInitialized) {
+        throw new Error(subscribeAdapterNotInitialized)
+      }
+
+      return {
+        url: '/api/socket-io/'
+      }
     }
   }
 }

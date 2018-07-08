@@ -1,57 +1,47 @@
-import getWebSocketStream from 'websocket-stream'
-import MqttConnection from 'mqtt-connection'
+const sanitizeWildcardTopic = topic => (topic === '*' ? '+' : topic)
 
-import getMqttTopic from './get_mqtt_topic'
-
-const createServerHandler = (pubsubManager, callback, appId, qos) => ws => {
-  const stream = getWebSocketStream(ws)
-  const client = new MqttConnection(stream)
-  let messageId = 1
-
+const createServerHandler = pubsubManager => socket => {
   const publisher = (topicName, topicId, event) =>
-    new Promise((resolve, reject) => {
-      console.log({ topicName, topicId, event })
-      client.publish(
-        {
-          topic: getMqttTopic(appId, { topicName, topicId }),
-          payload: JSON.stringify(event),
-          messageId: messageId++,
-          qos
-        },
-        error => (error ? reject(error) : resolve())
+    new Promise(resolve => {
+      socket.emit(
+        'message',
+        JSON.stringify({
+          topicName,
+          topicId,
+          payload: event
+        }),
+        resolve
       )
     })
 
-  client.on('connect', () => {
-    client.connack({ returnCode: 0 })
-    callback()
-  })
-  client.on('pingreq', () => client.pingresp())
-
-  client.on('subscribe', packet => {
-    for (const subscription of packet.subscriptions) {
-      const [appId, topicName, topicId] = subscription.topic.split('/')
-      pubsubManager.subscribe({ client: publisher, topicName, topicId })
+  socket.on('subscribe', packet => {
+    const subscriptions = JSON.parse(packet)
+    for (const { topicName, topicId } of subscriptions) {
+      pubsubManager.subscribe({
+        client: publisher,
+        topicName: sanitizeWildcardTopic(topicName),
+        topicId: sanitizeWildcardTopic(topicId)
+      })
     }
-    client.suback({ granted: [packet.qos], messageId: packet.messageId })
   })
 
-  client.on('unsubscribe', packet => {
-    for (const unsubscription of packet.unsubscriptions) {
-      const [appId, topicName, topicId] = unsubscription.topic.split('/')
-      pubsubManager.unsubscribe({ client: publisher, topicName, topicId })
+  socket.on('unsubscribe', packet => {
+    const unsubscriptions = JSON.parse(packet)
+    for (const { topicName, topicId } of unsubscriptions) {
+      pubsubManager.unsubscribe({
+        client: publisher,
+        topicName: sanitizeWildcardTopic(topicName),
+        topicId: sanitizeWildcardTopic(topicId)
+      })
     }
-    client.unsuback({ granted: [packet.qos], messageId: packet.messageId })
   })
 
   const dispose = () => {
     pubsubManager.unsubscribeClient(publisher)
-    client.destroy()
   }
 
-  client.on('close', dispose)
-  client.on('error', dispose)
-  client.on('disconnect', dispose)
+  socket.on('error', dispose)
+  socket.on('disconnect', dispose)
 }
 
 export default createServerHandler
