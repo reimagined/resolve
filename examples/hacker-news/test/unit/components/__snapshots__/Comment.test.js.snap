@@ -41,24 +41,24 @@ ShallowWrapper {
             −
             ]
           </styled.div>
-          <Styled(Link)
+          <Styled(Connect(Link))
             to="/user/SomeUser"
           />
           <Styled(_default)
             createdAt={0}
           />
           <styled.div />
-          <Styled(Link)
+          <Styled(Connect(Link))
             to="/storyDetails/story-id/comments/SomeId"
           >
             link
-          </Styled(Link)>
+          </Styled(Connect(Link))>
           <styled.div />
-          <Styled(Link)
+          <Styled(Connect(Link))
             to="/storyDetails/story-id"
           >
             parent
-          </Styled(Link)>
+          </Styled(Connect(Link))>
         </styled.div>,
         <div
           dangerouslySetInnerHTML={
@@ -86,24 +86,24 @@ ShallowWrapper {
               −
               ]
             </styled.div>,
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/user/SomeUser"
             />,
             <Styled(_default)
               createdAt={0}
             />,
             <styled.div />,
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/storyDetails/story-id/comments/SomeId"
             >
               link
-            </Styled(Link)>,
+            </Styled(Connect(Link))>,
             <styled.div />,
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/storyDetails/story-id"
             >
               parent
-            </Styled(Link)>,
+            </Styled(Connect(Link))>,
           ],
         },
         "ref": null,
@@ -230,24 +230,24 @@ ShallowWrapper {
               −
               ]
             </styled.div>
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/user/SomeUser"
             />
             <Styled(_default)
               createdAt={0}
             />
             <styled.div />
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/storyDetails/story-id/comments/SomeId"
             >
               link
-            </Styled(Link)>
+            </Styled(Connect(Link))>
             <styled.div />
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/storyDetails/story-id"
             >
               parent
-            </Styled(Link)>
+            </Styled(Connect(Link))>
           </styled.div>,
           <div
             dangerouslySetInnerHTML={
@@ -275,24 +275,24 @@ ShallowWrapper {
                 −
                 ]
               </styled.div>,
-              <Styled(Link)
+              <Styled(Connect(Link))
                 to="/user/SomeUser"
               />,
               <Styled(_default)
                 createdAt={0}
               />,
               <styled.div />,
-              <Styled(Link)
+              <Styled(Connect(Link))
                 to="/storyDetails/story-id/comments/SomeId"
               >
                 link
-              </Styled(Link)>,
+              </Styled(Connect(Link))>,
               <styled.div />,
-              <Styled(Link)
+              <Styled(Connect(Link))
                 to="/storyDetails/story-id"
               >
                 parent
-              </Styled(Link)>,
+              </Styled(Connect(Link))>,
             ],
           },
           "ref": null,
@@ -455,24 +455,24 @@ ShallowWrapper {
             −
             ]
           </styled.div>
-          <Styled(Link)
+          <Styled(Connect(Link))
             to="/user/SomeUser"
           />
           <Styled(_default)
             createdAt={0}
           />
           <styled.div />
-          <Styled(Link)
+          <Styled(Connect(Link))
             to="/storyDetails/story-id/comments/SomeId"
           >
             link
-          </Styled(Link)>
+          </Styled(Connect(Link))>
           <styled.div />
-          <Styled(Link)
+          <Styled(Connect(Link))
             to="/storyDetails/story-id/comments/parent-id"
           >
             parent
-          </Styled(Link)>
+          </Styled(Connect(Link))>
         </styled.div>,
         <div
           dangerouslySetInnerHTML={
@@ -500,24 +500,24 @@ ShallowWrapper {
               −
               ]
             </styled.div>,
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/user/SomeUser"
             />,
             <Styled(_default)
               createdAt={0}
             />,
             <styled.div />,
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/storyDetails/story-id/comments/SomeId"
             >
               link
-            </Styled(Link)>,
+            </Styled(Connect(Link))>,
             <styled.div />,
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/storyDetails/story-id/comments/parent-id"
             >
               parent
-            </Styled(Link)>,
+            </Styled(Connect(Link))>,
           ],
         },
         "ref": null,
@@ -644,24 +644,24 @@ ShallowWrapper {
               −
               ]
             </styled.div>
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/user/SomeUser"
             />
             <Styled(_default)
               createdAt={0}
             />
             <styled.div />
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/storyDetails/story-id/comments/SomeId"
             >
               link
-            </Styled(Link)>
+            </Styled(Connect(Link))>
             <styled.div />
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/storyDetails/story-id/comments/parent-id"
             >
               parent
-            </Styled(Link)>
+            </Styled(Connect(Link))>
           </styled.div>,
           <div
             dangerouslySetInnerHTML={
@@ -689,24 +689,24 @@ ShallowWrapper {
                 −
                 ]
               </styled.div>,
-              <Styled(Link)
+              <Styled(Connect(Link))
                 to="/user/SomeUser"
               />,
               <Styled(_default)
                 createdAt={0}
               />,
               <styled.div />,
-              <Styled(Link)
+              <Styled(Connect(Link))
                 to="/storyDetails/story-id/comments/SomeId"
               >
                 link
-              </Styled(Link)>,
+              </Styled(Connect(Link))>,
               <styled.div />,
-              <Styled(Link)
+              <Styled(Connect(Link))
                 to="/storyDetails/story-id/comments/parent-id"
               >
                 parent
-              </Styled(Link)>,
+              </Styled(Connect(Link))>,
             ],
           },
           "ref": null,
@@ -863,24 +863,24 @@ ShallowWrapper {
             −
             ]
           </styled.div>
-          <Styled(Link)
+          <Styled(Connect(Link))
             to="/user/SomeUser"
           />
           <Styled(_default)
             createdAt={0}
           />
           <styled.div />
-          <Styled(Link)
+          <Styled(Connect(Link))
             to="/storyDetails/story-id/comments/SomeId"
           >
             link
-          </Styled(Link)>
+          </Styled(Connect(Link))>
           <styled.div />
-          <Styled(Link)
+          <Styled(Connect(Link))
             to="/storyDetails/story-id/comments/parent-id"
           >
             parent
-          </Styled(Link)>
+          </Styled(Connect(Link))>
         </styled.div>,
         <div
           dangerouslySetInnerHTML={
@@ -908,24 +908,24 @@ ShallowWrapper {
               −
               ]
             </styled.div>,
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/user/SomeUser"
             />,
             <Styled(_default)
               createdAt={0}
             />,
             <styled.div />,
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/storyDetails/story-id/comments/SomeId"
             >
               link
-            </Styled(Link)>,
+            </Styled(Connect(Link))>,
             <styled.div />,
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/storyDetails/story-id/comments/parent-id"
             >
               parent
-            </Styled(Link)>,
+            </Styled(Connect(Link))>,
           ],
         },
         "ref": null,
@@ -1052,24 +1052,24 @@ ShallowWrapper {
               −
               ]
             </styled.div>
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/user/SomeUser"
             />
             <Styled(_default)
               createdAt={0}
             />
             <styled.div />
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/storyDetails/story-id/comments/SomeId"
             >
               link
-            </Styled(Link)>
+            </Styled(Connect(Link))>
             <styled.div />
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/storyDetails/story-id/comments/parent-id"
             >
               parent
-            </Styled(Link)>
+            </Styled(Connect(Link))>
           </styled.div>,
           <div
             dangerouslySetInnerHTML={
@@ -1097,24 +1097,24 @@ ShallowWrapper {
                 −
                 ]
               </styled.div>,
-              <Styled(Link)
+              <Styled(Connect(Link))
                 to="/user/SomeUser"
               />,
               <Styled(_default)
                 createdAt={0}
               />,
               <styled.div />,
-              <Styled(Link)
+              <Styled(Connect(Link))
                 to="/storyDetails/story-id/comments/SomeId"
               >
                 link
-              </Styled(Link)>,
+              </Styled(Connect(Link))>,
               <styled.div />,
-              <Styled(Link)
+              <Styled(Connect(Link))
                 to="/storyDetails/story-id/comments/parent-id"
               >
                 parent
-              </Styled(Link)>,
+              </Styled(Connect(Link))>,
             ],
           },
           "ref": null,
@@ -1271,24 +1271,24 @@ ShallowWrapper {
             −
             ]
           </styled.div>
-          <Styled(Link)
+          <Styled(Connect(Link))
             to="/user/SomeUser"
           />
           <Styled(_default)
             createdAt={0}
           />
           <styled.div />
-          <Styled(Link)
+          <Styled(Connect(Link))
             to="/storyDetails/story-id/comments/SomeId"
           >
             link
-          </Styled(Link)>
+          </Styled(Connect(Link))>
           <styled.div />
-          <Styled(Link)
+          <Styled(Connect(Link))
             to="/storyDetails/story-id/comments/parent-id"
           >
             parent
-          </Styled(Link)>
+          </Styled(Connect(Link))>
         </styled.div>,
         <div
           dangerouslySetInnerHTML={
@@ -1316,24 +1316,24 @@ ShallowWrapper {
               −
               ]
             </styled.div>,
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/user/SomeUser"
             />,
             <Styled(_default)
               createdAt={0}
             />,
             <styled.div />,
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/storyDetails/story-id/comments/SomeId"
             >
               link
-            </Styled(Link)>,
+            </Styled(Connect(Link))>,
             <styled.div />,
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/storyDetails/story-id/comments/parent-id"
             >
               parent
-            </Styled(Link)>,
+            </Styled(Connect(Link))>,
           ],
         },
         "ref": null,
@@ -1460,24 +1460,24 @@ ShallowWrapper {
               −
               ]
             </styled.div>
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/user/SomeUser"
             />
             <Styled(_default)
               createdAt={0}
             />
             <styled.div />
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/storyDetails/story-id/comments/SomeId"
             >
               link
-            </Styled(Link)>
+            </Styled(Connect(Link))>
             <styled.div />
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/storyDetails/story-id/comments/parent-id"
             >
               parent
-            </Styled(Link)>
+            </Styled(Connect(Link))>
           </styled.div>,
           <div
             dangerouslySetInnerHTML={
@@ -1505,24 +1505,24 @@ ShallowWrapper {
                 −
                 ]
               </styled.div>,
-              <Styled(Link)
+              <Styled(Connect(Link))
                 to="/user/SomeUser"
               />,
               <Styled(_default)
                 createdAt={0}
               />,
               <styled.div />,
-              <Styled(Link)
+              <Styled(Connect(Link))
                 to="/storyDetails/story-id/comments/SomeId"
               >
                 link
-              </Styled(Link)>,
+              </Styled(Connect(Link))>,
               <styled.div />,
-              <Styled(Link)
+              <Styled(Connect(Link))
                 to="/storyDetails/story-id/comments/parent-id"
               >
                 parent
-              </Styled(Link)>,
+              </Styled(Connect(Link))>,
             ],
           },
           "ref": null,
@@ -1679,24 +1679,24 @@ ShallowWrapper {
             −
             ]
           </styled.div>
-          <Styled(Link)
+          <Styled(Connect(Link))
             to="/user/SomeUser"
           />
           <Styled(_default)
             createdAt={0}
           />
           <styled.div />
-          <Styled(Link)
+          <Styled(Connect(Link))
             to="/storyDetails/story-id/comments/SomeId"
           >
             link
-          </Styled(Link)>
+          </Styled(Connect(Link))>
           <styled.div />
-          <Styled(Link)
+          <Styled(Connect(Link))
             to="/storyDetails/story-id/comments/parent-id"
           >
             parent
-          </Styled(Link)>
+          </Styled(Connect(Link))>
         </styled.div>,
         <div
           dangerouslySetInnerHTML={
@@ -1724,24 +1724,24 @@ ShallowWrapper {
               −
               ]
             </styled.div>,
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/user/SomeUser"
             />,
             <Styled(_default)
               createdAt={0}
             />,
             <styled.div />,
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/storyDetails/story-id/comments/SomeId"
             >
               link
-            </Styled(Link)>,
+            </Styled(Connect(Link))>,
             <styled.div />,
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/storyDetails/story-id/comments/parent-id"
             >
               parent
-            </Styled(Link)>,
+            </Styled(Connect(Link))>,
           ],
         },
         "ref": null,
@@ -1868,24 +1868,24 @@ ShallowWrapper {
               −
               ]
             </styled.div>
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/user/SomeUser"
             />
             <Styled(_default)
               createdAt={0}
             />
             <styled.div />
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/storyDetails/story-id/comments/SomeId"
             >
               link
-            </Styled(Link)>
+            </Styled(Connect(Link))>
             <styled.div />
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/storyDetails/story-id/comments/parent-id"
             >
               parent
-            </Styled(Link)>
+            </Styled(Connect(Link))>
           </styled.div>,
           <div
             dangerouslySetInnerHTML={
@@ -1913,24 +1913,24 @@ ShallowWrapper {
                 −
                 ]
               </styled.div>,
-              <Styled(Link)
+              <Styled(Connect(Link))
                 to="/user/SomeUser"
               />,
               <Styled(_default)
                 createdAt={0}
               />,
               <styled.div />,
-              <Styled(Link)
+              <Styled(Connect(Link))
                 to="/storyDetails/story-id/comments/SomeId"
               >
                 link
-              </Styled(Link)>,
+              </Styled(Connect(Link))>,
               <styled.div />,
-              <Styled(Link)
+              <Styled(Connect(Link))
                 to="/storyDetails/story-id/comments/parent-id"
               >
                 parent
-              </Styled(Link)>,
+              </Styled(Connect(Link))>,
             ],
           },
           "ref": null,
@@ -2087,24 +2087,24 @@ ShallowWrapper {
             −
             ]
           </styled.div>
-          <Styled(Link)
+          <Styled(Connect(Link))
             to="/user/SomeUser"
           />
           <Styled(_default)
             createdAt={0}
           />
           <styled.div />
-          <Styled(Link)
+          <Styled(Connect(Link))
             to="/storyDetails/story-id/comments/SomeId"
           >
             link
-          </Styled(Link)>
+          </Styled(Connect(Link))>
           <styled.div />
-          <Styled(Link)
+          <Styled(Connect(Link))
             to="/storyDetails/story-id/comments/parent-id"
           >
             parent
-          </Styled(Link)>
+          </Styled(Connect(Link))>
         </styled.div>,
         <div
           dangerouslySetInnerHTML={
@@ -2132,24 +2132,24 @@ ShallowWrapper {
               −
               ]
             </styled.div>,
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/user/SomeUser"
             />,
             <Styled(_default)
               createdAt={0}
             />,
             <styled.div />,
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/storyDetails/story-id/comments/SomeId"
             >
               link
-            </Styled(Link)>,
+            </Styled(Connect(Link))>,
             <styled.div />,
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/storyDetails/story-id/comments/parent-id"
             >
               parent
-            </Styled(Link)>,
+            </Styled(Connect(Link))>,
           ],
         },
         "ref": null,
@@ -2276,24 +2276,24 @@ ShallowWrapper {
               −
               ]
             </styled.div>
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/user/SomeUser"
             />
             <Styled(_default)
               createdAt={0}
             />
             <styled.div />
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/storyDetails/story-id/comments/SomeId"
             >
               link
-            </Styled(Link)>
+            </Styled(Connect(Link))>
             <styled.div />
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/storyDetails/story-id/comments/parent-id"
             >
               parent
-            </Styled(Link)>
+            </Styled(Connect(Link))>
           </styled.div>,
           <div
             dangerouslySetInnerHTML={
@@ -2321,24 +2321,24 @@ ShallowWrapper {
                 −
                 ]
               </styled.div>,
-              <Styled(Link)
+              <Styled(Connect(Link))
                 to="/user/SomeUser"
               />,
               <Styled(_default)
                 createdAt={0}
               />,
               <styled.div />,
-              <Styled(Link)
+              <Styled(Connect(Link))
                 to="/storyDetails/story-id/comments/SomeId"
               >
                 link
-              </Styled(Link)>,
+              </Styled(Connect(Link))>,
               <styled.div />,
-              <Styled(Link)
+              <Styled(Connect(Link))
                 to="/storyDetails/story-id/comments/parent-id"
               >
                 parent
-              </Styled(Link)>,
+              </Styled(Connect(Link))>,
             ],
           },
           "ref": null,

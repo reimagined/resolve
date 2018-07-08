@@ -59,7 +59,7 @@ const createClientAdapter = ({ origin, rootPath, url, appId, onEvent }) => {
         throw new Error(subscribeAdapterNotInitialized)
       }
 
-      return await Promise.all(
+      await Promise.all(
         topics.map(
           topic =>
             new Promise((resolve, reject) =>
@@ -78,7 +78,7 @@ const createClientAdapter = ({ origin, rootPath, url, appId, onEvent }) => {
         throw new Error(subscribeAdapterNotInitialized)
       }
 
-      return await Promise.all(
+      await Promise.all(
         topics.map(
           topic =>
             new Promise((resolve, reject) =>

@@ -28,10 +28,10 @@ describe('resolve-query view-model', () => {
 
     eventStore = {
       getEventsByAggregateId(aggregateIds, callback) {
-        for(const event of eventList) {
-          if(aggregateIds === '*') {
+        for (const event of eventList) {
+          if (aggregateIds === '*') {
             callback(event)
-          } else if(aggregateIds.includes(event.aggregateId)) {
+          } else if (aggregateIds.includes(event.aggregateId)) {
             callback(event)
           }
         }
@@ -69,7 +69,7 @@ describe('resolve-query view-model', () => {
     }
     eventList = [testEvent]
 
-    const state = await viewModel.read({ aggregateIds: ['test-id'] })
+    const { state } = await viewModel.read({ aggregateIds: ['test-id'] })
 
     expect(state).to.be.deep.equal(['test-payload'])
   })
@@ -87,8 +87,12 @@ describe('resolve-query view-model', () => {
     }
     eventList = [testEvent1, testEvent2]
 
-    const state1 = await viewModel.read({ aggregateIds: ['test-id-1'] })
-    const state2 = await viewModel.read({ aggregateIds: ['test-id-2'] })
+    const { state: state1 } = await viewModel.read({
+      aggregateIds: ['test-id-1']
+    })
+    const { state: state2 } = await viewModel.read({
+      aggregateIds: ['test-id-2']
+    })
 
     expect(state1).to.be.deep.equal(['test-payload-1'])
     expect(state2).to.be.deep.equal(['test-payload-2'])
@@ -107,7 +111,7 @@ describe('resolve-query view-model', () => {
     }
     eventList = [testEvent1, testEvent2]
 
-    const state = await viewModel.read({ aggregateIds: '*' })
+    const { state } = await viewModel.read({ aggregateIds: '*' })
 
     expect(state).to.be.deep.equal(['test-payload-1', 'test-payload-2'])
   })
@@ -233,8 +237,12 @@ describe('resolve-query view-model', () => {
     }
     eventList = [testEvent]
 
-    const { state: stateOne } = await viewModel.read({ aggregateIds: ['test-id'] })
-    const { state: stateTwo } = await viewModel.read({ aggregateIds: ['test-id'] })
+    const { state: stateOne } = await viewModel.read({
+      aggregateIds: ['test-id']
+    })
+    const { state: stateTwo } = await viewModel.read({
+      aggregateIds: ['test-id']
+    })
 
     expect(stateOne).to.be.deep.equal(['test-payload'])
     expect(stateTwo).to.be.deep.equal(['test-payload'])

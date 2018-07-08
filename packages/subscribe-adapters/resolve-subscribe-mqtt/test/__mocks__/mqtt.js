@@ -13,9 +13,8 @@ const mqtt = {
         callback(Client._error)
       },
 
-      unsubscribe(topics, options, callback) {
+      unsubscribe(topics, callback) {
         Client._topics = topics
-        Client._options = options
 
         callback(Client._error)
       },

@@ -4,7 +4,7 @@ exports[`Href { disabled: true } renders correctly 1`] = `
 ShallowWrapper {
   "length": 1,
   Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <Styled(Link)
+  Symbol(enzyme.__unrendered__): <Styled(Connect(Link))
     disabled={true}
     to="/"
   />,
@@ -22,7 +22,6 @@ ShallowWrapper {
     "props": Object {
       "className": "sc-htpNat ifxIeg",
       "disabled": true,
-      "replace": false,
       "to": "/",
     },
     "ref": null,
@@ -37,7 +36,6 @@ ShallowWrapper {
       "props": Object {
         "className": "sc-htpNat ifxIeg",
         "disabled": true,
-        "replace": false,
         "to": "/",
       },
       "ref": null,
@@ -59,7 +57,7 @@ exports[`Href renders correctly 1`] = `
 ShallowWrapper {
   "length": 1,
   Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <Styled(Link)
+  Symbol(enzyme.__unrendered__): <Styled(Connect(Link))
     to="/"
   />,
   Symbol(enzyme.__renderer__): Object {
@@ -75,7 +73,6 @@ ShallowWrapper {
     "nodeType": "class",
     "props": Object {
       "className": "sc-htpNat kVXeGd",
-      "replace": false,
       "to": "/",
     },
     "ref": null,
@@ -89,7 +86,6 @@ ShallowWrapper {
       "nodeType": "class",
       "props": Object {
         "className": "sc-htpNat kVXeGd",
-        "replace": false,
         "to": "/",
       },
       "ref": null,
@@ -159,21 +155,21 @@ ShallowWrapper {
     "nodeType": "class",
     "props": Object {
       "children": Array [
-        <Styled(Link)
+        <Styled(Connect(Link))
           disabled={true}
           to="news/0"
         >
           Prev
-        </Styled(Link)>,
+        </Styled(Connect(Link))>,
         <styled.div />,
         1,
         <styled.div />,
-        <Styled(Link)
+        <Styled(Connect(Link))
           disabled={false}
           to="news/2"
         >
           More
-        </Styled(Link)>,
+        </Styled(Connect(Link))>,
       ],
     },
     "ref": null,
@@ -233,21 +229,21 @@ ShallowWrapper {
       "nodeType": "class",
       "props": Object {
         "children": Array [
-          <Styled(Link)
+          <Styled(Connect(Link))
             disabled={true}
             to="news/0"
           >
             Prev
-          </Styled(Link)>,
+          </Styled(Connect(Link))>,
           <styled.div />,
           1,
           <styled.div />,
-          <Styled(Link)
+          <Styled(Connect(Link))
             disabled={false}
             to="news/2"
           >
             More
-          </Styled(Link)>,
+          </Styled(Connect(Link))>,
         ],
       },
       "ref": null,
@@ -333,21 +329,21 @@ ShallowWrapper {
     "nodeType": "class",
     "props": Object {
       "children": Array [
-        <Styled(Link)
+        <Styled(Connect(Link))
           disabled={true}
           to="news/0"
         >
           Prev
-        </Styled(Link)>,
+        </Styled(Connect(Link))>,
         <styled.div />,
         1,
         <styled.div />,
-        <Styled(Link)
+        <Styled(Connect(Link))
           disabled={false}
           to="news/2"
         >
           More
-        </Styled(Link)>,
+        </Styled(Connect(Link))>,
       ],
     },
     "ref": null,
@@ -407,21 +403,21 @@ ShallowWrapper {
       "nodeType": "class",
       "props": Object {
         "children": Array [
-          <Styled(Link)
+          <Styled(Connect(Link))
             disabled={true}
             to="news/0"
           >
             Prev
-          </Styled(Link)>,
+          </Styled(Connect(Link))>,
           <styled.div />,
           1,
           <styled.div />,
-          <Styled(Link)
+          <Styled(Connect(Link))
             disabled={false}
             to="news/2"
           >
             More
-          </Styled(Link)>,
+          </Styled(Connect(Link))>,
         ],
       },
       "ref": null,
@@ -507,21 +503,21 @@ ShallowWrapper {
     "nodeType": "class",
     "props": Object {
       "children": Array [
-        <Styled(Link)
+        <Styled(Connect(Link))
           disabled={false}
           to="news/1"
         >
           Prev
-        </Styled(Link)>,
+        </Styled(Connect(Link))>,
         <styled.div />,
         2,
         <styled.div />,
-        <Styled(Link)
+        <Styled(Connect(Link))
           disabled={false}
           to="news/3"
         >
           More
-        </Styled(Link)>,
+        </Styled(Connect(Link))>,
       ],
     },
     "ref": null,
@@ -581,21 +577,21 @@ ShallowWrapper {
       "nodeType": "class",
       "props": Object {
         "children": Array [
-          <Styled(Link)
+          <Styled(Connect(Link))
             disabled={false}
             to="news/1"
           >
             Prev
-          </Styled(Link)>,
+          </Styled(Connect(Link))>,
           <styled.div />,
           2,
           <styled.div />,
-          <Styled(Link)
+          <Styled(Connect(Link))
             disabled={false}
             to="news/3"
           >
             More
-          </Styled(Link)>,
+          </Styled(Connect(Link))>,
         ],
       },
       "ref": null,
@@ -681,21 +677,21 @@ ShallowWrapper {
     "nodeType": "class",
     "props": Object {
       "children": Array [
-        <Styled(Link)
+        <Styled(Connect(Link))
           disabled={false}
           to="news/2"
         >
           Prev
-        </Styled(Link)>,
+        </Styled(Connect(Link))>,
         <styled.div />,
         3,
         <styled.div />,
-        <Styled(Link)
+        <Styled(Connect(Link))
           disabled={true}
           to="news/4"
         >
           More
-        </Styled(Link)>,
+        </Styled(Connect(Link))>,
       ],
     },
     "ref": null,
@@ -755,21 +751,21 @@ ShallowWrapper {
       "nodeType": "class",
       "props": Object {
         "children": Array [
-          <Styled(Link)
+          <Styled(Connect(Link))
             disabled={false}
             to="news/2"
           >
             Prev
-          </Styled(Link)>,
+          </Styled(Connect(Link))>,
           <styled.div />,
           3,
           <styled.div />,
-          <Styled(Link)
+          <Styled(Connect(Link))
             disabled={true}
             to="news/4"
           >
             More
-          </Styled(Link)>,
+          </Styled(Connect(Link))>,
         ],
       },
       "ref": null,
