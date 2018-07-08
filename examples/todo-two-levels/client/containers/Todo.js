@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { connectViewModel } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
 import { NavLink } from 'react-router-dom'
-
 import { Helmet } from 'react-helmet'
 import {
   ListGroup,
@@ -14,15 +13,6 @@ import {
   Image,
   FormControl
 } from 'react-bootstrap'
-import Header from '../components/Header.js'
-
-// TODO remove
-import commands from '../../common/aggregates/todo.commands'
-import { createActions } from 'resolve-redux'
-const aggregateActions = createActions({
-  name: 'Todo',
-  commands
-})
 
 const viewModelName = 'Todos'
 
@@ -46,71 +36,60 @@ export const Todo = ({
   let todoList = todos || {}
 
   return (
-    <div>
-      <Helmet>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="/bootstrap.min.css" />
-        <link rel="stylesheet" href="/style.css" />
-        <title>reSolve Todo Two Levels Example</title>
-      </Helmet>
-
-      <Header />
-
-      <div className="example-wrapper">
-        <Form inline>
-          <NavLink to="/">
-            <Image
-              className="example-arrow-button"
-              src="/left-arrow-button.png"
-            />
-            <span className="example-back-label">Back</span>
-          </NavLink>
-          <div className="example-task-name">Task's List</div>
-        </Form>
-
-        <ListGroup className="example-list">
-          {Object.keys(todoList).map(id => (
-            <ListGroupItem key={id}>
-              <Checkbox
-                inline
-                checked={todoList[id].checked}
-                onChange={toggleItem.bind(null, aggregateId, { id })}
-              >
-                {todoList[id].text}
-              </Checkbox>
-              <Image
-                className="example-close-button"
-                src="/close-button.png"
-                onClick={removeItem.bind(null, aggregateId, { id })}
-              />
-            </ListGroupItem>
-          ))}
-        </ListGroup>
-
-        <Form inline className="example-form">
-          <FormControl
-            className="example-form-control"
-            type="text"
-            placeholder={placeholder}
-            inputRef={element => (newTodo = element)}
-            onKeyPress={event => {
-              if (event.charCode === 13) {
-                event.preventDefault()
-                createItemFunc()
-              }
-            }}
+    <div className="example-wrapper">
+      <Form inline>
+        <NavLink to="/">
+          <Image
+            className="example-arrow-button"
+            src="/left-arrow-button.png"
           />
-          <Button
-            className="example-button"
-            bsStyle="success"
-            onClick={() => {
+          <span className="example-back-label">Back</span>
+        </NavLink>
+        <div className="example-task-name">Task's List</div>
+      </Form>
+
+      <ListGroup className="example-list">
+        {Object.keys(todoList).map(id => (
+          <ListGroupItem key={id}>
+            <Checkbox
+              inline
+              checked={todoList[id].checked}
+              onChange={toggleItem.bind(null, aggregateId, { id })}
+            >
+              {todoList[id].text}
+            </Checkbox>
+            <Image
+              className="example-close-button"
+              src="/close-button.png"
+              onClick={removeItem.bind(null, aggregateId, { id })}
+            />
+          </ListGroupItem>
+        ))}
+      </ListGroup>
+
+      <Form inline className="example-form">
+        <FormControl
+          className="example-form-control"
+          type="text"
+          placeholder={placeholder}
+          inputRef={element => (newTodo = element)}
+          onKeyPress={event => {
+            if (event.charCode === 13) {
+              event.preventDefault()
               createItemFunc()
-            }}
-          >
-            Add Task
-          </Button>
-        </Form>
-      </div>
+            }
+          }}
+        />
+        <Button
+          className="example-button"
+          bsStyle="success"
+          onClick={() => {
+            createItemFunc()
+          }}
+        >
+          Add Task
+        </Button>
+      </Form>
     </div>
   )
 }
@@ -131,7 +110,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = dispatch =>
+const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default connectViewModel(mapStateToOptions)(

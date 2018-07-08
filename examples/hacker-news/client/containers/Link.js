@@ -1,7 +1,7 @@
 import React from 'react'
+import { connect } from 'react-redux'
 
 import { ROUTE_CHANGED } from '../actions/actionTypes'
-import { connect } from 'react-redux'
 
 const Link = ({ to, children, className, style, pushRoute }) => (
   <a

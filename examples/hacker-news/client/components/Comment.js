@@ -1,10 +1,10 @@
 import React from 'react'
-import Link from '../containers/Link'
 import sanitizer from 'sanitizer'
 import styled from 'styled-components'
 
 import Splitter from './Splitter'
 import TimeAgo from './TimeAgo'
+import Link from '../containers/Link'
 
 const CommentRoot = styled.div`
   margin-bottom: 0.75em;

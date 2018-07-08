@@ -6,21 +6,6 @@ import { connectReadModel } from 'resolve-redux'
 import Stories from '../components/Stories'
 import { ITEMS_PER_PAGE } from '../constants'
 
-// TODO remove
-import { createActions } from 'resolve-redux'
-import userCommands from '../../common/aggregates/user.commands'
-import storyCommands from '../../common/aggregates/story.commands'
-const aggregateActions = {
-  ...createActions({
-    name: 'user',
-    commands: userCommands
-  }),
-  ...createActions({
-    name: 'story',
-    commands: storyCommands
-  })
-}
-
 const NewestByPage = ({ page, stories, me, upvoteStory, unvoteStory }) => (
   <Stories
     items={stories}
@@ -62,7 +47,7 @@ export const mapStateToProps = (
   me: state.jwt
 })
 
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(
     {
       upvoteStory: aggregateActions.upvoteStory,

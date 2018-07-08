@@ -3,8 +3,7 @@ import { routerActions } from 'react-router-redux'
 
 import {
   OPTIMISTIC_STORY_UPVOTED,
-  OPTIMISTIC_STORY_UNVOTED,
-  ROUTE_CHANGED
+  OPTIMISTIC_STORY_UNVOTED
 } from '../actions/actionTypes'
 import { rootDirectory } from '../constants'
 

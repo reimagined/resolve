@@ -8,21 +8,6 @@ import styled from 'styled-components'
 import Comment from '../components/Comment'
 import ChildrenComments from '../components/ChildrenComments'
 
-// TODO remove
-import { createActions } from 'resolve-redux'
-import userCommands from '../../common/aggregates/user.commands'
-import storyCommands from '../../common/aggregates/story.commands'
-const aggregateActions = {
-  ...createActions({
-    name: 'user',
-    commands: userCommands
-  }),
-  ...createActions({
-    name: 'story',
-    commands: storyCommands
-  })
-}
-
 const Reply = styled.div`
   padding: 1em 1.25em 0 1.25em;
   margin-bottom: 1em;
@@ -111,7 +96,7 @@ export const mapStateToProps = (
 })
 
 // TODO: magic aggregateActions
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(
     {
       commentStory: ({ aggregateId, parentId, text }) =>

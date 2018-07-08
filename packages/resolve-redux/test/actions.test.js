@@ -440,9 +440,15 @@ describe('actions', () => {
 
   describe('stopReadModelSubscriptionRequest', () => {
     test('should create an action to stop read model subscription request', () => {
+      const readModelName = 'readModelName'
+      const resolverName = 'resolverName'
       const queryId = 'queryId'
-      expect(stopReadModelSubscriptionRequest(queryId)).toEqual({
+      expect(
+        stopReadModelSubscriptionRequest(readModelName, resolverName, queryId)
+      ).toEqual({
         type: STOP_READ_MODEL_SUBSCRIPTION_REQUEST,
+        readModelName,
+        resolverName,
         queryId
       })
     })
@@ -450,9 +456,15 @@ describe('actions', () => {
 
   describe('stopReadModelSubscriptionSuccess', () => {
     test('should create an action to stop read model subscription success', () => {
+      const readModelName = 'readModelName'
+      const resolverName = 'resolverName'
       const queryId = 'queryId'
-      expect(stopReadModelSubscriptionSuccess(queryId)).toEqual({
+      expect(
+        stopReadModelSubscriptionSuccess(readModelName, resolverName, queryId)
+      ).toEqual({
         type: STOP_READ_MODEL_SUBSCRIPTION_SUCCESS,
+        readModelName,
+        resolverName,
         queryId
       })
     })
@@ -460,10 +472,21 @@ describe('actions', () => {
 
   describe('stopReadModelSubscriptionFailure', () => {
     test('should create an action to stop read model subscription failure', () => {
+      const readModelName = 'readModelName'
+      const resolverName = 'resolverName'
       const queryId = 'queryId'
       const error = 'error'
-      expect(stopReadModelSubscriptionFailure(queryId, error)).toEqual({
+      expect(
+        stopReadModelSubscriptionFailure(
+          readModelName,
+          resolverName,
+          queryId,
+          error
+        )
+      ).toEqual({
         type: STOP_READ_MODEL_SUBSCRIPTION_FAILURE,
+        readModelName,
+        resolverName,
         queryId,
         error
       })

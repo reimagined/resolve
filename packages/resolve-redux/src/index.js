@@ -8,11 +8,12 @@ import createActions from './create_actions'
 import connectReadModel from './connect_read_model'
 import connectViewModel from './connect_view_model'
 import createApi from './create_api'
-import { FetchError, HttpError } from './create_api'
 import createConnectionManager from './create_connection_manager'
 import createSagaManager from './create_saga_manager'
 import getHash from './get_hash'
 import getRootBasedUrl from './get_root_based_url'
+import { FetchError, HttpError } from './create_api'
+import { Provider, Consumer } from './resolve_context'
 
 export {
   actions,
@@ -29,6 +30,8 @@ export {
   createSagaManager,
   getHash,
   getRootBasedUrl,
+  Provider,
+  Consumer,
   FetchError,
   HttpError
 }

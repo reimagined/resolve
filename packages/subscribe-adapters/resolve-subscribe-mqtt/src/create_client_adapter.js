@@ -84,7 +84,6 @@ const createClientAdapter = ({ origin, rootPath, url, appId, onEvent }) => {
             new Promise((resolve, reject) =>
               client.unsubscribe(
                 getMqttTopic(appId, topic),
-                { qos },
                 err => (err ? reject(err) : resolve())
               )
             )

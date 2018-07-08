@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
+import { Consumer } from './resolve_context'
 import * as actions from './actions'
 import { connectorMetaMap, isReactiveArg } from './constants'
 import getHash from './get_hash'
@@ -151,7 +152,22 @@ const connectReadModel = mapStateToOptions => Component => {
   )(ReadModelContainer)
   ReadModelConnector.mapStateToOptions = mapStateToOptions
 
-  return ReadModelConnector
+  class ResolveConsumer extends React.PureComponent {
+    render() {
+      return (
+        <Consumer>
+          {({ aggregateActions }) => (
+            <ReadModelConnector
+              {...this.props}
+              aggregateActions={aggregateActions}
+            />
+          )}
+        </Consumer>
+      )
+    }
+  }
+
+  return ResolveConsumer
 }
 
 export default connectReadModel

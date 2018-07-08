@@ -7,6 +7,7 @@ import {
 } from 'resolve-redux'
 import { routerReducer, routerMiddleware } from 'react-router-redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
+import uuid from 'uuid/v4'
 
 import redux from '$resolve.redux'
 import viewModels from '$resolve.viewModels'
@@ -16,14 +17,9 @@ import subscribeAdapter from '$resolve.subscribeAdapter'
 
 const { reducers, middlewares, store: setupStore } = redux
 
-export default ({
-  initialState,
-  history,
-  origin,
-  rootPath,
-  sessionId,
-  isClient
-}) => {
+export default ({ initialState, history, origin, rootPath, isClient }) => {
+  const sessionId = uuid()
+
   const resolveMiddleware = createResolveMiddleware()
 
   const store = createStore(

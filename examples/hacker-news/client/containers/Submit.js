@@ -6,21 +6,6 @@ import { bindActionCreators } from 'redux'
 import urlLib from 'url'
 import styled from 'styled-components'
 
-// TODO remove
-import { createActions } from 'resolve-redux'
-import userCommands from '../../common/aggregates/user.commands'
-import storyCommands from '../../common/aggregates/story.commands'
-const aggregateActions = {
-  ...createActions({
-    name: 'user',
-    commands: userCommands
-  }),
-  ...createActions({
-    name: 'story',
-    commands: storyCommands
-  })
-}
-
 const labelWidth = '30px'
 
 const SubmitRoot = styled.div`
@@ -140,7 +125,7 @@ export const mapStateToProps = state => ({
   me: state.jwt
 })
 
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(
     {
       createStory: ({ id, title, text, link }) =>

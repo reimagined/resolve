@@ -1,8 +1,6 @@
 import Url from 'url'
 import React from 'react'
 import ReactDOM from 'react-dom/server'
-import { Provider } from 'react-redux'
-import { ConnectedRouter } from 'react-router-redux'
 import createHistory from 'history/createMemoryHistory'
 import jsonwebtoken from 'jsonwebtoken'
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components'
@@ -10,12 +8,13 @@ import { ServerStyleSheet, StyleSheetManager } from 'styled-components'
 import createStore from '../client/store/create_store'
 import getHtmlMarkup from './get_html_markup'
 import getRootBasedUrl from './utils/get_root_based_url'
-import Routes from '../client/components/Routes'
+import AppContainer from '../client/components/AppContainer'
 
 import routes from '$resolve.routes'
 import staticPath from '$resolve.staticPath'
 import rootPath from '$resolve.rootPath'
 import jwtCookie from '$resolve.jwtCookie'
+import aggregateActions from '$resolve.aggregateActions'
 
 const serverSideRendering = (req, res) => {
   const url = req.params[0] || ''
@@ -42,11 +41,12 @@ const serverSideRendering = (req, res) => {
   const sheet = new ServerStyleSheet()
   const markup = ReactDOM.renderToStaticMarkup(
     <StyleSheetManager sheet={sheet.instance}>
-      <Provider store={store}>
-        <ConnectedRouter history={history}>
-          <Routes routes={routes} />
-        </ConnectedRouter>
-      </Provider>
+      <AppContainer
+        aggregateActions={aggregateActions}
+        store={store}
+        history={history}
+        routes={routes}
+      />
     </StyleSheetManager>
   )
   const styleTags = sheet.getStyleTags()

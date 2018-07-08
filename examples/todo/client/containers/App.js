@@ -13,14 +13,6 @@ import {
   FormControl
 } from 'react-bootstrap'
 
-// TODO remove
-import commands from '../../common/aggregates/todo.commands'
-import { createActions } from 'resolve-redux'
-const aggregateActions = createActions({
-  name: 'Todo',
-  commands
-})
-
 const viewModelName = 'Todos'
 const aggregateId = 'root-id'
 
@@ -97,7 +89,7 @@ const mapStateToProps = (state, { data }) => ({
   todos: data
 })
 
-const mapDispatchToProps = (dispatch, props) =>
+const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default connectViewModel(mapStateToOptions)(

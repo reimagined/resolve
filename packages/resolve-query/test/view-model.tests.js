@@ -27,6 +27,16 @@ describe('resolve-query view-model', () => {
     }
 
     eventStore = {
+      getEventsByAggregateId(aggregateIds, callback) {
+        for(const event of eventList) {
+          if(aggregateIds === '*') {
+            callback(event)
+          } else if(aggregateIds.includes(event.aggregateId)) {
+            callback(event)
+          }
+        }
+        return Promise.resolve()
+      },
       subscribeByEventType: sinon
         .stub()
         .callsFake(subscribeByAnyField.bind(null, 'type')),
@@ -223,8 +233,8 @@ describe('resolve-query view-model', () => {
     }
     eventList = [testEvent]
 
-    const stateOne = await viewModel.read({ aggregateIds: ['test-id'] })
-    const stateTwo = await viewModel.read({ aggregateIds: ['test-id'] })
+    const { state: stateOne } = await viewModel.read({ aggregateIds: ['test-id'] })
+    const { state: stateTwo } = await viewModel.read({ aggregateIds: ['test-id'] })
 
     expect(stateOne).to.be.deep.equal(['test-payload'])
     expect(stateTwo).to.be.deep.equal(['test-payload'])

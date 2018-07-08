@@ -8,21 +8,6 @@ import styled from 'styled-components'
 import Story from '../containers/Story'
 import ChildrenComments from '../components/ChildrenComments'
 
-// TODO remove
-import { createActions } from 'resolve-redux'
-import userCommands from '../../common/aggregates/user.commands'
-import storyCommands from '../../common/aggregates/story.commands'
-const aggregateActions = {
-  ...createActions({
-    name: 'user',
-    commands: userCommands
-  }),
-  ...createActions({
-    name: 'story',
-    commands: storyCommands
-  })
-}
-
 const StoryDetailsRoot = styled.div`
   padding: 1em 1.25em 0 1.75em;
   margin-bottom: 1em;
@@ -105,7 +90,7 @@ export const mapStateToProps = (state, { data }) => ({
   me: state.jwt
 })
 
-export const mapDispatchToProps = dispatch =>
+export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(
     {
       upvoteStory: aggregateActions.upvoteStory,
