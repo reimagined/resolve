@@ -3,7 +3,6 @@ import { Helmet } from 'react-helmet'
 import jsonUtfStringify from './utils/json_utf_stringify'
 
 import redux from '$resolve.redux'
-import viewModels from '$resolve.viewModels'
 
 const reducers = redux.reducers
 
@@ -13,19 +12,6 @@ export default ({ markup, styleTags, initialState, clientUrl }) => {
   for (const reducerName of Object.keys(reducers)) {
     delete initialState[reducerName]
   }
-
-  // TODO revert
-  // for (const viewModel of viewModels) {
-  //   for (const aggregateId of Object.keys(
-  //     initialState.viewModels[viewModel.name]
-  //   )) {
-  //     initialState.viewModels[viewModel.name][
-  //       aggregateId
-  //     ] = viewModel.serializeState(
-  //       initialState.viewModels[viewModel.name][aggregateId]
-  //     )
-  //   }
-  // }
 
   return (
     `<!doctype html>` +
@@ -38,6 +24,7 @@ export default ({ markup, styleTags, initialState, clientUrl }) => {
     styleTags +
     '<script>' +
     `window.__INITIAL_STATE__=${jsonUtfStringify(initialState)};` +
+    `window.__LOCAL_DEVELOPMENT__=true;` +
     '</script>' +
     `${helmet.script.toString()}` +
     '</head>' +

@@ -20,6 +20,12 @@ const { reducers, middlewares, store: setupStore } = redux
 export default ({ initialState, history, origin, rootPath, isClient }) => {
   const sessionId = uuid()
 
+  if (process.env.NODE_ENV !== 'production') {
+    if (isClient) {
+      require('./create_hmr_socket')({ origin, rootPath })
+    }
+  }
+
   const resolveMiddleware = createResolveMiddleware()
 
   const store = createStore(

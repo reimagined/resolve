@@ -2,6 +2,7 @@ import path from 'path'
 import express from 'express'
 import cookieParser from 'cookie-parser'
 import bodyParser from 'body-parser'
+import createSocketServer from 'socket.io'
 
 import { app, server } from './server'
 import getRootBasedUrl from './utils/get_root_based_url'
@@ -17,6 +18,7 @@ import pubsubManager from './pubsub_manager'
 import subscribeHandler from './subscribe_handler'
 import subscribeAdapter from './subscribe_adapter'
 import argumentsParser from './arguments_parser'
+import HMRSocketHandler from './hmr_socket_handler'
 
 import staticDir from '$resolve.staticDir'
 import distDir from '$resolve.distDir'
@@ -31,6 +33,13 @@ subscribeAdapter.init().then(() => {
     })
   })
 })
+
+const HMRSocketServer = createSocketServer(server, {
+  path: getRootBasedUrl('/api/hmr/'),
+  serveClient: false
+})
+
+HMRSocketServer.on('connection', HMRSocketHandler)
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))

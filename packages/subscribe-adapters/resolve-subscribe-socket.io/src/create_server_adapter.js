@@ -1,5 +1,4 @@
 import createSocketServer from 'socket.io'
-import Url from 'url'
 
 import createServerHandler from './create_server_handler'
 import {
