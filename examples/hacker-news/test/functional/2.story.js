@@ -36,8 +36,11 @@ test('add comment', async (t /*: TestController */) => {
 
   await t.click(titleLink)
 
-  await t.typeText('textarea', 'first comment')
-  await t.click('button')
+  const textarea = await Selector('textarea').nth(-1)
+  await t.typeText(textarea, 'first comment')
+
+  const button = await Selector('button').nth(-1)
+  await t.click(button)
 
   await t
     .expect(await Selector('div').withText('first comment').exists)
@@ -48,10 +51,18 @@ test('add comment', async (t /*: TestController */) => {
 test('add reply', async (t /*: TestController */) => {
   await t.navigateTo(`${ROOT_URL}/newest`)
 
-  await t.click(await Selector('a').withText('Ask HN: my ask'))
-  await t.click(await Selector('a').withText('reply'))
+  await t.click(
+    await Selector('a')
+      .withText('Ask HN: my ask')
+      .nth(-1)
+  )
+  await t.click(
+    await Selector('a')
+      .withText('reply')
+      .nth(-1)
+  )
 
-  await t.wait(1000) // TODO Fix reactivity
+  await t.wait(5000) // TODO Fix reactivity
 
   await t.expect(await Selector('div').withText('my text').exists).eql(false)
 
@@ -59,8 +70,11 @@ test('add reply', async (t /*: TestController */) => {
     .expect(await Selector('div').withText('first comment').exists)
     .eql(true)
 
-  await t.typeText('textarea', 'first reply')
-  await t.click('button')
+  const textarea = await Selector('textarea').nth(-1)
+  await t.typeText(textarea, 'first reply')
+
+  const button = await Selector('button').nth(-1)
+  await t.click(button)
 
   await t.wait(5000) // TODO Fix reactivity
 

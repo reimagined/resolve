@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux'
 import * as actions from './actions'
 import { connectorMetaMap } from './constants'
 import getHash from './get_hash'
-import { Consumer } from './resolve_context'
+import connectResolveAdvanced from './connect_resolve_advanced'
 
 const connectViewModel = mapStateToOptions => Component => {
   class ViewModelContainer extends React.PureComponent {
@@ -134,22 +134,7 @@ const connectViewModel = mapStateToOptions => Component => {
   )(ViewModelContainer)
   ViewModelConnector.mapStateToOptions = mapStateToOptions
 
-  class ResolveConsumer extends React.PureComponent {
-    render() {
-      return (
-        <Consumer>
-          {({ aggregateActions }) => (
-            <ViewModelConnector
-              {...this.props}
-              aggregateActions={aggregateActions}
-            />
-          )}
-        </Consumer>
-      )
-    }
-  }
-
-  return ResolveConsumer
+  return connectResolveAdvanced(ViewModelConnector)
 }
 
 export default connectViewModel

@@ -1,17 +1,29 @@
 import React from 'react'
 import { Provider as ReduxProvider } from 'react-redux'
-import { Provider as ResolveProvider } from 'resolve-redux'
+import { Provider as ResolveProvider, createApi } from 'resolve-redux'
 import { ConnectedRouter } from 'react-router-redux'
 
 import Routes from './Routes'
 
 class AppContainer extends React.PureComponent {
   render() {
-    const { aggregateActions, store, history, routes } = this.props
+    const {
+      origin,
+      rootPath,
+      aggregateActions,
+      store,
+      history,
+      routes
+    } = this.props
+
+    const api = createApi({ origin, rootPath })
 
     return (
       <ResolveProvider
         value={{
+          api,
+          origin,
+          rootPath,
           aggregateActions
         }}
       >

@@ -127,6 +127,13 @@ const createViewModel = ({
       if (error) throw error
 
       const aggregateVersionsMap = {}
+
+      if (aggregateIds !== '*') {
+        for (const aggregateId of aggregateIds) {
+          aggregateVersionsMap[aggregateId] = 0
+        }
+      }
+
       await eventStore.getEventsByAggregateId(
         Array.from(aggregateIdsSet),
         event => {

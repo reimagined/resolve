@@ -7,6 +7,7 @@ import createJwtReducer from './create_jwt_reducer'
 import createActions from './create_actions'
 import connectReadModel from './connect_read_model'
 import connectViewModel from './connect_view_model'
+import connectResolveAdvanced from './connect_resolve_advanced'
 import createApi from './create_api'
 import createConnectionManager from './create_connection_manager'
 import createSagaManager from './create_saga_manager'
@@ -25,6 +26,7 @@ export {
   createActions,
   connectViewModel,
   connectReadModel,
+  connectResolveAdvanced,
   createApi,
   createConnectionManager,
   createSagaManager,

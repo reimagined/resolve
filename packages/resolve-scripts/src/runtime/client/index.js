@@ -30,6 +30,8 @@ const store = createStore({
 
 render(
   <AppContainer
+    origin={origin}
+    rootPath={rootPath}
     aggregateActions={aggregateActions}
     store={store}
     history={history}

@@ -1,6 +1,7 @@
 import React from 'react'
 import uuid from 'uuid'
 import { connect } from 'react-redux'
+import { connectResolveAdvanced } from 'resolve-redux'
 import { Redirect } from 'react-router'
 import { bindActionCreators } from 'redux'
 import urlLib from 'url'
@@ -138,7 +139,9 @@ export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
     dispatch
   )
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Submit)
+export default connectResolveAdvanced(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Submit)
+)
