@@ -3,7 +3,6 @@ import { Helmet } from 'react-helmet'
 import { connectReadModel } from 'resolve-redux'
 import uuid from 'uuid'
 
-import actions from '../../actions'
 import Header from '../components/Header'
 
 class App extends React.Component {
@@ -147,8 +146,9 @@ const mapStateToProps = state => ({
   isReactive: true
 })
 
-const mapDispatchToProps = dispatch => ({
-  createUser: ({ email }) => dispatch(actions.createUser(uuid.v4(), { email }))
+const mapDispatchToProps = (dispatch, props) => ({
+  createUser: ({ email }) =>
+    dispatch(props.aggregateActions.createUser(uuid.v4(), { email }))
 })
 
 export default connectReadModel(mapStateToProps, mapDispatchToProps)(App)

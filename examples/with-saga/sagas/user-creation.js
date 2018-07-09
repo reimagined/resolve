@@ -1,4 +1,4 @@
-const outdatePeriod = 1000 * 60 * 10
+const outdatedPeriod = 1000 * 60 * 10
 
 const saga = {
   eventHandlers: {
@@ -25,7 +25,7 @@ const saga = {
 
       await resolve.executeCommand({
         type: userWithSameEmail ? 'rejectUserCreation' : 'confirmUserCreation',
-        aggregateName: 'User',
+        aggregateName: 'user',
         aggregateId
       })
     }
@@ -40,10 +40,10 @@ const saga = {
       const now = Date.now()
 
       users.forEach(user => {
-        if (user.timestamp + outdatePeriod < now) {
+        if (user.timestamp + outdatedPeriod < now) {
           resolve.executeCommand({
             type: 'deleteOutdatedUser',
-            aggregateName: 'User',
+            aggregateName: 'user',
             aggregateId: user.id
           })
         }

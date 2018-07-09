@@ -78,6 +78,7 @@ module.exports = {
           'config',
           'configs',
           'const',
+          'cron',
           'cwd',
           'darwin',
           'dev',

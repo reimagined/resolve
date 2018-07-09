@@ -5,27 +5,24 @@ import {
   USER_CREATION_CONFIRMED,
   USER_CREATION_REJECTED,
   OUTDATED_USER_DELETED
-} from '../../event-names'
+} from '../event-names'
 
 export default {
   Init: async store => {
-    await store.defineTable('Users', [
-      { name: 'id', type: 'string', index: 'primary' },
-      { name: 'email', type: 'string' },
-      { name: 'timestamp', type: 'number' }
-    ])
+    await store.defineTable('Users', {
+      indexes: { id: 'string' },
+      fields: ['email', 'timestamp']
+    })
 
-    await store.defineTable('CreatedUsers', [
-      { name: 'id', type: 'string', index: 'primary' },
-      { name: 'email', type: 'string' },
-      { name: 'timestamp', type: 'number' }
-    ])
+    await store.defineTable('CreatedUsers', {
+      indexes: { id: 'string' },
+      fields: ['email', 'timestamp']
+    })
 
-    await store.defineTable('Errors', [
-      { name: 'id', type: 'string', index: 'primary' },
-      { name: 'timestamp', type: 'number' },
-      { name: 'message', type: 'string' }
-    ])
+    await store.defineTable('Errors', {
+      indexes: { id: 'string' },
+      fields: ['timestamp', 'message']
+    })
   },
   [USER_CREATION_REQUESTED]: async (
     store,
