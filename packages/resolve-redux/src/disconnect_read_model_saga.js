@@ -9,7 +9,6 @@ import {
   STOP_READ_MODEL_SUBSCRIPTION_SUCCESS,
   STOP_READ_MODEL_SUBSCRIPTION_FAILURE
 } from './action_types'
-
 import { namespace } from './constants'
 import unsubscribeReadModelTopicsSaga from './unsubscribe_read_model_topics_saga'
 import { HttpError } from './create_api'
@@ -74,6 +73,7 @@ const disconnectReadModelSaga = function*(sagaArgs, action) {
         STOP_READ_MODEL_SUBSCRIPTION_FAILURE &&
       stopSubscriptionResultAction.error instanceof HttpError
     ) {
+      // eslint-disable-next-line no-console
       console.warn('Http error: ', stopSubscriptionResultAction.error)
       return
     }

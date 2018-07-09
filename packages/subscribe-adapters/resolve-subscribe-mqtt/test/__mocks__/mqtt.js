@@ -27,6 +27,7 @@ const mqtt = {
           case 'error':
             Client._onError = callback
             break
+          default:
         }
       }
     }

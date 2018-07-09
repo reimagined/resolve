@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { connectViewModel } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
 import { NavLink } from 'react-router-dom'
-import { Helmet } from 'react-helmet'
 import {
   ListGroup,
   ListGroupItem,

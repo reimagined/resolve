@@ -1,6 +1,6 @@
 import { take, put } from 'redux-saga/effects'
 
-import { unsubscibeTopicRequest } from './actions'
+import { unsubscribeTopicRequest } from './actions'
 import {
   UNSUBSCRIBE_TOPIC_FAILURE,
   UNSUBSCRIBE_TOPIC_SUCCESS
@@ -9,7 +9,8 @@ import { diffTopicName } from './constants'
 
 const unsubscribeReadModelTopicsSaga = function*({ queryId }) {
   while (true) {
-    yield put(unsubscibeTopicRequest(diffTopicName, queryId))
+    // eslint-disable-next-line no-loop-func
+    yield put(unsubscribeTopicRequest(diffTopicName, queryId))
 
     const unsubscribeResultAction = yield take(
       action =>

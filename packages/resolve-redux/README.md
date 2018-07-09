@@ -196,7 +196,7 @@ export default connectReadModel(mapStateToOptions)(
     * `topicId`
     * `error`
 
-  * #### `unsubscibeTopicRequest`
+  * #### `unsubscribeTopicRequest`
     Request unsubscription from topic. It takes the object with the following required arguments:
     * `topicName`
     * `topicId`

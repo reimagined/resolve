@@ -72,6 +72,7 @@ const connectViewModelSaga = function*(sagaArgs, action) {
     }
 
     while (counter > 0) {
+      // eslint-disable-next-line no-loop-func
       const subscribeResultAction = yield take(action => {
         return (
           (action.type === SUBSCRIBE_TOPIC_SUCCESS ||
@@ -120,6 +121,7 @@ const connectViewModelSaga = function*(sagaArgs, action) {
       loadViewModelStateResultAction.type === LOAD_VIEWMODEL_STATE_FAILURE &&
       loadViewModelStateResultAction.error instanceof HttpError
     ) {
+      // eslint-disable-next-line no-console
       console.warn('Http error: ', loadViewModelStateResultAction.error)
       return
     }

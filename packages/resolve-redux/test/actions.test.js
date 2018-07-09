@@ -53,7 +53,7 @@ import {
   subscribeTopicRequest,
   subscribeTopicSuccess,
   subscribeTopicFailure,
-  unsubscibeTopicRequest,
+  unsubscribeTopicRequest,
   unsubscribeTopicFailure,
   unsubscribeTopicSuccess
 } from '../src/actions'
@@ -531,11 +531,11 @@ describe('actions', () => {
     })
   })
 
-  describe('unsubscibeTopicRequest', () => {
+  describe('unsubscribeTopicRequest', () => {
     test('should create an action to unsubscribe topic request', () => {
       const topicName = 'topicName'
       const topicId = 'topicId'
-      expect(unsubscibeTopicRequest(topicName, topicId)).toEqual({
+      expect(unsubscribeTopicRequest(topicName, topicId)).toEqual({
         type: UNSUBSCRIBE_TOPIC_REQUEST,
         topicName,
         topicId

@@ -4,7 +4,7 @@ import { Consumer } from './resolve_context'
 import * as actions from './actions'
 
 const connectResolveAdvanced = Component => {
-  return class ConnectResolveAdvanced extends React.PureComponent {
+  class ConnectResolveAdvanced extends React.PureComponent {
     functionAsChildComponent = context => (
       <Component {...context} actions={actions} {...this.props} />
     )

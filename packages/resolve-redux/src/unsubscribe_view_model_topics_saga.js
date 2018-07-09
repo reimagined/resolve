@@ -1,6 +1,6 @@
 import { take, put } from 'redux-saga/effects'
 
-import { unsubscibeTopicRequest } from './actions'
+import { unsubscribeTopicRequest } from './actions'
 import {
   UNSUBSCRIBE_TOPIC_FAILURE,
   UNSUBSCRIBE_TOPIC_SUCCESS
@@ -26,11 +26,12 @@ const unsubscribeViewModelTopicsSaga = function*({
   while (subscriptionKeys.length > 0) {
     let counter = subscriptionKeys.length
     for (const { aggregateId, eventType } of subscriptionKeys) {
-      yield put(unsubscibeTopicRequest(eventType, aggregateId))
+      yield put(unsubscribeTopicRequest(eventType, aggregateId))
     }
 
     while (counter > 0) {
       const unsubscribeResultAction = yield take(
+        // eslint-disable-next-line no-loop-func
         action =>
           (action.type === UNSUBSCRIBE_TOPIC_SUCCESS ||
             action.type === UNSUBSCRIBE_TOPIC_FAILURE) &&

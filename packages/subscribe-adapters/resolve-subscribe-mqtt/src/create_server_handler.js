@@ -30,7 +30,7 @@ const createServerHandler = (pubsubManager, callback, appId, qos) => ws => {
   client.on('subscribe', packet => {
     try {
       for (const subscription of packet.subscriptions) {
-        const [appId, topicName, topicId] = (
+        const [, topicName, topicId] = (
           subscription.topic || subscription
         ).split('/')
         pubsubManager.subscribe({ client: publisher, topicName, topicId })
@@ -39,6 +39,7 @@ const createServerHandler = (pubsubManager, callback, appId, qos) => ws => {
     } catch (error) {
       // eslint-disable-next-line no-console
       console.warn(packet)
+      // eslint-disable-next-line no-console
       console.warn(error)
     }
   })
@@ -46,7 +47,7 @@ const createServerHandler = (pubsubManager, callback, appId, qos) => ws => {
   client.on('unsubscribe', packet => {
     try {
       for (const unsubscription of packet.unsubscriptions) {
-        const [appId, topicName, topicId] = (
+        const [, topicName, topicId] = (
           unsubscription.topic || unsubscription
         ).split('/')
         pubsubManager.unsubscribe({ client: publisher, topicName, topicId })
@@ -55,6 +56,7 @@ const createServerHandler = (pubsubManager, callback, appId, qos) => ws => {
     } catch (error) {
       // eslint-disable-next-line no-console
       console.warn(packet)
+      // eslint-disable-next-line no-console
       console.warn(error)
     }
   })

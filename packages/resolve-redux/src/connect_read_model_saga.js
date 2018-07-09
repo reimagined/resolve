@@ -128,6 +128,7 @@ const connectReadModelSaga = function*(sagaArgs, action) {
       loadReadModelStateResultAction.type === LOAD_READMODEL_STATE_FAILURE &&
       loadReadModelStateResultAction.error instanceof HttpError
     ) {
+      // eslint-disable-next-line no-console
       console.warn('Http error: ', loadReadModelStateResultAction.error)
       return
     }

@@ -1,5 +1,4 @@
 import React from 'react'
-import { Helmet } from 'react-helmet'
 
 import ItemsPager from './ItemsPager'
 import ItemsViewer from './ItemsViewer'

@@ -72,6 +72,7 @@ const pubsubManager = {
 
     clients.forEach(client =>
       client(topicName, topicId, event).catch(warning => {
+        // eslint-disable-next-line
         console.warn(warning)
       })
     )

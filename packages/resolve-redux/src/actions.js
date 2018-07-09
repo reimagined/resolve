@@ -88,7 +88,7 @@ export const subscribeTopicFailure = (topicName, topicId, error) => ({
   error
 })
 
-export const unsubscibeTopicRequest = (topicName, topicId) => ({
+export const unsubscribeTopicRequest = (topicName, topicId) => ({
   type: UNSUBSCRIBE_TOPIC_REQUEST,
   topicName,
   topicId

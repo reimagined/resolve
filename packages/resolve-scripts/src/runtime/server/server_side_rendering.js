@@ -28,12 +28,14 @@ const serverSideRendering = (req, res) => {
     Object.assign(jwt, jsonwebtoken.decode(req.cookies[jwtCookie.name]))
   } catch (e) {}
 
+  const origin = ''
+
   const store = createStore({
     initialState: {
       jwt
     },
     history,
-    origin: req.headers.origin,
+    origin,
     rootPath,
     isClient: false
   })
@@ -42,10 +44,13 @@ const serverSideRendering = (req, res) => {
   const markup = ReactDOM.renderToStaticMarkup(
     <StyleSheetManager sheet={sheet.instance}>
       <AppContainer
+        origin={origin}
+        rootPath={rootPath}
         aggregateActions={aggregateActions}
         store={store}
         history={history}
         routes={routes}
+        isSSR={true}
       />
     </StyleSheetManager>
   )

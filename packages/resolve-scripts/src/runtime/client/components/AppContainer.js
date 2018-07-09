@@ -13,7 +13,8 @@ class AppContainer extends React.PureComponent {
       aggregateActions,
       store,
       history,
-      routes
+      routes,
+      isSSR
     } = this.props
 
     const api = createApi({ origin, rootPath })
@@ -28,7 +29,7 @@ class AppContainer extends React.PureComponent {
         }}
       >
         <ReduxProvider store={store}>
-          <ConnectedRouter history={history}>
+          <ConnectedRouter history={history} isSSR={isSSR}>
             <Routes routes={routes} />
           </ConnectedRouter>
         </ReduxProvider>

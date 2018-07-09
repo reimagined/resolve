@@ -1,7 +1,6 @@
 import React from 'react'
 import { connectReadModel } from 'resolve-redux'
 import { connect } from 'react-redux'
-import { Helmet } from 'react-helmet'
 
 import Login from '../components/Login'
 import Logout from '../components/Logout'

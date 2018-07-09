@@ -10,14 +10,13 @@ import connectResolveAdvanced from './connect_resolve_advanced'
 const connectReadModel = mapStateToOptions => Component => {
   class ReadModelContainer extends React.PureComponent {
     componentDidMount() {
-      // TODO placeholder
       const {
         readModelName,
         resolverName,
         resolverArgs,
-        isReactive,
-        placeholder,
-        placeholderTimeout
+        isReactive
+        // placeholder,
+        // placeholderTimeout
       } = this.props.connectorOptions
 
       this.props.connectReadModel(
@@ -29,14 +28,13 @@ const connectReadModel = mapStateToOptions => Component => {
     }
 
     componentWillUnmount() {
-      // TODO placeholder
       const {
         readModelName,
         resolverName,
         resolverArgs,
-        isReactive,
-        placeholder,
-        placeholderTimeout
+        isReactive
+        // placeholder,
+        // placeholderTimeout
       } = this.props.connectorOptions
 
       this.props.disconnectReadModel(
@@ -82,7 +80,6 @@ const connectReadModel = mapStateToOptions => Component => {
     render() {
       const { ownProps, isLoading, data } = this.props
 
-      // TODO
       if (isLoading !== false) {
         return null
       }

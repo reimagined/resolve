@@ -66,7 +66,7 @@ const refreshUpdatedObjects = (
   }
 }
 
-export default function createReadModelsReducer(readModels) {
+export default function createReadModelsReducer() {
   const handlers = {}
 
   handlers[LOAD_READMODEL_STATE_REQUEST] = (state, action) => {

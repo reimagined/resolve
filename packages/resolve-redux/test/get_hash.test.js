@@ -17,7 +17,7 @@ describe('getHash', () => {
     expect(getHash({})).toMatchSnapshot()
   })
 
-  test('expty array should work correctly', () => {
+  test('empty array should work correctly', () => {
     expect(getHash([])).toMatchSnapshot()
   })
 

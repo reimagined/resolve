@@ -10,26 +10,24 @@ import connectResolveAdvanced from './connect_resolve_advanced'
 const connectViewModel = mapStateToOptions => Component => {
   class ViewModelContainer extends React.PureComponent {
     componentDidMount() {
-      // TODO placeholder
       const {
         viewModelName,
         aggregateIds,
-        aggregateArgs,
-        placeholder,
-        placeholderTimeout
+        aggregateArgs
+        // placeholder,
+        // placeholderTimeout
       } = this.props.connectorOptions
 
       this.props.connectViewModel(viewModelName, aggregateIds, aggregateArgs)
     }
 
     componentWillUnmount() {
-      // TODO placeholder
       const {
         viewModelName,
         aggregateIds,
-        aggregateArgs,
-        placeholder,
-        placeholderTimeout
+        aggregateArgs
+        // placeholder,
+        // placeholderTimeout
       } = this.props.connectorOptions
 
       this.props.disconnectViewModel(viewModelName, aggregateIds, aggregateArgs)
@@ -69,7 +67,6 @@ const connectViewModel = mapStateToOptions => Component => {
     render() {
       const { ownProps, isLoading, data } = this.props
 
-      // TODO
       if (isLoading !== false) {
         return null
       }
