@@ -8,10 +8,13 @@ const PagePreloader = ({ route }) => {
   let children = []
   if (route != null) {
     let index = 0
-    for (const { route, match } of matchRoutes(routes, route)) {
-      if (match.path === '/') continue
-      const Component = route.component
-      children.push(<Component key={index++} match={match} />)
+    for (const {
+      route: { component: Component },
+      match
+    } of matchRoutes(routes, route)) {
+      if (match.path !== '/') {
+        children.push(<Component key={index++} match={match} />)
+      }
     }
   }
   return (

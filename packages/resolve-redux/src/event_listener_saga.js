@@ -17,7 +17,8 @@ const eventListenerSaga = function*(
         action.type === DISPATCH_TOPIC_MESSAGE &&
         (eventTypes.indexOf(action.message.type) > -1 &&
           (connectAction.aggregateIds === '*' ||
-            connectAction.aggregateIds.indexOf(action.message.aggregateId)))
+            connectAction.aggregateIds.indexOf(action.message.aggregateId) >
+              -1))
     )
 
     eventQueue.push(event)

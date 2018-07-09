@@ -36,6 +36,8 @@ test('add comment', async (t /*: TestController */) => {
 
   await t.click(titleLink)
 
+  await t.wait(5000) // TODO Fix reactivity
+
   const textarea = await Selector('textarea').nth(-1)
   await t.typeText(textarea, 'first comment')
 
