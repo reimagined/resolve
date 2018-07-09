@@ -3,13 +3,27 @@
 
 This package is a `resolve-redux` adapter for subscribe to events using [MQTT](https://github.com/mqttjs/MQTT.js).
 
-## Available Parameters
-* `api` - Refer to [resolve-redux API](../../resolve-redux/README.md#api) for more information.
 
+#### Client Side
 ```js
-import createSubscribeAdapter from 'resolve-subscribe-mqtt';
+import createClientAdapter from 'resolve-subscribe-mqtt/create_client_adapter';
 
-const adapter = createSubscribeAdapter({ api });
+(async () => {
+  const adapter = createClientAdapter({ origin, rootPath, url, appId, onEvent })
+  
+  await adapter.init()
+})() 
+```
+
+#### Server Side
+```js
+import createServerAdapter from 'resolve-subscribe-mqtt/create_server_adapter';
+
+(async () => {
+  const adapter = createServerAdapter({ server, getRootBasedUrl, pubsubManager, appId })
+  
+  await adapter.init()
+})() 
 ```
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-resolve-subscribe-mqtt-readme?pixel)

@@ -1,15 +1,29 @@
-# **resolve-subscribe-mqtt**
-[![npm version](https://badge.fury.io/js/resolve-subscribe-mqtt.svg)](https://badge.fury.io/js/resolve-subscribe-mqtt)
+# **resolve-subscribe-socket.io**
+[![npm version](https://badge.fury.io/js/resolve-subscribe-socket.io.svg)](https://badge.fury.io/js/resolve-subscribe-socket.io)
 
-This package is a `resolve-redux` adapter for subscribe to events using [MQTT](https://github.com/mqttjs/MQTT.js).
+This package is a `resolve-redux` adapter for subscribe to events using [Socket.io](https://socket.io/).
 
-## Available Parameters
-* `api` - Refer to [resolve-redux API](../../resolve-redux/README.md#api) for more information.
 
+#### Client Side
 ```js
-import createSubscribeAdapter from 'resolve-subscribe-mqtt';
+import createClientAdapter from 'resolve-subscribe-socket.io/create_client_adapter';
 
-const adapter = createSubscribeAdapter({ api });
+(async () => {
+  const adapter = createClientAdapter({ origin, rootPath, url, appId, onEvent })
+  
+  await adapter.init()
+})() 
 ```
 
-![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-resolve-subscribe-mqtt-readme?pixel)
+#### Server Side
+```js
+import createServerAdapter from 'resolve-subscribe-socket.io/create_server_adapter';
+
+(async () => {
+  const adapter = createServerAdapter({ server, getRootBasedUrl, pubsubManager, appId })
+  
+  await adapter.init()
+})() 
+```
+
+![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-resolve-subscribe-socket.io-readme?pixel)
