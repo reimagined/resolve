@@ -44,7 +44,7 @@ export const Todo = ({
           />
           <span className="example-back-label">Back</span>
         </NavLink>
-        <div className="example-task-name">Task's List</div>
+        <div className="example-task-name">Tasks List</div>
       </Form>
 
       <ListGroup className="example-list">

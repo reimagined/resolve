@@ -12,7 +12,7 @@ class App extends React.Component {
   render() {
     return (
       <div className="example-wrapper">
-        <h2 className="example-title">Team's Rating Top 100</h2>
+        <h2 className="example-title">Top 100 Teams</h2>
 
         <ItemsViewer limit={ITEMS_PER_PAGE} page={this.state.page} />
 

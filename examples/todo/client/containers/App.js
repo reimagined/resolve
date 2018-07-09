@@ -31,7 +31,7 @@ export const App = props => {
 
   return (
     <div className="example-wrapper">
-      <h1>Task's List</h1>
+      <h1>Tasks List</h1>
 
       <ListGroup className="example-list">
         {Object.keys(todos).map(id => (
