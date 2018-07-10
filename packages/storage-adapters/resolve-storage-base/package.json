@@ -1,6 +1,6 @@
 {
   "name": "resolve-storage-base",
-  "version": "0.12.1",
+  "version": "0.12.3",
   "description": "This package contains the basic components for storage adapters",
   "main": "./dist/index.js",
   "bugs": {
@@ -8,8 +8,8 @@
   },
   "scripts": {
     "prepublish": "babel --out-dir ./dist ./src",
-    "test": "exit 0",
-    "testw": "exit 0"
+    "test": "echo || exit 0",
+    "testw": "echo || exit 0"
   },
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
@@ -21,12 +21,12 @@
     "ddd"
   ],
   "devDependencies": {
-    "@babel/cli": "^7.0.0-beta.49",
-    "@babel/core": "^7.0.0-beta.49",
-    "@babel/plugin-transform-runtime": "^7.0.0-beta.49",
-    "@babel/preset-env": "^7.0.0-beta.49",
-    "@babel/preset-react": "^7.0.0-beta.49",
-    "@babel/preset-stage-0": "^7.0.0-beta.49",
+    "@babel/cli": "7.0.0-beta.51",
+    "@babel/core": "7.0.0-beta.51",
+    "@babel/plugin-transform-runtime": "7.0.0-beta.51",
+    "@babel/preset-env": "7.0.0-beta.51",
+    "@babel/preset-react": "7.0.0-beta.51",
+    "@babel/preset-stage-0": "7.0.0-beta.51",
     "babel-core": "^7.0.0-0",
     "babel-jest": "^23.0.0",
     "regenerator-runtime": "^0.11.1",

@@ -1,6 +1,6 @@
 {
   "name": "with-styled-components",
-  "version": "0.12.1",
+  "version": "0.12.3",
   "private": true,
   "scripts": {
     "build": "resolve-scripts build",
@@ -13,15 +13,15 @@
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
     "redux": "^3.7.2",
-    "resolve-scripts": "0.12.1",
+    "resolve-scripts": "0.12.3",
     "styled-components": "^3.3.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0-beta.49",
-    "@babel/preset-env": "^7.0.0-beta.49",
-    "@babel/preset-react": "^7.0.0-beta.49",
-    "@babel/plugin-transform-runtime": "^7.0.0-beta.49",
-    "@babel/preset-stage-0": "^7.0.0-beta.49",
+    "@babel/core": "7.0.0-beta.51",
+    "@babel/preset-env": "7.0.0-beta.51",
+    "@babel/preset-react": "7.0.0-beta.51",
+    "@babel/plugin-transform-runtime": "7.0.0-beta.51",
+    "@babel/preset-stage-0": "7.0.0-beta.51",
     "babel-core": "^7.0.0-0",
     "jest": "^23.0.1",
     "react-test-renderer": "^16.4.0",

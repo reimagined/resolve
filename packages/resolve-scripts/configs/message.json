@@ -3,20 +3,20 @@
   "viewModelsArrayFormat": "The viewModels field should be an array",
   "readModelMandatoryName": "A read model name is required",
   "viewModelMandatoryName": "A view model name is required",
-  "badSocketIoClientId": "Supposed socket.io client identifier does not exist",
+  "badSocketIoClientId": "No valid socket.io client identifier found",
   "duplicateName": "A read/view name is not unique",
   "readModelQuerySideMandatory":
     "The gqlSchema and gqlResolvers fields are required for a read model facade",
   "viewModelSerializable":
     "The serializeState and deserializeState fields are required for a view model facade",
   "commandSuccess": "OK",
-  "commandFail": "A command error: ",
-  "readModelFail": "A read model query error: ",
-  "viewModelFail": "A view model query error: ",
+  "commandFail": "Command error: ",
+  "readModelFail": "Read model query error: ",
+  "viewModelFail": "View model query error: ",
   "viewModelOnlyOnDemand": "The aggregateIds field is required",
   "ssrError": "An SSR error: ",
-  "clientEnvError": "Don't use environment variables in the client code: ",
-  "serverAliasInClientCodeError": "Don't use server alias in the client code: ",
+  "clientEnvError": "Environment variables in the client code are restricted: ",
+  "serverAliasInClientCodeError": "Server alias in the client code is restricted: ",
   "configNotContainSectionError":
-    "Resolve Config does not contain the section: "
+    "Missing section in the ReSolve config: "
 }
