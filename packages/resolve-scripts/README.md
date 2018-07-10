@@ -1,15 +1,17 @@
 # **resolve-scripts**
 [![npm version](https://badge.fury.io/js/resolve-scripts.svg)](https://badge.fury.io/js/resolve-scripts)
 
-This package includes scripts and a configuration the [Create reSolve App](../create-resolve-app) uses.
+This package includes scripts and configuration for the [create-resolve-app](../create-resolve-app) package.
 
-Refer to its documentation:
 
- * [Getting started](../create-resolve-app#getting-started) - How to create a new app
- * [User Guide](../create-resolve-app#user-guide) - Information on apps created with Create reSolve App
- 
 ### Configuration File
-App's configuration can be defined in the resolve.config.json file or through the --config <path/to/json> option. 
+
+You can configure reSolve in the `resolve.config.json` file, or in the file passed as an argument with the `--config` key, for example:
+
+```sh
+npm run dev --config=custom-resolve.config.json
+npm run build --config=custom-resolve.config.json
+```
 
 Please keep in mind that the resulting configuration must match the [JSON Schema ReSolve Config](./configs/schema.resolve.config.json)
 
