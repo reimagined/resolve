@@ -147,7 +147,9 @@ export default function createViewModelsReducer(viewModels) {
   const uniqueListeners = new Map()
 
   for (const viewModel of viewModels) {
-    for (const eventType of Object.keys(viewModel.projection)) {
+    for (const eventType of Object.keys(viewModel.projection).filter(
+      eventType => eventType !== 'Init'
+    )) {
       if (!uniqueListeners.has(eventType)) {
         uniqueListeners.set(eventType, [])
       }

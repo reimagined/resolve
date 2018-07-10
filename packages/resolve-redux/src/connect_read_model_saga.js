@@ -18,6 +18,22 @@ import {
 import { diffTopicName, namespace } from './constants'
 import { HttpError } from './create_api'
 
+/*
+  Saga is launched on action `CONNECT_READMODEL`, emitted by read model connector.
+  If read model with supposed options had already been fetched, do nothing.
+  Saga performs resolver result fetching and subscribes to diff topic.
+  If read model is reactive, it launches `diff_listener_saga`.
+  Saga ends when resolver result is fetched and diff topic is acknowledged.
+  Resolver result is fetched by `load_read_model_state_saga`, interaction
+  performs through following actions: `LOAD_READMODEL_STATE_REQUEST`,
+  `LOAD_READMODEL_STATE_SUCCESS` and `LOAD_READMODEL_STATE_FAILURE`.
+  Subscription to diff topic is performed by `subscribe_saga`, interaction
+  performs by following actions: `SUBSCRIBE_TOPIC_REQUEST`,
+  `SUBSCRIBE_TOPIC_SUCCESS` and `SUBSCRIBE_TOPIC_FAILURE`.
+  If read model is reactive, saga suspends itself after `timeToLive` ms
+  and emits new `CONNECT_READMODEL` action to reconnect.
+*/
+
 const connectReadModelSaga = function*(sagaArgs, action) {
   const {
     connectionManager,

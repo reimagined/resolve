@@ -12,7 +12,9 @@ const unsubscribeViewModelTopicsSaga = function*({
   aggregateIds
 }) {
   const viewModel = viewModels.find(({ name }) => name === viewModelName)
-  const eventTypes = Object.keys(viewModel.projection)
+  const eventTypes = Object.keys(viewModel.projection).filter(
+    eventType => eventType !== 'Init'
+  )
 
   let subscriptionKeys = eventTypes.reduce((acc, eventType) => {
     if (Array.isArray(aggregateIds)) {

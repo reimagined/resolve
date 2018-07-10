@@ -14,6 +14,20 @@ import {
 } from './action_types'
 import { HttpError } from './create_api'
 
+/*
+  Saga is launched on action `CONNECT_VIEWMODEL`, emitted by view model connector.
+  If view model with supposed options had already been fetched, do nothing.
+  Saga performs view model state fetching and subscribe to topics Array<{aggregateId, eventType}>
+  If launches `event_listener_saga`.
+  Saga ends when view model state is fetched and all necessary topics are acknowledged.
+  View model state is fetched by `load_view_model_state_saga`, interaction
+  performs through following actions: `LOAD_VIEWMODEL_STATE_REQUEST`,
+  `LOAD_VIEWMODEL_STATE_SUCCESS` and `LOAD_VIEWMODEL_STATE_FAILURE`.
+  Subscription to necessary topics are performed by `subscribe_saga`, interaction
+  performs by following actions: `SUBSCRIBE_TOPIC_REQUEST`,
+  `SUBSCRIBE_TOPIC_SUCCESS` and `SUBSCRIBE_TOPIC_FAILURE`.
+*/
+
 const connectViewModelSaga = function*(sagaArgs, action) {
   const {
     viewModels,
@@ -43,7 +57,9 @@ const connectViewModelSaga = function*(sagaArgs, action) {
 
   const viewModel = viewModels.find(({ name }) => name === viewModelName)
 
-  const eventTypes = Object.keys(viewModel.projection)
+  const eventTypes = Object.keys(viewModel.projection).filter(
+    eventType => eventType !== 'Init'
+  )
 
   // viewModelName + aggregateIds => Array<{ aggregateId, eventType }>
   let subscriptionKeys = eventTypes.reduce((acc, eventType) => {
