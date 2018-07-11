@@ -1,0 +1,34 @@
+{
+  "name": "resolve-nightly-builds-publisher",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "start": "babel-node ./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MrCheater/resolve.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MrCheater/resolve/issues"
+  },
+  "homepage": "https://github.com/MrCheater/resolve#readme",
+  "devDependencies": {
+    "@babel/core": "7.0.0-beta.51",
+    "@babel/node": "7.0.0-beta.51",
+    "@babel/plugin-transform-runtime": "7.0.0-beta.51",
+    "@babel/preset-env": "7.0.0-beta.51",
+    "@babel/preset-stage-0": "7.0.0-beta.51",
+    "@babel/runtime": "7.0.0-beta.51"
+  },
+  "dependencies": {
+    "@octokit/rest": "^15.9.4",
+    "adm-zip": "^0.4.11",
+    "isomorphic-fetch": "^2.2.1",
+    "rimraf": "^2.6.2"
+  }
+}

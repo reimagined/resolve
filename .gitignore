@@ -2,3 +2,7 @@ vscode
 .vscode
 .idea
 node_modules
+packages/*
+publisher/resolve-dev
+publisher/tarballs
+publisher/yarn-error.log
