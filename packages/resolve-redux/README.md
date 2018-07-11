@@ -14,7 +14,7 @@ This package contains tools for integrating reSolve with [Redux](http://redux.js
 
 ### `createViewModelsReducer`
 
-  Generates a standard Redux reducer using reSolve view models. This function takes the following arguments:
+  Generates a [Redux reducer](https://redux.js.org/basics/reducers) from reSolve View Models. Arguments:
 
 ```js
 createViewModelsReducer(viewModels)
@@ -22,7 +22,7 @@ createViewModelsReducer(viewModels)
 
 ### `createReadModelsReducer`
 
-  Generates a standard Redux reducer using reSolve read models. This function takes the following arguments:
+  Generates a [Redux reducer](https://redux.js.org/basics/reducers) using reSolve Read Models. Arguments:
 
 ```js
 createReadModelsReducer(readModels)
@@ -30,18 +30,19 @@ createReadModelsReducer(readModels)
 
 ### `createJwtReducer`
 
-  Generates a standard Redux reducer using reSolve JWT. This function  does not take any arguments:
+  Generates a [Redux reducer](https://redux.js.org/basics/reducers) using a reSolve JWT. No arguments:
 
 ```js
 createJwtReducer()
 ```
-  
+
 ### `createResolveMiddleware`
   
-  Redux middleware used to:
+  Redux middleware is used to:
 
-  1) Automatically fetch a view/read model state and subscribe to events.
-  2) Send a command to the server side.
+  1. Fetch View and Read Models 
+  2. Subscribe to events
+  3. Send commands to the server side
   
 ```js
 import { createStore, applyMiddleware, combineReducers } from 'redux'
@@ -85,7 +86,7 @@ resolveMiddleware.run({
 ```
 
 ### `connectViewModel`
-  A higher-order component (HOC), which automatically subscribes/unsubscribes to/from a view model by aggregateIds and fetch a view model state.
+  A higher-order component (HOC), used to automatically subscribe/unsubscribe to/from View Model updates, and access the aggregate commands by `aggregateIds`.
 
 ```js
 import { connect } from 'react-redux'
@@ -115,7 +116,7 @@ export default connectViewModel(mapStateToOptions)(
 ```
 
 ### `connectReadModel`
-  A higher-order component (HOC), which automatically subscribes/unsubscribes to/from a read model by resolver name and resolver arguments and fetch a read model state.
+  A higher-order component (HOC), used to automatically subscribe/unsubscribe to/from Read Model updates, and access the corresponding aggregate's commands.
 
 ```js
 import { connect } from 'react-redux'
@@ -152,11 +153,12 @@ export default connectReadModel(mapStateToOptions)(
 
 ### `createActions`
 
-  Generates Redux actions using a reSolve aggregate. This function uses the reSolve's [`sendCommandRequest`](#sendcommandrequest) action to pass a command from Redux to the server side. Generated actions are named as an aggregate's commands. This function takes two arguments:
+  Generates [Redux actions](https://redux.js.org/basics/actions) using a reSolve aggregate. This function uses [`sendCommandRequest`](#sendcommandrequest) to pass a command from Redux to the server side. The generated actions are named after the aggregate commands. Arguments:
+  
   * `aggregate` -  reSolve aggregate
   * `extendActions` - actions to extend or redefine resulting actions
 
-### `action creators`
+### Action Creators
 
   * #### `sendCommandRequest`
     Request sending command to the server side. It takes the object with the following required arguments:
