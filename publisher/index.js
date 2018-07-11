@@ -1,5 +1,6 @@
 import AdmZip from 'adm-zip'
 import { execSync } from 'child_process'
+import crypto from 'crypto';
 import fs from 'fs'
 import https from 'https'
 import path from 'path'
@@ -18,6 +19,12 @@ const resolveDevDir = path.join(rootDir, './resolve-dev')
 const tarballsDir = path.join(rootDir, './tarballs')
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+
+const getHash = (buf) =>
+  crypto.createHmac('sha256', 'resolve')
+    .update(buf)
+    .digest('hex')
+
 
 const fetchGithubDevZip = () => new Promise((resolve, reject) => {
     const data = []
@@ -42,8 +49,7 @@ const fetchGithubDevZip = () => new Promise((resolve, reject) => {
           pos += data[i].length;
         }
 
-        const zip = new AdmZip(buf)
-        resolve(zip)
+        resolve(buf)
       })
     })
     
@@ -51,12 +57,13 @@ const fetchGithubDevZip = () => new Promise((resolve, reject) => {
     req.end()
   })
   
-const downloadAndExtractResolveDev = async () => {
+const extractResolveDev = async (buf) => {
   await new Promise((resolve, reject) =>
     rimraf(resolveDevDir, err => err ? reject(err) : resolve())
   )
 
-  const zipArchive = await fetchGithubDevZip()
+  const zipArchive = new AdmZip(buf)
+  
   await new Promise((resolve, reject) =>
     zipArchive.extractAllToAsync(
       rootDir,
@@ -150,16 +157,28 @@ const publishTarballs = async (tarballs) => {
 }
 
 const main = async () => {
+  let lastHash = ''
+  
   while(true) {
-    await downloadAndExtractResolveDev()
-    await yarnResolveDev()
-    const packages = await retrieveMonorepoPackages()
     const isoTime = (new Date()).toLocaleString().replace(/\s|:/g, '-')
-    await patchPackageJsons(packages, isoTime)
-    const tarballs = await packPackages(packages, isoTime)
-    await publishTarballs(tarballs)
+    const buf = await fetchGithubDevZip()
+    const hash = getHash(buf)
+  
+    if(hash !== lastHash) {
+      await extractResolveDev(buf)
+      await yarnResolveDev()
+      const packages = await retrieveMonorepoPackages()
+      await patchPackageJsons(packages, isoTime)
+      const tarballs = await packPackages(packages, isoTime)
+      await publishTarballs(tarballs)
+      
+      lastHash = hash
+      
+      console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+      console.log(`Nightly builds update within ${isoTime}`)
+      console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    }
     
-    console.log(tarballs)
     await delay(10 * 60 * 1000)
   }
 }
