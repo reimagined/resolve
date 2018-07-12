@@ -10,15 +10,7 @@ const defineTable = async ({ connection }, tableName, tableDescription) => {
   }
 }
 
-const find = async (
-  { connection },
-  tableName,
-  searchExpression,
-  fieldList,
-  sort,
-  skip,
-  limit
-) => {
+const find = async ({ connection }, tableName, searchExpression, fieldList, sort, skip, limit) => {
   const collection = await connection.collection(tableName)
   const findCursor = await collection.find(searchExpression, {
     projection: fieldList ? { _id: 0, ...fieldList } : { _id: 0 },
@@ -30,12 +22,7 @@ const find = async (
   return await findCursor.toArray()
 }
 
-const findOne = async (
-  { connection },
-  tableName,
-  searchExpression,
-  fieldList
-) => {
+const findOne = async ({ connection }, tableName, searchExpression, fieldList) => {
   const collection = await connection.collection(tableName)
 
   return await collection.findOne(searchExpression, {
@@ -53,15 +40,11 @@ const insert = async ({ connection }, tableName, document) => {
   return await collection.insert(document)
 }
 
-const update = async (
-  { connection },
-  tableName,
-  searchExpression,
-  updateExpression
-) => {
+const update = async ({ connection }, tableName, searchExpression, updateExpression, options) => {
   const collection = await connection.collection(tableName)
   return await collection.update(searchExpression, updateExpression, {
-    multi: true
+    multi: true,
+    upsert: !!options.upsert
   })
 }
 
