@@ -9,6 +9,7 @@ This is a set of guidelines for contributing to reSolve and its packages hosted 
     * [Code Style](#code-style)
     * [Working in Monorepo](#working-in-monorepo)
 * [Reporting Bugs and Requesting Features](#reporting-bugs-and-requesting-features)
+* [Nightly builds](#nightly-builds)
 * [Issue Labels](#issue-labels)
 
 ## Pull Requests
@@ -74,6 +75,24 @@ Follow these guidelines to help maintainers and the community understand your re
     * **Provide examples**. Include links to files or GitHub projects, or add code snippets that demonstrate the problem. Use [Markdown code blocks](https://help.github.com/articles/markdown-basics/#multiple-lines) when providing code snippets.
     * **Include screenshots or screencast** to demonstrate the problem. 
     * **If the problem is related to performance or memory**, include a memory and CPU profile capture.
+
+## Nightly builds
+
+Resolve provides nightly builds for early adopters. All packages are being published automatically after push into `dev` branch. Packages are available here: https://github.com/reimagined/resolve/tree/nightly-builds/packages.
+
+To use nightly builded packages in your project, patch `package.json` as following:
+
+```json
+{
+  ...
+  "dependencies": {
+    ...
+    "resolve-any-package": "https://raw.githubusercontent.com/reimagined/resolve/nightly-builds/packages/resolve-any-package-0.12.3-2018-7-11-17-34-02.tgz",
+  }
+}
+```
+
+All packages are already linked between each self, so you should not specify all subsequent dependencies direcly. Note that there is no `latest` nightly build version, because any breaking change can occure between `dev` versions. So use only specific packages version with specific timestamp.
 
 ## Issue Labels
 
