@@ -27,7 +27,7 @@ export const Index = ({ lists, createList, removeList }) => {
 
   return (
     <div className="example-wrapper">
-      <h1>Todo's List</h1>
+      <h1>To-Do Lists</h1>
 
       <ListGroup className="example-list">
         {lists.map(({ id, title }) => (

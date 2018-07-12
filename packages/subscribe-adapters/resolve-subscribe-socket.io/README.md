@@ -1,7 +1,7 @@
 # **resolve-subscribe-socket.io**
 [![npm version](https://badge.fury.io/js/resolve-subscribe-socket.io.svg)](https://badge.fury.io/js/resolve-subscribe-socket.io)
 
-This package is a `resolve-redux` adapter for subscribe to events using [Socket.io](https://socket.io/).
+This package is a `resolve-redux` adapter used to subscribe to events via [Socket.io](https://socket.io/).
 
 
 #### Client Side

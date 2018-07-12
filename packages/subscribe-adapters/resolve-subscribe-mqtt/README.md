@@ -1,7 +1,7 @@
 # **resolve-subscribe-mqtt**
 [![npm version](https://badge.fury.io/js/resolve-subscribe-mqtt.svg)](https://badge.fury.io/js/resolve-subscribe-mqtt)
 
-This package is a `resolve-redux` adapter for subscribe to events using [MQTT](https://github.com/mqttjs/MQTT.js).
+This package is a `resolve-redux` adapter used to subscribe to events via an [MQTT](https://github.com/mqttjs/MQTT.js) protocol.
 
 
 #### Client Side

@@ -14,7 +14,7 @@ This package contains tools for integrating reSolve with [Redux](http://redux.js
 
 ### `createViewModelsReducer`
 
-  Generates a standard Redux reducer using reSolve view models. This function takes the following arguments:
+  Generates a [Redux reducer](https://redux.js.org/basics/reducers) from reSolve View Models. Arguments:
 
 ```js
 createViewModelsReducer(viewModels)
@@ -22,7 +22,7 @@ createViewModelsReducer(viewModels)
 
 ### `createReadModelsReducer`
 
-  Generates a standard Redux reducer using reSolve read models. This function takes the following arguments:
+  Generates a [Redux reducer](https://redux.js.org/basics/reducers) using reSolve Read Models. Arguments:
 
 ```js
 createReadModelsReducer(readModels)
@@ -30,18 +30,19 @@ createReadModelsReducer(readModels)
 
 ### `createJwtReducer`
 
-  Generates a standard Redux reducer using reSolve JWT. This function  does not take any arguments:
+  Generates a [Redux reducer](https://redux.js.org/basics/reducers) using a reSolve JWT. No arguments:
 
 ```js
 createJwtReducer()
 ```
-  
+
 ### `createResolveMiddleware`
   
-  Redux middleware used to:
+  Redux middleware is used to:
 
-  1) Automatically fetch a view/read model state and subscribe to events.
-  2) Send a command to the server side.
+  1. Fetch View and Read Models 
+  2. Subscribe to events
+  3. Send commands to the server side
   
 ```js
 import { createStore, applyMiddleware, combineReducers } from 'redux'
@@ -85,7 +86,7 @@ resolveMiddleware.run({
 ```
 
 ### `connectViewModel`
-  A higher-order component (HOC), which automatically subscribes/unsubscribes to/from a view model by aggregateIds and fetch a view model state.
+  A higher-order component (HOC), used to automatically subscribe/unsubscribe to/from View Model updates, and access the aggregate commands by `aggregateIds`.
 
 ```js
 import { connect } from 'react-redux'
@@ -115,7 +116,7 @@ export default connectViewModel(mapStateToOptions)(
 ```
 
 ### `connectReadModel`
-  A higher-order component (HOC), which automatically subscribes/unsubscribes to/from a read model by resolver name and resolver arguments and fetch a read model state.
+  A higher-order component (HOC), used to automatically subscribe/unsubscribe to/from Read Model updates, and access the corresponding aggregate's commands.
 
 ```js
 import { connect } from 'react-redux'
@@ -152,28 +153,29 @@ export default connectReadModel(mapStateToOptions)(
 
 ### `createActions`
 
-  Generates Redux actions using a reSolve aggregate. This function uses the reSolve's [`sendCommandRequest`](#sendcommandrequest) action to pass a command from Redux to the server side. Generated actions are named as an aggregate's commands. This function takes two arguments:
+  Generates [Redux actions](https://redux.js.org/basics/actions) using a reSolve aggregate. This function uses [`sendCommandRequest`](#sendcommandrequest) to pass a command from Redux to the server side. The generated actions are named after the aggregate commands. Arguments:
+  
   * `aggregate` -  reSolve aggregate
   * `extendActions` - actions to extend or redefine resulting actions
 
-### `action creators`
+### Action Creators
 
   * #### `sendCommandRequest`
-    Request sending command to the server side. It takes the object with the following required arguments:
+    Request sending command to the server side. The function takes one argument, which is an object with the following keys:
     * `commandType`
     * `aggregateId`
     * `aggregateName`
     * `payload`
 
   * #### `sendCommandSuccess`
-    Acknowledge sending command to the server side. It takes the object with the following required arguments:
+    Acknowledge sending command to the server side. The function takes one argument, which is an object with the following keys:
     * `commandType`
     * `aggregateId`
     * `aggregateName`
     * `payload`
 
   * #### `sendCommandFailure`
-    Refuse sending command to the server side. It takes the object with the following required arguments:
+    Refuse sending command to the server side. The function takes one argument, which is an object with the following keys:
     * `commandType`
     * `aggregateId`
     * `aggregateName`
@@ -181,57 +183,57 @@ export default connectReadModel(mapStateToOptions)(
     * `error`
 
   * #### `subscribeTopicRequest`
-    Request subscription to topic. It takes the object with the following required arguments:
+    Request subscription to a topic. The function takes one argument, which is an object with the following keys:
     * `topicName`
     * `topicId`
 
   * #### `subscribeTopicSuccess`
-    Acknowledge subscription to topic. It takes the object with the following required arguments:
+    Acknowledge subscription to a topic. The function takes one argument, which is an object with the following keys:
     * `topicName`
     * `topicId`
 
   * #### `subscribeTopicFailure`
-    Refuse subscription to topic. It takes the object with the following required arguments:
+    Refuse subscription to a topic. The function takes one argument, which is an object with the following keys:
     * `topicName`
     * `topicId`
     * `error`
 
   * #### `unsubscribeTopicRequest`
-    Request unsubscription from topic. It takes the object with the following required arguments:
+    Request unsubscription from a topic. The function takes one argument, which is an object with the following keys:
     * `topicName`
     * `topicId`
 
   * #### `unsubscribeTopicSuccess`
-    Acknowledge unsubscription from topic. It takes the object with the following required arguments:
+    Acknowledge unsubscription from a topic. The function takes one argument, which is an object with the following keys:
     * `topicName`
     * `topicId`
 
   * #### `unsubscribeTopicFailure`
-    Refuse unsubscription from topic. It takes the object with the following required arguments:
+    Refuse unsubscription from a topic. The function takes one argument, which is an object with the following keys:
     * `topicName`
     * `topicId`
     * `error`
 
   * #### `connectViewModel`
-    Start watching view model by parameters. It takes the object with the following required arguments:
+    Subscribe to a View Model changes. The function takes one argument, which is an object with the following keys:
     * `viewModelName`
     * `aggregateIds`
     * `aggregateArgs`
 
   * #### `disconnectViewModel`
-    Stop watching view model by parameters. It takes the object with the following required arguments:
+    Unsubscribe from View Model changes. The function takes one argument, which is an object with the following keys:
     * `viewModelName`
     * `aggregateIds`
     * `aggregateArgs`
 
   * #### `loadViewModelStateRequest`
-    Request fetching view model state from the server side. It takes the object with the following required arguments:
+    Request a View Model from the server side. The function takes one argument, which is an object with the following keys:
     * `viewModelName`
     * `aggregateIds`
     * `aggregateArgs`
 
   * #### `loadViewModelStateSuccess`
-    Acknowledge fetching view model state from the server side. It takes the object with the following required arguments:
+    Acknowledge fetching a View Model from the server side. The function takes one argument, which is an object with the following keys:
     * `viewModelName`
     * `aggregateIds`
     * `aggregateArgs`
@@ -239,34 +241,34 @@ export default connectReadModel(mapStateToOptions)(
     * `aggregateVersionsMap`
 
   * #### `loadViewModelStateFailure`
-    Refuse fetching view model state from the server side. It takes the object with the following required arguments:
+    Refuse fetching a View Model from the server side. The function takes one argument, which is an object with the following keys:
     * `viewModelName`
     * `aggregateIds`
     * `aggregateArgs`
     * `error`
 
   * #### `dropViewModelState`
-    Drop view model state. It takes the object with the following required arguments:
+    Clear a View Model. The function takes one argument, which is an object with the following keys:
     * `viewModelName`
     * `aggregateIds`
     * `aggregateArgs`
 
   * #### `connectReadModel`
-    Start watching read model by parameters. It takes the object with the following required arguments:
+    Subscribe to a Read Model changes. The function takes one argument, which is an object with the following keys:
     * `readModelName`
     * `resolverName`
     * `resolverArgs`
     * `isReactive`
 
   * #### `disconnectReadModel`
-    Stop watching read model by parameters. It takes the object with the following required arguments:
+    Unsubscribe from a Read Model changes. The function takes one argument, which is an object with the following keys:
     * `readModelName`
     * `resolverName`
     * `resolverArgs`
     * `isReactive`
 
   * #### `loadReadModelStateRequest`
-    Request fetching read model resolver result from the server side. If read model is reactive also subscribe to diff topic. It takes the object with the following required arguments:
+    Request a Read Model Resolver result from the server side. If the Read Model is reactive, this function also subscribes to the `diff` topic. The function takes one argument, which is an object with the following keys:
     * `readModelName`
     * `resolverName`
     * `resolverArgs`
@@ -274,7 +276,7 @@ export default connectReadModel(mapStateToOptions)(
     * `queryId`
 
   * #### `loadReadModelStateSuccess`
-    Acknowledge fetching read model state from the server side. It takes the object with the following required arguments:
+    Acknowledge fetching a Read Model Resolver result from the server side. The function takes one argument, which is an object with the following keys:
     * `readModelName`
     * `resolverName`
     * `resolverArgs`
@@ -284,7 +286,7 @@ export default connectReadModel(mapStateToOptions)(
     * `timeToLive`
 
   * #### `loadReadModelStateFailure`
-    Refuse fetching read model state from the server side. It takes the object with the following required arguments:
+    Refuse fetching a Read Model Resolver result from the server side. The function takes one argument, which is an object with the following keys:
     * `readModelName`
     * `resolverName`
     * `resolverArgs`
@@ -293,36 +295,36 @@ export default connectReadModel(mapStateToOptions)(
     * `error`
 
   * #### `applyReadModelDiff`
-    Modify reactive read model state by diff. It takes the object with the following required arguments:
+    Modify a reactive Read Model. The function takes one argument, which is an object with the following keys:
     * `readModelName`
     * `resolverName`
     * `resolverArgs`
     * `diff`
 
   * #### `dropReadModelState`
-    Drop read model state. It takes the object with the following required arguments:
+    Clear a Read Model. The function takes one argument, which is an object with the following keys:
     * `readModelName`
     * `resolverName`
     * `resolverArgs`
 
   * #### `stopReadModelSubscriptionRequest`
-    Request stopping read model subscription to the server side. It takes the object with the following required arguments:
+    Request stopping a Read Model subscription. It takes the object with the following required arguments:
     * `queryId`
 
   * #### `stopReadModelSubscriptionSuccess`
-    Acknowledge stopping read model subscription to the server side. It takes the object with the following required arguments:
+    Acknowledge stopping a Read Model subscription. The function takes one argument, which is an object with the following keys:
     * `queryId`
 
   * #### `stopReadModelSubscriptionFailure`
-    Refuse stopping read model subscription to the server side. It takes the object with the following required arguments:
+    Refuse stopping a Read Model subscription. The function takes one argument, which is an object with the following keys:
     * `queryId`
     * `error`
 
   * #### `dispatchTopicMessage`
-    Dispatch topic message. It takes the object with the following required arguments:
+    Dispatch the topic message. The function takes one argument, which is an object with the following keys:
     * `message`
 
   * #### `hotModuleReplacement`
-    Hot module replacement. It takes the object with the following required arguments:
+    Initiate [Hot Module Replacement](https://webpack.js.org/concepts/hot-module-replacement/). The function takes one argument, which is an object with the following keys:
     * `hotModuleReplacementId`
  
