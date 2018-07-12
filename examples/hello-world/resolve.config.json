@@ -1,7 +1,7 @@
 {
   "port": 3000,
   "rootPath": "",
-  "staticPath": "",
+  "staticPath": "static",
   "staticDir": "static",
   "distDir": "dist",
   "routes": "client/routes.js",

@@ -131,6 +131,45 @@ export function rootPath({ resolveConfig }, argv) {
   resolveConfig.rootPath = encodeURI(resolveConfig.rootPath)
 }
 
+extenders.push(staticPath)
+export function staticPath({ resolveConfig }) {
+  const {
+    protocol,
+    slashes,
+    auth,
+    host,
+    port,
+    hostname,
+    hash,
+    search,
+    query,
+    path
+  } = Url.parse(resolveConfig.staticPath)
+
+  if (
+    protocol ||
+    slashes ||
+    auth ||
+    host ||
+    port ||
+    hostname ||
+    hash ||
+    search ||
+    query ||
+    /^\//.test(path) ||
+    /\/$/.test(path) ||
+    path === ''
+  ) {
+    throw new Error(
+      `Incorrect options.staticPath = "${
+        resolveConfig.staticPath
+      }"\nValue must be part of the URL, which is the application's static subdirectory`
+    )
+  }
+
+  resolveConfig.staticPath = encodeURI(resolveConfig.staticPath)
+}
+
 extenders.push(index)
 export function index({ resolveConfig }, argv) {
   if (argv.index) {

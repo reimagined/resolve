@@ -46,6 +46,7 @@ const serverSideRendering = (req, res) => {
       <AppContainer
         origin={origin}
         rootPath={rootPath}
+        staticPath={staticPath}
         aggregateActions={aggregateActions}
         store={store}
         history={history}
@@ -57,7 +58,13 @@ const serverSideRendering = (req, res) => {
   const styleTags = sheet.getStyleTags()
 
   const initialState = store.getState()
-  const clientUrl = getRootBasedUrl(Url.resolve(staticPath || '/', 'client.js'))
+  const isTrailingSlash = /\/$/i
+  const clientUrl = getRootBasedUrl(
+    Url.resolve(
+      isTrailingSlash.test(staticPath) ? staticPath : `${staticPath}/`,
+      './client.js'
+    )
+  )
 
   res.send(
     getHtmlMarkup({

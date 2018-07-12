@@ -1,29 +1,42 @@
 import React from 'react'
 import { Navbar, Image } from 'react-bootstrap'
+import { staticBasedComponent } from 'resolve-redux'
+import { Helmet } from 'react-helmet'
 
-const Header = () => (
+const StaticBasedImage = staticBasedComponent(['src'])(Image)
+
+const Header = ({ title, css, favicon }) => (
   <div>
+    <Helmet>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="icon" href={favicon} type="image/png" />
+      {css.map((href, index) => (
+        <link rel="stylesheet" href={href} key={index} />
+      ))}
+      <title>{title}</title>
+    </Helmet>
+
     <Navbar>
       <Navbar.Text>
-        <Image src="/resolve-logo.png" /> Hello World Example
+        <StaticBasedImage src="/resolve-logo.png" /> Hello World Example
       </Navbar.Text>
 
       <Navbar.Collapse>
         <Navbar.Text pullRight>
           <Navbar.Link href="https://facebook.com/resolvejs/">
-            <Image src="/fb-logo.png" />
+            <StaticBasedImage src="/fb-logo.png" />
           </Navbar.Link>
         </Navbar.Text>
 
         <Navbar.Text pullRight>
           <Navbar.Link href="https://twitter.com/resolvejs">
-            <Image src="/twitter-logo.png" />
+            <StaticBasedImage src="/twitter-logo.png" />
           </Navbar.Link>
         </Navbar.Text>
 
         <Navbar.Text pullRight>
           <Navbar.Link href="https://github.com/reimagined/resolve">
-            <Image src="/github-logo.png" />
+            <StaticBasedImage src="/github-logo.png" />
           </Navbar.Link>
         </Navbar.Text>
       </Navbar.Collapse>
@@ -31,4 +44,4 @@ const Header = () => (
   </div>
 )
 
-export default Header
+export default staticBasedComponent(['css', 'favicon'])(Header)
