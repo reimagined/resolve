@@ -308,7 +308,7 @@ export default connectReadModel(mapStateToOptions)(
     * `resolverArgs`
 
   * #### `stopReadModelSubscriptionRequest`
-    Requess stopping a Read Model subscription. It takes the object with the following required arguments:
+    Requests stopping a Read Model subscription. It takes the object with the following required arguments:
     * `queryId`
 
   * #### `stopReadModelSubscriptionSuccess`
