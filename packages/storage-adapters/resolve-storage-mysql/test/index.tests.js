@@ -1,116 +1,144 @@
 import sinon from 'sinon'
 import { expect } from 'chai'
-import { MongoClient, _setFindResult, _setInsertCommandReject } from 'mongodb'
+import mysql, { _setLastResult, _setLastError, _reset } from 'mysql2'
+import sqlFormatter from 'sql-formatter'
 import createAdapter from '../src'
 
-const adapterSettings = {
-  url: 'test-url',
-  collectionName: 'test-collection',
-  databaseName: 'test-db'
+const connectionOptions = {
+  tableName: 'table',
+  host: 'host',
+  port: 1234,
+  user: 'user',
+  password: 'pass',
+  database: 'db'
 }
 
 const testEvent = {
-  id: '1',
-  type: 'event-type'
+  timestamp: 100,
+  aggregateId: 'aggregate-id',
+  aggregateVersion: 5,
+  type: 'event-type',
+  payload: {}
 }
 
-describe('es-mongo', () => {
+describe('es-mysql', () => {
+  const format = sqlFormatter.format.bind(sqlFormatter)
   afterEach(() => {
-    _setFindResult(null)
-    _setInsertCommandReject(false)
+    _reset()
   })
 
-  it('should save event', () => {
-    const adapter = createAdapter(adapterSettings)
+  it('should save event', async () => {
+    const adapter = createAdapter(connectionOptions)
+    await adapter.saveEvent(testEvent)
 
-    return adapter
-      .saveEvent(testEvent)
-      .then(() => {
-        expect(MongoClient.connect.lastCall.args).to.deep.equal(['test-url'])
-        return MongoClient.connect.lastCall.returnValue
-      })
-      .then(client => {
-        const db = client.db(adapterSettings.dbName)
-        expect(db.collection.lastCall.args).to.deep.equal(['test-collection'])
-        expect(
-          db.collection.lastCall.returnValue.insert.lastCall.args
-        ).to.deep.equal([testEvent])
+    const executor = (await mysql.createConnection.firstCall.returnValue).execute
 
-        expect(
-          db.collection.lastCall.returnValue.createIndex.firstCall.args
-        ).to.be.deep.equal(['timestamp'])
+    expect(format(executor.firstCall.args[0])).to.be.equal(
+      format(
+        `CREATE TABLE IF NOT EXISTS table(
+        timestamp BIGINT NOT NULL,
+        aggregateId VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+        aggregateVersion BIGINT NOT NULL,
+        type VARCHAR(700) VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+        payload JSON NULL,
+        PRIMARY KEY(aggregateId, aggregateVersion),
+        INDEX USING BTREE(type),
+        INDEX USING BTREE(timestamp)
+      )`
+      )
+    )
 
-        expect(
-          db.collection.lastCall.returnValue.createIndex.secondCall.args
-        ).to.be.deep.equal(['aggregateId'])
+    expect(executor.firstCall.args[1]).to.be.deep.equal([])
 
-        expect(
-          db.collection.lastCall.returnValue.createIndex.thirdCall.args
-        ).to.be.deep.equal([
-          { aggregateId: 1, aggregateVersion: 1 },
-          { unique: true }
-        ])
-      })
+    expect(format(executor.secondCall.args[0])).to.be.equal(
+      format(
+        `INSERT INTO table (timestamp, aggregateId, aggregateVersion, type, payload )
+         VALUES  (?, ?, ?, ?, ?)`
+      )
+    )
+
+    expect(executor.secondCall.args[1]).to.be.deep.equal([
+      testEvent.timestamp,
+      testEvent.aggregateId,
+      testEvent.aggregateVersion,
+      testEvent.type,
+      testEvent.payload
+    ])
   })
 
-  it('should load events by types', () => {
-    const adapter = createAdapter(adapterSettings)
-    const types = ['event-type-1', 'event-type-2']
-    const eventsByTypes = [
-      { id: '1', type: 'event-type-1' },
-      { id: '1', type: 'event-type-2' }
-    ]
-    const processEvent = sinon.spy()
-    _setFindResult(eventsByTypes)
+  it('should load events by types', async () => {
+    const adapter = createAdapter(connectionOptions)
+    const eventTypes = ['EVENT_TYPE_1', 'EVENT_TYPE_2']
 
-    return adapter
-      .loadEventsByTypes(types, processEvent)
-      .then(() => MongoClient.connect.lastCall.returnValue)
-      .then(client => {
-        const db = client.db(adapterSettings.dbName)
-        expect(db.collection.lastCall.args).to.deep.equal(['test-collection'])
-        expect(
-          db.collection.lastCall.returnValue.find.lastCall.args
-        ).to.deep.equal([
-          { type: { $in: types }, timestamp: { $gt: 0 } },
-          { sort: 'timestamp' }
-        ])
+    const callback = sinon.stub()
+    const result = [[{ ...testEvent }, { ...testEvent, aggregateVersion: 6 }]]
+    _setLastResult(result)
+    await adapter.loadEventsByTypes(eventTypes, callback, 100)
 
-        expect(processEvent.args).to.deep.equal([
-          [eventsByTypes[0]],
-          [eventsByTypes[1]]
-        ])
-      })
+    const executor = (await mysql.createConnection.firstCall.returnValue).execute
+
+    expect(format(executor.firstCall.args[0])).to.be.equal(
+      format(
+        `CREATE TABLE IF NOT EXISTS table(
+        timestamp BIGINT NOT NULL,
+        aggregateId VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+        aggregateVersion BIGINT NOT NULL,
+        type VARCHAR(700) VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+        payload JSON NULL,
+        PRIMARY KEY(aggregateId, aggregateVersion),
+        INDEX USING BTREE(type),
+        INDEX USING BTREE(timestamp)
+      )`
+      )
+    )
+
+    expect(executor.firstCall.args[1]).to.be.deep.equal([])
+
+    expect(format(executor.secondCall.args[0])).to.be.equal(
+      format(`SELECT * FROM  table WHERE timestamp > ? AND type IN (?, ?)`)
+    )
+
+    expect(executor.secondCall.args[1]).to.be.deep.equal([100, 'EVENT_TYPE_1', 'EVENT_TYPE_2'])
+
+    expect(callback.firstCall.args[0]).to.be.equal(result[0][0])
+    expect(callback.secondCall.args[0]).to.be.equal(result[0][1])
   })
 
-  it('should load events by aggregate ids', () => {
-    const adapter = createAdapter(adapterSettings)
-    const aggregateId = 'test-aggregate-id'
-    const eventsByAggregateId = [
-      { id: '1', aggregateId },
-      { id: '1', aggregateId }
-    ]
+  it('should load events by aggregate ids', async () => {
+    const adapter = createAdapter(connectionOptions)
+    const aggregateIds = ['AGGREGATE_ID_1', 'AGGREGATE_ID_2']
 
-    const processEvent = sinon.spy()
-    _setFindResult(eventsByAggregateId)
+    const callback = sinon.stub()
+    const result = [[{ ...testEvent }, { ...testEvent, aggregateVersion: 6 }]]
+    _setLastResult(result)
+    await adapter.loadEventsByAggregateIds(aggregateIds, callback, 100)
 
-    return adapter
-      .loadEventsByAggregateIds([aggregateId], processEvent)
-      .then(() => MongoClient.connect.lastCall.returnValue)
-      .then(client => {
-        const db = client.db(adapterSettings.dbName)
-        expect(db.collection.lastCall.args).to.deep.equal(['test-collection'])
-        expect(
-          db.collection.lastCall.returnValue.find.lastCall.args
-        ).to.deep.equal([
-          { aggregateId: { $in: [aggregateId] }, timestamp: { $gt: 0 } },
-          { sort: 'timestamp' }
-        ])
+    const executor = (await mysql.createConnection.firstCall.returnValue).execute
 
-        expect(processEvent.args).to.deep.equal([
-          [eventsByAggregateId[0]],
-          [eventsByAggregateId[1]]
-        ])
-      })
+    expect(format(executor.firstCall.args[0])).to.be.equal(
+      format(
+        `CREATE TABLE IF NOT EXISTS table(
+        timestamp BIGINT NOT NULL,
+        aggregateId VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+        aggregateVersion BIGINT NOT NULL,
+        type VARCHAR(700) VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+        payload JSON NULL,
+        PRIMARY KEY(aggregateId, aggregateVersion),
+        INDEX USING BTREE(type),
+        INDEX USING BTREE(timestamp)
+      )`
+      )
+    )
+
+    expect(executor.firstCall.args[1]).to.be.deep.equal([])
+
+    expect(format(executor.secondCall.args[0])).to.be.equal(
+      format(`SELECT * FROM  table WHERE timestamp > ? AND aggregateId IN (?, ?)`)
+    )
+
+    expect(executor.secondCall.args[1]).to.be.deep.equal([100, 'AGGREGATE_ID_1', 'AGGREGATE_ID_2'])
+
+    expect(callback.firstCall.args[0]).to.be.equal(result[0][0])
+    expect(callback.secondCall.args[0]).to.be.equal(result[0][1])
   })
 })

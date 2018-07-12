@@ -7,6 +7,9 @@ const customObjectSqlType = 'JSON NULL'
 
 const convertBinaryRow = row => Object.setPrototypeOf(row, Object.prototype)
 
+// https://dev.mysql.com/doc/refman/5.5/en/error-messages-server.html#error_er_dup_entry
+const ER_DUP_ENTRY = 1062
+
 function createAdapter({ tableName, ...options }) {
   let promise
 
@@ -56,59 +59,49 @@ function createAdapter({ tableName, ...options }) {
           )
         })
         .catch(e => {
-          if (e.code === DUPLICATE_KEY_ERROR) {
+          if (e.errno === ER_DUP_ENTRY) {
             throw new ConcurrentError()
           }
           throw e
         }),
 
     loadEventsByTypes: (types, callback, startTime = 0) =>
-      endorseEventTable()
-        .then(async connection => {
-          if (!Array.isArray(types) || types.length === 0) {
-            return []
-          }
+      endorseEventTable().then(async connection => {
+        if (!Array.isArray(types) || types.length === 0) {
+          return []
+        }
 
-          let [rows] = await connection.execute(
-            `SELECT * FROM ${escapeId(tableName)}
+        let [rows] = await connection.execute(
+          `SELECT * FROM ${escapeId(tableName)}
             WHERE timestamp > ? AND
             type IN (${types.map(() => '?')})
             `,
-            [startTime, ...types]
-          )
+          [startTime, ...types]
+        )
 
-          for (let idx = 0; idx < rows.length; idx++) {
-            rows[idx] = convertBinaryRow(rows[idx])
-          }
-
-          return rows
-        })
-        .then(rows => callback(rows))
-        .catch(err => callback(err)),
+        for (const row of rows) {
+          callback(convertBinaryRow(row))
+        }
+      }),
 
     loadEventsByAggregateIds: (aggregateIds, callback, startTime = 0) =>
-      endorseEventTable()
-        .then(async connection => {
-          if (!Array.isArray(aggregateIds) || aggregateIds.length === 0) {
-            return []
-          }
+      endorseEventTable().then(async connection => {
+        if (!Array.isArray(aggregateIds) || aggregateIds.length === 0) {
+          return []
+        }
 
-          let [rows] = await connection.execute(
-            `SELECT * FROM ${escapeId(tableName)}
+        let [rows] = await connection.execute(
+          `SELECT * FROM ${escapeId(tableName)}
             WHERE timestamp > ? AND
             aggregateId IN (${aggregateIds.map(() => '?')})
             `,
-            [startTime, ...aggregateIds]
-          )
+          [startTime, ...aggregateIds]
+        )
 
-          for (let idx = 0; idx < rows.length; idx++) {
-            rows[idx] = convertBinaryRow(rows[idx])
-          }
-
-          return rows
-        })
-        .then(rows => callback(rows))
-        .catch(err => callback(err))
+        for (const row of rows) {
+          callback(convertBinaryRow(row))
+        }
+      })
   }
 }
 

@@ -20,8 +20,7 @@
     "https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-mysql#readme",
   "dependencies": {
     "mysql2": "^1.5.3",
-    "resolve-storage-base": "0.12.1",
-    "sql-formatter": "^2.3.1"
+    "resolve-storage-base": "0.12.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.49",
@@ -32,9 +31,10 @@
     "@babel/preset-stage-0": "^7.0.0-beta.49",
     "babel-core": "^7.0.0-0",
     "babel-jest": "^23.0.0",
-    "regenerator-runtime": "^0.11.1",
-    "jest": "^23.0.1",
     "chai": "^4.1.2",
-    "sinon": "^5.0.10"
+    "jest": "^23.0.1",
+    "regenerator-runtime": "^0.11.1",
+    "sinon": "^5.0.10",
+    "sql-formatter": "^2.3.1"
   }
 }
