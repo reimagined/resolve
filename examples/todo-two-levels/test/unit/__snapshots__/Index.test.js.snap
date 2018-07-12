@@ -5,7 +5,7 @@ exports[`renders correctly 1`] = `
   className="example-wrapper"
 >
   <h1>
-    Todo's List
+    To-Do Lists
   </h1>
   <ul
     className="example-list list-group"

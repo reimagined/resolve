@@ -27,7 +27,7 @@ exports[`renders correctly 1`] = `
     <div
       className="example-task-name"
     >
-      Task's List
+      Tasks List
     </div>
   </form>
   <ul
