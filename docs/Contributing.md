@@ -9,7 +9,7 @@ This is a set of guidelines for contributing to reSolve and its packages hosted 
     * [Code Style](#code-style)
     * [Working in Monorepo](#working-in-monorepo)
 * [Reporting Bugs and Requesting Features](#reporting-bugs-and-requesting-features)
-* [Nightly builds](#nightly-builds)
+* [Nightly Builds](#nightly-builds)
 * [Issue Labels](#issue-labels)
 
 ## Pull Requests
@@ -76,11 +76,11 @@ Follow these guidelines to help maintainers and the community understand your re
     * **Include screenshots or screencast** to demonstrate the problem. 
     * **If the problem is related to performance or memory**, include a memory and CPU profile capture.
 
-## Nightly builds
+## Nightly Builds
 
-Resolve provides nightly builds for early adopters. All packages are being published automatically after push into `dev` branch. Packages are available here: https://github.com/reimagined/resolve/tree/nightly-builds/packages.
+ReSolve provides Nightly Builds for early adopters. All packages are published automatically on `dev` branch update. Packages are available here: https://github.com/reimagined/resolve/tree/nightly-builds/packages.
 
-To use nightly builded packages in your project, patch `package.json` as following:
+You can use nightly packages in your project by changing your `package.json` as follows:
 
 ```json
 {
@@ -92,7 +92,7 @@ To use nightly builded packages in your project, patch `package.json` as followi
 }
 ```
 
-All packages are already linked between each self, so you should not specify all subsequent dependencies direcly. Note that there is no `latest` nightly build version, because any breaking change can occure between `dev` versions. So use only specific packages version with specific timestamp.
+Nightly packages are already linked, so you should not specify subsequent dependencies. Note that there is no `latest` nightly build version, because nightly packages can introduce braking changes and become incompatible with the previous version. Use only specific package versions in order to make sure your code works after re-installing node modules.
 
 ## Issue Labels
 
