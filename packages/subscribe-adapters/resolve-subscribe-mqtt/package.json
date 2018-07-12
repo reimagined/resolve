@@ -1,0 +1,41 @@
+{
+  "name": "resolve-subscribe-mqtt",
+  "version": "0.12.1",
+  "description": "This package serves as an adapter for resolve-redux subscribe to events.",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "scripts": {
+    "prepublish": "babel --source-maps --out-dir ./dist ./src",
+    "test": "jest --testMatch=**/test/*.test.js",
+    "testw": "jest --testMatch=**/test/*.test.js --watchAll"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "author": "reimagined team",
+  "license": "MIT",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "dependencies": {
+    "mqtt": "^2.18.2",
+    "ws": "^5.2.1",
+    "websocket-stream": "^5.1.2",
+    "mqtt-connection": "^4.0.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "7.0.0-beta.52",
+    "@babel/core": "7.0.0-beta.52",
+    "@babel/plugin-transform-runtime": "7.0.0-beta.52",
+    "@babel/preset-env": "7.0.0-beta.52",
+    "@babel/preset-react": "7.0.0-beta.52",
+    "@babel/preset-stage-0": "7.0.0-beta.52",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-jest": "^23.2.0",
+    "regenerator-runtime": "^0.12.0",
+    "jest": "^23.3.0"
+  },
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/subscribe-adapters/resolve-subscribe-mqtt#readme"
+}

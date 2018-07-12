@@ -64,6 +64,8 @@ const createViewModel = ({
     const eventTypes = Object.keys(projection).filter(
       eventName => eventName !== 'Init'
     )
+
+    let aggregateIdsSet = new Set()
     let appliedEvents = 0
     let lastTimestamp = 0
     let state = null
@@ -71,6 +73,9 @@ const createViewModel = ({
 
     try {
       const snapshot = await snapshotAdapter.loadSnapshot(snapshotKey)
+      if (Array.isArray(snapshot.aggregateIdsSet)) {
+        aggregateIdsSet = new Set(snapshot.aggregateIdsSet)
+      }
       lastTimestamp = snapshot.timestamp
       state = snapshot.state
     } catch (err) {}
@@ -90,9 +95,15 @@ const createViewModel = ({
         state = projection[event.type](state, event)
         filterAsyncResult(state)
 
+        aggregateIdsSet.add(event.aggregateId)
+
         if (++appliedEvents % snapshotBucketSize === 0) {
           lastTimestamp = Date.now()
-          snapshotAdapter.saveSnapshot(snapshotKey, { state, lastTimestamp })
+          snapshotAdapter.saveSnapshot(snapshotKey, {
+            state,
+            lastTimestamp,
+            aggregateIdsSet: Array.from(aggregateIdsSet)
+          })
         }
       } catch (err) {
         error = err
@@ -114,7 +125,26 @@ const createViewModel = ({
     const executor = async () => {
       await subscribePromise
       if (error) throw error
-      return state
+
+      const aggregateVersionsMap = {}
+
+      if (aggregateIds !== '*') {
+        for (const aggregateId of aggregateIds) {
+          aggregateVersionsMap[aggregateId] = 0
+        }
+      }
+
+      await eventStore.getEventsByAggregateId(
+        Array.from(aggregateIdsSet),
+        event => {
+          aggregateVersionsMap[event.aggregateId] = event.aggregateVersion
+        }
+      )
+
+      return {
+        state,
+        aggregateVersionsMap
+      }
     }
 
     executor.dispose = () => subscribePromise.then(unsubscribe => unsubscribe())

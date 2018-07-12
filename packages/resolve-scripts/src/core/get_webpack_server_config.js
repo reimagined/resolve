@@ -55,7 +55,13 @@ const getWebpackServerConfig = ({
                 babelrc: false,
                 presets: [
                   '@babel/preset-env',
-                  ['@babel/preset-stage-0', { decoratorsLegacy: true }],
+                  [
+                    '@babel/preset-stage-0',
+                    {
+                      decoratorsLegacy: true,
+                      pipelineProposal: 'minimal'
+                    }
+                  ],
                   '@babel/preset-react'
                 ],
                 plugins: ['@babel/plugin-transform-runtime']

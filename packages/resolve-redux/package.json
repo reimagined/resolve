@@ -7,9 +7,9 @@
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
-    "prepublish": "babel --out-dir ./dist ./src",
-    "test": "jest --testMatch=**/test/*.tests.js --verbose",
-    "testw": "jest --testMatch=**/test/*.tests.js --watchAll"
+    "prepublish": "babel --source-maps --out-dir ./dist ./src",
+    "test": "jest --testMatch=**/test/*.test.js --verbose",
+    "testw": "jest --testMatch=**/test/*.test.js --watchAll"
   },
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
@@ -22,34 +22,39 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#readme",
   "dependencies": {
+    "async-mqtt": "^1.0.1",
     "diff-json": "^0.1.11",
-    "isomorphic-fetch": "^2.2.1",
-    "prop-types": "^15.6.1",
+    "json-stable-stringify": "^1.0.1",
+    "prop-types": "^15.6.2",
     "react-redux": "^5.0.7",
+    "redux-saga": "^0.16.0",
     "socket.io-client": "^2.1.1"
   },
   "devDependencies": {
-    "@babel/cli": "7.0.0-beta.51",
-    "@babel/core": "7.0.0-beta.51",
-    "@babel/plugin-transform-runtime": "7.0.0-beta.51",
-    "@babel/preset-env": "7.0.0-beta.51",
-    "@babel/preset-react": "7.0.0-beta.51",
-    "@babel/preset-stage-0": "7.0.0-beta.51",
-    "babel-core": "^7.0.0-0",
-    "babel-jest": "^23.0.0",
-    "regenerator-runtime": "^0.11.1",
-    "jest": "^23.0.1",
+    "@babel/cli": "7.0.0-beta.52",
+    "@babel/core": "7.0.0-beta.52",
+    "@babel/plugin-transform-runtime": "7.0.0-beta.52",
+    "@babel/preset-env": "7.0.0-beta.52",
+    "@babel/preset-react": "7.0.0-beta.52",
+    "@babel/preset-stage-0": "7.0.0-beta.52",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-jest": "^23.2.0",
     "chai": "^4.1.2",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
-    "react-test-renderer": "^16.4.0",
+    "jest": "^23.3.0",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "react-test-renderer": "^16.4.1",
+    "redux": "^4.0.0",
+    "regenerator-runtime": "^0.12.0",
     "seamless-immutable": "^7.1.3",
-    "sinon": "^5.0.10",
-    "uuid": "^3.2.1"
+    "sinon": "^6.1.3",
+    "uuid": "^3.3.2"
   },
   "peerDependencies": {
     "react": ">=16.4.0",
     "react-dom": ">=16.4.0",
-    "redux": ">=3.7.2"
+    "redux": ">=4.0.0"
   }
 }

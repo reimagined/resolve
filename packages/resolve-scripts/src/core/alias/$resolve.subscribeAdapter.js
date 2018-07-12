@@ -1,8 +1,8 @@
-import { envKey } from 'json-env-extract'
+import { injectEnv, envKey } from 'json-env-extract'
 
 import { message } from '../constants'
 
-export default ({ resolveConfig }) => {
+export default ({ resolveConfig, isClient }) => {
   if (!resolveConfig.subscribeAdapter) {
     throw new Error(`${message.configNotContainSectionError}.subscribeAdapter`)
   }
@@ -10,34 +10,45 @@ export default ({ resolveConfig }) => {
   if (resolveConfig.subscribeAdapter.module in resolveConfig[envKey]) {
     throw new Error(`${message.clientEnvError}.subscribeAdapter.module`)
   }
-  for (const optionsKey of Object.keys(
-    resolveConfig.subscribeAdapter.options
-  )) {
-    if (
-      resolveConfig.subscribeAdapter.options[optionsKey] in
-      resolveConfig[envKey]
-    ) {
+
+  const options = {
+    client: resolveConfig.subscribeAdapter.options.client || {},
+    server: resolveConfig.subscribeAdapter.options.server || {}
+  }
+
+  for (const optionsKey of Object.keys(options.client)) {
+    if (options.client[optionsKey] in resolveConfig[envKey]) {
       throw new Error(
-        `${message.clientEnvError}.subscribeAdapter.options.${optionsKey}`
+        `${
+          message.clientEnvError
+        }.subscribeAdapter.options.client.${optionsKey}`
       )
     }
   }
 
   const exports = []
 
-  exports.push(
-    `import module from ${JSON.stringify(
-      resolveConfig.subscribeAdapter.module
-    )}`,
-    ``,
-    `const options = ${JSON.stringify(
-      resolveConfig.subscribeAdapter.options,
-      null,
-      2
-    )}`,
-    ``,
-    `export default { module, options }`
-  )
+  if (isClient) {
+    exports.push(
+      `import module from ${JSON.stringify(
+        `${resolveConfig.subscribeAdapter.module}/dist/create_client_adapter`
+      )}`,
+      ``,
+      `const options = ${JSON.stringify(options.client, null, 2)}`,
+      ``,
+      `export default { module, options }`
+    )
+  } else {
+    exports.push(
+      `import module from ${JSON.stringify(
+        `${resolveConfig.subscribeAdapter.module}/dist/create_server_adapter`
+      )}`,
+      ``,
+      `const options = ${injectEnv(options.server, null, 2)}`,
+      ``,
+      `export default { module, options }`
+    )
+  }
 
   return {
     code: exports.join('\r\n')
