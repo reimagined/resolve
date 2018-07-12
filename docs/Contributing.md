@@ -78,7 +78,7 @@ Follow these guidelines to help maintainers and the community understand your re
 
 ## Nightly Builds
 
-ReSolve provides Nightly Builds for early adopters. All packages are published automatically on `dev` branch update. Packages are available here: https://github.com/reimagined/resolve/tree/nightly-builds/packages.
+ReSolve provides Nightly Builds for early adopters. All packages are published automatically on the `dev` branch update. Packages are available here: https://github.com/reimagined/resolve/tree/nightly-builds/packages.
 
 You can use nightly packages in your project by changing your `package.json` as follows:
 
@@ -92,7 +92,7 @@ You can use nightly packages in your project by changing your `package.json` as 
 }
 ```
 
-Nightly packages are already linked, so you should not specify subsequent dependencies. Note that there is no `latest` nightly build version, because nightly packages can introduce braking changes and become incompatible with the previous version. Use only specific package versions in order to make sure your code works after re-installing node modules.
+Nightly packages are already linked, so you should not specify subsequent dependencies. Note that there is no `latest` nightly build version, because nightly packages can introduce breaking changes and become incompatible with the previous version. Use only specific package versions in order to make sure your code works after re-installing node modules.
 
 ## Issue Labels
 
