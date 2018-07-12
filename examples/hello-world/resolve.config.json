@@ -7,16 +7,16 @@
   "routes": "client/routes.js",
   "aggregates": [
     {
-      "name": "default",
-      "commands": "common/aggregates/default.commands.js",
-      "projection": "common/aggregates/default.projection.js"
+      "name": "aggregate-name",
+      "commands": "common/aggregates/aggregate-name.commands.js",
+      "projection": "common/aggregates/aggregate-name.projection.js"
     }
   ],
   "readModels": [
     {
-      "name": "default",
-      "projection": "common/read-models/default.projection.js",
-      "resolvers": "common/read-models/default.resolvers.js",
+      "name": "read-model-name",
+      "projection": "common/read-models/read-model-name.projection.js",
+      "resolvers": "common/read-models/read-model-name.resolvers.js",
       "adapter": {
         "module": "resolve-readmodel-memory",
         "options": {}
@@ -25,10 +25,10 @@
   ],
   "viewModels": [
     {
-      "name": "default",
-      "projection": "common/view-models/default.projection.js",
-      "serializeState": "common/view-models/default.serialize_state.js",
-      "deserializeState": "common/view-models/default.deserialize_state.js"
+      "name": "view-model-name",
+      "projection": "common/view-models/view-model-name.projection.js",
+      "serializeState": "common/view-models/view-model-name.serialize_state.js",
+      "deserializeState": "common/view-models/view-model-name.deserialize_state.js"
     }
   ],
   "sagas": "common/sagas/index.js",
@@ -52,7 +52,7 @@
     "options": {}
   },
   "subscribeAdapter": {
-    "module": "resolve-redux/dist/subscribe_adapter",
+    "module": "resolve-subscribe-socket.io",
     "options": {}
   },
   "jwtCookie": {
