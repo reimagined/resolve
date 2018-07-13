@@ -58,24 +58,6 @@ The monorepo workflow begins with the bootstrapping process. In the `reSolve` re
 * All `resolve-*` packages versions should be identical. Otherwise, the missing npm package versions will be downloaded from the Internet, and local development packages will be ignored. 
 * Remember to re-bootstrap using `yarn` after making changes to the dependent `resolve-*` packages.
 
-## Reporting Bugs and Requesting Features
-
-Follow these guidelines to help maintainers and the community understand your report, reproduce the behavior, and find the related reports.
-
-* When creating an issue, please include as many details as possible. 
-
-* Before creating an issue, search for the related issues and add links to all issues that seem relevant, even to Closed ones.
-
-* Bugs and suggestions are tracked using [GitHub Issues](https://guides.github.com/features/issues/). After you've determined [which package](../packages) your issue is related to, create an Issue and provide the complete description.
-
-* Explain the problem and include additional details to help maintainers reproduce it:
-
-    * **Use a clear and descriptive title** for an issue to identify the problem.
-    * **Describe the exact steps to reproduce the problem** in detail. 
-    * **Provide examples**. Include links to files or GitHub projects, or add code snippets that demonstrate the problem. Use [Markdown code blocks](https://help.github.com/articles/markdown-basics/#multiple-lines) when providing code snippets.
-    * **Include screenshots or screencast** to demonstrate the problem. 
-    * **If the problem is related to performance or memory**, include a memory and CPU profile capture.
-
 ## Nightly Builds
 
 ReSolve provides Nightly Builds for early adopters. All packages are published automatically on the `dev` branch update. Packages are available here: https://github.com/reimagined/resolve/tree/nightly-builds/packages.
@@ -93,6 +75,24 @@ You can use nightly packages in your project by changing your `package.json` as 
 ```
 
 Nightly packages are already linked, so you should not specify subsequent dependencies. Note that there is no `latest` nightly build version, because nightly packages can introduce breaking changes and become incompatible with the previous version. Use only specific package versions in order to make sure your code works after re-installing node modules.
+
+## Reporting Bugs and Requesting Features
+
+Follow these guidelines to help maintainers and the community understand your report, reproduce the behavior, and find the related reports.
+
+* When creating an issue, please include as many details as possible. 
+
+* Before creating an issue, search for the related issues and add links to all issues that seem relevant, even to Closed ones.
+
+* Bugs and suggestions are tracked using [GitHub Issues](https://guides.github.com/features/issues/). After you've determined [which package](../packages) your issue is related to, create an Issue and provide the complete description.
+
+* Explain the problem and include additional details to help maintainers reproduce it:
+
+    * **Use a clear and descriptive title** for an issue to identify the problem.
+    * **Describe the exact steps to reproduce the problem** in detail. 
+    * **Provide examples**. Include links to files or GitHub projects, or add code snippets that demonstrate the problem. Use [Markdown code blocks](https://help.github.com/articles/markdown-basics/#multiple-lines) when providing code snippets.
+    * **Include screenshots or screencast** to demonstrate the problem. 
+    * **If the problem is related to performance or memory**, include a memory and CPU profile capture.
 
 ## Issue Labels
 
