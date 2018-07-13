@@ -12,15 +12,16 @@
   "dependencies": {
     "react": "16.4.1",
     "react-dom": "16.4.1",
+    "react-helmet": "5.2.0",
     "redux": "4.0.0",
     "resolve-scripts": "0.12.3",
     "styled-components": "3.3.3"
   },
   "devDependencies": {
     "@babel/core": "7.0.0-beta.52",
+    "@babel/plugin-transform-runtime": "7.0.0-beta.52",
     "@babel/preset-env": "7.0.0-beta.52",
     "@babel/preset-react": "7.0.0-beta.52",
-    "@babel/plugin-transform-runtime": "7.0.0-beta.52",
     "@babel/preset-stage-0": "7.0.0-beta.52",
     "babel-core": "7.0.0-bridge.0",
     "jest": "23.3.0",
