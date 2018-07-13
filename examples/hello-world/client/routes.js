@@ -1,4 +1,4 @@
-import App from './containers/App'
+import App from './components/App'
 
 export default [
   {

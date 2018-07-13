@@ -32,7 +32,6 @@
     }
   ],
   "sagas": "common/sagas/index.js",
-  "index": "client/containers/App.js",
   "auth": {
     "strategies": "auth/index.js"
   },

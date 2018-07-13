@@ -6,7 +6,7 @@ import isString from './is_string'
 
 export const isNonString = value => !isString(value)
 
-const staticBasedComponent = propsList => Component =>
+const connectStaticBasedUrls = propsList => Component =>
   class StaticBasedComponent extends React.PureComponent {
     render() {
       const props = this.props
@@ -51,4 +51,4 @@ const staticBasedComponent = propsList => Component =>
     }
   }
 
-export default staticBasedComponent
+export default connectStaticBasedUrls

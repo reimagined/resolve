@@ -14,7 +14,7 @@ import createSagaManager from './create_saga_manager'
 import getHash from './get_hash'
 import getRootBasedUrl from './get_root_based_url'
 import getStaticBasedUrl from './get_static_based_url'
-import staticBasedComponent from './static_based_component'
+import connectStaticBasedUrls from './connect_static_based_urls'
 import { FetchError, HttpError } from './create_api'
 import { Provider, Consumer } from './resolve_context'
 
@@ -29,13 +29,13 @@ export {
   connectViewModel,
   connectReadModel,
   connectResolveAdvanced,
+  connectStaticBasedUrls,
   createApi,
   createConnectionManager,
   createSagaManager,
   getHash,
   getRootBasedUrl,
   getStaticBasedUrl,
-  staticBasedComponent,
   Provider,
   Consumer,
   FetchError,

@@ -1,11 +1,11 @@
 import React from 'react'
 import { Navbar, Image } from 'react-bootstrap'
-import { staticBasedComponent } from 'resolve-redux'
+import { connectStaticBasedUrls } from 'resolve-redux'
 import { Helmet } from 'react-helmet'
 
-const StaticBasedImage = staticBasedComponent(['src'])(Image)
+const StaticBasedImage = connectStaticBasedUrls(['src'])(Image)
 
-const Header = ({ title, css, favicon }) => (
+const Header = ({ title, name, css, favicon }) => (
   <div>
     <Helmet>
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -18,7 +18,7 @@ const Header = ({ title, css, favicon }) => (
 
     <Navbar>
       <Navbar.Text>
-        <StaticBasedImage src="/resolve-logo.png" /> Hello World Example
+        <StaticBasedImage src="/resolve-logo.png" /> {name}
       </Navbar.Text>
 
       <Navbar.Collapse>
@@ -44,4 +44,4 @@ const Header = ({ title, css, favicon }) => (
   </div>
 )
 
-export default staticBasedComponent(['css', 'favicon'])(Header)
+export default connectStaticBasedUrls(['css', 'favicon'])(Header)
