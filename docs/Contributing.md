@@ -116,13 +116,14 @@ Follow these guidelines to help maintainers and the community understand your re
 | `Component: Documentation` | Issues related to package descriptions, [docs folder topics](https://github.com/reimagined/resolve/tree/master/docs), and README files |
 | `Component: Core` | Issues related to a core part of the framework, installation, etc. |
 | `Component: Examples` | Issues related to [reSolve examples](https://github.com/reimagined/resolve/tree/master/examples) |
-| `Component: readmodel-adapters` | Issues related to [Read Model adapters](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters) packages |
-| `Component: storage-adapters` | Issues related to [storage adapters](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters) packages |
 | `Component: resolve-auth` | Issues related to the [resolve-auth](https://github.com/reimagined/resolve/tree/master/packages/resolve-auth) package |
 | `Component: resolve-es` | Issues related to the [resolve-es](https://github.com/reimagined/resolve/tree/master/packages/resolve-es) package |
 | `Component: resolve-query` | Issues related to the [resolve-query](https://github.com/reimagined/resolve/tree/master/packages/resolve-query) package |
 | `Component: resolve-redux` | Issues related to the [resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux) package |
 | `Component: resolve-scripts` | Issues related to the [resolve-scripts](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts) package |
 | `Component: resolve-command` | Issues related to the [resolve-command](https://github.com/reimagined/resolve/tree/master/packages/resolve-command) package |
+| `Component: storage-adapters` | Issues related to [storage adapters](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters) packages |
+| `Component: readmodel-adapters` | Issues related to [Read Model adapters](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters) packages |
 | `Component: bus-adapters` | Issues related to the [bus adapters](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters) packages |
+| `Component: subscribe-adapters` | Issues related to the [subscribe adapters](https://github.com/reimagined/resolve/tree/master/packages/subscribe-adapters) packages |
 
