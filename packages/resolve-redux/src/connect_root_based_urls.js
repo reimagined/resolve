@@ -2,51 +2,57 @@ import React from 'react'
 
 import getRootBasedUrl from './get_root_based_url'
 import { Consumer } from './resolve_context'
-import isString from './is_string'
+import * as validate from './validate'
 
-export const isNonString = value => !isString(value)
+const connectRootBasedUrls = propsList => Component => {
+  validate.arrayOfString(propsList, 'Props list')
 
-const connectRootBasedUrls = propsList => Component =>
-  class RootBasedComponent extends React.PureComponent {
-    render() {
+  const propsListSize = propsList.length
+
+  return class RootBasedComponent extends React.PureComponent {
+    functionAsChildComponent = ({ origin = '', rootPath = '' } = {}) => {
       const props = this.props
 
-      if (!Array.isArray(propsList) || propsList.find(isNonString)) {
-        // eslint-disable-next-line
-        console.error(propsList)
-        throw new Error('Props list must be Array<String>')
+      const staticBasedProps = {}
+
+      for (
+        let propertyIndex = 0;
+        propertyIndex < propsListSize;
+        propertyIndex++
+      ) {
+        const propertyName = propsList[propertyIndex]
+        const propertyValue = props[propertyName]
+        if (Array.isArray(propertyValue)) {
+          const subProps = []
+          const subPropertySize = propertyValue.length
+          for (
+            let subPropertyIndex = 0;
+            subPropertyIndex < subPropertySize;
+            subPropertyIndex++
+          ) {
+            subProps[subPropertyIndex] = getRootBasedUrl(
+              origin,
+              rootPath,
+              propertyValue[subPropertyIndex]
+            )
+          }
+          staticBasedProps[propertyName] = subProps
+        } else {
+          staticBasedProps[propertyName] = getRootBasedUrl(
+            origin,
+            rootPath,
+            propertyValue
+          )
+        }
       }
 
-      return (
-        <Consumer>
-          {({ origin = '', rootPath = '' } = {}) => {
-            const staticBasedProps = {}
+      return <Component {...props} {...staticBasedProps} />
+    }
 
-            for (const name of propsList) {
-              const propValue = props[name]
-              if (Array.isArray(propValue)) {
-                staticBasedProps[name] = []
-                for (let index = 0; index < propValue.length; index++) {
-                  staticBasedProps[name][index] = getRootBasedUrl(
-                    origin,
-                    rootPath,
-                    propValue[index]
-                  )
-                }
-              } else {
-                staticBasedProps[name] = getRootBasedUrl(
-                  origin,
-                  rootPath,
-                  propValue
-                )
-              }
-            }
-
-            return <Component {...props} {...staticBasedProps} />
-          }}
-        </Consumer>
-      )
+    render() {
+      return <Consumer>{this.functionAsChildComponent}</Consumer>
     }
   }
+}
 
 export default connectRootBasedUrls

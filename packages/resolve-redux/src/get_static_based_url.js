@@ -1,18 +1,16 @@
 import getRootBasedUrl from './get_root_based_url'
-import isString from './is_string'
-import isLeadingSlash from './is_leading_slash'
-import isAbsoluteUrl from './is_absolute_url'
+import { isAbsoluteUrl } from './utils'
+import * as validate from './validate'
 
 const getStaticBasedUrl = (origin, rootPath, staticPath, path) => {
-  if (!isString(path)) {
-    throw new Error('Path must be string')
-  }
+  validate.string(path, 'Path')
+
   if (isAbsoluteUrl(path)) {
     return path
   }
-  if (!isLeadingSlash(path)) {
-    throw new Error('Path must have leading "/"')
-  }
+
+  validate.leadingSlash(path, 'Path')
+
   return getRootBasedUrl(origin, rootPath, `/${staticPath}${path}`)
 }
 
