@@ -2,7 +2,7 @@ import React from 'react'
 
 import Header from '../containers/Header.js'
 
-const App = ({ children }) => (
+const App = () => (
   <div>
     <Header
       title="reSolve Hello World"

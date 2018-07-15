@@ -3,8 +3,6 @@ import jwt from 'jsonwebtoken'
 import jwtSecret from './jwtSecret'
 import uuid from 'uuid'
 
-import { rootDirectory } from '../client/constants'
-
 const strategyOptions = {
   strategy: {
     usernameField: 'username',
@@ -14,8 +12,8 @@ const strategyOptions = {
 }
 
 const authenticateOptions = {
-  failureRedirect: error => `${rootDirectory}/error?text=${error}`,
-  errorRedirect: error => `${rootDirectory}/error?text=${error}`
+  failureRedirect: error => `/error?text=${error}`,
+  errorRedirect: error => `/error?text=${error}`
 }
 
 const routes = [

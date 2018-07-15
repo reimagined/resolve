@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { connectRootBasedUrls } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
 import styled from 'styled-components'
 import { Link as NormalLink } from 'react-router-dom'
@@ -20,6 +21,8 @@ const PageAuth = styled.div`
   float: right;
 `
 
+const RootBasedForm = connectRootBasedUrls(['action'])('form')
+
 const LoginInfo = ({ me }) => (
   <PageAuth>
     {me && me.id ? (
@@ -34,10 +37,14 @@ const LoginInfo = ({ me }) => (
         >
           logout
         </Link>
-        <form method="post" id="hidden-form-for-logout" action="/logout">
+        <RootBasedForm
+          method="post"
+          id="hidden-form-for-logout"
+          action="/logout"
+        >
           <input type="hidden" name="username" value="null" />
           <input type="hidden" />
-        </form>
+        </RootBasedForm>
       </div>
     ) : (
       <Link to="/login">login</Link>

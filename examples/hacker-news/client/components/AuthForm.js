@@ -1,4 +1,5 @@
 import React from 'react'
+import { connectRootBasedUrls } from 'resolve-redux'
 import styled from 'styled-components'
 
 const AuthFormRoot = styled.div`
@@ -23,15 +24,17 @@ const AuthFormContent = styled.div`
   margin-bottom: 0.83em;
 `
 
+const RootBasedForm = connectRootBasedUrls(['action'])('form')
+
 const AuthForm = ({ title, action, buttonText }) => (
   <AuthFormRoot>
     <AuthFormTitle>{title}</AuthFormTitle>
-    <form method="POST" action={action}>
+    <RootBasedForm method="POST" action={action}>
       <AuthFormContent>
         username: <input type="text" name="username" />
       </AuthFormContent>
       <input type="submit" value={buttonText} />
-    </form>
+    </RootBasedForm>
   </AuthFormRoot>
 )
 

@@ -28,7 +28,7 @@ describe('aggregates', () => {
     it('command "createStory" should create an event to create a story', () => {
       const title = 'SomeTitle'
       const text = 'SomeText'
-      const link = 'SomeLink'
+      const link = 'http://SomeLink.test'
 
       const state = {}
       const command = {

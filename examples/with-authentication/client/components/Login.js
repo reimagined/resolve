@@ -1,29 +1,26 @@
 import React from 'react'
+import { connectRootBasedUrls } from 'resolve-redux'
 import { Form, FormControl, ControlLabel, Button } from 'react-bootstrap'
 
-const Login = () => {
-  return (
-    <div className="example-login-wrapper">
-      <ControlLabel className="example-login-label">
-        Enter your username:
-      </ControlLabel>
+const RootBasedForm = connectRootBasedUrls(['action'])(Form)
 
-      <Form inline method="POST" action="/register">
-        <FormControl
-          className="example-login-input"
-          type="text"
-          name="username"
-        />
-        <Button
-          className="example-login-button"
-          type="submit"
-          bsStyle="success"
-        >
-          Create Account
-        </Button>
-      </Form>
-    </div>
-  )
-}
+const Login = () => (
+  <div className="example-login-wrapper">
+    <ControlLabel className="example-login-label">
+      Enter your username:
+    </ControlLabel>
+
+    <RootBasedForm inline method="POST" action="/register">
+      <FormControl
+        className="example-login-input"
+        type="text"
+        name="username"
+      />
+      <Button className="example-login-button" type="submit" bsStyle="success">
+        Create Account
+      </Button>
+    </RootBasedForm>
+  </div>
+)
 
 export default Login

@@ -29,7 +29,7 @@ export class CommentById extends React.PureComponent {
   render() {
     const { me, story, parentId } = this.props
 
-    const loggedIn = !!me
+    const loggedIn = !!me.id
 
     if (!story || !story.comments) {
       return null
@@ -95,7 +95,6 @@ export const mapStateToProps = (
   me: state.jwt
 })
 
-// TODO: magic aggregateActions
 export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(
     {

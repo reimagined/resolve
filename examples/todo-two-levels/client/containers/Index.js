@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { connectViewModel } from 'resolve-redux'
+import { connectViewModel, connectStaticBasedUrls } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
 import { NavLink } from 'react-router-dom'
 import {
@@ -13,6 +13,8 @@ import {
 } from 'react-bootstrap'
 
 const viewModelName = 'Lists'
+
+const StaticBasedImage = connectStaticBasedUrls(['src'])(Image)
 
 export const Index = ({ lists, createList, removeList }) => {
   const placeholder = 'New List'
@@ -33,7 +35,7 @@ export const Index = ({ lists, createList, removeList }) => {
         {lists.map(({ id, title }) => (
           <ListGroupItem key={id}>
             <NavLink to={`/${id}`}>{title}</NavLink>
-            <Image
+            <StaticBasedImage
               className="example-close-button"
               src="/close-button.png"
               onClick={() => removeList(id)}

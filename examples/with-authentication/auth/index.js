@@ -1,5 +1,6 @@
 import { Strategy } from 'passport-local'
 import jwt from 'jsonwebtoken'
+
 import jwtSecret from './jwtSecret'
 
 const strategyOptions = {

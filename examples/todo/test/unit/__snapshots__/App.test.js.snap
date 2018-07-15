@@ -28,7 +28,7 @@ exports[`renders correctly 1`] = `
       <img
         className="example-close-button"
         onClick={[Function]}
-        src="/close-button.png"
+        src="/static/close-button.png"
       />
     </li>
     <li
@@ -49,7 +49,7 @@ exports[`renders correctly 1`] = `
       <img
         className="example-close-button"
         onClick={[Function]}
-        src="/close-button.png"
+        src="/static/close-button.png"
       />
     </li>
   </ul>

@@ -19,7 +19,7 @@ const connectStaticBasedUrls = propsList => Component =>
 
       return (
         <Consumer>
-          {({ origin, rootPath, staticPath }) => {
+          {({ origin = '', rootPath = '', staticPath = 'static' } = {}) => {
             const staticBasedProps = {}
 
             for (const name of propsList) {

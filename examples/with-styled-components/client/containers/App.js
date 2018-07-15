@@ -8,6 +8,7 @@ export const Title = styled.h1`
 `
 
 export const Wrapper = styled.section`
+  margin: 0 10px;
   padding: 4em;
   background: papayawhip;
 `

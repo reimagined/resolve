@@ -1,17 +1,15 @@
 import React from 'react'
-import { Helmet } from 'react-helmet'
 
-import Header from './Header'
+import Header from '../containers/Header'
 
 const Layout = ({ children }) => (
   <div>
-    <Helmet>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <link rel="stylesheet" href="/bootstrap.min.css" />
-      <link rel="stylesheet" href="/style.css" />
-      <title>reSolve Top List Example</title>
-    </Helmet>
-    <Header />
+    <Header
+      title="reSolve Top List Example"
+      name="Top List Example"
+      favicon="/favicon.ico"
+      css={['/bootstrap.min.css', '/style.css']}
+    />
     {children}
   </div>
 )

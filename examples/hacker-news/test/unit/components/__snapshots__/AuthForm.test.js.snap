@@ -25,7 +25,7 @@ ShallowWrapper {
         <styled.div>
           Title
         </styled.div>,
-        <form
+        <RootBasedComponent
           action="/auth"
           method="POST"
         >
@@ -40,7 +40,7 @@ ShallowWrapper {
             type="submit"
             value="login"
           />
-        </form>,
+        </RootBasedComponent>,
       ],
     },
     "ref": null,
@@ -59,7 +59,7 @@ ShallowWrapper {
       Object {
         "instance": null,
         "key": undefined,
-        "nodeType": "host",
+        "nodeType": "class",
         "props": Object {
           "action": "/auth",
           "children": Array [
@@ -123,7 +123,7 @@ ShallowWrapper {
             "type": "input",
           },
         ],
-        "type": "form",
+        "type": [Function],
       },
     ],
     "type": [Function],
@@ -138,7 +138,7 @@ ShallowWrapper {
           <styled.div>
             Title
           </styled.div>,
-          <form
+          <RootBasedComponent
             action="/auth"
             method="POST"
           >
@@ -153,7 +153,7 @@ ShallowWrapper {
               type="submit"
               value="login"
             />
-          </form>,
+          </RootBasedComponent>,
         ],
       },
       "ref": null,
@@ -172,7 +172,7 @@ ShallowWrapper {
         Object {
           "instance": null,
           "key": undefined,
-          "nodeType": "host",
+          "nodeType": "class",
           "props": Object {
             "action": "/auth",
             "children": Array [
@@ -236,7 +236,7 @@ ShallowWrapper {
               "type": "input",
             },
           ],
-          "type": "form",
+          "type": [Function],
         },
       ],
       "type": [Function],

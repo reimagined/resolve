@@ -1,13 +1,13 @@
 import React from 'react'
+import { connectStaticBasedUrls } from 'resolve-redux'
 import { Link as NormalLink } from 'react-router-dom'
-import { Helmet } from 'react-helmet'
 import styled from 'styled-components'
 
-import NavLink from '../containers/Link'
 import Splitter from './Splitter'
+import Header from '../containers/Header'
+import NavLink from '../containers/Link'
 import LoginInfo from '../containers/LoginInfo'
 import PagePreloader from '../containers/PagePreloader'
-import { rootDirectory } from '../constants'
 
 const ContentRoot = styled.div`
   width: 90%;
@@ -71,31 +71,21 @@ const FooterLink = styled.a`
   text-decoration: underline;
 `
 
+const StaticBasedImg = connectStaticBasedUrls(['src'])('img')
+
 const Layout = ({ children }) => (
   <div>
-    <Helmet>
-      <title>reSolve Hacker News</title>
-      <meta
-        name="viewport"
-        content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-      />
-      <link
-        rel="shortcut icon"
-        type="image/x-icon"
-        href={`${rootDirectory}/reSolve-logo.svg`}
-      />
-      <link
-        rel="stylesheet"
-        type="text/css"
-        href={`${rootDirectory}/style.css`}
-      />
-    </Helmet>
+    <Header
+      title="reSolve Hacker News"
+      favicon="/favicon.ico"
+      css={['/style.css']}
+    />
     <PagePreloader />
     <ContentRoot>
       <PageHeader>
         <Link to="/">
-          <img
-            src={`${rootDirectory}/reSolve-logo.svg`}
+          <StaticBasedImg
+            src="/reSolve-logo.svg"
             width="18"
             height="18"
             alt=""

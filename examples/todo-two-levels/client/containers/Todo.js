@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { connectViewModel } from 'resolve-redux'
+import { connectViewModel, connectStaticBasedUrls } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
 import { NavLink } from 'react-router-dom'
 import {
@@ -14,6 +14,8 @@ import {
 } from 'react-bootstrap'
 
 const viewModelName = 'Todos'
+
+const StaticBasedImage = connectStaticBasedUrls(['src'])(Image)
 
 export const Todo = ({
   todos,
@@ -38,7 +40,7 @@ export const Todo = ({
     <div className="example-wrapper">
       <Form inline>
         <NavLink to="/">
-          <Image
+          <StaticBasedImage
             className="example-arrow-button"
             src="/left-arrow-button.png"
           />
@@ -57,7 +59,7 @@ export const Todo = ({
             >
               {todoList[id].text}
             </Checkbox>
-            <Image
+            <StaticBasedImage
               className="example-close-button"
               src="/close-button.png"
               onClick={removeItem.bind(null, aggregateId, { id })}

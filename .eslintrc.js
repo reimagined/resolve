@@ -119,6 +119,8 @@ module.exports = {
           'https',
           'ico',
           'idx',
+          'img',
+          'Img',
           'impl',
           'init',
           'inline',
