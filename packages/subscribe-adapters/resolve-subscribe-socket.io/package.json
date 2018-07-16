@@ -1,7 +1,8 @@
 {
   "name": "resolve-subscribe-socket.io",
-  "version": "0.12.2",
-  "description": "This package serves as an adapter for resolve-redux subscribe to events.",
+  "version": "0.12.3",
+  "description":
+    "This package serves as an adapter for resolve-redux subscribe to events.",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
@@ -13,12 +14,7 @@
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": [
-    "cqrs",
-    "eventsourcing",
-    "es",
-    "ddd"
-  ],
+  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
   "dependencies": {
     "socket.io": "^2.1.1",
     "socket.io-client": "^2.1.1"
@@ -35,5 +31,6 @@
     "regenerator-runtime": "^0.12.0",
     "jest": "^23.3.0"
   },
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/subscribe-adapters/resolve-subscribe-socket.io#readme"
+  "homepage":
+    "https://github.com/reimagined/resolve/tree/master/packages/subscribe-adapters/resolve-subscribe-socket.io#readme"
 }
