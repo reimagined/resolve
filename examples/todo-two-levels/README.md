@@ -10,7 +10,7 @@ npx create-resolve-app resolve-two-levels-todo-example -e todo-two-levels
 
 ## What's next?
 
-📑 Learn more about this case in the [View Model](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md) article.
+📑 Learn more about this case in the [**View Model**](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md) article.
 
 📑 Available scripts, project structure overview, configuration files and more useful information are in [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md) topic.
 
