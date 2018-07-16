@@ -1,9 +1,10 @@
 import getRootBasedUrl from './get_root_based_url'
-import { isAbsoluteUrl } from './utils'
 import * as validate from './validate'
+import { isAbsoluteUrl } from './utils'
 
 const getStaticBasedUrl = (origin, rootPath, staticPath, path) => {
   validate.string(path, 'Path')
+  validate.nonEmptyString(staticPath, 'Static path')
 
   if (isAbsoluteUrl(path)) {
     return path

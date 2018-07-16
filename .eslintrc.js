@@ -129,6 +129,7 @@ module.exports = {
           'interop',
           'invoker',
           'iterable',
+          'jpg',
           'jsonschema',
           'jsonwebtoken',
           'jwt',

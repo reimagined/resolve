@@ -1,4 +1,3 @@
-import Url from 'url'
 import React from 'react'
 import ReactDOM from 'react-dom/server'
 import createHistory from 'history/createMemoryHistory'
@@ -8,6 +7,7 @@ import { ServerStyleSheet, StyleSheetManager } from 'styled-components'
 import createStore from '../client/store/create_store'
 import getHtmlMarkup from './get_html_markup'
 import getRootBasedUrl from './utils/get_root_based_url'
+import getClientJsPath from './utils/get_client_js_path'
 import AppContainer from '../client/components/AppContainer'
 
 import routes from '$resolve.routes'
@@ -58,13 +58,7 @@ const serverSideRendering = (req, res) => {
   const styleTags = sheet.getStyleTags()
 
   const initialState = store.getState()
-  const isTrailingSlash = /\/$/i
-  const clientUrl = getRootBasedUrl(
-    Url.resolve(
-      isTrailingSlash.test(staticPath) ? staticPath : `${staticPath}/`,
-      './client.js'
-    )
-  )
+  const clientUrl = getRootBasedUrl(getClientJsPath(staticPath))
 
   res.send(
     getHtmlMarkup({
