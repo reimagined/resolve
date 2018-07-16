@@ -1,7 +1,8 @@
 {
   "name": "resolve-subscribe-mqtt",
-  "version": "0.12.1",
-  "description": "This package serves as an adapter for resolve-redux subscribe to events.",
+  "version": "0.12.3",
+  "description":
+    "This package serves as an adapter for resolve-redux subscribe to events.",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
@@ -13,12 +14,7 @@
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": [
-    "cqrs",
-    "eventsourcing",
-    "es",
-    "ddd"
-  ],
+  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
   "dependencies": {
     "mqtt": "^2.18.2",
     "ws": "^5.2.1",
@@ -37,5 +33,6 @@
     "regenerator-runtime": "^0.12.0",
     "jest": "^23.3.0"
   },
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/subscribe-adapters/resolve-subscribe-mqtt#readme"
+  "homepage":
+    "https://github.com/reimagined/resolve/tree/master/packages/subscribe-adapters/resolve-subscribe-mqtt#readme"
 }
