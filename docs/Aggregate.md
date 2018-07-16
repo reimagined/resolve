@@ -34,6 +34,20 @@ reSolve stores **Aggregates** in the `common/aggregates/` folder. A typical **Ag
             ...
 ```
 
+You should set the paths for **Aggregates** into [configuration](https://github.com/reimagined/resolve/blob/dev/docs/API%20References.md#configuration-files) file `resolve.config.json`:
+
+```json
+{
+    "aggregates": [
+    {
+      "name": "aggregate-name",
+      "commands": "common/aggregates/aggregate-name.commands.js",
+      "projection": "common/aggregates/aggregate-name.projection.js"
+    }
+  ]
+}
+```
+
 A typical **Commands** structure:
 
 ```js
@@ -72,6 +86,6 @@ export default {
 
 📑 To learn more about common building principles of architecture, please look at the [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md) documentation topic.
 
-📑 Learn more about [**Command**](././Command.md) and [**Event Store**](./Event%20Store.md).
+📑 Learn more about [**Event Store**](./Event%20Store.md).
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/docs-aggregate?pixel)
