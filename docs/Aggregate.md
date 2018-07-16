@@ -8,7 +8,7 @@ An **Aggregate** is a cluster of domain objects responsible for system behavior.
 
 In a **CQRS** + **Event Sourcing** system, the **State** changes as a result of the following chain:
 
-1. A user issues a [**Command**](./Command.md) using an application interface.
+1. A user issues a **Command** using an application interface.
 2. A [**Domain Aggregate**](./System%20Metaphor.md) receives the **Command**.
 3. The **Domain Aggregate** handles the **Command**: checks whether it can be executed and generates an **Event**.
 4. The **Event** is sent to the [**Event Store**](./Event%20Store.md).
