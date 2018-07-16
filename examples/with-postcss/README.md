@@ -5,7 +5,7 @@
 This example demonstrates how to work with [postCSS](https://github.com/postcss/postcss-loader#css-modules). Get the example using this command:
 
 ```sh
-npx create-resolve-app with-postcss -e with-postcss
+npx create-resolve-app resolve-with-postcss-example -e with-postcss
 ```
 
 ## How to Use
