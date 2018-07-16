@@ -112,7 +112,7 @@ export default (webpackConfigs, { resolveConfig, deployOptions, env }) => {
 }
 ```
 
-Example can be found in [`with-postcss-modules`](../examples/with-postcss-modules) example
+Example can be found in [`with-postcss`](../examples/with-postcss) example
 
 ## **Command Line Interface**
 
