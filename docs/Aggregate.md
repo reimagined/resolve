@@ -8,7 +8,7 @@ An **Aggregate** is a cluster of domain objects responsible for system behavior.
 
 In a **CQRS** + **Event Sourcing** system, the **State** changes as a result of the following chain:
 
-1. A user issues a [**Command**](./Command.md) using an application interface.
+1. A user issues a **Command** using an application interface.
 2. A [**Domain Aggregate**](./System%20Metaphor.md) receives the **Command**.
 3. The **Domain Aggregate** handles the **Command**: checks whether it can be executed and generates an **Event**.
 4. The **Event** is sent to the [**Event Store**](./Event%20Store.md).
@@ -32,6 +32,20 @@ reSolve stores **Aggregates** in the `common/aggregates/` folder. A typical **Ag
             📄 aggregate2.commands.js
             📄 aggregate2.projection.js
             ...
+```
+
+You should set the paths for **Aggregates** into [configuration](https://github.com/reimagined/resolve/blob/dev/docs/API%20References.md#configuration-files) file `resolve.config.json`:
+
+```json
+{
+    "aggregates": [
+    {
+      "name": "aggregate-name",
+      "commands": "common/aggregates/aggregate-name.commands.js",
+      "projection": "common/aggregates/aggregate-name.projection.js"
+    }
+  ]
+}
 ```
 
 A typical **Commands** structure:
@@ -72,6 +86,6 @@ export default {
 
 📑 To learn more about common building principles of architecture, please look at the [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md) documentation topic.
 
-📑 Learn more about [**Command**](././Command.md) and [**Event Store**](./Event%20Store.md).
+📑 Learn more about [**Event Store**](./Event%20Store.md).
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/docs-aggregate?pixel)

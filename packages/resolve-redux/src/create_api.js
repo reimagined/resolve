@@ -1,9 +1,32 @@
+import fetch from 'isomorphic-fetch'
+
 import getRootBasedUrl from './get_root_based_url'
 import { isReactiveArg, queryIdArg, stopSubscriptionArg } from './constants'
 
 export class FetchError extends Error {}
 
 export class HttpError extends Error {}
+
+export const temporaryErrorHttpCodes = [
+  408, // Request Timeout
+  429, // Too Many Requests
+  502, // Bad Gateway
+  503, // Service Unavailable
+  504, // Gateway Timeout
+  507, // Insufficient Storage
+  509, // Bandwidth Limit Exceeded
+  521, // Web Server Is Down
+  522, // Connection Timed Out
+  523, // Origin Is Unreachable
+  524 // A Timeout Occurred
+]
+
+const validateStatus = status => {
+  // eslint-disable-next-line eqeqeq
+  if (temporaryErrorHttpCodes.find(code => code == status)) {
+    throw new FetchError(status)
+  }
+}
 
 const createApi = ({ origin, rootPath }) => ({
   async loadViewModelState({ viewModelName, aggregateIds, aggregateArgs }) {
@@ -28,6 +51,8 @@ const createApi = ({ origin, rootPath }) => ({
     } catch (error) {
       throw new FetchError(error.message)
     }
+
+    validateStatus(response.status)
 
     if (!response.ok) {
       throw new HttpError(response.text())
@@ -72,6 +97,8 @@ const createApi = ({ origin, rootPath }) => ({
       throw new FetchError(error.message)
     }
 
+    validateStatus(response.status)
+
     if (!response.ok) {
       throw new HttpError(response.text())
     }
@@ -108,6 +135,8 @@ const createApi = ({ origin, rootPath }) => ({
       throw new FetchError(error.message)
     }
 
+    validateStatus(response.status)
+
     if (!response.ok) {
       throw new HttpError(response.text())
     }
@@ -134,6 +163,8 @@ const createApi = ({ origin, rootPath }) => ({
       throw new FetchError(error.message)
     }
 
+    validateStatus(response.status)
+
     if (!response.ok) {
       throw new HttpError(response.text())
     }
@@ -157,6 +188,8 @@ const createApi = ({ origin, rootPath }) => ({
     } catch (error) {
       throw new FetchError(error.message)
     }
+
+    validateStatus(response.status)
 
     if (!response.ok) {
       throw new HttpError(response.text())

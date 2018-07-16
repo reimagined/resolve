@@ -5,7 +5,7 @@
 This example shows the `resolve-auth` package usage. Get the example using this command:
 
 ```sh
-npx create-resolve-app with-authentication -e with-authentication
+npx create-resolve-app resolve-with-authentication-example -e with-authentication
 ```
 
 ## What's next?

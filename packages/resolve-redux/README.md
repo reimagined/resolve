@@ -10,7 +10,7 @@ This package contains tools for integrating reSolve with [Redux](http://redux.js
 * [connectViewModel](#connectviewmodel)
 * [connectReadModel](#connectreadmodel)
 * [createActions](#createactions)
-* [action creators](#action-creators)
+* [Action Creators](#action-creators)
 
 ### `createViewModelsReducer`
 

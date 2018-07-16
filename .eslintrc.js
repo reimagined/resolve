@@ -94,6 +94,7 @@ module.exports = {
           'dns',
           'dotenv',
           'downvote',
+          'eqeqeq',
           'eslint',
           'eql',
           'escaper',

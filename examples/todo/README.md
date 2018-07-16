@@ -1,4 +1,4 @@
-# ToDo List App Example
+# ToDo List Example
 
 ![todo](https://user-images.githubusercontent.com/19663260/41163516-88101fca-6b41-11e8-879a-ffa36d61602a.png)
 
@@ -10,7 +10,7 @@ npx create-resolve-app resolve-todo-example -e todo
 
 ## What's next?
 
-📑 The app's creation process is detailed in the [ToDo List App Tutorial](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/ToDo%20List%20App%20Tutorial.md).
+📑 The app's creation process is detailed in the [**ToDo List App Tutorial**](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/ToDo%20List%20App%20Tutorial.md).
 
 📑 You can learn more in the [**View Model**](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md) topic.
 
