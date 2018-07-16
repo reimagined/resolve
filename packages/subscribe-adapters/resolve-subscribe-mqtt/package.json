@@ -1,6 +1,6 @@
 {
   "name": "resolve-subscribe-mqtt",
-  "version": "0.12.1",
+  "version": "0.12.3",
   "description": "This package serves as an adapter for resolve-redux subscribe to events.",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
@@ -26,12 +26,12 @@
     "mqtt-connection": "^4.0.0"
   },
   "devDependencies": {
-    "@babel/cli": "7.0.0-beta.53",
-    "@babel/core": "7.0.0-beta.53",
-    "@babel/plugin-transform-runtime": "7.0.0-beta.53",
-    "@babel/preset-env": "7.0.0-beta.53",
-    "@babel/preset-react": "7.0.0-beta.53",
-    "@babel/preset-stage-0": "7.0.0-beta.53",
+    "@babel/cli": "7.0.0-beta.54",
+    "@babel/core": "7.0.0-beta.54",
+    "@babel/plugin-transform-runtime": "7.0.0-beta.54",
+    "@babel/preset-env": "7.0.0-beta.54",
+    "@babel/preset-react": "7.0.0-beta.54",
+    "@babel/preset-stage-0": "7.0.0-beta.54",
     "babel-core": "7.0.0-bridge.0",
     "babel-jest": "^23.2.0",
     "regenerator-runtime": "^0.12.0",

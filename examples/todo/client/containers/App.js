@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { connectViewModel, connectStaticBasedUrls } from 'resolve-redux'
+import { connectViewModel } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
 import {
   ListGroup,
@@ -8,14 +8,13 @@ import {
   Checkbox,
   Form,
   Button,
-  Image,
   FormControl
 } from 'react-bootstrap'
 
+import Image from './Image'
+
 const viewModelName = 'Todos'
 const aggregateId = 'root-id'
-
-const StaticBasedImage = connectStaticBasedUrls(['src'])(Image)
 
 export const App = props => {
   const { todos, createItem, toggleItem, removeItem } = props
@@ -45,7 +44,7 @@ export const App = props => {
             >
               {todos[id].text}
             </Checkbox>
-            <StaticBasedImage
+            <Image
               className="example-close-button"
               src="/close-button.png"
               onClick={removeItem.bind(null, aggregateId, { id })}

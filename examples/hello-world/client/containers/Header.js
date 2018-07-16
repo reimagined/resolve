@@ -1,9 +1,9 @@
 import React from 'react'
-import { Navbar, Image } from 'react-bootstrap'
 import { connectStaticBasedUrls } from 'resolve-redux'
+import { Navbar } from 'react-bootstrap'
 import { Helmet } from 'react-helmet'
 
-const StaticBasedImage = connectStaticBasedUrls(['src'])(Image)
+import Image from './Image'
 
 const Header = ({ title, name, css, favicon }) => (
   <div>
@@ -18,25 +18,25 @@ const Header = ({ title, name, css, favicon }) => (
 
     <Navbar>
       <Navbar.Text>
-        <StaticBasedImage src="/resolve-logo.png" /> {name}
+        <Image src="/resolve-logo.png" /> {name}
       </Navbar.Text>
 
       <Navbar.Collapse>
         <Navbar.Text pullRight>
           <Navbar.Link href="https://facebook.com/resolvejs/">
-            <StaticBasedImage src="/fb-logo.png" />
+            <Image src="/fb-logo.png" />
           </Navbar.Link>
         </Navbar.Text>
 
         <Navbar.Text pullRight>
           <Navbar.Link href="https://twitter.com/resolvejs">
-            <StaticBasedImage src="/twitter-logo.png" />
+            <Image src="/twitter-logo.png" />
           </Navbar.Link>
         </Navbar.Text>
 
         <Navbar.Text pullRight>
           <Navbar.Link href="https://github.com/reimagined/resolve">
-            <StaticBasedImage src="/github-logo.png" />
+            <Image src="/github-logo.png" />
           </Navbar.Link>
         </Navbar.Text>
       </Navbar.Collapse>

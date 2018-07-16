@@ -1,9 +1,9 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
-import uuid from 'uuid'
 import { connectViewModel } from 'resolve-redux'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+import uuid from 'uuid'
 
 import Comment from '../components/Comment'
 import ChildrenComments from '../components/ChildrenComments'

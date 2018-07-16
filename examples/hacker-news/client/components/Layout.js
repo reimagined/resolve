@@ -1,5 +1,4 @@
 import React from 'react'
-import { connectStaticBasedUrls } from 'resolve-redux'
 import { Link as NormalLink } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -8,6 +7,7 @@ import Header from '../containers/Header'
 import NavLink from '../containers/Link'
 import LoginInfo from '../containers/LoginInfo'
 import PagePreloader from '../containers/PagePreloader'
+import Image from '../containers/Image'
 
 const ContentRoot = styled.div`
   width: 90%;
@@ -71,8 +71,6 @@ const FooterLink = styled.a`
   text-decoration: underline;
 `
 
-const StaticBasedImg = connectStaticBasedUrls(['src'])('img')
-
 const Layout = ({ children }) => (
   <div>
     <Header
@@ -84,12 +82,7 @@ const Layout = ({ children }) => (
     <ContentRoot>
       <PageHeader>
         <Link to="/">
-          <StaticBasedImg
-            src="/reSolve-logo.svg"
-            width="18"
-            height="18"
-            alt=""
-          />
+          <Image src="/reSolve-logo.svg" width="18" height="18" alt="" />
         </Link>
         <Link to="/newest">
           <PageTitle>reSolve HN</PageTitle>

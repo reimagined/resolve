@@ -1,13 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { connectRootBasedUrls } from 'resolve-redux'
 
 import { ROUTE_CHANGED } from '../actions/actionTypes'
-
-const RootBasedA = connectRootBasedUrls(['href'])('a')
+import NavLink from './NavLink'
 
 const Link = ({ to, children, className, style, pushRoute }) => (
-  <RootBasedA
+  <NavLink
     className={className}
     style={style}
     href={to}
@@ -23,7 +21,7 @@ const Link = ({ to, children, className, style, pushRoute }) => (
     }}
   >
     {children}
-  </RootBasedA>
+  </NavLink>
 )
 
 const mapDispatchToProps = dispatch => ({

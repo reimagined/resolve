@@ -47,7 +47,6 @@ const mapStateToProps = (
   me: state.jwt
 })
 
-// TODO: magic aggregateActions
 const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(
     {

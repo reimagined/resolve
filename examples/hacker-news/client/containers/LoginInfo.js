@@ -1,12 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { connectRootBasedUrls } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
 import styled from 'styled-components'
 import { Link as NormalLink } from 'react-router-dom'
 
 import Splitter from '../components/Splitter'
 import * as userActions from '../actions/userActions'
+import Form from './Form'
 
 const Link = styled(NormalLink)`
   color: white;
@@ -20,8 +20,6 @@ const Link = styled(NormalLink)`
 const PageAuth = styled.div`
   float: right;
 `
-
-const RootBasedForm = connectRootBasedUrls(['action'])('form')
 
 const LoginInfo = ({ me }) => (
   <PageAuth>
@@ -37,14 +35,10 @@ const LoginInfo = ({ me }) => (
         >
           logout
         </Link>
-        <RootBasedForm
-          method="post"
-          id="hidden-form-for-logout"
-          action="/logout"
-        >
+        <Form method="post" id="hidden-form-for-logout" action="/logout">
           <input type="hidden" name="username" value="null" />
           <input type="hidden" />
-        </RootBasedForm>
+        </Form>
       </div>
     ) : (
       <Link to="/login">login</Link>
