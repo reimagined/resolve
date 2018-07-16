@@ -69,6 +69,7 @@
     "resolve-command": "0.12.3",
     "resolve-es": "0.12.3",
     "resolve-query": "0.12.3",
+    "resolve-subscribe-socket.io": "0.12.3",
     "resolve-redux": "0.12.3",
     "resolve-storage-lite": "0.12.3",
     "respawn": "^2.5.0",
