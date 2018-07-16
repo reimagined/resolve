@@ -5,7 +5,7 @@
 This example demonstrates how to work with [Styled Components](https://www.styled-components.com/docs). Get the example using this command:
 
 ```sh
-npx create-resolve-app with-styled-components -e with-styled-components
+npx create-resolve-app resolve-with-styled-components-example -e with-styled-components
 ```
 
 ## How to Use
