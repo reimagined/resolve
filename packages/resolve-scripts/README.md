@@ -9,8 +9,15 @@ This package includes scripts and configuration for the [create-resolve-app](../
 You can configure reSolve in the `resolve.config.json` file, or in the file passed as an argument with the `--config` key, for example:
 
 ```sh
-npm run dev --config=custom-resolve.config.json
-npm run build --config=custom-resolve.config.json
+npm run dev -- --config=custom-resolve.config.json
+npm run build -- --config=custom-resolve.config.json
+```
+
+or with `yarn`:
+
+```sh
+yarn run dev --config=custom-resolve.config.json
+yarn run build --config=custom-resolve.config.json
 ```
 
 Please keep in mind that the resulting configuration must match the [JSON Schema ReSolve Config](./configs/schema.resolve.config.json)
