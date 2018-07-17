@@ -1,27 +1,29 @@
-import {
-  READMODEL_SUBSCRIPTION_DIFF,
-  READMODEL_LOAD_INITIAL_STATE,
-  READMODEL_DROP_STATE
-} from './action_types'
 import { applyChanges } from 'diff-json'
 
-function copyResolveSerials(oldState, newState) {
-  Object.getOwnPropertyNames(oldState).forEach(key => {
-    const propertyDescriptor = Object.getOwnPropertyDescriptor(oldState, key)
+import getHash from './get_hash'
 
-    if (
-      key.indexOf('resolve-serial:') !== 0 ||
-      propertyDescriptor.enumerable ||
-      propertyDescriptor.writable
-    ) {
-      return
-    }
+import {
+  LOAD_READMODEL_STATE_REQUEST,
+  LOAD_READMODEL_STATE_SUCCESS,
+  LOAD_READMODEL_STATE_FAILURE,
+  DROP_READMODEL_STATE,
+  APPLY_READMODEL_DIFF
+} from './action_types'
 
-    Object.defineProperty(newState, key, propertyDescriptor)
-  })
+import { connectorMetaMap, diffVersionsMap } from './constants'
+
+export const dropKey = (state, key) => {
+  const nextState = { ...state }
+  delete nextState[key]
+
+  return nextState
 }
 
-function refreshUpdatedObjects(updatedObject, changes, embeddedKey = '$index') {
+const refreshUpdatedObjects = (
+  updatedObject,
+  changes,
+  embeddedKey = '$index'
+) => {
   for (const {
     key,
     changes: nextChanges,
@@ -65,84 +67,134 @@ function refreshUpdatedObjects(updatedObject, changes, embeddedKey = '$index') {
 }
 
 export default function createReadModelsReducer() {
-  return (state = {}, action) => {
-    switch (action.type) {
-      case READMODEL_LOAD_INITIAL_STATE: {
-        const { readModelName, resolverName, initialState, serialId } = action
-        const nextState = {
-          ...state,
-          [readModelName]: {
-            ...(state[readModelName] || {}),
-            [resolverName]: initialState
-          }
+  const handlers = {}
+
+  handlers[LOAD_READMODEL_STATE_REQUEST] = (state, action) => {
+    const readModelName = action.readModelName
+    const resolverName = getHash(action.resolverName)
+    const resolverArgs = getHash(action.resolverArgs)
+
+    return {
+      ...state,
+      [connectorMetaMap]: {
+        ...state[connectorMetaMap],
+        [`${readModelName}${resolverName}${resolverArgs}`]: {
+          isLoading: true,
+          isFailure: false
         }
-
-        copyResolveSerials(state, nextState)
-        Object.defineProperty(
-          nextState,
-          `resolve-serial:${readModelName}:${resolverName}`,
-          {
-            configurable: true,
-            writable: false,
-            enumerable: false,
-            value: serialId
-          }
-        )
-
-        return nextState
       }
-
-      case READMODEL_DROP_STATE: {
-        const { readModelName, resolverName } = action
-        const nextState = {
-          ...state,
-          [readModelName]: {
-            ...(state[readModelName] || {}),
-            [resolverName]: null
-          }
-        }
-
-        copyResolveSerials(state, nextState)
-        delete nextState[`resolve-serial:${readModelName}:${resolverName}`]
-        delete nextState[readModelName][resolverName]
-
-        return nextState
-      }
-
-      case READMODEL_SUBSCRIPTION_DIFF: {
-        const { readModelName, resolverName, serialId, diff } = action
-
-        if (
-          !state[readModelName] ||
-          !state[readModelName].hasOwnProperty(resolverName) ||
-          state[`resolve-serial:${readModelName}:${resolverName}`] !== serialId
-        ) {
-          return state
-        }
-
-        const wrappedResolverState = {
-          wrap: state[readModelName][resolverName]
-        }
-
-        applyChanges(wrappedResolverState, diff)
-
-        refreshUpdatedObjects(wrappedResolverState, diff)
-
-        const nextState = {
-          ...state,
-          [readModelName]: {
-            ...state[readModelName],
-            [resolverName]: wrappedResolverState.wrap
-          }
-        }
-
-        copyResolveSerials(state, nextState)
-
-        return nextState
-      }
-
-      default:
-        return state
     }
+  }
+
+  handlers[LOAD_READMODEL_STATE_SUCCESS] = (state, action) => {
+    const readModelName = action.readModelName
+    const resolverName = getHash(action.resolverName)
+    const resolverArgs = getHash(action.resolverArgs)
+    const readModelState = action.result
+
+    const key = `${readModelName}${resolverName}${resolverArgs}`
+
+    return {
+      ...state,
+      [readModelName]: {
+        ...(state[readModelName] || {}),
+        [resolverName]: {
+          ...((state[readModelName] || {})[resolverName] || {}),
+          [resolverArgs]: readModelState
+        }
+      },
+      [connectorMetaMap]: {
+        ...state[connectorMetaMap],
+        [key]: {
+          isLoading: false,
+          isFailure: false
+        }
+      },
+      [diffVersionsMap]: {
+        ...state[diffVersionsMap],
+        [key]: 0
+      }
+    }
+  }
+
+  handlers[LOAD_READMODEL_STATE_FAILURE] = (state, action) => {
+    const readModelName = action.readModelName
+    const resolverName = getHash(action.resolverName)
+    const resolverArgs = getHash(action.resolverArgs)
+    const error = action.error
+
+    const key = `${readModelName}${resolverName}${resolverArgs}`
+
+    return {
+      ...state,
+      [connectorMetaMap]: {
+        ...state[connectorMetaMap],
+        [key]: {
+          isLoading: false,
+          isFailure: true,
+          error
+        }
+      }
+    }
+  }
+
+  handlers[DROP_READMODEL_STATE] = (state, action) => {
+    const readModelName = action.readModelName
+    const resolverName = getHash(action.resolverName)
+    const resolverArgs = getHash(action.resolverArgs)
+
+    const key = `${readModelName}${resolverName}${resolverArgs}`
+
+    return {
+      ...state,
+      [readModelName]: {
+        ...state[readModelName],
+        [resolverName]: dropKey(
+          state[readModelName][resolverName],
+          resolverArgs
+        )
+      },
+      [connectorMetaMap]: dropKey(state[connectorMetaMap], key),
+      [diffVersionsMap]: dropKey(state[diffVersionsMap], key)
+    }
+  }
+
+  handlers[APPLY_READMODEL_DIFF] = (state, action) => {
+    const readModelName = action.readModelName
+    const resolverName = getHash(action.resolverName)
+    const resolverArgs = getHash(action.resolverArgs)
+
+    const wrappedReadModelState = {
+      wrap: state[readModelName][resolverName][resolverArgs]
+    }
+
+    applyChanges(wrappedReadModelState, action.diff)
+
+    refreshUpdatedObjects(wrappedReadModelState, action.diff)
+
+    return {
+      ...state,
+      [readModelName]: {
+        ...state[readModelName],
+        [resolverName]: {
+          ...state[readModelName][resolverName],
+          [resolverArgs]: wrappedReadModelState.wrap
+        }
+      }
+    }
+  }
+
+  let state = {
+    [connectorMetaMap]: {},
+    [diffVersionsMap]: {}
+  }
+
+  return (_, action) => {
+    const eventHandler = handlers[action.type]
+    if (eventHandler) {
+      state = eventHandler(state, action)
+    }
+
+    return state
   }
 }

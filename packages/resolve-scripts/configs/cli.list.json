@@ -42,7 +42,7 @@
     "type": "boolean"
   },
   "browser": {
-    "describe": "Specified browser for TestCafe",
+    "describe": "Browser used by TestCafe",
     "type": "string"
   },
   "config": {

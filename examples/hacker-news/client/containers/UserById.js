@@ -1,5 +1,6 @@
 import React from 'react'
 import { connectReadModel } from 'resolve-redux'
+import { connect } from 'react-redux'
 import styled from 'styled-components'
 
 const UserInfoRoot = styled.div`
@@ -21,7 +22,7 @@ const Content = styled.div`
   vertical-align: middle;
 `
 
-export const UserById = ({ data: { user } }) => {
+export const UserById = ({ user }) => {
   if (!user) {
     return null
   }
@@ -40,20 +41,24 @@ export const UserById = ({ data: { user } }) => {
   )
 }
 
-const getReadModelData = state => {
-  try {
-    return {
-      user: state.readModels['default']['user'].user,
-      me: state.readModels['default']['user'].me
+const mapStateToOptions = (
+  state,
+  {
+    match: {
+      params: { userId }
     }
-  } catch (err) {
-    return { user: null, me: null }
   }
-}
-
-export default connectReadModel((state, { match: { params: { userId } } }) => ({
+) => ({
   readModelName: 'default',
   resolverName: 'user',
-  parameters: { id: userId },
-  data: getReadModelData(state)
-}))(UserById)
+  resolverArgs: { id: userId }
+})
+
+const mapStateToProps = (state, { data }) => ({
+  user: data,
+  me: state.jwt
+})
+
+export default connectReadModel(mapStateToOptions)(
+  connect(mapStateToProps)(UserById)
+)

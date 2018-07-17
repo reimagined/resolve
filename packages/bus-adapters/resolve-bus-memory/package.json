@@ -1,7 +1,8 @@
 {
   "name": "resolve-bus-memory",
   "version": "0.12.3",
-  "description": "This package is an adapter for resolve-bus to emit events using memory.",
+  "description":
+    "This package is an adapter for resolve-bus to emit events using memory.",
   "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
@@ -14,25 +15,21 @@
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": [
-    "cqrs",
-    "eventsourcing",
-    "es",
-    "ddd"
-  ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-bus-memory#readme",
+  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
+  "homepage":
+    "https://github.com/reimagined/resolve/tree/master/packages/resolve-bus-memory#readme",
   "devDependencies": {
-    "@babel/cli": "7.0.0-beta.51",
-    "@babel/core": "7.0.0-beta.51",
-    "@babel/plugin-transform-runtime": "7.0.0-beta.51",
-    "@babel/preset-env": "7.0.0-beta.51",
-    "@babel/preset-react": "7.0.0-beta.51",
-    "@babel/preset-stage-0": "7.0.0-beta.51",
-    "babel-core": "^7.0.0-0",
-    "babel-jest": "^23.0.0",
-    "regenerator-runtime": "^0.11.1",
-    "jest": "^23.0.1",
+    "@babel/cli": "7.0.0-beta.54",
+    "@babel/core": "7.0.0-beta.54",
+    "@babel/plugin-transform-runtime": "7.0.0-beta.54",
+    "@babel/preset-env": "7.0.0-beta.54",
+    "@babel/preset-react": "7.0.0-beta.54",
+    "@babel/preset-stage-0": "7.0.0-beta.54",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-jest": "23.4.0",
+    "regenerator-runtime": "0.12.0",
+    "jest": "23.4.1",
     "chai": "^4.1.2",
-    "sinon": "^5.0.10"
+    "sinon": "^6.1.3"
   }
 }

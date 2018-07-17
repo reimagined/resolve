@@ -1,17 +1,13 @@
 import React from 'react'
 import { Redirect } from 'react-router-dom'
 import { connectReadModel } from 'resolve-redux'
+import { connect } from 'react-redux'
 
 import Comment from '../components/Comment'
 import { ITEMS_PER_PAGE } from '../constants'
 import Pagination from '../components/Pagination'
 
-export const CommentsByPage = ({
-  data: { comments = [] },
-  match: {
-    params: { page }
-  }
-}) =>
+export const CommentsByPage = ({ comments, page }) =>
   page && !Number.isInteger(Number(page)) ? (
     <Redirect push to={`/error?text=No such page`} />
   ) : (
@@ -27,24 +23,35 @@ export const CommentsByPage = ({
     </div>
   )
 
-const getReadModelData = state => {
-  try {
-    return {
-      comments: state.readModels['default']['comments'].comments,
-      me: state.readModels['default']['comments'].me
+const mapStateToOptions = (
+  state,
+  {
+    match: {
+      params: { page }
     }
-  } catch (err) {
-    return { comments: [], me: null }
   }
-}
-
-export default connectReadModel((state, { match: { params: { page } } }) => ({
+) => ({
   readModelName: 'default',
   resolverName: 'comments',
-  parameters: {
+  resolverArgs: {
     offset: ITEMS_PER_PAGE + 1,
     first: (+page - 1) * ITEMS_PER_PAGE
-  },
-  data: getReadModelData(state),
+  }
+})
+
+const mapStateToProps = (
+  state,
+  {
+    match: {
+      params: { page }
+    },
+    data
+  }
+) => ({
+  comments: data,
   page
-}))(CommentsByPage)
+})
+
+export default connectReadModel(mapStateToOptions)(
+  connect(mapStateToProps)(CommentsByPage)
+)

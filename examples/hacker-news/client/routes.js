@@ -1,7 +1,7 @@
-import Layout from './containers/Layout'
+import Layout from './components/Layout'
 
-import Error from './containers/Error'
-import Login from './containers/Login'
+import Error from './components/Error'
+import Login from './components/Login'
 import UserById from './containers/UserById'
 
 import NewestByPage from './containers/NewestByPage'
@@ -13,7 +13,7 @@ import Submit from './containers/Submit'
 import CommentsByPage from './containers/CommentsByPage'
 import CommentById from './containers/CommentById'
 
-import PageNotFound from './containers/PageNotFound'
+import PageNotFound from './components/PageNotFound'
 
 const routes = [
   {

@@ -1,11 +1,11 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
-import uuid from 'uuid'
-import { connectReadModel, connectViewModel } from 'resolve-redux'
+import uuid from 'uuid/v4'
+import { connectViewModel } from 'resolve-redux'
+import { connect } from 'react-redux'
 import styled from 'styled-components'
 
 import Story from '../containers/Story'
-
 import ChildrenComments from '../components/ChildrenComments'
 
 const StoryDetailsRoot = styled.div`
@@ -29,12 +29,7 @@ export class StoryDetails extends React.PureComponent {
   }
 
   render() {
-    const {
-      data: { me },
-      story,
-      upvoteStory,
-      unvoteStory
-    } = this.props
+    const { me, story, upvoteStory, unvoteStory } = this.props
     const loggedIn = !!me
 
     if (!story) {
@@ -74,7 +69,7 @@ export class StoryDetails extends React.PureComponent {
   }
 }
 
-export const mapStateToProps = (
+export const mapStateToOptions = (
   state,
   {
     match: {
@@ -82,9 +77,17 @@ export const mapStateToProps = (
     }
   }
 ) => ({
-  story: state.viewModels['storyDetails'][storyId],
   viewModelName: 'storyDetails',
-  aggregateId: storyId
+  aggregateIds: [storyId],
+  aggregateArgs: {
+    page: 'StoryDetails',
+    storyId
+  }
+})
+
+export const mapStateToProps = (state, { data }) => ({
+  story: data,
+  me: state.jwt
 })
 
 export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
@@ -96,23 +99,15 @@ export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
         aggregateActions.commentStory(parentId, {
           text,
           parentId,
-          commentId: uuid.v4()
+          commentId: uuid()
         })
     },
     dispatch
   )
 
-const getReadModelData = state => {
-  try {
-    return { me: state.readModels['default']['user'] }
-  } catch (err) {
-    return { me: null }
-  }
-}
-
-export default connectReadModel(state => ({
-  readModelName: 'default',
-  resolverName: 'user',
-  parameters: {},
-  data: getReadModelData(state)
-}))(connectViewModel(mapStateToProps, mapDispatchToProps)(StoryDetails))
+export default connectViewModel(mapStateToOptions)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(StoryDetails)
+)

@@ -1,21 +1,16 @@
-import actions from './actions'
+import { sendCommandRequest } from './actions'
 
-export default function createActions({ name, commands }, extendActions) {
+const createActions = ({ name, commands }, extendActions) => {
   const generatedActions = Object.keys(commands).reduce(
     (result, commandType) => ({
       ...result,
       [commandType]: (aggregateId, payload) =>
-        actions.sendCommand({
-          aggregateId,
-          aggregateName: name,
-          command: {
-            type: commandType
-          },
-          payload
-        })
+        sendCommandRequest(commandType, aggregateId, name, payload)
     }),
     {}
   )
 
   return { ...generatedActions, ...extendActions }
 }
+
+export default createActions

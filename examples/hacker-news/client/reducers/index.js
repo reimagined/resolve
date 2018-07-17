@@ -1,3 +1,4 @@
 import optimistic from './optimistic'
+import prefetchRoute from './prefetchRoute'
 
-export default { optimistic }
+export default { optimistic, prefetchRoute }

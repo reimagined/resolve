@@ -14,6 +14,28 @@
       "required": ["module", "options"],
       "additionalProperties": false
     },
+    "subscribeAdapter": {
+      "type": "object",
+      "properties": {
+        "module": {
+          "type": "string"
+        },
+        "options": {
+          "type": "object",
+          "properties": {
+            "client": {
+              "type": "object"
+            },
+            "server": {
+              "type": "object"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": ["module", "options"],
+      "additionalProperties": false
+    },
     "aggregate": {
       "type": "object",
       "properties": {
@@ -174,7 +196,7 @@
           "$ref": "#/definitions/adapter"
         },
         "subscribeAdapter": {
-          "$ref": "#/definitions/adapter"
+          "$ref": "#/definitions/subscribeAdapter"
         },
         "auth": {
           "$ref": "#/definitions/auth"

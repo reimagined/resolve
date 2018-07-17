@@ -42,6 +42,7 @@ Open [http://localhost:3000](http://localhost:3000/) or http://<your_ip>:3000 to
 📁 resolve-app
     📄 .gitignore
     📄 .yarnrc
+    📄 .babelrc
     📄 LICENSE
     📄 README.md
     📄 package.json
@@ -56,15 +57,22 @@ Open [http://localhost:3000](http://localhost:3000/) or http://<your_ip>:3000 to
             📄 index.js
         📁 store
             📄 index.js
+        📁 middlewares
+            📄 index.js
         📄 routes.js
     📁 common
         📁 aggregates
-            📄 firstAggregate.commands.js
+            📄 aggregate-name.commands.js
+            📄 aggregate-name.projection.js
         📁 read-models
-            📄 firstReadModel.projection.js
-            📄 firstReadModel.resolvers.js
+            📄 read-model-name.projection.js
+            📄 read-model-name.resolvers.js
         📁 view-models
-            📄 firstViewModel.projection.js
+            📄 view-model-name.projection.js
+            📄 view-model-name.serialize_state.js
+            📄 view-model-name.deserialize_state.js
+        📁 sagas
+            📄 index.js
     📁 static
         📄 favicon.ico
     📁 tests
@@ -112,7 +120,7 @@ export default (webpackConfigs, { resolveConfig, deployOptions, env }) => {
 }
 ```
 
-Example can be found in [`with-postcss-modules`](../examples/with-postcss-modules) example
+Example can be found in [`with-postcss`](../examples/with-postcss) example
 
 ## **Command Line Interface**
 
