@@ -27,7 +27,7 @@
     "@babel/preset-react": "7.0.0-beta.54",
     "@babel/plugin-transform-runtime": "7.0.0-beta.54",
     "@babel/preset-stage-0": "7.0.0-beta.54",
-    "babel-core": "7.0.0-bridge.0",
+    "babel-core": "^7.0.0-0",
     "babel-jest": "23.4.0",
     "regenerator-runtime": "0.12.0",
     "jest": "23.4.1",
