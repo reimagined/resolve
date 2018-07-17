@@ -6,7 +6,7 @@
     "build": "resolve-scripts build",
     "dev": "resolve-scripts dev",
     "start": "resolve-scripts start",
-    "test": "resolve-scripts test",
+    "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
     "test:functional": "resolve-scripts test:functional"
   },
   "dependencies": {
