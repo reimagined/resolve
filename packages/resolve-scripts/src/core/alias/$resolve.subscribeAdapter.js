@@ -10,6 +10,15 @@ export default ({ resolveConfig, isClient }) => {
   if (resolveConfig.subscribeAdapter.module in resolveConfig[envKey]) {
     throw new Error(`${message.clientEnvError}.subscribeAdapter.module`)
   }
+  for (const option of Object.keys(resolveConfig.subscribeAdapter.options)) {
+    if (
+      resolveConfig.subscribeAdapter.options[option] in resolveConfig[envKey]
+    ) {
+      throw new Error(
+        `${message.clientEnvError}.subscribeAdapter.options.${option}`
+      )
+    }
+  }
 
   for (const option of Object.keys(resolveConfig.subscribeAdapter.options)) {
     if (
