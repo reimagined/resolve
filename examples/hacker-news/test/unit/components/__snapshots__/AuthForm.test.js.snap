@@ -25,7 +25,7 @@ ShallowWrapper {
         <styled.div>
           Title
         </styled.div>,
-        <RootBasedComponent
+        <ContextBasedComponent
           action="/auth"
           method="POST"
         >
@@ -40,7 +40,7 @@ ShallowWrapper {
             type="submit"
             value="login"
           />
-        </RootBasedComponent>,
+        </ContextBasedComponent>,
       ],
     },
     "ref": null,
@@ -138,7 +138,7 @@ ShallowWrapper {
           <styled.div>
             Title
           </styled.div>,
-          <RootBasedComponent
+          <ContextBasedComponent
             action="/auth"
             method="POST"
           >
@@ -153,7 +153,7 @@ ShallowWrapper {
               type="submit"
               value="login"
             />
-          </RootBasedComponent>,
+          </ContextBasedComponent>,
         ],
       },
       "ref": null,
