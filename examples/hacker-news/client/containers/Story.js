@@ -1,11 +1,11 @@
 import React from 'react'
 import url from 'url'
-import Link from './Link'
 import plur from 'plur'
 import { connect } from 'react-redux'
 import sanitizer from 'sanitizer'
 import styled, { css } from 'styled-components'
 
+import Link from './Link'
 import Splitter from '../components/Splitter'
 import TimeAgo from '../components/TimeAgo'
 

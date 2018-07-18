@@ -1,11 +1,24 @@
 import React from 'react'
-import { Navbar, Image } from 'react-bootstrap'
+import { Navbar } from 'react-bootstrap'
+import { connectStaticBasedUrls } from 'resolve-redux'
+import { Helmet } from 'react-helmet'
 
-const Header = () => (
+import Image from './Image'
+
+const Header = ({ title, name, css, favicon }) => (
   <div>
+    <Helmet>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="icon" href={favicon} type="image/png" />
+      {css.map((href, index) => (
+        <link rel="stylesheet" href={href} key={index} />
+      ))}
+      <title>{title}</title>
+    </Helmet>
+
     <Navbar>
       <Navbar.Text>
-        <Image src="/resolve-logo.png" /> Auth Example
+        <Image src="/resolve-logo.png" /> {name}
       </Navbar.Text>
 
       <Navbar.Collapse>
@@ -31,4 +44,4 @@ const Header = () => (
   </div>
 )
 
-export default Header
+export default connectStaticBasedUrls(['css', 'favicon'])(Header)

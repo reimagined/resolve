@@ -23,7 +23,7 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-mysql#readme",
   "dependencies": {
     "mysql2": "^1.5.3",
-    "resolve-readmodel-base": "0.12.3",
+    "resolve-readmodel-base": "0.13.0",
     "sql-formatter": "^2.3.1",
     "uuid": "^3.3.2"
   },

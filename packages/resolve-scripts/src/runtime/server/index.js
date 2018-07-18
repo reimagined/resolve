@@ -20,6 +20,7 @@ import subscribeAdapter from './subscribe_adapter'
 import argumentsParser from './arguments_parser'
 import HMRSocketHandler from './hmr_socket_handler'
 
+import staticPath from '$resolve.staticPath'
 import staticDir from '$resolve.staticDir'
 import distDir from '$resolve.distDir'
 import jwtCookie from '$resolve.jwtCookie'
@@ -63,10 +64,10 @@ app.use(getRootBasedUrl('/api/subscribe'), argumentsParser, subscribeHandler)
 
 app.use(getRootBasedUrl('/api/commands'), commandHandler)
 
-app.use(getRootBasedUrl('/'), express.static(`${distDir}/client`))
-app.use(getRootBasedUrl('/'), express.static(staticDir))
+app.use(getRootBasedUrl(`/${staticPath}`), express.static(`${distDir}/client`))
+app.use(getRootBasedUrl(`/${staticPath}`), express.static(staticDir))
 app.use(
-  getRootBasedUrl('/'),
+  getRootBasedUrl(`/${staticPath}`),
   express.static(path.resolve(__dirname, '../static'))
 )
 

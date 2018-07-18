@@ -9,6 +9,8 @@ This package contains tools for integrating reSolve with [Redux](http://redux.js
 * [createResolveMiddleware](#createresolvemiddleware)
 * [connectViewModel](#connectviewmodel)
 * [connectReadModel](#connectreadmodel)
+* [connectStaticBasedUrls](#connectstaticbasedurls)
+* [connectRootBasedUrls](#connectrootbasedurls)
 * [createActions](#createactions)
 * [Action Creators](#action-creators)
 
@@ -149,6 +151,46 @@ export default connectReadModel(mapStateToOptions)(
     mapDispatchToProps
   )(MyComponent)
 )
+```
+
+### `connectRootBasedUrls`
+A higher-order component (HOC), used to automatically fixes server routes.
+
+```js
+import React from 'react'
+import { connectRootBasedUrls } from 'resolve-redux'
+
+const Form = connectRootBasedUrls(['action'])('form')
+
+const Markup = () => (
+  <div>
+    <From method="POST" action={action}>
+      username: <input type="text" name="username" />
+      <input type="submit" value="Submit" />
+    </From>
+  </div>
+)
+
+export default Markup
+```
+
+### `connectStaticBasedUrls`
+A higher-order component (HOC), used to automatically fixes paths for static files.
+
+```js
+import React from 'react'
+import { Image as BootstrapImage } from 'react-bootstrap'
+import { connectStaticBasedUrls } from 'resolve-redux'
+
+const Image = connectStaticBasedUrls(['src'])(BootstrapImage)
+
+const Markup = () => (
+  <div>
+    <Image src="/logo.png" /> {name}
+  </div>
+)
+
+export default Markup
 ```
 
 ### `createActions`
