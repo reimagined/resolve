@@ -1,12 +1,17 @@
 {
   "name": "resolve-scripts",
-  "version": "0.12.3",
+  "version": "0.13.0",
   "description": "This package create server with resolve.",
   "main": "./dist/index.js",
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
   "bin": {
     "resolve-scripts": "./bin/resolve-scripts.js"
   },
@@ -18,8 +23,7 @@
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
-  "homepage":
-    "https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts#readme",
   "dependencies": {
     "@babel/cli": "7.0.0-beta.54",
     "@babel/core": "7.0.0-beta.54",
@@ -65,7 +69,7 @@
     "resolve-command": "0.12.3",
     "resolve-es": "0.12.3",
     "resolve-query": "0.12.3",
-    "resolve-subscribe-socket.io": "0.12.3",
+    "resolve-subscribe-socket.io": "0.13.0",
     "resolve-redux": "0.12.3",
     "resolve-storage-lite": "0.12.3",
     "respawn": "^2.5.0",

@@ -1,6 +1,6 @@
 {
   "name": "with-postcss",
-  "version": "0.12.3",
+  "version": "0.13.0",
   "private": true,
   "scripts": {
     "build": "resolve-scripts build",
