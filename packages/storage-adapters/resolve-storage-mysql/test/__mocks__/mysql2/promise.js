@@ -1,7 +1,5 @@
 import sinon from 'sinon'
 
-export const escapeId = sinon.stub().callsFake(str => str)
-
 let lastResult = null
 let lastError = null
 

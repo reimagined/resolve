@@ -3,7 +3,7 @@ import sinon from 'sinon'
 
 import storeApi from '../src/store-api'
 
-describe('resolve-readmodel-memory store-api', () => {
+describe('resolve-readmodel-mongo store-api', () => {
   const META_NAME = 'META_NAME'
 
   let collectionApi, pool

@@ -56,7 +56,9 @@ describe('resolve-readmodel-mongo meta-api', () => {
     ]
 
     collectionApi.findOne.onCall(0).callsFake(async () => ({ timestamp: 100 }))
-    collectionApi.find.onCall(0).callsFake(async () => tableDeclarations)
+    collectionApi.find.onCall(0).callsFake(async () => ({
+      toArray: async () => tableDeclarations
+    }))
 
     checkStoredTableSchema.onCall(0).callsFake(() => true)
     checkStoredTableSchema.onCall(1).callsFake(() => true)
@@ -81,7 +83,9 @@ describe('resolve-readmodel-mongo meta-api', () => {
 
   it('should provide getMetaInfo method - for empty meta table', async () => {
     collectionApi.findOne.onCall(0).callsFake(async () => null)
-    collectionApi.find.onCall(0).callsFake(async () => [])
+    collectionApi.find.onCall(0).callsFake(async () => ({
+      toArray: async () => []
+    }))
 
     checkStoredTableSchema.onCall(0).callsFake(() => false)
     checkStoredTableSchema.onCall(1).callsFake(() => false)
@@ -118,7 +122,9 @@ describe('resolve-readmodel-mongo meta-api', () => {
     collectionApi.findOne
       .onCall(0)
       .callsFake(async () => ({ timestamp: Number.NaN }))
-    collectionApi.find.onCall(0).callsFake(async () => tableDeclarations)
+    collectionApi.find.onCall(0).callsFake(async () => ({
+      toArray: async () => tableDeclarations
+    }))
 
     checkStoredTableSchema.onCall(0).callsFake(() => false)
     checkStoredTableSchema.onCall(1).callsFake(() => false)

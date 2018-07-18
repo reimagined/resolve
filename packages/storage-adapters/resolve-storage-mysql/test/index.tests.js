@@ -1,6 +1,6 @@
 import sinon from 'sinon'
 import { expect } from 'chai'
-import mysql, { _setLastResult, _reset } from 'mysql2'
+import mysql, { _setLastResult, _reset } from 'mysql2/promise'
 import sqlFormatter from 'sql-formatter'
 import createAdapter from '../src'
 
@@ -40,7 +40,7 @@ describe('es-mysql', () => {
         timestamp BIGINT NOT NULL,
         aggregateId VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
         aggregateVersion BIGINT NOT NULL,
-        type VARCHAR(700) VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+        type VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
         payload JSON NULL,
         PRIMARY KEY(aggregateId, aggregateVersion),
         INDEX USING BTREE(type),
@@ -85,7 +85,7 @@ describe('es-mysql', () => {
         timestamp BIGINT NOT NULL,
         aggregateId VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
         aggregateVersion BIGINT NOT NULL,
-        type VARCHAR(700) VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+        type VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
         payload JSON NULL,
         PRIMARY KEY(aggregateId, aggregateVersion),
         INDEX USING BTREE(type),
@@ -128,7 +128,7 @@ describe('es-mysql', () => {
         timestamp BIGINT NOT NULL,
         aggregateId VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
         aggregateVersion BIGINT NOT NULL,
-        type VARCHAR(700) VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+        type VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
         payload JSON NULL,
         PRIMARY KEY(aggregateId, aggregateVersion),
         INDEX USING BTREE(type),
