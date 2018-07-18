@@ -1,6 +1,6 @@
 import sinon from 'sinon'
 import { expect } from 'chai'
-import mysql, { _setLastResult, _setLastError, _reset } from 'mysql2'
+import mysql, { _setLastResult, _reset } from 'mysql2'
 import sqlFormatter from 'sql-formatter'
 import createAdapter from '../src'
 
