@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
-const resolveFile = query => {
+const resolveFile = (query, fallbackQuery) => {
   try {
     const customFilePath = path.resolve(process.cwd(), query)
 
@@ -11,7 +11,7 @@ const resolveFile = query => {
   } catch (e) {}
 
   try {
-    const customFilePath = path.resolve(__dirname, '../runtime', query)
+    const customFilePath = path.resolve(__dirname, '../runtime', fallbackQuery)
 
     if (fs.existsSync(customFilePath)) {
       return customFilePath

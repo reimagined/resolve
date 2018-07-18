@@ -31,8 +31,8 @@ const getClientWebpackConfig = ({
     output: {
       path: clientDistDir,
       filename: 'client.js',
-      devtoolModuleFilenameTemplate: '[resource-path]',
-      devtoolFallbackModuleFilenameTemplate: '[resource-path]?[hash]'
+      devtoolModuleFilenameTemplate: '[absolute-resource-path]',
+      devtoolFallbackModuleFilenameTemplate: '[absolute-resource-path]?[hash]'
     },
     resolve: {
       modules: getModulesDirs(),
