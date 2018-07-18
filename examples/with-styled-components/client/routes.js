@@ -1,14 +1,14 @@
-import Layout from './components/Layout'
 import App from './containers/App'
+import StyledComponents from './containers/StyledComponents'
 
 export default [
   {
     path: '/',
-    component: Layout,
+    component: App,
     routes: [
       {
         path: '/',
-        component: App,
+        component: StyledComponents,
         exact: true
       }
     ]

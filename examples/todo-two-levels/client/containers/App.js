@@ -1,8 +1,8 @@
 import React from 'react'
 
-import Header from '../containers/Header'
+import Header from './Header'
 
-const Layout = ({ children }) => (
+const App = ({ children }) => (
   <div>
     <Header
       title="reSolve Two Levels To-Do List Example"
@@ -14,4 +14,4 @@ const Layout = ({ children }) => (
   </div>
 )
 
-export default Layout
+export default App

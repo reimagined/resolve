@@ -1,12 +1,16 @@
 import React from 'react'
 
-import styles from './App.css'
+import Header from './Header'
 
-const App = () => (
-  <div className={styles.wrapper}>
-    <div className={styles.title}>
-      Hello World, this is my first component with postcss-modules!
-    </div>
+const App = ({ children }) => (
+  <div>
+    <Header
+      title="reSolve PostCSS Example"
+      name="PostCSS Example"
+      favicon="/favicon.ico"
+      css={['/bootstrap.min.css', '/style.css']}
+    />
+    {children}
   </div>
 )
 

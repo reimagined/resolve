@@ -1,4 +1,4 @@
-import Layout from './components/Layout'
+import App from './containers/App'
 
 import Error from './components/Error'
 import Login from './components/Login'
@@ -18,7 +18,7 @@ import PageNotFound from './components/PageNotFound'
 const routes = [
   {
     path: '/',
-    component: Layout,
+    component: App,
     routes: [
       {
         path: '/error',

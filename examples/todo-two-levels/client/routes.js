@@ -1,15 +1,15 @@
 import Index from './containers/Index'
-import Todo from './containers/Todo'
-import Layout from './components/Layout'
+import Todos from './containers/Todos'
+import App from './containers/App'
 
 export default [
   {
     path: '/',
-    component: Layout,
+    component: App,
     routes: [
       {
         path: '/:id',
-        component: Todo,
+        component: Todos,
         exact: true
       },
       {

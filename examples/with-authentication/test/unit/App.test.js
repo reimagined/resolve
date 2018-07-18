@@ -1,12 +1,12 @@
 import React from 'react'
 import renderer from 'react-test-renderer'
 
-import { App } from '../../client/containers/App'
+import { Authentication } from '../../client/containers/Authentication'
 
 test('renders correctly', () => {
   const tree = renderer
     .create(
-      <App
+      <Authentication
         me={{
           name: 'Test'
         }}
