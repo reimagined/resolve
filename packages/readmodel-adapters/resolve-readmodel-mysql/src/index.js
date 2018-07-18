@@ -1,4 +1,5 @@
-import mysql, { escapeId } from 'mysql2'
+import mysql from 'mysql2/promise'
+import { escapeId } from 'mysql2'
 import createAdapter from 'resolve-readmodel-base'
 
 import implementation from './implementation'

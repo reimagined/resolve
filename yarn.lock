@@ -8261,16 +8261,6 @@ resolve-pathname@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/resolve-pathname/-/resolve-pathname-2.2.0.tgz#7e9ae21ed815fd63ab189adeee64dc831eefa879"
 
-resolve-readmodel-base@0.11.0:
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/resolve-readmodel-base/-/resolve-readmodel-base-0.11.0.tgz#d7c01bd0823ac1d8fc5d88eb470e1c96ef94c163"
-  dependencies:
-    uuid "^3.1.0"
-
-resolve-storage-base@0.12.1:
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/resolve-storage-base/-/resolve-storage-base-0.12.1.tgz#592e405e35ace5db39f0e9ed83b393828f6f6f6c"
-
 resolve-url@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/resolve-url/-/resolve-url-0.2.1.tgz#2c637fe77c893afd2a663fe21aa9080068e2052a"

@@ -31,7 +31,8 @@ describe('es-mysql', () => {
     const adapter = createAdapter(connectionOptions)
     await adapter.saveEvent(testEvent)
 
-    const executor = (await mysql.createConnection.firstCall.returnValue).execute
+    const executor = (await mysql.createConnection.firstCall.returnValue)
+      .execute
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
@@ -75,7 +76,8 @@ describe('es-mysql', () => {
     _setLastResult(result)
     await adapter.loadEventsByTypes(eventTypes, callback, 100)
 
-    const executor = (await mysql.createConnection.firstCall.returnValue).execute
+    const executor = (await mysql.createConnection.firstCall.returnValue)
+      .execute
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
@@ -98,7 +100,11 @@ describe('es-mysql', () => {
       format(`SELECT * FROM  table WHERE timestamp > ? AND type IN (?, ?)`)
     )
 
-    expect(executor.secondCall.args[1]).to.be.deep.equal([100, 'EVENT_TYPE_1', 'EVENT_TYPE_2'])
+    expect(executor.secondCall.args[1]).to.be.deep.equal([
+      100,
+      'EVENT_TYPE_1',
+      'EVENT_TYPE_2'
+    ])
 
     expect(callback.firstCall.args[0]).to.be.equal(result[0][0])
     expect(callback.secondCall.args[0]).to.be.equal(result[0][1])
@@ -113,7 +119,8 @@ describe('es-mysql', () => {
     _setLastResult(result)
     await adapter.loadEventsByAggregateIds(aggregateIds, callback, 100)
 
-    const executor = (await mysql.createConnection.firstCall.returnValue).execute
+    const executor = (await mysql.createConnection.firstCall.returnValue)
+      .execute
 
     expect(format(executor.firstCall.args[0])).to.be.equal(
       format(
@@ -133,10 +140,16 @@ describe('es-mysql', () => {
     expect(executor.firstCall.args[1]).to.be.deep.equal([])
 
     expect(format(executor.secondCall.args[0])).to.be.equal(
-      format(`SELECT * FROM  table WHERE timestamp > ? AND aggregateId IN (?, ?)`)
+      format(
+        `SELECT * FROM  table WHERE timestamp > ? AND aggregateId IN (?, ?)`
+      )
     )
 
-    expect(executor.secondCall.args[1]).to.be.deep.equal([100, 'AGGREGATE_ID_1', 'AGGREGATE_ID_2'])
+    expect(executor.secondCall.args[1]).to.be.deep.equal([
+      100,
+      'AGGREGATE_ID_1',
+      'AGGREGATE_ID_2'
+    ])
 
     expect(callback.firstCall.args[0]).to.be.equal(result[0][0])
     expect(callback.secondCall.args[0]).to.be.equal(result[0][1])

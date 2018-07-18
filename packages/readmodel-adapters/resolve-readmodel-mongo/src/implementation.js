@@ -8,8 +8,6 @@ const implementation = (
 
   const connectionOptions = {
     url: options.url || 'mongodb://127.0.0.1:27017/',
-    user: options.user || 'admin',
-    password: options.password || '',
     database: options.database || 'admin'
   }
 
@@ -20,13 +18,7 @@ const implementation = (
     if (!connectionPromise) {
       connectionPromise = Promise.resolve()
         .then(async () => {
-          const client = await MongoClient.connect(
-            connectionOptions.url,
-            {
-              'auth.user': connectionOptions.user,
-              'auth.password': connectionOptions.password
-            }
-          )
+          const client = await MongoClient.connect(connectionOptions.url)
           pool.connection = await client.db(connectionOptions.database)
           await getMetaInfo(pool, checkStoredTableSchema)
         })

@@ -17,7 +17,9 @@ const getMetaInfo = async (pool, checkStoredTableSchema) => {
     pool.metaInfo.timestamp = timestamp
   }
 
-  const tables = await metaCollection.find({ key: 'tableDescription' })
+  const tables = await (await metaCollection.find({
+    key: 'tableDescription'
+  })).toArray()
 
   for (let { tableName, tableDescription } of tables) {
     if (checkStoredTableSchema(tableName, tableDescription)) {

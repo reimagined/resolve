@@ -6,14 +6,19 @@ const FIELD_NAME_REGEXP = /^(?:\w|\d|-)+?(?:\.(?:\w|\d|-)+?)*?$/
 const checkCondition = (condition, messageGenerator, ...args) => {
   if (!condition) {
     throw new Error(
-      typeof messageGenerator === 'function' ? messageGenerator(...args) : messageGenerator
+      typeof messageGenerator === 'function'
+        ? messageGenerator(...args)
+        : messageGenerator
     )
   }
 }
 
 const checkOptionShape = (option, types, nullable = false) =>
   (nullable && option == null) ||
-  !(option == null || !types.reduce((acc, type) => acc || option.constructor === type, false))
+  !(
+    option == null ||
+    !types.reduce((acc, type) => acc || option.constructor === type, false)
+  )
 
 const checkAndGetTableMetaSchema = (tableName, tableSchema) => {
   checkCondition(
@@ -52,7 +57,8 @@ const checkAndGetTableMetaSchema = (tableName, tableSchema) => {
   for (let [idx, indexName] of Object.keys(indexes).entries()) {
     const indexType = indexes[indexName]
     checkCondition(
-      COLUMN_NAME_REGEXP.test(indexName) && (indexType === 'number' || indexType === 'string'),
+      COLUMN_NAME_REGEXP.test(indexName) &&
+        (indexType === 'number' || indexType === 'string'),
       messages.invalidTableSchema,
       tableName,
       messages.columnWrongIndex,
@@ -71,7 +77,8 @@ const checkAndGetColumnStatus = (metaInfo, fieldName, allowNested) => {
   const [baseName, ...nestedName] = fieldName.split('.')
   if (
     !metaInfo[baseName] ||
-    (nestedName.length > 0 && (metaInfo[baseName] !== 'regular' || !allowNested))
+    (nestedName.length > 0 &&
+      (metaInfo[baseName] !== 'regular' || !allowNested))
   ) {
     return null
   }
@@ -79,7 +86,12 @@ const checkAndGetColumnStatus = (metaInfo, fieldName, allowNested) => {
   return metaInfo[baseName]
 }
 
-const checkFieldList = (metaInfo, fieldList, allowNested, validProjectionValues = []) => {
+const checkFieldList = (
+  metaInfo,
+  fieldList,
+  allowNested,
+  validProjectionValues = []
+) => {
   if (!checkOptionShape(fieldList, [Object, Array])) {
     return '*'
   }
@@ -132,7 +144,8 @@ const checkInsertedDocumentShape = (tableName, metaInfo, document) => {
   const documentKeys = document instanceof Object ? Object.keys(document) : []
 
   checkCondition(
-    checkOptionShape(document, [Object]) && Object.keys(metaInfo).length === documentKeys.length,
+    checkOptionShape(document, [Object]) &&
+      Object.keys(metaInfo).length === documentKeys.length,
     messages.invalidFieldList,
     'insert',
     tableName,
@@ -164,7 +177,12 @@ const checkInsertedDocumentShape = (tableName, metaInfo, document) => {
   }
 }
 
-const checkSearchExpression = (tableName, operation, metaInfo, searchExpression) => {
+const checkSearchExpression = (
+  tableName,
+  operation,
+  metaInfo,
+  searchExpression
+) => {
   checkCondition(
     checkOptionShape(searchExpression, [Object]),
     messages.invalidSearchExpression,
@@ -174,13 +192,23 @@ const checkSearchExpression = (tableName, operation, metaInfo, searchExpression)
     messages.searchExpressionNotObject
   )
 
-  const allowedComparisonOperators = ['$lt', '$lte', '$gt', '$gte', '$eq', '$ne']
+  const allowedComparisonOperators = [
+    '$lt',
+    '$lte',
+    '$gt',
+    '$gte',
+    '$eq',
+    '$ne'
+  ]
   const allowedLogicalOperators = ['$and', '$or', '$not']
 
-  const operators = Object.keys(searchExpression).filter(key => key.indexOf('$') > -1)
+  const operators = Object.keys(searchExpression).filter(
+    key => key.indexOf('$') > -1
+  )
 
   checkCondition(
-    operators.length === 0 || operators.length === Object.keys(searchExpression).length,
+    operators.length === 0 ||
+      operators.length === Object.keys(searchExpression).length,
     messages.invalidSearchExpression,
     operation,
     tableName,
@@ -201,7 +229,12 @@ const checkSearchExpression = (tableName, operation, metaInfo, searchExpression)
       )
 
       if (operator === '$not') {
-        checkSearchExpression(tableName, operation, metaInfo, searchExpression[operator])
+        checkSearchExpression(
+          tableName,
+          operation,
+          metaInfo,
+          searchExpression[operator]
+        )
         return
       }
 
@@ -281,7 +314,12 @@ const checkSearchExpression = (tableName, operation, metaInfo, searchExpression)
   }
 }
 
-const checkUpdateExpression = (tableName, metaInfo, updateExpression, isUpsert) => {
+const checkUpdateExpression = (
+  tableName,
+  metaInfo,
+  updateExpression,
+  isUpsert
+) => {
   const operators =
     updateExpression instanceof Object
       ? Object.keys(updateExpression).filter(key => key.indexOf('$') > -1)
@@ -289,7 +327,8 @@ const checkUpdateExpression = (tableName, metaInfo, updateExpression, isUpsert) 
 
   checkCondition(
     checkOptionShape(updateExpression, [Object]) &&
-      (operators.length > 0 && operators.length === Object.keys(updateExpression).length),
+      (operators.length > 0 &&
+        operators.length === Object.keys(updateExpression).length),
     messages.invalidUpdateExpression,
     tableName,
     updateExpression,
@@ -321,7 +360,12 @@ const checkUpdateExpression = (tableName, metaInfo, updateExpression, isUpsert) 
     for (let fieldName of Object.keys(affectedFields)) {
       checkCondition(
         operator !== '$unset'
-          ? isFieldValueCorrect(metaInfo, fieldName, affectedFields[fieldName], true) &&
+          ? isFieldValueCorrect(
+              metaInfo,
+              fieldName,
+              affectedFields[fieldName],
+              true
+            ) &&
             (operator === '$set' ||
               (operator === '$inc' &&
                 affectedFields[fieldName] != null &&
@@ -338,11 +382,23 @@ const checkUpdateExpression = (tableName, metaInfo, updateExpression, isUpsert) 
 }
 
 const checkTableExists = async (metaApi, tableName) => {
-  checkCondition(await metaApi.tableExists(tableName), messages.tableNotExist, tableName)
+  checkCondition(
+    await metaApi.tableExists(tableName),
+    messages.tableNotExist,
+    tableName
+  )
 }
 
-const defineTable = async ({ metaApi, storeApi }, tableName, inputTableSchema) => {
-  checkCondition(!(await metaApi.tableExists(tableName)), messages.tableExists, tableName)
+const defineTable = async (
+  { metaApi, storeApi },
+  tableName,
+  inputTableSchema
+) => {
+  checkCondition(
+    !(await metaApi.tableExists(tableName)),
+    messages.tableExists,
+    tableName
+  )
   const tableSchema = checkAndGetTableMetaSchema(tableName, inputTableSchema)
   await storeApi.defineTable(tableName, tableSchema)
   await metaApi.describeTable(tableName, tableSchema)
@@ -361,7 +417,10 @@ const find = async (
   const metaInfo = await metaApi.getTableInfo(tableName)
 
   if (resultFieldsList != null) {
-    const checkFieldResult = checkFieldList(metaInfo, resultFieldsList, true, [0, 1])
+    const checkFieldResult = checkFieldList(metaInfo, resultFieldsList, true, [
+      0,
+      1
+    ])
 
     checkCondition(
       checkFieldResult == null,
@@ -376,7 +435,10 @@ const find = async (
   }
 
   if (sortFieldsList != null) {
-    const checkFieldResult = checkFieldList(metaInfo, sortFieldsList, true, [-1, 1])
+    const checkFieldResult = checkFieldList(metaInfo, sortFieldsList, true, [
+      -1,
+      1
+    ])
 
     checkCondition(
       checkFieldResult == null,
@@ -411,12 +473,20 @@ const find = async (
   )
 }
 
-const findOne = async ({ metaApi, storeApi }, tableName, searchExpression, resultFieldsList) => {
+const findOne = async (
+  { metaApi, storeApi },
+  tableName,
+  searchExpression,
+  resultFieldsList
+) => {
   await checkTableExists(metaApi, tableName)
 
   const metaInfo = await metaApi.getTableInfo(tableName)
   if (resultFieldsList != null) {
-    const checkFieldResult = checkFieldList(metaInfo, resultFieldsList, true, [0, 1])
+    const checkFieldResult = checkFieldList(metaInfo, resultFieldsList, true, [
+      0,
+      1
+    ])
 
     checkCondition(
       checkFieldResult == null,
@@ -473,7 +543,8 @@ const update = async (
 
   checkCondition(
     Object.keys(options).length === 0 ||
-      (Object.keys(options).length === 1 && (options.upsert === true || options.upsert === false)),
+      (Object.keys(options).length === 1 &&
+        (options.upsert === true || options.upsert === false)),
     messages.invalidUpdateExpression,
     options,
     messages.invalidUpdateOptions

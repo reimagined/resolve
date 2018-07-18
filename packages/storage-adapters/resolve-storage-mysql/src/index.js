@@ -1,7 +1,9 @@
-import mysql, { escapeId } from 'mysql2'
+import mysql from 'mysql2/promise'
+import { escapeId } from 'mysql2'
 import { ConcurrentError } from 'resolve-storage-base'
 
-const longStringSqlType = 'VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL'
+const longStringSqlType =
+  'VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL'
 const longNumberSqlType = 'BIGINT NOT NULL'
 const customObjectSqlType = 'JSON NULL'
 
@@ -26,7 +28,7 @@ const endorseEventTable = async (tableName, options) => {
       timestamp ${longNumberSqlType},
       aggregateId ${longStringSqlType},
       aggregateVersion ${longNumberSqlType},
-      type VARCHAR(700) ${longStringSqlType},
+      type ${longStringSqlType},
       payload ${customObjectSqlType},
       PRIMARY KEY(aggregateId, aggregateVersion),
       INDEX USING BTREE(type),
@@ -45,17 +47,29 @@ const saveEvent = async (connectionPromise, tableName, event) => {
       `INSERT INTO ${escapeId(tableName)}
       (timestamp, aggregateId, aggregateVersion, type, payload)
       VALUES (?, ?, ?, ?, ?)`,
-      [event.timestamp, event.aggregateId, event.aggregateVersion, event.type, event.payload]
+      [
+        event.timestamp,
+        event.aggregateId,
+        event.aggregateVersion,
+        event.type,
+        event.payload
+      ]
     )
   } catch (error) {
-    if (e.errno === ER_DUP_ENTRY) {
+    if (error.errno === ER_DUP_ENTRY) {
       throw new ConcurrentError()
     }
-    throw e
+    throw error
   }
 }
 
-const loadEventsByTypes = async (connectionPromise, tableName, types, callback, startTime = 0) => {
+const loadEventsByTypes = async (
+  connectionPromise,
+  tableName,
+  types,
+  callback,
+  startTime = 0
+) => {
   const connection = await connectionPromise
 
   if (
@@ -116,8 +130,16 @@ const createAdapter = ({ tableName = 'EventStore', ...options }) => {
 
   return {
     saveEvent: saveEvent.bind(null, connectionPromise, tableName),
-    loadEventsByTypes: loadEventsByTypes.bind(null, connectionPromise, tableName),
-    loadEventsByAggregateIds: loadEventsByAggregateIds.bind(null, connectionPromise, tableName)
+    loadEventsByTypes: loadEventsByTypes.bind(
+      null,
+      connectionPromise,
+      tableName
+    ),
+    loadEventsByAggregateIds: loadEventsByAggregateIds.bind(
+      null,
+      connectionPromise,
+      tableName
+    )
   }
 }
 
