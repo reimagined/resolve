@@ -1,9 +1,10 @@
 import React from 'react'
 import { connectReadModel } from 'resolve-redux'
+import { connect } from 'react-redux'
 
 import { ButtonToolbar, ToggleButtonGroup, ToggleButton } from 'react-bootstrap'
 
-const pager = ({ count, page, setPage, limit }) => {
+const ItemsPager = ({ count, page, setPage, limit }) => {
   const rowLength = 5
 
   let firstRow = []
@@ -11,7 +12,8 @@ const pager = ({ count, page, setPage, limit }) => {
   let length = Number.isInteger(count) && count > 0 ? +count : 0
 
   for (let i = 0; i < length; i++) {
-    ;(i >= rowLength ? secondRow : firstRow).push(
+    const row = i >= rowLength ? secondRow : firstRow
+    row.push(
       <ToggleButton
         className="page-button"
         onClick={i !== page ? setPage.bind(null, i) : undefined}
@@ -50,38 +52,23 @@ const pager = ({ count, page, setPage, limit }) => {
   )
 }
 
-const getReadModel = (state, modelName, resolverName) => {
-  try {
-    return state.readModels[modelName][resolverName]
-  } catch (err) {
-    return null
-  }
-}
-
-const FilledItemsPager = connectReadModel(
-  (state, { limit, page, setPage }) => ({
+const mapStateToOptions = (state, { limit }) => {
+  return {
     readModelName: 'Rating',
     resolverName: 'PagesCount',
-    parameters: { limit: limit },
-    isReactive: true,
-    count: getReadModel(state, 'Rating', 'PagesCount'),
-    page,
-    setPage
-  })
-)(pager)
-
-class ItemsPager extends React.Component {
-  render() {
-    return (
-      <div>
-        <FilledItemsPager
-          limit={this.props.count}
-          page={this.props.page}
-          setPage={this.props.setPage}
-        />
-      </div>
-    )
+    resolverArgs: { limit },
+    isReactive: true
   }
 }
 
-export default ItemsPager
+const mapStateToProps = (state, { data, page, setPage }) => {
+  return {
+    count: data,
+    page,
+    setPage
+  }
+}
+
+export default connectReadModel(mapStateToOptions)(
+  connect(mapStateToProps)(ItemsPager)
+)

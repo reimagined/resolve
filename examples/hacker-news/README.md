@@ -37,7 +37,7 @@ Press `Control-C` to stop importing or wait until it is finished.
 
 ## What's next?
 
-📑 The app's creation process is detailed in the [Hacker News Tutorial](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/Hacker%20News%20Tutorial.md).
+📑 The app's creation process is detailed in the [**Hacker News Tutorial**](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/Hacker%20News%20Tutorial.md).
 
 📑 You can learn more about read-models in a [**Read Model**](https://github.com/reimagined/resolve/blob/master/docs/Read%20Model.md) topic.
 

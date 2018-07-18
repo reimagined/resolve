@@ -1,6 +1,6 @@
 import React from 'react'
 import url from 'url'
-import { Link } from 'react-router-dom'
+import Link from './Link'
 import plur from 'plur'
 import { connect } from 'react-redux'
 import sanitizer from 'sanitizer'

@@ -7,42 +7,56 @@ import {
 } from 'resolve-redux'
 import { routerReducer, routerMiddleware } from 'react-router-redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
+import uuid from 'uuid/v4'
 
 import redux from '$resolve.redux'
 import viewModels from '$resolve.viewModels'
 import readModels from '$resolve.readModels'
 import aggregates from '$resolve.aggregates'
-import subscribe from '$resolve.subscribeAdapter'
-
-const subscribeAdapter = subscribe.module
+import subscribeAdapter from '$resolve.subscribeAdapter'
 
 const { reducers, middlewares, store: setupStore } = redux
 
-export default ({ initialState, history, origin, rootPath }) => {
+export default ({ initialState, history, origin, rootPath, isClient }) => {
+  const sessionId = uuid()
+
+  if (process.env.NODE_ENV !== 'production') {
+    if (isClient) {
+      require('./create_hmr_socket')({ origin, rootPath })
+    }
+  }
+
+  const resolveMiddleware = createResolveMiddleware()
+
   const store = createStore(
     combineReducers({
       ...reducers,
       router: routerReducer,
-      viewModels: createViewModelsReducer(),
-      readModels: createReadModelsReducer(),
+      viewModels: createViewModelsReducer(viewModels),
+      readModels: createReadModelsReducer(readModels),
       jwt: createJwtReducer()
     }),
     initialState,
     composeWithDevTools(
       applyMiddleware(
         routerMiddleware(history),
-        createResolveMiddleware({
-          viewModels,
-          readModels,
-          aggregates,
-          subscribeAdapter,
-          origin,
-          rootPath
-        }),
+        resolveMiddleware,
         ...middlewares
       )
     )
   )
+
+  resolveMiddleware.run({
+    store,
+    viewModels,
+    readModels,
+    aggregates,
+    origin,
+    rootPath,
+    subscribeAdapter,
+    sessionId,
+    isClient
+  })
 
   setupStore(store, middlewares)
 

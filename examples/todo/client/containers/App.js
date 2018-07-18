@@ -1,8 +1,7 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { connectViewModel } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
-
-import { Helmet } from 'react-helmet'
 import {
   ListGroup,
   ListGroupItem,
@@ -12,18 +11,13 @@ import {
   Image,
   FormControl
 } from 'react-bootstrap'
-import Header from '../components/Header.js'
 
 const viewModelName = 'Todos'
 const aggregateId = 'root-id'
 
-export const App = ({
-  todos,
-  createItem,
-  toggleItem,
-  removeItem,
-  aggregateId
-}) => {
+export const App = props => {
+  const { todos, createItem, toggleItem, removeItem } = props
+
   const placeholder = 'New Task'
   const createItemFunc = () => {
     createItem(aggregateId, {
@@ -34,74 +28,72 @@ export const App = ({
   }
 
   let newTodo
+
   return (
-    <div>
-      <Helmet>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="/bootstrap.min.css" />
-        <link rel="stylesheet" href="/style.css" />
-        <title>reSolve Todo Example</title>
-      </Helmet>
+    <div className="example-wrapper">
+      <h1>Tasks List</h1>
 
-      <Header />
+      <ListGroup className="example-list">
+        {Object.keys(todos).map(id => (
+          <ListGroupItem key={id}>
+            <Checkbox
+              inline
+              checked={todos[id].checked}
+              onChange={toggleItem.bind(null, aggregateId, { id })}
+            >
+              {todos[id].text}
+            </Checkbox>
+            <Image
+              className="example-close-button"
+              src="/close-button.png"
+              onClick={removeItem.bind(null, aggregateId, { id })}
+            />
+          </ListGroupItem>
+        ))}
+      </ListGroup>
 
-      <div className="example-wrapper">
-        <h1>Task's List</h1>
-
-        <ListGroup className="example-list">
-          {Object.keys(todos).map(id => (
-            <ListGroupItem key={id}>
-              <Checkbox
-                inline
-                checked={todos[id].checked}
-                onChange={toggleItem.bind(null, aggregateId, { id })}
-              >
-                {todos[id].text}
-              </Checkbox>
-              <Image
-                className="example-close-button"
-                src="/close-button.png"
-                onClick={removeItem.bind(null, aggregateId, { id })}
-              />
-            </ListGroupItem>
-          ))}
-        </ListGroup>
-
-        <Form inline className="example-form">
-          <FormControl
-            className="example-form-control"
-            type="text"
-            placeholder={placeholder}
-            inputRef={element => (newTodo = element)}
-            onKeyPress={event => {
-              if (event.charCode === 13) {
-                event.preventDefault()
-                createItemFunc()
-              }
-            }}
-          />
-          <Button
-            className="example-button"
-            bsStyle="success"
-            onClick={() => {
+      <Form inline className="example-form">
+        <FormControl
+          className="example-form-control"
+          type="text"
+          placeholder={placeholder}
+          inputRef={element => (newTodo = element)}
+          onKeyPress={event => {
+            if (event.charCode === 13) {
+              event.preventDefault()
               createItemFunc()
-            }}
-          >
-            Add Task
-          </Button>
-        </Form>
-      </div>
+            }
+          }}
+        />
+        <Button
+          className="example-button"
+          bsStyle="success"
+          onClick={() => {
+            createItemFunc()
+          }}
+        >
+          Add Task
+        </Button>
+      </Form>
     </div>
   )
 }
 
-const mapStateToProps = state => ({
+const mapStateToOptions = () => ({
   viewModelName,
-  aggregateId,
-  todos: state.viewModels[viewModelName][aggregateId]
+  aggregateIds: [aggregateId]
 })
 
-const mapDispatchToProps = (dispatch, props) =>
-  bindActionCreators(props.aggregateActions, dispatch)
+const mapStateToProps = (state, { data }) => ({
+  todos: data
+})
 
-export default connectViewModel(mapStateToProps, mapDispatchToProps)(App)
+const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+  bindActionCreators(aggregateActions, dispatch)
+
+export default connectViewModel(mapStateToOptions)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(App)
+)

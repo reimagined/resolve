@@ -34,11 +34,11 @@ ShallowWrapper {
         "1 point ",
         Array [
           "by ",
-          <Styled(Link)
+          <Styled(Connect(Link))
             to="/user/user-id"
           >
             user
-          </Styled(Link)>,
+          </Styled(Connect(Link))>,
           " ",
         ],
         <_default
@@ -52,11 +52,11 @@ ShallowWrapper {
            
         </span>,
         <styled.div />,
-        <Styled(Link)
+        <Styled(Connect(Link))
           to="/storyDetails/story-id"
         >
           discuss
-        </Styled(Link)>,
+        </Styled(Connect(Link))>,
         " ",
       ],
     },
@@ -163,11 +163,11 @@ ShallowWrapper {
           "1 point ",
           Array [
             "by ",
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/user/user-id"
             >
               user
-            </Styled(Link)>,
+            </Styled(Connect(Link))>,
             " ",
           ],
           <_default
@@ -181,11 +181,11 @@ ShallowWrapper {
              
           </span>,
           <styled.div />,
-          <Styled(Link)
+          <Styled(Connect(Link))
             to="/storyDetails/story-id"
           >
             discuss
-          </Styled(Link)>,
+          </Styled(Connect(Link))>,
           " ",
         ],
       },
@@ -330,11 +330,11 @@ ShallowWrapper {
            
         </span>,
         <styled.div />,
-        <Styled(Link)
+        <Styled(Connect(Link))
           to="/storyDetails/story-id"
         >
           discuss
-        </Styled(Link)>,
+        </Styled(Connect(Link))>,
         " ",
       ],
     },
@@ -438,11 +438,11 @@ ShallowWrapper {
              
           </span>,
           <styled.div />,
-          <Styled(Link)
+          <Styled(Connect(Link))
             to="/storyDetails/story-id"
           >
             discuss
-          </Styled(Link)>,
+          </Styled(Connect(Link))>,
           " ",
         ],
       },
@@ -1307,7 +1307,7 @@ exports[`StyledLink 1`] = `
 ShallowWrapper {
   "length": 1,
   Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <Styled(Link)
+  Symbol(enzyme.__unrendered__): <Styled(Connect(Link))
     to="/"
   />,
   Symbol(enzyme.__renderer__): Object {
@@ -1323,7 +1323,6 @@ ShallowWrapper {
     "nodeType": "class",
     "props": Object {
       "className": "sc-bxivhb cRaLxZ",
-      "replace": false,
       "to": "/",
     },
     "ref": null,
@@ -1337,7 +1336,6 @@ ShallowWrapper {
       "nodeType": "class",
       "props": Object {
         "className": "sc-bxivhb cRaLxZ",
-        "replace": false,
         "to": "/",
       },
       "ref": null,
@@ -1633,11 +1631,11 @@ ShallowWrapper {
         <styled.div
           hidden={true}
         />,
-        <Styled(Link)
+        <Styled(Connect(Link))
           to="/story/story-id"
         >
           Title
-        </Styled(Link)>,
+        </Styled(Connect(Link))>,
         " ",
         null,
       ],
@@ -1682,11 +1680,11 @@ ShallowWrapper {
           <styled.div
             hidden={true}
           />,
-          <Styled(Link)
+          <Styled(Connect(Link))
             to="/story/story-id"
           >
             Title
-          </Styled(Link)>,
+          </Styled(Connect(Link))>,
           " ",
           null,
         ],

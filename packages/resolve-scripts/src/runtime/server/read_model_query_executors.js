@@ -1,4 +1,5 @@
 import { createReadModel } from 'resolve-query'
+
 import eventStore from './event_store'
 import raiseError from './utils/raise_error'
 

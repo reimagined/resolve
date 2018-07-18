@@ -29,7 +29,7 @@
     "options": {}
   },
   "subscribeAdapter": {
-    "module": "resolve-redux/dist/subscribe_adapter",
+    "module": "resolve-subscribe-socket.io",
     "options": {}
   },
   "jwtCookie": {

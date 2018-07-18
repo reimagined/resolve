@@ -3,158 +3,328 @@
 
 This package contains tools for integrating reSolve with [Redux](http://redux.js.org/).
 ## **Table of Contents** 📑
-* [Tools](#tools-)
-  * [createResolveMiddleware](#createresolvemiddleware)
-  * [createViewModelsReducer](#createviewmodelsreducer)
-  * [connectViewModel](#connectViewModel)
-  * [createActions](#createactions)
-  * [actions](#actions)
-    * [sendCommand](#sendcommand)
-    * [subscribe](#subscribe)
-    * [unsubscribe](#unsubscribe)
-    * [merge](#merge)
-* [Basic Usage](#basic-usage-)
-  * [How to Create Redux Store](#how-to-create-redux-store)
-  * [How to Generate Action from Aggregate](#how-to-generate-actions-from-aggregate)
-  * [How to Send Commands to Server](#how-to-send-command-to-server)
-
-## Tools 🛠
-### `createResolveMiddleware`
-
-  Redux middleware used to:
-
-  1) Automatically fetch a view model state and subscribe to events.
-  2) Send a command to the server side.
-
-  This function takes the following arguments:
-
-```js
-createResolveMiddleware({ [viewModels] [, readModels] [, aggregates] [, subscribeAdapter] })
-```
+* [createViewModelsReducer](#createviewmodelsreducer)
+* [createReadModelsReducer](#createreadmodelsreducer)
+* [createJwtReducer](#createjwtreducer)
+* [createResolveMiddleware](#createresolvemiddleware)
+* [connectViewModel](#connectviewmodel)
+* [connectReadModel](#connectreadmodel)
+* [createActions](#createactions)
+* [Action Creators](#action-creators)
 
 ### `createViewModelsReducer`
 
-  Generates a standard Redux reducer using reSolve view models. It does not take any arguments as it receives required data from [createResolveMiddleware](#createresolvemiddleware) automatically.
-
-  This reducer includes handling the reSolve's [`merge`](#merge) action.
-
-### `connectViewModel`
-  A higher-order component (HOC), which automatically subscribes/unsubscribes to/from a view model by aggregateId and connects a React component to a Redux store.
+  Generates a [Redux reducer](https://redux.js.org/basics/reducers) from reSolve View Models. Arguments:
 
 ```js
-const mapStateToProps = (state) => ({
-    ...state[viewModelName][aggregateId],
-    viewModelName, // required field
-    aggregateId // required field
-});
+createViewModelsReducer(viewModels)
+```
 
-const mapDispatchToProps = (dispatch, { aggregateActions }) =>
-    bindActionCreators(aggregateActions, dispatch)
+### `createReadModelsReducer`
 
-export default connect(mapStateToProps, mapDispatchToProps)(Component);
+  Generates a [Redux reducer](https://redux.js.org/basics/reducers) using reSolve Read Models. Arguments:
+
+```js
+createReadModelsReducer(readModels)
+```
+
+### `createJwtReducer`
+
+  Generates a [Redux reducer](https://redux.js.org/basics/reducers) using a reSolve JWT. No arguments:
+
+```js
+createJwtReducer()
+```
+
+### `createResolveMiddleware`
+  
+  Redux middleware is used to:
+
+  1. Fetch View and Read Models 
+  2. Subscribe to events
+  3. Send commands to the server side
+  
+```js
+import { createStore, applyMiddleware, combineReducers } from 'redux'
+import { routerReducer, routerMiddleware } from 'react-router-redux'
+import {
+  createViewModelsReducer,
+  createReadModelsReducer,
+  createJwtReducer,
+  createResolveMiddleware
+} from 'resolve-redux'
+
+const resolveMiddleware = createResolveMiddleware()
+
+const store = createStore(
+  combineReducers({
+    ...reducers,
+    router: routerReducer,
+    viewModels: createViewModelsReducer(viewModels),
+    readModels: createReadModelsReducer(readModels),
+    jwt: createJwtReducer()
+  }),
+  initialState,
+  applyMiddleware(
+    routerMiddleware(history),
+    resolveMiddleware,
+    ...middlewares
+  )
+)
+
+resolveMiddleware.run({
+  store,
+  viewModels,
+  readModels,
+  aggregates,
+  origin,
+  rootPath,
+  subscribeAdapter,
+  sessionId,
+  isClient
+})
+```
+
+### `connectViewModel`
+  A higher-order component (HOC), used to automatically subscribe/unsubscribe to/from View Model updates, and access the aggregate commands by `aggregateIds`.
+
+```js
+import { connect } from 'react-redux'
+import { connectViewModel } from 'resolve-redux'
+import { bindActionCreators } from 'redux'
+
+const MyComponent = () => { /* React component implementation */ }
+
+const mapStateToOptions = (state, ownProps) => ({
+  viewModelName,
+  aggregateIds
+})
+
+const mapStateToProps = (state, ownProps) => ({
+  items: ownProps.data
+})
+
+const mapDispatchToProps = (dispatch, ownProps) =>
+  bindActionCreators(aggregateActions, dispatch)
+
+export default connectViewModel(mapStateToOptions)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(MyComponent)
+)
+```
+
+### `connectReadModel`
+  A higher-order component (HOC), used to automatically subscribe/unsubscribe to/from Read Model updates, and access the corresponding aggregate's commands.
+
+```js
+import { connect } from 'react-redux'
+import { connectReadModel } from 'resolve-redux'
+import { bindActionCreators } from 'redux'
+
+const MyComponent = () => { /* React component implementation */ }
+
+const mapStateToOptions = (state, ownProps) => {
+  return {
+    readModelName: 'Items',
+    resolverName: 'getAllItems',
+    resolverArgs: {  },
+    isReactive: true
+  }
+}
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    items: ownProps.data,
+  }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) =>
+  bindActionCreators(aggregateActions, dispatch)
+
+export default connectReadModel(mapStateToOptions)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(MyComponent)
+)
 ```
 
 ### `createActions`
 
-  Generates Redux actions using a reSolve aggregate. This function uses the reSolve's [`sendCommand`](#sendcommand) action to pass a command from Redux to the server side. Generated actions are named as an aggregate's commands. This function takes two arguments:
+  Generates [Redux actions](https://redux.js.org/basics/actions) using a reSolve aggregate. This function uses [`sendCommandRequest`](#sendcommandrequest) to pass a command from Redux to the server side. The generated actions are named after the aggregate commands. Arguments:
+  
   * `aggregate` -  reSolve aggregate
   * `extendActions` - actions to extend or redefine resulting actions
 
-### `actions`
+### Action Creators
 
-  A plain object used to send special actions to be automatically handled by [`createResolveMiddleware`](#resolvemiddleware). It implements the following functions.
+  * #### `sendCommandRequest`
+    Requests sending a command to the server side. The function takes one argument, which is an object with the following keys:
+    * `commandType`
+    * `aggregateId`
+    * `aggregateName`
+    * `payload`
 
-  * #### `sendCommand`
-    Sends a command to the server side. It takes the object with the following required arguments:
-    *  `command`
-    *  `aggregateId`
-    *  `aggregateName`
-    *  `payload`
+  * #### `sendCommandSuccess`
+    Acknowledges sending a command to the server side. The function takes one argument, which is an object with the following keys:
+    * `commandType`
+    * `aggregateId`
+    * `aggregateName`
+    * `payload`
 
-  * #### `subscribeViewModel`
+  * #### `sendCommandFailure`
+    Refuses sending the command to the server side. The function takes one argument, which is an object with the following keys:
+    * `commandType`
+    * `aggregateId`
+    * `aggregateName`
+    * `payload`
+    * `error`
 
-    Subscribes to new server-side events. This function takes two arguments:
-     *  `eventTypes` - an array of event types
-    *  `aggregateId` - an aggregate id
+  * #### `subscribeTopicRequest`
+    Requests subscription to a topic. The function takes one argument, which is an object with the following keys:
+    * `topicName`
+    * `topicId`
 
- * #### `unsubscribeViewModel`
+  * #### `subscribeTopicSuccess`
+    Acknowledges subscription to a topic. The function takes one argument, which is an object with the following keys:
+    * `topicName`
+    * `topicId`
 
-    Unsubscribes from provided server-side events. This function takes two arguments:
-    *  `eventTypes` - an array of event types
-    *  `aggregateId` - an aggregate id
+  * #### `subscribeTopicFailure`
+    Refuses subscription to a topic. The function takes one argument, which is an object with the following keys:
+    * `topicName`
+    * `topicId`
+    * `error`
 
+  * #### `unsubscribeTopicRequest`
+    Requests unsubscription from a topic. The function takes one argument, which is an object with the following keys:
+    * `topicName`
+    * `topicId`
 
- * #### `merge`
+  * #### `unsubscribeTopicSuccess`
+    Acknowledges unsubscription from a topic. The function takes one argument, which is an object with the following keys:
+    * `topicName`
+    * `topicId`
 
-    Produces an action handled by a reducer which the [`createViewModelsReducer`](#createviewmodelsreducer) function generates. A view model state is replaced with a new state
-. It takes three arguments:
-    *  `viewModelName` -  the name of a view model whose state should be updated
-    *  `aggregateId` - an aggregate id
-    *  `state` - the state to be merged with the specified view model's existing state
+  * #### `unsubscribeTopicFailure`
+    Refuses unsubscription from a topic. The function takes one argument, which is an object with the following keys:
+    * `topicName`
+    * `topicId`
+    * `error`
 
+  * #### `connectViewModel`
+    Subscribes to a View Model change. The function takes one argument, which is an object with the following keys:
+    * `viewModelName`
+    * `aggregateIds`
+    * `aggregateArgs`
 
-## Basic Usage 💻
+  * #### `disconnectViewModel`
+    Unsubscribes from View Model changes. The function takes one argument, which is an object with the following keys:
+    * `viewModelName`
+    * `aggregateIds`
+    * `aggregateArgs`
 
-### How to Create Redux Store
+  * #### `loadViewModelStateRequest`
+    Requests a View Model from the server side. The function takes one argument, which is an object with the following keys:
+    * `viewModelName`
+    * `aggregateIds`
+    * `aggregateArgs`
 
-  ``` js
-import React from 'react'
-import { connectViewModel } from 'resolve-redux'
-import { bindActionCreators } from 'redux'
+  * #### `loadViewModelStateSuccess`
+    Acknowledges fetching a View Model from the server side. The function takes one argument, which is an object with the following keys:
+    * `viewModelName`
+    * `aggregateIds`
+    * `aggregateArgs`
+    * `state`
+    * `aggregateVersionsMap`
 
-import actions from '../actions'
+  * #### `loadViewModelStateFailure`
+    Refuses fetching a View Model from the server side. The function takes one argument, which is an object with the following keys:
+    * `viewModelName`
+    * `aggregateIds`
+    * `aggregateArgs`
+    * `error`
 
-const viewModelName = 'Todos'
-const aggregateId = 'root-id'
+  * #### `dropViewModelState`
+    Clears a View Model. The function takes one argument, which is an object with the following keys:
+    * `viewModelName`
+    * `aggregateIds`
+    * `aggregateArgs`
 
-const App = ({ todos, createItem, toggleItem, removeItem, aggregateId }) => {
-  let newTodo
-  return (
-    <div>
-      <h1>TODO</h1>
-      <ol>
-        {Object.keys(todos).map(id => (
-          <li key={id}>
-            <label>
-              <input
-                type="checkbox"
-                checked={todos[id].checked}
-                onChange={toggleItem.bind(null, aggregateId, { id })}
-              />
-              {todos[id].text}
-            </label>
-            <span onClick={removeItem.bind(null, aggregateId, { id })}>
-              {' [x]'}
-            </span>
-          </li>
-        ))}
-      </ol>
-      <input type="text" ref={element => (newTodo = element)} />
-      <button
-        onClick={() => {
-          createItem(aggregateId, {
-            text: newTodo.value,
-            id: Date.now()
-          })
-          newTodo.value = ''
-        }}
-      >
-        Add Todo
-      </button>
-    </div>
-  )
-}
+  * #### `connectReadModel`
+    Subscribes to Read Model changes. The function takes one argument, which is an object with the following keys:
+    * `readModelName`
+    * `resolverName`
+    * `resolverArgs`
+    * `isReactive`
 
-const mapStateToProps = state => ({
-  viewModelName,
-  aggregateId,
-  todos: state[viewModelName][aggregateId]
-})
+  * #### `disconnectReadModel`
+    Unsubscribes from Read Model changes. The function takes one argument, which is an object with the following keys:
+    * `readModelName`
+    * `resolverName`
+    * `resolverArgs`
+    * `isReactive`
 
-const mapDispatchToProps = dispatch => bindActionCreators(actions, dispatch)
+  * #### `loadReadModelStateRequest`
+    Requests a Read Model Resolver result from the server side. If the Read Model is reactive, this function also subscribes to the `diff` topic. The function takes one argument, which is an object with the following keys:
+    * `readModelName`
+    * `resolverName`
+    * `resolverArgs`
+    * `isReactive`
+    * `queryId`
 
-export default connectViewModel(mapStateToProps, mapDispatchToProps)(App)
+  * #### `loadReadModelStateSuccess`
+    Acknowledges fetching a Read Model Resolver result from the server side. The function takes one argument, which is an object with the following keys:
+    * `readModelName`
+    * `resolverName`
+    * `resolverArgs`
+    * `isReactive`
+    * `queryId`
+    * `result`
+    * `timeToLive`
 
-```
+  * #### `loadReadModelStateFailure`
+    Refuses fetching a Read Model Resolver result from the server side. The function takes one argument, which is an object with the following keys:
+    * `readModelName`
+    * `resolverName`
+    * `resolverArgs`
+    * `isReactive`
+    * `queryId`
+    * `error`
 
-![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-resolve-redux-readme?pixel)
+  * #### `applyReadModelDiff`
+    Modify a reactive Read Model. The function takes one argument, which is an object with the following keys:
+    * `readModelName`
+    * `resolverName`
+    * `resolverArgs`
+    * `diff`
+
+  * #### `dropReadModelState`
+    Clears a Read Model. The function takes one argument, which is an object with the following keys:
+    * `readModelName`
+    * `resolverName`
+    * `resolverArgs`
+
+  * #### `stopReadModelSubscriptionRequest`
+    Requests stopping a Read Model subscription. It takes the object with the following required arguments:
+    * `queryId`
+
+  * #### `stopReadModelSubscriptionSuccess`
+    Acknowledges stopping a Read Model subscription. The function takes one argument, which is an object with the following keys:
+    * `queryId`
+
+  * #### `stopReadModelSubscriptionFailure`
+    Refuses stopping a Read Model subscription. The function takes one argument, which is an object with the following keys:
+    * `queryId`
+    * `error`
+
+  * #### `dispatchTopicMessage`
+    Dispatches the topic message. The function takes one argument, which is an object with the following keys:
+    * `message`
+
+  * #### `hotModuleReplacement`
+    Initiates [Hot Module Replacement](https://webpack.js.org/concepts/hot-module-replacement/). The function takes one argument, which is an object with the following keys:
+    * `hotModuleReplacementId`
+ 

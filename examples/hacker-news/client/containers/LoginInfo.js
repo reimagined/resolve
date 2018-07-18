@@ -1,14 +1,13 @@
 import React from 'react'
-import { connectReadModel } from 'resolve-redux'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import styled from 'styled-components'
-import { NavLink } from 'react-router-dom'
+import { Link as NormalLink } from 'react-router-dom'
 
 import Splitter from '../components/Splitter'
-import { connect } from 'react-redux'
 import * as userActions from '../actions/userActions'
-import { bindActionCreators } from 'redux'
 
-const Link = styled(NavLink)`
+const Link = styled(NormalLink)`
   color: white;
 
   &.active {
@@ -21,14 +20,14 @@ const PageAuth = styled.div`
   float: right;
 `
 
-const LoginInfo = ({ data: { me } }) => (
+const LoginInfo = ({ me }) => (
   <PageAuth>
-    {me ? (
+    {me && me.id ? (
       <div>
         <Link to={`/user/${me.id}`}>{me.name}</Link>
         <Splitter color="white" />
         <Link
-          to="/"
+          to="/newest"
           onClick={() =>
             document.getElementById('hidden-form-for-logout').submit()
           }
@@ -46,7 +45,9 @@ const LoginInfo = ({ data: { me } }) => (
   </PageAuth>
 )
 
-export const mapStateToProps = () => ({})
+export const mapStateToProps = state => ({
+  me: state.jwt
+})
 
 export const mapDispatchToProps = dispatch =>
   bindActionCreators(
@@ -56,22 +57,7 @@ export const mapDispatchToProps = dispatch =>
     dispatch
   )
 
-const getReadModelData = state => {
-  try {
-    return { me: state.readModels['default']['me'] }
-  } catch (err) {
-    return { me: null }
-  }
-}
-
-export default connectReadModel(state => ({
-  readModelName: 'default',
-  resolverName: 'me',
-  parameters: {},
-  data: getReadModelData(state)
-}))(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(LoginInfo)
-)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(LoginInfo)

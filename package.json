@@ -1,22 +1,22 @@
 {
   "name": "resolve",
-  "version": "0.12.1",
+  "version": "0.12.3",
   "repository": "https://github.com/reimagined/resolve.git",
   "license": "MIT",
   "private": true,
   "devDependencies": {
-    "babel-eslint": "^8.2.3",
-    "eslint": "^4.19.1",
-    "eslint-config-react-app": "^3.0.0-next.66cc7a90",
-    "eslint-plugin-flowtype": "^2.48.0",
+    "babel-eslint": "^8.2.6",
+    "eslint": "^5.0.1",
+    "eslint-config-react-app": "^3.0.0-next.3e165448",
+    "eslint-plugin-flowtype": "^2.49.3",
     "eslint-plugin-spellcheck": "^0.0.10",
-    "eslint-plugin-import": "^2.12.0",
-    "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-react": "^7.8.2",
-    "lint-staged": "^7.1.2",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-jsx-a11y": "^6.1.0",
+    "eslint-plugin-react": "^7.10.0",
+    "lint-staged": "^7.2.0",
     "oao": "=1.4.1",
     "pre-commit": "^1.2.2",
-    "prettier": "^1.12.1",
+    "prettier": "^1.13.7",
     "prettier-eslint-cli": "^4.7.1"
   },
   "workspaces": {
@@ -25,6 +25,7 @@
       "packages/bus-adapters/*",
       "packages/storage-adapters/*",
       "packages/readmodel-adapters/*",
+      "packages/subscribe-adapters/*",
       "examples/*"
     ]
   },

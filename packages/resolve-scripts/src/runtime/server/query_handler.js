@@ -1,24 +1,58 @@
 import viewModelHandler from './view_model_handler'
 import readModelNonReactiveHandler from './read_model_non_reactive_handler'
-import readModelReactiveHandler from './read_model_reactive_handler'
+import readModelReactiveHandlers from './read_model_reactive_handler'
+import raiseError from './utils/raise_error'
+import { stopSubscriptionArg, isReactiveArg } from './constants'
+
+import viewModels from '$resolve.viewModels'
+import readModels from '$resolve.readModels'
+
+const message = require('../../../configs/message.json')
+
+const {
+  readModelSubscribeHandler,
+  readModelUnsubscribeHandler
+} = readModelReactiveHandlers
+
+const queryMap = new Map()
+
+for (const readModel of readModels) {
+  if (queryMap.has(readModel.name)) {
+    raiseError(message.duplicateName, readModel)
+  }
+
+  queryMap.set(readModel.name, 'read')
+}
+
+for (const viewModel of viewModels) {
+  if (queryMap.has(viewModel.name)) {
+    raiseError(message.duplicateName, viewModel)
+  }
+
+  queryMap.set(viewModel.name, 'view')
+}
 
 const queryHandler = (req, res) => {
-  if (
-    (req.method === 'POST' && req.body.isReactive) ||
-    req.method === 'DELETE'
-  ) {
-    return readModelReactiveHandler(req, res)
-  }
+  const { modelName } = req.params
+  switch (queryMap.get(modelName)) {
+    case 'view': {
+      return viewModelHandler(req, res)
+    }
 
-  if (req.method === 'POST' && !req.body.isReactive) {
-    return readModelNonReactiveHandler(req, res)
-  }
+    case 'read': {
+      if (req.arguments.hasOwnProperty(stopSubscriptionArg)) {
+        return readModelUnsubscribeHandler(req, res)
+      } else if (req.arguments.hasOwnProperty(isReactiveArg)) {
+        return readModelSubscribeHandler(req, res)
+      } else {
+        return readModelNonReactiveHandler(req, res)
+      }
+    }
 
-  if (req.method === 'GET') {
-    return viewModelHandler(req, res)
+    default: {
+      return res.status(422).end()
+    }
   }
-
-  return res.status(405).end()
 }
 
 export default queryHandler
