@@ -14,9 +14,10 @@ exports[`renders correctly 1`] = `
         >
           <img
             className=""
-            src="/resolve-logo.png"
+            src="/static/resolve-logo.png"
           />
-           Hello World Example
+           
+          Hello World Example
         </p>
         <div
           aria-expanded={null}
@@ -31,7 +32,7 @@ exports[`renders correctly 1`] = `
             >
               <img
                 className=""
-                src="/fb-logo.png"
+                src="/static/fb-logo.png"
               />
             </a>
           </p>
@@ -44,7 +45,7 @@ exports[`renders correctly 1`] = `
             >
               <img
                 className=""
-                src="/twitter-logo.png"
+                src="/static/twitter-logo.png"
               />
             </a>
           </p>
@@ -57,7 +58,7 @@ exports[`renders correctly 1`] = `
             >
               <img
                 className=""
-                src="/github-logo.png"
+                src="/static/github-logo.png"
               />
             </a>
           </p>

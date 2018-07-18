@@ -1,29 +1,17 @@
 import React from 'react'
 
-import ItemsPager from './ItemsPager'
-import ItemsViewer from './ItemsViewer'
+import Header from './Header'
 
-const ITEMS_PER_PAGE = 10
-
-class App extends React.Component {
-  state = { page: 0 }
-  setPage = page => this.setState({ page })
-
-  render() {
-    return (
-      <div className="example-wrapper">
-        <h2 className="example-title">Top 100 Teams</h2>
-
-        <ItemsViewer limit={ITEMS_PER_PAGE} page={this.state.page} />
-
-        <ItemsPager
-          limit={ITEMS_PER_PAGE}
-          page={this.state.page}
-          setPage={this.setPage}
-        />
-      </div>
-    )
-  }
-}
+const App = ({ children }) => (
+  <div>
+    <Header
+      title="reSolve Top List Example"
+      name="Top List Example"
+      favicon="/favicon.ico"
+      css={['/bootstrap.min.css', '/style.css']}
+    />
+    {children}
+  </div>
+)
 
 export default App

@@ -2,14 +2,8 @@ import { envKey } from 'json-env-extract'
 
 import { message } from '../constants'
 
-export default ({ resolveConfig, isClient }) => {
-  if (isClient) {
-    throw new Error(
-      `${message.serverAliasInClientCodeError}$resolve.staticPath`
-    )
-  }
-
-  if (resolveConfig.staticPath == null) {
+export default ({ resolveConfig }) => {
+  if (resolveConfig.staticPath == null || resolveConfig.staticPath === '') {
     throw new Error(`${message.configNotContainSectionError}.staticPath`)
   }
 

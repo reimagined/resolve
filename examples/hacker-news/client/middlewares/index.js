@@ -1,11 +1,11 @@
 import { actionTypes } from 'resolve-redux'
-import { routerActions } from 'react-router-redux'
+import { routerActions, LOCATION_CHANGE } from 'react-router-redux'
+import { ROUTE_CHANGED } from '../actions/actionTypes'
 
 import {
   OPTIMISTIC_STORY_UPVOTED,
   OPTIMISTIC_STORY_UNVOTED
 } from '../actions/actionTypes'
-import { rootDirectory } from '../constants'
 
 const {
   SEND_COMMAND_SUCCESS,
@@ -14,18 +14,22 @@ const {
   LOAD_READMODEL_STATE_SUCCESS
 } = actionTypes
 
-const storyCreateMiddleware = () => next => action => {
+const storyCreateMiddleware = store => next => action => {
   if (
     action.type === SEND_COMMAND_SUCCESS &&
     action.commandType === 'createStory'
   ) {
-    window.location = `${rootDirectory}/storyDetails/${action.aggregateId}`
+    setTimeout(() => {
+      store.dispatch(routerActions.push(`/storyDetails/${action.aggregateId}`))
+    }, 100)
   }
   if (
     action.type === SEND_COMMAND_FAILURE &&
     action.commandType === 'createStory'
   ) {
-    window.location = `${rootDirectory}/error?text=Failed to create a story`
+    setTimeout(() => {
+      store.dispatch(routerActions.push(`/error?text=Failed to create a story`))
+    }, 100)
   }
   next(action)
 }
@@ -54,6 +58,14 @@ const optimisticVotingMiddleware = store => next => action => {
 }
 
 const routeChangeMiddleware = store => next => action => {
+  if (action.type === LOCATION_CHANGE) {
+    setTimeout(() => {
+      store.dispatch({
+        type: ROUTE_CHANGED,
+        route: null
+      })
+    }, 1000)
+  }
   if (
     action.type === LOAD_VIEWMODEL_STATE_SUCCESS ||
     action.type === LOAD_READMODEL_STATE_SUCCESS

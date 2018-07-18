@@ -46,7 +46,11 @@ const assignAuthRoutes = app => {
           applyJwtValue,
           ...createResponse(res)
         }
-        callback(safeReq, safeRes, createAuthOptions(safeReq, safeRes, next))
+        callback(
+          safeReq,
+          safeRes,
+          createAuthOptions(getRootBasedUrl, safeReq, safeRes, next)
+        )
       }
     )
   })

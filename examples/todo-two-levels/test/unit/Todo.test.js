@@ -2,13 +2,13 @@ import React from 'react'
 import renderer from 'react-test-renderer'
 import { StaticRouter } from 'react-router'
 
-import { Todo } from '../../client/containers/Todo'
+import { Todos } from '../../client/containers/Todos'
 
 test('renders correctly', () => {
   const tree = renderer
     .create(
       <StaticRouter location="/id1" context={{}}>
-        <Todo
+        <Todos
           todos={{
             id1: {
               text: 'text1',

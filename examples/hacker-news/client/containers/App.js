@@ -1,13 +1,13 @@
 import React from 'react'
 import { Link as NormalLink } from 'react-router-dom'
-import { Helmet } from 'react-helmet'
 import styled from 'styled-components'
 
-import NavLink from '../containers/Link'
-import Splitter from './Splitter'
-import LoginInfo from '../containers/LoginInfo'
-import PagePreloader from '../containers/PagePreloader'
-import { rootDirectory } from '../constants'
+import Splitter from '../components/Splitter'
+import Header from './Header'
+import NavLink from './Link'
+import LoginInfo from './LoginInfo'
+import PagePreloader from './PagePreloader'
+import Image from './Image'
 
 const ContentRoot = styled.div`
   width: 90%;
@@ -71,35 +71,18 @@ const FooterLink = styled.a`
   text-decoration: underline;
 `
 
-const Layout = ({ children }) => (
+const App = ({ children }) => (
   <div>
-    <Helmet>
-      <title>reSolve Hacker News</title>
-      <meta
-        name="viewport"
-        content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-      />
-      <link
-        rel="shortcut icon"
-        type="image/x-icon"
-        href={`${rootDirectory}/reSolve-logo.svg`}
-      />
-      <link
-        rel="stylesheet"
-        type="text/css"
-        href={`${rootDirectory}/style.css`}
-      />
-    </Helmet>
+    <Header
+      title="reSolve Hacker News"
+      favicon="/favicon.ico"
+      css={['/style.css']}
+    />
     <PagePreloader />
     <ContentRoot>
       <PageHeader>
         <Link to="/">
-          <img
-            src={`${rootDirectory}/reSolve-logo.svg`}
-            width="18"
-            height="18"
-            alt=""
-          />
+          <Image src="/reSolve-logo.svg" width="18" height="18" alt="" />
         </Link>
         <Link to="/newest">
           <PageTitle>reSolve HN</PageTitle>
@@ -125,4 +108,4 @@ const Layout = ({ children }) => (
   </div>
 )
 
-export default Layout
+export default App

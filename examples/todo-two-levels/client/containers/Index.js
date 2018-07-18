@@ -8,9 +8,10 @@ import {
   ListGroupItem,
   Form,
   Button,
-  Image,
   FormControl
 } from 'react-bootstrap'
+
+import Image from './Image'
 
 const viewModelName = 'Lists'
 
