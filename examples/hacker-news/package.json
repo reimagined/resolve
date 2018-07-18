@@ -1,6 +1,6 @@
 {
   "name": "hacker-news",
-  "version": "0.12.3",
+  "version": "0.13.0",
   "description": "A React & Redux & Resolve implementation of Hacker News",
   "private": true,
   "scripts": {
@@ -62,7 +62,10 @@
     "testcafe": "0.20.4"
   },
   "jest": {
-    "setupFiles": ["raf/polyfill", "<rootDir>/test/unit/jest-setup.js"],
+    "setupFiles": [
+      "raf/polyfill",
+      "<rootDir>/test/unit/jest-setup.js"
+    ],
     "coveragePathIgnorePatterns": [
       "node_modules/",
       "dist/",
