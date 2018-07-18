@@ -15,7 +15,7 @@ export default ({ resolveConfig, isClient }) => {
   if (resolveConfig.auth.strategies in resolveConfig[envKey]) {
     throw new Error(`${message.clientEnvError}.auth.strategies`)
   }
-  const strategies = resolveFile(resolveConfig.auth.strategies)
+  const strategies = resolveFile(resolveConfig.auth.strategies, 'auth/strategies.js')
 
   const exports = []
 

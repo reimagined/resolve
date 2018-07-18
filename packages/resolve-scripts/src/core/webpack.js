@@ -30,7 +30,7 @@ export default argv => {
 
   const [
     webpackClientConfig,
-    webpackServerConfig,
+    webpackCommonConfig,
     ...otherWebpackConfigs
   ] = getWebpackConfigs({
     resolveConfig,
@@ -41,29 +41,29 @@ export default argv => {
 
   const compiler = webpack([
     webpackClientConfig,
-    webpackServerConfig,
+    webpackCommonConfig,
     ...otherWebpackConfigs
   ])
 
-  const serverPath = `${webpackServerConfig.output.path}/${
-    webpackServerConfig.output.filename
+  const serverPath = `${webpackCommonConfig.output.path}/${
+    webpackCommonConfig.output.filename
   }`
 
   if (deployOptions.start && !fs.existsSync(serverPath)) {
     deployOptions.build = true
   }
 
-  const server = deployOptions.start
-    ? respawn([serverPath], {
-        maxRestarts: 0,
-        kill: 5000,
-        stdio: 'inherit',
-        fork: true
-      })
-    : getMockServer()
+  // const server = deployOptions.start
+  //   ? respawn([serverPath], {
+  //       maxRestarts: 0,
+  //       kill: 5000,
+  //       stdio: 'inherit',
+  //       fork: true
+  //     })
+  //   : getMockServer()
 
   process.on('exit', () => {
-    server.stop()
+    //server.stop()
   })
 
   process.env.RESOLVE_SERVER_FIRST_START = 'true'
@@ -73,7 +73,7 @@ export default argv => {
       stdin.addListener('data', data => {
         if (data.toString().indexOf('rs') !== -1) {
           process.env.RESOLVE_SERVER_FIRST_START = 'false'
-          server.stop(() => server.start())
+          //server.stop(() => server.start())
         }
       })
       compiler.watch(
@@ -89,14 +89,14 @@ export default argv => {
               (serverStats && serverStats.hasErrors()) ||
               (clientStats && clientStats.hasErrors())
             ) {
-              server.stop()
+              //server.stop()
             } else {
-              if (server.status === 'running') {
-                process.env.RESOLVE_SERVER_FIRST_START = 'false'
-                server.stop(() => server.start())
-              } else {
-                server.start()
-              }
+              // if (server.status === 'running') {
+              //   process.env.RESOLVE_SERVER_FIRST_START = 'false'
+              //   //server.stop(() => server.start())
+              // } else {
+              //   //server.start()
+              // }
             }
           }
         }
@@ -112,12 +112,12 @@ export default argv => {
             !serverStats.hasErrors() &&
             !clientStats.hasErrors()
           ) {
-            server.start()
+            //server.start()
           }
         }
       })
     }
   } else {
-    server.start()
+    //server.start()
   }
 }
