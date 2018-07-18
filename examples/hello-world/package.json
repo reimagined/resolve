@@ -13,8 +13,8 @@
     "react": "16.4.1",
     "react-dom": "16.4.1",
     "redux": "4.0.0",
-    "resolve-scripts": "0.12.3",
-    "resolve-redux": "0.12.3",
+    "resolve-scripts": "0.13.0",
+    "resolve-redux": "0.13.0",
     "react-helmet": "5.2.0",
     "react-bootstrap": "0.32.1"
   },
