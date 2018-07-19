@@ -67,7 +67,7 @@ You can use nightly packages in your project by changing your `package.json` as 
 ```json
 {
   "dependencies": {
-    "resolve-any-package": "https://raw.githubusercontent.com/reimagined/resolve/nightly-builds/packages/resolve-any-package-0.13.0-2018-7-11-17-34-02.tgz",
+    "resolve-any-package": "https://raw.githubusercontent.com/reimagined/resolve/nightly-builds/packages/resolve-any-package-0.13.1-2018-7-11-17-34-02.tgz",
   }
 }
 ```

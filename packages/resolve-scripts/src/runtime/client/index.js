@@ -8,6 +8,7 @@ import deserializeInitialState from './store/deserialize_initial_state'
 
 import routes from '$resolve.routes'
 import rootPath from '$resolve.rootPath'
+import staticPath from '$resolve.staticPath'
 import aggregateActions from '$resolve.aggregateActions'
 
 const initialState = deserializeInitialState(window.__INITIAL_STATE__)
@@ -32,6 +33,7 @@ render(
   <AppContainer
     origin={origin}
     rootPath={rootPath}
+    staticPath={staticPath}
     aggregateActions={aggregateActions}
     store={store}
     history={history}

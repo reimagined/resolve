@@ -1,6 +1,4 @@
-import { getRootBasedUrl } from './helpers'
-
-export default (authReq, authRes, next) => ({
+export default (getRootBasedUrl, authReq, authRes, next) => ({
   onSuccess: (options, user /*, info*/) => {
     authRes.applyJwtValue(
       user,
@@ -32,7 +30,7 @@ export default (authReq, authRes, next) => ({
   onRedirect: (options, url, status) => {
     const res = authRes.expressRes
     res.statusCode = status || 302
-    res.setHeader('Location', url)
+    res.setHeader('Location', getRootBasedUrl(url))
     res.setHeader('Content-Length', '0')
     res.end()
   },

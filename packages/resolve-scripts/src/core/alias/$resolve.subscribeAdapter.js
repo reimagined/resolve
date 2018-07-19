@@ -20,6 +20,16 @@ export default ({ resolveConfig, isClient }) => {
     }
   }
 
+  for (const option of Object.keys(resolveConfig.subscribeAdapter.options)) {
+    if (
+      resolveConfig.subscribeAdapter.options[option] in resolveConfig[envKey]
+    ) {
+      throw new Error(
+        `${message.clientEnvError}.subscribeAdapter.options.${option}`
+      )
+    }
+  }
+
   const options = {
     client: resolveConfig.subscribeAdapter.options.client || {},
     server: resolveConfig.subscribeAdapter.options.server || {}

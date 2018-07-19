@@ -28,7 +28,7 @@ export default ([webpackClientConfig, webpackServerConfig]) => {
 
     webpackConfig.plugins.push(
       new ExtractTextPlugin({
-        filename: 'styles/bundle.css',
+        filename: 'style.css',
         allChunks: true
       })
     )

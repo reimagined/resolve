@@ -2,26 +2,23 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { connectViewModel } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
-import { NavLink } from 'react-router-dom'
 import {
   ListGroup,
   ListGroupItem,
   Checkbox,
   Form,
   Button,
-  Image,
   FormControl
 } from 'react-bootstrap'
 
-const viewModelName = 'Todos'
+import Image from './Image'
 
-export const Todo = ({
-  todos,
-  createItem,
-  toggleItem,
-  removeItem,
-  aggregateId
-}) => {
+const viewModelName = 'Todos'
+const aggregateId = 'root-id'
+
+export const Todos = props => {
+  const { todos, createItem, toggleItem, removeItem } = props
+
   const placeholder = 'New Task'
   const createItemFunc = () => {
     createItem(aggregateId, {
@@ -32,30 +29,20 @@ export const Todo = ({
   }
 
   let newTodo
-  let todoList = todos || {}
 
   return (
     <div className="example-wrapper">
-      <Form inline>
-        <NavLink to="/">
-          <Image
-            className="example-arrow-button"
-            src="/left-arrow-button.png"
-          />
-          <span className="example-back-label">Back</span>
-        </NavLink>
-        <div className="example-task-name">Tasks List</div>
-      </Form>
+      <h1>Tasks List</h1>
 
       <ListGroup className="example-list">
-        {Object.keys(todoList).map(id => (
+        {Object.keys(todos).map(id => (
           <ListGroupItem key={id}>
             <Checkbox
               inline
-              checked={todoList[id].checked}
+              checked={todos[id].checked}
               onChange={toggleItem.bind(null, aggregateId, { id })}
             >
-              {todoList[id].text}
+              {todos[id].text}
             </Checkbox>
             <Image
               className="example-close-button"
@@ -93,21 +80,14 @@ export const Todo = ({
   )
 }
 
-const mapStateToOptions = (state, ownProps) => {
-  const aggregateId = ownProps.match.params.id
+const mapStateToOptions = () => ({
+  viewModelName,
+  aggregateIds: [aggregateId]
+})
 
-  return {
-    viewModelName,
-    aggregateIds: [aggregateId]
-  }
-}
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-    aggregateId: ownProps.match.params.id,
-    todos: ownProps.data
-  }
-}
+const mapStateToProps = (state, { data }) => ({
+  todos: data
+})
 
 const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(aggregateActions, dispatch)
@@ -116,5 +96,5 @@ export default connectViewModel(mapStateToOptions)(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(Todo)
+  )(Todos)
 )

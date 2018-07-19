@@ -1,9 +1,16 @@
 import App from './containers/App'
+import PostCSS from './containers/PostCSS'
 
 export default [
   {
     path: '/',
     component: App,
-    exact: true
+    routes: [
+      {
+        path: '/',
+        component: PostCSS,
+        exact: true
+      }
+    ]
   }
 ]

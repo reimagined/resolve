@@ -1,4 +1,5 @@
-import jwt from 'jsonwebtoken'
+import urlLib from 'url'
+import jsonwebtoken from 'jsonwebtoken'
 
 import validate from './validation'
 import {
@@ -11,39 +12,69 @@ import jwtSecret from '../../auth/jwtSecret'
 
 export default {
   createStory: (state, command, jwtToken) => {
-    const { id: userId, name: userName } = jwt.verify(jwtToken, jwtSecret)
+    const jwt = jsonwebtoken.verify(jwtToken, jwtSecret)
+
+    validate.fieldRequired(jwt, 'id')
     validate.stateIsAbsent(state, 'Story')
 
     const { title, link, text } = command.payload
 
     validate.fieldRequired(command.payload, 'title')
 
+    if (!title || (!text && !link)) {
+      throw new Error('Enter submit data')
+    }
+
+    if (link && !urlLib.parse(link).hostname) {
+      throw new Error('Enter valid url')
+    }
+
     return {
       type: STORY_CREATED,
-      payload: { title, text, link, userId, userName }
+      payload: {
+        title,
+        text,
+        link,
+        userId: jwt.id,
+        userName: jwt.name
+      }
     }
   },
 
   upvoteStory: (state, command, jwtToken) => {
-    const { id: userId } = jwt.verify(jwtToken, jwtSecret)
+    const jwt = jsonwebtoken.verify(jwtToken, jwtSecret)
 
+    validate.fieldRequired(jwt, 'id')
     validate.stateExists(state, 'Story')
-    validate.itemIsNotInArray(state.voted, userId, 'User already voted')
+    validate.itemIsNotInArray(state.voted, jwt.id, 'User already voted')
 
-    return { type: STORY_UPVOTED, payload: { userId } }
+    return {
+      type: STORY_UPVOTED,
+      payload: {
+        userId: jwt.id
+      }
+    }
   },
 
   unvoteStory: (state, command, jwtToken) => {
-    const { id: userId } = jwt.verify(jwtToken, jwtSecret)
+    const jwt = jsonwebtoken.verify(jwtToken, jwtSecret)
 
+    validate.fieldRequired(jwt, 'id')
     validate.stateExists(state, 'Story')
-    validate.itemIsInArray(state.voted, userId, 'User did not vote')
+    validate.itemIsInArray(state.voted, jwt.id, 'User did not vote')
 
-    return { type: STORY_UNVOTED, payload: { userId } }
+    return {
+      type: STORY_UNVOTED,
+      payload: {
+        userId: jwt.id
+      }
+    }
   },
 
   commentStory: (state, command, jwtToken) => {
-    const { id: userId, name: userName } = jwt.verify(jwtToken, jwtSecret)
+    const jwt = jsonwebtoken.verify(jwtToken, jwtSecret)
+
+    validate.fieldRequired(jwt, 'id')
     validate.stateExists(state, 'Story')
 
     const { commentId, parentId, text } = command.payload
@@ -61,8 +92,8 @@ export default {
       payload: {
         commentId,
         parentId,
-        userId,
-        userName,
+        userId: jwt.id,
+        userName: jwt.name,
         text
       }
     }

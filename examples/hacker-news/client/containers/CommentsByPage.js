@@ -4,8 +4,8 @@ import { connectReadModel } from 'resolve-redux'
 import { connect } from 'react-redux'
 
 import Comment from '../components/Comment'
-import { ITEMS_PER_PAGE } from '../constants'
 import Pagination from '../components/Pagination'
+import { ITEMS_PER_PAGE } from '../constants'
 
 export const CommentsByPage = ({ comments, page }) =>
   page && !Number.isInteger(Number(page)) ? (

@@ -10,6 +10,7 @@ class AppContainer extends React.PureComponent {
     const {
       origin,
       rootPath,
+      staticPath,
       aggregateActions,
       store,
       history,
@@ -25,6 +26,7 @@ class AppContainer extends React.PureComponent {
           api,
           origin,
           rootPath,
+          staticPath,
           aggregateActions
         }}
       >
