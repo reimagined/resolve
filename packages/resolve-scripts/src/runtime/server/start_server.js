@@ -4,10 +4,7 @@ import openBrowser from './utils/open_browser'
 import println from './utils/println'
 import prepareUrls from './utils/prepare_urls'
 
-import port from '$resolve.port'
-import isOpenBrowser from '$resolve.openBrowser'
-import applicationName from '$resolve.applicationName'
-import useYarn from '$resolve.useYarn'
+import { port, isOpenBrowser, applicationName, useYarn } from './resources'
 
 const host = '0.0.0.0'
 const protocol = 'http'

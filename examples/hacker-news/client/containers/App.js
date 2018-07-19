@@ -2,12 +2,12 @@ import React from 'react'
 import { Link as NormalLink } from 'react-router-dom'
 import styled from 'styled-components'
 
-import Splitter from './Splitter'
-import Header from '../containers/Header'
-import NavLink from '../containers/Link'
-import LoginInfo from '../containers/LoginInfo'
-import PagePreloader from '../containers/PagePreloader'
-import Image from '../containers/Image'
+import Splitter from '../components/Splitter'
+import Header from './Header'
+import NavLink from './Link'
+import LoginInfo from './LoginInfo'
+import PagePreloader from './PagePreloader'
+import Image from './Image'
 
 const ContentRoot = styled.div`
   width: 90%;
@@ -71,7 +71,7 @@ const FooterLink = styled.a`
   text-decoration: underline;
 `
 
-const Layout = ({ children }) => (
+const App = ({ children }) => (
   <div>
     <Header
       title="reSolve Hacker News"
@@ -108,4 +108,4 @@ const Layout = ({ children }) => (
   </div>
 )
 
-export default Layout
+export default App

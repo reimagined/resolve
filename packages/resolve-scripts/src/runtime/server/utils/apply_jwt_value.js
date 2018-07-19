@@ -3,7 +3,7 @@ import jsonwebtoken from 'jsonwebtoken'
 import getRootBasedUrl from './get_root_based_url'
 import isObject from './is_object'
 
-import jwtCookie from '$resolve.jwtCookie'
+import { jwtCookie } from '../resources'
 
 const applyJwtValue = (jwtToken, res, url) => {
   const { name: cookieName, ...cookieOptions } = jwtCookie

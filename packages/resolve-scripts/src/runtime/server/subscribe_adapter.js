@@ -2,7 +2,7 @@ import { server } from './server'
 import pubsubManager from './pubsub_manager'
 import getRootBasedUrl from './utils/get_root_based_url'
 
-import subscribeAdapter from '$resolve.subscribeAdapter'
+import { subscribeAdapter } from './resources'
 
 const createSubscribeAdapter = subscribeAdapter.module
 

@@ -4,8 +4,7 @@ import readModelReactiveHandlers from './read_model_reactive_handler'
 import raiseError from './utils/raise_error'
 import { stopSubscriptionArg, isReactiveArg } from './constants'
 
-import viewModels from '$resolve.viewModels'
-import readModels from '$resolve.readModels'
+import { viewModels, readModels } from './resources'
 
 const message = require('../../../configs/message.json')
 

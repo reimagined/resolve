@@ -14,16 +14,12 @@
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": [
-    "cqrs",
-    "eventsourcing",
-    "es",
-    "ddd"
-  ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-memory#readme",
+  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
+  "homepage":
+    "https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-memory#readme",
   "dependencies": {
     "nedb": "^1.8.0",
-    "resolve-readmodel-base": "0.12.3",
+    "resolve-readmodel-base": "0.13.1",
     "uuid": "^3.3.2"
   },
   "devDependencies": {

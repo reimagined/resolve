@@ -20,10 +20,7 @@ import subscribeAdapter from './subscribe_adapter'
 import argumentsParser from './arguments_parser'
 import HMRSocketHandler from './hmr_socket_handler'
 
-import staticPath from '$resolve.staticPath'
-import staticDir from '$resolve.staticDir'
-import distDir from '$resolve.distDir'
-import jwtCookie from '$resolve.jwtCookie'
+import { staticPath, staticDir, distDir, jwtCookie } from './resources'
 
 subscribeAdapter.init().then(() => {
   eventStore.subscribeOnBus(event => {
@@ -71,7 +68,7 @@ app.use(
   express.static(path.resolve(__dirname, '../static'))
 )
 
-app.get([getRootBasedUrl('/'), getRootBasedUrl('/*')], serverSideRendering)
+app.get([getRootBasedUrl('/'), getRootBasedUrl('/!*')], serverSideRendering)
 
 sagaRunner()
 

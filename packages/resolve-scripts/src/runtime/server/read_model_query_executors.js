@@ -3,7 +3,7 @@ import { createReadModel } from 'resolve-query'
 import eventStore from './event_store'
 import raiseError from './utils/raise_error'
 
-import readModels from '$resolve.readModels'
+import { readModels } from './resources'
 
 const message = require('../../../configs/message.json')
 

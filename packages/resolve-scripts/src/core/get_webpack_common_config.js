@@ -11,26 +11,39 @@ const getWebpackCommonConfig = ({
   env,
   alias
 }) => {
-  const distDir = path.resolve(
-    process.cwd(),
-    resolveConfig.distDir,
-  )
+  const distDir = path.resolve(process.cwd(), resolveConfig.distDir)
 
   const isClient = false
 
-  const libs = [
-    '@babel/runtime/regenerator',
-    'source-map-support'
-  ]
+  const libs = ['@babel/runtime/regenerator']
 
   return {
     name: 'Common',
     entry: {
-      "common/aggregates/index.js": [...libs, path.resolve(__dirname, '../runtime/common/aggregates/index.js')],
-      "common/view-models/index.js": [...libs, path.resolve(__dirname, '../runtime/common/view-models/index.js')],
-      "common/read-models/index.js": [...libs, path.resolve(__dirname, '../runtime/common/read-models/index.js')],
-      "common/sagas/index.js": [...libs, path.resolve(__dirname, '../runtime/common/sagas/index.js')],
-      "auth/index.js": [...libs, path.resolve(__dirname, '../runtime/auth/index.js')]
+      'common/aggregates/index.js': [
+        ...libs,
+        path.resolve(__dirname, '../runtime/common/aggregates/index.js')
+      ],
+      'common/view-models/index.js': [
+        ...libs,
+        path.resolve(__dirname, '../runtime/common/view-models/index.js')
+      ],
+      'common/read-models/index.js': [
+        ...libs,
+        path.resolve(__dirname, '../runtime/common/read-models/index.js')
+      ],
+      'common/sagas/index.js': [
+        ...libs,
+        path.resolve(__dirname, '../runtime/common/sagas/index.js')
+      ],
+      'auth/index.js': [
+        ...libs,
+        path.resolve(__dirname, '../runtime/auth/index.js')
+      ],
+      'config-entries.js': [
+        ...libs,
+        path.resolve(__dirname, '../runtime/config-entries.js')
+      ]
     },
     context: path.resolve(process.cwd()),
     mode: deployOptions.mode,
@@ -48,6 +61,7 @@ const getWebpackCommonConfig = ({
     output: {
       path: distDir,
       filename: '[name]',
+      libraryTarget: 'commonjs-module',
       devtoolModuleFilenameTemplate: '[absolute-resource-path]',
       devtoolFallbackModuleFilenameTemplate: '[absolute-resource-path]?[hash]'
     },
@@ -62,11 +76,14 @@ const getWebpackCommonConfig = ({
                 cacheDirectory: true,
                 babelrc: false,
                 presets: [
-                  ['@babel/preset-env', {
-                    "targets": {
-                      "node": "8.10.0"
+                  [
+                    '@babel/preset-env',
+                    {
+                      targets: {
+                        node: '8.10.0'
+                      }
                     }
-                  }],
+                  ],
                   [
                     '@babel/preset-stage-0',
                     {
@@ -94,12 +111,7 @@ const getWebpackCommonConfig = ({
           use: {
             loader: 'babel-loader',
             options: {
-              cacheDirectory: true,
-              env: {
-                development: {
-                  plugins: ['babel-plugin-object-source']
-                }
-              }
+              cacheDirectory: true
             }
           },
           exclude: [
@@ -111,12 +123,7 @@ const getWebpackCommonConfig = ({
       ]
     },
     plugins: [
-      getWebpackEnvPlugin({ resolveConfig, deployOptions, env, isClient }),
-      new webpack.BannerPlugin({
-        banner: 'require("source-map-support").install();',
-        raw: true,
-        entryOnly: false
-      })
+      getWebpackEnvPlugin({ resolveConfig, deployOptions, env, isClient })
     ],
     externals: getModulesDirs().map(modulesDir => nodeExternals({ modulesDir }))
   }

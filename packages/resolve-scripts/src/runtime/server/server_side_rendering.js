@@ -10,11 +10,18 @@ import getRootBasedUrl from './utils/get_root_based_url'
 import getClientJsPath from './utils/get_client_js_path'
 import AppContainer from '../client/components/AppContainer'
 
-import routes from '$resolve.routes'
-import staticPath from '$resolve.staticPath'
-import rootPath from '$resolve.rootPath'
-import jwtCookie from '$resolve.jwtCookie'
-import aggregateActions from '$resolve.aggregateActions'
+import {
+  routes,
+  staticPath,
+  rootPath,
+  jwtCookie,
+  aggregateActions,
+  redux,
+  viewModels,
+  readModels,
+  aggregates,
+  subscribeAdapter
+} from './resources'
 
 const serverSideRendering = (req, res) => {
   const url = req.params[0] || ''
@@ -31,6 +38,12 @@ const serverSideRendering = (req, res) => {
   const origin = ''
 
   const store = createStore({
+    redux,
+    viewModels,
+    readModels,
+    aggregates,
+    subscribeAdapter
+  })({
     initialState: {
       jwt
     },

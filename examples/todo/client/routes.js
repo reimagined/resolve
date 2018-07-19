@@ -1,14 +1,14 @@
-import Layout from './components/Layout'
 import App from './containers/App'
+import Todos from './containers/Todos'
 
 export default [
   {
     path: '/',
-    component: Layout,
+    component: App,
     routes: [
       {
         path: '/',
-        component: App,
+        component: Todos,
         exact: true
       }
     ]

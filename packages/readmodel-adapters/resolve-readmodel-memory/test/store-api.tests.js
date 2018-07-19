@@ -274,7 +274,9 @@ describe('resolve-readmodel-memory store-api', () => {
       test: {
         update: sinon
           .stub()
-          .callsFake((searchExpression, updateExpression, cb) => cb(null))
+          .callsFake((searchExpression, updateExpression, options, cb) =>
+            cb(null)
+          )
       }
     }
 
@@ -282,7 +284,8 @@ describe('resolve-readmodel-memory store-api', () => {
       { storage },
       'test',
       { id: 1, value: 2 },
-      { id: 1, value: 10 }
+      { id: 1, value: 10 },
+      { upsert: false }
     )
 
     expect(storage.test.update.firstCall.args[0]).to.be.deep.equal({

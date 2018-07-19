@@ -36,21 +36,30 @@ export default ({ resolveConfig, isClient }) => {
         `${message.clientEnvError}.viewModels[${index}].serializeState`
       )
     }
-    const serializeState = resolveFile(viewModel.serializeState, 'common/view-models/serialize_state.js')
+    const serializeState = resolveFile(
+      viewModel.serializeState,
+      'common/view-models/serialize_state.js'
+    )
 
     if (viewModel.deserializeState in resolveConfig[envKey]) {
       throw new Error(
         `${message.clientEnvError}.viewModels[${index}].deserializeState`
       )
     }
-    const deserializeState = resolveFile(viewModel.deserializeState, 'common/view-models/deserialize_state.js')
+    const deserializeState = resolveFile(
+      viewModel.deserializeState,
+      'common/view-models/deserialize_state.js'
+    )
 
     if (viewModel.validator in resolveConfig[envKey]) {
       throw new Error(
         `${message.clientEnvError}.viewModels[${index}].validator`
       )
     }
-    const validator = resolveFile(viewModel.validator, 'common/view-models/validator.js')
+    const validator = resolveFile(
+      viewModel.validator,
+      'common/view-models/validator.js'
+    )
 
     const snapshotAdapter = viewModel.snapshotAdapter
       ? {

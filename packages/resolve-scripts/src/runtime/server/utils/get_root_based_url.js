@@ -1,4 +1,4 @@
-import rootPath from '$resolve.rootPath'
+import { rootPath } from '../resources'
 
 const isAbsoluteUrl = /:\/\//i
 

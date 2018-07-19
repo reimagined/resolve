@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet'
 
 import jsonUtfStringify from './utils/json_utf_stringify'
 
-import redux from '$resolve.redux'
+import { redux } from './resources'
 
 const reducers = redux.reducers
 

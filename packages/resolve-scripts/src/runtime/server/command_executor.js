@@ -1,7 +1,7 @@
 import createCommandExecutor from 'resolve-command'
 import eventStore from './event_store'
 
-import aggregates from '$resolve.aggregates'
+import { aggregates } from './resources'
 
 const commandExecutor = createCommandExecutor({
   eventStore,

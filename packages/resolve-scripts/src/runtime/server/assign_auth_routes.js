@@ -11,7 +11,7 @@ import executeViewModelQuery from './execute_view_model_query'
 import executeReadModelQuery from './execute_read_model_query'
 import executeCommand from './command_executor'
 
-import auth from '$resolve.auth'
+import { auth } from './resources'
 
 const authStrategiesConfigs = auth.strategies
 

@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@babel/cli@7.0.0-beta.54", "@babel/cli@^7.0.0-beta.49":
+"@babel/cli@7.0.0-beta.54":
   version "7.0.0-beta.54"
   resolved "https://registry.yarnpkg.com/@babel/cli/-/cli-7.0.0-beta.54.tgz#c3b9766ad3218988f120e4058509adff0b72b183"
   dependencies:
@@ -30,7 +30,7 @@
   dependencies:
     "@babel/highlight" "7.0.0-beta.54"
 
-"@babel/core@7.0.0-beta.54", "@babel/core@^7.0.0-beta.49":
+"@babel/core@7.0.0-beta.54":
   version "7.0.0-beta.54"
   resolved "https://registry.yarnpkg.com/@babel/core/-/core-7.0.0-beta.54.tgz#253c54d0095403a5cfa764e7d9b458194692d02b"
   dependencies:
@@ -703,7 +703,7 @@
   dependencies:
     regenerator-transform "^0.13.3"
 
-"@babel/plugin-transform-runtime@7.0.0-beta.54", "@babel/plugin-transform-runtime@^7.0.0-beta.49":
+"@babel/plugin-transform-runtime@7.0.0-beta.54":
   version "7.0.0-beta.54"
   resolved "https://registry.yarnpkg.com/@babel/plugin-transform-runtime/-/plugin-transform-runtime-7.0.0-beta.54.tgz#ad45d1e84a9d0cfc48df148dda609ff09c121fd2"
   dependencies:
@@ -757,7 +757,7 @@
     core-js "^2.5.7"
     regenerator-runtime "^0.11.1"
 
-"@babel/preset-env@7.0.0-beta.54", "@babel/preset-env@^7.0.0-beta.49":
+"@babel/preset-env@7.0.0-beta.54":
   version "7.0.0-beta.54"
   resolved "https://registry.yarnpkg.com/@babel/preset-env/-/preset-env-7.0.0-beta.54.tgz#4b05c4e3aaed64a509098e4e854dfc0e02edf053"
   dependencies:
@@ -802,7 +802,7 @@
     js-levenshtein "^1.1.3"
     semver "^5.3.0"
 
-"@babel/preset-react@7.0.0-beta.54", "@babel/preset-react@^7.0.0-beta.49":
+"@babel/preset-react@7.0.0-beta.54":
   version "7.0.0-beta.54"
   resolved "https://registry.yarnpkg.com/@babel/preset-react/-/preset-react-7.0.0-beta.54.tgz#98021037a74b27b46a46d3b28e84a1f2f406dadb"
   dependencies:
@@ -812,7 +812,7 @@
     "@babel/plugin-transform-react-jsx-self" "7.0.0-beta.54"
     "@babel/plugin-transform-react-jsx-source" "7.0.0-beta.54"
 
-"@babel/preset-stage-0@7.0.0-beta.54", "@babel/preset-stage-0@^7.0.0-beta.49":
+"@babel/preset-stage-0@7.0.0-beta.54":
   version "7.0.0-beta.54"
   resolved "https://registry.yarnpkg.com/@babel/preset-stage-0/-/preset-stage-0-7.0.0-beta.54.tgz#c6acbb97e1e4699a61a84fbfdc351f0f6d93041a"
   dependencies:
@@ -859,7 +859,7 @@
     "@babel/plugin-syntax-dynamic-import" "7.0.0-beta.54"
     "@babel/plugin-syntax-import-meta" "7.0.0-beta.54"
 
-"@babel/register@7.0.0-beta.54", "@babel/register@^7.0.0-beta.49":
+"@babel/register@7.0.0-beta.54":
   version "7.0.0-beta.54"
   resolved "https://registry.yarnpkg.com/@babel/register/-/register-7.0.0-beta.54.tgz#108284ab394788cb86687087871ad8e949abefb8"
   dependencies:
@@ -871,7 +871,7 @@
     pirates "^4.0.0"
     source-map-support "^0.4.2"
 
-"@babel/runtime@7.0.0-beta.54", "@babel/runtime@^7.0.0-beta.49":
+"@babel/runtime@7.0.0-beta.54":
   version "7.0.0-beta.54"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.0.0-beta.54.tgz#39ebb42723fe7ca4b3e1b00e967e80138d47cadf"
   dependencies:
@@ -1525,10 +1525,6 @@ babel-code-frame@^6.22.0, babel-code-frame@^6.26.0:
     esutils "^2.0.2"
     js-tokens "^3.0.2"
 
-babel-core@7.0.0-bridge.0, babel-core@^7.0.0-0:
-  version "7.0.0-bridge.0"
-  resolved "https://registry.yarnpkg.com/babel-core/-/babel-core-7.0.0-bridge.0.tgz#95a492ddd90f9b4e9a4a1da14eb335b87b634ece"
-
 babel-core@^6.0.0, babel-core@^6.22.1, babel-core@^6.26.0:
   version "6.26.3"
   resolved "https://registry.yarnpkg.com/babel-core/-/babel-core-6.26.3.tgz#b2e2f09e342d0f0c88e2f02e067794125e75c207"
@@ -1552,6 +1548,10 @@ babel-core@^6.0.0, babel-core@^6.22.1, babel-core@^6.26.0:
     private "^0.1.8"
     slash "^1.0.0"
     source-map "^0.5.7"
+
+babel-core@^7.0.0-0:
+  version "7.0.0-bridge.0"
+  resolved "https://registry.yarnpkg.com/babel-core/-/babel-core-7.0.0-bridge.0.tgz#95a492ddd90f9b4e9a4a1da14eb335b87b634ece"
 
 babel-eslint@^8.2.6:
   version "8.2.6"
@@ -1702,7 +1702,7 @@ babel-jest@23.4.0, babel-jest@^23.0.0, babel-jest@^23.4.0:
     babel-plugin-istanbul "^4.1.6"
     babel-preset-jest "^23.2.0"
 
-babel-loader@8.0.0-beta.4, babel-loader@^8.0.0-beta.3:
+babel-loader@8.0.0-beta.4:
   version "8.0.0-beta.4"
   resolved "https://registry.yarnpkg.com/babel-loader/-/babel-loader-8.0.0-beta.4.tgz#c3fab00696c385c70c04dbe486391f0eb996f345"
   dependencies:
@@ -3409,10 +3409,6 @@ dot-prop@^4.1.1:
   dependencies:
     is-obj "^1.0.0"
 
-dotenv@^5.0.1:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-5.0.1.tgz#a5317459bd3d79ab88cff6e44057a6a3fbb1fcef"
-
 dotenv@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-6.0.0.tgz#24e37c041741c5f4b25324958ebbc34bca965935"
@@ -4237,7 +4233,7 @@ flat-cache@^1.2.1:
     graceful-fs "^4.1.2"
     write "^0.2.1"
 
-flat@^4.0.0, flat@^4.1.0:
+flat@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/flat/-/flat-4.1.0.tgz#090bec8b05e39cba309747f1d588f04dbaf98db2"
   dependencies:
@@ -5786,7 +5782,7 @@ jsonify@~0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/jsonify/-/jsonify-0.0.0.tgz#2c74b6ee41d93ca51b7b5aaee8f503631d252a73"
 
-jsonwebtoken@8.3.0, jsonwebtoken@^8.2.1, jsonwebtoken@^8.3.0:
+jsonwebtoken@8.3.0, jsonwebtoken@^8.3.0:
   version "8.3.0"
   resolved "https://registry.yarnpkg.com/jsonwebtoken/-/jsonwebtoken-8.3.0.tgz#056c90eee9a65ed6e6c72ddb0a1d325109aaf643"
   dependencies:
@@ -6447,7 +6443,7 @@ mongodb-core@3.1.0:
   optionalDependencies:
     saslprep "^1.0.0"
 
-mongodb@^3.1.1:
+mongodb@^3.1.0-beta4, mongodb@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-3.1.1.tgz#c018c4b277614e8b1e08426d5bcbe1a7e5cdbd74"
   dependencies:
@@ -8014,7 +8010,7 @@ redeyed@~1.0.0:
   dependencies:
     esprima "~3.0.0"
 
-redux-devtools-extension@^2.13.2, redux-devtools-extension@^2.13.5:
+redux-devtools-extension@^2.13.5:
   version "2.13.5"
   resolved "https://registry.yarnpkg.com/redux-devtools-extension/-/redux-devtools-extension-2.13.5.tgz#3ff34f7227acfeef3964194f5f7fc2765e5c5a39"
 
@@ -8240,22 +8236,6 @@ reserved-words@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/reserved-words/-/reserved-words-0.1.2.tgz#00a0940f98cd501aeaaac316411d9adc52b31ab1"
 
-resolve-auth@0.12.3:
-  version "0.12.3"
-  resolved "https://registry.yarnpkg.com/resolve-auth/-/resolve-auth-0.12.3.tgz#fb81d8ed098270a460cc3ce6a64e414f3d47dab4"
-  dependencies:
-    cookie "^0.3.1"
-
-resolve-bus-memory@0.12.3:
-  version "0.12.3"
-  resolved "https://registry.yarnpkg.com/resolve-bus-memory/-/resolve-bus-memory-0.12.3.tgz#733c2d6300e15344bf5b7edcaa05deb412a26bb3"
-
-resolve-command@0.12.3:
-  version "0.12.3"
-  resolved "https://registry.yarnpkg.com/resolve-command/-/resolve-command-0.12.3.tgz#335521fb28c1033a7168559056e43c7b6ea0c557"
-  dependencies:
-    invariant-function-hash "^1.0.1"
-
 resolve-cwd@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/resolve-cwd/-/resolve-cwd-1.0.0.tgz#4eaeea41ed040d1702457df64a42b2b07d246f9f"
@@ -8267,10 +8247,6 @@ resolve-cwd@^2.0.0:
   resolved "https://registry.yarnpkg.com/resolve-cwd/-/resolve-cwd-2.0.0.tgz#00a9f7387556e27038eae232caa372a6a59b665a"
   dependencies:
     resolve-from "^3.0.0"
-
-resolve-es@0.12.3:
-  version "0.12.3"
-  resolved "https://registry.yarnpkg.com/resolve-es/-/resolve-es-0.12.3.tgz#f7cf3fadea928cc504299a280c60a034d7e39a3e"
 
 resolve-from@^1.0.0:
   version "1.0.1"
@@ -8291,109 +8267,6 @@ resolve-from@^4.0.0:
 resolve-pathname@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/resolve-pathname/-/resolve-pathname-2.2.0.tgz#7e9ae21ed815fd63ab189adeee64dc831eefa879"
-
-resolve-query@0.12.3:
-  version "0.12.3"
-  resolved "https://registry.yarnpkg.com/resolve-query/-/resolve-query-0.12.3.tgz#8c2447647ce46c1e7a542b10c8d0d234e9dcf6cc"
-  dependencies:
-    diff-json "^0.1.11"
-    invariant-function-hash "^1.0.1"
-    resolve-readmodel-memory "0.12.3"
-
-resolve-readmodel-base@0.12.3:
-  version "0.12.3"
-  resolved "https://registry.yarnpkg.com/resolve-readmodel-base/-/resolve-readmodel-base-0.12.3.tgz#885ef391d069c242176f821dea503c62f50c5e68"
-  dependencies:
-    uuid "^3.2.1"
-
-resolve-readmodel-memory@0.12.3:
-  version "0.12.3"
-  resolved "https://registry.yarnpkg.com/resolve-readmodel-memory/-/resolve-readmodel-memory-0.12.3.tgz#007e79e4ff23bdf3d81059475607b3b21fdcb6b2"
-  dependencies:
-    nedb "^1.8.0"
-    resolve-readmodel-base "0.12.3"
-    uuid "^3.2.1"
-
-resolve-redux@0.12.3:
-  version "0.12.3"
-  resolved "https://registry.yarnpkg.com/resolve-redux/-/resolve-redux-0.12.3.tgz#3cd9620449799f5cfc72fb25a85b2c3da797ef80"
-  dependencies:
-    diff-json "^0.1.11"
-    isomorphic-fetch "^2.2.1"
-    prop-types "^15.6.1"
-    react-redux "^5.0.7"
-    socket.io-client "^2.1.1"
-
-resolve-scripts@0.12.3:
-  version "0.12.3"
-  resolved "https://registry.yarnpkg.com/resolve-scripts/-/resolve-scripts-0.12.3.tgz#980c3d672defd4e214173abb1209a4e876d41cba"
-  dependencies:
-    "@babel/cli" "^7.0.0-beta.49"
-    "@babel/core" "^7.0.0-beta.49"
-    "@babel/plugin-transform-runtime" "^7.0.0-beta.49"
-    "@babel/preset-env" "^7.0.0-beta.49"
-    "@babel/preset-react" "^7.0.0-beta.49"
-    "@babel/preset-stage-0" "^7.0.0-beta.49"
-    "@babel/register" "^7.0.0-beta.49"
-    "@babel/runtime" "^7.0.0-beta.49"
-    address "^1.0.3"
-    ajv "^6.5.0"
-    babel-core "^7.0.0-0"
-    babel-jest "^23.0.0"
-    babel-loader "^8.0.0-beta.3"
-    babel-plugin-object-source "^1.0.4"
-    body-parser "^1.18.3"
-    chalk "^2.4.1"
-    cookie "^0.3.1"
-    cookie-parser "^1.4.3"
-    cross-spawn "^6.0.5"
-    dotenv "^5.0.1"
-    env-string "^1.0.0"
-    express "^4.16.3"
-    flat "^4.0.0"
-    history "^4.7.2"
-    ip "^1.1.5"
-    isomorphic-fetch "^2.2.1"
-    jest "^23.0.1"
-    json-env-extract "^1.4.0"
-    jsonwebtoken "^8.2.1"
-    lodash "^4.17.10"
-    opn "^5.3.0"
-    prop-types "^15.6.1"
-    react-helmet "^5.2.0"
-    react-redux "^5.0.7"
-    react-router "^4.2.0"
-    react-router-redux "^5.0.0-alpha.9"
-    redux-devtools-extension "^2.13.2"
-    regenerator-runtime "^0.11.1"
-    resolve-auth "0.12.3"
-    resolve-bus-memory "0.12.3"
-    resolve-command "0.12.3"
-    resolve-es "0.12.3"
-    resolve-query "0.12.3"
-    resolve-redux "0.12.3"
-    resolve-storage-lite "0.12.3"
-    respawn "^2.5.0"
-    socket.io "^2.1.1"
-    source-map-support "^0.5.6"
-    styled-components "^3.3.0"
-    testcafe "^0.20.2"
-    testcafe-browser-tools "^1.6.3"
-    val-loader "^1.1.0"
-    webpack "^4.10.2"
-    webpack-node-externals "^1.7.2"
-    yargs "^12.0.0-candidate.0"
-
-resolve-storage-base@0.12.3:
-  version "0.12.3"
-  resolved "https://registry.yarnpkg.com/resolve-storage-base/-/resolve-storage-base-0.12.3.tgz#951358259632593fe3ae4828c7b7eb9d3cee9bc7"
-
-resolve-storage-lite@0.12.3:
-  version "0.12.3"
-  resolved "https://registry.yarnpkg.com/resolve-storage-lite/-/resolve-storage-lite-0.12.3.tgz#34aea20087276b1d9ba23b7c7d10e358f43af145"
-  dependencies:
-    nedb "^1.8.0"
-    resolve-storage-base "0.12.3"
 
 resolve-url@^0.2.1:
   version "0.2.1"
@@ -8710,6 +8583,18 @@ sinon@6.1.3, sinon@^6.1.3:
   dependencies:
     "@sinonjs/formatio" "^2.0.0"
     "@sinonjs/samsam" "^2.0.0"
+    diff "^3.5.0"
+    lodash.get "^4.4.2"
+    lolex "^2.4.2"
+    nise "^1.3.3"
+    supports-color "^5.4.0"
+    type-detect "^4.0.8"
+
+sinon@^5.0.10:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/sinon/-/sinon-5.1.1.tgz#19c59810ffb733ea6e76a28b94a71fc4c2f523b8"
+  dependencies:
+    "@sinonjs/formatio" "^2.0.0"
     diff "^3.5.0"
     lodash.get "^4.4.2"
     lolex "^2.4.2"
@@ -9139,7 +9024,7 @@ style-loader@0.21.0:
     loader-utils "^1.1.0"
     schema-utils "^0.4.5"
 
-styled-components@3.3.3, styled-components@^3.3.0, styled-components@^3.3.3:
+styled-components@3.3.3, styled-components@^3.3.3:
   version "3.3.3"
   resolved "https://registry.yarnpkg.com/styled-components/-/styled-components-3.3.3.tgz#09e702055ab11f7a8eab8229b1c0d0b855095686"
   dependencies:
@@ -9481,7 +9366,7 @@ testcafe@0.20.4:
     typescript "^2.2.2"
     useragent "^2.1.7"
 
-testcafe@^0.20.2, testcafe@^0.20.4:
+testcafe@^0.20.4:
   version "0.20.5"
   resolved "https://registry.yarnpkg.com/testcafe/-/testcafe-0.20.5.tgz#3230d2731d1ec2d84856115c218228dafb16883c"
   dependencies:
@@ -9984,7 +9869,7 @@ v8flags@^3.1.1:
   dependencies:
     homedir-polyfill "^1.0.1"
 
-val-loader@1.1.1, val-loader@^1.1.0:
+val-loader@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/val-loader/-/val-loader-1.1.1.tgz#32ba8ed5c3607504134977251db2966499e15ef7"
   dependencies:
@@ -10084,7 +9969,7 @@ webidl-conversions@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-4.0.2.tgz#a855980b1f0b6b359ba1d5d9fb39ae941faa63ad"
 
-webpack-node-externals@1.7.2, webpack-node-externals@^1.7.2:
+webpack-node-externals@1.7.2:
   version "1.7.2"
   resolved "https://registry.yarnpkg.com/webpack-node-externals/-/webpack-node-externals-1.7.2.tgz#6e1ee79ac67c070402ba700ef033a9b8d52ac4e3"
 
@@ -10095,7 +9980,7 @@ webpack-sources@^1.0.1, webpack-sources@^1.1.0:
     source-list-map "^2.0.0"
     source-map "~0.6.1"
 
-webpack@4.16.1, webpack@^4.10.2:
+webpack@4.16.1:
   version "4.16.1"
   resolved "https://registry.yarnpkg.com/webpack/-/webpack-4.16.1.tgz#2c4b89ea648125c3e67bcca6adf49ce2c14b2d31"
   dependencies:
@@ -10358,7 +10243,7 @@ yargs@^11.0.0:
     y18n "^3.2.1"
     yargs-parser "^9.0.2"
 
-yargs@^12.0.0-candidate.0, yargs@^12.0.1:
+yargs@^12.0.1:
   version "12.0.1"
   resolved "https://registry.yarnpkg.com/yargs/-/yargs-12.0.1.tgz#6432e56123bb4e7c3562115401e98374060261c2"
   dependencies:

@@ -9,15 +9,13 @@ import { routerReducer, routerMiddleware } from 'react-router-redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import uuid from 'uuid/v4'
 
-import redux from '$resolve.redux'
-import viewModels from '$resolve.viewModels'
-import readModels from '$resolve.readModels'
-import aggregates from '$resolve.aggregates'
-import subscribeAdapter from '$resolve.subscribeAdapter'
-
-const { reducers, middlewares, store: setupStore } = redux
-
-export default ({ initialState, history, origin, rootPath, isClient }) => {
+export default ({
+  redux: { reducers, middlewares, store: setupStore },
+  viewModels,
+  readModels,
+  aggregates,
+  subscribeAdapter
+}) => ({ initialState, history, origin, rootPath, isClient }) => {
   const sessionId = uuid()
 
   if (process.env.NODE_ENV !== 'production') {

@@ -10,10 +10,14 @@ const resolveFile = (query, fallbackQuery) => {
     }
   } catch (e) {}
 
-  if(fallbackQuery) {
+  if (fallbackQuery) {
     try {
-      const customFilePath = path.resolve(__dirname, '../runtime', fallbackQuery)
-  
+      const customFilePath = path.resolve(
+        __dirname,
+        '../runtime',
+        fallbackQuery
+      )
+
       if (fs.existsSync(customFilePath)) {
         return customFilePath
       }

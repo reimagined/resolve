@@ -19,7 +19,10 @@ const setup = argv => {
 
   if (argv.config) {
     localConfig = extractEnv(
-      envString(fs.readFileSync(path.resolve(process.cwd(), argv.config)).toString(), env)
+      envString(
+        fs.readFileSync(path.resolve(process.cwd(), argv.config)).toString(),
+        env
+      )
     )
   } else {
     const configPath = path.resolve(process.cwd(), 'resolve.config.json')

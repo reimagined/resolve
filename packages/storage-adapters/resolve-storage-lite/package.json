@@ -1,7 +1,8 @@
 {
   "name": "resolve-storage-lite",
   "version": "0.13.1",
-  "description": "This package serves as an adapter for resolve-storage to store events using a file or in memory.",
+  "description":
+    "This package serves as an adapter for resolve-storage to store events using a file or in memory.",
   "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
@@ -14,20 +15,15 @@
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": [
-    "cqrs",
-    "eventsourcing",
-    "es",
-    "ddd"
-  ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-lite#readme",
+  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
+  "homepage":
+    "https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-lite#readme",
   "dependencies": {
     "nedb": "^1.8.0",
-    "resolve-storage-base": "0.12.3"
+    "resolve-storage-base": "0.13.1"
   },
   "devDependencies": {
     "@babel/cli": "7.0.0-beta.54",
-    "@babel/core": "7.0.0-beta.54",
     "@babel/plugin-transform-runtime": "7.0.0-beta.54",
     "@babel/preset-env": "7.0.0-beta.54",
     "@babel/preset-react": "7.0.0-beta.54",

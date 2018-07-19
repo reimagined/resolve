@@ -3,7 +3,7 @@ import { createViewModel } from 'resolve-query'
 import eventStore from './event_store'
 import raiseError from './utils/raise_error'
 
-import viewModels from '$resolve.viewModels'
+import { viewModels } from './resources'
 
 const message = require('../../../configs/message.json')
 
