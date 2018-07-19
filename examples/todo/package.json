@@ -1,6 +1,6 @@
 {
   "name": "todo",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "private": true,
   "scripts": {
     "build": "resolve-scripts build",

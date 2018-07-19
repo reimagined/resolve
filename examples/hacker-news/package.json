@@ -1,6 +1,6 @@
 {
   "name": "hacker-news",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "description": "A React & Redux & Resolve implementation of Hacker News",
   "private": true,
   "scripts": {

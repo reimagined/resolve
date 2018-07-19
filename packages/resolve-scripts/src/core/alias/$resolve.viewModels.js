@@ -1,4 +1,3 @@
-import path from 'path'
 import { injectEnv, envKey } from 'json-env-extract'
 
 import { message } from '../constants'
@@ -37,33 +36,21 @@ export default ({ resolveConfig, isClient }) => {
         `${message.clientEnvError}.viewModels[${index}].serializeState`
       )
     }
-    const serializeState = viewModel.serializeState
-      ? resolveFile(viewModel.serializeState)
-      : path.resolve(
-          __dirname,
-          '../../runtime/common/view-models/serialize_state.js'
-        )
+    const serializeState = resolveFile(viewModel.serializeState, 'common/view-models/serialize_state.js')
 
     if (viewModel.deserializeState in resolveConfig[envKey]) {
       throw new Error(
         `${message.clientEnvError}.viewModels[${index}].deserializeState`
       )
     }
-    const deserializeState = viewModel.deserializeState
-      ? resolveFile(viewModel.deserializeState)
-      : path.resolve(
-          __dirname,
-          '../../runtime/common/view-models/deserialize_state.js'
-        )
+    const deserializeState = resolveFile(viewModel.deserializeState, 'common/view-models/deserialize_state.js')
 
     if (viewModel.validator in resolveConfig[envKey]) {
       throw new Error(
         `${message.clientEnvError}.viewModels[${index}].validator`
       )
     }
-    const validator = viewModel.validator
-      ? resolveFile(viewModel.validator)
-      : path.resolve(__dirname, '../../runtime/common/view-models/validator.js')
+    const validator = resolveFile(viewModel.validator, 'common/view-models/validator.js')
 
     const snapshotAdapter = viewModel.snapshotAdapter
       ? {

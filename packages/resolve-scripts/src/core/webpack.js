@@ -45,13 +45,13 @@ export default argv => {
     ...otherWebpackConfigs
   ])
 
-  const serverPath = `${webpackCommonConfig.output.path}/${
-    webpackCommonConfig.output.filename
-  }`
+  // const serverPath = `${webpackCommonConfig.output.path}/${
+  //   webpackCommonConfig.output.filename
+  // }`
 
-  if (deployOptions.start && !fs.existsSync(serverPath)) {
-    deployOptions.build = true
-  }
+  // if (deployOptions.start && !fs.existsSync(serverPath)) {
+  //   deployOptions.build = true
+  // }
 
   // const server = deployOptions.start
   //   ? respawn([serverPath], {

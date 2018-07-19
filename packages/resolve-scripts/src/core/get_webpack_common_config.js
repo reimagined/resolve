@@ -5,7 +5,7 @@ import nodeExternals from 'webpack-node-externals'
 import getModulesDirs from './get_modules_dirs'
 import getWebpackEnvPlugin from './get_webpack_env_plugin'
 
-const getWebpackServerConfig = ({
+const getWebpackCommonConfig = ({
   resolveConfig,
   deployOptions,
   env,
@@ -122,4 +122,4 @@ const getWebpackServerConfig = ({
   }
 }
 
-export default getWebpackServerConfig
+export default getWebpackCommonConfig
