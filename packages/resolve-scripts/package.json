@@ -6,12 +6,7 @@
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": [
-    "cqrs",
-    "eventsourcing",
-    "es",
-    "ddd"
-  ],
+  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
   "bin": {
     "resolve-scripts": "./bin/resolve-scripts.js"
   },
@@ -23,7 +18,8 @@
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts#readme",
+  "homepage":
+    "https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts#readme",
   "dependencies": {
     "@babel/cli": "7.0.0-beta.54",
     "@babel/core": "7.0.0-beta.54",

@@ -1,29 +1,25 @@
 const implementation = (
   rawMetaApi,
   storeApi,
-  mysql,
-  escapeId,
+  MongoClient,
   { metaName, checkStoredTableSchema, ...options }
 ) => {
   const { getMetaInfo, ...metaApi } = rawMetaApi
 
   const connectionOptions = {
-    host: options.host || '127.0.0.1',
-    port: options.port || 3306,
-    user: options.user || 'root',
-    password: options.password || '',
-    database: options.database || 'temp'
+    url: options.url || 'mongodb://127.0.0.1:27017/',
+    database: options.database || 'admin'
   }
 
-  const pool = { escapeId, metaName }
+  const pool = { metaName }
   let connectionPromise = null
 
   const bindWithConnection = func => async (...args) => {
     if (!connectionPromise) {
       connectionPromise = Promise.resolve()
-        .then(() => mysql.createConnection(connectionOptions))
-        .then(async connection => {
-          pool.connection = connection
+        .then(async () => {
+          const client = await MongoClient.connect(connectionOptions.url)
+          pool.connection = await client.db(connectionOptions.database)
           await getMetaInfo(pool, checkStoredTableSchema)
         })
         .catch(error => error)

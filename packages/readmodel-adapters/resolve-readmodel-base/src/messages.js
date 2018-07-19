@@ -53,7 +53,8 @@ export default {
   updateExpressionNotValidObject: 'Object with keys as only allowed update operators expected like { $set: {...} }',
   illegalUpdateOperator: 'Illegal update operator',
   updateOperatorNotObject: 'Update operator value only as object expected',
-  incompatibleUpdateValue: 'Value in update operator is incompatible with table column or operator requirement'
+  incompatibleUpdateValue: 'Value in update operator is incompatible with table column or operator requirement',
+  invalidUpdateOptions: 'Update operator supports only upsert options (true of false)'
 
 
 }

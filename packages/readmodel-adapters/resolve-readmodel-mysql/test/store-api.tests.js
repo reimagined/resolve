@@ -332,7 +332,8 @@ describe('resolve-readmodel-mysql store-api', () => {
         $set: { one: 10, 'inner.one': 20 },
         $unset: { two: true, 'inner.two': true },
         $inc: { counter: 3, 'inner.counter': 4 }
-      }
+      },
+      { upsert: false }
     )
 
     expect(format(executor.firstCall.args[0])).to.be.equal(

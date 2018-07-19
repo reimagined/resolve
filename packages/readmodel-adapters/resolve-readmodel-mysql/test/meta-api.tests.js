@@ -8,9 +8,10 @@ describe('resolve-readmodel-mysql meta-api', () => {
   const META_NAME = 'META_NAME'
   const format = sqlFormatter.format.bind(sqlFormatter)
 
-  let executor, pool
+  let executor, pool, checkStoredTableSchema
 
   beforeEach(() => {
+    checkStoredTableSchema = sinon.stub()
     executor = sinon.stub()
 
     pool = {
@@ -23,6 +24,7 @@ describe('resolve-readmodel-mysql meta-api', () => {
   })
 
   afterEach(() => {
+    checkStoredTableSchema = null
     executor = null
     pool = null
   })
@@ -50,7 +52,10 @@ describe('resolve-readmodel-mysql meta-api', () => {
     executor.onCall(1).callsFake(async () => [[{ Timestamp: 100 }]])
     executor.onCall(2).callsFake(async () => [tableDeclarations])
 
-    await metaApi.getMetaInfo(pool)
+    checkStoredTableSchema.onCall(0).callsFake(() => true)
+    checkStoredTableSchema.onCall(1).callsFake(() => true)
+
+    await metaApi.getMetaInfo(pool, checkStoredTableSchema)
     expect(pool.metaInfo.tables['table1']).to.be.deep.equal(
       tableDeclarations[0].TableDescription
     )
@@ -88,7 +93,10 @@ describe('resolve-readmodel-mysql meta-api', () => {
     executor.onCall(1).callsFake(async () => [[]])
     executor.onCall(3).callsFake(async () => [[]])
 
-    await metaApi.getMetaInfo(pool)
+    checkStoredTableSchema.onCall(0).callsFake(() => false)
+    checkStoredTableSchema.onCall(1).callsFake(() => false)
+
+    await metaApi.getMetaInfo(pool, checkStoredTableSchema)
     expect(pool.metaInfo.tables).to.be.deep.equal({})
     expect(pool.metaInfo.timestamp).to.be.equal(0)
 
@@ -137,7 +145,10 @@ describe('resolve-readmodel-mysql meta-api', () => {
     executor.onCall(1).callsFake(async () => [[{ Timestamp: 'NaN' }]])
     executor.onCall(2).callsFake(async () => [tableDeclarations])
 
-    await metaApi.getMetaInfo(pool)
+    checkStoredTableSchema.onCall(0).callsFake(() => false)
+    checkStoredTableSchema.onCall(1).callsFake(() => false)
+
+    await metaApi.getMetaInfo(pool, checkStoredTableSchema)
     expect(pool.metaInfo.tables).to.be.deep.equal({})
     expect(pool.metaInfo.timestamp).to.be.equal(0)
 
