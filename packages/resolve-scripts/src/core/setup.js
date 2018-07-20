@@ -4,7 +4,6 @@ import envString from './env_string'
 import { extractEnv, envKey } from 'json-env-extract'
 
 import assignSettings from './assign_settings'
-import resolveFile from './resolve_file'
 import validateConfig from './validate_config'
 
 import {

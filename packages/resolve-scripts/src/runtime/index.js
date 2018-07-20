@@ -19,13 +19,7 @@ import subscribeAdapter from './subscribe_adapter'
 import argumentsParser from './arguments_parser'
 import HMRSocketHandler from './hmr_socket_handler'
 
-import {
-  staticPath,
-  staticDir,
-  distDir,
-  jwtCookie,
-  rootPath
-} from './assemblies'
+import { staticPath, distDir, jwtCookie, rootPath } from './assemblies'
 
 subscribeAdapter.init().then(() => {
   eventStore.subscribeOnBus(event => {

@@ -22,7 +22,6 @@ import AppContainer from './app_container'
 import Routes from './routes'
 import deserializeInitialState from './deserialize_initial_state'
 import createStore from './create_store'
-import createHmrSocket from './create_hmr_socket'
 
 export {
   actions,
@@ -50,6 +49,5 @@ export {
   AppContainer,
   Routes,
   createStore,
-  deserializeInitialState,
-  createHmrSocket
+  deserializeInitialState
 }

@@ -1,5 +1,4 @@
 import path from 'path'
-import webpack from 'webpack'
 import nodeExternals from 'webpack-node-externals'
 
 import getModulesDirs from './get_modules_dirs'

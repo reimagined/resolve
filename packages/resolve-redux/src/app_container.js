@@ -1,8 +1,9 @@
 import React from 'react'
-import { Provider as ReduxProvider } from 'react-redux'
-import { Provider as ResolveProvider, createApi } from 'resolve-redux'
 import { ConnectedRouter } from 'react-router-redux'
+import { Provider as ReduxProvider } from 'react-redux'
 
+import { Provider as ResolveProvider } from './resolve_context'
+import createApi from './create_api'
 import Routes from './routes'
 
 class AppContainer extends React.PureComponent {

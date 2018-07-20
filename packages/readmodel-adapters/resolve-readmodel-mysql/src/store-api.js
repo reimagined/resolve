@@ -256,7 +256,7 @@ const buildUpsertDocument = (searchExpression, updateExpression) => {
         acc.hasOwnProperty(val)
           ? acc[val]
           : (acc[val] = isNaN(Number(nestedKeys[idx + 1]))
-              ? nestedKeys.length - 1 == idx
+              ? nestedKeys.length - 1 === idx
                 ? baseDocument[key]
                 : {}
               : []),
