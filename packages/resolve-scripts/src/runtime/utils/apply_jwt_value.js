@@ -18,7 +18,7 @@ const applyJwtValue = (rootPath, jwtCookie, jwtToken, res, path) => {
     res.clearCookie(cookieName)
   }
 
-  res.redirect(getRootBasedUrl(rootPath, path || '/'))
+  res.redirect(path || getRootBasedUrl(rootPath, '/'))
 }
 
 export default applyJwtValue
