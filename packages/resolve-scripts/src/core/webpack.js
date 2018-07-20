@@ -7,6 +7,7 @@ import webpack from 'webpack'
 import setup from './setup'
 import getMockServer from './get_mock_server'
 import showBuildInfo from './show_build_info'
+import copyEnvToDist from './copy_env_to_dist'
 import getWebpackConfigs from './get_webpack_configs'
 import getResolveBuildConfig from './get_resolve_build_config'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
@@ -95,6 +96,8 @@ export default argv => {
             nodeModulesByAssembly
           )
 
+          copyEnvToDist(resolveConfig.distDir)
+
           if (deployOptions.start) {
             const hasErrors = stats.reduce(
               (acc, val) => acc || (val != null && val.hasErrors()),
@@ -121,6 +124,8 @@ export default argv => {
           resolveConfig.distDir,
           nodeModulesByAssembly
         )
+
+        copyEnvToDist(resolveConfig.distDir)
 
         if (deployOptions.start) {
           const hasNoErrors = stats.reduce(
