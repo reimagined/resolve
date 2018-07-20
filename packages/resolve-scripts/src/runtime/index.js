@@ -78,7 +78,6 @@ app.use(
   getRootBasedUrl(rootPath, `/${staticPath}`),
   express.static(`${distDir}/client`)
 )
-app.use(getRootBasedUrl(rootPath, `/${staticPath}`), express.static(staticDir))
 
 app.get(
   [getRootBasedUrl(rootPath, '/'), getRootBasedUrl(rootPath, '/!*')],

@@ -1,4 +1,5 @@
 import fs from 'fs'
+import fsExtra from 'fs-extra'
 import path from 'path'
 import respawn from 'respawn'
 import webpack from 'webpack'
@@ -48,7 +49,12 @@ export default argv => {
 
   const serverPath = path.resolve(__dirname, '../../dist/runtime/index.js')
 
-  if (deployOptions.start && !fs.existsSync(serverPath)) {
+  if (
+    deployOptions.start &&
+    !fs.existsSync(
+      path.join(process.cwd(), './', resolveConfig.distDir, './assemblies.js')
+    )
+  ) {
     deployOptions.build = true
   }
 
@@ -67,6 +73,11 @@ export default argv => {
 
   process.env.RESOLVE_SERVER_FIRST_START = 'true'
   if (deployOptions.build) {
+    fsExtra.copySync(
+      path.resolve(process.cwd(), './', resolveConfig.staticDir),
+      path.resolve(process.cwd(), './', resolveConfig.distDir, './client')
+    )
+
     if (deployOptions.watch) {
       const stdin = process.openStdin()
       stdin.addListener('data', data => {

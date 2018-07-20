@@ -4,7 +4,12 @@ import openBrowser from './utils/open_browser'
 import println from './utils/println'
 import prepareUrls from './utils/prepare_urls'
 
-import { port, isOpenBrowser, applicationName, useYarn } from './assemblies'
+import {
+  port,
+  openBrowser as isOpenBrowser,
+  applicationName,
+  useYarn
+} from './assemblies'
 
 const host = '0.0.0.0'
 const protocol = 'http'

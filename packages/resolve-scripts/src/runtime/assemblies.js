@@ -9,7 +9,7 @@ const aggregates = requireAssembly('common/aggregates/index.js')
 const viewModels = requireAssembly('common/view-models/index.js')
 const readModels = requireAssembly('common/read-models/index.js')
 const sagas = requireAssembly('common/sagas/index.js')
-const auth = requireAssembly('auth/index.js')
+const auth = requireAssembly('common/auth/index.js')
 const assemblies = requireAssembly('assemblies.js')
 
 module.exports = {

@@ -36,7 +36,7 @@ const getWebpackCommonConfig = ({
         ...libs,
         path.resolve(__dirname, './alias/$resolve.sagas.js')
       ],
-      'auth/index.js': [
+      'common/auth/index.js': [
         ...libs,
         path.resolve(__dirname, './alias/$resolve.auth.js')
       ],

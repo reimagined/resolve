@@ -5,7 +5,12 @@
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
   "bin": {
     "resolve-scripts": "./bin/resolve-scripts.js"
   },
@@ -17,8 +22,7 @@
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
-  "homepage":
-    "https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts#readme",
   "dependencies": {
     "@babel/cli": "7.0.0-beta.54",
     "@babel/core": "7.0.0-beta.54",
@@ -43,6 +47,7 @@
     "env-string": "^1.0.0",
     "express": "^4.16.3",
     "flat": "^4.1.0",
+    "fs-extra": "^7.0.0",
     "history": "^4.7.2",
     "ip": "^1.1.5",
     "isomorphic-fetch": "^2.2.1",
@@ -64,9 +69,9 @@
     "resolve-command": "0.13.1",
     "resolve-es": "0.13.1",
     "resolve-query": "0.13.1",
-    "resolve-subscribe-socket.io": "0.13.1",
     "resolve-redux": "0.13.1",
     "resolve-storage-lite": "0.13.1",
+    "resolve-subscribe-socket.io": "0.13.1",
     "respawn": "^2.5.0",
     "socket.io": "^2.1.1",
     "socket.io-client": "^2.1.1",

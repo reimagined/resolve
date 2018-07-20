@@ -21,7 +21,7 @@ export default ({ isClient }) => {
     ``,
     `client.on('hotModuleReload', message => {`,
     `  if (HMR_ID && HMR_ID !== message) {`,
-    `    window.location.reload(true)`,
+    `    window.location.reload()`,
     `  }`,
     `  HMR_ID = message`,
     `})`,
