@@ -535,7 +535,7 @@ const update = async (
   checkCondition(
     checkOptionShape(inputOptions, [Object], true),
     messages.invalidUpdateExpression,
-    options,
+    inputOptions,
     messages.invalidUpdateOptions
   )
 

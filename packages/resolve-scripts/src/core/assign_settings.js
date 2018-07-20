@@ -132,7 +132,11 @@ export function rootPath({ resolveConfig }, argv) {
 }
 
 extenders.push(staticPath)
-export function staticPath({ resolveConfig }) {
+export function staticPath({ resolveConfig }, argv) {
+  if (argv.staticPath) {
+    resolveConfig.staticPath = argv.staticPath
+  }
+
   const {
     protocol,
     slashes,

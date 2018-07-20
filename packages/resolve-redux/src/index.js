@@ -18,6 +18,10 @@ import connectStaticBasedUrls from './connect_static_based_urls'
 import connectRootBasedUrls from './connect_root_based_urls'
 import { FetchError, HttpError } from './create_api'
 import { Provider, Consumer } from './resolve_context'
+import AppContainer from './app_container'
+import Routes from './routes'
+import deserializeInitialState from './deserialize_initial_state'
+import createStore from './create_store'
 
 export {
   actions,
@@ -41,5 +45,9 @@ export {
   Provider,
   Consumer,
   FetchError,
-  HttpError
+  HttpError,
+  AppContainer,
+  Routes,
+  createStore,
+  deserializeInitialState
 }

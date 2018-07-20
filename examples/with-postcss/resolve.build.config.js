@@ -2,8 +2,8 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import postcssImport from 'postcss-import'
 import autoprefixer from 'autoprefixer'
 
-export default ([webpackClientConfig, webpackServerConfig]) => {
-  for (const webpackConfig of [webpackClientConfig, webpackServerConfig]) {
+export default webpackClientConfigs => {
+  for (const webpackConfig of webpackClientConfigs) {
     webpackConfig.module.rules.push({
       test: /\.css$/,
       use: ExtractTextPlugin.extract({
