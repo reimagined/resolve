@@ -30,12 +30,6 @@ const history = createHistory({
 
 const isClient = true
 
-if (process.env.NODE_ENV !== 'production') {
-  if (window.__LOCAL_DEVELOPMENT__) {
-    require('resolve-redux').createHmrSocket({ origin, rootPath })
-  }
-}
-
 const store = createStore({
   redux,
   viewModels,
