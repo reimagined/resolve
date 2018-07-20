@@ -14,7 +14,7 @@ const resolveFile = (query, fallbackQuery) => {
     try {
       const customFilePath = path.resolve(
         __dirname,
-        '../runtime',
+        '../defaults',
         fallbackQuery
       )
 

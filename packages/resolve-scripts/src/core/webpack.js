@@ -46,10 +46,7 @@ export default argv => {
     ...otherWebpackConfigs
   ])
 
-  const serverPath = path.resolve(
-    __dirname,
-    '../../dist/runtime/server/index.js'
-  )
+  const serverPath = path.resolve(__dirname, '../../dist/runtime/index.js')
 
   if (deployOptions.start && !fs.existsSync(serverPath)) {
     deployOptions.build = true

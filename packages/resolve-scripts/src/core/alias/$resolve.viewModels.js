@@ -38,7 +38,7 @@ export default ({ resolveConfig, isClient }) => {
     }
     const serializeState = resolveFile(
       viewModel.serializeState,
-      'common/view-models/serialize_state.js'
+      'view_model_serialize_state.js'
     )
 
     if (viewModel.deserializeState in resolveConfig[envKey]) {
@@ -48,7 +48,7 @@ export default ({ resolveConfig, isClient }) => {
     }
     const deserializeState = resolveFile(
       viewModel.deserializeState,
-      'common/view-models/deserialize_state.js'
+      'view_model_deserialize_state.js'
     )
 
     if (viewModel.validator in resolveConfig[envKey]) {
@@ -58,7 +58,7 @@ export default ({ resolveConfig, isClient }) => {
     }
     const validator = resolveFile(
       viewModel.validator,
-      'common/view-models/validator.js'
+      'view_model_validator.js'
     )
 
     const snapshotAdapter = viewModel.snapshotAdapter

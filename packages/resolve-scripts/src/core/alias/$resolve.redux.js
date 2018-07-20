@@ -12,14 +12,14 @@ export default ({ resolveConfig }) => {
   if (resolveConfig.redux.store in resolveConfig[envKey]) {
     throw new Error(`${message.clientEnvError}.redux.store`)
   }
-  const store = resolveFile(resolveConfig.redux.store, 'client/store/index.js')
+  const store = resolveFile(resolveConfig.redux.store, 'redux_store.js')
 
   if (resolveConfig.redux.reducers in resolveConfig[envKey]) {
     throw new Error(`${message.clientEnvError}.redux.reducers`)
   }
   const reducers = resolveFile(
     resolveConfig.redux.reducers,
-    'client/reducers/index.js'
+    'redux_reducers.js'
   )
 
   if (resolveConfig.redux.middlewares in resolveConfig[envKey]) {
@@ -27,7 +27,7 @@ export default ({ resolveConfig }) => {
   }
   const middlewares = resolveFile(
     resolveConfig.redux.middlewares,
-    'client/middlewares/index.js'
+    'redux_middlewares.js'
   )
 
   const exports = []

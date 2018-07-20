@@ -17,7 +17,7 @@ export default ({ resolveConfig, isClient }) => {
   }
   const strategies = resolveFile(
     resolveConfig.auth.strategies,
-    'auth/strategies.js'
+    'auth_strategies.js'
   )
 
   const exports = []

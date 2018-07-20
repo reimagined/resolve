@@ -10,7 +10,7 @@ const getClientWebpackConfig = ({
   env,
   alias
 }) => {
-  const clientIndexPath = resolveFile(resolveConfig.index, 'client/index.js')
+  const clientIndexPath = resolveFile(resolveConfig.index, 'client_index.js')
 
   const clientDistDir = path.resolve(
     process.cwd(),

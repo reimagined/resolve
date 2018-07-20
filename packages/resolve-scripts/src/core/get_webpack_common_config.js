@@ -22,27 +22,27 @@ const getWebpackCommonConfig = ({
     entry: {
       'common/aggregates/index.js': [
         ...libs,
-        path.resolve(__dirname, '../runtime/common/aggregates/index.js')
+        path.resolve(__dirname, './alias/$resolve.aggregates.js')
       ],
       'common/view-models/index.js': [
         ...libs,
-        path.resolve(__dirname, '../runtime/common/view-models/index.js')
+        path.resolve(__dirname, './alias/$resolve.viewModels.js')
       ],
       'common/read-models/index.js': [
         ...libs,
-        path.resolve(__dirname, '../runtime/common/read-models/index.js')
+        path.resolve(__dirname, './alias/$resolve.readModels.js')
       ],
       'common/sagas/index.js': [
         ...libs,
-        path.resolve(__dirname, '../runtime/common/sagas/index.js')
+        path.resolve(__dirname, './alias/$resolve.sagas.js')
       ],
       'auth/index.js': [
         ...libs,
-        path.resolve(__dirname, '../runtime/auth/index.js')
+        path.resolve(__dirname, './alias/$resolve.auth.js')
       ],
-      'config-entries.js': [
+      'assemblies.js': [
         ...libs,
-        path.resolve(__dirname, '../runtime/config-entries.js')
+        path.resolve(__dirname, './alias/$resolve.assemblies.js')
       ]
     },
     context: path.resolve(process.cwd()),
