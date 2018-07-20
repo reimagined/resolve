@@ -6,6 +6,7 @@ import prepareUrls from './utils/prepare_urls'
 
 import {
   port,
+  rootPath,
   openBrowser as isOpenBrowser,
   applicationName,
   useYarn
@@ -16,7 +17,7 @@ const protocol = 'http'
 
 const serverFirstStart = process.env.RESOLVE_SERVER_FIRST_START === 'true'
 
-const urls = prepareUrls(protocol, host, port)
+const urls = prepareUrls(protocol, host, port, rootPath)
 
 const startServer = server => {
   server.listen(port, host, () => {

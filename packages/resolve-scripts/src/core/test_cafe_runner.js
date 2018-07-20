@@ -26,7 +26,6 @@ const testCafeRunner = async argv => {
     'node',
     [`${path.resolve(__dirname, '../runtime/index.js')}`],
     {
-      cwd: process.cwd(),
       stdio: 'inherit'
     }
   )

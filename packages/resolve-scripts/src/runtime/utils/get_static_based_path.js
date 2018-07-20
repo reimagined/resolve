@@ -24,18 +24,13 @@ export const nonEmptyString = (value, name) => {
 
 const validate = { nonEmptyString }
 
-const isTrailingSlash = /\/$/i
-
 const getStaticBasedPath = (rootPath, staticPath, filename) => {
   validate.nonEmptyString(staticPath, 'Static path')
   validate.nonEmptyString(filename, 'Filename')
 
   return getRootBasedUrl(
     rootPath,
-    Url.resolve(
-      isTrailingSlash.test(staticPath) ? staticPath : `${staticPath}/`,
-      `./${filename}`
-    )
+    Url.resolve(`${staticPath}/`, `./${filename}`)
   )
 }
 

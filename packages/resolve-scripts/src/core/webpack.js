@@ -9,36 +9,7 @@ import getMockServer from './get_mock_server'
 import showBuildInfo from './show_build_info'
 import getWebpackConfigs from './get_webpack_configs'
 import getResolveBuildConfig from './get_resolve_build_config'
-
-const writePackageJsonsForAssemblies = (distDir, nodeModulesByAssembly) => {
-  const applicationPackageJson = JSON.parse(
-    fs.readFileSync(path.join(process.cwd(), 'package.json'))
-  )
-
-  for (const [
-    assemblyPackageJsonPath,
-    nodeModulesSet
-  ] of nodeModulesByAssembly.entries()) {
-    const filePath = path.join(process.cwd(), distDir, assemblyPackageJsonPath)
-
-    const syntheticName = assemblyPackageJsonPath
-      .replace('/package.json', '')
-      .replace(/[^\w\d-]/g, '-')
-
-    const assemblyPackageJson = {
-      name: `${applicationPackageJson.name}-${syntheticName}`,
-      private: true,
-      version: applicationPackageJson.version,
-      main: './index.js',
-      dependencies: Array.from(nodeModulesSet).reduce((acc, val) => {
-        acc[val] = applicationPackageJson.dependencies[val]
-        return acc
-      }, {})
-    }
-
-    fs.writeFileSync(filePath, JSON.stringify(assemblyPackageJson, null, 2))
-  }
-}
+import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
 
 export default argv => {
   const { resolveConfig, deployOptions, env } = setup(argv)

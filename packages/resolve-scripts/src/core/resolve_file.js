@@ -11,17 +11,15 @@ const resolveFile = (query, fallbackQuery) => {
   } catch (e) {}
 
   if (fallbackQuery) {
-    try {
-      const customFilePath = path.resolve(
-        __dirname,
-        '../defaults',
-        fallbackQuery
-      )
+    const customFilePath = path.resolve(__dirname, '../defaults', fallbackQuery)
 
-      if (fs.existsSync(customFilePath)) {
-        return customFilePath
-      }
-    } catch (e) {}
+    if (fs.existsSync(customFilePath)) {
+      return customFilePath
+    } else {
+      throw new Error(
+        `File "${query}" does not exist. Fallback "${customFilePath}" does not exist`
+      )
+    }
   }
 
   throw new Error(`File "${query}" does not exist`)
