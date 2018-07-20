@@ -5,7 +5,7 @@ exports[`base config works correctly [client] 1`] = `
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
 import projection_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testProjection.js\\"
-import deserializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/runtime/common/view-models/deserialize_state.js\\"
+import deserializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/defaults/view_model_deserialize_state.js\\"
 
 const name_0 = \\"Todos\\"
 const viewModels = []
@@ -25,8 +25,8 @@ exports[`base config works correctly [server] 1`] = `
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
 import projection_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testProjection.js\\"
-import serializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/runtime/common/view-models/serialize_state.js\\"
-import deserializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/runtime/common/view-models/deserialize_state.js\\"
+import serializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/defaults/view_model_serialize_state.js\\"
+import deserializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/defaults/view_model_deserialize_state.js\\"
 
 const name_0 = \\"Todos\\"
 const viewModels = []
@@ -47,10 +47,10 @@ exports[`base(v2) config works correctly [client] 1`] = `
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
 import projection_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testProjection.js\\"
-import deserializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/runtime/common/view-models/deserialize_state.js\\"
+import deserializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/defaults/view_model_deserialize_state.js\\"
 
 import projection_1 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testProjection.js\\"
-import deserializeState_1 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/runtime/common/view-models/deserialize_state.js\\"
+import deserializeState_1 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/defaults/view_model_deserialize_state.js\\"
 
 const name_0 = \\"Todos\\"
 const name_1 = \\"Items\\"
@@ -77,12 +77,12 @@ exports[`base(v2) config works correctly [server] 1`] = `
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
 import projection_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testProjection.js\\"
-import serializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/runtime/common/view-models/serialize_state.js\\"
-import deserializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/runtime/common/view-models/deserialize_state.js\\"
+import serializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/defaults/view_model_serialize_state.js\\"
+import deserializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/defaults/view_model_deserialize_state.js\\"
 
 import projection_1 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testProjection.js\\"
-import serializeState_1 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/runtime/common/view-models/serialize_state.js\\"
-import deserializeState_1 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/runtime/common/view-models/deserialize_state.js\\"
+import serializeState_1 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/defaults/view_model_serialize_state.js\\"
+import deserializeState_1 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/defaults/view_model_deserialize_state.js\\"
 
 const name_0 = \\"Todos\\"
 const name_1 = \\"Items\\"
@@ -153,7 +153,7 @@ exports[`config with snapshot + process.env works correctly [client] 1`] = `
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
 import projection_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testProjection.js\\"
-import deserializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/runtime/common/view-models/deserialize_state.js\\"
+import deserializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/defaults/view_model_deserialize_state.js\\"
 
 const name_0 = \\"Todos\\"
 const viewModels = []
@@ -173,8 +173,8 @@ exports[`config with snapshot + process.env works correctly [server] 1`] = `
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
 import projection_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testProjection.js\\"
-import serializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/runtime/common/view-models/serialize_state.js\\"
-import deserializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/runtime/common/view-models/deserialize_state.js\\"
+import serializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/defaults/view_model_serialize_state.js\\"
+import deserializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/defaults/view_model_deserialize_state.js\\"
 
 const name_0 = \\"Todos\\"
 const snapshotAdapter_0 = {
@@ -209,7 +209,7 @@ exports[`config with snapshot works correctly [client] 1`] = `
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
 import projection_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testProjection.js\\"
-import deserializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/runtime/common/view-models/deserialize_state.js\\"
+import deserializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/defaults/view_model_deserialize_state.js\\"
 
 const name_0 = \\"Todos\\"
 const viewModels = []
@@ -229,8 +229,8 @@ exports[`config with snapshot works correctly [server] 1`] = `
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
 import projection_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testProjection.js\\"
-import serializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/runtime/common/view-models/serialize_state.js\\"
-import deserializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/runtime/common/view-models/deserialize_state.js\\"
+import serializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/defaults/view_model_serialize_state.js\\"
+import deserializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/defaults/view_model_deserialize_state.js\\"
 
 import snapshotAdapterModule_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testSnapshotAdapter.js\\"
 const name_0 = \\"Todos\\"
@@ -259,7 +259,7 @@ exports[`config with validator works correctly [client] 1`] = `
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
 import projection_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testProjection.js\\"
-import deserializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/runtime/common/view-models/deserialize_state.js\\"
+import deserializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/defaults/view_model_deserialize_state.js\\"
 
 const name_0 = \\"Todos\\"
 const viewModels = []
@@ -279,8 +279,8 @@ exports[`config with validator works correctly [server] 1`] = `
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
 import projection_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testProjection.js\\"
-import serializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/runtime/common/view-models/serialize_state.js\\"
-import deserializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/runtime/common/view-models/deserialize_state.js\\"
+import serializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/defaults/view_model_serialize_state.js\\"
+import deserializeState_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/src/defaults/view_model_deserialize_state.js\\"
 import validator_0 from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testValidator.js\\"
 
 const name_0 = \\"Todos\\"

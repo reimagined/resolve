@@ -27,7 +27,8 @@ const validate = { nonEmptyString }
 const isTrailingSlash = /\/$/i
 
 const getStaticBasedPath = (rootPath, staticPath, filename) => {
-  validate.nonEmptyString(staticPath)
+  validate.nonEmptyString(staticPath, 'Static path')
+  validate.nonEmptyString(filename, 'Filename')
 
   return getRootBasedUrl(
     rootPath,

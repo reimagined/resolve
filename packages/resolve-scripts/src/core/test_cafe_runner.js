@@ -24,14 +24,9 @@ const testCafeRunner = async argv => {
 
   const application = spawn(
     'node',
-    [
-      `${path.resolve(
-        process.cwd(),
-        resolveConfig.distDir,
-        'server/server.js'
-      )}`
-    ],
+    [`${path.resolve(__dirname, '../runtime/index.js')}`],
     {
+      cwd: process.cwd(),
       stdio: 'inherit'
     }
   )

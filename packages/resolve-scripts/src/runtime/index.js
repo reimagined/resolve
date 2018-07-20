@@ -74,7 +74,7 @@ app.use(
 )
 
 app.get(
-  [getRootBasedUrl(rootPath, '/'), getRootBasedUrl(rootPath, '/!*')],
+  [getRootBasedUrl(rootPath, '/'), getRootBasedUrl(rootPath, '/*')],
   serverSideRendering
 )
 
