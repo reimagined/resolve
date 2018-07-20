@@ -1,5 +1,7 @@
 import Url from 'url'
 
+import getRootBasedUrl from './get_root_based_url'
+
 export const isString = value => value != null && value.constructor === String
 
 export const string = (value, name) => {
@@ -24,13 +26,16 @@ const validate = { nonEmptyString }
 
 const isTrailingSlash = /\/$/i
 
-const getClientJsPath = staticPath => {
+const getStaticBasedPath = (rootPath, staticPath, filename) => {
   validate.nonEmptyString(staticPath)
 
-  return Url.resolve(
-    isTrailingSlash.test(staticPath) ? staticPath : `${staticPath}/`,
-    './client.js'
+  return getRootBasedUrl(
+    rootPath,
+    Url.resolve(
+      isTrailingSlash.test(staticPath) ? staticPath : `${staticPath}/`,
+      `./${filename}`
+    )
   )
 }
 
-export default getClientJsPath
+export default getStaticBasedPath

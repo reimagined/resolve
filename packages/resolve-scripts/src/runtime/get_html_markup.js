@@ -6,7 +6,7 @@ import { redux } from './assemblies'
 
 const reducers = redux.reducers
 
-export default ({ markup, styleTags, initialState, clientUrl }) => {
+export default ({ markup, styleTags, initialState, bundleUrl, hmrUrl }) => {
   const helmet = Helmet.renderStatic()
 
   for (const reducerName of Object.keys(reducers)) {
@@ -24,13 +24,13 @@ export default ({ markup, styleTags, initialState, clientUrl }) => {
     styleTags +
     '<script>' +
     `window.__INITIAL_STATE__=${jsonUtfStringify(initialState)};` +
-    `window.__LOCAL_DEVELOPMENT__=true;` +
     '</script>' +
     `${helmet.script.toString()}` +
     '</head>' +
     `<body ${helmet.bodyAttributes.toString()}>` +
     `<div class="app-container">${markup}</div>` +
-    `<script src="${clientUrl}"></script>` +
+    `<script src="${bundleUrl}"></script>` +
+    `<script src="${hmrUrl}"></script>` +
     '</body>' +
     '</html>'
   )

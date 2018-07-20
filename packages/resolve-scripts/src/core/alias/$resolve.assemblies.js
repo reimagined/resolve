@@ -7,6 +7,7 @@ const excludeAlias = [
   'readModels',
   'sagas',
   'viewModels',
+  'hotModuleReplacement',
   'assemblies'
 ]
 

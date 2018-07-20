@@ -22,7 +22,12 @@ const getClientWebpackConfig = ({
 
   return {
     name: 'Client',
-    entry: ['@babel/runtime/regenerator', clientIndexPath],
+    entry: {
+      'bundle.js': ['@babel/runtime/regenerator', clientIndexPath],
+      'hmr.js': [
+        path.resolve(__dirname, './alias/$resolve.hotModuleReplacement.js')
+      ]
+    },
     context: path.resolve(process.cwd()),
     mode: deployOptions.mode,
     performance: false,
@@ -30,7 +35,7 @@ const getClientWebpackConfig = ({
     target: 'web',
     output: {
       path: clientDistDir,
-      filename: 'client.js',
+      filename: '[name]',
       devtoolModuleFilenameTemplate: '[absolute-resource-path]',
       devtoolFallbackModuleFilenameTemplate: '[absolute-resource-path]?[hash]'
     },

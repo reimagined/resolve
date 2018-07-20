@@ -6,8 +6,7 @@ import { ServerStyleSheet, StyleSheetManager } from 'styled-components'
 import { createStore, AppContainer } from 'resolve-redux'
 
 import getHtmlMarkup from './get_html_markup'
-import getRootBasedUrl from './utils/get_root_based_url'
-import getClientJsPath from './utils/get_client_js_path'
+import getStaticBasedPath from './utils/get_static_based_path'
 
 import {
   routes,
@@ -69,14 +68,16 @@ const serverSideRendering = (req, res) => {
   const styleTags = sheet.getStyleTags()
 
   const initialState = store.getState()
-  const clientUrl = getRootBasedUrl(rootPath, getClientJsPath(staticPath))
+  const bundleUrl = getStaticBasedPath(rootPath, staticPath, 'bundle.js')
+  const hmrUrl = getStaticBasedPath(rootPath, staticPath, 'hmr.js')
 
   res.send(
     getHtmlMarkup({
       markup,
       styleTags,
       initialState,
-      clientUrl
+      bundleUrl,
+      hmrUrl
     })
   )
 }
