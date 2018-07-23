@@ -237,6 +237,36 @@ const updateToSetExpression = (expression, fieldTypes, escapeId) => {
   }
 }
 
+const buildUpsertDocument = (searchExpression, updateExpression) => {
+  const isSearchDocument =
+    Object.keys(searchExpression).filter(key => key.indexOf('$') > -1)
+      .length === 0
+
+  const baseDocument = {
+    ...(isSearchDocument ? searchExpression : {}),
+    ...(updateExpression['$set'] || {})
+  }
+
+  const resultDocument = {}
+
+  for (const key of Object.keys(baseDocument)) {
+    const nestedKeys = key.split('.')
+    nestedKeys.reduce(
+      (acc, val, idx) =>
+        acc.hasOwnProperty(val)
+          ? acc[val]
+          : (acc[val] = isNaN(Number(nestedKeys[idx + 1]))
+              ? nestedKeys.length - 1 === idx
+                ? baseDocument[key]
+                : {}
+              : []),
+      resultDocument
+    )
+  }
+
+  return resultDocument
+}
+
 const convertBinaryRow = row => Object.setPrototypeOf(row, Object.prototype)
 
 const find = async (
@@ -427,9 +457,30 @@ const update = async (
   { connection, escapeId, metaInfo },
   tableName,
   searchExpression,
-  updateExpression
+  updateExpression,
+  options
 ) => {
   const fieldTypes = metaInfo.tables[tableName]
+  const isUpsert = !!options.upsert
+
+  if (isUpsert) {
+    const foundDocumentsCount = await count(
+      { connection, escapeId, metaInfo },
+      tableName,
+      searchExpression
+    )
+
+    if (foundDocumentsCount === 0) {
+      const document = buildUpsertDocument(
+        searchExpression,
+        updateExpression,
+        fieldTypes,
+        escapeId
+      )
+      await insert({ connection, escapeId, metaInfo }, tableName, document)
+      return
+    }
+  }
 
   const { searchExpr, searchValues } = searchToWhereExpression(
     searchExpression,

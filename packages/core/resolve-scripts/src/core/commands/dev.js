@@ -12,6 +12,7 @@ export const builder = yargs =>
     .option('port', cli.port)
     .option('inspect', cli.inspect)
     .option('root-path', cli.rootPath)
+    .option('static-path', cli.staticPath)
     .option('open-browser', cli.openBrowser)
     .option('config', cli.config)
     .option('build-config', cli.buildConfig)

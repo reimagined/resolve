@@ -1,9 +1,9 @@
 import React from 'react'
 import renderer from 'react-test-renderer'
 
-import { App } from '../../client/containers/App'
+import { StyledComponents } from '../../client/containers/StyledComponents'
 
 test('renders correctly', () => {
-  const tree = renderer.create(<App />).toJSON()
+  const tree = renderer.create(<StyledComponents />).toJSON()
   expect(tree).toMatchSnapshot()
 })

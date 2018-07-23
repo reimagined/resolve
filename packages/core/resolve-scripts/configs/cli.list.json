@@ -57,6 +57,10 @@
     "describe": "Application root path",
     "type": "string"
   },
+  "staticPath": {
+    "describe": "Application static path",
+    "type": "string"
+  },
   "registry": {
     "describe": "ReSolve registry URL",
     "type": "string"

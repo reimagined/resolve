@@ -2,9 +2,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import { ROUTE_CHANGED } from '../actions/actionTypes'
+import NavLink from './NavLink'
 
 const Link = ({ to, children, className, style, pushRoute }) => (
-  <a
+  <NavLink
     className={className}
     style={style}
     href={to}
@@ -20,7 +21,7 @@ const Link = ({ to, children, className, style, pushRoute }) => (
     }}
   >
     {children}
-  </a>
+  </NavLink>
 )
 
 const mapDispatchToProps = dispatch => ({

@@ -17,6 +17,7 @@
   "ssrError": "An SSR error: ",
   "clientEnvError": "Environment variables in the client code are restricted: ",
   "serverAliasInClientCodeError": "Server alias in the client code is restricted: ",
+  "clientAliasInServerCodeError": "Client alias in the server code is restricted: ",
   "configNotContainSectionError":
     "Missing section in the ReSolve config: "
 }

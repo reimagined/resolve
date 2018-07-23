@@ -1,6 +1,6 @@
 {
   "name": "resolve-redux",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "description": "This package serves as a helper for creating the Redux storage.",
   "main": "./dist/index.js",
   "bugs": {
@@ -28,6 +28,9 @@
     "json-stable-stringify": "^1.0.1",
     "prop-types": "^15.6.2",
     "react-redux": "^5.0.7",
+    "react-router": "^4.3.1",
+    "react-router-redux": "^5.0.0-alpha.9",
+    "redux-devtools-extension": "^2.13.5",
     "redux-saga": "^0.16.0",
     "socket.io-client": "^2.1.1"
   },

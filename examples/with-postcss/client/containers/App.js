@@ -1,18 +1,16 @@
 import React from 'react'
-import { Helmet } from 'react-helmet'
 
-import styles from './App.css'
+import Header from './Header'
 
-export const App = () => (
-  <div className={styles.wrapper}>
-    <Helmet>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <link rel="stylesheet" href="/styles/bundle.css" />
-      <title>reSolve PostCSS Example</title>
-    </Helmet>
-    <div className={styles.title}>
-      Hello World, this is my first component with postcss-modules!
-    </div>
+const App = ({ children }) => (
+  <div>
+    <Header
+      title="reSolve PostCSS Example"
+      name="PostCSS Example"
+      favicon="/favicon.ico"
+      css={['/bootstrap.min.css', '/style.css']}
+    />
+    {children}
   </div>
 )
 

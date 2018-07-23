@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { connectResolveAdvanced } from 'resolve-redux'
 import { Redirect } from 'react-router'
 import { bindActionCreators } from 'redux'
-import urlLib from 'url'
 import styled from 'styled-components'
 
 const labelWidth = '30px'
@@ -37,12 +36,6 @@ const StoryTextInput = styled.textarea`
   vertical-align: middle;
 `
 
-// eslint-disable-next-line
-const ErrorMessage = styled.div`
-  color: red;
-  margin-left: ${labelWidth};
-`
-
 const SubmitButton = styled.button`
   margin-left: ${labelWidth};
   margin-top: 1em;
@@ -60,14 +53,6 @@ export class Submit extends React.PureComponent {
   handleSubmit = () => {
     const { title, link, text } = this.state
 
-    if (!title || (!text && !link)) {
-      return this.props.history.push('/error?text=Enter submit data')
-    }
-
-    if (link && !urlLib.parse(link).hostname) {
-      return this.props.history.push('/error?text=Enter valid url')
-    }
-
     return this.props.createStory({
       id: uuid.v4(),
       title,
@@ -77,7 +62,7 @@ export class Submit extends React.PureComponent {
   }
 
   render() {
-    if (!this.props.me) {
+    if (!this.props.me.id) {
       return <Redirect to="/login?redirect=/submit" />
     }
 

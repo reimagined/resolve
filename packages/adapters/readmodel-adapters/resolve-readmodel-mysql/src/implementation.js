@@ -3,7 +3,7 @@ const implementation = (
   storeApi,
   mysql,
   escapeId,
-  { metaName, ...options }
+  { metaName, checkStoredTableSchema, ...options }
 ) => {
   const { getMetaInfo, ...metaApi } = rawMetaApi
 
@@ -24,7 +24,7 @@ const implementation = (
         .then(() => mysql.createConnection(connectionOptions))
         .then(async connection => {
           pool.connection = connection
-          await getMetaInfo(pool)
+          await getMetaInfo(pool, checkStoredTableSchema)
         })
         .catch(error => error)
     }

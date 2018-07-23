@@ -1,9 +1,16 @@
 import App from './containers/App'
+import StyledComponents from './containers/StyledComponents'
 
 export default [
   {
     path: '/',
     component: App,
-    exact: true
+    routes: [
+      {
+        path: '/',
+        component: StyledComponents,
+        exact: true
+      }
+    ]
   }
 ]

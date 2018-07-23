@@ -314,7 +314,12 @@ const checkSearchExpression = (
   }
 }
 
-const checkUpdateExpression = (tableName, metaInfo, updateExpression) => {
+const checkUpdateExpression = (
+  tableName,
+  metaInfo,
+  updateExpression,
+  isUpsert
+) => {
   const operators =
     updateExpression instanceof Object
       ? Object.keys(updateExpression).filter(key => key.indexOf('$') > -1)
@@ -330,7 +335,7 @@ const checkUpdateExpression = (tableName, metaInfo, updateExpression) => {
     messages.updateExpressionNotValidObject
   )
 
-  const allowedOperators = ['$set', '$unset', '$inc']
+  const allowedOperators = isUpsert ? ['$set'] : ['$set', '$unset', '$inc']
 
   for (let operator of operators) {
     checkCondition(
@@ -522,15 +527,36 @@ const update = async (
   { metaApi, storeApi },
   tableName,
   searchExpression,
-  updateExpression
+  updateExpression,
+  inputOptions
 ) => {
   await checkTableExists(metaApi, tableName)
 
+  checkCondition(
+    checkOptionShape(inputOptions, [Object], true),
+    messages.invalidUpdateExpression,
+    inputOptions,
+    messages.invalidUpdateOptions
+  )
+
+  let options = inputOptions || {}
+
+  checkCondition(
+    Object.keys(options).length === 0 ||
+      (Object.keys(options).length === 1 &&
+        (options.upsert === true || options.upsert === false)),
+    messages.invalidUpdateExpression,
+    options,
+    messages.invalidUpdateOptions
+  )
+
+  const isUpsert = options.upsert === true
+
   const metaInfo = await metaApi.getTableInfo(tableName)
   checkSearchExpression(tableName, 'update', metaInfo, searchExpression)
-  checkUpdateExpression(tableName, metaInfo, updateExpression)
+  checkUpdateExpression(tableName, metaInfo, updateExpression, isUpsert)
 
-  await storeApi.update(tableName, searchExpression, updateExpression)
+  await storeApi.update(tableName, searchExpression, updateExpression, options)
 }
 
 const del = async ({ metaApi, storeApi }, tableName, searchExpression) => {

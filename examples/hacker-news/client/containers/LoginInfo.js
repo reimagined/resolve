@@ -6,6 +6,7 @@ import { Link as NormalLink } from 'react-router-dom'
 
 import Splitter from '../components/Splitter'
 import * as userActions from '../actions/userActions'
+import Form from './Form'
 
 const Link = styled(NormalLink)`
   color: white;
@@ -34,10 +35,10 @@ const LoginInfo = ({ me }) => (
         >
           logout
         </Link>
-        <form method="post" id="hidden-form-for-logout" action="/logout">
+        <Form method="post" id="hidden-form-for-logout" action="/logout">
           <input type="hidden" name="username" value="null" />
           <input type="hidden" />
-        </form>
+        </Form>
       </div>
     ) : (
       <Link to="/login">login</Link>

@@ -84,12 +84,14 @@ const update = async (
   { storage },
   tableName,
   searchExpression,
-  updateExpression
+  updateExpression,
+  options
 ) => {
   await new Promise((resolve, reject) =>
     storage[tableName].update(
       searchExpression,
       updateExpression,
+      { multi: true, upsert: !!options.upsert },
       err => (!err ? resolve() : reject(err))
     )
   )

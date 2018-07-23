@@ -30,7 +30,7 @@ export class StoryDetails extends React.PureComponent {
 
   render() {
     const { me, story, upvoteStory, unvoteStory } = this.props
-    const loggedIn = !!me
+    const loggedIn = !!me.id
 
     if (!story) {
       return null

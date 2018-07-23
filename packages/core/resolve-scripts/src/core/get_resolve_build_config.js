@@ -3,7 +3,8 @@ import resolveFile from './resolve_file'
 
 const getResolveBuildConfig = (argv, env) => {
   const path = resolveFile(
-    argv.buildConfig || env.BUILD_CONFIG_PATH || 'resolve.build.config.js'
+    argv.buildConfig || env.BUILD_CONFIG_PATH || 'resolve.build.config.js',
+    'resolve_build_config.js'
   )
 
   return importBabel(path)
