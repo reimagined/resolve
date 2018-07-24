@@ -1,6 +1,6 @@
 {
   "name": "with-authentication",
-  "version": "0.13.1",
+  "version": "0.13.2",
   "private": true,
   "scripts": {
     "build": "resolve-scripts build",
@@ -21,8 +21,8 @@
     "react-helmet": "5.2.0",
     "react-bootstrap": "0.32.1",
     "redux": "4.0.0",
-    "resolve-scripts": "0.13.1",
-    "resolve-redux": "0.13.1",
+    "resolve-scripts": "0.13.2",
+    "resolve-redux": "0.13.2",
     "styled-components": "3.3.3",
     "uuid": "3.3.2"
   },

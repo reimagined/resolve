@@ -1,6 +1,6 @@
 {
   "name": "resolve-storage-mongo",
-  "version": "0.13.1",
+  "version": "0.13.2",
   "description": "This package serves as an adapter for resolve-storage to store events using MongoDB.",
   "main": "./dist/index.js",
   "bugs": {
@@ -14,12 +14,16 @@
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
-  "keywords": ["cqrs", "eventsourcing", "es", "ddd"],
-  "homepage":
-    "https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-mongo#readme",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-mongo#readme",
   "dependencies": {
     "mongodb": "^3.1.1",
-    "resolve-storage-base": "0.13.1"
+    "resolve-storage-base": "0.13.2"
   },
   "devDependencies": {
     "@babel/cli": "7.0.0-beta.54",
