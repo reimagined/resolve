@@ -70,7 +70,7 @@ describe('Read-model generic adapter API', () => {
         const lastError = await readModel.getLastError()
 
         if (lastError != null) {
-          result = lastError
+          throw lastError
         }
 
         return result
