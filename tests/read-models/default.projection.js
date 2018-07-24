@@ -1,5 +1,4 @@
 const projection = {
-
   Init: async store => {
     await store.defineTable('TestTable', {
       indexes: {
