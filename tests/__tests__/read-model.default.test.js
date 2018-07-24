@@ -1,8 +1,11 @@
-describe('Read-model generic adapter API', () => {
-  const createReadModel = require('resolve-query').createReadModel
-  const createAdapter = require('resolve-readmodel-memory').default
+import { createReadModel } from 'resolve-query'
+import createMemoryReadModelAdapter from 'resolve-readmodel-memory'
 
-  let buildTestReadModel, events
+import projection from '../read-models/default.projection.js'
+import resolvers from '../read-models/default.resolvers.js'
+
+describe('Read-model generic adapter API', () => {
+  let buildTestReadModelReader, events
 
   it('Insert and find in table', async () => {
     events.push({ type: 'INSERT_TEST', timestamp: 100 })
@@ -56,7 +59,7 @@ describe('Read-model generic adapter API', () => {
 
     buildTestReadModelReader = () => {
       const readModel = createReadModel({
-        adapter: createAdapter(),
+        adapter: createMemoryReadModelAdapter(),
         projection,
         eventStore,
         resolvers
@@ -76,7 +79,7 @@ describe('Read-model generic adapter API', () => {
   })
 
   afterEach(async () => {
-    buildTestReadModel = null
+    buildTestReadModelReader = null
     events = null
   })
 })
