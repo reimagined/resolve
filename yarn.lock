@@ -30,7 +30,7 @@
   dependencies:
     "@babel/highlight" "7.0.0-beta.54"
 
-"@babel/core@7.0.0-beta.54":
+"@babel/core@7.0.0-beta.54", "@babel/core@^7.0.0-beta.49":
   version "7.0.0-beta.54"
   resolved "https://registry.yarnpkg.com/@babel/core/-/core-7.0.0-beta.54.tgz#253c54d0095403a5cfa764e7d9b458194692d02b"
   dependencies:
@@ -703,7 +703,7 @@
   dependencies:
     regenerator-transform "^0.13.3"
 
-"@babel/plugin-transform-runtime@7.0.0-beta.54":
+"@babel/plugin-transform-runtime@7.0.0-beta.54", "@babel/plugin-transform-runtime@^7.0.0-beta.49":
   version "7.0.0-beta.54"
   resolved "https://registry.yarnpkg.com/@babel/plugin-transform-runtime/-/plugin-transform-runtime-7.0.0-beta.54.tgz#ad45d1e84a9d0cfc48df148dda609ff09c121fd2"
   dependencies:
@@ -757,7 +757,7 @@
     core-js "^2.5.7"
     regenerator-runtime "^0.11.1"
 
-"@babel/preset-env@7.0.0-beta.54":
+"@babel/preset-env@7.0.0-beta.54", "@babel/preset-env@^7.0.0-beta.49":
   version "7.0.0-beta.54"
   resolved "https://registry.yarnpkg.com/@babel/preset-env/-/preset-env-7.0.0-beta.54.tgz#4b05c4e3aaed64a509098e4e854dfc0e02edf053"
   dependencies:
@@ -802,7 +802,7 @@
     js-levenshtein "^1.1.3"
     semver "^5.3.0"
 
-"@babel/preset-react@7.0.0-beta.54":
+"@babel/preset-react@7.0.0-beta.54", "@babel/preset-react@^7.0.0-beta.49":
   version "7.0.0-beta.54"
   resolved "https://registry.yarnpkg.com/@babel/preset-react/-/preset-react-7.0.0-beta.54.tgz#98021037a74b27b46a46d3b28e84a1f2f406dadb"
   dependencies:
@@ -812,7 +812,7 @@
     "@babel/plugin-transform-react-jsx-self" "7.0.0-beta.54"
     "@babel/plugin-transform-react-jsx-source" "7.0.0-beta.54"
 
-"@babel/preset-stage-0@7.0.0-beta.54":
+"@babel/preset-stage-0@7.0.0-beta.54", "@babel/preset-stage-0@^7.0.0-beta.49":
   version "7.0.0-beta.54"
   resolved "https://registry.yarnpkg.com/@babel/preset-stage-0/-/preset-stage-0-7.0.0-beta.54.tgz#c6acbb97e1e4699a61a84fbfdc351f0f6d93041a"
   dependencies:
@@ -962,8 +962,8 @@
   resolved "https://registry.yarnpkg.com/@types/error-stack-parser/-/error-stack-parser-1.3.18.tgz#e01c9f8c85ca83b610320c62258b0c9026ade0f7"
 
 "@types/lodash@^4.14.72":
-  version "4.14.112"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.112.tgz#4a8d8e5716b97a1ac01fe1931ad1e4cba719de5a"
+  version "4.14.113"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.113.tgz#1d1cb063f17fec4cc46f1a90d978ebf441113061"
 
 "@types/node@*":
   version "10.5.2"
@@ -3783,8 +3783,8 @@ eslint@^4.0.0, eslint@^4.5.0:
     text-table "~0.2.0"
 
 eslint@^5.0.1:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-5.1.0.tgz#2ed611f1ce163c0fb99e1e0cda5af8f662dff645"
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-5.2.0.tgz#3901ae249195d473e633c4acbc370068b1c964dc"
   dependencies:
     ajv "^6.5.0"
     babel-code-frame "^6.26.0"
@@ -3802,7 +3802,7 @@ eslint@^5.0.1:
     functional-red-black-tree "^1.0.1"
     glob "^7.1.2"
     globals "^11.7.0"
-    ignore "^3.3.3"
+    ignore "^4.0.2"
     imurmurhash "^0.1.4"
     inquirer "^5.2.0"
     is-resolvable "^1.1.0"
@@ -4815,6 +4815,10 @@ ignore-walk@^3.0.1:
 ignore@^3.2.7, ignore@^3.3.3:
   version "3.3.10"
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-3.3.10.tgz#0a97fb876986e8081c631160f8f9f389157f0043"
+
+ignore@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/ignore/-/ignore-4.0.2.tgz#0a8dd228947ec78c2d7f736b1642a9f7317c1905"
 
 immediate@~3.0.5:
   version "3.0.6"
@@ -6043,7 +6047,7 @@ locate-path@^3.0.0:
     p-locate "^3.0.0"
     path-exists "^3.0.0"
 
-lodash-es@^4.17.5:
+lodash-es@^4.17.5, lodash-es@^4.2.1:
   version "4.17.10"
   resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.10.tgz#62cd7104cdf5dd87f235a837f0ede0e8e5117e05"
 
@@ -6107,7 +6111,7 @@ lodash.unescape@4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/lodash.unescape/-/lodash.unescape-4.0.1.tgz#bf2249886ce514cda112fae9218cdc065211fc9c"
 
-lodash@4.17.10, "lodash@4.6.1 || ^4.16.1", lodash@^4.13.1, lodash@^4.14.0, lodash@^4.14.2, lodash@^4.15.0, lodash@^4.16.0, lodash@^4.17.10, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.0, lodash@^4.3.0:
+lodash@4.17.10, "lodash@4.6.1 || ^4.16.1", lodash@^4.13.1, lodash@^4.14.0, lodash@^4.14.2, lodash@^4.15.0, lodash@^4.16.0, lodash@^4.17.10, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.0, lodash@^4.2.1, lodash@^4.3.0:
   version "4.17.10"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.10.tgz#1b7793cf7259ea38fb3661d4d38b3260af8ae4e7"
 
@@ -6154,7 +6158,7 @@ loglevel@^1.4.1:
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.6.1.tgz#e0fc95133b6ef276cdc8887cdaf24aa6f156f8fa"
 
-lolex@^2.3.2, lolex@^2.4.2:
+lolex@^2.3.2, lolex@^2.4.2, lolex@^2.7.1:
   version "2.7.1"
   resolved "https://registry.yarnpkg.com/lolex/-/lolex-2.7.1.tgz#e40a8c4d1f14b536aa03e42a537c7adbaf0c20be"
 
@@ -6645,7 +6649,7 @@ nice-try@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.4.tgz#d93962f6c52f2c1558c0fbda6d512819f1efe1c4"
 
-nise@^1.3.3:
+nise@^1.3.3, nise@^1.4.2:
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/nise/-/nise-1.4.2.tgz#a9a3800e3994994af9e452333d549d60f72b8e8c"
   dependencies:
@@ -6834,8 +6838,8 @@ number-is-nan@^1.0.0:
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
 
 nwsapi@^2.0.0:
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/nwsapi/-/nwsapi-2.0.6.tgz#5fb7f5b828b97fe1de47eb2a6f8703036b6cb71a"
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/nwsapi/-/nwsapi-2.0.7.tgz#6fc54c254621f10cac5225b76e81c74120139b78"
 
 oao@=1.4.1:
   version "1.4.1"
@@ -7797,7 +7801,7 @@ react-bootstrap@0.32.1:
     uncontrollable "^4.1.0"
     warning "^3.0.0"
 
-react-dom@16.4.1, react-dom@^16.4.1:
+react-dom@16.4.1, react-dom@^16.4.0, react-dom@^16.4.1:
   version "16.4.1"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.4.1.tgz#7f8b0223b3a5fbe205116c56deb85de32685dad6"
   dependencies:
@@ -7902,7 +7906,7 @@ react-side-effect@^1.1.0:
     exenv "^1.2.1"
     shallowequal "^1.0.1"
 
-react-test-renderer@16.4.1, react-test-renderer@^16.0.0-0, react-test-renderer@^16.4.1:
+react-test-renderer@16.4.1, react-test-renderer@^16.0.0-0, react-test-renderer@^16.4.0, react-test-renderer@^16.4.1:
   version "16.4.1"
   resolved "https://registry.yarnpkg.com/react-test-renderer/-/react-test-renderer-16.4.1.tgz#f2fb30c2c7b517db6e5b10ed20bb6b0a7ccd8d70"
   dependencies:
@@ -7920,7 +7924,7 @@ react-transition-group@^2.0.0, react-transition-group@^2.2.0:
     prop-types "^15.6.2"
     react-lifecycles-compat "^3.0.4"
 
-react@16.4.1, react@^16.4.1:
+react@16.4.1, react@^16.4.0, react@^16.4.1:
   version "16.4.1"
   resolved "https://registry.yarnpkg.com/react/-/react-16.4.1.tgz#de51ba5764b5dbcd1f9079037b862bd26b82fe32"
   dependencies:
@@ -8045,6 +8049,15 @@ redux@4.0.0, redux@^4.0.0:
   dependencies:
     loose-envify "^1.1.0"
     symbol-observable "^1.2.0"
+
+redux@^3.7.2:
+  version "3.7.2"
+  resolved "https://registry.yarnpkg.com/redux/-/redux-3.7.2.tgz#06b73123215901d25d065be342eb026bc1c8537b"
+  dependencies:
+    lodash "^4.2.1"
+    lodash-es "^4.2.1"
+    loose-envify "^1.1.0"
+    symbol-observable "^1.0.3"
 
 regenerate-unicode-properties@^7.0.0:
   version "7.0.0"
@@ -8598,7 +8611,7 @@ simple-get@^2.7.0:
     once "^1.3.1"
     simple-concat "^1.0.0"
 
-sinon@6.1.3, sinon@^6.1.3:
+sinon@6.1.3:
   version "6.1.3"
   resolved "https://registry.yarnpkg.com/sinon/-/sinon-6.1.3.tgz#98e7d716b7b11f7f1200e9c997e74f50ae094660"
   dependencies:
@@ -8620,6 +8633,19 @@ sinon@^5.0.10:
     lodash.get "^4.4.2"
     lolex "^2.4.2"
     nise "^1.3.3"
+    supports-color "^5.4.0"
+    type-detect "^4.0.8"
+
+sinon@^6.1.3:
+  version "6.1.4"
+  resolved "https://registry.yarnpkg.com/sinon/-/sinon-6.1.4.tgz#b67f7a7b7fe2496042b54a5c2f425e2d699927a2"
+  dependencies:
+    "@sinonjs/formatio" "^2.0.0"
+    "@sinonjs/samsam" "^2.0.0"
+    diff "^3.5.0"
+    lodash.get "^4.4.2"
+    lolex "^2.7.1"
+    nise "^1.4.2"
     supports-color "^5.4.0"
     type-detect "^4.0.8"
 
@@ -9094,7 +9120,7 @@ symbol-observable@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-1.0.1.tgz#8340fc4702c3122df5d22288f88283f513d3fdd4"
 
-symbol-observable@^1.1.0, symbol-observable@^1.2.0:
+symbol-observable@^1.0.3, symbol-observable@^1.1.0, symbol-observable@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-1.2.0.tgz#c22688aed4eab3cdc2dfeacbb561660560a00804"
 
@@ -9387,7 +9413,7 @@ testcafe@0.20.4:
     typescript "^2.2.2"
     useragent "^2.1.7"
 
-testcafe@^0.20.4:
+testcafe@^0.20.2, testcafe@^0.20.4:
   version "0.20.5"
   resolved "https://registry.yarnpkg.com/testcafe/-/testcafe-0.20.5.tgz#3230d2731d1ec2d84856115c218228dafb16883c"
   dependencies:
@@ -9505,8 +9531,8 @@ timm@1.2.5:
   resolved "https://registry.yarnpkg.com/timm/-/timm-1.2.5.tgz#2892ac9f490a33e2300e5d94797f184cef16748b"
 
 timm@^1.2.3:
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/timm/-/timm-1.4.2.tgz#8ff71882e68c91b8ee25c716dc7b3ebcee3b75be"
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/timm/-/timm-1.5.0.tgz#cf5ad2d9bc86095cb4e242c53709c3a3808e06f2"
 
 tmp@0.0.28:
   version "0.0.28"
