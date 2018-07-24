@@ -16,7 +16,7 @@ export default ({ resolveConfig, isClient }) => {
   if (resolveConfig.sagas in resolveConfig[envKey]) {
     throw new Error(`${message.clientEnvError}.sagas`)
   }
-  const sagas = resolveFile(resolveConfig.sagas)
+  const sagas = resolveFile(resolveConfig.sagas, 'sagas.js')
 
   const exports = []
 

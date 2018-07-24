@@ -62,10 +62,7 @@
     "testcafe": "0.20.4"
   },
   "jest": {
-    "setupFiles": [
-      "raf/polyfill",
-      "<rootDir>/test/unit/jest-setup.js"
-    ],
+    "setupFiles": ["raf/polyfill", "<rootDir>/test/unit/jest-setup.js"],
     "coveragePathIgnorePatterns": [
       "node_modules/",
       "dist/",

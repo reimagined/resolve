@@ -25,7 +25,7 @@ const setup = argv => {
     const configPath = path.resolve(process.cwd(), 'resolve.config.json')
     if (fs.existsSync(configPath)) {
       localConfig = extractEnv(
-        envString(fs.readFileSync(resolveFile(configPath)).toString(), env)
+        envString(fs.readFileSync(configPath).toString(), env)
       )
     }
   }

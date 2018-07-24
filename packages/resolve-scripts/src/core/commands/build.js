@@ -19,6 +19,7 @@ export const builder = yargs =>
     .option('build-config', cli.buildConfig)
     .option('print-config', cli.printConfig)
     .option('root-path', cli.rootPath)
+    .option('static-path', cli.staticPath)
     .option('open-browser', cli.openBrowser)
     .implies('inspect', 'start')
     .conflicts('dev', 'prod')
