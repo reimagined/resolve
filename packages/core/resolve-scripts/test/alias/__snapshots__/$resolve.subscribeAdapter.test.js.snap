@@ -2,7 +2,7 @@
 
 exports[`base config works correctly [client] 1`] = `
 "
-import module from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testAdapter.js/dist/create_client_adapter\\"
+import module from \\"<MONOREPO_DIR>/packages/core/resolve-scripts/test/alias/files/testAdapter.js/dist/create_client_adapter\\"
 
 const options = {}
 
@@ -12,7 +12,7 @@ export default { module, options }
 
 exports[`base config works correctly [server] 1`] = `
 "
-import module from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testAdapter.js/dist/create_server_adapter\\"
+import module from \\"<MONOREPO_DIR>/packages/core/resolve-scripts/test/alias/files/testAdapter.js/dist/create_client_adapter\\"
 
 const options = {}
 

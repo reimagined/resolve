@@ -38,7 +38,8 @@
     "prettier-json": "prettier --write \"**/**.json\"",
     "publish": "oao publish -i \"examples/*\" --no-git-commit --no-changelog",
     "test": "oao all \"yarn test --color 2>&1\"",
-    "test:functional": "oao run-script test:functional"
+    "test:functional": "oao run-script test:functional",
+    "test:clean-snapshots": "npx oao all \"yarn test -u --color 2>&1\""
   },
   "pre-commit": [
     "lint-staged",
