@@ -2,9 +2,9 @@
 
 exports[`base config works correctly [client] 1`] = `
 "
-import store from \\"<MONOREPO_DIR>/packages/core/resolve-scripts/test/alias/files/testStore.js\\"
-import reducers from \\"<MONOREPO_DIR>/packages/core/resolve-scripts/test/alias/files/testReducers.js\\"
-import middlewares from \\"<MONOREPO_DIR>/packages/core/resolve-scripts/test/alias/files/testMiddlewares.js\\"
+import store from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testStore.js\\"
+import reducers from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testReducers.js\\"
+import middlewares from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testMiddlewares.js\\"
 
 export default {
   store, reducers, middlewares
@@ -14,9 +14,9 @@ export default {
 
 exports[`base config works correctly [server] 1`] = `
 "
-import store from \\"<MONOREPO_DIR>/packages/core/resolve-scripts/test/alias/files/testStore.js\\"
-import reducers from \\"<MONOREPO_DIR>/packages/core/resolve-scripts/test/alias/files/testReducers.js\\"
-import middlewares from \\"<MONOREPO_DIR>/packages/core/resolve-scripts/test/alias/files/testMiddlewares.js\\"
+import store from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testStore.js\\"
+import reducers from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testReducers.js\\"
+import middlewares from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testMiddlewares.js\\"
 
 export default {
   store, reducers, middlewares

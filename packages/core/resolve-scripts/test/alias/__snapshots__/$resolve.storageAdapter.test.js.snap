@@ -2,7 +2,7 @@
 
 exports[`base config works correctly [server] 1`] = `
 "
-import storageAdapterModule from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testAdapter.js\\"
+import storageAdapterModule from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testAdapter.js\\"
 
 const storageAdapterOptions = {
   \\"url\\": \\"http://test.test\\"

@@ -2,7 +2,7 @@
 
 exports[`base config works correctly [server] 1`] = `
 "
-import sagas from \\"<MONOREPO_DIR>/packages/core/resolve-scripts/test/alias/files/testSagas.js\\"
+import sagas from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testSagas.js\\"
 
 export default sagas
 "
