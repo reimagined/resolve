@@ -109,7 +109,21 @@ const projection = {
     )
   },
 
-  DELETE_TEST: async (store, event) => {}
+  DELETE_TEST: async (store, event) => {
+    await store.delete('TestTable', {
+      firstIndexName: { $gt: 1 },
+      secondIndexName: 'idx-a'
+    })
+
+    await store.delete('TestTable', {
+      $or: [
+        {
+          $and: [{ firstIndexName: { $lt: 1 } }, { secondIndexName: 'idx-a' }]
+        },
+        { secondIndexName: 'idx-b' }
+      ]
+    })
+  }
 }
 
 export default projection

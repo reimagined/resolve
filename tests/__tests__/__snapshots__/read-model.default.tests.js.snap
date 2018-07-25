@@ -2,7 +2,7 @@
 
 exports[`Read-model generic adapter API Delete and non-parametrized resolver invocation 1`] = `
 Object {
-  "countResult": 4,
+  "countResult": 2,
   "findOneResult": Object {
     "firstJsonName": Object {
       "a": 1,
