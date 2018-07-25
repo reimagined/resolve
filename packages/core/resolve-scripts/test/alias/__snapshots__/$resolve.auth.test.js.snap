@@ -2,7 +2,7 @@
 
 exports[`works correctly [server] 1`] = `
 "
-import strategies from \\"<MONOREPO_DIR>/packages/resolve-scripts/test/alias/files/testStrategies.js\\"
+import strategies from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testStrategies.js\\"
 
 const auth = {
   strategies

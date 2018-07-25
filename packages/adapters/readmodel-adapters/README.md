@@ -10,7 +10,7 @@ The read model storage API consists of the following asynchronous functions:
 * `getReadable` - provides an API to access (read-only) and retrieve data from a store.  
 * `getError` - returns the last internal adapter error if a failure occurred.
 
-Available adapters:  
+Available adapters:
 * [resolve-readmodel-memory](./resolve-readmodel-memory)
 	Used to store a read model in Memory.
 * [resolve-readmodel-mysql](./resolve-readmodel-mysql)

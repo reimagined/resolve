@@ -21,11 +21,11 @@
   },
   "workspaces": {
     "packages": [
-      "packages/*",
-      "packages/bus-adapters/*",
-      "packages/storage-adapters/*",
-      "packages/readmodel-adapters/*",
-      "packages/subscribe-adapters/*",
+      "packages/core/*",
+      "packages/adapters/bus-adapters/*",
+      "packages/adapters/storage-adapters/*",
+      "packages/adapters/readmodel-adapters/*",
+      "packages/adapters/subscribe-adapters/*",
       "examples/*"
     ]
   },
@@ -38,7 +38,8 @@
     "prettier-json": "prettier --write \"**/**.json\"",
     "publish": "oao publish -i \"examples/*\" --no-git-commit --no-changelog",
     "test": "oao all \"yarn test --color 2>&1\"",
-    "test:functional": "oao run-script test:functional"
+    "test:functional": "oao run-script test:functional",
+    "test:clean-snapshots": "npx oao all \"yarn test -u --color 2>&1\""
   },
   "pre-commit": [
     "lint-staged",
