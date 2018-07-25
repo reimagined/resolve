@@ -5,7 +5,12 @@ const projection = {
         firstIndexName: 'number',
         secondIndexName: 'string'
       },
-      fields: ['firstFieldName', 'secondFieldName', 'firstJsonName', 'secondJsonName']
+      fields: [
+        'firstFieldName',
+        'secondFieldName',
+        'firstJsonName',
+        'secondJsonName'
+      ]
     })
   },
 
@@ -22,20 +27,28 @@ const projection = {
     await store.insert('TestTable', {
       firstIndexName: 2,
       secondIndexName: 'idx-a',
+      firstFieldName: null,
       secondFieldName: 100,
-      firstJsonName: { c: 3, d: 4, e: 20 }
+      firstJsonName: { c: 3, d: 4, e: 20 },
+      secondJsonName: null
     })
 
     await store.insert('TestTable', {
       firstIndexName: 3,
       secondIndexName: 'idx-b',
+      firstFieldName: null,
       secondFieldName: 200,
+      firstJsonName: null,
       secondJsonName: [3, 2, 1]
     })
 
     await store.insert('TestTable', {
       firstIndexName: 4,
-      firstFieldName: 'text'
+      secondIndexName: null,
+      firstFieldName: 'text',
+      secondFieldName: null,
+      firstJsonName: null,
+      secondJsonName: null
     })
   },
 
@@ -44,17 +57,16 @@ const projection = {
       'TestTable',
       {
         firstIndexName: { $gt: 1 },
-        secondIndexName: { $eq: 'idx-a' }
+        secondIndexName: 'idx-a'
       },
       {
         $set: {
-          'firstJsonName.f': 'new-inner-field',
-          thirdFieldName: 'new-outer-field',
-          thirdJsonName: ['new', 'outer', 'json', 'value']
+          'firstJsonName.f': 'inner-field',
+          firstFieldName: 'outer-field',
+          secondJsonName: ['outer', 'json', 'value']
         },
         $unset: {
-          'firstJsonName.d': true,
-          secondJsonName: true
+          'firstJsonName.d': true
         },
         $inc: {
           'firstJsonName.e': 5,
@@ -68,16 +80,15 @@ const projection = {
       {
         $or: [
           {
-            $and: [{ firstIndexName: { $lt: 1 } }, { secondIndexName: { $eq: 'idx-a' } }]
+            $and: [{ firstIndexName: { $lt: 1 } }, { secondIndexName: 'idx-a' }]
           },
           { secondIndexName: 'idx-b' }
         ]
       },
       {
         $set: {
-          'firstJsonName.f': 'new-inner-field',
-          thirdFieldName: 'new-outer-field',
-          thirdJsonName: ['new', 'outer', 'json', 'value']
+          firstFieldName: 'outer-field',
+          secondJsonName: ['outer', 'json', 'value']
         }
       }
     )
@@ -89,12 +100,9 @@ const projection = {
       { firstIndexName: 10 },
       {
         $set: {
-          'firstJsonName.f': 'new-inner-field',
-          thirdFieldName: 'new-outer-field',
-          thirdJsonName: ['new', 'outer', 'json', 'value']
-        },
-        $unset: {
-          thirdFieldName: true
+          'firstJsonName.f': 'inner-field',
+          firstFieldName: 'outer-field',
+          secondJsonName: ['outer', 'json', 'value']
         }
       },
       { upsert: true }
@@ -102,7 +110,6 @@ const projection = {
   },
 
   DELETE_TEST: async (store, event) => {}
-
 }
 
 export default projection

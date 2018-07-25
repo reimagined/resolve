@@ -1,44 +1,58 @@
 import { createReadModel } from 'resolve-query'
 import createMemoryReadModelAdapter from 'resolve-readmodel-memory'
 
-import projection from '../read-models/default.projection.js'
-import resolvers from '../read-models/default.resolvers.js'
+import projection from '../read-models/default.projection'
+import resolvers from '../read-models/default.resolvers'
 
 describe('Read-model generic adapter API', () => {
   let buildTestReadModelReader, events
 
-  it('Insert and find in table', async () => {
+  it('Insert and non-parametrized resolver invocation', async () => {
     events.push({ type: 'INSERT_TEST', timestamp: 100 })
     const reader = buildTestReadModelReader()
 
-    const result = await reader('RESOLVER_TEST', { x: 1, y: 2 })
+    const result = await reader('NON_PARAMERTIZED_RESOLVER_TEST', {})
     expect(result).toMatchSnapshot()
   })
 
-  it('Update and find in table', async () => {
+  it('Update and non-parametrized resolver invocation', async () => {
     events.push({ type: 'INSERT_TEST', timestamp: 100 })
     events.push({ type: 'UPDATE_TEST', timestamp: 101 })
     const reader = buildTestReadModelReader()
 
-    const result = await reader('RESOLVER_TEST', { x: 1, y: 2 })
+    const result = await reader('NON_PARAMERTIZED_RESOLVER_TEST', {})
     expect(result).toMatchSnapshot()
   })
 
-  it('Upsert and find in table', async () => {
+  it('Upsert and non-parametrized resolver invocation', async () => {
     events.push({ type: 'INSERT_TEST', timestamp: 100 })
     events.push({ type: 'UPSERT_TEST', timestamp: 101 })
     const reader = buildTestReadModelReader()
 
-    const result = await reader('RESOLVER_TEST', { x: 1, y: 2 })
+    const result = await reader('NON_PARAMERTIZED_RESOLVER_TEST', {})
     expect(result).toMatchSnapshot()
   })
 
-  it('Delete and find in table', async () => {
+  it('Delete and non-parametrized resolver invocation', async () => {
     events.push({ type: 'INSERT_TEST', timestamp: 100 })
     events.push({ type: 'DELETE_TEST', timestamp: 101 })
     const reader = buildTestReadModelReader()
 
-    const result = await reader('RESOLVER_TEST', { x: 1, y: 2 })
+    const result = await reader('NON_PARAMERTIZED_RESOLVER_TEST', {})
+    expect(result).toMatchSnapshot()
+  })
+
+  it('Update and parametrized resolver invocation', async () => {
+    events.push({ type: 'INSERT_TEST', timestamp: 100 })
+    events.push({ type: 'UPDATE_TEST', timestamp: 101 })
+    const reader = buildTestReadModelReader()
+
+    const result = await reader('PARAMETRIZED_RESOLVER_TEST', {
+      firstFieldCondition: 10,
+      secondFieldCondition: 2,
+      pageNumber: 2,
+      pageLength: 5
+    })
     expect(result).toMatchSnapshot()
   })
 
@@ -47,7 +61,11 @@ describe('Read-model generic adapter API', () => {
     const eventStore = {
       async subscribeByEventType(eventTypes, handler, { startTime = 0 } = {}) {
         for (let event of events) {
-          if (event && eventTypes.indexOf(event.type) > -1 && event.timestamp >= startTime) {
+          if (
+            event &&
+            eventTypes.indexOf(event.type) > -1 &&
+            event.timestamp >= startTime
+          ) {
             handler(event)
             await Promise.resolve()
           }
