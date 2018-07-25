@@ -1,0 +1,43 @@
+{
+  "name": "resolve-storage-mysql",
+  "version": "0.13.2",
+  "description": "This package serves as an adapter for resolve-storage to store events using MongoDB.",
+  "main": "./dist/index.js",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "scripts": {
+    "prepublish": "babel --out-dir ./dist ./src",
+    "test": "jest --testMatch=**/test/*.tests.js",
+    "testw": "jest --testMatch=**/test/*.tests.js --watchAll"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "author": "reimagined team",
+  "license": "MIT",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-mysql#readme",
+  "dependencies": {
+    "mysql2": "^1.5.3",
+    "resolve-storage-base": "0.13.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "7.0.0-beta.54",
+    "@babel/core": "7.0.0-beta.54",
+    "@babel/plugin-transform-runtime": "7.0.0-beta.54",
+    "@babel/preset-env": "7.0.0-beta.54",
+    "@babel/preset-react": "7.0.0-beta.54",
+    "@babel/preset-stage-0": "7.0.0-beta.54",
+    "babel-core": "^7.0.0-0",
+    "babel-jest": "^23.0.0",
+    "chai": "^4.1.2",
+    "jest": "^23.0.1",
+    "regenerator-runtime": "^0.11.1",
+    "sinon": "^5.0.10",
+    "sql-formatter": "^2.3.1"
+  }
+}
