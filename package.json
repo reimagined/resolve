@@ -26,7 +26,8 @@
       "packages/adapters/storage-adapters/*",
       "packages/adapters/readmodel-adapters/*",
       "packages/adapters/subscribe-adapters/*",
-      "examples/*"
+      "examples/*",
+      "tests"
     ]
   },
   "scripts": {

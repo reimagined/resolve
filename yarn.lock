@@ -8281,6 +8281,28 @@ resolve-pathname@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/resolve-pathname/-/resolve-pathname-2.2.0.tgz#7e9ae21ed815fd63ab189adeee64dc831eefa879"
 
+resolve-query@0.13.1:
+  version "0.13.1"
+  resolved "https://registry.yarnpkg.com/resolve-query/-/resolve-query-0.13.1.tgz#939e837eeaa057683eea4828a2bc7405dee752e9"
+  dependencies:
+    diff-json "^0.1.11"
+    invariant-function-hash "^1.0.1"
+    resolve-readmodel-memory "0.13.1"
+
+resolve-readmodel-base@0.13.1:
+  version "0.13.1"
+  resolved "https://registry.yarnpkg.com/resolve-readmodel-base/-/resolve-readmodel-base-0.13.1.tgz#49b0e499d21f16fed51575e6e55cdf63ff0c1d53"
+  dependencies:
+    uuid "^3.3.2"
+
+resolve-readmodel-memory@0.13.1:
+  version "0.13.1"
+  resolved "https://registry.yarnpkg.com/resolve-readmodel-memory/-/resolve-readmodel-memory-0.13.1.tgz#76eec91c7c8eb1202cc5caad1653223207ed8e25"
+  dependencies:
+    nedb "^1.8.0"
+    resolve-readmodel-base "0.13.1"
+    uuid "^3.3.2"
+
 resolve-url@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/resolve-url/-/resolve-url-0.2.1.tgz#2c637fe77c893afd2a663fe21aa9080068e2052a"
