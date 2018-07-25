@@ -11,7 +11,8 @@ describe('Read-model generic adapter API', () => {
     events.push({
       type: 'EVENT_APPEARED',
       aggregateId: 'aggregate-id',
-      timestamp: 100
+      timestamp: 100,
+      payload: 'test'
     })
     const reader = buildTestViewModelReader()
 
@@ -23,12 +24,14 @@ describe('Read-model generic adapter API', () => {
     events.push({
       type: 'EVENT_APPEARED',
       aggregateId: 'aggregate-id1',
-      timestamp: 100
+      timestamp: 100,
+      payload: 'test'
     })
     events.push({
       type: 'EVENT_APPEARED',
       aggregateId: 'aggregate-id2',
-      timestamp: 101
+      timestamp: 101,
+      payload: 'test'
     })
     const reader = buildTestViewModelReader()
 
@@ -40,17 +43,20 @@ describe('Read-model generic adapter API', () => {
     events.push({
       type: 'EVENT_APPEARED',
       aggregateId: 'aggregate-id1',
-      timestamp: 100
+      timestamp: 100,
+      payload: 'test'
     })
     events.push({
       type: 'EVENT_APPEARED',
       aggregateId: 'aggregate-id2',
-      timestamp: 101
+      timestamp: 101,
+      payload: 'test'
     })
     events.push({
       type: 'EVENT_APPEARED',
       aggregateId: 'aggregate-id3',
-      timestamp: 102
+      timestamp: 102,
+      payload: 'test'
     })
     const reader = buildTestViewModelReader()
 

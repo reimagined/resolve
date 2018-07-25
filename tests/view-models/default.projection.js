@@ -6,10 +6,13 @@ const projection = {
   }),
 
   EVENT_APPEARED: (state, event) => {
+    const testEventContent = event.payload
+
     const nextState = {
       ...state,
       modified: 400,
-      content: 500
+      content: 500,
+      testEventContent
     }
 
     return nextState

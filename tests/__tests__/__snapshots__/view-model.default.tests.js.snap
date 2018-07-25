@@ -6,6 +6,7 @@ Object {
   "modified": 400,
   "some": 100,
   "state": 200,
+  "testEventContent": "test",
 }
 `;
 
@@ -15,6 +16,7 @@ Object {
   "modified": 400,
   "some": 100,
   "state": 200,
+  "testEventContent": "test",
 }
 `;
 
@@ -24,5 +26,6 @@ Object {
   "modified": 400,
   "some": 100,
   "state": 200,
+  "testEventContent": "test",
 }
 `;

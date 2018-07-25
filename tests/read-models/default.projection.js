@@ -15,10 +15,12 @@ const projection = {
   },
 
   INSERT_TEST: async (store, event) => {
+    const testEventContent = event.payload
+
     await store.insert('TestTable', {
       firstIndexName: 1,
       secondIndexName: 'idx-a',
-      firstFieldName: 'content',
+      firstFieldName: testEventContent,
       secondFieldName: 0,
       firstJsonName: { a: 1, b: 2, e: 10 },
       secondJsonName: [1, 2, 3]
@@ -45,7 +47,7 @@ const projection = {
     await store.insert('TestTable', {
       firstIndexName: 4,
       secondIndexName: null,
-      firstFieldName: 'text',
+      firstFieldName: testEventContent,
       secondFieldName: null,
       firstJsonName: null,
       secondJsonName: null
@@ -53,6 +55,8 @@ const projection = {
   },
 
   UPDATE_TEST: async (store, event) => {
+    const testEventContent = event.payload
+
     await store.update(
       'TestTable',
       {
@@ -63,7 +67,7 @@ const projection = {
         $set: {
           'firstJsonName.f': 'inner-field',
           firstFieldName: 'outer-field',
-          secondJsonName: ['outer', 'json', 'value']
+          secondJsonName: ['outer', 'json', 'value', testEventContent]
         },
         $unset: {
           'firstJsonName.d': true
@@ -88,13 +92,15 @@ const projection = {
       {
         $set: {
           firstFieldName: 'outer-field',
-          secondJsonName: ['outer', 'json', 'value']
+          secondJsonName: ['outer', 'json', 'value', testEventContent]
         }
       }
     )
   },
 
   UPSERT_TEST: async (store, event) => {
+    const testEventContent = event.payload
+
     await store.update(
       'TestTable',
       { firstIndexName: 10 },
@@ -102,7 +108,7 @@ const projection = {
         $set: {
           'firstJsonName.f': 'inner-field',
           firstFieldName: 'outer-field',
-          secondJsonName: ['outer', 'json', 'value']
+          secondJsonName: ['outer', 'json', 'value', testEventContent]
         }
       },
       { upsert: true }
@@ -110,6 +116,8 @@ const projection = {
   },
 
   DELETE_TEST: async (store, event) => {
+    const testEventContent = event.payload
+
     await store.delete('TestTable', {
       firstIndexName: { $gt: 1 },
       secondIndexName: 'idx-a'
@@ -120,7 +128,7 @@ const projection = {
         {
           $and: [{ firstIndexName: { $lt: 1 } }, { secondIndexName: 'idx-a' }]
         },
-        { secondIndexName: 'idx-b' }
+        { secondIndexName: testEventContent }
       ]
     })
   }

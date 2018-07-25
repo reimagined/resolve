@@ -8,7 +8,7 @@ describe('Read-model generic adapter API', () => {
   let buildTestReadModelReader, events
 
   it('Insert and non-parameterized resolver invocation', async () => {
-    events.push({ type: 'INSERT_TEST', timestamp: 100 })
+    events.push({ type: 'INSERT_TEST', timestamp: 100, payload: 'test' })
     const reader = buildTestReadModelReader()
 
     const result = await reader('NON_PARAMETERIZED_RESOLVER_TEST', {})
@@ -16,8 +16,8 @@ describe('Read-model generic adapter API', () => {
   })
 
   it('Update and non-parameterized resolver invocation', async () => {
-    events.push({ type: 'INSERT_TEST', timestamp: 100 })
-    events.push({ type: 'UPDATE_TEST', timestamp: 101 })
+    events.push({ type: 'INSERT_TEST', timestamp: 100, payload: 'test' })
+    events.push({ type: 'UPDATE_TEST', timestamp: 101, payload: 'test' })
     const reader = buildTestReadModelReader()
 
     const result = await reader('NON_PARAMETERIZED_RESOLVER_TEST', {})
@@ -25,8 +25,8 @@ describe('Read-model generic adapter API', () => {
   })
 
   it('Upsert and non-parameterized resolver invocation', async () => {
-    events.push({ type: 'INSERT_TEST', timestamp: 100 })
-    events.push({ type: 'UPSERT_TEST', timestamp: 101 })
+    events.push({ type: 'INSERT_TEST', timestamp: 100, payload: 'test' })
+    events.push({ type: 'UPSERT_TEST', timestamp: 101, payload: 'test' })
     const reader = buildTestReadModelReader()
 
     const result = await reader('NON_PARAMETERIZED_RESOLVER_TEST', {})
@@ -34,8 +34,8 @@ describe('Read-model generic adapter API', () => {
   })
 
   it('Delete and non-parameterized resolver invocation', async () => {
-    events.push({ type: 'INSERT_TEST', timestamp: 100 })
-    events.push({ type: 'DELETE_TEST', timestamp: 101 })
+    events.push({ type: 'INSERT_TEST', timestamp: 100, payload: 'test' })
+    events.push({ type: 'DELETE_TEST', timestamp: 101, payload: 'test' })
     const reader = buildTestReadModelReader()
 
     const result = await reader('NON_PARAMETERIZED_RESOLVER_TEST', {})
@@ -43,8 +43,8 @@ describe('Read-model generic adapter API', () => {
   })
 
   it('Update and parameterized resolver invocation', async () => {
-    events.push({ type: 'INSERT_TEST', timestamp: 100 })
-    events.push({ type: 'UPDATE_TEST', timestamp: 101 })
+    events.push({ type: 'INSERT_TEST', timestamp: 100, payload: 'test' })
+    events.push({ type: 'UPDATE_TEST', timestamp: 101, payload: 'test' })
     const reader = buildTestReadModelReader()
 
     const result = await reader('PARAMETRIZED_RESOLVER_TEST', {
