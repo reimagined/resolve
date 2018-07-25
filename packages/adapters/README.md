@@ -1,9 +1,10 @@
-# **reSolve adapters**
+# **reSolve Adapters**
 
-This folder contain different adapters:
-* [Bus adapters](bus-adapters/) specifying how to send events
-* [Storage adapters](storage-adapters/) specifying where to store events
-* [Read-model adapters](readmodels-adapters/) specifying where to store read-models
-* [Subscribe adapters](subscribe-adapters/) specifying the ways for events subscribing
+This directory contains reSolve adapters:
+
+* [Bus Adapters](bus-adapters/) -- specifies how to send events
+* [Storage Adapters](storage-adapters/) -- specifies where to store events
+* [Read Model Adapters](readmodel-adapters/) -- specifies how to store Read Models
+* [Subscribe Adapters](subscribe-adapters/) -- enables you to subscribe to events
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-adapters-readme?pixel)
