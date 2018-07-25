@@ -7,7 +7,7 @@
       "projection": "common/read-models/default.projection.js",
       "resolvers": "common/read-models/default.resolvers.js"
   }],
-  "sagas": "sagas/index.js",
+  "sagas": "common/sagas/index.js",
   "aggregates": [{
       "name": "user",
       "commands": "common/aggregates/user.commands.js",

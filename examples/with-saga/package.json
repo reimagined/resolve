@@ -11,12 +11,13 @@
   },
   "dependencies": {
     "react": "^16.4.0",
+    "react-bootstrap": "0.32.1",
     "react-dom": "^16.4.0",
-    "redux": "^3.7.2",
     "react-helmet": "^5.2.0",
+    "react-redux": "^5.0.7",
+    "redux": "^3.7.2",
     "resolve-redux": "0.13.2",
     "resolve-scripts": "0.13.2",
-    "react-bootstrap": "0.32.1",
     "uuid": "^3.2.1"
   },
   "devDependencies": {

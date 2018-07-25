@@ -1,16 +1,22 @@
 import React from 'react'
 
 import Header from './Header.js'
+import UsersInput from './UsersInput.js'
+import UsersList from './UsersList.js'
 
 const App = () => (
   <div>
     <Header
-      title="reSolve Hello World"
-      name="Hello World Example"
+      title="reSolve With Saga"
+      name="With Saga Example"
       favicon="/favicon.ico"
       css={['/bootstrap.min.css']}
     />
-    <h1 align="center">Hello, reSolve world!</h1>
+
+    <div className="example-wrapper">
+      <UsersInput />
+      <UsersList />
+    </div>
   </div>
 )
 
