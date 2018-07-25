@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Read-model generic adapter API Delete and non-parametrized resolver invocation 1`] = `
+exports[`Read-model generic adapter API Delete and non-parameterized resolver invocation 1`] = `
 Object {
   "countResult": 2,
   "findOneResult": Object {
@@ -14,7 +14,7 @@ Object {
 }
 `;
 
-exports[`Read-model generic adapter API Insert and non-parametrized resolver invocation 1`] = `
+exports[`Read-model generic adapter API Insert and non-parameterized resolver invocation 1`] = `
 Object {
   "countResult": 4,
   "findOneResult": Object {
@@ -28,7 +28,7 @@ Object {
 }
 `;
 
-exports[`Read-model generic adapter API Update and non-parametrized resolver invocation 1`] = `
+exports[`Read-model generic adapter API Update and non-parameterized resolver invocation 1`] = `
 Object {
   "countResult": 4,
   "findOneResult": Object {
@@ -42,7 +42,7 @@ Object {
 }
 `;
 
-exports[`Read-model generic adapter API Update and parametrized resolver invocation 1`] = `
+exports[`Read-model generic adapter API Update and parameterized resolver invocation 1`] = `
 Array [
   Object {
     "firstJsonName": Object {
@@ -57,7 +57,7 @@ Array [
 ]
 `;
 
-exports[`Read-model generic adapter API Upsert and non-parametrized resolver invocation 1`] = `
+exports[`Read-model generic adapter API Upsert and non-parameterized resolver invocation 1`] = `
 Object {
   "countResult": 4,
   "findOneResult": Object {

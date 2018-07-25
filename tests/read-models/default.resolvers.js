@@ -1,5 +1,5 @@
 const resolvers = {
-  NON_PARAMERTIZED_RESOLVER_TEST: async store => {
+  NON_PARAMETERIZED_RESOLVER_TEST: async store => {
     const searchExpression = { firstIndexName: { $gte: 1 } }
     const projectionExpression = { firstJsonName: 1 }
     const sortExpression = { secondFieldName: 1 }

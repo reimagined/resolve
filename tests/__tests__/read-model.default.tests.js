@@ -7,42 +7,42 @@ import resolvers from '../read-models/default.resolvers'
 describe('Read-model generic adapter API', () => {
   let buildTestReadModelReader, events
 
-  it('Insert and non-parametrized resolver invocation', async () => {
+  it('Insert and non-parameterized resolver invocation', async () => {
     events.push({ type: 'INSERT_TEST', timestamp: 100 })
     const reader = buildTestReadModelReader()
 
-    const result = await reader('NON_PARAMERTIZED_RESOLVER_TEST', {})
+    const result = await reader('NON_PARAMETERIZED_RESOLVER_TEST', {})
     expect(result).toMatchSnapshot()
   })
 
-  it('Update and non-parametrized resolver invocation', async () => {
+  it('Update and non-parameterized resolver invocation', async () => {
     events.push({ type: 'INSERT_TEST', timestamp: 100 })
     events.push({ type: 'UPDATE_TEST', timestamp: 101 })
     const reader = buildTestReadModelReader()
 
-    const result = await reader('NON_PARAMERTIZED_RESOLVER_TEST', {})
+    const result = await reader('NON_PARAMETERIZED_RESOLVER_TEST', {})
     expect(result).toMatchSnapshot()
   })
 
-  it('Upsert and non-parametrized resolver invocation', async () => {
+  it('Upsert and non-parameterized resolver invocation', async () => {
     events.push({ type: 'INSERT_TEST', timestamp: 100 })
     events.push({ type: 'UPSERT_TEST', timestamp: 101 })
     const reader = buildTestReadModelReader()
 
-    const result = await reader('NON_PARAMERTIZED_RESOLVER_TEST', {})
+    const result = await reader('NON_PARAMETERIZED_RESOLVER_TEST', {})
     expect(result).toMatchSnapshot()
   })
 
-  it('Delete and non-parametrized resolver invocation', async () => {
+  it('Delete and non-parameterized resolver invocation', async () => {
     events.push({ type: 'INSERT_TEST', timestamp: 100 })
     events.push({ type: 'DELETE_TEST', timestamp: 101 })
     const reader = buildTestReadModelReader()
 
-    const result = await reader('NON_PARAMERTIZED_RESOLVER_TEST', {})
+    const result = await reader('NON_PARAMETERIZED_RESOLVER_TEST', {})
     expect(result).toMatchSnapshot()
   })
 
-  it('Update and parametrized resolver invocation', async () => {
+  it('Update and parameterized resolver invocation', async () => {
     events.push({ type: 'INSERT_TEST', timestamp: 100 })
     events.push({ type: 'UPDATE_TEST', timestamp: 101 })
     const reader = buildTestReadModelReader()
