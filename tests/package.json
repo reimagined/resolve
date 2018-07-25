@@ -4,7 +4,7 @@
   "description": "API tests for resolve",
   "private": true,
   "scripts": {
-    "test": "jest"
+    "test": "jest --testMatch=**/__tests__/*.tests.js"
   },
   "dependencies": {
     "resolve-readmodel-memory": "0.13.1",
