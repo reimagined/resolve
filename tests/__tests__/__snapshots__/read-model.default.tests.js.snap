@@ -59,7 +59,7 @@ Array [
 
 exports[`Read-model generic adapter API Upsert and non-parametrized resolver invocation 1`] = `
 Object {
-  "countResult": 5,
+  "countResult": 4,
   "findOneResult": Object {
     "firstJsonName": Object {
       "a": 1,
