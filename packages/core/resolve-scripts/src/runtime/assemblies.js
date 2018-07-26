@@ -2,7 +2,7 @@ import path from 'path'
 import minimist from 'minimist'
 import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 
-const { distDir } = minimist(process.argv.slice(2));
+const { distDir } = minimist(process.argv.slice(2))
 
 const requireAssembly = filename =>
   interopRequireDefault(require(path.join(process.cwd(), distDir, filename)))
