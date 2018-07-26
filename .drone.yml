@@ -7,6 +7,7 @@ pipeline:
     image: maxvasin/resolve-docker
     pull: true
     commands:
+      - yarn install
       - VERSION=$(/scripts/prepare_downstream)
       - /scripts/npm_patch_rc
       - /scripts/yarn_publish $VERSION nightly
