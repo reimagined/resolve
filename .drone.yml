@@ -38,7 +38,7 @@ pipeline:
     wait: true
     secrets: [ downstream_token ]
     params:
-      - .entry
+      - .downstream
     repositories:
       - max-vasin/okrserver
       - max-vasin/orgstruct
