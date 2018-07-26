@@ -1,6 +1,6 @@
 {
   "name": "resolve",
-  "version": "1.2.3",
+  "version": "0.13.2",
   "repository": "https://github.com/reimagined/resolve.git",
   "license": "MIT",
   "private": true,
@@ -21,7 +21,13 @@
   },
   "workspaces": {
     "packages": [
-      "packages/core/create-resolve-app"
+      "packages/core/*",
+      "packages/adapters/bus-adapters/*",
+      "packages/adapters/storage-adapters/*",
+      "packages/adapters/readmodel-adapters/*",
+      "packages/adapters/subscribe-adapters/*",
+      "examples/*",
+      "tests"
     ]
   },
   "scripts": {
@@ -36,6 +42,10 @@
     "test:functional": "oao run-script test:functional",
     "test:clean-snapshots": "npx oao all \"yarn test -u --color 2>&1\""
   },
+  "pre-commit": [
+    "lint-staged",
+    "lint"
+  ],
   "lint-staged": {
     "*.{js,css}": [
       "prettier --single-quote --no-semi --write",
