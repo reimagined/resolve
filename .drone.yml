@@ -1,0 +1,14 @@
+pipeline:
+  # Building pushes to [dev] branch (nightly, latest-stable)
+  # Repository must be trusted in Drone
+  publish-nightly:
+    when:
+      event: push
+      branch: dev
+    image: maxvasin/resolve-docker
+    pull: true
+    commands:
+      - VERSION=$(/scripts/prepare_downstream)
+      - /scripts/npm_patch_rc
+      - /scripts/npm_publish $VERSION
+    secrets: [ npm_repository, npm_token ]

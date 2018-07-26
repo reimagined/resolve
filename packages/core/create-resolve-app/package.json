@@ -1,6 +1,6 @@
 {
-  "name": "create-resolve-app",
-  "version": "0.13.2",
+  "name": "@badgeteam/create-resolve-app",
+  "version": "1.2.3",
   "description": "This package generates boilerplate web application based on resolve framework",
   "bin": {
     "create-resolve-app": "./bin/index.js"
@@ -21,6 +21,9 @@
     "es",
     "ddd"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app#readme",
   "dependencies": {
     "adm-zip": "^0.4.11",
