@@ -52,7 +52,7 @@ pipeline:
     pull: true
     commands:
       - /scripts/npm_patch_rc
-      - npx oao all "/scripts/npm_tag $(/scripts/package_json name) $REGISTRY_VERSION latest-stable"
+      - npx oao all "/scripts/npm_tag $REGISTRY_VERSION latest-stable"
     secrets: [ npm_repository, npm_token ]
 
   notify-downstream-success:
