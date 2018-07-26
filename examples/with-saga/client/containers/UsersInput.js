@@ -1,10 +1,5 @@
 import React from 'react'
 
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-
-import uuid from 'uuid'
-
 import {
   Form,
   FormGroup,
@@ -13,40 +8,45 @@ import {
   ControlLabel
 } from 'react-bootstrap'
 
-const UsersInput = () => (
-  <div className="example-form-wrapper">
-    <Form inline onSubmit={() => {}}>
-      <FormGroup validationState={null}>
-        <ControlLabel className="example-form-label">Enter email:</ControlLabel>
-        {'  '}
-        <FormControl
-          className="example-form-input"
-          type="email"
-          placeholder="example@example.com"
-          onKeyPress={event => {
-            if (event.charCode === 13) {
-            }
-          }}
-        />
-      </FormGroup>
-      <Button type="submit" bsStyle="success">
-        Create user
-      </Button>
-    </Form>
-  </div>
-)
+const placeholder = 'example@example.com'
 
-const mapDispatchToProps = (dispatch, { aggregateActions }) =>
-  bindActionCreators(
-    {
-      createUser: ({ email }) => {
-        aggregateActions.createUser(uuid.v4(), { email })
-      }
-    },
-    dispatch
-  )
+class UsersInput extends React.Component {
+  render() {
+    let newEmail
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(UsersInput)
+    const handleClick = event => {
+      event.preventDefault()
+      this.props.submitUser(newEmail.value || placeholder)
+      newEmail.value = ''
+    }
+
+    return (
+      <div className="example-form-wrapper">
+        <Form inline onSubmit={handleClick}>
+          <FormGroup validationState={null}>
+            <ControlLabel className="example-form-label">
+              Enter email:
+            </ControlLabel>
+            {'  '}
+            <FormControl
+              className="example-form-input"
+              type="email"
+              inputRef={element => (newEmail = element)}
+              placeholder={placeholder}
+              onKeyPress={event => {
+                if (event.charCode === 13) {
+                  handleClick(event)
+                }
+              }}
+            />
+          </FormGroup>
+          <Button type="submit" bsStyle="success">
+            Create user
+          </Button>
+        </Form>
+      </div>
+    )
+  }
+}
+
+export default UsersInput

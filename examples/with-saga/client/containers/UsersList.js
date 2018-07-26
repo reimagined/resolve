@@ -1,44 +1,37 @@
 import React from 'react'
 
-import { connectReadModel } from 'resolve-redux'
-
 import { Alert, ListGroup, ListGroupItem } from 'react-bootstrap'
 
-const UsersList = ({ isLoading, data: { users, errors } }) => {
-  let errorMessage
+class UsersList extends React.Component {
+  render() {
+    let errorMessage = this.props.errorMessage
+    let users = this.props.users || []
+    let isLoading = this.props.isLoading
 
-  return (
-    <div className="example-list-wrapper">
-      {errorMessage && (
-        <Alert className="example-alert" bsStyle="danger">
-          {errors}
-        </Alert>
-      )}
+    return (
+      <div className="example-list-wrapper">
+        {errorMessage && (
+          <Alert className="example-alert" bsStyle="danger">
+            {errorMessage}
+          </Alert>
+        )}
 
-      <h3 className="example-title">Created Users</h3>
+        <h3 className="example-title">Created Users</h3>
 
-      {isLoading && <div>Data loading</div>}
+        {isLoading && <div>Data loading</div>}
 
-      {!isLoading && !users.length && <div>No users</div>}
+        {!isLoading && !users.length && <div>No users</div>}
 
-      <ListGroup className="example-list">
-        {users.map(user => (
-          <ListGroupItem key={user.email} header={user.email}>
-            {new Date(user.timestamp).toString()}
-          </ListGroupItem>
-        ))}
-      </ListGroup>
-    </div>
-  )
-}
-
-const mapStateToOptions = () => {
-  return {
-    readModelName: 'default',
-    resolverName: 'default',
-    resolverArgs: {},
-    isReactive: true
+        <ListGroup className="example-list">
+          {users.map(user => (
+            <ListGroupItem key={user.email} header={user.email}>
+              {new Date(user.timestamp).toString()}
+            </ListGroupItem>
+          ))}
+        </ListGroup>
+      </div>
+    )
   }
 }
 
-export default connectReadModel(mapStateToOptions)(UsersList)
+export default UsersList
