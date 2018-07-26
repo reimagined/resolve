@@ -4,7 +4,6 @@ pipeline:
   publish-nightly:
     when:
       event: push
-      branch: dev
     image: maxvasin/resolve-docker
     pull: true
     commands:
@@ -12,3 +11,5 @@ pipeline:
       - /scripts/npm_patch_rc
       - /scripts/npm_publish $VERSION
     secrets: [ npm_repository, npm_token ]
+
+branch: dev
