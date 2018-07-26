@@ -77,7 +77,7 @@ pipeline:
   notify-downstream-failure:
     when:
       event: deployment
-      environment: downstream-success
+      environment: downstream-failure
     image: plugins/webhook
     urls:
     - https://outlook.office.com/webhook/0595e0a8-6fc7-4faa-94a9-96b4fba4f2f6@e4d60396-9352-4ae8-b84c-e69244584fa4/IncomingWebhook/55568e0903b04770b9c5b0bb54640480/c13b34d1-4353-4381-afd8-dc20a9568d31
