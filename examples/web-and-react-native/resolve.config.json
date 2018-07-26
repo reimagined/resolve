@@ -1,0 +1,25 @@
+{
+  "port": 3000,
+  "routes": "web/client/routes.js",
+  "distDir": "native/dist",
+  "aggregates": [
+    {
+      "name": "Todo",
+      "commands": "common/aggregates/todo.commands.js"
+    }
+  ],
+  "viewModels": [
+    {
+      "name": "Todos",
+      "projection": "common/view-models/todos.projection.js"
+    }
+  ],
+  "env": {
+    "test": {
+      "storageAdapter": {
+        "module": "resolve-storage-lite",
+        "options": {}
+      }
+    }
+  }
+}

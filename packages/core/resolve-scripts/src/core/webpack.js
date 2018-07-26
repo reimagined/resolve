@@ -56,7 +56,7 @@ export default argv => {
   }
 
   const server = deployOptions.start
-    ? respawn([serverPath], {
+    ? respawn([serverPath, `--distDir=${resolveConfig.distDir}`], {
         maxRestarts: 0,
         kill: 5000,
         stdio: 'inherit',
