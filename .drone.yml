@@ -9,7 +9,7 @@ pipeline:
     commands:
       - VERSION=$(/scripts/prepare_downstream)
       - /scripts/npm_patch_rc
-      - /scripts/npm_publish $VERSION
+      - /scripts/yarn_publish $VERSION nightly
     secrets: [ npm_repository, npm_token ]
 
 branches: dev
