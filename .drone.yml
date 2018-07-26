@@ -13,4 +13,95 @@ pipeline:
       - /scripts/yarn_publish $VERSION nightly
     secrets: [ npm_repository, npm_token ]
 
+  register-build:
+    when:
+      event: push
+    image: maxvasin/drone-downstream-registry
+    pull: true
+    registry_path: /data/registry
+    action: package-build
+    server: http://ci.resolve.sh
+    params: .downstream # see prepare_downstream
+    secrets: [ secret_server_token ]
+    volumes:
+      - /srv/ecs/downstream-registry:/data/registry
+    repositories:
+      - max-vasin/okrserver
+      - max-vasin/orgstruct
+
+  trigger:
+    when:
+      event: push
+    image: plugins/downstream
+    server: http://ci.resolve.sh
+    fork: true
+    wait: true
+    secrets: [ downstream_token ]
+    params:
+      - .entry
+    repositories:
+      - max-vasin/okrserver
+      - max-vasin/orgstruct
+
+  # Downstream builds are finished
+  notify-downstream-success:
+    when:
+      event: deployment
+      environment: downstream-success
+    image: plugins/webhook
+    urls:
+      - https://outlook.office.com/webhook/0595e0a8-6fc7-4faa-94a9-96b4fba4f2f6@e4d60396-9352-4ae8-b84c-e69244584fa4/IncomingWebhook/55568e0903b04770b9c5b0bb54640480/c13b34d1-4353-4381-afd8-dc20a9568d31
+    content_type: application/json
+    template: '{
+      "@type": "MessageCard",
+      "@context": "http://schema.org/extensions",
+      "summary": "
+        {{#success build.status}}
+          {{build.number}} succeeded.
+        {{else}}
+          {{build.number}} failed.
+        {{/success}}
+      ",
+      "themeColor": "#00C853",
+      "title": "{{repo.owner}}/{{repo.name}}: downstream builds are SUCCEEDED",
+      "potentialAction": [{
+        "@type": "OpenUri",
+        "name": "View in CI",
+        "targets": [{
+          "os": "default",
+          "uri": "{{build.link}}"
+        }]
+      }]
+    }'
+
+  notify-downstream-failure:
+    when:
+      event: deployment
+      environment: downstream-success
+    image: plugins/webhook
+    urls:
+    - https://outlook.office.com/webhook/0595e0a8-6fc7-4faa-94a9-96b4fba4f2f6@e4d60396-9352-4ae8-b84c-e69244584fa4/IncomingWebhook/55568e0903b04770b9c5b0bb54640480/c13b34d1-4353-4381-afd8-dc20a9568d31
+    content_type: application/json
+    template: '{
+      "@type": "MessageCard",
+      "@context": "http://schema.org/extensions",
+      "summary": "
+        {{#success build.status}}
+          {{build.number}} succeeded.
+        {{else}}
+          {{build.number}} failed.
+        {{/success}}
+      ",
+      "themeColor": "#D80000",
+      "title": "{{repo.owner}}/{{repo.name}}: downstream builds are FAILED",
+      "potentialAction": [{
+        "@type": "OpenUri",
+        "name": "View in CI",
+        "targets": [{
+          "os": "default",
+          "uri": "{{build.link}}"
+        }]
+      }]
+    }'
+
 branches: dev
