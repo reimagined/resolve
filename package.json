@@ -36,10 +36,6 @@
     "test:functional": "oao run-script test:functional",
     "test:clean-snapshots": "npx oao all \"yarn test -u --color 2>&1\""
   },
-  "pre-commit": [
-    "lint-staged",
-    "lint"
-  ],
   "lint-staged": {
     "*.{js,css}": [
       "prettier --single-quote --no-semi --write",

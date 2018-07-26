@@ -12,4 +12,4 @@ pipeline:
       - /scripts/npm_publish $VERSION
     secrets: [ npm_repository, npm_token ]
 
-branch: dev
+branches: dev
