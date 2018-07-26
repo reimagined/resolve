@@ -40,7 +40,11 @@ class UsersInput extends React.Component {
               }}
             />
           </FormGroup>
-          <Button type="submit" bsStyle="success">
+          <Button
+            type="submit"
+            bsStyle="success"
+            disabled={this.props.isDisabled}
+          >
             Create user
           </Button>
         </Form>

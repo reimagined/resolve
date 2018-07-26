@@ -29,6 +29,7 @@ class App extends React.Component {
 
         <div className="example-wrapper">
           <UsersInput
+            isDisabled={this.props.user.disableButton}
             submitUser={email => {
               this.submitUser(uuid.v4(), { email: email })
             }}
@@ -53,12 +54,14 @@ const mapStateToOptions = () => {
   }
 }
 
+const mapStateToProps = ({ user }) => ({ user })
+
 const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(aggregateActions, dispatch)
 
 export default connectReadModel(mapStateToOptions)(
   connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
   )(App)
 )

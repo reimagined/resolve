@@ -12,5 +12,10 @@
       "name": "user",
       "commands": "common/aggregates/user.commands.js",
       "projection": "common/aggregates/user.projection.js"
-  }]
+  }],
+  "redux": {
+    "store": "client/store/index.js",
+    "reducers": "client/reducers/index.js",
+    "middlewares": "client/middlewares/index.js"
+  }
 }
