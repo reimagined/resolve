@@ -29,7 +29,13 @@ const getWebpackConfigs = ({
 
   const configs = [webpackClientConfig, ...webpackCommonConfigs]
 
-  resolveBuildConfig(configs, { resolveConfig, deployOptions, env })
+  resolveBuildConfig(configs, {
+    resolveConfig,
+    deployOptions,
+    env,
+    alias,
+    nodeModulesByAssembly
+  })
 
   return configs
 }
