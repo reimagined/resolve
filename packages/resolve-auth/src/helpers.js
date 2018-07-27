@@ -1,17 +1,5 @@
 import cookie from 'cookie'
-
-const createRequest = expressReq => ({
-  path: expressReq.path,
-  method: expressReq.method,
-  originalUrl: expressReq.originalUrl,
-  headers: expressReq.headers,
-  params: expressReq.params,
-  body: expressReq.body,
-  query: expressReq.query,
-  cookies: expressReq.cookies,
-  resolve: expressReq.resolve
-})
-
+/*
 const createResponse = expressRes => {
   const response = {
     expressRes,
@@ -33,7 +21,7 @@ const createResponse = expressRes => {
 
   return response
 }
-
+*/
 const rootPath = process.env.ROOT_PATH ? `/${process.env.ROOT_PATH}` : ''
 
 const getRootBasedUrl = path => {
@@ -43,4 +31,4 @@ const getRootBasedUrl = path => {
   return `${rootPath}/${path.replace(/^\//, '')}`
 }
 
-export { createRequest, createResponse, getRootBasedUrl }
+export { getRootBasedUrl }

@@ -1,18 +1,38 @@
-import { createRequest, createResponse } from './helpers'
-import createAuthOptions from './createAuthOptions'
+import defaultAuthOptions from './defaultAuthOptions'
 
 const resolveAuth = (strategyConstructor, options) => ({
   route: options.route,
-  callback: async (req, res, callbackOptions) => {
+  callback: async (req, res, next) => {
     const strategy = strategyConstructor(options)
 
-    strategy.success = callbackOptions.onSuccess.bind(null, options)
-    strategy.fail = callbackOptions.onFail.bind(null, options)
-    strategy.redirect = callbackOptions.onRedirect.bind(null, options)
-    strategy.pass = callbackOptions.onPass.bind(null, options)
-    strategy.error = callbackOptions.onError.bind(null, options)
-    strategy.authenticate(req, { response: res })
+    let fakeResponse = {
+      statusCode: 200,
+      headers: {},
+      cookies: {}
+    }
+
+    console.log('Promise')
+    await new Promise(resolve => {
+      Object.keys(defaultAuthOptions).forEach(
+        key =>
+          (strategy[key] = async (...args) => {
+            await defaultAuthOptions[key](
+              options,
+              req,
+              fakeResponse,
+              next,
+              ...args
+            )
+            console.log('resolve')
+            resolve()
+          })
+      )
+      strategy.authenticate(req, { response: res })
+    })
+    console.log('buildResponse')
+
+    ;(options.buildResponse || (f => f))(res, fakeResponse)
   }
 })
 
-export { createAuthOptions, createRequest, createResponse, resolveAuth }
+export { resolveAuth }

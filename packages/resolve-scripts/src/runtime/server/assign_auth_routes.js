@@ -1,11 +1,4 @@
-import {
-  createAuthOptions,
-  createRequest,
-  createResponse,
-  resolveAuth
-} from 'resolve-auth'
-
-import applyJwtValue from './utils/apply_jwt_value'
+import { resolveAuth } from 'resolve-auth'
 import getRootBasedUrl from './utils/get_root_based_url'
 import executeViewModelQuery from './execute_view_model_query'
 import executeReadModelQuery from './execute_read_model_query'
@@ -25,9 +18,7 @@ const assignAuthRoutes = app => {
     app[route.method.toLowerCase()](
       getRootBasedUrl(route.path),
       (req, res, next) => {
-        const safeReq = createRequest(req)
-
-        Object.assign(safeReq, {
+        Object.assign(req, {
           resolve: {
             executeReadModelQuery: args =>
               executeReadModelQuery({
@@ -42,11 +33,7 @@ const assignAuthRoutes = app => {
             executeCommand
           }
         })
-        const safeRes = {
-          applyJwtValue,
-          ...createResponse(res)
-        }
-        callback(safeReq, safeRes, createAuthOptions(safeReq, safeRes, next))
+        callback(req, res, next)
       }
     )
   })

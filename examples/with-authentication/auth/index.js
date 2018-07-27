@@ -15,6 +15,7 @@ const routes = [
     path: '/register',
     method: 'POST',
     callback: async (_, username) => {
+      console.log('cb1 ', jwtSecret)
       return jwt.sign(
         {
           name: username
@@ -38,11 +39,27 @@ const options = routes.map(({ path, method, callback }) => ({
     path,
     method
   },
-  callback
+  callback,
+  buildResponse: (resExpress, response) => {
+    resExpress.statusCode = response.statusCode
+    Object.keys(response.headers || {}).forEach(key => {
+      resExpress.setHeader(key, response.headers[key])
+    })
+    Object.keys(response.cookies || {}).forEach(key => {
+      resExpress.cookie(
+        key,
+        response.cookies[key].value,
+        response.cookies[key].options
+      )
+    })
+
+    resExpress.end(response.error)
+  },
+  jwtSecret
 }))
 
-const strategyConstructor = options =>
-  new Strategy(
+const strategyConstructor = options => {
+  return new Strategy(
     {
       ...options.strategy,
       passReqToCallback: true
@@ -55,6 +72,7 @@ const strategyConstructor = options =>
       }
     }
   )
+}
 
 const strategies = options.map(options => ({
   options,
