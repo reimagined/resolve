@@ -1,5 +1,3 @@
-import { injectEnv, envKey } from 'json-env-extract'
-
 import { message } from '../constants'
 
 export default ({ resolveConfig, isClient }) => {
@@ -14,7 +12,6 @@ export default ({ resolveConfig, isClient }) => {
   const config = {
     port: resolveConfig.port
   }
-  Object.defineProperty(config, envKey, { value: resolveConfig[envKey] })
 
   const exports = []
 

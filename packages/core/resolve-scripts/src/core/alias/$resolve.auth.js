@@ -1,5 +1,3 @@
-import { envKey } from 'json-env-extract'
-
 import { message } from '../constants'
 import resolveFile from '../resolve_file'
 
@@ -12,9 +10,6 @@ export default ({ resolveConfig, isClient }) => {
     throw new Error(`${message.configNotContainSectionError}.auth`)
   }
 
-  if (resolveConfig.auth.strategies in resolveConfig[envKey]) {
-    throw new Error(`${message.clientEnvError}.auth.strategies`)
-  }
   const strategies = resolveFile(
     resolveConfig.auth.strategies,
     'auth_strategies.js'

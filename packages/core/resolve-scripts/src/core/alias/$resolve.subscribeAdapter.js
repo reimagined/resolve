@@ -1,5 +1,3 @@
-import { injectEnv, envKey } from 'json-env-extract'
-
 import { message } from '../constants'
 
 export default ({ resolveConfig, isClient }) => {
@@ -7,42 +5,9 @@ export default ({ resolveConfig, isClient }) => {
     throw new Error(`${message.configNotContainSectionError}.subscribeAdapter`)
   }
 
-  if (resolveConfig.subscribeAdapter.module in resolveConfig[envKey]) {
-    throw new Error(`${message.clientEnvError}.subscribeAdapter.module`)
-  }
-  for (const option of Object.keys(resolveConfig.subscribeAdapter.options)) {
-    if (
-      resolveConfig.subscribeAdapter.options[option] in resolveConfig[envKey]
-    ) {
-      throw new Error(
-        `${message.clientEnvError}.subscribeAdapter.options.${option}`
-      )
-    }
-  }
-
-  for (const option of Object.keys(resolveConfig.subscribeAdapter.options)) {
-    if (
-      resolveConfig.subscribeAdapter.options[option] in resolveConfig[envKey]
-    ) {
-      throw new Error(
-        `${message.clientEnvError}.subscribeAdapter.options.${option}`
-      )
-    }
-  }
-
   const options = {
     client: resolveConfig.subscribeAdapter.options.client || {},
     server: resolveConfig.subscribeAdapter.options.server || {}
-  }
-
-  for (const optionsKey of Object.keys(options.client)) {
-    if (options.client[optionsKey] in resolveConfig[envKey]) {
-      throw new Error(
-        `${
-          message.clientEnvError
-        }.subscribeAdapter.options.client.${optionsKey}`
-      )
-    }
   }
 
   const exports = []

@@ -1,5 +1,3 @@
-import { envKey } from 'json-env-extract'
-
 import { message } from '../constants'
 
 export default ({ resolveConfig, isClient }) => {
@@ -9,10 +7,6 @@ export default ({ resolveConfig, isClient }) => {
 
   if (!resolveConfig.distDir) {
     throw new Error(`${message.configNotContainSectionError}.staticDir`)
-  }
-
-  if (resolveConfig.distDir in resolveConfig[envKey]) {
-    throw new Error(`${message.clientEnvError}.staticDir`)
   }
 
   const exports = []

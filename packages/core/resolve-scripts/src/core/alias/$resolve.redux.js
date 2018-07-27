@@ -1,5 +1,3 @@
-import { envKey } from 'json-env-extract'
-
 import { message } from '../constants'
 
 import resolveFile from '../resolve_file'
@@ -9,22 +7,13 @@ export default ({ resolveConfig }) => {
     throw new Error(`${message.configNotContainSectionError}.redux`)
   }
 
-  if (resolveConfig.redux.store in resolveConfig[envKey]) {
-    throw new Error(`${message.clientEnvError}.redux.store`)
-  }
   const store = resolveFile(resolveConfig.redux.store, 'redux_store.js')
 
-  if (resolveConfig.redux.reducers in resolveConfig[envKey]) {
-    throw new Error(`${message.clientEnvError}.redux.reducers`)
-  }
   const reducers = resolveFile(
     resolveConfig.redux.reducers,
     'redux_reducers.js'
   )
 
-  if (resolveConfig.redux.middlewares in resolveConfig[envKey]) {
-    throw new Error(`${message.clientEnvError}.redux.middlewares`)
-  }
   const middlewares = resolveFile(
     resolveConfig.redux.middlewares,
     'redux_middlewares.js'
