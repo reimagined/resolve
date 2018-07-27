@@ -16,7 +16,7 @@ export default ({ resolveConfig, isClient }) => {
   const exports = []
 
   exports.push(
-    `const config = ${injectEnv(config)}`,
+    `const config = ${JSON.stringify(config)}`,
     ``,
     `const port = config.port`,
     ``,

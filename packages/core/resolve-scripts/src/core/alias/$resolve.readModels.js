@@ -56,7 +56,7 @@ export default ({ resolveConfig, isClient }) => {
         `import adapterModule_${index} from ${JSON.stringify(adapter.module)}`
       )
       constants.push(
-        `const adapterOptions_${index} = ${injectEnv(adapter.options)}`
+        `const adapterOptions_${index} = ${JSON.stringify(adapter.options)}`
       )
     }
 

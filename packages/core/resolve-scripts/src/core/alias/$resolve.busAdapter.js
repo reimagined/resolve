@@ -26,7 +26,7 @@ export default ({ resolveConfig, isClient }) => {
   exports.push(
     `import busAdapterModule from ${JSON.stringify(busAdapter.module)}`,
     ``,
-    `const busAdapterOptions = ${injectEnv(busAdapter.options)}`
+    `const busAdapterOptions = ${JSON.stringify(busAdapter.options)}`
   )
 
   exports.push(

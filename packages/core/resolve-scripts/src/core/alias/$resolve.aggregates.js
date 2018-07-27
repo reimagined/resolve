@@ -66,7 +66,7 @@ export default ({ resolveConfig, isClient }) => {
         )}`
       )
       constants.push(
-        `const snapshotAdapterOptions_${index} = ${injectEnv(
+        `const snapshotAdapterOptions_${index} = ${JSON.stringify(
           snapshotAdapter.options
         )}`
       )

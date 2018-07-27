@@ -26,7 +26,7 @@ export default ({ resolveConfig, isClient }) => {
   exports.push(
     `import storageAdapterModule from ${JSON.stringify(storageAdapter.module)}`,
     ``,
-    `const storageAdapterOptions = ${injectEnv(storageAdapter.options)}`
+    `const storageAdapterOptions = ${JSON.stringify(storageAdapter.options)}`
   )
 
   exports.push(

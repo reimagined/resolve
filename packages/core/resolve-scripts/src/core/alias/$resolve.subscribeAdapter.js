@@ -28,7 +28,7 @@ export default ({ resolveConfig, isClient }) => {
         `${resolveConfig.subscribeAdapter.module}/dist/create_server_adapter`
       )}`,
       ``,
-      `const options = ${injectEnv(options.server, null, 2)}`,
+      `const options = ${JSON.stringify(options.server, null, 2)}`,
       ``,
       `export default { module, options }`
     )
