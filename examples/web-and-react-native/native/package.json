@@ -18,11 +18,12 @@
     "expo": "28.0.0",
     "react": "16.4.1",
     "react-native": "0.55.4",
+    "react-native-elements": "^0.19.1",
     "resolve-redux": "0.13.2"
   },
   "devDependencies": {
-    "react-native-scripts": "1.14.0",
     "jest-expo": "28.0.0",
+    "react-native-scripts": "1.14.0",
     "react-test-renderer": "16.4.1"
   },
   "workspaces": {

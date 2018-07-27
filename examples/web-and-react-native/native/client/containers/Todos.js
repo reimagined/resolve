@@ -9,11 +9,12 @@ import {
   Text,
   View,
   FlatList,
-  Button,
   TextInput,
   Keyboard,
   Platform
 } from 'react-native'
+
+import Item from '../components/Item'
 
 const isAndroid = Platform.OS == "android";
 const viewPadding = 10;
@@ -29,50 +30,26 @@ const styles = StyleSheet.create({
     padding: viewPadding,
     paddingTop: 30
   },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    width: "100%",
+    paddingBottom: 5
+  },
   list: {
     width: "100%"
   },
-  listItem: {
-    paddingTop: 2,
-    paddingBottom: 2,
-    fontSize: 18
-  },
-  hr: {
-    height: 1,
-    backgroundColor: "gray"
-  },
-  listItemCont: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between"
-  },
   textInput: {
-    height: 40,
+    alignSelf: 'stretch',
+    textAlign: 'center',
+    height: 60,
     paddingRight: 10,
     paddingLeft: 10,
     borderColor: "gray",
     borderWidth: isAndroid ? 0 : 1,
-    width: "100%"
+    fontSize: 18
   }
 });
-
-class Item extends React.PureComponent {
-  render() {
-    const { checked, text, removeItem, toggleItem } = this.props
-    
-    return (
-      <View>
-        <View style={styles.listItemCont}>
-          <Text style={styles.listItem} onPress={toggleItem}>
-            {`${checked ? 'yes' : 'no'}/${text}`}
-          </Text>
-          <Button title="X" onPress={removeItem} />
-        </View>
-        <View style={styles.hr} />
-      </View>
-    );
-  }
-}
 
 export class Todos extends React.PureComponent {
   state = {
@@ -95,10 +72,12 @@ export class Todos extends React.PureComponent {
     );
   }
   
-  createItem = (id) => {
-    const text = this.state;
-    
-    this.props.createItem(aggregateId, { id, text })
+  createItem = () => {
+    const { text } = this.state;
+
+    this.setState({ text: '' })
+
+    this.props.createItem(aggregateId, { id: Date.now().toString(), text })
   };
   
   removeItem = (id) => {
@@ -125,6 +104,9 @@ export class Todos extends React.PureComponent {
       <View
         style={[styles.container, { paddingBottom: this.state.viewPadding }]}
       >
+        <Text style={styles.title}>
+          Tasks List
+        </Text>
         <FlatList
           style={styles.list}
           data={this.props.todos}
@@ -136,7 +118,7 @@ export class Todos extends React.PureComponent {
           onChangeText={this.updateText}
           onSubmitEditing={this.createItem}
           value={this.state.text}
-          placeholder="Add Tasks"
+          placeholder="New Task"
           returnKeyType="done"
           returnKeyLabel="done"
         />
@@ -144,8 +126,6 @@ export class Todos extends React.PureComponent {
     )
   }
 }
-
-
 
 const mapStateToOptions = () => ({
   viewModelName,
