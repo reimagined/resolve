@@ -35,14 +35,14 @@ export const Todos = props => {
       <h1>Tasks List</h1>
 
       <ListGroup className="example-list">
-        {Object.keys(todos).map(id => (
+        {todos.map(({ id, text, checked }) => (
           <ListGroupItem key={id}>
             <Checkbox
               inline
-              checked={todos[id].checked}
+              checked={checked}
               onChange={toggleItem.bind(null, aggregateId, { id })}
             >
-              {todos[id].text}
+              {text}
             </Checkbox>
             <Image
               className="example-close-button"

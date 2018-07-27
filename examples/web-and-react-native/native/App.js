@@ -1,17 +1,25 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import * as config from './resolve'
-import { createStore, createActions } from 'resolve-redux'
+import { Providers} from './resolve/resolve-redux'
+import { origin, rootPath, staticPath, aggregateActions } from './resolve/config'
+import store from './redux/store'
 
-export default class App extends React.Component {
+import Todos from './client/containers/Todos'
+
+export default class App extends React.PureComponent {
   render() {
     return (
-      <View style={styles.container}>
-        <Text>{JSON.stringify(config)}</Text>
-        <Text>Open up App.js to start working on your app!</Text>
-        <Text>Changes you make will automatically reload.</Text>
-        <Text>Shake your phone to open the developer menu.</Text>
-      </View>
+      <Providers
+        origin={origin}
+        rootPath={rootPath}
+        staticPath={staticPath}
+        aggregateActions={aggregateActions}
+        store={store}
+      >
+        <View style={styles.container}>
+          <Todos/>
+        </View>
+      </Providers>
     )
   }
 }

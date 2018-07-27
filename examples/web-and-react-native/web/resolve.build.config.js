@@ -13,6 +13,10 @@ export default (webpackConfigs, { resolveConfig, deployOptions, env }) => {
     ['$resolve.businessLogic']: path.resolve(
       __dirname,
       'core/alias/$resolve.businessLogic.js'
+    ),
+    ['$resolve.resolveRedux']: path.resolve(
+      __dirname,
+      'core/alias/$resolve.resolveRedux.js'
     )
   }
 
@@ -21,16 +25,18 @@ export default (webpackConfigs, { resolveConfig, deployOptions, env }) => {
   webpackConfigs.push({
     name: 'Common Business Logic',
     entry: {
-      'resolve/index.js': [
-        '@babel/runtime/regenerator',
+      'resolve/config.js': [
         '$resolve.businessLogic'
+      ],
+      'resolve/resolve-redux.js': [
+        '$resolve.resolveRedux'
       ]
     },
     context: path.resolve(process.cwd()),
     mode: deployOptions.mode,
     performance: false,
     devtool: 'source-map',
-    target: 'node',
+    target: 'web',
     output: {
       path: path.resolve(process.cwd(), '../native'),
       filename: '[name]',
@@ -84,7 +90,7 @@ export default (webpackConfigs, { resolveConfig, deployOptions, env }) => {
               cacheDirectory: true
             }
           },
-          exclude: [/node_modules/, ...getModulesDirs()]
+          //exclude: [/node_modules/, ...getModulesDirs()]
         }
       ]
     },
