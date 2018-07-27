@@ -1,9 +1,10 @@
+import { defaultResolveConfig } from 'resolve-scripts'
 import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import postcssImport from 'postcss-import'
 import autoprefixer from 'autoprefixer'
 
-export default webpackClientConfigs => {
-  for (const webpackConfig of webpackClientConfigs) {
+const updateWebpackConfig = (webpackConfigs, resolveConfig) => {
+  for (const webpackConfig of webpackConfigs) {
     webpackConfig.module.rules.push({
       test: /\.css$/,
       use: ExtractTextPlugin.extract({
@@ -32,5 +33,31 @@ export default webpackClientConfigs => {
         allChunks: true
       })
     )
+  }
+}
+
+export default () => {
+  const config = {
+    ...defaultResolveConfig,
+    port: 3000,
+    routes: 'client/routes.js',
+    webpack: updateWebpackConfig
+  }
+
+  const launchMode = process.argv[2]
+
+  switch (launchMode) {
+    case 'start':
+    case 'build':
+      return {
+        ...config,
+        mode: 'production'
+      }
+
+    default:
+      return {
+        ...config,
+        mode: 'development'
+      }
   }
 }
