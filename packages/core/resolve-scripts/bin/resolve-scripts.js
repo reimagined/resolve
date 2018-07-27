@@ -3,12 +3,11 @@ require('source-map-support').install()
 
 require('dotenv').config()
 
-// eslint-disable-next-line no-unused-expressions
-require('yargs')
-  .usage('resolve-scripts <command> [options]')
-  .command(require('../dist/core/commands/build'))
-  .command(require('../dist/core/commands/start'))
-  .command(require('../dist/core/commands/dev'))
-  .command(require('../dist/core/commands/test'))
-  .command(require('../dist/core/commands/test_functional'))
-  .help('help').argv
+const commandList = require('../configs/command.list.json')
+const command = process.argv[2]
+
+if (commandList.hasOwnProperty(command)) {
+  require('../dist/core/commands/' + command)
+} else {
+  require('../dist/core/commands/usage')
+}

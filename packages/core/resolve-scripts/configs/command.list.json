@@ -2,6 +2,5 @@
   "build": "Compile the app into the build directory",
   "dev": "Run the app in the development mode",
   "start": "Run the app from the build directory",
-  "testFunctional": "Run functional tests with TestCafe",
-  "test": "Run unit tests with Jest"
+  "runready": "Run custom shell script when application is ready"
 }

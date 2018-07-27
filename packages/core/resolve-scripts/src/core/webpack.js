@@ -4,41 +4,26 @@ import path from 'path'
 import respawn from 'respawn'
 import webpack from 'webpack'
 
-import setup from './setup'
-import getMockServer from './get_mock_server'
-import showBuildInfo from './show_build_info'
+import assignSettings from './assign_settings'
 import copyEnvToDist from './copy_env_to_dist'
-import getWebpackConfigs from './get_webpack_configs'
+import getMockServer from './get_mock_server'
 import getResolveBuildConfig from './get_resolve_build_config'
+import getResolveConfigFactory from './get_resolve_config_factory'
+import getWebpackConfigs from './get_webpack_configs'
+import setup from './setup'
+import showBuildInfo from './show_build_info'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
 
-export default argv => {
-  const { resolveConfig, deployOptions, env } = setup(argv)
+export default async options => {
+  const resolveConfigFactory = getResolveConfigFactory()
 
-  if (argv.printConfig) {
-    // eslint-disable-next-line
-    console.log(
-      JSON.stringify(
-        {
-          ...resolveConfig,
-          deployOptions
-        },
-        null,
-        3
-      )
-    )
-    return
-  }
-
-  const resolveBuildConfig = getResolveBuildConfig(argv, env)
+  const resolveConfig = await resolveConfigFactory()
+  assignSettings(resolveConfig, options)
 
   const nodeModulesByAssembly = new Map()
 
-  const webpackConfigs = getWebpackConfigs({
+  const webpackConfigs = await getWebpackConfigs({
     resolveConfig,
-    deployOptions,
-    env,
-    resolveBuildConfig,
     nodeModulesByAssembly
   })
 
@@ -46,16 +31,21 @@ export default argv => {
 
   const serverPath = path.resolve(__dirname, '../../dist/runtime/index.js')
 
+  let resolveDonePromise, rejectDonePromise
+  const donePromise = new Promise(
+    (...args) => ([resolveDonePromise, rejectDonePromise] = args)
+  )
+
   if (
-    deployOptions.start &&
+    options.start &&
     !fs.existsSync(
       path.join(process.cwd(), resolveConfig.distDir, './assemblies.js')
     )
   ) {
-    deployOptions.build = true
+    options.build = true
   }
 
-  const server = deployOptions.start
+  const server = options.start
     ? respawn([serverPath], {
         maxRestarts: 0,
         kill: 5000,
@@ -69,13 +59,13 @@ export default argv => {
   })
 
   process.env.RESOLVE_SERVER_FIRST_START = 'true'
-  if (deployOptions.build) {
+  if (options.build) {
     fsExtra.copySync(
       path.resolve(process.cwd(), resolveConfig.staticDir),
       path.resolve(process.cwd(), resolveConfig.distDir, './client')
     )
 
-    if (deployOptions.watch) {
+    if (options.watch) {
       const stdin = process.openStdin()
       stdin.addListener('data', data => {
         if (data.toString().indexOf('rs') !== -1) {
@@ -98,19 +88,21 @@ export default argv => {
 
           copyEnvToDist(resolveConfig.distDir)
 
-          if (deployOptions.start) {
+          if (options.start) {
             const hasErrors = stats.reduce(
               (acc, val) => acc || (val != null && val.hasErrors()),
               false
             )
             if (hasErrors) {
               server.stop()
+              rejectDonePromise()
             } else {
               if (server.status === 'running') {
                 process.env.RESOLVE_SERVER_FIRST_START = 'false'
                 server.stop(() => server.start())
               } else {
                 server.start()
+                resolveDonePromise()
               }
             }
           }
@@ -126,19 +118,31 @@ export default argv => {
         )
 
         copyEnvToDist(resolveConfig.distDir)
+        resolveDonePromise()
 
-        if (deployOptions.start) {
+        if (options.start) {
           const hasNoErrors = stats.reduce(
             (acc, val) => acc && (val != null && !val.hasErrors()),
             true
           )
           if (hasNoErrors) {
             server.start()
+            resolveDonePromise()
           }
+
+          rejectDonePromise()
         }
       })
     }
   } else {
     server.start()
+    resolveDonePromise()
+  }
+
+  await donePromise
+
+  return {
+    resolveConfig,
+    webpackConfigs
   }
 }

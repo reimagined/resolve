@@ -216,7 +216,8 @@
         "registry": {
           "type": "string"
         }
-      }
+      },
+      "additionalProperties": false
     },
     "config": {
       "$ref": "#/definitions/subConfig",
