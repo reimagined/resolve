@@ -141,6 +141,12 @@
       "additionalProperties": false,
       "required": ["strategies"]
     },
+    "polyfills": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "subConfig": {
       "type": "object",
       "properties": {
@@ -204,6 +210,9 @@
         "jwtCookie": {
           "$ref": "#/definitions/jwtCookie"
         },
+        "polyfills": {
+          "$ref": "#/definitions/polyfills"
+        },
         "registry": {
           "type": "string"
         }
@@ -245,7 +254,8 @@
         "readModels",
         "busAdapter",
         "storageAdapter",
-        "subscribeAdapter"
+        "subscribeAdapter",
+        "polyfills"
       ],
       "additionalProperties": false
     }

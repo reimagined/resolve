@@ -1,8 +1,10 @@
 # **Subscribe Adapters**
-This folder contains `resolve-redux` adapters used to subscribe to events via [Socket.io](https://socket.io/).
+
+This directory contains `resolve-redux` adapters used to subscribe to events.
 
 Available ways:
-* [resolve-subscribe-mqtt](./resolve-subscribe-mqtt)  
-* [resolve-subscribe-socket.io](./resolve-bus-socket.io)  
+
+* [MQTT](./resolve-subscribe-mqtt)
+* [Socket.io](./resolve-subscribe-socket.io)
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-resolve-subscribe-adapters-readme?pixel)

@@ -1,5 +1,3 @@
-import fetch from 'isomorphic-fetch'
-
 import getRootBasedUrl from './get_root_based_url'
 import { isReactiveArg, queryIdArg, stopSubscriptionArg } from './constants'
 
