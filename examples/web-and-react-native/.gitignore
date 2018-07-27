@@ -63,4 +63,4 @@ dist
 
 event-storage.db
 package-lock.json
-client/native/resolve
+native/resolve

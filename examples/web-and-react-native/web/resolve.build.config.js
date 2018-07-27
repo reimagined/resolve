@@ -21,7 +21,7 @@ export default (webpackConfigs, { resolveConfig, deployOptions, env }) => {
   webpackConfigs.push({
     name: 'Common Business Logic',
     entry: {
-      'client/native/resolve/index.js': [
+      'resolve/index.js': [
         '@babel/runtime/regenerator',
         '$resolve.businessLogic'
       ]
@@ -32,7 +32,7 @@ export default (webpackConfigs, { resolveConfig, deployOptions, env }) => {
     devtool: 'source-map',
     target: 'node',
     output: {
-      path: process.cwd(),
+      path: path.resolve(process.cwd(), '../native'),
       filename: '[name]',
       libraryTarget: 'commonjs-module',
       devtoolModuleFilenameTemplate: '[absolute-resource-path]',

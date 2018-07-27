@@ -1,12 +1,7 @@
 {
-  "name": "web-and-react-native",
+  "name": "native",
   "version": "0.13.2",
   "private": true,
-  "devDependencies": {
-    "react-native-scripts": "1.14.0",
-    "jest-expo": "28.0.0",
-    "react-test-renderer": "16.4.1"
-  },
   "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
   "scripts": {
     "start": "react-native-scripts start",
@@ -22,6 +17,25 @@
     "@babel/runtime": "7.0.0-beta.54",
     "expo": "28.0.0",
     "react": "16.4.1",
-    "react-native": "0.55.4"
+    "react-native": "0.55.4",
+    "resolve-redux": "0.13.2"
+  },
+  "devDependencies": {
+    "react-native-scripts": "1.14.0",
+    "jest-expo": "28.0.0",
+    "react-test-renderer": "16.4.1"
+  },
+  "workspaces": {
+    "nohoist": [
+      "**",
+      "**/react-native",
+      "**/react-native/**",
+      "**/react-native-scripts",
+      "**/react-native-scripts/**",
+      "**/expo",
+      "**/expo/**",
+      "**/jest-expo",
+      "**/jest-expo/**"
+    ]
   }
 }

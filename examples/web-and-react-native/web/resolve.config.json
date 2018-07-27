@@ -1,6 +1,6 @@
 {
   "port": 3000,
-  "routes": "client/web/routes.js",
+  "routes": "client/routes.js",
   "aggregates": [
     {
       "name": "Todo",
