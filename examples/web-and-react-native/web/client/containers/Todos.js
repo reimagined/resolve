@@ -23,7 +23,7 @@ export const Todos = props => {
   const createItemFunc = () => {
     createItem(aggregateId, {
       text: newTodo.value === '' ? placeholder : newTodo.value,
-      id: Date.now()
+      id: Date.now().toString()
     })
     newTodo.value = ''
   }
