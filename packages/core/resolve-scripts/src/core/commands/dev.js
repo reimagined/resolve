@@ -6,4 +6,6 @@ webpack({
   start: true,
   watch: true,
   openBrowser: true
+}).catch(error => {
+  console.log(error)
 })

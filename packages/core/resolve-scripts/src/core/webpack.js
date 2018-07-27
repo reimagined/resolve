@@ -4,21 +4,15 @@ import path from 'path'
 import respawn from 'respawn'
 import webpack from 'webpack'
 
-import assignSettings from './assign_settings'
-import copyEnvToDist from './copy_env_to_dist'
 import getMockServer from './get_mock_server'
-import getResolveBuildConfig from './get_resolve_build_config'
-import getResolveConfigFactory from './get_resolve_config_factory'
 import getWebpackConfigs from './get_webpack_configs'
-import setup from './setup'
-import showBuildInfo from './show_build_info'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
+import showBuildInfo from './show_build_info'
+import copyEnvToDist from './copy_env_to_dist'
+import setup from './setup'
 
 export default async options => {
-  const resolveConfigFactory = getResolveConfigFactory()
-
-  const resolveConfig = await resolveConfigFactory()
-  assignSettings(resolveConfig, options)
+  const resolveConfig = await setup(options)
 
   const nodeModulesByAssembly = new Map()
 

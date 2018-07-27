@@ -147,7 +147,7 @@
         "type": "string"
       }
     },
-    "subConfig": {
+    "config": {
       "type": "object",
       "properties": {
         "port": {
@@ -215,30 +215,9 @@
         },
         "registry": {
           "type": "string"
-        }
-      },
-      "additionalProperties": false
-    },
-    "config": {
-      "$ref": "#/definitions/subConfig",
-      "properties": {
-        "env": {
-          "type": "object",
-          "properties": {
-            "development": {
-              "$ref": "#/definitions/subConfig",
-              "additionalProperties": false
-            },
-            "production": {
-              "$ref": "#/definitions/subConfig",
-              "additionalProperties": false
-            },
-            "test": {
-              "$ref": "#/definitions/subConfig",
-              "additionalProperties": false
-            }
-          },
-          "additionalProperties": false
+        },
+        "mode": {
+          "type": "string"
         }
       },
       "required": [

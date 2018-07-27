@@ -7,6 +7,10 @@ export const extenders = []
 
 extenders.push(rootPath)
 export function rootPath(resolveConfig) {
+  if (!resolveConfig.hasOwnProperty('rootPath')) {
+    return
+  }
+
   const {
     protocol,
     slashes,
@@ -45,6 +49,10 @@ export function rootPath(resolveConfig) {
 
 extenders.push(staticPath)
 export function staticPath(resolveConfig) {
+  if (!resolveConfig.hasOwnProperty('staticPath')) {
+    return
+  }
+
   const {
     protocol,
     slashes,

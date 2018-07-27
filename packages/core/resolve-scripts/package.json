@@ -5,6 +5,7 @@
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
+  "main": "./dist/core/index.js",
   "keywords": [
     "cqrs",
     "eventsourcing",
