@@ -115,7 +115,7 @@ Use the following command to get the current [To-Do List](../examples/todo) stat
 
 ```sh
 curl -g -X GET "http://localhost:3000/api/query/Todos/root-id"
-```"
+```
 
 ### Example Response
 
