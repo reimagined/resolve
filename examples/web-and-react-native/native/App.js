@@ -1,7 +1,12 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { Providers} from './resolve/resolve-redux'
-import { origin, rootPath, staticPath, aggregateActions } from './resolve/config'
+import { Providers } from './resolve/resolve-redux'
+import {
+  origin,
+  rootPath,
+  staticPath,
+  aggregateActions
+} from './resolve/config'
 import store from './redux/store'
 
 import Todos from './client/containers/Todos'
@@ -17,7 +22,7 @@ export default class App extends React.PureComponent {
         store={store}
       >
         <View style={styles.container}>
-          <Todos/>
+          <Todos />
         </View>
       </Providers>
     )

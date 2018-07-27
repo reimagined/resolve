@@ -26,7 +26,7 @@
       "packages/adapters/storage-adapters/*",
       "packages/adapters/readmodel-adapters/*",
       "packages/adapters/subscribe-adapters/*",
-      "examples/web-and-react-native/*",
+      "examples/web-and-react-native/web",
       "examples/*",
       "tests"
     ]

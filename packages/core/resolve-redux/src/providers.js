@@ -14,9 +14,9 @@ class Providers extends React.PureComponent {
       store,
       children
     } = this.props
-    
+
     const api = createApi({ origin, rootPath })
-    
+
     return (
       <ResolveProvider
         value={{
@@ -27,9 +27,7 @@ class Providers extends React.PureComponent {
           aggregateActions
         }}
       >
-        <ReduxProvider store={store}>
-          {children}
-        </ReduxProvider>
+        <ReduxProvider store={store}>{children}</ReduxProvider>
       </ResolveProvider>
     )
   }

@@ -1,15 +1,13 @@
-import fs from 'fs'
 import path from 'path'
-import webpack from 'webpack'
-
-import nodeExternals from 'webpack-node-externals'
 import getModulesDirs from 'resolve-scripts/dist/core/get_modules_dirs'
 import getWebpackEnvPlugin from 'resolve-scripts/dist/core/get_webpack_env_plugin'
-import getWebpackAlias from 'resolve-scripts/dist/core/get_webpack_alias'
 
-export default (webpackConfigs, { resolveConfig, deployOptions, env }) => {
+export default (
+  webpackConfigs,
+  { resolveConfig, deployOptions, env, alias: _alias }
+) => {
   const alias = {
-    ...getWebpackAlias(),
+    ..._alias,
     ['$resolve.businessLogic']: path.resolve(
       __dirname,
       'core/alias/$resolve.businessLogic.js'
@@ -25,12 +23,8 @@ export default (webpackConfigs, { resolveConfig, deployOptions, env }) => {
   webpackConfigs.push({
     name: 'Common Business Logic',
     entry: {
-      'resolve/config.js': [
-        '$resolve.businessLogic'
-      ],
-      'resolve/resolve-redux.js': [
-        '$resolve.resolveRedux'
-      ]
+      'resolve/config.js': ['$resolve.businessLogic'],
+      'resolve/resolve-redux.js': ['$resolve.resolveRedux']
     },
     context: path.resolve(process.cwd()),
     mode: deployOptions.mode,
@@ -89,8 +83,7 @@ export default (webpackConfigs, { resolveConfig, deployOptions, env }) => {
             options: {
               cacheDirectory: true
             }
-          },
-          //exclude: [/node_modules/, ...getModulesDirs()]
+          }
         }
       ]
     },

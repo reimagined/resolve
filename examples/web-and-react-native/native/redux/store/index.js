@@ -1,6 +1,14 @@
 import createMemoryHistory from 'history/createMemoryHistory'
+
 import { createStore, Providers } from '../../resolve/resolve-redux'
-import { viewModels, readModels, aggregates, subscribeAdapter, rootPath, origin } from '../../resolve/config'
+import {
+  viewModels,
+  readModels,
+  aggregates,
+  subscribeAdapter,
+  rootPath,
+  origin
+} from '../../resolve/config'
 
 import reducers from '../reducers'
 import middlewares from '../middlewares'

@@ -1,9 +1,5 @@
 import React from 'react'
-import {
-  StyleSheet,
-  Text,
-  View
-} from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import { Icon } from 'react-native-elements'
 
 const styles = StyleSheet.create({
@@ -19,13 +15,13 @@ const styles = StyleSheet.create({
     fontSize: 18
   },
   container: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between"
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
   },
   separator: {
     height: StyleSheet.hairlineWidth,
-    backgroundColor: "#dddddd"
+    backgroundColor: '#dddddd'
   },
   checkbox: {
     paddingRight: 2
@@ -33,7 +29,7 @@ const styles = StyleSheet.create({
   remove: {
     paddingLeft: 5
   }
-});
+})
 
 class Item extends React.PureComponent {
   render() {
@@ -44,19 +40,24 @@ class Item extends React.PureComponent {
         <View style={styles.container}>
           <Icon
             color="#767676"
-            type='material-community'
-            name={checked ? 'checkbox-marked-outline' : 'checkbox-blank-outline'}
+            type="material-community"
+            name={
+              checked ? 'checkbox-marked-outline' : 'checkbox-blank-outline'
+            }
             size={36}
             containerStyle={styles.checkbox}
             onPress={toggleItem}
           />
-          <Text style={checked ? styles.textChecked : styles.textUnchecked} onPress={toggleItem}>
+          <Text
+            style={checked ? styles.textChecked : styles.textUnchecked}
+            onPress={toggleItem}
+          >
             {text}
           </Text>
           <Icon
             color="#767676"
-            type='material-community'
-            name='close-circle-outline'
+            type="material-community"
+            name="close-circle-outline"
             size={36}
             containerStyle={styles.remove}
             onPress={removeItem}
@@ -64,7 +65,7 @@ class Item extends React.PureComponent {
         </View>
         <View style={styles.separator} />
       </View>
-    );
+    )
   }
 }
 

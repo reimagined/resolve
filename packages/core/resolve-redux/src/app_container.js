@@ -15,7 +15,7 @@ class AppContainer extends React.PureComponent {
       routes,
       isSSR
     } = this.props
-    
+
     return (
       <Providers
         origin={origin}
