@@ -1,3 +1,3 @@
-import { defaultResolveConfig } from './default.resolve.config.js'
+import defaultResolveConfig from './default.resolve.config'
 
 export { defaultResolveConfig }

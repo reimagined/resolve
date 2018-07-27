@@ -218,6 +218,9 @@
         },
         "mode": {
           "type": "string"
+        },
+        "webpack": {
+          "not": { "type": "null" }
         }
       },
       "required": [

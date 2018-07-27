@@ -37,5 +37,5 @@ export default {
     maxAge: 31536000000
   },
   polyfills: [],
-  webpack: function() {}
+  webpack: async function(webpackConfigs, resolveConfig) {}
 }

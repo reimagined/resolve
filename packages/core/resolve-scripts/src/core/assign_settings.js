@@ -111,25 +111,15 @@ export function mode(resolveConfig, options) {
   }
 }
 
-// eslint-disable-next-line no-unused-vars
-export async function defaultCustomWebpackConfig(
-  webpackConfigs,
-  resolveConfig
-) {}
-
 extenders.push(customWebpackConfig)
 export function customWebpackConfig(resolveConfig) {
   const callback = resolveConfig.webpack
-  if (callback == null) {
-    resolveConfig.webpack = defaultCustomWebpackConfig
-    return
-  }
 
   if (typeof callback !== 'function' || callback.length !== 2) {
     throw new Error(
       `Incorrect options.webpack = "${
         resolveConfig.webpack
-      }"\nShould be function with following signature: ${defaultCustomWebpackConfig}`
+      }"\nShould be function with following signature: (webpackConfigs, resolveConfig) => {}`
     )
   }
 }
