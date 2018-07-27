@@ -1,6 +1,6 @@
 import { message } from '../constants'
 
-export default ({ deployOptions, isClient }) => {
+export default ({ resolveConfig, isClient }) => {
   if (isClient) {
     throw new Error(`${message.serverAliasInClientCodeError}$resolve.useYarn`)
   }
@@ -8,7 +8,7 @@ export default ({ deployOptions, isClient }) => {
   const exports = []
 
   exports.push(
-    `const useYarn = ${JSON.stringify(deployOptions.useYarn, null, 2)}`,
+    `const useYarn = ${JSON.stringify(resolveConfig.useYarn, null, 2)}`,
     ``,
     `export default useYarn`
   )

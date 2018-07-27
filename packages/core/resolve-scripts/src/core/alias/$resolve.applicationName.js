@@ -1,8 +1,8 @@
-export default ({ deployOptions }) => {
+export default ({ resolveConfig }) => {
   const exports = []
 
   exports.push(
-    `const applicationName = ${JSON.stringify(deployOptions.applicationName)}`,
+    `const applicationName = ${JSON.stringify(resolveConfig.applicationName)}`,
     ``,
     `export default applicationName`
   )

@@ -3,13 +3,13 @@ import exec from '../../exec'
 jest.setTimeout(30000)
 
 test('resolve-scripts build', async () => {
-  const { deployOptions } = await exec('resolve-scripts build')
+  const { resolveConfig } = await exec('resolve-scripts build')
 
-  expect(deployOptions).toHaveProperty('start', false)
+  expect(resolveConfig).toHaveProperty('start', false)
 })
 
 test('resolve-scripts build --start', async () => {
-  const { deployOptions } = await exec('resolve-scripts build --start')
+  const { resolveConfig } = await exec('resolve-scripts build --start')
 
-  expect(deployOptions).toHaveProperty('start', true)
+  expect(resolveConfig).toHaveProperty('start', true)
 })

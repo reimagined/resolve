@@ -2,7 +2,7 @@ import alias from '../../src/core/alias/$resolve.openBrowser'
 import normalizePaths from './normalize_paths'
 
 describe('base config works correctly', () => {
-  const deployOptions = {
+  const resolveConfig = {
     openBrowser: true
   }
 
@@ -11,7 +11,7 @@ describe('base config works correctly', () => {
       normalizePaths(
         '\r\n' +
           alias({
-            deployOptions,
+            resolveConfig,
             isClient: true
           }).code +
           '\r\n'
@@ -24,7 +24,7 @@ describe('base config works correctly', () => {
       normalizePaths(
         '\r\n' +
           alias({
-            deployOptions,
+            resolveConfig,
             isClient: false
           }).code +
           '\r\n'

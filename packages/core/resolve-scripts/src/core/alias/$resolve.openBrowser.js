@@ -1,6 +1,6 @@
 import { message } from '../constants'
 
-export default ({ deployOptions, isClient }) => {
+export default ({ resolveConfig, isClient }) => {
   if (isClient) {
     throw new Error(
       `${message.serverAliasInClientCodeError}$resolve.openBrowser`
@@ -10,7 +10,7 @@ export default ({ deployOptions, isClient }) => {
   const exports = []
 
   exports.push(
-    `const openBrowser = ${JSON.stringify(deployOptions.openBrowser, null, 2)}`,
+    `const openBrowser = ${JSON.stringify(resolveConfig.openBrowser, null, 2)}`,
     ``,
     `export default openBrowser`
   )

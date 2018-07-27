@@ -115,7 +115,7 @@ The **resolve.build.config.js** file contains information for building an applic
 ```js
 // resolve.build.config
 
-export default (webpackConfigs, { resolveConfig, deployOptions, env }) => {
+export default (webpackConfigs, { resolveConfig, resolveConfig, env }) => {
 
 }
 ```
