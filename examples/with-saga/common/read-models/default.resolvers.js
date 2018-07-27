@@ -1,10 +1,8 @@
 export default {
-  default: async (store, { timestamp }) => {
+  default: async store => {
     const [users, errors] = await Promise.all([
       store.find('Users', {}, null, { timestamp: -1 }),
-      store.find('Errors', { timestamp: { $gt: timestamp } }, null, {
-        timestamp: 1
-      })
+      store.find('Errors', {}, null, { timestamp: 1 })
     ])
 
     return {

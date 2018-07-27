@@ -30,6 +30,7 @@ class App extends React.Component {
         <div className="example-wrapper">
           <UsersInput
             isDisabled={this.props.user.disableButton}
+            errors={this.props.data.errors}
             submitUser={email => {
               this.submitUser(uuid.v4(), { email: email })
             }}
@@ -37,7 +38,6 @@ class App extends React.Component {
           <UsersList
             isLoading={this.props.isLoading}
             users={this.props.data.users}
-            errorMessage={null}
           />
         </div>
       </div>

@@ -7,6 +7,12 @@
       "projection": "common/read-models/default.projection.js",
       "resolvers": "common/read-models/default.resolvers.js"
   }],
+  "viewModels": [
+    {
+      "name": "error",
+      "projection": "common/view-models/error.projection.js"
+    }
+  ],
   "sagas": "common/sagas/index.js",
   "aggregates": [{
       "name": "user",
