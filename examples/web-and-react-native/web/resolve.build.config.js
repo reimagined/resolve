@@ -8,11 +8,11 @@ export default (
 ) => {
   const alias = {
     ..._alias,
-    ['$resolve.businessLogic']: path.resolve(
+    '$resolve.businessLogic': path.resolve(
       __dirname,
       'core/alias/$resolve.businessLogic.js'
     ),
-    ['$resolve.resolveRedux']: path.resolve(
+    '$resolve.resolveRedux': path.resolve(
       __dirname,
       'core/alias/$resolve.resolveRedux.js'
     )
@@ -50,20 +50,7 @@ export default (
             {
               loader: 'babel-loader',
               options: {
-                cacheDirectory: true,
-                babelrc: false,
-                presets: [
-                  '@babel/preset-env',
-                  [
-                    '@babel/preset-stage-0',
-                    {
-                      decoratorsLegacy: true,
-                      pipelineProposal: 'minimal'
-                    }
-                  ],
-                  '@babel/preset-react'
-                ],
-                plugins: ['@babel/plugin-transform-runtime']
+                cacheDirectory: true
               }
             },
             {

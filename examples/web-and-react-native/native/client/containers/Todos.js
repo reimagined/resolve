@@ -16,7 +16,7 @@ import {
 
 import Item from '../components/Item'
 
-const isAndroid = Platform.OS == 'android'
+const isAndroid = Platform.OS === 'android'
 const viewPadding = 10
 
 const viewModelName = 'Todos'

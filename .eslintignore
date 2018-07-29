@@ -1,3 +1,4 @@
 node_modules
 dist
 coverage
+examples/web-and-react-native/native/resolve
