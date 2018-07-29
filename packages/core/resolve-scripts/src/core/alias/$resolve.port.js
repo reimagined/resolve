@@ -1,4 +1,5 @@
 import { message } from '../constants'
+import { checkRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig, isClient }) => {
   if (isClient) {
@@ -9,19 +10,21 @@ export default ({ resolveConfig, isClient }) => {
     throw new Error(`${message.configNotContainSectionError}.port`)
   }
 
-  const config = {
-    port: resolveConfig.port
-  }
-
   const exports = []
 
-  exports.push(
-    `const config = ${JSON.stringify(config)}`,
-    ``,
-    `const port = config.port`,
-    ``,
-    `export default port`
-  )
+  if(checkRuntimeEnv(resolveConfig.port) != null) {
+    exports.push(
+      `const port = process.env[${JSON.stringify(resolveConfig.port)}]`,
+      ``,
+      `export default port`
+    )
+  } else {
+    exports.push(
+      `const port = ${JSON.stringify(config.port)}`,
+      ``,
+      `export default port`
+    )
+  }
 
   return {
     code: exports.join('\r\n')
