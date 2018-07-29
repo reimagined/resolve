@@ -9,12 +9,6 @@
     "test": "resolve-scripts test",
     "test:functional": "resolve-scripts test:functional"
   },
-  "jest": {
-    "transform": {
-      "\\.js$": "<rootDir>/test/unit/config/jest-js-transform",
-      "\\.css$": "<rootDir>/test/unit/config/jest-css-modules-transform"
-    }
-  },
   "dependencies": {
     "react": "16.4.1",
     "react-dom": "16.4.1",

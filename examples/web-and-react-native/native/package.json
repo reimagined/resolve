@@ -1,5 +1,5 @@
 {
-  "name": "native",
+  "name": "@web-and-react-native/native",
   "version": "0.13.2",
   "private": true,
   "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
@@ -9,9 +9,6 @@
     "android": "react-native-scripts android",
     "ios": "react-native-scripts ios",
     "test": "jest"
-  },
-  "jest": {
-    "preset": "jest-expo"
   },
   "dependencies": {
     "expo": "29.0.0",

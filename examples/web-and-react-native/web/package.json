@@ -1,12 +1,11 @@
 {
-  "name": "web",
+  "name": "@web-and-react-native/web",
   "version": "0.13.2",
   "private": true,
   "scripts": {
     "build": "resolve-scripts build",
     "dev": "resolve-scripts dev",
     "start": "resolve-scripts start",
-    "start:native": "cd client/native && yarn start",
     "test": "resolve-scripts test",
     "test:functional": "resolve-scripts test:functional"
   },

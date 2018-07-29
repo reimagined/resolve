@@ -1,6 +1,6 @@
 import createMemoryHistory from 'history/createMemoryHistory'
 
-import { createStore, Providers } from '../../resolve/resolve-redux'
+import { createStore } from '../../resolve/resolve-redux'
 import {
   viewModels,
   readModels,
