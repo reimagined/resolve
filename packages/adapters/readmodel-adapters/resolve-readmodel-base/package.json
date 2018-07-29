@@ -8,8 +8,8 @@
   },
   "scripts": {
     "prepare": "babel --config-file=../../../../.babelrc --source-maps --out-dir ./dist ./src",
-    "test": "jest --config=../../../../jest.config.js --rootDir=. --verbose",
-    "testw": "jest --config=../../../../jest.config.js --rootDir=. --watchAll"
+    "test": "jest --config=../../../../jest.config.js --verbose",
+    "testw": "jest --config=../../../../jest.config.js --watchAll"
   },
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
