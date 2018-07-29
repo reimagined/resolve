@@ -5,10 +5,10 @@ const declareRuntimeEnv = (envName) => {
     throw new Error('Runtime environment variable should be an string')
   }
   
-  return Object.create(null, {
-    type: { value: runtimeEnvSymbol },
-    name: { value: envName }
-  })
+  const envContainer = new String(envName)
+  envContainer.type = runtimeEnvSymbol
+  
+  return envContainer
 }
 
 export const checkRuntimeEnv = (value) => {
@@ -16,7 +16,7 @@ export const checkRuntimeEnv = (value) => {
     return null
   }
   
-  return value.name
+  return value
 }
 
 export default declareRuntimeEnv
