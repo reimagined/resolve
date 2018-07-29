@@ -2,6 +2,7 @@ import { message } from '../constants'
 import resolveFile from '../resolve_file'
 import resolveFileOrModule from '../resolve_file_or_module'
 import importBabel from '../import_babel'
+import { checkRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig, isClient }) => {
   if (!resolveConfig.aggregates) {
@@ -17,16 +18,31 @@ export default ({ resolveConfig, isClient }) => {
 
   for (let index = 0; index < resolveConfig.aggregates.length; index++) {
     const aggregate = resolveConfig.aggregates[index]
+
+    if (checkRuntimeEnv(aggregate.name) != null) {
+      throw new Error(`${message.clientEnvError}.aggregates[${index}].name`)
+    }
     const name = aggregate.name
+
+    if (checkRuntimeEnv(aggregate.commands) != null) {
+      throw new Error(`${message.clientEnvError}.aggregates[${index}].commands`)
+    }
     const commands = resolveFile(aggregate.commands)
 
+    if (aggregate.projection && checkRuntimeEnv(aggregate.projection) != null) {
+      throw new Error(
+        `${message.clientEnvError}.aggregates[${index}].projection`
+      )
+    }
     const projection = aggregate.projection
       ? resolveFile(aggregate.projection)
       : undefined
 
     const snapshotAdapter = aggregate.snapshotAdapter
       ? {
-          module: resolveFileOrModule(aggregate.snapshotAdapter.module),
+          module: checkRuntimeEnv(aggregate.snapshotAdapter.module) != null
+            ? aggregate.snapshotAdapter.module
+            : resolveFileOrModule(aggregate.snapshotAdapter.module),
           options: {
             ...aggregate.snapshotAdapter.options
           }
@@ -60,16 +76,26 @@ export default ({ resolveConfig, isClient }) => {
     }
 
     if (!isClient && aggregate.snapshotAdapter) {
-      imports.push(
-        `import snapshotAdapterModule_${index} from ${JSON.stringify(
-          snapshotAdapter.module
-        )}`
-      )
-      constants.push(
-        `const snapshotAdapterOptions_${index} = ${JSON.stringify(
-          snapshotAdapter.options
-        )}`
-      )
+       if (checkRuntimeEnv(aggregate.snapshotAdapter.module) != null) {
+          constants.push(
+            `const snapshotAdapter_${index} = ${JSON.stringify(snapshotAdapter)}`,
+            `const snapshotAdapterModule_${index} = interopRequireDefault(`,
+            `  eval('require(snapshotAdapter_${index}.module)')`,
+            `).default`,
+            `const snapshotAdapterOptions_${index} = snapshotAdapter_${index}.options`
+          )
+      } else {
+        imports.push(
+          `import snapshotAdapterModule_${index} from ${JSON.stringify(
+            snapshotAdapter.module
+          )}`
+        )
+        constants.push(
+          `const snapshotAdapterOptions_${index} = ${JSON.stringify(
+            snapshotAdapter.options
+          )}`
+        )
+      }
     }
 
     exports.push(`aggregates.push({`)
