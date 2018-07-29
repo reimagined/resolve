@@ -1,4 +1,5 @@
 import { message } from '../constants'
+import { checkRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig, isClient }) => {
   if (isClient) {
@@ -7,6 +8,10 @@ export default ({ resolveConfig, isClient }) => {
 
   if (!resolveConfig.distDir) {
     throw new Error(`${message.configNotContainSectionError}.distDir`)
+  }
+  
+  if (checkRuntimeEnv(resolveConfig.distDir) != null) {
+    throw new Error(`${message.clientEnvError}.distDir`)
   }
 
   const exports = []
