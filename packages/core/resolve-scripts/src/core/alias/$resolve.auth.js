@@ -1,5 +1,6 @@
 import { message } from '../constants'
 import resolveFile from '../resolve_file'
+import { checkRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig, isClient }) => {
   if (isClient) {
@@ -8,6 +9,10 @@ export default ({ resolveConfig, isClient }) => {
 
   if (!resolveConfig.auth) {
     throw new Error(`${message.configNotContainSectionError}.auth`)
+  }
+  
+  if (checkRuntimeEnv(resolveConfig.auth.strategies) != null) {
+    throw new Error(`${message.clientEnvError}.auth.strategies`)
   }
 
   const strategies = resolveFile(
