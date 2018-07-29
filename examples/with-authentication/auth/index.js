@@ -15,7 +15,6 @@ const routes = [
     path: '/register',
     method: 'POST',
     callback: async (_, username) => {
-      console.log('cb1 ', jwtSecret)
       return jwt.sign(
         {
           name: username

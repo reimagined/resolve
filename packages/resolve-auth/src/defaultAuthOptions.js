@@ -1,6 +1,4 @@
-import jsonwebtoken from 'jsonwebtoken'
 import { getRootBasedUrl } from './helpers'
-import { promisify } from 'util'
 
 const applyJwtValue = (jwtToken, res) => {
   const { name: cookieName, ...cookieOptions } = { name: 'jwt' } // TODO get from config
@@ -21,18 +19,13 @@ const redirect = location => ({
 
 export default {
   success: async (options, req, res, next, arg /*, info*/) => {
-    console.log(arg)
     await applyJwtValue(arg, res)
     Object.assign(
       res,
       redirect(getRootBasedUrl(options.successRedirect || '/'))
     )
-    console.log('success')
-    console.log(res)
   },
   fail: async (options, req, res, next, error, status) => {
-    console.log(error)
-    console.log('fail')
     if (options.failureRedirect) {
       Object.assign(
         res,
@@ -50,18 +43,13 @@ export default {
     }
   },
   redirect: async (options, req, res, next, url) => {
-    console.log(url)
-    console.log('redirect')
     Object.assign(res, redirect(url))
   },
   pass: async (options, req, res, next) => {
-    console.log('pass')
     res.statusCode = 200
     next()
   },
   error: async (options, req, res, next, err) => {
-    console.log(err)
-    console.log('error')
     if (options.errorRedirect) {
       Object.assign(
         res,

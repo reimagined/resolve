@@ -11,7 +11,6 @@ const resolveAuth = (strategyConstructor, options) => ({
       cookies: {}
     }
 
-    console.log('Promise')
     await new Promise(resolve => {
       Object.keys(defaultAuthOptions).forEach(
         key =>
@@ -23,14 +22,11 @@ const resolveAuth = (strategyConstructor, options) => ({
               next,
               ...args
             )
-            console.log('resolve')
             resolve()
           })
       )
       strategy.authenticate(req, { response: res })
     })
-    console.log('buildResponse')
-
     ;(options.buildResponse || (f => f))(res, fakeResponse)
   }
 })
