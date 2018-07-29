@@ -2,6 +2,7 @@ import { message } from '../constants'
 import resolveFile from '../resolve_file'
 import resolveFileOrModule from '../resolve_file_or_module'
 import importBabel from '../import_babel'
+import { checkRuntimeEnv } from '../declare_runtime_env' 
 
 export default ({ resolveConfig, isClient }) => {
   if (!resolveConfig.readModels) {
@@ -17,14 +18,31 @@ export default ({ resolveConfig, isClient }) => {
 
   for (let index = 0; index < resolveConfig.readModels.length; index++) {
     const readModel = resolveConfig.readModels[index]
+
+    if (checkRuntimeEnv(readModel.name) != null) {
+      throw new Error(`${message.clientEnvError}.readModels[${index}].name`)
+    }
     const name = readModel.name
+
+    if (checkRuntimeEnv(readModel.projection) != null) {
+      throw new Error(
+        `${message.clientEnvError}.readModels[${index}].projection`
+      )
+    }
     const projection = resolveFile(readModel.projection)
 
+    if (checkRuntimeEnv(readModel.resolvers) != null) {
+      throw new Error(
+        `${message.clientEnvError}.readModels[${index}].resolvers`
+      )
+    }
     const resolvers = resolveFile(readModel.resolvers)
 
     const adapter = readModel.adapter
       ? {
-          module: resolveFileOrModule(readModel.adapter.module),
+          module: checkRuntimeEnv(readModel.adapter.module) != null
+            ? readModel.adapter.module
+            : resolveFileOrModule(readModel.adapter.module),
           options: {
             ...readModel.adapter.options
           }
@@ -52,12 +70,22 @@ export default ({ resolveConfig, isClient }) => {
     }
 
     if (!isClient && readModel.adapter) {
-      imports.push(
-        `import adapterModule_${index} from ${JSON.stringify(adapter.module)}`
-      )
-      constants.push(
-        `const adapterOptions_${index} = ${JSON.stringify(adapter.options)}`
-      )
+      if (checkRuntimeEnv(readModel.adapter.module) != null) {
+        constants.push(
+          `const adapter_${index} = ${JSON.stringify(adapter)}`,
+          `const adapterModule_${index} = interopRequireDefault(`,
+          `  eval('require(adapter_${index}.module)')`,
+          `).default`,
+          `const adapterOptions_${index} = adapter_${index}.options`
+        )
+      } else {
+        imports.push(
+          `import adapterModule_${index} from ${JSON.stringify(adapter.module)}`
+        )
+        constants.push(
+          `const adapterOptions_${index} = ${JSON.stringify(adapter.options)}`
+        )
+      }
     }
 
     exports.push(`readModels.push({`, `  name: name_${index}`)
