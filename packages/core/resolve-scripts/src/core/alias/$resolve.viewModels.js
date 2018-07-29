@@ -1,6 +1,7 @@
 import { message } from '../constants'
 import resolveFile from '../resolve_file'
 import resolveFileOrModule from '../resolve_file_or_module'
+import { checkRuntimeEnv } from '../declare_runtime_env' 
 
 export default ({ resolveConfig, isClient }) => {
   if (!resolveConfig.viewModels) {
@@ -16,20 +17,44 @@ export default ({ resolveConfig, isClient }) => {
 
   for (let index = 0; index < resolveConfig.viewModels.length; index++) {
     const viewModel = resolveConfig.viewModels[index]
+
+    if (checkRuntimeEnv(viewModel.name) != null) {
+      throw new Error(`${message.clientEnvError}.viewModels[${index}].name`)
+    }
     const name = viewModel.name
 
+    if (checkRuntimeEnv(viewModel.projection) != null) {
+      throw new Error(
+        `${message.clientEnvError}.viewModels[${index}].projection`
+      )
+    }
     const projection = resolveFile(viewModel.projection)
 
+    if (checkRuntimeEnv(viewModel.serializeState) != null) {
+      throw new Error(
+        `${message.clientEnvError}.viewModels[${index}].serializeState`
+      )
+    }
     const serializeState = resolveFile(
       viewModel.serializeState,
       'view_model_serialize_state.js'
     )
 
+    if (checkRuntimeEnv(viewModel.deserializeState) != null) {
+      throw new Error(
+        `${message.clientEnvError}.viewModels[${index}].deserializeState`
+      )
+    }
     const deserializeState = resolveFile(
       viewModel.deserializeState,
       'view_model_deserialize_state.js'
     )
 
+    if (checkRuntimeEnv(viewModel.validator) != null) {
+      throw new Error(
+        `${message.clientEnvError}.viewModels[${index}].validator`
+      )
+    }
     const validator = resolveFile(
       viewModel.validator,
       'view_model_validator.js'
@@ -37,7 +62,9 @@ export default ({ resolveConfig, isClient }) => {
 
     const snapshotAdapter = viewModel.snapshotAdapter
       ? {
-          module: resolveFileOrModule(viewModel.snapshotAdapter.module),
+          module: checkRuntimeEnv(viewModel.snapshotAdapter.module) != null
+            ? viewModel.snapshotAdapter.module
+            : resolveFileOrModule(viewModel.snapshotAdapter.module),
           options: {
             ...viewModel.snapshotAdapter.options
           }
@@ -71,16 +98,26 @@ export default ({ resolveConfig, isClient }) => {
     constants.push(`const name_${index} = ${JSON.stringify(name)}`)
 
     if (!isClient && viewModel.snapshotAdapter) {
-      imports.push(
-        `import snapshotAdapterModule_${index} from ${JSON.stringify(
-          snapshotAdapter.module
-        )}`
-      )
-      constants.push(
-        `const snapshotAdapterOptions_${index} = ${JSON.stringify(
-          snapshotAdapter.options
-        )}`
-      )
+      if (checkRuntimeEnv(viewModel.snapshotAdapter.module) != null) {
+        constants.push(
+          `const snapshotAdapter_${index} = ${injectEnv(snapshotAdapter)}`,
+          `const snapshotAdapterModule_${index} = interopRequireDefault(`,
+          `  eval('require(snapshotAdapter_${index}.module)')`,
+          `).default`,
+          `const snapshotAdapterOptions_${index} = snapshotAdapter_${index}.options`
+        )
+      } else {
+        imports.push(
+          `import snapshotAdapterModule_${index} from ${JSON.stringify(
+            snapshotAdapter.module
+          )}`
+        )
+        constants.push(
+          `const snapshotAdapterOptions_${index} = ${JSON.stringify(
+            snapshotAdapter.options
+          )}`
+        )
+      }
     }
 
     exports.push(
