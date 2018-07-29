@@ -1,5 +1,6 @@
 import { message } from '../constants'
 import resolveFileOrModule from '../resolve_file_or_module'
+import { checkRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig, isClient }) => {
   if (isClient) {
@@ -14,7 +15,9 @@ export default ({ resolveConfig, isClient }) => {
 
   const busAdapter = resolveConfig.busAdapter
     ? {
-        module: resolveFileOrModule(resolveConfig.busAdapter.module),
+        module: checkRuntimeEnv(resolveConfig.busAdapter.module) != null
+          ? resolveConfig.busAdapter.module
+          : resolveFileOrModule(resolveConfig.busAdapter.module),
         options: {
           ...resolveConfig.busAdapter.options
         }
@@ -23,11 +26,23 @@ export default ({ resolveConfig, isClient }) => {
 
   const exports = []
 
-  exports.push(
-    `import busAdapterModule from ${JSON.stringify(busAdapter.module)}`,
-    ``,
-    `const busAdapterOptions = ${JSON.stringify(busAdapter.options)}`
-  )
+  if (checkRuntimeEnv(busAdapter.module) != null) {
+    exports.push(
+      `import interopRequireDefault from "@babel/runtime/helpers/interopRequireDefault"`,
+      ``,
+      `const busAdapter = ${JSON.stringify(busAdapter)}`,
+      `const busAdapterModule = interopRequireDefault(`,
+      `  eval('require(busAdapter.module)')`,
+      `).default`,
+      `const busAdapterOptions = busAdapter.options`
+    )
+  } else {
+    exports.push(
+      `import busAdapterModule from ${JSON.stringify(busAdapter.module)}`,
+      ``,
+      `const busAdapterOptions = ${JSON.stringify(busAdapter.options)}`
+    )
+  }
 
   exports.push(
     ``,
