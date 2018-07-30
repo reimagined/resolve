@@ -82,21 +82,6 @@ const options = routes.map(({ path, method, callback }) => ({
   },
   callback,
   ...authenticateOptions,
-  buildResponse: (resExpress, response) => {
-    resExpress.statusCode = response.statusCode
-    Object.keys(response.headers || {}).forEach(key => {
-      resExpress.setHeader(key, response.headers[key])
-    })
-    Object.keys(response.cookies || {}).forEach(key => {
-      resExpress.cookie(
-        key,
-        response.cookies[key].value,
-        response.cookies[key].options
-      )
-    })
-
-    resExpress.end(response.error)
-  },
   jwtSecret
 }))
 

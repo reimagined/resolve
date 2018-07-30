@@ -13,6 +13,22 @@ const authStrategies = authStrategiesConfigs.map(
     resolveAuth(strategyConstructor, options)
 )
 
+const postProcessResponse = (resExpress, response) => {
+  resExpress.statusCode = response.statusCode
+  Object.keys(response.headers || {}).forEach(key => {
+    resExpress.setHeader(key, response.headers[key])
+  })
+  Object.keys(response.cookies || {}).forEach(key => {
+    resExpress.cookie(
+      key,
+      response.cookies[key].value,
+      response.cookies[key].options
+    )
+  })
+
+  resExpress.end(response.error)
+}
+
 const assignAuthRoutes = app => {
   authStrategies.forEach(({ route, callback }) => {
     app[route.method.toLowerCase()](
@@ -33,7 +49,8 @@ const assignAuthRoutes = app => {
             executeCommand
           }
         })
-        callback(req, res, next)
+        const authResponse = callback(req, res, next)
+        postProcessResponse(res, authResponse)
       }
     )
   })

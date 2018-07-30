@@ -1,5 +1,7 @@
 import defaultAuthOptions from './defaultAuthOptions'
 
+const createResponse = () => {}
+
 const resolveAuth = (strategyConstructor, options) => ({
   route: options.route,
   callback: async (req, res, next) => {
@@ -27,7 +29,7 @@ const resolveAuth = (strategyConstructor, options) => ({
       )
       strategy.authenticate(req, { response: res })
     })
-    ;(options.buildResponse || (f => f))(res, fakeResponse)
+    return fakeResponse
   }
 })
 
