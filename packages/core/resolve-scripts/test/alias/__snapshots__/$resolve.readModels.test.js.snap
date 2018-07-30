@@ -198,9 +198,7 @@ import resolvers_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/
 import adapterModule_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testSnapshotAdapter.js\\"
 
 const name_0 = \\"Todos\\"
-const adapterOptions_0 = {
-  \\"size\\": 100
-}
+const adapterOptions_0 = {\\"size\\":100}
 
 const readModels = []
 

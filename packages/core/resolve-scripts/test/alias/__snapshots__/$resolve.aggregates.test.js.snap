@@ -235,9 +235,7 @@ import commands_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/t
 
 import snapshotAdapterModule_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testSnapshotAdapter.js\\"
 const name_0 = \\"Todo\\"
-const snapshotAdapterOptions_0 = {
-  \\"size\\": 100
-}
+const snapshotAdapterOptions_0 = {\\"size\\":100}
 
 const aggregates = []
 

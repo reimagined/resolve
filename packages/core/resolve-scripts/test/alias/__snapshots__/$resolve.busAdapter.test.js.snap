@@ -4,9 +4,7 @@ exports[`base config works correctly [server] 1`] = `
 "
 import busAdapterModule from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testAdapter.js\\"
 
-const busAdapterOptions = {
-  \\"url\\": \\"http://test.test\\"
-}
+const busAdapterOptions = {\\"url\\":\\"http://test.test\\"}
 
 export default {
   module: busAdapterModule,

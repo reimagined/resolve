@@ -6,11 +6,11 @@ export default ({ resolveConfig, isClient }) => {
     throw new Error(`${message.serverAliasInClientCodeError}$resolve.staticDir`)
   }
 
-  if (!resolveConfig.distDir) {
+  if (!resolveConfig.staticDir) {
     throw new Error(`${message.configNotContainSectionError}.staticDir`)
   }
 
-  if (checkRuntimeEnv(resolveConfig.distDir)) {
+  if (checkRuntimeEnv(resolveConfig.staticDir)) {
     throw new Error(`${message.clientEnvError}.staticDir`)
   }
 
