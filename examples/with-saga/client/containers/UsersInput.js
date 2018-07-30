@@ -1,7 +1,6 @@
 import React from 'react'
 
 import { connectViewModel } from 'resolve-redux'
-import { connect } from 'react-redux'
 
 import {
   Alert,
@@ -17,8 +16,12 @@ const placeholder = 'example@example.com'
 class UsersInput extends React.Component {
   render() {
     let newEmail
-    let errors = this.props.errors || []
-    let isError = this.props.error.isError
+    let data = this.props.data
+    let clientId = this.props.clientId
+
+    let errorsData =
+      data.errors && data.errors[clientId] ? data.errors[clientId] : {}
+    let errors = errorsData.errors || [{}]
 
     const handleClick = event => {
       event.preventDefault()
@@ -28,7 +31,7 @@ class UsersInput extends React.Component {
 
     return (
       <div className="example-form-wrapper">
-        {isError && (
+        {errorsData.isError && (
           <Alert className="example-alert" bsStyle="danger">
             {errors[errors.length - 1].message}
           </Alert>
@@ -70,8 +73,4 @@ const mapStateToOptions = () => ({
   aggregateIds: '*'
 })
 
-const mapStateToProps = ({ error }) => ({ error })
-
-export default connectViewModel(mapStateToOptions)(
-  connect(mapStateToProps)(UsersInput)
-)
+export default connectViewModel(mapStateToOptions)(UsersInput)

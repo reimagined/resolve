@@ -11,13 +11,6 @@ export default {
       case 'endLoading': {
         return { ...state, disableButton: false }
       }
-      default:
-        return state
-    }
-  },
-
-  error: (state = initialState, action) => {
-    switch (action.type) {
       case 'UserCreationRejected': {
         return { ...state, isError: true }
       }

@@ -6,19 +6,19 @@ import {
 } from '../events'
 
 export default {
-  createUser: (state, { payload: { email } }) => {
+  createUser: (state, { payload: { email, clientId } }) => {
     if (state) {
       throw new Error('User already exists')
     }
-
     return {
       type: USER_CREATION_REQUESTED,
       payload: {
-        email
+        email,
+        clientId
       }
     }
   },
-  confirmUserCreation: state => {
+  confirmUserCreation: (state, { payload: { clientId } }) => {
     if (!state) {
       throw new Error('User does not exist')
     }
@@ -28,10 +28,11 @@ export default {
     }
 
     return {
-      type: USER_CREATION_CONFIRMED
+      type: USER_CREATION_CONFIRMED,
+      payload: { clientId }
     }
   },
-  rejectUserCreation: state => {
+  rejectUserCreation: (state, { payload: { clientId, createdUser } }) => {
     if (!state) {
       throw new Error('User does not exist')
     }
@@ -41,7 +42,8 @@ export default {
     }
 
     return {
-      type: USER_CREATION_REJECTED
+      type: USER_CREATION_REJECTED,
+      payload: { clientId, createdUser }
     }
   },
   deleteOutdatedUser: state => {

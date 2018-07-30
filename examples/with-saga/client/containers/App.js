@@ -10,6 +10,8 @@ import UsersList from './UsersList.js'
 
 import uuid from 'uuid'
 
+let clientId = ''
+
 class App extends React.Component {
   constructor(props) {
     super(props)
@@ -18,6 +20,8 @@ class App extends React.Component {
   }
 
   render() {
+    clientId = document.cookie
+
     return (
       <div>
         <Header
@@ -30,15 +34,12 @@ class App extends React.Component {
         <div className="example-wrapper">
           <UsersInput
             isDisabled={this.props.user.disableButton}
-            errors={this.props.data.errors}
+            clientId={clientId}
             submitUser={email => {
-              this.submitUser(uuid.v4(), { email: email })
+              this.submitUser(uuid.v4(), { email: email, clientId: clientId })
             }}
           />
-          <UsersList
-            isLoading={this.props.isLoading}
-            users={this.props.data.users}
-          />
+          <UsersList isLoading={this.props.isLoading} users={this.props.data} />
         </div>
       </div>
     )
