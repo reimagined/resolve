@@ -26,7 +26,7 @@ export default ({ resolveConfig, isClient }) => {
 
   const exports = []
 
-  if (storageAdapter.module in resolveConfig[envKey]) {
+  if (checkRuntimeEnv(storageAdapter.module)) {
     exports.push(
       `import interopRequireDefault from "@babel/runtime/helpers/interopRequireDefault"`,
       ``,
