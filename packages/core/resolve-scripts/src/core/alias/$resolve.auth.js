@@ -10,8 +10,8 @@ export default ({ resolveConfig, isClient }) => {
   if (!resolveConfig.auth) {
     throw new Error(`${message.configNotContainSectionError}.auth`)
   }
-  
-  if (checkRuntimeEnv(resolveConfig.auth.strategies) != null) {
+
+  if (checkRuntimeEnv(resolveConfig.auth.strategies)) {
     throw new Error(`${message.clientEnvError}.auth.strategies`)
   }
 

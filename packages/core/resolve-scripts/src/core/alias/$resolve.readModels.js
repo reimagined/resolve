@@ -2,7 +2,7 @@ import { message } from '../constants'
 import resolveFile from '../resolve_file'
 import resolveFileOrModule from '../resolve_file_or_module'
 import importBabel from '../import_babel'
-import { checkRuntimeEnv } from '../declare_runtime_env' 
+import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig, isClient }) => {
   if (!resolveConfig.readModels) {
@@ -19,19 +19,19 @@ export default ({ resolveConfig, isClient }) => {
   for (let index = 0; index < resolveConfig.readModels.length; index++) {
     const readModel = resolveConfig.readModels[index]
 
-    if (checkRuntimeEnv(readModel.name) != null) {
+    if (checkRuntimeEnv(readModel.name)) {
       throw new Error(`${message.clientEnvError}.readModels[${index}].name`)
     }
     const name = readModel.name
 
-    if (checkRuntimeEnv(readModel.projection) != null) {
+    if (checkRuntimeEnv(readModel.projection)) {
       throw new Error(
         `${message.clientEnvError}.readModels[${index}].projection`
       )
     }
     const projection = resolveFile(readModel.projection)
 
-    if (checkRuntimeEnv(readModel.resolvers) != null) {
+    if (checkRuntimeEnv(readModel.resolvers)) {
       throw new Error(
         `${message.clientEnvError}.readModels[${index}].resolvers`
       )
@@ -40,7 +40,7 @@ export default ({ resolveConfig, isClient }) => {
 
     const adapter = readModel.adapter
       ? {
-          module: checkRuntimeEnv(readModel.adapter.module) != null
+          module: checkRuntimeEnv(readModel.adapter.module)
             ? readModel.adapter.module
             : resolveFileOrModule(readModel.adapter.module),
           options: {
@@ -70,9 +70,9 @@ export default ({ resolveConfig, isClient }) => {
     }
 
     if (!isClient && readModel.adapter) {
-      if (checkRuntimeEnv(readModel.adapter.module) != null) {
+      if (checkRuntimeEnv(readModel.adapter.module)) {
         constants.push(
-          `const adapter_${index} = ${JSON.stringify(adapter)}`,
+          `const adapter_${index} = ${injectRuntimeEnv(adapter)}`,
           `const adapterModule_${index} = interopRequireDefault(`,
           `  eval('require(adapter_${index}.module)')`,
           `).default`,

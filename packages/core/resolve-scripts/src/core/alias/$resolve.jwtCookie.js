@@ -7,11 +7,11 @@ export default ({ resolveConfig }) => {
   }
 
   for (const optionsKey of Object.keys(resolveConfig.jwtCookie)) {
-    if (checkRuntimeEnv(resolveConfig.jwtCookie[optionsKey]) != null) {
+    if (checkRuntimeEnv(resolveConfig.jwtCookie[optionsKey])) {
       throw new Error(`${message.clientEnvError}.jwtCookie.${optionsKey}`)
     }
   }
-  
+
   const exports = []
 
   exports.push(

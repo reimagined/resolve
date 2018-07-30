@@ -6,14 +6,12 @@ export default ({ resolveConfig, isClient }) => {
     throw new Error(`${message.configNotContainSectionError}.subscribeAdapter`)
   }
 
-  if (checkRuntimeEnv(resolveConfig.subscribeAdapter.module) != null) {
+  if (checkRuntimeEnv(resolveConfig.subscribeAdapter.module)) {
     throw new Error(`${message.clientEnvError}.subscribeAdapter.module`)
   }
 
   for (const option of Object.keys(resolveConfig.subscribeAdapter.options)) {
-    if (
-      checkRuntimeEnv(resolveConfig.subscribeAdapter.options[option]) != null
-    ) {
+    if (checkRuntimeEnv(resolveConfig.subscribeAdapter.options[option])) {
       throw new Error(
         `${message.clientEnvError}.subscribeAdapter.options.${option}`
       )
@@ -21,15 +19,13 @@ export default ({ resolveConfig, isClient }) => {
   }
 
   for (const option of Object.keys(resolveConfig.subscribeAdapter.options)) {
-    if (
-      checkRuntimeEnv(resolveConfig.subscribeAdapter.options[option]) != null
-    ) {
+    if (checkRuntimeEnv(resolveConfig.subscribeAdapter.options[option])) {
       throw new Error(
         `${message.clientEnvError}.subscribeAdapter.options.${option}`
       )
     }
   }
-  
+
   const options = {
     client: resolveConfig.subscribeAdapter.options.client || {},
     server: resolveConfig.subscribeAdapter.options.server || {}

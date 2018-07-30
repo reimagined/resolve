@@ -1,6 +1,6 @@
 import { message } from '../constants'
 import resolveFileOrModule from '../resolve_file_or_module'
-import { checkRuntimeEnv } from '../declare_runtime_env'
+import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig, isClient }) => {
   if (isClient) {
@@ -15,7 +15,7 @@ export default ({ resolveConfig, isClient }) => {
 
   const busAdapter = resolveConfig.busAdapter
     ? {
-        module: checkRuntimeEnv(resolveConfig.busAdapter.module) != null
+        module: checkRuntimeEnv(resolveConfig.busAdapter.module)
           ? resolveConfig.busAdapter.module
           : resolveFileOrModule(resolveConfig.busAdapter.module),
         options: {
@@ -26,11 +26,11 @@ export default ({ resolveConfig, isClient }) => {
 
   const exports = []
 
-  if (checkRuntimeEnv(busAdapter.module) != null) {
+  if (checkRuntimeEnv(busAdapter.module)) {
     exports.push(
       `import interopRequireDefault from "@babel/runtime/helpers/interopRequireDefault"`,
       ``,
-      `const busAdapter = ${JSON.stringify(busAdapter)}`,
+      `const busAdapter = ${injectRuntimeEnv(busAdapter)}`,
       `const busAdapterModule = interopRequireDefault(`,
       `  eval('require(busAdapter.module)')`,
       `).default`,

@@ -1,5 +1,5 @@
 import { message } from '../constants'
-import { checkRuntimeEnv } from '../declare_runtime_env'
+import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig, isClient }) => {
   if (isClient) {
@@ -12,9 +12,9 @@ export default ({ resolveConfig, isClient }) => {
 
   const exports = []
 
-  if (checkRuntimeEnv(resolveConfig.port) != null) {
+  if (checkRuntimeEnv(resolveConfig.port)) {
     exports.push(
-      `const port = process.env[${JSON.stringify(resolveConfig.port)}]`,
+      `const port = ${injectRuntimeEnv(resolveConfig.port)}`,
       ``,
       `export default port`
     )
