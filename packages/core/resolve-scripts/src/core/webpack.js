@@ -11,14 +11,15 @@ import showBuildInfo from './show_build_info'
 import copyEnvToDist from './copy_env_to_dist'
 import setup from './setup'
 
-export default async options => {
-  const resolveConfig = await setup(options)
+export default async (options, resolveConfig, adjustWebpackConfigs) => {
+  setup(resolveConfig, options)
 
   const nodeModulesByAssembly = new Map()
 
   const webpackConfigs = await getWebpackConfigs({
     resolveConfig,
-    nodeModulesByAssembly
+    nodeModulesByAssembly,
+    adjustWebpackConfigs
   })
 
   const compiler = webpack(webpackConfigs)

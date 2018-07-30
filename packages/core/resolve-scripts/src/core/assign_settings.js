@@ -111,6 +111,13 @@ export function mode(resolveConfig, options) {
   }
 }
 
+extenders.push(openBrowser)
+export function openBrowser(resolveConfig, options) {
+  if (!resolveConfig.hasOwnProperty('openBrowser')) {
+    resolveConfig.openBrowser = options.openBrowser
+  }
+}
+
 extenders.push(customWebpackConfig)
 export function customWebpackConfig(resolveConfig) {
   const callback = resolveConfig.webpack

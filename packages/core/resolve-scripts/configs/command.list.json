@@ -1,6 +1,0 @@
-{
-  "build": "Compile the app into the build directory",
-  "dev": "Run the app in the development mode",
-  "start": "Run the app from the build directory",
-  "runready": "Run custom shell script when application is ready"
-}

@@ -2,7 +2,11 @@ import getWebpackClientConfig from './get_webpack_client_config'
 import getWebpackCommonConfigs from './get_webpack_common_configs'
 import getWebpackAlias from './get_webpack_alias'
 
-const getWebpackConfigs = async ({ resolveConfig, nodeModulesByAssembly }) => {
+const getWebpackConfigs = async ({
+  resolveConfig,
+  nodeModulesByAssembly,
+  adjustWebpackConfigs
+}) => {
   const alias = getWebpackAlias()
 
   const webpackClientConfig = getWebpackClientConfig({
@@ -19,11 +23,12 @@ const getWebpackConfigs = async ({ resolveConfig, nodeModulesByAssembly }) => {
 
   const configs = [webpackClientConfig, ...webpackCommonConfigs]
 
-  await resolveConfig.webpack(configs, {
-    resolveConfig,
-    alias,
-    nodeModulesByAssembly
-  })
+  if (typeof adjustWebpackConfigs === 'function') {
+    await adjustWebpackConfigs(configs, {
+      alias,
+      nodeModulesByAssembly
+    })
+  }
 
   return configs
 }
