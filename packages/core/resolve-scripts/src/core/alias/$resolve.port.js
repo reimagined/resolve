@@ -12,7 +12,7 @@ export default ({ resolveConfig, isClient }) => {
 
   const exports = []
 
-  if(checkRuntimeEnv(resolveConfig.port) != null) {
+  if (checkRuntimeEnv(resolveConfig.port) != null) {
     exports.push(
       `const port = process.env[${JSON.stringify(resolveConfig.port)}]`,
       ``,
@@ -20,7 +20,7 @@ export default ({ resolveConfig, isClient }) => {
     )
   } else {
     exports.push(
-      `const port = ${JSON.stringify(config.port)}`,
+      `const port = ${JSON.stringify(resolveConfig.port)}`,
       ``,
       `export default port`
     )
