@@ -1,3 +1,4 @@
+import fetch from 'isomorphic-fetch'
 import path from 'path'
 import respawn from 'respawn'
 

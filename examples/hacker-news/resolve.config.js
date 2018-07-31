@@ -93,7 +93,7 @@ async function main() {
           module: 'resolve-storage-lite',
           options: {}
         },
-        mode: 'test'
+        mode: 'development'
       })
 
       await build(config)
