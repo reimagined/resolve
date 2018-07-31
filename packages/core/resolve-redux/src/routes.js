@@ -13,7 +13,9 @@ const Routes = ({ path, component: Component, routes, exact, redirectTo }) => {
       render={props => {
         const content = (
           <Switch>
-            {routes.map((route, index) => <Routes key={index} {...route} />)}
+            {routes.map((route, index) => (
+              <Routes key={index} {...route} />
+            ))}
           </Switch>
         )
         return Component ? <Component {...props}>{content}</Component> : content

@@ -1,10 +1,10 @@
 import path from 'path'
-import lodash from 'lodash'
+import escapeRegExp from 'lodash.escaperegexp'
 
 const normalizePaths = source => {
   const monorepoPath = path.resolve(__dirname, '../../../..')
   return source.replace(
-    new RegExp(lodash.escapeRegExp(monorepoPath), 'gi'),
+    new RegExp(escapeRegExp(monorepoPath), 'gi'),
     '<MONOREPO_DIR>'
   )
 }

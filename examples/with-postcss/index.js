@@ -78,7 +78,7 @@ async function main() {
     }
 
     case 'start': {
-      const stopServer = await start()
+      const stopServer = await start(config)
       process.on('exit', stopServer)
       break
     }

@@ -1,0 +1,9 @@
+{
+  "name": "@react-native-todo/utils",
+  "version": "0.13.2",
+  "private": true,
+  "scripts": {
+    "build": "echo || exit 0",
+    "test": "echo || exit 0"
+  }
+}
