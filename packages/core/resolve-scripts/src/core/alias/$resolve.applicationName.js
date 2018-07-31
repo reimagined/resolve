@@ -1,4 +1,4 @@
-import resolveFile from './resolve_file'
+import resolveFile from '../resolve_file'
 
 export default ({ resolveConfig }) => {
   const { name: applicationName } = require(resolveFile('package.json'))
