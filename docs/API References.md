@@ -50,7 +50,7 @@ Open [http://localhost:3000](http://localhost:3000/) or http://<your_ip>:3000 to
     📄 LICENSE
     📄 README.md
     📄 package.json
-    📄 resolve.config.json
+    📄 index.js
     📁 auth/
         📄 index.js
     📁 client/
