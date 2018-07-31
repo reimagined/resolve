@@ -16,7 +16,8 @@
     "resolve-scripts": "0.13.2",
     "resolve-redux": "0.13.2",
     "react-helmet": "5.2.0",
-    "react-bootstrap": "0.32.1"
+    "react-bootstrap": "0.32.1",
+    "testcafe-browser-tools": "1.6.3"
   },
   "devDependencies": {
     "@babel/core": "7.0.0-beta.55",

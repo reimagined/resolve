@@ -1,5 +1,3 @@
-import deepForEach from 'deep-for-each'
-
 const runtimeEnvSymbol = Symbol('@@resolve/runtime_env')
 
 const declareRuntimeEnv = envName => {
@@ -7,6 +5,7 @@ const declareRuntimeEnv = envName => {
     throw new Error('Runtime environment variable should be an string')
   }
 
+  // eslint-disable-next-line no-new-wrappers
   const envContainer = new String(envName)
   envContainer.type = runtimeEnvSymbol
 

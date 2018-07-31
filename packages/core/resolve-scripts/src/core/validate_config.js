@@ -1,5 +1,4 @@
 import Ajv from 'ajv'
-import { isV4Format } from 'ip'
 import Url from 'url'
 
 import { schemaResolveConfig } from './constants'

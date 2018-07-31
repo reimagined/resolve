@@ -1,6 +1,6 @@
 import resolveFile from '../resolve_file'
 
-export default ({ resolveConfig }) => {
+export default () => {
   const { name: applicationName } = require(resolveFile('package.json'))
   const exports = []
 

@@ -88,7 +88,6 @@ async function main() {
 
     default: {
       throw new Error('Unknown option')
-      break
     }
   }
 }

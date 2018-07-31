@@ -17,7 +17,8 @@
     "react-redux": "5.0.7",
     "redux": "4.0.0",
     "resolve-redux": "0.13.2",
-    "resolve-scripts": "0.13.2"
+    "resolve-scripts": "0.13.2",
+    "testcafe-browser-tools": "1.6.3"
   },
   "devDependencies": {
     "@babel/core": "7.0.0-beta.55",

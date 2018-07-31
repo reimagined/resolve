@@ -88,6 +88,10 @@ async function main() {
       process.on('exit', stopServer)
       break
     }
+
+    default: {
+      throw new Error('Unknown option')
+    }
   }
 }
 

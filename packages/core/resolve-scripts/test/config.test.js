@@ -1,4 +1,3 @@
-import path from 'path'
 import resolveConfigOrigin from '../src/core/default.resolve.config.js'
 import validateConfig from '../src/core/validate_config'
 

@@ -16,7 +16,8 @@
     "redux": "4.0.0",
     "react-helmet": "5.2.0",
     "resolve-scripts": "0.13.2",
-    "resolve-redux": "0.13.2"
+    "resolve-redux": "0.13.2",
+    "testcafe-browser-tools": "1.6.3"
   },
   "devDependencies": {
     "autoprefixer": "8.6.5",
