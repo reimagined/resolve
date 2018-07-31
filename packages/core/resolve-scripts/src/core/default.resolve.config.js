@@ -36,6 +36,5 @@ export default {
     name: 'jwt',
     maxAge: 31536000000
   },
-  polyfills: [],
-  webpack: async function(webpackConfigs, resolveConfig) {}
+  polyfills: []
 }
