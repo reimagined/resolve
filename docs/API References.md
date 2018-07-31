@@ -1,35 +1,39 @@
 # API References
 
 ## 📑 **Table Of Contents**
-* [Available Scripts](#available-scripts)
-* [Project Structure Overview](#project-structure-overview)
-    * [Authentication](#authentication)
-    * [Client](#client)
-    * [Common](#common)
-    * [Functional tests](#functional-tests)
-* [Configuration Files](#configuration-files)
-    * [Resolve Config](#resolve-config)
-    * [Build Config](#build-config)
-* [Command Line Interface](#command-line-interface)
-* [Environment Variables](#environment-variables)
+
+- [Available Scripts](#available-scripts)
+- [Project Structure Overview](#project-structure-overview)
+  - [Authentication](#authentication)
+  - [Client](#client)
+  - [Common](#common)
+  - [Functional tests](#functional-tests)
+- [Configuration Files](#configuration-files)
+  - [Resolve Config](#resolve-config)
+  - [Build Config](#build-config)
+- [Command Line Interface](#command-line-interface)
+- [Environment Variables](#environment-variables)
 
 ## **Available Scripts**
 
 In the project directory, you can run:
 
 ### `npm run dev`
+
 Runs the app in the development mode.
 
-Two web servers are  started: one - for the frontend/UI part, based on the webpack-dev-server on the 3001 port by default, and another one - for the API backend part to provide API for reSolve endpoints, based on express on the 3000 port. Development servers provide all the required debugging capabilities, including [Hot Module Replacement](https://webpack.js.org/concepts/hot-module-replacement/) and [source maps](https://webpack.js.org/configuration/devtool/).
+Two web servers are started: one - for the frontend/UI part, based on the webpack-dev-server on the 3001 port by default, and another one - for the API backend part to provide API for reSolve endpoints, based on express on the 3000 port. Development servers provide all the required debugging capabilities, including [Hot Module Replacement](https://webpack.js.org/concepts/hot-module-replacement/) and [source maps](https://webpack.js.org/configuration/devtool/).
 
 Open [http://localhost:3000](http://localhost:3000/) or http://<your_ip>:3000 to view the app in the browser (you can change your [url settings](#configuration-files)).
 
 ### `npm run build`
+
 Builds client and server bundles for production through Webpack.
 
-Building is performed in the `NODE_ENV === 'production'` [mode](https://webpack.js.org/guides/production/#node-environment-variable), so the build is optimized. No additional HTTP server for the serving client bundle and assets are  built.
+Building is performed in the `NODE_ENV === 'production'` [mode](https://webpack.js.org/guides/production/#node-environment-variable), so the build is optimized. No additional HTTP server for the serving client bundle and assets are built.
 
 ### `npm start`
+
 Runs the built app in the production mode.
 
 Open [http://localhost:3000](http://localhost:3000/) or http://<your_ip>:3000 to view it in the browser (you can change your [url settings](#configuration-files)).
@@ -83,33 +87,36 @@ Open [http://localhost:3000](http://localhost:3000/) or http://<your_ip>:3000 to
 ```
 
 ### **Authentication**
+
 The `auth` folder contains authentication strategies' code. You can choose this file location using `auth` section in `resolve.config.json` (see [with-authentication example](../examples/with-authentication/resolve.config.json))
 
 ### **Client**
+
 The client side is located in the `client/` folder. File `routes.js` contains route configuration according to the specifications of [Route Configuration Shape](https://github.com/reacttraining/react-router/tree/master/packages/react-router-config#route-configuration-shape).
 
 ### **Common**
+
 The `common/` folder contains the application's isomorphic part which represents a business logic distributed between server and client in the same code. The domain logic is described in a reSolve-compatible format and appears in [aggregate](https://github.com/reimagined/resolve/blob/master/docs/Aggregate.md), [read model](https://github.com/reimagined/resolve/blob/master/docs/Read%20Model.md) and [view model](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md) declarations.
 
 ### **Functional-tests**
+
 The system's operability is controlled with [TestCafe](http://devexpress.github.io/testcafe/documentation/using-testcafe/) functional tests. A test set builds and starts a demonstration application, opens it in a browser and automates UI interaction. After you modify the code, start functional tests to check if everything works correctly.
 
-## **Configuration Files**
-Create ReSolve App provides declarative configuration instead of an imperative coding server-side part. The configuration allows you to customize the React client and server-side rendering, declare domain business logic regarding Event Sourcing with the reSolve library, and modify the development and production modes' webpack behavior.
+## **Configuration**
 
-The general and building phase configuration are split into two segregated files:
-* [resolve.config.json](#resolve-config)
-* [resolve.build.config.js](#build-config)
+Resolve-based application should be launched manually with custom `index.js` script, and Resolve provides functional entry points for build and run application within target mode. Launching facilities are managed by Resolve configuration object, which contains major information about building phase (read models, view models, aggregate, etc) and launching application (environment, root path, TCP port, etc).
+The configuration allows you to customize the React client and server-side rendering, declare domain business logic regarding Event Sourcing with the reSolve library, and modify the development and production modes' webpack behavior.
 
 ### Resolve Config
 
 JSON Schema ReSolve Config is available at [schema.resolve.config.json](../packages/resolve-scripts/configs/schema.resolve.config.json).
 
-Default values for config sections are available at [resolve.config.json](../packages/resolve-scripts/configs/resolve.config.json). If there is no application-based `resolve.config.json` supplied, default values from this file will be used.
+Default values for config sections can be accessed via `import { defaultResolveConfig } from 'resolve-scripts'`
 
-Config examples can be found in `examples` directory. Most advanced config, including descriptions for custom reducers, shapshots, auth, etc can be found in [`hacker-news`](../examples/hacker-news) example.
+Config examples can be found in `examples` directory. Most advanced config, including descriptions for custom reducers, shapshots, auth, etc can be found in [`hacker-news`](../examples/hacker-news) example in `index.js` file.
 
 ### Build config
+
 The **resolve.build.config.js** file contains information for building an application.
 
 ```js
@@ -127,7 +134,7 @@ Example can be found in [`with-postcss`](../examples/with-postcss) example
 ### Commands:
 
 | Name              | Description                              |
-|-------------------|------------------------------------------|
+| ----------------- | ---------------------------------------- |
 | `build`           | Compile the app into the build directory |
 | `start`           | Run the app from the build directory     |
 | `dev`             | Run the app in the development mode      |
@@ -137,7 +144,7 @@ Example can be found in [`with-postcss`](../examples/with-postcss) example
 #### command "build"
 
 | Options          | Description                                                            | Type      |
-|------------------|------------------------------------------------------------------------|-----------|
+| ---------------- | ---------------------------------------------------------------------- | --------- |
 | `--version`      | Show version number                                                    | [boolean] |
 | `--help`         | Show help                                                              | [boolean] |
 | `--dev`          | Set `webpack.mode` and `process.env.NODE_ENV` to 'development'         | [boolean] |
@@ -155,17 +162,17 @@ Example can be found in [`with-postcss`](../examples/with-postcss) example
 
 #### command "start"
 
-| Options          | Description                                                            | Type      |
-|------------------|------------------------------------------------------------------------|-----------|
-| `--version`      | Show version number                                                    | [boolean] |
-| `--help`         | Show help                                                              | [boolean] |
-| `--inspect`      | Start Node.js inspector on [host:]port                                 | [string]  |
-| `--print-config` | Show the current configuration                                         | [boolean] |
+| Options          | Description                            | Type      |
+| ---------------- | -------------------------------------- | --------- |
+| `--version`      | Show version number                    | [boolean] |
+| `--help`         | Show help                              | [boolean] |
+| `--inspect`      | Start Node.js inspector on [host:]port | [string]  |
+| `--print-config` | Show the current configuration         | [boolean] |
 
 #### command "dev"
 
 | Options          | Description                                                            | Type      |
-|------------------|------------------------------------------------------------------------|-----------|
+| ---------------- | ---------------------------------------------------------------------- | --------- |
 | `--version`      | Show version number                                                    | [boolean] |
 | `--help`         | Show help                                                              | [boolean] |
 | `--test`         | Set `webpack.mode` to 'development' and process.env.NODE_ENV to 'test' | [boolean] |
@@ -178,4 +185,5 @@ Example can be found in [`with-postcss`](../examples/with-postcss) example
 | `--print-config` | Show the current configuration                                         | [boolean] |
 
 ## Environment Variables
+
 You can pass env variables to the client side. To do this, use the `RESOLVE_` prefix when naming a variable. After that, this variable is available on the client and server side via the `process.env` object.
