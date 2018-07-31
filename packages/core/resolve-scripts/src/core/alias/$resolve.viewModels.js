@@ -1,7 +1,7 @@
 import { message } from '../constants'
 import resolveFile from '../resolve_file'
 import resolveFileOrModule from '../resolve_file_or_module'
-import { checkRuntimeEnv } from '../declare_runtime_env'
+import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig, isClient }) => {
   if (!resolveConfig.viewModels) {

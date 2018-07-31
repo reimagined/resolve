@@ -16,7 +16,7 @@ const declareRuntimeEnv = envName => {
 export const checkRuntimeEnv = value =>
   !(value == null || value.type !== runtimeEnvSymbol)
 
-export const injectRuntimeEnv = value =>
+export const injectRuntimeEnv = json =>
   JSON.stringify(
     json,
     (key, value) => {

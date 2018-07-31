@@ -1,5 +1,5 @@
 import path from 'path'
-import declareRuntimeEnv, { injectRuntimeEnv } from '../src/declare_runtime_env'
+import declareRuntimeEnv from '../../src/core/declare_runtime_env'
 
 import alias from '../../src/core/alias/$resolve.aggregates'
 import normalizePaths from './normalize_paths'
