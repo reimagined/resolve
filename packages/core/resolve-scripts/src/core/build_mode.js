@@ -26,7 +26,7 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
     path.resolve(process.cwd(), resolveConfig.distDir, './client')
   )
 
-  return new Promise((resolve, reject) => {
+  return await new Promise((resolve, reject) => {
     compiler.run((err, { stats }) => {
       stats.forEach(showBuildInfo.bind(null, err))
 

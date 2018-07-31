@@ -50,7 +50,7 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
     }
   })
 
-  return new Promise((resolve, reject) =>
+  return await new Promise((resolve, reject) =>
     compiler.watch(
       {
         aggregateTimeout: 1000,
@@ -80,7 +80,10 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
             server.stop(() => server.start())
           } else {
             server.start()
-            resolve()
+
+            const stopServer = () =>
+              new Promise(resolve => server.stop(resolve))
+            resolve(stopServer)
           }
         }
       }
