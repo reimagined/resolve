@@ -3,6 +3,7 @@
   "version": "0.13.2",
   "private": true,
   "scripts": {
+    "prepare": "yarn build:web",
     "dev:web": "cd web && yarn dev",
     "build:web": "cd web && yarn build",
     "start:web": "cd web && yarn start",
