@@ -1,14 +1,12 @@
-import { extractEnv } from 'json-env-extract'
+import declareRuntimeEnv, { injectRuntimeEnv } from '../src/declare_runtime_env'
 
 import alias from '../../src/core/alias/$resolve.port'
 import normalizePaths from './normalize_paths'
 
 describe('base config works correctly', () => {
-  const resolveConfig = extractEnv(`
-    {
-      port: 1234
-    }
-  `)
+  const resolveConfig = {
+    port: 1234
+  }
 
   test('[client]', () => {
     expect(() =>
@@ -38,9 +36,9 @@ describe('base config works correctly', () => {
 })
 
 describe('config with process.env works correctly', () => {
-  const resolveConfig = extractEnv(`{
-    port: process.env.PORT
-  }`)
+  const resolveConfig = {
+    port: declareRuntimeEnv('PORT')
+  }
 
   test('[client]', () => {
     expect(() =>

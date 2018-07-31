@@ -1,20 +1,18 @@
 import path from 'path'
-import { extractEnv } from 'json-env-extract'
+import declareRuntimeEnv, { injectRuntimeEnv } from '../src/declare_runtime_env'
 
 import alias from '../../src/core/alias/$resolve.subscribeAdapter'
 import normalizePaths from './normalize_paths'
 
 describe('base config works correctly', () => {
-  const resolveConfig = extractEnv(`
-    {
-      subscribeAdapter: {
-        module: "${path.resolve(__dirname, 'files/testAdapter.js')}",
-        options: {
-          url: 'http://test.test'
-        }
+  const resolveConfig = {
+    subscribeAdapter: {
+      module: path.resolve(__dirname, 'files/testAdapter.js'),
+      options: {
+        url: 'http://test.test'
       }
     }
-  `)
+  }
 
   test('[client]', () => {
     expect(
@@ -44,16 +42,14 @@ describe('base config works correctly', () => {
 })
 
 test('config with process.env failed', () => {
-  const resolveConfig = extractEnv(`
-    {
-      subscribeAdapter: {
-        module: process.env.SUBSCRIBE_ADAPTER,
-        options: {
-          url: process.env.SUBSCRIBE_OPTIONS_URL
-        }
+  const resolveConfig = {
+    subscribeAdapter: {
+      module: declareRuntimeEnv('SUBSCRIBE_ADAPTER'),
+      options: {
+        url: declareRuntimeEnv('SUBSCRIBE_OPTIONS_URL')
       }
     }
-  `)
+  }
 
   expect(() =>
     normalizePaths(
@@ -68,16 +64,14 @@ test('config with process.env failed', () => {
 })
 
 test('config with process.env (v2) failed', () => {
-  const resolveConfig = extractEnv(`
-    {
-      subscribeAdapter: {
-        module: "${path.resolve(__dirname, 'files/testAdapter.js')}",
-        options: {
-          url: process.env.SUBSCRIBE_OPTIONS_URL
-        }
+  const resolveConfig = {
+    subscribeAdapter: {
+      module: path.resolve(__dirname, 'files/testAdapter.js'),
+      options: {
+        url: declareRuntimeEnv('SUBSCRIBE_OPTIONS_URL')
       }
     }
-  `)
+  }
 
   expect(() =>
     normalizePaths(

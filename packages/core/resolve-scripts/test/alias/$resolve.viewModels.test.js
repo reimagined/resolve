@@ -1,20 +1,18 @@
 import path from 'path'
-import { extractEnv } from 'json-env-extract'
+import declareRuntimeEnv, { injectRuntimeEnv } from '../src/declare_runtime_env'
 
 import alias from '../../src/core/alias/$resolve.viewModels'
 import normalizePaths from './normalize_paths'
 
 describe('base config works correctly', () => {
-  const resolveConfig = extractEnv(`
-    {
-      viewModels: [
-        {
-          name: 'Todos',
-          projection: "${path.resolve(__dirname, 'files/testProjection.js')}"
-        }
-      ]
-    }
-  `)
+  const resolveConfig = {
+    viewModels: [
+      {
+        name: 'Todos',
+        projection: path.resolve(__dirname, 'files/testProjection.js')
+      }
+    ]
+  }
 
   test('[client]', () => {
     expect(
@@ -44,20 +42,18 @@ describe('base config works correctly', () => {
 })
 
 describe('base(v2) config works correctly', () => {
-  const resolveConfig = extractEnv(`
-    {
-      viewModels: [
-        {
-          name: 'Todos',
-          projection: "${path.resolve(__dirname, 'files/testProjection.js')}"
-        },
-        {
-          name: 'Items',
-          projection: "${path.resolve(__dirname, 'files/testProjection.js')}"
-        }
-      ]
-    }
-  `)
+  const resolveConfig = {
+    viewModels: [
+      {
+        name: 'Todos',
+        projection: path.resolve(__dirname, 'files/testProjection.js')
+      },
+      {
+        name: 'Items',
+        projection: path.resolve(__dirname, 'files/testProjection.js')
+      }
+    ]
+  }
 
   test('[client]', () => {
     expect(
@@ -87,24 +83,19 @@ describe('base(v2) config works correctly', () => {
 })
 
 describe('config with serializeState/deserializeState works correctly', () => {
-  const resolveConfig = extractEnv(`
-    {
-      viewModels: [
-        {
-          name: 'Todos',
-          projection: "${path.resolve(__dirname, 'files/testProjection.js')}",
-          serializeState: "${path.resolve(
-            __dirname,
-            'files/testSerializeState.js'
-          )}",
-          deserializeState: "${path.resolve(
-            __dirname,
-            'files/testDeserializeState.js'
-          )}"
-        }
-      ]
-    }
-  `)
+  const resolveConfig = {
+    viewModels: [
+      {
+        name: 'Todos',
+        projection: path.resolve(__dirname, 'files/testProjection.js'),
+        serializeState: path.resolve(__dirname, 'files/testSerializeState.js'),
+        deserializeState: path.resolve(
+          __dirname,
+          'files/testDeserializeState.js'
+        )
+      }
+    ]
+  }
 
   test('[client]', () => {
     expect(
@@ -134,17 +125,15 @@ describe('config with serializeState/deserializeState works correctly', () => {
 })
 
 describe('config with validator works correctly', () => {
-  const resolveConfig = extractEnv(`
-    {
-      viewModels: [
-        {
-          name: 'Todos',
-          projection: "${path.resolve(__dirname, 'files/testProjection.js')}",
-          validator: "${path.resolve(__dirname, 'files/testValidator.js')}"
-        }
-      ]
-    }
-  `)
+  const resolveConfig = {
+    viewModels: [
+      {
+        name: 'Todos',
+        projection: path.resolve(__dirname, 'files/testProjection.js'),
+        validator: path.resolve(__dirname, 'files/testValidator.js')
+      }
+    ]
+  }
 
   test('[client]', () => {
     expect(
@@ -174,25 +163,20 @@ describe('config with validator works correctly', () => {
 })
 
 describe('config with snapshot works correctly', () => {
-  const resolveConfig = extractEnv(`
-    {
-      viewModels: [
-        {
-          name: 'Todos',
-          projection: "${path.resolve(__dirname, 'files/testProjection.js')}",
-          snapshotAdapter: {
-            module: "${path.resolve(
-              __dirname,
-              'files/testSnapshotAdapter.js'
-            )}",
-            options: {
-              size: 100
-            }
+  const resolveConfig = {
+    viewModels: [
+      {
+        name: 'Todos',
+        projection: path.resolve(__dirname, 'files/testProjection.js'),
+        snapshotAdapter: {
+          module: path.resolve(__dirname, 'files/testSnapshotAdapter.js'),
+          options: {
+            size: 100
           }
         }
-      ]
-    }
-  `)
+      }
+    ]
+  }
 
   test('[client]', () => {
     expect(
@@ -222,20 +206,20 @@ describe('config with snapshot works correctly', () => {
 })
 
 describe('config with snapshot + process.env works correctly', () => {
-  const resolveConfig = extractEnv(`{
+  const resolveConfig = {
     viewModels: [
       {
         name: 'Todos',
-        projection: "${path.resolve(__dirname, 'files/testProjection.js')}",
+        projection: path.resolve(__dirname, 'files/testProjection.js'),
         snapshotAdapter: {
-          module: process.env.VIEW_MODEL_TODOS_ADAPTER,
+          module: declareRuntimeEnv('VIEW_MODEL_TODOS_ADAPTER'),
           options: {
-            size: process.env.VIEW_MODEL_TODOS_OPTIONS_SIZE
+            size: declareRuntimeEnv('VIEW_MODEL_TODOS_OPTIONS_SIZE')
           }
         }
       }
     ]
-  }`)
+  }
 
   test('[client]', () => {
     expect(

@@ -1,17 +1,13 @@
-import { extractEnv } from 'json-env-extract'
-
 import alias from '../../src/core/alias/$resolve.jwtCookie'
 import normalizePaths from './normalize_paths'
 
 describe('base config works correctly', () => {
-  const resolveConfig = extractEnv(`
-    {
-      jwtCookie: {
-        name: 'test-jwt',
-        maxAge: 123
-      }
+  const resolveConfig = {
+    jwtCookie: {
+      name: 'test-jwt',
+      maxAge: 123
     }
-  `)
+  }
 
   test('[client]', () => {
     expect(
