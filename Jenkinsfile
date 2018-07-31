@@ -12,6 +12,8 @@ pipeline {
                     sh """
                         export YARN_CACHE_FOLDER=/yarn_cache
                         yarn
+                        cd examples/resolve-native-todo/web
+                        yarn build --dev
                     """
                 }
             }
