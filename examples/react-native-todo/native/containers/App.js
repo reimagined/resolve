@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
-import { connectViewModel } from '../../resolve/resolve-redux'
+import { connectViewModel } from '../resolve/resolve-redux'
 
 import {
   StyleSheet,

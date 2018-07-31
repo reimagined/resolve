@@ -1,5 +1,5 @@
 import React from 'react'
-import { App } from '../../client/containers/App'
+import { App } from '../../containers/App'
 
 import { shallow } from 'enzyme'
 

@@ -10,9 +10,9 @@ import {
   aggregateActions
 } from './resolve/config'
 
-import store from './redux/store'
+import store from './store'
 
-import App from './client/containers/App'
+import App from './containers/App'
 
 if (process.env.NODE_ENV === 'development') {
   Expo.KeepAwake.activate()
