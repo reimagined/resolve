@@ -1,5 +1,5 @@
 {
-  "name": "@web-and-react-native/web",
+  "name": "@react-native-todo/web",
   "version": "0.13.2",
   "private": true,
   "scripts": {
@@ -16,8 +16,8 @@
     "react-helmet": "5.2.0",
     "react-redux": "5.0.7",
     "redux": "4.0.0",
-    "resolve-scripts": "0.13.2",
-    "resolve-redux": "0.13.2"
+    "resolve-redux": "0.13.2",
+    "resolve-scripts": "0.13.2"
   },
   "devDependencies": {
     "@babel/core": "7.0.0-beta.55",
@@ -27,7 +27,7 @@
     "@babel/plugin-transform-runtime": "7.0.0-beta.55",
     "@babel/preset-env": "7.0.0-beta.55",
     "@babel/preset-react": "7.0.0-beta.55",
-    "babel-core": "^7.0.0-bridge.0",
+    "babel-core": "^7.0.0-0",
     "babel-jest": "23.4.2",
     "jest": "23.4.2",
     "my-local-ip": "^1.0.0",

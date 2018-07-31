@@ -2,7 +2,7 @@
   "name": "@web-and-react-native/native",
   "version": "0.13.2",
   "private": true,
-  "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
+  "main": "./index.js",
   "scripts": {
     "start": "react-native-scripts start",
     "eject": "react-native-scripts eject",

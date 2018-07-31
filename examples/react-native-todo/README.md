@@ -1,8 +1,8 @@
-# Web and React-Native Example
+# React-Native Todo Example
 
-# Project Structure Overview
+### Project Structure Overview
 ```
-📁 web-and-react-native
+📁 react-native-todo
     📁 web
         📁 client
             📁 components

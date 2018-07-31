@@ -1,17 +1,25 @@
-import React from 'react'
+import Expo from 'expo';
+import React from 'react';
 import { StyleSheet, View } from 'react-native'
+
 import { Providers } from './resolve/resolve-redux'
+
 import {
   origin,
   rootPath,
   staticPath,
   aggregateActions
 } from './resolve/config'
+
 import store from './redux/store'
 
 import Todos from './client/containers/Todos'
 
-export default class App extends React.PureComponent {
+if (process.env.NODE_ENV === 'development') {
+  Expo.KeepAwake.activate();
+}
+
+class App extends React.PureComponent {
   render() {
     return (
       <Providers
@@ -37,3 +45,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   }
 })
+
+Expo.registerRootComponent(App)

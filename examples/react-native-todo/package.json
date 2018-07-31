@@ -1,0 +1,13 @@
+{
+  "name": "@react-native-todo/scripts",
+  "version": "0.13.2",
+  "private": true,
+  "scripts": {
+    "dev:web": "node ./scripts/dev-web",
+    "build:web": "node ./scripts/build-web",
+    "start:web": "node ./scripts/start-web",
+    "start:native": "node ./scripts/start-native",
+    "build:ui": "node ./scripts/build-ui",
+    "build:utils": "node ./scripts/build-utils"
+  }
+}
