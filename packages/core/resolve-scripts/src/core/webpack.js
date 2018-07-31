@@ -56,12 +56,15 @@ export default argv => {
   }
 
   const server = deployOptions.start
-    ? respawn([serverPath], {
-        maxRestarts: 0,
-        kill: 5000,
-        stdio: 'inherit',
-        fork: true
-      })
+    ? respawn(
+        [serverPath, `--distDir=${JSON.stringify(resolveConfig.distDir)}`],
+        {
+          maxRestarts: 0,
+          kill: 5000,
+          stdio: 'inherit',
+          fork: true
+        }
+      )
     : getMockServer()
 
   process.on('exit', () => {
