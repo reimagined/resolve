@@ -60,7 +60,7 @@ describe('validate schema', () => {
     expect(
       validateConfig({
         ...resolveConfigOrigin,
-        staticPath: 'https://my-cdn'
+        staticPath: 'my-cdn'
       })
     ).toBeTruthy()
   })
@@ -137,26 +137,6 @@ describe('validate schema', () => {
         jwtCookie: {
           name: 'authToken',
           maxAge: 1000 * 60 * 60 * 24 * 365
-        }
-      })
-    ).toBeTruthy()
-  })
-
-  it('custom env', () => {
-    expect(
-      validateConfig({
-        ...resolveConfigOrigin,
-        subscribeAdapter: {
-          module: 'resolve-subscribe-socket-io',
-          options: {}
-        },
-        env: {
-          production: {
-            subscribeAdapter: {
-              module: 'resolve-subscribe-mqtt',
-              options: {}
-            }
-          }
         }
       })
     ).toBeTruthy()
