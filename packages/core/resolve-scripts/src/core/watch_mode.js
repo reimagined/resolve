@@ -23,12 +23,15 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
   const compiler = webpack(webpackConfigs)
 
   const serverPath = path.resolve(__dirname, '../../dist/runtime/index.js')
-  const server = respawn([serverPath], {
-    maxRestarts: 0,
-    kill: 5000,
-    stdio: 'inherit',
-    fork: true
-  })
+  const server = respawn(
+    [serverPath, `--distDir=${JSON.stringify(resolveConfig.distDir)}`],
+    {
+      maxRestarts: 0,
+      kill: 5000,
+      stdio: 'inherit',
+      fork: true
+    }
+  )
 
   process.on('exit', () => {
     server.stop()
