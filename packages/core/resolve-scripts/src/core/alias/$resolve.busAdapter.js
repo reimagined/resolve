@@ -32,7 +32,7 @@ export default ({ resolveConfig, isClient }) => {
       ``,
       `const busAdapter = ${injectRuntimeEnv(busAdapter)}`,
       `const busAdapterModule = interopRequireDefault(`,
-      `  eval('require(busAdapter.module)')`,
+      `  __non_webpack_require__(busAdapter.module)`,
       `).default`,
       `const busAdapterOptions = busAdapter.options`
     )

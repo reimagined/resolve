@@ -82,7 +82,7 @@ export default ({ resolveConfig, isClient }) => {
             snapshotAdapter
           )}`,
           `const snapshotAdapterModule_${index} = interopRequireDefault(`,
-          `  eval('require(snapshotAdapter_${index}.module)')`,
+          `  __non_webpack_require__(snapshotAdapter_${index}.module)`,
           `).default`,
           `const snapshotAdapterOptions_${index} = snapshotAdapter_${index}.options`
         )

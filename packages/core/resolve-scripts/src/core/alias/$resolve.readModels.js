@@ -74,7 +74,7 @@ export default ({ resolveConfig, isClient }) => {
         constants.push(
           `const adapter_${index} = ${injectRuntimeEnv(adapter)}`,
           `const adapterModule_${index} = interopRequireDefault(`,
-          `  eval('require(adapter_${index}.module)')`,
+          `  __non_webpack_require__(adapter_${index}.module)`,
           `).default`,
           `const adapterOptions_${index} = adapter_${index}.options`
         )

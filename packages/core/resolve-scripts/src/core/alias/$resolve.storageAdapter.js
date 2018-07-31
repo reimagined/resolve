@@ -32,7 +32,7 @@ export default ({ resolveConfig, isClient }) => {
       ``,
       `const storageAdapter = ${injectRuntimeEnv(storageAdapter)}`,
       `const storageAdapterModule = interopRequireDefault(`,
-      `  eval('require(storageAdapter.module)')`,
+      `  __non_webpack_require__(storageAdapter.module)`,
       `).default`,
       `const storageAdapterOptions = storageAdapter.options`
     )

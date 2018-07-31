@@ -1,8 +1,11 @@
+import resolveFile from './resolve_file'
+
 export default ({ resolveConfig }) => {
+  const { name: applicationName } = require(resolveFile('package.json'))
   const exports = []
 
   exports.push(
-    `const applicationName = ${JSON.stringify(resolveConfig.applicationName)}`,
+    `const applicationName = ${JSON.stringify(applicationName)}`,
     ``,
     `export default applicationName`
   )
