@@ -38,13 +38,15 @@
     📁 native
         📁 components
         📁 containers
+            📄 App.js
         📁 reducers
             📄 index.js
         📁 store
             📄 index.js
         📁 middlewares
             📄 index.js
-        📄 App.js
+        📁 test
+        📄 index.js
         📄 app.json
         📄 jest.config.js
         📄 package.json

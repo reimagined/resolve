@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   }
 })
 
-class Item extends React.PureComponent {
+class Todo extends React.PureComponent {
   render() {
     const { checked, text, removeItem, toggleItem } = this.props
 
@@ -69,4 +69,4 @@ class Item extends React.PureComponent {
   }
 }
 
-export default Item
+export default Todo

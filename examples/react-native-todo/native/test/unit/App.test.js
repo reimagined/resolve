@@ -1,7 +1,7 @@
 import React from 'react'
-import { Todos } from '../../client/containers/Todos'
+import { App } from '../../client/containers/App'
 
-import renderer from 'react-test-renderer'
+import { shallow } from 'enzyme'
 
 it('renders correctly', () => {
   const todos = [
@@ -22,15 +22,13 @@ it('renders correctly', () => {
   const toggleItem = () => {}
 
   expect(
-    renderer
-      .create(
-        <Todos
-          todos={todos}
-          createItem={createItem}
-          removeItem={removeItem}
-          toggleItem={toggleItem}
-        />
-      )
-      .toJSON()
+    shallow(
+      <App
+        todos={todos}
+        createItem={createItem}
+        removeItem={removeItem}
+        toggleItem={toggleItem}
+      />
+    )
   ).toMatchSnapshot()
 })

@@ -1,6 +1,5 @@
-import Expo from 'expo';
-import React from 'react';
-import { StyleSheet, View } from 'react-native'
+import Expo from 'expo'
+import React from 'react'
 
 import { Providers } from './resolve/resolve-redux'
 
@@ -13,13 +12,13 @@ import {
 
 import store from './redux/store'
 
-import Todos from './client/containers/Todos'
+import App from './client/containers/App'
 
 if (process.env.NODE_ENV === 'development') {
-  Expo.KeepAwake.activate();
+  Expo.KeepAwake.activate()
 }
 
-class App extends React.PureComponent {
+class AppContainer extends React.PureComponent {
   render() {
     return (
       <Providers
@@ -29,21 +28,10 @@ class App extends React.PureComponent {
         aggregateActions={aggregateActions}
         store={store}
       >
-        <View style={styles.container}>
-          <Todos />
-        </View>
+        <App />
       </Providers>
     )
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center'
-  }
-})
-
-Expo.registerRootComponent(App)
+Expo.registerRootComponent(AppContainer)

@@ -3,11 +3,12 @@
   "version": "0.13.2",
   "private": true,
   "scripts": {
-    "dev:web": "node ./scripts/dev-web",
-    "build:web": "node ./scripts/build-web",
-    "start:web": "node ./scripts/start-web",
-    "start:native": "node ./scripts/start-native",
-    "build:ui": "node ./scripts/build-ui",
-    "build:utils": "node ./scripts/build-utils"
+    "dev:web": "cd web && yarn dev",
+    "build:web": "cd web && yarn build",
+    "start:web": "cd web && yarn start",
+    "start:native": "cd native && yarn start",
+    "build:ui": "cd ui && yarn build",
+    "build:utils": "cd utils && yarn build",
+    "test": "cd web && yarn test && cd .. && cd native && yarn test"
   }
 }

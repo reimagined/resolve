@@ -1,5 +1,5 @@
 {
-  "name": "@web-and-react-native/native",
+  "name": "@react-native-todo/native",
   "version": "0.13.2",
   "private": true,
   "main": "./index.js",
@@ -8,20 +8,39 @@
     "eject": "react-native-scripts eject",
     "android": "react-native-scripts android",
     "ios": "react-native-scripts ios",
-    "test": "jest"
+    "test": "jest --config=jest.config.js"
   },
   "dependencies": {
     "expo": "29.0.0",
+    "history": "4.7.2",
     "react": "16.4.1",
     "react-native": "0.55.4",
     "react-native-elements": "0.19.1",
-    "history": "4.7.2",
-    "redux": "4.0.0",
-    "react-redux": "5.0.7"
+    "react-redux": "5.0.7",
+    "redux": "4.0.0"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "7.0.0-beta.55",
+    "@babel/plugin-proposal-export-default-from": "7.0.0-beta.55",
+    "@babel/plugin-proposal-export-namespace-from": "7.0.0-beta.55",
+    "@babel/plugin-transform-runtime": "7.0.0-beta.55",
+    "@babel/preset-env": "7.0.0-beta.55",
+    "@babel/preset-flow": "7.0.0-beta.55",
+    "@babel/preset-react": "7.0.0-beta.55",
+    "babel-jest": "23.4.2",
+    "babel-preset-expo": "4.0.0",
+    "babel-preset-react-native": "4.0.0",
+    "enzyme": "3.3.0",
+    "enzyme-adapter-react-16": "1.1.1",
+    "jest": "23.4.2",
     "jest-expo": "29.0.0",
     "react-native-scripts": "1.14.0",
     "react-test-renderer": "16.4.1"
+  },
+  "workspaces": {
+    "nohoist": [
+      "**",
+      "**/**"
+    ]
   }
 }
