@@ -12,7 +12,7 @@ import {
   startWaitReady
 } from 'resolve-scripts'
 
-const adjustWebpackConfigs = (webpackConfigs, resolveConfig) => {
+const adjustWebpackConfigs = webpackConfigs => {
   for (const webpackConfig of webpackConfigs) {
     webpackConfig.module.rules.push({
       test: /\.css$/,
