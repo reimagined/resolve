@@ -13,10 +13,12 @@ Install the [Expo](https://expo.io) app on your iOS or Android phone, and use th
 
 To run:
 
-1\) First Terminal. Starts the web app in development mode
+1\) First Terminal
 ```sh
 npm run dev:web
 ```
+Runs your the web app in development mode.
+
 2\) Second Terminal
 ```sh
 npm run start:native
