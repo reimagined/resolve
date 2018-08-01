@@ -1,7 +1,15 @@
-import { getRootBasedUrl } from './helpers'
+const getRootBasedUrl = (rootPath, path) => {
+  if (/^https?:\/\//.test(path)) {
+    throw new Error(`Absolute path not allowed: ${path}`)
+  }
+  return `${rootPath}/${path.replace(/^\//, '')}`
+}
 
-const applyJwtValue = (jwtToken, res) => {
-  const { name: cookieName, ...cookieOptions } = { name: 'jwt' } // TODO get from config
+const applyJwtValue = (
+  { name: cookieName, ...cookieOptions },
+  jwtToken,
+  res
+) => {
   res.cookies[cookieName] = {
     name: cookieName,
     value: jwtToken,
@@ -19,10 +27,15 @@ const redirect = location => ({
 
 export default {
   success: async (options, req, res, next, arg /*, info*/) => {
-    await applyJwtValue(arg, res)
+    await applyJwtValue(options.$resolveConfig.jwtCookie, arg, res)
     Object.assign(
       res,
-      redirect(getRootBasedUrl(options.successRedirect || '/'))
+      redirect(
+        getRootBasedUrl(
+          options.$resolveConfig.rootPath,
+          options.successRedirect || '/'
+        )
+      )
     )
   },
   fail: async (options, req, res, next, error, status) => {
@@ -31,6 +44,7 @@ export default {
         res,
         redirect(
           getRootBasedUrl(
+            options.$resolveConfig.rootPath,
             typeof options.failureRedirect === 'function'
               ? options.failureRedirect(error)
               : options.failureRedirect
@@ -55,6 +69,7 @@ export default {
         res,
         redirect(
           getRootBasedUrl(
+            options.$resolveConfig.rootPath,
             typeof options.errorRedirect === 'function'
               ? options.errorRedirect(err)
               : options.errorRedirect

@@ -1,16 +1,18 @@
-import { resolveAuth } from 'resolve-auth'
+import resolveAuth from 'resolve-auth'
 import getRootBasedUrl from './utils/get_root_based_url'
 import executeViewModelQuery from './execute_view_model_query'
 import executeReadModelQuery from './execute_read_model_query'
 import executeCommand from './command_executor'
 
 import auth from '$resolve.auth'
+import rootPath from '$resolve.rootPath'
+import jwtCookie from '$resolve.jwtCookie'
 
 const authStrategiesConfigs = auth.strategies
 
 const authStrategies = authStrategiesConfigs.map(
   ({ strategyConstructor, options }) =>
-    resolveAuth(strategyConstructor, options)
+    resolveAuth(strategyConstructor, options, { rootPath, jwtCookie })
 )
 
 const postProcessResponse = (resExpress, response) => {
@@ -49,8 +51,9 @@ const assignAuthRoutes = app => {
             executeCommand
           }
         })
-        const authResponse = callback(req, res, next)
-        postProcessResponse(res, authResponse)
+        callback(req, res, next).then(authResponse => {
+          postProcessResponse(res, authResponse)
+        })
       }
     )
   })
