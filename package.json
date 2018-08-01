@@ -34,7 +34,7 @@
     "clean": "npx oao all \"npx rimraf dist\" --parallel && npx rimraf yarn-error.log && npx oao clean",
     "lint": "eslint .",
     "lint-staged": "lint-staged",
-    "prepublish": "npx oao all \"npx rimraf dist\" --parallel && oao run-script prepublish --parallel",
+    "prepublish": "npx oao all \"npx rimraf dist\" && oao run-script prepublish",
     "prettier": "prettier --single-quote --no-semi --write \"**/**.js\"",
     "prettier-json": "prettier --write \"**/**.json\"",
     "publish": "oao publish -i \"examples/*\" --no-git-commit --no-changelog",
