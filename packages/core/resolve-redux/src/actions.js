@@ -26,7 +26,10 @@ import {
   STOP_READ_MODEL_SUBSCRIPTION_REQUEST,
   STOP_READ_MODEL_SUBSCRIPTION_SUCCESS,
   STOP_READ_MODEL_SUBSCRIPTION_FAILURE,
-  UPDATE_JWT
+  UPDATE_JWT,
+  AUTH_REQUEST,
+  AUTH_SUCCESS,
+  AUTH_FAILURE
 } from './action_types'
 
 export const sendCommandRequest = (
@@ -329,4 +332,23 @@ export const hotModuleReplacement = hotModuleReplacementId => ({
 export const updateJwt = jwt => ({
   type: UPDATE_JWT,
   jwt
+})
+
+export const authRequest = (url, body) => ({
+  type: AUTH_REQUEST,
+  url,
+  body
+})
+
+export const authSuccess = (url, body) => ({
+  type: AUTH_SUCCESS,
+  url,
+  body
+})
+
+export const authFailure = (url, body, error) => ({
+  type: AUTH_FAILURE,
+  url,
+  body,
+  error
 })

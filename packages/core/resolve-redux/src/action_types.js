@@ -60,3 +60,9 @@ export const HOT_MODULE_REPLACEMENT = '@@resolve/HOT_MODULE_REPLACEMENT'
 //
 
 export const UPDATE_JWT = '@@resolve/UPDATE_JWT'
+
+//
+
+export const AUTH_REQUEST = '@@resolve/AUTH_REQUEST'
+export const AUTH_SUCCESS = '@@resolve/AUTH_SUCCESS'
+export const AUTH_FAILURE = '@@resolve/AUTH_FAILURE'

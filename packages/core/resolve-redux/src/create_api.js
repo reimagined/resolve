@@ -200,7 +200,9 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
       return result
     },
 
-    request
+    async request({ url, body }) {
+      return request(url, body)
+    }
   }
 }
 
