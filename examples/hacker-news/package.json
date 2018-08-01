@@ -6,7 +6,6 @@
   "scripts": {
     "build": "resolve-scripts build",
     "start": "resolve-scripts start",
-    "update": "resolve-scripts update",
     "dev": "resolve-scripts dev",
     "import": "babel-node ./import",
     "test": "jest",
@@ -46,37 +45,21 @@
     "uuid": "3.3.2"
   },
   "devDependencies": {
-    "@babel/core": "7.0.0-beta.54",
-    "@babel/node": "7.0.0-beta.54",
-    "@babel/plugin-transform-runtime": "7.0.0-beta.54",
-    "@babel/preset-env": "7.0.0-beta.54",
-    "@babel/preset-react": "7.0.0-beta.54",
-    "@babel/preset-stage-0": "7.0.0-beta.54",
+    "@babel/core": "7.0.0-beta.55",
+    "@babel/node": "7.0.0-beta.55",
+    "@babel/plugin-proposal-class-properties": "7.0.0-beta.55",
+    "@babel/plugin-proposal-export-default-from": "7.0.0-beta.55",
+    "@babel/plugin-proposal-export-namespace-from": "7.0.0-beta.55",
+    "@babel/plugin-transform-runtime": "7.0.0-beta.55",
+    "@babel/preset-env": "7.0.0-beta.55",
+    "@babel/preset-react": "7.0.0-beta.55",
     "babel-core": "^7.0.0-0",
-    "babel-jest": "23.4.0",
+    "babel-jest": "23.4.2",
     "enzyme": "3.3.0",
     "enzyme-adapter-react-16": "1.1.1",
-    "jest": "23.4.1",
+    "jest": "23.4.2",
     "regenerator-runtime": "0.12.0",
     "sinon": "6.1.3",
     "testcafe": "0.20.4"
-  },
-  "jest": {
-    "setupFiles": [
-      "raf/polyfill",
-      "<rootDir>/test/unit/jest-setup.js"
-    ],
-    "coveragePathIgnorePatterns": [
-      "node_modules/",
-      "dist/",
-      "coverage/",
-      "resolve.build.config.js",
-      "resolve.client.config.js",
-      "resolve.server.config.js"
-    ],
-    "unmockedModulePathPatterns": [
-      "node_modules/react/",
-      "node_modules/enzyme/"
-    ]
   }
 }
