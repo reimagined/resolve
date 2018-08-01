@@ -2,7 +2,6 @@
 
 ## 📑 **Table Of Contents**
 
-- [Available Scripts](#available-scripts)
 - [Project Structure Overview](#project-structure-overview)
   - [Authentication](#authentication)
   - [Client](#client)
@@ -11,32 +10,8 @@
 - [Configuration Files](#configuration-files)
   - [Resolve Config](#resolve-config)
   - [Build Config](#build-config)
-- [Command Line Interface](#command-line-interface)
 - [Environment Variables](#environment-variables)
 
-## **Available Scripts**
-
-In the project directory, you can run:
-
-### `npm run dev`
-
-Runs the app in the development mode.
-
-Two web servers are started: one - for the frontend/UI part, based on the webpack-dev-server on the 3001 port by default, and another one - for the API backend part to provide API for reSolve endpoints, based on express on the 3000 port. Development servers provide all the required debugging capabilities, including [Hot Module Replacement](https://webpack.js.org/concepts/hot-module-replacement/) and [source maps](https://webpack.js.org/configuration/devtool/).
-
-Open [http://localhost:3000](http://localhost:3000/) or http://<your_ip>:3000 to view the app in the browser (you can change your [url settings](#configuration-files)).
-
-### `npm run build`
-
-Builds client and server bundles for production through Webpack.
-
-Building is performed in the `NODE_ENV === 'production'` [mode](https://webpack.js.org/guides/production/#node-environment-variable), so the build is optimized. No additional HTTP server for the serving client bundle and assets are built.
-
-### `npm start`
-
-Runs the built app in the production mode.
-
-Open [http://localhost:3000](http://localhost:3000/) or http://<your_ip>:3000 to view it in the browser (you can change your [url settings](#configuration-files)).
 
 ## **Project Structure Overview**
 
@@ -115,74 +90,6 @@ Default values for config sections can be accessed via `import { defaultResolveC
 
 Config examples can be found in `examples` directory. Most advanced config, including descriptions for custom reducers, shapshots, auth, etc can be found in [`hacker-news`](../examples/hacker-news) example in `index.js` file.
 
-### Build config
-
-The **resolve.build.config.js** file contains information for building an application.
-
-```js
-// resolve.build.config
-
-export default (webpackConfigs, { resolveConfig, resolveConfig, env }) => {
-
-}
-```
-
-Example can be found in [`with-postcss`](../examples/with-postcss) example
-
-## **Command Line Interface**
-
-### Commands:
-
-| Name              | Description                              |
-| ----------------- | ---------------------------------------- |
-| `build`           | Compile the app into the build directory |
-| `start`           | Run the app from the build directory     |
-| `dev`             | Run the app in the development mode      |
-| `test`            | Run unit tests with Jest                 |
-| `test:functional` | Run functional tests with TestCafe       |
-
-#### command "build"
-
-| Options          | Description                                                            | Type      |
-| ---------------- | ---------------------------------------------------------------------- | --------- |
-| `--version`      | Show version number                                                    | [boolean] |
-| `--help`         | Show help                                                              | [boolean] |
-| `--dev`          | Set `webpack.mode` and `process.env.NODE_ENV` to 'development'         | [boolean] |
-| `--prod`         | Set `webpack.mode` and `process.env.NODE_ENV` to 'production'          | [boolean] |
-| `--test`         | Set `webpack.mode` to 'development' and process.env.NODE_ENV to 'test' | [boolean] |
-| `--watch`        | Watch the filesystem for changes and update the app using Webpack HMR  | [boolean] |
-| `--start`        | Automatically start your server once the Webpack build completes       | [boolean] |
-| `--port`         | Application port                                                       | [number]  |
-| `--inspect`      | Start Node.js inspector on [host:]port                                 | [string]  |
-| `--config`       | Path to reSolve config                                                 | [string]  |
-| `--build-config` | Path to reSolve build config                                           | [string]  |
-| `--print-config` | Show the current configuration                                         | [boolean] |
-| `--root-path`    | Application root path                                                  | [string]  |
-| `--open-browser` | Open the root page in the default browser                              | [boolean] |
-
-#### command "start"
-
-| Options          | Description                            | Type      |
-| ---------------- | -------------------------------------- | --------- |
-| `--version`      | Show version number                    | [boolean] |
-| `--help`         | Show help                              | [boolean] |
-| `--inspect`      | Start Node.js inspector on [host:]port | [string]  |
-| `--print-config` | Show the current configuration         | [boolean] |
-
-#### command "dev"
-
-| Options          | Description                                                            | Type      |
-| ---------------- | ---------------------------------------------------------------------- | --------- |
-| `--version`      | Show version number                                                    | [boolean] |
-| `--help`         | Show help                                                              | [boolean] |
-| `--test`         | Set `webpack.mode` to 'development' and process.env.NODE_ENV to 'test' | [boolean] |
-| `--port`         | Application port                                                       | [number]  |
-| `--inspect`      | Start Node.js inspector on [host:]port                                 | [string]  |
-| `--root-path`    | Application root path                                                  | [string]  |
-| `--open-browser` | Open the root page in the default browser                              | [boolean] |
-| `--config`       | Path to reSolve config                                                 | [string]  |
-| `--build-config` | Path to reSolve build config                                           | [string]  |
-| `--print-config` | Show the current configuration                                         | [boolean] |
 
 ## Environment Variables
 
