@@ -3,16 +3,26 @@ import { StyleSheet, Text, View } from 'react-native'
 import { Icon } from 'react-native-elements'
 
 const styles = StyleSheet.create({
+  textContainer: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
   textChecked: {
     paddingTop: 2,
     paddingBottom: 2,
     fontSize: 18,
-    textDecorationLine: 'line-through'
+    textDecorationLine: 'line-through',
+    width: 0,
+    flexGrow: 1,
+    flex: 1
   },
   textUnchecked: {
     paddingTop: 2,
     paddingBottom: 2,
-    fontSize: 18
+    fontSize: 18,
+    width: 0,
+    flexGrow: 1,
+    flex: 1
   },
   container: {
     flexDirection: 'row',
@@ -38,30 +48,32 @@ class Todo extends React.PureComponent {
     return (
       <View>
         <View style={styles.container}>
-          <Icon
-            color="#767676"
-            type="material-community"
-            name={
-              checked ? 'checkbox-marked-outline' : 'checkbox-blank-outline'
-            }
-            size={36}
-            containerStyle={styles.checkbox}
-            onPress={toggleItem}
-          />
-          <Text
-            style={checked ? styles.textChecked : styles.textUnchecked}
-            onPress={toggleItem}
-          >
-            {text}
-          </Text>
-          <Icon
-            color="#767676"
-            type="material-community"
-            name="close-circle-outline"
-            size={36}
-            containerStyle={styles.remove}
-            onPress={removeItem}
-          />
+          <View style={styles.textContainer}>
+            <Icon
+              color="#767676"
+              type="material-community"
+              name={
+                checked ? 'checkbox-marked-outline' : 'checkbox-blank-outline'
+              }
+              size={36}
+              containerStyle={styles.checkbox}
+              onPress={toggleItem}
+            />
+            <Text
+              style={checked ? styles.textChecked : styles.textUnchecked}
+              onPress={toggleItem}
+            >
+              {text}
+            </Text>
+            <Icon
+              color="#767676"
+              type="material-community"
+              name="close-circle-outline"
+              size={36}
+              containerStyle={styles.remove}
+              onPress={removeItem}
+            />
+          </View>
         </View>
         <View style={styles.separator} />
       </View>
