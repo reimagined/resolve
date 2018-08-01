@@ -12,9 +12,9 @@ export const CommentsByPage = ({ comments, page }) =>
     <Redirect push to={`/error?text=No such page`} />
   ) : (
     <div>
-      {comments
-        .slice(0, ITEMS_PER_PAGE)
-        .map(comment => <Comment key={comment.id} {...comment} />)}
+      {comments.slice(0, ITEMS_PER_PAGE).map(comment => (
+        <Comment key={comment.id} {...comment} />
+      ))}
       <Pagination
         page={page}
         hasNext={!!comments[ITEMS_PER_PAGE]}
