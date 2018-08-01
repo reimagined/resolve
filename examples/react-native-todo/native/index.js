@@ -1,0 +1,37 @@
+import Expo from 'expo'
+import React from 'react'
+
+import { Providers } from './resolve/resolve-redux'
+
+import {
+  origin,
+  rootPath,
+  staticPath,
+  aggregateActions
+} from './resolve/config'
+
+import store from './store'
+
+import App from './containers/App'
+
+if (process.env.NODE_ENV === 'development') {
+  Expo.KeepAwake.activate()
+}
+
+class AppContainer extends React.PureComponent {
+  render() {
+    return (
+      <Providers
+        origin={origin}
+        rootPath={rootPath}
+        staticPath={staticPath}
+        aggregateActions={aggregateActions}
+        store={store}
+      >
+        <App />
+      </Providers>
+    )
+  }
+}
+
+Expo.registerRootComponent(AppContainer)

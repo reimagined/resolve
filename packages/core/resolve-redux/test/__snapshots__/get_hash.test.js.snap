@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getHash boolean should work correctly 1`] = `true`;
+
+exports[`getHash disordered array should work correctly 1`] = `"[3,2,1]"`;
+
+exports[`getHash disordered object should work correctly 1`] = `"{\\"a\\":3,\\"b\\":2,\\"c\\":1}"`;
+
+exports[`getHash empty array should work correctly 1`] = `"[]"`;
+
+exports[`getHash empty object should work correctly 1`] = `"{}"`;
+
+exports[`getHash number should work correctly 1`] = `123`;
+
+exports[`getHash ordered object should work correctly 1`] = `"{\\"a\\":1,\\"b\\":2,\\"c\\":3}"`;
+
+exports[`getHash ordered should work correctly 1`] = `"[1,2,3]"`;
+
+exports[`getHash string should work correctly 1`] = `"ABC"`;

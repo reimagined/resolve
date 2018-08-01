@@ -1,11 +1,10 @@
 import React from 'react'
 import uuid from 'uuid'
 import { connect } from 'react-redux'
+import { connectResolveAdvanced } from 'resolve-redux'
 import { Redirect } from 'react-router'
 import { bindActionCreators } from 'redux'
-import urlLib from 'url'
 import styled from 'styled-components'
-import { connectReadModel } from 'resolve-redux'
 
 const labelWidth = '30px'
 
@@ -37,12 +36,6 @@ const StoryTextInput = styled.textarea`
   vertical-align: middle;
 `
 
-// eslint-disable-next-line
-const ErrorMessage = styled.div`
-  color: red;
-  margin-left: ${labelWidth};
-`
-
 const SubmitButton = styled.button`
   margin-left: ${labelWidth};
   margin-top: 1em;
@@ -60,14 +53,6 @@ export class Submit extends React.PureComponent {
   handleSubmit = () => {
     const { title, link, text } = this.state
 
-    if (!title || (!text && !link)) {
-      return this.props.history.push('/error?text=Enter submit data')
-    }
-
-    if (link && !urlLib.parse(link).hostname) {
-      return this.props.history.push('/error?text=Enter valid url')
-    }
-
     return this.props.createStory({
       id: uuid.v4(),
       title,
@@ -77,7 +62,7 @@ export class Submit extends React.PureComponent {
   }
 
   render() {
-    if (!this.props.data.loading && !this.props.data.me) {
+    if (!this.props.me.id) {
       return <Redirect to="/login?redirect=/submit" />
     }
 
@@ -122,6 +107,10 @@ export class Submit extends React.PureComponent {
   }
 }
 
+export const mapStateToProps = state => ({
+  me: state.jwt
+})
+
 export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(
     {
@@ -135,28 +124,9 @@ export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
     dispatch
   )
 
-const getReadModelData = state => {
-  try {
-    return {
-      me: state.readModels['default']['user'].me,
-      loading: false
-    }
-  } catch (err) {
-    return {
-      me: null,
-      loading: true
-    }
-  }
-}
-
-export default connectReadModel(state => ({
-  readModelName: 'default',
-  resolverName: 'user',
-  parameters: {},
-  data: getReadModelData(state)
-}))(
+export default connectResolveAdvanced(
   connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
   )(Submit)
 )

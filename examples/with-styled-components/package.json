@@ -1,6 +1,6 @@
 {
   "name": "with-styled-components",
-  "version": "0.12.3",
+  "version": "0.13.2",
   "private": true,
   "scripts": {
     "build": "resolve-scripts build",
@@ -10,21 +10,26 @@
     "test:functional": "resolve-scripts test:functional"
   },
   "dependencies": {
-    "react": "^16.4.0",
-    "react-dom": "^16.4.0",
-    "redux": "^3.7.2",
-    "resolve-scripts": "0.12.3",
-    "styled-components": "^3.3.0"
+    "react": "16.4.1",
+    "react-dom": "16.4.1",
+    "react-bootstrap": "0.32.1",
+    "react-helmet": "5.2.0",
+    "redux": "4.0.0",
+    "resolve-scripts": "0.13.2",
+    "resolve-redux": "0.13.2",
+    "styled-components": "3.3.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0-beta.49",
-    "@babel/preset-env": "^7.0.0-beta.49",
-    "@babel/preset-react": "^7.0.0-beta.49",
-    "@babel/plugin-transform-runtime": "^7.0.0-beta.49",
-    "@babel/preset-stage-0": "^7.0.0-beta.49",
+    "@babel/core": "7.0.0-beta.55",
+    "@babel/preset-env": "7.0.0-beta.55",
+    "@babel/preset-react": "7.0.0-beta.55",
+    "@babel/plugin-proposal-class-properties": "7.0.0-beta.55",
+    "@babel/plugin-proposal-export-default-from": "7.0.0-beta.55",
+    "@babel/plugin-proposal-export-namespace-from": "7.0.0-beta.55",
+    "@babel/plugin-transform-runtime": "7.0.0-beta.55",
     "babel-core": "^7.0.0-0",
-    "jest": "^23.0.1",
-    "react-test-renderer": "^16.4.0",
-    "testcafe": "^0.20.2"
+    "jest": "23.4.2",
+    "react-test-renderer": "16.4.1",
+    "testcafe": "0.20.4"
   }
 }

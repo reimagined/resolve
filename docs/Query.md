@@ -2,7 +2,7 @@
 
 ## What is a Query?
 
-A **Query** is a function used to fetch data from a Read Model or View Model.
+A **Query** is a function used to fetch data from a [**Read Model**](https://github.com/reimagined/resolve/blob/dev/docs/Read%20Model.md) or [**View Model**](https://github.com/reimagined/resolve/blob/dev/docs/View%20Model.md).
 
 Refer to the [Edument CQRS Starter Kit Tutorial](http://cqrs.nu/tutorial/cs/01-design) for details.
 

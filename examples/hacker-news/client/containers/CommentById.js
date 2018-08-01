@@ -1,8 +1,9 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
-import uuid from 'uuid'
-import { connectReadModel, connectViewModel } from 'resolve-redux'
+import { connectViewModel } from 'resolve-redux'
+import { connect } from 'react-redux'
 import styled from 'styled-components'
+import uuid from 'uuid'
 
 import Comment from '../components/Comment'
 import ChildrenComments from '../components/ChildrenComments'
@@ -14,10 +15,10 @@ const Reply = styled.div`
 
 export class CommentById extends React.PureComponent {
   saveComment = () => {
-    const { parentId, aggregateId } = this.props
+    const { parentId, story } = this.props
 
     this.props.commentStory({
-      aggregateId,
+      aggregateId: story.id,
       parentId,
       text: this.textarea.value
     })
@@ -26,12 +27,9 @@ export class CommentById extends React.PureComponent {
   }
 
   render() {
-    const {
-      data: { me },
-      story,
-      parentId
-    } = this.props
-    const loggedIn = !!me
+    const { me, story, parentId } = this.props
+
+    const loggedIn = !!me.id
 
     if (!story || !story.comments) {
       return null
@@ -66,7 +64,7 @@ export class CommentById extends React.PureComponent {
   }
 }
 
-export const mapStateToProps = (
+export const mapStateToOptions = (
   state,
   {
     match: {
@@ -74,10 +72,27 @@ export const mapStateToProps = (
     }
   }
 ) => ({
-  story: state.viewModels['storyDetails'][storyId],
   viewModelName: 'storyDetails',
-  aggregateId: storyId,
-  parentId: commentId
+  aggregateIds: [storyId],
+  aggregateArgs: {
+    page: 'CommentById',
+    storyId,
+    commentId
+  }
+})
+
+export const mapStateToProps = (
+  state,
+  {
+    match: {
+      params: { commentId }
+    },
+    data
+  }
+) => ({
+  story: data,
+  parentId: commentId,
+  me: state.jwt
 })
 
 export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
@@ -93,27 +108,9 @@ export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
     dispatch
   )
 
-const getReadModelData = state => {
-  try {
-    return { me: state.readModels['default']['user'] }
-  } catch (err) {
-    return { me: null }
-  }
-}
-
-export default connectReadModel(
-  state => ({
-    readModelName: 'default',
-    resolverName: 'user',
-    parameters: {},
-    data: getReadModelData(state)
-  }),
-  (dispatch, { aggregateActions }) =>
-    bindActionCreators(
-      {
-        upvoteStory: aggregateActions.upvoteStory,
-        unvoteStory: aggregateActions.unvoteStory
-      },
-      dispatch
-    )
-)(connectViewModel(mapStateToProps, mapDispatchToProps)(CommentById))
+export default connectViewModel(mapStateToOptions)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(CommentById)
+)

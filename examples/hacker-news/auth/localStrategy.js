@@ -3,8 +3,6 @@ import jwt from 'jsonwebtoken'
 import jwtSecret from './jwtSecret'
 import uuid from 'uuid'
 
-import { rootDirectory } from '../client/constants'
-
 const strategyOptions = {
   strategy: {
     usernameField: 'username',
@@ -14,8 +12,8 @@ const strategyOptions = {
 }
 
 const authenticateOptions = {
-  failureRedirect: error => `${rootDirectory}/error?text=${error}`,
-  errorRedirect: error => `${rootDirectory}/error?text=${error}`
+  failureRedirect: error => `/error?text=${error}`,
+  errorRedirect: error => `/error?text=${error}`
 }
 
 const routes = [
@@ -23,7 +21,7 @@ const routes = [
     path: '/register',
     method: 'POST',
     callback: async ({ resolve }, username) => {
-      const { user: existingUser } = await resolve.executeReadModelQuery({
+      const existingUser = await resolve.executeReadModelQuery({
         modelName: 'default',
         resolverName: 'user',
         resolverArgs: { name: username.trim() }
@@ -52,7 +50,7 @@ const routes = [
     path: '/login',
     method: 'POST',
     callback: async ({ resolve }, username) => {
-      const { user } = await resolve.executeReadModelQuery({
+      const user = await resolve.executeReadModelQuery({
         modelName: 'default',
         resolverName: 'user',
         resolverArgs: { name: username.trim() }

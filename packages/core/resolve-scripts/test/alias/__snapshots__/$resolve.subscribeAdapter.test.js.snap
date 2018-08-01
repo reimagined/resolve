@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`base config works correctly [client] 1`] = `
+"
+import module from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testAdapter.js/dist/create_client_adapter\\"
+
+const options = {}
+
+export default { module, options }
+"
+`;
+
+exports[`base config works correctly [server] 1`] = `
+"
+import module from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testAdapter.js/dist/create_server_adapter\\"
+
+const options = {}
+
+export default { module, options }
+"
+`;

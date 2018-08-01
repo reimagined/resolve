@@ -1,18 +1,12 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import { connectReadModel } from 'resolve-redux'
 
 import Stories from '../components/Stories'
 import { ITEMS_PER_PAGE } from '../constants'
 
-const NewestByPage = ({
-  match: {
-    params: { page }
-  },
-  data: { stories = [], me },
-  upvoteStory,
-  unvoteStory
-}) => (
+const NewestByPage = ({ page, stories, me, upvoteStory, unvoteStory }) => (
   <Stories
     items={stories}
     page={page || '1'}
@@ -23,41 +17,48 @@ const NewestByPage = ({
   />
 )
 
-const getReadModelData = state => {
-  try {
-    return {
-      stories: state.readModels['default']['allStories'].stories,
-      me: state.readModels['default']['allStories'].me
+export const mapStateToOptions = (
+  state,
+  {
+    match: {
+      params: { page }
     }
-  } catch (err) {
-    return { stories: [], me: null }
   }
-}
+) => ({
+  readModelName: 'default',
+  resolverName: 'allStories',
+  resolverArgs: {
+    offset: ITEMS_PER_PAGE + 1,
+    first: (+page - 1) * ITEMS_PER_PAGE
+  }
+})
 
-export default connectReadModel(
-  (
-    state,
-    {
-      match: {
-        params: { page }
-      }
-    }
-  ) => ({
-    readModelName: 'default',
-    resolverName: 'allStories',
-    parameters: {
-      offset: ITEMS_PER_PAGE + 1,
-      first: (+page - 1) * ITEMS_PER_PAGE
+export const mapStateToProps = (
+  state,
+  {
+    match: {
+      params: { page }
     },
-    data: getReadModelData(state),
-    page
-  }),
-  (dispatch, { aggregateActions }) =>
-    bindActionCreators(
-      {
-        upvoteStory: aggregateActions.upvoteStory,
-        unvoteStory: aggregateActions.unvoteStory
-      },
-      dispatch
-    )
-)(NewestByPage)
+    data
+  }
+) => ({
+  stories: data,
+  page,
+  me: state.jwt
+})
+
+export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+  bindActionCreators(
+    {
+      upvoteStory: aggregateActions.upvoteStory,
+      unvoteStory: aggregateActions.unvoteStory
+    },
+    dispatch
+  )
+
+export default connectReadModel(mapStateToOptions)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(NewestByPage)
+)
