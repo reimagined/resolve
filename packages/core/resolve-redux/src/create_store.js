@@ -22,6 +22,7 @@ const createStore = ({
   history,
   origin,
   rootPath,
+  jwtProvider,
   isClient
 }) => {
   const sessionId = uuid()
@@ -55,6 +56,7 @@ const createStore = ({
     rootPath,
     subscribeAdapter,
     sessionId,
+    jwtProvider,
     isClient
   })
 
