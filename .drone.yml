@@ -11,7 +11,7 @@ pipeline:
       - VERSION=$(/scripts/prepare_downstream)
       - /scripts/npm_patch_rc
       - npx oao all "/scripts/npm_publish $VERSION nightly"
-    secrets: [ npm_repository, npm_token ]
+    secrets: [ npm_registry, npm_token ]
 
   register-build:
     when:
@@ -53,7 +53,7 @@ pipeline:
     commands:
       - /scripts/npm_patch_rc
       - npx oao all "/scripts/npm_tag $REGISTRY_VERSION latest-stable"
-    secrets: [ npm_repository, npm_token ]
+    secrets: [ npm_registry, npm_token ]
 
   notify-downstream-success:
     when:
