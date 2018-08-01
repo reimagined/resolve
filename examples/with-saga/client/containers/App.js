@@ -8,8 +8,6 @@ import Header from './Header.js'
 import UsersInput from './UsersInput.js'
 import UsersList from './UsersList.js'
 
-import uuid from 'uuid'
-
 let clientId = ''
 
 class App extends React.Component {
@@ -36,7 +34,7 @@ class App extends React.Component {
             isDisabled={this.props.user.disableButton}
             clientId={clientId}
             submitUser={email => {
-              this.submitUser(uuid.v4(), { email: email, clientId: clientId })
+              this.submitUser(clientId, { email: email })
             }}
           />
           <UsersList isLoading={this.props.isLoading} users={this.props.data} />

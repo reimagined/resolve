@@ -6,55 +6,26 @@ import {
 } from '../events'
 
 export default {
-  createUser: (state, { payload: { email, clientId } }) => {
-    if (state) {
-      throw new Error('User already exists')
-    }
+  createUser: (_, { payload: { email } }) => {
     return {
       type: USER_CREATION_REQUESTED,
       payload: {
-        email,
-        clientId
+        email
       }
     }
   },
-  confirmUserCreation: (state, { payload: { clientId } }) => {
-    if (!state) {
-      throw new Error('User does not exist')
-    }
-
-    if (state.isConfirmed) {
-      throw new Error('User is already confirmed')
-    }
-
+  confirmUserCreation: () => {
     return {
-      type: USER_CREATION_CONFIRMED,
-      payload: { clientId }
+      type: USER_CREATION_CONFIRMED
     }
   },
-  rejectUserCreation: (state, { payload: { clientId, createdUser } }) => {
-    if (!state) {
-      throw new Error('User does not exist')
-    }
-
-    if (state.isConfirmed) {
-      throw new Error('User is already confirmed')
-    }
-
+  rejectUserCreation: (_, { payload: { createdUser } }) => {
     return {
       type: USER_CREATION_REJECTED,
-      payload: { clientId, createdUser }
+      payload: { createdUser }
     }
   },
-  deleteOutdatedUser: state => {
-    if (!state) {
-      throw new Error('User does not exist')
-    }
-
-    if (!state.isConfirmed) {
-      throw new Error('User is not confirmed yet')
-    }
-
+  deleteOutdatedUser: () => {
     return {
       type: OUTDATED_USER_DELETED
     }

@@ -1,22 +1,15 @@
 export default {
-  Init: () => ({ errors: [] }),
-  UserCreationConfirmed: (state, { payload: { clientId } }) => {
-    let clientObj = state.errors[clientId] || {}
-
+  Init: () => ({ errors: [], isError: false }),
+  UserCreationRequested: state => ({ ...state }),
+  OutdatedUserDeleted: state => ({ ...state }),
+  UserCreationConfirmed: state => {
     return {
       ...state,
-      errors: {
-        [clientId]: {
-          ...clientObj,
-          isError: false
-        }
-      }
+      errors: [...state.errors],
+      isError: false
     }
   },
-  UserCreationRejected: (
-    state,
-    { timestamp, payload: { createdUser, clientId } }
-  ) => {
+  UserCreationRejected: (state, { timestamp, payload: { createdUser } }) => {
     if (!createdUser) {
       return state
     }
@@ -25,17 +18,11 @@ export default {
       timestamp,
       message: `User with the '${createdUser.email}' email already exists`
     }
-    let clientObj = state.errors[clientId] || {}
-    let errorsByClient = clientObj.errors || []
 
     return {
       ...state,
-      errors: {
-        [clientId]: {
-          errors: [errorsByClient, error],
-          isError: true
-        }
-      }
+      errors: [...state.errors, error],
+      isError: true
     }
   }
 }

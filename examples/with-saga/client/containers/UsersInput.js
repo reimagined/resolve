@@ -16,12 +16,7 @@ const placeholder = 'example@example.com'
 class UsersInput extends React.Component {
   render() {
     let newEmail
-    let data = this.props.data
-    let clientId = this.props.clientId
-
-    let errorsData =
-      data.errors && data.errors[clientId] ? data.errors[clientId] : {}
-    let errors = errorsData.errors || [{}]
+    let errors = this.props.data.errors || [{}]
 
     const handleClick = event => {
       event.preventDefault()
@@ -31,7 +26,7 @@ class UsersInput extends React.Component {
 
     return (
       <div className="example-form-wrapper">
-        {errorsData.isError && (
+        {this.props.data.isError && (
           <Alert className="example-alert" bsStyle="danger">
             {errors[errors.length - 1].message}
           </Alert>
@@ -68,9 +63,11 @@ class UsersInput extends React.Component {
   }
 }
 
-const mapStateToOptions = () => ({
-  viewModelName: 'error',
-  aggregateIds: '*'
-})
+const mapStateToOptions = (_, { clientId }) => {
+  return {
+    viewModelName: 'error',
+    aggregateIds: [clientId]
+  }
+}
 
 export default connectViewModel(mapStateToOptions)(UsersInput)

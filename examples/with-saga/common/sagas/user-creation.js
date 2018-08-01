@@ -3,10 +3,7 @@ const outdatedPeriod = 1000 * 60 * 10
 const saga = {
   eventHandlers: {
     UserCreationRequested: async (event, { resolve }) => {
-      const {
-        aggregateId,
-        payload: { clientId }
-      } = event
+      const { aggregateId } = event
       const createdUser = await resolve.executeReadModelQuery({
         modelName: 'default',
         resolverName: 'createdUser',
@@ -30,7 +27,7 @@ const saga = {
       await resolve.executeCommand({
         type: userWithSameEmail ? 'rejectUserCreation' : 'confirmUserCreation',
         aggregateName: 'user',
-        payload: { clientId, createdUser },
+        payload: { createdUser },
         aggregateId
       })
     }
