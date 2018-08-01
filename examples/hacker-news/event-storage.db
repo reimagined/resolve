@@ -3,5 +3,3 @@
 {"$$indexCreated":{"fieldName":"type","unique":false,"sparse":false}}
 {"$$indexCreated":{"fieldName":"aggregateId","unique":false,"sparse":false}}
 {"$$indexCreated":{"fieldName":"aggregateIdAndVersion","unique":false,"sparse":false}}
-{"type":"UserCreated","payload":{"name":"1"},"aggregateId":"b90a1d5b-a5d0-4f88-af19-262023f54877","aggregateVersion":1,"timestamp":1532540009207,"aggregateIdAndVersion":"b90a1d5b-a5d0-4f88-af19-262023f54877:1","_id":"cPRCMRiAYhqfhAL0"}
-{"type":"UserCreated","payload":{"name":"123123"},"aggregateId":"048edfbd-fef1-41cc-afa4-7dab8d44ee93","aggregateVersion":1,"timestamp":1532540032260,"aggregateIdAndVersion":"048edfbd-fef1-41cc-afa4-7dab8d44ee93:1","_id":"IVX48Nv98jifXyrR"}

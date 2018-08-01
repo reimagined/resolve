@@ -39,26 +39,11 @@ const options = routes.map(({ path, method, callback }) => ({
     method
   },
   callback,
-  buildResponse: (resExpress, response) => {
-    resExpress.statusCode = response.statusCode
-    Object.keys(response.headers || {}).forEach(key => {
-      resExpress.setHeader(key, response.headers[key])
-    })
-    Object.keys(response.cookies || {}).forEach(key => {
-      resExpress.cookie(
-        key,
-        response.cookies[key].value,
-        response.cookies[key].options
-      )
-    })
-
-    resExpress.end(response.error)
-  },
   jwtSecret
 }))
 
-const strategyConstructor = options => {
-  return new Strategy(
+const strategyConstructor = options =>
+  new Strategy(
     {
       ...options.strategy,
       passReqToCallback: true
@@ -71,7 +56,6 @@ const strategyConstructor = options => {
       }
     }
   )
-}
 
 const strategies = options.map(options => ({
   options,
