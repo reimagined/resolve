@@ -56,3 +56,7 @@ export const STOP_READ_MODEL_SUBSCRIPTION_FAILURE =
 //
 
 export const HOT_MODULE_REPLACEMENT = '@@resolve/HOT_MODULE_REPLACEMENT'
+
+//
+
+export const UPDATE_JWT = '@@resolve/UPDATE_JWT'

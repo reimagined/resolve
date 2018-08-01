@@ -1,5 +1,9 @@
+import jwtDecode from 'jwt-decode'
+import stableStringify from 'json-stable-stringify'
+
 import getRootBasedUrl from './get_root_based_url'
 import { isReactiveArg, queryIdArg, stopSubscriptionArg } from './constants'
+import { updateJwt } from './actions'
 
 export class FetchError extends Error {}
 
@@ -26,7 +30,7 @@ const validateStatus = status => {
   }
 }
 
-const createApi = ({ origin, rootPath, jwtProvider }) => {
+const createApi = ({ origin, rootPath, jwtProvider, store }) => {
   const request = async (url, body) => {
     const rootBasedUrl = getRootBasedUrl(origin, rootPath, url)
     const options = {
@@ -39,7 +43,26 @@ const createApi = ({ origin, rootPath, jwtProvider }) => {
       const jwtToken = await jwtProvider.get()
       options.headers.Authorization = `Bearer ${jwtToken}`
     }
-    return await fetch(rootBasedUrl, options)
+    const response = await fetch(rootBasedUrl, options)
+
+    const jwt = {}
+    try {
+      Object.assign(
+        jwt,
+        jwtDecode(
+          (
+            response.headers.get('Authorization') ||
+            response.headers.get('authorization')
+          ).replace(/^Bearer /i, '')
+        )
+      )
+    } catch (err) {}
+
+    if (stableStringify(store.getState().jwt) !== stableStringify(jwt)) {
+      store.dispatch(updateJwt(jwt))
+    }
+
+    return response
   }
 
   return {
@@ -175,7 +198,9 @@ const createApi = ({ origin, rootPath, jwtProvider }) => {
       }
 
       return result
-    }
+    },
+
+    request
   }
 }
 

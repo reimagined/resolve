@@ -25,7 +25,8 @@ import {
   HOT_MODULE_REPLACEMENT,
   STOP_READ_MODEL_SUBSCRIPTION_REQUEST,
   STOP_READ_MODEL_SUBSCRIPTION_SUCCESS,
-  STOP_READ_MODEL_SUBSCRIPTION_FAILURE
+  STOP_READ_MODEL_SUBSCRIPTION_FAILURE,
+  UPDATE_JWT
 } from './action_types'
 
 export const sendCommandRequest = (
@@ -323,4 +324,9 @@ export const dispatchTopicMessage = message => ({
 export const hotModuleReplacement = hotModuleReplacementId => ({
   type: HOT_MODULE_REPLACEMENT,
   hotModuleReplacementId
+})
+
+export const updateJwt = jwt => ({
+  type: UPDATE_JWT,
+  jwt
 })
