@@ -44,7 +44,15 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
 
 app.use((req, res, next) => {
-  req.jwtToken = req.cookies[jwtCookie.name]
+  let jwtToken = req.cookies[jwtCookie.name]
+
+  if (req.headers && req.headers.authorization) {
+    jwtToken = req.headers.authorization.replace(/^Bearer /i, '')
+  }
+
+  req.jwtToken = jwtToken
+
+  res.setHeader('Authorization', `Bearer ${jwtToken}`)
 
   next()
 })
