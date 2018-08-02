@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { connectViewModel } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
+import { NavLink } from 'react-router-dom'
 import {
   ListGroup,
   ListGroupItem,
@@ -14,16 +15,19 @@ import {
 import Image from './Image'
 
 const viewModelName = 'Todos'
-const aggregateId = 'root-id'
 
-export const Todos = props => {
-  const { todos, createItem, toggleItem, removeItem } = props
-
+export const Todos = ({
+  todos,
+  createItem,
+  toggleItem,
+  removeItem,
+  aggregateId
+}) => {
   const placeholder = 'New Task'
   const createItemFunc = () => {
     createItem(aggregateId, {
       text: newTodo.value === '' ? placeholder : newTodo.value,
-      id: Date.now().toString()
+      id: Date.now()
     })
     newTodo.value = ''
   }
@@ -32,22 +36,31 @@ export const Todos = props => {
 
   return (
     <div className="example-wrapper">
-      <h1>Tasks List</h1>
+      <Form inline>
+        <NavLink to="/">
+          <Image
+            className="example-arrow-button"
+            src="/left-arrow-button.png"
+          />
+          <span className="example-back-label">Back</span>
+        </NavLink>
+        <div className="example-task-name">Tasks List</div>
+      </Form>
 
       <ListGroup className="example-list">
-        {todos.map(({ id, text, checked }) => (
-          <ListGroupItem key={id}>
+        {todos.map(todo => (
+          <ListGroupItem key={todo.id}>
             <Checkbox
               inline
-              checked={checked}
-              onChange={toggleItem.bind(null, aggregateId, { id })}
+              checked={todo.checked}
+              onChange={toggleItem.bind(null, aggregateId, { id: todo.id })}
             >
-              {text}
+              {todo.text}
             </Checkbox>
             <Image
               className="example-close-button"
               src="/close-button.png"
-              onClick={removeItem.bind(null, aggregateId, { id })}
+              onClick={removeItem.bind(null, aggregateId, { id: todo.id })}
             />
           </ListGroupItem>
         ))}
@@ -80,14 +93,21 @@ export const Todos = props => {
   )
 }
 
-const mapStateToOptions = () => ({
-  viewModelName,
-  aggregateIds: [aggregateId]
-})
+const mapStateToOptions = (state, ownProps) => {
+  const aggregateId = ownProps.match.params.id
 
-const mapStateToProps = (state, { data }) => ({
-  todos: data
-})
+  return {
+    viewModelName,
+    aggregateIds: [aggregateId]
+  }
+}
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    aggregateId: ownProps.match.params.id,
+    todos: ownProps.data
+  }
+}
 
 const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(aggregateActions, dispatch)

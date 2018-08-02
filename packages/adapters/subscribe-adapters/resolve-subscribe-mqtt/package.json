@@ -20,7 +20,7 @@
     "ddd"
   ],
   "dependencies": {
-    "mqtt": "^2.18.2",
+    "mqtt": "^2.18.3",
     "ws": "^5.2.1",
     "websocket-stream": "^5.1.2",
     "mqtt-connection": "^4.0.0"

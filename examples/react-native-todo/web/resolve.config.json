@@ -13,6 +13,16 @@
       "projection": "common/view-models/todos.projection.js"
     }
   ],
+  "readModels": [
+    {
+      "name": "Default",
+      "projection": "common/read-models/default.projection.js",
+      "resolvers": "common/read-models/default.resolvers.js"
+    }
+  ],
+  "auth": {
+    "strategies": "auth/index.js"
+  },
   "env": {
     "test": {
       "storageAdapter": {
