@@ -19,7 +19,4 @@ export default async resolveConfig => {
   })
 
   server.start()
-
-  const stopServer = () => new Promise(resolve => server.stop(resolve))
-  return stopServer
 }

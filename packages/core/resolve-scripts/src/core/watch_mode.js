@@ -84,9 +84,7 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
           } else {
             server.start()
 
-            const stopServer = () =>
-              new Promise(resolve => server.stop(resolve))
-            resolve(stopServer)
+            resolve()
           }
         }
       }

@@ -16,7 +16,6 @@ export {
   getWebpackEnvPlugin,
   build,
   start,
-  startWaitReady,
   watch,
   runTestcafe
 }

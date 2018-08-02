@@ -4,13 +4,7 @@ import postcssImport from 'postcss-import'
 import autoprefixer from 'autoprefixer'
 import { execSync } from 'child_process'
 
-import {
-  defaultResolveConfig,
-  build,
-  start,
-  watch,
-  startWaitReady
-} from 'resolve-scripts'
+import { defaultResolveConfig, build, start, watch } from 'resolve-scripts'
 
 const adjustWebpackConfigs = webpackConfigs => {
   for (const webpackConfig of webpackConfigs) {
@@ -78,42 +72,7 @@ async function main() {
     }
 
     case 'start': {
-      const stopServer = await start(config)
-      process.on('exit', stopServer)
-      break
-    }
-
-    case 'test:functional': {
-      Object.assign(config, {
-        storageAdapter: {
-          module: 'resolve-storage-lite',
-          options: {}
-        },
-        mode: 'development'
-      })
-
-      await build(config, adjustWebpackConfigs)
-
-      const stopServer = await startWaitReady(config)
-      process.on('exit', stopServer)
-
-      const browser = !process.argv[3]
-        ? Object.keys(await getInstallations())[0]
-        : process.argv[3]
-      const TIMEOUT = 20000
-
-      execSync(
-        `npx testcafe ${browser}` +
-          ' test/functional' +
-          ` --app-init-delay ${TIMEOUT}` +
-          ` --selector-timeout ${TIMEOUT}` +
-          ` --assertion-timeout ${TIMEOUT}` +
-          ` --page-load-timeout ${TIMEOUT}` +
-          (browser === 'remote' ? ' --qr-code' : ''),
-        { stdio: 'inherit' }
-      )
-
-      await stopServer()
+      await start(config)
 
       break
     }
