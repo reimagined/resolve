@@ -7,6 +7,15 @@ import executeCommand from './command_executor'
 
 import { sagas } from './assemblies'
 
+const CRON_REBOOT = '@reboot'
+const CRON_VARS = {
+  '@yearly': '0 0 0 1 1 *',
+  '@annually': '0 0 0 1 1 *',
+  '@weekly': '0 0 0 * * 0',
+  '@daily': '0 0 0 * * *',
+  '@hourly': '0 0 * * * *'
+}
+
 const createSaga = (saga = {}, context) => {
   const { eventHandlers = {}, cronHandlers = {} } = saga
 
@@ -16,14 +25,19 @@ const createSaga = (saga = {}, context) => {
     )
   )
 
-  Object.keys(cronHandlers).map(
-    cronTime =>
-      new CronJob({
-        cronTime,
-        onTick: a => cronHandlers[cronTime](a, context),
-        start: true
-      })
-  )
+  Object.keys(cronHandlers).map(cronTime => {
+    let cronArg = CRON_VARS[cronTime] ? CRON_VARS[cronTime] : cronTime
+
+    if (cronTime === CRON_REBOOT) {
+      return cronHandlers[cronTime](null, context)
+    }
+
+    return new CronJob({
+      cronArg,
+      onTick: a => cronHandlers[cronTime](a, context),
+      start: true
+    })
+  })
 }
 
 const sagaRunner = () => {
