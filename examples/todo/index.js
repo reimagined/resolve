@@ -1,46 +1,34 @@
-import { defaultResolveConfig, build, start, watch } from 'resolve-scripts'
+import { build, start, watch, runTestcafe } from 'resolve-scripts'
 
-const config = {
-  ...defaultResolveConfig,
-  port: 3000,
-  routes: 'client/routes.js',
-  aggregates: [
-    {
-      name: 'Todo',
-      commands: 'common/aggregates/todo.commands.js'
-    }
-  ],
-  viewModels: [
-    {
-      name: 'Todos',
-      projection: 'common/view-models/todos.projection.js'
-    }
-  ]
-}
+import devConfig from './config.dev'
+import prodConfig from './config.prod'
+import testFunctionalConfig from './config.test_functional'
 
-async function main() {
-  const launchMode = process.argv[2]
+const launchMode = process.argv[2]
 
+void (async () => {
   switch (launchMode) {
     case 'dev': {
-      await watch({
-        ...config,
-        mode: 'development'
-      })
+      await watch(devConfig)
       break
     }
 
     case 'build': {
-      await build({
-        ...config,
-        mode: 'production'
-      })
+      await build(prodConfig)
       break
     }
 
     case 'start': {
-      await start(config)
+      await start(prodConfig)
+      break
+    }
 
+    case 'test:functional': {
+      await runTestcafe({
+        resolveConfig: testFunctionalConfig,
+        functionalTestsDir: 'test/functional',
+        browser: process.argv[3]
+      })
       break
     }
 
@@ -48,9 +36,7 @@ async function main() {
       throw new Error('Unknown option')
     }
   }
-}
-
-main().catch(error => {
+})().catch(error => {
   // eslint-disable-next-line no-console
   console.log(error)
 })

@@ -62,8 +62,8 @@ const eventListenerSaga = function*(
 
     while (nextEventsForAggregate.length > 0) {
       yield put(nextEventsForAggregate[0])
-      nextEventsForAggregate.splice(0, 1)
       lastAppliedAggregateVersion = nextEventsForAggregate[0].aggregateVersion
+      nextEventsForAggregate.splice(0, 1)
     }
 
     aggregateVersionByAggregateId[
