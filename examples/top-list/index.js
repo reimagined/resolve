@@ -1,56 +1,34 @@
-import { execSync } from 'child_process'
-import { getInstallations } from 'testcafe-browser-tools'
+import { build, start, watch, runTestcafe } from 'resolve-scripts'
 
-import { defaultResolveConfig, build, start, watch } from 'resolve-scripts'
+import devConfig from './config.dev'
+import prodConfig from './config.prod'
+import testFunctionalConfig from './config.test_functional'
 
-const config = {
-  ...defaultResolveConfig,
+const launchMode = process.argv[2]
 
-  port: 3000,
-  routes: 'client/routes.js',
-  aggregates: [
-    {
-      name: 'Rating',
-      commands: 'common/aggregates/rating.commands.js'
-    }
-  ],
-  readModels: [
-    {
-      name: 'Rating',
-      projection: 'common/read-models/rating.projection.js',
-      resolvers: 'common/read-models/rating.resolvers.js'
-    }
-  ],
-  sagas: 'common/sagas/index.js',
-  storageAdapter: {
-    module: 'resolve-storage-lite',
-    options: {}
-  }
-}
-
-async function main() {
-  const launchMode = process.argv[2]
-
+void (async () => {
   switch (launchMode) {
     case 'dev': {
-      await watch({
-        ...config,
-        mode: 'development'
-      })
+      await watch(devConfig)
       break
     }
 
     case 'build': {
-      await build({
-        ...config,
-        mode: 'production'
-      })
+      await build(prodConfig)
       break
     }
 
     case 'start': {
-      await start(config)
+      await start(prodConfig)
+      break
+    }
 
+    case 'test:functional': {
+      await runTestcafe({
+        resolveConfig: testFunctionalConfig,
+        functionalTestsDir: 'test/functional',
+        browser: process.argv[3]
+      })
       break
     }
 
@@ -58,9 +36,7 @@ async function main() {
       throw new Error('Unknown option')
     }
   }
-}
-
-main().catch(error => {
+})().catch(error => {
   // eslint-disable-next-line no-console
   console.log(error)
 })
