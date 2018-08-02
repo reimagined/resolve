@@ -118,6 +118,11 @@ export default ({ eventStore, aggregates }) => {
   return async (command, jwtToken) => {
     await verifyCommand(command)
     const aggregateName = command.aggregateName
+
+    if (!executors.hasOwnProperty(aggregateName)) {
+      throw new Error(`Aggregate ${aggregateName} does not exist`)
+    }
+
     return executors[aggregateName](command, jwtToken)
   }
 }

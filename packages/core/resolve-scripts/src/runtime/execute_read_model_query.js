@@ -6,6 +6,10 @@ const executeReadModelQuery = async ({
   resolverName,
   resolverArgs
 }) => {
+  if (!readModelQueryExecutors.hasOwnProperty(modelName)) {
+    throw new Error(`Read model ${modelName} does not exist`)
+  }
+
   return await readModelQueryExecutors[modelName].read(resolverName, {
     ...resolverArgs,
     jwtToken
