@@ -67,6 +67,15 @@ const getWebpackCommonConfigs = ({
       packageJson: 'common/auth/package.json'
     },
     {
+      name: 'Constants',
+      entry: {
+        'common/constants/index.js': [
+          ...libs,
+          path.resolve(__dirname, './alias/$resolve.constants.js')
+        ]
+      }
+    },
+    {
       name: 'Assemblies',
       entry: {
         'assemblies.js': [

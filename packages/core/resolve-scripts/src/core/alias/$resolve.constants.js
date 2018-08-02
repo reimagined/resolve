@@ -1,17 +1,14 @@
 import fs from 'fs'
 import path from 'path'
 
-import { includeAlias as excludeConstantAlias } from './$resolve.constants'
-
-const excludeAlias = [
-  'auth',
-  'aggregates',
-  'readModels',
-  'sagas',
-  'viewModels',
-  'hotModuleReplacement',
-  'assemblies',
-  ...excludeConstantAlias
+export const includeAlias = [
+  'applicationName',
+  'distDir',
+  'jwtCookie',
+  'port',
+  'rootPath',
+  'staticDir',
+  'staticPath'
 ]
 
 export default () => {
@@ -21,7 +18,7 @@ export default () => {
     .readdirSync(__dirname)
     .filter(filename => path.extname(filename) === '.js')
     .map(filename => path.basename(filename, '.js').replace('$resolve.', ''))
-    .filter(alias => !excludeAlias.includes(alias))
+    .filter(alias => includeAlias.includes(alias))
 
   for (const name of alias) {
     exports.push(`import ${name} from '$resolve.${name}'`)
