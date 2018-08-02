@@ -14,13 +14,14 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
   )
 
   const isClient = true
-
-  const polyfills = ['@babel/runtime/regenerator', ...resolveConfig.polyfills]
+  const polyfills = Array.isArray(resolveConfig.polyfills)
+    ? resolveConfig.polyfills
+    : []
 
   return {
     name: 'Client',
     entry: {
-      'bundle.js': [...Array.from(new Set(polyfills)), clientIndexPath],
+      'bundle.js': [...polyfills, clientIndexPath],
       'hmr.js': [
         path.resolve(__dirname, './alias/$resolve.hotModuleReplacement.js')
       ]

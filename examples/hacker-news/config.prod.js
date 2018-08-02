@@ -6,6 +6,7 @@ const prodConfig = {
   ...appConfig,
 
   port: 3000,
+  polyfills: ['@babel/runtime/regenerator'],
   mode: 'production',
   jwtCookie: {
     name: 'jwt',

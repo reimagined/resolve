@@ -1,5 +1,6 @@
 export default {
   port: 3000,
+  polyfills: ['@babel/runtime/regenerator'],
   rootPath: '',
   staticPath: 'static',
   staticDir: 'static',
@@ -35,6 +36,5 @@ export default {
   jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000
-  },
-  polyfills: []
+  }
 }
