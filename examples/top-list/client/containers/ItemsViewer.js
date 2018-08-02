@@ -27,7 +27,7 @@ const mapStateToOptions = (state, { limit, page }) => {
     readModelName: 'Rating',
     resolverName: 'TopRating',
     resolverArgs: { page, limit },
-    isReactive: false
+    isReactive: true
   }
 }
 
