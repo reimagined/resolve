@@ -1,6 +1,5 @@
-import { envKey } from 'json-env-extract'
-
 import { message } from '../constants'
+import { checkRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig, isClient }) => {
   if (isClient) {
@@ -11,7 +10,7 @@ export default ({ resolveConfig, isClient }) => {
     throw new Error(`${message.configNotContainSectionError}.distDir`)
   }
 
-  if (resolveConfig.distDir in resolveConfig[envKey]) {
+  if (checkRuntimeEnv(resolveConfig.distDir)) {
     throw new Error(`${message.clientEnvError}.distDir`)
   }
 
