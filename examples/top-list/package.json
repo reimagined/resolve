@@ -10,6 +10,7 @@
     "test:functional": "babel-node ./index.js test:functional"
   },
   "dependencies": {
+    "@babel/runtime": "7.0.0-beta.55",
     "project-name-generator": "2.1.5",
     "prop-types": "15.6.2",
     "react": "16.4.1",
