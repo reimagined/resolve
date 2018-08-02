@@ -8,8 +8,6 @@ import adjustWebpackConfigs from './config.adjust_webpack'
 const launchMode = process.argv[2]
 
 void (async () => {
-  const launchMode = process.argv[2]
-
   switch (launchMode) {
     case 'dev': {
       await watch(devConfig, adjustWebpackConfigs)
