@@ -13,14 +13,16 @@ const getWebpackCommonConfigs = ({
 
   const isClient = false
 
-  const libs = ['@babel/runtime/regenerator']
+  const polyfills = Array.isArray(resolveConfig.polyfills)
+    ? resolveConfig.polyfills
+    : []
 
   const assemblies = [
     {
       name: 'Aggregates',
       entry: {
         'common/aggregates/index.js': [
-          ...libs,
+          ...polyfills,
           path.resolve(__dirname, './alias/$resolve.aggregates.js')
         ]
       },
@@ -30,7 +32,7 @@ const getWebpackCommonConfigs = ({
       name: 'View Models',
       entry: {
         'common/view-models/index.js': [
-          ...libs,
+          ...polyfills,
           path.resolve(__dirname, './alias/$resolve.viewModels.js')
         ]
       },
@@ -40,7 +42,7 @@ const getWebpackCommonConfigs = ({
       name: 'Read Models',
       entry: {
         'common/read-models/index.js': [
-          ...libs,
+          ...polyfills,
           path.resolve(__dirname, './alias/$resolve.readModels.js')
         ]
       },
@@ -50,7 +52,7 @@ const getWebpackCommonConfigs = ({
       name: 'Sagas',
       entry: {
         'common/sagas/index.js': [
-          ...libs,
+          ...polyfills,
           path.resolve(__dirname, './alias/$resolve.sagas.js')
         ]
       },
@@ -60,7 +62,7 @@ const getWebpackCommonConfigs = ({
       name: 'Auth',
       entry: {
         'common/auth/index.js': [
-          ...libs,
+          ...polyfills,
           path.resolve(__dirname, './alias/$resolve.auth.js')
         ]
       },
@@ -70,7 +72,7 @@ const getWebpackCommonConfigs = ({
       name: 'Constants',
       entry: {
         'common/constants/index.js': [
-          ...libs,
+          ...polyfills,
           path.resolve(__dirname, './alias/$resolve.constants.js')
         ]
       }
@@ -79,7 +81,7 @@ const getWebpackCommonConfigs = ({
       name: 'Assemblies',
       entry: {
         'assemblies.js': [
-          ...libs,
+          ...polyfills,
           path.resolve(__dirname, './alias/$resolve.assemblies.js')
         ]
       }
