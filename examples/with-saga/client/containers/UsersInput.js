@@ -25,21 +25,13 @@ class UsersInput extends React.Component {
     }
 
     return (
-      <div className="example-form-wrapper">
-        {this.props.data.isError && (
-          <Alert className="example-alert" bsStyle="danger">
-            {errors[errors.length - 1].message}
-          </Alert>
-        )}
-
-        <Form inline onSubmit={handleClick}>
-          <FormGroup validationState={null}>
-            <ControlLabel className="example-form-label">
-              Enter email:
-            </ControlLabel>
+      <div>
+        <Form inline onSubmit={handleClick} className="example-form-wrapper">
+          <FormGroup validationState={this.props.data.isError ? 'error' : null}>
+            <ControlLabel>Enter new user's email:</ControlLabel>
             {'  '}
             <FormControl
-              className="example-form-input"
+              className="example-form-control"
               type="email"
               inputRef={element => (newEmail = element)}
               placeholder={placeholder}
@@ -50,7 +42,9 @@ class UsersInput extends React.Component {
               }}
             />
           </FormGroup>
+          {'  '}
           <Button
+            className="example-button"
             type="submit"
             bsStyle="success"
             disabled={this.props.isDisabled}
@@ -58,6 +52,12 @@ class UsersInput extends React.Component {
             Create user
           </Button>
         </Form>
+
+        {this.props.data.isError && (
+          <Alert className="example-alert" bsStyle="danger">
+            {errors[errors.length - 1].message}
+          </Alert>
+        )}
       </div>
     )
   }

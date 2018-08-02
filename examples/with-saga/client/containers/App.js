@@ -26,7 +26,7 @@ class App extends React.Component {
           title="reSolve With Saga"
           name="With Saga Example"
           favicon="/favicon.ico"
-          css={['/bootstrap.min.css']}
+          css={['/bootstrap.min.css', '/style.css']}
         />
 
         <div className="example-wrapper">

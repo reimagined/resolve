@@ -9,13 +9,13 @@ class UsersList extends React.Component {
 
     return (
       <div className="example-list-wrapper">
-        <h3 className="example-title">Created Users</h3>
+        <h3>Created Users</h3>
 
         {isLoading && <div>Data loading</div>}
 
         {!isLoading && !users.length && <div>No users</div>}
 
-        <ListGroup className="example-list">
+        <ListGroup>
           {users.map(user => (
             <ListGroupItem key={user.email} header={user.email}>
               {new Date(user.timestamp).toString()}
