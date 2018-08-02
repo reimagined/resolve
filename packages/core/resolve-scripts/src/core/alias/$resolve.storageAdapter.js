@@ -1,7 +1,6 @@
-import { injectEnv, envKey } from 'json-env-extract'
-
 import { message } from '../constants'
 import resolveFileOrModule from '../resolve_file_or_module'
+import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig, isClient }) => {
   if (isClient) {
@@ -16,28 +15,24 @@ export default ({ resolveConfig, isClient }) => {
 
   const storageAdapter = resolveConfig.storageAdapter
     ? {
-        module:
-          resolveConfig.storageAdapter.module in resolveConfig[envKey]
-            ? resolveConfig.storageAdapter.module
-            : resolveFileOrModule(resolveConfig.storageAdapter.module),
+        module: checkRuntimeEnv(resolveConfig.storageAdapter.module)
+          ? resolveConfig.storageAdapter.module
+          : resolveFileOrModule(resolveConfig.storageAdapter.module),
         options: {
           ...resolveConfig.storageAdapter.options
         }
       }
     : {}
-  Object.defineProperty(storageAdapter, envKey, {
-    value: resolveConfig[envKey]
-  })
 
   const exports = []
 
-  if (storageAdapter.module in resolveConfig[envKey]) {
+  if (checkRuntimeEnv(storageAdapter.module)) {
     exports.push(
       `import interopRequireDefault from "@babel/runtime/helpers/interopRequireDefault"`,
       ``,
-      `const storageAdapter = ${injectEnv(storageAdapter)}`,
+      `const storageAdapter = ${injectRuntimeEnv(storageAdapter)}`,
       `const storageAdapterModule = interopRequireDefault(`,
-      `  eval('require(storageAdapter.module)')`,
+      `  __non_webpack_require__(storageAdapter.module)`,
       `).default`,
       `const storageAdapterOptions = storageAdapter.options`
     )
@@ -47,7 +42,7 @@ export default ({ resolveConfig, isClient }) => {
         storageAdapter.module
       )}`,
       ``,
-      `const storageAdapterOptions = ${injectEnv(storageAdapter.options)}`
+      `const storageAdapterOptions = ${JSON.stringify(storageAdapter.options)}`
     )
   }
 

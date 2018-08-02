@@ -1,19 +1,17 @@
-import { injectEnv, envKey } from 'json-env-extract'
-
 import { message } from '../constants'
+import { checkRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig, isClient }) => {
   if (!resolveConfig.subscribeAdapter) {
     throw new Error(`${message.configNotContainSectionError}.subscribeAdapter`)
   }
 
-  if (resolveConfig.subscribeAdapter.module in resolveConfig[envKey]) {
+  if (checkRuntimeEnv(resolveConfig.subscribeAdapter.module)) {
     throw new Error(`${message.clientEnvError}.subscribeAdapter.module`)
   }
+
   for (const option of Object.keys(resolveConfig.subscribeAdapter.options)) {
-    if (
-      resolveConfig.subscribeAdapter.options[option] in resolveConfig[envKey]
-    ) {
+    if (checkRuntimeEnv(resolveConfig.subscribeAdapter.options[option])) {
       throw new Error(
         `${message.clientEnvError}.subscribeAdapter.options.${option}`
       )
@@ -21,9 +19,7 @@ export default ({ resolveConfig, isClient }) => {
   }
 
   for (const option of Object.keys(resolveConfig.subscribeAdapter.options)) {
-    if (
-      resolveConfig.subscribeAdapter.options[option] in resolveConfig[envKey]
-    ) {
+    if (checkRuntimeEnv(resolveConfig.subscribeAdapter.options[option])) {
       throw new Error(
         `${message.clientEnvError}.subscribeAdapter.options.${option}`
       )
@@ -33,16 +29,6 @@ export default ({ resolveConfig, isClient }) => {
   const options = {
     client: resolveConfig.subscribeAdapter.options.client || {},
     server: resolveConfig.subscribeAdapter.options.server || {}
-  }
-
-  for (const optionsKey of Object.keys(options.client)) {
-    if (options.client[optionsKey] in resolveConfig[envKey]) {
-      throw new Error(
-        `${
-          message.clientEnvError
-        }.subscribeAdapter.options.client.${optionsKey}`
-      )
-    }
   }
 
   const exports = []
@@ -63,7 +49,7 @@ export default ({ resolveConfig, isClient }) => {
         `${resolveConfig.subscribeAdapter.module}/dist/create_server_adapter`
       )}`,
       ``,
-      `const options = ${injectEnv(options.server, null, 2)}`,
+      `const options = ${JSON.stringify(options.server, null, 2)}`,
       ``,
       `export default { module, options }`
     )

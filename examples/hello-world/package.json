@@ -3,11 +3,11 @@
   "version": "0.13.2",
   "private": true,
   "scripts": {
-    "build": "resolve-scripts build",
-    "dev": "resolve-scripts dev",
-    "start": "resolve-scripts start",
-    "test": "resolve-scripts test",
-    "test:functional": "resolve-scripts test:functional"
+    "build": "babel-node ./index.js build",
+    "dev": "babel-node ./index.js dev",
+    "start": "babel-node ./index.js start",
+    "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
+    "test:functional": "babel-node ./index.js test:functional"
   },
   "dependencies": {
     "react": "16.4.1",
@@ -16,7 +16,8 @@
     "resolve-scripts": "0.13.2",
     "resolve-redux": "0.13.2",
     "react-helmet": "5.2.0",
-    "react-bootstrap": "0.32.1"
+    "react-bootstrap": "0.32.1",
+    "testcafe-browser-tools": "1.6.3"
   },
   "devDependencies": {
     "@babel/core": "7.0.0-beta.55",

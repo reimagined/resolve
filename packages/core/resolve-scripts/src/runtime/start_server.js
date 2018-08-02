@@ -4,13 +4,14 @@ import openBrowser from './utils/open_browser'
 import println from './utils/println'
 import prepareUrls from './utils/prepare_urls'
 
-import {
-  port,
-  rootPath,
-  openBrowser as isOpenBrowser,
-  applicationName,
-  useYarn
-} from './assemblies'
+import { port, rootPath, applicationName } from './assemblies'
+
+const useYarn =
+  (process.env.npm_execpath && process.env.npm_execpath.includes('yarn')) ||
+  (process.env.npm_config_user_agent &&
+    process.env.npm_config_user_agent.includes('yarn'))
+
+const isOpenBrowser = process.env.RESOLVE_SERVER_OPEN_BROWSER === 'true'
 
 const host = '0.0.0.0'
 const protocol = 'http'

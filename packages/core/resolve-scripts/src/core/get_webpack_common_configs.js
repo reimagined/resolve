@@ -6,8 +6,6 @@ import getWebpackEnvPlugin from './get_webpack_env_plugin'
 
 const getWebpackCommonConfigs = ({
   resolveConfig,
-  deployOptions,
-  env,
   alias,
   nodeModulesByAssembly
 }) => {
@@ -90,7 +88,7 @@ const getWebpackCommonConfigs = ({
       name: assembly.name,
       entry: assembly.entry,
       context: path.resolve(process.cwd()),
-      mode: deployOptions.mode,
+      mode: resolveConfig.mode,
       performance: false,
       devtool: 'source-map',
       target: 'node',
@@ -158,7 +156,6 @@ const getWebpackCommonConfigs = ({
                 loader: 'val-loader',
                 options: {
                   resolveConfig,
-                  deployOptions,
                   isClient
                 }
               }
@@ -180,9 +177,7 @@ const getWebpackCommonConfigs = ({
           }
         ]
       },
-      plugins: [
-        getWebpackEnvPlugin({ resolveConfig, deployOptions, env, isClient })
-      ],
+      plugins: [getWebpackEnvPlugin({ resolveConfig, isClient })],
       externals: [
         (context, request, callback) => {
           if (assembly.hasOwnProperty('packageJson')) {

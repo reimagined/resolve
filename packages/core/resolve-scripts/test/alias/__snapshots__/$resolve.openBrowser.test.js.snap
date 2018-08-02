@@ -1,9 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`base config works correctly [server] 1`] = `
-"
-const openBrowser = true
-
-export default openBrowser
-"
-`;

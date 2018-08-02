@@ -1,6 +1,5 @@
-import { injectEnv, envKey } from 'json-env-extract'
-
 import { message } from '../constants'
+import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig, isClient }) => {
   if (isClient) {
@@ -11,20 +10,21 @@ export default ({ resolveConfig, isClient }) => {
     throw new Error(`${message.configNotContainSectionError}.port`)
   }
 
-  const config = {
-    port: resolveConfig.port
-  }
-  Object.defineProperty(config, envKey, { value: resolveConfig[envKey] })
-
   const exports = []
 
-  exports.push(
-    `const config = ${injectEnv(config)}`,
-    ``,
-    `const port = config.port`,
-    ``,
-    `export default port`
-  )
+  if (checkRuntimeEnv(resolveConfig.port)) {
+    exports.push(
+      `const port = ${injectRuntimeEnv(resolveConfig.port)}`,
+      ``,
+      `export default port`
+    )
+  } else {
+    exports.push(
+      `const port = ${JSON.stringify(resolveConfig.port)}`,
+      ``,
+      `export default port`
+    )
+  }
 
   return {
     code: exports.join('\r\n')
