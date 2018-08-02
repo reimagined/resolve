@@ -23,7 +23,7 @@ pipeline {
                     steps {
                         script {
                             sh """
-                                yarn prettier
+                                if [ "\$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
                             """
                         }
                     }
