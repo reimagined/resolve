@@ -2,8 +2,8 @@ pipeline:
   # Building pushes to [dev] branch (nightly, latest-stable)
   # Repository must be trusted in Drone
   publish-nightly:
-    # when:
-    #  event: push
+    when:
+      event: push
     image: maxvasin/resolve-docker
     pull: true
     commands:
@@ -14,8 +14,8 @@ pipeline:
     secrets: [ npm_registry, npm_token ]
 
   register-build:
-    # when:
-    #  event: push
+    when:
+      event: push
     image: maxvasin/drone-downstream-registry
     pull: true
     registry_path: /data/registry
@@ -26,12 +26,12 @@ pipeline:
     volumes:
       - /srv/ecs/downstream-registry:/data/registry
     repositories:
-      - DevExpress/okrserver
-      - DevExpress/orgstruct
+      - max-vasin/okrserver
+      - max-vasin/orgstruct
 
   trigger:
-    #when:
-    #  event: push
+    when:
+      event: push
     image: plugins/downstream
     server: http://ci.resolve.sh
     fork: true
@@ -40,8 +40,8 @@ pipeline:
     params:
       - .downstream
     repositories:
-      - DevExpress/okrserver
-      - DevExpress/orgstruct
+      - max-vasin/okrserver
+      - max-vasin/orgstruct
 
   # Downstream builds are finished
   npm-tag:
