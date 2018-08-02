@@ -1,79 +1,38 @@
-import { getInstallations } from 'testcafe-browser-tools'
-import ExtractTextPlugin from 'extract-text-webpack-plugin'
-import postcssImport from 'postcss-import'
-import autoprefixer from 'autoprefixer'
-import { execSync } from 'child_process'
+import { build, start, watch, runTestcafe } from 'resolve-scripts'
 
-import { defaultResolveConfig, build, start, watch } from 'resolve-scripts'
+import devConfig from './config.dev'
+import prodConfig from './config.prod'
+import testFunctionalConfig from './config.test_functional'
+import adjustWebpackConfigs from './config.adjust_webpack'
 
-const adjustWebpackConfigs = webpackConfigs => {
-  for (const webpackConfig of webpackConfigs) {
-    webpackConfig.module.rules.push({
-      test: /\.css$/,
-      use: ExtractTextPlugin.extract({
-        fallback: 'style-loader',
-        use: [
-          {
-            loader: 'css-loader',
-            options: {
-              modules: true,
-              importLoaders: 1
-            }
-          },
-          {
-            loader: 'postcss-loader',
-            options: {
-              plugins: [postcssImport(), autoprefixer()]
-            }
-          }
-        ]
-      })
-    })
+const launchMode = process.argv[2]
 
-    webpackConfig.plugins.push(
-      new ExtractTextPlugin({
-        filename: 'style.css',
-        allChunks: true
-      })
-    )
-  }
-}
-
-const config = {
-  ...defaultResolveConfig,
-  port: 3000,
-  routes: 'client/routes.js'
-}
-
-async function main() {
+void (async () => {
   const launchMode = process.argv[2]
 
   switch (launchMode) {
     case 'dev': {
-      await watch(
-        {
-          ...config,
-          mode: 'development'
-        },
-        adjustWebpackConfigs
-      )
+      await watch(devConfig, adjustWebpackConfigs)
       break
     }
 
     case 'build': {
-      await build(
-        {
-          ...config,
-          mode: 'production'
-        },
-        adjustWebpackConfigs
-      )
+      await build(prodConfig, adjustWebpackConfigs)
       break
     }
 
     case 'start': {
-      await start(config)
+      await start(prodConfig)
+      break
+    }
 
+    case 'test:functional': {
+      await runTestcafe({
+        resolveConfig: testFunctionalConfig,
+        functionalTestsDir: 'test/functional',
+        browser: process.argv[3],
+        adjustWebpackConfigs
+      })
       break
     }
 
@@ -81,9 +40,7 @@ async function main() {
       throw new Error('Unknown option')
     }
   }
-}
-
-main().catch(error => {
+})().catch(error => {
   // eslint-disable-next-line no-console
   console.log(error)
 })
