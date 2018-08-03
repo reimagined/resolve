@@ -3,6 +3,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { connectReadModel } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
+import uuid from 'uuid'
 
 import Header from './Header.js'
 import UsersInput from './UsersInput.js'
@@ -18,7 +19,7 @@ class App extends React.Component {
   }
 
   render() {
-    clientId = document.cookie
+    clientId = clientId || document.cookie || uuid.v4()
 
     return (
       <div>
