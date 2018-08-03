@@ -37,13 +37,13 @@ async function processRating(executeCommand) {
 
 const saga = {
   cronHandlers: {
-    '@reboot': async (_, { resolve }) => {
+    '@reboot': async ({ resolve }) => {
       appendRating(resolve.executeCommand).catch(error => {
         // eslint-disable-next-line no-console
         console.log('Saga error:', error)
       })
     },
-    '* * * * * *': async (_, { resolve }) => {
+    '* * * * * *': async ({ resolve }) => {
       processRating(resolve.executeCommand).catch(error => {
         // eslint-disable-next-line no-console
         console.log('Saga error:', error)

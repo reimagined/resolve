@@ -29,14 +29,25 @@ const createSaga = (saga = {}, context) => {
     let cronArg = CRON_VARS[cronTime] ? CRON_VARS[cronTime] : cronTime
 
     if (cronTime === CRON_REBOOT) {
-      return cronHandlers[cronTime](null, context)
+      return cronHandlers[cronTime](context)
     }
 
-    return new CronJob({
-      cronArg,
-      onTick: a => cronHandlers[cronTime](a, context),
-      start: true
-    })
+    try {
+      return new CronJob(
+        cronArg,
+        () => {
+          cronHandlers[cronTime](context)
+        },
+        null,
+        true
+      )
+    } catch (e) {
+      throw new Error(
+        "Invalid format for saga cron. \
+        Please, use '[seconds] [minutes] [hours] [day of month] [months] [day of week]' format \
+        or variables @reboot, @yearly, @annually, @weekly, @daily, @hourly."
+      )
+    }
   })
 }
 

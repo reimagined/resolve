@@ -33,7 +33,7 @@ const saga = {
     }
   },
   cronHandlers: {
-    '0 */10 * * * *': async (_, { resolve }) => {
+    '0 */10 * * * *': async ({ resolve }) => {
       const users = await resolve.executeReadModelQuery({
         modelName: 'default',
         resolverName: 'users'
