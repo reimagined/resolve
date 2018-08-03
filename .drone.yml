@@ -4,7 +4,7 @@ pipeline:
   publish-nightly:
     when:
       event: push
-    image: maxvasin/resolve-docker
+    image: reimagined/resolve-docker
     pull: true
     commands:
       - yarn install
@@ -16,7 +16,7 @@ pipeline:
   register-build:
     when:
       event: push
-    image: maxvasin/drone-downstream-registry
+    image: reimagined/drone-downstream-registry
     pull: true
     registry_path: /data/registry
     action: package-build
@@ -26,8 +26,8 @@ pipeline:
     volumes:
       - /srv/ecs/downstream-registry:/data/registry
     repositories:
-      - max-vasin/okrserver
-      - max-vasin/orgstruct
+      - DevExpress/okrserver
+      - DevExpress/orgstruct
 
   trigger:
     when:
@@ -40,15 +40,15 @@ pipeline:
     params:
       - .downstream
     repositories:
-      - max-vasin/okrserver
-      - max-vasin/orgstruct
+      - DevExpress/okrserver
+      - DevExpress/orgstruct
 
   # Downstream builds are finished
   npm-tag:
     when:
       event: deployment
       environment: downstream-success
-    image: maxvasin/resolve-docker
+    image: reimagined/resolve-docker
     pull: true
     commands:
       - /scripts/npm_patch_rc
