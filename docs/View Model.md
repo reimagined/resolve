@@ -49,7 +49,7 @@ Use this method to subscribe to events. If you do that, don’t forget to unsubs
 
 [`componentWillUnmount()`](https://reactjs.org/docs/react-component.html#componentwillunmount) is invoked immediately before a component is unmounted and destroyed. Use this method to unsubscribe from events.
 
-To automate this process, use the [`connect`](../packages/resolve-redux#connect) higher-order component (HOC).
+To automate this process, use the [`connect`](../packages/core/resolve-redux#connect) higher-order component (HOC).
 
 ```js
 import { connect } from 'resolve-redux';
@@ -65,17 +65,17 @@ export default connect(mapStateToProps)(Component);
 
 #### Request for Initial State
 
-[`createResolveMiddleware`](../packages/resolve-redux#createresolvemiddleware) handles the `SUBSCRIBE` action and requests an initial state of a view model with the specified aggregateId from the server.
+[`createResolveMiddleware`](../packages/core/resolve-redux#createresolvemiddleware) handles the `SUBSCRIBE` action and requests an initial state of a view model with the specified aggregateId from the server.
 
 #### Subscribe to Events
 
-After receiving initialState, [`createResolveMiddleware`](../packages/resolve-redux#createresolvemiddleware) subscribes to events setting up a web socket connection.
+After receiving initialState, [`createResolveMiddleware`](../packages/core/resolve-redux#createresolvemiddleware) subscribes to events setting up a web socket connection.
 
 #### Unsubscribe from Events
 
-[`createResolveMiddleware`](../packages/resolve-redux#createresolvemiddleware) handles the `UNSUBSCRIBE` action, removes a state of a view model with the specified aggregateId and unsubscribes from events setting up a web socket connection.
+[`createResolveMiddleware`](../packages/core/resolve-redux#createresolvemiddleware) handles the `UNSUBSCRIBE` action, removes a state of a view model with the specified aggregateId and unsubscribes from events setting up a web socket connection.
 
-#### How to add [`createResolveMiddleware`](../packages/resolve-redux#createresolvemiddleware) to [Store](https://redux.js.org/docs/api/createStore.html)
+#### How to add [`createResolveMiddleware`](../packages/core/resolve-redux#createresolvemiddleware) to [Store](https://redux.js.org/docs/api/createStore.html)
 ``` js
 import { createStore, applyMiddleware } from 'redux';
 import { createResolveMiddleware, createViewModelsReducer } from 'resolve-redux';

@@ -150,7 +150,7 @@ Now we have described our app's business logic.
 
 Next, create a User Interface to send commands to the aggregate. The commands are invoked by calling the functions described in the aggregate's `commands` element. You should bind these functions to your UI elements and use the `state` object to show the current state.
 
-The [resolve-redux](https://reimagined.github.io/resolve/packages/resolve-redux) package's [withViewModel](https://reimagined.github.io/resolve/packages/resolve-redux/#withviewmodel) function provides access to the `state` and commands. Pass a React component to it and receive everything from the object passed as a parameter. Next, call the function returned from the `react-redux`'s [connect()](https://github.com/reactjs/react-redux/blob/master/docs/api.md#connectmapstatetoprops-mapdispatchtoprops-mergeprops-options) function with the `withViewModel`'s output as a parameter.
+The [resolve-redux](https://reimagined.github.io/resolve/packages/core/resolve-redux) package's [withViewModel](https://reimagined.github.io/resolve/packages/core/resolve-redux/#withviewmodel) function provides access to the `state` and commands. Pass a React component to it and receive everything from the object passed as a parameter. Next, call the function returned from the `react-redux`'s [connect()](https://github.com/reactjs/react-redux/blob/master/docs/api.md#connectmapstatetoprops-mapdispatchtoprops-mergeprops-options) function with the `withViewModel`'s output as a parameter.
 
 The code below demonstrates this:
 
