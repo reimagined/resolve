@@ -43,9 +43,9 @@ const createSaga = (saga = {}, context) => {
       )
     } catch (e) {
       throw new Error(
-        "Invalid format for saga cron. \
-        Please, use '[seconds] [minutes] [hours] [day of month] [months] [day of week]' format \
-        or variables @reboot, @yearly, @annually, @weekly, @daily, @hourly."
+        'Invalid format for saga cron. Please, use ' +
+          "'[seconds] [minutes] [hours] [day of month] [months] [day of week]' format " +
+          'or variables @reboot, @yearly, @annually, @weekly, @daily, @hourly.'
       )
     }
   })
