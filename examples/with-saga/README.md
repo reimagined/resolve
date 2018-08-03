@@ -1,5 +1,7 @@
 # **With Saga Example**
 
+![with-saga](https://user-images.githubusercontent.com/19663260/43643944-93f5106e-9735-11e8-8d53-6ce2915972a2.png)
+
 This is a simple application that demonstrates how to use sagas. Saga listens to events and can issue commands based on its state and custom logic. You can think of it as of a virtual programmatic user.
 
 ## How to Start?
@@ -7,7 +9,7 @@ This is a simple application that demonstrates how to use sagas. Saga listens to
 You can use `create-resolve-app` to install this example:
 
 ```bash
-npx create-resolve-app resolve-saga-example -e with-saga
+npx create-resolve-app resolve-with-saga-example -e with-saga
 ```
 
 ## What's Next?
