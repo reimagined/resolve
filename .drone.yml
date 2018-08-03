@@ -1,6 +1,4 @@
 pipeline:
-  # Building pushes to [dev] branch (nightly, latest-stable)
-  # Repository must be trusted in Drone
   publish-nightly:
     when:
       event: push
@@ -21,7 +19,7 @@ pipeline:
     registry_path: /data/registry
     action: package-build
     server: http://ci.resolve.sh
-    params: .downstream # see prepare_downstream
+    params: .downstream
     secrets: [ secret_server_token ]
     volumes:
       - /srv/ecs/downstream-registry:/data/registry
@@ -43,7 +41,6 @@ pipeline:
       - DevExpress/okrserver
       - DevExpress/orgstruct
 
-  # Downstream builds are finished
   npm-tag:
     when:
       event: deployment
