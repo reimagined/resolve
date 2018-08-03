@@ -6,8 +6,6 @@ import getWebpackEnvPlugin from './get_webpack_env_plugin'
 
 const getWebpackCommonConfigs = ({
   resolveConfig,
-  deployOptions,
-  env,
   alias,
   nodeModulesByAssembly
 }) => {
@@ -15,14 +13,16 @@ const getWebpackCommonConfigs = ({
 
   const isClient = false
 
-  const libs = ['@babel/runtime/regenerator']
+  const polyfills = Array.isArray(resolveConfig.polyfills)
+    ? resolveConfig.polyfills
+    : []
 
   const assemblies = [
     {
       name: 'Aggregates',
       entry: {
         'common/aggregates/index.js': [
-          ...libs,
+          ...polyfills,
           path.resolve(__dirname, './alias/$resolve.aggregates.js')
         ]
       },
@@ -32,7 +32,7 @@ const getWebpackCommonConfigs = ({
       name: 'View Models',
       entry: {
         'common/view-models/index.js': [
-          ...libs,
+          ...polyfills,
           path.resolve(__dirname, './alias/$resolve.viewModels.js')
         ]
       },
@@ -42,7 +42,7 @@ const getWebpackCommonConfigs = ({
       name: 'Read Models',
       entry: {
         'common/read-models/index.js': [
-          ...libs,
+          ...polyfills,
           path.resolve(__dirname, './alias/$resolve.readModels.js')
         ]
       },
@@ -52,7 +52,7 @@ const getWebpackCommonConfigs = ({
       name: 'Sagas',
       entry: {
         'common/sagas/index.js': [
-          ...libs,
+          ...polyfills,
           path.resolve(__dirname, './alias/$resolve.sagas.js')
         ]
       },
@@ -62,17 +62,26 @@ const getWebpackCommonConfigs = ({
       name: 'Auth',
       entry: {
         'common/auth/index.js': [
-          ...libs,
+          ...polyfills,
           path.resolve(__dirname, './alias/$resolve.auth.js')
         ]
       },
       packageJson: 'common/auth/package.json'
     },
     {
+      name: 'Constants',
+      entry: {
+        'common/constants/index.js': [
+          ...polyfills,
+          path.resolve(__dirname, './alias/$resolve.constants.js')
+        ]
+      }
+    },
+    {
       name: 'Assemblies',
       entry: {
         'assemblies.js': [
-          ...libs,
+          ...polyfills,
           path.resolve(__dirname, './alias/$resolve.assemblies.js')
         ]
       }
@@ -90,7 +99,7 @@ const getWebpackCommonConfigs = ({
       name: assembly.name,
       entry: assembly.entry,
       context: path.resolve(process.cwd()),
-      mode: deployOptions.mode,
+      mode: resolveConfig.mode,
       performance: false,
       devtool: 'source-map',
       target: 'node',
@@ -128,23 +137,36 @@ const getWebpackCommonConfigs = ({
                         }
                       }
                     ],
-                    [
-                      '@babel/preset-stage-0',
-                      {
-                        decoratorsLegacy: true,
-                        pipelineProposal: 'minimal'
-                      }
-                    ],
                     '@babel/preset-react'
                   ],
-                  plugins: ['@babel/plugin-transform-runtime']
+                  plugins: [
+                    ['@babel/plugin-proposal-decorators', { legacy: true }],
+                    '@babel/plugin-proposal-class-properties',
+                    '@babel/plugin-proposal-do-expressions',
+                    '@babel/plugin-proposal-export-default-from',
+                    '@babel/plugin-proposal-export-namespace-from',
+                    '@babel/plugin-proposal-function-bind',
+                    '@babel/plugin-proposal-function-sent',
+                    '@babel/plugin-proposal-json-strings',
+                    '@babel/plugin-proposal-logical-assignment-operators',
+                    '@babel/plugin-proposal-nullish-coalescing-operator',
+                    '@babel/plugin-proposal-numeric-separator',
+                    '@babel/plugin-proposal-optional-chaining',
+                    [
+                      '@babel/plugin-proposal-pipeline-operator',
+                      { proposal: 'minimal' }
+                    ],
+                    '@babel/plugin-proposal-throw-expressions',
+                    '@babel/plugin-syntax-dynamic-import',
+                    '@babel/plugin-syntax-import-meta',
+                    '@babel/plugin-transform-runtime'
+                  ]
                 }
               },
               {
                 loader: 'val-loader',
                 options: {
                   resolveConfig,
-                  deployOptions,
                   isClient
                 }
               }
@@ -166,9 +188,7 @@ const getWebpackCommonConfigs = ({
           }
         ]
       },
-      plugins: [
-        getWebpackEnvPlugin({ resolveConfig, deployOptions, env, isClient })
-      ],
+      plugins: [getWebpackEnvPlugin({ resolveConfig, isClient })],
       externals: [
         (context, request, callback) => {
           if (assembly.hasOwnProperty('packageJson')) {

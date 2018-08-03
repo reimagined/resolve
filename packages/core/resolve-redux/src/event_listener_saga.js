@@ -60,14 +60,10 @@ const eventListenerSaga = function*(
       .filter(savedEvent => savedEvent.aggregateId === event.aggregateId)
       .sort((a, b) => a.aggregateVersion - b.aggregateVersion)
 
-    while (
-      nextEventsForAggregate.length > 0 &&
-      nextEventsForAggregate[0].aggregateVersion ===
-        lastAppliedAggregateVersion + 1
-    ) {
+    while (nextEventsForAggregate.length > 0) {
       yield put(nextEventsForAggregate[0])
+      lastAppliedAggregateVersion = nextEventsForAggregate[0].aggregateVersion
       nextEventsForAggregate.splice(0, 1)
-      lastAppliedAggregateVersion++
     }
 
     aggregateVersionByAggregateId[

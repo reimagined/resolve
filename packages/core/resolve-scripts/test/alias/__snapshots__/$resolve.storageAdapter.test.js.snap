@@ -4,9 +4,7 @@ exports[`base config works correctly [server] 1`] = `
 "
 import storageAdapterModule from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testAdapter.js\\"
 
-const storageAdapterOptions = {
-  \\"url\\": \\"http://test.test\\"
-}
+const storageAdapterOptions = {\\"url\\":\\"http://test.test\\"}
 
 export default {
   module: storageAdapterModule,
@@ -20,13 +18,13 @@ exports[`config with process.env works correctly 1`] = `
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
 const storageAdapter = {
-  \\"module\\": process.env.STORAGE_ADAPTER,
+  \\"module\\": \\"process.env[\\\\\\"STORAGE_ADAPTER\\\\\\"]\\",
   \\"options\\": {
-    \\"url\\": process.env.STORAGE_OPTIONS_URL
+    \\"url\\": \\"process.env[\\\\\\"STORAGE_OPTIONS_URL\\\\\\"]\\"
   }
 }
 const storageAdapterModule = interopRequireDefault(
-  eval('require(storageAdapter.module)')
+  __non_webpack_require__(storageAdapter.module)
 ).default
 const storageAdapterOptions = storageAdapter.options
 

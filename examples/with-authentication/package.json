@@ -3,13 +3,14 @@
   "version": "0.13.2",
   "private": true,
   "scripts": {
-    "build": "resolve-scripts build",
-    "dev": "resolve-scripts dev",
-    "start": "resolve-scripts start",
-    "test": "resolve-scripts test",
-    "test:functional": "resolve-scripts test:functional"
+    "build": "babel-node ./index.js build",
+    "dev": "babel-node ./index.js dev",
+    "start": "babel-node ./index.js start",
+    "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
+    "test:functional": "babel-node ./index.js test:functional"
   },
   "dependencies": {
+    "@babel/runtime": "7.0.0-beta.55",
     "jsonwebtoken": "8.3.0",
     "node-fetch": "2.1.2",
     "passport-local": "1.0.0",
@@ -24,17 +25,21 @@
     "resolve-scripts": "0.13.2",
     "resolve-redux": "0.13.2",
     "styled-components": "3.3.3",
+    "testcafe-browser-tools": "1.6.3",
     "uuid": "3.3.2"
   },
   "devDependencies": {
-    "@babel/core": "7.0.0-beta.54",
-    "@babel/preset-env": "7.0.0-beta.54",
-    "@babel/preset-react": "7.0.0-beta.54",
-    "@babel/preset-stage-0": "7.0.0-beta.54",
+    "@babel/core": "7.0.0-beta.55",
+    "@babel/preset-env": "7.0.0-beta.55",
+    "@babel/preset-react": "7.0.0-beta.55",
+    "@babel/plugin-proposal-class-properties": "7.0.0-beta.55",
+    "@babel/plugin-proposal-export-default-from": "7.0.0-beta.55",
+    "@babel/plugin-proposal-export-namespace-from": "7.0.0-beta.55",
+    "@babel/plugin-transform-runtime": "7.0.0-beta.55",
     "babel-core": "^7.0.0-0",
-    "babel-jest": "23.4.0",
+    "babel-jest": "23.4.2",
     "regenerator-runtime": "0.12.0",
-    "jest": "23.4.1",
+    "jest": "23.4.2",
     "react-test-renderer": "16.4.1",
     "testcafe": "0.20.4"
   }

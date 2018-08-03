@@ -1,20 +1,24 @@
 # **reSolve Core Packages**
-App generator libraries:
+
+Application generator libraries:
+
 * [create-resolve-app](create-resolve-app)  
-	Create a new application based on reSolve.
+	Create a new reSolve-enabled application.
 * [create-scripts](create-resolve-app)  
-	Include scripts and configuration for the [create-resolve-app](../create-resolve-app) package.
+	Provides scripts and configuration for the [create-resolve-app](../create-resolve-app) package.
+
 
 Core libraries:
+
 * [resolve-auth](resolve-auth)
-    Helper for authentication.
+    Provides an Authentication helper.
 * [resolve-command](resolve-command)  
-	Creates a function to execute a command.
+	Provides a function for executing a commands.
 * [resolve-es](resolve-es)  
-	Serves as an event-store.
+	Provides an Event Store.
 * [resolve-query](resolve-query)  
-	Creates a function to execute a query.
+	Provides a function for querying Read and View Models.
 * [resolve-redux](resolve-redux)  
-	Helper for creating the Redux storage.
+	Provides a Redux storage helper.
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-readme?pixel)

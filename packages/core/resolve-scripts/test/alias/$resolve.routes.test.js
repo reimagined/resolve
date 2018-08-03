@@ -1,16 +1,11 @@
-import { extractEnv } from 'json-env-extract'
-
 import path from 'path'
-
 import alias from '../../src/core/alias/$resolve.routes'
 import normalizePaths from './normalize_paths'
 
 describe('base config works correctly', () => {
-  const resolveConfig = extractEnv(`
-    {
-      routes: "${path.resolve(__dirname, 'files/testRoutes.js')}"
-    }
-  `)
+  const resolveConfig = {
+    routes: path.resolve(__dirname, 'files/testRoutes.js')
+  }
 
   test('[client]', () => {
     expect(

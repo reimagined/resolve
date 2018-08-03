@@ -2,7 +2,8 @@ import webpack from 'webpack'
 
 const regExp = /^RESOLVE_/
 
-const getWebpackEnvPlugin = ({ env }) => {
+const getWebpackEnvPlugin = () => {
+  const env = process.env
   const defineObject = {}
 
   for (const envKey of Object.keys(env).filter(envKey => regExp.test(envKey))) {

@@ -141,7 +141,13 @@
       "additionalProperties": false,
       "required": ["strategies"]
     },
-    "subConfig": {
+    "polyfills": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "config": {
       "type": "object",
       "properties": {
         "port": {
@@ -204,31 +210,17 @@
         "jwtCookie": {
           "$ref": "#/definitions/jwtCookie"
         },
+        "polyfills": {
+          "$ref": "#/definitions/polyfills"
+        },
         "registry": {
           "type": "string"
-        }
-      }
-    },
-    "config": {
-      "$ref": "#/definitions/subConfig",
-      "properties": {
-        "env": {
-          "type": "object",
-          "properties": {
-            "development": {
-              "$ref": "#/definitions/subConfig",
-              "additionalProperties": false
-            },
-            "production": {
-              "$ref": "#/definitions/subConfig",
-              "additionalProperties": false
-            },
-            "test": {
-              "$ref": "#/definitions/subConfig",
-              "additionalProperties": false
-            }
-          },
-          "additionalProperties": false
+        },
+        "mode": {
+          "type": "string"
+        },
+        "webpack": {
+          "not": { "type": "null" }
         }
       },
       "required": [
@@ -245,7 +237,8 @@
         "readModels",
         "busAdapter",
         "storageAdapter",
-        "subscribeAdapter"
+        "subscribeAdapter",
+        "polyfills"
       ],
       "additionalProperties": false
     }

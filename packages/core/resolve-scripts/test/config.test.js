@@ -1,9 +1,5 @@
-import path from 'path'
-
-import exec from './exec'
+import resolveConfigOrigin from '../src/core/default.resolve.config.js'
 import validateConfig from '../src/core/validate_config'
-
-const resolveConfigOrigin = require('../configs/resolve.config.json')
 
 jest.setTimeout(30000)
 
@@ -63,7 +59,7 @@ describe('validate schema', () => {
     expect(
       validateConfig({
         ...resolveConfigOrigin,
-        staticPath: 'https://my-cdn'
+        staticPath: 'my-cdn'
       })
     ).toBeTruthy()
   })
@@ -140,26 +136,6 @@ describe('validate schema', () => {
         jwtCookie: {
           name: 'authToken',
           maxAge: 1000 * 60 * 60 * 24 * 365
-        }
-      })
-    ).toBeTruthy()
-  })
-
-  it('custom env', () => {
-    expect(
-      validateConfig({
-        ...resolveConfigOrigin,
-        subscribeAdapter: {
-          module: 'resolve-subscribe-socket-io',
-          options: {}
-        },
-        env: {
-          production: {
-            subscribeAdapter: {
-              module: 'resolve-subscribe-mqtt',
-              options: {}
-            }
-          }
         }
       })
     ).toBeTruthy()
@@ -291,47 +267,4 @@ describe('validate schema (fail)', () => {
       })
     ).toThrow()
   })
-})
-
-describe('resolve-scripts build --config=resolve.test.config.json', () => {
-  const resolveConfigPath = path.resolve(__dirname, 'resolve.test.config.json')
-  const { env, ...config } = require(resolveConfigPath)
-
-  test(
-    'merge cli should work correctly ' +
-      '[{} <- defaults <- resolve.config.json <- cli] (mode=development)',
-    async () => {
-      const json = await exec(
-        `resolve-scripts build --config=${resolveConfigPath} --start --dev`
-      )
-
-      const resultConfig = {
-        ...resolveConfigOrigin,
-        ...config,
-        ...env.development
-      }
-      delete resultConfig.env
-
-      expect(json).toMatchObject(resultConfig)
-    }
-  )
-
-  test(
-    'merge cli should work correctly ' +
-      '[{} <- defaults <- resolve.config.json <- cli] (mode=production)',
-    async () => {
-      const json = await exec(
-        `resolve-scripts build --config=${resolveConfigPath} --prod`
-      )
-
-      const resultConfig = {
-        ...resolveConfigOrigin,
-        ...config,
-        ...env.production
-      }
-      delete resultConfig.env
-
-      expect(json).toMatchObject(resultConfig)
-    }
-  )
 })
