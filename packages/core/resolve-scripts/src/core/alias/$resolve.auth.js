@@ -1,7 +1,6 @@
-import { envKey } from 'json-env-extract'
-
 import { message } from '../constants'
 import resolveFile from '../resolve_file'
+import { checkRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig, isClient }) => {
   if (isClient) {
@@ -12,9 +11,10 @@ export default ({ resolveConfig, isClient }) => {
     throw new Error(`${message.configNotContainSectionError}.auth`)
   }
 
-  if (resolveConfig.auth.strategies in resolveConfig[envKey]) {
+  if (checkRuntimeEnv(resolveConfig.auth.strategies)) {
     throw new Error(`${message.clientEnvError}.auth.strategies`)
   }
+
   const strategies = resolveFile(
     resolveConfig.auth.strategies,
     'auth_strategies.js'

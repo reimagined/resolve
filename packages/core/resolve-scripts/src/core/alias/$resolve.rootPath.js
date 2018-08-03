@@ -1,13 +1,12 @@
-import { envKey } from 'json-env-extract'
-
 import { message } from '../constants'
+import { checkRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig }) => {
   if (resolveConfig.rootPath === undefined) {
     throw new Error(`${message.configNotContainSectionError}.rootPath`)
   }
 
-  if (resolveConfig.rootPath in resolveConfig[envKey]) {
+  if (checkRuntimeEnv(resolveConfig.rootPath)) {
     throw new Error(`${message.clientEnvError}.rootPath`)
   }
   const rootPath = resolveConfig.rootPath
