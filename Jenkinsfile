@@ -126,7 +126,7 @@ pipeline {
                                 create-resolve-app hello-world -c \$(cat /last_commit)
                                 cd ./hello-world; \
                                 cat ./package.json; \
-                                sed -i 's/"port": 3000/"port": 3001/g' ./resolve.config.json;
+                                sed -i 's/"port": 3000/"port": 3001/g' ./index.js;
                                 grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3001/g'
 
                                 yarn test
@@ -144,7 +144,7 @@ pipeline {
                                 create-resolve-app todolist -e todo -c \$(cat /last_commit)
                                 cd ./todolist
                                 cat ./package.json
-                                sed -i 's/"port": 3000/"port": 3002/g' ./resolve.config.json
+                                sed -i 's/"port": 3000/"port": 3002/g' ./index.js
                                 grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3002/g'
 
                                 yarn test
@@ -162,7 +162,7 @@ pipeline {
                                 create-resolve-app twolevelstodo -e todo-two-levels -c \$(cat /last_commit)
                                 cd ./twolevelstodo
                                 cat ./package.json
-                                sed -i 's/"port": 3000/"port": 3003/g' ./resolve.config.json
+                                sed -i 's/"port": 3000/"port": 3003/g' ./index.js
                                 grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3003/g'
 
                                 yarn test:functional --browser=path:/chromium
@@ -179,7 +179,7 @@ pipeline {
                                 create-resolve-app hn -e hacker-news -c \$(cat /last_commit)
                                 cd ./hn
                                 cat ./package.json
-                                sed -i 's/"port": 3000/"port": 3004/g' ./resolve.config.json
+                                sed -i 's/"port": 3000/"port": 3004/g' ./index.js
                                 grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3004/g'
 
                                 yarn test
@@ -197,7 +197,7 @@ pipeline {
                                 create-resolve-app toplist -e top-list -c \$(cat /last_commit)
                                 cd ./toplist
                                 cat ./package.json
-                                sed -i 's/"port": 3000/"port": 3005/g' ./resolve.config.json
+                                sed -i 's/"port": 3000/"port": 3005/g' ./index.js
                                 grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3005/g'
 
 
@@ -216,7 +216,7 @@ pipeline {
                                 create-resolve-app with-postcss -e with-postcss -c \$(cat /last_commit)
                                 cd ./with-postcss
                                 cat ./package.json
-                                sed -i 's/"port": 3000/"port": 3006/g' ./resolve.config.json
+                                sed -i 's/"port": 3000/"port": 3006/g' ./index.js
                                 grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3006/g'
 
                                 yarn test
@@ -234,7 +234,7 @@ pipeline {
                                 create-resolve-app with-authentication -e with-authentication -c \$(cat /last_commit)
                                 cd ./with-authentication
                                 cat ./package.json
-                                sed -i 's/"port": 3000/"port": 3007/g' ./resolve.config.json
+                                sed -i 's/"port": 3000/"port": 3007/g' ./index.js
                                 grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3007/g'
 
                                 yarn test
@@ -252,8 +252,26 @@ pipeline {
                                 create-resolve-app with-styled-components -e with-styled-components -c \$(cat /last_commit)
                                 cd ./with-styled-components
                                 cat ./package.json
-                                sed -i 's/"port": 3000/"port": 3008/g' ./resolve.config.json
+                                sed -i 's/"port": 3000/"port": 3008/g' ./index.js
                                 grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3008/g'
+
+                                yarn test
+                                yarn test:functional --browser=path:/chromium
+                            """
+                        }
+                    }
+                }
+
+                stage('Create-resolve-app [ with-saga ] Functional Tests') {
+                    steps {
+                        script {
+                            sh """
+                                mkdir with-saga && cd with-saga;
+                                create-resolve-app with-saga -e with-saga -c \$(cat /last_commit)
+                                cd ./with-saga
+                                cat ./package.json
+                                sed -i 's/"port": 3000/"port": 3009/g' ./index.js
+                                grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3009/g'
 
                                 yarn test
                                 yarn test:functional --browser=path:/chromium
