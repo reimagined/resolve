@@ -84,7 +84,7 @@ The configuration allows you to customize the React client and server-side rende
 
 ### Resolve Config
 
-JSON Schema ReSolve Config is available at [schema.resolve.config.json](../packages/resolve-scripts/configs/schema.resolve.config.json).
+JSON Schema ReSolve Config is available at [schema.resolve.config.json](../packages/core/resolve-scripts/configs/schema.resolve.config.json).
 
 Default values for config sections can be accessed via `import { defaultResolveConfig } from 'resolve-scripts'`
 

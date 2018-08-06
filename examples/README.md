@@ -10,7 +10,7 @@ npx create-resolve-app resolve-todo-example -e todo
 
 Use the `create-resolve-app -h` command to list the available examples.
 
-The created application is accessible using the `http://localhost:3000/` and `http://<your_ip>:3000` URLs (you can change this in [resolve.config.json](https://github.com/reimagined/resolve/blob/master/packages/resolve-scripts/configs/resolve.config.json)).
+The created application is accessible using the `http://localhost:3000/` and `http://<your_ip>:3000` URLs (you can change this in [resolve.config.json](https://github.com/reimagined/resolve/blob/master/packages/core/resolve-scripts/configs/resolve.config.json)).
 
 You can also use `npm` or `yarn` instead of `npx`:
 
@@ -35,7 +35,7 @@ create-resolve-app resolve-todo-example -e todo
 | [with-styled-components](https://github.com/reimagined/resolve/tree/master/examples/with-styled-components) | Shows how to work with [Styled Components](https://www.styled-components.com/docs). | ⭐️ |
 | [todo-two-levels](https://github.com/reimagined/resolve/tree/master/examples/todo-two-levels) | Shows how to work with View Models in the **all events subscription** case | ⭐️⭐️ |
 | [top-list](https://github.com/reimagined/resolve/tree/master/examples/top-list) | Shows how to update the application state on external events unrelated to user actions. | ⭐️⭐️ |
-| [with-authentication](https://github.com/reimagined/resolve/tree/master/examples/with-authentication) | Allows [resolve-auth](https://github.com/reimagined/resolve/tree/master/packages/resolve-auth) package usage. | ⭐️⭐️ |
+| [with-authentication](https://github.com/reimagined/resolve/tree/master/examples/with-authentication) | Allows [resolve-auth](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-auth) package usage. | ⭐️⭐️ |
 | [hacker-news](https://github.com/reimagined/resolve/tree/master/examples/hacker-news) | The [HackerNews](https://news.ycombinator.com/) application clone with CQRS and EventSoucing. | ⭐️⭐️️️️⭐️️️️ |
 
 
