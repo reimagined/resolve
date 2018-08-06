@@ -1,17 +1,13 @@
 import { defaultResolveConfig } from 'resolve-scripts'
 import appConfig from './config.app'
 
-const devConfig = {
+const prodConfig = {
   ...defaultResolveConfig,
   ...appConfig,
 
   port: 3000,
   polyfills: ['@babel/runtime/regenerator'],
-  mode: 'development',
-  storageAdapter: {
-    module: 'resolve-storage-lite',
-    options: {}
-  }
+  mode: 'production'
 }
 
-export default devConfig
+export default prodConfig
