@@ -1,0 +1,30 @@
+.example-wrapper {
+  max-width: 580px;
+  margin: 0 auto;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.example-form-wrapper {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 8%;
+}
+
+.example-close-button {
+  cursor: pointer;
+  float: right;
+}
+
+.example-list-wrapper {
+  margin-top: 70px;
+}
+
+.example-alert {
+  position: absolute;
+  margin-top: 10px;
+}
+
+.example-button {
+  float: right;
+}

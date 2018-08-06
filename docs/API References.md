@@ -81,7 +81,7 @@ The system's operability is controlled with [TestCafe](http://devexpress.github.
 
 ## **Configuration**
 
-Resolve-based application should be launched manually with custom `index.js` script, and Resolve provides functional entry points for build and run application within target mode. Launching facilities are managed by Resolve configuration object, which contains major information about building phase (read models, view models, aggregate, etc) and launching application (environment, root path, TCP port, etc).
+Resolve-based application should be launched manually with custom config files, and Resolve provides functional entry points for build and run application within target mode. Launching facilities are managed by Resolve configuration object, which contains major information about building phase (read models, view models, aggregate, etc) and launching application (environment, root path, TCP port, etc).
 
 The configuration allows you to customize the React client and server-side rendering, declare domain business logic regarding Event Sourcing with the reSolve library, and modify the development and production modes' webpack behavior.
 
@@ -93,7 +93,7 @@ By default resolve app folder has those config files:
 * congif.prod.js
 * congif.test_functional.js
 
-JSON Schema ReSolve Config is available at [schema.resolve.config.json](../packages/resolve-scripts/configs/schema.resolve.config.json).
+JSON Schema ReSolve Config is available at [schema.resolve.config.json](../packages/core/resolve-scripts/configs/schema.resolve.config.json).
 
 Default values for config sections can be accessed via `import { defaultResolveConfig } from 'resolve-scripts'`
 

@@ -35,7 +35,7 @@ create-resolve-app resolve-todo-example -e todo
 | [with-styled-components](https://github.com/reimagined/resolve/tree/master/examples/with-styled-components) | Shows how to work with [Styled Components](https://www.styled-components.com/docs). | ⭐️ |
 | [todo-two-levels](https://github.com/reimagined/resolve/tree/master/examples/todo-two-levels) | Shows how to work with View Models in the **all events subscription** case | ⭐️⭐️ |
 | [top-list](https://github.com/reimagined/resolve/tree/master/examples/top-list) | Shows how to update the application state on external events unrelated to user actions. | ⭐️⭐️ |
-| [with-authentication](https://github.com/reimagined/resolve/tree/master/examples/with-authentication) | Allows [resolve-auth](https://github.com/reimagined/resolve/tree/master/packages/resolve-auth) package usage. | ⭐️⭐️ |
+| [with-authentication](https://github.com/reimagined/resolve/tree/master/examples/with-authentication) | Allows [resolve-auth](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-auth) package usage. | ⭐️⭐️ |
 | [hacker-news](https://github.com/reimagined/resolve/tree/master/examples/hacker-news) | The [HackerNews](https://news.ycombinator.com/) application clone with CQRS and EventSoucing. | ⭐️⭐️️️️⭐️️️️ |
 
 

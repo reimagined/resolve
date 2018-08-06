@@ -1,9 +1,6 @@
 import generateCodeName from 'project-name-generator'
 
-const ITEMS_COUNT = 100
-
-const delay = timeout => new Promise(resolve => setTimeout(resolve, timeout))
-
+const ITEMS_COUNT = 30
 const rand = max => Math.floor(Math.random() * max)
 
 const upFirstLetter = string => {
@@ -12,7 +9,7 @@ const upFirstLetter = string => {
   })
 }
 
-async function mainSagaImpl(executeCommand, pushInterval) {
+async function appendRating(executeCommand) {
   for (let idx of Array.from(Array(ITEMS_COUNT)).map((_, idx) => idx)) {
     await executeCommand({
       aggregateId: 'root-id',
@@ -24,34 +21,35 @@ async function mainSagaImpl(executeCommand, pushInterval) {
       }
     })
   }
-
-  while (true) {
-    await executeCommand({
-      aggregateId: 'root-id',
-      aggregateName: 'Rating',
-      type: rand(2) === 0 ? 'upvote' : 'downvote',
-      payload: {
-        id: `Item${rand(ITEMS_COUNT)}`,
-        userId: `User${rand(ITEMS_COUNT)}`
-      }
-    })
-
-    await delay(pushInterval)
-  }
 }
 
-function mainSaga({ resolve: { executeCommand } }) {
-  const pushInterval =
-    Number.isSafeInteger(+process.env.PUSH_INTERVAL) &&
-    +process.env.PUSH_INTERVAL > 10 &&
-    +process.env.PUSH_INTERVAL < 3000
-      ? +process.env.PUSH_INTERVAL
-      : 300
-
-  mainSagaImpl(executeCommand, pushInterval).catch(error => {
-    // eslint-disable-next-line no-console
-    console.log('Saga error:', error)
+async function processRating(executeCommand) {
+  await executeCommand({
+    aggregateId: 'root-id',
+    aggregateName: 'Rating',
+    type: rand(2) === 0 ? 'upvote' : 'downvote',
+    payload: {
+      id: `Item${rand(ITEMS_COUNT)}`,
+      userId: `User${rand(ITEMS_COUNT)}`
+    }
   })
 }
 
-export default [mainSaga]
+const saga = {
+  cronHandlers: {
+    '@reboot': async ({ resolve }) => {
+      appendRating(resolve.executeCommand).catch(error => {
+        // eslint-disable-next-line no-console
+        console.log('Saga error:', error)
+      })
+    },
+    '* * * * * *': async ({ resolve }) => {
+      processRating(resolve.executeCommand).catch(error => {
+        // eslint-disable-next-line no-console
+        console.log('Saga error:', error)
+      })
+    }
+  }
+}
+
+export default [saga]

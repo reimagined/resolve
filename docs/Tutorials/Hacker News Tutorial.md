@@ -53,7 +53,7 @@ You can also read the following articles for more information:
 
 ## Creating a New ReSolve Application
 
-Use the [create-resolve-app](https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app) CLI tool to create a new reSolve project.
+Use the [create-resolve-app](https://github.com/reimagined/resolve/tree/master/packages/core/create-resolve-app) CLI tool to create a new reSolve project.
 
 Create an empty reSolve project using `create-resolve-app`, and run the application in the development mode.
 
@@ -552,7 +552,7 @@ In this file, comment all imports except the `Layout` container and `Login` comp
 * Implement the `RouteWithSubRoutes` component to provide routes.
 
 Use a Redux store for data storing.
-In the [./client/store/index.js](./client/store/index.js) file, add the [devtools](https://github.com/zalmoxisus/redux-devtools-extension) and [resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#-utils) middlewares and implement the logout middleware. Replace the `viewModels` array with an empty array (comment out its import and usage).
+In the [./client/store/index.js](./client/store/index.js) file, add the [devtools](https://github.com/zalmoxisus/redux-devtools-extension) and [resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-redux#-utils) middlewares and implement the logout middleware. Replace the `viewModels` array with an empty array (comment out its import and usage).
 
 Prepare the [App](./client/components/App.js) component by adding router providers.
 
