@@ -1,135 +1,65 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`renders correctly 1`] = `
-<div>
-  <div>
-    <nav
-      className="navbar navbar-default"
-    >
-      <div
-        className="container"
-      >
-        <p
-          className="navbar-text"
-        >
-          <img
-            className=""
-            src="/resolve-logo.png"
-          />
-           Todo Two Levels Example
-        </p>
-        <div
-          aria-expanded={null}
-          className="navbar-collapse collapse"
-        >
-          <p
-            className="navbar-text navbar-right"
-          >
-            <a
-              className="navbar-link"
-              href="https://facebook.com/resolvejs/"
-            >
-              <img
-                className=""
-                src="/fb-logo.png"
-              />
-            </a>
-          </p>
-          <p
-            className="navbar-text navbar-right"
-          >
-            <a
-              className="navbar-link"
-              href="https://twitter.com/resolvejs"
-            >
-              <img
-                className=""
-                src="/twitter-logo.png"
-              />
-            </a>
-          </p>
-          <p
-            className="navbar-text navbar-right"
-          >
-            <a
-              className="navbar-link"
-              href="https://github.com/reimagined/resolve"
-            >
-              <img
-                className=""
-                src="/github-logo.png"
-              />
-            </a>
-          </p>
-        </div>
-      </div>
-    </nav>
-  </div>
-  <div
-    className="example-wrapper"
+<div
+  className="example-wrapper"
+>
+  <h1>
+    To-Do Lists
+  </h1>
+  <ul
+    className="example-list list-group"
   >
-    <h1>
-      Todo's List
-    </h1>
-    <ul
-      className="example-list list-group"
+    <li
+      className="list-group-item"
     >
-      <li
-        className="list-group-item"
-      >
-        <a
-          aria-current={false}
-          className={undefined}
-          href="/id1"
-          onClick={[Function]}
-          style={undefined}
-        >
-          title1
-        </a>
-        <img
-          className="example-close-button"
-          onClick={[Function]}
-          src="/close-button.png"
-        />
-      </li>
-      <li
-        className="list-group-item"
-      >
-        <a
-          aria-current={false}
-          className={undefined}
-          href="/id2"
-          onClick={[Function]}
-          style={undefined}
-        >
-          title2
-        </a>
-        <img
-          className="example-close-button"
-          onClick={[Function]}
-          src="/close-button.png"
-        />
-      </li>
-    </ul>
-    <form
-      className="example-form form-inline"
-    >
-      <input
-        className="example-form-control form-control"
-        id={undefined}
-        onKeyPress={[Function]}
-        placeholder="New List"
-        type="text"
-      />
-      <button
-        className="example-button btn btn-success"
-        disabled={false}
+      <a
+        aria-current={null}
+        href="/id1"
         onClick={[Function]}
-        type="button"
       >
-        Add List
-      </button>
-    </form>
-  </div>
+        title1
+      </a>
+      <img
+        className="example-close-button"
+        onClick={[Function]}
+        src="/static/close-button.png"
+      />
+    </li>
+    <li
+      className="list-group-item"
+    >
+      <a
+        aria-current={null}
+        href="/id2"
+        onClick={[Function]}
+      >
+        title2
+      </a>
+      <img
+        className="example-close-button"
+        onClick={[Function]}
+        src="/static/close-button.png"
+      />
+    </li>
+  </ul>
+  <form
+    className="example-form form-inline"
+  >
+    <input
+      className="example-form-control form-control"
+      onKeyPress={[Function]}
+      placeholder="New List"
+      type="text"
+    />
+    <button
+      className="example-button btn btn-success"
+      disabled={false}
+      onClick={[Function]}
+      type="button"
+    >
+      Add List
+    </button>
+  </form>
 </div>
 `;

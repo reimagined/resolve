@@ -1,102 +1,35 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`renders correctly 1`] = `
-<div>
-  <div>
-    <nav
-      className="navbar navbar-default"
-    >
-      <div
-        className="container"
-      >
-        <p
-          className="navbar-text"
-        >
-          <img
-            className=""
-            src="/resolve-logo.png"
-          />
-           Auth Example
-        </p>
-        <div
-          aria-expanded={null}
-          className="navbar-collapse collapse"
-        >
-          <p
-            className="navbar-text navbar-right"
-          >
-            <a
-              className="navbar-link"
-              href="https://facebook.com/resolvejs/"
-            >
-              <img
-                className=""
-                src="/fb-logo.png"
-              />
-            </a>
-          </p>
-          <p
-            className="navbar-text navbar-right"
-          >
-            <a
-              className="navbar-link"
-              href="https://twitter.com/resolvejs"
-            >
-              <img
-                className=""
-                src="/twitter-logo.png"
-              />
-            </a>
-          </p>
-          <p
-            className="navbar-text navbar-right"
-          >
-            <a
-              className="navbar-link"
-              href="https://github.com/reimagined/resolve"
-            >
-              <img
-                className=""
-                src="/github-logo.png"
-              />
-            </a>
-          </p>
-        </div>
-      </div>
-    </nav>
-  </div>
+<div
+  className="example-wrapper"
+>
   <div
-    className="example-wrapper"
+    className="example-login-wrapper"
   >
-    <div
-      className="example-login-wrapper"
+    <h1>
+      Hello, 
+      Test
+    </h1>
+    <form
+      action="/logout"
+      className=""
+      method="POST"
     >
-      <label
-        className="example-login-label control-label"
-        htmlFor={undefined}
+      <input
+        className="form-control"
+        name="username"
+        type="hidden"
+        value="null"
+      />
+      <button
+        className="btn btn-danger"
+        disabled={false}
+        type="submit"
       >
-        Enter your username:
-      </label>
-      <form
-        action="/register"
-        className="form-inline"
-        method="POST"
-      >
-        <input
-          className="example-login-input form-control"
-          id={undefined}
-          name="username"
-          type="text"
-        />
-        <button
-          className="example-login-button btn btn-success"
-          disabled={false}
-          type="submit"
-        >
-          Create Account
-        </button>
-      </form>
-    </div>
+        Logout
+      </button>
+    </form>
   </div>
 </div>
 `;

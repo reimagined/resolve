@@ -34,31 +34,29 @@ ShallowWrapper {
         "1 point ",
         Array [
           "by ",
-          <Styled(Link)
+          <Styled(Connect(Link))
             to="/user/user-id"
           >
             user
-          </Styled(Link)>,
+          </Styled(Connect(Link))>,
           " ",
         ],
-        <Unknown
+        <_default
           createdAt={1970-01-01T00:00:00.000Z}
         />,
         <span>
           <styled.div />
-          <styled.span
-            onClick={undefined}
-          >
+          <styled.span>
             unvote
           </styled.span>
            
         </span>,
         <styled.div />,
-        <Styled(Link)
+        <Styled(Connect(Link))
           to="/storyDetails/story-id"
         >
           discuss
-        </Styled(Link)>,
+        </Styled(Connect(Link))>,
         " ",
       ],
     },
@@ -97,9 +95,7 @@ ShallowWrapper {
         "props": Object {
           "children": Array [
             <styled.div />,
-            <styled.span
-              onClick={undefined}
-            >
+            <styled.span>
               unvote
             </styled.span>,
             " ",
@@ -167,31 +163,29 @@ ShallowWrapper {
           "1 point ",
           Array [
             "by ",
-            <Styled(Link)
+            <Styled(Connect(Link))
               to="/user/user-id"
             >
               user
-            </Styled(Link)>,
+            </Styled(Connect(Link))>,
             " ",
           ],
-          <Unknown
+          <_default
             createdAt={1970-01-01T00:00:00.000Z}
           />,
           <span>
             <styled.div />
-            <styled.span
-              onClick={undefined}
-            >
+            <styled.span>
               unvote
             </styled.span>
              
           </span>,
           <styled.div />,
-          <Styled(Link)
+          <Styled(Connect(Link))
             to="/storyDetails/story-id"
           >
             discuss
-          </Styled(Link)>,
+          </Styled(Connect(Link))>,
           " ",
         ],
       },
@@ -230,9 +224,7 @@ ShallowWrapper {
           "props": Object {
             "children": Array [
               <styled.div />,
-              <styled.span
-                onClick={undefined}
-              >
+              <styled.span>
                 unvote
               </styled.span>,
               " ",
@@ -327,24 +319,22 @@ ShallowWrapper {
       "children": Array [
         null,
         null,
-        <Unknown
+        <_default
           createdAt={1970-01-01T00:00:00.000Z}
         />,
         <span>
           <styled.div />
-          <styled.span
-            onClick={undefined}
-          >
+          <styled.span>
             unvote
           </styled.span>
            
         </span>,
         <styled.div />,
-        <Styled(Link)
+        <Styled(Connect(Link))
           to="/storyDetails/story-id"
         >
           discuss
-        </Styled(Link)>,
+        </Styled(Connect(Link))>,
         " ",
       ],
     },
@@ -370,9 +360,7 @@ ShallowWrapper {
         "props": Object {
           "children": Array [
             <styled.div />,
-            <styled.span
-              onClick={undefined}
-            >
+            <styled.span>
               unvote
             </styled.span>,
             " ",
@@ -439,24 +427,22 @@ ShallowWrapper {
         "children": Array [
           null,
           null,
-          <Unknown
+          <_default
             createdAt={1970-01-01T00:00:00.000Z}
           />,
           <span>
             <styled.div />
-            <styled.span
-              onClick={undefined}
-            >
+            <styled.span>
               unvote
             </styled.span>
              
           </span>,
           <styled.div />,
-          <Styled(Link)
+          <Styled(Connect(Link))
             to="/storyDetails/story-id"
           >
             discuss
-          </Styled(Link)>,
+          </Styled(Connect(Link))>,
           " ",
         ],
       },
@@ -482,9 +468,7 @@ ShallowWrapper {
           "props": Object {
             "children": Array [
               <styled.div />,
-              <styled.span
-                onClick={undefined}
-              >
+              <styled.span>
                 unvote
               </styled.span>,
               " ",
@@ -1323,7 +1307,7 @@ exports[`StyledLink 1`] = `
 ShallowWrapper {
   "length": 1,
   Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <Styled(Link)
+  Symbol(enzyme.__unrendered__): <Styled(Connect(Link))
     to="/"
   />,
   Symbol(enzyme.__renderer__): Object {
@@ -1339,7 +1323,6 @@ ShallowWrapper {
     "nodeType": "class",
     "props": Object {
       "className": "sc-bxivhb cRaLxZ",
-      "replace": false,
       "to": "/",
     },
     "ref": null,
@@ -1353,7 +1336,6 @@ ShallowWrapper {
       "nodeType": "class",
       "props": Object {
         "className": "sc-bxivhb cRaLxZ",
-        "replace": false,
         "to": "/",
       },
       "ref": null,
@@ -1394,7 +1376,6 @@ ShallowWrapper {
     "props": Object {
       "children": Array [
         <styled.div
-          onClick={undefined}
           title="upvote"
         />,
         <styled.a
@@ -1445,7 +1426,6 @@ ShallowWrapper {
       "props": Object {
         "children": Array [
           <styled.div
-            onClick={undefined}
             title="upvote"
           />,
           <styled.a
@@ -1522,7 +1502,6 @@ ShallowWrapper {
     "props": Object {
       "children": Array [
         <styled.div
-          onClick={undefined}
           title="upvote"
         />,
         <styled.a
@@ -1573,7 +1552,6 @@ ShallowWrapper {
       "props": Object {
         "children": Array [
           <styled.div
-            onClick={undefined}
             title="upvote"
           />,
           <styled.a
@@ -1653,11 +1631,11 @@ ShallowWrapper {
         <styled.div
           hidden={true}
         />,
-        <Styled(Link)
+        <Styled(Connect(Link))
           to="/story/story-id"
         >
           Title
-        </Styled(Link)>,
+        </Styled(Connect(Link))>,
         " ",
         null,
       ],
@@ -1702,11 +1680,11 @@ ShallowWrapper {
           <styled.div
             hidden={true}
           />,
-          <Styled(Link)
+          <Styled(Connect(Link))
             to="/story/story-id"
           >
             Title
-          </Styled(Link)>,
+          </Styled(Connect(Link))>,
           " ",
           null,
         ],

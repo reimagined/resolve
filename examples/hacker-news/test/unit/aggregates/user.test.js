@@ -1,5 +1,5 @@
-import '../../../common/aggregates'
-import user from '../../../common/aggregates/user'
+import commands from '../../../common/aggregates/user.commands'
+import projection from '../../../common/aggregates/user.projection'
 import { USER_CREATED } from '../../../common/events'
 
 describe('aggregates', () => {
@@ -14,7 +14,7 @@ describe('aggregates', () => {
         }
       }
 
-      const event = user.commands.createUser(state, command)
+      const event = commands.createUser(state, command)
 
       expect(event).toEqual({ type: USER_CREATED, payload: { name } })
     })
@@ -31,7 +31,7 @@ describe('aggregates', () => {
         }
       }
 
-      expect(() => user.commands.createUser(state, command)).toThrowError(
+      expect(() => commands.createUser(state, command)).toThrowError(
         'User already exists'
       )
     })
@@ -46,7 +46,7 @@ describe('aggregates', () => {
         }
       }
 
-      expect(() => user.commands.createUser(state, command)).toThrowError(
+      expect(() => commands.createUser(state, command)).toThrowError(
         'The "name" field is required'
       )
     })
@@ -54,7 +54,7 @@ describe('aggregates', () => {
     it('eventHandler "USER_CREATED" should set new user to state', () => {
       const createdAt = Date.now()
 
-      const state = user.initialState
+      const state = projection.Init()
       const event = {
         timestamp: createdAt
       }
@@ -62,7 +62,7 @@ describe('aggregates', () => {
         createdAt
       }
 
-      expect(user.projection[USER_CREATED](state, event)).toEqual(nextState)
+      expect(projection[USER_CREATED](state, event)).toEqual(nextState)
     })
   })
 })

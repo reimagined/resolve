@@ -1,6 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 
+import Form from '../containers/Form'
+
 const AuthFormRoot = styled.div`
   padding-left: 3em;
   padding-right: 1.25em;
@@ -26,12 +28,12 @@ const AuthFormContent = styled.div`
 const AuthForm = ({ title, action, buttonText }) => (
   <AuthFormRoot>
     <AuthFormTitle>{title}</AuthFormTitle>
-    <form method="POST" action={action}>
+    <Form method="POST" action={action}>
       <AuthFormContent>
         username: <input type="text" name="username" />
       </AuthFormContent>
       <input type="submit" value={buttonText} />
-    </form>
+    </Form>
   </AuthFormRoot>
 )
 

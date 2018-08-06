@@ -1,41 +1,64 @@
 import React from 'react'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import { connectReadModel } from 'resolve-redux'
 
 import Stories from '../components/Stories'
 import { ITEMS_PER_PAGE } from '../constants'
 
-const NewestByPage = ({
-  match: {
-    params: { page }
-  },
-  data: { stories = [], me }
-}) => (
+const NewestByPage = ({ page, stories, me, upvoteStory, unvoteStory }) => (
   <Stories
     items={stories}
     page={page || '1'}
     type="newest"
     userId={me && me.id}
+    upvoteStory={upvoteStory}
+    unvoteStory={unvoteStory}
   />
 )
 
-const getReadModelData = state => {
-  try {
-    return {
-      stories: state.readModels['default']['allStories'].stories,
-      me: state.readModels['default']['allStories'].me
+export const mapStateToOptions = (
+  state,
+  {
+    match: {
+      params: { page }
     }
-  } catch (err) {
-    return { stories: [], me: null }
   }
-}
-
-export default connectReadModel((state, { match: { params: { page } } }) => ({
+) => ({
   readModelName: 'default',
   resolverName: 'allStories',
-  parameters: {
+  resolverArgs: {
     offset: ITEMS_PER_PAGE + 1,
     first: (+page - 1) * ITEMS_PER_PAGE
-  },
-  data: getReadModelData(state),
-  page
-}))(NewestByPage)
+  }
+})
+
+export const mapStateToProps = (
+  state,
+  {
+    match: {
+      params: { page }
+    },
+    data
+  }
+) => ({
+  stories: data,
+  page,
+  me: state.jwt
+})
+
+export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+  bindActionCreators(
+    {
+      upvoteStory: aggregateActions.upvoteStory,
+      unvoteStory: aggregateActions.unvoteStory
+    },
+    dispatch
+  )
+
+export default connectReadModel(mapStateToOptions)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(NewestByPage)
+)

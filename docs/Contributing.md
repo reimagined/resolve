@@ -8,7 +8,8 @@ This is a set of guidelines for contributing to reSolve and its packages hosted 
     * [Definition of the Done](#definition-of-the-done)
     * [Code Style](#code-style)
     * [Working in Monorepo](#working-in-monorepo)
-* [Reporting Bugs](#reporting-bugs)
+* [Nightly Builds](#nightly-builds)
+* [Reporting Bugs and Requesting Features](#reporting-bugs-and-requesting-features)
 * [Issue Labels](#issue-labels)
 
 ## Pull Requests
@@ -57,6 +58,22 @@ The monorepo workflow begins with the bootstrapping process. In the `reSolve` re
 * All `resolve-*` packages versions should be identical. Otherwise, the missing npm package versions will be downloaded from the Internet, and local development packages will be ignored. 
 * Remember to re-bootstrap using `yarn` after making changes to the dependent `resolve-*` packages.
 
+## Nightly Builds
+
+ReSolve provides Nightly Builds for early adopters. All packages are published automatically on the `dev` branch update. Packages are available here: https://github.com/reimagined/resolve/tree/nightly-builds/packages.
+
+You can use nightly packages in your project by changing your `package.json` as follows:
+
+```json
+{
+  "dependencies": {
+    "resolve-any-package": "https://raw.githubusercontent.com/reimagined/resolve/nightly-builds/packages/resolve-any-package-0.13.1-2018-7-11-17-34-02.tgz",
+  }
+}
+```
+
+Nightly packages are already linked, so you should not specify subsequent dependencies. Note that there is no `latest` nightly build version, because nightly packages can introduce breaking changes and become incompatible with the previous version. Use only specific package versions in order to make sure your code works after re-installing node modules.
+
 ## Reporting Bugs and Requesting Features
 
 Follow these guidelines to help maintainers and the community understand your report, reproduce the behavior, and find the related reports.
@@ -65,7 +82,7 @@ Follow these guidelines to help maintainers and the community understand your re
 
 * Before creating an issue, search for the related issues and add links to all issues that seem relevant, even to Closed ones.
 
-* Bugs and suggestions are tracked using [GitHub Issues](https://guides.github.com/features/issues/). After you've determined [which package](../Packages) your issue is related to, create an Issue and provide the complete description.
+* Bugs and suggestions are tracked using [GitHub Issues](https://guides.github.com/features/issues/). After you've determined [which package](../packages) your issue is related to, create an Issue and provide the complete description.
 
 * Explain the problem and include additional details to help maintainers reproduce it:
 
@@ -99,13 +116,14 @@ Follow these guidelines to help maintainers and the community understand your re
 | `Component: Documentation` | Issues related to package descriptions, [docs folder topics](https://github.com/reimagined/resolve/tree/master/docs), and README files |
 | `Component: Core` | Issues related to a core part of the framework, installation, etc. |
 | `Component: Examples` | Issues related to [reSolve examples](https://github.com/reimagined/resolve/tree/master/examples) |
-| `Component: readmodel-adapters` | Issues related to [Read Model adapters](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters) packages |
-| `Component: storage-adapters` | Issues related to [storage adapters](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters) packages |
 | `Component: resolve-auth` | Issues related to the [resolve-auth](https://github.com/reimagined/resolve/tree/master/packages/resolve-auth) package |
 | `Component: resolve-es` | Issues related to the [resolve-es](https://github.com/reimagined/resolve/tree/master/packages/resolve-es) package |
 | `Component: resolve-query` | Issues related to the [resolve-query](https://github.com/reimagined/resolve/tree/master/packages/resolve-query) package |
 | `Component: resolve-redux` | Issues related to the [resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/resolve-redux) package |
 | `Component: resolve-scripts` | Issues related to the [resolve-scripts](https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts) package |
 | `Component: resolve-command` | Issues related to the [resolve-command](https://github.com/reimagined/resolve/tree/master/packages/resolve-command) package |
+| `Component: storage-adapters` | Issues related to [storage adapters](https://github.com/reimagined/resolve/tree/master/packages/storage-adapters) packages |
+| `Component: readmodel-adapters` | Issues related to [Read Model adapters](https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters) packages |
 | `Component: bus-adapters` | Issues related to the [bus adapters](https://github.com/reimagined/resolve/tree/master/packages/bus-adapters) packages |
+| `Component: subscribe-adapters` | Issues related to the [subscribe adapters](https://github.com/reimagined/resolve/tree/master/packages/subscribe-adapters) packages |
 
