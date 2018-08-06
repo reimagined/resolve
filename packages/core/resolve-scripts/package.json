@@ -12,9 +12,6 @@
     "es",
     "ddd"
   ],
-  "bin": {
-    "resolve-scripts": "./bin/resolve-scripts.js"
-  },
   "scripts": {
     "prepare": "babel --config-file=../../../.babelrc --source-maps --out-dir ./dist ./src",
     "test": "jest --config=../../../jest.config.js --verbose",
