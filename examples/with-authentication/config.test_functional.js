@@ -5,7 +5,7 @@ const testFunctionalConfig = {
   ...defaultResolveConfig,
   ...appConfig,
 
-  port: 3000,
+  port: 3004,
   polyfills: ['@babel/runtime/regenerator'],
   mode: 'development',
 
