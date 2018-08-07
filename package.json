@@ -50,7 +50,7 @@
       "packages/adapters/storage-adapters/*",
       "packages/adapters/readmodel-adapters/*",
       "packages/adapters/subscribe-adapters/*",
-      "examples/react-native-todo/*",
+      "examples/react-native-shopping-list/*",
       "examples/*",
       "tests"
     ]

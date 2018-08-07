@@ -18,7 +18,7 @@ exports[`createViewModelsReducer reducer work correctly 3`] = `
 Object {
   "@@resolve/aggregateVersionsMap": Object {},
   "@@resolve/connectorMetaMap": Object {
-    "Todos[\\"1\\",\\"2\\",\\"3\\"]{}": Object {
+    "ShoppingList[\\"1\\",\\"2\\",\\"3\\"]{}": Object {
       "isFailure": false,
       "isLoading": true,
     },
@@ -30,11 +30,11 @@ exports[`createViewModelsReducer reducer work correctly 4`] = `
 Object {
   "@@resolve/aggregateVersionsMap": Object {},
   "@@resolve/connectorMetaMap": Object {
-    "Todos*{}": Object {
+    "ShoppingList*{}": Object {
       "isFailure": false,
       "isLoading": true,
     },
-    "Todos[\\"1\\",\\"2\\",\\"3\\"]{}": Object {
+    "ShoppingList[\\"1\\",\\"2\\",\\"3\\"]{}": Object {
       "isFailure": false,
       "isLoading": true,
     },
@@ -45,23 +45,23 @@ Object {
 exports[`createViewModelsReducer reducer work correctly 5`] = `
 Object {
   "@@resolve/aggregateVersionsMap": Object {
-    "Todos[\\"1\\",\\"2\\",\\"3\\"]{}": Object {
+    "ShoppingList[\\"1\\",\\"2\\",\\"3\\"]{}": Object {
       "1": 1,
       "2": 1,
       "3": 2,
     },
   },
   "@@resolve/connectorMetaMap": Object {
-    "Todos*{}": Object {
+    "ShoppingList*{}": Object {
       "isFailure": false,
       "isLoading": true,
     },
-    "Todos[\\"1\\",\\"2\\",\\"3\\"]{}": Object {
+    "ShoppingList[\\"1\\",\\"2\\",\\"3\\"]{}": Object {
       "isFailure": false,
       "isLoading": false,
     },
   },
-  "Todos": Object {
+  "ShoppingList": Object {
     "[\\"1\\",\\"2\\",\\"3\\"]": Object {
       "{}": Array [
         "A",
@@ -77,28 +77,28 @@ Object {
 exports[`createViewModelsReducer reducer work correctly 6`] = `
 Object {
   "@@resolve/aggregateVersionsMap": Object {
-    "Todos*{}": Object {
+    "ShoppingList*{}": Object {
       "1": 1,
       "2": 1,
       "3": 2,
     },
-    "Todos[\\"1\\",\\"2\\",\\"3\\"]{}": Object {
+    "ShoppingList[\\"1\\",\\"2\\",\\"3\\"]{}": Object {
       "1": 1,
       "2": 1,
       "3": 2,
     },
   },
   "@@resolve/connectorMetaMap": Object {
-    "Todos*{}": Object {
+    "ShoppingList*{}": Object {
       "isFailure": false,
       "isLoading": false,
     },
-    "Todos[\\"1\\",\\"2\\",\\"3\\"]{}": Object {
+    "ShoppingList[\\"1\\",\\"2\\",\\"3\\"]{}": Object {
       "isFailure": false,
       "isLoading": false,
     },
   },
-  "Todos": Object {
+  "ShoppingList": Object {
     "*": Object {
       "{}": Array [
         "A",
@@ -122,28 +122,28 @@ Object {
 exports[`createViewModelsReducer reducer work correctly 7`] = `
 Object {
   "@@resolve/aggregateVersionsMap": Object {
-    "Todos*{}": Object {
+    "ShoppingList*{}": Object {
       "1": 1,
       "2": 1,
       "3": 2,
     },
-    "Todos[\\"1\\",\\"2\\",\\"3\\"]{}": Object {
+    "ShoppingList[\\"1\\",\\"2\\",\\"3\\"]{}": Object {
       "1": 1,
       "2": 1,
       "3": 2,
     },
   },
   "@@resolve/connectorMetaMap": Object {
-    "Todos*{}": Object {
+    "ShoppingList*{}": Object {
       "isFailure": false,
       "isLoading": false,
     },
-    "Todos[\\"1\\",\\"2\\",\\"3\\"]{}": Object {
+    "ShoppingList[\\"1\\",\\"2\\",\\"3\\"]{}": Object {
       "isFailure": false,
       "isLoading": false,
     },
   },
-  "Todos": Object {
+  "ShoppingList": Object {
     "*": Object {
       "{}": Array [
         "A",
@@ -167,28 +167,28 @@ Object {
 exports[`createViewModelsReducer reducer work correctly 8`] = `
 Object {
   "@@resolve/aggregateVersionsMap": Object {
-    "Todos*{}": Object {
+    "ShoppingList*{}": Object {
       "1": 1,
       "2": 1,
       "3": 2,
     },
-    "Todos[\\"1\\",\\"2\\",\\"3\\"]{}": Object {
+    "ShoppingList[\\"1\\",\\"2\\",\\"3\\"]{}": Object {
       "1": 1,
       "2": 1,
       "3": 2,
     },
   },
   "@@resolve/connectorMetaMap": Object {
-    "Todos*{}": Object {
+    "ShoppingList*{}": Object {
       "isFailure": false,
       "isLoading": false,
     },
-    "Todos[\\"1\\",\\"2\\",\\"3\\"]{}": Object {
+    "ShoppingList[\\"1\\",\\"2\\",\\"3\\"]{}": Object {
       "isFailure": false,
       "isLoading": false,
     },
   },
-  "Todos": Object {
+  "ShoppingList": Object {
     "*": Object {
       "{}": Array [
         "A",
@@ -212,19 +212,19 @@ Object {
 exports[`createViewModelsReducer reducer work correctly 9`] = `
 Object {
   "@@resolve/aggregateVersionsMap": Object {
-    "Todos*{}": Object {
+    "ShoppingList*{}": Object {
       "1": 1,
       "2": 1,
       "3": 2,
     },
   },
   "@@resolve/connectorMetaMap": Object {
-    "Todos*{}": Object {
+    "ShoppingList*{}": Object {
       "isFailure": false,
       "isLoading": false,
     },
   },
-  "Todos": Object {
+  "ShoppingList": Object {
     "*": Object {
       "{}": Array [
         "A",
@@ -242,7 +242,7 @@ exports[`createViewModelsReducer reducer work correctly 10`] = `
 Object {
   "@@resolve/aggregateVersionsMap": Object {},
   "@@resolve/connectorMetaMap": Object {},
-  "Todos": Object {
+  "ShoppingList": Object {
     "*": Object {},
     "[\\"1\\",\\"2\\",\\"3\\"]": Object {},
   },
@@ -253,7 +253,7 @@ exports[`createViewModelsReducer reducer work correctly 11`] = `
 Object {
   "@@resolve/aggregateVersionsMap": Object {},
   "@@resolve/connectorMetaMap": Object {},
-  "Todos": Object {
+  "ShoppingList": Object {
     "*": Object {},
     "[\\"1\\",\\"2\\",\\"3\\"]": Object {},
   },
@@ -264,12 +264,12 @@ exports[`createViewModelsReducer reducer work correctly 12`] = `
 Object {
   "@@resolve/aggregateVersionsMap": Object {},
   "@@resolve/connectorMetaMap": Object {
-    "Todos*{}": Object {
+    "ShoppingList*{}": Object {
       "isFailure": false,
       "isLoading": true,
     },
   },
-  "Todos": Object {
+  "ShoppingList": Object {
     "*": Object {},
     "[\\"1\\",\\"2\\",\\"3\\"]": Object {},
   },
@@ -280,13 +280,13 @@ exports[`createViewModelsReducer reducer work correctly 13`] = `
 Object {
   "@@resolve/aggregateVersionsMap": Object {},
   "@@resolve/connectorMetaMap": Object {
-    "Todos*{}": Object {
+    "ShoppingList*{}": Object {
       "error": "error",
       "isFailure": true,
       "isLoading": false,
     },
   },
-  "Todos": Object {
+  "ShoppingList": Object {
     "*": Object {},
     "[\\"1\\",\\"2\\",\\"3\\"]": Object {},
   },
