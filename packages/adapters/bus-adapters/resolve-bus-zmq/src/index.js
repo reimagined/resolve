@@ -10,7 +10,7 @@ const defaultOptions = {
 function createAdapter(options) {
   let handler = () => {}
   const config = { ...defaultOptions, ...options }
-  let initPromise
+  let initPromise = null
   let pubSocket
   let subSocket
   let xpubSocket
@@ -21,21 +21,30 @@ function createAdapter(options) {
 
   return {
     init: async () => {
+      if (initPromise) {
+        return initPromise
+      }
+
       initPromise = new Promise(async resolve => {
-        xsubSocket = zmq.socket('xsub')
-        xsubSocket.identity = `subscriber${process.pid}`
-        xsubSocket.bindSync(subAddress)
+        try {
+          xsubSocket = zmq.socket('xsub')
+          xsubSocket.identity = `subscriber${process.pid}`
+          xsubSocket.bindSync(subAddress)
 
-        xpubSocket = zmq.socket('xpub')
-        xpubSocket.identity = `publisher${process.pid}`
+          xpubSocket = zmq.socket('xpub')
+          xpubSocket.identity = `publisher${process.pid}`
 
-        // ZMQ parameters described here http://api.zeromq.org/3-3:zmq-setsockopt
-        xpubSocket.setsockopt(zmq.ZMQ_SNDHWM, 1000)
-        xpubSocket.setsockopt(zmq.ZMQ_XPUB_VERBOSE, 0)
-        xpubSocket.bindSync(pubAddress)
+          // ZMQ parameters described here http://api.zeromq.org/3-3:zmq-setsockopt
+          xpubSocket.setsockopt(zmq.ZMQ_SNDHWM, 1000)
+          xpubSocket.setsockopt(zmq.ZMQ_XPUB_VERBOSE, 0)
+          xpubSocket.bindSync(pubAddress)
 
-        xsubSocket.on('message', data => xpubSocket.send(data))
-        xpubSocket.on('message', data => xsubSocket.send(data))
+          xsubSocket.on('message', data => xpubSocket.send(data))
+          xpubSocket.on('message', data => xsubSocket.send(data))
+        } catch (e) {}
+
+        pubSocket = zmq.socket('pub')
+        await pubSocket.connect(subAddress)
 
         subSocket = zmq.socket('sub')
         await subSocket.subscribe(channel)
@@ -46,14 +55,12 @@ function createAdapter(options) {
           handler(JSON.parse(data))
         })
 
-        pubSocket = zmq.socket('pub')
-        await pubSocket.connect(subAddress)
         resolve()
       })
 
       return initPromise
     },
-    close: () => {
+    close: async () => {
       if (xpubSocket) {
         xpubSocket.unbindSync(pubAddress)
       }
@@ -64,13 +71,23 @@ function createAdapter(options) {
 
       subSocket.disconnect(pubAddress)
       pubSocket.disconnect(pubAddress)
+      initPromise = null
     },
     publish: async event => {
+      if (!initPromise) {
+        throw new Error('ZMQ bus adapter is not initialized')
+      }
+
       await initPromise
       const message = `${channel} ${JSON.stringify(event)}`
       pubSocket.send(message)
     },
-    subscribe: callback => {
+    subscribe: async callback => {
+      if (!initPromise) {
+        throw new Error('ZMQ bus adapter is not initialized')
+      }
+
+      await initPromise
       handler = callback
     }
   }

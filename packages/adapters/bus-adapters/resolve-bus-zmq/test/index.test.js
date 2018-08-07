@@ -74,145 +74,150 @@ describe('ZeroMQ bus', () => {
     }
   })
 
-  it('should init correctly and run new broker', () => {
+  it('should init correctly and run new broker', async () => {
     const instance = adapter(testOptions)
 
-    return instance.subscribe(trigger).then(() => {
-      expect(zeromq.socket.callCount).toEqual(4)
+    await instance.init()
+    await instance.subscribe(trigger)
 
-      expect(zeromq.socket.getCall(0).args).toEqual(['xsub'])
-      expect(fakeSocketXsub.identity).toMatch(/^subscriber/)
-      expect(fakeSocketXsub.bindSync.callCount).toEqual(1)
+    expect(zeromq.socket.callCount).toEqual(4)
 
-      expect(fakeSocketXsub.bindSync.firstCall.args).toEqual([
-        `tcp://${testOptions.address}:${testOptions.subPort}`
-      ])
+    expect(zeromq.socket.getCall(0).args).toEqual(['xsub'])
+    expect(fakeSocketXsub.identity).toMatch(/^subscriber/)
+    expect(fakeSocketXsub.bindSync.callCount).toEqual(1)
 
-      expect(zeromq.socket.getCall(1).args).toEqual(['xpub'])
-      expect(fakeSocketXpub.identity).toMatch(/^publisher/)
+    expect(fakeSocketXsub.bindSync.firstCall.args).toEqual([
+      `tcp://${testOptions.address}:${testOptions.subPort}`
+    ])
 
-      expect(fakeSocketXpub.setsockopt.callCount).toEqual(2)
-      expect(fakeSocketXpub.setsockopt.firstCall.args).toEqual([
-        zeromq.ZMQ_SNDHWM,
-        1000
-      ])
-      expect(fakeSocketXpub.setsockopt.secondCall.args).toEqual([
-        zeromq.ZMQ_XPUB_VERBOSE,
-        0
-      ])
+    expect(zeromq.socket.getCall(1).args).toEqual(['xpub'])
+    expect(fakeSocketXpub.identity).toMatch(/^publisher/)
 
-      expect(fakeSocketXpub.bindSync.firstCall.args).toEqual([
-        `tcp://${testOptions.address}:${testOptions.pubPort}`
-      ])
+    expect(fakeSocketXpub.setsockopt.callCount).toEqual(2)
+    expect(fakeSocketXpub.setsockopt.firstCall.args).toEqual([
+      zeromq.ZMQ_SNDHWM,
+      1000
+    ])
+    expect(fakeSocketXpub.setsockopt.secondCall.args).toEqual([
+      zeromq.ZMQ_XPUB_VERBOSE,
+      0
+    ])
 
-      expect(fakeSocketXsub.on.callCount).toEqual(1)
-      expect(fakeSocketXsub.on.firstCall.args[0]).toEqual('message')
-      const xsubCallback = fakeSocketXsub.on.firstCall.args[1]
+    expect(fakeSocketXpub.bindSync.firstCall.args).toEqual([
+      `tcp://${testOptions.address}:${testOptions.pubPort}`
+    ])
 
-      expect(fakeSocketXpub.on.callCount).toEqual(1)
-      expect(fakeSocketXpub.on.firstCall.args[0]).toEqual('message')
-      const xpubCallback = fakeSocketXpub.on.firstCall.args[1]
+    expect(fakeSocketXsub.on.callCount).toEqual(1)
+    expect(fakeSocketXsub.on.firstCall.args[0]).toEqual('message')
+    const xsubCallback = fakeSocketXsub.on.firstCall.args[1]
 
-      xsubCallback('xpubMarker')
-      expect(fakeSocketXpub.send.callCount).toBeGreaterThan(0)
-      expect(fakeSocketXpub.send.lastCall.args[0]).toEqual('xpubMarker')
+    expect(fakeSocketXpub.on.callCount).toEqual(1)
+    expect(fakeSocketXpub.on.firstCall.args[0]).toEqual('message')
+    const xpubCallback = fakeSocketXpub.on.firstCall.args[1]
 
-      xpubCallback('xsubMarker')
-      expect(fakeSocketXsub.send.callCount).toBeGreaterThan(0)
-      expect(fakeSocketXsub.send.lastCall.args[0]).toEqual('xsubMarker')
+    xsubCallback('xpubMarker')
+    expect(fakeSocketXpub.send.callCount).toBeGreaterThan(0)
+    expect(fakeSocketXpub.send.lastCall.args[0]).toEqual('xpubMarker')
 
-      expect(zeromq.socket.getCall(2).args).toEqual(['pub'])
-      expect(fakeSocketPub.connect.callCount).toEqual(1)
+    xpubCallback('xsubMarker')
+    expect(fakeSocketXsub.send.callCount).toBeGreaterThan(0)
+    expect(fakeSocketXsub.send.lastCall.args[0]).toEqual('xsubMarker')
 
-      expect(fakeSocketPub.connect.firstCall.args).toEqual([
-        `tcp://${testOptions.address}:${testOptions.subPort}`
-      ])
+    expect(zeromq.socket.getCall(2).args).toEqual(['pub'])
+    expect(fakeSocketPub.connect.callCount).toEqual(1)
 
-      expect(zeromq.socket.getCall(3).args).toEqual(['sub'])
-      expect(fakeSocketSub.subscribe.callCount).toEqual(1)
-      expect(fakeSocketSub.subscribe.firstCall.args).toEqual([
-        testOptions.channel
-      ])
+    expect(fakeSocketPub.connect.firstCall.args).toEqual([
+      `tcp://${testOptions.address}:${testOptions.subPort}`
+    ])
 
-      expect(fakeSocketSub.connect.callCount).toEqual(1)
-      expect(fakeSocketSub.connect.firstCall.args).toEqual([
-        `tcp://${testOptions.address}:${testOptions.pubPort}`
-      ])
+    expect(zeromq.socket.getCall(3).args).toEqual(['sub'])
+    expect(fakeSocketSub.subscribe.callCount).toEqual(1)
+    expect(fakeSocketSub.subscribe.firstCall.args).toEqual([
+      testOptions.channel
+    ])
 
-      expect(fakeSocketSub.on.callCount).toEqual(1)
-      expect(fakeSocketSub.on.firstCall.args[0]).toEqual('message')
-    })
+    expect(fakeSocketSub.connect.callCount).toEqual(1)
+    expect(fakeSocketSub.connect.firstCall.args).toEqual([
+      `tcp://${testOptions.address}:${testOptions.pubPort}`
+    ])
+
+    expect(fakeSocketSub.on.callCount).toEqual(1)
+    expect(fakeSocketSub.on.firstCall.args[0]).toEqual('message')
   })
 
-  it('should init correctly and use existing broker', () => {
+  it('should init correctly and use existing broker', async () => {
     brokerActivated = { pub: true, sub: true }
     const instance = adapter(testOptions)
+    await instance.init()
+    instance.subscribe(trigger)
 
-    return instance.subscribe(trigger).then(() => {
-      expect(zeromq.socket.callCount).toEqual(3)
+    expect(zeromq.socket.callCount).toEqual(3)
 
-      expect(fakeSocketXsub.bindSync.callCount).toEqual(1)
-      expect(fakeSocketXsub.bindSync.lastCall.exception.message).toEqual(
-        'Bind error'
-      )
+    expect(fakeSocketXsub.bindSync.callCount).toEqual(1)
+    expect(fakeSocketXsub.bindSync.lastCall.exception.message).toEqual(
+      'Bind error'
+    )
 
-      expect(fakeSocketXpub.bindSync.callCount).toEqual(0)
-      expect(fakeSocketXpub.setsockopt.callCount).toEqual(0)
+    expect(fakeSocketXpub.bindSync.callCount).toEqual(0)
+    expect(fakeSocketXpub.setsockopt.callCount).toEqual(0)
 
-      expect(fakeSocketXsub.on.callCount).toEqual(0)
-      expect(fakeSocketXpub.on.callCount).toEqual(0)
+    expect(fakeSocketXsub.on.callCount).toEqual(0)
+    expect(fakeSocketXpub.on.callCount).toEqual(0)
 
-      expect(zeromq.socket.getCall(1).args).toEqual(['pub'])
-      expect(fakeSocketPub.connect.callCount).toEqual(1)
+    expect(zeromq.socket.getCall(1).args).toEqual(['pub'])
+    expect(fakeSocketPub.connect.callCount).toEqual(1)
 
-      expect(fakeSocketPub.connect.firstCall.args).toEqual([
-        `tcp://${testOptions.address}:${testOptions.subPort}`
-      ])
+    expect(fakeSocketPub.connect.firstCall.args).toEqual([
+      `tcp://${testOptions.address}:${testOptions.subPort}`
+    ])
 
-      expect(zeromq.socket.getCall(2).args).toEqual(['sub'])
-      expect(fakeSocketSub.subscribe.callCount).toEqual(1)
-      expect(fakeSocketSub.subscribe.firstCall.args).toEqual([
-        testOptions.channel
-      ])
+    expect(zeromq.socket.getCall(2).args).toEqual(['sub'])
+    expect(fakeSocketSub.subscribe.callCount).toEqual(1)
+    expect(fakeSocketSub.subscribe.firstCall.args).toEqual([
+      testOptions.channel
+    ])
 
-      expect(fakeSocketSub.connect.callCount).toEqual(1)
-      expect(fakeSocketSub.connect.firstCall.args).toEqual([
-        `tcp://${testOptions.address}:${testOptions.pubPort}`
-      ])
+    expect(fakeSocketSub.connect.callCount).toEqual(1)
+    expect(fakeSocketSub.connect.firstCall.args).toEqual([
+      `tcp://${testOptions.address}:${testOptions.pubPort}`
+    ])
 
-      expect(fakeSocketSub.on.callCount).toEqual(1)
-      expect(fakeSocketSub.on.firstCall.args[0]).toEqual('message')
-    })
+    expect(fakeSocketSub.on.callCount).toEqual(1)
+    expect(fakeSocketSub.on.firstCall.args[0]).toEqual('message')
   })
 
-  it('should publish messages in bus', () => {
+  it('should publish messages in bus', async () => {
     brokerActivated = { pub: true, sub: true }
     const instance = adapter(testOptions)
+    await instance.init()
 
     const originalMessage = { marker: '@@message-marker' }
     const stringMessage = JSON.stringify(originalMessage)
 
-    return instance.publish(originalMessage).then(() => {
-      expect(fakeSocketPub.send.callCount).toEqual(1)
-      expect(fakeSocketPub.send.lastCall.args[0]).toEqual(
-        `${testOptions.channel} ${stringMessage}`
-      )
-    })
+    await instance.publish(originalMessage)
+
+    expect(fakeSocketPub.send.callCount).toEqual(1)
+
+    expect(fakeSocketPub.send.lastCall.args[0]).toEqual(
+      `${testOptions.channel} ${stringMessage}`
+    )
   })
 
-  it('should trigger on incoming bus messages', () => {
+  it('should trigger on incoming bus messages', async () => {
     brokerActivated = { pub: true, sub: true }
     const instance = adapter(testOptions)
+    await instance.init()
 
     const originalMessage = { marker: '@@message-marker' }
     const stringMessage = JSON.stringify(originalMessage)
 
-    return instance.subscribe(trigger).then(() => {
-      const onCallback = fakeSocketSub.on.firstCall.args[1]
-      onCallback(`${testOptions.channel} ${stringMessage}`)
+    await instance.init()
+    await instance.subscribe(trigger)
 
-      expect(trigger.callCount).toEqual(1)
-      expect(trigger.lastCall.args).toEqual([originalMessage])
-    })
+    const onCallback = fakeSocketSub.on.firstCall.args[1]
+    onCallback(`${testOptions.channel} ${stringMessage}`)
+
+    expect(trigger.callCount).toEqual(1)
+    expect(trigger.lastCall.args).toEqual([originalMessage])
   })
 })
