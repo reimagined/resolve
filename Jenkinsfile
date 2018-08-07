@@ -59,7 +59,7 @@ pipeline {
                         export DISPLAY=:0;
                         firefox && echo 'err';
 
-                        npx oao run-script test:functional -- --browser=path:/chromium
+                        npx oao run-script test:functional
                     """
                 }
             }
@@ -127,7 +127,7 @@ pipeline {
                                 cd ./hello-world; 
                                 cat ./package.json; 
                                 yarn test
-                                yarn test:functional --browser=path:/chromium
+                                yarn test:functional
                             """
                         }
                     }
@@ -142,7 +142,7 @@ pipeline {
                                 cd ./todolist
                                 cat ./package.json
                                 yarn test
-                                yarn test:functional --browser=path:/chromium
+                                yarn test:functional
                             """
                         }
                     }
@@ -156,7 +156,7 @@ pipeline {
                                 create-resolve-app twolevelstodo -e todo-two-levels -c \$(cat /last_commit)
                                 cd ./twolevelstodo
                                 cat ./package.json
-                                yarn test:functional --browser=path:/chromium
+                                yarn test:functional
                             """
                         }
                     }
@@ -171,7 +171,7 @@ pipeline {
                                 cd ./hn
                                 cat ./package.json
                                 yarn test
-                                yarn test:functional --browser=path:/chromium
+                                yarn test:functional
                             """
                         }
                     }
@@ -186,7 +186,7 @@ pipeline {
                                 cd ./toplist
                                 cat ./package.json
                                 yarn test
-                                yarn test:functional --browser=path:/chromium
+                                yarn test:functional
                             """
                         }
                     }
@@ -201,7 +201,7 @@ pipeline {
                                 cd ./with-postcss
                                 cat ./package.json
                                 yarn test
-                                yarn test:functional --browser=path:/chromium
+                                yarn test:functional
                             """
                         }
                     }
@@ -216,7 +216,7 @@ pipeline {
                                 cd ./with-authentication
                                 cat ./package.json
                                 yarn test
-                                yarn test:functional --browser=path:/chromium
+                                yarn test:functional
                             """
                         }
                     }
@@ -231,7 +231,7 @@ pipeline {
                                 cd ./with-styled-components
                                 cat ./package.json
                                 yarn test
-                                yarn test:functional --browser=path:/chromium
+                                yarn test:functional
                             """
                         }
                     }
@@ -246,7 +246,7 @@ pipeline {
                                 cd ./with-saga
                                 cat ./package.json
                                 yarn test
-                                yarn test:functional --browser=path:/chromium
+                                yarn test:functional
                             """
                         }
                     }
