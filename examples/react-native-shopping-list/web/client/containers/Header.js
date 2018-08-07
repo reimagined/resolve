@@ -30,11 +30,12 @@ const Header = ({ title, name, css, favicon, shoppingListId, jwt }) => (
       </Navbar.Header>
       <Navbar.Collapse>
         <Nav>
-          <NavItem eventKey={1} href="/new">
-            New List
+          <NavItem eventKey={1} href="/all">
+            My Lists
           </NavItem>
-          {shoppingListId ? (
-            <NavItem eventKey={2} href="/share">
+          {shoppingListId &&
+          ['all', 'share', 'settings'].indexOf(shoppingListId) === -1 ? (
+            <NavItem eventKey={2} href={`/share/${shoppingListId}`}>
               Share
             </NavItem>
           ) : null}

@@ -1,7 +1,7 @@
 import RequiredAuth from './containers/RequiredAuth'
 import App from './containers/App'
 import ShoppingList from './containers/ShoppingList'
-import NewShoppingList from './containers/NewShoppingList'
+import AllShoppingLists from './containers/ShoppingLists'
 import ShareForm from './containers/ShareForm'
 import Settings from './containers/Settings'
 import LoginForm from './components/LoginForm'
@@ -25,12 +25,12 @@ export default [
             exact: true
           },
           {
-            path: '/new',
-            component: NewShoppingList,
+            path: '/all',
+            component: AllShoppingLists,
             exact: true
           },
           {
-            path: '/share',
+            path: '/share/:id',
             component: ShareForm,
             exact: true
           },

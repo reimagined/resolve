@@ -5,57 +5,110 @@ import { routerActions } from 'react-router-redux'
 import { bindActionCreators } from 'redux'
 import { Redirect } from 'react-router-dom'
 import {
-  Grid,
   Row,
   Col,
   ListGroup,
   ListGroupItem,
   Checkbox,
-  Form,
   Button,
   FormControl,
-  FormGroup
+  FormGroup,
+  ControlLabel
 } from 'react-bootstrap'
 
 import Image from './Image'
+import NotFound from '../components/NotFound'
 
 export class ShoppingList extends React.PureComponent {
+  state = {
+    shoppingListName: this.props.data && this.props.data.name,
+    itemText: ''
+  }
+
   componentDidMount() {
     if (this.props.jwt.id && !this.props.match.params.id) {
       this.props.replaceUrl(`/${this.props.jwt.id}`)
     }
   }
 
-  render() {
-    const {
-      name,
-      list,
-      jwt,
-      aggregateId,
-      createItem,
-      toggleItem,
-      removeItem
-    } = this.props
-
-    const placeholder = 'New Task'
-    const createItemFunc = () => {
-      createItem(aggregateId, {
-        text: newTodo.value === '' ? placeholder : newTodo.value,
-        id: Date.now()
+  componentDidUpdate(prevProps) {
+    if (
+      this.props.data &&
+      this.props.data.name !== (prevProps.data || {}).name
+    ) {
+      this.setState({
+        shoppingListName: this.props.data.name
       })
-      newTodo.value = ''
     }
+  }
 
-    let newTodo
+  createItem = () => {
+    this.props.createItem(this.props.aggregateId, {
+      text: this.state.itemText,
+      id: Date.now().toString()
+    })
+
+    this.setState({
+      itemText: ''
+    })
+  }
+
+  renameList = () => {
+    this.props.renameList(this.props.aggregateId, {
+      name: this.state.shoppingListName
+    })
+  }
+
+  updateItemText = event => {
+    this.setState({
+      itemText: event.target.value
+    })
+  }
+
+  onItemTextPressEnter = event => {
+    if (event.charCode === 13) {
+      event.preventDefault()
+      this.createItem()
+    }
+  }
+
+  updateShoppingListName = event => {
+    this.setState({
+      shoppingListName: event.target.value
+    })
+  }
+
+  onShoppingListNamePressEnter = event => {
+    if (event.charCode === 13) {
+      event.preventDefault()
+      this.renameList()
+    }
+  }
+
+  render() {
+    const { data, jwt, aggregateId, toggleItem, removeItem } = this.props
 
     if (!jwt.id) {
       return <Redirect to="/login" />
     }
 
+    if (data === null) {
+      return <NotFound />
+    }
+
+    const { list } = data
+
     return (
       <div className="example-wrapper">
+        <ControlLabel>Shopping list name</ControlLabel>
         <FormGroup bsSize="large">
-          <FormControl type="text" defaultValue={name} />
+          <FormControl
+            type="text"
+            value={this.state.shoppingListName}
+            onChange={this.updateShoppingListName}
+            onKeyPress={this.onShoppingListNamePressEnter}
+            onBlur={this.renameList}
+          />
         </FormGroup>
         <ListGroup className="example-list">
           {list.map(todo => (
@@ -75,36 +128,27 @@ export class ShoppingList extends React.PureComponent {
             </ListGroupItem>
           ))}
         </ListGroup>
-
-        <Form inline className="example-form">
-          <Row className="show-grid">
-            <Col md={8}>
-              <FormControl
-                className="example-form-control"
-                type="text"
-                placeholder={placeholder}
-                inputRef={element => (newTodo = element)}
-                onKeyPress={event => {
-                  if (event.charCode === 13) {
-                    event.preventDefault()
-                    createItemFunc()
-                  }
-                }}
-              />
-            </Col>
-            <Col md={4}>
-              <Button
-                className="example-button"
-                bsStyle="success"
-                onClick={() => {
-                  createItemFunc()
-                }}
-              >
-                Add Item
-              </Button>
-            </Col>
-          </Row>
-        </Form>
+        <ControlLabel>Item name</ControlLabel>
+        <Row>
+          <Col md={8}>
+            <FormControl
+              className="example-form-control"
+              type="text"
+              value={this.state.itemText}
+              onChange={this.updateItemText}
+              onKeyPress={this.onItemTextPressEnter}
+            />
+          </Col>
+          <Col md={4}>
+            <Button
+              className="example-button"
+              bsStyle="success"
+              onClick={this.createItem}
+            >
+              Add Item
+            </Button>
+          </Col>
+        </Row>
       </div>
     )
   }
@@ -120,11 +164,11 @@ const mapStateToOptions = (state, ownProps) => {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  const aggregateId = ownProps.match.params.id || state.jwt.id
+
   return {
-    aggregateId: state.jwt.id,
-    name: ownProps.data.name,
-    list: ownProps.data.list,
-    jwt: state.jwt
+    jwt: state.jwt,
+    aggregateId
   }
 }
 

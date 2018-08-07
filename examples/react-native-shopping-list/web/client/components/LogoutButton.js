@@ -1,6 +1,6 @@
 import React from 'react'
 
-import RootBasedForm from '../containers/Form'
+import Form from '../containers/Form'
 import Image from '../containers/Image'
 
 class LogoutButton extends React.PureComponent {
@@ -30,17 +30,13 @@ class LogoutButton extends React.PureComponent {
     }
 
     return (
-      <RootBasedForm
-        method="POST"
-        action="/auth/local/logout"
-        innerRef={this.formRef}
-      >
+      <Form method="POST" action="/auth/local/logout" innerRef={this.formRef}>
         <input type="text" name="username" readOnly value="hidden" hidden />
         <input type="text" name="password" readOnly value="hidden" hidden />
         <a className="logout" href="/login" onClick={this.onLogoutClick}>
           <Image className="example-icon" src="/logout.svg" /> Logout
         </a>
-      </RootBasedForm>
+      </Form>
     )
   }
 }

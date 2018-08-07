@@ -63,6 +63,14 @@ const strategies = [
 
         const userId = uuid.v4()
 
+        const jwtToken = jwt.sign(
+          {
+            username: username.trim(),
+            id: userId
+          },
+          jwtSecret
+        )
+
         await resolve.executeCommand({
           type: 'createUser',
           aggregateId: userId,
@@ -73,22 +81,19 @@ const strategies = [
           }
         })
 
-        await resolve.executeCommand({
-          type: 'createList',
-          aggregateId: userId,
-          aggregateName: 'ShoppingList',
-          payload: {
-            name: 'Shopping List'
-          }
-        })
-
-        return jwt.sign(
+        await resolve.executeCommand(
           {
-            username: username.toLowerCase().trim(),
-            id: userId
+            type: 'createList',
+            aggregateId: userId,
+            aggregateName: 'ShoppingList',
+            payload: {
+              name: 'Shopping List'
+            }
           },
-          jwtSecret
+          jwtToken
         )
+
+        return jwtToken
       }
     }
   },

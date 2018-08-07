@@ -11,7 +11,7 @@ const App = ({
   <div>
     <Header
       title="ReSolve React-Native Shopping List Example"
-      name="Shopping List Example"
+      name="Shopping List"
       favicon="/favicon.ico"
       css={[
         '/bootstrap.min.css',

@@ -1,8 +1,8 @@
 export default {
-  Init: () => ({ name: '', list: [] }),
+  Init: () => null,
   LIST_CREATED: (state, { payload: { name } }) => ({
-    ...state,
-    name
+    name,
+    list: []
   }),
   LIST_RENAMED: (state, { payload: { name } }) => ({
     ...state,

@@ -17,6 +17,10 @@
     {
       "name": "ShoppingList",
       "projection": "common/view-models/shoppingList.projection.js"
+    },
+    {
+      "name": "Sharings",
+      "projection": "common/view-models/sharings.projection.js"
     }
   ],
   "readModels": [

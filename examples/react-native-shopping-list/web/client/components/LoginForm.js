@@ -2,7 +2,7 @@ import React from 'react'
 
 import { FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap'
 
-import RootBasedForm from '../containers/Form'
+import Form from '../containers/Form'
 
 class LoginForm extends React.PureComponent {
   state = {
@@ -39,11 +39,7 @@ class LoginForm extends React.PureComponent {
     return (
       <div className="example-wrapper">
         <h2>Login Form</h2>
-        <RootBasedForm
-          method="POST"
-          action={this.state.action}
-          innerRef={this.formRef}
-        >
+        <Form method="POST" action={this.state.action} innerRef={this.formRef}>
           <FormGroup>
             <ControlLabel>username</ControlLabel>
             <FormControl name="username" type="text" />
@@ -60,7 +56,7 @@ class LoginForm extends React.PureComponent {
               Register
             </Button>
           </FormGroup>
-        </RootBasedForm>
+        </Form>
         <br />
         <h2>Login with your social</h2>
         <Button bsStyle="primary" block>

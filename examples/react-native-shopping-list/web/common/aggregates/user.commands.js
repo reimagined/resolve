@@ -1,3 +1,6 @@
+import jwt from 'jsonwebtoken'
+
+import jwtSecret from '../../auth/jwtSecret'
 import validation from './validation'
 
 export default {
@@ -15,7 +18,9 @@ export default {
       }
     }
   },
-  updateUserName: (state, command) => {
+  updateUserName: (state, command, jwtToken) => {
+    jwt.verify(jwtToken, jwtSecret)
+
     validation.stateExists(state, 'User')
 
     validation.fieldRequired(command.payload, 'username')
