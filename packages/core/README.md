@@ -21,4 +21,4 @@ Core libraries:
 * [resolve-redux](resolve-redux)  
 	Provides a Redux storage helper.
 
-![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-readme?pixel)
+![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-core-readme?pixel)
