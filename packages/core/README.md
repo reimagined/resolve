@@ -4,8 +4,8 @@ Application generator libraries:
 
 * [create-resolve-app](create-resolve-app)  
 	Create a new reSolve-enabled application.
-* [create-scripts](create-resolve-app)  
-	Provides scripts and configuration for the [create-resolve-app](../create-resolve-app) package.
+* [resolve-scripts](resolve-scripts)  
+	Provides scripts and configuration for the create-resolve-app package.
 
 
 Core libraries:
