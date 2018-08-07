@@ -10,7 +10,7 @@ npx create-resolve-app resolve-todo-example -e todo
 
 Use the `create-resolve-app -h` command to list the available examples.
 
-The created application is accessible using the `http://localhost:3000/` and `http://<your_ip>:3000` URLs (you can change this in [configuration files](https://github.com/reimagined/resolve/blob/dev/packages/core/resolve-scripts/configs/schema.resolve.config.json)).
+The created application is accessible using the `http://localhost:300x/` and `http://<your_ip>:300x` URLs (you can change this in [configuration files](https://github.com/reimagined/resolve/blob/dev/packages/core/resolve-scripts/configs/schema.resolve.config.json)).
 
 You can also use `npm` or `yarn` instead of `npx`:
 
