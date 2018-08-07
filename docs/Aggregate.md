@@ -34,7 +34,7 @@ reSolve stores **Aggregates** in the `common/aggregates/` folder. A typical **Ag
             ...
 ```
 
-You should set the paths for **Aggregates** into [configuration](https://github.com/reimagined/resolve/blob/dev/docs/API%20References.md#configuration-files) file `resolve.config.json`:
+You should set the paths for **Aggregates** into [configuration](https://github.com/reimagined/resolve/blob/dev/docs/API%20References.md#configuration-files) file `config.app.json`:
 
 ```json
 {

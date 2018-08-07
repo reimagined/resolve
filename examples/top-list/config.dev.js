@@ -5,7 +5,7 @@ const devConfig = {
   ...defaultResolveConfig,
   ...appConfig,
 
-  port: 3000,
+  port: 3003,
   polyfills: ['@babel/runtime/regenerator'],
   mode: 'development',
   storageAdapter: {

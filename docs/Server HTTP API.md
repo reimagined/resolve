@@ -44,7 +44,7 @@ Content-Type: application/json
 
 |        Name   |  Type  | Description
 | ------------- | ------ | ------------
-| aggregateName | string | The aggregate's name as defined in [resolve.config.json](https://github.com/reimagined/resolve/blob/b6946c424ba24afef6bd99e2dd718c073316e7b2/examples/todo/resolve.config.json#L6)
+| aggregateName | string | The aggregate's name as defined in [config.app.json](https://github.com/reimagined/resolve/blob/b6946c424ba24afef6bd99e2dd718c073316e7b2/examples/todo/config.app.json#L6)
 | commandType   | string | The command type supported by [the aggregate](https://github.com/reimagined/resolve/blob/b6946c424ba24afef6bd99e2dd718c073316e7b2/examples/todo/common/aggregates/todo.commands.js#L2)
 | aggregateId   | string | The ID of an aggregate to which you are addressing the command
 | payload       | object | The parameters that [the command](https://github.com/reimagined/resolve/blob/b6946c424ba24afef6bd99e2dd718c073316e7b2/examples/todo/common/aggregates/todo.commands.js#L2) accepts
@@ -81,7 +81,7 @@ curl -X POST -H "Content-Type: application/json" \
 | --------- | -----------------------
 | host      | The backend host URL (e.g. `localhost`)
 | port      | The backend port (default is `3000`)
-| ViewModel | The View Model name as defined in [resolve.config.json](https://github.com/reimagined/resolve/blob/b6946c424ba24afef6bd99e2dd718c073316e7b2/examples/todo/resolve.config.json#L12)
+| ViewModel | The View Model name as defined in [config.app.json](https://github.com/reimagined/resolve/blob/b6946c424ba24afef6bd99e2dd718c073316e7b2/examples/todo/config.app.json#L12)
 | aggregateIds | The comma-separated list of Aggregate IDs to include into the View Model. Use `*` to include all Aggregates
 
 
@@ -143,7 +143,7 @@ curl -g -X GET "http://localhost:3000/api/query/Todos/root-id"
 | --------- | -----------------------
 | host      | The backend host URL (e.g., `localhost`)
 | port      | The backend port (default is `3000`)
-| readModel | The Read Model name as defined in [resolve.config.json](https://github.com/reimagined/resolve/blob/b6946c424ba24afef6bd99e2dd718c073316e7b2/examples/top-list/resolve.config.json#L12)
+| readModel | The Read Model name as defined in [config.app.json](https://github.com/reimagined/resolve/blob/b6946c424ba24afef6bd99e2dd718c073316e7b2/examples/top-list/config.app.json#L12)
 | resolver  | The name of a [resolver defined in the Read Model](https://github.com/reimagined/resolve/blob/b6946c424ba24afef6bd99e2dd718c073316e7b2/examples/top-list/common/read-models/rating.resolvers.js#L2)
 
 ### Headers

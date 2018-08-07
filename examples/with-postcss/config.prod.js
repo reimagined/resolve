@@ -5,7 +5,7 @@ const prodConfig = {
   ...defaultResolveConfig,
   ...appConfig,
 
-  port: 3000,
+  port: 3005,
   polyfills: ['@babel/runtime/regenerator'],
   mode: 'production'
 }

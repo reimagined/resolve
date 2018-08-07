@@ -8,8 +8,6 @@
   - [Common](#common)
   - [Functional tests](#functional-tests)
 - [Configuration Files](#configuration-files)
-  - [Resolve Config](#resolve-config)
-  - [Build Config](#build-config)
 - [Environment Variables](#environment-variables)
 
 
@@ -22,9 +20,13 @@
     📄 .gitignore
     📄 .yarnrc
     📄 .babelrc
-    📄 LICENSE
     📄 README.md
     📄 package.json
+    📄 config.app.json
+    📄 config.dev.json
+    📄 config.prod.json
+    📄 config.test_functional.json
+    📄 jest.config.json
     📄 index.js
     📁 auth/
         📄 index.js
@@ -63,7 +65,7 @@
 
 ### **Authentication**
 
-The `auth` folder contains authentication strategies' code. You can choose this file location using `auth` section in `resolve.config.json` (see [with-authentication example](../examples/with-authentication/resolve.config.json))
+The `auth` folder contains authentication strategies' code. You can choose this file location using `auth` section in `config.app.json` (see [with-authentication example](../examples/with-authentication/config.app.json))
 
 ### **Client**
 
@@ -79,17 +81,23 @@ The system's operability is controlled with [TestCafe](http://devexpress.github.
 
 ## **Configuration**
 
-Resolve-based application should be launched manually with custom `index.js` script, and Resolve provides functional entry points for build and run application within target mode. Launching facilities are managed by Resolve configuration object, which contains major information about building phase (read models, view models, aggregate, etc) and launching application (environment, root path, TCP port, etc).
+Resolve-based application should be launched manually with custom config files, and Resolve provides functional entry points for build and run application within target mode. Launching facilities are managed by Resolve configuration object, which contains major information about building phase (read models, view models, aggregate, etc) and launching application (environment, root path, TCP port, etc).
+
 The configuration allows you to customize the React client and server-side rendering, declare domain business logic regarding Event Sourcing with the reSolve library, and modify the development and production modes' webpack behavior.
 
-### Resolve Config
+By default resolve app folder has those config files:
+
+* index.js
+* congif.app.js
+* congif.dev.js
+* congif.prod.js
+* congif.test_functional.js
 
 JSON Schema ReSolve Config is available at [schema.resolve.config.json](../packages/core/resolve-scripts/configs/schema.resolve.config.json).
 
 Default values for config sections can be accessed via `import { defaultResolveConfig } from 'resolve-scripts'`
 
 Config examples can be found in `examples` directory. Most advanced config, including descriptions for custom reducers, shapshots, auth, etc can be found in [`hacker-news`](../examples/hacker-news) example in `index.js` file.
-
 
 ## Environment Variables
 
