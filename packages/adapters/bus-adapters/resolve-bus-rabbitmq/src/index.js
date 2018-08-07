@@ -10,11 +10,14 @@ const defaultOptions = {
 }
 
 class RabbitMQBusError extends Error {
-  constructor({ message, cause }) {
+  constructor(message, cause) {
     super()
     this.name = 'RabbitMQ Bus Error'
     this.message = message
-    this.cause = cause
+
+    if (cause) {
+      this.cause = cause
+    }
   }
 }
 
@@ -53,7 +56,7 @@ const init = async (
 
     return channel
   } catch (e) {
-    throw new RabbitMQBusError(e)
+    throw new RabbitMQBusError(e.message, e.cause)
   }
 }
 
@@ -70,18 +73,18 @@ function createAdapter(options) {
       }
 
       try {
-        return initPromise
+        return await initPromise
       } catch (e) {
         initPromise = null
         throw e
       }
     },
     publish: async event => {
-      const channel = await initPromise
-
-      if (!channel) {
-        return
+      if (!initPromise) {
+        throw new RabbitMQBusError('Adapter is not initialized')
       }
+
+      const channel = await initPromise
 
       return channel.publish(
         exchange,
