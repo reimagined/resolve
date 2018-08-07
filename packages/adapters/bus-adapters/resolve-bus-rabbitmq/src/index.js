@@ -95,7 +95,10 @@ function createAdapter(options) {
         }
       )
     },
-    subscribe: callback => (handler = callback)
+    subscribe: async callback => (handler = callback),
+    close: async () => {
+      initPromise = null
+    }
   }
 }
 
