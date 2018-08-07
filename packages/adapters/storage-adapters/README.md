@@ -1,5 +1,5 @@
 # **Storage Adapters**
-This folder contains [resolve-es](../resolve-es) storage adapters.
+This folder contains [resolve-es](../../core/resolve-es) storage adapters.
 
 A storage adapter is an object that must contain the following functions:  
 * `saveEvent` - gets an event to be saved in storage. Returns a Promise object that is resolved when the event is stored.
