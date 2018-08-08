@@ -1,14 +1,22 @@
+import {
+  SHOPPING_LIST_CREATED,
+  SHOPPING_LIST_RENAMED,
+  SHOPPING_ITEM_CREATED,
+  SHOPPING_ITEM_TOGGLED,
+  SHOPPING_ITEM_REMOVED
+} from '../eventTypes'
+
 export default {
   Init: () => null,
-  LIST_CREATED: (state, { payload: { name } }) => ({
+  [SHOPPING_LIST_CREATED]: (state, { payload: { name } }) => ({
     name,
     list: []
   }),
-  LIST_RENAMED: (state, { payload: { name } }) => ({
+  [SHOPPING_LIST_RENAMED]: (state, { payload: { name } }) => ({
     ...state,
     name
   }),
-  ITEM_CREATED: (state, { payload: { id, text } }) => ({
+  [SHOPPING_ITEM_CREATED]: (state, { payload: { id, text } }) => ({
     ...state,
     list: [
       ...state.list,
@@ -19,7 +27,7 @@ export default {
       }
     ]
   }),
-  ITEM_TOGGLED: (state, { payload: { id } }) => ({
+  [SHOPPING_ITEM_TOGGLED]: (state, { payload: { id } }) => ({
     ...state,
     list: state.list.map(
       item =>
@@ -31,7 +39,7 @@ export default {
           : item
     )
   }),
-  ITEM_REMOVED: (state, { payload: { id } }) => ({
+  [SHOPPING_ITEM_REMOVED]: (state, { payload: { id } }) => ({
     ...state,
     list: state.list.filter(item => item.id !== id)
   })

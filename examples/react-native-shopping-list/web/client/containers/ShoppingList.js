@@ -1,9 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { connectViewModel } from 'resolve-redux'
+import { connectViewModel, connectRootBasedUrls } from 'resolve-redux'
 import { routerActions } from 'react-router-redux'
 import { bindActionCreators } from 'redux'
-import { Redirect } from 'react-router-dom'
+import { Redirect, Link } from 'react-router-dom'
 import {
   Row,
   Col,
@@ -11,6 +11,7 @@ import {
   ListGroupItem,
   Checkbox,
   Button,
+  InputGroup,
   FormControl,
   FormGroup,
   ControlLabel
@@ -18,6 +19,8 @@ import {
 
 import Image from './Image'
 import NotFound from '../components/NotFound'
+
+const ButtonLink = connectRootBasedUrls(['href'])(Button)
 
 export class ShoppingList extends React.PureComponent {
   state = {
@@ -42,8 +45,8 @@ export class ShoppingList extends React.PureComponent {
     }
   }
 
-  createItem = () => {
-    this.props.createItem(this.props.aggregateId, {
+  createShoppingItem = () => {
+    this.props.createShoppingItem(this.props.aggregateId, {
       text: this.state.itemText,
       id: Date.now().toString()
     })
@@ -53,8 +56,8 @@ export class ShoppingList extends React.PureComponent {
     })
   }
 
-  renameList = () => {
-    this.props.renameList(this.props.aggregateId, {
+  renameShoppingList = () => {
+    this.props.renameShoppingList(this.props.aggregateId, {
       name: this.state.shoppingListName
     })
   }
@@ -68,7 +71,7 @@ export class ShoppingList extends React.PureComponent {
   onItemTextPressEnter = event => {
     if (event.charCode === 13) {
       event.preventDefault()
-      this.createItem()
+      this.createShoppingItem()
     }
   }
 
@@ -81,12 +84,18 @@ export class ShoppingList extends React.PureComponent {
   onShoppingListNamePressEnter = event => {
     if (event.charCode === 13) {
       event.preventDefault()
-      this.renameList()
+      this.renameShoppingList()
     }
   }
 
   render() {
-    const { data, jwt, aggregateId, toggleItem, removeItem } = this.props
+    const {
+      data,
+      jwt,
+      aggregateId,
+      toggleShoppingItem,
+      removeShoppingItem
+    } = this.props
 
     if (!jwt.id) {
       return <Redirect to="/login" />
@@ -102,13 +111,25 @@ export class ShoppingList extends React.PureComponent {
       <div className="example-wrapper">
         <ControlLabel>Shopping list name</ControlLabel>
         <FormGroup bsSize="large">
-          <FormControl
-            type="text"
-            value={this.state.shoppingListName}
-            onChange={this.updateShoppingListName}
-            onKeyPress={this.onShoppingListNamePressEnter}
-            onBlur={this.renameList}
-          />
+          <InputGroup>
+            <InputGroup.Button>
+              <Button bsSize="large">
+                <i className="far fa-trash-alt" />
+              </Button>
+            </InputGroup.Button>
+            <FormControl
+              type="text"
+              value={this.state.shoppingListName}
+              onChange={this.updateShoppingListName}
+              onKeyPress={this.onShoppingListNamePressEnter}
+              onBlur={this.renameShoppingList}
+            />
+            <InputGroup.Button>
+              <ButtonLink href={`/share/${aggregateId}`} bsSize="large">
+                <i className="fas fa-share-alt" />
+              </ButtonLink>
+            </InputGroup.Button>
+          </InputGroup>
         </FormGroup>
         <ListGroup className="example-list">
           {list.map(todo => (
@@ -116,14 +137,18 @@ export class ShoppingList extends React.PureComponent {
               <Checkbox
                 inline
                 checked={todo.checked}
-                onChange={toggleItem.bind(null, aggregateId, { id: todo.id })}
+                onChange={toggleShoppingItem.bind(null, aggregateId, {
+                  id: todo.id
+                })}
               >
                 {todo.text}
               </Checkbox>
               <Image
                 className="example-close-button"
                 src="/close-button.png"
-                onClick={removeItem.bind(null, aggregateId, { id: todo.id })}
+                onClick={removeShoppingItem.bind(null, aggregateId, {
+                  id: todo.id
+                })}
               />
             </ListGroupItem>
           ))}
@@ -143,7 +168,7 @@ export class ShoppingList extends React.PureComponent {
             <Button
               className="example-button"
               bsStyle="success"
-              onClick={this.createItem}
+              onClick={this.createShoppingItem}
             >
               Add Item
             </Button>

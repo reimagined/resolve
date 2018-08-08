@@ -5,12 +5,14 @@ import { connectReadModel } from 'resolve-redux'
 import { connect } from 'react-redux'
 import {
   Button,
+  ButtonGroup,
   Col,
   ControlLabel,
   FormControl,
   ListGroup,
   ListGroupItem,
-  Row
+  Row,
+  Table
 } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
@@ -33,7 +35,7 @@ class ShoppingLists extends React.PureComponent {
   }
 
   createList = () => {
-    this.props.createList(uuid(), {
+    this.props.createShoppingList(uuid(), {
       name:
         this.state.shoppingListName ||
         `Shopping List ${this.props.lists.length + 1}`
@@ -47,13 +49,33 @@ class ShoppingLists extends React.PureComponent {
     return (
       <div className="example-wrapper">
         <ControlLabel>My shopping lists</ControlLabel>
-        <ListGroup>
-          {this.props.lists.map(({ id, name }) => (
-            <ListGroupItem key={id}>
-              <Link to={`/${id}`}>{name}</Link>
-            </ListGroupItem>
-          ))}
-        </ListGroup>
+        <Table responsive>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Shopping List</th>
+              <th className="example-table-acton">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.props.lists.map(({ id, name }, index) => (
+              <tr key={id}>
+                <td>{index + 1}</td>
+                <td>
+                  <Link to={`/${id}`}>{name}</Link>
+                </td>
+                <td className="example-table-acton">
+                  <Button>
+                    <i className="fas fa-share-alt" />
+                  </Button>{' '}
+                  <Button>
+                    <i className="far fa-trash-alt" />
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
         <ControlLabel>Shopping list name</ControlLabel>
         <Row>
           <Col md={8}>

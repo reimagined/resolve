@@ -83,15 +83,18 @@ export class App extends React.PureComponent {
 
     this.setState({ text: '' })
 
-    this.props.createItem(aggregateId, { id: Date.now().toString(), text })
+    this.props.createShoppingItem(aggregateId, {
+      id: Date.now().toString(),
+      text
+    })
   }
 
   removeItem = id => {
-    this.props.removeItem(aggregateId, { id })
+    this.props.removeShoppingItem(aggregateId, { id })
   }
 
   toggleItem = id => {
-    this.props.toggleItem(aggregateId, { id })
+    this.props.toggleShoppingItem(aggregateId, { id })
   }
 
   keyExtractor = item => item.id

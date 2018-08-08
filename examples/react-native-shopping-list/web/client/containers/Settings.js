@@ -1,21 +1,74 @@
 import React from 'react'
+import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { connectReadModel } from 'resolve-redux'
+
+import { ControlLabel, FormControl } from 'react-bootstrap'
 
 class Settings extends React.PureComponent {
+  state = {
+    username: this.props.username
+  }
+
+  updateInputText = event => {
+    this.setState({
+      username: event.target.value
+    })
+  }
+
+  updateUserName = () => {
+    this.props.updateUserName(this.props.id, {
+      username: this.state.username
+    })
+  }
+
+  onInputTextPressEnter = event => {
+    if (event.charCode === 13) {
+      event.preventDefault()
+      this.updateUserName()
+    }
+  }
+
   render() {
-    const { jwt } = this.props
+    const { id } = this.props
 
     return (
       <div className="example-wrapper">
-        Profile
-        <div>{JSON.stringify(jwt)}</div>
+        <ControlLabel>Username</ControlLabel>
+        <FormControl
+          type="text"
+          value={this.state.username}
+          onChange={this.updateInputText}
+          onKeyPress={this.onInputTextPressEnter}
+          onBlur={this.updateUserName}
+        />
+        <br />
+        <ControlLabel>User Id</ControlLabel>
+        <FormControl type="text" value={id} readOnly />
       </div>
     )
   }
 }
 
-const mapStateToProps = state => ({
-  jwt: state.jwt
+export const mapStateToOptions = state => ({
+  readModelName: 'Default',
+  resolverName: 'user',
+  resolverArgs: {
+    id: state.jwt.id
+  }
 })
 
-export default connect(mapStateToProps)(Settings)
+export const mapStateToProps = (state, { data }) => ({
+  id: data.id,
+  username: data.username
+})
+
+export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+  bindActionCreators(aggregateActions, dispatch)
+
+export default connectReadModel(mapStateToOptions)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Settings)
+)

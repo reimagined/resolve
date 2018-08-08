@@ -6,9 +6,9 @@ ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
   Symbol(enzyme.__unrendered__): <Todo
     checked={true}
-    removeItem={[Function]}
+    removeShoppingItem={[Function]}
     text="text"
-    toggleItem={[Function]}
+    toggleShoppingItem={[Function]}
   />,
   Symbol(enzyme.__renderer__): Object {
     "batchedUpdates": [Function],
@@ -483,9 +483,9 @@ ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
   Symbol(enzyme.__unrendered__): <Todo
     checked={false}
-    removeItem={[Function]}
+    removeShoppingItem={[Function]}
     text="text"
-    toggleItem={[Function]}
+    toggleShoppingItem={[Function]}
   />,
   Symbol(enzyme.__renderer__): Object {
     "batchedUpdates": [Function],

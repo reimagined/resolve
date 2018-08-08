@@ -2,32 +2,32 @@ import commands from '../../common/aggregates/shoppingList.commands'
 
 describe('aggregates', () => {
   describe('Todo', () => {
-    it('command "createItem" should create an event to create a item', () => {
+    it('command "createShoppingItem" should create an event to create a item', () => {
       const state = undefined
       const command = { payload: { id: 'id', text: 'text' } }
 
-      expect(commands.createItem(state, command)).toEqual({
-        type: 'ITEM_CREATED',
+      expect(commands.createShoppingItem(state, command)).toEqual({
+        type: 'SHOPPING_ITEM_CREATED',
         payload: { id: command.payload.id, text: command.payload.text }
       })
     })
 
-    it('command "toggleItem" should create an event to toggle the item', () => {
+    it('command "toggleShoppingItem" should create an event to toggle the item', () => {
       const state = undefined
       const command = { payload: { id: 'id' } }
 
-      expect(commands.toggleItem(state, command)).toEqual({
-        type: 'ITEM_TOGGLED',
+      expect(commands.toggleShoppingItem(state, command)).toEqual({
+        type: 'SHOPPING_ITEM_TOGGLED',
         payload: { id: command.payload.id }
       })
     })
 
-    it('command "removeItem" should create an event to remove the item', () => {
+    it('command "removeShoppingItem" should create an event to remove the item', () => {
       const state = undefined
       const command = { payload: { id: 'id' } }
 
-      expect(commands.removeItem(state, command)).toEqual({
-        type: 'ITEM_REMOVED',
+      expect(commands.removeShoppingItem(state, command)).toEqual({
+        type: 'SHOPPING_ITEM_REMOVED',
         payload: { id: command.payload.id }
       })
     })

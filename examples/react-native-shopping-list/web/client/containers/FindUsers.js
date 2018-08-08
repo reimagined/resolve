@@ -34,7 +34,7 @@ class FindUsers extends React.PureComponent {
           <tr>
             <th>#</th>
             <th>Username</th>
-            <th style={{ width: '1px' }}>Action</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -42,8 +42,9 @@ class FindUsers extends React.PureComponent {
             <tr key={id}>
               <td>{index + 1}</td>
               <td>{username}</td>
-              <td>
+              <td className="example-table-acton">
                 <Button
+                  className="example-button"
                   bsStyle={buttonBaseStyle}
                   onClick={onPressButton.bind(null, id, username)}
                 >

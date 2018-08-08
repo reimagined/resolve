@@ -47,6 +47,11 @@
   margin-top: -14px;
 }
 
+.example-table-acton {
+  width: 110px;
+  white-space: nowrap;
+}
+
 .logout {
   cursor: pointer;
   white-space: nowrap;

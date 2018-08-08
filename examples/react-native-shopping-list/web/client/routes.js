@@ -8,7 +8,6 @@ import LoginForm from './components/LoginForm'
 
 export default [
   {
-    path: '/:id?',
     component: App,
     routes: [
       {
@@ -20,13 +19,13 @@ export default [
         component: RequiredAuth,
         routes: [
           {
-            path: '/settings',
-            component: Settings,
+            path: '/',
+            component: AllShoppingLists,
             exact: true
           },
           {
-            path: '/all',
-            component: AllShoppingLists,
+            path: '/settings',
+            component: Settings,
             exact: true
           },
           {
@@ -35,6 +34,7 @@ export default [
             exact: true
           },
           {
+            path: '/:id?',
             component: ShoppingList
           }
         ]

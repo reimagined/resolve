@@ -5,8 +5,8 @@ ShallowWrapper {
   "length": 1,
   Symbol(enzyme.__root__): [Circular],
   Symbol(enzyme.__unrendered__): <App
-    createItem={[Function]}
-    removeItem={[Function]}
+    createShoppingItem={[Function]}
+    removeShoppingItem={[Function]}
     todos={
       Array [
         Object {
@@ -21,7 +21,7 @@ ShallowWrapper {
         },
       ]
     }
-    toggleItem={[Function]}
+    toggleShoppingItem={[Function]}
   />,
   Symbol(enzyme.__renderer__): Object {
     "batchedUpdates": [Function],

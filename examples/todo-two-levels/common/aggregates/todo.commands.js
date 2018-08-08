@@ -1,21 +1,21 @@
 export default {
   createList: (state, { payload: { title } }) => ({
-    type: 'LIST_CREATED',
+    type: 'SHOPPING_LIST_CREATED',
     payload: { title }
   }),
   removeList: () => ({
     type: 'LIST_REMOVED'
   }),
   createItem: (state, { payload: { id, text } }) => ({
-    type: 'ITEM_CREATED',
+    type: 'SHOPPING_ITEM_CREATED',
     payload: { id, text }
   }),
   toggleItem: (state, { payload: { id } }) => ({
-    type: 'ITEM_TOGGLED',
+    type: 'SHOPPING_ITEM_TOGGLED',
     payload: { id }
   }),
   removeItem: (state, { payload: { id } }) => ({
-    type: 'ITEM_REMOVED',
+    type: 'SHOPPING_ITEM_REMOVED',
     payload: { id }
   })
 }

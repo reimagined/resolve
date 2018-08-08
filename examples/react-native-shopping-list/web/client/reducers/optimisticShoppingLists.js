@@ -1,11 +1,12 @@
 import { LOCATION_CHANGE } from 'react-router-redux'
+import { OPTIMISTIC_CREATE_SHOPPING_LIST } from '../../common/eventTypes'
 
 const optimisticShoppingLists = (state = [], action) => {
   switch (action.type) {
     case LOCATION_CHANGE: {
       return []
     }
-    case 'OPTIMISTIC_CREATE_SHOPPING_LIST': {
+    case OPTIMISTIC_CREATE_SHOPPING_LIST: {
       return [
         ...state,
         {

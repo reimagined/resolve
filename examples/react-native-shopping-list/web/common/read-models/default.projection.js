@@ -1,3 +1,12 @@
+import {
+  USER_CREATED,
+  USER_NAME_UPDATED,
+  SHOPPING_LIST_CREATED,
+  SHOPPING_LIST_RENAMED,
+  SHOPPING_LIST_SHARED,
+  SHOPPING_LIST_UNSHARED
+} from '../eventTypes'
+
 export default {
   Init: async store => {
     await store.defineTable('Users', {
@@ -27,7 +36,7 @@ export default {
     })
   },
 
-  USER_CREATED: async (
+  [USER_CREATED]: async (
     store,
     {
       aggregateId,
@@ -45,7 +54,10 @@ export default {
     await store.insert('Users', user)
   },
 
-  USER_NAME_UPDATED: async (store, { aggregateId, payload: { username } }) => {
+  [USER_NAME_UPDATED]: async (
+    store,
+    { aggregateId, payload: { username } }
+  ) => {
     await store.update(
       'Users',
       { id: aggregateId },
@@ -53,7 +65,7 @@ export default {
     )
   },
 
-  LIST_CREATED: async (
+  [SHOPPING_LIST_CREATED]: async (
     store,
     { aggregateId, timestamp, payload: { name, userId } }
   ) => {
@@ -68,11 +80,17 @@ export default {
     await store.insert('Sharings', { shoppingListId: aggregateId, userId })
   },
 
-  LIST_RENAMED: async (store, { aggregateId, payload: { name } }) => {
+  [SHOPPING_LIST_RENAMED]: async (
+    store,
+    { aggregateId, payload: { name } }
+  ) => {
     await store.update('ShoppingLists', { id: aggregateId }, { $set: { name } })
   },
 
-  SHOPPING_LIST_SHARED: async (store, { aggregateId, payload: { userId } }) => {
+  [SHOPPING_LIST_SHARED]: async (
+    store,
+    { aggregateId, payload: { userId } }
+  ) => {
     const record = await store.findOne('Sharings', {
       shoppingListId: aggregateId,
       userId
@@ -83,7 +101,7 @@ export default {
     }
   },
 
-  SHOPPING_LIST_UNSHARED: async (
+  [SHOPPING_LIST_UNSHARED]: async (
     store,
     { aggregateId, payload: { userId } }
   ) => {

@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken'
 
 import jwtSecret from '../../auth/jwtSecret'
 import validation from './validation'
+import { USER_CREATED, USER_NAME_UPDATED } from '../eventTypes'
 
 export default {
   createUser: (state, command) => {
@@ -10,7 +11,7 @@ export default {
     validation.fieldRequired(command.payload, 'username')
 
     return {
-      type: 'USER_CREATED',
+      type: USER_CREATED,
       payload: {
         username: command.payload.username,
         passwordHash: command.payload.passwordHash,
@@ -26,7 +27,7 @@ export default {
     validation.fieldRequired(command.payload, 'username')
 
     return {
-      type: 'USER_NAME_UPDATED',
+      type: USER_NAME_UPDATED,
       payload: {
         username: command.payload.username
       }

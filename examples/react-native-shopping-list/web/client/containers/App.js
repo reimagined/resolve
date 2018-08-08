@@ -13,12 +13,7 @@ const App = ({
       title="ReSolve React-Native Shopping List Example"
       name="Shopping List"
       favicon="/favicon.ico"
-      css={[
-        '/bootstrap.min.css',
-        '/fontawesome.min.css',
-        '/brands.min.css',
-        '/style.css'
-      ]}
+      css={['/bootstrap.min.css', '/fontawesome.min.css', '/style.css']}
       shoppingListId={id}
     />
     {children}

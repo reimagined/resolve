@@ -2,7 +2,7 @@ import projection from '../../common/view-models/shoppingList.projection'
 
 describe('view-models', () => {
   describe('Todos', () => {
-    it('projection "ITEM_CREATED" should create a item', () => {
+    it('projection "SHOPPING_ITEM_CREATED" should create a item', () => {
       const state = [
         {
           id: 'id1',
@@ -26,7 +26,7 @@ describe('view-models', () => {
       ])
     })
 
-    it('projection "ITEM_TOGGLED" should toggle the item', () => {
+    it('projection "SHOPPING_ITEM_TOGGLED" should toggle the item', () => {
       const state = [
         {
           id: 'id1',
@@ -45,7 +45,7 @@ describe('view-models', () => {
       ])
     })
 
-    it('projection "ITEM_REMOVED" should remove the item', () => {
+    it('projection "SHOPPING_ITEM_REMOVED" should remove the item', () => {
       const state = [
         {
           id: 'id1',

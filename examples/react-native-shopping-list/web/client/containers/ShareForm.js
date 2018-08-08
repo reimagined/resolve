@@ -39,7 +39,7 @@ class ShareForm extends React.PureComponent {
 
     return (
       <div className="example-wrapper">
-        <ControlLabel>Find</ControlLabel>
+        <ControlLabel>Find users</ControlLabel>
         <FormControl
           className="example-form-control"
           type="text"

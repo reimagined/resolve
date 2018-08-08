@@ -22,11 +22,11 @@ export default {
           )
         }
         users = users.filter(({ id }) => !sharings.includes(id))
-        users = users.filter(({ id }) => id !== userId)
       } else {
         users = users.filter(({ id }) => sharings.includes(id))
       }
     }
+    users = users.filter(({ id }) => id !== userId)
 
     return users
   },

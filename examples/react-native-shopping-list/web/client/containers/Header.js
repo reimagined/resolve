@@ -3,13 +3,12 @@ import { Navbar, Nav, NavItem as RawNavItem } from 'react-bootstrap'
 import { connectStaticBasedUrls, connectRootBasedUrls } from 'resolve-redux'
 import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
-import { Link } from 'react-router-dom'
 
 import Image from './Image'
 
 const NavItem = connectRootBasedUrls(['href'])(RawNavItem)
 
-const Header = ({ title, name, css, favicon, shoppingListId, jwt }) => (
+const Header = ({ title, name, css, favicon, jwt }) => (
   <div>
     <Helmet>
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -22,32 +21,23 @@ const Header = ({ title, name, css, favicon, shoppingListId, jwt }) => (
     <Navbar collapseOnSelect>
       <Navbar.Header>
         <Navbar.Brand>
-          <Link to={`/${jwt.id}`}>
-            <Image className="example-icon" src="/resolve-logo.png" /> {name}
-          </Link>
+          <Image className="example-icon" src="/resolve-logo.png" /> {name}
         </Navbar.Brand>
         <Navbar.Toggle />
       </Navbar.Header>
       {jwt.id ? (
         <Navbar.Collapse>
           <Nav>
-            <NavItem eventKey={1} href="/all">
+            <NavItem eventKey={1} href="/">
               My Lists
             </NavItem>
-            {shoppingListId &&
-            ['all', 'share', 'settings', 'login'].indexOf(shoppingListId) ===
-              -1 ? (
-              <NavItem eventKey={2} href={`/share/${shoppingListId}`}>
-                Share
-              </NavItem>
-            ) : null}
           </Nav>
           <Nav pullRight>
-            <NavItem eventKey={3} href="/settings">
+            <NavItem eventKey={2} href="/settings">
               Settings
             </NavItem>
             <NavItem
-              eventKey={4}
+              eventKey={3}
               href="/auth/logout?username=logout&&password=logout"
             >
               <Image className="example-icon" src="/logout.svg" /> Logout

@@ -1,4 +1,8 @@
 import { LOCATION_CHANGE } from 'react-router-redux'
+import {
+  OPTIMISTIC_SHARE_SHOPPING_LIST,
+  OPTIMISTIC_UNSHARE_SHOPPING_LIST
+} from '../../common/eventTypes'
 
 const initialState = {
   share: [],
@@ -10,7 +14,7 @@ const optimisticSharings = (state = initialState, action) => {
     case LOCATION_CHANGE: {
       return initialState
     }
-    case 'OPTIMISTIC_SHARE_SHOPPING_LIST': {
+    case OPTIMISTIC_SHARE_SHOPPING_LIST: {
       return {
         share: [
           ...state.share,
@@ -22,7 +26,7 @@ const optimisticSharings = (state = initialState, action) => {
         unshare: state.unshare.filter(({ id }) => id !== action.payload.id)
       }
     }
-    case 'OPTIMISTIC_UNSHARE_SHOPPING_LIST': {
+    case OPTIMISTIC_UNSHARE_SHOPPING_LIST: {
       return {
         share: state.share.filter(({ id }) => id !== action.payload.id),
         unshare: [

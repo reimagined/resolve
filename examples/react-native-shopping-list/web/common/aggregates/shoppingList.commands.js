@@ -2,55 +2,70 @@ import jwt from 'jsonwebtoken'
 
 import jwtSecret from '../../auth/jwtSecret'
 import validation from './validation'
+import {
+  SHOPPING_LIST_CREATED,
+  SHOPPING_LIST_RENAMED,
+  SHOPPING_ITEM_CREATED,
+  SHOPPING_ITEM_TOGGLED,
+  SHOPPING_ITEM_REMOVED,
+  SHOPPING_LIST_SHARED,
+  SHOPPING_LIST_UNSHARED
+} from '../eventTypes'
 
 export default {
-  createList: (state, { payload: { name } }, jwtToken) => {
+  createShoppingList: (state, { payload: { name } }, jwtToken) => {
     const { id: userId } = jwt.verify(jwtToken, jwtSecret)
 
     validation.stateIsAbsent(state, 'Shopping List')
+    validation.fieldRequired({ name }, 'name')
 
     return {
-      type: 'LIST_CREATED',
+      type: SHOPPING_LIST_CREATED,
       payload: { name, userId }
     }
   },
-  renameList: (state, { payload: { name } }, jwtToken) => {
+  renameShoppingList: (state, { payload: { name } }, jwtToken) => {
     const { id: userId } = jwt.verify(jwtToken, jwtSecret)
 
     validation.stateExists(state, 'Shopping List')
+    validation.fieldRequired({ name }, 'name')
 
     return {
-      type: 'LIST_RENAMED',
+      type: SHOPPING_LIST_RENAMED,
       payload: { name, userId }
     }
   },
-  createItem: (state, { payload: { id, text } }, jwtToken) => {
+  createShoppingItem: (state, { payload: { id, text } }, jwtToken) => {
     const { id: userId } = jwt.verify(jwtToken, jwtSecret)
 
     validation.stateExists(state, 'Shopping List')
+    validation.fieldRequired({ id }, 'id')
+    validation.fieldRequired({ text }, 'text')
 
     return {
-      type: 'ITEM_CREATED',
+      type: SHOPPING_ITEM_CREATED,
       payload: { id, text, userId }
     }
   },
-  toggleItem: (state, { payload: { id } }, jwtToken) => {
+  toggleShoppingItem: (state, { payload: { id } }, jwtToken) => {
     const { id: userId } = jwt.verify(jwtToken, jwtSecret)
 
     validation.stateExists(state, 'Shopping List')
+    validation.fieldRequired({ id }, 'id')
 
     return {
-      type: 'ITEM_TOGGLED',
+      type: SHOPPING_ITEM_TOGGLED,
       payload: { id, userId }
     }
   },
-  removeItem: (state, { payload: { id } }, jwtToken) => {
+  removeShoppingItem: (state, { payload: { id } }, jwtToken) => {
     const { id: userId } = jwt.verify(jwtToken, jwtSecret)
 
     validation.stateExists(state, 'Shopping List')
+    validation.fieldRequired({ id }, 'id')
 
     return {
-      type: 'ITEM_REMOVED',
+      type: SHOPPING_ITEM_REMOVED,
       payload: { id, userId }
     }
   },
@@ -58,6 +73,7 @@ export default {
     jwt.verify(jwtToken, jwtSecret)
 
     validation.stateExists(state, 'User')
+    validation.fieldRequired({ userId }, 'userId')
     validation.itemIsNotInArray(
       state.sharing,
       userId,
@@ -65,7 +81,7 @@ export default {
     )
 
     return {
-      type: 'SHOPPING_LIST_SHARED',
+      type: SHOPPING_LIST_SHARED,
       payload: { userId }
     }
   },
@@ -73,6 +89,7 @@ export default {
     jwt.verify(jwtToken, jwtSecret)
 
     validation.stateExists(state, 'User')
+    validation.fieldRequired({ userId }, 'userId')
     validation.itemIsInArray(
       state.sharing,
       userId,
@@ -80,7 +97,7 @@ export default {
     )
 
     return {
-      type: 'SHOPPING_LIST_UNSHARED',
+      type: SHOPPING_LIST_UNSHARED,
       payload: { userId }
     }
   }

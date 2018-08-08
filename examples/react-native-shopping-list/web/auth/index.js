@@ -83,7 +83,7 @@ const strategies = [
 
         await resolve.executeCommand(
           {
-            type: 'createList',
+            type: 'createShoppingList',
             aggregateId: userId,
             aggregateName: 'ShoppingList',
             payload: {

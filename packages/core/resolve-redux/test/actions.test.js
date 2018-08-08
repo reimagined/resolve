@@ -372,7 +372,7 @@ describe('actions', () => {
 
   describe('sendCommandRequest', () => {
     test('should create an action to send command request', () => {
-      const commandType = 'createItem'
+      const commandType = 'createShoppingItem'
       const aggregateId = 'aggregateId'
       const aggregateName = 'aggregateName'
       const payload = {
@@ -392,7 +392,7 @@ describe('actions', () => {
 
   describe('sendCommandSuccess', () => {
     test('should create an action to send command success', () => {
-      const commandType = 'createItem'
+      const commandType = 'createShoppingItem'
       const aggregateId = 'aggregateId'
       const aggregateName = 'aggregateName'
       const payload = {
@@ -412,7 +412,7 @@ describe('actions', () => {
 
   describe('sendCommandFailure', () => {
     test('should create an action to send command failure', () => {
-      const commandType = 'createItem'
+      const commandType = 'createShoppingItem'
       const aggregateId = 'aggregateId'
       const aggregateName = 'aggregateName'
       const payload = {
