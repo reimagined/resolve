@@ -28,34 +28,33 @@ const Header = ({ title, name, css, favicon, shoppingListId, jwt }) => (
         </Navbar.Brand>
         <Navbar.Toggle />
       </Navbar.Header>
-      <Navbar.Collapse>
-        <Nav>
-          <NavItem eventKey={1} href="/all">
-            My Lists
-          </NavItem>
-          {shoppingListId &&
-          ['all', 'share', 'settings'].indexOf(shoppingListId) === -1 ? (
-            <NavItem eventKey={2} href={`/share/${shoppingListId}`}>
-              Share
+      {jwt.id ? (
+        <Navbar.Collapse>
+          <Nav>
+            <NavItem eventKey={1} href="/all">
+              My Lists
             </NavItem>
-          ) : null}
-        </Nav>
-        <Nav pullRight>
-          {jwt.id ? (
+            {shoppingListId &&
+            ['all', 'share', 'settings', 'login'].indexOf(shoppingListId) ===
+              -1 ? (
+              <NavItem eventKey={2} href={`/share/${shoppingListId}`}>
+                Share
+              </NavItem>
+            ) : null}
+          </Nav>
+          <Nav pullRight>
             <NavItem eventKey={3} href="/settings">
               Settings
             </NavItem>
-          ) : null}
-          {jwt.id ? (
             <NavItem
               eventKey={4}
               href="/auth/logout?username=logout&&password=logout"
             >
               <Image className="example-icon" src="/logout.svg" /> Logout
             </NavItem>
-          ) : null}
-        </Nav>
-      </Navbar.Collapse>
+          </Nav>
+        </Navbar.Collapse>
+      ) : null}
     </Navbar>
   </div>
 )
