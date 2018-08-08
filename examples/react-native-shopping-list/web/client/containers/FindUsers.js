@@ -4,9 +4,21 @@ import { Button, Table } from 'react-bootstrap'
 
 class FindUsers extends React.PureComponent {
   render() {
-    const { data, onShareForUser } = this.props
+    const {
+      data,
+      optimisticAddedSharings,
+      optimisticRemovedSharings,
+      buttonText,
+      buttonBaseStyle,
+      onPressButton
+    } = this.props
+    
+    const removedSharingIds = optimisticRemovedSharings.map(({ id }) => id)
+    const users = [...data, ...optimisticAddedSharings].filter(
+      ({ id }) => !removedSharingIds.includes(id)
+    )
 
-    if (data.length === 0) {
+    if (users.length === 0) {
       return (
         <div>
           Users not found
@@ -26,16 +38,16 @@ class FindUsers extends React.PureComponent {
           </tr>
         </thead>
         <tbody>
-          {data.map(({ id, username }, index) => (
+          {users.map(({ id, username }, index) => (
             <tr key={id}>
               <td>{index + 1}</td>
               <td>{username}</td>
               <td>
                 <Button
-                  bsStyle="success"
-                  onClick={onShareForUser.bind(null, id)}
+                  bsStyle={buttonBaseStyle}
+                  onClick={onPressButton.bind(null, id, username)}
                 >
-                  Share
+                  {buttonText}
                 </Button>
               </td>
             </tr>
@@ -46,10 +58,10 @@ class FindUsers extends React.PureComponent {
   }
 }
 
-export const mapStateToOptions = (state, { query }) => ({
+export const mapStateToOptions = (state, { options }) => ({
   readModelName: 'Default',
   resolverName: 'users',
-  resolverArgs: { query }
+  resolverArgs: options
 })
 
 export default connectReadModel(mapStateToOptions)(FindUsers)

@@ -113,7 +113,7 @@ const strategies = [
       errorRedirect,
       callback: async ({ resolve }, username, password) => {
         const user = await resolve.executeReadModelQuery({
-          modelName: 'default',
+          modelName: 'Default',
           resolverName: 'user',
           resolverArgs: { username }
         })

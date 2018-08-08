@@ -36,7 +36,7 @@ class ShoppingLists extends React.PureComponent {
     this.props.createList(uuid(), {
       name:
         this.state.shoppingListName ||
-        `Shopping List ${this.props.data.length + 1}`
+        `Shopping List ${this.props.lists.length + 1}`
     })
     this.setState({
       shoppingListName: ''

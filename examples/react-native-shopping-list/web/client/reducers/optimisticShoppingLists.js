@@ -14,8 +14,9 @@ const optimisticShoppingLists = (state = [], action) => {
         }
       ]
     }
-    default:
+    default: {
       return state
+    }
   }
 }
 

@@ -3,20 +3,34 @@ import jwt from 'jsonwebtoken'
 import jwtSecret from '../../auth/jwtSecret'
 
 export default {
-  users: async (store, { query, jwtToken }) => {
+  users: async (store, { query, shareId, jwtToken }) => {
     const { id: userId } = jwt.verify(jwtToken, jwtSecret)
 
     let users = await store.find('Users', {}, null, { createdAt: -1 })
 
     users = Array.isArray(users) ? users : []
 
-    if (query) {
-      users = users.filter(({ username }) =>
-        username.toLowerCase().includes(query.toLowerCase())
-      )
+    if(shareId) {
+      const shoppingList = await store.findOne('ShoppingLists', { id: shareId })
+      
+      if(query !== undefined) {
+        if(query !== '') {
+          users = users.filter(({ username }) =>
+            username.toLowerCase().includes(query.toLowerCase())
+          )
+        }
+        users = users.filter(({ id }) =>
+          !shoppingList.sharings.includes(id)
+        )
+        users = users.filter(({ id }) => id !== userId)
+      } else  {
+        const shoppingList = await store.findOne('ShoppingLists', { id: shareId })
+  
+        users = users.filter(({ id }) =>
+          shoppingList.sharings.includes(id)
+        )
+      }
     }
-
-    users = users.filter(({ id }) => id !== userId)
 
     return users
   },
