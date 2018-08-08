@@ -15,7 +15,15 @@ export default {
         id: 'string',
         createdBy: 'string'
       },
-      fields: ['createdAt', 'name', 'sharings']
+      fields: ['createdAt', 'name']
+    })
+
+    await store.defineTable('Sharings', {
+      indexes: {
+        shoppingListId: 'string',
+        userId: 'string'
+      },
+      fields: []
     })
   },
 
@@ -53,32 +61,39 @@ export default {
       id: aggregateId,
       name,
       createdAt: timestamp,
-      createdBy: userId,
-      sharings: []
+      createdBy: userId
     }
 
     await store.insert('ShoppingLists', shoppingList)
+    await store.insert('Sharings', { shoppingListId: aggregateId, userId })
   },
 
   LIST_RENAMED: async (store, { aggregateId, payload: { name } }) => {
     await store.update('ShoppingLists', { id: aggregateId }, { $set: { name } })
   },
-  
+
   SHOPPING_LIST_SHARED: async (store, { aggregateId, payload: { userId } }) => {
-    const shoppingList = await store.findOne('ShoppingLists', { id: aggregateId })
-    
-    const sharings = [...shoppingList.sharings, userId]
-    
-    await store.update('ShoppingLists', { id: aggregateId }, { $set: { sharings } })
+    const record = await store.findOne('Sharings', {
+      shoppingListId: aggregateId,
+      userId
+    })
+
+    if (!record) {
+      await store.insert('Sharings', { shoppingListId: aggregateId, userId })
+    }
   },
-  
-  SHOPPING_LIST_UNSHARED:  async (store, { aggregateId, payload: { userId } }) => {
-    const shoppingList = await store.findOne('ShoppingLists', { id: aggregateId })
-  
-    const sharings = shoppingList.sharings.filter(
-      (id) => id !== userId
-    )
-  
-    await store.update('ShoppingLists', { id: aggregateId }, { $set: { sharings } })
+
+  SHOPPING_LIST_UNSHARED: async (
+    store,
+    { aggregateId, payload: { userId } }
+  ) => {
+    const record = await store.findOne('Sharings', {
+      shoppingListId: aggregateId,
+      userId
+    })
+
+    if (record) {
+      await store.delete('Sharings', { shoppingListId: aggregateId, userId })
+    }
   }
 }

@@ -15,7 +15,7 @@ const optimisticShoppingListsMiddleware = store => next => action => {
       }
     })
   }
-  
+
   if (
     action.type === SEND_COMMAND_SUCCESS &&
     action.commandType === 'unshareShoppingListForUser'
@@ -28,7 +28,7 @@ const optimisticShoppingListsMiddleware = store => next => action => {
       }
     })
   }
-  
+
   next(action)
 }
 

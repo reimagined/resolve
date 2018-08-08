@@ -12,7 +12,7 @@ class FindUsers extends React.PureComponent {
       buttonBaseStyle,
       onPressButton
     } = this.props
-    
+
     const removedSharingIds = optimisticRemovedSharings.map(({ id }) => id)
     const users = [...data, ...optimisticAddedSharings].filter(
       ({ id }) => !removedSharingIds.includes(id)

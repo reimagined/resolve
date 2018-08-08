@@ -16,7 +16,7 @@ class ShareForm extends React.PureComponent {
 
     this.props.shareShoppingListForUser(shoppingListId, { userId, username })
   }
-  
+
   unshareShoppingListForUser = (userId, username) => {
     const shoppingListId = this.props.match.params.id
 
@@ -30,8 +30,13 @@ class ShareForm extends React.PureComponent {
   }
 
   render() {
-    const { match: { params: { id: shareId }}, optimisticSharings } = this.props
-  
+    const {
+      match: {
+        params: { id: shareId }
+      },
+      optimisticSharings
+    } = this.props
+
     return (
       <div className="example-wrapper">
         <ControlLabel>Find</ControlLabel>
@@ -68,7 +73,7 @@ class ShareForm extends React.PureComponent {
   }
 }
 
-export const mapStateToProps = (state) => ({
+export const mapStateToProps = state => ({
   optimisticSharings: state.optimisticSharings
 })
 

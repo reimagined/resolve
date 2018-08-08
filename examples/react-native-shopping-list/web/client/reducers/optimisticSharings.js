@@ -19,16 +19,12 @@ const optimisticSharings = (state = initialState, action) => {
             username: action.payload.username
           }
         ],
-        unshare: state.unshare.filter(
-          ({ id }) => id !==action.payload.id
-        )
+        unshare: state.unshare.filter(({ id }) => id !== action.payload.id)
       }
     }
     case 'OPTIMISTIC_UNSHARE_SHOPPING_LIST': {
       return {
-        share: state.share.filter(
-          ({ id }) => id !==action.payload.id
-        ),
+        share: state.share.filter(({ id }) => id !== action.payload.id),
         unshare: [
           ...state.unshare,
           {

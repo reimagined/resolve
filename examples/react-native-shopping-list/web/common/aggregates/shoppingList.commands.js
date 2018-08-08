@@ -58,6 +58,11 @@ export default {
     jwt.verify(jwtToken, jwtSecret)
 
     validation.stateExists(state, 'User')
+    validation.itemIsNotInArray(
+      state.sharing,
+      userId,
+      'UserId is already in array Sharing'
+    )
 
     return {
       type: 'SHOPPING_LIST_SHARED',
@@ -68,6 +73,11 @@ export default {
     jwt.verify(jwtToken, jwtSecret)
 
     validation.stateExists(state, 'User')
+    validation.itemIsInArray(
+      state.sharing,
+      userId,
+      'UserId is not in array Sharing'
+    )
 
     return {
       type: 'SHOPPING_LIST_UNSHARED',
