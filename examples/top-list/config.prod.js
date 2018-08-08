@@ -5,7 +5,7 @@ const prodConfig = {
   ...defaultResolveConfig,
   ...appConfig,
 
-  port: 3003,
+  port: 3000,
   polyfills: ['@babel/runtime/regenerator'],
   mode: 'production',
   storageAdapter: {

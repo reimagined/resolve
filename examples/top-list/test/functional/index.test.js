@@ -1,7 +1,7 @@
 import { Selector } from 'testcafe'
 
 const host = process.env.HOST || 'localhost'
-const MAIN_PAGE = `http://${host}:3003`
+const MAIN_PAGE = `http://${host}:3000`
 const INSPECT_PAGE_COUNT = 3
 const INSPECT_MATCH_TIMES = 5
 

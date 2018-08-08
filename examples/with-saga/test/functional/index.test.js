@@ -1,7 +1,7 @@
 import { Selector } from 'testcafe'
 
 const host = process.env.HOST || 'localhost'
-const MAIN_PAGE = `http://${host}:3006`
+const MAIN_PAGE = `http://${host}:3000`
 
 // eslint-disable-next-line no-unused-expressions, no-undef
 fixture`with-saga`.beforeEach(async t => {

@@ -1,7 +1,7 @@
 import { Selector } from 'testcafe'
 
 const host = process.env.HOST || 'localhost'
-const MAIN_PAGE = `http://${host}:3002`
+const MAIN_PAGE = `http://${host}:3000`
 
 let todolistId, firstListId, secondListId
 
