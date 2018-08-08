@@ -113,7 +113,7 @@ pipeline {
             }
         }
 
-        stage('CRA tests') {
+        stages('CRA tests') {
             when {
                 expression { CHANGE_TARGET == 'master' }
             }
