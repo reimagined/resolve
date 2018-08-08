@@ -113,11 +113,11 @@ pipeline {
             }
         }
 
-        stages('CRA tests') {
-            when {
+       
+            stage('Create-resolve-app [ hello-world ] Functional Tests') {
+                 when {
                 expression { CHANGE_TARGET == 'master' }
             }
-            stage('Create-resolve-app [ hello-world ] Functional Tests') {
                 steps {
                     script {
                         sh """
@@ -133,6 +133,9 @@ pipeline {
             }
 
             stage('Create-resolve-app [ todolist ] Functional Tests') {
+                 when {
+                expression { CHANGE_TARGET == 'master' }
+            }
                 steps {
                     script {
                         sh """
@@ -148,6 +151,9 @@ pipeline {
             }
 
             stage('Create-resolve-app [ twolevelstodo ] Functional Tests') {
+                 when {
+                expression { CHANGE_TARGET == 'master' }
+            }
                 steps {
                     script {
                         sh """
@@ -162,6 +168,9 @@ pipeline {
             }
 
             stage('Create-resolve-app [ hacker-news ] Functional Tests') {
+                 when {
+                expression { CHANGE_TARGET == 'master' }
+            }
                 steps {
                     script {
                         sh """
@@ -177,6 +186,9 @@ pipeline {
             }
 
             stage('Create-resolve-app [ top-list ] Functional Tests') {
+                 when {
+                expression { CHANGE_TARGET == 'master' }
+            }
                 steps {
                     script {
                         sh """
@@ -192,6 +204,9 @@ pipeline {
             }
 
             stage('Create-resolve-app [ with-postcss ] Functional Tests') {
+                 when {
+                expression { CHANGE_TARGET == 'master' }
+            }
                 steps {
                     script {
                         sh """
@@ -207,6 +222,9 @@ pipeline {
             }
 
             stage('Create-resolve-app [ with-authentication ] Functional Tests') {
+                 when {
+                expression { CHANGE_TARGET == 'master' }
+            }
                 steps {
                     script {
                         sh """
@@ -222,6 +240,9 @@ pipeline {
             }
 
             stage('Create-resolve-app [ with-styled-components ] Functional Tests') {
+                 when {
+                expression { CHANGE_TARGET == 'master' }
+            }
                 steps {
                     script {
                         sh """
@@ -237,6 +258,9 @@ pipeline {
             }
 
             stage('Create-resolve-app [ with-saga ] Functional Tests') {
+                 when {
+                expression { CHANGE_TARGET == 'master' }
+            }
                 steps {
                     script {
                         sh """
@@ -250,7 +274,7 @@ pipeline {
                     }
                 }
             }
-        }
+        
     }
 
     post {
