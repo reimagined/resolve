@@ -1,5 +1,5 @@
 import { defaultResolveConfig } from 'resolve-scripts'
-import appConfig from './config.app'
+import appConfig from './config.domain'
 
 const prodConfig = {
   ...defaultResolveConfig,

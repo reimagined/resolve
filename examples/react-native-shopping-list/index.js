@@ -3,18 +3,19 @@ import { build, start, watch, runTestcafe } from 'resolve-scripts'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
 import testFunctionalConfig from './config.test_functional'
+import adjustWebpackConfigs from './config.adjust_webpack'
 
 const launchMode = process.argv[2]
 
 void (async () => {
   switch (launchMode) {
     case 'dev': {
-      await watch(devConfig)
+      await watch(devConfig, adjustWebpackConfigs.bind(null, devConfig))
       break
     }
 
     case 'build': {
-      await build(prodConfig)
+      await build(prodConfig, adjustWebpackConfigs.bind(null, prodConfig))
       break
     }
 

@@ -39,7 +39,7 @@ When you are ready to share your project with others (for example, by deploying 
 📁 react-native-shopping-list
     📁 domain
         📁 auth
-            📄 index.js
+            📄 config.js
             📄 jwtSecret.js
         📁 aggregates
             📄 aggregate-name.commands.js
@@ -51,7 +51,6 @@ When you are ready to share your project with others (for example, by deploying 
             📄 view-model-name.projection.js
             📄 view-model-name.serialize_state.js
             📄 view-model-name.deserialize_state.js
-        📁 test
         📄 eventTypes.js
         📄 package.json
     📁 web
@@ -60,11 +59,11 @@ When you are ready to share your project with others (for example, by deploying 
             📄 App.js
         📁 redux
             📁 store
-                📄 index.js
+                📄 config.js
             📁 reducers
-                📄 index.js
+                📄 config.js
             📁 middlewares
-                📄 index.js
+                📄 config.js
         📁 static
         📁 test
         📄 routes.js
@@ -76,13 +75,13 @@ When you are ready to share your project with others (for example, by deploying 
             📄 App.js
         📁 redux
             📁 store
-                📄 index.js
+                📄 config.js
             📁 reducers
-                📄 index.js
+                📄 config.js
             📁 middlewares
-                📄 index.js
+                📄 config.js
         📁 test
-        📄 index.js
+        📄 config.js
         📄 app.json
         📄 jest.config.js
         📄 package.json
