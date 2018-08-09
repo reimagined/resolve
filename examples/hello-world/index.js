@@ -24,6 +24,8 @@ void (async () => {
     }
 
     case 'test:functional': {
+      // eslint-disable-next-line no-console
+      console.log(process.argv)
       await runTestcafe({
         resolveConfig: testFunctionalConfig,
         functionalTestsDir: 'test/functional',

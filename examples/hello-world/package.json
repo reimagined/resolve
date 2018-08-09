@@ -10,7 +10,6 @@
     "test:functional": "babel-node ./index.js test:functional"
   },
   "dependencies": {
-    "@babel/cli": "7.0.0-beta.55",
     "@babel/node": "^7.0.0-beta.56",
     "@babel/runtime": "7.0.0-beta.55",
     "react": "16.4.1",
