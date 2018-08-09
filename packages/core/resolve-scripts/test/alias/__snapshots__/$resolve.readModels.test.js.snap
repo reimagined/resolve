@@ -5,7 +5,7 @@ exports[`base config works correctly [client] 1`] = `
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
 
-const name_0 = \\"ShoppingList\\"
+const name_0 = \\"Todos\\"
 const resolvers_0 = {
   todos() {},
   items() {}
@@ -30,7 +30,7 @@ import projection_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files
 import resolvers_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testResolvers.js\\"
 
 
-const name_0 = \\"ShoppingList\\"
+const name_0 = \\"Todos\\"
 
 const readModels = []
 
@@ -49,7 +49,7 @@ exports[`base(v2) config works correctly [client] 1`] = `
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
 
-const name_0 = \\"ShoppingList\\"
+const name_0 = \\"Todos\\"
 const resolvers_0 = {
   todos() {},
   items() {}
@@ -87,7 +87,7 @@ import projection_1 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files
 import resolvers_1 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testResolvers.js\\"
 
 
-const name_0 = \\"ShoppingList\\"
+const name_0 = \\"Todos\\"
 const name_1 = \\"Items\\"
 
 const readModels = []
@@ -113,7 +113,7 @@ exports[`config with storage + process.env works correctly [client] 1`] = `
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
 
-const name_0 = \\"ShoppingList\\"
+const name_0 = \\"Todos\\"
 const resolvers_0 = {
   todos() {},
   items() {}
@@ -138,15 +138,15 @@ import projection_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files
 import resolvers_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testResolvers.js\\"
 
 
-const name_0 = \\"ShoppingList\\"
+const name_0 = \\"Todos\\"
 const adapter_0 = {
-  \\"module\\": process.env.READ_MODEL_TODOS_ADAPTER,
+  \\"module\\": \\"process.env[\\\\\\"READ_MODEL_TODOS_ADAPTER\\\\\\"]\\",
   \\"options\\": {
-    \\"size\\": process.env.READ_MODEL_TODOS_OPTIONS_SIZE
+    \\"size\\": \\"process.env[\\\\\\"READ_MODEL_TODOS_OPTIONS_SIZE\\\\\\"]\\"
   }
 }
 const adapterModule_0 = interopRequireDefault(
-  eval('require(adapter_0.module)')
+  __non_webpack_require__(adapter_0.module)
 ).default
 const adapterOptions_0 = adapter_0.options
 
@@ -171,7 +171,7 @@ exports[`config with storage works correctly [client] 1`] = `
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
 
-const name_0 = \\"ShoppingList\\"
+const name_0 = \\"Todos\\"
 const resolvers_0 = {
   todos() {},
   items() {}
@@ -197,10 +197,8 @@ import resolvers_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/
 
 import adapterModule_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testSnapshotAdapter.js\\"
 
-const name_0 = \\"ShoppingList\\"
-const adapterOptions_0 = {
-  \\"size\\": 100
-}
+const name_0 = \\"Todos\\"
+const adapterOptions_0 = {\\"size\\":100}
 
 const readModels = []
 
