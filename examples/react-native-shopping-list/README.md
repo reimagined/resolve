@@ -99,6 +99,11 @@ When you are ready to share your project with others (for example, by deploying 
         📄 calcSomething.js
         📄 package.json
     📄 package.json
+    📄 config.app.js	
+    📄 config.dev.js
+    📄 config.prod.js
+    📄 config.test_functional.js
+    📄 index.js
     📄 README.md
     📄 .gitignore
 ```
