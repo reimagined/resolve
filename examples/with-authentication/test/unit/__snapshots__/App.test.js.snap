@@ -27,7 +27,7 @@ exports[`renders correctly 1`] = `
         disabled={false}
         type="submit"
       >
-        LogoutButton
+        Logout
       </button>
     </form>
   </div>
