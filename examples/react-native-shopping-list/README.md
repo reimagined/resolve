@@ -51,6 +51,8 @@ When you are ready to share your project with others (for example, by deploying 
             📄 view-model-name.projection.js
             📄 view-model-name.serialize_state.js
             📄 view-model-name.deserialize_state.js
+        📄 eventTypes.js
+        📄 package.json
     📁 web
         📁 components
         📁 containers
@@ -92,8 +94,10 @@ When you are ready to share your project with others (for example, by deploying 
             📄 index.android.js
             📄 index.ios.js
             📄 index.web.js
+        📄 package.json
     📁 utils
         📄 calcSomething.js
+        📄 package.json
     📄 package.json
     📄 README.md
     📄 .gitignore
