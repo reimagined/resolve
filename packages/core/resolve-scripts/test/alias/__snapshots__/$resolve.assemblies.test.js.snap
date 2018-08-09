@@ -12,16 +12,11 @@ import subscribeAdapter from '$resolve.subscribeAdapter'
 
 export default {
  aggregateActions,
-applicationName,
 busAdapter,
-distDir,
-jwtCookie,
-port,
+constants,
 redux,
 rootPath,
 routes,
-staticDir,
-staticPath,
 storageAdapter,
 subscribeAdapter
 }",
