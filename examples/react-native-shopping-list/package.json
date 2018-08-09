@@ -3,17 +3,10 @@
   "version": "0.13.2",
   "private": true,
   "scripts": {
-    "dev:web": "cd web && yarn dev",
-    "build:web": "cd web && yarn build",
-    "start:web": "cd web && yarn start",
-    "start:native": "cd native && yarn start",
-    "build:ui": "cd ui && yarn build",
-    "build:utils": "cd utils && yarn build",
-    "test": "cd web && yarn test && cd .. && cd native && yarn test",
     "build": "babel-node ./index.js build",
     "dev": "babel-node ./index.js dev",
     "start": "babel-node ./index.js start",
-    "test1": "jest --testMatch=**/test/unit/*.test.js --verbose",
+    "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
     "test:functional": "babel-node ./index.js test:functional"
   },
   "dependencies": {
