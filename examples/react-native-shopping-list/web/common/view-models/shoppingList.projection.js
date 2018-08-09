@@ -8,7 +8,8 @@ import {
 
 export default {
   Init: () => null,
-  [SHOPPING_LIST_CREATED]: (state, { payload: { name } }) => ({
+  [SHOPPING_LIST_CREATED]: (state, { aggregateId, payload: { name } }) => ({
+    id: aggregateId,
     name,
     list: []
   }),

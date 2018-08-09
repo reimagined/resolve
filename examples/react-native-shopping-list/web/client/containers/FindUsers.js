@@ -8,15 +8,21 @@ class FindUsers extends React.PureComponent {
       data,
       optimisticAddedSharings,
       optimisticRemovedSharings,
+      options: { query },
       buttonText,
       buttonBaseStyle,
       onPressButton
     } = this.props
 
+    const addedSharingIds = optimisticAddedSharings.map(({ id }) => id)
     const removedSharingIds = optimisticRemovedSharings.map(({ id }) => id)
-    const users = [...data, ...optimisticAddedSharings].filter(
-      ({ id }) => !removedSharingIds.includes(id)
-    )
+    let users = [
+      ...data.filter(({ id }) => !addedSharingIds.includes(id)),
+      ...optimisticAddedSharings
+    ].filter(({ id }) => !removedSharingIds.includes(id))
+    if (query) {
+      users = users.filter(({ username }) => username.includes('query'))
+    }
 
     if (users.length === 0) {
       return (
@@ -42,7 +48,7 @@ class FindUsers extends React.PureComponent {
             <tr key={id}>
               <td>{index + 1}</td>
               <td>{username}</td>
-              <td className="example-table-acton">
+              <td className="example-table-action">
                 <Button
                   className="example-button"
                   bsStyle={buttonBaseStyle}

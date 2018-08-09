@@ -1,8 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { connectResolveAdvanced } from 'resolve-redux'
-import { ControlLabel, FormControl } from 'react-bootstrap'
+import { connectViewModel } from 'resolve-redux'
+import { FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 
 import FindUsers from './FindUsers'
 
@@ -30,15 +31,20 @@ class ShareForm extends React.PureComponent {
   }
 
   render() {
-    const {
-      match: {
-        params: { id: shareId }
-      },
-      optimisticSharings
-    } = this.props
+    const { optimisticSharings, shoppingList } = this.props
 
     return (
       <div className="example-wrapper">
+        <ControlLabel>Shopping list name</ControlLabel>
+        <Link to={`/${shoppingList.id}`}>
+          <FormGroup bsSize="large">
+            <FormControl
+              type="text"
+              value={shoppingList.name}
+              onChange={() => {}}
+            />
+          </FormGroup>
+        </Link>
         <ControlLabel>Find users</ControlLabel>
         <FormControl
           className="example-form-control"
@@ -50,7 +56,7 @@ class ShareForm extends React.PureComponent {
           buttonText="Share"
           buttonBaseStyle="success"
           options={{
-            shareId,
+            shareId: shoppingList.id,
             query: this.state.query
           }}
           optimisticAddedSharings={optimisticSharings.unshare}
@@ -62,7 +68,7 @@ class ShareForm extends React.PureComponent {
           buttonText="Unshare"
           buttonBaseStyle="success"
           options={{
-            shareId
+            shareId: shoppingList.id
           }}
           optimisticAddedSharings={optimisticSharings.share}
           optimisticRemovedSharings={optimisticSharings.unshare}
@@ -73,14 +79,24 @@ class ShareForm extends React.PureComponent {
   }
 }
 
-export const mapStateToProps = state => ({
-  optimisticSharings: state.optimisticSharings
+const mapStateToOptions = (state, ownProps) => {
+  const aggregateId = ownProps.match.params.id
+
+  return {
+    viewModelName: 'ShoppingList',
+    aggregateIds: [aggregateId]
+  }
+}
+
+export const mapStateToProps = (state, ownProps) => ({
+  optimisticSharings: state.optimisticSharings,
+  shoppingList: ownProps.data
 })
 
 export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(aggregateActions, dispatch)
 
-export default connectResolveAdvanced(
+export default connectViewModel(mapStateToOptions)(
   connect(
     mapStateToProps,
     mapDispatchToProps

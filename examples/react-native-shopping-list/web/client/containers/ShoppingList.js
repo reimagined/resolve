@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { connectViewModel, connectRootBasedUrls } from 'resolve-redux'
 import { routerActions } from 'react-router-redux'
 import { bindActionCreators } from 'redux'
-import { Redirect, Link } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 import {
   Row,
   Col,
@@ -26,23 +26,6 @@ export class ShoppingList extends React.PureComponent {
   state = {
     shoppingListName: this.props.data && this.props.data.name,
     itemText: ''
-  }
-
-  componentDidMount() {
-    if (this.props.jwt.id && !this.props.match.params.id) {
-      this.props.replaceUrl(`/${this.props.jwt.id}`)
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    if (
-      this.props.data &&
-      this.props.data.name !== (prevProps.data || {}).name
-    ) {
-      this.setState({
-        shoppingListName: this.props.data.name
-      })
-    }
   }
 
   createShoppingItem = () => {
@@ -180,7 +163,7 @@ export class ShoppingList extends React.PureComponent {
 }
 
 const mapStateToOptions = (state, ownProps) => {
-  const aggregateId = ownProps.match.params.id || state.jwt.id
+  const aggregateId = ownProps.match.params.id
 
   return {
     viewModelName: 'ShoppingList',
@@ -189,7 +172,7 @@ const mapStateToOptions = (state, ownProps) => {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const aggregateId = ownProps.match.params.id || state.jwt.id
+  const aggregateId = ownProps.match.params.id
 
   return {
     jwt: state.jwt,

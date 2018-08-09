@@ -5,18 +5,15 @@ import { connectReadModel } from 'resolve-redux'
 import { connect } from 'react-redux'
 import {
   Button,
-  ButtonGroup,
   Col,
   ControlLabel,
   FormControl,
-  ListGroup,
-  ListGroupItem,
   Row,
   Table
 } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
-class ShoppingLists extends React.PureComponent {
+class Index extends React.PureComponent {
   state = {
     shoppingListName: ''
   }
@@ -54,7 +51,7 @@ class ShoppingLists extends React.PureComponent {
             <tr>
               <th>#</th>
               <th>Shopping List</th>
-              <th className="example-table-acton">Action</th>
+              <th className="example-table-action">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -64,8 +61,8 @@ class ShoppingLists extends React.PureComponent {
                 <td>
                   <Link to={`/${id}`}>{name}</Link>
                 </td>
-                <td className="example-table-acton">
-                  <Button>
+                <td className="example-table-action">
+                  <Button href={`/share/${id}`}>
                     <i className="fas fa-share-alt" />
                   </Button>{' '}
                   <Button>
@@ -119,5 +116,5 @@ export default connectReadModel(mapStateToOptions)(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(ShoppingLists)
+  )(Index)
 )

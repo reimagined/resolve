@@ -1,7 +1,7 @@
 import RequiredAuth from './containers/RequiredAuth'
 import App from './containers/App'
 import ShoppingList from './containers/ShoppingList'
-import AllShoppingLists from './containers/ShoppingLists'
+import Index from './containers/Index'
 import ShareForm from './containers/ShareForm'
 import Settings from './containers/Settings'
 import LoginForm from './components/LoginForm'
@@ -20,7 +20,7 @@ export default [
         routes: [
           {
             path: '/',
-            component: AllShoppingLists,
+            component: Index,
             exact: true
           },
           {
