@@ -126,7 +126,7 @@ pipeline {
                             cd ./hello-world; 
                             cat ./package.json; 
                             yarn test
-                            yarn test:functional --browser=path:/chromium
+                            yarn test:functional path:/chromium
                         """
                     }
                 }
@@ -144,7 +144,7 @@ pipeline {
                             cd ./todolist
                             cat ./package.json
                             yarn test
-                            yarn test:functional --browser=path:/chromium
+                            yarn test:functional path:/chromium
                         """
                     }
                 }
@@ -161,7 +161,7 @@ pipeline {
                             create-resolve-app twolevelstodo -e todo-two-levels -c \$(cat /last_commit)
                             cd ./twolevelstodo
                             cat ./package.json
-                            yarn test:functional --browser=path:/chromium
+                            yarn test:functional path:/chromium
                         """
                     }
                 }
@@ -179,7 +179,7 @@ pipeline {
                             cd ./hn
                             cat ./package.json
                             yarn test
-                            yarn test:functional --browser=path:/chromium
+                            yarn test:functional path:/chromium
                         """
                     }
                 }
@@ -197,7 +197,7 @@ pipeline {
                             cd ./toplist
                             cat ./package.json
                             yarn test
-                            yarn test:functional --browser=path:/chromium
+                            yarn test:functional path:/chromium
                         """
                     }
                 }
@@ -215,7 +215,7 @@ pipeline {
                             cd ./with-postcss
                             cat ./package.json
                             yarn test
-                            yarn test:functional --browser=path:/chromium
+                            yarn test:functional path:/chromium
                         """
                     }
                 }
@@ -233,7 +233,7 @@ pipeline {
                             cd ./with-authentication
                             cat ./package.json
                             yarn test
-                            yarn test:functional --browser=path:/chromium
+                            yarn test:functional path:/chromium
                         """
                     }
                 }
@@ -251,7 +251,7 @@ pipeline {
                             cd ./with-styled-components
                             cat ./package.json
                             yarn test
-                            yarn test:functional --browser=path:/chromium
+                            yarn test:functional path:/chromium
                         """
                     }
                 }
@@ -269,7 +269,7 @@ pipeline {
                             cd ./with-saga
                             cat ./package.json
                             yarn test
-                            yarn test:functional --browser=path:/chromium
+                            yarn test:functional path:/chromium
                         """
                     }
                 }

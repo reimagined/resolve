@@ -284,6 +284,18 @@
     output-file-sync "^2.0.0"
     v8flags "^3.1.1"
 
+"@babel/node@^7.0.0-beta.56":
+  version "7.0.0-beta.56"
+  resolved "http://npm.resolve.sh:10080/@babel%2fnode/-/node-7.0.0-beta.56.tgz#ec6d2599c543fd46b07efb81678d84f8be7eaffa"
+  dependencies:
+    "@babel/polyfill" "7.0.0-beta.56"
+    "@babel/register" "7.0.0-beta.56"
+    commander "^2.8.1"
+    fs-readdir-recursive "^1.0.0"
+    lodash "^4.17.10"
+    output-file-sync "^2.0.0"
+    v8flags "^3.1.1"
+
 "@babel/parser@7.0.0-beta.55":
   version "7.0.0-beta.55"
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.0.0-beta.55.tgz#0a527efc148c6c8cd85d5ffddacad817a2daeeb2"
@@ -771,6 +783,13 @@
     core-js "^2.5.7"
     regenerator-runtime "^0.11.1"
 
+"@babel/polyfill@7.0.0-beta.56":
+  version "7.0.0-beta.56"
+  resolved "http://npm.resolve.sh:10080/@babel%2fpolyfill/-/polyfill-7.0.0-beta.56.tgz#6942d474d0e9cee7124477df11e97ba192764919"
+  dependencies:
+    core-js "^2.5.7"
+    regenerator-runtime "^0.11.1"
+
 "@babel/preset-env@7.0.0-beta.55":
   version "7.0.0-beta.55"
   resolved "https://registry.yarnpkg.com/@babel/preset-env/-/preset-env-7.0.0-beta.55.tgz#d3d997517761890144081d53c0c669ba7e8334e0"
@@ -829,6 +848,18 @@
 "@babel/register@7.0.0-beta.55":
   version "7.0.0-beta.55"
   resolved "https://registry.yarnpkg.com/@babel/register/-/register-7.0.0-beta.55.tgz#930bf5a13f99eeb22c276b346a54586abb01e611"
+  dependencies:
+    core-js "^2.5.7"
+    find-cache-dir "^1.0.0"
+    home-or-tmp "^3.0.0"
+    lodash "^4.17.10"
+    mkdirp "^0.5.1"
+    pirates "^4.0.0"
+    source-map-support "^0.4.2"
+
+"@babel/register@7.0.0-beta.56":
+  version "7.0.0-beta.56"
+  resolved "http://npm.resolve.sh:10080/@babel%2fregister/-/register-7.0.0-beta.56.tgz#bc228ccb87308bbf9dc0d2b4e1dca0490ac178cb"
   dependencies:
     core-js "^2.5.7"
     find-cache-dir "^1.0.0"
