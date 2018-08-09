@@ -12,17 +12,17 @@ void (async () => {
       await watch(devConfig)
       break
     }
-    
+
     case 'build': {
       await build(prodConfig)
       break
     }
-    
+
     case 'start': {
       await start(prodConfig)
       break
     }
-    
+
     case 'test:functional': {
       await runTestcafe({
         resolveConfig: testFunctionalConfig,
@@ -31,7 +31,7 @@ void (async () => {
       })
       break
     }
-    
+
     default: {
       throw new Error('Unknown option')
     }

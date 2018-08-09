@@ -39,6 +39,12 @@ export class ShoppingList extends React.PureComponent {
     })
   }
 
+  updateShoppingListName = event => {
+    this.setState({
+      shoppingListName: event.target.value
+    })
+  }
+
   renameShoppingList = () => {
     this.props.renameShoppingList(this.props.aggregateId, {
       name: this.state.shoppingListName
@@ -57,13 +63,6 @@ export class ShoppingList extends React.PureComponent {
       this.createShoppingItem()
     }
   }
-
-  updateShoppingListName = event => {
-    this.setState({
-      shoppingListName: event.target.value
-    })
-  }
-
   onShoppingListNamePressEnter = event => {
     if (event.charCode === 13) {
       event.preventDefault()
@@ -162,7 +161,7 @@ export class ShoppingList extends React.PureComponent {
   }
 }
 
-const mapStateToOptions = (state, ownProps) => {
+export const mapStateToOptions = (state, ownProps) => {
   const aggregateId = ownProps.match.params.id
 
   return {
@@ -171,7 +170,7 @@ const mapStateToOptions = (state, ownProps) => {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
+export const mapStateToProps = (state, ownProps) => {
   const aggregateId = ownProps.match.params.id
 
   return {
@@ -180,7 +179,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(
     {
       ...aggregateActions,

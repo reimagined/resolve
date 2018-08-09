@@ -6,9 +6,9 @@ ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
   Symbol(enzyme.__unrendered__): <Todo
     checked={true}
-    removeShoppingItem={[Function]}
+    removeItem={[Function]}
     text="text"
-    toggleShoppingItem={[Function]}
+    toggleItem={[Function]}
   />,
   Symbol(enzyme.__renderer__): Object {
     "batchedUpdates": [Function],
@@ -58,7 +58,6 @@ ShallowWrapper {
                 "fontSize": 18,
                 "paddingBottom": 2,
                 "paddingTop": 2,
-                "textDecorationLine": "line-through",
               }
             }
           >
@@ -125,7 +124,6 @@ ShallowWrapper {
                   "fontSize": 18,
                   "paddingBottom": 2,
                   "paddingTop": 2,
-                  "textDecorationLine": "line-through",
                 }
               }
             >
@@ -192,7 +190,6 @@ ShallowWrapper {
                 "fontSize": 18,
                 "paddingBottom": 2,
                 "paddingTop": 2,
-                "textDecorationLine": "line-through",
               },
             },
             "ref": null,
@@ -283,7 +280,6 @@ ShallowWrapper {
                   "fontSize": 18,
                   "paddingBottom": 2,
                   "paddingTop": 2,
-                  "textDecorationLine": "line-through",
                 }
               }
             >
@@ -350,7 +346,6 @@ ShallowWrapper {
                     "fontSize": 18,
                     "paddingBottom": 2,
                     "paddingTop": 2,
-                    "textDecorationLine": "line-through",
                   }
                 }
               >
@@ -417,7 +412,6 @@ ShallowWrapper {
                   "fontSize": 18,
                   "paddingBottom": 2,
                   "paddingTop": 2,
-                  "textDecorationLine": "line-through",
                 },
               },
               "ref": null,
@@ -483,9 +477,9 @@ ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
   Symbol(enzyme.__unrendered__): <Todo
     checked={false}
-    removeShoppingItem={[Function]}
+    removeItem={[Function]}
     text="text"
-    toggleShoppingItem={[Function]}
+    toggleItem={[Function]}
   />,
   Symbol(enzyme.__renderer__): Object {
     "batchedUpdates": [Function],
