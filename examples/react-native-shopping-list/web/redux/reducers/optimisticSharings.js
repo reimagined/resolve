@@ -2,7 +2,7 @@ import { LOCATION_CHANGE } from 'react-router-redux'
 import {
   OPTIMISTIC_SHARE_SHOPPING_LIST,
   OPTIMISTIC_UNSHARE_SHOPPING_LIST
-} from '../../domain/eventTypes'
+} from '../../../domain/eventTypes'
 
 const initialState = {
   share: [],

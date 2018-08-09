@@ -1,6 +1,6 @@
 import { actionTypes } from 'resolve-redux'
 
-import { OPTIMISTIC_CREATE_SHOPPING_LIST } from '../../domain/eventTypes'
+import { OPTIMISTIC_CREATE_SHOPPING_LIST } from '../../../domain/eventTypes'
 
 const { SEND_COMMAND_SUCCESS } = actionTypes
 

@@ -3,9 +3,9 @@ const appConfig = {
   staticDir: "web/static",
   distDir: "web/dist",
   redux: {
-    reducers: "web/reducers/index.js",
-    middlewares: "web/middlewares/index.js",
-    store: "web/store/index.js"
+    reducers: "web/redux/reducers/index.js",
+    middlewares: "web/redux/middlewares/index.js",
+    store: "web/redux/store/index.js"
   },
   aggregates: [
     {

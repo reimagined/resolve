@@ -3,7 +3,7 @@ import { actionTypes } from 'resolve-redux'
 import {
   OPTIMISTIC_SHARE_SHOPPING_LIST,
   OPTIMISTIC_UNSHARE_SHOPPING_LIST
-} from '../../domain/eventTypes'
+} from '../../../domain/eventTypes'
 
 const { SEND_COMMAND_SUCCESS } = actionTypes
 
