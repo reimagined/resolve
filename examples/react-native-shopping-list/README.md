@@ -1,4 +1,4 @@
-# React Native To-Do List Example
+# React Native Shopping List Example
 
 This example demonstrates how to use [React Native](https://github.com/react-community/create-react-native-app) in a reSolve app.
 
@@ -8,7 +8,7 @@ This example demonstrates how to use [React Native](https://github.com/react-com
 Get the example:
 
 ```sh
-npx create-resolve-app -e react-native-todo resolve-native-todo
+npx create-resolve-app -e react-native-shopping-list react-native-shopping-list
 ```
 
 Run the example:
