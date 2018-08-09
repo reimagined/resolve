@@ -1,6 +1,6 @@
 import createMemoryHistory from 'history/createMemoryHistory'
 
-import { createStore } from '../resolve/resolve-redux'
+import { createStore } from '../../resolve/resolve-redux'
 import {
   viewModels,
   readModels,
@@ -8,10 +8,10 @@ import {
   subscribeAdapter,
   rootPath,
   origin
-} from '../resolve/config'
+} from '../../resolve/config'
 
-import reducers from '../reducers'
-import middlewares from '../middlewares'
+import reducers from '../reducers/index'
+import middlewares from '../middlewares/index'
 
 const initialState = {}
 

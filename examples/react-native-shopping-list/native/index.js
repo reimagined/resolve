@@ -10,7 +10,7 @@ import {
   aggregateActions
 } from './resolve/config'
 
-import store from './store'
+import store from './redux/store'
 
 import App from './containers/App'
 
