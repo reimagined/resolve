@@ -6,7 +6,7 @@ This package includes scripts and configuration for the [create-resolve-app](../
 
 ### Configuration File
 
-You can configure reSolve in the `resolve.config.json` file, or in the file passed as an argument with the `--config` key, for example:
+You can configure reSolve in the `config.app.json`, `config.dev.json`, `config.prod.json`, `config.test_functional.json` files, or in the file passed as an argument with the `--config` key, for example:
 
 ```sh
 npm run dev -- --config=custom-resolve.config.json

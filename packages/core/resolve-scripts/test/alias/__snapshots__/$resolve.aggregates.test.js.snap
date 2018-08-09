@@ -179,13 +179,13 @@ import commands_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/t
 
 const name_0 = \\"Todo\\"
 const snapshotAdapter_0 = {
-  \\"module\\": process.env.AGGREGATE_TODO_SNAPSHOT_ADAPTER,
+  \\"module\\": \\"process.env[\\\\\\"AGGREGATE_TODO_SNAPSHOT_ADAPTER\\\\\\"]\\",
   \\"options\\": {
-    \\"size\\": process.env.AGGREGATE_TODO_SNAPSHOT_OPTIONS_SIZE
+    \\"size\\": \\"process.env[\\\\\\"AGGREGATE_TODO_SNAPSHOT_OPTIONS_SIZE\\\\\\"]\\"
   }
 }
 const snapshotAdapterModule_0 = interopRequireDefault(
-  eval('require(snapshotAdapter_0.module)')
+  __non_webpack_require__(snapshotAdapter_0.module)
 ).default
 const snapshotAdapterOptions_0 = snapshotAdapter_0.options
 
@@ -235,9 +235,7 @@ import commands_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/t
 
 import snapshotAdapterModule_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testSnapshotAdapter.js\\"
 const name_0 = \\"Todo\\"
-const snapshotAdapterOptions_0 = {
-  \\"size\\": 100
-}
+const snapshotAdapterOptions_0 = {\\"size\\":100}
 
 const aggregates = []
 

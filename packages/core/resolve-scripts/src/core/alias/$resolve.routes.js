@@ -1,15 +1,13 @@
-import { envKey } from 'json-env-extract'
-
 import { message } from '../constants'
-
 import resolveFile from '../resolve_file'
+import { checkRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig }) => {
   if (!resolveConfig.routes) {
     throw new Error(`${message.configNotContainSectionError}.routes`)
   }
 
-  if (resolveConfig.routes in resolveConfig[envKey]) {
+  if (checkRuntimeEnv(resolveConfig.routes)) {
     throw new Error(`${message.clientEnvError}.routes`)
   }
   const routes = resolveFile(resolveConfig.routes)

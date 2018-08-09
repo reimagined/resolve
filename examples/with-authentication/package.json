@@ -3,13 +3,14 @@
   "version": "0.13.2",
   "private": true,
   "scripts": {
-    "build": "resolve-scripts build",
-    "dev": "resolve-scripts dev",
-    "start": "resolve-scripts start",
-    "test": "resolve-scripts test",
-    "test:functional": "resolve-scripts test:functional"
+    "build": "babel-node ./index.js build",
+    "dev": "babel-node ./index.js dev",
+    "start": "babel-node ./index.js start",
+    "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
+    "test:functional": "babel-node ./index.js test:functional"
   },
   "dependencies": {
+    "@babel/runtime": "7.0.0-beta.55",
     "jsonwebtoken": "8.3.0",
     "node-fetch": "2.1.2",
     "passport-local": "1.0.0",
@@ -24,6 +25,7 @@
     "resolve-scripts": "0.13.2",
     "resolve-redux": "0.13.2",
     "styled-components": "3.3.3",
+    "testcafe-browser-tools": "1.6.3",
     "uuid": "3.3.2"
   },
   "devDependencies": {

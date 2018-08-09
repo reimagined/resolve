@@ -9,70 +9,99 @@ const defaultOptions = {
   maxLength: 10000
 }
 
-function init(
+class RabbitMQBusError extends Error {
+  constructor(message, cause) {
+    super()
+    this.name = 'RabbitMQ Bus Error'
+    this.message = message
+
+    if (cause) {
+      this.cause = cause
+    }
+  }
+}
+
+const init = async (
   { url, exchange, exchangeType, queueName, messageTtl, maxLength },
   handler
-) {
-  return amqp
-    .connect(url)
-    .then(connection => connection.createChannel())
-    .then(channel =>
-      channel
-        .assertExchange(exchange, exchangeType, {
-          durable: false
-        })
-        .then(() => channel)
+) => {
+  try {
+    const connection = await amqp.connect(url)
+    const channel = await connection.createChannel()
+
+    await channel.assertExchange(exchange, exchangeType, {
+      durable: false
+    })
+
+    const queue = await channel.assertQueue(queueName, {
+      arguments: {
+        messageTtl: messageTtl,
+        maxLength: maxLength
+      }
+    })
+
+    await channel.bindQueue(queue.queue, exchange)
+
+    await channel.consume(
+      queueName,
+      msg => {
+        if (msg) {
+          const content = msg.content.toString()
+          const message = JSON.parse(content)
+          handler(message)
+        }
+      },
+      { noAck: true }
     )
-    .then(channel =>
-      channel
-        // Additional options described here:
-        // http://www.squaremobius.net/amqp.node/channel_api.html#channel_assertQueue
-        .assertQueue(queueName, {
-          arguments: {
-            messageTtl: messageTtl,
-            maxLength: maxLength
-          }
-        })
-        .then(queue => channel.bindQueue(queue.queue, exchange))
-        .then(() =>
-          channel.consume(
-            queueName,
-            msg => {
-              if (msg) {
-                const content = msg.content.toString()
-                const message = JSON.parse(content)
-                handler(message)
-              }
-            },
-            { noAck: true }
-          )
-        )
-        .then(() => channel)
-    )
+
+    return channel
+  } catch (e) {
+    throw new RabbitMQBusError(e.message, e.cause)
+  }
 }
 
 function createAdapter(options) {
   let handler = () => {}
   const config = { ...defaultOptions, ...options }
-  const initPromise = init(config, event => handler(event))
+  let initPromise = null
   const { exchange, queueName, messageTtl } = config
 
   return {
-    publish: event =>
-      initPromise.then(channel => {
-        channel.publish(
-          exchange,
-          queueName,
-          new Buffer(JSON.stringify(event)),
-          // Additional options described here:
-          // http://www.squaremobius.net/amqp.node/channel_api.html#channel_publish
-          {
-            expiration: messageTtl,
-            persistent: false
-          }
-        )
-      }),
-    subscribe: callback => initPromise.then(() => (handler = callback))
+    init: async () => {
+      if (!initPromise) {
+        initPromise = init(config, event => handler(event))
+      }
+
+      try {
+        return await initPromise
+      } catch (e) {
+        initPromise = null
+        throw e
+      }
+    },
+    publish: async event => {
+      if (!initPromise) {
+        throw new RabbitMQBusError('Adapter is not initialized')
+      }
+
+      const channel = await initPromise
+
+      return channel.publish(
+        exchange,
+        queueName,
+        new Buffer(JSON.stringify(event)),
+        // Additional options described here:
+        // http://www.squaremobius.net/amqp.node/channel_api.html#channel_publish
+        {
+          expiration: messageTtl,
+          persistent: false
+        }
+      )
+    },
+    subscribe: async callback => (handler = callback),
+    close: async () => {
+      initPromise = null
+    }
   }
 }
 

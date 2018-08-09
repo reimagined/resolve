@@ -1,6 +1,6 @@
 # Top List Example
 
-![top-list](https://user-images.githubusercontent.com/19663260/41165263-da21823c-6b45-11e8-9af4-f81b797d0b52.png)
+![top-list](https://user-images.githubusercontent.com/19663260/43643921-7b734f92-9735-11e8-9bc3-7fb7551e02fd.png)
 
 This example demonstrates how to update the application state on external events regardless of user actions. Get the example using this command:
 

@@ -1,6 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 
+import { includeAlias as excludeConstantAlias } from './$resolve.constants'
+
 const excludeAlias = [
   'auth',
   'aggregates',
@@ -8,7 +10,8 @@ const excludeAlias = [
   'sagas',
   'viewModels',
   'hotModuleReplacement',
-  'assemblies'
+  'assemblies',
+  ...excludeConstantAlias
 ]
 
 export default () => {

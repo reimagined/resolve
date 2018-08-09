@@ -1,4 +1,4 @@
-import commands from '../../common/aggregates/shoppingList.commands'
+import commands from '../../../domain/aggregates/shoppingList.commands'
 
 describe('aggregates', () => {
   describe('Todo', () => {

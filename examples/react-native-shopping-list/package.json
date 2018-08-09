@@ -9,6 +9,24 @@
     "start:native": "cd native && yarn start",
     "build:ui": "cd ui && yarn build",
     "build:utils": "cd utils && yarn build",
-    "test": "cd web && yarn test && cd .. && cd native && yarn test"
+    "test": "cd web && yarn test && cd .. && cd native && yarn test",
+    "build": "babel-node ./index.js build",
+    "dev": "babel-node ./index.js dev",
+    "start": "babel-node ./index.js start",
+    "test1": "jest --testMatch=**/test/unit/*.test.js --verbose",
+    "test:functional": "babel-node ./index.js test:functional"
+  },
+  "dependencies": {
+    "@babel/runtime": "7.0.0-beta.55"
+  },
+  "devDependencies": {
+    "@babel/core": "7.0.0-beta.55",
+    "@babel/plugin-proposal-class-properties": "7.0.0-beta.55",
+    "@babel/plugin-proposal-export-default-from": "7.0.0-beta.55",
+    "@babel/plugin-proposal-export-namespace-from": "7.0.0-beta.55",
+    "@babel/plugin-transform-runtime": "7.0.0-beta.55",
+    "@babel/preset-env": "7.0.0-beta.55",
+    "@babel/preset-react": "7.0.0-beta.55",
+    "@babel/node": "7.0.0-beta.55"
   }
 }

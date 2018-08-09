@@ -13,6 +13,7 @@ const viewModels = requireAssembly('common/view-models/index.js')
 const readModels = requireAssembly('common/read-models/index.js')
 const sagas = requireAssembly('common/sagas/index.js')
 const auth = requireAssembly('common/auth/index.js')
+const constants = requireAssembly('common/constants/index.js')
 const assemblies = requireAssembly('assemblies.js')
 
 module.exports = {
@@ -21,5 +22,6 @@ module.exports = {
   readModels,
   sagas,
   auth,
+  ...constants,
   ...assemblies
 }

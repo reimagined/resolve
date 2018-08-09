@@ -81,6 +81,7 @@ module.exports = {
           'configs',
           'connack',
           'const',
+          'cron',
           'cwd',
           'darwin',
           'dddddd',

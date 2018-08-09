@@ -5,9 +5,10 @@ module.exports = {
     'node_modules/',
     'dist/',
     'coverage/',
-    'resolve.build.config.js',
-    'resolve.client.config.js',
-    'resolve.server.config.js'
+    'config.app.js',
+    'config.dev.js',
+    'config.prod.js',
+    'config.test_functional.js'
   ],
   unmockedModulePathPatterns: ['node_modules/react/', 'node_modules/enzyme/']
 }

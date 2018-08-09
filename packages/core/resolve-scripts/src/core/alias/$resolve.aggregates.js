@@ -1,9 +1,8 @@
-import { injectEnv, envKey } from 'json-env-extract'
-
 import { message } from '../constants'
 import resolveFile from '../resolve_file'
 import resolveFileOrModule from '../resolve_file_or_module'
 import importBabel from '../import_babel'
+import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig, isClient }) => {
   if (!resolveConfig.aggregates) {
@@ -20,17 +19,17 @@ export default ({ resolveConfig, isClient }) => {
   for (let index = 0; index < resolveConfig.aggregates.length; index++) {
     const aggregate = resolveConfig.aggregates[index]
 
-    if (aggregate.name in resolveConfig[envKey]) {
+    if (checkRuntimeEnv(aggregate.name)) {
       throw new Error(`${message.clientEnvError}.aggregates[${index}].name`)
     }
     const name = aggregate.name
 
-    if (aggregate.commands in resolveConfig[envKey]) {
+    if (checkRuntimeEnv(aggregate.commands)) {
       throw new Error(`${message.clientEnvError}.aggregates[${index}].commands`)
     }
     const commands = resolveFile(aggregate.commands)
 
-    if (aggregate.projection && aggregate.projection in resolveConfig[envKey]) {
+    if (aggregate.projection && checkRuntimeEnv(aggregate.projection)) {
       throw new Error(
         `${message.clientEnvError}.aggregates[${index}].projection`
       )
@@ -41,18 +40,14 @@ export default ({ resolveConfig, isClient }) => {
 
     const snapshotAdapter = aggregate.snapshotAdapter
       ? {
-          module:
-            aggregate.snapshotAdapter.module in resolveConfig[envKey]
-              ? aggregate.snapshotAdapter.module
-              : resolveFileOrModule(aggregate.snapshotAdapter.module),
+          module: checkRuntimeEnv(aggregate.snapshotAdapter.module)
+            ? aggregate.snapshotAdapter.module
+            : resolveFileOrModule(aggregate.snapshotAdapter.module),
           options: {
             ...aggregate.snapshotAdapter.options
           }
         }
       : {}
-    Object.defineProperty(snapshotAdapter, envKey, {
-      value: resolveConfig[envKey]
-    })
 
     if (!isClient) {
       imports.push(`import commands_${index} from ${JSON.stringify(commands)}`)
@@ -81,11 +76,13 @@ export default ({ resolveConfig, isClient }) => {
     }
 
     if (!isClient && aggregate.snapshotAdapter) {
-      if (aggregate.snapshotAdapter.module in resolveConfig[envKey]) {
+      if (checkRuntimeEnv(aggregate.snapshotAdapter.module)) {
         constants.push(
-          `const snapshotAdapter_${index} = ${injectEnv(snapshotAdapter)}`,
+          `const snapshotAdapter_${index} = ${injectRuntimeEnv(
+            snapshotAdapter
+          )}`,
           `const snapshotAdapterModule_${index} = interopRequireDefault(`,
-          `  eval('require(snapshotAdapter_${index}.module)')`,
+          `  __non_webpack_require__(snapshotAdapter_${index}.module)`,
           `).default`,
           `const snapshotAdapterOptions_${index} = snapshotAdapter_${index}.options`
         )
@@ -96,7 +93,7 @@ export default ({ resolveConfig, isClient }) => {
           )}`
         )
         constants.push(
-          `const snapshotAdapterOptions_${index} = ${injectEnv(
+          `const snapshotAdapterOptions_${index} = ${JSON.stringify(
             snapshotAdapter.options
           )}`
         )

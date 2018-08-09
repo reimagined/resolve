@@ -2,7 +2,7 @@
 
 The reSolve framework includes the following packages:
 
-* [**reSolve Packages**](#resolve-packages)
+* [**reSolve Packages**](core/)
     The base framework elements. We don't expect contributions into these packages, because this may affect the whole framework.
 
 * [**Adapter Packages**](adapters/)

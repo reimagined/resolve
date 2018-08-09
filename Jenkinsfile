@@ -59,7 +59,7 @@ pipeline {
                         export DISPLAY=:0;
                         firefox && echo 'err';
 
-                        npx oao run-script test:functional -- --browser=path:/chromium
+                        npx oao run-script test:functional
                     """
                 }
             }
@@ -113,156 +113,168 @@ pipeline {
             }
         }
 
-        stage('CRA tests') {
-            when {
+       
+            stage('Create-resolve-app [ hello-world ] Functional Tests') {
+                 when {
                 expression { CHANGE_TARGET == 'master' }
             }
-            parallel {
-                stage('Create-resolve-app [ hello-world ] Functional Tests') {
-                    steps {
-                        script {
-                            sh """
-                                mkdir hello-world && cd hello-world;
-                                create-resolve-app hello-world -c \$(cat /last_commit)
-                                cd ./hello-world; \
-                                cat ./package.json; \
-                                sed -i 's/"port": 3000/"port": 3001/g' ./resolve.config.json;
-                                grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3001/g'
-
-                                yarn test
-                                yarn test:functional --browser=path:/chromium
-                            """
-                        }
-                    }
-                }
-
-                stage('Create-resolve-app [ todolist ] Functional Tests') {
-                    steps {
-                        script {
-                            sh """
-                                mkdir todolist && cd todolist;
-                                create-resolve-app todolist -e todo -c \$(cat /last_commit)
-                                cd ./todolist
-                                cat ./package.json
-                                sed -i 's/"port": 3000/"port": 3002/g' ./resolve.config.json
-                                grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3002/g'
-
-                                yarn test
-                                yarn test:functional --browser=path:/chromium
-                            """
-                        }
-                    }
-                }
-
-                stage('Create-resolve-app [ twolevelstodo ] Functional Tests') {
-                    steps {
-                        script {
-                            sh """
-                                mkdir twolevelstodo && cd twolevelstodo;
-                                create-resolve-app twolevelstodo -e todo-two-levels -c \$(cat /last_commit)
-                                cd ./twolevelstodo
-                                cat ./package.json
-                                sed -i 's/"port": 3000/"port": 3003/g' ./resolve.config.json
-                                grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3003/g'
-
-                                yarn test:functional --browser=path:/chromium
-                            """
-                        }
-                    }
-                }
-
-                stage('Create-resolve-app [ hacker-news ] Functional Tests') {
-                    steps {
-                        script {
-                            sh """
-                                mkdir hacker-news && cd hacker-news;
-                                create-resolve-app hn -e hacker-news -c \$(cat /last_commit)
-                                cd ./hn
-                                cat ./package.json
-                                sed -i 's/"port": 3000/"port": 3004/g' ./resolve.config.json
-                                grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3004/g'
-
-                                yarn test
-                                yarn test:functional --browser=path:/chromium
-                            """
-                        }
-                    }
-                }
-
-                stage('Create-resolve-app [ top-list ] Functional Tests') {
-                    steps {
-                        script {
-                            sh """
-                                mkdir top-list && cd top-list;
-                                create-resolve-app toplist -e top-list -c \$(cat /last_commit)
-                                cd ./toplist
-                                cat ./package.json
-                                sed -i 's/"port": 3000/"port": 3005/g' ./resolve.config.json
-                                grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3005/g'
-
-
-                                yarn test
-                                yarn test:functional --browser=path:/chromium
-                            """
-                        }
-                    }
-                }
-
-                stage('Create-resolve-app [ with-postcss ] Functional Tests') {
-                    steps {
-                        script {
-                            sh """
-                                mkdir with-postcss && cd with-postcss;
-                                create-resolve-app with-postcss -e with-postcss -c \$(cat /last_commit)
-                                cd ./with-postcss
-                                cat ./package.json
-                                sed -i 's/"port": 3000/"port": 3006/g' ./resolve.config.json
-                                grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3006/g'
-
-                                yarn test
-                                yarn test:functional --browser=path:/chromium
-                            """
-                        }
-                    }
-                }
-
-                stage('Create-resolve-app [ with-authentication ] Functional Tests') {
-                    steps {
-                        script {
-                            sh """
-                                mkdir with-authentication && cd with-authentication;
-                                create-resolve-app with-authentication -e with-authentication -c \$(cat /last_commit)
-                                cd ./with-authentication
-                                cat ./package.json
-                                sed -i 's/"port": 3000/"port": 3007/g' ./resolve.config.json
-                                grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3007/g'
-
-                                yarn test
-                                yarn test:functional --browser=path:/chromium
-                            """
-                        }
-                    }
-                }
-
-                stage('Create-resolve-app [ with-styled-components ] Functional Tests') {
-                    steps {
-                        script {
-                            sh """
-                                mkdir with-styled-components && cd with-styled-components;
-                                create-resolve-app with-styled-components -e with-styled-components -c \$(cat /last_commit)
-                                cd ./with-styled-components
-                                cat ./package.json
-                                sed -i 's/"port": 3000/"port": 3008/g' ./resolve.config.json
-                                grep -rl 3000 ./test/functional/ | xargs sed -i 's/3000/3008/g'
-
-                                yarn test
-                                yarn test:functional --browser=path:/chromium
-                            """
-                        }
+                steps {
+                    script {
+                        sh """
+                            mkdir hello-world && cd hello-world;
+                            create-resolve-app hello-world -c \$(cat /last_commit)
+                            cd ./hello-world; 
+                            cat ./package.json; 
+                            yarn test
+                            yarn test:functional --browser=path:/chromium
+                        """
                     }
                 }
             }
-        }
+
+            stage('Create-resolve-app [ todolist ] Functional Tests') {
+                 when {
+                expression { CHANGE_TARGET == 'master' }
+            }
+                steps {
+                    script {
+                        sh """
+                            mkdir todolist && cd todolist;
+                            create-resolve-app todolist -e todo -c \$(cat /last_commit)
+                            cd ./todolist
+                            cat ./package.json
+                            yarn test
+                            yarn test:functional --browser=path:/chromium
+                        """
+                    }
+                }
+            }
+
+            stage('Create-resolve-app [ twolevelstodo ] Functional Tests') {
+                 when {
+                expression { CHANGE_TARGET == 'master' }
+            }
+                steps {
+                    script {
+                        sh """
+                            mkdir twolevelstodo && cd twolevelstodo;
+                            create-resolve-app twolevelstodo -e todo-two-levels -c \$(cat /last_commit)
+                            cd ./twolevelstodo
+                            cat ./package.json
+                            yarn test:functional --browser=path:/chromium
+                        """
+                    }
+                }
+            }
+
+            stage('Create-resolve-app [ hacker-news ] Functional Tests') {
+                 when {
+                expression { CHANGE_TARGET == 'master' }
+            }
+                steps {
+                    script {
+                        sh """
+                            mkdir hacker-news && cd hacker-news;
+                            create-resolve-app hn -e hacker-news -c \$(cat /last_commit)
+                            cd ./hn
+                            cat ./package.json
+                            yarn test
+                            yarn test:functional --browser=path:/chromium
+                        """
+                    }
+                }
+            }
+
+            stage('Create-resolve-app [ top-list ] Functional Tests') {
+                 when {
+                expression { CHANGE_TARGET == 'master' }
+            }
+                steps {
+                    script {
+                        sh """
+                            mkdir top-list && cd top-list;
+                            create-resolve-app toplist -e top-list -c \$(cat /last_commit)
+                            cd ./toplist
+                            cat ./package.json
+                            yarn test
+                            yarn test:functional --browser=path:/chromium
+                        """
+                    }
+                }
+            }
+
+            stage('Create-resolve-app [ with-postcss ] Functional Tests') {
+                 when {
+                expression { CHANGE_TARGET == 'master' }
+            }
+                steps {
+                    script {
+                        sh """
+                            mkdir with-postcss && cd with-postcss;
+                            create-resolve-app with-postcss -e with-postcss -c \$(cat /last_commit)
+                            cd ./with-postcss
+                            cat ./package.json
+                            yarn test
+                            yarn test:functional --browser=path:/chromium
+                        """
+                    }
+                }
+            }
+
+            stage('Create-resolve-app [ with-authentication ] Functional Tests') {
+                 when {
+                expression { CHANGE_TARGET == 'master' }
+            }
+                steps {
+                    script {
+                        sh """
+                            mkdir with-authentication && cd with-authentication;
+                            create-resolve-app with-authentication -e with-authentication -c \$(cat /last_commit)
+                            cd ./with-authentication
+                            cat ./package.json
+                            yarn test
+                            yarn test:functional --browser=path:/chromium
+                        """
+                    }
+                }
+            }
+
+            stage('Create-resolve-app [ with-styled-components ] Functional Tests') {
+                 when {
+                expression { CHANGE_TARGET == 'master' }
+            }
+                steps {
+                    script {
+                        sh """
+                            mkdir with-styled-components && cd with-styled-components;
+                            create-resolve-app with-styled-components -e with-styled-components -c \$(cat /last_commit)
+                            cd ./with-styled-components
+                            cat ./package.json
+                            yarn test
+                            yarn test:functional --browser=path:/chromium
+                        """
+                    }
+                }
+            }
+
+            stage('Create-resolve-app [ with-saga ] Functional Tests') {
+                 when {
+                expression { CHANGE_TARGET == 'master' }
+            }
+                steps {
+                    script {
+                        sh """
+                            mkdir with-saga && cd with-saga;
+                            create-resolve-app with-saga -e with-saga -c \$(cat /last_commit)
+                            cd ./with-saga
+                            cat ./package.json
+                            yarn test
+                            yarn test:functional --browser=path:/chromium
+                        """
+                    }
+                }
+            }
+        
     }
 
     post {

@@ -1,9 +1,8 @@
-import { injectEnv, envKey } from 'json-env-extract'
-
 import { message } from '../constants'
 import resolveFile from '../resolve_file'
 import resolveFileOrModule from '../resolve_file_or_module'
 import importBabel from '../import_babel'
+import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig, isClient }) => {
   if (!resolveConfig.readModels) {
@@ -20,19 +19,19 @@ export default ({ resolveConfig, isClient }) => {
   for (let index = 0; index < resolveConfig.readModels.length; index++) {
     const readModel = resolveConfig.readModels[index]
 
-    if (readModel.name in resolveConfig[envKey]) {
+    if (checkRuntimeEnv(readModel.name)) {
       throw new Error(`${message.clientEnvError}.readModels[${index}].name`)
     }
     const name = readModel.name
 
-    if (readModel.projection in resolveConfig[envKey]) {
+    if (checkRuntimeEnv(readModel.projection)) {
       throw new Error(
         `${message.clientEnvError}.readModels[${index}].projection`
       )
     }
     const projection = resolveFile(readModel.projection)
 
-    if (readModel.resolvers in resolveConfig[envKey]) {
+    if (checkRuntimeEnv(readModel.resolvers)) {
       throw new Error(
         `${message.clientEnvError}.readModels[${index}].resolvers`
       )
@@ -41,16 +40,14 @@ export default ({ resolveConfig, isClient }) => {
 
     const adapter = readModel.adapter
       ? {
-          module:
-            readModel.adapter.module in resolveConfig[envKey]
-              ? readModel.adapter.module
-              : resolveFileOrModule(readModel.adapter.module),
+          module: checkRuntimeEnv(readModel.adapter.module)
+            ? readModel.adapter.module
+            : resolveFileOrModule(readModel.adapter.module),
           options: {
             ...readModel.adapter.options
           }
         }
       : {}
-    Object.defineProperty(adapter, envKey, { value: resolveConfig[envKey] })
 
     constants.push(`const name_${index} = ${JSON.stringify(name)}`)
 
@@ -73,11 +70,11 @@ export default ({ resolveConfig, isClient }) => {
     }
 
     if (!isClient && readModel.adapter) {
-      if (readModel.adapter.module in resolveConfig[envKey]) {
+      if (checkRuntimeEnv(readModel.adapter.module)) {
         constants.push(
-          `const adapter_${index} = ${injectEnv(adapter)}`,
+          `const adapter_${index} = ${injectRuntimeEnv(adapter)}`,
           `const adapterModule_${index} = interopRequireDefault(`,
-          `  eval('require(adapter_${index}.module)')`,
+          `  __non_webpack_require__(adapter_${index}.module)`,
           `).default`,
           `const adapterOptions_${index} = adapter_${index}.options`
         )
@@ -86,7 +83,7 @@ export default ({ resolveConfig, isClient }) => {
           `import adapterModule_${index} from ${JSON.stringify(adapter.module)}`
         )
         constants.push(
-          `const adapterOptions_${index} = ${injectEnv(adapter.options)}`
+          `const adapterOptions_${index} = ${JSON.stringify(adapter.options)}`
         )
       }
     }

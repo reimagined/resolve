@@ -2,7 +2,7 @@ import alias from '../../src/core/alias/$resolve.applicationName'
 import normalizePaths from './normalize_paths'
 
 test('works correctly', () => {
-  const deployOptions = {
+  const resolveConfig = {
     applicationName: 'test'
   }
 
@@ -10,7 +10,7 @@ test('works correctly', () => {
     normalizePaths(
       '\r\n' +
         alias({
-          deployOptions
+          resolveConfig
         }).code +
         '\r\n'
     )

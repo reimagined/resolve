@@ -1,4 +1,4 @@
-import projection from '../../common/view-models/shoppingList.projection'
+import projection from '../../../domain/view-models/shoppingList.projection'
 
 describe('view-models', () => {
   describe('Todos', () => {

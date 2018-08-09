@@ -1,6 +1,5 @@
-import { envKey } from 'json-env-extract'
-
 import { message } from '../constants'
+import { checkRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig }) => {
   if (!resolveConfig.jwtCookie) {
@@ -8,7 +7,7 @@ export default ({ resolveConfig }) => {
   }
 
   for (const optionsKey of Object.keys(resolveConfig.jwtCookie)) {
-    if (resolveConfig.jwtCookie[optionsKey] in resolveConfig[envKey]) {
+    if (checkRuntimeEnv(resolveConfig.jwtCookie[optionsKey])) {
       throw new Error(`${message.clientEnvError}.jwtCookie.${optionsKey}`)
     }
   }

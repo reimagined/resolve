@@ -1,7 +1,7 @@
 import React from 'react'
 import renderer from 'react-test-renderer'
 
-import { ShoppingList } from '../../client/containers/ShoppingList'
+import { ShoppingList } from '../../containers/ShoppingList'
 
 test('renders correctly', () => {
   const tree = renderer

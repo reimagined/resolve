@@ -1,5 +1,5 @@
 # **Bus Adapters** 🚌
-This folder contains [resolve-es](../resolve-es) bus adapters.
+This folder contains [resolve-es](../../core/resolve-es) bus adapters.
 
 A bus adapter is an object that must contain two functions:  
 * `setTrigger` - gets a callback that is called when an event is emitted. 

@@ -4,12 +4,7 @@ import getModulesDirs from './get_modules_dirs'
 import getWebpackEnvPlugin from './get_webpack_env_plugin'
 import resolveFile from './resolve_file'
 
-const getClientWebpackConfig = ({
-  resolveConfig,
-  deployOptions,
-  env,
-  alias
-}) => {
+const getClientWebpackConfig = ({ resolveConfig, alias }) => {
   const clientIndexPath = resolveFile(resolveConfig.index, 'client_index.js')
 
   const clientDistDir = path.resolve(
@@ -19,19 +14,20 @@ const getClientWebpackConfig = ({
   )
 
   const isClient = true
-
-  const polyfills = ['@babel/runtime/regenerator', ...resolveConfig.polyfills]
+  const polyfills = Array.isArray(resolveConfig.polyfills)
+    ? resolveConfig.polyfills
+    : []
 
   return {
     name: 'Client',
     entry: {
-      'bundle.js': [...Array.from(new Set(polyfills)), clientIndexPath],
+      'bundle.js': [...polyfills, clientIndexPath],
       'hmr.js': [
         path.resolve(__dirname, './alias/$resolve.hotModuleReplacement.js')
       ]
     },
     context: path.resolve(process.cwd()),
-    mode: deployOptions.mode,
+    mode: resolveConfig.mode,
     performance: false,
     devtool: 'source-map',
     target: 'web',
@@ -84,7 +80,6 @@ const getClientWebpackConfig = ({
               loader: 'val-loader',
               options: {
                 resolveConfig,
-                deployOptions,
                 isClient
               }
             }
@@ -106,9 +101,7 @@ const getClientWebpackConfig = ({
         }
       ]
     },
-    plugins: [
-      getWebpackEnvPlugin({ resolveConfig, deployOptions, env, isClient })
-    ]
+    plugins: [getWebpackEnvPlugin({ resolveConfig, isClient })]
   }
 }
 

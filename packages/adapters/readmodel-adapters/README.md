@@ -1,5 +1,5 @@
 # **Read Model Adapters** 🛢
-This folder contains [resolve-query](../resolve-query) read model adapters.
+This folder contains [resolve-query](../../core/resolve-query) read model adapters.
 
 A read model adapter is an object that should contain the following functions:  
 * `buildProjection` - wraps the projection.  
@@ -15,5 +15,7 @@ Available adapters:
 	Used to store a read model in Memory.
 * [resolve-readmodel-mysql](./resolve-readmodel-mysql)
 	Used to store a read model in MySQL.
+* [resolve-readmodel-mongo](./resolve-readmodel-mongo)
+	Used to store a read model in MongoDB.
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-readmodel-adapters-readme?pixel)

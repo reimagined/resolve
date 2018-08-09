@@ -2,8 +2,10 @@ function createAdapter() {
   let handler = () => {}
 
   return {
-    subscribe: callback => (handler = callback),
-    publish: event => handler(event)
+    init: async () => {},
+    close: async () => {},
+    subscribe: async callback => (handler = callback),
+    publish: async event => handler(event)
   }
 }
 

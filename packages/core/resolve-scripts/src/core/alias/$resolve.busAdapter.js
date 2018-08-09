@@ -1,7 +1,6 @@
-import { injectEnv, envKey } from 'json-env-extract'
-
 import { message } from '../constants'
 import resolveFileOrModule from '../resolve_file_or_module'
+import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig, isClient }) => {
   if (isClient) {
@@ -16,26 +15,24 @@ export default ({ resolveConfig, isClient }) => {
 
   const busAdapter = resolveConfig.busAdapter
     ? {
-        module:
-          resolveConfig.busAdapter.module in resolveConfig[envKey]
-            ? resolveConfig.busAdapter.module
-            : resolveFileOrModule(resolveConfig.busAdapter.module),
+        module: checkRuntimeEnv(resolveConfig.busAdapter.module)
+          ? resolveConfig.busAdapter.module
+          : resolveFileOrModule(resolveConfig.busAdapter.module),
         options: {
           ...resolveConfig.busAdapter.options
         }
       }
     : {}
-  Object.defineProperty(busAdapter, envKey, { value: resolveConfig[envKey] })
 
   const exports = []
 
-  if (busAdapter.module in resolveConfig[envKey]) {
+  if (checkRuntimeEnv(busAdapter.module)) {
     exports.push(
       `import interopRequireDefault from "@babel/runtime/helpers/interopRequireDefault"`,
       ``,
-      `const busAdapter = ${injectEnv(busAdapter)}`,
+      `const busAdapter = ${injectRuntimeEnv(busAdapter)}`,
       `const busAdapterModule = interopRequireDefault(`,
-      `  eval('require(busAdapter.module)')`,
+      `  __non_webpack_require__(busAdapter.module)`,
       `).default`,
       `const busAdapterOptions = busAdapter.options`
     )
@@ -43,7 +40,7 @@ export default ({ resolveConfig, isClient }) => {
     exports.push(
       `import busAdapterModule from ${JSON.stringify(busAdapter.module)}`,
       ``,
-      `const busAdapterOptions = ${injectEnv(busAdapter.options)}`
+      `const busAdapterOptions = ${JSON.stringify(busAdapter.options)}`
     )
   }
 

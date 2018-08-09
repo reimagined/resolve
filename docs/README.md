@@ -22,7 +22,7 @@ Welcome to the reSolve documentation! Here you can find articles that help you u
 
 | Topic Name | Short Description |
 | --- | --- |
-| [Packages](./Packages.md) | Lists and describes the reSolve libraries. |
+| [Packages](https://github.com/reimagined/resolve/tree/master/packages) | Lists and describes the reSolve libraries. |
 | [Aggregate](./Aggregate.md) | A **Domain-Driven Design** concept: a cluster of domain objects that can be treated as a single unit. |
 | [Event Store](./Event%20Store.md) | An **Event Sourcing** concept: a database that stores all Events and delivers them to subscribers. |
 | [Projection](./Projection.md) | An **Event Sourcing** concept: a function that derives the current state from the events stream. |

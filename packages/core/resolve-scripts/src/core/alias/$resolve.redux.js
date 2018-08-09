@@ -1,20 +1,18 @@
-import { envKey } from 'json-env-extract'
-
 import { message } from '../constants'
-
 import resolveFile from '../resolve_file'
+import { checkRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig }) => {
   if (!resolveConfig.redux) {
     throw new Error(`${message.configNotContainSectionError}.redux`)
   }
 
-  if (resolveConfig.redux.store in resolveConfig[envKey]) {
+  if (checkRuntimeEnv(resolveConfig.redux.store)) {
     throw new Error(`${message.clientEnvError}.redux.store`)
   }
   const store = resolveFile(resolveConfig.redux.store, 'redux_store.js')
 
-  if (resolveConfig.redux.reducers in resolveConfig[envKey]) {
+  if (checkRuntimeEnv(resolveConfig.redux.reducers)) {
     throw new Error(`${message.clientEnvError}.redux.reducers`)
   }
   const reducers = resolveFile(
@@ -22,7 +20,7 @@ export default ({ resolveConfig }) => {
     'redux_reducers.js'
   )
 
-  if (resolveConfig.redux.middlewares in resolveConfig[envKey]) {
+  if (checkRuntimeEnv(resolveConfig.redux.middlewares)) {
     throw new Error(`${message.clientEnvError}.redux.middlewares`)
   }
   const middlewares = resolveFile(

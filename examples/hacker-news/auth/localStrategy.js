@@ -79,7 +79,8 @@ const options = routes.map(({ path, method, callback }) => ({
     method
   },
   callback,
-  ...authenticateOptions
+  ...authenticateOptions,
+  jwtSecret
 }))
 
 const strategyConstructor = options => {
