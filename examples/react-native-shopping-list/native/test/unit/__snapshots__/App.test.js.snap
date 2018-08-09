@@ -35,91 +35,21 @@ ShallowWrapper {
     "key": undefined,
     "nodeType": "class",
     "props": Object {
-      "children": <Component
+      "children": <Text
+        accessible={true}
+        allowFontScaling={true}
+        ellipsizeMode="tail"
         style={
-          Array [
-            Object {
-              "alignItems": "center",
-              "flex": 1,
-              "justifyContent": "center",
-              "padding": 10,
-              "paddingTop": 30,
-            },
-            Object {
-              "paddingBottom": undefined,
-            },
-          ]
+          Object {
+            "fontSize": 24,
+            "fontWeight": "bold",
+            "paddingBottom": 5,
+            "width": "100%",
+          }
         }
       >
-        <Text
-          accessible={true}
-          allowFontScaling={true}
-          ellipsizeMode="tail"
-          style={
-            Object {
-              "fontSize": 24,
-              "fontWeight": "bold",
-              "paddingBottom": 5,
-              "width": "100%",
-            }
-          }
-        >
-          Tasks List
-        </Text>
-        <FlatList
-          data={
-            Array [
-              Object {
-                "checked": false,
-                "id": "id1",
-                "text": "text1",
-              },
-              Object {
-                "checked": false,
-                "id": "id2",
-                "text": "text2",
-              },
-            ]
-          }
-          disableVirtualization={false}
-          horizontal={false}
-          initialNumToRender={10}
-          keyExtractor={[Function]}
-          maxToRenderPerBatch={10}
-          numColumns={1}
-          onEndReachedThreshold={2}
-          renderItem={[Function]}
-          scrollEventThrottle={50}
-          style={
-            Object {
-              "width": "100%",
-            }
-          }
-          updateCellsBatchingPeriod={50}
-          windowSize={21}
-        />
-        <TextInput
-          allowFontScaling={true}
-          onChangeText={[Function]}
-          onSubmitEditing={[Function]}
-          placeholder="New Task"
-          returnKeyLabel="done"
-          returnKeyType="done"
-          style={
-            Object {
-              "alignSelf": "stretch",
-              "borderColor": "gray",
-              "borderWidth": 1,
-              "fontSize": 18,
-              "height": 60,
-              "paddingLeft": 10,
-              "paddingRight": 10,
-              "textAlign": "center",
-            }
-          }
-          value=""
-        />
-      </Component>,
+        Hello
+      </Text>,
       "style": Object {
         "alignItems": "center",
         "backgroundColor": "#fff",
@@ -133,175 +63,19 @@ ShallowWrapper {
       "key": undefined,
       "nodeType": "class",
       "props": Object {
-        "children": Array [
-          <Text
-            accessible={true}
-            allowFontScaling={true}
-            ellipsizeMode="tail"
-            style={
-              Object {
-                "fontSize": 24,
-                "fontWeight": "bold",
-                "paddingBottom": 5,
-                "width": "100%",
-              }
-            }
-          >
-            Tasks List
-          </Text>,
-          <FlatList
-            data={
-              Array [
-                Object {
-                  "checked": false,
-                  "id": "id1",
-                  "text": "text1",
-                },
-                Object {
-                  "checked": false,
-                  "id": "id2",
-                  "text": "text2",
-                },
-              ]
-            }
-            disableVirtualization={false}
-            horizontal={false}
-            initialNumToRender={10}
-            keyExtractor={[Function]}
-            maxToRenderPerBatch={10}
-            numColumns={1}
-            onEndReachedThreshold={2}
-            renderItem={[Function]}
-            scrollEventThrottle={50}
-            style={
-              Object {
-                "width": "100%",
-              }
-            }
-            updateCellsBatchingPeriod={50}
-            windowSize={21}
-          />,
-          <TextInput
-            allowFontScaling={true}
-            onChangeText={[Function]}
-            onSubmitEditing={[Function]}
-            placeholder="New Task"
-            returnKeyLabel="done"
-            returnKeyType="done"
-            style={
-              Object {
-                "alignSelf": "stretch",
-                "borderColor": "gray",
-                "borderWidth": 1,
-                "fontSize": 18,
-                "height": 60,
-                "paddingLeft": 10,
-                "paddingRight": 10,
-                "textAlign": "center",
-              }
-            }
-            value=""
-          />,
-        ],
-        "style": Array [
-          Object {
-            "alignItems": "center",
-            "flex": 1,
-            "justifyContent": "center",
-            "padding": 10,
-            "paddingTop": 30,
-          },
-          Object {
-            "paddingBottom": undefined,
-          },
-        ],
+        "accessible": true,
+        "allowFontScaling": true,
+        "children": "Hello",
+        "ellipsizeMode": "tail",
+        "style": Object {
+          "fontSize": 24,
+          "fontWeight": "bold",
+          "paddingBottom": 5,
+          "width": "100%",
+        },
       },
       "ref": null,
-      "rendered": Array [
-        Object {
-          "instance": null,
-          "key": undefined,
-          "nodeType": "class",
-          "props": Object {
-            "accessible": true,
-            "allowFontScaling": true,
-            "children": "Tasks List",
-            "ellipsizeMode": "tail",
-            "style": Object {
-              "fontSize": 24,
-              "fontWeight": "bold",
-              "paddingBottom": 5,
-              "width": "100%",
-            },
-          },
-          "ref": null,
-          "rendered": "Tasks List",
-          "type": [Function],
-        },
-        Object {
-          "instance": null,
-          "key": undefined,
-          "nodeType": "class",
-          "props": Object {
-            "data": Array [
-              Object {
-                "checked": false,
-                "id": "id1",
-                "text": "text1",
-              },
-              Object {
-                "checked": false,
-                "id": "id2",
-                "text": "text2",
-              },
-            ],
-            "disableVirtualization": false,
-            "horizontal": false,
-            "initialNumToRender": 10,
-            "keyExtractor": [Function],
-            "maxToRenderPerBatch": 10,
-            "numColumns": 1,
-            "onEndReachedThreshold": 2,
-            "renderItem": [Function],
-            "scrollEventThrottle": 50,
-            "style": Object {
-              "width": "100%",
-            },
-            "updateCellsBatchingPeriod": 50,
-            "windowSize": 21,
-          },
-          "ref": null,
-          "rendered": null,
-          "type": [Function],
-        },
-        Object {
-          "instance": null,
-          "key": undefined,
-          "nodeType": "class",
-          "props": Object {
-            "allowFontScaling": true,
-            "onChangeText": [Function],
-            "onSubmitEditing": [Function],
-            "placeholder": "New Task",
-            "returnKeyLabel": "done",
-            "returnKeyType": "done",
-            "style": Object {
-              "alignSelf": "stretch",
-              "borderColor": "gray",
-              "borderWidth": 1,
-              "fontSize": 18,
-              "height": 60,
-              "paddingLeft": 10,
-              "paddingRight": 10,
-              "textAlign": "center",
-            },
-            "value": "",
-          },
-          "ref": null,
-          "rendered": null,
-          "type": [Function],
-        },
-      ],
+      "rendered": "Hello",
       "type": [Function],
     },
     "type": [Function],
@@ -312,91 +86,21 @@ ShallowWrapper {
       "key": undefined,
       "nodeType": "class",
       "props": Object {
-        "children": <Component
+        "children": <Text
+          accessible={true}
+          allowFontScaling={true}
+          ellipsizeMode="tail"
           style={
-            Array [
-              Object {
-                "alignItems": "center",
-                "flex": 1,
-                "justifyContent": "center",
-                "padding": 10,
-                "paddingTop": 30,
-              },
-              Object {
-                "paddingBottom": undefined,
-              },
-            ]
+            Object {
+              "fontSize": 24,
+              "fontWeight": "bold",
+              "paddingBottom": 5,
+              "width": "100%",
+            }
           }
         >
-          <Text
-            accessible={true}
-            allowFontScaling={true}
-            ellipsizeMode="tail"
-            style={
-              Object {
-                "fontSize": 24,
-                "fontWeight": "bold",
-                "paddingBottom": 5,
-                "width": "100%",
-              }
-            }
-          >
-            Tasks List
-          </Text>
-          <FlatList
-            data={
-              Array [
-                Object {
-                  "checked": false,
-                  "id": "id1",
-                  "text": "text1",
-                },
-                Object {
-                  "checked": false,
-                  "id": "id2",
-                  "text": "text2",
-                },
-              ]
-            }
-            disableVirtualization={false}
-            horizontal={false}
-            initialNumToRender={10}
-            keyExtractor={[Function]}
-            maxToRenderPerBatch={10}
-            numColumns={1}
-            onEndReachedThreshold={2}
-            renderItem={[Function]}
-            scrollEventThrottle={50}
-            style={
-              Object {
-                "width": "100%",
-              }
-            }
-            updateCellsBatchingPeriod={50}
-            windowSize={21}
-          />
-          <TextInput
-            allowFontScaling={true}
-            onChangeText={[Function]}
-            onSubmitEditing={[Function]}
-            placeholder="New Task"
-            returnKeyLabel="done"
-            returnKeyType="done"
-            style={
-              Object {
-                "alignSelf": "stretch",
-                "borderColor": "gray",
-                "borderWidth": 1,
-                "fontSize": 18,
-                "height": 60,
-                "paddingLeft": 10,
-                "paddingRight": 10,
-                "textAlign": "center",
-              }
-            }
-            value=""
-          />
-        </Component>,
+          Hello
+        </Text>,
         "style": Object {
           "alignItems": "center",
           "backgroundColor": "#fff",
@@ -410,175 +114,19 @@ ShallowWrapper {
         "key": undefined,
         "nodeType": "class",
         "props": Object {
-          "children": Array [
-            <Text
-              accessible={true}
-              allowFontScaling={true}
-              ellipsizeMode="tail"
-              style={
-                Object {
-                  "fontSize": 24,
-                  "fontWeight": "bold",
-                  "paddingBottom": 5,
-                  "width": "100%",
-                }
-              }
-            >
-              Tasks List
-            </Text>,
-            <FlatList
-              data={
-                Array [
-                  Object {
-                    "checked": false,
-                    "id": "id1",
-                    "text": "text1",
-                  },
-                  Object {
-                    "checked": false,
-                    "id": "id2",
-                    "text": "text2",
-                  },
-                ]
-              }
-              disableVirtualization={false}
-              horizontal={false}
-              initialNumToRender={10}
-              keyExtractor={[Function]}
-              maxToRenderPerBatch={10}
-              numColumns={1}
-              onEndReachedThreshold={2}
-              renderItem={[Function]}
-              scrollEventThrottle={50}
-              style={
-                Object {
-                  "width": "100%",
-                }
-              }
-              updateCellsBatchingPeriod={50}
-              windowSize={21}
-            />,
-            <TextInput
-              allowFontScaling={true}
-              onChangeText={[Function]}
-              onSubmitEditing={[Function]}
-              placeholder="New Task"
-              returnKeyLabel="done"
-              returnKeyType="done"
-              style={
-                Object {
-                  "alignSelf": "stretch",
-                  "borderColor": "gray",
-                  "borderWidth": 1,
-                  "fontSize": 18,
-                  "height": 60,
-                  "paddingLeft": 10,
-                  "paddingRight": 10,
-                  "textAlign": "center",
-                }
-              }
-              value=""
-            />,
-          ],
-          "style": Array [
-            Object {
-              "alignItems": "center",
-              "flex": 1,
-              "justifyContent": "center",
-              "padding": 10,
-              "paddingTop": 30,
-            },
-            Object {
-              "paddingBottom": undefined,
-            },
-          ],
+          "accessible": true,
+          "allowFontScaling": true,
+          "children": "Hello",
+          "ellipsizeMode": "tail",
+          "style": Object {
+            "fontSize": 24,
+            "fontWeight": "bold",
+            "paddingBottom": 5,
+            "width": "100%",
+          },
         },
         "ref": null,
-        "rendered": Array [
-          Object {
-            "instance": null,
-            "key": undefined,
-            "nodeType": "class",
-            "props": Object {
-              "accessible": true,
-              "allowFontScaling": true,
-              "children": "Tasks List",
-              "ellipsizeMode": "tail",
-              "style": Object {
-                "fontSize": 24,
-                "fontWeight": "bold",
-                "paddingBottom": 5,
-                "width": "100%",
-              },
-            },
-            "ref": null,
-            "rendered": "Tasks List",
-            "type": [Function],
-          },
-          Object {
-            "instance": null,
-            "key": undefined,
-            "nodeType": "class",
-            "props": Object {
-              "data": Array [
-                Object {
-                  "checked": false,
-                  "id": "id1",
-                  "text": "text1",
-                },
-                Object {
-                  "checked": false,
-                  "id": "id2",
-                  "text": "text2",
-                },
-              ],
-              "disableVirtualization": false,
-              "horizontal": false,
-              "initialNumToRender": 10,
-              "keyExtractor": [Function],
-              "maxToRenderPerBatch": 10,
-              "numColumns": 1,
-              "onEndReachedThreshold": 2,
-              "renderItem": [Function],
-              "scrollEventThrottle": 50,
-              "style": Object {
-                "width": "100%",
-              },
-              "updateCellsBatchingPeriod": 50,
-              "windowSize": 21,
-            },
-            "ref": null,
-            "rendered": null,
-            "type": [Function],
-          },
-          Object {
-            "instance": null,
-            "key": undefined,
-            "nodeType": "class",
-            "props": Object {
-              "allowFontScaling": true,
-              "onChangeText": [Function],
-              "onSubmitEditing": [Function],
-              "placeholder": "New Task",
-              "returnKeyLabel": "done",
-              "returnKeyType": "done",
-              "style": Object {
-                "alignSelf": "stretch",
-                "borderColor": "gray",
-                "borderWidth": 1,
-                "fontSize": 18,
-                "height": 60,
-                "paddingLeft": 10,
-                "paddingRight": 10,
-                "textAlign": "center",
-              },
-              "value": "",
-            },
-            "ref": null,
-            "rendered": null,
-            "type": [Function],
-          },
-        ],
+        "rendered": "Hello",
         "type": [Function],
       },
       "type": [Function],
