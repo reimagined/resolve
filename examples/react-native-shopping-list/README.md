@@ -51,6 +51,7 @@ When you are ready to share your project with others (for example, by deploying 
             📄 view-model-name.projection.js
             📄 view-model-name.serialize_state.js
             📄 view-model-name.deserialize_state.js
+        📁 test
         📄 eventTypes.js
         📄 package.json
     📁 web
