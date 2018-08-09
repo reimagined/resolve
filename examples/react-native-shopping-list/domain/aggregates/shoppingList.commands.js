@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 
-import jwtSecret from '../../auth/jwtSecret'
+import jwtSecret from '../auth/jwtSecret'
 import validation from './validation'
 import {
   SHOPPING_LIST_CREATED,

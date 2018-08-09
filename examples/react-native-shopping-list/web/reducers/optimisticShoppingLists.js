@@ -1,5 +1,5 @@
 import { LOCATION_CHANGE } from 'react-router-redux'
-import { OPTIMISTIC_CREATE_SHOPPING_LIST } from '../../common/eventTypes'
+import { OPTIMISTIC_CREATE_SHOPPING_LIST } from '../../domain/eventTypes'
 
 const optimisticShoppingLists = (state = [], action) => {
   switch (action.type) {

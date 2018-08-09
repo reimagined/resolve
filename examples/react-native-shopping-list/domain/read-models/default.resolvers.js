@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 
-import jwtSecret from '../../auth/jwtSecret'
+import jwtSecret from '../auth/jwtSecret'
 
 export default {
   users: async (store, { query, shareId, jwtToken }) => {
