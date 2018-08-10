@@ -17,13 +17,15 @@
   },
   "devDependencies": {
     "@babel/core": "7.0.0-beta.55",
+    "@babel/node": "7.0.0-beta.55",
     "@babel/plugin-proposal-class-properties": "7.0.0-beta.55",
     "@babel/plugin-proposal-export-default-from": "7.0.0-beta.55",
     "@babel/plugin-proposal-export-namespace-from": "7.0.0-beta.55",
     "@babel/plugin-transform-runtime": "7.0.0-beta.55",
     "@babel/preset-env": "7.0.0-beta.55",
     "@babel/preset-react": "7.0.0-beta.55",
-    "@babel/node": "7.0.0-beta.55",
-    "resolve-scripts": "0.13.2"
+    "resolve-redux": "0.13.2",
+    "resolve-scripts": "0.13.2",
+    "resolve-subscribe-socket.io": "0.13.2"
   }
 }

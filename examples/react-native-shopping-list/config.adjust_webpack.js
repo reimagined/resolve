@@ -1,20 +1,18 @@
 import path from 'path'
 
-const adjustWebpackConfigs = (resolveConfig, webpackConfigs, { alias }) => {
+const adjustWebpackConfigs = (resolveConfig, webpackConfigs) => {
   const [webpackWebConfig] = webpackConfigs
+
+  const modules = webpackWebConfig.resolve.modules
 
   const webpackNativeConfig = {
     ...webpackWebConfig,
     name: 'Common Business Logic',
     entry: {
-      'resolve/config': path.resolve(__dirname, 'native/build/config.js')
-    },
-    resolve: {
-      ...webpackWebConfig.resolve,
-      alias: {
-        ...alias,
-        '$resolve.origin': path.resolve(__dirname, 'native/build/origin.js')
-      }
+      'resolve/config': path.resolve(__dirname, 'native/build/config.js'),
+      'resolve/resolve-redux': require.resolve('resolve-redux', {
+        paths: modules
+      })
     },
     output: {
       path: path.resolve(__dirname, 'native'),
@@ -24,14 +22,21 @@ const adjustWebpackConfigs = (resolveConfig, webpackConfigs, { alias }) => {
       rules: [
         ...webpackWebConfig.module.rules,
         {
-          test: path.resolve(__dirname, 'native/build/origin.js'),
+          test: [path.resolve(__dirname, 'native/build/origin.js')],
           use: [
+            {
+              loader: 'babel-loader'
+            },
             {
               loader: 'val-loader',
               options: {
                 resolveConfig,
+                modules,
                 isClient: true
               }
+            },
+            {
+              loader: 'babel-loader'
             }
           ]
         }

@@ -38,6 +38,10 @@ const appConfig = {
   },
   auth: {
     strategies: 'domain/auth/index.js'
+  },
+  subscribeAdapter: {
+    module: 'resolve-subscribe-socket.io',
+    options: {}
   }
 }
 

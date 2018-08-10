@@ -1,7 +1,5 @@
 import React from 'react'
 
-import * as config from '../resolve/config.js'
-
 import { StyleSheet, Text, View } from 'react-native'
 
 const styles = StyleSheet.create({
@@ -19,17 +17,11 @@ const styles = StyleSheet.create({
   }
 })
 
-// eslint-disable-next-line
-console.log(config)
-
 export class App extends React.PureComponent {
   render() {
     return (
       <View style={styles.layout}>
-        <Text style={styles.title}>
-          Hello
-          {JSON.stringify(config)}
-        </Text>
+        <Text style={styles.title}>Hello</Text>
       </View>
     )
   }

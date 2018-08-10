@@ -5,13 +5,13 @@ import {
   viewModels,
   readModels,
   aggregates,
-  subscribeAdapter,
   rootPath,
-  origin
+  origin,
+  subscribeAdapter
 } from '../../resolve/config'
 
-import reducers from '../reducers/index'
-import middlewares from '../middlewares/index'
+import reducers from '../reducers'
+import middlewares from '../middlewares'
 
 const initialState = {}
 

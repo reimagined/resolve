@@ -3,14 +3,10 @@ import React from 'react'
 
 import { Providers } from './resolve/resolve-redux'
 
-import {
-  origin,
-  rootPath,
-  staticPath,
-  aggregateActions
-} from './resolve/config'
+import { origin, rootPath, staticPath } from './resolve/config'
 
 import store from './redux/store'
+import aggregateActions from './redux/actions/aggregateActions'
 
 import App from './containers/App'
 

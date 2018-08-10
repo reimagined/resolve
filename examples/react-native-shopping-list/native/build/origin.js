@@ -1,10 +1,11 @@
-const host = require('my-local-ip')()
+import getLocalHost from 'my-local-ip'
 
-module.exports = function({ resolveConfig }) {
+export default ({ resolveConfig }) => {
   const exports = []
 
   const origin =
-    process.env.RESOLVE_ORIGIN || `http://${host}:${resolveConfig.port}`
+    process.env.RESOLVE_ORIGIN ||
+    `http://${getLocalHost()}:${resolveConfig.port}`
 
   exports.push(`module.exports = "${origin}"`)
 
