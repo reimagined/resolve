@@ -36,8 +36,7 @@
     "jest-expo": "29.0.0",
     "react-native-scripts": "1.14.0",
     "react-test-renderer": "16.4.1",
-    "my-local-ip": "1.0.0",
-    "browser-resolve": "1.11.3"
+    "my-local-ip": "1.0.0"
   },
   "workspaces": {
     "nohoist": [
