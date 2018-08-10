@@ -20,7 +20,7 @@ A JavaScript framework for **CQRS**, **Domain-Driven Design** and **Event Sourci
 
 ### <a name="installation">Installation</a>
 
-The [create-resolve-app](packages/create-resolve-app) package is used to create a **reSolve**-based application. You can use it to get one of the examples, or create an empty application. By default, `create-resolve-app` generates an empty [Hello World](https://github.com/reimagined/resolve/tree/master/examples/hello-world) application. You can start working on your new **reSolve** application in just **2 minutes** using [npx](https://www.npmjs.com/package/npx/v/1.1.1)!
+The [create-resolve-app](packages/core/create-resolve-app) package is used to create a **reSolve**-based application. You can use it to get one of the examples, or create an empty application. By default, `create-resolve-app` generates an empty [Hello World](https://github.com/reimagined/resolve/tree/master/examples/hello-world) application. You can start working on your new **reSolve** application in just **2 minutes** using [npx](https://www.npmjs.com/package/npx/v/1.1.1)!
 
 ```sh
 npx create-resolve-app my-awesome-app

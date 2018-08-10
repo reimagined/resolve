@@ -1,4 +1,0 @@
-{
-  "port": 3000,
-  "routes": "client/routes.js"
-}

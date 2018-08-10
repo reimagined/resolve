@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`works correctly 1`] = `
+Object {
+  "code": "import aggregateActions from '$resolve.aggregateActions'
+import busAdapter from '$resolve.busAdapter'
+import constants from '$resolve.constants'
+import redux from '$resolve.redux'
+import routes from '$resolve.routes'
+import storageAdapter from '$resolve.storageAdapter'
+import subscribeAdapter from '$resolve.subscribeAdapter'
+
+export default {
+ aggregateActions,
+busAdapter,
+constants,
+redux,
+routes,
+storageAdapter,
+subscribeAdapter
+}",
+}
+`;

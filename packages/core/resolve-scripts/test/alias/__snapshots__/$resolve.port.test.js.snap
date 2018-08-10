@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`base config works correctly [server] 1`] = `
+"
+const port = 1234
+
+export default port
+"
+`;
+
+exports[`config with process.env works correctly [server] 1`] = `
+"
+const port = \\"process.env[\\\\\\"PORT\\\\\\"]\\"
+
+export default port
+"
+`;

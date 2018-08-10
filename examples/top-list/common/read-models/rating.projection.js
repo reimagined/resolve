@@ -1,3 +1,6 @@
+const INC_RANGE = 5
+const DEC_NUMBER = -1
+
 export default {
   Init: async store => {
     await store.defineTable('Rating', {
@@ -18,7 +21,7 @@ export default {
       'Rating',
       { id },
       {
-        $inc: { rating: 1 },
+        $inc: { rating: Math.floor(Math.random() * INC_RANGE) },
         $set: { [`votes.${userId}`]: true }
       }
     )
@@ -32,7 +35,7 @@ export default {
       'Rating',
       { id },
       {
-        $inc: { rating: -1 },
+        $inc: { rating: DEC_NUMBER },
         $unset: { [`votes.${userId}`]: true }
       }
     )

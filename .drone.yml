@@ -1,0 +1,114 @@
+pipeline:
+  publish-nightly:
+    when:
+      event: push
+    image: reimagined/resolve-docker
+    pull: true
+    commands:
+      - yarn install
+      - VERSION=$(/scripts/prepare_downstream)
+      - /scripts/npm_patch_rc
+      - npx oao all "/scripts/package_json patch-dependencies resolve $VERSION && /scripts/npm_publish $VERSION nightly"
+    secrets: [ npm_registry, npm_token ]
+
+  register-build:
+    when:
+      event: push
+    image: reimagined/drone-downstream-registry
+    pull: true
+    registry_path: /data/registry
+    action: package-build
+    server: http://ci.resolve.sh
+    params: .downstream
+    secrets: [ secret_server_token ]
+    volumes:
+      - /srv/ecs/downstream-registry:/data/registry
+    repositories:
+      - DevExpress/okrserver
+      - DevExpress/orgstruct
+
+  trigger:
+    when:
+      event: push
+    image: plugins/downstream
+    server: http://ci.resolve.sh
+    fork: true
+    wait: true
+    secrets: [ downstream_token ]
+    params:
+      - .downstream
+    repositories:
+      - DevExpress/okrserver
+      - DevExpress/orgstruct
+
+  npm-tag:
+    when:
+      event: deployment
+      environment: downstream-success
+    image: reimagined/resolve-docker
+    pull: true
+    commands:
+      - /scripts/npm_patch_rc
+      - npx oao all "/scripts/npm_tag $REGISTRY_VERSION latest-stable"
+    secrets: [ npm_registry, npm_token ]
+
+  notify-downstream-success:
+    when:
+      event: deployment
+      environment: downstream-success
+    image: plugins/webhook
+    secrets: [ webhook_urls ]
+    content_type: application/json
+    template: '{
+      "@type": "MessageCard",
+      "@context": "http://schema.org/extensions",
+      "summary": "
+        {{#success build.status}}
+          {{build.number}} succeeded.
+        {{else}}
+          {{build.number}} failed.
+        {{/success}}
+      ",
+      "themeColor": "#00C853",
+      "title": "{{repo.owner}}/{{repo.name}}: downstream builds are SUCCEEDED",
+      "potentialAction": [{
+        "@type": "OpenUri",
+        "name": "View in CI",
+        "targets": [{
+          "os": "default",
+          "uri": "{{build.link}}"
+        }]
+      }]
+    }'
+
+  notify-downstream-failure:
+    when:
+      event: deployment
+      environment: downstream-failure
+    image: plugins/webhook
+    secrets: [ webhook_urls ]
+    content_type: application/json
+    template: '{
+      "@type": "MessageCard",
+      "@context": "http://schema.org/extensions",
+      "summary": "
+        {{#success build.status}}
+          {{build.number}} succeeded.
+        {{else}}
+          {{build.number}} failed.
+        {{/success}}
+      ",
+      "themeColor": "#D80000",
+      "title": "{{repo.owner}}/{{repo.name}}: downstream builds are FAILED",
+      "potentialAction": [{
+        "@type": "OpenUri",
+        "name": "View in CI",
+        "targets": [{
+          "os": "default",
+          "uri": "{{build.link}}"
+        }]
+      }]
+    }'
+
+
+branches: dev

@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`base config works correctly [server] 1`] = `
+"
+import storageAdapterModule from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testAdapter.js\\"
+
+const storageAdapterOptions = {\\"url\\":\\"http://test.test\\"}
+
+export default {
+  module: storageAdapterModule,
+  options: storageAdapterOptions
+}
+"
+`;
+
+exports[`config with process.env works correctly 1`] = `
+"
+import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
+
+const storageAdapter = {
+  \\"module\\": \\"process.env[\\\\\\"STORAGE_ADAPTER\\\\\\"]\\",
+  \\"options\\": {
+    \\"url\\": \\"process.env[\\\\\\"STORAGE_OPTIONS_URL\\\\\\"]\\"
+  }
+}
+const storageAdapterModule = interopRequireDefault(
+  __non_webpack_require__(storageAdapter.module)
+).default
+const storageAdapterOptions = storageAdapter.options
+
+export default {
+  module: storageAdapterModule,
+  options: storageAdapterOptions
+}
+"
+`;
