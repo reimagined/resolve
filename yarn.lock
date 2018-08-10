@@ -8279,6 +8279,28 @@ resolve-pathname@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/resolve-pathname/-/resolve-pathname-2.2.0.tgz#7e9ae21ed815fd63ab189adeee64dc831eefa879"
 
+resolve-query@0.13.2:
+  version "0.13.2"
+  resolved "https://registry.yarnpkg.com/resolve-query/-/resolve-query-0.13.2.tgz#b98aae96a4e1f41f4da065096053acb2499164a0"
+  dependencies:
+    diff-json "^0.1.11"
+    invariant-function-hash "^1.0.1"
+    resolve-readmodel-memory "0.13.2"
+
+resolve-readmodel-base@0.13.2:
+  version "0.13.2"
+  resolved "https://registry.yarnpkg.com/resolve-readmodel-base/-/resolve-readmodel-base-0.13.2.tgz#cc4df6c933530c62a776a8a45cfedd93d82f702e"
+  dependencies:
+    uuid "^3.3.2"
+
+resolve-readmodel-memory@0.13.2:
+  version "0.13.2"
+  resolved "https://registry.yarnpkg.com/resolve-readmodel-memory/-/resolve-readmodel-memory-0.13.2.tgz#c581a5643abb8632a75a889b3f9c720d4ebfb5e2"
+  dependencies:
+    nedb "^1.8.0"
+    resolve-readmodel-base "0.13.2"
+    uuid "^3.3.2"
+
 resolve-url@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/resolve-url/-/resolve-url-0.2.1.tgz#2c637fe77c893afd2a663fe21aa9080068e2052a"
@@ -9891,7 +9913,7 @@ utils-merge@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
 
-uuid@3.3.2, uuid@^3.0.1, uuid@^3.1.0, uuid@^3.2.1, uuid@^3.3.2:
+uuid@3.3.2, uuid@^3.0.1, uuid@^3.1.0, uuid@^3.3.2:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.2.tgz#1b4af4955eb3077c501c23872fc6513811587131"
 
