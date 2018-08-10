@@ -3,15 +3,13 @@ import path from 'path'
 const adjustWebpackConfigs = (resolveConfig, webpackConfigs) => {
   const [webpackWebConfig] = webpackConfigs
 
-  const modules = webpackWebConfig.resolve.modules
-
   const webpackNativeConfig = {
     ...webpackWebConfig,
     name: 'Common Business Logic',
     entry: {
       'resolve/config': path.resolve(__dirname, 'native/build/config.js'),
       'resolve/resolve-redux': require.resolve('resolve-redux', {
-        paths: modules
+        paths: webpackWebConfig.resolve.modules
       })
     },
     output: {
@@ -31,7 +29,6 @@ const adjustWebpackConfigs = (resolveConfig, webpackConfigs) => {
               loader: 'val-loader',
               options: {
                 resolveConfig,
-                modules,
                 isClient: true
               }
             },

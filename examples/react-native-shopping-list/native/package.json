@@ -11,11 +11,14 @@
     "test": "jest --config=jest.config.js"
   },
   "dependencies": {
+    "@expo/vector-icons": "^6.3.1",
     "expo": "29.0.0",
     "history": "4.7.2",
+    "native-base": "2.6.1",
     "react": "16.4.1",
     "react-native": "0.55.4",
     "react-native-elements": "0.19.1",
+    "react-navigation": "^2.11.2",
     "react-redux": "5.0.7",
     "redux": "4.0.0"
   },
@@ -34,9 +37,9 @@
     "enzyme-adapter-react-16": "1.1.1",
     "jest": "23.4.2",
     "jest-expo": "29.0.0",
+    "my-local-ip": "1.0.0",
     "react-native-scripts": "1.14.0",
-    "react-test-renderer": "16.4.1",
-    "my-local-ip": "1.0.0"
+    "react-test-renderer": "16.4.1"
   },
   "workspaces": {
     "nohoist": [

@@ -8,4 +8,7 @@ module.exports = {
   transform: {
     '^.+\\.js$': path.resolve(__dirname, 'jest.transform.js')
   }
+  // transformIgnorePatterns: [
+  //   "/node_modules/(?!react-native|native-base)/"
+  // ]
 }
