@@ -1,6 +1,6 @@
 {
   "name": "with-authentication",
-  "version": "0.13.2",
+  "version": "0.14.0",
   "private": true,
   "scripts": {
     "build": "babel-node ./index.js build",
@@ -23,8 +23,8 @@
     "react-router": "4.3.1",
     "react-router-dom": "4.3.1",
     "redux": "4.0.0",
-    "resolve-redux": "0.13.2",
-    "resolve-scripts": "0.13.2",
+    "resolve-redux": "0.14.0",
+    "resolve-scripts": "0.14.0",
     "styled-components": "3.3.3",
     "testcafe-browser-tools": "1.6.3",
     "uuid": "3.3.2"
