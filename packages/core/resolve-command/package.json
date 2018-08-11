@@ -2,6 +2,9 @@
   "name": "resolve-command",
   "version": "0.14.0",
   "description": "This package creates a function to execute a command.",
+  "engines" : { 
+    "node" : ">=8.10"
+  },
   "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
