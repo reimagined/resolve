@@ -41,21 +41,25 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
     }
     if (jwtProvider) {
       const jwtToken = await jwtProvider.get()
-      options.headers.Authorization = `Bearer ${jwtToken}`
+      if (jwtToken) {
+        options.headers.Authorization = `Bearer ${jwtToken}`
+      }
     }
     const response = await fetch(rootBasedUrl, options)
 
     const jwt = {}
+
+    const responseJwtToken = ((
+      response.headers.get('Authorization') ||
+      response.headers.get('authorization')
+    ) || '').replace(/^Bearer /i, '')
+
+    if (jwtProvider) {
+      await jwtProvider.set(responseJwtToken)
+    }
+
     try {
-      Object.assign(
-        jwt,
-        jwtDecode(
-          (
-            response.headers.get('Authorization') ||
-            response.headers.get('authorization')
-          ).replace(/^Bearer /i, '')
-        )
-      )
+      Object.assign(jwt, jwtDecode(responseJwtToken))
     } catch (err) {}
 
     if (stableStringify(store.getState().jwt) !== stableStringify(jwt)) {

@@ -2,8 +2,9 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { connectReadModel } from 'resolve-redux'
-
 import { ControlLabel, FormControl } from 'react-bootstrap'
+
+import requiredAuth from '../decorators/requiredAuth'
 
 class Settings extends React.PureComponent {
   state = {
@@ -66,9 +67,11 @@ export const mapStateToProps = (state, { data }) => ({
 export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(aggregateActions, dispatch)
 
-export default connectReadModel(mapStateToOptions)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Settings)
+export default requiredAuth(
+  connectReadModel(mapStateToOptions)(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(Settings)
+  )
 )

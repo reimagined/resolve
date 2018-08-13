@@ -1,21 +1,31 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { Text, Container, List, ListItem, Content } from 'native-base'
 
 const routes = ['My Lists', 'Settings', 'Logout']
 
 export class SideBar extends React.Component {
   render() {
-    const { navigation } = this.props
+    const { navigation, jwt } = this.props
+
+    console.log(jwt)
+
+    // if (!jwt.id) {
+    //   return null
+    // }
 
     return (
       <Container>
         <Content>
           <List
             dataArray={routes}
-            renderRow={data => {
+            renderRow={route => {
               return (
-                <ListItem button onPress={() => navigation.navigate(data)}>
-                  <Text>{data}</Text>
+                <ListItem
+                  button
+                  onPress={navigation.navigate.bind(null, route)}
+                >
+                  <Text>{route}</Text>
                 </ListItem>
               )
             }}
@@ -26,4 +36,10 @@ export class SideBar extends React.Component {
   }
 }
 
-export default SideBar
+export const mapStateToProps = state => {
+  return {
+    jwt: state.jwt
+  }
+}
+
+export default connect(mapStateToProps)(SideBar)

@@ -13,7 +13,9 @@ import {
 } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
-class Index extends React.PureComponent {
+import requiredAuth from '../decorators/requiredAuth'
+
+class MyLists extends React.PureComponent {
   state = {
     shoppingListName: ''
   }
@@ -112,9 +114,11 @@ export const mapStateToProps = (state, { data }) => ({
 export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(aggregateActions, dispatch)
 
-export default connectReadModel(mapStateToOptions)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Index)
+export default requiredAuth(
+  connectReadModel(mapStateToOptions)(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(MyLists)
+  )
 )

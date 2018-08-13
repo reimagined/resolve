@@ -6,6 +6,7 @@ import { FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 import FindUsers from './FindUsers'
+import requiredAuth from '../decorators/requiredAuth'
 
 class ShareForm extends React.PureComponent {
   state = {
@@ -96,9 +97,11 @@ export const mapStateToProps = (state, ownProps) => ({
 export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(aggregateActions, dispatch)
 
-export default connectViewModel(mapStateToOptions)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ShareForm)
+export default requiredAuth(
+  connectViewModel(mapStateToOptions)(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(ShareForm)
+  )
 )

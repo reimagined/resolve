@@ -1,1 +1,7 @@
-export default []
+export default [
+  () => next => action => {
+    console.log(action)
+
+    next(action)
+  }
+]

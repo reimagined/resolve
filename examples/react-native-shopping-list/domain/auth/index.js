@@ -40,6 +40,8 @@ const strategies = [
       failureRedirect,
       errorRedirect,
       callback: async ({ resolve }, username, password) => {
+        console.log(username, password)
+
         if (!password) {
           throw new Error('The "password" field is required')
         }

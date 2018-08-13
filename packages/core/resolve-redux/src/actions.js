@@ -334,6 +334,11 @@ export const updateJwt = jwt => ({
   jwt
 })
 
+export const logout = () => ({
+  type: UPDATE_JWT,
+  jwt: {}
+})
+
 export const authRequest = (url, body) => ({
   type: AUTH_REQUEST,
   url,

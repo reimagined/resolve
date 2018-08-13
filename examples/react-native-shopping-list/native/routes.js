@@ -6,19 +6,19 @@ import MyLists from './containers/MyLists'
 import ShoppingList from './containers/ShoppingList'
 import Settings from './containers/Settings'
 import Login from './containers/Login'
-import Logout from './containers/Logout'
+import ShareForm from './containers/ShareForm'
 
 const routes = createDrawerNavigator(
   {
     'My Lists': { screen: MyLists },
     ShoppingList: { screen: ShoppingList },
     Settings: { screen: Settings },
-    Login: { screen: Login },
-    Logout: { screen: Logout }
+    ShareForm: { screen: ShareForm },
+    Login: { screen: Login }
   },
   {
     initialRouteName: 'My Lists',
-    contentComponent: props => <SideBar {...props} />
+    contentComponent: SideBar /*props => <SideBar {...props} />*/
   }
 )
 

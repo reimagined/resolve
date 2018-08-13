@@ -1,5 +1,4 @@
 import React from 'react'
-
 import {
   Container,
   Header,
@@ -15,7 +14,9 @@ import {
   Text
 } from 'native-base'
 
-export class Logout extends React.PureComponent {
+import requireAuth from '../decorators/requiredAuth'
+
+export class ShareForm extends React.PureComponent {
   render() {
     return (
       <Container>
@@ -31,7 +32,7 @@ export class Logout extends React.PureComponent {
           <Right />
         </Header>
         <Content>
-          <Text>Logout</Text>
+          <Text>ShareForm</Text>
         </Content>
         <Footer>
           <FooterTab>
@@ -45,4 +46,4 @@ export class Logout extends React.PureComponent {
   }
 }
 
-export default Logout
+export default requireAuth(ShareForm)

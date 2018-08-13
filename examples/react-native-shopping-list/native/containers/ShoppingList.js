@@ -1,5 +1,4 @@
 import React from 'react'
-
 import {
   Container,
   Header,
@@ -14,6 +13,8 @@ import {
   Icon,
   Text
 } from 'native-base'
+
+import requireAuth from '../decorators/requiredAuth'
 
 export class ShoppingList extends React.PureComponent {
   render() {
@@ -45,4 +46,4 @@ export class ShoppingList extends React.PureComponent {
   }
 }
 
-export default ShoppingList
+export default requireAuth(ShoppingList)

@@ -20,6 +20,8 @@ import {
 import Image from './Image'
 import NotFound from '../components/NotFound'
 
+import requiredAuth from '../decorators/requiredAuth'
+
 const ButtonLink = connectRootBasedUrls(['href'])(Button)
 
 export class ShoppingList extends React.PureComponent {
@@ -188,9 +190,11 @@ export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
     dispatch
   )
 
-export default connectViewModel(mapStateToOptions)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ShoppingList)
+export default requiredAuth(
+  connectViewModel(mapStateToOptions)(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(ShoppingList)
+  )
 )
