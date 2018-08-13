@@ -15,7 +15,7 @@
 
 [Create reSolve App](https://www.npmjs.com/package/create-resolve-app) is an [NPM](https://www.npmjs.com/) package used to prepare the file structure for a new reSolve-based application. The package corresponds to the latest [reSolve framework package](https://github.com/reimagined/resolve/) version.
 
-The server-side reSolve part is encapsulated in the `resolve-scripts` package, and can be customized using [configuration files](#configuration-files). The project also includes unit and functional tests, and deployment assets. We use [ES2016](http://2ality.com/2016/01/ecmascript-2016.html) for source code and tests.
+The server-side reSolve part is encapsulated in the `resolve-scripts` package and can be customized using [configuration files](#configuration-files). The project also includes unit and functional tests, and deployment assets. We use [ES2016](http://2ality.com/2016/01/ecmascript-2016.html) for source code and tests.
 
 ```
 📁 resolve-app
@@ -67,7 +67,7 @@ The server-side reSolve part is encapsulated in the `resolve-scripts` package, a
 
 ### **Authentication**
 
-The `auth` folder contains authentication strategies' code. You can change this folder's path using the `auth` section in `config.app.json` (see [with-authentication example](../examples/with-authentication/config.app.json))
+The `auth` folder contains the code of authentication strategies. You can change this folder's path using the `auth` section in `config.app.json` (see [with-authentication example](../examples/with-authentication/config.app.json))
 
 ### **Client**
 
@@ -75,11 +75,11 @@ The client-side reSolve part is located in the `client` folder. The `routes.js` 
 
 ### **Common**
 
-The `common` folder contains the application's isomorphic part, which represents a business logic distributed between server and client. The domain logic is described in a reSolve-specific format and appears in [Aggregates](https://github.com/reimagined/resolve/blob/master/docs/Aggregate.md), [Read Models](https://github.com/reimagined/resolve/blob/master/docs/Read%20Model.md), and [View Models](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md) declarations.
+The `common` folder contains the application's isomorphic part, which represents a business logic distributed between the server and client. The domain logic is described in a reSolve-specific format and appears in [Aggregates](https://github.com/reimagined/resolve/blob/master/docs/Aggregate.md), [Read Models](https://github.com/reimagined/resolve/blob/master/docs/Read%20Model.md), and [View Models](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md) declarations.
 
 ### **Functional-tests**
 
-The system's operability is controlled by [TestCafe](http://devexpress.github.io/testcafe/documentation/using-testcafe/) functional tests. A test suite builds and starts a demo application, opens it in a browser and automatically performs UI interaction. After you modify the code, run functional tests to check if everything works correctly.
+[TestCafe](http://devexpress.github.io/testcafe/documentation/using-testcafe/) functional tests control the system's operability. A test suite builds and starts a demo application, opens it in a browser and automatically performs UI interaction. After you modify the code, run functional tests to ensure that everything works correctly.
 
 ## **Configuration**
 
