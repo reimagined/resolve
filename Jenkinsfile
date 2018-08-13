@@ -202,24 +202,6 @@ pipeline {
                 }
             }
 
-            stage('Create-resolve-app [ with-authentication ] Functional Tests') {
-                 when {
-                expression { CHANGE_TARGET == 'master' }
-            }
-                steps {
-                    script {
-                        sh """
-                            mkdir with-authentication && cd with-authentication;
-                            create-resolve-app with-authentication -e with-authentication -c \$(cat /last_commit)
-                            cd ./with-authentication
-                            cat ./package.json
-                            yarn test
-                            yarn test:functional path:/chromium
-                        """
-                    }
-                }
-            }
-
             stage('Create-resolve-app [ with-styled-components ] Functional Tests') {
                  when {
                 expression { CHANGE_TARGET == 'master' }
