@@ -32,7 +32,7 @@ const optionsInfo =
   ` directory${EOL}` +
   `            Now you can choose one of the next examples:${EOL}` +
   `              hello-world - used as a template for new reSolve applications ${EOL}` +
-  `              todo-two-levels - shows how to work with read-models and view-models ${EOL}` +
+  `              nested-list - shows how to work with read-models and view-models ${EOL}` +
   `              with-postcss - demonstrates how to work with postCSS ${EOL}` +
   `              with-saga - demonstrates how to use sagas ${EOL}` +
   `              with-styled-components - demonstrates how to work with Styled Components ${EOL}` +

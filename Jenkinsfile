@@ -131,16 +131,16 @@ pipeline {
                 }
             }
 
-            stage('Create-resolve-app [ twolevelstodo ] Functional Tests') {
+            stage('Create-resolve-app [ nested-list ] Functional Tests') {
                  when {
                 expression { CHANGE_TARGET == 'master' }
             }
                 steps {
                     script {
                         sh """
-                            mkdir twolevelstodo && cd twolevelstodo;
-                            create-resolve-app twolevelstodo -e todo-two-levels -c \$(cat /last_commit)
-                            cd ./twolevelstodo
+                            mkdir nested-list && cd nested-list;
+                            create-resolve-app nested-list -e nested-list -c \$(cat /last_commit)
+                            cd ./nested-list
                             cat ./package.json
                             yarn test:functional path:/chromium
                         """

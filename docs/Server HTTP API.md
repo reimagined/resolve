@@ -44,16 +44,16 @@ Content-Type: application/json
 
 |        Name   |  Type  | Description
 | ------------- | ------ | ------------
-| aggregateName | string | The aggregate's name as defined in [config.app.js](https://github.com/reimagined/resolve/blob/master/examples/todo-two-levels/config.app.js)
-| commandType   | string | The command type supported by [the aggregate](https://github.com/reimagined/resolve/tree/master/examples/todo-two-levels/common/aggregates)
+| aggregateName | string | The aggregate's name as defined in [config.app.js](https://github.com/reimagined/resolve/blob/master/examples/nested-list/config.app.js)
+| commandType   | string | The command type supported by [the aggregate](https://github.com/reimagined/resolve/tree/master/examples/nested-list/common/aggregates)
 | aggregateId   | string | The ID of an aggregate to which you are addressing the command
-| payload       | object | The parameters that [the command](https://github.com/reimagined/resolve/tree/master/examples/todo-two-levels/common/aggregates) accepts
+| payload       | object | The parameters that [the command](https://github.com/reimagined/resolve/tree/master/examples/nested-list/common/aggregates) accepts
 
 
 
 ### Example
 
-Use the following command to add an item to the [todo-two-levels example](../examples/todo-two-levels).
+Use the following command to add an item to the [nested-list example](../examples/nested-list).
 
 
 ```sh
@@ -81,7 +81,7 @@ curl -X POST -H "Content-Type: application/json" \
 | --------- | -----------------------
 | host      | The backend host URL (e.g. `localhost`)
 | port      | The backend port (default is `3000`)
-| ViewModel | The View Model name as defined in [config.app.js](https://github.com/reimagined/resolve/blob/master/examples/todo-two-levels/config.app.js)
+| ViewModel | The View Model name as defined in [config.app.js](https://github.com/reimagined/resolve/blob/master/examples/nested-list/config.app.js)
 | aggregateIds | The comma-separated list of Aggregate IDs to include into the View Model. Use `*` to include all Aggregates
 
 
@@ -110,7 +110,7 @@ curl -X POST -H "Content-Type: application/json" \
 
 ### Example Request
 
-Use the following command to get the current [todo-two-levels example](../examples/todo-two-levels) state.
+Use the following command to get the current [nested-list example](../examples/nested-list) state.
 
 
 ```sh
