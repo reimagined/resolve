@@ -97,6 +97,5 @@ A query receives the current state of a view model with the specified aggregateI
 All events saved to [EventStore](https://github.com/reimagined/resolve/blob/master/docs/Event%20Store.md) are also sent to the bus in real time. The client receives events if it has an active subscription to events with the specified aggregateId and eventTypes.
 
 ## TL;DR
-* [Link to Github "ToDo App"](https://github.com/reimagined/resolve/tree/master/examples/todo-two-levels)
-* [Link to Github "Two Level ToDo App"](https://github.com/reimagined/resolve/tree/master/examples/todo)
+* [Link to Github "Two Level ToDo App"](https://github.com/reimagined/resolve/tree/master/examples/todo-two-levels)
 

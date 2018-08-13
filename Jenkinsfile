@@ -131,24 +131,6 @@ pipeline {
                 }
             }
 
-            stage('Create-resolve-app [ todolist ] Functional Tests') {
-                 when {
-                expression { CHANGE_TARGET == 'master' }
-            }
-                steps {
-                    script {
-                        sh """
-                            mkdir todolist && cd todolist;
-                            create-resolve-app todolist -e todo -c \$(cat /last_commit)
-                            cd ./todolist
-                            cat ./package.json
-                            yarn test
-                            yarn test:functional path:/chromium
-                        """
-                    }
-                }
-            }
-
             stage('Create-resolve-app [ twolevelstodo ] Functional Tests') {
                  when {
                 expression { CHANGE_TARGET == 'master' }
