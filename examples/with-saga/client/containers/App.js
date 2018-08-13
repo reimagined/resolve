@@ -49,8 +49,7 @@ const mapStateToOptions = () => {
   return {
     readModelName: 'default',
     resolverName: 'default',
-    resolverArgs: {},
-    isReactive: true
+    resolverArgs: {}
   }
 }
 

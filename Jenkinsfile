@@ -184,24 +184,6 @@ pipeline {
                 }
             }
 
-            stage('Create-resolve-app [ top-list ] Functional Tests') {
-                 when {
-                expression { CHANGE_TARGET == 'master' }
-            }
-                steps {
-                    script {
-                        sh """
-                            mkdir top-list && cd top-list;
-                            create-resolve-app toplist -e top-list -c \$(cat /last_commit)
-                            cd ./toplist
-                            cat ./package.json
-                            yarn test
-                            yarn test:functional path:/chromium
-                        """
-                    }
-                }
-            }
-
             stage('Create-resolve-app [ with-postcss ] Functional Tests') {
                  when {
                 expression { CHANGE_TARGET == 'master' }
