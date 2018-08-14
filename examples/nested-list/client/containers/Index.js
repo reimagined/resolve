@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { connectViewModel } from 'resolve-redux'
+import { connectReadModel } from 'resolve-redux'
 import { bindActionCreators } from 'redux'
 import { NavLink } from 'react-router-dom'
 import {
@@ -13,9 +13,7 @@ import {
 
 import Image from './Image'
 
-const viewModelName = 'Lists'
-
-export const Index = ({ lists, createList, removeList }) => {
+export const Index = ({ createList, removeList, lists }) => {
   const placeholder = 'New List'
   const createListFunc = () => {
     createList(`${Date.now()}`, {
@@ -31,7 +29,7 @@ export const Index = ({ lists, createList, removeList }) => {
       <h1>To-Do Lists</h1>
 
       <ListGroup className="example-list">
-        {lists.map(({ id, title }) => (
+        {(lists || []).map(({ id, title }) => (
           <ListGroupItem key={id}>
             <NavLink to={`/${id}`}>{title}</NavLink>
             <Image
@@ -72,21 +70,22 @@ export const Index = ({ lists, createList, removeList }) => {
 
 const mapStateToOptions = () => {
   return {
-    viewModelName,
-    aggregateIds: '*'
+    readModelName: 'default',
+    resolverName: 'default',
+    resolverArgs: {}
   }
 }
 
-const mapStateToProps = (state, { data }) => {
+const mapStateToProps = state => {
   return {
-    lists: data
+    lists: state.optimistic && state.optimistic.lists
   }
 }
 
 const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(aggregateActions, dispatch)
 
-export default connectViewModel(mapStateToOptions)(
+export default connectReadModel(mapStateToOptions)(
   connect(
     mapStateToProps,
     mapDispatchToProps

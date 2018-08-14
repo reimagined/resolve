@@ -1,42 +1,6 @@
 import todosProjection from '../../common/view-models/todos.projection'
-import listsProjection from '../../common/view-models/lists.projection'
 
 describe('view-models', () => {
-  describe('Lists', () => {
-    it('projection "LIST_CREATED" should create a list', () => {
-      const state = [
-        {
-          id: 'id1',
-          title: 'title1'
-        }
-      ]
-      const event = { aggregateId: 'id2', payload: { title: 'title2' } }
-
-      expect(listsProjection['LIST_CREATED'](state, event)).toEqual([
-        {
-          id: 'id1',
-          title: 'title1'
-        },
-        {
-          id: 'id2',
-          title: 'title2'
-        }
-      ])
-    })
-
-    it('projection "LIST_REMOVED" should remove the item', () => {
-      const state = [
-        {
-          id: 'id1',
-          title: 'title1'
-        }
-      ]
-      const event = { aggregateId: 'id1' }
-
-      expect(listsProjection['LIST_REMOVED'](state, event)).toEqual([])
-    })
-  })
-
   describe('Todos', () => {
     it('projection "ITEM_CREATED" should create a item', () => {
       const state = {

@@ -5,8 +5,8 @@ import Header from './Header'
 const App = ({ children }) => (
   <div>
     <Header
-      title="reSolve Two Levels To-Do List Example"
-      name="Two Levels To-Do List Example"
+      title="reSolve Nested List Example"
+      name="Nested List Example"
       favicon="/favicon.ico"
       css={['/bootstrap.min.css', '/style.css']}
     />
