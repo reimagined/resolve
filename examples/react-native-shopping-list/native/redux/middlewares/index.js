@@ -1,7 +1,7 @@
 export default [
-  () => next => action => {
-    console.log(action)
-
-    next(action)
-  }
+  // () => next => action => {
+  //   console.log(action)
+  //
+  //   next(action)
+  // }
 ]

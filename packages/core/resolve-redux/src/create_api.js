@@ -1,9 +1,6 @@
-import jwtDecode from 'jwt-decode'
-import stableStringify from 'json-stable-stringify'
-
 import getRootBasedUrl from './get_root_based_url'
 import { isReactiveArg, queryIdArg, stopSubscriptionArg } from './constants'
-import { updateJwt } from './actions'
+import syncJwtProviderWithStore from './sync_jwt_provider_with_store'
 
 export class FetchError extends Error {}
 
@@ -39,6 +36,7 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
       credentials: 'same-origin',
       body: JSON.stringify(body)
     }
+
     if (jwtProvider) {
       const jwtToken = await jwtProvider.get()
       if (jwtToken) {
@@ -47,24 +45,17 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
     }
     const response = await fetch(rootBasedUrl, options)
 
-    const jwt = {}
-
-    const responseJwtToken = ((
+    const responseJwtToken = (
       response.headers.get('Authorization') ||
-      response.headers.get('authorization')
-    ) || '').replace(/^Bearer /i, '')
+      response.headers.get('authorization') ||
+      ''
+    ).replace(/^Bearer /i, '')
 
     if (jwtProvider) {
       await jwtProvider.set(responseJwtToken)
     }
 
-    try {
-      Object.assign(jwt, jwtDecode(responseJwtToken))
-    } catch (err) {}
-
-    if (stableStringify(store.getState().jwt) !== stableStringify(jwt)) {
-      store.dispatch(updateJwt(jwt))
-    }
+    await syncJwtProviderWithStore(jwtProvider, store)
 
     return response
   }

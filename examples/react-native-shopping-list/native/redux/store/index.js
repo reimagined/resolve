@@ -31,29 +31,12 @@ const redux = {
 
 const jwtProvider = {
   async get() {
-    //console.log('get')
-    try {
-      //console.log('jwtCookie', jwtCookie)
-      const jwtToken = await AsyncStorage.getItem(jwtCookie.name)
-      //console.log('jwtToken', jwtToken)
-      return jwtToken
-    } catch (error) {
-      //console.error('Error')
-      //console.error(error)
-      throw error
-    }
+    const jwtToken = (await AsyncStorage.getItem(jwtCookie.name)) || ''
+
+    return jwtToken
   },
   async set(jwtToken) {
-    //console.log('set')
-    try {
-      //console.log('jwtCookie', jwtCookie)
-      //console.log('jwtToken', jwtToken)
-      return AsyncStorage.setItem(jwtCookie.name, jwtToken)
-    } catch (error) {
-      //console.error('Error')
-      //console.error(error)
-      throw error
-    }
+    return AsyncStorage.setItem(jwtCookie.name, jwtToken)
   }
 }
 

@@ -1,4 +1,3 @@
-import React from 'react'
 import { createDrawerNavigator } from 'react-navigation'
 
 import SideBar from './containers/SideBar'
@@ -18,7 +17,7 @@ const routes = createDrawerNavigator(
   },
   {
     initialRouteName: 'My Lists',
-    contentComponent: SideBar /*props => <SideBar {...props} />*/
+    contentComponent: SideBar
   }
 )
 

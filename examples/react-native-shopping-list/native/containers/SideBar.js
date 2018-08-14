@@ -1,18 +1,60 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Text, Container, List, ListItem, Content } from 'native-base'
+import { bindActionCreators } from 'redux'
+import { Text, Container, List, ListItem, Content, Icon } from 'native-base'
 
-const routes = ['My Lists', 'Settings', 'Logout']
+import { actions } from '../resolve/resolve-redux'
 
 export class SideBar extends React.Component {
   render() {
-    const { navigation, jwt } = this.props
+    const { navigation, jwt, logout } = this.props
 
-    console.log(jwt)
+    const routes = [
+      {
+        name: 'My Lists',
+        icon: (
+          <Icon
+            style={{ width: 30, marginRight: 2, textAlign: 'center' }}
+            name="list"
+            type="FontAwesome"
+          />
+        ),
+        callback: () => {
+          navigation.navigate('My Lists')
+        }
+      },
+      {
+        name: 'Settings',
+        icon: (
+          <Icon
+            style={{ width: 30, marginRight: 2, textAlign: 'center' }}
+            name="user"
+            type="FontAwesome"
+          />
+        ),
+        callback: () => {
+          navigation.navigate('Settings')
+        }
+      },
+      {
+        name: 'Logout',
+        icon: (
+          <Icon
+            style={{ width: 30, marginRight: 2, textAlign: 'center' }}
+            name="sign-out"
+            type="FontAwesome"
+          />
+        ),
+        callback: () => {
+          logout()
+          navigation.navigate('Logout')
+        }
+      }
+    ]
 
-    // if (!jwt.id) {
-    //   return null
-    // }
+    if (!jwt.id) {
+      return null
+    }
 
     return (
       <Container>
@@ -21,11 +63,9 @@ export class SideBar extends React.Component {
             dataArray={routes}
             renderRow={route => {
               return (
-                <ListItem
-                  button
-                  onPress={navigation.navigate.bind(null, route)}
-                >
-                  <Text>{route}</Text>
+                <ListItem button onPress={route.callback}>
+                  {route.icon}
+                  <Text>{route.name}</Text>
                 </ListItem>
               )
             }}
@@ -42,4 +82,10 @@ export const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps)(SideBar)
+export const mapDispatchToProps = dispatch =>
+  bindActionCreators(actions, dispatch)
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SideBar)
