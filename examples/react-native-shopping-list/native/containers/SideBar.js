@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux'
 import { Text, Container, List, ListItem, Content, Icon } from 'native-base'
 import { StyleSheet } from 'react-native'
 
+import Logo from '../components/Logo'
 import { actions } from '../resolve/resolve-redux'
 
 const styles = StyleSheet.create({
@@ -49,7 +50,8 @@ export class SideBar extends React.Component {
 
     return (
       <Container>
-        <Content>
+        <Content padder>
+          <Logo />
           <List
             dataArray={this.routes}
             renderRow={route => {
