@@ -107,3 +107,11 @@ When you are ready to share your project with others (for example, by deploying 
     📄 README.md
     📄 .gitignore
 ```
+
+# Screenshots
+TODO
+![resolve react native shopping list example 7](https://user-images.githubusercontent.com/5055654/44088408-a999f666-9fcb-11e8-81ec-fa657b03eea9.png)
+![resolve react native shopping list example 3](https://user-images.githubusercontent.com/5055654/44088404-a91b208e-9fcb-11e8-9a59-650258cff342.png)
+![resolve react native shopping list example 4](https://user-images.githubusercontent.com/5055654/44088405-a9393cfe-9fcb-11e8-9667-c02e2322034e.png)
+![resolve react native shopping list example 5](https://user-images.githubusercontent.com/5055654/44088406-a95623dc-9fcb-11e8-93e0-d783d9e0985a.png)
+![resolve react native shopping list example 6](https://user-images.githubusercontent.com/5055654/44088407-a9772d98-9fcb-11e8-8392-8fb309e6d3a6.png)
