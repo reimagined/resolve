@@ -1,7 +1,10 @@
 {
   "name": "resolve-query",
-  "version": "0.13.2",
+  "version": "0.14.0",
   "description": "This package creates a function to execute a query.",
+  "engines" : { 
+    "node" : ">=8.10"
+  },
   "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
@@ -24,7 +27,7 @@
   "dependencies": {
     "diff-json": "^0.1.11",
     "invariant-function-hash": "^1.0.1",
-    "resolve-readmodel-memory": "0.13.2"
+    "resolve-readmodel-memory": "0.14.0"
   },
   "devDependencies": {
     "jest": "23.4.2",

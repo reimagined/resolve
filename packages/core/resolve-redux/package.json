@@ -1,7 +1,10 @@
 {
   "name": "resolve-redux",
-  "version": "0.13.2",
+  "version": "0.14.0",
   "description": "This package serves as a helper for creating the Redux storage.",
+  "engines" : { 
+    "node" : ">=8.10"
+  },
   "main": "./dist/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
