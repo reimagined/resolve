@@ -27,7 +27,13 @@ const appConfig = {
         'common/view-models/view-model-name.deserialize_state.js'
     }
   ],
-  sagas: 'common/sagas/index.js',
+  sagas: [
+    {
+      name: 'saga-name',
+      cronHandlers: 'common/sagas/saga-name.cron.js',
+      eventHandlers: 'common/sagas/saga-name.event.js'
+    }
+  ],
   auth: {
     strategies: 'auth/index.js'
   },

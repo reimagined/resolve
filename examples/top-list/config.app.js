@@ -13,7 +13,12 @@ const appConfig = {
       resolvers: 'common/read-models/rating.resolvers.js'
     }
   ],
-  sagas: 'common/sagas/index.js'
+  sagas: [
+    {
+      name: 'rating',
+      cronHandlers: 'common/sagas/rating.cron.js'
+    }
+  ]
 }
 
 export default appConfig

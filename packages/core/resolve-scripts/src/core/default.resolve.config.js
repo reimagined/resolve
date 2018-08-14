@@ -9,7 +9,7 @@ export default {
   aggregates: [],
   readModels: [],
   viewModels: [],
-  sagas: 'common/sagas/index.js',
+  sagas: [],
   index: 'client/index.js',
   auth: {
     strategies: 'auth/index.js'

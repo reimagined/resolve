@@ -2,7 +2,800 @@
 
 exports[`base config works correctly [server] 1`] = `
 "
-import sagas from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testSagas.js\\"
+
+import cronHandlers_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_1 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_1 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_2 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_2 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_3 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_3 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_4 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_4 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_5 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_5 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_6 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_6 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_7 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_7 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_8 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_8 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_9 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_9 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_10 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_10 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_11 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_11 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_12 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_12 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_13 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_13 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_14 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_14 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_15 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_15 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_16 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_16 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_17 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_17 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_18 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_18 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_19 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_19 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_20 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_20 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_21 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_21 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_22 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_22 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_23 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_23 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_24 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_24 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_25 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_25 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_26 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_26 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_27 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_27 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_28 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_28 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_29 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_29 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_30 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_30 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_31 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_31 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_32 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_32 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_33 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_33 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_34 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_34 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_35 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_35 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_36 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_36 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_37 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_37 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_38 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_38 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_39 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_39 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_40 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_40 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_41 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_41 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_42 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_42 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_43 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_43 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_44 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_44 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_45 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_45 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_46 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_46 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_47 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_47 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_48 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_48 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_49 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_49 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_50 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_50 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_51 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_51 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_52 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_52 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_53 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_53 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_54 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_54 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_55 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_55 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_56 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_56 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_57 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_57 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_58 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_58 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_59 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_59 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_60 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_60 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_61 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_61 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_62 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_62 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_63 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_63 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_64 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_64 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_65 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_65 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_66 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_66 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_67 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_67 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_68 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_68 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_69 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_69 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_70 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_70 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_71 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_71 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_72 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_72 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_73 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_73 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_74 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_74 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_75 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_75 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_76 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_76 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_77 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_77 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+import cronHandlers_78 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_cron_handlers.js\\"
+import eventHandlers_78 from \\"<MONOREPO_DIR>/core/resolve-scripts/src/defaults/saga_event_handlers.js\\"
+
+
+const name_0 = undefined
+const name_1 = undefined
+const name_2 = undefined
+const name_3 = undefined
+const name_4 = undefined
+const name_5 = undefined
+const name_6 = undefined
+const name_7 = undefined
+const name_8 = undefined
+const name_9 = undefined
+const name_10 = undefined
+const name_11 = undefined
+const name_12 = undefined
+const name_13 = undefined
+const name_14 = undefined
+const name_15 = undefined
+const name_16 = undefined
+const name_17 = undefined
+const name_18 = undefined
+const name_19 = undefined
+const name_20 = undefined
+const name_21 = undefined
+const name_22 = undefined
+const name_23 = undefined
+const name_24 = undefined
+const name_25 = undefined
+const name_26 = undefined
+const name_27 = undefined
+const name_28 = undefined
+const name_29 = undefined
+const name_30 = undefined
+const name_31 = undefined
+const name_32 = undefined
+const name_33 = undefined
+const name_34 = undefined
+const name_35 = undefined
+const name_36 = undefined
+const name_37 = undefined
+const name_38 = undefined
+const name_39 = undefined
+const name_40 = undefined
+const name_41 = undefined
+const name_42 = undefined
+const name_43 = undefined
+const name_44 = undefined
+const name_45 = undefined
+const name_46 = undefined
+const name_47 = undefined
+const name_48 = undefined
+const name_49 = undefined
+const name_50 = undefined
+const name_51 = undefined
+const name_52 = undefined
+const name_53 = undefined
+const name_54 = undefined
+const name_55 = undefined
+const name_56 = undefined
+const name_57 = undefined
+const name_58 = undefined
+const name_59 = undefined
+const name_60 = undefined
+const name_61 = undefined
+const name_62 = undefined
+const name_63 = undefined
+const name_64 = undefined
+const name_65 = undefined
+const name_66 = undefined
+const name_67 = undefined
+const name_68 = undefined
+const name_69 = undefined
+const name_70 = undefined
+const name_71 = undefined
+const name_72 = undefined
+const name_73 = undefined
+const name_74 = undefined
+const name_75 = undefined
+const name_76 = undefined
+const name_77 = undefined
+const name_78 = undefined
+
+const sagas = []
+
+sagas.push({
+  name: name_0
+, cronHandlers: cronHandlers_0
+, eventHandlers: eventHandlers_0
+})
+
+sagas.push({
+  name: name_1
+, cronHandlers: cronHandlers_1
+, eventHandlers: eventHandlers_1
+})
+
+sagas.push({
+  name: name_2
+, cronHandlers: cronHandlers_2
+, eventHandlers: eventHandlers_2
+})
+
+sagas.push({
+  name: name_3
+, cronHandlers: cronHandlers_3
+, eventHandlers: eventHandlers_3
+})
+
+sagas.push({
+  name: name_4
+, cronHandlers: cronHandlers_4
+, eventHandlers: eventHandlers_4
+})
+
+sagas.push({
+  name: name_5
+, cronHandlers: cronHandlers_5
+, eventHandlers: eventHandlers_5
+})
+
+sagas.push({
+  name: name_6
+, cronHandlers: cronHandlers_6
+, eventHandlers: eventHandlers_6
+})
+
+sagas.push({
+  name: name_7
+, cronHandlers: cronHandlers_7
+, eventHandlers: eventHandlers_7
+})
+
+sagas.push({
+  name: name_8
+, cronHandlers: cronHandlers_8
+, eventHandlers: eventHandlers_8
+})
+
+sagas.push({
+  name: name_9
+, cronHandlers: cronHandlers_9
+, eventHandlers: eventHandlers_9
+})
+
+sagas.push({
+  name: name_10
+, cronHandlers: cronHandlers_10
+, eventHandlers: eventHandlers_10
+})
+
+sagas.push({
+  name: name_11
+, cronHandlers: cronHandlers_11
+, eventHandlers: eventHandlers_11
+})
+
+sagas.push({
+  name: name_12
+, cronHandlers: cronHandlers_12
+, eventHandlers: eventHandlers_12
+})
+
+sagas.push({
+  name: name_13
+, cronHandlers: cronHandlers_13
+, eventHandlers: eventHandlers_13
+})
+
+sagas.push({
+  name: name_14
+, cronHandlers: cronHandlers_14
+, eventHandlers: eventHandlers_14
+})
+
+sagas.push({
+  name: name_15
+, cronHandlers: cronHandlers_15
+, eventHandlers: eventHandlers_15
+})
+
+sagas.push({
+  name: name_16
+, cronHandlers: cronHandlers_16
+, eventHandlers: eventHandlers_16
+})
+
+sagas.push({
+  name: name_17
+, cronHandlers: cronHandlers_17
+, eventHandlers: eventHandlers_17
+})
+
+sagas.push({
+  name: name_18
+, cronHandlers: cronHandlers_18
+, eventHandlers: eventHandlers_18
+})
+
+sagas.push({
+  name: name_19
+, cronHandlers: cronHandlers_19
+, eventHandlers: eventHandlers_19
+})
+
+sagas.push({
+  name: name_20
+, cronHandlers: cronHandlers_20
+, eventHandlers: eventHandlers_20
+})
+
+sagas.push({
+  name: name_21
+, cronHandlers: cronHandlers_21
+, eventHandlers: eventHandlers_21
+})
+
+sagas.push({
+  name: name_22
+, cronHandlers: cronHandlers_22
+, eventHandlers: eventHandlers_22
+})
+
+sagas.push({
+  name: name_23
+, cronHandlers: cronHandlers_23
+, eventHandlers: eventHandlers_23
+})
+
+sagas.push({
+  name: name_24
+, cronHandlers: cronHandlers_24
+, eventHandlers: eventHandlers_24
+})
+
+sagas.push({
+  name: name_25
+, cronHandlers: cronHandlers_25
+, eventHandlers: eventHandlers_25
+})
+
+sagas.push({
+  name: name_26
+, cronHandlers: cronHandlers_26
+, eventHandlers: eventHandlers_26
+})
+
+sagas.push({
+  name: name_27
+, cronHandlers: cronHandlers_27
+, eventHandlers: eventHandlers_27
+})
+
+sagas.push({
+  name: name_28
+, cronHandlers: cronHandlers_28
+, eventHandlers: eventHandlers_28
+})
+
+sagas.push({
+  name: name_29
+, cronHandlers: cronHandlers_29
+, eventHandlers: eventHandlers_29
+})
+
+sagas.push({
+  name: name_30
+, cronHandlers: cronHandlers_30
+, eventHandlers: eventHandlers_30
+})
+
+sagas.push({
+  name: name_31
+, cronHandlers: cronHandlers_31
+, eventHandlers: eventHandlers_31
+})
+
+sagas.push({
+  name: name_32
+, cronHandlers: cronHandlers_32
+, eventHandlers: eventHandlers_32
+})
+
+sagas.push({
+  name: name_33
+, cronHandlers: cronHandlers_33
+, eventHandlers: eventHandlers_33
+})
+
+sagas.push({
+  name: name_34
+, cronHandlers: cronHandlers_34
+, eventHandlers: eventHandlers_34
+})
+
+sagas.push({
+  name: name_35
+, cronHandlers: cronHandlers_35
+, eventHandlers: eventHandlers_35
+})
+
+sagas.push({
+  name: name_36
+, cronHandlers: cronHandlers_36
+, eventHandlers: eventHandlers_36
+})
+
+sagas.push({
+  name: name_37
+, cronHandlers: cronHandlers_37
+, eventHandlers: eventHandlers_37
+})
+
+sagas.push({
+  name: name_38
+, cronHandlers: cronHandlers_38
+, eventHandlers: eventHandlers_38
+})
+
+sagas.push({
+  name: name_39
+, cronHandlers: cronHandlers_39
+, eventHandlers: eventHandlers_39
+})
+
+sagas.push({
+  name: name_40
+, cronHandlers: cronHandlers_40
+, eventHandlers: eventHandlers_40
+})
+
+sagas.push({
+  name: name_41
+, cronHandlers: cronHandlers_41
+, eventHandlers: eventHandlers_41
+})
+
+sagas.push({
+  name: name_42
+, cronHandlers: cronHandlers_42
+, eventHandlers: eventHandlers_42
+})
+
+sagas.push({
+  name: name_43
+, cronHandlers: cronHandlers_43
+, eventHandlers: eventHandlers_43
+})
+
+sagas.push({
+  name: name_44
+, cronHandlers: cronHandlers_44
+, eventHandlers: eventHandlers_44
+})
+
+sagas.push({
+  name: name_45
+, cronHandlers: cronHandlers_45
+, eventHandlers: eventHandlers_45
+})
+
+sagas.push({
+  name: name_46
+, cronHandlers: cronHandlers_46
+, eventHandlers: eventHandlers_46
+})
+
+sagas.push({
+  name: name_47
+, cronHandlers: cronHandlers_47
+, eventHandlers: eventHandlers_47
+})
+
+sagas.push({
+  name: name_48
+, cronHandlers: cronHandlers_48
+, eventHandlers: eventHandlers_48
+})
+
+sagas.push({
+  name: name_49
+, cronHandlers: cronHandlers_49
+, eventHandlers: eventHandlers_49
+})
+
+sagas.push({
+  name: name_50
+, cronHandlers: cronHandlers_50
+, eventHandlers: eventHandlers_50
+})
+
+sagas.push({
+  name: name_51
+, cronHandlers: cronHandlers_51
+, eventHandlers: eventHandlers_51
+})
+
+sagas.push({
+  name: name_52
+, cronHandlers: cronHandlers_52
+, eventHandlers: eventHandlers_52
+})
+
+sagas.push({
+  name: name_53
+, cronHandlers: cronHandlers_53
+, eventHandlers: eventHandlers_53
+})
+
+sagas.push({
+  name: name_54
+, cronHandlers: cronHandlers_54
+, eventHandlers: eventHandlers_54
+})
+
+sagas.push({
+  name: name_55
+, cronHandlers: cronHandlers_55
+, eventHandlers: eventHandlers_55
+})
+
+sagas.push({
+  name: name_56
+, cronHandlers: cronHandlers_56
+, eventHandlers: eventHandlers_56
+})
+
+sagas.push({
+  name: name_57
+, cronHandlers: cronHandlers_57
+, eventHandlers: eventHandlers_57
+})
+
+sagas.push({
+  name: name_58
+, cronHandlers: cronHandlers_58
+, eventHandlers: eventHandlers_58
+})
+
+sagas.push({
+  name: name_59
+, cronHandlers: cronHandlers_59
+, eventHandlers: eventHandlers_59
+})
+
+sagas.push({
+  name: name_60
+, cronHandlers: cronHandlers_60
+, eventHandlers: eventHandlers_60
+})
+
+sagas.push({
+  name: name_61
+, cronHandlers: cronHandlers_61
+, eventHandlers: eventHandlers_61
+})
+
+sagas.push({
+  name: name_62
+, cronHandlers: cronHandlers_62
+, eventHandlers: eventHandlers_62
+})
+
+sagas.push({
+  name: name_63
+, cronHandlers: cronHandlers_63
+, eventHandlers: eventHandlers_63
+})
+
+sagas.push({
+  name: name_64
+, cronHandlers: cronHandlers_64
+, eventHandlers: eventHandlers_64
+})
+
+sagas.push({
+  name: name_65
+, cronHandlers: cronHandlers_65
+, eventHandlers: eventHandlers_65
+})
+
+sagas.push({
+  name: name_66
+, cronHandlers: cronHandlers_66
+, eventHandlers: eventHandlers_66
+})
+
+sagas.push({
+  name: name_67
+, cronHandlers: cronHandlers_67
+, eventHandlers: eventHandlers_67
+})
+
+sagas.push({
+  name: name_68
+, cronHandlers: cronHandlers_68
+, eventHandlers: eventHandlers_68
+})
+
+sagas.push({
+  name: name_69
+, cronHandlers: cronHandlers_69
+, eventHandlers: eventHandlers_69
+})
+
+sagas.push({
+  name: name_70
+, cronHandlers: cronHandlers_70
+, eventHandlers: eventHandlers_70
+})
+
+sagas.push({
+  name: name_71
+, cronHandlers: cronHandlers_71
+, eventHandlers: eventHandlers_71
+})
+
+sagas.push({
+  name: name_72
+, cronHandlers: cronHandlers_72
+, eventHandlers: eventHandlers_72
+})
+
+sagas.push({
+  name: name_73
+, cronHandlers: cronHandlers_73
+, eventHandlers: eventHandlers_73
+})
+
+sagas.push({
+  name: name_74
+, cronHandlers: cronHandlers_74
+, eventHandlers: eventHandlers_74
+})
+
+sagas.push({
+  name: name_75
+, cronHandlers: cronHandlers_75
+, eventHandlers: eventHandlers_75
+})
+
+sagas.push({
+  name: name_76
+, cronHandlers: cronHandlers_76
+, eventHandlers: eventHandlers_76
+})
+
+sagas.push({
+  name: name_77
+, cronHandlers: cronHandlers_77
+, eventHandlers: eventHandlers_77
+})
+
+sagas.push({
+  name: name_78
+, cronHandlers: cronHandlers_78
+, eventHandlers: eventHandlers_78
+})
 
 export default sagas
 "

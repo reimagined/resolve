@@ -35,21 +35,19 @@ async function processRating(executeCommand) {
   })
 }
 
-const saga = {
-  cronHandlers: {
-    '@reboot': async ({ resolve }) => {
-      appendRating(resolve.executeCommand).catch(error => {
-        // eslint-disable-next-line no-console
-        console.log('Saga error:', error)
-      })
-    },
-    '* * * * * *': async ({ resolve }) => {
-      processRating(resolve.executeCommand).catch(error => {
-        // eslint-disable-next-line no-console
-        console.log('Saga error:', error)
-      })
-    }
+const cronHandlers = {
+  '@reboot': async ({ resolve }) => {
+    appendRating(resolve.executeCommand).catch(error => {
+      // eslint-disable-next-line no-console
+      console.log('Saga error:', error)
+    })
+  },
+  '* * * * * *': async ({ resolve }) => {
+    processRating(resolve.executeCommand).catch(error => {
+      // eslint-disable-next-line no-console
+      console.log('Saga error:', error)
+    })
   }
 }
 
-export default [saga]
+export default cronHandlers
