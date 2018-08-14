@@ -2,55 +2,46 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Text, Container, List, ListItem, Content, Icon } from 'native-base'
+import { StyleSheet } from 'react-native'
 
 import { actions } from '../resolve/resolve-redux'
 
-export class SideBar extends React.Component {
-  render() {
-    const { navigation, jwt, logout } = this.props
+const styles = StyleSheet.create({
+  icon: {
+    width: 30,
+    marginRight: 2,
+    textAlign: 'center'
+  }
+})
 
-    const routes = [
-      {
-        name: 'My Lists',
-        icon: (
-          <Icon
-            style={{ width: 30, marginRight: 2, textAlign: 'center' }}
-            name="list"
-            type="FontAwesome"
-          />
-        ),
-        callback: () => {
-          navigation.navigate('My Lists')
-        }
-      },
-      {
-        name: 'Settings',
-        icon: (
-          <Icon
-            style={{ width: 30, marginRight: 2, textAlign: 'center' }}
-            name="user"
-            type="FontAwesome"
-          />
-        ),
-        callback: () => {
-          navigation.navigate('Settings')
-        }
-      },
-      {
-        name: 'Logout',
-        icon: (
-          <Icon
-            style={{ width: 30, marginRight: 2, textAlign: 'center' }}
-            name="sign-out"
-            type="FontAwesome"
-          />
-        ),
-        callback: () => {
-          logout()
-          navigation.navigate('Logout')
-        }
+export class SideBar extends React.Component {
+  routes = [
+    {
+      name: 'My Lists',
+      icon: <Icon style={styles.icon} name="list" type="FontAwesome" />,
+      callback: () => {
+        this.props.navigation.navigate('My Lists')
       }
-    ]
+    },
+    {
+      name: 'Settings',
+      icon: <Icon style={styles.icon} name="user" type="FontAwesome" />,
+      callback: () => {
+        this.props.navigation.navigate('Settings')
+      }
+    },
+    {
+      name: 'Logout',
+      icon: <Icon style={styles.icon} name="sign-out" type="FontAwesome" />,
+      callback: () => {
+        this.props.logout()
+        this.props.navigation.navigate('Logout')
+      }
+    }
+  ]
+
+  render() {
+    const { jwt } = this.props
 
     if (!jwt.id) {
       return null
@@ -60,7 +51,7 @@ export class SideBar extends React.Component {
       <Container>
         <Content>
           <List
-            dataArray={routes}
+            dataArray={this.routes}
             renderRow={route => {
               return (
                 <ListItem button onPress={route.callback}>

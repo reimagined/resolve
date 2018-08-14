@@ -12,13 +12,38 @@ import {
   Label,
   View
 } from 'native-base'
-import { Image } from 'react-native'
+import { StyleSheet } from 'react-native'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { actions } from '../resolve/resolve-redux'
 
+import { actions } from '../resolve/resolve-redux'
 import requiredNoAuth from '../decorators/requiredNoAuth'
-import ResolveLogo from '../assets/resolve-logo.png'
+import Logo from '../components/Logo'
+
+const styles = StyleSheet.create({
+  contentContainer: {
+    justifyContent: 'center',
+    flex: 1
+  },
+  form: {
+    marginBottom: 20
+  },
+  buttonContainer: {
+    flexDirection: 'row'
+  },
+  button: {
+    marginRight: 5
+  },
+  socialTitle: {
+    marginTop: 30
+  },
+  socialButton: {
+    marginTop: 10
+  },
+  socialButtonIcon: {
+    marginRight: 0
+  }
+})
 
 export class Login extends React.PureComponent {
   state = {
@@ -27,6 +52,13 @@ export class Login extends React.PureComponent {
   }
 
   onLogin = () => {
+    this.props.authRequest('/auth/local/login', {
+      username: this.state.username,
+      password: this.state.password
+    })
+  }
+
+  onRegister = () => {
     this.props.authRequest('/auth/local/register', {
       username: this.state.username,
       password: this.state.password
@@ -48,18 +80,10 @@ export class Login extends React.PureComponent {
   render() {
     return (
       <Container>
-        <Content
-          padder
-          contentContainerStyle={{ justifyContent: 'center', flex: 1 }}
-        >
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-            <Image style={{ width: 35, height: 35 }} source={ResolveLogo} />
-            <Text style={{ marginBottom: 30, marginLeft: 5, fontSize: 27 }}>
-              Shopping List
-            </Text>
-          </View>
+        <Content padder contentContainerStyle={styles.contentContainer}>
+          <Logo />
           <H3>Login Form</H3>
-          <Form style={{ marginBottom: 20 }}>
+          <Form style={styles.form}>
             <Item stackedLabel>
               <Label>Username</Label>
               <Input
@@ -75,17 +99,21 @@ export class Login extends React.PureComponent {
               />
             </Item>
           </Form>
-          <View style={{ flexDirection: 'row' }}>
-            <Button style={{ marginRight: 5 }} onPress={this.onLogin}>
+          <View style={styles.buttonContainer}>
+            <Button style={styles.button} onPress={this.onRegister}>
               <Text>Login</Text>
             </Button>
-            <Button success>
+            <Button style={styles.button} onPress={this.onLogin} success>
               <Text>Register</Text>
             </Button>
           </View>
-          <H3 style={{ marginTop: 30 }}>Login with your social</H3>
-          <Button style={{ marginTop: 10 }} block>
-            <Icon style={{ marginRight: 0 }} name="google" type="FontAwesome" />
+          <H3 style={styles.socialTitle}>Login with your social</H3>
+          <Button style={styles.socialButton} block>
+            <Icon
+              style={styles.socialButtonIcon}
+              name="google"
+              type="FontAwesome"
+            />
             <Text>Login with Google</Text>
           </Button>
         </Content>
