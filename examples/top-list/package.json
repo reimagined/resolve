@@ -10,7 +10,7 @@
     "test:functional": "babel-node ./run.js test:functional"
   },
   "dependencies": {
-    "@babel/node": "^7.0.0-beta.56",
+    "@babel/node": "7.0.0-beta.55",
     "@babel/runtime": "7.0.0-beta.55",
     "project-name-generator": "2.1.5",
     "prop-types": "15.6.2",
