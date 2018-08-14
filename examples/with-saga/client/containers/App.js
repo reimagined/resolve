@@ -38,7 +38,10 @@ class App extends React.Component {
               this.submitUser(clientId, { email: email })
             }}
           />
-          <UsersList isLoading={this.props.isLoading} users={this.props.data} />
+          <UsersList
+            isLoading={this.props.isLoading}
+            users={this.props.user.users}
+          />
         </div>
       </div>
     )
