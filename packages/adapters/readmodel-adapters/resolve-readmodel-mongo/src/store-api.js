@@ -12,13 +12,12 @@ const defineTable = async ({ connection }, tableName, tableDescription) => {
 
 // BSON Types in mongodb: https://docs.mongodb.com/manual/reference/bson-types/
 // Type schema conversion algorithm in mongodb native driver: https://bit.ly/2weXEnh
+// Only allowed in *Resolve Read-model Query & Projection API* data types are present
 const bsonTypesMap = new Map([
   [String, 'string'],
   [Number, 'double'],
   [Array, 'array'],
-  [Date, 'date'],
   [Boolean, 'bool'],
-  [RegExp, 'regex'],
   [Object, 'object'],
   [null, 'null']
 ])
@@ -29,7 +28,7 @@ const transformCompareOperator = operation => {
   const type = bsonTypesMap.get(value != null ? value.constructor : null)
 
   if (type == null) {
-    throw new Error(`Invalid BSON type provided: ${type}`)
+    throw new Error(`Invalid BSON type provided: ${value}`)
   }
 
   switch (key) {
