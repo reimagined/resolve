@@ -11,7 +11,9 @@ This package contains tools for integrating reSolve with [Redux](http://redux.js
 * [connectReadModel](#connectreadmodel)
 * [connectStaticBasedUrls](#connectstaticbasedurls)
 * [connectRootBasedUrls](#connectrootbasedurls)
+* [createStore](#createstore)
 * [createActions](#createactions)
+* [jwtProvider](#jwtprovider)
 * [Action Creators](#action-creators)
 
 ### `createViewModelsReducer`
@@ -32,7 +34,7 @@ createReadModelsReducer(readModels)
 
 ### `createJwtReducer`
 
-  Generates a [Redux reducer](https://redux.js.org/basics/reducers) using a reSolve JWT. No arguments:
+  Generates a [Redux reducer](https://redux.js.org/basics/reducers) using a reSolve JWT. No arguments.
 
 ```js
 createJwtReducer()
@@ -193,12 +195,42 @@ const Markup = () => (
 export default Markup
 ```
 
+### `createStore`
+  Generates a [Redux store](https://github.com/reduxjs/redux/blob/master/docs/api/Store.md) for a reSolve application. Arguments:
+
+  * `redux: { reducers, middlewares, store }`
+  * `viewModels`
+  * `readModels`
+  * `aggregates`
+  * `subscribeAdapter`
+  * `history`
+  * `origin`
+  * `rootPath`
+  * `isClient`
+  * [`initialState`]
+  * [[`jwtProvider`]](#jwtprovider)
+
 ### `createActions`
 
   Generates [Redux actions](https://redux.js.org/basics/actions) using a reSolve aggregate. This function uses [`sendCommandRequest`](#sendcommandrequest) to pass a command from Redux to the server side. The generated actions are named after the aggregate commands. Arguments:
   
   * `aggregate` -  reSolve aggregate
   * `extendActions` - actions to extend or redefine resulting actions
+  
+### `jwtProvider`
+  Example for custom jwtProvider:
+```js
+import { AsyncStorage } from 'react-native'
+
+const jwtProvider = {
+  async get() {
+    return (await AsyncStorage.getItem(jwtCookie.name)) || ''
+  },
+  async set(jwtToken) {
+    return AsyncStorage.setItem(jwtCookie.name, jwtToken)
+  }
+}
+```
 
 ### Action Creators
 
@@ -361,6 +393,34 @@ export default Markup
     Refuses stopping a Read Model subscription. The function takes one argument, which is an object with the following keys:
     * `queryId`
     * `error`
+    
+  * #### `authRequest`
+      Requests authorization. It takes the object with the following required arguments:
+      * `url`
+      * `body`
+  
+  * #### `authSuccess`
+    Acknowledges authorization. The function takes one argument, which is an object with the following keys:
+    * `url`
+    * `body`
+
+  * #### `authFailure`
+    Refuses authorization. The function takes one argument, which is an object with the following keys:
+    * `url`
+    * `body`
+    * `error`  
+    
+  * #### `updateJwt`
+    Sets a jwt. The function takes one argument, which is an object with the following keys:
+    * `jwt`
+    
+  * #### `logout`
+    Clears a jwt and logout. No arguments.
+    
+    export const updateJwt = jwt => ({
+      type: UPDATE_JWT,
+      jwt
+    })    
 
   * #### `dispatchTopicMessage`
     Dispatches the topic message. The function takes one argument, which is an object with the following keys:

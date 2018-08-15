@@ -19,8 +19,9 @@ import subscribeHandler from './subscribe_handler'
 import subscribeAdapter from './subscribe_adapter'
 import argumentsParser from './arguments_parser'
 import HMRSocketHandler from './hmr_socket_handler'
+import provideJwtMiddleware from './provide_jwt_middleware'
 
-import { staticPath, distDir, jwtCookie, rootPath } from './assemblies'
+import { staticPath, distDir, rootPath } from './assemblies'
 
 subscribeAdapter.init().then(() => {
   eventStore.subscribeOnBus(event => {
@@ -42,20 +43,7 @@ HMRSocketServer.on('connection', HMRSocketHandler)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
-
-app.use((req, res, next) => {
-  let jwtToken = req.cookies[jwtCookie.name]
-
-  if (req.headers && req.headers.authorization) {
-    jwtToken = req.headers.authorization.replace(/^Bearer /i, '')
-  }
-
-  req.jwtToken = jwtToken
-
-  res.setHeader('Authorization', `Bearer ${jwtToken}`)
-
-  next()
-})
+app.use(provideJwtMiddleware)
 
 assignAuthRoutes(app)
 
