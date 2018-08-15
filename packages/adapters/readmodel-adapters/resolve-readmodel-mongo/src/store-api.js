@@ -33,17 +33,17 @@ const transformCompareOperator = operation => {
 
   switch (key) {
     case '$eq':
-      return { $eq: value, type }
+      return { $eq: value, $type: type }
     case '$ne':
-      return { $not: { $eq: value, type } }
+      return { $not: { $eq: value, $type: type } }
     case '$lt':
-      return { $lt: value, type }
+      return { $lt: value, $type: type }
     case '$lte':
-      return { $lte: value, type }
+      return { $lte: value, $type: type }
     case '$gt':
-      return { $gt: value, type }
+      return { $gt: value, $type: type }
     case '$gte':
-      return { $gte: value, type }
+      return { $gte: value, $type: type }
     default:
       throw new Error('Invalid operator')
   }
