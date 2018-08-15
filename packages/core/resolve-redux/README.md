@@ -14,6 +14,7 @@ This package contains tools for integrating reSolve with [Redux](http://redux.js
 * [createStore](#createstore)
 * [createActions](#createactions)
 * [jwtProvider](#jwtprovider)
+* [innerRef](#innerref)
 * [Action Creators](#action-creators)
 
 ### `createViewModelsReducer`
@@ -176,6 +177,8 @@ const Markup = () => (
 export default Markup
 ```
 
+See also: [`innerRef`](#innerref).
+
 ### `connectStaticBasedUrls`
 A higher-order component (HOC), used to automatically fixes paths for static files.
 
@@ -194,6 +197,13 @@ const Markup = () => (
 
 export default Markup
 ```
+
+See also: [`innerRef`](#innerref).
+
+### `innerRef`
+Passing a `ref` prop to a connected component will give you an instance of the wrapper, but not to the underlying DOM node. This is due to how refs work. It's not possible to call DOM methods, like `focus`, on our wrappers directly.
+
+To get a ref to the actual, wrapped DOM node, pass the callback to the `innerRef` prop instead.
 
 ### `createStore`
   Generates a [Redux store](https://github.com/reduxjs/redux/blob/master/docs/api/Store.md) for a reSolve application. Arguments:
