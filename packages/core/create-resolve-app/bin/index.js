@@ -76,6 +76,11 @@ const messages = {
     `Run ${chalk.cyan('create-resolve-app --help')} to see all options.`
 }
 
+const useYarn =
+  (process.env.npm_execpath && process.env.npm_execpath.includes('yarn')) ||
+  (process.env.npm_config_user_agent &&
+    process.env.npm_config_user_agent.includes('yarn'))
+
 const options = commandLineArgs(optionDefinitions, { partial: true })
 const unknownOptions =
   options._unknown && options._unknown.filter(x => x.startsWith('-'))
@@ -271,7 +276,8 @@ if (unknownOptions && unknownOptions.length) {
   const install = () => {
     log()
     log(chalk.green('Install dependencies'))
-    let command = `cd ./${appName} && npm i`
+
+    let command = `cd ./${appName} && ${useYarn ? 'yarn' : 'npm i'}`
     const proc = spawn.sync(command, [], { stdio: 'inherit', shell: true })
     if (proc.status !== 0) {
       throw Error(`\`${command}\` failed`)
@@ -280,7 +286,7 @@ if (unknownOptions && unknownOptions.length) {
 
   const printFinishOutput = () => {
     const displayCommand = (isDefaultCmd = false) =>
-      isDefaultCmd ? 'npm' : 'npm run'
+      useYarn ? 'yarn' : isDefaultCmd ? 'npm' : 'npm run'
 
     log()
     log(`Success! ${appName} is created `)
