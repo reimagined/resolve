@@ -134,8 +134,7 @@ const mapStateToOptions = (state, ownProps) => {
   return {
     readModelName: 'Items',
     resolverName: 'getAllItems',
-    resolverArgs: {  },
-    isReactive: true
+    resolverArgs: {  }
   }
 }
 
@@ -342,21 +341,18 @@ const jwtProvider = {
     * `readModelName`
     * `resolverName`
     * `resolverArgs`
-    * `isReactive`
 
   * #### `disconnectReadModel`
     Unsubscribes from Read Model changes. The function takes one argument, which is an object with the following keys:
     * `readModelName`
     * `resolverName`
     * `resolverArgs`
-    * `isReactive`
 
   * #### `loadReadModelStateRequest`
-    Requests a Read Model Resolver result from the server side. If the Read Model is reactive, this function also subscribes to the `diff` topic. The function takes one argument, which is an object with the following keys:
+    Requests a Read Model Resolver result from the server side. The function takes one argument, which is an object with the following keys:
     * `readModelName`
     * `resolverName`
     * `resolverArgs`
-    * `isReactive`
     * `queryId`
 
   * #### `loadReadModelStateSuccess`
@@ -364,7 +360,6 @@ const jwtProvider = {
     * `readModelName`
     * `resolverName`
     * `resolverArgs`
-    * `isReactive`
     * `queryId`
     * `result`
     * `timeToLive`
@@ -374,16 +369,8 @@ const jwtProvider = {
     * `readModelName`
     * `resolverName`
     * `resolverArgs`
-    * `isReactive`
     * `queryId`
     * `error`
-
-  * #### `applyReadModelDiff`
-    Modify a reactive Read Model. The function takes one argument, which is an object with the following keys:
-    * `readModelName`
-    * `resolverName`
-    * `resolverArgs`
-    * `diff`
 
   * #### `dropReadModelState`
     Clears a Read Model. The function takes one argument, which is an object with the following keys:
