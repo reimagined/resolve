@@ -14,9 +14,10 @@ export default {
       }
     }
   },
-  confirmUserCreation: () => {
+  confirmUserCreation: (_, { payload: { createdUser } }) => {
     return {
-      type: USER_CREATION_CONFIRMED
+      type: USER_CREATION_CONFIRMED,
+      payload: { createdUser }
     }
   },
   rejectUserCreation: (_, { payload: { createdUser } }) => {
@@ -25,9 +26,10 @@ export default {
       payload: { createdUser }
     }
   },
-  deleteOutdatedUser: () => {
+  deleteOutdatedUser: (_, { aggregateId }) => {
     return {
-      type: OUTDATED_USER_DELETED
+      type: OUTDATED_USER_DELETED,
+      aggregateId: aggregateId
     }
   }
 }
