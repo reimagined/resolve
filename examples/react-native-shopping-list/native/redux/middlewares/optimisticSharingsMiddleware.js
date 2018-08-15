@@ -1,5 +1,4 @@
-import { actionTypes } from 'resolve-redux'
-
+import { actionTypes } from '../../resolve/resolve-redux'
 import {
   OPTIMISTIC_SHARE_SHOPPING_LIST,
   OPTIMISTIC_UNSHARE_SHOPPING_LIST

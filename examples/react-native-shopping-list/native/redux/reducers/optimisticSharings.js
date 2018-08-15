@@ -1,4 +1,3 @@
-import { LOCATION_CHANGE } from 'react-router-redux'
 import {
   OPTIMISTIC_SHARE_SHOPPING_LIST,
   OPTIMISTIC_UNSHARE_SHOPPING_LIST
@@ -11,7 +10,7 @@ const initialState = {
 
 const optimisticSharings = (state = initialState, action) => {
   switch (action.type) {
-    case LOCATION_CHANGE: {
+    case 'LOCATION_CHANGE': {
       return initialState
     }
     case OPTIMISTIC_SHARE_SHOPPING_LIST: {

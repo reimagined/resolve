@@ -13,8 +13,11 @@ import {
   Icon,
   Text
 } from 'native-base'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 
-import requireAuth from '../decorators/requiredAuth'
+import requiredAuth from '../decorators/requiredAuth'
+import { connectReadModel } from '../resolve/resolve-redux'
 
 export class MyLists extends React.PureComponent {
   render() {
@@ -32,7 +35,10 @@ export class MyLists extends React.PureComponent {
           <Right />
         </Header>
         <Content>
-          <Text>MyLists</Text>
+          <Text>
+            MyLists
+            {JSON.stringify(this.props)}
+          </Text>
         </Content>
         <Footer>
           <FooterTab>
@@ -46,4 +52,24 @@ export class MyLists extends React.PureComponent {
   }
 }
 
-export default requireAuth(MyLists)
+export const mapStateToOptions = () => ({
+  readModelName: 'Default',
+  resolverName: 'shoppingLists',
+  resolverArgs: {}
+})
+
+export const mapStateToProps = (state, { data }) => ({
+  lists: [...data, ...state.optimisticShoppingLists]
+})
+
+export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+  bindActionCreators(aggregateActions, dispatch)
+
+export default requiredAuth(
+  connectReadModel(mapStateToOptions)(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(MyLists)
+  )
+)

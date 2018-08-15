@@ -1,5 +1,4 @@
-import { actionTypes } from 'resolve-redux'
-
+import { actionTypes } from '../../resolve/resolve-redux'
 import { OPTIMISTIC_CREATE_SHOPPING_LIST } from '../actions/optimisticActions'
 
 const { SEND_COMMAND_SUCCESS } = actionTypes
