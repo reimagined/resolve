@@ -1,6 +1,6 @@
 {
   "name": "@react-native-shopping-list/domain",
-  "version": "0.13.2",
+  "version": "0.14.0",
   "private": true,
   "dependencies": {
     "jsonwebtoken": "8.3.0",

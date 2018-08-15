@@ -1,6 +1,6 @@
 {
   "name": "@react-native-shopping-list/web",
-  "version": "0.13.2",
+  "version": "0.14.0",
   "private": true,
   "scripts": {
     "build": "resolve-scripts build",
@@ -18,7 +18,7 @@
     "react-router-dom": "4.3.1",
     "react-router-redux": "5.0.0-alpha.9",
     "redux": "4.0.0",
-    "resolve-redux": "0.13.2",
+    "resolve-redux": "0.14.0",
     "uuid": "3.3.2"
   },
   "devDependencies": {
