@@ -113,7 +113,7 @@ pipeline {
             }
         }
 
-       stage('Create-resolve-app [ hello-world ] Functional Tests') {
+       stage('NPM. Create-resolve-app [ hello-world ] Functional Tests') {
                  when {
                 expression { CHANGE_TARGET == 'master' }
             }
@@ -121,7 +121,7 @@ pipeline {
                     script {
                         sh """
                             mkdir hello-world && cd hello-world;
-                            create-resolve-app hello-world -c \$(cat /last_commit)
+                            npx create-resolve-app hello-world -c \$(cat /last_commit)
                             cd ./hello-world; 
                             cat ./package.json; 
                             yarn test
@@ -131,7 +131,7 @@ pipeline {
                 }
             }
 
-            stage('Create-resolve-app [ nested-list ] Functional Tests') {
+            stage('NPM. Create-resolve-app [ nested-list ] Functional Tests') {
                  when {
                 expression { CHANGE_TARGET == 'master' }
             }
@@ -139,7 +139,7 @@ pipeline {
                     script {
                         sh """
                             mkdir nested-list && cd nested-list;
-                            create-resolve-app nested-list -e nested-list -c \$(cat /last_commit)
+                            npx create-resolve-app nested-list -e nested-list -c \$(cat /last_commit)
                             cd ./nested-list
                             cat ./package.json
                             yarn test:functional path:/chromium
@@ -148,7 +148,7 @@ pipeline {
                 }
             }
 
-            stage('Create-resolve-app [ hacker-news ] Functional Tests') {
+            stage('NPM. Create-resolve-app [ hacker-news ] Functional Tests') {
                  when {
                 expression { CHANGE_TARGET == 'master' }
             }
@@ -156,7 +156,7 @@ pipeline {
                     script {
                         sh """
                             mkdir hacker-news && cd hacker-news;
-                            create-resolve-app hn -e hacker-news -c \$(cat /last_commit)
+                            npx create-resolve-app hn -e hacker-news -c \$(cat /last_commit)
                             cd ./hn
                             cat ./package.json
                             yarn test
@@ -166,7 +166,7 @@ pipeline {
                 }
             }
 
-            stage('Create-resolve-app [ with-postcss ] Functional Tests') {
+            stage('NPM. Create-resolve-app [ with-postcss ] Functional Tests') {
                  when {
                 expression { CHANGE_TARGET == 'master' }
             }
@@ -174,7 +174,7 @@ pipeline {
                     script {
                         sh """
                             mkdir with-postcss && cd with-postcss;
-                            create-resolve-app with-postcss -e with-postcss -c \$(cat /last_commit)
+                            npx create-resolve-app with-postcss -e with-postcss -c \$(cat /last_commit)
                             cd ./with-postcss
                             cat ./package.json
                             yarn test
@@ -184,7 +184,7 @@ pipeline {
                 }
             }
 
-            stage('Create-resolve-app [ with-styled-components ] Functional Tests') {
+            stage('NPM. Create-resolve-app [ with-styled-components ] Functional Tests') {
                  when {
                 expression { CHANGE_TARGET == 'master' }
             }
@@ -192,7 +192,7 @@ pipeline {
                     script {
                         sh """
                             mkdir with-styled-components && cd with-styled-components;
-                            create-resolve-app with-styled-components -e with-styled-components -c \$(cat /last_commit)
+                            npx create-resolve-app with-styled-components -e with-styled-components -c \$(cat /last_commit)
                             cd ./with-styled-components
                             cat ./package.json
                             yarn test
@@ -202,7 +202,7 @@ pipeline {
                 }
             }
             
-            stage('Create-resolve-app [ with-saga ] Functional Tests') {
+            stage('NPM. Create-resolve-app [ with-saga ] Functional Tests') {
                  when {
                 expression { CHANGE_TARGET == 'master' }
             }
@@ -210,7 +210,114 @@ pipeline {
                     script {
                         sh """
                             mkdir with-saga && cd with-saga;
-                            create-resolve-app with-saga -e with-saga -c \$(cat /last_commit)
+                            npx create-resolve-app with-saga -e with-saga -c \$(cat /last_commit)
+                            cd ./with-saga
+                            cat ./package.json
+                            yarn test
+                            yarn test:functional path:/chromium
+                        """
+                    }
+                }
+            }
+
+            stage('Yarn. Create-resolve-app [ hello-world ] Functional Tests') {
+                 when {
+                expression { CHANGE_TARGET == 'master' }
+            }
+                steps {
+                    script {
+                        sh """
+                            mkdir hello-world && cd hello-world;
+                            yarn create-resolve-app hello-world -c \$(cat /last_commit)
+                            cd ./hello-world; 
+                            cat ./package.json; 
+                            yarn test
+                            yarn test:functional path:/chromium
+                        """
+                    }
+                }
+            }
+
+            stage('Yarn. Create-resolve-app [ nested-list ] Functional Tests') {
+                 when {
+                expression { CHANGE_TARGET == 'master' }
+            }
+                steps {
+                    script {
+                        sh """
+                            mkdir nested-list && cd nested-list;
+                            yarn create-resolve-app nested-list -e nested-list -c \$(cat /last_commit)
+                            cd ./nested-list
+                            cat ./package.json
+                            yarn test:functional path:/chromium
+                        """
+                    }
+                }
+            }
+
+            stage('Yarn. Create-resolve-app [ hacker-news ] Functional Tests') {
+                 when {
+                expression { CHANGE_TARGET == 'master' }
+            }
+                steps {
+                    script {
+                        sh """
+                            mkdir hacker-news && cd hacker-news;
+                            yarn create-resolve-app hn -e hacker-news -c \$(cat /last_commit)
+                            cd ./hn
+                            cat ./package.json
+                            yarn test
+                            yarn test:functional path:/chromium
+                        """
+                    }
+                }
+            }
+
+            stage('Yarn. Create-resolve-app [ with-postcss ] Functional Tests') {
+                 when {
+                expression { CHANGE_TARGET == 'master' }
+            }
+                steps {
+                    script {
+                        sh """
+                            mkdir with-postcss && cd with-postcss;
+                            yarn create-resolve-app with-postcss -e with-postcss -c \$(cat /last_commit)
+                            cd ./with-postcss
+                            cat ./package.json
+                            yarn test
+                            yarn test:functional path:/chromium
+                        """
+                    }
+                }
+            }
+
+            stage('Yarn. Create-resolve-app [ with-styled-components ] Functional Tests') {
+                 when {
+                expression { CHANGE_TARGET == 'master' }
+            }
+                steps {
+                    script {
+                        sh """
+                            mkdir with-styled-components && cd with-styled-components;
+                            yarn create-resolve-app with-styled-components -e with-styled-components -c \$(cat /last_commit)
+                            cd ./with-styled-components
+                            cat ./package.json
+                            yarn test
+                            yarn test:functional path:/chromium
+                        """
+                    }
+                }
+            }
+            
+            stage('Yarn. Create-resolve-app [ with-saga ] Functional Tests') {
+                 when {
+                expression { CHANGE_TARGET == 'master' }
+            }
+                steps {
+                    script {
+                        sh """
+                            mkdir with-saga && cd with-saga;
+                            yarn create-resolve-app with-saga -e with-saga -c \$(cat /last_commit)
                             cd ./with-saga
                             cat ./package.json
                             yarn test
