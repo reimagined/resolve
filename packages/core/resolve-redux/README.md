@@ -405,9 +405,9 @@ const jwtProvider = {
     * `error`
     
   * #### `authRequest`
-      Requests authorization. It takes the object with the following required arguments:
-      * `url`
-      * `body`
+    Requests authorization. It takes the object with the following required arguments:
+    * `url`
+    * `body`
   
   * #### `authSuccess`
     Acknowledges authorization. The function takes one argument, which is an object with the following keys:
