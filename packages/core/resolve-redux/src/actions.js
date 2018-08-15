@@ -339,7 +339,7 @@ export const logout = () => ({
   jwt: {}
 })
 
-export const authRequest = (url, body) => ({
+export const authRequest = (url, body = {}) => ({
   type: AUTH_REQUEST,
   url,
   body
