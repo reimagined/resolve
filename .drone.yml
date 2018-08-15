@@ -8,7 +8,7 @@ pipeline:
       - yarn install
       - VERSION=$(/scripts/prepare_downstream)
       - /scripts/npm_patch_rc
-      - npx oao all "/scripts/npm_publish $VERSION nightly"
+      - npx oao all "/scripts/package_json patch-dependencies resolve $VERSION && /scripts/npm_publish $VERSION nightly"
     secrets: [ npm_registry, npm_token ]
 
   register-build:
@@ -38,8 +38,8 @@ pipeline:
     params:
       - .downstream
     repositories:
-      - DevExpress/okrserver
-      - DevExpress/orgstruct
+      - DevExpress/okrserver@build
+      - DevExpress/orgstruct@build
 
   npm-tag:
     when:
@@ -109,5 +109,6 @@ pipeline:
         }]
       }]
     }'
+
 
 branches: dev
