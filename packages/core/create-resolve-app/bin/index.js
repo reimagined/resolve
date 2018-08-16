@@ -36,7 +36,7 @@ const optionsInfo =
   `              with-postcss - demonstrates how to work with postCSS ${EOL}` +
   `              with-saga - demonstrates how to use sagas ${EOL}` +
   `              with-styled-components - demonstrates how to work with Styled Components ${EOL}` +
-  `              hacker-news - HackerNews application clone with CQRS and EventSourсing ${EOL}` +
+  `              hacker-news - HackerNews application clone with CQRS and EventSourcing ${EOL}` +
   `  -b, --branch     branch (optional, master is default)${EOL}` +
   `  -c, --commit     commit ${EOL}` +
   `  -V, --version    outputs the version number${EOL}` +
