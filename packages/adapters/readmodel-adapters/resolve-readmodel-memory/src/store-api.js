@@ -123,12 +123,14 @@ const processWhereExpression = (document, expression) => {
 }
 
 const convertSearchExpression = expression => ({
-  $and: {
-    $and: [expression],
-    $where: function() {
-      return processWhereExpression(this, expression)
+  $and: [
+    expression,
+    {
+      $where: function() {
+        return processWhereExpression(this, expression)
+      }
     }
-  }
+  ]
 })
 
 const find = async (

@@ -62,9 +62,7 @@ describe('resolve-readmodel-memory store-api', () => {
     )
 
     const {
-      $and: {
-        $and: [findQuery]
-      }
+      $and: [findQuery]
     } = storage['test'].find.firstCall.args[0]
     expect(findQuery).toEqual({ search: 0 })
 
@@ -96,9 +94,7 @@ describe('resolve-readmodel-memory store-api', () => {
     )
 
     const {
-      $and: {
-        $and: [findQuery]
-      }
+      $and: [findQuery]
     } = storage['test'].find.firstCall.args[0]
     expect(findQuery).toEqual({
       search: 0
@@ -128,9 +124,7 @@ describe('resolve-readmodel-memory store-api', () => {
     )
 
     const {
-      $and: {
-        $and: [findQuery]
-      }
+      $and: [findQuery]
     } = storage['test'].find.firstCall.args[0]
     expect(findQuery).toEqual({
       search: 0
@@ -163,9 +157,7 @@ describe('resolve-readmodel-memory store-api', () => {
     )
 
     const {
-      $and: {
-        $and: [findQuery]
-      }
+      $and: [findQuery]
     } = storage['test'].find.firstCall.args[0]
     expect(findQuery).toEqual({
       search: 0
@@ -198,9 +190,7 @@ describe('resolve-readmodel-memory store-api', () => {
     )
 
     const {
-      $and: {
-        $and: [findQuery]
-      }
+      $and: [findQuery]
     } = storage['test'].find.firstCall.args[0]
     expect(findQuery).toEqual({
       search: 0
@@ -230,9 +220,7 @@ describe('resolve-readmodel-memory store-api', () => {
     )
 
     const {
-      $and: {
-        $and: [findQuery]
-      }
+      $and: [findQuery]
     } = storage['test'].findOne.firstCall.args[0]
     expect(findQuery).toEqual({
       search: 0
@@ -254,9 +242,7 @@ describe('resolve-readmodel-memory store-api', () => {
     const result = await storeApi.findOne({ storage }, 'test', { search: 0 })
 
     const {
-      $and: {
-        $and: [findQuery]
-      }
+      $and: [findQuery]
     } = storage['test'].findOne.firstCall.args[0]
 
     expect(findQuery).toEqual({
@@ -280,9 +266,7 @@ describe('resolve-readmodel-memory store-api', () => {
     const result = await storeApi.count({ storage }, 'test', { search: 0 })
 
     const {
-      $and: {
-        $and: [findQuery]
-      }
+      $and: [findQuery]
     } = storage['test'].count.firstCall.args[0]
 
     expect(findQuery).toEqual({ search: 0 })
@@ -325,9 +309,7 @@ describe('resolve-readmodel-memory store-api', () => {
     )
 
     const {
-      $and: {
-        $and: [findQuery]
-      }
+      $and: [findQuery]
     } = storage['test'].update.firstCall.args[0]
 
     expect(findQuery).toEqual({
@@ -350,9 +332,7 @@ describe('resolve-readmodel-memory store-api', () => {
     await storeApi.del({ storage }, 'test', { id: 1, value: 2 })
 
     const {
-      $and: {
-        $and: [findQuery]
-      }
+      $and: [findQuery]
     } = storage['test'].remove.firstCall.args[0]
 
     expect(findQuery).toEqual({
