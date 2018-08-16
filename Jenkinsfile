@@ -120,9 +120,9 @@ pipeline {
                 steps {
                     script {
                         sh """
-                            mkdir hello-world && cd hello-world;
-                            npx create-resolve-app hello-world -c \$(cat /last_commit)
-                            cd ./hello-world; 
+                            mkdir npm-hello-world && cd hello-world;
+                            npx create-resolve-app npm-hello-world -c \$(cat /last_commit)
+                            cd ./npm-hello-world; 
                             cat ./package.json; 
                             yarn test
                             yarn test:functional path:/chromium
@@ -138,9 +138,9 @@ pipeline {
                 steps {
                     script {
                         sh """
-                            mkdir nested-list && cd nested-list;
-                            npx create-resolve-app nested-list -e nested-list -c \$(cat /last_commit)
-                            cd ./nested-list
+                            mkdir npm-nested-list && cd nested-list;
+                            npx create-resolve-app npm-nested-list -e nested-list -c \$(cat /last_commit)
+                            cd ./npm-nested-list
                             cat ./package.json
                             yarn test:functional path:/chromium
                         """
@@ -155,9 +155,9 @@ pipeline {
                 steps {
                     script {
                         sh """
-                            mkdir hacker-news && cd hacker-news;
-                            npx create-resolve-app hn -e hacker-news -c \$(cat /last_commit)
-                            cd ./hn
+                            mkdir npm-hacker-news && cd hacker-news;
+                            npx create-resolve-app npm-hacker-news -e hacker-news -c \$(cat /last_commit)
+                            cd ./npm-hacker-news
                             cat ./package.json
                             yarn test
                             yarn test:functional path:/chromium
@@ -173,9 +173,9 @@ pipeline {
                 steps {
                     script {
                         sh """
-                            mkdir with-postcss && cd with-postcss;
-                            npx create-resolve-app with-postcss -e with-postcss -c \$(cat /last_commit)
-                            cd ./with-postcss
+                            mkdir npm-with-postcss && cd with-postcss;
+                            npx create-resolve-app npm-with-postcss -e with-postcss -c \$(cat /last_commit)
+                            cd ./npm-with-postcss
                             cat ./package.json
                             yarn test
                             yarn test:functional path:/chromium
@@ -191,9 +191,9 @@ pipeline {
                 steps {
                     script {
                         sh """
-                            mkdir with-styled-components && cd with-styled-components;
-                            npx create-resolve-app with-styled-components -e with-styled-components -c \$(cat /last_commit)
-                            cd ./with-styled-components
+                            mkdir npm-with-styled-components && cd with-styled-components;
+                            npx create-resolve-app npm-with-styled-components -e with-styled-components -c \$(cat /last_commit)
+                            cd ./npm-with-styled-components
                             cat ./package.json
                             yarn test
                             yarn test:functional path:/chromium
@@ -209,9 +209,9 @@ pipeline {
                 steps {
                     script {
                         sh """
-                            mkdir with-saga && cd with-saga;
-                            npx create-resolve-app with-saga -e with-saga -c \$(cat /last_commit)
-                            cd ./with-saga
+                            mkdir npm-with-saga && cd with-saga;
+                            npx create-resolve-app npm-with-saga -e with-saga -c \$(cat /last_commit)
+                            cd ./npm-with-saga
                             cat ./package.json
                             yarn test
                             yarn test:functional path:/chromium
@@ -227,9 +227,9 @@ pipeline {
                 steps {
                     script {
                         sh """
-                            mkdir hello-world && cd hello-world;
-                            yarn create-resolve-app hello-world -c \$(cat /last_commit)
-                            cd ./hello-world; 
+                            mkdir yarn-hello-world && cd hello-world;
+                            yarn create-resolve-app yarn-hello-world -c \$(cat /last_commit)
+                            cd ./yarn-hello-world; 
                             cat ./package.json; 
                             yarn test
                             yarn test:functional path:/chromium
@@ -245,9 +245,9 @@ pipeline {
                 steps {
                     script {
                         sh """
-                            mkdir nested-list && cd nested-list;
-                            yarn create-resolve-app nested-list -e nested-list -c \$(cat /last_commit)
-                            cd ./nested-list
+                            mkdir yarn-nested-list && cd nested-list;
+                            yarn create-resolve-app yarn-nested-list -e nested-list -c \$(cat /last_commit)
+                            cd ./yarn-nested-list
                             cat ./package.json
                             yarn test:functional path:/chromium
                         """
@@ -262,9 +262,9 @@ pipeline {
                 steps {
                     script {
                         sh """
-                            mkdir hacker-news && cd hacker-news;
-                            yarn create-resolve-app hn -e hacker-news -c \$(cat /last_commit)
-                            cd ./hn
+                            mkdir yarn-hacker-news && cd hacker-news;
+                            yarn create-resolve-app yarn-hacker-news -e hacker-news -c \$(cat /last_commit)
+                            cd ./yarn-hacker-news
                             cat ./package.json
                             yarn test
                             yarn test:functional path:/chromium
@@ -280,9 +280,9 @@ pipeline {
                 steps {
                     script {
                         sh """
-                            mkdir with-postcss && cd with-postcss;
-                            yarn create-resolve-app with-postcss -e with-postcss -c \$(cat /last_commit)
-                            cd ./with-postcss
+                            mkdir yarn-with-postcss && cd with-postcss;
+                            yarn create-resolve-app yarn-with-postcss -e with-postcss -c \$(cat /last_commit)
+                            cd ./yarn-with-postcss
                             cat ./package.json
                             yarn test
                             yarn test:functional path:/chromium
@@ -298,9 +298,9 @@ pipeline {
                 steps {
                     script {
                         sh """
-                            mkdir with-styled-components && cd with-styled-components;
-                            yarn create-resolve-app with-styled-components -e with-styled-components -c \$(cat /last_commit)
-                            cd ./with-styled-components
+                            mkdir yarn-with-styled-components && cd with-styled-components;
+                            yarn create-resolve-app yarn-with-styled-components -e with-styled-components -c \$(cat /last_commit)
+                            cd ./yarn-with-styled-components
                             cat ./package.json
                             yarn test
                             yarn test:functional path:/chromium
@@ -316,9 +316,9 @@ pipeline {
                 steps {
                     script {
                         sh """
-                            mkdir with-saga && cd with-saga;
-                            yarn create-resolve-app with-saga -e with-saga -c \$(cat /last_commit)
-                            cd ./with-saga
+                            mkdir yarn-with-saga && cd with-saga;
+                            yarn create-resolve-app yarn-with-saga -e with-saga -c \$(cat /last_commit)
+                            cd ./yarn-with-saga
                             cat ./package.json
                             yarn test
                             yarn test:functional path:/chromium
