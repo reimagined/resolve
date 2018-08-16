@@ -2,7 +2,7 @@
 
 exports[`Read-model generic adapter API Delete and non-parameterized resolver invocation 1`] = `
 Object {
-  "countResult": 3,
+  "countResult": 1,
   "findOneResult": Object {
     "firstJsonName": Object {
       "a": 1,
@@ -16,7 +16,7 @@ Object {
 
 exports[`Read-model generic adapter API Insert and non-parameterized resolver invocation 1`] = `
 Object {
-  "countResult": 4,
+  "countResult": 1,
   "findOneResult": Object {
     "firstJsonName": Object {
       "a": 1,
@@ -30,7 +30,7 @@ Object {
 
 exports[`Read-model generic adapter API Update and non-parameterized resolver invocation 1`] = `
 Object {
-  "countResult": 4,
+  "countResult": 1,
   "findOneResult": Object {
     "firstJsonName": Object {
       "a": 1,
@@ -42,24 +42,11 @@ Object {
 }
 `;
 
-exports[`Read-model generic adapter API Update and parameterized resolver invocation 1`] = `
-Array [
-  Object {
-    "firstJsonName": Object {
-      "c": 3,
-      "e": 25,
-      "f": "inner-field",
-    },
-  },
-  Object {
-    "firstJsonName": null,
-  },
-]
-`;
+exports[`Read-model generic adapter API Update and parameterized resolver invocation 1`] = `Array []`;
 
 exports[`Read-model generic adapter API Upsert and non-parameterized resolver invocation 1`] = `
 Object {
-  "countResult": 5,
+  "countResult": 1,
   "findOneResult": Object {
     "firstJsonName": Object {
       "a": 1,
