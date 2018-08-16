@@ -38,8 +38,8 @@ pipeline:
     params:
       - .downstream
     repositories:
-      - DevExpress/okrserver
-      - DevExpress/orgstruct
+      - DevExpress/okrserver@build
+      - DevExpress/orgstruct@build
 
   npm-tag:
     when:

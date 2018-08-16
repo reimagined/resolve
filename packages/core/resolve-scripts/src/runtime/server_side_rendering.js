@@ -2,7 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom/server'
 import createHistory from 'history/createMemoryHistory'
 import jsonwebtoken from 'jsonwebtoken'
-import { ServerStyleSheet, StyleSheetManager } from 'styled-components'
 import { createStore, AppContainer } from 'resolve-redux'
 
 import getHtmlMarkup from './get_html_markup'
@@ -20,6 +19,13 @@ import {
   aggregates,
   subscribeAdapter
 } from './assemblies'
+
+let ServerStyleSheet, StyleSheetManager
+try {
+  const styledComponents = require('styled-components')
+  ServerStyleSheet = styledComponents.ServerStyleSheet
+  StyleSheetManager = styledComponents.StyleSheetManager
+} catch (err) {}
 
 const serverSideRendering = (req, res) => {
   const url = req.params[0] || ''
@@ -50,22 +56,36 @@ const serverSideRendering = (req, res) => {
     isClient: false
   })
 
-  const sheet = new ServerStyleSheet()
-  const markup = ReactDOM.renderToStaticMarkup(
-    <StyleSheetManager sheet={sheet.instance}>
-      <AppContainer
-        origin={origin}
-        rootPath={rootPath}
-        staticPath={staticPath}
-        aggregateActions={aggregateActions}
-        store={store}
-        history={history}
-        routes={routes}
-        isSSR={true}
-      />
-    </StyleSheetManager>
+  const appContainer = (
+    <AppContainer
+      origin={origin}
+      rootPath={rootPath}
+      staticPath={staticPath}
+      aggregateActions={aggregateActions}
+      store={store}
+      history={history}
+      routes={routes}
+      isSSR={true}
+    />
   )
-  const styleTags = sheet.getStyleTags()
+
+  let markup, styleTags
+
+  if (StyleSheetManager) {
+    const sheet = new ServerStyleSheet()
+
+    markup = ReactDOM.renderToStaticMarkup(
+      <StyleSheetManager sheet={sheet.instance}>
+        {appContainer}
+      </StyleSheetManager>
+    )
+
+    styleTags = sheet.getStyleTags()
+  } else {
+    markup = ReactDOM.renderToStaticMarkup(appContainer)
+
+    styleTags = ''
+  }
 
   const initialState = store.getState()
   const bundleUrl = getStaticBasedPath(rootPath, staticPath, 'bundle.js')
