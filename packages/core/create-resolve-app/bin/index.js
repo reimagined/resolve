@@ -30,10 +30,13 @@ const optionsInfo =
   EOL +
   `  -e, --example    creates an example application base on application from resolve examples` +
   ` directory${EOL}` +
-  `                   Now you can choose one of the next examples:${EOL}` +
-  `                     todo - todo list ${EOL}` +
-  `                     hello-world - simple empty example with single hello world page ${EOL}` +
-  `                     todo-two-levels - two levels todo list ${EOL}` +
+  `            Now you can choose one of the next examples:${EOL}` +
+  `              hello-world - used as a template for new reSolve applications ${EOL}` +
+  `              nested-list - shows how to work with read-models and view-models ${EOL}` +
+  `              with-postcss - demonstrates how to work with postCSS ${EOL}` +
+  `              with-saga - demonstrates how to use sagas ${EOL}` +
+  `              with-styled-components - demonstrates how to work with Styled Components ${EOL}` +
+  `              hacker-news - HackerNews application clone with CQRS and EventSourcing ${EOL}` +
   `  -b, --branch     branch (optional, master is default)${EOL}` +
   `  -c, --commit     commit ${EOL}` +
   `  -V, --version    outputs the version number${EOL}` +

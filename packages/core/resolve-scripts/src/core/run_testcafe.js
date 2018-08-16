@@ -88,18 +88,23 @@ const runTestcafe = async ({
     browser == null ? Object.keys(await getInstallations())[0] : browser
   const targetTimeout = timeout == null ? 20000 : timeout
 
-  execSync(
-    `npx testcafe ${targetBrowser}` +
-      ` ${functionalTestsDir}` +
-      ` --app-init-delay ${targetTimeout}` +
-      ` --selector-timeout ${targetTimeout}` +
-      ` --assertion-timeout ${targetTimeout}` +
-      ` --page-load-timeout ${targetTimeout}` +
-      (targetBrowser === 'remote' ? ' --qr-code' : ''),
-    { stdio: 'inherit' }
-  )
-
-  server.stop()
+  try {
+    execSync(
+      `npx testcafe ${targetBrowser}` +
+        ` ${functionalTestsDir}` +
+        ` --app-init-delay ${targetTimeout}` +
+        ` --selector-timeout ${targetTimeout}` +
+        ` --assertion-timeout ${targetTimeout}` +
+        ` --page-load-timeout ${targetTimeout}` +
+        (targetBrowser === 'remote' ? ' --qr-code' : ''),
+      { stdio: 'inherit' }
+    )
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(e)
+  } finally {
+    server.stop()
+  }
 }
 
 export default runTestcafe

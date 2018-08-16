@@ -10,16 +10,16 @@
     "test:functional": "babel-node ./index.js test:functional"
   },
   "dependencies": {
-    "@babel/node": "^7.0.0-beta.56",
+    "@babel/node": "7.0.0-beta.55",
     "@babel/runtime": "7.0.0-beta.55",
-    "react": "16.4.1",
+    "react": "16.4.2",
     "react-bootstrap": "0.32.1",
-    "react-dom": "16.4.1",
+    "react-dom": "16.4.2",
     "react-helmet": "5.2.0",
     "redux": "4.0.0",
     "resolve-redux": "0.14.0",
     "resolve-scripts": "0.14.0",
-    "styled-components": "3.3.3",
+    "styled-components": "3.4.2",
     "testcafe-browser-tools": "1.6.3"
   },
   "devDependencies": {
@@ -32,7 +32,7 @@
     "@babel/preset-react": "7.0.0-beta.55",
     "babel-core": "^7.0.0-0",
     "jest": "23.4.2",
-    "react-test-renderer": "16.4.1",
+    "react-test-renderer": "16.4.2",
     "testcafe": "0.20.4"
   }
 }

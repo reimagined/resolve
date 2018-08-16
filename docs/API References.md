@@ -67,7 +67,7 @@ The server-side reSolve part is encapsulated in the `resolve-scripts` package an
 
 ### **Authentication**
 
-The `auth` folder contains the code of authentication strategies. You can change this folder's path using the `auth` section in `config.app.json` (see [with-authentication example](../examples/with-authentication/config.app.json))
+The `auth` folder contains the code of authentication strategies. You can change this folder's path using the `auth` section in `config.app.json` (see [hacker-news example](../examples/hacker-news/config.app.json))
 
 ### **Client**
 

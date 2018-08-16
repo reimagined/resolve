@@ -44,16 +44,16 @@ Content-Type: application/json
 
 |        Name   |  Type  | Description
 | ------------- | ------ | ------------
-| aggregateName | string | The aggregate's name as defined in [config.app.json](https://github.com/reimagined/resolve/blob/b6946c424ba24afef6bd99e2dd718c073316e7b2/examples/todo/config.app.json#L6)
-| commandType   | string | The command type supported by [the aggregate](https://github.com/reimagined/resolve/blob/b6946c424ba24afef6bd99e2dd718c073316e7b2/examples/todo/common/aggregates/todo.commands.js#L2)
+| aggregateName | string | The aggregate's name as defined in [config.app.js](https://github.com/reimagined/resolve/blob/master/examples/nested-list/config.app.js)
+| commandType   | string | The command type supported by [the aggregate](https://github.com/reimagined/resolve/tree/master/examples/nested-list/common/aggregates)
 | aggregateId   | string | The ID of an aggregate to which you are addressing the command
-| payload       | object | The parameters that [the command](https://github.com/reimagined/resolve/blob/b6946c424ba24afef6bd99e2dd718c073316e7b2/examples/todo/common/aggregates/todo.commands.js#L2) accepts
+| payload       | object | The parameters that [the command](https://github.com/reimagined/resolve/tree/master/examples/nested-list/common/aggregates) accepts
 
 
 
 ### Example
 
-Use the following command to add an item to the [To-Do List](../examples/todo).
+Use the following command to add an item to the [nested-list example](../examples/nested-list).
 
 
 ```sh
@@ -81,7 +81,7 @@ curl -X POST -H "Content-Type: application/json" \
 | --------- | -----------------------
 | host      | The backend host URL (e.g. `localhost`)
 | port      | The backend port (default is `3000`)
-| ViewModel | The View Model name as defined in [config.app.json](https://github.com/reimagined/resolve/blob/b6946c424ba24afef6bd99e2dd718c073316e7b2/examples/todo/config.app.json#L12)
+| ViewModel | The View Model name as defined in [config.app.js](https://github.com/reimagined/resolve/blob/master/examples/nested-list/config.app.js)
 | aggregateIds | The comma-separated list of Aggregate IDs to include into the View Model. Use `*` to include all Aggregates
 
 
@@ -110,7 +110,7 @@ curl -X POST -H "Content-Type: application/json" \
 
 ### Example Request
 
-Use the following command to get the current [To-Do List](../examples/todo) state.
+Use the following command to get the current [nested-list example](../examples/nested-list) state.
 
 
 ```sh
@@ -143,8 +143,8 @@ curl -g -X GET "http://localhost:3000/api/query/Todos/root-id"
 | --------- | -----------------------
 | host      | The backend host URL (e.g., `localhost`)
 | port      | The backend port (default is `3000`)
-| readModel | The Read Model name as defined in [config.app.json](https://github.com/reimagined/resolve/blob/b6946c424ba24afef6bd99e2dd718c073316e7b2/examples/top-list/config.app.json#L12)
-| resolver  | The name of a [resolver defined in the Read Model](https://github.com/reimagined/resolve/blob/b6946c424ba24afef6bd99e2dd718c073316e7b2/examples/top-list/common/read-models/rating.resolvers.js#L2)
+| readModel | The Read Model name as defined in [config.app.js](https://github.com/reimagined/resolve/blob/master/examples/with-saga/config.app.js)
+| resolver  | The name of a [resolver defined in the Read Model](https://github.com/reimagined/resolve/blob/master/examples/with-saga/common/read-models/default.resolvers.js)
 
 ### Headers
 
@@ -163,7 +163,7 @@ Content-Type: application/json
 }
 ```
 
-The object contains the parameters that [the resolver](https://github.com/reimagined/resolve/blob/b6946c424ba24afef6bd99e2dd718c073316e7b2/examples/top-list/common/read-models/rating.resolvers.js#L2) accepts
+The object contains the parameters that [the resolver](https://github.com/reimagined/resolve/blob/master/examples/with-saga/common/read-models/default.resolvers.js) accepts
 
 ### Response
 
@@ -171,18 +171,18 @@ The object contains the parameters that [the resolver](https://github.com/reimag
 { "result": resolverResponse }
 ```
 
-The [result](https://github.com/reimagined/resolve/blob/b6946c424ba24afef6bd99e2dd718c073316e7b2/examples/top-list/common/read-models/rating.resolvers.js#L13) is not limited to any type or structure.
+The [result](https://github.com/reimagined/resolve/blob/master/examples/with-saga/common/read-models/default.resolvers.js) is not limited to any type or structure.
 
 ### Example
 
-Use the following command to get top 3 products from the [Top List](../examples/top-list) example.
+Use the following command to get 3 users from the [with-saga](../examples/with-saga) example.
 
 
 ```sh
 curl -X POST \
 -H "Content-Type: application/json" \
 -d "{\"page\":0, \"limit\":3}" \
-"http://localhost:3000/api/query/Rating/TopRating"
+"http://localhost:3000/api/query/default/users"
 ```
 
 
@@ -191,9 +191,9 @@ curl -X POST \
 ```javascript
 {
   "result": [
-    { "id": "Item70", "rating": 18, "name": "Jumbled Money" },
-    { "id": "Item28", "rating": 13, "name": "Nappy Way" },
-    { "id": "Item77", "rating": 12, "name": "Confused Box" }
+    { "id": "jwt=yeJ...", "email": "example@example.com", "timestamp": 1534160787935 },
+    { "id": "jwt=yeJ...", "email": "email@email.com", "timestamp": 1534160788935 },
+    { "id": "jwt=yeJ...", "email": "user@email.com", "timestamp": 1534160789935 }
   ]
 }
 
