@@ -27,6 +27,7 @@ import {
   STOP_READ_MODEL_SUBSCRIPTION_SUCCESS,
   STOP_READ_MODEL_SUBSCRIPTION_FAILURE,
   UPDATE_JWT,
+  LOGOUT,
   AUTH_REQUEST,
   AUTH_SUCCESS,
   AUTH_FAILURE
@@ -335,8 +336,7 @@ export const updateJwt = jwt => ({
 })
 
 export const logout = () => ({
-  type: UPDATE_JWT,
-  jwt: {}
+  type: LOGOUT
 })
 
 export const authRequest = (url, body = {}) => ({

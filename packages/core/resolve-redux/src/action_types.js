@@ -60,6 +60,7 @@ export const HOT_MODULE_REPLACEMENT = '@@resolve/HOT_MODULE_REPLACEMENT'
 //
 
 export const UPDATE_JWT = '@@resolve/UPDATE_JWT'
+export const LOGOUT = '@@resolve/LOGOUT'
 
 //
 
