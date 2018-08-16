@@ -29,7 +29,8 @@ import {
   AUTH_REQUEST,
   AUTH_SUCCESS,
   AUTH_FAILURE,
-  UPDATE_JWT
+  UPDATE_JWT,
+  LOGOUT
 } from '../src/action_types'
 
 import {
@@ -627,10 +628,9 @@ describe('actions', () => {
   })
 
   describe('logout', () => {
-    test('should create an action to authorization success', () => {
+    test('should create an action to logout', () => {
       expect(logout()).toEqual({
-        type: UPDATE_JWT,
-        jwt: {}
+        type: LOGOUT
       })
     })
   })
