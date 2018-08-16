@@ -59,7 +59,7 @@ const strictCompareValues = (operator, leftValue, rightValue) => {
     case '$gte':
       return leftValue >= rightValue
     default:
-      return acc
+      return false
   }
 }
 
@@ -140,7 +140,9 @@ const find = async (
   skip,
   limit
 ) => {
-  let findCursor = await storage[tableName].find(searchExpression)
+  let findCursor = await storage[tableName].find(
+    convertSearchExpression(searchExpression)
+  )
 
   if (sort) {
     findCursor = findCursor.sort(sort)
@@ -166,7 +168,9 @@ const find = async (
 }
 
 const findOne = async ({ storage }, tableName, searchExpression, fieldList) => {
-  let findCursor = await storage[tableName].findOne(searchExpression)
+  let findCursor = await storage[tableName].findOne(
+    convertSearchExpression(searchExpression)
+  )
 
   if (fieldList) {
     findCursor = findCursor.projection({ _id: 0, ...fieldList })
@@ -182,7 +186,7 @@ const findOne = async ({ storage }, tableName, searchExpression, fieldList) => {
 const count = async ({ storage }, tableName, searchExpression) => {
   return await new Promise((resolve, reject) =>
     storage[tableName].count(
-      searchExpression,
+      convertSearchExpression(searchExpression),
       (err, count) => (!err ? resolve(count) : reject(err))
     )
   )
@@ -203,7 +207,7 @@ const update = async (
 ) => {
   await new Promise((resolve, reject) =>
     storage[tableName].update(
-      searchExpression,
+      convertSearchExpression(searchExpression),
       updateExpression,
       { multi: true, upsert: !!options.upsert },
       err => (!err ? resolve() : reject(err))
@@ -214,7 +218,7 @@ const update = async (
 const del = async ({ storage }, tableName, searchExpression) => {
   await new Promise((resolve, reject) =>
     storage[tableName].remove(
-      searchExpression,
+      convertSearchExpression(searchExpression),
       err => (!err ? resolve() : reject(err))
     )
   )
