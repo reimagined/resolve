@@ -284,18 +284,6 @@
     output-file-sync "^2.0.0"
     v8flags "^3.1.1"
 
-"@babel/node@^7.0.0-beta.56":
-  version "7.0.0-rc.1"
-  resolved "https://registry.yarnpkg.com/@babel/node/-/node-7.0.0-rc.1.tgz#35b741f5f4c02285c9f300429b3eef2e419ca11b"
-  dependencies:
-    "@babel/polyfill" "7.0.0-rc.1"
-    "@babel/register" "7.0.0-rc.1"
-    commander "^2.8.1"
-    fs-readdir-recursive "^1.0.0"
-    lodash "^4.17.10"
-    output-file-sync "^2.0.0"
-    v8flags "^3.1.1"
-
 "@babel/parser@7.0.0-beta.55":
   version "7.0.0-beta.55"
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.0.0-beta.55.tgz#0a527efc148c6c8cd85d5ffddacad817a2daeeb2"
@@ -783,13 +771,6 @@
     core-js "^2.5.7"
     regenerator-runtime "^0.11.1"
 
-"@babel/polyfill@7.0.0-rc.1":
-  version "7.0.0-rc.1"
-  resolved "https://registry.yarnpkg.com/@babel/polyfill/-/polyfill-7.0.0-rc.1.tgz#c78e17e64c42cd6a2f5d8edf0f20e18213c0d74d"
-  dependencies:
-    core-js "^2.5.7"
-    regenerator-runtime "^0.11.1"
-
 "@babel/preset-env@7.0.0-beta.55":
   version "7.0.0-beta.55"
   resolved "https://registry.yarnpkg.com/@babel/preset-env/-/preset-env-7.0.0-beta.55.tgz#d3d997517761890144081d53c0c669ba7e8334e0"
@@ -848,18 +829,6 @@
 "@babel/register@7.0.0-beta.55":
   version "7.0.0-beta.55"
   resolved "https://registry.yarnpkg.com/@babel/register/-/register-7.0.0-beta.55.tgz#930bf5a13f99eeb22c276b346a54586abb01e611"
-  dependencies:
-    core-js "^2.5.7"
-    find-cache-dir "^1.0.0"
-    home-or-tmp "^3.0.0"
-    lodash "^4.17.10"
-    mkdirp "^0.5.1"
-    pirates "^4.0.0"
-    source-map-support "^0.4.2"
-
-"@babel/register@7.0.0-rc.1":
-  version "7.0.0-rc.1"
-  resolved "https://registry.yarnpkg.com/@babel/register/-/register-7.0.0-rc.1.tgz#a120415f5e3613115277c0857cdedf27ead78657"
   dependencies:
     core-js "^2.5.7"
     find-cache-dir "^1.0.0"
@@ -8277,28 +8246,6 @@ resolve-pathname@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/resolve-pathname/-/resolve-pathname-2.2.0.tgz#7e9ae21ed815fd63ab189adeee64dc831eefa879"
 
-resolve-query@0.13.2:
-  version "0.13.2"
-  resolved "https://registry.yarnpkg.com/resolve-query/-/resolve-query-0.13.2.tgz#b98aae96a4e1f41f4da065096053acb2499164a0"
-  dependencies:
-    diff-json "^0.1.11"
-    invariant-function-hash "^1.0.1"
-    resolve-readmodel-memory "0.13.2"
-
-resolve-readmodel-base@0.13.2:
-  version "0.13.2"
-  resolved "https://registry.yarnpkg.com/resolve-readmodel-base/-/resolve-readmodel-base-0.13.2.tgz#cc4df6c933530c62a776a8a45cfedd93d82f702e"
-  dependencies:
-    uuid "^3.3.2"
-
-resolve-readmodel-memory@0.13.2:
-  version "0.13.2"
-  resolved "https://registry.yarnpkg.com/resolve-readmodel-memory/-/resolve-readmodel-memory-0.13.2.tgz#c581a5643abb8632a75a889b3f9c720d4ebfb5e2"
-  dependencies:
-    nedb "^1.8.0"
-    resolve-readmodel-base "0.13.2"
-    uuid "^3.3.2"
-
 resolve-url@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/resolve-url/-/resolve-url-0.2.1.tgz#2c637fe77c893afd2a663fe21aa9080068e2052a"
@@ -9063,22 +9010,7 @@ style-loader@0.21.0:
     loader-utils "^1.1.0"
     schema-utils "^0.4.5"
 
-styled-components@3.3.3:
-  version "3.3.3"
-  resolved "https://registry.yarnpkg.com/styled-components/-/styled-components-3.3.3.tgz#09e702055ab11f7a8eab8229b1c0d0b855095686"
-  dependencies:
-    buffer "^5.0.3"
-    css-to-react-native "^2.0.3"
-    fbjs "^0.8.16"
-    hoist-non-react-statics "^2.5.0"
-    is-plain-object "^2.0.1"
-    prop-types "^15.5.4"
-    react-is "^16.3.1"
-    stylis "^3.5.0"
-    stylis-rule-sheet "^0.0.10"
-    supports-color "^3.2.3"
-
-styled-components@^3.3.3:
+styled-components@3.4.2, styled-components@>=3.4.2:
   version "3.4.2"
   resolved "https://registry.yarnpkg.com/styled-components/-/styled-components-3.4.2.tgz#8f518419932327e47fe9144824e3184b3e2da95d"
   dependencies:
