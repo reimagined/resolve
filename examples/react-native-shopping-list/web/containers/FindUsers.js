@@ -21,7 +21,7 @@ class FindUsers extends React.PureComponent {
       ...optimisticAddedSharings
     ].filter(({ id }) => !removedSharingIds.includes(id))
     if (query) {
-      users = users.filter(({ username }) => username.includes('query'))
+      users = users.filter(({ username }) => username.includes(query))
     }
 
     if (users.length === 0) {
