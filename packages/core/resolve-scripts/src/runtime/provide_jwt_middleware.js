@@ -9,7 +9,9 @@ const provideJwtMiddleware = (req, res, next) => {
 
   req.jwtToken = jwtToken
 
-  res.setHeader('Authorization', `Bearer ${jwtToken}`)
+  if (jwtToken) {
+    res.setHeader('Authorization', `Bearer ${jwtToken}`)
+  }
 
   next()
 }
