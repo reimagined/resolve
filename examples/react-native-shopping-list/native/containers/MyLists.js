@@ -18,13 +18,13 @@ import { connect } from 'react-redux'
 
 import requiredAuth from '../decorators/requiredAuth'
 import { connectReadModel } from '../resolve/resolve-redux'
-import ShoppingLists from "../../web/components/ShoppingLists";
-import ShoppingListCreator from "../../web/components/ShoppingListCreator";
+import ShoppingLists from '../components/ShoppingLists'
+import ShoppingListCreator from '../components/ShoppingListCreator'
 
 export class MyLists extends React.PureComponent {
   render() {
     const { lists, createShoppingList } = this.props
-  
+
     return (
       <Container>
         <Header>
@@ -39,14 +39,14 @@ export class MyLists extends React.PureComponent {
           <Right />
         </Header>
         <Content>
-          <ShoppingLists lists={lists}/>
-          <ShoppingListCreator lists={lists} createShoppingList={createShoppingList}/>
+          <ShoppingLists lists={lists} />
         </Content>
         <Footer>
           <FooterTab>
-            <Button full>
-              <Text>Footer</Text>
-            </Button>
+            <ShoppingListCreator
+              lists={lists}
+              createShoppingList={createShoppingList}
+            />
           </FooterTab>
         </Footer>
       </Container>
