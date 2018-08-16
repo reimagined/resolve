@@ -100,10 +100,10 @@ export class Login extends React.PureComponent {
             </Item>
           </Form>
           <View style={styles.buttonContainer}>
-            <Button style={styles.button} onPress={this.onRegister}>
+            <Button style={styles.button} onPress={this.onLogin}>
               <Text>Login</Text>
             </Button>
-            <Button style={styles.button} onPress={this.onLogin} success>
+            <Button style={styles.button} onPress={this.onRegister} success>
               <Text>Register</Text>
             </Button>
           </View>
