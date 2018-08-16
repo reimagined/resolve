@@ -18,9 +18,13 @@ import { connect } from 'react-redux'
 
 import requiredAuth from '../decorators/requiredAuth'
 import { connectReadModel } from '../resolve/resolve-redux'
+import ShoppingLists from "../../web/components/ShoppingLists";
+import ShoppingListCreator from "../../web/components/ShoppingListCreator";
 
 export class MyLists extends React.PureComponent {
   render() {
+    const { lists, createShoppingList } = this.props
+  
     return (
       <Container>
         <Header>
@@ -35,10 +39,8 @@ export class MyLists extends React.PureComponent {
           <Right />
         </Header>
         <Content>
-          <Text>
-            MyLists
-            {JSON.stringify(this.props)}
-          </Text>
+          <ShoppingLists lists={lists}/>
+          <ShoppingListCreator lists={lists} createShoppingList={createShoppingList}/>
         </Content>
         <Footer>
           <FooterTab>
