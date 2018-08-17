@@ -3,11 +3,11 @@
   "version": "0.14.0",
   "private": true,
   "scripts": {
-    "build": "babel-node ./index.js build",
-    "dev": "babel-node ./index.js dev",
-    "start": "babel-node ./index.js start",
+    "build": "babel-node ./run.js build",
+    "dev": "babel-node ./run.js dev",
+    "start": "babel-node ./run.js start",
     "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
-    "test:functional": "babel-node ./index.js test:functional"
+    "test:functional": "babel-node ./run.js test:functional"
   },
   "dependencies": {
     "@babel/node": "7.0.0-beta.55",

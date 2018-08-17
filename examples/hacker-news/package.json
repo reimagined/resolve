@@ -4,15 +4,15 @@
   "description": "A React & Redux & Resolve implementation of Hacker News",
   "private": true,
   "scripts": {
-    "build": "babel-node ./index.js build",
-    "start": "babel-node ./index.js start",
-    "dev": "babel-node ./index.js dev",
+    "build": "babel-node ./run.js build",
+    "start": "babel-node ./run.js start",
+    "dev": "babel-node ./run.js dev",
     "import": "babel-node ./import",
     "test": "jest",
     "test:update": "jest -u",
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watchAll",
-    "test:functional": "babel-node ./index.js test:functional"
+    "test:functional": "babel-node ./run.js test:functional"
   },
   "dependencies": {
     "@babel/node": "7.0.0-beta.55",

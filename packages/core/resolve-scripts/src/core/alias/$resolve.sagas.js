@@ -14,17 +14,50 @@ export default ({ resolveConfig, isClient }) => {
   if (checkRuntimeEnv(resolveConfig.sagas)) {
     throw new Error(`${message.clientEnvError}.sagas`)
   }
-  const sagas = resolveFile(resolveConfig.sagas, 'sagas.js')
 
-  const exports = []
+  const imports = [``]
+  const constants = [``]
+  const exports = [``, `const sagas = []`, ``]
 
-  exports.push(
-    `import sagas from ${JSON.stringify(sagas)}`,
-    ``,
-    `export default sagas`
-  )
+  for (let index = 0; index < resolveConfig.sagas.length; index++) {
+    const saga = resolveConfig.sagas[index]
+
+    if (checkRuntimeEnv(saga.name)) {
+      throw new Error(`${message.clientEnvError}.sagas[${index}].name`)
+    }
+    const name = saga.name
+
+    if (checkRuntimeEnv(saga.eventHandlers)) {
+      throw new Error(`${message.clientEnvError}.sagas[${index}].eventHandlers`)
+    }
+    const eventHandlers = resolveFile(
+      saga.eventHandlers,
+      'saga_event_handlers.js'
+    )
+
+    if (checkRuntimeEnv(saga.cronHandlers)) {
+      throw new Error(`${message.clientEnvError}.sagas[${index}].cronHandlers`)
+    }
+
+    const cronHandlers = resolveFile(saga.cronHandlers, 'saga_cron_handlers.js')
+
+    constants.push(`const name_${index} = ${JSON.stringify(name)}`)
+
+    imports.push(
+      `import cronHandlers_${index} from ${JSON.stringify(cronHandlers)}`,
+      `import eventHandlers_${index} from ${JSON.stringify(eventHandlers)}`,
+      ``
+    )
+
+    exports.push(`sagas.push({`, `  name: name_${index}`)
+    exports.push(`, cronHandlers: cronHandlers_${index}`)
+    exports.push(`, eventHandlers: eventHandlers_${index}`)
+    exports.push(`})`, ``)
+  }
+
+  exports.push(`export default sagas`)
 
   return {
-    code: exports.join('\r\n')
+    code: [...imports, ...constants, ...exports].join('\r\n')
   }
 }

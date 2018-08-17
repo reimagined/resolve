@@ -103,6 +103,22 @@
       "required": ["name", "projection", "resolvers"],
       "additionalProperties": false
     },
+    "saga": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "cronHandlers": {
+          "type": "string"
+        },
+        "eventHandlers": {
+          "type": "string"
+        }
+      },
+      "required": ["name"],
+      "additionalProperties": false
+    },
     "jwtCookie": {
       "type": "object",
       "properties": {
@@ -193,7 +209,10 @@
           }
         },
         "sagas": {
-          "type": "string"
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/saga"
+          }
         },
         "busAdapter": {
           "$ref": "#/definitions/adapter"
