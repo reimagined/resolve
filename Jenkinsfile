@@ -228,7 +228,7 @@ pipeline {
                     script {
                         sh """
                             mkdir yarn-hello-world && cd yarn-hello-world;
-                            yarn create-resolve-app yarn-hello-world -c \$(cat /last_commit)
+                            yarn create resolve-app yarn-hello-world -c \$(cat /last_commit)
                             cd ./yarn-hello-world; 
                             cat ./package.json; 
                             yarn test
@@ -246,7 +246,7 @@ pipeline {
                     script {
                         sh """
                             mkdir yarn-nested-list && cd yarn-nested-list;
-                            yarn create-resolve-app yarn-nested-list -e nested-list -c \$(cat /last_commit)
+                            yarn create resolve-app yarn-nested-list -e nested-list -c \$(cat /last_commit)
                             cd ./yarn-nested-list
                             cat ./package.json
                             yarn test:functional path:/chromium
@@ -263,7 +263,7 @@ pipeline {
                     script {
                         sh """
                             mkdir yarn-hacker-news && cd yarn-hacker-news;
-                            yarn create-resolve-app yarn-hacker-news -e hacker-news -c \$(cat /last_commit)
+                            yarn create resolve-app yarn-hacker-news -e hacker-news -c \$(cat /last_commit)
                             cd ./yarn-hacker-news
                             cat ./package.json
                             yarn test
@@ -281,7 +281,7 @@ pipeline {
                     script {
                         sh """
                             mkdir yarn-with-postcss && cd yarn-with-postcss;
-                            yarn create-resolve-app yarn-with-postcss -e with-postcss -c \$(cat /last_commit)
+                            yarn create resolve-app yarn-with-postcss -e with-postcss -c \$(cat /last_commit)
                             cd ./yarn-with-postcss
                             cat ./package.json
                             yarn test
@@ -299,7 +299,7 @@ pipeline {
                     script {
                         sh """
                             mkdir yarn-with-styled-components && cd yarn-with-styled-components;
-                            yarn create-resolve-app yarn-with-styled-components -e with-styled-components -c \$(cat /last_commit)
+                            yarn create resolve-app yarn-with-styled-components -e with-styled-components -c \$(cat /last_commit)
                             cd ./yarn-with-styled-components
                             cat ./package.json
                             yarn test
@@ -317,7 +317,7 @@ pipeline {
                     script {
                         sh """
                             mkdir yarn-with-saga && cd yarn-with-saga;
-                            yarn create-resolve-app yarn-with-saga -e with-saga -c \$(cat /last_commit)
+                            yarn create resolve-app yarn-with-saga -e with-saga -c \$(cat /last_commit)
                             cd ./yarn-with-saga
                             cat ./package.json
                             yarn test
