@@ -6,6 +6,7 @@
     "build": "babel-node ./index.js build",
     "dev": "babel-node ./index.js dev",
     "start": "babel-node ./index.js start",
+    "start:native": "cd native && npm run start",
     "test": "npm run test:domain && npm run test:web && npm run test:native",
     "test:domain": "cd domain && npm run test",
     "test:web": "cd web && npm run test",

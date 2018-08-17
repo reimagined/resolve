@@ -42,7 +42,7 @@ export class MyLists extends React.PureComponent {
           <ShoppingLists lists={lists} />
         </Content>
         <Footer>
-          <FooterTab>
+          <FooterTab style={{backgroundColor:"#FFF"}}>
             <ShoppingListCreator
               lists={lists}
               createShoppingList={createShoppingList}

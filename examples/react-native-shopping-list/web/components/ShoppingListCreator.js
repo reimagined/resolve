@@ -1,25 +1,25 @@
 import React from 'react'
-import { Button, Col, ControlLabel, FormControl, Row } from "react-bootstrap";
-import uuid from "uuid/v4";
+import { Button, Col, ControlLabel, FormControl, Row } from 'react-bootstrap'
+import uuid from 'uuid/v4'
 
 class ShoppingListCreator extends React.PureComponent {
   state = {
     shoppingListName: ''
   }
-  
+
   updateShoppingListName = event => {
     this.setState({
       shoppingListName: event.target.value
     })
   }
-  
+
   onShoppingListNamePressEnter = event => {
     if (event.charCode === 13) {
       event.preventDefault()
       this.createList()
     }
   }
-  
+
   createList = () => {
     this.props.createShoppingList(uuid(), {
       name:
@@ -30,7 +30,7 @@ class ShoppingListCreator extends React.PureComponent {
       shoppingListName: ''
     })
   }
-  
+
   render() {
     return (
       <div>
@@ -60,4 +60,4 @@ class ShoppingListCreator extends React.PureComponent {
   }
 }
 
-export default  ShoppingListCreator
+export default ShoppingListCreator

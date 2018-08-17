@@ -1,62 +1,82 @@
 import React from 'react'
-import { List, ListItem, Text, Left, Right, Icon, Button } from 'native-base'
-import { StyleSheet, TouchableHighlight } from 'react-native'
+import { List, ListItem, Text, Left, Right, Icon, Button, Picker } from 'native-base'
+import { StyleSheet, TouchableOpacity, UIManager, findNodeHandle } from 'react-native'
 
 const styles = StyleSheet.create({
   button: {
-    borderWidth: 1,
-    borderColor: 'rgba(0,0,0,0.2)',
+    borderWidth: 0,
     padding: 0,
-    width: 40,
-    height: 40,
-    borderRadius: 40,
+    width: 50,
+    height: 50,
+    borderRadius: 50,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginBottom: 5
   },
   icon: {
     margin: 0,
-    padding: 0
+    padding: 0,
+    fontSize: 24
+  },
+  picker: {
+    width: '100%'
   }
 })
 
+const actions = ['Share', 'Remove']
+
 class ShoppingLists extends React.PureComponent {
-  onShare = id => {
-    this.props.navigate('ShoppingList', {
-      id
-    })
+  onSelectError = () => {}
+  
+  onSelectComplete = (id, type, index) => {
+    if (type === 'itemSelected') {
+      switch (actions[index]) {
+        case 'Share':
+          this.props.navigate('ShareForm', { id })
+        break;
+        case 'Remove':
+          this.props.removeShoppingList(id)
+        break;
+        default:
+      }
+    }
   }
 
   onRemove = id => {
-    console.log(id)
+    UIManager.showPopupMenu(
+      findNodeHandle(this.refs[`more-${id}`]),
+      actions,
+      this.onSelectError,
+      this.onSelectComplete.bind(this, id)
+    )
   }
+  
 
   render() {
     const { lists, navigate } = this.props
 
     return (
       <List>
-        {lists.map(({ id, name }) => (
+        {lists.map(({ id, name }, index) => (
           <ListItem key={id}>
             <Left>
-              <Text>{`/${id}` + ' ' + name}</Text>
+              <Text>
+                {`${(index+1)}. `}
+                {name}
+              </Text>
             </Left>
             <Right>
-              <TouchableHighlight style={styles.button}>
+              <TouchableOpacity
+                style={styles.button}
+                ref={`more-${id}`}
+                onPress={this.onRemove.bind(this, id)}
+              >
                 <Icon
                   style={styles.icon}
-                  name="share-alt"
+                  name="ellipsis-v"
                   type="FontAwesome"
-                  onPress={this.onShare.bind(this, id)}
                 />
-              </TouchableHighlight>
-              <TouchableHighlight style={styles.button}>
-                <Icon
-                  style={styles.icon}
-                  name="trash"
-                  type="FontAwesome"
-                  onPress={this.onRemove.bind(this, id)}
-                />
-              </TouchableHighlight>
+              </TouchableOpacity>
             </Right>
           </ListItem>
         ))}

@@ -5,6 +5,7 @@ import validation from './validation'
 import {
   SHOPPING_LIST_CREATED,
   SHOPPING_LIST_RENAMED,
+  SHOPPING_LIST_REMOVED,
   SHOPPING_ITEM_CREATED,
   SHOPPING_ITEM_TOGGLED,
   SHOPPING_ITEM_REMOVED,
@@ -33,6 +34,16 @@ export default {
     return {
       type: SHOPPING_LIST_RENAMED,
       payload: { name, userId }
+    }
+  },
+  removeShoppingList: (state, command, jwtToken) => {
+    const { id: userId } = jwt.verify(jwtToken, jwtSecret)
+
+    validation.stateExists(state, 'Shopping List')
+
+    return {
+      type: SHOPPING_LIST_REMOVED,
+      payload: { userId }
     }
   },
   createShoppingItem: (state, { payload: { id, text } }, jwtToken) => {
