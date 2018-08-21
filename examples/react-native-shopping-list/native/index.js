@@ -1,5 +1,7 @@
 import Expo from 'expo'
 import React from 'react'
+import { ActionSheetProvider } from '@expo/react-native-action-sheet';
+import '@react-native-shopping-list/ui'
 
 import { Providers } from './resolve/resolve-redux'
 
@@ -37,15 +39,17 @@ class AppContainer extends React.PureComponent {
     }
 
     return (
-      <Providers
-        origin={origin}
-        rootPath={rootPath}
-        staticPath={staticPath}
-        aggregateActions={aggregateActions}
-        store={store}
-      >
-        <Routes />
-      </Providers>
+      <ActionSheetProvider>
+        <Providers
+          origin={origin}
+          rootPath={rootPath}
+          staticPath={staticPath}
+          aggregateActions={aggregateActions}
+          store={store}
+        >
+          <Routes />
+        </Providers>
+      </ActionSheetProvider>
     )
   }
 }

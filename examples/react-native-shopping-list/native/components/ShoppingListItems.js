@@ -1,17 +1,6 @@
 import React from 'react'
-import {
-  List,
-  ListItem,
-  Text,
-  Left,
-  Right,
-  Icon,
-} from 'native-base'
-import {
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native'
-import { connectActionSheet } from '@expo/react-native-action-sheet';
+import { Icon, Left, List, ListItem, Right, Text } from "native-base";
+import { StyleSheet, TouchableOpacity } from "react-native";
 
 const styles = StyleSheet.create({
   button: {
@@ -35,42 +24,13 @@ const styles = StyleSheet.create({
   }
 })
 
-const options = ['Edit', 'Share', 'Remove']
-
-class ShoppingLists extends React.PureComponent {
-  onMenuItemSelect = (id, index) => {
-    switch (options[index]) {
-      case 'Edit':
-        this.props.navigate('ShoppingList', { id })
-        break
-      case 'Share':
-        this.props.navigate('ShareForm', { id })
-        break
-      case 'Remove':
-        this.props.removeShoppingList(id)
-        break
-      default:
-    }
-  }
-
-  onMenuPress = id => {
-    this.props.showActionSheetWithOptions({
-        options
-      },
-      this.onMenuItemSelect.bind(this, id)
-    );
-  }
-
-  onPress = id => {
-    this.props.navigate('ShoppingList', { id })
-  }
-
+class ShoppingListItems extends React.PureComponent {
   render() {
-    const { lists } = this.props
-
+    const { items } = this.props
+  
     return (
       <List>
-        {lists.map(({ id, name }, index) => (
+        {items.map(({ id, name }, index) => (
           <ListItem key={id}>
             <Left>
               <Text onPress={this.onPress.bind(this, id)}>
@@ -97,4 +57,4 @@ class ShoppingLists extends React.PureComponent {
   }
 }
 
-export default connectActionSheet(ShoppingLists)
+export default ShoppingListItems

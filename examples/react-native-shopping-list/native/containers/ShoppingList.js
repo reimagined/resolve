@@ -11,16 +11,21 @@ import {
   Right,
   Body,
   Icon,
-  Text
-} from 'native-base'
+  Text, Form, Label, Input, Item
+} from "native-base";
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
 import { connectViewModel } from '../resolve/resolve-redux'
 import requiredAuth from '../decorators/requiredAuth'
+import ShoppingItemCreator from '../components/ShoppingItemCreator'
+import ShoppingListPanel from '../components/ShoppingListPanel'
+import ShoppingListItems from '../components/ShoppingListItems'
 
 export class ShoppingList extends React.PureComponent {
   render() {
+    const { aggregateId, data, navigation, createShoppingItem } = this.props;
+  
     return (
       <Container padder>
         <Header>
@@ -35,25 +40,25 @@ export class ShoppingList extends React.PureComponent {
           <Right />
         </Header>
         <Content>
-          <Text>
-            ShoppingList
-            {JSON.stringify(this.props)}
-          </Text>
+          <ShoppingListPanel
+            navigate={navigation.navigate}
+            aggregateId={aggregateId}
+            name={data.name}
+          />
+          <ShoppingListItems
+            items={data.list}
+          />
         </Content>
-        <Footer>
-          <FooterTab>
-            <Button full>
-              <Text>Footer</Text>
-            </Button>
-          </FooterTab>
-        </Footer>
+        <ShoppingItemCreator
+          createShoppingItem={this.props.createShoppingItem}
+        />
       </Container>
     )
   }
 }
 
 export const mapStateToOptions = (state, ownProps) => {
-  const aggregateId = ownProps.match.params.id
+  const aggregateId = ownProps.navigation.state.params.id
 
   return {
     viewModelName: 'ShoppingList',
@@ -62,7 +67,7 @@ export const mapStateToOptions = (state, ownProps) => {
 }
 
 export const mapStateToProps = (state, ownProps) => {
-  const aggregateId = ownProps.match.params.id
+  const aggregateId = ownProps.navigation.state.params.id
 
   return {
     jwt: state.jwt,

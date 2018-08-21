@@ -23,32 +23,30 @@ import ShoppingListCreator from '../components/ShoppingListCreator'
 
 export class MyLists extends React.PureComponent {
   render() {
-    const { lists, createShoppingList } = this.props
+    const { lists, createShoppingList, navigation } = this.props
+
+    console.log(navigation)
 
     return (
       <Container>
         <Header>
           <Left>
-            <Button transparent onPress={this.props.navigation.openDrawer}>
+            <Button transparent onPress={navigation.openDrawer}>
               <Icon name="menu" />
             </Button>
           </Left>
           <Body>
-            <Title>Shopping List</Title>
+            <Title>My Lists</Title>
           </Body>
           <Right />
         </Header>
         <Content>
-          <ShoppingLists lists={lists} />
+          <ShoppingLists lists={lists} navigate={navigation.navigate} />
         </Content>
-        <Footer>
-          <FooterTab style={{backgroundColor:"#FFF"}}>
-            <ShoppingListCreator
-              lists={lists}
-              createShoppingList={createShoppingList}
-            />
-          </FooterTab>
-        </Footer>
+        <ShoppingListCreator
+          lists={lists}
+          createShoppingList={createShoppingList}
+        />
       </Container>
     )
   }

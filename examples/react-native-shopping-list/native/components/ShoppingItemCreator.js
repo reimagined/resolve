@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
   }
 })
 
-class ShoppingListCreator extends React.PureComponent {
+class ShoppingItemCreator extends React.PureComponent {
   state = {
     text: ''
   }
@@ -28,8 +28,8 @@ class ShoppingListCreator extends React.PureComponent {
     })
   }
 
-  createShoppingList = () => {
-    this.props.createShoppingList(uuid(), { name: this.state.text })
+  createShoppingItem = () => {
+    this.props.createShoppingItem(uuid(), { name: this.state.text })
     this.setState({
       text: ''
     })
@@ -41,12 +41,12 @@ class ShoppingListCreator extends React.PureComponent {
         <FooterTab>
           <Form>
             <Item stackedLabel>
-              <Label style={styles.label}>Shopping list name:</Label>
+              <Label style={styles.label}>Item name:</Label>
               <Input
                 style={styles.input}
                 value={this.state.text}
                 onChangeText={this.updateText}
-                onSubmitEditing={this.createShoppingList}
+                onSubmitEditing={this.createShoppingItem}
                 returnKeyType="done"
                 returnKeyLabel="done"
               />
@@ -58,4 +58,4 @@ class ShoppingListCreator extends React.PureComponent {
   }
 }
 
-export default ShoppingListCreator
+export default ShoppingItemCreator
