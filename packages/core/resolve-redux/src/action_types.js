@@ -56,3 +56,14 @@ export const STOP_READ_MODEL_SUBSCRIPTION_FAILURE =
 //
 
 export const HOT_MODULE_REPLACEMENT = '@@resolve/HOT_MODULE_REPLACEMENT'
+
+//
+
+export const UPDATE_JWT = '@@resolve/UPDATE_JWT'
+export const LOGOUT = '@@resolve/LOGOUT'
+
+//
+
+export const AUTH_REQUEST = '@@resolve/AUTH_REQUEST'
+export const AUTH_SUCCESS = '@@resolve/AUTH_SUCCESS'
+export const AUTH_FAILURE = '@@resolve/AUTH_FAILURE'

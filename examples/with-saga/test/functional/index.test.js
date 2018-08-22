@@ -58,7 +58,7 @@ test('create custom', async t => {
   await t
     .expect(
       await Selector('.list-group-item-heading')
-        .nth(0)
+        .nth(1)
         .withText('custom@example.com').exists
     )
     .eql(true)

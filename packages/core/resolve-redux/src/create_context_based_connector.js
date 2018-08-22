@@ -12,7 +12,7 @@ const createContextBasedConnector = getContextBasedUrl => propsList => Component
 
   return class ContextBasedComponent extends React.PureComponent {
     functionAsChildComponent = context => {
-      const props = this.props
+      const { innerRef, ...props } = this.props
 
       const staticBasedProps = {}
 
@@ -45,7 +45,7 @@ const createContextBasedConnector = getContextBasedUrl => propsList => Component
         }
       }
 
-      return <Component {...props} {...staticBasedProps} />
+      return <Component {...props} {...staticBasedProps} ref={innerRef} />
     }
 
     render() {

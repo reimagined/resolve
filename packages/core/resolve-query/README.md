@@ -3,7 +3,7 @@
 
 Provides an interface for creating and querying Read- and View-Models.
 
-A **Read Model** is an application state built from the Event Log by Projection Functions and used to reply to Queries. It can be saved into a server-side Storage using an appropriate [Storage Adapter](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters). Queries to a Read Model are processed by Resolver Functions, which can filter, aggregate and/or paginate data before sending it to the client side. You can manage the Resolver behavior using client-defined arguments. Read Models can be reactive. In this case, the server-side changes trigger the client-side updates.
+A **Read Model** is an application state built from the Event Log by Projection Functions and used to reply to Queries. It can be saved into a server-side Storage using an appropriate [Storage Adapter](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters). Queries to a Read Model are processed by Resolver Functions, which can filter, aggregate and/or paginate data before sending it to the client side. You can manage the Resolver behavior using client-defined arguments.  In this case, the server-side changes trigger the client-side updates.
 
 A **View Model** is built on the client side and used to keep the UI up to the current application state. It is built and updated by Reducers. Aggregates whose events should participate in the View Model construction are defined by the `aggregateId` (in most cases, one aggregate corresponds to one view model, although, a wildcard `aggregateId` is possible).
 
@@ -21,7 +21,6 @@ Pass the following arguments to the `createReadModel` factory function to create
 
 A **Read Model** supports the following functions to query data:
 * `read` - Performs a query within a Read Model via Resolvers. The first argument is a Resolver name; the second one contains an object with the Resolver function properties. Returns the Resolver execution result.
-* `makeReactiveReader` - Creates reactive Read Models. The first argument is a callback for publishing changes; the following are equivalent to the `read` function arguments. Returns the `{ result, forceStop }` object, where `result` is the first Resolver execution result, and `forceStop` is a function used to stop publishing Read Model changes.
 * `getLastError` - Returns the last error that occurred while applying events by adapter-bound projection functions.
 * `getReadInterface` - Returns the underlying Read-Side Storage API object after it has been initialized. Can be used for direct read-only interactions with the Read-Model Storage.
 * `dispose` - Removes the Read Model. Invokes the Read Model Adapter's disposal mechanisms and stops listening to the Event Store bus. The default adapters' disposal operation disconnects with the storage and drops stored tables.
@@ -38,6 +37,6 @@ You can access Resolvers and query data from Read Models using a Facade, which s
 * `dispose` - Deletes the View Model (for internal use).
 
 ### Example
-See the [Top List](https://github.com/reimagined/resolve/tree/master/examples/top-list) example.
+See the [with-saga](https://github.com/reimagined/resolve/tree/master/examples/with-saga) example.
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-resolve-query-readme?pixel)
