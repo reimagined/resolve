@@ -1,29 +1,17 @@
 import React from 'react'
 import { connectReadModel } from 'resolve-redux'
+import { connect } from 'react-redux'
 import { Button, Table } from 'react-bootstrap'
 
 class FindUsers extends React.PureComponent {
   render() {
     const {
-      data,
-      optimisticAddedSharings,
-      optimisticRemovedSharings,
-      options: { query },
+      users,
       buttonText,
       buttonBaseStyle,
       onPressButton
     } = this.props
-
-    const addedSharingIds = optimisticAddedSharings.map(({ id }) => id)
-    const removedSharingIds = optimisticRemovedSharings.map(({ id }) => id)
-    let users = [
-      ...data.filter(({ id }) => !addedSharingIds.includes(id)),
-      ...optimisticAddedSharings
-    ].filter(({ id }) => !removedSharingIds.includes(id))
-    if (query) {
-      users = users.filter(({ username }) => username.includes(query))
-    }
-
+    
     if (users.length === 0) {
       return (
         <div>
@@ -71,4 +59,10 @@ export const mapStateToOptions = (state, { options }) => ({
   resolverArgs: options
 })
 
-export default connectReadModel(mapStateToOptions)(FindUsers)
+export const mapStateToProps = (state) => ({
+  users: state.optimisticSharings
+})
+
+export default connectReadModel(mapStateToOptions)(
+  connect(mapStateToProps)(FindUsers)
+)

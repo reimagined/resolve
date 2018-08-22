@@ -4,15 +4,12 @@ import {
   Header,
   Title,
   Content,
-  Footer,
-  FooterTab,
   Button,
   Left,
   Right,
   Body,
-  Icon,
-  Text, Form, Label, Input, Item
-} from "native-base";
+  Icon
+} from 'native-base'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
@@ -24,8 +21,17 @@ import ShoppingListItems from '../components/ShoppingListItems'
 
 export class ShoppingList extends React.PureComponent {
   render() {
-    const { aggregateId, data, navigation, createShoppingItem } = this.props;
-  
+    const {
+      aggregateId,
+      data,
+      navigation,
+      createShoppingItem,
+      renameShoppingList,
+      removeShoppingList,
+      toggleShoppingItem,
+      removeShoppingItem
+    } = this.props
+
     return (
       <Container padder>
         <Header>
@@ -41,16 +47,22 @@ export class ShoppingList extends React.PureComponent {
         </Header>
         <Content>
           <ShoppingListPanel
+            renameShoppingList={renameShoppingList}
+            removeShoppingList={removeShoppingList}
             navigate={navigation.navigate}
             aggregateId={aggregateId}
             name={data.name}
           />
           <ShoppingListItems
+            aggregateId={aggregateId}
             items={data.list}
+            toggleShoppingItem={toggleShoppingItem}
+            removeShoppingItem={removeShoppingItem}
           />
         </Content>
         <ShoppingItemCreator
-          createShoppingItem={this.props.createShoppingItem}
+          aggregateId={aggregateId}
+          createShoppingItem={createShoppingItem}
         />
       </Container>
     )

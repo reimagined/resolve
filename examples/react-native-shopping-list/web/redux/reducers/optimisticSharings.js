@@ -1,42 +1,25 @@
-import { LOCATION_CHANGE } from 'react-router-redux'
 import {
-  OPTIMISTIC_SHARE_SHOPPING_LIST,
-  OPTIMISTIC_UNSHARE_SHOPPING_LIST
+  OPTIMISTIC_SHARINGS_SYNC,
+  OPTIMISTIC_SHARINGS_SHOPPING_LIST_SHARE,
+  OPTIMISTIC_SHARINGS_SHOPPING_LIST_UNSHARE
 } from '../actions/optimisticActions'
 
-const initialState = {
-  share: [],
-  unshare: []
-}
-
-const optimisticSharings = (state = initialState, action) => {
+const optimisticSharings = (state = [], action) => {
   switch (action.type) {
-    case LOCATION_CHANGE: {
-      return initialState
+    case OPTIMISTIC_SHARINGS_SYNC: {
+      return action.payload.users
     }
-    case OPTIMISTIC_SHARE_SHOPPING_LIST: {
-      return {
-        share: [
-          ...state.share,
-          {
-            id: action.payload.id,
-            username: action.payload.username
-          }
-        ],
-        unshare: state.unshare.filter(({ id }) => id !== action.payload.id)
-      }
+    case OPTIMISTIC_SHARINGS_SHOPPING_LIST_SHARE: {
+      return [
+        ...state,
+        {
+          id: action.payload.id,
+          username: action.payload.username
+        }
+      ]
     }
-    case OPTIMISTIC_UNSHARE_SHOPPING_LIST: {
-      return {
-        share: state.share.filter(({ id }) => id !== action.payload.id),
-        unshare: [
-          ...state.unshare,
-          {
-            id: action.payload.id,
-            username: action.payload.username
-          }
-        ]
-      }
+    case OPTIMISTIC_SHARINGS_SHOPPING_LIST_UNSHARE: {
+      return state.filter(({ id }) => id !== action.payload.id)
     }
     default: {
       return state

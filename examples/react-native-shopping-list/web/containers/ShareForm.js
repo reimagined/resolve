@@ -58,10 +58,9 @@ class ShareForm extends React.PureComponent {
           buttonBaseStyle="success"
           options={{
             shareId: shoppingList.id,
-            query: this.state.query
+            query: this.state.query,
           }}
-          optimisticAddedSharings={optimisticSharings.unshare}
-          optimisticRemovedSharings={optimisticSharings.share}
+         
           onPressButton={this.shareShoppingListForUser}
         />
         <ControlLabel>Already shared for users</ControlLabel>
@@ -71,8 +70,6 @@ class ShareForm extends React.PureComponent {
           options={{
             shareId: shoppingList.id
           }}
-          optimisticAddedSharings={optimisticSharings.share}
-          optimisticRemovedSharings={optimisticSharings.unshare}
           onPressButton={this.unshareShoppingListForUser}
         />
       </div>
@@ -90,7 +87,6 @@ const mapStateToOptions = (state, ownProps) => {
 }
 
 export const mapStateToProps = (state, ownProps) => ({
-  optimisticSharings: state.optimisticSharings,
   shoppingList: ownProps.data
 })
 

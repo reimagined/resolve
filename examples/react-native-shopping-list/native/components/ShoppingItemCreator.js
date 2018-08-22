@@ -29,7 +29,12 @@ class ShoppingItemCreator extends React.PureComponent {
   }
 
   createShoppingItem = () => {
-    this.props.createShoppingItem(uuid(), { name: this.state.text })
+    console.log('createShoppingItem')
+    console.log(this.props.aggregateId, { id: uuid(), text: this.state.text })
+    this.props.createShoppingItem(this.props.aggregateId, {
+      id: uuid(),
+      text: this.state.text
+    })
     this.setState({
       text: ''
     })

@@ -1,17 +1,7 @@
 import React from 'react'
-import {
-  List,
-  ListItem,
-  Text,
-  Left,
-  Right,
-  Icon,
-} from 'native-base'
-import {
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native'
-import { connectActionSheet } from '@expo/react-native-action-sheet';
+import { List, ListItem, Text, Left, Right, Icon } from 'native-base'
+import { StyleSheet, TouchableOpacity } from 'react-native'
+import { connectActionSheet } from '@expo/react-native-action-sheet'
 
 const styles = StyleSheet.create({
   button: {
@@ -54,11 +44,12 @@ class ShoppingLists extends React.PureComponent {
   }
 
   onMenuPress = id => {
-    this.props.showActionSheetWithOptions({
+    this.props.showActionSheetWithOptions(
+      {
         options
       },
       this.onMenuItemSelect.bind(this, id)
-    );
+    )
   }
 
   onPress = id => {
