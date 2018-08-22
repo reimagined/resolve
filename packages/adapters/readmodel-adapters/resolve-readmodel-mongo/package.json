@@ -1,6 +1,6 @@
 {
   "name": "resolve-readmodel-mongo",
-  "version": "0.14.0",
+  "version": "0.14.1",
   "description": "This package serves as a resolve-query adapter for storing a read model in mongo",
   "main": "./dist/index.js",
   "bugs": {
@@ -23,7 +23,7 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-mongo#readme",
   "dependencies": {
     "mongodb": "^3.1.0-beta4",
-    "resolve-readmodel-base": "0.14.0",
+    "resolve-readmodel-base": "0.14.1",
     "uuid": "^3.3.2"
   },
   "devDependencies": {

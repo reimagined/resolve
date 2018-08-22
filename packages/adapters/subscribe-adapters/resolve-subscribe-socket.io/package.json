@@ -1,6 +1,6 @@
 {
   "name": "resolve-subscribe-socket.io",
-  "version": "0.14.0",
+  "version": "0.14.1",
   "description": "This package serves as an adapter for resolve-redux subscribe to events.",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
