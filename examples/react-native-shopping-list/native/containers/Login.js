@@ -94,6 +94,7 @@ export class Login extends React.PureComponent {
             <Item stackedLabel>
               <Label>Password</Label>
               <Input
+                secureTextEntry
                 value={this.state.password}
                 onChangeText={this.updatePassword}
               />

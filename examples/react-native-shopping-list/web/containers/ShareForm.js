@@ -6,8 +6,6 @@ import { Link } from 'react-router-dom'
 import FindUsers from './FindUsers'
 import requiredAuth from '../decorators/requiredAuth'
 
-
-
 class ShareForm extends React.PureComponent {
   state = {
     query: ''
@@ -21,7 +19,7 @@ class ShareForm extends React.PureComponent {
 
   render() {
     const { shoppingListId, shoppingListName } = this.props
-    const { query} = this.state
+    const { query } = this.state
 
     return (
       <div className="example-wrapper">
@@ -35,27 +33,29 @@ class ShareForm extends React.PureComponent {
             />
           </FormGroup>
         </Link>
-        <ControlLabel>Find users</ControlLabel>
+        <ControlLabel>Find users:</ControlLabel>
         <FormControl
           className="example-form-control"
           type="text"
           value={query}
           onChange={this.updateQuery}
         />
-        <FindUsers
-          shoppingListId={shoppingListId}
-          query = {query}
-        />
+        <FindUsers shoppingListId={shoppingListId} query={query} />
       </div>
     )
   }
 }
 
-export const mapStateToProps = (state, { match: { params: { id } }}) => ({
+export const mapStateToProps = (
+  state,
+  {
+    match: {
+      params: { id }
+    }
+  }
+) => ({
   shoppingListId: id,
   shoppingListName: state.optimisticSharings.name
 })
 
-export default requiredAuth(connect(
-  mapStateToProps
-)(ShareForm))
+export default requiredAuth(connect(mapStateToProps)(ShareForm))

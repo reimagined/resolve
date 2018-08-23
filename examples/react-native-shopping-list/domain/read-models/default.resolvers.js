@@ -20,7 +20,6 @@ export default {
       (await store.find('Sharings', { shoppingListId })) || []
     ).map(({ userId }) => userId)
 
-
     if (query !== '') {
       users = users.filter(({ username }) =>
         username.toLowerCase().includes(query.toLowerCase())

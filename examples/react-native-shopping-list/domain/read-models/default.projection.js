@@ -4,7 +4,8 @@ import {
   SHOPPING_LIST_CREATED,
   SHOPPING_LIST_RENAMED,
   SHOPPING_LIST_SHARED,
-  SHOPPING_LIST_UNSHARED
+  SHOPPING_LIST_UNSHARED,
+  SHOPPING_LIST_REMOVED
 } from '../eventTypes'
 
 export default {
@@ -29,6 +30,7 @@ export default {
 
     await store.defineTable('Sharings', {
       indexes: {
+        id: 'string',
         shoppingListId: 'string',
         userId: 'string'
       },
@@ -77,7 +79,16 @@ export default {
     }
 
     await store.insert('ShoppingLists', shoppingList)
-    await store.insert('Sharings', { shoppingListId: aggregateId, userId })
+    await store.insert('Sharings', {
+      id: `${aggregateId}-${userId}`,
+      shoppingListId: aggregateId,
+      userId
+    })
+  },
+
+  [SHOPPING_LIST_REMOVED]: async (store, { aggregateId }) => {
+    await store.delete('ShoppingLists', { id: aggregateId })
+    await store.delete('Sharings', { shoppingListId: aggregateId })
   },
 
   [SHOPPING_LIST_RENAMED]: async (
@@ -97,7 +108,11 @@ export default {
     })
 
     if (!record) {
-      await store.insert('Sharings', { shoppingListId: aggregateId, userId })
+      await store.insert('Sharings', {
+        id: `${aggregateId}-${userId}`,
+        shoppingListId: aggregateId,
+        userId
+      })
     }
   },
 

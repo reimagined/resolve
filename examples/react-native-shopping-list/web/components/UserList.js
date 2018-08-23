@@ -3,13 +3,8 @@ import { Button, Table } from 'react-bootstrap'
 
 class UserList extends React.PureComponent {
   render() {
-    const {
-      users,
-      buttonText,
-      buttonBaseStyle,
-      onPressButton
-    } = this.props
-    
+    const { users, buttonText, buttonBaseStyle, onPressButton } = this.props
+
     if (users.length === 0) {
       return (
         <div>

@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   }
 })
 
-const options = ['Edit', 'Share', 'Remove']
+const options = ['Edit', 'Share', 'Remove', 'Cancel']
 
 class ShoppingLists extends React.PureComponent {
   onMenuItemSelect = (id, index) => {
@@ -48,7 +48,8 @@ class ShoppingLists extends React.PureComponent {
       {
         options
       },
-      this.onMenuItemSelect.bind(this, id)
+      this.onMenuItemSelect.bind(this, id),
+      3
     )
   }
 

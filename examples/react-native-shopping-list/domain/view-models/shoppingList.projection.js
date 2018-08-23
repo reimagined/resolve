@@ -1,5 +1,6 @@
 import {
   SHOPPING_LIST_CREATED,
+  SHOPPING_LIST_REMOVED,
   SHOPPING_LIST_RENAMED,
   SHOPPING_ITEM_CREATED,
   SHOPPING_ITEM_TOGGLED,
@@ -13,6 +14,7 @@ export default {
     name,
     list: []
   }),
+  [SHOPPING_LIST_REMOVED]: () => ({ removed: true }),
   [SHOPPING_LIST_RENAMED]: (state, { payload: { name } }) => ({
     ...state,
     name

@@ -10,6 +10,17 @@ const { SEND_COMMAND_SUCCESS, LOAD_READMODEL_STATE_SUCCESS } = actionTypes
 
 const optimisticShoppingListsMiddleware = store => next => action => {
   if (
+    action.type === LOAD_READMODEL_STATE_SUCCESS &&
+    action.readModelName === 'Default' &&
+    action.resolverName === 'sharings'
+  ) {
+    store.dispatch({
+      type: OPTIMISTIC_SHARINGS_SYNC,
+      payload: action.result
+    })
+  }
+
+  if (
     action.type === SEND_COMMAND_SUCCESS &&
     action.commandType === 'shareShoppingListForUser'
   ) {
@@ -32,17 +43,6 @@ const optimisticShoppingListsMiddleware = store => next => action => {
         id: action.payload.userId,
         username: action.payload.username
       }
-    })
-  }
-
-  if (
-    action.type === LOAD_READMODEL_STATE_SUCCESS &&
-    action.readModelName === 'Default' &&
-    action.resolverName === 'sharings'
-  ) {
-    store.dispatch({
-      type: OPTIMISTIC_SHARINGS_SYNC,
-      payload: action.result
     })
   }
 

@@ -4,14 +4,11 @@ import {
   Header,
   Title,
   Content,
-  Footer,
-  FooterTab,
   Button,
   Left,
   Right,
   Body,
   Icon,
-  Text
 } from 'native-base'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -24,8 +21,6 @@ import ShoppingListCreator from '../components/ShoppingListCreator'
 export class MyLists extends React.PureComponent {
   render() {
     const { lists, createShoppingList, navigation } = this.props
-
-    console.log(navigation)
 
     return (
       <Container>
@@ -58,8 +53,8 @@ export const mapStateToOptions = () => ({
   resolverArgs: {}
 })
 
-export const mapStateToProps = (state, { data }) => ({
-  lists: [...data, ...state.optimisticShoppingLists]
+export const mapStateToProps = (state) => ({
+  lists: state.optimisticShoppingLists
 })
 
 export const mapDispatchToProps = (dispatch, { aggregateActions }) =>

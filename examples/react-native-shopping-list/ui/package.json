@@ -6,5 +6,14 @@
   "scripts": {
     "build": "echo || exit 0",
     "test": "echo || exit 0"
+  },
+  "devDependencies": {
+    "babel-preset-expo": "4.0.0"
+  },
+  "workspaces": {
+    "nohoist": [
+      "**",
+      "**/**"
+    ]
   }
 }

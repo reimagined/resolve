@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   }
 })
 
-const options = ['Share', 'Remove']
+const options = ['Share', 'Remove', 'Cancel']
 
 class ShoppingListPanel extends React.PureComponent {
   state = {
@@ -54,7 +54,8 @@ class ShoppingListPanel extends React.PureComponent {
       {
         options
       },
-      this.onMenuItemSelect
+      this.onMenuItemSelect,
+      2
     )
   }
 

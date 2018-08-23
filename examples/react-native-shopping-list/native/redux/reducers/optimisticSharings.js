@@ -1,40 +1,53 @@
 import {
-  OPTIMISTIC_SHARE_SHOPPING_LIST,
-  OPTIMISTIC_UNSHARE_SHOPPING_LIST
+  OPTIMISTIC_SHARINGS_SYNC,
+  OPTIMISTIC_SHARINGS_SHOPPING_LIST_SHARE,
+  OPTIMISTIC_SHARINGS_SHOPPING_LIST_UNSHARE
 } from '../actions/optimisticActions'
 
 const initialState = {
-  share: [],
-  unshare: []
+  id: '',
+  name: '',
+  users: {
+    sharings: [],
+    other: []
+  }
 }
 
 const optimisticSharings = (state = initialState, action) => {
   switch (action.type) {
-    case 'LOCATION_CHANGE': {
-      return initialState
+    case OPTIMISTIC_SHARINGS_SYNC: {
+      return action.payload
     }
-    case OPTIMISTIC_SHARE_SHOPPING_LIST: {
+    case OPTIMISTIC_SHARINGS_SHOPPING_LIST_SHARE: {
       return {
-        share: [
-          ...state.share,
-          {
-            id: action.payload.id,
-            username: action.payload.username
-          }
-        ],
-        unshare: state.unshare.filter(({ id }) => id !== action.payload.id)
+        ...state,
+        users: {
+          sharings: [
+            ...state.users.sharings,
+            {
+              id: action.payload.id,
+              username: action.payload.username
+            }
+          ],
+          other: state.users.other.filter(({ id }) => id !== action.payload.id)
+        }
       }
     }
-    case OPTIMISTIC_UNSHARE_SHOPPING_LIST: {
+    case OPTIMISTIC_SHARINGS_SHOPPING_LIST_UNSHARE: {
       return {
-        share: state.share.filter(({ id }) => id !== action.payload.id),
-        unshare: [
-          ...state.unshare,
-          {
-            id: action.payload.id,
-            username: action.payload.username
-          }
-        ]
+        ...state,
+        users: {
+          sharings: state.users.sharings.filter(
+            ({ id }) => id !== action.payload.id
+          ),
+          other: [
+            ...state.users.other,
+            {
+              id: action.payload.id,
+              username: action.payload.username
+            }
+          ]
+        }
       }
     }
     default: {

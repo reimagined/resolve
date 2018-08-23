@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 class ShoppingLists extends React.PureComponent {
   render() {
-    const { lists } = this.props
+    const { lists, removeShoppingList } = this.props
 
     return (
       <div>
@@ -28,7 +28,7 @@ class ShoppingLists extends React.PureComponent {
                   <Button href={`/share/${id}`}>
                     <i className="fas fa-share-alt" />
                   </Button>{' '}
-                  <Button>
+                  <Button onClick={removeShoppingList.bind(null, id, {})}>
                     <i className="far fa-trash-alt" />
                   </Button>
                 </td>

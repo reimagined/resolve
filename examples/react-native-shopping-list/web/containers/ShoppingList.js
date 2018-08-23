@@ -53,6 +53,10 @@ export class ShoppingList extends React.PureComponent {
     })
   }
 
+  removeShoppingList = () => {
+    this.props.removeShoppingList(this.props.aggregateId)
+  }
+
   updateItemText = event => {
     this.setState({
       itemText: event.target.value
@@ -89,6 +93,10 @@ export class ShoppingList extends React.PureComponent {
       return <NotFound />
     }
 
+    if (data.removed) {
+      return <Redirect to="/" />
+    }
+
     const { list } = data
 
     return (
@@ -97,7 +105,7 @@ export class ShoppingList extends React.PureComponent {
         <FormGroup bsSize="large">
           <InputGroup>
             <InputGroup.Button>
-              <Button bsSize="large">
+              <Button bsSize="large" onClick={this.removeShoppingList}>
                 <i className="far fa-trash-alt" />
               </Button>
             </InputGroup.Button>

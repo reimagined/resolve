@@ -10,11 +10,11 @@ import ShoppingListCreator from '../components/ShoppingListCreator'
 
 class MyLists extends React.PureComponent {
   render() {
-    const { lists, createShoppingList } = this.props
+    const { lists, createShoppingList, removeShoppingList } = this.props
 
     return (
       <div className="example-wrapper">
-        <ShoppingLists lists={lists} />
+        <ShoppingLists lists={lists} removeShoppingList={removeShoppingList} />
         <ShoppingListCreator
           lists={lists}
           createShoppingList={createShoppingList}
@@ -30,8 +30,8 @@ export const mapStateToOptions = () => ({
   resolverArgs: {}
 })
 
-export const mapStateToProps = (state, { data }) => ({
-  lists: [...data, ...state.optimisticShoppingLists]
+export const mapStateToProps = state => ({
+  lists: state.optimisticShoppingLists
 })
 
 export const mapDispatchToProps = (dispatch, { aggregateActions }) =>

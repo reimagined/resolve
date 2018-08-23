@@ -11,13 +11,44 @@ import {
   Right,
   Body,
   Icon,
-  Text
+  Text,
+  Label,
+  Input
 } from 'native-base'
+import { connect} from "react-redux";
 
-import requireAuth from '../decorators/requiredAuth'
+import requiredAuth from '../decorators/requiredAuth'
+import { StyleSheet } from "react-native";
+import FindUsers from "./FindUsers";
+
+const styles = StyleSheet.create({
+  input: {
+    flex: 1,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    marginBottom: 5
+  },
+  label: {
+    paddingLeft: 10,
+    fontSize: 16,
+    color: '#575757'
+  }
+})
 
 export class ShareForm extends React.PureComponent {
+  state = {
+    query: ''
+  }
+  
+  updateQuery = text => {
+    this.setState({
+      query: text
+    })
+  }
+  
   render() {
+    const { shoppingListId, shoppingListName } = this.props
+    const { query } = this.state
+    
     return (
       <Container>
         <Header>
@@ -27,23 +58,41 @@ export class ShareForm extends React.PureComponent {
             </Button>
           </Left>
           <Body>
-            <Title>Shopping List</Title>
+            <Title>Share</Title>
           </Body>
           <Right />
         </Header>
-        <Content>
-          <Text>ShareForm</Text>
+        <Content padder>
+          <Label style={styles.label}>Shopping list name:</Label>
+          <Input
+            style={styles.input}
+            value={shoppingListName}
+          />
+          <Label style={styles.label}>Find users:</Label>
+          <Input
+            style={styles.input}
+            value={query}
+            onChangeText={this.updateQuery}
+          />
+          <FindUsers shoppingListId={shoppingListId} query={query} />
         </Content>
-        <Footer>
-          <FooterTab>
-            <Button full>
-              <Text>Footer</Text>
-            </Button>
-          </FooterTab>
-        </Footer>
       </Container>
     )
   }
 }
 
-export default requireAuth(ShareForm)
+export const mapStateToProps = (
+  state,
+  {
+    navigation: {
+      state: {
+        params: { id }
+      }
+    }
+  }
+) => ({
+  shoppingListId: id,
+  shoppingListName: state.optimisticSharings.name
+})
+
+export default requiredAuth(connect(mapStateToProps)(ShareForm))
