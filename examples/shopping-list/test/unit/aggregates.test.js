@@ -1,18 +1,17 @@
-import commands from '../../aggregates/shoppingList.commands'
-import { SHOPPING_LIST_CREATED } from '../../eventTypes'
+import commands from '../../common/aggregates/shoppingList.commands'
+import { SHOPPING_LIST_CREATED } from '../../common/eventTypes'
 
 describe('aggregates', () => {
   describe('ShoppingList', () => {
     it('command "createShoppingItem" should create an event to create a item', () => {
       const name = 'test'
-      const userId = 'userId'
 
       const state = {}
-      const command = { payload: { name, userId } }
+      const command = { payload: { name } }
 
       expect(commands.createShoppingList(state, command)).toEqual({
         type: SHOPPING_LIST_CREATED,
-        payload: { name, userId }
+        payload: { name }
       })
     })
   })
