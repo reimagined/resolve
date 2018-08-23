@@ -25,7 +25,12 @@ import {
   SUBSCRIBE_TOPIC_SUCCESS,
   UNSUBSCRIBE_TOPIC_FAILURE,
   UNSUBSCRIBE_TOPIC_REQUEST,
-  UNSUBSCRIBE_TOPIC_SUCCESS
+  UNSUBSCRIBE_TOPIC_SUCCESS,
+  AUTH_REQUEST,
+  AUTH_SUCCESS,
+  AUTH_FAILURE,
+  UPDATE_JWT,
+  LOGOUT
 } from '../src/action_types'
 
 import {
@@ -55,7 +60,12 @@ import {
   subscribeTopicFailure,
   unsubscribeTopicRequest,
   unsubscribeTopicFailure,
-  unsubscribeTopicSuccess
+  unsubscribeTopicSuccess,
+  authRequest,
+  authSuccess,
+  authFailure,
+  updateJwt,
+  logout
 } from '../src/actions'
 
 describe('actions', () => {
@@ -565,6 +575,62 @@ describe('actions', () => {
         topicName,
         topicId,
         error
+      })
+    })
+  })
+
+  describe('authRequest', () => {
+    test('should create an action to authorization request', () => {
+      const url = '/auth/local'
+      const body = { username: 'username', password: 'password' }
+      expect(authRequest(url, body)).toEqual({
+        type: AUTH_REQUEST,
+        url,
+        body
+      })
+    })
+  })
+
+  describe('authSuccess', () => {
+    test('should create an action to authorization success', () => {
+      const url = '/auth/local'
+      const body = { username: 'username', password: 'password' }
+      expect(authSuccess(url, body)).toEqual({
+        type: AUTH_SUCCESS,
+        url,
+        body
+      })
+    })
+  })
+
+  describe('authFailure', () => {
+    test('should create an action to authorization failure', () => {
+      const url = '/auth/local'
+      const body = { username: 'username', password: 'password' }
+      const error = 'error'
+      expect(authFailure(url, body, error)).toEqual({
+        type: AUTH_FAILURE,
+        url,
+        body,
+        error
+      })
+    })
+  })
+
+  describe('updateJwt', () => {
+    test('should create an action to update jwt', () => {
+      const jwt = { username: 'username', id: 'id' }
+      expect(updateJwt(jwt)).toEqual({
+        type: UPDATE_JWT,
+        jwt
+      })
+    })
+  })
+
+  describe('logout', () => {
+    test('should create an action to logout', () => {
+      expect(logout()).toEqual({
+        type: LOGOUT
       })
     })
   })

@@ -1,6 +1,6 @@
 {
   "name": "resolve-redux",
-  "version": "0.14.0",
+  "version": "0.14.2",
   "description": "This package serves as a helper for creating the Redux storage.",
   "engines": {
     "node": ">=8.10"
@@ -27,6 +27,7 @@
   "dependencies": {
     "diff-json": "^0.1.11",
     "json-stable-stringify": "^1.0.1",
+    "jwt-decode": "^2.2.0",
     "prop-types": "^15.6.2",
     "react-redux": "^5.0.7",
     "react-router": "^4.3.1",
