@@ -1,7 +1,6 @@
 import React from 'react'
-import { View, TouchableOpacity, StyleSheet } from "react-native";
-import { Icon, Left, List, ListItem, Right, Button, Text } from "native-base";
-
+import { View, StyleSheet } from "react-native";
+import { List, ListItem, Button, Text } from "native-base";
 
 const styles = StyleSheet.create({
   container: {
@@ -13,6 +12,10 @@ const styles = StyleSheet.create({
     width: 0,
     flexGrow: 1,
     flex: 1
+  },
+  notFound: {
+    marginTop: 10,
+    marginBottom: 20
   }
 })
 
@@ -25,12 +28,12 @@ class UserList extends React.PureComponent {
   render() {
     const {
       buttonText,
-      users,
+      users
     } = this.props
 
     if (users.length === 0) {
       return (
-        <View>
+        <View style={styles.notFound}>
           <Text>
             Users not found
           </Text>

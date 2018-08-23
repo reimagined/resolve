@@ -8,7 +8,7 @@ import {
   Left,
   Right,
   Body,
-  Icon,
+  Icon
 } from 'native-base'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -20,7 +20,7 @@ import ShoppingListCreator from '../components/ShoppingListCreator'
 
 export class MyLists extends React.PureComponent {
   render() {
-    const { lists, createShoppingList, navigation } = this.props
+    const { lists, createShoppingList, removeShoppingList,  navigation } = this.props
 
     return (
       <Container>
@@ -36,7 +36,7 @@ export class MyLists extends React.PureComponent {
           <Right />
         </Header>
         <Content>
-          <ShoppingLists lists={lists} navigate={navigation.navigate} />
+          <ShoppingLists lists={lists} navigate={navigation.navigate} removeShoppingList={removeShoppingList} />
         </Content>
         <ShoppingListCreator
           lists={lists}

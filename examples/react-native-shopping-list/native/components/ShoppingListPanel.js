@@ -43,7 +43,7 @@ class ShoppingListPanel extends React.PureComponent {
         this.props.navigate('ShareForm', { id: this.props.aggregateId })
         break
       case 'Remove':
-        this.props.removeShoppingList(this.props.aggregateId)
+        this.props.removeShoppingList(this.props.aggregateId, {})
         break
       default:
     }

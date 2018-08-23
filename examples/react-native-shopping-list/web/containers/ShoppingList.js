@@ -84,11 +84,7 @@ export class ShoppingList extends React.PureComponent {
       toggleShoppingItem,
       removeShoppingItem
     } = this.props
-
-    if (!jwt.id) {
-      return <Redirect to="/login" />
-    }
-
+    
     if (data === null) {
       return <NotFound />
     }

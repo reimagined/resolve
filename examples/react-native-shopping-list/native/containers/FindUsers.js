@@ -10,6 +10,7 @@ import UserList from '../components/UserList'
 
 const styles = StyleSheet.create({
   label: {
+    marginTop: 15,
     paddingLeft: 5,
     fontSize: 16,
     color: '#575757'

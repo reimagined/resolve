@@ -37,7 +37,7 @@ class ShoppingLists extends React.PureComponent {
         this.props.navigate('ShareForm', { id })
         break
       case 'Remove':
-        this.props.removeShoppingList(id)
+        this.props.removeShoppingList(id, {})
         break
       default:
     }

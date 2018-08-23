@@ -35,7 +35,7 @@ class Settings extends React.PureComponent {
 
     return (
       <div className="example-wrapper">
-        <ControlLabel>Username</ControlLabel>
+        <ControlLabel>Username:</ControlLabel>
         <FormControl
           type="text"
           value={this.state.username}
@@ -44,7 +44,7 @@ class Settings extends React.PureComponent {
           onBlur={this.updateUserName}
         />
         <br />
-        <ControlLabel>User Id</ControlLabel>
+        <ControlLabel>User Id:</ControlLabel>
         <FormControl type="text" value={id} readOnly />
       </div>
     )

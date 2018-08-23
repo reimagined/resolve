@@ -4,21 +4,19 @@ import {
   Header,
   Title,
   Content,
-  Footer,
-  FooterTab,
   Button,
   Left,
   Right,
   Body,
   Icon,
-  Text,
   Label,
   Input
 } from 'native-base'
 import { connect} from "react-redux";
+import { StyleSheet, View } from "react-native";
 
 import requiredAuth from '../decorators/requiredAuth'
-import { StyleSheet } from "react-native";
+
 import FindUsers from "./FindUsers";
 
 const styles = StyleSheet.create({
@@ -63,11 +61,14 @@ export class ShareForm extends React.PureComponent {
           <Right />
         </Header>
         <Content padder>
-          <Label style={styles.label}>Shopping list name:</Label>
-          <Input
-            style={styles.input}
-            value={shoppingListName}
-          />
+          <View>
+            <Label style={styles.label}>Shopping list name:</Label>
+            <Input
+              style={styles.input}
+              value={shoppingListName}
+              disabled
+            />
+          </View>
           <Label style={styles.label}>Find users:</Label>
           <Input
             style={styles.input}

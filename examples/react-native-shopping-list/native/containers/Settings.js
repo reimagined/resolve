@@ -4,23 +4,61 @@ import {
   Header,
   Title,
   Content,
-  Footer,
-  FooterTab,
   Button,
   Left,
   Right,
   Body,
   Icon,
+  Label,
+  Input,
   Text
 } from 'native-base'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { StyleSheet } from "react-native";
 
 import { connectReadModel } from '../resolve/resolve-redux'
 import requiredAuth from '../decorators/requiredAuth'
 
+const styles = StyleSheet.create({
+  label: {
+    paddingLeft: 5,
+    fontSize: 16,
+    color: '#575757'
+  },
+  input: {
+    flex: 1,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    color: '#000',
+    backgroundColor: '#fff',
+    marginBottom: 10
+  }
+})
+
 export class Settings extends React.PureComponent {
+  state = {
+    text: this.props.username
+  }
+  
+  updateText = (text) => {
+    this.setState({
+      text
+    })
+  }
+  
+  updateUserName = () => {
+    this.props.updateUserName(
+      this.props.id,
+      {
+        username: this.state.text
+      }
+    )
+  }
+  
   render() {
+    const { id } = this.props
+    const { text } = this.state
+  
     return (
       <Container>
         <Header>
@@ -30,23 +68,31 @@ export class Settings extends React.PureComponent {
             </Button>
           </Left>
           <Body>
-            <Title>Shopping List</Title>
+            <Title>Settings</Title>
           </Body>
           <Right />
         </Header>
-        <Content>
-          <Text>
-            Settings
-            {JSON.stringify(this.props)}
-          </Text>
+        <Content padder>
+          <Label style={styles.label}>
+            Username:
+          </Label>
+          <Input
+            style={styles.input}
+            value={text}
+            onChangeText={this.updateText}
+            onSubmitEditing={this.updateUserName}
+            onBlur={this.updateUserName}
+          />
+          <Label style={styles.label}>
+            User Id:
+          </Label>
+          <Input
+            style={styles.input}
+            value={id}
+            multiline
+            disabled
+          />
         </Content>
-        <Footer>
-          <FooterTab>
-            <Button full>
-              <Text>Footer</Text>
-            </Button>
-          </FooterTab>
-        </Footer>
       </Container>
     )
   }
