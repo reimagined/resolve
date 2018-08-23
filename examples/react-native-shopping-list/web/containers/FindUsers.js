@@ -1,68 +1,68 @@
 import React from 'react'
-import { connectReadModel } from 'resolve-redux'
 import { connect } from 'react-redux'
-import { Button, Table } from 'react-bootstrap'
+import { bindActionCreators } from 'redux'
+import { connectReadModel } from 'resolve-redux'
+import { ControlLabel } from 'react-bootstrap'
+
+import UserList from '../components/UserList'
 
 class FindUsers extends React.PureComponent {
+  shareShoppingListForUser = (userId, username) => {
+    const shoppingListId = this.props.shoppingListId
+
+    this.props.shareShoppingListForUser(shoppingListId, { userId, username })
+  }
+
+  unshareShoppingListForUser = (userId, username) => {
+    const shoppingListId = this.props.shoppingListId
+
+    this.props.unshareShoppingListForUser(shoppingListId, { userId, username })
+  }
+
   render() {
-    const {
-      users,
-      buttonText,
-      buttonBaseStyle,
-      onPressButton
-    } = this.props
-    
-    if (users.length === 0) {
-      return (
-        <div>
-          Users not found
-          <br />
-          <br />
-        </div>
-      )
-    }
+    const { users } = this.props
 
     return (
-      <Table responsive>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Username</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map(({ id, username }, index) => (
-            <tr key={id}>
-              <td>{index + 1}</td>
-              <td>{username}</td>
-              <td className="example-table-action">
-                <Button
-                  className="example-button"
-                  bsStyle={buttonBaseStyle}
-                  onClick={onPressButton.bind(null, id, username)}
-                >
-                  {buttonText}
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      <div>
+        <UserList
+          buttonText="Share"
+          buttonBaseStyle="success"
+          users={users.other}
+          onPressButton={this.shareShoppingListForUser}
+        />
+        <ControlLabel>Already shared for users</ControlLabel>
+        <UserList
+          buttonText="Unshare"
+          buttonBaseStyle="success"
+          users={users.sharings}
+          onPressButton={this.unshareShoppingListForUser}
+        />
+      </div>
     )
   }
 }
 
-export const mapStateToOptions = (state, { options }) => ({
+
+
+export const mapStateToOptions = (state, { query, shoppingListId }) => ({
   readModelName: 'Default',
-  resolverName: 'users',
-  resolverArgs: options
+  resolverName: 'sharings',
+  resolverArgs: {
+    query,
+    shoppingListId
+  }
 })
 
 export const mapStateToProps = (state) => ({
-  users: state.optimisticSharings
+  users: state.optimisticSharings.users
 })
 
+export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+  bindActionCreators(aggregateActions, dispatch)
+
 export default connectReadModel(mapStateToOptions)(
-  connect(mapStateToProps)(FindUsers)
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(FindUsers)
 )

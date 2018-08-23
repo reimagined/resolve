@@ -1,28 +1,16 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { connectViewModel } from 'resolve-redux'
 import { FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 import FindUsers from './FindUsers'
 import requiredAuth from '../decorators/requiredAuth'
 
+
+
 class ShareForm extends React.PureComponent {
   state = {
     query: ''
-  }
-
-  shareShoppingListForUser = (userId, username) => {
-    const shoppingListId = this.props.match.params.id
-
-    this.props.shareShoppingListForUser(shoppingListId, { userId, username })
-  }
-
-  unshareShoppingListForUser = (userId, username) => {
-    const shoppingListId = this.props.match.params.id
-
-    this.props.unshareShoppingListForUser(shoppingListId, { userId, username })
   }
 
   updateQuery = event => {
@@ -32,16 +20,17 @@ class ShareForm extends React.PureComponent {
   }
 
   render() {
-    const { optimisticSharings, shoppingList } = this.props
+    const { shoppingListId, shoppingListName } = this.props
+    const { query} = this.state
 
     return (
       <div className="example-wrapper">
-        <ControlLabel>Shopping list name</ControlLabel>
-        <Link to={`/${shoppingList.id}`}>
+        <ControlLabel>Shopping list name:</ControlLabel>
+        <Link to={`/${shoppingListId}`}>
           <FormGroup bsSize="large">
             <FormControl
               type="text"
-              value={shoppingList.name}
+              value={shoppingListName}
               onChange={() => {}}
             />
           </FormGroup>
@@ -50,54 +39,23 @@ class ShareForm extends React.PureComponent {
         <FormControl
           className="example-form-control"
           type="text"
-          value={this.state.query}
+          value={query}
           onChange={this.updateQuery}
         />
         <FindUsers
-          buttonText="Share"
-          buttonBaseStyle="success"
-          options={{
-            shareId: shoppingList.id,
-            query: this.state.query,
-          }}
-         
-          onPressButton={this.shareShoppingListForUser}
-        />
-        <ControlLabel>Already shared for users</ControlLabel>
-        <FindUsers
-          buttonText="Unshare"
-          buttonBaseStyle="success"
-          options={{
-            shareId: shoppingList.id
-          }}
-          onPressButton={this.unshareShoppingListForUser}
+          shoppingListId={shoppingListId}
+          query = {query}
         />
       </div>
     )
   }
 }
 
-const mapStateToOptions = (state, ownProps) => {
-  const aggregateId = ownProps.match.params.id
-
-  return {
-    viewModelName: 'ShoppingList',
-    aggregateIds: [aggregateId]
-  }
-}
-
-export const mapStateToProps = (state, ownProps) => ({
-  shoppingList: ownProps.data
+export const mapStateToProps = (state, { match: { params: { id } }}) => ({
+  shoppingListId: id,
+  shoppingListName: state.optimisticSharings.name
 })
 
-export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
-  bindActionCreators(aggregateActions, dispatch)
-
-export default requiredAuth(
-  connectViewModel(mapStateToOptions)(
-    connect(
-      mapStateToProps,
-      mapDispatchToProps
-    )(ShareForm)
-  )
-)
+export default requiredAuth(connect(
+  mapStateToProps
+)(ShareForm))

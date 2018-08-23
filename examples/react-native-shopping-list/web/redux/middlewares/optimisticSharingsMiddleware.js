@@ -38,13 +38,11 @@ const optimisticShoppingListsMiddleware = store => next => action => {
   if (
     action.type === LOAD_READMODEL_STATE_SUCCESS &&
     action.readModelName === 'Default' &&
-    action.resolverName === 'users'
+    action.resolverName === 'sharings'
   ) {
     store.dispatch({
       type: OPTIMISTIC_SHARINGS_SYNC,
-      payload: {
-        users: action.result
-      }
+      payload: action.result
     })
   }
 
