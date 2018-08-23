@@ -2,12 +2,18 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Text, Container, List, ListItem, Content, Icon } from 'native-base'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Platform } from 'react-native'
 
 import Logo from '../components/Logo'
 import { actions } from '../resolve/resolve-redux'
 
 const styles = StyleSheet.create({
+  content: {
+    paddingTop: Platform.select({
+      ios: 20,
+      android: 0
+    })
+  },
   icon: {
     width: 30,
     marginRight: 2,
@@ -50,7 +56,7 @@ export class SideBar extends React.Component {
 
     return (
       <Container>
-        <Content padder>
+        <Content padder style={styles.content}>
           <Logo />
           <List
             dataArray={this.routes}

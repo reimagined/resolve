@@ -10,10 +10,11 @@ import {
   Body,
   Icon,
   Label,
-  Input
+  Input,
+  Text
 } from 'native-base'
 import { connect} from "react-redux";
-import { StyleSheet, View } from "react-native";
+import { View, StyleSheet } from "react-native";
 
 import requiredAuth from '../decorators/requiredAuth'
 
@@ -23,7 +24,15 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    marginBottom: 5
+    borderColor: '#D9D5DC',
+    marginBottom: 10,
+    paddingLeft: 5,
+    paddingRight: 5,
+    height: 50
+  },
+  inputText: {
+    fontSize: 17,
+    lineHeight: 50
   },
   label: {
     paddingLeft: 10,
@@ -41,6 +50,10 @@ export class ShareForm extends React.PureComponent {
     this.setState({
       query: text
     })
+  }
+  
+  redirectToShoppingList = () => {
+    this.props.navigation.navigate('ShoppingList', { id: this.props.shoppingListId })
   }
   
   render() {
@@ -61,13 +74,19 @@ export class ShareForm extends React.PureComponent {
           <Right />
         </Header>
         <Content padder>
-          <View>
-            <Label style={styles.label}>Shopping list name:</Label>
-            <Input
-              style={styles.input}
-              value={shoppingListName}
-              disabled
-            />
+          <Label
+            style={styles.label}
+            onPress={this.redirectToShoppingList}
+          >
+            Shopping list name:
+          </Label>
+          <View style={styles.input}>
+            <Text
+              style={styles.inputText}
+              onPress={this.redirectToShoppingList}
+            >
+              {shoppingListName}
+            </Text>
           </View>
           <Label style={styles.label}>Find users:</Label>
           <Input
