@@ -1,9 +1,9 @@
 {
   "name": "resolve-bus-zmq",
-  "version": "0.14.0",
+  "version": "0.14.2",
   "description": "This package is an adapter for resolve-bus to emit events using ZeroMQ.",
-  "engines" : { 
-    "node" : ">=8.10"
+  "engines": {
+    "node": ">=8.10"
   },
   "main": "./dist/index.js",
   "bugs": {

@@ -13,7 +13,13 @@ const appConfig = {
       projection: 'common/view-models/error.projection.js'
     }
   ],
-  sagas: 'common/sagas/index.js',
+  sagas: [
+    {
+      name: 'userCreation',
+      eventHandlers: 'common/sagas/user-creation.event.js',
+      cronHandlers: 'common/sagas/user-creation.cron.js'
+    }
+  ],
   aggregates: [
     {
       name: 'user',

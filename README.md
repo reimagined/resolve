@@ -58,7 +58,7 @@ You can get a sample app using the `create-resolve-app` tool with the `-e` flag 
 The following tools are used to get a sample **reSolve** application:
 
 ```sh
-npx create-resolve-app todo-example -e todo
+npx create-resolve-app nested-list-example -e nested-list
 ```
 
 The created application is accessible using the http://localhost:3000/ and `http://<your_ip>:3000` URLs (you can [change your URL settings](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)).
@@ -68,14 +68,14 @@ Instead of npx you can also use npm or yarn tools:
 * [yarn](https://yarnpkg.com/lang/en/)
 
     ```sh
-    yarn create resolve-app todo-example -e todo
+    yarn create resolve-app nested-list-example -e nested-list
     ```
 
 * [npm](https://www.npmjs.com/)
 
     ```sh
     npm i -g create-resolve-app
-    create-resolve-app todo-example -e todo
+    create-resolve-app nested-list-example -e nested-list
     ```
 
 ## <a name="documentation">**📚 Documentation**</a>

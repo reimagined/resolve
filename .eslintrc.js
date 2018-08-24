@@ -30,7 +30,7 @@ module.exports = {
     'object-curly-spacing': ['error', 'always'],
     'no-unused-vars': ['error', { args: 'after-used' }],
     'max-len': [
-      'error',
+      'warn',
       {
         code: 100
       }
@@ -38,7 +38,7 @@ module.exports = {
     'eol-last': ['error', 'always'],
     'no-console': ['error'],
     'spellcheck/spell-checker': [
-      1,
+      'warn',
       {
         comments: true,
         strings: true,

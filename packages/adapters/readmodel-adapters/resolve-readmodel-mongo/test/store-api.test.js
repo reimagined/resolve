@@ -78,7 +78,7 @@ describe('resolve-readmodel-mongo store-api', () => {
     expect(result).toEqual(resultValue)
 
     expect(collectionApi.find.firstCall.args).toEqual([
-      { search: 0 },
+      { search: { $eq: 0, $type: 'double' } },
       {
         projection: { field: 1, _id: 0 },
         sort: { sort: -1 },
@@ -111,7 +111,7 @@ describe('resolve-readmodel-mongo store-api', () => {
     expect(result).toEqual(resultValue)
 
     expect(collectionApi.find.firstCall.args).toEqual([
-      { search: 0 },
+      { search: { $eq: 0, $type: 'double' } },
       {
         projection: { _id: 0 },
         sort: { sort: -1 },
@@ -144,7 +144,7 @@ describe('resolve-readmodel-mongo store-api', () => {
     expect(result).toEqual(resultValue)
 
     expect(collectionApi.find.firstCall.args).toEqual([
-      { search: 0 },
+      { search: { $eq: 0, $type: 'double' } },
       {
         projection: { field: 1, _id: 0 },
         skip: 10,
@@ -176,7 +176,7 @@ describe('resolve-readmodel-mongo store-api', () => {
     expect(result).toEqual(resultValue)
 
     expect(collectionApi.find.firstCall.args).toEqual([
-      { search: 0 },
+      { search: { $eq: 0, $type: 'double' } },
       {
         projection: { field: 1, _id: 0 },
         sort: { sort: -1 },
@@ -208,7 +208,7 @@ describe('resolve-readmodel-mongo store-api', () => {
     expect(result).toEqual(resultValue)
 
     expect(collectionApi.find.firstCall.args).toEqual([
-      { search: 0 },
+      { search: { $eq: 0, $type: 'double' } },
       {
         projection: { field: 1, _id: 0 },
         sort: { sort: -1 },
@@ -235,7 +235,7 @@ describe('resolve-readmodel-mongo store-api', () => {
     expect(result).toEqual(resultValue)
 
     expect(collectionApi.findOne.firstCall.args).toEqual([
-      { search: 0 },
+      { search: { $eq: 0, $type: 'double' } },
       { projection: { field: 1, _id: 0 } }
     ])
   })
@@ -253,7 +253,7 @@ describe('resolve-readmodel-mongo store-api', () => {
     expect(result).toEqual(resultValue)
 
     expect(collectionApi.findOne.firstCall.args).toEqual([
-      { search: 0 },
+      { search: { $eq: 0, $type: 'double' } },
       { projection: { _id: 0 } }
     ])
   })
@@ -295,7 +295,7 @@ describe('resolve-readmodel-mongo store-api', () => {
     )
 
     expect(collectionApi.update.firstCall.args).toEqual([
-      { id: 1, value: 2 },
+      { id: { $eq: 1, $type: 'double' }, value: { $eq: 2, $type: 'double' } },
       { id: 1, value: 10 },
       { multi: true, upsert: false }
     ])
@@ -309,7 +309,7 @@ describe('resolve-readmodel-mongo store-api', () => {
     )
 
     expect(collectionApi.remove.firstCall.args).toEqual([
-      { id: 1, value: 2 },
+      { id: { $eq: 1, $type: 'double' }, value: { $eq: 2, $type: 'double' } },
       { multi: true }
     ])
   })

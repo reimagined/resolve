@@ -1,4 +1,4 @@
 node_modules
 dist
 coverage
-examples/react-native-shopping-list/native/resolve
+examples/shopping-list-advanced/native/resolve

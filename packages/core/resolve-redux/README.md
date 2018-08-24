@@ -14,6 +14,7 @@ This package contains tools for integrating reSolve with [Redux](http://redux.js
 * [createStore](#createstore)
 * [createActions](#createactions)
 * [jwtProvider](#jwtprovider)
+* [innerRef](#innerref)
 * [Action Creators](#action-creators)
 
 ### `createViewModelsReducer`
@@ -133,8 +134,7 @@ const mapStateToOptions = (state, ownProps) => {
   return {
     readModelName: 'Items',
     resolverName: 'getAllItems',
-    resolverArgs: {  },
-    isReactive: true
+    resolverArgs: {  }
   }
 }
 
@@ -176,6 +176,8 @@ const Markup = () => (
 export default Markup
 ```
 
+See also: [`innerRef`](#innerref).
+
 ### `connectStaticBasedUrls`
 A higher-order component (HOC), used to automatically fixes paths for static files.
 
@@ -194,6 +196,13 @@ const Markup = () => (
 
 export default Markup
 ```
+
+See also: [`innerRef`](#innerref).
+
+### `innerRef`
+Passing a `ref` prop to a connected component will give you an instance of the wrapper, but not to the underlying DOM node. This is due to how refs work. It's not possible to call DOM methods, like `focus`, on our wrappers directly.
+
+To get a ref to the actual, wrapped DOM node, pass the callback to the `innerRef` prop instead.
 
 ### `createStore`
   Generates a [Redux store](https://github.com/reduxjs/redux/blob/master/docs/api/Store.md) for a reSolve application. Arguments:
@@ -332,21 +341,18 @@ const jwtProvider = {
     * `readModelName`
     * `resolverName`
     * `resolverArgs`
-    * `isReactive`
 
   * #### `disconnectReadModel`
     Unsubscribes from Read Model changes. The function takes one argument, which is an object with the following keys:
     * `readModelName`
     * `resolverName`
     * `resolverArgs`
-    * `isReactive`
 
   * #### `loadReadModelStateRequest`
-    Requests a Read Model Resolver result from the server side. If the Read Model is reactive, this function also subscribes to the `diff` topic. The function takes one argument, which is an object with the following keys:
+    Requests a Read Model Resolver result from the server side. The function takes one argument, which is an object with the following keys:
     * `readModelName`
     * `resolverName`
     * `resolverArgs`
-    * `isReactive`
     * `queryId`
 
   * #### `loadReadModelStateSuccess`
@@ -354,7 +360,6 @@ const jwtProvider = {
     * `readModelName`
     * `resolverName`
     * `resolverArgs`
-    * `isReactive`
     * `queryId`
     * `result`
     * `timeToLive`
@@ -364,16 +369,8 @@ const jwtProvider = {
     * `readModelName`
     * `resolverName`
     * `resolverArgs`
-    * `isReactive`
     * `queryId`
     * `error`
-
-  * #### `applyReadModelDiff`
-    Modify a reactive Read Model. The function takes one argument, which is an object with the following keys:
-    * `readModelName`
-    * `resolverName`
-    * `resolverArgs`
-    * `diff`
 
   * #### `dropReadModelState`
     Clears a Read Model. The function takes one argument, which is an object with the following keys:
@@ -395,9 +392,9 @@ const jwtProvider = {
     * `error`
     
   * #### `authRequest`
-      Requests authorization. It takes the object with the following required arguments:
-      * `url`
-      * `body`
+    Requests authorization. It takes the object with the following required arguments:
+    * `url`
+    * `body`
   
   * #### `authSuccess`
     Acknowledges authorization. The function takes one argument, which is an object with the following keys:
