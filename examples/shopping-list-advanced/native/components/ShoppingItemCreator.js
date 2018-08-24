@@ -1,5 +1,5 @@
 import React from 'react'
-import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native'
 import { Footer, Input, Label } from 'native-base'
 import uuid from 'uuid/v4'
 
@@ -56,7 +56,7 @@ class ShoppingItemCreator extends React.PureComponent {
 
   render() {
     return (
-      <KeyboardAvoidingView  behavior="padding" enabled={ Platform.OS === "ios" }>
+      <KeyboardAvoidingView behavior="padding" enabled={Platform.OS === 'ios'}>
         <Footer style={styles.footer}>
           <View style={styles.container}>
             <Label style={styles.label}>Item name:</Label>

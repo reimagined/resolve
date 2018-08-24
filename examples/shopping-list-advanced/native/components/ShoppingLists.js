@@ -1,6 +1,6 @@
 import React from 'react'
 import { List, ListItem, Text, Left, Right, Icon } from 'native-base'
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { connectActionSheet } from '@expo/react-native-action-sheet'
 
 const styles = StyleSheet.create({
@@ -80,7 +80,10 @@ class ShoppingLists extends React.PureComponent {
             <Left>
               <View style={styles.container}>
                 <View style={styles.subContainer}>
-                  <Text style={styles.text} onPress={this.onPress.bind(this, id)}>
+                  <Text
+                    style={styles.text}
+                    onPress={this.onPress.bind(this, id)}
+                  >
                     {`${index + 1}. `}
                     {name}
                   </Text>

@@ -14,7 +14,7 @@ import {
 } from 'native-base'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native'
 
 import { connectReadModel } from '../resolve/resolve-redux'
 import requiredAuth from '../decorators/requiredAuth'
@@ -38,26 +38,23 @@ export class Settings extends React.PureComponent {
   state = {
     text: this.props.username
   }
-  
-  updateText = (text) => {
+
+  updateText = text => {
     this.setState({
       text
     })
   }
-  
+
   updateUserName = () => {
-    this.props.updateUserName(
-      this.props.id,
-      {
-        username: this.state.text
-      }
-    )
+    this.props.updateUserName(this.props.id, {
+      username: this.state.text
+    })
   }
-  
+
   render() {
     const { id } = this.props
     const { text } = this.state
-  
+
     return (
       <Container>
         <Header>
@@ -69,12 +66,10 @@ export class Settings extends React.PureComponent {
           <Body>
             <Title>Settings</Title>
           </Body>
-          <Right/>
+          <Right />
         </Header>
         <Content padder>
-          <Label style={styles.label}>
-            Username:
-          </Label>
+          <Label style={styles.label}>Username:</Label>
           <Input
             style={styles.input}
             value={text}
@@ -82,15 +77,8 @@ export class Settings extends React.PureComponent {
             onSubmitEditing={this.updateUserName}
             onBlur={this.updateUserName}
           />
-          <Label style={styles.label}>
-            User Id:
-          </Label>
-          <Input
-            style={styles.input}
-            value={id}
-            multiline
-            disabled
-          />
+          <Label style={styles.label}>User Id:</Label>
+          <Input style={styles.input} value={id} multiline disabled />
         </Content>
       </Container>
     )

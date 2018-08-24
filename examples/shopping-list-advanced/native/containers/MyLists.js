@@ -21,7 +21,12 @@ import * as refreshActions from '../redux/actions/refreshActions'
 
 export class MyLists extends React.PureComponent {
   render() {
-    const { lists, createShoppingList, removeShoppingList,  navigation } = this.props
+    const {
+      lists,
+      createShoppingList,
+      removeShoppingList,
+      navigation
+    } = this.props
 
     return (
       <Container>
@@ -41,7 +46,11 @@ export class MyLists extends React.PureComponent {
           </Right>
         </Header>
         <Content>
-          <ShoppingLists lists={lists} navigate={navigation.navigate} removeShoppingList={removeShoppingList} />
+          <ShoppingLists
+            lists={lists}
+            navigate={navigation.navigate}
+            removeShoppingList={removeShoppingList}
+          />
         </Content>
         <ShoppingListCreator
           lists={lists}
@@ -52,7 +61,7 @@ export class MyLists extends React.PureComponent {
   }
 }
 
-export const mapStateToOptions = (state) => ({
+export const mapStateToOptions = state => ({
   readModelName: 'Default',
   resolverName: 'shoppingLists',
   resolverArgs: {
@@ -60,15 +69,18 @@ export const mapStateToOptions = (state) => ({
   }
 })
 
-export const mapStateToProps = (state) => ({
+export const mapStateToProps = state => ({
   lists: state.optimisticShoppingLists
 })
 
 export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
-  bindActionCreators({
-    ...aggregateActions,
-    ...refreshActions
-  }, dispatch)
+  bindActionCreators(
+    {
+      ...aggregateActions,
+      ...refreshActions
+    },
+    dispatch
+  )
 
 export default requiredAuth(
   connectReadModel(mapStateToOptions)(

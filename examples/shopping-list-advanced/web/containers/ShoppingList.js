@@ -83,7 +83,7 @@ export class ShoppingList extends React.PureComponent {
       toggleShoppingItem,
       removeShoppingItem
     } = this.props
-    
+
     if (data === null) {
       return <NotFound />
     }

@@ -1,6 +1,6 @@
 import React from 'react'
-import { View, StyleSheet } from "react-native";
-import { List, ListItem, Button, Text } from "native-base";
+import { View, StyleSheet } from 'react-native'
+import { List, ListItem, Button, Text } from 'native-base'
 
 const styles = StyleSheet.create({
   container: {
@@ -19,28 +19,22 @@ const styles = StyleSheet.create({
   }
 })
 
-
 class UserList extends React.PureComponent {
   onPressButton = (userId, username) => {
     this.props.onPressButton(userId, username)
   }
-  
+
   render() {
-    const {
-      buttonText,
-      users
-    } = this.props
+    const { buttonText, users } = this.props
 
     if (users.length === 0) {
       return (
         <View style={styles.notFound}>
-          <Text>
-            Users not found
-          </Text>
+          <Text>Users not found</Text>
         </View>
       )
     }
-  
+
     return (
       <List>
         {users.map(({ id, username }, index) => (
@@ -50,10 +44,11 @@ class UserList extends React.PureComponent {
                 {`${index + 1}. `}
                 {username}
               </Text>
-              <Button success onPress={this.onPressButton.bind(this, id, username)}>
-                <Text numberOfLines={1}>
-                {buttonText}
-                </Text>
+              <Button
+                success
+                onPress={this.onPressButton.bind(this, id, username)}
+              >
+                <Text numberOfLines={1}>{buttonText}</Text>
               </Button>
             </View>
           </ListItem>

@@ -1,6 +1,6 @@
 import React from 'react'
-import { Platform, KeyboardAvoidingView, StyleSheet, View } from "react-native";
-import { Footer, Input, Label } from "native-base";
+import { Platform, KeyboardAvoidingView, StyleSheet, View } from 'react-native'
+import { Footer, Input, Label } from 'native-base'
 import uuid from 'uuid/v4'
 
 const styles = StyleSheet.create({
@@ -53,7 +53,7 @@ class ShoppingListCreator extends React.PureComponent {
 
   render() {
     return (
-      <KeyboardAvoidingView  behavior="padding" enabled={ Platform.OS === "ios"}>
+      <KeyboardAvoidingView behavior="padding" enabled={Platform.OS === 'ios'}>
         <Footer style={styles.footer}>
           <View style={styles.container}>
             <Label style={styles.label}>Shopping list name:</Label>

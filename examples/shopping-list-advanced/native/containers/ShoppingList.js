@@ -18,25 +18,25 @@ import requiredAuth from '../decorators/requiredAuth'
 import ShoppingItemCreator from '../components/ShoppingItemCreator'
 import ShoppingListPanel from '../components/ShoppingListPanel'
 import ShoppingListItems from '../components/ShoppingListItems'
-import NotFound from "../components/NotFound";
+import NotFound from '../components/NotFound'
 
 export class ShoppingList extends React.PureComponent {
   componentDidMount() {
     this.optionalRedirect()
   }
-  
+
   componentDidUpdate(prevProps) {
     if (this.props.data !== prevProps.data) {
       this.optionalRedirect()
     }
   }
-  
+
   optionalRedirect = () => {
     if (this.props.data && this.props.data.removed) {
       this.props.navigation.navigate('My Lists')
     }
   }
-  
+
   render() {
     const {
       aggregateId,
@@ -48,11 +48,11 @@ export class ShoppingList extends React.PureComponent {
       toggleShoppingItem,
       removeShoppingItem
     } = this.props
-  
+
     if (data === null) {
       return <NotFound />
     }
-  
+
     if (data.removed) {
       return null
     }

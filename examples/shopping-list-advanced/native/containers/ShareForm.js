@@ -13,12 +13,12 @@ import {
   Input,
   Text
 } from 'native-base'
-import { connect} from "react-redux";
-import { View, StyleSheet } from "react-native";
+import { connect } from 'react-redux'
+import { View, StyleSheet } from 'react-native'
 
 import requiredAuth from '../decorators/requiredAuth'
 
-import FindUsers from "./FindUsers";
+import FindUsers from './FindUsers'
 
 const styles = StyleSheet.create({
   input: {
@@ -45,21 +45,23 @@ export class ShareForm extends React.PureComponent {
   state = {
     query: ''
   }
-  
+
   updateQuery = text => {
     this.setState({
       query: text
     })
   }
-  
+
   redirectToShoppingList = () => {
-    this.props.navigation.navigate('ShoppingList', { id: this.props.shoppingListId })
+    this.props.navigation.navigate('ShoppingList', {
+      id: this.props.shoppingListId
+    })
   }
-  
+
   render() {
     const { shoppingListId, shoppingListName } = this.props
     const { query } = this.state
-    
+
     return (
       <Container>
         <Header>
@@ -74,10 +76,7 @@ export class ShareForm extends React.PureComponent {
           <Right />
         </Header>
         <Content padder>
-          <Label
-            style={styles.label}
-            onPress={this.redirectToShoppingList}
-          >
+          <Label style={styles.label} onPress={this.redirectToShoppingList}>
             Shopping list name:
           </Label>
           <View style={styles.input}>

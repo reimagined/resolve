@@ -1,8 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { View, StyleSheet } from "react-native";
-import { Label } from "native-base";
+import { View, StyleSheet } from 'react-native'
+import { Label } from 'native-base'
 
 import { connectReadModel } from '../resolve/resolve-redux'
 
@@ -20,23 +20,29 @@ const styles = StyleSheet.create({
 class FindUsers extends React.PureComponent {
   shareShoppingListForUser = (userId, username) => {
     const shoppingListId = this.props.shoppingListId
-  
-    console.log('shareShoppingListForUser', shoppingListId, { userId, username })
-    
+
+    console.log('shareShoppingListForUser', shoppingListId, {
+      userId,
+      username
+    })
+
     this.props.shareShoppingListForUser(shoppingListId, { userId, username })
   }
-  
+
   unshareShoppingListForUser = (userId, username) => {
     const shoppingListId = this.props.shoppingListId
-  
-    console.log('unshareShoppingListForUser', shoppingListId, { userId, username })
-    
+
+    console.log('unshareShoppingListForUser', shoppingListId, {
+      userId,
+      username
+    })
+
     this.props.unshareShoppingListForUser(shoppingListId, { userId, username })
   }
-  
+
   render() {
     const { users } = this.props
-    
+
     return (
       <View>
         <UserList
@@ -45,9 +51,7 @@ class FindUsers extends React.PureComponent {
           users={users.other}
           onPressButton={this.shareShoppingListForUser}
         />
-        <Label style={styles.label}>
-          Already shared for users:
-        </Label>
+        <Label style={styles.label}>Already shared for users:</Label>
         <UserList
           buttonText="Unshare"
           buttonBaseStyle="success"
