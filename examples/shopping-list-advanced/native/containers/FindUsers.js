@@ -21,21 +21,11 @@ class FindUsers extends React.PureComponent {
   shareShoppingListForUser = (userId, username) => {
     const shoppingListId = this.props.shoppingListId
 
-    console.log('shareShoppingListForUser', shoppingListId, {
-      userId,
-      username
-    })
-
     this.props.shareShoppingListForUser(shoppingListId, { userId, username })
   }
 
   unshareShoppingListForUser = (userId, username) => {
     const shoppingListId = this.props.shoppingListId
-
-    console.log('unshareShoppingListForUser', shoppingListId, {
-      userId,
-      username
-    })
 
     this.props.unshareShoppingListForUser(shoppingListId, { userId, username })
   }

@@ -5,7 +5,6 @@ import {
   Button,
   H3,
   Text,
-  Icon,
   Form,
   Input,
   Item,

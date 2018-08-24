@@ -32,15 +32,16 @@ module.exports = {
     'max-len': [
       'warn',
       {
-        code: 100
+        code: 100,
+        comments: 10000
       }
     ],
     'eol-last': ['error', 'always'],
     'no-console': ['error'],
     'spellcheck/spell-checker': [
-      'warn',
+      'error',
       {
-        comments: true,
+        comments: false,
         strings: true,
         identifiers: true,
         lang: 'en_US',
@@ -66,6 +67,8 @@ module.exports = {
           'autoprefixer',
           'basename',
           'babelrc',
+          'bson',
+          'bool',
           'buf',
           'calc',
           'cax',
@@ -101,6 +104,7 @@ module.exports = {
           'dup',
           'eqeqeq',
           'eslint',
+          'ecma',
           'eql',
           'errno',
           'escaper',
@@ -131,6 +135,7 @@ module.exports = {
           'ico',
           'idx',
           'Ionicons',
+          'ios',
           'img',
           'Img',
           'impl',
@@ -158,6 +163,7 @@ module.exports = {
           'mongo',
           'mongodb',
           'monorepo',
+          'Monorepos',
           'mqtt',
           'msg',
           'mysql',
@@ -225,6 +231,7 @@ module.exports = {
           'serializable',
           'sinon',
           'scalable',
+          'sep',
           'setsockopt',
           'showstories',
           'socktype',
@@ -284,6 +291,7 @@ module.exports = {
           'webpack',
           'wikipedia',
           'wildcard',
+          'workspaces',
           'www',
           'xcopy',
           'xpub',
