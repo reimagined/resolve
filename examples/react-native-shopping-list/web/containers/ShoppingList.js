@@ -79,7 +79,6 @@ export class ShoppingList extends React.PureComponent {
   render() {
     const {
       data,
-      jwt,
       aggregateId,
       toggleShoppingItem,
       removeShoppingItem
@@ -97,7 +96,7 @@ export class ShoppingList extends React.PureComponent {
 
     return (
       <div className="example-wrapper">
-        <ControlLabel>Shopping list name</ControlLabel>
+        <ControlLabel>Shopping list name:</ControlLabel>
         <FormGroup bsSize="large">
           <InputGroup>
             <InputGroup.Button>
@@ -141,7 +140,7 @@ export class ShoppingList extends React.PureComponent {
             </ListGroupItem>
           ))}
         </ListGroup>
-        <ControlLabel>Item name</ControlLabel>
+        <ControlLabel>Item name:</ControlLabel>
         <Row>
           <Col md={8}>
             <FormControl

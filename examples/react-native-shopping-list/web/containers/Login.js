@@ -42,11 +42,11 @@ class Login extends React.PureComponent {
         <h2>Login Form</h2>
         <Form method="POST" action={this.state.action} innerRef={this.formRef}>
           <FormGroup>
-            <ControlLabel>username</ControlLabel>
+            <ControlLabel>username:</ControlLabel>
             <FormControl name="username" type="text" />
           </FormGroup>
           <FormGroup>
-            <ControlLabel>password</ControlLabel>
+            <ControlLabel>password:</ControlLabel>
             <FormControl name="password" type="password" />
           </FormGroup>
           <FormGroup>
@@ -58,11 +58,6 @@ class Login extends React.PureComponent {
             </Button>
           </FormGroup>
         </Form>
-        <br />
-        <h2>Login with your social</h2>
-        <Button bsStyle="primary" block>
-          <i className="fab fa-google fa-fw" /> Login with Google
-        </Button>
       </div>
     )
   }

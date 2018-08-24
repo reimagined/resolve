@@ -30,7 +30,7 @@ class FindUsers extends React.PureComponent {
           users={users.other}
           onPressButton={this.shareShoppingListForUser}
         />
-        <ControlLabel>Already shared for users</ControlLabel>
+        <ControlLabel>Already shared for users:</ControlLabel>
         <UserList
           buttonText="Unshare"
           buttonBaseStyle="success"

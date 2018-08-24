@@ -34,7 +34,7 @@ class ShoppingListCreator extends React.PureComponent {
   render() {
     return (
       <div>
-        <ControlLabel>Shopping list name</ControlLabel>
+        <ControlLabel>Shopping list name:</ControlLabel>
         <Row>
           <Col md={8}>
             <FormControl

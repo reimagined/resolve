@@ -85,14 +85,14 @@ export class Login extends React.PureComponent {
           <H3>Login Form</H3>
           <Form style={styles.form}>
             <Item stackedLabel>
-              <Label>Username</Label>
+              <Label>Username:</Label>
               <Input
                 value={this.state.username}
                 onChangeText={this.updateUsername}
               />
             </Item>
             <Item stackedLabel>
-              <Label>Password</Label>
+              <Label>Password:</Label>
               <Input
                 secureTextEntry
                 value={this.state.password}
@@ -108,15 +108,6 @@ export class Login extends React.PureComponent {
               <Text>Register</Text>
             </Button>
           </View>
-          <H3 style={styles.socialTitle}>Login with your social</H3>
-          <Button style={styles.socialButton} block>
-            <Icon
-              style={styles.socialButtonIcon}
-              name="google"
-              type="FontAwesome"
-            />
-            <Text>Login with Google</Text>
-          </Button>
         </Content>
       </Container>
     )

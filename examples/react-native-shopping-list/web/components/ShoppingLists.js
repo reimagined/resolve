@@ -8,7 +8,7 @@ class ShoppingLists extends React.PureComponent {
 
     return (
       <div>
-        <ControlLabel>My shopping lists</ControlLabel>
+        <ControlLabel>My shopping lists:</ControlLabel>
         <Table responsive>
           <thead>
             <tr>

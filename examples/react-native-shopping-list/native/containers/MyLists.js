@@ -17,6 +17,7 @@ import requiredAuth from '../decorators/requiredAuth'
 import { connectReadModel } from '../resolve/resolve-redux'
 import ShoppingLists from '../components/ShoppingLists'
 import ShoppingListCreator from '../components/ShoppingListCreator'
+import * as refreshActions from '../redux/actions/refreshActions'
 
 export class MyLists extends React.PureComponent {
   render() {
@@ -33,7 +34,11 @@ export class MyLists extends React.PureComponent {
           <Body>
             <Title>My Lists</Title>
           </Body>
-          <Right />
+          <Right>
+            <Button transparent onPress={this.props.refresh}>
+              <Icon name="md-refresh" />
+            </Button>
+          </Right>
         </Header>
         <Content>
           <ShoppingLists lists={lists} navigate={navigation.navigate} removeShoppingList={removeShoppingList} />
@@ -47,10 +52,12 @@ export class MyLists extends React.PureComponent {
   }
 }
 
-export const mapStateToOptions = () => ({
+export const mapStateToOptions = (state) => ({
   readModelName: 'Default',
   resolverName: 'shoppingLists',
-  resolverArgs: {}
+  resolverArgs: {
+    updatedAt: state.refresh.timestamp
+  }
 })
 
 export const mapStateToProps = (state) => ({
@@ -58,7 +65,10 @@ export const mapStateToProps = (state) => ({
 })
 
 export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
-  bindActionCreators(aggregateActions, dispatch)
+  bindActionCreators({
+    ...aggregateActions,
+    ...refreshActions
+  }, dispatch)
 
 export default requiredAuth(
   connectReadModel(mapStateToOptions)(

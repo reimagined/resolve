@@ -3,6 +3,15 @@ import { Icon, Left, List, ListItem, Right, Text } from 'native-base'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  subContainer: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
   button: {
     borderWidth: 0,
     padding: 0,
@@ -22,34 +31,25 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: '#000'
   },
-  picker: {
-    width: '100%'
-  },
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between'
-  },
-  subContainer: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
   textChecked: {
     textDecorationLine: 'line-through',
     width: 0,
     flexGrow: 1,
-    flex: 1
+    flex: 1,
+    paddingTop: 20,
+    paddingBottom: 20
   },
   textUnchecked: {
     width: 0,
     flexGrow: 1,
-    flex: 1
+    flex: 1,
+    paddingTop: 20,
+    paddingBottom: 20
   }
 })
 
 class ShoppingListItems extends React.PureComponent {
   toggleShoppingItem = id => {
-    console.log('toggleShoppingItem', this.props.aggregateId, { id })
     this.props.toggleShoppingItem(this.props.aggregateId, { id })
   }
 

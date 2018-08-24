@@ -1,9 +1,18 @@
 import React from 'react'
 import { List, ListItem, Text, Left, Right, Icon } from 'native-base'
-import { StyleSheet, TouchableOpacity } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { connectActionSheet } from '@expo/react-native-action-sheet'
 
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  subContainer: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
   button: {
     borderWidth: 0,
     padding: 0,
@@ -20,8 +29,12 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: '#000'
   },
-  picker: {
-    width: '100%'
+  text: {
+    width: 0,
+    flexGrow: 1,
+    flex: 1,
+    paddingTop: 20,
+    paddingBottom: 20
   }
 })
 
@@ -65,10 +78,14 @@ class ShoppingLists extends React.PureComponent {
         {lists.map(({ id, name }, index) => (
           <ListItem key={id}>
             <Left>
-              <Text onPress={this.onPress.bind(this, id)}>
-                {`${index + 1}. `}
-                {name}
-              </Text>
+              <View style={styles.container}>
+                <View style={styles.subContainer}>
+                  <Text style={styles.text} onPress={this.onPress.bind(this, id)}>
+                    {`${index + 1}. `}
+                    {name}
+                  </Text>
+                </View>
+              </View>
             </Left>
             <Right>
               <TouchableOpacity

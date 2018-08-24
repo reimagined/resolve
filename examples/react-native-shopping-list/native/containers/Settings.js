@@ -10,8 +10,7 @@ import {
   Body,
   Icon,
   Label,
-  Input,
-  Text
+  Input
 } from 'native-base'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -70,7 +69,7 @@ export class Settings extends React.PureComponent {
           <Body>
             <Title>Settings</Title>
           </Body>
-          <Right />
+          <Right/>
         </Header>
         <Content padder>
           <Label style={styles.label}>

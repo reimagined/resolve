@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, View } from "react-native";
-import { Text } from "native-base";
+import { Text, H1, H2 } from "native-base";
 
 const styles = StyleSheet.create({
   container: {
@@ -13,8 +13,10 @@ class NotFound extends React.PureComponent {
   render() {
     return (
       <View style={styles.container}>
+        <H1>Oops!</H1>
+        <H2>404 Not Found</H2>
         <Text>
-          Users not found
+          Sorry, an error has occurred, Requested page not found!
         </Text>
       </View>
     )
