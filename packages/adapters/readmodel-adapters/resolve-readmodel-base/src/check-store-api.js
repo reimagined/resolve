@@ -117,6 +117,11 @@ const checkFieldList = (
   return null
 }
 
+// BSON Types in MongoDB: https://docs.mongodb.com/manual/reference/bson-types/
+// JSON types in MySQL: https://dev.mysql.com/doc/refman/5.7/en/json-attribute-functions.html#function_json-type
+// Compromise allowed ES6 types based on above lists intersection:
+const allowedJsonTypes = [String, Number, Array, Boolean, Object]
+
 const isFieldValueCorrect = (metaInfo, fieldName, fieldValue, allowNested) => {
   try {
     const columnType = checkAndGetColumnStatus(metaInfo, fieldName, allowNested)
@@ -131,7 +136,7 @@ const isFieldValueCorrect = (metaInfo, fieldName, fieldValue, allowNested) => {
       case 'secondary-number':
         return checkOptionShape(fieldValue, [Number], true)
       case 'regular':
-        return true
+        return checkOptionShape(fieldValue, allowedJsonTypes, true)
       default:
         return false
     }

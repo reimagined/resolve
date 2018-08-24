@@ -15,7 +15,7 @@ class Providers extends React.PureComponent {
       children
     } = this.props
 
-    const api = createApi({ origin, rootPath })
+    const api = createApi({ origin, rootPath, store })
 
     return (
       <ResolveProvider

@@ -1,9 +1,9 @@
 {
   "name": "create-resolve-app",
-  "version": "0.14.0",
+  "version": "0.14.2",
   "description": "This package generates boilerplate web application based on resolve framework",
-  "engines" : { 
-    "node" : ">=8.10"
+  "engines": {
+    "node": ">=8.10"
   },
   "bin": {
     "create-resolve-app": "./bin/index.js"

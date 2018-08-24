@@ -61,9 +61,11 @@ describe('resolve-readmodel-memory store-api', () => {
       20
     )
 
-    expect(storage['test'].find.firstCall.args[0]).toEqual({
-      search: 0
-    })
+    const {
+      $and: [findQuery]
+    } = storage['test'].find.firstCall.args[0]
+    expect(findQuery).toEqual({ search: 0 })
+
     const cursor = storage['test'].find.firstCall.returnValue
 
     expect(cursor.projection.firstCall.args[0]).toEqual({
@@ -91,7 +93,10 @@ describe('resolve-readmodel-memory store-api', () => {
       20
     )
 
-    expect(storage['test'].find.firstCall.args[0]).toEqual({
+    const {
+      $and: [findQuery]
+    } = storage['test'].find.firstCall.args[0]
+    expect(findQuery).toEqual({
       search: 0
     })
     const cursor = storage['test'].find.firstCall.returnValue
@@ -118,7 +123,10 @@ describe('resolve-readmodel-memory store-api', () => {
       20
     )
 
-    expect(storage['test'].find.firstCall.args[0]).toEqual({
+    const {
+      $and: [findQuery]
+    } = storage['test'].find.firstCall.args[0]
+    expect(findQuery).toEqual({
       search: 0
     })
     const cursor = storage['test'].find.firstCall.returnValue
@@ -148,7 +156,10 @@ describe('resolve-readmodel-memory store-api', () => {
       20
     )
 
-    expect(storage['test'].find.firstCall.args[0]).toEqual({
+    const {
+      $and: [findQuery]
+    } = storage['test'].find.firstCall.args[0]
+    expect(findQuery).toEqual({
       search: 0
     })
     const cursor = storage['test'].find.firstCall.returnValue
@@ -178,7 +189,10 @@ describe('resolve-readmodel-memory store-api', () => {
       Infinity
     )
 
-    expect(storage['test'].find.firstCall.args[0]).toEqual({
+    const {
+      $and: [findQuery]
+    } = storage['test'].find.firstCall.args[0]
+    expect(findQuery).toEqual({
       search: 0
     })
     const cursor = storage['test'].find.firstCall.returnValue
@@ -205,7 +219,10 @@ describe('resolve-readmodel-memory store-api', () => {
       { field: 1 }
     )
 
-    expect(storage['test'].findOne.firstCall.args[0]).toEqual({
+    const {
+      $and: [findQuery]
+    } = storage['test'].findOne.firstCall.args[0]
+    expect(findQuery).toEqual({
       search: 0
     })
     const cursor = storage['test'].findOne.firstCall.returnValue
@@ -224,7 +241,11 @@ describe('resolve-readmodel-memory store-api', () => {
 
     const result = await storeApi.findOne({ storage }, 'test', { search: 0 })
 
-    expect(storage['test'].findOne.firstCall.args[0]).toEqual({
+    const {
+      $and: [findQuery]
+    } = storage['test'].findOne.firstCall.args[0]
+
+    expect(findQuery).toEqual({
       search: 0
     })
     const cursor = storage['test'].findOne.firstCall.returnValue
@@ -244,7 +265,11 @@ describe('resolve-readmodel-memory store-api', () => {
 
     const result = await storeApi.count({ storage }, 'test', { search: 0 })
 
-    expect(storage.test.count.firstCall.args[0]).toEqual({ search: 0 })
+    const {
+      $and: [findQuery]
+    } = storage['test'].count.firstCall.args[0]
+
+    expect(findQuery).toEqual({ search: 0 })
 
     expect(result).toEqual(gaugeResult)
   })
@@ -283,7 +308,11 @@ describe('resolve-readmodel-memory store-api', () => {
       { upsert: false }
     )
 
-    expect(storage.test.update.firstCall.args[0]).toEqual({
+    const {
+      $and: [findQuery]
+    } = storage['test'].update.firstCall.args[0]
+
+    expect(findQuery).toEqual({
       id: 1,
       value: 2
     })
@@ -302,7 +331,11 @@ describe('resolve-readmodel-memory store-api', () => {
 
     await storeApi.del({ storage }, 'test', { id: 1, value: 2 })
 
-    expect(storage.test.remove.firstCall.args[0]).toEqual({
+    const {
+      $and: [findQuery]
+    } = storage['test'].remove.firstCall.args[0]
+
+    expect(findQuery).toEqual({
       id: 1,
       value: 2
     })

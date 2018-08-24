@@ -9,8 +9,9 @@ import uuid from 'uuid/v4'
 
 import createViewModelsReducer from './create_view_models_reducer'
 import createReadModelsReducer from './create_read_models_reducer'
-import createResolveMiddleware from './create_resolve_middleware'
 import createJwtReducer from './create_jwt_reducer'
+import createResolveMiddleware from './create_resolve_middleware'
+import syncJwtProviderWithStore from './sync_jwt_provider_with_store'
 
 const createStore = ({
   redux: { reducers, middlewares, store: setupStore },
@@ -22,6 +23,7 @@ const createStore = ({
   history,
   origin,
   rootPath,
+  jwtProvider,
   isClient
 }) => {
   const sessionId = uuid()
@@ -55,10 +57,16 @@ const createStore = ({
     rootPath,
     subscribeAdapter,
     sessionId,
+    jwtProvider,
     isClient
   })
 
   setupStore(store, middlewares)
+
+  syncJwtProviderWithStore(jwtProvider, store).catch(
+    // eslint-disable-next-line no-console
+    error => console.error(error)
+  )
 
   return store
 }

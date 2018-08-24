@@ -15,16 +15,18 @@ const authStrategies = authStrategiesConfigs.map(
 
 const postProcessResponse = (resExpress, response) => {
   resExpress.statusCode = response.statusCode
-  Object.keys(response.headers || {}).forEach(key => {
-    resExpress.setHeader(key, response.headers[key])
+  const headers = response.headers || {}
+  const cookies = response.cookies || {}
+  Object.keys(headers).forEach(key => {
+    resExpress.setHeader(key, headers[key])
   })
-  Object.keys(response.cookies || {}).forEach(key => {
-    resExpress.cookie(
-      key,
-      response.cookies[key].value,
-      response.cookies[key].options
-    )
+  Object.keys(cookies).forEach(key => {
+    resExpress.cookie(key, cookies[key].value, cookies[key].options)
   })
+  const jwtToken = cookies[jwtCookie.name]
+  if (jwtToken) {
+    resExpress.setHeader('Authorization', `Bearer ${jwtToken}`)
+  }
 
   resExpress.end(response.error)
 }
