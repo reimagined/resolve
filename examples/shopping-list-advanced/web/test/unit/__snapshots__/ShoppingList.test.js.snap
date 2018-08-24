@@ -47,7 +47,7 @@ ShallowWrapper {
           bsClass="control-label"
           srOnly={false}
         >
-          Shopping list name
+          Shopping list name:
         </ControlLabel>,
         <FormGroup
           bsClass="form-group"
@@ -66,6 +66,7 @@ ShallowWrapper {
                 bsSize="large"
                 bsStyle="default"
                 disabled={false}
+                onClick={[Function]}
               >
                 <i
                   className="far fa-trash-alt"
@@ -143,7 +144,7 @@ ShallowWrapper {
           bsClass="control-label"
           srOnly={false}
         >
-          Item name
+          Item name:
         </ControlLabel>,
         <Row
           bsClass="row"
@@ -193,11 +194,11 @@ ShallowWrapper {
         "nodeType": "class",
         "props": Object {
           "bsClass": "control-label",
-          "children": "Shopping list name",
+          "children": "Shopping list name:",
           "srOnly": false,
         },
         "ref": null,
-        "rendered": "Shopping list name",
+        "rendered": "Shopping list name:",
         "type": [Function],
       },
       Object {
@@ -220,6 +221,7 @@ ShallowWrapper {
                 bsSize="large"
                 bsStyle="default"
                 disabled={false}
+                onClick={[Function]}
               >
                 <i
                   className="far fa-trash-alt"
@@ -266,6 +268,7 @@ ShallowWrapper {
                   bsSize="large"
                   bsStyle="default"
                   disabled={false}
+                  onClick={[Function]}
                 >
                   <i
                     className="far fa-trash-alt"
@@ -309,6 +312,7 @@ ShallowWrapper {
                   bsSize="large"
                   bsStyle="default"
                   disabled={false}
+                  onClick={[Function]}
                 >
                   <i
                     className="far fa-trash-alt"
@@ -330,6 +334,7 @@ ShallowWrapper {
                     className="far fa-trash-alt"
                   />,
                   "disabled": false,
+                  "onClick": [Function],
                 },
                 "ref": null,
                 "rendered": Object {
@@ -593,11 +598,11 @@ ShallowWrapper {
         "nodeType": "class",
         "props": Object {
           "bsClass": "control-label",
-          "children": "Item name",
+          "children": "Item name:",
           "srOnly": false,
         },
         "ref": null,
-        "rendered": "Item name",
+        "rendered": "Item name:",
         "type": [Function],
       },
       Object {
@@ -740,7 +745,7 @@ ShallowWrapper {
             bsClass="control-label"
             srOnly={false}
           >
-            Shopping list name
+            Shopping list name:
           </ControlLabel>,
           <FormGroup
             bsClass="form-group"
@@ -759,6 +764,7 @@ ShallowWrapper {
                   bsSize="large"
                   bsStyle="default"
                   disabled={false}
+                  onClick={[Function]}
                 >
                   <i
                     className="far fa-trash-alt"
@@ -836,7 +842,7 @@ ShallowWrapper {
             bsClass="control-label"
             srOnly={false}
           >
-            Item name
+            Item name:
           </ControlLabel>,
           <Row
             bsClass="row"
@@ -886,11 +892,11 @@ ShallowWrapper {
           "nodeType": "class",
           "props": Object {
             "bsClass": "control-label",
-            "children": "Shopping list name",
+            "children": "Shopping list name:",
             "srOnly": false,
           },
           "ref": null,
-          "rendered": "Shopping list name",
+          "rendered": "Shopping list name:",
           "type": [Function],
         },
         Object {
@@ -913,6 +919,7 @@ ShallowWrapper {
                   bsSize="large"
                   bsStyle="default"
                   disabled={false}
+                  onClick={[Function]}
                 >
                   <i
                     className="far fa-trash-alt"
@@ -959,6 +966,7 @@ ShallowWrapper {
                     bsSize="large"
                     bsStyle="default"
                     disabled={false}
+                    onClick={[Function]}
                   >
                     <i
                       className="far fa-trash-alt"
@@ -1002,6 +1010,7 @@ ShallowWrapper {
                     bsSize="large"
                     bsStyle="default"
                     disabled={false}
+                    onClick={[Function]}
                   >
                     <i
                       className="far fa-trash-alt"
@@ -1023,6 +1032,7 @@ ShallowWrapper {
                       className="far fa-trash-alt"
                     />,
                     "disabled": false,
+                    "onClick": [Function],
                   },
                   "ref": null,
                   "rendered": Object {
@@ -1286,11 +1296,11 @@ ShallowWrapper {
           "nodeType": "class",
           "props": Object {
             "bsClass": "control-label",
-            "children": "Item name",
+            "children": "Item name:",
             "srOnly": false,
           },
           "ref": null,
-          "rendered": "Item name",
+          "rendered": "Item name:",
           "type": [Function],
         },
         Object {

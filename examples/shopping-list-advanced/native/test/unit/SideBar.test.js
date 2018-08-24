@@ -7,6 +7,8 @@ it('renders correctly', () => {
   const navigation = {
     navigate: () => {}
   }
+  
+  const jwt = { id: 'id' }
 
-  expect(shallow(<SideBar navigation={navigation} />)).toMatchSnapshot()
+  expect(shallow(<SideBar navigation={navigation} jwt={jwt}/>)).toMatchSnapshot()
 })

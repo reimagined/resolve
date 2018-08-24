@@ -5,6 +5,11 @@ ShallowWrapper {
   "length": 1,
   Symbol(enzyme.__root__): [Circular],
   Symbol(enzyme.__unrendered__): <SideBar
+    jwt={
+      Object {
+        "id": "id",
+      }
+    }
     navigation={
       Object {
         "navigate": [Function],
@@ -23,13 +28,63 @@ ShallowWrapper {
     "key": undefined,
     "nodeType": "function",
     "props": Object {
-      "children": <Content>
+      "children": <Content
+        padder={true}
+        style={
+          Object {
+            "paddingTop": 20,
+          }
+        }
+      >
+        <Logo />
         <List
           dataArray={
             Array [
-              "My Lists",
-              "Settings",
-              "Logout",
+              Object {
+                "callback": [Function],
+                "icon": <Icon
+                  name="list"
+                  style={
+                    Object {
+                      "marginRight": 2,
+                      "textAlign": "center",
+                      "width": 30,
+                    }
+                  }
+                  type="FontAwesome"
+                />,
+                "name": "My Lists",
+              },
+              Object {
+                "callback": [Function],
+                "icon": <Icon
+                  name="user"
+                  style={
+                    Object {
+                      "marginRight": 2,
+                      "textAlign": "center",
+                      "width": 30,
+                    }
+                  }
+                  type="FontAwesome"
+                />,
+                "name": "Settings",
+              },
+              Object {
+                "callback": [Function],
+                "icon": <Icon
+                  name="sign-out"
+                  style={
+                    Object {
+                      "marginRight": 2,
+                      "textAlign": "center",
+                      "width": 30,
+                    }
+                  }
+                  type="FontAwesome"
+                />,
+                "name": "Logout",
+              },
             ]
           }
           renderRow={[Function]}
@@ -42,34 +97,136 @@ ShallowWrapper {
       "key": undefined,
       "nodeType": "function",
       "props": Object {
-        "children": <List
-          dataArray={
-            Array [
-              "My Lists",
-              "Settings",
-              "Logout",
-            ]
-          }
-          renderRow={[Function]}
-        />,
+        "children": Array [
+          <Logo />,
+          <List
+            dataArray={
+              Array [
+                Object {
+                  "callback": [Function],
+                  "icon": <Icon
+                    name="list"
+                    style={
+                      Object {
+                        "marginRight": 2,
+                        "textAlign": "center",
+                        "width": 30,
+                      }
+                    }
+                    type="FontAwesome"
+                  />,
+                  "name": "My Lists",
+                },
+                Object {
+                  "callback": [Function],
+                  "icon": <Icon
+                    name="user"
+                    style={
+                      Object {
+                        "marginRight": 2,
+                        "textAlign": "center",
+                        "width": 30,
+                      }
+                    }
+                    type="FontAwesome"
+                  />,
+                  "name": "Settings",
+                },
+                Object {
+                  "callback": [Function],
+                  "icon": <Icon
+                    name="sign-out"
+                    style={
+                      Object {
+                        "marginRight": 2,
+                        "textAlign": "center",
+                        "width": 30,
+                      }
+                    }
+                    type="FontAwesome"
+                  />,
+                  "name": "Logout",
+                },
+              ]
+            }
+            renderRow={[Function]}
+          />,
+        ],
+        "padder": true,
+        "style": Object {
+          "paddingTop": 20,
+        },
       },
       "ref": null,
-      "rendered": Object {
-        "instance": null,
-        "key": undefined,
-        "nodeType": "function",
-        "props": Object {
-          "dataArray": Array [
-            "My Lists",
-            "Settings",
-            "Logout",
-          ],
-          "renderRow": [Function],
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {},
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
         },
-        "ref": null,
-        "rendered": null,
-        "type": [Function],
-      },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "function",
+          "props": Object {
+            "dataArray": Array [
+              Object {
+                "callback": [Function],
+                "icon": <Icon
+                  name="list"
+                  style={
+                    Object {
+                      "marginRight": 2,
+                      "textAlign": "center",
+                      "width": 30,
+                    }
+                  }
+                  type="FontAwesome"
+                />,
+                "name": "My Lists",
+              },
+              Object {
+                "callback": [Function],
+                "icon": <Icon
+                  name="user"
+                  style={
+                    Object {
+                      "marginRight": 2,
+                      "textAlign": "center",
+                      "width": 30,
+                    }
+                  }
+                  type="FontAwesome"
+                />,
+                "name": "Settings",
+              },
+              Object {
+                "callback": [Function],
+                "icon": <Icon
+                  name="sign-out"
+                  style={
+                    Object {
+                      "marginRight": 2,
+                      "textAlign": "center",
+                      "width": 30,
+                    }
+                  }
+                  type="FontAwesome"
+                />,
+                "name": "Logout",
+              },
+            ],
+            "renderRow": [Function],
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+      ],
       "type": [Function],
     },
     "type": [Function],
@@ -80,13 +237,63 @@ ShallowWrapper {
       "key": undefined,
       "nodeType": "function",
       "props": Object {
-        "children": <Content>
+        "children": <Content
+          padder={true}
+          style={
+            Object {
+              "paddingTop": 20,
+            }
+          }
+        >
+          <Logo />
           <List
             dataArray={
               Array [
-                "My Lists",
-                "Settings",
-                "Logout",
+                Object {
+                  "callback": [Function],
+                  "icon": <Icon
+                    name="list"
+                    style={
+                      Object {
+                        "marginRight": 2,
+                        "textAlign": "center",
+                        "width": 30,
+                      }
+                    }
+                    type="FontAwesome"
+                  />,
+                  "name": "My Lists",
+                },
+                Object {
+                  "callback": [Function],
+                  "icon": <Icon
+                    name="user"
+                    style={
+                      Object {
+                        "marginRight": 2,
+                        "textAlign": "center",
+                        "width": 30,
+                      }
+                    }
+                    type="FontAwesome"
+                  />,
+                  "name": "Settings",
+                },
+                Object {
+                  "callback": [Function],
+                  "icon": <Icon
+                    name="sign-out"
+                    style={
+                      Object {
+                        "marginRight": 2,
+                        "textAlign": "center",
+                        "width": 30,
+                      }
+                    }
+                    type="FontAwesome"
+                  />,
+                  "name": "Logout",
+                },
               ]
             }
             renderRow={[Function]}
@@ -99,34 +306,136 @@ ShallowWrapper {
         "key": undefined,
         "nodeType": "function",
         "props": Object {
-          "children": <List
-            dataArray={
-              Array [
-                "My Lists",
-                "Settings",
-                "Logout",
-              ]
-            }
-            renderRow={[Function]}
-          />,
+          "children": Array [
+            <Logo />,
+            <List
+              dataArray={
+                Array [
+                  Object {
+                    "callback": [Function],
+                    "icon": <Icon
+                      name="list"
+                      style={
+                        Object {
+                          "marginRight": 2,
+                          "textAlign": "center",
+                          "width": 30,
+                        }
+                      }
+                      type="FontAwesome"
+                    />,
+                    "name": "My Lists",
+                  },
+                  Object {
+                    "callback": [Function],
+                    "icon": <Icon
+                      name="user"
+                      style={
+                        Object {
+                          "marginRight": 2,
+                          "textAlign": "center",
+                          "width": 30,
+                        }
+                      }
+                      type="FontAwesome"
+                    />,
+                    "name": "Settings",
+                  },
+                  Object {
+                    "callback": [Function],
+                    "icon": <Icon
+                      name="sign-out"
+                      style={
+                        Object {
+                          "marginRight": 2,
+                          "textAlign": "center",
+                          "width": 30,
+                        }
+                      }
+                      type="FontAwesome"
+                    />,
+                    "name": "Logout",
+                  },
+                ]
+              }
+              renderRow={[Function]}
+            />,
+          ],
+          "padder": true,
+          "style": Object {
+            "paddingTop": 20,
+          },
         },
         "ref": null,
-        "rendered": Object {
-          "instance": null,
-          "key": undefined,
-          "nodeType": "function",
-          "props": Object {
-            "dataArray": Array [
-              "My Lists",
-              "Settings",
-              "Logout",
-            ],
-            "renderRow": [Function],
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "class",
+            "props": Object {},
+            "ref": null,
+            "rendered": null,
+            "type": [Function],
           },
-          "ref": null,
-          "rendered": null,
-          "type": [Function],
-        },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "function",
+            "props": Object {
+              "dataArray": Array [
+                Object {
+                  "callback": [Function],
+                  "icon": <Icon
+                    name="list"
+                    style={
+                      Object {
+                        "marginRight": 2,
+                        "textAlign": "center",
+                        "width": 30,
+                      }
+                    }
+                    type="FontAwesome"
+                  />,
+                  "name": "My Lists",
+                },
+                Object {
+                  "callback": [Function],
+                  "icon": <Icon
+                    name="user"
+                    style={
+                      Object {
+                        "marginRight": 2,
+                        "textAlign": "center",
+                        "width": 30,
+                      }
+                    }
+                    type="FontAwesome"
+                  />,
+                  "name": "Settings",
+                },
+                Object {
+                  "callback": [Function],
+                  "icon": <Icon
+                    name="sign-out"
+                    style={
+                      Object {
+                        "marginRight": 2,
+                        "textAlign": "center",
+                        "width": 30,
+                      }
+                    }
+                    type="FontAwesome"
+                  />,
+                  "name": "Logout",
+                },
+              ],
+              "renderRow": [Function],
+            },
+            "ref": null,
+            "rendered": null,
+            "type": [Function],
+          },
+        ],
         "type": [Function],
       },
       "type": [Function],
