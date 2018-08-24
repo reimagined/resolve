@@ -1,8 +1,8 @@
 # Shopping List Example
 
-![shopping-list](https://user-images.githubusercontent.com/19663260/41165183-af6e4f02-6b45-11e8-9494-38aace0c518e.png)
+![shopping-list](https://user-images.githubusercontent.com/19663260/44575926-f3613580-a795-11e8-825f-670c36b843dd.png)
 
-//todo
+This example demonstrates how to work with [read-models](https://github.com/reimagined/resolve/blob/master/docs/Read%20Model.md) and [view-models](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md).
 
 ```sh
 npx create-resolve-app resolve-shopping-list -e shopping-list
