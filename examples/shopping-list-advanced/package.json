@@ -1,6 +1,6 @@
 {
   "name": "@react-native-shopping-list/scripts",
-  "version": "0.14.0",
+  "version": "0.14.2",
   "private": true,
   "scripts": {
     "build": "babel-node ./index.js build",
@@ -25,8 +25,8 @@
     "@babel/plugin-transform-runtime": "7.0.0-beta.55",
     "@babel/preset-env": "7.0.0-beta.55",
     "@babel/preset-react": "7.0.0-beta.55",
-    "resolve-redux": "0.14.0",
-    "resolve-scripts": "0.14.0",
-    "resolve-subscribe-socket.io": "0.14.0"
+    "resolve-redux": "0.14.2",
+    "resolve-scripts": "0.14.2",
+    "resolve-subscribe-socket.io": "0.14.2"
   }
 }

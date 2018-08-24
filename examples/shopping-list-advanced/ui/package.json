@@ -1,6 +1,6 @@
 {
   "name": "@react-native-shopping-list/ui",
-  "version": "0.14.0",
+  "version": "0.14.2",
   "private": true,
   "main": "src/index",
   "scripts": {
