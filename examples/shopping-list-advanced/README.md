@@ -46,31 +46,38 @@ When you are ready to share your project with others (for example, by deploying 
 📁 react-native-shopping-list
     📁 domain
         📁 auth
-            📄 config.js
+            📄 index.js
             📄 jwt_secret.js
         📁 aggregates
-            📄 aggregate-name.commands.js
-            📄 aggregate-name.projection.js
+            📄 shopping_list.commands.js
+            📄 shopping_list.projection.js
+            📄 user.commands.js
+            📄 user.projection.js
+            📄 validation.js
         📁 read-models
-            📄 read-model-name.projection.js
-            📄 read-model-name.resolvers.js
+            📄 default.projection.js
+            📄 default.resolvers.js
         📁 view-models
-            📄 view-model-name.projection.js
-            📄 view-model-name.serialize_state.js
-            📄 view-model-name.deserialize_state.js
-        📄 eventTypes.js
+            📄 shopping_list.projection.js
+        📄 event_types.js
         📄 package.json
     📁 web
         📁 components
         📁 containers
             📄 App.js
         📁 redux
+            📁 actions
+                📄 optimistic_actions.js
             📁 store
-                📄 config.js
+                📄 index.js
             📁 reducers
-                📄 config.js
+                📄 index.js
+                📄 optimistic_sharings.js
+                📄 optimistic_shopping_lists.js
             📁 middlewares
-                📄 config.js
+                📄 index.js
+                📄 optimistic_sharings_middleware.js
+                📄 optimistic_shopping_lists_middleware.js
         📁 static
         📁 test
         📄 routes.js
@@ -81,12 +88,21 @@ When you are ready to share your project with others (for example, by deploying 
         📁 containers
             📄 App.js
         📁 redux
+            📁 actions
+                📄 aggregate_actions.js
+                📄 refresh_actions.js
             📁 store
-                📄 config.js
+                📄 index.js
             📁 reducers
-                📄 config.js
+                📄 index.js
+                📄 optimistic_sharings.js
+                📄 optimistic_shopping_lists.js
+                📄 refresh.js
             📁 middlewares
-                📄 config.js
+                📄 index.js
+                📄 optimistic_sharings_middleware.js
+                📄 optimistic_shopping_lists_middleware.js
+            📄 action_types.js
         📁 test
         📄 config.js
         📄 app.json
