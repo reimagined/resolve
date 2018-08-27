@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 
-import jwtSecret from '../auth/jwtSecret'
+import jwtSecret from '../auth/jwt_secret'
 
 export default {
   sharings: async (store, { query, shoppingListId, jwtToken }) => {

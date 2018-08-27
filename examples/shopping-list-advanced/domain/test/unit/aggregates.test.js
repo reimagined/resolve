@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken'
 
-import commands from '../../aggregates/shoppingList.commands'
-import { SHOPPING_LIST_CREATED } from '../../eventTypes'
-import jwtSecret from '../../auth/jwtSecret'
+import commands from '../../aggregates/shopping_list.commands'
+import { SHOPPING_LIST_CREATED } from '../../event_types'
+import jwtSecret from '../../auth/jwt_secret'
 
 describe('aggregates', () => {
   describe('ShoppingList', () => {

@@ -10,8 +10,8 @@ const appConfig = {
   aggregates: [
     {
       name: 'ShoppingList',
-      commands: 'domain/aggregates/shoppingList.commands.js',
-      projection: 'domain/aggregates/shoppingList.projection.js'
+      commands: 'domain/aggregates/shopping_list.commands.js',
+      projection: 'domain/aggregates/shopping_list.projection.js'
     },
     {
       name: 'User',
@@ -22,7 +22,7 @@ const appConfig = {
   viewModels: [
     {
       name: 'ShoppingList',
-      projection: 'domain/view-models/shoppingList.projection.js'
+      projection: 'domain/view-models/shopping_list.projection.js'
     }
   ],
   readModels: [

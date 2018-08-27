@@ -2,7 +2,7 @@ import {
   SHOPPING_LIST_CREATED,
   SHOPPING_LIST_SHARED,
   SHOPPING_LIST_UNSHARED
-} from '../eventTypes'
+} from '../event_types'
 
 export default {
   Init: () => ({}),

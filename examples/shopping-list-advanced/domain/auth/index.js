@@ -3,7 +3,7 @@ import uuid from 'uuid'
 import crypto from 'crypto'
 import jwt from 'jsonwebtoken'
 
-import jwtSecret from './jwtSecret'
+import jwtSecret from './jwt_secret'
 
 const failureRedirect = error => `/error?text=${error.message.toString()}`
 const errorRedirect = error => `/error?text=${error.message.toString()}`

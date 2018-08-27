@@ -1,4 +1,4 @@
-import { USER_CREATED } from '../eventTypes'
+import { USER_CREATED } from '../event_types'
 
 export default {
   Init: () => ({}),
