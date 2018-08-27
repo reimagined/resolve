@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { View } from 'react-native'
 
 export const mapStateToProps = state => {
   return {
@@ -8,8 +7,8 @@ export const mapStateToProps = state => {
   }
 }
 
-const requiredNoAuth = Component => {
-  class RequiredNoAuth extends React.PureComponent {
+const required_auth = Component => {
+  class RequiredAuth extends React.PureComponent {
     componentDidMount() {
       this.optionalRedirect()
     }
@@ -21,19 +20,19 @@ const requiredNoAuth = Component => {
     }
 
     optionalRedirect = () => {
-      if (this.props.jwt.id) {
-        this.props.navigation.navigate('My Lists')
+      if (!this.props.jwt.id) {
+        this.props.navigation.navigate('Login')
       }
     }
 
     render() {
       const { jwt, ...props } = this.props
 
-      return jwt.id ? <View /> : <Component {...props} />
+      return jwt.id ? <Component {...props} /> : null
     }
   }
 
-  return connect(mapStateToProps)(RequiredNoAuth)
+  return connect(mapStateToProps)(RequiredAuth)
 }
 
-export default requiredNoAuth
+export default required_auth

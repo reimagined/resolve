@@ -16,7 +16,7 @@ import {
 import { connect } from 'react-redux'
 import { View, StyleSheet } from 'react-native'
 
-import requiredAuth from '../decorators/requiredAuth'
+import required_auth from '../decorators/required_auth'
 
 import FindUsers from './FindUsers'
 
@@ -114,4 +114,4 @@ export const mapStateToProps = (
   shoppingListName: state.optimisticSharings.name
 })
 
-export default requiredAuth(connect(mapStateToProps)(ShareForm))
+export default required_auth(connect(mapStateToProps)(ShareForm))

@@ -8,16 +8,16 @@ export const mapStateToProps = state => {
   }
 }
 
-const requiredAuth = Component => {
-  class RequiredAuth extends React.PureComponent {
+const required_no_auth = Component => {
+  class RequiredNoAuth extends React.PureComponent {
     render() {
       const { jwt, ...props } = this.props
 
-      return jwt.id ? <Component {...props} /> : <Redirect to="/login" />
+      return jwt.id ? <Redirect to="/" /> : <Component {...props} />
     }
   }
 
-  return connect(mapStateToProps)(RequiredAuth)
+  return connect(mapStateToProps)(RequiredNoAuth)
 }
 
-export default requiredAuth
+export default required_no_auth

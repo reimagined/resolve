@@ -2,7 +2,7 @@ import {
   OPTIMISTIC_SHARINGS_SYNC,
   OPTIMISTIC_SHARINGS_SHOPPING_LIST_SHARE,
   OPTIMISTIC_SHARINGS_SHOPPING_LIST_UNSHARE
-} from '../actions/optimisticActions'
+} from '../action_types'
 
 const initialState = {
   id: '',
@@ -13,7 +13,7 @@ const initialState = {
   }
 }
 
-const optimisticSharings = (state = initialState, action) => {
+const optimistic_sharings = (state = initialState, action) => {
   switch (action.type) {
     case OPTIMISTIC_SHARINGS_SYNC: {
       return action.payload
@@ -56,4 +56,4 @@ const optimisticSharings = (state = initialState, action) => {
   }
 }
 
-export default optimisticSharings
+export default optimistic_sharings

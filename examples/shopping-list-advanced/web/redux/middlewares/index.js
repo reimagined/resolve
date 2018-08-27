@@ -1,4 +1,4 @@
-import optimisticShoppingListsMiddleware from './optimisticShoppingListsMiddleware'
-import optimisticSharingsMiddleware from './optimisticSharingsMiddleware'
+import optimistic_shopping_lists_middleware from './optimistic_shopping_lists_middleware'
+import optimisticSharingsMiddleware from './optimistic_sharings_middleware'
 
-export default [optimisticShoppingListsMiddleware, optimisticSharingsMiddleware]
+export default [optimistic_shopping_lists_middleware, optimisticSharingsMiddleware]

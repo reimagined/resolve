@@ -3,7 +3,7 @@ import React from 'react'
 import { FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap'
 
 import Form from './Form'
-import requiredNoAuth from '../decorators/requiredNoAuth'
+import required_no_auth from '../decorators/required_no_auth'
 
 class Login extends React.PureComponent {
   state = {
@@ -63,4 +63,4 @@ class Login extends React.PureComponent {
   }
 }
 
-export default requiredNoAuth(Login)
+export default required_no_auth(Login)

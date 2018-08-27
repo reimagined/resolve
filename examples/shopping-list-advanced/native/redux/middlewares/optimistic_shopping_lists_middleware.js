@@ -1,14 +1,14 @@
-import { actionTypes } from 'resolve-redux'
+import { actionTypes } from '../../resolve/resolve-redux'
 
 import {
   OPTIMISTIC_SHOPPING_LIST_SYNC,
   OPTIMISTIC_SHOPPING_LIST_CREATE,
   OPTIMISTIC_SHOPPING_LIST_REMOVE
-} from '../actions/optimisticActions'
+} from '../action_types'
 
 const { SEND_COMMAND_SUCCESS, LOAD_READMODEL_STATE_SUCCESS } = actionTypes
 
-const optimisticShoppingListsMiddleware = store => next => action => {
+const optimistic_shopping_lists_middleware = store => next => action => {
   if (
     action.type === LOAD_READMODEL_STATE_SUCCESS &&
     action.readModelName === 'Default' &&
@@ -49,4 +49,4 @@ const optimisticShoppingListsMiddleware = store => next => action => {
   next(action)
 }
 
-export default optimisticShoppingListsMiddleware
+export default optimistic_shopping_lists_middleware

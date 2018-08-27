@@ -17,7 +17,7 @@ import { connect } from 'react-redux'
 import { StyleSheet } from 'react-native'
 
 import { connectReadModel } from '../resolve/resolve-redux'
-import requiredAuth from '../decorators/requiredAuth'
+import required_auth from '../decorators/required_auth'
 
 const styles = StyleSheet.create({
   label: {
@@ -101,7 +101,7 @@ export const mapStateToProps = (state, { data }) => ({
 export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(aggregateActions, dispatch)
 
-export default requiredAuth(
+export default required_auth(
   connectReadModel(mapStateToOptions)(
     connect(
       mapStateToProps,

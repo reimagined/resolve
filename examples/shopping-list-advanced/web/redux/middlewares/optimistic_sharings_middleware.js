@@ -4,7 +4,7 @@ import {
   OPTIMISTIC_SHARINGS_SYNC,
   OPTIMISTIC_SHARINGS_SHOPPING_LIST_SHARE,
   OPTIMISTIC_SHARINGS_SHOPPING_LIST_UNSHARE
-} from '../actions/optimisticActions'
+} from '../action_types'
 
 const { SEND_COMMAND_SUCCESS, LOAD_READMODEL_STATE_SUCCESS } = actionTypes
 

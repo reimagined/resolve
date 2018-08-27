@@ -20,7 +20,7 @@ import {
 import Image from './Image'
 import NotFound from '../components/NotFound'
 
-import requiredAuth from '../decorators/requiredAuth'
+import required_auth from '../decorators/required_auth'
 
 const ButtonLink = connectRootBasedUrls(['href'])(Button)
 
@@ -193,7 +193,7 @@ export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
     dispatch
   )
 
-export default requiredAuth(
+export default required_auth(
   connectViewModel(mapStateToOptions)(
     connect(
       mapStateToProps,

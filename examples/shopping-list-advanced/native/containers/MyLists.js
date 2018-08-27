@@ -13,11 +13,11 @@ import {
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
-import requiredAuth from '../decorators/requiredAuth'
+import required_auth from '../decorators/required_auth'
 import { connectReadModel } from '../resolve/resolve-redux'
 import ShoppingLists from '../components/ShoppingLists'
 import ShoppingListCreator from '../components/ShoppingListCreator'
-import * as refreshActions from '../redux/actions/refreshActions'
+import * as refreshActions from '../redux/actions/refresh_actions'
 
 export class MyLists extends React.PureComponent {
   render() {
@@ -82,7 +82,7 @@ export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
     dispatch
   )
 
-export default requiredAuth(
+export default required_auth(
   connectReadModel(mapStateToOptions)(
     connect(
       mapStateToProps,

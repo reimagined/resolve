@@ -1,4 +1,4 @@
-import { REFRESH } from '../actionTypes'
+import { REFRESH } from '../action_types'
 
 const initialState = {
   timestamp: Date.now()

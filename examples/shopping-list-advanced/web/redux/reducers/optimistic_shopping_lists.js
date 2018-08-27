@@ -2,9 +2,9 @@ import {
   OPTIMISTIC_SHOPPING_LIST_SYNC,
   OPTIMISTIC_SHOPPING_LIST_CREATE,
   OPTIMISTIC_SHOPPING_LIST_REMOVE
-} from '../actionTypes'
+} from '../action_types'
 
-const optimisticShoppingLists = (state = [], action) => {
+const optimistic_shopping_lists = (state = [], action) => {
   switch (action.type) {
     case OPTIMISTIC_SHOPPING_LIST_SYNC: {
       return action.payload
@@ -27,4 +27,4 @@ const optimisticShoppingLists = (state = [], action) => {
   }
 }
 
-export default optimisticShoppingLists
+export default optimistic_shopping_lists
