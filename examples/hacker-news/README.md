@@ -2,7 +2,7 @@
 
 ![hn](https://user-images.githubusercontent.com/19663260/41345723-23bce79a-6f0d-11e8-891a-ceb39c86db62.png)
 
-This example demonstrates [HackerNews](https://news.ycombinator.com/) application clone with CQRS and EventSourсing. To install:
+This example demonstrates [HackerNews](https://news.ycombinator.com/) application clone with CQRS and EventSourcing. To install:
 
 ```bash
 npx create-resolve-app hacker-news-example -e hacker-news
