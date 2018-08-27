@@ -32,10 +32,11 @@ const optionsInfo =
   ` directory${EOL}` +
   `            Now you can choose one of the next examples:${EOL}` +
   `              hello-world - used as a template for new reSolve applications ${EOL}` +
-  `              nested-list - shows how to work with read-models and view-models ${EOL}` +
-  `              with-postcss - demonstrates how to work with postCSS ${EOL}` +
-  `              with-saga - demonstrates how to use sagas ${EOL}` +
-  `              with-styled-components - demonstrates how to work with Styled Components ${EOL}` +
+  `              shopping-list - shows how to work with read-models and view-models ${EOL}` +
+  `              shopping-list-advanced - shows how to work with React-Native ${EOL}` +
+  `              with-postcss - shows how to work with postCSS ${EOL}` +
+  `              with-saga - shows how to use sagas ${EOL}` +
+  `              with-styled-components - shows how to work with Styled Components ${EOL}` +
   `              hacker-news - HackerNews application clone with CQRS and EventSourcing ${EOL}` +
   `  -b, --branch     branch (optional, master is default)${EOL}` +
   `  -c, --commit     commit ${EOL}` +
@@ -78,6 +79,11 @@ const messages = {
     EOL +
     `Run ${chalk.cyan('create-resolve-app --help')} to see all options.`
 }
+
+const useYarn =
+  (process.env.npm_execpath && process.env.npm_execpath.includes('yarn')) ||
+  (process.env.npm_config_user_agent &&
+    process.env.npm_config_user_agent.includes('yarn'))
 
 const options = commandLineArgs(optionDefinitions, { partial: true })
 const unknownOptions =
@@ -162,7 +168,7 @@ if (unknownOptions && unknownOptions.length) {
     if (
       errMessage.toLowerCase().indexOf('invalid or unsupported zip format') > -1
     ) {
-      let buf = fs.readFileSync(tmpFilePath).toString()
+      const buf = fs.readFileSync(tmpFilePath).toString()
       if (buf.toLowerCase().indexOf('not found')) {
         log(chalk.red('Referent commit does not exists in resolve repository.'))
         log(
@@ -179,7 +185,7 @@ if (unknownOptions && unknownOptions.length) {
   }
 
   const testExampleExists = () => {
-    var examplesDirs = fs
+    const examplesDirs = fs
       .readdirSync(`./${appName}/${repoDirName}/examples`)
       .filter(d =>
         fs.statSync(`./${appName}/${repoDirName}/examples/${d}`).isDirectory()
@@ -197,7 +203,7 @@ if (unknownOptions && unknownOptions.length) {
     new Promise((resolve, reject) => {
       log()
       log(chalk.green('Copy example'))
-      let command =
+      const command =
         `cd ${appName} ` +
         ` && cp -r ${examplePath}/* . && cp -r ${examplePath}/.[a-zA-Z0-9]* .` +
         ` && rm -rf ./${repoDirName}`
@@ -211,8 +217,8 @@ if (unknownOptions && unknownOptions.length) {
 
   const copyExampleCMD = prevErr => {
     log()
-    let examplePathCMD = examplePath.split('/').join('\\')
-    let command =
+    const examplePathCMD = examplePath.split('/').join('\\')
+    const command =
       `cd ${appName} ` +
       ` && xcopy ${examplePathCMD} /E /Q ` +
       ` && rmdir /S /Q ${repoDirName}`
@@ -252,7 +258,7 @@ if (unknownOptions && unknownOptions.length) {
     log()
     log(chalk.green('Patch package.json'))
 
-    let packageJsonPath = `${process.cwd()}/${appName}/package.json`,
+    const packageJsonPath = `${process.cwd()}/${appName}/package.json`,
       packageJson = require(packageJsonPath)
 
     packageJson.name = appName
@@ -274,7 +280,15 @@ if (unknownOptions && unknownOptions.length) {
   const install = () => {
     log()
     log(chalk.green('Install dependencies'))
-    let command = `cd ./${appName} && npm i`
+
+    const packageJsonPath = `${process.cwd()}/${appName}/package.json`,
+      packageJson = require(packageJsonPath)
+
+    if (packageJson.workspaces && !useYarn) {
+      throw 'Managing dependencies in a monorepo is not supported with `npm`. Please use `yarn` to install dependencies.'
+    }
+
+    const command = `cd ./${appName} && ${useYarn ? 'yarn' : 'npm i'}`
     const proc = spawn.sync(command, [], { stdio: 'inherit', shell: true })
     if (proc.status !== 0) {
       throw Error(`\`${command}\` failed`)
@@ -283,7 +297,7 @@ if (unknownOptions && unknownOptions.length) {
 
   const printFinishOutput = () => {
     const displayCommand = (isDefaultCmd = false) =>
-      isDefaultCmd ? 'npm' : 'npm run'
+      useYarn ? 'yarn' : isDefaultCmd ? 'npm' : 'npm run'
 
     log()
     log(`Success! ${appName} is created `)
