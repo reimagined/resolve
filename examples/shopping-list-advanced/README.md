@@ -1,14 +1,21 @@
-# React Native Shopping List Example
+# Shopping List Advanced Example
 
 This example demonstrates how to use [React Native](https://github.com/react-community/create-react-native-app) in a reSolve app.
 
-| ![Web](https://user-images.githubusercontent.com/5055654/43512907-fbed0490-9584-11e8-8065-27a26abcbe41.png)           | ![React-native](https://user-images.githubusercontent.com/5055654/43513480-828fe250-9586-11e8-8999-c29114134e33.png) |
-|-----|--------------|
+| Web |
+| ------ |
+| <img src="https://user-images.githubusercontent.com/5055654/44654333-fcead780-a9f9-11e8-9527-05ac55526e44.gif" height="252" />  |
 
-Get the example:
+| Android | Ios |
+| ---------- | ---- |
+| <img src="https://user-images.githubusercontent.com/5055654/44654326-f4929c80-a9f9-11e8-83f3-855030b0d42c.gif" height="400" />  | <img src="https://user-images.githubusercontent.com/5055654/44654321-efcde880-a9f9-11e8-8bca-b4c02a6f5158.gif" height="400" /> |
+
+Get the example: 
+
+!!! Warning: use this example only with `yarn` !!! 
 
 ```sh
-npx create-resolve-app -e react-native-shopping-list react-native-shopping-list
+yarn create resolve-app -e shopping-list-advanced shopping-list-advanced
 ```
 
 Run the example:
@@ -16,7 +23,7 @@ Run the example:
 1. First Terminal
 
     ```sh
-    npm run dev:web
+    yarn dev
     ```
 
     Runs your web app in development mode.
@@ -24,7 +31,7 @@ Run the example:
 2. Second Terminal
 
     ```sh
-    npm run start:native
+    yarn start:native
     ```
 
     Runs your native app in development mode with an interactive prompt. To run it without a prompt, use the `--no-interactive` flag.
@@ -40,7 +47,7 @@ When you are ready to share your project with others (for example, by deploying 
     📁 domain
         📁 auth
             📄 config.js
-            📄 jwtSecret.js
+            📄 jwt_secret.js
         📁 aggregates
             📄 aggregate-name.commands.js
             📄 aggregate-name.projection.js
@@ -89,14 +96,14 @@ When you are ready to share your project with others (for example, by deploying 
         📁 Component1
             📄 index.android.js
             📄 index.ios.js
-            📄 index.web.js
+            📄 index.js
         📁 Component2
             📄 index.android.js
             📄 index.ios.js
-            📄 index.web.js
+            📄 index.js
         📄 package.json
     📁 utils
-        📄 calcSomething.js
+        📄 calc_something.js
         📄 package.json
     📄 package.json
     📄 config.app.js	
@@ -107,11 +114,3 @@ When you are ready to share your project with others (for example, by deploying 
     📄 README.md
     📄 .gitignore
 ```
-
-# Screenshots
-TODO
-![resolve react native shopping list example 7](https://user-images.githubusercontent.com/5055654/44088408-a999f666-9fcb-11e8-81ec-fa657b03eea9.png)
-![resolve react native shopping list example 3](https://user-images.githubusercontent.com/5055654/44088404-a91b208e-9fcb-11e8-9a59-650258cff342.png)
-![resolve react native shopping list example 4](https://user-images.githubusercontent.com/5055654/44088405-a9393cfe-9fcb-11e8-9667-c02e2322034e.png)
-![resolve react native shopping list example 5](https://user-images.githubusercontent.com/5055654/44088406-a95623dc-9fcb-11e8-93e0-d783d9e0985a.png)
-![resolve react native shopping list example 6](https://user-images.githubusercontent.com/5055654/44088407-a9772d98-9fcb-11e8-8392-8fb309e6d3a6.png)
