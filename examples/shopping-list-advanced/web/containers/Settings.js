@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { connectReadModel } from 'resolve-redux'
 import { ControlLabel, FormControl } from 'react-bootstrap'
 
-import required_auth from '../decorators/required_auth'
+import requiredAuth from '../decorators/required_auth'
 
 class Settings extends React.PureComponent {
   state = {
@@ -67,7 +67,7 @@ export const mapStateToProps = (state, { data }) => ({
 export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(aggregateActions, dispatch)
 
-export default required_auth(
+export default requiredAuth(
   connectReadModel(mapStateToOptions)(
     connect(
       mapStateToProps,

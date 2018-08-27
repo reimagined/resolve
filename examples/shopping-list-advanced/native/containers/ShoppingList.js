@@ -14,7 +14,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
 import { connectViewModel } from '../resolve/resolve-redux'
-import required_auth from '../decorators/required_auth'
+import requiredAuth from '../decorators/required_auth'
 import ShoppingItemCreator from '../components/ShoppingItemCreator'
 import ShoppingListPanel from '../components/ShoppingListPanel'
 import ShoppingListItems from '../components/ShoppingListItems'
@@ -115,7 +115,7 @@ export const mapStateToProps = (state, ownProps) => {
 export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(aggregateActions, dispatch)
 
-export default required_auth(
+export default requiredAuth(
   connectViewModel(mapStateToOptions)(
     connect(
       mapStateToProps,

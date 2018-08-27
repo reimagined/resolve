@@ -16,7 +16,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
 import { actions } from '../resolve/resolve-redux'
-import required_no_auth from '../decorators/required_no_auth'
+import requiredNoAuth from '../decorators/required_no_auth'
 import Logo from '../components/Logo'
 
 const styles = StyleSheet.create({
@@ -116,7 +116,7 @@ export class Login extends React.PureComponent {
 export const mapDispatchToProps = dispatch =>
   bindActionCreators(actions, dispatch)
 
-export default required_no_auth(
+export default requiredNoAuth(
   connect(
     null,
     mapDispatchToProps

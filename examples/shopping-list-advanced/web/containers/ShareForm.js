@@ -4,7 +4,7 @@ import { FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 import FindUsers from './FindUsers'
-import required_auth from '../decorators/required_auth'
+import requiredAuth from '../decorators/required_auth'
 
 class ShareForm extends React.PureComponent {
   state = {
@@ -58,4 +58,4 @@ export const mapStateToProps = (
   shoppingListName: state.optimisticSharings.name
 })
 
-export default required_auth(connect(mapStateToProps)(ShareForm))
+export default requiredAuth(connect(mapStateToProps)(ShareForm))

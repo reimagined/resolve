@@ -13,7 +13,7 @@ import {
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
-import required_auth from '../decorators/required_auth'
+import requiredAuth from '../decorators/required_auth'
 import { connectReadModel } from '../resolve/resolve-redux'
 import ShoppingLists from '../components/ShoppingLists'
 import ShoppingListCreator from '../components/ShoppingListCreator'
@@ -82,7 +82,7 @@ export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
     dispatch
   )
 
-export default required_auth(
+export default requiredAuth(
   connectReadModel(mapStateToOptions)(
     connect(
       mapStateToProps,

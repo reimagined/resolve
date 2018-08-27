@@ -8,7 +8,7 @@ import {
 
 const { SEND_COMMAND_SUCCESS, LOAD_READMODEL_STATE_SUCCESS } = actionTypes
 
-const optimistic_shopping_lists_middleware = store => next => action => {
+const optimisticShoppingListsMiddleware = store => next => action => {
   if (
     action.type === LOAD_READMODEL_STATE_SUCCESS &&
     action.readModelName === 'Default' &&
@@ -49,4 +49,4 @@ const optimistic_shopping_lists_middleware = store => next => action => {
   next(action)
 }
 
-export default optimistic_shopping_lists_middleware
+export default optimisticShoppingListsMiddleware

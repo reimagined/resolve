@@ -13,7 +13,7 @@ const initialState = {
   }
 }
 
-const optimistic_sharings = (state = initialState, action) => {
+const optimisticSharings = (state = initialState, action) => {
   switch (action.type) {
     case OPTIMISTIC_SHARINGS_SYNC: {
       return action.payload
@@ -56,4 +56,4 @@ const optimistic_sharings = (state = initialState, action) => {
   }
 }
 
-export default optimistic_sharings
+export default optimisticSharings

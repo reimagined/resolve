@@ -8,7 +8,7 @@ export const mapStateToProps = state => {
   }
 }
 
-const required_auth = Component => {
+const requiredAuth = Component => {
   class RequiredAuth extends React.PureComponent {
     render() {
       const { jwt, ...props } = this.props
@@ -20,4 +20,4 @@ const required_auth = Component => {
   return connect(mapStateToProps)(RequiredAuth)
 }
 
-export default required_auth
+export default requiredAuth
