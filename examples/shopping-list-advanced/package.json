@@ -3,15 +3,15 @@
   "version": "0.14.2",
   "private": true,
   "scripts": {
-    "build": "babel-node ./index.js build",
-    "dev": "babel-node ./index.js dev",
-    "start": "babel-node ./index.js start",
+    "build": "babel-node ./run.js build",
+    "dev": "babel-node ./run.js dev",
+    "start": "babel-node ./run.js start",
     "start:native": "cd native && npm run start",
     "test": "npm run test:domain && npm run test:web && npm run test:native",
     "test:domain": "cd domain && npm run test",
     "test:web": "cd web && npm run test",
     "test:native": "cd native && npm run test",
-    "test:functional": "babel-node ./index.js test:functional"
+    "test:functional": "babel-node ./run.js test:functional"
   },
   "dependencies": {
     "@babel/runtime": "7.0.0-beta.55"
@@ -28,5 +28,10 @@
     "resolve-redux": "0.14.2",
     "resolve-scripts": "0.14.2",
     "resolve-subscribe-socket.io": "0.14.2"
+  },
+  "workspaces": {
+    "packages": [
+      "*"
+    ]
   }
 }
