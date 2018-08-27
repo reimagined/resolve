@@ -66,8 +66,6 @@ When you are ready to share your project with others (for example, by deploying 
         📁 containers
             📄 App.js
         📁 redux
-            📁 actions
-                📄 optimistic_actions.js
             📁 store
                 📄 index.js
             📁 reducers
@@ -78,6 +76,7 @@ When you are ready to share your project with others (for example, by deploying 
                 📄 index.js
                 📄 optimistic_sharings_middleware.js
                 📄 optimistic_shopping_lists_middleware.js
+            📄 action_types.js
         📁 static
         📁 test
         📄 routes.js
