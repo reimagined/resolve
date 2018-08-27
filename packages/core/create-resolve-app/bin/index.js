@@ -285,6 +285,7 @@ if (unknownOptions && unknownOptions.length) {
       packageJson = require(packageJsonPath)
 
     if (packageJson.workspaces && !useYarn) {
+      // eslint-disable-next-line
       throw 'Managing dependencies in a monorepo is not supported with `npm`. Please use `yarn` to install dependencies.'
     }
 

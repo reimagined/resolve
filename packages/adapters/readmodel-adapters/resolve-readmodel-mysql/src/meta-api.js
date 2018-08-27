@@ -2,21 +2,23 @@ const getMetaInfo = async (pool, checkStoredTableSchema) => {
   const { connection, escapeId, metaName } = pool
 
   await connection.execute(`CREATE TABLE IF NOT EXISTS ${escapeId(metaName)} (
-      FirstKey VARCHAR(128) NOT NULL,
-      SecondKey VARCHAR(128) NULL,
-      Value JSON NULL
+      \`FirstKey\` VARCHAR(128) NOT NULL,
+      \`SecondKey\` VARCHAR(128) NOT NULL DEFAULT '',
+      \`Value\` JSON NULL,
+      PRIMARY KEY(\`FirstKey\`, \`SecondKey\`),
+      INDEX USING BTREE(\`FirstKey\`)
     )`)
 
-  pool.metaInfo = { tables: {}, timestamp: 0 }
+  pool.metaInfo = { tables: {}, timestamp: 0, aggregatesVersionsMap: new Map() }
 
   let [rows] = await connection.execute(
-    `SELECT Value AS Timestamp FROM ${escapeId(metaName)}
-     WHERE FirstKey="Timestamp"`
+    `SELECT \`Value\` AS \`Timestamp\` FROM ${escapeId(metaName)}
+     WHERE \`FirstKey\`="Timestamp"`
   )
 
   if (rows.length === 0) {
     await connection.execute(
-      `INSERT INTO ${escapeId(metaName)}(FirstKey, Value)
+      `INSERT INTO ${escapeId(metaName)}(\`FirstKey\`, \`Value\`)
        VALUES("Timestamp", CAST("0" AS JSON))`
     )
   } else {
@@ -26,9 +28,19 @@ const getMetaInfo = async (pool, checkStoredTableSchema) => {
   }
 
   void ([rows] = await connection.execute(
-    `SELECT SecondKey AS TableName, Value AS TableDescription
+    `SELECT \`SecondKey\` AS \`AggregateId\`, \`Value\` AS \`AggregateVersion\`
      FROM ${escapeId(metaName)}
-     WHERE FirstKey="TableDescriptor"`
+     WHERE \`FirstKey\`="AggregatesVersionsMap"`
+  ))
+
+  for (let { AggregateId, AggregateVersion } of rows) {
+    pool.metaInfo.aggregatesVersionsMap.set(AggregateId, AggregateVersion)
+  }
+
+  void ([rows] = await connection.execute(
+    `SELECT \`SecondKey\` AS \`TableName\`, \`Value\` AS \`TableDescription\`
+     FROM ${escapeId(metaName)}
+     WHERE \`FirstKey\`="TableDescriptor"`
   ))
 
   for (let { TableName, TableDescription } of rows) {
@@ -46,7 +58,8 @@ const getMetaInfo = async (pool, checkStoredTableSchema) => {
 
     await connection.execute(
       `DELETE FROM ${escapeId(metaName)}
-         WHERE FirstKey="TableDescriptor" AND SecondKey=?`,
+         WHERE \`FirstKey\`="TableDescriptor"
+         AND \`SecondKey\`=?`,
       [TableName]
     )
   }
@@ -61,13 +74,35 @@ const setLastTimestamp = async (
   timestamp
 ) => {
   await connection.execute(
-    `UPDATE ${escapeId(
-      metaName
-    )} SET Value=CAST(? AS JSON) WHERE FirstKey="Timestamp"`,
+    `UPDATE ${escapeId(metaName)} SET \`Value\`=CAST(? AS JSON)
+    WHERE \`FirstKey\`="Timestamp"`,
     [JSON.stringify(timestamp)]
   )
 
   metaInfo.timestamp = +timestamp
+}
+
+const setLastAggregateVersion = async (
+  { connection, escapeId, metaName, metaInfo },
+  aggregateId,
+  aggregateVersion
+) => {
+  await connection.execute(
+    `INSERT INTO ${escapeId(metaName)}(\`FirstKey\`, \`SecondKey\`, \`Value\`)
+    VALUES("AggregatesVersionsMap", ?, CAST(? AS JSON))
+    ON DUPLICATE KEY UPDATE \`Value\` = CAST(? AS JSON)`,
+    [
+      aggregateId,
+      JSON.stringify(aggregateVersion),
+      JSON.stringify(aggregateVersion)
+    ]
+  )
+
+  metaInfo.aggregatesVersionsMap.set(aggregateId, aggregateVersion)
+}
+
+const getLastAggregatesVersions = async ({ metaInfo }) => {
+  return metaInfo.aggregatesVersionsMap
 }
 
 const tableExists = async ({ metaInfo }, tableName) => {
@@ -84,9 +119,8 @@ const describeTable = async (
   metaSchema
 ) => {
   await connection.execute(
-    `INSERT INTO ${escapeId(
-      metaName
-    )}(FirstKey, SecondKey, Value) VALUES("TableDescriptor", ?, CAST(? AS JSON))`,
+    `INSERT INTO ${escapeId(metaName)}(\`FirstKey\`, \`SecondKey\`, \`Value\`)
+    VALUES("TableDescriptor", ?, CAST(? AS JSON))`,
     [tableName, JSON.stringify(metaSchema)]
   )
 
@@ -113,6 +147,8 @@ export default {
   getMetaInfo,
   getLastTimestamp,
   setLastTimestamp,
+  setLastAggregateVersion,
+  getLastAggregatesVersions,
   tableExists,
   getTableInfo,
   describeTable,

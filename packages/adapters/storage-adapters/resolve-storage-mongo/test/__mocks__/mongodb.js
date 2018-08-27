@@ -21,17 +21,22 @@ const db = {
       () =>
         !isRejectInsert ? Promise.resolve() : Promise.reject({ code: 11000 })
     ),
-    find: sinon.spy(() => ({
-      stream: sinon.spy(() => ({
-        on: (event, callback) => {
-          if (event === 'data') {
-            foundArray.forEach(elm => callback(elm))
-          } else if (event === 'end') {
-            callback()
+    find: sinon.spy(() => {
+      const cursor = {
+        sort: sinon.spy(() => cursor),
+        stream: sinon.spy(() => ({
+          on: (event, callback) => {
+            if (event === 'data') {
+              foundArray.forEach(elm => callback(elm))
+            } else if (event === 'end') {
+              callback()
+            }
           }
-        }
-      }))
-    })),
+        }))
+      }
+
+      return cursor
+    }),
     createIndex: sinon.spy(() => Promise.resolve())
   }))
 }

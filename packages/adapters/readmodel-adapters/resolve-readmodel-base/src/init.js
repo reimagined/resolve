@@ -32,7 +32,10 @@ const init = ({ metaApi, storeApi, internalContext }) => {
         await metaApi.setLastTimestamp(1)
         await internalContext.initHandler(storeApi)
       }
-      return lastTimestamp
+
+      const aggregatesVersionsMap = await metaApi.getLastAggregatesVersions()
+
+      return { lastTimestamp, aggregatesVersionsMap }
     },
 
     getReadInterface: async () => {

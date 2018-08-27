@@ -36,15 +36,17 @@ describe('es-mysql', () => {
     expect(format(executor.firstCall.args[0])).toEqual(
       format(
         `CREATE TABLE IF NOT EXISTS table(
-        timestamp BIGINT NOT NULL,
-        aggregateId VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-        aggregateVersion BIGINT NOT NULL,
-        type VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-        payload JSON NULL,
-        PRIMARY KEY(aggregateId, aggregateVersion),
-        INDEX USING BTREE(type),
-        INDEX USING BTREE(timestamp)
-      )`
+        \`timestamp\` BIGINT NOT NULL,
+        \`aggregateId\` VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+        \`aggregateVersion\` BIGINT NOT NULL,
+        \`type\` VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+        \`payload\` JSON NULL,
+        PRIMARY KEY(\`aggregateId\`, \`aggregateVersion\`),
+        INDEX USING BTREE(\`aggregateId\`),
+        INDEX USING BTREE(\`aggregateVersion\`),
+        INDEX USING BTREE(\`type\`),
+        INDEX USING BTREE(\`timestamp\`)
+        )`
       )
     )
 
@@ -52,8 +54,14 @@ describe('es-mysql', () => {
 
     expect(format(executor.secondCall.args[0])).toEqual(
       format(
-        `INSERT INTO table (timestamp, aggregateId, aggregateVersion, type, payload )
-         VALUES  (?, ?, ?, ?, ?)`
+        `INSERT INTO table (
+          \`timestamp\`,
+          \`aggregateId\`,
+          \`aggregateVersion\`,
+          \`type\`,
+          \`payload\`
+        )
+        VALUES  (?, ?, ?, ?, ?)`
       )
     )
 
@@ -81,22 +89,31 @@ describe('es-mysql', () => {
     expect(format(executor.firstCall.args[0])).toEqual(
       format(
         `CREATE TABLE IF NOT EXISTS table(
-        timestamp BIGINT NOT NULL,
-        aggregateId VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-        aggregateVersion BIGINT NOT NULL,
-        type VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-        payload JSON NULL,
-        PRIMARY KEY(aggregateId, aggregateVersion),
-        INDEX USING BTREE(type),
-        INDEX USING BTREE(timestamp)
-      )`
+          \`timestamp\` BIGINT NOT NULL,
+          \`aggregateId\` VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+          \`aggregateVersion\` BIGINT NOT NULL,
+          \`type\` VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+          \`payload\` JSON NULL,
+          PRIMARY KEY(\`aggregateId\`, \`aggregateVersion\`),
+          INDEX USING BTREE(\`aggregateId\`),
+          INDEX USING BTREE(\`aggregateVersion\`),
+          INDEX USING BTREE(\`type\`),
+          INDEX USING BTREE(\`timestamp\`)
+          )`
       )
     )
 
     expect(executor.firstCall.args[1]).toEqual([])
 
     expect(format(executor.secondCall.args[0])).toEqual(
-      format(`SELECT * FROM  table WHERE timestamp > ? AND type IN (?, ?)`)
+      format(`SELECT * FROM table
+      WHERE
+        \`timestamp\` > ? AND
+        \`type\` IN (?, ?)
+      ORDER BY
+        \`timestamp\` ASC,
+        \`aggregateVersion\` ASC
+      `)
     )
 
     expect(executor.secondCall.args[1]).toEqual([
@@ -124,15 +141,17 @@ describe('es-mysql', () => {
     expect(format(executor.firstCall.args[0])).toEqual(
       format(
         `CREATE TABLE IF NOT EXISTS table(
-        timestamp BIGINT NOT NULL,
-        aggregateId VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-        aggregateVersion BIGINT NOT NULL,
-        type VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-        payload JSON NULL,
-        PRIMARY KEY(aggregateId, aggregateVersion),
-        INDEX USING BTREE(type),
-        INDEX USING BTREE(timestamp)
-      )`
+          \`timestamp\` BIGINT NOT NULL,
+          \`aggregateId\` VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+          \`aggregateVersion\` BIGINT NOT NULL,
+          \`type\` VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+          \`payload\` JSON NULL,
+          PRIMARY KEY(\`aggregateId\`, \`aggregateVersion\`),
+          INDEX USING BTREE(\`aggregateId\`),
+          INDEX USING BTREE(\`aggregateVersion\`),
+          INDEX USING BTREE(\`type\`),
+          INDEX USING BTREE(\`timestamp\`)
+          )`
       )
     )
 
@@ -140,7 +159,14 @@ describe('es-mysql', () => {
 
     expect(format(executor.secondCall.args[0])).toEqual(
       format(
-        `SELECT * FROM  table WHERE timestamp > ? AND aggregateId IN (?, ?)`
+        `SELECT * FROM table
+        WHERE
+          \`timestamp\` > ? AND
+          \`aggregateId\` IN (?, ?)
+        ORDER BY
+          \`timestamp\` ASC,
+          \`aggregateVersion\` ASC
+        `
       )
     )
 
