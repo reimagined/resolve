@@ -20,8 +20,9 @@ const storage = {
   prepare: async filename => {
     const db = storage.createDatabase(NeDB, filename)
     await storage.init(db)
-    await storage.createIndex(db, 'aggregateIdAndVersion')
+    await storage.createIndex(db, 'aggregateIdAndVersion', true)
     await storage.createIndex(db, 'aggregateId')
+    await storage.createIndex(db, 'aggregateVersion')
     await storage.createIndex(db, 'type')
     return db
   },
@@ -30,7 +31,7 @@ const storage = {
     new Promise((resolve, reject) =>
       db
         .find({ ...query, timestamp: { $gt: startTime } })
-        .sort({ timestamp: 1 })
+        .sort({ timestamp: 1, aggregateVersion: 1 })
         .projection({ aggregateIdAndVersion: 0, _id: 0 })
         .exec((error, events) => {
           if (error) {

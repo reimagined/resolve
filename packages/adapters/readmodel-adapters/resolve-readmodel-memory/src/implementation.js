@@ -1,6 +1,6 @@
 const implementation = (metaApi, storeApi, createTable, options) => {
   const pool = {
-    metaInfo: { tables: {}, timestamp: 0 },
+    metaInfo: { tables: {}, timestamp: 0, aggregatesVersionsMap: new Map() },
     createTable,
     storage: {}
   }

@@ -49,7 +49,8 @@ describe('resolve-readmodel-mysql meta-api', () => {
     ]
 
     executor.onCall(1).callsFake(async () => [[{ Timestamp: 100 }]])
-    executor.onCall(2).callsFake(async () => [tableDeclarations])
+    executor.onCall(2).callsFake(async () => [[]])
+    executor.onCall(3).callsFake(async () => [tableDeclarations])
 
     checkStoredTableSchema.onCall(0).callsFake(() => true)
     checkStoredTableSchema.onCall(1).callsFake(() => true)
@@ -63,27 +64,44 @@ describe('resolve-readmodel-mysql meta-api', () => {
     )
     expect(pool.metaInfo.timestamp).toEqual(100)
 
-    expect(format(executor.firstCall.args[0])).toEqual(
+    expect(format(executor.getCall(0).args[0])).toEqual(
       format(
         `CREATE TABLE IF NOT EXISTS \`META_NAME\` (
-          FirstKey VARCHAR(128) NOT NULL,
-          SecondKey VARCHAR(128) NULL,
-          Value JSON NULL
+          \`FirstKey\` VARCHAR(128) NOT NULL,
+          \`SecondKey\` VARCHAR(128) NOT NULL DEFAULT '',
+          \`Value\` JSON NULL,
+          PRIMARY KEY(\`FirstKey\`, \`SecondKey\`),
+          INDEX USING BTREE(\`FirstKey\`)
         )`
       )
     )
 
-    expect(format(executor.secondCall.args[0])).toEqual(
+    expect(format(executor.getCall(1).args[0])).toEqual(
       format(
-        `SELECT Value AS Timestamp FROM \`META_NAME\` WHERE FirstKey="Timestamp"`
+        `SELECT \`Value\` AS \`Timestamp\`
+        FROM \`META_NAME\`
+        WHERE \`FirstKey\` = "Timestamp"
+        `
       )
     )
 
-    expect(format(executor.thirdCall.args[0])).toEqual(
+    expect(format(executor.getCall(2).args[0])).toEqual(
       format(
-        `SELECT SecondKey AS TableName, Value AS TableDescription
-         FROM \`META_NAME\`
-         WHERE FirstKey="TableDescriptor"`
+        `SELECT \`SecondKey\` AS \`AggregateId\`,
+          \`Value\` AS \`AggregateVersion\`
+        FROM \`META_NAME\`
+        WHERE \`FirstKey\` = "AggregatesVersionsMap"
+        `
+      )
+    )
+
+    expect(format(executor.getCall(3).args[0])).toEqual(
+      format(
+        `SELECT \`SecondKey\` AS \`TableName\`,
+          \`Value\` AS \`TableDescription\`
+        FROM \`META_NAME\`
+        WHERE \`FirstKey\` = "TableDescriptor"
+        `
       )
     )
   })
@@ -91,6 +109,7 @@ describe('resolve-readmodel-mysql meta-api', () => {
   it('should provide getMetaInfo method - for empty meta table', async () => {
     executor.onCall(1).callsFake(async () => [[]])
     executor.onCall(3).callsFake(async () => [[]])
+    executor.onCall(4).callsFake(async () => [[]])
 
     checkStoredTableSchema.onCall(0).callsFake(() => false)
     checkStoredTableSchema.onCall(1).callsFake(() => false)
@@ -102,31 +121,48 @@ describe('resolve-readmodel-mysql meta-api', () => {
     expect(format(executor.getCall(0).args[0])).toEqual(
       format(
         `CREATE TABLE IF NOT EXISTS \`META_NAME\` (
-          FirstKey VARCHAR(128) NOT NULL,
-          SecondKey VARCHAR(128) NULL,
-          Value JSON NULL
+          \`FirstKey\` VARCHAR(128) NOT NULL,
+          \`SecondKey\` VARCHAR(128) NOT NULL DEFAULT '',
+          \`Value\` JSON NULL,
+          PRIMARY KEY(\`FirstKey\`, \`SecondKey\`),
+          INDEX USING BTREE(\`FirstKey\`)
         )`
       )
     )
 
     expect(format(executor.getCall(1).args[0])).toEqual(
       format(
-        `SELECT Value AS Timestamp FROM \`META_NAME\` WHERE FirstKey="Timestamp"`
+        `SELECT \`Value\` AS \`Timestamp\`
+         FROM \`META_NAME\`
+         WHERE \`FirstKey\`="Timestamp"
+        `
       )
     )
 
     expect(format(executor.getCall(2).args[0])).toEqual(
       format(
-        `INSERT INTO \`META_NAME\`(FirstKey, Value)
+        `INSERT INTO \`META_NAME\`(\`FirstKey\`, \`Value\`)
          VALUES("Timestamp", CAST("0" AS JSON))`
       )
     )
 
     expect(format(executor.getCall(3).args[0])).toEqual(
       format(
-        `SELECT SecondKey AS TableName, Value AS TableDescription
-         FROM \`META_NAME\`
-         WHERE FirstKey="TableDescriptor"`
+        `SELECT \`SecondKey\` AS \`AggregateId\`,
+          \`Value\` AS \`AggregateVersion\`
+        FROM \`META_NAME\`
+        WHERE \`FirstKey\` = "AggregatesVersionsMap"
+        `
+      )
+    )
+
+    expect(format(executor.getCall(4).args[0])).toEqual(
+      format(
+        `SELECT \`SecondKey\` AS \`TableName\`,
+          \`Value\` AS \`TableDescription\`
+        FROM \`META_NAME\`
+        WHERE \`FirstKey\` = "TableDescriptor"
+        `
       )
     )
   })
@@ -142,7 +178,8 @@ describe('resolve-readmodel-mysql meta-api', () => {
     ]
 
     executor.onCall(1).callsFake(async () => [[{ Timestamp: 'NaN' }]])
-    executor.onCall(2).callsFake(async () => [tableDeclarations])
+    executor.onCall(2).callsFake(async () => [[]])
+    executor.onCall(3).callsFake(async () => [tableDeclarations])
 
     checkStoredTableSchema.onCall(0).callsFake(() => false)
     checkStoredTableSchema.onCall(1).callsFake(() => false)
@@ -154,34 +191,53 @@ describe('resolve-readmodel-mysql meta-api', () => {
     expect(format(executor.getCall(0).args[0])).toEqual(
       format(
         `CREATE TABLE IF NOT EXISTS \`META_NAME\` (
-          FirstKey VARCHAR(128) NOT NULL,
-          SecondKey VARCHAR(128) NULL,
-          Value JSON NULL
+          \`FirstKey\` VARCHAR(128) NOT NULL,
+          \`SecondKey\` VARCHAR(128) NOT NULL DEFAULT '',
+          \`Value\` JSON NULL,
+          PRIMARY KEY(\`FirstKey\`, \`SecondKey\`),
+          INDEX USING BTREE(\`FirstKey\`)
         )`
       )
     )
 
     expect(format(executor.getCall(1).args[0])).toEqual(
       format(
-        `SELECT Value AS Timestamp FROM \`META_NAME\` WHERE FirstKey="Timestamp"`
+        `SELECT \`Value\` AS \`Timestamp\`
+         FROM \`META_NAME\`
+         WHERE \`FirstKey\`="Timestamp"
+        `
       )
     )
 
     expect(format(executor.getCall(2).args[0])).toEqual(
       format(
-        `SELECT SecondKey AS TableName, Value AS TableDescription
-         FROM \`META_NAME\`
-         WHERE FirstKey="TableDescriptor"`
+        `SELECT \`SecondKey\` AS \`AggregateId\`,
+          \`Value\` AS \`AggregateVersion\`
+        FROM \`META_NAME\`
+        WHERE \`FirstKey\` = "AggregatesVersionsMap"
+        `
       )
     )
 
     expect(format(executor.getCall(3).args[0])).toEqual(
       format(
-        `DELETE FROM \`META_NAME\` WHERE FirstKey="TableDescriptor" AND SecondKey = ?`
+        `SELECT \`SecondKey\` AS \`TableName\`,
+          \`Value\` AS \`TableDescription\`
+        FROM \`META_NAME\`
+        WHERE \`FirstKey\` = "TableDescriptor"
+        `
       )
     )
 
-    expect(executor.getCall(3).args[1]).toEqual(['table'])
+    expect(format(executor.getCall(4).args[0])).toEqual(
+      format(
+        `DELETE FROM \`META_NAME\`
+         WHERE \`FirstKey\`="TableDescriptor"
+          AND \`SecondKey\` = ?`
+      )
+    )
+
+    expect(executor.getCall(4).args[1]).toEqual(['table'])
   })
 
   it('should provide getLastTimestamp method', async () => {
@@ -199,7 +255,8 @@ describe('resolve-readmodel-mysql meta-api', () => {
     await metaApi.setLastTimestamp(pool, 20)
     expect(format(executor.firstCall.args[0])).toEqual(
       format(
-        `UPDATE \`META_NAME\` SET Value=CAST(? AS JSON) WHERE FirstKey="Timestamp"`
+        `UPDATE \`META_NAME\` SET \`Value\`=CAST(? AS JSON)
+        WHERE \`FirstKey\`="Timestamp"`
       )
     )
     expect(executor.firstCall.args[1]).toEqual(['20'])
@@ -235,7 +292,7 @@ describe('resolve-readmodel-mysql meta-api', () => {
 
     expect(format(executor.firstCall.args[0])).toEqual(
       format(
-        `INSERT INTO \`META_NAME\`(FirstKey, SecondKey, Value)
+        `INSERT INTO \`META_NAME\`(\`FirstKey\`, \`SecondKey\`, \`Value\`)
          VALUES("TableDescriptor", ?, CAST(? AS JSON))`
       )
     )

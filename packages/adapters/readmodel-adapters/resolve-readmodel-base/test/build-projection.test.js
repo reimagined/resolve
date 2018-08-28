@@ -4,7 +4,10 @@ import buildProjection from '../src/build-projection'
 
 describe('resolve-readmodel-base build-projection', () => {
   it('should work properly', async () => {
-    const metaApi = { setLastTimestamp: sinon.stub() }
+    const metaApi = {
+      setLastTimestamp: sinon.stub(),
+      setLastAggregateVersion: sinon.stub()
+    }
     const storeApi = {}
     const internalContext = {
       initDonePromise: Promise.resolve(),
