@@ -1,4 +1,5 @@
 import { createReadModel } from 'resolve-query'
+import createDefaultAdapter from 'resolve-readmodel-memory'
 
 import eventStore from './event_store'
 import raiseError from './utils/raise_error'
@@ -21,11 +22,9 @@ readModels.forEach(readModel => {
   const facade = createReadModel({
     projection: readModel.projection,
     resolvers: readModel.resolvers,
-    ...(readModel.hasOwnProperty('adapter')
-      ? {
-          adapter: readModel.adapter.module(readModel.adapter.options)
-        }
-      : {}),
+    adapter: readModel.hasOwnProperty('adapter')
+      ? readModel.adapter.module(readModel.adapter.options)
+      : createDefaultAdapter(),
     eventStore
   })
 

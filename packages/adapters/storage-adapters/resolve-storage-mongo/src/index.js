@@ -9,7 +9,8 @@ function loadEvents(coll, query, startTime, callback) {
   let workerPromise = Promise.resolve()
 
   const cursorStream = coll
-    .find({ ...query, timestamp: { $gt: startTime } }, { sort: 'timestamp' })
+    .find({ ...query, timestamp: { $gt: startTime } })
+    .sort({ timestamp: 1, aggregateVersion: 1 })
     .stream()
 
   cursorStream.on(
@@ -39,6 +40,7 @@ function createAdapter({ url, collectionName, databaseName }) {
           coll
             .createIndex('timestamp')
             .then(() => coll.createIndex('aggregateId'))
+            .then(() => coll.createIndex('aggregateVersion'))
             .then(() =>
               coll.createIndex(
                 { aggregateId: 1, aggregateVersion: 1 },

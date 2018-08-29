@@ -1,6 +1,18 @@
 const getMetaInfo = async (pool, checkStoredTableSchema) => {
-  const metaCollection = await pool.connection.collection(pool.metaName)
-  pool.metaInfo = { tables: {}, timestamp: 0 }
+  const { connection: db, metaName } = pool
+  const collections = await db.collections()
+  let metaCollection = null
+
+  if (!collections.map(c => c.s.name).includes(metaName)) {
+    await db.createCollection(metaName)
+    metaCollection = await db.collection(metaName)
+    await metaCollection.createIndex('key')
+    await metaCollection.createIndex('aggregateId')
+  } else {
+    metaCollection = await db.collection(metaName)
+  }
+
+  pool.metaInfo = { tables: {}, timestamp: 0, aggregatesVersionsMap: new Map() }
 
   let { timestamp } =
     (await metaCollection.findOne({
@@ -17,6 +29,14 @@ const getMetaInfo = async (pool, checkStoredTableSchema) => {
     pool.metaInfo.timestamp = timestamp
   }
 
+  const aggregatesVersionsArray = await (await metaCollection.find({
+    key: 'aggregatesVersionsMap'
+  })).toArray()
+
+  for (let { aggregateId, aggregateVersion } of aggregatesVersionsArray) {
+    pool.metaInfo.aggregatesVersionsMap.set(aggregateId, aggregateVersion)
+  }
+
   const tables = await (await metaCollection.find({
     key: 'tableDescription'
   })).toArray()
@@ -29,7 +49,7 @@ const getMetaInfo = async (pool, checkStoredTableSchema) => {
 
     // eslint-disable-next-line no-console
     console.log(
-      `Can't table "${tableName}" meta information due invalid schema: ${JSON.stringify(
+      `Can't restore table "${tableName}" meta information due invalid schema: ${JSON.stringify(
         tableDescription
       )}`
     )
@@ -52,6 +72,26 @@ const setLastTimestamp = async (
   )
 
   metaInfo.timestamp = +timestamp
+}
+
+const setLastAggregateVersion = async (
+  { metaInfo, connection, metaName },
+  aggregateId,
+  aggregateVersion
+) => {
+  const metaCollection = await connection.collection(metaName)
+
+  await metaCollection.update(
+    { key: 'aggregatesVersionsMap', aggregateId },
+    { key: 'aggregatesVersionsMap', aggregateId, aggregateVersion },
+    { upsert: true }
+  )
+
+  metaInfo.aggregatesVersionsMap.set(aggregateId, aggregateVersion)
+}
+
+const getLastAggregatesVersions = async ({ metaInfo }) => {
+  return metaInfo.aggregatesVersionsMap
 }
 
 const tableExists = async ({ metaInfo }, tableName) =>
@@ -93,6 +133,8 @@ export default {
   getMetaInfo,
   getLastTimestamp,
   setLastTimestamp,
+  setLastAggregateVersion,
+  getLastAggregatesVersions,
   tableExists,
   getTableInfo,
   describeTable,
