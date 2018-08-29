@@ -6,14 +6,16 @@ import executeCommand from './command_executor'
 
 import { auth, rootPath, jwtCookie } from './assemblies'
 
-const strategies = auth.strategies.map(
-  ({ strategyConstructor, options }) =>
-    createStrategy(strategyConstructor, options, { rootPath, jwtCookie, getRootBasedUrl })
+const strategies = auth.strategies.map(({ strategyConstructor, options }) =>
+  createStrategy(strategyConstructor, options, {
+    rootPath,
+    jwtCookie,
+    getRootBasedUrl
+  })
 )
 
 const assignAuthRoutes = app => {
-  strategies.forEach(
-    ({ route, callback }) => {
+  strategies.forEach(({ route, callback }) => {
     app[route.method.toLowerCase()](
       getRootBasedUrl(rootPath, route.path),
       async (req, res) => {
@@ -35,15 +37,19 @@ const assignAuthRoutes = app => {
 
         const authResponse = await callback(req)
 
-        for(const key of Object.keys(authResponse.headers)) {
+        for (const key of Object.keys(authResponse.headers)) {
           res.setHeader(key, authResponse.headers[key])
         }
-        for(const key of Object.keys(authResponse.cookies)) {
-          res.cookie(key, authResponse.cookies[key].value, authResponse.cookies[key].options)
+        for (const key of Object.keys(authResponse.cookies)) {
+          res.cookie(
+            key,
+            authResponse.cookies[key].value,
+            authResponse.cookies[key].options
+          )
         }
-  
+
         res.status(authResponse.statusCode)
-        if(authResponse.headers.Location) {
+        if (authResponse.headers.Location) {
           res.redirect(authResponse.statusCode, authResponse.headers.Location)
         } else {
           res.end(authResponse.error)

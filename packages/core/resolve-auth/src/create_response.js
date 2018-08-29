@@ -15,7 +15,7 @@ const createResponse = () => {
     },
     redirect: (...args) => {
       let status, path
-      if(args.length === 1) {
+      if (args.length === 1) {
         status = 302
         path = args[0]
       } else {
