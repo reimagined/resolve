@@ -1,5 +1,7 @@
 import getRootBasedUrl from './get_root_based_url'
 
+const TIMEOUT = 30000
+
 const authenticate = (strategy, req, res, options, { jwtCookie, rootPath }) => {
   const wrapper = Object.create(Object.getPrototypeOf(strategy))
 
@@ -9,7 +11,7 @@ const authenticate = (strategy, req, res, options, { jwtCookie, rootPath }) => {
     Object.defineProperty(wrapper, key, descriptor)
   }
 
-  return new Promise(next => {
+  return new Promise((next, fail) => {
     Object.assign(wrapper, {
       success: jwtToken => {
         const { name: cookieName, ...cookieOptions } = jwtCookie
@@ -78,6 +80,8 @@ const authenticate = (strategy, req, res, options, { jwtCookie, rootPath }) => {
     })
 
     wrapper.authenticate(req, { response: res })
+
+    setTimeout(fail, TIMEOUT)
   })
 }
 
