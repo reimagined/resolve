@@ -23,7 +23,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-query#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-query#readme",
   "dependencies": {
     "diff-json": "^0.1.11",
     "invariant-function-hash": "^1.0.1",

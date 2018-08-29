@@ -23,7 +23,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-base#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/readmodel-adapters/resolve-readmodel-base#readme",
   "dependencies": {
     "uuid": "^3.3.2"
   },

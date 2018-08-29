@@ -24,7 +24,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/create-resolve-app#readme",
   "dependencies": {
     "adm-zip": "^0.4.11",
     "chalk": "^2.4.1",
