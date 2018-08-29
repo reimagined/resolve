@@ -12,8 +12,9 @@ This package is a `resolve-es` adapter for storing events using [MongoDB](https:
 import createAdapter from 'resolve-storage-mongo';
 
 const adapter = createAdapter({
-    url: 'mongodb://localhost:27015',
-    collection: 'events'
+    url: 'mongodb://localhost:27017',
+    databaseName: 'DatabaseName',
+    collectionName: 'Events'
 });
 ```
 

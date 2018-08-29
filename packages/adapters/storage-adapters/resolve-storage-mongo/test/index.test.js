@@ -45,7 +45,7 @@ describe('es-mongo', () => {
 
         expect(
           db.collection.lastCall.returnValue.createIndex.thirdCall.args
-        ).toEqual(['aggregateVersion'])
+        ).toEqual([{ aggregateVersion: 1, timestamp: 1 }])
 
         expect(
           db.collection.lastCall.returnValue.createIndex.getCall(3).args

@@ -40,7 +40,7 @@ function createAdapter({ url, collectionName, databaseName }) {
           coll
             .createIndex('timestamp')
             .then(() => coll.createIndex('aggregateId'))
-            .then(() => coll.createIndex('aggregateVersion'))
+            .then(() => coll.createIndex({ timestamp: 1, aggregateVersion: 1 }))
             .then(() =>
               coll.createIndex(
                 { aggregateId: 1, aggregateVersion: 1 },
