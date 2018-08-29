@@ -4,7 +4,7 @@ import createResponse from './create_response'
 const createStrategy = (
   strategyConstructor,
   options,
-  { jwtCookie, rootPath, getRootBasedUrl }
+  { jwtCookie, rootPath }
 ) => {
   const strategy = strategyConstructor(options)
 
@@ -15,8 +15,7 @@ const createStrategy = (
 
       await authenticate(strategy, req, res, options, {
         jwtCookie,
-        rootPath,
-        getRootBasedUrl
+        rootPath
       })
 
       return res

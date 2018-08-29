@@ -1,10 +1,6 @@
-const authenticate = (
-  strategy,
-  req,
-  res,
-  options,
-  { jwtCookie, rootPath, getRootBasedUrl }
-) => {
+import getRootBasedUrl from './get_root_based_url'
+
+const authenticate = (strategy, req, res, options, { jwtCookie, rootPath }) => {
   const wrapper = Object.create(Object.getPrototypeOf(strategy))
 
   for (const key of Reflect.ownKeys(strategy)) {
