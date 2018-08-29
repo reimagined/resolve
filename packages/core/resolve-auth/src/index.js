@@ -1,4 +1,4 @@
-import createStrategyWrapper from './create_strategy_wrapper'
+import authenticate from './authenticate'
 import createResponse from './create_response'
 
 const createStrategy = (strategyConstructor, options, { jwtCookie, rootPath, getRootBasedUrl }) => {
@@ -9,20 +9,13 @@ const createStrategy = (strategyConstructor, options, { jwtCookie, rootPath, get
     callback: async (req) => {
       const res = createResponse()
       
-      const strategyWrapper = createStrategyWrapper(
+      return await authenticate(
         strategy,
         req,
         res,
         options,
         { jwtCookie, rootPath, getRootBasedUrl }
       )
-      
-      console.log( strategy.authenticate)
-      console.log( strategyWrapper.authenticate)
-  
-      strategyWrapper.authenticate(req, { response: res })
-      
-      return res
     }
   }
 }

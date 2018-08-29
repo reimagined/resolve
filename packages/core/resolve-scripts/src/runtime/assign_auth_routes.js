@@ -32,15 +32,9 @@ const assignAuthRoutes = app => {
             executeCommand
           }
         })
-        
-        console.log('const authResponse = await callback(req)')
-        
+
         const authResponse = await callback(req)
-  
-        console.log(authResponse)
-  
-        res.statusCode = authResponse.statusCode
-  
+
         for(const key of Object.keys(authResponse.headers)) {
           res.setHeader(key, authResponse.headers[key])
         }
@@ -48,7 +42,12 @@ const assignAuthRoutes = app => {
           res.cookie(key, authResponse.cookies[key].value, authResponse.cookies[key].options)
         }
   
-        res.end(authResponse.error)
+        res.status(authResponse.statusCode)
+        if(authResponse.headers.Location) {
+          res.redirect(authResponse.statusCode, authResponse.headers.Location)
+        } else {
+          res.end(authResponse.error)
+        }
       }
     )
   })
