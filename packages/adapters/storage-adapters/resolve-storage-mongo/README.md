@@ -5,7 +5,8 @@ This package is a `resolve-es` adapter for storing events using [MongoDB](https:
 
 ## Available Parameters
 * `url` - a MongoDB connection string. Refer to [Connection String URI Format](https://docs.mongodb.com/manual/reference/connection-string/) for more information.
-* `collection` - a name of a collection storing events.
+* `databaseName` - a name of a database storing events.
+* `collectionName` - a name of a collection storing events.
 ## Usage
 
 ```js
