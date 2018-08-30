@@ -10,7 +10,6 @@ shopping-list-advanced (macOS) (failure):
   script: 
     - curl "https://api.github.com/repos/reimagined/resolve/statuses/${CI_COMMIT_SHA}?access_token=${GITHUB_RESOLVE_STATUSES_ACCESS_TOKEN}" -H "Content-Type: application/json" -X POST -d "{\"state\": \"failure\", \"description\": \"Shopping List Advanced - macOS\"}"
 
-
 shopping-list-advanced (macOS):
   stage: install
   tags:
