@@ -11,4 +11,4 @@ job 2:
   stage: install
   tags:
     - macos
-  script: echo "macos"
+  script: open /Applications/Calculator.app
