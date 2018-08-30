@@ -1,5 +1,5 @@
 pages:
-  stage: deploy
+  stage: build
   script:
     - echo "Hello"
   only:
