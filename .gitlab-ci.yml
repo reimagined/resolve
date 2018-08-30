@@ -12,7 +12,7 @@ job 2:
   tags:
     - macos
   before_script:
-    - git clone http://172.22.7.16:8081/github-mirror/resolve.git /Users/resolve/resolve
+    - git clone git@172.22.7.16:github-mirror/resolve.git /Users/resolve/resolve
     - cd /Users/resolve/resolve
     - yarn
   script: 
