@@ -1,10 +1,6 @@
 stages:
   - install
 
-pages:
+job 1:
   stage: install
-  script:
-    - echo "Hello"
-  only:
-    - feature/gitlab-ci
-
+  script: echo "install"
