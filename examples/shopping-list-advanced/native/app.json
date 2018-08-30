@@ -9,6 +9,9 @@
     "androidStatusBar": {
       "barStyle": "light-content",
       "backgroundColor": "#000000"
+    },
+    "ios": {
+      "bundleIdentifier": "com.resolve.shoppinglistadvanced"
     }
   }
 }
