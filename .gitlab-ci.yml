@@ -13,7 +13,7 @@ shopping-list-advanced (macOS):
     - macos
   before_script:
     - rm -rf /Users/resolve/resolve
-    - git clone git@172.22.7.16:github-mirror/resolve.git /Users/resolve/resolve
+    - git clone -b feature/new-ci-initial git@172.22.7.16:github-mirror/resolve.git /Users/resolve/resolve
     - cd /Users/resolve/resolve
     - yarn
   script: 
