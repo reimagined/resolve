@@ -7,7 +7,7 @@ job 1:
     - ubuntu
   script: echo "ubuntu"
 
-job 2:
+shopping-list-advanced (macOS):
   stage: install
   tags:
     - macos
@@ -16,6 +16,25 @@ job 2:
     - cd /Users/resolve/resolve
     - yarn
   script: 
+    - watchman watch-del-all
+    - sleep 1
+    - npx exp build:ios --type simulator
+    - sleep 1
+    - npx exp build:status | grep IPA | tail -1 | sed s/'^.*http'/'http'/g | xargs wget
+    - sleep 1
+    - ls -1 | grep simulator.tar.gz | xargs tar xvf
+    - sleep 1
+    - xcrun simctl boot 770A5B6B-ECD7-46A7-B5AB-CF694B3E2328
+    - sleep 1
+    - ls -1d */ | grep .app | xargs xcrun simctl install 770A5B6B-ECD7-46A7-B5AB-CF694B3E2328
+    - sleep 1
+    - xcrun simctl launch 770A5B6B-ECD7-46A7-B5AB-CF694B3E2328 com.resolve.shoppinglistadvanced
+    - sleep 1
+    - xcrun simctl terminate 770A5B6B-ECD7-46A7-B5AB-CF694B3E2328 com.resolve.shoppinglistadvanced
+    - sleep 1
     - open /Applications/Calculator.app
   after_script:
+    - ls -1 | grep simulator.tar.gz | xargs unlink
+    - xcrun simctl uninstall 770A5B6B-ECD7-46A7-B5AB-CF694B3E2328 com.resolve.shoppinglistadvanced
+    - ls -1d */ | grep .app | xargs rm -rf
     - rm -rf /Users/resolve/resolve
