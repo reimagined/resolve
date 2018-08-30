@@ -29,7 +29,7 @@ shopping-list-advanced (macOS):
     - sleep 1
     - ls -1 | grep simulator.tar.gz | xargs tar xvf
     - sleep 1
-    - xcrun simctl boot 770A5B6B-ECD7-46A7-B5AB-CF694B3E2328
+    - xcrun simctl boot 770A5B6B-ECD7-46A7-B5AB-CF694B3E2328 || echo 'boot'
     - sleep 1
     - ls -1d */ | grep .app | xargs xcrun simctl install 770A5B6B-ECD7-46A7-B5AB-CF694B3E2328
     - sleep 1
