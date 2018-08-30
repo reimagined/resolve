@@ -3,4 +3,7 @@ stages:
 
 job 1:
   stage: install
+  tags:
+    - linux
+    - ubuntu
   script: echo "install"
