@@ -16,6 +16,7 @@ shopping-list-advanced (macOS):
     - cd /Users/resolve/resolve
     - yarn
   script: 
+    - cd examples/shopping-list-advanced/native
     - watchman watch-del-all
     - sleep 1
     - npx exp build:ios --type simulator
