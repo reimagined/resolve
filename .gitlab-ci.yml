@@ -1,5 +1,8 @@
+stages:
+  - install
+
 pages:
-  stage: build
+  stage: install
   script:
     - echo "Hello"
   only:
