@@ -11,4 +11,11 @@ job 2:
   stage: install
   tags:
     - macos
-  script: open /Applications/Calculator.app
+  before_script:
+    - git clone git@github.com:reimagined/resolve.git /Users/resolve/resolve
+    - cd /Users/resolve/resolve
+    - yarn
+  script: 
+    - open /Applications/Calculator.app
+  after_script:
+    - rm -rf /Users/resolve/resolve
