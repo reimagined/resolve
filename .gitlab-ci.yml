@@ -4,6 +4,11 @@ stages:
 job 1:
   stage: install
   tags:
-    - linux
     - ubuntu
-  script: echo "install"
+  script: echo "ubuntu"
+
+job 2:
+  stage: install
+  tags:
+    - macos
+  script: echo "macos"
