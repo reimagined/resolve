@@ -1,6 +1,7 @@
 pages:
-  stage: unit-tests
+  stage: deploy
   script:
     - echo "Hello"
   only:
     - feature/gitlab-ci
+
