@@ -20,7 +20,8 @@ shopping-list-advanced (macOS):
     - cd /Users/resolve/resolve
     - git reset --hard $CI_COMMIT_SHA
     - yarn
-  script: 
+  script:
+    - echo "POSTING https://api.github.com/repos/reimagined/resolve/statuses/${CI_COMMIT_SHA}?access_token=${GITHUB_RESOLVE_STATUSES_ACCESS_TOKEN}"
     - "curl \"https://api.github.com/repos/reimagined/resolve/statuses/${CI_COMMIT_SHA}?access_token=${GITHUB_RESOLVE_STATUSES_ACCESS_TOKEN}\" -H \"Content-Type: application/json\" -X POST -d \"{\\\"state\\\": \\\"pending\\\", \\\"description\\\": \\\"Shopping List Advanced - macOS\\\"}\""
     - cd /Users/resolve/resolve/examples/shopping-list-advanced
     - yarn build
