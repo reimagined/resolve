@@ -32,7 +32,6 @@
     "cross-spawn": "^6.0.5",
     "fs-extra": "^6.0.1",
     "https": "^1.0.0",
-    "request": "^2.87.0",
     "validate-npm-package-name": "^3.0.0"
   }
 }

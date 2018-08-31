@@ -5,7 +5,6 @@ const commandLineArgs = require('command-line-args')
 const chalk = require('chalk')
 const fs = require('fs')
 const https = require('https')
-const request = require('request')
 const spawn = require('cross-spawn')
 const validateProjectName = require('validate-npm-package-name')
 
@@ -236,21 +235,30 @@ if (unknownOptions && unknownOptions.length) {
   }
 
   const getResolvePackages = () => {
-    return new Promise((resolve, reject) => {
-      request(
-        'https://registry.npmjs.org/-/v1/search?text=maintainer:reimagined&size=100',
-        { json: true },
-        (fetchError, response, body) => {
-          if (fetchError) {
-            reject('Package list loading error:' + fetchError.stack)
-          }
-          try {
-            resolve(body.objects.map(object => object.package.name))
-          } catch (parseError) {
-            reject('Package list loading error:' + parseError.stack)
-          }
-        }
-      )
+    // TODO. compile-time
+    return new Promise(resolve => {
+      resolve([
+        'resolve-es',
+        'resolve-bus-zmq',
+        'resolve-bus-memory',
+        'resolve-bus-rabbitmq',
+        'resolve-command',
+        'resolve-query',
+        'resolve-redux',
+        'resolve-storage-mongo',
+        'resolve-scripts',
+        'create-resolve-app',
+        'resolve-storage-lite',
+        'resolve-readmodel-memory',
+        'resolve-storage-base',
+        'resolve-readmodel-mongo',
+        'resolve-readmodel-base',
+        'resolve-readmodel-mysql',
+        'resolve-auth',
+        'resolve-subscribe-mqtt',
+        'resolve-subscribe-socket.io',
+        'resolve-storage-mysql'
+      ])
     })
   }
 
