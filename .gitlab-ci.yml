@@ -1,51 +1,108 @@
 stages:
   - install
-  - after_install
-
-shopping-list-advanced (macOS) (failure):
-  stage: after_install
-  tags:
-    - macos
-  when: on_failure
-  script: 
-    - "curl \"https://api.github.com/repos/reimagined/resolve/statuses/${CI_COMMIT_SHA}?access_token=${GITHUB_RESOLVE_STATUSES_ACCESS_TOKEN}\" -H \"Content-Type: application/json\" -X POST -d \"{\\\"state\\\": \\\"failure\\\", \\\"description\\\": \\\"Shopping List Advanced - macOS\\\", \\\"context\\\": \\\"GitLab\\\", \\\"target_url\\\": \\\"${CI_PIPELINE_URL}\\\"}\""
-
-shopping-list-advanced (macOS):
+  - lint
+  - unit-tests
+  - functional-tests
+  - integration-tests
+  - create-resolve-app-tests
+  - clear
+  
+macOS (install):
   stage: install
-  tags:
-    - macos
-  before_script:
-    - rm -rf /Users/resolve/resolve
-    - git clone git@172.22.7.16:github-mirror/resolve.git /Users/resolve/resolve
-    - cd /Users/resolve/resolve
-    - git reset --hard $CI_COMMIT_SHA
-    - yarn
   script:
-    - "curl \"https://api.github.com/repos/reimagined/resolve/statuses/${CI_COMMIT_SHA}?access_token=${GITHUB_RESOLVE_STATUSES_ACCESS_TOKEN}\" -H \"Content-Type: application/json\" -X POST -d \"{\\\"state\\\": \\\"pending\\\", \\\"description\\\": \\\"Shopping List Advanced - macOS\\\", \\\"context\\\": \\\"GitLab\\\", \\\"target_url\\\": \\\"${CI_PIPELINE_URL}\\\"}\""
-    - cd /Users/resolve/resolve/examples/shopping-list-advanced
-    - yarn build
-    - cd /Users/resolve/resolve/examples/shopping-list-advanced/native
-    - watchman watch-del-all
-    - watchman shutdown-server
-    - sleep 1
-    - npx exp build:ios --type simulator
-    - sleep 1
-    - npx exp build:status | grep IPA | tail -1 | sed s/'^.*http'/'http'/g | xargs wget
-    - sleep 1
-    - ls -1 | grep simulator.tar.gz | xargs tar xvf
-    - sleep 1
-    - xcrun simctl boot 770A5B6B-ECD7-46A7-B5AB-CF694B3E2328 || echo 'boot'
-    - sleep 1
-    - ls -1d */ | grep .app | xargs xcrun simctl install 770A5B6B-ECD7-46A7-B5AB-CF694B3E2328
-    - sleep 1
-    - xcrun simctl launch 770A5B6B-ECD7-46A7-B5AB-CF694B3E2328 com.resolve.shoppinglistadvanced
-    - sleep 1
-    - xcrun simctl terminate 770A5B6B-ECD7-46A7-B5AB-CF694B3E2328 com.resolve.shoppinglistadvanced
-    - sleep 1
-    - "curl \"https://api.github.com/repos/reimagined/resolve/statuses/${CI_COMMIT_SHA}?access_token=${GITHUB_RESOLVE_STATUSES_ACCESS_TOKEN}\" -H \"Content-Type: application/json\" -X POST -d \"{\\\"state\\\": \\\"success\\\", \\\"description\\\": \\\"Shopping List Advanced - macOS\\\", \\\"context\\\": \\\"GitLab\\\", \\\"target_url\\\": \\\"${CI_PIPELINE_URL}\\\"}\""
-  after_script:
-    - cd /Users/resolve/resolve/examples/shopping-list-advanced/native
-    - ls -1 | grep simulator.tar.gz | xargs unlink
-    - xcrun simctl uninstall 770A5B6B-ECD7-46A7-B5AB-CF694B3E2328 com.resolve.shoppinglistadvanced
-    - ls -1d */ | grep .app | xargs rm -rf
-    - rm -rf /Users/resolve/resolve
+    - echo macos
+    
+ubuntu (install):
+  stage: install
+  script:
+    - echo ubuntu
+    
+windows (install):
+  stage: install
+  script:
+    - echo windows
+
+eslint:
+  stage: lint
+  script:
+    - echo eslint
+   
+prettier-check:
+  stage: lint
+  script:
+    - echo prettier-check
+    
+macOS (unit-tests):
+  stage: unit-tests
+  script:
+    - echo macos
+    
+ubuntu (unit-tests):
+  stage: unit-tests
+  script:
+    - echo ubuntu
+    
+windows (unit-tests):
+  stage: unit-tests
+  script:
+    - echo windows
+    
+macOS (functional-tests):
+  stage: functional-tests
+  script:
+    - echo macos
+    
+ubuntu (functional-tests):
+  stage: functional-tests
+  script:
+    - echo ubuntu
+    
+windows (functional-tests):
+  stage: functional-tests
+  script:
+    - echo windows
+    
+bus:
+  stage: integration-tests
+  script:
+    - echo (memory, rabbitmq, zeromq)
+
+storage:
+  stage: integration-tests
+  script:
+    - echo (memory, mongodb, mysql, dynamodb)
+    
+readmodel-adapter:
+  stage: integration-tests
+  script:
+    - echo (memory, mongodb, mysql)         
+    
+subscribe-adapters:
+  stage: integration-tests
+  script:
+    - echo (mqtt, socket.io)
+    
+npx create-resolve-app:
+  stage: create-resolve-app-tests
+  script:
+    - echo npx
+    
+yarn create resolve-app:
+  stage: create-resolve-app-tests
+  script:
+    - echo yarn
+    
+macOS (clear):
+  stage: clear
+  script:
+    - echo macos
+    
+ubuntu (clear):
+  stage: clear
+  script:
+    - echo ubuntu
+    
+windows (clear):
+  stage: clear
+  script:
+    - echo windows
