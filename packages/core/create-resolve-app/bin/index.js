@@ -80,6 +80,7 @@ const messages = {
 }
 
 const useYarn =
+  (process.env._ && process.env._.includes('yarn')) ||
   (process.env.npm_execpath && process.env.npm_execpath.includes('yarn')) ||
   (process.env.npm_config_user_agent &&
     process.env.npm_config_user_agent.includes('yarn'))
