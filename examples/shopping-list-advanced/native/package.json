@@ -1,0 +1,55 @@
+{
+  "name": "@react-native-shopping-list/native",
+  "version": "0.14.2",
+  "private": true,
+  "main": "./index.js",
+  "scripts": {
+    "start": "react-native-scripts start",
+    "eject": "react-native-scripts eject",
+    "android": "react-native-scripts android",
+    "ios": "react-native-scripts ios",
+    "test": "jest --config=jest.config.js",
+    "test:functional": "echo || exit 0"
+  },
+  "dependencies": {
+    "@expo/react-native-action-sheet": "^1.1.0",
+    "@expo/vector-icons": "^6.3.1",
+    "@react-native-shopping-list/ui": "0.14.2",
+    "expo": "29.0.0",
+    "history": "4.7.2",
+    "native-base": "2.6.1",
+    "react": "16.4.2",
+    "react-native": "0.55.4",
+    "react-native-elements": "0.19.1",
+    "react-navigation": "^2.11.2",
+    "react-redux": "5.0.7",
+    "redux": "4.0.0",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "7.0.0-beta.55",
+    "@babel/plugin-proposal-export-default-from": "7.0.0-beta.55",
+    "@babel/plugin-proposal-export-namespace-from": "7.0.0-beta.55",
+    "@babel/plugin-transform-runtime": "7.0.0-beta.55",
+    "@babel/preset-env": "7.0.0-beta.55",
+    "@babel/preset-flow": "7.0.0-beta.55",
+    "@babel/preset-react": "7.0.0-beta.55",
+    "babel-jest": "23.4.2",
+    "babel-preset-expo": "4.0.0",
+    "babel-preset-react-native": "4.0.0",
+    "enzyme": "3.3.0",
+    "enzyme-adapter-react-16": "1.1.1",
+    "exp": "57.0.0",
+    "jest": "23.4.2",
+    "jest-expo": "29.0.0",
+    "my-local-ip": "1.0.0",
+    "react-native-scripts": "1.14.0",
+    "react-test-renderer": "16.4.2"
+  },
+  "workspaces": {
+    "nohoist": [
+      "**",
+      "**/**"
+    ]
+  }
+}

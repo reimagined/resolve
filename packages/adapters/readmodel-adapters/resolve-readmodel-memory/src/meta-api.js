@@ -3,6 +3,15 @@ const getLastTimestamp = async ({ metaInfo }) => metaInfo.timestamp
 const setLastTimestamp = async ({ metaInfo }, timestamp) =>
   (metaInfo.timestamp = +timestamp)
 
+const setLastAggregateVersion = async (
+  { metaInfo },
+  aggregateId,
+  aggregateVersion
+) => metaInfo.aggregatesVersionsMap.set(aggregateId, aggregateVersion)
+
+const getLastAggregatesVersions = async ({ metaInfo }) =>
+  metaInfo.aggregatesVersionsMap
+
 const tableExists = async ({ metaInfo }, tableName) =>
   !!metaInfo.tables[tableName]
 
@@ -24,6 +33,8 @@ const drop = async ({ storage, metaInfo }) => clearObjects(storage, metaInfo)
 export default {
   getLastTimestamp,
   setLastTimestamp,
+  setLastAggregateVersion,
+  getLastAggregatesVersions,
   tableExists,
   getTableInfo,
   describeTable,

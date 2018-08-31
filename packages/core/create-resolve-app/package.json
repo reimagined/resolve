@@ -24,7 +24,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/create-resolve-app#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/create-resolve-app#readme",
   "dependencies": {
     "adm-zip": "^0.4.11",
     "chalk": "^2.4.1",
@@ -32,7 +32,6 @@
     "cross-spawn": "^6.0.5",
     "fs-extra": "^6.0.1",
     "https": "^1.0.0",
-    "request": "^2.87.0",
     "validate-npm-package-name": "^3.0.0"
   }
 }

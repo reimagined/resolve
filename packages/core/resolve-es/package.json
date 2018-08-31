@@ -23,7 +23,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-es#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-es#readme",
   "devDependencies": {
     "jest": "23.4.2",
     "sinon": "^6.1.3",

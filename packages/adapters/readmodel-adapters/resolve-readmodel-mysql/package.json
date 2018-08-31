@@ -23,7 +23,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-mysql#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/readmodel-adapters/resolve-readmodel-mysql#readme",
   "dependencies": {
     "mysql2": "^1.5.3",
     "resolve-readmodel-base": "0.14.2",

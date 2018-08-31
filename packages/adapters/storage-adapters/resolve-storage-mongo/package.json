@@ -23,7 +23,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-mongo#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-storage-mongo#readme",
   "dependencies": {
     "mongodb": "^3.1.1",
     "resolve-storage-base": "0.14.2"

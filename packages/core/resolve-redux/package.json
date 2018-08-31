@@ -23,7 +23,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-redux#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-redux#readme",
   "dependencies": {
     "diff-json": "^0.1.11",
     "json-stable-stringify": "^1.0.1",

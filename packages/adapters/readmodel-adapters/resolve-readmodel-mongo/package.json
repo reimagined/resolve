@@ -23,7 +23,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/readmodel-adapters/resolve-readmodel-mongo#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/readmodel-adapters/resolve-readmodel-mongo#readme",
   "dependencies": {
     "mongodb": "^3.1.0-beta4",
     "resolve-readmodel-base": "0.14.2",

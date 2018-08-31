@@ -1,0 +1,37 @@
+{
+  "name": "@react-native-shopping-list/scripts",
+  "version": "0.14.2",
+  "private": true,
+  "scripts": {
+    "build": "babel-node ./run.js build",
+    "dev": "babel-node ./run.js dev",
+    "start": "babel-node ./run.js start",
+    "start:native": "cd native && npm run start",
+    "test": "npm run test:domain && npm run test:web && npm run test:native",
+    "test:domain": "cd domain && npm run test",
+    "test:web": "cd web && npm run test",
+    "test:native": "cd native && npm run test",
+    "test:functional": "echo || exit 0"
+  },
+  "dependencies": {
+    "@babel/runtime": "7.0.0-beta.55"
+  },
+  "devDependencies": {
+    "@babel/core": "7.0.0-beta.55",
+    "@babel/node": "7.0.0-beta.55",
+    "@babel/plugin-proposal-class-properties": "7.0.0-beta.55",
+    "@babel/plugin-proposal-export-default-from": "7.0.0-beta.55",
+    "@babel/plugin-proposal-export-namespace-from": "7.0.0-beta.55",
+    "@babel/plugin-transform-runtime": "7.0.0-beta.55",
+    "@babel/preset-env": "7.0.0-beta.55",
+    "@babel/preset-react": "7.0.0-beta.55",
+    "resolve-redux": "0.14.2",
+    "resolve-scripts": "0.14.2",
+    "resolve-subscribe-socket.io": "0.14.2"
+  },
+  "workspaces": {
+    "packages": [
+      "*"
+    ]
+  }
+}

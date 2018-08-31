@@ -23,7 +23,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-command#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-command#readme",
   "dependencies": {
     "invariant-function-hash": "^1.0.1"
   },

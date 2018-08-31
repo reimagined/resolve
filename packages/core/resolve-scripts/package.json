@@ -23,7 +23,7 @@
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-scripts#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-scripts#readme",
   "dependencies": {
     "@babel/cli": "7.0.0-beta.55",
     "@babel/core": "7.0.0-beta.55",
@@ -82,6 +82,7 @@
     "resolve-command": "0.14.2",
     "resolve-es": "0.14.2",
     "resolve-query": "0.14.2",
+    "resolve-readmodel-memory": "0.14.2",
     "resolve-redux": "0.14.2",
     "resolve-storage-lite": "0.14.2",
     "resolve-subscribe-socket.io": "0.14.2",

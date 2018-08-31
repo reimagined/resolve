@@ -45,6 +45,10 @@ describe('es-mongo', () => {
 
         expect(
           db.collection.lastCall.returnValue.createIndex.thirdCall.args
+        ).toEqual([{ aggregateVersion: 1, timestamp: 1 }])
+
+        expect(
+          db.collection.lastCall.returnValue.createIndex.getCall(3).args
         ).toEqual([{ aggregateId: 1, aggregateVersion: 1 }, { unique: true }])
       })
   })
@@ -66,8 +70,7 @@ describe('es-mongo', () => {
         const db = client.db(adapterSettings.dbName)
         expect(db.collection.lastCall.args).toEqual(['test-collection'])
         expect(db.collection.lastCall.returnValue.find.lastCall.args).toEqual([
-          { type: { $in: types }, timestamp: { $gt: 0 } },
-          { sort: 'timestamp' }
+          { type: { $in: types }, timestamp: { $gt: 0 } }
         ])
 
         expect(processEvent.args).toEqual([
@@ -95,8 +98,7 @@ describe('es-mongo', () => {
         const db = client.db(adapterSettings.dbName)
         expect(db.collection.lastCall.args).toEqual(['test-collection'])
         expect(db.collection.lastCall.returnValue.find.lastCall.args).toEqual([
-          { aggregateId: { $in: [aggregateId] }, timestamp: { $gt: 0 } },
-          { sort: 'timestamp' }
+          { aggregateId: { $in: [aggregateId] }, timestamp: { $gt: 0 } }
         ])
 
         expect(processEvent.args).toEqual([
