@@ -9,16 +9,22 @@ stages:
   
 macOS (install):
   stage: install
+  tags:
+    - macos
   script:
     - echo macos
     
 ubuntu (install):
   stage: install
+  tags:
+    - ubuntu
   script:
     - echo ubuntu
     
 windows (install):
   stage: install
+  tags:
+    - windows
   script:
     - echo windows
 
@@ -34,75 +40,133 @@ prettier-check:
     
 macOS (unit-tests):
   stage: unit-tests
+  tags:
+    - macos
   script:
     - echo macos
     
 ubuntu (unit-tests):
   stage: unit-tests
+  tags:
+    - ubuntu
   script:
     - echo ubuntu
     
 windows (unit-tests):
   stage: unit-tests
+  tags:
+    - windows
   script:
     - echo windows
     
 macOS (functional-tests):
   stage: functional-tests
+  tags:
+    - macos
   script:
     - echo macos
     
 ubuntu (functional-tests):
   stage: functional-tests
+  tags:
+    - ubuntu
   script:
     - echo ubuntu
     
 windows (functional-tests):
   stage: functional-tests
+  tags:
+    - windows
   script:
     - echo windows
     
 bus:
   stage: integration-tests
+  tags:
+    - ubuntu
   script:
     - echo (memory, rabbitmq, zeromq)
 
 storage:
   stage: integration-tests
+  tags:
+    - ubuntu
   script:
     - echo (memory, mongodb, mysql, dynamodb)
     
 readmodel-adapter:
   stage: integration-tests
+  tags:
+    - ubuntu
   script:
     - echo (memory, mongodb, mysql)         
     
 subscribe-adapters:
   stage: integration-tests
+  tags:
+    - ubuntu
   script:
     - echo (mqtt, socket.io)
     
-npx create-resolve-app:
+macOS (npx):
   stage: create-resolve-app-tests
+  tags:
+    - macos
+  script:
+    - echo npx
+
+ubuntu (npx):
+  stage: create-resolve-app-tests
+  tags:
+    - ubuntu
+  script:
+    - echo npx
+
+windows (npx):
+  stage: create-resolve-app-tests
+  tags:
+    - windows
   script:
     - echo npx
     
-yarn create resolve-app:
+macOS (yarn):
   stage: create-resolve-app-tests
+  tags:
+    - macos
+  script:
+    - echo yarn
+    
+ubuntu (yarn):
+  stage: create-resolve-app-tests
+  tags:
+    - ubuntu
+  script:
+    - echo yarn
+
+windows (yarn):
+  stage: create-resolve-app-tests
+  tags:
+    - windows
   script:
     - echo yarn
     
 macOS (clear):
   stage: clear
+  tags:
+    - macos
   script:
     - echo macos
     
 ubuntu (clear):
   stage: clear
+  tags:
+    - ubuntu
   script:
     - echo ubuntu
     
 windows (clear):
   stage: clear
+  tags:
+    - windows
   script:
     - echo windows
