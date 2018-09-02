@@ -1,6 +1,6 @@
 {
   "name": "resolve-bus-rabbitmq",
-  "version": "0.14.2",
+  "version": "0.14.3",
   "description": "This package is an adapter for resolve-bus to emit events using RabbitMQ.",
   "engines": {
     "node": ">=8.10"
@@ -23,7 +23,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-bus-rabbitmq#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/bus-adapters/resolve-bus-rabbitmq#readme",
   "dependencies": {
     "amqplib": "^0.5.2"
   },

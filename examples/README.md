@@ -32,9 +32,10 @@ create-resolve-app resolve-nested-list-example -e nested-list
 | [hello-world](https://github.com/reimagined/resolve/tree/master/examples/hello-world) | An empty app used as a template for a reSolve application. | ⭐️ |
 | [with-postcss](https://github.com/reimagined/resolve/tree/master/examples/with-postcss) | Shows how to work with [postCSS](https://github.com/postcss/postcss-loader#css-modules). | ⭐️ |
 | [with-styled-components](https://github.com/reimagined/resolve/tree/master/examples/with-styled-components) | Shows how to work with [Styled Components](https://www.styled-components.com/docs). | ⭐️ |
-| [nested-list](https://github.com/reimagined/resolve/tree/master/examples/nested-list) | Shows how to work with View Models in the **all events subscription** case | ⭐️⭐️ |
+| [shopping-list](https://github.com/reimagined/resolve/tree/master/examples/shopping-list) | Shows how to work with View Models in the **all events subscription** case | ⭐️⭐️ |
+| [shopping-list-advanced](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-advanced) | Shows how to work with [React-Native](https://github.com/facebook/react-native) | ⭐️⭐️ |
 | [with-saga](https://github.com/reimagined/resolve/tree/master/examples/with-saga) | Shows how to work with server saga | ⭐️⭐️ |
-| [hacker-news](https://github.com/reimagined/resolve/tree/master/examples/hacker-news) | The [HackerNews](https://news.ycombinator.com/) application clone with CQRS and EventSoucing. | ⭐️⭐️️️️⭐️️️️ |
+| [hacker-news](https://github.com/reimagined/resolve/tree/master/examples/hacker-news) | The [HackerNews](https://news.ycombinator.com/) application clone with CQRS and EventSourcing. | ⭐️⭐️️️️⭐️️️️ |
 
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/examples-index-readme?pixel)

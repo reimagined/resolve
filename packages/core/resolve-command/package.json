@@ -1,6 +1,6 @@
 {
   "name": "resolve-command",
-  "version": "0.14.2",
+  "version": "0.14.3",
   "description": "This package creates a function to execute a command.",
   "engines": {
     "node": ">=8.10"
@@ -23,7 +23,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-command#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-command#readme",
   "dependencies": {
     "invariant-function-hash": "^1.0.1"
   },
