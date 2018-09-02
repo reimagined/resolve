@@ -19,7 +19,7 @@
     "redux": "4.0.0",
     "resolve-redux": "0.14.3",
     "resolve-scripts": "0.14.3",
-    "styled-components": "3.4.2",
+    "styled-components": "3.4.5",
     "testcafe-browser-tools": "1.6.3"
   },
   "devDependencies": {
