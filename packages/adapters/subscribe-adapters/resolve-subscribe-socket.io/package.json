@@ -1,6 +1,6 @@
 {
   "name": "resolve-subscribe-socket.io",
-  "version": "0.14.3",
+  "version": "0.14.4",
   "description": "This package serves as an adapter for resolve-redux subscribe to events.",
   "engines": {
     "node": ">=8.10"
