@@ -89,7 +89,7 @@ const analyticsUrlBase = 'https://ga-beacon.appspot.com/UA-118635726-2'
 
 const isYarnAvailable = () => {
   try {
-    execSync('yarnpkg --version', { stdio: 'ignore' })
+    execSync('yarn --version', { stdio: 'ignore' })
     return true
   } catch (e) {
     return false

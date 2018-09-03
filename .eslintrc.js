@@ -298,7 +298,6 @@ module.exports = {
           'xsub',
           'xyz',
           'yargs',
-          'yarnpkg',
           'ycombinator',
           'zeromq',
           'zmq'
