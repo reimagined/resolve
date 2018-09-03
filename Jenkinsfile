@@ -94,6 +94,10 @@ pipeline {
                         sleep 10
                         
                         rm -rf ./*
+                        
+                        export YARN_CACHE_FOLDER=/yarn_cache
+
+                        yarn global add create-resolve-app@\$(cat /canary_version)
                     """
                 }
             }
@@ -107,11 +111,11 @@ pipeline {
                 script {
                     sh """
                         mkdir hello-world && cd hello-world;
-                        npx create-resolve-app@\$(cat /canary_version) hello-world -c \$(cat /last_commit)
+                        yarn create resolve-app@\$(cat /canary_version) hello-world -c \$(cat /last_commit)
                         cd ./hello-world; 
                         cat ./package.json; 
-                        npm run test
-                        npm run test:functional path:/chromium
+                        yarn test
+                        yarn test:functional path:/chromium
                     """
                 }
             }
@@ -125,10 +129,10 @@ pipeline {
                 script {
                     sh """
                         mkdir shopping-list && cd shopping-list;
-                        npx create-resolve-app@\$(cat /canary_version) shopping-list -e shopping-list -c \$(cat /last_commit)
+                        yarn create resolve-app@\$(cat /canary_version) shopping-list -e shopping-list -c \$(cat /last_commit)
                         cd ./shopping-list
                         cat ./package.json
-                        npm run test:functional path:/chromium
+                        yarn test:functional path:/chromium
                     """
                 }
             }
@@ -160,11 +164,11 @@ pipeline {
                 script {
                     sh """
                         mkdir hacker-news && cd hacker-news;
-                        npx create-resolve-app@\$(cat /canary_version) hn -e hacker-news -c \$(cat /last_commit)
+                        yarn create resolve-app@\$(cat /canary_version) hn -e hacker-news -c \$(cat /last_commit)
                         cd ./hn
                         cat ./package.json
-                        npm run test
-                        npm run test:functional path:/chromium
+                        yarn test
+                        yarn test:functional path:/chromium
                     """
                 }
             }
@@ -178,11 +182,11 @@ pipeline {
                 script {
                     sh """
                         mkdir with-postcss && cd with-postcss;
-                        npx create-resolve-app@\$(cat /canary_version) with-postcss -e with-postcss -c \$(cat /last_commit)
+                        yarn create resolve-app@\$(cat /canary_version) with-postcss -e with-postcss -c \$(cat /last_commit)
                         cd ./with-postcss
                         cat ./package.json
-                        npm run test
-                        npm run test:functional path:/chromium
+                        yarn test
+                        yarn test:functional path:/chromium
                     """
                 }
             }
@@ -196,11 +200,11 @@ pipeline {
                 script {
                     sh """
                         mkdir with-styled-components && cd with-styled-components;
-                        npx create-resolve-app@\$(cat /canary_version) with-styled-components -e with-styled-components -c \$(cat /last_commit)
+                        yarn create resolve-app@\$(cat /canary_version) with-styled-components -e with-styled-components -c \$(cat /last_commit)
                         cd ./with-styled-components
                         cat ./package.json
-                        npm run test
-                        npm run test:functional path:/chromium
+                        yarn test
+                        yarn test:functional path:/chromium
                     """
                 }
             }
@@ -214,11 +218,11 @@ pipeline {
                 script {
                     sh """
                         mkdir with-saga && cd with-saga;
-                        npx create-resolve-app@\$(cat /canary_version) with-saga -e with-saga -c \$(cat /last_commit)
+                        yarn create resolve-app@\$(cat /canary_version) with-saga -e with-saga -c \$(cat /last_commit)
                         cd ./with-saga
                         cat ./package.json
-                        npm run test
-                        npm run test:functional path:/chromium
+                        yarn test
+                        yarn test:functional path:/chromium
                     """
                 }
             }
