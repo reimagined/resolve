@@ -1,17 +1,10 @@
 import viewModelHandler from './view_model_handler'
-import readModelNonReactiveHandler from './read_model_non_reactive_handler'
-import readModelReactiveHandlers from './read_model_reactive_handler'
+import readModelHandler from './read_model_handler'
 import raiseError from './utils/raise_error'
-import { stopSubscriptionArg, isReactiveArg } from './constants'
 
 import { viewModels, readModels } from './assemblies'
 
 const message = require('../../configs/message.json')
-
-const {
-  readModelSubscribeHandler,
-  readModelUnsubscribeHandler
-} = readModelReactiveHandlers
 
 const queryMap = new Map()
 
@@ -34,23 +27,14 @@ for (const viewModel of viewModels) {
 const queryHandler = (req, res) => {
   const { modelName } = req.params
   switch (queryMap.get(modelName)) {
-    case 'view': {
+    case 'view':
       return viewModelHandler(req, res)
-    }
 
-    case 'read': {
-      if (req.arguments.hasOwnProperty(stopSubscriptionArg)) {
-        return readModelUnsubscribeHandler(req, res)
-      } else if (req.arguments.hasOwnProperty(isReactiveArg)) {
-        return readModelSubscribeHandler(req, res)
-      } else {
-        return readModelNonReactiveHandler(req, res)
-      }
-    }
+    case 'read':
+      return readModelHandler(req, res)
 
-    default: {
+    default:
       return res.status(422).end()
-    }
   }
 }
 

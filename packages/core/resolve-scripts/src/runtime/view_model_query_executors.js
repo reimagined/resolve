@@ -33,6 +33,7 @@ viewModels.forEach(viewModel => {
 
   const facade = createViewModel({
     projection: viewModel.projection,
+    viewModelHash: viewModel.viewModelHash,
     snapshotAdapter,
     snapshotBucketSize,
     eventStore

@@ -4,14 +4,13 @@ import { loadReadModelStateSuccess, loadReadModelStateFailure } from './actions'
 
 const loadReadModelStateSaga = function*(
   { api },
-  { readModelName, resolverName, resolverArgs, isReactive, queryId }
+  { readModelName, resolverName, resolverArgs, queryId }
 ) {
   try {
-    const { timeToLive, result } = yield api.loadReadModelState({
+    const { result } = yield api.loadReadModelState({
       readModelName,
       resolverName,
       resolverArgs,
-      isReactive,
       queryId
     })
 
@@ -20,10 +19,8 @@ const loadReadModelStateSaga = function*(
         readModelName,
         resolverName,
         resolverArgs,
-        isReactive,
         queryId,
-        result,
-        timeToLive
+        result
       )
     )
   } catch (error) {
@@ -32,7 +29,6 @@ const loadReadModelStateSaga = function*(
         readModelName,
         resolverName,
         resolverArgs,
-        isReactive,
         queryId,
         error
       )

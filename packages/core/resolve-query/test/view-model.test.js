@@ -3,7 +3,7 @@ import sinon from 'sinon'
 import createViewModel from '../src/view-model'
 
 describe('resolve-query view-model', () => {
-  let eventList, eventStore, viewModelProjection, viewModel, unsubscribe
+  let eventList, eventStore, projection, unsubscribe, snapshotAdapter
 
   const simulatedEventList = [
     { type: 'UserAdded', aggregateId: '1', payload: { UserName: 'User-1' } },
@@ -11,6 +11,9 @@ describe('resolve-query view-model', () => {
     { type: 'UserAdded', aggregateId: '3', payload: { UserName: 'User-3' } },
     { type: 'UserDeleted', aggregateId: '1' }
   ]
+
+  const viewModelHash = 'unique-view-model-hash'
+  const snapshotBucketSize = 1
 
   beforeEach(() => {
     unsubscribe = sinon.stub()
@@ -44,23 +47,41 @@ describe('resolve-query view-model', () => {
         .callsFake(subscribeByAnyField.bind(null, 'aggregateId'))
     }
 
-    viewModelProjection = {
+    projection = {
       Init: sinon.stub().callsFake(() => []),
       TestEvent: sinon
         .stub()
         .callsFake((state, event) => state.concat([event.payload]))
     }
 
-    viewModel = createViewModel({ eventStore, projection: viewModelProjection })
+    snapshotAdapter = {
+      loadSnapshot: sinon.stub().callsFake(async () => {}),
+      saveSnapshot: sinon.stub()
+    }
   })
 
   afterEach(() => {
-    viewModel = null
+    snapshotAdapter = null
     eventStore = null
     eventList = null
   })
 
+  it('should raise error on view-model with snapshot adapter without viewModelHash', async () => {
+    try {
+      createViewModel({ eventStore, projection, snapshotAdapter })
+
+      return Promise.reject('test failed')
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error)
+      expect(error.message).toEqual(
+        `Field 'viewModelHash' is mandatory when using view-model snapshots`
+      )
+    }
+  })
+
   it('should support view-models with redux-like projection functions', async () => {
+    const viewModel = createViewModel({ eventStore, projection })
+
     const testEvent = {
       type: 'TestEvent',
       aggregateId: 'test-id',
@@ -74,6 +95,8 @@ describe('resolve-query view-model', () => {
   })
 
   it('should support view-models with many aggregate ids', async () => {
+    const viewModel = createViewModel({ eventStore, projection })
+
     const testEvent1 = {
       type: 'TestEvent',
       aggregateId: 'test-id-1',
@@ -98,6 +121,8 @@ describe('resolve-query view-model', () => {
   })
 
   it('should support view-models with wildcard aggregate ids', async () => {
+    const viewModel = createViewModel({ eventStore, projection })
+
     const testEvent1 = {
       type: 'TestEvent',
       aggregateId: 'test-id-1',
@@ -117,6 +142,8 @@ describe('resolve-query view-model', () => {
 
   // eslint-disable-next-line max-len
   it("should raise error in case of if view-model's aggregateIds argument absence", async () => {
+    const viewModel = createViewModel({ eventStore, projection })
+
     const testEvent = {
       type: 'TestEvent',
       aggregateId: 'test-id',
@@ -130,54 +157,6 @@ describe('resolve-query view-model', () => {
     } catch (error) {
       expect(error.message).toMatch(
         /View models are build up only with aggregateIds array or wildcard argument/
-      )
-    }
-  })
-
-  it('should fail on view-models with non-redux/async projection functions', async () => {
-    const wrongViewModel = createViewModel({
-      eventStore,
-      projection: {
-        TestEvent: async () => null
-      }
-    })
-    eventList = [
-      {
-        type: 'TestEvent',
-        aggregateId: 'test-id'
-      }
-    ]
-
-    try {
-      await wrongViewModel.read({ aggregateIds: ['test-id'] })
-      return Promise.reject('Test failed')
-    } catch (error) {
-      expect(error.message).toMatch(
-        /A Projection function cannot be asynchronous or return a Promise object/
-      )
-    }
-  })
-
-  it('should fail on view-models with non-redux/generator projection functions', async () => {
-    const wrongViewModel = createViewModel({
-      eventStore,
-      projection: {
-        TestEvent: function*() {}
-      }
-    })
-    eventList = [
-      {
-        type: 'TestEvent',
-        aggregateId: 'test-id'
-      }
-    ]
-
-    try {
-      await wrongViewModel.read({ aggregateIds: ['test-id'] })
-      return Promise.reject('Test failed')
-    } catch (error) {
-      expect(error.message).toMatch(
-        /A Projection function cannot be a generator or return an iterable object/
       )
     }
   })
@@ -229,6 +208,8 @@ describe('resolve-query view-model', () => {
   })
 
   it('should support view-model with caching subscription and last state', async () => {
+    const viewModel = createViewModel({ eventStore, projection })
+
     const testEvent = {
       type: 'TestEvent',
       aggregateId: 'test-id',
@@ -246,13 +227,95 @@ describe('resolve-query view-model', () => {
     expect(stateOne).toEqual(['test-payload'])
     expect(stateTwo).toEqual(['test-payload'])
 
-    expect(viewModelProjection.Init.callCount).toEqual(1)
-    expect(viewModelProjection.TestEvent.callCount).toEqual(1)
+    expect(projection.Init.callCount).toEqual(1)
+    expect(projection.TestEvent.callCount).toEqual(1)
+
+    expect(unsubscribe.callCount).toEqual(0)
+  })
+
+  it('should support snapshot adapter restoring with normal snapshot and saving', async () => {
+    snapshotAdapter = {
+      loadSnapshot: sinon.stub().callsFake(async () => ({
+        aggregateIdsSet: [],
+        timestamp: 1000,
+        state: ['test-payload']
+      })),
+      saveSnapshot: sinon.stub()
+    }
+
+    const viewModel = createViewModel({
+      eventStore,
+      projection,
+      snapshotAdapter,
+      snapshotBucketSize,
+      viewModelHash
+    })
+
+    const testEvent = {
+      type: 'TestEvent',
+      aggregateId: 'test-id',
+      payload: 'test-payload'
+    }
+    eventList = [testEvent, testEvent]
+
+    const { state } = await viewModel.read({
+      aggregateIds: ['test-id']
+    })
+
+    expect(state).toEqual(['test-payload', 'test-payload', 'test-payload'])
+
+    expect(projection.Init.callCount).toEqual(0)
+    expect(projection.TestEvent.callCount).toEqual(2)
+
+    expect(snapshotAdapter.loadSnapshot.callCount).toEqual(1)
+    expect(snapshotAdapter.saveSnapshot.callCount).toEqual(2)
+
+    expect(unsubscribe.callCount).toEqual(0)
+  })
+
+  it('should support snapshot adapter restoring with bad snapshot and saving', async () => {
+    snapshotAdapter = {
+      loadSnapshot: sinon.stub().callsFake(async () => ({
+        aggregateIdsSet: null,
+        timestamp: null,
+        state: null
+      })),
+      saveSnapshot: sinon.stub()
+    }
+
+    const viewModel = createViewModel({
+      eventStore,
+      projection,
+      snapshotAdapter,
+      snapshotBucketSize,
+      viewModelHash
+    })
+
+    const testEvent = {
+      type: 'TestEvent',
+      aggregateId: 'test-id',
+      payload: 'test-payload'
+    }
+    eventList = [testEvent, testEvent]
+
+    const { state } = await viewModel.read({
+      aggregateIds: ['test-id']
+    })
+
+    expect(state).toEqual(['test-payload', 'test-payload'])
+
+    expect(projection.Init.callCount).toEqual(1)
+    expect(projection.TestEvent.callCount).toEqual(2)
+
+    expect(snapshotAdapter.loadSnapshot.callCount).toEqual(1)
+    expect(snapshotAdapter.saveSnapshot.callCount).toEqual(2)
 
     expect(unsubscribe.callCount).toEqual(0)
   })
 
   it('should support view-model disposing by aggregate-id', async () => {
+    const viewModel = createViewModel({ eventStore, projection })
+
     eventList = simulatedEventList.slice(0)
     await viewModel.read({ aggregateIds: ['test-aggregate-id'] })
     viewModel.dispose('test-aggregate-id')
@@ -263,6 +326,8 @@ describe('resolve-query view-model', () => {
   })
 
   it('should support view-model wildcard disposing', async () => {
+    const viewModel = createViewModel({ eventStore, projection })
+
     eventList = simulatedEventList.slice(0)
     await viewModel.read({ aggregateIds: ['test-aggregate-id'] })
     viewModel.dispose()
@@ -272,6 +337,8 @@ describe('resolve-query view-model', () => {
   })
 
   it('should not dispose view-model after it disposed', async () => {
+    const viewModel = createViewModel({ eventStore, projection })
+
     eventList = simulatedEventList.slice(0)
     await viewModel.read({ aggregateIds: ['test-aggregate-id'] })
     viewModel.dispose()

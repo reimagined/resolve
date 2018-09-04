@@ -10,10 +10,11 @@ const executeReadModelQuery = async ({
     throw new Error(`Read model ${modelName} does not exist`)
   }
 
-  return await readModelQueryExecutors[modelName].read(resolverName, {
-    ...resolverArgs,
+  return await readModelQueryExecutors[modelName].read(
+    resolverName,
+    resolverArgs,
     jwtToken
-  })
+  )
 }
 
 export default executeReadModelQuery

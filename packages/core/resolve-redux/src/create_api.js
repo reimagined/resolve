@@ -1,5 +1,5 @@
 import getRootBasedUrl from './get_root_based_url'
-import { isReactiveArg, queryIdArg, stopSubscriptionArg } from './constants'
+import { queryIdArg } from './constants'
 import syncJwtProviderWithStore from './sync_jwt_provider_with_store'
 
 export class FetchError extends Error {}
@@ -96,7 +96,6 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
       readModelName,
       resolverName,
       resolverArgs,
-      isReactive,
       queryId
     }) {
       let response, result
@@ -105,7 +104,6 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
           `/api/query/${readModelName}/${resolverName}`,
           {
             ...resolverArgs,
-            ...(isReactive ? { [isReactiveArg]: isReactive } : {}),
             [queryIdArg]: queryId
           }
         )
@@ -126,27 +124,6 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
       }
 
       return result
-    },
-
-    async stopReadModelSubscription({ readModelName, resolverName, queryId }) {
-      let response
-      try {
-        response = await request(
-          `/api/query/${readModelName}/${resolverName}`,
-          {
-            [stopSubscriptionArg]: true,
-            [queryIdArg]: queryId
-          }
-        )
-      } catch (error) {
-        throw new FetchError(error.message)
-      }
-
-      validateStatus(response.status)
-
-      if (!response.ok) {
-        throw new HttpError(response.text())
-      }
     },
 
     async sendCommand({ commandType, aggregateId, aggregateName, payload }) {
