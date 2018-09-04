@@ -2,7 +2,7 @@
 [![npm version](https://badge.fury.io/js/resolve-readmodel-mysql.svg)](https://badge.fury.io/js/resolve-readmodel-mysql)
  
 A **Read Model Adapter** for [MySQL](https://www.mysql.com/) 5.7+ and compatible (like [AWS Aurora](https://aws.amazon.com/rds/aurora/)) databases.
-The adapter provides a query API for projection and resolvers. This API is similar to the other reSolve adapters' API, which means you can change a **Read Model Adapter** in the configuration file without changing the code.
+The adapter provides a query API for projection and resolvers. This API is similar to the other reSolve adapters API, which means you can change a **Read Model Adapter** in the configuration file without changing the code.
  
 ## Notes:
 - Index fields can store only strings in `utf8mb4` encoding with the `utf8mb4_unicode_ci` collation ([details](https://dev.mysql.com/doc/refman/5.5/en/charset-unicode-utf8mb4.html)).
