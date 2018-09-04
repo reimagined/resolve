@@ -124,7 +124,7 @@ const count = async ({ connection }, tableName, searchExpression) => {
 
 const insert = async ({ connection }, tableName, document) => {
   const collection = await connection.collection(tableName)
-  return await collection.insert(document)
+  return await collection.insertOne(document)
 }
 
 const update = async (

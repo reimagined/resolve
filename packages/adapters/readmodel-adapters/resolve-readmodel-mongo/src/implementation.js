@@ -8,7 +8,7 @@ const implementation = (
 
   const connectionOptions = {
     url: options.url || 'mongodb://127.0.0.1:27017/',
-    database: options.database || 'admin'
+    databaseName: options.databaseName || 'admin'
   }
 
   const pool = { metaName }
@@ -19,7 +19,7 @@ const implementation = (
       connectionPromise = Promise.resolve()
         .then(async () => {
           const client = await MongoClient.connect(connectionOptions.url)
-          pool.connection = await client.db(connectionOptions.database)
+          pool.connection = await client.db(connectionOptions.databaseName)
           await getMetaInfo(pool, checkStoredTableSchema)
         })
         .catch(error => error)

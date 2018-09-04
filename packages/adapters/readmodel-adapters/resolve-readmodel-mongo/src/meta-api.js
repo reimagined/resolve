@@ -107,7 +107,7 @@ const describeTable = async (
 ) => {
   const metaCollection = await connection.collection(metaName)
 
-  await metaCollection.insert({
+  await metaCollection.insertOne({
     key: 'tableDescription',
     tableName,
     tableDescription: metaSchema

@@ -19,7 +19,7 @@ describe('resolve-readmodel-mongo implementation', () => {
       url: 'url',
       user: 'user',
       password: 'password',
-      database: 'database'
+      databaseName: 'databaseName'
     }
   })
 
@@ -52,7 +52,9 @@ describe('resolve-readmodel-mongo implementation', () => {
     )
     const client = await MongoClient.connect.firstCall.returnValue
 
-    expect(client.db.firstCall.args[0]).toEqual(testConnectionOptions.database)
+    expect(client.db.firstCall.args[0]).toEqual(
+      testConnectionOptions.databaseName
+    )
 
     const metaMethodCallArg = metaApi.metaMethod.firstCall.args[0]
     expect(metaMethodCallArg.connection).toEqual(connection)
