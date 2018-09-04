@@ -1,0 +1,14 @@
+export const Container = () => null
+export const Header = () => null
+export const Title = () => null
+export const Content = () => null
+export const Footer = () => null
+export const FooterTab = () => null
+export const Button = () => null
+export const Left = () => null
+export const Right = () => null
+export const Body = () => null
+export const Icon = () => null
+export const Text = () => null
+export const List = () => null
+export const ListItem = () => null

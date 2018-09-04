@@ -5,9 +5,9 @@ const commandLineArgs = require('command-line-args')
 const chalk = require('chalk')
 const fs = require('fs')
 const https = require('https')
-const request = require('request')
 const spawn = require('cross-spawn')
 const validateProjectName = require('validate-npm-package-name')
+const execSync = require('child_process').execSync
 
 // eslint-disable-next-line no-console
 const log = console.log
@@ -32,10 +32,11 @@ const optionsInfo =
   ` directory${EOL}` +
   `            Now you can choose one of the next examples:${EOL}` +
   `              hello-world - used as a template for new reSolve applications ${EOL}` +
-  `              nested-list - shows how to work with read-models and view-models ${EOL}` +
-  `              with-postcss - demonstrates how to work with postCSS ${EOL}` +
-  `              with-saga - demonstrates how to use sagas ${EOL}` +
-  `              with-styled-components - demonstrates how to work with Styled Components ${EOL}` +
+  `              shopping-list - shows how to work with read-models and view-models ${EOL}` +
+  `              shopping-list-advanced - shows how to work with React-Native ${EOL}` +
+  `              with-postcss - shows how to work with postCSS ${EOL}` +
+  `              with-saga - shows how to use sagas ${EOL}` +
+  `              with-styled-components - shows how to work with Styled Components ${EOL}` +
   `              hacker-news - HackerNews application clone with CQRS and EventSourcing ${EOL}` +
   `  -b, --branch     branch (optional, master is default)${EOL}` +
   `  -c, --commit     commit ${EOL}` +
@@ -85,6 +86,17 @@ const unknownOptions =
 
 const resolveVersion = require('../package.json').version
 const analyticsUrlBase = 'https://ga-beacon.appspot.com/UA-118635726-2'
+
+const isYarnAvailable = () => {
+  try {
+    execSync('yarn --version', { stdio: 'ignore' })
+    return true
+  } catch (e) {
+    return false
+  }
+}
+
+const useYarn = isYarnAvailable()
 
 if (unknownOptions && unknownOptions.length) {
   const options = unknownOptions.join()
@@ -162,7 +174,7 @@ if (unknownOptions && unknownOptions.length) {
     if (
       errMessage.toLowerCase().indexOf('invalid or unsupported zip format') > -1
     ) {
-      let buf = fs.readFileSync(tmpFilePath).toString()
+      const buf = fs.readFileSync(tmpFilePath).toString()
       if (buf.toLowerCase().indexOf('not found')) {
         log(chalk.red('Referent commit does not exists in resolve repository.'))
         log(
@@ -179,7 +191,7 @@ if (unknownOptions && unknownOptions.length) {
   }
 
   const testExampleExists = () => {
-    var examplesDirs = fs
+    const examplesDirs = fs
       .readdirSync(`./${appName}/${repoDirName}/examples`)
       .filter(d =>
         fs.statSync(`./${appName}/${repoDirName}/examples/${d}`).isDirectory()
@@ -197,7 +209,7 @@ if (unknownOptions && unknownOptions.length) {
     new Promise((resolve, reject) => {
       log()
       log(chalk.green('Copy example'))
-      let command =
+      const command =
         `cd ${appName} ` +
         ` && cp -r ${examplePath}/* . && cp -r ${examplePath}/.[a-zA-Z0-9]* .` +
         ` && rm -rf ./${repoDirName}`
@@ -211,8 +223,8 @@ if (unknownOptions && unknownOptions.length) {
 
   const copyExampleCMD = prevErr => {
     log()
-    let examplePathCMD = examplePath.split('/').join('\\')
-    let command =
+    const examplePathCMD = examplePath.split('/').join('\\')
+    const command =
       `cd ${appName} ` +
       ` && xcopy ${examplePathCMD} /E /Q ` +
       ` && rmdir /S /Q ${repoDirName}`
@@ -230,21 +242,30 @@ if (unknownOptions && unknownOptions.length) {
   }
 
   const getResolvePackages = () => {
-    return new Promise((resolve, reject) => {
-      request(
-        'https://registry.npmjs.org/-/v1/search?text=maintainer:reimagined&size=100',
-        { json: true },
-        (fetchError, response, body) => {
-          if (fetchError) {
-            reject('Package list loading error:' + fetchError.stack)
-          }
-          try {
-            resolve(body.objects.map(object => object.package.name))
-          } catch (parseError) {
-            reject('Package list loading error:' + parseError.stack)
-          }
-        }
-      )
+    // TODO. compile-time
+    return new Promise(resolve => {
+      resolve([
+        'resolve-es',
+        'resolve-bus-zmq',
+        'resolve-bus-memory',
+        'resolve-bus-rabbitmq',
+        'resolve-command',
+        'resolve-query',
+        'resolve-redux',
+        'resolve-storage-mongo',
+        'resolve-scripts',
+        'create-resolve-app',
+        'resolve-storage-lite',
+        'resolve-readmodel-memory',
+        'resolve-storage-base',
+        'resolve-readmodel-mongo',
+        'resolve-readmodel-base',
+        'resolve-readmodel-mysql',
+        'resolve-auth',
+        'resolve-subscribe-mqtt',
+        'resolve-subscribe-socket.io',
+        'resolve-storage-mysql'
+      ])
     })
   }
 
@@ -252,7 +273,7 @@ if (unknownOptions && unknownOptions.length) {
     log()
     log(chalk.green('Patch package.json'))
 
-    let packageJsonPath = `${process.cwd()}/${appName}/package.json`,
+    const packageJsonPath = `${process.cwd()}/${appName}/package.json`,
       packageJson = require(packageJsonPath)
 
     packageJson.name = appName
@@ -274,7 +295,16 @@ if (unknownOptions && unknownOptions.length) {
   const install = () => {
     log()
     log(chalk.green('Install dependencies'))
-    let command = `cd ./${appName} && npm i`
+
+    const packageJsonPath = `${process.cwd()}/${appName}/package.json`,
+      packageJson = require(packageJsonPath)
+
+    if (packageJson.workspaces && !useYarn) {
+      // eslint-disable-next-line
+      throw 'Managing dependencies in a monorepo is not supported with `npm`. Please use `yarn` to install dependencies.'
+    }
+
+    const command = `cd ./${appName} && ${useYarn ? 'yarn' : 'npm i'}`
     const proc = spawn.sync(command, [], { stdio: 'inherit', shell: true })
     if (proc.status !== 0) {
       throw Error(`\`${command}\` failed`)
@@ -283,7 +313,7 @@ if (unknownOptions && unknownOptions.length) {
 
   const printFinishOutput = () => {
     const displayCommand = (isDefaultCmd = false) =>
-      isDefaultCmd ? 'npm' : 'npm run'
+      useYarn ? 'yarn' : isDefaultCmd ? 'npm' : 'npm run'
 
     log()
     log(`Success! ${appName} is created `)

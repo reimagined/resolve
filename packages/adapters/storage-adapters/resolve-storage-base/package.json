@@ -1,6 +1,6 @@
 {
   "name": "resolve-storage-base",
-  "version": "0.14.2",
+  "version": "0.14.4",
   "description": "This package contains the basic components for storage adapters",
   "engines": {
     "node": ">=8.10"
@@ -23,5 +23,5 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-storage-base#readme"
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-storage-base#readme"
 }

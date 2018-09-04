@@ -25,14 +25,16 @@ const endorseEventTable = async (tableName, options) => {
 
   await connection.execute(
     `CREATE TABLE IF NOT EXISTS ${escapeId(tableName)}(
-      timestamp ${longNumberSqlType},
-      aggregateId ${longStringSqlType},
-      aggregateVersion ${longNumberSqlType},
-      type ${longStringSqlType},
-      payload ${customObjectSqlType},
-      PRIMARY KEY(aggregateId, aggregateVersion),
-      INDEX USING BTREE(type),
-      INDEX USING BTREE(timestamp)
+      \`timestamp\` ${longNumberSqlType},
+      \`aggregateId\` ${longStringSqlType},
+      \`aggregateVersion\` ${longNumberSqlType},
+      \`type\` ${longStringSqlType},
+      \`payload\` ${customObjectSqlType},
+      PRIMARY KEY(\`aggregateId\`, \`aggregateVersion\`),
+      INDEX USING BTREE(\`aggregateId\`),
+      INDEX USING BTREE(\`aggregateVersion\`),
+      INDEX USING BTREE(\`type\`),
+      INDEX USING BTREE(\`timestamp\`)
     )`,
     []
   )
@@ -45,7 +47,7 @@ const saveEvent = async (connectionPromise, tableName, event) => {
   try {
     await connection.execute(
       `INSERT INTO ${escapeId(tableName)}
-      (timestamp, aggregateId, aggregateVersion, type, payload)
+      (\`timestamp\`, \`aggregateId\`, \`aggregateVersion\`, \`type\`, \`payload\`)
       VALUES (?, ?, ?, ?, ?)`,
       [
         event.timestamp,
@@ -83,8 +85,8 @@ const loadEventsByTypes = async (
 
   let [rows] = await connection.execute(
     `SELECT * FROM ${escapeId(tableName)}
-    WHERE timestamp > ? AND
-    type IN (${types.map(() => '?')})
+    WHERE \`timestamp\` > ? AND \`type\` IN (${types.map(() => '?')})
+    ORDER BY \`timestamp\` ASC, \`aggregateVersion\` ASC
     `,
     [startTime, ...types]
   )
@@ -114,8 +116,10 @@ const loadEventsByAggregateIds = async (
 
   let [rows] = await connection.execute(
     `SELECT * FROM ${escapeId(tableName)}
-    WHERE timestamp > ? AND
-    aggregateId IN (${aggregateIds.map(() => '?')})
+    WHERE \`timestamp\` > ? AND \`aggregateId\` IN (${aggregateIds.map(
+      () => '?'
+    )})
+    ORDER BY \`timestamp\` ASC, \`aggregateVersion\` ASC
     `,
     [startTime, ...aggregateIds]
   )

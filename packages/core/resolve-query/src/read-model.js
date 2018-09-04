@@ -1,7 +1,10 @@
-import createDefaultAdapter from 'resolve-readmodel-memory'
 import { diff } from 'diff-json'
 
 const emptyFunction = () => {}
+const defaultPrepareProjection = () => ({
+  lastTimestamp: 0,
+  aggregatesVersionsMap: new Map()
+})
 
 const [diffWrapperPrev, diffWrapperNext] = [{ wrap: null }, { wrap: null }]
 
@@ -15,7 +18,10 @@ const init = async repository => {
     return
   }
 
-  const { prepareProjection = () => 0, ...readApi } = adapter.init()
+  const {
+    prepareProjection = defaultPrepareProjection,
+    ...readApi
+  } = adapter.init()
   let subscriptionCanceler = null
 
   let onDispose = () => {
@@ -44,29 +50,44 @@ const init = async repository => {
       reject(reason)
     }
 
-    const projectionInvoker = async event => await projection[event.type](event)
+    const projectionInvoker = async (event, aggregatesVersionsMap) => {
+      if (event == null || event.constructor !== Object) {
+        return
+      }
+      const expectedAggregateVersion = aggregatesVersionsMap.get(
+        event.aggregateId
+      )
+      if (
+        expectedAggregateVersion != null &&
+        event.aggregateVersion <= expectedAggregateVersion
+      ) {
+        return
+      }
+
+      await projection[event.type](event)
+    }
 
     const eventListenerInvoker = async event =>
       typeof repository.eventListener === 'function'
         ? await repository.eventListener(event)
         : null
 
-    const synchronizedEventWorker = event =>
+    const synchronizedEventWorker = (aggregatesVersionsMap, event) =>
       (flowPromise = flowPromise
         ? flowPromise
-            .then(projectionInvoker.bind(null, event))
+            .then(projectionInvoker.bind(null, event, aggregatesVersionsMap))
             .then(eventListenerInvoker.bind(null, event))
             .catch(forceStop)
         : flowPromise)
 
     Promise.resolve()
       .then(prepareProjection)
-      .then(startTime =>
+      .then(({ lastTimestamp, aggregatesVersionsMap }) =>
         eventStore.subscribeByEventType(
           Object.keys(projection),
-          synchronizedEventWorker,
+          synchronizedEventWorker.bind(null, aggregatesVersionsMap),
           {
-            startTime
+            startTime: lastTimestamp
           }
         )
       )
@@ -207,12 +228,7 @@ const makeReactiveReader = async (
   return { result, forceStop }
 }
 
-const createReadModel = ({
-  adapter = createDefaultAdapter(),
-  projection,
-  eventStore,
-  resolvers
-}) => {
+const createReadModel = ({ adapter, projection, eventStore, resolvers }) => {
   const repository = {
     projection: projection ? adapter.buildProjection(projection) : null,
     externalEventListeners: [],

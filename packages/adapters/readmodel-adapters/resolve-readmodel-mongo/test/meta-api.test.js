@@ -22,7 +22,9 @@ describe('resolve-readmodel-mongo meta-api', () => {
 
     pool = {
       connection: {
-        collection: sinon.stub().callsFake(() => Promise.resolve(collectionApi))
+        createCollection: sinon.stub().callsFake(async () => null),
+        collection: sinon.stub().callsFake(async () => collectionApi),
+        collections: sinon.stub().callsFake(async () => [])
       },
       metaName: META_NAME
     }
@@ -56,6 +58,9 @@ describe('resolve-readmodel-mongo meta-api', () => {
 
     collectionApi.findOne.onCall(0).callsFake(async () => ({ timestamp: 100 }))
     collectionApi.find.onCall(0).callsFake(async () => ({
+      toArray: async () => []
+    }))
+    collectionApi.find.onCall(1).callsFake(async () => ({
       toArray: async () => tableDeclarations
     }))
 
@@ -75,7 +80,7 @@ describe('resolve-readmodel-mongo meta-api', () => {
       key: 'timestamp'
     })
 
-    expect(collectionApi.find.firstCall.args[0]).toEqual({
+    expect(collectionApi.find.secondCall.args[0]).toEqual({
       key: 'tableDescription'
     })
   })
@@ -83,6 +88,9 @@ describe('resolve-readmodel-mongo meta-api', () => {
   it('should provide getMetaInfo method - for empty meta table', async () => {
     collectionApi.findOne.onCall(0).callsFake(async () => null)
     collectionApi.find.onCall(0).callsFake(async () => ({
+      toArray: async () => []
+    }))
+    collectionApi.find.onCall(1).callsFake(async () => ({
       toArray: async () => []
     }))
 
@@ -97,7 +105,7 @@ describe('resolve-readmodel-mongo meta-api', () => {
       key: 'timestamp'
     })
 
-    expect(collectionApi.find.firstCall.args[0]).toEqual({
+    expect(collectionApi.find.secondCall.args[0]).toEqual({
       key: 'tableDescription'
     })
 
@@ -121,7 +129,12 @@ describe('resolve-readmodel-mongo meta-api', () => {
     collectionApi.findOne
       .onCall(0)
       .callsFake(async () => ({ timestamp: Number.NaN }))
+
     collectionApi.find.onCall(0).callsFake(async () => ({
+      toArray: async () => []
+    }))
+
+    collectionApi.find.onCall(1).callsFake(async () => ({
       toArray: async () => tableDeclarations
     }))
 
@@ -136,7 +149,7 @@ describe('resolve-readmodel-mongo meta-api', () => {
       key: 'timestamp'
     })
 
-    expect(collectionApi.find.firstCall.args[0]).toEqual({
+    expect(collectionApi.find.secondCall.args[0]).toEqual({
       key: 'tableDescription'
     })
 

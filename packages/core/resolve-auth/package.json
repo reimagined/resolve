@@ -1,6 +1,6 @@
 {
   "name": "resolve-auth",
-  "version": "0.14.2",
+  "version": "0.14.4",
   "description": "This package provide an auth to your app.",
   "engines": {
     "node": ">=8.10"
@@ -23,7 +23,7 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/resolve-auth#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-auth#readme",
   "dependencies": {
     "cookie": "^0.3.1"
   },
