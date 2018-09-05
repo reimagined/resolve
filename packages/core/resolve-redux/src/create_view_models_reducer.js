@@ -165,8 +165,9 @@ export default function createViewModelsReducer(viewModels) {
         const aggregateKeys = Array.from(
           new Set(aggregateHash.get(action.aggregateId))
         )
-        if (aggregateKeys) {
-          for (const aggregateKey of aggregateKeys) {
+
+        for (const aggregateKey of aggregateKeys) {
+          if (state[viewModel.name] && state[viewModel.name][aggregateKey]) {
             for (const aggregateArgs of Object.keys(
               state[viewModel.name][aggregateKey]
             )) {
