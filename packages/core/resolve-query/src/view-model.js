@@ -1,48 +1,22 @@
-import invariantFunctionHash from 'invariant-function-hash'
-const GeneratorProto = (function*() {})().__proto__.__proto__
-const PromiseProto = (async function() {})().__proto__
-
-const filterAsyncResult = result => {
-  if (
-    result &&
-    result.__proto__ &&
-    result.__proto__.__proto__ === GeneratorProto
-  ) {
-    throw new Error(
-      'A Projection function cannot be a generator or return an iterable object'
-    )
-  }
-  if (result && result.__proto__ === PromiseProto) {
-    throw new Error(
-      'A Projection function cannot be asynchronous or return a Promise object'
-    )
-  }
-}
-
-const emptySnapshotAdapter = Object.freeze({
-  loadSnapshot: async () => ({ timestamp: 0, state: null }),
-  saveSnapshot: () => null
-})
-
-const makeViewModelHash = projection =>
-  Object.keys(projection)
-    .sort()
-    .map(
-      handlerName =>
-        `${handlerName}:${invariantFunctionHash(projection[handlerName])}`
-    )
-    .join(',')
-
 const createViewModel = ({
   projection,
   eventStore,
-  snapshotAdapter = emptySnapshotAdapter,
-  snapshotBucketSize = 100
+  snapshotAdapter = null,
+  snapshotBucketSize = 100,
+  invariantHash = null
 }) => {
   const getKey = aggregateIds =>
     Array.isArray(aggregateIds) ? aggregateIds.sort().join(',') : aggregateIds
   const viewMap = new Map()
-  const viewModelHash = makeViewModelHash(projection)
+
+  if (
+    (invariantHash == null || invariantHash.constructor !== String) &&
+    snapshotAdapter != null
+  ) {
+    throw new Error(
+      `Field 'invariantHash' is mandatory when using view-model snapshots`
+    )
+  }
 
   const reader = async ({ aggregateIds } = { aggregateIds: null }) => {
     if (
@@ -60,7 +34,7 @@ const createViewModel = ({
       return await executor()
     }
 
-    const snapshotKey = `${viewModelHash};${key}`
+    const snapshotKey = `${invariantHash};${key}`
     const eventTypes = Object.keys(projection).filter(
       eventName => eventName !== 'Init'
     )
@@ -68,8 +42,8 @@ const createViewModel = ({
     let aggregateIdsSet = new Set()
     let appliedEvents = 0
     let lastTimestamp = 0
+    let lastError = null
     let state = null
-    let error = null
 
     try {
       const snapshot = await snapshotAdapter.loadSnapshot(snapshotKey)
@@ -78,26 +52,26 @@ const createViewModel = ({
       }
       lastTimestamp = snapshot.timestamp
       state = snapshot.state
-    } catch (err) {}
+    } catch (error) {}
 
     try {
       if (!(+lastTimestamp > 0) && typeof projection.Init === 'function') {
         state = projection.Init()
-        filterAsyncResult(state)
       }
-    } catch (err) {
-      error = err
+    } catch (error) {
+      lastError = error
     }
 
     const callback = event => {
-      if (!event || !event.type || error) return
+      if (!event || !event.type || lastError) return
       try {
         state = projection[event.type](state, event)
-        filterAsyncResult(state)
-
         aggregateIdsSet.add(event.aggregateId)
 
-        if (++appliedEvents % snapshotBucketSize === 0) {
+        if (
+          snapshotAdapter != null &&
+          ++appliedEvents % snapshotBucketSize === 0
+        ) {
           lastTimestamp = Date.now()
           snapshotAdapter.saveSnapshot(snapshotKey, {
             state,
@@ -105,8 +79,8 @@ const createViewModel = ({
             aggregateIdsSet: Array.from(aggregateIdsSet)
           })
         }
-      } catch (err) {
-        error = err
+      } catch (error) {
+        lastError = error
       }
     }
 
@@ -124,7 +98,7 @@ const createViewModel = ({
 
     const executor = async () => {
       await subscribePromise
-      if (error) throw error
+      if (lastError) throw lastError
 
       const aggregateVersionsMap = {}
 
