@@ -32,7 +32,6 @@
     "babel-core": "^7.0.0-0",
     "jest": "23.5.0",
     "react-test-renderer": "16.4.2",
-    "testcafe": "0.22.0",
-    "testcafe-browser-tools": "1.6.5"
+    "testcafe": "0.22.0"
   }
 }

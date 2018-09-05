@@ -31,6 +31,6 @@
   },
   "devDependencies": {
     "jest": "23.5.0",
-    "sinon": "^6.1.3"
+    "sinon": "6.2.0"
   }
 }
