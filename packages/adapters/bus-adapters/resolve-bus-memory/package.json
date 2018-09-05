@@ -25,7 +25,7 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/bus-adapters/resolve-bus-memory#readme",
   "devDependencies": {
-    "jest": "23.4.2",
+    "jest": "23.5.0",
     "sinon": "^6.1.3"
   }
 }

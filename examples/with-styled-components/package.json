@@ -19,8 +19,7 @@
     "redux": "4.0.0",
     "resolve-redux": "0.14.4",
     "resolve-scripts": "0.14.4",
-    "styled-components": "3.4.2",
-    "testcafe-browser-tools": "1.6.3"
+    "styled-components": "3.4.5"
   },
   "devDependencies": {
     "@babel/core": "7.0.0-beta.55",
@@ -31,8 +30,9 @@
     "@babel/preset-env": "7.0.0-beta.55",
     "@babel/preset-react": "7.0.0-beta.55",
     "babel-core": "^7.0.0-0",
-    "jest": "23.4.2",
+    "jest": "23.5.0",
     "react-test-renderer": "16.4.2",
-    "testcafe": "0.20.4"
+    "testcafe": "0.22.0",
+    "testcafe-browser-tools": "1.6.5"
   }
 }
