@@ -134,6 +134,7 @@ import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefaul
 import commands_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
 import projection_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testProjection.js\\"
 
+const invariantHash_0 = \\"fd94fac3a204e7a84b8cf3ca72e37aaa23c04dc2e1e971d69af2e20e84a40bbc2170931076d4d3e847c571f3be90e47f4c0f48aac76fdcaed083df090285b39d\\"
 const name_0 = \\"Todo\\"
 
 const aggregates = []
@@ -142,6 +143,7 @@ aggregates.push({
   name: name_0
 , commands: commands_0
 , projection: projection_0
+, invariantHash: invariantHash_0
 })
 
 export default aggregates

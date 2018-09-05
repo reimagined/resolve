@@ -5,6 +5,7 @@ exports[`base config works correctly [client] 1`] = `
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
 
+const invariantHash_0 = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
 const name_0 = \\"Todos\\"
 const resolvers_0 = {
   todos() {},
@@ -30,6 +31,7 @@ import projection_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files
 import resolvers_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testResolvers.js\\"
 
 
+const invariantHash_0 = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
 const name_0 = \\"Todos\\"
 
 const readModels = []
@@ -37,6 +39,7 @@ const readModels = []
 readModels.push({
   name: name_0
 , projection: projection_0
+, invariantHash: invariantHash_0
 , resolvers: resolvers_0
 })
 
@@ -49,11 +52,13 @@ exports[`base(v2) config works correctly [client] 1`] = `
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
 
+const invariantHash_0 = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
 const name_0 = \\"Todos\\"
 const resolvers_0 = {
   todos() {},
   items() {}
 }
+const invariantHash_1 = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
 const name_1 = \\"Items\\"
 const resolvers_1 = {
   todos() {},
@@ -87,7 +92,9 @@ import projection_1 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files
 import resolvers_1 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testResolvers.js\\"
 
 
+const invariantHash_0 = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
 const name_0 = \\"Todos\\"
+const invariantHash_1 = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
 const name_1 = \\"Items\\"
 
 const readModels = []
@@ -95,12 +102,14 @@ const readModels = []
 readModels.push({
   name: name_0
 , projection: projection_0
+, invariantHash: invariantHash_0
 , resolvers: resolvers_0
 })
 
 readModels.push({
   name: name_1
 , projection: projection_1
+, invariantHash: invariantHash_1
 , resolvers: resolvers_1
 })
 
@@ -113,6 +122,7 @@ exports[`config with storage + process.env works correctly [client] 1`] = `
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
 
+const invariantHash_0 = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
 const name_0 = \\"Todos\\"
 const resolvers_0 = {
   todos() {},
@@ -138,6 +148,7 @@ import projection_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files
 import resolvers_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testResolvers.js\\"
 
 
+const invariantHash_0 = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
 const name_0 = \\"Todos\\"
 const adapter_0 = {
   \\"module\\": \\"process.env[\\\\\\"READ_MODEL_TODOS_ADAPTER\\\\\\"]\\",
@@ -155,6 +166,7 @@ const readModels = []
 readModels.push({
   name: name_0
 , projection: projection_0
+, invariantHash: invariantHash_0
 , resolvers: resolvers_0
 , adapter: {
     module: adapterModule_0,
@@ -171,6 +183,7 @@ exports[`config with storage works correctly [client] 1`] = `
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 
 
+const invariantHash_0 = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
 const name_0 = \\"Todos\\"
 const resolvers_0 = {
   todos() {},
@@ -197,6 +210,7 @@ import resolvers_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/
 
 import adapterModule_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testSnapshotAdapter.js\\"
 
+const invariantHash_0 = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
 const name_0 = \\"Todos\\"
 const adapterOptions_0 = {\\"size\\":100}
 
@@ -205,6 +219,7 @@ const readModels = []
 readModels.push({
   name: name_0
 , projection: projection_0
+, invariantHash: invariantHash_0
 , resolvers: resolvers_0
 , adapter: {
     module: adapterModule_0,
