@@ -175,6 +175,8 @@ const createReadModel = ({ adapter, projection, eventStore, resolvers }) => {
     getReadInterface: getReadInterface.bind(null, repository),
     getLastError: getLastError.bind(null, repository),
     read: read.bind(null, repository),
+    readAndSerialize: async (...args) =>
+      JSON.stringify(await read(repository, ...args)),
     dispose: dispose.bind(null, repository)
   })
 }

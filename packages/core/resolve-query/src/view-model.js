@@ -3,7 +3,8 @@ const createViewModel = ({
   eventStore,
   snapshotAdapter = null,
   snapshotBucketSize = 100,
-  invariantHash = null
+  invariantHash = null,
+  serializeState
 }) => {
   const getKey = aggregateIds =>
     Array.isArray(aggregateIds) ? aggregateIds.sort().join(',') : aggregateIds
@@ -145,6 +146,11 @@ const createViewModel = ({
 
   return Object.freeze({
     read: reader,
+    readAndSerialize: async ({ jwtToken, ...args }) => {
+      const { state, aggregateVersionsMap } = await reader(args)
+      const serializedState = serializeState(state, jwtToken)
+      return { serializedState, aggregateVersionsMap }
+    },
     dispose
   })
 }
