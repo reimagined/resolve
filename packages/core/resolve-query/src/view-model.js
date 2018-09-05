@@ -3,18 +3,18 @@ const createViewModel = ({
   eventStore,
   snapshotAdapter = null,
   snapshotBucketSize = 100,
-  viewModelHash = null
+  invariantHash = null
 }) => {
   const getKey = aggregateIds =>
     Array.isArray(aggregateIds) ? aggregateIds.sort().join(',') : aggregateIds
   const viewMap = new Map()
 
   if (
-    (viewModelHash == null || viewModelHash.constructor !== String) &&
+    (invariantHash == null || invariantHash.constructor !== String) &&
     snapshotAdapter != null
   ) {
     throw new Error(
-      `Field 'viewModelHash' is mandatory when using view-model snapshots`
+      `Field 'invariantHash' is mandatory when using view-model snapshots`
     )
   }
 
@@ -34,7 +34,7 @@ const createViewModel = ({
       return await executor()
     }
 
-    const snapshotKey = `${viewModelHash};${key}`
+    const snapshotKey = `${invariantHash};${key}`
     const eventTypes = Object.keys(projection).filter(
       eventName => eventName !== 'Init'
     )

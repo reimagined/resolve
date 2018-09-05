@@ -90,7 +90,7 @@ export default ({ resolveConfig, isClient }) => {
       'resolve-view-model-projection-hash'
     )
     hmac.update(fs.readFileSync(projection).toString())
-    const viewModelHash = hmac.digest('hex')
+    const invariantHash = hmac.digest('hex')
 
     if (checkRuntimeEnv(viewModel.serializeState)) {
       throw new Error(
@@ -138,7 +138,7 @@ export default ({ resolveConfig, isClient }) => {
     )
 
     constants.push(
-      `const viewModelHash_${index} = ${JSON.stringify(viewModelHash)}`
+      `const invariantHash_${index} = ${JSON.stringify(invariantHash)}`
     )
 
     if (!isClient) {
@@ -192,7 +192,7 @@ export default ({ resolveConfig, isClient }) => {
       `viewModels.push({`,
       `  name: name_${index}`,
       `, projection: wrapCheckProjection(projection_${index})`,
-      `, viewModelHash: viewModelHash_${index}`
+      `, invariantHash: invariantHash_${index}`
     )
 
     if (!isClient) {

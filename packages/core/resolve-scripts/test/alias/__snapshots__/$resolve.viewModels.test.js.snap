@@ -56,14 +56,14 @@ let AsyncGeneratorProto, GeneratorProto, PromiseProto
 
       return acc
     }, {})
-const viewModelHash_0 = \\"8f56cca6d478dcc3beca1ff4497e55b4709427de061adf605db3a831efe5130027c3e1ad1eafd5d5258dbcce41bc240b074e9ac153ea29cbff610a465cf7d4ba\\"
+const invariantHash_0 = \\"8f56cca6d478dcc3beca1ff4497e55b4709427de061adf605db3a831efe5130027c3e1ad1eafd5d5258dbcce41bc240b074e9ac153ea29cbff610a465cf7d4ba\\"
 const name_0 = \\"Todos\\"
 const viewModels = []
 
 viewModels.push({
   name: name_0
 , projection: wrapCheckProjection(projection_0)
-, viewModelHash: viewModelHash_0
+, invariantHash: invariantHash_0
 , deserializeState: deserializeState_0
 })
 
@@ -128,14 +128,14 @@ let AsyncGeneratorProto, GeneratorProto, PromiseProto
 
       return acc
     }, {})
-const viewModelHash_0 = \\"8f56cca6d478dcc3beca1ff4497e55b4709427de061adf605db3a831efe5130027c3e1ad1eafd5d5258dbcce41bc240b074e9ac153ea29cbff610a465cf7d4ba\\"
+const invariantHash_0 = \\"8f56cca6d478dcc3beca1ff4497e55b4709427de061adf605db3a831efe5130027c3e1ad1eafd5d5258dbcce41bc240b074e9ac153ea29cbff610a465cf7d4ba\\"
 const name_0 = \\"Todos\\"
 const viewModels = []
 
 viewModels.push({
   name: name_0
 , projection: wrapCheckProjection(projection_0)
-, viewModelHash: viewModelHash_0
+, invariantHash: invariantHash_0
 , serializeState: serializeState_0
 , deserializeState: deserializeState_0
 })
@@ -203,23 +203,23 @@ let AsyncGeneratorProto, GeneratorProto, PromiseProto
 
       return acc
     }, {})
-const viewModelHash_0 = \\"8f56cca6d478dcc3beca1ff4497e55b4709427de061adf605db3a831efe5130027c3e1ad1eafd5d5258dbcce41bc240b074e9ac153ea29cbff610a465cf7d4ba\\"
+const invariantHash_0 = \\"8f56cca6d478dcc3beca1ff4497e55b4709427de061adf605db3a831efe5130027c3e1ad1eafd5d5258dbcce41bc240b074e9ac153ea29cbff610a465cf7d4ba\\"
 const name_0 = \\"Todos\\"
-const viewModelHash_1 = \\"8f56cca6d478dcc3beca1ff4497e55b4709427de061adf605db3a831efe5130027c3e1ad1eafd5d5258dbcce41bc240b074e9ac153ea29cbff610a465cf7d4ba\\"
+const invariantHash_1 = \\"8f56cca6d478dcc3beca1ff4497e55b4709427de061adf605db3a831efe5130027c3e1ad1eafd5d5258dbcce41bc240b074e9ac153ea29cbff610a465cf7d4ba\\"
 const name_1 = \\"Items\\"
 const viewModels = []
 
 viewModels.push({
   name: name_0
 , projection: wrapCheckProjection(projection_0)
-, viewModelHash: viewModelHash_0
+, invariantHash: invariantHash_0
 , deserializeState: deserializeState_0
 })
 
 viewModels.push({
   name: name_1
 , projection: wrapCheckProjection(projection_1)
-, viewModelHash: viewModelHash_1
+, invariantHash: invariantHash_1
 , deserializeState: deserializeState_1
 })
 
@@ -288,16 +288,16 @@ let AsyncGeneratorProto, GeneratorProto, PromiseProto
 
       return acc
     }, {})
-const viewModelHash_0 = \\"8f56cca6d478dcc3beca1ff4497e55b4709427de061adf605db3a831efe5130027c3e1ad1eafd5d5258dbcce41bc240b074e9ac153ea29cbff610a465cf7d4ba\\"
+const invariantHash_0 = \\"8f56cca6d478dcc3beca1ff4497e55b4709427de061adf605db3a831efe5130027c3e1ad1eafd5d5258dbcce41bc240b074e9ac153ea29cbff610a465cf7d4ba\\"
 const name_0 = \\"Todos\\"
-const viewModelHash_1 = \\"8f56cca6d478dcc3beca1ff4497e55b4709427de061adf605db3a831efe5130027c3e1ad1eafd5d5258dbcce41bc240b074e9ac153ea29cbff610a465cf7d4ba\\"
+const invariantHash_1 = \\"8f56cca6d478dcc3beca1ff4497e55b4709427de061adf605db3a831efe5130027c3e1ad1eafd5d5258dbcce41bc240b074e9ac153ea29cbff610a465cf7d4ba\\"
 const name_1 = \\"Items\\"
 const viewModels = []
 
 viewModels.push({
   name: name_0
 , projection: wrapCheckProjection(projection_0)
-, viewModelHash: viewModelHash_0
+, invariantHash: invariantHash_0
 , serializeState: serializeState_0
 , deserializeState: deserializeState_0
 })
@@ -305,7 +305,7 @@ viewModels.push({
 viewModels.push({
   name: name_1
 , projection: wrapCheckProjection(projection_1)
-, viewModelHash: viewModelHash_1
+, invariantHash: invariantHash_1
 , serializeState: serializeState_1
 , deserializeState: deserializeState_1
 })
@@ -370,14 +370,14 @@ let AsyncGeneratorProto, GeneratorProto, PromiseProto
 
       return acc
     }, {})
-const viewModelHash_0 = \\"8f56cca6d478dcc3beca1ff4497e55b4709427de061adf605db3a831efe5130027c3e1ad1eafd5d5258dbcce41bc240b074e9ac153ea29cbff610a465cf7d4ba\\"
+const invariantHash_0 = \\"8f56cca6d478dcc3beca1ff4497e55b4709427de061adf605db3a831efe5130027c3e1ad1eafd5d5258dbcce41bc240b074e9ac153ea29cbff610a465cf7d4ba\\"
 const name_0 = \\"Todos\\"
 const viewModels = []
 
 viewModels.push({
   name: name_0
 , projection: wrapCheckProjection(projection_0)
-, viewModelHash: viewModelHash_0
+, invariantHash: invariantHash_0
 , deserializeState: deserializeState_0
 })
 
@@ -442,14 +442,14 @@ let AsyncGeneratorProto, GeneratorProto, PromiseProto
 
       return acc
     }, {})
-const viewModelHash_0 = \\"8f56cca6d478dcc3beca1ff4497e55b4709427de061adf605db3a831efe5130027c3e1ad1eafd5d5258dbcce41bc240b074e9ac153ea29cbff610a465cf7d4ba\\"
+const invariantHash_0 = \\"8f56cca6d478dcc3beca1ff4497e55b4709427de061adf605db3a831efe5130027c3e1ad1eafd5d5258dbcce41bc240b074e9ac153ea29cbff610a465cf7d4ba\\"
 const name_0 = \\"Todos\\"
 const viewModels = []
 
 viewModels.push({
   name: name_0
 , projection: wrapCheckProjection(projection_0)
-, viewModelHash: viewModelHash_0
+, invariantHash: invariantHash_0
 , serializeState: serializeState_0
 , deserializeState: deserializeState_0
 })
@@ -514,14 +514,14 @@ let AsyncGeneratorProto, GeneratorProto, PromiseProto
 
       return acc
     }, {})
-const viewModelHash_0 = \\"8f56cca6d478dcc3beca1ff4497e55b4709427de061adf605db3a831efe5130027c3e1ad1eafd5d5258dbcce41bc240b074e9ac153ea29cbff610a465cf7d4ba\\"
+const invariantHash_0 = \\"8f56cca6d478dcc3beca1ff4497e55b4709427de061adf605db3a831efe5130027c3e1ad1eafd5d5258dbcce41bc240b074e9ac153ea29cbff610a465cf7d4ba\\"
 const name_0 = \\"Todos\\"
 const viewModels = []
 
 viewModels.push({
   name: name_0
 , projection: wrapCheckProjection(projection_0)
-, viewModelHash: viewModelHash_0
+, invariantHash: invariantHash_0
 , deserializeState: deserializeState_0
 })
 
@@ -586,7 +586,7 @@ let AsyncGeneratorProto, GeneratorProto, PromiseProto
 
       return acc
     }, {})
-const viewModelHash_0 = \\"8f56cca6d478dcc3beca1ff4497e55b4709427de061adf605db3a831efe5130027c3e1ad1eafd5d5258dbcce41bc240b074e9ac153ea29cbff610a465cf7d4ba\\"
+const invariantHash_0 = \\"8f56cca6d478dcc3beca1ff4497e55b4709427de061adf605db3a831efe5130027c3e1ad1eafd5d5258dbcce41bc240b074e9ac153ea29cbff610a465cf7d4ba\\"
 const name_0 = \\"Todos\\"
 const snapshotAdapter_0 = {
   \\"module\\": \\"process.env[\\\\\\"VIEW_MODEL_TODOS_ADAPTER\\\\\\"]\\",
@@ -603,7 +603,7 @@ const viewModels = []
 viewModels.push({
   name: name_0
 , projection: wrapCheckProjection(projection_0)
-, viewModelHash: viewModelHash_0
+, invariantHash: invariantHash_0
 , serializeState: serializeState_0
 , deserializeState: deserializeState_0
 , snapshotAdapter: {
@@ -672,14 +672,14 @@ let AsyncGeneratorProto, GeneratorProto, PromiseProto
 
       return acc
     }, {})
-const viewModelHash_0 = \\"8f56cca6d478dcc3beca1ff4497e55b4709427de061adf605db3a831efe5130027c3e1ad1eafd5d5258dbcce41bc240b074e9ac153ea29cbff610a465cf7d4ba\\"
+const invariantHash_0 = \\"8f56cca6d478dcc3beca1ff4497e55b4709427de061adf605db3a831efe5130027c3e1ad1eafd5d5258dbcce41bc240b074e9ac153ea29cbff610a465cf7d4ba\\"
 const name_0 = \\"Todos\\"
 const viewModels = []
 
 viewModels.push({
   name: name_0
 , projection: wrapCheckProjection(projection_0)
-, viewModelHash: viewModelHash_0
+, invariantHash: invariantHash_0
 , deserializeState: deserializeState_0
 })
 
@@ -745,7 +745,7 @@ let AsyncGeneratorProto, GeneratorProto, PromiseProto
 
       return acc
     }, {})
-const viewModelHash_0 = \\"8f56cca6d478dcc3beca1ff4497e55b4709427de061adf605db3a831efe5130027c3e1ad1eafd5d5258dbcce41bc240b074e9ac153ea29cbff610a465cf7d4ba\\"
+const invariantHash_0 = \\"8f56cca6d478dcc3beca1ff4497e55b4709427de061adf605db3a831efe5130027c3e1ad1eafd5d5258dbcce41bc240b074e9ac153ea29cbff610a465cf7d4ba\\"
 const name_0 = \\"Todos\\"
 const snapshotAdapterOptions_0 = {\\"size\\":100}
 const viewModels = []
@@ -753,7 +753,7 @@ const viewModels = []
 viewModels.push({
   name: name_0
 , projection: wrapCheckProjection(projection_0)
-, viewModelHash: viewModelHash_0
+, invariantHash: invariantHash_0
 , serializeState: serializeState_0
 , deserializeState: deserializeState_0
 , snapshotAdapter: {
@@ -822,14 +822,14 @@ let AsyncGeneratorProto, GeneratorProto, PromiseProto
 
       return acc
     }, {})
-const viewModelHash_0 = \\"8f56cca6d478dcc3beca1ff4497e55b4709427de061adf605db3a831efe5130027c3e1ad1eafd5d5258dbcce41bc240b074e9ac153ea29cbff610a465cf7d4ba\\"
+const invariantHash_0 = \\"8f56cca6d478dcc3beca1ff4497e55b4709427de061adf605db3a831efe5130027c3e1ad1eafd5d5258dbcce41bc240b074e9ac153ea29cbff610a465cf7d4ba\\"
 const name_0 = \\"Todos\\"
 const viewModels = []
 
 viewModels.push({
   name: name_0
 , projection: wrapCheckProjection(projection_0)
-, viewModelHash: viewModelHash_0
+, invariantHash: invariantHash_0
 , deserializeState: deserializeState_0
 })
 
@@ -895,14 +895,14 @@ let AsyncGeneratorProto, GeneratorProto, PromiseProto
 
       return acc
     }, {})
-const viewModelHash_0 = \\"8f56cca6d478dcc3beca1ff4497e55b4709427de061adf605db3a831efe5130027c3e1ad1eafd5d5258dbcce41bc240b074e9ac153ea29cbff610a465cf7d4ba\\"
+const invariantHash_0 = \\"8f56cca6d478dcc3beca1ff4497e55b4709427de061adf605db3a831efe5130027c3e1ad1eafd5d5258dbcce41bc240b074e9ac153ea29cbff610a465cf7d4ba\\"
 const name_0 = \\"Todos\\"
 const viewModels = []
 
 viewModels.push({
   name: name_0
 , projection: wrapCheckProjection(projection_0)
-, viewModelHash: viewModelHash_0
+, invariantHash: invariantHash_0
 , serializeState: serializeState_0
 , deserializeState: deserializeState_0
 , validator: validator_0

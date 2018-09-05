@@ -12,7 +12,7 @@ describe('resolve-query view-model', () => {
     { type: 'UserDeleted', aggregateId: '1' }
   ]
 
-  const viewModelHash = 'unique-view-model-hash'
+  const invariantHash = 'unique-view-model-hash'
   const snapshotBucketSize = 1
 
   beforeEach(() => {
@@ -66,7 +66,7 @@ describe('resolve-query view-model', () => {
     eventList = null
   })
 
-  it('should raise error on view-model with snapshot adapter without viewModelHash', async () => {
+  it('should raise error on view-model with snapshot adapter without invariantHash', async () => {
     try {
       createViewModel({ eventStore, projection, snapshotAdapter })
 
@@ -74,7 +74,7 @@ describe('resolve-query view-model', () => {
     } catch (error) {
       expect(error).toBeInstanceOf(Error)
       expect(error.message).toEqual(
-        `Field 'viewModelHash' is mandatory when using view-model snapshots`
+        `Field 'invariantHash' is mandatory when using view-model snapshots`
       )
     }
   })
@@ -248,7 +248,7 @@ describe('resolve-query view-model', () => {
       projection,
       snapshotAdapter,
       snapshotBucketSize,
-      viewModelHash
+      invariantHash
     })
 
     const testEvent = {
@@ -288,7 +288,7 @@ describe('resolve-query view-model', () => {
       projection,
       snapshotAdapter,
       snapshotBucketSize,
-      viewModelHash
+      invariantHash
     })
 
     const testEvent = {
