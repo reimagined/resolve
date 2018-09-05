@@ -25,9 +25,9 @@
     "@babel/plugin-transform-runtime": "7.0.0-beta.55",
     "@babel/preset-env": "7.0.0-beta.55",
     "@babel/preset-react": "7.0.0-beta.55",
-    "resolve-redux": "0.14.3",
-    "resolve-scripts": "0.14.3",
-    "resolve-subscribe-socket.io": "0.14.3"
+    "resolve-redux": "0.14.4",
+    "resolve-scripts": "0.14.4",
+    "resolve-subscribe-socket.io": "0.14.4"
   },
   "workspaces": {
     "packages": [
