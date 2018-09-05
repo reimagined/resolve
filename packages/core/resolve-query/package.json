@@ -1,6 +1,6 @@
 {
   "name": "resolve-query",
-  "version": "0.14.3",
+  "version": "0.14.4",
   "description": "This package creates a function to execute a query.",
   "engines": {
     "node": ">=8.10"
@@ -30,7 +30,7 @@
   "dependencies": {
     "diff-json": "^0.1.11",
     "invariant-function-hash": "^1.0.1",
-    "resolve-readmodel-memory": "0.14.3"
+    "resolve-readmodel-memory": "0.14.4"
   },
   "devDependencies": {
     "jest": "23.5.0",

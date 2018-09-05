@@ -5,7 +5,7 @@ import println from './utils/println'
 
 const message = require('../../configs/message.json')
 
-const readModelNonReactiveHandler = async (req, res) => {
+const readModelHandler = async (req, res) => {
   const { modelName: readModelName, modelOptions: resolverName } = req.params
   const { [queryIdArg]: queryId, ...resolverArgs } = req.arguments
 
@@ -25,6 +25,7 @@ const readModelNonReactiveHandler = async (req, res) => {
     const lastError = await readModelQueryExecutors[
       readModelName
     ].getLastError()
+
     if (lastError != null) {
       println.error(lastError)
     }
@@ -34,4 +35,4 @@ const readModelNonReactiveHandler = async (req, res) => {
   }
 }
 
-export default readModelNonReactiveHandler
+export default readModelHandler

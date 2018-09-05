@@ -92,19 +92,9 @@ pipeline {
                         find . -name package.json -type f -print | grep -v node_modules | xargs -I '%' node -e 'require("fs").writeFileSync(process.argv[1], JSON.stringify((() => { const pj = require(process.argv[1]); if(pj.dependencies) Object.keys(pj.dependencies).forEach(key => { if(key.indexOf("resolve-") < 0) return; pj.dependencies[key] = process.env.CI_CANARY_VERSION  }); return pj; })(), null, 3))' '%'; \
                         yarn run publish --no-checks --no-confirm --new-version \$(cat /canary_version); \
                         sleep 10
-                    """
-                }
-            }
-        }
-
-        stage('Prepare for [ create-resolve-app ] testing') {
-            when {
-                expression { CHANGE_TARGET == 'master' }
-            }
-            steps {
-                script {
-                    sh """
+                        
                         rm -rf ./*
+                        
                         export YARN_CACHE_FOLDER=/yarn_cache
 
                         yarn global add create-resolve-app@\$(cat /canary_version)
@@ -121,7 +111,7 @@ pipeline {
                 script {
                     sh """
                         mkdir hello-world && cd hello-world;
-                        create-resolve-app hello-world -c \$(cat /last_commit)
+                        yarn create resolve-app hello-world -c \$(cat /last_commit)
                         cd ./hello-world; 
                         cat ./package.json; 
                         yarn test
@@ -139,7 +129,7 @@ pipeline {
                 script {
                     sh """
                         mkdir shopping-list && cd shopping-list;
-                        create-resolve-app shopping-list -e shopping-list -c \$(cat /last_commit)
+                        yarn create resolve-app shopping-list -e shopping-list -c \$(cat /last_commit)
                         cd ./shopping-list
                         cat ./package.json
                         yarn test:functional path:/chromium
@@ -155,8 +145,9 @@ pipeline {
             steps {
                 script {
                     sh """
+                        export YARN_CACHE_FOLDER=/yarn_cache
                         mkdir shopping-list-advanced && cd shopping-list-advanced;
-                        create-resolve-app shopping-list-advanced -e shopping-list-advanced -c \$(cat /last_commit)
+                        yarn create resolve-app shopping-list-advanced -e shopping-list-advanced -c \$(cat /last_commit)
                         cd ./shopping-list-advanced
                         cat ./package.json
                         yarn test:functional path:/chromium
@@ -173,7 +164,7 @@ pipeline {
                 script {
                     sh """
                         mkdir hacker-news && cd hacker-news;
-                        create-resolve-app hn -e hacker-news -c \$(cat /last_commit)
+                        yarn create resolve-app hn -e hacker-news -c \$(cat /last_commit)
                         cd ./hn
                         cat ./package.json
                         yarn test
@@ -191,7 +182,7 @@ pipeline {
                 script {
                     sh """
                         mkdir with-postcss && cd with-postcss;
-                        create-resolve-app with-postcss -e with-postcss -c \$(cat /last_commit)
+                        yarn create resolve-app with-postcss -e with-postcss -c \$(cat /last_commit)
                         cd ./with-postcss
                         cat ./package.json
                         yarn test
@@ -209,7 +200,7 @@ pipeline {
                 script {
                     sh """
                         mkdir with-styled-components && cd with-styled-components;
-                        create-resolve-app with-styled-components -e with-styled-components -c \$(cat /last_commit)
+                        yarn create resolve-app with-styled-components -e with-styled-components -c \$(cat /last_commit)
                         cd ./with-styled-components
                         cat ./package.json
                         yarn test
@@ -227,7 +218,7 @@ pipeline {
                 script {
                     sh """
                         mkdir with-saga && cd with-saga;
-                        create-resolve-app with-saga -e with-saga -c \$(cat /last_commit)
+                        yarn create resolve-app with-saga -e with-saga -c \$(cat /last_commit)
                         cd ./with-saga
                         cat ./package.json
                         yarn test

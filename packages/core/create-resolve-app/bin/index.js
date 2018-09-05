@@ -7,6 +7,7 @@ const fs = require('fs')
 const https = require('https')
 const spawn = require('cross-spawn')
 const validateProjectName = require('validate-npm-package-name')
+const execSync = require('child_process').execSync
 
 // eslint-disable-next-line no-console
 const log = console.log
@@ -79,18 +80,23 @@ const messages = {
     `Run ${chalk.cyan('create-resolve-app --help')} to see all options.`
 }
 
-const useYarn =
-  (process.env._ && process.env._.includes('yarn')) ||
-  (process.env.npm_execpath && process.env.npm_execpath.includes('yarn')) ||
-  (process.env.npm_config_user_agent &&
-    process.env.npm_config_user_agent.includes('yarn'))
-
 const options = commandLineArgs(optionDefinitions, { partial: true })
 const unknownOptions =
   options._unknown && options._unknown.filter(x => x.startsWith('-'))
 
 const resolveVersion = require('../package.json').version
 const analyticsUrlBase = 'https://ga-beacon.appspot.com/UA-118635726-2'
+
+const isYarnAvailable = () => {
+  try {
+    execSync('yarn --version', { stdio: 'ignore' })
+    return true
+  } catch (e) {
+    return false
+  }
+}
+
+const useYarn = isYarnAvailable()
 
 if (unknownOptions && unknownOptions.length) {
   const options = unknownOptions.join()

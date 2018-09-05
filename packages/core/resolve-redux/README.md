@@ -362,7 +362,6 @@ const jwtProvider = {
     * `resolverArgs`
     * `queryId`
     * `result`
-    * `timeToLive`
 
   * #### `loadReadModelStateFailure`
     Refuses fetching a Read Model Resolver result from the server side. The function takes one argument, which is an object with the following keys:
@@ -378,19 +377,6 @@ const jwtProvider = {
     * `resolverName`
     * `resolverArgs`
 
-  * #### `stopReadModelSubscriptionRequest`
-    Requests stopping a Read Model subscription. It takes the object with the following required arguments:
-    * `queryId`
-
-  * #### `stopReadModelSubscriptionSuccess`
-    Acknowledges stopping a Read Model subscription. The function takes one argument, which is an object with the following keys:
-    * `queryId`
-
-  * #### `stopReadModelSubscriptionFailure`
-    Refuses stopping a Read Model subscription. The function takes one argument, which is an object with the following keys:
-    * `queryId`
-    * `error`
-    
   * #### `authRequest`
     Requests authorization. It takes the object with the following required arguments:
     * `url`
