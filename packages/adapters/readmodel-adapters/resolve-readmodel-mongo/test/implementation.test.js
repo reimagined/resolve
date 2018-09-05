@@ -16,10 +16,7 @@ describe('resolve-readmodel-mongo implementation', () => {
     storeApi = { storeMethod: sinon.stub().callsFake(() => 20) }
 
     testConnectionOptions = {
-      url: 'url',
-      user: 'user',
-      password: 'password',
-      databaseName: 'databaseName'
+      url: 'url'
     }
   })
 

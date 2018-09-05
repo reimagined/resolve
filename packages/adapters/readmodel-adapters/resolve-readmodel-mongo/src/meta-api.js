@@ -20,9 +20,9 @@ const getMetaInfo = async (pool, checkStoredTableSchema) => {
     })) || {}
 
   if (!Number.isInteger(timestamp) || timestamp < 0) {
-    await metaCollection.update(
+    await metaCollection.updateOne(
       { key: 'timestamp' },
-      { key: 'timestamp', timestamp: 0 },
+      { $set: { key: 'timestamp', timestamp: 0 } },
       { upsert: true }
     )
   } else {
@@ -54,7 +54,7 @@ const getMetaInfo = async (pool, checkStoredTableSchema) => {
       )}`
     )
 
-    await metaCollection.remove({ key: 'tableDescription', tableName })
+    await metaCollection.deleteMany({ key: 'tableDescription', tableName })
   }
 }
 
@@ -66,9 +66,9 @@ const setLastTimestamp = async (
 ) => {
   const metaCollection = await connection.collection(metaName)
 
-  await metaCollection.update(
+  await metaCollection.updateOne(
     { key: 'timestamp' },
-    { key: 'timestamp', timestamp }
+    { $set: { key: 'timestamp', timestamp } }
   )
 
   metaInfo.timestamp = +timestamp
@@ -81,9 +81,9 @@ const setLastAggregateVersion = async (
 ) => {
   const metaCollection = await connection.collection(metaName)
 
-  await metaCollection.update(
+  await metaCollection.updateOne(
     { key: 'aggregatesVersionsMap', aggregateId },
-    { key: 'aggregatesVersionsMap', aggregateId, aggregateVersion },
+    { $set: { key: 'aggregatesVersionsMap', aggregateId, aggregateVersion } },
     { upsert: true }
   )
 

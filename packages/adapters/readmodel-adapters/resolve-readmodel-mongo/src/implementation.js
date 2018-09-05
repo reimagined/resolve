@@ -2,14 +2,9 @@ const implementation = (
   rawMetaApi,
   storeApi,
   MongoClient,
-  { metaName, checkStoredTableSchema, ...options }
+  { metaName, checkStoredTableSchema, url, ...connectionOptions }
 ) => {
   const { getMetaInfo, ...metaApi } = rawMetaApi
-
-  const connectionOptions = {
-    url: options.url || 'mongodb://127.0.0.1:27017/',
-    databaseName: options.databaseName || 'admin'
-  }
 
   const pool = { metaName }
   let connectionPromise = null
@@ -18,8 +13,11 @@ const implementation = (
     if (!connectionPromise) {
       connectionPromise = Promise.resolve()
         .then(async () => {
-          const client = await MongoClient.connect(connectionOptions.url)
-          pool.connection = await client.db(connectionOptions.databaseName)
+          const client = await MongoClient.connect(
+            url,
+            { ...connectionOptions, useNewUrlParser: true }
+          )
+          pool.connection = await client.db()
           await getMetaInfo(pool, checkStoredTableSchema)
         })
         .catch(error => error)

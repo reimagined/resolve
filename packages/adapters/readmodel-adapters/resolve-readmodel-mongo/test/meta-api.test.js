@@ -14,9 +14,9 @@ describe('resolve-readmodel-mongo meta-api', () => {
       find: sinon.stub().callsFake(() => Promise.resolve()),
       findOne: sinon.stub().callsFake(() => Promise.resolve()),
       count: sinon.stub().callsFake(() => Promise.resolve()),
-      insert: sinon.stub().callsFake(() => Promise.resolve()),
-      update: sinon.stub().callsFake(() => Promise.resolve()),
-      remove: sinon.stub().callsFake(() => Promise.resolve()),
+      insertOne: sinon.stub().callsFake(() => Promise.resolve()),
+      updateOne: sinon.stub().callsFake(() => Promise.resolve()),
+      deleteMany: sinon.stub().callsFake(() => Promise.resolve()),
       drop: sinon.stub().callsFake(() => Promise.resolve())
     }
 
@@ -109,9 +109,9 @@ describe('resolve-readmodel-mongo meta-api', () => {
       key: 'tableDescription'
     })
 
-    expect(collectionApi.update.firstCall.args).toEqual([
+    expect(collectionApi.updateOne.firstCall.args).toEqual([
       { key: 'timestamp' },
-      { key: 'timestamp', timestamp: 0 },
+      { $set: { key: 'timestamp', timestamp: 0 } },
       { upsert: true }
     ])
   })
@@ -153,13 +153,13 @@ describe('resolve-readmodel-mongo meta-api', () => {
       key: 'tableDescription'
     })
 
-    expect(collectionApi.update.firstCall.args).toEqual([
+    expect(collectionApi.updateOne.firstCall.args).toEqual([
       { key: 'timestamp' },
-      { key: 'timestamp', timestamp: 0 },
+      { $set: { key: 'timestamp', timestamp: 0 } },
       { upsert: true }
     ])
 
-    expect(collectionApi.remove.firstCall.args[0]).toEqual({
+    expect(collectionApi.deleteMany.firstCall.args[0]).toEqual({
       key: 'tableDescription',
       tableName: tableDeclarations[0].tableName
     })
@@ -177,9 +177,9 @@ describe('resolve-readmodel-mongo meta-api', () => {
     pool.metaInfo = { timestamp: 10 }
 
     await metaApi.setLastTimestamp(pool, 20)
-    expect(collectionApi.update.firstCall.args).toEqual([
+    expect(collectionApi.updateOne.firstCall.args).toEqual([
       { key: 'timestamp' },
-      { key: 'timestamp', timestamp: 20 }
+      { $set: { key: 'timestamp', timestamp: 20 } }
     ])
 
     expect(pool.metaInfo.timestamp).toEqual(20)
@@ -211,7 +211,7 @@ describe('resolve-readmodel-mongo meta-api', () => {
     await metaApi.describeTable(pool, 'one', metaInfoOne)
     expect(pool.metaInfo.tables['one']).toEqual(metaInfoOne)
 
-    expect(collectionApi.insert.firstCall.args[0]).toEqual({
+    expect(collectionApi.insertOne.firstCall.args[0]).toEqual({
       key: 'tableDescription',
       tableName: 'one',
       tableDescription: metaInfoOne

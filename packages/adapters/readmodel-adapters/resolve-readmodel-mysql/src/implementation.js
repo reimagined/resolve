@@ -3,17 +3,9 @@ const implementation = (
   storeApi,
   mysql,
   escapeId,
-  { metaName, checkStoredTableSchema, ...options }
+  { metaName, checkStoredTableSchema, ...connectionOptions }
 ) => {
   const { getMetaInfo, ...metaApi } = rawMetaApi
-
-  const connectionOptions = {
-    host: options.host || '127.0.0.1',
-    port: options.port || 3306,
-    user: options.user || 'root',
-    password: options.password || '',
-    database: options.database || 'temp'
-  }
 
   const pool = { escapeId, metaName }
   let connectionPromise = null

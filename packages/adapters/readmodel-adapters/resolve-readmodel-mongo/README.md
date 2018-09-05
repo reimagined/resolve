@@ -6,16 +6,17 @@ The adapter provides a query API for projection and resolvers. This API is simil
  
 ## Available Parameters
 * `url` - a MongoDB connection string. Refer to [Connection String URI Format](https://docs.mongodb.com/manual/reference/connection-string/) for more information.
-* `databaseName` - a name of a database.
+* `...connectionSettings` - see [URI Connection Settings](https://github.com/mongodb/node-mongodb-native/blob/master/docs/reference/content/reference/connecting/connection-settings.md) for more information.
+
 ## Usage
 
 ```js
-import createAdapter from 'resolve-readmodel-mongo';
+import createAdapter from 'resolve-readmodel-mongo'
 
 const adapter = createAdapter({
-    url: 'mongodb://localhost:27017',
-    databaseName: 'DatabaseName'
-});
+  url: 'mongodb://localhost:27017/DatabaseName',
+  ...connectionSettings
+})
 ```
  
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-resolve-readmodel-mongo-readme?pixel)
