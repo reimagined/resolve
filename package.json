@@ -57,10 +57,10 @@
     ]
   },
   "scripts": {
-    "clean": "npx oao all \"npx rimraf dist\" --parallel && npx rimraf yarn-error.log && npx oao clean",
+    "clean": "oao all \"npx rimraf dist\" --parallel && oao all \"npx rimraf lib\" --parallel && oao all \"npx rimraf es\" --parallel && npx rimraf yarn-error.log && npx oao clean",
     "lint": "eslint .",
     "lint-staged": "lint-staged",
-    "prepare": "oao all \"npx rimraf dist\" && oao run-script build",
+    "prepare": "oao all \"npx rimraf dist\" --parallel && oao all \"npx rimraf lib\" --parallel && oao all \"npx rimraf es\" --parallel && oao run-script build",
     "prettier": "prettier --single-quote --no-semi --write \"**/**.js\"",
     "prettier-json": "prettier --write \"**/**.json\"",
     "publish": "oao publish -i \"examples/*\" --no-git-commit --no-changelog",
