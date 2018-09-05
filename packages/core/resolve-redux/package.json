@@ -1,6 +1,6 @@
 {
   "name": "resolve-redux",
-  "version": "0.14.3",
+  "version": "0.14.4",
   "description": "This package serves as a helper for creating the Redux storage.",
   "engines": {
     "node": ">=8.10"
@@ -37,7 +37,7 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "jest": "23.4.2",
+    "jest": "23.5.0",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "react-test-renderer": "^16.4.2",

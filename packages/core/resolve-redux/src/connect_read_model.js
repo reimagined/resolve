@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
 import * as actions from './actions'
-import { connectorMetaMap, isReactiveArg } from './constants'
+import { connectorMetaMap } from './constants'
 import getHash from './get_hash'
 import connectResolveAdvanced from './connect_resolve_advanced'
 
@@ -13,36 +13,24 @@ const connectReadModel = mapStateToOptions => Component => {
       const {
         readModelName,
         resolverName,
-        resolverArgs,
-        isReactive
+        resolverArgs
         // placeholder,
         // placeholderTimeout
       } = this.props.connectorOptions
 
-      this.props.connectReadModel(
-        readModelName,
-        resolverName,
-        resolverArgs,
-        isReactive
-      )
+      this.props.connectReadModel(readModelName, resolverName, resolverArgs)
     }
 
     componentWillUnmount() {
       const {
         readModelName,
         resolverName,
-        resolverArgs,
-        isReactive
+        resolverArgs
         // placeholder,
         // placeholderTimeout
       } = this.props.connectorOptions
 
-      this.props.disconnectReadModel(
-        readModelName,
-        resolverName,
-        resolverArgs,
-        isReactive
-      )
+      this.props.disconnectReadModel(readModelName, resolverName, resolverArgs)
     }
 
     componentDidUpdate(prevProps) {
@@ -65,14 +53,12 @@ const connectReadModel = mapStateToOptions => Component => {
         this.props.disconnectReadModel(
           prevConnectorOptions.readModelName,
           prevConnectorOptions.resolverName,
-          prevConnectorOptions.resolverArgs,
-          prevConnectorOptions.isReactive
+          prevConnectorOptions.resolverArgs
         )
         this.props.connectReadModel(
           connectorOptions.readModelName,
           connectorOptions.resolverName,
-          connectorOptions.resolverArgs,
-          connectorOptions.isReactive
+          connectorOptions.resolverArgs
         )
       }
     }
@@ -91,17 +77,9 @@ const connectReadModel = mapStateToOptions => Component => {
   const mapStateToConnectorProps = (state, ownProps) => {
     const connectorOptions = mapStateToOptions(state, ownProps)
 
-    if (connectorOptions.isReactive) {
-      Object.assign(connectorOptions.resolverArgs, { [isReactiveArg]: true })
-    }
     const readModelName = connectorOptions.readModelName
     const resolverName = getHash(connectorOptions.resolverName)
     const resolverArgs = getHash(connectorOptions.resolverArgs)
-    const isReactive = connectorOptions.isReactive
-
-    if (isReactive) {
-      Object.assign(resolverArgs, { [isReactiveArg]: true })
-    }
 
     const connectorMeta =
       state.readModels &&

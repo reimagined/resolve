@@ -124,7 +124,7 @@ const count = async ({ connection }, tableName, searchExpression) => {
 
 const insert = async ({ connection }, tableName, document) => {
   const collection = await connection.collection(tableName)
-  return await collection.insert(document)
+  return await collection.insertOne(document)
 }
 
 const update = async (
@@ -135,21 +135,16 @@ const update = async (
   options
 ) => {
   const collection = await connection.collection(tableName)
-  return await collection.update(
+  return await collection.updateMany(
     wrapSearchExpression(searchExpression),
     updateExpression,
-    {
-      multi: true,
-      upsert: !!options.upsert
-    }
+    { upsert: !!options.upsert }
   )
 }
 
 const del = async ({ connection }, tableName, searchExpression) => {
   const collection = await connection.collection(tableName)
-  return await collection.remove(wrapSearchExpression(searchExpression), {
-    multi: true
-  })
+  return await collection.deleteMany(wrapSearchExpression(searchExpression))
 }
 
 export default {

@@ -4,7 +4,6 @@ import {
   LOAD_VIEWMODEL_STATE_REQUEST,
   LOAD_READMODEL_STATE_REQUEST,
   SEND_COMMAND_REQUEST,
-  STOP_READ_MODEL_SUBSCRIPTION_REQUEST,
   AUTH_REQUEST,
   LOGOUT
 } from './action_types'
@@ -14,7 +13,6 @@ import sendCommandSaga from './send_command_saga'
 import viewModelSaga from './view_models_saga'
 import readModelSaga from './read_models_saga'
 import subscribeSaga from './subscribe_saga'
-import stopReadModelSubscriptionSaga from './stop_read_model_subscription_saga'
 import authSaga from './auth_saga'
 import logoutSaga from './logout_saga'
 
@@ -31,11 +29,7 @@ function* rootSaga(sagaArgs) {
     sagaArgs
   )
   yield takeEvery(SEND_COMMAND_REQUEST, sendCommandSaga, sagaArgs)
-  yield takeEvery(
-    STOP_READ_MODEL_SUBSCRIPTION_REQUEST,
-    stopReadModelSubscriptionSaga,
-    sagaArgs
-  )
+
   yield takeEvery(AUTH_REQUEST, authSaga, sagaArgs)
   yield takeEvery(LOGOUT, logoutSaga, sagaArgs)
   yield fork(viewModelSaga, sagaArgs)

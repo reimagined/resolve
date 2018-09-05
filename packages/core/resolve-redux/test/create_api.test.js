@@ -8,7 +8,6 @@ describe('createApi', () => {
 
     expect(api.loadViewModelState).toBeInstanceOf(Function)
     expect(api.loadReadModelState).toBeInstanceOf(Function)
-    expect(api.stopReadModelSubscription).toBeInstanceOf(Function)
     expect(api.sendCommand).toBeInstanceOf(Function)
     expect(api.getSubscribeAdapterOptions).toBeInstanceOf(Function)
   })

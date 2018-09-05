@@ -16,10 +16,7 @@ describe('resolve-readmodel-mongo implementation', () => {
     storeApi = { storeMethod: sinon.stub().callsFake(() => 20) }
 
     testConnectionOptions = {
-      url: 'url',
-      user: 'user',
-      password: 'password',
-      database: 'database'
+      url: 'url'
     }
   })
 
@@ -52,7 +49,9 @@ describe('resolve-readmodel-mongo implementation', () => {
     )
     const client = await MongoClient.connect.firstCall.returnValue
 
-    expect(client.db.firstCall.args[0]).toEqual(testConnectionOptions.database)
+    expect(client.db.firstCall.args[0]).toEqual(
+      testConnectionOptions.databaseName
+    )
 
     const metaMethodCallArg = metaApi.metaMethod.firstCall.args[0]
     expect(metaMethodCallArg.connection).toEqual(connection)
