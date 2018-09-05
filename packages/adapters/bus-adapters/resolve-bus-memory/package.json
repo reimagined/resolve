@@ -11,7 +11,9 @@
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
-    "build": "babel --config-file=../../../../babel.config.js --source-maps --out-dir ./dist ./src",
+    "build": "npm run build:es && npm run build:commonjs",
+    "build:es": "cross-env MODULE_TYPE=es MODULE_TARGET=server babel --config-file=../../../../babel.config.js --source-maps --out-dir ./es ./src",
+    "build:commonjs": "cross-env MODULE_TYPE=cjs MODULE_TARGET=server babel --config-file=../../../../babel.config.js --source-maps --out-dir ./lib ./src",
     "test": "jest --config=../../../../jest.config.js --verbose",
     "testw": "jest --config=../../../../jest.config.js --watchAll"
   },
@@ -26,7 +28,7 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/bus-adapters/resolve-bus-memory#readme",
   "devDependencies": {
-    "jest": "23.4.2",
-    "sinon": "^6.1.3"
+    "jest": "23.5.0",
+    "sinon": "6.2.0"
   }
 }

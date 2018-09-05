@@ -11,7 +11,9 @@
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
-    "build": "babel --config-file=../../../../babel.config.js --source-maps --out-dir ./dist ./src",
+    "build": "npm run build:es && npm run build:commonjs",
+    "build:es": "cross-env MODULE_TYPE=es MODULE_TARGET=server babel --config-file=../../../../babel.config.js --source-maps --out-dir ./es ./src",
+    "build:commonjs": "cross-env MODULE_TYPE=cjs MODULE_TARGET=server babel --config-file=../../../../babel.config.js --source-maps --out-dir ./lib ./src",
     "test": "echo || exit 0",
     "testw": "echo || exit 0"
   },
