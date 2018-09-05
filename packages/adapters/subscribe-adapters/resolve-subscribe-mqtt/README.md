@@ -6,7 +6,7 @@ This package is a `resolve-redux` adapter used to subscribe to events via an [MQ
 
 #### Client Side
 ```js
-import createClientAdapter from 'resolve-subscribe-mqtt/create_client_adapter';
+import createClientAdapter from 'resolve-subscribe-mqtt';
 
 (async () => {
   const adapter = createClientAdapter({ origin, rootPath, url, appId, onEvent })
@@ -17,7 +17,7 @@ import createClientAdapter from 'resolve-subscribe-mqtt/create_client_adapter';
 
 #### Server Side
 ```js
-import createServerAdapter from 'resolve-subscribe-mqtt/create_server_adapter';
+import createServerAdapter from 'resolve-subscribe-mqtt';
 
 (async () => {
   const adapter = createServerAdapter({ server, getRootBasedUrl, pubsubManager, appId })

@@ -1,5 +1,7 @@
 module.exports = function(api) {
-  api.cache.using(() => process.env.MODULE_TYPE + ':' + process.env.MODULE_TARGET)
+  api.cache.using(
+    () => process.env.MODULE_TYPE + ':' + process.env.MODULE_TARGET
+  )
 
   let useESModules, regenerator, helpers, modules, targets, loose
 
@@ -38,11 +40,14 @@ module.exports = function(api) {
 
   return {
     presets: [
-      ['@babel/preset-env', {
-        loose,
-        targets,
-        modules
-      }],
+      [
+        '@babel/preset-env',
+        {
+          loose,
+          targets,
+          modules
+        }
+      ],
       '@babel/preset-react'
     ],
     plugins: [
@@ -62,12 +67,15 @@ module.exports = function(api) {
       '@babel/plugin-proposal-throw-expressions',
       '@babel/plugin-syntax-dynamic-import',
       '@babel/plugin-syntax-import-meta',
-      ['@babel/plugin-transform-runtime', {
-        corejs: false,
-        helpers,
-        regenerator,
-        useESModules
-      }]
+      [
+        '@babel/plugin-transform-runtime',
+        {
+          corejs: false,
+          helpers,
+          regenerator,
+          useESModules
+        }
+      ]
     ]
   }
 }

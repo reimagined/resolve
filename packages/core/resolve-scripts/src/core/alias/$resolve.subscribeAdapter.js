@@ -36,7 +36,7 @@ export default ({ resolveConfig, isClient }) => {
   if (isClient) {
     exports.push(
       `import module from ${JSON.stringify(
-        `${resolveConfig.subscribeAdapter.module}/dist/create_client_adapter`
+        `${resolveConfig.subscribeAdapter.module}`
       )}`,
       ``,
       `const options = ${JSON.stringify(options.client, null, 2)}`,
@@ -46,7 +46,7 @@ export default ({ resolveConfig, isClient }) => {
   } else {
     exports.push(
       `import module from ${JSON.stringify(
-        `${resolveConfig.subscribeAdapter.module}/dist/create_server_adapter`
+        `${resolveConfig.subscribeAdapter.module}`
       )}`,
       ``,
       `const options = ${JSON.stringify(options.server, null, 2)}`,
