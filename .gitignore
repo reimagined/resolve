@@ -43,3 +43,6 @@ jspm_packages
 event-storage.db
 #
 dist
+lib
+es
+

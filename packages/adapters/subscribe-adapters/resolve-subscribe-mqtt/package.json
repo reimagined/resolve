@@ -5,13 +5,13 @@
   "engines": {
     "node": ">=8.10"
   },
-  "main": "./dist/create_server_adapter.js",
-  "browser": "./dist/create_client_adapter.js",
+  "main": "./lib/create_server_adapter.js",
+  "browser": "./lib/create_client_adapter.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
-    "prepare": "babel --config-file=../../../../.babelrc --source-maps --out-dir ./dist ./src",
+    "build": "babel --config-file=../../../../babel.config.js --source-maps --out-dir ./dist ./src",
     "test": "jest --config=../../../../jest.config.js --verbose",
     "testw": "jest --config=../../../../jest.config.js --watchAll"
   },

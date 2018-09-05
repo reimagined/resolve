@@ -5,12 +5,13 @@
   "engines": {
     "node": ">=8.10"
   },
-  "main": "./dist/index.js",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
-    "prepare": "babel --config-file=../../../../.babelrc --source-maps --out-dir ./dist ./src",
+    "build": "babel --config-file=../../../../babel.config.js --source-maps --out-dir ./dist ./src",
     "test": "jest --config=../../../../jest.config.js --verbose",
     "testw": "jest --config=../../../../jest.config.js --watchAll"
   },
