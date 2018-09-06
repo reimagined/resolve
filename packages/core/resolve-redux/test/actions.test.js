@@ -288,11 +288,6 @@ describe('actions', () => {
       }
       const result = { test: true }
       const timestamp = Date.now()
-      const aggregateVersionsMap = {
-        'uuid-1': 1,
-        'uuid-2': 2,
-        'uuid-3': 3
-      }
       expect(
         loadViewModelStateSuccess(
           viewModelName,

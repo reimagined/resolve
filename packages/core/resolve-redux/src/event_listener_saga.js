@@ -34,6 +34,7 @@ const eventListenerSaga = function*(
         yield put(event)
         viewModelLastTimestampMap[key] = event.timestamp
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.warn(error)
 
         yield* unsubscribeViewModelTopicsSaga({
