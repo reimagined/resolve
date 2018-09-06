@@ -7,11 +7,13 @@ const loadViewModelStateSaga = function*(
   { viewModelName, aggregateIds, aggregateArgs }
 ) {
   try {
-    const { result: serializedState, timestamp } = yield api.loadViewModelState({
-      viewModelName,
-      aggregateIds,
-      aggregateArgs
-    })
+    const { result: serializedState, timestamp } = yield api.loadViewModelState(
+      {
+        viewModelName,
+        aggregateIds,
+        aggregateArgs
+      }
+    )
 
     const { deserializeState } = viewModels.find(
       ({ name }) => name === viewModelName

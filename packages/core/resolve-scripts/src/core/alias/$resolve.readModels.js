@@ -62,9 +62,9 @@ export default ({ resolveConfig, isClient }) => {
           }
         }
       : {
-        module: resolveFileOrModule('resolve-readmodel-memory'),
-        options: {}
-      }
+          module: resolveFileOrModule('resolve-readmodel-memory'),
+          options: {}
+        }
 
     constants.push(`const name_${index} = ${JSON.stringify(name)}`)
 

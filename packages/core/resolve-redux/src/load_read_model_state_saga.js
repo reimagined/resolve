@@ -13,7 +13,7 @@ const loadReadModelStateSaga = function*(
       resolverArgs,
       queryId
     })
-    
+
     const data = JSON.parse(serializedData)
 
     yield put(

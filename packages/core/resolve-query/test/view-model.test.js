@@ -175,7 +175,7 @@ describe('resolve-query view-model', () => {
     const args = { aggregateIds: '*' }
     await wrongViewModel.read(args)
     const lastError = await wrongViewModel.getLastError(args)
-    
+
     expect(lastError).toEqual(error)
   })
 
@@ -199,11 +199,11 @@ describe('resolve-query view-model', () => {
         aggregateId: 'test-id-2'
       }
     ]
-  
+
     const args = { aggregateIds: '*' }
     await wrongViewModel.read(args)
     const lastError = await wrongViewModel.getLastError(args)
-  
+
     expect(lastError).toEqual(error)
   })
 

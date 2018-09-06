@@ -121,12 +121,12 @@ describe('Read-model generic adapter API', () => {
         const originResult = await viewModel.read({ aggregateIds })
         const serializedResult = serializeState(originResult.state)
         const deserializedResult = deserializeState(serializedResult)
-        
+
         const lastError = await viewModel.getLastError({ aggregateIds })
-        if(lastError != null) {
+        if (lastError != null) {
           throw lastError
         }
-        
+
         return deserializedResult
       }
     }

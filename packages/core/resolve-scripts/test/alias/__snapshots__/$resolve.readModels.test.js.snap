@@ -30,9 +30,11 @@ import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefaul
 import projection_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testProjection.js\\"
 import resolvers_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testResolvers.js\\"
 
+import adapterModule_0 from \\"<MONOREPO_DIR>/adapters/readmodel-adapters/resolve-readmodel-memory/dist/index.js\\"
 
 const invariantHash_0 = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
 const name_0 = \\"Todos\\"
+const adapterOptions_0 = {}
 
 const readModels = []
 
@@ -41,6 +43,10 @@ readModels.push({
 , projection: projection_0
 , invariantHash: invariantHash_0
 , resolvers: resolvers_0
+, adapter: {
+    module: adapterModule_0,
+    options: adapterOptions_0
+  }
 })
 
 export default readModels
@@ -88,14 +94,18 @@ import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefaul
 import projection_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testProjection.js\\"
 import resolvers_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testResolvers.js\\"
 
+import adapterModule_0 from \\"<MONOREPO_DIR>/adapters/readmodel-adapters/resolve-readmodel-memory/dist/index.js\\"
 import projection_1 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testProjection.js\\"
 import resolvers_1 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testResolvers.js\\"
 
+import adapterModule_1 from \\"<MONOREPO_DIR>/adapters/readmodel-adapters/resolve-readmodel-memory/dist/index.js\\"
 
 const invariantHash_0 = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
 const name_0 = \\"Todos\\"
+const adapterOptions_0 = {}
 const invariantHash_1 = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
 const name_1 = \\"Items\\"
+const adapterOptions_1 = {}
 
 const readModels = []
 
@@ -104,6 +114,10 @@ readModels.push({
 , projection: projection_0
 , invariantHash: invariantHash_0
 , resolvers: resolvers_0
+, adapter: {
+    module: adapterModule_0,
+    options: adapterOptions_0
+  }
 })
 
 readModels.push({
@@ -111,6 +125,10 @@ readModels.push({
 , projection: projection_1
 , invariantHash: invariantHash_1
 , resolvers: resolvers_1
+, adapter: {
+    module: adapterModule_1,
+    options: adapterOptions_1
+  }
 })
 
 export default readModels
