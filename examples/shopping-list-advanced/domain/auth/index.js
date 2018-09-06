@@ -49,7 +49,7 @@ const strategies = [
 
         const passwordHash = hmac.digest('hex')
 
-        const existingUser = await resolve.executeReadModelQuery({
+        const existingUser = await resolve.executeQuery({
           modelName: 'Default',
           resolverName: 'user',
           resolverArgs: {
@@ -112,7 +112,7 @@ const strategies = [
       failureRedirect,
       errorRedirect,
       callback: async ({ resolve }, username, password) => {
-        const user = await resolve.executeReadModelQuery({
+        const user = await resolve.executeQuery({
           modelName: 'Default',
           resolverName: 'user',
           resolverArgs: { username }

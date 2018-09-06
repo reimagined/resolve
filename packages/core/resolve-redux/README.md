@@ -320,8 +320,8 @@ const jwtProvider = {
     * `viewModelName`
     * `aggregateIds`
     * `aggregateArgs`
-    * `state`
-    * `aggregateVersionsMap`
+    * `result`
+    * `timestamp`
 
   * #### `loadViewModelStateFailure`
     Refuses fetching a View Model from the server side. The function takes one argument, which is an object with the following keys:
@@ -362,6 +362,7 @@ const jwtProvider = {
     * `resolverArgs`
     * `queryId`
     * `result`
+    * `timestamp`
 
   * #### `loadReadModelStateFailure`
     Refuses fetching a Read Model Resolver result from the server side. The function takes one argument, which is an object with the following keys:

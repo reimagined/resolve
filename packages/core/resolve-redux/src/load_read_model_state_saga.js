@@ -7,12 +7,14 @@ const loadReadModelStateSaga = function*(
   { readModelName, resolverName, resolverArgs, queryId }
 ) {
   try {
-    const { result } = yield api.loadReadModelState({
+    const { result: serializedData, timestamp } = yield api.loadReadModelState({
       readModelName,
       resolverName,
       resolverArgs,
       queryId
     })
+
+    const data = JSON.parse(serializedData)
 
     yield put(
       loadReadModelStateSuccess(
@@ -20,7 +22,8 @@ const loadReadModelStateSaga = function*(
         resolverName,
         resolverArgs,
         queryId,
-        result
+        data,
+        timestamp
       )
     )
   } catch (error) {

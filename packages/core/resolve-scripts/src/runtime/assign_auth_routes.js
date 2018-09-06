@@ -1,8 +1,7 @@
 import createStrategy from 'resolve-auth'
 import getRootBasedUrl from './utils/get_root_based_url'
-import executeViewModelQuery from './execute_view_model_query'
-import executeReadModelQuery from './execute_read_model_query'
-import executeCommand from './command_executor'
+import queryExecutor from './query_executor'
+import commandExecutor from './command_executor'
 
 import { auth, rootPath, jwtCookie } from './assemblies'
 
@@ -21,17 +20,16 @@ const assignAuthRoutes = app => {
       async (req, res) => {
         Object.assign(req, {
           resolve: {
-            executeReadModelQuery: args =>
-              executeReadModelQuery({
+            executeQuery: args =>
+              queryExecutor({
                 ...args,
                 jwtToken: req.jwtToken
               }),
-            executeViewModelQuery: args =>
-              executeViewModelQuery({
+            executeCommand: args =>
+              commandExecutor({
                 ...args,
                 jwtToken: req.jwtToken
-              }),
-            executeCommand
+              })
           }
         })
 
