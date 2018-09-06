@@ -22,7 +22,7 @@ const queryExecutor = createQueryExecutor({
 Pass the following arguments to the `createReadModel` factory function to create a **Read Model**:
 * `eventStore` - A configured [eventStore](../resolve-es) instance.
 * `projection` - An object with **Projection Functions** used to handle incoming Events and build the Read Model.
-* `adapter` - A Read Model [adapter](../readmodel-adapters) instance. A memory [adapter](../../adapters/readmodel-adapters/resolve-readmodel-memory), which supports a simple query & projection API is used by default.
+* `adapter` - A Read Model [adapter](../../adapters/readmodel-adapters) instance. A memory [adapter](../../adapters/readmodel-adapters/resolve-readmodel-memory), which supports a simple query & projection API is used by default.
 * `resolvers` - An object with **Resolver Functions**. Each function should accept two arguments: the first argument is a reference to the target Read Model. The second argument is an object with fields used to extract data from a Read Model Storage.
 
 A **Read Model** supports the following functions to query data:
