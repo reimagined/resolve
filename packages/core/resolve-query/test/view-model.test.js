@@ -89,9 +89,9 @@ describe('resolve-query view-model', () => {
     }
     eventList = [testEvent]
 
-    const { state } = await viewModel.read({ aggregateIds: ['test-id'] })
+    const result = await viewModel.read({ aggregateIds: ['test-id'] })
 
-    expect(state).toEqual(['test-payload'])
+    expect(result).toEqual(['test-payload'])
   })
 
   it('should support view-models with many aggregate ids', async () => {
@@ -109,15 +109,15 @@ describe('resolve-query view-model', () => {
     }
     eventList = [testEvent1, testEvent2]
 
-    const { state: state1 } = await viewModel.read({
+    const result1 = await viewModel.read({
       aggregateIds: ['test-id-1']
     })
-    const { state: state2 } = await viewModel.read({
+    const result2 = await viewModel.read({
       aggregateIds: ['test-id-2']
     })
 
-    expect(state1).toEqual(['test-payload-1'])
-    expect(state2).toEqual(['test-payload-2'])
+    expect(result1).toEqual(['test-payload-1'])
+    expect(result2).toEqual(['test-payload-2'])
   })
 
   it('should support view-models with wildcard aggregate ids', async () => {
@@ -135,9 +135,9 @@ describe('resolve-query view-model', () => {
     }
     eventList = [testEvent1, testEvent2]
 
-    const { state } = await viewModel.read({ aggregateIds: '*' })
+    const result = await viewModel.read({ aggregateIds: '*' })
 
-    expect(state).toEqual(['test-payload-1', 'test-payload-2'])
+    expect(result).toEqual(['test-payload-1', 'test-payload-2'])
   })
 
   // eslint-disable-next-line max-len
@@ -162,29 +162,30 @@ describe('resolve-query view-model', () => {
   })
 
   it('should handle view-models error on Init function', async () => {
+    const error = new Error('InitError')
     const wrongViewModel = createViewModel({
       eventStore,
       projection: {
         Init: () => {
-          throw new Error('InitError')
+          throw error
         }
       }
     })
 
-    try {
-      await wrongViewModel.read({ aggregateIds: '*' })
-      return Promise.reject('Test failed')
-    } catch (error) {
-      expect(error.message).toMatch(/InitError/)
-    }
+    const args = { aggregateIds: '*' }
+    await wrongViewModel.read(args)
+    const lastError = await wrongViewModel.getLastError(args)
+    
+    expect(lastError).toEqual(error)
   })
 
   it('should handle view-models error on custom event handler function', async () => {
+    const error = new Error('InitError')
     const wrongViewModel = createViewModel({
       eventStore,
       projection: {
         TestEvent: () => {
-          throw new Error('TestEventError')
+          throw error
         }
       }
     })
@@ -198,13 +199,12 @@ describe('resolve-query view-model', () => {
         aggregateId: 'test-id-2'
       }
     ]
-
-    try {
-      await wrongViewModel.read({ aggregateIds: '*' })
-      return Promise.reject('Test failed')
-    } catch (error) {
-      expect(error.message).toMatch(/TestEventError/)
-    }
+  
+    const args = { aggregateIds: '*' }
+    await wrongViewModel.read(args)
+    const lastError = await wrongViewModel.getLastError(args)
+  
+    expect(lastError).toEqual(error)
   })
 
   it('should support view-model with caching subscription and last state', async () => {
@@ -217,15 +217,15 @@ describe('resolve-query view-model', () => {
     }
     eventList = [testEvent]
 
-    const { state: stateOne } = await viewModel.read({
+    const result1 = await viewModel.read({
       aggregateIds: ['test-id']
     })
-    const { state: stateTwo } = await viewModel.read({
+    const result2 = await viewModel.read({
       aggregateIds: ['test-id']
     })
 
-    expect(stateOne).toEqual(['test-payload'])
-    expect(stateTwo).toEqual(['test-payload'])
+    expect(result1).toEqual(['test-payload'])
+    expect(result2).toEqual(['test-payload'])
 
     expect(projection.Init.callCount).toEqual(1)
     expect(projection.TestEvent.callCount).toEqual(1)
@@ -258,11 +258,11 @@ describe('resolve-query view-model', () => {
     }
     eventList = [testEvent, testEvent]
 
-    const { state } = await viewModel.read({
+    const result = await viewModel.read({
       aggregateIds: ['test-id']
     })
 
-    expect(state).toEqual(['test-payload', 'test-payload', 'test-payload'])
+    expect(result).toEqual(['test-payload', 'test-payload', 'test-payload'])
 
     expect(projection.Init.callCount).toEqual(0)
     expect(projection.TestEvent.callCount).toEqual(2)
@@ -298,11 +298,11 @@ describe('resolve-query view-model', () => {
     }
     eventList = [testEvent, testEvent]
 
-    const { state } = await viewModel.read({
+    const result = await viewModel.read({
       aggregateIds: ['test-id']
     })
 
-    expect(state).toEqual(['test-payload', 'test-payload'])
+    expect(result).toEqual(['test-payload', 'test-payload'])
 
     expect(projection.Init.callCount).toEqual(1)
     expect(projection.TestEvent.callCount).toEqual(2)

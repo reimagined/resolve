@@ -128,7 +128,7 @@ const getLastError = async repository => {
   return null
 }
 
-const read = async (repository, resolverName, resolverArgs, jwtToken) => {
+const read = async (repository, { resolverName, resolverArgs, jwtToken }) => {
   const resolver = repository.resolvers[resolverName]
 
   if (typeof resolver !== 'function') {
@@ -177,6 +177,7 @@ const createReadModel = ({ adapter, projection, eventStore, resolvers }) => {
     read: read.bind(null, repository),
     readAndSerialize: async (...args) =>
       JSON.stringify(await read(repository, ...args)),
+    resolverNames: Object.keys(resolvers != null ? resolvers : {}),
     dispose: dispose.bind(null, repository)
   })
 }

@@ -1,34 +1,28 @@
-import executeReadModelQuery from './execute_read_model_query'
-import readModelQueryExecutors from './read_model_query_executors'
-import { queryIdArg } from './constants'
 import println from './utils/println'
+import queryExecutor from './query_executor'
 
 const message = require('../../configs/message.json')
 
 const readModelHandler = async (req, res) => {
-  const { modelName: readModelName, modelOptions: resolverName } = req.params
-  const { [queryIdArg]: queryId, ...resolverArgs } = req.arguments
-
   try {
-    const result = await executeReadModelQuery({
-      jwtToken: req.jwtToken,
-      modelName: readModelName,
+    const { modelName, modelOptions: resolverName } = req.params
+    const resolverArgs = req.arguments
+    const jwtToken = req.jwtToken
+
+    const result = await queryExecutor.readAndSerialize({
+      modelName,
       resolverName,
-      resolverArgs
+      resolverArgs,
+      jwtToken
     })
 
-    res.status(200).send({
-      queryId,
-      result
-    })
-
-    const lastError = await readModelQueryExecutors[
-      readModelName
-    ].getLastError()
-
+    const lastError = await queryExecutor.getLastError({ modelName })
     if (lastError != null) {
-      println.error(lastError)
+      println.error(lastError.message)
+      throw lastError
     }
+
+    res.status(200).send(result)
   } catch (err) {
     res.status(500).end(`${message.readModelFail}${err.message}`)
     println.error(err)

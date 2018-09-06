@@ -1,12 +1,16 @@
-import readModelQueryExecutors from './read_model_query_executors'
+import queryExecutor from './query_executor'
 
 const statusHandler = async (req, res) => {
   if (req.method !== 'GET') {
     return res.status(405).end()
   }
-  for (const executeQuery of Object.values(readModelQueryExecutors)) {
+
+  for (const executor of queryExecutor.getExecutors()) {
     try {
-      await executeQuery(executeQuery.resolverNames[0], {})
+      await executor.read({
+        resolverName: executor.resolverNames[0],
+        resolverArgs: {}
+      })
     } catch (e) {}
   }
   res.end('ok')

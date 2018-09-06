@@ -80,16 +80,19 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
       validateStatus(response.status)
 
       if (!response.ok) {
-        throw new HttpError(response.text())
+        throw new HttpError(await response.text())
       }
 
       try {
-        result = await response.json()
+        result = await response.text()
       } catch (error) {
         throw new HttpError(error.message)
       }
 
-      return result
+      return {
+        timestamp: Number(new Date(response.headers.get('Date'))),
+        result
+      }
     },
 
     async loadReadModelState({
@@ -114,16 +117,19 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
       validateStatus(response.status)
 
       if (!response.ok) {
-        throw new HttpError(response.text())
+        throw new HttpError(await response.text())
       }
 
       try {
-        result = await response.json()
+        result = await response.text()
       } catch (error) {
         throw new HttpError(error.message)
       }
 
-      return result
+      return {
+        timestamp: Number(new Date(response.headers.get('Date'))),
+        result
+      }
     },
 
     async sendCommand({ commandType, aggregateId, aggregateName, payload }) {
@@ -142,7 +148,7 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
       validateStatus(response.status)
 
       if (!response.ok) {
-        throw new HttpError(response.text())
+        throw new HttpError(await response.text())
       }
     },
 
@@ -160,7 +166,7 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
       validateStatus(response.status)
 
       if (!response.ok) {
-        throw new HttpError(response.text())
+        throw new HttpError(await response.text())
       }
 
       try {

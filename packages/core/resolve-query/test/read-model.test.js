@@ -520,7 +520,7 @@ describe('resolve-query read-model', () => {
 
     const resolverArgs = {}
     const jwtToken = 'JWT_TOKEN'
-    await readModel.read(resolverName, resolverArgs, jwtToken)
+    await readModel.read({ resolverName, resolverArgs, jwtToken })
 
     const adapterInitResult = adapter.init.firstCall.returnValue
     const readInterface = await adapterInitResult.getReadInterface.firstCall
@@ -549,7 +549,7 @@ describe('resolve-query read-model', () => {
     await builtProjection.GOOD_EVENT(createEvent(GOOD, 10, PRIMARY))
 
     try {
-      await readModel.read(resolverName, {})
+      await readModel.read({ resolverName, resolverArgs: {} })
       return Promise.reject('should throw error on invalid resolver entry')
     } catch (error) {
       expect(error).toBeInstanceOf(Error)

@@ -1,16 +1,16 @@
 import createReadModel from './read-model'
 import createViewModel from './view-model'
 
-const duplicateName = 'A read/view name is not unique'
-const modelNotFound = 'A read/view model is not defined'
+import { modelTypes, errors } from './constants'
 
 const createQuery = ({ eventStore, viewModels, readModels }) => {
   const executors = new Map()
-  const errors = []
+  const executorTypes = new WeakMap()
+  const errorMessages = []
 
   for (const readModel of readModels) {
     if (executors.has(readModel.name)) {
-      errors.push(`${duplicateName} ${readModel}`)
+      errorMessages.push(`${errors.duplicateName} ${readModel}`)
     }
 
     const executor = createReadModel({
@@ -21,11 +21,12 @@ const createQuery = ({ eventStore, viewModels, readModels }) => {
     })
 
     executors.set(readModel.name, executor)
+    executorTypes.set(executor, modelTypes.readModel)
   }
 
   for (const viewModel of viewModels) {
     if (executors.has(viewModel.name)) {
-      errors.push(`${duplicateName} "${viewModel}"`)
+      errorMessages.push(`${errors.duplicateName} "${viewModel}"`)
     }
 
     let snapshotAdapter, snapshotBucketSize
@@ -47,36 +48,51 @@ const createQuery = ({ eventStore, viewModels, readModels }) => {
     })
 
     executors.set(viewModel.name, executor)
+    executorTypes.set(executor, modelTypes.viewModel)
   }
 
-  if (errors.length > 0) {
+  if (errorMessages.length > 0) {
     for (const executor of executors.values()) {
       executor.dispose()
     }
-    throw new Error(errors.join('\n'))
+    throw new Error(errorMessages.join('\n'))
   }
 
   const getExecutor = modelName => {
     const executor = executors.get(modelName)
     if (executor == null) {
-      throw new Error(`${modelNotFound} "${modelName}"`)
+      throw new Error(`${errors.modelNotFound} "${modelName}"`)
     }
     return executor
   }
 
-  return Object.freeze({
+  const api = Object.freeze({
     read: async ({ modelName, ...options }) => {
       const executor = getExecutor(modelName)
-      return await executor.read(...options)
+      return await executor.read(options)
     },
 
     readAndSerialize: async ({ modelName, ...options }) => {
       const executor = getExecutor(modelName)
-      return await executor.readAndSerialize(...options)
+      return await executor.readAndSerialize(options)
+    },
+
+    getLastError: async ({ modelName, ...options }) => {
+      const executor = getExecutor(modelName)
+      return await executor.getLastError(options)
+    },
+
+    getModelType: modelName => {
+      const executor = executors.get(modelName)
+      return executorTypes.get(executor)
     },
 
     getExecutors: () => executors
   })
+
+  const query = (...args) => api.read(...args)
+  Object.assign(query, api)
+  return query
 }
 
 export default createQuery

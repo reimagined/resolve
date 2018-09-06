@@ -1,7 +1,7 @@
 const eventHandlers = {
   UserCreationRequested: async (event, { resolve }) => {
     const { aggregateId } = event
-    const createdUser = await resolve.executeReadModelQuery({
+    const createdUser = await resolve.executeQuery({
       modelName: 'default',
       resolverName: 'createdUser',
       resolverArgs: { id: aggregateId }
@@ -11,7 +11,7 @@ const eventHandlers = {
       return
     }
 
-    const users = await resolve.executeReadModelQuery({
+    const users = await resolve.executeQuery({
       modelName: 'default',
       resolverName: 'users',
       resolverArgs: { id: aggregateId }

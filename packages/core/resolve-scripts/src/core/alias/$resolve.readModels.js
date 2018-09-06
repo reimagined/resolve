@@ -61,7 +61,10 @@ export default ({ resolveConfig, isClient }) => {
             ...readModel.adapter.options
           }
         }
-      : {}
+      : {
+        module: resolveFileOrModule('resolve-readmodel-memory'),
+        options: {}
+      }
 
     constants.push(`const name_${index} = ${JSON.stringify(name)}`)
 
@@ -83,8 +86,8 @@ export default ({ resolveConfig, isClient }) => {
       )
     }
 
-    if (!isClient && readModel.adapter) {
-      if (checkRuntimeEnv(readModel.adapter.module)) {
+    if (!isClient) {
+      if (checkRuntimeEnv(adapter.module)) {
         constants.push(
           `const adapter_${index} = ${injectRuntimeEnv(adapter)}`,
           `const adapterModule_${index} = interopRequireDefault(`,
@@ -108,7 +111,7 @@ export default ({ resolveConfig, isClient }) => {
       exports.push(`, invariantHash: invariantHash_${index}`)
     }
     exports.push(`, resolvers: resolvers_${index}`)
-    if (!isClient && readModel.adapter) {
+    if (!isClient) {
       exports.push(
         `, adapter: {`,
         `    module: adapterModule_${index},`,

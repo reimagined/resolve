@@ -31,8 +31,8 @@ const createViewModel = ({
 
     const key = getKey(aggregateIds)
     if (viewMap.has(key)) {
-      const executor = viewMap.get(key)
-      return await executor()
+      const viewModel = viewMap.get(key)
+      return await viewModel.read()
     }
 
     const snapshotKey = `${invariantHash};${key}`
@@ -40,7 +40,6 @@ const createViewModel = ({
       eventName => eventName !== 'Init'
     )
 
-    let aggregateIdsSet = new Set()
     let appliedEvents = 0
     let lastTimestamp = 0
     let lastError = null
@@ -48,9 +47,6 @@ const createViewModel = ({
 
     try {
       const snapshot = await snapshotAdapter.loadSnapshot(snapshotKey)
-      if (Array.isArray(snapshot.aggregateIdsSet)) {
-        aggregateIdsSet = new Set(snapshot.aggregateIdsSet)
-      }
       lastTimestamp = snapshot.timestamp
       state = snapshot.state
     } catch (error) {}
@@ -67,7 +63,6 @@ const createViewModel = ({
       if (!event || !event.type || lastError) return
       try {
         state = projection[event.type](state, event)
-        aggregateIdsSet.add(event.aggregateId)
 
         if (
           snapshotAdapter != null &&
@@ -76,8 +71,7 @@ const createViewModel = ({
           lastTimestamp = Date.now()
           snapshotAdapter.saveSnapshot(snapshotKey, {
             state,
-            lastTimestamp,
-            aggregateIdsSet: Array.from(aggregateIdsSet)
+            lastTimestamp
           })
         }
       } catch (error) {
@@ -97,40 +91,32 @@ const createViewModel = ({
             { onlyBus: false, startTime: lastTimestamp }
           )
 
-    const executor = async () => {
+    const read = async () => {
       await subscribePromise
-      if (lastError) throw lastError
-
-      const aggregateVersionsMap = {}
-
-      if (aggregateIds !== '*') {
-        for (const aggregateId of aggregateIds) {
-          aggregateVersionsMap[aggregateId] = 0
-        }
-      }
-
-      await eventStore.getEventsByAggregateId(
-        Array.from(aggregateIdsSet),
-        event => {
-          aggregateVersionsMap[event.aggregateId] = event.aggregateVersion
-        }
-      )
-
-      return {
-        state,
-        aggregateVersionsMap
-      }
+      return state
     }
 
-    executor.dispose = () => subscribePromise.then(unsubscribe => unsubscribe())
+    const getLastError = async () => {
+      await subscribePromise
+      return lastError
+    }
 
-    viewMap.set(key, executor)
-    return await executor()
+    const dispose = () => {
+      subscribePromise.then(unsubscribe => unsubscribe())
+    }
+
+    viewMap.set(key, {
+      read,
+      getLastError,
+      dispose
+    })
+
+    return await read()
   }
 
   const dispose = aggregateIds => {
     if (!aggregateIds) {
-      viewMap.forEach(executor => executor.dispose())
+      viewMap.forEach(({ dispose }) => dispose())
       viewMap.clear()
       return
     }
@@ -146,11 +132,23 @@ const createViewModel = ({
 
   return Object.freeze({
     read: reader,
+
     readAndSerialize: async ({ jwtToken, ...args }) => {
-      const { state, aggregateVersionsMap } = await reader(args)
+      const state = await reader(args)
       const serializedState = serializeState(state, jwtToken)
-      return { serializedState, aggregateVersionsMap }
+      return serializedState
     },
+
+    getLastError: async ({ aggregateIds } = { aggregateIds: null }) => {
+      const key = getKey(aggregateIds)
+      if (!viewMap.has(key)) {
+        return null
+      }
+
+      const viewModel = viewMap.get(key)
+      return await viewModel.getLastError()
+    },
+
     dispose
   })
 }
