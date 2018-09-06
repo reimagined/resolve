@@ -43,9 +43,9 @@ Content-Type: application/json
 |        Name   |  Type  | Description
 | ------------- | ------ | ------------
 | aggregateId   | string | The ID of an aggregate to which you are addressing the command
-| aggregateName | string | The aggregate's name as defined in [config.app.js](https://github.com/reimagined/resolve/blob/master/examples/shopping-list/config.app.js)
-| commandType   | string | The command type supported by [the aggregate](https://github.com/reimagined/resolve/tree/master/examples/shopping-list/common/aggregates)
-| payload       | object | The parameters that [the command](https://github.com/reimagined/resolve/tree/master/examples/shopping-list/common/aggregates) accepts
+| aggregateName | string | The aggregate's name as defined in [config.app.js](../examples/shopping-list/config.app.js)
+| commandType   | string | The command type supported by [the aggregate](../examples/shopping-list/common/aggregates)
+| payload       | object | The parameters that [the command](../examples/shopping-list/common/aggregates) accepts
 
 ### Example
 
@@ -70,7 +70,7 @@ curl -X POST -H "Content-Type: application/json" \
 | --------- | -----------------------
 | host      | The backend host URL (e.g. `localhost`)
 | port      | The backend port (default is `3000`)
-| viewModel | The View Model name as defined in [config.app.js](https://github.com/reimagined/resolve/blob/master/examples/shopping-list/config.app.js)
+| viewModel | The View Model name as defined in [config.app.js](../examples/shopping-list/config.app.js)
 | aggregateIds | The comma-separated list of Aggregate IDs to include into the View Model. Use `*` to include all Aggregates
 
 ### Response
@@ -113,8 +113,8 @@ curl -g -X GET "http://localhost:3000/api/query/Default/shoppingLists"
 | --------- | -----------------------
 | host      | The backend host URL (e.g., `localhost`)
 | port      | The backend port (default is `3000`)
-| readModel | The Read Model name as defined in [config.app.js](https://github.com/reimagined/resolve/blob/master/examples/with-saga/config.app.js)
-| resolver  | The name of a [resolver defined in the Read Model](https://github.com/reimagined/resolve/blob/master/examples/with-saga/common/read-models/default.resolvers.js)
+| readModel | The Read Model name as defined in [config.app.js](../examples/with-saga/config.app.js)
+| resolver  | The name of a [resolver defined in the Read Model](../examples/with-saga/common/read-models/default.resolvers.js)
 
 ### Headers
 
@@ -133,7 +133,7 @@ Content-Type: application/json
 }
 ```
 
-The object contains the parameters that [the resolver](https://github.com/reimagined/resolve/blob/master/examples/with-saga/common/read-models/default.resolvers.js) accepts
+The object contains the parameters that [the resolver](../examples/with-saga/common/read-models/default.resolvers.js) accepts
 
 ### Response
 
@@ -147,7 +147,7 @@ serializedResult
 | -------------------- | ------ | ------------
 | serializedResult     | string | The serialized Read Model resolve result 
 
-The [result](https://github.com/reimagined/resolve/blob/master/examples/with-saga/common/read-models/default.resolvers.js) is not limited to any type or structure.
+The [result](../examples/with-saga/common/read-models/default.resolvers.js) is not limited to any type or structure.
 
 ### Example
 
