@@ -1,5 +1,6 @@
 import { message } from '../constants'
 import { checkRuntimeEnv } from '../declare_runtime_env'
+import resolveFileOrModule from '../resolve_file_or_module'
 
 export default ({ resolveConfig, isClient }) => {
   if (!resolveConfig.subscribeAdapter) {
@@ -26,34 +27,26 @@ export default ({ resolveConfig, isClient }) => {
     }
   }
 
-  const options = {
-    client: resolveConfig.subscribeAdapter.options.client || {},
-    server: resolveConfig.subscribeAdapter.options.server || {}
-  }
-
   const exports = []
 
-  if (isClient) {
-    exports.push(
-      `import module from ${JSON.stringify(
-        `${resolveConfig.subscribeAdapter.module}`
-      )}`,
-      ``,
-      `const options = ${JSON.stringify(options.client, null, 2)}`,
-      ``,
-      `export default { module, options }`
-    )
-  } else {
-    exports.push(
-      `import module from ${JSON.stringify(
-        `${resolveConfig.subscribeAdapter.module}`
-      )}`,
-      ``,
-      `const options = ${JSON.stringify(options.server, null, 2)}`,
-      ``,
-      `export default { module, options }`
-    )
+  const subscribeAdapter = {
+    module: resolveFileOrModule(
+      `${resolveConfig.subscribeAdapter.module}/lib/${
+        isClient ? 'client' : 'server'
+      }`
+    ),
+    options: isClient
+      ? resolveConfig.subscribeAdapter.options.client || {}
+      : resolveConfig.subscribeAdapter.options.server || {}
   }
+
+  exports.push(
+    `import module from ${JSON.stringify(`${subscribeAdapter.module}`)}`,
+    ``,
+    `const options = ${JSON.stringify(subscribeAdapter.options, null, 2)}`,
+    ``,
+    `export default { module, options }`
+  )
 
   return {
     code: exports.join('\r\n')

@@ -19,6 +19,7 @@
     "@babel/plugin-proposal-nullish-coalescing-operator": "7.0.0",
     "@babel/plugin-proposal-numeric-separator": "7.0.0",
     "@babel/plugin-proposal-optional-chaining": "7.0.0",
+    "@babel/plugin-proposal-object-rest-spread": "7.0.0",
     "@babel/plugin-proposal-pipeline-operator": "7.0.0",
     "@babel/plugin-proposal-throw-expressions": "7.0.0",
     "@babel/plugin-syntax-dynamic-import": "7.0.0",
@@ -57,10 +58,10 @@
     ]
   },
   "scripts": {
-    "clean": "oao all \"npx rimraf dist\" --parallel && oao all \"npx rimraf lib\" --parallel && oao all \"npx rimraf es\" --parallel && npx rimraf yarn-error.log && npx oao clean",
+    "clean": "oao all \"npx rimraf dist lib es\" --parallel && npx rimraf yarn-error.log && npx oao clean",
     "lint": "eslint .",
     "lint-staged": "lint-staged",
-    "prepare": "oao all \"npx rimraf dist\" --parallel && oao all \"npx rimraf lib\" --parallel && oao all \"npx rimraf es\" --parallel && oao run-script build",
+    "prepare": "oao all \"npx rimraf dist lib es\" --parallel && oao run-script compile --parallel",
     "prettier": "prettier --single-quote --no-semi --write \"**/**.js\"",
     "prettier-json": "prettier --write \"**/**.json\"",
     "publish": "oao publish -i \"examples/*\" --no-git-commit --no-changelog",

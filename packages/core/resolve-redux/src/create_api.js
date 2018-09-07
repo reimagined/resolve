@@ -1,5 +1,4 @@
 import getRootBasedUrl from './get_root_based_url'
-import { queryIdArg } from './constants'
 import syncJwtProviderWithStore from './sync_jwt_provider_with_store'
 
 export class FetchError extends Error {}
@@ -95,19 +94,13 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
       }
     },
 
-    async loadReadModelState({
-      readModelName,
-      resolverName,
-      resolverArgs,
-      queryId
-    }) {
+    async loadReadModelState({ readModelName, resolverName, resolverArgs }) {
       let response, result
       try {
         response = await request(
           `/api/query/${readModelName}/${resolverName}`,
           {
-            ...resolverArgs,
-            [queryIdArg]: queryId
+            ...resolverArgs
           }
         )
       } catch (error) {

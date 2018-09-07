@@ -11,7 +11,7 @@
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
-    "build": "npm run build:client && npm run build:server",
+    "compile": "npm run build:client && npm run build:server",
     "build:client": "cross-env MODULE_TYPE=cjs MODULE_TARGET=client babel --config-file=../../../../babel.config.js --source-maps --out-dir ./lib/client ./src/client",
     "build:server": "cross-env MODULE_TYPE=cjs MODULE_TARGET=server babel --config-file=../../../../babel.config.js --source-maps --out-dir ./lib/server ./src/server",
     "test": "jest --config=../../../../jest.config.js --verbose",

@@ -14,7 +14,7 @@
     "test:functional": "echo || exit 0"
   },
   "dependencies": {
-    "@babel/runtime": "7.0.0"
+    "@babel/polyfill": "7.0.0"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",
