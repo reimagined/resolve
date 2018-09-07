@@ -141,19 +141,20 @@ export const loadViewModelStateRequest = (
   aggregateArgs
 })
 
+// TODO fix docs
 export const loadViewModelStateSuccess = (
   viewModelName,
   aggregateIds,
   aggregateArgs,
-  state,
-  aggregateVersionsMap
+  result,
+  timestamp
 ) => ({
   type: LOAD_VIEWMODEL_STATE_SUCCESS,
   viewModelName,
   aggregateIds,
   aggregateArgs,
-  state,
-  aggregateVersionsMap
+  result,
+  timestamp
 })
 
 export const loadViewModelStateFailure = (
@@ -220,14 +221,16 @@ export const loadReadModelStateSuccess = (
   resolverName,
   resolverArgs,
   queryId,
-  result
+  result,
+  timestamp
 ) => ({
   type: LOAD_READMODEL_STATE_SUCCESS,
   readModelName,
   resolverName,
   resolverArgs,
   queryId,
-  result
+  result,
+  timestamp
 })
 
 export const loadReadModelStateFailure = (

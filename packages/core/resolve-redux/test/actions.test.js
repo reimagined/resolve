@@ -211,13 +211,15 @@ describe('actions', () => {
       }
       const queryId = 'uuid-1'
       const result = { test: true }
+      const timestamp = Date.now()
       expect(
         loadReadModelStateSuccess(
           readModelName,
           resolverName,
           resolverArgs,
           queryId,
-          result
+          result,
+          timestamp
         )
       ).toEqual({
         type: LOAD_READMODEL_STATE_SUCCESS,
@@ -225,7 +227,8 @@ describe('actions', () => {
         resolverName,
         resolverArgs,
         queryId,
-        result
+        result,
+        timestamp
       })
     })
   })
@@ -283,27 +286,23 @@ describe('actions', () => {
       const aggregateArgs = {
         invert: true
       }
-      const state = { test: true }
-      const aggregateVersionsMap = {
-        'uuid-1': 1,
-        'uuid-2': 2,
-        'uuid-3': 3
-      }
+      const result = { test: true }
+      const timestamp = Date.now()
       expect(
         loadViewModelStateSuccess(
           viewModelName,
           aggregateIds,
           aggregateArgs,
-          state,
-          aggregateVersionsMap
+          result,
+          timestamp
         )
       ).toEqual({
         type: LOAD_VIEWMODEL_STATE_SUCCESS,
         viewModelName,
         aggregateIds,
         aggregateArgs,
-        state,
-        aggregateVersionsMap
+        result,
+        timestamp
       })
     })
   })

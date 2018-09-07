@@ -1,15 +1,15 @@
-import executeViewModelQuery from './execute_view_model_query'
-import viewModelQueryExecutors from './view_model_query_executors'
 import println from './utils/println'
+import queryExecutor from './query_executor'
 
 const message = require('../../configs/message.json')
 
 const viewModelHandler = async (req, res) => {
   try {
-    const viewModelName = req.params.modelName
+    const modelName = req.params.modelName
     const aggregateIds =
       req.params.modelOptions !== '*' ? req.params.modelOptions.split(/,/) : '*'
     const aggregateArgs = req.arguments
+    const jwtToken = req.jwtToken
 
     if (
       aggregateIds !== '*' &&
@@ -18,20 +18,23 @@ const viewModelHandler = async (req, res) => {
       throw new Error(message.viewModelOnlyOnDemand)
     }
 
-    const { state, aggregateVersionsMap } = await executeViewModelQuery({
-      modelName: viewModelName,
+    const serializedState = await queryExecutor.readAndSerialize({
+      modelName,
       aggregateIds,
-      aggregateArgs
+      aggregateArgs,
+      jwtToken
     })
 
-    const serializedState = viewModelQueryExecutors[
-      viewModelName
-    ].serializeState(state, req.jwtToken)
-
-    res.status(200).json({
-      serializedState,
-      aggregateVersionsMap
+    const lastError = await queryExecutor.getLastError({
+      modelName,
+      aggregateIds
     })
+    if (lastError != null) {
+      println.error(lastError.message)
+      throw lastError
+    }
+
+    res.status(200).send(serializedState)
   } catch (err) {
     res.status(500).end(`${message.viewModelFail}${err.message}`)
     println.error(err)

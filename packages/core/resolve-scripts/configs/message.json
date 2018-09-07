@@ -1,4 +1,5 @@
 {
+  "incorrectQuery": "Query is incorrect",
   "readModelsArrayFormat": "The readModels field should be an array",
   "viewModelsArrayFormat": "The viewModels field should be an array",
   "readModelMandatoryName": "A read model name is required",
