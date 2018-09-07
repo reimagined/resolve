@@ -1,7 +1,7 @@
 import getWebSocketStream from 'websocket-stream'
 import MqttConnection from 'mqtt-connection'
 
-import getMqttTopic from '../client/get_mqtt_topic'
+import getMqttTopic from './get_mqtt_topic'
 
 const createServerHandler = (pubsubManager, callback, appId, qos) => ws => {
   const stream = getWebSocketStream(ws)
