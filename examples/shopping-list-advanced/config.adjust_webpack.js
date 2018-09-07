@@ -23,17 +23,11 @@ const adjustWebpackConfigs = (resolveConfig, webpackConfigs) => {
           test: [path.resolve(__dirname, 'native/build/origin.js')],
           use: [
             {
-              loader: 'babel-loader'
-            },
-            {
               loader: 'val-loader',
               options: {
                 resolveConfig,
                 isClient: true
               }
-            },
-            {
-              loader: 'babel-loader'
             }
           ]
         }
