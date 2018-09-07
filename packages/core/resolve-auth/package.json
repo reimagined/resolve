@@ -32,7 +32,6 @@
   },
   "devDependencies": {
     "jest": "23.5.0",
-    "sinon": "6.2.0",
-    "cross-env": "5.2.0"
+    "sinon": "6.2.0"
   }
 }
