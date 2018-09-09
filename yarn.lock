@@ -8708,9 +8708,9 @@ nwsapi@^2.0.7:
   version "2.0.9"
   resolved "https://registry.yarnpkg.com/nwsapi/-/nwsapi-2.0.9.tgz#77ac0cdfdcad52b6a1151a84e73254edc33ed016"
 
-oao@=1.4.1:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/oao/-/oao-1.4.1.tgz#96cf715b9ca9ad2d16c08689865b1ebf918170f5"
+oao@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/oao/-/oao-1.5.1.tgz#ead609ee2b36bf56699f06a38be16340ce6be099"
   dependencies:
     babel-polyfill "6.26.0"
     commander "2.11.0"
@@ -8718,6 +8718,7 @@ oao@=1.4.1:
     globby "6.1.0"
     inquirer "3.2.1"
     kebab-case "1.0.0"
+    minimatch "^3.0.4"
     rimraf "2.6.1"
     semver "5.4.1"
     shelljs "0.7.8"

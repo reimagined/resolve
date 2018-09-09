@@ -5,7 +5,8 @@ pipeline:
     image: reimagined/resolve-docker
     pull: true
     commands:
-      - yarn install
+      - yarn install --ignore-scripts
+      - yarn prepare --parallel-limit=1
       - VERSION=$(/scripts/prepare_downstream)
       - /scripts/npm_patch_rc
       - npx oao all "/scripts/package_json patch-dependencies resolve $VERSION && /scripts/npm_publish $VERSION nightly"
