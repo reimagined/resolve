@@ -44,7 +44,7 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
     module: {
       rules: [
         {
-          test: /core(\/|\\)alias(\/|\\)\$resolve.\w+\.js/,
+          test: Object.values(alias),
           use: [
             {
               loader: 'babel-loader',
@@ -56,7 +56,12 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
                   '@babel/plugin-proposal-class-properties',
                   '@babel/plugin-proposal-export-default-from',
                   '@babel/plugin-proposal-export-namespace-from',
-                  '@babel/plugin-transform-runtime'
+                  ['@babel/plugin-transform-runtime', {
+                    corejs: false,
+                    helpers: true,
+                    regenerator: true,
+                    useESModules: false
+                  }]
                 ]
               }
             },
@@ -80,7 +85,8 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
           exclude: [
             /node_modules/,
             ...getModulesDirs(),
-            path.resolve(__dirname, '../../dist')
+            path.resolve(__dirname, '../../lib'),
+            path.resolve(__dirname, '../../es')
           ]
         }
       ]
