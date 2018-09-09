@@ -1,6 +1,6 @@
-import getLocalHost from 'my-local-ip'
+const getLocalHost = require('my-local-ip')
 
-export default ({ resolveConfig }) => {
+module.exports = ({ resolveConfig }) => {
   const exports = []
 
   const origin =

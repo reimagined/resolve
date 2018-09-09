@@ -11,11 +11,11 @@
     "resolve-query": "0.14.4"
   },
   "devDependencies": {
-    "@babel/core": "7.0.0-beta.55",
-    "@babel/node": "7.0.0-beta.55",
-    "@babel/plugin-transform-runtime": "7.0.0-beta.55",
-    "@babel/preset-env": "7.0.0-beta.55",
-    "@babel/preset-react": "7.0.0-beta.55",
+    "@babel/core": "7.0.0",
+    "@babel/node": "7.0.0",
+    "@babel/plugin-transform-runtime": "7.0.0",
+    "@babel/preset-env": "7.0.0",
+    "@babel/preset-react": "7.0.0",
     "babel-core": "^7.0.0-0",
     "babel-jest": "23.4.2",
     "enzyme": "3.3.0",

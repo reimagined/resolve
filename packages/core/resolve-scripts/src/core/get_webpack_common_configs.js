@@ -121,7 +121,7 @@ const getWebpackCommonConfigs = ({
       module: {
         rules: [
           {
-            test: /core(\/|\\)alias(\/|\\)\$resolve.\w+\.js/,
+            test: Object.values(alias),
             use: [
               {
                 loader: 'babel-loader',
@@ -143,7 +143,15 @@ const getWebpackCommonConfigs = ({
                     '@babel/plugin-proposal-class-properties',
                     '@babel/plugin-proposal-export-default-from',
                     '@babel/plugin-proposal-export-namespace-from',
-                    '@babel/plugin-transform-runtime'
+                    [
+                      '@babel/plugin-transform-runtime',
+                      {
+                        corejs: false,
+                        helpers: false,
+                        regenerator: false,
+                        useESModules: false
+                      }
+                    ]
                   ]
                 }
               },
@@ -167,7 +175,8 @@ const getWebpackCommonConfigs = ({
             exclude: [
               /node_modules/,
               ...getModulesDirs(),
-              path.resolve(__dirname, '../../dist')
+              path.resolve(__dirname, '../../lib'),
+              path.resolve(__dirname, '../../es')
             ]
           }
         ]

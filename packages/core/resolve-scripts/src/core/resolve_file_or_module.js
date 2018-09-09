@@ -11,13 +11,15 @@ const resolveFileOrModule = query => {
   }
 
   try {
-    return require.resolve(query, {
+    require.resolve(query, {
       paths: [
         path.resolve(process.cwd(), 'node_modules'),
         path.resolve(__dirname, '../../node_modules'),
         ...getMonorepoNodeModules()
       ]
     })
+
+    return query
   } catch (e) {}
 
   throw new Error(`File/module "${query}" does not exist`)

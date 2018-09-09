@@ -7,7 +7,7 @@ import normalizePaths from './normalize_paths'
 describe('base config works correctly', () => {
   const resolveConfig = {
     subscribeAdapter: {
-      module: path.resolve(__dirname, 'files/testAdapter.js'),
+      module: 'resolve-subscribe-socket.io',
       options: {
         url: 'http://test.test'
       }

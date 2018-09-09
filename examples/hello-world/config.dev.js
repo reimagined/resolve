@@ -1,6 +1,6 @@
 const devConfig = {
   port: 3000,
-  polyfills: ['@babel/runtime/regenerator'],
+  polyfills: ['@babel/polyfill'],
   mode: 'development',
   rootPath: '',
   staticPath: 'static',

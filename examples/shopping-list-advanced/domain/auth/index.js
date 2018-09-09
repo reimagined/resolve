@@ -81,17 +81,15 @@ const strategies = [
           }
         })
 
-        await resolve.executeCommand(
-          {
-            type: 'createShoppingList',
-            aggregateId: userId,
-            aggregateName: 'ShoppingList',
-            payload: {
-              name: 'Shopping List'
-            }
+        await resolve.executeCommand({
+          type: 'createShoppingList',
+          aggregateId: userId,
+          aggregateName: 'ShoppingList',
+          payload: {
+            name: 'Shopping List'
           },
           jwtToken
-        )
+        })
 
         return jwtToken
       }

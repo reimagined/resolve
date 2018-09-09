@@ -10,5 +10,8 @@ module.exports = {
     'config.prod.js',
     'config.test_functional.js'
   ],
-  unmockedModulePathPatterns: ['node_modules/react/', 'node_modules/enzyme/']
+  unmockedModulePathPatterns: ['node_modules/react/', 'node_modules/enzyme/'],
+  transform: {
+    '^.+\\.js$': 'babel-jest'
+  }
 }
