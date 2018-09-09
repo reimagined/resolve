@@ -97,7 +97,7 @@ curl -g -X GET "http://localhost:3000/api/query/Default/shoppingLists"
 ### Example Response
 
 ```javascript
-{"serializedState":"{\"1532620308\":{\"text\":\"Hello World\",\"checked\":true},\"1532620333\":{\"text\":\"Learn reSolve API\",\"checked\":false}}","aggregateVersionsMap":{"root-id":2}}
+{"1532620308":{"text":"Hello World","checked":true},"1532620333":{"text":"Learn reSolve API","checked":false}}
 ```
 
 ## [Query](./Query.md) a [Read Model](./Read%20Model.md) 
@@ -163,12 +163,9 @@ curl -X POST \
 ### Example Response
 
 ```javascript
-{
-  "result": [
-    { "id": "jwt=yeJ...", "email": "example@example.com", "timestamp": 1534160787935 },
-    { "id": "jwt=yeJ...", "email": "email@email.com", "timestamp": 1534160788935 },
-    { "id": "jwt=yeJ...", "email": "user@email.com", "timestamp": 1534160789935 }
-  ]
-}
-
+[
+  { "id": "jwt=yeJ...", "email": "example@example.com", "timestamp": 1534160787935 },
+  { "id": "jwt=yeJ...", "email": "email@email.com", "timestamp": 1534160788935 },
+  { "id": "jwt=yeJ...", "email": "user@email.com", "timestamp": 1534160789935 }
+]
 ```
