@@ -3,7 +3,6 @@ import fs from 'fs'
 
 import { message } from '../constants'
 import resolveFile from '../resolve_file'
-import resolveFileOrModule from '../resolve_file_or_module'
 import importBabel from '../import_babel'
 import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 
@@ -54,15 +53,13 @@ export default ({ resolveConfig, isClient }) => {
 
     const adapter = readModel.adapter
       ? {
-          module: checkRuntimeEnv(readModel.adapter.module)
-            ? readModel.adapter.module
-            : resolveFileOrModule(readModel.adapter.module),
+          module: readModel.adapter.module,
           options: {
             ...readModel.adapter.options
           }
         }
       : {
-          module: resolveFileOrModule('resolve-readmodel-memory'),
+          module: 'resolve-readmodel-memory',
           options: {}
         }
 

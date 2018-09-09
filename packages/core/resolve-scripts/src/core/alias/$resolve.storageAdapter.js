@@ -1,5 +1,4 @@
 import { message } from '../constants'
-import resolveFileOrModule from '../resolve_file_or_module'
 import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig, isClient }) => {
@@ -15,9 +14,7 @@ export default ({ resolveConfig, isClient }) => {
 
   const storageAdapter = resolveConfig.storageAdapter
     ? {
-        module: checkRuntimeEnv(resolveConfig.storageAdapter.module)
-          ? resolveConfig.storageAdapter.module
-          : resolveFileOrModule(resolveConfig.storageAdapter.module),
+        module: resolveConfig.storageAdapter.module,
         options: {
           ...resolveConfig.storageAdapter.options
         }

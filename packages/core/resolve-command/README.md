@@ -22,11 +22,7 @@ After the command is initialized, you get a function that is used to send an eve
 	* `aggregateId` - a unique aggregate id.
 	* `aggregateName` - the name of aggregate that has to handle the command.
 	* `type` - the command type.
-	
-	A command may also have some additional payload.
-
- * `jwtToken`  
-   Non-verified actual JWT token provided from client.
+	* `jwtToken` - non-verified actual JWT token provided from client.
 
 ### Example
 Define a news handling aggregate (see the  `news-aggregate.js` file), use the `resolve-command` library to execute the `createNews` command and send the corresponding event to the specified event store. To see a read model handling events which this aggregate produces, refer to the [resolve-query](../resolve-query#example) package documentation.

@@ -22,13 +22,13 @@ const assignAuthRoutes = app => {
           resolve: {
             executeQuery: args =>
               queryExecutor({
-                ...args,
-                jwtToken: req.jwtToken
+                jwtToken: req.jwtToken,
+                ...args
               }),
             executeCommand: args =>
               commandExecutor({
-                ...args,
-                jwtToken: req.jwtToken
+                jwtToken: req.jwtToken,
+                ...args
               })
           }
         })

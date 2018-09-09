@@ -1,5 +1,4 @@
 import { message } from '../constants'
-import resolveFileOrModule from '../resolve_file_or_module'
 import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig, isClient }) => {
@@ -15,9 +14,7 @@ export default ({ resolveConfig, isClient }) => {
 
   const busAdapter = resolveConfig.busAdapter
     ? {
-        module: checkRuntimeEnv(resolveConfig.busAdapter.module)
-          ? resolveConfig.busAdapter.module
-          : resolveFileOrModule(resolveConfig.busAdapter.module),
+        module: resolveConfig.busAdapter.module,
         options: {
           ...resolveConfig.busAdapter.options
         }

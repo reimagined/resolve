@@ -8,7 +8,7 @@ const commandHandler = async (req, res) => {
     return res.status(405).end()
   }
   try {
-    await executeCommand(req.body, req.jwtToken)
+    await executeCommand({ ...req.body, jwtToken: req.jwtToken })
     res.status(200).send(message.commandSuccess)
   } catch (err) {
     res.status(500).end(`${message.commandFail}${err.message}`)

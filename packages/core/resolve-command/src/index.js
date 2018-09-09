@@ -120,7 +120,7 @@ export default ({ eventStore, aggregates }) => {
     return result
   }, {})
 
-  return async (command, jwtToken) => {
+  return async ({ jwtToken, ...command }) => {
     await verifyCommand(command)
     const aggregateName = command.aggregateName
 
