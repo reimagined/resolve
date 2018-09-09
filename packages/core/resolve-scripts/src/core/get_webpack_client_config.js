@@ -56,12 +56,15 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
                   '@babel/plugin-proposal-class-properties',
                   '@babel/plugin-proposal-export-default-from',
                   '@babel/plugin-proposal-export-namespace-from',
-                  ['@babel/plugin-transform-runtime', {
-                    corejs: false,
-                    helpers: true,
-                    regenerator: true,
-                    useESModules: false
-                  }]
+                  [
+                    '@babel/plugin-transform-runtime',
+                    {
+                      corejs: false,
+                      helpers: true,
+                      regenerator: true,
+                      useESModules: false
+                    }
+                  ]
                 ]
               }
             },

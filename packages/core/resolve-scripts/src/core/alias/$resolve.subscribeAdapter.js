@@ -1,5 +1,6 @@
 import { message } from '../constants'
 import { checkRuntimeEnv } from '../declare_runtime_env'
+import resolveFileOrModule from '../resolve_file_or_module'
 
 export default ({ resolveConfig, isClient }) => {
   if (!resolveConfig.subscribeAdapter) {
@@ -29,9 +30,11 @@ export default ({ resolveConfig, isClient }) => {
   const exports = []
 
   const subscribeAdapter = {
-    module: `${resolveConfig.subscribeAdapter.module}/lib/${
-      isClient ? 'client' : 'server'
-    }`,
+    module: resolveFileOrModule(
+      `${resolveConfig.subscribeAdapter.module}/lib/${
+        isClient ? 'client' : 'server'
+      }`
+    ),
     options: isClient
       ? resolveConfig.subscribeAdapter.options.client || {}
       : resolveConfig.subscribeAdapter.options.server || {}

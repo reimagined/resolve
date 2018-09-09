@@ -3,6 +3,7 @@ import fs from 'fs'
 
 import { message } from '../constants'
 import resolveFile from '../resolve_file'
+import resolveFileOrModule from '../resolve_file_or_module'
 import importBabel from '../import_babel'
 import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 
@@ -42,7 +43,9 @@ export default ({ resolveConfig, isClient }) => {
 
     const snapshotAdapter = aggregate.snapshotAdapter
       ? {
-          module: aggregate.snapshotAdapter.module,
+          module: checkRuntimeEnv(aggregate.snapshotAdapter.module)
+            ? aggregate.snapshotAdapter.module
+            : resolveFileOrModule(aggregate.snapshotAdapter.module),
           options: {
             ...aggregate.snapshotAdapter.options
           }

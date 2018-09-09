@@ -30,7 +30,7 @@ import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefaul
 import projection_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testProjection.js\\"
 import resolvers_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testResolvers.js\\"
 
-import adapterModule_0 from \\"<MONOREPO_DIR>/adapters/readmodel-adapters/resolve-readmodel-memory/lib/index.js\\"
+import adapterModule_0 from \\"resolve-readmodel-memory\\"
 
 const invariantHash_0 = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
 const name_0 = \\"Todos\\"
@@ -94,11 +94,11 @@ import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefaul
 import projection_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testProjection.js\\"
 import resolvers_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testResolvers.js\\"
 
-import adapterModule_0 from \\"<MONOREPO_DIR>/adapters/readmodel-adapters/resolve-readmodel-memory/lib/index.js\\"
+import adapterModule_0 from \\"resolve-readmodel-memory\\"
 import projection_1 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testProjection.js\\"
 import resolvers_1 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testResolvers.js\\"
 
-import adapterModule_1 from \\"<MONOREPO_DIR>/adapters/readmodel-adapters/resolve-readmodel-memory/lib/index.js\\"
+import adapterModule_1 from \\"resolve-readmodel-memory\\"
 
 const invariantHash_0 = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
 const name_0 = \\"Todos\\"

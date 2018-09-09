@@ -3,6 +3,7 @@ import fs from 'fs'
 
 import { message } from '../constants'
 import resolveFile from '../resolve_file'
+import resolveFileOrModule from '../resolve_file_or_module'
 import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig, isClient }) => {
@@ -123,7 +124,9 @@ export default ({ resolveConfig, isClient }) => {
 
     const snapshotAdapter = viewModel.snapshotAdapter
       ? {
-          module: viewModel.snapshotAdapter.module,
+          module: checkRuntimeEnv(viewModel.snapshotAdapter.module)
+            ? viewModel.snapshotAdapter.module
+            : resolveFileOrModule(viewModel.snapshotAdapter.module),
           options: {
             ...viewModel.snapshotAdapter.options
           }
