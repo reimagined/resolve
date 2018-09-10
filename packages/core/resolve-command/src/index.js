@@ -1,4 +1,3 @@
-import invariantFunctionHash from 'invariant-function-hash'
 const verifyCommand = async ({ aggregateId, aggregateName, type }) => {
   if (!aggregateId) throw new Error('The "aggregateId" argument is required')
   if (aggregateId.constructor !== String)
@@ -8,33 +7,30 @@ const verifyCommand = async ({ aggregateId, aggregateName, type }) => {
   if (!type) throw new Error('The "type" argument is required')
 }
 
-const emptySnapshotAdapter = Object.freeze({
-  loadSnapshot: async () => ({ timestamp: 0, state: null, version: 0 }),
-  saveSnapshot: () => null
-})
-
-const makeCommandHandlerHash = (projection, aggregateId) =>
-  Object.keys(projection)
-    .sort()
-    .map(
-      handlerName =>
-        `${handlerName}:${invariantFunctionHash(projection[handlerName])}`
-    )
-    .join(',') + `;${aggregateId}`
-
 const getAggregateState = async (
   {
     projection: { Init, ...projection } = {},
-    snapshotAdapter = emptySnapshotAdapter,
-    snapshotBucketSize = 100
+    snapshotAdapter = null,
+    snapshotBucketSize = 100,
+    invariantHash = null
   },
   aggregateId,
   eventStore
 ) => {
   const snapshotKey =
-    projection && projection.constructor === Object
-      ? makeCommandHandlerHash(projection, aggregateId)
+    projection != null && projection.constructor === Object
+      ? `${invariantHash};${aggregateId}`
       : null
+
+  if (
+    (invariantHash == null || invariantHash.constructor !== String) &&
+    snapshotAdapter != null &&
+    snapshotKey != null
+  ) {
+    throw new Error(
+      `Field 'invariantHash' is mandatory when using aggregate snapshots`
+    )
+  }
 
   let aggregateState = null
   let aggregateVersion = 0
@@ -62,7 +58,11 @@ const getAggregateState = async (
 
       aggregateState = handler(aggregateState, event)
 
-      if (snapshotKey != null && ++appliedEvents % snapshotBucketSize === 0) {
+      if (
+        snapshotAdapter != null &&
+        snapshotKey != null &&
+        ++appliedEvents % snapshotBucketSize === 0
+      ) {
         lastTimestamp = Date.now()
         snapshotAdapter.saveSnapshot(snapshotKey, {
           state: aggregateState,
@@ -86,7 +86,12 @@ const executeCommand = async (command, aggregate, eventStore, jwtToken) => {
   )
 
   const handler = aggregate.commands[type]
-  const event = handler(aggregateState, command, jwtToken, aggregateVersion)
+  const event = await handler(
+    aggregateState,
+    command,
+    jwtToken,
+    aggregateVersion
+  )
 
   if (!event.type) {
     throw new Error('event type is required')
@@ -115,7 +120,7 @@ export default ({ eventStore, aggregates }) => {
     return result
   }, {})
 
-  return async (command, jwtToken) => {
+  return async ({ jwtToken, ...command }) => {
     await verifyCommand(command)
     const aggregateName = command.aggregateName
 

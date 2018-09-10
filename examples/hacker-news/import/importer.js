@@ -10,8 +10,6 @@ import {
 import api from './api'
 import eventStore, { dropStore } from './eventStore'
 
-const USER_CREATED_TIMESTAMP = new Date(2007, 1, 19).getTime()
-
 const users = {}
 
 const aggregateVersionByAggregateId = {}
@@ -32,7 +30,7 @@ const generateUserEvents = async name => {
   await saveEventRaw({
     type: USER_CREATED,
     aggregateId,
-    timestamp: USER_CREATED_TIMESTAMP,
+    timestamp: Date.now(),
     payload: { name }
   })
 
@@ -60,7 +58,7 @@ const generateCommentEvents = async (comment, aggregateId, parentId) => {
   await saveEventRaw({
     type: STORY_COMMENTED,
     aggregateId,
-    timestamp: comment.time * 1000,
+    timestamp: Date.now(),
     payload: {
       userId,
       userName,
@@ -125,7 +123,7 @@ const generateStoryEvents = async story => {
   await saveEventRaw({
     type: STORY_CREATED,
     aggregateId,
-    timestamp: story.time * 1000,
+    timestamp: Date.now(),
     payload: {
       title: story.title || '',
       text: story.text || '',

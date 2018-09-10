@@ -6,7 +6,7 @@ const testFunctionalConfig = {
   ...appConfig,
 
   port: 3000,
-  polyfills: ['@babel/runtime/regenerator'],
+  polyfills: ['@babel/polyfill'],
   mode: 'development',
 
   storageAdapter: {

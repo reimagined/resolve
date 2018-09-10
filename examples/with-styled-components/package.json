@@ -10,8 +10,8 @@
     "test:functional": "babel-node ./run.js test:functional"
   },
   "dependencies": {
-    "@babel/node": "7.0.0-beta.55",
-    "@babel/runtime": "7.0.0-beta.55",
+    "@babel/node": "7.0.0",
+    "@babel/polyfill": "7.0.0",
     "react": "16.4.2",
     "react-bootstrap": "0.32.1",
     "react-dom": "16.4.2",
@@ -19,20 +19,18 @@
     "redux": "4.0.0",
     "resolve-redux": "0.14.4",
     "resolve-scripts": "0.14.4",
-    "styled-components": "3.4.2",
-    "testcafe-browser-tools": "1.6.3"
+    "styled-components": "3.4.5"
   },
   "devDependencies": {
-    "@babel/core": "7.0.0-beta.55",
-    "@babel/plugin-proposal-class-properties": "7.0.0-beta.55",
-    "@babel/plugin-proposal-export-default-from": "7.0.0-beta.55",
-    "@babel/plugin-proposal-export-namespace-from": "7.0.0-beta.55",
-    "@babel/plugin-transform-runtime": "7.0.0-beta.55",
-    "@babel/preset-env": "7.0.0-beta.55",
-    "@babel/preset-react": "7.0.0-beta.55",
-    "babel-core": "^7.0.0-0",
-    "jest": "23.4.2",
+    "@babel/core": "7.0.0",
+    "@babel/plugin-proposal-class-properties": "7.0.0",
+    "@babel/plugin-proposal-export-default-from": "7.0.0",
+    "@babel/plugin-proposal-export-namespace-from": "7.0.0",
+    "@babel/plugin-transform-runtime": "7.0.0",
+    "@babel/preset-env": "7.0.0",
+    "@babel/preset-react": "7.0.0",
+    "jest": "23.5.0",
     "react-test-renderer": "16.4.2",
-    "testcafe": "0.20.4"
+    "testcafe": "0.22.0"
   }
 }

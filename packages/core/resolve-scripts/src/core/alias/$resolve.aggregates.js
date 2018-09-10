@@ -1,3 +1,6 @@
+import crypto from 'crypto'
+import fs from 'fs'
+
 import { message } from '../constants'
 import resolveFile from '../resolve_file'
 import resolveFileOrModule from '../resolve_file_or_module'
@@ -57,6 +60,17 @@ export default ({ resolveConfig, isClient }) => {
       imports.push(
         `import projection_${index} from ${JSON.stringify(projection)}`
       )
+
+      const hmac = crypto.createHmac(
+        'sha512',
+        'resolve-aggregate-projection-hash'
+      )
+      hmac.update(fs.readFileSync(projection).toString())
+      const invariantHash = hmac.digest('hex')
+
+      constants.push(
+        `const invariantHash_${index} = ${JSON.stringify(invariantHash)}`
+      )
     }
 
     imports.push(``)
@@ -105,6 +119,7 @@ export default ({ resolveConfig, isClient }) => {
     exports.push(`, commands: commands_${index}`)
     if (!isClient && aggregate.projection) {
       exports.push(`, projection: projection_${index}`)
+      exports.push(`, invariantHash: invariantHash_${index}`)
     }
     if (!isClient && aggregate.snapshotAdapter) {
       exports.push(

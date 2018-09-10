@@ -1,5 +1,4 @@
 import {
-  APPLY_READMODEL_DIFF,
   CONNECT_READMODEL,
   CONNECT_VIEWMODEL,
   DISCONNECT_READMODEL,
@@ -17,9 +16,6 @@ import {
   SEND_COMMAND_FAILURE,
   SEND_COMMAND_REQUEST,
   SEND_COMMAND_SUCCESS,
-  STOP_READ_MODEL_SUBSCRIPTION_FAILURE,
-  STOP_READ_MODEL_SUBSCRIPTION_REQUEST,
-  STOP_READ_MODEL_SUBSCRIPTION_SUCCESS,
   SUBSCRIBE_TOPIC_FAILURE,
   SUBSCRIBE_TOPIC_REQUEST,
   SUBSCRIBE_TOPIC_SUCCESS,
@@ -34,7 +30,6 @@ import {
 } from '../src/action_types'
 
 import {
-  applyReadModelDiff,
   connectReadModel,
   connectViewModel,
   disconnectReadModel,
@@ -52,9 +47,6 @@ import {
   sendCommandRequest,
   sendCommandSuccess,
   sendCommandFailure,
-  stopReadModelSubscriptionRequest,
-  stopReadModelSubscriptionSuccess,
-  stopReadModelSubscriptionFailure,
   subscribeTopicRequest,
   subscribeTopicSuccess,
   subscribeTopicFailure,
@@ -69,38 +61,18 @@ import {
 } from '../src/actions'
 
 describe('actions', () => {
-  describe('applyReadModelDiff', () => {
-    test('should create an action to apply read model diff', () => {
-      const readModelName = 'items'
-      const resolverName = 'getAllItems'
-      const resolverArgs = { invert: true }
-      const diff = { added: [], removed: [] }
-      expect(
-        applyReadModelDiff(readModelName, resolverName, resolverArgs, diff)
-      ).toEqual({
-        type: APPLY_READMODEL_DIFF,
-        readModelName,
-        resolverName,
-        resolverArgs,
-        diff
-      })
-    })
-  })
-
   describe('connectReadModel', () => {
     test('should create an action to connect read model', () => {
       const readModelName = 'items'
       const resolverName = 'getAllItems'
       const resolverArgs = { invert: true }
-      const isReactive = false
       expect(
-        connectReadModel(readModelName, resolverName, resolverArgs, isReactive)
+        connectReadModel(readModelName, resolverName, resolverArgs)
       ).toEqual({
         type: CONNECT_READMODEL,
         readModelName,
         resolverName,
-        resolverArgs,
-        isReactive
+        resolverArgs
       })
     })
   })
@@ -126,20 +98,13 @@ describe('actions', () => {
       const readModelName = 'items'
       const resolverName = 'getAllItems'
       const resolverArgs = { invert: true }
-      const isReactive = false
       expect(
-        disconnectReadModel(
-          readModelName,
-          resolverName,
-          resolverArgs,
-          isReactive
-        )
+        disconnectReadModel(readModelName, resolverName, resolverArgs)
       ).toEqual({
         type: DISCONNECT_READMODEL,
         readModelName,
         resolverName,
-        resolverArgs,
-        isReactive
+        resolverArgs
       })
     })
   })
@@ -219,14 +184,12 @@ describe('actions', () => {
       const resolverArgs = {
         invert: true
       }
-      const isReactive = false
       const queryId = 'uuid-1'
       expect(
         loadReadModelStateRequest(
           readModelName,
           resolverName,
           resolverArgs,
-          isReactive,
           queryId
         )
       ).toEqual({
@@ -234,7 +197,6 @@ describe('actions', () => {
         readModelName,
         resolverName,
         resolverArgs,
-        isReactive,
         queryId
       })
     })
@@ -247,29 +209,26 @@ describe('actions', () => {
       const resolverArgs = {
         invert: true
       }
-      const isReactive = false
       const queryId = 'uuid-1'
       const result = { test: true }
-      const timeToLive = 5000
+      const timestamp = Date.now()
       expect(
         loadReadModelStateSuccess(
           readModelName,
           resolverName,
           resolverArgs,
-          isReactive,
           queryId,
           result,
-          timeToLive
+          timestamp
         )
       ).toEqual({
         type: LOAD_READMODEL_STATE_SUCCESS,
         readModelName,
         resolverName,
         resolverArgs,
-        isReactive,
         queryId,
         result,
-        timeToLive
+        timestamp
       })
     })
   })
@@ -281,7 +240,6 @@ describe('actions', () => {
       const resolverArgs = {
         invert: true
       }
-      const isReactive = false
       const queryId = 'uuid-1'
       const error = 'error'
       expect(
@@ -289,7 +247,6 @@ describe('actions', () => {
           readModelName,
           resolverName,
           resolverArgs,
-          isReactive,
           queryId,
           error
         )
@@ -298,7 +255,6 @@ describe('actions', () => {
         readModelName,
         resolverName,
         resolverArgs,
-        isReactive,
         queryId,
         error
       })
@@ -330,27 +286,23 @@ describe('actions', () => {
       const aggregateArgs = {
         invert: true
       }
-      const state = { test: true }
-      const aggregateVersionsMap = {
-        'uuid-1': 1,
-        'uuid-2': 2,
-        'uuid-3': 3
-      }
+      const result = { test: true }
+      const timestamp = Date.now()
       expect(
         loadViewModelStateSuccess(
           viewModelName,
           aggregateIds,
           aggregateArgs,
-          state,
-          aggregateVersionsMap
+          result,
+          timestamp
         )
       ).toEqual({
         type: LOAD_VIEWMODEL_STATE_SUCCESS,
         viewModelName,
         aggregateIds,
         aggregateArgs,
-        state,
-        aggregateVersionsMap
+        result,
+        timestamp
       })
     })
   })
@@ -443,61 +395,6 @@ describe('actions', () => {
         aggregateId,
         aggregateName,
         payload,
-        error
-      })
-    })
-  })
-
-  describe('stopReadModelSubscriptionRequest', () => {
-    test('should create an action to stop read model subscription request', () => {
-      const readModelName = 'readModelName'
-      const resolverName = 'resolverName'
-      const queryId = 'queryId'
-      expect(
-        stopReadModelSubscriptionRequest(readModelName, resolverName, queryId)
-      ).toEqual({
-        type: STOP_READ_MODEL_SUBSCRIPTION_REQUEST,
-        readModelName,
-        resolverName,
-        queryId
-      })
-    })
-  })
-
-  describe('stopReadModelSubscriptionSuccess', () => {
-    test('should create an action to stop read model subscription success', () => {
-      const readModelName = 'readModelName'
-      const resolverName = 'resolverName'
-      const queryId = 'queryId'
-      expect(
-        stopReadModelSubscriptionSuccess(readModelName, resolverName, queryId)
-      ).toEqual({
-        type: STOP_READ_MODEL_SUBSCRIPTION_SUCCESS,
-        readModelName,
-        resolverName,
-        queryId
-      })
-    })
-  })
-
-  describe('stopReadModelSubscriptionFailure', () => {
-    test('should create an action to stop read model subscription failure', () => {
-      const readModelName = 'readModelName'
-      const resolverName = 'resolverName'
-      const queryId = 'queryId'
-      const error = 'error'
-      expect(
-        stopReadModelSubscriptionFailure(
-          readModelName,
-          resolverName,
-          queryId,
-          error
-        )
-      ).toEqual({
-        type: STOP_READ_MODEL_SUBSCRIPTION_FAILURE,
-        readModelName,
-        resolverName,
-        queryId,
         error
       })
     })

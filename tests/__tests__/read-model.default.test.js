@@ -84,7 +84,7 @@ describe('Read-model generic adapter API', () => {
       })
 
       return async (resolverName, resolverArgs) => {
-        let result = await readModel.read(resolverName, resolverArgs)
+        let result = await readModel.read({ resolverName, resolverArgs })
         const lastError = await readModel.getLastError()
 
         if (lastError != null) {

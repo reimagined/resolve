@@ -2,7 +2,7 @@ const outdatedPeriod = 1000 * 60 * 10
 
 const cronHandlers = {
   '0 */10 * * * *': async ({ resolve }) => {
-    const users = await resolve.executeReadModelQuery({
+    const users = await resolve.executeQuery({
       modelName: 'default',
       resolverName: 'users'
     })

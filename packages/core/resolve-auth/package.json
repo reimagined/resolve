@@ -5,12 +5,15 @@
   "engines": {
     "node": ">=8.10"
   },
-  "main": "./dist/index.js",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
-    "prepare": "babel --config-file=../../../.babelrc --source-maps --out-dir ./dist ./src",
+    "compile": "npm run compile:es && npm run compile:cjs",
+    "compile:es": "cross-env MODULE_TYPE=es MODULE_TARGET=server babel --config-file=../../../babel.config.js --source-maps --out-dir ./es ./src",
+    "compile:cjs": "cross-env MODULE_TYPE=cjs MODULE_TARGET=server babel --config-file=../../../babel.config.js --source-maps --out-dir ./lib ./src",
     "test": "jest --config=../../../jest.config.js --verbose",
     "testw": "jest --config=../../../jest.config.js --watchAll"
   },
@@ -28,7 +31,7 @@
     "cookie": "^0.3.1"
   },
   "devDependencies": {
-    "jest": "23.4.2",
-    "sinon": "^6.1.3"
+    "jest": "23.5.0",
+    "sinon": "6.2.0"
   }
 }

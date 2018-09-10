@@ -4,26 +4,26 @@ import { loadReadModelStateSuccess, loadReadModelStateFailure } from './actions'
 
 const loadReadModelStateSaga = function*(
   { api },
-  { readModelName, resolverName, resolverArgs, isReactive, queryId }
+  { readModelName, resolverName, resolverArgs, queryId }
 ) {
   try {
-    const { timeToLive, result } = yield api.loadReadModelState({
+    const { result: serializedData, timestamp } = yield api.loadReadModelState({
       readModelName,
       resolverName,
       resolverArgs,
-      isReactive,
       queryId
     })
+
+    const data = JSON.parse(serializedData)
 
     yield put(
       loadReadModelStateSuccess(
         readModelName,
         resolverName,
         resolverArgs,
-        isReactive,
         queryId,
-        result,
-        timeToLive
+        data,
+        timestamp
       )
     )
   } catch (error) {
@@ -32,7 +32,6 @@ const loadReadModelStateSaga = function*(
         readModelName,
         resolverName,
         resolverArgs,
-        isReactive,
         queryId,
         error
       )

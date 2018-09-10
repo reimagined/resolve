@@ -1,31 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Read-model generic adapter API View model with one aggregate id 1`] = `
-Object {
-  "content": 500,
-  "modified": 400,
-  "some": 100,
-  "state": 200,
-  "testEventContent": "test",
-}
-`;
+exports[`Read-model generic adapter API View model with one aggregate id 1`] = `200`;
 
-exports[`Read-model generic adapter API View model with several aggregate ids 1`] = `
-Object {
-  "content": 500,
-  "modified": 400,
-  "some": 100,
-  "state": 200,
-  "testEventContent": "test",
-}
-`;
+exports[`Read-model generic adapter API View model with several aggregate ids 1`] = `200`;
 
-exports[`Read-model generic adapter API View model with wildcard aggregate ids 1`] = `
-Object {
-  "content": 500,
-  "modified": 400,
-  "some": 100,
-  "state": 200,
-  "testEventContent": "test",
-}
-`;
+exports[`Read-model generic adapter API View model with wildcard aggregate ids 1`] = `200`;

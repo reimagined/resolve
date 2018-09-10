@@ -1,48 +1,23 @@
-import invariantFunctionHash from 'invariant-function-hash'
-const GeneratorProto = (function*() {})().__proto__.__proto__
-const PromiseProto = (async function() {})().__proto__
-
-const filterAsyncResult = result => {
-  if (
-    result &&
-    result.__proto__ &&
-    result.__proto__.__proto__ === GeneratorProto
-  ) {
-    throw new Error(
-      'A Projection function cannot be a generator or return an iterable object'
-    )
-  }
-  if (result && result.__proto__ === PromiseProto) {
-    throw new Error(
-      'A Projection function cannot be asynchronous or return a Promise object'
-    )
-  }
-}
-
-const emptySnapshotAdapter = Object.freeze({
-  loadSnapshot: async () => ({ timestamp: 0, state: null }),
-  saveSnapshot: () => null
-})
-
-const makeViewModelHash = projection =>
-  Object.keys(projection)
-    .sort()
-    .map(
-      handlerName =>
-        `${handlerName}:${invariantFunctionHash(projection[handlerName])}`
-    )
-    .join(',')
-
 const createViewModel = ({
   projection,
   eventStore,
-  snapshotAdapter = emptySnapshotAdapter,
-  snapshotBucketSize = 100
+  snapshotAdapter = null,
+  snapshotBucketSize = 100,
+  invariantHash = null,
+  serializeState
 }) => {
   const getKey = aggregateIds =>
     Array.isArray(aggregateIds) ? aggregateIds.sort().join(',') : aggregateIds
   const viewMap = new Map()
-  const viewModelHash = makeViewModelHash(projection)
+
+  if (
+    (invariantHash == null || invariantHash.constructor !== String) &&
+    snapshotAdapter != null
+  ) {
+    throw new Error(
+      `Field 'invariantHash' is mandatory when using view-model snapshots`
+    )
+  }
 
   const reader = async ({ aggregateIds } = { aggregateIds: null }) => {
     if (
@@ -56,57 +31,51 @@ const createViewModel = ({
 
     const key = getKey(aggregateIds)
     if (viewMap.has(key)) {
-      const executor = viewMap.get(key)
-      return await executor()
+      const viewModel = viewMap.get(key)
+      return await viewModel.read()
     }
 
-    const snapshotKey = `${viewModelHash};${key}`
+    const snapshotKey = `${invariantHash};${key}`
     const eventTypes = Object.keys(projection).filter(
       eventName => eventName !== 'Init'
     )
 
-    let aggregateIdsSet = new Set()
     let appliedEvents = 0
     let lastTimestamp = 0
+    let lastError = null
     let state = null
-    let error = null
 
     try {
       const snapshot = await snapshotAdapter.loadSnapshot(snapshotKey)
-      if (Array.isArray(snapshot.aggregateIdsSet)) {
-        aggregateIdsSet = new Set(snapshot.aggregateIdsSet)
-      }
       lastTimestamp = snapshot.timestamp
       state = snapshot.state
-    } catch (err) {}
+    } catch (error) {}
 
     try {
       if (!(+lastTimestamp > 0) && typeof projection.Init === 'function') {
         state = projection.Init()
-        filterAsyncResult(state)
       }
-    } catch (err) {
-      error = err
+    } catch (error) {
+      lastError = error
     }
 
     const callback = event => {
-      if (!event || !event.type || error) return
+      if (!event || !event.type || lastError) return
       try {
         state = projection[event.type](state, event)
-        filterAsyncResult(state)
 
-        aggregateIdsSet.add(event.aggregateId)
-
-        if (++appliedEvents % snapshotBucketSize === 0) {
+        if (
+          snapshotAdapter != null &&
+          ++appliedEvents % snapshotBucketSize === 0
+        ) {
           lastTimestamp = Date.now()
           snapshotAdapter.saveSnapshot(snapshotKey, {
             state,
-            lastTimestamp,
-            aggregateIdsSet: Array.from(aggregateIdsSet)
+            lastTimestamp
           })
         }
-      } catch (err) {
-        error = err
+      } catch (error) {
+        lastError = error
       }
     }
 
@@ -122,40 +91,32 @@ const createViewModel = ({
             { onlyBus: false, startTime: lastTimestamp }
           )
 
-    const executor = async () => {
+    const read = async () => {
       await subscribePromise
-      if (error) throw error
-
-      const aggregateVersionsMap = {}
-
-      if (aggregateIds !== '*') {
-        for (const aggregateId of aggregateIds) {
-          aggregateVersionsMap[aggregateId] = 0
-        }
-      }
-
-      await eventStore.getEventsByAggregateId(
-        Array.from(aggregateIdsSet),
-        event => {
-          aggregateVersionsMap[event.aggregateId] = event.aggregateVersion
-        }
-      )
-
-      return {
-        state,
-        aggregateVersionsMap
-      }
+      return state
     }
 
-    executor.dispose = () => subscribePromise.then(unsubscribe => unsubscribe())
+    const getLastError = async () => {
+      await subscribePromise
+      return lastError
+    }
 
-    viewMap.set(key, executor)
-    return await executor()
+    const dispose = () => {
+      subscribePromise.then(unsubscribe => unsubscribe())
+    }
+
+    viewMap.set(key, {
+      read,
+      getLastError,
+      dispose
+    })
+
+    return await read()
   }
 
   const dispose = aggregateIds => {
     if (!aggregateIds) {
-      viewMap.forEach(executor => executor.dispose())
+      viewMap.forEach(({ dispose }) => dispose())
       viewMap.clear()
       return
     }
@@ -171,6 +132,23 @@ const createViewModel = ({
 
   return Object.freeze({
     read: reader,
+
+    readAndSerialize: async ({ jwtToken, ...args }) => {
+      const state = await reader(args)
+      const serializedState = serializeState(state, jwtToken)
+      return serializedState
+    },
+
+    getLastError: async ({ aggregateIds } = { aggregateIds: null }) => {
+      const key = getKey(aggregateIds)
+      if (!viewMap.has(key)) {
+        return null
+      }
+
+      const viewModel = viewMap.get(key)
+      return await viewModel.getLastError()
+    },
+
     dispose
   })
 }

@@ -21,7 +21,7 @@ const routes = [
     path: '/register',
     method: 'POST',
     callback: async ({ resolve }, username) => {
-      const existingUser = await resolve.executeReadModelQuery({
+      const existingUser = await resolve.executeQuery({
         modelName: 'default',
         resolverName: 'user',
         resolverArgs: { name: username.trim() }
@@ -50,7 +50,7 @@ const routes = [
     path: '/login',
     method: 'POST',
     callback: async ({ resolve }, username) => {
-      const user = await resolve.executeReadModelQuery({
+      const user = await resolve.executeQuery({
         modelName: 'default',
         resolverName: 'user',
         resolverArgs: { name: username.trim() }

@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 import jwtSecret from '../auth/jwt_secret'
 
 export default {
-  sharings: async (store, { query, shoppingListId, jwtToken }) => {
+  sharings: async (store, { query, shoppingListId }, jwtToken) => {
     const { id: userId } = jwt.verify(jwtToken, jwtSecret)
 
     const shoppingList = await store.findOne('ShoppingLists', {
@@ -54,7 +54,7 @@ export default {
     return await store.findOne('Users', query)
   },
 
-  shoppingLists: async (store, { jwtToken }) => {
+  shoppingLists: async (store, _, jwtToken) => {
     const { id: userId } = jwt.verify(jwtToken, jwtSecret)
 
     const shoppingLists = []

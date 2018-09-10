@@ -1,5 +1,5 @@
 const babelrc = require('../babel.config')({
-  cache: function() {}
+  cache: { forever: () => {} }
 })
 
 module.exports = require('babel-jest').createTransformer(babelrc)

@@ -9,7 +9,7 @@ import {
   DISCONNECT_VIEWMODEL
 } from './action_types'
 
-import { aggregateVersionsMap, connectorMetaMap } from './constants'
+import { connectorMetaMap, lastTimestampMap } from './constants'
 
 export const dropKey = (state, key) => {
   const nextState = { ...state }
@@ -42,8 +42,8 @@ export default function createViewModelsReducer(viewModels) {
     const viewModelName = action.viewModelName
     const aggregateIds = getHash(action.aggregateIds)
     const aggregateArgs = getHash(action.aggregateArgs)
-    const viewModelState = action.state
-    const viewModelAggregateVersionsMap = action.aggregateVersionsMap
+    const viewModelState = action.result
+    const viewModelTimestamp = action.timestamp
 
     const key = `${viewModelName}${aggregateIds}${aggregateArgs}`
 
@@ -63,9 +63,9 @@ export default function createViewModelsReducer(viewModels) {
           isFailure: false
         }
       },
-      [aggregateVersionsMap]: {
-        ...state[aggregateVersionsMap],
-        [key]: viewModelAggregateVersionsMap
+      [lastTimestampMap]: {
+        ...state[lastTimestampMap],
+        [key]: viewModelTimestamp
       }
     }
   }
@@ -108,7 +108,7 @@ export default function createViewModelsReducer(viewModels) {
         )
       },
       [connectorMetaMap]: dropKey(state[connectorMetaMap], key),
-      [aggregateVersionsMap]: dropKey(state[aggregateVersionsMap], key)
+      [lastTimestampMap]: dropKey(state[lastTimestampMap], key)
     }
   }
 
@@ -165,8 +165,9 @@ export default function createViewModelsReducer(viewModels) {
         const aggregateKeys = Array.from(
           new Set(aggregateHash.get(action.aggregateId))
         )
-        if (aggregateKeys) {
-          for (const aggregateKey of aggregateKeys) {
+
+        for (const aggregateKey of aggregateKeys) {
+          if (state[viewModel.name] && state[viewModel.name][aggregateKey]) {
             for (const aggregateArgs of Object.keys(
               state[viewModel.name][aggregateKey]
             )) {
@@ -202,7 +203,7 @@ export default function createViewModelsReducer(viewModels) {
 
   let state = {
     [connectorMetaMap]: {},
-    [aggregateVersionsMap]: {}
+    [lastTimestampMap]: {}
   }
 
   return (_, action) => {
