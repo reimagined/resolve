@@ -20,6 +20,7 @@ import subscribeAdapter from './subscribe_adapter'
 import argumentsParser from './arguments_parser'
 import HMRSocketHandler from './hmr_socket_handler'
 import provideJwtMiddleware from './provide_jwt_middleware'
+import registerApiHandlers from './register_api_handlers'
 
 import { staticPath, distDir, rootPath } from './assemblies'
 
@@ -64,6 +65,8 @@ app.use(
 )
 
 app.use(getRootBasedUrl(rootPath, '/api/commands'), commandHandler)
+
+registerApiHandlers()
 
 app.use(
   getRootBasedUrl(rootPath, `/${staticPath}`),

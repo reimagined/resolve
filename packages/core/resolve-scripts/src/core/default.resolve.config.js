@@ -10,6 +10,7 @@ export default {
   readModels: [],
   viewModels: [],
   sagas: [],
+  apiHandlers: [],
   index: 'client/index.js',
   auth: {
     strategies: 'auth/index.js'

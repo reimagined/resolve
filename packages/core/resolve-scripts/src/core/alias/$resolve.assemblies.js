@@ -9,6 +9,7 @@ const excludeAlias = [
   'readModels',
   'sagas',
   'viewModels',
+  'apiHandlers',
   'hotModuleReplacement',
   'assemblies',
   ...excludeConstantAlias
