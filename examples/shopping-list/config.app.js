@@ -27,6 +27,12 @@ const appConfig = {
       resolvers: 'common/read-models/default.resolvers.js'
     }
   ],
+  apiHandlers: [
+    {
+      path: 'get-list-json',
+      controller: 'common/api-handlers/get-list-json.js'
+    }
+  ],
   jwtCookie: {
     name: 'shopping-list-jwt',
     maxAge: 31536000000
