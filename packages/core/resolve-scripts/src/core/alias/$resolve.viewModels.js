@@ -173,7 +173,7 @@ export default ({ resolveConfig, isClient }) => {
       let AsyncGeneratorFunction = {}
       try {
         eval('AsyncGeneratorFunction = (async function* name(){}).constructor')
-      } catch(err)
+      } catch(err) {}
       
       const checkValidProjectionFunction = (func) => {
         if(typeof func !== 'function') {
