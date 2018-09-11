@@ -1,6 +1,6 @@
 {
   "name": "resolve-command",
-  "version": "0.14.4",
+  "version": "0.15.0",
   "description": "This package creates a function to execute a command.",
   "engines": {
     "node": ">=8.10"

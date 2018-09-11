@@ -1,6 +1,6 @@
 {
   "name": "resolve-auth",
-  "version": "0.14.4",
+  "version": "0.15.0",
   "description": "This package provide an auth to your app.",
   "engines": {
     "node": ">=8.10"
