@@ -1,14 +1,14 @@
 {
   "name": "tests",
-  "version": "0.14.4",
+  "version": "0.15.0",
   "description": "API tests for resolve",
   "private": true,
   "scripts": {
     "test": "jest --config=../jest.config.js --testMatch=**/__tests__/*.test.js"
   },
   "dependencies": {
-    "resolve-readmodel-memory": "0.14.4",
-    "resolve-query": "0.14.4"
+    "resolve-readmodel-memory": "0.15.0",
+    "resolve-query": "0.15.0"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",
