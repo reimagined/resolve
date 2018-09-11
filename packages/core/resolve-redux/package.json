@@ -40,7 +40,7 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "jest": "23.5.0",
+    "jest": "23.6.0",
     "react": "16.4.2",
     "react-dom": "16.4.2",
     "react-test-renderer": "16.4.2",

@@ -28,7 +28,7 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/bus-adapters/resolve-bus-memory#readme",
   "devDependencies": {
-    "jest": "23.5.0",
+    "jest": "23.6.0",
     "sinon": "6.2.0"
   },
   "babelCompile": [

@@ -31,7 +31,7 @@
     "socket.io-client": "^2.1.1"
   },
   "devDependencies": {
-    "jest": "23.5.0"
+    "jest": "23.6.0"
   },
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/subscribe-adapters/resolve-subscribe-socket.io#readme"
 }

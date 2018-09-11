@@ -31,7 +31,7 @@
     "amqplib": "^0.5.2"
   },
   "devDependencies": {
-    "jest": "23.5.0",
+    "jest": "23.6.0",
     "sinon": "6.2.0"
   }
 }
