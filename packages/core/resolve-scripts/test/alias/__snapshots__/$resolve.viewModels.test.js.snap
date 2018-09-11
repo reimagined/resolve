@@ -48,7 +48,7 @@ viewModels.push({
       let AsyncGeneratorFunction = {}
       try {
         eval('AsyncGeneratorFunction = (async function* name(){}).constructor')
-      } catch(err)
+      } catch(err) {}
       
       const checkValidProjectionFunction = (func) => {
         if(typeof func !== 'function') {
@@ -154,7 +154,7 @@ viewModels.push({
       let AsyncGeneratorFunction = {}
       try {
         eval('AsyncGeneratorFunction = (async function* name(){}).constructor')
-      } catch(err)
+      } catch(err) {}
       
       const checkValidProjectionFunction = (func) => {
         if(typeof func !== 'function') {
@@ -234,7 +234,7 @@ viewModels.push({
       let AsyncGeneratorFunction = {}
       try {
         eval('AsyncGeneratorFunction = (async function* name(){}).constructor')
-      } catch(err)
+      } catch(err) {}
       
       const checkValidProjectionFunction = (func) => {
         if(typeof func !== 'function') {
@@ -328,7 +328,7 @@ viewModels.push({
       let AsyncGeneratorFunction = {}
       try {
         eval('AsyncGeneratorFunction = (async function* name(){}).constructor')
-      } catch(err)
+      } catch(err) {}
       
       const checkValidProjectionFunction = (func) => {
         if(typeof func !== 'function') {
@@ -414,7 +414,7 @@ viewModels.push({
       let AsyncGeneratorFunction = {}
       try {
         eval('AsyncGeneratorFunction = (async function* name(){}).constructor')
-      } catch(err)
+      } catch(err) {}
       
       const checkValidProjectionFunction = (func) => {
         if(typeof func !== 'function') {
@@ -496,7 +496,7 @@ viewModels.push({
       let AsyncGeneratorFunction = {}
       try {
         eval('AsyncGeneratorFunction = (async function* name(){}).constructor')
-      } catch(err)
+      } catch(err) {}
       
       const checkValidProjectionFunction = (func) => {
         if(typeof func !== 'function') {
