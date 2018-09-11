@@ -1,6 +1,6 @@
 function getConfig({ moduleType, moduleTarget }) {
   let useESModules, regenerator, helpers, modules, targets, loose
-  
+
   switch (moduleType) {
     case 'cjs': {
       modules = 'commonjs'
@@ -16,7 +16,7 @@ function getConfig({ moduleType, moduleTarget }) {
       throw new Error('process.env.MODULE_TYPE must be one of ["cjs", "es"]')
     }
   }
-  
+
   switch (moduleTarget) {
     case 'server': {
       loose = false
@@ -34,10 +34,12 @@ function getConfig({ moduleType, moduleTarget }) {
       break
     }
     default: {
-      throw new Error('process.env.MODULE_TARGET must be one of ["server", "client"]')
+      throw new Error(
+        'process.env.MODULE_TARGET must be one of ["server", "client"]'
+      )
     }
   }
-  
+
   return {
     presets: [
       [
@@ -81,13 +83,19 @@ function getConfig({ moduleType, moduleTarget }) {
   }
 }
 
+function isBabelCli(caller) {
+  return caller && caller.name === '@babel/cli'
+}
+
 module.exports = function(api) {
   const moduleType = process.env.MODULE_TYPE
   const moduleTarget = process.env.MODULE_TARGET
-  
-  api.cache.using(
-    () => moduleType + ':' + moduleTarget
-  )
+
+  if (api.caller(isBabelCli)) {
+    return {}
+  }
+
+  api.cache.using(() => moduleType + ':' + moduleTarget)
 
   return getConfig({ moduleType, moduleTarget })
 }
