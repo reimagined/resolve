@@ -262,6 +262,7 @@ module.exports = {
           'ttf',
           'ttl',
           'txt',
+          'typeof',
           'verdana',
           'viewport',
           'wss',

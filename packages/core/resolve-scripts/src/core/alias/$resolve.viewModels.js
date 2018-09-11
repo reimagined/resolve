@@ -16,57 +16,7 @@ export default ({ resolveConfig, isClient }) => {
     ``
   ]
 
-  const constants = [
-    `let AsyncGeneratorProto, GeneratorProto, PromiseProto
-    const EmptyProto = {}
-
-    try {
-      AsyncGeneratorProto = (async function*() {})().__proto__.__proto__
-    } catch(error) {
-      AsyncGeneratorProto = EmptyProto
-    }
-    try {
-      GeneratorProto = (function*() {})().__proto__.__proto__
-    } catch(error) {
-      GeneratorProto = EmptyProto
-    }
-    try {
-      PromiseProto = (async function() {})().__proto__
-    } catch(error) {
-      PromiseProto = EmptyProto
-    }
-
-    const filterAsyncResult = result => {
-      if (result == null || result.__proto__ == null) return
-
-      if (result.__proto__ === PromiseProto) {
-        throw new Error(
-          'A Projection function cannot be asynchronous or return a Promise object'
-        )
-      }
-
-      const innerProto = result.__proto__.__proto__
-      if (innerProto == null) return
-
-      if (innerProto === GeneratorProto || innerProto === AsyncGeneratorProto) {
-        throw new Error(
-          'A Projection function cannot be a generator or return an iterable object'
-        )
-      }
-    }
-
-    const wrapCheckProjection = projection => Object.keys(projection).reduce((acc, key) => {
-      const originalHandler = projection[key].bind(projection)
-
-      acc[key] = (...args) => {
-        const result = originalHandler(...args)
-        filterAsyncResult(result)
-        return result
-      }
-
-      return acc
-    }, {})`
-  ]
+  const constants = []
 
   const exports = [`const viewModels = []`, ``]
 
@@ -214,6 +164,43 @@ export default ({ resolveConfig, isClient }) => {
     }
 
     exports.push(`})`, ``)
+  }
+
+  if (!isClient) {
+    exports.push(`
+      const AsyncFunction = (async function(){}).constructor
+      const GeneratorFunction = (function*(){}).constructor
+      let AsyncGeneratorFunction = {}
+      try {
+        eval('AsyncGeneratorFunction = (async function* name(){}).constructor')
+      } catch(err)
+      
+      const checkValidProjectionFunction = (func) => {
+        if(typeof func !== 'function') {
+          return false
+        }
+        if(func.constructor === GeneratorFunction) {
+          return false
+        }
+        if(func.constructor === AsyncFunction) {
+          return false
+        }
+        if(func.constructor === AsyncGeneratorFunction) {
+          return false
+        }
+        return true
+      }
+    
+      for(const { projection } of viewModels) {
+        for(const key of Object.keys(projection)) {
+          if(!checkValidProjectionFunction(projection[key])) {
+            throw new Error(
+              \`A Projection handler "\${key}" cannot be a generator or/and asynchronous function\`
+            )
+          }
+        }
+      }
+    `)
   }
 
   exports.push(`export default viewModels`)
