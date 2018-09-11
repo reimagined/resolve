@@ -1,5 +1,8 @@
 const path = require('path')
 
+process.env.MODULE_TYPE = 'cjs'
+process.env.MODULE_TARGET = 'server'
+
 module.exports = {
   rootDir: process.cwd(),
   testEnvironment: 'node',

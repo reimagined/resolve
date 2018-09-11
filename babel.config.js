@@ -16,7 +16,9 @@ module.exports = function(api) {
       useESModules = true
       break
     }
-    default:
+    default: {
+      throw new Error('process.env.MODULE_TYPE must be one of ["cjs", "es"]')
+    }
   }
 
   switch (process.env.MODULE_TARGET) {
@@ -35,7 +37,9 @@ module.exports = function(api) {
       helpers = true
       break
     }
-    default:
+    default: {
+      throw new Error('process.env.MODULE_TARGET must be one of ["server", "client"]')
+    }
   }
 
   return {
