@@ -1,11 +1,7 @@
-module.exports = function(api) {
-  api.cache.using(
-    () => process.env.MODULE_TYPE + ':' + process.env.MODULE_TARGET
-  )
-
+function getConfig({ moduleType, moduleTarget }) {
   let useESModules, regenerator, helpers, modules, targets, loose
-
-  switch (process.env.MODULE_TYPE) {
+  
+  switch (moduleType) {
     case 'cjs': {
       modules = 'commonjs'
       useESModules = false
@@ -20,8 +16,8 @@ module.exports = function(api) {
       throw new Error('process.env.MODULE_TYPE must be one of ["cjs", "es"]')
     }
   }
-
-  switch (process.env.MODULE_TARGET) {
+  
+  switch (moduleTarget) {
     case 'server': {
       loose = false
       regenerator = false
@@ -41,7 +37,7 @@ module.exports = function(api) {
       throw new Error('process.env.MODULE_TARGET must be one of ["server", "client"]')
     }
   }
-
+  
   return {
     presets: [
       [
@@ -84,3 +80,16 @@ module.exports = function(api) {
     ]
   }
 }
+
+module.exports = function(api) {
+  const moduleType = process.env.MODULE_TYPE
+  const moduleTarget = process.env.MODULE_TARGET
+  
+  api.cache.using(
+    () => moduleType + ':' + moduleTarget
+  )
+
+  return getConfig({ moduleType, moduleTarget })
+}
+
+module.exports.getConfig = getConfig

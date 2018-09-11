@@ -30,5 +30,19 @@
   "devDependencies": {
     "jest": "23.5.0",
     "sinon": "6.2.0"
-  }
+  },
+  "babelCompile": [
+    {
+      "moduleType": "es",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./es"
+    },
+    {
+      "moduleType": "cjs",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./lib"
+    }
+  ]
 }
