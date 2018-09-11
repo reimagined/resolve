@@ -4,7 +4,7 @@ import createReadModel from '../src/read-model'
 
 describe('resolve-query read-model', () => {
   let eventStore, readStore, adapter, projection, subscriptionCanceler
-  let primaryEvents, secondaryEvents, resolveSecondaryEvents
+  let primaryEvents, secondaryEvents, resolveSecondaryEvents, processEvents
 
   const INIT_TIME = 1000
 
@@ -37,7 +37,7 @@ describe('resolve-query read-model', () => {
     }
   }
 
-  beforeEach(() => {
+  beforeEach(async () => {
     void ([primaryEvents, secondaryEvents] = [[], []])
     const secondaryEventsPromise = new Promise(
       resolve => (resolveSecondaryEvents = resolve)
@@ -45,15 +45,10 @@ describe('resolve-query read-model', () => {
     const projectionLog = []
     subscriptionCanceler = sinon.stub()
 
-    const processEvents = async (
-      eventsList,
-      eventTypes,
-      callback,
-      startTime
-    ) => {
+    processEvents = async (eventsList, eventTypes, callback, startTime) => {
       for (let event of eventsList) {
         if (
-          event &&
+          event != null &&
           eventTypes.indexOf(event.type) > -1 &&
           event.timestamp >= startTime
         ) {
@@ -126,10 +121,15 @@ describe('resolve-query read-model', () => {
     }
   })
 
-  afterEach(() => {
+  afterEach(async () => {
+    try {
+      resolveSecondaryEvents()
+      await skipTicks()
+    } catch (error) {}
     primaryEvents = null
     secondaryEvents = null
     resolveSecondaryEvents = null
+    processEvents = null
     eventStore = null
     subscriptionCanceler = null
     readStore = null
@@ -206,6 +206,62 @@ describe('resolve-query read-model', () => {
     expect(secondResult[3]).toEqual(secondaryEvents[2])
 
     expect(builtProjection.GOOD_EVENT.callCount).toEqual(4)
+  })
+
+  it('should not apply malformed/duplicate events and provide read API on-demand', async () => {
+    processEvents = async (eventsList, _, callback) => eventsList.map(callback)
+
+    const readModel = createReadModel({ projection, eventStore, adapter })
+    const builtProjection = adapter.buildProjection.firstCall.returnValue
+    const aggregateId = 'root-id'
+    const appliedPromise = new Promise(resolve => {
+      projection.GOOD_EVENT.onCall(1).callsFake(async (store, event) => {
+        await store.touch(event)
+        resolve()
+      })
+    })
+
+    primaryEvents = [
+      Object.assign(createEvent(GOOD, 10, PRIMARY), {
+        aggregateId,
+        aggregateVersion: 1
+      }),
+      'WRONG_EVENT',
+      null
+    ]
+
+    secondaryEvents = [
+      Object.assign(createEvent(GOOD, 20, PRIMARY), {
+        aggregateId,
+        aggregateVersion: 1
+      }),
+      Object.assign(createEvent(GOOD, 30, PRIMARY), {
+        aggregateId,
+        aggregateVersion: 2
+      }),
+      Object.assign(createEvent(GOOD, 40, PRIMARY), {
+        aggregateId,
+        aggregateVersion: 1
+      })
+    ]
+
+    await readModel.getReadInterface()
+    const adapterInitResult = adapter.init.firstCall.returnValue
+    const prepareProjectionResult = await adapterInitResult.prepareProjection
+      .firstCall.returnValue
+
+    const aggregatesVersionsMap = prepareProjectionResult.aggregatesVersionsMap
+    aggregatesVersionsMap.set(aggregateId, 1)
+
+    resolveSecondaryEvents()
+    await appliedPromise
+
+    expect(builtProjection.GOOD_EVENT.callCount).toEqual(2)
+    const result = await readModel.getReadInterface()
+
+    expect(result.length).toEqual(2)
+    expect(result[0]).toEqual(primaryEvents[0])
+    expect(result[1]).toEqual(secondaryEvents[1])
   })
 
   it('should provide read API and perform adapter init only once', async () => {
@@ -336,6 +392,9 @@ describe('resolve-query read-model', () => {
   it('should handle error in subscribe init phase', async () => {
     const readModel = createReadModel({ projection, eventStore, adapter })
 
+    const earlyLastError = await readModel.getLastError()
+    expect(earlyLastError).toEqual(null)
+
     adapter.init.onCall(0).callsFake(() => ({
       prepareProjection: sinon.stub().callsFake(async () => {
         throw new Error('Prepare projection error')
@@ -398,6 +457,19 @@ describe('resolve-query read-model', () => {
     expect(subscriptionCanceler.callCount).toEqual(1)
   })
 
+  it('should support dispose due store events failure phase', async () => {
+    const readModel = createReadModel({ projection, eventStore, adapter })
+
+    primaryEvents = [createEvent(FAILED, 10, PRIMARY)]
+
+    const readPromise = readModel.getReadInterface()
+    await readModel.dispose()
+    await readPromise
+
+    expect(adapter.reset.callCount).toEqual(1)
+    expect(subscriptionCanceler.callCount).toEqual(0)
+  })
+
   it('should support dispose after store events loading phase', async () => {
     const readModel = createReadModel({ projection, eventStore, adapter })
 
@@ -412,5 +484,78 @@ describe('resolve-query read-model', () => {
 
     expect(adapter.reset.callCount).toEqual(1)
     expect(subscriptionCanceler.callCount).toEqual(1)
+  })
+
+  it('should support dispose twice and more without repeat side effect', async () => {
+    const readModel = createReadModel({ projection, eventStore, adapter })
+
+    primaryEvents = [
+      createEvent(GOOD, -10, PRIMARY),
+      createEvent(GOOD, 10, PRIMARY),
+      createEvent(GOOD, 20, PRIMARY)
+    ]
+
+    await readModel.getReadInterface()
+    await readModel.dispose()
+    await readModel.dispose()
+
+    expect(adapter.reset.callCount).toEqual(1)
+    expect(subscriptionCanceler.callCount).toEqual(1)
+  })
+
+  it('should invoke resolvers via read function', async () => {
+    const resolverName = 'resolver-name'
+    const resolvers = {
+      [resolverName]: sinon.stub().callsFake(async () => {})
+    }
+    const readModel = createReadModel({
+      projection,
+      eventStore,
+      adapter,
+      resolvers
+    })
+
+    const builtProjection = adapter.buildProjection.firstCall.returnValue
+    await builtProjection.GOOD_EVENT(createEvent(GOOD, 10, PRIMARY))
+
+    const resolverArgs = {}
+    const jwtToken = 'JWT_TOKEN'
+    await readModel.read({ resolverName, resolverArgs, jwtToken })
+
+    const adapterInitResult = adapter.init.firstCall.returnValue
+    const readInterface = await adapterInitResult.getReadInterface.firstCall
+      .returnValue
+    const resolver = resolvers[resolverName]
+
+    expect(resolver.callCount).toEqual(1)
+    expect(resolver.firstCall.args[0]).toEqual(readInterface)
+    expect(resolver.firstCall.args[1]).toEqual(resolverArgs)
+    expect(resolver.firstCall.args[2]).toEqual(jwtToken)
+  })
+
+  it('should throw error on invalid or missing resolver entry', async () => {
+    const resolverName = 'resolver-name'
+    const resolvers = {
+      [resolverName]: 'WRONG_RESOLVER_ENTRY'
+    }
+    const readModel = createReadModel({
+      projection,
+      eventStore,
+      adapter,
+      resolvers
+    })
+
+    const builtProjection = adapter.buildProjection.firstCall.returnValue
+    await builtProjection.GOOD_EVENT(createEvent(GOOD, 10, PRIMARY))
+
+    try {
+      await readModel.read({ resolverName, resolverArgs: {} })
+      return Promise.reject('should throw error on invalid resolver entry')
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error)
+      expect(error.message).toEqual(
+        `The '${resolverName}' resolver is not specified or not function`
+      )
+    }
   })
 })

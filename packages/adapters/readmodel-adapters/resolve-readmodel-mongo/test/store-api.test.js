@@ -13,9 +13,9 @@ describe('resolve-readmodel-mongo store-api', () => {
       find: sinon.stub().callsFake(() => Promise.resolve()),
       findOne: sinon.stub().callsFake(() => Promise.resolve()),
       count: sinon.stub().callsFake(() => Promise.resolve()),
-      insert: sinon.stub().callsFake(() => Promise.resolve()),
-      update: sinon.stub().callsFake(() => Promise.resolve()),
-      remove: sinon.stub().callsFake(() => Promise.resolve()),
+      insertOne: sinon.stub().callsFake(() => Promise.resolve()),
+      updateMany: sinon.stub().callsFake(() => Promise.resolve()),
+      deleteMany: sinon.stub().callsFake(() => Promise.resolve()),
       drop: sinon.stub().callsFake(() => Promise.resolve())
     }
 
@@ -278,7 +278,9 @@ describe('resolve-readmodel-mongo store-api', () => {
       collectionApi
     )
 
-    expect(collectionApi.insert.firstCall.args).toEqual([{ id: 1, value: 2 }])
+    expect(collectionApi.insertOne.firstCall.args).toEqual([
+      { id: 1, value: 2 }
+    ])
   })
 
   it('should provide update method', async () => {
@@ -294,10 +296,10 @@ describe('resolve-readmodel-mongo store-api', () => {
       collectionApi
     )
 
-    expect(collectionApi.update.firstCall.args).toEqual([
+    expect(collectionApi.updateMany.firstCall.args).toEqual([
       { id: { $eq: 1, $type: 'double' }, value: { $eq: 2, $type: 'double' } },
       { id: 1, value: 10 },
-      { multi: true, upsert: false }
+      { upsert: false }
     ])
   })
 
@@ -308,9 +310,8 @@ describe('resolve-readmodel-mongo store-api', () => {
       collectionApi
     )
 
-    expect(collectionApi.remove.firstCall.args).toEqual([
-      { id: { $eq: 1, $type: 'double' }, value: { $eq: 2, $type: 'double' } },
-      { multi: true }
+    expect(collectionApi.deleteMany.firstCall.args).toEqual([
+      { id: { $eq: 1, $type: 'double' }, value: { $eq: 2, $type: 'double' } }
     ])
   })
 })

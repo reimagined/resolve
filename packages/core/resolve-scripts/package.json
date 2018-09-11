@@ -8,7 +8,8 @@
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
-  "main": "./dist/core/index.js",
+  "main": "./lib/core/index.js",
+  "module": "./es/core/index.js",
   "keywords": [
     "cqrs",
     "eventsourcing",
@@ -16,7 +17,9 @@
     "ddd"
   ],
   "scripts": {
-    "prepare": "babel --config-file=../../../.babelrc --source-maps --out-dir ./dist ./src",
+    "compile": "npm run compile:es && npm run compile:cjs",
+    "compile:es": "cross-env MODULE_TYPE=es MODULE_TARGET=server babel --config-file=../../../babel.config.js --source-maps --out-dir ./es ./src",
+    "compile:cjs": "cross-env MODULE_TYPE=cjs MODULE_TARGET=server babel --config-file=../../../babel.config.js --source-maps --out-dir ./lib ./src",
     "test": "jest --config=../../../jest.config.js --verbose",
     "testw": "jest --config=../../../jest.config.js --watchAll"
   },
@@ -25,34 +28,19 @@
   },
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-scripts#readme",
   "dependencies": {
-    "@babel/cli": "7.0.0-beta.55",
-    "@babel/core": "7.0.0-beta.55",
-    "@babel/plugin-proposal-class-properties": "7.0.0-beta.55",
-    "@babel/plugin-proposal-decorators": "7.0.0-beta.55",
-    "@babel/plugin-proposal-do-expressions": "7.0.0-beta.55",
-    "@babel/plugin-proposal-export-default-from": "7.0.0-beta.55",
-    "@babel/plugin-proposal-export-namespace-from": "7.0.0-beta.55",
-    "@babel/plugin-proposal-function-bind": "7.0.0-beta.55",
-    "@babel/plugin-proposal-function-sent": "7.0.0-beta.55",
-    "@babel/plugin-proposal-json-strings": "7.0.0-beta.55",
-    "@babel/plugin-proposal-logical-assignment-operators": "7.0.0-beta.55",
-    "@babel/plugin-proposal-nullish-coalescing-operator": "7.0.0-beta.55",
-    "@babel/plugin-proposal-numeric-separator": "7.0.0-beta.55",
-    "@babel/plugin-proposal-optional-chaining": "7.0.0-beta.55",
-    "@babel/plugin-proposal-pipeline-operator": "7.0.0-beta.55",
-    "@babel/plugin-proposal-throw-expressions": "7.0.0-beta.55",
-    "@babel/plugin-syntax-dynamic-import": "7.0.0-beta.55",
-    "@babel/plugin-syntax-import-meta": "7.0.0-beta.55",
-    "@babel/plugin-transform-runtime": "7.0.0-beta.55",
-    "@babel/preset-env": "7.0.0-beta.55",
-    "@babel/preset-react": "7.0.0-beta.55",
-    "@babel/register": "7.0.0-beta.55",
-    "@babel/runtime": "7.0.0-beta.55",
+    "@babel/cli": "7.0.0",
+    "@babel/core": "7.0.0",
+    "@babel/plugin-proposal-class-properties": "7.0.0",
+    "@babel/plugin-proposal-export-default-from": "7.0.0",
+    "@babel/plugin-proposal-export-namespace-from": "7.0.0",
+    "@babel/plugin-transform-runtime": "7.0.0",
+    "@babel/preset-env": "7.0.0",
+    "@babel/preset-react": "7.0.0",
+    "@babel/register": "7.0.0",
+    "@babel/runtime": "7.0.0",
     "address": "^1.0.3",
     "ajv": "^6.5.2",
-    "babel-core": "^7.0.0-0",
-    "babel-jest": "23.4.2",
-    "babel-loader": "^8.0.0-beta.0",
+    "babel-loader": "^8.0.2",
     "body-parser": "^1.18.3",
     "chalk": "^2.4.1",
     "cookie": "^0.3.1",
@@ -67,7 +55,6 @@
     "history": "^4.7.2",
     "ip": "^1.1.5",
     "isomorphic-fetch": "^2.2.1",
-    "jest": "23.4.2",
     "json-env-extract": "^1.4.0",
     "json-stable-stringify": "^1.0.1",
     "jsonwebtoken": "^8.3.0",
@@ -76,7 +63,6 @@
     "opn": "^5.3.0",
     "prop-types": "^15.6.2",
     "react-helmet": "^5.2.0",
-    "regenerator-runtime": "0.12.0",
     "resolve-auth": "0.14.4",
     "resolve-bus-memory": "0.14.4",
     "resolve-command": "0.14.4",
@@ -89,14 +75,13 @@
     "respawn": "^2.5.0",
     "socket.io": "^2.1.1",
     "socket.io-client": "^2.1.1",
-    "source-map-support": "^0.5.6",
-    "testcafe": "^0.20.4",
-    "testcafe-browser-tools": "1.6.3",
+    "source-map-support": "^0.5.9",
+    "testcafe": "^0.21.1",
+    "testcafe-browser-tools": "^1.6.5",
     "uuid": "^3.3.2",
     "val-loader": "1.1.1",
-    "webpack": "4.16.1",
-    "webpack-node-externals": "1.7.2",
-    "yargs": "^12.0.1"
+    "webpack": "4.17.2",
+    "webpack-node-externals": "1.7.2"
   },
   "peerDependencies": {
     "react": ">=16.4.0",
@@ -104,9 +89,10 @@
     "redux": ">=4.0.0"
   },
   "devDependencies": {
-    "sinon": "^6.1.3"
+    "sinon": "6.2.0",
+    "jest": "23.6.0"
   },
   "optionalDependencies": {
-    "styled-components": ">=3.4.2"
+    "styled-components": ">=3.4.5"
   }
 }

@@ -49,7 +49,7 @@ const strategies = [
 
         const passwordHash = hmac.digest('hex')
 
-        const existingUser = await resolve.executeReadModelQuery({
+        const existingUser = await resolve.executeQuery({
           modelName: 'Default',
           resolverName: 'user',
           resolverArgs: {
@@ -81,17 +81,15 @@ const strategies = [
           }
         })
 
-        await resolve.executeCommand(
-          {
-            type: 'createShoppingList',
-            aggregateId: userId,
-            aggregateName: 'ShoppingList',
-            payload: {
-              name: 'Shopping List'
-            }
+        await resolve.executeCommand({
+          type: 'createShoppingList',
+          aggregateId: userId,
+          aggregateName: 'ShoppingList',
+          payload: {
+            name: 'Shopping List'
           },
           jwtToken
-        )
+        })
 
         return jwtToken
       }
@@ -112,7 +110,7 @@ const strategies = [
       failureRedirect,
       errorRedirect,
       callback: async ({ resolve }, username, password) => {
-        const user = await resolve.executeReadModelQuery({
+        const user = await resolve.executeQuery({
           modelName: 'Default',
           resolverName: 'user',
           resolverArgs: { username }

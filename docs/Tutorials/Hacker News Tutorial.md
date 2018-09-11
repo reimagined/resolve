@@ -4,52 +4,52 @@
 
 This tutorial shows you how to create a **Hacker News** application and consists of the following steps:
 
-* [Requirements](#requirements)
-* [Creating a New ReSolve Application](#creating-a-new-resolve-application)
-* [Domain Model Analysis](#domain-model-analysis)
-* [Adding Users](#adding-users)
-  * [Write Side](#write-side)
-  * [Read Side](#read-side)
-  * [Authentication](#authentication)
-  * [Error View](#error-view)
-  * [Login View](#login-view)
-  * [User View](#user-view)
-* [Adding Stories](#adding-stories)
-  * [Write Side](#write-side-1)
-  * [Read Side](#read-side-1)
-  * [Stories View](#stories-view)
-  * [View Model](#view-model)
-  * [Story View](#story-view)
-  * [Submit View](#submit-view)
-* [Adding Comments](#adding-comments)
-  * [Write Side](#write-side-2)
-  * [Read Side](#read-side-2)
-  * [View Model](#view-model-1)
-  * [Story View Extension](#story-view-extension)
-  * [Comments View](#comments-view)
-  * [Page Not Found View](#page-not-found-view)
-* [Data Importer](#data-importer)
+- [Requirements](#requirements)
+- [Creating a New ReSolve Application](#creating-a-new-resolve-application)
+- [Domain Model Analysis](#domain-model-analysis)
+- [Adding Users](#adding-users)
+  - [Write Side](#write-side)
+  - [Read Side](#read-side)
+  - [Authentication](#authentication)
+  - [Error View](#error-view)
+  - [Login View](#login-view)
+  - [User View](#user-view)
+- [Adding Stories](#adding-stories)
+  - [Write Side](#write-side-1)
+  - [Read Side](#read-side-1)
+  - [Stories View](#stories-view)
+  - [View Model](#view-model)
+  - [Story View](#story-view)
+  - [Submit View](#submit-view)
+- [Adding Comments](#adding-comments)
+  - [Write Side](#write-side-2)
+  - [Read Side](#read-side-2)
+  - [View Model](#view-model-1)
+  - [Story View Extension](#story-view-extension)
+  - [Comments View](#comments-view)
+  - [Page Not Found View](#page-not-found-view)
+- [Data Importer](#data-importer)
 
 This demo is implemented using the [reSolve](https://github.com/reimagined/resolve) framework.
 You need to be familiar with React and Redux, as well as with DDD, CQRS and Event Sourcing.
 If you are new to these concepts, refer to the following links to learn the basics:
 
-* [Event Sourcing](https://martinfowler.com/eaaDev/EventSourcing.html)
-* [Command/Query Responsibility Segregation and Domain-Driven Design](http://cqrs.nu/)
-* [React](https://reactjs.org/)
-* [Redux](http://redux.js.org/docs/introduction/)
+- [Event Sourcing](https://martinfowler.com/eaaDev/EventSourcing.html)
+- [Command/Query Responsibility Segregation and Domain-Driven Design](http://cqrs.nu/)
+- [React](https://reactjs.org/)
+- [Redux](http://redux.js.org/docs/introduction/)
 
 You can also read the following articles for more information:
 
-* [Why using DDD, CQRS and Event Sourcing](https://github.com/cer/event-sourcing-examples/wiki/WhyEventSourcing)
-* [Building Scalable Applications Using Event Sourcing and CQRS](https://medium.com/technology-learning/event-sourcing-and-cqrs-a-look-at-kafka-e0c1b90d17d8)
-* [May the source be with you](http://arkwright.github.io/event-sourcing.html)
-* [Using logs to build a solid data infrastructure](https://www.confluent.io/blog/using-logs-to-build-a-solid-data-infrastructure-or-why-dual-writes-are-a-bad-idea/)
+- [Why using DDD, CQRS and Event Sourcing](https://github.com/cer/event-sourcing-examples/wiki/WhyEventSourcing)
+- [Building Scalable Applications Using Event Sourcing and CQRS](https://medium.com/technology-learning/event-sourcing-and-cqrs-a-look-at-kafka-e0c1b90d17d8)
+- [May the source be with you](http://arkwright.github.io/event-sourcing.html)
+- [Using logs to build a solid data infrastructure](https://www.confluent.io/blog/using-logs-to-build-a-solid-data-infrastructure-or-why-dual-writes-are-a-bad-idea/)
 
 ## Requirements
 
-* node 6.13.1, or later
-* npm 3.10.10, or later
+- node 6.13.1, or later
+- npm 3.10.10, or later
 
 ## Creating a New ReSolve Application
 
@@ -77,16 +77,18 @@ Its users can post news, ask questions, comment on the news, and reply to commen
 These posts are called **Stories**.
 
 **Users** can post **Stories** and **Comments**.
-* Story - news or question
-* Comment - a short message written about news or question
-* User - a registered and logged in user that can perform actions (post news, ask questions, write comments)
+
+- Story - news or question
+- Comment - a short message written about news or question
+- User - a registered and logged in user that can perform actions (post news, ask questions, write comments)
 
 Next, identify domain aggregate roots by detecting which commands the **Hacker News** application should perform and which entities they are addressed to:
-* create a **User**
-* create a **Story**
-* comment a **Story**
-* upvote a **Story**
-* unvote a **Story**
+
+- create a **User**
+- create a **Story**
+- comment a **Story**
+- upvote a **Story**
+- unvote a **Story**
 
 You only need the User and Story aggregate roots since there are no commands addressed to Comment.
 Note that when using CQRS and Event Sourcing, you need to identify which events should be captured on the Write Side, and then compose a list of Read Side models from these events.
@@ -94,13 +96,14 @@ Note that when using CQRS and Event Sourcing, you need to identify which events 
 To summarize the domain analysis:
 
 There are two aggregate roots - User and Story with the following commands and events:
-* User
-  * CreateUser generates the UserCreated event
-* Story
-  * CreateStory generates the StoryCreated event
-  * CommentStory generates the StoryCommented event
-  * UpvoteStory generates the StoryUpvoted event
-  * UnvoteStory generates the StoryUnvoted event
+
+- User
+  - CreateUser generates the UserCreated event
+- Story
+  - CreateStory generates the StoryCreated event
+  - CommentStory generates the StoryCommented event
+  - UpvoteStory generates the StoryUpvoted event
+  - UnvoteStory generates the StoryUnvoted event
 
 ## Adding Users
 
@@ -109,9 +112,10 @@ For demo purposes, we omitted password checking.
 If needed, you can implement hashing and storing passwords later.
 
 A user has the following fields:
-* id - a unique user ID automatically created on the server side
-* name - a unique username provided by a user in the registration form
-* createdAt - the user's registration timestamp
+
+- id - a unique user ID automatically created on the server side
+- name - a unique username provided by a user in the registration form
+- createdAt - the user's registration timestamp
 
 ### Write Side
 
@@ -173,7 +177,6 @@ export default {
     })
   }
 }
-
 ```
 
 Add aggregate for passing to the config.
@@ -194,9 +197,7 @@ The simplest way to store users is using a store collection.
 ```js
 // ./common/read-models/projection.js
 
-import {
-  USER_CREATED
-} from '../events'
+import { USER_CREATED } from '../events'
 
 export default {
   Init: async store => {
@@ -219,7 +220,6 @@ export default {
     await store.insert('Users', user)
   }
 }
-
 ```
 
 Implement resolvers:
@@ -228,7 +228,7 @@ Implement resolvers:
 // ./common/read-models/resolvers.js
 
 export default {
-  user: async (store, { id, name, jwtToken }) => {
+  user: async (store, { id, name }, jwtToken) => {
     const user =
       name != null
         ? await store.findOne('Users', { name })
@@ -263,6 +263,7 @@ export default [storiesReadModel]
 After adding storage for users, create the local authentication strategy and implement the required callbacks.
 
 Install `uuid` package:
+
 ```
 npm install --save uuid
 ```
@@ -307,7 +308,8 @@ const options = [
     callback: async ({ resolve }, username) => {
       // ...
     }
-  }, {
+  },
+  {
     ...strategyOptions,
     route: {
       path: '/logout',
@@ -325,8 +327,8 @@ const strategies = options.map(options => ({
 }))
 
 export default strategies
-
 ```
+
 Add the required authentication parameters:
 
 ```js
@@ -343,7 +345,6 @@ Add the required authentication parameters:
         "maxAge": 31536000000
     }
 }
-
 ```
 
 It's recommended to store an `authenticationSecret` in an environment variable for security purposes.
@@ -360,7 +361,8 @@ if (
   )
 }
 
-export default process.env.JWT_SECRET || 'HARDCODED_JWT_SECRET_FOR_DEVELOPMENT_ENV'
+export default process.env.JWT_SECRET ||
+  'HARDCODED_JWT_SECRET_FOR_DEVELOPMENT_ENV'
 ```
 
 Update `register` and `login` callbacks. Use the `resolve` parameter to access the query and command executors.
@@ -476,7 +478,6 @@ const strategies = options.map(options => ({
 }))
 
 export default strategies
-
 ```
 
 Remember to install the `jsonwebtoken` package to access cookies.
@@ -502,7 +503,7 @@ const getMe = async jwtToken => {
 export default {
   // user implementation
 
-  me: async (store, { jwtToken }) => await getMe(jwtToken),
+  me: async (store, _, jwtToken) => await getMe(jwtToken)
 }
 ```
 
@@ -511,7 +512,8 @@ Now the server side works with users: a user can be registered and authenticated
 ### Error View
 
 Install the following packages:
-* `query-string` - to parse the `search` location part
+
+- `query-string` - to parse the `search` location part
 
 ```bash
 npm install --save query-string
@@ -524,12 +526,13 @@ Implement the [Error](./client/components/Error.js) component to display error m
 The app layout contains meta-information, an application header with a menu, user info and some content.
 
 Install the following packages:
-* `react-helmet` - to pass meta-information to the HTML header
-* `react-router` - to implement routing
-* `redux` and `react-redux` - to store data
-* `seamless-immutable` - to enforce state immutability
-* `js-cookie` - to manipulate cookies
-* `styled-components` -  to style components
+
+- `react-helmet` - to pass meta-information to the HTML header
+- `react-router` - to implement routing
+- `redux` and `react-redux` - to store data
+- `seamless-immutable` - to enforce state immutability
+- `js-cookie` - to manipulate cookies
+- `styled-components` - to style components
 
 ```bash
 npm install --save react-helmet react-router react-router-dom seamless-immutable js-cookie styled-components
@@ -539,17 +542,18 @@ Implement the login view which is based on the [AuthForm](./client/components/Au
 
 The login view is placed in the main layout.
 Follow the steps below to implement the layout:
-* Prepare Redux [user actions](./client/actions/userActions.js).
-* Add the [Splitter](./client/components/Splitter.js) component that serves as a vertical menu splitter.
-* Add the [Layout](./client/components/Layout.js) container implementing the layout.
-* Add the [LoginInfo](./client/containers/LoginInfo.js) container implementing the login/logout menu.
-In the `containers/Layout.js` file, comment the `uiActions` import and the `onSubmitViewShown` action in the `mapDispatchToProps` function, and add the header's [logo](./static/reSolve-logo.svg).
+
+- Prepare Redux [user actions](./client/actions/userActions.js).
+- Add the [Splitter](./client/components/Splitter.js) component that serves as a vertical menu splitter.
+- Add the [Layout](./client/components/Layout.js) container implementing the layout.
+- Add the [LoginInfo](./client/containers/LoginInfo.js) container implementing the login/logout menu.
+  In the `containers/Layout.js` file, comment the `uiActions` import and the `onSubmitViewShown` action in the `mapDispatchToProps` function, and add the header's [logo](./static/reSolve-logo.svg).
 
 Add the layout and login view to the root component.
 
-* Add routes. To do this, create the `./client/routes.js` file.
-In this file, comment all imports except the `Layout` container and `Login` component, and all routes except the `/login` path.
-* Implement the `RouteWithSubRoutes` component to provide routes.
+- Add routes. To do this, create the `./client/routes.js` file.
+  In this file, comment all imports except the `Layout` container and `Login` component, and all routes except the `/login` path.
+- Implement the `RouteWithSubRoutes` component to provide routes.
 
 Use a Redux store for data storing.
 In the [./client/store/index.js](./client/store/index.js) file, add the [devtools](https://github.com/zalmoxisus/redux-devtools-extension) and [resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-redux#-utils) middlewares and implement the logout middleware. Replace the `viewModels` array with an empty array (comment out its import and usage).
@@ -570,17 +574,19 @@ Implement the [UserById](./client/containers/UserById.js) container and uncommen
 
 A **story** is either a **news** or a **question** posted by a user.
 In **Hacker News**, stories are displayed on the following pages:
-* Newest - the newest stories
-* Ask - users’ questions (Ask HNs)
-* Show - users’ news (Show HNs)
+
+- Newest - the newest stories
+- Ask - users’ questions (Ask HNs)
+- Show - users’ news (Show HNs)
 
 A story can have the following fields:
-* id - a unique ID
-* title - the story's title
-* link - a link to the original news or external website
-* text - the story's content
-* createdAt - the story's creation timestamp
-* createdBy - the story's author
+
+- id - a unique ID
+- title - the story's title
+- link - a link to the original news or external website
+- text - the story's content
+- createdAt - the story's creation timestamp
+- createdBy - the story's author
 
 ### Write Side
 
@@ -600,7 +606,11 @@ export default {
     }
   },
 
-  itemIsNotInArray: (array, item, errorMessage = 'Item is already in array') => {
+  itemIsNotInArray: (
+    array,
+    item,
+    errorMessage = 'Item is already in array'
+  ) => {
     if (array.includes(item)) {
       throw new Error(errorMessage)
     }
@@ -629,11 +639,7 @@ export const USER_CREATED = 'UserCreated'
 // ./common/aggregate/story.js
 import jwtSecret from '../../auth/jwtSecret'
 
-import {
-  STORY_CREATED,
-  STORY_UPVOTED,
-  STORY_UNVOTED
-} from '../events'
+import { STORY_CREATED, STORY_UPVOTED, STORY_UNVOTED } from '../events'
 
 import validate from './validation'
 
@@ -642,10 +648,7 @@ export default {
   initialState: {},
   commands: {
     createStory: (state, command, jwtToken) => {
-     const { id: userId, name: userName } = jwt.verify(
-        jwtToken,
-        jwtSecret
-      )
+      const { id: userId, name: userName } = jwt.verify(jwtToken, jwtSecret)
       validate.stateIsAbsent(state, 'Story')
 
       const { title, link, text } = command.payload
@@ -659,10 +662,7 @@ export default {
     },
 
     upvoteStory: (state, command, jwtToken) => {
-      const { id: userId } = jwt.verify(
-        jwtToken,
-       jwtSecret
-      )
+      const { id: userId } = jwt.verify(jwtToken, jwtSecret)
 
       validate.stateExists(state, 'Story')
       validate.itemIsNotInArray(state.voted, userId, 'User already voted')
@@ -671,10 +671,7 @@ export default {
     },
 
     unvoteStory: (state, command, jwtToken) => {
-     const { id: userId } = jwt.verify(
-        jwtToken,
-        jwtSecret
-      )
+      const { id: userId } = jwt.verify(jwtToken, jwtSecret)
 
       validate.stateExists(state, 'Story')
       validate.itemIsInArray(state.voted, userId, 'User did not vote')
@@ -754,11 +751,7 @@ export default {
 
   [STORY_CREATED]: async (
     store,
-    {
-      aggregateId,
-      timestamp,
-      payload: { title, link, userId, userName, text }
-    }
+    { aggregateId, timestamp, payload: { title, link, userId, userName, text } }
   ) => {
     const type = !link ? 'ask' : /^(Show HN)/.test(title) ? 'show' : 'story'
 
@@ -778,10 +771,7 @@ export default {
     await store.insert('Stories', story)
   },
 
-  [STORY_UPVOTED]: async (
-    store,
-    { aggregateId, payload: { userId } }
-  ) => {
+  [STORY_UPVOTED]: async (store, { aggregateId, payload: { userId } }) => {
     const story = await store.findOne(
       'Stories',
       { id: aggregateId },
@@ -794,10 +784,7 @@ export default {
     )
   },
 
-  [STORY_UNVOTED]: async (
-    store,
-    { aggregateId, payload: { userId } }
-  ) => {
+  [STORY_UNVOTED]: async (store, { aggregateId, payload: { userId } }) => {
     const story = await store.findOne(
       'Stories',
       { id: aggregateId },
@@ -821,7 +808,7 @@ Add the appropriate resolvers:
 ```js
 // ./common/read-models/graphql/resolvers.js
 
-const getStories = async (type, store, { first, offset, jwtToken }) => {
+const getStories = async (type, store, { first, offset }, jwtToken) => {
   const search = type && type.constructor === String ? { type } : {}
   const skip = first || 0
   const stories = await store.find(
@@ -854,9 +841,10 @@ export default {
 Implement a component rendering a list of stories.
 
 Install the following packages:
-* url - to parse URLs
-* plur - to pluralize words
-* sanitizer - to sanitize story content markup
+
+- url - to parse URLs
+- plur - to pluralize words
+- sanitizer - to sanitize story content markup
 
 ```bash
 npm i --save url plur sanitizer
@@ -892,11 +880,7 @@ Add the `./common/view-models/storyDetails.js` file:
 
 import Immutable from 'seamless-immutable'
 
-import {
-  STORY_CREATED,
-  STORY_UNVOTED,
-  STORY_UPVOTED
-} from '../events'
+import { STORY_CREATED, STORY_UNVOTED, STORY_UPVOTED } from '../events'
 
 export default {
   name: 'storyDetails',
@@ -936,7 +920,6 @@ export default {
   serializeState: (state: any) => JSON.stringify(state || {}),
   deserializeState: (state: any) => Immutable(JSON.parse(state))
 }
-
 ```
 
 Add view models' default export:
@@ -971,13 +954,14 @@ A comment is a short message written about news or question and relates to a sto
 Next, implement comments which reply to other comments.
 
 A comment has the following fields:
-* id - a unique ID
-* parentId - the parent comment's id, or the story's id if it is a root comment
-* storyId - the story's id
-* text - the comment's content
-* replies - a list of replies
-* createdAt - the story's creation timestamp
-* createdBy - the comment's author
+
+- id - a unique ID
+- parentId - the parent comment's id, or the story's id if it is a root comment
+- storyId - the story's id
+- text - the comment's content
+- replies - a list of replies
+- createdAt - the story's creation timestamp
+- createdBy - the comment's author
 
 ### Write Side
 
@@ -1002,7 +986,11 @@ Extend the [validation](./common/aggregates/validation.js) for commands:
 export default {
   // other validation functions
 
-  keyIsNotInObject: (object, key, errorMessage = 'Key is already in object') => {
+  keyIsNotInObject: (
+    object,
+    key,
+    errorMessage = 'Key is already in object'
+  ) => {
     if (object[key]) {
       throw new Error(errorMessage)
     }
@@ -1208,7 +1196,7 @@ export default {
     Init: () => Immutable({}),
 
     // implemented handlers
-  [STORY_COMMENTED]: (
+    [STORY_COMMENTED]: (
       state,
       {
         aggregateId,
@@ -1261,7 +1249,6 @@ Add the [ReplyLink](./client/components/ReplyLink.js) component to implement the
 Add the [ChildrenComments](./client/components/ChildrenComments.js) component for building a comments tree.
 
 A comment depends on a story, so you need to extend the existing [StoryDetails](./client/containers/StoryDetails.js) container and add a comments tree with a text area for new comments.
-
 
 ### Comments View
 

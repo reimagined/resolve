@@ -44,7 +44,7 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
     module: {
       rules: [
         {
-          test: /core(\/|\\)alias(\/|\\)\$resolve.\w+\.js/,
+          test: Object.values(alias),
           use: [
             {
               loader: 'babel-loader',
@@ -53,26 +53,18 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
                 babelrc: false,
                 presets: ['@babel/preset-env', '@babel/preset-react'],
                 plugins: [
-                  ['@babel/plugin-proposal-decorators', { legacy: true }],
                   '@babel/plugin-proposal-class-properties',
-                  '@babel/plugin-proposal-do-expressions',
                   '@babel/plugin-proposal-export-default-from',
                   '@babel/plugin-proposal-export-namespace-from',
-                  '@babel/plugin-proposal-function-bind',
-                  '@babel/plugin-proposal-function-sent',
-                  '@babel/plugin-proposal-json-strings',
-                  '@babel/plugin-proposal-logical-assignment-operators',
-                  '@babel/plugin-proposal-nullish-coalescing-operator',
-                  '@babel/plugin-proposal-numeric-separator',
-                  '@babel/plugin-proposal-optional-chaining',
                   [
-                    '@babel/plugin-proposal-pipeline-operator',
-                    { proposal: 'minimal' }
-                  ],
-                  '@babel/plugin-proposal-throw-expressions',
-                  '@babel/plugin-syntax-dynamic-import',
-                  '@babel/plugin-syntax-import-meta',
-                  '@babel/plugin-transform-runtime'
+                    '@babel/plugin-transform-runtime',
+                    {
+                      corejs: false,
+                      helpers: true,
+                      regenerator: true,
+                      useESModules: false
+                    }
+                  ]
                 ]
               }
             },
@@ -96,7 +88,8 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
           exclude: [
             /node_modules/,
             ...getModulesDirs(),
-            path.resolve(__dirname, '../../dist')
+            path.resolve(__dirname, '../../lib'),
+            path.resolve(__dirname, '../../es')
           ]
         }
       ]

@@ -1,5 +1,4 @@
 import getRootBasedUrl from './get_root_based_url'
-import { isReactiveArg, queryIdArg, stopSubscriptionArg } from './constants'
 import syncJwtProviderWithStore from './sync_jwt_provider_with_store'
 
 export class FetchError extends Error {}
@@ -80,33 +79,28 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
       validateStatus(response.status)
 
       if (!response.ok) {
-        throw new HttpError(response.text())
+        throw new HttpError(await response.text())
       }
 
       try {
-        result = await response.json()
+        result = await response.text()
       } catch (error) {
         throw new HttpError(error.message)
       }
 
-      return result
+      return {
+        timestamp: Number(new Date(response.headers.get('Date'))),
+        result
+      }
     },
 
-    async loadReadModelState({
-      readModelName,
-      resolverName,
-      resolverArgs,
-      isReactive,
-      queryId
-    }) {
+    async loadReadModelState({ readModelName, resolverName, resolverArgs }) {
       let response, result
       try {
         response = await request(
           `/api/query/${readModelName}/${resolverName}`,
           {
-            ...resolverArgs,
-            ...(isReactive ? { [isReactiveArg]: isReactive } : {}),
-            [queryIdArg]: queryId
+            ...resolverArgs
           }
         )
       } catch (error) {
@@ -116,36 +110,18 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
       validateStatus(response.status)
 
       if (!response.ok) {
-        throw new HttpError(response.text())
+        throw new HttpError(await response.text())
       }
 
       try {
-        result = await response.json()
+        result = await response.text()
       } catch (error) {
         throw new HttpError(error.message)
       }
 
-      return result
-    },
-
-    async stopReadModelSubscription({ readModelName, resolverName, queryId }) {
-      let response
-      try {
-        response = await request(
-          `/api/query/${readModelName}/${resolverName}`,
-          {
-            [stopSubscriptionArg]: true,
-            [queryIdArg]: queryId
-          }
-        )
-      } catch (error) {
-        throw new FetchError(error.message)
-      }
-
-      validateStatus(response.status)
-
-      if (!response.ok) {
-        throw new HttpError(response.text())
+      return {
+        timestamp: Number(new Date(response.headers.get('Date'))),
+        result
       }
     },
 
@@ -165,7 +141,7 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
       validateStatus(response.status)
 
       if (!response.ok) {
-        throw new HttpError(response.text())
+        throw new HttpError(await response.text())
       }
     },
 
@@ -183,7 +159,7 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
       validateStatus(response.status)
 
       if (!response.ok) {
-        throw new HttpError(response.text())
+        throw new HttpError(await response.text())
       }
 
       try {

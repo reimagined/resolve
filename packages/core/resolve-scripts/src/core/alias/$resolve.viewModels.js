@@ -1,3 +1,6 @@
+import crypto from 'crypto'
+import fs from 'fs'
+
 import { message } from '../constants'
 import resolveFile from '../resolve_file'
 import resolveFileOrModule from '../resolve_file_or_module'
@@ -12,7 +15,59 @@ export default ({ resolveConfig, isClient }) => {
     `import interopRequireDefault from "@babel/runtime/helpers/interopRequireDefault"`,
     ``
   ]
-  const constants = []
+
+  const constants = [
+    `let AsyncGeneratorProto, GeneratorProto, PromiseProto
+    const EmptyProto = {}
+
+    try {
+      AsyncGeneratorProto = (async function*() {})().__proto__.__proto__
+    } catch(error) {
+      AsyncGeneratorProto = EmptyProto
+    }
+    try {
+      GeneratorProto = (function*() {})().__proto__.__proto__
+    } catch(error) {
+      GeneratorProto = EmptyProto
+    }
+    try {
+      PromiseProto = (async function() {})().__proto__
+    } catch(error) {
+      PromiseProto = EmptyProto
+    }
+
+    const filterAsyncResult = result => {
+      if (result == null || result.__proto__ == null) return
+
+      if (result.__proto__ === PromiseProto) {
+        throw new Error(
+          'A Projection function cannot be asynchronous or return a Promise object'
+        )
+      }
+
+      const innerProto = result.__proto__.__proto__
+      if (innerProto == null) return
+
+      if (innerProto === GeneratorProto || innerProto === AsyncGeneratorProto) {
+        throw new Error(
+          'A Projection function cannot be a generator or return an iterable object'
+        )
+      }
+    }
+
+    const wrapCheckProjection = projection => Object.keys(projection).reduce((acc, key) => {
+      const originalHandler = projection[key].bind(projection)
+
+      acc[key] = (...args) => {
+        const result = originalHandler(...args)
+        filterAsyncResult(result)
+        return result
+      }
+
+      return acc
+    }, {})`
+  ]
+
   const exports = [`const viewModels = []`, ``]
 
   for (let index = 0; index < resolveConfig.viewModels.length; index++) {
@@ -29,6 +84,13 @@ export default ({ resolveConfig, isClient }) => {
       )
     }
     const projection = resolveFile(viewModel.projection)
+
+    const hmac = crypto.createHmac(
+      'sha512',
+      'resolve-view-model-projection-hash'
+    )
+    hmac.update(fs.readFileSync(projection).toString())
+    const invariantHash = hmac.digest('hex')
 
     if (checkRuntimeEnv(viewModel.serializeState)) {
       throw new Error(
@@ -73,6 +135,10 @@ export default ({ resolveConfig, isClient }) => {
 
     imports.push(
       `import projection_${index} from ${JSON.stringify(projection)}`
+    )
+
+    constants.push(
+      `const invariantHash_${index} = ${JSON.stringify(invariantHash)}`
     )
 
     if (!isClient) {
@@ -125,7 +191,8 @@ export default ({ resolveConfig, isClient }) => {
     exports.push(
       `viewModels.push({`,
       `  name: name_${index}`,
-      `, projection: projection_${index}`
+      `, projection: wrapCheckProjection(projection_${index})`,
+      `, invariantHash: invariantHash_${index}`
     )
 
     if (!isClient) {

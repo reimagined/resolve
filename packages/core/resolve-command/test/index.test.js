@@ -224,14 +224,12 @@ describe('resolve-command', () => {
     eventList = [{ type: 'SuccessEvent', aggregateVersion: 1 }]
 
     const jwtToken = 'JWT-TOKEN'
-    const transaction = executeCommand(
-      {
-        aggregateName: AGGREGATE_NAME,
-        aggregateId: AGGREGATE_ID,
-        type: 'emptyCommand'
-      },
+    const transaction = executeCommand({
+      aggregateName: AGGREGATE_NAME,
+      aggregateId: AGGREGATE_ID,
+      type: 'emptyCommand',
       jwtToken
-    )
+    })
 
     await transaction
 

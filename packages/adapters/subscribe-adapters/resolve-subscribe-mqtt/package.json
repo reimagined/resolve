@@ -5,13 +5,15 @@
   "engines": {
     "node": ">=8.10"
   },
-  "main": "./dist/create_server_adapter.js",
-  "browser": "./dist/create_client_adapter.js",
+  "main": "./lib/server/index.js",
+  "browser": "./lib/client/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
-    "prepare": "babel --config-file=../../../../.babelrc --source-maps --out-dir ./dist ./src",
+    "compile": "npm run build:client && npm run build:server",
+    "build:client": "cross-env MODULE_TYPE=cjs MODULE_TARGET=client babel --config-file=../../../../babel.config.js --source-maps --out-dir ./lib/client ./src/client",
+    "build:server": "cross-env MODULE_TYPE=cjs MODULE_TARGET=server babel --config-file=../../../../babel.config.js --source-maps --out-dir ./lib/server ./src/server",
     "test": "jest --config=../../../../jest.config.js --verbose",
     "testw": "jest --config=../../../../jest.config.js --watchAll"
   },
@@ -25,13 +27,13 @@
     "ddd"
   ],
   "dependencies": {
-    "mqtt": "^2.18.3",
+    "mqtt": "^2.18.8",
     "ws": "^5.2.1",
     "websocket-stream": "^5.1.2",
     "mqtt-connection": "^4.0.0"
   },
   "devDependencies": {
-    "jest": "23.4.2"
+    "jest": "23.6.0"
   },
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/subscribe-adapters/resolve-subscribe-mqtt#readme"
 }

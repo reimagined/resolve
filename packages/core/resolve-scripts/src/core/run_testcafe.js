@@ -56,7 +56,7 @@ const runTestcafe = async ({
     })
   })
 
-  const serverPath = path.resolve(__dirname, '../../dist/runtime/index.js')
+  const serverPath = path.resolve(__dirname, '../../lib/runtime/index.js')
 
   const server = respawn(
     [serverPath, `--distDir=${JSON.stringify(resolveConfig.distDir)}`],

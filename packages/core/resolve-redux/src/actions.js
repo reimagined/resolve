@@ -19,13 +19,9 @@ import {
   LOAD_READMODEL_STATE_REQUEST,
   LOAD_READMODEL_STATE_SUCCESS,
   LOAD_READMODEL_STATE_FAILURE,
-  APPLY_READMODEL_DIFF,
   DROP_READMODEL_STATE,
   DISPATCH_TOPIC_MESSAGE,
   HOT_MODULE_REPLACEMENT,
-  STOP_READ_MODEL_SUBSCRIPTION_REQUEST,
-  STOP_READ_MODEL_SUBSCRIPTION_SUCCESS,
-  STOP_READ_MODEL_SUBSCRIPTION_FAILURE,
   UPDATE_JWT,
   LOGOUT,
   AUTH_REQUEST,
@@ -145,19 +141,20 @@ export const loadViewModelStateRequest = (
   aggregateArgs
 })
 
+// TODO fix docs
 export const loadViewModelStateSuccess = (
   viewModelName,
   aggregateIds,
   aggregateArgs,
-  state,
-  aggregateVersionsMap
+  result,
+  timestamp
 ) => ({
   type: LOAD_VIEWMODEL_STATE_SUCCESS,
   viewModelName,
   aggregateIds,
   aggregateArgs,
-  state,
-  aggregateVersionsMap
+  result,
+  timestamp
 })
 
 export const loadViewModelStateFailure = (
@@ -187,41 +184,35 @@ export const dropViewModelState = (
 export const connectReadModel = (
   readModelName,
   resolverName,
-  resolverArgs,
-  isReactive
+  resolverArgs
 ) => ({
   type: CONNECT_READMODEL,
   readModelName,
   resolverName,
-  resolverArgs,
-  isReactive
+  resolverArgs
 })
 
 export const disconnectReadModel = (
   readModelName,
   resolverName,
-  resolverArgs,
-  isReactive
+  resolverArgs
 ) => ({
   type: DISCONNECT_READMODEL,
   readModelName,
   resolverName,
-  resolverArgs,
-  isReactive
+  resolverArgs
 })
 
 export const loadReadModelStateRequest = (
   readModelName,
   resolverName,
   resolverArgs,
-  isReactive,
   queryId
 ) => ({
   type: LOAD_READMODEL_STATE_REQUEST,
   readModelName,
   resolverName,
   resolverArgs,
-  isReactive,
   queryId
 })
 
@@ -229,26 +220,23 @@ export const loadReadModelStateSuccess = (
   readModelName,
   resolverName,
   resolverArgs,
-  isReactive,
   queryId,
   result,
-  timeToLive
+  timestamp
 ) => ({
   type: LOAD_READMODEL_STATE_SUCCESS,
   readModelName,
   resolverName,
   resolverArgs,
-  isReactive,
   queryId,
   result,
-  timeToLive
+  timestamp
 })
 
 export const loadReadModelStateFailure = (
   readModelName,
   resolverName,
   resolverArgs,
-  isReactive,
   queryId,
   error
 ) => ({
@@ -256,22 +244,8 @@ export const loadReadModelStateFailure = (
   readModelName,
   resolverName,
   resolverArgs,
-  isReactive,
   queryId,
   error
-})
-
-export const applyReadModelDiff = (
-  readModelName,
-  resolverName,
-  resolverArgs,
-  diff
-) => ({
-  type: APPLY_READMODEL_DIFF,
-  readModelName,
-  resolverName,
-  resolverArgs,
-  diff
 })
 
 export const dropReadModelState = (
@@ -283,41 +257,6 @@ export const dropReadModelState = (
   readModelName,
   resolverName,
   resolverArgs
-})
-
-export const stopReadModelSubscriptionRequest = (
-  readModelName,
-  resolverName,
-  queryId
-) => ({
-  type: STOP_READ_MODEL_SUBSCRIPTION_REQUEST,
-  readModelName,
-  resolverName,
-  queryId
-})
-
-export const stopReadModelSubscriptionSuccess = (
-  readModelName,
-  resolverName,
-  queryId
-) => ({
-  type: STOP_READ_MODEL_SUBSCRIPTION_SUCCESS,
-  readModelName,
-  resolverName,
-  queryId
-})
-
-export const stopReadModelSubscriptionFailure = (
-  readModelName,
-  resolverName,
-  queryId,
-  error
-) => ({
-  type: STOP_READ_MODEL_SUBSCRIPTION_FAILURE,
-  readModelName,
-  resolverName,
-  queryId,
-  error
 })
 
 export const dispatchTopicMessage = message => ({

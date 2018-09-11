@@ -1,3 +1,6 @@
+import crypto from 'crypto'
+import fs from 'fs'
+
 import { message } from '../constants'
 import resolveFile from '../resolve_file'
 import resolveFileOrModule from '../resolve_file_or_module'
@@ -38,6 +41,17 @@ export default ({ resolveConfig, isClient }) => {
     }
     const resolvers = resolveFile(readModel.resolvers)
 
+    const hmac = crypto.createHmac(
+      'sha512',
+      'resolve-read-model-projection-hash'
+    )
+    hmac.update(fs.readFileSync(projection).toString())
+    const invariantHash = hmac.digest('hex')
+
+    constants.push(
+      `const invariantHash_${index} = ${JSON.stringify(invariantHash)}`
+    )
+
     const adapter = readModel.adapter
       ? {
           module: checkRuntimeEnv(readModel.adapter.module)
@@ -47,7 +61,10 @@ export default ({ resolveConfig, isClient }) => {
             ...readModel.adapter.options
           }
         }
-      : {}
+      : {
+          module: resolveFileOrModule('resolve-readmodel-memory'),
+          options: {}
+        }
 
     constants.push(`const name_${index} = ${JSON.stringify(name)}`)
 
@@ -69,8 +86,8 @@ export default ({ resolveConfig, isClient }) => {
       )
     }
 
-    if (!isClient && readModel.adapter) {
-      if (checkRuntimeEnv(readModel.adapter.module)) {
+    if (!isClient) {
+      if (checkRuntimeEnv(adapter.module)) {
         constants.push(
           `const adapter_${index} = ${injectRuntimeEnv(adapter)}`,
           `const adapterModule_${index} = interopRequireDefault(`,
@@ -91,9 +108,10 @@ export default ({ resolveConfig, isClient }) => {
     exports.push(`readModels.push({`, `  name: name_${index}`)
     if (!isClient) {
       exports.push(`, projection: projection_${index}`)
+      exports.push(`, invariantHash: invariantHash_${index}`)
     }
     exports.push(`, resolvers: resolvers_${index}`)
-    if (!isClient && readModel.adapter) {
+    if (!isClient) {
       exports.push(
         `, adapter: {`,
         `    module: adapterModule_${index},`,
