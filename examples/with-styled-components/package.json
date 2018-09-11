@@ -29,7 +29,9 @@
     "@babel/plugin-transform-runtime": "7.0.0",
     "@babel/preset-env": "7.0.0",
     "@babel/preset-react": "7.0.0",
-    "jest": "23.5.0",
+    "babel-core": "^7.0.0-0",
+    "regenerator-runtime": "0.12.1",
+    "jest": "23.6.0",
     "react-test-renderer": "16.4.2",
     "testcafe": "0.22.0"
   }
