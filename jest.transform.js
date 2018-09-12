@@ -1,4 +1,4 @@
-const babelrc = require('./babel.config').getConfig({
+const babelrc = require('./babel.compile').getConfig({
   moduleType: 'cjs',
   moduleTarget: 'server'
 })

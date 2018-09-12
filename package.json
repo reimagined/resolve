@@ -63,7 +63,7 @@
     "clean": "oao all \"npx rimraf dist lib es\" --parallel && npx rimraf yarn-error.log && npx oao clean",
     "lint": "eslint .",
     "lint-staged": "lint-staged",
-    "prepare": "oao all \"npx rimraf dist lib es\" --parallel && oao run-script compile --parallel",
+    "prepare": "node ./babel.compile.js --run",
     "prettier": "prettier --single-quote --no-semi --write \"**/**.js\"",
     "prettier-json": "prettier --write \"**/**.json\"",
     "publish": "oao publish -i \"examples/*\" --no-git-commit --no-changelog",
