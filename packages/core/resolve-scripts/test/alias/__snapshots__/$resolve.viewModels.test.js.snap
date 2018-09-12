@@ -13,7 +13,7 @@ const viewModels = []
 
 viewModels.push({
   name: name_0
-, projection: wrapCheckProjection(projection_0)
+, projection: projection_0
 , invariantHash: invariantHash_0
 , deserializeState: deserializeState_0
 })
@@ -36,7 +36,7 @@ const viewModels = []
 
 viewModels.push({
   name: name_0
-, projection: wrapCheckProjection(projection_0)
+, projection: projection_0
 , invariantHash: invariantHash_0
 , serializeState: serializeState_0
 , deserializeState: deserializeState_0
@@ -98,14 +98,14 @@ const viewModels = []
 
 viewModels.push({
   name: name_0
-, projection: wrapCheckProjection(projection_0)
+, projection: projection_0
 , invariantHash: invariantHash_0
 , deserializeState: deserializeState_0
 })
 
 viewModels.push({
   name: name_1
-, projection: wrapCheckProjection(projection_1)
+, projection: projection_1
 , invariantHash: invariantHash_1
 , deserializeState: deserializeState_1
 })
@@ -134,7 +134,7 @@ const viewModels = []
 
 viewModels.push({
   name: name_0
-, projection: wrapCheckProjection(projection_0)
+, projection: projection_0
 , invariantHash: invariantHash_0
 , serializeState: serializeState_0
 , deserializeState: deserializeState_0
@@ -142,7 +142,7 @@ viewModels.push({
 
 viewModels.push({
   name: name_1
-, projection: wrapCheckProjection(projection_1)
+, projection: projection_1
 , invariantHash: invariantHash_1
 , serializeState: serializeState_1
 , deserializeState: deserializeState_1
@@ -199,7 +199,7 @@ const viewModels = []
 
 viewModels.push({
   name: name_0
-, projection: wrapCheckProjection(projection_0)
+, projection: projection_0
 , invariantHash: invariantHash_0
 , deserializeState: deserializeState_0
 })
@@ -222,7 +222,7 @@ const viewModels = []
 
 viewModels.push({
   name: name_0
-, projection: wrapCheckProjection(projection_0)
+, projection: projection_0
 , invariantHash: invariantHash_0
 , serializeState: serializeState_0
 , deserializeState: deserializeState_0
@@ -279,7 +279,7 @@ const viewModels = []
 
 viewModels.push({
   name: name_0
-, projection: wrapCheckProjection(projection_0)
+, projection: projection_0
 , invariantHash: invariantHash_0
 , deserializeState: deserializeState_0
 })
@@ -312,7 +312,7 @@ const viewModels = []
 
 viewModels.push({
   name: name_0
-, projection: wrapCheckProjection(projection_0)
+, projection: projection_0
 , invariantHash: invariantHash_0
 , serializeState: serializeState_0
 , deserializeState: deserializeState_0
@@ -373,7 +373,7 @@ const viewModels = []
 
 viewModels.push({
   name: name_0
-, projection: wrapCheckProjection(projection_0)
+, projection: projection_0
 , invariantHash: invariantHash_0
 , deserializeState: deserializeState_0
 })
@@ -398,7 +398,7 @@ const viewModels = []
 
 viewModels.push({
   name: name_0
-, projection: wrapCheckProjection(projection_0)
+, projection: projection_0
 , invariantHash: invariantHash_0
 , serializeState: serializeState_0
 , deserializeState: deserializeState_0
@@ -459,7 +459,7 @@ const viewModels = []
 
 viewModels.push({
   name: name_0
-, projection: wrapCheckProjection(projection_0)
+, projection: projection_0
 , invariantHash: invariantHash_0
 , deserializeState: deserializeState_0
 })
@@ -483,7 +483,7 @@ const viewModels = []
 
 viewModels.push({
   name: name_0
-, projection: wrapCheckProjection(projection_0)
+, projection: projection_0
 , invariantHash: invariantHash_0
 , serializeState: serializeState_0
 , deserializeState: deserializeState_0

@@ -141,7 +141,7 @@ export default ({ resolveConfig, isClient }) => {
     exports.push(
       `viewModels.push({`,
       `  name: name_${index}`,
-      `, projection: wrapCheckProjection(projection_${index})`,
+      `, projection: projection_${index}`,
       `, invariantHash: invariantHash_${index}`
     )
 
