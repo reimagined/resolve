@@ -1,6 +1,6 @@
 {
   "name": "@react-native-shopping-list/scripts",
-  "version": "0.15.1",
+  "version": "0.15.2",
   "private": true,
   "scripts": {
     "build": "babel-node ./run.js build",
@@ -16,9 +16,9 @@
   "dependencies": {
     "@babel/polyfill": "7.0.0",
     "redux": "4.0.0",
-    "resolve-redux": "0.15.1",
-    "resolve-scripts": "0.15.1",
-    "resolve-subscribe-socket.io": "0.15.1"
+    "resolve-redux": "0.15.2",
+    "resolve-scripts": "0.15.2",
+    "resolve-subscribe-socket.io": "0.15.2"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",
