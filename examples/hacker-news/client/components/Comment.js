@@ -6,13 +6,6 @@ import Splitter from './Splitter'
 import TimeAgo from './TimeAgo'
 import Link from '../containers/Link'
 
-const CommentRoot = styled.div`
-  margin-bottom: 0.75em;
-  padding-right: 1.25em;
-  padding-top: 0.65em;
-  padding-left: ${2.5}em;
-`
-
 const CommentInfo = styled.div`
   color: #666;
   margin-bottom: 0.5em;
@@ -75,7 +68,7 @@ class Comment extends React.PureComponent {
         : `/storyDetails/${storyId}/comments/${parentId}`
 
     return (
-      <CommentRoot>
+      <div>
         <CommentInfo>
           <Collapse onClick={this.expand} tabIndex="0">
             {'['}
@@ -101,7 +94,7 @@ class Comment extends React.PureComponent {
           />
         ) : null}
         {this.state.expanded ? children : null}
-      </CommentRoot>
+      </div>
     )
   }
 }
