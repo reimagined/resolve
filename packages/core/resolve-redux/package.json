@@ -11,9 +11,6 @@
     "url": "https://github.com/reimagined/resolve/issues"
   },
   "scripts": {
-    "compile": "npm run compile:es && npm run compile:cjs",
-    "compile:es": "cross-env MODULE_TYPE=es MODULE_TARGET=client babel --config-file=../../../babel.config.js --source-maps --out-dir ./es ./src",
-    "compile:cjs": "cross-env MODULE_TYPE=cjs MODULE_TARGET=client babel --config-file=../../../babel.config.js --source-maps --out-dir ./lib ./src",
     "test": "jest --config=../../../jest.config.js --verbose",
     "testw": "jest --config=../../../jest.config.js --watchAll"
   },
@@ -51,5 +48,19 @@
     "react": ">=16.4.0",
     "react-dom": ">=16.4.0",
     "redux": ">=4.0.0"
-  }
+  },
+  "babelCompile": [
+    {
+      "moduleType": "es",
+      "moduleTarget": "client",
+      "inputDir": "./src",
+      "outDir": "./es"
+    },
+    {
+      "moduleType": "cjs",
+      "moduleTarget": "client",
+      "inputDir": "./src",
+      "outDir": "./lib"
+    }
+  ]
 }
