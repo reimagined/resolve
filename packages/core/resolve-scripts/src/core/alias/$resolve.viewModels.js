@@ -168,13 +168,22 @@ export default ({ resolveConfig, isClient }) => {
 
   if (!isClient) {
     exports.push(`
-      const AsyncFunction = (async function(){}).constructor
-      const GeneratorFunction = (function*(){}).constructor
       let AsyncGeneratorFunction = {}
+      let GeneratorFunction = {}
+      let AsyncFunction = {}
+
       try {
         eval('AsyncGeneratorFunction = (async function* name(){}).constructor')
       } catch(err) {}
-      
+
+      try {
+        eval('GeneratorFunction = (function*(){}).constructor')
+      } catch(err) {}
+
+      try {
+        eval('AsyncFunction = (async function(){}).constructor')
+      } catch(err) {}
+
       const checkValidProjectionFunction = (func) => {
         if(typeof func !== 'function') {
           return false
