@@ -33,15 +33,15 @@ The `res` object represents the HTTP response that an api handler sends when it 
 
 ```js
 {
-  status(code)
-  getHeader(key)
-  setHeader(key, value)
-  text([content] [, encoding])
-  json([content])
-  end([content] [, encoding])
-  file(content, filename [, encoding])
-  redirect([status,] path)
-  cookie(name, value [, options])
+  status(code),
+  getHeader(key),
+  setHeader(key, value),
+  text([content] [, encoding]),
+  json([content]),
+  end([content] [, encoding]),
+  file(content, filename [, encoding]),
+  redirect([status,] path),
+  cookie(name, value [, options]),
   clearCookie(name [, options])
 }
 ```
