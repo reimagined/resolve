@@ -20,7 +20,6 @@ const createRequest = async (lambdaEvent, customParameters) => {
     query: queryStringParameters,
     path,
     headers,
-    resolveApiPath,
     cookies,
     body,
     ...customParameters

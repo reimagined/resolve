@@ -40,7 +40,6 @@ const createRequest = async (expressReq, customParameters) => {
     query: expressReq.query,
     path: expressReq.path,
     headers: expressReq.headers,
-    resolveApiPath,
     cookies,
     body,
     ...customParameters

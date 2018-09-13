@@ -6,24 +6,24 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "error",
-        [Function],
+        "\\"error\\"",
+        "[FUNCTION IMPLEMENTATION]",
       ],
-      "returnValue": undefined,
+      "returnValue": "undefined",
     },
     Object {
       "args": Array [
-        "data",
-        [Function],
+        "\\"data\\"",
+        "[FUNCTION IMPLEMENTATION]",
       ],
-      "returnValue": undefined,
+      "returnValue": "undefined",
     },
     Object {
       "args": Array [
-        "end",
-        [Function],
+        "\\"end\\"",
+        "[FUNCTION IMPLEMENTATION]",
       ],
-      "returnValue": undefined,
+      "returnValue": "undefined",
     },
   ],
 }
@@ -35,13 +35,9 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        500,
+        "200",
       ],
-      "returnValue": Object {
-        "append": [Function],
-        "end": [Function],
-        "status": [Function],
-      },
+      "returnValue": "{}",
     },
   ],
 }
@@ -49,8 +45,44 @@ Object {
 
 exports[`API handler wrapper for express.js should work with custom handler with any client request 3`] = `
 Object {
-  "callCount": 0,
-  "callsInfo": Array [],
+  "callCount": 5,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "\\"One-Header-Name\\"",
+        "\\"One-Header-Value\\"",
+      ],
+      "returnValue": "{}",
+    },
+    Object {
+      "args": Array [
+        "\\"Two-Header-Name\\"",
+        "\\"Two-Header-Value\\"",
+      ],
+      "returnValue": "{}",
+    },
+    Object {
+      "args": Array [
+        "\\"Set-Cookie\\"",
+        "\\"One-Cookie-Name=One-Cookie-Value\\"",
+      ],
+      "returnValue": "{}",
+    },
+    Object {
+      "args": Array [
+        "\\"Set-Cookie\\"",
+        "\\"Two-Cookie-Name=Two-Cookie-Value\\"",
+      ],
+      "returnValue": "{}",
+    },
+    Object {
+      "args": Array [
+        "\\"Set-Cookie\\"",
+        "\\"Two-Cookie-Name=; Expires=Sat, 31 Jan 1970 21:00:00 GMT\\"",
+      ],
+      "returnValue": "{}",
+    },
+  ],
 }
 `;
 
@@ -60,21 +92,9 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "ReferenceError: resolveApiPath is not defined
-    at resolveApiPath (/home/vladv/resolve/packages/adapters/api-handler-adapters/resolve-api-handler-express/src/index.js:43:5)
-    at tryCatch (/home/vladv/resolve/node_modules/regenerator-runtime/runtime.js:62:40)
-    at Generator.invoke [as _invoke] (/home/vladv/resolve/node_modules/regenerator-runtime/runtime.js:288:22)
-    at Generator.prototype.(anonymous function) [as next] (/home/vladv/resolve/node_modules/regenerator-runtime/runtime.js:114:21)
-    at asyncGeneratorStep (/home/vladv/resolve/node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:24)
-    at _next (/home/vladv/resolve/node_modules/@babel/runtime/helpers/asyncToGenerator.js:25:9)
-    at <anonymous>
-    at process._tickCallback (internal/process/next_tick.js:188:7)",
+        "{\\"type\\":\\"Buffer\\",\\"data\\":[123,34,109,101,116,104,111,100,34,58,34,72,84,84,80,45,86,69,82,66,34,44,34,113,117,101,114,121,34,58,123,34,113,117,101,114,121,45,110,97,109,101,45,49,34,58,34,113,117,101,114,121,45,118,97,108,117,101,45,49,34,44,34,113,117,101,114,121,45,110,97,109,101,45,50,34,58,34,113,117,101,114,121,45,118,97,108,117,101,45,50,34,125,44,34,112,97,116,104,34,58,34,80,65,84,72,95,73,78,70,79,34,44,34,104,101,97,100,101,114,115,34,58,123,34,104,101,97,100,101,114,45,110,97,109,101,45,49,34,58,34,104,101,97,100,101,114,45,118,97,108,117,101,45,49,34,44,34,104,101,97,100,101,114,45,110,97,109,101,45,50,34,58,34,104,101,97,100,101,114,45,118,97,108,117,101,45,50,34,44,34,99,111,111,107,105,101,34,58,34,99,111,111,107,105,101,45,99,111,110,116,101,110,116,34,44,34,104,111,115,116,34,58,34,104,111,115,116,45,99,111,110,116,101,110,116,34,125,44,34,99,111,111,107,105,101,115,34,58,123,125,44,34,98,111,100,121,34,58,110,117,108,108,44,34,112,97,114,97,109,34,58,34,118,97,108,117,101,34,44,34,101,120,105,115,116,105,110,103,72,101,97,100,101,114,34,58,34,79,110,101,45,72,101,97,100,101,114,45,86,97,108,117,101,34,44,34,109,105,115,115,105,110,103,72,101,97,100,101,114,34,58,34,79,110,101,45,72,101,97,100,101,114,45,86,97,108,117,101,34,125]}",
       ],
-      "returnValue": Object {
-        "append": [Function],
-        "end": [Function],
-        "status": [Function],
-      },
+      "returnValue": "{}",
     },
   ],
 }
@@ -86,30 +106,10 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        Object {
-          "headers": Object {
-            "cookie": "cookie-content",
-            "header-name-1": "header-value-1",
-            "header-name-2": "header-value-2",
-            "host": "host-content",
-          },
-          "method": "HTTP-VERB",
-          "on": [Function],
-          "path": "PATH_INFO",
-          "query": Object {
-            "query-name-1": "query-value-1",
-            "query-name-2": "query-value-2",
-          },
-        },
-        Object {
-          "append": [Function],
-          "end": [Function],
-          "status": [Function],
-        },
+        "{\\"method\\":\\"HTTP-VERB\\",\\"query\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"path\\":\\"PATH_INFO\\",\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"}}",
+        "{}",
       ],
-      "returnValue": Object {
-        "param": "value",
-      },
+      "returnValue": "{\\"param\\":\\"value\\"}",
     },
   ],
 }
@@ -121,24 +121,24 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "error",
-        [Function],
+        "\\"error\\"",
+        "[FUNCTION IMPLEMENTATION]",
       ],
-      "returnValue": undefined,
+      "returnValue": "undefined",
     },
     Object {
       "args": Array [
-        "data",
-        [Function],
+        "\\"data\\"",
+        "[FUNCTION IMPLEMENTATION]",
       ],
-      "returnValue": undefined,
+      "returnValue": "undefined",
     },
     Object {
       "args": Array [
-        "end",
-        [Function],
+        "\\"end\\"",
+        "[FUNCTION IMPLEMENTATION]",
       ],
-      "returnValue": undefined,
+      "returnValue": "undefined",
     },
   ],
 }
@@ -150,13 +150,9 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        500,
+        "500",
       ],
-      "returnValue": Object {
-        "append": [Function],
-        "end": [Function],
-        "status": [Function],
-      },
+      "returnValue": "{}",
     },
   ],
 }
@@ -175,21 +171,9 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "ReferenceError: resolveApiPath is not defined
-    at resolveApiPath (/home/vladv/resolve/packages/adapters/api-handler-adapters/resolve-api-handler-express/src/index.js:43:5)
-    at tryCatch (/home/vladv/resolve/node_modules/regenerator-runtime/runtime.js:62:40)
-    at Generator.invoke [as _invoke] (/home/vladv/resolve/node_modules/regenerator-runtime/runtime.js:288:22)
-    at Generator.prototype.(anonymous function) [as next] (/home/vladv/resolve/node_modules/regenerator-runtime/runtime.js:114:21)
-    at asyncGeneratorStep (/home/vladv/resolve/node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:24)
-    at _next (/home/vladv/resolve/node_modules/@babel/runtime/helpers/asyncToGenerator.js:25:9)
-    at <anonymous>
-    at process._tickCallback (internal/process/next_tick.js:188:7)",
+        "\\"Error: Custom error\\\\n    at _callee6$ (<MONOREPO_DIR>/packages/adapters/api-handler-adapters/resolve-api-handler-express/test/index.test.js:180:11)\\\\n    at tryCatch (<MONOREPO_DIR>/node_modules/regenerator-runtime/runtime.js:62:40)\\\\n    at Generator.invoke [as _invoke] (<MONOREPO_DIR>/node_modules/regenerator-runtime/runtime.js:288:22)\\\\n    at Generator.prototype.(anonymous function) [as next] (<MONOREPO_DIR>/node_modules/regenerator-runtime/runtime.js:114:21)\\\\n    at asyncGeneratorStep (<MONOREPO_DIR>/node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:24)\\\\n    at _next (<MONOREPO_DIR>/node_modules/@babel/runtime/helpers/asyncToGenerator.js:25:9)\\\\n    at <MONOREPO_DIR>/node_modules/@babel/runtime/helpers/asyncToGenerator.js:32:7\\\\n    at new Promise (<anonymous>)\\\\n    at <MONOREPO_DIR>/node_modules/@babel/runtime/helpers/asyncToGenerator.js:21:12\\\\n    at apiThrowHandler (<MONOREPO_DIR>/packages/adapters/api-handler-adapters/resolve-api-handler-express/test/index.test.js:179:24)\\"",
       ],
-      "returnValue": Object {
-        "append": [Function],
-        "end": [Function],
-        "status": [Function],
-      },
+      "returnValue": "{}",
     },
   ],
 }
@@ -201,30 +185,10 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        Object {
-          "headers": Object {
-            "cookie": "cookie-content",
-            "header-name-1": "header-value-1",
-            "header-name-2": "header-value-2",
-            "host": "host-content",
-          },
-          "method": "HTTP-VERB",
-          "on": [Function],
-          "path": "PATH_INFO",
-          "query": Object {
-            "query-name-1": "query-value-1",
-            "query-name-2": "query-value-2",
-          },
-        },
-        Object {
-          "append": [Function],
-          "end": [Function],
-          "status": [Function],
-        },
+        "{\\"method\\":\\"HTTP-VERB\\",\\"query\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"path\\":\\"PATH_INFO\\",\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"}}",
+        "{}",
       ],
-      "returnValue": Object {
-        "param": "value",
-      },
+      "returnValue": "{\\"param\\":\\"value\\"}",
     },
   ],
 }
@@ -236,24 +200,24 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "error",
-        [Function],
+        "\\"error\\"",
+        "[FUNCTION IMPLEMENTATION]",
       ],
-      "returnValue": undefined,
+      "returnValue": "undefined",
     },
     Object {
       "args": Array [
-        "data",
-        [Function],
+        "\\"data\\"",
+        "[FUNCTION IMPLEMENTATION]",
       ],
-      "returnValue": undefined,
+      "returnValue": "undefined",
     },
     Object {
       "args": Array [
-        "end",
-        [Function],
+        "\\"end\\"",
+        "[FUNCTION IMPLEMENTATION]",
       ],
-      "returnValue": undefined,
+      "returnValue": "undefined",
     },
   ],
 }
@@ -265,13 +229,9 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        500,
+        "200",
       ],
-      "returnValue": Object {
-        "append": [Function],
-        "end": [Function],
-        "status": [Function],
-      },
+      "returnValue": "{}",
     },
   ],
 }
@@ -279,8 +239,51 @@ Object {
 
 exports[`API handler wrapper for express.js should work with file handler with any client request 3`] = `
 Object {
-  "callCount": 0,
-  "callsInfo": Array [],
+  "callCount": 6,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "\\"One-Header-Name\\"",
+        "\\"One-Header-Value\\"",
+      ],
+      "returnValue": "{}",
+    },
+    Object {
+      "args": Array [
+        "\\"Two-Header-Name\\"",
+        "\\"Two-Header-Value\\"",
+      ],
+      "returnValue": "{}",
+    },
+    Object {
+      "args": Array [
+        "\\"Set-Cookie\\"",
+        "\\"One-Cookie-Name=One-Cookie-Value\\"",
+      ],
+      "returnValue": "{}",
+    },
+    Object {
+      "args": Array [
+        "\\"Set-Cookie\\"",
+        "\\"Two-Cookie-Name=Two-Cookie-Value\\"",
+      ],
+      "returnValue": "{}",
+    },
+    Object {
+      "args": Array [
+        "\\"Set-Cookie\\"",
+        "\\"Two-Cookie-Name=; Expires=Sat, 31 Jan 1970 21:00:00 GMT\\"",
+      ],
+      "returnValue": "{}",
+    },
+    Object {
+      "args": Array [
+        "\\"Content-Disposition\\"",
+        "\\"attachment; filename=\\\\\\"synthetic-filename.txt\\\\\\"\\"",
+      ],
+      "returnValue": "{}",
+    },
+  ],
 }
 `;
 
@@ -290,21 +293,9 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "ReferenceError: resolveApiPath is not defined
-    at resolveApiPath (/home/vladv/resolve/packages/adapters/api-handler-adapters/resolve-api-handler-express/src/index.js:43:5)
-    at tryCatch (/home/vladv/resolve/node_modules/regenerator-runtime/runtime.js:62:40)
-    at Generator.invoke [as _invoke] (/home/vladv/resolve/node_modules/regenerator-runtime/runtime.js:288:22)
-    at Generator.prototype.(anonymous function) [as next] (/home/vladv/resolve/node_modules/regenerator-runtime/runtime.js:114:21)
-    at asyncGeneratorStep (/home/vladv/resolve/node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:24)
-    at _next (/home/vladv/resolve/node_modules/@babel/runtime/helpers/asyncToGenerator.js:25:9)
-    at <anonymous>
-    at process._tickCallback (internal/process/next_tick.js:188:7)",
+        "{\\"type\\":\\"Buffer\\",\\"data\\":[123,34,109,101,116,104,111,100,34,58,34,72,84,84,80,45,86,69,82,66,34,44,34,113,117,101,114,121,34,58,123,34,113,117,101,114,121,45,110,97,109,101,45,49,34,58,34,113,117,101,114,121,45,118,97,108,117,101,45,49,34,44,34,113,117,101,114,121,45,110,97,109,101,45,50,34,58,34,113,117,101,114,121,45,118,97,108,117,101,45,50,34,125,44,34,112,97,116,104,34,58,34,80,65,84,72,95,73,78,70,79,34,44,34,104,101,97,100,101,114,115,34,58,123,34,104,101,97,100,101,114,45,110,97,109,101,45,49,34,58,34,104,101,97,100,101,114,45,118,97,108,117,101,45,49,34,44,34,104,101,97,100,101,114,45,110,97,109,101,45,50,34,58,34,104,101,97,100,101,114,45,118,97,108,117,101,45,50,34,44,34,99,111,111,107,105,101,34,58,34,99,111,111,107,105,101,45,99,111,110,116,101,110,116,34,44,34,104,111,115,116,34,58,34,104,111,115,116,45,99,111,110,116,101,110,116,34,125,44,34,99,111,111,107,105,101,115,34,58,123,125,44,34,98,111,100,121,34,58,110,117,108,108,44,34,112,97,114,97,109,34,58,34,118,97,108,117,101,34,44,34,101,120,105,115,116,105,110,103,72,101,97,100,101,114,34,58,34,79,110,101,45,72,101,97,100,101,114,45,86,97,108,117,101,34,44,34,109,105,115,115,105,110,103,72,101,97,100,101,114,34,58,34,79,110,101,45,72,101,97,100,101,114,45,86,97,108,117,101,34,125]}",
       ],
-      "returnValue": Object {
-        "append": [Function],
-        "end": [Function],
-        "status": [Function],
-      },
+      "returnValue": "{}",
     },
   ],
 }
@@ -316,30 +307,10 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        Object {
-          "headers": Object {
-            "cookie": "cookie-content",
-            "header-name-1": "header-value-1",
-            "header-name-2": "header-value-2",
-            "host": "host-content",
-          },
-          "method": "HTTP-VERB",
-          "on": [Function],
-          "path": "PATH_INFO",
-          "query": Object {
-            "query-name-1": "query-value-1",
-            "query-name-2": "query-value-2",
-          },
-        },
-        Object {
-          "append": [Function],
-          "end": [Function],
-          "status": [Function],
-        },
+        "{\\"method\\":\\"HTTP-VERB\\",\\"query\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"path\\":\\"PATH_INFO\\",\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"}}",
+        "{}",
       ],
-      "returnValue": Object {
-        "param": "value",
-      },
+      "returnValue": "{\\"param\\":\\"value\\"}",
     },
   ],
 }
@@ -351,24 +322,24 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "error",
-        [Function],
+        "\\"error\\"",
+        "[FUNCTION IMPLEMENTATION]",
       ],
-      "returnValue": undefined,
+      "returnValue": "undefined",
     },
     Object {
       "args": Array [
-        "data",
-        [Function],
+        "\\"data\\"",
+        "[FUNCTION IMPLEMENTATION]",
       ],
-      "returnValue": undefined,
+      "returnValue": "undefined",
     },
     Object {
       "args": Array [
-        "end",
-        [Function],
+        "\\"end\\"",
+        "[FUNCTION IMPLEMENTATION]",
       ],
-      "returnValue": undefined,
+      "returnValue": "undefined",
     },
   ],
 }
@@ -380,13 +351,9 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        500,
+        "200",
       ],
-      "returnValue": Object {
-        "append": [Function],
-        "end": [Function],
-        "status": [Function],
-      },
+      "returnValue": "{}",
     },
   ],
 }
@@ -394,8 +361,44 @@ Object {
 
 exports[`API handler wrapper for express.js should work with primitive JSON handler with GET client request 3`] = `
 Object {
-  "callCount": 0,
-  "callsInfo": Array [],
+  "callCount": 5,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "\\"One-Header-Name\\"",
+        "\\"One-Header-Value\\"",
+      ],
+      "returnValue": "{}",
+    },
+    Object {
+      "args": Array [
+        "\\"Two-Header-Name\\"",
+        "\\"Two-Header-Value\\"",
+      ],
+      "returnValue": "{}",
+    },
+    Object {
+      "args": Array [
+        "\\"Set-Cookie\\"",
+        "\\"One-Cookie-Name=One-Cookie-Value\\"",
+      ],
+      "returnValue": "{}",
+    },
+    Object {
+      "args": Array [
+        "\\"Set-Cookie\\"",
+        "\\"Two-Cookie-Name=Two-Cookie-Value\\"",
+      ],
+      "returnValue": "{}",
+    },
+    Object {
+      "args": Array [
+        "\\"Set-Cookie\\"",
+        "\\"Two-Cookie-Name=; Expires=Sat, 31 Jan 1970 21:00:00 GMT\\"",
+      ],
+      "returnValue": "{}",
+    },
+  ],
 }
 `;
 
@@ -405,21 +408,9 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "ReferenceError: resolveApiPath is not defined
-    at resolveApiPath (/home/vladv/resolve/packages/adapters/api-handler-adapters/resolve-api-handler-express/src/index.js:43:5)
-    at tryCatch (/home/vladv/resolve/node_modules/regenerator-runtime/runtime.js:62:40)
-    at Generator.invoke [as _invoke] (/home/vladv/resolve/node_modules/regenerator-runtime/runtime.js:288:22)
-    at Generator.prototype.(anonymous function) [as next] (/home/vladv/resolve/node_modules/regenerator-runtime/runtime.js:114:21)
-    at asyncGeneratorStep (/home/vladv/resolve/node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:24)
-    at _next (/home/vladv/resolve/node_modules/@babel/runtime/helpers/asyncToGenerator.js:25:9)
-    at <anonymous>
-    at process._tickCallback (internal/process/next_tick.js:188:7)",
+        "\\"{\\\\\\"method\\\\\\":\\\\\\"HTTP-VERB\\\\\\",\\\\\\"query\\\\\\":{\\\\\\"query-name-1\\\\\\":\\\\\\"query-value-1\\\\\\",\\\\\\"query-name-2\\\\\\":\\\\\\"query-value-2\\\\\\"},\\\\\\"path\\\\\\":\\\\\\"PATH_INFO\\\\\\",\\\\\\"headers\\\\\\":{\\\\\\"header-name-1\\\\\\":\\\\\\"header-value-1\\\\\\",\\\\\\"header-name-2\\\\\\":\\\\\\"header-value-2\\\\\\",\\\\\\"cookie\\\\\\":\\\\\\"cookie-content\\\\\\",\\\\\\"host\\\\\\":\\\\\\"host-content\\\\\\"},\\\\\\"cookies\\\\\\":{},\\\\\\"body\\\\\\":null,\\\\\\"param\\\\\\":\\\\\\"value\\\\\\",\\\\\\"existingHeader\\\\\\":\\\\\\"One-Header-Value\\\\\\",\\\\\\"missingHeader\\\\\\":\\\\\\"One-Header-Value\\\\\\"}\\"",
       ],
-      "returnValue": Object {
-        "append": [Function],
-        "end": [Function],
-        "status": [Function],
-      },
+      "returnValue": "{}",
     },
   ],
 }
@@ -431,30 +422,10 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        Object {
-          "headers": Object {
-            "cookie": "cookie-content",
-            "header-name-1": "header-value-1",
-            "header-name-2": "header-value-2",
-            "host": "host-content",
-          },
-          "method": "HTTP-VERB",
-          "on": [Function],
-          "path": "PATH_INFO",
-          "query": Object {
-            "query-name-1": "query-value-1",
-            "query-name-2": "query-value-2",
-          },
-        },
-        Object {
-          "append": [Function],
-          "end": [Function],
-          "status": [Function],
-        },
+        "{\\"method\\":\\"HTTP-VERB\\",\\"query\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"path\\":\\"PATH_INFO\\",\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"}}",
+        "{}",
       ],
-      "returnValue": Object {
-        "param": "value",
-      },
+      "returnValue": "{\\"param\\":\\"value\\"}",
     },
   ],
 }
@@ -466,24 +437,24 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "error",
-        [Function],
+        "\\"error\\"",
+        "[FUNCTION IMPLEMENTATION]",
       ],
-      "returnValue": undefined,
+      "returnValue": "undefined",
     },
     Object {
       "args": Array [
-        "data",
-        [Function],
+        "\\"data\\"",
+        "[FUNCTION IMPLEMENTATION]",
       ],
-      "returnValue": undefined,
+      "returnValue": "undefined",
     },
     Object {
       "args": Array [
-        "end",
-        [Function],
+        "\\"end\\"",
+        "[FUNCTION IMPLEMENTATION]",
       ],
-      "returnValue": undefined,
+      "returnValue": "undefined",
     },
   ],
 }
@@ -495,13 +466,9 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        500,
+        "200",
       ],
-      "returnValue": Object {
-        "append": [Function],
-        "end": [Function],
-        "status": [Function],
-      },
+      "returnValue": "{}",
     },
   ],
 }
@@ -509,8 +476,44 @@ Object {
 
 exports[`API handler wrapper for express.js should work with primitive JSON handler with POST client request 3`] = `
 Object {
-  "callCount": 0,
-  "callsInfo": Array [],
+  "callCount": 5,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "\\"One-Header-Name\\"",
+        "\\"One-Header-Value\\"",
+      ],
+      "returnValue": "{}",
+    },
+    Object {
+      "args": Array [
+        "\\"Two-Header-Name\\"",
+        "\\"Two-Header-Value\\"",
+      ],
+      "returnValue": "{}",
+    },
+    Object {
+      "args": Array [
+        "\\"Set-Cookie\\"",
+        "\\"One-Cookie-Name=One-Cookie-Value\\"",
+      ],
+      "returnValue": "{}",
+    },
+    Object {
+      "args": Array [
+        "\\"Set-Cookie\\"",
+        "\\"Two-Cookie-Name=Two-Cookie-Value\\"",
+      ],
+      "returnValue": "{}",
+    },
+    Object {
+      "args": Array [
+        "\\"Set-Cookie\\"",
+        "\\"Two-Cookie-Name=; Expires=Sat, 31 Jan 1970 21:00:00 GMT\\"",
+      ],
+      "returnValue": "{}",
+    },
+  ],
 }
 `;
 
@@ -520,21 +523,9 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "ReferenceError: resolveApiPath is not defined
-    at resolveApiPath (/home/vladv/resolve/packages/adapters/api-handler-adapters/resolve-api-handler-express/src/index.js:43:5)
-    at tryCatch (/home/vladv/resolve/node_modules/regenerator-runtime/runtime.js:62:40)
-    at Generator.invoke [as _invoke] (/home/vladv/resolve/node_modules/regenerator-runtime/runtime.js:288:22)
-    at Generator.prototype.(anonymous function) [as next] (/home/vladv/resolve/node_modules/regenerator-runtime/runtime.js:114:21)
-    at asyncGeneratorStep (/home/vladv/resolve/node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:24)
-    at _next (/home/vladv/resolve/node_modules/@babel/runtime/helpers/asyncToGenerator.js:25:9)
-    at <anonymous>
-    at process._tickCallback (internal/process/next_tick.js:188:7)",
+        "\\"{\\\\\\"method\\\\\\":\\\\\\"HTTP-VERB\\\\\\",\\\\\\"query\\\\\\":{\\\\\\"query-name-1\\\\\\":\\\\\\"query-value-1\\\\\\",\\\\\\"query-name-2\\\\\\":\\\\\\"query-value-2\\\\\\"},\\\\\\"path\\\\\\":\\\\\\"PATH_INFO\\\\\\",\\\\\\"headers\\\\\\":{\\\\\\"header-name-1\\\\\\":\\\\\\"header-value-1\\\\\\",\\\\\\"header-name-2\\\\\\":\\\\\\"header-value-2\\\\\\",\\\\\\"cookie\\\\\\":\\\\\\"cookie-content\\\\\\",\\\\\\"host\\\\\\":\\\\\\"host-content\\\\\\"},\\\\\\"cookies\\\\\\":{},\\\\\\"body\\\\\\":\\\\\\"Body partition oneBody partition two\\\\\\",\\\\\\"param\\\\\\":\\\\\\"value\\\\\\",\\\\\\"existingHeader\\\\\\":\\\\\\"One-Header-Value\\\\\\",\\\\\\"missingHeader\\\\\\":\\\\\\"One-Header-Value\\\\\\"}\\"",
       ],
-      "returnValue": Object {
-        "append": [Function],
-        "end": [Function],
-        "status": [Function],
-      },
+      "returnValue": "{}",
     },
   ],
 }
@@ -546,30 +537,10 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        Object {
-          "headers": Object {
-            "cookie": "cookie-content",
-            "header-name-1": "header-value-1",
-            "header-name-2": "header-value-2",
-            "host": "host-content",
-          },
-          "method": "HTTP-VERB",
-          "on": [Function],
-          "path": "PATH_INFO",
-          "query": Object {
-            "query-name-1": "query-value-1",
-            "query-name-2": "query-value-2",
-          },
-        },
-        Object {
-          "append": [Function],
-          "end": [Function],
-          "status": [Function],
-        },
+        "{\\"method\\":\\"HTTP-VERB\\",\\"query\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"path\\":\\"PATH_INFO\\",\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"}}",
+        "{}",
       ],
-      "returnValue": Object {
-        "param": "value",
-      },
+      "returnValue": "{\\"param\\":\\"value\\"}",
     },
   ],
 }
@@ -581,24 +552,24 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "error",
-        [Function],
+        "\\"error\\"",
+        "[FUNCTION IMPLEMENTATION]",
       ],
-      "returnValue": undefined,
+      "returnValue": "undefined",
     },
     Object {
       "args": Array [
-        "data",
-        [Function],
+        "\\"data\\"",
+        "[FUNCTION IMPLEMENTATION]",
       ],
-      "returnValue": undefined,
+      "returnValue": "undefined",
     },
     Object {
       "args": Array [
-        "end",
-        [Function],
+        "\\"end\\"",
+        "[FUNCTION IMPLEMENTATION]",
       ],
-      "returnValue": undefined,
+      "returnValue": "undefined",
     },
   ],
 }
@@ -610,13 +581,9 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        500,
+        "500",
       ],
-      "returnValue": Object {
-        "append": [Function],
-        "end": [Function],
-        "status": [Function],
-      },
+      "returnValue": "{}",
     },
   ],
 }
@@ -635,21 +602,9 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "ReferenceError: resolveApiPath is not defined
-    at resolveApiPath (/home/vladv/resolve/packages/adapters/api-handler-adapters/resolve-api-handler-express/src/index.js:43:5)
-    at tryCatch (/home/vladv/resolve/node_modules/regenerator-runtime/runtime.js:62:40)
-    at Generator.invoke [as _invoke] (/home/vladv/resolve/node_modules/regenerator-runtime/runtime.js:288:22)
-    at Generator.prototype.(anonymous function) [as next] (/home/vladv/resolve/node_modules/regenerator-runtime/runtime.js:114:21)
-    at asyncGeneratorStep (/home/vladv/resolve/node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:24)
-    at _next (/home/vladv/resolve/node_modules/@babel/runtime/helpers/asyncToGenerator.js:25:9)
-    at <anonymous>
-    at process._tickCallback (internal/process/next_tick.js:188:7)",
+        "\\"Error: Response already sent\\\\n    at validateResponseOpened (<MONOREPO_DIR>/packages/adapters/api-handler-adapters/resolve-api-handler-express/src/index.js:75:13)\\\\n    at Object.validateResponseOpened [as status] (<MONOREPO_DIR>/packages/adapters/api-handler-adapters/resolve-api-handler-express/src/index.js:119:5)\\\\n    at status (<MONOREPO_DIR>/packages/adapters/api-handler-adapters/resolve-api-handler-express/test/index.test.js:176:9)\\\\n    at tryCatch (<MONOREPO_DIR>/node_modules/regenerator-runtime/runtime.js:62:40)\\\\n    at Generator.invoke [as _invoke] (<MONOREPO_DIR>/node_modules/regenerator-runtime/runtime.js:288:22)\\\\n    at Generator.prototype.(anonymous function) [as next] (<MONOREPO_DIR>/node_modules/regenerator-runtime/runtime.js:114:21)\\\\n    at asyncGeneratorStep (<MONOREPO_DIR>/node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:24)\\\\n    at _next (<MONOREPO_DIR>/node_modules/@babel/runtime/helpers/asyncToGenerator.js:25:9)\\\\n    at <MONOREPO_DIR>/node_modules/@babel/runtime/helpers/asyncToGenerator.js:32:7\\\\n    at new Promise (<anonymous>)\\"",
       ],
-      "returnValue": Object {
-        "append": [Function],
-        "end": [Function],
-        "status": [Function],
-      },
+      "returnValue": "{}",
     },
   ],
 }
@@ -661,30 +616,10 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        Object {
-          "headers": Object {
-            "cookie": "cookie-content",
-            "header-name-1": "header-value-1",
-            "header-name-2": "header-value-2",
-            "host": "host-content",
-          },
-          "method": "HTTP-VERB",
-          "on": [Function],
-          "path": "PATH_INFO",
-          "query": Object {
-            "query-name-1": "query-value-1",
-            "query-name-2": "query-value-2",
-          },
-        },
-        Object {
-          "append": [Function],
-          "end": [Function],
-          "status": [Function],
-        },
+        "{\\"method\\":\\"HTTP-VERB\\",\\"query\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"path\\":\\"PATH_INFO\\",\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"}}",
+        "{}",
       ],
-      "returnValue": Object {
-        "param": "value",
-      },
+      "returnValue": "{\\"param\\":\\"value\\"}",
     },
   ],
 }
@@ -696,24 +631,24 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "error",
-        [Function],
+        "\\"error\\"",
+        "[FUNCTION IMPLEMENTATION]",
       ],
-      "returnValue": undefined,
+      "returnValue": "undefined",
     },
     Object {
       "args": Array [
-        "data",
-        [Function],
+        "\\"data\\"",
+        "[FUNCTION IMPLEMENTATION]",
       ],
-      "returnValue": undefined,
+      "returnValue": "undefined",
     },
     Object {
       "args": Array [
-        "end",
-        [Function],
+        "\\"end\\"",
+        "[FUNCTION IMPLEMENTATION]",
       ],
-      "returnValue": undefined,
+      "returnValue": "undefined",
     },
   ],
 }
@@ -725,13 +660,9 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        500,
+        "200",
       ],
-      "returnValue": Object {
-        "append": [Function],
-        "end": [Function],
-        "status": [Function],
-      },
+      "returnValue": "{}",
     },
   ],
 }
@@ -739,8 +670,44 @@ Object {
 
 exports[`API handler wrapper for express.js should work with text handler with any client request 3`] = `
 Object {
-  "callCount": 0,
-  "callsInfo": Array [],
+  "callCount": 5,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "\\"One-Header-Name\\"",
+        "\\"One-Header-Value\\"",
+      ],
+      "returnValue": "{}",
+    },
+    Object {
+      "args": Array [
+        "\\"Two-Header-Name\\"",
+        "\\"Two-Header-Value\\"",
+      ],
+      "returnValue": "{}",
+    },
+    Object {
+      "args": Array [
+        "\\"Set-Cookie\\"",
+        "\\"One-Cookie-Name=One-Cookie-Value\\"",
+      ],
+      "returnValue": "{}",
+    },
+    Object {
+      "args": Array [
+        "\\"Set-Cookie\\"",
+        "\\"Two-Cookie-Name=Two-Cookie-Value\\"",
+      ],
+      "returnValue": "{}",
+    },
+    Object {
+      "args": Array [
+        "\\"Set-Cookie\\"",
+        "\\"Two-Cookie-Name=; Expires=Sat, 31 Jan 1970 21:00:00 GMT\\"",
+      ],
+      "returnValue": "{}",
+    },
+  ],
 }
 `;
 
@@ -750,21 +717,9 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "ReferenceError: resolveApiPath is not defined
-    at resolveApiPath (/home/vladv/resolve/packages/adapters/api-handler-adapters/resolve-api-handler-express/src/index.js:43:5)
-    at tryCatch (/home/vladv/resolve/node_modules/regenerator-runtime/runtime.js:62:40)
-    at Generator.invoke [as _invoke] (/home/vladv/resolve/node_modules/regenerator-runtime/runtime.js:288:22)
-    at Generator.prototype.(anonymous function) [as next] (/home/vladv/resolve/node_modules/regenerator-runtime/runtime.js:114:21)
-    at asyncGeneratorStep (/home/vladv/resolve/node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:24)
-    at _next (/home/vladv/resolve/node_modules/@babel/runtime/helpers/asyncToGenerator.js:25:9)
-    at <anonymous>
-    at process._tickCallback (internal/process/next_tick.js:188:7)",
+        "{\\"type\\":\\"Buffer\\",\\"data\\":[123,34,109,101,116,104,111,100,34,58,34,72,84,84,80,45,86,69,82,66,34,44,34,113,117,101,114,121,34,58,123,34,113,117,101,114,121,45,110,97,109,101,45,49,34,58,34,113,117,101,114,121,45,118,97,108,117,101,45,49,34,44,34,113,117,101,114,121,45,110,97,109,101,45,50,34,58,34,113,117,101,114,121,45,118,97,108,117,101,45,50,34,125,44,34,112,97,116,104,34,58,34,80,65,84,72,95,73,78,70,79,34,44,34,104,101,97,100,101,114,115,34,58,123,34,104,101,97,100,101,114,45,110,97,109,101,45,49,34,58,34,104,101,97,100,101,114,45,118,97,108,117,101,45,49,34,44,34,104,101,97,100,101,114,45,110,97,109,101,45,50,34,58,34,104,101,97,100,101,114,45,118,97,108,117,101,45,50,34,44,34,99,111,111,107,105,101,34,58,34,99,111,111,107,105,101,45,99,111,110,116,101,110,116,34,44,34,104,111,115,116,34,58,34,104,111,115,116,45,99,111,110,116,101,110,116,34,125,44,34,99,111,111,107,105,101,115,34,58,123,125,44,34,98,111,100,121,34,58,110,117,108,108,44,34,112,97,114,97,109,34,58,34,118,97,108,117,101,34,44,34,101,120,105,115,116,105,110,103,72,101,97,100,101,114,34,58,34,79,110,101,45,72,101,97,100,101,114,45,86,97,108,117,101,34,44,34,109,105,115,115,105,110,103,72,101,97,100,101,114,34,58,34,79,110,101,45,72,101,97,100,101,114,45,86,97,108,117,101,34,125]}",
       ],
-      "returnValue": Object {
-        "append": [Function],
-        "end": [Function],
-        "status": [Function],
-      },
+      "returnValue": "{}",
     },
   ],
 }
@@ -776,30 +731,10 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        Object {
-          "headers": Object {
-            "cookie": "cookie-content",
-            "header-name-1": "header-value-1",
-            "header-name-2": "header-value-2",
-            "host": "host-content",
-          },
-          "method": "HTTP-VERB",
-          "on": [Function],
-          "path": "PATH_INFO",
-          "query": Object {
-            "query-name-1": "query-value-1",
-            "query-name-2": "query-value-2",
-          },
-        },
-        Object {
-          "append": [Function],
-          "end": [Function],
-          "status": [Function],
-        },
+        "{\\"method\\":\\"HTTP-VERB\\",\\"query\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"path\\":\\"PATH_INFO\\",\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"}}",
+        "{}",
       ],
-      "returnValue": Object {
-        "param": "value",
-      },
+      "returnValue": "{\\"param\\":\\"value\\"}",
     },
   ],
 }

@@ -1,6 +1,39 @@
+import escapeRegExp from 'lodash.escaperegexp'
+import path from 'path'
 import sinon from 'sinon'
 
 import wrapApiHandler from '../src'
+
+const stringifyAndNormalizePaths = value => {
+  const source = (() => {
+    switch (typeof value) {
+      case 'function':
+        return '[FUNCTION IMPLEMENTATION]'
+      case 'undefined':
+        return 'undefined'
+      default:
+        return JSON.stringify(value)
+    }
+  })()
+
+  const monorepoDir = path.resolve(__dirname, '../../../../../')
+  return source.replace(
+    new RegExp(escapeRegExp(monorepoDir), 'gi'),
+    '<MONOREPO_DIR>'
+  )
+}
+
+const extractInvocationInfo = sinonStub => {
+  const result = { callCount: sinonStub.callCount, callsInfo: [] }
+  for (let idx = 0; idx < sinonStub.callCount; idx++) {
+    const { args, returnValue } = sinonStub.getCall(idx)
+    result.callsInfo[idx] = {
+      args: args.map(arg => stringifyAndNormalizePaths(arg)),
+      returnValue: stringifyAndNormalizePaths(returnValue)
+    }
+  }
+  return result
+}
 
 describe('API handler wrapper for express.js', () => {
   let expressReq, expressRes, httpBodyPromise, resolveHttpBody, getCustomParams
@@ -66,15 +99,6 @@ describe('API handler wrapper for express.js', () => {
     expressReq = null
     expressRes = null
   })
-
-  const extractInvocationInfo = sinonStub => {
-    const result = { callCount: sinonStub.callCount, callsInfo: [] }
-    for (let idx = 0; idx < sinonStub.callCount; idx++) {
-      const { args, returnValue } = sinonStub.getCall(idx)
-      result.callsInfo[idx] = { args, returnValue }
-    }
-    return result
-  }
 
   const apiJsonHandler = async (req, res) => {
     res.setHeader('One-Header-Name', 'One-Header-Value')
