@@ -6,16 +6,20 @@ import { Redirect } from 'react-router'
 import { bindActionCreators } from 'redux'
 import styled from 'styled-components'
 
-const labelWidth = '30px'
-
 const FormLabel = styled.div`
-  display: block;
-  padding-bottom: 3px;
+  margin-bottom: 0.1em;
+`
+
+const FormInput = styled.input`
+  margin-bottom: 1em;
+`
+
+const FormTextArea = styled.textarea`
+  margin-bottom: 1em;
 `
 
 const SubmitButton = styled.button`
-  margin-left: ${labelWidth};
-  margin-top: 1em;
+  margin-bottom: 1em;
 `
 
 export class Submit extends React.PureComponent {
@@ -46,24 +50,24 @@ export class Submit extends React.PureComponent {
     return (
       <div>
         <div>
-          <FormLabel>Title:</FormLabel>
-          <input
+          <FormLabel>title:</FormLabel>
+          <FormInput
             type="text"
             value={this.state.title}
             onChange={e => this.handleChange(e, 'title')}
           />
         </div>
         <div>
-          <FormLabel>Url:</FormLabel>
-          <input
+          <FormLabel>url:</FormLabel>
+          <FormInput
             type="text"
             value={this.state.link}
             onChange={e => this.handleChange(e, 'link')}
           />
         </div>
         <div>
-          <FormLabel>Text:</FormLabel>
-          <textarea
+          <FormLabel>text:</FormLabel>
+          <FormTextArea
             name="text"
             rows="4"
             value={this.state.text}
@@ -71,10 +75,10 @@ export class Submit extends React.PureComponent {
           />
         </div>
         <div>
-        <SubmitButton onClick={this.handleSubmit}>submit</SubmitButton>
+          <SubmitButton onClick={this.handleSubmit}>submit</SubmitButton>
         </div>
         <div>
-         Leave url blank to submit a question for discussion. If there is no
+          Leave url blank to submit a question for discussion. If there is no
           url, the text (if any) will appear at the top of the thread.
         </div>
       </div>
