@@ -58,9 +58,9 @@ test('add reply', async (t /*: TestController */) => {
       .withText('Ask HN: my ask')
       .nth(-1)
   )
-  
+
   await t.wait(5000) // TODO Fix reactivity
-  
+
   await t.click(
     await Selector('a')
       .withText('reply')
