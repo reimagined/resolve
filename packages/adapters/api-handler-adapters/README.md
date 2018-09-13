@@ -9,6 +9,9 @@ const apiHandler = wrapApiHandler(handler, customParameters)
 ```
 
 ## Request
+
+The `req` object represents the HTTP request and has properties for the request query string, parameters, body, HTTP headers, and so on.
+
 ```js
 {
   method: "GET" | "HEAD" | "POST" | "PUT" | "DELETE" | "CONNECT" | "OPTIONS" | "TRACE" | "PATCH",
@@ -25,6 +28,9 @@ const apiHandler = wrapApiHandler(handler, customParameters)
 ```
 
 ## Response
+
+The `res` object represents the HTTP response that an api handler sends when it gets an HTTP request.
+
 ```js
 {
   status(code)
