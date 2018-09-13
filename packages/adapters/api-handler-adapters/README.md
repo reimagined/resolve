@@ -15,7 +15,6 @@ The `req` object represents the HTTP request and has properties for the request 
 ```js
 {
   method: "GET" | "HEAD" | "POST" | "PUT" | "DELETE" | "CONNECT" | "OPTIONS" | "TRACE" | "PATCH",
-  originalUrl: String,
   protocol: String,
   host: String,
   path: String,
