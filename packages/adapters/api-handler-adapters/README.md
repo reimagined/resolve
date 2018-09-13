@@ -1,41 +1,49 @@
 # **Api Handler Adapters** 🚌
-This folder contains [resolve-es](../../core/resolve-es) bus adapters.
+This folder contains api handler adapters.
 
-Request
+## Usage
 ```js
-req.body
-req.cookies
-req.method
-req.params
-req.path
-req.query
-req.headers
-``
+import wrapApiHandler from 'resolve-api-handler-xxx'
 
-Response
-```js
-res.cookie(name, value [, options])
-res.clearCookie(name [, options])
-
-res.file(bufferOrString, filename)
-
-res.end([bufferOrString] [, encoding])
-res.text([string])
-res.json([body])
-
-res.redirect([status,] path)
-
-res.status(code)
-
-res.getHeader(field)
-res.setHeader(field [, value])
+const apiHandler = wrapApiHandler(handler, customParameters)
 ```
 
+## Request
+```js
+{
+  method: "GET" | "HEAD" | "POST" | "PUT" | "DELETE" | "CONNECT" | "OPTIONS" | "TRACE" | "PATCH",
+  originalUrl: String,
+  protocol: String,
+  host: String,
+  path: String,
+  body: String,
+  cookies: Object<key, value>,
+  headers: Object<key, value>,
+  query: Object<key, value>,
+  ...customParameters
+}
+```
+
+## Response
+```js
+{
+  status(code)
+  getHeader(key)
+  setHeader(key, value)
+  text([content] [, encoding])
+  json([content])
+  end([content] [, encoding])
+  file(content, filename [, encoding])
+  redirect([status,] path)
+  cookie(name, value [, options])
+  clearCookie(name [, options])
+}
+```
 
 Available adapters: 
 * [resolve-api-handler-express](./resolve-api-handler-express)  
-	Used to emit and listen events using memory.
+	Used to Express.
 * [resolve-api-handler-lambda](./resolve-api-handler-lambda)  
-	Used to emit and listen events using RabbitMQ.
+	Used to AWS Lambda.
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-api-handler-adapters-readme?pixel)
