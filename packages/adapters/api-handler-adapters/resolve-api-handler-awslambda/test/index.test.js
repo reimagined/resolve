@@ -3,44 +3,12 @@ import sinon from 'sinon'
 import wrapApiHandler from '../src'
 
 describe('API handler wrapper for express.js', () => {
-  let expressReq, expressRes, httpBodyPromise, resolveHttpBody, getCustomParams
+  let lambdaEvent, lambdaContext, lambdaCallback, getCustomParams
 
   beforeEach(() => {
-    httpBodyPromise = new Promise(resolve => (resolveHttpBody = resolve))
     getCustomParams = sinon.stub().callsFake(() => ({ param: 'value' }))
 
-    expressReq = Object.create(null, {
-      on: {
-        value: sinon.stub().callsFake((event, callback) => {
-          if (event === 'data') {
-            httpBodyPromise.then(
-              bodyChunks =>
-                Array.isArray(bodyChunks) ? bodyChunks.map(callback) : null,
-              () => null
-            )
-          } else if (event === 'end') {
-            httpBodyPromise.then(callback, callback)
-          } else if (event === 'error') {
-            httpBodyPromise.catch(callback)
-          }
-        }),
-        enumerable: true
-      },
-      method: {
-        value: 'HTTP-VERB',
-        enumerable: true
-      },
-      query: {
-        value: {
-          'query-name-1': 'query-value-1',
-          'query-name-2': 'query-value-2'
-        },
-        enumerable: true
-      },
-      path: {
-        value: 'PATH_INFO',
-        enumerable: true
-      },
+    lambdaEvent = Object.create(null, {
       headers: {
         value: {
           'header-name-1': 'header-value-1',
@@ -49,22 +17,36 @@ describe('API handler wrapper for express.js', () => {
           host: 'host-content'
         },
         enumerable: true
+      },
+      path: {
+        value: 'PATH_INFO',
+        enumerable: true
+      },
+      body: {
+        value: 'BODY_CONTENT',
+        enumerable: true
+      },
+      queryStringParameters: {
+        value: {
+          'query-name-1': 'query-value-1',
+          'query-name-2': 'query-value-2'
+        },
+        enumerable: true
+      },
+      httpMethod: {
+        value: 'GET',
+        enumerable: true
       }
     })
-
-    expressRes = {
-      status: sinon.stub().callsFake(() => expressRes),
-      append: sinon.stub().callsFake(() => expressRes),
-      end: sinon.stub().callsFake(() => expressRes)
-    }
+    lambdaContext = null
+    lambdaCallback = sinon.stub()
   })
 
   afterEach(() => {
     getCustomParams = null
-    httpBodyPromise = null
-    resolveHttpBody = null
-    expressReq = null
-    expressRes = null
+    lambdaEvent = null
+    lambdaContext = null
+    lambdaCallback = null
   })
 
   const extractInvocationInfo = sinonStub => {
@@ -158,116 +140,60 @@ describe('API handler wrapper for express.js', () => {
 
   it('should work with primitive JSON handler with GET client request', async () => {
     const wrappedHandler = wrapApiHandler(apiJsonHandler, getCustomParams)
-    resolveHttpBody(null)
-    await wrappedHandler(expressReq, expressRes)
+    resolveClientRequestBody(null)
+    await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
-    expect(extractInvocationInfo(expressReq.on)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(expressRes.append)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
   })
 
   it('should work with primitive JSON handler with POST client request', async () => {
     const wrappedHandler = wrapApiHandler(apiJsonHandler, getCustomParams)
-    resolveHttpBody([
+    resolveClientRequestBody([
       Buffer.from('Body partition one'),
       Buffer.from('Body partition two')
     ])
-    await wrappedHandler(expressReq, expressRes)
+    await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
-    expect(extractInvocationInfo(expressReq.on)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(expressRes.append)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
   })
 
   it('should work with text handler with any client request', async () => {
     const wrappedHandler = wrapApiHandler(apiTextHandler, getCustomParams)
-    resolveHttpBody(null)
-    await wrappedHandler(expressReq, expressRes)
+    resolveClientRequestBody(null)
+    await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
-    expect(extractInvocationInfo(expressReq.on)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(expressRes.append)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
   })
 
   it('should work with custom handler with any client request', async () => {
     const wrappedHandler = wrapApiHandler(apiCustomHandler, getCustomParams)
-    resolveHttpBody(null)
-    await wrappedHandler(expressReq, expressRes)
+    resolveClientRequestBody(null)
+    await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
-    expect(extractInvocationInfo(expressReq.on)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(expressRes.append)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
   })
 
   it('should work with file handler with any client request', async () => {
     const wrappedHandler = wrapApiHandler(apiFileHandler, getCustomParams)
-    resolveHttpBody(null)
-    await wrappedHandler(expressReq, expressRes)
+    resolveClientRequestBody(null)
+    await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
-    expect(extractInvocationInfo(expressReq.on)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(expressRes.append)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
   })
 
   it('should work with redirect handler with any client request', async () => {
     const wrappedHandler = wrapApiHandler(apiRedirectHandler, getCustomParams)
-    resolveHttpBody(null)
-    await wrappedHandler(expressReq, expressRes)
+    resolveClientRequestBody(null)
+    await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
-    expect(extractInvocationInfo(expressReq.on)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(expressRes.append)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
   })
 
   it('should work with error throwing handler', async () => {
     const wrappedHandler = wrapApiHandler(apiThrowHandler, getCustomParams)
-    resolveHttpBody(null)
-    await wrappedHandler(expressReq, expressRes)
+    resolveClientRequestBody(null)
+    await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
-    expect(extractInvocationInfo(expressReq.on)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(expressRes.append)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
-
-    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+    expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
   })
 })

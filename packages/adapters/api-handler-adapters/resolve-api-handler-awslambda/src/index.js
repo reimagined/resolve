@@ -4,30 +4,10 @@ import cookie from 'cookie'
 const COOKIE_CLEAR_DATE = new Date(1970, 1, 1)
 const INTERNAL = Symbol('INTERNAL')
 
-const createRequest = async (expressReq, customParameters) => {
-  let expressReqError = null
+const createRequest = async (lambdaEvent, customParameters) => {
+  const { path, httpMethod, headers, queryStringParameters, body } = lambdaEvent
 
-  const body = await new Promise((resolve, reject) => {
-    expressReq.on('error', error => {
-      expressReqError = error
-      reject(error)
-    })
-    const bodyChunks = []
-
-    expressReq.on('data', chunk => {
-      bodyChunks.push(chunk)
-    })
-    expressReq.on('end', () => {
-      if (bodyChunks.length === 0) {
-        return resolve(null)
-      }
-
-      const body = Buffer.concat(bodyChunks).toString()
-      resolve(body)
-    })
-  })
-
-  const cookieHeader = expressReq.headers.cookie
+  const cookieHeader = headers.cookie
   const cookies =
     cookieHeader != null && cookieHeader.constructor === String
       ? cookie.parse(cookieHeader)
@@ -36,10 +16,10 @@ const createRequest = async (expressReq, customParameters) => {
   const req = Object.create(null)
 
   const reqProperties = {
-    method: expressReq.method,
-    query: expressReq.query,
-    path: expressReq.path,
-    headers: expressReq.headers,
+    method: httpMethod,
+    query: queryStringParameters,
+    path,
+    headers,
     resolveApiPath,
     cookies,
     body,
@@ -56,8 +36,8 @@ const createRequest = async (expressReq, customParameters) => {
     })
   }
 
-  if (expressReqError != null) {
-    throw expressReqError
+  if (lambdaEventError != null) {
+    throw lambdaEventError
   }
 
   return Object.freeze(req)
@@ -189,30 +169,39 @@ const createResponse = () => {
 }
 
 const wrapApiHandler = (handler, getCustomParameters) => async (
-  expressReq,
-  expressRes
+  lambdaEvent,
+  lambdaContext,
+  lambdaCallback
 ) => {
   try {
-    const customParameters = await getCustomParameters(expressReq, expressRes)
-    const req = await createRequest(expressReq, customParameters)
+    const customParameters = await getCustomParameters(
+      lambdaEvent,
+      lambdaContext,
+      lambdaCallback
+    )
+    const req = await createRequest(lambdaEvent, customParameters)
     const res = createResponse()
 
     await handler(req, res)
 
-    const { status, headers, body } = res[INTERNAL]
+    const { status: statusCode, headers, body: bodyBuffer } = res[INTERNAL]
+    const body = bodyBuffer.toString()
 
-    expressRes.status(status)
-    for (const { key, value } of headers) {
-      expressRes.append(key, value)
-    }
-    expressRes.end(body)
+    lambdaCallback(null, {
+      statusCode,
+      headers,
+      body
+    })
   } catch (error) {
     const outError =
       error != null && error.stack != null
         ? `${error.stack}`
         : `Unknown error ${error}`
 
-    expressRes.status(500).end(outError)
+    lambdaCallback(null, {
+      statusCode: 500,
+      body: outError
+    })
   }
 }
 
