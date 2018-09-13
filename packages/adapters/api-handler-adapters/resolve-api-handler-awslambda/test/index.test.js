@@ -1,6 +1,39 @@
+import escapeRegExp from 'lodash.escaperegexp'
+import path from 'path'
 import sinon from 'sinon'
 
 import wrapApiHandler from '../src'
+
+const stringifyAndNormalizePaths = value => {
+  const source = (() => {
+    switch (typeof value) {
+      case 'function':
+        return '[FUNCTION IMPLEMENTATION]'
+      case 'undefined':
+        return 'undefined'
+      default:
+        return JSON.stringify(value)
+    }
+  })()
+
+  const monorepoDir = path.resolve(__dirname, '../../../../../')
+  return source.replace(
+    new RegExp(escapeRegExp(monorepoDir), 'gi'),
+    '<MONOREPO_DIR>'
+  )
+}
+
+const extractInvocationInfo = sinonStub => {
+  const result = { callCount: sinonStub.callCount, callsInfo: [] }
+  for (let idx = 0; idx < sinonStub.callCount; idx++) {
+    const { args, returnValue } = sinonStub.getCall(idx)
+    result.callsInfo[idx] = {
+      args: args.map(arg => stringifyAndNormalizePaths(arg)),
+      returnValue: stringifyAndNormalizePaths(returnValue)
+    }
+  }
+  return result
+}
 
 describe('API handler wrapper for express.js', () => {
   let lambdaEvent, lambdaContext, lambdaCallback, getCustomParams
@@ -48,15 +81,6 @@ describe('API handler wrapper for express.js', () => {
     lambdaContext = null
     lambdaCallback = null
   })
-
-  const extractInvocationInfo = sinonStub => {
-    const result = { callCount: sinonStub.callCount, callsInfo: [] }
-    for (let idx = 0; idx < sinonStub.callCount; idx++) {
-      const { args, returnValue } = sinonStub.getCall(idx)
-      result.callsInfo[idx] = { args, returnValue }
-    }
-    return result
-  }
 
   const apiJsonHandler = async (req, res) => {
     res.setHeader('One-Header-Name', 'One-Header-Value')
@@ -140,60 +164,64 @@ describe('API handler wrapper for express.js', () => {
 
   it('should work with primitive JSON handler with GET client request', async () => {
     const wrappedHandler = wrapApiHandler(apiJsonHandler, getCustomParams)
-    resolveClientRequestBody(null)
     await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
     expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
   })
 
   it('should work with primitive JSON handler with POST client request', async () => {
     const wrappedHandler = wrapApiHandler(apiJsonHandler, getCustomParams)
-    resolveClientRequestBody([
-      Buffer.from('Body partition one'),
-      Buffer.from('Body partition two')
-    ])
     await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
     expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
   })
 
   it('should work with text handler with any client request', async () => {
     const wrappedHandler = wrapApiHandler(apiTextHandler, getCustomParams)
-    resolveClientRequestBody(null)
     await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
     expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
   })
 
   it('should work with custom handler with any client request', async () => {
     const wrappedHandler = wrapApiHandler(apiCustomHandler, getCustomParams)
-    resolveClientRequestBody(null)
     await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
     expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
   })
 
   it('should work with file handler with any client request', async () => {
     const wrappedHandler = wrapApiHandler(apiFileHandler, getCustomParams)
-    resolveClientRequestBody(null)
     await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
     expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
   })
 
   it('should work with redirect handler with any client request', async () => {
     const wrappedHandler = wrapApiHandler(apiRedirectHandler, getCustomParams)
-    resolveClientRequestBody(null)
     await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
     expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
   })
 
   it('should work with error throwing handler', async () => {
     const wrappedHandler = wrapApiHandler(apiThrowHandler, getCustomParams)
-    resolveClientRequestBody(null)
     await wrappedHandler(lambdaEvent, lambdaContext, lambdaCallback)
 
     expect(extractInvocationInfo(lambdaCallback)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
   })
 })
