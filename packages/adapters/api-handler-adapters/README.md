@@ -1,4 +1,4 @@
-# **Api Handler Adapters** 🚌
+# **Api Handler Adapters**
 This folder contains api handler adapters.
 
 ## Usage
@@ -40,7 +40,7 @@ const apiHandler = wrapApiHandler(handler, customParameters)
 }
 ```
 
-Available adapters: 
+## Available adapters: 
 * [resolve-api-handler-express](./resolve-api-handler-express)  
 	Used to Express.
 * [resolve-api-handler-lambda](./resolve-api-handler-lambda)  
