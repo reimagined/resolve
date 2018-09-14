@@ -1,9 +1,9 @@
 import fetch from 'isomorphic-fetch'
 
 const controller = async (req, res) => {
-  const defaultReadModelUrl = `${req.protocol}://${req.host}${
-    req.resolveApiPath
-  }/query/Default/shoppingLists`
+  const defaultReadModelUrl = `http://${req.headers.host}${
+    req.resolve.rootPath
+  }/api/query/Default/shoppingLists`
 
   const request = await fetch(defaultReadModelUrl)
   const content = await request.json()
