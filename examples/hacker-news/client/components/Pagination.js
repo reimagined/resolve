@@ -5,7 +5,6 @@ import Link from '../containers/Link'
 import Splitter from './Splitter'
 
 export const PaginationRoot = styled.div`
-  margin-left: 3em;
   padding: 0.5em 0;
 `
 

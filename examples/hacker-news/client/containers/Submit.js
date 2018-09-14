@@ -6,39 +6,20 @@ import { Redirect } from 'react-router'
 import { bindActionCreators } from 'redux'
 import styled from 'styled-components'
 
-const labelWidth = '30px'
-
-const SubmitRoot = styled.div`
-  padding-left: 3em;
-  padding-right: 1.25em;
-  margin-top: 1em;
-  margin-bottom: 0.5em;
-`
-
 const FormLabel = styled.div`
-  display: inline-block;
-  vertical-align: middle;
-  width: ${labelWidth};
-  padding: 5px 0;
+  margin-bottom: 0.1em;
 `
 
-const FormBottomMessage = styled.div`
-  margin-top: 1em;
+const FormInput = styled.input`
+  margin-bottom: 1em;
 `
 
-const ConditionLabel = styled.div`
-  font-weight: bold;
-  margin-left: ${labelWidth};
-  margin-bottom: 5px;
-`
-
-const StoryTextInput = styled.textarea`
-  vertical-align: middle;
+const FormTextArea = styled.textarea`
+  margin-bottom: 1em;
 `
 
 const SubmitButton = styled.button`
-  margin-left: ${labelWidth};
-  margin-top: 1em;
+  margin-bottom: 1em;
 `
 
 export class Submit extends React.PureComponent {
@@ -67,42 +48,40 @@ export class Submit extends React.PureComponent {
     }
 
     return (
-      <SubmitRoot>
+      <div>
         <div>
-          <FormLabel>title</FormLabel>
-          <input
+          <FormLabel>title:</FormLabel>
+          <FormInput
             type="text"
             value={this.state.title}
             onChange={e => this.handleChange(e, 'title')}
-            size="50"
           />
         </div>
         <div>
-          <FormLabel>url</FormLabel>
-          <input
+          <FormLabel>url:</FormLabel>
+          <FormInput
             type="text"
             value={this.state.link}
             onChange={e => this.handleChange(e, 'link')}
-            size="50"
           />
         </div>
-        <ConditionLabel>or</ConditionLabel>
         <div>
-          <FormLabel>text</FormLabel>
-          <StoryTextInput
+          <FormLabel>text:</FormLabel>
+          <FormTextArea
             name="text"
             rows="4"
-            cols="49"
             value={this.state.text}
             onChange={e => this.handleChange(e, 'text')}
           />
         </div>
-        <SubmitButton onClick={this.handleSubmit}>submit</SubmitButton>
-        <FormBottomMessage>
+        <div>
+          <SubmitButton onClick={this.handleSubmit}>submit</SubmitButton>
+        </div>
+        <div>
           Leave url blank to submit a question for discussion. If there is no
           url, the text (if any) will appear at the top of the thread.
-        </FormBottomMessage>
-      </SubmitRoot>
+        </div>
+      </div>
     )
   }
 }

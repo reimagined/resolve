@@ -39,7 +39,7 @@ test('create: is already exists', async (t /*: TestController */) => {
 
   await t.expect(await Selector('a').withText('login').exists).eql(true)
 
-  await t.expect(await Selector('h1').withText('Error').exists).eql(true)
+  await t.expect(await Selector('div').withText('Error').exists).eql(true)
 
   await t
     .expect(await Selector('div').withText('User already exists').exists)

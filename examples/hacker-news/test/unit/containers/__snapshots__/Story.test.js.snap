@@ -576,13 +576,13 @@ ShallowWrapper {
   Symbol(enzyme.__node__): Object {
     "instance": null,
     "key": undefined,
-    "nodeType": "host",
+    "nodeType": "class",
     "props": Object {
       "children": Array [
         <Title
           link="https://www.google.com"
           loggedIn={true}
-          title="Ask HN: Ask HN: Google"
+          title="undefined. Ask HN: Ask HN: Google"
           upvoteStory={[Function]}
           voted={false}
         />,
@@ -615,7 +615,7 @@ ShallowWrapper {
         "props": Object {
           "link": "https://www.google.com",
           "loggedIn": true,
-          "title": "Ask HN: Ask HN: Google",
+          "title": "undefined. Ask HN: Ask HN: Google",
           "upvoteStory": [Function],
           "voted": false,
         },
@@ -656,19 +656,19 @@ ShallowWrapper {
         "type": [Function],
       },
     ],
-    "type": "div",
+    "type": [Function],
   },
   Symbol(enzyme.__nodes__): Array [
     Object {
       "instance": null,
       "key": undefined,
-      "nodeType": "host",
+      "nodeType": "class",
       "props": Object {
         "children": Array [
           <Title
             link="https://www.google.com"
             loggedIn={true}
-            title="Ask HN: Ask HN: Google"
+            title="undefined. Ask HN: Ask HN: Google"
             upvoteStory={[Function]}
             voted={false}
           />,
@@ -701,7 +701,7 @@ ShallowWrapper {
           "props": Object {
             "link": "https://www.google.com",
             "loggedIn": true,
-            "title": "Ask HN: Ask HN: Google",
+            "title": "undefined. Ask HN: Ask HN: Google",
             "upvoteStory": [Function],
             "voted": false,
           },
@@ -742,7 +742,7 @@ ShallowWrapper {
           "type": [Function],
         },
       ],
-      "type": "div",
+      "type": [Function],
     },
   ],
   Symbol(enzyme.__options__): Object {
@@ -792,13 +792,13 @@ ShallowWrapper {
   Symbol(enzyme.__node__): Object {
     "instance": null,
     "key": undefined,
-    "nodeType": "host",
+    "nodeType": "class",
     "props": Object {
       "children": Array [
         <Title
           link="/storyDetails/story-id"
           loggedIn={true}
-          title="Ask HN: Ask HN: Google"
+          title="undefined. Ask HN: Ask HN: Google"
           upvoteStory={[Function]}
           voted={false}
         />,
@@ -825,7 +825,7 @@ ShallowWrapper {
         "props": Object {
           "link": "/storyDetails/story-id",
           "loggedIn": true,
-          "title": "Ask HN: Ask HN: Google",
+          "title": "undefined. Ask HN: Ask HN: Google",
           "upvoteStory": [Function],
           "voted": false,
         },
@@ -854,19 +854,19 @@ ShallowWrapper {
       },
       null,
     ],
-    "type": "div",
+    "type": [Function],
   },
   Symbol(enzyme.__nodes__): Array [
     Object {
       "instance": null,
       "key": undefined,
-      "nodeType": "host",
+      "nodeType": "class",
       "props": Object {
         "children": Array [
           <Title
             link="/storyDetails/story-id"
             loggedIn={true}
-            title="Ask HN: Ask HN: Google"
+            title="undefined. Ask HN: Ask HN: Google"
             upvoteStory={[Function]}
             voted={false}
           />,
@@ -893,7 +893,7 @@ ShallowWrapper {
           "props": Object {
             "link": "/storyDetails/story-id",
             "loggedIn": true,
-            "title": "Ask HN: Ask HN: Google",
+            "title": "undefined. Ask HN: Ask HN: Google",
             "upvoteStory": [Function],
             "voted": false,
           },
@@ -922,7 +922,7 @@ ShallowWrapper {
         },
         null,
       ],
-      "type": "div",
+      "type": [Function],
     },
   ],
   Symbol(enzyme.__options__): Object {
@@ -981,13 +981,13 @@ ShallowWrapper {
   Symbol(enzyme.__node__): Object {
     "instance": null,
     "key": undefined,
-    "nodeType": "host",
+    "nodeType": "class",
     "props": Object {
       "children": Array [
         <Title
           link="https://www.google.com"
           loggedIn={true}
-          title="Ask HN: Ask HN: Google"
+          title="undefined. Ask HN: Ask HN: Google"
           upvoteStory={[Function]}
           voted={false}
         />,
@@ -1014,7 +1014,7 @@ ShallowWrapper {
         "props": Object {
           "link": "https://www.google.com",
           "loggedIn": true,
-          "title": "Ask HN: Ask HN: Google",
+          "title": "undefined. Ask HN: Ask HN: Google",
           "upvoteStory": [Function],
           "voted": false,
         },
@@ -1043,19 +1043,19 @@ ShallowWrapper {
       },
       null,
     ],
-    "type": "div",
+    "type": [Function],
   },
   Symbol(enzyme.__nodes__): Array [
     Object {
       "instance": null,
       "key": undefined,
-      "nodeType": "host",
+      "nodeType": "class",
       "props": Object {
         "children": Array [
           <Title
             link="https://www.google.com"
             loggedIn={true}
-            title="Ask HN: Ask HN: Google"
+            title="undefined. Ask HN: Ask HN: Google"
             upvoteStory={[Function]}
             voted={false}
           />,
@@ -1082,7 +1082,7 @@ ShallowWrapper {
           "props": Object {
             "link": "https://www.google.com",
             "loggedIn": true,
-            "title": "Ask HN: Ask HN: Google",
+            "title": "undefined. Ask HN: Ask HN: Google",
             "upvoteStory": [Function],
             "voted": false,
           },
@@ -1111,7 +1111,7 @@ ShallowWrapper {
         },
         null,
       ],
-      "type": "div",
+      "type": [Function],
     },
   ],
   Symbol(enzyme.__options__): Object {
@@ -1160,13 +1160,13 @@ ShallowWrapper {
   Symbol(enzyme.__node__): Object {
     "instance": null,
     "key": undefined,
-    "nodeType": "host",
+    "nodeType": "class",
     "props": Object {
       "children": Array [
         <Title
           link="https://google.com"
           loggedIn={false}
-          title="Google"
+          title="undefined. Google"
           upvoteStory={[Function]}
           voted={false}
         />,
@@ -1193,7 +1193,7 @@ ShallowWrapper {
         "props": Object {
           "link": "https://google.com",
           "loggedIn": false,
-          "title": "Google",
+          "title": "undefined. Google",
           "upvoteStory": [Function],
           "voted": false,
         },
@@ -1222,19 +1222,19 @@ ShallowWrapper {
       },
       null,
     ],
-    "type": "div",
+    "type": [Function],
   },
   Symbol(enzyme.__nodes__): Array [
     Object {
       "instance": null,
       "key": undefined,
-      "nodeType": "host",
+      "nodeType": "class",
       "props": Object {
         "children": Array [
           <Title
             link="https://google.com"
             loggedIn={false}
-            title="Google"
+            title="undefined. Google"
             upvoteStory={[Function]}
             voted={false}
           />,
@@ -1261,7 +1261,7 @@ ShallowWrapper {
           "props": Object {
             "link": "https://google.com",
             "loggedIn": false,
-            "title": "Google",
+            "title": "undefined. Google",
             "upvoteStory": [Function],
             "voted": false,
           },
@@ -1290,7 +1290,7 @@ ShallowWrapper {
         },
         null,
       ],
-      "type": "div",
+      "type": [Function],
     },
   ],
   Symbol(enzyme.__options__): Object {
@@ -1322,7 +1322,7 @@ ShallowWrapper {
     "key": undefined,
     "nodeType": "class",
     "props": Object {
-      "className": "sc-bxivhb cRaLxZ",
+      "className": "sc-ifAKCX gjTkMf",
       "to": "/",
     },
     "ref": null,
@@ -1335,7 +1335,7 @@ ShallowWrapper {
       "key": undefined,
       "nodeType": "class",
       "props": Object {
-        "className": "sc-bxivhb cRaLxZ",
+        "className": "sc-ifAKCX gjTkMf",
         "to": "/",
       },
       "ref": null,
@@ -1749,7 +1749,7 @@ ShallowWrapper {
     "key": undefined,
     "nodeType": "host",
     "props": Object {
-      "className": "sc-htoDjs iGmGRz",
+      "className": "sc-dnqmqq gTdAJ",
     },
     "ref": null,
     "rendered": null,
@@ -1761,7 +1761,7 @@ ShallowWrapper {
       "key": undefined,
       "nodeType": "host",
       "props": Object {
-        "className": "sc-htoDjs iGmGRz",
+        "className": "sc-dnqmqq gTdAJ",
       },
       "ref": null,
       "rendered": null,
@@ -1795,7 +1795,7 @@ ShallowWrapper {
     "key": undefined,
     "nodeType": "host",
     "props": Object {
-      "className": "sc-htoDjs iGmGRz",
+      "className": "sc-dnqmqq gTdAJ",
     },
     "ref": null,
     "rendered": null,
@@ -1807,7 +1807,7 @@ ShallowWrapper {
       "key": undefined,
       "nodeType": "host",
       "props": Object {
-        "className": "sc-htoDjs iGmGRz",
+        "className": "sc-dnqmqq gTdAJ",
       },
       "ref": null,
       "rendered": null,
