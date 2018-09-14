@@ -32,6 +32,7 @@
     "cookie": "0.3.1"
   },
   "devDependencies": {
+    "lodash.escaperegexp": "^4.1.2",
     "jest": "23.6.0",
     "sinon": "6.2.0"
   }

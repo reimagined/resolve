@@ -59,7 +59,7 @@ export const validateApiHandlers = resolveConfig => {
       throw new Error(
         `Incorrect options.apiHandlers[${idx}].path = "${
           apiHandler.path
-        }"\nValue must be part of the URL, which is HTTP API handper URL path`
+        }"\nValue must be part of the URL, which is HTTP API handler URL path`
       )
     }
 

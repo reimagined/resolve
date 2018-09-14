@@ -129,10 +129,10 @@ const createResponse = () => {
     internalRes.status = code != null ? code : 302
   })
 
-  defineResponseMethod('getHeader', key => {
-    validateOptionShape('Header name', key, [String])
+  defineResponseMethod('getHeader', searchKey => {
+    validateOptionShape('Header name', searchKey, [String])
     const header = internalRes.headers.find(
-      ({ key }) => key.toLowerCase() === key.toLowerCase()
+      ({ key }) => key.toLowerCase() === searchKey.toLowerCase()
     )
     if (header == null) return null
     return header.value
