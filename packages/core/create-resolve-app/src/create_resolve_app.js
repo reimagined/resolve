@@ -243,26 +243,28 @@ if (unknownOptions && unknownOptions.length) {
     // TODO. compile-time
     return new Promise(resolve => {
       resolve([
-        'resolve-es',
+        'create-resolve-app',
+        'resolve-api-handler-awslambda',
+        'resolve-api-handler-express',
+        'resolve-auth',
         'resolve-bus-zmq',
         'resolve-bus-memory',
         'resolve-bus-rabbitmq',
         'resolve-command',
+        'resolve-es',
         'resolve-query',
-        'resolve-redux',
-        'resolve-storage-mongo',
-        'resolve-scripts',
-        'create-resolve-app',
-        'resolve-storage-lite',
         'resolve-readmodel-memory',
-        'resolve-storage-base',
         'resolve-readmodel-mongo',
         'resolve-readmodel-base',
         'resolve-readmodel-mysql',
-        'resolve-auth',
+        'resolve-redux',
+        'resolve-scripts',
+        'resolve-storage-base',
+        'resolve-storage-lite',
+        'resolve-storage-mongo',
+        'resolve-storage-mysql',        
         'resolve-subscribe-mqtt',
-        'resolve-subscribe-socket.io',
-        'resolve-storage-mysql'
+        'resolve-subscribe-socket.io'
       ])
     })
   }
