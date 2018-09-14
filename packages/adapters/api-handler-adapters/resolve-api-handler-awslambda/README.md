@@ -9,7 +9,7 @@ This package is a [Api Handler](../README.md) adapter for [AWS Lambda](https://g
 import wrapApiHandler from 'resolve-api-handler-awslambda'
 
 export const handler = wrapApiHandler(
-  (req, res) => {
+  async (req, res) => {
     res.end('Hello World!')
   }
 )

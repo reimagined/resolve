@@ -9,7 +9,7 @@ This package is a [Api Handler](../README.md) adapter for [Express](https://gith
 import express from 'express'
 import wrapApiHandler from 'resolve-api-handler-express'
 
-const handler = (req, res) => {
+const handler = async (req, res) => {
   res.end('Hello World!')
 }
 
