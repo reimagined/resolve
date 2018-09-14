@@ -6,7 +6,7 @@ This folder contains api handler adapters.
 // Isomorphic handler
 import wrapApiHandler from 'resolve-api-handler-xxx'
 
-function handler(req, res) {
+async function handler(req, res) {
   /* ... */
 }
 
@@ -27,7 +27,7 @@ async function getCustomParameters(event, context, callback) {
   }
 }
 
-function handler(req, res) {
+async function handler(req, res) {
   console.log(req.internal.event)
   /* ... */
 }
