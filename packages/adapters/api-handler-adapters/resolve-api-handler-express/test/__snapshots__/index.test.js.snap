@@ -171,7 +171,7 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "\\"Error: Custom error\\\\n    at apiThrowHandler (<MONOREPO_DIR>/packages/adapters/api-handler-adapters/resolve-api-handler-express/test/index.test.js:180:11)\\\\n    at handler (<MONOREPO_DIR>/packages/adapters/api-handler-adapters/resolve-api-handler-express/src/index.js:199:11)\\\\n    at <anonymous>\\\\n    at process._tickCallback (internal/process/next_tick.js:188:7)\\"",
+        "\\"Error: Custom error\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\"",
       ],
       "returnValue": "{}",
     },
@@ -602,7 +602,7 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "\\"Error: Response already sent\\\\n    at validateResponseOpened (<MONOREPO_DIR>/packages/adapters/api-handler-adapters/resolve-api-handler-express/src/index.js:75:13)\\\\n    at Object.validateResponseOpened [as status] (<MONOREPO_DIR>/packages/adapters/api-handler-adapters/resolve-api-handler-express/src/index.js:119:5)\\\\n    at status (<MONOREPO_DIR>/packages/adapters/api-handler-adapters/resolve-api-handler-express/test/index.test.js:176:9)\\\\n    at handler (<MONOREPO_DIR>/packages/adapters/api-handler-adapters/resolve-api-handler-express/src/index.js:199:11)\\\\n    at <anonymous>\\\\n    at process._tickCallback (internal/process/next_tick.js:188:7)\\"",
+        "\\"Error: Response already sent\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\"",
       ],
       "returnValue": "{}",
     },

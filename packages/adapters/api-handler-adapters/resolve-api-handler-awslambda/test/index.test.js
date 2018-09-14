@@ -17,10 +17,12 @@ const stringifyAndNormalizePaths = value => {
   })()
 
   const monorepoDir = path.resolve(__dirname, '../../../../../')
-  return source.replace(
+  const relativeSource = source.replace(
     new RegExp(escapeRegExp(monorepoDir), 'gi'),
     '<MONOREPO_DIR>'
   )
+
+  return relativeSource.replace(/at [^(]+? \([^)]+?\)/gi, '<STACK_FRAME>')
 }
 
 const extractInvocationInfo = sinonStub => {
