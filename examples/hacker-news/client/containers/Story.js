@@ -9,6 +9,10 @@ import Link from './Link'
 import Splitter from '../components/Splitter'
 import TimeAgo from '../components/TimeAgo'
 
+export const StoryRoot = styled.div`
+  margin-bottom: 12px;
+`
+
 export const StoryText = styled.div`
   color: #000;
   font-size: 14px;
@@ -92,11 +96,13 @@ export const Title = ({ title, link, upvoteStory, voted, loggedIn }) => {
 
   return (
     <TitleRoot>
-      {loggedIn && !voted ? (
-        <UpvoteArrow onClick={upvoteStory} title="upvote" />
-      ) : (
-        <UpvoteArrow hidden />
-      )}
+      {loggedIn ? (
+        !voted ? (
+          <UpvoteArrow onClick={upvoteStory} title="upvote" />
+        ) : (
+          <UpvoteArrow hidden />
+        )
+      ) : null}
       {isExternal ? (
         <StyledExternalLink href={link}>{title}</StyledExternalLink>
       ) : (
@@ -156,7 +162,7 @@ export class Story extends React.PureComponent {
   unvoteStory = () => this.props.unvoteStory(this.props.story.id)
 
   render() {
-    const { story, userId, showText, optimistic } = this.props
+    const { story, index, userId, showText, optimistic } = this.props
 
     if (!story || !story.id) {
       return null
@@ -177,13 +183,17 @@ export class Story extends React.PureComponent {
       ? story.comments.length
       : story.commentCount
 
+    const title = `${index}. ${
+      story.type === 'ask' ? `Ask HN: ${story.title}` : story.title
+    }`
+
     return (
-      <div>
+      <StoryRoot>
         <Title
           loggedIn={loggedIn}
           voted={voted}
           upvoteStory={this.upvoteStory}
-          title={story.type === 'ask' ? `Ask HN: ${story.title}` : story.title}
+          title={title}
           link={story.link || `/storyDetails/${story.id}`}
         />
         <StoryInfo
@@ -204,7 +214,7 @@ export class Story extends React.PureComponent {
             }}
           />
         ) : null}
-      </div>
+      </StoryRoot>
     )
   }
 }

@@ -57,6 +57,7 @@ const PageTitle = styled.div`
 const Content = styled.div`
   overflow-wrap: break-word;
   word-wrap: break-word;
+  padding: 1em;
 `
 
 const Footer = styled.div`

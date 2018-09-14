@@ -1,7 +1,13 @@
 import React from 'react'
+import styled from 'styled-components'
 
 import Comment from './Comment'
 import ReplyLink from './ReplyLink'
+
+const ChildrenCommentsContainer = styled.div`
+  margin-left: 2em;
+  margin-top: 1em;
+`
 
 const ChildrenComments = ({ storyId, parentId, comments, loggedIn }) => {
   if (!comments || !comments.length) {
@@ -19,12 +25,14 @@ const ChildrenComments = ({ storyId, parentId, comments, loggedIn }) => {
             {loggedIn ? (
               <ReplyLink storyId={storyId} commentId={comment.id} />
             ) : null}
-            <ChildrenComments
-              storyId={storyId}
-              comments={comments}
-              parentId={comment.id}
-              loggedIn={loggedIn}
-            />
+            <ChildrenCommentsContainer>
+              <ChildrenComments
+                storyId={storyId}
+                comments={comments}
+                parentId={comment.id}
+                loggedIn={loggedIn}
+              />
+            </ChildrenCommentsContainer>
           </Comment>
         )
       })}

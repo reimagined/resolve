@@ -9,7 +9,7 @@ import Comment from '../components/Comment'
 import ChildrenComments from '../components/ChildrenComments'
 
 const Reply = styled.div`
-  padding: 1em 1.25em 0 1.25em;
+  padding: 0.5em;
   margin-bottom: 1em;
 `
 

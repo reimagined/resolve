@@ -15,3 +15,7 @@ a {
   text-decoration: none;
   color: inherit;
 }
+input[type="text"],textarea {
+  width: 100%;
+  max-width: 400px;
+}
