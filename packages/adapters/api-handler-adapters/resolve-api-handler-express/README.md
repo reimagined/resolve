@@ -15,7 +15,7 @@ const handler = (req, res) => {
 
 const app = express()
 
-app.use(wrapApiHandler(handler))
+app.use('/my-handler', wrapApiHandler(handler))
 
 app.listen(3000)
 ```

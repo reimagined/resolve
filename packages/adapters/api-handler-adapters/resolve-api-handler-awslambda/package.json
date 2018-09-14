@@ -1,7 +1,7 @@
 {
   "name": "resolve-api-handler-awslambda",
   "version": "0.15.2",
-  "description": "This package is an adapter for api handler to awslambda.js.",
+  "description": "This package is an adapter for api handler to AWS Lambda.",
   "engines": {
     "node": ">=8.10"
   },
