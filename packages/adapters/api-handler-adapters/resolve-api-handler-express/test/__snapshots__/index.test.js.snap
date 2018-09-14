@@ -171,7 +171,7 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "\\"Error: Custom error\\\\n    at _callee6$ (<MONOREPO_DIR>/packages/adapters/api-handler-adapters/resolve-api-handler-express/test/index.test.js:180:11)\\\\n    at tryCatch (<MONOREPO_DIR>/node_modules/regenerator-runtime/runtime.js:62:40)\\\\n    at Generator.invoke [as _invoke] (<MONOREPO_DIR>/node_modules/regenerator-runtime/runtime.js:288:22)\\\\n    at Generator.prototype.(anonymous function) [as next] (<MONOREPO_DIR>/node_modules/regenerator-runtime/runtime.js:114:21)\\\\n    at asyncGeneratorStep (<MONOREPO_DIR>/node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:24)\\\\n    at _next (<MONOREPO_DIR>/node_modules/@babel/runtime/helpers/asyncToGenerator.js:25:9)\\\\n    at <MONOREPO_DIR>/node_modules/@babel/runtime/helpers/asyncToGenerator.js:32:7\\\\n    at new Promise (<anonymous>)\\\\n    at <MONOREPO_DIR>/node_modules/@babel/runtime/helpers/asyncToGenerator.js:21:12\\\\n    at apiThrowHandler (<MONOREPO_DIR>/packages/adapters/api-handler-adapters/resolve-api-handler-express/test/index.test.js:179:24)\\"",
+        "\\"Error: Custom error\\\\n    at apiThrowHandler (<MONOREPO_DIR>/packages/adapters/api-handler-adapters/resolve-api-handler-express/test/index.test.js:180:11)\\\\n    at handler (<MONOREPO_DIR>/packages/adapters/api-handler-adapters/resolve-api-handler-express/src/index.js:199:11)\\\\n    at <anonymous>\\\\n    at process._tickCallback (internal/process/next_tick.js:188:7)\\"",
       ],
       "returnValue": "{}",
     },
@@ -602,7 +602,7 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "\\"Error: Response already sent\\\\n    at validateResponseOpened (<MONOREPO_DIR>/packages/adapters/api-handler-adapters/resolve-api-handler-express/src/index.js:75:13)\\\\n    at Object.validateResponseOpened [as status] (<MONOREPO_DIR>/packages/adapters/api-handler-adapters/resolve-api-handler-express/src/index.js:119:5)\\\\n    at status (<MONOREPO_DIR>/packages/adapters/api-handler-adapters/resolve-api-handler-express/test/index.test.js:176:9)\\\\n    at tryCatch (<MONOREPO_DIR>/node_modules/regenerator-runtime/runtime.js:62:40)\\\\n    at Generator.invoke [as _invoke] (<MONOREPO_DIR>/node_modules/regenerator-runtime/runtime.js:288:22)\\\\n    at Generator.prototype.(anonymous function) [as next] (<MONOREPO_DIR>/node_modules/regenerator-runtime/runtime.js:114:21)\\\\n    at asyncGeneratorStep (<MONOREPO_DIR>/node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:24)\\\\n    at _next (<MONOREPO_DIR>/node_modules/@babel/runtime/helpers/asyncToGenerator.js:25:9)\\\\n    at <MONOREPO_DIR>/node_modules/@babel/runtime/helpers/asyncToGenerator.js:32:7\\\\n    at new Promise (<anonymous>)\\"",
+        "\\"Error: Response already sent\\\\n    at validateResponseOpened (<MONOREPO_DIR>/packages/adapters/api-handler-adapters/resolve-api-handler-express/src/index.js:75:13)\\\\n    at Object.validateResponseOpened [as status] (<MONOREPO_DIR>/packages/adapters/api-handler-adapters/resolve-api-handler-express/src/index.js:119:5)\\\\n    at status (<MONOREPO_DIR>/packages/adapters/api-handler-adapters/resolve-api-handler-express/test/index.test.js:176:9)\\\\n    at handler (<MONOREPO_DIR>/packages/adapters/api-handler-adapters/resolve-api-handler-express/src/index.js:199:11)\\\\n    at <anonymous>\\\\n    at process._tickCallback (internal/process/next_tick.js:188:7)\\"",
       ],
       "returnValue": "{}",
     },
