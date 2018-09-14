@@ -96,11 +96,13 @@ export const Title = ({ title, link, upvoteStory, voted, loggedIn }) => {
 
   return (
     <TitleRoot>
-      {loggedIn ? (!voted ? (
-        <UpvoteArrow onClick={upvoteStory} title="upvote" />
-      ) : (
-        <UpvoteArrow hidden />
-      )) : null}
+      {loggedIn ? (
+        !voted ? (
+          <UpvoteArrow onClick={upvoteStory} title="upvote" />
+        ) : (
+          <UpvoteArrow hidden />
+        )
+      ) : null}
       {isExternal ? (
         <StyledExternalLink href={link}>{title}</StyledExternalLink>
       ) : (
@@ -181,7 +183,9 @@ export class Story extends React.PureComponent {
       ? story.comments.length
       : story.commentCount
 
-    const title = `${index}. ${story.type === 'ask' ? `Ask HN: ${story.title}` : story.title}`
+    const title = `${index}. ${
+      story.type === 'ask' ? `Ask HN: ${story.title}` : story.title
+    }`
 
     return (
       <StoryRoot>
