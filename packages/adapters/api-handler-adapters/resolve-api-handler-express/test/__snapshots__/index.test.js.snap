@@ -1,0 +1,554 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`API handler wrapper for express.js should work with custom handler with any client request 1`] = `
+Object {
+  "callCount": 3,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "\\"error\\"",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "undefined",
+    },
+    Object {
+      "args": Array [
+        "\\"data\\"",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "undefined",
+    },
+    Object {
+      "args": Array [
+        "\\"end\\"",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "undefined",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with custom handler with any client request 2`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "500",
+      ],
+      "returnValue": "{}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with custom handler with any client request 3`] = `
+Object {
+  "callCount": 0,
+  "callsInfo": Array [],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with custom handler with any client request 4`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "\\"TypeError: option expires is invalid\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\"",
+      ],
+      "returnValue": "{}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with custom handler with any client request 5`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"method\\":\\"HTTP-VERB\\",\\"query\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"path\\":\\"PATH_INFO\\",\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"}}",
+        "{}",
+      ],
+      "returnValue": "{\\"param\\":\\"value\\"}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with error throwing handler 1`] = `
+Object {
+  "callCount": 3,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "\\"error\\"",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "undefined",
+    },
+    Object {
+      "args": Array [
+        "\\"data\\"",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "undefined",
+    },
+    Object {
+      "args": Array [
+        "\\"end\\"",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "undefined",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with error throwing handler 2`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "500",
+      ],
+      "returnValue": "{}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with error throwing handler 3`] = `
+Object {
+  "callCount": 0,
+  "callsInfo": Array [],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with error throwing handler 4`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "\\"Error: Custom error\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\"",
+      ],
+      "returnValue": "{}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with error throwing handler 5`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"method\\":\\"HTTP-VERB\\",\\"query\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"path\\":\\"PATH_INFO\\",\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"}}",
+        "{}",
+      ],
+      "returnValue": "{\\"param\\":\\"value\\"}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with file handler with any client request 1`] = `
+Object {
+  "callCount": 3,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "\\"error\\"",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "undefined",
+    },
+    Object {
+      "args": Array [
+        "\\"data\\"",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "undefined",
+    },
+    Object {
+      "args": Array [
+        "\\"end\\"",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "undefined",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with file handler with any client request 2`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "500",
+      ],
+      "returnValue": "{}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with file handler with any client request 3`] = `
+Object {
+  "callCount": 0,
+  "callsInfo": Array [],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with file handler with any client request 4`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "\\"TypeError: option expires is invalid\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\"",
+      ],
+      "returnValue": "{}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with file handler with any client request 5`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"method\\":\\"HTTP-VERB\\",\\"query\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"path\\":\\"PATH_INFO\\",\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"}}",
+        "{}",
+      ],
+      "returnValue": "{\\"param\\":\\"value\\"}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with primitive JSON handler with GET client request 1`] = `
+Object {
+  "callCount": 3,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "\\"error\\"",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "undefined",
+    },
+    Object {
+      "args": Array [
+        "\\"data\\"",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "undefined",
+    },
+    Object {
+      "args": Array [
+        "\\"end\\"",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "undefined",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with primitive JSON handler with GET client request 2`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "500",
+      ],
+      "returnValue": "{}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with primitive JSON handler with GET client request 3`] = `
+Object {
+  "callCount": 0,
+  "callsInfo": Array [],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with primitive JSON handler with GET client request 4`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "\\"TypeError: option expires is invalid\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\"",
+      ],
+      "returnValue": "{}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with primitive JSON handler with GET client request 5`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"method\\":\\"HTTP-VERB\\",\\"query\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"path\\":\\"PATH_INFO\\",\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"}}",
+        "{}",
+      ],
+      "returnValue": "{\\"param\\":\\"value\\"}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with primitive JSON handler with POST client request 1`] = `
+Object {
+  "callCount": 3,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "\\"error\\"",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "undefined",
+    },
+    Object {
+      "args": Array [
+        "\\"data\\"",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "undefined",
+    },
+    Object {
+      "args": Array [
+        "\\"end\\"",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "undefined",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with primitive JSON handler with POST client request 2`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "500",
+      ],
+      "returnValue": "{}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with primitive JSON handler with POST client request 3`] = `
+Object {
+  "callCount": 0,
+  "callsInfo": Array [],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with primitive JSON handler with POST client request 4`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "\\"TypeError: option expires is invalid\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\"",
+      ],
+      "returnValue": "{}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with primitive JSON handler with POST client request 5`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"method\\":\\"HTTP-VERB\\",\\"query\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"path\\":\\"PATH_INFO\\",\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"}}",
+        "{}",
+      ],
+      "returnValue": "{\\"param\\":\\"value\\"}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with redirect handler with any client request 1`] = `
+Object {
+  "callCount": 3,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "\\"error\\"",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "undefined",
+    },
+    Object {
+      "args": Array [
+        "\\"data\\"",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "undefined",
+    },
+    Object {
+      "args": Array [
+        "\\"end\\"",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "undefined",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with redirect handler with any client request 2`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "500",
+      ],
+      "returnValue": "{}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with redirect handler with any client request 3`] = `
+Object {
+  "callCount": 0,
+  "callsInfo": Array [],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with redirect handler with any client request 4`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "\\"Error: Response already sent\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\"",
+      ],
+      "returnValue": "{}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with redirect handler with any client request 5`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"method\\":\\"HTTP-VERB\\",\\"query\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"path\\":\\"PATH_INFO\\",\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"}}",
+        "{}",
+      ],
+      "returnValue": "{\\"param\\":\\"value\\"}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with text handler with any client request 1`] = `
+Object {
+  "callCount": 3,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "\\"error\\"",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "undefined",
+    },
+    Object {
+      "args": Array [
+        "\\"data\\"",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "undefined",
+    },
+    Object {
+      "args": Array [
+        "\\"end\\"",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "undefined",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with text handler with any client request 2`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "500",
+      ],
+      "returnValue": "{}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with text handler with any client request 3`] = `
+Object {
+  "callCount": 0,
+  "callsInfo": Array [],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with text handler with any client request 4`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "\\"TypeError: option expires is invalid\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\"",
+      ],
+      "returnValue": "{}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with text handler with any client request 5`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"method\\":\\"HTTP-VERB\\",\\"query\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"path\\":\\"PATH_INFO\\",\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"}}",
+        "{}",
+      ],
+      "returnValue": "{\\"param\\":\\"value\\"}",
+    },
+  ],
+}
+`;

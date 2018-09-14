@@ -60,6 +60,7 @@
     "opn": "^5.3.0",
     "prop-types": "^15.6.2",
     "react-helmet": "^5.2.0",
+    "resolve-api-handler-express": "0.15.2",
     "resolve-auth": "0.15.2",
     "resolve-bus-memory": "0.15.2",
     "resolve-command": "0.15.2",

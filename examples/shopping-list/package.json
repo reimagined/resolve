@@ -12,6 +12,7 @@
   "dependencies": {
     "@babel/node": "7.0.0",
     "@babel/polyfill": "7.0.0",
+    "isomorphic-fetch": "2.2.1",
     "react": "16.4.2",
     "react-bootstrap": "0.32.1",
     "react-dom": "16.4.2",
