@@ -1,7 +1,7 @@
 import contentDisposition from 'content-disposition'
 import cookie from 'cookie'
 
-const COOKIE_CLEAR_DATE = new Date(1970, 1, 1)
+const COOKIE_CLEAR_DATE = new Date(0).toGMTString()
 const INTERNAL = Symbol('INTERNAL')
 
 const createRequest = async (lambdaEvent, customParameters) => {
