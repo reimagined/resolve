@@ -2,6 +2,12 @@
 
 ## API Reference
 
+```js
+export default async (req, res) => {
+  // ...
+}
+```
+
 ## Request
 
 The `req` object represents the HTTP request and has properties for the request query string, parameters, body, HTTP headers, and so on.
