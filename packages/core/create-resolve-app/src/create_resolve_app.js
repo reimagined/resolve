@@ -262,7 +262,7 @@ if (unknownOptions && unknownOptions.length) {
         'resolve-storage-base',
         'resolve-storage-lite',
         'resolve-storage-mongo',
-        'resolve-storage-mysql',        
+        'resolve-storage-mysql',
         'resolve-subscribe-mqtt',
         'resolve-subscribe-socket.io'
       ])
