@@ -111,7 +111,7 @@ export default async (req, res) => {
 ## How to write a resolve config
 
 ```
-//run.js
+// run.js
 
 import {
   defaultResolveConfig,
@@ -149,5 +149,6 @@ void (async () => {
   // eslint-disable-next-line no-console
   console.log(error)
 })
-
 ```
+
+See [Schema Resolve Config](../packages/core/resolve-scripts/configs/schema.resolve.config.json) for more information.
