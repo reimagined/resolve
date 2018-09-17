@@ -42,7 +42,7 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
         true
       )
 
-      void (hasNoErrors ? resolve() : reject(err))
+      void (hasNoErrors ? resolve() : reject(stats.toString('')))
     })
   })
 }
