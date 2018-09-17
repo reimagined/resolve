@@ -48,6 +48,7 @@
   "workspaces": {
     "packages": [
       "packages/core/*",
+      "packages/modules/*",
       "packages/adapters/bus-adapters/*",
       "packages/adapters/storage-adapters/*",
       "packages/adapters/readmodel-adapters/*",
