@@ -2,7 +2,6 @@ const createViewModel = ({
   projection,
   eventStore,
   snapshotAdapter = null,
-  snapshotBucketSize = 100,
   invariantHash = null,
   serializeState
 }) => {
@@ -40,8 +39,7 @@ const createViewModel = ({
       eventName => eventName !== 'Init'
     )
 
-    let appliedEvents = 0
-    let lastTimestamp = 0
+    let lastTimestamp = -1
     let lastError = null
     let state = null
 
@@ -59,35 +57,40 @@ const createViewModel = ({
       lastError = error
     }
 
-    const callback = event => {
+    const regularHandler = event => {
       if (!event || !event.type || lastError) return
       try {
         state = projection[event.type](state, event)
-
-        if (
-          snapshotAdapter != null &&
-          ++appliedEvents % snapshotBucketSize === 0
-        ) {
-          lastTimestamp = Date.now()
-          snapshotAdapter.saveSnapshot(snapshotKey, {
-            state,
-            lastTimestamp
-          })
-        }
       } catch (error) {
         lastError = error
       }
     }
 
+    const snapshotHandler = event => {
+      if (!event || !event.type || lastError) return
+      try {
+        state = projection[event.type](state, event)
+        lastTimestamp = event.timestamp - 1
+        snapshotAdapter.saveSnapshot(snapshotKey, {
+          lastTimestamp,
+          state
+        })
+      } catch (error) {
+        lastError = error
+      }
+    }
+
+    const handler = snapshotAdapter != null ? snapshotHandler : regularHandler
+
     const subscribePromise =
       aggregateIds === '*'
-        ? eventStore.subscribeByEventType(eventTypes, callback, {
+        ? eventStore.subscribeByEventType(eventTypes, handler, {
             onlyBus: false,
             startTime: lastTimestamp
           })
         : eventStore.subscribeByAggregateId(
             aggregateIds,
-            event => eventTypes.includes(event.type) && callback(event),
+            event => eventTypes.includes(event.type) && handler(event),
             { onlyBus: false, startTime: lastTimestamp }
           )
 

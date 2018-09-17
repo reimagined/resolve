@@ -1,12 +1,13 @@
 import NeDB from 'nedb'
 
-export default ({ pathToFile } = {}) => {
+export default ({ pathToFile, bucketSize = 100 } = {}) => {
   const db = new NeDB(
     pathToFile
       ? { filename: pathToFile, autoload: true }
       : { inMemoryOnly: true }
   )
   let flowPromise = Promise.resolve()
+  const countersMap = new Map()
 
   return Object.freeze({
     loadSnapshot: async key =>
@@ -18,6 +19,16 @@ export default ({ pathToFile } = {}) => {
       ),
 
     saveSnapshot: (key, value) => {
+      if (!countersMap.has(key)) {
+        countersMap.set(key, 0)
+      }
+      const currentCount = countersMap.get(key)
+      countersMap.set(key, currentCount + 1)
+
+      if (currentCount % bucketSize !== 0) {
+        return
+      }
+
       flowPromise = flowPromise
         .then(
           () =>

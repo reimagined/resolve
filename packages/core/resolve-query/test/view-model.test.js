@@ -13,7 +13,6 @@ describe('resolve-query view-model', () => {
   ]
 
   const invariantHash = 'unique-view-model-hash'
-  const snapshotBucketSize = 1
 
   beforeEach(() => {
     unsubscribe = sinon.stub()
@@ -247,7 +246,6 @@ describe('resolve-query view-model', () => {
       eventStore,
       projection,
       snapshotAdapter,
-      snapshotBucketSize,
       invariantHash
     })
 
@@ -287,7 +285,6 @@ describe('resolve-query view-model', () => {
       eventStore,
       projection,
       snapshotAdapter,
-      snapshotBucketSize,
       invariantHash
     })
 

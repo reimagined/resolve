@@ -1,21 +1,22 @@
-import crypto from 'crypto'
-import fs from 'fs'
-
-import { message } from '../constants'
-import resolveFile from '../resolve_file'
-import resolveFileOrModule from '../resolve_file_or_module'
+import {
+  message,
+  RESOURCE_CONSTRUCTOR_ONLY,
+  RESOURCE_ANY,
+  RUNTIME_ENV_NOWHERE,
+  RUNTIME_ENV_ANYWHERE
+} from '../constants'
 import importBabel from '../import_babel'
-import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
+import { checkRuntimeEnv } from '../declare_runtime_env'
+import importResource from '../import_resource'
+import resolveFileOrModule from '../resolve_file_or_module'
+import resolveFile from '../resolve_file'
 
 export default ({ resolveConfig, isClient }) => {
   if (!resolveConfig.aggregates) {
     throw new Error(`${message.configNotContainSectionError}.aggregates`)
   }
 
-  const imports = [
-    `import interopRequireDefault from "@babel/runtime/helpers/interopRequireDefault"`,
-    ``
-  ]
+  const imports = []
   const constants = []
   const exports = [``, `const aggregates = []`, ``]
 
@@ -25,60 +26,32 @@ export default ({ resolveConfig, isClient }) => {
     if (checkRuntimeEnv(aggregate.name)) {
       throw new Error(`${message.clientEnvError}.aggregates[${index}].name`)
     }
-    const name = aggregate.name
+    constants.push(`const name_${index} = ${JSON.stringify(aggregate.name)}`)
 
-    if (checkRuntimeEnv(aggregate.commands)) {
-      throw new Error(`${message.clientEnvError}.aggregates[${index}].commands`)
-    }
-    const commands = resolveFile(aggregate.commands)
-
-    if (aggregate.projection && checkRuntimeEnv(aggregate.projection)) {
-      throw new Error(
-        `${message.clientEnvError}.aggregates[${index}].projection`
-      )
-    }
-    const projection = aggregate.projection
-      ? resolveFile(aggregate.projection)
-      : undefined
-
-    const snapshotAdapter = aggregate.snapshotAdapter
-      ? {
-          module: checkRuntimeEnv(aggregate.snapshotAdapter.module)
-            ? aggregate.snapshotAdapter.module
-            : resolveFileOrModule(aggregate.snapshotAdapter.module),
-          options: {
-            ...aggregate.snapshotAdapter.options
-          }
-        }
-      : {}
-
-    if (!isClient) {
-      imports.push(`import commands_${index} from ${JSON.stringify(commands)}`)
-    }
-
-    if (!isClient && aggregate.projection) {
-      imports.push(
-        `import projection_${index} from ${JSON.stringify(projection)}`
-      )
-
-      const hmac = crypto.createHmac(
-        'sha512',
-        'resolve-aggregate-projection-hash'
-      )
-      hmac.update(fs.readFileSync(projection).toString())
-      const invariantHash = hmac.digest('hex')
-
-      constants.push(
-        `const invariantHash_${index} = ${JSON.stringify(invariantHash)}`
-      )
-    }
-
-    imports.push(``)
-
-    constants.push(`const name_${index} = ${JSON.stringify(name)}`)
+    importResource({
+      resourceName: `commands_${index}`,
+      resourceValue: aggregate.commands,
+      runtimeMode: RUNTIME_ENV_NOWHERE,
+      importMode: RESOURCE_ANY,
+      imports: !isClient ? imports : [],
+      constants: !isClient ? constants : []
+    })
 
     if (isClient) {
-      const clientCommands = Object.keys(importBabel(commands))
+      const clientCommands =
+        aggregate.commands.constructor === String
+          ? Object.keys(importBabel(resolveFile(aggregate.commands)))
+          : importBabel(resolveFileOrModule(aggregate.commands.module))(
+              aggregate.commands.options,
+              aggregate.commands.imports != null
+                ? Object.keys(aggregate.commands.imports).reduce((acc, key) => {
+                    acc[key] = importBabel(
+                      resolveFile(aggregate.commands.imports[key])
+                    )
+                    return acc
+                  }, {})
+                : null
+            )
 
       constants.push(
         `const commands_${index} = {`,
@@ -89,46 +62,37 @@ export default ({ resolveConfig, isClient }) => {
       )
     }
 
-    if (!isClient && aggregate.snapshotAdapter) {
-      if (checkRuntimeEnv(aggregate.snapshotAdapter.module)) {
-        constants.push(
-          `const snapshotAdapter_${index} = ${injectRuntimeEnv(
-            snapshotAdapter
-          )}`,
-          `const snapshotAdapterModule_${index} = interopRequireDefault(`,
-          `  __non_webpack_require__(snapshotAdapter_${index}.module)`,
-          `).default`,
-          `const snapshotAdapterOptions_${index} = snapshotAdapter_${index}.options`
-        )
-      } else {
-        imports.push(
-          `import snapshotAdapterModule_${index} from ${JSON.stringify(
-            snapshotAdapter.module
-          )}`
-        )
-        constants.push(
-          `const snapshotAdapterOptions_${index} = ${JSON.stringify(
-            snapshotAdapter.options
-          )}`
-        )
-      }
-    }
-
     exports.push(`aggregates.push({`)
     exports.push(`  name: name_${index}`)
     exports.push(`, commands: commands_${index}`)
+
     if (!isClient && aggregate.projection) {
+      importResource({
+        resourceName: `projection_${index}`,
+        resourceValue: aggregate.projection,
+        runtimeMode: RUNTIME_ENV_NOWHERE,
+        importMode: RESOURCE_ANY,
+        calculateHash: 'resolve-aggregate-projection-hash',
+        imports,
+        constants
+      })
       exports.push(`, projection: projection_${index}`)
-      exports.push(`, invariantHash: invariantHash_${index}`)
+      exports.push(`, invariantHash: projection_${index}_hash`)
     }
+
     if (!isClient && aggregate.snapshotAdapter) {
-      exports.push(
-        `, snapshotAdapter: {`,
-        `    module: snapshotAdapterModule_${index},`,
-        `    options: snapshotAdapterOptions_${index}`,
-        `  }`
-      )
+      importResource({
+        resourceName: `snapshotAdapter_${index}`,
+        resourceValue: aggregate.snapshotAdapter,
+        runtimeMode: RUNTIME_ENV_ANYWHERE,
+        importMode: RESOURCE_CONSTRUCTOR_ONLY,
+        imports,
+        constants
+      })
+
+      exports.push(`, snapshotAdapter: snapshotAdapter_${index}`)
     }
+
     exports.push(`})`, ``)
   }
 

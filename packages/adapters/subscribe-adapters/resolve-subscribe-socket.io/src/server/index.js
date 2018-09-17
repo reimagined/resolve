@@ -6,7 +6,11 @@ import {
   subscribeAdapterAlreadyInitialized
 } from './constants'
 
-const createServerAdapter = ({ server, getRootBasedUrl, pubsubManager }) => {
+const createServerAdapter = () => ({
+  server,
+  getRootBasedUrl,
+  pubsubManager
+}) => {
   let isInitialized = false
   let socketMqttServer = null
 
