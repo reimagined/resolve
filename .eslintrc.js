@@ -65,6 +65,7 @@ module.exports = {
           'auth',
           'autoload',
           'autoprefixer',
+          'awslambda',
           'basename',
           'babelrc',
           'bson',
