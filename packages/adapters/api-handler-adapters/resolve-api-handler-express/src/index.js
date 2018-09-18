@@ -110,7 +110,7 @@ const createResponse = () => {
     validateResponseOpened()
     const serializedCookie = cookie.serialize(name, '', {
       ...options,
-      expires: COOKIE_CLEAR_DATE
+      expire: COOKIE_CLEAR_DATE
     })
     internalRes.headers.push({ key: 'Set-Cookie', value: serializedCookie })
   })
@@ -127,6 +127,8 @@ const createResponse = () => {
     validateOptionShape('Location path', path, [String])
     internalRes.headers.push({ key: 'Location', value: path })
     internalRes.status = code != null ? code : 302
+
+    internalRes.closed = true
   })
 
   defineResponseMethod('getHeader', searchKey => {
