@@ -11,6 +11,7 @@ const requireAssembly = filename =>
 const aggregates = requireAssembly('common/aggregates/index.js')
 const viewModels = requireAssembly('common/view-models/index.js')
 const readModels = requireAssembly('common/read-models/index.js')
+const apiHandlers = requireAssembly('common/api-handlers/index.js')
 const sagas = requireAssembly('common/sagas/index.js')
 const auth = requireAssembly('common/auth/index.js')
 const constants = requireAssembly('common/constants/index.js')
@@ -20,6 +21,7 @@ module.exports = {
   aggregates,
   viewModels,
   readModels,
+  apiHandlers,
   sagas,
   auth,
   ...constants,

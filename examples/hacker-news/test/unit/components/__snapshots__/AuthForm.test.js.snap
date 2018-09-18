@@ -30,7 +30,9 @@ ShallowWrapper {
           method="POST"
         >
           <styled.div>
-            username: 
+            <div>
+              username:
+            </div>
             <input
               name="username"
               type="text"
@@ -64,7 +66,9 @@ ShallowWrapper {
           "action": "/auth",
           "children": Array [
             <styled.div>
-              username: 
+              <div>
+                username:
+              </div>
               <input
                 name="username"
                 type="text"
@@ -85,7 +89,9 @@ ShallowWrapper {
             "nodeType": "class",
             "props": Object {
               "children": Array [
-                "username: ",
+                <div>
+                  username:
+                </div>,
                 <input
                   name="username"
                   type="text"
@@ -94,7 +100,17 @@ ShallowWrapper {
             },
             "ref": null,
             "rendered": Array [
-              "username: ",
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "children": "username:",
+                },
+                "ref": null,
+                "rendered": "username:",
+                "type": "div",
+              },
               Object {
                 "instance": null,
                 "key": undefined,
@@ -143,7 +159,9 @@ ShallowWrapper {
             method="POST"
           >
             <styled.div>
-              username: 
+              <div>
+                username:
+              </div>
               <input
                 name="username"
                 type="text"
@@ -177,7 +195,9 @@ ShallowWrapper {
             "action": "/auth",
             "children": Array [
               <styled.div>
-                username: 
+                <div>
+                  username:
+                </div>
                 <input
                   name="username"
                   type="text"
@@ -198,7 +218,9 @@ ShallowWrapper {
               "nodeType": "class",
               "props": Object {
                 "children": Array [
-                  "username: ",
+                  <div>
+                    username:
+                  </div>,
                   <input
                     name="username"
                     type="text"
@@ -207,7 +229,17 @@ ShallowWrapper {
               },
               "ref": null,
               "rendered": Array [
-                "username: ",
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "host",
+                  "props": Object {
+                    "children": "username:",
+                  },
+                  "ref": null,
+                  "rendered": "username:",
+                  "type": "div",
+                },
                 Object {
                   "instance": null,
                   "key": undefined,

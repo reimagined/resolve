@@ -8,13 +8,8 @@ import styled from 'styled-components'
 import Story from '../containers/Story'
 import ChildrenComments from '../components/ChildrenComments'
 
-const StoryDetailsRoot = styled.div`
-  padding: 1em 1.25em 0 1.75em;
-  margin-bottom: 1em;
-`
-
 const Reply = styled.div`
-  padding: 1em 1.25em 0 1.25em;
+  padding: 0.5em;
   margin-bottom: 1em;
 `
 
@@ -37,7 +32,7 @@ export class StoryDetails extends React.PureComponent {
     }
 
     return (
-      <StoryDetailsRoot>
+      <div>
         <Story
           showText
           story={story}
@@ -51,7 +46,6 @@ export class StoryDetails extends React.PureComponent {
               ref={element => (this.textarea = element)}
               name="text"
               rows="6"
-              cols="70"
             />
             <div>
               <button onClick={this.saveComment}>add comment</button>
@@ -64,7 +58,7 @@ export class StoryDetails extends React.PureComponent {
           parentId={story.id}
           loggedIn={loggedIn}
         />
-      </StoryDetailsRoot>
+      </div>
     )
   }
 }

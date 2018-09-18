@@ -119,6 +119,19 @@
       "required": ["name"],
       "additionalProperties": false
     },
+    "apiHandler": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "controller": {
+          "type": "string"
+        }
+      },
+      "required": ["path", "controller"],
+      "additionalProperties": false
+    },
     "jwtCookie": {
       "type": "object",
       "properties": {
@@ -214,6 +227,12 @@
             "$ref": "#/definitions/saga"
           }
         },
+        "apiHandlers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiHandler"
+          }
+        },
         "busAdapter": {
           "$ref": "#/definitions/adapter"
         },
@@ -237,9 +256,6 @@
         },
         "mode": {
           "type": "string"
-        },
-        "webpack": {
-          "not": { "type": "null" }
         }
       },
       "required": [

@@ -12,8 +12,8 @@ const strategyOptions = {
 }
 
 const authenticateOptions = {
-  failureRedirect: error => `/error?text=${error}`,
-  errorRedirect: error => `/error?text=${error}`
+  failureRedirect: error => `/error?text=${error.message}`,
+  errorRedirect: error => `/error?text=${error.message}`
 }
 
 const routes = [

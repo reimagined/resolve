@@ -1,7 +1,9 @@
 import Ajv from 'ajv'
-import Url from 'url'
 
-import { schemaResolveConfig } from './constants'
+import { schemaResolveConfig, message } from './constants'
+import { checkRuntimeEnv } from './declare_runtime_env'
+import resolveFile from './resolve_file'
+import validatePath from './validate_path'
 
 const ajv = new Ajv()
 
@@ -10,32 +12,7 @@ export const validateRootPath = resolveConfig => {
     return
   }
 
-  const {
-    protocol,
-    slashes,
-    auth,
-    host,
-    port,
-    hostname,
-    hash,
-    search,
-    query,
-    path
-  } = Url.parse(resolveConfig.rootPath)
-
-  if (
-    protocol ||
-    slashes ||
-    auth ||
-    host ||
-    port ||
-    hostname ||
-    hash ||
-    search ||
-    query ||
-    /^\//.test(path) ||
-    /\/$/.test(path)
-  ) {
+  if (!validatePath(resolveConfig.rootPath, true)) {
     throw new Error(
       `Incorrect options.rootPath = "${
         resolveConfig.rootPath
@@ -51,33 +28,7 @@ export const validateStaticPath = resolveConfig => {
     return
   }
 
-  const {
-    protocol,
-    slashes,
-    auth,
-    host,
-    port,
-    hostname,
-    hash,
-    search,
-    query,
-    path
-  } = Url.parse(resolveConfig.staticPath)
-
-  if (
-    protocol ||
-    slashes ||
-    auth ||
-    host ||
-    port ||
-    hostname ||
-    hash ||
-    search ||
-    query ||
-    /^\//.test(path) ||
-    /\/$/.test(path) ||
-    path === ''
-  ) {
+  if (!validatePath(resolveConfig.staticPath)) {
     throw new Error(
       `Incorrect options.staticPath = "${
         resolveConfig.staticPath
@@ -86,6 +37,36 @@ export const validateStaticPath = resolveConfig => {
   }
 
   resolveConfig.staticPath = encodeURI(resolveConfig.staticPath)
+}
+
+export const validateApiHandlers = resolveConfig => {
+  if (!resolveConfig.hasOwnProperty('apiHandlers')) {
+    return
+  }
+
+  for (const [idx, apiHandler] of resolveConfig.apiHandlers.entries()) {
+    if (checkRuntimeEnv(apiHandler.path)) {
+      throw new Error(`${message.clientEnvError}.apiHandlers[${idx}].path`)
+    }
+
+    if (checkRuntimeEnv(apiHandler.controller)) {
+      throw new Error(
+        `${message.clientEnvError}.apiHandlers[${idx}].controller`
+      )
+    }
+
+    if (!validatePath(apiHandler.path)) {
+      throw new Error(
+        `Incorrect options.apiHandlers[${idx}].path = "${
+          apiHandler.path
+        }"\nValue must be part of the URL, which is HTTP API handler URL path`
+      )
+    }
+
+    apiHandler.path = encodeURI(apiHandler.path)
+
+    resolveFile(apiHandler.controller)
+  }
 }
 
 const validateConfig = config => {
@@ -99,6 +80,7 @@ const validateConfig = config => {
 
   validateStaticPath(config)
   validateRootPath(config)
+  validateApiHandlers(config)
 
   return true
 }

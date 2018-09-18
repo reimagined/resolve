@@ -1,0 +1,218 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`API handler wrapper for express.js should work with custom handler with any client request 1`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "null",
+        "{\\"statusCode\\":200,\\"headers\\":[{\\"key\\":\\"One-Header-Name\\",\\"value\\":\\"One-Header-Value\\"},{\\"key\\":\\"Two-Header-Name\\",\\"value\\":\\"Two-Header-Value\\"},{\\"key\\":\\"Set-Cookie\\",\\"value\\":\\"One-Cookie-Name=One-Cookie-Value\\"},{\\"key\\":\\"Set-Cookie\\",\\"value\\":\\"Two-Cookie-Name=Two-Cookie-Value\\"},{\\"key\\":\\"Set-Cookie\\",\\"value\\":\\"Two-Cookie-Name=\\"}],\\"body\\":\\"{\\\\\\"method\\\\\\":\\\\\\"GET\\\\\\",\\\\\\"query\\\\\\":{\\\\\\"query-name-1\\\\\\":\\\\\\"query-value-1\\\\\\",\\\\\\"query-name-2\\\\\\":\\\\\\"query-value-2\\\\\\"},\\\\\\"path\\\\\\":\\\\\\"PATH_INFO\\\\\\",\\\\\\"headers\\\\\\":{\\\\\\"header-name-1\\\\\\":\\\\\\"header-value-1\\\\\\",\\\\\\"header-name-2\\\\\\":\\\\\\"header-value-2\\\\\\",\\\\\\"cookie\\\\\\":\\\\\\"cookie-content\\\\\\",\\\\\\"host\\\\\\":\\\\\\"host-content\\\\\\"},\\\\\\"cookies\\\\\\":{},\\\\\\"body\\\\\\":\\\\\\"BODY_CONTENT\\\\\\",\\\\\\"param\\\\\\":\\\\\\"value\\\\\\",\\\\\\"existingHeader\\\\\\":\\\\\\"Two-Header-Value\\\\\\",\\\\\\"missingHeader\\\\\\":null}\\"}",
+      ],
+      "returnValue": "undefined",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with custom handler with any client request 2`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"queryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
+        "null",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "{\\"param\\":\\"value\\"}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with error throwing handler 1`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "null",
+        "{\\"statusCode\\":500,\\"body\\":\\"Error: Custom error\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\"}",
+      ],
+      "returnValue": "undefined",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with error throwing handler 2`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"queryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
+        "null",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "{\\"param\\":\\"value\\"}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with file handler with any client request 1`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "null",
+        "{\\"statusCode\\":200,\\"headers\\":[{\\"key\\":\\"One-Header-Name\\",\\"value\\":\\"One-Header-Value\\"},{\\"key\\":\\"Two-Header-Name\\",\\"value\\":\\"Two-Header-Value\\"},{\\"key\\":\\"Set-Cookie\\",\\"value\\":\\"One-Cookie-Name=One-Cookie-Value\\"},{\\"key\\":\\"Set-Cookie\\",\\"value\\":\\"Two-Cookie-Name=Two-Cookie-Value\\"},{\\"key\\":\\"Set-Cookie\\",\\"value\\":\\"Two-Cookie-Name=\\"},{\\"key\\":\\"Content-Disposition\\",\\"value\\":\\"attachment; filename=\\\\\\"synthetic-filename.txt\\\\\\"\\"}],\\"body\\":\\"{\\\\\\"method\\\\\\":\\\\\\"GET\\\\\\",\\\\\\"query\\\\\\":{\\\\\\"query-name-1\\\\\\":\\\\\\"query-value-1\\\\\\",\\\\\\"query-name-2\\\\\\":\\\\\\"query-value-2\\\\\\"},\\\\\\"path\\\\\\":\\\\\\"PATH_INFO\\\\\\",\\\\\\"headers\\\\\\":{\\\\\\"header-name-1\\\\\\":\\\\\\"header-value-1\\\\\\",\\\\\\"header-name-2\\\\\\":\\\\\\"header-value-2\\\\\\",\\\\\\"cookie\\\\\\":\\\\\\"cookie-content\\\\\\",\\\\\\"host\\\\\\":\\\\\\"host-content\\\\\\"},\\\\\\"cookies\\\\\\":{},\\\\\\"body\\\\\\":\\\\\\"BODY_CONTENT\\\\\\",\\\\\\"param\\\\\\":\\\\\\"value\\\\\\",\\\\\\"existingHeader\\\\\\":\\\\\\"Two-Header-Value\\\\\\",\\\\\\"missingHeader\\\\\\":null}\\"}",
+      ],
+      "returnValue": "undefined",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with file handler with any client request 2`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"queryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
+        "null",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "{\\"param\\":\\"value\\"}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with primitive JSON handler with GET client request 1`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "null",
+        "{\\"statusCode\\":200,\\"headers\\":[{\\"key\\":\\"One-Header-Name\\",\\"value\\":\\"One-Header-Value\\"},{\\"key\\":\\"Two-Header-Name\\",\\"value\\":\\"Two-Header-Value\\"},{\\"key\\":\\"Set-Cookie\\",\\"value\\":\\"One-Cookie-Name=One-Cookie-Value\\"},{\\"key\\":\\"Set-Cookie\\",\\"value\\":\\"Two-Cookie-Name=Two-Cookie-Value\\"},{\\"key\\":\\"Set-Cookie\\",\\"value\\":\\"Two-Cookie-Name=\\"}],\\"body\\":\\"{\\\\\\"method\\\\\\":\\\\\\"GET\\\\\\",\\\\\\"query\\\\\\":{\\\\\\"query-name-1\\\\\\":\\\\\\"query-value-1\\\\\\",\\\\\\"query-name-2\\\\\\":\\\\\\"query-value-2\\\\\\"},\\\\\\"path\\\\\\":\\\\\\"PATH_INFO\\\\\\",\\\\\\"headers\\\\\\":{\\\\\\"header-name-1\\\\\\":\\\\\\"header-value-1\\\\\\",\\\\\\"header-name-2\\\\\\":\\\\\\"header-value-2\\\\\\",\\\\\\"cookie\\\\\\":\\\\\\"cookie-content\\\\\\",\\\\\\"host\\\\\\":\\\\\\"host-content\\\\\\"},\\\\\\"cookies\\\\\\":{},\\\\\\"body\\\\\\":\\\\\\"BODY_CONTENT\\\\\\",\\\\\\"param\\\\\\":\\\\\\"value\\\\\\",\\\\\\"existingHeader\\\\\\":\\\\\\"Two-Header-Value\\\\\\",\\\\\\"missingHeader\\\\\\":null}\\"}",
+      ],
+      "returnValue": "undefined",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with primitive JSON handler with GET client request 2`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"queryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
+        "null",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "{\\"param\\":\\"value\\"}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with primitive JSON handler with POST client request 1`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "null",
+        "{\\"statusCode\\":200,\\"headers\\":[{\\"key\\":\\"One-Header-Name\\",\\"value\\":\\"One-Header-Value\\"},{\\"key\\":\\"Two-Header-Name\\",\\"value\\":\\"Two-Header-Value\\"},{\\"key\\":\\"Set-Cookie\\",\\"value\\":\\"One-Cookie-Name=One-Cookie-Value\\"},{\\"key\\":\\"Set-Cookie\\",\\"value\\":\\"Two-Cookie-Name=Two-Cookie-Value\\"},{\\"key\\":\\"Set-Cookie\\",\\"value\\":\\"Two-Cookie-Name=\\"}],\\"body\\":\\"{\\\\\\"method\\\\\\":\\\\\\"GET\\\\\\",\\\\\\"query\\\\\\":{\\\\\\"query-name-1\\\\\\":\\\\\\"query-value-1\\\\\\",\\\\\\"query-name-2\\\\\\":\\\\\\"query-value-2\\\\\\"},\\\\\\"path\\\\\\":\\\\\\"PATH_INFO\\\\\\",\\\\\\"headers\\\\\\":{\\\\\\"header-name-1\\\\\\":\\\\\\"header-value-1\\\\\\",\\\\\\"header-name-2\\\\\\":\\\\\\"header-value-2\\\\\\",\\\\\\"cookie\\\\\\":\\\\\\"cookie-content\\\\\\",\\\\\\"host\\\\\\":\\\\\\"host-content\\\\\\"},\\\\\\"cookies\\\\\\":{},\\\\\\"body\\\\\\":\\\\\\"BODY_CONTENT\\\\\\",\\\\\\"param\\\\\\":\\\\\\"value\\\\\\",\\\\\\"existingHeader\\\\\\":\\\\\\"Two-Header-Value\\\\\\",\\\\\\"missingHeader\\\\\\":null}\\"}",
+      ],
+      "returnValue": "undefined",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with primitive JSON handler with POST client request 2`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"queryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
+        "null",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "{\\"param\\":\\"value\\"}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with redirect handler with any client request 1`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "null",
+        "{\\"statusCode\\":500,\\"body\\":\\"Error: Response already sent\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\"}",
+      ],
+      "returnValue": "undefined",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with redirect handler with any client request 2`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"queryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
+        "null",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "{\\"param\\":\\"value\\"}",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with text handler with any client request 1`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "null",
+        "{\\"statusCode\\":200,\\"headers\\":[{\\"key\\":\\"One-Header-Name\\",\\"value\\":\\"One-Header-Value\\"},{\\"key\\":\\"Two-Header-Name\\",\\"value\\":\\"Two-Header-Value\\"},{\\"key\\":\\"Set-Cookie\\",\\"value\\":\\"One-Cookie-Name=One-Cookie-Value\\"},{\\"key\\":\\"Set-Cookie\\",\\"value\\":\\"Two-Cookie-Name=Two-Cookie-Value\\"},{\\"key\\":\\"Set-Cookie\\",\\"value\\":\\"Two-Cookie-Name=\\"}],\\"body\\":\\"{\\\\\\"method\\\\\\":\\\\\\"GET\\\\\\",\\\\\\"query\\\\\\":{\\\\\\"query-name-1\\\\\\":\\\\\\"query-value-1\\\\\\",\\\\\\"query-name-2\\\\\\":\\\\\\"query-value-2\\\\\\"},\\\\\\"path\\\\\\":\\\\\\"PATH_INFO\\\\\\",\\\\\\"headers\\\\\\":{\\\\\\"header-name-1\\\\\\":\\\\\\"header-value-1\\\\\\",\\\\\\"header-name-2\\\\\\":\\\\\\"header-value-2\\\\\\",\\\\\\"cookie\\\\\\":\\\\\\"cookie-content\\\\\\",\\\\\\"host\\\\\\":\\\\\\"host-content\\\\\\"},\\\\\\"cookies\\\\\\":{},\\\\\\"body\\\\\\":\\\\\\"BODY_CONTENT\\\\\\",\\\\\\"param\\\\\\":\\\\\\"value\\\\\\",\\\\\\"existingHeader\\\\\\":\\\\\\"Two-Header-Value\\\\\\",\\\\\\"missingHeader\\\\\\":null}\\"}",
+      ],
+      "returnValue": "undefined",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with text handler with any client request 2`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"queryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
+        "null",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "{\\"param\\":\\"value\\"}",
+    },
+  ],
+}
+`;
