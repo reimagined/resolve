@@ -1,6 +1,6 @@
 {
   "name": "@react-native-shopping-list/native",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "private": true,
   "main": "./index.js",
   "scripts": {
@@ -14,7 +14,7 @@
   "dependencies": {
     "@expo/react-native-action-sheet": "1.1.0",
     "@expo/vector-icons": "6.3.1",
-    "@react-native-shopping-list/ui": "0.16.0",
+    "@react-native-shopping-list/ui": "0.16.1",
     "expo": "29.0.0",
     "history": "4.7.2",
     "native-base": "2.6.1",
