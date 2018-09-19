@@ -100,6 +100,8 @@ module.exports = {
           'desc',
           'deserialize',
           'deserialized',
+          'deserializer',
+          'deserializers',
           'dir',
           'dirname',
           'dns',

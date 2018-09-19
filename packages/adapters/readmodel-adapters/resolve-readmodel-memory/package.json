@@ -1,6 +1,6 @@
 {
   "name": "resolve-readmodel-memory",
-  "version": "0.15.2",
+  "version": "0.16.0",
   "description": "This package serves as a resolve-query adapter for storing a read model in memory",
   "engines": {
     "node": ">=8.10"
@@ -26,7 +26,7 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/readmodel-adapters/resolve-readmodel-memory#readme",
   "dependencies": {
     "nedb": "^1.8.0",
-    "resolve-readmodel-base": "0.15.2",
+    "resolve-readmodel-base": "0.16.0",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
