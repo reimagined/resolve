@@ -36,6 +36,7 @@ const createRequest = async (expressReq, customParameters) => {
   const req = Object.create(null)
 
   const reqProperties = {
+    adapter: 'express',
     method: expressReq.method,
     query: expressReq.query,
     path: expressReq.path,
