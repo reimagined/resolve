@@ -83,7 +83,6 @@ const getWebpackCommonConfigs = ({
       name: 'Constants',
       entry: {
         'common/constants/index.js': [
-          ...polyfills,
           path.resolve(__dirname, './alias/$resolve.constants.js')
         ]
       }
