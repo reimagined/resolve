@@ -1,5 +1,5 @@
-- Introduction
-  - Setting Up
+- [Introduction](Introduction.md)
+  - [Setting Up](Introduction.md/#setting-up)
     - Prerequisites
     - Getting Started
 - Core Concepts
