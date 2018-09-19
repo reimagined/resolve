@@ -141,7 +141,7 @@ const read = async (repository, { resolverName, resolverArgs, jwtToken }) => {
   return await resolver(store, resolverArgs, jwtToken)
 }
 
-const dispose = repository => {
+const dispose = (repository, drop = false) => {
   if (repository.disposePromise) {
     return repository.disposePromise
   }
@@ -151,7 +151,7 @@ const dispose = repository => {
     repository.adapter.reset
   ]).then(async ([onDispose, reset]) => {
     await onDispose()
-    await reset()
+    await reset(drop)
   })
 
   Object.keys(repository).forEach(key => {
