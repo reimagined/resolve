@@ -1,7 +1,7 @@
 - [Introduction](Introduction.md)
   - [Setting Up](Introduction.md/#setting-up)
-    - Prerequisites
-    - Getting Started
+    - [Prerequisites](Introduction.md/#prerequisites)
+    - [Getting Started](Introduction.md/#getting-started)
 - Core Concepts
 
   - reSolve app structure
