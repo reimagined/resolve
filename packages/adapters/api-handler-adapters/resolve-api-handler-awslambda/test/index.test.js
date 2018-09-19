@@ -22,7 +22,9 @@ const stringifyAndNormalizePaths = value => {
     '<MONOREPO_DIR>'
   )
 
-  return relativeSource.replace(/at [^(]+? \([^)]+?\)/gi, '<STACK_FRAME>')
+  return relativeSource
+    .replace(/at [^(]+? \([^)]+?\)/gi, '<STACK_FRAME>')
+    .replace(/at <anonymous>/gi, '<STACK_FRAME>')
 }
 
 const extractInvocationInfo = sinonStub => {

@@ -59,12 +59,11 @@ const runTestcafe = async ({
   const serverPath = path.resolve(__dirname, '../../lib/runtime/index.js')
 
   const server = respawn(
-    [serverPath, `--distDir=${JSON.stringify(resolveConfig.distDir)}`],
+    ['node', serverPath, `--distDir=${JSON.stringify(resolveConfig.distDir)}`],
     {
       maxRestarts: 0,
       kill: 5000,
-      stdio: 'inherit',
-      fork: true
+      stdio: 'inherit'
     }
   )
 
@@ -88,6 +87,7 @@ const runTestcafe = async ({
     browser == null ? Object.keys(await getInstallations())[0] : browser
   const targetTimeout = timeout == null ? 20000 : timeout
 
+  let status = 0
   try {
     execSync(
       `npx testcafe ${targetBrowser}` +
@@ -99,11 +99,14 @@ const runTestcafe = async ({
         (targetBrowser === 'remote' ? ' --qr-code' : ''),
       { stdio: 'inherit' }
     )
-  } catch (e) {
+  } catch (error) {
+    status = 1
     // eslint-disable-next-line no-console
-    console.error(e)
+    console.error(error.message)
   } finally {
-    server.stop()
+    server.stop(() => {
+      process.exit(status)
+    })
   }
 }
 

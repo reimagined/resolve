@@ -183,7 +183,7 @@ export class Story extends React.PureComponent {
       ? story.comments.length
       : story.commentCount
 
-    const title = `${index}. ${
+    const title = `${index ? `${index}. ` : ''}${
       story.type === 'ask' ? `Ask HN: ${story.title}` : story.title
     }`
 

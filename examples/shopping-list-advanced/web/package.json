@@ -1,22 +1,22 @@
 {
   "name": "@react-native-shopping-list/web",
-  "version": "0.15.2",
+  "version": "0.16.0",
   "private": true,
   "scripts": {
     "test": "jest --testMatch=**/test/**/unit/*.test.js --verbose",
     "test:functional": "echo || exit 0"
   },
   "dependencies": {
-    "react": "16.4.2",
-    "react-dom": "16.4.2",
+    "react": "16.5.1",
+    "react-dom": "16.5.1",
     "react-bootstrap": "0.32.1",
     "react-helmet": "5.2.0",
     "react-redux": "5.0.7",
     "react-router-dom": "4.3.1",
     "react-router-redux": "5.0.0-alpha.9",
-    "@react-native-shopping-list/ui": "0.15.2",
+    "@react-native-shopping-list/ui": "0.16.0",
     "redux": "4.0.0",
-    "resolve-redux": "0.15.2",
+    "resolve-redux": "0.16.0",
     "uuid": "3.3.2"
   },
   "devDependencies": {
