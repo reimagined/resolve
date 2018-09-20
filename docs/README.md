@@ -1,10 +1,10 @@
 - [Introduction](introduction.md)
 
-  - [Setting Up](introduction.md/#setting-up)
-    - [Prerequisites](introduction.md/#prerequisites)
-    - [Getting Started](introduction.md/#getting-started)
-  - [Examples](introduction.md/#examples)
-  - [Learning Resouces](introduction.md/#learning-resouces)
+  - [Setting Up](introduction.md#setting-up)
+    - [Prerequisites](introduction.md#prerequisites)
+    - [Getting Started](introduction.md#getting-started)
+  - [Examples](introduction.md#examples)
+  - [Learning Resouces](introduction.md#learning-resouces)
 
 - [Basics](basics/README.md)
 
