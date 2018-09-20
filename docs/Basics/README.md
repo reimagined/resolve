@@ -14,7 +14,7 @@
   - [Configuring Read Models](read-side.md#configuring-read-models)
   - [Initialize Read Model](read-side.md#initialize-read-model)
   - [Updating Read Model via Projection Function](read-side.md#updating-read-model-via-projection-function)
-  - [Resolvers](read-side.md#resolvers) 
+  - [Resolvers](read-side.md#resolvers)
   - [Performing Queries Using HTTP API](read-side.md#performing-queries-using-http-api)
   - [View Model Specifics](read-side.md#view-model-specifics)
 - [Frontend](frontend.md)
