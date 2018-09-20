@@ -38,9 +38,7 @@
     "eslint-plugin-jsx-a11y": "^6.1.1",
     "eslint-plugin-react": "^7.11.1",
     "eslint-plugin-spellcheck": "^0.0.10",
-    "lint-staged": "^7.2.2",
     "oao": "^1.5.1",
-    "pre-commit": "^1.2.2",
     "prettier": "^1.14.2",
     "prettier-eslint-cli": "^4.7.1",
     "rimraf": "2.6.2",
@@ -63,7 +61,6 @@
   "scripts": {
     "clean": "oao all \"npx rimraf dist lib es\" --parallel && npx rimraf yarn-error.log && npx oao clean",
     "lint": "eslint .",
-    "lint-staged": "lint-staged",
     "prepare": "node ./babel.compile.js --run",
     "prettier": "prettier --single-quote --no-semi --write \"**/**.js\"",
     "prettier-json": "prettier --write \"**/**.json\"",
@@ -71,15 +68,5 @@
     "test": "oao all \"yarn test --color 2>&1\"",
     "test:functional": "oao run-script test:functional",
     "test:clean-snapshots": "npx oao all \"yarn test -u --color 2>&1\""
-  },
-  "pre-commit": [
-    "lint-staged",
-    "lint"
-  ],
-  "lint-staged": {
-    "*.{js,css}": [
-      "prettier --single-quote --no-semi --write",
-      "git add"
-    ]
   }
 }
