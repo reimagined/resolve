@@ -582,7 +582,7 @@ ShallowWrapper {
         <Title
           link="https://www.google.com"
           loggedIn={true}
-          title="undefined. Ask HN: Ask HN: Google"
+          title="Ask HN: Ask HN: Google"
           upvoteStory={[Function]}
           voted={false}
         />,
@@ -615,7 +615,7 @@ ShallowWrapper {
         "props": Object {
           "link": "https://www.google.com",
           "loggedIn": true,
-          "title": "undefined. Ask HN: Ask HN: Google",
+          "title": "Ask HN: Ask HN: Google",
           "upvoteStory": [Function],
           "voted": false,
         },
@@ -668,7 +668,7 @@ ShallowWrapper {
           <Title
             link="https://www.google.com"
             loggedIn={true}
-            title="undefined. Ask HN: Ask HN: Google"
+            title="Ask HN: Ask HN: Google"
             upvoteStory={[Function]}
             voted={false}
           />,
@@ -701,7 +701,7 @@ ShallowWrapper {
           "props": Object {
             "link": "https://www.google.com",
             "loggedIn": true,
-            "title": "undefined. Ask HN: Ask HN: Google",
+            "title": "Ask HN: Ask HN: Google",
             "upvoteStory": [Function],
             "voted": false,
           },
@@ -798,7 +798,7 @@ ShallowWrapper {
         <Title
           link="/storyDetails/story-id"
           loggedIn={true}
-          title="undefined. Ask HN: Ask HN: Google"
+          title="Ask HN: Ask HN: Google"
           upvoteStory={[Function]}
           voted={false}
         />,
@@ -825,7 +825,7 @@ ShallowWrapper {
         "props": Object {
           "link": "/storyDetails/story-id",
           "loggedIn": true,
-          "title": "undefined. Ask HN: Ask HN: Google",
+          "title": "Ask HN: Ask HN: Google",
           "upvoteStory": [Function],
           "voted": false,
         },
@@ -866,7 +866,7 @@ ShallowWrapper {
           <Title
             link="/storyDetails/story-id"
             loggedIn={true}
-            title="undefined. Ask HN: Ask HN: Google"
+            title="Ask HN: Ask HN: Google"
             upvoteStory={[Function]}
             voted={false}
           />,
@@ -893,7 +893,7 @@ ShallowWrapper {
           "props": Object {
             "link": "/storyDetails/story-id",
             "loggedIn": true,
-            "title": "undefined. Ask HN: Ask HN: Google",
+            "title": "Ask HN: Ask HN: Google",
             "upvoteStory": [Function],
             "voted": false,
           },
@@ -987,7 +987,7 @@ ShallowWrapper {
         <Title
           link="https://www.google.com"
           loggedIn={true}
-          title="undefined. Ask HN: Ask HN: Google"
+          title="Ask HN: Ask HN: Google"
           upvoteStory={[Function]}
           voted={false}
         />,
@@ -1014,7 +1014,7 @@ ShallowWrapper {
         "props": Object {
           "link": "https://www.google.com",
           "loggedIn": true,
-          "title": "undefined. Ask HN: Ask HN: Google",
+          "title": "Ask HN: Ask HN: Google",
           "upvoteStory": [Function],
           "voted": false,
         },
@@ -1055,7 +1055,7 @@ ShallowWrapper {
           <Title
             link="https://www.google.com"
             loggedIn={true}
-            title="undefined. Ask HN: Ask HN: Google"
+            title="Ask HN: Ask HN: Google"
             upvoteStory={[Function]}
             voted={false}
           />,
@@ -1082,7 +1082,7 @@ ShallowWrapper {
           "props": Object {
             "link": "https://www.google.com",
             "loggedIn": true,
-            "title": "undefined. Ask HN: Ask HN: Google",
+            "title": "Ask HN: Ask HN: Google",
             "upvoteStory": [Function],
             "voted": false,
           },
@@ -1166,7 +1166,7 @@ ShallowWrapper {
         <Title
           link="https://google.com"
           loggedIn={false}
-          title="undefined. Google"
+          title="Google"
           upvoteStory={[Function]}
           voted={false}
         />,
@@ -1193,7 +1193,7 @@ ShallowWrapper {
         "props": Object {
           "link": "https://google.com",
           "loggedIn": false,
-          "title": "undefined. Google",
+          "title": "Google",
           "upvoteStory": [Function],
           "voted": false,
         },
@@ -1234,7 +1234,7 @@ ShallowWrapper {
           <Title
             link="https://google.com"
             loggedIn={false}
-            title="undefined. Google"
+            title="Google"
             upvoteStory={[Function]}
             voted={false}
           />,
@@ -1261,7 +1261,7 @@ ShallowWrapper {
           "props": Object {
             "link": "https://google.com",
             "loggedIn": false,
-            "title": "undefined. Google",
+            "title": "Google",
             "upvoteStory": [Function],
             "voted": false,
           },

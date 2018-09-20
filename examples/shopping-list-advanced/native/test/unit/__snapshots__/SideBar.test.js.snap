@@ -30,11 +30,6 @@ ShallowWrapper {
     "props": Object {
       "children": <Content
         padder={true}
-        style={
-          Object {
-            "paddingTop": 20,
-          }
-        }
       >
         <Logo />
         <List
@@ -44,13 +39,6 @@ ShallowWrapper {
                 "callback": [Function],
                 "icon": <Icon
                   name="list"
-                  style={
-                    Object {
-                      "marginRight": 2,
-                      "textAlign": "center",
-                      "width": 30,
-                    }
-                  }
                   type="FontAwesome"
                 />,
                 "name": "My Lists",
@@ -59,13 +47,6 @@ ShallowWrapper {
                 "callback": [Function],
                 "icon": <Icon
                   name="user"
-                  style={
-                    Object {
-                      "marginRight": 2,
-                      "textAlign": "center",
-                      "width": 30,
-                    }
-                  }
                   type="FontAwesome"
                 />,
                 "name": "Settings",
@@ -74,13 +55,6 @@ ShallowWrapper {
                 "callback": [Function],
                 "icon": <Icon
                   name="sign-out"
-                  style={
-                    Object {
-                      "marginRight": 2,
-                      "textAlign": "center",
-                      "width": 30,
-                    }
-                  }
                   type="FontAwesome"
                 />,
                 "name": "Logout",
@@ -106,13 +80,6 @@ ShallowWrapper {
                   "callback": [Function],
                   "icon": <Icon
                     name="list"
-                    style={
-                      Object {
-                        "marginRight": 2,
-                        "textAlign": "center",
-                        "width": 30,
-                      }
-                    }
                     type="FontAwesome"
                   />,
                   "name": "My Lists",
@@ -121,13 +88,6 @@ ShallowWrapper {
                   "callback": [Function],
                   "icon": <Icon
                     name="user"
-                    style={
-                      Object {
-                        "marginRight": 2,
-                        "textAlign": "center",
-                        "width": 30,
-                      }
-                    }
                     type="FontAwesome"
                   />,
                   "name": "Settings",
@@ -136,13 +96,6 @@ ShallowWrapper {
                   "callback": [Function],
                   "icon": <Icon
                     name="sign-out"
-                    style={
-                      Object {
-                        "marginRight": 2,
-                        "textAlign": "center",
-                        "width": 30,
-                      }
-                    }
                     type="FontAwesome"
                   />,
                   "name": "Logout",
@@ -153,9 +106,7 @@ ShallowWrapper {
           />,
         ],
         "padder": true,
-        "style": Object {
-          "paddingTop": 20,
-        },
+        "style": undefined,
       },
       "ref": null,
       "rendered": Array [
@@ -178,13 +129,6 @@ ShallowWrapper {
                 "callback": [Function],
                 "icon": <Icon
                   name="list"
-                  style={
-                    Object {
-                      "marginRight": 2,
-                      "textAlign": "center",
-                      "width": 30,
-                    }
-                  }
                   type="FontAwesome"
                 />,
                 "name": "My Lists",
@@ -193,13 +137,6 @@ ShallowWrapper {
                 "callback": [Function],
                 "icon": <Icon
                   name="user"
-                  style={
-                    Object {
-                      "marginRight": 2,
-                      "textAlign": "center",
-                      "width": 30,
-                    }
-                  }
                   type="FontAwesome"
                 />,
                 "name": "Settings",
@@ -208,13 +145,6 @@ ShallowWrapper {
                 "callback": [Function],
                 "icon": <Icon
                   name="sign-out"
-                  style={
-                    Object {
-                      "marginRight": 2,
-                      "textAlign": "center",
-                      "width": 30,
-                    }
-                  }
                   type="FontAwesome"
                 />,
                 "name": "Logout",
@@ -239,11 +169,6 @@ ShallowWrapper {
       "props": Object {
         "children": <Content
           padder={true}
-          style={
-            Object {
-              "paddingTop": 20,
-            }
-          }
         >
           <Logo />
           <List
@@ -253,13 +178,6 @@ ShallowWrapper {
                   "callback": [Function],
                   "icon": <Icon
                     name="list"
-                    style={
-                      Object {
-                        "marginRight": 2,
-                        "textAlign": "center",
-                        "width": 30,
-                      }
-                    }
                     type="FontAwesome"
                   />,
                   "name": "My Lists",
@@ -268,13 +186,6 @@ ShallowWrapper {
                   "callback": [Function],
                   "icon": <Icon
                     name="user"
-                    style={
-                      Object {
-                        "marginRight": 2,
-                        "textAlign": "center",
-                        "width": 30,
-                      }
-                    }
                     type="FontAwesome"
                   />,
                   "name": "Settings",
@@ -283,13 +194,6 @@ ShallowWrapper {
                   "callback": [Function],
                   "icon": <Icon
                     name="sign-out"
-                    style={
-                      Object {
-                        "marginRight": 2,
-                        "textAlign": "center",
-                        "width": 30,
-                      }
-                    }
                     type="FontAwesome"
                   />,
                   "name": "Logout",
@@ -315,13 +219,6 @@ ShallowWrapper {
                     "callback": [Function],
                     "icon": <Icon
                       name="list"
-                      style={
-                        Object {
-                          "marginRight": 2,
-                          "textAlign": "center",
-                          "width": 30,
-                        }
-                      }
                       type="FontAwesome"
                     />,
                     "name": "My Lists",
@@ -330,13 +227,6 @@ ShallowWrapper {
                     "callback": [Function],
                     "icon": <Icon
                       name="user"
-                      style={
-                        Object {
-                          "marginRight": 2,
-                          "textAlign": "center",
-                          "width": 30,
-                        }
-                      }
                       type="FontAwesome"
                     />,
                     "name": "Settings",
@@ -345,13 +235,6 @@ ShallowWrapper {
                     "callback": [Function],
                     "icon": <Icon
                       name="sign-out"
-                      style={
-                        Object {
-                          "marginRight": 2,
-                          "textAlign": "center",
-                          "width": 30,
-                        }
-                      }
                       type="FontAwesome"
                     />,
                     "name": "Logout",
@@ -362,9 +245,7 @@ ShallowWrapper {
             />,
           ],
           "padder": true,
-          "style": Object {
-            "paddingTop": 20,
-          },
+          "style": undefined,
         },
         "ref": null,
         "rendered": Array [
@@ -387,13 +268,6 @@ ShallowWrapper {
                   "callback": [Function],
                   "icon": <Icon
                     name="list"
-                    style={
-                      Object {
-                        "marginRight": 2,
-                        "textAlign": "center",
-                        "width": 30,
-                      }
-                    }
                     type="FontAwesome"
                   />,
                   "name": "My Lists",
@@ -402,13 +276,6 @@ ShallowWrapper {
                   "callback": [Function],
                   "icon": <Icon
                     name="user"
-                    style={
-                      Object {
-                        "marginRight": 2,
-                        "textAlign": "center",
-                        "width": 30,
-                      }
-                    }
                     type="FontAwesome"
                   />,
                   "name": "Settings",
@@ -417,13 +284,6 @@ ShallowWrapper {
                   "callback": [Function],
                   "icon": <Icon
                     name="sign-out"
-                    style={
-                      Object {
-                        "marginRight": 2,
-                        "textAlign": "center",
-                        "width": 30,
-                      }
-                    }
                     type="FontAwesome"
                   />,
                   "name": "Logout",
