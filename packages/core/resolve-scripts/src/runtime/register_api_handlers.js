@@ -4,15 +4,15 @@ import { app } from './server'
 import * as assemblies from './assemblies'
 import getRootBasedUrl from './utils/get_root_based_url'
 
-const { rootPath, apiHandlers } = assemblies
+const { rootPath, apiHandlers, constants } = assemblies
 
-const getCustomParameters = async () => ({ resolve: assemblies })
+const getCustomParameters = async () => ({ resolve: constants })
 
 const registerApiHandlers = () => {
-  for (const { path, controller } of apiHandlers) {
+  for (const { path, method, controller } of apiHandlers) {
     const handlerPath = getRootBasedUrl(rootPath, `/api/${path}`)
     const executor = wrapApiHandler(controller, getCustomParameters)
-    app.use(handlerPath, executor)
+    app[method.toLowerCase()](handlerPath, executor)
   }
 }
 

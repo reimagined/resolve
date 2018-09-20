@@ -15,8 +15,10 @@
   },
   "dependencies": {
     "@babel/polyfill": "7.0.0",
+    "deepmerge": "2.2.1",
     "redux": "4.0.0",
     "react": "16.5.2",
+    "resolve-module-auth": "0.17.4",
     "resolve-readmodel-memory": "0.17.4",
     "resolve-redux": "0.17.4",
     "resolve-scripts": "0.17.4",

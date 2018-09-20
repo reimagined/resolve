@@ -1,6 +1,0 @@
-{"type":"StoryCreated","payload":{"title":"Welcome to reSolve Hacker News!","text":"To import news from the origin (https://news.ycombinator.com/), run `npm run import` or `yarn run import` and restart the application","link":"","userId":"f6118edd-aeca-46a7-99fa-56ca72555543","userName":"resolve"},"aggregateId":"0b8aa1db-85ea-46e6-a795-597bd506494e","aggregateVersion":1,"timestamp":1522141781312,"_id":"EoY818SOcOAceAWL"}
-{"type":"UserCreated","payload":{"name":"resolve"},"aggregateId":"f6118edd-aeca-46a7-99fa-56ca72555543","aggregateVersion":1,"timestamp":1522141501439,"_id":"Ti9D060izHZRTDLq"}
-{"$$indexCreated":{"fieldName":"type","unique":false,"sparse":false}}
-{"$$indexCreated":{"fieldName":"aggregateId","unique":false,"sparse":false}}
-{"$$indexCreated":{"fieldName":"aggregateIdAndVersion","unique":false,"sparse":false}}
-{"$$indexCreated":{"fieldName":"aggregateVersion","unique":false,"sparse":false}}

@@ -13,17 +13,37 @@ const getStories = async (type, store, { first, offset }) => {
   return Array.isArray(stories) ? stories : []
 }
 
-export default {
-  user: async (store, { id, name }) => {
-    const user =
-      name != null
-        ? await store.findOne('Users', { name })
-        : id != null
-          ? await store.findOne('Users', { id })
-          : null
+const getStory = async (store, { id }) => {
+  const story = await store.findOne('Stories', { id })
 
-    return user
-  },
+  if (!story) {
+    return null
+  }
+
+  const type = !story.link
+    ? 'ask'
+    : /^(Show HN)/.test(story.title)
+      ? 'show'
+      : 'story'
+
+  Object.assign(story, { type })
+
+  return story
+}
+
+const getUser = async (store, { id, name }) => {
+  const user =
+    name != null
+      ? await store.findOne('Users', { name })
+      : id != null
+        ? await store.findOne('Users', { id })
+        : null
+
+  return user
+}
+
+export default {
+  story: getStory,
 
   allStories: getStories.bind(null, null),
 
@@ -31,17 +51,5 @@ export default {
 
   showStories: getStories.bind(null, 'show'),
 
-  comments: async (store, { first, offset }) => {
-    const skip = first || 0
-    const comments = await store.find(
-      'Comments',
-      {},
-      null,
-      { createdAt: -1 },
-      skip,
-      skip + offset
-    )
-
-    return Array.isArray(comments) ? comments : []
-  }
+  user: getUser
 }

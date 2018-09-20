@@ -3,8 +3,10 @@ import {
   build,
   start,
   watch,
-  runTestcafe
+  runTestcafe,
+  merge
 } from 'resolve-scripts'
+import createAuthModule from 'resolve-module-auth'
 
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
@@ -15,14 +17,34 @@ import appConfig from './config.app'
 const launchMode = process.argv[2]
 
 void (async () => {
+  const authModule = createAuthModule([
+    {
+      name: 'local-strategy',
+      createStrategy: 'domain/auth/create_strategy.js',
+      routes: [
+        {
+          path: 'auth/local/register',
+          method: 'POST',
+          callback: 'domain/auth/route_register_callback.js'
+        },
+        {
+          path: 'auth/local/login',
+          method: 'POST',
+          callback: 'domain/auth/route_login_callback.js'
+        },
+        {
+          path: 'auth/local/logout',
+          method: 'GET',
+          callback: 'domain/auth/route_logout_callback.js'
+        }
+      ]
+    }
+  ])
+
   switch (launchMode) {
     case 'dev': {
       await watch(
-        {
-          ...defaultResolveConfig,
-          ...appConfig,
-          ...devConfig
-        },
+        merge(defaultResolveConfig, appConfig, devConfig, authModule),
         adjustWebpackConfigs.bind(null, devConfig)
       )
       break
@@ -30,28 +52,27 @@ void (async () => {
 
     case 'build': {
       await build(
-        {
-          ...defaultResolveConfig,
-          ...appConfig,
-          ...prodConfig
-        },
+        merge(defaultResolveConfig, appConfig, prodConfig, authModule),
         adjustWebpackConfigs.bind(null, prodConfig)
       )
       break
     }
 
     case 'start': {
-      await start({
-        ...defaultResolveConfig,
-        ...appConfig,
-        ...prodConfig
-      })
+      await start(
+        merge(defaultResolveConfig, appConfig, prodConfig, authModule)
+      )
       break
     }
 
     case 'test:functional': {
       await runTestcafe({
-        resolveConfig: testFunctionalConfig,
+        resolveConfig: merge(
+          defaultResolveConfig,
+          appConfig,
+          testFunctionalConfig,
+          authModule
+        ),
         functionalTestsDir: 'test/functional',
         browser: process.argv[3]
       })

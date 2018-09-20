@@ -2,7 +2,6 @@ import Ajv from 'ajv'
 
 import { schemaResolveConfig, message } from './constants'
 import { checkRuntimeEnv } from './declare_runtime_env'
-import resolveFile from './resolve_file'
 import validatePath from './validate_path'
 
 const ajv = new Ajv()
@@ -39,6 +38,17 @@ export const validateStaticPath = resolveConfig => {
   resolveConfig.staticPath = encodeURI(resolveConfig.staticPath)
 }
 
+const allowedMethods = [
+  'HEAD',
+  'GET',
+  'POST',
+  'PUT',
+  'DELETE',
+  'PATCH',
+  'OPTIONS',
+  'ALL'
+]
+
 export const validateApiHandlers = resolveConfig => {
   if (!resolveConfig.hasOwnProperty('apiHandlers')) {
     return
@@ -47,6 +57,9 @@ export const validateApiHandlers = resolveConfig => {
   for (const [idx, apiHandler] of resolveConfig.apiHandlers.entries()) {
     if (checkRuntimeEnv(apiHandler.path)) {
       throw new Error(`${message.clientEnvError}.apiHandlers[${idx}].path`)
+    }
+    if (checkRuntimeEnv(apiHandler.method)) {
+      throw new Error(`${message.clientEnvError}.apiHandlers[${idx}].method`)
     }
 
     if (checkRuntimeEnv(apiHandler.controller)) {
@@ -65,7 +78,15 @@ export const validateApiHandlers = resolveConfig => {
 
     apiHandler.path = encodeURI(apiHandler.path)
 
-    resolveFile(apiHandler.controller)
+    apiHandler.method = apiHandler.method.toUpperCase()
+
+    if (allowedMethods.indexOf(apiHandler.method) < 0) {
+      throw new Error(
+        `Incorrect options.apiHandlers[${idx}].method = "${
+          apiHandler.path
+        }"\nAPI handler method should be one from following list ${allowedMethods}`
+      )
+    }
   }
 }
 

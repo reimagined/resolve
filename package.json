@@ -57,6 +57,7 @@
       "packages/adapters/api-handler-adapters/*",
       "examples/shopping-list-advanced/*",
       "examples/*",
+      "packages/modules/*",
       "tests"
     ]
   },

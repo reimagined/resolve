@@ -7,9 +7,8 @@ import projection from '../../../common/aggregates/story.projection'
 import {
   STORY_CREATED,
   STORY_UPVOTED,
-  STORY_UNVOTED,
-  STORY_COMMENTED
-} from '../../../common/event_types'
+  STORY_UNVOTED
+} from '../../../common/event-types'
 
 let sandbox
 let userId
@@ -267,8 +266,7 @@ describe('aggregates', () => {
       const nextState = {
         createdAt,
         createdBy: userId,
-        voted: [],
-        comments: {}
+        voted: []
       }
 
       expect(projection[STORY_CREATED](state, event)).toEqual(nextState)
@@ -316,152 +314,6 @@ describe('aggregates', () => {
       }
 
       expect(projection[STORY_UNVOTED](state, event)).toEqual(nextState)
-    })
-  })
-
-  describe('comments', () => {
-    it('command "commentStory" should create an event to create a comment', () => {
-      const text = 'SomeText'
-      const parentId = uuid.v4()
-
-      const state = {
-        createdAt: Date.now(),
-        comments: {}
-      }
-
-      const command = {
-        payload: {
-          text,
-          parentId,
-          userId
-        }
-      }
-
-      const event = commands.commentStory(state, command, () => ({
-        id: userId
-      }))
-
-      expect(event).toEqual({
-        type: STORY_COMMENTED,
-        payload: { text, parentId, userId }
-      })
-    })
-
-    it('command "commentStory" should throw Error "Comment already exists"', () => {
-      const text = 'SomeText'
-      const parentId = uuid.v4()
-      const commentId = uuid.v4()
-
-      const state = {
-        createdAt: Date.now(),
-        comments: {
-          [commentId]: {}
-        }
-      }
-
-      const command = {
-        payload: {
-          text,
-          parentId,
-          userId,
-          commentId
-        }
-      }
-
-      expect(() => commands.commentStory(state, command, token)).toThrowError(
-        'Comment already exists'
-      )
-    })
-
-    it('command "commentStory" should throw Error "The text field is required"', () => {
-      const text = undefined
-      const parentId = uuid.v4()
-
-      const state = {
-        createdAt: Date.now()
-      }
-
-      const command = {
-        payload: {
-          text,
-          parentId,
-          userId
-        }
-      }
-
-      expect(() => commands.commentStory(state, command, token)).toThrowError(
-        'The "text" field is required'
-      )
-    })
-
-    it('command "commentStory" should throw Error "The parentId field is required"', () => {
-      const text = 'SomeText'
-      const parentId = undefined
-
-      const state = {
-        createdAt: Date.now()
-      }
-
-      const command = {
-        payload: {
-          text,
-          parentId,
-          userId
-        }
-      }
-
-      expect(() => commands.commentStory(state, command, token)).toThrowError(
-        'The "parentId" field is required'
-      )
-    })
-
-    it('command "commentStory" should throw Error "The userId field is required"', () => {
-      const text = 'SomeText'
-      const parentId = uuid.v4()
-      const userId = undefined
-      jwt.verify = sandbox
-        .stub()
-        .throws(new Error('The "userId" field is required'))
-
-      const state = {
-        createdAt: Date.now()
-      }
-
-      const command = {
-        payload: {
-          text,
-          parentId,
-          userId
-        }
-      }
-
-      expect(() => commands.commentStory(state, command, token)).toThrowError(
-        'The "userId" field is required'
-      )
-    })
-
-    it('eventHandler "STORY_COMMENTED" should set new comment to state', () => {
-      const createdAt = Date.now()
-      const commentId = uuid.v4()
-
-      const state = projection.Init()
-      const event = {
-        timestamp: createdAt,
-        payload: {
-          userId,
-          commentId
-        }
-      }
-      const nextState = {
-        comments: {
-          [commentId]: {
-            createdAt,
-            createdBy: userId
-          }
-        }
-      }
-
-      expect(projection[STORY_COMMENTED](state, event)).toEqual(nextState)
     })
   })
 })
