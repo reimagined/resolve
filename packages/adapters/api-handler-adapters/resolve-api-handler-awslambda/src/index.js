@@ -16,6 +16,7 @@ const createRequest = async (lambdaEvent, customParameters) => {
   const req = Object.create(null)
 
   const reqProperties = {
+    adapter: 'awslambda',
     method: httpMethod,
     query: queryStringParameters,
     path,

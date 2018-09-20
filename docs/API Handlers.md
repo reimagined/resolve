@@ -14,6 +14,7 @@ The `req` object represents the HTTP request and has properties for the request 
 
 ```js
 {
+  adapter: "express" | "awslambda",
   method: "GET" | "HEAD" | "POST" | "PUT" | "DELETE" | "CONNECT" | "OPTIONS" | "TRACE" | "PATCH",
   path: String,
   body: String,

@@ -8,7 +8,7 @@ describe('resolve-readmodel-base reset', () => {
     const metaApi = { drop: sinon.stub().callsFake(() => disposePromise) }
 
     const internalContext = { key: true }
-    const result = reset({ metaApi, internalContext })
+    const result = reset({ metaApi, internalContext }, true)
 
     expect(result).toEqual(disposePromise)
 

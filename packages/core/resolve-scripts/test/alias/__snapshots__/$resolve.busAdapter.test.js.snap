@@ -2,35 +2,33 @@
 
 exports[`base config works correctly [server] 1`] = `
 "
-import busAdapterModule from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testAdapter.js\\"
-
-const busAdapterOptions = {\\"url\\":\\"http://test.test\\"}
-
-export default {
-  module: busAdapterModule,
-  options: busAdapterOptions
+import busAdapter_constructor from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testAdapter.js\\"
+const busAdapter_imports = {  }
+const busAdapter_options = {
+  \\"url\\": \\"http://test.test\\"
 }
+const busAdapter = busAdapter_constructor(
+      busAdapter_options,
+      busAdapter_imports
+    )
+export default busAdapter
 "
 `;
 
 exports[`config with process.env works correctly 1`] = `
 "
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
-
-const busAdapter = {
-  \\"module\\": \\"process.env[\\\\\\"BUS_ADAPTER\\\\\\"]\\",
-  \\"options\\": {
-    \\"url\\": \\"process.env[\\\\\\"BUS_OPTIONS_URL\\\\\\"]\\"
-  }
+const busAdapter_constructor = ((moduleOrFile) => {
+  return interopRequireDefault(__non_webpack_require__(moduleOrFile)).default
+})(process.env[\\"BUS_ADAPTER\\"])
+const busAdapter_imports = {  }
+const busAdapter_options = {
+  \\"url\\": process.env[\\"BUS_OPTIONS_URL\\"]
 }
-const busAdapterModule = interopRequireDefault(
-  __non_webpack_require__(busAdapter.module)
-).default
-const busAdapterOptions = busAdapter.options
-
-export default {
-  module: busAdapterModule,
-  options: busAdapterOptions
-}
+const busAdapter = busAdapter_constructor(
+      busAdapter_options,
+      busAdapter_imports
+    )
+export default busAdapter
 "
 `;

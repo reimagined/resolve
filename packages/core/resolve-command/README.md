@@ -12,8 +12,8 @@ When initializing a command, pass the following arguments:
 * `aggregates`  
 	An array of [aggregates](../resolve-scripts/src/template#aggregates-and-read-models-).  
 
-Each aggregate can have optional properties `snapshotAdapter` and `snapshotBucketSize`  for managing snapshots mechanism. If properties had not been passed, snapshots are turned off by default.
-Property `snapshotAdapter` receives the adapter for loading and saving intermediate aggregate state. Property `snapshotBucketSize` contains event count between saving the aggregate snapshot. 
+Each aggregate can have optional property `snapshotAdapter` for managing snapshots mechanism. If property had not been passed, snapshots are turned off by default.
+Property `snapshotAdapter` receives the adapter for loading and saving intermediate aggregate state.
 
 
 After the command is initialized, you get a function that is used to send an event to the event store. It receives two arguments:

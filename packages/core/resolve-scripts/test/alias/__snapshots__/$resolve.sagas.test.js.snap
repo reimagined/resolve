@@ -3,9 +3,8 @@
 exports[`base config works correctly [server] 1`] = `
 "
 
-import cronHandlers_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testSagaCronHandlers.js\\"
 import eventHandlers_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testSagaEventHandlers.js\\"
-
+import cronHandlers_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testSagaCronHandlers.js\\"
 
 const name_0 = \\"Saga\\"
 
