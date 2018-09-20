@@ -82,8 +82,8 @@
     "webpack-node-externals": "^1.7.2"
   },
   "peerDependencies": {
-    "react": ">=16.5.1",
-    "react-dom": ">=16.5.1",
+    "react": ">=16.5.2",
+    "react-dom": ">=16.5.2",
     "redux": ">=4.0.0"
   },
   "devDependencies": {

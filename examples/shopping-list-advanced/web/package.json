@@ -7,8 +7,8 @@
     "test:functional": "echo || exit 0"
   },
   "dependencies": {
-    "react": "16.5.1",
-    "react-dom": "16.5.1",
+    "react": "16.5.2",
+    "react-dom": "16.5.2",
     "react-bootstrap": "0.32.1",
     "react-helmet": "5.2.0",
     "react-redux": "5.0.7",

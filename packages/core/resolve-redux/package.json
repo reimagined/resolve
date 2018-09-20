@@ -38,15 +38,15 @@
   },
   "devDependencies": {
     "jest": "23.6.0",
-    "react": "16.5.1",
-    "react-dom": "16.5.1",
+    "react": "16.5.2",
+    "react-dom": "16.5.2",
     "react-test-renderer": "16.4.2",
     "redux": "4.0.0",
     "sinon": "6.3.4"
   },
   "peerDependencies": {
-    "react": ">=16.5.1",
-    "react-dom": ">=16.5.1",
+    "react": ">=16.5.2",
+    "react-dom": ">=16.5.2",
     "redux": ">=4.0.0"
   },
   "babelCompile": [
