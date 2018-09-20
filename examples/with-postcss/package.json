@@ -39,7 +39,7 @@
     "jest-css-modules-transform": "2.0.0",
     "postcss-import": "11.1.0",
     "postcss-loader": "2.1.5",
-    "react-test-renderer": "16.4.2",
+    "react-test-renderer": "16.5.2",
     "style-loader": "0.21.0",
     "testcafe": "0.22.0"
   }
