@@ -1,6 +1,6 @@
-import { message } from '../constants'
-import resolveFile from '../resolve_file'
+import { message, RESOURCE_ANY, RUNTIME_ENV_ANYWHERE } from '../constants'
 import { checkRuntimeEnv } from '../declare_runtime_env'
+import importResource from '../import_resource'
 
 export default ({ resolveConfig, isClient }) => {
   if (isClient) {
@@ -27,21 +27,16 @@ export default ({ resolveConfig, isClient }) => {
     if (checkRuntimeEnv(apiHandler.path)) {
       throw new Error(`${message.clientEnvError}.apiHandlers[${index}].path`)
     }
-    const path = apiHandler.path
+    constants.push(`const path_${index} = ${JSON.stringify(apiHandler.path)}`)
 
-    if (checkRuntimeEnv(apiHandler.controller)) {
-      throw new Error(
-        `${message.clientEnvError}.apiHandlers[${index}].controller`
-      )
-    }
-    const controller = resolveFile(apiHandler.controller)
-
-    constants.push(`const path_${index} = ${JSON.stringify(path)}`)
-
-    imports.push(
-      `import controller_${index} from ${JSON.stringify(controller)}`,
-      ``
-    )
+    importResource({
+      resourceName: `controller_${index}`,
+      resourceValue: apiHandler.controller,
+      runtimeMode: RUNTIME_ENV_ANYWHERE,
+      importMode: RESOURCE_ANY,
+      imports,
+      constants
+    })
 
     exports.push(`apiHandlers.push({`, `  path: path_${index}`)
     exports.push(`, controller: controller_${index}`)

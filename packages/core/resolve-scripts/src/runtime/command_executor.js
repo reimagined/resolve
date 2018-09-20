@@ -12,8 +12,7 @@ const commandExecutor = createCommandExecutor({
 
     return {
       ...aggregate,
-      snapshotAdapter: snapshotAdapter.module(snapshotAdapter.options),
-      snapshotBucketSize: snapshotAdapter.options.bucketSize
+      snapshotAdapter
     }
   })
 })
