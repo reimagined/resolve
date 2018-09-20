@@ -42,3 +42,14 @@ System is divided in two "sides":
 - Read Side applies events to Read Models, and process queries.
 
 Write side is optimized for writing, read side - for reading.
+
+
+
+
+
+# Examples
+
+
+
+
+# Learning Resouces

@@ -1,3 +1,0 @@
-# reSolve app structure
-
-## Configuration
