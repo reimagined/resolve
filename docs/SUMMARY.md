@@ -35,7 +35,7 @@
     - [Reactive View Models, Event Subscription](Basics/Frontend.md#reactive-view-vodels-event-subscription)
     - [Optimistic Commands](Basics/Frontend.md#optimistic-commands)
 
-- [Authentication and Authorization](Authentication%20and%20Authorization.md)
+- [Authentication and Authorization](auth.md)
 
   - [Setting up Authentication](Authentication%20and%20Authorization.md#setting-up-authentication)
   - [Using 3rd Party Auth Services](Authentication%20and%20Authorization.md#using-3rd-party-auth-services)
