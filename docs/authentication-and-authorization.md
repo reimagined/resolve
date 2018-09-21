@@ -63,7 +63,21 @@ users.resolvers.js:
 
 ```js
 ...
-  user: async(store, id) => store.findOne('Users', {id})
+  userById: async(store, id) => store.findOne('Users', {id})
+...
+```
+
+Now upon login you can query Users read model and store user record with its permissions in the JWT Token:
+
+```js
+...
+        const user = await resolve.executeQuery({
+          modelName: 'Users',
+          resolverName: 'userById',
+          resolverArgs: { id }
+        })
+        if (user)
+           return jwt.sign(user, jwtSecret)
 ...
 ```
 
