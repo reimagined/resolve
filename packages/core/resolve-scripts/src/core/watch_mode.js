@@ -24,12 +24,11 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
 
   const serverPath = path.resolve(__dirname, '../../lib/runtime/index.js')
   const server = respawn(
-    [serverPath, `--distDir=${JSON.stringify(resolveConfig.distDir)}`],
+    ['node', serverPath, `--distDir=${JSON.stringify(resolveConfig.distDir)}`],
     {
       maxRestarts: 0,
       kill: 5000,
-      stdio: 'inherit',
-      fork: true
+      stdio: 'inherit'
     }
   )
 
@@ -76,7 +75,7 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
 
         if (hasErrors) {
           server.stop()
-          reject(stats)
+          reject('')
         } else {
           if (server.status === 'running') {
             process.env.RESOLVE_SERVER_FIRST_START = 'false'

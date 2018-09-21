@@ -10,5 +10,5 @@ fixture`Todo`.beforeEach(async t => {
 })
 
 test('should list be empty', async t => {
-  await t.expect(await Selector('a').count).eql(0)
+  await t.expect(await Selector('td > a').count).eql(0)
 })

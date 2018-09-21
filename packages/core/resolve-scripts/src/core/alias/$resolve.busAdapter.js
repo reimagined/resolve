@@ -1,6 +1,9 @@
-import { message } from '../constants'
-import resolveFileOrModule from '../resolve_file_or_module'
-import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
+import {
+  message,
+  RESOURCE_CONSTRUCTOR_ONLY,
+  RUNTIME_ENV_ANYWHERE
+} from '../constants'
+import importResource from '../import_resource'
 
 export default ({ resolveConfig, isClient }) => {
   if (isClient) {
@@ -13,46 +16,22 @@ export default ({ resolveConfig, isClient }) => {
     throw new Error(`${message.configNotContainSectionError}.busAdapter`)
   }
 
-  const busAdapter = resolveConfig.busAdapter
-    ? {
-        module: checkRuntimeEnv(resolveConfig.busAdapter.module)
-          ? resolveConfig.busAdapter.module
-          : resolveFileOrModule(resolveConfig.busAdapter.module),
-        options: {
-          ...resolveConfig.busAdapter.options
-        }
-      }
-    : {}
-
+  const imports = []
+  const constants = []
   const exports = []
 
-  if (checkRuntimeEnv(busAdapter.module)) {
-    exports.push(
-      `import interopRequireDefault from "@babel/runtime/helpers/interopRequireDefault"`,
-      ``,
-      `const busAdapter = ${injectRuntimeEnv(busAdapter)}`,
-      `const busAdapterModule = interopRequireDefault(`,
-      `  __non_webpack_require__(busAdapter.module)`,
-      `).default`,
-      `const busAdapterOptions = busAdapter.options`
-    )
-  } else {
-    exports.push(
-      `import busAdapterModule from ${JSON.stringify(busAdapter.module)}`,
-      ``,
-      `const busAdapterOptions = ${JSON.stringify(busAdapter.options)}`
-    )
-  }
+  importResource({
+    resourceName: 'busAdapter',
+    resourceValue: resolveConfig.busAdapter,
+    runtimeMode: RUNTIME_ENV_ANYWHERE,
+    importMode: RESOURCE_CONSTRUCTOR_ONLY,
+    imports,
+    constants
+  })
 
-  exports.push(
-    ``,
-    `export default {`,
-    `  module: busAdapterModule,`,
-    `  options: busAdapterOptions`,
-    `}`
-  )
+  exports.push('export default busAdapter')
 
   return {
-    code: exports.join('\r\n')
+    code: [...imports, ...constants, ...exports].join('\r\n')
   }
 }

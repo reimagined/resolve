@@ -18,9 +18,8 @@ export default {
     ...state,
     name
   }),
-  [SHOPPING_LIST_REMOVED]: (state, { payload: { name } }) => ({
-    ...state,
-    name
+  [SHOPPING_LIST_REMOVED]: () => ({
+    removed: true
   }),
   [SHOPPING_ITEM_CREATED]: (state, { payload: { id, text } }) => ({
     ...state,

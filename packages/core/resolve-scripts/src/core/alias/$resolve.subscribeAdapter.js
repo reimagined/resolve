@@ -1,54 +1,63 @@
-import { message } from '../constants'
+import {
+  message,
+  RUNTIME_ENV_NOWHERE,
+  RESOURCE_CONSTRUCTOR_ONLY,
+  RUNTIME_ENV_OPTIONS_ONLY
+} from '../constants'
 import { checkRuntimeEnv } from '../declare_runtime_env'
-import resolveFileOrModule from '../resolve_file_or_module'
+import importResource from '../import_resource'
 
 export default ({ resolveConfig, isClient }) => {
   if (!resolveConfig.subscribeAdapter) {
     throw new Error(`${message.configNotContainSectionError}.subscribeAdapter`)
   }
 
+  if (
+    resolveConfig.subscribeAdapter.module == null ||
+    resolveConfig.subscribeAdapter.module.constructor !== String
+  ) {
+    throw new Error(
+      `${message.configNotContainSectionError}.subscribeAdapter.module`
+    )
+  }
+
   if (checkRuntimeEnv(resolveConfig.subscribeAdapter.module)) {
-    throw new Error(`${message.clientEnvError}.subscribeAdapter.module`)
+    throw new Error(`${message.message.clientEnvError}.subscribeAdapter.module`)
   }
 
-  for (const option of Object.keys(resolveConfig.subscribeAdapter.options)) {
-    if (checkRuntimeEnv(resolveConfig.subscribeAdapter.options[option])) {
-      throw new Error(
-        `${message.clientEnvError}.subscribeAdapter.options.${option}`
-      )
-    }
-  }
-
-  for (const option of Object.keys(resolveConfig.subscribeAdapter.options)) {
-    if (checkRuntimeEnv(resolveConfig.subscribeAdapter.options[option])) {
-      throw new Error(
-        `${message.clientEnvError}.subscribeAdapter.options.${option}`
-      )
-    }
-  }
-
+  const imports = []
+  const constants = []
   const exports = []
 
-  const subscribeAdapter = {
-    module: resolveFileOrModule(
-      `${resolveConfig.subscribeAdapter.module}/lib/${
-        isClient ? 'client' : 'server'
-      }`
-    ),
-    options: isClient
-      ? resolveConfig.subscribeAdapter.options.client || {}
-      : resolveConfig.subscribeAdapter.options.server || {}
+  if (isClient) {
+    importResource({
+      resourceName: `subscribe_adapter`,
+      resourceValue: {
+        module: `${resolveConfig.subscribeAdapter.module}/lib/client`,
+        options: resolveConfig.subscribeAdapter.options.client
+      },
+      runtimeMode: RUNTIME_ENV_NOWHERE,
+      importMode: RESOURCE_CONSTRUCTOR_ONLY,
+      imports,
+      constants
+    })
+  } else {
+    importResource({
+      resourceName: `subscribe_adapter`,
+      resourceValue: {
+        module: `${resolveConfig.subscribeAdapter.module}/lib/server`,
+        options: resolveConfig.subscribeAdapter.options.server
+      },
+      runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
+      importMode: RESOURCE_CONSTRUCTOR_ONLY,
+      imports,
+      constants
+    })
   }
 
-  exports.push(
-    `import module from ${JSON.stringify(`${subscribeAdapter.module}`)}`,
-    ``,
-    `const options = ${JSON.stringify(subscribeAdapter.options, null, 2)}`,
-    ``,
-    `export default { module, options }`
-  )
+  exports.push(`export default subscribe_adapter`)
 
   return {
-    code: exports.join('\r\n')
+    code: [...imports, ...constants, ...exports].join('\r\n')
   }
 }
