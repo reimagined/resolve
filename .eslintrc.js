@@ -162,6 +162,7 @@ module.exports = {
           'lan',
           'len',
           'libs',
+          'linearized',
           'localhost',
           'lodash',
           'lte',
