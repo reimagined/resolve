@@ -71,6 +71,7 @@ module.exports = {
           'bson',
           'bool',
           'buf',
+          'btn',
           'calc',
           'cax',
           'cdn',

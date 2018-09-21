@@ -1,5 +1,5 @@
 export default {
-  shoppingLists: async store => {
+  all: async store => {
     return await store.find('ShoppingLists', {})
   }
 }
