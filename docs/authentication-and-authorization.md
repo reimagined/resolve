@@ -6,6 +6,10 @@
 
 If you want to store user registry in your application, or if you need to store an additional information about users, not provided by authentication service (like roles or permissions), then you can make User an aggregate, and accept commands, generate events, create read model, and eventually use Users read model during login to look up current user's information and put it into JWT Token.
 
+For example, if you want to grant permissions to user, you can write something like this:
+
+Write side. "user" aggregate:
+
 user.commands.js:
 
 ```js
@@ -23,6 +27,43 @@ user.commands.js:
          }
      }
   }
+...
+```
+
+user.projection.js:
+
+```js
+...
+  [PERMISSION_GRANTED]: (state, {payload: {permission}}) => ({
+      ...state,
+      permissions: [...state.permissions, permission]
+  })
+...
+```
+
+Read side. "users" read model:
+users.projection.js:
+
+```js
+...
+  [PERMISSION_GRANTED]: async (store, {aggregateId, payload:{permission}}) => {
+      const user = await store.findOne('Users', { id: aggregateId })
+      if (user) {
+          await store.update(
+            'Users',
+            { id: aggregateId },
+            { $set: {permissions: [...user.permissions, permission]}}
+          )
+      }
+  }
+...
+```
+
+users.resolvers.js:
+
+```js
+...
+  user: async(store, id) => store.findOne('Users', {id})
 ...
 ```
 
