@@ -5,7 +5,7 @@ import {
   subscribeAdapterAlreadyInitialized
 } from './constants'
 
-const createClientAdapter = () => ({ origin, rootPath, url, onEvent }) => {
+const createClientAdapter = ({ origin, rootPath, url, onEvent }) => {
   let client
   let isInitialized
 

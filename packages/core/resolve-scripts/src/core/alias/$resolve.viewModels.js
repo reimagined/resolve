@@ -4,7 +4,9 @@ import {
   RESOURCE_ANY,
   RUNTIME_ENV_OPTIONS_ONLY,
   RESOURCE_CONSTRUCTOR_ONLY,
-  RUNTIME_ENV_ANYWHERE
+  RUNTIME_ENV_ANYWHERE,
+  IMPORT_CONSTRUCTOR,
+  IMPORT_INSTANCE
 } from '../constants'
 import { checkRuntimeEnv } from '../declare_runtime_env'
 import importResource from '../import_resource'
@@ -31,6 +33,7 @@ export default ({ resolveConfig, isClient }) => {
       resourceValue: viewModel.projection,
       runtimeMode: RUNTIME_ENV_NOWHERE,
       importMode: RESOURCE_ANY,
+      instanceMode: IMPORT_INSTANCE,
       calculateHash: !isClient ? 'resolve-view-model-projection-hash' : null,
       imports,
       constants
@@ -41,6 +44,7 @@ export default ({ resolveConfig, isClient }) => {
       resourceValue: viewModel.deserializeState,
       runtimeMode: RUNTIME_ENV_NOWHERE,
       importMode: RESOURCE_ANY,
+      instanceMode: IMPORT_INSTANCE,
       instanceFallback: 'view_model_deserialize_state.js',
       imports,
       constants
@@ -61,6 +65,7 @@ export default ({ resolveConfig, isClient }) => {
         resourceValue: viewModel.serializeState,
         runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
         importMode: RESOURCE_ANY,
+        instanceMode: IMPORT_INSTANCE,
         instanceFallback: 'view_model_serialize_state.js',
         imports,
         constants
@@ -73,6 +78,7 @@ export default ({ resolveConfig, isClient }) => {
         resourceValue: viewModel.validator,
         runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
         importMode: RESOURCE_ANY,
+        instanceMode: IMPORT_INSTANCE,
         instanceFallback: 'view_model_validator.js',
         imports,
         constants
@@ -86,6 +92,7 @@ export default ({ resolveConfig, isClient }) => {
           resourceValue: viewModel.snapshotAdapter,
           runtimeMode: RUNTIME_ENV_ANYWHERE,
           importMode: RESOURCE_CONSTRUCTOR_ONLY,
+          instanceMode: IMPORT_CONSTRUCTOR,
           imports,
           constants
         })

@@ -3,11 +3,24 @@
 exports[`base config works correctly [server] 1`] = `
 "
 import busAdapter_constructor from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testAdapter.js\\"
+const constructorBindFunction =
+    (
+      constructorFunction,
+      compileTimeOptions,
+      compileTimeImports,
+      runTimeOptions,
+      runTimeImports
+    ) => constructorFunction(
+      { ...compileTimeOptions, ...runTimeOptions },
+      { ...compileTimeImports, ...runTimeImports }
+    )
+const idempotentFunction = value => value
 const busAdapter_imports = {  }
 const busAdapter_options = {
   \\"url\\": \\"http://test.test\\"
 }
-const busAdapter = busAdapter_constructor(
+const busAdapter = constructorBindFunction.bind(null,
+      busAdapter_constructor,
       busAdapter_options,
       busAdapter_imports
     )
@@ -18,6 +31,18 @@ export default busAdapter
 exports[`config with process.env works correctly 1`] = `
 "
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
+const constructorBindFunction =
+    (
+      constructorFunction,
+      compileTimeOptions,
+      compileTimeImports,
+      runTimeOptions,
+      runTimeImports
+    ) => constructorFunction(
+      { ...compileTimeOptions, ...runTimeOptions },
+      { ...compileTimeImports, ...runTimeImports }
+    )
+const idempotentFunction = value => value
 const busAdapter_constructor = ((moduleOrFile) => {
   return interopRequireDefault(__non_webpack_require__(moduleOrFile)).default
 })(process.env[\\"BUS_ADAPTER\\"])
@@ -25,7 +50,8 @@ const busAdapter_imports = {  }
 const busAdapter_options = {
   \\"url\\": process.env[\\"BUS_OPTIONS_URL\\"]
 }
-const busAdapter = busAdapter_constructor(
+const busAdapter = constructorBindFunction.bind(null,
+      busAdapter_constructor,
       busAdapter_options,
       busAdapter_imports
     )

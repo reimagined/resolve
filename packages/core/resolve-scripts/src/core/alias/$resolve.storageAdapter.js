@@ -1,7 +1,8 @@
 import {
   message,
   RESOURCE_CONSTRUCTOR_ONLY,
-  RUNTIME_ENV_ANYWHERE
+  RUNTIME_ENV_ANYWHERE,
+  IMPORT_CONSTRUCTOR
 } from '../constants'
 import importResource from '../import_resource'
 
@@ -25,6 +26,7 @@ export default ({ resolveConfig, isClient }) => {
     resourceValue: resolveConfig.storageAdapter,
     runtimeMode: RUNTIME_ENV_ANYWHERE,
     importMode: RESOURCE_CONSTRUCTOR_ONLY,
+    instanceMode: IMPORT_CONSTRUCTOR,
     imports,
     constants
   })
