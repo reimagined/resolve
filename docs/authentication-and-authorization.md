@@ -4,7 +4,29 @@
 
 # Making Your Own User Registry
 
-# Using JWT Tokens for C and Q Authorization
+If you want to store user registry in your application, or if you need to store an additional information about users, not provided by authentication service (like roles or permissions), then you can make User an aggregate, and accept commands, generate events, create read model, and eventually use Users read model during login to look up current user's information and put it into JWT Token.
+
+user.commands.js:
+
+```js
+...
+  grantPermission: (state, command) => {
+     const {payload: {permission: permissionToGrant }} = command;
+
+     if (state.permissions.includes(permissionToGrant)) {
+         throw new Error("permission aleady granted")
+     }
+     return {
+         type: PERMISSION_GRANTED,
+         payload: {
+             permission: permissionToGrant
+         }
+     }
+  }
+...
+```
+
+# Using JWT Tokens for Command and Query Authorization
 
 Every command and query handler accepts a JWT Token that was obtained during authentication process.
 
@@ -18,12 +40,12 @@ const { id: userId } = jwt.verify(jwtToken, jwtSecret);
 ```
 
 You can store any information you need in JWT Token. For instance, during authentication, you can look up
-user's rights and store them in the token. Then you can check for user's rights on command or query execution like this:
+user's permissions and store them in the token. Then you can check for user's permissions on command or query execution like this:
 
 ```js
-  const { id: userId, rights } = jwt.verify(jwtToken, jwtSecret);
+  const { id: userId, permissions } = jwt.verify(jwtToken, jwtSecret);
 
-  if (rights && rights.includes("admin")) {
+  if (permissions && permissions.includes("admin")) {
       ...
   } else {
       throw new Error("Access denied");
