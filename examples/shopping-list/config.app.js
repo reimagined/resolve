@@ -10,27 +10,27 @@ const appConfig = {
   aggregates: [
     {
       name: 'ShoppingList',
-      commands: 'common/aggregates/shoppingList.commands.js',
-      projection: 'common/aggregates/shoppingList.projection.js'
+      commands: 'common/aggregates/shopping_list.commands.js',
+      projection: 'common/aggregates/shopping_list.projection.js'
     }
   ],
   viewModels: [
     {
       name: 'ShoppingList',
-      projection: 'common/view-models/shoppingList.projection.js'
+      projection: 'common/view-models/shopping_list.projection.js'
     }
   ],
   readModels: [
     {
-      name: 'Default',
-      projection: 'common/read-models/default.projection.js',
-      resolvers: 'common/read-models/default.resolvers.js'
+      name: 'ShoppingLists',
+      projection: 'common/read-models/shopping_lists.projection.js',
+      resolvers: 'common/read-models/shopping_lists.resolvers.js'
     }
   ],
   apiHandlers: [
     {
-      path: 'get-list-json',
-      controller: 'common/api-handlers/get-list-json.js'
+      path: 'shopping-lists.json',
+      controller: 'common/api-handlers/shopping_lists.js'
     }
   ]
 }

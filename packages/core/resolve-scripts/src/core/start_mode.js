@@ -5,12 +5,11 @@ export default async resolveConfig => {
   const serverPath = path.resolve(__dirname, '../../lib/runtime/index.js')
 
   const server = respawn(
-    [serverPath, `--distDir=${JSON.stringify(resolveConfig.distDir)}`],
+    ['node', serverPath, `--distDir=${JSON.stringify(resolveConfig.distDir)}`],
     {
       maxRestarts: 0,
       kill: 5000,
-      stdio: 'inherit',
-      fork: true
+      stdio: 'inherit'
     }
   )
 

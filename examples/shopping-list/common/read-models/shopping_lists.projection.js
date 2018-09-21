@@ -2,7 +2,7 @@ import {
   SHOPPING_LIST_CREATED,
   SHOPPING_LIST_REMOVED,
   SHOPPING_LIST_RENAMED
-} from '../eventTypes'
+} from '../event_types'
 
 export default {
   Init: async store => {

@@ -36,7 +36,6 @@ Pass the following arguments to the `createViewModel` factory function to create
 * `eventStore` - A configured [eventStore](../resolve-es) instance.
 * `projection` - A map of [Redux-like Reducer functions](https://redux.js.org/docs/basics/Reducers.html). A function per each event type.
 * `snapshotAdapter` - An adapter for loading and saving the intermediate Aggregate state. The argument is optional, snapshots are not used by default.
-* `snapshotBucketSize` - Number of events between storing an aggregate snapshot. Argument is optional, the default value is 100.
 
 You can access Resolvers and query data from Read Models using a Facade, which supports the following functions:
 * `read` - Performs a query from a View Model using Resolvers.

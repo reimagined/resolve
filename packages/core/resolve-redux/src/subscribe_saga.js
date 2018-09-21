@@ -19,10 +19,7 @@ const subscribeSaga = function*({
   origin,
   rootPath,
   store,
-  subscribeAdapter: {
-    module: createSubscribeAdapter,
-    options: subscribeAdapterOptions
-  }
+  subscribeAdapter: createSubscribeAdapter
 }) {
   const connectionManager = createConnectionManager()
 
@@ -32,7 +29,6 @@ const subscribeSaga = function*({
     const onEvent = event => store.dispatch(dispatchTopicMessage(event))
 
     const subscribeAdapter = createSubscribeAdapter({
-      ...subscribeAdapterOptions,
       appId,
       origin,
       rootPath,
