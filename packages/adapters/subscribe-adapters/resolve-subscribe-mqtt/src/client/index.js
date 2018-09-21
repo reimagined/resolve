@@ -10,13 +10,7 @@ import {
 
 const qos = 1
 
-const createClientAdapter = () => ({
-  origin,
-  rootPath,
-  url,
-  appId,
-  onEvent
-}) => {
+const createClientAdapter = ({ origin, rootPath, url, appId, onEvent }) => {
   let client
   let isInitialized
 

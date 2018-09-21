@@ -2,7 +2,8 @@ import {
   message,
   RUNTIME_ENV_NOWHERE,
   RESOURCE_CONSTRUCTOR_ONLY,
-  RUNTIME_ENV_OPTIONS_ONLY
+  RUNTIME_ENV_OPTIONS_ONLY,
+  IMPORT_CONSTRUCTOR
 } from '../constants'
 import { checkRuntimeEnv } from '../declare_runtime_env'
 import importResource from '../import_resource'
@@ -38,6 +39,7 @@ export default ({ resolveConfig, isClient }) => {
       },
       runtimeMode: RUNTIME_ENV_NOWHERE,
       importMode: RESOURCE_CONSTRUCTOR_ONLY,
+      instanceMode: IMPORT_CONSTRUCTOR,
       imports,
       constants
     })
@@ -50,6 +52,7 @@ export default ({ resolveConfig, isClient }) => {
       },
       runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
       importMode: RESOURCE_CONSTRUCTOR_ONLY,
+      instanceMode: IMPORT_CONSTRUCTOR,
       imports,
       constants
     })

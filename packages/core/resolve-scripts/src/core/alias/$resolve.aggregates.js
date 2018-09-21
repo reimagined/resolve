@@ -3,7 +3,9 @@ import {
   RESOURCE_CONSTRUCTOR_ONLY,
   RESOURCE_ANY,
   RUNTIME_ENV_NOWHERE,
-  RUNTIME_ENV_ANYWHERE
+  RUNTIME_ENV_ANYWHERE,
+  IMPORT_CONSTRUCTOR,
+  IMPORT_INSTANCE
 } from '../constants'
 import importBabel from '../import_babel'
 import { checkRuntimeEnv } from '../declare_runtime_env'
@@ -33,6 +35,7 @@ export default ({ resolveConfig, isClient }) => {
       resourceValue: aggregate.commands,
       runtimeMode: RUNTIME_ENV_NOWHERE,
       importMode: RESOURCE_ANY,
+      instanceMode: IMPORT_INSTANCE,
       imports: !isClient ? imports : [],
       constants: !isClient ? constants : []
     })
@@ -72,6 +75,7 @@ export default ({ resolveConfig, isClient }) => {
         resourceValue: aggregate.projection,
         runtimeMode: RUNTIME_ENV_NOWHERE,
         importMode: RESOURCE_ANY,
+        instanceMode: IMPORT_INSTANCE,
         calculateHash: 'resolve-aggregate-projection-hash',
         imports,
         constants
@@ -86,6 +90,7 @@ export default ({ resolveConfig, isClient }) => {
         resourceValue: aggregate.snapshotAdapter,
         runtimeMode: RUNTIME_ENV_ANYWHERE,
         importMode: RESOURCE_CONSTRUCTOR_ONLY,
+        instanceMode: IMPORT_CONSTRUCTOR,
         imports,
         constants
       })

@@ -17,7 +17,7 @@ const createQuery = ({ eventStore, viewModels, readModels }) => {
     const executor = createReadModel({
       projection: readModel.projection,
       resolvers: readModel.resolvers,
-      adapter: readModel.adapter,
+      adapter: readModel.adapter(),
       eventStore
     })
 
@@ -31,11 +31,16 @@ const createQuery = ({ eventStore, viewModels, readModels }) => {
       errorMessages.push(`${errors.duplicateName} "${viewModel}"`)
     }
 
+    const snapshotAdapter =
+      typeof viewModel.snapshotAdapter === 'function'
+        ? viewModel.snapshotAdapter()
+        : null
+
     const executor = createViewModel({
       projection: viewModel.projection,
       invariantHash: viewModel.invariantHash,
       serializeState: viewModel.serializeState,
-      snapshotAdapter: viewModel.snapshotAdapter,
+      snapshotAdapter,
       eventStore
     })
 

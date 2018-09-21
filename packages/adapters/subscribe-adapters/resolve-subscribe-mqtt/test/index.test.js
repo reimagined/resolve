@@ -1,4 +1,4 @@
-import createSubscribeAdapterConstructor from '../src/client/index'
+import createSubscribeAdapter from '../src/client/index'
 import mqtt from 'mqtt'
 
 const delay = timeout =>
@@ -13,16 +13,6 @@ const events = []
 const onEvent = event => {
   events.push(event)
 }
-
-let createSubscribeAdapter = null
-
-beforeEach(() => {
-  createSubscribeAdapter = createSubscribeAdapterConstructor()
-})
-
-afterEach(() => {
-  createSubscribeAdapter = null
-})
 
 test('createSubscribeAdapter should return subscribeAdapter', () => {
   const subscribeAdapter = createSubscribeAdapter({ url, appId, onEvent })

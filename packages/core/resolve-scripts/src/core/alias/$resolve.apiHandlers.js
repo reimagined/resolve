@@ -1,4 +1,9 @@
-import { message, RESOURCE_ANY, RUNTIME_ENV_ANYWHERE } from '../constants'
+import {
+  message,
+  RESOURCE_ANY,
+  RUNTIME_ENV_ANYWHERE,
+  IMPORT_INSTANCE
+} from '../constants'
 import { checkRuntimeEnv } from '../declare_runtime_env'
 import importResource from '../import_resource'
 
@@ -34,6 +39,7 @@ export default ({ resolveConfig, isClient }) => {
       resourceValue: apiHandler.controller,
       runtimeMode: RUNTIME_ENV_ANYWHERE,
       importMode: RESOURCE_ANY,
+      instanceMode: IMPORT_INSTANCE,
       imports,
       constants
     })

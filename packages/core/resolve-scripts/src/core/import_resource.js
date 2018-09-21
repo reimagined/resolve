@@ -11,7 +11,9 @@ import {
   RUNTIME_ENV_NOWHERE,
   RESOURCE_CONSTRUCTOR_ONLY,
   RESOURCE_INSTANCE_ONLY,
-  RESOURCE_ANY
+  RESOURCE_ANY,
+  IMPORT_CONSTRUCTOR,
+  IMPORT_INSTANCE
 } from './constants'
 
 const createHashCompileTime = (prefix, content) => {
@@ -47,6 +49,29 @@ const ensureInteropRequireDefault = imports => {
   }
 }
 
+const ensureFunctionBindings = constants => {
+  const idempotentFunction = 'const idempotentFunction = value => value'
+  const constructorBindFunction = `const constructorBindFunction =
+    (
+      constructorFunction,
+      compileTimeOptions,
+      compileTimeImports,
+      runTimeOptions,
+      runTimeImports
+    ) => constructorFunction(
+      { ...compileTimeOptions, ...runTimeOptions },
+      { ...compileTimeImports, ...runTimeImports }
+    )`
+
+  if (constants.indexOf(idempotentFunction) < 0) {
+    constants.unshift(idempotentFunction)
+  }
+
+  if (constants.indexOf(constructorBindFunction) < 0) {
+    constants.unshift(constructorBindFunction)
+  }
+}
+
 const isPrimitiveType = value =>
   value == null ||
   value.constructor === Number ||
@@ -79,10 +104,18 @@ const validateImportMode = importMode => {
   }
 }
 
+const validateInstanceMode = instanceMode => {
+  if (instanceMode !== IMPORT_CONSTRUCTOR && instanceMode !== IMPORT_INSTANCE) {
+    throwInternalError(`wrong instance mode ${instanceMode}`)
+  }
+}
+
 const importEmptyResource = ({
   imports,
+  constants,
   resourceName,
   importMode = RESOURCE_ANY,
+  instanceMode = IMPORT_INSTANCE,
   instanceFallback = null
 }) => {
   if (importMode === RESOURCE_CONSTRUCTOR_ONLY || instanceFallback == null) {
@@ -92,9 +125,17 @@ const importEmptyResource = ({
   }
 
   const resourceFile = resolveFile(null, instanceFallback)
-  imports.push(`import ${resourceName} from ${JSON.stringify(resourceFile)}`)
+  imports.push(
+    `import ${resourceName}_instance from ${JSON.stringify(resourceFile)}`
+  )
 
-  return
+  if (instanceMode === IMPORT_CONSTRUCTOR) {
+    constants.push(
+      `const ${resourceName} = idempotentFunction.bind(null, ${resourceName}_instance)`
+    )
+  } else {
+    constants.push(`const ${resourceName} = ${resourceName}_instance`)
+  }
 }
 
 const validateInstanceResource = ({
@@ -123,6 +164,7 @@ const importInstanceResource = ({
   resourceValue,
   runtimeMode = RUNTIME_ENV_NOWHERE,
   importMode = RESOURCE_ANY,
+  instanceMode = IMPORT_INSTANCE,
   instanceFallback = null,
   calculateHash = null
 }) => {
@@ -135,7 +177,9 @@ const importInstanceResource = ({
 
   if (!checkRuntimeEnv(resourceValue)) {
     const resourceFile = resolveFile(resourceValue, instanceFallback)
-    imports.push(`import ${resourceName} from ${JSON.stringify(resourceFile)}`)
+    imports.push(
+      `import ${resourceName}_instance from ${JSON.stringify(resourceFile)}`
+    )
 
     if (calculateHash != null) {
       constants.push(
@@ -150,7 +194,7 @@ const importInstanceResource = ({
   } else {
     ensureInteropRequireDefault(imports)
     constants.push(
-      `const ${resourceName} = ${importFileRuntime(
+      `const ${resourceName}_instance = ${importFileRuntime(
         injectRuntimeEnv(resourceValue)
       )}`
     )
@@ -163,6 +207,14 @@ const importInstanceResource = ({
         )}`
       )
     }
+  }
+
+  if (instanceMode === IMPORT_CONSTRUCTOR) {
+    constants.push(
+      `const ${resourceName} = idempotentFunction.bind(null, ${resourceName}_instance)`
+    )
+  } else {
+    constants.push(`const ${resourceName} = ${resourceName}_instance`)
   }
 }
 
@@ -406,6 +458,7 @@ const importConstructorResource = ({
   resourceValue,
   runtimeMode = RUNTIME_ENV_NOWHERE,
   importMode = RESOURCE_ANY,
+  instanceMode = IMPORT_INSTANCE,
   calculateHash = null
 }) => {
   validateConstructorResource({
@@ -439,12 +492,20 @@ const importConstructorResource = ({
     calculateHash
   })
 
-  constants.push(
-    `const ${resourceName} = ${resourceName}_constructor(
+  constants.push()
+
+  if (instanceMode === IMPORT_CONSTRUCTOR) {
+    constants.push(`const ${resourceName} = constructorBindFunction.bind(null,
+      ${resourceName}_constructor,
       ${resourceName}_options,
       ${resourceName}_imports
-    )`
-  )
+    )`)
+  } else {
+    constants.push(`const ${resourceName} = ${resourceName}_constructor(
+      ${resourceName}_options,
+      ${resourceName}_imports
+    )`)
+  }
 
   if (calculateHash != null) {
     constants.push(
@@ -461,9 +522,11 @@ const importConstructorResource = ({
 }
 
 const importResource = options => {
-  const { runtimeMode, importMode, resourceValue } = options
+  const { runtimeMode, importMode, instanceMode, resourceValue } = options
   validateRuntimeMode(runtimeMode)
   validateImportMode(importMode)
+  validateInstanceMode(instanceMode)
+  ensureFunctionBindings(options.constants)
 
   if (resourceValue == null) {
     return importEmptyResource(options)

@@ -1,4 +1,9 @@
-import { message, RESOURCE_ANY, RUNTIME_ENV_ANYWHERE } from '../constants'
+import {
+  message,
+  RESOURCE_ANY,
+  RUNTIME_ENV_ANYWHERE,
+  IMPORT_INSTANCE
+} from '../constants'
 import importResource from '../import_resource'
 import { checkRuntimeEnv } from '../declare_runtime_env'
 
@@ -32,6 +37,7 @@ export default ({ resolveConfig, isClient }) => {
       resourceValue: saga.eventHandlers,
       runtimeMode: RUNTIME_ENV_ANYWHERE,
       importMode: RESOURCE_ANY,
+      instanceMode: IMPORT_INSTANCE,
       instanceFallback: 'saga_event_handlers.js',
       imports,
       constants
@@ -42,6 +48,7 @@ export default ({ resolveConfig, isClient }) => {
       resourceValue: saga.cronHandlers,
       runtimeMode: RUNTIME_ENV_ANYWHERE,
       importMode: RESOURCE_ANY,
+      instanceMode: IMPORT_INSTANCE,
       instanceFallback: 'saga_cron_handlers.js',
       imports,
       constants

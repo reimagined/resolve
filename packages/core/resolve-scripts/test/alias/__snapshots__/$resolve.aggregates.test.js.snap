@@ -22,8 +22,21 @@ export default aggregates
 
 exports[`base config works correctly [server] 1`] = `
 "
-import commands_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
+import commands_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
+const constructorBindFunction =
+    (
+      constructorFunction,
+      compileTimeOptions,
+      compileTimeImports,
+      runTimeOptions,
+      runTimeImports
+    ) => constructorFunction(
+      { ...compileTimeOptions, ...runTimeOptions },
+      { ...compileTimeImports, ...runTimeImports }
+    )
+const idempotentFunction = value => value
 const name_0 = \\"Todo\\"
+const commands_0 = commands_0_instance
 
 const aggregates = []
 
@@ -69,10 +82,24 @@ export default aggregates
 
 exports[`base(v2) config works correctly [server] 1`] = `
 "
-import commands_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
-import commands_1 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
+import commands_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
+import commands_1_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
+const constructorBindFunction =
+    (
+      constructorFunction,
+      compileTimeOptions,
+      compileTimeImports,
+      runTimeOptions,
+      runTimeImports
+    ) => constructorFunction(
+      { ...compileTimeOptions, ...runTimeOptions },
+      { ...compileTimeImports, ...runTimeImports }
+    )
+const idempotentFunction = value => value
 const name_0 = \\"Todo\\"
+const commands_0 = commands_0_instance
 const name_1 = \\"Item\\"
+const commands_1 = commands_1_instance
 
 const aggregates = []
 
@@ -112,10 +139,24 @@ export default aggregates
 
 exports[`config with projection works correctly [server] 1`] = `
 "
-import commands_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
-import projection_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testProjection.js\\"
+import commands_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
+import projection_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testProjection.js\\"
+const constructorBindFunction =
+    (
+      constructorFunction,
+      compileTimeOptions,
+      compileTimeImports,
+      runTimeOptions,
+      runTimeImports
+    ) => constructorFunction(
+      { ...compileTimeOptions, ...runTimeOptions },
+      { ...compileTimeImports, ...runTimeImports }
+    )
+const idempotentFunction = value => value
 const name_0 = \\"Todo\\"
+const commands_0 = commands_0_instance
 const projection_0_hash = \\"fd94fac3a204e7a84b8cf3ca72e37aaa23c04dc2e1e971d69af2e20e84a40bbc2170931076d4d3e847c571f3be90e47f4c0f48aac76fdcaed083df090285b39d\\"
+const projection_0 = projection_0_instance
 
 const aggregates = []
 
@@ -153,8 +194,21 @@ export default aggregates
 exports[`config with snapshot + process.env works correctly [server] 1`] = `
 "
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
-import commands_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
+import commands_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
+const constructorBindFunction =
+    (
+      constructorFunction,
+      compileTimeOptions,
+      compileTimeImports,
+      runTimeOptions,
+      runTimeImports
+    ) => constructorFunction(
+      { ...compileTimeOptions, ...runTimeOptions },
+      { ...compileTimeImports, ...runTimeImports }
+    )
+const idempotentFunction = value => value
 const name_0 = \\"Todo\\"
+const commands_0 = commands_0_instance
 const snapshotAdapter_0_constructor = ((moduleOrFile) => {
   return interopRequireDefault(__non_webpack_require__(moduleOrFile)).default
 })(process.env[\\"AGGREGATE_TODO_SNAPSHOT_ADAPTER\\"])
@@ -162,7 +216,8 @@ const snapshotAdapter_0_imports = {  }
 const snapshotAdapter_0_options = {
   \\"size\\": process.env[\\"AGGREGATE_TODO_SNAPSHOT_OPTIONS_SIZE\\"]
 }
-const snapshotAdapter_0 = snapshotAdapter_0_constructor(
+const snapshotAdapter_0 = constructorBindFunction.bind(null,
+      snapshotAdapter_0_constructor,
       snapshotAdapter_0_options,
       snapshotAdapter_0_imports
     )
@@ -201,14 +256,28 @@ export default aggregates
 
 exports[`config with snapshot works correctly [server] 1`] = `
 "
-import commands_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
+import commands_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
 import snapshotAdapter_0_constructor from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testSnapshotAdapter.js\\"
+const constructorBindFunction =
+    (
+      constructorFunction,
+      compileTimeOptions,
+      compileTimeImports,
+      runTimeOptions,
+      runTimeImports
+    ) => constructorFunction(
+      { ...compileTimeOptions, ...runTimeOptions },
+      { ...compileTimeImports, ...runTimeImports }
+    )
+const idempotentFunction = value => value
 const name_0 = \\"Todo\\"
+const commands_0 = commands_0_instance
 const snapshotAdapter_0_imports = {  }
 const snapshotAdapter_0_options = {
   \\"size\\": 100
 }
-const snapshotAdapter_0 = snapshotAdapter_0_constructor(
+const snapshotAdapter_0 = constructorBindFunction.bind(null,
+      snapshotAdapter_0_constructor,
       snapshotAdapter_0_options,
       snapshotAdapter_0_imports
     )
