@@ -99,9 +99,7 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
       try {
         response = await request(
           `/api/query/${readModelName}/${resolverName}`,
-          {
-            ...resolverArgs
-          }
+          resolverArgs
         )
       } catch (error) {
         throw new FetchError(error.message)

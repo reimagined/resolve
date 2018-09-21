@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { connectViewModel } from 'resolve-redux'
 import { routerActions } from 'react-router-redux'
+import { Redirect } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
 import {
   Row,
@@ -48,6 +49,10 @@ export class ShoppingList extends React.PureComponent {
     })
   }
 
+  removeShoppingList = () => {
+    this.props.removeShoppingList(this.props.aggregateId)
+  }
+
   updateItemText = event => {
     this.setState({
       itemText: event.target.value
@@ -79,6 +84,10 @@ export class ShoppingList extends React.PureComponent {
       return <NotFound />
     }
 
+    if (data.removed) {
+      return <Redirect to="/" />
+    }
+
     const { list } = data
 
     return (
@@ -86,6 +95,11 @@ export class ShoppingList extends React.PureComponent {
         <ControlLabel>Shopping list name</ControlLabel>
         <FormGroup bsSize="large">
           <InputGroup>
+            <InputGroup.Button>
+              <Button bsSize="large" onClick={this.removeShoppingList}>
+                <i className="far fa-trash-alt" />
+              </Button>
+            </InputGroup.Button>
             <FormControl
               type="text"
               value={this.state.shoppingListName}
