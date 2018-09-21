@@ -3,11 +3,24 @@
 exports[`base config works correctly [server] 1`] = `
 "
 import storageAdapter_constructor from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testAdapter.js\\"
+const constructorBindFunction =
+    (
+      constructorFunction,
+      compileTimeOptions,
+      compileTimeImports,
+      runTimeOptions,
+      runTimeImports
+    ) => constructorFunction(
+      { ...compileTimeOptions, ...runTimeOptions },
+      { ...compileTimeImports, ...runTimeImports }
+    )
+const idempotentFunction = value => value
 const storageAdapter_imports = {  }
 const storageAdapter_options = {
   \\"url\\": \\"http://test.test\\"
 }
-const storageAdapter = storageAdapter_constructor(
+const storageAdapter = constructorBindFunction.bind(null,
+      storageAdapter_constructor,
       storageAdapter_options,
       storageAdapter_imports
     )
@@ -18,6 +31,18 @@ export default storageAdapter
 exports[`config with process.env works correctly 1`] = `
 "
 import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
+const constructorBindFunction =
+    (
+      constructorFunction,
+      compileTimeOptions,
+      compileTimeImports,
+      runTimeOptions,
+      runTimeImports
+    ) => constructorFunction(
+      { ...compileTimeOptions, ...runTimeOptions },
+      { ...compileTimeImports, ...runTimeImports }
+    )
+const idempotentFunction = value => value
 const storageAdapter_constructor = ((moduleOrFile) => {
   return interopRequireDefault(__non_webpack_require__(moduleOrFile)).default
 })(process.env[\\"STORAGE_ADAPTER\\"])
@@ -25,7 +50,8 @@ const storageAdapter_imports = {  }
 const storageAdapter_options = {
   \\"url\\": process.env[\\"STORAGE_OPTIONS_URL\\"]
 }
-const storageAdapter = storageAdapter_constructor(
+const storageAdapter = constructorBindFunction.bind(null,
+      storageAdapter_constructor,
       storageAdapter_options,
       storageAdapter_imports
     )

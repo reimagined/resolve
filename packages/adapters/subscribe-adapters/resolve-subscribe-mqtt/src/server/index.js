@@ -10,7 +10,7 @@ import {
 
 const qos = 1
 
-const createServerAdapter = () => ({
+const createServerAdapter = ({
   server,
   getRootBasedUrl,
   pubsubManager,
