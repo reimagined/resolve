@@ -7,28 +7,34 @@ describe('resolve-readmodel-mysql meta-api', () => {
   const META_NAME = 'META_NAME'
   const format = sqlFormatter.format.bind(sqlFormatter)
 
-  let executor, pool, checkStoredTableSchema
+  let executor, pool, checkStoredTableSchema, escapeId, connection
 
   beforeEach(() => {
     checkStoredTableSchema = sinon.stub()
     executor = sinon.stub()
 
+    escapeId = sinon.stub().callsFake(value => {
+      return `\`${value.replace(/`/g, '``')}\``
+    })
+
+    connection = { execute: executor }
+
     pool = {
-      escapeId: sinon
-        .stub()
-        .callsFake(value => `\`${value.replace(/`/g, '``')}\``),
-      connection: { execute: executor },
-      metaName: META_NAME
+      connection,
+      metaName: META_NAME,
+      escapeId
     }
   })
 
   afterEach(() => {
     checkStoredTableSchema = null
+    connection = null
+    escapeId = null
     executor = null
     pool = null
   })
 
-  it('should provide getMetaInfo method - for initialized meta table', async () => {
+  it('should provide connect method - for initialized meta table', async () => {
     const tableDeclarations = [
       {
         TableName: 'table1',
@@ -55,7 +61,11 @@ describe('resolve-readmodel-mysql meta-api', () => {
     checkStoredTableSchema.onCall(0).callsFake(() => true)
     checkStoredTableSchema.onCall(1).callsFake(() => true)
 
-    await metaApi.getMetaInfo(pool, checkStoredTableSchema)
+    await metaApi.connect(
+      { mysql: { createConnection: () => connection }, escapeId },
+      pool,
+      { checkStoredTableSchema, metaName: META_NAME }
+    )
     expect(pool.metaInfo.tables['table1']).toEqual(
       tableDeclarations[0].TableDescription
     )
@@ -106,7 +116,7 @@ describe('resolve-readmodel-mysql meta-api', () => {
     )
   })
 
-  it('should provide getMetaInfo method - for empty meta table', async () => {
+  it('should provide connect method - for empty meta table', async () => {
     executor.onCall(1).callsFake(async () => [[]])
     executor.onCall(3).callsFake(async () => [[]])
     executor.onCall(4).callsFake(async () => [[]])
@@ -114,7 +124,11 @@ describe('resolve-readmodel-mysql meta-api', () => {
     checkStoredTableSchema.onCall(0).callsFake(() => false)
     checkStoredTableSchema.onCall(1).callsFake(() => false)
 
-    await metaApi.getMetaInfo(pool, checkStoredTableSchema)
+    await metaApi.connect(
+      { mysql: { createConnection: () => connection }, escapeId },
+      pool,
+      { checkStoredTableSchema, metaName: META_NAME }
+    )
     expect(pool.metaInfo.tables).toEqual({})
     expect(pool.metaInfo.timestamp).toEqual(0)
 
@@ -167,7 +181,7 @@ describe('resolve-readmodel-mysql meta-api', () => {
     )
   })
 
-  it('should provide getMetaInfo method - for malformed meta table', async () => {
+  it('should provide connect method - for malformed meta table', async () => {
     const tableDeclarations = [
       {
         TableName: 'table',
@@ -184,7 +198,11 @@ describe('resolve-readmodel-mysql meta-api', () => {
     checkStoredTableSchema.onCall(0).callsFake(() => false)
     checkStoredTableSchema.onCall(1).callsFake(() => false)
 
-    await metaApi.getMetaInfo(pool, checkStoredTableSchema)
+    await metaApi.connect(
+      { mysql: { createConnection: () => connection }, escapeId },
+      pool,
+      { checkStoredTableSchema, metaName: META_NAME }
+    )
     expect(pool.metaInfo.tables).toEqual({})
     expect(pool.metaInfo.timestamp).toEqual(0)
 
@@ -309,10 +327,16 @@ describe('resolve-readmodel-mysql meta-api', () => {
     expect(result).toEqual(['one', 'two'])
   })
 
-  it('should provide drop method', async () => {
+  it('should provide drop method with default arguments', async () => {
     pool.metaInfo = { tables: { one: {}, two: {} } }
 
     await metaApi.drop(pool)
+  })
+
+  it('should provide drop method with custom arguments', async () => {
+    pool.metaInfo = { tables: { one: {}, two: {} } }
+
+    await metaApi.drop(pool, { dropDataTables: true, dropMetaTable: true })
 
     expect(format(executor.firstCall.args[0])).toEqual(
       format('DROP TABLE `one`')

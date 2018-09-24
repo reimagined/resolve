@@ -1,25 +1,26 @@
-const getMetaInfo = async (pool, checkStoredTableSchema) => {
-  const { connection, escapeId, metaName } = pool
+const connect = async ({ mysql, escapeId }, pool, options) => {
+  const { checkStoredTableSchema, metaName, ...connectionOptions } = options
+  const connection = await mysql.createConnection(connectionOptions)
 
   await connection.execute(`CREATE TABLE IF NOT EXISTS ${escapeId(metaName)} (
-      \`FirstKey\` VARCHAR(128) NOT NULL,
-      \`SecondKey\` VARCHAR(128) NOT NULL DEFAULT '',
-      \`Value\` JSON NULL,
-      PRIMARY KEY(\`FirstKey\`, \`SecondKey\`),
-      INDEX USING BTREE(\`FirstKey\`)
-    )`)
+    \`FirstKey\` VARCHAR(128) NOT NULL,
+    \`SecondKey\` VARCHAR(128) NOT NULL DEFAULT '',
+    \`Value\` JSON NULL,
+    PRIMARY KEY(\`FirstKey\`, \`SecondKey\`),
+    INDEX USING BTREE(\`FirstKey\`)
+  )`)
 
   pool.metaInfo = { tables: {}, timestamp: 0, aggregatesVersionsMap: new Map() }
 
   let [rows] = await connection.execute(
     `SELECT \`Value\` AS \`Timestamp\` FROM ${escapeId(metaName)}
-     WHERE \`FirstKey\`="Timestamp"`
+   WHERE \`FirstKey\`="Timestamp"`
   )
 
   if (rows.length === 0) {
     await connection.execute(
       `INSERT INTO ${escapeId(metaName)}(\`FirstKey\`, \`Value\`)
-       VALUES("Timestamp", CAST("0" AS JSON))`
+     VALUES("Timestamp", CAST("0" AS JSON))`
     )
   } else {
     pool.metaInfo.timestamp = Number.isInteger(+rows[0]['Timestamp'])
@@ -29,8 +30,8 @@ const getMetaInfo = async (pool, checkStoredTableSchema) => {
 
   void ([rows] = await connection.execute(
     `SELECT \`SecondKey\` AS \`AggregateId\`, \`Value\` AS \`AggregateVersion\`
-     FROM ${escapeId(metaName)}
-     WHERE \`FirstKey\`="AggregatesVersionsMap"`
+   FROM ${escapeId(metaName)}
+   WHERE \`FirstKey\`="AggregatesVersionsMap"`
   ))
 
   for (let { AggregateId, AggregateVersion } of rows) {
@@ -39,8 +40,8 @@ const getMetaInfo = async (pool, checkStoredTableSchema) => {
 
   void ([rows] = await connection.execute(
     `SELECT \`SecondKey\` AS \`TableName\`, \`Value\` AS \`TableDescription\`
-     FROM ${escapeId(metaName)}
-     WHERE \`FirstKey\`="TableDescriptor"`
+   FROM ${escapeId(metaName)}
+   WHERE \`FirstKey\`="TableDescriptor"`
   ))
 
   for (let { TableName, TableDescription } of rows) {
@@ -58,11 +59,17 @@ const getMetaInfo = async (pool, checkStoredTableSchema) => {
 
     await connection.execute(
       `DELETE FROM ${escapeId(metaName)}
-         WHERE \`FirstKey\`="TableDescriptor"
-         AND \`SecondKey\`=?`,
+       WHERE \`FirstKey\`="TableDescriptor"
+       AND \`SecondKey\`=?`,
       [TableName]
     )
   }
+
+  Object.assign(pool, {
+    metaName,
+    escapeId,
+    connection
+  })
 }
 
 const getLastTimestamp = async ({ metaInfo }) => {
@@ -131,20 +138,31 @@ const getTableNames = async ({ metaInfo }) => {
   return Object.keys(metaInfo.tables)
 }
 
-const drop = async ({ connection, escapeId, metaName, metaInfo }) => {
-  for (let tableName of Object.keys(metaInfo.tables)) {
-    await connection.execute(`DROP TABLE ${escapeId(tableName)}`)
+const disconnect = async ({ connection }) => {
+  await connection.close()
+}
+
+const drop = async (
+  { connection, escapeId, metaName, metaInfo },
+  { dropMetaTable, dropDataTables } = {}
+) => {
+  if (dropDataTables) {
+    for (let tableName of Object.keys(metaInfo.tables)) {
+      await connection.execute(`DROP TABLE ${escapeId(tableName)}`)
+    }
   }
 
-  await connection.execute(`DROP TABLE ${escapeId(metaName)}`)
+  if (dropMetaTable) {
+    await connection.execute(`DROP TABLE ${escapeId(metaName)}`)
 
-  for (let key of Object.keys(metaInfo)) {
-    delete metaInfo[key]
+    for (let key of Object.keys(metaInfo)) {
+      delete metaInfo[key]
+    }
   }
 }
 
 export default {
-  getMetaInfo,
+  connect,
   getLastTimestamp,
   setLastTimestamp,
   setLastAggregateVersion,
@@ -153,5 +171,6 @@ export default {
   getTableInfo,
   describeTable,
   getTableNames,
+  disconnect,
   drop
 }

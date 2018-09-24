@@ -1,3 +1,23 @@
+const connect = async (NeDB, pool, options) => {
+  pool.createTable = () => new NeDB({ autoload: true })
+
+  if (options.metaInfo && options.metaInfo.constructor === Object) {
+    pool.metaInfo = options.metaInfo
+  } else {
+    pool.metaInfo = {
+      tables: {},
+      timestamp: 0,
+      aggregatesVersionsMap: new Map()
+    }
+  }
+
+  if (options.storage && options.storage.constructor === Object) {
+    pool.storage = options.storage
+  } else {
+    pool.storage = {}
+  }
+}
+
 const getLastTimestamp = async ({ metaInfo }) => metaInfo.timestamp
 
 const setLastTimestamp = async ({ metaInfo }, timestamp) =>
@@ -23,14 +43,25 @@ const describeTable = async ({ metaInfo }, tableName, metaSchema) =>
 
 const getTableNames = async ({ metaInfo }) => Object.keys(metaInfo.tables)
 
-const clearObjects = (...objs) =>
-  objs.forEach(obj =>
-    Object.keys(obj).forEach(key => Reflect.deleteProperty(obj, key))
-  )
+const clearObject = obj =>
+  Object.keys(obj).forEach(key => Reflect.deleteProperty(obj, key))
 
-const drop = async ({ storage, metaInfo }) => clearObjects(storage, metaInfo)
+const drop = async (
+  { storage, metaInfo },
+  { dropMetaTable, dropDataTables } = {}
+) => {
+  if (dropDataTables) {
+    clearObject(storage)
+  }
+  if (dropMetaTable) {
+    clearObject(metaInfo)
+  }
+}
+
+const disconnect = async () => null
 
 export default {
+  connect,
   getLastTimestamp,
   setLastTimestamp,
   setLastAggregateVersion,
@@ -39,5 +70,6 @@ export default {
   getTableInfo,
   describeTable,
   getTableNames,
+  disconnect,
   drop
 }
