@@ -62,8 +62,8 @@ export class MyLists extends React.PureComponent {
 }
 
 export const mapStateToOptions = state => ({
-  readModelName: 'Default',
-  resolverName: 'shoppingLists',
+  readModelName: 'ShoppingLists',
+  resolverName: 'all',
   resolverArgs: {
     updatedAt: state.refresh.timestamp
   }

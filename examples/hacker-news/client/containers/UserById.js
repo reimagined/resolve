@@ -4,9 +4,6 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 
 const UserInfoRoot = styled.div`
-  padding-left: 3em;
-  padding-right: 1.25em;
-  margin-top: 1em;
   margin-bottom: 0.5em;
 `
 
@@ -49,7 +46,7 @@ const mapStateToOptions = (
     }
   }
 ) => ({
-  readModelName: 'default',
+  readModelName: 'HackerNews',
   resolverName: 'user',
   resolverArgs: { id: userId }
 })
