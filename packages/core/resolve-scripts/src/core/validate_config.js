@@ -70,7 +70,8 @@ export const validateApiHandlers = resolveConfig => {
 }
 
 const validateConfig = config => {
-  const valid = ajv.validate(schemaResolveConfig, config)
+  const linearizedConfig = JSON.parse(JSON.stringify(config))
+  const valid = ajv.validate(schemaResolveConfig, linearizedConfig)
 
   if (!valid) {
     throw new Error(

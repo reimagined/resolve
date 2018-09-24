@@ -3,9 +3,9 @@ import {
   OPTIMISTIC_CREATE_SHOPPING_LIST,
   OPTIMISTIC_REMOVE_SHOPPING_LIST,
   OPTIMISTIC_SYNC
-} from '../actions/optimisticActions'
+} from '../actions/optimistic_actions'
 
-const optimisticShoppingLists = (state = [], action) => {
+const optimistic_shopping_lists = (state = [], action) => {
   switch (action.type) {
     case LOCATION_CHANGE: {
       return []
@@ -33,4 +33,4 @@ const optimisticShoppingLists = (state = [], action) => {
   }
 }
 
-export default optimisticShoppingLists
+export default optimistic_shopping_lists
