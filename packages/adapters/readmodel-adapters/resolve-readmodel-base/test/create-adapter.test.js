@@ -11,7 +11,7 @@ describe('resolve-readmodel-base create-adapter', () => {
       sinon.stub()
     ]
     const [storeApi, metaApi, checkedStoreApi] = [{}, {}, {}]
-    const implementation = sinon.stub().callsFake(() => ({ storeApi, metaApi }))
+    metaApi.connect = sinon.stub().callsFake(async () => null)
     const checkStoreApi = sinon.stub().callsFake(() => checkedStoreApi)
     const options = { metaName: 'META_NAME', param: { val: 'PARAM' } }
 
@@ -20,39 +20,38 @@ describe('resolve-readmodel-base create-adapter', () => {
       checkStoreApi,
       init,
       reset,
-      implementation,
+      { storeApi, metaApi },
       options
     )
-
-    expect(implementation.callCount).toEqual(1)
-    expect(implementation.firstCall.args[0].metaName).toEqual(options.metaName)
-    expect(implementation.firstCall.args[0].param).toEqual(options.param)
-
-    expect(checkStoreApi.callCount).toEqual(1)
-    expect(checkStoreApi.firstCall.args[0].storeApi).toEqual(storeApi)
-    expect(checkStoreApi.firstCall.args[0].metaApi).toEqual(metaApi)
 
     expect(buildProjection.callCount).toEqual(0)
     adapter.buildProjection()
     expect(buildProjection.callCount).toEqual(1)
+    const pool = buildProjection.firstCall.args[0]
+
     expect(buildProjection.firstCall.args[0].storeApi).toEqual(checkedStoreApi)
-    expect(buildProjection.firstCall.args[0].metaApi).toEqual(metaApi)
+    expect(buildProjection.firstCall.args[0].metaApi).toEqual(pool.metaApi)
+
     const internalContext = buildProjection.firstCall.args[0].internalContext
     expect(internalContext).toEqual({})
+
+    expect(checkStoreApi.callCount).toEqual(1)
+    expect(checkStoreApi.firstCall.args[0].storeApi).toEqual(pool.storeApi)
+    expect(checkStoreApi.firstCall.args[0].metaApi).toEqual(pool.metaApi)
 
     expect(init.callCount).toEqual(0)
     adapter.init()
     expect(init.callCount).toEqual(1)
     expect(init.firstCall.args[0].internalContext).toEqual(internalContext)
     expect(init.firstCall.args[0].storeApi).toEqual(checkedStoreApi)
-    expect(init.firstCall.args[0].metaApi).toEqual(metaApi)
+    expect(init.firstCall.args[0].metaApi).toEqual(pool.metaApi)
 
     expect(reset.callCount).toEqual(0)
     adapter.reset()
     expect(reset.callCount).toEqual(1)
     expect(reset.firstCall.args[0].internalContext).toEqual(internalContext)
     expect(reset.firstCall.args[0].storeApi).toEqual(checkedStoreApi)
-    expect(reset.firstCall.args[0].metaApi).toEqual(metaApi)
+    expect(reset.firstCall.args[0].metaApi).toEqual(pool.metaApi)
   })
 
   it('should throw error - on invalid storeApi and metaApi', async () => {
