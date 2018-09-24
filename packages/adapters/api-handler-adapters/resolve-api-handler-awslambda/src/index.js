@@ -4,13 +4,70 @@ import cookie from 'cookie'
 const COOKIE_CLEAR_DATE = new Date(0).toGMTString()
 const INTERNAL = Symbol('INTERNAL')
 
-const createRequest = async (lambdaEvent, customParameters) => {
-  const { path, httpMethod, headers, queryStringParameters, body } = lambdaEvent
+const normalizeKey = (key, mode) => {
+  switch (mode) {
+    case 'upper-dash-case':
+      return key
+        .toLowerCase()
+        .split(/-/g)
+        .map(part => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
+        .join('-')
+    case 'dash-case':
+      return `${key.charAt(0).toUpperCase()}${key.slice(1).toLowerCase()}`
+    case 'lower-case':
+      return key.toLowerCase()
+    default:
+      throw new Error(`Wrong normalize mode ${mode}`)
+  }
+}
 
-  const cookieHeader = headers.cookie
+const wrapHeadersCaseInsensitive = headersMap =>
+  Object.create(
+    null,
+    Object.keys(headersMap).reduce((acc, key) => {
+      const value = headersMap[key]
+      const [upperDashKey, dashKey, lowerKey] = [
+        normalizeKey(key, 'upper-dash-case'),
+        normalizeKey(key, 'dash-case'),
+        normalizeKey(key, 'lower-case')
+      ]
+
+      acc[upperDashKey] = { value, enumerable: true }
+      if (upperDashKey !== dashKey) {
+        acc[dashKey] = { value, enumerable: false }
+      }
+      acc[lowerKey] = { value, enumerable: false }
+
+      return acc
+    }, {})
+  )
+
+const mergeResponseHeaders = responseHeaders => {
+  const resultHeaders = {}
+  for (const { key, value } of responseHeaders) {
+    if (resultHeaders.hasOwnProperty(key)) {
+      // See https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2 paragraph 4
+      resultHeaders[key] = `${resultHeaders[key]}, ${value}`
+    } else {
+      resultHeaders[key] = value
+    }
+  }
+  return resultHeaders
+}
+
+const createRequest = async (lambdaEvent, customParameters) => {
+  const {
+    path,
+    httpMethod,
+    headers: originalHeaders,
+    queryStringParameters,
+    body
+  } = lambdaEvent
+
+  const headers = wrapHeadersCaseInsensitive(originalHeaders)
   const cookies =
-    cookieHeader != null && cookieHeader.constructor === String
-      ? cookie.parse(cookieHeader)
+    headers.cookie != null && headers.cookie.constructor === String
+      ? cookie.parse(headers.cookie)
       : {}
 
   const req = Object.create(null)
@@ -110,9 +167,8 @@ const createResponse = () => {
 
   defineResponseMethod('getHeader', searchKey => {
     validateOptionShape('Header name', searchKey, [String])
-    const header = internalRes.headers.find(
-      ({ key }) => key.toLowerCase() === searchKey.toLowerCase()
-    )
+    const normalizedKey = normalizeKey(searchKey, 'upper-dash-case')
+    const header = internalRes.headers.find(({ key }) => key === normalizedKey)
     if (header == null) return null
     return header.value
   })
@@ -121,7 +177,11 @@ const createResponse = () => {
     validateResponseOpened()
     validateOptionShape('Header name', key, [String])
     validateOptionShape('Header value', value, [String])
-    internalRes.headers.push({ key, value })
+
+    internalRes.headers.push({
+      key: normalizeKey(key, 'upper-dash-case'),
+      value
+    })
   })
 
   defineResponseMethod('text', (content, encoding) => {
@@ -171,35 +231,47 @@ const wrapApiHandler = (handler, getCustomParameters) => async (
   lambdaContext,
   lambdaCallback
 ) => {
+  let result
   try {
-    const customParameters = await getCustomParameters(
-      lambdaEvent,
-      lambdaContext,
-      lambdaCallback
-    )
+    const customParameters =
+      typeof getCustomParameters === 'function'
+        ? await getCustomParameters(lambdaEvent, lambdaContext, lambdaCallback)
+        : {}
+
     const req = await createRequest(lambdaEvent, customParameters)
     const res = createResponse()
 
     await handler(req, res)
 
-    const { status: statusCode, headers, body: bodyBuffer } = res[INTERNAL]
+    const {
+      status: statusCode,
+      headers: responseHeaders,
+      body: bodyBuffer
+    } = res[INTERNAL]
+
     const body = bodyBuffer.toString()
 
-    lambdaCallback(null, {
+    result = {
       statusCode,
-      headers,
+      headers: mergeResponseHeaders(responseHeaders),
       body
-    })
+    }
   } catch (error) {
     const outError =
       error != null && error.stack != null
         ? `${error.stack}`
         : `Unknown error ${error}`
 
-    lambdaCallback(null, {
+    result = {
       statusCode: 500,
       body: outError
-    })
+    }
+  }
+
+  if (typeof lambdaCallback === 'function') {
+    return lambdaCallback(null, result)
+  } else {
+    return result
   }
 }
 
