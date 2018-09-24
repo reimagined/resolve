@@ -3,6 +3,7 @@ import nodeExternals from 'webpack-node-externals'
 
 import getModulesDirs from './get_modules_dirs'
 import getWebpackEnvPlugin from './get_webpack_env_plugin'
+import resolveFile from './resolve_file'
 
 const getWebpackCommonConfigs = ({
   resolveConfig,
@@ -59,6 +60,16 @@ const getWebpackCommonConfigs = ({
       packageJson: 'common/sagas/package.json'
     },
     {
+      name: 'Api Handlers',
+      entry: {
+        'common/api-handlers/index.js': [
+          ...polyfills,
+          path.resolve(__dirname, './alias/$resolve.apiHandlers.js')
+        ]
+      },
+      packageJson: 'common/api-handlers/package.json'
+    },
+    {
       name: 'Auth',
       entry: {
         'common/auth/index.js': [
@@ -72,7 +83,6 @@ const getWebpackCommonConfigs = ({
       name: 'Constants',
       entry: {
         'common/constants/index.js': [
-          ...polyfills,
           path.resolve(__dirname, './alias/$resolve.constants.js')
         ]
       }
@@ -87,6 +97,24 @@ const getWebpackCommonConfigs = ({
       }
     }
   ]
+
+  const apiHandlers = Array.isArray(resolveConfig.apiHandlers)
+    ? resolveConfig.apiHandlers
+    : []
+
+  for (const { path, controller } of apiHandlers) {
+    const syntheticName = path.replace(/[^\w\d-]/g, '-')
+    assemblies.push({
+      name: `Api Handler "${syntheticName}" for path "${path}"`,
+      entry: {
+        [`common/api-handlers/${syntheticName}/index.js`]: [
+          ...polyfills,
+          resolveFile(controller)
+        ]
+      },
+      packageJson: `common/api-handlers/${syntheticName}/package.json`
+    })
+  }
 
   const configs = []
 
@@ -124,7 +152,7 @@ const getWebpackCommonConfigs = ({
             test: Object.values(alias),
             use: [
               {
-                loader: 'babel-loader',
+                loader: require.resolve('babel-loader'),
                 options: {
                   cacheDirectory: true,
                   babelrc: false,
@@ -156,7 +184,7 @@ const getWebpackCommonConfigs = ({
                 }
               },
               {
-                loader: 'val-loader',
+                loader: require.resolve('val-loader'),
                 options: {
                   resolveConfig,
                   isClient
@@ -167,7 +195,7 @@ const getWebpackCommonConfigs = ({
           {
             test: /\.js$/,
             use: {
-              loader: 'babel-loader',
+              loader: require.resolve('babel-loader'),
               options: {
                 cacheDirectory: true
               }

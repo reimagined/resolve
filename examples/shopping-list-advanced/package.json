@@ -1,6 +1,6 @@
 {
   "name": "@react-native-shopping-list/scripts",
-  "version": "0.14.4",
+  "version": "0.17.0",
   "private": true,
   "scripts": {
     "build": "babel-node ./run.js build",
@@ -14,7 +14,11 @@
     "test:functional": "echo || exit 0"
   },
   "dependencies": {
-    "@babel/polyfill": "7.0.0"
+    "@babel/polyfill": "7.0.0",
+    "redux": "4.0.0",
+    "resolve-redux": "0.17.0",
+    "resolve-scripts": "0.17.0",
+    "resolve-subscribe-socket.io": "0.17.0"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",
@@ -24,10 +28,7 @@
     "@babel/plugin-proposal-export-namespace-from": "7.0.0",
     "@babel/plugin-transform-runtime": "7.0.0",
     "@babel/preset-env": "7.0.0",
-    "@babel/preset-react": "7.0.0",
-    "resolve-redux": "0.14.4",
-    "resolve-scripts": "0.14.4",
-    "resolve-subscribe-socket.io": "0.14.4"
+    "@babel/preset-react": "7.0.0"
   },
   "workspaces": {
     "packages": [

@@ -10,34 +10,29 @@ const appConfig = {
   aggregates: [
     {
       name: 'ShoppingList',
-      commands: 'common/aggregates/shoppingList.commands.js',
-      projection: 'common/aggregates/shoppingList.projection.js'
+      commands: 'common/aggregates/shopping_list.commands.js',
+      projection: 'common/aggregates/shopping_list.projection.js'
     }
   ],
   viewModels: [
     {
       name: 'ShoppingList',
-      projection: 'common/view-models/shoppingList.projection.js'
+      projection: 'common/view-models/shopping_list.projection.js'
     }
   ],
   readModels: [
     {
-      name: 'Default',
-      projection: 'common/read-models/default.projection.js',
-      resolvers: 'common/read-models/default.resolvers.js'
+      name: 'ShoppingLists',
+      projection: 'common/read-models/shopping_lists.projection.js',
+      resolvers: 'common/read-models/shopping_lists.resolvers.js'
     }
   ],
-  jwtCookie: {
-    name: 'shopping-list-jwt',
-    maxAge: 31536000000
-  },
-  auth: {
-    strategies: 'common/auth/index.js'
-  },
-  subscribeAdapter: {
-    module: 'resolve-subscribe-socket.io',
-    options: {}
-  }
+  apiHandlers: [
+    {
+      path: 'shopping-lists.json',
+      controller: 'common/api-handlers/shopping_lists.js'
+    }
+  ]
 }
 
 export default appConfig

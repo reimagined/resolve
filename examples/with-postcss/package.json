@@ -1,6 +1,6 @@
 {
   "name": "with-postcss",
-  "version": "0.14.4",
+  "version": "0.17.0",
   "private": true,
   "scripts": {
     "build": "babel-node ./run.js build",
@@ -12,13 +12,13 @@
   "dependencies": {
     "@babel/node": "7.0.0",
     "@babel/polyfill": "7.0.0",
-    "react": "16.4.2",
+    "react": "16.5.2",
     "react-bootstrap": "0.32.1",
-    "react-dom": "16.4.2",
+    "react-dom": "16.5.2",
     "react-helmet": "5.2.0",
     "redux": "4.0.0",
-    "resolve-redux": "0.14.4",
-    "resolve-scripts": "0.14.4",
+    "resolve-redux": "0.17.0",
+    "resolve-scripts": "0.17.0",
     "testcafe-browser-tools": "1.6.5"
   },
   "devDependencies": {
@@ -30,14 +30,16 @@
     "@babel/preset-env": "7.0.0",
     "@babel/preset-react": "7.0.0",
     "autoprefixer": "8.6.5",
-    "babel-jest": "23.4.2",
+    "babel-core": "^7.0.0-0",
+    "regenerator-runtime": "0.12.1",
+    "babel-jest": "23.6.0",
     "css-loader": "1.0.0",
     "extract-text-webpack-plugin": "4.0.0-beta.0",
-    "jest": "23.5.0",
+    "jest": "23.6.0",
     "jest-css-modules-transform": "2.0.0",
     "postcss-import": "11.1.0",
     "postcss-loader": "2.1.5",
-    "react-test-renderer": "16.4.2",
+    "react-test-renderer": "16.5.2",
     "style-loader": "0.21.0",
     "testcafe": "0.22.0"
   }

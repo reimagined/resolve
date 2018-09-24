@@ -1,16 +1,12 @@
 import createEventStore from 'resolve-es'
 
-import { storageAdapter, busAdapter } from './assemblies'
+import {
+  storageAdapter as createStorageAdapter,
+  busAdapter as createBusAdapter
+} from './assemblies'
 
-const createStorageAdapter = storageAdapter.module
-const storageAdapterOptions = storageAdapter.options
-
-const createBusAdapter = busAdapter.module
-const busAdapterOptions = busAdapter.options
-
-const storage = createStorageAdapter(storageAdapterOptions)
-
-const bus = createBusAdapter(busAdapterOptions)
+const storage = createStorageAdapter()
+const bus = createBusAdapter()
 
 const eventStore = createEventStore({ storage, bus })
 

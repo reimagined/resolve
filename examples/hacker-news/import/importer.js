@@ -1,4 +1,5 @@
 import uuid from 'uuid'
+import { EOL } from 'os'
 
 import {
   USER_CREATED,
@@ -208,9 +209,12 @@ export const start = async (countCallback, tickCallback) => {
     countCallback(storyIds.length)
     dropStore()
     await fetchStories(storyIds, tickCallback)
-  } catch (e) {
+  } catch (error) {
     // eslint-disable-next-line no-console
-    console.error(e)
+    console.log(EOL)
+    // eslint-disable-next-line no-console
+    console.error(error)
+    process.exit(1)
   }
 
   return null

@@ -1,21 +1,24 @@
-import crypto from 'crypto'
-import fs from 'fs'
-
-import { message } from '../constants'
+import {
+  message,
+  RUNTIME_ENV_NOWHERE,
+  RESOURCE_ANY,
+  RESOURCE_CONSTRUCTOR_ONLY,
+  RUNTIME_ENV_ANYWHERE,
+  IMPORT_CONSTRUCTOR,
+  IMPORT_INSTANCE
+} from '../constants'
+import importBabel from '../import_babel'
+import { checkRuntimeEnv } from '../declare_runtime_env'
 import resolveFile from '../resolve_file'
 import resolveFileOrModule from '../resolve_file_or_module'
-import importBabel from '../import_babel'
-import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
+import importResource from '../import_resource'
 
 export default ({ resolveConfig, isClient }) => {
   if (!resolveConfig.readModels) {
     throw new Error(`${message.configNotContainSectionError}.readModels`)
   }
 
-  const imports = [
-    `import interopRequireDefault from "@babel/runtime/helpers/interopRequireDefault"`,
-    ``
-  ]
+  const imports = []
   const constants = [``]
   const exports = [``, `const readModels = []`, ``]
 
@@ -25,51 +28,36 @@ export default ({ resolveConfig, isClient }) => {
     if (checkRuntimeEnv(readModel.name)) {
       throw new Error(`${message.clientEnvError}.readModels[${index}].name`)
     }
-    const name = readModel.name
+    constants.push(`const name_${index} = ${JSON.stringify(readModel.name)}`)
 
-    if (checkRuntimeEnv(readModel.projection)) {
-      throw new Error(
-        `${message.clientEnvError}.readModels[${index}].projection`
-      )
-    }
-    const projection = resolveFile(readModel.projection)
-
-    if (checkRuntimeEnv(readModel.resolvers)) {
-      throw new Error(
-        `${message.clientEnvError}.readModels[${index}].resolvers`
-      )
-    }
-    const resolvers = resolveFile(readModel.resolvers)
-
-    const hmac = crypto.createHmac(
-      'sha512',
-      'resolve-read-model-projection-hash'
-    )
-    hmac.update(fs.readFileSync(projection).toString())
-    const invariantHash = hmac.digest('hex')
-
-    constants.push(
-      `const invariantHash_${index} = ${JSON.stringify(invariantHash)}`
-    )
-
-    const adapter = readModel.adapter
-      ? {
-          module: checkRuntimeEnv(readModel.adapter.module)
-            ? readModel.adapter.module
-            : resolveFileOrModule(readModel.adapter.module),
-          options: {
-            ...readModel.adapter.options
-          }
-        }
-      : {
-          module: resolveFileOrModule('resolve-readmodel-memory'),
-          options: {}
-        }
-
-    constants.push(`const name_${index} = ${JSON.stringify(name)}`)
+    importResource({
+      resourceName: `resolvers_${index}`,
+      resourceValue: readModel.resolvers,
+      runtimeMode: RUNTIME_ENV_NOWHERE,
+      importMode: RESOURCE_ANY,
+      instanceMode: IMPORT_INSTANCE,
+      imports: !isClient ? imports : [],
+      constants: !isClient ? constants : []
+    })
 
     if (isClient) {
-      const clientResolvers = Object.keys(importBabel(resolvers))
+      const clientResolvers =
+        readModel.resolvers.constructor === String
+          ? Object.keys(importBabel(resolveFile(readModel.resolvers)))
+          : importBabel(resolveFileOrModule(readModel.resolvers.module))(
+              readModel.resolvers.options,
+              readModel.resolvers.imports != null
+                ? Object.keys(readModel.resolvers.imports).reduce(
+                    (acc, key) => {
+                      acc[key] = importBabel(
+                        resolveFile(readModel.resolvers.imports[key])
+                      )
+                      return acc
+                    },
+                    {}
+                  )
+                : null
+            )
 
       constants.push(
         `const resolvers_${index} = {`,
@@ -78,46 +66,43 @@ export default ({ resolveConfig, isClient }) => {
           .join(',\r\n'),
         `}`
       )
-    } else {
-      imports.push(
-        `import projection_${index} from ${JSON.stringify(projection)}`,
-        `import resolvers_${index} from ${JSON.stringify(resolvers)}`,
-        ``
-      )
     }
 
-    if (!isClient) {
-      if (checkRuntimeEnv(adapter.module)) {
-        constants.push(
-          `const adapter_${index} = ${injectRuntimeEnv(adapter)}`,
-          `const adapterModule_${index} = interopRequireDefault(`,
-          `  __non_webpack_require__(adapter_${index}.module)`,
-          `).default`,
-          `const adapterOptions_${index} = adapter_${index}.options`
-        )
-      } else {
-        imports.push(
-          `import adapterModule_${index} from ${JSON.stringify(adapter.module)}`
-        )
-        constants.push(
-          `const adapterOptions_${index} = ${JSON.stringify(adapter.options)}`
-        )
-      }
-    }
+    const readModelAdapter = readModel.hasOwnProperty('adapter')
+      ? readModel.adapter
+      : {
+          module: 'resolve-readmodel-memory',
+          options: {}
+        }
 
     exports.push(`readModels.push({`, `  name: name_${index}`)
-    if (!isClient) {
-      exports.push(`, projection: projection_${index}`)
-      exports.push(`, invariantHash: invariantHash_${index}`)
-    }
     exports.push(`, resolvers: resolvers_${index}`)
+
     if (!isClient) {
-      exports.push(
-        `, adapter: {`,
-        `    module: adapterModule_${index},`,
-        `    options: adapterOptions_${index}`,
-        `  }`
-      )
+      importResource({
+        resourceName: `projection_${index}`,
+        resourceValue: readModel.projection,
+        runtimeMode: RUNTIME_ENV_NOWHERE,
+        importMode: RESOURCE_ANY,
+        instanceMode: IMPORT_INSTANCE,
+        calculateHash: 'resolve-read-model-projection-hash',
+        imports,
+        constants
+      })
+      exports.push(`, projection: projection_${index}`)
+      exports.push(`, invariantHash: projection_${index}_hash`)
+
+      importResource({
+        resourceName: `read_model_adapter_${index}`,
+        resourceValue: readModelAdapter,
+        runtimeMode: RUNTIME_ENV_ANYWHERE,
+        importMode: RESOURCE_CONSTRUCTOR_ONLY,
+        instanceMode: IMPORT_CONSTRUCTOR,
+        imports,
+        constants
+      })
+
+      exports.push(`, adapter: read_model_adapter_${index}`)
     }
     exports.push(`})`, ``)
   }

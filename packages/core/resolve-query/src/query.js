@@ -5,7 +5,8 @@ import { modelTypes, errors } from './constants'
 
 const createQuery = ({ eventStore, viewModels, readModels }) => {
   const executors = new Map()
-  const executorTypes = new WeakMap()
+  const executorTypes = new Map()
+  const executorDeserializers = new Map()
   const errorMessages = []
 
   for (const readModel of readModels) {
@@ -16,12 +17,13 @@ const createQuery = ({ eventStore, viewModels, readModels }) => {
     const executor = createReadModel({
       projection: readModel.projection,
       resolvers: readModel.resolvers,
-      adapter: readModel.adapter.module(readModel.adapter.options),
+      adapter: readModel.adapter(),
       eventStore
     })
 
     executors.set(readModel.name, executor)
     executorTypes.set(executor, modelTypes.readModel)
+    executorDeserializers.set(readModel.name, JSON.parse)
   }
 
   for (const viewModel of viewModels) {
@@ -29,26 +31,22 @@ const createQuery = ({ eventStore, viewModels, readModels }) => {
       errorMessages.push(`${errors.duplicateName} "${viewModel}"`)
     }
 
-    let snapshotAdapter, snapshotBucketSize
-    if (viewModel.snapshotAdapter) {
-      const createSnapshotAdapter = viewModel.snapshotAdapter.module
-      const snapshotAdapterOptions = viewModel.snapshotAdapter.options
-
-      snapshotAdapter = createSnapshotAdapter(snapshotAdapterOptions)
-      snapshotBucketSize = snapshotAdapterOptions.bucketSize
-    }
+    const snapshotAdapter =
+      typeof viewModel.snapshotAdapter === 'function'
+        ? viewModel.snapshotAdapter()
+        : null
 
     const executor = createViewModel({
       projection: viewModel.projection,
       invariantHash: viewModel.invariantHash,
       serializeState: viewModel.serializeState,
       snapshotAdapter,
-      snapshotBucketSize,
       eventStore
     })
 
     executors.set(viewModel.name, executor)
     executorTypes.set(executor, modelTypes.viewModel)
+    executorDeserializers.set(viewModel.name, viewModel.deserializeState)
   }
 
   if (errorMessages.length > 0) {
@@ -56,6 +54,14 @@ const createQuery = ({ eventStore, viewModels, readModels }) => {
       executor.dispose()
     }
     throw new Error(errorMessages.join('\n'))
+  }
+
+  const getDeserializer = modelName => {
+    const deserializer = executorDeserializers.get(modelName)
+    if (deserializer == null) {
+      throw new Error(`${errors.modelNotFound} "${modelName}"`)
+    }
+    return deserializer
   }
 
   const getExecutor = modelName => {
@@ -85,6 +91,10 @@ const createQuery = ({ eventStore, viewModels, readModels }) => {
     getModelType: modelName => {
       const executor = executors.get(modelName)
       return executorTypes.get(executor)
+    },
+
+    getDeserializer: ({ modelName }) => {
+      return getDeserializer(modelName)
     },
 
     getExecutors: () => executors

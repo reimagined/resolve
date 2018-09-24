@@ -1,5 +1,10 @@
-import { message } from '../constants'
-import resolveFile from '../resolve_file'
+import {
+  message,
+  RESOURCE_ANY,
+  RUNTIME_ENV_ANYWHERE,
+  IMPORT_INSTANCE
+} from '../constants'
+import importResource from '../import_resource'
 import { checkRuntimeEnv } from '../declare_runtime_env'
 
 export default ({ resolveConfig, isClient }) => {
@@ -25,29 +30,29 @@ export default ({ resolveConfig, isClient }) => {
     if (checkRuntimeEnv(saga.name)) {
       throw new Error(`${message.clientEnvError}.sagas[${index}].name`)
     }
-    const name = saga.name
+    constants.push(`const name_${index} = ${JSON.stringify(saga.name)}`)
 
-    if (checkRuntimeEnv(saga.eventHandlers)) {
-      throw new Error(`${message.clientEnvError}.sagas[${index}].eventHandlers`)
-    }
-    const eventHandlers = resolveFile(
-      saga.eventHandlers,
-      'saga_event_handlers.js'
-    )
+    importResource({
+      resourceName: `eventHandlers_${index}`,
+      resourceValue: saga.eventHandlers,
+      runtimeMode: RUNTIME_ENV_ANYWHERE,
+      importMode: RESOURCE_ANY,
+      instanceMode: IMPORT_INSTANCE,
+      instanceFallback: 'saga_event_handlers.js',
+      imports,
+      constants
+    })
 
-    if (checkRuntimeEnv(saga.cronHandlers)) {
-      throw new Error(`${message.clientEnvError}.sagas[${index}].cronHandlers`)
-    }
-
-    const cronHandlers = resolveFile(saga.cronHandlers, 'saga_cron_handlers.js')
-
-    constants.push(`const name_${index} = ${JSON.stringify(name)}`)
-
-    imports.push(
-      `import cronHandlers_${index} from ${JSON.stringify(cronHandlers)}`,
-      `import eventHandlers_${index} from ${JSON.stringify(eventHandlers)}`,
-      ``
-    )
+    importResource({
+      resourceName: `cronHandlers_${index}`,
+      resourceValue: saga.cronHandlers,
+      runtimeMode: RUNTIME_ENV_ANYWHERE,
+      importMode: RESOURCE_ANY,
+      instanceMode: IMPORT_INSTANCE,
+      instanceFallback: 'saga_cron_handlers.js',
+      imports,
+      constants
+    })
 
     exports.push(`sagas.push({`, `  name: name_${index}`)
     exports.push(`, cronHandlers: cronHandlers_${index}`)

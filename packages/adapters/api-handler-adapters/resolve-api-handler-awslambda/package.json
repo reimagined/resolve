@@ -1,0 +1,50 @@
+{
+  "name": "resolve-api-handler-awslambda",
+  "version": "0.17.0",
+  "description": "This package is an adapter for api handler to AWS Lambda.",
+  "engines": {
+    "node": ">=8.10"
+  },
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "scripts": {
+    "test": "jest --config=../../../../jest.config.js --verbose",
+    "testw": "jest --config=../../../../jest.config.js --watchAll"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "author": "reimagined team",
+  "license": "MIT",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/api-handler-adapters/resolve-api-handler-awslambda#readme",
+  "dependencies": {
+    "content-disposition": "0.5.2",
+    "cookie": "0.3.1"
+  },
+  "devDependencies": {
+    "lodash.escaperegexp": "^4.1.2",
+    "jest": "23.6.0",
+    "sinon": "6.3.4"
+  },
+  "babelCompile": [
+    {
+      "moduleType": "es",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./es"
+    },
+    {
+      "moduleType": "cjs",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./lib"
+    }
+  ]
+}

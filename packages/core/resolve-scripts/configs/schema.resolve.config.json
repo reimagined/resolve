@@ -9,6 +9,28 @@
         },
         "options": {
           "type": "object"
+        },
+        "import": {
+          "type": "object"
+        }
+      },
+      "required": ["module", "options"],
+      "additionalProperties": false
+    },
+    "resourceInstance": {
+      "type": "string"
+    },
+    "resourceConstructor": {
+      "type": "object",
+      "properties": {
+        "module": {
+          "type": "string"
+        },
+        "options": {
+          "type": "object"
+        },
+        "import": {
+          "type": "object"
         }
       },
       "required": ["module", "options"],
@@ -43,10 +65,16 @@
           "type": "string"
         },
         "commands": {
-          "type": "string"
+          "oneOf": [
+            { "$ref": "#/definitions/resourceInstance" },
+            { "$ref": "#/definitions/resourceConstructor" }
+          ]
         },
         "projection": {
-          "type": "string"
+          "oneOf": [
+            { "$ref": "#/definitions/resourceInstance" },
+            { "$ref": "#/definitions/resourceConstructor" }
+          ]
         },
         "snapshotAdapter": {
           "$ref": "#/definitions/adapter"
@@ -62,16 +90,28 @@
           "type": "string"
         },
         "projection": {
-          "type": "string"
+          "oneOf": [
+            { "$ref": "#/definitions/resourceInstance" },
+            { "$ref": "#/definitions/resourceConstructor" }
+          ]
         },
         "serializeState": {
-          "type": "string"
+          "oneOf": [
+            { "$ref": "#/definitions/resourceInstance" },
+            { "$ref": "#/definitions/resourceConstructor" }
+          ]
         },
         "deserializeState": {
-          "type": "string"
+          "oneOf": [
+            { "$ref": "#/definitions/resourceInstance" },
+            { "$ref": "#/definitions/resourceConstructor" }
+          ]
         },
         "validator": {
-          "type": "string"
+          "oneOf": [
+            { "$ref": "#/definitions/resourceInstance" },
+            { "$ref": "#/definitions/resourceConstructor" }
+          ]
         },
         "snapshotAdapter": {
           "$ref": "#/definitions/adapter"
@@ -91,10 +131,16 @@
           "type": "string"
         },
         "projection": {
-          "type": "string"
+          "oneOf": [
+            { "$ref": "#/definitions/resourceInstance" },
+            { "$ref": "#/definitions/resourceConstructor" }
+          ]
         },
         "resolvers": {
-          "type": "string"
+          "oneOf": [
+            { "$ref": "#/definitions/resourceInstance" },
+            { "$ref": "#/definitions/resourceConstructor" }
+          ]
         },
         "adapter": {
           "$ref": "#/definitions/adapter"
@@ -110,13 +156,35 @@
           "type": "string"
         },
         "cronHandlers": {
-          "type": "string"
+          "oneOf": [
+            { "$ref": "#/definitions/resourceInstance" },
+            { "$ref": "#/definitions/resourceConstructor" }
+          ]
         },
         "eventHandlers": {
-          "type": "string"
+          "oneOf": [
+            { "$ref": "#/definitions/resourceInstance" },
+            { "$ref": "#/definitions/resourceConstructor" }
+          ]
         }
       },
       "required": ["name"],
+      "additionalProperties": false
+    },
+    "apiHandler": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "controller": {
+          "oneOf": [
+            { "$ref": "#/definitions/resourceInstance" },
+            { "$ref": "#/definitions/resourceConstructor" }
+          ]
+        }
+      },
+      "required": ["path", "controller"],
       "additionalProperties": false
     },
     "jwtCookie": {
@@ -214,6 +282,12 @@
             "$ref": "#/definitions/saga"
           }
         },
+        "apiHandlers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiHandler"
+          }
+        },
         "busAdapter": {
           "$ref": "#/definitions/adapter"
         },
@@ -237,9 +311,6 @@
         },
         "mode": {
           "type": "string"
-        },
-        "webpack": {
-          "not": { "type": "null" }
         }
       },
       "required": [

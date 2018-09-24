@@ -1,6 +1,10 @@
-import { message } from '../constants'
-import resolveFileOrModule from '../resolve_file_or_module'
-import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
+import {
+  message,
+  RESOURCE_CONSTRUCTOR_ONLY,
+  RUNTIME_ENV_ANYWHERE,
+  IMPORT_CONSTRUCTOR
+} from '../constants'
+import importResource from '../import_resource'
 
 export default ({ resolveConfig, isClient }) => {
   if (isClient) {
@@ -13,48 +17,23 @@ export default ({ resolveConfig, isClient }) => {
     throw new Error(`${message.configNotContainSectionError}.storageAdapter`)
   }
 
-  const storageAdapter = resolveConfig.storageAdapter
-    ? {
-        module: checkRuntimeEnv(resolveConfig.storageAdapter.module)
-          ? resolveConfig.storageAdapter.module
-          : resolveFileOrModule(resolveConfig.storageAdapter.module),
-        options: {
-          ...resolveConfig.storageAdapter.options
-        }
-      }
-    : {}
-
+  const imports = []
+  const constants = []
   const exports = []
 
-  if (checkRuntimeEnv(storageAdapter.module)) {
-    exports.push(
-      `import interopRequireDefault from "@babel/runtime/helpers/interopRequireDefault"`,
-      ``,
-      `const storageAdapter = ${injectRuntimeEnv(storageAdapter)}`,
-      `const storageAdapterModule = interopRequireDefault(`,
-      `  __non_webpack_require__(storageAdapter.module)`,
-      `).default`,
-      `const storageAdapterOptions = storageAdapter.options`
-    )
-  } else {
-    exports.push(
-      `import storageAdapterModule from ${JSON.stringify(
-        storageAdapter.module
-      )}`,
-      ``,
-      `const storageAdapterOptions = ${JSON.stringify(storageAdapter.options)}`
-    )
-  }
+  importResource({
+    resourceName: 'storageAdapter',
+    resourceValue: resolveConfig.storageAdapter,
+    runtimeMode: RUNTIME_ENV_ANYWHERE,
+    importMode: RESOURCE_CONSTRUCTOR_ONLY,
+    instanceMode: IMPORT_CONSTRUCTOR,
+    imports,
+    constants
+  })
 
-  exports.push(
-    ``,
-    `export default {`,
-    `  module: storageAdapterModule,`,
-    `  options: storageAdapterOptions`,
-    `}`
-  )
+  exports.push('export default storageAdapter')
 
   return {
-    code: exports.join('\r\n')
+    code: [...imports, ...constants, ...exports].join('\r\n')
   }
 }

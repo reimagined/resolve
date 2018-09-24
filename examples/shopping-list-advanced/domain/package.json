@@ -1,6 +1,6 @@
 {
   "name": "@react-native-shopping-list/domain",
-  "version": "0.14.4",
+  "version": "0.17.0",
   "private": true,
   "dependencies": {
     "jsonwebtoken": "8.3.0",
@@ -8,8 +8,10 @@
     "uuid": "3.3.2"
   },
   "devDependencies": {
-    "babel-jest": "23.4.2",
-    "jest": "23.5.0"
+    "babel-core": "^7.0.0-0",
+    "regenerator-runtime": "0.12.1",
+    "babel-jest": "23.6.0",
+    "jest": "23.6.0"
   },
   "scripts": {
     "test": "jest --testMatch=**/test/**/unit/*.test.js --verbose",

@@ -7,10 +7,7 @@ import TimeAgo from './TimeAgo'
 import Link from '../containers/Link'
 
 const CommentRoot = styled.div`
-  margin-bottom: 0.75em;
-  padding-right: 1.25em;
-  padding-top: 0.65em;
-  padding-left: ${2.5}em;
+  margin-bottom: 1em;
 `
 
 const CommentInfo = styled.div`

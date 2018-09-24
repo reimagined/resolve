@@ -2,20 +2,52 @@
 
 exports[`base config works correctly [client] 1`] = `
 "
-import module from \\"resolve-subscribe-socket.io/lib/client\\"
-
-const options = {}
-
-export default { module, options }
+import subscribe_adapter_constructor from \\"resolve-subscribe-socket.io/lib/client\\"
+const constructorBindFunction =
+    (
+      constructorFunction,
+      compileTimeOptions,
+      compileTimeImports,
+      runTimeOptions,
+      runTimeImports
+    ) => constructorFunction(
+      { ...compileTimeOptions, ...runTimeOptions },
+      { ...compileTimeImports, ...runTimeImports }
+    )
+const idempotentFunction = value => value
+const subscribe_adapter_imports = {  }
+const subscribe_adapter_options = {}
+const subscribe_adapter = constructorBindFunction.bind(null,
+      subscribe_adapter_constructor,
+      subscribe_adapter_options,
+      subscribe_adapter_imports
+    )
+export default subscribe_adapter
 "
 `;
 
 exports[`base config works correctly [server] 1`] = `
 "
-import module from \\"resolve-subscribe-socket.io/lib/server\\"
-
-const options = {}
-
-export default { module, options }
+import subscribe_adapter_constructor from \\"resolve-subscribe-socket.io/lib/server\\"
+const constructorBindFunction =
+    (
+      constructorFunction,
+      compileTimeOptions,
+      compileTimeImports,
+      runTimeOptions,
+      runTimeImports
+    ) => constructorFunction(
+      { ...compileTimeOptions, ...runTimeOptions },
+      { ...compileTimeImports, ...runTimeImports }
+    )
+const idempotentFunction = value => value
+const subscribe_adapter_imports = {  }
+const subscribe_adapter_options = {}
+const subscribe_adapter = constructorBindFunction.bind(null,
+      subscribe_adapter_constructor,
+      subscribe_adapter_options,
+      subscribe_adapter_imports
+    )
+export default subscribe_adapter
 "
 `;
