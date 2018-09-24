@@ -54,7 +54,7 @@ class FindUsers extends React.PureComponent {
 }
 
 export const mapStateToOptions = (state, { query, shoppingListId }) => ({
-  readModelName: 'Default',
+  readModelName: 'ShoppingLists',
   resolverName: 'sharings',
   resolverArgs: {
     query,

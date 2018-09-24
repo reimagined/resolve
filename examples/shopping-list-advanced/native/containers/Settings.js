@@ -86,7 +86,7 @@ export class Settings extends React.PureComponent {
 }
 
 export const mapStateToOptions = state => ({
-  readModelName: 'Default',
+  readModelName: 'ShoppingLists',
   resolverName: 'user',
   resolverArgs: {
     id: state.jwt.id

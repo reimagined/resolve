@@ -1,9 +1,18 @@
 import { Strategy as LocalStrategy } from 'passport-local'
-import uuid from 'uuid'
+import uuid from 'uuid/v4'
 import crypto from 'crypto'
-import jwt from 'jsonwebtoken'
+import JWT from 'jsonwebtoken'
 
 import jwtSecret from './jwt_secret'
+
+const ROOT_JWT_TOKEN = JWT.sign(
+  {
+    username: 'root',
+    id: '00000000-0000-0000-0000-000000000000',
+    role: 'root'
+  },
+  jwtSecret
+)
 
 const failureRedirect = error => `/error?text=${error.message.toString()}`
 const errorRedirect = error => `/error?text=${error.message.toString()}`
@@ -50,7 +59,7 @@ const strategies = [
         const passwordHash = hmac.digest('hex')
 
         const existingUser = await resolve.executeQuery({
-          modelName: 'Default',
+          modelName: 'ShoppingLists',
           resolverName: 'user',
           resolverArgs: {
             username
@@ -58,12 +67,12 @@ const strategies = [
         })
 
         if (existingUser) {
-          throw new Error('User already exists')
+          throw new Error('User can not be created')
         }
 
-        const userId = uuid.v4()
+        const userId = uuid()
 
-        const jwtToken = jwt.sign(
+        const jwtToken = JWT.sign(
           {
             username: username.trim(),
             id: userId
@@ -78,7 +87,8 @@ const strategies = [
           payload: {
             username,
             passwordHash
-          }
+          },
+          jwtToken: ROOT_JWT_TOKEN
         })
 
         await resolve.executeCommand({
@@ -111,7 +121,7 @@ const strategies = [
       errorRedirect,
       callback: async ({ resolve }, username, password) => {
         const user = await resolve.executeQuery({
-          modelName: 'Default',
+          modelName: 'ShoppingLists',
           resolverName: 'user',
           resolverArgs: { username }
         })
@@ -121,15 +131,11 @@ const strategies = [
 
         const passwordHash = hmac.digest('hex')
 
-        if (!user) {
-          throw new Error('No such user')
-        }
-
-        if (user.passwordHash !== passwordHash) {
+        if (!user || user.passwordHash !== passwordHash) {
           throw new Error('Incorrect username or password')
         }
 
-        return jwt.sign(user, jwtSecret)
+        return JWT.sign(user, jwtSecret)
       }
     }
   },
@@ -148,7 +154,7 @@ const strategies = [
       failureRedirect,
       errorRedirect,
       callback: async () => {
-        return jwt.sign({}, jwtSecret)
+        return JWT.sign({}, jwtSecret)
       }
     }
   }

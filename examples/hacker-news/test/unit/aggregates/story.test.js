@@ -9,7 +9,7 @@ import {
   STORY_UPVOTED,
   STORY_UNVOTED,
   STORY_COMMENTED
-} from '../../../common/events'
+} from '../../../common/event_types'
 
 let sandbox
 let userId

@@ -6,7 +6,7 @@ import {
   STORY_CREATED,
   STORY_UPVOTED,
   STORY_COMMENTED
-} from '../common/events'
+} from '../common/event_types'
 
 import api from './api'
 import eventStore, { dropStore } from './eventStore'
