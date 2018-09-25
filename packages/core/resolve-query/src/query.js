@@ -8,6 +8,13 @@ const createQuery = ({ eventStore, viewModels, readModels }) => {
   const executorTypes = new Map()
   const executorDeserializers = new Map()
   const errorMessages = []
+  let disposePromise = null
+
+  const checkQueryDisposeState = () => {
+    if (disposePromise != null) {
+      throw new Error(errors.disposed)
+    }
+  }
 
   for (const readModel of readModels) {
     if (executors.has(readModel.name)) {
@@ -74,30 +81,53 @@ const createQuery = ({ eventStore, viewModels, readModels }) => {
 
   const api = Object.freeze({
     read: async ({ modelName, ...options }) => {
+      checkQueryDisposeState()
       const executor = getExecutor(modelName)
       return await executor.read(options)
     },
 
     readAndSerialize: async ({ modelName, ...options }) => {
+      checkQueryDisposeState()
       const executor = getExecutor(modelName)
       return await executor.readAndSerialize(options)
     },
 
     getLastError: async ({ modelName, ...options }) => {
+      checkQueryDisposeState()
       const executor = getExecutor(modelName)
       return await executor.getLastError(options)
     },
 
     getModelType: modelName => {
+      checkQueryDisposeState()
       const executor = executors.get(modelName)
       return executorTypes.get(executor)
     },
 
     getDeserializer: ({ modelName }) => {
+      checkQueryDisposeState()
       return getDeserializer(modelName)
     },
 
-    getExecutors: () => executors
+    dispose: () => {
+      if (disposePromise == null) {
+        disposePromise = (async () => {
+          for (const executor of executors.values()) {
+            await executor.dispose()
+          }
+          executorDeserializers.clear()
+          executorTypes.clear()
+          executors.clear()
+        })()
+      }
+
+      return disposePromise
+    },
+
+    getExecutors: () => {
+      checkQueryDisposeState()
+      return executors
+    }
   })
 
   const query = (...args) => api.read(...args)
