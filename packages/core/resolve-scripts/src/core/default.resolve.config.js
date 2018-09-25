@@ -37,5 +37,6 @@ export default {
   jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000
-  }
+  },
+  customConstants: {}
 }
