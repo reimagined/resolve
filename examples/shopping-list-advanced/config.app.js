@@ -27,9 +27,9 @@ const appConfig = {
   ],
   readModels: [
     {
-      name: 'Default',
-      projection: 'domain/read-models/default.projection.js',
-      resolvers: 'domain/read-models/default.resolvers.js'
+      name: 'ShoppingLists',
+      projection: 'domain/read-models/shopping_lists.projection.js',
+      resolvers: 'domain/read-models/shopping_lists.resolvers.js'
     }
   ],
   jwtCookie: {

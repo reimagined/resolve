@@ -1,14 +1,16 @@
-import jwt from 'jsonwebtoken'
+import JWT from 'jsonwebtoken'
 
 import jwtSecret from '../auth/jwt_secret'
 import validation from './validation'
 import { USER_CREATED, USER_NAME_UPDATED } from '../event_types'
 
 export default {
-  createUser: (state, command) => {
-    validation.stateIsAbsent(state, 'User')
+  createUser: (state, command, jwtToken) => {
+    const jwt = JWT.verify(jwtToken, jwtSecret)
 
+    validation.stateIsAbsent(state, 'User')
     validation.fieldRequired(command.payload, 'username')
+    validation.toEqual(jwt, 'role', 'root')
 
     return {
       type: USER_CREATED,
@@ -20,11 +22,11 @@ export default {
     }
   },
   updateUserName: (state, command, jwtToken) => {
-    jwt.verify(jwtToken, jwtSecret)
+    const jwt = JWT.verify(jwtToken, jwtSecret)
 
     validation.stateExists(state, 'User')
-
     validation.fieldRequired(command.payload, 'username')
+    validation.toEqual(jwt, 'id', state.userId)
 
     return {
       type: USER_NAME_UPDATED,

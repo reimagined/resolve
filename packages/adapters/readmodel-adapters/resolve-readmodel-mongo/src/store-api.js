@@ -1,5 +1,6 @@
 const defineTable = async ({ connection }, tableName, tableDescription) => {
-  const collection = await connection.collection(tableName)
+  const db = await connection.db()
+  const collection = await db.collection(tableName)
   for (let [idx, columnName] of Object.keys(tableDescription).entries()) {
     if (tableDescription[columnName] === 'regular') continue
     const indexArgs = [{ [columnName]: 1 }]
@@ -90,7 +91,8 @@ const find = async (
   skip,
   limit
 ) => {
-  const collection = await connection.collection(tableName)
+  const db = await connection.db()
+  const collection = await db.collection(tableName)
   const findCursor = await collection.find(
     wrapSearchExpression(searchExpression),
     {
@@ -110,7 +112,8 @@ const findOne = async (
   searchExpression,
   fieldList
 ) => {
-  const collection = await connection.collection(tableName)
+  const db = await connection.db()
+  const collection = await db.collection(tableName)
 
   return await collection.findOne(wrapSearchExpression(searchExpression), {
     projection: fieldList ? { _id: 0, ...fieldList } : { _id: 0 }
@@ -118,12 +121,14 @@ const findOne = async (
 }
 
 const count = async ({ connection }, tableName, searchExpression) => {
-  const collection = await connection.collection(tableName)
+  const db = await connection.db()
+  const collection = await db.collection(tableName)
   return await collection.count(wrapSearchExpression(searchExpression))
 }
 
 const insert = async ({ connection }, tableName, document) => {
-  const collection = await connection.collection(tableName)
+  const db = await connection.db()
+  const collection = await db.collection(tableName)
   return await collection.insertOne(document)
 }
 
@@ -134,7 +139,8 @@ const update = async (
   updateExpression,
   options
 ) => {
-  const collection = await connection.collection(tableName)
+  const db = await connection.db()
+  const collection = await db.collection(tableName)
   return await collection.updateMany(
     wrapSearchExpression(searchExpression),
     updateExpression,
@@ -143,7 +149,8 @@ const update = async (
 }
 
 const del = async ({ connection }, tableName, searchExpression) => {
-  const collection = await connection.collection(tableName)
+  const db = await connection.db()
+  const collection = await db.collection(tableName)
   return await collection.deleteMany(wrapSearchExpression(searchExpression))
 }
 

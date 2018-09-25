@@ -34,13 +34,13 @@ const appConfig = {
   ],
   readModels: [
     {
-      name: 'default',
-      projection: 'common/read-models/default.projection.js',
-      resolvers: 'common/read-models/default.resolvers.js'
+      name: 'HackerNews',
+      projection: 'common/read-models/hacker-news.projection.js',
+      resolvers: 'common/read-models/hacker-news.resolvers.js'
     }
   ],
   auth: {
-    strategies: 'auth/localStrategy.js'
+    strategies: 'auth/local_strategy.js'
   }
 }
 

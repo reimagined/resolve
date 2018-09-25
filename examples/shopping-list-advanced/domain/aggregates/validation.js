@@ -11,6 +11,12 @@ export default {
     }
   },
 
+  toEqual: (obj, key, value) => {
+    if (obj[key] !== value) {
+      throw new Error(`The ".${key}" must be a equal to "${value}"`)
+    }
+  },
+
   stateExists: (state, type) => {
     if (!state || Object.keys(state).length === 0) {
       throw new Error(`${type} does not exist`)

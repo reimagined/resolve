@@ -1,5 +1,5 @@
 {
-  "name": "@react-native-shopping-list/ui",
+  "name": "@shopping-list-advanced/ui",
   "version": "0.17.0",
   "private": true,
   "main": "src/index",
