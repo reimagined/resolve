@@ -25,7 +25,7 @@ const mapStateToOptions = (
     }
   }
 ) => ({
-  readModelName: 'default',
+  readModelName: 'HackerNews',
   resolverName: 'askStories',
   resolverArgs: {
     offset: ITEMS_PER_PAGE + 1,

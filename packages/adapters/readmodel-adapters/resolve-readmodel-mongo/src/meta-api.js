@@ -1,5 +1,17 @@
-const getMetaInfo = async (pool, checkStoredTableSchema) => {
-  const { connection: db, metaName } = pool
+const connect = async (MongoClient, pool, options) => {
+  const {
+    checkStoredTableSchema,
+    metaName,
+    url,
+    ...connectionOptions
+  } = options
+
+  const connection = await MongoClient.connect(
+    url,
+    { ...connectionOptions, useNewUrlParser: true }
+  )
+
+  const db = await connection.db()
   const collections = await db.collections()
   let metaCollection = null
 
@@ -56,6 +68,11 @@ const getMetaInfo = async (pool, checkStoredTableSchema) => {
 
     await metaCollection.deleteMany({ key: 'tableDescription', tableName })
   }
+
+  Object.assign(pool, {
+    metaName,
+    connection
+  })
 }
 
 const getLastTimestamp = async ({ metaInfo }) => metaInfo.timestamp
@@ -64,7 +81,8 @@ const setLastTimestamp = async (
   { metaInfo, connection, metaName },
   timestamp
 ) => {
-  const metaCollection = await connection.collection(metaName)
+  const db = await connection.db()
+  const metaCollection = await db.collection(metaName)
 
   await metaCollection.updateOne(
     { key: 'timestamp' },
@@ -79,7 +97,8 @@ const setLastAggregateVersion = async (
   aggregateId,
   aggregateVersion
 ) => {
-  const metaCollection = await connection.collection(metaName)
+  const db = await connection.db()
+  const metaCollection = await db.collection(metaName)
 
   await metaCollection.updateOne(
     { key: 'aggregatesVersionsMap', aggregateId },
@@ -105,7 +124,8 @@ const describeTable = async (
   tableName,
   metaSchema
 ) => {
-  const metaCollection = await connection.collection(metaName)
+  const db = await connection.db()
+  const metaCollection = await db.collection(metaName)
 
   await metaCollection.insertOne({
     key: 'tableDescription',
@@ -118,19 +138,35 @@ const describeTable = async (
 
 const getTableNames = async ({ metaInfo }) => Object.keys(metaInfo.tables)
 
-const drop = async ({ metaInfo, connection, metaName }) => {
-  for (let tableName of [...Object.keys(metaInfo.tables), metaName]) {
-    const collection = await connection.collection(tableName)
-    await collection.drop()
+const disconnect = async ({ connection }) => {
+  await connection.close()
+}
+
+const drop = async (
+  { metaInfo, connection, metaName },
+  { dropMetaTable, dropDataTables } = {}
+) => {
+  const db = await connection.db()
+
+  if (dropDataTables) {
+    for (let tableName of Object.keys(metaInfo.tables)) {
+      const collection = await db.collection(tableName)
+      await collection.drop()
+    }
   }
 
-  for (let key of Object.keys(metaInfo)) {
-    delete metaInfo[key]
+  if (dropMetaTable) {
+    const metaCollection = await db.collection(metaName)
+    await metaCollection.drop()
+
+    for (let key of Object.keys(metaInfo)) {
+      delete metaInfo[key]
+    }
   }
 }
 
 export default {
-  getMetaInfo,
+  connect,
   getLastTimestamp,
   setLastTimestamp,
   setLastAggregateVersion,
@@ -139,5 +175,6 @@ export default {
   getTableInfo,
   describeTable,
   getTableNames,
+  disconnect,
   drop
 }

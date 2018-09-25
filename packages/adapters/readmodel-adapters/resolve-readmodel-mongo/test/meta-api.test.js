@@ -5,7 +5,7 @@ import metaApi from '../src/meta-api'
 describe('resolve-readmodel-mongo meta-api', () => {
   const META_NAME = 'META_NAME'
 
-  let collectionApi, pool, checkStoredTableSchema
+  let collectionApi, pool, db, connection, checkStoredTableSchema
 
   beforeEach(() => {
     checkStoredTableSchema = sinon.stub()
@@ -20,12 +20,18 @@ describe('resolve-readmodel-mongo meta-api', () => {
       drop: sinon.stub().callsFake(() => Promise.resolve())
     }
 
+    db = {
+      createCollection: sinon.stub().callsFake(async () => null),
+      collection: sinon.stub().callsFake(async () => collectionApi),
+      collections: sinon.stub().callsFake(async () => [])
+    }
+
+    connection = {
+      db: sinon.stub().callsFake(async () => db)
+    }
+
     pool = {
-      connection: {
-        createCollection: sinon.stub().callsFake(async () => null),
-        collection: sinon.stub().callsFake(async () => collectionApi),
-        collections: sinon.stub().callsFake(async () => [])
-      },
+      connection,
       metaName: META_NAME
     }
   })
@@ -33,10 +39,12 @@ describe('resolve-readmodel-mongo meta-api', () => {
   afterEach(() => {
     checkStoredTableSchema = null
     collectionApi = null
+    connection = null
     pool = null
+    db = null
   })
 
-  it('should provide getMetaInfo method - for initialized meta table', async () => {
+  it('should provide connect method - for initialized meta table', async () => {
     const tableDeclarations = [
       {
         tableName: 'table1',
@@ -67,7 +75,11 @@ describe('resolve-readmodel-mongo meta-api', () => {
     checkStoredTableSchema.onCall(0).callsFake(() => true)
     checkStoredTableSchema.onCall(1).callsFake(() => true)
 
-    await metaApi.getMetaInfo(pool, checkStoredTableSchema)
+    await metaApi.connect(
+      { connect: async () => connection },
+      pool,
+      { checkStoredTableSchema }
+    )
     expect(pool.metaInfo.tables['table1']).toEqual(
       tableDeclarations[0].tableDescription
     )
@@ -85,7 +97,7 @@ describe('resolve-readmodel-mongo meta-api', () => {
     })
   })
 
-  it('should provide getMetaInfo method - for empty meta table', async () => {
+  it('should provide connect method - for empty meta table', async () => {
     collectionApi.findOne.onCall(0).callsFake(async () => null)
     collectionApi.find.onCall(0).callsFake(async () => ({
       toArray: async () => []
@@ -97,7 +109,11 @@ describe('resolve-readmodel-mongo meta-api', () => {
     checkStoredTableSchema.onCall(0).callsFake(() => false)
     checkStoredTableSchema.onCall(1).callsFake(() => false)
 
-    await metaApi.getMetaInfo(pool, checkStoredTableSchema)
+    await metaApi.connect(
+      { connect: async () => connection },
+      pool,
+      { checkStoredTableSchema }
+    )
     expect(pool.metaInfo.tables).toEqual({})
     expect(pool.metaInfo.timestamp).toEqual(0)
 
@@ -116,7 +132,7 @@ describe('resolve-readmodel-mongo meta-api', () => {
     ])
   })
 
-  it('should provide getMetaInfo method - for malformed meta table', async () => {
+  it('should provide connect method - for malformed meta table', async () => {
     const tableDeclarations = [
       {
         tableName: 'table',
@@ -141,7 +157,11 @@ describe('resolve-readmodel-mongo meta-api', () => {
     checkStoredTableSchema.onCall(0).callsFake(() => false)
     checkStoredTableSchema.onCall(1).callsFake(() => false)
 
-    await metaApi.getMetaInfo(pool, checkStoredTableSchema)
+    await metaApi.connect(
+      { connect: async () => connection },
+      pool,
+      { checkStoredTableSchema }
+    )
     expect(pool.metaInfo.tables).toEqual({})
     expect(pool.metaInfo.timestamp).toEqual(0)
 
@@ -226,17 +246,23 @@ describe('resolve-readmodel-mongo meta-api', () => {
     expect(result).toEqual(['one', 'two'])
   })
 
-  it('should provide drop method', async () => {
+  it('should provide drop method with default arguments', async () => {
     pool.metaInfo = { tables: { one: {}, two: {} } }
 
     await metaApi.drop(pool)
+  })
+
+  it('should provide drop method with custom arguments', async () => {
+    pool.metaInfo = { tables: { one: {}, two: {} } }
+
+    await metaApi.drop(pool, { dropDataTables: true, dropMetaTable: true })
 
     expect(collectionApi.drop.callCount).toEqual(3)
 
-    expect(pool.connection.collection.callCount).toEqual(3)
-    expect(pool.connection.collection.firstCall.args[0]).toEqual('one')
-    expect(pool.connection.collection.secondCall.args[0]).toEqual('two')
-    expect(pool.connection.collection.thirdCall.args[0]).toEqual(META_NAME)
+    expect(db.collection.callCount).toEqual(3)
+    expect(db.collection.firstCall.args[0]).toEqual('one')
+    expect(db.collection.secondCall.args[0]).toEqual('two')
+    expect(db.collection.thirdCall.args[0]).toEqual(META_NAME)
 
     expect(Object.keys(pool.metaInfo)).toEqual([])
   })

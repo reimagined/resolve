@@ -1,11 +1,11 @@
 import { actionTypes } from 'resolve-redux'
 import { routerActions, LOCATION_CHANGE } from 'react-router-redux'
-import { ROUTE_CHANGED } from '../actions/actionTypes'
+import { ROUTE_CHANGED } from '../actions/action_types'
 
 import {
   OPTIMISTIC_STORY_UPVOTED,
   OPTIMISTIC_STORY_UNVOTED
-} from '../actions/actionTypes'
+} from '../actions/action_types'
 
 const {
   SEND_COMMAND_SUCCESS,

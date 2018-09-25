@@ -141,7 +141,13 @@ const read = async (repository, { resolverName, resolverArgs, jwtToken }) => {
   return await resolver(store, resolverArgs, jwtToken)
 }
 
-const dispose = (repository, drop = false) => {
+const dispose = (repository, options = {}) => {
+  if (options == null || options.constructor !== Object) {
+    throw new Error(
+      'Dispose options should be object or not be passed to use default behaviour'
+    )
+  }
+
   if (repository.disposePromise) {
     return repository.disposePromise
   }
@@ -151,7 +157,7 @@ const dispose = (repository, drop = false) => {
     repository.adapter.reset
   ]).then(async ([onDispose, reset]) => {
     await onDispose()
-    await reset(drop)
+    await reset(options)
   })
 
   Object.keys(repository).forEach(key => {

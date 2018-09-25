@@ -1,6 +1,6 @@
 import { Strategy } from 'passport-local'
 import jwt from 'jsonwebtoken'
-import jwtSecret from './jwtSecret'
+import jwtSecret from './jwt_secret'
 import uuid from 'uuid'
 
 const strategyOptions = {
@@ -22,13 +22,13 @@ const routes = [
     method: 'POST',
     callback: async ({ resolve }, username) => {
       const existingUser = await resolve.executeQuery({
-        modelName: 'default',
+        modelName: 'HackerNews',
         resolverName: 'user',
         resolverArgs: { name: username.trim() }
       })
 
       if (existingUser) {
-        throw new Error('User already exists')
+        throw new Error('User can not be created')
       }
 
       const user = {
@@ -51,13 +51,13 @@ const routes = [
     method: 'POST',
     callback: async ({ resolve }, username) => {
       const user = await resolve.executeQuery({
-        modelName: 'default',
+        modelName: 'HackerNews',
         resolverName: 'user',
         resolverArgs: { name: username.trim() }
       })
 
       if (!user) {
-        throw new Error('No such user')
+        throw new Error('Incorrect "username"')
       }
 
       return jwt.sign(user, jwtSecret)

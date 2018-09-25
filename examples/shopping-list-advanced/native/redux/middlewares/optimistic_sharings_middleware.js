@@ -11,7 +11,7 @@ const { SEND_COMMAND_SUCCESS, LOAD_READMODEL_STATE_SUCCESS } = actionTypes
 const optimisticSharingsMiddleware = store => next => action => {
   if (
     action.type === LOAD_READMODEL_STATE_SUCCESS &&
-    action.readModelName === 'Default' &&
+    action.readModelName === 'ShoppingLists' &&
     action.resolverName === 'sharings'
   ) {
     store.dispatch({

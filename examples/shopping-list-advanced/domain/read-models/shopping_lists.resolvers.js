@@ -54,7 +54,7 @@ export default {
     return await store.findOne('Users', query)
   },
 
-  shoppingLists: async (store, _, jwtToken) => {
+  all: async (store, _, jwtToken) => {
     const { id: userId } = jwt.verify(jwtToken, jwtSecret)
 
     const shoppingLists = []
