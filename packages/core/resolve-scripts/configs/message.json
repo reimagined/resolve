@@ -17,6 +17,7 @@
   "viewModelOnlyOnDemand": "The aggregateIds field is required",
   "ssrError": "An SSR error: ",
   "clientEnvError": "Environment variables in the client code are restricted: ",
+  "incorrectJsonSchemaType": "Type must be one of [\"string\", \"number\", \"object\", \"array\", \"boolean\", null]: ",
   "serverAliasInClientCodeError":
     "Server alias in the client code is restricted: ",
   "clientAliasInServerCodeError":

@@ -5,6 +5,7 @@ Object {
   "code": "import aggregateActions from '$resolve.aggregateActions'
 import busAdapter from '$resolve.busAdapter'
 import constants from '$resolve.constants'
+import customConstants from '$resolve.customConstants'
 import redux from '$resolve.redux'
 import routes from '$resolve.routes'
 import storageAdapter from '$resolve.storageAdapter'
@@ -14,6 +15,7 @@ export default {
  aggregateActions,
 busAdapter,
 constants,
+customConstants,
 redux,
 routes,
 storageAdapter,
