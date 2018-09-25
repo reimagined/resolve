@@ -91,7 +91,7 @@ describe('API handler wrapper for express.js', () => {
 
     expressRes = {
       status: sinon.stub().callsFake(() => expressRes),
-      append: sinon.stub().callsFake(() => expressRes),
+      set: sinon.stub().callsFake(() => expressRes),
       end: sinon.stub().callsFake(() => expressRes)
     }
   })
@@ -193,7 +193,7 @@ describe('API handler wrapper for express.js', () => {
 
     expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
 
-    expect(extractInvocationInfo(expressRes.append)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.set)).toMatchSnapshot()
 
     expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
 
@@ -212,7 +212,7 @@ describe('API handler wrapper for express.js', () => {
 
     expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
 
-    expect(extractInvocationInfo(expressRes.append)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.set)).toMatchSnapshot()
 
     expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
 
@@ -228,7 +228,7 @@ describe('API handler wrapper for express.js', () => {
 
     expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
 
-    expect(extractInvocationInfo(expressRes.append)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.set)).toMatchSnapshot()
 
     expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
 
@@ -244,7 +244,7 @@ describe('API handler wrapper for express.js', () => {
 
     expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
 
-    expect(extractInvocationInfo(expressRes.append)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.set)).toMatchSnapshot()
 
     expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
 
@@ -260,7 +260,7 @@ describe('API handler wrapper for express.js', () => {
 
     expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
 
-    expect(extractInvocationInfo(expressRes.append)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.set)).toMatchSnapshot()
 
     expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
 
@@ -276,7 +276,7 @@ describe('API handler wrapper for express.js', () => {
 
     expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
 
-    expect(extractInvocationInfo(expressRes.append)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.set)).toMatchSnapshot()
 
     expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
 
@@ -292,7 +292,7 @@ describe('API handler wrapper for express.js', () => {
 
     expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
 
-    expect(extractInvocationInfo(expressRes.append)).toMatchSnapshot()
+    expect(extractInvocationInfo(expressRes.set)).toMatchSnapshot()
 
     expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
 

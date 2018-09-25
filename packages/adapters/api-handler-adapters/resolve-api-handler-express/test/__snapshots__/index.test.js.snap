@@ -45,40 +45,11 @@ Object {
 
 exports[`API handler wrapper for express.js should work with custom handler with any client request 3`] = `
 Object {
-  "callCount": 5,
+  "callCount": 1,
   "callsInfo": Array [
     Object {
       "args": Array [
-        "\\"One-Header-Name\\"",
-        "\\"One-Header-Value\\"",
-      ],
-      "returnValue": "{}",
-    },
-    Object {
-      "args": Array [
-        "\\"Two-Header-Name\\"",
-        "\\"Two-Header-Value\\"",
-      ],
-      "returnValue": "{}",
-    },
-    Object {
-      "args": Array [
-        "\\"Set-Cookie\\"",
-        "\\"One-Cookie-Name=One-Cookie-Value\\"",
-      ],
-      "returnValue": "{}",
-    },
-    Object {
-      "args": Array [
-        "\\"Set-Cookie\\"",
-        "\\"Two-Cookie-Name=Two-Cookie-Value\\"",
-      ],
-      "returnValue": "{}",
-    },
-    Object {
-      "args": Array [
-        "\\"Set-Cookie\\"",
-        "\\"Two-Cookie-Name=\\"",
+        "{\\"One-Header-Name\\":\\"One-Header-Value\\",\\"Two-Header-Name\\":\\"Two-Header-Value\\",\\"Set-Cookie\\":\\"One-Cookie-Name=One-Cookie-Value, Two-Cookie-Name=Two-Cookie-Value, Two-Cookie-Name=\\"}",
       ],
       "returnValue": "{}",
     },
@@ -239,47 +210,11 @@ Object {
 
 exports[`API handler wrapper for express.js should work with file handler with any client request 3`] = `
 Object {
-  "callCount": 6,
+  "callCount": 1,
   "callsInfo": Array [
     Object {
       "args": Array [
-        "\\"One-Header-Name\\"",
-        "\\"One-Header-Value\\"",
-      ],
-      "returnValue": "{}",
-    },
-    Object {
-      "args": Array [
-        "\\"Two-Header-Name\\"",
-        "\\"Two-Header-Value\\"",
-      ],
-      "returnValue": "{}",
-    },
-    Object {
-      "args": Array [
-        "\\"Set-Cookie\\"",
-        "\\"One-Cookie-Name=One-Cookie-Value\\"",
-      ],
-      "returnValue": "{}",
-    },
-    Object {
-      "args": Array [
-        "\\"Set-Cookie\\"",
-        "\\"Two-Cookie-Name=Two-Cookie-Value\\"",
-      ],
-      "returnValue": "{}",
-    },
-    Object {
-      "args": Array [
-        "\\"Set-Cookie\\"",
-        "\\"Two-Cookie-Name=\\"",
-      ],
-      "returnValue": "{}",
-    },
-    Object {
-      "args": Array [
-        "\\"Content-Disposition\\"",
-        "\\"attachment; filename=\\\\\\"synthetic-filename.txt\\\\\\"\\"",
+        "{\\"One-Header-Name\\":\\"One-Header-Value\\",\\"Two-Header-Name\\":\\"Two-Header-Value\\",\\"Set-Cookie\\":\\"One-Cookie-Name=One-Cookie-Value, Two-Cookie-Name=Two-Cookie-Value, Two-Cookie-Name=\\",\\"Content-Disposition\\":\\"attachment; filename=\\\\\\"synthetic-filename.txt\\\\\\"\\"}",
       ],
       "returnValue": "{}",
     },
@@ -361,40 +296,11 @@ Object {
 
 exports[`API handler wrapper for express.js should work with primitive JSON handler with GET client request 3`] = `
 Object {
-  "callCount": 5,
+  "callCount": 1,
   "callsInfo": Array [
     Object {
       "args": Array [
-        "\\"One-Header-Name\\"",
-        "\\"One-Header-Value\\"",
-      ],
-      "returnValue": "{}",
-    },
-    Object {
-      "args": Array [
-        "\\"Two-Header-Name\\"",
-        "\\"Two-Header-Value\\"",
-      ],
-      "returnValue": "{}",
-    },
-    Object {
-      "args": Array [
-        "\\"Set-Cookie\\"",
-        "\\"One-Cookie-Name=One-Cookie-Value\\"",
-      ],
-      "returnValue": "{}",
-    },
-    Object {
-      "args": Array [
-        "\\"Set-Cookie\\"",
-        "\\"Two-Cookie-Name=Two-Cookie-Value\\"",
-      ],
-      "returnValue": "{}",
-    },
-    Object {
-      "args": Array [
-        "\\"Set-Cookie\\"",
-        "\\"Two-Cookie-Name=\\"",
+        "{\\"One-Header-Name\\":\\"One-Header-Value\\",\\"Two-Header-Name\\":\\"Two-Header-Value\\",\\"Set-Cookie\\":\\"One-Cookie-Name=One-Cookie-Value, Two-Cookie-Name=Two-Cookie-Value, Two-Cookie-Name=\\"}",
       ],
       "returnValue": "{}",
     },
@@ -476,40 +382,11 @@ Object {
 
 exports[`API handler wrapper for express.js should work with primitive JSON handler with POST client request 3`] = `
 Object {
-  "callCount": 5,
+  "callCount": 1,
   "callsInfo": Array [
     Object {
       "args": Array [
-        "\\"One-Header-Name\\"",
-        "\\"One-Header-Value\\"",
-      ],
-      "returnValue": "{}",
-    },
-    Object {
-      "args": Array [
-        "\\"Two-Header-Name\\"",
-        "\\"Two-Header-Value\\"",
-      ],
-      "returnValue": "{}",
-    },
-    Object {
-      "args": Array [
-        "\\"Set-Cookie\\"",
-        "\\"One-Cookie-Name=One-Cookie-Value\\"",
-      ],
-      "returnValue": "{}",
-    },
-    Object {
-      "args": Array [
-        "\\"Set-Cookie\\"",
-        "\\"Two-Cookie-Name=Two-Cookie-Value\\"",
-      ],
-      "returnValue": "{}",
-    },
-    Object {
-      "args": Array [
-        "\\"Set-Cookie\\"",
-        "\\"Two-Cookie-Name=\\"",
+        "{\\"One-Header-Name\\":\\"One-Header-Value\\",\\"Two-Header-Name\\":\\"Two-Header-Value\\",\\"Set-Cookie\\":\\"One-Cookie-Name=One-Cookie-Value, Two-Cookie-Name=Two-Cookie-Value, Two-Cookie-Name=\\"}",
       ],
       "returnValue": "{}",
     },
@@ -670,40 +547,11 @@ Object {
 
 exports[`API handler wrapper for express.js should work with text handler with any client request 3`] = `
 Object {
-  "callCount": 5,
+  "callCount": 1,
   "callsInfo": Array [
     Object {
       "args": Array [
-        "\\"One-Header-Name\\"",
-        "\\"One-Header-Value\\"",
-      ],
-      "returnValue": "{}",
-    },
-    Object {
-      "args": Array [
-        "\\"Two-Header-Name\\"",
-        "\\"Two-Header-Value\\"",
-      ],
-      "returnValue": "{}",
-    },
-    Object {
-      "args": Array [
-        "\\"Set-Cookie\\"",
-        "\\"One-Cookie-Name=One-Cookie-Value\\"",
-      ],
-      "returnValue": "{}",
-    },
-    Object {
-      "args": Array [
-        "\\"Set-Cookie\\"",
-        "\\"Two-Cookie-Name=Two-Cookie-Value\\"",
-      ],
-      "returnValue": "{}",
-    },
-    Object {
-      "args": Array [
-        "\\"Set-Cookie\\"",
-        "\\"Two-Cookie-Name=\\"",
+        "{\\"One-Header-Name\\":\\"One-Header-Value\\",\\"Two-Header-Name\\":\\"Two-Header-Value\\",\\"Set-Cookie\\":\\"One-Cookie-Name=One-Cookie-Value, Two-Cookie-Name=Two-Cookie-Value, Two-Cookie-Name=\\"}",
       ],
       "returnValue": "{}",
     },
