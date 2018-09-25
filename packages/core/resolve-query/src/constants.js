@@ -5,5 +5,6 @@ export const modelTypes = {
 
 export const errors = {
   duplicateName: 'A read/view name is not unique',
-  modelNotFound: 'A read/view model is not defined'
+  modelNotFound: 'A read/view model is not defined',
+  disposed: 'A query is disposed'
 }
