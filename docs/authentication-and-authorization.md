@@ -1,5 +1,64 @@
 # Setting up Authentication
 
+[embedmd]:# (../examples/hacker-news/auth/localStrategy.js /const routes = \[/ /\]/) 
+```js
+const routes = [
+  {
+    path: '/register',
+    method: 'POST',
+    callback: async ({ resolve }, username) => {
+      const existingUser = await resolve.executeQuery({
+        modelName: 'default',
+        resolverName: 'user',
+        resolverArgs: { name: username.trim() }
+      })
+
+      if (existingUser) {
+        throw new Error('User already exists')
+      }
+
+      const user = {
+        name: username.trim(),
+        id: uuid.v4()
+      }
+
+      await resolve.executeCommand({
+        type: 'createUser',
+        aggregateId: user.id,
+        aggregateName: 'user',
+        payload: user
+      })
+
+      return jwt.sign(user, jwtSecret)
+    }
+  },
+  {
+    path: '/login',
+    method: 'POST',
+    callback: async ({ resolve }, username) => {
+      const user = await resolve.executeQuery({
+        modelName: 'default',
+        resolverName: 'user',
+        resolverArgs: { name: username.trim() }
+      })
+
+      if (!user) {
+        throw new Error('No such user')
+      }
+
+      return jwt.sign(user, jwtSecret)
+    }
+  },
+  {
+    path: '/logout',
+    method: 'POST',
+    callback: async () => {
+      return jwt.sign({}, jwtSecret)
+    }
+  }
+]
+```
+
 # Using 3rd Party Auth Services
 
 # Making Your Own User Registry
