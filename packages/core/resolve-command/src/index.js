@@ -11,7 +11,6 @@ const getAggregateState = async (
   {
     projection: { Init, ...projection } = {},
     snapshotAdapter = null,
-    snapshotBucketSize = 100,
     invariantHash = null
   },
   aggregateId,
@@ -34,8 +33,7 @@ const getAggregateState = async (
 
   let aggregateState = null
   let aggregateVersion = 0
-  let appliedEvents = 0
-  let lastTimestamp = 0
+  let lastTimestamp = -1
 
   try {
     if (snapshotKey == null) throw new Error()
@@ -49,28 +47,32 @@ const getAggregateState = async (
     aggregateState = typeof Init === 'function' ? Init() : null
   }
 
+  const regularHandler = event => {
+    aggregateVersion = event.aggregateVersion
+    if (projection && typeof projection[event.type] === 'function') {
+      aggregateState = projection[event.type](aggregateState, event)
+    }
+  }
+
+  const snapshotHandler = event => {
+    aggregateVersion = event.aggregateVersion
+    if (projection && typeof projection[event.type] === 'function') {
+      aggregateState = projection[event.type](aggregateState, event)
+    }
+
+    lastTimestamp = event.timestamp - 1
+    snapshotAdapter.saveSnapshot(snapshotKey, {
+      state: aggregateState,
+      version: aggregateVersion,
+      timestamp: lastTimestamp
+    })
+  }
+
   await eventStore.getEventsByAggregateId(
     aggregateId,
-    event => {
-      aggregateVersion = event.aggregateVersion
-      const handler = projection && projection[event.type]
-      if (typeof handler !== 'function') return
-
-      aggregateState = handler(aggregateState, event)
-
-      if (
-        snapshotAdapter != null &&
-        snapshotKey != null &&
-        ++appliedEvents % snapshotBucketSize === 0
-      ) {
-        lastTimestamp = Date.now()
-        snapshotAdapter.saveSnapshot(snapshotKey, {
-          state: aggregateState,
-          version: aggregateVersion,
-          timestamp: lastTimestamp
-        })
-      }
-    },
+    snapshotAdapter != null && snapshotKey != null
+      ? snapshotHandler
+      : regularHandler,
     lastTimestamp
   )
 

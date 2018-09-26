@@ -41,12 +41,20 @@ describe('resolve-readmodel-memory meta-api', () => {
     expect(result).toEqual(['one', 'two'])
   })
 
-  it('should provide drop method', async () => {
+  it('should provide drop method with default arguments', async () => {
     const pool = {
       metaInfo: { tables: { one: {}, two: {} } },
       storage: { one: {}, two: {} }
     }
     await metaApi.drop(pool)
+  })
+
+  it('should provide drop method with custom arguments', async () => {
+    const pool = {
+      metaInfo: { tables: { one: {}, two: {} } },
+      storage: { one: {}, two: {} }
+    }
+    await metaApi.drop(pool, { dropDataTables: true, dropMetaTable: true })
     expect(Object.keys(pool.metaInfo)).toEqual([])
     expect(Object.keys(pool.storage)).toEqual([])
   })

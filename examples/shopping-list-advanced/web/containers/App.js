@@ -1,5 +1,5 @@
 import React from 'react'
-import '@react-native-shopping-list/ui'
+import '@shopping-list-advanced/ui'
 
 import Header from './Header'
 

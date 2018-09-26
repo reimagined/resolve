@@ -5,7 +5,7 @@ import {
   STORY_CREATED,
   STORY_UNVOTED,
   STORY_UPVOTED
-} from '../events'
+} from '../event_types'
 
 export default {
   Init: () => Immutable({}),

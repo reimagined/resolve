@@ -88,13 +88,5 @@ test('get error on second custom', async t => {
 })
 
 test('check two users after error', async t => {
-  await t.click(await Selector('.example-button'))
-
-  await t
-    .expect(
-      await Selector('.list-group-item-heading')
-        .nth(1)
-        .withText('custom@example.com').exists
-    )
-    .eql(false)
+  await t.expect(await Selector('.list-group-item-heading').count).eql(2)
 })

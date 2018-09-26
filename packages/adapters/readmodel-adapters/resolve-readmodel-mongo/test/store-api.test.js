@@ -5,7 +5,7 @@ import storeApi from '../src/store-api'
 describe('resolve-readmodel-mongo store-api', () => {
   const META_NAME = 'META_NAME'
 
-  let collectionApi, pool
+  let collectionApi, pool, db, connection
 
   beforeEach(() => {
     collectionApi = {
@@ -19,17 +19,25 @@ describe('resolve-readmodel-mongo store-api', () => {
       drop: sinon.stub().callsFake(() => Promise.resolve())
     }
 
+    db = {
+      collection: sinon.stub().callsFake(() => Promise.resolve(collectionApi))
+    }
+
+    connection = {
+      db: sinon.stub().callsFake(async () => db)
+    }
+
     pool = {
-      connection: {
-        collection: sinon.stub().callsFake(() => Promise.resolve(collectionApi))
-      },
+      connection,
       metaName: META_NAME
     }
   })
 
   afterEach(() => {
     collectionApi = null
+    connection = null
     pool = null
+    db = null
   })
 
   it('should provide defineTable method', async () => {
@@ -40,9 +48,7 @@ describe('resolve-readmodel-mongo store-api', () => {
       normal: 'regular'
     })
 
-    expect(await pool.connection.collection.firstCall.returnValue).toEqual(
-      collectionApi
-    )
+    expect(await db.collection.firstCall.returnValue).toEqual(collectionApi)
 
     expect(collectionApi.createIndex.callCount).toEqual(3)
     expect(collectionApi.createIndex.firstCall.args).toEqual([
@@ -71,9 +77,7 @@ describe('resolve-readmodel-mongo store-api', () => {
       20
     )
 
-    expect(await pool.connection.collection.firstCall.returnValue).toEqual(
-      collectionApi
-    )
+    expect(await db.collection.firstCall.returnValue).toEqual(collectionApi)
 
     expect(result).toEqual(resultValue)
 
@@ -104,9 +108,7 @@ describe('resolve-readmodel-mongo store-api', () => {
       20
     )
 
-    expect(await pool.connection.collection.firstCall.returnValue).toEqual(
-      collectionApi
-    )
+    expect(await db.collection.firstCall.returnValue).toEqual(collectionApi)
 
     expect(result).toEqual(resultValue)
 
@@ -137,9 +139,7 @@ describe('resolve-readmodel-mongo store-api', () => {
       20
     )
 
-    expect(await pool.connection.collection.firstCall.returnValue).toEqual(
-      collectionApi
-    )
+    expect(await db.collection.firstCall.returnValue).toEqual(collectionApi)
 
     expect(result).toEqual(resultValue)
 
@@ -169,9 +169,7 @@ describe('resolve-readmodel-mongo store-api', () => {
       20
     )
 
-    expect(await pool.connection.collection.firstCall.returnValue).toEqual(
-      collectionApi
-    )
+    expect(await db.collection.firstCall.returnValue).toEqual(collectionApi)
 
     expect(result).toEqual(resultValue)
 
@@ -201,9 +199,7 @@ describe('resolve-readmodel-mongo store-api', () => {
       Infinity
     )
 
-    expect(await pool.connection.collection.firstCall.returnValue).toEqual(
-      collectionApi
-    )
+    expect(await db.collection.firstCall.returnValue).toEqual(collectionApi)
 
     expect(result).toEqual(resultValue)
 
@@ -228,9 +224,7 @@ describe('resolve-readmodel-mongo store-api', () => {
       { field: 1 }
     )
 
-    expect(await pool.connection.collection.firstCall.returnValue).toEqual(
-      collectionApi
-    )
+    expect(await db.collection.firstCall.returnValue).toEqual(collectionApi)
 
     expect(result).toEqual(resultValue)
 
@@ -246,9 +240,7 @@ describe('resolve-readmodel-mongo store-api', () => {
 
     const result = await storeApi.findOne(pool, 'test', { search: 0 })
 
-    expect(await pool.connection.collection.firstCall.returnValue).toEqual(
-      collectionApi
-    )
+    expect(await db.collection.firstCall.returnValue).toEqual(collectionApi)
 
     expect(result).toEqual(resultValue)
 
@@ -264,9 +256,7 @@ describe('resolve-readmodel-mongo store-api', () => {
 
     const result = await storeApi.count(pool, 'test', { search: 0 })
 
-    expect(await pool.connection.collection.firstCall.returnValue).toEqual(
-      collectionApi
-    )
+    expect(await db.collection.firstCall.returnValue).toEqual(collectionApi)
 
     expect(result).toEqual(resultValue)
   })
@@ -274,9 +264,7 @@ describe('resolve-readmodel-mongo store-api', () => {
   it('should provide insert method', async () => {
     await storeApi.insert(pool, 'test', { id: 1, value: 2 })
 
-    expect(await pool.connection.collection.firstCall.returnValue).toEqual(
-      collectionApi
-    )
+    expect(await db.collection.firstCall.returnValue).toEqual(collectionApi)
 
     expect(collectionApi.insertOne.firstCall.args).toEqual([
       { id: 1, value: 2 }
@@ -292,9 +280,7 @@ describe('resolve-readmodel-mongo store-api', () => {
       { upsert: false }
     )
 
-    expect(await pool.connection.collection.firstCall.returnValue).toEqual(
-      collectionApi
-    )
+    expect(await db.collection.firstCall.returnValue).toEqual(collectionApi)
 
     expect(collectionApi.updateMany.firstCall.args).toEqual([
       { id: { $eq: 1, $type: 'double' }, value: { $eq: 2, $type: 'double' } },
@@ -306,9 +292,7 @@ describe('resolve-readmodel-mongo store-api', () => {
   it('should provide del method', async () => {
     await storeApi.del(pool, 'test', { id: 1, value: 2 })
 
-    expect(await pool.connection.collection.firstCall.returnValue).toEqual(
-      collectionApi
-    )
+    expect(await db.collection.firstCall.returnValue).toEqual(collectionApi)
 
     expect(collectionApi.deleteMany.firstCall.args).toEqual([
       { id: { $eq: 1, $type: 'double' }, value: { $eq: 2, $type: 'double' } }

@@ -5,17 +5,18 @@ import { aggregates } from './assemblies'
 
 const commandExecutor = createCommandExecutor({
   eventStore,
-  aggregates: aggregates.map(({ snapshotAdapter, ...aggregate }) => {
-    if (!snapshotAdapter) {
-      return aggregate
-    }
+  aggregates: aggregates.map(
+    ({ snapshotAdapter: createSnapshotAdapter, ...aggregate }) => {
+      if (!createSnapshotAdapter) {
+        return aggregate
+      }
 
-    return {
-      ...aggregate,
-      snapshotAdapter: snapshotAdapter.module(snapshotAdapter.options),
-      snapshotBucketSize: snapshotAdapter.options.bucketSize
+      return {
+        ...aggregate,
+        snapshotAdapter: createSnapshotAdapter()
+      }
     }
-  })
+  )
 })
 
 export default commandExecutor

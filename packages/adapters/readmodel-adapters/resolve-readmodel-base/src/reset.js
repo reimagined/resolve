@@ -1,9 +1,12 @@
-const reset = ({ metaApi, internalContext }, drop = false) => {
+const reset = ({ metaApi, internalContext }, options) => {
   if (internalContext.disposePromise) {
     return internalContext.disposePromise
   }
 
-  const disposePromise = drop ? metaApi.drop() : Promise.resolve()
+  const disposePromise = (async () => {
+    await metaApi.drop(options)
+    await metaApi.disconnect()
+  })()
 
   Object.keys(internalContext).forEach(key => {
     delete internalContext[key]

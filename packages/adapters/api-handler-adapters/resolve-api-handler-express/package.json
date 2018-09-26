@@ -1,6 +1,6 @@
 {
   "name": "resolve-api-handler-express",
-  "version": "0.16.0",
+  "version": "0.17.1",
   "description": "This package is an adapter for api handler to Express.js.",
   "engines": {
     "node": ">=8.10"
@@ -31,7 +31,7 @@
   "devDependencies": {
     "lodash.escaperegexp": "^4.1.2",
     "jest": "23.6.0",
-    "sinon": "6.2.0"
+    "sinon": "6.3.4"
   },
   "babelCompile": [
     {

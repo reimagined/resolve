@@ -3,11 +3,24 @@
 exports[`base config works correctly [server] 1`] = `
 "
 
-import cronHandlers_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testSagaCronHandlers.js\\"
-import eventHandlers_0 from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testSagaEventHandlers.js\\"
-
+import eventHandlers_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testSagaEventHandlers.js\\"
+import cronHandlers_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testSagaCronHandlers.js\\"
+const constructorBindFunction =
+    (
+      constructorFunction,
+      compileTimeOptions,
+      compileTimeImports,
+      runTimeOptions,
+      runTimeImports
+    ) => constructorFunction(
+      { ...compileTimeOptions, ...runTimeOptions },
+      { ...compileTimeImports, ...runTimeImports }
+    )
+const idempotentFunction = value => value
 
 const name_0 = \\"Saga\\"
+const eventHandlers_0 = eventHandlers_0_instance
+const cronHandlers_0 = cronHandlers_0_instance
 
 const sagas = []
 

@@ -5,7 +5,7 @@ import {
   SHOPPING_ITEM_CREATED,
   SHOPPING_ITEM_TOGGLED,
   SHOPPING_ITEM_REMOVED
-} from '../eventTypes'
+} from '../event_types'
 
 export default {
   Init: () => null,
@@ -18,9 +18,8 @@ export default {
     ...state,
     name
   }),
-  [SHOPPING_LIST_REMOVED]: (state, { payload: { name } }) => ({
-    ...state,
-    name
+  [SHOPPING_LIST_REMOVED]: () => ({
+    removed: true
   }),
   [SHOPPING_ITEM_CREATED]: (state, { payload: { id, text } }) => ({
     ...state,

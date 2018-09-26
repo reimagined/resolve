@@ -25,8 +25,8 @@ class MyLists extends React.PureComponent {
 }
 
 export const mapStateToOptions = () => ({
-  readModelName: 'Default',
-  resolverName: 'shoppingLists',
+  readModelName: 'ShoppingLists',
+  resolverName: 'all',
   resolverArgs: {}
 })
 

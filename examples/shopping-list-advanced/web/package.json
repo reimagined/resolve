@@ -1,22 +1,22 @@
 {
-  "name": "@react-native-shopping-list/web",
-  "version": "0.16.0",
+  "name": "@shopping-list-advanced/web",
+  "version": "0.17.1",
   "private": true,
   "scripts": {
     "test": "jest --testMatch=**/test/**/unit/*.test.js --verbose",
     "test:functional": "echo || exit 0"
   },
   "dependencies": {
-    "react": "16.4.2",
-    "react-dom": "16.4.2",
+    "react": "16.5.2",
+    "react-dom": "16.5.2",
     "react-bootstrap": "0.32.1",
     "react-helmet": "5.2.0",
     "react-redux": "5.0.7",
     "react-router-dom": "4.3.1",
     "react-router-redux": "5.0.0-alpha.9",
-    "@react-native-shopping-list/ui": "0.16.0",
+    "@shopping-list-advanced/ui": "0.17.1",
     "redux": "4.0.0",
-    "resolve-redux": "0.16.0",
+    "resolve-redux": "0.17.1",
     "uuid": "3.3.2"
   },
   "devDependencies": {
@@ -25,7 +25,7 @@
     "babel-jest": "23.6.0",
     "jest": "23.6.0",
     "my-local-ip": "1.0.0",
-    "react-test-renderer": "16.4.2",
+    "react-test-renderer": "16.5.2",
     "testcafe": "0.22.0",
     "enzyme": "3.3.0",
     "enzyme-adapter-react-16": "1.1.1"

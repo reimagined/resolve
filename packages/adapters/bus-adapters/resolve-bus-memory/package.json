@@ -1,6 +1,6 @@
 {
   "name": "resolve-bus-memory",
-  "version": "0.16.0",
+  "version": "0.17.1",
   "description": "This package is an adapter for resolve-bus to emit events using memory.",
   "engines": {
     "node": ">=8.10"
@@ -26,7 +26,7 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/bus-adapters/resolve-bus-memory#readme",
   "devDependencies": {
     "jest": "23.6.0",
-    "sinon": "6.2.0"
+    "sinon": "6.3.4"
   },
   "babelCompile": [
     {

@@ -141,10 +141,19 @@ function compile() {
         outDir: config.outDir,
         deleteDirOnStart: true
       }
-    }).catch(error => {
-      // eslint-disable-next-line no-console
-      console.error(error)
     })
+      .then(() => {
+        // eslint-disable-next-line no-console
+        console.log(
+          `↑ [${config.name}] { moduleType: "${
+            config.moduleType
+          }", moduleType: "${config.moduleTarget}" }`
+        )
+      })
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.error(error)
+      })
   }
 }
 

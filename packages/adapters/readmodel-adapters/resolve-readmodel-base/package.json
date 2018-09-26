@@ -1,6 +1,6 @@
 {
   "name": "resolve-readmodel-base",
-  "version": "0.16.0",
+  "version": "0.17.1",
   "description": "Base package for readModel adapters",
   "engines": {
     "node": ">=8.10"
@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "jest": "23.6.0",
-    "sinon": "6.2.0"
+    "sinon": "6.3.4"
   },
   "babelCompile": [
     {

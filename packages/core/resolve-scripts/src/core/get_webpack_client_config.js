@@ -47,7 +47,7 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
           test: Object.values(alias),
           use: [
             {
-              loader: 'babel-loader',
+              loader: require.resolve('babel-loader'),
               options: {
                 cacheDirectory: true,
                 babelrc: false,
@@ -69,7 +69,7 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
               }
             },
             {
-              loader: 'val-loader',
+              loader: require.resolve('val-loader'),
               options: {
                 resolveConfig,
                 isClient
@@ -80,14 +80,14 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
         {
           test: /\.js$/,
           use: {
-            loader: 'babel-loader',
+            loader: require.resolve('babel-loader'),
             options: {
               cacheDirectory: true
             }
           },
           exclude: [
             /node_modules/,
-            ...getModulesDirs(),
+            ...getModulesDirs({ isAbsolutePath: true }),
             path.resolve(__dirname, '../../lib'),
             path.resolve(__dirname, '../../es')
           ]

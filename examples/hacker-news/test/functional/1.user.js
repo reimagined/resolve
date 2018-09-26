@@ -31,7 +31,7 @@ test('login', async (t /*: TestController */) => {
   await t.expect(await Selector('a').withText('login').exists).eql(false)
 })
 
-test('create: is already exists', async (t /*: TestController */) => {
+test('create: User can not be created', async (t /*: TestController */) => {
   await t.typeText(await Selector('input[type=text]').nth(1), '123')
   await t.click(await Selector('input[type=submit]').nth(1))
 
@@ -42,6 +42,6 @@ test('create: is already exists', async (t /*: TestController */) => {
   await t.expect(await Selector('div').withText('Error').exists).eql(true)
 
   await t
-    .expect(await Selector('div').withText('User already exists').exists)
+    .expect(await Selector('div').withText('User can not be created').exists)
     .eql(true)
 })

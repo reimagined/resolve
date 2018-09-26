@@ -1,4 +1,4 @@
-import { ROUTE_CHANGED } from '../actions/actionTypes'
+import { ROUTE_CHANGED } from '../actions/action_types'
 
 const prefetchRoute = (state = null, action) => {
   switch (action.type) {
