@@ -232,7 +232,7 @@
       }
     },
     "customConstants": {
-      "type":"object",
+      "type": "object",
       "additionalProperties": true
     },
     "config": {

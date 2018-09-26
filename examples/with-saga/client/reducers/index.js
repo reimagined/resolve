@@ -17,7 +17,10 @@ export default {
       }
 
       case 'UserCreationConfirmed': {
-        return { ...state, users: [...state.users, action.payload.createdUser] }
+        return {
+          ...state,
+          users: [...state.users, action.payload.createdUser]
+        }
       }
       case 'OutdatedUserDeleted': {
         return {
