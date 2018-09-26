@@ -1,15 +1,22 @@
-# Configuring Commands and Events
-The main purpose of the write side is to receive commands and translate them to events, which a then saved to the event store. This document section provides information on how you can control this functionality.
+### Aggregates
+In reSolve aggregate is an object that contains set of functions. Functions that build aggregate state from events are called [projections](#aggregate-projection-function). Functions that executes commands - [command handlers](#command-handler). 
 
-To get basic understanding on the concept refer to popular publications on the Event Sourcing paradigm.
-
-Commands are processed according to logic defined by the aggregate.
-
-In reSolve, and aggregate consists of the following building blocks
-* **Commands** - A set of function that map commands along with arbitrary data payload and map them tho corresponding events, which are then saved to the event store. Refer to the [Command Handler](#command-handler) section to learn more.
+See the Martin Fowler's definition for aggregates in the DDD paradigm: [https://martinfowler.com/bliki/DDD_Aggregate.html](https://martinfowler.com/bliki/DDD_Aggregate.html)
 
 
-* **Projection** - A set of functions used to accumulate state for particular commands on the read side. You can then use this state in **commands**, e.g., to perform validation. Refer to the [Aggregate Projection Function](#aggregate-projection-function) section to learn more.
+
+## Configuring Aggregates
+To configure an aggregates in reSolve app, provide aggregates array in the application configuration file:
+
+``` js
+aggregates: [
+  {
+    name: 'ShoppingList',
+    commands: 'common/aggregates/shoppingList.commands.js',
+    projection: 'common/aggregates/shoppingList.projection.js'
+  }
+]
+```
 
 
 # Sending a Command
