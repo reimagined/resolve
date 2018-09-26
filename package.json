@@ -1,6 +1,6 @@
 {
   "name": "resolve",
-  "version": "0.17.0",
+  "version": "0.17.1",
   "repository": "https://github.com/reimagined/resolve.git",
   "license": "MIT",
   "private": true,
@@ -62,8 +62,7 @@
     "clean": "oao all \"npx rimraf dist lib es\" --parallel && npx rimraf yarn-error.log && npx oao clean",
     "lint": "eslint .",
     "prepare": "node ./babel.compile.js --run",
-    "prettier": "prettier --single-quote --no-semi --write \"**/**.js\"",
-    "prettier-json": "prettier --write \"**/**.json\"",
+    "prettier": "prettier --write \"**/**.{js,json}\"",
     "publish": "oao publish -i \"examples/*\" --no-git-commit --no-changelog",
     "test": "oao all \"yarn test --color 2>&1\"",
     "test:functional": "oao run-script test:functional",

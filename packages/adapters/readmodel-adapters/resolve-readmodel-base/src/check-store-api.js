@@ -538,7 +538,7 @@ const update = async (
   await checkTableExists(metaApi, tableName)
 
   checkCondition(
-    checkOptionShape(inputOptions, [Object], true),
+    inputOptions == null || checkOptionShape(inputOptions, [Object]),
     messages.invalidUpdateExpression,
     inputOptions,
     messages.invalidUpdateOptions
