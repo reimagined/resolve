@@ -2,7 +2,7 @@ import path from 'path'
 
 import getMonorepoNodeModules from './get_monorepo_node_modules'
 
-const getModulesDirs = () => {
+const getModulesDirs = ({ isAbsolutePath = false } = {}) => {
   const currentDir = process.cwd()
 
   const absoluteDirs = [
@@ -11,11 +11,15 @@ const getModulesDirs = () => {
     ...getMonorepoNodeModules()
   ]
 
-  const relativeDirs = absoluteDirs.map(absoluteDir =>
-    path.relative(currentDir, absoluteDir)
-  )
+  if (isAbsolutePath) {
+    return absoluteDirs
+  } else {
+    const relativeDirs = absoluteDirs.map(absoluteDir =>
+      path.relative(currentDir, absoluteDir)
+    )
 
-  return relativeDirs
+    return relativeDirs
+  }
 }
 
 export default getModulesDirs

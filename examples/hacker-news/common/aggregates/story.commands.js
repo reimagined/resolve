@@ -7,8 +7,8 @@ import {
   STORY_CREATED,
   STORY_UNVOTED,
   STORY_UPVOTED
-} from '../events'
-import jwtSecret from '../../auth/jwtSecret'
+} from '../event_types'
+import jwtSecret from '../../auth/jwt_secret'
 
 export default {
   createStory: (state, command, jwtToken) => {

@@ -11,8 +11,8 @@ const { SEND_COMMAND_SUCCESS, LOAD_READMODEL_STATE_SUCCESS } = actionTypes
 const optimisticShoppingListsMiddleware = store => next => action => {
   if (
     action.type === LOAD_READMODEL_STATE_SUCCESS &&
-    action.readModelName === 'Default' &&
-    action.resolverName === 'shoppingLists'
+    action.readModelName === 'ShoppingLists' &&
+    action.resolverName === 'all'
   ) {
     store.dispatch({
       type: OPTIMISTIC_SHOPPING_LIST_SYNC,

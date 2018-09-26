@@ -64,7 +64,7 @@ describe('aggregates', () => {
       })
     })
 
-    it('command "removeShoppingItem" should create an event to toggle the item', () => {
+    it('command "removeShoppingItem" should create an event to remove the item', () => {
       const state = { createdAt: Date.now() }
       const command = { payload: { id: 'id' } }
 

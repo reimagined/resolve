@@ -231,6 +231,10 @@
         "type": "string"
       }
     },
+    "customConstants": {
+      "type": "object",
+      "additionalProperties": true
+    },
     "config": {
       "type": "object",
       "properties": {
@@ -311,6 +315,9 @@
         },
         "mode": {
           "type": "string"
+        },
+        "customConstants": {
+          "$ref": "#/definitions/customConstants"
         }
       },
       "required": [
@@ -328,7 +335,8 @@
         "busAdapter",
         "storageAdapter",
         "subscribeAdapter",
-        "polyfills"
+        "polyfills",
+        "customConstants"
       ],
       "additionalProperties": false
     }

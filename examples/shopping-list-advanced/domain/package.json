@@ -1,5 +1,5 @@
 {
-  "name": "@react-native-shopping-list/domain",
+  "name": "@shopping-list-advanced/domain",
   "version": "0.17.0",
   "private": true,
   "dependencies": {

@@ -3,7 +3,7 @@ import Immutable from 'seamless-immutable'
 import {
   OPTIMISTIC_STORY_UPVOTED,
   OPTIMISTIC_STORY_UNVOTED
-} from '../actions/actionTypes'
+} from '../actions/action_types'
 
 export const initialState = Immutable({ votedStories: {} })
 

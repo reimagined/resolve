@@ -43,27 +43,48 @@ const createAdapter = (
       ? options.metaName
       : DEFAULT_META_NAME
 
-  const api = implementation({ metaName, checkStoredTableSchema, ...options })
-  if (!api || !api instanceof Object) {
-    throw new Error(messages.invalidApiImplementation)
-  }
-
-  const { metaApi, storeApi } = api
-
   if (
-    !metaApi ||
-    !storeApi ||
-    !metaApi instanceof Object ||
-    !storeApi instanceof Object
+    !(implementation instanceof Object) ||
+    !(implementation.metaApi instanceof Object) ||
+    !(implementation.storeApi instanceof Object)
   ) {
     throw new Error(messages.invalidApiImplementation)
   }
 
   const pool = {
-    metaApi,
-    storeApi: checkStoreApi({ metaApi, storeApi }),
+    adapterContext: Object.create(null),
     internalContext: Object.create(null)
   }
+
+  const bindWithConnection = func => async (...args) => {
+    if (!pool.internalContext.connectPromise) {
+      pool.internalContext.connectPromise = implementation.metaApi.connect(
+        pool.adapterContext,
+        {
+          checkStoredTableSchema,
+          metaName,
+          ...options
+        }
+      )
+    }
+
+    await pool.internalContext.connectPromise
+
+    return await func(pool.adapterContext, ...args)
+  }
+
+  const metaApi = Object.keys(implementation.metaApi).reduce((acc, key) => {
+    acc[key] = bindWithConnection(implementation.metaApi[key])
+    return acc
+  }, {})
+
+  const storeApi = Object.keys(implementation.storeApi).reduce((acc, key) => {
+    acc[key] = bindWithConnection(implementation.storeApi[key])
+    return acc
+  }, {})
+
+  pool.storeApi = checkStoreApi({ metaApi, storeApi })
+  pool.metaApi = metaApi
 
   return Object.create(null, {
     buildProjection: {
