@@ -16,6 +16,7 @@
   "dependencies": {
     "@babel/polyfill": "7.0.0",
     "redux": "4.0.0",
+    "react": "16.5.2",
     "resolve-redux": "0.17.1",
     "resolve-scripts": "0.17.1",
     "resolve-subscribe-socket.io": "0.17.1"
