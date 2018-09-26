@@ -202,7 +202,7 @@ const getWebpackCommonConfigs = ({
             },
             exclude: [
               /node_modules/,
-              ...getModulesDirs(),
+              ...getModulesDirs({ isAbsolutePath: true }),
               path.resolve(__dirname, '../../lib'),
               path.resolve(__dirname, '../../es')
             ]
