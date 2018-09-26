@@ -10,7 +10,11 @@ const connect = async ({ mysql, escapeId }, pool, options) => {
     INDEX USING BTREE(\`FirstKey\`)
   )`)
 
-  pool.metaInfo = { tables: {}, timestamp: 0, aggregatesVersionsMap: new Map() }
+  pool.metaInfo = {
+    tables: {},
+    timestamp: 0,
+    aggregatesVersionsMap: new Map()
+  }
 
   let [rows] = await connection.execute(
     `SELECT \`Value\` AS \`Timestamp\` FROM ${escapeId(metaName)}

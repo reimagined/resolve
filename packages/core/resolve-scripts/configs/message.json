@@ -6,10 +6,8 @@
   "viewModelMandatoryName": "A view model name is required",
   "badSocketIoClientId": "No valid socket.io client identifier found",
   "duplicateName": "A read/view name is not unique",
-  "readModelQuerySideMandatory":
-    "The gqlSchema and gqlResolvers fields are required for a read model facade",
-  "viewModelSerializable":
-    "The serializeState and deserializeState fields are required for a view model facade",
+  "readModelQuerySideMandatory": "The gqlSchema and gqlResolvers fields are required for a read model facade",
+  "viewModelSerializable": "The serializeState and deserializeState fields are required for a view model facade",
   "commandSuccess": "OK",
   "commandFail": "Command error: ",
   "readModelFail": "Read model query error: ",
@@ -18,9 +16,7 @@
   "ssrError": "An SSR error: ",
   "clientEnvError": "Environment variables in the client code are restricted: ",
   "incorrectJsonSchemaType": "Type must be one of [\"string\", \"number\", \"object\", \"array\", \"boolean\", null]: ",
-  "serverAliasInClientCodeError":
-    "Server alias in the client code is restricted: ",
-  "clientAliasInServerCodeError":
-    "Client alias in the server code is restricted: ",
+  "serverAliasInClientCodeError": "Server alias in the client code is restricted: ",
+  "clientAliasInServerCodeError": "Client alias in the server code is restricted: ",
   "configNotContainSectionError": "Missing section in the ReSolve config: "
 }

@@ -24,7 +24,11 @@ const connect = async (MongoClient, pool, options) => {
     metaCollection = await db.collection(metaName)
   }
 
-  pool.metaInfo = { tables: {}, timestamp: 0, aggregatesVersionsMap: new Map() }
+  pool.metaInfo = {
+    tables: {},
+    timestamp: 0,
+    aggregatesVersionsMap: new Map()
+  }
 
   let { timestamp } =
     (await metaCollection.findOne({
