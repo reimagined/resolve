@@ -1,11 +1,11 @@
-### Aggregates
+# Aggregates
 In reSolve aggregate is an object that contains set of functions. Functions that build aggregate state from events are called [projections](#aggregate-projection-function). Functions that executes commands - [command handlers](#command-handler). 
 
 See the Martin Fowler's definition for aggregates in the DDD paradigm: [https://martinfowler.com/bliki/DDD_Aggregate.html](https://martinfowler.com/bliki/DDD_Aggregate.html)
 
 
 
-## Configuring Aggregates
+# Configuring Aggregates
 To configure an aggregates in reSolve app, provide aggregates array in the application configuration file:
 
 ``` js
