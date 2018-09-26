@@ -143,7 +143,7 @@ const getTableNames = async ({ metaInfo }) => {
 }
 
 const disconnect = async ({ connection }) => {
-  await connection.close()
+  await connection.end()
 }
 
 const drop = async (
