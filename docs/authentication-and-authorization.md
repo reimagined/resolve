@@ -122,7 +122,7 @@ users.resolvers.js:
 
 ```js
 ...
-  userById: async(store, id) => store.findOne('Users', {id})
+  userById: async(store, {id}) => store.findOne('Users', {id})
 ...
 ```
 
