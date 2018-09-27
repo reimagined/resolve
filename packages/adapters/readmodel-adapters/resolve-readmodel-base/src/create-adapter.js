@@ -56,9 +56,11 @@ const createAdapter = (
     internalContext: Object.create(null)
   }
 
+  let connectPromise = null
+
   const bindWithConnection = func => async (...args) => {
-    if (!pool.internalContext.connectPromise) {
-      pool.internalContext.connectPromise = implementation.metaApi.connect(
+    if (!connectPromise) {
+      connectPromise = implementation.metaApi.connect(
         pool.adapterContext,
         {
           checkStoredTableSchema,
@@ -68,7 +70,7 @@ const createAdapter = (
       )
     }
 
-    await pool.internalContext.connectPromise
+    await connectPromise
 
     return await func(pool.adapterContext, ...args)
   }
