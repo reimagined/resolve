@@ -10,7 +10,7 @@ describe('resolve-readmodel-base create-adapter', () => {
     buildProjection = sinon.stub()
     checkStoreApi = sinon
       .stub()
-      .callsFake(({ metaApi, storeApi }) => ({ metaApi, storeApi: {} }))
+      .callsFake(({ metaApi }) => ({ metaApi, storeApi: {} }))
     checkTableSchema = sinon.stub()
     wrapApis = sinon.stub().callsFake(() => ({ metaApi: {}, storeApi: {} }))
     init = sinon.stub()
