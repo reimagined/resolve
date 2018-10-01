@@ -4,7 +4,7 @@ import checkStoreApi from '../src/check-store-api'
 import messages from '../src/messages'
 
 describe('resolve-readmodel-base check-store-api', () => {
-  let storeApi, metaApi, api
+  let storeApi, metaApi, api, fieldsInputDeclaration, fieldsOutputDeclaration
 
   beforeEach(() => {
     storeApi = {
@@ -28,29 +28,31 @@ describe('resolve-readmodel-base check-store-api', () => {
     }
 
     api = checkStoreApi({ metaApi, storeApi })
+
+    fieldsInputDeclaration = {
+      indexes: {
+        id: 'string',
+        volume: 'number',
+        timestamp: 'number'
+      },
+      fields: ['content']
+    }
+
+    fieldsOutputDeclaration = {
+      id: 'primary-string',
+      volume: 'secondary-number',
+      timestamp: 'secondary-number',
+      content: 'regular'
+    }
   })
 
   afterEach(() => {
+    fieldsInputDeclaration = null
+    fieldsOutputDeclaration = null
     storeApi = null
     metaApi = null
     api = null
   })
-
-  const fieldsInputDeclaration = {
-    indexes: {
-      id: 'string',
-      volume: 'number',
-      timestamp: 'number'
-    },
-    fields: ['content']
-  }
-
-  const fieldsOutputDeclaration = {
-    id: 'primary-string',
-    volume: 'secondary-number',
-    timestamp: 'secondary-number',
-    content: 'regular'
-  }
 
   it('defineTable should pass correct table schema', async () => {
     metaApi.tableExists.onCall(0).callsFake(async () => false)
@@ -235,6 +237,9 @@ describe('resolve-readmodel-base check-store-api', () => {
   })
 
   it('find should pass correct search expressions without skip and limit', async () => {
+    fieldsOutputDeclaration.id = 'primary-number'
+    fieldsOutputDeclaration.volume = 'secondary-string'
+
     metaApi.tableExists.onCall(0).callsFake(async () => true)
     metaApi.getTableInfo
       .onCall(0)
@@ -245,14 +250,15 @@ describe('resolve-readmodel-base check-store-api', () => {
 
     const result = await api.find(
       'table',
-      { volume: 100 },
+      { id: 100, volume: '200' },
       { id: 1, 'content.text': 1 },
       { timestamp: -1 }
     )
 
     expect(storeApi.find.firstCall.args[0]).toEqual('table')
     expect(storeApi.find.firstCall.args[1]).toEqual({
-      volume: 100
+      id: 100,
+      volume: '200'
     })
     expect(storeApi.find.firstCall.args[2]).toEqual({
       id: 1,
@@ -351,6 +357,94 @@ describe('resolve-readmodel-base check-store-api', () => {
     }
   })
 
+  it('find should fail on wrong type projection fields key', async () => {
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
+
+    try {
+      await api.find(
+        'table',
+        { volume: 100 },
+        'idErr',
+        { timestamp: -1 },
+        100,
+        200
+      )
+
+      return Promise.reject(
+        'find should fail on wrong type projection fields key'
+      )
+    } catch (err) {
+      expect(err).toBeInstanceOf(Error)
+      expect(err.message).toEqual(
+        messages.invalidFieldList(
+          'find',
+          'table',
+          'idErr',
+          messages.projectionNotObject
+        )
+      )
+    }
+  })
+
+  it('find should fail on projection fields key with unserializable objects', async () => {
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
+
+    const searchValue = Object.create(null, {
+      constructor: {
+        get: () => {
+          throw new Error('Cannot get constructor')
+        }
+      }
+    })
+
+    try {
+      await api.find('table', { volume: searchValue })
+
+      return Promise.reject(
+        'find should fail on projection fields key with unserializable objects'
+      )
+    } catch (err) {
+      expect(err).toBeInstanceOf(Error)
+      expect(err.message).toEqual(
+        messages.invalidSearchExpression(
+          'find',
+          'table',
+          { volume: searchValue },
+          messages.incompatibleSearchField,
+          { volume: searchValue }
+        )
+      )
+    }
+  })
+
+  it('find should fail on non-existing table', async () => {
+    metaApi.tableExists.onCall(0).callsFake(async () => false)
+
+    try {
+      await api.find(
+        'table',
+        { volume: 100 },
+        'idErr',
+        { timestamp: -1 },
+        100,
+        200
+      )
+
+      return Promise.reject(
+        'find should fail on wrong type projection fields key'
+      )
+    } catch (err) {
+      expect(err).toBeInstanceOf(Error)
+      expect(err.message).toEqual(messages.tableNotExist('table'))
+    }
+  })
+
   it('find should fail on nonExisting fields on sort fields key', async () => {
     metaApi.tableExists.onCall(0).callsFake(async () => true)
     metaApi.getTableInfo
@@ -378,6 +472,38 @@ describe('resolve-readmodel-base check-store-api', () => {
           { id: 1, 'content.text': 1 },
           messages.illegalSortColumn,
           'timestampErr'
+        )
+      )
+    }
+  })
+
+  it('find should fail on incorrect named fields on sort fields key', async () => {
+    metaApi.tableExists.onCall(0).callsFake(async () => true)
+    metaApi.getTableInfo
+      .onCall(0)
+      .callsFake(async () => fieldsOutputDeclaration)
+
+    try {
+      await api.find(
+        'table',
+        { volume: 100 },
+        { id: 1, 'content.text': 1 },
+        { 'timestampErr$$%%': -1 },
+        100,
+        200
+      )
+      return Promise.reject(
+        'find should fail on incorrect named fields on sort fields key'
+      )
+    } catch (err) {
+      expect(err).toBeInstanceOf(Error)
+      expect(err.message).toEqual(
+        messages.invalidFieldList(
+          'find',
+          'table',
+          { id: 1, 'content.text': 1 },
+          messages.illegalSortColumn,
+          'timestampErr$$%%'
         )
       )
     }

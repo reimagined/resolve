@@ -32,4 +32,22 @@ describe('resolve-readmodel-base reset', () => {
 
     await disposePromise
   })
+
+  // eslint-disable-next-line max-len
+  it('Regression test. Pool should be contain .connectPromise after .reset(pool) [To many connection]', async () => {
+    const metaApi = {
+      disconnect: sinon.stub().callsFake(async () => null),
+      drop: sinon.stub().callsFake(async () => null)
+    }
+
+    const connectPromise = Promise.resolve()
+
+    const pool = { internalContext: {}, connectPromise, metaApi }
+
+    await reset(pool)
+
+    expect(pool).toMatchObject({
+      connectPromise
+    })
+  })
 })
