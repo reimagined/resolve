@@ -8,7 +8,7 @@ const createAdapter = (
   publish,
   subscribe,
   dispose,
-  amqp,
+  zmq,
   options
 ) => {
   const config = {
@@ -22,7 +22,7 @@ const createAdapter = (
     handlers: new Set()
   }
 
-  wrapInit(pool, init, onMessage.bind(null, pool), amqp)
+  wrapInit(pool, init, onMessage.bind(null, pool), zmq)
 
   return Object.freeze({
     publish: wrapMethod(pool, publish),

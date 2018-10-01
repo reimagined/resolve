@@ -1,4 +1,7 @@
-const publish = async({ channel, config: { exchange, queueName, messageTtl }, onEvent }, event)=> {
+const publish = async (
+  { channel, config: { exchange, queueName, messageTtl } },
+  event
+) => {
   await channel.publish(
     exchange,
     queueName,
@@ -10,9 +13,6 @@ const publish = async({ channel, config: { exchange, queueName, messageTtl }, on
       persistent: false
     }
   )
-  
-  // TODO check double event
-  await onEvent(event)
 }
 
 export default publish

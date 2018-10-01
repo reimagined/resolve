@@ -183,6 +183,7 @@ module.exports = {
           'navbar',
           'nedb',
           'newstories',
+          'noop',
           'npm',
           'npmjs',
           'npx',

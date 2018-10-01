@@ -1,6 +1,6 @@
-const RabbitMQError = function(message, stack, cause) {
+const ZeroMQBusError = function(message, stack, cause) {
   Error.call(this)
-  this.name = 'RabbitMQ Bus Error'
+  this.name = 'ZeroMQ Bus Error'
   this.message = message
   this.stack = stack
   if (cause) {
@@ -9,4 +9,4 @@ const RabbitMQError = function(message, stack, cause) {
   return this
 }
 
-export default RabbitMQError
+export default ZeroMQBusError
