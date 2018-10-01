@@ -10,7 +10,7 @@
         "options": {
           "type": "object"
         },
-        "import": {
+        "imports": {
           "type": "object"
         }
       },
@@ -29,7 +29,7 @@
         "options": {
           "type": "object"
         },
-        "import": {
+        "imports": {
           "type": "object"
         }
       },

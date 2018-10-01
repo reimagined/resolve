@@ -59,7 +59,7 @@ export default ({ resolveConfig, isClient }) => {
       constants.push(
         `const commands_${index} = {`,
         clientCommands
-          .map(commandName => `  ${commandName}() {}`)
+          .map(commandName => `  [\`${commandName}\`]: () => {}`)
           .join(',\r\n'),
         `}`
       )
