@@ -1,108 +1,22 @@
 import amqp from 'amqplib'
 
-const defaultOptions = {
-  exchange: 'exchange',
-  queueName: '',
-  channelName: '',
-  exchangeType: 'fanout',
-  messageTtl: 2000,
-  maxLength: 10000
-}
+import createAdapter from './create-adapter'
+import wrapInit from './wrap-init'
+import wrapMethod from './wrap-method'
+import onMessage from './on-message'
+import init from './init'
+import publish from './publish'
+import subscribe from './subscribe'
+import dispose from './dispose'
 
-class RabbitMQBusError extends Error {
-  constructor(message, cause) {
-    super()
-    this.name = 'RabbitMQ Bus Error'
-    this.message = message
-
-    if (cause) {
-      this.cause = cause
-    }
-  }
-}
-
-const init = async (
-  { url, exchange, exchangeType, queueName, messageTtl, maxLength },
-  handler
-) => {
-  try {
-    const connection = await amqp.connect(url)
-    const channel = await connection.createChannel()
-
-    await channel.assertExchange(exchange, exchangeType, {
-      durable: false
-    })
-
-    const queue = await channel.assertQueue(queueName, {
-      arguments: {
-        messageTtl: messageTtl,
-        maxLength: maxLength
-      }
-    })
-
-    await channel.bindQueue(queue.queue, exchange)
-
-    await channel.consume(
-      queueName,
-      msg => {
-        if (msg) {
-          const content = msg.content.toString()
-          const message = JSON.parse(content)
-          handler(message)
-        }
-      },
-      { noAck: true }
-    )
-
-    return channel
-  } catch (e) {
-    throw new RabbitMQBusError(e.message, e.cause)
-  }
-}
-
-function createAdapter(options) {
-  let handler = () => {}
-  const config = { ...defaultOptions, ...options }
-  let initPromise = null
-  const { exchange, queueName, messageTtl } = config
-
-  return {
-    init: async () => {
-      if (!initPromise) {
-        initPromise = init(config, event => handler(event))
-      }
-
-      try {
-        return await initPromise
-      } catch (e) {
-        initPromise = null
-        throw e
-      }
-    },
-    publish: async event => {
-      if (!initPromise) {
-        throw new RabbitMQBusError('Adapter is not initialized')
-      }
-
-      const channel = await initPromise
-
-      return channel.publish(
-        exchange,
-        queueName,
-        new Buffer(JSON.stringify(event)),
-        // Additional options described here:
-        // http://www.squaremobius.net/amqp.node/channel_api.html#channel_publish
-        {
-          expiration: messageTtl,
-          persistent: false
-        }
-      )
-    },
-    subscribe: async callback => (handler = callback),
-    close: async () => {
-      initPromise = null
-    }
-  }
-}
-
-export default createAdapter
+export default createAdapter.bind(
+  null,
+  wrapInit,
+  wrapMethod,
+  onMessage,
+  init,
+  publish,
+  subscribe,
+  dispose,
+  amqp
+)

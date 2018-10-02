@@ -14,7 +14,11 @@ export default (
     busListeners.forEach(handler => handler(event))
   }
 
-  config.bus.subscribe(trigger)
+  config.bus.subscribe(trigger).catch(error => {
+    // TODO
+    // eslint-disable-next-line no-console
+    console.error(error)
+  })
 
   const onEvent = (eventMap, eventDescriptors, callback) => {
     eventDescriptors.forEach(eventDescriptor => {

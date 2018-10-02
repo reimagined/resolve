@@ -18,7 +18,7 @@ describe('resolve-es', () => {
         })
       }
       const bus = {
-        subscribe: sinon.stub()
+        subscribe: sinon.stub().returns(Promise.resolve())
       }
 
       const eventStore = createEventStore({ storage, bus })
@@ -39,7 +39,7 @@ describe('resolve-es', () => {
       const resolvedPromise = Promise.resolve()
 
       const storage = { loadEventsByTypes: sinon.stub() }
-      const bus = { subscribe: sinon.stub() }
+      const bus = { subscribe: sinon.stub().returns(Promise.resolve()) }
 
       const eventStore = createEventStore({ storage, bus })
 
@@ -57,7 +57,7 @@ describe('resolve-es', () => {
 
     it('using timestamp', async () => {
       const storage = { loadEventsByTypes: sinon.stub() }
-      const bus = { subscribe: () => {} }
+      const bus = { subscribe: sinon.stub().returns(Promise.resolve()) }
       const eventStore = createEventStore({ storage, bus })
 
       const eventTypes = ['CREATE_TODO', 'REMOVE_TODO']
@@ -94,7 +94,7 @@ describe('resolve-es', () => {
           })
       }
       const bus = {
-        subscribe: sinon.stub()
+        subscribe: sinon.stub().returns(Promise.resolve())
       }
 
       const eventStore = createEventStore({ storage, bus })
@@ -127,7 +127,7 @@ describe('resolve-es', () => {
           })
       }
       const bus = {
-        subscribe: sinon.stub()
+        subscribe: sinon.stub().returns(Promise.resolve())
       }
 
       const eventStore = createEventStore({ storage, bus })
@@ -149,7 +149,7 @@ describe('resolve-es', () => {
       const resolvedPromise = Promise.resolve()
 
       const storage = { loadEventsByAggregateIds: sinon.stub() }
-      const bus = { subscribe: sinon.stub() }
+      const bus = { subscribe: sinon.stub().returns(Promise.resolve()) }
 
       const eventStore = createEventStore({ storage, bus })
 
@@ -167,7 +167,7 @@ describe('resolve-es', () => {
 
     it('using timestamp', async () => {
       const storage = { loadEventsByAggregateIds: sinon.stub() }
-      const bus = { subscribe: () => {} }
+      const bus = { subscribe: sinon.stub().returns(Promise.resolve()) }
       const eventStore = createEventStore({ storage, bus })
 
       const aggregateId = 'aggregateId'
@@ -202,7 +202,7 @@ describe('resolve-es', () => {
             return resolvedPromise
           })
       }
-      const bus = { subscribe: sinon.stub() }
+      const bus = { subscribe: sinon.stub().returns(Promise.resolve()) }
 
       const eventStore = createEventStore({ storage, bus })
 
@@ -220,7 +220,7 @@ describe('resolve-es', () => {
 
     it('using timestamp', async () => {
       const storage = { loadEventsByAggregateIds: sinon.stub() }
-      const bus = { subscribe: () => {} }
+      const bus = { subscribe: sinon.stub().returns(Promise.resolve()) }
       const eventStore = createEventStore({ storage, bus })
 
       const aggregateId = 'aggregateId'
@@ -244,7 +244,7 @@ describe('resolve-es', () => {
         saveEvent: sinon.stub().returns(Promise.resolve())
       }
       const bus = {
-        subscribe: sinon.stub(),
+        subscribe: sinon.stub().returns(Promise.resolve()),
         publish: sinon.stub().returns(Promise.resolve())
       }
 
@@ -261,7 +261,7 @@ describe('resolve-es', () => {
         saveEvent: sinon.stub().returns(Promise.resolve())
       }
       const bus = {
-        subscribe: sinon.stub(),
+        subscribe: sinon.stub().returns(Promise.resolve()),
         publish: sinon.stub().returns(Promise.resolve())
       }
 
@@ -281,7 +281,7 @@ describe('resolve-es', () => {
         saveEvent: sinon.stub().returns(Promise.resolve())
       }
       const bus = {
-        subscribe: sinon.stub(),
+        subscribe: sinon.stub().returns(Promise.resolve()),
         publish: sinon.stub().returns(Promise.resolve())
       }
 
@@ -301,7 +301,7 @@ describe('resolve-es', () => {
         saveEvent: sinon.stub().returns(Promise.resolve())
       }
       const bus = {
-        subscribe: sinon.stub(),
+        subscribe: sinon.stub().returns(Promise.resolve()),
         publish: sinon.stub().returns(Promise.resolve())
       }
 
@@ -326,7 +326,7 @@ describe('resolve-es', () => {
         saveEvent: sinon.stub().returns(Promise.resolve())
       }
       const bus = {
-        subscribe: sinon.stub(),
+        subscribe: sinon.stub().returns(Promise.resolve()),
         publish: sinon.stub().returns(Promise.resolve())
       }
 
@@ -343,7 +343,7 @@ describe('resolve-es', () => {
         saveEvent: sinon.stub().returns(Promise.resolve())
       }
       const bus = {
-        subscribe: sinon.stub(),
+        subscribe: sinon.stub().returns(Promise.resolve()),
         publish: sinon.stub().returns(Promise.resolve())
       }
 
@@ -363,7 +363,7 @@ describe('resolve-es', () => {
         saveEvent: sinon.stub().returns(Promise.resolve())
       }
       const bus = {
-        subscribe: sinon.stub(),
+        subscribe: sinon.stub().returns(Promise.resolve()),
         publish: sinon.stub().returns(Promise.resolve())
       }
 
@@ -404,7 +404,7 @@ describe('resolve-es', () => {
       }
     }
     const bus = {
-      subscribe: sinon.stub()
+      subscribe: sinon.stub().returns(Promise.resolve())
     }
     const errorHandler = sinon.stub()
     const eventStore = createEventStore({ storage, bus }, errorHandler)
