@@ -36,8 +36,7 @@ It is important to understand that the read side and the write side do not and s
 
 The framework architecture imposes the functional programming, so both the read and write sides should never mutate any data outside of their scope.
 
-[TODO] - there is no "Storage" really - there is event store, read-model store, and snapshot store, all can be in different places.
-I don't think it is important for understanding the system - this is just a config options.
+[TODO] lets move storage adapters section to somewhere else, it not really a part of app structure
 
 # Storage Adapters
 Storage adapters provide a simple interface for controlling how your resolve app stores its data.
@@ -58,7 +57,7 @@ A storage adapter encapsulates logic that defines *how* this data is stored. reS
   * MySQL
   * In-memory 
 
-You can also provide your on implementation of data adapters by implementing a specific API interface.
+You can also provide your own implementation of data adapters by implementing a specific API interface.
 
 
 

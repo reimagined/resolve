@@ -1,10 +1,23 @@
-# Read Models and View Models
+[TODO] IMPORTANT: View Models are read models, these are not two different things, View Model is just a specific implementation of a read model. Don't do dihotomy, explain read model in general, and say that resolve provides a specific kind of read model for an aggregate-centric view - one that can be updated but redux reducer and live on the client, resolvers for such read models also provided.
+
+# Read Models
+[TODO] Simple explanation: Read side listens to the events, produced by the Write side, and updates read models. The purpose of read model is to answer queries. Read model should provide a functions that applies events - projection functions, and a function that answers a query - query resolver.
+
+[TODO] Read model can do anything in the projection function - send SQL statements, update Elastic Search indexes, add line to the files - no limitation, as long as it can use that data to answer the query in the resolver function.
+
+[TODO] reSolve provides unified data management and selection API with adapters for different DBMS, so you can use the same app code to work with different DBMS.
+
+[TODO] also, reSolve provides a special kind of read model, that can be calculated on the fly, sent to the client and kept up-to-date there. Such read models are called View Models in reSolve. It is queried by aggregateID and the whole read model sent as an answer - which means you need to keep view models small.
+
+[TODO] also we need some links to CQRS resources about read models. It is important to explain that read model should be optimized for query, so don't hesitate to denormalize data to avoid joins.
+
 In a reSolve application, you can query data by sending your requests to **Read Models** and **View Models**. 
 Read Models and View Models serve a similar purpose - they allow you to query the system data. In both cases this data is built based on events obtained from the event store. However, Read Models and View Models differ in both in how they treat the event data as what role they serve in an application:
 
   *  A **Read Model** gradually accumulates the event data in a storage based on the logic defined by the [projection](#updating_a_read_model_via_a_projection_function).  When the client queries the data, the data is pulled from the storage by the [resolver](#resolvers), processed based on the provided arguments and sent to the client in the required form.
-  * A **View Model** does not use a storage, neither does it provide a resolver to prepare data in response to queries. Instead, a view model builds a data sample from events only for one or several specified **aggregate IDs**. Generally, the data sample is built based on events from the very beginning of the history on every request, but you can also store intermediate snapshots to optimize the system resource consumption.
 
+  
+  * A **View Model** does not use a storage, neither does it provide a resolver to prepare data in response to queries. Instead, a view model builds a data sample from events only for one or several specified **aggregate IDs**. Generally, the data sample is built based on events from the very beginning of the history on every request, but you can also store intermediate snapshots to optimize the system resource consumption.
 
 
 
