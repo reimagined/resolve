@@ -12,14 +12,15 @@ In reSolve aggregate is a static object that contains set of functions. Function
 # Configuring Aggregates
 To configure an aggregates in reSolve app, provide aggregates array in the application configuration file:
 
-``` js
+[embedmd]:# (../../examples/shopping-list/config.app.js /aggregates: \[/ /\]/)
+```js
 aggregates: [
-  {
-    name: 'ShoppingList',
-    commands: 'common/aggregates/shoppingList.commands.js',
-    projection: 'common/aggregates/shoppingList.projection.js'
-  }
-]
+    {
+      name: 'ShoppingList',
+      commands: 'common/aggregates/shopping_list.commands.js',
+      projection: 'common/aggregates/shopping_list.projection.js'
+    }
+  ]
 ```
 
 # Sending a Command
