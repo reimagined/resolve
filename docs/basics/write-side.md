@@ -28,7 +28,7 @@ You can emit a command in the following use-case scenarios:
 * [Sending commands from the server](#emitting-commands-on-the-server)
 
 ### Sending Commands From the Client 
-The reSolve framework exposes a standard REST API interface that you can use to to send commands from the client side. Depending on the architecture of your web application's front-end, you can use this API interface directly or using the **Redux** bindings provided by the **[resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-redux)** library.
+The reSolve framework exposes [HTTP API](../api-reference.md#commands-http-api) that you can use to to send commands from the client side. Depending on the architecture of your web application's front-end, you can use this API interface directly or using the **Redux** bindings provided by the **[resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-redux)** library.
 
 You can send a command from the client side by sending a POST request to the following URL:
 ```
