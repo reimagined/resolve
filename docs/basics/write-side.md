@@ -3,7 +3,7 @@ Commands are executed by objects that encapsulate domain logic. These objects ar
 
 Since write side is used only to perform commands, your aggregate can be pretty slim, and only keep state that required for command exection.
 
-See the Martin Fowler's definition for aggregates in the DDD paradigm: [https://martinfowler.com/bliki/DDD_Aggregate.html](https://martinfowler.com/bliki/DDD_Aggregate.html)
+See Martin Fowler's definition for aggregates in the DDD paradigm: [https://martinfowler.com/bliki/DDD_Aggregate.html](https://martinfowler.com/bliki/DDD_Aggregate.html)
 
 
 In reSolve aggregate is a static object that contains set of functions. Functions that build aggregate state from events are called [projections](#aggregate-projection-function). Functions that executes commands - [command handlers](#command-handler). Aggregate state is passed to each of these functions explicitly as parameter.
