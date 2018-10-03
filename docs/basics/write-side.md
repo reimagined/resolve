@@ -1,8 +1,12 @@
 # Aggregates
-In reSolve aggregate is an object that contains set of functions. Functions that build aggregate state from events are called [projections](#aggregate-projection-function). Functions that executes commands - [command handlers](#command-handler). 
+Commands are executed by objects that encapsulate domain logic. These objects are called Domain Objects. Usually Domain Objects are grouped into Aggregates. Aggregate boundary should be a transaction boundary. In CQRS/ES app it means that given aggregate should be able to execute a command without talking to other aggregates.
+
+Since write side is used only to perform commands, your aggregate can be pretty slim, and only keep state that required for command exection.
 
 See the Martin Fowler's definition for aggregates in the DDD paradigm: [https://martinfowler.com/bliki/DDD_Aggregate.html](https://martinfowler.com/bliki/DDD_Aggregate.html)
 
+
+In reSolve aggregate is a static object that contains set of functions. Functions that build aggregate state from events are called [projections](#aggregate-projection-function). Functions that executes commands - [command handlers](#command-handler). Aggregate state is passed to each of these functions explicitly as parameter.
 
 
 # Configuring Aggregates
@@ -18,7 +22,6 @@ aggregates: [
 ]
 ```
 
-
 # Sending a Command
 You can emit a command in the following use-case scenarios: 
 * [Sending commands from the client](#sending-commands-from-the-client) 
@@ -32,6 +35,8 @@ You can send a command from the client side by sending a POST request to the fol
 http://{host}:{port}/api/commands
 ```
 The request body should have the `application/json` content type and the following structure:
+
+[TODO] - this is a description of command object, not a request body format. Request body should be simply a JSON representation of a command, whatever it is.
 
 ``` js
 {
@@ -57,19 +62,20 @@ The request body should have the `application/json` content type and the followi
 ##### Example
 Use the following command to add an item to the [shopping-list example](../examples/shopping-list).
 ```sh
-curl -X POST -H "Content-Type: application/json" \
--d "{\"aggregateName\":\"Todo\", \"type\":\"createItem\", \"aggregateId\":\"root-id\", \"payload\": {\"id\":`date +%s`, \"text\":\"Learn reSolve API\"}}" \
-"http://localhost:3000/api/commands"
+$ curl -X POST "http://localhost:3000/api/commands" 
+--header "Content-Type: application/json" \
+--data '
+{
+  "aggregateName":"Todo",
+  "type":"createItem", 
+  "aggregateId":"root-id", 
+  "payload": {
+    "id":`date +%s`, 
+    "text":"Learn reSolve API"
+  }
+}
+'
 ```
-
-
-
-
-
-
-
-
-
 
 
 ### Emitting Commands on the Server
@@ -87,15 +93,13 @@ await resolve.executeCommand({
 For the full code sample, refer to the [with-saga](https://github.com/reimagined/resolve/tree/master/examples/with-saga) example project.
 
 
+# Aggregate Command Handlers
 
 
-# Command Handler
+The aggregate command handlers object maps associates command handlers with command names. A command handler receives a state accumulated by the aggregate [Projection](#aggregate-projection-function) the command object. The command object has the following structure:
 
 
-The aggregate Commands object maps associates command handlers with command names. A command handler receives a state accumulated by the aggregate [Projection](#aggregate-projection-function) the command object. The command object has the following structure:
-
-
-A command handler should return an event object that is then saved to the [event store](#event-store). An event object consists of the name and an arbitrary **payload**. 
+A command handler should return an event object that is then saved to the [event store](#event-store). A returned object should specify an event type and some **payload** specific to this event type. 
 
 A typical **Commands** object structure:
 
@@ -114,11 +118,10 @@ export default {
 }
 ```
 
-
-
-
 # Aggregate Projection Function
-A projection function on write side is used to accumulate an arbitrary state based on commands received by the aggregate. A projection function receives a state and command data. Based on received data, a projection function returns an updated state. The accumulated state is passed to the corresponding [command handler](#command_handler). 
+A aggregate projection function is used to calculate an aggregate state based on agreggate's events. A projection function receives a previous state and event to be applied. Based on input, a projection function should return a new state. The computed state is then passed to the corresponding [command handler](#command_handler). 
+
+Init function returns initial state of the aggregate.
 
  A typical **Projection** object structure: 
 
@@ -136,9 +139,10 @@ export default {
 }
 ```
 
-
-
 # Event Store
+
+[TODO] This should go to the advanced section, not to basics
+
 All events returned by command handlers are saved to the event store. The saving is performed by the reSolve framework using one of the supported storage adapters or you can implement a custom adapter according to your requirements. 
 
 An event storage adapter implementation should expose the following methods:
@@ -150,6 +154,6 @@ An event storage adapter implementation should expose the following methods:
 | loadEventsByAggregateIds: (aggregateIds, callback, startTime)     | Gets events with the specified aggregate IDs   |
 
 
-By default, events are stored in a **event-storage.db** file in the application's root folder.
+By default, events are stored in a **event-storage.db** file in the application's root folder. 
 
 In a development environment you can reset the state of the system by removing the event store file/database.
