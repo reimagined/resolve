@@ -119,7 +119,7 @@ export default {
 ```
 
 # Aggregate Projection Function
-A aggregate projection function is used to calculate an aggregate state based on agreggate's events. A projection function receives a previous state and event to be applied. Based on input, a projection function should return a new state. The computed state is then passed to the corresponding [command handler](#command_handler). 
+Projection function is used to calculate an aggregate state based on agreggate's events. A projection function receives a previous state and event to be applied. Based on input, a projection function should return a new state. The computed state is then passed to the corresponding [command handler](#command_handler). 
 
 Init function returns initial state of the aggregate.
 
