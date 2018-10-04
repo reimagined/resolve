@@ -1,0 +1,15 @@
+{
+  "name": "@resolve/trigger-on-pull-request",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node ./index.js"
+  },
+  "author": "reimagined team",
+  "license": "MIT",
+  "dependencies": {
+    "@octokit/rest": "15.12.0",
+    "minimist": "1.2.0",
+    "request": "2.88.0"
+  }
+}
