@@ -8,7 +8,7 @@ stages:
   - create-resolve-app-tests
   - clear
 
-ci/cd:
+prepare environment:
   stage: ci/cd
   tags:
     - ci/cd
@@ -37,6 +37,8 @@ ubuntu (install):
 
 eslint:
   stage: lint
+  tags:
+    - macos
   only:
     - triggers
   script:
@@ -44,6 +46,8 @@ eslint:
    
 prettier-check:
   stage: lint
+  tags:
+    - macos
   only:
     - triggers
   script:
@@ -92,7 +96,7 @@ bus:
   only:
     - triggers
   script:
-    - echo (memory, rabbitmq, zeromq)
+    - echo "(memory, rabbitmq, zeromq)"
 
 storage:
   stage: integration-tests
@@ -101,7 +105,7 @@ storage:
   only:
     - triggers
   script:
-    - echo (memory, mongodb, mysql, dynamodb)
+    - echo "(memory, mongodb, mysql, dynamodb)"
     
 readmodel-adapter:
   stage: integration-tests
@@ -110,7 +114,7 @@ readmodel-adapter:
   only:
     - triggers
   script:
-    - echo (memory, mongodb, mysql)         
+    - echo "(memory, mongodb, mysql)"
     
 subscribe-adapters:
   stage: integration-tests
@@ -119,7 +123,7 @@ subscribe-adapters:
   only:
     - triggers
   script:
-    - echo (mqtt, socket.io)
+    - echo "(mqtt, socket.io)"
     
 macOS (npx):
   stage: create-resolve-app-tests

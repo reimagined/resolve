@@ -43,14 +43,20 @@ async function main({ gitlab, github, refreshTime }) {
               }
             },
             json: true,
-            url: gitlab.endpoint
+            url: gitlab.url
           },
-          (err, ...args) => {
+          err => {
             if (err) {
               triggers[pullRequest.number] = prevMergeCommitSha
               console.error(err)
+              return
             }
-            console.log(...args)
+
+            console.log(
+              `pull request from "${pullRequest.head.ref}" to "${
+                pullRequest.base.ref
+              }"`
+            )
           }
         )
       }
@@ -60,15 +66,12 @@ async function main({ gitlab, github, refreshTime }) {
   }
 }
 
-const {
-  gitlabEndpoint,
-  gitlabToken,
-  githubToken,
-  refreshTime = 30000
-} = minimist(process.argv.slice(2))
+const { gitlabUrl, gitlabToken, githubToken, refreshTime = 30000 } = minimist(
+  process.argv.slice(2)
+)
 
-if (!gitlabEndpoint) {
-  throw new Error('Option "gitlabEndpoint" is required and must be a String')
+if (!gitlabUrl) {
+  throw new Error('Option "gitlabUrl" is required and must be a String')
 }
 if (!gitlabToken) {
   throw new Error('Option "gitlabToken" is required and must be a String')
@@ -80,9 +83,9 @@ if (!githubToken) {
 main({
   refreshTime: +refreshTime,
   gitlab: {
-    endpoint: gitlabEndpoint,
+    url: gitlabUrl,
     token: gitlabToken,
-    ref: 'master'
+    ref: 'ci/cd'
   },
   github: {
     owner: 'reimagined',
