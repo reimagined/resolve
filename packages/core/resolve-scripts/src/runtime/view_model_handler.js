@@ -1,5 +1,6 @@
 import println from './utils/println'
 import queryExecutor from './query_executor'
+import extractErrorHttpCode from './utils/extract_error_http_code'
 
 const message = require('../../configs/message.json')
 
@@ -36,7 +37,8 @@ const viewModelHandler = async (req, res) => {
 
     res.status(200).send(serializedState)
   } catch (err) {
-    res.status(500).end(`${message.viewModelFail}${err.message}`)
+    const errorCode = extractErrorHttpCode(err)
+    res.status(errorCode).end(`${message.viewModelFail}${err.message}`)
     println.error(err)
   }
 }
