@@ -1,4 +1,4 @@
-export default (options, imports) => ({
+export default options => ({
   ReadCommentsTree: async (store, args) => {
     const { treeId, parentCommentId, maxLevel } = args
     const parentId = parentCommentId != null ? parentCommentId : null

@@ -1,2 +1,3 @@
 import { createActions } from 'resolve-module-comments'
-export default createActions({ aggregateName: 'HackernewsComments' })
+
+export default createActions({ aggregateName: 'HackerNewsComments' })

@@ -4,8 +4,8 @@ import plur from 'plur'
 import { connect } from 'react-redux'
 import sanitizer from 'sanitizer'
 import styled, { css } from 'styled-components'
+import { NavLink } from 'react-router-dom'
 
-import Link from './Link'
 import Splitter from '../components/Splitter'
 import TimeAgo from '../components/TimeAgo'
 
@@ -26,7 +26,7 @@ export const TitleRoot = styled.div`
   font-size: 8pt;
 `
 
-export const StyledLink = styled(Link)`
+export const StyledLink = styled(NavLink)`
   font-size: 10pt;
 `
 
@@ -52,7 +52,7 @@ export const UnvoteLink = styled.span`
   ${infoLinkStyles};
 `
 
-export const DiscussLink = styled(Link)`
+export const DiscussLink = styled(NavLink)`
   ${infoLinkStyles};
 `
 
@@ -75,7 +75,7 @@ export const UpvoteArrow = styled.div`
     `};
 `
 
-const Username = styled(Link)`
+const Username = styled(NavLink)`
   display: inline-block;
   font-weight: bold;
   text-decoration: none;

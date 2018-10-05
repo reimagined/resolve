@@ -7,16 +7,29 @@ import { createComment, updateComment, removeComment } from '../command_types'
 
 export default (options, imports) => ({
   [createComment]: async (state, command, jwtToken) => {
-    if (command.payload.commentId == null) {
-      throw new Error('Comment creation should provide "commentId" field')
+    if (
+      command.payload.commentId == null ||
+      command.payload.commentId.constructor !== String
+    ) {
+      throw new Error(
+        'Comment creation should provide "commentId" field as string'
+      )
     }
 
-    if (!command.payload.parentCommentId == null) {
-      throw new Error('Comment creation should provide "parentCommentId" field')
+    if (
+      command.payload.parentCommentId !== null &&
+      (command.payload.parentCommentId === undefined ||
+        command.payload.parentCommentId.constructor !== String)
+    ) {
+      throw new Error(
+        'Comment creation should provide "parentCommentId" field as string'
+      )
     }
 
-    if (!command.payload.content == null) {
-      throw new Error('Comment creation should provide "content" field')
+    if (command.payload.content == null) {
+      throw new Error(
+        'Comment creation should provide "content" field as not-null'
+      )
     }
 
     await imports.verify(state, command, jwtToken, createComment)
@@ -32,12 +45,19 @@ export default (options, imports) => ({
   },
 
   [updateComment]: async (state, command, jwtToken) => {
-    if (command.payload.commentId == null) {
-      throw new Error('Comment creation should provide "commentId" field')
+    if (
+      command.payload.commentId == null ||
+      command.payload.commentId.constructor !== String
+    ) {
+      throw new Error(
+        'Comment update should provide "commentId" field as string'
+      )
     }
 
-    if (!command.payload.content == null) {
-      throw new Error('Comment creation should provide "content" field')
+    if (command.payload.content == null) {
+      throw new Error(
+        'Comment update should provide "content" field as not-null'
+      )
     }
 
     await imports.verify(state, command, jwtToken, updateComment)
@@ -52,12 +72,13 @@ export default (options, imports) => ({
   },
 
   [removeComment]: async (state, command, jwtToken) => {
-    if (command.payload.commentId == null) {
-      throw new Error('Comment creation should provide "commentId" field')
-    }
-
-    if (!command.payload.content == null) {
-      throw new Error('Comment creation should provide "content" field')
+    if (
+      command.payload.commentId == null ||
+      command.payload.commentId.constructor !== String
+    ) {
+      throw new Error(
+        'Comment remove should provide "commentId" field as string'
+      )
     }
 
     await imports.verify(state, command, jwtToken, removeComment)

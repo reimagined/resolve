@@ -1,3 +1,3 @@
-export default (options, imports) => ({
+export default () => ({
   Init: () => ({})
 })

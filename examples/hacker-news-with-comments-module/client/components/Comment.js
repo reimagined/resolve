@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 import Splitter from './Splitter'
 import TimeAgo from './TimeAgo'
-import Link from '../containers/Link'
+import { NavLink } from 'react-router-dom'
 
 const CommentRoot = styled.div`
   margin-bottom: 1em;
@@ -30,11 +30,11 @@ const linkStyles = `
   }
 `
 
-const StyledLink = styled(Link)`
+const StyledLink = styled(NavLink)`
   ${linkStyles};
 `
 
-const StyledUserLink = styled(Link)`
+const StyledUserLink = styled(NavLink)`
   ${linkStyles} font-weight: bold;
 `
 

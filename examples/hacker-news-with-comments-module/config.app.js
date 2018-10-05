@@ -9,20 +9,20 @@ const appConfig = {
   },
   aggregates: [
     {
-      name: 'story',
+      name: 'Story',
       commands: 'common/aggregates/story.commands.js',
       projection: 'common/aggregates/story.projection.js'
     },
     {
-      name: 'user',
+      name: 'User',
       commands: 'common/aggregates/user.commands.js',
       projection: 'common/aggregates/user.projection.js'
     }
   ],
   viewModels: [
     {
-      name: 'storyDetails',
-      projection: 'common/view-models/story_details.projection.js'
+      name: 'CommentNotification',
+      projection: 'common/view-models/comments-notification.projection.js'
     }
   ],
   readModels: [
@@ -38,7 +38,7 @@ const appConfig = {
 }
 
 const moduleComments = resolveModuleComments({
-  aggregateName: 'HackernewsComments'
+  aggregateName: 'HackerNewsComments'
 })
 
 for (const key of Object.keys(moduleComments)) {

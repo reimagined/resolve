@@ -1,16 +1,21 @@
 import { actionTypes } from 'resolve-redux'
-import { routerActions, LOCATION_CHANGE } from 'react-router-redux'
-import { ROUTE_CHANGED } from '../actions/action_types'
+import { routerActions } from 'react-router-redux'
+import { commandTypes } from 'resolve-module-comments'
 
 import {
   OPTIMISTIC_STORY_UPVOTED,
-  OPTIMISTIC_STORY_UNVOTED
+  OPTIMISTIC_STORY_UNVOTED,
+  OPTIMISTIC_COMMENTS_INIT,
+  OPTIMISTIC_COMMENT_CREATE,
+  OPTIMISTIC_COMMENT_UPDATE,
+  OPTIMISTIC_COMMENT_REMOVE
 } from '../actions/action_types'
+
+const { createComment, updateComment, removeComment } = commandTypes
 
 const {
   SEND_COMMAND_SUCCESS,
   SEND_COMMAND_FAILURE,
-  LOAD_VIEWMODEL_STATE_SUCCESS,
   LOAD_READMODEL_STATE_SUCCESS
 } = actionTypes
 
@@ -57,23 +62,54 @@ const optimisticVotingMiddleware = store => next => action => {
   next(action)
 }
 
-const routeChangeMiddleware = store => next => action => {
-  if (action.type === LOCATION_CHANGE) {
-    setTimeout(() => {
-      store.dispatch({
-        type: ROUTE_CHANGED,
-        route: null
-      })
-    }, 1000)
-  }
+const optimisticCommentsMiddleware = store => next => action => {
   if (
-    action.type === LOAD_VIEWMODEL_STATE_SUCCESS ||
-    action.type === LOAD_READMODEL_STATE_SUCCESS
+    action.type === LOAD_READMODEL_STATE_SUCCESS &&
+    action.readModelName === 'HackerNewsComments' &&
+    action.resolverName === 'ReadCommentsTree'
   ) {
-    const route = store.getState().prefetchRoute
-    if (route) {
-      store.dispatch(routerActions.push(route))
-    }
+    store.dispatch({
+      type: OPTIMISTIC_COMMENTS_INIT,
+      treeId: action.resolverArgs.treeId,
+      parentCommentId: action.resolverArgs.parentCommentId,
+      payload: action.result
+    })
+  }
+
+  if (
+    action.type === SEND_COMMAND_SUCCESS &&
+    action.commandType === createComment
+  ) {
+    store.dispatch({
+      type: OPTIMISTIC_COMMENT_CREATE,
+      treeId: action.aggregateId,
+      parentCommentId: action.payload.parentCommentId,
+      payload: action.payload
+    })
+  }
+
+  if (
+    action.type === SEND_COMMAND_SUCCESS &&
+    action.commandType === updateComment
+  ) {
+    store.dispatch({
+      type: OPTIMISTIC_COMMENT_UPDATE,
+      treeId: action.aggregateId,
+      parentCommentId: action.payload.parentCommentId,
+      payload: action.payload
+    })
+  }
+
+  if (
+    action.type === SEND_COMMAND_SUCCESS &&
+    action.commandType === removeComment
+  ) {
+    store.dispatch({
+      type: OPTIMISTIC_COMMENT_REMOVE,
+      treeId: action.aggregateId,
+      parentCommentId: action.payload.parentCommentId,
+      payload: action.payload
+    })
   }
 
   next(action)
@@ -82,5 +118,5 @@ const routeChangeMiddleware = store => next => action => {
 export default [
   storyCreateMiddleware,
   optimisticVotingMiddleware,
-  routeChangeMiddleware
+  optimisticCommentsMiddleware
 ]

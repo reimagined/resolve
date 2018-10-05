@@ -4,7 +4,7 @@ import {
   COMMENT_REMOVED
 } from '../event_types'
 
-export default (options, imports) => ({
+export default options => ({
   Init: async store => {
     await store.defineTable('Comments', {
       indexes: {

@@ -8,10 +8,10 @@ import {
   STORY_UPVOTED
 } from '../common/event_types'
 
-const { COMMENT_CREATED } = moduleCommentsEventTypes
-
 import api from './api'
 import eventStore, { dropStore } from './eventStore'
+
+const { COMMENT_CREATED } = moduleCommentsEventTypes
 
 const users = {}
 
