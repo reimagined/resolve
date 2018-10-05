@@ -193,7 +193,6 @@ export default aggregates
 
 exports[`config with snapshot + process.env works correctly [server] 1`] = `
 "
-import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 import commands_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
 const constructorBindFunction =
     (
@@ -209,25 +208,12 @@ const constructorBindFunction =
 const idempotentFunction = value => value
 const name_0 = \\"Todo\\"
 const commands_0 = commands_0_instance
-const snapshotAdapter_0_constructor = ((moduleOrFile) => {
-  return interopRequireDefault(__non_webpack_require__(moduleOrFile)).default
-})(process.env[\\"AGGREGATE_TODO_SNAPSHOT_ADAPTER\\"])
-const snapshotAdapter_0_imports = {  }
-const snapshotAdapter_0_options = {
-  \\"size\\": process.env[\\"AGGREGATE_TODO_SNAPSHOT_OPTIONS_SIZE\\"]
-}
-const snapshotAdapter_0 = constructorBindFunction.bind(null,
-      snapshotAdapter_0_constructor,
-      snapshotAdapter_0_options,
-      snapshotAdapter_0_imports
-    )
 
 const aggregates = []
 
 aggregates.push({
   name: name_0
 , commands: commands_0
-, snapshotAdapter: snapshotAdapter_0
 })
 
 export default aggregates
@@ -257,7 +243,6 @@ export default aggregates
 exports[`config with snapshot works correctly [server] 1`] = `
 "
 import commands_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
-import snapshotAdapter_0_constructor from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testSnapshotAdapter.js\\"
 const constructorBindFunction =
     (
       constructorFunction,
@@ -272,22 +257,12 @@ const constructorBindFunction =
 const idempotentFunction = value => value
 const name_0 = \\"Todo\\"
 const commands_0 = commands_0_instance
-const snapshotAdapter_0_imports = {  }
-const snapshotAdapter_0_options = {
-  \\"size\\": 100
-}
-const snapshotAdapter_0 = constructorBindFunction.bind(null,
-      snapshotAdapter_0_constructor,
-      snapshotAdapter_0_options,
-      snapshotAdapter_0_imports
-    )
 
 const aggregates = []
 
 aggregates.push({
   name: name_0
 , commands: commands_0
-, snapshotAdapter: snapshotAdapter_0
 })
 
 export default aggregates

@@ -7,6 +7,12 @@ const devConfig = {
   staticDir: 'static',
   distDir: 'dist',
 
+  readModelAdapters: {
+    'read-model-name': {
+      module: 'resolve-readmodel-memory',
+      options: {}
+    }
+  },
   storageAdapter: {
     module: 'resolve-storage-lite',
     options: {

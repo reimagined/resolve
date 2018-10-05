@@ -28,6 +28,12 @@ export default ({ resolveConfig, isClient }) => {
     }
     constants.push(`const name_${index} = ${JSON.stringify(viewModel.name)}`)
 
+    const snapshotAdapter =
+      resolveConfig.hasOwnProperty('viewModelAdapters') &&
+      resolveConfig.viewModelAdapters.hasOwnProperty(viewModel.name)
+        ? resolveConfig.viewModelAdapters[viewModel.name]
+        : null
+
     importResource({
       resourceName: `projection_${index}`,
       resourceValue: viewModel.projection,
@@ -86,7 +92,7 @@ export default ({ resolveConfig, isClient }) => {
 
       exports.push(`, validator: validator_${index}`)
 
-      if (viewModel.snapshotAdapter) {
+      if (snapshotAdapter) {
         importResource({
           resourceName: `snapshotAdapter_${index}`,
           resourceValue: viewModel.snapshotAdapter,

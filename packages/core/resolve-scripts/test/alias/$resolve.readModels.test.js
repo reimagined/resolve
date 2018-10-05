@@ -12,7 +12,13 @@ describe('base config works correctly', () => {
         projection: path.resolve(__dirname, 'files/testProjection.js'),
         resolvers: path.resolve(__dirname, 'files/testResolvers.js')
       }
-    ]
+    ],
+    readModelAdapters: {
+      Todos: {
+        module: 'resolve-readmodel-memory',
+        options: {}
+      }
+    }
   }
 
   test('[client]', () => {
@@ -55,7 +61,17 @@ describe('base(v2) config works correctly', () => {
         projection: path.resolve(__dirname, 'files/testProjection.js'),
         resolvers: path.resolve(__dirname, 'files/testResolvers.js')
       }
-    ]
+    ],
+    readModelAdapters: {
+      Todos: {
+        module: 'resolve-readmodel-memory',
+        options: {}
+      },
+      Items: {
+        module: 'resolve-readmodel-memory',
+        options: {}
+      }
+    }
   }
 
   test('[client]', () => {
@@ -91,15 +107,17 @@ describe('config with storage works correctly', () => {
       {
         name: 'Todos',
         projection: path.resolve(__dirname, 'files/testProjection.js'),
-        resolvers: path.resolve(__dirname, 'files/testResolvers.js'),
-        adapter: {
-          module: path.resolve(__dirname, 'files/testSnapshotAdapter.js'),
-          options: {
-            size: 100
-          }
+        resolvers: path.resolve(__dirname, 'files/testResolvers.js')
+      }
+    ],
+    readModelAdapters: {
+      Todos: {
+        module: path.resolve(__dirname, 'files/testSnapshotAdapter.js'),
+        options: {
+          size: 100
         }
       }
-    ]
+    }
   }
 
   test('[client]', () => {
@@ -135,15 +153,17 @@ describe('config with storage + process.env works correctly', () => {
       {
         name: 'Todos',
         projection: path.resolve(__dirname, 'files/testProjection.js'),
-        resolvers: path.resolve(__dirname, 'files/testResolvers.js'),
-        adapter: {
-          module: declareRuntimeEnv('READ_MODEL_TODOS_ADAPTER'),
-          options: {
-            size: declareRuntimeEnv('READ_MODEL_TODOS_OPTIONS_SIZE')
-          }
+        resolvers: path.resolve(__dirname, 'files/testResolvers.js')
+      }
+    ],
+    readModelAdapters: {
+      Todos: {
+        module: declareRuntimeEnv('READ_MODEL_TODOS_ADAPTER'),
+        options: {
+          size: declareRuntimeEnv('READ_MODEL_TODOS_OPTIONS_SIZE')
         }
       }
-    ]
+    }
   }
 
   test('[client]', () => {

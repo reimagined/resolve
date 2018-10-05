@@ -34,6 +34,9 @@ export default {
     module: 'resolve-subscribe-socket.io',
     options: {}
   },
+  readModelAdapters: {},
+  viewModelAdapters: {},
+  aggregateAdapters: {},
   jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000

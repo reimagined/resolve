@@ -30,6 +30,12 @@ export default ({ resolveConfig, isClient }) => {
     }
     constants.push(`const name_${index} = ${JSON.stringify(aggregate.name)}`)
 
+    const snapshotAdapter =
+      resolveConfig.hasOwnProperty('aggregateAdapters') &&
+      resolveConfig.aggregateAdapters.hasOwnProperty(aggregate.name)
+        ? resolveConfig.aggregateAdapters[aggregate.name]
+        : null
+
     importResource({
       resourceName: `commands_${index}`,
       resourceValue: aggregate.commands,
@@ -85,10 +91,10 @@ export default ({ resolveConfig, isClient }) => {
       exports.push(`, invariantHash: projection_${index}_hash`)
     }
 
-    if (!isClient && aggregate.snapshotAdapter) {
+    if (!isClient && snapshotAdapter) {
       importResource({
         resourceName: `snapshotAdapter_${index}`,
-        resourceValue: aggregate.snapshotAdapter,
+        resourceValue: snapshotAdapter,
         runtimeMode: RUNTIME_ENV_ANYWHERE,
         importMode: RESOURCE_CONSTRUCTOR_ONLY,
         instanceMode: IMPORT_CONSTRUCTOR,

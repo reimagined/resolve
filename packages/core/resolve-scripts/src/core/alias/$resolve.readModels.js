@@ -69,12 +69,19 @@ export default ({ resolveConfig, isClient }) => {
       )
     }
 
-    const readModelAdapter = readModel.hasOwnProperty('adapter')
-      ? readModel.adapter
-      : {
-          module: 'resolve-readmodel-memory',
-          options: {}
-        }
+    const readModelAdapter =
+      resolveConfig.hasOwnProperty('readModelAdapters') &&
+      resolveConfig.readModelAdapters.hasOwnProperty(readModel.name)
+        ? resolveConfig.readModelAdapters[readModel.name]
+        : null
+
+    if (!readModelAdapter) {
+      throw new Error(
+        `${message.configNotContainSectionError}.readModelAdapters[${
+          readModel.name
+        }]`
+      )
+    }
 
     exports.push(`readModels.push({`, `  name: name_${index}`)
     exports.push(`, resolvers: resolvers_${index}`)
