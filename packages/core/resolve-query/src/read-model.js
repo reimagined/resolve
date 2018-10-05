@@ -182,7 +182,7 @@ const createReadModel = ({ adapter, projection, eventStore, resolvers }) => {
     getLastError: getLastError.bind(null, repository),
     read: read.bind(null, repository),
     readAndSerialize: async (...args) =>
-      JSON.stringify(await read(repository, ...args)),
+      JSON.stringify(await read(repository, ...args), null, 2),
     resolverNames: Object.keys(resolvers != null ? resolvers : {}),
     dispose: dispose.bind(null, repository)
   })
