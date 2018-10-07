@@ -42,7 +42,7 @@ export default connectReadModel(mapStateToOptions)(
 )
 ```
 
-Additionally, the following HOCs automatically fix URLs passed as component props so that these URLs comply with the backend structure.
+Additionally, use the following HOCs to automatically fix URLs passed as component props so that these URLs comply with the backend structure.
 
 * **connectRootBasedUrls** - Fixes server routs.
   ```js
@@ -135,23 +135,116 @@ export default connectViewModel(mapStateToOptions)(
 
 
 # Optimistic Commands
-If a component is connected to a reSolve ReadModel, you can enhance its responsiveness by providing it with **optimistic UI update** functionality.  With this approach, a component applies model changes on the client side before synchronizing them with the server via an aggregate command. After a command has been sent and the server has returned an OK response, data is synchronized between the client and server sides.
+If a component is connected to a reSolve ReadModel, you can enhance its responsiveness by providing it with **optimistic UI update** functionality.  With this approach, a component applies model changes on the client side before synchronizing them with the server via an aggregate command. 
 
 Use the following steps to implement the optimistic update functionality: 
 
-* Create Redux actions that will perform optimistic updates: 
+1) Create Redux actions that will perform optimistic updates: 
 
- 
+[embedmd]:# (..\..\examples\shopping-list\client\actions\optimistic_actions.js /^/ /\n$/)
+```js
+export const OPTIMISTIC_CREATE_SHOPPING_LIST = 'OPTIMISTIC_CREATE_SHOPPING_LIST'
+export const OPTIMISTIC_REMOVE_SHOPPING_LIST = 'OPTIMISTIC_REMOVE_SHOPPING_LIST'
+export const OPTIMISTIC_SYNC = 'OPTIMISTIC_SYNC'
+```
 
-* Implement an optimistic reducer function that responds to these commands to update the corresponding slice of the Redux state: 
+2) Implement an optimistic reducer function that responds to these commands to update the corresponding slice of the Redux state: 
 
+[embedmd]:# (..\..\examples\shopping-list\client\reducers\optimistic_shopping_lists.js /^/ /\n$/)
+```js
+import { LOCATION_CHANGE } from 'react-router-redux'
+import {
+  OPTIMISTIC_CREATE_SHOPPING_LIST,
+  OPTIMISTIC_REMOVE_SHOPPING_LIST,
+  OPTIMISTIC_SYNC
+} from '../actions/optimistic_actions'
+
+const optimistic_shopping_lists = (state = [], action) => {
+  switch (action.type) {
+    case LOCATION_CHANGE: {
+      return []
+    }
+    case OPTIMISTIC_CREATE_SHOPPING_LIST: {
+      return [
+        ...state,
+        {
+          id: action.payload.id,
+          name: action.payload.name
+        }
+      ]
+    }
+    case OPTIMISTIC_REMOVE_SHOPPING_LIST: {
+      return state.filter(item => {
+        return item.id !== action.payload.id
+      })
+    }
+    case OPTIMISTIC_SYNC: {
+      return action.payload.originalLists
+    }
+    default: {
+      return state
+    }
+  }
+}
+
+export default optimistic_shopping_lists
+```
   
 
-* Implement an optimistic middleware to intercept actions used to communicate with a Read Model and update the Redux state accordingly:
+3) Implement an optimistic middleware to intercept actions used to communicate with a Read Model and update the Redux state accordingly:
 
+[embedmd]:# (..\..\examples\shopping-list\client\middlewares\optimistic_shopping_lists_middleware.js /^/ /\n$/)
+```js
+import { actionTypes } from 'resolve-redux'
 
+import {
+  OPTIMISTIC_CREATE_SHOPPING_LIST,
+  OPTIMISTIC_REMOVE_SHOPPING_LIST,
+  OPTIMISTIC_SYNC
+} from '../actions/optimistic_actions'
 
+const { SEND_COMMAND_SUCCESS, LOAD_READMODEL_STATE_SUCCESS } = actionTypes
 
+const optimistic_shopping_lists_middleware = store => next => action => {
+  if (
+    action.type === SEND_COMMAND_SUCCESS &&
+    action.commandType === 'createShoppingList'
+  ) {
+    store.dispatch({
+      type: OPTIMISTIC_CREATE_SHOPPING_LIST,
+      payload: {
+        id: action.aggregateId,
+        name: action.payload.name
+      }
+    })
+  }
+  if (
+    action.type === SEND_COMMAND_SUCCESS &&
+    action.commandType === 'removeShoppingList'
+  ) {
+    store.dispatch({
+      type: OPTIMISTIC_REMOVE_SHOPPING_LIST,
+      payload: {
+        id: action.aggregateId
+      }
+    })
+  }
+  if (action.type === LOAD_READMODEL_STATE_SUCCESS) {
+    store.dispatch({
+      type: OPTIMISTIC_SYNC,
+      payload: {
+        originalLists: action.result
+      }
+    })
+  }
+
+  next(action)
+}
+
+export default optimistic_shopping_lists_middleware
+```
+
+For the full code, refer to the [Shopping List](https://github.com/reimagined/resolve/tree/master/examples/shopping-list) example project.
 
 
 
