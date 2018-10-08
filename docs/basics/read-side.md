@@ -11,13 +11,19 @@
 
 [TODO] also we need some links to CQRS resources about read models. It is important to explain that read model should be optimized for query, so don't hesitate to denormalize data to avoid joins.
 
-In a reSolve application, you can query data by sending your requests to **Read Models** and **View Models**. 
-Read Models and View Models serve a similar purpose - they allow you to query the system data. In both cases this data is built based on events obtained from the event store. However, Read Models and View Models differ in both in how they treat the event data as what role they serve in an application:
 
-  *  A **Read Model** gradually accumulates the event data in a storage based on the logic defined by the [projection](#updating_a_read_model_via_a_projection_function).  When the client queries the data, the data is pulled from the storage by the [resolver](#resolvers), processed based on the provided arguments and sent to the client in the required form.
 
-  
-  * A **View Model** does not use a storage, neither does it provide a resolver to prepare data in response to queries. Instead, a view model builds a data sample from events only for one or several specified **aggregate IDs**. Generally, the data sample is built based on events from the very beginning of the history on every request, but you can also store intermediate snapshots to optimize the system resource consumption.
+The Read Side of the reSolve framework listens to events produced by the write side and updates **Read Models**. Read Models are then used to answer queries. 
+
+A Read Model is defined using functions of the following two kinds:
+* **[Projection functions](#updating-a-read-model-via-projection-functions)** - Applies events to accumulate state.
+* **[Query resolver](#resolvers)** - Answers queries based on the accumulated state.
+
+
+
+
+
+
 
 
 
@@ -99,7 +105,7 @@ reSolve defines a simple standard interface for initializing a storage. You can 
 
 
 
-# Updating a Read Model via a Projection Function
+# Updating a Read Model via Projection Functions
 A projection function is used to accumulate the event data to a **Read Model store**. Each projection function takes the store object and event settings, including the aggregateID, timestamp and payload.
 
 
