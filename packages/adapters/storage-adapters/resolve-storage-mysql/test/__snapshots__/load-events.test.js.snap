@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`load events should scan eventstore within criteria 1`] = `
+Array [
+  "SELECT * FROM @ESCAPED[tableName]
+    WHERE \`timestamp\` > ? AND @ESCAPED[criteria] IN (?,?)
+    ORDER BY \`timestamp\` ASC, \`aggregateVersion\` ASC
+    ",
+  Array [
+    100,
+    "event_type_1",
+    "event_type_2",
+  ],
+]
+`;

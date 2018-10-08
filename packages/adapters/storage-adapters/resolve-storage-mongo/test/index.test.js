@@ -1,110 +1,42 @@
 import sinon from 'sinon'
-import { MongoClient, _setFindResult, _setInsertCommandReject } from 'mongodb'
-import createAdapter from '../src'
 
-const adapterSettings = {
-  url: 'test-url',
-  collectionName: 'test-collection',
-  databaseName: 'test-db'
-}
+test('resolve-storage-lite index', () => {
+  const createAdapter = require('resolve-storage-base')
+  const init = require('../src/init')
+  const loadEvents = require('../src/load-events')
+  const saveEvent = require('../src/save-event')
+  const dispose = require('../src/dispose')
 
-const testEvent = {
-  id: '1',
-  type: 'event-type'
-}
+  sinon.stub(init, 'default').callsFake(() => () => {})
+  sinon.stub(loadEvents, 'default').callsFake(() => () => {})
+  sinon.stub(saveEvent, 'default').callsFake(() => () => {})
+  sinon.stub(dispose, 'default').callsFake(() => () => {})
 
-describe('es-mongo', () => {
-  afterEach(() => {
-    _setFindResult(null)
-    _setInsertCommandReject(false)
+  sinon.stub(createAdapter, 'default').callsFake((...args) => {
+    for (const func of args) {
+      if (typeof func === 'function') {
+        func()
+      }
+    }
   })
 
-  it('should save event', () => {
-    const adapter = createAdapter(adapterSettings)
+  const index = require('../src/index.js')
 
-    return adapter
-      .saveEvent(testEvent)
-      .then(() => {
-        expect(MongoClient.connect.lastCall.args).toEqual(['test-url'])
-        return MongoClient.connect.lastCall.returnValue
-      })
-      .then(client => {
-        const db = client.db(adapterSettings.dbName)
-        expect(db.collection.lastCall.args).toEqual(['test-collection'])
-        expect(db.collection.lastCall.returnValue.insert.lastCall.args).toEqual(
-          [testEvent]
-        )
+  expect(init.default.callCount).toEqual(0)
+  expect(loadEvents.default.callCount).toEqual(0)
+  expect(saveEvent.default.callCount).toEqual(0)
+  expect(dispose.default.callCount).toEqual(0)
 
-        expect(
-          db.collection.lastCall.returnValue.createIndex.firstCall.args
-        ).toEqual(['timestamp'])
+  index.default()
 
-        expect(
-          db.collection.lastCall.returnValue.createIndex.secondCall.args
-        ).toEqual(['aggregateId'])
+  expect(init.default.callCount).toEqual(1)
+  expect(loadEvents.default.callCount).toEqual(1)
+  expect(saveEvent.default.callCount).toEqual(1)
+  expect(dispose.default.callCount).toEqual(1)
 
-        expect(
-          db.collection.lastCall.returnValue.createIndex.thirdCall.args
-        ).toEqual([{ aggregateVersion: 1, timestamp: 1 }])
-
-        expect(
-          db.collection.lastCall.returnValue.createIndex.getCall(3).args
-        ).toEqual([{ aggregateId: 1, aggregateVersion: 1 }, { unique: true }])
-      })
-  })
-
-  it('should load events by types', () => {
-    const adapter = createAdapter(adapterSettings)
-    const types = ['event-type-1', 'event-type-2']
-    const eventsByTypes = [
-      { id: '1', type: 'event-type-1' },
-      { id: '1', type: 'event-type-2' }
-    ]
-    const processEvent = sinon.spy()
-    _setFindResult(eventsByTypes)
-
-    return adapter
-      .loadEventsByTypes(types, processEvent)
-      .then(() => MongoClient.connect.lastCall.returnValue)
-      .then(client => {
-        const db = client.db(adapterSettings.dbName)
-        expect(db.collection.lastCall.args).toEqual(['test-collection'])
-        expect(db.collection.lastCall.returnValue.find.lastCall.args).toEqual([
-          { type: { $in: types }, timestamp: { $gt: 0 } }
-        ])
-
-        expect(processEvent.args).toEqual([
-          [eventsByTypes[0]],
-          [eventsByTypes[1]]
-        ])
-      })
-  })
-
-  it('should load events by aggregate ids', () => {
-    const adapter = createAdapter(adapterSettings)
-    const aggregateId = 'test-aggregate-id'
-    const eventsByAggregateId = [
-      { id: '1', aggregateId },
-      { id: '1', aggregateId }
-    ]
-
-    const processEvent = sinon.spy()
-    _setFindResult(eventsByAggregateId)
-
-    return adapter
-      .loadEventsByAggregateIds([aggregateId], processEvent)
-      .then(() => MongoClient.connect.lastCall.returnValue)
-      .then(client => {
-        const db = client.db(adapterSettings.dbName)
-        expect(db.collection.lastCall.args).toEqual(['test-collection'])
-        expect(db.collection.lastCall.returnValue.find.lastCall.args).toEqual([
-          { aggregateId: { $in: [aggregateId] }, timestamp: { $gt: 0 } }
-        ])
-
-        expect(processEvent.args).toEqual([
-          [eventsByAggregateId[0]],
-          [eventsByAggregateId[1]]
-        ])
-      })
-  })
+  const adapterCallArgs = createAdapter.default.firstCall.args
+  expect(adapterCallArgs[0]).toEqual(init.default)
+  expect(adapterCallArgs[1]).toEqual(loadEvents.default)
+  expect(adapterCallArgs[2]).toEqual(saveEvent.default)
+  expect(adapterCallArgs[3]).toEqual(dispose.default)
 })

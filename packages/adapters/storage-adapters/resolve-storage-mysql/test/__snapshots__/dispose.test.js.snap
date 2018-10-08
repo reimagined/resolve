@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`dispose should free resources and drop events with "dropEvents" option 1`] = `
+Array [
+  "
+      DELETE FROM @ESCAPED[tableName]
+    ",
+]
+`;

@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`save event should store event in eventstore if success 1`] = `
+Array [
+  "INSERT INTO @ESCAPED[tableName]
+      (\`timestamp\`, \`aggregateId\`, \`aggregateVersion\`, \`type\`, \`payload\`)
+      VALUES (?, ?, ?, ?, ?)",
+  Array [
+    undefined,
+    "aggregate_id",
+    123,
+    "event_type",
+    undefined,
+  ],
+]
+`;

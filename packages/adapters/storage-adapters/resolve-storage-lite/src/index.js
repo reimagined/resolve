@@ -1,17 +1,17 @@
-import storage from './storage'
+import NeDB from 'nedb'
 
-export default ({ pathToFile } = {}) => {
-  const prepareStorage = storage.prepare(pathToFile)
+import createAdapter from 'resolve-storage-base'
 
-  return {
-    saveEvent: event => prepareStorage.then(storage.saveEvent(event)),
-    loadEventsByTypes: (types, callback, startTime = 0) =>
-      prepareStorage.then(
-        storage.loadEvents({ type: { $in: types } }, startTime, callback)
-      ),
-    loadEventsByAggregateIds: (ids, callback, startTime = 0) =>
-      prepareStorage.then(
-        storage.loadEvents({ aggregateId: { $in: ids } }, startTime, callback)
-      )
-  }
-}
+import init from './init'
+import loadEvents from './load-events'
+import saveEvent from './save-event'
+import dispose from './dispose'
+
+export default createAdapter.bind(
+  null,
+  init,
+  loadEvents,
+  saveEvent,
+  dispose,
+  NeDB
+)
