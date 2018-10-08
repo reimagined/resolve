@@ -160,9 +160,9 @@ To learn how to send a request to a Read Model resolver, refer to the [Query a R
 
 
 # View Model Specifics
-A View Model does not use a storage to store intermediate data. Because there is no View Model storage, there is also no View Model resolvers - requests are handled directly by projection functions. 
+A **View Model** is a special kind of a Read Model. A View Model is intended to provide data to an aggregate-centric view. Such view queries data bases on aggregate ID and updates itself on the fly based on changes in the View Model. 
 
-A projection function takes a state and an event object, and returns an updated state. For every request, a projection runs for every event with the specified aggregate ID from the beginning of the history.
+A projection function takes a state and an event object, and returns an updated state. A projection runs for every event with the specified aggregate ID from the beginning of the history for every request. You can optimize system resource consumption by storing snapshots of the View Model state.
 
 The code sample below demonstrate a typical View Model projection function:
 ``` js
