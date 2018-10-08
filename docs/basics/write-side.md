@@ -35,9 +35,7 @@ You can send a command from the client side by sending a POST request to the fol
 ```
 http://{host}:{port}/api/commands
 ```
-The request body should have the `application/json` content type and the following structure:
-
-[TODO] - this is a description of command object, not a request body format. Request body should be simply a JSON representation of a command, whatever it is.
+The request body should have the `application/json` content type and contain a JSON representation of the command:
 
 ``` js
 {
@@ -141,20 +139,22 @@ export default {
 ```
 
 # Event Store
+All events returned by command handlers are saved to the event store. The saving is performed by the reSolve framework using one of the supported storage adapters.
 
-[TODO] This should go to the advanced section, not to basics
+You can specify the storage adapter in the **storageAdapter** config section:
+``` js
+storageAdapter: {
+  module: 'resolve-storage-lite',
+  options: {
+    pathToFile = '../event-storage.db'
+  }
+}
+```
 
-All events returned by command handlers are saved to the event store. The saving is performed by the reSolve framework using one of the supported storage adapters or you can implement a custom adapter according to your requirements. 
-
-An event storage adapter implementation should expose the following methods:
-
-| Method Signature                                                  | Description                                    |
-| ----------------------------------------------------------------- | ---------------------------------------------- |
-| saveEvent(event)                                                  | Saves event to the store.                      |
-| loadEventsByTypes: (types, callback, startTime)                   | Gets events of the specified types.            |
-| loadEventsByAggregateIds: (aggregateIds, callback, startTime)     | Gets events with the specified aggregate IDs   |
+Adapters for the following storage types are available out of the box:
+* [File or memory](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-storage-lite)
+* [MongoDB](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-storage-mongo)
+* [MySQL](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-storage-mysql)
 
 
-By default, events are stored in a **event-storage.db** file in the application's root folder. 
-
-In a development environment you can reset the state of the system by removing the event store file/database.
+To learn how to implement a custom adapter, refer to the [Custom Adapters](../advanced-techniques.md#custom-adapters)
