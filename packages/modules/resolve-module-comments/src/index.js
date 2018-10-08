@@ -1,15 +1,18 @@
 import path from 'path'
 
-import createAggregates from './aggregates'
-import createReadModels from './read-models'
-import * as commandTypes from './command_types'
-import * as eventTypes from './event_types'
-import createActions from './actions'
-import defaultAggregateName from './defaults/aggregate_name'
+import createAggregates from './common/aggregates'
+import createReadModels from './common/read-models'
+import createActions from './client/actions'
+import * as commandTypes from './command-types'
+import * as eventTypes from './event-types'
+import defaultAggregateName from './common/aggregates/defaults/aggregate-name'
 
 export default ({
   aggregateName = defaultAggregateName,
-  verify = path.join(__dirname, './defaults/verify.js')
+  verify = path.join(
+    __dirname,
+    './common/aggregates/defaults/verify-command.js'
+  )
 } = {}) => {
   const options = {
     aggregateName

@@ -21,10 +21,11 @@ class ConnectedStory extends React.PureComponent {
   }
 }
 
-const mapStateToOptions = (state, { id }) => ({
+const mapStateToOptions = ({ optimistic: { refreshId } }, { id }) => ({
   readModelName: 'HackerNews',
   resolverName: 'story',
   resolverArgs: {
+    refreshId,
     id
   }
 })

@@ -16,8 +16,8 @@ export const StoryRoot = styled.div`
 export const StoryText = styled.div`
   color: #000;
   font-size: 14px;
-  padding-left: 1.25em;
-  padding-top: 1.25em;
+  padding-top: 15px;
+  padding-left: 5px;
 `
 
 export const TitleRoot = styled.div`
@@ -37,7 +37,6 @@ export const StyledExternalLink = styled.a`
 export const StoryInfoRoot = styled.div`
   color: #666;
   font-size: 8pt;
-  padding-left: 1.25em;
 `
 
 const infoLinkStyles = `

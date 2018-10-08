@@ -35,12 +35,9 @@ const StyledLink = styled(NavLink)`
 `
 
 const StyledUserLink = styled(NavLink)`
-  ${linkStyles} font-weight: bold;
-`
-
-const StyledTimeAgo = styled(TimeAgo)`
-  vertical-align: middle;
-  margin-left: 0.33em;
+  ${linkStyles};
+  font-weight: bold;
+  padding-right: 3px;
 `
 
 class Comment extends React.PureComponent {
@@ -82,7 +79,7 @@ class Comment extends React.PureComponent {
           <StyledUserLink to={`/user/${createdBy}`}>
             {createdByName}
           </StyledUserLink>
-          <StyledTimeAgo createdAt={createdAt} />
+          <TimeAgo createdAt={createdAt} />
           <Splitter />
           <StyledLink to={`/storyDetails/${storyId}/comments/${id}`}>
             link

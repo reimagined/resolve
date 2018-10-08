@@ -12190,22 +12190,6 @@ resolve-pathname@^2.2.0:
   resolved "https://registry.yarnpkg.com/resolve-pathname/-/resolve-pathname-2.2.0.tgz#7e9ae21ed815fd63ab189adeee64dc831eefa879"
   integrity sha512-bAFz9ld18RzJfddgrO2e/0S2O81710++chRMUxHjXOYKF6jTAMrUNZrEZ1PvV0zlhfjidm08iRPdTLPno1FuRg==
 
-resolve-redux@0.17.1:
-  version "0.17.1"
-  resolved "https://registry.yarnpkg.com/resolve-redux/-/resolve-redux-0.17.1.tgz#1e7f0116789934d0eebf5656a8aa7b6c3d796524"
-  integrity sha512-aKI/J9WQY/suHEy4F6neUsRz0cdZEUuyAkqmWEzB/ZKwMIY1VatYRyws3/OCoHvY4D74YXujamZVSvOVq/cnTQ==
-  dependencies:
-    diff-json "^0.1.11"
-    json-stable-stringify "^1.0.1"
-    jwt-decode "^2.2.0"
-    prop-types "^15.6.2"
-    react-redux "^5.0.7"
-    react-router "^4.3.1"
-    react-router-redux "^5.0.0-alpha.9"
-    redux-devtools-extension "^2.13.5"
-    redux-saga "^0.16.0"
-    uuid "^3.3.2"
-
 resolve-url@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/resolve-url/-/resolve-url-0.2.1.tgz#2c637fe77c893afd2a663fe21aa9080068e2052a"

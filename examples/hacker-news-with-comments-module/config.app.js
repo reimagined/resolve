@@ -21,7 +21,7 @@ const appConfig = {
   ],
   viewModels: [
     {
-      name: 'CommentNotification',
+      name: 'CommentsNotification',
       projection: 'common/view-models/comments-notification.projection.js'
     }
   ],

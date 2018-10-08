@@ -2,8 +2,12 @@ import {
   COMMENT_CREATED,
   COMMENT_UPDATED,
   COMMENT_REMOVED
-} from '../event_types'
-import { createComment, updateComment, removeComment } from '../command_types'
+} from '../../event-types'
+import {
+  createComment,
+  updateComment,
+  removeComment
+} from '../../command-types'
 
 export default (options, imports) => ({
   [createComment]: async (state, command, jwtToken) => {

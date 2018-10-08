@@ -2,7 +2,7 @@ import {
   COMMENT_CREATED,
   COMMENT_UPDATED,
   COMMENT_REMOVED
-} from '../event_types'
+} from '../../event-types'
 
 export default options => ({
   Init: async store => {

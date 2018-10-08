@@ -1,6 +1,6 @@
 import { Strategy } from 'passport-local'
 import jwt from 'jsonwebtoken'
-import jwtSecret from './jwt_secret'
+import jwtSecret from './jwt-secret'
 import uuid from 'uuid'
 
 const strategyOptions = {
@@ -39,7 +39,7 @@ const routes = [
       await resolve.executeCommand({
         type: 'createUser',
         aggregateId: user.id,
-        aggregateName: 'user',
+        aggregateName: 'User',
         payload: user
       })
 

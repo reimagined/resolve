@@ -3,7 +3,7 @@ import jsonwebtoken from 'jsonwebtoken'
 
 import validate from './validation'
 import { STORY_CREATED, STORY_UNVOTED, STORY_UPVOTED } from '../event_types'
-import jwtSecret from '../../auth/jwt_secret'
+import jwtSecret from '../../auth/jwt-secret'
 
 export default {
   createStory: (state, command, jwtToken) => {

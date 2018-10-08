@@ -1,31 +1,57 @@
 import React from 'react'
 import plur from 'plur'
+import styled from 'styled-components'
 
 const SECOND = 1000
 const MINUTE = SECOND * 60
 const HOUR = MINUTE * 60
 const DAY = HOUR * 24
 
-const getMessage = createdAt => {
-  const now = Date.now()
-  const time = new Date(+createdAt).getTime()
+const Container = styled.div`
+  display: inline-block;
+  vertical-align: middle;
+`
 
-  const difference = now - time
+class TimeAgo extends React.PureComponent {
+  state = { timestamp: Date.now() }
 
-  if (difference / MINUTE < 1) {
-    return 'less than a minute ago'
-  } else if (difference / HOUR < 1) {
-    const minutes = Math.floor(difference / MINUTE)
-    return `${minutes} ${plur('minute', minutes)} ago`
-  } else if (difference / DAY < 1) {
-    const hours = Math.floor(difference / HOUR)
-    return `${hours} ${plur('hour', hours)} ago`
-  } else {
-    const days = Math.floor(difference / DAY)
-    return `${days} ${plur('day', days)} ago`
+  getMessage = () => {
+    const now = Date.now()
+    const time = new Date(+this.props.createdAt).getTime()
+
+    const difference = now - time
+
+    if (difference / MINUTE < 1) {
+      return 'less than a minute ago'
+    } else if (difference / HOUR < 1) {
+      const minutes = Math.floor(difference / MINUTE)
+      return `${minutes} ${plur('minute', minutes)} ago`
+    } else if (difference / DAY < 1) {
+      const hours = Math.floor(difference / HOUR)
+      return `${hours} ${plur('hour', hours)} ago`
+    } else {
+      const days = Math.floor(difference / DAY)
+      return `${days} ${plur('day', days)} ago`
+    }
+  }
+
+  updateTimestamp = () => {
+    this.setState({
+      timestamp: Date.now()
+    })
+  }
+
+  componentDidMount() {
+    this.timer = setInterval(this.updateTimestamp, MINUTE)
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer)
+  }
+
+  render() {
+    return <Container>{this.getMessage()}</Container>
   }
 }
 
-export default ({ className, createdAt }) => (
-  <span className={className}>{getMessage(createdAt)}</span>
-)
+export default TimeAgo

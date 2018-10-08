@@ -3,13 +3,13 @@ import { routerActions } from 'react-router-redux'
 import { commandTypes } from 'resolve-module-comments'
 
 import {
-  OPTIMISTIC_STORY_UPVOTED,
-  OPTIMISTIC_STORY_UNVOTED,
-  OPTIMISTIC_COMMENTS_INIT,
-  OPTIMISTIC_COMMENT_CREATE,
-  OPTIMISTIC_COMMENT_UPDATE,
-  OPTIMISTIC_COMMENT_REMOVE
-} from '../actions/action_types'
+  optimisticUpvoteStory,
+  optimisticUnvoteStory,
+  optimisticLoadComments,
+  optimisticCreateComment,
+  optimisticUpdateComment,
+  optimisticRemoveComment
+} from '../actions/optimistic-actions'
 
 const { createComment, updateComment, removeComment } = commandTypes
 
@@ -20,6 +20,8 @@ const {
 } = actionTypes
 
 const storyCreateMiddleware = store => next => action => {
+  next(action)
+
   if (
     action.type === SEND_COMMAND_SUCCESS &&
     action.commandType === 'createStory'
@@ -36,83 +38,80 @@ const storyCreateMiddleware = store => next => action => {
       store.dispatch(routerActions.push(`/error?text=Failed to create a story`))
     }, 100)
   }
-  next(action)
 }
 
 const optimisticVotingMiddleware = store => next => action => {
+  next(action)
+
   if (
     action.type === SEND_COMMAND_SUCCESS &&
     action.commandType === 'upvoteStory'
   ) {
-    store.dispatch({
-      type: OPTIMISTIC_STORY_UPVOTED,
-      storyId: action.aggregateId
-    })
+    store.dispatch(optimisticUpvoteStory(action.aggregateId))
   }
   if (
     action.type === SEND_COMMAND_SUCCESS &&
     action.commandType === 'unvoteStory'
   ) {
-    store.dispatch({
-      type: OPTIMISTIC_STORY_UNVOTED,
-      storyId: action.aggregateId
-    })
+    store.dispatch(optimisticUnvoteStory(action.aggregateId))
   }
-
-  next(action)
 }
 
 const optimisticCommentsMiddleware = store => next => action => {
+  next(action)
+
   if (
     action.type === LOAD_READMODEL_STATE_SUCCESS &&
     action.readModelName === 'HackerNewsComments' &&
     action.resolverName === 'ReadCommentsTree'
   ) {
-    store.dispatch({
-      type: OPTIMISTIC_COMMENTS_INIT,
-      treeId: action.resolverArgs.treeId,
-      parentCommentId: action.resolverArgs.parentCommentId,
-      payload: action.result
-    })
+    store.dispatch(
+      optimisticLoadComments(
+        action.resolverArgs.treeId,
+        action.resolverArgs.parentCommentId,
+        action.result
+      )
+    )
   }
 
   if (
     action.type === SEND_COMMAND_SUCCESS &&
     action.commandType === createComment
   ) {
-    store.dispatch({
-      type: OPTIMISTIC_COMMENT_CREATE,
-      treeId: action.aggregateId,
-      parentCommentId: action.payload.parentCommentId,
-      payload: action.payload
-    })
+    store.dispatch(
+      optimisticCreateComment(
+        action.aggregateId,
+        action.payload.parentCommentId,
+        action.payload
+      )
+    )
   }
 
   if (
     action.type === SEND_COMMAND_SUCCESS &&
     action.commandType === updateComment
   ) {
-    store.dispatch({
-      type: OPTIMISTIC_COMMENT_UPDATE,
-      treeId: action.aggregateId,
-      parentCommentId: action.payload.parentCommentId,
-      payload: action.payload
-    })
+    store.dispatch(
+      optimisticUpdateComment(
+        action.aggregateId,
+        action.payload.parentCommentId,
+        action.payload
+      )
+    )
   }
 
   if (
     action.type === SEND_COMMAND_SUCCESS &&
     action.commandType === removeComment
   ) {
-    store.dispatch({
-      type: OPTIMISTIC_COMMENT_REMOVE,
-      treeId: action.aggregateId,
-      parentCommentId: action.payload.parentCommentId,
-      payload: action.payload
-    })
+    store.dispatch(
+      optimisticRemoveComment(
+        action.aggregateId,
+        action.payload.parentCommentId,
+        action.payload
+      )
+    )
   }
-
-  next(action)
 }
 
 export default [

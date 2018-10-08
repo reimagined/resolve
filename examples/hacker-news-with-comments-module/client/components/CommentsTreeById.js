@@ -1,29 +1,27 @@
 import React from 'react'
 
-import ConnectedStory from '../containers/ConnectedStory'
 import ConnectedComments from '../containers/ConnectedComments'
 import CommentsNotification from '../containers/CommentsNotification'
 
-export class StoryById extends React.PureComponent {
+export class CommentsTreeById extends React.PureComponent {
   render() {
     const {
       match: {
-        params: { storyId }
+        params: { storyId, commentId }
       }
     } = this.props
 
-    if (!storyId) {
+    if (!storyId || !commentId) {
       return null
     }
 
     return (
       <div>
         <CommentsNotification treeId={storyId} />
-        <ConnectedStory id={storyId} />
-        <ConnectedComments treeId={storyId} />
+        <ConnectedComments treeId={storyId} parentCommentId={commentId} />
       </div>
     )
   }
 }
 
-export default StoryById
+export default CommentsTreeById

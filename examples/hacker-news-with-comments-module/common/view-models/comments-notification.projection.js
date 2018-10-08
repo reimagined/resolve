@@ -15,7 +15,7 @@ export default {
       timestamp,
       payload: {
         commentId,
-        content: { userId }
+        content: { createdBy: userId }
       }
     }
   ) => {
@@ -32,7 +32,7 @@ export default {
       timestamp,
       payload: {
         commentId,
-        content: { userId }
+        content: { createdBy: userId }
       }
     }
   ) => {
@@ -49,7 +49,7 @@ export default {
       timestamp,
       payload: {
         commentId,
-        content: { userId }
+        content: { createdBy: userId }
       }
     }
   ) => {
