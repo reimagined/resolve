@@ -17,6 +17,12 @@
       "required": ["module", "options"],
       "additionalProperties": false
     },
+    "adaptersMap": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/adapter"
+      }
+    },
     "resourceInstance": {
       "type": "string"
     },
@@ -75,9 +81,6 @@
             { "$ref": "#/definitions/resourceInstance" },
             { "$ref": "#/definitions/resourceConstructor" }
           ]
-        },
-        "snapshotAdapter": {
-          "$ref": "#/definitions/adapter"
         }
       },
       "required": ["name", "commands"],
@@ -112,9 +115,6 @@
             { "$ref": "#/definitions/resourceInstance" },
             { "$ref": "#/definitions/resourceConstructor" }
           ]
-        },
-        "snapshotAdapter": {
-          "$ref": "#/definitions/adapter"
         }
       },
       "required": ["name", "projection"],
@@ -141,9 +141,6 @@
             { "$ref": "#/definitions/resourceInstance" },
             { "$ref": "#/definitions/resourceConstructor" }
           ]
-        },
-        "adapter": {
-          "$ref": "#/definitions/adapter"
         }
       },
       "required": ["name", "projection", "resolvers"],
@@ -330,6 +327,9 @@
         },
         "subscribeAdapter": {
           "$ref": "#/definitions/subscribeAdapter"
+        },
+        "readModelAdapters": {
+          "$ref": "#/definitions/adaptersMap"
         },
         "auth": {
           "$ref": "#/definitions/auth"

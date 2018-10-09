@@ -21,6 +21,7 @@
     "react-router": "4.3.1",
     "react-router-dom": "4.3.1",
     "redux": "4.0.0",
+    "resolve-readmodel-memory": "0.17.2",
     "resolve-redux": "0.17.2",
     "resolve-scripts": "0.17.2",
     "seamless-immutable": "7.1.3",

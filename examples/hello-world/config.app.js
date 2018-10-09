@@ -11,11 +11,7 @@ const appConfig = {
     {
       name: 'read-model-name',
       projection: 'common/read-models/read-model-name.projection.js',
-      resolvers: 'common/read-models/read-model-name.resolvers.js',
-      adapter: {
-        module: 'resolve-readmodel-memory',
-        options: {}
-      }
+      resolvers: 'common/read-models/read-model-name.resolvers.js'
     }
   ],
   viewModels: [

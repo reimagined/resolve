@@ -17,6 +17,7 @@
     "react-dom": "16.5.2",
     "react-helmet": "5.2.0",
     "redux": "4.0.0",
+    "resolve-readmodel-memory": "0.17.2",
     "resolve-redux": "0.17.2",
     "resolve-scripts": "0.17.2",
     "testcafe-browser-tools": "1.6.5"
