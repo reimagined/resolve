@@ -1,0 +1,33 @@
+import sinon from 'sinon'
+
+import wrapDispose from '../src/wrap-dispose'
+
+test('wrap dispose should bypass on correct arguments', async () => {
+  const rawDispose = sinon.stub().callsFake(async () => null)
+  const pool = {}
+
+  const dispose = wrapDispose(rawDispose)
+  await dispose(pool)
+
+  expect(rawDispose.callCount).toEqual(1)
+
+  expect(pool.disposed).toEqual(true)
+})
+
+test('wrap dispose should fail on wrong arguments', async () => {
+  const rawDispose = sinon.stub().callsFake(async () => null)
+  const pool = {}
+
+  try {
+    const dispose = wrapDispose(rawDispose)
+    await dispose(pool, 123)
+
+    return Promise.reject('Test failed')
+  } catch (error) {
+    expect(error).toBeInstanceOf(Error)
+
+    expect(error.message).toEqual(
+      'Dispose options should be object or not be passed to use default behaviour'
+    )
+  }
+})

@@ -184,6 +184,15 @@
       "required": ["path", "controller"],
       "additionalProperties": false
     },
+    "reduxReducersMap": {
+      "type": "object",
+      "additionalProperties": {
+        "oneOf": [
+          { "$ref": "#/definitions/resourceInstance" },
+          { "$ref": "#/definitions/resourceConstructor" }
+        ]
+      }
+    },
     "jwtCookie": {
       "type": "object",
       "properties": {
@@ -199,17 +208,38 @@
     "redux": {
       "type": "object",
       "properties": {
-        "store": {
-          "type": "string"
-        },
         "reducers": {
-          "type": "string"
+          "$ref": "#/definitions/reduxReducersMap"
         },
         "middlewares": {
-          "type": "string"
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "$ref": "#/definitions/resourceInstance" },
+              { "$ref": "#/definitions/resourceConstructor" }
+            ]
+          }
+        },
+        "sagas": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "$ref": "#/definitions/resourceInstance" },
+              { "$ref": "#/definitions/resourceConstructor" }
+            ]
+          }
+        },
+        "enhancers": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "$ref": "#/definitions/resourceInstance" },
+              { "$ref": "#/definitions/resourceConstructor" }
+            ]
+          }
         }
       },
-      "required": ["store", "reducers", "middlewares"],
+      "required": ["reducers"],
       "additionalProperties": false
     },
     "auth": {

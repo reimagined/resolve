@@ -34,9 +34,8 @@ const appConfig = {
     strategies: 'auth/index.js'
   },
   redux: {
-    store: 'client/store/index.js',
-    reducers: 'client/reducers/index.js',
-    middlewares: 'client/middlewares/index.js'
+    reducers: { 'reducer-name': 'client/reducers/reducer-name.js' },
+    middlewares: ['client/middlewares/middleware-name.js']
   }
 }
 

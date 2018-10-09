@@ -16,7 +16,7 @@ import subscribeSaga from './subscribe_saga'
 import authSaga from './auth_saga'
 import logoutSaga from './logout_saga'
 
-function* rootSaga(sagaArgs) {
+function* rootSaga({ customSagas, ...sagaArgs }) {
   yield fork(subscribeSaga, sagaArgs)
   yield takeEvery(
     LOAD_VIEWMODEL_STATE_REQUEST,
@@ -34,6 +34,10 @@ function* rootSaga(sagaArgs) {
   yield takeEvery(LOGOUT, logoutSaga, sagaArgs)
   yield fork(viewModelSaga, sagaArgs)
   yield fork(readModelSaga, sagaArgs)
+
+  for (const customSaga of customSagas) {
+    yield fork(customSaga, sagaArgs)
+  }
 }
 
 export default rootSaga
