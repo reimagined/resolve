@@ -7,16 +7,16 @@ The **redux** config section specifies the following settings related to the Red
 * **reducers** - Specifies the file containing the Redux reducer definition.
 * **middlewares** - Specifies the file containing the Redux middleware definitions.
 
-Based on the specified setting, reSolve injects client code to facilitate client-server communication:
+Based on the specified settings, reSolve injects client code to facilitate client-server communication:
 * Redux actions are generated for available reSolve aggregate commands. 
-* Auxiliary reducer and middleware code are generated to handle these actions and send the corresponding commands to the server. 
+* Auxiliary reducer and middleware code is generated to handle these actions and send the corresponding commands to the server. 
 
 To connect components to the backend, use the following resolve-redux library's higher order components (HOCs):
 
 * **connectReadModel** - Connects a component to Read Model.
 * **connectViewModel** - Connects a component to a View Model.
 
-A connected component obtains additional props providing access to the Read Model data and available Redux actions mapped to reSolve commands. You can chain the connectReadModel function call with the Redux **connect** function call:
+A connected component obtains additional props providing access to the Read Model data and available Redux actions mapped to reSolve commands. You can chain the **connectReadModel** function call with the Redux **connect** function call:
 
 
 [embedmd]:# (..\..\examples\shopping-list\client\containers\MyLists.js /export const mapStateToOptions/ /^\)/)
@@ -94,7 +94,7 @@ class MyLists extends React.PureComponent {
 
 
 # Reactive View Models, Event Subscription
-A View Model is a special kind of a Read Mode. A View Model's projection is declared in a universal format so it can also serve as the reducer code on the client side. Because of this property, View Models are reactive out of the box. This means that a component connected to a View Model using the **connectViewModel** method automatically reflect the Read Model changes on the server side, without the need to implement any additional logic. 
+A View Model is a special kind of a Read Model. Its projection is declared in a universal format so it can also serve as the reducer code on the client side. Events are automatically sent to the client through a WebSocket connection. Because of these properties, View Models are reactive out of the box. This means that a component connected to a View Model using the **connectViewModel** method automatically reflect the Read Model changes on the server side, without the need to implement any additional logic. 
 
 [embedmd]:# (..\..\examples\shopping-list\client\containers\ShoppingList.js /export const mapStateToOptions/ /^\)/)
 ```js

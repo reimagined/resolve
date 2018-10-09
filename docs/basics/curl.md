@@ -1,4 +1,13 @@
-Creating a new shopping list name "List 1":
+This document demonstrates how to communicate with a reSolve backend using a 
+
+- Unix shell-compatible console 
+- curl
+
+
+This document provides input samples that you can use to communicate with a reSolve backend via a console. To try the provided inputs on your machine, download and run the Shopping List example project.
+
+
+1. Create a new shopping list name "List 1":
 
 ```sh
 $ curl -i http://localhost:3000/api/commands/ \
@@ -26,7 +35,7 @@ Connection: keep-alive
 OK
 ```
 
-Query view model to see the shopping list:
+2. Query a View Model to see the shopping list:
 
 ```sh
 $ curl -i -g -X GET "http://localhost:3000/api/query/ShoppingList/12345-new-shopping-list"
@@ -41,7 +50,8 @@ Connection: keep-alive
 
 {"id":"12345-new-shopping-list","name":"List 1","list":[]}
 ```
-Create an item in the shopping list:
+
+3. Create an item in the shopping list:
 
 ```sh
 $ curl -i http://localhost:3000/api/commands/ \
@@ -69,7 +79,7 @@ Connection: keep-alive
 OK
 ```
 
-Add another item:
+4. Add another item:
 ```sh
 $ curl -i http://localhost:3000/api/commands/ \
 --header "Content-Type: application/json" \
@@ -85,7 +95,8 @@ $ curl -i http://localhost:3000/api/commands/ \
 }
 '
 ```
-Now we can query view model again and see items we have added:
+
+5. Now we can query view model again and see the items we have added:
 ```sh
 $ curl --g -X GET "http://localhost:3000/api/query/ShoppingList/12345-new-shopping-list" '
 HTTP/1.1 200 OK
@@ -98,6 +109,7 @@ Connection: keep-alive
 
 {"id":"12345-new-shopping-list","name":"List 1","list":[{"id":"1","text":"Beer","checked":false},{"id":"2","text":"Chips","checked":false}]}
 ```
-And you can see our newly create items in the app:
+
+And here you can see our newly created list and its items in the app:
 
 ![List1-items](list1-items.png)
