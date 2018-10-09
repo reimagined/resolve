@@ -83,7 +83,9 @@ In the configuration object, specify the View Model's name and the path to the p
 
 # Initialize a Read Model
 Each Read Model has an **Init** function that initializes the Read Model storage. 
-reSolve defines a simple standard interface for initializing a storage. You can add tables to the storage using the defineTable method:
+
+You can add tables to the storage using the defineTable method:
+
 ``` js
   Init: async store => {
     ...
@@ -103,11 +105,14 @@ reSolve defines a simple standard interface for initializing a storage. You can 
   },
 ```
 
+ReSolve provides a unified API to manage data in a storage, so this code will work with any supported storage type. The internal logic used to communicate with various DBMSs is provided by **Read Model Adapters**. 
+
+
+
 
 
 # Updating a Read Model via Projection Functions
 A projection function is used to accumulate the event data to a **Read Model store**. Each projection function takes the store object and event settings, including the aggregateID, timestamp and payload.
-
 
 You can communicate with the store using the standard API. The code sample below demonstrates a typical Read Model projection function implementation:
 
@@ -127,9 +132,13 @@ You can communicate with the store using the standard API. The code sample below
 }
 ...
 ```
+
 The data from the populated store is then used by [resolvers](#resolvers) to prepare the final data samples in response to data requests.
 
 You can force the system to re-populate the store using events from the start of the history by deleting the Read Model storage. This can be useful in the development environment and when deploying an updated version of the application. 
+
+Note that reSolve does not limit you on what logic you can use in a projection function implementation as long as it helps you prepare data required to answer queries. Depending on your requirements, you can perform SQL queries, update Elastic Search indexes, write arbitrary data to files, etc.
+
 
 
 
@@ -160,9 +169,14 @@ To learn how to send a request to a Read Model resolver, refer to the [Query a R
 
 
 # View Model Specifics
-A **View Model** is a special kind of a Read Model. A View Model is intended to provide data to an aggregate-centric view. Such view queries data bases on aggregate ID and updates itself on the fly based on changes in the View Model. 
+**View Models** are a special kind of Read Models. They are queried by aggregate ID and and can automatically provide updates to the client Redux state. View Models are defined in a special isomorphic format so their code can also be used on the client side to provide reducer logic.  
 
-A projection function takes a state and an event object, and returns an updated state. A projection runs for every event with the specified aggregate ID from the beginning of the history for every request. You can optimize system resource consumption by storing snapshots of the View Model state.
+Use View Models in the following scenarios:
+
+* To create aggregate-centric views. Such views request relatively portions of data based on aggregate IDs. 
+* To create reactive components, whose state is kept up-to date on the client.
+
+A View Model's projection function takes a state and an event object, and returns an updated state. A projection function runs for every event with the specified aggregate ID from the beginning of the history on every request so it important to keep View Models small. You can also optimize system resource consumption by storing snapshots of the View Model state.
 
 The code sample below demonstrate a typical View Model projection function:
 ``` js
