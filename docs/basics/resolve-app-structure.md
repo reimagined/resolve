@@ -45,6 +45,6 @@ The **common** folder contains sources for the reSolve application This folder t
 * **read-models** - Contains source files for read model projections and resolvers.
 * **view-models** - Contains source files for view model projections.
 * **sagas** - Contains source files for sagas.
-API HANDLERS
+* **api-handlers** - Contains source files for API handlers.
 
 Node, that this is just the default and recommended structure. You are free to rearrange files differently provided that you adjust the app configurations accordingly.
