@@ -1,7 +1,6 @@
 import { actions } from 'resolve-redux'
 
-import * as commandTypes from '../../command-types'
-import defaultAggregateName from '../../common/aggregates/defaults/aggregate-name'
+import { commandTypes, defaultAggregateName } from '../../common/constants'
 
 const { sendCommandRequest } = actions
 

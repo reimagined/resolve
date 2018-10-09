@@ -5,8 +5,8 @@
   "engines": {
     "node": ">=8.10"
   },
-  "main": "./lib/index.js",
-  "module": "./es/index.js",
+  "main": "./lib/common/index.js",
+  "browser": "./lib/client/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
@@ -33,16 +33,16 @@
   },
   "babelCompile": [
     {
-      "moduleType": "es",
+      "moduleType": "cjs",
       "moduleTarget": "server",
-      "inputDir": "./src",
-      "outDir": "./es"
+      "inputDir": "./src/common",
+      "outDir": "./lib/common"
     },
     {
       "moduleType": "cjs",
-      "moduleTarget": "server",
-      "inputDir": "./src",
-      "outDir": "./lib"
+      "moduleTarget": "client",
+      "inputDir": "./src/client",
+      "outDir": "./lib/client"
     }
   ]
 }

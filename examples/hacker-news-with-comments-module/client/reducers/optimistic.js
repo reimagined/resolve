@@ -4,7 +4,7 @@ import {
   REFRESH_ID_UPDATED,
   OPTIMISTIC_STORY_UPVOTED,
   OPTIMISTIC_STORY_UNVOTED,
-  OPTIMISTIC_COMMENTS_LOADED,
+  OPTIMISTIC_COMMENTS_CREATED,
   OPTIMISTIC_COMMENT_CREATED,
   OPTIMISTIC_COMMENT_UPDATED,
   OPTIMISTIC_COMMENT_REMOVED
@@ -23,7 +23,7 @@ export default (state = initialState, action) => {
     case OPTIMISTIC_STORY_UNVOTED: {
       return state.setIn(['votedStories', action.storyId], false)
     }
-    case OPTIMISTIC_COMMENTS_LOADED: {
+    case OPTIMISTIC_COMMENTS_CREATED: {
       return state.setIn(['comments'], action.payload)
     }
     case OPTIMISTIC_COMMENT_CREATED: {

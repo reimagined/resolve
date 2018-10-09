@@ -6,7 +6,7 @@ import {
   OPTIMISTIC_COMMENT_CREATED,
   OPTIMISTIC_COMMENT_UPDATED,
   OPTIMISTIC_COMMENT_REMOVED,
-  OPTIMISTIC_COMMENTS_LOADED,
+  OPTIMISTIC_COMMENTS_CREATED,
   OPTIMISTIC_STORY_UNVOTED,
   OPTIMISTIC_STORY_UPVOTED
 } from './action-types'
@@ -20,8 +20,8 @@ export const logout = () => ({
   type: USER_LOGOUT
 })
 
-export const optimisticLoadComments = (treeId, parentCommentId, payload) => ({
-  type: OPTIMISTIC_COMMENTS_LOADED,
+export const optimisticCreateComments = (treeId, parentCommentId, payload) => ({
+  type: OPTIMISTIC_COMMENTS_CREATED,
   treeId,
   parentCommentId,
   payload

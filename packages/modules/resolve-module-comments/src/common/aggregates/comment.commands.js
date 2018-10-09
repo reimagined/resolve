@@ -1,13 +1,8 @@
-import {
-  COMMENT_CREATED,
-  COMMENT_UPDATED,
-  COMMENT_REMOVED
-} from '../../event-types'
-import {
-  createComment,
-  updateComment,
-  removeComment
-} from '../../command-types'
+import { eventTypes, commandTypes } from '../constants'
+
+const { COMMENT_CREATED, COMMENT_UPDATED, COMMENT_REMOVED } = eventTypes
+
+const { createComment, updateComment, removeComment } = commandTypes
 
 export default (options, imports) => ({
   [createComment]: async (state, command, jwtToken) => {
@@ -36,7 +31,7 @@ export default (options, imports) => ({
       )
     }
 
-    await imports.verify(state, command, jwtToken, createComment)
+    await imports.verifyCommand(state, command, jwtToken, createComment)
 
     return {
       type: COMMENT_CREATED,
@@ -64,7 +59,7 @@ export default (options, imports) => ({
       )
     }
 
-    await imports.verify(state, command, jwtToken, updateComment)
+    await imports.verifyCommand(state, command, jwtToken, updateComment)
 
     return {
       type: COMMENT_UPDATED,
@@ -85,7 +80,7 @@ export default (options, imports) => ({
       )
     }
 
-    await imports.verify(state, command, jwtToken, removeComment)
+    await imports.verifyCommand(state, command, jwtToken, removeComment)
 
     return {
       type: COMMENT_REMOVED,

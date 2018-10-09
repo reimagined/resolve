@@ -7,7 +7,7 @@ import uuid from 'uuid/v4'
 
 import ChildrenComments from '../components/ChildrenComments'
 import Comment from '../components/Comment'
-import commentsActions from '../actions/comments-actions'
+import commentsActions from '../actions/comment-actions'
 
 const Reply = styled.div`
   padding: 0.5em;
