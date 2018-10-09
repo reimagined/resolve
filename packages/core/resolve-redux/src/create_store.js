@@ -1,10 +1,10 @@
 import {
   createStore as reduxCreateStore,
   applyMiddleware,
-  combineReducers
+  combineReducers,
+  compose
 } from 'redux'
 import { routerReducer, routerMiddleware } from 'react-router-redux'
-import { composeWithDevTools } from 'redux-devtools-extension'
 import uuid from 'uuid/v4'
 
 import createViewModelsReducer from './create_view_models_reducer'
@@ -14,7 +14,7 @@ import createResolveMiddleware from './create_resolve_middleware'
 import syncJwtProviderWithStore from './sync_jwt_provider_with_store'
 
 const createStore = ({
-  redux: { reducers, middlewares, store: setupStore },
+  redux: { reducers, middlewares, enhancers, sagas: customSagas },
   viewModels,
   readModels,
   aggregates,
@@ -30,22 +30,29 @@ const createStore = ({
 
   const resolveMiddleware = createResolveMiddleware()
 
+  const combinedReducers = combineReducers({
+    ...reducers,
+    router: routerReducer,
+    viewModels: createViewModelsReducer(viewModels),
+    readModels: createReadModelsReducer(readModels),
+    jwt: createJwtReducer()
+  })
+
+  const appliedMiddlewares = applyMiddleware(
+    routerMiddleware(history),
+    resolveMiddleware,
+    ...middlewares
+  )
+
+  const composedEnhancers = compose(
+    appliedMiddlewares,
+    ...enhancers
+  )
+
   const store = reduxCreateStore(
-    combineReducers({
-      ...reducers,
-      router: routerReducer,
-      viewModels: createViewModelsReducer(viewModels),
-      readModels: createReadModelsReducer(readModels),
-      jwt: createJwtReducer()
-    }),
+    combinedReducers,
     initialState,
-    composeWithDevTools(
-      applyMiddleware(
-        routerMiddleware(history),
-        resolveMiddleware,
-        ...middlewares
-      )
-    )
+    composedEnhancers
   )
 
   resolveMiddleware.run({
@@ -58,10 +65,9 @@ const createStore = ({
     subscribeAdapter,
     sessionId,
     jwtProvider,
-    isClient
+    isClient,
+    customSagas
   })
-
-  setupStore(store, middlewares)
 
   syncJwtProviderWithStore(jwtProvider, store).catch(
     // eslint-disable-next-line no-console

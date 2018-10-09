@@ -29,4 +29,4 @@ const userCreateMiddleware = store => next => action => {
   next(action)
 }
 
-export default [userCreateMiddleware]
+export default userCreateMiddleware
