@@ -36,34 +36,11 @@ It is important to understand that the read side and the write side do not and s
 
 The framework architecture imposes the functional programming, so both the read and write sides should never mutate any data outside of their scope.
 
-[TODO] lets move storage adapters section to somewhere else, it not really a part of app structure
-
-# Storage Adapters
-Storage adapters provide a simple interface for controlling how your resolve app stores its data.
-
-A reSolve application uses persistent data storages to store the following information:
-* Events
-* **Read model** state 
-* **View model** snapshots 
-
-A storage adapter encapsulates logic that defines *how* this data is stored. reSolve provides default adapters for the following types of data storages: 
-
-* Event storage adapters:
-  * MongoDB
-  * MySQL
-  * File-based
-* Read model adapters:
-  * MongoDB
-  * MySQL
-  * In-memory 
-
-You can also provide your own implementation of data adapters by implementing a specific API interface.
 
 
 
 # Folder Structure
 A typical reSolve applications has the following general structure: 
-
 
 ```
 📁 resolve-app
