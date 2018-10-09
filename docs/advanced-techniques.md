@@ -3,6 +3,83 @@
 # Server-Side Rendering
 # Process Managers (Sagas)
 
+Process Managers (or Sagas) are used to ran arbitrary service code in response to events or on schedule. Generally, this is where you define logic that deal with side effects: you can emit new events and communicate with the outside world in any way (e.g., query databases, send emails, etc.). You can view a Saga as a scripted replacement to a user.
+
+The code below demonstrates a Saga that handles events:
+
+[embedmd]:# (../examples/with-saga/common/sagas/user-creation.event.js /^/ /\n$/)
+```js
+const eventHandlers = {
+  UserCreationRequested: async (event, { resolve }) => {
+    const { aggregateId } = event
+    const createdUser = await resolve.executeQuery({
+      modelName: 'default',
+      resolverName: 'createdUser',
+      resolverArgs: { id: aggregateId }
+    })
+
+    if (!createdUser) {
+      return
+    }
+
+    const users = await resolve.executeQuery({
+      modelName: 'default',
+      resolverName: 'users',
+      resolverArgs: { id: aggregateId }
+    })
+
+    const userWithSameEmail = users.find(
+      user => user.email === createdUser.email
+    )
+
+    await resolve.executeCommand({
+      type: userWithSameEmail ? 'rejectUserCreation' : 'confirmUserCreation',
+      aggregateName: 'user',
+      payload: { createdUser },
+      aggregateId
+    })
+  }
+}
+
+export default eventHandlers
+```
+
+For a scheduled Saga, tasks are specified in the cron format. The code below demonstrates a Saga that emits commands on schedule:
+
+[embedmd]:# (../examples/with-saga/common/sagas/user-creation.cron.js /^/ /\n$/)
+```js
+const outdatedPeriod = 1000 * 60 * 10
+
+const cronHandlers = {
+  '0 */10 * * * *': async ({ resolve }) => {
+    const users = await resolve.executeQuery({
+      modelName: 'default',
+      resolverName: 'users'
+    })
+
+    const now = Date.now()
+
+    users.forEach(user => {
+      if (user.timestamp + outdatedPeriod < now) {
+        resolve.executeCommand({
+          type: 'deleteOutdatedUser',
+          aggregateName: 'user',
+          aggregateId: user.id
+        })
+      }
+    })
+  }
+}
+
+export default cronHandlers
+```
+
+For the full code, refer to the [With Saga](https://github.com/reimagined/resolve/tree/dev/examples/with-saga) example project.
+
+
+
+
+
 # Custom Adapters
 
 [TODO] Don't use word "custom" - it implies that there are "normal" adapters. 
