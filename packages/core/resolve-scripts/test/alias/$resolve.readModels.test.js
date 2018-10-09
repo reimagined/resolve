@@ -101,53 +101,7 @@ describe('base(v2) config works correctly', () => {
   })
 })
 
-describe('config with storage works correctly', () => {
-  const resolveConfig = {
-    readModels: [
-      {
-        name: 'Todos',
-        projection: path.resolve(__dirname, 'files/testProjection.js'),
-        resolvers: path.resolve(__dirname, 'files/testResolvers.js')
-      }
-    ],
-    readModelAdapters: {
-      Todos: {
-        module: path.resolve(__dirname, 'files/testSnapshotAdapter.js'),
-        options: {
-          size: 100
-        }
-      }
-    }
-  }
-
-  test('[client]', () => {
-    expect(
-      normalizePaths(
-        '\r\n' +
-          alias({
-            resolveConfig,
-            isClient: true
-          }).code +
-          '\r\n'
-      )
-    ).toMatchSnapshot()
-  })
-
-  test('[server]', () => {
-    expect(
-      normalizePaths(
-        '\r\n' +
-          alias({
-            resolveConfig,
-            isClient: false
-          }).code +
-          '\r\n'
-      )
-    ).toMatchSnapshot()
-  })
-})
-
-describe('config with storage + process.env works correctly', () => {
+describe('config + process.env works correctly', () => {
   const resolveConfig = {
     readModels: [
       {

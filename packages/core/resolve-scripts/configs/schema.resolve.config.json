@@ -331,12 +331,6 @@
         "readModelAdapters": {
           "$ref": "#/definitions/adaptersMap"
         },
-        "viewModelAdapters": {
-          "$ref": "#/definitions/adaptersMap"
-        },
-        "aggregateAdapters": {
-          "$ref": "#/definitions/adaptersMap"
-        },
         "auth": {
           "$ref": "#/definitions/auth"
         },

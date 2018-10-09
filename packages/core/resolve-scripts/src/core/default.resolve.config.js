@@ -36,8 +36,6 @@ export default {
     options: {}
   },
   readModelAdapters: {},
-  viewModelAdapters: {},
-  aggregateAdapters: {},
   jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000

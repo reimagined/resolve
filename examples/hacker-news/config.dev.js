@@ -8,15 +8,6 @@ const devConfig = {
       options: {}
     }
   },
-  viewModelAdapters: {
-    storyDetails: {
-      module: 'common/view-models/snapshot_adapter.module.js',
-      options: {
-        pathToFile: 'snapshot.db',
-        bucketSize: 1
-      }
-    }
-  },
   jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000

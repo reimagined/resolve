@@ -1,10 +1,7 @@
 import {
   message,
-  RESOURCE_CONSTRUCTOR_ONLY,
   RESOURCE_ANY,
   RUNTIME_ENV_NOWHERE,
-  RUNTIME_ENV_ANYWHERE,
-  IMPORT_CONSTRUCTOR,
   IMPORT_INSTANCE
 } from '../constants'
 import importBabel from '../import_babel'
@@ -29,12 +26,6 @@ export default ({ resolveConfig, isClient }) => {
       throw new Error(`${message.clientEnvError}.aggregates[${index}].name`)
     }
     constants.push(`const name_${index} = ${JSON.stringify(aggregate.name)}`)
-
-    const snapshotAdapter =
-      resolveConfig.hasOwnProperty('aggregateAdapters') &&
-      resolveConfig.aggregateAdapters.hasOwnProperty(aggregate.name)
-        ? resolveConfig.aggregateAdapters[aggregate.name]
-        : null
 
     importResource({
       resourceName: `commands_${index}`,
@@ -89,20 +80,6 @@ export default ({ resolveConfig, isClient }) => {
       })
       exports.push(`, projection: projection_${index}`)
       exports.push(`, invariantHash: projection_${index}_hash`)
-    }
-
-    if (!isClient && snapshotAdapter) {
-      importResource({
-        resourceName: `snapshotAdapter_${index}`,
-        resourceValue: snapshotAdapter,
-        runtimeMode: RUNTIME_ENV_ANYWHERE,
-        importMode: RESOURCE_CONSTRUCTOR_ONLY,
-        instanceMode: IMPORT_CONSTRUCTOR,
-        imports,
-        constants
-      })
-
-      exports.push(`, snapshotAdapter: snapshotAdapter_${index}`)
     }
 
     exports.push(`})`, ``)
