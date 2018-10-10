@@ -16,7 +16,7 @@ Aggregate state is passed to each of these functions explicitly as parameter.
 # Aggregate ID
 
 Each aggregate should have an unique ID that is immutable during its lifetime. Though it should be unique in the given event store,
-it is recommended to make it globally unique. We recommend using [UUID v4](https://github.com/kelektiv/node-uuid#version-4) to generate Aggregate IDs.
+it is recommended to make it globally unique. We recommend using [UUID v4](https://github.com/kelektiv/node-uuid#version-4) to generate Aggregate IDs or [cuid](https://github.com/ericelliott/cuid) for massive parallel apps.
 
 Please note that you have to generate a new Aggregate ID and send it with command that creates a new aggregate.
 
@@ -56,16 +56,16 @@ http://{host}:{port}/api/commands
 
 The request body should have the `application/json` content type and contain a JSON representation of the command:
 
-```js
+```
 {
   "aggregateName": aggregateName,
   "type": commandType,
   "aggregateId": aggregateID,
   "payload": {
-    param1: value1,
-    param2: value2,
-    // ...
-    paramN: valueN
+    "param1": value1,
+    "param2": value2,
+    ...
+    "paramN": valueN
   }
 }
 ```
