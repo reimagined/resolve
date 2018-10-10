@@ -1,5 +1,6 @@
 # Setting up Authentication
 
+<!-- prettier-ignore-start -->
 [embedmd]:# (../examples/hacker-news/auth/localStrategy.js /const routes = \[/ /\]/) 
 ```js
 const routes = [
@@ -58,6 +59,7 @@ const routes = [
   }
 ]
 ```
+<!-- prettier-ignore-end -->
 
 # Using 3rd Party Auth Services
 
@@ -150,7 +152,7 @@ JWT Token is signed, so it cannot be forged by attacker, without knowing a secre
 JWT Token can be decoded and verified using the same secret that was used on its creation:
 
 ```js
-const { id: userId } = jwt.verify(jwtToken, jwtSecret);
+const { id: userId } = jwt.verify(jwtToken, jwtSecret)
 ```
 
 You can store any information you need in JWT Token. For instance, during authentication, you can look up

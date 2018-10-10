@@ -1,24 +1,26 @@
 # React/Redux Support
-The reSolve framework is shipped with the client **resolve-redux** library that allows you to easily connect you client React + Redux app to a reSolve-powered backend. 
+
+The reSolve framework is shipped with the client **resolve-redux** library that allows you to easily connect you client React + Redux app to a reSolve-powered backend.
 
 The **redux** config section specifies the following settings related to the Redux-based frontend:
 
-* **store** - Specifies the file containing the Redux store definition.
-* **reducers** - Specifies the file containing the Redux reducer definition.
-* **middlewares** - Specifies the file containing the Redux middleware definitions.
+- **store** - Specifies the file containing the Redux store definition.
+- **reducers** - Specifies the file containing the Redux reducer definition.
+- **middlewares** - Specifies the file containing the Redux middleware definitions.
 
 Based on the specified settings, reSolve injects client code to facilitate client-server communication:
-* Redux actions are generated for available reSolve aggregate commands. 
-* Auxiliary reducer and middleware code is generated to handle these actions and send the corresponding commands to the server. 
+
+- Redux actions are generated for available reSolve aggregate commands.
+- Auxiliary reducer and middleware code is generated to handle these actions and send the corresponding commands to the server.
 
 To connect components to the backend, use the following resolve-redux library's higher order components (HOCs):
 
-* **connectReadModel** - Connects a component to Read Model.
-* **connectViewModel** - Connects a component to a View Model.
+- **connectReadModel** - Connects a component to Read Model.
+- **connectViewModel** - Connects a component to a View Model.
 
 A connected component obtains additional props providing access to the Read Model data and available Redux actions mapped to reSolve commands. You can chain the **connectReadModel** function call with the Redux **connect** function call:
 
-
+<!-- prettier-ignore-start -->
 [embedmd]:# (..\..\examples\shopping-list\client\containers\MyLists.js /export const mapStateToOptions/ /^\)/)
 ```js
 export const mapStateToOptions = () => ({
@@ -41,36 +43,35 @@ export default connectReadModel(mapStateToOptions)(
   )(MyLists)
 )
 ```
+<!-- prettier-ignore-end -->
 
 Additionally, use the following HOCs to automatically fix URLs passed as component props so that these URLs comply with the backend structure.
 
-* **connectRootBasedUrls** - Fixes server routs.
+- **connectRootBasedUrls** - Fixes server routs.
   ```js
-  export default connectRootBasedUrls(['href'])(Link)  
+  export default connectRootBasedUrls(['href'])(Link)
   ```
-
 
 * **connectStaticBasedUrls** - Fixes static files paths.
   ```js
   export default connectStaticBasedUrls(['css', 'favicon'])(Header)
   ```
 
-
-
-
-
-
 # Sending Commands as Redux Actions
-A component connected to a Read Model receives an object containing available command names. You can use the **redux.bindActionCreators** function to automatically wrap all these commands into **dispatch** function calls. This allows for a compact implementation of the **mapDispatchToProps** function: 
 
+A component connected to a Read Model receives an object containing available command names. You can use the **redux.bindActionCreators** function to automatically wrap all these commands into **dispatch** function calls. This allows for a compact implementation of the **mapDispatchToProps** function:
+
+<!-- prettier-ignore-start -->
 [embedmd]:# (..\..\examples\shopping-list\client\containers\MyLists.js /export const mapDispatchToProps/ /bindActionCreators\(aggregateActions, dispatch\)/)
 ```js
 export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(aggregateActions, dispatch)
 ```
+<!-- prettier-ignore-end -->
 
 After this, you can use dispatch aggregate commands using the corresponding props:
 
+<!-- prettier-ignore-start -->
 [embedmd]:# (..\..\examples\shopping-list\client\containers\MyLists.js /class MyLists/ /^\}/)
 ```js
 class MyLists extends React.PureComponent {
@@ -89,13 +90,13 @@ class MyLists extends React.PureComponent {
   }
 }
 ```
-
-
-
+<!-- prettier-ignore-end -->
 
 # Reactive View Models, Event Subscription
-A View Model is a special kind of a Read Model. Its projection is declared in a universal format so it can also serve as the reducer code on the client side. Events are automatically sent to the client through a WebSocket connection. Because of these properties, View Models are reactive out of the box. This means that a component connected to a View Model using the **connectViewModel** method automatically reflect the Read Model changes on the server side, without the need to implement any additional logic. 
 
+A View Model is a special kind of a Read Model. Its projection is declared in a universal format so it can also serve as the reducer code on the client side. Events are automatically sent to the client through a WebSocket connection. Because of these properties, View Models are reactive out of the box. This means that a component connected to a View Model using the **connectViewModel** method automatically reflect the Read Model changes on the server side, without the need to implement any additional logic.
+
+<!-- prettier-ignore-start -->
 [embedmd]:# (..\..\examples\shopping-list\client\containers\ShoppingList.js /export const mapStateToOptions/ /^\)/)
 ```js
 export const mapStateToOptions = (state, ownProps) => {
@@ -131,26 +132,32 @@ export default connectViewModel(mapStateToOptions)(
   )(ShoppingList)
 )
 ```
-
-
+<!-- prettier-ignore-end -->
 
 # Optimistic Commands
-If a component is connected to a reSolve ReadModel, you can enhance its responsiveness by providing it with **optimistic UI update** functionality.  With this approach, a component applies model changes on the client side before synchronizing them with the server via an aggregate command. 
 
-Use the following steps to implement the optimistic update functionality: 
+If a component is connected to a reSolve ReadModel, you can enhance its responsiveness by providing it with **optimistic UI update** functionality. With this approach, a component applies model changes on the client side before synchronizing them with the server via an aggregate command.
 
-1) Create Redux actions that will perform optimistic updates: 
+Use the following steps to implement the optimistic update functionality:
 
+1. Create Redux actions that will perform optimistic updates:
+
+<!-- prettier-ignore-start -->
 [embedmd]:# (..\..\examples\shopping-list\client\actions\optimistic_actions.js /^/ /\n$/)
+
 ```js
 export const OPTIMISTIC_CREATE_SHOPPING_LIST = 'OPTIMISTIC_CREATE_SHOPPING_LIST'
 export const OPTIMISTIC_REMOVE_SHOPPING_LIST = 'OPTIMISTIC_REMOVE_SHOPPING_LIST'
 export const OPTIMISTIC_SYNC = 'OPTIMISTIC_SYNC'
 ```
 
-2) Implement an optimistic reducer function that responds to these commands to update the corresponding slice of the Redux state: 
+<!-- prettier-ignore-end -->
 
+2. Implement an optimistic reducer function that responds to these commands to update the corresponding slice of the Redux state:
+
+<!-- prettier-ignore-start -->
 [embedmd]:# (..\..\examples\shopping-list\client\reducers\optimistic_shopping_lists.js /^/ /\n$/)
+
 ```js
 import { LOCATION_CHANGE } from 'react-router-redux'
 import {
@@ -189,11 +196,14 @@ const optimistic_shopping_lists = (state = [], action) => {
 
 export default optimistic_shopping_lists
 ```
-  
 
-3) Implement an optimistic middleware to intercept actions used to communicate with a Read Model and update the Redux state accordingly:
+<!-- prettier-ignore-end -->
 
+3. Implement an optimistic middleware to intercept actions used to communicate with a Read Model and update the Redux state accordingly:
+
+<!-- prettier-ignore-start -->
 [embedmd]:# (..\..\examples\shopping-list\client\middlewares\optimistic_shopping_lists_middleware.js /^/ /\n$/)
+
 ```js
 import { actionTypes } from 'resolve-redux'
 
@@ -244,12 +254,6 @@ const optimistic_shopping_lists_middleware = store => next => action => {
 export default optimistic_shopping_lists_middleware
 ```
 
+<!-- prettier-ignore-end -->
+
 For the full code, refer to the [Shopping List](https://github.com/reimagined/resolve/tree/master/examples/shopping-list) example project.
-
-
-
-
-
-
-
-
