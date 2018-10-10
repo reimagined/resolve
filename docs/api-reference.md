@@ -1,8 +1,8 @@
 ## Commands
 ### Command HTTP API
-Command can be sent using HTTP API.
+A command can be sent using HTTP API.
 
-For instance, to create an new list in the shopping list app:
+For instance, to create a new list in the shopping list app:
 
 ```sh
 $ curl -X POST http://localhost:3000/api/commands/ \
