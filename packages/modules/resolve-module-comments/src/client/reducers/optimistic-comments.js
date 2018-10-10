@@ -3,12 +3,11 @@ import { actionTypes } from 'resolve-redux'
 import {
   commandTypes,
   resolverNames,
-  defaultReducerName,
-  defaultReadModelName,
-  defaultAggregateName
+  DEFAULT_READ_MODEL_NAME,
+  DEFAULT_AGGREGATE_NAME
 } from '../../common/constants'
 
-const { createComment, updateComment, removeComment } = commandTypes
+const { CREATE_COMMENT, UPDATE_COMMENT, REMOVE_COMMENT } = commandTypes
 
 const {
   SEND_COMMAND_SUCCESS,
@@ -18,8 +17,8 @@ const {
 } = actionTypes
 
 const createOptimisticCommentsReducer = ({
-  aggregateName = defaultAggregateName,
-  readModelName = defaultReadModelName
+  aggregateName = DEFAULT_AGGREGATE_NAME,
+  readModelName = DEFAULT_READ_MODEL_NAME
 }) => (state = {}, action) => {
   if (
     action.type === CONNECT_READMODEL &&
@@ -69,7 +68,7 @@ const createOptimisticCommentsReducer = ({
 
   if (
     action.type === SEND_COMMAND_SUCCESS &&
-    action.commandType === createComment
+    action.commandType === CREATE_COMMENT
   ) {
     return {
       ...state,
@@ -90,7 +89,7 @@ const createOptimisticCommentsReducer = ({
   if (
     action.type === SEND_COMMAND_SUCCESS &&
     action.aggregateName === aggregateName &&
-    action.commandType === updateComment
+    action.commandType === UPDATE_COMMENT
   ) {
     return {
       ...state,
@@ -116,7 +115,7 @@ const createOptimisticCommentsReducer = ({
 
   if (
     action.type === SEND_COMMAND_SUCCESS &&
-    action.commandType === removeComment
+    action.commandType === REMOVE_COMMENT
   ) {
     return {
       ...state,

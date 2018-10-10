@@ -24,14 +24,20 @@ export const commandTypes = {
   REMOVE_COMMENT: '@resolve-module-comments/REMOVE_COMMENT'
 }
 
-// Resolver Names
-export const resolverNames = {
-  ReadCommentsTree: 'ReadCommentsTree',
-  ReadAllCommentsPaginate: 'ReadAllCommentsPaginate'
-}
+// Reducer Name
+export const DEFAULT_REDUCER_NAME = 'comments'
 
 // Aggregate Name
-export const defaultAggregateName = 'Comments'
+export const DEFAULT_AGGREGATE_NAME = 'Comments'
 
 // Read Model Name
-export const defaultReadModelName = 'Comments'
+export const DEFAULT_READ_MODEL_NAME = 'Comments'
+
+// Comments Table Name
+export const DEFAULT_COMMENTS_TABLE_NAME = 'Comments'
+
+// Resolver Names
+export const resolverNames = {
+  READ_COMMENTS_TREE: 'ReadCommentsTree',
+  READ_ALL_COMMENTS_PAGINATE: 'ReadAllCommentsPaginate'
+}

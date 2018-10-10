@@ -1,12 +1,10 @@
-import {
-  COMMENT_CREATED,
-  COMMENT_UPDATED,
-  COMMENT_REMOVED
-} from '../event-types'
+import { DEFAULT_COMMENTS_TABLE_NAME, eventTypes } from '../constants'
 
-export default options => ({
+const { COMMENT_CREATED, COMMENT_UPDATED, COMMENT_REMOVED } = eventTypes
+
+export default ({ commentsTableName = DEFAULT_COMMENTS_TABLE_NAME }) => ({
   Init: async store => {
-    await store.defineTable('Comments', {
+    await store.defineTable(commentsTableName, {
       indexes: {
         mainId: 'string',
         treeId: 'string',
@@ -30,7 +28,7 @@ export default options => ({
     } = event
 
     if (
-      (await store.count('Comments', {
+      (await store.count(commentsTableName, {
         commentId: parentCommentId,
         treeId
       })) === 0
@@ -39,7 +37,7 @@ export default options => ({
         return
       }
 
-      await store.insert('Comments', {
+      await store.insert(commentsTableName, {
         mainId: `${treeId}-root`,
         treeId,
         commentId: null,
@@ -51,7 +49,7 @@ export default options => ({
       })
     }
 
-    await store.insert('Comments', {
+    await store.insert(commentsTableName, {
       mainId: `${treeId}-${commentId}`,
       treeId,
       commentId,
@@ -63,7 +61,7 @@ export default options => ({
     })
 
     const parentComments = await store.find(
-      'Comments',
+      commentsTableName,
       {
         $or: [
           { treeId, commentId: parentCommentId, nestedLevel: 0 },
@@ -120,7 +118,7 @@ export default options => ({
         continue
       }
 
-      await store.insert('Comments', {
+      await store.insert(commentsTableName, {
         mainId,
         treeId,
         commentId: parentComment.commentId,
@@ -140,7 +138,7 @@ export default options => ({
     } = event
 
     await store.update(
-      'Comments',
+      commentsTableName,
       {
         $or: [
           { treeId, commentId, nestedLevel: 0 },
@@ -158,14 +156,14 @@ export default options => ({
     } = event
 
     const childCommentsIds = (await store.find(
-      'Comments',
+      commentsTableName,
       { treeId, commentId, childCommentId: { $ne: null } },
       { childCommentId: 1 }
     ))
       .map(({ childCommentId }) => childCommentId)
       .concat(commentId)
 
-    await store.delete('Comments', {
+    await store.delete(commentsTableName, {
       $or: [
         ...childCommentsIds.map(innerCommentId => ({
           childCommentId: innerCommentId

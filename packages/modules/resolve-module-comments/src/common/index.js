@@ -1,28 +1,26 @@
 import path from 'path'
 
-import createActions from '../client/actions/comment-actions'
 import {
-  eventTypes,
-  actionTypes,
-  commandTypes,
-  defaultAggregateName,
-  defaultReadModelName
+  DEFAULT_AGGREGATE_NAME,
+  DEFAULT_READ_MODEL_NAME,
+  DEFAULT_COMMENTS_TABLE_NAME,
+  DEFAULT_REDUCER_NAME
 } from './constants'
 
-// Runtime
-export { createActions, commandTypes, eventTypes, actionTypes }
+export * from '../client'
 
-// Compile time
 export default ({
-  aggregateName = defaultAggregateName,
-  readModelName = (defaultReadModelName.verifyCommand = path.join(
-    __dirname,
-    './common/aggregates/verify-command.js'
-  ))
+  aggregateName = DEFAULT_AGGREGATE_NAME,
+  readModelName = DEFAULT_READ_MODEL_NAME,
+  commentsTableName = DEFAULT_COMMENTS_TABLE_NAME,
+  reducerName = DEFAULT_REDUCER_NAME,
+  verifyCommand = path.join(__dirname, './aggregates/verify-command.js')
 } = {}) => {
   const options = {
     aggregateName,
-    readModelName
+    readModelName,
+    commentsTableName,
+    reducerName
   }
   const imports = {
     verifyCommand
@@ -33,18 +31,12 @@ export default ({
       {
         name: options.aggregateName,
         commands: {
-          module: path.join(
-            __dirname,
-            './common/aggregates/comment.commands.js'
-          ),
+          module: path.join(__dirname, './aggregates/comment.commands.js'),
           options,
           imports
         },
         projection: {
-          module: path.join(
-            __dirname,
-            './common/aggregates/comment.projection.js'
-          ),
+          module: path.join(__dirname, './aggregates/comment.projection.js'),
           options,
           imports
         }
@@ -54,34 +46,28 @@ export default ({
       {
         name: options.aggregateName,
         projection: {
-          module: path.join(
-            __dirname,
-            './common/read-models/comments.projection.js'
-          ),
+          module: path.join(__dirname, './read-models/comments.projection.js'),
           options,
           imports
         },
         resolvers: {
-          module: path.join(
-            __dirname,
-            './common/read-models/comments.resolvers.js'
-          ),
+          module: path.join(__dirname, './read-models/comments.resolvers.js'),
           options,
           imports
         }
       }
     ],
     redux: {
-      middlewares: [
-        {
+      reducers: {
+        [reducerName]: {
           module: path.join(
             __dirname,
-            '../client/middlewares/optimistic-comments-middleware.js'
+            '../client/reducers/optimistic-comments.js'
           ),
           options,
           imports
         }
-      ]
+      }
     }
   }
 }

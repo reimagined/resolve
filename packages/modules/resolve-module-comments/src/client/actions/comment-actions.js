@@ -1,10 +1,10 @@
 import { actions } from 'resolve-redux'
 
-import { commandTypes, defaultAggregateName } from '../../common/constants'
+import { commandTypes, DEFAULT_AGGREGATE_NAME } from '../../common/constants'
 
 const { sendCommandRequest } = actions
 
-export default ({ aggregateName = defaultAggregateName } = {}) => {
+export default ({ aggregateName = DEFAULT_AGGREGATE_NAME } = {}) => {
   const actionCreators = {}
 
   for (const name of Object.keys(commandTypes)) {

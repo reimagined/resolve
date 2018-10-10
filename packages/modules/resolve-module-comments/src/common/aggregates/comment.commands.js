@@ -1,11 +1,16 @@
+import path from 'path'
+
 import { eventTypes, commandTypes } from '../constants'
 
 const { COMMENT_CREATED, COMMENT_UPDATED, COMMENT_REMOVED } = eventTypes
 
-const { createComment, updateComment, removeComment } = commandTypes
+const { CREATE_COMMENT, UPDATE_COMMENT, REMOVE_COMMENT } = commandTypes
 
-export default (options, imports) => ({
-  [createComment]: async (state, command, jwtToken) => {
+export default (
+  options,
+  { verifyCommand = path.join(__dirname, './verify-command.js') }
+) => ({
+  [CREATE_COMMENT]: async (state, command, jwtToken) => {
     if (
       command.payload.commentId == null ||
       command.payload.commentId.constructor !== String
@@ -31,7 +36,7 @@ export default (options, imports) => ({
       )
     }
 
-    await imports.verifyCommand(state, command, jwtToken, createComment)
+    await verifyCommand(state, command, jwtToken)
 
     return {
       type: COMMENT_CREATED,
@@ -43,7 +48,7 @@ export default (options, imports) => ({
     }
   },
 
-  [updateComment]: async (state, command, jwtToken) => {
+  [UPDATE_COMMENT]: async (state, command, jwtToken) => {
     if (
       command.payload.commentId == null ||
       command.payload.commentId.constructor !== String
@@ -59,7 +64,7 @@ export default (options, imports) => ({
       )
     }
 
-    await imports.verifyCommand(state, command, jwtToken, updateComment)
+    await verifyCommand(state, command, jwtToken)
 
     return {
       type: COMMENT_UPDATED,
@@ -70,7 +75,7 @@ export default (options, imports) => ({
     }
   },
 
-  [removeComment]: async (state, command, jwtToken) => {
+  [REMOVE_COMMENT]: async (state, command, jwtToken) => {
     if (
       command.payload.commentId == null ||
       command.payload.commentId.constructor !== String
@@ -80,7 +85,7 @@ export default (options, imports) => ({
       )
     }
 
-    await imports.verifyCommand(state, command, jwtToken, removeComment)
+    await verifyCommand(state, command, jwtToken)
 
     return {
       type: COMMENT_REMOVED,

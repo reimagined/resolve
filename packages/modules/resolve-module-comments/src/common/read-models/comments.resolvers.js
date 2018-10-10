@@ -1,5 +1,12 @@
-export default options => ({
-  ReadCommentsTree: async (store, args) => {
+import { DEFAULT_COMMENTS_TABLE_NAME, resolverNames } from '../constants'
+
+const { READ_COMMENTS_TREE, READ_ALL_COMMENTS_PAGINATE } = resolverNames
+
+export default ({
+  commentsTableName = DEFAULT_COMMENTS_TABLE_NAME,
+  maxNestedLevel
+}) => ({
+  [READ_COMMENTS_TREE]: async (store, args) => {
     const { treeId, parentCommentId, maxLevel } = args
     const parentId = parentCommentId != null ? parentCommentId : null
 
@@ -15,13 +22,10 @@ export default options => ({
 
       if (
         maxLevelInt < 0 ||
-        (Number.isInteger(options.maxNestedLevel) &&
-          maxLevelInt > options.maxNestedLevel)
+        (Number.isInteger(maxNestedLevel) && maxLevelInt > maxNestedLevel)
       ) {
         throw new Error(
-          `Field "maxLevel" if present should be number between 0 and ${
-            options.maxNestedLevel
-          }`
+          `Field "maxLevel" if present should be number between 0 and ${maxNestedLevel}`
         )
       }
 
@@ -51,7 +55,7 @@ export default options => ({
     }
 
     const linearizedComments = await store.find(
-      'Comments',
+      commentsTableName,
       searchExpression,
       fieldFilterExpression,
       sortExpression
@@ -85,7 +89,7 @@ export default options => ({
     return treeComments
   },
 
-  ReadAllCommentsPaginate: async (store, args) => {
+  [READ_ALL_COMMENTS_PAGINATE]: async (store, args) => {
     const { itemsOnPage, pageNumber } = args
 
     const itemsOnPageInt = +itemsOnPage
@@ -118,7 +122,7 @@ export default options => ({
     }
 
     const linearizedComments = await store.find(
-      'Comments',
+      commentsTableName,
       searchExpression,
       fieldFilterExpression,
       sortExpression,
