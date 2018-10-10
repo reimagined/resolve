@@ -66,7 +66,6 @@
     "resolve-command": "0.17.2",
     "resolve-es": "0.17.2",
     "resolve-query": "0.17.2",
-    "resolve-readmodel-memory": "0.17.2",
     "resolve-redux": "0.17.2",
     "resolve-storage-lite": "0.17.2",
     "resolve-subscribe-socket.io": "0.17.2",

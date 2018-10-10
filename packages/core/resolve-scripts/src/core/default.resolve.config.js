@@ -16,9 +16,10 @@ export default {
     strategies: 'auth/index.js'
   },
   redux: {
-    store: 'client/store/index.js',
-    reducers: 'client/reducers/index.js',
-    middlewares: 'client/middlewares/index.js'
+    reducers: {},
+    middlewares: [],
+    sagas: [],
+    enhancers: []
   },
   storageAdapter: {
     module: 'resolve-storage-lite',
@@ -34,6 +35,7 @@ export default {
     module: 'resolve-subscribe-socket.io',
     options: {}
   },
+  readModelAdapters: {},
   jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000

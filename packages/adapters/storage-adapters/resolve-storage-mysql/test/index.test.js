@@ -1,182 +1,42 @@
 import sinon from 'sinon'
-import mysql, { _setLastResult, _reset } from 'mysql2/promise'
-import sqlFormatter from 'sql-formatter'
-import createAdapter from '../src'
 
-const connectionOptions = {
-  tableName: 'table',
-  host: 'host',
-  port: 1234,
-  user: 'user',
-  password: 'pass',
-  database: 'db'
-}
+test('resolve-storage-lite index', () => {
+  const createAdapter = require('resolve-storage-base')
+  const init = require('../src/init')
+  const loadEvents = require('../src/load-events')
+  const saveEvent = require('../src/save-event')
+  const dispose = require('../src/dispose')
 
-const testEvent = {
-  timestamp: 100,
-  aggregateId: 'aggregate-id',
-  aggregateVersion: 5,
-  type: 'event-type',
-  payload: {}
-}
+  sinon.stub(init, 'default').callsFake(() => () => {})
+  sinon.stub(loadEvents, 'default').callsFake(() => () => {})
+  sinon.stub(saveEvent, 'default').callsFake(() => () => {})
+  sinon.stub(dispose, 'default').callsFake(() => () => {})
 
-describe('es-mysql', () => {
-  const format = sqlFormatter.format.bind(sqlFormatter)
-  afterEach(() => {
-    _reset()
+  sinon.stub(createAdapter, 'default').callsFake((...args) => {
+    for (const func of args) {
+      if (typeof func === 'function') {
+        func()
+      }
+    }
   })
 
-  it('should save event', async () => {
-    const adapter = createAdapter(connectionOptions)
-    await adapter.saveEvent(testEvent)
+  const index = require('../src/index.js')
 
-    const executor = (await mysql.createConnection.firstCall.returnValue)
-      .execute
+  expect(init.default.callCount).toEqual(0)
+  expect(loadEvents.default.callCount).toEqual(0)
+  expect(saveEvent.default.callCount).toEqual(0)
+  expect(dispose.default.callCount).toEqual(0)
 
-    expect(format(executor.firstCall.args[0])).toEqual(
-      format(
-        `CREATE TABLE IF NOT EXISTS table(
-        \`timestamp\` BIGINT NOT NULL,
-        \`aggregateId\` VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-        \`aggregateVersion\` BIGINT NOT NULL,
-        \`type\` VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-        \`payload\` JSON NULL,
-        PRIMARY KEY(\`aggregateId\`, \`aggregateVersion\`),
-        INDEX USING BTREE(\`aggregateId\`),
-        INDEX USING BTREE(\`aggregateVersion\`),
-        INDEX USING BTREE(\`type\`),
-        INDEX USING BTREE(\`timestamp\`)
-        )`
-      )
-    )
+  index.default()
 
-    expect(executor.firstCall.args[1]).toEqual([])
+  expect(init.default.callCount).toEqual(1)
+  expect(loadEvents.default.callCount).toEqual(1)
+  expect(saveEvent.default.callCount).toEqual(1)
+  expect(dispose.default.callCount).toEqual(1)
 
-    expect(format(executor.secondCall.args[0])).toEqual(
-      format(
-        `INSERT INTO table (
-          \`timestamp\`,
-          \`aggregateId\`,
-          \`aggregateVersion\`,
-          \`type\`,
-          \`payload\`
-        )
-        VALUES  (?, ?, ?, ?, ?)`
-      )
-    )
-
-    expect(executor.secondCall.args[1]).toEqual([
-      testEvent.timestamp,
-      testEvent.aggregateId,
-      testEvent.aggregateVersion,
-      testEvent.type,
-      testEvent.payload
-    ])
-  })
-
-  it('should load events by types', async () => {
-    const adapter = createAdapter(connectionOptions)
-    const eventTypes = ['EVENT_TYPE_1', 'EVENT_TYPE_2']
-
-    const callback = sinon.stub()
-    const result = [[{ ...testEvent }, { ...testEvent, aggregateVersion: 6 }]]
-    _setLastResult(result)
-    await adapter.loadEventsByTypes(eventTypes, callback, 100)
-
-    const executor = (await mysql.createConnection.firstCall.returnValue)
-      .execute
-
-    expect(format(executor.firstCall.args[0])).toEqual(
-      format(
-        `CREATE TABLE IF NOT EXISTS table(
-          \`timestamp\` BIGINT NOT NULL,
-          \`aggregateId\` VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-          \`aggregateVersion\` BIGINT NOT NULL,
-          \`type\` VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-          \`payload\` JSON NULL,
-          PRIMARY KEY(\`aggregateId\`, \`aggregateVersion\`),
-          INDEX USING BTREE(\`aggregateId\`),
-          INDEX USING BTREE(\`aggregateVersion\`),
-          INDEX USING BTREE(\`type\`),
-          INDEX USING BTREE(\`timestamp\`)
-          )`
-      )
-    )
-
-    expect(executor.firstCall.args[1]).toEqual([])
-
-    expect(format(executor.secondCall.args[0])).toEqual(
-      format(`SELECT * FROM table
-      WHERE
-        \`timestamp\` > ? AND
-        \`type\` IN (?, ?)
-      ORDER BY
-        \`timestamp\` ASC,
-        \`aggregateVersion\` ASC
-      `)
-    )
-
-    expect(executor.secondCall.args[1]).toEqual([
-      100,
-      'EVENT_TYPE_1',
-      'EVENT_TYPE_2'
-    ])
-
-    expect(callback.firstCall.args[0]).toEqual(result[0][0])
-    expect(callback.secondCall.args[0]).toEqual(result[0][1])
-  })
-
-  it('should load events by aggregate ids', async () => {
-    const adapter = createAdapter(connectionOptions)
-    const aggregateIds = ['AGGREGATE_ID_1', 'AGGREGATE_ID_2']
-
-    const callback = sinon.stub()
-    const result = [[{ ...testEvent }, { ...testEvent, aggregateVersion: 6 }]]
-    _setLastResult(result)
-    await adapter.loadEventsByAggregateIds(aggregateIds, callback, 100)
-
-    const executor = (await mysql.createConnection.firstCall.returnValue)
-      .execute
-
-    expect(format(executor.firstCall.args[0])).toEqual(
-      format(
-        `CREATE TABLE IF NOT EXISTS table(
-          \`timestamp\` BIGINT NOT NULL,
-          \`aggregateId\` VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-          \`aggregateVersion\` BIGINT NOT NULL,
-          \`type\` VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-          \`payload\` JSON NULL,
-          PRIMARY KEY(\`aggregateId\`, \`aggregateVersion\`),
-          INDEX USING BTREE(\`aggregateId\`),
-          INDEX USING BTREE(\`aggregateVersion\`),
-          INDEX USING BTREE(\`type\`),
-          INDEX USING BTREE(\`timestamp\`)
-          )`
-      )
-    )
-
-    expect(executor.firstCall.args[1]).toEqual([])
-
-    expect(format(executor.secondCall.args[0])).toEqual(
-      format(
-        `SELECT * FROM table
-        WHERE
-          \`timestamp\` > ? AND
-          \`aggregateId\` IN (?, ?)
-        ORDER BY
-          \`timestamp\` ASC,
-          \`aggregateVersion\` ASC
-        `
-      )
-    )
-
-    expect(executor.secondCall.args[1]).toEqual([
-      100,
-      'AGGREGATE_ID_1',
-      'AGGREGATE_ID_2'
-    ])
-
-    expect(callback.firstCall.args[0]).toEqual(result[0][0])
-    expect(callback.secondCall.args[0]).toEqual(result[0][1])
-  })
+  const adapterCallArgs = createAdapter.default.firstCall.args
+  expect(adapterCallArgs[0]).toEqual(init.default)
+  expect(adapterCallArgs[1]).toEqual(loadEvents.default)
+  expect(adapterCallArgs[2]).toEqual(saveEvent.default)
+  expect(adapterCallArgs[3]).toEqual(dispose.default)
 })
