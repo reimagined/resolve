@@ -1,18 +1,15 @@
-import defaultOptions from './default-options'
-
 const createAdapter = (
   wrapInit,
   wrapMethod,
+  subscribe,
   onMessage,
   init,
   publish,
-  subscribe,
   dispose,
-  zmq,
+  bus,
   options
 ) => {
   const config = {
-    ...defaultOptions,
     ...options
   }
 
@@ -22,7 +19,7 @@ const createAdapter = (
     handlers: new Set()
   }
 
-  wrapInit(pool, init, onMessage.bind(null, pool), zmq)
+  wrapInit(pool, init, onMessage.bind(null, pool), bus)
 
   return Object.freeze({
     publish: wrapMethod(pool, publish),
