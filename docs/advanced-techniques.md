@@ -3,7 +3,7 @@
 # Server-Side Rendering
 # Process Managers (Sagas)
 
-Process Managers (or Sagas) are used to ran arbitrary service code in response to events or on schedule. Generally, this is where you define logic that deal with side effects: you can emit new events and communicate with the outside world in any way (e.g., query databases, send emails, etc.). You can view a Saga as a scripted replacement to a user.
+Process Managers (or Sagas) are used to run arbitrary service code in response to events or on schedule. Generally, this is where you define logic that deal with side effects: you can emit new events and communicate with the outside world in any way (e.g., query databases, send emails, etc.). You can view a Saga as a scripted replacement to a user.
 
 The code below demonstrates a Saga that handles events:
 
