@@ -6,7 +6,7 @@ import createEventStore from '../src/index'
 describe('resolve-es', () => {
   describe('subscribeByEventType', () => {
     // eslint-disable-next-line max-len
-    it('should handle callback by eventTypes with events propagated from storage and bus', async () => {
+    it('should handle callback by DefaultEventTypes with events propagated from storage and bus', async () => {
       const resolvedPromise = Promise.resolve()
 
       const emittedEvent = { type: 'EMITTED_EVENT' }
@@ -35,7 +35,7 @@ describe('resolve-es', () => {
     })
 
     // eslint-disable-next-line max-len
-    it('should handle callback by eventTypes with events propagated only from bus', async () => {
+    it('should handle callback by DefaultEventTypes with events propagated only from bus', async () => {
       const resolvedPromise = Promise.resolve()
 
       const storage = { loadEventsByTypes: sinon.stub() }

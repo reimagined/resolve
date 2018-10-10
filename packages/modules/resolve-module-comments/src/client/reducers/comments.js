@@ -1,29 +1,28 @@
 import { actionTypes } from 'resolve-redux'
 
-import {
-  commandTypes,
-  resolverNames,
-  DEFAULT_READ_MODEL_NAME,
-  DEFAULT_AGGREGATE_NAME
-} from '../../common/constants'
-
-const { CREATE_COMMENT, UPDATE_COMMENT, REMOVE_COMMENT } = commandTypes
+import injectDefaultOptions from '../../common/inject-default-options'
 
 const {
-  SEND_COMMAND_SUCCESS,
-  LOAD_READMODEL_STATE_SUCCESS,
   CONNECT_READMODEL,
-  DISCONNECT_READMODEL
+  DISCONNECT_READMODEL,
+  LOAD_READMODEL_STATE_SUCCESS,
+  SEND_COMMAND_SUCCESS
 } = actionTypes
 
-const createOptimisticCommentsReducer = ({
-  aggregateName = DEFAULT_AGGREGATE_NAME,
-  readModelName = DEFAULT_READ_MODEL_NAME
+const createCommentsReducer = ({
+  aggregateName,
+  readModelName,
+  resolverNames: { commentsTree = defaults.commentsTree } = {},
+  commandTypes: {
+    createComment = defaults.createComment,
+    updateComment = defaults.updateComment,
+    removeComment = defaults.removeComment
+  } = {}
 }) => (state = {}, action) => {
   if (
     action.type === CONNECT_READMODEL &&
     action.readModelName === readModelName &&
-    action.resolverName === resolverNames.ReadCommentsTree
+    action.resolverName === commentsTree
   ) {
     return {
       ...state,
@@ -38,7 +37,7 @@ const createOptimisticCommentsReducer = ({
   if (
     action.type === DISCONNECT_READMODEL &&
     action.readModelName === readModelName &&
-    action.resolverName === resolverNames.ReadCommentsTree
+    action.resolverName === commentsTree
   ) {
     const nextState = {
       ...state,
@@ -55,7 +54,7 @@ const createOptimisticCommentsReducer = ({
   if (
     action.type === LOAD_READMODEL_STATE_SUCCESS &&
     action.readModelName === readModelName &&
-    action.resolverName === resolverNames.ReadCommentsTree
+    action.resolverName === commentsTree
   ) {
     return {
       ...state,
@@ -68,7 +67,7 @@ const createOptimisticCommentsReducer = ({
 
   if (
     action.type === SEND_COMMAND_SUCCESS &&
-    action.commandType === CREATE_COMMENT
+    action.commandType === createComment
   ) {
     return {
       ...state,
@@ -89,7 +88,7 @@ const createOptimisticCommentsReducer = ({
   if (
     action.type === SEND_COMMAND_SUCCESS &&
     action.aggregateName === aggregateName &&
-    action.commandType === UPDATE_COMMENT
+    action.commandType === updateComment
   ) {
     return {
       ...state,
@@ -115,7 +114,7 @@ const createOptimisticCommentsReducer = ({
 
   if (
     action.type === SEND_COMMAND_SUCCESS &&
-    action.commandType === REMOVE_COMMENT
+    action.commandType === removeComment
   ) {
     return {
       ...state,
@@ -136,4 +135,4 @@ const createOptimisticCommentsReducer = ({
   return state
 }
 
-export default createOptimisticCommentsReducer
+export default injectDefaultOptions(createCommentsReducer)

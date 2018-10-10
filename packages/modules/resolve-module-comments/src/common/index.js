@@ -1,20 +1,24 @@
 import path from 'path'
 
-import {
-  DEFAULT_AGGREGATE_NAME,
-  DEFAULT_READ_MODEL_NAME,
-  DEFAULT_COMMENTS_TABLE_NAME,
-  DEFAULT_REDUCER_NAME
-} from './constants'
+import createCommentsCommands from './aggregates/comments.commands'
+import createCommentsProjection from './read-models/comments.projection'
+import createCommentsResolvers from './read-models/comments.resolvers'
+import injectDefaults from './inject-defaults'
 
 export * from '../client'
 
+export {
+  createCommentsCommands,
+  createCommentsProjection,
+  createCommentsResolvers
+}
+
 export default ({
-  aggregateName = DEFAULT_AGGREGATE_NAME,
-  readModelName = DEFAULT_READ_MODEL_NAME,
-  commentsTableName = DEFAULT_COMMENTS_TABLE_NAME,
-  reducerName = DEFAULT_REDUCER_NAME,
-  verifyCommand = path.join(__dirname, './aggregates/verify-command.js')
+  aggregateName,
+  readModelName,
+  commentsTableName,
+  reducerName,
+  verifyCommand
 } = {}) => {
   const options = {
     aggregateName,
@@ -26,17 +30,12 @@ export default ({
     verifyCommand
   }
 
-  return {
+  return injectDefaults((options, imports) => ({
     aggregates: [
       {
         name: options.aggregateName,
         commands: {
-          module: path.join(__dirname, './aggregates/comment.commands.js'),
-          options,
-          imports
-        },
-        projection: {
-          module: path.join(__dirname, './aggregates/comment.projection.js'),
+          module: path.join(__dirname, './aggregates/comments.commands.js'),
           options,
           imports
         }
@@ -60,14 +59,11 @@ export default ({
     redux: {
       reducers: {
         [reducerName]: {
-          module: path.join(
-            __dirname,
-            '../client/reducers/optimistic-comments.js'
-          ),
+          module: path.join(__dirname, '../client/reducers/comments.js'),
           options,
           imports
         }
       }
     }
-  }
+  }))(options, imports)
 }

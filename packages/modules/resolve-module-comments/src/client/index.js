@@ -1,4 +1,4 @@
-import createActions from './actions/comment-actions'
-import { eventTypes, actionTypes, commandTypes } from '../common/constants'
+import createCommentsReducer from './reducers/comments'
+import * as defaults from '../common/defaults'
 
-export { createActions, commandTypes, eventTypes, actionTypes }
+export { createCommentsReducer, defaults }

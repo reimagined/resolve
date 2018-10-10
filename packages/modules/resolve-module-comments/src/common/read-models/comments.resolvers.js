@@ -1,12 +1,11 @@
-import { DEFAULT_COMMENTS_TABLE_NAME, resolverNames } from '../constants'
+import injectDefaults from '../inject-defaults'
 
-const { READ_COMMENTS_TREE, READ_ALL_COMMENTS_PAGINATE } = resolverNames
-
-export default ({
-  commentsTableName = DEFAULT_COMMENTS_TABLE_NAME,
+const createCommentsProjection = ({
+  commentsTableName,
+  resolverNames: { commentsTree, allCommentsPaginate },
   maxNestedLevel
 }) => ({
-  [READ_COMMENTS_TREE]: async (store, args) => {
+  [commentsTree]: async (store, args) => {
     const { treeId, parentCommentId, maxLevel } = args
     const parentId = parentCommentId != null ? parentCommentId : null
 
@@ -89,7 +88,7 @@ export default ({
     return treeComments
   },
 
-  [READ_ALL_COMMENTS_PAGINATE]: async (store, args) => {
+  [allCommentsPaginate]: async (store, args) => {
     const { itemsOnPage, pageNumber } = args
 
     const itemsOnPageInt = +itemsOnPage
@@ -139,3 +138,5 @@ export default ({
     }
   }
 })
+
+export default injectDefaults(createCommentsProjection)

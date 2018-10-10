@@ -1,16 +1,15 @@
 import path from 'path'
 
-import { eventTypes, commandTypes } from '../constants'
+import injectDefaults from '../inject-defaults'
 
-const { COMMENT_CREATED, COMMENT_UPDATED, COMMENT_REMOVED } = eventTypes
-
-const { CREATE_COMMENT, UPDATE_COMMENT, REMOVE_COMMENT } = commandTypes
-
-export default (
-  options,
+const createCommentTreeCommands = (
+  {
+    commandTypes: { createComment, updateComment, removeComment },
+    eventTypes: { COMMENT_CREATED, COMMENT_UPDATED, COMMENT_REMOVED }
+  },
   { verifyCommand = path.join(__dirname, './verify-command.js') }
 ) => ({
-  [CREATE_COMMENT]: async (state, command, jwtToken) => {
+  [createComment]: async (state, command, jwtToken) => {
     if (
       command.payload.commentId == null ||
       command.payload.commentId.constructor !== String
@@ -48,7 +47,7 @@ export default (
     }
   },
 
-  [UPDATE_COMMENT]: async (state, command, jwtToken) => {
+  [updateComment]: async (state, command, jwtToken) => {
     if (
       command.payload.commentId == null ||
       command.payload.commentId.constructor !== String
@@ -75,7 +74,7 @@ export default (
     }
   },
 
-  [REMOVE_COMMENT]: async (state, command, jwtToken) => {
+  [removeComment]: async (state, command, jwtToken) => {
     if (
       command.payload.commentId == null ||
       command.payload.commentId.constructor !== String
@@ -95,3 +94,5 @@ export default (
     }
   }
 })
+
+export default injectDefaults(createCommentTreeCommands)

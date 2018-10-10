@@ -36,8 +36,8 @@ const mapStateToOptions = (
     }
   }
 ) => ({
-  readModelName: 'HackerNewsComments',
-  resolverName: 'ReadAllCommentsPaginate',
+  readModelName: 'Comments',
+  resolverName: 'allCommentsPaginate',
   resolverArgs: {
     itemsOnPage: ITEMS_PER_PAGE,
     pageNumber: +page - 1

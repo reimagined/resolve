@@ -7,7 +7,6 @@ import uuid from 'uuid/v4'
 
 import ChildrenComments from '../components/ChildrenComments'
 import Comment from '../components/Comment'
-import commentsActions from '../actions/comment-actions'
 
 const Reply = styled.div`
   padding: 0.5em;
@@ -87,10 +86,10 @@ class ConnectedComments extends React.PureComponent {
 
 const mapStateToOptions = (
   { optimistic: { refreshId } },
-  { treeId, parentCommentId = null }
+  { treeId, parentCommentId }
 ) => ({
-  readModelName: 'HackerNewsComments',
-  resolverName: 'ReadCommentsTree',
+  readModelName: 'Comments',
+  resolverName: 'commentsTree',
   resolverArgs: {
     refreshId,
     treeId,
@@ -98,13 +97,13 @@ const mapStateToOptions = (
   }
 })
 
-const mapStateToProps = state => ({
-  comments: state.optimistic.comments,
+const mapStateToProps = (state, { treeId, parentCommentId }) => ({
+  comments: state.comments[treeId][parentCommentId],
   me: state.jwt
 })
 
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(commentsActions, dispatch)
+const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+  bindActionCreators(aggregateActions, dispatch)
 
 export default connectReadModel(mapStateToOptions)(
   connect(

@@ -1,8 +1,10 @@
-import { DEFAULT_COMMENTS_TABLE_NAME, eventTypes } from '../constants'
+import injectDefaults from '../inject-defaults'
 
-const { COMMENT_CREATED, COMMENT_UPDATED, COMMENT_REMOVED } = eventTypes
-
-export default ({ commentsTableName = DEFAULT_COMMENTS_TABLE_NAME }) => ({
+const createCommentsProjection = ({
+  eventTypes: { COMMENT_CREATED, COMMENT_UPDATED, COMMENT_REMOVED },
+  commentsTableName,
+  maxNestedLevel
+}) => ({
   Init: async store => {
     await store.defineTable(commentsTableName, {
       indexes: {
@@ -111,10 +113,7 @@ export default ({ commentsTableName = DEFAULT_COMMENTS_TABLE_NAME }) => ({
 
       const nestedLevel = parentComment.nestedLevel + 1
 
-      if (
-        Number.isInteger(options.maxNestedLevel) &&
-        nestedLevel > options.maxNestedLevel
-      ) {
+      if (Number.isInteger(maxNestedLevel) && nestedLevel > maxNestedLevel) {
         continue
       }
 
@@ -175,3 +174,5 @@ export default ({ commentsTableName = DEFAULT_COMMENTS_TABLE_NAME }) => ({
     })
   }
 })
+
+export default injectDefaults(createCommentsProjection)

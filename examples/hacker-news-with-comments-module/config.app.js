@@ -1,11 +1,13 @@
-import resolveModuleComments from 'resolve-module-comments'
-
 const appConfig = {
   routes: 'client/routes.js',
   redux: {
-    store: 'client/store/index.js',
-    reducers: 'client/reducers/index.js',
-    middlewares: 'client/middlewares/index.js'
+    reducers: {
+      optimistic: 'client/reducers/optimistic.js'
+    },
+    middlewares: [
+      'client/middlewares/story-create-middleware.js',
+      'client/middlewares/optimistic-voting-middleware.js'
+    ]
   },
   aggregates: [
     {
@@ -34,16 +36,6 @@ const appConfig = {
   ],
   auth: {
     strategies: 'auth/local_strategy.js'
-  }
-}
-
-const moduleComments = resolveModuleComments({
-  aggregateName: 'HackerNewsComments'
-})
-
-for (const key of Object.keys(moduleComments)) {
-  if (Array.isArray(moduleComments[key])) {
-    appConfig[key] = appConfig[key].concat(moduleComments[key])
   }
 }
 
