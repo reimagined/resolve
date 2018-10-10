@@ -61,9 +61,8 @@ describe('resolve-readmodel-memory store-api', () => {
       20
     )
 
-    const {
-      $and: [findQuery]
-    } = storage['test'].find.firstCall.args[0]
+    const { $where, ...findQuery } = storage['test'].find.firstCall.args[0]
+    expect($where).toBeInstanceOf(Function)
     expect(findQuery).toEqual({ search: 0 })
 
     const cursor = storage['test'].find.firstCall.returnValue
@@ -93,9 +92,8 @@ describe('resolve-readmodel-memory store-api', () => {
       20
     )
 
-    const {
-      $and: [findQuery]
-    } = storage['test'].find.firstCall.args[0]
+    const { $where, ...findQuery } = storage['test'].find.firstCall.args[0]
+    expect($where).toBeInstanceOf(Function)
     expect(findQuery).toEqual({
       search: 0
     })
@@ -123,9 +121,8 @@ describe('resolve-readmodel-memory store-api', () => {
       20
     )
 
-    const {
-      $and: [findQuery]
-    } = storage['test'].find.firstCall.args[0]
+    const { $where, ...findQuery } = storage['test'].find.firstCall.args[0]
+    expect($where).toBeInstanceOf(Function)
     expect(findQuery).toEqual({
       search: 0
     })
@@ -156,9 +153,8 @@ describe('resolve-readmodel-memory store-api', () => {
       20
     )
 
-    const {
-      $and: [findQuery]
-    } = storage['test'].find.firstCall.args[0]
+    const { $where, ...findQuery } = storage['test'].find.firstCall.args[0]
+    expect($where).toBeInstanceOf(Function)
     expect(findQuery).toEqual({
       search: 0
     })
@@ -189,9 +185,8 @@ describe('resolve-readmodel-memory store-api', () => {
       Infinity
     )
 
-    const {
-      $and: [findQuery]
-    } = storage['test'].find.firstCall.args[0]
+    const { $where, ...findQuery } = storage['test'].find.firstCall.args[0]
+    expect($where).toBeInstanceOf(Function)
     expect(findQuery).toEqual({
       search: 0
     })
@@ -219,9 +214,8 @@ describe('resolve-readmodel-memory store-api', () => {
       { field: 1 }
     )
 
-    const {
-      $and: [findQuery]
-    } = storage['test'].findOne.firstCall.args[0]
+    const { $where, ...findQuery } = storage['test'].findOne.firstCall.args[0]
+    expect($where).toBeInstanceOf(Function)
     expect(findQuery).toEqual({
       search: 0
     })
@@ -241,9 +235,8 @@ describe('resolve-readmodel-memory store-api', () => {
 
     const result = await storeApi.findOne({ storage }, 'test', { search: 0 })
 
-    const {
-      $and: [findQuery]
-    } = storage['test'].findOne.firstCall.args[0]
+    const { $where, ...findQuery } = storage['test'].findOne.firstCall.args[0]
+    expect($where).toBeInstanceOf(Function)
 
     expect(findQuery).toEqual({
       search: 0
@@ -265,9 +258,8 @@ describe('resolve-readmodel-memory store-api', () => {
 
     const result = await storeApi.count({ storage }, 'test', { search: 0 })
 
-    const {
-      $and: [findQuery]
-    } = storage['test'].count.firstCall.args[0]
+    const { $where, ...findQuery } = storage['test'].count.firstCall.args[0]
+    expect($where).toBeInstanceOf(Function)
 
     expect(findQuery).toEqual({ search: 0 })
 
@@ -308,9 +300,8 @@ describe('resolve-readmodel-memory store-api', () => {
       { upsert: false }
     )
 
-    const {
-      $and: [findQuery]
-    } = storage['test'].update.firstCall.args[0]
+    const { $where, ...findQuery } = storage['test'].update.firstCall.args[0]
+    expect($where).toBeInstanceOf(Function)
 
     expect(findQuery).toEqual({
       id: 1,
@@ -331,9 +322,8 @@ describe('resolve-readmodel-memory store-api', () => {
 
     await storeApi.del({ storage }, 'test', { id: 1, value: 2 })
 
-    const {
-      $and: [findQuery]
-    } = storage['test'].remove.firstCall.args[0]
+    const { $where, ...findQuery } = storage['test'].remove.firstCall.args[0]
+    expect($where).toBeInstanceOf(Function)
 
     expect(findQuery).toEqual({
       id: 1,
