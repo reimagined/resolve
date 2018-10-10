@@ -16,7 +16,7 @@ Aggregate state is passed to each of these functions explicitly as parameter.
 # Aggregate ID
 
 Each aggregate should have an unique ID that is immutable during its lifetime. Though it should be unique in the given event store,
-it is recommended to make it globally unique. We recommend using [UUID v4](https://github.com/kelektiv/node-uuid#version-4) to generate Aggregate IDs or [cuid](https://github.com/ericelliott/cuid) for massive parallel apps.
+it is recommended to make it globally unique. We recommend using [UUID v4](https://github.com/kelektiv/node-uuid#version-4) to generate Aggregate IDs or [cuid](https://github.com/ericelliott/cuid) for distributed scalable apps.
 
 Please note that you have to generate a new Aggregate ID and send it with command that creates a new aggregate.
 
