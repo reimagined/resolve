@@ -117,6 +117,7 @@ module.exports = {
           'ecma',
           'eql',
           'errno',
+          'eventstore',
           'escaper',
           'escaperegexp',
           'execpath',
