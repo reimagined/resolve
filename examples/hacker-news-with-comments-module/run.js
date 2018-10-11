@@ -6,12 +6,12 @@ import {
   runTestcafe
 } from 'resolve-scripts'
 import merge from 'deepmerge'
+import resolveModuleComments from 'resolve-module-comments'
 
 import appConfig from './config.app'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
 import testFunctionalConfig from './config.test_functional'
-import resolveModuleComments from 'resolve-module-comments'
 
 const launchMode = process.argv[2]
 
@@ -20,7 +20,6 @@ void (async () => {
 
   switch (launchMode) {
     case 'dev': {
-      console.log(merge.all([defaultResolveConfig, appConfig, devConfig, moduleComments]))
       await watch(
         merge.all([defaultResolveConfig, appConfig, devConfig, moduleComments])
       )

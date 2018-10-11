@@ -18,6 +18,7 @@ const injectDefaultOptions = callback => (
     } = {},
     resolverNames: {
       commentsTree = defaults.commentsTree,
+      foreignCommentsCount = defaults.foreignCommentsCount,
       allCommentsPaginate = defaults.allCommentsPaginate
     } = {},
     ...options
@@ -42,6 +43,7 @@ const injectDefaultOptions = callback => (
       },
       resolverNames: {
         commentsTree,
+        foreignCommentsCount,
         allCommentsPaginate
       },
       ...options

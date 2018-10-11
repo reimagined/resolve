@@ -20,9 +20,17 @@ const createCommentTreeCommands = (
     }
 
     if (
-      command.payload.parentCommentId !== null &&
-      (command.payload.parentCommentId === undefined ||
-        command.payload.parentCommentId.constructor !== String)
+      command.payload.authorId == null ||
+      command.payload.authorId.constructor !== String
+    ) {
+      throw new Error(
+        'Comment creation should provide "authorId" field as string'
+      )
+    }
+
+    if (
+      command.payload.parentCommentId != null &&
+      command.payload.parentCommentId.constructor !== String
     ) {
       throw new Error(
         'Comment creation should provide "parentCommentId" field as string'
@@ -40,8 +48,9 @@ const createCommentTreeCommands = (
     return {
       type: COMMENT_CREATED,
       payload: {
+        authorId: command.payload.authorId,
         commentId: command.payload.commentId,
-        parentCommentId: command.payload.parentCommentId,
+        parentCommentId: command.payload.parentCommentId || null,
         content: command.payload.content
       }
     }

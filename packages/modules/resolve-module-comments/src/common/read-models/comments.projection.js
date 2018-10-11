@@ -10,6 +10,7 @@ const createCommentsProjection = ({
       indexes: {
         mainId: 'string',
         treeId: 'string',
+        authorId: 'string',
         commentId: 'string',
         childCommentId: 'string',
         timestamp: 'number',
@@ -25,7 +26,7 @@ const createCommentsProjection = ({
   [COMMENT_CREATED]: async (store, event) => {
     const {
       aggregateId: treeId,
-      payload: { commentId, parentCommentId, content },
+      payload: { commentId, parentCommentId, authorId, content },
       timestamp
     } = event
 
@@ -42,6 +43,7 @@ const createCommentsProjection = ({
       await store.insert(commentsTableName, {
         mainId: `${treeId}-root`,
         treeId,
+        authorId,
         commentId: null,
         position: null,
         childCommentId: null,
@@ -54,6 +56,7 @@ const createCommentsProjection = ({
     await store.insert(commentsTableName, {
       mainId: `${treeId}-${commentId}`,
       treeId,
+      authorId,
       commentId,
       position: null,
       childCommentId: null,
@@ -120,6 +123,7 @@ const createCommentsProjection = ({
       await store.insert(commentsTableName, {
         mainId,
         treeId,
+        authorId,
         commentId: parentComment.commentId,
         position,
         childCommentId: commentId,

@@ -19,17 +19,17 @@ class ConnectedComments extends React.PureComponent {
   }
 
   saveComment = () => {
-    const { treeId, parentCommentId = null, me, createComment } = this.props
+    const { treeId, parentCommentId, me, createComment } = this.props
 
     createComment(treeId, {
       commentId: uuid(),
+      authorId: me.id,
       parentCommentId,
       content: {
         text: this.state.commentText,
         createdBy: me.id,
         createdByName: me.name,
-        createdAt: Date.now(),
-        parentId: null
+        createdAt: Date.now()
       }
     })
 

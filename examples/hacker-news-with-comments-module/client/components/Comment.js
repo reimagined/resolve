@@ -17,14 +17,11 @@ const CommentInfo = styled.div`
 
 const Collapse = styled.div`
   display: inline-block;
-  vertical-align: middle;
   margin-right: 0.33em;
   cursor: pointer;
 `
 
 const linkStyles = `
-  vertical-align: middle;
-
   &:hover {
     text-decoration: underline;
   }

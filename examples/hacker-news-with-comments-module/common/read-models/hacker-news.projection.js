@@ -1,13 +1,9 @@
-import { eventTypes as moduleCommentsEventTypes } from 'resolve-module-comments'
-
 import {
   STORY_CREATED,
   STORY_UNVOTED,
   STORY_UPVOTED,
   USER_CREATED
 } from '../event_types'
-
-const { COMMENT_CREATED, COMMENT_REMOVED } = moduleCommentsEventTypes
 
 export default {
   Init: async store => {
@@ -90,7 +86,8 @@ export default {
     await store.insert('Users', user)
   },
 
-  [COMMENT_CREATED]: async (store, { aggregateId }) => {
+  /* from module "resolve-module-comments" */
+  COMMENT_CREATED: async (store, { aggregateId }) => {
     await store.update(
       'Stories',
       { id: aggregateId },
@@ -98,7 +95,8 @@ export default {
     )
   },
 
-  [COMMENT_REMOVED]: async (store, { aggregateId }) => {
+  /* from module "resolve-module-comments" */
+  COMMENT_REMOVED: async (store, { aggregateId }) => {
     await store.update(
       'Stories',
       { id: aggregateId },

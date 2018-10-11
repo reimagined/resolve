@@ -7,7 +7,8 @@ const appConfig = {
     middlewares: [
       'client/middlewares/story-create-middleware.js',
       'client/middlewares/optimistic-voting-middleware.js'
-    ]
+    ],
+    enhancers: ['client/enhancers/redux-devtools.js']
   },
   aggregates: [
     {
@@ -21,12 +22,6 @@ const appConfig = {
       projection: 'common/aggregates/user.projection.js'
     }
   ],
-  viewModels: [
-    {
-      name: 'CommentsNotification',
-      projection: 'common/view-models/comments-notification.projection.js'
-    }
-  ],
   readModels: [
     {
       name: 'HackerNews',
@@ -35,7 +30,7 @@ const appConfig = {
     }
   ],
   auth: {
-    strategies: 'auth/local_strategy.js'
+    strategies: 'auth/local-strategy.js'
   }
 }
 

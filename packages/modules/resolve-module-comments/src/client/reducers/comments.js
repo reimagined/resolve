@@ -12,12 +12,8 @@ const {
 const createCommentsReducer = ({
   aggregateName,
   readModelName,
-  resolverNames: { commentsTree = defaults.commentsTree } = {},
-  commandTypes: {
-    createComment = defaults.createComment,
-    updateComment = defaults.updateComment,
-    removeComment = defaults.removeComment
-  } = {}
+  resolverNames: { commentsTree } = {},
+  commandTypes: { createComment, updateComment, removeComment } = {}
 }) => (state = {}, action) => {
   if (
     action.type === CONNECT_READMODEL &&
@@ -27,6 +23,7 @@ const createCommentsReducer = ({
     return {
       ...state,
       [action.resolverArgs.treeId]: {
+        ...state[action.resolverArgs.treeId],
         [action.resolverArgs.parentCommentId]: {
           children: []
         }
@@ -76,8 +73,11 @@ const createCommentsReducer = ({
         [action.payload.parentCommentId]: {
           ...state[action.aggregateId][action.payload.parentCommentId],
           children: [
-            ...state[action.aggregateId][action.payload.parentCommentId]
-              .children,
+            ...(
+              state[action.aggregateId][action.payload.parentCommentId] || {
+                children: []
+              }
+            ).children,
             action.payload
           ]
         }

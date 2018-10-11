@@ -1,6 +1,6 @@
 // Events
 export const COMMENT_CREATED = 'COMMENT_CREATED'
-export const COMMENT_UPDATED = 'COMMENT_CREATED'
+export const COMMENT_UPDATED = 'COMMENT_UPDATED'
 export const COMMENT_REMOVED = 'COMMENT_REMOVED'
 
 // Command Types
@@ -22,4 +22,5 @@ export const commentsTableName = 'Comments'
 
 // Resolver Names
 export const commentsTree = 'commentsTree'
+export const foreignCommentsCount = 'foreignCommentsCount'
 export const allCommentsPaginate = 'allCommentsPaginate'

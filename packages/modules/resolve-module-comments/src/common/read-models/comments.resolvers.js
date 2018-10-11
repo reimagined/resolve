@@ -2,7 +2,7 @@ import injectDefaults from '../inject-defaults'
 
 const createCommentsProjection = ({
   commentsTableName,
-  resolverNames: { commentsTree, allCommentsPaginate },
+  resolverNames: { commentsTree, foreignCommentsCount, allCommentsPaginate },
   maxNestedLevel
 }) => ({
   [commentsTree]: async (store, args) => {
@@ -86,6 +86,60 @@ const createCommentsProjection = ({
     }
 
     return treeComments
+  },
+
+  [foreignCommentsCount]: async (store, args) => {
+    const { treeId, parentCommentId, authorId, maxLevel } = args
+    const parentId = parentCommentId != null ? parentCommentId : null
+
+    if (authorId == null) {
+      throw new Error(
+        'Comments can be fetched only for supposed "authorId" field'
+      )
+    }
+
+    if (treeId == null) {
+      throw new Error(
+        'Comments can be fetched only for supposed "treeId" field'
+      )
+    }
+
+    let searchLevel = []
+    if (maxLevel != null) {
+      const maxLevelInt = parseInt(maxLevel)
+
+      if (
+        maxLevelInt < 0 ||
+        (Number.isInteger(maxNestedLevel) && maxLevelInt > maxNestedLevel)
+      ) {
+        throw new Error(
+          `Field "maxLevel" if present should be number between 0 and ${maxNestedLevel}`
+        )
+      }
+
+      searchLevel = [
+        {
+          $or: Array.from({ length: maxLevelInt }).map((_, idx) => ({
+            nestedLevel: idx
+          }))
+        }
+      ]
+    }
+
+    const searchExpression = {
+      $and: [
+        {
+          commentId: parentId,
+          treeId,
+          authorId: { $ne: authorId }
+        },
+        ...searchLevel
+      ]
+    }
+
+    const count = await store.count(commentsTableName, searchExpression)
+
+    return count
   },
 
   [allCommentsPaginate]: async (store, args) => {

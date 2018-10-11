@@ -1,6 +1,6 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
-import { connectViewModel } from 'resolve-redux'
+import { connectReadModel } from 'resolve-redux'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 
@@ -20,60 +20,116 @@ const Notification = styled.div`
   color: #ffffff;
 `
 
-class CommentsNotification extends React.PureComponent {
-  state = {
-    shown: false
-  }
-
-  showNotification = () => {
-    this.setState({
-      shown: true
-    })
-  }
-
-  componentDidUpdate() {
-    if (this.props.shown) {
-      this.setState({
-        shown: true
-      })
-    }
+export class CommentCountUpdater extends React.PureComponent {
+  componentDidMount() {
+    this.props.updateCommentCount(this.props.commentCount)
   }
 
   render() {
-    const { updateRefreshId } = this.props
+    return null
+  }
+}
 
-    if (!this.state.shown) {
-      return null
+export const mapStateToOptions = (
+  { optimistic: { refreshId }, jwt: { id: authorId } },
+  { treeId, parentCommentId, timestamp }
+) => ({
+  readModelName: 'Comments',
+  resolverName: 'foreignCommentsCount',
+  resolverArgs: {
+    refreshId,
+    authorId,
+    treeId,
+    parentCommentId,
+    timestamp
+  }
+})
+
+export const mapStateToProps = (state, { data }) => ({
+  commentCount: data
+})
+
+export const mapDispatchToProps = dispatch =>
+  bindActionCreators(optimisticActions, dispatch)
+
+export const CommentsConnector = connectReadModel(mapStateToOptions)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(CommentCountUpdater)
+)
+
+class CommentsNotification extends React.PureComponent {
+  static defaultProps = {
+    refreshInterval: 30 * 1000
+  }
+
+  state = {
+    timestamp: Date.now(),
+    commentCount: null,
+    prevCommentCount: null
+  }
+
+  componentDidMount() {
+    this.timer = setInterval(this.updateTimestamp, this.props.refreshInterval)
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer)
+  }
+
+  updateTimestamp = () => {
+    this.setState({
+      timestamp: Date.now()
+    })
+  }
+
+  updateCommentCount = commentCount => {
+    if (this.state.commentCount === commentCount) {
+      return
     }
 
+    const prevCommentCount =
+      this.state.commentCount === null ? commentCount : this.state.commentCount
+
+    this.setState({
+      prevCommentCount,
+      commentCount
+    })
+  }
+
+  refresh = () => {
+    this.props.updateRefreshId()
+    this.setState({
+      commentCount: null,
+      prevCommentCount: null
+    })
+  }
+
+  render() {
+    const notification =
+      this.state.commentCount === this.state.prevCommentCount ? null : (
+        <Container onClick={this.refresh}>
+          <Notification>
+            Comments had been updated - refresh page to see them
+          </Notification>
+        </Container>
+      )
+
     return (
-      <Container onClick={updateRefreshId}>
-        <Notification>
-          Comments had been updated - refresh page to see them
-        </Notification>
-      </Container>
+      <React.Fragment>
+        {notification}
+        <CommentsConnector
+          {...this.props}
+          timestamp={this.state.timestamp}
+          updateCommentCount={this.updateCommentCount}
+        />
+      </React.Fragment>
     )
   }
 }
 
-const mapStateToOptions = ({ optimistic: { refreshId } }, { treeId }) => ({
-  viewModelName: 'CommentsNotification',
-  aggregateIds: [treeId],
-  aggregateArgs: {
-    refreshId
-  }
-})
-
-const mapStateToProps = (state, props) => ({
-  shown: state.jwt && state.jwt.id !== props.data.userId
-})
-
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(optimisticActions, dispatch)
-
-export default connectViewModel(mapStateToOptions)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(CommentsNotification)
-)
+export default connect(
+  null,
+  dispatch => bindActionCreators(optimisticActions, dispatch)
+)(CommentsNotification)

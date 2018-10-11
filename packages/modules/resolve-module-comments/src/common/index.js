@@ -58,7 +58,7 @@ export default ({
     ],
     redux: {
       reducers: {
-        [reducerName]: {
+        [options.reducerName]: {
           module: path.join(__dirname, '../client/reducers/comments.js'),
           options,
           imports

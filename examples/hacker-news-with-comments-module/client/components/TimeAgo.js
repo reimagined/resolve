@@ -9,7 +9,6 @@ const DAY = HOUR * 24
 
 const Container = styled.div`
   display: inline-block;
-  vertical-align: middle;
 `
 
 class TimeAgo extends React.PureComponent {
