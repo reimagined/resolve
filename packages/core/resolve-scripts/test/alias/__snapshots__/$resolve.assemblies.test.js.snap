@@ -8,6 +8,7 @@ import constants from '$resolve.constants'
 import customConstants from '$resolve.customConstants'
 import redux from '$resolve.redux'
 import routes from '$resolve.routes'
+import snapshotAdapter from '$resolve.snapshotAdapter'
 import storageAdapter from '$resolve.storageAdapter'
 import subscribeAdapter from '$resolve.subscribeAdapter'
 
@@ -18,6 +19,7 @@ constants,
 customConstants,
 redux,
 routes,
+snapshotAdapter,
 storageAdapter,
 subscribeAdapter
 }",
