@@ -1,9 +1,9 @@
-const wrapInit = (pool, init, onMessage, zmq) => {
+const wrapInit = (pool, init, onMessage, bus) => {
   let initialPromiseResolve
   const initialPromise = new Promise(resolve => {
     initialPromiseResolve = resolve
   }).then(async () => {
-    await init(zmq, pool, onMessage)
+    await init(bus, pool, onMessage)
   })
 
   Object.assign(pool, {

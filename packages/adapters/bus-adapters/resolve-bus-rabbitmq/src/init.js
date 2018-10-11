@@ -1,6 +1,12 @@
 import RabbitMQBusError from './rabbitmq-error'
+import defaultOptions from './default-options'
 
 const init = async (amqp, pool, onMessage) => {
+  pool.config = {
+    ...defaultOptions,
+    ...pool.config
+  }
+
   try {
     const {
       url,

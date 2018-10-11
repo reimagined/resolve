@@ -1,22 +1,9 @@
 import amqp from 'amqplib'
 
-import createAdapter from './create-adapter'
-import wrapInit from './wrap-init'
-import wrapMethod from './wrap-method'
+import createAdapter from 'resolve-bus-base'
 import onMessage from './on-message'
 import init from './init'
 import publish from './publish'
-import subscribe from './subscribe'
 import dispose from './dispose'
 
-export default createAdapter.bind(
-  null,
-  wrapInit,
-  wrapMethod,
-  onMessage,
-  init,
-  publish,
-  subscribe,
-  dispose,
-  amqp
-)
+export default createAdapter.bind(null, onMessage, init, publish, dispose, amqp)
