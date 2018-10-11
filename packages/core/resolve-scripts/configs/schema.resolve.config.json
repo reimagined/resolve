@@ -331,6 +331,9 @@
         "readModelAdapters": {
           "$ref": "#/definitions/adaptersMap"
         },
+        "snapshotAdapter": {
+          "$ref": "#/definitions/adapter"
+        },
         "auth": {
           "$ref": "#/definitions/auth"
         },
@@ -363,7 +366,9 @@
         "viewModels",
         "readModels",
         "busAdapter",
+        "readModelAdapters",
         "storageAdapter",
+        "snapshotAdapter",
         "subscribeAdapter",
         "polyfills",
         "customConstants"

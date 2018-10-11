@@ -1,102 +1,75 @@
-const emptyFunction = () => {}
+const projectionInvoker = async (repository, event) => {
+  if (
+    repository.disposePromise &&
+    typeof repository.cancelSubscription !== 'function'
+  ) {
+    throw new Error('Read model is disposed')
+  } else if (
+    repository.disposePromise ||
+    repository.hasOwnProperty('lastError')
+  ) {
+    return
+  }
+
+  try {
+    if (event == null || event.constructor !== Object) {
+      return
+    }
+    const expectedAggregateVersion = repository.aggregatesVersionsMap.get(
+      event.aggregateId
+    )
+    if (
+      expectedAggregateVersion != null &&
+      event.aggregateVersion <= expectedAggregateVersion
+    ) {
+      return
+    }
+
+    await repository.projection[event.type](event)
+  } catch (error) {
+    repository.lastError = error
+
+    if (typeof repository.cancelSubscription === 'function') {
+      await repository.cancelSubscription()
+    } else {
+      throw error
+    }
+  }
+}
 
 const init = async repository => {
   const { adapter, eventStore, projection } = repository
   if (projection == null) {
-    Object.assign(repository, adapter.init(), {
-      loadDonePromise: Promise.resolve(),
-      onDispose: emptyFunction
-    })
+    Object.assign(repository, adapter.init())
     return
   }
 
   const { prepareProjection, ...readApi } = adapter.init()
-  let subscriptionCanceler = null
+  const { aggregatesVersionsMap, lastTimestamp } = await prepareProjection()
 
-  let onDispose = () => {
-    if (subscriptionCanceler === null) {
-      onDispose = emptyFunction
-      return
-    }
-    subscriptionCanceler()
-  }
-
-  const loadDonePromise = new Promise((resolve, reject) => {
-    let flowPromise = Promise.resolve()
-
-    const forceStop = (reason, chainable = true) => {
-      if (flowPromise != null) {
-        flowPromise.catch(reject)
-        flowPromise = null
-        onDispose()
-      }
-
-      repository.lateFailure = reason
-      if (chainable) {
-        return Promise.reject(reason)
-      }
-
-      reject(reason)
-    }
-
-    const projectionInvoker = async (event, aggregatesVersionsMap) => {
-      if (event == null || event.constructor !== Object) {
-        return
-      }
-      const expectedAggregateVersion = aggregatesVersionsMap.get(
-        event.aggregateId
-      )
-      if (
-        expectedAggregateVersion != null &&
-        event.aggregateVersion <= expectedAggregateVersion
-      ) {
-        return
-      }
-
-      await projection[event.type](event)
-    }
-
-    const synchronizedEventWorker = (aggregatesVersionsMap, event) => {
-      if (flowPromise == null) return
-
-      flowPromise = flowPromise
-        .then(projectionInvoker.bind(null, event, aggregatesVersionsMap))
-        .catch(forceStop)
-    }
-
-    Promise.resolve()
-      .then(prepareProjection)
-      .then(({ lastTimestamp, aggregatesVersionsMap }) =>
-        eventStore.subscribeByEventType(
-          Object.keys(projection),
-          synchronizedEventWorker.bind(null, aggregatesVersionsMap),
-          {
-            startTime: lastTimestamp
-          }
-        )
-      )
-      .then(cancelSubscription => {
-        if (flowPromise) {
-          flowPromise = flowPromise.then(resolve).catch(forceStop)
-        }
-        if (onDispose !== emptyFunction) {
-          subscriptionCanceler = cancelSubscription
-        } else {
-          cancelSubscription()
-        }
-      })
-      .catch(error => forceStop(error, false))
+  Object.assign(repository, {
+    prepareProjection,
+    aggregatesVersionsMap,
+    lastTimestamp,
+    ...readApi
   })
 
-  Object.assign(repository, readApi, {
-    loadDonePromise,
-    onDispose
-  })
+  repository.subscribePromise = eventStore.subscribeByEventType(
+    Object.keys(projection),
+    projectionInvoker.bind(null, repository),
+    { startTime: lastTimestamp }
+  )
+
+  repository.cancelSubscription = await repository.subscribePromise
 }
 
 const getReadInterface = async repository => {
+  if (repository.disposePromise) {
+    throw new Error('Read model is disposed')
+  }
+
   if (!repository.hasOwnProperty('loadDonePromise')) {
-    init(repository)
+    repository.loadDonePromise = init(repository)
   }
 
   try {
@@ -111,6 +84,10 @@ const getReadInterface = async repository => {
 }
 
 const getLastError = async repository => {
+  if (repository.disposePromise) {
+    throw new Error('Read model is disposed')
+  }
+
   if (!repository.hasOwnProperty('loadDonePromise')) {
     return null
   }
@@ -121,14 +98,18 @@ const getLastError = async repository => {
     return error
   }
 
-  if (repository.hasOwnProperty('lateFailure')) {
-    return repository.lateFailure
+  if (repository.hasOwnProperty('lastError')) {
+    return repository.lastError
   }
 
   return null
 }
 
 const read = async (repository, { resolverName, resolverArgs, jwtToken }) => {
+  if (repository.disposePromise) {
+    throw new Error('Read model is disposed')
+  }
+
   const resolver = repository.resolvers[resolverName]
 
   if (typeof resolver !== 'function') {
@@ -138,7 +119,21 @@ const read = async (repository, { resolverName, resolverArgs, jwtToken }) => {
   }
 
   const store = await getReadInterface(repository)
+
   return await resolver(store, resolverArgs, jwtToken)
+}
+
+const readAndSerialize = async (
+  repository,
+  { resolverName, resolverArgs, jwtToken }
+) => {
+  const result = await read(repository, {
+    resolverName,
+    resolverArgs,
+    jwtToken
+  })
+
+  return JSON.stringify(result, null, 2)
 }
 
 const dispose = (repository, options = {}) => {
@@ -152,13 +147,17 @@ const dispose = (repository, options = {}) => {
     return repository.disposePromise
   }
 
-  const disposePromise = Promise.resolve([
-    repository.onDispose,
-    repository.adapter.reset
-  ]).then(async ([onDispose, reset]) => {
-    await onDispose()
+  if (!repository.hasOwnProperty('loadDonePromise')) {
+    return
+  }
+
+  const disposePromise = (async (cancelSubscription, reset) => {
+    if (typeof cancelSubscription === 'function') {
+      await cancelSubscription()
+    }
+
     await reset(options)
-  })
+  })(repository.cancelSubscription, repository.adapter.reset)
 
   Object.keys(repository).forEach(key => {
     delete repository[key]
@@ -168,11 +167,18 @@ const dispose = (repository, options = {}) => {
   return repository.disposePromise
 }
 
+const resolverNames = repository => {
+  if (repository.disposePromise) {
+    throw new Error('Read model is disposed')
+  }
+
+  return Object.keys(repository.resolvers)
+}
+
 const createReadModel = ({ adapter, projection, eventStore, resolvers }) => {
   const repository = {
     projection: projection != null ? adapter.buildProjection(projection) : null,
     resolvers: resolvers != null ? resolvers : {},
-    onDispose: () => null,
     adapter,
     eventStore
   }
@@ -181,9 +187,8 @@ const createReadModel = ({ adapter, projection, eventStore, resolvers }) => {
     getReadInterface: getReadInterface.bind(null, repository),
     getLastError: getLastError.bind(null, repository),
     read: read.bind(null, repository),
-    readAndSerialize: async (...args) =>
-      JSON.stringify(await read(repository, ...args), null, 2),
-    resolverNames: Object.keys(resolvers != null ? resolvers : {}),
+    readAndSerialize: readAndSerialize.bind(null, repository),
+    resolverNames: resolverNames.bind(null, repository),
     dispose: dispose.bind(null, repository)
   })
 }

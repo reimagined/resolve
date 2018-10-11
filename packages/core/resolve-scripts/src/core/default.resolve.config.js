@@ -35,6 +35,10 @@ export default {
     module: 'resolve-subscribe-socket.io',
     options: {}
   },
+  snapshotAdapter: {
+    module: 'resolve-snapshot-lite',
+    options: {}
+  },
   readModelAdapters: {},
   jwtCookie: {
     name: 'jwt',
