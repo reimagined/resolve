@@ -6,11 +6,4 @@ import init from './init'
 import publish from './publish'
 import dispose from './dispose'
 
-export default createAdapter.bind(
-  null,
-  onMessage,
-  init,
-  publish,
-  dispose,
-  zmq
-)
+export default createAdapter.bind(null, onMessage, init, publish, dispose, zmq)

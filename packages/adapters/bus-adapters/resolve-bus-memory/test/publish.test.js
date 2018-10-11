@@ -35,7 +35,6 @@ test('publish causes exception', async () => {
   } catch (e) {
     expect(e).toEqual(new Error('Adapter has been already disposed'))
   }
-
 })
 
 test('publish should call all handlers including failed one', async () => {
@@ -52,7 +51,7 @@ test('publish should call all handlers including failed one', async () => {
 
   const event = { event: 'content' }
   await publish(pool, event)
-  
+
   sinon.assert.calledWith(pool.handlers[0], event)
   sinon.assert.calledWith(pool.handlers[1], event)
   sinon.assert.calledWith(pool.handlers[2], event)
