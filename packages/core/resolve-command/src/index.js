@@ -8,7 +8,7 @@ const verifyCommand = async ({ aggregateId, aggregateName, type }) => {
 }
 
 const getAggregateState = async (
-  { projection: { Init, ...projection } = {}, invariantHash = null },
+  { projection, invariantHash = null },
   aggregateId,
   eventStore,
   snapshotAdapter = null
@@ -40,37 +40,41 @@ const getAggregateState = async (
     lastTimestamp = snapshot.timestamp
   } catch (err) {}
 
-  if (!(+lastTimestamp > 0)) {
-    aggregateState = typeof Init === 'function' ? Init() : null
+  if (!(+lastTimestamp > 0) && projection != null) {
+    aggregateState =
+      typeof projection.Init === 'function' ? await projection.Init() : null
   }
 
-  const regularHandler = event => {
+  const regularHandler = async event => {
     aggregateVersion = event.aggregateVersion
-    if (projection && typeof projection[event.type] === 'function') {
-      aggregateState = projection[event.type](aggregateState, event)
+    if (projection != null && typeof projection[event.type] === 'function') {
+      aggregateState = await projection[event.type](aggregateState, event)
     }
   }
 
-  const snapshotHandler = event => {
+  const snapshotHandler = async event => {
     aggregateVersion = event.aggregateVersion
-    if (projection && typeof projection[event.type] === 'function') {
-      aggregateState = projection[event.type](aggregateState, event)
+    if (projection != null && typeof projection[event.type] === 'function') {
+      aggregateState = await projection[event.type](aggregateState, event)
     }
 
     lastTimestamp = event.timestamp - 1
-    snapshotAdapter.saveSnapshot(snapshotKey, {
+    await snapshotAdapter.saveSnapshot(snapshotKey, {
       state: aggregateState,
       version: aggregateVersion,
       timestamp: lastTimestamp
     })
   }
 
-  await eventStore.getEventsByAggregateId(
-    aggregateId,
+  await eventStore.loadEvents(
+    {
+      aggregateIds: [aggregateId],
+      startTime: lastTimestamp,
+      skipBus: true
+    },
     snapshotAdapter != null && snapshotKey != null
       ? snapshotHandler
-      : regularHandler,
-    lastTimestamp
+      : regularHandler
   )
 
   return { aggregateState, aggregateVersion }

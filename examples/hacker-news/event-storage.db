@@ -3,3 +3,4 @@
 {"$$indexCreated":{"fieldName":"type","unique":false,"sparse":false}}
 {"$$indexCreated":{"fieldName":"aggregateId","unique":false,"sparse":false}}
 {"$$indexCreated":{"fieldName":"aggregateIdAndVersion","unique":false,"sparse":false}}
+{"$$indexCreated":{"fieldName":"aggregateVersion","unique":false,"sparse":false}}

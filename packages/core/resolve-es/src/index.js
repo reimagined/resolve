@@ -1,56 +1,89 @@
-const busEventFilter = async (criteria, values, handler, event) => {
-  if (event == null || !event.hasOwnProperty(criteria)) return
-  if (values.indexOf(event[criteria]) < 0) return
-  await handler(event)
-}
-
-const subscribeByEventType = async (
-  storage,
-  bus,
-  eventTypes,
-  handler,
-  { onlyBus = false, startTime = 0 } = {}
-) => {
-  if (!onlyBus) {
-    await storage.loadEventsByTypes(eventTypes, handler, startTime)
+const validateEventFilter = filter => {
+  if (filter == null || filter.constructor !== Object) {
+    throw new Error('Event filter should be an object')
   }
 
-  return bus.subscribe(busEventFilter.bind(null, 'type', eventTypes, handler))
-}
+  const stringArrayFields = ['eventTypes', 'aggregateIds']
+  const booleanFields = ['skipStorage', 'skipBus']
+  const numericFields = ['startTime', 'finishTime']
+  const allowedFields = [
+    ...stringArrayFields,
+    ...booleanFields,
+    ...numericFields
+  ]
 
-const subscribeByAggregateId = async (
-  storage,
-  bus,
-  aggregateId,
-  handler,
-  { onlyBus = false, startTime = 0 } = {}
-) => {
-  const aggregateIds = Array.isArray(aggregateId) ? aggregateId : [aggregateId]
-  if (!onlyBus) {
-    await storage.loadEventsByAggregateIds(aggregateIds, handler, startTime)
+  for (const key of Object.keys(filter)) {
+    if (allowedFields.indexOf(key) < 0) {
+      throw new Error(`Wrong field in event filter: ${key}`)
+    }
   }
 
-  return bus.subscribe(
-    busEventFilter.bind(null, 'aggregateId', aggregateIds, handler)
-  )
+  for (const key of stringArrayFields) {
+    if (
+      filter[key] != null &&
+      !(
+        Array.isArray(filter[key]) &&
+        filter[key].every(
+          value => value != null && value.constructor === String
+        )
+      )
+    ) {
+      throw new Error(`Event filter field ${key} should be array of strings`)
+    }
+  }
+
+  for (const key of booleanFields) {
+    if (filter[key] != null && filter[key].constructor !== Boolean) {
+      throw new Error(`Event filter field ${key} should be boolean`)
+    }
+  }
+
+  for (const key of numericFields) {
+    if (filter[key] != null && filter[key].constructor !== Number) {
+      throw new Error(`Event filter field ${key} should be number`)
+    }
+  }
+
+  if (filter.skipStorage && filter.skipBus) {
+    throw new Error(
+      'Cannot load events when storage and the bus are skipped at the same time'
+    )
+  }
 }
 
-const subscribeOnBus = async (storage, bus, handler) => {
-  return await bus.subscribe(handler)
-}
+const loadEvents = async (storage, bus, filter, handler) => {
+  validateEventFilter(filter)
+  const {
+    skipStorage,
+    skipBus,
+    startTime,
+    finishTime,
+    eventTypes,
+    aggregateIds
+  } = filter
 
-const getEventsByAggregateId = async (
-  storage,
-  bus,
-  aggregateId,
-  handler,
-  startTime = 0
-) => {
-  const aggregateIds = Array.isArray(aggregateId) ? aggregateId : [aggregateId]
-  return await storage.loadEventsByAggregateIds(
-    aggregateIds,
-    handler,
-    startTime
+  if (!skipStorage) {
+    await storage.loadEvents(
+      {
+        eventTypes,
+        aggregateIds,
+        startTime,
+        finishTime
+      },
+      handler
+    )
+  }
+
+  if (bus == null || skipBus) {
+    return null
+  }
+
+  return await bus.subscribe(
+    {
+      eventTypes,
+      aggregateIds
+    },
+    handler
   )
 }
 
@@ -61,11 +94,14 @@ const saveEvent = async (storage, bus, event) => {
   if (!event.aggregateId) {
     throw new Error('The `aggregateId` field is missed')
   }
+
   event.timestamp = Date.now()
   event.aggregateId = String(event.aggregateId)
 
   await storage.saveEvent(event)
-  await bus.publish(event)
+  if (bus != null) {
+    await bus.publish(event)
+  }
   return event
 }
 
@@ -84,25 +120,7 @@ export default (
   }
 ) => {
   return Object.freeze({
-    subscribeByEventType: wrapMethod(
-      subscribeByEventType,
-      storage,
-      bus,
-      errorHandler
-    ),
-    subscribeByAggregateId: wrapMethod(
-      subscribeByAggregateId,
-      storage,
-      bus,
-      errorHandler
-    ),
-    subscribeOnBus: wrapMethod(subscribeOnBus, storage, bus, errorHandler),
-    getEventsByAggregateId: wrapMethod(
-      getEventsByAggregateId,
-      storage,
-      bus,
-      errorHandler
-    ),
+    loadEvents: wrapMethod(loadEvents, storage, bus, errorHandler),
     saveEvent: wrapMethod(saveEvent, storage, bus, errorHandler)
   })
 }

@@ -19,7 +19,7 @@ const createSaga = (saga = {}, context) => {
   const { eventHandlers = {}, cronHandlers = {} } = saga
 
   Object.keys(eventHandlers).map(eventName =>
-    context.resolve.subscribeByEventType([eventName], event =>
+    context.resolve.loadEvents({ eventTypes: [eventName] }, event =>
       eventHandlers[eventName](event, context)
     )
   )
@@ -54,8 +54,7 @@ const sagaRunner = () => {
   sagas.forEach(saga => {
     const context = {
       resolve: {
-        subscribeByEventType: eventStore.subscribeByEventType,
-        subscribeByAggregateId: eventStore.subscribeByAggregateId,
+        loadEvents: eventStore.loadEvents,
         executeQuery,
         executeCommand
       }

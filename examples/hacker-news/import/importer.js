@@ -15,11 +15,11 @@ const users = {}
 
 const aggregateVersionByAggregateId = {}
 
-const saveEventRaw = async event => {
+const saveEvent = async event => {
   aggregateVersionByAggregateId[event.aggregateId] =
     ++aggregateVersionByAggregateId[event.aggregateId] || 1
 
-  await eventStore.saveEventRaw({
+  await eventStore.saveEvent({
     ...event,
     aggregateVersion: aggregateVersionByAggregateId[event.aggregateId]
   })
@@ -28,10 +28,9 @@ const saveEventRaw = async event => {
 const generateUserEvents = async name => {
   const aggregateId = uuid.v4()
 
-  await saveEventRaw({
+  await saveEvent({
     type: USER_CREATED,
     aggregateId,
-    timestamp: Date.now(),
     payload: { name }
   })
 
@@ -56,10 +55,9 @@ const generateCommentEvents = async (comment, aggregateId, parentId) => {
   const userId = await getUserId(userName)
   const commentId = uuid.v4()
 
-  await saveEventRaw({
+  await saveEvent({
     type: STORY_COMMENTED,
     aggregateId,
-    timestamp: Date.now(),
     payload: {
       userId,
       userName,
@@ -102,10 +100,9 @@ const generatePointEvents = async (aggregateId, pointCount) => {
   const count = Math.min(keys.length, pointCount)
 
   for (let i = 0; i < count; i++) {
-    await saveEventRaw({
+    await saveEvent({
       type: STORY_UPVOTED,
       aggregateId,
-      timestamp: Date.now(),
       payload: {
         userId: users[keys[i]]
       }
@@ -121,10 +118,9 @@ const generateStoryEvents = async story => {
   const userName = story.by || 'anonymous'
   const aggregateId = uuid.v4()
 
-  await saveEventRaw({
+  await saveEvent({
     type: STORY_CREATED,
     aggregateId,
-    timestamp: Date.now(),
     payload: {
       title: story.title || '',
       text: story.text || '',
