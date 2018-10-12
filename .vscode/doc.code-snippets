@@ -26,6 +26,6 @@
       "```",
       "<!-- prettier-ignore-end -->"
     ],
-    "description": "Embed code snippet from the other file"
+    "description": "Embed code snippet from another file"
   }
 }
