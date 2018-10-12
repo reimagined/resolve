@@ -315,9 +315,8 @@ describe('resolve-query view-model', () => {
 
     eventList = simulatedEventList.slice(0)
     await viewModel.read({ aggregateIds: ['test-aggregate-id'] })
-    viewModel.dispose('test-aggregate-id')
-    viewModel.dispose('test-aggregate-wrong-id')
-    await Promise.resolve()
+    await viewModel.dispose('test-aggregate-id')
+    await viewModel.dispose('test-aggregate-wrong-id')
 
     expect(unsubscribe.callCount).toEqual(1)
   })
@@ -327,8 +326,7 @@ describe('resolve-query view-model', () => {
 
     eventList = simulatedEventList.slice(0)
     await viewModel.read({ aggregateIds: ['test-aggregate-id'] })
-    viewModel.dispose()
-    await Promise.resolve()
+    await viewModel.dispose()
 
     expect(unsubscribe.callCount).toEqual(1)
   })
@@ -338,9 +336,8 @@ describe('resolve-query view-model', () => {
 
     eventList = simulatedEventList.slice(0)
     await viewModel.read({ aggregateIds: ['test-aggregate-id'] })
-    viewModel.dispose()
-    viewModel.dispose()
-    await Promise.resolve()
+    await viewModel.dispose()
+    await viewModel.dispose()
 
     expect(unsubscribe.callCount).toEqual(1)
   })

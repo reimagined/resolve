@@ -52,7 +52,7 @@ describe('resolve-query read-model', () => {
           eventTypes.indexOf(event.type) > -1 &&
           event.timestamp >= startTime
         ) {
-          callback(event)
+          await callback(event)
           await skipTicks()
         }
       }
@@ -61,27 +61,26 @@ describe('resolve-query read-model', () => {
     eventStore = {
       subscribeByEventType: sinon
         .stub()
-        .callsFake((eventTypes, callback, { startTime }) => {
+        .callsFake(async (eventTypes, callback, { startTime }) => {
           const primaryEventPromise = processEvents(
             primaryEvents,
             eventTypes,
             callback,
             startTime
           )
+          await primaryEventPromise
 
-          primaryEventPromise
-            .then(() => secondaryEventsPromise)
-            .then(
-              processEvents.bind(
-                null,
-                secondaryEvents,
-                eventTypes,
-                callback,
-                startTime
-              )
+          secondaryEventsPromise.then(
+            processEvents.bind(
+              null,
+              secondaryEvents,
+              eventTypes,
+              callback,
+              startTime
             )
+          )
 
-          return primaryEventPromise.then(() => subscriptionCanceler)
+          return subscriptionCanceler
         })
     }
 
@@ -409,20 +408,6 @@ describe('resolve-query read-model', () => {
     expect(lastError.message).toEqual('Prepare projection error')
   })
 
-  it('should work fine with default zero value as initial last timestamp', async () => {
-    const readModel = createReadModel({ projection, eventStore, adapter })
-
-    adapter.init.onCall(0).callsFake(() => ({
-      getReadInterface: sinon.stub()
-    }))
-
-    const result = await readModel.getReadInterface()
-    const adapterApi = adapter.init.firstCall.returnValue
-    const readValue = await adapterApi.getReadInterface.firstCall.returnValue
-
-    expect(result).toEqual(readValue)
-  })
-
   it('should work fine without projection function', async () => {
     const readModel = createReadModel({ eventStore, adapter })
     const result = await readModel.getReadInterface()
@@ -435,7 +420,7 @@ describe('resolve-query read-model', () => {
 
   it('should support dispose on initial phase', async () => {
     const readModel = createReadModel({ eventStore, adapter })
-    readModel.dispose()
+    await readModel.dispose()
 
     expect(adapter.reset.callCount).toEqual(0)
   })
@@ -454,7 +439,16 @@ describe('resolve-query read-model', () => {
     await readPromise
 
     expect(adapter.reset.callCount).toEqual(1)
-    expect(subscriptionCanceler.callCount).toEqual(1)
+    expect(subscriptionCanceler.callCount).toEqual(0)
+
+    expect(eventStore.subscribeByEventType.callCount).toEqual(1)
+    try {
+      await eventStore.subscribeByEventType.firstCall.returnValue
+      return Promise.reject('Test failed')
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error)
+      expect(error.message).toEqual('Read model is disposed')
+    }
   })
 
   it('should support dispose due store events failure phase', async () => {
@@ -468,6 +462,15 @@ describe('resolve-query read-model', () => {
 
     expect(adapter.reset.callCount).toEqual(1)
     expect(subscriptionCanceler.callCount).toEqual(0)
+
+    expect(eventStore.subscribeByEventType.callCount).toEqual(1)
+    try {
+      await eventStore.subscribeByEventType.firstCall.returnValue
+      return Promise.reject('Test failed')
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error)
+      expect(error.message).toEqual('Read model is disposed')
+    }
   })
 
   it('should support dispose after store events loading phase', async () => {
@@ -484,6 +487,10 @@ describe('resolve-query read-model', () => {
 
     expect(adapter.reset.callCount).toEqual(1)
     expect(subscriptionCanceler.callCount).toEqual(1)
+
+    expect(eventStore.subscribeByEventType.callCount).toEqual(1)
+    const result = await eventStore.subscribeByEventType.firstCall.returnValue
+    expect(result).toEqual(subscriptionCanceler)
   })
 
   it('should support dispose twice and more without repeat side effect', async () => {

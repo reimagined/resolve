@@ -3,7 +3,12 @@ import createViewModel from './view-model'
 
 import { modelTypes, errors } from './constants'
 
-const createQuery = ({ eventStore, viewModels, readModels }) => {
+const createQuery = ({
+  eventStore,
+  viewModels,
+  readModels,
+  snapshotAdapter
+}) => {
   const executors = new Map()
   const executorTypes = new Map()
   const executorDeserializers = new Map()
@@ -37,11 +42,6 @@ const createQuery = ({ eventStore, viewModels, readModels }) => {
     if (executors.has(viewModel.name)) {
       errorMessages.push(`${errors.duplicateName} "${viewModel}"`)
     }
-
-    const snapshotAdapter =
-      typeof viewModel.snapshotAdapter === 'function'
-        ? viewModel.snapshotAdapter()
-        : null
 
     const executor = createViewModel({
       projection: viewModel.projection,

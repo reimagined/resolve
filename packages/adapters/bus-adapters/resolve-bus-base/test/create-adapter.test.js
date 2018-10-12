@@ -22,10 +22,10 @@ test('createAdapter should return the correct interface', async () => {
   const adapter = createAdapter(
     wrapInit,
     wrapMethod,
+    subscribe,
     onMessage,
     init,
     publish,
-    subscribe,
     dispose,
     amqp,
     options
