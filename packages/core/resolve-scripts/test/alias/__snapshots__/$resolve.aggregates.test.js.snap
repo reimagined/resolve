@@ -4,9 +4,9 @@ exports[`base config works correctly [client] 1`] = `
 "
 const name_0 = \\"Todo\\"
 const commands_0 = {
-  create() {},
-  update() {},
-  remove() {}
+  [\`create\`]: () => {},
+  [\`update\`]: () => {},
+  [\`remove\`]: () => {}
 }
 
 const aggregates = []
@@ -53,15 +53,15 @@ exports[`base(v2) config works correctly [client] 1`] = `
 "
 const name_0 = \\"Todo\\"
 const commands_0 = {
-  create() {},
-  update() {},
-  remove() {}
+  [\`create\`]: () => {},
+  [\`update\`]: () => {},
+  [\`remove\`]: () => {}
 }
 const name_1 = \\"Item\\"
 const commands_1 = {
-  create() {},
-  update() {},
-  remove() {}
+  [\`create\`]: () => {},
+  [\`update\`]: () => {},
+  [\`remove\`]: () => {}
 }
 
 const aggregates = []
@@ -121,9 +121,9 @@ exports[`config with projection works correctly [client] 1`] = `
 "
 const name_0 = \\"Todo\\"
 const commands_0 = {
-  create() {},
-  update() {},
-  remove() {}
+  [\`create\`]: () => {},
+  [\`update\`]: () => {},
+  [\`remove\`]: () => {}
 }
 
 const aggregates = []
@@ -175,9 +175,9 @@ exports[`config with snapshot + process.env works correctly [client] 1`] = `
 "
 const name_0 = \\"Todo\\"
 const commands_0 = {
-  create() {},
-  update() {},
-  remove() {}
+  [\`create\`]: () => {},
+  [\`update\`]: () => {},
+  [\`remove\`]: () => {}
 }
 
 const aggregates = []
@@ -238,9 +238,9 @@ exports[`config with snapshot works correctly [client] 1`] = `
 "
 const name_0 = \\"Todo\\"
 const commands_0 = {
-  create() {},
-  update() {},
-  remove() {}
+  [\`create\`]: () => {},
+  [\`update\`]: () => {},
+  [\`remove\`]: () => {}
 }
 
 const aggregates = []

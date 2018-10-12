@@ -41,9 +41,9 @@ export default ({ resolveConfig, isClient }) => {
     })
 
     if (isClient) {
-      const clientResolvers =
+      const clientResolvers = Object.keys(
         readModel.resolvers.constructor === String
-          ? Object.keys(importBabel(resolveFile(readModel.resolvers)))
+          ? importBabel(resolveFile(readModel.resolvers))
           : importBabel(resolveFileOrModule(readModel.resolvers.module))(
               readModel.resolvers.options,
               readModel.resolvers.imports != null
@@ -58,6 +58,7 @@ export default ({ resolveConfig, isClient }) => {
                   )
                 : null
             )
+      )
 
       constants.push(
         `const resolvers_${index} = {`,

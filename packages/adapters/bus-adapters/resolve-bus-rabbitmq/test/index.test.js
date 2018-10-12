@@ -1,182 +1,57 @@
 import sinon from 'sinon'
-import amqplib from 'amqplib'
-import adapter from '../src'
 
-const fakeChannel = {
-  publish: () => {},
-  consume: () => {},
-  bindQueue: () => {},
-  assertQueue: () => {},
-  assertExchange: () => {}
-}
+test('resolve-readmodel-base index', () => {
+  const createAdapter = require('../src/create-adapter')
+  const wrapInit = require('../src/wrap-init')
+  const wrapMethod = require('../src/wrap-method')
+  const onMessage = require('../src/on-message')
+  const init = require('../src/init')
+  const publish = require('../src/publish')
+  const subscribe = require('../src/subscribe')
+  const dispose = require('../src/dispose')
 
-const fakeConnection = {
-  createChannel: () => fakeChannel
-}
+  sinon.stub(wrapInit, 'default').callsFake(() => () => {})
+  sinon.stub(wrapMethod, 'default').callsFake(() => () => {})
+  sinon.stub(onMessage, 'default').callsFake(() => () => {})
+  sinon.stub(init, 'default').callsFake(() => () => {})
+  sinon.stub(publish, 'default').callsFake(() => () => {})
+  sinon.stub(subscribe, 'default').callsFake(() => () => {})
+  sinon.stub(dispose, 'default').callsFake(() => () => {})
 
-describe('RabbitMQ bus', () => {
-  let amqplibMock
-  let fakeChannelMock
-  let consumeExpectation
-  let assertExchangeExpectation
-
-  const adapterConfig = {
-    url: 'url',
-    messageTtl: 'messageTtl',
-    maxLength: 'maxLength'
-  }
-  const queue = { queue: 'queue' }
-
-  const queueConfig = {
-    arguments: {
-      messageTtl: adapterConfig.messageTtl,
-      maxLength: adapterConfig.maxLength
+  sinon.stub(createAdapter, 'default').callsFake((...args) => {
+    for (const func of args) {
+      if (typeof func === 'function') {
+        func()
+      }
     }
-  }
-
-  const message = {
-    content: JSON.stringify({ type: 'eventType' })
-  }
-
-  beforeEach(() => {
-    amqplibMock = sinon.mock(amqplib)
-    fakeChannelMock = sinon.mock(fakeChannel)
-
-    amqplibMock
-      .expects('connect')
-      .withArgs(adapterConfig.url)
-      .resolves(fakeConnection)
-
-    consumeExpectation = fakeChannelMock.expects('consume')
-
-    fakeChannelMock
-      .expects('assertQueue')
-      .withArgs('', queueConfig)
-      .resolves(queue)
-
-    fakeChannelMock
-      .expects('bindQueue')
-      .withArgs(queue.queue, 'exchange')
-      .resolves()
-
-    assertExchangeExpectation = fakeChannelMock
-      .expects('assertExchange')
-      .resolves()
   })
 
-  afterEach(() => {
-    amqplibMock.restore()
-    fakeChannelMock.restore()
-  })
+  const index = require('../src/index.js')
 
-  describe('publish', () => {
-    it('calls amqplib connect once', async () => {
-      const instance = adapter(adapterConfig)
-      await instance.init()
-      await instance.publish({})
-      await instance.publish({})
-      amqplibMock.verify()
-    })
+  expect(wrapInit.default.callCount).toEqual(0)
+  expect(wrapMethod.default.callCount).toEqual(0)
+  expect(onMessage.default.callCount).toEqual(0)
+  expect(init.default.callCount).toEqual(0)
+  expect(publish.default.callCount).toEqual(0)
+  expect(subscribe.default.callCount).toEqual(0)
+  expect(dispose.default.callCount).toEqual(0)
 
-    it('calls amqplib publish', async () => {
-      const event = {}
+  index.default()
 
-      fakeChannelMock
-        .expects('publish')
-        .withArgs('exchange', '', new Buffer(JSON.stringify(event)))
+  expect(wrapInit.default.callCount).toEqual(1)
+  expect(wrapMethod.default.callCount).toEqual(1)
+  expect(onMessage.default.callCount).toEqual(1)
+  expect(init.default.callCount).toEqual(1)
+  expect(publish.default.callCount).toEqual(1)
+  expect(subscribe.default.callCount).toEqual(1)
+  expect(dispose.default.callCount).toEqual(1)
 
-      const instance = adapter(adapterConfig)
-      await instance.init()
-      await instance.publish(event)
-
-      fakeChannelMock.verify()
-    })
-
-    it('calls amqplib connect once in parallel', async () => {
-      const instance = adapter(adapterConfig)
-      await instance.init()
-      const firstEvent = { message: 1 }
-      const secondEvent = { message: 2 }
-
-      fakeChannelMock
-        .expects('publish')
-        .onCall(0)
-        .callsFake((exchange, queueName, event, options) => {
-          expect(new Buffer(JSON.stringify(firstEvent))).toEqual(event)
-          expect(options).toEqual({
-            expiration: adapterConfig.messageTtl,
-            persistent: false
-          })
-        })
-
-      fakeChannelMock
-        .expects('publish')
-        .onCall(1)
-        .callsFake((exchange, queueName, event, options) => {
-          expect(new Buffer(JSON.stringify(secondEvent))).toEqual(event)
-          expect(options).toEqual({
-            expiration: adapterConfig.messageTtl,
-            persistent: false
-          })
-        })
-
-      await Promise.all([
-        instance.publish(firstEvent),
-        instance.publish(secondEvent)
-      ])
-
-      amqplibMock.verify()
-    })
-  })
-
-  describe('onEvent', () => {
-    it('calls amqplib connect only once in sequence', async () => {
-      const instance = adapter(adapterConfig)
-      await instance.init()
-      await instance.subscribe(() => {})
-      await instance.subscribe(['eventType'], () => {})
-      amqplibMock.verify()
-    })
-
-    it('calls callback on message is got from amqplib', async () => {
-      const instance = adapter(adapterConfig)
-      let emitter
-
-      consumeExpectation.callsFake((queueName, func, options) => {
-        expect(queueName).toEqual('')
-        expect(func).toBeInstanceOf(Function)
-        expect(options).toEqual({ noAck: true })
-        emitter = func
-      })
-
-      await instance.init()
-
-      await instance.subscribe(event => {
-        expect(JSON.stringify(event)).toEqual(message.content)
-        fakeChannelMock.verify()
-      })
-
-      emitter(message)
-    })
-
-    it('calls amqplib bindQueue with correct arguments', async () => {
-      const instance = adapter(adapterConfig)
-      await instance.init()
-
-      await instance.subscribe(['eventType'], () => {})
-      fakeChannelMock.verify()
-    })
-
-    it('calls amqplib assertExchange', async () => {
-      const instance = adapter(adapterConfig)
-      await instance.init()
-
-      assertExchangeExpectation
-        .withArgs('exchange', 'fanout', { durable: false })
-        .resolves()
-
-      await instance.subscribe(() => {})
-      fakeChannelMock.verify()
-    })
-  })
+  const adapterCallArgs = createAdapter.default.firstCall.args
+  expect(adapterCallArgs[0]).toEqual(wrapInit.default)
+  expect(adapterCallArgs[1]).toEqual(wrapMethod.default)
+  expect(adapterCallArgs[2]).toEqual(onMessage.default)
+  expect(adapterCallArgs[3]).toEqual(init.default)
+  expect(adapterCallArgs[4]).toEqual(publish.default)
+  expect(adapterCallArgs[5]).toEqual(subscribe.default)
+  expect(adapterCallArgs[6]).toEqual(dispose.default)
 })

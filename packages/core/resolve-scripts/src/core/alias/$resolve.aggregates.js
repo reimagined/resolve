@@ -41,9 +41,9 @@ export default ({ resolveConfig, isClient }) => {
     })
 
     if (isClient) {
-      const clientCommands =
+      const clientCommands = Object.keys(
         aggregate.commands.constructor === String
-          ? Object.keys(importBabel(resolveFile(aggregate.commands)))
+          ? importBabel(resolveFile(aggregate.commands))
           : importBabel(resolveFileOrModule(aggregate.commands.module))(
               aggregate.commands.options,
               aggregate.commands.imports != null
@@ -55,11 +55,12 @@ export default ({ resolveConfig, isClient }) => {
                   }, {})
                 : null
             )
+      )
 
       constants.push(
         `const commands_${index} = {`,
         clientCommands
-          .map(commandName => `  ${commandName}() {}`)
+          .map(commandName => `  [\`${commandName}\`]: () => {}`)
           .join(',\r\n'),
         `}`
       )
