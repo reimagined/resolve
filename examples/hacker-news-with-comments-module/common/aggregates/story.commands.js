@@ -2,7 +2,7 @@ import urlLib from 'url'
 import jsonwebtoken from 'jsonwebtoken'
 
 import validate from './validation'
-import { STORY_CREATED, STORY_UNVOTED, STORY_UPVOTED } from '../event_types'
+import { STORY_CREATED, STORY_UNVOTED, STORY_UPVOTED } from '../event-types'
 import jwtSecret from '../../auth/jwt-secret'
 
 export default {

@@ -25,11 +25,17 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/modules/resolve-module-comments#readme",
   "dependencies": {
-    "resolve-redux": "0.17.2"
+    "resolve-redux": "0.17.2",
+    "resolve-readmodel-memory": "0.17.2"
   },
   "devDependencies": {
     "jest": "23.6.0",
     "sinon": "6.3.4"
+  },
+  "peerDependencies": {
+    "react": "^16.5.2",
+    "react-redux": "^5.0.7",
+    "redux": "^4.0.0"
   },
   "babelCompile": [
     {

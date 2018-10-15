@@ -1,4 +1,4 @@
-import { STORY_CREATED, STORY_UNVOTED, STORY_UPVOTED } from '../event_types'
+import { STORY_CREATED, STORY_UNVOTED, STORY_UPVOTED } from '../event-types'
 
 export default {
   Init: () => ({}),

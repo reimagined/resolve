@@ -3,7 +3,7 @@ import {
   STORY_UNVOTED,
   STORY_UPVOTED,
   USER_CREATED
-} from '../event_types'
+} from '../event-types'
 
 export default {
   Init: async store => {

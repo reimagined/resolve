@@ -1,5 +1,3 @@
-import path from 'path'
-
 import injectDefaults from '../inject-defaults'
 
 const createCommentTreeCommands = (
@@ -7,7 +5,7 @@ const createCommentTreeCommands = (
     commandTypes: { createComment, updateComment, removeComment },
     eventTypes: { COMMENT_CREATED, COMMENT_UPDATED, COMMENT_REMOVED }
   },
-  { verifyCommand = path.join(__dirname, './verify-command.js') }
+  { verifyCommand }
 ) => ({
   [createComment]: async (state, command, jwtToken) => {
     if (

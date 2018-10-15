@@ -6,10 +6,6 @@ const prodConfig = {
     HackerNews: {
       module: 'resolve-readmodel-memory',
       options: {}
-    },
-    Comments: {
-      module: 'resolve-readmodel-memory',
-      options: {}
     }
   },
   jwtCookie: {

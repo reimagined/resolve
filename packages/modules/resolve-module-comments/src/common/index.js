@@ -5,9 +5,16 @@ import createCommentsProjection from './read-models/comments.projection'
 import createCommentsResolvers from './read-models/comments.resolvers'
 import injectDefaults from './inject-defaults'
 
-export * from '../client'
+import {
+  createCommentsReducer,
+  defaults,
+  CommentsNotification
+} from '../client'
 
 export {
+  defaults,
+  CommentsNotification,
+  createCommentsReducer,
   createCommentsCommands,
   createCommentsProjection,
   createCommentsResolvers
@@ -16,15 +23,25 @@ export {
 export default ({
   aggregateName,
   readModelName,
+  readModelAdapter,
   commentsTableName,
   reducerName,
+  eventTypes,
+  commandTypes,
+  resolverNames,
+  maxNestedLevel,
   verifyCommand
 } = {}) => {
   const options = {
     aggregateName,
     readModelName,
+    readModelAdapter,
     commentsTableName,
-    reducerName
+    reducerName,
+    eventTypes,
+    commandTypes,
+    resolverNames,
+    maxNestedLevel
   }
   const imports = {
     verifyCommand
@@ -43,7 +60,7 @@ export default ({
     ],
     readModels: [
       {
-        name: options.aggregateName,
+        name: options.readModelName,
         projection: {
           module: path.join(__dirname, './read-models/comments.projection.js'),
           options,
@@ -56,6 +73,9 @@ export default ({
         }
       }
     ],
+    readModelAdapters: {
+      [options.readModelName]: options.readModelAdapter
+    },
     redux: {
       reducers: {
         [options.reducerName]: {

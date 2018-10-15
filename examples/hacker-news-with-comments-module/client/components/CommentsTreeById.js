@@ -17,7 +17,7 @@ export class CommentsTreeById extends React.PureComponent {
 
     return (
       <div>
-        <CommentsNotification treeId={storyId} />
+        <CommentsNotification treeId={storyId} parentCommentId={commentId} />
         <ConnectedComments treeId={storyId} parentCommentId={commentId} />
       </div>
     )
