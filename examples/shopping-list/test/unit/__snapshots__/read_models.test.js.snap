@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`read-models ShoppingLists projection "SHOPPING_LIST_CREATED" should create a first shopping list 1`] = `
+Array [
+  Object {
+    "createdAt": 1,
+    "id": "00000000-0000-0000-0000-000000000000",
+    "name": "Products",
+  },
+]
+`;
+
+exports[`read-models ShoppingLists projection "SHOPPING_LIST_CREATED" should create a second shopping list 1`] = `
+Array [
+  Object {
+    "createdAt": 1,
+    "id": "00000000-0000-0000-0000-000000000000",
+    "name": "Products",
+  },
+  Object {
+    "createdAt": 2,
+    "id": "11111111-1111-1111-1111-111111111111",
+    "name": "Building materials",
+  },
+]
+`;
+
+exports[`read-models ShoppingLists projection "SHOPPING_LIST_REMOVED" should remove the second shopping list 1`] = `
+Array [
+  Object {
+    "createdAt": 1,
+    "id": "00000000-0000-0000-0000-000000000000",
+    "name": "Products",
+  },
+]
+`;
+
+exports[`read-models ShoppingLists projection "SHOPPING_LIST_RENAMED" should rename the second shopping list 1`] = `
+Array [
+  Object {
+    "createdAt": 1,
+    "id": "00000000-0000-0000-0000-000000000000",
+    "name": "Products",
+  },
+  Object {
+    "createdAt": 2,
+    "id": "11111111-1111-1111-1111-111111111111",
+    "name": "Medicines",
+  },
+]
+`;
+
+exports[`read-models ShoppingLists resolver "all" should return an empty array 1`] = `Array []`;

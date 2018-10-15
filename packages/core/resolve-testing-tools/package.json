@@ -26,7 +26,12 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-testing-tools#readme",
   "devDependencies": {
     "jest": "23.6.0",
-    "sinon": "6.3.4"
+    "sinon": "6.3.4",
+    "resolve-es": "0.17.2",
+    "resolve-query": "0.17.2",
+    "resolve-readmodel-memory": "0.17.2",
+    "resolve-storage-lite": "0.17.2",
+    "resolve-bus-memory": "0.17.2"
   },
   "babelCompile": [
     {

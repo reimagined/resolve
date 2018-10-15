@@ -27,11 +27,10 @@ export default {
       payload: { name }
     }
   },
-  removeShoppingList: (state, { aggregateId }) => {
+  removeShoppingList: state => {
     validation.stateExists(state, 'Shopping List')
     return {
-      type: SHOPPING_LIST_REMOVED,
-      payload: { id: aggregateId }
+      type: SHOPPING_LIST_REMOVED
     }
   },
   createShoppingItem: (state, { payload: { id, text } }) => {
