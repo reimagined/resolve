@@ -94,7 +94,7 @@ class MyLists extends React.PureComponent {
 
 # Reactive View Models, Event Subscription
 
-A View Model is a special kind of a Read Model. Its projection is declared in a universal format so it can also serve as the reducer code on the client side. Events are automatically sent to the client through a WebSocket connection. Because of these properties, View Models are reactive out of the box. This means that a component connected to a View Model using the **connectViewModel** method automatically reflect the Read Model changes on the server side, without the need to implement any additional logic.
+A View Model is a special kind of a Read Model. Its projection is declared in a universal format so it can also serve as the reducer code on the client side. Events are automatically sent to the client through a WebSocket connection. Because of these properties, View Models are reactive out of the box. This means that a component connected to a View Model using the **connectViewModel** method automatically reflects the Read Model changes on the server side, without the need to implement any additional logic.
 
 <!-- prettier-ignore-start -->
 [embedmd]:# (..\..\examples\shopping-list\client\containers\ShoppingList.js /export const mapStateToOptions/ /^\)/)
