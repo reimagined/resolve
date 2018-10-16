@@ -1,17 +1,24 @@
 # Splitting Code Into Chunks
 
-reSolve uses webpack to transpile and bundle application code, so it can be run by browsers, server and serverless platforms. After building, reSolve application code is bundled into following chanks:
+reSolve uses webpack to transpile and bundle application code, so it can be run by browsers, server and serverless platforms. 
 
 [TODO] fix and elaborate what goes where.
 
-- command processor code (aggregate command handlers and projections)
-- view model query resolvers
-- read model projections
-- read model query resolvers
-- API handlers
-- SSR renderer
-- client vendor libraries
-- client app
+Every chunk is used for building target application. Some chunks are being included by different chunk, for example, client includes view-model projection chunk for automatic redux-reducers generation.
+When executing in cloud/serverless, chunks like read-model projection & resolvers, SSR renderer, API hadnlers and rest business-logic are distributet to apropriate cloud executors.
+When executing locally, `resolve-scripts` requires all nessesary chunks and combines them with runtime code.
+Depend on usage, every chunk can be server-only (for business logic), browser-only (for UI and client logic) and isomorphic (for view-models, which automatically maps to redux reducers).
+So, After building, reSolve application code is bundled into following chanks:
+
+- command processor code - aggregate command handlers and projections (server only)
+- view model projection (isomorphic)
+- read model projections and resolvers (server only)
+- API handlers (server only)
+- SSR renderer (server only, with peer dependencies with client, like `styled-components`)
+- client application with UI (browser only)
+
+[Comments ontopic]
+Resolve 
 
 # Running Serverless
 
