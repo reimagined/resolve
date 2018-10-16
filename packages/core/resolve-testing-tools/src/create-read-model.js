@@ -1,13 +1,15 @@
 const createReadModel = (
-  createQuery,
-  createStorageAdapter,
-  createBusAdapter,
-  createEventStore,
-  createReadModelAdapter,
-  createResolver,
-  createResolvers,
-  applyEvent,
-  applyEvents,
+  {
+    createQuery,
+    createStorageAdapter,
+    createBusAdapter,
+    createEventStore,
+    createReadModelAdapter,
+    createResolver,
+    createResolvers,
+    applyEvent,
+    applyEvents
+  },
   { name, projection, resolvers, adapter = createReadModelAdapter }
 ) => {
   const storage = createStorageAdapter()

@@ -10,8 +10,7 @@ import applyEvents from './apply-events'
 import createResolver from './create-resolver'
 import createResolvers from './create-resolvers'
 
-export const createReadModel = createReadModelFactory.bind(
-  null,
+export const createReadModel = createReadModelFactory.bind(null, {
   createQuery,
   createStorageAdapter,
   createBusAdapter,
@@ -21,4 +20,4 @@ export const createReadModel = createReadModelFactory.bind(
   createResolvers,
   applyEvent,
   applyEvents
-)
+})

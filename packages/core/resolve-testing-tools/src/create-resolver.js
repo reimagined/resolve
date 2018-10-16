@@ -1,10 +1,12 @@
 const createResolver = ({ modelName, query }, resolverName) => async (
-  ...resolverArgs
+  resolverArgs,
+  jwtToken
 ) => {
   const result = await query.read({
     modelName,
     resolverName,
-    resolverArgs
+    resolverArgs,
+    jwtToken
   })
 
   const error = await query.getLastError({ modelName })
