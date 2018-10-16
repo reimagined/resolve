@@ -24,7 +24,7 @@
     "ddd"
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-testing-tools#readme",
-  "devDependencies": {
+  "dependencies": {
     "jest": "23.6.0",
     "sinon": "6.3.4",
     "resolve-es": "0.17.2",
