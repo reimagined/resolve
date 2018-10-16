@@ -10,24 +10,37 @@ import { createReadModel } from 'resolve-testing-tools'
 import projection from './common/read-models/something.projection'
 import resolvers from './common/read-models/something.resolvers'
 
-test('read-model "something"', async () => {
-  const readModel = createReadModel({
-    name: 'something', 
-    projection, 
-    resolvers, 
-    /* adapter */ // custom adapter 
-  }) 
+describe('read-model "something"', () => {
+  let readModel
   
-  await readModel.applyEvent(event)
-  await readModel.applyEvents(events)
-  
-  const result1 = await readModel.resolvers.myCustomResolverName1(resolverArgs1, jwtToken)
-  const result2 = await readModel.resolvers.myCustomResolverName2(resolverArgs2, jwtToken)
-  
-  expect(result1).toMatchSnapshot()
-  expect(result2).toMatchSnapshot()
-})
+  beforeEach(() => {
+    readModel = createReadModel({
+      name: 'ShoppingLists',
+      projection,
+      resolvers
+    })
+  })
 
+  afterEach(async () => {
+    await readModel.dispose()
+  })
+
+  test('resolver "myCustomResolverName" should return correctly result', async () => {
+    const readModel = createReadModel({
+      name: 'something', 
+      projection, 
+      resolvers, 
+      /* adapter */ // custom adapter 
+    }) 
+    
+    await readModel.applyEvent(event)
+    await readModel.applyEvents(events)
+    
+    const result = await readModel.resolvers.myCustomResolverName(resolverArgs, jwtToken)
+  
+    expect(result).toMatchSnapshot()
+  })
+})
 ```
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-resolve-testing-tools-readme?pixel)

@@ -11,12 +11,11 @@ import {
 
 describe('read-models', () => {
   describe('ShoppingLists', () => {
-    const aggregateId1 = '00000000-0000-0000-0000-000000000000'
-    const aggregateId2 = '11111111-1111-1111-1111-111111111111'
+    const aggregateId = '00000000-0000-0000-0000-000000000000'
 
     let readModel
 
-    beforeAll(async () => {
+    beforeEach(() => {
       readModel = createReadModel({
         name: 'ShoppingLists',
         projection,
@@ -24,17 +23,19 @@ describe('read-models', () => {
       })
     })
 
+    afterEach(async () => {
+      await readModel.dispose()
+    })
+
     test('resolver "all" should return an empty array', async () => {
       const shoppingLists = await readModel.resolvers.all()
 
       expect(shoppingLists).toEqual([])
-
-      expect(shoppingLists).toMatchSnapshot()
     })
 
-    test('projection "SHOPPING_LIST_CREATED" should create a first shopping list', async () => {
+    test('projection "SHOPPING_LIST_CREATED" should create a shopping list', async () => {
       await readModel.applyEvent({
-        aggregateId: aggregateId1,
+        aggregateId: aggregateId,
         type: SHOPPING_LIST_CREATED,
         payload: {
           name: 'Products'
@@ -44,65 +45,55 @@ describe('read-models', () => {
       const shoppingLists = await readModel.resolvers.all()
 
       expect(shoppingLists[0]).toMatchObject({
-        id: aggregateId1,
+        id: aggregateId,
         name: 'Products'
       })
-
-      expect(shoppingLists).toMatchSnapshot()
     })
 
-    test('projection "SHOPPING_LIST_CREATED" should create a second shopping list', async () => {
-      await readModel.applyEvent({
-        aggregateId: aggregateId2,
-        type: SHOPPING_LIST_CREATED,
-        payload: {
-          name: 'Building materials'
+    test('projection "SHOPPING_LIST_RENAMED" should rename the shopping list', async () => {
+      await readModel.applyEvents([
+        {
+          aggregateId: aggregateId,
+          type: SHOPPING_LIST_CREATED,
+          payload: {
+            name: 'Products'
+          }
+        },
+        {
+          aggregateId: aggregateId,
+          type: SHOPPING_LIST_RENAMED,
+          payload: {
+            name: 'Medicines'
+          }
         }
-      })
+      ])
 
       const shoppingLists = await readModel.resolvers.all()
 
-      expect(shoppingLists[1]).toMatchObject({
-        id: aggregateId2,
-        name: 'Building materials'
-      })
-
-      expect(shoppingLists).toMatchSnapshot()
-    })
-
-    test('projection "SHOPPING_LIST_RENAMED" should rename the second shopping list', async () => {
-      await readModel.applyEvent({
-        aggregateId: aggregateId2,
-        type: SHOPPING_LIST_RENAMED,
-        payload: {
-          name: 'Medicines'
-        }
-      })
-
-      const shoppingLists = await readModel.resolvers.all()
-
-      expect(shoppingLists[1]).toMatchObject({
-        id: aggregateId2,
+      expect(shoppingLists[0]).toMatchObject({
+        id: aggregateId,
         name: 'Medicines'
       })
-
-      expect(shoppingLists).toMatchSnapshot()
     })
 
-    test('projection "SHOPPING_LIST_REMOVED" should remove the second shopping list', async () => {
-      const beforeRemoveShoppingListsCount = (await readModel.resolvers.all())
-        .length
-
-      await readModel.applyEvent({
-        aggregateId: aggregateId2,
-        type: SHOPPING_LIST_REMOVED
-      })
+    test('projection "SHOPPING_LIST_REMOVED" should remove the shopping list', async () => {
+      await readModel.applyEvents([
+        {
+          aggregateId: aggregateId,
+          type: SHOPPING_LIST_CREATED,
+          payload: {
+            name: 'Products'
+          }
+        },
+        {
+          aggregateId: aggregateId,
+          type: SHOPPING_LIST_REMOVED
+        }
+      ])
 
       const shoppingLists = await readModel.resolvers.all()
 
-      expect(beforeRemoveShoppingListsCount - shoppingLists.length).toEqual(1)
-
-      expect(shoppingLists).toMatchSnapshot()
+      expect(shoppingLists.length).toEqual(0)
     })
   })
 })
