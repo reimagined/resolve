@@ -264,7 +264,8 @@ if (unknownOptions && unknownOptions.length) {
         'resolve-storage-mongo',
         'resolve-storage-mysql',
         'resolve-subscribe-mqtt',
-        'resolve-subscribe-socket.io'
+        'resolve-subscribe-socket.io',
+        'resolve-testing-tools'
       ])
     })
   }
