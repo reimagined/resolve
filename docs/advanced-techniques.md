@@ -35,7 +35,7 @@ The Resolve uses [react-router](https://github.com/ReactTraining/react-router) a
 #### Route Configuration Shape
 https://github.com/reacttraining/react-router/tree/master/packages/react-router-config#route-configuration-shape
 
-Routes are objects with the same properties as a [<Route>](https://reacttraining.com/react-router/web/api/Route):
+Routes are objects with the same properties as a [\<Route\>](https://reacttraining.com/react-router/web/api/Route):
 
 ```js
 const routes = [
@@ -58,7 +58,7 @@ const routes = [
 ]
 ```
 
-When you render a [<Redirect>](https://reacttraining.com/react-router/web/api/Redirect) history changes state and we get the new screen.
+When you render a [\<Redirect\>](https://reacttraining.com/react-router/web/api/Redirect) history changes state and we get the new screen.
 
 #### Customization document head
 This reusable React component will manage all of your changes to the document head. [React Helmet](https://github.com/nfl/react-helmet#reference-guide).
