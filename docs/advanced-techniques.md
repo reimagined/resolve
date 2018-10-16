@@ -1,14 +1,17 @@
 # Splitting Code Into Chunks
-
-reSolve uses webpack to transpile and bundle application code, so it can be run by browsers, server and serverless platforms. 
+ReSolve uses **webpack** to transpile and bundle the application code so it can be run by browsers, the server and serverless platforms. 
 
 [TODO] fix and elaborate what goes where.
 
 Every chunk is used for building target application. Some chunks are being included by different chunk, for example, client includes view-model projection chunk for automatic redux-reducers generation.
-When executing in cloud/serverless, chunks like read-model projection & resolvers, SSR renderer, API hadnlers and rest business-logic are distributet to apropriate cloud executors.
-When executing locally, `resolve-scripts` requires all nessesary chunks and combines them with runtime code.
+
+When executing in cloud/serverless, chunks like read-model projection & resolvers, SSR renderer, API handlers and rest business-logic are distributed to appropriate cloud executors.
+
+When executing locally, `resolve-scripts` requires all necessary chunks and combines them with runtime code.
+
 Depend on usage, every chunk can be server-only (for business logic), browser-only (for UI and client logic) and isomorphic (for view-models, which automatically maps to redux reducers).
-So, After building, reSolve application code is bundled into following chanks:
+
+So, After building, reSolve application code is bundled into following chunks:
 
 - command processor code - aggregate command handlers and projections (server only)
 - view model projection (isomorphic)
@@ -22,20 +25,20 @@ Resolve
 
 # Running Serverless
 
-Coming soon. reSolve app is serverless-ready and can be deployed into AWS with a single command.
+Coming soon. A reSolve app is serverless-ready and can be deployed into AWS with a single command.
+
+
+
+
+
 
 # Server-Side Rendering
 
-[TODO] add details of how SSR works
+ReSolve provides the Server-Side rendering (SSR) functionality for React code out of the box. This means that reSolve application pages are always pre-rendered before being passed to the client browser. Note that server-side rendering is currently performed only for static content, without pre-fetching data.
 
-A route configuration is basically a set of instructions that tell a router how to try to match the URL and what code to run when it does. You declare your routes as part of your app’s in the config section `.routes` [default: `routes.js`]
 
-The Resolve uses [react-router](https://github.com/ReactTraining/react-router), [react-router-config](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config) and server-side rendering by default.
-
-#### Route Configuration Shape
-https://github.com/reacttraining/react-router/tree/master/packages/react-router-config#route-configuration-shape
-
-Routes are objects with the same properties as a [\<Route\>](https://reacttraining.com/react-router/web/api/Route):
+#### Managing routes
+ReSolve uses [react-router](https://github.com/ReactTraining/react-router) for routing. The [react-router-config](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config) library is also used to provide a centralized route config that can be used both on the server and client sides. You can define routes as shown below:
 
 ```js
 const routes = [
@@ -57,11 +60,20 @@ const routes = [
   }
 ]
 ```
+Here, each route is specified by an object whose fields correspond to the [\<Route\>](https://reacttraining.com/react-router/web/api/Route) component's props.
 
-When you render a [\<Redirect\>](https://reacttraining.com/react-router/web/api/Redirect) history changes state and we get the new screen.
+To register routes within a reSolve app, specify the path to the file containing routs definition in the **routes** config section:
 
-#### Customization document head
-This reusable React component will manage all of your changes to the document head. [React Helmet](https://github.com/nfl/react-helmet#reference-guide).
+``` js
+routes: 'client/routes.js'
+```
+
+After this, app routing is configured for server-side rendering. Routing is also performed as expected on the client: when you render a [\<Redirect\>](https://reacttraining.com/react-router/web/api/Redirect), the browser switches to the new location, and this location is appended to the browser's history stack.
+
+
+
+#### Providing the document head
+The code below utilizes the [React Helmet](https://github.com/nfl/react-helmet#reference-guide) library to specify the document's **head** section:
 
 ```js
 import React from "react";
@@ -82,6 +94,9 @@ class Application extends React.Component {
   }
 };
 ```
+This way, the document head is specified in an isomorphic format so it can be rendered on the server and dynamically modified on the client. Use this approach to make your reSolve applications SEO-friendly.
+
+
 
 # Process Managers (Sagas)
 
