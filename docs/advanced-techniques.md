@@ -28,6 +28,61 @@ Coming soon. reSolve app is serverless-ready and can be deployed into AWS with a
 
 [TODO] add details of how SSR works
 
+A route configuration is basically a set of instructions that tell a router how to try to match the URL and what code to run when it does. You declare your routes as part of your app’s in the config section `.routes` [default: `routes.js`]
+
+The Resolve uses [react-router](https://github.com/ReactTraining/react-router) and [react-router-config](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config).
+
+#### Route Configuration Shape
+https://github.com/reacttraining/react-router/tree/master/packages/react-router-config#route-configuration-shape
+
+Routes are objects with the same properties as a [<Route>](https://reacttraining.com/react-router/web/api/Route):
+
+```js
+const routes = [
+  { component: Root,
+    routes: [
+      { path: '/',
+        exact: true,
+        component: Home
+      },
+      { path: '/child/:id',
+        component: Child,
+        routes: [
+          { path: '/child/:id/grand-child',
+            component: GrandChild
+          }
+        ]
+      }
+    ]
+  }
+]
+```
+
+When you render a [<Redirect>](https://reacttraining.com/react-router/web/api/Redirect) history changes state and we get the new screen.
+
+#### Customization document head
+This reusable React component will manage all of your changes to the document head. [React Helmet](https://github.com/nfl/react-helmet#reference-guide).
+
+```js
+import React from "react";
+import { Helmet } from "react-helmet";
+
+class Application extends React.Component {
+  render () {
+    return (
+        <div className="application">
+            <Helmet>
+                <meta charSet="utf-8" />
+                <title>My Title</title>
+                <link rel="canonical" href="http://mysite.com/example" />
+            </Helmet>
+            ...
+        </div>
+    );
+  }
+};
+```
+
 # Process Managers (Sagas)
 
 Process Managers (or Sagas) are used to run arbitrary service code in response to events or on schedule. Generally, this is where you define logic that deal with side effects: you can emit new events and communicate with the outside world in any way (e.g., query databases, send emails, etc.). You can view a Saga as a scripted replacement to a user.
