@@ -15,24 +15,18 @@ describe('read-model "something"', () => {
   
   beforeEach(() => {
     readModel = createReadModel({
-      name: 'ShoppingLists',
-      projection,
-      resolvers
-    })
+      name: 'something', 
+      projection, 
+      resolvers, 
+      /* adapter */ // custom adapter 
+    }) 
   })
 
   afterEach(async () => {
     await readModel.dispose()
   })
 
-  test('resolver "myCustomResolverName" should return correctly result', async () => {
-    const readModel = createReadModel({
-      name: 'something', 
-      projection, 
-      resolvers, 
-      /* adapter */ // custom adapter 
-    }) 
-    
+  test('resolver "myCustomResolverName" should return correctly result', async () => {   
     await readModel.applyEvent(event)
     await readModel.applyEvents(events)
     
