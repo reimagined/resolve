@@ -30,7 +30,7 @@ Coming soon. reSolve app is serverless-ready and can be deployed into AWS with a
 
 A route configuration is basically a set of instructions that tell a router how to try to match the URL and what code to run when it does. You declare your routes as part of your app’s in the config section `.routes` [default: `routes.js`]
 
-The Resolve uses [react-router](https://github.com/ReactTraining/react-router) and [react-router-config](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config).
+The Resolve uses [react-router](https://github.com/ReactTraining/react-router), [react-router-config](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config) and server-side rendering by default.
 
 #### Route Configuration Shape
 https://github.com/reacttraining/react-router/tree/master/packages/react-router-config#route-configuration-shape
