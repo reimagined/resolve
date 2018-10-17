@@ -3,22 +3,23 @@ ReSolve uses **webpack** to transpile and bundle the application code so it can 
 
 [TODO] fix and elaborate what goes where.
 
-Every chunk is used for building target application. Some chunks are being included by different chunk, for example, client includes view-model projection chunk for automatic redux-reducers generation.
+ReSolve takes advantage of the webpack's code splitting functionality to split the bundles into chunks. Depend on its purpose, every chunk can be server-only (for business logic), browser-only (for UI and client logic) or isomorphic (for view-models on the server side and Redux reducers on the client).
 
-When executing in cloud/serverless, chunks like read-model projection & resolvers, SSR renderer, API handlers and rest business-logic are distributed to appropriate cloud executors.
-
-When executing locally, `resolve-scripts` requires all necessary chunks and combines them with runtime code.
-
-Depend on usage, every chunk can be server-only (for business logic), browser-only (for UI and client logic) and isomorphic (for view-models, which automatically maps to redux reducers).
-
-So, After building, reSolve application code is bundled into following chunks:
+Building a reSolve application produces the following chunks:
 
 - command processor code - aggregate command handlers and projections (server only)
 - view model projection (isomorphic)
 - read model projections and resolvers (server only)
 - API handlers (server only)
 - SSR renderer (server only, with peer dependencies with client, like `styled-components`)
-- client application with UI (browser only)
+- the client application with UI (browser only)
+
+All of these chunks are used by the target application. Some chunks can be included by other chunks. E.g., client includes the view-model projection chunk to automatically generate Redux reducers.
+
+In a cloud/serverless environment, chunks like read-model projection & resolvers, SSR renderer, API handlers and rest business-logic are distributed to appropriate cloud executors.
+
+When running locally, `resolve-scripts` requires all necessary chunks and combines them with the runtime code.
+
 
 [Comments ontopic]
 Resolve 
