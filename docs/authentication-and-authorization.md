@@ -1,65 +1,54 @@
 # Setting up Authentication
 
+ReSolve relies on the [Passport.js](http://www.passportjs.org/) library for authentication. 
+
+To specify authentication strategies for your reSolve application, register the path to a file defining these strategies in the **auth.strategies** config section:
+
 <!-- prettier-ignore-start -->
-[embedmd]:# (../examples/hacker-news/auth/localStrategy.js /const routes = \[/ /\]/) 
+[embedmd]:# (../examples/hacker-news/config.app.js /auth: \{/ /\}/)
 ```js
-const routes = [
+auth: {
+    strategies: 'auth/local_strategy.js'
+  }
+```
+<!-- prettier-ignore-end -->
+
+The specified file should export an array. Each item of this array defines a strategy by providing a strategy constructor function along with a set of strategy options. You can define strategies using the following general format: 
+
+```js
+// ./auth/index.js
+import LocalStrategy from 'passport-local'
+const jwtSecret = process.env.JWT_SECRET
+export default [
   {
-    path: '/register',
-    method: 'POST',
-    callback: async ({ resolve }, username) => {
-      const existingUser = await resolve.executeQuery({
-        modelName: 'default',
-        resolverName: 'user',
-        resolverArgs: { name: username.trim() }
-      })
-
-      if (existingUser) {
-        throw new Error('User already exists')
+    strategyConstructor: options => {
+      return new LocalStrategy(
+        {
+          customStrategyOption1: "customStrategyOption1",
+          customStrategyOption2: "customStrategyOption2",
+          passReqToCallback: true
+        },
+        async (req, username, password, done) => {
+          try {
+            done(null, { username }, jwtSecret)
+          } catch (error) {
+            done(error)
+          }
+        }
+      )
+    },
+    options: {
+      route: {
+        path: '/auth/local',
+        method: 'get'
       }
-
-      const user = {
-        name: username.trim(),
-        id: uuid.v4()
-      }
-
-      await resolve.executeCommand({
-        type: 'createUser',
-        aggregateId: user.id,
-        aggregateName: 'user',
-        payload: user
-      })
-
-      return jwt.sign(user, jwtSecret)
-    }
-  },
-  {
-    path: '/login',
-    method: 'POST',
-    callback: async ({ resolve }, username) => {
-      const user = await resolve.executeQuery({
-        modelName: 'default',
-        resolverName: 'user',
-        resolverArgs: { name: username.trim() }
-      })
-
-      if (!user) {
-        throw new Error('No such user')
-      }
-
-      return jwt.sign(user, jwtSecret)
-    }
-  },
-  {
-    path: '/logout',
-    method: 'POST',
-    callback: async () => {
-      return jwt.sign({}, jwtSecret)
     }
   }
 ]
 ```
-<!-- prettier-ignore-end -->
+
+For a comprehensive code sample, refer to the [Hacker News](https://github.com/reimagined/resolve/tree/master/examples/hacker-news) example application.
+
 
 # Using 3rd Party Auth Services
 
