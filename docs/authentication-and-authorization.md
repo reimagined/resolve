@@ -54,7 +54,9 @@ For a comprehensive code sample, refer to the [Hacker News](https://github.com/r
 
 # Making Your Own User Registry
 
-If you want to store user registry in your application, or if you need to store an additional information about users, not provided by authentication service (like roles or permissions), then you can make User an aggregate, and accept commands, generate events, create read model, and eventually use Users read model during login to look up current user's information and put it into JWT Token.
+If you prefer to store a user registry in your application, or if you use a third-party authentication service but need to store additional information that is not provided by this service (e.g., roles or permissions), then you can just stick to the standard event sourcing approach:
+- Add a User aggregate to accept commands and generate events related to managing a user registry
+- Create a read model and use it to look up a current user's information during logging in and put this information into a JWT (JSON Web Token)
 
 For example, if you want to grant permissions to user, you can write something like this:
 
