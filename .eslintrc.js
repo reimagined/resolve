@@ -182,6 +182,7 @@ module.exports = {
           'msg',
           'mysql',
           'namespace',
+          'namespaces',
           'nav',
           'navbar',
           'nedb',

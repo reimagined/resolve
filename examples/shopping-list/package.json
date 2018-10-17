@@ -37,6 +37,7 @@
     "@babel/preset-env": "7.0.0",
     "@babel/preset-react": "7.0.0",
     "babel-core": "^7.0.0-0",
+    "resolve-testing-tools": "0.17.3",
     "regenerator-runtime": "0.12.1",
     "babel-jest": "23.6.0",
     "enzyme": "3.6.0",
