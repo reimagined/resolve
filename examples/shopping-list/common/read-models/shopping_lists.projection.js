@@ -27,8 +27,8 @@ export default {
     await store.insert('ShoppingLists', shoppingList)
   },
 
-  [SHOPPING_LIST_REMOVED]: async (store, { payload: { id } }) => {
-    await store.delete('ShoppingLists', { id })
+  [SHOPPING_LIST_REMOVED]: async (store, { aggregateId }) => {
+    await store.delete('ShoppingLists', { id: aggregateId })
   },
 
   [SHOPPING_LIST_RENAMED]: async (

@@ -28,11 +28,8 @@ const jsonTypesMap = new Map([
 ])
 
 const strictCompareValues = (operator, leftValue, rightValue) => {
-  const leftType = jsonTypesMap.get(
-    leftValue != null ? leftValue.constructor : null
-  )
-  const rightType = jsonTypesMap.get(
-    rightValue != null ? rightValue.constructor : null
+  const [leftType, rightType] = [leftValue, rightValue].map(value =>
+    jsonTypesMap.get(value != null ? value.constructor : null)
   )
 
   if (leftType == null || rightType == null) {
@@ -87,7 +84,7 @@ const processWhereExpression = (document, expression) => {
           document
         )
 
-      return acc && strictCompareValues(operator, comparedValue, extractedValue)
+      return acc && strictCompareValues(operator, extractedValue, comparedValue)
     }, true)
   }
 
@@ -122,15 +119,39 @@ const processWhereExpression = (document, expression) => {
   }, true)
 }
 
-const convertSearchExpression = expression => ({
-  $and: [
-    expression,
-    {
-      $where: function() {
-        return processWhereExpression(this, expression)
-      }
+// Extract immediate index fields expression like in NeDB for accelerate searching
+const getIndexMatchExpression = expression => {
+  const indexExpression = {}
+  for (const key of Object.keys(expression)) {
+    const keyType = jsonTypesMap.get(
+      expression[key] != null ? expression[key].constructor : null
+    )
+
+    // Supported in NeDB data types and search operators for indexing - https://git.io/fxCab
+    if (
+      ['string', 'double', 'bool', 'null'].indexOf(keyType) >= 0 ||
+      (keyType === 'object' &&
+        ['$lt', '$lte', '$gt', '$gte', '$ne'].some(oper =>
+          expression[key].hasOwnProperty(oper)
+        ))
+    ) {
+      indexExpression[key] = expression[key]
     }
-  ]
+    // Emulate missing $eq operator in NeDB - https://git.io/fxCaA
+    else if (keyType === 'object' && expression[key].hasOwnProperty('$eq')) {
+      indexExpression[key] = expression[key]['$eq']
+      continue
+    }
+  }
+
+  return indexExpression
+}
+
+const convertSearchExpression = expression => ({
+  ...getIndexMatchExpression(expression),
+  $where: function() {
+    return processWhereExpression(this, expression)
+  }
 })
 
 const find = async (
