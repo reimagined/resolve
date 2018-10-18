@@ -3,25 +3,55 @@ import sinon from 'sinon'
 import loadEvents from '../src/load-events'
 
 test('load events should scan eventstore within criteria', async () => {
-  const criteria = 'criteria'
-  const values = ['event_type_1', 'event_type_2']
   const events = [{ type: 'event_type_1' }, { type: 'event_type_2' }]
   const callback = sinon.stub().callsFake(async () => await Promise.resolve())
-  const startTime = 100
+
+  const stream = {
+    on: sinon.stub().callsFake((type, callback) => {
+      switch (type) {
+        case 'result': {
+          for (const event of events) {
+            callback(event)
+          }
+          break
+        }
+        case 'end': {
+          Promise.resolve().then(callback)
+          break
+        }
+        default:
+          break
+      }
+    }),
+    destroy: sinon.stub()
+  }
+
+  const streamConnection = {
+    query: sinon.stub().callsFake(async () => stream),
+    pause: sinon.stub(),
+    resume: sinon.stub()
+  }
 
   const pool = {
-    connection: {
-      execute: sinon.stub().callsFake(async () => [events]),
-      end: sinon.stub().callsFake(async () => null)
-    },
+    connection: { connection: streamConnection },
     escapeId: value => `@ESCAPED[${value}]`,
+    escape: value => `@@ESCAPED[${value}]`,
     tableName: 'tableName'
   }
 
-  await loadEvents(pool, criteria, values, callback, startTime)
+  await loadEvents(
+    pool,
+    {
+      eventTypes: ['EVENT_TYPE'],
+      aggregateIds: ['AGGREGATE_ID'],
+      startTime: 100,
+      finishTime: 200
+    },
+    callback
+  )
 
-  expect(pool.connection.execute.callCount).toEqual(1)
-  expect(pool.connection.execute.firstCall.args).toMatchSnapshot()
+  expect(streamConnection.query.callCount).toEqual(1)
+  expect(streamConnection.query.firstCall.args).toMatchSnapshot()
 
   expect(callback.callCount).toEqual(2)
   expect(callback.firstCall.args).toEqual([events[0]])

@@ -4,7 +4,16 @@ const publish = async (pool, event) => {
   }
   await Promise.resolve()
   try {
-    await Promise.all(Array.from(pool.handlers).map(handler => handler(event)))
+    const publishTopics = pool.makeTopicsForEvent(event)
+
+    for (const topic of publishTopics) {
+      const topicHandlers = pool.handlers.get(topic)
+      if (topicHandlers == null) continue
+
+      await Promise.all(
+        Array.from(topicHandlers).map(handler => handler(event))
+      )
+    }
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error)

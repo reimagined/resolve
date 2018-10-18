@@ -15,8 +15,8 @@ const createAdapter = (
 
   const pool = {
     config,
-    disposed: false,
-    handlers: new Set()
+    handlers: new Map(),
+    disposed: false
   }
 
   wrapInit(pool, init, onMessage.bind(null, pool), bus)
