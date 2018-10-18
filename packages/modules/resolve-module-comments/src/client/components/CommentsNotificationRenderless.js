@@ -1,11 +1,11 @@
 import React from 'react'
-import CommentCountUpdater from './CommentCountUpdater'
+import CommentCountUpdater from '../containers/CommentCountUpdater'
 
 import * as defaults from '../../common/defaults'
 
-class CommentsNotification extends React.PureComponent {
+class CommentsNotificationRenderless extends React.PureComponent {
   static defaultProps = {
-    refreshInterval: 30 * 1000,
+    checkInterval: 30 * 1000,
     children: ({ count }) => {
       // eslint-disable-next-line
       console.log(`commentCount - prevCommentCount = ${count}`)
@@ -22,7 +22,7 @@ class CommentsNotification extends React.PureComponent {
   }
 
   componentDidMount() {
-    this.timer = setInterval(this.updateTimestamp, this.props.refreshInterval)
+    this.timer = setInterval(this.updateTimestamp, this.props.checkInterval)
   }
 
   componentWillUnmount() {
@@ -49,14 +49,14 @@ class CommentsNotification extends React.PureComponent {
     })
   }
 
-  refresh = () => {
-    if (this.props.refresh) {
-      this.props.refresh()
-    }
+  onClick = e => {
     this.setState({
       commentCount: null,
       prevCommentCount: null
     })
+    if (this.props.onClick) {
+      this.props.onClick(e)
+    }
   }
 
   render() {
@@ -79,7 +79,7 @@ class CommentsNotification extends React.PureComponent {
       throw new Error('Props "resolverName" must be a string')
     }
     if (treeId == null || treeId.constructor !== String) {
-      throw new Error('Props "resolverName" must be a string')
+      throw new Error('Props "treeId" must be a string')
     }
     if (parentCommentId != null && parentCommentId.constructor !== String) {
       throw new Error('Props "parentCommentId" must be a string')
@@ -102,6 +102,7 @@ class CommentsNotification extends React.PureComponent {
         />
         <Component
           {...props}
+          onClick={this.onClick}
           readModelName={readModelName}
           resolverName={resolverName}
           treeId={treeId}
@@ -114,4 +115,4 @@ class CommentsNotification extends React.PureComponent {
   }
 }
 
-export default CommentsNotification
+export default CommentsNotificationRenderless

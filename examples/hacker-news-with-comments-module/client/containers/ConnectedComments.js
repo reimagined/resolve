@@ -1,9 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { connectReadModel } from 'resolve-redux'
 import styled from 'styled-components'
 import uuid from 'uuid/v4'
+import { CommentsTreeRenderless } from 'resolve-module-comments'
 
 import ChildrenComments from '../components/ChildrenComments'
 import Comment from '../components/Comment'
@@ -14,100 +13,86 @@ const Reply = styled.div`
 `
 
 class ConnectedComments extends React.PureComponent {
-  state = {
-    commentText: ''
-  }
+  comment = React.createRef()
 
-  saveComment = () => {
-    const { treeId, parentCommentId, me, createComment } = this.props
+  onCreateComment = createComment => {
+    const { treeId, parentCommentId, me } = this.props
 
     createComment(treeId, {
       commentId: uuid(),
       authorId: me.id,
       parentCommentId,
       content: {
-        text: this.state.commentText,
+        text: this.comment.current.value,
         createdBy: me.id,
         createdByName: me.name,
         createdAt: Date.now()
       }
     })
 
-    this.setState({
-      commentText: ''
-    })
+    this.comment.current.value = ''
   }
 
-  updateCommentText = event => {
+  updateCommentText = event =>
     this.setState({
       commentText: event.target.value
     })
-  }
 
   render() {
-    const { comments, treeId, me } = this.props
+    const { treeId, parentCommentId, authorId, me } = this.props
 
-    const loggedIn = !!me.id
+    return (
+      <CommentsTreeRenderless
+        treeId={treeId}
+        parentCommentId={parentCommentId}
+        authorId={authorId}
+      >
+        {({ comments, createComment }) => {
+          const loggedIn = !!me.id
 
-    const content = (
-      <div>
-        {loggedIn ? (
-          <Reply>
-            <textarea
-              name="text"
-              rows="6"
-              value={this.state.commentText}
-              onChange={this.updateCommentText}
-            />
+          const content = (
             <div>
-              <button onClick={this.saveComment}>add comment</button>
+              {loggedIn ? (
+                <Reply>
+                  <textarea ref={this.comment} rows="6" />
+                  <div>
+                    <button
+                      onClick={this.onCreateComment.bind(this, createComment)}
+                    >
+                      add comment
+                    </button>
+                  </div>
+                </Reply>
+              ) : null}
+              <ChildrenComments
+                storyId={treeId}
+                comments={comments.children}
+                loggedIn={loggedIn}
+              />
             </div>
-          </Reply>
-        ) : null}
-        <ChildrenComments
-          storyId={treeId}
-          comments={comments.children}
-          loggedIn={loggedIn}
-        />
-      </div>
-    )
+          )
 
-    if (comments.commentId) {
-      return (
-        <Comment storyId={treeId} id={comments.commentId} {...comments.content}>
-          {content}
-        </Comment>
-      )
-    } else {
-      return <div>{content}</div>
-    }
+          if (comments.commentId) {
+            return (
+              <Comment
+                storyId={treeId}
+                id={comments.commentId}
+                {...comments.content}
+              >
+                {content}
+              </Comment>
+            )
+          } else {
+            return <div>{content}</div>
+          }
+        }}
+      </CommentsTreeRenderless>
+    )
   }
 }
 
-const mapStateToOptions = (
-  { optimistic: { refreshId } },
-  { treeId, parentCommentId }
-) => ({
-  readModelName: 'Comments',
-  resolverName: 'commentsTree',
-  resolverArgs: {
-    refreshId,
-    treeId,
-    parentCommentId
-  }
-})
-
-const mapStateToProps = (state, { treeId, parentCommentId }) => ({
-  comments: state.comments[treeId][parentCommentId],
+const mapStateToProps = state => ({
   me: state.jwt
 })
 
-const mapDispatchToProps = (dispatch, { aggregateActions }) =>
-  bindActionCreators(aggregateActions, dispatch)
-
-export default connectReadModel(mapStateToOptions)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ConnectedComments)
-)
+export default connect(mapStateToProps)(ConnectedComments)

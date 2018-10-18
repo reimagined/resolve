@@ -7,11 +7,11 @@ import UserById from './containers/UserById'
 import NewestByPage from './containers/NewestByPage'
 import ShowByPage from './containers/ShowByPage'
 import AskByPage from './containers/AskByPage'
-import StoryById from './components/StoryById'
+import StoryById from './containers/StoryById'
 import Submit from './containers/Submit'
 
 import CommentsByPage from './containers/CommentsByPage'
-import CommentsTreeById from './components/CommentsTreeById'
+import CommentsTreeById from './containers/CommentsTreeById'
 
 import PageNotFound from './components/PageNotFound'
 

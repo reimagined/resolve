@@ -6,14 +6,20 @@ import createCommentsResolvers from './read-models/comments.resolvers'
 import injectDefaults from './inject-defaults'
 
 import {
-  createCommentsReducer,
   defaults,
-  CommentsNotification
+  CommentsNotificationRenderless,
+  CommentsTreeRenderless,
+  CommentsPaginateRenderless,
+  RefreshHelperRenderless,
+  createCommentsReducer
 } from '../client'
 
 export {
   defaults,
-  CommentsNotification,
+  CommentsNotificationRenderless,
+  CommentsTreeRenderless,
+  CommentsPaginateRenderless,
+  RefreshHelperRenderless,
   createCommentsReducer,
   createCommentsCommands,
   createCommentsProjection,

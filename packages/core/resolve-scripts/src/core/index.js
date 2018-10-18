@@ -1,3 +1,5 @@
+import deepmerge from 'deepmerge'
+
 import defaultResolveConfig from './default.resolve.config'
 import declareRuntimeEnv from './declare_runtime_env'
 
@@ -9,6 +11,8 @@ import build from './build_mode'
 import watch from './watch_mode'
 import runTestcafe from './run_testcafe'
 
+const merge = deepmerge.all
+
 export {
   defaultResolveConfig,
   declareRuntimeEnv,
@@ -17,5 +21,6 @@ export {
   build,
   start,
   watch,
-  runTestcafe
+  runTestcafe,
+  merge
 }

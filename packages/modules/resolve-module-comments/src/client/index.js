@@ -1,5 +1,15 @@
 import createCommentsReducer from './reducers/comments'
 import * as defaults from '../common/defaults'
-import CommentsNotification from './containers/CommentsNotification'
+import CommentsNotificationRenderless from './components/CommentsNotificationRenderless'
+import CommentsTreeRenderless from './containers/CommentsTreeRenderless'
+import CommentsPaginateRenderless from './containers/CommentsPaginateRenderless'
+import RefreshHelperRenderless from './components/RefreshHelperRenderless'
 
-export { createCommentsReducer, defaults, CommentsNotification }
+export {
+  defaults,
+  CommentsNotificationRenderless,
+  CommentsTreeRenderless,
+  CommentsPaginateRenderless,
+  RefreshHelperRenderless,
+  createCommentsReducer
+}

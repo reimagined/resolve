@@ -3,9 +3,9 @@ import {
   build,
   start,
   watch,
-  runTestcafe
+  runTestcafe,
+  merge
 } from 'resolve-scripts'
-import merge from 'deepmerge'
 import resolveModuleComments from 'resolve-module-comments'
 
 import appConfig from './config.app'
@@ -21,28 +21,28 @@ void (async () => {
   switch (launchMode) {
     case 'dev': {
       await watch(
-        merge.all([defaultResolveConfig, appConfig, devConfig, moduleComments])
+        merge([defaultResolveConfig, appConfig, devConfig, moduleComments])
       )
       break
     }
 
     case 'build': {
       await build(
-        merge.all([defaultResolveConfig, appConfig, prodConfig, moduleComments])
+        merge([defaultResolveConfig, appConfig, prodConfig, moduleComments])
       )
       break
     }
 
     case 'start': {
       await start(
-        merge.all([defaultResolveConfig, appConfig, prodConfig, moduleComments])
+        merge([defaultResolveConfig, appConfig, prodConfig, moduleComments])
       )
       break
     }
 
     case 'test:functional': {
       await runTestcafe({
-        resolveConfig: merge.all([
+        resolveConfig: merge([
           defaultResolveConfig,
           appConfig,
           testFunctionalConfig,
