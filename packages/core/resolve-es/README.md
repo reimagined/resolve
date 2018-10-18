@@ -14,10 +14,8 @@ When initializing an event store, pass the following arguments:
   _ [resolve-storage-lite](../storage-adapters/resolve-storage-lite)
 
       	... or implement a custom storage adapter. A storage adapter is an object with the following fields:
-      	* `loadEventsByTypes` - a function which takes three arguments: an array of event types, a callback that is called for handling each appropriate event and a timestamp specifying when to start loading events.
-      	* `loadEventsByAggregateIds` - a function which takes three arguments: an aggregate id/ array of aggregate ids, a callback that is called for handling each   appropriate event and a timestamp specifying when to start loading events.
+      	* `loadEvents` - gets an array of events filtered by the first argument and a function for handling an event as the second argument. Returns a Promise object that is resolved when all the persistent events are handled. If bus involved in loading events, promise resolves with unsubscribe callback for bus, or resolves with null in another case.
       	* `saveEvent` - a function which takes an event and returns a Promise that is resolved when the event is stored. Event should contain following required fields: `aggregateId`, `aggregateVersion` and `type`. Using `saveEvent` function in custom code is not not recommended.
-      	* `saveEventRaw` - like `saveEvent`, but event should contain custom `timestamp` field.
 
 * `bus`  
    Use a reSolve framework [adapter](../bus-adapters)...
@@ -31,6 +29,7 @@ When initializing an event store, pass the following arguments:
 ### Example
 
 ```js
+// Import and initializtion
 import createEventStore from 'resolve-es'
 import createInFileStorageAdapter from 'resolve-storage-lite'
 import createInMemoryBusAdapter from 'resolve-bus-memory'
@@ -40,20 +39,27 @@ const eventStore = createEventStore({
   bus: createInMemoryBusAdapter()
 })
 
-eventStore.loadEvents(
-  {
-    skipStorage: false,
-    skipBus: false,
-    eventTypes: ['EVENT_TYPE'],
-    aggregateIds: ['AGGREGATE_ID'],
-    startTime: Date.now() - 10000,
-    finishTime: Date.now() + 10000
-  },
-  event => {
-    console.log('Event from eventstore', event)
-  }
-)
+// Load events
+const eventHandler = async event => {
+  console.log('Event from eventstore', event)
+  // Eventstore is waiting for event processing so overflow will not occur
+  await processEvent(event)
+}
 
+const eventFilter = {
+  skipStorage: false, // Or true to skip event loading from storage
+  skipBus: false, // Or true to skip bus subscription
+  eventTypes: ['EVENT_TYPE_1', 'EVENT_TYPE_2'], // Or null to load ALL event types
+  aggregateIds: ['AGGREGATE_ID_1', 'AGGREGATE_ID_2'], // Or null to load ALL aggregate ids
+  startTime: Date.now() - 10000, // Or null to load events from beginnig of time
+  finishTime: Date.now() + 10000 // Or null to load events to current time
+}
+
+const unsubscribe = await eventStore.loadEvents(eventFilter, eventHandler)
+
+await unsubscribe() // Or do nothing if skipBus: true
+
+// Save event
 const event = {
   aggregateId: '1',
   aggregateVersion: 2,

@@ -1,32 +1,34 @@
-const emptyTrueCondition = ' 1=1 '
-
 const loadEvents = async (pool, filter, callback) => {
   const { connection, escapeId, escape, tableName } = pool
   const { eventTypes, aggregateIds, startTime, finishTime } = filter
-  const injectString = value => `"${escape(value)}"`
+  const injectString = value => `${escape(value)}`
   const injectNumber = value => `${+value}`
 
   // https://github.com/sidorares/node-mysql2/issues/677
   const streamConnection = connection.connection
 
-  const stream = await streamConnection.query(
-    `SELECT * FROM ${escapeId(tableName)} WHERE ${
-      eventTypes != null
-        ? `\`type\` IN (${eventTypes.map(injectString)})`
-        : emptyTrueCondition
-    } AND ${
-      aggregateIds != null
-        ? `\`aggregateId\` IN (${aggregateIds.map(injectString)})`
-        : emptyTrueCondition
-    } AND ${
-      startTime != null
-        ? `\`timestamp\` > ${injectNumber(startTime)}`
-        : emptyTrueCondition
-    } AND ${
-      finishTime != null
-        ? `\`timestamp\` < ${injectNumber(finishTime)}`
-        : emptyTrueCondition
-    } ORDER BY \`timestamp\` ASC, \`aggregateVersion\` ASC`
+  const queryConditions = []
+  if (eventTypes != null) {
+    queryConditions.push(`\`type\` IN (${eventTypes.map(injectString)})`)
+  }
+  if (aggregateIds != null) {
+    queryConditions.push(
+      `\`aggregateId\` IN (${aggregateIds.map(injectString)})`
+    )
+  }
+  if (startTime != null) {
+    queryConditions.push(`\`timestamp\` > ${injectNumber(startTime)}`)
+  }
+  if (finishTime != null) {
+    queryConditions.push(`\`timestamp\` < ${injectNumber(finishTime)}`)
+  }
+
+  const resultQueryCondition =
+    queryConditions.length > 0 ? `WHERE ${queryConditions.join(' AND ')}` : ''
+
+  const stream = streamConnection.query(
+    `SELECT * FROM ${escapeId(tableName)} ${resultQueryCondition}
+    ORDER BY \`timestamp\` ASC, \`aggregateVersion\` ASC`
   )
 
   let lastError = null

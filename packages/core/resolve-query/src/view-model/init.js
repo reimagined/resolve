@@ -25,8 +25,8 @@ const init = async (repository, key, inputAggregateIds, skipEventReading) => {
     try {
       const snapshot = await snapshotAdapter.loadSnapshot(snapshotKey)
       Object.assign(viewModel, {
-        aggregatesVersionsMap: new Map(viewModel.aggregatesVersionsMap),
-        lastTimestamp: snapshot.timestamp,
+        aggregatesVersionsMap: new Map(snapshot.aggregatesVersionsMap),
+        lastTimestamp: snapshot.lastTimestamp,
         state: deserializeState(snapshot.state)
       })
     } catch (error) {}

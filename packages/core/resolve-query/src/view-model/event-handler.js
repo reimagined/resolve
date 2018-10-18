@@ -31,7 +31,7 @@ const eventHandler = async (
     if (snapshotAdapter != null) {
       await snapshotAdapter.saveSnapshot(viewModel.snapshotKey, {
         aggregatesVersionsMap: Array.from(viewModel.aggregatesVersionsMap),
-        viewModel: viewModel.lastTimestamp,
+        lastTimestamp: viewModel.lastTimestamp,
         state: serializeState(viewModel.state)
       })
     }
