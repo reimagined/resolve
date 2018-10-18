@@ -27,7 +27,7 @@ test('load events should scan eventstore within criteria', async () => {
   }
 
   const streamConnection = {
-    query: sinon.stub().callsFake(async () => stream),
+    query: sinon.stub().callsFake(() => stream),
     pause: sinon.stub(),
     resume: sinon.stub()
   }

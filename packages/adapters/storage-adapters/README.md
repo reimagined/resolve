@@ -16,4 +16,43 @@ Available adapters:
 - [resolve-storage-mysql](../storage-adapters/resolve-storage-mysql)  
    Used to store events in a MySQL base.
 
+### Example
+
+```js
+// Import and initializtion
+import createInFileStorageAdapter from 'resolve-storage-lite'
+
+const eventStorage = createInFileStorageAdapter({
+  pathToFile: './event-store.db'
+})
+
+// Load events
+const eventHandler = async event => {
+  console.log('Event from eventstore', event)
+  // Eventstore is waiting for event processing so overflow will not occur
+  await processEvent(event)
+}
+
+const eventFilter = {
+  eventTypes: ['EVENT_TYPE_1', 'EVENT_TYPE_2'], // Or null to load ALL event types
+  aggregateIds: ['AGGREGATE_ID_1', 'AGGREGATE_ID_2'], // Or null to load ALL aggregate ids
+  startTime: Date.now() - 10000, // Or null to load events from beginnig of time
+  finishTime: Date.now() + 10000 // Or null to load events to current time
+}
+
+await eventStore.loadEvents(eventFilter, eventHandler)
+
+// Save event
+const event = {
+  aggregateId: '1',
+  aggregateVersion: 2,
+  type: 'UserCreated',
+  payload: {
+    email: 'test@user.com'
+  }
+}
+
+eventStore.saveEvent(event)
+```
+
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-resolve-storage-adapters-readme?pixel)
