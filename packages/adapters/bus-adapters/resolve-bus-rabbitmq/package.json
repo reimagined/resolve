@@ -26,7 +26,7 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/bus-adapters/resolve-bus-rabbitmq#readme",
   "dependencies": {
     "amqplib": "^0.5.2",
-    "resolve-bus-base": "0.17.2"
+    "resolve-bus-base": "0.17.4"
   },
   "devDependencies": {
     "jest": "23.6.0",
