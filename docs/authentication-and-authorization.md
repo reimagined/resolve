@@ -66,19 +66,19 @@ user.commands.js:
 
 ```js
 ...
-  grantPermission: (state, command) => {
-     const {payload: {permission: permissionToGrant }} = command;
+grantPermission: (state, command) => {
+   const {payload: {permission: permissionToGrant }} = command;
 
-     if (state.permissions.includes(permissionToGrant)) {
-         throw new Error("permission aleady granted")
-     }
-     return {
-         type: PERMISSION_GRANTED,
-         payload: {
-             permission: permissionToGrant
-         }
-     }
-  }
+   if (state.permissions.includes(permissionToGrant)) {
+       throw new Error("permission aleady granted")
+   }
+   return {
+       type: PERMISSION_GRANTED,
+       payload: {
+           permission: permissionToGrant
+       }
+   }
+}
 ...
 ```
 
@@ -86,10 +86,10 @@ user.projection.js:
 
 ```js
 ...
-  [PERMISSION_GRANTED]: (state, {payload: {permission}}) => ({
-      ...state,
-      permissions: [...state.permissions, permission]
-  })
+[PERMISSION_GRANTED]: (state, {payload: {permission}}) => ({
+    ...state,
+    permissions: [...state.permissions, permission]
+})
 ...
 ```
 
@@ -98,16 +98,16 @@ users.projection.js:
 
 ```js
 ...
-  [PERMISSION_GRANTED]: async (store, {aggregateId, payload:{permission}}) => {
-      const user = await store.findOne('Users', { id: aggregateId })
-      if (user) {
-          await store.update(
-            'Users',
-            { id: aggregateId },
-            { $set: {permissions: [...user.permissions, permission]}}
-          )
-      }
-  }
+[PERMISSION_GRANTED]: async (store, {aggregateId, payload:{permission}}) => {
+    const user = await store.findOne('Users', { id: aggregateId })
+    if (user) {
+        await store.update(
+          'Users',
+          { id: aggregateId },
+          { $set: {permissions: [...user.permissions, permission]}}
+        )
+    }
+}
 ...
 ```
 
@@ -115,7 +115,7 @@ users.resolvers.js:
 
 ```js
 ...
-  userById: async(store, {id}) => store.findOne('Users', {id})
+userById: async(store, {id}) => store.findOne('Users', {id})
 ...
 ```
 
@@ -123,13 +123,13 @@ Now upon login you can query Users read model and store user record with its per
 
 ```js
 ...
-        const user = await resolve.executeQuery({
-          modelName: 'Users',
-          resolverName: 'userById',
-          resolverArgs: { id }
-        })
-        if (user)
-           return jwt.sign(user, jwtSecret)
+const user = await resolve.executeQuery({
+  modelName: 'Users',
+  resolverName: 'userById',
+  resolverArgs: { id }
+})
+if (user)
+  return jwt.sign(user, jwtSecret)
 ...
 ```
 
@@ -147,11 +147,11 @@ You can store any information in a JWT. For instance, during authentication, you
 user's permissions and add it to the token. Then, you can check for the user's permissions on a command or query execution as shown below:
 
 ```js
-  const { id: userId, permissions } = jwt.verify(jwtToken, jwtSecret);
+const { id: userId, permissions } = jwt.verify(jwtToken, jwtSecret);
 
-  if (permissions && permissions.includes("admin")) {
-      ...
-  } else {
-      throw new Error("Access denied");
-  }
+if (permissions && permissions.includes("admin")) {
+...
+} else {
+    throw new Error("Access denied");
+}
 ```
