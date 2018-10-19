@@ -38,6 +38,7 @@
     "redux-saga": "0.16.0",
     "resolve-bus-memory": "0.17.4",
     "resolve-es": "0.17.4",
+    "resolve-readmodel-memory": "0.17.4",
     "resolve-redux": "0.17.4",
     "resolve-scripts": "0.17.4",
     "resolve-storage-lite": "0.17.4",
