@@ -2,14 +2,7 @@
 
 exports[`load events should scan eventstore within criteria 1`] = `
 Array [
-  "SELECT * FROM @ESCAPED[tableName]
-    WHERE \`timestamp\` > ? AND @ESCAPED[criteria] IN (?,?)
-    ORDER BY \`timestamp\` ASC, \`aggregateVersion\` ASC
-    ",
-  Array [
-    100,
-    "event_type_1",
-    "event_type_2",
-  ],
+  "SELECT * FROM @ESCAPED[tableName] WHERE \`type\` IN (@@ESCAPED[EVENT_TYPE]) AND \`aggregateId\` IN (@@ESCAPED[AGGREGATE_ID]) AND \`timestamp\` > 100 AND \`timestamp\` < 200
+    ORDER BY \`timestamp\` ASC, \`aggregateVersion\` ASC",
 ]
 `;

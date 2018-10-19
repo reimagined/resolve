@@ -3,15 +3,14 @@ import sinon from 'sinon'
 import loadEvents from '../src/load-events'
 
 test('load events should scan eventstore within criteria', async () => {
-  const criteria = 'criteria'
-  const values = ['event_type_1', 'event_type_2']
   const events = [{ type: 'event_type_1' }, { type: 'event_type_2' }]
   const callback = sinon.stub().callsFake(async () => await Promise.resolve())
-  const startTime = 100
 
   const cursor = {
     sort: sinon.stub().callsFake(() => cursor),
     projection: sinon.stub().callsFake(() => cursor),
+    skip: sinon.stub().callsFake(() => cursor),
+    limit: sinon.stub().callsFake(() => cursor),
     exec: sinon.stub().callsFake(async () => events)
   }
   const find = sinon.stub().callsFake(() => cursor)
@@ -22,13 +21,26 @@ test('load events should scan eventstore within criteria', async () => {
     db: { find }
   }
 
-  await loadEvents(pool, criteria, values, callback, startTime)
+  await loadEvents(
+    pool,
+    {
+      eventTypes: ['EVENT_TYPE'],
+      aggregateIds: ['AGGREGATE_ID'],
+      startTime: 100,
+      finishTime: 200
+    },
+    callback
+  )
 
   expect(find.callCount).toEqual(1)
   expect(find.firstCall.args).toEqual([
     {
-      [criteria]: { $in: values },
-      timestamp: { $gt: startTime }
+      type: { $in: ['EVENT_TYPE'] },
+      aggregateId: { $in: ['AGGREGATE_ID'] },
+      timestamp: {
+        $gt: 100,
+        $lt: 200
+      }
     }
   ])
 

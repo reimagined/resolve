@@ -2,7 +2,7 @@ const applyEvent = async (pool, rawEvent) => {
   const { storage, bus } = pool
 
   let aggregateVersion = 1
-  await storage.loadEventsByAggregateIds([rawEvent.aggregateId], () => {
+  await storage.loadEvents({ aggregateIds: [rawEvent.aggregateId] }, () => {
     aggregateVersion++
   })
 

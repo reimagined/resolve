@@ -1,5 +1,5 @@
 import mysql from 'mysql2/promise'
-import { escapeId } from 'mysql2'
+import { escape, escapeId } from 'mysql2'
 
 import createAdapter from 'resolve-storage-base'
 
@@ -10,5 +10,6 @@ import dispose from './dispose'
 
 export default createAdapter.bind(null, init, loadEvents, saveEvent, dispose, {
   mysql,
-  escapeId
+  escapeId,
+  escape
 })

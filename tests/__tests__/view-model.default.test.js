@@ -4,7 +4,7 @@ import projection from '../view-models/default.projection'
 import serializeState from '../view-models/default.serialize_state'
 import deserializeState from '../view-models/default.deserialize_state'
 
-describe('Read-model generic adapter API', () => {
+describe('View-model generic adapter API', () => {
   let buildTestViewModelReader, events
 
   it('View model with one aggregate id', async () => {
@@ -67,42 +67,16 @@ describe('Read-model generic adapter API', () => {
   beforeEach(async () => {
     events = []
     const eventStore = {
-      async subscribeByEventType(eventTypes, handler, { startTime = 0 } = {}) {
+      async loadEvents({ eventTypes, startTime, aggregateIds }, handler) {
         for (let event of events) {
           if (
             event &&
             eventTypes.indexOf(event.type) > -1 &&
+            (aggregateIds == null ||
+              aggregateIds.indexOf(event.aggregateId) > -1) &&
             event.timestamp >= startTime
           ) {
-            handler(event)
-            await Promise.resolve()
-          }
-        }
-
-        return () => null
-      },
-      async subscribeByAggregateId(
-        aggregateIds,
-        handler,
-        { startTime = 0 } = {}
-      ) {
-        for (let event of events) {
-          if (
-            event &&
-            aggregateIds.indexOf(event.aggregateId) > -1 &&
-            event.timestamp >= startTime
-          ) {
-            handler(event)
-            await Promise.resolve()
-          }
-        }
-
-        return () => null
-      },
-      async getEventsByAggregateId(aggregateIds, handler) {
-        for (let event of events) {
-          if (event && aggregateIds.indexOf(event.aggregateId) > -1) {
-            handler(event)
+            await handler(event)
             await Promise.resolve()
           }
         }

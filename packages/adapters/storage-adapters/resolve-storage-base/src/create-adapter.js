@@ -15,11 +15,7 @@ const createAdapter = (
   wrapInit(pool, init, db)
 
   return Object.freeze({
-    loadEventsByTypes: wrapMethod(pool, wrapLoadEvents(loadEvents, 'type')),
-    loadEventsByAggregateIds: wrapMethod(
-      pool,
-      wrapLoadEvents(loadEvents, 'aggregateId')
-    ),
+    loadEvents: wrapMethod(pool, wrapLoadEvents(loadEvents)),
     saveEvent: wrapMethod(pool, saveEvent),
     dispose: wrapMethod(pool, wrapDispose(dispose))
   })
