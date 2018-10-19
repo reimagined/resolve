@@ -1,7 +1,7 @@
 {
-  "name": "resolve-auth",
+  "name": "resolve-testing-tools",
   "version": "0.17.4",
-  "description": "This package provide an auth to your app.",
+  "description": "This package for testing read-model, view-model, aggregate, saga, API handler, bus, storage and event-store.",
   "engines": {
     "node": ">=8.10"
   },
@@ -23,13 +23,15 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-auth#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-testing-tools#readme",
   "dependencies": {
-    "cookie": "^0.3.1"
-  },
-  "devDependencies": {
     "jest": "23.6.0",
-    "sinon": "6.3.4"
+    "sinon": "6.3.4",
+    "resolve-es": "0.17.4",
+    "resolve-query": "0.17.4",
+    "resolve-readmodel-memory": "0.17.4",
+    "resolve-storage-lite": "0.17.4",
+    "resolve-bus-memory": "0.17.4"
   },
   "babelCompile": [
     {

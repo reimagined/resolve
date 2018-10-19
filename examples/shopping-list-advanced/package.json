@@ -1,6 +1,6 @@
 {
   "name": "@shopping-list-advanced/scripts",
-  "version": "0.17.2",
+  "version": "0.17.4",
   "private": true,
   "scripts": {
     "build": "babel-node ./run.js build",
@@ -17,10 +17,10 @@
     "@babel/polyfill": "7.0.0",
     "redux": "4.0.0",
     "react": "16.5.2",
-    "resolve-readmodel-memory": "0.17.2",
-    "resolve-redux": "0.17.2",
-    "resolve-scripts": "0.17.2",
-    "resolve-subscribe-socket.io": "0.17.2"
+    "resolve-readmodel-memory": "0.17.4",
+    "resolve-redux": "0.17.4",
+    "resolve-scripts": "0.17.4",
+    "resolve-subscribe-socket.io": "0.17.4"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",
