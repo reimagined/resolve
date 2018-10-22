@@ -3,7 +3,7 @@ ReSolve uses **webpack** to transpile and bundle the application code so it can 
 
 [TODO] fix and elaborate what goes where.
 
-ReSolve takes advantage of the webpack's code splitting functionality to split the bundles into chunks. Depending on its purpose, every chunk can be server-only (for business logic), browser-only (for UI and client logic) or isomorphic (for view-models on the server side and Redux reducers on the client).
+ReSolve takes advantage of webpack's code splitting functionality to split the bundles into chunks. Depending on its purpose, every chunk can be server-only (for business logic), browser-only (for UI and client logic) or isomorphic (for view-models on the server side and Redux reducers on the client).
 
 Building a reSolve application produces the following chunks:
 

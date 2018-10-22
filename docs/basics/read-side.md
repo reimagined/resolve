@@ -232,9 +232,9 @@ http://{host}:{port}/api/query/{viewModel}/{aggregateIds}
 ```
 
 ##### URL Parameters
-| Name      | Description
-| --------- | -----------------------
-| viewModel | The View Model name as defined in [config.app.js](../examples/shopping-list/config.app.js)
+| Name         | Description
+| ------------ | -----------------------
+| viewModel    | The View Model name as defined in [config.app.js](../examples/shopping-list/config.app.js)
 | aggregateIds | The comma-separated list of Aggregate IDs to include into the View Model. Use `*` to include all Aggregates
 
 
