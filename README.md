@@ -1,4 +1,3 @@
-
 # [<img src="https://user-images.githubusercontent.com/15689049/29659048-ad0d158a-88c5-11e7-9354-dbe4bb105ad7.png" height="60">](https://github.com/reimagined/resolve/)
 
 [![Build Status](https://travis-ci.org/reimagined/resolve.svg?branch=master)](https://travis-ci.org/reimagined/resolve) [![npm version](https://badge.fury.io/js/create-resolve-app.svg)](https://badge.fury.io/js/create-resolve-app) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/reimagined/resolve/master/LICENSE)
@@ -7,14 +6,15 @@ A JavaScript framework for **CQRS**, **Domain-Driven Design** and **Event Sourci
 
 <p align="center"><img src="https://user-images.githubusercontent.com/19663260/41475089-73b9620e-70c6-11e8-9ca9-633f3857626b.png"></p>
 
-* 2 minutes [installation](#installation).
-* [Free and open source](https://github.com/reimagined/resolve/blob/master/LICENSE.md).
-* Flexible and clear [API](#documentation).
+- 2 minutes [installation](#installation).
+- [Free and open source](https://github.com/reimagined/resolve/blob/master/LICENSE.md).
+- Flexible and clear [API](#documentation).
 
 ## **📑 Table of Contents**
-* **[🚀 Getting Started](#getting-started)**
-* **[📚 Documentation](#documentation)**
-* **[📢 Get in Touch](#get-in-touch)**
+
+- **[🚀 Getting Started](#getting-started)**
+- **[📚 Documentation](#documentation)**
+- **[📢 Get in Touch](#get-in-touch)**
 
 ## <a name="getting-started">**🚀 Getting Started**</a>
 
@@ -32,24 +32,24 @@ The created application is accessible using the http://localhost:3000/ and `http
 
 Instead of npx you can also use npm or yarn tools:
 
-* [npm](https://www.npmjs.com/)
+- [npm](https://www.npmjs.com/)
 
-    > Note: Installing a package globally may require administrative privileges. That means you have to use the `sudo` prefix on Linux and MacOS, or start a terminal with the administrative privileges on Windows.
+  > Note: Installing a package globally may require administrative privileges. That means you have to use the `sudo` prefix on Linux and MacOS, or start a terminal with the administrative privileges on Windows.
 
-    ```sh
-    npm i -g create-resolve-app
-    create-resolve-app my-awesome-app
-    cd my-awesome-app
-    npm run dev
-    ```
+  ```sh
+  npm i -g create-resolve-app
+  create-resolve-app my-awesome-app
+  cd my-awesome-app
+  npm run dev
+  ```
 
-* [yarn](https://yarnpkg.com/lang/en/)
+- [yarn](https://yarnpkg.com/lang/en/)
 
-    ```sh
-    yarn create resolve-app my-awesome-app
-    cd my-awesome-app
-    yarn run dev
-    ```
+  ```sh
+  yarn create resolve-app my-awesome-app
+  cd my-awesome-app
+  yarn run dev
+  ```
 
 ### <a name="examples">Examples</a>
 
@@ -65,18 +65,18 @@ The created application is accessible using the http://localhost:3000/ and `http
 
 Instead of npx you can also use npm or yarn tools:
 
-* [yarn](https://yarnpkg.com/lang/en/)
+- [yarn](https://yarnpkg.com/lang/en/)
 
-    ```sh
-    yarn create resolve-app nested-list-example -e nested-list
-    ```
+  ```sh
+  yarn create resolve-app nested-list-example -e nested-list
+  ```
 
-* [npm](https://www.npmjs.com/)
+- [npm](https://www.npmjs.com/)
 
-    ```sh
-    npm i -g create-resolve-app
-    create-resolve-app nested-list-example -e nested-list
-    ```
+  ```sh
+  npm i -g create-resolve-app
+  create-resolve-app nested-list-example -e nested-list
+  ```
 
 ## <a name="documentation">**📚 Documentation**</a>
 
@@ -90,17 +90,17 @@ Learn more in [documentation topics](https://github.com/reimagined/resolve/tree/
 
 ## <a name="get-in-touch">**📢 Get in Touch**</a>
 
-Feel free to contact us if you have any questions!
+:question: Feel free to ask questions at [Stackoverflow](https://stackoverflow.com/questions/tagged/resolvejs), using `[resolvejs]` tag.
+
+:beetle: Report bugs,issues and suggestions to [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
 
 ✉️ We are glad to see your e-mails sent to **reimagined@devexpress.com**.
 
-💬 Follow us on [**Twitter**](https://twitter.com/resolvejs). We post interesting arcticles, announcements, post polls about **reSolve** development and talk about the modern web technologies!
+💬 Follow us on [**Twitter**](https://twitter.com/resolvejs).
 
 💻 We also have a [**Facebook**](https://www.facebook.com/resolvejs/) page, join us!
 
 📃 You can find our articles on [**Medium**](https://medium.com/resolvejs)
-
-❓ You are welcome to post any questions or suggestions in [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
 
 🔧 Feel yourself capable of improving **reSolve**? Become one of our [**contributors**](https://github.com/reimagined/resolve/pulls)! Look through our [**Contrubutors Guide**](https://github.com/reimagined/resolve/blob/master/docs/Contributors%20Guide.md) and make a great Pull Request.
 
