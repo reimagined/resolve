@@ -14,7 +14,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
 import requiredAuth from '../decorators/required_auth'
-import { connectReadModel } from '../resolve/resolve-redux'
+import { connectReadModel } from 'resolve-redux'
 import ShoppingLists from '../components/ShoppingLists'
 import ShoppingListCreator from '../components/ShoppingListCreator'
 import * as refreshActions from '../redux/actions/refresh_actions'

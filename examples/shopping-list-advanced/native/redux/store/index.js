@@ -1,7 +1,7 @@
 import createMemoryHistory from 'history/createMemoryHistory'
 import { AsyncStorage } from 'react-native'
 
-import { createStore } from '../../resolve/resolve-redux'
+import { createStore } from 'resolve-redux'
 import {
   viewModels,
   readModels,

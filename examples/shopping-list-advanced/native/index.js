@@ -1,9 +1,9 @@
 import Expo from 'expo'
 import React from 'react'
 import { ActionSheetProvider } from '@expo/react-native-action-sheet'
-import '@shopping-list-advanced/ui'
+// import '@shopping-list-advanced/ui'
 
-import { Providers } from './resolve/resolve-redux'
+import { Providers } from 'resolve-redux'
 
 import { origin, rootPath, staticPath } from './resolve/config'
 

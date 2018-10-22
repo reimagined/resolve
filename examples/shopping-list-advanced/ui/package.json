@@ -10,11 +10,5 @@
   },
   "devDependencies": {
     "babel-preset-expo": "4.0.0"
-  },
-  "workspaces": {
-    "nohoist": [
-      "**",
-      "**/**"
-    ]
   }
 }

@@ -1,5 +1,5 @@
 import { aggregates } from '../../resolve/config'
-import { createActions } from '../../resolve/resolve-redux'
+import { createActions } from 'resolve-redux'
 
 const actions = {}
 for (const aggregate of aggregates) {

@@ -16,7 +16,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { StyleSheet } from 'react-native'
 
-import { connectReadModel } from '../resolve/resolve-redux'
+import { connectReadModel } from 'resolve-redux'
 import requiredAuth from '../decorators/required_auth'
 
 const styles = StyleSheet.create({

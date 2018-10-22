@@ -1,4 +1,4 @@
-import { actionTypes } from '../../resolve/resolve-redux'
+import { actionTypes } from 'resolve-redux'
 
 import {
   OPTIMISTIC_SHARINGS_SYNC,

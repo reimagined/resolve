@@ -1,5 +1,13 @@
 {
   "presets": ["babel-preset-expo"],
+  "plugins": [
+    ["module-resolver", {
+      "root": ["."],
+      "alias": {
+        "resolve-redux": "./resolve/resolve-redux"
+      }
+    }]
+  ],
   "env": {
     "development": {
       "plugins": ["transform-react-jsx-source"]

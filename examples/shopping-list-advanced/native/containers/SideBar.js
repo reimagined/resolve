@@ -5,7 +5,7 @@ import { Text, Container, List, ListItem, Content, Icon } from 'native-base'
 import { StyleSheet, Platform } from 'react-native'
 
 import Logo from '../components/Logo'
-import { actions } from '../resolve/resolve-redux'
+import { actions } from 'resolve-redux'
 
 const styles = StyleSheet.create({
   content: {
