@@ -92,7 +92,7 @@ Learn more in [documentation topics](https://github.com/reimagined/resolve/tree/
 
 :question: Feel free to ask questions at [Stackoverflow](https://stackoverflow.com/questions/tagged/resolvejs), using `[resolvejs]` tag.
 
-:beetle: Report bugs,issues and suggestions to [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
+:beetle: Report bugs, issues and suggestions at [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
 
 ✉️ We are glad to see your e-mails sent to **reimagined@devexpress.com**.
 
