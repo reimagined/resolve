@@ -73,7 +73,7 @@ In the configuration object, specify the View Model's name and the path to the p
 # Initialize a Read Model
 Each Read Model has an **Init** function that initializes the Read Model storage. 
 
-You can add tables to the storage using the defineTable method:
+You can add tables to the storage using the **defineTable** method:
 
 ``` js
   Init: async store => {
@@ -157,14 +157,14 @@ To learn how to send a request to a Read Model resolver, refer to the [Query a R
 
 
 # View Model Specifics
-**View Models** are a special kind of Read Models. They are queried by aggregate ID and and can automatically provide updates to the client Redux state. View Models are defined in a special isomorphic format so their code can also be used on the client side to provide reducer logic.  
+**View Models** are a special kind of Read Models. They are queried by aggregate ID and and can automatically provide updates to Redux state on the client. View Models are defined in a special isomorphic format so their code can also be used on the client side to provide reducer logic.  
 
 Use View Models in the following scenarios:
 
 * To create aggregate-centric views. Such views request relatively portions of data based on aggregate IDs. 
 * To create reactive components, whose state is kept up-to date on the client.
 
-A View Model's projection function takes a state and an event object, and returns an updated state. A projection function runs for every event with the specified aggregate ID from the beginning of the history on every request so it important to keep View Models small. You can also optimize system resource consumption by storing snapshots of the View Model state.
+A View Model's projection function takes a state and an event object, and returns an updated state. A projection function runs for every event with the specified aggregate ID from the beginning of the history on every request so it is important to keep View Models small. You can also store snapshots of the View Model state to optimize system resource consumption.
 
 The code sample below demonstrate a typical View Model projection function:
 ``` js
