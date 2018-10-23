@@ -2,27 +2,27 @@
 
 Commands are executed by objects that encapsulate domain logic. These objects are called Domain Objects.
 Usually Domain Objects are grouped into Aggregates. Aggregate boundary should be a transaction boundary.
-In CQRS/ES app it means that given aggregate should be able to execute a command without talking to other aggregates.
+In a CQRS/ES app, it means that any given aggregate should be able to execute its commands without talking to other aggregates.
 
-Since write side is used only to perform commands, your aggregate can be pretty slim, and only keep state that required for command exection.
+Since the write side is used only to perform commands, your aggregate can be pretty slim, and only keep state that required for command execution.
 
 See Martin Fowler's definition for aggregates in the DDD paradigm: [https://martinfowler.com/bliki/DDD_Aggregate.html](https://martinfowler.com/bliki/DDD_Aggregate.html)
 
-In reSolve aggregate is a static object that contains set of functions. Functions that build aggregate
+In reSolve, an aggregate is a static object that contains a set of functions. Functions that build aggregate
 state from events are called [projections](#aggregate-projection-function).
-Functions that executes commands - [command handlers](#command-handler).
-Aggregate state is passed to each of these functions explicitly as parameter.
+Functions that execute commands - [command handlers](#command-handler).
+Aggregate state is passed to each of these functions explicitly as an argument.
 
 # Aggregate ID
 
-Each aggregate should have an unique ID that is immutable during its lifetime. Though it should be unique in the given event store,
-it is recommended to make it globally unique. We recommend using [UUID v4](https://github.com/kelektiv/node-uuid#version-4) to generate Aggregate IDs or [cuid](https://github.com/ericelliott/cuid) for distributed scalable apps.
+Each aggregate should have a unique ID that is immutable during its lifetime. An Aggregate ID should be unique in the given event store, however we recommend to also keep it
+globally unique. We recommend generating Aggregate IDs using [UUID v4](https://github.com/kelektiv/node-uuid#version-4) or [cuid](https://github.com/ericelliott/cuid) for distributed scalable apps.
 
-Please note that you have to generate a new Aggregate ID and send it with command that creates a new aggregate.
+Please note that you have to generate a new Aggregate ID and send it with a command that creates a new aggregate.
 
 # Configuring Aggregates
 
-To configure an aggregates in reSolve app, provide aggregates array in the application configuration file:
+To configure aggregates in a reSolve app, provide an aggregates array in the application configuration file:
 
 <!-- prettier-ignore-start -->
 [embedmd]:# (../../examples/shopping-list/config.app.js /aggregates: \[/ /\]/)
@@ -137,9 +137,9 @@ export default {
 
 # Aggregate Projection Function
 
-Projection function is used to calculate an aggregate state based on agreggate's events. A projection function receives a previous state and event to be applied. Based on input, a projection function should return a new state. The computed state is then passed to the corresponding [command handler](#command_handler).
+Projection functions are used to calculate an aggregate state based on the agreggate's events. A projection function receives a previous state and event to be applied. A projection function should return a new state based on input. The computed state is then passed to the corresponding [command handler](#command_handler).
 
-Init function returns initial state of the aggregate.
+The Init function returns initial state of the aggregate.
 
 A typical **Projection** object structure:
 
@@ -178,4 +178,4 @@ Adapters for the following storage types are available out of the box:
 - [MongoDB](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-storage-mongo)
 - [MySQL](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-storage-mysql)
 
-To learn how to implement a custom adapter, refer to the [Custom Adapters](../advanced-techniques.md#custom-adapters)
+To learn more about adapters, refer to the [Adapters](../advanced-techniques.md#adapters) section of the reSolve documentation.
