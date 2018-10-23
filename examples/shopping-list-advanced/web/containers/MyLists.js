@@ -8,12 +8,15 @@ import requiredAuth from '../decorators/required_auth'
 import ShoppingLists from '../components/ShoppingLists'
 import ShoppingListCreator from '../components/ShoppingListCreator'
 
+import Test from '@shopping-list-advanced/ui'
+
 class MyLists extends React.PureComponent {
   render() {
     const { lists, createShoppingList, removeShoppingList } = this.props
 
     return (
       <div className="example-wrapper">
+        <Test/>
         <ShoppingLists lists={lists} removeShoppingList={removeShoppingList} />
         <ShoppingListCreator
           lists={lists}

@@ -1,3 +1,3 @@
-console.log('web')
+import Test from './Test'
 
-module.exports = () => {}
+export default Test
