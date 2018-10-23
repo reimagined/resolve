@@ -27,7 +27,6 @@
     "uuid": "3.3.2"
   },
   "devDependencies": {
-    "babel-plugin-module-resolver": "3.1.1",
     "@babel/plugin-proposal-class-properties": "7.0.0",
     "@babel/plugin-proposal-export-default-from": "7.0.0",
     "@babel/plugin-proposal-export-namespace-from": "7.0.0",
@@ -37,8 +36,8 @@
     "@babel/preset-react": "7.0.0",
     "@babel/runtime": "7.0.0",
     "babel-core": "^7.0.0-0",
-    "regenerator-runtime": "0.12.1",
     "babel-jest": "23.6.0",
+    "babel-plugin-module-resolver": "3.1.1",
     "babel-preset-expo": "4.0.0",
     "babel-preset-react-native": "4.0.0",
     "enzyme": "3.3.0",
@@ -47,7 +46,9 @@
     "jest": "23.6.0",
     "jest-expo": "29.0.0",
     "my-local-ip": "1.0.0",
-    "react-test-renderer": "16.5.2"
+    "react-test-renderer": "16.5.2",
+    "regenerator-runtime": "0.12.1",
+    "get-yarn-workspaces": "1.0.2"
   },
   "workspaces": {
     "nohoist": [

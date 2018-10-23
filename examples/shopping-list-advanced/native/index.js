@@ -1,7 +1,7 @@
 import Expo from 'expo'
 import React from 'react'
 import { ActionSheetProvider } from '@expo/react-native-action-sheet'
-// import '@shopping-list-advanced/ui'
+import '@shopping-list-advanced/ui'
 
 import { Providers } from 'resolve-redux'
 

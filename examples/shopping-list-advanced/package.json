@@ -33,7 +33,11 @@
   },
   "workspaces": {
     "packages": [
-      "*"
+      "domain",
+      "native",
+      "ui",
+      "utils",
+      "web"
     ]
   }
 }

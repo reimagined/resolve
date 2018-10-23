@@ -12,6 +12,9 @@
     },
     "ios": {
       "bundleIdentifier": "com.resolve.shoppinglistadvanced"
+    },
+    "packagerOpts": {
+      "config": "rn-cli.config.js"
     }
   }
 }
