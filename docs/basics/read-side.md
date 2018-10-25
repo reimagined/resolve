@@ -1,6 +1,4 @@
 # Read Models
-[TODO] we need some links to CQRS resources about read models. It is important to explain that read model should be optimized for query, so don't hesitate to denormalize data to avoid joins.
-
 
 The Read Side of the reSolve framework listens to events produced by the write side and updates **Read Models**. Read Models are then used to answer queries. 
 
