@@ -1,5 +1,5 @@
 # Splitting Code Into Chunks
-ReSolve uses **webpack** to transpile and bundle the application code so it can be run by browsers, the server and serverless platforms. 
+ReSolve uses **webpack** to transpile and bundle the application code so it can be run by client browsers, the server and serverless platforms. 
 
 [TODO] fix and elaborate what goes where.
 
@@ -24,13 +24,10 @@ When running locally, `resolve-scripts` requires all necessary chunks and combin
 [Comments ontopic]
 Resolve 
 
+
 # Running Serverless
 
 Coming soon. A reSolve app is serverless-ready and can be deployed into AWS with a single command.
-
-
-
-
 
 
 # Server-Side Rendering
@@ -69,7 +66,7 @@ To register routes within a reSolve app, specify the path to the file containing
 routes: 'client/routes.js'
 ```
 
-After this, app routing is configured for server-side rendering. Routing is also performed as expected on the client: when you render a [\<Redirect\>](https://reacttraining.com/react-router/web/api/Redirect), the browser switches to the new location, and this location is appended to the browser's history stack.
+After this, app routing is configured for server-side rendering. On the client, routing is also performed as expected: when you render a [\<Redirect\>](https://reacttraining.com/react-router/web/api/Redirect), the browser switches to the new location, and this location is appended to the browser's history stack.
 
 
 
@@ -101,7 +98,7 @@ This way, the document head is specified in an isomorphic format so it can be re
 
 # Process Managers (Sagas)
 
-Process Managers (or Sagas) are used to run arbitrary service code in response to events or on schedule. Generally, this is where you define logic that deal with side effects: you can emit new events and communicate with the outside world in any way (e.g., query databases, send emails, etc.). You can view a Saga as a scripted replacement to a user.
+Process Managers (or Sagas) are used to run arbitrary service code in response to events or on schedule. Generally, this is where you define logic that deal with side effects: you can emit new events and communicate with the outside world in any way (e.g., query databases, send emails, etc.). You can view a Saga as a scripted virtual user.
 
 The code below demonstrates a Saga that handles events:
 
@@ -180,7 +177,7 @@ For the full code, refer to the [With Saga](https://github.com/reimagined/resolv
 
 # Adapters
 
-ReSolve uses the **adapter** mechanism to provide an abstraction layer above APIs used by its subsystems. For instance, adapters are used to define how a reSolve application stores its data. They abstract away all direct interactions with the storage, allowing reSolve to provide a unified data management API.
+ReSolve uses the **adapter** mechanism to provide an abstraction layer above APIs used by its subsystems. For instance, adapters are used to define how a reSolve application stores its data. They abstract away all direct interactions with the underlying storage, allowing reSolve to provide a unified data management API.
 
 ReSolve uses different types of adapters depending on which kind of data needs to be stored.
 
@@ -188,8 +185,8 @@ ReSolve uses different types of adapters depending on which kind of data needs t
 - **Snapshot store adapters**
 - **Read model store adapters**
 
-Resolve comes with a set of adapters that cover popular DBMS choices. You can also implement new adapters to store data in any required way.
+Resolve comes with a set of adapters covering popular DBMS choices. You can also implement new adapters to store data in any required way.
 
-Note that reSolve does not force you to use adapters. For instance, you may need to build a Read Model on top of some arbitrary system, such as a full-text-search engine, OLAP or a specific SQL database. In such case you can just work with that system in the code of the projection function and query resolver, without writing a new Read Model adapter.
+Note that reSolve does not force you to use adapters. For example, you may need to implement a Read Model on top of some arbitrary system, such as a full-text-search engine, OLAP or a particular SQL database. In such case, you can just work with that system in the code of the projection function and query resolver, without writing a new Read Model adapter.
 
 To learn more about a particular adapter type, refer to the documentation for [reSolve adapter modules](https://github.com/reimagined/resolve/tree/master/packages/adapters).
