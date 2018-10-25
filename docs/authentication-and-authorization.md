@@ -50,7 +50,12 @@ export default [
 For a comprehensive code sample, refer to the [Hacker News](https://github.com/reimagined/resolve/tree/master/examples/hacker-news) example application.
 
 
-# Using 3rd Party Auth Services
+# Using 3rd-Party Auth Services
+
+You can implement authentication via 3rd-party services in the same way, in which you implement local authentication. To implement authentication for a particular service, use a corresponding Passport modules, e.g, **passport-google** or **passport-facebook**.
+
+
+
 
 # Making Your Own User Registry
 
@@ -58,7 +63,7 @@ If you prefer to store a user registry in your application, or if you use a thir
 - Add a User aggregate to accept commands and generate events related to managing a user registry
 - Create a read model and use it to look up a current user's information during logging in and put this information into a JWT (JSON Web Token)
 
-For example, if you want to grant permissions to user, you can write something like this:
+For example, if you want to grant permissions to a user, you can write something like this:
 
 Write side. "user" aggregate:
 

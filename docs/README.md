@@ -37,7 +37,7 @@
 - [Authentication and Authorization](authentication-and-authorization.md)
 
   - [Setting up Authentication](authentication-and-authorization.md#setting-up-authentication)
-  - [Using 3rd Party Auth Services](authentication-and-authorization.md#using-3rd-party-auth-services)
+  - [Using 3rd-Party Auth Services](authentication-and-authorization.md#using-3rd-party-auth-services)
   - [Making Your Own User Registry](authentication-and-authorization.md#making-your-own-user-registry)
   - [Using JWT for Command and Query Authorization](#using-jwt-for-command-and-query-authorization)
 
