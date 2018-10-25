@@ -5,7 +5,7 @@ import interopRequireDefault from '@babel/runtime/helpers/interopRequireDefault'
 const distDir = JSON.parse(minimist(process.argv.slice(2)).distDir)
 
 const requireAssembly = filename =>
-  interopRequireDefault(require(path.join(process.cwd(), distDir, filename)))
+  interopRequireDefault(require(path.resolve(process.cwd(), distDir, filename)))
     .default
 
 const aggregates = requireAssembly('common/aggregates/index.js')

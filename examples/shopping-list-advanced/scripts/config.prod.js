@@ -4,4 +4,4 @@ const prodConfig = {
   mode: 'production'
 }
 
-export default prodConfig
+module.exports = prodConfig

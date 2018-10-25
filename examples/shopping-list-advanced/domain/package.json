@@ -3,6 +3,7 @@
   "version": "0.17.4",
   "private": true,
   "dependencies": {
+    "@babel/polyfill": "^7.0.0",
     "jsonwebtoken": "8.3.0",
     "passport-local": "1.0.0",
     "uuid": "3.3.2"
@@ -14,7 +15,7 @@
     "jest": "23.6.0"
   },
   "scripts": {
-    "test": "jest --testMatch=**/test/**/unit/*.test.js --verbose",
+    "test": "jest --testMatch=**/test/**/*.test.js --verbose",
     "test:functional": "echo || exit 0"
   }
 }

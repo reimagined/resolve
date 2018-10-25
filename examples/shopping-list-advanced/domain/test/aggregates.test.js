@@ -1,7 +1,7 @@
 import JWT from 'jsonwebtoken'
 
-import shoppingListCommands from '../../../domain/aggregates/shopping_list.commands'
-import userCommands from '../../../domain/aggregates/user.commands'
+import shoppingListCommands from '../src/aggregates/shopping-list.commands'
+import userCommands from '../src/aggregates/user.commands'
 import {
   SHOPPING_LIST_CREATED,
   SHOPPING_LIST_RENAMED,
@@ -11,8 +11,8 @@ import {
   SHOPPING_ITEM_REMOVED,
   USER_CREATED,
   USER_NAME_UPDATED
-} from '../../../domain/event_types'
-import jwtSecret from '../../../domain/auth/jwt_secret'
+} from '../src/event-types'
+import jwtSecret from '../src/auth/jwt-secret'
 
 const jwtToken = JWT.sign(
   {

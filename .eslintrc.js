@@ -70,6 +70,7 @@ module.exports = {
           'awslambda',
           'basename',
           'babelrc',
+          'babelify',
           'behaviour',
           'bson',
           'bool',

@@ -1,11 +1,13 @@
 {
-  "name": "@shopping-list-advanced/scripts",
+  "name": "@shopping-list-advanced/monorepo-root",
   "version": "0.17.4",
   "private": true,
   "scripts": {
-    "build": "babel-node ./run.js build",
-    "dev": "babel-node ./run.js dev",
-    "start": "babel-node ./run.js start",
+    "babelify": "cd scripts && node babel.compile.js --run",
+    "babelify:watch": "cd scripts && node babel.compile.js --watch",
+    "build": "cd scripts && node ./run.js build",
+    "dev": "cd scripts && node ./run.js dev",
+    "start": "cd scripts && node ./run.js start",
     "start:native": "cd native && npm run start",
     "test": "npm run test:domain && npm run test:web && npm run test:native",
     "test:domain": "cd domain && npm run test",
@@ -13,32 +15,14 @@
     "test:native": "cd native && npm run test",
     "test:functional": "echo || exit 0"
   },
-  "dependencies": {
-    "@babel/polyfill": "7.0.0",
-    "redux": "4.0.0",
-    "react": "16.5.2",
-    "resolve-redux": "0.17.4",
-    "resolve-scripts": "0.17.4",
-    "resolve-subscribe-socket.io": "0.17.4"
-  },
-  "devDependencies": {
-    "@babel/core": "7.0.0",
-    "@babel/cli": "7.0.0",
-    "@babel/node": "7.0.0",
-    "@babel/plugin-proposal-class-properties": "7.0.0",
-    "@babel/plugin-proposal-export-default-from": "7.0.0",
-    "@babel/plugin-proposal-export-namespace-from": "7.0.0",
-    "@babel/plugin-transform-runtime": "7.0.0",
-    "@babel/preset-env": "7.0.0",
-    "@babel/preset-react": "7.0.0"
-  },
   "workspaces": {
     "packages": [
       "domain",
-      "native",
       "ui",
       "utils",
-      "web"
+      "web",
+      "scripts",
+      "native"
     ]
   }
 }

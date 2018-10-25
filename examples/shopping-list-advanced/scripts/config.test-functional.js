@@ -9,4 +9,4 @@ const testFunctionalConfig = {
   }
 }
 
-export default testFunctionalConfig
+module.exports = testFunctionalConfig

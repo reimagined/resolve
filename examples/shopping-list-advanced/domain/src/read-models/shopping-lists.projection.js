@@ -6,7 +6,7 @@ import {
   SHOPPING_LIST_SHARED,
   SHOPPING_LIST_UNSHARED,
   SHOPPING_LIST_REMOVED
-} from '../event_types'
+} from '../event-types'
 
 export default {
   Init: async store => {

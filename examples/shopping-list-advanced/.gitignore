@@ -60,6 +60,8 @@ typings/
 .next
 
 dist
+es
+lib
 
 event-storage.db
 package-lock.json

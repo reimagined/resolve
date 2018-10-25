@@ -3,7 +3,7 @@ import uuid from 'uuid/v4'
 import crypto from 'crypto'
 import JWT from 'jsonwebtoken'
 
-import jwtSecret from './jwt_secret'
+import jwtSecret from './jwt-secret'
 
 const ROOT_JWT_TOKEN = JWT.sign(
   {

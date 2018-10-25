@@ -3,14 +3,14 @@ import path from 'path'
 
 const writePackageJsonsForAssemblies = (distDir, nodeModulesByAssembly) => {
   const applicationPackageJson = JSON.parse(
-    fs.readFileSync(path.join(process.cwd(), 'package.json'))
+    fs.readFileSync(path.resolve(process.cwd(), 'package.json'))
   )
 
   for (const [
     packageJsonPath,
     nodeModules
   ] of nodeModulesByAssembly.entries()) {
-    const absolutePackageJsonPath = path.join(
+    const absolutePackageJsonPath = path.resolve(
       process.cwd(),
       distDir,
       packageJsonPath

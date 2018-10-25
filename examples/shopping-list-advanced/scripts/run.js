@@ -1,16 +1,16 @@
-import {
+const {
   defaultResolveConfig,
   build,
   start,
   watch,
   runTestcafe
-} from 'resolve-scripts'
+} = require('resolve-scripts')
 
-import devConfig from './config.dev'
-import prodConfig from './config.prod'
-import testFunctionalConfig from './config.test_functional'
-import adjustWebpackConfigs from './config.adjust_webpack'
-import appConfig from './config.app'
+const devConfig = require('./config.dev')
+const prodConfig = require('./config.prod')
+const testFunctionalConfig = require('./config.test-functional')
+const adjustWebpackConfigs = require('./config.adjust-webpack')
+const appConfig = require('./config.app')
 
 const launchMode = process.argv[2]
 
@@ -23,7 +23,7 @@ void (async () => {
           ...appConfig,
           ...devConfig
         },
-        adjustWebpackConfigs.bind(null, devConfig)
+        adjustWebpackConfigs.bind(null, { watch: true })
       )
       break
     }
@@ -35,7 +35,7 @@ void (async () => {
           ...appConfig,
           ...prodConfig
         },
-        adjustWebpackConfigs.bind(null, prodConfig)
+        adjustWebpackConfigs
       )
       break
     }
@@ -65,4 +65,5 @@ void (async () => {
 })().catch(error => {
   // eslint-disable-next-line no-console
   console.log(error)
+  process.exit(1)
 })

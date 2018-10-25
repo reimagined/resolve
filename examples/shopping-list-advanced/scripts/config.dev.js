@@ -4,4 +4,4 @@ const devConfig = {
   mode: 'development'
 }
 
-export default devConfig
+module.exports = devConfig

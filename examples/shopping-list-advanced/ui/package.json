@@ -8,6 +8,9 @@
     "test": "echo || exit 0",
     "test:functional": "echo || exit 0"
   },
+  "dependencies": {
+    "rambda": "^1.2.6"
+  },
   "peerDependencies": {
     "react": "*",
     "react-native": "*"

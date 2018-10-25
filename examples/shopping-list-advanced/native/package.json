@@ -12,29 +12,20 @@
     "test:functional": "echo || exit 0"
   },
   "dependencies": {
-    "@expo/react-native-action-sheet": "1.1.0",
+    "@expo/react-native-action-sheet": "1.1.2",
     "@expo/vector-icons": "6.3.1",
     "expo": "30.0.1",
     "history": "4.7.2",
     "native-base": "2.8.1",
-    "react": "16.3.1",
-    "react-dom": "16.3.1",
+    "react": "16.5.2",
     "react-native": "https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz",
     "react-native-elements": "0.19.1",
-    "react-navigation": "2.11.2",
+    "react-navigation": "2.18.1",
     "react-redux": "5.0.7",
-    "redux": "4.0.0",
+    "redux": "4.0.1",
     "uuid": "3.3.2"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-class-properties": "7.0.0",
-    "@babel/plugin-proposal-export-default-from": "7.0.0",
-    "@babel/plugin-proposal-export-namespace-from": "7.0.0",
-    "@babel/plugin-transform-runtime": "7.0.0",
-    "@babel/preset-env": "7.0.0",
-    "@babel/preset-flow": "7.0.0",
-    "@babel/preset-react": "7.0.0",
-    "@babel/runtime": "7.0.0",
     "babel-core": "^7.0.0-0",
     "babel-jest": "23.6.0",
     "babel-plugin-module-resolver": "3.1.1",
@@ -52,8 +43,10 @@
   },
   "workspaces": {
     "nohoist": [
-      "**",
-      "**/**"
+      "react-native",
+      "react-native/**",
+      "expo",
+      "expo/**"
     ]
   }
 }

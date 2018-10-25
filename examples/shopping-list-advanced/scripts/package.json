@@ -1,0 +1,28 @@
+{
+  "name": "@shopping-list-advanced/scripts",
+  "version": "0.17.4",
+  "private": true,
+  "scripts": {
+    "test": "echo || exit 0",
+    "test:functional": "echo || exit 0"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.0.0"
+  },
+  "devDependencies": {
+    "chalk": "^2.4.1",
+    "@babel/core": "^7.0.0",
+    "@babel/cli": "^7.0.0",
+    "@babel/node": "^7.0.0",
+    "@babel/plugin-proposal-decorators": "^7.0.0",
+    "@babel/plugin-proposal-class-properties": "^7.0.0",
+    "@babel/plugin-proposal-export-default-from": "^7.0.0",
+    "@babel/plugin-proposal-export-namespace-from": "^7.0.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "get-yarn-workspaces": "^1.0.2",
+    "glob": "^7.1.3"
+  }
+}

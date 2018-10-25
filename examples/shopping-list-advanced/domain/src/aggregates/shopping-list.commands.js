@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 
-import jwtSecret from '../auth/jwt_secret'
+import jwtSecret from '../auth/jwt-secret'
 import validation from './validation'
 import {
   SHOPPING_LIST_CREATED,
@@ -11,7 +11,7 @@ import {
   SHOPPING_ITEM_REMOVED,
   SHOPPING_LIST_SHARED,
   SHOPPING_LIST_UNSHARED
-} from '../event_types'
+} from '../event-types'
 
 export default {
   createShoppingList: (state, { payload: { name } }, jwtToken) => {

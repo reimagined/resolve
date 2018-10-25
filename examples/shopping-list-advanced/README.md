@@ -47,10 +47,10 @@ When you are ready to share your project with others (for example, by deploying 
     📁 domain
         📁 auth
             📄 index.js
-            📄 jwt_secret.js
+            📄 jwt-secret.js
         📁 aggregates
-            📄 shopping_list.commands.js
-            📄 shopping_list.projection.js
+            📄 shopping-list.commands.js
+            📄 shopping-list.projection.js
             📄 user.commands.js
             📄 user.projection.js
             📄 validation.js
@@ -58,8 +58,8 @@ When you are ready to share your project with others (for example, by deploying 
             📄 default.projection.js
             📄 default.resolvers.js
         📁 view-models
-            📄 shopping_list.projection.js
-        📄 event_types.js
+            📄 shopping-list.projection.js
+        📄 event-types.js
         📄 package.json
     📁 web
         📁 components
@@ -124,7 +124,7 @@ When you are ready to share your project with others (for example, by deploying 
     📄 config.app.js	
     📄 config.dev.js
     📄 config.prod.js
-    📄 config.test_functional.js
+    📄 config.test-functional.js
     📄 index.js
     📄 README.md
     📄 .gitignore

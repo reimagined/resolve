@@ -1,8 +1,8 @@
 import JWT from 'jsonwebtoken'
 
-import jwtSecret from '../auth/jwt_secret'
+import jwtSecret from '../auth/jwt-secret'
 import validation from './validation'
-import { USER_CREATED, USER_NAME_UPDATED } from '../event_types'
+import { USER_CREATED, USER_NAME_UPDATED } from '../event-types'
 
 export default {
   createUser: (state, command, jwtToken) => {
