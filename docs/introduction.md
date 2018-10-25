@@ -52,4 +52,4 @@ Write side is optimized for writing, read side - for reading.
 
 
 
-# Learning Resouces
+# Learning Resources
