@@ -136,7 +136,7 @@ export default connectViewModel(mapStateToOptions)(
 
 # Optimistic Commands
 
-If a component is connected to a reSolve ReadModel, you can enhance its responsiveness by providing it with **optimistic UI update** functionality. With this approach, a component applies model changes on the client side before synchronizing them with the server via an aggregate command.
+If a component is connected to a reSolve ReadModel, you can enhance its responsiveness by providing it with **optimistic UI updating** functionality. With this approach, a component applies model changes on the client side before synchronizing them with the server via an aggregate command.
 
 Use the following steps to implement the optimistic update functionality:
 
