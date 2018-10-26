@@ -13,7 +13,7 @@ auth: {
 ```
 <!-- prettier-ignore-end -->
 
-The specified file should export an array. Each item of this array defines a strategy by providing a strategy constructor function along with a set of strategy options. You can define strategies using the following general format: 
+The specified file should export an array. Each item in this array defines a strategy by providing a strategy constructor function along with a set of strategy options. You can define strategies using the following general format: 
 
 ```js
 // ./auth/index.js
@@ -52,7 +52,7 @@ For a comprehensive code sample, refer to the [Hacker News](https://github.com/r
 
 # Using 3rd-Party Auth Services
 
-You can implement authentication via 3rd-party services in the same way, in which you implement local authentication. To implement authentication for a particular service, use a corresponding Passport modules, e.g, **passport-google** or **passport-facebook**.
+You can implement authentication via 3rd-party services in the same way, in which you implement local authentication. To implement authentication for a particular service, use corresponding Passport modules, e.g., **passport-google** or **passport-facebook**.
 
 
 
@@ -124,7 +124,7 @@ userById: async(store, {id}) => store.findOne('Users', {id})
 ...
 ```
 
-Now upon login you can query Users read model and store user record with its permissions in the JWT Token:
+Now, upon login you can query Users read model and store user record with its permissions in the JWT Token:
 
 ```js
 ...
@@ -142,14 +142,14 @@ if (user)
 
 Every command and query handler accepts a JSON Web Token (JWT) obtained during the authentication process. This JWT contains an object that was returned by authentication function, or an empty object `{}` if current user is not logged in.
 
-A JWT is signed, so it cannot be forged by an attacker, without knowing a secret that was used for token creation. It can be decoded and verified using the same secret that was used for its creation:
+A JWT is signed, so it cannot be forged by an attacker, without knowing a secret that was used for token creation. The token can be decoded and verified using the same secret that was used for its creation:
 
 ```js
 const { id: userId } = jwt.verify(jwtToken, jwtSecret)
 ```
 
 You can store any information in a JWT. For instance, during authentication, you can look up a
-user's permissions and add it to the token. Then, you can check for the user's permissions on a command or query execution as shown below:
+user's permissions and add them to the token. Then, you can check for the user's permissions on a command or query execution as shown below:
 
 ```js
 const { id: userId, permissions } = jwt.verify(jwtToken, jwtSecret);
