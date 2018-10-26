@@ -1,6 +1,6 @@
 import injectDefaults from '../inject-defaults'
 
-const createCommentTreeCommands = (
+const createCommentsCommands = (
   {
     commandTypes: { createComment, updateComment, removeComment },
     eventTypes: { COMMENT_CREATED, COMMENT_UPDATED, COMMENT_REMOVED }
@@ -64,6 +64,15 @@ const createCommentTreeCommands = (
       )
     }
 
+    if (
+      command.payload.authorId == null ||
+      command.payload.authorId.constructor !== String
+    ) {
+      throw new Error(
+        'Comment creation should provide "authorId" field as string'
+      )
+    }
+
     if (command.payload.content == null) {
       throw new Error(
         'Comment update should provide "content" field as not-null'
@@ -75,6 +84,7 @@ const createCommentTreeCommands = (
     return {
       type: COMMENT_UPDATED,
       payload: {
+        authorId: command.payload.authorId,
         commentId: command.payload.commentId,
         content: command.payload.content
       }
@@ -91,15 +101,25 @@ const createCommentTreeCommands = (
       )
     }
 
+    if (
+      command.payload.authorId == null ||
+      command.payload.authorId.constructor !== String
+    ) {
+      throw new Error(
+        'Comment creation should provide "authorId" field as string'
+      )
+    }
+
     await verifyCommand(state, command, jwtToken)
 
     return {
       type: COMMENT_REMOVED,
       payload: {
-        commentId: command.payload.commentId
+        commentId: command.payload.commentId,
+        authorId: command.payload.authorId
       }
     }
   }
 })
 
-export default injectDefaults(createCommentTreeCommands)
+export default injectDefaults(createCommentsCommands)

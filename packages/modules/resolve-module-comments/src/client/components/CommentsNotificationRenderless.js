@@ -103,11 +103,6 @@ class CommentsNotificationRenderless extends React.PureComponent {
         <Component
           {...props}
           onClick={this.onClick}
-          readModelName={readModelName}
-          resolverName={resolverName}
-          treeId={treeId}
-          parentCommentId={parentCommentId}
-          authorId={authorId}
           count={+commentCount - +prevCommentCount}
         />
       </React.Fragment>

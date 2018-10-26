@@ -1,6 +1,6 @@
 import { actionTypes } from 'resolve-redux'
 
-import injectDefaultOptions from '../../common/inject-default-options'
+import injectDefaults from '../../common/inject-defaults'
 
 const {
   CONNECT_READMODEL,
@@ -12,8 +12,8 @@ const {
 const createCommentsReducer = ({
   aggregateName,
   readModelName,
-  resolverNames: { commentsTree } = {},
-  commandTypes: { createComment, updateComment, removeComment } = {}
+  resolverNames: { commentsTree },
+  commandTypes: { createComment, updateComment, removeComment }
 }) => (state = {}, action) => {
   if (
     action.type === CONNECT_READMODEL &&
@@ -45,6 +45,9 @@ const createCommentsReducer = ({
     delete nextState[action.resolverArgs.treeId][
       action.resolverArgs.parentCommentId
     ]
+    if (Object.keys(nextState[action.resolverArgs.treeId]).length === 0) {
+      delete nextState[action.resolverArgs.treeId]
+    }
     return nextState
   }
 
@@ -64,6 +67,7 @@ const createCommentsReducer = ({
 
   if (
     action.type === SEND_COMMAND_SUCCESS &&
+    action.aggregateName === aggregateName &&
     action.commandType === createComment
   ) {
     return {
@@ -114,6 +118,7 @@ const createCommentsReducer = ({
 
   if (
     action.type === SEND_COMMAND_SUCCESS &&
+    action.aggregateName === aggregateName &&
     action.commandType === removeComment
   ) {
     return {
@@ -135,4 +140,4 @@ const createCommentsReducer = ({
   return state
 }
 
-export default injectDefaultOptions(createCommentsReducer)
+export default injectDefaults(createCommentsReducer)

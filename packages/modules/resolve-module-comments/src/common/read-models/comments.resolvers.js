@@ -146,7 +146,7 @@ const createCommentsProjection = ({
     const { itemsOnPage, pageNumber } = args
 
     const itemsOnPageInt = +itemsOnPage
-    const pageNumberInt = +pageNumber
+    const pageNumberInt = +pageNumber - 1
     if (
       !Number.isInteger(itemsOnPageInt) ||
       !Number.isInteger(pageNumberInt) ||
@@ -187,7 +187,10 @@ const createCommentsProjection = ({
     linearizedComments.pop()
 
     return {
-      comments: linearizedComments,
+      comments: linearizedComments.map(({ childCommentId, ...rest }) => ({
+        commentId: childCommentId,
+        ...rest
+      })),
       paginationDone
     }
   }

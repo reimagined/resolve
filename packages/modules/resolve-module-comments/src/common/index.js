@@ -1,5 +1,3 @@
-import path from 'path'
-
 import createCommentsCommands from './aggregates/comments.commands'
 import createCommentsProjection from './read-models/comments.projection'
 import createCommentsResolvers from './read-models/comments.resolvers'
@@ -50,7 +48,8 @@ export default ({
     maxNestedLevel
   }
   const imports = {
-    verifyCommand
+    verifyCommand:
+      verifyCommand || 'resolve-module-comments/lib/aggregates/verify-command.js'
   }
 
   return injectDefaults((options, imports) => ({
@@ -58,7 +57,7 @@ export default ({
       {
         name: options.aggregateName,
         commands: {
-          module: path.join(__dirname, './aggregates/comments.commands.js'),
+          module: 'resolve-module-comments/lib/aggregates/comments.commands.js',
           options,
           imports
         }
@@ -68,12 +67,12 @@ export default ({
       {
         name: options.readModelName,
         projection: {
-          module: path.join(__dirname, './read-models/comments.projection.js'),
+          module: 'resolve-module-comments/lib/read-models/comments.projection.js',
           options,
           imports
         },
         resolvers: {
-          module: path.join(__dirname, './read-models/comments.resolvers.js'),
+          module: 'resolve-module-comments/lib/read-models/comments.resolvers.js',
           options,
           imports
         }
@@ -85,7 +84,7 @@ export default ({
     redux: {
       reducers: {
         [options.reducerName]: {
-          module: path.join(__dirname, '../client/reducers/comments.js'),
+          module: 'resolve-module-comments/lib/client/reducers/comments.js',
           options,
           imports
         }

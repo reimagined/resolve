@@ -8,10 +8,10 @@
     "start": "babel-node ./run.js start",
     "dev": "babel-node ./run.js dev",
     "import": "babel-node ./import",
-    "test": "echo OK || exit 0",
-    "test:update": "echo OK || exit 0",
-    "test:coverage": "echo OK || exit 0",
-    "test:watch": "echo OK || exit 0",
+    "test": "jest",
+    "test:update": "jest -u",
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watchAll",
     "test:functional": "babel-node ./run.js test:functional"
   },
   "dependencies": {
