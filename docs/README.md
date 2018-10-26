@@ -24,7 +24,7 @@
     - [Read Models](basics/read-side.md#read-models)
     - [Configuring Read Models and View Models](basics/read-side.md#configuring-read-models-and-view-models)
     - [Initialize a Read Model](basics/read-side.md#initialize-a-read-model)
-    - [Updating a Read Model via a Projection Function](basics/read-side.md#updating-a-read-model-via-a-projection-function)
+    - [Updating a Read Model via Projection Functions](basics/read-side.md#updating-a-read-model-via-projection-functions)
     - [Resolvers](basics/read-side.md#resolvers)
     - [View Model Specifics](basics/read-side.md#view-model-specifics)
     - [Performing Queries Using HTTP API](basics/read-side.md#performing-queries-using-http-api)
@@ -39,7 +39,7 @@
   - [Setting up Authentication](authentication-and-authorization.md#setting-up-authentication)
   - [Using 3rd-Party Auth Services](authentication-and-authorization.md#using-3rd-party-auth-services)
   - [Making Your Own User Registry](authentication-and-authorization.md#making-your-own-user-registry)
-  - [Using JWT for Command and Query Authorization](#using-jwt-for-command-and-query-authorization)
+  - [Using JWT for Command and Query Authorization](authentication-and-authorization.md#using-jwt-for-command-and-query-authorization)
 
 - [Preparing to Production](preparing-to-production.md)
 
