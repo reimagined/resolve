@@ -114,7 +114,7 @@ For the full code sample, refer to the [with-saga](https://github.com/reimagined
 
 # Aggregate Command Handlers
 
-The aggregate command handlers object associates command handlers with command names. A command handler receives a state accumulated by the aggregate [Projection](#aggregate-projection-function) the command object. The command object has the following structure:
+The aggregate command handlers object associates command handlers with command names. A command handler receives a state accumulated by the aggregate [Projection](#aggregate-projection-function) the command object.
 
 A command handler should return an event object that is then saved to the [event store](#event-store). A returned object should specify an event type and some **payload** specific to this event type.
 
@@ -137,7 +137,7 @@ export default {
 
 # Aggregate Projection Function
 
-Projection functions are used to calculate an aggregate state based on the agreggate's events. A projection function receives a previous state and event to be applied. A projection function should return a new state based on input. The computed state is then passed to the corresponding [command handler](#command_handler).
+Projection functions are used to calculate an aggregate state based on the agreggate's events. A projection function receives a previous state and event to be applied. A projection function should return a new state based on the input. The computed state is then passed to the corresponding [command handler](#command_handler).
 
 The Init function returns initial state of the aggregate.
 
