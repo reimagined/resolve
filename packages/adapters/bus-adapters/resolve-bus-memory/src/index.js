@@ -1,12 +1,11 @@
-function createAdapter() {
-  let handler = () => {}
+import createAdapter from 'resolve-bus-base'
+import publish from './publish'
+import dispose from './dispose'
 
-  return {
-    init: async () => {},
-    close: async () => {},
-    subscribe: async callback => (handler = callback),
-    publish: async event => handler(event)
-  }
-}
-
-export default createAdapter
+export default createAdapter.bind(
+  null,
+  async () => {},
+  async () => {},
+  publish,
+  dispose
+)

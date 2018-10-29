@@ -1,0 +1,1 @@
+export default createStore => createStore

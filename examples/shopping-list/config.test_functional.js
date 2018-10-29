@@ -3,6 +3,12 @@ const testFunctionalConfig = {
   polyfills: ['@babel/polyfill'],
   mode: 'development',
 
+  readModelAdapters: {
+    ShoppingLists: {
+      module: 'resolve-readmodel-memory',
+      options: {}
+    }
+  },
   storageAdapter: {
     module: 'resolve-storage-lite',
     options: {}

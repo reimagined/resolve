@@ -1,10 +1,7 @@
 import {
   message,
-  RESOURCE_CONSTRUCTOR_ONLY,
   RESOURCE_ANY,
   RUNTIME_ENV_NOWHERE,
-  RUNTIME_ENV_ANYWHERE,
-  IMPORT_CONSTRUCTOR,
   IMPORT_INSTANCE
 } from '../constants'
 import importBabel from '../import_babel'
@@ -41,9 +38,9 @@ export default ({ resolveConfig, isClient }) => {
     })
 
     if (isClient) {
-      const clientCommands =
+      const clientCommands = Object.keys(
         aggregate.commands.constructor === String
-          ? Object.keys(importBabel(resolveFile(aggregate.commands)))
+          ? importBabel(resolveFile(aggregate.commands))
           : importBabel(resolveFileOrModule(aggregate.commands.module))(
               aggregate.commands.options,
               aggregate.commands.imports != null
@@ -55,11 +52,12 @@ export default ({ resolveConfig, isClient }) => {
                   }, {})
                 : null
             )
+      )
 
       constants.push(
         `const commands_${index} = {`,
         clientCommands
-          .map(commandName => `  ${commandName}() {}`)
+          .map(commandName => `  [\`${commandName}\`]: () => {}`)
           .join(',\r\n'),
         `}`
       )
@@ -82,20 +80,6 @@ export default ({ resolveConfig, isClient }) => {
       })
       exports.push(`, projection: projection_${index}`)
       exports.push(`, invariantHash: projection_${index}_hash`)
-    }
-
-    if (!isClient && aggregate.snapshotAdapter) {
-      importResource({
-        resourceName: `snapshotAdapter_${index}`,
-        resourceValue: aggregate.snapshotAdapter,
-        runtimeMode: RUNTIME_ENV_ANYWHERE,
-        importMode: RESOURCE_CONSTRUCTOR_ONLY,
-        instanceMode: IMPORT_CONSTRUCTOR,
-        imports,
-        constants
-      })
-
-      exports.push(`, snapshotAdapter: snapshotAdapter_${index}`)
     }
 
     exports.push(`})`, ``)

@@ -3,9 +3,10 @@ const appConfig = {
   staticDir: 'static',
   distDir: 'dist',
   redux: {
-    reducers: 'client/reducers/index.js',
-    middlewares: 'client/middlewares/index.js',
-    store: 'client/store/index.js'
+    reducers: {
+      optimisticShoppingLists: 'client/reducers/optimistic_shopping_lists.js'
+    },
+    middlewares: ['client/middlewares/optimistic_shopping_lists_middleware.js']
   },
   aggregates: [
     {

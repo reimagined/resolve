@@ -264,7 +264,8 @@ if (unknownOptions && unknownOptions.length) {
         'resolve-storage-mongo',
         'resolve-storage-mysql',
         'resolve-subscribe-mqtt',
-        'resolve-subscribe-socket.io'
+        'resolve-subscribe-socket.io',
+        'resolve-testing-tools'
       ])
     })
   }
@@ -281,11 +282,21 @@ if (unknownOptions && unknownOptions.length) {
 
     return getResolvePackages()
       .then(packages => {
-        Object.keys(packageJson.dependencies).forEach(k => {
-          if (packages.indexOf(k) > -1) {
-            packageJson.dependencies[k] = resolveVersion
+        const namespaces = [
+          'dependencies',
+          'devDependencies',
+          'peerDependencies',
+          'optionalDependencies'
+        ]
+        for (const namespace of namespaces) {
+          if (packageJson[namespace]) {
+            for (const packageName of Object.keys(packageJson[namespace])) {
+              if (packages.includes(packageName)) {
+                packageJson[namespace][packageName] = resolveVersion
+              }
+            }
           }
-        })
+        }
       })
       .then(() =>
         fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2))

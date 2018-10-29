@@ -8,13 +8,10 @@ const verifyCommand = async ({ aggregateId, aggregateName, type }) => {
 }
 
 const getAggregateState = async (
-  {
-    projection: { Init, ...projection } = {},
-    snapshotAdapter = null,
-    invariantHash = null
-  },
+  { projection, invariantHash = null },
   aggregateId,
-  eventStore
+  eventStore,
+  snapshotAdapter = null
 ) => {
   const snapshotKey =
     projection != null && projection.constructor === Object
@@ -43,48 +40,59 @@ const getAggregateState = async (
     lastTimestamp = snapshot.timestamp
   } catch (err) {}
 
-  if (!(+lastTimestamp > 0)) {
-    aggregateState = typeof Init === 'function' ? Init() : null
+  if (!(+lastTimestamp > 0) && projection != null) {
+    aggregateState =
+      typeof projection.Init === 'function' ? await projection.Init() : null
   }
 
-  const regularHandler = event => {
+  const regularHandler = async event => {
     aggregateVersion = event.aggregateVersion
-    if (projection && typeof projection[event.type] === 'function') {
-      aggregateState = projection[event.type](aggregateState, event)
+    if (projection != null && typeof projection[event.type] === 'function') {
+      aggregateState = await projection[event.type](aggregateState, event)
     }
   }
 
-  const snapshotHandler = event => {
+  const snapshotHandler = async event => {
     aggregateVersion = event.aggregateVersion
-    if (projection && typeof projection[event.type] === 'function') {
-      aggregateState = projection[event.type](aggregateState, event)
+    if (projection != null && typeof projection[event.type] === 'function') {
+      aggregateState = await projection[event.type](aggregateState, event)
     }
 
     lastTimestamp = event.timestamp - 1
-    snapshotAdapter.saveSnapshot(snapshotKey, {
+    await snapshotAdapter.saveSnapshot(snapshotKey, {
       state: aggregateState,
       version: aggregateVersion,
       timestamp: lastTimestamp
     })
   }
 
-  await eventStore.getEventsByAggregateId(
-    aggregateId,
+  await eventStore.loadEvents(
+    {
+      aggregateIds: [aggregateId],
+      startTime: lastTimestamp,
+      skipBus: true
+    },
     snapshotAdapter != null && snapshotKey != null
       ? snapshotHandler
-      : regularHandler,
-    lastTimestamp
+      : regularHandler
   )
 
   return { aggregateState, aggregateVersion }
 }
 
-const executeCommand = async (command, aggregate, eventStore, jwtToken) => {
+const executeCommand = async (
+  command,
+  aggregate,
+  eventStore,
+  jwtToken,
+  snapshotAdapter
+) => {
   const { aggregateId, type } = command
   let { aggregateState, aggregateVersion } = await getAggregateState(
     aggregate,
     aggregateId,
-    eventStore
+    eventStore,
+    snapshotAdapter
   )
 
   const handler = aggregate.commands[type]
@@ -106,18 +114,25 @@ const executeCommand = async (command, aggregate, eventStore, jwtToken) => {
   return event
 }
 
-function createExecutor({ eventStore, aggregate }) {
+function createExecutor({ eventStore, aggregate, snapshotAdapter }) {
   return async (command, jwtToken) => {
-    const event = await executeCommand(command, aggregate, eventStore, jwtToken)
+    const event = await executeCommand(
+      command,
+      aggregate,
+      eventStore,
+      jwtToken,
+      snapshotAdapter
+    )
     return await eventStore.saveEvent(event)
   }
 }
 
-export default ({ eventStore, aggregates }) => {
+export default ({ eventStore, aggregates, snapshotAdapter }) => {
   const executors = aggregates.reduce((result, aggregate) => {
     result[aggregate.name] = createExecutor({
       eventStore,
-      aggregate
+      aggregate,
+      snapshotAdapter
     })
     return result
   }, {})

@@ -3,8 +3,8 @@ const resolvers = {
     const searchExpression = { firstIndexName: { $gte: 1 } }
     const projectionExpression = { firstJsonName: 1 }
     const sortExpression = { secondFieldName: 1 }
-    const skipValue = 10
-    const limitValue = 100
+    const skipValue = 1
+    const limitValue = 10
 
     const findResult = await store.find(
       'TestTable',

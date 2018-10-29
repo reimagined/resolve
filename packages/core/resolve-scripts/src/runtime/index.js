@@ -25,8 +25,8 @@ import registerApiHandlers from './register_api_handlers'
 import { staticPath, distDir, rootPath } from './assemblies'
 
 subscribeAdapter.init().then(() => {
-  eventStore.subscribeOnBus(event => {
-    pubsubManager.dispatch({
+  eventStore.loadEvents({ skipStorage: true }, async event => {
+    await pubsubManager.dispatch({
       topicName: event.type,
       topicId: event.aggregateId,
       event

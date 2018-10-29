@@ -1,0 +1,50 @@
+{
+  "name": "resolve-testing-tools",
+  "version": "0.17.4",
+  "description": "This package for testing read-model, view-model, aggregate, saga, API handler, bus, storage and event-store.",
+  "engines": {
+    "node": ">=8.10"
+  },
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "scripts": {
+    "test": "jest --config=../../../jest.config.js --verbose",
+    "testw": "jest --config=../../../jest.config.js --watchAll"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "author": "reimagined team",
+  "license": "MIT",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-testing-tools#readme",
+  "dependencies": {
+    "jest": "23.6.0",
+    "sinon": "6.3.4",
+    "resolve-es": "0.17.4",
+    "resolve-query": "0.17.4",
+    "resolve-readmodel-memory": "0.17.4",
+    "resolve-storage-lite": "0.17.4",
+    "resolve-bus-memory": "0.17.4"
+  },
+  "babelCompile": [
+    {
+      "moduleType": "es",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./es"
+    },
+    {
+      "moduleType": "cjs",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./lib"
+    }
+  ]
+}
