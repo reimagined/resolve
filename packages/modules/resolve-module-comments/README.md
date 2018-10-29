@@ -64,7 +64,7 @@ export default verifyCommand
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-resolve-module-comments-readme?pixel)
 
 #### Commands 
-```
+```js
 createComment(aggregateId, {
   authorId,
   commentId
