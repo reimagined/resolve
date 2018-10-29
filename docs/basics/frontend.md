@@ -2,6 +2,8 @@
 
 The reSolve framework is shipped with the client **resolve-redux** library that allows you to easily connect you client React + Redux app to a reSolve-powered backend.
 
+[TODO] Explain the simplest case: how to show results of the query. It doesnt need state, actions, reducers, optimistic things - just mapStateToOptions, and use 'data' property.
+
 The **redux** config section specifies the following settings related to the Redux-based frontend:
 
 - **store** - Specifies the file containing the Redux store definition.
