@@ -173,6 +173,7 @@ module.exports = {
           'localhost',
           'lodash',
           'lte',
+          'Mergeable',
           'middleware',
           'middlewares',
           'minimist',
