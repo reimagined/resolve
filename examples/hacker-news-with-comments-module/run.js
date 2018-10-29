@@ -17,37 +17,37 @@ const launchMode = process.argv[2]
 
 void (async () => {
   const moduleComments = resolveModuleComments()
-
+  
   switch (launchMode) {
     case 'dev': {
       await watch(
-        merge([defaultResolveConfig, appConfig, devConfig, moduleComments])
+        merge(defaultResolveConfig, appConfig, devConfig, moduleComments)
       )
       break
     }
 
     case 'build': {
       await build(
-        merge([defaultResolveConfig, appConfig, prodConfig, moduleComments])
+        merge(defaultResolveConfig, appConfig, prodConfig, moduleComments)
       )
       break
     }
 
     case 'start': {
       await start(
-        merge([defaultResolveConfig, appConfig, prodConfig, moduleComments])
+        merge(defaultResolveConfig, appConfig, prodConfig, moduleComments)
       )
       break
     }
 
     case 'test:functional': {
       await runTestcafe({
-        resolveConfig: merge([
+        resolveConfig: merge(
           defaultResolveConfig,
           appConfig,
           testFunctionalConfig,
           moduleComments
-        ]),
+        ),
         functionalTestsDir: 'test/functional',
         browser: process.argv[3]
       })

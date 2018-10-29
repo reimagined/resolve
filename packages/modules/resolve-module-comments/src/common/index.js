@@ -50,7 +50,7 @@ export default ({
   const imports = {
     verifyCommand:
       verifyCommand ||
-      'resolve-module-comments/lib/aggregates/verify-command.js'
+      'resolve-module-comments/lib/common/aggregates/verify-command.js'
   }
 
   return injectDefaults((options, imports) => ({
@@ -58,7 +58,8 @@ export default ({
       {
         name: options.aggregateName,
         commands: {
-          module: 'resolve-module-comments/lib/aggregates/comments.commands.js',
+          module:
+            'resolve-module-comments/lib/common/aggregates/comments.commands.js',
           options,
           imports
         }
@@ -69,13 +70,13 @@ export default ({
         name: options.readModelName,
         projection: {
           module:
-            'resolve-module-comments/lib/read-models/comments.projection.js',
+            'resolve-module-comments/lib/common/read-models/comments.projection.js',
           options,
           imports
         },
         resolvers: {
           module:
-            'resolve-module-comments/lib/read-models/comments.resolvers.js',
+            'resolve-module-comments/lib/common/read-models/comments.resolvers.js',
           options,
           imports
         }

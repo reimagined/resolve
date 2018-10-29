@@ -383,7 +383,9 @@ const importConstructorResourceImports = ({
           `const ${inlineImportKey}_hash = ${JSON.stringify(
             createHashCompileTime(
               calculateHash,
-              fs.readFileSync(resourceFile).toString()
+              fs
+                .readFileSync(resolveFileOrModule(resourceFile, true))
+                .toString()
             )
           )}`
         )

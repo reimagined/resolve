@@ -18,7 +18,7 @@ merge([
 import { merge } from 'resolve-scripts'
 import createModuleComments from 'resolve-module-comments'
 
-merge([
+merge(
   resolveConfig,
   createModuleComments({
     aggregateName: 'CustomCommentsAggregateName', // default = 'Comments'
@@ -47,7 +47,7 @@ merge([
     maxNestedLevel: 2,                                            // default = undefined
     verifyCommand: path.join(__dirname, 'customVerifyCommand.js') // default = 'resolve-module-comments/lib/aggregates/verify-command.js'
   })
-])
+)
 ```
 
 #### Customization of verifyCommand
