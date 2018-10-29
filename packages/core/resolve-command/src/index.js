@@ -66,12 +66,15 @@ const getAggregateState = async (
     })
   }
 
-  await eventStore.getEventsByAggregateId(
-    aggregateId,
+  await eventStore.loadEvents(
+    {
+      aggregateIds: [aggregateId],
+      startTime: lastTimestamp,
+      skipBus: true
+    },
     snapshotAdapter != null && snapshotKey != null
       ? snapshotHandler
-      : regularHandler,
-    lastTimestamp
+      : regularHandler
   )
 
   return { aggregateState, aggregateVersion }

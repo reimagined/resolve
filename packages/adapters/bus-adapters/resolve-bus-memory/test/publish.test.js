@@ -1,9 +1,14 @@
 import sinon from 'sinon'
 import publish from '../src/publish'
 
+const TOPIC_NAME = 'TOPIC_NAME'
+
 test('publish should work correctly', async () => {
+  const handlers = [sinon.stub(), sinon.stub(), sinon.stub()]
+
   const pool = {
-    handlers: [sinon.stub(), sinon.stub(), sinon.stub()],
+    makeTopicsForEvent: () => [TOPIC_NAME],
+    handlers: new Map([[TOPIC_NAME, new Set(handlers)]]),
     config: {
       channel: 'channel'
     }
@@ -13,15 +18,18 @@ test('publish should work correctly', async () => {
 
   await publish(pool, event)
 
-  sinon.assert.calledWith(pool.handlers[0], event)
-  sinon.assert.calledWith(pool.handlers[1], event)
-  sinon.assert.calledWith(pool.handlers[2], event)
+  sinon.assert.calledWith(handlers[0], event)
+  sinon.assert.calledWith(handlers[1], event)
+  sinon.assert.calledWith(handlers[2], event)
 })
 
 test('publish causes exception', async () => {
+  const handlers = [sinon.stub(), sinon.stub(), sinon.stub()]
+
   const pool = {
     disposed: true,
-    handlers: [sinon.stub(), sinon.stub(), sinon.stub()],
+    makeTopicsForEvent: () => [TOPIC_NAME],
+    handlers: new Map([[TOPIC_NAME, new Set(handlers)]]),
     config: {
       channel: 'channel'
     }
@@ -42,8 +50,11 @@ test('publish should call all handlers including failed one', async () => {
   const handlerErr = sinon.stub().callsFake(async () => {
     throw error
   })
+  const handlers = [sinon.stub(), handlerErr, sinon.stub()]
+
   const pool = {
-    handlers: [sinon.stub(), handlerErr, sinon.stub()],
+    makeTopicsForEvent: () => [TOPIC_NAME],
+    handlers: new Map([[TOPIC_NAME, new Set(handlers)]]),
     config: {
       channel: 'channel'
     }
@@ -52,7 +63,7 @@ test('publish should call all handlers including failed one', async () => {
   const event = { event: 'content' }
   await publish(pool, event)
 
-  sinon.assert.calledWith(pool.handlers[0], event)
-  sinon.assert.calledWith(pool.handlers[1], event)
-  sinon.assert.calledWith(pool.handlers[2], event)
+  sinon.assert.calledWith(handlers[0], event)
+  sinon.assert.calledWith(handlers[1], event)
+  sinon.assert.calledWith(handlers[2], event)
 })

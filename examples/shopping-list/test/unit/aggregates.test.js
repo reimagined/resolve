@@ -39,8 +39,7 @@ describe('aggregates', () => {
       const command = {}
 
       expect(commands.removeShoppingList(state, command)).toEqual({
-        type: SHOPPING_LIST_REMOVED,
-        payload: {}
+        type: SHOPPING_LIST_REMOVED
       })
     })
 

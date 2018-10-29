@@ -1,6 +1,6 @@
 {
   "name": "resolve-module-comments",
-  "version": "0.17.2",
+  "version": "0.17.4",
   "description": "TODO",
   "engines": {
     "node": ">=8.10"
@@ -25,8 +25,8 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/modules/resolve-module-comments#readme",
   "dependencies": {
-    "resolve-redux": "0.17.2",
-    "resolve-readmodel-memory": "0.17.2"
+    "resolve-redux": "0.17.4",
+    "resolve-readmodel-memory": "0.17.4"
   },
   "devDependencies": {
     "jest": "23.6.0",

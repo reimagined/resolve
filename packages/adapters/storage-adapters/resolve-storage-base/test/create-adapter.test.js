@@ -39,14 +39,13 @@ test('createAdapter should return the correct interface', async () => {
     options
   )
 
-  await adapter.loadEventsByTypes()
-  await adapter.loadEventsByAggregateIds()
+  await adapter.loadEvents()
   await adapter.saveEvent()
   await adapter.dispose()
 
-  expect(loadEvents.callCount).toEqual(2)
+  expect(loadEvents.callCount).toEqual(1)
   expect(saveEvent.callCount).toEqual(1)
   expect(dispose.callCount).toEqual(1)
 
-  expect(wrapMethod.callCount).toEqual(4)
+  expect(wrapMethod.callCount).toEqual(3)
 })
