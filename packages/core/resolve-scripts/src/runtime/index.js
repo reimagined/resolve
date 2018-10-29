@@ -12,7 +12,6 @@ import commandHandler from './command_handler'
 import statusHandler from './status_handler'
 import queryHandler from './query_handler'
 import sagaRunner from './saga_runner'
-import assignAuthRoutes from './assign_auth_routes'
 import eventStore from './event_store'
 import pubsubManager from './pubsub_manager'
 import subscribeHandler from './subscribe_handler'
@@ -41,30 +40,40 @@ const HMRSocketServer = createSocketServer(server, {
 
 HMRSocketServer.on('connection', HMRSocketHandler)
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
 app.use(provideJwtMiddleware)
 
-assignAuthRoutes(app)
+const bodyParserJson = bodyParser.json()
+const bodyParserUrlencoded = bodyParser.urlencoded({ extended: true })
 
 app.use(
   getRootBasedUrl(rootPath, '/api/query/:modelName/:modelOptions'),
+  bodyParserJson,
+  bodyParserUrlencoded,
   argumentsParser,
   queryHandler
 )
 app.use(
   getRootBasedUrl(rootPath, '/api/status'),
+  bodyParserJson,
+  bodyParserUrlencoded,
   argumentsParser,
   statusHandler
 )
 app.use(
   getRootBasedUrl(rootPath, '/api/subscribe'),
+  bodyParserJson,
+  bodyParserUrlencoded,
   argumentsParser,
   subscribeHandler
 )
 
-app.use(getRootBasedUrl(rootPath, '/api/commands'), commandHandler)
+app.use(
+  getRootBasedUrl(rootPath, '/api/commands'),
+  bodyParserJson,
+  bodyParserUrlencoded,
+  commandHandler
+)
 
 registerApiHandlers()
 
@@ -75,6 +84,8 @@ app.use(
 
 app.get(
   [getRootBasedUrl(rootPath, '/'), getRootBasedUrl(rootPath, '/*')],
+  bodyParserJson,
+  bodyParserUrlencoded,
   serverSideRendering
 )
 

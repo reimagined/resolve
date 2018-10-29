@@ -30,9 +30,6 @@ const appConfig = {
       eventHandlers: 'common/sagas/saga-name.event.js'
     }
   ],
-  auth: {
-    strategies: 'auth/index.js'
-  },
   redux: {
     reducers: { 'reducer-name': 'client/reducers/reducer-name.js' },
     middlewares: ['client/middlewares/middleware-name.js']
