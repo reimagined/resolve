@@ -1,1 +1,1 @@
-export default () => createStore => (...args) => createStore(...args)
+export default createStore => createStore
