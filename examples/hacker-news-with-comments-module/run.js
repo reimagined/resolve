@@ -17,7 +17,7 @@ const launchMode = process.argv[2]
 
 void (async () => {
   const moduleComments = resolveModuleComments()
-  
+
   switch (launchMode) {
     case 'dev': {
       await watch(
