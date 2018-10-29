@@ -6,7 +6,10 @@ describe('resolve-readmodel-base build-projection', () => {
   it('should work properly', async () => {
     const metaApi = {
       setLastTimestamp: sinon.stub(),
-      setLastAggregateVersion: sinon.stub()
+      setLastAggregateVersion: sinon.stub(),
+      getLastAggregatesVersions: sinon
+        .stub()
+        .callsFake(async () => new Map([['root-id', 9]]))
     }
     const storeApi = {}
     const internalContext = {
@@ -19,7 +22,11 @@ describe('resolve-readmodel-base build-projection', () => {
       CorrectEvent: sinon.stub(),
       WrongEvent: sinon.stub().throws('ERR')
     }
-    const event = { timestamp: 100 }
+    const event = {
+      timestamp: 100,
+      aggregateId: 'root-id',
+      aggregateVersion: 10
+    }
 
     const wrappedProjection = buildProjection(
       { metaApi, storeApi, internalContext },

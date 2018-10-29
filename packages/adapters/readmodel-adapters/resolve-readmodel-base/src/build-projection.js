@@ -12,6 +12,22 @@ const buildProjection = (
     }
 
     projection[eventType] = async event => {
+      if (event == null || event.constructor !== Object) {
+        return
+      }
+
+      const aggregatesVersionsMap = await metaApi.getLastAggregatesVersions()
+
+      const expectedAggregateVersion = aggregatesVersionsMap.get(
+        event.aggregateId
+      )
+      if (
+        expectedAggregateVersion != null &&
+        event.aggregateVersion <= expectedAggregateVersion
+      ) {
+        return
+      }
+
       await inputProjection[eventType](storeApi, event)
       await metaApi.setLastTimestamp(event.timestamp)
 

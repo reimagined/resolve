@@ -1,22 +1,14 @@
 import createCommandExecutor from 'resolve-command'
+
 import eventStore from './event_store'
+import snapshotAdapter from './snapshot_adapter'
 
 import { aggregates } from './assemblies'
 
 const commandExecutor = createCommandExecutor({
   eventStore,
-  aggregates: aggregates.map(
-    ({ snapshotAdapter: createSnapshotAdapter, ...aggregate }) => {
-      if (!createSnapshotAdapter) {
-        return aggregate
-      }
-
-      return {
-        ...aggregate,
-        snapshotAdapter: createSnapshotAdapter()
-      }
-    }
-  )
+  aggregates,
+  snapshotAdapter
 })
 
 export default commandExecutor
