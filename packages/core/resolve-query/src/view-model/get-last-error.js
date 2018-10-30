@@ -1,5 +1,5 @@
 const getLastError = async (repository, { aggregateIds } = {}) => {
-  const viewModel = repository.getViewModel(repository, aggregateIds, false)
+  const viewModel = repository.getViewModel(repository, aggregateIds, true)
   if (viewModel == null) {
     return null
   }

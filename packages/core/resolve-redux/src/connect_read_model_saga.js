@@ -10,7 +10,6 @@ import {
   LOAD_READMODEL_STATE_SUCCESS
 } from './action_types'
 
-import { namespace } from './constants'
 import { HttpError } from './create_api'
 
 /*
@@ -60,7 +59,10 @@ const connectReadModelSaga = function*(sagaArgs, action) {
   }
   queryIdMap.set(key, queryIdMap.get(key) + 1)
 
-  const queryId = hash(`${key}${queryIdMap.get(key)}${sessionId}`, namespace)
+  const queryId = hash(
+    `${key}${queryIdMap.get(key)}${sessionId}`,
+    '00000000-0000-0000-0000-000000000000'
+  )
 
   while (true) {
     yield put(

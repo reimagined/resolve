@@ -11,7 +11,7 @@ test('View-model get last error should return null on non-existing view model', 
   expect(repository.getViewModel.callCount).toEqual(1)
   expect(repository.getViewModel.firstCall.args[0]).toEqual(repository)
   expect(repository.getViewModel.firstCall.args[1]).toEqual(undefined)
-  expect(repository.getViewModel.firstCall.args[2]).toEqual(false)
+  expect(repository.getViewModel.firstCall.args[2]).toEqual(true)
 
   expect(result).toEqual(null)
 })
@@ -27,7 +27,7 @@ test('View-model get last error re-throw last error if exists', async () => {
   expect(repository.getViewModel.callCount).toEqual(1)
   expect(repository.getViewModel.firstCall.args[0]).toEqual(repository)
   expect(repository.getViewModel.firstCall.args[1]).toEqual(aggregateIds)
-  expect(repository.getViewModel.firstCall.args[2]).toEqual(false)
+  expect(repository.getViewModel.firstCall.args[2]).toEqual(true)
 
   expect(result).toEqual(viewModel.lastError)
 })
@@ -43,7 +43,7 @@ test('View-model get last error should return null on non-init view model', asyn
   expect(repository.getViewModel.callCount).toEqual(1)
   expect(repository.getViewModel.firstCall.args[0]).toEqual(repository)
   expect(repository.getViewModel.firstCall.args[1]).toEqual(aggregateIds)
-  expect(repository.getViewModel.firstCall.args[2]).toEqual(false)
+  expect(repository.getViewModel.firstCall.args[2]).toEqual(true)
 
   expect(result).toEqual(null)
 })
@@ -59,7 +59,7 @@ test('View-model get last error should translate init error if exists', async ()
   expect(repository.getViewModel.callCount).toEqual(1)
   expect(repository.getViewModel.firstCall.args[0]).toEqual(repository)
   expect(repository.getViewModel.firstCall.args[1]).toEqual(aggregateIds)
-  expect(repository.getViewModel.firstCall.args[2]).toEqual(false)
+  expect(repository.getViewModel.firstCall.args[2]).toEqual(true)
 
   expect(result).toEqual('INIT_ERROR')
 })
@@ -75,7 +75,7 @@ test('View-model get last error should return null if init success', async () =>
   expect(repository.getViewModel.callCount).toEqual(1)
   expect(repository.getViewModel.firstCall.args[0]).toEqual(repository)
   expect(repository.getViewModel.firstCall.args[1]).toEqual(aggregateIds)
-  expect(repository.getViewModel.firstCall.args[2]).toEqual(false)
+  expect(repository.getViewModel.firstCall.args[2]).toEqual(true)
 
   expect(result).toEqual(null)
 })

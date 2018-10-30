@@ -4,13 +4,15 @@ import path from 'path'
 import { includeAlias as excludeConstantAlias } from './$resolve.constants'
 
 const excludeAlias = [
-  'auth',
+  'clientEntry',
+  'hotModuleReplacement',
+  'localEntry',
+  'cloudEntry',
+  'apiHandlers',
   'aggregates',
   'readModels',
-  'sagas',
   'viewModels',
-  'apiHandlers',
-  'hotModuleReplacement',
+  'sagas',
   'assemblies',
   ...excludeConstantAlias
 ]

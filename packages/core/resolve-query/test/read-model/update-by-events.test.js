@@ -17,7 +17,8 @@ test('Read-model update by events should throw on disposed state', async () => {
 test('Read-model update by events should update by events with good projection', async () => {
   const repository = {
     getModelReadInterface: sinon.stub().callsFake(async () => null),
-    boundProjectionInvoker: sinon.stub().callsFake(async () => null)
+    boundProjectionInvoker: sinon.stub().callsFake(async () => null),
+    eventTypes: ['EVENT_TYPE_1', 'EVENT_TYPE_2']
   }
 
   const events = [{ type: 'EVENT_TYPE_1' }, { type: 'EVENT_TYPE_2' }]
@@ -30,9 +31,7 @@ test('Read-model update by events should update by events with good projection',
     events[1]
   )
 
-  expect(repository.getModelReadInterface.callCount).toEqual(1)
-  expect(repository.getModelReadInterface.firstCall.args[0]).toEqual(repository)
-  expect(repository.getModelReadInterface.firstCall.args[1]).toEqual(true)
+  expect(repository.getModelReadInterface.callCount).toEqual(0)
 })
 
 test('Read-model update by events should update by events with bad projection', async () => {
@@ -40,7 +39,8 @@ test('Read-model update by events should update by events with bad projection', 
     getModelReadInterface: sinon.stub().callsFake(async () => null),
     boundProjectionInvoker: sinon.stub().callsFake(async () => {
       throw new Error('Projection error')
-    })
+    }),
+    eventTypes: ['EVENT_TYPE_1', 'EVENT_TYPE_2']
   }
 
   const events = [{ type: 'EVENT_TYPE_1' }, { type: 'EVENT_TYPE_2' }]
@@ -50,7 +50,5 @@ test('Read-model update by events should update by events with bad projection', 
   expect(repository.boundProjectionInvoker.callCount).toEqual(1)
   expect(repository.boundProjectionInvoker.firstCall.args[0]).toEqual(events[0])
 
-  expect(repository.getModelReadInterface.callCount).toEqual(1)
-  expect(repository.getModelReadInterface.firstCall.args[0]).toEqual(repository)
-  expect(repository.getModelReadInterface.firstCall.args[1]).toEqual(false)
+  expect(repository.getModelReadInterface.callCount).toEqual(0)
 })

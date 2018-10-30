@@ -24,7 +24,7 @@ export default ({ resolveConfig, isClient }) => {
 
   const imports = [``]
   const constants = [``]
-  const exports = [``, `let apiHandlers = []`, ``]
+  const exports = [``, `const apiHandlers = []`, ``]
 
   for (let index = 0; index < resolveConfig.apiHandlers.length; index++) {
     const apiHandler = resolveConfig.apiHandlers[index]
@@ -56,17 +56,6 @@ export default ({ resolveConfig, isClient }) => {
     exports.push(`, method: method_${index}`)
     exports.push(`})`, ``)
   }
-
-  // https://webpack.js.org/api/module-variables/#__resourcequery-webpack-specific-
-  exports.push(`try {
-    let handlerIdx = null
-    if(__resourceQuery.constructor === String && __resourceQuery[0] === '?') {
-      handlerIdx = Number(__resourceQuery.substring(1))
-    }
-    if(Number.isInteger(handlerIdx) && handlerIdx > -1 && handlerIdx < apiHandlers.length) {
-      apiHandlers = apiHandlers[handlerIdx]
-    }
-  } catch(err) {}`)
 
   exports.push(`export default apiHandlers`)
 

@@ -1,0 +1,29 @@
+export default () => ({
+  code: `
+      import assemblies from '$resolve.assemblies'
+      import constants from '$resolve.constants'
+      import apiHandlers from '$resolve.apiHandlers'
+      import aggregates from '$resolve.aggregates'
+      import readModels from '$resolve.readModels'
+      import viewModels from '$resolve.viewModels'
+      import sagas from '$resolve.sagas'
+  
+      const { routes, redux, ...restAssemblies } = assemblies
+
+      const serverAssemblies = {
+        assemblies: restAssemblies,
+        constants,
+        domain: {
+          apiHandlers,
+          aggregates,
+          readModels,
+          viewModels,
+          sagas
+        },
+        routes,
+        redux
+      }
+  
+      export default serverAssemblies
+    `
+})

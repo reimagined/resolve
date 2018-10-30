@@ -1,34 +1,31 @@
-import invokeDomain from './invoke_domain'
+const wrapDefaultJwt = (executor, defaultJwtToken) => async ({
+  jwtToken,
+  ...args
+}) =>
+  await executor({
+    jwtToken: jwtToken != null ? jwtToken : defaultJwtToken,
+    ...args
+  })
 
 const wrapAuthRequest = req => {
+  const jwtToken = req.cookies[req.resolve.jwtCookie.name]
+
   const authRequest = {
     ...req,
     resolve: {
-      ...(req.resolve == null
-        ? { rootPath: '', jwtCookie: { name: 'jwt', maxAge: 31536000000 } }
-        : req.resolve)
+      ...req.resolve,
+      executeCommand: wrapDefaultJwt(req.resolve.executeCommand, jwtToken),
+      executeQuery: wrapDefaultJwt(req.resolve.executeQuery, jwtToken)
     }
   }
 
-  // TODO: Protocol, host and port should be retrieved from config in explicit manner
-  const baseApiUrl = `http://${authRequest.headers.host}${
-    authRequest.resolve.rootPath
-  }/api`
-
-  const jwtToken = authRequest.cookies[authRequest.resolve.jwtCookie.name]
-
-  Object.assign(authRequest.resolve, {
-    executeQuery: invokeDomain.bind(null, `${baseApiUrl}/query`, jwtToken),
-    executeCommand: invokeDomain.bind(null, `${baseApiUrl}/commands`, jwtToken)
-  })
-
   // TODO: use string-based body parsers (not stream-based like npm body-parser)
-  if (authRequest.body != null && authRequest.headers['content-type'] != null) {
-    const bodyContentType = authRequest.headers['content-type'].toLowerCase()
+  if (req.body != null && req.headers['content-type'] != null) {
+    const bodyContentType = req.headers['content-type'].toLowerCase()
 
     switch (bodyContentType) {
       case 'application/x-www-form-urlencoded': {
-        authRequest.body = authRequest.body.split('&').reduce((acc, part) => {
+        authRequest.body = req.body.split('&').reduce((acc, part) => {
           const [key, ...value] = part.split('=')
           acc[decodeURIComponent(key)] = decodeURIComponent(value.join('='))
           return acc
@@ -37,7 +34,7 @@ const wrapAuthRequest = req => {
       }
 
       case 'application/json': {
-        authRequest.body = JSON.parse(authRequest.body)
+        authRequest.body = JSON.parse(req.body)
         break
       }
 

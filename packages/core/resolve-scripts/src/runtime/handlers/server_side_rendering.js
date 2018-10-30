@@ -5,20 +5,8 @@ import jsonwebtoken from 'jsonwebtoken'
 import { createStore, AppContainer } from 'resolve-redux'
 
 import getHtmlMarkup from './get_html_markup'
-import getStaticBasedPath from './utils/get_static_based_path'
-
-import {
-  routes,
-  staticPath,
-  rootPath,
-  jwtCookie,
-  aggregateActions,
-  redux,
-  viewModels,
-  readModels,
-  aggregates,
-  subscribeAdapter
-} from './assemblies'
+import getStaticBasedPath from '../utils/get_static_based_path'
+import getRootBasedUrl from '../utils/get_root_based_url'
 
 let ServerStyleSheet, StyleSheetManager
 try {
@@ -28,10 +16,23 @@ try {
 } catch (err) {}
 
 const serverSideRendering = (req, res) => {
-  const url = req.params[0] || ''
+  const {
+    aggregateActions,
+    subscribeAdapter,
+    viewModels,
+    readModels,
+    aggregates,
+    staticPath,
+    jwtCookie,
+    rootPath,
+    routes,
+    redux
+  } = req.resolve
+
+  const baseQueryUrl = getRootBasedUrl(req.resolve.rootPath, '/')
+  const url = req.path.substring(baseQueryUrl.length)
 
   const history = createHistory()
-
   history.push(url)
 
   const jwt = {}
@@ -91,8 +92,9 @@ const serverSideRendering = (req, res) => {
   const bundleUrl = getStaticBasedPath(rootPath, staticPath, 'bundle.js')
   const hmrUrl = getStaticBasedPath(rootPath, staticPath, 'hmr.js')
 
-  res.send(
+  res.end(
     getHtmlMarkup({
+      reducers: redux.reducers,
       markup,
       styleTags,
       initialState,
