@@ -17,25 +17,27 @@ const launchMode = process.argv[2]
 void (async () => {
   switch (launchMode) {
     case 'dev': {
+      const resolveConfig = {
+        ...defaultResolveConfig,
+        ...appConfig,
+        ...devConfig
+      }
       await watch(
-        {
-          ...defaultResolveConfig,
-          ...appConfig,
-          ...devConfig
-        },
-        adjustWebpackConfigs.bind(null, { watch: true })
+        resolveConfig,
+        adjustWebpackConfigs.bind(null, resolveConfig, { watch: true })
       )
       break
     }
 
     case 'build': {
+      const resolveConfig = {
+        ...defaultResolveConfig,
+        ...appConfig,
+        ...prodConfig
+      }
       await build(
-        {
-          ...defaultResolveConfig,
-          ...appConfig,
-          ...prodConfig
-        },
-        adjustWebpackConfigs
+        resolveConfig,
+        adjustWebpackConfigs.bind(null, resolveConfig, {})
       )
       break
     }

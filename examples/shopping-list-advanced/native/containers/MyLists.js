@@ -48,7 +48,7 @@ export class MyLists extends React.PureComponent {
           </Right>
         </Header>
         <Content>
-          <Test/>
+          <Test />
           <ShoppingLists
             lists={lists}
             navigate={navigation.navigate}

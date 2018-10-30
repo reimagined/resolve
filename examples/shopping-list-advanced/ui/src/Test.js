@@ -8,10 +8,6 @@ const result = R.compose(
 
 export default class Test extends React.PureComponent {
   render() {
-    return (
-      <div>
-        Hello3333 Web {JSON.stringify(result)}
-      </div>
-    )
+    return <div>Hello3333 Web {JSON.stringify(result)}</div>
   }
 }

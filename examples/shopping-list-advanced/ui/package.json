@@ -9,10 +9,20 @@
     "test:functional": "echo || exit 0"
   },
   "dependencies": {
+    "@babel/runtime": "^7.0.0",
     "rambda": "^1.2.6"
+  },
+  "devDependencies": {
+    "react": "16.6.0"
   },
   "peerDependencies": {
     "react": "*",
     "react-native": "*"
+  },
+  "workspaces": {
+    "nohoist": [
+      "**",
+      "**/**"
+    ]
   }
 }

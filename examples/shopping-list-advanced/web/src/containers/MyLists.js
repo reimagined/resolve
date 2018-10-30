@@ -16,7 +16,7 @@ class MyLists extends React.PureComponent {
 
     return (
       <div className="example-wrapper">
-        <Test/>
+        <Test />
         <ShoppingLists lists={lists} removeShoppingList={removeShoppingList} />
         <ShoppingListCreator
           lists={lists}

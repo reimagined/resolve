@@ -18,10 +18,11 @@ function getBabelConfig() {
     plugins: [
       ['@babel/plugin-proposal-decorators', { legacy: true }],
       '@babel/plugin-proposal-class-properties',
-    
+
       '@babel/plugin-proposal-export-default-from',
       '@babel/plugin-proposal-export-namespace-from',
-      '@babel/plugin-proposal-object-rest-spread', [
+      '@babel/plugin-proposal-object-rest-spread',
+      [
         '@babel/plugin-transform-runtime',
         {
           corejs: false,
@@ -54,8 +55,8 @@ function babelify({ watch = false } = {}) {
   }
 
   return Promise.all(
-    configs.map(
-      config => babel({
+    configs.map(config =>
+      babel({
         babelOptions: {
           ...getBabelConfig(),
           sourceMaps: true,
@@ -67,13 +68,10 @@ function babelify({ watch = false } = {}) {
           deleteDirOnStart: true,
           watch
         }
+      }).then(() => {
+        // eslint-disable-next-line no-console
+        console.log(chalk.green(`↑ [${config.name}]`))
       })
-        .then(() => {
-          // eslint-disable-next-line no-console
-          console.log(chalk.green(
-            `↑ [${config.name}]`
-          ))
-        })
     )
   )
 }

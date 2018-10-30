@@ -12,12 +12,14 @@
     "test:functional": "echo || exit 0"
   },
   "dependencies": {
+    "@shopping-list-advanced/ui": "0.17.4",
     "@expo/react-native-action-sheet": "1.1.2",
     "@expo/vector-icons": "6.3.1",
+    "@babel/runtime": "^7.0.0",
     "expo": "30.0.1",
     "history": "4.7.2",
     "native-base": "2.8.1",
-    "react": "16.5.2",
+    "react": "16.6.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz",
     "react-native-elements": "0.19.1",
     "react-navigation": "2.18.1",
@@ -37,16 +39,14 @@
     "jest": "23.6.0",
     "jest-expo": "29.0.0",
     "my-local-ip": "1.0.0",
-    "react-test-renderer": "16.5.2",
+    "react-test-renderer": "16.6.0",
     "regenerator-runtime": "0.12.1",
     "get-yarn-workspaces": "1.0.2"
   },
   "workspaces": {
     "nohoist": [
-      "react-native",
-      "react-native/**",
-      "expo",
-      "expo/**"
+      "**",
+      "**/**"
     ]
   }
 }
