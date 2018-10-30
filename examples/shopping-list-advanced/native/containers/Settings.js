@@ -17,7 +17,7 @@ import { connect } from 'react-redux'
 import { StyleSheet } from 'react-native'
 
 import { connectReadModel } from 'resolve-redux'
-import requiredAuth from '../decorators/required_auth'
+import requiredAuth from '../decorators/required-auth'
 
 const styles = StyleSheet.create({
   label: {

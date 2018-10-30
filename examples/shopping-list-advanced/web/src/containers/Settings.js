@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { connectReadModel } from 'resolve-redux'
 import { ControlLabel, FormControl } from 'react-bootstrap'
 
-import requiredAuth from '../decorators/required_auth'
+import requiredAuth from '../decorators/required-auth'
 
 class Settings extends React.PureComponent {
   state = {

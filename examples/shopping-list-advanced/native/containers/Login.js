@@ -16,7 +16,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
 import { actions } from '../resolve/resolve-redux'
-import requiredNoAuth from '../decorators/required_no_auth'
+import requiredNoAuth from '../decorators/required-no-auth'
 import Logo from '../components/Logo'
 
 const styles = StyleSheet.create({

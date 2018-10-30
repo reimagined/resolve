@@ -2,7 +2,7 @@ import {
   OPTIMISTIC_SHOPPING_LIST_SYNC,
   OPTIMISTIC_SHOPPING_LIST_CREATE,
   OPTIMISTIC_SHOPPING_LIST_REMOVE
-} from '../action_types'
+} from '../action-types'
 
 const optimisticShoppingLists = (state = [], action) => {
   switch (action.type) {

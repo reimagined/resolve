@@ -7,7 +7,7 @@ import { Providers } from 'resolve-redux'
 import { origin, rootPath, staticPath } from './resolve/config'
 
 import store from './redux/store'
-import aggregateActions from './redux/actions/aggregate_actions'
+import aggregateActions from './redux/actions/aggregate-actions'
 
 import Routes from './routes'
 

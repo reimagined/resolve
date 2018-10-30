@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import { connectReadModel } from 'resolve-redux'
 import { connect } from 'react-redux'
 
-import requiredAuth from '../decorators/required_auth'
+import requiredAuth from '../decorators/required-auth'
 import ShoppingLists from '../components/ShoppingLists'
 import ShoppingListCreator from '../components/ShoppingListCreator'
 

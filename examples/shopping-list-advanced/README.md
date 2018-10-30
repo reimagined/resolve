@@ -70,13 +70,13 @@ When you are ready to share your project with others (for example, by deploying 
                 📄 index.js
             📁 reducers
                 📄 index.js
-                📄 optimistic_sharings.js
-                📄 optimistic_shopping_lists.js
+                📄 optimistic-sharings.js
+                📄 optimistic-shopping-lists.js
             📁 middlewares
                 📄 index.js
-                📄 optimistic_sharings_middleware.js
-                📄 optimistic_shopping_lists_middleware.js
-            📄 action_types.js
+                📄 optimistic-sharings-middleware.js
+                📄 optimistic-shopping-lists-middleware.js
+            📄 action-types.js
         📁 static
         📁 test
         📄 routes.js
@@ -88,20 +88,20 @@ When you are ready to share your project with others (for example, by deploying 
             📄 App.js
         📁 redux
             📁 actions
-                📄 aggregate_actions.js
-                📄 refresh_actions.js
+                📄 aggregate-actions.js
+                📄 refresh-actions.js
             📁 store
                 📄 index.js
             📁 reducers
                 📄 index.js
-                📄 optimistic_sharings.js
-                📄 optimistic_shopping_lists.js
+                📄 optimistic-sharings.js
+                📄 optimistic-shopping-lists.js
                 📄 refresh.js
             📁 middlewares
                 📄 index.js
-                📄 optimistic_sharings_middleware.js
-                📄 optimistic_shopping_lists_middleware.js
-            📄 action_types.js
+                📄 optimistic-sharings-middleware.js
+                📄 optimistic-shopping-lists-middleware.js
+            📄 action-types.js
         📁 test
         📄 config.js
         📄 app.json

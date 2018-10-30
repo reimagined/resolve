@@ -8,4 +8,4 @@ module.exports.staticPath = interopRequireDefault(require('$resolve.staticPath')
 module.exports.jwtCookie = interopRequireDefault(require('$resolve.jwtCookie')).default
 module.exports.applicationName = interopRequireDefault(require('$resolve.applicationName')).default
 module.exports.subscribeAdapter = interopRequireDefault(require('$resolve.subscribeAdapter')).default
-module.exports.origin = interopRequireDefault(require('$resolve.origin')).default
+module.exports.origin = interopRequireDefault(require('./origin')).default

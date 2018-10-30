@@ -2,7 +2,7 @@ import {
   OPTIMISTIC_SHARINGS_SYNC,
   OPTIMISTIC_SHARINGS_SHOPPING_LIST_SHARE,
   OPTIMISTIC_SHARINGS_SHOPPING_LIST_UNSHARE
-} from '../action_types'
+} from '../action-types'
 
 const initialState = {
   id: '',

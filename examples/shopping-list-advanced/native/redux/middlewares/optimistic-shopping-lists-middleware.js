@@ -4,7 +4,7 @@ import {
   OPTIMISTIC_SHOPPING_LIST_SYNC,
   OPTIMISTIC_SHOPPING_LIST_CREATE,
   OPTIMISTIC_SHOPPING_LIST_REMOVE
-} from '../action_types'
+} from '../action-types'
 
 const { SEND_COMMAND_SUCCESS, LOAD_READMODEL_STATE_SUCCESS } = actionTypes
 

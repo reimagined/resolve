@@ -4,7 +4,7 @@ const R = require('rambda')
 const result = R.compose(
   R.map(x => x * 2),
   R.filter(x => x > 2)
-)([1, 2, 3, 4])
+)([1, 2, 3, 5])
 
 export default class Test extends React.PureComponent {
   render() {

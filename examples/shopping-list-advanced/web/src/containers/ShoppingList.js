@@ -20,7 +20,7 @@ import {
 import Image from './Image'
 import NotFound from '../components/NotFound'
 
-import requiredAuth from '../decorators/required_auth'
+import requiredAuth from '../decorators/required-auth'
 
 const ButtonLink = connectRootBasedUrls(['href'])(Button)
 

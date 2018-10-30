@@ -4,7 +4,7 @@ import { FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 import FindUsers from './FindUsers'
-import requiredAuth from '../decorators/required_auth'
+import requiredAuth from '../decorators/required-auth'
 
 class ShareForm extends React.PureComponent {
   state = {
