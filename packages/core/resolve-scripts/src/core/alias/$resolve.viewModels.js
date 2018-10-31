@@ -3,9 +3,6 @@ import {
   RUNTIME_ENV_NOWHERE,
   RESOURCE_ANY,
   RUNTIME_ENV_OPTIONS_ONLY,
-  RESOURCE_CONSTRUCTOR_ONLY,
-  RUNTIME_ENV_ANYWHERE,
-  IMPORT_CONSTRUCTOR,
   IMPORT_INSTANCE
 } from '../constants'
 import { checkRuntimeEnv } from '../declare_runtime_env'
@@ -85,20 +82,6 @@ export default ({ resolveConfig, isClient }) => {
       })
 
       exports.push(`, validator: validator_${index}`)
-
-      if (viewModel.snapshotAdapter) {
-        importResource({
-          resourceName: `snapshotAdapter_${index}`,
-          resourceValue: viewModel.snapshotAdapter,
-          runtimeMode: RUNTIME_ENV_ANYWHERE,
-          importMode: RESOURCE_CONSTRUCTOR_ONLY,
-          instanceMode: IMPORT_CONSTRUCTOR,
-          imports,
-          constants
-        })
-
-        exports.push(`, snapshotAdapter: snapshotAdapter_${index}`)
-      }
     }
 
     exports.push(`})`, ``)

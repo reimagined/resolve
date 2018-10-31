@@ -1,35 +1,33 @@
 import sinon from 'sinon'
 
-import inMemoryBus from '../src'
+test('resolve-bus-memory index', () => {
+  const createAdapter = require('resolve-bus-base')
 
-describe('inMemoryBus', () => {
-  it('publish', () => {
-    const busInstance = inMemoryBus()
+  const publish = require('../src/publish')
+  const dispose = require('../src/dispose')
 
-    const event1 = { type: 'ONE', payload: { data: 'AAA' } }
-    const event2 = { type: 'TWO', payload: { data: 'BBB' } }
+  sinon.stub(publish, 'default').callsFake(() => () => {})
+  sinon.stub(dispose, 'default').callsFake(() => () => {})
 
-    const triggerSpy = sinon.spy()
-    busInstance.subscribe(triggerSpy)
-
-    busInstance.publish(event1)
-    busInstance.publish(event2)
-
-    expect(triggerSpy.callCount).toEqual(2)
-    expect(triggerSpy.args[0][0]).toEqual(event1)
-    expect(triggerSpy.args[1][0]).toEqual(event2)
+  sinon.stub(createAdapter, 'default').callsFake((...args) => {
+    for (const func of args) {
+      if (typeof func === 'function') {
+        func()
+      }
+    }
   })
 
-  it('publish handles subscription', () => {
-    const busInstance = inMemoryBus()
-    const event = { type: 'ONE', payload: { data: 'AAA' } }
+  const index = require('../src/index.js')
 
-    const eventHandlerSpy = sinon.spy()
-    busInstance.subscribe(eventHandlerSpy)
+  expect(publish.default.callCount).toEqual(0)
+  expect(dispose.default.callCount).toEqual(0)
 
-    busInstance.publish(event)
+  index.default()
 
-    expect(eventHandlerSpy.callCount).toEqual(1)
-    expect(eventHandlerSpy.lastCall.args[0]).toEqual(event)
-  })
+  expect(publish.default.callCount).toEqual(1)
+  expect(dispose.default.callCount).toEqual(1)
+
+  const adapterCallArgs = createAdapter.default.firstCall.args
+  expect(adapterCallArgs[2]).toEqual(publish.default)
+  expect(adapterCallArgs[3]).toEqual(dispose.default)
 })

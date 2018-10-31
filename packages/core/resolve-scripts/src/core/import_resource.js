@@ -332,7 +332,7 @@ const importConstructorResourceModule = ({
         `const ${resourceName}_constructor_hash = ${JSON.stringify(
           createHashCompileTime(
             calculateHash,
-            fs.readFileSync(resolveFileOrModule(module, true)).toString
+            fs.readFileSync(resolveFileOrModule(module, true)).toString()
           )
         )}`
       )
@@ -370,7 +370,7 @@ const importConstructorResourceImports = ({
   for (const importKey of Object.keys(resourceImports)) {
     const importValue = resourceImports[importKey]
 
-    const inlineImportKey = `import ${resourceName}_import_${importKey}`
+    const inlineImportKey = `${resourceName}_import_${importKey}`
     const resourceFile = resolveFile(importValue)
 
     if (!checkRuntimeEnv(importValue)) {
@@ -383,7 +383,9 @@ const importConstructorResourceImports = ({
           `const ${inlineImportKey}_hash = ${JSON.stringify(
             createHashCompileTime(
               calculateHash,
-              fs.readFileSync(resourceFile).toString()
+              fs
+                .readFileSync(resolveFileOrModule(resourceFile, true))
+                .toString()
             )
           )}`
         )
@@ -422,10 +424,10 @@ const importConstructorResourceImports = ({
     constants.push(
       `const ${resourceName}_imports_hash = ${createHashRunTime(
         calculateHash,
-        `JSON.stringify(${inlinedImports
+        `JSON.stringify([${inlinedImports
           .map(({ inlineImportKey }) => `${inlineImportKey}_hash`)
           .join(',')}
-        )`
+        ])`
       )}`
     )
   }
@@ -445,7 +447,7 @@ const importConstructorResourceOptions = ({
     constants.push(
       `const ${resourceName}_options_hash = ${createHashRunTime(
         calculateHash,
-        `JSON.stringify(${resourceName}_options`
+        `JSON.stringify(${resourceName}_options)`
       )}`
     )
   }

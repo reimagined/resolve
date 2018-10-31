@@ -25,13 +25,11 @@ describe('resolve-command', () => {
     aggregateVersion = -1
 
     eventStore = {
-      getEventsByAggregateId: sinon
-        .stub()
-        .callsFake(
-          (eventTypes, handler) =>
-            eventList.length ? handler(eventList.shift()) : null
-        ),
-      saveEvent: sinon.stub().callsFake(event => {
+      loadEvents: sinon.stub().callsFake(async (filter, handler) => {
+        if (eventList.length < 1) return null
+        await handler(eventList.shift())
+      }),
+      saveEvent: sinon.stub().callsFake(async event => {
         eventList.push(event)
         return event
       })
@@ -76,13 +74,11 @@ describe('resolve-command', () => {
     const executeCommand = createCommandExecutor({ eventStore, aggregates })
     eventList = []
 
-    const transaction = executeCommand({
+    const event = await executeCommand({
       aggregateName: AGGREGATE_NAME,
       aggregateId: AGGREGATE_ID,
       type: 'emptyCommand'
     })
-
-    const event = await transaction
 
     expect(event.aggregateVersion).toEqual(1)
     expect(aggregateVersion).toEqual(0)
@@ -92,13 +88,11 @@ describe('resolve-command', () => {
     const executeCommand = createCommandExecutor({ eventStore, aggregates })
     eventList = [{ type: 'SuccessEvent', aggregateVersion: 1 }]
 
-    const transaction = executeCommand({
+    const event = await executeCommand({
       aggregateName: AGGREGATE_NAME,
       aggregateId: AGGREGATE_ID,
       type: 'emptyCommand'
     })
-
-    const event = await transaction
 
     expect(event.aggregateVersion).toEqual(2)
     expect(aggregateVersion).toEqual(1)
@@ -112,13 +106,11 @@ describe('resolve-command', () => {
     eventList = [{ type: 'BrokenEvent', aggregateVersion: 1 }]
 
     try {
-      const command = executeCommand({
+      await executeCommand({
         aggregateName: AGGREGATE_NAME,
         aggregateId: AGGREGATE_ID,
         type: 'emptyCommand'
       })
-
-      await command
 
       return Promise.reject('Test failed')
     } catch (error) {
@@ -136,13 +128,11 @@ describe('resolve-command', () => {
     })
     eventList = [{ type: 'SuccessEvent', aggregateVersion: 1 }]
 
-    executeCommand({
+    await executeCommand({
       aggregateName: AGGREGATE_NAME,
       aggregateId: AGGREGATE_ID,
       type: 'emptyCommand'
     })
-
-    await Promise.resolve()
 
     expect(lastState).toEqual(aggregate.initialState)
   })
@@ -151,16 +141,13 @@ describe('resolve-command', () => {
     const executeCommand = createCommandExecutor({ eventStore, aggregates })
     eventList = [{ type: 'SuccessEvent', aggregateVersion: 1 }]
 
-    const transaction = executeCommand({
-      aggregateName: AGGREGATE_NAME,
-      aggregateId: AGGREGATE_ID,
-      type: 'brokenCommand'
-    })
-
-    await Promise.resolve()
-
     try {
-      await transaction
+      await executeCommand({
+        aggregateName: AGGREGATE_NAME,
+        aggregateId: AGGREGATE_ID,
+        type: 'brokenCommand'
+      })
+
       return Promise.reject('Test failed')
     } catch (error) {
       expect(error.message).toEqual('event type is required')
@@ -224,14 +211,12 @@ describe('resolve-command', () => {
     eventList = [{ type: 'SuccessEvent', aggregateVersion: 1 }]
 
     const jwtToken = 'JWT-TOKEN'
-    const transaction = executeCommand({
+    await executeCommand({
       aggregateName: AGGREGATE_NAME,
       aggregateId: AGGREGATE_ID,
       type: 'emptyCommand',
       jwtToken
     })
-
-    await transaction
 
     expect(aggregate.commands.emptyCommand.lastCall.args[2]).toEqual(jwtToken)
 

@@ -9,7 +9,7 @@ const ChildrenCommentsContainer = styled.div`
   margin-top: 1em;
 `
 
-const ChildrenComments = ({ storyId, parentId, comments, loggedIn }) => {
+const ChildrenComments = ({ storyId, comments, loggedIn }) => {
   if (!comments || !comments.length) {
     return null
   }
@@ -17,19 +17,23 @@ const ChildrenComments = ({ storyId, parentId, comments, loggedIn }) => {
   return (
     <div>
       {comments.map(comment => {
-        if (comment.parentId !== parentId) {
+        if (comment == null) {
           return null
         }
         return (
-          <Comment key={comment.id} storyId={storyId} {...comment}>
+          <Comment
+            key={comment.commentId}
+            id={comment.commentId}
+            storyId={storyId}
+            {...comment.content}
+          >
             {loggedIn ? (
-              <ReplyLink storyId={storyId} commentId={comment.id} />
+              <ReplyLink storyId={storyId} commentId={comment.commentId} />
             ) : null}
             <ChildrenCommentsContainer>
               <ChildrenComments
                 storyId={storyId}
-                comments={comments}
-                parentId={comment.id}
+                comments={comment.children}
                 loggedIn={loggedIn}
               />
             </ChildrenCommentsContainer>

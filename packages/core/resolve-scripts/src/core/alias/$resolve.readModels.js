@@ -41,9 +41,9 @@ export default ({ resolveConfig, isClient }) => {
     })
 
     if (isClient) {
-      const clientResolvers =
+      const clientResolvers = Object.keys(
         readModel.resolvers.constructor === String
-          ? Object.keys(importBabel(resolveFile(readModel.resolvers)))
+          ? importBabel(resolveFile(readModel.resolvers))
           : importBabel(resolveFileOrModule(readModel.resolvers.module))(
               readModel.resolvers.options,
               readModel.resolvers.imports != null
@@ -58,6 +58,7 @@ export default ({ resolveConfig, isClient }) => {
                   )
                 : null
             )
+      )
 
       constants.push(
         `const resolvers_${index} = {`,
@@ -68,12 +69,19 @@ export default ({ resolveConfig, isClient }) => {
       )
     }
 
-    const readModelAdapter = readModel.hasOwnProperty('adapter')
-      ? readModel.adapter
-      : {
-          module: 'resolve-readmodel-memory',
-          options: {}
-        }
+    const readModelAdapter =
+      resolveConfig.hasOwnProperty('readModelAdapters') &&
+      resolveConfig.readModelAdapters.hasOwnProperty(readModel.name)
+        ? resolveConfig.readModelAdapters[readModel.name]
+        : null
+
+    if (!readModelAdapter) {
+      throw new Error(
+        `${message.configNotContainSectionError}.readModelAdapters[${
+          readModel.name
+        }]`
+      )
+    }
 
     exports.push(`readModels.push({`, `  name: name_${index}`)
     exports.push(`, resolvers: resolvers_${index}`)

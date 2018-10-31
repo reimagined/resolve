@@ -478,7 +478,7 @@ describe('actions', () => {
 
   describe('authRequest', () => {
     test('should create an action to authorization request', () => {
-      const url = '/auth/local'
+      const url = '/api/auth/local'
       const body = { username: 'username', password: 'password' }
       expect(authRequest(url, body)).toEqual({
         type: AUTH_REQUEST,
@@ -490,7 +490,7 @@ describe('actions', () => {
 
   describe('authSuccess', () => {
     test('should create an action to authorization success', () => {
-      const url = '/auth/local'
+      const url = '/api/auth/local'
       const body = { username: 'username', password: 'password' }
       expect(authSuccess(url, body)).toEqual({
         type: AUTH_SUCCESS,
@@ -502,7 +502,7 @@ describe('actions', () => {
 
   describe('authFailure', () => {
     test('should create an action to authorization failure', () => {
-      const url = '/auth/local'
+      const url = '/api/auth/local'
       const body = { username: 'username', password: 'password' }
       const error = 'error'
       expect(authFailure(url, body, error)).toEqual({

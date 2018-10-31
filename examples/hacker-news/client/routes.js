@@ -7,11 +7,11 @@ import UserById from './containers/UserById'
 import NewestByPage from './containers/NewestByPage'
 import ShowByPage from './containers/ShowByPage'
 import AskByPage from './containers/AskByPage'
-import StoryDetails from './containers/StoryDetails'
+import StoryById from './containers/StoryById'
 import Submit from './containers/Submit'
 
 import CommentsByPage from './containers/CommentsByPage'
-import CommentById from './containers/CommentById'
+import CommentsTreeById from './containers/CommentsTreeById'
 
 import PageNotFound from './components/PageNotFound'
 
@@ -55,11 +55,11 @@ const routes = [
       },
       {
         path: '/storyDetails/:storyId/comments/:commentId',
-        component: CommentById
+        component: CommentsTreeById
       },
       {
         path: '/storyDetails/:storyId',
-        component: StoryDetails
+        component: StoryById
       },
       {
         path: '/comments/:page?',

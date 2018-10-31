@@ -3,9 +3,15 @@ const appConfig = {
   staticDir: 'web/static',
   distDir: 'web/dist',
   redux: {
-    reducers: 'web/redux/reducers/index.js',
-    middlewares: 'web/redux/middlewares/index.js',
-    store: 'web/redux/store/index.js'
+    reducers: {
+      optimisticShoppingLists:
+        'web/redux/reducers/optimistic_shopping_lists.js',
+      optimisticSharings: 'web/redux/reducers/optimistic_sharings.js'
+    },
+    middlewares: [
+      'web/redux/middlewares/optimistic_shopping_lists_middleware.js',
+      'web/redux/middlewares/optimistic_sharings_middleware.js'
+    ]
   },
   aggregates: [
     {

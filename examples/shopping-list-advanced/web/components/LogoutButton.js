@@ -30,7 +30,11 @@ class LogoutButton extends React.PureComponent {
     }
 
     return (
-      <Form method="POST" action="/auth/local/logout" innerRef={this.formRef}>
+      <Form
+        method="POST"
+        action="/api/auth/local/logout"
+        innerRef={this.formRef}
+      >
         <input type="text" name="username" readOnly value="hidden" hidden />
         <input type="text" name="password" readOnly value="hidden" hidden />
         <a className="logout" href="/login" onClick={this.onLogoutClick}>

@@ -7,12 +7,12 @@ const Login = props => {
     <div>
       <AuthForm
         buttonText="login"
-        action={`/login${props.location.search}`}
+        action={`/api/login${props.location.search}`}
         title="Login"
       />
       <AuthForm
         buttonText="create account"
-        action="/register"
+        action="/api/register"
         title="Create account"
       />
     </div>

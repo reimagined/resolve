@@ -13,7 +13,7 @@ class Login extends React.PureComponent {
   onLoginClick = () => {
     this.setState(
       {
-        action: '/auth/local/login'
+        action: '/api/auth/local/login'
       },
       () => {
         this.form.submit()
@@ -24,7 +24,7 @@ class Login extends React.PureComponent {
   onRegisterClick = () => {
     this.setState(
       {
-        action: '/auth/local/register'
+        action: '/api/auth/local/register'
       },
       () => {
         this.form.submit()

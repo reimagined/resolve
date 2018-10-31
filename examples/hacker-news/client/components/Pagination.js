@@ -1,14 +1,14 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
+import { NavLink } from 'react-router-dom'
 
-import Link from '../containers/Link'
 import Splitter from './Splitter'
 
 export const PaginationRoot = styled.div`
   padding: 0.5em 0;
 `
 
-export const StyledLink = styled(Link)`
+export const StyledLink = styled(NavLink)`
   display: inline;
   font-weight: bold;
   text-decoration: none;

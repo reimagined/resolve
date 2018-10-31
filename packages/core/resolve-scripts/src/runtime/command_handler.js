@@ -1,5 +1,6 @@
 import println from './utils/println'
 import executeCommand from './command_executor'
+import extractErrorHttpCode from './utils/extract_error_http_code'
 
 const message = require('../../configs/message.json')
 
@@ -11,7 +12,8 @@ const commandHandler = async (req, res) => {
     await executeCommand({ ...req.body, jwtToken: req.jwtToken })
     res.status(200).send(message.commandSuccess)
   } catch (err) {
-    res.status(500).end(`${message.commandFail}${err.message}`)
+    const errorCode = extractErrorHttpCode(err)
+    res.status(errorCode).end(`${message.commandFail}${err.message}`)
     println.error(err)
   }
 }

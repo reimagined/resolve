@@ -10,12 +10,18 @@
         "options": {
           "type": "object"
         },
-        "import": {
+        "imports": {
           "type": "object"
         }
       },
       "required": ["module", "options"],
       "additionalProperties": false
+    },
+    "adaptersMap": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/adapter"
+      }
     },
     "resourceInstance": {
       "type": "string"
@@ -29,7 +35,7 @@
         "options": {
           "type": "object"
         },
-        "import": {
+        "imports": {
           "type": "object"
         }
       },
@@ -75,9 +81,6 @@
             { "$ref": "#/definitions/resourceInstance" },
             { "$ref": "#/definitions/resourceConstructor" }
           ]
-        },
-        "snapshotAdapter": {
-          "$ref": "#/definitions/adapter"
         }
       },
       "required": ["name", "commands"],
@@ -112,9 +115,6 @@
             { "$ref": "#/definitions/resourceInstance" },
             { "$ref": "#/definitions/resourceConstructor" }
           ]
-        },
-        "snapshotAdapter": {
-          "$ref": "#/definitions/adapter"
         }
       },
       "required": ["name", "projection"],
@@ -141,9 +141,6 @@
             { "$ref": "#/definitions/resourceInstance" },
             { "$ref": "#/definitions/resourceConstructor" }
           ]
-        },
-        "adapter": {
-          "$ref": "#/definitions/adapter"
         }
       },
       "required": ["name", "projection", "resolvers"],
@@ -177,6 +174,9 @@
         "path": {
           "type": "string"
         },
+        "method": {
+          "type": "string"
+        },
         "controller": {
           "oneOf": [
             { "$ref": "#/definitions/resourceInstance" },
@@ -186,6 +186,15 @@
       },
       "required": ["path", "controller"],
       "additionalProperties": false
+    },
+    "reduxReducersMap": {
+      "type": "object",
+      "additionalProperties": {
+        "oneOf": [
+          { "$ref": "#/definitions/resourceInstance" },
+          { "$ref": "#/definitions/resourceConstructor" }
+        ]
+      }
     },
     "jwtCookie": {
       "type": "object",
@@ -202,17 +211,38 @@
     "redux": {
       "type": "object",
       "properties": {
-        "store": {
-          "type": "string"
-        },
         "reducers": {
-          "type": "string"
+          "$ref": "#/definitions/reduxReducersMap"
         },
         "middlewares": {
-          "type": "string"
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "$ref": "#/definitions/resourceInstance" },
+              { "$ref": "#/definitions/resourceConstructor" }
+            ]
+          }
+        },
+        "sagas": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "$ref": "#/definitions/resourceInstance" },
+              { "$ref": "#/definitions/resourceConstructor" }
+            ]
+          }
+        },
+        "enhancers": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "$ref": "#/definitions/resourceInstance" },
+              { "$ref": "#/definitions/resourceConstructor" }
+            ]
+          }
         }
       },
-      "required": ["store", "reducers", "middlewares"],
+      "required": ["reducers"],
       "additionalProperties": false
     },
     "auth": {
@@ -301,6 +331,12 @@
         "subscribeAdapter": {
           "$ref": "#/definitions/subscribeAdapter"
         },
+        "readModelAdapters": {
+          "$ref": "#/definitions/adaptersMap"
+        },
+        "snapshotAdapter": {
+          "$ref": "#/definitions/adapter"
+        },
         "auth": {
           "$ref": "#/definitions/auth"
         },
@@ -333,7 +369,9 @@
         "viewModels",
         "readModels",
         "busAdapter",
+        "readModelAdapters",
         "storageAdapter",
+        "snapshotAdapter",
         "subscribeAdapter",
         "polyfills",
         "customConstants"
