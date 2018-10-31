@@ -88,7 +88,7 @@ export default {
     }]
 }
 ```
-This approach is useful when you need to assign settings that should not be included in application sources or settings that should be defined by the current server instance.
+This approach is useful when you need to assign settings that should not be included in application sources (e.g., authentication credentials or secret keys) or settings that should be defined by the current server instance.
 
 
 
