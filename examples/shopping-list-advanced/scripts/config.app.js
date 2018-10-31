@@ -1,6 +1,3 @@
-// TODO fix path "$packageName/lib/path-to-file"
-const path = require('path')
-
 const appConfig = {
   routes: '../web/lib/routes.js',
   staticDir: '../web/static',

@@ -2,7 +2,11 @@
   "name": "@shopping-list-advanced/monorepo-root",
   "version": "0.17.4",
   "private": true,
+  "devDependencies": {
+    "lerna": "3.4.3"
+  },
   "scripts": {
+    "install": "lerna bootstrap",
     "babelify": "cd scripts && node babel.compile.js --run",
     "babelify:watch": "cd scripts && node babel.compile.js --watch",
     "build": "cd scripts && node ./run.js build",
@@ -14,15 +18,5 @@
     "test:web": "cd web && npm run test",
     "test:native": "cd native && npm run test",
     "test:functional": "echo || exit 0"
-  },
-  "workspaces": {
-    "packages": [
-      "domain",
-      "ui",
-      "utils",
-      "web",
-      "scripts",
-      "native"
-    ]
   }
 }

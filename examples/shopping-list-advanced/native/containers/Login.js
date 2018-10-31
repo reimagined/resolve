@@ -17,7 +17,7 @@ import { bindActionCreators } from 'redux'
 
 import { actions } from '../resolve/resolve-redux'
 import requiredNoAuth from '../decorators/required-no-auth'
-import Logo from '../components/Logo'
+import { Logo } from '@shopping-list-advanced/ui'
 
 const styles = StyleSheet.create({
   contentContainer: {

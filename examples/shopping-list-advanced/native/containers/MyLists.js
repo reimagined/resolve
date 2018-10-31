@@ -19,8 +19,6 @@ import ShoppingLists from '../components/ShoppingLists'
 import ShoppingListCreator from '../components/ShoppingListCreator'
 import * as refreshActions from '../redux/actions/refresh-actions'
 
-import Test from '@shopping-list-advanced/ui'
-
 export class MyLists extends React.PureComponent {
   render() {
     const {
@@ -48,7 +46,6 @@ export class MyLists extends React.PureComponent {
           </Right>
         </Header>
         <Content>
-          <Test />
           <ShoppingLists
             lists={lists}
             navigate={navigation.navigate}

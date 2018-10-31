@@ -53,7 +53,6 @@
       "packages/adapters/readmodel-adapters/*",
       "packages/adapters/subscribe-adapters/*",
       "packages/adapters/api-handler-adapters/*",
-      "examples/shopping-list-advanced/*",
       "examples/*",
       "tests"
     ]

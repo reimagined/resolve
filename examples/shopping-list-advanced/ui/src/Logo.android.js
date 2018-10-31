@@ -1,6 +1,5 @@
 import React from 'react'
-import { Image, StyleSheet } from 'react-native'
-import { Text, View } from 'native-base'
+import { Text, View, Image, StyleSheet } from 'react-native'
 
 import ResolveLogo from '../assets/resolve-logo.png'
 

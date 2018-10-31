@@ -11,6 +11,8 @@
     "@babel/runtime": "^7.0.0"
   },
   "devDependencies": {
+    "resolve-scripts": "0.17.4",
+    "my-local-ip": "1.0.0",
     "chalk": "^2.4.1",
     "@babel/core": "^7.0.0",
     "@babel/cli": "^7.0.0",
@@ -23,7 +25,6 @@
     "@babel/plugin-transform-runtime": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
-    "get-yarn-workspaces": "^1.0.2",
     "glob": "^7.1.3"
   }
 }

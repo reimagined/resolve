@@ -1,0 +1,15 @@
+{
+  "packages": [
+    "domain",
+    "ui",
+    "utils",
+    "web",
+    "scripts",
+    "native",
+    "../../packages/core/resolve-scripts",
+    "../../packages/core/resolve-redux"
+  ],
+  "version": "0.17.4",
+  "npmClient": "npm",
+  "npmClientArgs": ["--no-package-lock"]
+}

@@ -1,3 +1,3 @@
-import Test from './Test'
+import Logo from './Logo'
 
-export default Test
+export { Logo }

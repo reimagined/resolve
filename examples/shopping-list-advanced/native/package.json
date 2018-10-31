@@ -12,10 +12,11 @@
     "test:functional": "echo || exit 0"
   },
   "dependencies": {
+    "@babel/runtime": "^7.0.0",
     "@shopping-list-advanced/ui": "0.17.4",
+    "resolve-redux": "0.17.4",
     "@expo/react-native-action-sheet": "1.1.2",
     "@expo/vector-icons": "6.3.1",
-    "@babel/runtime": "^7.0.0",
     "expo": "30.0.1",
     "history": "4.7.2",
     "native-base": "2.8.1",
@@ -32,21 +33,12 @@
     "babel-jest": "23.6.0",
     "babel-plugin-module-resolver": "3.1.1",
     "babel-preset-expo": "4.0.0",
-    "babel-preset-react-native": "4.0.0",
-    "enzyme": "3.3.0",
-    "enzyme-adapter-react-16": "1.1.1",
-    "exp": "57.0.0",
+    "babel-preset-react-native": "4.0.1",
+    "enzyme": "3.7.0",
+    "enzyme-adapter-react-16": "1.6.0",
     "jest": "23.6.0",
-    "jest-expo": "29.0.0",
-    "my-local-ip": "1.0.0",
+    "jest-expo": "30.0.0",
     "react-test-renderer": "16.6.0",
-    "regenerator-runtime": "0.12.1",
-    "get-yarn-workspaces": "1.0.2"
-  },
-  "workspaces": {
-    "nohoist": [
-      "**",
-      "**/**"
-    ]
+    "regenerator-runtime": "0.12.1"
   }
 }

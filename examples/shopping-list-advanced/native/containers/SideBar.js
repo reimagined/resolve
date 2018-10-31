@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import { Text, Container, List, ListItem, Content, Icon } from 'native-base'
 import { StyleSheet, Platform } from 'react-native'
 
-import Logo from '../components/Logo'
+import { Logo } from '@shopping-list-advanced/ui'
 import { actions } from 'resolve-redux'
 
 const styles = StyleSheet.create({

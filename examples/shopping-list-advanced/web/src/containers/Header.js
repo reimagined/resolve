@@ -3,6 +3,7 @@ import { Navbar, Nav, NavItem as RawNavItem } from 'react-bootstrap'
 import { connectStaticBasedUrls, connectRootBasedUrls } from 'resolve-redux'
 import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
+import { Logo } from '@shopping-list-advanced/ui'
 
 import Image from './Image'
 
@@ -19,12 +20,7 @@ const Header = ({ title, name, css, favicon, jwt }) => (
       <title>{title}</title>
     </Helmet>
     <Navbar collapseOnSelect>
-      <Navbar.Header>
-        <Navbar.Brand>
-          <Image className="example-icon" src="/resolve-logo.png" /> {name}
-        </Navbar.Brand>
-        <Navbar.Toggle />
-      </Navbar.Header>
+      <Logo />
       {jwt.id ? (
         <Navbar.Collapse>
           <Nav>

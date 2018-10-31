@@ -1,3 +1,4 @@
+const fs = require('fs')
 const path = require('path')
 const chalk = require('chalk')
 const find = require('glob').sync
@@ -47,11 +48,16 @@ function babelify({ watch = false } = {}) {
 
     const { name } = require(filePath)
 
-    configs.push({
-      name,
-      inputDir: path.resolve(path.dirname(filePath), './src'),
-      outDir: path.resolve(path.dirname(filePath), './lib')
-    })
+    const inputDir = path.resolve(path.dirname(filePath), './src')
+    const outDir = path.resolve(path.dirname(filePath), './lib')
+
+    if (fs.existsSync(inputDir)) {
+      configs.push({
+        name,
+        inputDir,
+        outDir
+      })
+    }
   }
 
   return Promise.all(

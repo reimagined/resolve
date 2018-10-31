@@ -10,19 +10,12 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "rambda": "^1.2.6"
-  },
-  "devDependencies": {
-    "react": "16.6.0"
+    "react-bootstrap": "0.32.4",
+    "resolve-redux": "0.17.4"
   },
   "peerDependencies": {
     "react": "*",
+    "react-dom": "*",
     "react-native": "*"
-  },
-  "workspaces": {
-    "nohoist": [
-      "**",
-      "**/**"
-    ]
   }
 }

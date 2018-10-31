@@ -14,10 +14,7 @@ const adjustWebpackConfigs = async (
     ...webpackWebConfig,
     name: 'Common Business Logic',
     entry: {
-      'resolve/config': path.resolve(__dirname, './alias/config.js'),
-      'resolve/resolve-redux': require.resolve('resolve-redux', {
-        paths: webpackWebConfig.resolve.modules
-      })
+      'resolve/config': path.resolve(__dirname, './alias/config.js')
     },
     output: {
       path: path.resolve(__dirname, '../native'),
