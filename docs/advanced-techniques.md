@@ -12,7 +12,7 @@ Building a reSolve application produces the following chunks:
 - SSR renderer (server only, with peer dependencies with client, like `styled-components`)
 - the client application with UI (browser only)
 
-All of these chunks are used by the target application. Some chunks can be included by other chunks. E.g., client includes the view-model projection chunk to automatically generate Redux reducers.
+All of these chunks are used by the target application. Some chunks can be included by other chunks. E.g., the client includes the view-model projection chunk to automatically generate Redux reducers.
 
 In a cloud/serverless environment, chunks like read-model projection & resolvers, SSR renderer, API handlers and rest business-logic are distributed to appropriate cloud executors.
 
