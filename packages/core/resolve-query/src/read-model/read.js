@@ -11,7 +11,7 @@ const read = async (repository, { resolverName, resolverArgs, jwtToken }) => {
     )
   }
 
-  const store = await repository.getModelReadInterface(repository)
+  const store = await repository.getModelReadInterface(repository, true)
 
   return await resolver(store, resolverArgs, jwtToken)
 }

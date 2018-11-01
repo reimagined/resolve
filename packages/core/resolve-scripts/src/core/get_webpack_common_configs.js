@@ -19,95 +19,16 @@ const getWebpackCommonConfigs = ({
 
   const assemblies = [
     {
-      name: 'Aggregates',
+      name: 'Server local entry point',
       entry: {
-        'common/aggregates/index.js': [
+        'common/local-entry/local-entry.js': [
           ...polyfills,
-          path.resolve(__dirname, './alias/$resolve.aggregates.js')
+          path.resolve(__dirname, './alias/$resolve.localEntry.js')
         ]
       },
-      packageJson: 'common/aggregates/package.json'
-    },
-    {
-      name: 'View Models',
-      entry: {
-        'common/view-models/index.js': [
-          ...polyfills,
-          path.resolve(__dirname, './alias/$resolve.viewModels.js')
-        ]
-      },
-      packageJson: 'common/view-models/package.json'
-    },
-    {
-      name: 'Read Models',
-      entry: {
-        'common/read-models/index.js': [
-          ...polyfills,
-          path.resolve(__dirname, './alias/$resolve.readModels.js')
-        ]
-      },
-      packageJson: 'common/read-models/package.json'
-    },
-    {
-      name: 'Sagas',
-      entry: {
-        'common/sagas/index.js': [
-          ...polyfills,
-          path.resolve(__dirname, './alias/$resolve.sagas.js')
-        ]
-      },
-      packageJson: 'common/sagas/package.json'
-    },
-    {
-      name: 'Api Handlers',
-      entry: {
-        'common/api-handlers/index.js': [
-          ...polyfills,
-          path.resolve(__dirname, './alias/$resolve.apiHandlers.js')
-        ]
-      },
-      packageJson: 'common/api-handlers/package.json'
-    },
-    {
-      name: 'Constants',
-      entry: {
-        'common/constants/index.js': [
-          path.resolve(__dirname, './alias/$resolve.constants.js')
-        ]
-      }
-    },
-    {
-      name: 'Assemblies',
-      entry: {
-        'assemblies.js': [
-          ...polyfills,
-          path.resolve(__dirname, './alias/$resolve.assemblies.js')
-        ]
-      }
+      packageJson: 'common/local-entry/package.json'
     }
   ]
-
-  const apiHandlers = Array.isArray(resolveConfig.apiHandlers)
-    ? resolveConfig.apiHandlers
-    : []
-  const apiHandlerEntryBase = path.resolve(
-    __dirname,
-    './alias/$resolve.apiHandlers.js'
-  )
-
-  for (const [idx, { path, method }] of apiHandlers.entries()) {
-    const syntheticName = `${method}-${path.replace(/[^\w\d-]/g, '-')}`
-    assemblies.push({
-      name: `Api Handler "${syntheticName}" for "${method.toUpperCase()} ${path}"`,
-      entry: {
-        [`common/api-handlers/${syntheticName}/index.js`]: [
-          ...polyfills,
-          `${apiHandlerEntryBase}?${idx}`
-        ]
-      },
-      packageJson: `common/api-handlers/${syntheticName}/package.json`
-    })
-  }
 
   const configs = []
 

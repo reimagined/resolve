@@ -1,11 +1,12 @@
-import queryExecutor from './query_executor'
-
 const statusHandler = async (req, res) => {
   if (req.method !== 'GET') {
-    return res.status(405).end()
+    await res.status(405)
+    await res.end('Invalid HTTP method for status invocation')
+    return
   }
 
-  for (const executor of queryExecutor.getExecutors()) {
+  const executeQuery = req.resolve.executeQuery
+  for (const executor of executeQuery.getExecutors().values()) {
     try {
       await executor.read({
         resolverName: executor.resolverNames[0],
@@ -13,7 +14,8 @@ const statusHandler = async (req, res) => {
       })
     } catch (e) {}
   }
-  res.end('ok')
+
+  await res.end('ok')
 }
 
 export default statusHandler

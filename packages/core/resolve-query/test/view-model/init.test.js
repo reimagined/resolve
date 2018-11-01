@@ -188,9 +188,9 @@ test('View-model init should init view-model with bad Init method without snapsh
     key: 'KEY'
   })
 
-  expect(eventStore.loadEvents.callCount).toEqual(0)
+  expect(eventStore.loadEvents.callCount).toEqual(1)
 
-  expect(viewModel.hasOwnProperty('initPromise')).toEqual(true)
+  expect(viewModel.hasOwnProperty('initPromise')).toEqual(false)
 })
 
 // eslint-disable-next-line max-len
@@ -299,5 +299,5 @@ test('View-model init should use initialized view-model', async () => {
   expect(eventStore.loadEvents.callCount).toEqual(0)
   expect(repository.snapshotAdapter.loadSnapshot.callCount).toEqual(0)
 
-  expect(viewModel.hasOwnProperty('initPromise')).toEqual(true)
+  expect(viewModel.hasOwnProperty('initPromise')).toEqual(false)
 })

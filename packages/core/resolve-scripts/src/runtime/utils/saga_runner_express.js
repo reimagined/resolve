@@ -1,11 +1,5 @@
 import { CronJob } from 'cron'
 
-import eventStore from './event_store'
-import executeCommand from './command_executor'
-import executeQuery from './query_executor'
-
-import { sagas } from './assemblies'
-
 const CRON_REBOOT = '@reboot'
 const CRON_VARS = {
   '@yearly': '0 0 0 1 1 *',
@@ -19,8 +13,9 @@ const createSaga = (saga = {}, context) => {
   const { eventHandlers = {}, cronHandlers = {} } = saga
 
   Object.keys(eventHandlers).map(eventName =>
-    context.resolve.loadEvents({ eventTypes: [eventName] }, event =>
-      eventHandlers[eventName](event, context)
+    context.resolve.loadEvents(
+      { eventTypes: [eventName], skipStorage: true },
+      async event => await eventHandlers[eventName](event, context)
     )
   )
 
@@ -50,7 +45,7 @@ const createSaga = (saga = {}, context) => {
   })
 }
 
-const sagaRunner = () => {
+const sagaRunner = ({ eventStore, executeCommand, executeQuery, sagas }) => {
   sagas.forEach(saga => {
     const context = {
       resolve: {
