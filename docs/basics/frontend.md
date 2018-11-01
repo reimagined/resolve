@@ -53,7 +53,7 @@ In this code, a **connectViewModel** HOC is used to associate a React component 
 - **viewModelName** - the name of a View Model to bind to
 - **aggregateIds** - an array of aggregate IDs for which to obtain data
 
-A component connected to a View Model can access the View Model data through the **data** prop:
+A component connected to a View Model can access the View Model data through the **data** prop.
 
 
 
