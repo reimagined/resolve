@@ -5,11 +5,9 @@
     "utils",
     "web",
     "scripts",
-    "native",
-    "../../packages/core/resolve-scripts",
-    "../../packages/core/resolve-redux"
+    "native"
   ],
   "version": "0.17.4",
-  "npmClient": "npm",
-  "npmClientArgs": ["--no-package-lock"]
+  "npmClient": "yarn",
+  "npmClientArgs": ["--no-lockfile"]
 }

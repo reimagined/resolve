@@ -6,7 +6,7 @@
     "lerna": "3.4.3"
   },
   "scripts": {
-    "install": "lerna bootstrap",
+    "prepare": "lerna bootstrap",
     "babelify": "cd scripts && node babel.compile.js --run",
     "babelify:watch": "cd scripts && node babel.compile.js --watch",
     "build": "cd scripts && node ./run.js build",
