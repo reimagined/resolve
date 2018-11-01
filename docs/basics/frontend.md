@@ -36,7 +36,7 @@ const TodoList = ({ data }) => (
         {data.map(i => ( Access View Model data via the data prop
           <li>{i}</li>
         ))}
-    <
+    </ul>
 
 export const mapStateToOptions = () => {
     return {
