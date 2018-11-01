@@ -3,7 +3,6 @@ import nodeExternals from 'webpack-node-externals'
 
 import getModulesDirs from './get_modules_dirs'
 import getWebpackEnvPlugin from './get_webpack_env_plugin'
-import resolveFile from './resolve_file'
 
 const getWebpackCommonConfigs = ({
   resolveConfig,
@@ -70,16 +69,6 @@ const getWebpackCommonConfigs = ({
       packageJson: 'common/api-handlers/package.json'
     },
     {
-      name: 'Auth',
-      entry: {
-        'common/auth/index.js': [
-          ...polyfills,
-          path.resolve(__dirname, './alias/$resolve.auth.js')
-        ]
-      },
-      packageJson: 'common/auth/package.json'
-    },
-    {
       name: 'Constants',
       entry: {
         'common/constants/index.js': [
@@ -101,15 +90,19 @@ const getWebpackCommonConfigs = ({
   const apiHandlers = Array.isArray(resolveConfig.apiHandlers)
     ? resolveConfig.apiHandlers
     : []
+  const apiHandlerEntryBase = path.resolve(
+    __dirname,
+    './alias/$resolve.apiHandlers.js'
+  )
 
-  for (const { path, controller } of apiHandlers) {
-    const syntheticName = path.replace(/[^\w\d-]/g, '-')
+  for (const [idx, { path, method }] of apiHandlers.entries()) {
+    const syntheticName = `${method}-${path.replace(/[^\w\d-]/g, '-')}`
     assemblies.push({
-      name: `Api Handler "${syntheticName}" for path "${path}"`,
+      name: `Api Handler "${syntheticName}" for "${method.toUpperCase()} ${path}"`,
       entry: {
         [`common/api-handlers/${syntheticName}/index.js`]: [
           ...polyfills,
-          resolveFile(controller)
+          `${apiHandlerEntryBase}?${idx}`
         ]
       },
       packageJson: `common/api-handlers/${syntheticName}/package.json`

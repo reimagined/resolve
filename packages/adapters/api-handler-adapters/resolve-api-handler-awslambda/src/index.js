@@ -42,10 +42,15 @@ const wrapHeadersCaseInsensitive = headersMap =>
     }, {})
   )
 
+const MERGEABLE_HEADERS = ['Set-Cookie', 'Vary']
+
 const mergeResponseHeaders = responseHeaders => {
   const resultHeaders = {}
   for (const { key, value } of responseHeaders) {
-    if (resultHeaders.hasOwnProperty(key)) {
+    if (
+      resultHeaders.hasOwnProperty(key) &&
+      MERGEABLE_HEADERS.indexOf(key) > -1
+    ) {
       // See https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2 paragraph 4
       resultHeaders[key] = `${resultHeaders[key]}, ${value}`
     } else {

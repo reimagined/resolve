@@ -4,8 +4,8 @@ import plur from 'plur'
 import { connect } from 'react-redux'
 import sanitizer from 'sanitizer'
 import styled, { css } from 'styled-components'
+import { NavLink } from 'react-router-dom'
 
-import Link from './Link'
 import Splitter from '../components/Splitter'
 import TimeAgo from '../components/TimeAgo'
 
@@ -16,8 +16,8 @@ export const StoryRoot = styled.div`
 export const StoryText = styled.div`
   color: #000;
   font-size: 14px;
-  padding-left: 1.25em;
-  padding-top: 1.25em;
+  padding-top: 15px;
+  padding-left: 5px;
 `
 
 export const TitleRoot = styled.div`
@@ -26,7 +26,7 @@ export const TitleRoot = styled.div`
   font-size: 8pt;
 `
 
-export const StyledLink = styled(Link)`
+export const StyledLink = styled(NavLink)`
   font-size: 10pt;
 `
 
@@ -37,7 +37,6 @@ export const StyledExternalLink = styled.a`
 export const StoryInfoRoot = styled.div`
   color: #666;
   font-size: 8pt;
-  padding-left: 1.25em;
 `
 
 const infoLinkStyles = `
@@ -52,7 +51,7 @@ export const UnvoteLink = styled.span`
   ${infoLinkStyles};
 `
 
-export const DiscussLink = styled(Link)`
+export const DiscussLink = styled(NavLink)`
   ${infoLinkStyles};
 `
 
@@ -75,7 +74,7 @@ export const UpvoteArrow = styled.div`
     `};
 `
 
-const Username = styled(Link)`
+const Username = styled(NavLink)`
   display: inline-block;
   font-weight: bold;
   text-decoration: none;
@@ -179,9 +178,7 @@ export class Story extends React.PureComponent {
       .filter(id => id !== userId)
       .concat(voted ? [userId] : [])
 
-    const commentCount = story.comments
-      ? story.comments.length
-      : story.commentCount
+    const commentCount = story.commentCount
 
     const title = `${index ? `${index}. ` : ''}${
       story.type === 'ask' ? `Ask HN: ${story.title}` : story.title

@@ -1,5 +1,6 @@
 import contentDisposition from 'content-disposition'
 import cookie from 'cookie'
+import getRawBody from 'raw-body'
 
 const COOKIE_CLEAR_DATE = new Date(0).toGMTString()
 const INTERNAL = Symbol('INTERNAL')
@@ -23,7 +24,7 @@ const normalizeKey = (key, mode) => {
 
 const wrapHeadersCaseInsensitive = headersMap =>
   Object.create(
-    null,
+    Object.prototype,
     Object.keys(headersMap).reduce((acc, key) => {
       const value = headersMap[key]
       const [upperDashKey, dashKey, lowerKey] = [
@@ -42,10 +43,16 @@ const wrapHeadersCaseInsensitive = headersMap =>
     }, {})
   )
 
+const MERGEABLE_HEADERS = ['Set-Cookie', 'Vary']
+
 const mergeResponseHeaders = responseHeaders => {
   const resultHeaders = {}
+
   for (const { key, value } of responseHeaders) {
-    if (resultHeaders.hasOwnProperty(key)) {
+    if (
+      resultHeaders.hasOwnProperty(key) &&
+      MERGEABLE_HEADERS.indexOf(key) > -1
+    ) {
       // See https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2 paragraph 4
       resultHeaders[key] = `${resultHeaders[key]}, ${value}`
     } else {
@@ -58,31 +65,18 @@ const mergeResponseHeaders = responseHeaders => {
 const createRequest = async (expressReq, customParameters) => {
   let expressReqError = null
 
-  const body = await new Promise((resolve, reject) => {
-    expressReq.on('error', error => {
-      expressReqError = error
-      reject(error)
-    })
-    const bodyChunks = []
-
-    expressReq.on('data', chunk => {
-      bodyChunks.push(chunk)
-    })
-    expressReq.on('end', () => {
-      if (bodyChunks.length === 0) {
-        return resolve(null)
-      }
-
-      const body = Buffer.concat(bodyChunks).toString()
-      resolve(body)
-    })
-  })
-
   const headers = wrapHeadersCaseInsensitive(expressReq.headers)
   const cookies =
     headers.cookie != null && headers.cookie.constructor === String
       ? cookie.parse(headers.cookie)
       : {}
+
+  const body = headers.hasOwnProperty('Content-Length')
+    ? await getRawBody(expressReq, {
+        length: headers['Content-Length'],
+        encoding: true
+      })
+    : null
 
   const req = Object.create(null)
 
@@ -137,9 +131,9 @@ const createResponse = () => {
       )
     if (!isValidValue) {
       throw new Error(
-        `Variable "${fieldName}" should be one of following types: ${types.json(
-          ', '
-        )}`
+        `Variable "${fieldName}" should be one of following types: ${types
+          .map(type => type.name)
+          .join(', ')}`
       )
     }
   }

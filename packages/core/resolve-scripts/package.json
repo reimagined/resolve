@@ -62,7 +62,6 @@
     "prop-types": "^15.6.2",
     "react-helmet": "^5.2.0",
     "resolve-api-handler-express": "0.17.4",
-    "resolve-auth": "0.17.4",
     "resolve-bus-memory": "0.17.4",
     "resolve-command": "0.17.4",
     "resolve-es": "0.17.4",
@@ -79,12 +78,12 @@
     "testcafe-browser-tools": "^1.6.5",
     "uuid": "^3.3.2",
     "val-loader": "^1.1.1",
-    "webpack": "^4.20.1",
+    "webpack": "^4.23.1",
     "webpack-node-externals": "^1.7.2"
   },
   "peerDependencies": {
-    "react": ">=16.5.2",
-    "react-dom": ">=16.5.2",
+    "react": ">=16.6.0",
+    "react-dom": ">=16.6.0",
     "redux": ">=4.0.0",
     "styled-components": ">=3.4.9"
   },

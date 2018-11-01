@@ -1,9 +1,4 @@
-import {
-  STORY_COMMENTED,
-  STORY_CREATED,
-  STORY_UNVOTED,
-  STORY_UPVOTED
-} from '../event_types'
+import { STORY_CREATED, STORY_UNVOTED, STORY_UPVOTED } from '../event-types'
 
 export default {
   Init: () => ({}),
@@ -11,8 +6,7 @@ export default {
     ...state,
     createdAt: timestamp,
     createdBy: userId,
-    voted: [],
-    comments: {}
+    voted: []
   }),
 
   [STORY_UPVOTED]: (state, { payload: { userId } }) => ({
@@ -23,19 +17,5 @@ export default {
   [STORY_UNVOTED]: (state, { payload: { userId } }) => ({
     ...state,
     voted: state.voted.filter(curUserId => curUserId !== userId)
-  }),
-
-  [STORY_COMMENTED]: (
-    state,
-    { timestamp, payload: { commentId, userId } }
-  ) => ({
-    ...state,
-    comments: {
-      ...state.comments,
-      [commentId]: {
-        createdAt: timestamp,
-        createdBy: userId
-      }
-    }
   })
 }

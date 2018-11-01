@@ -38,7 +38,7 @@ const Header = ({ title, name, css, favicon, jwt }) => (
             </NavItem>
             <NavItem
               eventKey={3}
-              href="/auth/logout?username=logout&&password=logout"
+              href="/api/auth/local/logout?username=logout&&password=logout"
             >
               <Image className="example-icon" src="/logout.svg" /> Logout
             </NavItem>

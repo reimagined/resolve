@@ -2,12 +2,7 @@ import urlLib from 'url'
 import jsonwebtoken from 'jsonwebtoken'
 
 import validate from './validation'
-import {
-  STORY_COMMENTED,
-  STORY_CREATED,
-  STORY_UNVOTED,
-  STORY_UPVOTED
-} from '../event_types'
+import { STORY_CREATED, STORY_UNVOTED, STORY_UPVOTED } from '../event-types'
 import jwtSecret from '../../auth/jwt_secret'
 
 export default {
@@ -67,34 +62,6 @@ export default {
       type: STORY_UNVOTED,
       payload: {
         userId: jwt.id
-      }
-    }
-  },
-
-  commentStory: (state, command, jwtToken) => {
-    const jwt = jsonwebtoken.verify(jwtToken, jwtSecret)
-
-    validate.fieldRequired(jwt, 'id')
-    validate.stateExists(state, 'Story')
-
-    const { commentId, parentId, text } = command.payload
-
-    validate.fieldRequired(command.payload, 'parentId')
-    validate.fieldRequired(command.payload, 'text')
-    validate.keyIsNotInObject(
-      state.comments,
-      commentId,
-      'Comment already exists'
-    )
-
-    return {
-      type: STORY_COMMENTED,
-      payload: {
-        commentId,
-        parentId,
-        userId: jwt.id,
-        userName: jwt.name,
-        text
       }
     }
   }

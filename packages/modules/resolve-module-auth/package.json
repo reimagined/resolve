@@ -1,0 +1,49 @@
+{
+  "name": "resolve-module-auth",
+  "version": "0.17.4",
+  "description": "This package is resolve module for authentication.",
+  "engines": {
+    "node": ">=8.10"
+  },
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "bugs": {
+    "url": "https://github.com/reimagined/resolve/issues"
+  },
+  "scripts": {
+    "test": "jest --config=../../../jest.config.js --verbose",
+    "testw": "jest --config=../../../jest.config.js --watchAll"
+  },
+  "repository": "https://github.com/reimagined/resolve.git",
+  "author": "reimagined team",
+  "license": "MIT",
+  "keywords": [
+    "cqrs",
+    "eventsourcing",
+    "es",
+    "ddd"
+  ],
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/api-handler-adapters/resolve-module-auth#readme",
+  "dependencies": {
+    "isomorphic-fetch": "2.2.1",
+    "uuid": "3.3.2"
+  },
+  "devDependencies": {
+    "jest": "23.6.0",
+    "sinon": "6.2.0"
+  },
+  "babelCompile": [
+    {
+      "moduleType": "es",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./es"
+    },
+    {
+      "moduleType": "cjs",
+      "moduleTarget": "server",
+      "inputDir": "./src",
+      "outDir": "./lib"
+    }
+  ]
+}

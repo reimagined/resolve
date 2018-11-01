@@ -246,7 +246,6 @@ if (unknownOptions && unknownOptions.length) {
         'create-resolve-app',
         'resolve-api-handler-awslambda',
         'resolve-api-handler-express',
-        'resolve-auth',
         'resolve-bus-zmq',
         'resolve-bus-memory',
         'resolve-bus-rabbitmq',

@@ -424,10 +424,10 @@ const importConstructorResourceImports = ({
     constants.push(
       `const ${resourceName}_imports_hash = ${createHashRunTime(
         calculateHash,
-        `JSON.stringify(${inlinedImports
+        `JSON.stringify([${inlinedImports
           .map(({ inlineImportKey }) => `${inlineImportKey}_hash`)
           .join(',')}
-        )`
+        ])`
       )}`
     )
   }
