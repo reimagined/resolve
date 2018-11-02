@@ -43,25 +43,6 @@ const wrapHeadersCaseInsensitive = headersMap =>
     }, {})
   )
 
-const MERGEABLE_HEADERS = ['Set-Cookie', 'Vary']
-
-const mergeResponseHeaders = responseHeaders => {
-  const resultHeaders = {}
-
-  for (const { key, value } of responseHeaders) {
-    if (
-      resultHeaders.hasOwnProperty(key) &&
-      MERGEABLE_HEADERS.indexOf(key) > -1
-    ) {
-      // See https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2 paragraph 4
-      resultHeaders[key] = `${resultHeaders[key]}, ${value}`
-    } else {
-      resultHeaders[key] = value
-    }
-  }
-  return resultHeaders
-}
-
 const createRequest = async (expressReq, customParameters) => {
   let expressReqError = null
 
@@ -111,7 +92,7 @@ const createRequest = async (expressReq, customParameters) => {
 const createResponse = () => {
   const internalRes = {
     status: 200,
-    headers: [],
+    headers: {},
     body: '',
     closed: false
   }
@@ -149,7 +130,15 @@ const createResponse = () => {
   defineResponseMethod('cookie', (name, value, options) => {
     validateResponseOpened()
     const serializedCookie = cookie.serialize(name, value, options)
-    internalRes.headers.push({ key: 'Set-Cookie', value: serializedCookie })
+
+    let cookieHeader = internalRes.headers['Set-Cookie']
+    if (cookieHeader != null) {
+      cookieHeader = `${cookieHeader}, ${serializedCookie}`
+    } else {
+      cookieHeader = serializedCookie
+    }
+
+    internalRes.headers['Set-Cookie'] = cookieHeader
   })
 
   defineResponseMethod('clearCookie', (name, options) => {
@@ -158,7 +147,15 @@ const createResponse = () => {
       ...options,
       expire: COOKIE_CLEAR_DATE
     })
-    internalRes.headers.push({ key: 'Set-Cookie', value: serializedCookie })
+
+    let cookieHeader = internalRes.headers['Set-Cookie']
+    if (cookieHeader != null) {
+      cookieHeader = `${cookieHeader}, ${serializedCookie}`
+    } else {
+      cookieHeader = serializedCookie
+    }
+
+    internalRes.headers['Set-Cookie'] = cookieHeader
   })
 
   defineResponseMethod('status', code => {
@@ -171,7 +168,7 @@ const createResponse = () => {
     validateResponseOpened()
     validateOptionShape('Status code', code, [Number], true)
     validateOptionShape('Location path', path, [String])
-    internalRes.headers.push({ key: 'Location', value: path })
+    internalRes.headers['Location'] = path
     internalRes.status = code != null ? code : 302
 
     internalRes.closed = true
@@ -180,9 +177,7 @@ const createResponse = () => {
   defineResponseMethod('getHeader', searchKey => {
     validateOptionShape('Header name', searchKey, [String])
     const normalizedKey = normalizeKey(searchKey, 'upper-dash-case')
-    const header = internalRes.headers.find(({ key }) => key === normalizedKey)
-    if (header == null) return null
-    return header.value
+    return internalRes.headers[normalizedKey]
   })
 
   defineResponseMethod('setHeader', (key, value) => {
@@ -190,10 +185,7 @@ const createResponse = () => {
     validateOptionShape('Header name', key, [String])
     validateOptionShape('Header value', value, [String])
 
-    internalRes.headers.push({
-      key: normalizeKey(key, 'upper-dash-case'),
-      value
-    })
+    internalRes.headers[normalizeKey(key, 'upper-dash-case')] = value
   })
 
   defineResponseMethod('text', (content, encoding) => {
@@ -227,10 +219,7 @@ const createResponse = () => {
     internalRes.body =
       content.constructor === String ? Buffer.from(content, encoding) : content
 
-    internalRes.headers.push({
-      key: 'Content-Disposition',
-      value: contentDisposition(filename)
-    })
+    internalRes.headers['Content-Disposition'] = contentDisposition(filename)
 
     internalRes.closed = true
   })
@@ -256,7 +245,7 @@ const wrapApiHandler = (handler, getCustomParameters) => async (
     const { status, headers, body } = res[INTERNAL]
     expressRes.status(status)
 
-    expressRes.set(mergeResponseHeaders(headers))
+    expressRes.set(headers)
 
     expressRes.end(body)
   } catch (error) {

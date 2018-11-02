@@ -27,6 +27,16 @@ const getWebpackCommonConfigs = ({
         ]
       },
       packageJson: 'common/local-entry/package.json'
+    },
+    {
+      name: 'Server cloud entry point',
+      entry: {
+        'common/cloud-entry/cloud-entry.js': [
+          ...polyfills,
+          path.resolve(__dirname, './alias/$resolve.cloudEntry.js')
+        ]
+      },
+      packageJson: 'common/cloud-entry/package.json'
     }
   ]
 
