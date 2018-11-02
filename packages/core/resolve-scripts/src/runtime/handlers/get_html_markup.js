@@ -1,12 +1,15 @@
 import { Helmet } from 'react-helmet'
 
-import jsonUtfStringify from './utils/json_utf_stringify'
+import jsonUtfStringify from '../utils/json_utf_stringify'
 
-import { redux } from './assemblies'
-
-const reducers = redux.reducers
-
-export default ({ markup, styleTags, initialState, bundleUrl, hmrUrl }) => {
+export default ({
+  reducers,
+  markup,
+  styleTags,
+  initialState,
+  bundleUrl,
+  hmrUrl
+}) => {
   const helmet = Helmet.renderStatic()
 
   for (const reducerName of Object.keys(reducers)) {

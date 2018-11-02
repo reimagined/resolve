@@ -162,9 +162,9 @@ test('Read-model init should init adapter and bind projection and skip event rea
 
   expect(repository.prepareProjection.callCount).toEqual(1)
 
-  expect(eventStore.loadEvents.callCount).toEqual(0)
+  expect(eventStore.loadEvents.callCount).toEqual(1)
 
-  expect(repository.loadDonePromise).toEqual(loadDonePromise)
+  expect(repository.loadDonePromise).toEqual(undefined)
 })
 
 // eslint-disable-next-line max-len
@@ -195,5 +195,5 @@ test('Read-model init should work with already initialized adapter', async () =>
 
   expect(eventStore.loadEvents.callCount).toEqual(0)
 
-  expect(repository.loadDonePromise).toEqual(loadDonePromise)
+  expect(repository.loadDonePromise).toEqual(undefined)
 })

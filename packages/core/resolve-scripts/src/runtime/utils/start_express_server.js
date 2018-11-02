@@ -1,10 +1,8 @@
 import chalk from 'chalk'
 
-import openBrowser from './utils/open_browser'
-import println from './utils/println'
-import prepareUrls from './utils/prepare_urls'
-
-import { port, rootPath, applicationName } from './assemblies'
+import openBrowser from './open_browser'
+import println from './println'
+import prepareUrls from './prepare_urls'
 
 const useYarn =
   (process.env.npm_execpath && process.env.npm_execpath.includes('yarn')) ||
@@ -18,9 +16,9 @@ const protocol = 'http'
 
 const serverFirstStart = process.env.RESOLVE_SERVER_FIRST_START === 'true'
 
-const urls = prepareUrls(protocol, host, port, rootPath)
+const startServer = ({ port, rootPath, applicationName, server }) => {
+  const urls = prepareUrls(protocol, host, port, rootPath)
 
-const startServer = server => {
   server.listen(port, host, () => {
     println()
     println(`You can now view ${chalk.bold(applicationName)} in the browser.`)

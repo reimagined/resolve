@@ -1,11 +1,12 @@
-import println from './utils/println'
-import queryExecutor from './query_executor'
-import extractErrorHttpCode from './utils/extract_error_http_code'
+import println from '../utils/println'
+import extractErrorHttpCode from '../utils/extract_error_http_code'
 
-const message = require('../../configs/message.json')
+const message = require('../../../configs/message.json')
 
 const viewModelHandler = async (req, res) => {
   try {
+    const executeQuery = req.resolve.executeQuery
+
     const modelName = req.params.modelName
     const aggregateIds =
       req.params.modelOptions !== '*' ? req.params.modelOptions.split(/,/) : '*'
@@ -19,14 +20,14 @@ const viewModelHandler = async (req, res) => {
       throw new Error(message.viewModelOnlyOnDemand)
     }
 
-    const serializedState = await queryExecutor.readAndSerialize({
+    const serializedState = await executeQuery.readAndSerialize({
       modelName,
       aggregateIds,
       aggregateArgs,
       jwtToken
     })
 
-    const lastError = await queryExecutor.getLastError({
+    const lastError = await executeQuery.getLastError({
       modelName,
       aggregateIds
     })
@@ -35,10 +36,12 @@ const viewModelHandler = async (req, res) => {
       throw lastError
     }
 
-    res.status(200).send(serializedState)
+    await res.status(200)
+    await res.end(serializedState)
   } catch (err) {
     const errorCode = extractErrorHttpCode(err)
-    res.status(errorCode).end(`${message.viewModelFail}${err.message}`)
+    await res.status(errorCode)
+    await res.end(`${message.viewModelFail}${err.message}`)
     println.error(err)
   }
 }
