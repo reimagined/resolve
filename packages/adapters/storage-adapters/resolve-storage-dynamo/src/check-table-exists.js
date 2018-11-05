@@ -5,10 +5,13 @@ const checkTableExists = async (database, tableName) => {
       .promise()
 
     const tableStatus = tableInfo.Table.TableStatus
-    if (tableStatus === 'ACTIVE') return true
+
+    if (tableStatus === 'ACTIVE') {
+      return true
+    }
 
     return await checkTableExists(database, tableName)
-  } catch (err) {}
+  } catch (error) {}
 
   return false
 }

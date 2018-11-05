@@ -12,7 +12,7 @@ const executePaginationQuery = async (
     for (const event of res.Items) {
       await callback(event)
     }
-  } while (res.hasOwnProperty('LastEvaluatedKey'))
+  } while (res.LastEvaluatedKey != null)
 }
 
 export default executePaginationQuery

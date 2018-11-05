@@ -1,10 +1,4 @@
-const dispose = async (pool, options) => {
-  const {
-    database,
-    config: { tableName }
-  } = pool
-  const { dropEvents } = options
-
+const dispose = async ({ database, config: { tableName } }, { dropEvents }) => {
   if (dropEvents) {
     await database.deleteTable({
       TableName: tableName
