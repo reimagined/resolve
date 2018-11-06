@@ -12,13 +12,7 @@ reSolve is a full stack functional JavaScript framework.
 - Integrates with [React](https://reactjs.org) and [Redux](https://redux.js.org) for seamless development experience.
 - [React Native](https://facebook.github.io/react-native/) support.
 
-## **📑 Table of Contents**
-
-- **[🚀 Getting Started](#getting-started)**
-- **[📚 Documentation](#documentation)**
-- **[📢 Get in Touch](#get-in-touch)**
-
-## <a name="getting-started">**🚀 Getting Started**</a>
+## :rocket:Getting Started
 
 ### <a name="installation">Installation</a>
 
