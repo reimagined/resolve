@@ -2,7 +2,6 @@
 
 The reSolve framework is shipped with the client **resolve-redux** library that allows you to easily connect you client React + Redux app to a reSolve-powered backend.
 
-[TODO] Explain the simplest case: how to show results of the query. It doesnt need state, actions, reducers, optimistic things - just mapStateToOptions, and use 'data' property.
 
 The **redux** config section specifies the following settings related to the Redux-based frontend:
 
@@ -20,7 +19,47 @@ To connect components to the backend, use the following resolve-redux library's 
 - **connectReadModel** - Connects a component to Read Model.
 - **connectViewModel** - Connects a component to a View Model.
 
-A connected component obtains additional props providing access to the Read Model data and available Redux actions mapped to reSolve commands. You can chain the **connectReadModel** function call with the Redux **connect** function call:
+A connected component obtains additional props providing access to the Read Model data and available Redux actions mapped to reSolve commands. 
+
+
+### Obtain View Model Data
+
+The code below demonstrates the most basic use-case scenario of obtaining data from a reSolve backend:
+
+``` js
+import { connectViewModel } from 'resolve-redux'
+
+import React from 'react'
+...
+const TodoList = ({ data }) => ( 
+    <ul>
+        {data.map(i => ( Access View Model data via the data prop
+          <li>{i}</li>
+        ))}
+    </ul>
+
+export const mapStateToOptions = () => {
+    return {
+        viewModelName: 'TodoList',
+        aggregateIds: ["root-id"]
+    }
+}
+
+export default connectViewModel(mapStateToOptions)(TodoList)
+
+``` 
+
+In this code, a **connectViewModel** HOC is used to associate a React component with an existing View Model. The HOC uses a **mapStateToOptions** function to specify the View Model options. The following options are required:
+- **viewModelName** - the name of a View Model to bind to
+- **aggregateIds** - an array of aggregate IDs for which to obtain data
+
+A component connected to a View Model can access the View Model data through the **data** prop.
+
+
+
+### Connect to Redux
+
+You can chain the **connectReadModel** or **connectViewModel** function call with the Redux **connect** function call:
 
 <!-- prettier-ignore-start -->
 [embedmd]:# (..\..\examples\shopping-list\client\containers\MyLists.js /export const mapStateToOptions/ /^\)/)
@@ -47,17 +86,23 @@ export default connectReadModel(mapStateToOptions)(
 ```
 <!-- prettier-ignore-end -->
 
-Additionally, use the following HOCs to automatically fix URLs passed as component props so that these URLs comply with the backend structure.
 
-- **connectRootBasedUrls** - Fixes server routs.
+### Fix URLs
+
+Use the following HOCs to automatically fix URLs passed as component props so that these URLs comply with the backend structure.
+
+- **connectRootBasedUrls** - Fixes server routs:
   ```js
   export default connectRootBasedUrls(['href'])(Link)
   ```
 
-* **connectStaticBasedUrls** - Fixes static files paths.
+* **connectStaticBasedUrls** - Fixes static files paths:
   ```js
   export default connectStaticBasedUrls(['css', 'favicon'])(Header)
   ```
+
+
+
 
 # Sending Commands as Redux Actions
 
@@ -93,6 +138,8 @@ class MyLists extends React.PureComponent {
 }
 ```
 <!-- prettier-ignore-end -->
+
+
 
 # Reactive View Models, Event Subscription
 
@@ -135,6 +182,9 @@ export default connectViewModel(mapStateToOptions)(
 )
 ```
 <!-- prettier-ignore-end -->
+
+
+
 
 # Optimistic Commands
 

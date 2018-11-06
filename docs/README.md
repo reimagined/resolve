@@ -45,7 +45,7 @@
 
   - [Configuration Options](preparing-to-production.md#configuration-options)
   - [Configuring Adapters](preparing-to-production.md#configuring-adapters)
-  - [Configure App URLs](preparing-to-production.md#configure-app-urls)
+  - [Using Environment Variables](preparing-to-production.md#using-environment-variables)
 
 - [Advanced Techniques](advanced-techniques.md)
 
