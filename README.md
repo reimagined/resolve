@@ -1,20 +1,22 @@
-
 # [<img src="https://user-images.githubusercontent.com/15689049/29659048-ad0d158a-88c5-11e7-9354-dbe4bb105ad7.png" height="60">](https://github.com/reimagined/resolve/)
 
 [![Build Status](https://travis-ci.org/reimagined/resolve.svg?branch=master)](https://travis-ci.org/reimagined/resolve) [![npm version](https://badge.fury.io/js/create-resolve-app.svg)](https://badge.fury.io/js/create-resolve-app) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/reimagined/resolve/master/LICENSE)
 
-A JavaScript framework for **CQRS**, **Domain-Driven Design** and **Event Sourcing** with robust support for **React** and **Redux**. **reSolve** provides a new way to describe an app's core logic and fully separate it from auxiliary code.
+![CQRS DDD Event Sourcing React Redux](https://user-images.githubusercontent.com/19663260/41475089-73b9620e-70c6-11e8-9ca9-633f3857626b.png)
 
-<p align="center"><img src="https://user-images.githubusercontent.com/19663260/41475089-73b9620e-70c6-11e8-9ca9-633f3857626b.png"></p>
+reSolve is a full stack functional JavaScript framework.
 
-* 2 minutes [installation](#installation).
-* [Free and open source](https://github.com/reimagined/resolve/blob/master/LICENSE.md).
-* Flexible and clear [API](#documentation).
+- [CQRS](https://martinfowler.com/bliki/CQRS.html) - independent Command and Query sides.
+- [DDD Aggregate](https://martinfowler.com/bliki/DDD_Aggregate.html) support.
+- [Event sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) - using events as a source of truth and calculates read models from them.
+- Integrates with [React](https://reactjs.org) and [Redux](https://redux.js.org) for seamless development experience.
+- [React Native](https://facebook.github.io/react-native/) support.
 
 ## **📑 Table of Contents**
-* **[🚀 Getting Started](#getting-started)**
-* **[📚 Documentation](#documentation)**
-* **[📢 Get in Touch](#get-in-touch)**
+
+- **[🚀 Getting Started](#getting-started)**
+- **[📚 Documentation](#documentation)**
+- **[📢 Get in Touch](#get-in-touch)**
 
 ## <a name="getting-started">**🚀 Getting Started**</a>
 
@@ -32,24 +34,24 @@ The created application is accessible using the http://localhost:3000/ and `http
 
 Instead of npx you can also use npm or yarn tools:
 
-* [npm](https://www.npmjs.com/)
+- [npm](https://www.npmjs.com/)
 
-    > Note: Installing a package globally may require administrative privileges. That means you have to use the `sudo` prefix on Linux and MacOS, or start a terminal with the administrative privileges on Windows.
+  > Note: Installing a package globally may require administrative privileges. That means you have to use the `sudo` prefix on Linux and MacOS, or start a terminal with the administrative privileges on Windows.
 
-    ```sh
-    npm i -g create-resolve-app
-    create-resolve-app my-awesome-app
-    cd my-awesome-app
-    npm run dev
-    ```
+  ```sh
+  npm i -g create-resolve-app
+  create-resolve-app my-awesome-app
+  cd my-awesome-app
+  npm run dev
+  ```
 
-* [yarn](https://yarnpkg.com/lang/en/)
+- [yarn](https://yarnpkg.com/lang/en/)
 
-    ```sh
-    yarn create resolve-app my-awesome-app
-    cd my-awesome-app
-    yarn run dev
-    ```
+  ```sh
+  yarn create resolve-app my-awesome-app
+  cd my-awesome-app
+  yarn run dev
+  ```
 
 ### <a name="examples">Examples</a>
 
@@ -65,18 +67,18 @@ The created application is accessible using the http://localhost:3000/ and `http
 
 Instead of npx you can also use npm or yarn tools:
 
-* [yarn](https://yarnpkg.com/lang/en/)
+- [yarn](https://yarnpkg.com/lang/en/)
 
-    ```sh
-    yarn create resolve-app nested-list-example -e nested-list
-    ```
+  ```sh
+  yarn create resolve-app nested-list-example -e nested-list
+  ```
 
-* [npm](https://www.npmjs.com/)
+- [npm](https://www.npmjs.com/)
 
-    ```sh
-    npm i -g create-resolve-app
-    create-resolve-app nested-list-example -e nested-list
-    ```
+  ```sh
+  npm i -g create-resolve-app
+  create-resolve-app nested-list-example -e nested-list
+  ```
 
 ## <a name="documentation">**📚 Documentation**</a>
 
