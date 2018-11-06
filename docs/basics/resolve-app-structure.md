@@ -13,7 +13,7 @@ By default, configuration setting are split across the following files:
 
 
 # Write and Read Sides
-In accordance with the CQRS paradigm, a reSolve application is divided into **[write](write-side.md)** and **[read](read-side.md)** sides.
+In accordance with the CQRS paradigm, a reSolve application is divided into the **[write](write-side.md)** and **[read](read-side.md)**.
 * The **[write side](write-side.md)** is represented by a set of aggregates, which execute commands. In response to the received commands, aggregates emit events, which are then saved to the event store. 
 * The **[read side](read-side.md)** is used to query the application's data. The read side is represented by a set of **Read Models**. 
 
