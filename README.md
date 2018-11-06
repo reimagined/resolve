@@ -27,7 +27,7 @@ npm run dev
 ```
 
 <details>
-<summary>Instead of npx you can also use npm or yarn tools</summary>
+<summary>You can also use npm or yarn tools</summary>
 
 #### [npm](https://www.npmjs.com/)
 
@@ -75,10 +75,6 @@ You can find reSolve documentation in the [docs section](./docs).
 - Follow us on Twitter [@resolvejs](https://twitter.com/resolvejs)
 - Facebook page [resolvejs](https://www.facebook.com/resolvejs/)
 
-<br/>
-<br/>
-<p align="center">reSolve is developed by</p>
-<p align="center"><a href="https://devexpress.com">Developer Express Inc.</a></p>
-<p align="center"><img src="https://user-images.githubusercontent.com/19663260/38686793-dd31fb22-3e7d-11e8-8f26-33606ad82a16.png"></p>
+reSolve is developed by [Developer Express Inc.](https://devexpress.com)
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/index-readme?pixel)
