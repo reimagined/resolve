@@ -86,21 +86,11 @@ Learn more in [documentation topics](https://github.com/reimagined/resolve/tree/
 
 ## :loudspeaker: Get in Touch
 
-Feel free to contact us if you have any questions!
-
-We are glad to see your e-mails sent to **reimagined@devexpress.com**.
-
-Follow us on [**Twitter**](https://twitter.com/resolvejs). We post interesting arcticles, announcements, post polls about **reSolve** development and talk about the modern web technologies!
-
-We also have a [**Facebook**](https://www.facebook.com/resolvejs/) page, join us!
-
-You can find our articles on [**Medium**](https://medium.com/resolvejs)
-
-You are welcome to post any questions or suggestions in [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
-
-🔧 Feel yourself capable of improving **reSolve**? Become one of our [**contributors**](https://github.com/reimagined/resolve/pulls)! Look through our [**Contrubutors Guide**](https://github.com/reimagined/resolve/blob/master/docs/Contributors%20Guide.md) and make a great Pull Request.
-
-Remember to star our **GitHub** repository if you like **reSolve**!
+- Ask questions at Stackoverlow with [resolvejs tag](https://stackoverflow.com/tags/resolvejs)
+- Submit bugs and issues to [GitHub Issues](https://github.com/reimagined/resolve/issues)
+- Email team reimagined@devexpress.com
+- Follow us on Twitter [@resolvejs](https://twitter.com/resolvejs)
+- Facebook page [resolvejs](https://www.facebook.com/resolvejs/)
 
 <br/>
 <br/>
