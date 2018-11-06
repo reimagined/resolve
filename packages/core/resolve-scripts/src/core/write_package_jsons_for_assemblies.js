@@ -10,7 +10,7 @@ const writePackageJsonsForAssemblies = (distDir, nodeModulesByAssembly) => {
     packageJsonPath,
     nodeModules
   ] of nodeModulesByAssembly.entries()) {
-    const absolutePackageJsonPath = path.join(
+    const absolutePackageJsonPath = path.resolve(
       process.cwd(),
       distDir,
       packageJsonPath

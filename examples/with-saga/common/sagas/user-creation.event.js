@@ -1,14 +1,17 @@
 const eventHandlers = {
   UserCreationRequested: async (event, { resolve }) => {
     const { aggregateId } = event
-    const createdUser = await resolve.executeQuery({
-      modelName: 'default',
-      resolverName: 'createdUser',
-      resolverArgs: { id: aggregateId }
-    })
+    let createdUser = null
 
-    if (!createdUser) {
-      return
+    // https://10consulting.com/2017/10/06/dealing-with-eventual-consistency/
+    while (createdUser == null) {
+      createdUser = await resolve.executeQuery({
+        modelName: 'default',
+        resolverName: 'createdUser',
+        resolverArgs: { id: aggregateId }
+      })
+
+      await new Promise(resolve => setTimeout(resolve, 100))
     }
 
     const users = await resolve.executeQuery({

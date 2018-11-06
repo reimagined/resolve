@@ -42,7 +42,7 @@ test('Read-model read should retrieve store and invoke resolver', async () => {
     jwtToken
   })
 
-  expect(repository.getModelReadInterface.callCount).toEqual(1)
+  expect(repository.getModelReadInterface.callCount).toEqual(2)
 
   expect(repository.resolvers.RESOLVER_NAME.callCount).toEqual(1)
   expect(repository.resolvers.RESOLVER_NAME.firstCall.args[0]).toEqual(store)

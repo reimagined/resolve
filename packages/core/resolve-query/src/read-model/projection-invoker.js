@@ -1,4 +1,4 @@
-const projectionInvoker = async (repository, event) => {
+const projectionInvoker = async (repository, event, maybeUnordered) => {
   if (repository.disposePromise) {
     throw new Error('Read model is disposed')
   } else if (repository.hasOwnProperty('lastError')) {
@@ -6,7 +6,7 @@ const projectionInvoker = async (repository, event) => {
   }
 
   try {
-    await repository.projection[event.type](event)
+    return await repository.projection[event.type](event, maybeUnordered)
   } catch (error) {
     repository.lastError = error
     throw error

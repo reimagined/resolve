@@ -1,10 +1,9 @@
 import {
-  STORY_COMMENTED,
   STORY_CREATED,
   STORY_UNVOTED,
   STORY_UPVOTED,
   USER_CREATED
-} from '../event_types'
+} from '../event-types'
 
 export default {
   Init: async store => {
@@ -25,19 +24,6 @@ export default {
     await store.defineTable('Users', {
       indexes: { id: 'string', name: 'string' },
       fields: ['createdAt']
-    })
-
-    await store.defineTable('Comments', {
-      indexes: { id: 'string' },
-      fields: [
-        'text',
-        'parentId',
-        'comments',
-        'storyId',
-        'createdAt',
-        'createdBy',
-        'createdByName'
-      ]
     })
   },
   [STORY_CREATED]: async (
@@ -60,33 +46,6 @@ export default {
     }
 
     await store.insert('Stories', story)
-  },
-
-  [STORY_COMMENTED]: async (
-    store,
-    {
-      aggregateId,
-      timestamp,
-      payload: { parentId, userId, userName, commentId, text }
-    }
-  ) => {
-    const comment = {
-      id: commentId,
-      text,
-      parentId,
-      comments: [],
-      storyId: aggregateId,
-      createdAt: timestamp,
-      createdBy: userId,
-      createdByName: userName
-    }
-
-    await store.insert('Comments', comment)
-    await store.update(
-      'Stories',
-      { id: aggregateId },
-      { $inc: { commentCount: 1 } }
-    )
   },
 
   [STORY_UPVOTED]: async (store, { aggregateId, payload: { userId } }) => {
@@ -125,5 +84,23 @@ export default {
       createdAt: timestamp
     }
     await store.insert('Users', user)
+  },
+
+  /* from module "resolve-module-comments" */
+  COMMENT_CREATED: async (store, { aggregateId }) => {
+    await store.update(
+      'Stories',
+      { id: aggregateId },
+      { $inc: { commentCount: 1 } }
+    )
+  },
+
+  /* from module "resolve-module-comments" */
+  COMMENT_REMOVED: async (store, { aggregateId }) => {
+    await store.update(
+      'Stories',
+      { id: aggregateId },
+      { $inc: { commentCount: -1 } }
+    )
   }
 }

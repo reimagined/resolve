@@ -16,25 +16,21 @@ test('View-model update by events should fail on non-array argument', async () =
 })
 
 test('View-model update by events should update with good projection', async () => {
-  const aggregateIds = ['a', 'b', 'c', 'd']
   const viewModel = {
     initPromise: Promise.resolve(),
-    handler: sinon.stub().callsFake(async () => null)
+    handler: sinon.stub().callsFake(async () => null),
+    aggregateIds: null
   }
   const refreshFromStorage = true
   const repository = {
-    getViewModel: sinon.stub().callsFake(() => viewModel)
+    eventTypes: ['EVENT_TYPE_1', 'EVENT_TYPE_2'],
+    getViewModel: sinon.stub().callsFake(() => viewModel),
+    viewMap: new Map([['KEY', viewModel]])
   }
 
   const events = [{ type: 'EVENT_TYPE_1' }, { type: 'EVENT_TYPE_2' }]
 
-  await updateByEvents(repository, { aggregateIds }, events, refreshFromStorage)
-
-  expect(repository.getViewModel.callCount).toEqual(1)
-  expect(repository.getViewModel.firstCall.args[0]).toEqual(repository)
-  expect(repository.getViewModel.firstCall.args[1]).toEqual(aggregateIds)
-  expect(repository.getViewModel.firstCall.args[2]).toEqual(true)
-  expect(repository.getViewModel.firstCall.args[3]).toEqual(!refreshFromStorage)
+  await updateByEvents(repository, events, refreshFromStorage)
 
   expect(viewModel.handler.callCount).toEqual(2)
   expect(viewModel.handler.firstCall.args[0]).toEqual(events[0])
@@ -42,27 +38,23 @@ test('View-model update by events should update with good projection', async () 
 })
 
 test('View-model update by events should update with bad projection', async () => {
-  const aggregateIds = ['a', 'b', 'c', 'd']
   const viewModel = {
     initPromise: Promise.resolve(),
     handler: sinon.stub().callsFake(async () => {
       throw new Error('Projection failed')
-    })
+    }),
+    aggregateIds: null
   }
   const refreshFromStorage = true
   const repository = {
-    getViewModel: sinon.stub().callsFake(() => viewModel)
+    eventTypes: ['EVENT_TYPE_1', 'EVENT_TYPE_2'],
+    getViewModel: sinon.stub().callsFake(() => viewModel),
+    viewMap: new Map([['KEY', viewModel]])
   }
 
   const events = [{ type: 'EVENT_TYPE_1' }, { type: 'EVENT_TYPE_2' }]
 
-  await updateByEvents(repository, { aggregateIds }, events, refreshFromStorage)
-
-  expect(repository.getViewModel.callCount).toEqual(1)
-  expect(repository.getViewModel.firstCall.args[0]).toEqual(repository)
-  expect(repository.getViewModel.firstCall.args[1]).toEqual(aggregateIds)
-  expect(repository.getViewModel.firstCall.args[2]).toEqual(true)
-  expect(repository.getViewModel.firstCall.args[3]).toEqual(!refreshFromStorage)
+  await updateByEvents(repository, events, refreshFromStorage)
 
   expect(viewModel.handler.callCount).toEqual(1)
   expect(viewModel.handler.firstCall.args[0]).toEqual(events[0])

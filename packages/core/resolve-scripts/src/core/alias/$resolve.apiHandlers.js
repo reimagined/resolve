@@ -34,6 +34,13 @@ export default ({ resolveConfig, isClient }) => {
     }
     constants.push(`const path_${index} = ${JSON.stringify(apiHandler.path)}`)
 
+    if (checkRuntimeEnv(apiHandler.method)) {
+      throw new Error(`${message.clientEnvError}.apiHandlers[${index}].method`)
+    }
+    constants.push(
+      `const method_${index} = ${JSON.stringify(apiHandler.method)}`
+    )
+
     importResource({
       resourceName: `controller_${index}`,
       resourceValue: apiHandler.controller,
@@ -46,6 +53,7 @@ export default ({ resolveConfig, isClient }) => {
 
     exports.push(`apiHandlers.push({`, `  path: path_${index}`)
     exports.push(`, controller: controller_${index}`)
+    exports.push(`, method: method_${index}`)
     exports.push(`})`, ``)
   }
 

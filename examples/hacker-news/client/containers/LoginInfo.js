@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { Link as NormalLink } from 'react-router-dom'
 
 import Splitter from '../components/Splitter'
-import * as userActions from '../actions/user_actions'
+import * as optimisticActions from '../actions/optimistic-actions'
 import Form from './Form'
 
 const Link = styled(NormalLink)`
@@ -35,7 +35,7 @@ const LoginInfo = ({ me }) => (
         >
           logout
         </Link>
-        <Form method="post" id="hidden-form-for-logout" action="/logout">
+        <Form method="post" id="hidden-form-for-logout" action="/api/logout">
           <input type="hidden" name="username" value="null" />
           <input type="hidden" />
         </Form>
@@ -53,7 +53,7 @@ export const mapStateToProps = state => ({
 export const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      logout: userActions.logout
+      logout: optimisticActions.logout
     },
     dispatch
   )

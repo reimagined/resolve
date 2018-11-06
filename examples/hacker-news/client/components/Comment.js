@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 import Splitter from './Splitter'
 import TimeAgo from './TimeAgo'
-import Link from '../containers/Link'
+import { NavLink } from 'react-router-dom'
 
 const CommentRoot = styled.div`
   margin-bottom: 1em;
@@ -17,30 +17,24 @@ const CommentInfo = styled.div`
 
 const Collapse = styled.div`
   display: inline-block;
-  vertical-align: middle;
   margin-right: 0.33em;
   cursor: pointer;
 `
 
 const linkStyles = `
-  vertical-align: middle;
-
   &:hover {
     text-decoration: underline;
   }
 `
 
-const StyledLink = styled(Link)`
+const StyledLink = styled(NavLink)`
   ${linkStyles};
 `
 
-const StyledUserLink = styled(Link)`
-  ${linkStyles} font-weight: bold;
-`
-
-const StyledTimeAgo = styled(TimeAgo)`
-  vertical-align: middle;
-  margin-left: 0.33em;
+const StyledUserLink = styled(NavLink)`
+  ${linkStyles};
+  font-weight: bold;
+  padding-right: 3px;
 `
 
 class Comment extends React.PureComponent {
@@ -67,7 +61,7 @@ class Comment extends React.PureComponent {
     }
 
     const parent =
-      parentId === storyId
+      parentId == null
         ? `/storyDetails/${storyId}`
         : `/storyDetails/${storyId}/comments/${parentId}`
 
@@ -82,7 +76,7 @@ class Comment extends React.PureComponent {
           <StyledUserLink to={`/user/${createdBy}`}>
             {createdByName}
           </StyledUserLink>
-          <StyledTimeAgo createdAt={createdAt} />
+          <TimeAgo createdAt={createdAt} />
           <Splitter />
           <StyledLink to={`/storyDetails/${storyId}/comments/${id}`}>
             link

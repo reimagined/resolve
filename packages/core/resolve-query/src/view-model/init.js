@@ -11,6 +11,7 @@ const init = async (repository, key, inputAggregateIds, skipEventReading) => {
   } = repository
 
   const viewModel = viewMap.get(key)
+  let readStorageAnyway = false
 
   if (!viewModel.handler) {
     Object.assign(viewModel, {
@@ -52,9 +53,12 @@ const init = async (repository, key, inputAggregateIds, skipEventReading) => {
       snapshotKey,
       key
     })
+
+    readStorageAnyway = true
   }
 
-  if (skipEventReading) {
+  if (skipEventReading && !readStorageAnyway) {
+    delete viewModel.initPromise
     return
   }
 

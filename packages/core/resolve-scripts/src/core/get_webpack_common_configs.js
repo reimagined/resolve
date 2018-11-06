@@ -3,7 +3,6 @@ import nodeExternals from 'webpack-node-externals'
 
 import getModulesDirs from './get_modules_dirs'
 import getWebpackEnvPlugin from './get_webpack_env_plugin'
-import resolveFile from './resolve_file'
 
 const getWebpackCommonConfigs = ({
   resolveConfig,
@@ -20,101 +19,26 @@ const getWebpackCommonConfigs = ({
 
   const assemblies = [
     {
-      name: 'Aggregates',
+      name: 'Server local entry point',
       entry: {
-        'common/aggregates/index.js': [
+        'common/local-entry/local-entry.js': [
           ...polyfills,
-          path.resolve(__dirname, './alias/$resolve.aggregates.js')
+          path.resolve(__dirname, './alias/$resolve.localEntry.js')
         ]
       },
-      packageJson: 'common/aggregates/package.json'
+      packageJson: 'common/local-entry/package.json'
     },
     {
-      name: 'View Models',
+      name: 'Server cloud entry point',
       entry: {
-        'common/view-models/index.js': [
+        'common/cloud-entry/cloud-entry.js': [
           ...polyfills,
-          path.resolve(__dirname, './alias/$resolve.viewModels.js')
+          path.resolve(__dirname, './alias/$resolve.cloudEntry.js')
         ]
       },
-      packageJson: 'common/view-models/package.json'
-    },
-    {
-      name: 'Read Models',
-      entry: {
-        'common/read-models/index.js': [
-          ...polyfills,
-          path.resolve(__dirname, './alias/$resolve.readModels.js')
-        ]
-      },
-      packageJson: 'common/read-models/package.json'
-    },
-    {
-      name: 'Sagas',
-      entry: {
-        'common/sagas/index.js': [
-          ...polyfills,
-          path.resolve(__dirname, './alias/$resolve.sagas.js')
-        ]
-      },
-      packageJson: 'common/sagas/package.json'
-    },
-    {
-      name: 'Api Handlers',
-      entry: {
-        'common/api-handlers/index.js': [
-          ...polyfills,
-          path.resolve(__dirname, './alias/$resolve.apiHandlers.js')
-        ]
-      },
-      packageJson: 'common/api-handlers/package.json'
-    },
-    {
-      name: 'Auth',
-      entry: {
-        'common/auth/index.js': [
-          ...polyfills,
-          path.resolve(__dirname, './alias/$resolve.auth.js')
-        ]
-      },
-      packageJson: 'common/auth/package.json'
-    },
-    {
-      name: 'Constants',
-      entry: {
-        'common/constants/index.js': [
-          path.resolve(__dirname, './alias/$resolve.constants.js')
-        ]
-      }
-    },
-    {
-      name: 'Assemblies',
-      entry: {
-        'assemblies.js': [
-          ...polyfills,
-          path.resolve(__dirname, './alias/$resolve.assemblies.js')
-        ]
-      }
+      packageJson: 'common/cloud-entry/package.json'
     }
   ]
-
-  const apiHandlers = Array.isArray(resolveConfig.apiHandlers)
-    ? resolveConfig.apiHandlers
-    : []
-
-  for (const { path, controller } of apiHandlers) {
-    const syntheticName = path.replace(/[^\w\d-]/g, '-')
-    assemblies.push({
-      name: `Api Handler "${syntheticName}" for path "${path}"`,
-      entry: {
-        [`common/api-handlers/${syntheticName}/index.js`]: [
-          ...polyfills,
-          resolveFile(controller)
-        ]
-      },
-      packageJson: `common/api-handlers/${syntheticName}/package.json`
-    })
-  }
 
   const configs = []
 

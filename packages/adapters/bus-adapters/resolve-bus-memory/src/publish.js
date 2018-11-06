@@ -5,15 +5,18 @@ const publish = async (pool, event) => {
   await Promise.resolve()
   try {
     const publishTopics = pool.makeTopicsForEvent(event)
+    const applicationPromises = []
 
     for (const topic of publishTopics) {
       const topicHandlers = pool.handlers.get(topic)
       if (topicHandlers == null) continue
 
-      await Promise.all(
-        Array.from(topicHandlers).map(handler => handler(event))
-      )
+      for (const handler of Array.from(topicHandlers)) {
+        applicationPromises.push(handler(event))
+      }
     }
+
+    await Promise.all(applicationPromises)
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error)

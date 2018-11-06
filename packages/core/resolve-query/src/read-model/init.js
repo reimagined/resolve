@@ -1,5 +1,6 @@
 const init = async (repository, skipEventReading = false) => {
   const { adapter, eventStore, projection, projectionInvoker } = repository
+  let readStorageAnyway = false
 
   if (!repository.prepareProjection) {
     const { prepareProjection, getReadInterface } = adapter.init()
@@ -13,10 +14,13 @@ const init = async (repository, skipEventReading = false) => {
       boundProjectionInvoker: projectionInvoker.bind(null, repository),
       eventTypes: Object.keys(projection)
     })
+
+    readStorageAnyway = true
   }
 
   const { lastTimestamp } = await repository.prepareProjection()
-  if (skipEventReading) {
+  if (skipEventReading && !readStorageAnyway) {
+    delete repository.loadDonePromise
     return
   }
 

@@ -2,11 +2,8 @@ import path from 'path'
 
 import getModulesDirs from './get_modules_dirs'
 import getWebpackEnvPlugin from './get_webpack_env_plugin'
-import resolveFile from './resolve_file'
 
 const getClientWebpackConfig = ({ resolveConfig, alias }) => {
-  const clientIndexPath = resolveFile(resolveConfig.index, 'client_index.js')
-
   const clientDistDir = path.resolve(
     process.cwd(),
     resolveConfig.distDir,
@@ -21,7 +18,10 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
   return {
     name: 'Client',
     entry: {
-      'bundle.js': [...polyfills, clientIndexPath],
+      'bundle.js': [
+        ...polyfills,
+        path.resolve(__dirname, './alias/$resolve.clientEntry.js')
+      ],
       'hmr.js': [
         path.resolve(__dirname, './alias/$resolve.hotModuleReplacement.js')
       ]

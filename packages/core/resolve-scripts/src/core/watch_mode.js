@@ -22,15 +22,17 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
 
   const compiler = webpack(webpackConfigs)
 
-  const serverPath = path.resolve(__dirname, '../../lib/runtime/index.js')
-  const server = respawn(
-    ['node', serverPath, `--distDir=${JSON.stringify(resolveConfig.distDir)}`],
-    {
-      maxRestarts: 0,
-      kill: 5000,
-      stdio: 'inherit'
-    }
+  const serverPath = path.resolve(
+    process.cwd(),
+    path.join(resolveConfig.distDir, './common/local-entry/local-entry.js')
   )
+
+  const server = respawn(['node', serverPath], {
+    cwd: process.cwd(),
+    maxRestarts: 0,
+    kill: 5000,
+    stdio: 'inherit'
+  })
 
   process.on('exit', () => {
     server.stop()
