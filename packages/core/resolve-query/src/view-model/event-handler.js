@@ -36,7 +36,10 @@ const eventHandler = async (
     }
 
     viewModel.state = projection[event.type](viewModel.state, event)
-    viewModel.lastTimestamp = event.timestamp - 1
+
+    if (!maybeUnordered) {
+      viewModel.lastTimestamp = event.timestamp - 1
+    }
 
     viewModel.aggregatesVersionsMap.set(
       event.aggregateId,

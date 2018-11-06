@@ -44,7 +44,10 @@ const buildProjection = (
       }
 
       await inputProjection[eventType](storeApi, event)
-      await metaApi.setLastTimestamp(event.timestamp)
+
+      if (!maybeUnordered) {
+        await metaApi.setLastTimestamp(event.timestamp)
+      }
 
       await metaApi.setLastAggregateVersion(
         event.aggregateId,
