@@ -16,15 +16,15 @@ reSolve is a full stack functional JavaScript framework.
 
 ### Installation
 
-The [create-resolve-app](packages/core/create-resolve-app) package is used to create a **reSolve**-based application. You can use it to get one of the examples, or create an empty application. By default, `create-resolve-app` generates an empty [Hello World](https://github.com/reimagined/resolve/tree/master/examples/hello-world) application. You can start working on your new **reSolve** application in just **2 minutes** using [npx](https://www.npmjs.com/package/npx/v/1.1.1)!
+Make sure you have Node version 8 or greater.
+
+Use [create-resolve-app](packages/core/create-resolve-app) package to create a new reSolve application. The easiest way is to use [npx](https://www.npmjs.com/package/npx/v/1.1.1) ()
 
 ```sh
 npx create-resolve-app my-awesome-app
 cd my-awesome-app
 npm run dev
 ```
-
-The created application is accessible using the http://localhost:3000/ and `http://<your_ip>:3000/` URLs (you can [change the URL settings](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)). Start learning **reSolve** with the [**ToDo List App Tutorial**](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/ToDo%20List%20App%20Tutorial.md) tutorial. Use the [**documentation**](#documentation), [**tutorials**](#tutorials) and [**examples**](#examples) to learn **reSolve** more deeply.
 
 Instead of npx you can also use npm or yarn tools:
 
@@ -47,32 +47,17 @@ Instead of npx you can also use npm or yarn tools:
   yarn run dev
   ```
 
-### Examples
+Your application is running at http://localhost:3000/.
 
-You can get a sample app using the `create-resolve-app` tool with the `-e` flag followed by an example name. Use the `create-resolve-app -h` command to list the available [examples](https://github.com/reimagined/resolve/tree/master/examples).
+### Creating a new app with an example code
 
-The following tools are used to get a sample **reSolve** application:
+You can create a new application with an example code using `create-resolve-app` with the `-e` flag followed by an example name. Use the `create-resolve-app -h` command to list the available [examples](./examples/).
+
+For instance, to run a [shopping-list](./examples/shopping-list) example, run:
 
 ```sh
-npx create-resolve-app nested-list-example -e nested-list
+npx create-resolve-app resolve-example -e shopping-list
 ```
-
-The created application is accessible using the http://localhost:3000/ and `http://<your_ip>:3000` URLs (you can [change your URL settings](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)).
-
-Instead of npx you can also use npm or yarn tools:
-
-- [yarn](https://yarnpkg.com/lang/en/)
-
-  ```sh
-  yarn create resolve-app nested-list-example -e nested-list
-  ```
-
-- [npm](https://www.npmjs.com/)
-
-  ```sh
-  npm i -g create-resolve-app
-  create-resolve-app nested-list-example -e nested-list
-  ```
 
 ## :books: Documentation
 
