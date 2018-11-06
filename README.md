@@ -84,7 +84,7 @@ The minimum supported **NodeJS** version is **8.10.0**.
 
 Learn more in [documentation topics](https://github.com/reimagined/resolve/tree/master/docs).
 
-## :Loudspeaker: Get in Touch
+## :loudspeaker: Get in Touch
 
 Feel free to contact us if you have any questions!
 
