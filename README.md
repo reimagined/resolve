@@ -26,26 +26,30 @@ cd my-awesome-app
 npm run dev
 ```
 
-Instead of npx you can also use npm or yarn tools:
+<details>
+<summary>Instead of npx you can also use npm or yarn tools</summary>
 
-- [npm](https://www.npmjs.com/)
+#### [npm](https://www.npmjs.com/)
 
-  > Note: Installing a package globally may require administrative privileges. That means you have to use the `sudo` prefix on Linux and MacOS, or start a terminal with the administrative privileges on Windows.
+> Note: Installing a package globally may require administrative privileges. That means you have to use the `sudo` prefix on Linux and MacOS, or start a terminal with the administrative privileges on Windows.
 
-  ```sh
-  npm i -g create-resolve-app
-  create-resolve-app my-awesome-app
-  cd my-awesome-app
-  npm run dev
-  ```
+```sh
+npm i -g create-resolve-app
+create-resolve-app my-awesome-app
+cd my-awesome-app
+npm run dev
+```
 
-- [yarn](https://yarnpkg.com/lang/en/)
+#### [yarn](https://yarnpkg.com/lang/en/)
 
-  ```sh
-  yarn create resolve-app my-awesome-app
-  cd my-awesome-app
-  yarn run dev
-  ```
+```sh
+yarn create resolve-app my-awesome-app
+cd my-awesome-app
+yarn run dev
+```
+
+</details>
+<p></p>
 
 Your application is running at http://localhost:3000/.
 
