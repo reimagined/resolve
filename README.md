@@ -16,7 +16,7 @@ reSolve is a full stack functional JavaScript framework.
 
 ### Installation
 
-Make sure you have Node version 8 or greater.
+Make sure you have **NodeJS** version **8.10.0** or greater.
 
 Use [create-resolve-app](packages/core/create-resolve-app) package to create a new reSolve application. The easiest way is to use [npx](https://www.npmjs.com/package/npx/v/1.1.1) ()
 
@@ -61,13 +61,7 @@ npx create-resolve-app resolve-example -e shopping-list
 
 ## :books: Documentation
 
-You can develop and run **reSolve** applications on **Linux**, **Mac** and **Windows** operating systems. It is also possible to integrate **reSolve** with the **React Native**, but this approach is currently experimental.
-
-The minimum supported **NodeJS** version is **8.10.0**.
-
-**reSolve** supports [**npx**](https://www.npmjs.com/package/npx), [**yarn**](https://yarnpkg.com/lang/en/), and [**npm**](https://www.npmjs.com/).
-
-Learn more in [documentation topics](https://github.com/reimagined/resolve/tree/master/docs).
+You can find reSolve documentation in the [docs section](./docs).
 
 ## :loudspeaker: Get in Touch
 
