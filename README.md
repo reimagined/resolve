@@ -12,9 +12,9 @@ reSolve is a full stack functional JavaScript framework.
 - Integrates with [React](https://reactjs.org) and [Redux](https://redux.js.org) for seamless development experience.
 - [React Native](https://facebook.github.io/react-native/) support.
 
-## :rocket:Getting Started
+## :rocket: Getting Started
 
-### <a name="installation">Installation</a>
+### Installation
 
 The [create-resolve-app](packages/core/create-resolve-app) package is used to create a **reSolve**-based application. You can use it to get one of the examples, or create an empty application. By default, `create-resolve-app` generates an empty [Hello World](https://github.com/reimagined/resolve/tree/master/examples/hello-world) application. You can start working on your new **reSolve** application in just **2 minutes** using [npx](https://www.npmjs.com/package/npx/v/1.1.1)!
 
@@ -47,7 +47,7 @@ Instead of npx you can also use npm or yarn tools:
   yarn run dev
   ```
 
-### <a name="examples">Examples</a>
+### Examples
 
 You can get a sample app using the `create-resolve-app` tool with the `-e` flag followed by an example name. Use the `create-resolve-app -h` command to list the available [examples](https://github.com/reimagined/resolve/tree/master/examples).
 
@@ -74,7 +74,7 @@ Instead of npx you can also use npm or yarn tools:
   create-resolve-app nested-list-example -e nested-list
   ```
 
-## <a name="documentation">**📚 Documentation**</a>
+## :books: Documentation
 
 You can develop and run **reSolve** applications on **Linux**, **Mac** and **Windows** operating systems. It is also possible to integrate **reSolve** with the **React Native**, but this approach is currently experimental.
 
@@ -84,23 +84,23 @@ The minimum supported **NodeJS** version is **8.10.0**.
 
 Learn more in [documentation topics](https://github.com/reimagined/resolve/tree/master/docs).
 
-## <a name="get-in-touch">**📢 Get in Touch**</a>
+## :Loudspeaker: Get in Touch
 
 Feel free to contact us if you have any questions!
 
-✉️ We are glad to see your e-mails sent to **reimagined@devexpress.com**.
+We are glad to see your e-mails sent to **reimagined@devexpress.com**.
 
-💬 Follow us on [**Twitter**](https://twitter.com/resolvejs). We post interesting arcticles, announcements, post polls about **reSolve** development and talk about the modern web technologies!
+Follow us on [**Twitter**](https://twitter.com/resolvejs). We post interesting arcticles, announcements, post polls about **reSolve** development and talk about the modern web technologies!
 
-💻 We also have a [**Facebook**](https://www.facebook.com/resolvejs/) page, join us!
+We also have a [**Facebook**](https://www.facebook.com/resolvejs/) page, join us!
 
-📃 You can find our articles on [**Medium**](https://medium.com/resolvejs)
+You can find our articles on [**Medium**](https://medium.com/resolvejs)
 
-❓ You are welcome to post any questions or suggestions in [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
+You are welcome to post any questions or suggestions in [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
 
 🔧 Feel yourself capable of improving **reSolve**? Become one of our [**contributors**](https://github.com/reimagined/resolve/pulls)! Look through our [**Contrubutors Guide**](https://github.com/reimagined/resolve/blob/master/docs/Contributors%20Guide.md) and make a great Pull Request.
 
-⭐️ Remember to star our **GitHub** repository if you like **reSolve**!
+Remember to star our **GitHub** repository if you like **reSolve**!
 
 <br/>
 <br/>
