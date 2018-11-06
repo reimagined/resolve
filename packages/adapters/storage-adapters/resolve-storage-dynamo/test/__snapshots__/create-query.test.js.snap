@@ -1,0 +1,140 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`method "createQuery" should return correctly query: {"aggregateIds":["id1","id2"],"eventTypes":["type1","type2"]} 1`] = `
+Object {
+  "ExpressionAttributeNames": Object {
+    "#aggregateId": "aggregateId",
+    "#globalPartitionKey": "globalPartitionKey",
+    "#type": "type",
+  },
+  "ExpressionAttributeValues": Object {
+    ":aggregateId0": "id1",
+    ":aggregateId1": "id2",
+    ":eventType0": "type1",
+    ":eventType1": "type2",
+    ":globalPartitionKey": "globalPartitionKey",
+  },
+  "FilterExpression": "(#aggregateId IN (:aggregateId0,:aggregateId1)) AND (#type IN (:eventType0,:eventType1))",
+  "IndexName": "rangedEvents",
+  "KeyConditionExpression": "(#globalPartitionKey = :globalPartitionKey)",
+  "ScanIndexForward": true,
+  "TableName": "tableName",
+}
+`;
+
+exports[`method "createQuery" should return correctly query: {"aggregateIds":["id1","id2"],"eventTypes":["type1"],"finishTime":10} 1`] = `
+Object {
+  "ExpressionAttributeNames": Object {
+    "#aggregateId": "aggregateId",
+    "#globalPartitionKey": "globalPartitionKey",
+    "#timestamp": "timestamp",
+    "#type": "type",
+  },
+  "ExpressionAttributeValues": Object {
+    ":aggregateId0": "id1",
+    ":aggregateId1": "id2",
+    ":eventType0": "type1",
+    ":finishTime": 10,
+    ":globalPartitionKey": "globalPartitionKey",
+  },
+  "FilterExpression": "(#aggregateId IN (:aggregateId0,:aggregateId1)) AND (#type = :eventType0)",
+  "IndexName": "rangedEvents",
+  "KeyConditionExpression": "(#globalPartitionKey = :globalPartitionKey) AND (#timestamp < :finishTime)",
+  "ScanIndexForward": true,
+  "TableName": "tableName",
+}
+`;
+
+exports[`method "createQuery" should return correctly query: {"aggregateIds":["id1","id2"],"finishTime":10} 1`] = `
+Object {
+  "ExpressionAttributeNames": Object {
+    "#aggregateId": "aggregateId",
+    "#globalPartitionKey": "globalPartitionKey",
+    "#timestamp": "timestamp",
+  },
+  "ExpressionAttributeValues": Object {
+    ":aggregateId0": "id1",
+    ":aggregateId1": "id2",
+    ":finishTime": 10,
+    ":globalPartitionKey": "globalPartitionKey",
+  },
+  "FilterExpression": "(#aggregateId IN (:aggregateId0,:aggregateId1))",
+  "IndexName": "rangedEvents",
+  "KeyConditionExpression": "(#globalPartitionKey = :globalPartitionKey) AND (#timestamp < :finishTime)",
+  "ScanIndexForward": true,
+  "TableName": "tableName",
+}
+`;
+
+exports[`method "createQuery" should return correctly query: {"aggregateIds":["id1"],"eventTypes":["type1","type2"],"startTime":5} 1`] = `
+Object {
+  "ExpressionAttributeNames": Object {
+    "#aggregateId": "aggregateId",
+    "#timestamp": "timestamp",
+    "#type": "type",
+  },
+  "ExpressionAttributeValues": Object {
+    ":aggregateId0": "id1",
+    ":eventType0": "type1",
+    ":eventType1": "type2",
+    ":startTime": 5,
+  },
+  "FilterExpression": "(#type IN (:eventType0,:eventType1)) AND (#timestamp > :startTime)",
+  "KeyConditionExpression": "(#aggregateId = :aggregateId0)",
+  "ScanIndexForward": true,
+  "TableName": "tableName",
+}
+`;
+
+exports[`method "createQuery" should return correctly query: {"aggregateIds":["id1"],"eventTypes":["type1"],"startTime":5,"finishTime":10} 1`] = `
+Object {
+  "ExpressionAttributeNames": Object {
+    "#aggregateId": "aggregateId",
+    "#timestamp": "timestamp",
+    "#type": "type",
+  },
+  "ExpressionAttributeValues": Object {
+    ":aggregateId0": "id1",
+    ":eventType0": "type1",
+    ":finishTime": 10,
+    ":startTime": 5,
+  },
+  "FilterExpression": "(#type = :eventType0) AND (#timestamp BETWEEN :startTime AND :finishTime)",
+  "KeyConditionExpression": "(#aggregateId = :aggregateId0)",
+  "ScanIndexForward": true,
+  "TableName": "tableName",
+}
+`;
+
+exports[`method "createQuery" should return correctly query: {"aggregateIds":["id1"],"startTime":5} 1`] = `
+Object {
+  "ExpressionAttributeNames": Object {
+    "#aggregateId": "aggregateId",
+    "#timestamp": "timestamp",
+  },
+  "ExpressionAttributeValues": Object {
+    ":aggregateId0": "id1",
+    ":startTime": 5,
+  },
+  "FilterExpression": "(#timestamp > :startTime)",
+  "KeyConditionExpression": "(#aggregateId = :aggregateId0)",
+  "ScanIndexForward": true,
+  "TableName": "tableName",
+}
+`;
+
+exports[`method "createQuery" should return correctly query: {} 1`] = `
+Object {
+  "ExpressionAttributeNames": Object {
+    "#globalPartitionKey": "globalPartitionKey",
+  },
+  "ExpressionAttributeValues": Object {
+    ":globalPartitionKey": "globalPartitionKey",
+  },
+  "FilterExpression": undefined,
+  "IndexName": "rangedEvents",
+  "KeyConditionExpression": "(#globalPartitionKey = :globalPartitionKey)",
+  "ScanIndexForward": true,
+  "TableName": "tableName",
+}
+`;
