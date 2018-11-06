@@ -112,4 +112,50 @@ describe('method "init"', () => {
       ]
     })
   })
+
+  test('should skip create table and init pool', async () => {
+    const database = {
+      name: 'database',
+      createTable: sinon
+        .stub()
+        .returns({ promise: sinon.stub().returns(Promise.resolve()) })
+    }
+    const documentClient = { name: 'documentClient' }
+    const DynamoDB = sinon.stub().returns(database)
+    DynamoDB.DocumentClient = sinon.stub().returns(documentClient)
+
+    const pool = {
+      config: {
+        region: 'region',
+        endpoint: 'endpoint',
+        accessKeyId: 'accessKeyId',
+        secretAccessKey: 'secretAccessKey',
+        tableName: 'tableName'
+      }
+    }
+    const helpers = {}
+
+    const checkTableExists = sinon.stub()
+    checkTableExists.returns(Promise.resolve(true))
+
+    await init({ DynamoDB, checkTableExists, ...helpers }, pool)
+
+    sinon.assert.calledWith(DynamoDB, {
+      region: pool.config.region,
+      endpoint: pool.config.endpoint,
+      accessKeyId: pool.config.accessKeyId,
+      secretAccessKey: pool.config.secretAccessKey,
+      apiVersion
+    })
+    sinon.assert.calledWith(DynamoDB.DocumentClient, {
+      region: pool.config.region,
+      endpoint: pool.config.endpoint,
+      accessKeyId: pool.config.accessKeyId,
+      secretAccessKey: pool.config.secretAccessKey,
+      apiVersion
+    })
+    sinon.assert.calledWith(checkTableExists, database, pool.config.tableName)
+
+    sinon.assert.callCount(database.createTable, 0)
+  })
 })
