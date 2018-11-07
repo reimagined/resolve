@@ -26,7 +26,7 @@ test('View-model read should read view model with success returns state', async 
 
   const result = await read(repository, { aggregateIds })
 
-  expect(repository.getViewModel.callCount).toEqual(2)
+  expect(repository.getViewModel.callCount).toEqual(1)
   expect(repository.getViewModel.firstCall.args[0]).toEqual(repository)
   expect(repository.getViewModel.firstCall.args[1]).toEqual(aggregateIds)
   expect(repository.getViewModel.firstCall.args[2]).toEqual(true)
