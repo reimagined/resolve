@@ -114,7 +114,7 @@ For the full code sample, refer to the [with-saga](https://github.com/reimagined
 
 # Aggregate Command Handlers
 
-The aggregate command handlers object associates command handlers with command names. A command handler receives a state accumulated by the aggregate [Projection](#aggregate-projection-function) the command object.
+The aggregate command handlers object associates command handlers with command names. A command handler receives a state accumulated by the aggregate [Projection](#aggregate-projection-function).
 
 A command handler should return an event object that is then saved to the [event store](#event-store). A returned object should specify an event type and some **payload** specific to this event type.
 
