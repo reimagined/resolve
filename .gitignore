@@ -36,13 +36,17 @@ jspm_packages
 # Optional REPL history
 .node_repl_history
 
-# IDE directory
+#gitbook build folder
+**/_book
+
 .idea
 .vscode
+vscode
 
 event-storage.db
 #
 dist
 lib
 es
+
 
