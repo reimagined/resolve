@@ -125,6 +125,9 @@ const initEventLoop = async resolve => {
         event
       })
 
+      // In multi-instance mode application developer should give a guarantee
+      // that every read/view-model had been updated only from singular instance
+      // Updating read/view-model from multiple threads is not supported
       const applicationPromises = []
       for (const executor of executors) {
         applicationPromises.push(executor.updateByEvents([event]))
