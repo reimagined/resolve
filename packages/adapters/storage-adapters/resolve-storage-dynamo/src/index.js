@@ -2,6 +2,7 @@ import DynamoDB from 'aws-sdk/clients/dynamodb'
 
 import createAdapter from 'resolve-storage-base'
 
+import connect from './connect'
 import init from './init'
 import loadEvents from './load-events'
 import saveEvent from './save-event'
@@ -16,15 +17,23 @@ import checkTableExists from './check-table-exists'
 import executePaginationQuery from './execute-pagination-query'
 import executeSingleQuery from './execute-single-query'
 
-export default createAdapter.bind(null, init, loadEvents, saveEvent, dispose, {
-  DynamoDB,
-  createTypeExpression,
-  createTimestampExpression,
-  createAggregateIdExpression,
-  createQuery,
-  expressionObject,
-  expressionString,
-  checkTableExists,
-  executePaginationQuery,
-  executeSingleQuery
-})
+export default createAdapter.bind(
+  null,
+  connect,
+  init,
+  loadEvents,
+  saveEvent,
+  dispose,
+  {
+    DynamoDB,
+    createTypeExpression,
+    createTimestampExpression,
+    createAggregateIdExpression,
+    createQuery,
+    expressionObject,
+    expressionString,
+    checkTableExists,
+    executePaginationQuery,
+    executeSingleQuery
+  }
+)

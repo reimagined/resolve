@@ -12,7 +12,7 @@ describe('method "dispose"', async () => {
     await dispose(
       {
         database,
-        config: { tableName }
+        tableName
       },
       { dropEvents: true }
     )
@@ -29,7 +29,7 @@ describe('method "dispose"', async () => {
     await dispose(
       {
         database,
-        config: { tableName }
+        tableName
       },
       { dropEvents: false }
     )

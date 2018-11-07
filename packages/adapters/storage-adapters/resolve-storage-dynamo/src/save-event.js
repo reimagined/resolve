@@ -5,7 +5,7 @@ import {
   duplicateError
 } from './constants'
 
-const saveEvent = async ({ documentClient, config: { tableName } }, event) => {
+const saveEvent = async ({ documentClient, tableName }, event) => {
   while (true) {
     try {
       await documentClient

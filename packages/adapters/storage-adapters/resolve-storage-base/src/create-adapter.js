@@ -1,20 +1,29 @@
 const createAdapter = (
-  wrapInit,
+  prepare,
   wrapMethod,
   wrapLoadEvents,
   wrapDispose,
+  connect,
   init,
   loadEvents,
   saveEvent,
   dispose,
-  db,
+  adapterSpecificArguments,
   options
 ) => {
   const config = { ...options }
   const pool = { config, disposed: false }
-  wrapInit(pool, init, db)
+
+  prepare(pool, connect, init, adapterSpecificArguments)
 
   return Object.freeze({
+    init: wrapMethod(
+      {
+        ...pool,
+        skipInit: false
+      },
+      Function() // eslint-disable-current-line no-new-function
+    ),
     loadEvents: wrapMethod(pool, wrapLoadEvents(loadEvents)),
     saveEvent: wrapMethod(pool, saveEvent),
     dispose: wrapMethod(pool, wrapDispose(dispose))

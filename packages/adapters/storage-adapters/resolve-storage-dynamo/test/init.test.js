@@ -1,60 +1,38 @@
 import sinon from 'sinon'
 
 import init from '../src/init'
-import { apiVersion, globalPartitionKey, rangedIndex } from '../src/constants'
+import { globalPartitionKey, rangedIndex } from '../src/constants'
 
 describe('method "init"', () => {
-  test('should create table and init pool', async () => {
+  test('should create table', async () => {
     const database = {
       name: 'database',
       createTable: sinon
         .stub()
         .returns({ promise: sinon.stub().returns(Promise.resolve()) })
     }
-    const documentClient = { name: 'documentClient' }
-    const DynamoDB = sinon.stub().returns(database)
-    DynamoDB.DocumentClient = sinon.stub().returns(documentClient)
-
-    const pool = {
-      config: {
-        region: 'region',
-        endpoint: 'endpoint',
-        accessKeyId: 'accessKeyId',
-        secretAccessKey: 'secretAccessKey',
-        tableName: 'tableName',
-        readCapacityUnits: 1,
-        writeCapacityUnits: 1
-      }
-    }
-    const helpers = {}
 
     const checkTableExists = sinon.stub()
     checkTableExists.onCall(0).returns(Promise.resolve(false))
     checkTableExists.onCall(1).returns(Promise.resolve(false))
     checkTableExists.returns(Promise.resolve(true))
 
-    await init({ DynamoDB, checkTableExists, ...helpers }, pool)
+    const pool = {
+      tableName: 'tableName',
+      readCapacityUnits: 1,
+      writeCapacityUnits: 1,
+      database,
+      checkTableExists
+    }
 
-    sinon.assert.calledWith(DynamoDB, {
-      region: pool.config.region,
-      endpoint: pool.config.endpoint,
-      accessKeyId: pool.config.accessKeyId,
-      secretAccessKey: pool.config.secretAccessKey,
-      apiVersion
-    })
-    sinon.assert.calledWith(DynamoDB.DocumentClient, {
-      region: pool.config.region,
-      endpoint: pool.config.endpoint,
-      accessKeyId: pool.config.accessKeyId,
-      secretAccessKey: pool.config.secretAccessKey,
-      apiVersion
-    })
-    sinon.assert.calledWith(checkTableExists, database, pool.config.tableName)
+    await init(pool)
+
+    sinon.assert.calledWith(checkTableExists, database, pool.tableName)
     sinon.assert.calledWith(database.createTable, {
-      TableName: pool.config.tableName,
+      TableName: pool.tableName,
       ProvisionedThroughput: {
-        ReadCapacityUnits: pool.config.readCapacityUnits,
-        WriteCapacityUnits: pool.config.writeCapacityUnits
+        ReadCapacityUnits: pool.readCapacityUnits,
+        WriteCapacityUnits: pool.writeCapacityUnits
       },
       AttributeDefinitions: [
         {
@@ -105,56 +83,34 @@ describe('method "init"', () => {
             ProjectionType: 'ALL'
           },
           ProvisionedThroughput: {
-            ReadCapacityUnits: pool.config.readCapacityUnits,
-            WriteCapacityUnits: pool.config.writeCapacityUnits
+            ReadCapacityUnits: pool.readCapacityUnits,
+            WriteCapacityUnits: pool.writeCapacityUnits
           }
         }
       ]
     })
   })
 
-  test('should skip create table and init pool', async () => {
+  test('should skip create table', async () => {
     const database = {
       name: 'database',
       createTable: sinon
         .stub()
         .returns({ promise: sinon.stub().returns(Promise.resolve()) })
     }
-    const documentClient = { name: 'documentClient' }
-    const DynamoDB = sinon.stub().returns(database)
-    DynamoDB.DocumentClient = sinon.stub().returns(documentClient)
-
-    const pool = {
-      config: {
-        region: 'region',
-        endpoint: 'endpoint',
-        accessKeyId: 'accessKeyId',
-        secretAccessKey: 'secretAccessKey',
-        tableName: 'tableName'
-      }
-    }
-    const helpers = {}
 
     const checkTableExists = sinon.stub()
     checkTableExists.returns(Promise.resolve(true))
 
-    await init({ DynamoDB, checkTableExists, ...helpers }, pool)
+    const pool = {
+      tableName: 'tableName',
+      database,
+      checkTableExists
+    }
 
-    sinon.assert.calledWith(DynamoDB, {
-      region: pool.config.region,
-      endpoint: pool.config.endpoint,
-      accessKeyId: pool.config.accessKeyId,
-      secretAccessKey: pool.config.secretAccessKey,
-      apiVersion
-    })
-    sinon.assert.calledWith(DynamoDB.DocumentClient, {
-      region: pool.config.region,
-      endpoint: pool.config.endpoint,
-      accessKeyId: pool.config.accessKeyId,
-      secretAccessKey: pool.config.secretAccessKey,
-      apiVersion
-    })
-    sinon.assert.calledWith(checkTableExists, database, pool.config.tableName)
+    await init(pool)
+
+    sinon.assert.calledWith(checkTableExists, database, pool.tableName)
 
     sinon.assert.callCount(database.createTable, 0)
   })

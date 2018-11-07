@@ -1,4 +1,4 @@
-const dispose = async ({ database, config: { tableName } }, { dropEvents }) => {
+const dispose = async ({ database, tableName }, { dropEvents }) => {
   if (dropEvents) {
     await database.deleteTable({
       TableName: tableName

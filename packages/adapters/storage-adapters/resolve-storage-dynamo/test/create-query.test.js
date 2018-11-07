@@ -74,7 +74,7 @@ describe('method "createQuery"', () => {
       } = createAggregateIdExpression(filter)
 
       const query = createQuery(
-        { config: { tableName }, expressionString, expressionObject },
+        { tableName, expressionString, expressionObject },
         { aggregateIds },
         {
           aggregateIdAttributeNames,

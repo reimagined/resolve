@@ -21,7 +21,7 @@ describe('method "saveEvent"', () => {
     await saveEvent(
       {
         documentClient,
-        config: { tableName }
+        tableName
       },
       event
     )
@@ -61,7 +61,7 @@ describe('method "saveEvent"', () => {
       await saveEvent(
         {
           documentClient,
-          config: { tableName }
+          tableName
         },
         event
       )
@@ -82,7 +82,7 @@ describe('method "saveEvent"', () => {
       await saveEvent(
         {
           documentClient,
-          config: { tableName }
+          tableName
         },
         event
       )

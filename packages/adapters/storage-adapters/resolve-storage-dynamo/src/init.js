@@ -1,33 +1,12 @@
-import { apiVersion, globalPartitionKey, rangedIndex } from './constants'
+import { globalPartitionKey, rangedIndex } from './constants'
 
-const init = async ({ DynamoDB, checkTableExists, ...helpers }, pool) => {
-  const {
-    region,
-    endpoint,
-    accessKeyId,
-    secretAccessKey,
-    tableName,
-    readCapacityUnits = 5,
-    writeCapacityUnits = 5
-  } = pool.config
-
-  const options = {
-    region,
-    endpoint,
-    accessKeyId,
-    secretAccessKey,
-    apiVersion
-  }
-
-  const database = new DynamoDB(options)
-  const documentClient = new DynamoDB.DocumentClient(options)
-
-  Object.assign(pool, helpers, {
-    database,
-    documentClient,
-    checkTableExists
-  })
-
+const init = async ({
+  tableName,
+  readCapacityUnits,
+  writeCapacityUnits,
+  database,
+  checkTableExists
+}) => {
   if (await checkTableExists(database, tableName)) {
     return
   }

@@ -2,18 +2,6 @@
 
 exports[`init should connect to mysql database and prepare indexes 1`] = `
 Array [
-  Object {
-    "database": "database",
-    "host": "host",
-    "password": "password",
-    "port": "port",
-    "user": "user",
-  },
-]
-`;
-
-exports[`init should connect to mysql database and prepare indexes 2`] = `
-Array [
   "CREATE TABLE IF NOT EXISTS @ESCAPED[tableName](
       \`timestamp\` BIGINT NOT NULL,
       \`aggregateId\` VARCHAR(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,

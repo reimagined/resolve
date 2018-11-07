@@ -14,7 +14,7 @@ test('save event should store event in eventstore if success', async () => {
   const pool = {
     disposed: false,
     promiseInvoke: async (func, ...args) => await func(...args),
-    db: { insert }
+    database: { insert }
   }
 
   await saveEvent(pool, event)
@@ -44,7 +44,7 @@ test('save event should throw ConcurrentError on duplicate aggregateVersion', as
   const pool = {
     disposed: false,
     promiseInvoke: async (func, ...args) => await func(...args),
-    db: { insert }
+    database: { insert }
   }
 
   try {
@@ -62,7 +62,7 @@ test('save event should throw ConcurrentError on duplicate aggregateVersion', as
   }
 })
 
-test('save event should re-throw custom db error', async () => {
+test('save event should re-throw custom database error', async () => {
   const event = {
     type: 'event_type',
     aggregateId: 'aggregate_id',
@@ -77,7 +77,7 @@ test('save event should re-throw custom db error', async () => {
   const pool = {
     disposed: false,
     promiseInvoke: async (func, ...args) => await func(...args),
-    db: { insert }
+    database: { insert }
   }
 
   try {

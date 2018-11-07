@@ -1,7 +1,7 @@
 import { globalPartitionKey, rangedIndex } from './constants'
 
 const createQuery = (
-  { config: { tableName }, expressionString, expressionObject },
+  { tableName, expressionString, expressionObject },
   { aggregateIds = [] },
   {
     aggregateIdAttributeNames,

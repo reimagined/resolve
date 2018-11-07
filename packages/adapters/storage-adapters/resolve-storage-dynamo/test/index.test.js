@@ -1,6 +1,6 @@
 import sinon from 'sinon'
 
-test('resolve-storage-mysql index', () => {
+test('resolve-storage-dynamo index', () => {
   const createAdapter = require('resolve-storage-base')
   const connect = require('../src/connect')
   const init = require('../src/init')
@@ -8,8 +8,8 @@ test('resolve-storage-mysql index', () => {
   const saveEvent = require('../src/save-event')
   const dispose = require('../src/dispose')
 
-  sinon.stub(init, 'default').callsFake(() => () => {})
   sinon.stub(connect, 'default').callsFake(() => () => {})
+  sinon.stub(init, 'default').callsFake(() => () => {})
   sinon.stub(loadEvents, 'default').callsFake(() => () => {})
   sinon.stub(saveEvent, 'default').callsFake(() => () => {})
   sinon.stub(dispose, 'default').callsFake(() => () => {})
