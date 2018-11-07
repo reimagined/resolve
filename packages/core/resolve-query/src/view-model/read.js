@@ -17,9 +17,6 @@ const read = async (repository, { aggregateIds } = {}) => {
   try {
     const viewModel = getViewModel(true)
     await viewModel.initPromise
-
-    getViewModel(false).initPromise.catch(() => null)
-
     return viewModel.state
   } catch (error) {
     return null

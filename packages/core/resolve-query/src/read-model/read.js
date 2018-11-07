@@ -18,8 +18,6 @@ const read = async (repository, { resolverName, resolverArgs, jwtToken }) => {
 
   const store = await getModelReadInterface(true)
 
-  getModelReadInterface(false).catch(() => null)
-
   return await resolver(store, resolverArgs, jwtToken)
 }
 
