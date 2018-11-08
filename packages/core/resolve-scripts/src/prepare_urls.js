@@ -1,8 +1,7 @@
 import chalk from 'chalk'
 import url from 'url'
 import address from 'address'
-
-import getRootBasedUrl from './get_root_based_url'
+import { getRootBasedUrl } from 'resolve-runtime'
 
 const prepareUrls = (protocol, host, port, rootPath) => {
   const formatUrl = hostname =>

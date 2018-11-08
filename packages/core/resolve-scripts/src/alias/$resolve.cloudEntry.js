@@ -1,9 +1,9 @@
 export default () => ({
   code: `
     import serverAssemblies from '$resolve.serverAssemblies'
-    import cloudServer from 'resolve-runtime/lib/cloud_entry'
+    import { cloudEntry } from 'resolve-runtime'
 
-    const initPromise = cloudServer(serverAssemblies)
+    const initPromise = cloudEntry(serverAssemblies)
 
     const handler = async (...args) => {
       const worker = await initPromise
