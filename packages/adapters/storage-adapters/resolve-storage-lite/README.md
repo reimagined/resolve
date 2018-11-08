@@ -10,9 +10,11 @@ You can pass the following argument when initializing an adapter:
 ## Usage
 
 ```js
-import createAdapter from 'resolve-storage-lite';
+import createAdapter from 'resolve-storage-lite'
 
-const adapter = createAdapter({ pathToFile: './store.db' });
+const adapter = createAdapter({ 
+  pathToFile: './store.db' 
+})
 ```
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-resolve-storage-lite-readme?pixel)

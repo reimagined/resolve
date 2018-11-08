@@ -1,10 +1,4 @@
-const init = async (MongoClient, pool) => {
-  const { url, collectionName, databaseName } = pool.config
-
-  const client = await MongoClient.connect(url)
-  const db = await client.db(databaseName)
-  const collection = await db.collection(collectionName)
-
+const init = async ({ collection }) => {
   await collection.createIndex('timestamp')
 
   await collection.createIndex('aggregateId')
@@ -15,12 +9,6 @@ const init = async (MongoClient, pool) => {
     { aggregateId: 1, aggregateVersion: 1 },
     { unique: true }
   )
-
-  Object.assign(pool, {
-    client,
-    db,
-    collection
-  })
 }
 
 export default init

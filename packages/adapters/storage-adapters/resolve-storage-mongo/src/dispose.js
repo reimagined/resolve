@@ -1,10 +1,10 @@
-const dispose = async (pool, options) => {
-  if (options.dropEvents) {
-    await pool.collection.deleteMany({})
-    await pool.collection.dropIndexes()
+const dispose = async ({ collection, client }, { dropEvents }) => {
+  if (dropEvents) {
+    await collection.deleteMany({})
+    await collection.dropIndexes()
   }
 
-  await pool.client.close()
+  await client.close()
 }
 
 export default dispose

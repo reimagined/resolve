@@ -63,10 +63,8 @@ const createClientAdapter = ({ origin, rootPath, url, appId, onEvent }) => {
         topics.map(
           topic =>
             new Promise((resolve, reject) =>
-              client.subscribe(
-                getMqttTopic(appId, topic),
-                { qos },
-                err => (err ? reject(err) : resolve())
+              client.subscribe(getMqttTopic(appId, topic), { qos }, err =>
+                err ? reject(err) : resolve()
               )
             )
         )
@@ -82,9 +80,8 @@ const createClientAdapter = ({ origin, rootPath, url, appId, onEvent }) => {
         topics.map(
           topic =>
             new Promise((resolve, reject) =>
-              client.unsubscribe(
-                getMqttTopic(appId, topic),
-                err => (err ? reject(err) : resolve())
+              client.unsubscribe(getMqttTopic(appId, topic), err =>
+                err ? reject(err) : resolve()
               )
             )
         )

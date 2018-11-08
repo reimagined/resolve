@@ -1,31 +1,60 @@
-# Documentation
+- [Introduction](introduction.md)
 
-Welcome to the reSolve documentation! Here you can find articles that help you understand common concepts of the reSolve framework, start making an application from scratch, find the right API methods, and customize your application.
+  - [Setting Up](introduction.md#setting-up)
+    - [Prerequisites](introduction.md#prerequisites)
+    - [Getting Started](introduction.md#getting-started)
+  - [Examples](introduction.md#examples)
+  - [Learning Resouces](introduction.md#learning-resouces)
 
-## How to Start
+- [Basics](basics/README.md)
 
-| Topic Name | Description |
-| --- | --- |
-| [ToDo List App Tutorial](./Tutorials/ToDo%20List%20App%20Tutorial.md) | This topic describes how to create a classic Redux example - the **ToDo List** app. |
-| [Hacker News Tutorial](./Tutorials/Hacker%20News%20Tutorial.md) | This tutorial describes how to create a **Hacker News** application clone. |
+  - [reSolve app structure](basics/resolve-app-structure.md)
+    - [Configuration](basics/resolve-app-structure.md#configuration)
+    - [Write and Read Sides](basics/resolve-app-structure.md#write-and-read-sides)
+    - [Folder Structure](basics/resolve-app-structure.md#folder-structure)
+  - [Write Side](basics/write-side.md)
+    - [Aggregates](basics/write-side.md#aggregates)
+    - [Aggregate ID](basics/write-side.md#aggregate-id)
+    - [Configuring Aggregates](basics/write-side.md#configuring-aggregates)
+    - [Sending a Command](basics/write-side.md#sending-a-command)
+    - [Aggregate Command Handlers](basics/write-side.md#aggregate-command-handlers)
+    - [Aggregate Projection Function](basics/write-side.md#aggregate-projection-function)
+    - [Event Store](basics/write-side.md#event-store)
+  - [Read Side](basics/read-side.md)
+    - [Read Models](basics/read-side.md#read-models)
+    - [Configuring Read Models and View Models](basics/read-side.md#configuring-read-models-and-view-models)
+    - [Initialize a Read Model](basics/read-side.md#initialize-a-read-model)
+    - [Updating a Read Model via Projection Functions](basics/read-side.md#updating-a-read-model-via-projection-functions)
+    - [Resolvers](basics/read-side.md#resolvers)
+    - [View Model Specifics](basics/read-side.md#view-model-specifics)
+    - [Performing Queries Using HTTP API](basics/read-side.md#performing-queries-using-http-api)
+  - [Frontend](basics/frontend.md)
+    - [React/Redux Support](basics/frontend.md#react-redux-support)
+    - [Sending Commands as Redux Actions](basics/frontend.md#sending-commands-as-redux-actions)
+    - [Reactive View Models, Event Subscription](basics/frontend.md#reactive-view-vodels-event-subscription)
+    - [Optimistic Commands](basics/frontend.md#optimistic-commands)
 
-## Common Concepts
+- [Authentication and Authorization](authentication-and-authorization.md)
 
-| Topic Name | Description |
-| --- | --- |
-| [System Metaphor](./System%20Metaphor.md) | An Extreme Programming concept: a [shared story](http://c2.com/xp/SystemMetaphor.html) on the common patterns and terms that shape the core flow of the system being built. |
-| [Architecture](./Architecture.md) | This topic helps you understand the common approach for building an application architecture. |
-| [API References](./API%20References.md) | This topic describes the reSolve API. |
-| [Contributing](./Contributing.md) | Guidelines that help you contribute to reSolve and its packages. |
+  - [Setting up Authentication](authentication-and-authorization.md#setting-up-authentication)
+  - [Using 3rd-Party Auth Services](authentication-and-authorization.md#using-3rd-party-auth-services)
+  - [Making Your Own User Registry](authentication-and-authorization.md#making-your-own-user-registry)
+  - [Using JWT for Command and Query Authorization](authentication-and-authorization.md#using-jwt-for-command-and-query-authorization)
 
-## reSolve Concepts
+- [Preparing to Production](preparing-to-production.md)
 
-| Topic Name | Short Description |
-| --- | --- |
-| [Packages](https://github.com/reimagined/resolve/tree/master/packages) | Lists and describes the reSolve libraries. |
-| [Aggregate](./Aggregate.md) | A **Domain-Driven Design** concept: a cluster of domain objects that can be treated as a single unit. |
-| [Event Store](./Event%20Store.md) | An **Event Sourcing** concept: a database that stores all Events and delivers them to subscribers. |
-| [Projection](./Projection.md) | An **Event Sourcing** concept: a function that derives the current state from the events stream. |
-| [Query](./Query.md) | A **reSolve** concept: an interface used to get data from [read](./Read%20Model.md) and [view](./View%20Model.md) models.  |
-| [Read Model](./Read%20Model.md) | A **reSolve** concept: a data structure that represents the current system state |
-| [View Model](./View%20Model.md) | A **reSolve** concept: a read model designed to be maintained on the client-side (used for UI) |
+  - [Configuration Options](preparing-to-production.md#configuration-options)
+  - [Configuring Adapters](preparing-to-production.md#configuring-adapters)
+  - [Using Environment Variables](preparing-to-production.md#using-environment-variables)
+
+- [Advanced Techniques](advanced-techniques.md)
+
+  - [Splitting Code Into Chunks](advanced-techniques.md#splitting-code-into-chunks)
+  - [Running Serverless](advanced-techniques.md#running-serverless)
+  - [Server-Side Rendering](advanced-techniques.md#server-side-rendering)
+  - [Process Managers (Sagas)](advanced-techniques.md#process-managers-sagas)
+  - [Adapters](advanced-techniques.md#adapters)
+
+- [FAQ](faq.md)
+- [API Reference](api-reference.md)
+- [Troubleshooting](troubleshooting.md)

@@ -8,8 +8,14 @@ const read = async (repository, { aggregateIds } = {}) => {
     )
   }
 
+  const getViewModel = repository.getViewModel.bind(
+    null,
+    repository,
+    aggregateIds
+  )
+
   try {
-    const viewModel = repository.getViewModel(repository, aggregateIds, true)
+    const viewModel = getViewModel(true)
     await viewModel.initPromise
     return viewModel.state
   } catch (error) {

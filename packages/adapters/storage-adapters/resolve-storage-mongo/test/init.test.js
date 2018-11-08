@@ -2,29 +2,16 @@ import sinon from 'sinon'
 
 import init from '../src/init'
 
-test('init should connect to mongodb database and prepare indexes', async () => {
+test('init should prepare indexes', async () => {
   const collection = {
     createIndex: sinon.stub().callsFake(async () => null)
   }
-  const db = {
-    collection: sinon.stub().callsFake(async () => collection)
-  }
-  const client = {
-    db: sinon.stub().callsFake(async () => db)
-  }
-  const MongoClient = {
-    connect: sinon.stub().callsFake(async () => client)
-  }
 
   const pool = {
-    config: {
-      url: 'url',
-      collectionName: 'collectionName',
-      databaseName: 'databaseName'
-    }
+    collection
   }
 
-  await init(MongoClient, pool)
+  await init(pool)
 
   expect(pool.collection.createIndex.callCount).toEqual(4)
   expect(pool.collection.createIndex.getCall(0).args).toEqual(['timestamp'])
@@ -36,8 +23,4 @@ test('init should connect to mongodb database and prepare indexes', async () => 
     { aggregateId: 1, aggregateVersion: 1 },
     { unique: true }
   ])
-
-  expect(pool.collection).toEqual(collection)
-  expect(pool.db).toEqual(db)
-  expect(pool.client).toEqual(client)
 })

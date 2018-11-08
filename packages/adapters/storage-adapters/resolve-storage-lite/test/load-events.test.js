@@ -18,7 +18,7 @@ test('load events should scan eventstore within criteria', async () => {
   const pool = {
     disposed: false,
     promiseInvoke: async (func, ...args) => await func(...args),
-    db: { find }
+    database: { find }
   }
 
   await loadEvents(

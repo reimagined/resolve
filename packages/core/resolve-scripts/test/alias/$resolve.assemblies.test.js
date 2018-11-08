@@ -1,4 +1,4 @@
-import alias from '../../src/core/alias/$resolve.assemblies'
+import alias from '../../src/alias/$resolve.assemblies'
 
 test('works correctly', () => {
   expect(alias()).toMatchSnapshot()
