@@ -3,17 +3,7 @@ const longStringSqlType =
 const longNumberSqlType = 'BIGINT NOT NULL'
 const customObjectSqlType = 'JSON NULL'
 
-const init = async ({ mysql, escapeId, escape }, pool) => {
-  const { host, port, user, password, database, tableName } = pool.config
-
-  const connection = await mysql.createConnection({
-    host,
-    port,
-    user,
-    password,
-    database
-  })
-
+const init = async ({ tableName, connection, escapeId }) => {
   await connection.execute(
     `CREATE TABLE IF NOT EXISTS ${escapeId(tableName)}(
       \`timestamp\` ${longNumberSqlType},
@@ -29,13 +19,6 @@ const init = async ({ mysql, escapeId, escape }, pool) => {
     )`,
     []
   )
-
-  Object.assign(pool, {
-    connection,
-    tableName,
-    escapeId,
-    escape
-  })
 }
 
 export default init

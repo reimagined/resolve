@@ -1,7 +1,7 @@
-const dispose = async (pool, options) => {
-  if (options.dropEvents) {
-    await pool.promiseInvoke(pool.db.remove.bind(pool.db), {}, { multi: true })
-    await pool.db.clearIndexes()
+const dispose = async ({ database, promiseInvoke }, { dropEvents }) => {
+  if (dropEvents) {
+    await promiseInvoke(database.remove.bind(database), {}, { multi: true })
+    await database.clearIndexes()
   }
 }
 

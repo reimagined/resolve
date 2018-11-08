@@ -16,9 +16,8 @@ const init = async pool => {
       )
 
       await new Promise((resolve, reject) =>
-        pool.db.ensureIndex(
-          { fieldName: 'snapshotKey', unique: true },
-          err => (err ? reject(err) : resolve())
+        pool.db.ensureIndex({ fieldName: 'snapshotKey', unique: true }, err =>
+          err ? reject(err) : resolve()
         )
       )
 
@@ -44,9 +43,8 @@ const loadSnapshot = async (pool, snapshotKey) => {
   }
 
   const result = await new Promise((resolve, reject) =>
-    pool.db.findOne(
-      { snapshotKey },
-      (err, doc) => (err ? reject(err) : resolve(doc))
+    pool.db.findOne({ snapshotKey }, (err, doc) =>
+      err ? reject(err) : resolve(doc)
     )
   )
 
@@ -80,10 +78,8 @@ const dispose = async (pool, options) => {
 
   if (options && options.dropSnapshots) {
     await new Promise((resolve, reject) =>
-      pool.db.remove(
-        {},
-        { multi: true },
-        err => (err ? reject(err) : resolve())
+      pool.db.remove({}, { multi: true }, err =>
+        err ? reject(err) : resolve()
       )
     )
   }

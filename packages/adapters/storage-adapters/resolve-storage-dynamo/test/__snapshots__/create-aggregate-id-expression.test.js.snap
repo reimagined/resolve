@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`method "createAggregateIdExpression" should return correctly expression for many aggregatesIds 1`] = `
+Object {
+  "attributeNames": Object {
+    "#aggregateId": "aggregateId",
+  },
+  "attributeValues": Object {
+    ":aggregateId0": "id1",
+    ":aggregateId1": "id2",
+  },
+  "conditionExpression": "(#aggregateId IN (:aggregateId0,:aggregateId1))",
+}
+`;
+
+exports[`method "createAggregateIdExpression" should return correctly expression for single aggregateId 1`] = `
+Object {
+  "attributeNames": Object {
+    "#aggregateId": "aggregateId",
+  },
+  "attributeValues": Object {
+    ":aggregateId0": "id1",
+  },
+  "conditionExpression": "(#aggregateId = :aggregateId0)",
+}
+`;
+
+exports[`method "createAggregateIdExpression" should return empty expression 1`] = `
+Object {
+  "attributeNames": Object {},
+  "attributeValues": Object {},
+  "conditionExpression": "",
+}
+`;

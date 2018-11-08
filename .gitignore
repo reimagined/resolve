@@ -39,6 +39,10 @@ jspm_packages
 #gitbook build folder
 **/_book
 
+.idea
+.vscode
+vscode
+
 event-storage.db
 #
 dist

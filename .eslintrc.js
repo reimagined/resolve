@@ -67,6 +67,7 @@ module.exports = {
           'auth',
           'autoload',
           'autoprefixer',
+          'aws',
           'awslambda',
           'aws',
           'basename',

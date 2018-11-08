@@ -10,7 +10,7 @@ Array [
     "aggregate_id",
     123,
     "event_type",
-    undefined,
+    null,
   ],
 ]
 `;

@@ -36,11 +36,10 @@ const defineTable = async (
           .join(',\n'),
         Object.keys(tableDescription)
           .filter(columnName => tableDescription[columnName] !== 'regular')
-          .map(
-            (columnName, idx) =>
-              idx === 0
-                ? `PRIMARY KEY (${escapeId(columnName)})`
-                : `INDEX USING BTREE (${escapeId(columnName)})`
+          .map((columnName, idx) =>
+            idx === 0
+              ? `PRIMARY KEY (${escapeId(columnName)})`
+              : `INDEX USING BTREE (${escapeId(columnName)})`
           )
           .join(',\n')
       ].join(',\n') +
@@ -444,11 +443,10 @@ const insert = async (
        .map(key => (fieldTypes[key] === 'regular' ? 'CAST(? AS JSON)' : '?'))
        .join(', ')})
     `,
-    Object.keys(document).map(
-      key =>
-        fieldTypes[key] === 'regular'
-          ? JSON.stringify(document[key])
-          : document[key]
+    Object.keys(document).map(key =>
+      fieldTypes[key] === 'regular'
+        ? JSON.stringify(document[key])
+        : document[key]
     )
   )
 }
