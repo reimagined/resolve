@@ -1,4 +1,4 @@
-import alias from '../../src/core/alias/$resolve.jwtCookie'
+import alias from '../../src/alias/$resolve.jwtCookie'
 import normalizePaths from './normalize_paths'
 
 describe('base config works correctly', () => {

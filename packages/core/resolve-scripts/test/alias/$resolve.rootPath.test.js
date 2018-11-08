@@ -1,4 +1,4 @@
-import alias from '../../src/core/alias/$resolve.rootPath'
+import alias from '../../src/alias/$resolve.rootPath'
 import normalizePaths from './normalize_paths'
 
 describe('base config works correctly', () => {

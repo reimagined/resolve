@@ -1,5 +1,5 @@
 import path from 'path'
-import alias from '../../src/core/alias/$resolve.redux'
+import alias from '../../src/alias/$resolve.redux'
 import normalizePaths from './normalize_paths'
 
 describe('base config works correctly', () => {

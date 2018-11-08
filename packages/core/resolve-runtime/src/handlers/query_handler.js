@@ -5,10 +5,9 @@ import readModelHandler from './read_model_handler'
 import viewModelHandler from './view_model_handler'
 
 import extractRequestBody from '../utils/extract_request_body'
+import message from '../message'
 
 const { modelTypes } = constants
-
-const message = require('../../../configs/message.json')
 
 const queryHandler = async (req, res) => {
   try {

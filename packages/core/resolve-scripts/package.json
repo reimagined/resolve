@@ -8,8 +8,8 @@
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
-  "main": "./lib/core/index.js",
-  "module": "./es/core/index.js",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
   "keywords": [
     "cqrs",
     "eventsourcing",
@@ -70,6 +70,7 @@
     "resolve-query": "0.17.4",
     "resolve-readmodel-memory": "0.17.4",
     "resolve-redux": "0.17.4",
+    "resolve-runtime": "0.17.4",
     "resolve-storage-lite": "0.17.4",
     "resolve-subscribe-socket.io": "0.17.4",
     "respawn": "^2.5.0",
