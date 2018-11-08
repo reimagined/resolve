@@ -3,7 +3,7 @@ import extractErrorHttpCode from '../utils/extract_error_http_code'
 
 import extractRequestBody from '../utils/extract_request_body'
 
-const message = require('../../../configs/message.json')
+import message from '../message'
 
 const commandHandler = async (req, res) => {
   if (req.method !== 'POST') {

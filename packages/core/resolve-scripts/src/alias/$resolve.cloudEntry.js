@@ -1,7 +1,7 @@
 export default () => ({
   code: `
     import serverAssemblies from '$resolve.serverAssemblies'
-    import cloudServer from 'resolve-scripts/lib/runtime/cloud_entry'
+    import cloudServer from 'resolve-runtime/lib/cloud_entry'
 
     const initPromise = cloudServer(serverAssemblies)
 

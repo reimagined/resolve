@@ -1,7 +1,7 @@
 import println from '../utils/println'
 import extractErrorHttpCode from '../utils/extract_error_http_code'
 
-const message = require('../../../configs/message.json')
+import message from '../message'
 
 const readModelHandler = async (req, res) => {
   try {

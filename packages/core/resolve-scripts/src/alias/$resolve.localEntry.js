@@ -1,7 +1,7 @@
 export default () => ({
   code: `
     import serverAssemblies from '$resolve.serverAssemblies'
-    import localServer from 'resolve-scripts/lib/runtime/local_entry'
+    import localServer from 'resolve-runtime/lib/local_entry'
 
     const initPromise = localServer(serverAssemblies)
 

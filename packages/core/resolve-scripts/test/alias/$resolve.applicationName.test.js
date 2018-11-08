@@ -1,4 +1,4 @@
-import alias from '../../src/core/alias/$resolve.applicationName'
+import alias from '../../src/alias/$resolve.applicationName'
 import normalizePaths from './normalize_paths'
 
 test('works correctly', () => {

@@ -1,5 +1,5 @@
 import sinon from 'sinon'
-import getStaticBasedPath from '../src/runtime/utils/get_static_based_path'
+import getStaticBasedPath from '../src/utils/get_static_based_path'
 
 describe('getStaticBasedPath', () => {
   let sandbox

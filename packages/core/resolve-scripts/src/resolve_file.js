@@ -25,7 +25,7 @@ const resolveFile = (query, fallbackQuery) => {
   } catch (e) {}
 
   if (fallbackQuery) {
-    const customFilePath = path.resolve(__dirname, '../defaults', fallbackQuery)
+    const customFilePath = path.resolve(__dirname, './defaults', fallbackQuery)
 
     if (fs.existsSync(customFilePath)) {
       return customFilePath

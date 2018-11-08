@@ -1,7 +1,7 @@
 import path from 'path'
-import declareRuntimeEnv from '../../src/core/declare_runtime_env'
+import declareRuntimeEnv from '../../src/declare_runtime_env'
 
-import alias from '../../src/core/alias/$resolve.subscribeAdapter'
+import alias from '../../src/alias/$resolve.subscribeAdapter'
 import normalizePaths from './normalize_paths'
 
 describe('base config works correctly', () => {
