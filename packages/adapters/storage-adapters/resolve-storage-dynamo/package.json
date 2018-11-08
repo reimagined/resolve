@@ -25,7 +25,7 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-storage-dynamo#readme",
   "dependencies": {
-    "aws-sdk": "2.346.0",
+    "aws-sdk": "2.350.0",
     "resolve-storage-base": "0.17.4"
   },
   "devDependencies": {

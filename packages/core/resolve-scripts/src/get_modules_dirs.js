@@ -5,10 +5,18 @@ import getMonorepoNodeModules from './get_monorepo_node_modules'
 const getModulesDirs = ({ isAbsolutePath = false } = {}) => {
   const currentDir = process.cwd()
 
+  const currentDirNodeModules = path.resolve(currentDir, 'node_modules')
+  const monorepoNodeModules = getMonorepoNodeModules()
+
   const absoluteDirs = [
-    path.resolve(currentDir, 'node_modules'),
-    path.resolve(__dirname, '../../node_modules'),
-    ...getMonorepoNodeModules()
+    currentDirNodeModules,
+    path.join(
+      require.resolve('resolve-runtime', {
+        paths: [currentDirNodeModules, ...monorepoNodeModules]
+      }),
+      '../node_modules'
+    ),
+    ...monorepoNodeModules
   ]
 
   if (isAbsolutePath) {

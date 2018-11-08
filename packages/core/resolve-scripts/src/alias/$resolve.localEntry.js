@@ -1,9 +1,9 @@
 export default () => ({
   code: `
     import serverAssemblies from '$resolve.serverAssemblies'
-    import localServer from 'resolve-runtime/lib/local_entry'
+    import { localEntry } from 'resolve-runtime'
 
-    const initPromise = localServer(serverAssemblies)
+    const initPromise = localEntry(serverAssemblies)
 
     const handler = async (...args) => {
       const worker = await initPromise
