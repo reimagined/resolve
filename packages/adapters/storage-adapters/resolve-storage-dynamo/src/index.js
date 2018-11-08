@@ -16,6 +16,7 @@ import expressionString from './expression-string'
 import checkTableExists from './check-table-exists'
 import executePaginationQuery from './execute-pagination-query'
 import executeSingleQuery from './execute-single-query'
+import { globalPartitionKey, rangedIndex, apiVersion } from './constants'
 
 export default createAdapter.bind(
   null,
@@ -37,3 +38,5 @@ export default createAdapter.bind(
     executeSingleQuery
   }
 )
+
+export { globalPartitionKey, rangedIndex, apiVersion }
