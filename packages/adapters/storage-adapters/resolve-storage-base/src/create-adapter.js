@@ -22,7 +22,7 @@ const createAdapter = (
         ...pool,
         skipInit: false
       },
-      Function() // eslint-disable-current-line no-new-function
+      Function() // eslint-disable-line no-new-function
     ),
     loadEvents: wrapMethod(pool, wrapLoadEvents(loadEvents)),
     saveEvent: wrapMethod(pool, saveEvent),

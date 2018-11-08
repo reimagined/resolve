@@ -3,10 +3,10 @@ const createTypeExpression = ({ eventTypes = [] }) => {
     eventTypes.length === 0
       ? ''
       : eventTypes.length === 1
-        ? `(#type = :eventType0)`
-        : `(#type IN (${eventTypes.map(
-            (eventType, eventTypeIndex) => `:eventType${eventTypeIndex}`
-          )}))`
+      ? `(#type = :eventType0)`
+      : `(#type IN (${eventTypes.map(
+          (eventType, eventTypeIndex) => `:eventType${eventTypeIndex}`
+        )}))`
 
   const attributeNames =
     eventTypes.length > 0

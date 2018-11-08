@@ -3,10 +3,10 @@ const createTimestampExpression = ({ startTime, finishTime }) => {
     startTime && finishTime
       ? '(#timestamp BETWEEN :startTime AND :finishTime)'
       : startTime
-        ? '(#timestamp > :startTime)'
-        : finishTime
-          ? '(#timestamp < :finishTime)'
-          : ''
+      ? '(#timestamp > :startTime)'
+      : finishTime
+      ? '(#timestamp < :finishTime)'
+      : ''
 
   const attributeNames =
     startTime || finishTime
@@ -22,14 +22,14 @@ const createTimestampExpression = ({ startTime, finishTime }) => {
           ':finishTime': finishTime
         }
       : startTime
-        ? {
-            ':startTime': startTime
-          }
-        : finishTime
-          ? {
-              ':finishTime': finishTime
-            }
-          : {}
+      ? {
+          ':startTime': startTime
+        }
+      : finishTime
+      ? {
+          ':finishTime': finishTime
+        }
+      : {}
 
   return {
     conditionExpression,

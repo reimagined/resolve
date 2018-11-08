@@ -3,10 +3,10 @@ const createAggregateIdExpression = ({ aggregateIds = [] }) => {
     aggregateIds.length === 0
       ? ''
       : aggregateIds.length === 1
-        ? `(#aggregateId = :aggregateId0)`
-        : `(#aggregateId IN (${aggregateIds.map(
-            (aggregateId, aggregateIdIndex) => `:aggregateId${aggregateIdIndex}`
-          )}))`
+      ? `(#aggregateId = :aggregateId0)`
+      : `(#aggregateId IN (${aggregateIds.map(
+          (aggregateId, aggregateIdIndex) => `:aggregateId${aggregateIdIndex}`
+        )}))`
 
   const attributeNames =
     aggregateIds.length > 0

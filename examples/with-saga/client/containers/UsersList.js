@@ -13,8 +13,9 @@ class UsersList extends React.Component {
 
         {isLoading && <div>Data loading</div>}
 
-        {!isLoading &&
-          !users.length && <div className="example-no-data">No users</div>}
+        {!isLoading && !users.length && (
+          <div className="example-no-data">No users</div>
+        )}
 
         <ListGroup>
           {users.map(user => (

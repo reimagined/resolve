@@ -9,9 +9,8 @@ const defineTable = async (
     if (tableDescription[fieldName] === 'regular') continue
 
     await new Promise((resolve, reject) =>
-      storage[tableName].ensureIndex(
-        { fieldName },
-        err => (!err ? resolve() : reject(err))
+      storage[tableName].ensureIndex({ fieldName }, err =>
+        !err ? resolve() : reject(err)
       )
     )
   }
@@ -240,9 +239,8 @@ const update = async (
 
 const del = async ({ storage }, tableName, searchExpression) => {
   await new Promise((resolve, reject) =>
-    storage[tableName].remove(
-      convertSearchExpression(searchExpression),
-      err => (!err ? resolve() : reject(err))
+    storage[tableName].remove(convertSearchExpression(searchExpression), err =>
+      !err ? resolve() : reject(err)
     )
   )
 }

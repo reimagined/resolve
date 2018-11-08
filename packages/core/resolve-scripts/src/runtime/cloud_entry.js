@@ -68,7 +68,7 @@ const lambdaWorker = async (assemblies, resolveBase, event, context) => {
     executorResult = await executor(event, context)
   }
   // DynamoDB trigger event
-  // AWS DynamoDB streams guarantees that changesets from one table partition will 
+  // AWS DynamoDB streams guarantees that changesets from one table partition will
   // be delivered strictly into one lambda instance, i.e. following code works in
   // single-thread mode for one event storage - see https://amzn.to/2LkKXAV
   else if (event.Records != null) {
