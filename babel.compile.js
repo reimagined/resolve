@@ -82,6 +82,12 @@ function getConfig({ moduleType, moduleTarget }) {
           regenerator,
           useESModules
         }
+      ],
+      [
+        'transform-inline-environment-variables',
+        {
+          include: ['__RESOLVE_PACKAGES__', '__RESOLVE_VERSION__']
+        }
       ]
     ]
   }
@@ -92,12 +98,16 @@ function compile() {
 
   const configs = []
 
+  const resolvePackages = []
+
   for (const filePath of files) {
     if (filePath.includes('node_modules')) {
       continue
     }
 
     const { name, babelCompile } = require(filePath)
+
+    resolvePackages.push(name)
 
     if (!Array.isArray(babelCompile)) {
       throw new Error(`[${name}] package.json "babelCompile" must be an array`)
@@ -125,6 +135,9 @@ function compile() {
       configs.push(config)
     }
   }
+
+  process.env.__RESOLVE_PACKAGES__ = JSON.stringify(resolvePackages)
+  process.env.__RESOLVE_VERSION__ = require('./package').version
 
   for (const config of configs) {
     babel({
