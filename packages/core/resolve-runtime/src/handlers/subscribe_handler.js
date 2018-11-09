@@ -11,11 +11,13 @@ const subscribeHandler = async (req, res) => {
   const { origin } = req.method === 'POST' ? JSON.parse(req.body) : req.query
 
   try {
+    await res.setHeader('Content-Type', 'application/json')
     await res.json(await subscribeAdapter.getOptions(origin))
     return
   } catch (err) {
     println.error(err)
     await res.status(500)
+    await res.setHeader('Content-Type', 'text/plain')
     await res.end(err.toString())
   }
 }
