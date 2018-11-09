@@ -25,10 +25,12 @@ const readModelHandler = async (req, res) => {
     }
 
     await res.status(200)
+    await res.setHeader('Content-Type', 'application/json')
     await res.end(result)
   } catch (err) {
     const errorCode = extractErrorHttpCode(err)
     await res.status(errorCode)
+    await res.setHeader('Content-Type', 'text/plain')
     await res.end(`${message.readModelFail}${err.message}`)
     println.error(err)
   }
