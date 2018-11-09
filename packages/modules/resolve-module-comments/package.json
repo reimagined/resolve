@@ -25,6 +25,7 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/modules/resolve-module-comments#readme",
   "dependencies": {
+    "@babel/runtime": "^7.0.0",
     "resolve-redux": "0.17.4",
     "resolve-readmodel-memory": "0.17.4"
   },

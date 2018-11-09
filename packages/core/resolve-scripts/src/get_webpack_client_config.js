@@ -88,8 +88,8 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
           exclude: [
             /node_modules/,
             ...getModulesDirs({ isAbsolutePath: true }),
-            path.resolve(__dirname, '../../lib'),
-            path.resolve(__dirname, '../../es')
+            path.resolve(__dirname, '../lib'),
+            path.resolve(__dirname, '../es')
           ]
         }
       ]

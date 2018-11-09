@@ -24,6 +24,9 @@
     "ddd"
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-storage-base#readme",
+  "dependencies": {
+    "@babel/runtime": "^7.0.0"
+  },
   "babelCompile": [
     {
       "moduleType": "es",
