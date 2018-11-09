@@ -6,6 +6,10 @@ const writePackageJsonsForAssemblies = (distDir, nodeModulesByAssembly) => {
     fs.readFileSync(path.join(process.cwd(), 'package.json'))
   )
 
+  const resolveScriptsPackageJson = JSON.parse(
+    fs.readFileSync(path.join(__dirname, '../package.json'))
+  )
+
   for (const [
     packageJsonPath,
     nodeModules
@@ -30,6 +34,9 @@ const writePackageJsonsForAssemblies = (distDir, nodeModulesByAssembly) => {
         return acc
       }, {})
     }
+
+    assemblyPackageJson.dependencies['resolve-runtime'] =
+      resolveScriptsPackageJson.version
 
     fs.writeFileSync(
       absolutePackageJsonPath,

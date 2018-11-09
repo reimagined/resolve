@@ -8,8 +8,8 @@
   "repository": "https://github.com/reimagined/resolve.git",
   "author": "reimagined team",
   "license": "MIT",
-  "main": "./lib/core/index.js",
-  "module": "./es/core/index.js",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
   "keywords": [
     "cqrs",
     "eventsourcing",
@@ -25,21 +25,13 @@
   },
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-runtime#readme",
   "dependencies": {
-    "address": "1.0.3",
     "aws-sdk": "2.350.0",
-    "chalk": "2.4.1",
     "cron": "1.5.0",
-    "cross-spawn": "6.0.5",
-    "child_process": "1.0.2",
     "express": "4.16.4",
     "history": "4.7.2",
     "http": "0.0.0",
     "jsonwebtoken": "8.3.0",
-    "opn": "5.4.0",
-    "path": "0.12.7",
-    "react-dom": "16.6.1",
     "react-helmet": "5.2.0",
-    "react": "16.6.1",
     "resolve-api-handler-awslambda": "0.17.4",
     "resolve-api-handler-express": "0.17.4",
     "resolve-command": "0.17.4",
@@ -48,15 +40,13 @@
     "resolve-redux": "0.17.4",
     "socket.io": "2.1.1",
     "source-map-support": "0.5.9",
-    "styled-components": "4.0.3",
     "url": "0.11.0",
     "uuid": "3.3.2"
   },
   "peerDependencies": {
     "react": ">=16.6.0",
     "react-dom": ">=16.6.0",
-    "redux": ">=4.0.0",
-    "styled-components": ">=3.4.9"
+    "styled-components": ">=4.0.0"
   },
   "devDependencies": {
     "sinon": "6.3.4",

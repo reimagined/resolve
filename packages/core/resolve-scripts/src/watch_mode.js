@@ -9,6 +9,8 @@ import showBuildInfo from './show_build_info'
 import copyEnvToDist from './copy_env_to_dist'
 import validateConfig from './validate_config'
 
+import openBrowser from './open_browser'
+
 export default async (resolveConfig, adjustWebpackConfigs) => {
   validateConfig(resolveConfig)
 
@@ -84,6 +86,16 @@ export default async (resolveConfig, adjustWebpackConfigs) => {
             server.stop(() => server.start())
           } else {
             server.start()
+
+            const isOpenBrowser =
+              process.env.RESOLVE_SERVER_OPEN_BROWSER === 'true'
+            const serverFirstStart =
+              process.env.RESOLVE_SERVER_FIRST_START === 'true'
+            if (isOpenBrowser && serverFirstStart) {
+              openBrowser(resolveConfig.port, resolveConfig.rootPath).catch(
+                () => {}
+              )
+            }
 
             resolve()
           }
