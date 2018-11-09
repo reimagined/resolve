@@ -84,9 +84,7 @@ const getWebpackCommonConfigs = ({
                     [
                       '@babel/preset-env',
                       {
-                        targets: {
-                          node: '8.10.0'
-                        }
+                        targets: { node: '8.10.0' }
                       }
                     ],
                     '@babel/preset-react'
@@ -127,8 +125,8 @@ const getWebpackCommonConfigs = ({
             exclude: [
               /node_modules/,
               ...getModulesDirs({ isAbsolutePath: true }),
-              path.resolve(__dirname, '../../lib'),
-              path.resolve(__dirname, '../../es')
+              path.resolve(__dirname, '../lib'),
+              path.resolve(__dirname, '../es')
             ]
           }
         ]
