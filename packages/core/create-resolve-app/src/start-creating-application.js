@@ -1,8 +1,7 @@
-import messages from './messages'
+const startCreatingApplication = pool => async () => {
+  const { console, message } = pool
 
-const startCreatingApplication = async options => {
-  // eslint-disable-next-line no-console
-  console.log(messages.startCreatingApp(options))
+  console.log(message.startCreatingApp(pool))
 }
 
 export default startCreatingApplication

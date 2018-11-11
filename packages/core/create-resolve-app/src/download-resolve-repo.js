@@ -1,35 +1,48 @@
 const downloadResolveRepo = ({
   fs,
-  path,
   chalk,
   https,
+  console,
   AdmZip,
-  applicationName,
+  applicationPath,
   resolveDownloadZipUrl,
   resolveCloneZipPath
-}) =>
-  new Promise((resolve, reject) => {
-    // eslint-disable-next-line
-    console.log(chalk.green('Load example'))
-    try {
-      fs.removeSync(resolveCloneZipPath)
-    } catch (e) {}
-    https.get(resolveDownloadZipUrl, response => {
-      response.on('data', data => {
-        fs.appendFileSync(resolveCloneZipPath, data)
-      })
+}) => async () => {
+  try {
+    await new Promise((resolve, reject) => {
+      console.log(chalk.green('Load example'))
 
-      response.on('end', () => {
-        try {
-          const zip = new AdmZip(resolveCloneZipPath)
-          zip.extractAllTo(path.join(process.cwd(), applicationName), true)
-          fs.unlinkSync(resolveCloneZipPath)
-          resolve()
-        } catch (e) {
-          reject(e)
-        }
+      try {
+        fs.removeSync(applicationPath)
+      } catch (e) {}
+
+      try {
+        fs.mkdirSync(applicationPath)
+      } catch (e) {}
+
+      https.get(resolveDownloadZipUrl, response => {
+        response.on('data', data => {
+          fs.appendFileSync(resolveCloneZipPath, data)
+        })
+        response.on('end', resolve)
+        response.on('error', reject)
       })
     })
-  })
+  } catch (_) {
+    console.log(
+      chalk.red('Referent commit does not exists in resolve repository.')
+    )
+    console.log(
+      chalk.red('Maybe you forgot to merge your feature branch with dev branch')
+    )
+    // eslint-disable-next-line
+    throw 'Repo downloading failed'
+  }
+
+  const zip = new AdmZip(resolveCloneZipPath)
+  zip.extractAllTo(applicationPath, true)
+
+  fs.removeSync(resolveCloneZipPath)
+}
 
 export default downloadResolveRepo

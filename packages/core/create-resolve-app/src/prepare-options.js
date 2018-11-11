@@ -1,5 +1,12 @@
 const prepareOptions = async pool => {
-  const { path, isYarnAvailable, messages, commandLineArgs } = pool
+  const {
+    path,
+    console,
+    process,
+    commandLineArgs,
+    isYarnAvailable,
+    message
+  } = pool
 
   const cliArgs = commandLineArgs(
     [
@@ -15,67 +22,77 @@ const prepareOptions = async pool => {
   const unknownCliArgs =
     cliArgs._unknown && cliArgs._unknown.filter(x => x.startsWith('-'))
 
+  const analyticsUrlBase = 'https://ga-beacon.appspot.com/UA-118635726-2'
   const resolveVersion = process.env.__RESOLVE_VERSION__
+  const resolvePackages = JSON.parse(process.env.__RESOLVE_PACKAGES__)
+  const resolveExamples = JSON.parse(process.env.__RESOLVE_EXAMPLES__)
+
+  Object.assign(pool, {
+    analyticsUrlBase,
+    resolveVersion,
+    resolvePackages,
+    resolveExamples
+  })
 
   if (unknownCliArgs && unknownCliArgs.length > 0) {
-    // eslint-disable-next-line no-console
-    console.error(messages.unknownOptions(unknownCliArgs.join(' ')))
-    process.exit(1)
+    console.error(message.unknownOptions(pool, unknownCliArgs))
+    return process.exit(1)
   } else if (cliArgs.help) {
-    // eslint-disable-next-line no-console
-    console.log(messages.help)
-    process.exit(0)
+    console.log(message.help(pool))
+    return process.exit(0)
   } else if (cliArgs.version) {
-    // eslint-disable-next-line no-console
     console.log(resolveVersion)
-    process.exit(0)
+    return process.exit(0)
   } else if (!cliArgs._unknown) {
     // eslint-disable-next-line no-console
-    console.error(messages.emptyAppNameError)
-    process.exit(1)
+    console.error(message.emptyAppNameError(pool))
+    return process.exit(1)
   } else {
     const applicationName = cliArgs._unknown[0]
 
-    const exampleName = cliArgs.example || 'hello-world'
+    const { commit, branch, example: exampleName = 'hello-world' } = cliArgs
 
-    const revision = cliArgs.branch
-      ? cliArgs.branch
-      : cliArgs.commit
-      ? cliArgs.commit
-      : 'master'
+    const revision = branch ? branch : commit ? commit : 'master'
 
     const resolveCloneDirName = `resolve-${revision}`
 
-    const resolveCloneExamplePath = path.join(
+    const applicationPath = path.join(process.cwd(), applicationName)
+    const applicationPackageJsonPath = path.join(
       process.cwd(),
       applicationName,
-      resolveCloneDirName,
-      'examples',
+      'package.json'
+    )
+
+    const resolveClonePath = path.join(applicationPath, resolveCloneDirName)
+    const resolveCloneExamplesPath = path.join(resolveClonePath, 'examples')
+    const resolveCloneExamplePath = path.join(
+      resolveCloneExamplesPath,
       exampleName
     )
 
     const resolveDownloadZipUrl = `https://codeload.github.com/reimagined/resolve/zip/${revision}`
 
     const resolveCloneZipPath = path.join(
-      process.cwd(),
-      applicationName,
+      applicationPath,
       `${resolveCloneDirName}.zip`
     )
 
-    const analyticsUrlBase = 'https://ga-beacon.appspot.com/UA-118635726-2'
-
-    const useYarn = isYarnAvailable()
+    const useYarn = isYarnAvailable(pool)
 
     Object.assign(pool, {
-      resolveVersion,
       applicationName,
+      commit,
+      branch,
       exampleName,
       revision,
       resolveCloneDirName,
+      applicationPath,
+      applicationPackageJsonPath,
+      resolveClonePath,
+      resolveCloneExamplesPath,
       resolveCloneExamplePath,
       resolveDownloadZipUrl,
       resolveCloneZipPath,
-      analyticsUrlBase,
       useYarn
     })
   }
