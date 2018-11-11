@@ -1,6 +1,8 @@
 const pipeline = pool => {
   const {
     chalk,
+    console,
+    process,
     prepareOptions,
     startCreatingApplication,
     checkApplicationName,
@@ -26,6 +28,7 @@ const pipeline = pool => {
     .catch(error => {
       // eslint-disable-next-line no-console
       console.error(chalk.red(error))
+      process.exit(1)
     })
 }
 
