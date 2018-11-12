@@ -25,6 +25,7 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/readmodel-adapters/resolve-readmodel-memory#readme",
   "dependencies": {
+    "@babel/runtime": "^7.0.0",
     "nedb": "^1.8.0",
     "resolve-readmodel-base": "0.17.4",
     "uuid": "^3.3.2"

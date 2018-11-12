@@ -38,11 +38,13 @@ const queryHandler = async (req, res) => {
       }
       default: {
         await res.status(422)
+        await res.setHeader('Content-Type', 'text/plain')
         await res.end(message.incorrectQuery)
       }
     }
   } catch (error) {
     await res.status(405)
+    await res.setHeader('Content-Type', 'text/plain')
     await res.end(error.message)
   }
 }

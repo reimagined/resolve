@@ -15,7 +15,7 @@ try {
   StyleSheetManager = styledComponents.StyleSheetManager
 } catch (err) {}
 
-const serverSideRendering = (req, res) => {
+const serverSideRendering = async (req, res) => {
   const {
     aggregateActions,
     subscribeAdapter,
@@ -92,7 +92,8 @@ const serverSideRendering = (req, res) => {
   const bundleUrl = getStaticBasedPath(rootPath, staticPath, 'bundle.js')
   const hmrUrl = getStaticBasedPath(rootPath, staticPath, 'hmr.js')
 
-  res.end(
+  await res.setHeader('Content-Type', 'text/html')
+  await res.end(
     getHtmlMarkup({
       reducers: redux.reducers,
       markup,

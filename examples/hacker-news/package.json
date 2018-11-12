@@ -1,7 +1,7 @@
 {
   "name": "hacker-news",
   "version": "0.17.4",
-  "description": "A React & Redux & Resolve implementation of Hacker News with resolve comments module",
+  "description": "Hacker News application clone with CQRS and EventSourcing",
   "private": true,
   "scripts": {
     "build": "babel-node ./run.js build",

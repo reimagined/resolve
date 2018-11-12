@@ -1,6 +1,7 @@
 {
   "name": "with-saga",
   "version": "0.17.4",
+  "description": "shows how to use sagas",
   "private": true,
   "scripts": {
     "build": "babel-node ./run.js build",
