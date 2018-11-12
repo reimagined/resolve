@@ -1,4 +1,4 @@
-import resolveConfigOrigin from '../src/default.resolve.config.js'
+import resolveConfigOrigin from '../configs/default.resolve.config.json'
 import validateConfig from '../src/validate_config'
 
 jest.setTimeout(30000)
@@ -114,17 +114,6 @@ describe('validate schema', () => {
       validateConfig({
         ...resolveConfigOrigin,
         staticDir: 'my-static-dir'
-      })
-    ).toBeTruthy()
-  })
-
-  it('custom auth', () => {
-    expect(
-      validateConfig({
-        ...resolveConfigOrigin,
-        auth: {
-          strategies: 'custom-auth/index.js'
-        }
       })
     ).toBeTruthy()
   })

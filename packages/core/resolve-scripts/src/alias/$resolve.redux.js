@@ -52,7 +52,6 @@ export default ({ resolveConfig }) => {
         runtimeMode: RUNTIME_ENV_NOWHERE,
         importMode: RESOURCE_ANY,
         instanceMode: IMPORT_INSTANCE,
-        instanceFallback: 'redux_reducer.js',
         imports,
         constants
       })
@@ -80,7 +79,6 @@ export default ({ resolveConfig }) => {
         runtimeMode: RUNTIME_ENV_NOWHERE,
         importMode: RESOURCE_ANY,
         instanceMode: IMPORT_INSTANCE,
-        instanceFallback: 'redux_middleware.js',
         imports,
         constants
       })
@@ -106,7 +104,6 @@ export default ({ resolveConfig }) => {
         runtimeMode: RUNTIME_ENV_NOWHERE,
         importMode: RESOURCE_ANY,
         instanceMode: IMPORT_INSTANCE,
-        instanceFallback: 'redux_saga.js',
         imports,
         constants
       })
@@ -132,7 +129,6 @@ export default ({ resolveConfig }) => {
         runtimeMode: RUNTIME_ENV_NOWHERE,
         importMode: RESOURCE_ANY,
         instanceMode: IMPORT_INSTANCE,
-        instanceFallback: 'redux_enhancer.js',
         imports,
         constants
       })
