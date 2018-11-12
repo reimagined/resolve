@@ -1,25 +1,26 @@
 import sinon from 'sinon'
 
 import init from '../src/init'
+import promiseInvoke from '../src/promise-invoke'
 
 test('init should prepare file-storage mode and return the correct interface', async () => {
-  const pool = {
-    config: {
-      pathToFile: 'pathToFile'
-    }
-  }
-
   const loadDatabase = sinon.stub().callsFake(callback => callback())
   const ensureIndex = sinon.stub().callsFake((key, callback) => callback())
 
-  const NeDB = sinon.stub().callsFake(function() {
-    this.loadDatabase = loadDatabase
-    this.ensureIndex = ensureIndex
-  })
+  const database = {
+    loadDatabase,
+    ensureIndex
+  }
 
-  await init(NeDB, pool)
+  const pool = {
+    config: {
+      pathToFile: 'pathToFile'
+    },
+    promiseInvoke,
+    database
+  }
 
-  expect(NeDB.firstCall.args[0]).toEqual({ filename: 'pathToFile' })
+  await init(pool)
 
   expect(loadDatabase.callCount).toEqual(1)
   expect(ensureIndex.callCount).toEqual(4)
@@ -42,7 +43,7 @@ test('init should prepare file-storage mode and return the correct interface', a
     fieldName: 'type'
   })
 
-  expect(pool.promiseInvoke).toBeInstanceOf(Function)
+  expect(pool.promiseInvoke).toEqual(promiseInvoke)
 
   const testCallbackFunc = (arg, callback) => {
     if (arg instanceof Error) {
@@ -63,43 +64,4 @@ test('init should prepare file-storage mode and return the correct interface', a
   } catch (error) {
     expect(error).toEqual(testError)
   }
-})
-
-test('init should prepare memory mode and return the correct interface', async () => {
-  const pool = {
-    config: {}
-  }
-
-  const loadDatabase = sinon.stub().callsFake(callback => callback())
-  const ensureIndex = sinon.stub().callsFake((key, callback) => callback())
-
-  const NeDB = sinon.stub().callsFake(function() {
-    this.loadDatabase = loadDatabase
-    this.ensureIndex = ensureIndex
-  })
-
-  await init(NeDB, pool)
-
-  expect(NeDB.firstCall.args[0]).toEqual({ inMemoryOnly: true })
-
-  expect(loadDatabase.callCount).toEqual(1)
-  expect(ensureIndex.callCount).toEqual(4)
-
-  expect(ensureIndex.getCall(0).args[0]).toEqual({
-    fieldName: 'aggregateIdAndVersion',
-    unique: true,
-    sparse: true
-  })
-
-  expect(ensureIndex.getCall(1).args[0]).toEqual({
-    fieldName: 'aggregateId'
-  })
-
-  expect(ensureIndex.getCall(2).args[0]).toEqual({
-    fieldName: 'aggregateVersion'
-  })
-
-  expect(ensureIndex.getCall(3).args[0]).toEqual({
-    fieldName: 'type'
-  })
 })

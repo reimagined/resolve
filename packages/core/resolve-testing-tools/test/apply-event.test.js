@@ -5,7 +5,7 @@ import applyEvent from '../src/apply-event'
 test('method "applyEvent" should apply event', async () => {
   const countEventsOnAggregate = (Math.random() * 10) | 0
   const storage = {
-    loadEventsByAggregateIds: sinon.stub().callsFake((_, callback) => {
+    loadEvents: sinon.stub().callsFake((_, callback) => {
       for (let i = 0; i < countEventsOnAggregate; i++) {
         callback()
       }

@@ -28,9 +28,10 @@ const appConfig = {
     }
   ],
   redux: {
-    store: 'client/store/index.js',
-    reducers: 'client/reducers/index.js',
-    middlewares: 'client/middlewares/index.js'
+    reducers: {
+      user: 'client/reducers/user_optimistic.js'
+    },
+    middlewares: ['client/middlewares/user_create_middleware.js']
   }
 }
 

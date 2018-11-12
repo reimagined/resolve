@@ -51,14 +51,14 @@ export class Login extends React.PureComponent {
   }
 
   onLogin = () => {
-    this.props.authRequest('/auth/local/login', {
+    this.props.authRequest('/api/auth/local/login', {
       username: this.state.username,
       password: this.state.password
     })
   }
 
   onRegister = () => {
-    this.props.authRequest('/auth/local/register', {
+    this.props.authRequest('/api/auth/local/register', {
       username: this.state.username,
       password: this.state.password
     })

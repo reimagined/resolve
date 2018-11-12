@@ -59,14 +59,14 @@ describe('Read-model generic adapter API', () => {
   beforeEach(async () => {
     events = []
     const eventStore = {
-      async subscribeByEventType(eventTypes, handler, { startTime = 0 } = {}) {
+      async loadEvents({ eventTypes, startTime }, handler) {
         for (let event of events) {
           if (
             event &&
             eventTypes.indexOf(event.type) > -1 &&
             event.timestamp >= startTime
           ) {
-            handler(event)
+            await handler(event)
             await Promise.resolve()
           }
         }

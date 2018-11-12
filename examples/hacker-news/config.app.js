@@ -1,35 +1,25 @@
 const appConfig = {
   routes: 'client/routes.js',
   redux: {
-    store: 'client/store/index.js',
-    reducers: 'client/reducers/index.js',
-    middlewares: 'client/middlewares/index.js'
+    reducers: {
+      optimistic: 'client/reducers/optimistic.js'
+    },
+    middlewares: [
+      'client/middlewares/story-create-middleware.js',
+      'client/middlewares/optimistic-voting-middleware.js'
+    ],
+    enhancers: ['client/enhancers/redux-devtools.js']
   },
   aggregates: [
     {
-      name: 'story',
+      name: 'Story',
       commands: 'common/aggregates/story.commands.js',
       projection: 'common/aggregates/story.projection.js'
     },
     {
-      name: 'user',
+      name: 'User',
       commands: 'common/aggregates/user.commands.js',
       projection: 'common/aggregates/user.projection.js'
-    }
-  ],
-  viewModels: [
-    {
-      name: 'storyDetails',
-      projection: 'common/view-models/story_details.projection.js',
-      serializeState: 'common/view-models/story_details.serialize_state.js',
-      deserializeState: 'common/view-models/story_details.deserialize_state.js',
-      snapshotAdapter: {
-        module: 'common/view-models/snapshot_adapter.module.js',
-        options: {
-          pathToFile: 'snapshot.db',
-          bucketSize: 1
-        }
-      }
     }
   ],
   readModels: [
@@ -40,7 +30,7 @@ const appConfig = {
     }
   ],
   auth: {
-    strategies: 'auth/local_strategy.js'
+    strategies: 'auth/local-strategy.js'
   }
 }
 

@@ -1,25 +1,30 @@
 const createAdapter = (
-  wrapInit,
+  prepare,
   wrapMethod,
   wrapLoadEvents,
   wrapDispose,
+  connect,
   init,
   loadEvents,
   saveEvent,
   dispose,
-  db,
+  adapterSpecificArguments,
   options
 ) => {
   const config = { ...options }
   const pool = { config, disposed: false }
-  wrapInit(pool, init, db)
+
+  prepare(pool, connect, init, adapterSpecificArguments)
 
   return Object.freeze({
-    loadEventsByTypes: wrapMethod(pool, wrapLoadEvents(loadEvents, 'type')),
-    loadEventsByAggregateIds: wrapMethod(
-      pool,
-      wrapLoadEvents(loadEvents, 'aggregateId')
+    init: wrapMethod(
+      {
+        ...pool,
+        skipInit: false
+      },
+      Function() // eslint-disable-line no-new-func
     ),
+    loadEvents: wrapMethod(pool, wrapLoadEvents(loadEvents)),
     saveEvent: wrapMethod(pool, saveEvent),
     dispose: wrapMethod(pool, wrapDispose(dispose))
   })

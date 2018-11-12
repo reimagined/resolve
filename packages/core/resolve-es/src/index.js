@@ -1,142 +1,126 @@
+const validateEventFilter = filter => {
+  if (filter == null || filter.constructor !== Object) {
+    throw new Error('Event filter should be an object')
+  }
+
+  const stringArrayFields = ['eventTypes', 'aggregateIds']
+  const booleanFields = ['skipStorage', 'skipBus']
+  const numericFields = ['startTime', 'finishTime']
+  const allowedFields = [
+    ...stringArrayFields,
+    ...booleanFields,
+    ...numericFields
+  ]
+
+  for (const key of Object.keys(filter)) {
+    if (allowedFields.indexOf(key) < 0) {
+      throw new Error(`Wrong field in event filter: ${key}`)
+    }
+  }
+
+  for (const key of stringArrayFields) {
+    if (
+      filter[key] != null &&
+      !(
+        Array.isArray(filter[key]) &&
+        filter[key].every(
+          value => value != null && value.constructor === String
+        )
+      )
+    ) {
+      throw new Error(`Event filter field ${key} should be array of strings`)
+    }
+  }
+
+  for (const key of booleanFields) {
+    if (filter[key] != null && filter[key].constructor !== Boolean) {
+      throw new Error(`Event filter field ${key} should be boolean`)
+    }
+  }
+
+  for (const key of numericFields) {
+    if (filter[key] != null && filter[key].constructor !== Number) {
+      throw new Error(`Event filter field ${key} should be number`)
+    }
+  }
+
+  if (filter.skipStorage && filter.skipBus) {
+    throw new Error(
+      'Cannot load events when storage and the bus are skipped at the same time'
+    )
+  }
+}
+
+const loadEvents = async (storage, bus, filter, handler) => {
+  validateEventFilter(filter)
+  const {
+    skipStorage,
+    skipBus,
+    startTime,
+    finishTime,
+    eventTypes,
+    aggregateIds
+  } = filter
+
+  if (!skipStorage) {
+    await storage.loadEvents(
+      {
+        eventTypes,
+        aggregateIds,
+        startTime,
+        finishTime
+      },
+      handler
+    )
+  }
+
+  if (bus == null || skipBus) {
+    return null
+  }
+
+  return await bus.subscribe(
+    {
+      eventTypes,
+      aggregateIds
+    },
+    handler
+  )
+}
+
+const saveEvent = async (storage, bus, event) => {
+  if (!event.type) {
+    throw new Error('The `type` field is missed')
+  }
+  if (!event.aggregateId) {
+    throw new Error('The `aggregateId` field is missed')
+  }
+
+  event.timestamp = Date.now()
+  event.aggregateId = String(event.aggregateId)
+
+  await storage.saveEvent(event)
+  if (bus != null) {
+    await bus.publish(event)
+  }
+  return event
+}
+
+const wrapMethod = (method, storage, bus, errorHandler) => async (...args) => {
+  try {
+    await method(storage, bus, ...args)
+  } catch (error) {
+    await errorHandler(error)
+  }
+}
+
 export default (
-  config,
+  { storage, bus },
   errorHandler = err => {
     throw err
   }
 ) => {
-  const projectionMap = { types: new Map(), ids: new Map() }
-  const busListeners = new Map()
-
-  function trigger(event) {
-    const handlersByType = projectionMap.types.get(event.type) || []
-    const handlersById = projectionMap.ids.get(event.aggregateId) || []
-    handlersByType.concat(handlersById).forEach(handler => handler(event))
-    busListeners.forEach(handler => handler(event))
-  }
-
-  config.bus.subscribe(trigger).catch(error => {
-    // TODO
-    // eslint-disable-next-line no-console
-    console.error(error)
+  return Object.freeze({
+    loadEvents: wrapMethod(loadEvents, storage, bus, errorHandler),
+    saveEvent: wrapMethod(saveEvent, storage, bus, errorHandler)
   })
-
-  const onEvent = (eventMap, eventDescriptors, callback) => {
-    eventDescriptors.forEach(eventDescriptor => {
-      const handlers = eventMap.get(eventDescriptor) || []
-      handlers.push(callback)
-      eventMap.set(eventDescriptor, handlers)
-    })
-
-    return () => {
-      eventDescriptors.forEach(eventDescriptor => {
-        const handlers = eventMap
-          .get(eventDescriptor)
-          .filter(item => item !== callback)
-
-        eventMap.set(eventDescriptor, handlers)
-      })
-    }
-  }
-
-  const onEventByType = onEvent.bind(null, projectionMap.types)
-  const onEventById = onEvent.bind(null, projectionMap.ids)
-
-  const result = {
-    async init() {
-      await config.bus.init()
-    },
-
-    async subscribeByEventType(
-      eventTypes,
-      handler,
-      { onlyBus = false, startTime = 0 } = {}
-    ) {
-      if (!onlyBus) {
-        await config.storage.loadEventsByTypes(eventTypes, handler, startTime)
-      }
-      return onEventByType(eventTypes, handler)
-    },
-
-    async subscribeByAggregateId(
-      aggregateId,
-      handler,
-      { onlyBus = false, startTime = 0 } = {}
-    ) {
-      const aggregateIds = Array.isArray(aggregateId)
-        ? aggregateId
-        : [aggregateId]
-      if (!onlyBus) {
-        await config.storage.loadEventsByAggregateIds(
-          aggregateIds,
-          handler,
-          startTime
-        )
-      }
-      return onEventById(aggregateIds, handler)
-    },
-
-    async subscribeOnBus(handler) {
-      const key = Date.now() + Math.random()
-      busListeners.set(key, handler)
-      return () => {
-        busListeners.delete(key)
-      }
-    },
-
-    async getEventsByAggregateId(aggregateId, handler, startTime = 0) {
-      const aggregateIds = Array.isArray(aggregateId)
-        ? aggregateId
-        : [aggregateId]
-      return await config.storage.loadEventsByAggregateIds(
-        aggregateIds,
-        handler,
-        startTime
-      )
-    },
-
-    async saveEvent(event) {
-      if (!event.type) {
-        throw new Error('The `type` field is missed')
-      }
-      if (!event.aggregateId) {
-        throw new Error('The `aggregateId` field is missed')
-      }
-      event.timestamp = Date.now()
-      event.aggregateId = String(event.aggregateId)
-
-      await config.storage.saveEvent(event)
-      await config.bus.publish(event)
-      return event
-    },
-
-    async saveEventRaw(event) {
-      const { type, aggregateId, timestamp } = event
-      if (!type) {
-        throw new Error('The `type` field is missed')
-      }
-      if (!aggregateId) {
-        throw new Error('The `aggregateId` field is missed')
-      }
-      if (parseInt(timestamp, 10) !== timestamp) {
-        throw new Error('The `timestamp` field is missed or incorrect')
-      }
-      event.aggregateId = String(event.aggregateId)
-
-      await config.storage.saveEvent(event)
-      await config.bus.publish(event)
-      return event
-    }
-  }
-
-  return Object.keys(result).reduce((acc, methodName) => {
-    acc[methodName] = async (...args) => {
-      try {
-        return await result[methodName](...args)
-      } catch (err) {
-        errorHandler(err)
-      }
-    }
-
-    return acc
-  }, {})
 }

@@ -1,7 +1,7 @@
 {
   "name": "hacker-news",
   "version": "0.17.4",
-  "description": "A React & Redux & Resolve implementation of Hacker News",
+  "description": "Hacker News application clone with CQRS and EventSourcing",
   "private": true,
   "scripts": {
     "build": "babel-node ./run.js build",
@@ -41,10 +41,14 @@
     "resolve-redux": "0.17.4",
     "resolve-scripts": "0.17.4",
     "resolve-storage-lite": "0.17.4",
+    "resolve-readmodel-memory": "0.17.4",
+    "resolve-module-comments": "0.17.4",
+    "resolve-module-auth": "0.17.4",
     "sanitizer": "0.1.3",
     "seamless-immutable": "7.1.3",
     "styled-components": "3.4.9",
-    "uuid": "3.3.2"
+    "uuid": "3.3.2",
+    "redux-devtools-extension": "2.13.5"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",

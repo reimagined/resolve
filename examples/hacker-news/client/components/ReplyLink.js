@@ -1,9 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
+import { NavLink } from 'react-router-dom'
 
-import Link from '../containers/Link'
-
-const StyledLink = styled(Link)`
+const StyledLink = styled(NavLink)`
   text-decoration: underline;
   margin-top: 0.33em;
   color: #000;

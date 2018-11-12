@@ -26,7 +26,8 @@ const isClient = true
 const redux = {
   reducers,
   middlewares,
-  store: () => {}
+  sagas: [],
+  enhancers: []
 }
 
 const jwtProvider = {

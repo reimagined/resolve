@@ -21,14 +21,12 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-redux#readme",
   "dependencies": {
-    "diff-json": "^0.1.11",
+    "@babel/runtime": "^7.0.0",
     "json-stable-stringify": "^1.0.1",
     "jwt-decode": "^2.2.0",
-    "prop-types": "^15.6.2",
     "react-redux": "^5.0.7",
     "react-router": "^4.3.1",
     "react-router-redux": "^5.0.0-alpha.9",
-    "redux-devtools-extension": "^2.13.5",
     "redux-saga": "^0.16.0",
     "uuid": "^3.3.2",
     "@babel/runtime": "^7.0.0"

@@ -1,12 +1,15 @@
 {
-  "name": "@shopping-list-advanced/monorepo-root",
+  "name": "shopping-list-advanced",
+  "description": "shows how to work with React-Native",
   "version": "0.17.4",
   "private": true,
   "devDependencies": {
-    "lerna": "3.4.3"
+    "lerna": "^3.4.3",
+    "glob": "^7.1.3"
   },
   "scripts": {
     "prepare": "lerna bootstrap",
+    "patch": "cd scripts && node ./patch-package-jsons.js",
     "babelify": "cd scripts && node babel.compile.js --run",
     "babelify:watch": "cd scripts && node babel.compile.js --watch",
     "build": "cd scripts && node ./run.js build",

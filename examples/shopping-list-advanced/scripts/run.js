@@ -3,7 +3,8 @@ const {
   build,
   start,
   watch,
-  runTestcafe
+  runTestcafe,
+  merge
 } = require('resolve-scripts')
 
 const devConfig = require('./config.dev')
@@ -11,17 +12,38 @@ const prodConfig = require('./config.prod')
 const testFunctionalConfig = require('./config.test-functional')
 const adjustWebpackConfigs = require('./config.adjust-webpack')
 const appConfig = require('./config.app')
+const createAuthModule = require('resolve-module-auth').default
 
 const launchMode = process.argv[2]
 
 void (async () => {
+  const authModule = createAuthModule([
+    {
+      name: 'local-strategy',
+      createStrategy: 'domain/auth/create_strategy.js',
+      routes: [
+        {
+          path: 'auth/local/register',
+          method: 'POST',
+          callback: 'domain/auth/route_register_callback.js'
+        },
+        {
+          path: 'auth/local/login',
+          method: 'POST',
+          callback: 'domain/auth/route_login_callback.js'
+        },
+        {
+          path: 'auth/local/logout',
+          method: 'GET',
+          callback: 'domain/auth/route_logout_callback.js'
+        }
+      ]
+    }
+  ])
+
   switch (launchMode) {
     case 'dev': {
-      const resolveConfig = {
-        ...defaultResolveConfig,
-        ...appConfig,
-        ...devConfig
-      }
+      const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig, authModule)
       await watch(
         resolveConfig,
         adjustWebpackConfigs.bind(null, resolveConfig, { watch: true })
@@ -30,11 +52,7 @@ void (async () => {
     }
 
     case 'build': {
-      const resolveConfig = {
-        ...defaultResolveConfig,
-        ...appConfig,
-        ...prodConfig
-      }
+      const resolveConfig = merge(defaultResolveConfig, appConfig, prodConfig, authModule)
       await build(
         resolveConfig,
         adjustWebpackConfigs.bind(null, resolveConfig, {})
@@ -43,17 +61,20 @@ void (async () => {
     }
 
     case 'start': {
-      await start({
-        ...defaultResolveConfig,
-        ...appConfig,
-        ...prodConfig
-      })
+      await start(
+        merge(defaultResolveConfig, appConfig, prodConfig, authModule)
+      )
       break
     }
 
     case 'test:functional': {
       await runTestcafe({
-        resolveConfig: testFunctionalConfig,
+        resolveConfig: merge(
+          defaultResolveConfig,
+          appConfig,
+          testFunctionalConfig,
+          authModule
+        ),
         functionalTestsDir: 'test/functional',
         browser: process.argv[3]
       })

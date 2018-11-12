@@ -1,19 +1,46 @@
-const loadEvents = async (pool, criteria, values, callback, startTime) => {
-  const cursorStream = pool.collection
-    .find({ [criteria]: { $in: values }, timestamp: { $gt: startTime } })
-    .sort({ timestamp: 1, aggregateVersion: 1 })
-    .project({ _id: 0 })
+const sortExpression = { timestamp: 1, aggregateVersion: 1 }
+const projectionExpression = { _id: 0 }
+
+const loadEvents = async (
+  { collection },
+  { eventTypes, aggregateIds, startTime, finishTime },
+  callback
+) => {
+  const findExpression = {
+    ...(eventTypes != null ? { type: { $in: eventTypes } } : {}),
+    ...(aggregateIds != null ? { aggregateId: { $in: aggregateIds } } : {}),
+    timestamp: {
+      $gt: startTime != null ? startTime : 0,
+      $lt: finishTime != null ? finishTime : Infinity
+    }
+  }
+
+  const cursorStream = collection
+    .find(findExpression)
+    .sort(sortExpression)
+    .project(projectionExpression)
     .stream()
+
+  let lastError = null
 
   for (
     let event = await cursorStream.next();
     event != null;
     event = await cursorStream.next()
   ) {
-    await callback(event)
+    try {
+      await callback(event)
+    } catch (error) {
+      lastError = error
+      break
+    }
   }
 
   await cursorStream.close()
+
+  if (lastError != null) {
+    throw lastError
+  }
 }
 
 export default loadEvents

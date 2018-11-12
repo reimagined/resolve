@@ -371,10 +371,10 @@ const checkUpdateExpression = (
               affectedFields[fieldName],
               true
             ) &&
-            (operator === '$set' ||
-              (operator === '$inc' &&
-                affectedFields[fieldName] != null &&
-                affectedFields[fieldName].constructor === Number))
+              (operator === '$set' ||
+                (operator === '$inc' &&
+                  affectedFields[fieldName] != null &&
+                  affectedFields[fieldName].constructor === Number))
           : checkAndGetColumnStatus(metaInfo, fieldName, true),
         messages.invalidUpdateExpression,
         tableName,
