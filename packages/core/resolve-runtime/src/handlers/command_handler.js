@@ -8,6 +8,7 @@ import message from '../message'
 const commandHandler = async (req, res) => {
   if (req.method !== 'POST') {
     await res.status(405)
+    await res.setHeader('Content-Type', 'text/plain')
     await res.end('')
     return
   }
@@ -16,10 +17,12 @@ const commandHandler = async (req, res) => {
     const commandArgs = extractRequestBody(req)
     await executeCommand({ ...commandArgs, jwtToken: req.jwtToken })
     await res.status(200)
+    await res.setHeader('Content-Type', 'text/plain')
     await res.end(message.commandSuccess)
   } catch (err) {
     const errorCode = extractErrorHttpCode(err)
     await res.status(errorCode)
+    await res.setHeader('Content-Type', 'text/plain')
     await res.end(`${message.commandFail}${err.message}`)
     println.error(err)
   }

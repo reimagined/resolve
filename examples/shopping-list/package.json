@@ -1,6 +1,7 @@
 {
   "name": "shopping-list",
   "version": "0.17.4",
+  "description": "shows how to work with read-models and view-models",
   "private": true,
   "scripts": {
     "build": "babel-node ./run.js build",

@@ -37,10 +37,12 @@ const viewModelHandler = async (req, res) => {
     }
 
     await res.status(200)
+    await res.setHeader('Content-Type', 'text/plain')
     await res.end(serializedState)
   } catch (err) {
     const errorCode = extractErrorHttpCode(err)
     await res.status(errorCode)
+    await res.setHeader('Content-Type', 'text/plain')
     await res.end(`${message.viewModelFail}${err.message}`)
     println.error(err)
   }
