@@ -1,7 +1,7 @@
 import crypto from 'crypto'
 import JWT from 'jsonwebtoken'
 
-import jwtSecret from './jwt_secret'
+import jwtSecret from './jwt-secret'
 
 const routeLoginCallback = async ({ resolve }, username, password) => {
   const user = await resolve.executeQuery({

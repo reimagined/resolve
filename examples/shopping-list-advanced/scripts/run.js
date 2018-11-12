@@ -20,22 +20,22 @@ void (async () => {
   const authModule = createAuthModule([
     {
       name: 'local-strategy',
-      createStrategy: 'domain/auth/create_strategy.js',
+      createStrategy: '../domain/lib/auth/create-strategy.js',
       routes: [
         {
           path: 'auth/local/register',
           method: 'POST',
-          callback: 'domain/auth/route_register_callback.js'
+          callback: '../domain/lib/auth/route-register-callback.js'
         },
         {
           path: 'auth/local/login',
           method: 'POST',
-          callback: 'domain/auth/route_login_callback.js'
+          callback: '../domain/lib/auth/route-login-callback.js'
         },
         {
           path: 'auth/local/logout',
           method: 'GET',
-          callback: 'domain/auth/route_logout_callback.js'
+          callback: '../domain/lib/auth/route-logout-callback.js'
         }
       ]
     }

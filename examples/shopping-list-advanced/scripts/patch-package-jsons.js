@@ -8,31 +8,16 @@ const resolveReduxPath = path.join(path.dirname(require.resolve('resolve-redux')
 const shoppingListPath = path.join(__dirname, '..')
 const shoppingListNodeModulesPath = path.join(shoppingListPath, 'node_modules')
 
-console.log(resolveScriptsPath)
-console.log(resolveReduxPath)
-console.log(shoppingListPath)
-
 try {
   fs.mkdirSync(shoppingListNodeModulesPath)
 } catch (e) {}
 
-execSync(`yarn pack --filename="${
-  path.join(shoppingListNodeModulesPath, 'resolve-scripts.tgz')
-}"`, { cwd: resolveScriptsPath })
-
-execSync(`yarn pack --filename="${
-  path.join(shoppingListNodeModulesPath, 'resolve-redux.tgz')
-}"`, { cwd: resolveReduxPath })
-
-const localPackages = find(`${shoppingListPath}/*/package.json`).map(
-  filePath => path.dirname(filePath)
-)
+const localPackages = find(`${shoppingListPath}/*/package.json`)
 
 const resolvePackages = ['resolve-scripts', 'resolve-redux']
 
 for(const localPackagePath of localPackages) {
-  const packageJson = fs.readFileSync(localPackagePath)
-  
+  const packageJson = JSON.parse(fs.readFileSync(localPackagePath))
   
   const namespaces = [
     'dependencies',
@@ -45,8 +30,7 @@ for(const localPackagePath of localPackages) {
     if (packageJson[namespace]) {
       for (const packageName of Object.keys(packageJson[namespace])) {
         if (resolvePackages.includes(packageName)) {
-          packageJson[namespace][packageName] =
-            path.join(shoppingListNodeModulesPath, `${packageName}.tgz`)
+          packageJson[namespace][packageName] = 'nightly'
         }
       }
     }
@@ -54,3 +38,5 @@ for(const localPackagePath of localPackages) {
   
   fs.writeFileSync(localPackagePath, JSON.stringify(packageJson, null, 2))
 }
+
+execSync(`yarn --registry="http://npm.resolve.sh:10080"`, { cwd: shoppingListPath, stdio: 'inherit' })

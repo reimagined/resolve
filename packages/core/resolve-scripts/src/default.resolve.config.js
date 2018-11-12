@@ -12,9 +12,6 @@ export default {
   sagas: [],
   apiHandlers: [],
   index: 'client/index.js',
-  auth: {
-    strategies: 'auth/index.js'
-  },
   redux: {
     reducers: {},
     middlewares: [],

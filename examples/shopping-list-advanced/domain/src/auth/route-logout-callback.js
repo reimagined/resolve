@@ -1,6 +1,6 @@
 import JWT from 'jsonwebtoken'
 
-import jwtSecret from './jwt_secret'
+import jwtSecret from './jwt-secret'
 
 const routeLogoutCallback = async () => {
   return JWT.sign({}, jwtSecret)

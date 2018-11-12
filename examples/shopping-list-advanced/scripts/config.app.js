@@ -3,9 +3,17 @@ const appConfig = {
   staticDir: '../web/static',
   distDir: './dist',
   redux: {
-    reducers: '../web/lib/redux/reducers/index.js',
-    middlewares: '../web/lib/redux/middlewares/index.js',
-    store: '../web/lib/redux/store/index.js'
+    reducers: {
+      optimisticSharings: '../web/lib/redux/reducers/optimistic-sharings.js',
+      optimisticShoppingLists: '../web/lib/redux/reducers/optimistic-shopping-lists.js'
+    },
+    middlewares: [
+      '../web/lib/redux/middlewares/optimistic-sharings-middleware.js',
+      '../web/lib/redux/middlewares/optimistic-shopping-lists-middleware.js'
+    ],
+    enhancers: [
+      '../web/lib/redux/enhancers/redux-devtools.js'
+    ]
   },
   aggregates: [
     {
@@ -35,9 +43,6 @@ const appConfig = {
   jwtCookie: {
     name: 'shopping-list-jwt',
     maxAge: 31536000000
-  },
-  auth: {
-    strategies: '../domain/lib/auth/index.js'
   },
   subscribeAdapter: {
     module: 'resolve-subscribe-socket.io',
