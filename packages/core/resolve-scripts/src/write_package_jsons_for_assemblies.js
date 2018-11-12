@@ -1,7 +1,11 @@
 import fs from 'fs'
 import path from 'path'
 
-const writePackageJsonsForAssemblies = (distDir, nodeModulesByAssembly) => {
+const writePackageJsonsForAssemblies = (
+  distDir,
+  nodeModulesByAssembly,
+  peerDependencies
+) => {
   const applicationPackageJson = JSON.parse(
     fs.readFileSync(path.join(process.cwd(), 'package.json'))
   )
@@ -24,12 +28,17 @@ const writePackageJsonsForAssemblies = (distDir, nodeModulesByAssembly) => {
       .replace('/package.json', '')
       .replace(/[^\w\d-]/g, '-')
 
+    const resultNodeModules = new Set([
+      ...Array.from(nodeModules),
+      ...Array.from(peerDependencies)
+    ])
+
     const assemblyPackageJson = {
       name: `${applicationPackageJson.name}-${syntheticName}`,
       private: true,
       version: applicationPackageJson.version,
       main: './index.js',
-      dependencies: Array.from(nodeModules).reduce((acc, val) => {
+      dependencies: Array.from(resultNodeModules).reduce((acc, val) => {
         acc[val] = applicationPackageJson.dependencies[val]
         return acc
       }, {})

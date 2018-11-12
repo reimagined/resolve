@@ -8,6 +8,7 @@ import webpack from 'webpack'
 
 import getWebpackConfigs from './get_webpack_configs'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
+import getPeerDependencies from './get_peer_dependencies'
 import showBuildInfo from './show_build_info'
 import copyEnvToDist from './copy_env_to_dist'
 import validateConfig from './validate_config'
@@ -29,6 +30,8 @@ const runTestcafe = async ({
     adjustWebpackConfigs
   })
 
+  const peerDependencies = getPeerDependencies()
+
   const compiler = webpack(webpackConfigs)
 
   fsExtra.copySync(
@@ -42,7 +45,8 @@ const runTestcafe = async ({
 
       writePackageJsonsForAssemblies(
         resolveConfig.distDir,
-        nodeModulesByAssembly
+        nodeModulesByAssembly,
+        peerDependencies
       )
 
       copyEnvToDist(resolveConfig.distDir)
