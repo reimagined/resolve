@@ -1,6 +1,7 @@
 {
   "name": "hello-world",
   "version": "0.17.4",
+  "description": "used as a template for new reSolve applications",
   "private": true,
   "scripts": {
     "build": "babel-node ./run.js build",

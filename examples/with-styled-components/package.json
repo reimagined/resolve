@@ -1,6 +1,7 @@
 {
   "name": "with-styled-components",
   "version": "0.17.4",
+  "description": "shows how to work with Styled Components",
   "private": true,
   "scripts": {
     "build": "babel-node ./run.js build",

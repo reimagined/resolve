@@ -1,3 +1,4 @@
 #!/usr/bin/env node
 
-require('../lib/create_resolve_app')
+require('source-map-support').install()
+require('../lib/index')
