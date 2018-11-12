@@ -42,9 +42,6 @@ const appConfig = {
     name: 'shopping-list-jwt',
     maxAge: 31536000000
   },
-  auth: {
-    strategies: 'domain/auth/index.js'
-  },
   subscribeAdapter: {
     module: 'resolve-subscribe-socket.io',
     options: {}
