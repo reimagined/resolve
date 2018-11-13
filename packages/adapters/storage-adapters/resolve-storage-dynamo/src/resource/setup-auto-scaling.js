@@ -1,10 +1,12 @@
 import { rangedIndex } from '../constants'
 
-const setupAutoScaling = async (pool, tableName) => {
-  const { setupAutoScalingItem } = pool
+const setupAutoScaling = async (pool, region, tableName) => {
+  const { setupAutoScalingItem, ApplicationAutoScaling } = pool
+
+  const applicationAutoScaling = new ApplicationAutoScaling({ region })
 
   const read = setupAutoScalingItem(
-    pool,
+    applicationAutoScaling,
     `table/${tableName}`,
     'dynamodb:table:ReadCapacityUnits',
     `${tableName}-readpolicy`,
@@ -12,7 +14,7 @@ const setupAutoScaling = async (pool, tableName) => {
   )
 
   const write = setupAutoScalingItem(
-    pool,
+    applicationAutoScaling,
     `table/${tableName}`,
     'dynamodb:table:WriteCapacityUnits',
     `${tableName}-writepolicy`,
@@ -20,7 +22,7 @@ const setupAutoScaling = async (pool, tableName) => {
   )
 
   const indexRead = setupAutoScalingItem(
-    pool,
+    applicationAutoScaling,
     `table/${tableName}/index/${rangedIndex}`,
     'dynamodb:index:ReadCapacityUnits',
     `${tableName}-indexreadpolicy`,
@@ -28,7 +30,7 @@ const setupAutoScaling = async (pool, tableName) => {
   )
 
   const indexWrite = setupAutoScalingItem(
-    pool,
+    applicationAutoScaling,
     `table/${tableName}/index/${rangedIndex}`,
     'dynamodb:index:WriteCapacityUnits',
     `${tableName}-indexwritepolicy`,
