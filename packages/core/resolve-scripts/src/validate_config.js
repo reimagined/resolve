@@ -11,7 +11,7 @@ export const validateRootPath = resolveConfig => {
     return
   }
 
-  if (!validatePath(resolveConfig.rootPath, true)) {
+  if (!validatePath(resolveConfig.rootPath, { allowEmptyPath: true })) {
     throw new Error(
       `Incorrect options.rootPath = "${
         resolveConfig.rootPath
@@ -27,11 +27,12 @@ export const validateStaticPath = resolveConfig => {
     return
   }
 
-  if (!validatePath(resolveConfig.staticPath)) {
+  if (!validatePath(resolveConfig.staticPath, { allowAbsolutePath: true })) {
     throw new Error(
       `Incorrect options.staticPath = "${
         resolveConfig.staticPath
-      }"\nValue must be part of the URL, which is the application's static subdirectory`
+        // eslint-disable-next-line max-len
+      }"\nValue must be part of the URL or the absolute URL, which is the application's static subdirectory`
     )
   }
 

@@ -9,13 +9,15 @@ A storage adapter is an object that must contain the following functions:
 
 Available adapters:
 
-- [resolve-storage-mongo](../storage-adapters/resolve-storage-mongo)  
+- [resolve-storage-mongo](./resolve-storage-mongo)  
    Used to store events in MongoDB.
-- [resolve-storage-lite](../storage-adapters/resolve-storage-lite)  
+- [resolve-storage-lite](./resolve-storage-lite)  
    Used to store events in a local file.
-- [resolve-storage-mysql](../storage-adapters/resolve-storage-mysql)  
-   Used to store events in a MySQL base.
-
+- [resolve-storage-mysql](./resolve-storage-mysql)  
+   Used to store events in a MySQL.
+- [resolve-storage-dynamo](./resolve-storage-dynamo)  
+   Used to store events in a DynamoDB.
+   
 ### Example
 
 ```js
