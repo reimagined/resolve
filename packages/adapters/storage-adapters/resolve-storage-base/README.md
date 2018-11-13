@@ -17,7 +17,7 @@ await loadEvents({
   aggregateIds: ['aggregate_1', 'aggregate_2'],
   startTime: 0,
   finishTime: Data.now()
-})
+}, callback)
 
 await saveEvent(event)
 
