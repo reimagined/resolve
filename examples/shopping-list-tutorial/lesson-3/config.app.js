@@ -7,16 +7,14 @@ const appConfig = {
       projection: 'common/aggregates/shopping_list.projection.js'
     }
   ],
-  readModels: [
-  ],
+  readModels: [],
   viewModels: [
     {
       name: 'ShoppingList',
       projection: 'common/view-models/shopping_list.projection.js'
     }
   ],
-  sagas: [
-  ],
+  sagas: [],
   auth: {
     strategies: 'auth/index.js'
   },

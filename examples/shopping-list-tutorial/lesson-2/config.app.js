@@ -7,12 +7,9 @@ const appConfig = {
       projection: 'common/aggregates/shopping_list.projection.js'
     }
   ],
-  readModels: [
-  ],
-  viewModels: [
-  ],
-  sagas: [
-  ],
+  readModels: [],
+  viewModels: [],
+  sagas: [],
   auth: {
     strategies: 'auth/index.js'
   },
