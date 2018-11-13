@@ -2,20 +2,20 @@
 
 You can create a new reSolve app using the create-resolve-app utility available on **npm**:
 
-#####npm:
+##### npm:
 ``` sh
 npm i -g create-resolve-app
 create-resolve-app shopping-list
 ```
 
-#####npx:
+##### npx:
 
 ``` sh
 $ npx create-resolve-app shopping-list
 ```
 
 
-#####yarn:
+##### yarn:
 
 ``` sh
 $ yarn create resolve-app shopping-list
