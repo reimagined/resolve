@@ -1,43 +1,32 @@
 import { message } from '../constants'
-import { checkRuntimeEnv } from '../declare_runtime_env'
+import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 
-export default ({ resolveConfig }) => {
+export default ({ resolveConfig, isClient }) => {
   if (resolveConfig.customConstants == null) {
     throw new Error(`${message.configNotContainSectionError}.customConstants`)
   }
 
-  for (const key of Object.keys(resolveConfig.customConstants)) {
-    if (checkRuntimeEnv(resolveConfig.customConstants[key])) {
+  void JSON.stringify(resolveConfig.customConstants, (key, value) => {
+    if (
+      value != null &&
+      value.constructor !== Number &&
+      value.constructor !== String &&
+      value.constructor !== Boolean &&
+      !Array.isArray(value) &&
+      value.constructor !== Object &&
+      !checkRuntimeEnv(value)
+    ) {
+      throw new Error(`${message.incorrectJsonSchemaType}".${key}"`)
     }
-  }
-
-  const customConstants = JSON.stringify(
-    resolveConfig.customConstants,
-    (key, value) => {
-      if (checkRuntimeEnv(value)) {
-        throw new Error(`${message.clientEnvError}".${key}"`)
-      }
-
-      if (
-        value == null ||
-        value.constructor === Number ||
-        value.constructor === String ||
-        value.constructor === Boolean ||
-        Array.isArray(value) ||
-        value.constructor === Object
-      ) {
-        return value
-      } else {
-        throw new Error(`${message.incorrectJsonSchemaType}".${key}"`)
-      }
-    },
-    2
-  )
+  })
 
   const exports = []
 
   exports.push(
-    `const customConstants = ${customConstants}`,
+    `const customConstants = ${injectRuntimeEnv(
+      resolveConfig.customConstants,
+      isClient
+    )}`,
     ``,
     `module.exports = customConstants`
   )
