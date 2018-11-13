@@ -1,6 +1,10 @@
 import Url from 'url'
 
-const validatePath = (url, allowEmptyPath) => {
+const validatePath = (url, { allowEmptyPath, allowAbsolutePath }) => {
+  if (url === '' && !allowEmptyPath) {
+    return false
+  }
+
   try {
     const {
       protocol,
@@ -11,27 +15,17 @@ const validatePath = (url, allowEmptyPath) => {
       hostname,
       hash,
       search,
-      query,
-      path
+      query
     } = Url.parse(url)
 
-    if (path === '' && !allowEmptyPath) {
+    if (
+      !allowAbsolutePath &&
+      (protocol || slashes || host || port || hostname)
+    ) {
       return false
     }
 
-    if (
-      protocol ||
-      slashes ||
-      auth ||
-      host ||
-      port ||
-      hostname ||
-      hash ||
-      search ||
-      query ||
-      /^\//.test(path) ||
-      /\/$/.test(path)
-    ) {
+    if (auth || hash || search || query || /^\//.test(url) || /\/$/.test(url)) {
       return false
     }
 
