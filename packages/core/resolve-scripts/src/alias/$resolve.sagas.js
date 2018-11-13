@@ -38,7 +38,6 @@ export default ({ resolveConfig, isClient }) => {
       runtimeMode: RUNTIME_ENV_ANYWHERE,
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
-      instanceFallback: 'saga_event_handlers.js',
       imports,
       constants
     })
@@ -49,7 +48,6 @@ export default ({ resolveConfig, isClient }) => {
       runtimeMode: RUNTIME_ENV_ANYWHERE,
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
-      instanceFallback: 'saga_cron_handlers.js',
       imports,
       constants
     })

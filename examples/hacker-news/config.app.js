@@ -28,10 +28,7 @@ const appConfig = {
       projection: 'common/read-models/hacker-news.projection.js',
       resolvers: 'common/read-models/hacker-news.resolvers.js'
     }
-  ],
-  auth: {
-    strategies: 'auth/local-strategy.js'
-  }
+  ]
 }
 
 export default appConfig
