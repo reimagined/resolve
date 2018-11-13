@@ -2,6 +2,9 @@
 
 exports[`as resource method "create" works correctly 1`] = `
 "{
+  \\"region\\": \\"region-test\\"
+}
+{
   \\"ResourceId\\": \\"table/tableName\\",
   \\"ServiceNamespace\\": \\"dynamodb\\",
   \\"ScalableDimension\\": \\"dynamodb:table:ReadCapacityUnits\\",

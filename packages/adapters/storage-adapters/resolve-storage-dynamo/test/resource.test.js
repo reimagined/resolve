@@ -10,11 +10,14 @@ describe('as resource', () => {
   test('method "create" works correctly', async () => {
     const EOL = '\r\n'
     const autoScalingResult = []
-    const ApplicationAutoScaling = {
+    const ApplicationAutoScaling = class {
+      constructor({ region }) {
+        autoScalingResult.push(JSON.stringify({ region }, null, 2))
+      }
       registerScalableTarget(config) {
         autoScalingResult.push(JSON.stringify(config, null, 2))
         return { promise: () => Promise.resolve() }
-      },
+      }
       putScalingPolicy(config) {
         autoScalingResult.push(JSON.stringify(config, null, 2))
         return { promise: () => Promise.resolve() }
@@ -32,11 +35,17 @@ describe('as resource', () => {
       createAdapter
     }
 
+    const region = 'region-test'
     const tableName = 'tableName'
     const readCapacityUnits = 23
     const writeCapacityUnits = 43
 
-    await create(pool, { tableName, readCapacityUnits, writeCapacityUnits })
+    await create(pool, {
+      region,
+      tableName,
+      readCapacityUnits,
+      writeCapacityUnits
+    })
 
     sinon.assert.calledWith(createAdapter, {
       tableName,

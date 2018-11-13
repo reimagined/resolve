@@ -33,6 +33,7 @@ const adapter = createAdapter({
 import { create, dispose, destroy } from 'resolve-storage-dynamo'
 
 await create({ 
+  region,
   tableName, 
   readCapacityUnits, 
   writeCapacityUnits 
