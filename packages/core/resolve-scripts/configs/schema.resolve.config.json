@@ -245,16 +245,6 @@
       "required": ["reducers"],
       "additionalProperties": false
     },
-    "auth": {
-      "type": "object",
-      "properties": {
-        "strategies": {
-          "type": "string"
-        }
-      },
-      "additionalProperties": false,
-      "required": ["strategies"]
-    },
     "polyfills": {
       "type": "array",
       "items": {
@@ -336,9 +326,6 @@
         },
         "snapshotAdapter": {
           "$ref": "#/definitions/adapter"
-        },
-        "auth": {
-          "$ref": "#/definitions/auth"
         },
         "jwtCookie": {
           "$ref": "#/definitions/jwtCookie"

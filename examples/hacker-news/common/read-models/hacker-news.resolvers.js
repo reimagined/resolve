@@ -23,8 +23,8 @@ const getStory = async (store, { id }) => {
   const type = !story.link
     ? 'ask'
     : /^(Show HN)/.test(story.title)
-      ? 'show'
-      : 'story'
+    ? 'show'
+    : 'story'
 
   Object.assign(story, { type })
 
@@ -36,8 +36,8 @@ const getUser = async (store, { id, name }) => {
     name != null
       ? await store.findOne('Users', { name })
       : id != null
-        ? await store.findOne('Users', { id })
-        : null
+      ? await store.findOne('Users', { id })
+      : null
 
   return user
 }

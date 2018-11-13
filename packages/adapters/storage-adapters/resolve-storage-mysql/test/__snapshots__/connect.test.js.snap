@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`connect should connect to mysql database 1`] = `
+Array [
+  Object {
+    "database": "database",
+    "host": "host",
+    "password": "password",
+    "port": "port",
+    "user": "user",
+  },
+]
+`;

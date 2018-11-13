@@ -1,6 +1,8 @@
-const loadEvents = async (pool, filter, callback) => {
-  const { connection, escapeId, escape, tableName } = pool
-  const { eventTypes, aggregateIds, startTime, finishTime } = filter
+const loadEvents = async (
+  { connection, escapeId, escape, tableName },
+  { eventTypes, aggregateIds, startTime, finishTime },
+  callback
+) => {
   const injectString = value => `${escape(value)}`
   const injectNumber = value => `${+value}`
 

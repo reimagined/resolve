@@ -2,7 +2,7 @@ import sinon from 'sinon'
 
 test('resolve-storage-base index', () => {
   const createAdapter = require('../src/create-adapter')
-  const wrapInit = require('../src/wrap-init')
+  const wrapInit = require('../src/prepare')
   const wrapMethod = require('../src/wrap-method')
   const wrapLoadEvents = require('../src/wrap-load-events')
   const wrapDispose = require('../src/wrap-dispose')

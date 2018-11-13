@@ -11,7 +11,12 @@ const read = async (repository, { resolverName, resolverArgs, jwtToken }) => {
     )
   }
 
-  const store = await repository.getModelReadInterface(repository)
+  const getModelReadInterface = repository.getModelReadInterface.bind(
+    null,
+    repository
+  )
+
+  const store = await getModelReadInterface(true)
 
   return await resolver(store, resolverArgs, jwtToken)
 }

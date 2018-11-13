@@ -34,14 +34,13 @@ export default {
   }),
   [SHOPPING_ITEM_TOGGLED]: (state, { payload: { id } }) => ({
     ...state,
-    list: state.list.map(
-      item =>
-        item.id === id
-          ? {
-              ...item,
-              checked: !item.checked
-            }
-          : item
+    list: state.list.map(item =>
+      item.id === id
+        ? {
+            ...item,
+            checked: !item.checked
+          }
+        : item
     )
   }),
   [SHOPPING_ITEM_REMOVED]: (state, { payload: { id } }) => ({

@@ -24,6 +24,7 @@
     "ddd"
   ],
   "dependencies": {
+    "@babel/runtime": "^7.0.0",
     "mqtt": "^2.18.8",
     "ws": "^5.2.1",
     "websocket-stream": "^5.1.2",

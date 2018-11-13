@@ -25,6 +25,7 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/api-handler-adapters/resolve-api-handler-awslambda#readme",
   "dependencies": {
+    "@babel/runtime": "^7.0.0",
     "content-disposition": "0.5.2",
     "cookie": "0.3.1"
   },

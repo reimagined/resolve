@@ -25,7 +25,7 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-redux#readme",
   "dependencies": {
-    "diff-json": "^0.1.11",
+    "@babel/runtime": "^7.0.0",
     "json-stable-stringify": "^1.0.1",
     "jwt-decode": "^2.2.0",
     "react-redux": "^5.0.7",

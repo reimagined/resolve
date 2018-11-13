@@ -1,7 +1,7 @@
 {
   "name": "resolve-snapshot-lite",
   "version": "0.17.4",
-  "description": "This package serves as an adapter for resolve-storage to store events using a file or in memory.",
+  "description": "This package serves as an adapter for snapshots using a file or in memory.",
   "engines": {
     "node": ">=8.10"
   },
@@ -23,8 +23,9 @@
     "es",
     "ddd"
   ],
-  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-snapshot-lite#readme",
+  "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/snapshot-adapters/resolve-snapshot-lite#readme",
   "dependencies": {
+    "@babel/runtime": "^7.0.0",
     "nedb": "^1.8.0"
   },
   "babelCompile": [

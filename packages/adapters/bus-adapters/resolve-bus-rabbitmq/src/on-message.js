@@ -12,15 +12,18 @@ const onMessage = async (pool, message) => {
     const event = JSON.parse(content)
 
     const topics = pool.makeTopicsForEvent(event)
+    const applicationPromises = []
 
     for (const topic of topics) {
       const topicHandlers = pool.handlers.get(topic)
       if (topicHandlers == null) return
 
-      await Promise.all(
-        Array.from(topicHandlers).map(handler => handler(event))
-      )
+      for (const handler of Array.from(topicHandlers)) {
+        applicationPromises.push(handler(event))
+      }
     }
+
+    await Promise.all(applicationPromises)
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error)

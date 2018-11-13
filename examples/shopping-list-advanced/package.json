@@ -1,5 +1,6 @@
 {
-  "name": "@shopping-list-advanced/scripts",
+  "name": "shopping-list-advanced",
+  "description": "shows how to work with React-Native",
   "version": "0.17.4",
   "private": true,
   "scripts": {

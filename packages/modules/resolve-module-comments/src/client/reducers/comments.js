@@ -102,14 +102,13 @@ const createCommentsReducer = ({
           ...state[action.aggregateId][action.payload.parentCommentId],
           children: state[action.aggregateId][
             action.payload.parentCommentId
-          ].children.map(
-            child =>
-              child.commentId === action.payload.commentId
-                ? {
-                    ...child,
-                    ...action.payload
-                  }
-                : child
+          ].children.map(child =>
+            child.commentId === action.payload.commentId
+              ? {
+                  ...child,
+                  ...action.payload
+                }
+              : child
           )
         }
       }

@@ -1,9 +1,11 @@
 const sortExpression = { timestamp: 1, aggregateVersion: 1 }
 const projectionExpression = { _id: 0 }
 
-const loadEvents = async (pool, filter, callback) => {
-  const { eventTypes, aggregateIds, startTime, finishTime } = filter
-
+const loadEvents = async (
+  { collection },
+  { eventTypes, aggregateIds, startTime, finishTime },
+  callback
+) => {
   const findExpression = {
     ...(eventTypes != null ? { type: { $in: eventTypes } } : {}),
     ...(aggregateIds != null ? { aggregateId: { $in: aggregateIds } } : {}),
@@ -13,7 +15,7 @@ const loadEvents = async (pool, filter, callback) => {
     }
   }
 
-  const cursorStream = pool.collection
+  const cursorStream = collection
     .find(findExpression)
     .sort(sortExpression)
     .project(projectionExpression)

@@ -1,3 +1,8 @@
+const EVENT_MALFORMED = 'EVENT_MALFORMED'
+const EVENT_OUTDATED = 'EVENT_OUTDATED'
+const EVENT_OUT_OF_ORDER = 'EVENT_OUT_OF_ORDER'
+const EVENT_SUCCESS = 'EVENT_SUCCESS'
+
 const buildProjection = (
   { metaApi, storeApi, internalContext },
   inputProjection
@@ -11,9 +16,9 @@ const buildProjection = (
       return projection
     }
 
-    projection[eventType] = async event => {
+    projection[eventType] = async (event, maybeUnordered) => {
       if (event == null || event.constructor !== Object) {
-        return
+        return EVENT_MALFORMED
       }
 
       const aggregatesVersionsMap = await metaApi.getLastAggregatesVersions()
@@ -25,16 +30,31 @@ const buildProjection = (
         expectedAggregateVersion != null &&
         event.aggregateVersion <= expectedAggregateVersion
       ) {
-        return
+        return EVENT_OUTDATED
+      }
+
+      if (
+        maybeUnordered &&
+        !(
+          (expectedAggregateVersion == null && event.aggregateVersion === 1) ||
+          expectedAggregateVersion + 1 === event.aggregateVersion
+        )
+      ) {
+        return EVENT_OUT_OF_ORDER
       }
 
       await inputProjection[eventType](storeApi, event)
-      await metaApi.setLastTimestamp(event.timestamp)
+
+      if (!maybeUnordered) {
+        await metaApi.setLastTimestamp(event.timestamp)
+      }
 
       await metaApi.setLastAggregateVersion(
         event.aggregateId,
         event.aggregateVersion
       )
+
+      return EVENT_SUCCESS
     }
 
     return projection

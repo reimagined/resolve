@@ -1,7 +1,12 @@
+const EVENT_OUTDATED = 'EVENT_OUTDATED'
+const EVENT_OUT_OF_ORDER = 'EVENT_OUT_OF_ORDER'
+const EVENT_SUCCESS = 'EVENT_SUCCESS'
+
 const eventHandler = async (
   { projection, snapshotAdapter, serializeState },
   viewModel,
-  event
+  event,
+  maybeUnordered
 ) => {
   if (viewModel.disposed) {
     throw new Error('View model is disposed')
@@ -17,11 +22,24 @@ const eventHandler = async (
       expectedAggregateVersion != null &&
       event.aggregateVersion <= expectedAggregateVersion
     ) {
-      return
+      return EVENT_OUTDATED
+    }
+
+    if (
+      maybeUnordered &&
+      !(
+        (expectedAggregateVersion == null && event.aggregateVersion === 1) ||
+        expectedAggregateVersion + 1 === event.aggregateVersion
+      )
+    ) {
+      return EVENT_OUT_OF_ORDER
     }
 
     viewModel.state = projection[event.type](viewModel.state, event)
-    viewModel.lastTimestamp = event.timestamp - 1
+
+    if (!maybeUnordered) {
+      viewModel.lastTimestamp = event.timestamp - 1
+    }
 
     viewModel.aggregatesVersionsMap.set(
       event.aggregateId,
@@ -35,6 +53,8 @@ const eventHandler = async (
         state: serializeState(viewModel.state)
       })
     }
+
+    return EVENT_SUCCESS
   } catch (error) {
     viewModel.lastError = error
     throw error

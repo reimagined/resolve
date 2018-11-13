@@ -1,6 +1,6 @@
 import path from 'path'
 
-import alias from '../../src/core/alias/$resolve.viewModels'
+import alias from '../../src/alias/$resolve.viewModels'
 import normalizePaths from './normalize_paths'
 
 describe('base config works correctly', () => {

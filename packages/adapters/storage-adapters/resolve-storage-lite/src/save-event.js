@@ -1,8 +1,8 @@
 import { ConcurrentError } from 'resolve-storage-base'
 
-const saveEvent = async (pool, event) => {
+const saveEvent = async ({ database, promiseInvoke }, event) => {
   try {
-    await pool.promiseInvoke(pool.db.insert.bind(pool.db), {
+    await promiseInvoke(database.insert.bind(database), {
       ...event,
       aggregateIdAndVersion: `${event.aggregateId}:${event.aggregateVersion}`
     })
