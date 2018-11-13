@@ -1,0 +1,113 @@
+import React from 'react'
+import { connect } from 'react-redux'
+import { connectViewModel } from 'resolve-redux'
+import { bindActionCreators } from 'redux'
+
+import {
+  ListGroup,
+  ListGroupItem,
+  Checkbox,
+  ControlLabel,
+  Row,
+  Col,
+  FormControl,
+  Button
+} from 'react-bootstrap'
+
+export class ShoppingList extends React.PureComponent {
+  state = {
+    itemText: ''
+  }
+
+  createShoppingItem = () => {
+    this.props.createShoppingItem('root-id', {
+      text: this.state.itemText,
+      id: Date.now().toString()
+    })
+
+    this.setState({
+      itemText: ''
+    })
+  }
+
+  updateItemText = event => {
+    this.setState({
+      itemText: event.target.value
+    })
+  }
+
+  onItemTextPressEnter = event => {
+    if (event.charCode === 13) {
+      event.preventDefault()
+      this.createShoppingItem()
+    }
+  }
+
+  render() {
+    const list = this.props.data
+    const toggleShoppingItem = this.props.toggleShoppingItem
+
+    return (
+      <div style={{ maxWidth: '500px', margin: 'auto' }}>
+        <ListGroup>
+          {list.map(todo => (
+            <ListGroupItem key={todo.id}>
+              <Checkbox
+                inline
+                checked={todo.checked}
+                onClick={toggleShoppingItem.bind(null, 'root-id', {
+                  id: todo.id
+                })}
+              >
+                {todo.text}
+              </Checkbox>
+            </ListGroupItem>
+          ))}
+        </ListGroup>
+        <ControlLabel>Item name</ControlLabel>
+        <Row>
+          <Col md={8}>
+            <FormControl
+              className="example-form-control"
+              type="text"
+              value={this.state.itemText}
+              onChange={this.updateItemText}
+              onKeyPress={this.onItemTextPressEnter}
+            />
+          </Col>
+          <Col md={4}>
+            <Button
+              className="example-button"
+              bsStyle="success"
+              onClick={this.createShoppingItem}
+            >
+              Add Item
+            </Button>
+          </Col>
+        </Row>
+      </div>
+    )
+  }
+}
+
+export const mapStateToOptions = (state, ownProps) => {
+  return {
+    viewModelName: 'ShoppingList',
+    aggregateIds: ['root-id']
+  }
+}
+
+export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+  bindActionCreators(
+    {
+      ...aggregateActions
+    },
+    dispatch
+  )
+
+export default connectViewModel(mapStateToOptions)(
+  connect(
+    null,
+    mapDispatchToProps
+  )(ShoppingList)
+)
