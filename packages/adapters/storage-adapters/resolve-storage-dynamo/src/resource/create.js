@@ -1,6 +1,6 @@
 const create = async (
   pool,
-  { tableName, readCapacityUnits, writeCapacityUnits }
+  { region, tableName, readCapacityUnits, writeCapacityUnits }
 ) => {
   const { createAdapter, setupAutoScaling } = pool
 
@@ -12,7 +12,7 @@ const create = async (
   })
   await dynamoAdapter.init()
 
-  await setupAutoScaling(pool, tableName)
+  await setupAutoScaling(pool, region, tableName)
 }
 
 export default create
