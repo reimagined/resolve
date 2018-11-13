@@ -30,6 +30,8 @@ const adapter = createAdapter({
 
 #### As Resource
 ```js
+import { create, dispose, destroy } from 'resolve-storage-dynamo'
+
 await create({ 
   tableName, 
   readCapacityUnits, 
