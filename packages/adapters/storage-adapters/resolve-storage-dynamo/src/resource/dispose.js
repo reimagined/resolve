@@ -1,15 +1,11 @@
-const dispose = async (
-  pool,
-  { tableName, newTableName, readCapacityUnits, writeCapacityUnits }
-) => {
+const dispose = async (pool, { newTableName, ...options }) => {
   const { createAdapter, destroy } = pool
 
-  await destroy(pool, { tableName, readCapacityUnits, writeCapacityUnits })
+  await destroy(pool, options)
 
   const dynamoAdapter = createAdapter({
+    ...options,
     tableName: newTableName,
-    readCapacityUnits,
-    writeCapacityUnits,
     skipInit: true
   })
   await dynamoAdapter.init()

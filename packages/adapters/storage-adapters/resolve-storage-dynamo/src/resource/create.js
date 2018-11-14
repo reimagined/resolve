@@ -1,18 +1,13 @@
-const create = async (
-  pool,
-  { region, tableName, readCapacityUnits, writeCapacityUnits }
-) => {
+const create = async (pool, options) => {
   const { createAdapter, setupAutoScaling } = pool
 
   const dynamoAdapter = createAdapter({
-    tableName,
-    readCapacityUnits,
-    writeCapacityUnits,
+    ...options,
     skipInit: true
   })
   await dynamoAdapter.init()
 
-  await setupAutoScaling(pool, region, tableName)
+  await setupAutoScaling(pool, options)
 }
 
 export default create
