@@ -20,7 +20,10 @@ const createAdapter = (
     init: wrapMethod(
       {
         ...pool,
-        skipInit: false
+        config: {
+          ...pool.config,
+          skipInit: false
+        }
       },
       Function() // eslint-disable-line no-new-func
     ),
