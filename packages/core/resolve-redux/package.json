@@ -28,7 +28,7 @@
     "@babel/runtime": "^7.0.0",
     "json-stable-stringify": "^1.0.1",
     "jwt-decode": "^2.2.0",
-    "react-redux": "^5.0.7",
+    "react-redux": "^5.1.1",
     "react-router": "^4.3.1",
     "react-router-redux": "^5.0.0-alpha.9",
     "redux-saga": "^0.16.0",

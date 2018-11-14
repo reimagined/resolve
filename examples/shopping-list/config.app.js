@@ -6,7 +6,8 @@ const appConfig = {
     reducers: {
       optimisticShoppingLists: 'client/reducers/optimistic_shopping_lists.js'
     },
-    middlewares: ['client/middlewares/optimistic_shopping_lists_middleware.js']
+    middlewares: ['client/middlewares/optimistic_shopping_lists_middleware.js'],
+    enhancers: ['client/enhancers/redux-devtools.js']
   },
   aggregates: [
     {

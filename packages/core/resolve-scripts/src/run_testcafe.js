@@ -18,6 +18,7 @@ const runTestcafe = async ({
   adjustWebpackConfigs,
   functionalTestsDir,
   browser,
+  customArgs = [],
   timeout
 }) => {
   validateConfig(resolveConfig)
@@ -95,13 +96,16 @@ const runTestcafe = async ({
   let status = 0
   try {
     execSync(
-      `npx testcafe ${targetBrowser}` +
-        ` ${functionalTestsDir}` +
-        ` --app-init-delay ${targetTimeout}` +
-        ` --selector-timeout ${targetTimeout}` +
-        ` --assertion-timeout ${targetTimeout}` +
-        ` --page-load-timeout ${targetTimeout}` +
-        (targetBrowser === 'remote' ? ' --qr-code' : ''),
+      [
+        `npx testcafe ${targetBrowser}`,
+        `${functionalTestsDir}`,
+        `--app-init-delay ${targetTimeout}`,
+        `--selector-timeout ${targetTimeout}`,
+        `--assertion-timeout ${targetTimeout}`,
+        `--page-load-timeout ${targetTimeout}`,
+        targetBrowser === 'remote' ? ' --qr-code' : '',
+        ...customArgs
+      ].join(' '),
       { stdio: 'inherit' }
     )
   } catch (error) {
