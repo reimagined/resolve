@@ -18,13 +18,15 @@ const createAdapter = (
 
   return Object.freeze({
     init: wrapMethod(
-      {
-        ...pool,
+      Object.create(pool, {
         config: {
-          ...pool.config,
-          skipInit: false
+          writable: true,
+          configurable: true,
+          value: Object.create(config, {
+            skipInit: { value: false }
+          })
         }
-      },
+      }),
       Function() // eslint-disable-line no-new-func
     ),
     loadEvents: wrapMethod(pool, wrapLoadEvents(loadEvents)),

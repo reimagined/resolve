@@ -1,6 +1,6 @@
 import { rangedIndex } from '../constants'
 
-const setupAutoScaling = async (pool, region, tableName) => {
+const setupAutoScaling = async (pool, { region, tableName }) => {
   const { setupAutoScalingItem, ApplicationAutoScaling } = pool
 
   const applicationAutoScaling = new ApplicationAutoScaling({ region })
