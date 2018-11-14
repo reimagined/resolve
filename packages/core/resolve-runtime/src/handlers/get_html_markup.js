@@ -7,8 +7,9 @@ export default ({
   markup,
   styleTags,
   initialState,
-  bundleUrl,
-  hmrUrl
+  bundleUrl
+  // TODO. Revert HMR before 0.18.0. Local Server with HMR / Cloud Server without HMR
+  // hmrUrl
 }) => {
   const helmet = Helmet.renderStatic()
 
@@ -33,7 +34,8 @@ export default ({
     `<body ${helmet.bodyAttributes.toString()}>` +
     `<div class="app-container">${markup}</div>` +
     `<script src="${bundleUrl}"></script>` +
-    `<script src="${hmrUrl}"></script>` +
+    // TODO. Revert HMR before 0.18.0. Local Server with HMR / Cloud Server without HMR
+    // `<script src="${hmrUrl}"></script>` +
     '</body>' +
     '</html>'
   )
