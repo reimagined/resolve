@@ -23,8 +23,7 @@
     "resolve-readmodel-memory": "0.17.4",
     "resolve-redux": "0.17.4",
     "resolve-scripts": "0.17.4",
-    "resolve-subscribe-socket.io": "0.17.4",
-    "redux-devtools-extension": "2.13.5"
+    "resolve-subscribe-socket.io": "0.17.4"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",
