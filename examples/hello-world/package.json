@@ -21,7 +21,7 @@
     "resolve-redux": "0.17.4",
     "resolve-readmodel-memory": "0.17.4",
     "resolve-scripts": "0.17.4",
-    "testcafe-browser-tools": "1.6.5"
+    "redux-devtools-extension": "2.13.5"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",

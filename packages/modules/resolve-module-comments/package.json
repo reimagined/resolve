@@ -35,7 +35,7 @@
   },
   "peerDependencies": {
     "react": "^16.6.0",
-    "react-redux": "^5.0.7",
+    "react-redux": "^5.1.1",
     "redux": "^4.0.0"
   },
   "babelCompile": [
