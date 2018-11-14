@@ -40,6 +40,7 @@ await create({
 })
 
 await dispose({ 
+  region,
   tableName, 
   newTableName, 
   readCapacityUnits, 
@@ -47,6 +48,7 @@ await dispose({
 })
 
 await destroy({ 
+  region,
   tableName, 
   readCapacityUnits, 
   writeCapacityUnits 

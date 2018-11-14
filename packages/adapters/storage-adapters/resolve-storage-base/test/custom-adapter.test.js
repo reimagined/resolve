@@ -6,6 +6,8 @@ describe('createCustomAdapter', () => {
     const result = []
 
     const connect = async (pool, ...args) => {
+      pool.testField1 = 1
+      pool.testField2 = 2
       result.push(
         'connect',
         JSON.stringify(pool, null, 2),
@@ -66,6 +68,8 @@ describe('createCustomAdapter', () => {
     const result = []
 
     const connect = async (pool, ...args) => {
+      pool.testField1 = 1
+      pool.testField2 = 2
       result.push(
         'connect',
         JSON.stringify(pool, null, 2),
