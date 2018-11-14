@@ -11,7 +11,8 @@ const appConfig = {
     middlewares: [
       'web/redux/middlewares/optimistic_shopping_lists_middleware.js',
       'web/redux/middlewares/optimistic_sharings_middleware.js'
-    ]
+    ],
+    enhancers: ['web/redux/enhancers/redux-devtools.js']
   },
   aggregates: [
     {
@@ -41,9 +42,6 @@ const appConfig = {
   jwtCookie: {
     name: 'shopping-list-jwt',
     maxAge: 31536000000
-  },
-  auth: {
-    strategies: 'domain/auth/index.js'
   },
   subscribeAdapter: {
     module: 'resolve-subscribe-socket.io',

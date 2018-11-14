@@ -1,4 +1,4 @@
-import defaultResolveConfig from './default.resolve.config'
+import defaultResolveConfig from '../configs/default.resolve.config.json'
 import declareRuntimeEnv from './declare_runtime_env'
 
 import getModulesDirs from './get_modules_dirs'

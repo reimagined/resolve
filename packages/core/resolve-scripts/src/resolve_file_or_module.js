@@ -14,7 +14,7 @@ const resolveFileOrModule = (query, rewritePath = false) => {
     const resolvedQuery = require.resolve(query, {
       paths: [
         path.resolve(process.cwd(), 'node_modules'),
-        path.resolve(__dirname, '../../node_modules'),
+        path.resolve(__dirname, '../node_modules'),
         ...getMonorepoNodeModules()
       ]
     })

@@ -31,7 +31,8 @@ const appConfig = {
     reducers: {
       user: 'client/reducers/user_optimistic.js'
     },
-    middlewares: ['client/middlewares/user_create_middleware.js']
+    middlewares: ['client/middlewares/user_create_middleware.js'],
+    enhancers: ['client/enhancers/redux-devtools.js']
   }
 }
 

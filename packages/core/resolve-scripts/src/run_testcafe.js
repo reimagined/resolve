@@ -8,6 +8,7 @@ import webpack from 'webpack'
 
 import getWebpackConfigs from './get_webpack_configs'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
+import getPeerDependencies from './get_peer_dependencies'
 import showBuildInfo from './show_build_info'
 import copyEnvToDist from './copy_env_to_dist'
 import validateConfig from './validate_config'
@@ -17,6 +18,7 @@ const runTestcafe = async ({
   adjustWebpackConfigs,
   functionalTestsDir,
   browser,
+  customArgs = [],
   timeout
 }) => {
   validateConfig(resolveConfig)
@@ -28,6 +30,8 @@ const runTestcafe = async ({
     nodeModulesByAssembly,
     adjustWebpackConfigs
   })
+
+  const peerDependencies = getPeerDependencies()
 
   const compiler = webpack(webpackConfigs)
 
@@ -42,7 +46,8 @@ const runTestcafe = async ({
 
       writePackageJsonsForAssemblies(
         resolveConfig.distDir,
-        nodeModulesByAssembly
+        nodeModulesByAssembly,
+        peerDependencies
       )
 
       copyEnvToDist(resolveConfig.distDir)
@@ -91,13 +96,16 @@ const runTestcafe = async ({
   let status = 0
   try {
     execSync(
-      `npx testcafe ${targetBrowser}` +
-        ` ${functionalTestsDir}` +
-        ` --app-init-delay ${targetTimeout}` +
-        ` --selector-timeout ${targetTimeout}` +
-        ` --assertion-timeout ${targetTimeout}` +
-        ` --page-load-timeout ${targetTimeout}` +
-        (targetBrowser === 'remote' ? ' --qr-code' : ''),
+      [
+        `npx testcafe ${targetBrowser}`,
+        `${functionalTestsDir}`,
+        `--app-init-delay ${targetTimeout}`,
+        `--selector-timeout ${targetTimeout}`,
+        `--assertion-timeout ${targetTimeout}`,
+        `--page-load-timeout ${targetTimeout}`,
+        targetBrowser === 'remote' ? ' --qr-code' : '',
+        ...customArgs
+      ].join(' '),
       { stdio: 'inherit' }
     )
   } catch (error) {
