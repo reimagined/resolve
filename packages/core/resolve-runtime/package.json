@@ -50,7 +50,7 @@
     "react": ">=16.6.0",
     "react-dom": ">=16.6.0",
     "styled-components": ">=4.0.0",
-    "resolve-redux": "0.17.4"
+    "resolve-redux": "*"
   },
   "devDependencies": {
     "sinon": "6.3.4",
