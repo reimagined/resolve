@@ -40,6 +40,26 @@ describe('getStaticBasedUrl', () => {
         'https://cdn.localhost:3001/1.jpg'
       )
     ).toEqual('https://cdn.localhost:3001/1.jpg')
+
+    // Regression test
+    expect(
+      getStaticBasedUrl(
+        'http://localhost:3000',
+        '',
+        'http://localhost:3001',
+        '/1.jpg'
+      )
+    ).toEqual('http://localhost:3001/1.jpg')
+
+    // Regression test
+    expect(
+      getStaticBasedUrl(
+        'http://localhost:3000',
+        'my-app',
+        'http://localhost:3001',
+        '/2.jpg'
+      )
+    ).toEqual('http://localhost:3001/2.jpg')
   })
 
   test('should fail', () => {

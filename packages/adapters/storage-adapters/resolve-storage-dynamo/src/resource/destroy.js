@@ -1,11 +1,6 @@
-const destroy = async (
-  { createAdapter },
-  { tableName, readCapacityUnits, writeCapacityUnits }
-) => {
+const destroy = async ({ createAdapter }, options) => {
   const dynamoAdapter = createAdapter({
-    tableName,
-    readCapacityUnits,
-    writeCapacityUnits,
+    ...options,
     skipInit: true
   })
   await dynamoAdapter.dispose({ dropEvents: true }) // delete table
