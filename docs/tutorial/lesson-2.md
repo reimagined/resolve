@@ -26,6 +26,8 @@ For now, your application requires only one type of events - an event signaling 
 
 Next, create a **shopping_list.commands.js** file in the **aggregates** folder. This file will contain command handlers for the ShoppingList aggregate. Add the following code to the file:
 
+**common/aggregates/shopping_list.commands.js:**
+
 ```js
 import { SHOPPING_ITEM_CREATED } from '../eventTypes'
 import validation from './validation'
@@ -45,17 +47,23 @@ As the result of its execution, a command handler returns an event object. This 
 
 Your minimal shopping list aggregate is now ready. The last step is to register it in the application's configuration file. Open the **config.app.js** file, locate the **aggregates** section and specify the following settings:
 
+**config.app.js:**
+
 ```js
+...
 aggregates: [
   {
     name: 'ShoppingList',
     commands: 'common/aggregates/shopping_list.commands.js',
   }
 ],
+...
 ```
 
 Here, you just specify the aggregate name and the path to the file containing the aggregate's command handlers.
 
 ### Sending a Command
+
+Now that your application is capable of handling item creation commands,
 
 ### Performing Validation
