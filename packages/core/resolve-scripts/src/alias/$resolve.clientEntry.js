@@ -1,7 +1,10 @@
 import resolveFile from '../resolve_file'
 
 export default ({ resolveConfig }) => {
-  const clientIndexPath = resolveFile(resolveConfig.index, 'client_index.js')
+  const clientIndexPath = resolveFile(
+    resolveConfig.index,
+    'resolve-runtime/lib/defaults/client_index.js'
+  )
 
   const exports = [
     `import clientIndex from ${JSON.stringify(clientIndexPath)}`,
