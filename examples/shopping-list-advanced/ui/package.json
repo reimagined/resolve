@@ -10,12 +10,12 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "react-bootstrap": "0.32.4",
-    "resolve-redux": "0.17.4"
+    "react-bootstrap": "0.32.4"
   },
   "peerDependencies": {
     "react": "*",
     "react-dom": "*",
-    "react-native": "*"
+    "react-native": "*",
+    "resolve-redux": "*"
   }
 }
