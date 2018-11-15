@@ -1,4 +1,4 @@
-# Lesson 2 - Write side - Add a list item
+# Lesson 2 - Write side - Add a List Item
 
 This lesson will teach you how to implement a basic write side for your reSolve application. An application's write side is responsible for handling commands, performing input validation and emitting **events** based on valid commands. The emitted events are then saved to the **event store**.
 
@@ -64,6 +64,64 @@ Here, you just specify the aggregate name and the path to the file containing th
 
 ### Sending a Command
 
-Now that your application is capable of handling item creation commands,
+Now that your application is capable of handling item creation commands, you can try sending such command.
+
+ReSolve framework provides a standard API that allows you to send a command to an application's aggregate using a HTTP request.
+
+Run your application and send a POST request to the following URL:
+
+```
+http://127.0.0.1:3000/api/commands
+```
+
+The request body should have the `application/json` content type and contain a JSON representation of the command:
+
+```
+{
+  "aggregateName": "ShoppingList",
+  "type": "createShoppingItem",
+  "aggregateId": "root-id",
+  "payload": {
+    "text": "Item 1"
+  }
+}
+```
+
+In addition to aggregate name, command type and payload, this object specifies the aggregate Id (a unique identifier of an aggregate instance). Currently, your application requires a single aggregate instance that handles commands for a single shopping list, so you use an ID of your choice ("root-id" in the provided sample).
+
+You can do this using any REST client or using **curl**, as shown below:
+
+```sh
+$ curl -i http://localhost:3000/api/commands/ \
+--header "Content-Type: application/json" \
+--data '
+{
+    "aggregateName": "ShoppingList",
+    "aggregateId": "root-id",
+    "type": "createShoppingItem",
+    "payload": {
+        "text": "Item 1"
+    }
+}
+'
+
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: text/html; charset=utf-8
+Content-Length: 2
+ETag: W/"2-nOO9QiTIwXgNtWtBJezz8kv3SLc"
+Date: Tue, 02 Oct 2018 11:47:53 GMT
+Connection: keep-alive
+
+OK
+```
+
+Now, you can check the event store file to see the newly created event. Open the **event-storage.db** file and locate the event object:
+
+<!-- prettier-ignore-start -->
+``` json
+{"type":"SHOPPING_ITEM_CREATED","payload":{"text":"Item 1"},"aggregateId":"root-id","aggregateVersion":1,"timestamp":1542290836877,"aggregateIdAndVersion":"root-id:1","_id":"Qt5KvZEBpeivbm9N"}
+```
+<!-- prettier-ignore-end -->
 
 ### Performing Validation
