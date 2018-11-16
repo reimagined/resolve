@@ -155,6 +155,7 @@ module.exports = {
           'ico',
           'idx',
           'Ionicons',
+          'IotData',
           'ios',
           'img',
           'Img',
