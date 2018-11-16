@@ -1,4 +1,5 @@
 import 'source-map-support/register'
+import IotData from 'aws-sdk/clients/iotdata'
 import { Converter } from 'aws-sdk/clients/dynamodb'
 
 import wrapApiHandler from 'resolve-api-handler-awslambda'
@@ -53,28 +54,48 @@ const disposeResolve = async resolve => {
   await resolve.snapshotAdapter.dispose()
 }
 
-const lambdaWorker = async (assemblies, resolveBase, event, context) => {
-  context.callbackWaitsForEmptyEventLoop = false
+// TODO. Refactoring MQTT publish event
+const publisher = new IotData({
+  endpoint: process.env.IOT_ENDPOINT_HOST
+})
+
+const lambdaWorker = async (assemblies, resolveBase, lambdaEvent, lambdaContext) => {
+  lambdaContext.callbackWaitsForEmptyEventLoop = false
   let executorResult = null
 
   const resolve = Object.create(resolveBase)
   await initResolve(assemblies, resolve)
 
   // API gateway event
-  if (event.headers != null && event.httpMethod != null) {
+  if (lambdaEvent.headers != null && lambdaEvent.httpMethod != null) {
     const getCustomParameters = async () => ({ resolve })
     const executor = wrapApiHandler(mainHandler, getCustomParameters)
 
-    executorResult = await executor(event, context)
+    executorResult = await executor(lambdaEvent, lambdaContext)
   }
   // DynamoDB trigger event
   // AWS DynamoDB streams guarantees that changesets from one table partition will
   // be delivered strictly into one lambda instance, i.e. following code works in
   // single-thread mode for one event storage - see https://amzn.to/2LkKXAV
-  else if (event.Records != null) {
-    const events = event.Records.map(record =>
+  else if (lambdaEvent.Records != null) {
+    const events = lambdaEvent.Records.map(record =>
       Converter.unmarshall(record.dynamodb.NewImage)
     )
+    // TODO. Refactoring MQTT publish event
+    for(const event of events) {
+      publisher.publish({
+          topic: `${process.env.DEPLOYMENT_ID}/${event.type}/${event.aggregateId}`,
+          payload: JSON.stringify(event),
+          qos: 1
+        })
+        .promise()
+        .catch(
+          (error) => {
+            // eslint-disable-next-line
+            console.warn(error)
+          }
+        )
+    }
     const applicationPromises = []
     for (const executor of resolve.executeQuery.getExecutors().values()) {
       applicationPromises.push(executor.updateByEvents(events))
@@ -87,7 +108,7 @@ const lambdaWorker = async (assemblies, resolveBase, event, context) => {
   await disposeResolve(resolve)
 
   if (executorResult == null) {
-    throw new Error(`Lambda cannot be invoked with event: ${event}`)
+    throw new Error(`Lambda cannot be invoked with event: ${lambdaEvent}`)
   }
 
   return executorResult
