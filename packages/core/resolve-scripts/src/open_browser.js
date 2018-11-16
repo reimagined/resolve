@@ -1,13 +1,14 @@
 import chalk from 'chalk'
 import opn from 'opn'
+import path from 'path'
+
 import useYarn from './use_yarn'
 import prepareUrls from './prepare_urls'
-import resolveFile from './resolve_file'
 
 const openBrowser = async (port, rootPath) => {
   let applicationName = 'application'
   try {
-    applicationName = require(resolveFile('package.json')).name
+    applicationName = require(path.join(process.cwd(), 'package.json')).name
   } catch (e) {}
 
   const urls = prepareUrls('http', '0.0.0.0', port, rootPath)

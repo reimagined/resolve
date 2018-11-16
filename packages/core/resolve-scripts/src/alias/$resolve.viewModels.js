@@ -42,7 +42,8 @@ export default ({ resolveConfig, isClient }) => {
       runtimeMode: RUNTIME_ENV_NOWHERE,
       importMode: RESOURCE_ANY,
       instanceMode: IMPORT_INSTANCE,
-      instanceFallback: 'view_model_deserialize_state.js',
+      instanceFallback:
+        'resolve-runtime/lib/defaults/view_model_deserialize_state.js',
       imports,
       constants
     })
@@ -63,7 +64,8 @@ export default ({ resolveConfig, isClient }) => {
         runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
         importMode: RESOURCE_ANY,
         instanceMode: IMPORT_INSTANCE,
-        instanceFallback: 'view_model_serialize_state.js',
+        instanceFallback:
+          'resolve-runtime/lib/defaults/view_model_serialize_state.js',
         imports,
         constants
       })
@@ -76,7 +78,8 @@ export default ({ resolveConfig, isClient }) => {
         runtimeMode: RUNTIME_ENV_OPTIONS_ONLY,
         importMode: RESOURCE_ANY,
         instanceMode: IMPORT_INSTANCE,
-        instanceFallback: 'view_model_validator.js',
+        instanceFallback:
+          'resolve-runtime/lib/defaults/view_model_validator.js',
         imports,
         constants
       })
