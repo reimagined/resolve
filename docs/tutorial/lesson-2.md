@@ -81,7 +81,7 @@ The request body should have the `application/json` content type and contain a J
 }
 ```
 
-In addition to aggregate name, command type and payload, this object specifies the aggregate Id (a unique identifier of an aggregate instance). Currently, your application requires a single aggregate instance that handles commands for a single shopping list, so you use an ID of your choice ("root-id" in the provided sample).
+In addition to aggregate name, command type and payload, this object specifies the aggregate Id (a unique identifier of an aggregate instance). Currently, your application requires a single aggregate instance that handles commands for a single shopping list, so you can use an ID of your choice ("root-id" in the provided sample).
 
 Run your application and send a POST request to the following URL:
 
