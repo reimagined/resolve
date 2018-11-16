@@ -1,4 +1,7 @@
 const appConfig = {
+  redux: {
+    enhancers: ['client/enhancers/redux-devtools.js']
+  },
   routes: 'client/routes.js'
 }
 

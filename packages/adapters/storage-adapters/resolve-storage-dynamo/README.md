@@ -28,4 +28,31 @@ const adapter = createAdapter({
 })
 ```
 
+#### As Resource
+```js
+import { create, dispose, destroy } from 'resolve-storage-dynamo'
+
+await create({ 
+  region,
+  tableName, 
+  readCapacityUnits, 
+  writeCapacityUnits 
+})
+
+await dispose({ 
+  region,
+  tableName, 
+  newTableName, 
+  readCapacityUnits, 
+  writeCapacityUnits 
+})
+
+await destroy({ 
+  region,
+  tableName, 
+  readCapacityUnits, 
+  writeCapacityUnits 
+})
+```
+
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/packages-resolve-storage-mongo-readme?pixel)

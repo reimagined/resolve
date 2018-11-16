@@ -12,6 +12,10 @@ const getStaticBasedUrl = (origin, rootPath, staticPath, path) => {
 
   validate.leadingSlash(path, 'Path')
 
+  if (isAbsoluteUrl(staticPath)) {
+    return `${staticPath}${path}`
+  }
+
   return getRootBasedUrl(origin, rootPath, `/${staticPath}${path}`)
 }
 
