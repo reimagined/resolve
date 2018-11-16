@@ -11,10 +11,12 @@ const getModulesDirs = ({ isAbsolutePath = false } = {}) => {
   const absoluteDirs = [
     currentDirNodeModules,
     path.join(
-      require.resolve('resolve-runtime', {
-        paths: [currentDirNodeModules, ...monorepoNodeModules]
-      }),
-      '../node_modules'
+      path.dirname(
+        require.resolve('resolve-runtime/package.json', {
+          paths: [currentDirNodeModules, ...monorepoNodeModules]
+        })
+      ),
+      'node_modules'
     ),
     ...monorepoNodeModules
   ]
