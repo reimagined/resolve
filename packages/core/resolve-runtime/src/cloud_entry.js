@@ -59,7 +59,12 @@ const mqtt = new IotData({
   endpoint: process.env.IOT_ENDPOINT_HOST
 })
 
-const lambdaWorker = async (assemblies, resolveBase, lambdaEvent, lambdaContext) => {
+const lambdaWorker = async (
+  assemblies,
+  resolveBase,
+  lambdaEvent,
+  lambdaContext
+) => {
   lambdaContext.callbackWaitsForEmptyEventLoop = false
   let executorResult = null
 
@@ -82,19 +87,20 @@ const lambdaWorker = async (assemblies, resolveBase, lambdaEvent, lambdaContext)
       Converter.unmarshall(record.dynamodb.NewImage)
     )
     // TODO. Refactoring MQTT publish event
-    for(const event of events) {
-      mqtt.publish({
-          topic: `${process.env.DEPLOYMENT_ID}/${event.type}/${event.aggregateId}`,
+    for (const event of events) {
+      mqtt
+        .publish({
+          topic: `${process.env.DEPLOYMENT_ID}/${event.type}/${
+            event.aggregateId
+          }`,
           payload: JSON.stringify(event),
           qos: 1
         })
         .promise()
-        .catch(
-          (error) => {
-            // eslint-disable-next-line
-            console.warn(error)
-          }
-        )
+        .catch(error => {
+          // eslint-disable-next-line
+          console.warn(error)
+        })
     }
     const applicationPromises = []
     for (const executor of resolve.executeQuery.getExecutors().values()) {
