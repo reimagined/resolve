@@ -130,6 +130,8 @@ Your application currently has a flaw - it allows submitting list item creation 
 
 First, implement the required validation function. Add a **validation.js** file in the project's **aggregates** folder and add the following code to it:
 
+**common/aggregates/validation.js:**
+
 <!-- prettier-ignore-start -->
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-2/common/aggregates/validation.js /^/ /\n$/)
 ```js
@@ -146,6 +148,8 @@ export default {
 All this code does is checking the existence of a certain field in the payload and throwing an error if the field does not exist.
 
 Now you can use this function to check whether or not the **text** field exists in the payload. To achieve this, add the following code to the **fieldRequired** command handler implementation:
+
+**common/aggregates/shopping_list.commands.js:**
 
 <!-- prettier-ignore-start -->
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-2/common/aggregates/shopping_list.commands.js /export default/ /^\}/)
