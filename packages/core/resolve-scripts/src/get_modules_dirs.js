@@ -1,25 +1,31 @@
+import fs from 'fs'
 import path from 'path'
 
 import getMonorepoNodeModules from './get_monorepo_node_modules'
 
 const getModulesDirs = ({ isAbsolutePath = false } = {}) => {
   const currentDir = process.cwd()
-
-  const currentDirNodeModules = path.resolve(currentDir, 'node_modules')
+  
   const monorepoNodeModules = getMonorepoNodeModules()
-
-  const absoluteDirs = [
-    currentDirNodeModules,
-    path.join(
-      path.dirname(
-        require.resolve('resolve-runtime/package.json', {
-          paths: [currentDirNodeModules, ...monorepoNodeModules]
-        })
-      ),
-      'node_modules'
+  const currentDirNodeModules = path.join(currentDir, 'node_modules')
+  const resolveRuntimeNodeModules = path.join(
+    path.dirname(
+      require.resolve('resolve-runtime/package.json', {
+        paths: [currentDirNodeModules, ...monorepoNodeModules]
+      })
     ),
-    ...monorepoNodeModules
-  ]
+    'node_modules'
+  )
+
+  const absoluteDirs = []
+  
+  if(fs.existsSync(currentDirNodeModules)) {
+    absoluteDirs.push(currentDirNodeModules)
+  }
+  if(fs.existsSync(resolveRuntimeNodeModules)) {
+    absoluteDirs.push(resolveRuntimeNodeModules)
+  }
+  absoluteDirs.push(...monorepoNodeModules)
 
   if (isAbsolutePath) {
     return absoluteDirs
