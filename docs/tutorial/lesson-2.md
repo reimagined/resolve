@@ -125,3 +125,39 @@ Now, you can check the event store file to see the newly created event. Open the
 <!-- prettier-ignore-end -->
 
 ### Performing Validation
+
+Your application currently has a flaw - it allows submitting list item creation command without the item text in the payload. You can prevent creating such items by performing input validation in the command handler code.
+
+First, implement the required validation function. Add a **validation.js** file in the project's **aggregates** folder and add the following code to it:
+
+<!-- prettier-ignore-start -->
+[embedmd]:# (../../examples/shopping-list-tutorial/lesson-2/common/aggregates/validation.js /^/ /\n$/)
+```js
+export default {
+  fieldRequired: (payload, field) => {
+    if (!payload[field]) {
+      throw new Error(`The "${field}" field is required`)
+    }
+  }
+}
+```
+<!-- prettier-ignore-end -->
+
+All this code does is checking the existence of a certain field in the payload and throwing an error if the field does not exist.
+
+Now you can use this function to check whether or not the **text** field exists in the payload. To achieve this, add the following code to the **fieldRequired** command handler implementation:
+
+<!-- prettier-ignore-start -->
+[embedmd]:# (../../examples/shopping-list-tutorial/lesson-2/common/aggregates/shopping_list.commands.js /export default/ /^\}/)
+```js
+export default {
+  createShoppingItem: (state, { payload: { text } }) => {
+    validation.fieldRequired({ text }, 'text')
+    return {
+      type: SHOPPING_ITEM_CREATED,
+      payload: { text }
+    }
+  }
+}
+```
+<!-- prettier-ignore-end -->
