@@ -89,26 +89,29 @@ const lambdaWorker = async (
   // be delivered strictly into one lambda instance, i.e. following code works in
   // single-thread mode for one event storage - see https://amzn.to/2LkKXAV
   else if (lambdaEvent.Records != null) {
+    const applicationPromises = []
     const events = lambdaEvent.Records.map(record =>
       Converter.unmarshall(record.dynamodb.NewImage)
     )
     // TODO. Refactoring MQTT publish event
     for (const event of events) {
-      getMqtt()
-        .publish({
-          topic: `${process.env.DEPLOYMENT_ID}/${event.type}/${
-            event.aggregateId
-          }`,
-          payload: JSON.stringify(event),
-          qos: 1
-        })
-        .promise()
-        .catch(error => {
-          // eslint-disable-next-line
-          console.warn(error)
-        })
+      applicationPromises.push(
+        getMqtt()
+          .publish({
+            topic: `${process.env.DEPLOYMENT_ID}/${event.type}/${
+              event.aggregateId
+            }`,
+            payload: JSON.stringify(event),
+            qos: 1
+          })
+          .promise()
+          .catch(error => {
+            // eslint-disable-next-line
+            console.warn(error)
+          })
+      )
     }
-    const applicationPromises = []
+
     for (const executor of resolve.executeQuery.getExecutors().values()) {
       applicationPromises.push(executor.updateByEvents(events))
     }
