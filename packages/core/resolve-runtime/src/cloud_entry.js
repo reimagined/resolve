@@ -55,9 +55,15 @@ const disposeResolve = async resolve => {
 }
 
 // TODO. Refactoring MQTT publish event
-const mqtt = new IotData({
-  endpoint: process.env.IOT_ENDPOINT_HOST
-})
+let mqtt
+const getMqtt = () => {
+  if (mqtt) {
+    return mqtt
+  }
+  mqtt = new IotData({
+    endpoint: process.env.IOT_ENDPOINT_HOST
+  })
+}
 
 const lambdaWorker = async (
   assemblies,
@@ -88,7 +94,7 @@ const lambdaWorker = async (
     )
     // TODO. Refactoring MQTT publish event
     for (const event of events) {
-      mqtt
+      getMqtt()
         .publish({
           topic: `${process.env.DEPLOYMENT_ID}/${event.type}/${
             event.aggregateId
