@@ -68,12 +68,6 @@ Now that your application is capable of handling item creation commands, you can
 
 ReSolve framework provides a standard API that allows you to send a command to an application's aggregate using a HTTP request.
 
-Run your application and send a POST request to the following URL:
-
-```
-http://127.0.0.1:3000/api/commands
-```
-
 The request body should have the `application/json` content type and contain a JSON representation of the command:
 
 ```
@@ -88,6 +82,12 @@ The request body should have the `application/json` content type and contain a J
 ```
 
 In addition to aggregate name, command type and payload, this object specifies the aggregate Id (a unique identifier of an aggregate instance). Currently, your application requires a single aggregate instance that handles commands for a single shopping list, so you use an ID of your choice ("root-id" in the provided sample).
+
+Run your application and send a POST request to the following URL:
+
+```
+http://127.0.0.1:3000/api/commands
+```
 
 You can do this using any REST client or using **curl**, as shown below:
 
