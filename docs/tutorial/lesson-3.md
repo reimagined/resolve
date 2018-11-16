@@ -24,7 +24,7 @@ export default {
 
 You just defined a View Model **projection**. A View Model projection runs for all events for a specific aggregate ID. Based on event data, a projection builds state. This state is then returned as a query response.
 
-Now, you need to register the implemented View Model in the application's configuration file:
+Now, you need to register the implemented View Model in the application's configuration file.
 
 **config.app.js:**
 
