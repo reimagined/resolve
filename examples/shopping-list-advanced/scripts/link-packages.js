@@ -2,7 +2,6 @@ const find = require('glob').sync
 const path = require('path')
 const { execSync } = require('child_process')
 
-
 const monorepoRoot = path.join(__dirname, '..')
 
 const namespaces = [
@@ -15,7 +14,7 @@ const namespaces = [
 const localPackages = find(`${monorepoRoot}/*/package.json`)
 
 const localPackagesNames = localPackages.map(
-    localPackage => require(localPackage).name
+  localPackage => require(localPackage).name
 )
 //
 // // Install
@@ -28,38 +27,34 @@ localPackages.push(
   path.join(__dirname, '../../../packages/core/resolve-redux/package.json')
 )
 
-localPackagesNames.push(
-  'resolve-scripts',
-  'resolve-redux'
-)
+localPackagesNames.push('resolve-scripts', 'resolve-redux')
 
 // Create Links
-for(const localPackage of localPackages) {
+for (const localPackage of localPackages) {
   try {
-    
-  
-  execSync('yarn unlink', { cwd: path.dirname(localPackage), stdio: 'inherit' })
-  } catch (e) {
-    
-  }
+    execSync('yarn unlink', {
+      cwd: path.dirname(localPackage),
+      stdio: 'inherit'
+    })
+  } catch (e) {}
 }
 
-for(const localPackage of localPackages) {
+for (const localPackage of localPackages) {
   const packageJson = require(localPackage)
-  for(const key of namespaces) {
+  for (const key of namespaces) {
     const dependencies = packageJson[key]
-    if(!dependencies) {
+    if (!dependencies) {
       continue
     }
-    for(const packageName of Object.keys(dependencies)) {
-      if(localPackagesNames.includes(packageName)) {
+    for (const packageName of Object.keys(dependencies)) {
+      if (localPackagesNames.includes(packageName)) {
         try {
-        execSync(`yarn unlink ${packageName}`, { cwd: path.dirname(localPackage), stdio: 'inherit' })
-        } catch (e) {
-          
-        }
+          execSync(`yarn unlink ${packageName}`, {
+            cwd: path.dirname(localPackage),
+            stdio: 'inherit'
+          })
+        } catch (e) {}
       }
     }
   }
 }
-

@@ -4,7 +4,7 @@
   "private": true,
   "main": "./index.js",
   "scripts": {
-    "prestart": "node ./link-workspace.js",
+    "prestart": "node ./link-workspaces.js",
     "start": "expo start",
     "eject": "expo eject",
     "android": "expo android",

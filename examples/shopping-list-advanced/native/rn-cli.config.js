@@ -6,28 +6,36 @@ const { getModulesDirs } = require('resolve-scripts')
 const blacklist = require('metro-config/src/defaults/blacklist')
 
 function getConfig(from) {
-  const workspaces = getWorkspaces(from)
-  
-  const roots = [
-    path.resolve(from, '..'),
-    path.resolve(from)
-  ].concat(workspaces)
-  roots.forEach(
-    dir => {
-      const nodeModules = path.resolve(dir, 'node_modules')
-      if(fs.existsSync(nodeModules)) {
-        roots.push(nodeModules)
-      }
+  // [ '/home/mrcheater/resolve/examples/shopping-list-advanced/domain',
+  //   '/home/mrcheater/resolve/examples/shopping-list-advanced/ui',
+  //   '/home/mrcheater/resolve/examples/shopping-list-advanced/utils',
+  //   '/home/mrcheater/resolve/examples/shopping-list-advanced/web',
+  //   '/home/mrcheater/resolve/examples/shopping-list-advanced/scripts',
+  //   '/home/mrcheater/resolve/examples/shopping-list-advanced/native' ]
+
+  const workspaces = [
+    path.join(__dirname),
+    path.join(__dirname, '..'),
+    path.join(__dirname, '..', 'ui'),
+    path.join(__dirname, '..', 'utils')
+  ]
+
+  const roots = workspaces
+  roots.forEach(dir => {
+    const nodeModules = path.resolve(dir, 'node_modules')
+    if (fs.existsSync(nodeModules)) {
+      roots.push(nodeModules)
     }
-  )
+  })
   roots.push(...getModulesDirs({ isAbsolutePath: true }))
-  
-  
+
+  console.log(getModulesDirs({ isAbsolutePath: true }))
+
   console.log('roots')
   console.log(roots)
   console.log('workspaces')
   console.log(workspaces)
-  
+
   const config = {
     resolver: {
       extraNodeModules: {
@@ -45,7 +53,7 @@ function getConfig(from) {
     },
     watchFolders: roots
   }
-  
+
   return config
 }
 

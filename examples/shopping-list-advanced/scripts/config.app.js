@@ -5,15 +5,14 @@ const appConfig = {
   redux: {
     reducers: {
       optimisticSharings: '../web/lib/redux/reducers/optimistic-sharings.js',
-      optimisticShoppingLists: '../web/lib/redux/reducers/optimistic-shopping-lists.js'
+      optimisticShoppingLists:
+        '../web/lib/redux/reducers/optimistic-shopping-lists.js'
     },
     middlewares: [
       '../web/lib/redux/middlewares/optimistic-sharings-middleware.js',
       '../web/lib/redux/middlewares/optimistic-shopping-lists-middleware.js'
     ],
-    enhancers: [
-      '../web/lib/redux/enhancers/redux-devtools.js'
-    ]
+    enhancers: ['../web/lib/redux/enhancers/redux-devtools.js']
   },
   aggregates: [
     {

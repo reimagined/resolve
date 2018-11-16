@@ -43,7 +43,12 @@ void (async () => {
 
   switch (launchMode) {
     case 'dev': {
-      const resolveConfig = merge(defaultResolveConfig, appConfig, devConfig, authModule)
+      const resolveConfig = merge(
+        defaultResolveConfig,
+        appConfig,
+        devConfig,
+        authModule
+      )
       await watch(
         resolveConfig,
         adjustWebpackConfigs.bind(null, resolveConfig, { watch: true })
@@ -52,7 +57,12 @@ void (async () => {
     }
 
     case 'build': {
-      const resolveConfig = merge(defaultResolveConfig, appConfig, prodConfig, authModule)
+      const resolveConfig = merge(
+        defaultResolveConfig,
+        appConfig,
+        prodConfig,
+        authModule
+      )
       await build(
         resolveConfig,
         adjustWebpackConfigs.bind(null, resolveConfig, {})

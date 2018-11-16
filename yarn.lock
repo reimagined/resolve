@@ -1178,9 +1178,9 @@
   integrity sha512-iiJbKLZbhSa6FYRip/9ZDX6HXhayXLDGY2Fqws9cOkEQ6XeKfaxB0sC541mowZJueYyMnVUmmG+al5/4fCDrgw==
 
 "@types/node@*":
-  version "10.12.8"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.8.tgz#d0a3ab5a6e61458c492304e2776ac136b81db927"
-  integrity sha512-INamyRZG4rW3lDCUmwVd5Xho/bXvQm/v1yP8V0UN1RuInU7RoWoaO570b+yLX4Ia/0szsx1wa8VzcsVlsvbWLA==
+  version "10.12.9"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.9.tgz#a07bfa74331471e1dc22a47eb72026843f7b95c8"
+  integrity sha512-eajkMXG812/w3w4a1OcBlaTwsFPO5F7fJ/amy+tieQxEMWBlbV1JGSjkFM+zkHNf81Cad+dfIRA+IBkvmvdAeA==
 
 "@types/qs@^6.5.1":
   version "6.5.1"
@@ -1864,9 +1864,9 @@ autoprefixer@8.6.5:
     postcss-value-parser "^3.2.3"
 
 aws-sdk@^2.353.0:
-  version "2.356.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.356.0.tgz#491ec8f47a722ffdd2ac553895f012caef8022aa"
-  integrity sha512-s/VjKcmvF1Dh4G3eFI7BEiNaqNs38TqdpxInAK/89AyTpbuEeo1e0ErDUn6+EqdwePhbC6AuLtFTOUv/PlSJ+A==
+  version "2.357.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.357.0.tgz#1c13a2b8162f837aa500ba27094d1146405bc6cd"
+  integrity sha512-XXzIdfPV22cHJmyAFVcQmmz6eWNa5jLaUrOve9VYIr2w0eaSwtkwG3Jv1UAorQ31Kj7glGw28zs5jWddMlBqKQ==
   dependencies:
     buffer "4.9.1"
     events "1.1.1"
@@ -8499,10 +8499,10 @@ metro-babel7-plugin-react-transform@0.45.6:
   dependencies:
     "@babel/helper-module-imports" "^7.0.0"
 
-metro-babel7-plugin-react-transform@0.49.1:
-  version "0.49.1"
-  resolved "https://registry.yarnpkg.com/metro-babel7-plugin-react-transform/-/metro-babel7-plugin-react-transform-0.49.1.tgz#eb34c351abe217df942113d95752a0989f4aa38e"
-  integrity sha512-54kIDUaPNC0we/mm4L0xHNcsQOu79ojTIsPZSciiAX2z5fRt7IBxaaV2EaQ/nSDQ5xBzDXQ0kbM7oLliq7IuPw==
+metro-babel7-plugin-react-transform@0.49.2:
+  version "0.49.2"
+  resolved "https://registry.yarnpkg.com/metro-babel7-plugin-react-transform/-/metro-babel7-plugin-react-transform-0.49.2.tgz#d4c43faa6f2b91cc1b244a36a5d708ae8d39dbb2"
+  integrity sha512-LpJT8UvqF/tvVqEwiLUTMjRPhEGdI8e2dr3424XaRANba3j0nqmrbKdJQsPE8TrcqMWR4RHmfsXk0ti5QrEvJg==
   dependencies:
     "@babel/helper-module-imports" "^7.0.0"
 
@@ -8589,9 +8589,9 @@ metro-react-native-babel-preset@0.45.6:
     react-transform-hmr "^1.0.4"
 
 metro-react-native-babel-preset@^0.49.0:
-  version "0.49.1"
-  resolved "https://registry.yarnpkg.com/metro-react-native-babel-preset/-/metro-react-native-babel-preset-0.49.1.tgz#6df6195599055fe6010b81ad0e5a47c199e6a9c0"
-  integrity sha512-GYg2Sl7uVoRIvU4d3aN6UB65/aHxEU9GmjzFc7NWMQ1zkMZeRvcJaqZ5ijurNQLgN1TyEsIsKrV+3/KV9Xxnog==
+  version "0.49.2"
+  resolved "https://registry.yarnpkg.com/metro-react-native-babel-preset/-/metro-react-native-babel-preset-0.49.2.tgz#8d53610e044e0c9a53a03d307e1c51f9e8577abc"
+  integrity sha512-N0+4ramShYCHSAVEPUNWIZuKZskWj8/RDSoinhadHpdpHORMbMxLkexSOVHLluB+XFQ+DENLEx5oVPYwOlENBA==
   dependencies:
     "@babel/plugin-proposal-class-properties" "^7.0.0"
     "@babel/plugin-proposal-export-default-from" "^7.0.0"
@@ -8626,7 +8626,7 @@ metro-react-native-babel-preset@^0.49.0:
     "@babel/plugin-transform-typescript" "^7.0.0"
     "@babel/plugin-transform-unicode-regex" "^7.0.0"
     "@babel/template" "^7.0.0"
-    metro-babel7-plugin-react-transform "0.49.1"
+    metro-babel7-plugin-react-transform "0.49.2"
     react-transform-hmr "^1.0.4"
 
 metro-resolver@0.45.6:
@@ -10698,7 +10698,7 @@ react-native-keyboard-aware-scroll-view@0.5.0:
     prop-types "^15.6.0"
     react-native-iphone-x-helper "^1.0.1"
 
-react-native-maps@expo/react-native-maps#v0.22.1-exp.0:
+"react-native-maps@github:expo/react-native-maps#v0.22.1-exp.0":
   version "0.22.1"
   resolved "https://codeload.github.com/expo/react-native-maps/tar.gz/e6f98ff7272e5d0a7fe974a41f28593af2d77bb2"
 
