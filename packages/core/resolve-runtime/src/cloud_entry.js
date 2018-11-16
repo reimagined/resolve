@@ -57,12 +57,12 @@ const disposeResolve = async resolve => {
 // TODO. Refactoring MQTT publish event
 let mqtt
 const getMqtt = () => {
-  if (mqtt) {
-    return mqtt
+  if (!mqtt) {
+    mqtt = new IotData({
+      endpoint: process.env.IOT_ENDPOINT_HOST
+    })
   }
-  mqtt = new IotData({
-    endpoint: process.env.IOT_ENDPOINT_HOST
-  })
+  return mqtt
 }
 
 const lambdaWorker = async (
