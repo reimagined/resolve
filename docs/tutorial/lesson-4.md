@@ -10,7 +10,7 @@ Note that, if required, you can use the standard HTTP API to communicate with a 
 
 Create a **ShoppingList.js** file end the client application's containers folder. In this file, implement a component that displays a list of values obtained ftom the **data** prop:
 
-**client/containers/ShoppingList.js**
+**client/containers/ShoppingList.js:**
 
 <!-- prettier-ignore-start -->
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-4/client/containers/ShoppingList.js /import \{ ListGroup/ /^\}/)
@@ -52,9 +52,9 @@ export default connectViewModel
 ```
 <!-- prettier-ignore-end -->
 
-Now you can place the shopping list within the application's root component:
+Place the implemented shopping list within the application's root component:
 
-**client/containers/App.js**
+**client/containers/App.js:**
 
 ``` js
 const App = () => (
