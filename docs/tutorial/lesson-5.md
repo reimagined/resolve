@@ -89,3 +89,101 @@ The event payload contains the toggled item's identifier.
   ]
 ```
 <!-- prettier-ignore-end -->
+
+### Implement Data Editing UI
+
+
+**common/view-models/shopping_list.projection.js:**
+``` js
+render() {
+  const toggleShoppingItem = this.props.toggleShoppingItem;
+  ...
+```
+
+
+<!-- prettier-ignore-start -->
+[embedmd]:# (../../examples/shopping-list-tutorial/lesson-5/client/containers/ShoppingList.js /^[[:space:]]+\<ControlLabel\>Item name/   /\<\/Row\>/)
+```js
+        <ControlLabel>Item name</ControlLabel>
+        <Row>
+          <Col md={8}>
+            <FormControl
+              className="example-form-control"
+              type="text"
+              value={this.state.itemText}
+              onChange={this.updateItemText}
+              onKeyPress={this.onItemTextPressEnter}
+            />
+          </Col>
+          <Col md={4}>
+            <Button
+              className="example-button"
+              bsStyle="success"
+              onClick={this.createShoppingItem}
+            >
+              Add Item
+            </Button>
+          </Col>
+        </Row>
+```
+<!-- prettier-ignore-end -->
+
+
+<!-- prettier-ignore-start -->
+[embedmd]:# (../../examples/shopping-list-tutorial/lesson-5/client/containers/ShoppingList.js /^[[:space:]]+\<Checkbox/   /\<\/Checkbox\>/)
+```js
+              <Checkbox
+                inline
+                checked={todo.checked}
+                onClick={toggleShoppingItem.bind(null, 'root-id', {
+                  id: todo.id
+                })}
+              >
+                {todo.text}
+              </Checkbox>
+```
+<!-- prettier-ignore-end -->
+
+
+
+<!-- prettier-ignore-start -->
+[embedmd]:# (../../examples/shopping-list-tutorial/lesson-5/client/containers/ShoppingList.js /^[[:space:]]+createShoppingItem/   /}$^[[:space:]]};/)
+```js
+              <Checkbox
+                inline
+                checked={todo.checked}
+                onClick={toggleShoppingItem.bind(null, 'root-id', {
+                  id: todo.id
+                })}
+              >
+                {todo.text}
+              </Checkbox>
+```
+<!-- prettier-ignore-end -->
+
+
+``` js
+  createShoppingItem = () => {
+    this.props.createShoppingItem("root-id", {
+      text: this.state.itemText,
+      id: Date.now().toString()
+    });
+
+    this.setState({
+      itemText: ""
+    });
+  };
+
+  updateItemText = event => {
+    this.setState({
+      itemText: event.target.value
+    });
+  };
+
+  onItemTextPressEnter = event => {
+    if (event.charCode === 13) {
+      event.preventDefault();
+      this.createShoppingItem();
+    }
+  };
+```
