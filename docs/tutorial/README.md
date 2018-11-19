@@ -13,4 +13,5 @@ This tutorial includes the following lessons:
 - Lesson 2 - Write side - Add a List Item
 - Lesson 3 - Read side - Create a View Model to Query List Items
 - Lesson 4 - Frontend - Display View Model Data in the Browser
+- Lesson 5 - Frontend - Enable Data Editing
 - [TODO]
