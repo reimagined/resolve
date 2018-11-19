@@ -17,24 +17,12 @@ roots.forEach(dir => {
 })
 roots.push(...getModulesDirs({ isAbsolutePath: true }))
 
-
-let reactNativeDir = path.dirname(require.resolve('react-native/package.json'))
-if (fs.lstatSync(reactNativeDir).isSymbolicLink()) {
-  reactNativeDir = fs.realpathSync(reactNativeDir);
-}
-
-const config = {
+module.exports = {
   resolver: {
     extraNodeModules: {
-      'react-native': reactNativeDir
+      'react-native': path.dirname(require.resolve('react-native/package.json'))
     },
-    blacklistRE: blacklist(
-      [
-        /node_modules[/\\]react-native/,
-      ]
-    )
+    blacklistRE: blacklist([/node_modules[/\\]react-native/])
   },
   watchFolders: roots
 }
-
-module.exports = config
