@@ -1,10 +1,12 @@
 # Frontend - Display View Model Data in the Browser
 
-In the previous lesson, you modified your application so that it can answer queries. At this moment, your application does not provide a frontent that would present this data to an end-user. In this lesson, you will learn how to create a React frontend to display your reSolve application's data.
+In the previous lesson, you modified your application so that it can answer queries. However, at this moment, your application does not provide a frontent that would present this data to an end-user. In this lesson, you will learn how to create a React frontend to display your reSolve application's data.
 
-You can use the standard HTTP API to communicate with a reSolve backend and implement the frontend using any client side technology.
+This tutorial sticks to React + redux as the default choice for building a frontend for a reSolve application. Both React and redux work well in congunction with reSolve's infrastructure. To facilitate interoperability of React + redux on the client and reSolve on the server, the **resolve-redux** library is provided. This library contains HOCs allowing you to easily connect your React components to the backend.
 
-To facilitate client-server communication, reSolve provides the **resolve-redux** library providing HOCs allowing you to easily connect your React components to the backend.
+Note that, if required, you can use the standard HTTP API to communicate with a reSolve backend and implement the frontend using any client side technology.
+
+### Implement a React Frontend
 
 Create a **ShoppingList.js** file end the client application's containers folder. In this file, implement a component that displays a list of values obtained ftom the **data** prop:
 
@@ -49,6 +51,19 @@ export const mapStateToOptions = (state, ownProps) => {
 export default connectViewModel
 ```
 <!-- prettier-ignore-end -->
+
+Now you can place the shopping list within the application's root component:
+
+**client/containers/App.js**
+
+``` js
+const App = () => (
+  <div>
+    ...
+    <ShoppingList></ShoppingList>
+  </div>
+)
+```
 
 Run your application to see the result:
 ![result](images/lesson4_result.png)
