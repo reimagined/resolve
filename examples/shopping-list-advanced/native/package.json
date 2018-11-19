@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "fs-extra": "^7.0.1",
+    "metro-config": "^0.45.6",
     "babel-core": "^7.0.0-0",
     "babel-jest": "23.6.0",
     "babel-preset-expo": "^5.0.0",
@@ -40,7 +41,6 @@
     "jest-expo": "^31.0.0",
     "react-test-renderer": "16.5.0",
     "regenerator-runtime": "0.12.1",
-    "get-yarn-workspaces": "^1.0.2",
     "resolve-scripts": "0.17.4"
   }
 }
