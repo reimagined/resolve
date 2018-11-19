@@ -7,13 +7,11 @@ const subscribeHandler = async (req, res) => {
     return
   }
 
-  const subscribeAdapter = req.resolve.subscribeAdapter
-  const { origin } = req.method === 'POST' ? JSON.parse(req.body) : req.query
-
   try {
+    const parameters = req.method === 'POST' ? JSON.parse(req.body) : req.query
+    const { origin, adapterName } = parameters
     await res.setHeader('Content-Type', 'application/json')
-    await res.json(await subscribeAdapter.getOptions(origin))
-    return
+    await res.json(await req.resolve.getSubscribeAdapterOptions(origin, adapterName))
   } catch (err) {
     println.error(err)
     await res.status(500)

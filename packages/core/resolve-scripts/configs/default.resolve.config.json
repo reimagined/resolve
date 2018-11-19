@@ -1,4 +1,5 @@
 {
+  "target": "local",
   "port": 3000,
   "polyfills": [],
   "rootPath": "",

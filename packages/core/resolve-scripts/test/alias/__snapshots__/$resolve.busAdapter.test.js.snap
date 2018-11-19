@@ -24,6 +24,8 @@ const busAdapter = constructorBindFunction.bind(null,
       busAdapter_options,
       busAdapter_imports
     )
+    Object.assign(busAdapter, busAdapter_constructor)
+    
 export default busAdapter
 "
 `;
@@ -55,6 +57,8 @@ const busAdapter = constructorBindFunction.bind(null,
       busAdapter_options,
       busAdapter_imports
     )
+    Object.assign(busAdapter, busAdapter_constructor)
+    
 export default busAdapter
 "
 `;

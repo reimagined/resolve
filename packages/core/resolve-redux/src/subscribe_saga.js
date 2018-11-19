@@ -24,7 +24,7 @@ const subscribeSaga = function*({
   const connectionManager = createConnectionManager()
 
   const subscribeAdapterPromise = (async () => {
-    const { appId, url } = await api.getSubscribeAdapterOptions()
+    const { appId, url } = await api.getSubscribeAdapterOptions(createSubscribeAdapter.adapterName)
 
     const onEvent = event => store.dispatch(dispatchTopicMessage(event))
 

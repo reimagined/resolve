@@ -28,7 +28,7 @@ describe('base config works correctly', () => {
   })
 
   test('[server]', () => {
-    expect(
+    expect(() =>
       normalizePaths(
         '\r\n' +
           alias({
@@ -37,7 +37,7 @@ describe('base config works correctly', () => {
           }).code +
           '\r\n'
       )
-    ).toMatchSnapshot()
+    ).toThrow()
   })
 })
 

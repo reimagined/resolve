@@ -1,6 +1,8 @@
 import 'source-map-support/register'
 import IotData from 'aws-sdk/clients/iotdata'
 import { Converter } from 'aws-sdk/clients/dynamodb'
+import v4 from 'aws-signature-v4'
+import STS from 'aws-sdk/clients/sts'
 
 import wrapApiHandler from 'resolve-api-handler-awslambda'
 import createCommandExecutor from 'resolve-command'
@@ -54,15 +56,35 @@ const disposeResolve = async resolve => {
   await resolve.snapshotAdapter.dispose()
 }
 
-// TODO. Refactoring MQTT publish event
-let mqtt
-const getMqtt = () => {
-  if (!mqtt) {
-    mqtt = new IotData({
-      endpoint: process.env.IOT_ENDPOINT_HOST
+const getSubscribeAdapterOptions = async ({ sts }) => {
+  const { DEPLOYMENT_ID, IOT_ENDPOINT_HOST, IOT_ROLE_ARN } = process.env
+
+  const data = await sts
+    .assumeRole({
+      RoleArn: IOT_ROLE_ARN,
+      RoleSessionName: `role-session-${DEPLOYMENT_ID}`,
+      DurationSeconds: 3600
     })
+    .promise()
+
+  const url = v4.createPresignedURL(
+    'GET',
+    IOT_ENDPOINT_HOST,
+    '/mqtt',
+    'iotdevicegateway',
+    '',
+    {
+      key: data.Credentials.AccessKeyId,
+      secret: data.Credentials.SecretAccessKey,
+      sessionToken: data.Credentials.SessionToken,
+      protocol: 'wss'
+    }
+  )
+
+  return {
+    appId: DEPLOYMENT_ID,
+    url
   }
-  return mqtt
 }
 
 const lambdaWorker = async (
@@ -96,19 +118,18 @@ const lambdaWorker = async (
     // TODO. Refactoring MQTT publish event
     for (const event of events) {
       applicationPromises.push(
-        getMqtt()
-          .publish({
-            topic: `${process.env.DEPLOYMENT_ID}/${event.type}/${
-              event.aggregateId
-            }`,
-            payload: JSON.stringify(event),
-            qos: 1
-          })
-          .promise()
-          .catch(error => {
-            // eslint-disable-next-line
-            console.warn(error)
-          })
+        mqtt.publish({
+          topic: `${process.env.DEPLOYMENT_ID}/${event.type}/${
+            event.aggregateId
+          }`,
+          payload: JSON.stringify(event),
+          qos: 1
+        })
+        .promise()
+        .catch(error => {
+          // eslint-disable-next-line
+          console.warn(error)
+        })
       )
     }
 
@@ -131,9 +152,20 @@ const lambdaWorker = async (
 
 const cloudEntry = async ({ assemblies, constants, domain, redux, routes }) => {
   try {
-    const resolve = { ...constants, ...domain, redux, routes }
-    resolve.aggregateActions = assemblies.aggregateActions
-    resolve.seedClientEnvs = assemblies.seedClientEnvs
+    const resolve = {
+      aggregateActions: assemblies.aggregateActions,
+      seedClientEnvs: assemblies.seedClientEnvs,
+      sts: new STS(),
+      mqtt: new IotData({
+        endpoint: process.env.IOT_ENDPOINT_HOST
+      }),
+      ...constants,
+      ...domain,
+      redux,
+      routes
+    }
+
+    resolve.getSubscribeAdapterOptions = getSubscribeAdapterOptions.bind(null, resolve)
 
     return lambdaWorker.bind(null, assemblies, resolve)
   } catch (error) {

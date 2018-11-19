@@ -49,6 +49,8 @@ const read_model_adapter_0 = constructorBindFunction.bind(null,
       read_model_adapter_0_options,
       read_model_adapter_0_imports
     )
+    Object.assign(read_model_adapter_0, read_model_adapter_0_constructor)
+    
 
 const readModels = []
 
@@ -126,6 +128,8 @@ const read_model_adapter_0 = constructorBindFunction.bind(null,
       read_model_adapter_0_options,
       read_model_adapter_0_imports
     )
+    Object.assign(read_model_adapter_0, read_model_adapter_0_constructor)
+    
 const name_1 = \\"Items\\"
 const resolvers_1 = resolvers_1_instance
 const projection_1_hash = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
@@ -137,6 +141,8 @@ const read_model_adapter_1 = constructorBindFunction.bind(null,
       read_model_adapter_1_options,
       read_model_adapter_1_imports
     )
+    Object.assign(read_model_adapter_1, read_model_adapter_1_constructor)
+    
 
 const readModels = []
 
@@ -214,6 +220,8 @@ const read_model_adapter_0 = constructorBindFunction.bind(null,
       read_model_adapter_0_options,
       read_model_adapter_0_imports
     )
+    Object.assign(read_model_adapter_0, read_model_adapter_0_constructor)
+    
 
 const readModels = []
 

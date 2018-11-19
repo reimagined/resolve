@@ -1,16 +1,11 @@
-import mqtt from 'mqtt'
-
-import getMqttTopic from './get_mqtt_topic'
-import getRootBasedUrl from './get_root_based_url'
+import socketIOClient from 'socket.io-client'
 
 import {
   subscribeAdapterNotInitialized,
   subscribeAdapterAlreadyInitialized
 } from './constants'
 
-const qos = 1
-
-const createClientAdapter = ({ origin, rootPath, url, appId, onEvent }) => {
+const createClientAdapter = ({ origin, rootPath, url, onEvent }) => {
   let client
   let isInitialized
 
@@ -21,7 +16,9 @@ const createClientAdapter = ({ origin, rootPath, url, appId, onEvent }) => {
       }
 
       return await new Promise((resolve, reject) => {
-        client = mqtt.connect(getRootBasedUrl(origin, rootPath, url))
+        client = socketIOClient(origin, {
+          path: `${rootPath ? `/${rootPath}` : ''}${url}`
+        })
 
         client.on('connect', () => {
           isInitialized = true
@@ -32,13 +29,12 @@ const createClientAdapter = ({ origin, rootPath, url, appId, onEvent }) => {
           reject(err)
         })
 
-        client.on('message', (topic, message) => {
+        client.on('message', message => {
           try {
-            const event = JSON.parse(message.toString('utf8'))
-            onEvent(event)
+            onEvent(JSON.parse(message).payload)
           } catch (error) {
             // eslint-disable-next-line no-console
-            console.warn(topic, message, error)
+            console.warn(message)
           }
         })
       })
@@ -49,7 +45,7 @@ const createClientAdapter = ({ origin, rootPath, url, appId, onEvent }) => {
         throw new Error(subscribeAdapterNotInitialized)
       }
       isInitialized = false
-      client.end()
+      client.close()
 
       client = undefined
     },
@@ -59,16 +55,7 @@ const createClientAdapter = ({ origin, rootPath, url, appId, onEvent }) => {
         throw new Error(subscribeAdapterNotInitialized)
       }
 
-      await Promise.all(
-        topics.map(
-          topic =>
-            new Promise((resolve, reject) =>
-              client.subscribe(getMqttTopic(appId, topic), { qos }, err =>
-                err ? reject(err) : resolve()
-              )
-            )
-        )
-      )
+      client.emit('subscribe', JSON.stringify(topics))
     },
 
     async unsubscribeFromTopics(topics) {
@@ -76,16 +63,7 @@ const createClientAdapter = ({ origin, rootPath, url, appId, onEvent }) => {
         throw new Error(subscribeAdapterNotInitialized)
       }
 
-      await Promise.all(
-        topics.map(
-          topic =>
-            new Promise((resolve, reject) =>
-              client.unsubscribe(getMqttTopic(appId, topic), err =>
-                err ? reject(err) : resolve()
-              )
-            )
-        )
-      )
+      client.emit('unsubscribe', JSON.stringify(topics))
     },
 
     isConnected() {
@@ -97,5 +75,7 @@ const createClientAdapter = ({ origin, rootPath, url, appId, onEvent }) => {
     }
   }
 }
+
+createClientAdapter.adapterName = 'socket.io'
 
 export default createClientAdapter
