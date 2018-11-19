@@ -18,6 +18,8 @@ export default ({ resolveConfig, isClient }) => {
     ) {
       throw new Error(`${message.incorrectJsonSchemaType}".${key}"`)
     }
+
+    return value
   })
 
   const exports = []

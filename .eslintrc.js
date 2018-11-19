@@ -122,6 +122,7 @@ module.exports = {
           'eqeqeq',
           'eslint',
           'ecma',
+          'envs',
           'eql',
           'errno',
           'eventstore',
