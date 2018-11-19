@@ -1,4 +1,4 @@
-import Expo from 'expo'
+import { KeepAwake, AppLoading, Font, registerRootComponent } from 'expo'
 import React from 'react'
 import { ActionSheetProvider } from '@expo/react-native-action-sheet'
 
@@ -12,7 +12,7 @@ import aggregateActions from './redux/actions/aggregate-actions'
 import Routes from './routes'
 
 if (process.env.NODE_ENV === 'development') {
-  Expo.KeepAwake.activate()
+  KeepAwake.activate()
 }
 
 class AppContainer extends React.PureComponent {
@@ -21,7 +21,7 @@ class AppContainer extends React.PureComponent {
   }
 
   async componentDidMount() {
-    await Expo.Font.loadAsync({
+    await Font.loadAsync({
       Roboto: require('native-base/Fonts/Roboto.ttf'),
       Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
       Ionicons: require('@expo/vector-icons/fonts/Ionicons.ttf')
@@ -34,7 +34,7 @@ class AppContainer extends React.PureComponent {
 
   render() {
     if (!this.state.isReady) {
-      return <Expo.AppLoading />
+      return <AppLoading />
     }
 
     return (
@@ -53,4 +53,4 @@ class AppContainer extends React.PureComponent {
   }
 }
 
-Expo.registerRootComponent(AppContainer)
+registerRootComponent(AppContainer)

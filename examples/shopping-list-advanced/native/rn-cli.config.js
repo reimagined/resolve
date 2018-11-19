@@ -20,7 +20,7 @@ function getConfig(from) {
     path.join(__dirname, '..', 'utils')
   ]
 
-  const roots = workspaces
+  const roots = [...workspaces]
   roots.forEach(dir => {
     const nodeModules = path.resolve(dir, 'node_modules')
     if (fs.existsSync(nodeModules)) {
@@ -28,27 +28,51 @@ function getConfig(from) {
     }
   })
   roots.push(...getModulesDirs({ isAbsolutePath: true }))
-
-  console.log(getModulesDirs({ isAbsolutePath: true }))
-
-  console.log('roots')
-  console.log(roots)
-  console.log('workspaces')
-  console.log(workspaces)
+  
+  // const blacklistNodeModules = roots.map(
+  //   dir => dir.replace(/[\/\\]node_modules$/gi, '')
+  // ).map(
+  //   modulePath =>
+  //     `/${modulePath.replace(
+  //       /\//g,
+  //       '[/\\\\]'
+  //     )}[/\\\\]node_modules[/\\\\]react-native[/\\\\].*/`
+  // )
+  // console.log('blacklistNodeModules')
+  // console.log(blacklist(
+  //   [
+  //     /node_modules[/\\]react-native[/\\].*/
+  //   ]
+  //   //blacklistNodeModules
+  // ))
+  
+  // console.log(path.join(__dirname, 'node_module', 'react-native'))
+  // console.log(path.dirname(require.resolve('react-native/package.json')))
+console.log(path.dirname(require.resolve('expo/package.json')))
+  
+  let reactNativeDir = path.dirname(require.resolve('react-native/package.json'))
+  if (fs.lstatSync(reactNativeDir).isSymbolicLink()) {
+    reactNativeDir = fs.realpathSync(reactNativeDir);
+  }
 
   const config = {
     resolver: {
+      // resolveRequest: (_,query) => {
+      //   console.log(query)
+      //   return require.resolve(query)
+      // }
       extraNodeModules: {
-        'react-native': path.join(__dirname, 'node_module', 'react-native')
+        'react-native': reactNativeDir//path.dirname(require.resolve('react-native/package.json')), //path.join(__dirname, 'node_module', 'react-native')
+      //  'expo': path.dirname(require.resolve('expo/package.json'))
       },
       blacklistRE: blacklist(
-        workspaces.map(
-          modulePath =>
-            `/${modulePath.replace(
-              /\//g,
-              '[/\\\\]'
-            )}[/\\\\]node_modules[/\\\\]react-native[/\\\\].*/`
-        )
+        [
+          /node_modules[/\\]react-native/,
+          // /node_modules[/\\]react-native[/\\].*/,
+          // /node_modules[/\\]expo/,
+          // /node_modules[/\\]expo[/\\].*/
+        ]
+        //blacklistNodeModules
       )
     },
     watchFolders: roots
