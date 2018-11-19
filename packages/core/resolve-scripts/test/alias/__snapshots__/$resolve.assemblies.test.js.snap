@@ -8,6 +8,7 @@ import constants from '$resolve.constants'
 import customConstants from '$resolve.customConstants'
 import redux from '$resolve.redux'
 import routes from '$resolve.routes'
+import seedClientEnvs from '$resolve.seedClientEnvs'
 import serverAssemblies from '$resolve.serverAssemblies'
 import snapshotAdapter from '$resolve.snapshotAdapter'
 import storageAdapter from '$resolve.storageAdapter'
@@ -20,6 +21,7 @@ constants,
 customConstants,
 redux,
 routes,
+seedClientEnvs,
 serverAssemblies,
 snapshotAdapter,
 storageAdapter,

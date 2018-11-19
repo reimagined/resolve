@@ -145,6 +145,8 @@ const localEntry = async ({ assemblies, constants, domain, redux, routes }) => {
   try {
     const resolve = { ...constants, ...domain, redux, routes }
     resolve.aggregateActions = assemblies.aggregateActions
+    resolve.seedClientEnvs = assemblies.seedClientEnvs
+
     await initEventStore(assemblies, resolve)
     await initExpress(resolve)
     await initSubscribeAdapter(assemblies, resolve)

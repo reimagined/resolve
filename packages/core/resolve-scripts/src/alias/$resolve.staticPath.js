@@ -1,22 +1,29 @@
 import { message } from '../constants'
-import { checkRuntimeEnv } from '../declare_runtime_env'
+import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 
-export default ({ resolveConfig }) => {
-  if (resolveConfig.staticPath == null || resolveConfig.staticPath === '') {
+export default ({ resolveConfig, isClient }) => {
+  if (resolveConfig.staticPath == null) {
     throw new Error(`${message.configNotContainSectionError}.staticPath`)
-  }
-
-  if (checkRuntimeEnv(resolveConfig.staticPath)) {
-    throw new Error(`${message.clientEnvError}.staticPath`)
   }
 
   const exports = []
 
-  exports.push(
-    `const staticPath = ${JSON.stringify(resolveConfig.staticPath, null, 2)}`,
-    ``,
-    `export default staticPath`
-  )
+  if (!checkRuntimeEnv(resolveConfig.staticPath)) {
+    exports.push(
+      `const staticPath = ${JSON.stringify(resolveConfig.staticPath)}`,
+      ``,
+      `export default staticPath`
+    )
+  } else {
+    exports.push(
+      `const staticPath = ${injectRuntimeEnv(
+        resolveConfig.staticPath,
+        isClient
+      )}`,
+      ``,
+      `export default staticPath`
+    )
+  }
 
   return {
     code: exports.join('\r\n')

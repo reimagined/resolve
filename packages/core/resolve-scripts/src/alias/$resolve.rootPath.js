@@ -1,23 +1,27 @@
 import { message } from '../constants'
-import { checkRuntimeEnv } from '../declare_runtime_env'
+import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 
-export default ({ resolveConfig }) => {
-  if (resolveConfig.rootPath === undefined) {
+export default ({ resolveConfig, isClient }) => {
+  if (resolveConfig.rootPath == null) {
     throw new Error(`${message.configNotContainSectionError}.rootPath`)
   }
 
-  if (checkRuntimeEnv(resolveConfig.rootPath)) {
-    throw new Error(`${message.clientEnvError}.rootPath`)
-  }
   const rootPath = resolveConfig.rootPath
-
   const exports = []
 
-  exports.push(
-    `const rootPath = ${JSON.stringify(rootPath)}`,
-    ``,
-    `export default rootPath`
-  )
+  if (!checkRuntimeEnv(rootPath)) {
+    exports.push(
+      `const rootPath = ${JSON.stringify(rootPath)}`,
+      ``,
+      `export default rootPath`
+    )
+  } else {
+    exports.push(
+      `const rootPath = ${injectRuntimeEnv(rootPath, isClient)}`,
+      ``,
+      `export default rootPath`
+    )
+  }
 
   return {
     code: exports.join('\r\n')

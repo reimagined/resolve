@@ -133,6 +133,7 @@ const cloudEntry = async ({ assemblies, constants, domain, redux, routes }) => {
   try {
     const resolve = { ...constants, ...domain, redux, routes }
     resolve.aggregateActions = assemblies.aggregateActions
+    resolve.seedClientEnvs = assemblies.seedClientEnvs
 
     return lambdaWorker.bind(null, assemblies, resolve)
   } catch (error) {

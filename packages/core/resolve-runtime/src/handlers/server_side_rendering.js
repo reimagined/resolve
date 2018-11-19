@@ -17,6 +17,7 @@ try {
 
 const serverSideRendering = async (req, res) => {
   const {
+    seedClientEnvs,
     aggregateActions,
     subscribeAdapter,
     viewModels,
@@ -96,6 +97,7 @@ const serverSideRendering = async (req, res) => {
   await res.end(
     getHtmlMarkup({
       reducers: redux.reducers,
+      seedClientEnvs,
       markup,
       styleTags,
       initialState,

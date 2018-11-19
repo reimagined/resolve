@@ -23,11 +23,31 @@ const declareRuntimeEnv = envName => {
 export const checkRuntimeEnv = value =>
   !(value == null || value.type !== runtimeEnvSymbol)
 
-export const injectRuntimeEnv = json => {
-  const seedPrefix = JSON.stringify(json)
+const clientGlobalEnvObject = `((() => {
+  const globalObject = [() => window, () => global, () => self].reduce(
+    (acc, recognizer) => {
+      try {
+        return acc != null ? acc : recognizer()
+      } catch(e) {}
+    },
+    null
+  )
+  
+  if (globalObject == null || globalObject.__RESOLVE_RUNTIME_ENV__ == null) {
+    throw new Error(
+      'Client global object recognition failed - ENV variables failed'
+    )
+  }
 
+  return globalObject.__RESOLVE_RUNTIME_ENV__
+})())`
+
+export const injectRuntimeEnv = (json, isClient = false) => {
+  const seedPrefix = JSON.stringify(json)
   const runtimeDigestBegin = createDigestHash('digest-begin', seedPrefix)
   const runtimeDigestEnd = createDigestHash('digest-end', seedPrefix)
+
+  const envObj = isClient ? clientGlobalEnvObject : 'process.env'
 
   const rawResult = JSON.stringify(
     json,
@@ -47,7 +67,7 @@ export const injectRuntimeEnv = json => {
   )
 
   const result = rawResult.replace(runtimeEnvRegex, (match, group) => {
-    return `process.env[${JSON.stringify(group)}]`
+    return `${envObj}[${JSON.stringify(group)}]`
   })
 
   return result

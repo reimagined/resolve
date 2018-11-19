@@ -29,3 +29,11 @@ exports[`base config works correctly [server] 1`] = `
 
 module.exports = customConstants"
 `;
+
+exports[`config with deep process.env failure [client] 1`] = `[Function]`;
+
+exports[`config with deep process.env failure [server] 1`] = `[Function]`;
+
+exports[`config with process.env failure [client] 1`] = `[Function]`;
+
+exports[`config with process.env failure [server] 1`] = `[Function]`;
