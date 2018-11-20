@@ -2,7 +2,7 @@
 
 In the previous lesson, you modified your application so that it can answer queries. However, at this moment, your application does not provide a frontent that would present this data to an end-user. In this lesson, you will learn how to create a React frontend to display your reSolve application's data.
 
-This tutorial sticks to React + redux as the default choice for building a frontend for a reSolve application. Both React and redux work well in congunction with reSolve's infrastructure. To facilitate interoperability of React + redux on the client and reSolve on the server, the **resolve-redux** library is provided. This library contains HOCs allowing you to easily connect your React components to the backend.
+This tutorial sticks to React + Redux as the default choice for building a frontend for a reSolve application. Both React and Redux work well in congunction with reSolve's infrastructure. To facilitate interoperability of React + Redux on the client and reSolve on the server, the **resolve-redux** library is provided. This library contains HOCs allowing you to easily connect your React components to the backend.
 
 Note that, if required, you can use the standard HTTP API to communicate with a reSolve backend and implement the frontend using any client side technology.
 
@@ -56,11 +56,11 @@ Place the implemented shopping list within the application's root component:
 
 **client/containers/App.js:**
 
-``` js
+```js
 const App = () => (
   <div>
     ...
-    <ShoppingList></ShoppingList>
+    <ShoppingList />
   </div>
 )
 ```
