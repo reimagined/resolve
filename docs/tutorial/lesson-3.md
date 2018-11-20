@@ -4,7 +4,7 @@ Currently, your shopping list application has a fully functional write side allo
 
 ### Implement a View Model
 
-A reSolve applications read side answers queries using Read Models. For a shopping list, you will implement a special kind of a View Model, which is used to build an application's state on the fly, so you can keep the implementation simple. In later lesson, you will learn how to use regular Read Models to answer queries based on accumulated persistent state.
+A reSolve applications read side answers queries using Read Models. For a shopping list, you will implement a **View Model**, which is a special kind of a **Read Model** used to build an application's state on the fly, so you can keep the implementation simple. In later lesson, you will learn how to use regular Read Models to answer queries based on accumulated persistent state.
 
 Add a **shopping_list.projection.js** file to the **view-models** folder and add the following code to this file:
 
