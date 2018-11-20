@@ -219,7 +219,10 @@ const emptyWorker = async () => {
 }
 
 const initDomain = async (
-  { snapshotAdapter: createSnapshotAdapter },
+  {
+    snapshotAdapter: createSnapshotAdapter,
+    readModelAdapters: readModelAdaptersCreators
+  },
   resolve
 ) => {
   const { eventStore, aggregates, readModels, viewModels } = resolve
@@ -235,6 +238,7 @@ const initDomain = async (
     eventStore,
     viewModels,
     readModels,
+    readModelAdaptersCreators,
     snapshotAdapter
   })
 

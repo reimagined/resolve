@@ -10,7 +10,7 @@ const createReadModel = (
     applyEvent,
     applyEvents
   },
-  { name, projection, resolvers, adapter = createReadModelAdapter }
+  { name, projection, resolvers, adapterName }
 ) => {
   const storage = createStorageAdapter()
   const bus = createBusAdapter()
@@ -20,12 +20,16 @@ const createReadModel = (
   const query = createQuery({
     eventStore,
     viewModels: [],
+    readModelAdaptersCreators: [{
+      name: adapterName,
+      factory: createReadModelAdapter
+    }],
     readModels: [
       {
         name,
+        adapterName,
         projection,
-        resolvers,
-        adapter
+        resolvers
       }
     ]
   })
@@ -37,7 +41,6 @@ const createReadModel = (
     modelName: name,
     projection,
     resolvers,
-    adapter,
     storage,
     bus,
     query,

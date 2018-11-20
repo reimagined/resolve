@@ -26,7 +26,8 @@ const appConfig = {
     {
       name: 'HackerNews',
       projection: 'common/read-models/hacker-news.projection.js',
-      resolvers: 'common/read-models/hacker-news.resolvers.js'
+      resolvers: 'common/read-models/hacker-news.resolvers.js',
+      adapterName: 'default'
     }
   ]
 }

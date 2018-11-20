@@ -4,7 +4,8 @@ const appConfig = {
     {
       name: 'default',
       projection: 'common/read-models/default.projection.js',
-      resolvers: 'common/read-models/default.resolvers.js'
+      resolvers: 'common/read-models/default.resolvers.js',
+      adapterName: 'default'
     }
   ],
   viewModels: [
