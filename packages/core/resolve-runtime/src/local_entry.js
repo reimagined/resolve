@@ -50,7 +50,7 @@ const getMqttTopic = (appId, { topicName, topicId }) => {
   }`
 }
 
-const createServerMqttHandler = (pubsubManager, callback, appId, qos) => ws => {
+const createServerMqttHandler = (pubsubManager, appId, qos) => ws => {
   const stream = getWebSocketStream(ws)
   const client = new MqttConnection(stream)
   let messageId = 1
@@ -70,7 +70,6 @@ const createServerMqttHandler = (pubsubManager, callback, appId, qos) => ws => {
 
   client.on('connect', () => {
     client.connack({ returnCode: 0 })
-    callback()
   })
   client.on('pingreq', () => client.pingresp())
 
@@ -186,7 +185,7 @@ const initSubscribeAdapter = async resolve => {
       server: resolve.server,
       path: getRootBasedUrl(resolve.rootPath, '/api/mqtt')
     })
-    const handler = createServerMqttHandler(pubsubManager, resolve, appId, qos)
+    const handler = createServerMqttHandler(pubsubManager, appId, qos)
     socketMqttServer.on('connection', handler)
   } catch (error) {
     // eslint-disable-next-line no-console
