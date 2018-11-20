@@ -1,8 +1,8 @@
 # Lesson 5 - Frontend - Enable Data Editing
 
-
 ### Modify Backend Functionality
-Your applcation already implements logic required to add new list items. Apply the following modfications to the server code to also support item checking:
+
+Your application already implements logic required to add new list items. Apply the following modifications to the server code to also support item checking:
 
 1. Add a new event type that signals about the item checkbox being toggled.
 
@@ -15,9 +15,7 @@ export const SHOPPING_ITEM_TOGGLED = 'SHOPPING_ITEM_TOGGLED'
 ```
 <!-- prettier-ignore-end -->
 
-
-
-2. Add an **id** field to the payload of the **createShoppingItem** comand and **SHOPPING_ITEM_CREATED** event. This field's value uniquely identifies a list item.
+2. Add an **id** field to the payload of the **createShoppingItem** command and **SHOPPING_ITEM_CREATED** event. This field's value uniquely identifies a list item.
 
 **common/aggregates/shopping_list.commands.js:**
 
@@ -35,8 +33,7 @@ createShoppingItem: (state, { payload: { id, text } }) => {
 ```
 <!-- prettier-ignore-end -->
 
-
-3. Add a command handler that produces the added event in responce to the **toggleShoppingItem** command.
+3. Add a command handler that produces the added event in response to the **toggleShoppingItem** command.
 
 **common/aggregates/shopping_list.commands.js:**
 
@@ -68,7 +65,6 @@ The event payload contains the toggled item's identifier.
 ```
 <!-- prettier-ignore-end -->
 
-
 5. To the same projection, add code that applies **SHOPPING_ITEM_TOGGLED** events to the data sample.
 
 **common/view-models/shopping_list.projection.js:**
@@ -92,14 +88,13 @@ The event payload contains the toggled item's identifier.
 
 ### Implement Data Editing UI
 
-
 **common/view-models/shopping_list.projection.js:**
-``` js
+
+```js
 render() {
   const toggleShoppingItem = this.props.toggleShoppingItem;
   ...
 ```
-
 
 <!-- prettier-ignore-start -->
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-5/client/containers/ShoppingList.js /^[[:space:]]+\<ControlLabel\>Item name/   /\<\/Row\>/)
@@ -128,7 +123,6 @@ render() {
 ```
 <!-- prettier-ignore-end -->
 
-
 <!-- prettier-ignore-start -->
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-5/client/containers/ShoppingList.js /^[[:space:]]+\<Checkbox/   /\<\/Checkbox\>/)
 ```js
@@ -143,8 +137,6 @@ render() {
               </Checkbox>
 ```
 <!-- prettier-ignore-end -->
-
-
 
 <!-- prettier-ignore-start -->
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-5/client/containers/ShoppingList.js /^[[:space:]]+createShoppingItem/   /}$^[[:space:]]};/)
@@ -161,29 +153,28 @@ render() {
 ```
 <!-- prettier-ignore-end -->
 
+```js
+createShoppingItem = () => {
+  this.props.createShoppingItem('root-id', {
+    text: this.state.itemText,
+    id: Date.now().toString()
+  })
 
-``` js
-  createShoppingItem = () => {
-    this.props.createShoppingItem("root-id", {
-      text: this.state.itemText,
-      id: Date.now().toString()
-    });
+  this.setState({
+    itemText: ''
+  })
+}
 
-    this.setState({
-      itemText: ""
-    });
-  };
+updateItemText = event => {
+  this.setState({
+    itemText: event.target.value
+  })
+}
 
-  updateItemText = event => {
-    this.setState({
-      itemText: event.target.value
-    });
-  };
-
-  onItemTextPressEnter = event => {
-    if (event.charCode === 13) {
-      event.preventDefault();
-      this.createShoppingItem();
-    }
-  };
+onItemTextPressEnter = event => {
+  if (event.charCode === 13) {
+    event.preventDefault()
+    this.createShoppingItem()
+  }
+}
 ```
