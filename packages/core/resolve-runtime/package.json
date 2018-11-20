@@ -31,6 +31,7 @@
     "express": "^4.16.4",
     "history": "^4.7.2",
     "jsonwebtoken": "^8.3.0",
+    "mqtt-connection": "^4.0.0",
     "react-helmet": "^5.2.0",
     "resolve-api-handler-awslambda": "0.17.4",
     "resolve-api-handler-express": "0.17.4",
@@ -44,7 +45,9 @@
     "socket.io": "^2.1.1",
     "source-map-support": "^0.5.9",
     "url": "^0.11.0",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "ws": "^5.2.1",
+    "websocket-stream": "^5.1.2"
   },
   "peerDependencies": {
     "react": ">=16.6.0",

@@ -258,6 +258,10 @@
     "config": {
       "type": "object",
       "properties": {
+        "target": {
+          "type": "string",
+          "enum": ["local", "cloud"]
+        },
         "port": {
           "type": ["integer", "string"]
         },

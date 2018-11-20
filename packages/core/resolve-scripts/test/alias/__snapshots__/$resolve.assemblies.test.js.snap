@@ -12,7 +12,6 @@ import seedClientEnvs from '$resolve.seedClientEnvs'
 import serverAssemblies from '$resolve.serverAssemblies'
 import snapshotAdapter from '$resolve.snapshotAdapter'
 import storageAdapter from '$resolve.storageAdapter'
-import subscribeAdapter from '$resolve.subscribeAdapter'
 
 export default {
  aggregateActions,
@@ -24,8 +23,7 @@ routes,
 seedClientEnvs,
 serverAssemblies,
 snapshotAdapter,
-storageAdapter,
-subscribeAdapter
+storageAdapter
 }",
 }
 `;

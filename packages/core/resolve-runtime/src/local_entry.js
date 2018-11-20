@@ -1,6 +1,7 @@
 import 'source-map-support/register'
 import { Server } from 'http'
 import express from 'express'
+import MqttConnection from 'mqtt-connection'
 import path from 'path'
 import wrapApiHandler from 'resolve-api-handler-express'
 import createCommandExecutor from 'resolve-command'
@@ -8,6 +9,9 @@ import createEventStore from 'resolve-es'
 import createQueryExecutor from 'resolve-query'
 import createSocketServer from 'socket.io'
 import uuid from 'uuid/v4'
+import Url from 'url'
+import getWebSocketStream from 'websocket-stream'
+import { Server as WebSocketServer } from 'ws'
 
 import createPubsubManager from './utils/create_pubsub_manager'
 import getRootBasedUrl from './utils/get_root_based_url'
@@ -40,24 +44,155 @@ const initExpress = async resolve => {
   })
 }
 
-const initSubscribeAdapter = async (
-  { subscribeAdapter: createSubscribeAdapter },
-  resolve
-) => {
-  const pubsubManager = createPubsubManager()
+const getMqttTopic = (appId, { topicName, topicId }) => {
+  return `${appId}/${topicName === '*' ? '+' : topicName}/${
+    topicId === '*' ? '+' : topicId
+  }`
+}
 
-  const subscribeAdapter = createSubscribeAdapter({
-    pubsubManager,
-    server: resolve.server,
-    getRootBasedUrl: getRootBasedUrl.bind(null, resolve.rootPath),
-    qos: 1,
-    appId: 'resolve'
+const createServerMqttHandler = (pubsubManager, appId, qos) => ws => {
+  const stream = getWebSocketStream(ws)
+  const client = new MqttConnection(stream)
+  let messageId = 1
+
+  const publisher = (topicName, topicId, event) =>
+    new Promise((resolve, reject) => {
+      client.publish(
+        {
+          topic: getMqttTopic(appId, { topicName, topicId }),
+          payload: JSON.stringify(event),
+          messageId: messageId++,
+          qos
+        },
+        error => (error ? reject(error) : resolve())
+      )
+    })
+
+  client.on('connect', () => {
+    client.connack({ returnCode: 0 })
+  })
+  client.on('pingreq', () => client.pingresp())
+
+  client.on('subscribe', packet => {
+    try {
+      for (const subscription of packet.subscriptions) {
+        const [, topicName, topicId] = (
+          subscription.topic || subscription
+        ).split('/')
+        pubsubManager.subscribe({ client: publisher, topicName, topicId })
+      }
+      client.suback({ granted: [packet.qos], messageId: packet.messageId })
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.warn(packet)
+      // eslint-disable-next-line no-console
+      console.warn(error)
+    }
   })
 
-  await subscribeAdapter.init()
+  client.on('unsubscribe', packet => {
+    try {
+      for (const unsubscription of packet.unsubscriptions) {
+        const [, topicName, topicId] = (
+          unsubscription.topic || unsubscription
+        ).split('/')
+        pubsubManager.unsubscribe({ client: publisher, topicName, topicId })
+      }
+      client.unsuback({ granted: [packet.qos], messageId: packet.messageId })
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.warn(packet)
+      // eslint-disable-next-line no-console
+      console.warn(error)
+    }
+  })
+
+  const dispose = () => {
+    pubsubManager.unsubscribeClient(publisher)
+    client.destroy()
+  }
+
+  client.on('close', dispose)
+  client.on('error', dispose)
+  client.on('disconnect', dispose)
+}
+
+const sanitizeWildcardTopic = topic => (topic === '*' ? '+' : topic)
+
+const createServerSocketIOHandler = pubsubManager => socket => {
+  const publisher = (topicName, topicId, event) =>
+    new Promise(resolve => {
+      socket.emit(
+        'message',
+        JSON.stringify({
+          topicName,
+          topicId,
+          payload: event
+        }),
+        resolve
+      )
+    })
+
+  socket.on('subscribe', packet => {
+    const subscriptions = JSON.parse(packet)
+    for (const { topicName, topicId } of subscriptions) {
+      pubsubManager.subscribe({
+        client: publisher,
+        topicName: sanitizeWildcardTopic(topicName),
+        topicId: sanitizeWildcardTopic(topicId)
+      })
+    }
+  })
+
+  socket.on('unsubscribe', packet => {
+    const unsubscriptions = JSON.parse(packet)
+    for (const { topicName, topicId } of unsubscriptions) {
+      pubsubManager.unsubscribe({
+        client: publisher,
+        topicName: sanitizeWildcardTopic(topicName),
+        topicId: sanitizeWildcardTopic(topicId)
+      })
+    }
+  })
+
+  const dispose = () => {
+    pubsubManager.unsubscribeClient(publisher)
+  }
+
+  socket.on('error', dispose)
+  socket.on('disconnect', dispose)
+}
+
+const initSubscribeAdapter = async resolve => {
+  const pubsubManager = createPubsubManager()
+  const appId = resolve.applicationName
+  const qos = 1
+
+  try {
+    const handler = createServerSocketIOHandler(pubsubManager)
+    const socketIOServer = createSocketServer(resolve.server, {
+      path: getRootBasedUrl(resolve.rootPath, '/api/socket-io/'),
+      serveClient: false
+    })
+    socketIOServer.on('connection', handler)
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.log('Cannot init Socket.IO server socket: ', error)
+  }
+
+  try {
+    const socketMqttServer = new WebSocketServer({
+      server: resolve.server,
+      path: getRootBasedUrl(resolve.rootPath, '/api/mqtt')
+    })
+    const handler = createServerMqttHandler(pubsubManager, appId, qos)
+    socketMqttServer.on('connection', handler)
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.log('Cannot init MQTT server socket: ', error)
+  }
 
   Object.defineProperties(resolve, {
-    subscribeAdapter: { value: subscribeAdapter },
     pubsubManager: { value: pubsubManager }
   })
 }
@@ -119,19 +254,20 @@ const initEventLoop = async resolve => {
   const unsubscribe = await resolve.eventStore.loadEvents(
     { skipStorage: true },
     async event => {
-      await resolve.pubsubManager.dispatch({
+      resolve.pubsubManager.dispatch({
         topicName: event.type,
         topicId: event.aggregateId,
         event
       })
 
+      const applicationPromises = []
       // In multi-instance mode application developer should give a guarantee
       // that every read/view-model had been updated only from singular instance
       // Updating read/view-model from multiple threads is not supported
-      const applicationPromises = []
       for (const executor of executors) {
         applicationPromises.push(executor.updateByEvents([event]))
       }
+
       await Promise.all(applicationPromises)
     }
   )
@@ -141,15 +277,53 @@ const initEventLoop = async resolve => {
   })
 }
 
+const getSubscribeAdapterOptions = async (resolve, origin, adapterName) => {
+  switch (adapterName) {
+    case 'mqtt': {
+      const { protocol, hostname, port } = Url.parse(origin)
+      const wsProtocol = /^https/.test(protocol) ? 'wss' : 'ws'
+
+      const url = `${wsProtocol}://${hostname}:${port}${getRootBasedUrl(
+        resolve.rootPath,
+        '/api/mqtt'
+      )}`
+      return {
+        appId: resolve.applicationName,
+        url
+      }
+    }
+
+    case 'socket.io': {
+      return {
+        appId: resolve.applicationName,
+        url: getRootBasedUrl(resolve.rootPath, '/api/socket-io/')
+      }
+    }
+
+    default:
+      return null
+  }
+}
+
 const localEntry = async ({ assemblies, constants, domain, redux, routes }) => {
   try {
-    const resolve = { ...constants, ...domain, redux, routes }
-    resolve.aggregateActions = assemblies.aggregateActions
-    resolve.seedClientEnvs = assemblies.seedClientEnvs
+    const resolve = {
+      aggregateActions: assemblies.aggregateActions,
+      seedClientEnvs: assemblies.seedClientEnvs,
+      ...constants,
+      ...domain,
+      redux,
+      routes
+    }
+
+    resolve.getSubscribeAdapterOptions = getSubscribeAdapterOptions.bind(
+      null,
+      resolve
+    )
 
     await initEventStore(assemblies, resolve)
     await initExpress(resolve)
-    await initSubscribeAdapter(assemblies, resolve)
+    await initSubscribeAdapter(resolve)
     await initHMR(resolve)
     await initDomain(assemblies, resolve)
     await initEventLoop(resolve)
