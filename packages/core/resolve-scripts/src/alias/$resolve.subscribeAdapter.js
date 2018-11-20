@@ -29,7 +29,7 @@ export default ({ resolveConfig, isClient }) => {
   const constants = []
   const exports = []
 
-  if(!isClient) {
+  if (!isClient) {
     throw new Error(
       `${message.clientAliasInServerCodeError}.subscribeAdapter.module`
     )

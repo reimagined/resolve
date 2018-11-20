@@ -176,10 +176,11 @@ const initSubscribeAdapter = async resolve => {
       serveClient: false
     })
     socketIOServer.on('connection', handler)
-  } catch(error) {
+  } catch (error) {
+    // eslint-disable-next-line no-console
     console.log('Cannot init Socket.IO server socket: ', error)
   }
-  
+
   try {
     const socketMqttServer = new WebSocketServer({
       server: resolve.server,
@@ -187,7 +188,8 @@ const initSubscribeAdapter = async resolve => {
     })
     const handler = createServerMqttHandler(pubsubManager, resolve, appId, qos)
     socketMqttServer.on('connection', handler)
-  } catch(error) {
+  } catch (error) {
+    // eslint-disable-next-line no-console
     console.log('Cannot init MQTT server socket: ', error)
   }
 
@@ -277,11 +279,11 @@ const initEventLoop = async resolve => {
 }
 
 const getSubscribeAdapterOptions = async (resolve, origin, adapterName) => {
-  switch(adapterName) {
+  switch (adapterName) {
     case 'mqtt': {
       const { protocol, hostname, port } = Url.parse(origin)
       const wsProtocol = /^https/.test(protocol) ? 'wss' : 'ws'
-  
+
       const url = `${wsProtocol}://${hostname}:${port}${getRootBasedUrl(
         resolve.rootPath,
         '/api/mqtt'
@@ -302,7 +304,6 @@ const getSubscribeAdapterOptions = async (resolve, origin, adapterName) => {
     default:
       return null
   }
-  
 }
 
 const localEntry = async ({ assemblies, constants, domain, redux, routes }) => {
@@ -316,7 +317,10 @@ const localEntry = async ({ assemblies, constants, domain, redux, routes }) => {
       routes
     }
 
-    resolve.getSubscribeAdapterOptions = getSubscribeAdapterOptions.bind(null, resolve)
+    resolve.getSubscribeAdapterOptions = getSubscribeAdapterOptions.bind(
+      null,
+      resolve
+    )
 
     await initEventStore(assemblies, resolve)
     await initExpress(resolve)

@@ -18,7 +18,7 @@ const getWebpackCommonConfigs = ({
     : []
 
   const assemblies = []
-  if(resolveConfig.target === 'local') {
+  if (resolveConfig.target === 'local') {
     assemblies.push({
       name: 'Server local entry point',
       entry: {
@@ -29,7 +29,7 @@ const getWebpackCommonConfigs = ({
       },
       packageJson: 'common/local-entry/package.json'
     })
-  } else if(resolveConfig.target === 'cloud') {
+  } else if (resolveConfig.target === 'cloud') {
     assemblies.push({
       name: 'Server cloud entry point',
       entry: {
@@ -41,7 +41,7 @@ const getWebpackCommonConfigs = ({
       packageJson: 'common/cloud-entry/package.json'
     })
   } else {
-    throw new Error(`Wrong target mode ${target}`)
+    throw new Error(`Wrong target mode ${resolveConfig.target}`)
   }
 
   const configs = []

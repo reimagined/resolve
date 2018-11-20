@@ -118,18 +118,19 @@ const lambdaWorker = async (
     // TODO. Refactoring MQTT publish event
     for (const event of events) {
       applicationPromises.push(
-        mqtt.publish({
-          topic: `${process.env.DEPLOYMENT_ID}/${event.type}/${
-            event.aggregateId
-          }`,
-          payload: JSON.stringify(event),
-          qos: 1
-        })
-        .promise()
-        .catch(error => {
-          // eslint-disable-next-line
-          console.warn(error)
-        })
+        resolve.mqtt
+          .publish({
+            topic: `${process.env.DEPLOYMENT_ID}/${event.type}/${
+              event.aggregateId
+            }`,
+            payload: JSON.stringify(event),
+            qos: 1
+          })
+          .promise()
+          .catch(error => {
+            // eslint-disable-next-line no-console
+            console.warn(error)
+          })
       )
     }
 
@@ -165,7 +166,10 @@ const cloudEntry = async ({ assemblies, constants, domain, redux, routes }) => {
       routes
     }
 
-    resolve.getSubscribeAdapterOptions = getSubscribeAdapterOptions.bind(null, resolve)
+    resolve.getSubscribeAdapterOptions = getSubscribeAdapterOptions.bind(
+      null,
+      resolve
+    )
 
     return lambdaWorker.bind(null, assemblies, resolve)
   } catch (error) {
