@@ -15,14 +15,14 @@ import mainHandler from './handlers/main_handler'
 const initResolve = async (
   {
     snapshotAdapter: createSnapshotAdapter,
-    storageAdapter: createStorageAdapter
+    storageAdapter: createStorageAdapter,
+    readModelAdapters: readModelAdaptersCreators
   },
   resolve
 ) => {
   const storageAdapter = createStorageAdapter()
   const eventStore = createEventStore({ storage: storageAdapter })
   const { aggregates, readModels, viewModels } = resolve
-
   const snapshotAdapter = createSnapshotAdapter()
 
   const executeCommand = createCommandExecutor({
@@ -35,6 +35,7 @@ const initResolve = async (
     eventStore,
     viewModels,
     readModels,
+    readModelAdaptersCreators,
     snapshotAdapter
   })
 

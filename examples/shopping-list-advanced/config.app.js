@@ -36,7 +36,8 @@ const appConfig = {
     {
       name: 'ShoppingLists',
       projection: 'domain/read-models/shopping_lists.projection.js',
-      resolvers: 'domain/read-models/shopping_lists.resolvers.js'
+      resolvers: 'domain/read-models/shopping_lists.resolvers.js',
+      adapterName: 'default'
     }
   ],
   jwtCookie: {
