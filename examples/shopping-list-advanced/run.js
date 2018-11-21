@@ -9,6 +9,7 @@ import {
 import createAuthModule from 'resolve-module-auth'
 
 import devConfig from './config.dev'
+import cloudConfig from './config.cloud'
 import prodConfig from './config.prod'
 import testFunctionalConfig from './config.test_functional'
 import adjustWebpackConfigs from './config.adjust_webpack'
@@ -54,6 +55,14 @@ void (async () => {
       await build(
         merge(defaultResolveConfig, appConfig, prodConfig, authModule),
         adjustWebpackConfigs.bind(null, prodConfig)
+      )
+      break
+    }
+
+    case 'cloud': {
+      await build(
+        merge(defaultResolveConfig, appConfig, cloudConfig, authModule),
+        adjustWebpackConfigs.bind(null, authModule)
       )
       break
     }
