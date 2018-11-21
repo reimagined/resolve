@@ -59,7 +59,7 @@ const createRequest = async (lambdaEvent, customParameters) => {
       : {}
 
   const req = Object.create(null)
-  
+
   const query = queryStringParameters != null ? queryStringParameters : {}
 
   const reqProperties = {
