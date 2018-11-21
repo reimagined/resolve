@@ -12,7 +12,7 @@ const App = () => (
       css={['/bootstrap.min.css']}
     />
     <h1 align="center">Shopping List</h1>
-    <ShoppingList />
+    <ShoppingList></ShoppingList>
   </div>
 )
 

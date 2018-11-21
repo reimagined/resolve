@@ -1,23 +1,23 @@
 const appConfig = {
-  routes: 'client/routes.js',
+  routes: "client/routes.js",
   aggregates: [
     {
-      name: 'ShoppingList',
-      commands: 'common/aggregates/shopping_list.commands.js',
-      projection: 'common/aggregates/shopping_list.projection.js'
+      name: "ShoppingList",
+      commands: "common/aggregates/shopping_list.commands.js",
+      projection: "common/aggregates/shopping_list.projection.js"
     }
   ],
   readModels: [],
   viewModels: [],
   sagas: [],
   auth: {
-    strategies: 'auth/index.js'
+    strategies: "auth/index.js"
   },
   redux: {
-    store: 'client/store/index.js',
-    reducers: 'client/reducers/index.js',
-    middlewares: 'client/middlewares/index.js'
+    store: "client/store/index.js",
+    reducers: "client/reducers/index.js",
+    middlewares: "client/middlewares/index.js"
   }
-}
+};
 
-export default appConfig
+export default appConfig;
