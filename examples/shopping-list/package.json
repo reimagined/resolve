@@ -24,7 +24,6 @@
     "react-router-dom": "4.3.1",
     "redux": "4.0.0",
     "resolve-bus-memory": "0.17.4",
-    "resolve-es": "0.17.4",
     "resolve-redux": "0.17.4",
     "resolve-scripts": "0.17.4",
     "resolve-storage-dynamo": "0.17.4",
