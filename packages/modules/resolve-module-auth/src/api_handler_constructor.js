@@ -20,7 +20,13 @@ const apiHandlerConstructor = (
     await sendAuthResponse(authResponse, res, authRequest.resolve.rootPath)
   } catch (error) {
     res.status(504)
-    res.end(String(error.stack))
+
+    const outError =
+      error != null && error.stack != null
+        ? `${error.stack}`
+        : `Unknown error ${error}`
+
+    res.end(outError)
   }
 }
 
