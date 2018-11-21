@@ -10,14 +10,33 @@ const wrapDefaultJwt = (executor, defaultJwtToken) => async ({
 const wrapAuthRequest = req => {
   const jwtToken = req.cookies[req.resolve.jwtCookie.name]
 
-  const authRequest = {
-    ...req,
+  const authRequest = Object.create(req, {
     resolve: {
-      ...req.resolve,
-      executeCommand: wrapDefaultJwt(req.resolve.executeCommand, jwtToken),
-      executeQuery: wrapDefaultJwt(req.resolve.executeQuery, jwtToken)
+      value: Object.create(req.resolve, {
+        executeCommand: {
+          value: wrapDefaultJwt(req.resolve.executeCommand, jwtToken),
+          enumerable: true,
+          configurable: true,
+          writable: true
+        },
+        executeQuery: {
+          value: wrapDefaultJwt(req.resolve.executeQuery, jwtToken),
+          enumerable: true,
+          configurable: true,
+          writable: true
+        }
+      }),
+      enumerable: true,
+      configurable: true,
+      writable: true
+    },
+    body: {
+      value: null,
+      enumerable: true,
+      configurable: true,
+      writable: true
     }
-  }
+  })
 
   // TODO: use string-based body parsers (not stream-based like npm body-parser)
   if (req.body != null && req.headers['content-type'] != null) {
