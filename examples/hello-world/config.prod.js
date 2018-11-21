@@ -7,6 +7,13 @@ const prodConfig = {
   staticDir: 'static',
   distDir: 'dist',
 
+  readModelAdapters: [
+    {
+      name: 'default',
+      module: 'resolve-readmodel-memory',
+      options: {}
+    }
+  ],
   storageAdapter: {
     module: 'resolve-storage-lite',
     options: {

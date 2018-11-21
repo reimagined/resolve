@@ -1,6 +1,6 @@
 import commands from '../../../common/aggregates/user.commands'
 import projection from '../../../common/aggregates/user.projection'
-import { USER_CREATED } from '../../../common/event_types'
+import { USER_CREATED } from '../../../common/event-types'
 
 describe('aggregates', () => {
   describe('user', () => {

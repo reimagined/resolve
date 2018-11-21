@@ -6,20 +6,26 @@ Object {
 import busAdapter from '$resolve.busAdapter'
 import constants from '$resolve.constants'
 import customConstants from '$resolve.customConstants'
+import readModelAdapters from '$resolve.readModelAdapters'
 import redux from '$resolve.redux'
 import routes from '$resolve.routes'
+import seedClientEnvs from '$resolve.seedClientEnvs'
+import serverAssemblies from '$resolve.serverAssemblies'
+import snapshotAdapter from '$resolve.snapshotAdapter'
 import storageAdapter from '$resolve.storageAdapter'
-import subscribeAdapter from '$resolve.subscribeAdapter'
 
 export default {
  aggregateActions,
 busAdapter,
 constants,
 customConstants,
+readModelAdapters,
 redux,
 routes,
-storageAdapter,
-subscribeAdapter
+seedClientEnvs,
+serverAssemblies,
+snapshotAdapter,
+storageAdapter
 }",
 }
 `;

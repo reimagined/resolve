@@ -24,6 +24,8 @@ const storageAdapter = constructorBindFunction.bind(null,
       storageAdapter_options,
       storageAdapter_imports
     )
+    Object.assign(storageAdapter, storageAdapter_constructor)
+    
 export default storageAdapter
 "
 `;
@@ -55,6 +57,8 @@ const storageAdapter = constructorBindFunction.bind(null,
       storageAdapter_options,
       storageAdapter_imports
     )
+    Object.assign(storageAdapter, storageAdapter_constructor)
+    
 export default storageAdapter
 "
 `;

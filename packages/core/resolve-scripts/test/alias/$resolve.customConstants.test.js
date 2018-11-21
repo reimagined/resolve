@@ -1,5 +1,5 @@
-import declareRuntimeEnv from '../../src/core/declare_runtime_env'
-import alias from '../../src/core/alias/$resolve.customConstants'
+import declareRuntimeEnv from '../../src/declare_runtime_env'
+import alias from '../../src/alias/$resolve.customConstants'
 
 describe('base config works correctly', () => {
   const resolveConfig = {
@@ -48,7 +48,7 @@ describe('config with process.env failure', () => {
           resolveConfig,
           isClient: true
         }).code
-    ).toThrow()
+    ).toMatchSnapshot()
   })
 
   test('[server]', () => {
@@ -58,7 +58,7 @@ describe('config with process.env failure', () => {
           resolveConfig,
           isClient: false
         }).code
-    ).toThrow()
+    ).toMatchSnapshot()
   })
 })
 
@@ -78,7 +78,7 @@ describe('config with deep process.env failure', () => {
           resolveConfig,
           isClient: true
         }).code
-    ).toThrow()
+    ).toMatchSnapshot()
   })
 
   test('[server]', () => {
@@ -88,7 +88,7 @@ describe('config with deep process.env failure', () => {
           resolveConfig,
           isClient: false
         }).code
-    ).toThrow()
+    ).toMatchSnapshot()
   })
 })
 

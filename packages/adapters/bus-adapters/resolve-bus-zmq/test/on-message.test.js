@@ -2,6 +2,8 @@ import sinon from 'sinon'
 
 import onMessage from '../src/on-message'
 
+const TOPIC_NAME = 'TOPIC_NAME'
+
 test('onMessage should call all the handlers with good handlers', async () => {
   const handler1 = sinon.stub()
   const handler2 = sinon.stub()
@@ -9,7 +11,8 @@ test('onMessage should call all the handlers with good handlers', async () => {
 
   const pool = {
     config: { channel: 'channel' },
-    handlers: new Set([handler1, handler2, handler3])
+    makeTopicsForEvent: () => [TOPIC_NAME],
+    handlers: new Map([[TOPIC_NAME, new Set([handler1, handler2, handler3])]])
   }
 
   const message = 'channel { "content": 111 }'
@@ -31,7 +34,8 @@ test('onMessage should call all the handlers with failed handler', async () => {
 
   const pool = {
     config: { channel: 'channel' },
-    handlers: new Set([handler1, handler2, handler3])
+    makeTopicsForEvent: () => [TOPIC_NAME],
+    handlers: new Map([[TOPIC_NAME, new Set([handler1, handler2, handler3])]])
   }
 
   const message = 'channel { "content": 111 }'

@@ -12,10 +12,7 @@ const appConfig = {
       name: 'read-model-name',
       projection: 'common/read-models/read-model-name.projection.js',
       resolvers: 'common/read-models/read-model-name.resolvers.js',
-      adapter: {
-        module: 'resolve-readmodel-memory',
-        options: {}
-      }
+      adapterName: 'default'
     }
   ],
   viewModels: [
@@ -34,13 +31,10 @@ const appConfig = {
       eventHandlers: 'common/sagas/saga-name.event.js'
     }
   ],
-  auth: {
-    strategies: 'auth/index.js'
-  },
   redux: {
-    store: 'client/store/index.js',
-    reducers: 'client/reducers/index.js',
-    middlewares: 'client/middlewares/index.js'
+    reducers: { 'reducer-name': 'client/reducers/reducer-name.js' },
+    middlewares: ['client/middlewares/middleware-name.js'],
+    enhancers: ['client/enhancers/redux-devtools.js']
   }
 }
 

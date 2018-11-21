@@ -2,24 +2,7 @@ import sinon from 'sinon'
 
 import onMessage from '../src/on-message'
 
-/*
-
-const onMessage = async (pool, message) => {
-  if (!message || !message.content || typeof message.content.toString !== 'function') return
-
-  const content = message.content.toString()
-  const event = JSON.parse(content)
-
-  await Promise.resolve()
-  try {
-    await Promise.all(Array.from(pool.handlers).map(handler => handler(event)))
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(error)
-  }
-}
-
- */
+const TOPIC_NAME = 'TOPIC_NAME'
 
 test('onMessage should call all the handlers with good handlers', async () => {
   const handler1 = sinon.stub()
@@ -29,7 +12,8 @@ test('onMessage should call all the handlers with good handlers', async () => {
   const event = { type: 'EVENT_TYPE' }
 
   const pool = {
-    handlers: new Set([handler1, handler2, handler3])
+    makeTopicsForEvent: () => [TOPIC_NAME],
+    handlers: new Map([[TOPIC_NAME, new Set([handler1, handler2, handler3])]])
   }
 
   const message = {
@@ -54,7 +38,8 @@ test('onMessage should call all the handlers with failed handler', async () => {
   const event = { type: 'EVENT_TYPE' }
 
   const pool = {
-    handlers: new Set([handler1, handler2, handler3])
+    makeTopicsForEvent: () => [TOPIC_NAME],
+    handlers: new Map([[TOPIC_NAME, new Set([handler1, handler2, handler3])]])
   }
 
   const message = {
@@ -74,7 +59,8 @@ test('onMessage should noop on malformed message', async () => {
   const handler = sinon.stub()
 
   const pool = {
-    handlers: new Set([handler])
+    makeTopicsForEvent: () => [TOPIC_NAME],
+    handlers: new Map([[TOPIC_NAME, new Set([handler])]])
   }
 
   const message = {

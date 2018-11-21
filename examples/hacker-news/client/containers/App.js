@@ -1,12 +1,10 @@
 import React from 'react'
-import { Link as NormalLink } from 'react-router-dom'
+import { NavLink, Link as NormalLink } from 'react-router-dom'
 import styled from 'styled-components'
 
 import Splitter from '../components/Splitter'
 import Header from './Header'
-import NavLink from './Link'
 import LoginInfo from './LoginInfo'
-import PagePreloader from './PagePreloader'
 import Image from './Image'
 
 const ContentRoot = styled.div`
@@ -79,7 +77,6 @@ const App = ({ children }) => (
       favicon="/favicon.ico"
       css={['/style.css']}
     />
-    <PagePreloader />
     <ContentRoot>
       <PageHeader>
         <Link to="/">

@@ -45,22 +45,22 @@ The `res` object represents the HTTP response that an api handler sends when it 
 
 ## How to write an api handlers
 
-* Send Text
+- Send Text
 
 ```js
 export default async (req, res) => {
   const { username } = JSON.parse(req.body)
-  
+
   res.text(`Hello ${username}!')
 }
 ```
 
-* Send JSON
+- Send JSON
 
 ```js
 export default async (req, res) => {
   const { username } = JSON.parse(req.body)
-    
+
   res.json({
     id: uuid(),
     username
@@ -68,32 +68,29 @@ export default async (req, res) => {
 }
 ```
 
-* Send File
+- Send File
 
 ```js
 export default async (req, res) => {
   const { id } = req.query
-  
-  const user = await getUserById(id) 
-  
+
+  const user = await getUserById(id)
+
   res.file(JSON.stringify(user), 'user.json')
 }
 ```
 
-* Set Cookies
+- Set Cookies
 
 ```js
 export default async (req, res) => {
-  res.cookie(
-    'expireTime',
-    Date.now() + 1000 * 60 * 60
-  )
-  
+  res.cookie('expireTime', Date.now() + 1000 * 60 * 60)
+
   res.end()
 }
 ```
 
-* Redirect
+- Redirect
 
 ```js
 export default async (req, res) => {
@@ -101,16 +98,16 @@ export default async (req, res) => {
 }
 ```
 
-* Custom status
+- Custom status
 
 ```js
 export default async (req, res) => {
-  if(!checkAccess(req.query)) {
+  if (!checkAccess(req.query)) {
     res.status(401)
     res.end('Access denied')
     return
   }
-  
+
   res.end('Ok')
 }
 ```
@@ -143,15 +140,16 @@ void (async () => {
           apiHandlers: [
             {
               path: 'info',
-              controller: 'api-handlers/info.js'
-            } 
+              controller: 'api-handlers/info.js',
+              method: 'GET'
+            }
           ]
         }
       })
       break
     }
     // ...
-  }  
+  }
 })().catch(error => {
   // eslint-disable-next-line no-console
   console.log(error)

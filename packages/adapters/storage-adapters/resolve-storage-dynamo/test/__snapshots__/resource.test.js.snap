@@ -1,0 +1,95 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`as resource method "create" works correctly 1`] = `
+"{
+  \\"region\\": \\"region-test\\"
+}
+{
+  \\"ResourceId\\": \\"table/tableName\\",
+  \\"ServiceNamespace\\": \\"dynamodb\\",
+  \\"ScalableDimension\\": \\"dynamodb:table:ReadCapacityUnits\\",
+  \\"MinCapacity\\": 5,
+  \\"MaxCapacity\\": 25
+}
+{
+  \\"ResourceId\\": \\"table/tableName\\",
+  \\"ServiceNamespace\\": \\"dynamodb\\",
+  \\"ScalableDimension\\": \\"dynamodb:table:WriteCapacityUnits\\",
+  \\"MinCapacity\\": 5,
+  \\"MaxCapacity\\": 25
+}
+{
+  \\"ResourceId\\": \\"table/tableName/index/rangedEvents\\",
+  \\"ServiceNamespace\\": \\"dynamodb\\",
+  \\"ScalableDimension\\": \\"dynamodb:index:ReadCapacityUnits\\",
+  \\"MinCapacity\\": 5,
+  \\"MaxCapacity\\": 25
+}
+{
+  \\"ResourceId\\": \\"table/tableName/index/rangedEvents\\",
+  \\"ServiceNamespace\\": \\"dynamodb\\",
+  \\"ScalableDimension\\": \\"dynamodb:index:WriteCapacityUnits\\",
+  \\"MinCapacity\\": 5,
+  \\"MaxCapacity\\": 25
+}
+{
+  \\"PolicyName\\": \\"tableName-readpolicy\\",
+  \\"ResourceId\\": \\"table/tableName\\",
+  \\"ServiceNamespace\\": \\"dynamodb\\",
+  \\"ScalableDimension\\": \\"dynamodb:table:ReadCapacityUnits\\",
+  \\"PolicyType\\": \\"TargetTrackingScaling\\",
+  \\"TargetTrackingScalingPolicyConfiguration\\": {
+    \\"TargetValue\\": 50,
+    \\"PredefinedMetricSpecification\\": {
+      \\"PredefinedMetricType\\": \\"DynamoDBReadCapacityUtilization\\"
+    },
+    \\"ScaleOutCooldown\\": 60,
+    \\"ScaleInCooldown\\": 60
+  }
+}
+{
+  \\"PolicyName\\": \\"tableName-writepolicy\\",
+  \\"ResourceId\\": \\"table/tableName\\",
+  \\"ServiceNamespace\\": \\"dynamodb\\",
+  \\"ScalableDimension\\": \\"dynamodb:table:WriteCapacityUnits\\",
+  \\"PolicyType\\": \\"TargetTrackingScaling\\",
+  \\"TargetTrackingScalingPolicyConfiguration\\": {
+    \\"TargetValue\\": 50,
+    \\"PredefinedMetricSpecification\\": {
+      \\"PredefinedMetricType\\": \\"DynamoDBWriteCapacityUtilization\\"
+    },
+    \\"ScaleOutCooldown\\": 60,
+    \\"ScaleInCooldown\\": 60
+  }
+}
+{
+  \\"PolicyName\\": \\"tableName-indexreadpolicy\\",
+  \\"ResourceId\\": \\"table/tableName/index/rangedEvents\\",
+  \\"ServiceNamespace\\": \\"dynamodb\\",
+  \\"ScalableDimension\\": \\"dynamodb:index:ReadCapacityUnits\\",
+  \\"PolicyType\\": \\"TargetTrackingScaling\\",
+  \\"TargetTrackingScalingPolicyConfiguration\\": {
+    \\"TargetValue\\": 50,
+    \\"PredefinedMetricSpecification\\": {
+      \\"PredefinedMetricType\\": \\"DynamoDBReadCapacityUtilization\\"
+    },
+    \\"ScaleOutCooldown\\": 60,
+    \\"ScaleInCooldown\\": 60
+  }
+}
+{
+  \\"PolicyName\\": \\"tableName-indexwritepolicy\\",
+  \\"ResourceId\\": \\"table/tableName/index/rangedEvents\\",
+  \\"ServiceNamespace\\": \\"dynamodb\\",
+  \\"ScalableDimension\\": \\"dynamodb:index:WriteCapacityUnits\\",
+  \\"PolicyType\\": \\"TargetTrackingScaling\\",
+  \\"TargetTrackingScalingPolicyConfiguration\\": {
+    \\"TargetValue\\": 50,
+    \\"PredefinedMetricSpecification\\": {
+      \\"PredefinedMetricType\\": \\"DynamoDBWriteCapacityUtilization\\"
+    },
+    \\"ScaleOutCooldown\\": 60,
+    \\"ScaleInCooldown\\": 60
+  }
+}"
+`;

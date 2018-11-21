@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`method "createTimestampExpression" should return correctly expression for finishTime 1`] = `
+Object {
+  "attributeNames": Object {
+    "#timestamp": "timestamp",
+  },
+  "attributeValues": Object {
+    ":finishTime": 10,
+  },
+  "conditionExpression": "(#timestamp < :finishTime)",
+}
+`;
+
+exports[`method "createTimestampExpression" should return correctly expression for startTime 1`] = `
+Object {
+  "attributeNames": Object {
+    "#timestamp": "timestamp",
+  },
+  "attributeValues": Object {
+    ":startTime": 5,
+  },
+  "conditionExpression": "(#timestamp > :startTime)",
+}
+`;
+
+exports[`method "createTimestampExpression" should return correctly expression for startTime and finishTime 1`] = `
+Object {
+  "attributeNames": Object {
+    "#timestamp": "timestamp",
+  },
+  "attributeValues": Object {
+    ":finishTime": 10,
+    ":startTime": 5,
+  },
+  "conditionExpression": "(#timestamp BETWEEN :startTime AND :finishTime)",
+}
+`;
+
+exports[`method "createTimestampExpression" should return empty expression 1`] = `
+Object {
+  "attributeNames": Object {},
+  "attributeValues": Object {},
+  "conditionExpression": "",
+}
+`;

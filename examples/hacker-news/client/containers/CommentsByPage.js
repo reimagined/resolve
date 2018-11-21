@@ -1,57 +1,51 @@
 import React from 'react'
 import { Redirect } from 'react-router-dom'
-import { connectReadModel } from 'resolve-redux'
-import { connect } from 'react-redux'
 
 import Comment from '../components/Comment'
 import Pagination from '../components/Pagination'
+import { CommentsPaginateRenderless } from 'resolve-module-comments'
+
 import { ITEMS_PER_PAGE } from '../constants'
 
-export const CommentsByPage = ({ comments, page }) =>
-  page && !Number.isInteger(Number(page)) ? (
-    <Redirect push to={`/error?text=No such page`} />
-  ) : (
-    <div>
-      {comments.slice(0, ITEMS_PER_PAGE).map(comment => (
-        <Comment key={comment.id} {...comment} />
-      ))}
-      <Pagination
-        page={page}
-        hasNext={!!comments[ITEMS_PER_PAGE]}
-        location="/comments"
-      />
-    </div>
-  )
+class CommentsByPage extends React.PureComponent {
+  render() {
+    const {
+      match: {
+        params: { page }
+      }
+    } = this.props
 
-const mapStateToOptions = (
-  state,
-  {
-    match: {
-      params: { page }
-    }
+    return page && !Number.isInteger(Number(page)) ? (
+      <Redirect push to={`/error?text=No such page`} />
+    ) : (
+      <CommentsPaginateRenderless
+        itemsOnPage={ITEMS_PER_PAGE}
+        pageNumber={+page || 1}
+      >
+        {({ comments, paginationDone }) => (
+          <div>
+            {comments.map(comment => (
+              <Comment
+                key={comment.commentId}
+                id={comment.commentId}
+                storyId={comment.treeId}
+                text={comment.content.text}
+                createdBy={comment.content.createdBy}
+                createdByName={comment.content.createdByName}
+                createdAt={comment.content.createdAt}
+                parentId={comment.content.parentId}
+              />
+            ))}
+            <Pagination
+              page={page}
+              hasNext={!paginationDone}
+              location="/comments"
+            />
+          </div>
+        )}
+      </CommentsPaginateRenderless>
+    )
   }
-) => ({
-  readModelName: 'HackerNews',
-  resolverName: 'comments',
-  resolverArgs: {
-    offset: ITEMS_PER_PAGE + 1,
-    first: (+page - 1) * ITEMS_PER_PAGE
-  }
-})
+}
 
-const mapStateToProps = (
-  state,
-  {
-    match: {
-      params: { page }
-    },
-    data
-  }
-) => ({
-  comments: data,
-  page
-})
-
-export default connectReadModel(mapStateToOptions)(
-  connect(mapStateToProps)(CommentsByPage)
-)
+export default CommentsByPage

@@ -82,22 +82,35 @@ function getConfig({ moduleType, moduleTarget }) {
           regenerator,
           useESModules
         }
+      ],
+      [
+        'transform-inline-environment-variables',
+        {
+          include: [
+            '__RESOLVE_PACKAGES__',
+            '__RESOLVE_EXAMPLES__',
+            '__RESOLVE_VERSION__'
+          ]
+        }
       ]
     ]
   }
 }
 
 function compile() {
-  const files = find('./packages/**/package.json')
-
   const configs = []
 
-  for (const filePath of files) {
+  const resolvePackages = []
+  const resolveExamples = []
+
+  for (const filePath of find('./packages/**/package.json')) {
     if (filePath.includes('node_modules')) {
       continue
     }
 
     const { name, babelCompile } = require(filePath)
+
+    resolvePackages.push(name)
 
     if (!Array.isArray(babelCompile)) {
       throw new Error(`[${name}] package.json "babelCompile" must be an array`)
@@ -126,6 +139,29 @@ function compile() {
     }
   }
 
+  for (const filePath of find('./examples/*/package.json')) {
+    if (filePath.includes('node_modules')) {
+      continue
+    }
+
+    const { name, description } = require(filePath)
+
+    if (!description) {
+      throw new Error(`Example "${name}" .description must be a string`)
+    }
+
+    resolveExamples.push({ name, description })
+  }
+
+  resolvePackages.sort((a, b) => (a > b ? 1 : a < b ? -1 : 0))
+  resolveExamples.sort((a, b) =>
+    a.name > b.name ? 1 : a.name < b.name ? -1 : 0
+  )
+
+  process.env.__RESOLVE_PACKAGES__ = JSON.stringify(resolvePackages)
+  process.env.__RESOLVE_EXAMPLES__ = JSON.stringify(resolveExamples)
+  process.env.__RESOLVE_VERSION__ = require('./package').version
+
   for (const config of configs) {
     babel({
       babelOptions: {
@@ -153,6 +189,7 @@ function compile() {
       .catch(error => {
         // eslint-disable-next-line no-console
         console.error(error)
+        process.exit(1)
       })
   }
 }

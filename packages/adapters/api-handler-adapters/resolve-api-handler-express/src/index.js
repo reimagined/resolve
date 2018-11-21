@@ -1,5 +1,7 @@
+import binaryCase from 'binary-case'
 import contentDisposition from 'content-disposition'
 import cookie from 'cookie'
+import getRawBody from 'raw-body'
 
 const COOKIE_CLEAR_DATE = new Date(0).toGMTString()
 const INTERNAL = Symbol('INTERNAL')
@@ -23,7 +25,7 @@ const normalizeKey = (key, mode) => {
 
 const wrapHeadersCaseInsensitive = headersMap =>
   Object.create(
-    null,
+    Object.prototype,
     Object.keys(headersMap).reduce((acc, key) => {
       const value = headersMap[key]
       const [upperDashKey, dashKey, lowerKey] = [
@@ -42,47 +44,21 @@ const wrapHeadersCaseInsensitive = headersMap =>
     }, {})
   )
 
-const mergeResponseHeaders = responseHeaders => {
-  const resultHeaders = {}
-  for (const { key, value } of responseHeaders) {
-    if (resultHeaders.hasOwnProperty(key)) {
-      // See https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2 paragraph 4
-      resultHeaders[key] = `${resultHeaders[key]}, ${value}`
-    } else {
-      resultHeaders[key] = value
-    }
-  }
-  return resultHeaders
-}
-
 const createRequest = async (expressReq, customParameters) => {
   let expressReqError = null
-
-  const body = await new Promise((resolve, reject) => {
-    expressReq.on('error', error => {
-      expressReqError = error
-      reject(error)
-    })
-    const bodyChunks = []
-
-    expressReq.on('data', chunk => {
-      bodyChunks.push(chunk)
-    })
-    expressReq.on('end', () => {
-      if (bodyChunks.length === 0) {
-        return resolve(null)
-      }
-
-      const body = Buffer.concat(bodyChunks).toString()
-      resolve(body)
-    })
-  })
 
   const headers = wrapHeadersCaseInsensitive(expressReq.headers)
   const cookies =
     headers.cookie != null && headers.cookie.constructor === String
       ? cookie.parse(headers.cookie)
       : {}
+
+  const body = headers.hasOwnProperty('Content-Length')
+    ? await getRawBody(expressReq, {
+        length: headers['Content-Length'],
+        encoding: true
+      })
+    : null
 
   const req = Object.create(null)
 
@@ -117,7 +93,8 @@ const createRequest = async (expressReq, customParameters) => {
 const createResponse = () => {
   const internalRes = {
     status: 200,
-    headers: [],
+    headers: {},
+    cookies: [],
     body: '',
     closed: false
   }
@@ -137,9 +114,9 @@ const createResponse = () => {
       )
     if (!isValidValue) {
       throw new Error(
-        `Variable "${fieldName}" should be one of following types: ${types.json(
-          ', '
-        )}`
+        `Variable "${fieldName}" should be one of following types: ${types
+          .map(type => type.name)
+          .join(', ')}`
       )
     }
   }
@@ -155,7 +132,8 @@ const createResponse = () => {
   defineResponseMethod('cookie', (name, value, options) => {
     validateResponseOpened()
     const serializedCookie = cookie.serialize(name, value, options)
-    internalRes.headers.push({ key: 'Set-Cookie', value: serializedCookie })
+
+    internalRes.cookies.push(serializedCookie)
   })
 
   defineResponseMethod('clearCookie', (name, options) => {
@@ -164,7 +142,8 @@ const createResponse = () => {
       ...options,
       expire: COOKIE_CLEAR_DATE
     })
-    internalRes.headers.push({ key: 'Set-Cookie', value: serializedCookie })
+
+    internalRes.cookies.push(serializedCookie)
   })
 
   defineResponseMethod('status', code => {
@@ -177,7 +156,7 @@ const createResponse = () => {
     validateResponseOpened()
     validateOptionShape('Status code', code, [Number], true)
     validateOptionShape('Location path', path, [String])
-    internalRes.headers.push({ key: 'Location', value: path })
+    internalRes.headers['Location'] = path
     internalRes.status = code != null ? code : 302
 
     internalRes.closed = true
@@ -186,9 +165,7 @@ const createResponse = () => {
   defineResponseMethod('getHeader', searchKey => {
     validateOptionShape('Header name', searchKey, [String])
     const normalizedKey = normalizeKey(searchKey, 'upper-dash-case')
-    const header = internalRes.headers.find(({ key }) => key === normalizedKey)
-    if (header == null) return null
-    return header.value
+    return internalRes.headers[normalizedKey]
   })
 
   defineResponseMethod('setHeader', (key, value) => {
@@ -196,10 +173,7 @@ const createResponse = () => {
     validateOptionShape('Header name', key, [String])
     validateOptionShape('Header value', value, [String])
 
-    internalRes.headers.push({
-      key: normalizeKey(key, 'upper-dash-case'),
-      value
-    })
+    internalRes.headers[normalizeKey(key, 'upper-dash-case')] = value
   })
 
   defineResponseMethod('text', (content, encoding) => {
@@ -233,10 +207,7 @@ const createResponse = () => {
     internalRes.body =
       content.constructor === String ? Buffer.from(content, encoding) : content
 
-    internalRes.headers.push({
-      key: 'Content-Disposition',
-      value: contentDisposition(filename)
-    })
+    internalRes.headers['Content-Disposition'] = contentDisposition(filename)
 
     internalRes.closed = true
   })
@@ -259,10 +230,14 @@ const wrapApiHandler = (handler, getCustomParameters) => async (
 
     await handler(req, res)
 
-    const { status, headers, body } = res[INTERNAL]
+    const { status, headers, cookies, body } = res[INTERNAL]
     expressRes.status(status)
 
-    expressRes.set(mergeResponseHeaders(headers))
+    for (let idx = 0; idx < cookies.length; idx++) {
+      headers[binaryCase('Set-cookie', idx)] = cookies[idx]
+    }
+
+    expressRes.set(headers)
 
     expressRes.end(body)
   } catch (error) {

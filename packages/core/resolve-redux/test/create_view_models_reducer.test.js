@@ -29,14 +29,13 @@ describe('createViewModelsReducer', () => {
           ]
         },
         [TODO_CHECKED]: (state, event) => {
-          return state.map(
-            todo =>
-              todo.id === event.aggregateId
-                ? {
-                    ...todo,
-                    checked: !todo.checked
-                  }
-                : todo
+          return state.map(todo =>
+            todo.id === event.aggregateId
+              ? {
+                  ...todo,
+                  checked: !todo.checked
+                }
+              : todo
           )
         }
       }

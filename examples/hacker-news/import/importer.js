@@ -1,15 +1,17 @@
+import { eventTypes as moduleCommentsEventTypes } from 'resolve-module-comments'
 import uuid from 'uuid'
 import { EOL } from 'os'
 
 import {
   USER_CREATED,
   STORY_CREATED,
-  STORY_UPVOTED,
-  STORY_COMMENTED
-} from '../common/event_types'
+  STORY_UPVOTED
+} from '../common/event-types'
 
 import api from './api'
 import eventStore, { dropStore } from './eventStore'
+
+const { COMMENT_CREATED } = moduleCommentsEventTypes
 
 const users = {}
 
@@ -57,15 +59,18 @@ const generateCommentEvents = async (comment, aggregateId, parentId) => {
   const commentId = uuid.v4()
 
   await saveEventRaw({
-    type: STORY_COMMENTED,
+    type: COMMENT_CREATED,
     aggregateId,
     timestamp: Date.now(),
     payload: {
-      userId,
-      userName,
-      text: comment.text || '',
       commentId,
-      parentId
+      parentCommentId: parentId,
+      content: {
+        text: comment.text || '',
+        userId,
+        userName,
+        parentId: parentId
+      }
     }
   })
 
@@ -139,7 +144,7 @@ const generateStoryEvents = async story => {
   }
 
   if (story.kids) {
-    await generateComments(story.kids, aggregateId, aggregateId, {
+    await generateComments(story.kids, aggregateId, null, {
       count: Math.floor(Math.random() * 100)
     })
   }

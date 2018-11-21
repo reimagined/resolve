@@ -17,6 +17,22 @@
       "required": ["module", "options"],
       "additionalProperties": false
     },
+    "readModelAdapter": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "module": {
+          "type": "string"
+        },
+        "options": {
+          "type": "object"
+        }
+      },
+      "required": ["name", "module", "options"],
+      "additionalProperties": false
+    },
     "resourceInstance": {
       "type": "string"
     },
@@ -43,16 +59,7 @@
           "type": "string"
         },
         "options": {
-          "type": "object",
-          "properties": {
-            "client": {
-              "type": "object"
-            },
-            "server": {
-              "type": "object"
-            }
-          },
-          "additionalProperties": false
+          "type": "object"
         }
       },
       "required": ["module", "options"],
@@ -75,9 +82,6 @@
             { "$ref": "#/definitions/resourceInstance" },
             { "$ref": "#/definitions/resourceConstructor" }
           ]
-        },
-        "snapshotAdapter": {
-          "$ref": "#/definitions/adapter"
         }
       },
       "required": ["name", "commands"],
@@ -112,9 +116,6 @@
             { "$ref": "#/definitions/resourceInstance" },
             { "$ref": "#/definitions/resourceConstructor" }
           ]
-        },
-        "snapshotAdapter": {
-          "$ref": "#/definitions/adapter"
         }
       },
       "required": ["name", "projection"],
@@ -142,11 +143,11 @@
             { "$ref": "#/definitions/resourceConstructor" }
           ]
         },
-        "adapter": {
-          "$ref": "#/definitions/adapter"
+        "adapterName": {
+          "type": "string"
         }
       },
-      "required": ["name", "projection", "resolvers"],
+      "required": ["name", "projection", "resolvers", "adapterName"],
       "additionalProperties": false
     },
     "saga": {
@@ -177,6 +178,9 @@
         "path": {
           "type": "string"
         },
+        "method": {
+          "type": "string"
+        },
         "controller": {
           "oneOf": [
             { "$ref": "#/definitions/resourceInstance" },
@@ -186,6 +190,15 @@
       },
       "required": ["path", "controller"],
       "additionalProperties": false
+    },
+    "reduxReducersMap": {
+      "type": "object",
+      "additionalProperties": {
+        "oneOf": [
+          { "$ref": "#/definitions/resourceInstance" },
+          { "$ref": "#/definitions/resourceConstructor" }
+        ]
+      }
     },
     "jwtCookie": {
       "type": "object",
@@ -202,28 +215,39 @@
     "redux": {
       "type": "object",
       "properties": {
-        "store": {
-          "type": "string"
-        },
         "reducers": {
-          "type": "string"
+          "$ref": "#/definitions/reduxReducersMap"
         },
         "middlewares": {
-          "type": "string"
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "$ref": "#/definitions/resourceInstance" },
+              { "$ref": "#/definitions/resourceConstructor" }
+            ]
+          }
+        },
+        "sagas": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "$ref": "#/definitions/resourceInstance" },
+              { "$ref": "#/definitions/resourceConstructor" }
+            ]
+          }
+        },
+        "enhancers": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "$ref": "#/definitions/resourceInstance" },
+              { "$ref": "#/definitions/resourceConstructor" }
+            ]
+          }
         }
       },
-      "required": ["store", "reducers", "middlewares"],
+      "required": ["reducers"],
       "additionalProperties": false
-    },
-    "auth": {
-      "type": "object",
-      "properties": {
-        "strategies": {
-          "type": "string"
-        }
-      },
-      "additionalProperties": false,
-      "required": ["strategies"]
     },
     "polyfills": {
       "type": "array",
@@ -238,6 +262,10 @@
     "config": {
       "type": "object",
       "properties": {
+        "target": {
+          "type": "string",
+          "enum": ["local", "cloud"]
+        },
         "port": {
           "type": ["integer", "string"]
         },
@@ -292,6 +320,12 @@
             "$ref": "#/definitions/apiHandler"
           }
         },
+        "readModelAdapters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/readModelAdapter"
+          }
+        },
         "busAdapter": {
           "$ref": "#/definitions/adapter"
         },
@@ -301,8 +335,8 @@
         "subscribeAdapter": {
           "$ref": "#/definitions/subscribeAdapter"
         },
-        "auth": {
-          "$ref": "#/definitions/auth"
+        "snapshotAdapter": {
+          "$ref": "#/definitions/adapter"
         },
         "jwtCookie": {
           "$ref": "#/definitions/jwtCookie"
@@ -333,7 +367,9 @@
         "viewModels",
         "readModels",
         "busAdapter",
+        "readModelAdapters",
         "storageAdapter",
+        "snapshotAdapter",
         "subscribeAdapter",
         "polyfills",
         "customConstants"

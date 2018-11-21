@@ -3,10 +3,12 @@ import {
   build,
   start,
   watch,
-  runTestcafe
+  runTestcafe,
+  merge
 } from 'resolve-scripts'
 
 import appConfig from './config.app'
+import cloudConfig from './config.cloud'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
 import testFunctionalConfig from './config.test_functional'
@@ -18,11 +20,7 @@ void (async () => {
   switch (launchMode) {
     case 'dev': {
       await watch(
-        {
-          ...defaultResolveConfig,
-          ...appConfig,
-          ...devConfig
-        },
+        merge(defaultResolveConfig, appConfig, devConfig),
         adjustWebpackConfigs
       )
       break
@@ -30,32 +28,32 @@ void (async () => {
 
     case 'build': {
       await build(
-        {
-          ...defaultResolveConfig,
-          ...appConfig,
-          ...prodConfig
-        },
+        merge(defaultResolveConfig, appConfig, prodConfig),
+        adjustWebpackConfigs
+      )
+      break
+    }
+
+    case 'cloud': {
+      await build(
+        merge(defaultResolveConfig, appConfig, cloudConfig),
         adjustWebpackConfigs
       )
       break
     }
 
     case 'start': {
-      await start({
-        ...defaultResolveConfig,
-        ...appConfig,
-        ...prodConfig
-      })
+      await start(merge(defaultResolveConfig, appConfig, prodConfig))
       break
     }
 
     case 'test:functional': {
       await runTestcafe({
-        resolveConfig: {
-          ...defaultResolveConfig,
-          ...appConfig,
-          ...testFunctionalConfig
-        },
+        resolveConfig: merge(
+          defaultResolveConfig,
+          appConfig,
+          testFunctionalConfig
+        ),
         functionalTestsDir: 'test/functional',
         browser: process.argv[3],
         adjustWebpackConfigs
@@ -70,4 +68,5 @@ void (async () => {
 })().catch(error => {
   // eslint-disable-next-line no-console
   console.log(error)
+  process.exit(1)
 })

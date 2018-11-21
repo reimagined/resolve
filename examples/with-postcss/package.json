@@ -1,9 +1,11 @@
 {
   "name": "with-postcss",
   "version": "0.17.4",
+  "description": "shows how to work with postCSS",
   "private": true,
   "scripts": {
     "build": "babel-node ./run.js build",
+    "cloud": "babel-node ./run.js cloud",
     "dev": "babel-node ./run.js dev",
     "start": "babel-node ./run.js start",
     "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
@@ -12,14 +14,21 @@
   "dependencies": {
     "@babel/node": "7.0.0",
     "@babel/polyfill": "7.0.0",
-    "react": "16.5.2",
+    "react": "16.6.0",
     "react-bootstrap": "0.32.1",
-    "react-dom": "16.5.2",
+    "react-dom": "16.6.0",
     "react-helmet": "5.2.0",
     "redux": "4.0.0",
+    "resolve-bus-memory": "0.17.4",
     "resolve-redux": "0.17.4",
     "resolve-scripts": "0.17.4",
-    "testcafe-browser-tools": "1.6.5"
+    "resolve-storage-dynamo": "0.17.4",
+    "resolve-storage-lite": "0.17.4",
+    "resolve-readmodel-memory": "0.17.4",
+    "resolve-readmodel-mysql": "0.17.4",
+    "resolve-subscribe-mqtt": "0.17.4",
+    "resolve-subscribe-socket.io": "0.17.4",
+    "redux-devtools-extension": "2.13.5"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",
@@ -39,7 +48,7 @@
     "jest-css-modules-transform": "2.0.0",
     "postcss-import": "11.1.0",
     "postcss-loader": "2.1.5",
-    "react-test-renderer": "16.5.2",
+    "react-test-renderer": "16.6.0",
     "style-loader": "0.21.0",
     "testcafe": "0.22.0"
   }

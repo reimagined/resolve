@@ -25,6 +25,7 @@
   ],
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/core/resolve-testing-tools#readme",
   "dependencies": {
+    "@babel/runtime": "^7.0.0",
     "jest": "23.6.0",
     "sinon": "6.3.4",
     "resolve-es": "0.17.4",

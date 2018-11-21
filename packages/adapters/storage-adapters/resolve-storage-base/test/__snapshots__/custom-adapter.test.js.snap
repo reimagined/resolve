@@ -1,0 +1,109 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`createCustomAdapter should work correctly with skipInit = false: skipInit: false 1`] = `
+"connect
+{
+  \\"config\\": {
+    \\"skipInit\\": false,
+    \\"a\\": \\"a\\",
+    \\"b\\": \\"b\\"
+  },
+  \\"disposed\\": false,
+  \\"initialPromise\\": {},
+  \\"connectPromise\\": {},
+  \\"testField1\\": 1,
+  \\"testField2\\": 2
+}
+[
+  {}
+]
+init
+{
+  \\"config\\": {
+    \\"skipInit\\": false,
+    \\"a\\": \\"a\\",
+    \\"b\\": \\"b\\"
+  },
+  \\"disposed\\": false,
+  \\"initialPromise\\": {},
+  \\"connectPromise\\": {},
+  \\"testField1\\": 1,
+  \\"testField2\\": 2
+}
+[]
+loadEvents
+{
+  \\"config\\": {
+    \\"skipInit\\": false,
+    \\"a\\": \\"a\\",
+    \\"b\\": \\"b\\"
+  },
+  \\"disposed\\": false,
+  \\"initialPromise\\": {},
+  \\"connectPromise\\": {},
+  \\"testField1\\": 1,
+  \\"testField2\\": 2
+}
+[
+  {
+    \\"aggregateIds\\": [
+      \\"id1\\"
+    ]
+  },
+  null
+]"
+`;
+
+exports[`createCustomAdapter should work correctly with skipInit = true: skipInit: true 1`] = `
+"connect
+{
+  \\"config\\": {
+    \\"skipInit\\": true,
+    \\"a\\": \\"a\\",
+    \\"b\\": \\"b\\"
+  },
+  \\"disposed\\": false,
+  \\"initialPromise\\": {},
+  \\"connectPromise\\": {},
+  \\"testField1\\": 1,
+  \\"testField2\\": 2
+}
+[
+  {}
+]
+init
+{
+  \\"config\\": {
+    \\"skipInit\\": true,
+    \\"a\\": \\"a\\",
+    \\"b\\": \\"b\\"
+  },
+  \\"disposed\\": false,
+  \\"initialPromise\\": {},
+  \\"connectPromise\\": {},
+  \\"testField1\\": 1,
+  \\"testField2\\": 2
+}
+[]
+loadEvents
+{
+  \\"config\\": {
+    \\"skipInit\\": true,
+    \\"a\\": \\"a\\",
+    \\"b\\": \\"b\\"
+  },
+  \\"disposed\\": false,
+  \\"initialPromise\\": {},
+  \\"connectPromise\\": {},
+  \\"testField1\\": 1,
+  \\"testField2\\": 2
+}
+[
+  {
+    \\"aggregateIds\\": [
+      \\"id1\\"
+    ]
+  },
+  null
+]"
+`;

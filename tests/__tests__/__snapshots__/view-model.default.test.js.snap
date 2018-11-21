@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Read-model generic adapter API View model with one aggregate id 1`] = `200`;
+exports[`View-model generic adapter API View model with one aggregate id 1`] = `200`;
 
-exports[`Read-model generic adapter API View model with several aggregate ids 1`] = `200`;
+exports[`View-model generic adapter API View model with several aggregate ids 1`] = `200`;
 
-exports[`Read-model generic adapter API View model with wildcard aggregate ids 1`] = `200`;
+exports[`View-model generic adapter API View model with wildcard aggregate ids 1`] = `200`;

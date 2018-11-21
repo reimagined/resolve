@@ -143,12 +143,13 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
       }
     },
 
-    async getSubscribeAdapterOptions() {
+    async getSubscribeAdapterOptions(adapterName) {
       let response, result
       try {
         response = await request('/api/subscribe', {
           origin,
-          rootPath
+          rootPath,
+          adapterName
         })
       } catch (error) {
         throw new FetchError(error.message)

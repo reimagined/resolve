@@ -42,10 +42,12 @@ jspm_packages
 # IDE directory
 .idea
 .vscode
+vscode
 
 event-storage.db
 #
 dist
 lib
 es
+
 

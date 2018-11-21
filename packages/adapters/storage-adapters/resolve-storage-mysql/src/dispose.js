@@ -1,11 +1,11 @@
-const dispose = async (pool, options) => {
-  if (options.dropEvents) {
-    await pool.connection.execute(`
-      DELETE FROM ${pool.escapeId(pool.tableName)}
+const dispose = async ({ tableName, connection, escapeId }, { dropEvents }) => {
+  if (dropEvents) {
+    await connection.execute(`
+      DELETE FROM ${escapeId(tableName)}
     `)
   }
 
-  await pool.connection.end()
+  await connection.end()
 }
 
 export default dispose

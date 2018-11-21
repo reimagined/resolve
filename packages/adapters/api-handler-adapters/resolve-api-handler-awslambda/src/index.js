@@ -1,3 +1,4 @@
+import binaryCase from 'binary-case'
 import contentDisposition from 'content-disposition'
 import cookie from 'cookie'
 
@@ -23,7 +24,7 @@ const normalizeKey = (key, mode) => {
 
 const wrapHeadersCaseInsensitive = headersMap =>
   Object.create(
-    null,
+    Object.prototype,
     Object.keys(headersMap).reduce((acc, key) => {
       const value = headersMap[key]
       const [upperDashKey, dashKey, lowerKey] = [
@@ -42,19 +43,6 @@ const wrapHeadersCaseInsensitive = headersMap =>
     }, {})
   )
 
-const mergeResponseHeaders = responseHeaders => {
-  const resultHeaders = {}
-  for (const { key, value } of responseHeaders) {
-    if (resultHeaders.hasOwnProperty(key)) {
-      // See https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2 paragraph 4
-      resultHeaders[key] = `${resultHeaders[key]}, ${value}`
-    } else {
-      resultHeaders[key] = value
-    }
-  }
-  return resultHeaders
-}
-
 const createRequest = async (lambdaEvent, customParameters) => {
   const {
     path,
@@ -72,10 +60,12 @@ const createRequest = async (lambdaEvent, customParameters) => {
 
   const req = Object.create(null)
 
+  const query = queryStringParameters != null ? queryStringParameters : {}
+
   const reqProperties = {
     adapter: 'awslambda',
     method: httpMethod,
-    query: queryStringParameters,
+    query,
     path,
     headers,
     cookies,
@@ -99,7 +89,8 @@ const createRequest = async (lambdaEvent, customParameters) => {
 const createResponse = () => {
   const internalRes = {
     status: 200,
-    headers: [],
+    headers: {},
+    cookies: [],
     body: '',
     closed: false
   }
@@ -137,7 +128,8 @@ const createResponse = () => {
   defineResponseMethod('cookie', (name, value, options) => {
     validateResponseOpened()
     const serializedCookie = cookie.serialize(name, value, options)
-    internalRes.headers.push({ key: 'Set-Cookie', value: serializedCookie })
+
+    internalRes.cookies.push(serializedCookie)
   })
 
   defineResponseMethod('clearCookie', (name, options) => {
@@ -146,7 +138,8 @@ const createResponse = () => {
       ...options,
       expire: COOKIE_CLEAR_DATE
     })
-    internalRes.headers.push({ key: 'Set-Cookie', value: serializedCookie })
+
+    internalRes.cookies.push(serializedCookie)
   })
 
   defineResponseMethod('status', code => {
@@ -159,7 +152,7 @@ const createResponse = () => {
     validateResponseOpened()
     validateOptionShape('Status code', code, [Number], true)
     validateOptionShape('Location path', path, [String])
-    internalRes.headers.push({ key: 'Location', value: path })
+    internalRes.headers['Location'] = path
     internalRes.status = code != null ? code : 302
 
     internalRes.closed = true
@@ -168,9 +161,7 @@ const createResponse = () => {
   defineResponseMethod('getHeader', searchKey => {
     validateOptionShape('Header name', searchKey, [String])
     const normalizedKey = normalizeKey(searchKey, 'upper-dash-case')
-    const header = internalRes.headers.find(({ key }) => key === normalizedKey)
-    if (header == null) return null
-    return header.value
+    return internalRes.headers[normalizedKey]
   })
 
   defineResponseMethod('setHeader', (key, value) => {
@@ -178,10 +169,7 @@ const createResponse = () => {
     validateOptionShape('Header name', key, [String])
     validateOptionShape('Header value', value, [String])
 
-    internalRes.headers.push({
-      key: normalizeKey(key, 'upper-dash-case'),
-      value
-    })
+    internalRes.headers[normalizeKey(key, 'upper-dash-case')] = value
   })
 
   defineResponseMethod('text', (content, encoding) => {
@@ -215,10 +203,7 @@ const createResponse = () => {
     internalRes.body =
       content.constructor === String ? Buffer.from(content, encoding) : content
 
-    internalRes.headers.push({
-      key: 'Content-Disposition',
-      value: contentDisposition(filename)
-    })
+    internalRes.headers['Content-Disposition'] = contentDisposition(filename)
 
     internalRes.closed = true
   })
@@ -243,19 +228,16 @@ const wrapApiHandler = (handler, getCustomParameters) => async (
 
     await handler(req, res)
 
-    const {
-      status: statusCode,
-      headers: responseHeaders,
-      body: bodyBuffer
-    } = res[INTERNAL]
-
+    const { status: statusCode, headers, cookies, body: bodyBuffer } = res[
+      INTERNAL
+    ]
     const body = bodyBuffer.toString()
 
-    result = {
-      statusCode,
-      headers: mergeResponseHeaders(responseHeaders),
-      body
+    for (let idx = 0; idx < cookies.length; idx++) {
+      headers[binaryCase('Set-cookie', idx)] = cookies[idx]
     }
+
+    result = { statusCode, headers, body }
   } catch (error) {
     const outError =
       error != null && error.stack != null

@@ -1,13 +1,16 @@
 import path from 'path'
-import alias from '../../src/core/alias/$resolve.redux'
+import alias from '../../src/alias/$resolve.redux'
 import normalizePaths from './normalize_paths'
 
 describe('base config works correctly', () => {
   const resolveConfig = {
     redux: {
-      reducers: path.resolve(__dirname, 'files/testReducers.js'),
-      middlewares: path.resolve(__dirname, 'files/testMiddlewares.js'),
-      store: path.resolve(__dirname, 'files/testStore.js')
+      reducers: {
+        testReducerName: path.resolve(__dirname, 'files/testReducer.js')
+      },
+      middlewares: [path.resolve(__dirname, 'files/testMiddleware.js')],
+      sagas: [path.resolve(__dirname, 'files/testSaga.js')],
+      enhancers: [path.resolve(__dirname, 'files/testEnhancer.js')]
     }
   }
 

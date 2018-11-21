@@ -1,38 +1,23 @@
-const init = async (NeDB, pool) => {
-  const { pathToFile, ...initOptions } = pool.config
+const init = async ({ database, promiseInvoke }) => {
+  await promiseInvoke(database.loadDatabase.bind(database))
 
-  const db = new NeDB({
-    ...(pathToFile != null ? { filename: pathToFile } : { inMemoryOnly: true }),
-    ...initOptions
-  })
-
-  pool.promiseInvoke = async (func, ...args) =>
-    await new Promise((resolve, reject) =>
-      func(
-        ...args,
-        (error, result) => (error ? reject(error) : resolve(result))
-      )
-    )
-
-  await pool.promiseInvoke(db.loadDatabase.bind(db))
-
-  await pool.promiseInvoke(db.ensureIndex.bind(db), {
+  await promiseInvoke(database.ensureIndex.bind(database), {
     fieldName: 'aggregateIdAndVersion',
     unique: true,
     sparse: true
   })
 
-  await pool.promiseInvoke(db.ensureIndex.bind(db), {
+  await promiseInvoke(database.ensureIndex.bind(database), {
     fieldName: 'aggregateId'
   })
 
-  await pool.promiseInvoke(db.ensureIndex.bind(db), {
+  await promiseInvoke(database.ensureIndex.bind(database), {
     fieldName: 'aggregateVersion'
   })
 
-  await pool.promiseInvoke(db.ensureIndex.bind(db), { fieldName: 'type' })
-
-  pool.db = db
+  await promiseInvoke(database.ensureIndex.bind(database), {
+    fieldName: 'type'
+  })
 }
 
 export default init
