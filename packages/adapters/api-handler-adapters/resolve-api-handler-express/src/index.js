@@ -89,7 +89,23 @@ const createRequest = async (expressReq, customParameters) => {
   return Object.freeze(req)
 }
 
+const getCookieKey = index => {
+  // eslint-disable-next-line spellcheck/spell-checker
+  const arr = 'setcookie'.split('')
+  const binary = index.toString(2).split('').reverse()
+  const word = []
+
+  for (let j = 0; j < arr.length; j++) {
+    const symbol = binary[j] === '1' ? arr[j].toUpperCase() : arr[j]
+    word.push(symbol)
+  }
+
+  return `${word.slice(0, 3).join('')}-${word.slice(3).join('')}`
+}
+
 const createResponse = () => {
+  let setCookieCount = 0
+
   const internalRes = {
     status: 200,
     headers: {},
@@ -129,33 +145,18 @@ const createResponse = () => {
 
   defineResponseMethod('cookie', (name, value, options) => {
     validateResponseOpened()
-    const serializedCookie = cookie.serialize(name, value, options)
-
-    let cookieHeader = internalRes.headers['Set-Cookie']
-    if (cookieHeader != null) {
-      cookieHeader = `${cookieHeader}, ${serializedCookie}`
-    } else {
-      cookieHeader = serializedCookie
-    }
-
-    internalRes.headers['Set-Cookie'] = cookieHeader
+    const headerKey = getCookieKey(setCookieCount++)
+    internalRes.headers[headerKey] = cookie.serialize(name, value, options)
   })
 
   defineResponseMethod('clearCookie', (name, options) => {
     validateResponseOpened()
-    const serializedCookie = cookie.serialize(name, '', {
+    const headerKey = getCookieKey(setCookieCount++)
+
+    internalRes.headers[headerKey] = cookie.serialize(name, '', {
       ...options,
       expire: COOKIE_CLEAR_DATE
     })
-
-    let cookieHeader = internalRes.headers['Set-Cookie']
-    if (cookieHeader != null) {
-      cookieHeader = `${cookieHeader}, ${serializedCookie}`
-    } else {
-      cookieHeader = serializedCookie
-    }
-
-    internalRes.headers['Set-Cookie'] = cookieHeader
   })
 
   defineResponseMethod('status', code => {

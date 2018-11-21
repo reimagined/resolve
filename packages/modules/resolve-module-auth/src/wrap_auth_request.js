@@ -19,6 +19,9 @@ const wrapAuthRequest = req => {
     }
   }
 
+  Object.setPrototypeOf(authRequest, Object.getPrototypeOf(req))
+  Object.setPrototypeOf(authRequest.resolve, Object.getPrototypeOf(req.resolve))
+
   // TODO: use string-based body parsers (not stream-based like npm body-parser)
   if (req.body != null && req.headers['content-type'] != null) {
     const bodyContentType = req.headers['content-type'].toLowerCase()
