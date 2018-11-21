@@ -197,3 +197,7 @@ onItemTextPressEnter = event => {
   }
 }
 ```
+
+After these steps, your application's client UI should look as shown below.
+
+![result](images/lesson5_result.png)
