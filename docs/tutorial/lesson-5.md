@@ -116,6 +116,8 @@ In this code, the component is first connected to a **Redux** state by calling t
 
 Now the ShoppingList component's props include the **toggleShoppingItem** function.
 
+**common/view-models/shopping_list.projection.js:**
+
 ```js
 render() {
   const toggleShoppingItem = this.props.toggleShoppingItem;
@@ -125,6 +127,8 @@ render() {
 You can use this function to handle item checking on the client and send the **toggleShoppingItem** command to the server along with the required data in the payload.
 
 In the code below, the **toggleShoppingItem** function is used to handle checkbox click events.
+
+**common/view-models/shopping_list.projection.js:**
 
 <!-- prettier-ignore-start -->
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-5/client/containers/ShoppingList.js /^[[:space:]]+\<Checkbox/   /\<\/Checkbox\>/)
@@ -142,6 +146,8 @@ In the code below, the **toggleShoppingItem** function is used to handle checkbo
 <!-- prettier-ignore-end -->
 
 In the same way, you can use the **createShoppingItem** function to add new shopping list items. The UI markup is shown below:
+
+**common/view-models/shopping_list.projection.js:**
 
 <!-- prettier-ignore-start -->
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-5/client/containers/ShoppingList.js /^[[:space:]]+\<ControlLabel\>Item name/   /\<\/Row\>/)
@@ -171,6 +177,8 @@ In the same way, you can use the **createShoppingItem** function to add new shop
 <!-- prettier-ignore-end -->
 
 This markup uses the following methods to handle UI interaction.
+
+**common/view-models/shopping_list.projection.js:**
 
 ```js
 createShoppingItem = () => {
