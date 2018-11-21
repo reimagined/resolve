@@ -1,26 +1,40 @@
 const fs = require('fs')
 const path = require('path')
 const http = require('http')
-const util = require('util')
-//const { execSync } = require('child_process')
+const { spawn } = require('child_process')
 
-const exec = util.promisify(require('child_process').exec)
+const spawnAsync = (command, args, options) =>
+  new Promise((resolve, reject) => {
+    const childProcess = spawn(command, args, options)
+
+    childProcess.on('close', code => {
+      if (String(code) !== String(0)) {
+        reject({ code, command, args, options })
+        return
+      }
+      resolve()
+    })
+
+    childProcess.on('error', error => {
+      reject(error)
+    })
+  })
 
 const canaryVersion = Date.now()
 
 const safeName = str => `${str.replace('/', '__')}-canary-${canaryVersion}`
 
 const rmdir = function(dir) {
-  const list = fs.readdirSync(dir);
-  for(let i = 0; i < list.length; i++) {
-    const filename = path.join(dir, list[i]);
-    const stat = fs.statSync(filename);
-    
-    if(filename == '.' || filename == '..') {
+  const list = fs.readdirSync(dir)
+  for (let i = 0; i < list.length; i++) {
+    const filename = path.join(dir, list[i])
+    const stat = fs.statSync(filename)
+
+    if (filename === '.' || filename === '..') {
       continue
     }
-    if(stat.isDirectory()) {
-      rmdir(filename);
+    if (stat.isDirectory()) {
+      rmdir(filename)
     } else {
       fs.unlinkSync(filename)
     }
@@ -31,9 +45,9 @@ const rmdir = function(dir) {
 const main = async () => {
   // 0. Start static server
   const staticServer = http.createServer((req, res) => {
-    const tgzName = req.url.slice(1)
+    const fileName = req.url.slice(1)
 
-    const filePath = path.join(__dirname, '..', 'node_modules', tgzName)
+    const filePath = path.join(__dirname, '..', 'node_modules', fileName)
     const stat = fs.statSync(filePath)
 
     res.writeHead(200, {
@@ -62,6 +76,7 @@ const main = async () => {
 
   if (isResolveMonorepo) {
     resolvePackages.push(
+      // eslint-disable-next-line import/no-extraneous-dependencies
       ...require('create-resolve-app').resolvePackages.map(packageName => ({
         name: packageName,
         directory: path.dirname(
@@ -90,12 +105,14 @@ const main = async () => {
       directory: path.join(__dirname, '..', directory)
     }))
 
-  for (const { name, directory } of localPackages) {
+  for (const { name } of localPackages) {
     redefine[name] = `http://${address}:${port}/${safeName(name)}.tgz`
   }
 
   // 2. Backup package.json-s and setup rollback
+  const backup = {}
   for (const { directory } of [...localPackages, ...resolvePackages]) {
+    backup[directory] = fs.readFileSync(path.join(directory, 'package.json'))
     fs.copyFileSync(
       path.join(directory, 'package.json'),
       path.join(directory, 'package.backup.json')
@@ -104,10 +121,7 @@ const main = async () => {
 
   const rollback = () => {
     for (const { directory } of [...localPackages, ...resolvePackages]) {
-      fs.copyFileSync(
-        path.join(directory, 'package.backup.json'),
-        path.join(directory, 'package.json')
-      )
+      fs.writeFileSync(path.join(directory, 'package.json'), backup[directory])
       fs.unlinkSync(path.join(directory, 'package.backup.json'))
     }
   }
@@ -150,47 +164,51 @@ const main = async () => {
 
   const promises = []
   for (const { name, directory } of [...resolvePackages, ...localPackages]) {
-    promises.push(exec(
-      `yarn pack --filename=${JSON.stringify(
-        path.join(__dirname, '..', 'node_modules', `${safeName(name)}.tgz`)
-      )}`,
-      { cwd: directory, stdio: 'inherit' }
-    ))
+    promises.push(
+      spawnAsync(
+        'yarn',
+        [
+          'pack',
+          '--filename',
+
+          path.join(__dirname, '..', 'node_modules', `${safeName(name)}.tgz`)
+        ],
+        { cwd: directory }
+      )
+    )
   }
-  
+
   await Promise.all(promises)
-  
+
   // 5. Install packages
   for (const { directory } of localPackages) {
-    console.log(
-      JSON.parse(fs.readFileSync(path.join(directory, 'package.json')))
-    )
-
-    const { stdout } = await exec('yarn', { cwd: directory })
-    console.log(stdout)
+    await spawnAsync('yarn', [], { cwd: directory, stdio: 'inherit' })
   }
 
   // 6. Make symlinks
-  try {
-    rmdir(path.join(
-      __dirname, '..', 'native', 'node_modules', '@shopping-list-advanced', 'ui'
-    ))
-  } catch (e) {
-    console.warn(e)
-  }
-  
-  try {
-    fs.symlinkSync(
-      path.join(
-        __dirname, '..', 'ui'
-      ),
-      path.join(
-        __dirname, '..', 'native', 'node_modules', '@shopping-list-advanced', 'ui'
-      ),
-      'junction'
-    )
-  } catch (e) {
-    console.warn(e)
+  for (const targetPackage of localPackages) {
+    for (const sourcePackage of localPackages) {
+      const symlinkFrom = sourcePackage.directory
+      const symlinkTo = path.normalize(
+        path.join(targetPackage.directory, 'node_modules', sourcePackage.name)
+      )
+      try {
+        try {
+          rmdir(symlinkTo)
+        } catch (error) {
+          throw error
+        }
+        try {
+          fs.symlinkSync(symlinkFrom, symlinkTo, 'junction')
+        } catch (error) {
+          throw error
+        }
+      } catch (error) {
+        continue
+      }
+      // eslint-disable-next-line no-console
+      console.log('symlink', symlinkFrom, '->', symlinkTo)
+    }
   }
 
   // 7. Finish
@@ -198,6 +216,7 @@ const main = async () => {
 }
 
 main().catch(error => {
+  // eslint-disable-next-line no-console
   console.error(error)
   process.exit(1)
 })

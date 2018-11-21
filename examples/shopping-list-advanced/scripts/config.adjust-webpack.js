@@ -7,8 +7,8 @@ const adjustWebpackConfigs = async (
   webpackConfigs
 ) => {
   await babelify({ watch })
-  
-  for(const webpackConfig of webpackConfigs) {
+
+  for (const webpackConfig of webpackConfigs) {
     webpackConfig.resolve.modules = [
       path.join(__dirname, 'node_modules'),
       path.join(__dirname, '..', 'web', 'node_modules'),
@@ -22,7 +22,7 @@ const adjustWebpackConfigs = async (
     ...webpackWebConfig,
     resolve: {
       ...webpackWebConfig.resolve,
-      modules:[
+      modules: [
         path.join(__dirname, 'node_modules'),
         path.join(__dirname, '..', 'native', 'node_modules'),
         path.join(__dirname, '..', 'domain', 'node_modules')
@@ -56,8 +56,6 @@ const adjustWebpackConfigs = async (
   }
 
   webpackConfigs.push(webpackNativeConfig)
-  
-  
 }
 
 module.exports = adjustWebpackConfigs
