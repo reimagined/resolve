@@ -1,3 +1,10 @@
+import {
+  analyticsUrlBase,
+  resolveVersion,
+  resolvePackages,
+  resolveExamples
+} from './constants'
+
 const prepareOptions = async pool => {
   const {
     path,
@@ -21,11 +28,6 @@ const prepareOptions = async pool => {
 
   const unknownCliArgs =
     cliArgs._unknown && cliArgs._unknown.filter(x => x.startsWith('-'))
-
-  const analyticsUrlBase = 'https://ga-beacon.appspot.com/UA-118635726-2'
-  const resolveVersion = process.env.__RESOLVE_VERSION__
-  const resolvePackages = JSON.parse(process.env.__RESOLVE_PACKAGES__)
-  const resolveExamples = JSON.parse(process.env.__RESOLVE_EXAMPLES__)
 
   Object.assign(pool, {
     analyticsUrlBase,

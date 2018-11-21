@@ -8,6 +8,7 @@
   "bin": {
     "create-resolve-app": "./bin/index.js"
   },
+  "main": "./lib/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },

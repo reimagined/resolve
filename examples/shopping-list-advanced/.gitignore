@@ -66,3 +66,4 @@ lib
 event-storage.db
 package-lock.json
 native/resolve
+yarn.lock

@@ -7,11 +7,27 @@ const adjustWebpackConfigs = async (
   webpackConfigs
 ) => {
   await babelify({ watch })
+  
+  for(const webpackConfig of webpackConfigs) {
+    webpackConfig.resolve.modules = [
+      path.join(__dirname, 'node_modules'),
+      path.join(__dirname, '..', 'web', 'node_modules'),
+      path.join(__dirname, '..', 'domain', 'node_modules')
+    ]
+  }
 
   const [webpackWebConfig] = webpackConfigs
 
   const webpackNativeConfig = {
     ...webpackWebConfig,
+    resolve: {
+      ...webpackWebConfig.resolve,
+      modules:[
+        path.join(__dirname, 'node_modules'),
+        path.join(__dirname, '..', 'native', 'node_modules'),
+        path.join(__dirname, '..', 'domain', 'node_modules')
+      ]
+    },
     name: 'Common Business Logic',
     entry: {
       'resolve/config': path.resolve(__dirname, './alias/config.js')
@@ -40,6 +56,8 @@ const adjustWebpackConfigs = async (
   }
 
   webpackConfigs.push(webpackNativeConfig)
+  
+  
 }
 
 module.exports = adjustWebpackConfigs

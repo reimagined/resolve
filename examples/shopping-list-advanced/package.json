@@ -4,7 +4,7 @@
   "version": "0.17.4",
   "private": true,
   "scripts": {
-    "link-packages": "cd scripts && node ./link-packages.js",
+    "prepare": "cd scripts && node ./install.js",
     "patch": "cd scripts && node ./patch-package-jsons.js",
     "babelify": "cd scripts && node babel.compile.js --run",
     "babelify:watch": "cd scripts && node babel.compile.js --watch",
@@ -17,15 +17,5 @@
     "test:web": "cd web && npm run test",
     "test:native": "cd native && npm run test",
     "test:functional": "echo || exit 0"
-  },
-  "workspaces": {
-    "packages": [
-      "domain",
-      "ui",
-      "utils",
-      "web",
-      "scripts",
-      "native"
-    ]
   }
 }

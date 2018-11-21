@@ -56,13 +56,12 @@
       "packages/adapters/subscribe-adapters/*",
       "packages/adapters/api-handler-adapters/*",
       "examples/*",
-      "examples/shopping-list-advanced/*",
       "packages/modules/*",
       "tests"
     ]
   },
   "scripts": {
-    "clean": "oao all \"npx rimraf dist lib es\" --parallel && npx rimraf yarn-error.log && npx oao clean",
+    "clean": "npx oao all \"npx rimraf dist lib es\" --parallel && npx rimraf yarn-error.log && npx oao clean",
     "lint": "eslint .",
     "prepare": "node ./babel.compile.js --run",
     "prettier": "prettier --write \"**/**.{js,json}\"",
