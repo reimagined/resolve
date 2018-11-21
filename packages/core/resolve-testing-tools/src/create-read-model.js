@@ -20,10 +20,12 @@ const createReadModel = (
   const query = createQuery({
     eventStore,
     viewModels: [],
-    readModelAdaptersCreators: [{
-      name: adapterName,
-      factory: createReadModelAdapter
-    }],
+    readModelAdaptersCreators: [
+      {
+        name: adapterName,
+        factory: createReadModelAdapter
+      }
+    ],
     readModels: [
       {
         name,
