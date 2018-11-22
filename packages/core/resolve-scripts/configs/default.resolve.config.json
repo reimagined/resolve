@@ -37,13 +37,7 @@
     "module": "resolve-snapshot-lite",
     "options": {}
   },
-  "readModelAdapters": [
-    {
-      "name": "default",
-      "module": "resolve-readmodel-memory",
-      "options": {}
-    }
-  ],
+  "readModelAdapters": [],
   "jwtCookie": {
     "name": "jwt",
     "maxAge": 31536000000

@@ -6,15 +6,13 @@
 
 reSolve is a full stack functional JavaScript framework.
 
-- 2 minutes [installation](#installation).
-- [Free and open source](https://github.com/reimagined/resolve/blob/master/LICENSE.md).
-- Flexible and clear [API](#documentation).
+- [CQRS](https://martinfowler.com/bliki/CQRS.html) - independent Command and Query sides.
+- [DDD Aggregate](https://martinfowler.com/bliki/DDD_Aggregate.html) support.
+- [Event sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) - using events as a source of truth and calculates read models from them.
+- Integrates with [React](https://reactjs.org) and [Redux](https://redux.js.org) for seamless development experience.
+- [React Native](https://facebook.github.io/react-native/) support.
 
-## **📑 Table of Contents**
-
-- **[🚀 Getting Started](#getting-started)**
-- **[📚 Documentation](#documentation)**
-- **[📢 Get in Touch](#get-in-touch)**
+## :rocket: Getting Started
 
 ### Installation
 
@@ -28,28 +26,10 @@ cd my-awesome-app
 npm run dev
 ```
 
-The created application is accessible using the http://localhost:3000/ and `http://<your_ip>:3000/` URLs (you can [change the URL settings](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)). Start learning **reSolve** with the [**ToDo List App Tutorial**](https://github.com/reimagined/resolve/blob/master/docs/Tutorials/ToDo%20List%20App%20Tutorial.md) tutorial. Use the [**documentation**](#documentation), [**tutorials**](#tutorials) and [**examples**](#examples) to learn **reSolve** more deeply.
+<details>
+<summary>You can also use npm or yarn tools</summary>
 
-Instead of npx you can also use npm or yarn tools:
-
-- [npm](https://www.npmjs.com/)
-
-  > Note: Installing a package globally may require administrative privileges. That means you have to use the `sudo` prefix on Linux and MacOS, or start a terminal with the administrative privileges on Windows.
-
-  ```sh
-  npm i -g create-resolve-app
-  create-resolve-app my-awesome-app
-  cd my-awesome-app
-  npm run dev
-  ```
-
-- [yarn](https://yarnpkg.com/lang/en/)
-
-  ```sh
-  yarn create resolve-app my-awesome-app
-  cd my-awesome-app
-  yarn run dev
-  ```
+#### [npm](https://www.npmjs.com/)
 
 > Note: Installing a package globally may require administrative privileges. That means you have to use the `sudo` prefix on Linux and MacOS, or start a terminal with the administrative privileges on Windows.
 
@@ -60,43 +40,24 @@ cd my-awesome-app
 npm run dev
 ```
 
-The created application is accessible using the http://localhost:3000/ and `http://<your_ip>:3000` URLs (you can [change your URL settings](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md)).
+#### [yarn](https://yarnpkg.com/lang/en/)
 
-Instead of npx you can also use npm or yarn tools:
-
-- [yarn](https://yarnpkg.com/lang/en/)
-
-  ```sh
-  yarn create resolve-app nested-list-example -e nested-list
-  ```
-
-- [npm](https://www.npmjs.com/)
-
-  ```sh
-  npm i -g create-resolve-app
-  create-resolve-app nested-list-example -e nested-list
-  ```
-
-## <a name="documentation">**📚 Documentation**</a>
-
-You can develop and run **reSolve** applications on **Linux**, **Mac** and **Windows** operating systems. It is also possible to integrate **reSolve** with the **React Native**, but this approach is currently experimental.
-
-The minimum supported **NodeJS** version is **8.10.0**.
-
-**reSolve** supports [**npx**](https://www.npmjs.com/package/npx), [**yarn**](https://yarnpkg.com/lang/en/), and [**npm**](https://www.npmjs.com/).
+```sh
+yarn create resolve-app my-awesome-app
+cd my-awesome-app
+yarn run dev
+```
 
 </details>
 <p></p>
 
 Your application is running at http://localhost:3000/.
 
-:question: Feel free to ask questions at [Stackoverflow](https://stackoverflow.com/questions/tagged/resolvejs), using `[resolvejs]` tag.
-
-:beetle: Report bugs, issues and suggestions at [**GitHub Issues**](https://github.com/reimagined/resolve/issues)
+### Creating a new app with an example code
 
 You can create a new application with an example code using `create-resolve-app` with the `-e` flag followed by an example name. Use the `create-resolve-app -h` command to list the available [examples](./examples/).
 
-💬 Follow us on [**Twitter**](https://twitter.com/resolvejs).
+For instance, to run a [shopping-list](./examples/shopping-list) example, run:
 
 ```sh
 npx create-resolve-app resolve-example -e shopping-list
@@ -104,7 +65,9 @@ npx create-resolve-app resolve-example -e shopping-list
 
 ## :books: Documentation
 
-🔧 Feel yourself capable of improving **reSolve**? Become one of our [**contributors**](https://github.com/reimagined/resolve/pulls)! Look through our [**Contrubutors Guide**](https://github.com/reimagined/resolve/blob/master/docs/Contributors%20Guide.md) and make a great Pull Request.
+You can find reSolve documentation in the [docs section](./docs).
+
+## :loudspeaker: Get in Touch
 
 - Ask questions at Stackoverlow with [resolvejs tag](https://stackoverflow.com/tags/resolvejs)
 - Submit bugs and issues to [GitHub Issues](https://github.com/reimagined/resolve/issues)

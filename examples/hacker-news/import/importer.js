@@ -1,4 +1,5 @@
-import { eventTypes as moduleCommentsEventTypes } from 'resolve-module-comments'
+import { COMMENT_CREATED } from 'resolve-module-comments/lib/common/defaults'
+import fetch from 'isomorphic-fetch'
 import uuid from 'uuid'
 import { EOL } from 'os'
 
@@ -7,33 +8,49 @@ import {
   STORY_CREATED,
   STORY_UPVOTED
 } from '../common/event-types'
-
 import api from './api'
-import eventStore, { dropStore } from './eventStore'
 
-const { COMMENT_CREATED } = moduleCommentsEventTypes
-
+const aggregateVersionsMap = new Map()
+let eventTimestamp = Date.now()
 const users = {}
 
-const aggregateVersionByAggregateId = {}
-
-const saveEventRaw = async event => {
-  aggregateVersionByAggregateId[event.aggregateId] =
-    ++aggregateVersionByAggregateId[event.aggregateId] || 1
-
-  await eventStore.saveEventRaw({
-    ...event,
-    aggregateVersion: aggregateVersionByAggregateId[event.aggregateId]
-  })
+const invokeImportApi = async body => {
+  const response = await fetch(
+    `http://localhost:${process.env.PORT}${
+      process.env.ROOT_PATH
+    }/api/import_events`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify(body)
+    }
+  )
+  return await response.text()
 }
+
+const saveOneEvent = async event =>
+  await invokeImportApi({
+    saveEvent: {
+      ...event,
+      aggregateVersion: aggregateVersionsMap
+        .set(
+          event.aggregateId,
+          ~~aggregateVersionsMap.get(event.aggregateId) + 1
+        )
+        .get(event.aggregateId),
+      timestamp: eventTimestamp++
+    }
+  })
+
+const dropStore = async () => await invokeImportApi({ dropEvents: true })
 
 const generateUserEvents = async name => {
   const aggregateId = uuid.v4()
 
-  await saveEventRaw({
+  await saveOneEvent({
     type: USER_CREATED,
     aggregateId,
-    timestamp: Date.now(),
     payload: { name }
   })
 
@@ -58,13 +75,13 @@ const generateCommentEvents = async (comment, aggregateId, parentId) => {
   const userId = await getUserId(userName)
   const commentId = uuid.v4()
 
-  await saveEventRaw({
+  await saveOneEvent({
     type: COMMENT_CREATED,
     aggregateId,
-    timestamp: Date.now(),
     payload: {
       commentId,
-      parentCommentId: parentId,
+      parentCommentId: parentId != null ? parentId : null,
+      authorId: userId,
       content: {
         text: comment.text || '',
         userId,
@@ -107,10 +124,9 @@ const generatePointEvents = async (aggregateId, pointCount) => {
   const count = Math.min(keys.length, pointCount)
 
   for (let i = 0; i < count; i++) {
-    await saveEventRaw({
+    await saveOneEvent({
       type: STORY_UPVOTED,
       aggregateId,
-      timestamp: Date.now(),
       payload: {
         userId: users[keys[i]]
       }
@@ -126,10 +142,9 @@ const generateStoryEvents = async story => {
   const userName = story.by || 'anonymous'
   const aggregateId = uuid.v4()
 
-  await saveEventRaw({
+  await saveOneEvent({
     type: STORY_CREATED,
     aggregateId,
-    timestamp: Date.now(),
     payload: {
       title: story.title || '',
       text: story.text || '',
