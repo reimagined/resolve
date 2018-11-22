@@ -9,7 +9,7 @@ import Image from './Image'
 
 const NavItem = connectRootBasedUrls(['href'])(RawNavItem)
 
-const Header = ({ title, name, css, favicon, jwt }) => (
+const Header = ({ title, css, favicon, jwt }) => (
   <div>
     <Helmet>
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />

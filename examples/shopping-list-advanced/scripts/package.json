@@ -8,10 +8,11 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
-    "@babel/runtime": "^7.0.0"
+    "@babel/runtime": "^7.0.0",
+    "resolve-module-auth": "0.17.4",
+    "resolve-scripts": "0.17.4"
   },
   "devDependencies": {
-    "resolve-scripts": "0.17.4",
     "my-local-ip": "1.0.0",
     "chalk": "^2.4.1",
     "@babel/core": "^7.0.0",
