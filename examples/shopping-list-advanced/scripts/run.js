@@ -4,7 +4,7 @@ const {
   start,
   watch,
   runTestcafe,
-  merge
+  merge: rawMerge
 } = require('resolve-scripts')
 
 const devConfig = require('./config.dev')
@@ -14,8 +14,30 @@ const testFunctionalConfig = require('./config.test-functional')
 const adjustWebpackConfigs = require('./config.adjust-webpack')
 const appConfig = require('./config.app')
 const createAuthModule = require('resolve-module-auth').default
+const getLocalIp = require('my-local-ip')
+const remotedev = require('remotedev-server')
+const opn = require('opn')
 
 const launchMode = process.argv[2]
+
+const merge = (...configs) => {
+  const config = rawMerge(...configs)
+  return {
+    ...config,
+    customConstants: {
+      ...config.customConstants,
+      backend: {
+        protocol: process.env.SHOPPING_LIST_PROTOCOL || 'http',
+        hostname: process.env.SHOPPING_LIST_HOSTNAME || getLocalIp(),
+        port: process.env.SHOPPING_LIST_PORT || config.port
+      },
+      remoteReduxDevTools: {
+        hostname: process.env.SHOPPING_LIST_HOST || getLocalIp(),
+        port: process.env.SHOPPING_LIST_PROTOCOL || 19042
+      }
+    }
+  }
+}
 
 void (async () => {
   const authModule = createAuthModule([
@@ -54,6 +76,15 @@ void (async () => {
         resolveConfig,
         adjustWebpackConfigs.bind(null, resolveConfig, { watch: true })
       )
+      await remotedev({
+        hostname: resolveConfig.customConstants.remoteReduxDevTools.hostname,
+        port: resolveConfig.customConstants.remoteReduxDevTools.port
+      })
+      await opn(
+        `http://${resolveConfig.customConstants.remoteReduxDevTools.hostname}:${
+          resolveConfig.customConstants.remoteReduxDevTools.port
+        }`
+      )
       break
     }
 
@@ -72,28 +103,39 @@ void (async () => {
     }
 
     case 'cloud': {
+      const resolveConfig = merge(
+        defaultResolveConfig,
+        appConfig,
+        cloudConfig,
+        authModule
+      )
       await build(
-        merge(defaultResolveConfig, appConfig, cloudConfig, authModule),
-        adjustWebpackConfigs.bind(null, authModule)
+        resolveConfig,
+        adjustWebpackConfigs.bind(null, resolveConfig, {})
       )
       break
     }
 
     case 'start': {
-      await start(
-        merge(defaultResolveConfig, appConfig, prodConfig, authModule)
+      const resolveConfig = merge(
+        defaultResolveConfig,
+        appConfig,
+        prodConfig,
+        authModule
       )
+      await start(resolveConfig)
       break
     }
 
     case 'test:functional': {
+      const resolveConfig = merge(
+        defaultResolveConfig,
+        appConfig,
+        testFunctionalConfig,
+        authModule
+      )
       await runTestcafe({
-        resolveConfig: merge(
-          defaultResolveConfig,
-          appConfig,
-          testFunctionalConfig,
-          authModule
-        ),
+        resolveConfig,
         functionalTestsDir: 'test/functional',
         browser: process.argv[3]
       })

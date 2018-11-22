@@ -1,3 +1,4 @@
+import devToolsEnhancer from 'remote-redux-devtools'
 import createMemoryHistory from 'history/createMemoryHistory'
 import { AsyncStorage } from 'react-native'
 
@@ -7,13 +8,21 @@ import {
   readModels,
   aggregates,
   rootPath,
-  origin,
+  customConstants,
   subscribeAdapter,
   jwtCookie
 } from '../../resolve/config'
 
-import reducers from '../reducers'
-import middlewares from '../middlewares'
+import optimisticShoppingLists from '../reducers/optimistic-shopping-lists'
+import optimisticSharings from '../reducers/optimistic-sharings'
+import refresh from '../reducers/refresh'
+
+import optimisticSharingsMiddleware from '../middlewares/optimistic-sharings-middleware'
+import optimisticShoppingListsMiddleware from '../middlewares/optimistic-shopping-lists-middleware'
+
+const origin = `${customConstants.backend.protocol}://${
+  customConstants.backend.hostname
+}:${customConstants.backend.port}`
 
 const initialState = {}
 
@@ -24,10 +33,23 @@ const history = createMemoryHistory({
 const isClient = true
 
 const redux = {
-  reducers,
-  middlewares,
+  reducers: {
+    optimisticShoppingLists,
+    optimisticSharings,
+    refresh
+  },
+  middlewares: [
+    optimisticShoppingListsMiddleware,
+    optimisticSharingsMiddleware
+  ],
   sagas: [],
-  enhancers: []
+  enhancers: [
+    devToolsEnhancer({
+      realtime: true,
+      hostname: customConstants.remoteReduxDevTools.hostname,
+      port: customConstants.remoteReduxDevTools.port
+    })
+  ]
 }
 
 const jwtProvider = {

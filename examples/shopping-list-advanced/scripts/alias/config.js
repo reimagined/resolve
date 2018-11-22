@@ -24,4 +24,6 @@ module.exports.applicationName = interopRequireDefault(
 module.exports.subscribeAdapter = interopRequireDefault(
   require('$resolve.subscribeAdapter')
 ).default
-module.exports.origin = interopRequireDefault(require('./origin')).default
+module.exports.customConstants = interopRequireDefault(
+  require('$resolve.customConstants')
+).default

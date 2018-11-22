@@ -1,6 +1,6 @@
-import { declareRuntimeEnv } from 'resolve-scripts'
+const { declareRuntimeEnv } = require('resolve-scripts')
 
-export default {
+const cloudConfig = {
   target: 'cloud',
   mode: 'production',
   staticPath: declareRuntimeEnv('CLOUD_STATIC_URL'),
@@ -28,3 +28,5 @@ export default {
     }
   ]
 }
+
+module.exports = cloudConfig

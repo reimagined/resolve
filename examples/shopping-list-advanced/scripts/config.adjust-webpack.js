@@ -35,23 +35,6 @@ const adjustWebpackConfigs = async (
     output: {
       path: path.resolve(__dirname, '../native'),
       libraryTarget: 'commonjs-module'
-    },
-    module: {
-      rules: [
-        ...webpackWebConfig.module.rules,
-        {
-          test: [path.resolve(__dirname, './alias/origin.js')],
-          use: [
-            {
-              loader: 'val-loader',
-              options: {
-                resolveConfig,
-                isClient: true
-              }
-            }
-          ]
-        }
-      ]
     }
   }
 
