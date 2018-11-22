@@ -1715,6 +1715,11 @@ aws-sign2@~0.7.0:
   resolved "https://registry.yarnpkg.com/aws-sign2/-/aws-sign2-0.7.0.tgz#b46e890934a9591f2d2f6f86d7e6a9f1b3fe76a8"
   integrity sha1-tG6JCTSpWR8tL2+G1+ap8bP+dqg=
 
+aws-signature-v4@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/aws-signature-v4/-/aws-signature-v4-1.3.0.tgz#dacc7abb8dd806993ce4759fc6646813c6b52aa1"
+  integrity sha512-WD5O8kG216JXUFaLy2pYHipbZwx3L1bhpqCAxRWYkEgcKt3WpWhSMvtKJfE3sSpl2a+CYebnWVDgzkn2riCwsQ==
+
 aws4@^1.8.0:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.8.0.tgz#f0e003d9ca9e7f59c7a508945d7b2ef9a04a542f"
@@ -2528,6 +2533,11 @@ bin-v8-flags-filter@^1.1.2:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/bin-v8-flags-filter/-/bin-v8-flags-filter-1.1.3.tgz#14c018c6cca7529767c1f42f12bd3bb20d61e4d3"
   integrity sha512-8qoUG3/BSI9UCQaaBy7exflQFAy3Hfy5Qyyn9+7IlTVCe3tHZ3cozsRk7/2SuOzvFChuQuL3Jmc4ed5jGygHaQ==
+
+binary-case@1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/binary-case/-/binary-case-1.1.4.tgz#d687104d59e38f2b9e658d3a58936963c59ab931"
+  integrity sha512-9Kq8m6NZTAgy05Ryuh7U3Qc4/ujLQU1AZ5vMw4cr3igTdi5itZC6kCNrRr2X8NzPiDn2oUIFTfa71DKMnue/Zg==
 
 binary-extensions@^1.0.0:
   version "1.12.0"
