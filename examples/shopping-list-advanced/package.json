@@ -1,7 +1,7 @@
 {
   "name": "shopping-list-advanced",
   "description": "shows how to work with React-Native",
-  "version": "0.17.4",
+  "version": "0.18.0",
   "private": true,
   "scripts": {
     "build": "babel-node ./run.js build",
@@ -20,16 +20,16 @@
     "deepmerge": "2.2.1",
     "redux": "4.0.0",
     "react": "16.6.0",
-    "resolve-bus-memory": "0.17.4",
-    "resolve-redux": "0.17.4",
-    "resolve-scripts": "0.17.4",
-    "resolve-storage-dynamo": "0.17.4",
-    "resolve-storage-lite": "0.17.4",
-    "resolve-readmodel-memory": "0.17.4",
-    "resolve-readmodel-mysql": "0.17.4",
-    "resolve-subscribe-mqtt": "0.17.4",
-    "resolve-subscribe-socket.io": "0.17.4",
-    "resolve-module-auth": "0.17.4"
+    "resolve-bus-memory": "0.18.0",
+    "resolve-redux": "0.18.0",
+    "resolve-scripts": "0.18.0",
+    "resolve-storage-dynamo": "0.18.0",
+    "resolve-storage-lite": "0.18.0",
+    "resolve-readmodel-memory": "0.18.0",
+    "resolve-readmodel-mysql": "0.18.0",
+    "resolve-subscribe-mqtt": "0.18.0",
+    "resolve-subscribe-socket.io": "0.18.0",
+    "resolve-module-auth": "0.18.0"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",
