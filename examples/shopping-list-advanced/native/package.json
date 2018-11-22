@@ -1,6 +1,6 @@
 {
   "name": "@shopping-list-advanced/native",
-  "version": "0.17.4",
+  "version": "0.18.0",
   "private": true,
   "main": "./index.js",
   "scripts": {
@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "@shopping-list-advanced/ui": "0.17.4",
-    "resolve-redux": "0.17.4",
+    "@shopping-list-advanced/ui": "0.18.0",
+    "resolve-redux": "0.18.0",
     "@expo/react-native-action-sheet": "^1.1.2",
     "@expo/vector-icons": "^8.0.0",
     "expo": "^31.0.5",
@@ -40,6 +40,6 @@
     "jest-expo": "^31.0.0",
     "react-test-renderer": "16.5.0",
     "regenerator-runtime": "0.12.1",
-    "resolve-scripts": "0.17.4"
+    "resolve-scripts": "0.18.0"
   }
 }

@@ -7,12 +7,13 @@ const testFunctionalConfig = {
   staticDir: 'static',
   distDir: 'dist',
 
-  readModelAdapters: {
-    'read-model-name': {
+  readModelAdapters: [
+    {
+      name: 'default',
       module: 'resolve-readmodel-memory',
       options: {}
     }
-  },
+  ],
   storageAdapter: {
     module: 'resolve-storage-lite',
     options: {

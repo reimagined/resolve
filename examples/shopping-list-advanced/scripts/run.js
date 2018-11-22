@@ -9,6 +9,7 @@ const {
 
 const devConfig = require('./config.dev')
 const prodConfig = require('./config.prod')
+const cloudConfig = require('./config.cloud')
 const testFunctionalConfig = require('./config.test-functional')
 const adjustWebpackConfigs = require('./config.adjust-webpack')
 const appConfig = require('./config.app')
@@ -66,6 +67,14 @@ void (async () => {
       await build(
         resolveConfig,
         adjustWebpackConfigs.bind(null, resolveConfig, {})
+      )
+      break
+    }
+
+    case 'cloud': {
+      await build(
+        merge(defaultResolveConfig, appConfig, cloudConfig, authModule),
+        adjustWebpackConfigs.bind(null, authModule)
       )
       break
     }

@@ -10,6 +10,7 @@ import resolveModuleComments from 'resolve-module-comments'
 import resolveModuleAuth from 'resolve-module-auth'
 
 import appConfig from './config.app'
+import cloudConfig from './config.cloud'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
 import testFunctionalConfig from './config.test-functional'
@@ -63,6 +64,19 @@ void (async () => {
           defaultResolveConfig,
           appConfig,
           prodConfig,
+          moduleComments,
+          moduleAuth
+        )
+      )
+      break
+    }
+
+    case 'cloud': {
+      await build(
+        merge(
+          defaultResolveConfig,
+          appConfig,
+          cloudConfig,
           moduleComments,
           moduleAuth
         )

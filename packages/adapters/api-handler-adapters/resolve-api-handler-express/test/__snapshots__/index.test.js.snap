@@ -27,7 +27,7 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "{\\"One-Header-Name\\":\\"One-Header-Value\\",\\"Two-Header-Name\\":\\"Two-Header-Value\\",\\"Set-Cookie\\":\\"One-Cookie-Name=One-Cookie-Value, Two-Cookie-Name=Two-Cookie-Value, Two-Cookie-Name=\\"}",
+        "{\\"One-Header-Name\\":\\"One-Header-Value\\",\\"Two-Header-Name\\":\\"Two-Header-Value\\",\\"Set-cookie\\":\\"One-Cookie-Name=One-Cookie-Value\\",\\"set-cookie\\":\\"Two-Cookie-Name=Two-Cookie-Value\\",\\"SEt-cookie\\":\\"Two-Cookie-Name=\\"}",
       ],
       "returnValue": "{}",
     },
@@ -148,7 +148,7 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "{\\"One-Header-Name\\":\\"One-Header-Value\\",\\"Two-Header-Name\\":\\"Two-Header-Value\\",\\"Set-Cookie\\":\\"One-Cookie-Name=One-Cookie-Value, Two-Cookie-Name=Two-Cookie-Value, Two-Cookie-Name=\\",\\"Content-Disposition\\":\\"attachment; filename=\\\\\\"synthetic-filename.txt\\\\\\"\\"}",
+        "{\\"One-Header-Name\\":\\"One-Header-Value\\",\\"Two-Header-Name\\":\\"Two-Header-Value\\",\\"Content-Disposition\\":\\"attachment; filename=\\\\\\"synthetic-filename.txt\\\\\\"\\",\\"Set-cookie\\":\\"One-Cookie-Name=One-Cookie-Value\\",\\"set-cookie\\":\\"Two-Cookie-Name=Two-Cookie-Value\\",\\"SEt-cookie\\":\\"Two-Cookie-Name=\\"}",
       ],
       "returnValue": "{}",
     },
@@ -212,7 +212,7 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "{\\"One-Header-Name\\":\\"One-Header-Value\\",\\"Two-Header-Name\\":\\"Two-Header-Value\\",\\"Set-Cookie\\":\\"One-Cookie-Name=One-Cookie-Value, Two-Cookie-Name=Two-Cookie-Value, Two-Cookie-Name=\\"}",
+        "{\\"One-Header-Name\\":\\"One-Header-Value\\",\\"Two-Header-Name\\":\\"Two-Header-Value\\",\\"Set-cookie\\":\\"One-Cookie-Name=One-Cookie-Value\\",\\"set-cookie\\":\\"Two-Cookie-Name=Two-Cookie-Value\\",\\"SEt-cookie\\":\\"Two-Cookie-Name=\\"}",
       ],
       "returnValue": "{}",
     },
@@ -276,7 +276,7 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "{\\"One-Header-Name\\":\\"One-Header-Value\\",\\"Two-Header-Name\\":\\"Two-Header-Value\\",\\"Set-Cookie\\":\\"One-Cookie-Name=One-Cookie-Value, Two-Cookie-Name=Two-Cookie-Value, Two-Cookie-Name=\\"}",
+        "{\\"One-Header-Name\\":\\"One-Header-Value\\",\\"Two-Header-Name\\":\\"Two-Header-Value\\",\\"Set-cookie\\":\\"One-Cookie-Name=One-Cookie-Value\\",\\"set-cookie\\":\\"Two-Cookie-Name=Two-Cookie-Value\\",\\"SEt-cookie\\":\\"Two-Cookie-Name=\\"}",
       ],
       "returnValue": "{}",
     },
@@ -397,7 +397,7 @@ Object {
   "callsInfo": Array [
     Object {
       "args": Array [
-        "{\\"One-Header-Name\\":\\"One-Header-Value\\",\\"Two-Header-Name\\":\\"Two-Header-Value\\",\\"Set-Cookie\\":\\"One-Cookie-Name=One-Cookie-Value, Two-Cookie-Name=Two-Cookie-Value, Two-Cookie-Name=\\"}",
+        "{\\"One-Header-Name\\":\\"One-Header-Value\\",\\"Two-Header-Name\\":\\"Two-Header-Value\\",\\"Set-cookie\\":\\"One-Cookie-Name=One-Cookie-Value\\",\\"set-cookie\\":\\"Two-Cookie-Name=Two-Cookie-Value\\",\\"SEt-cookie\\":\\"Two-Cookie-Name=\\"}",
       ],
       "returnValue": "{}",
     },

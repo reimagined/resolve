@@ -68,6 +68,7 @@ export default ({
     readModels: [
       {
         name: options.readModelName,
+        adapterName: options.readModelAdapterName,
         projection: {
           module:
             'resolve-module-comments/lib/common/read-models/comments.projection.js',
@@ -82,9 +83,6 @@ export default ({
         }
       }
     ],
-    readModelAdapters: {
-      [options.readModelName]: options.readModelAdapter
-    },
     redux: {
       reducers: {
         [options.reducerName]: {

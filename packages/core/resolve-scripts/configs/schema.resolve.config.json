@@ -17,11 +17,21 @@
       "required": ["module", "options"],
       "additionalProperties": false
     },
-    "adaptersMap": {
+    "readModelAdapter": {
       "type": "object",
-      "additionalProperties": {
-        "$ref": "#/definitions/adapter"
-      }
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "module": {
+          "type": "string"
+        },
+        "options": {
+          "type": "object"
+        }
+      },
+      "required": ["name", "module", "options"],
+      "additionalProperties": false
     },
     "resourceInstance": {
       "type": "string"
@@ -49,16 +59,7 @@
           "type": "string"
         },
         "options": {
-          "type": "object",
-          "properties": {
-            "client": {
-              "type": "object"
-            },
-            "server": {
-              "type": "object"
-            }
-          },
-          "additionalProperties": false
+          "type": "object"
         }
       },
       "required": ["module", "options"],
@@ -141,9 +142,12 @@
             { "$ref": "#/definitions/resourceInstance" },
             { "$ref": "#/definitions/resourceConstructor" }
           ]
+        },
+        "adapterName": {
+          "type": "string"
         }
       },
-      "required": ["name", "projection", "resolvers"],
+      "required": ["name", "projection", "resolvers", "adapterName"],
       "additionalProperties": false
     },
     "saga": {
@@ -258,6 +262,10 @@
     "config": {
       "type": "object",
       "properties": {
+        "target": {
+          "type": "string",
+          "enum": ["local", "cloud"]
+        },
         "port": {
           "type": ["integer", "string"]
         },
@@ -312,6 +320,12 @@
             "$ref": "#/definitions/apiHandler"
           }
         },
+        "readModelAdapters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/readModelAdapter"
+          }
+        },
         "busAdapter": {
           "$ref": "#/definitions/adapter"
         },
@@ -320,9 +334,6 @@
         },
         "subscribeAdapter": {
           "$ref": "#/definitions/subscribeAdapter"
-        },
-        "readModelAdapters": {
-          "$ref": "#/definitions/adaptersMap"
         },
         "snapshotAdapter": {
           "$ref": "#/definitions/adapter"

@@ -2,12 +2,13 @@ const testFunctionalConfig = {
   port: 3000,
   polyfills: ['@babel/polyfill'],
   mode: 'development',
-  readModelAdapters: {
-    HackerNews: {
+  readModelAdapters: [
+    {
+      name: 'default',
       module: 'resolve-readmodel-memory',
       options: {}
     }
-  },
+  ],
   jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000

@@ -39,6 +39,7 @@ jspm_packages
 #gitbook build folder
 **/_book
 
+# IDE directory
 .idea
 .vscode
 vscode

@@ -1,4 +1,4 @@
-import createSubscribeAdapter from '../src/client/index'
+import createSubscribeAdapter from '../src/index'
 import mqtt from 'mqtt'
 
 const delay = timeout =>

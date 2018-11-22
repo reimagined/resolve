@@ -1,14 +1,17 @@
 const patchPackageJson = ({
   console,
   chalk,
+  path,
   fs,
   applicationName,
   applicationPackageJsonPath,
-  resolveVersion,
   resolvePackages
 }) => async () => {
   console.log()
   console.log(chalk.green('Patch package.json'))
+
+  const resolveVersion = require(path.join(__dirname, '..', 'package.json'))
+    .version
 
   const packageJson = require(applicationPackageJsonPath)
 

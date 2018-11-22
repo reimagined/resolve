@@ -1,6 +1,6 @@
 {
   "name": "@shopping-list-advanced/domain",
-  "version": "0.17.4",
+  "version": "0.18.0",
   "private": true,
   "dependencies": {
     "@babel/polyfill": "^7.0.0",

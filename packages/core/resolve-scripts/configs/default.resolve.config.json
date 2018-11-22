@@ -1,4 +1,5 @@
 {
+  "target": "local",
   "port": 3000,
   "polyfills": [],
   "rootPath": "",
@@ -36,7 +37,13 @@
     "module": "resolve-snapshot-lite",
     "options": {}
   },
-  "readModelAdapters": {},
+  "readModelAdapters": [
+    {
+      "name": "default",
+      "module": "resolve-readmodel-memory",
+      "options": {}
+    }
+  ],
   "jwtCookie": {
     "name": "jwt",
     "maxAge": 31536000000

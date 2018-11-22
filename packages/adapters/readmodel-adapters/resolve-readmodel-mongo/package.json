@@ -1,6 +1,6 @@
 {
   "name": "resolve-readmodel-mongo",
-  "version": "0.17.4",
+  "version": "0.18.0",
   "description": "This package serves as a resolve-query adapter for storing a read model in mongo",
   "engines": {
     "node": ">=8.10"
@@ -27,7 +27,7 @@
   "dependencies": {
     "@babel/runtime": "^7.0.0",
     "mongodb": "^3.1.4",
-    "resolve-readmodel-base": "0.17.4",
+    "resolve-readmodel-base": "0.18.0",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
