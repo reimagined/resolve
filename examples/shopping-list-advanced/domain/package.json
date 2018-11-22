@@ -1,6 +1,6 @@
 {
   "name": "@shopping-list-advanced/domain",
-  "version": "0.18.0",
+  "version": "0.18.1",
   "private": true,
   "dependencies": {
     "jsonwebtoken": "8.3.0",
