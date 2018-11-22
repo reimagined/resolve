@@ -59,4 +59,4 @@
 - [API Reference](api-reference.md)
 - [Troubleshooting](troubleshooting.md)
 
-![Analytics](https://ga-beacon.appspot.com/UA-129660490-1/index-readme?pixel)
+![Analytics](https://ga-beacon.appspot.com/UA-129660490-1/docs/readme.md)
