@@ -114,4 +114,4 @@ npx create-resolve-app resolve-example -e shopping-list
 
 reSolve is developed by [Developer Express Inc.](https://devexpress.com)
 
-![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/index-readme?pixel)
+![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/readme.md?pixel)
