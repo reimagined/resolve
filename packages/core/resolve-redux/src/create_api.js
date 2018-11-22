@@ -45,10 +45,8 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
     const response = await fetch(rootBasedUrl, options)
 
     const responseJwtToken = (
-      response.headers.get('Authorization') ||
-      response.headers.get('authorization') ||
-      ''
-    ).replace(/^Bearer /i, '')
+      response.headers.get('x-jwt')
+    )
 
     if (jwtProvider) {
       await jwtProvider.set(responseJwtToken)

@@ -78,7 +78,8 @@ void (async () => {
       )
       await remotedev({
         hostname: resolveConfig.customConstants.remoteReduxDevTools.hostname,
-        port: resolveConfig.customConstants.remoteReduxDevTools.port
+        port: resolveConfig.customConstants.remoteReduxDevTools.port,
+        wsEngine: 'ws'
       })
       await opn(
         `http://${resolveConfig.customConstants.remoteReduxDevTools.hostname}:${

@@ -135,6 +135,8 @@ const main = async () => {
       fs.readFileSync(path.join(directory, 'package.json'))
     )
 
+    packageJson.version += `-canary-${canaryVersion}`
+
     for (const namespace of [
       'dependencies',
       'devDependencies',
@@ -182,7 +184,9 @@ const main = async () => {
 
   // 5. Install packages
   for (const { directory } of localPackages) {
-    await spawnAsync('yarn', [], { cwd: directory, stdio: 'inherit' })
+    await spawnAsync('yarn', [
+      'install'
+    ], { cwd: directory, stdio: 'inherit' })
   }
 
   // 6. Make symlinks

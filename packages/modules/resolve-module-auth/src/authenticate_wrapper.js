@@ -5,7 +5,7 @@ const authenticateWrapper = {
     const { name: cookieName, ...cookieOptions } = this.jwtCookie
 
     this.internalRes.cookie(cookieName, jwtToken, cookieOptions)
-    this.internalRes.setHeader('Authorization', `Bearer ${jwtToken}`)
+    this.internalRes.setHeader('x-jwt', jwtToken)
 
     this.internalRes.redirect(
       getRootBasedUrl(this.rootPath, this.successRedirect || '/')
