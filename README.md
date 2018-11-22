@@ -77,4 +77,4 @@ You can find reSolve documentation in the [docs section](./docs).
 
 reSolve is developed by [Developer Express Inc.](https://devexpress.com)
 
-![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/index-readme?pixel)
+![Analytics](https://ga-beacon.appspot.com/UA-129660490-1/index-readme?pixel)
