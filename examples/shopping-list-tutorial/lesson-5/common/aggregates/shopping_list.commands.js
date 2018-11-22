@@ -2,34 +2,35 @@ import {
   SHOPPING_LIST_CREATED,
   SHOPPING_ITEM_CREATED,
   SHOPPING_ITEM_TOGGLED
-} from "../eventTypes";
+} from '../eventTypes'
 
 export default {
   createShoppingList: (state, { payload: { name } }) => {
-    if (state.createdAt) throw new Error("Shopping List already exists");
-    if (!name) throw new Error("name is required");
+    if (state.createdAt) throw new Error('shopping list already exists')
+    if (!name) throw new Error('name is required')
     return {
       type: SHOPPING_LIST_CREATED,
       payload: { name }
-    };
+    }
   },
   createShoppingItem: (state, { payload: { id, text } }) => {
-    if (!text) throw new Error("name is required");
+    if (!id) throw new Error('id is required')
+    if (!text) throw new Error('text is required')
     if (!state || Object.keys(state).length === 0) {
-      throw new Error(`shopping list does not exist`);
+      throw new Error(`shopping list does not exist`)
     }
     return {
       type: SHOPPING_ITEM_CREATED,
       payload: { id, text }
-    };
+    }
   },
   toggleShoppingItem: (state, { payload: { id } }) => {
     if (!state || Object.keys(state).length === 0) {
-      throw new Error(`shopping list does not exist`);
+      throw new Error(`shopping list does not exist`)
     }
     return {
       type: SHOPPING_ITEM_TOGGLED,
       payload: { id }
-    };
+    }
   }
-};
+}
