@@ -28,6 +28,7 @@ export default {
     if (!state || Object.keys(state).length === 0) {
       throw new Error(`shopping list does not exist`)
     }
+    if (!id) throw new Error('id is required')
     return {
       type: SHOPPING_ITEM_TOGGLED,
       payload: { id }
