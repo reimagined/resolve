@@ -14,16 +14,16 @@ const initReadModels = ({
       errorMessages.push(`${errors.duplicateName} ${readModel}`)
     }
 
-    const adapterCreator = readModelAdaptersCreators.find(
+    const adapterCreators = readModelAdaptersCreators.filter(
       ({ name }) => name === readModel.adapterName
     )
-    if (adapterCreator == null) {
+    if (adapterCreators.length !== 1) {
       throw new Error(
-        `${errors.missingAdapter} ${readModel.name}: ${readModel.adapterName}`
+        `${errors.wrongAdapter} in ${readModel.name}: ${readModel.adapterName}`
       )
     }
 
-    const adapter = adapterCreator.factory({
+    const adapter = adapterCreators[0].factory({
       metaName: `__ResolveMeta__${readModel.name}`
     })
 
