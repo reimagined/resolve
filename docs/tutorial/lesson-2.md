@@ -277,7 +277,7 @@ Content-Length: 31
 Command error: name is required
 
 
-# Trying to create an shopping list that already exists
+# Trying to create a shopping list that already exists
 $ curl -i http://localhost:3000/api/commands/ \
 > --header "Content-Type: application/json" \
 > --data '
