@@ -235,7 +235,7 @@ The projection object should specify an obligatory **Init** function and a set o
 - The Init function initializes the aggregate state. In the example code, it creates a new empty object.
 - Projection functions build the aggregate state based on the aggregate's events. Each such function is associated with a particular event type. The function receives the previous state and an event, and returns a new state based on the input.
 
-In the example code, the SHOPPING_LIST_CREATED projection function adds the SHOPPING_LIST_CREATED event's timestamp to the state. This information can be used on the write side to figure out whether and when a shopping list has been created for the current aggregate instance (i.e., an instance identified by the current aggregate ID).
+In the example code, the SHOPPING_LIST_CREATED projection function adds the SHOPPING_LIST_CREATED event's timestamp to the state. This information can be used on the write side to find out whether and when a shopping list has been created for the current aggregate instance (i.e., an instance identified by the current aggregate ID).
 
 **[common/aggregates/shopping_list.commands.js:](../../examples/shopping-list-tutorial/lesson-2/common/aggregates/shopping_list.commands.js)**
 
