@@ -32,8 +32,7 @@
     "react-router": "^4.3.1",
     "react-router-redux": "^5.0.0-alpha.9",
     "redux-saga": "^0.16.0",
-    "uuid": "^3.3.2",
-    "@babel/runtime": "^7.0.0"
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "jest": "23.6.0",

@@ -16,8 +16,10 @@ const apiHandlerConstructor = (
       strategyHash,
       callback
     )
+    
+    const noredirect = String(authRequest.query.noredirect)==='true'
 
-    await sendAuthResponse(authResponse, res, authRequest.resolve.rootPath)
+    await sendAuthResponse(authResponse, res, authRequest.resolve.rootPath, noredirect)
   } catch (error) {
     res.status(504)
 

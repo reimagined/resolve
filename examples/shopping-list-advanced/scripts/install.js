@@ -24,7 +24,7 @@ const canaryVersion = Date.now()
 
 const safeName = str => `${str.replace('/', '__')}-canary-${canaryVersion}`
 
-const rmdir = function(dir) {
+const removeExtra = function(dir) {
   const list = fs.readdirSync(dir)
   for (let i = 0; i < list.length; i++) {
     const filename = path.join(dir, list[i])
@@ -34,7 +34,7 @@ const rmdir = function(dir) {
       continue
     }
     if (stat.isDirectory()) {
-      rmdir(filename)
+      removeExtra(filename)
     } else {
       fs.unlinkSync(filename)
     }
@@ -135,8 +135,6 @@ const main = async () => {
       fs.readFileSync(path.join(directory, 'package.json'))
     )
 
-    packageJson.version += `-canary-${canaryVersion}`
-
     for (const namespace of [
       'dependencies',
       'devDependencies',
@@ -182,14 +180,38 @@ const main = async () => {
 
   await Promise.all(promises)
 
-  // 5. Install packages
+  // 5. Remove all resolve packages in node_modules
   for (const { directory } of localPackages) {
-    await spawnAsync('yarn', [
-      'install'
-    ], { cwd: directory, stdio: 'inherit' })
+    for (const { name } of resolvePackages) {
+      const resolvePackagePath = path.join(
+        directory,
+        'node_modules',
+        name
+      )
+      console.log('rm', resolvePackagePath)
+      if(fs.existsSync(resolvePackagePath)) {
+        removeExtra(resolvePackagePath)
+      }
+    }
+  }
+  
+  process.exit(0)
+
+  // 6. Install packages
+  for (const { directory } of localPackages) {
+    await spawnAsync('yarn', ['install'], { cwd: directory, stdio: 'inherit' })
+  }
+  
+  // 7. Remove tar.gz-s
+  for (const { name } of [...resolvePackages, ...localPackages]) {
+    const packagePath = path.join(__dirname, '..', 'node_modules', `${safeName(name)}.tgz`)
+    console.log('rm', packagePath)
+    // if(fs.existsSync(packagePath)) {
+      fs.unlinkSync(packagePath)
+//    }
   }
 
-  // 6. Make symlinks
+  // 8. Make symlinks
   for (const targetPackage of localPackages) {
     for (const sourcePackage of localPackages) {
       const symlinkFrom = sourcePackage.directory
@@ -198,7 +220,7 @@ const main = async () => {
       )
       try {
         try {
-          rmdir(symlinkTo)
+          removeExtra(symlinkTo)
         } catch (error) {
           throw error
         }
@@ -215,7 +237,7 @@ const main = async () => {
     }
   }
 
-  // 7. Finish
+  // 9. Finish
   process.exit(0)
 }
 

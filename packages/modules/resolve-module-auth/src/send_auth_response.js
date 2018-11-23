@@ -1,4 +1,4 @@
-const sendAuthResponse = async (authResponse, res, rootPath) => {
+const sendAuthResponse = async (authResponse, res, rootPath, noredirect) => {
   for (const key of Object.keys(authResponse.headers)) {
     res.setHeader(key, authResponse.headers[key])
   }
@@ -7,6 +7,12 @@ const sendAuthResponse = async (authResponse, res, rootPath) => {
       ...authResponse.cookies[key].options,
       path: `/${rootPath}`
     })
+  }
+  
+  if(noredirect) {
+    res.status(200)
+    res.end('OK')
+    return
   }
 
   res.status(authResponse.statusCode)
