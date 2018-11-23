@@ -13,7 +13,7 @@ Use the following steps to implement the write side for your shopping list appli
 
 To add an aggregate to you shopping list application, first define types of events that this aggregate will produce. Create an **eventTypes.js** file in the project's **common** folder and add the following content to it.
 
-**common/eventTypes.js:**
+**[common/eventTypes.js:](../../examples/shopping-list-tutorial/lesson-2/common/eventTypes.js)**
 
 <!-- prettier-ignore-start -->
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-2/common/eventTypes.js /^/ /\n$/)
@@ -31,7 +31,7 @@ For now, your application requires only two types of events:
 
 Next, create a **shopping_list.commands.js** file in the **common/aggregates** folder. This file will contain command handlers for the ShoppingList aggregate. Add the following code to the file:
 
-**common/aggregates/shopping_list.commands.js:**
+**[common/aggregates/shopping_list.commands.js:](../../examples/shopping-list-tutorial/lesson-2/common/aggregates/shopping_list.commands.js)**
 
 ```js
 import { SHOPPING_LIST_CREATED, SHOPPING_ITEM_CREATED } from '../eventTypes'
@@ -58,7 +58,7 @@ As the result of its execution, a command handler returns an event object. This 
 
 Your minimal shopping list aggregate is now ready. The last step is to register it in the application's configuration file. Open the **config.app.js** file, locate the **aggregates** section and specify the following settings:
 
-**config.app.js:**
+**[config.app.js:](../../examples/shopping-list-tutorial/lesson-2/config.app.js)**
 
 ```js
 ...
@@ -180,7 +180,7 @@ Your application currently has a flaw - it does not perform any input validation
 
 You can overcome the first flaw by adding simple checks to each command handler:
 
-**common/aggregates/shopping_list.commands.js:**
+**[common/aggregates/shopping_list.commands.js:](../../examples/shopping-list-tutorial/lesson-2/common/aggregates/shopping_list.commands.js)**
 
 ```js
 createShoppingList: (state, { payload: { name } }) => {
@@ -196,7 +196,7 @@ createShoppingItem: (state, { payload: { id, text } }) => {
 
 To overcome the second and third flaws, you need to somehow store information about previously performed operations. You can achieve this by maintaining an **aggregate state**. This state is assembled on the fly by an aggregate **projection** from previously created events. To add a projection to the ShoppingList aggregate, create a **shopping_list.projection.js** file in the **common/aggregates** folder and add the following code there:
 
-**common/aggregates/shopping_list.projection.js:**
+**[common/aggregates/shopping_list.projection.js:](../../examples/shopping-list-tutorial/lesson-2/common/aggregates/shopping_list.projection.js)**
 
 <!-- prettier-ignore-start -->
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-2/common/aggregates/shopping_list.projection.js /^/ /\n$/)
@@ -215,7 +215,7 @@ export default {
 
 Register the create projection in the application configuration file:
 
-**config.app.js:**
+**[config.app.js:](../../examples/shopping-list-tutorial/lesson-2/config.app.js)**
 
 <!-- prettier-ignore-start -->
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-2/config.app.js /^[[:blank:]]+aggregates:/ /\],/)
@@ -235,9 +235,9 @@ The projection object should specify an obligatory **Init** function and a set o
 - The Init function initializes the aggregate state. In the example code, it creates a new empty object.
 - Projection functions build the aggregate state based on the aggregate's events. Each such function is associated with a particular event type. The function receives the previous state and an event, and returns a new state based on the input.
 
-In the example code, the SHOPPING_LIST_CREATED projection function adds the SHOPPING_LIST_CREATED event's timestamp to the state. This information can be used on the write side to figure out whether and when a shopping list has been created for the current aggregate instance (i.e., with the current aggregate ID).
+In the example code, the SHOPPING_LIST_CREATED projection function adds the SHOPPING_LIST_CREATED event's timestamp to the state. This information can be used on the write side to figure out whether and when a shopping list has been created for the current aggregate instance (i.e., an instance identified by the current aggregate ID).
 
-**common/aggregates/shopping_list.commands.js:**
+**[common/aggregates/shopping_list.commands.js:](../../examples/shopping-list-tutorial/lesson-2/common/aggregates/shopping_list.commands.js)**
 
 ```js
   createShoppingList: (state, { payload: { name } }) => {
