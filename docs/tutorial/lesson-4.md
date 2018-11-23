@@ -10,7 +10,7 @@ Note that, if required, you can use the standard HTTP API to communicate with a 
 
 Create a **ShoppingList.js** file end the client application's containers folder. In this file, implement a component that displays a list of values obtained from the **data** prop:
 
-**client/containers/ShoppingList.js:**
+**[client/containers/ShoppingList.js:](../../examples/shopping-list-tutorial/lesson-4/client/containers/ShoppingList.js)**
 
 <!-- prettier-ignore-start -->
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-4/client/containers/ShoppingList.js /import \{ ListGroup/ /^\}/)
@@ -38,7 +38,7 @@ The example code uses components from the **react-bootstrap** library to keep th
 
 Now you can use the **resolve-redux** library's **connectViewModel** function to bind your component to **ShoppingList** view model implemented earlier:
 
-**client/containers/ShoppingList.js:**
+**[client/containers/ShoppingList.js:](../../examples/shopping-list-tutorial/lesson-4/client/containers/ShoppingList.js)**
 
 <!-- prettier-ignore-start -->
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-4/client/containers/ShoppingList.js /export const mapStateToOptions/ /export default connectViewModel/)
@@ -56,7 +56,7 @@ export default connectViewModel
 
 Place the implemented shopping list within the application's root component:
 
-**client/containers/App.js:**
+**[client/containers/App.js:](../../examples/shopping-list-tutorial/lesson-4/client/containers/App.js)**
 
 ```js
 const App = () => (

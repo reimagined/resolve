@@ -8,7 +8,7 @@ A reSolve applications read side answers queries using Read Models. In this less
 
 Create a **shopping_list.projection.js** file in the **view-models** folder and add the following code to this file:
 
-**common/view-models/shopping_list.projection.js:**
+**[common/view-models/shopping_list.projection.js:](../../examples/shopping-list-tutorial/lesson-3/common/view-models/shopping_list.projection.js)**
 
 <!-- prettier-ignore-start -->
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-3/common/view-models/shopping_list.projection.js /^/ /\n$/)
@@ -41,7 +41,7 @@ You just defined a View Model **projection**. A View Model projection runs for a
 
 Now, you need to register the implemented View Model in the application's configuration file.
 
-**config.app.js:**
+**[config.app.js:](../../examples/shopping-list-tutorial/lesson-3/config.app.js)**
 
 ```js
 ...
