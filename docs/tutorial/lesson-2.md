@@ -172,7 +172,7 @@ Now, you can check the event store file to see the newly created event. Open the
 
 ### Performing Validation
 
-Your application currently has a flaw - it does not perform any input validation. This results in the following flaws:
+Your application's write side currently does not perform any input validation. This results in the following flaws:
 
 - The aggregate allows you to create shopping lists and items without specifying the required fields in the payload.
 - It is possible to create more then one shopping list with the same aggregate ID.
