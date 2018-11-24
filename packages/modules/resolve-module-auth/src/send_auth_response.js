@@ -8,8 +8,8 @@ const sendAuthResponse = async (authResponse, res, rootPath, noredirect) => {
       path: `/${rootPath}`
     })
   }
-  
-  if(noredirect) {
+
+  if (noredirect) {
     res.status(200)
     res.end('OK')
     return

@@ -40,7 +40,10 @@ const wrapAuthRequest = req => {
 
   // TODO: use string-based body parsers (not stream-based like npm body-parser)
   if (req.body != null && req.headers['content-type'] != null) {
-    const bodyContentType = (req.headers['content-type'].toLowerCase().split(';'))[0].trim()
+    const bodyContentType = req.headers['content-type']
+      .toLowerCase()
+      .split(';')[0]
+      .trim()
 
     switch (bodyContentType) {
       case 'application/x-www-form-urlencoded': {

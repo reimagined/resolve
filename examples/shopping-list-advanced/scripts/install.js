@@ -20,9 +20,14 @@ const spawnAsync = (command, args, options) =>
     })
   })
 
-const canaryVersion = Date.now()
+const timestamp = Date.now()
 
-const safeName = str => `${str.replace('/', '__')}-canary-${canaryVersion}`
+const [_major, _minor, _patch] = require('./package').version.split('.')
+
+const canaryVersion = [_major, _minor, +_patch + timestamp].join('.')
+
+const safeName = str =>
+  `${str.replace('@', '').replace('/', '-')}-v${canaryVersion}`
 
 const removeExtra = function(dir) {
   const list = fs.readdirSync(dir)
@@ -69,27 +74,6 @@ const main = async () => {
   const redefine = {}
   const resolvePackages = []
 
-  let isResolveMonorepo = false
-  try {
-    isResolveMonorepo = require('../../../package').name === 'resolve'
-  } catch (e) {}
-
-  if (isResolveMonorepo) {
-    resolvePackages.push(
-      // eslint-disable-next-line import/no-extraneous-dependencies
-      ...require('create-resolve-app').resolvePackages.map(packageName => ({
-        name: packageName,
-        directory: path.dirname(
-          require.resolve(path.join(packageName, 'package.json'))
-        )
-      }))
-    )
-
-    for (const { name } of resolvePackages) {
-      redefine[name] = `http://${address}:${port}/${safeName(name)}.tgz`
-    }
-  }
-
   const localPackages = fs
     .readdirSync(path.join(__dirname, '..'))
     .filter(directory => {
@@ -109,7 +93,43 @@ const main = async () => {
     redefine[name] = `http://${address}:${port}/${safeName(name)}.tgz`
   }
 
-  // 2. Backup package.json-s and setup rollback
+  let isResolveMonorepo = false
+  try {
+    isResolveMonorepo = require('../../../package').name === 'resolve'
+  } catch (e) {}
+
+  if (isResolveMonorepo) {
+    // eslint-disable-next-line import/no-extraneous-dependencies
+    const resolvePackagesNames = require('create-resolve-app').resolvePackages
+
+    // 2. Remove all resolve packages in node_modules
+    for (const { directory } of localPackages) {
+      for (const name of resolvePackagesNames) {
+        const resolvePackagePath = path.normalize(
+          path.join(directory, 'node_modules', name)
+        )
+
+        if (fs.existsSync(resolvePackagePath)) {
+          removeExtra(resolvePackagePath)
+        }
+      }
+    }
+
+    resolvePackages.push(
+      ...resolvePackagesNames.map(packageName => ({
+        name: packageName,
+        directory: path.dirname(
+          require.resolve(path.join(packageName, 'package.json'))
+        )
+      }))
+    )
+
+    for (const { name } of resolvePackages) {
+      redefine[name] = `http://${address}:${port}/${safeName(name)}.tgz`
+    }
+  }
+
+  // 3. Backup package.json-s and setup rollback
   const backup = {}
   for (const { directory } of [...localPackages, ...resolvePackages]) {
     backup[directory] = fs.readFileSync(path.join(directory, 'package.json'))
@@ -122,18 +142,22 @@ const main = async () => {
   const rollback = () => {
     for (const { directory } of [...localPackages, ...resolvePackages]) {
       fs.writeFileSync(path.join(directory, 'package.json'), backup[directory])
-      fs.unlinkSync(path.join(directory, 'package.backup.json'))
+      try {
+        fs.unlinkSync(path.join(directory, 'package.backup.json'))
+      } catch (e) {}
     }
   }
 
   process.on('SIGINT', rollback)
   process.on('exit', rollback)
 
-  // 3. Patch package.json-s
+  // 4. Patch package.json-s
   for (const { directory } of [...resolvePackages, ...localPackages]) {
     const packageJson = JSON.parse(
       fs.readFileSync(path.join(directory, 'package.json'))
     )
+
+    packageJson.version = canaryVersion
 
     for (const namespace of [
       'dependencies',
@@ -146,7 +170,8 @@ const main = async () => {
       }
       for (const { name } of [...resolvePackages, ...localPackages]) {
         if (packageJson[namespace][name]) {
-          packageJson[namespace][name] = redefine[name]
+          packageJson[namespace][name] =
+            namespace === 'peerDependencies' ? '*' : redefine[name]
         }
       }
     }
@@ -157,7 +182,7 @@ const main = async () => {
     )
   }
 
-  // 4. Create tar.gz-s
+  // 5. Create tar.gz-s
   if (!fs.existsSync(path.join(__dirname, '..', 'node_modules'))) {
     fs.mkdirSync(path.join(__dirname, '..', 'node_modules'))
   }
@@ -170,7 +195,6 @@ const main = async () => {
         [
           'pack',
           '--filename',
-
           path.join(__dirname, '..', 'node_modules', `${safeName(name)}.tgz`)
         ],
         { cwd: directory }
@@ -180,35 +204,20 @@ const main = async () => {
 
   await Promise.all(promises)
 
-  // 5. Remove all resolve packages in node_modules
-  for (const { directory } of localPackages) {
-    for (const { name } of resolvePackages) {
-      const resolvePackagePath = path.join(
-        directory,
-        'node_modules',
-        name
-      )
-      console.log('rm', resolvePackagePath)
-      if(fs.existsSync(resolvePackagePath)) {
-        removeExtra(resolvePackagePath)
-      }
-    }
-  }
-  
-  process.exit(0)
-
   // 6. Install packages
   for (const { directory } of localPackages) {
     await spawnAsync('yarn', ['install'], { cwd: directory, stdio: 'inherit' })
   }
-  
+
   // 7. Remove tar.gz-s
   for (const { name } of [...resolvePackages, ...localPackages]) {
-    const packagePath = path.join(__dirname, '..', 'node_modules', `${safeName(name)}.tgz`)
-    console.log('rm', packagePath)
-    // if(fs.existsSync(packagePath)) {
-      fs.unlinkSync(packagePath)
-//    }
+    const packagePath = path.join(
+      __dirname,
+      '..',
+      'node_modules',
+      `${safeName(name)}.tgz`
+    )
+    fs.unlinkSync(packagePath)
   }
 
   // 8. Make symlinks
@@ -238,6 +247,7 @@ const main = async () => {
   }
 
   // 9. Finish
+  rollback()
   process.exit(0)
 }
 

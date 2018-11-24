@@ -3,7 +3,7 @@ import getRootBasedUrl from './get_root_based_url'
 const authenticateWrapper = {
   success: function(jwtToken) {
     const { name: cookieName, ...cookieOptions } = this.jwtCookie
-  
+
     this.internalRes.setHeader('x-jwt', jwtToken)
     this.internalRes.cookie(cookieName, jwtToken, cookieOptions)
 
