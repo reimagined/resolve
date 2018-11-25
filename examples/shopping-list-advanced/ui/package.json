@@ -1,6 +1,6 @@
 {
   "name": "@shopping-list-advanced/ui",
-  "version": "0.18.0",
+  "version": "0.18.1",
   "private": true,
   "main": "./lib/index.js",
   "module": "./es/index.js",

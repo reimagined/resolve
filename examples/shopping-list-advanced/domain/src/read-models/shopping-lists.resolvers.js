@@ -10,6 +10,10 @@ export default {
       id: shoppingListId
     })
 
+    if (!shoppingList) {
+      return null
+    }
+
     let users = await store.find('Users', {}, null, { createdAt: -1 })
 
     users = Array.isArray(users) ? users : []

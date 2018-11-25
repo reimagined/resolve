@@ -59,7 +59,10 @@ const jwtProvider = {
     return jwtToken
   },
   async set(jwtToken) {
-    return AsyncStorage.setItem(jwtCookie.name, jwtToken)
+    if (jwtToken == null) {
+      return await AsyncStorage.removeItem(jwtCookie.name)
+    }
+    return await AsyncStorage.setItem(jwtCookie.name, jwtToken)
   }
 }
 

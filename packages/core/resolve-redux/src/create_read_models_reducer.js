@@ -96,7 +96,7 @@ export default function createReadModelsReducer() {
       [readModelName]: {
         ...state[readModelName],
         [resolverName]: dropKey(
-          state[readModelName][resolverName],
+          (state[readModelName] || {})[resolverName],
           resolverArgs
         )
       },
