@@ -53,7 +53,7 @@ yarn run dev
 
 Your application is running at http://localhost:3000/.
 
-### Creating a new app with an example code
+### Creating a new app with a code example
 
 You can create a new application with an example code using `create-resolve-app` with the `-e` flag followed by an example name. Use the `create-resolve-app -h` command to list the available [examples](./examples/).
 
