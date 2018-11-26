@@ -6,5 +6,8 @@ module.exports = {
   setupFiles: ['raf/polyfill', '<rootDir>/jest-setup.js'],
   transform: {
     '^.+\\.js$': path.resolve(__dirname, 'jest.transform.js')
+  },
+  moduleNameMapper: {
+    '\\.(jpg|jpeg|png|svg)$': '<rootDir>/test/unit/img-mock.js'
   }
 }

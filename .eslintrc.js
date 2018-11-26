@@ -177,6 +177,7 @@ module.exports = {
           'iotdevicegateway',
           'iterable',
           'jpg',
+          'jpeg',
           'jsons',
           'jsonschema',
           'jsonwebtoken',

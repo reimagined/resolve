@@ -12,10 +12,6 @@
     "dev": "cd scripts && node ./run.js dev",
     "start": "cd scripts && node ./run.js start",
     "start:native": "cd native && npm run start",
-    "test": "echo || exit 0",
-    "test:domain": "cd domain && npm run test",
-    "test:web": "cd web && npm run test",
-    "test:native": "cd native && npm run test",
-    "test:functional": "echo || exit 0"
+    "test": "cd scripts && node ./test.js "
   }
 }
