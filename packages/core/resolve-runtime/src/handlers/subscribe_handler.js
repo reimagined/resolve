@@ -1,12 +1,4 @@
-import println from '../utils/println'
-
 const subscribeHandler = async (req, res) => {
-  if (req.method !== 'GET' && req.method !== 'POST') {
-    await res.status(405)
-    await res.end('Invalid HTTP method for subscribe options retrieving')
-    return
-  }
-
   try {
     const parameters = req.method === 'POST' ? JSON.parse(req.body) : req.query
     const { origin, adapterName } = parameters
@@ -15,7 +7,7 @@ const subscribeHandler = async (req, res) => {
       await req.resolve.getSubscribeAdapterOptions(origin, adapterName)
     )
   } catch (err) {
-    println.error(err)
+    resolveLog('warn', 'Subscribe handler error', err)
     await res.status(500)
     await res.setHeader('Content-Type', 'text/plain')
     await res.end(err.toString())

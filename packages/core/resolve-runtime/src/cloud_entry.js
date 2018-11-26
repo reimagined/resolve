@@ -8,7 +8,6 @@ import wrapApiHandler from 'resolve-api-handler-awslambda'
 import createCommandExecutor from 'resolve-command'
 import createEventStore from 'resolve-es'
 import createQueryExecutor from 'resolve-query'
-import println from './utils/println'
 
 import mainHandler from './handlers/main_handler'
 
@@ -94,14 +93,27 @@ const lambdaWorker = async (
   lambdaEvent,
   lambdaContext
 ) => {
+  resolveLog('debug', 'Lambda handler has received event', lambdaEvent)
+
   lambdaContext.callbackWaitsForEmptyEventLoop = false
   let executorResult = null
 
   const resolve = Object.create(resolveBase)
   await initResolve(assemblies, resolve)
+  resolveLog(
+    'debug',
+    'Lambda handler has initialized resolve instance',
+    resolve
+  )
 
   // API gateway event
   if (lambdaEvent.headers != null && lambdaEvent.httpMethod != null) {
+    resolveLog(
+      'debug',
+      'Lambda handler classified event as API gateway',
+      lambdaEvent.httpMethod,
+      lambdaEvent.headers
+    )
     const getCustomParameters = async () => ({ resolve })
     const executor = wrapApiHandler(mainHandler, getCustomParameters)
 
@@ -112,25 +124,43 @@ const lambdaWorker = async (
   // be delivered strictly into one lambda instance, i.e. following code works in
   // single-thread mode for one event storage - see https://amzn.to/2LkKXAV
   else if (lambdaEvent.Records != null) {
+    resolveLog(
+      'debug',
+      'Lambda handler classified event as Dynamo stream',
+      lambdaEvent.Records
+    )
     const applicationPromises = []
     const events = lambdaEvent.Records.map(record =>
       Converter.unmarshall(record.dynamodb.NewImage)
     )
     // TODO. Refactoring MQTT publish event
     for (const event of events) {
+      const eventDescriptor = {
+        topic: `${process.env.DEPLOYMENT_ID}/${event.type}/${
+          event.aggregateId
+        }`,
+        payload: JSON.stringify(event),
+        qos: 1
+      }
+
       applicationPromises.push(
         resolve.mqtt
-          .publish({
-            topic: `${process.env.DEPLOYMENT_ID}/${event.type}/${
-              event.aggregateId
-            }`,
-            payload: JSON.stringify(event),
-            qos: 1
-          })
+          .publish(eventDescriptor)
           .promise()
+          .then(() => {
+            resolveLog(
+              'info',
+              'Lambda pushed event into MQTT successfully',
+              eventDescriptor
+            )
+          })
           .catch(error => {
-            // eslint-disable-next-line no-console
-            console.warn(error)
+            resolveLog(
+              'warn',
+              'Lambda can not publish event into MQTT',
+              eventDescriptor,
+              error
+            )
           })
       )
     }
@@ -144,6 +174,7 @@ const lambdaWorker = async (
   }
 
   await disposeResolve(resolve)
+  resolveLog('debug', 'Lambda handler has disposed resolve instance')
 
   if (executorResult == null) {
     throw new Error(`Lambda cannot be invoked with event: ${lambdaEvent}`)
@@ -172,9 +203,11 @@ const cloudEntry = async ({ assemblies, constants, domain, redux, routes }) => {
       resolve
     )
 
+    resolveLog('debug', 'Cloud entry point cold start success', resolve)
+
     return lambdaWorker.bind(null, assemblies, resolve)
   } catch (error) {
-    println(error)
+    resolveLog('error', 'Cloud entry point cold start failure', error)
   }
 }
 

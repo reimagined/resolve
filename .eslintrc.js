@@ -11,6 +11,9 @@ module.exports = {
     }
   },
   plugins: ['react', 'jsx-a11y', 'import', 'spellcheck'],
+  globals: {
+    resolveLog: true
+  },
   rules: {
     'func-names': 'off',
     'no-underscore-dangle': 'off',
@@ -232,7 +235,6 @@ module.exports = {
           'prefetch',
           'prev',
           'Presigned',
-          'println',
           'proc',
           'proto',
           'pubsub',
