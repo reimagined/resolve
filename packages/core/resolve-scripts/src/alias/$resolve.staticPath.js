@@ -1,3 +1,5 @@
+import validatePath from 'resolve-runtime/lib/utils/validate_path'
+
 import { message } from '../constants'
 import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 
