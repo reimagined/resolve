@@ -3,8 +3,7 @@
   "version": "0.18.1",
   "private": true,
   "scripts": {
-    "test": "echo || exit 0",
-    "test:functional": "echo || exit 0"
+    "test": "echo || exit 0"
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",

@@ -3,8 +3,7 @@
   "version": "0.18.1",
   "private": true,
   "scripts": {
-    "test": "jest --testMatch=**/test/**/unit/*.test.js --verbose",
-    "test:functional": "echo || exit 0"
+    "test": "jest --testMatch=**/test/**/unit/*.test.js --verbose"
   },
   "dependencies": {
     "react": "16.6.0",

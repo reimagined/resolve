@@ -137,7 +137,7 @@ void (async () => {
       )
       await runTestcafe({
         resolveConfig,
-        functionalTestsDir: 'test/functional',
+        functionalTestsDir: '../web/test/functional',
         browser: process.argv[3]
       })
       break

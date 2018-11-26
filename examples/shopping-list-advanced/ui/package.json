@@ -5,8 +5,7 @@
   "main": "./lib/index.js",
   "module": "./es/index.js",
   "scripts": {
-    "test": "jest --config=jest.config.js",
-    "test:functional": "echo || exit 0"
+    "test": "jest --config=jest.config.js"
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
