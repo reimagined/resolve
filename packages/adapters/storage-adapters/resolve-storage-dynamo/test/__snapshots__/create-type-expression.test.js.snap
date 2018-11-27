@@ -1,5 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`method "createAggregateIdExpression" Regression test. [null] should return empty expression 1`] = `
+Object {
+  "attributeNames": Object {},
+  "attributeValues": false,
+  "conditionExpression": "",
+}
+`;
+
 exports[`method "createAggregateIdExpression" should return correctly expression for many eventTypes 1`] = `
 Object {
   "attributeNames": Object {
