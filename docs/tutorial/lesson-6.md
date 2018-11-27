@@ -83,6 +83,31 @@ Note that regular Read Models are not reactive like View Models are. This will h
 
 ### Query a Read Model Through HTTP API
 
+You can test the Shopping List's functionality using the standard HTTP API:
+
+```sh
+$ curl -X POST \
+-H "Content-Type: application/json" \
+-d "{}" \
+"http://localhost:3000/api/query/ShoppingLists/all"
+
+
+% Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   186  100   184  100     2    844      9 --:--:-- --:--:-- --:--:--   906[
+  {
+    "id": "shopping-list-1",
+    "name": "List 1",
+    "createdAt": 1543325125945
+  },
+  {
+    "id": "shopping-list-2",
+    "name": "List 2",
+    "createdAt": 1543325129138
+  }
+]
+```
+
 ### Implement Client UI
 
 ### Enable Data Editing
