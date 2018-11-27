@@ -143,7 +143,8 @@ void (async () => {
           {}
         ),
         functionalTestsDir: '../web/test/functional',
-        browser: process.argv[3]
+        browser: process.argv[3],
+        customArgs: ['-r', 'json:report.json']
       })
       break
     }
