@@ -1,21 +1,16 @@
-import executeStrategy from './execute_strategy'
 import wrapAuthRequest from './wrap_auth_request'
-import sendAuthResponse from './send_auth_response'
 
-const apiHandlerConstructor = (
-  { strategyHash, options },
-  { createStrategy, callback }
-) => async (req, res) => {
+const logoutApiHandler = async (req, res) => {
   try {
     const authRequest = wrapAuthRequest(req)
+    const { jwtCookie, rootPath } = authRequest.resolve
 
-    const authResponse = await executeStrategy(
-      authRequest,
-      createStrategy,
-      options,
-      strategyHash,
-      callback
-    )
+    res.cookie(jwtCookie.name, '', {
+      expires: new Date(0),
+      path: `/${rootPath}`
+    })
+    res.setHeader('Authorization', '')
+    res.setHeader('X-JWT', '')
 
     const noredirect =
       (authRequest.body &&
@@ -25,12 +20,19 @@ const apiHandlerConstructor = (
         authRequest.query.noredirect &&
         String(authRequest.query.noredirect) === 'true')
 
-    await sendAuthResponse(
-      authResponse,
-      res,
-      authRequest.resolve.rootPath,
-      noredirect
-    )
+    if (noredirect) {
+      res.status(200)
+      res.end('OK')
+      return
+    }
+
+    const referer = authRequest.headers['referer']
+    if (referer != null) {
+      res.redirect(referer)
+      return
+    }
+
+    res.redirect(`/${rootPath}`)
   } catch (error) {
     res.status(504)
 
@@ -43,4 +45,4 @@ const apiHandlerConstructor = (
   }
 }
 
-export default apiHandlerConstructor
+export default logoutApiHandler

@@ -7,9 +7,9 @@ const createUserModule = strategies => {
 
   const apiHandlers = []
   for (const strategyDescriptor of strategies) {
-    const { createStrategy, varyOptions, routes } = strategyDescriptor
+    const { createStrategy, options, routes, logoutRoute } = strategyDescriptor
     const strategyHash = uuidV4()
-    if (varyOptions != null && varyOptions.constructor !== Object) {
+    if (options != null && options.constructor !== Object) {
       throw new Error(`Vary options should be object if present`)
     }
 
@@ -21,7 +21,7 @@ const createUserModule = strategies => {
           module: 'resolve-module-auth/lib/api_handler_constructor',
           options: {
             strategyHash,
-            varyOptions
+            options
           },
           imports: {
             createStrategy,
@@ -30,6 +30,12 @@ const createUserModule = strategies => {
         }
       })
     }
+
+    apiHandlers.push({
+      method: logoutRoute.method,
+      path: logoutRoute.path,
+      controller: 'resolve-module-auth/lib/logout_api_handler'
+    })
   }
 
   return {

@@ -1,6 +1,6 @@
 import { Strategy as LocalStrategyFactory } from 'passport-local'
 
-const createStrategy = varyOptions => ({
+const createStrategy = options => ({
   factory: LocalStrategyFactory,
   options: {
     failureRedirect: error =>
@@ -9,7 +9,7 @@ const createStrategy = varyOptions => ({
     usernameField: 'username',
     passwordField: 'password',
     successRedirect: null,
-    ...varyOptions
+    ...options
   }
 })
 
