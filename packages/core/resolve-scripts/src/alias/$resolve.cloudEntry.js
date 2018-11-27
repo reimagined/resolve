@@ -1,5 +1,6 @@
 export default () => ({
   code: `
+    import '$resolve.installLogger'
     import serverAssemblies from '$resolve.serverAssemblies'
     import cloudEntry from 'resolve-runtime/lib/cloud_entry'
 

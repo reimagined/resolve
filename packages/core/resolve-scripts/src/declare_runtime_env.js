@@ -1,4 +1,5 @@
 import crypto from 'crypto'
+import getClientGlobalObject from './client_global_object'
 
 const runtimeEnvSymbol = Symbol('@@resolve/runtime_env')
 
@@ -23,31 +24,14 @@ const declareRuntimeEnv = envName => {
 export const checkRuntimeEnv = value =>
   !(value == null || value.type !== runtimeEnvSymbol)
 
-const clientGlobalEnvObject = `((() => {
-  const globalObject = [() => window, () => global, () => self].reduce(
-    (acc, recognizer) => {
-      try {
-        return acc != null ? acc : recognizer()
-      } catch(e) {}
-    },
-    null
-  )
-  
-  if (globalObject == null || globalObject.__RESOLVE_RUNTIME_ENV__ == null) {
-    throw new Error(
-      'Client global object recognition failed - ENV variables failed'
-    )
-  }
-
-  return globalObject.__RESOLVE_RUNTIME_ENV__
-})())`
-
 export const injectRuntimeEnv = (json, isClient = false) => {
   const seedPrefix = JSON.stringify(json)
   const runtimeDigestBegin = createDigestHash('digest-begin', seedPrefix)
   const runtimeDigestEnd = createDigestHash('digest-end', seedPrefix)
 
-  const envObj = isClient ? clientGlobalEnvObject : 'process.env'
+  const envObj = isClient
+    ? getClientGlobalObject('__RESOLVE_RUNTIME_ENV__')
+    : 'process.env'
 
   const rawResult = JSON.stringify(
     json,
