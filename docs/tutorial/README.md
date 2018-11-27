@@ -14,4 +14,5 @@ This tutorial includes the following lessons:
 - Lesson 3 - Read side - Create a View Model to Query List Items
 - Lesson 4 - Frontend - Display View Model Data in the Browser
 - Lesson 5 - Frontend - Enable Data Editing
-- [TODO]
+- Lesson 6 - Frontend - Support Multiple Shopping Lists
+- Lesson 7 - Functionality Enhancements - Support Item Editing and Deletion
