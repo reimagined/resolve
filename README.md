@@ -8,7 +8,7 @@ reSolve is a full stack functional JavaScript framework.
 
 - [CQRS](https://martinfowler.com/bliki/CQRS.html) - independent Command and Query sides.
 - [DDD Aggregate](https://martinfowler.com/bliki/DDD_Aggregate.html) support.
-- [Event sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) - using events as a source of truth and calculates read models from them.
+- [Event sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) - uses events as a source of truth and calculates read models from them.
 - Integrates with [React](https://reactjs.org) and [Redux](https://redux.js.org) for seamless development experience.
 - [React Native](https://facebook.github.io/react-native/) support.
 
@@ -16,7 +16,7 @@ reSolve is a full stack functional JavaScript framework.
 
 ### Installation
 
-Make sure you have **NodeJS** version **8.10.0** or greater.
+Make sure you have **NodeJS** version **8.10.0** or higher.
 
 Use [create-resolve-app](packages/core/create-resolve-app) package to create a new reSolve application. The easiest way is to use [npx](https://www.npmjs.com/package/npx/v/1.1.1) ()
 
@@ -51,13 +51,13 @@ yarn run dev
 </details>
 <p></p>
 
-Your application is running at http://localhost:3000/.
+Your application will be running at http://localhost:3000/.
 
 ### Creating a new app with a code example
 
-You can create a new application with an example code using `create-resolve-app` with the `-e` flag followed by an example name. Use the `create-resolve-app -h` command to list the available [examples](./examples/).
+You can create a new application with a code example using `create-resolve-app` with the `-e` flag followed by the example's name. Use the `create-resolve-app -h` command to list the available [examples](./examples/).
 
-For instance, to run a [shopping-list](./examples/shopping-list) example, run:
+For instance, to run the [shopping-list](./examples/shopping-list) example, run:
 
 ```sh
 npx create-resolve-app resolve-example -e shopping-list
@@ -69,11 +69,10 @@ You can find reSolve documentation in the [docs section](./docs).
 
 ## :loudspeaker: Get in Touch
 
-- Ask questions at Stackoverlow with [resolvejs tag](https://stackoverflow.com/tags/resolvejs)
-- Submit bugs and issues to [GitHub Issues](https://github.com/reimagined/resolve/issues)
+- Ask questions on Stackoverlow with [resolvejs tag](https://stackoverflow.com/questions/ask?tags=resolvejs)
+- Use [GitHub Issues](https://github.com/reimagined/resolve/issues) to report bugs and suggest features
 - Email team reimagined@devexpress.com
-- Follow us on Twitter [@resolvejs](https://twitter.com/resolvejs)
-- Facebook page [resolvejs](https://www.facebook.com/resolvejs/)
+- Follow [@resolvejs on Twitter](https://twitter.com/resolvejs) or join [our Facebook page](https://www.facebook.com/resolvejs/) for product news and updates.
 
 reSolve is developed by [Developer Express Inc.](https://devexpress.com)
 
