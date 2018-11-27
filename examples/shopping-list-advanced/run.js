@@ -22,6 +22,10 @@ void (async () => {
     {
       name: 'local-strategy',
       createStrategy: 'domain/auth/create_strategy.js',
+      logoutRoute: {
+        path: 'auth/local/logout',
+        method: 'GET'
+      },
       routes: [
         {
           path: 'auth/local/register',
@@ -32,11 +36,6 @@ void (async () => {
           path: 'auth/local/login',
           method: 'POST',
           callback: 'domain/auth/route_login_callback.js'
-        },
-        {
-          path: 'auth/local/logout',
-          method: 'GET',
-          callback: 'domain/auth/route_logout_callback.js'
         }
       ]
     }
