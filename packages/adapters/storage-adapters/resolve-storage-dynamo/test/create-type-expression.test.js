@@ -1,5 +1,4 @@
 import createTypeExpression from '../src/create-type-expression'
-import createAggregateIdExpression from '../src/create-aggregate-id-expression'
 
 describe('method "createAggregateIdExpression"', () => {
   test('should return empty expression', () => {
