@@ -1,22 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`base config (v2) works correctly [client] 1`] = `
-"
-const rootPath = \\"test\\"
-
-export default rootPath
-"
-`;
-
-exports[`base config (v2) works correctly [server] 1`] = `
-"
-const rootPath = \\"test\\"
-
-export default rootPath
-"
-`;
-
-exports[`base config works correctly [client] 1`] = `
+exports[`$resolve.rootPath should support empty URL: [client - compile-time] 1`] = `
 "
 const rootPath = \\"\\"
 
@@ -24,9 +8,67 @@ export default rootPath
 "
 `;
 
-exports[`base config works correctly [server] 1`] = `
+exports[`$resolve.rootPath should support empty URL: [server - compile-time] 1`] = `
 "
 const rootPath = \\"\\"
+
+export default rootPath
+"
+`;
+
+exports[`$resolve.rootPath should support part of URL: [client - compile-time] 1`] = `
+"
+const rootPath = \\"rootPath\\"
+
+export default rootPath
+"
+`;
+
+exports[`$resolve.rootPath should support part of URL: [server - compile-time] 1`] = `
+"
+const rootPath = \\"rootPath\\"
+
+export default rootPath
+"
+`;
+
+exports[`$resolve.rootPath should support runtime envs: [client - runtime] 1`] = `
+"
+let rootPath = ((() => {
+  const globalObject = [() => window, () => global, () => self].reduce(
+    (acc, recognizer) => {
+      try {
+        return acc != null ? acc : recognizer()
+      } catch(e) {}
+    },
+    null
+  )
+  
+  if (globalObject == null || globalObject.__RESOLVE_RUNTIME_ENV__ == null) {
+    throw new Error(
+      'Client global object recognition failed - ENV variables failed'
+    )
+  }
+
+  return globalObject.__RESOLVE_RUNTIME_ENV__
+})())[\\"ROOT_PATH\\"]
+export default rootPath
+"
+`;
+
+exports[`$resolve.rootPath should support runtime envs: [server - runtime] 1`] = `
+"
+import validatePath from 'resolve-runtime/lib/utils/validate_path'
+let rootPath = process.env[\\"ROOT_PATH\\"]
+if (!validatePath(rootPath, { allowEmptyPath: true })) {
+          throw new Error(
+            \`Incorrect options.rootPath = \\"\${
+              rootPath
+            }\\"\\\\nValue must be part of the URL, which is the application's subdirectory\`
+          )
+        }
+
+rootPath = encodeURI(rootPath)
 
 export default rootPath
 "

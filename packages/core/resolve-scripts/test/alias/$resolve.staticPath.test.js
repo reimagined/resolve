@@ -1,11 +1,11 @@
 import declareRuntimeEnv from '../../src/declare_runtime_env'
 
-import alias from '../../src/alias/$resolve.rootPath'
+import alias from '../../src/alias/$resolve.staticPath'
 import normalizePaths from './normalize_paths'
 
-describe('$resolve.rootPath', () => {
+describe('$resolve.staticPath', () => {
   test('should support runtime envs', () => {
-    const resolveConfig = { rootPath: declareRuntimeEnv('ROOT_PATH') }
+    const resolveConfig = { staticPath: declareRuntimeEnv('STATIC_PATH') }
     {
       const result = normalizePaths(
         '\r\n' +
@@ -33,10 +33,46 @@ describe('$resolve.rootPath', () => {
     }
   })
 
+  test('should support absolute paths', () => {
+    const staticPath = 'http://resolve.dev'
+
+    const resolveConfig = { staticPath }
+
+    {
+      const result = normalizePaths(
+        '\r\n' +
+          alias({
+            resolveConfig,
+            isClient: true
+          }).code +
+          '\r\n'
+      )
+
+      expect(result).toMatchSnapshot('[client - compile-time]')
+
+      expect(result).toContain(encodeURI(staticPath))
+    }
+
+    {
+      const result = normalizePaths(
+        '\r\n' +
+          alias({
+            resolveConfig,
+            isClient: false
+          }).code +
+          '\r\n'
+      )
+
+      expect(result).toMatchSnapshot('[server - compile-time]')
+
+      expect(result).toContain(encodeURI(staticPath))
+    }
+  })
+
   test('should support part of URL', () => {
-    const rootPath = 'rootPath'
+    const staticPath = 'static'
 
-    const resolveConfig = { rootPath }
+    const resolveConfig = { staticPath }
 
     {
       const result = normalizePaths(
@@ -50,7 +86,7 @@ describe('$resolve.rootPath', () => {
 
       expect(result).toMatchSnapshot('[client - compile-time]')
 
-      expect(result).toContain(encodeURI(rootPath))
+      expect(result).toContain(encodeURI(staticPath))
     }
 
     {
@@ -65,50 +101,14 @@ describe('$resolve.rootPath', () => {
 
       expect(result).toMatchSnapshot('[server - compile-time]')
 
-      expect(result).toContain(encodeURI(rootPath))
+      expect(result).toContain(encodeURI(staticPath))
     }
   })
 
-  test('should support empty URL', () => {
-    const rootPath = ''
+  test('should not support empty URL', () => {
+    const staticPath = ''
 
-    const resolveConfig = { rootPath }
-
-    {
-      const result = normalizePaths(
-        '\r\n' +
-          alias({
-            resolveConfig,
-            isClient: true
-          }).code +
-          '\r\n'
-      )
-
-      expect(result).toMatchSnapshot('[client - compile-time]')
-
-      expect(result).toContain(encodeURI(rootPath))
-    }
-
-    {
-      const result = normalizePaths(
-        '\r\n' +
-          alias({
-            resolveConfig,
-            isClient: false
-          }).code +
-          '\r\n'
-      )
-
-      expect(result).toMatchSnapshot('[server - compile-time]')
-
-      expect(result).toContain(encodeURI(rootPath))
-    }
-  })
-
-  test('should not support absolute URL', () => {
-    const rootPath = 'http://resolve.dev'
-
-    const resolveConfig = { rootPath }
+    const resolveConfig = { staticPath }
 
     {
       expect(() =>
@@ -139,9 +139,9 @@ describe('$resolve.rootPath', () => {
   })
 
   test('should not support part of URL with leading slash', () => {
-    const rootPath = '/rootPath'
+    const staticPath = '/static'
 
-    const resolveConfig = { rootPath }
+    const resolveConfig = { staticPath }
 
     {
       expect(() =>
@@ -172,9 +172,9 @@ describe('$resolve.rootPath', () => {
   })
 
   test('should not support part of URL with trailing slash', () => {
-    const rootPath = 'rootPath/'
+    const staticPath = 'static/'
 
-    const resolveConfig = { rootPath }
+    const resolveConfig = { staticPath }
 
     {
       expect(() =>
