@@ -83,7 +83,7 @@ Note that regular Read Models are not reactive like View Models are. This will h
 
 ### Query a Read Model Through HTTP API
 
-You can test the Shopping List's functionality using the standard HTTP API:
+You can test the ShoppingLists Read Model's functionality using the standard HTTP API:
 
 ```sh
 $ curl -X POST \
