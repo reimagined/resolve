@@ -33,9 +33,9 @@
     "sinon": "6.3.4"
   },
   "peerDependencies": {
-    "react": "^16.6.0",
-    "react-redux": "^5.1.1",
-    "redux": "^4.0.0",
+    "react": "*",
+    "react-redux": "*",
+    "redux": "*",
     "resolve-redux": "*"
   },
   "babelCompile": [

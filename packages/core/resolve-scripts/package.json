@@ -46,11 +46,11 @@
     "resolve-runtime": "0.18.1",
     "respawn": "^2.5.0",
     "socket.io-client": "^2.1.1",
-    "testcafe": "^0.23.1",
+    "testcafe": "^0.23.2",
     "testcafe-browser-tools": "^1.6.5",
     "uuid": "^3.3.2",
     "val-loader": "^1.1.1",
-    "webpack": "^4.25.1",
+    "webpack": "^4.26.1",
     "webpack-node-externals": "^1.7.2"
   },
   "devDependencies": {

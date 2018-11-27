@@ -8,7 +8,7 @@ class Todo extends React.PureComponent {
     const { checked, text, removeItem, toggleItem } = this.props
 
     return (
-      <div>
+      <div className="shopping-item">
         <Checkbox inline checked={checked} onChange={toggleItem}>
           {text}
         </Checkbox>

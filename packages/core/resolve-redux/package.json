@@ -36,16 +36,16 @@
   },
   "devDependencies": {
     "jest": "23.6.0",
-    "react": "16.6.0",
-    "react-dom": "16.6.0",
-    "react-test-renderer": "16.6.0",
-    "redux": "4.0.0",
+    "react": "16.6.3",
+    "react-dom": "16.6.3",
+    "react-test-renderer": "16.6.3",
+    "redux": "4.0.1",
     "sinon": "6.3.4"
   },
   "peerDependencies": {
-    "react": ">=16.6.0",
-    "react-dom": ">=16.6.0",
-    "redux": ">=4.0.0"
+    "react": "^16.5.0",
+    "react-dom": "^16.5.0",
+    "redux": "^4.0.0"
   },
   "babelCompile": [
     {

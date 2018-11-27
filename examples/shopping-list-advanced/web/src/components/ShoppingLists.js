@@ -19,7 +19,7 @@ class ShoppingLists extends React.PureComponent {
           </thead>
           <tbody>
             {lists.map(({ id, name }, index) => (
-              <tr key={id}>
+              <tr key={id} className="shopping-list">
                 <td>{index + 1}</td>
                 <td>
                   <Link to={`/${id}`}>{name}</Link>

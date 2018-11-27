@@ -137,6 +137,11 @@ void (async () => {
       )
       await runTestcafe({
         resolveConfig,
+        adjustWebpackConfigs: adjustWebpackConfigs.bind(
+          null,
+          resolveConfig,
+          {}
+        ),
         functionalTestsDir: '../web/test/functional',
         browser: process.argv[3]
       })

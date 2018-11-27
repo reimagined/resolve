@@ -268,6 +268,7 @@ module.exports = {
           'rgba',
           'rmdir',
           'Roboto',
+          'Rootable',
           'runtime',
           'sanitizer',
           'scalable',

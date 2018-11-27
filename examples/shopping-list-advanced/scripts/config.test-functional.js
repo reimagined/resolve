@@ -3,7 +3,6 @@ const testFunctionalConfig = {
   port: 3000,
   polyfills: ['@babel/polyfill'],
   mode: 'development',
-
   readModelAdapters: [
     {
       name: 'default',
