@@ -1,4 +1,5 @@
 import chalk from 'chalk'
+import fetch from 'isomorphic-fetch'
 import opn from 'opn'
 import path from 'path'
 
@@ -12,14 +13,23 @@ const openBrowser = async (port, rootPath) => {
   } catch (e) {}
 
   const urls = prepareUrls('http', '0.0.0.0', port, rootPath)
-
   const url = urls.localUrlForBrowser
 
-  try {
-    await opn(url, { app: process.env.BROWSER })
-  } catch (err) {}
-
   /* eslint-disable no-console */
+  while (true) {
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      await fetch(url)
+      break
+    } catch (error) {
+      console.log(`Server is still loading - please wait...`)
+    }
+  }
+
+  Promise.resolve()
+    .then(() => opn(url, { app: process.env.BROWSER }))
+    .catch(() => {})
+
   console.log()
   console.log(`You can now view ${chalk.bold(applicationName)} in the browser.`)
   console.log()

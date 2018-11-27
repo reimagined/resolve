@@ -1,0 +1,74 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`$resolve.staticPath should support absolute paths: [client - compile-time] 1`] = `
+"
+const staticPath = \\"http://resolve.dev\\"
+
+export default staticPath
+"
+`;
+
+exports[`$resolve.staticPath should support absolute paths: [server - compile-time] 1`] = `
+"
+const staticPath = \\"http://resolve.dev\\"
+
+export default staticPath
+"
+`;
+
+exports[`$resolve.staticPath should support part of URL: [client - compile-time] 1`] = `
+"
+const staticPath = \\"static\\"
+
+export default staticPath
+"
+`;
+
+exports[`$resolve.staticPath should support part of URL: [server - compile-time] 1`] = `
+"
+const staticPath = \\"static\\"
+
+export default staticPath
+"
+`;
+
+exports[`$resolve.staticPath should support runtime envs: [client - runtime] 1`] = `
+"
+let staticPath = ((() => {
+  const globalObject = [() => window, () => global, () => self].reduce(
+    (acc, recognizer) => {
+      try {
+        return acc != null ? acc : recognizer()
+      } catch(e) {}
+    },
+    null
+  )
+  
+  if (globalObject == null || globalObject.__RESOLVE_RUNTIME_ENV__ == null) {
+    throw new Error(
+      'Client global object recognition failed - ENV variables failed'
+    )
+  }
+
+  return globalObject.__RESOLVE_RUNTIME_ENV__
+})())[\\"STATIC_PATH\\"]
+export default staticPath
+"
+`;
+
+exports[`$resolve.staticPath should support runtime envs: [server - runtime] 1`] = `
+"
+import validatePath from 'resolve-runtime/lib/utils/validate_path'
+let staticPath = process.env[\\"STATIC_PATH\\"]
+if (!validatePath(staticPath, { allowAbsolutePath: true })) {
+          throw new Error(
+            \`Incorrect options.staticPath = \\"\${
+              staticPath
+            }\\"\\\\nValue must be part of the URL or the absolute URL, which is the application's static subdirectory\`
+          )
+        }
+staticPath = encodeURI(staticPath)
+
+export default staticPath
+"
+`;
