@@ -7,7 +7,9 @@ const devConfig = {
   staticPath: 'static',
   staticDir: 'static',
   distDir: 'dist',
-
+  redux: {
+    enhancers: ['client/enhancers/redux-devtools.js']
+  },
   readModelAdapters: [
     {
       name: 'default',

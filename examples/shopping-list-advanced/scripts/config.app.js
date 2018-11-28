@@ -11,8 +11,7 @@ const appConfig = {
     middlewares: [
       '../web/lib/redux/middlewares/optimistic-sharings-middleware.js',
       '../web/lib/redux/middlewares/optimistic-shopping-lists-middleware.js'
-    ],
-    enhancers: ['../web/lib/redux/enhancers/redux-devtools.js']
+    ]
   },
   aggregates: [
     {

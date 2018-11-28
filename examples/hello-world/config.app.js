@@ -33,8 +33,7 @@ const appConfig = {
   ],
   redux: {
     reducers: { 'reducer-name': 'client/reducers/reducer-name.js' },
-    middlewares: ['client/middlewares/middleware-name.js'],
-    enhancers: ['client/enhancers/redux-devtools.js']
+    middlewares: ['client/middlewares/middleware-name.js']
   }
 }
 
