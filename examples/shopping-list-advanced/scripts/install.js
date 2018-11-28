@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const http = require('http')
 const { spawn } = require('child_process')
+const { babelify } = require('./babel.compile')
 
 const spawnAsync = (command, args, options) =>
   new Promise((resolve, reject) => {
@@ -48,7 +49,13 @@ const removeExtra = function(dir) {
 }
 
 const main = async () => {
-  // 0. Start static server
+  // 0. Install self node_modules
+  await spawnAsync('yarn', ['install'], { cwd: __dirname, stdio: 'inherit' })
+
+  // 1. Babelify
+  await babelify()
+
+  // 2. Start static server
   const staticServer = http.createServer((req, res) => {
     const fileName = req.url.slice(1)
 
@@ -70,7 +77,7 @@ const main = async () => {
     })
   })
 
-  // 1. Prepare redefine map
+  // 3. Prepare redefine map
   const redefine = {}
   const resolvePackages = []
 
@@ -102,7 +109,7 @@ const main = async () => {
     // eslint-disable-next-line import/no-extraneous-dependencies
     const resolvePackagesNames = require('create-resolve-app').resolvePackages
 
-    // 2. Remove all resolve packages in node_modules
+    // 4. Remove all resolve packages in node_modules
     for (const { directory } of localPackages) {
       for (const name of resolvePackagesNames) {
         const resolvePackagePath = path.normalize(
@@ -129,7 +136,7 @@ const main = async () => {
     }
   }
 
-  // 3. Backup package.json-s and setup rollback
+  // 5. Backup package.json-s and setup rollback
   const backup = {}
   for (const { directory } of [...localPackages, ...resolvePackages]) {
     backup[directory] = fs.readFileSync(path.join(directory, 'package.json'))
@@ -151,7 +158,7 @@ const main = async () => {
   process.on('SIGINT', rollback)
   process.on('exit', rollback)
 
-  // 4. Patch package.json-s
+  // 6. Patch package.json-s
   for (const { directory } of [...resolvePackages, ...localPackages]) {
     const packageJson = JSON.parse(
       fs.readFileSync(path.join(directory, 'package.json'))
@@ -182,7 +189,7 @@ const main = async () => {
     )
   }
 
-  // 5. Create tar.gz-s
+  // 7. Create tar.gz-s
   if (!fs.existsSync(path.join(__dirname, '..', 'node_modules'))) {
     fs.mkdirSync(path.join(__dirname, '..', 'node_modules'))
   }
@@ -204,12 +211,12 @@ const main = async () => {
 
   await Promise.all(promises)
 
-  // 6. Install packages
+  // 8. Install packages
   for (const { directory } of localPackages) {
     await spawnAsync('yarn', ['install'], { cwd: directory, stdio: 'inherit' })
   }
 
-  // 7. Remove tar.gz-s
+  // 9. Remove tar.gz-s
   for (const { name } of [...resolvePackages, ...localPackages]) {
     const packagePath = path.join(
       __dirname,
@@ -220,7 +227,7 @@ const main = async () => {
     fs.unlinkSync(packagePath)
   }
 
-  // 8. Make symlinks
+  // 10. Make symlinks
   for (const targetPackage of localPackages) {
     for (const sourcePackage of localPackages) {
       const symlinkFrom = sourcePackage.directory
@@ -247,7 +254,7 @@ const main = async () => {
     }
   }
 
-  // 9. Finish
+  // 11. Finish
   rollback()
   process.exit(0)
 }
