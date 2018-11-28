@@ -24,6 +24,7 @@ module.exports = {
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'no-param-reassign': ['error', { props: false }],
     'new-cap': ['error', { capIsNew: false }],
+    'no-lone-block': 'off',
     'no-mixed-operators': [
       'error',
       {
@@ -312,6 +313,7 @@ module.exports = {
           'writepolicy',
           'unserializable',
           'undef',
+          'unfetch',
           'unicode',
           'unlink',
           'unmarshall',
