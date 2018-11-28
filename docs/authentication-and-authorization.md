@@ -63,6 +63,8 @@ export default createStrategy
 ```
 <!-- prettier-ignore-end -->
 
+This code sample demonstrates the implementation of an authentication strategy constructor on the example of a **local** authentication strategy. The createStrategy constructor takes a set of options defined at runtime and returns modified options.
+
 See the [Hacker News](../examples/hacker-news) example project the full code.
 
 # Using 3rd-Party Auth Services
