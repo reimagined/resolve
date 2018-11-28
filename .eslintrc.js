@@ -11,6 +11,9 @@ module.exports = {
     }
   },
   plugins: ['react', 'jsx-a11y', 'import', 'spellcheck'],
+  globals: {
+    resolveLog: true
+  },
   rules: {
     'func-names': 'off',
     'no-underscore-dangle': 'off',
@@ -157,6 +160,7 @@ module.exports = {
           'http',
           'https',
           'ico',
+          'iconv',
           'idx',
           'Img',
           'img',
@@ -250,6 +254,7 @@ module.exports = {
           'readpolicy',
           'realtime',
           'redux',
+          'referer',
           'refman',
           'regenerator',
           'reimagined',

@@ -15,6 +15,20 @@ describe('method "createAggregateIdExpression"', () => {
     }).toMatchSnapshot()
   })
 
+  test('Regression test. [null] should return empty expression', () => {
+    const {
+      conditionExpression,
+      attributeNames,
+      attributeValues
+    } = createAggregateIdExpression({ aggregateIds: null })
+
+    expect({
+      conditionExpression,
+      attributeNames,
+      attributeValues
+    }).toMatchSnapshot()
+  })
+
   test('should return correctly expression for single aggregateId', () => {
     const {
       conditionExpression,

@@ -73,8 +73,11 @@ const createPubsubManager = () => {
 
       clients.forEach(client =>
         client(topicName, topicId, event).catch(warning => {
-          // eslint-disable-next-line
-          console.warn(warning)
+          resolveLog(
+            'warn',
+            'PubSub manager caused warning from client',
+            warning
+          )
         })
       )
     }

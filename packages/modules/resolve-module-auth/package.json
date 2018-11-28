@@ -1,6 +1,6 @@
 {
   "name": "resolve-module-auth",
-  "version": "0.18.1",
+  "version": "0.18.2",
   "description": "This package is resolve module for authentication.",
   "engines": {
     "node": ">=8.10"
@@ -26,6 +26,7 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/api-handler-adapters/resolve-module-auth#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
+    "iconv": "2.3.1",
     "isomorphic-fetch": "2.2.1",
     "uuid": "3.3.2"
   },

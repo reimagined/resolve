@@ -54,13 +54,12 @@ void (async () => {
           path: 'auth/local/login',
           method: 'POST',
           callback: '../domain/lib/auth/route-login-callback.js'
-        },
-        {
-          path: 'auth/local/logout',
-          method: 'GET',
-          callback: '../domain/lib/auth/route-logout-callback.js'
         }
-      ]
+      ],
+      logoutRoute: {
+        path: 'auth/local/logout',
+        method: 'GET'
+      }
     }
   ])
 

@@ -15,7 +15,6 @@ import { Server as WebSocketServer } from 'ws'
 
 import createPubsubManager from './utils/create_pubsub_manager'
 import getRootBasedUrl from './utils/get_root_based_url'
-import println from './utils/println'
 
 import startExpressServer from './utils/start_express_server'
 import sagaRunnerExpress from './utils/saga_runner_express'
@@ -83,10 +82,7 @@ const createServerMqttHandler = (pubsubManager, appId, qos) => ws => {
       }
       client.suback({ granted: [packet.qos], messageId: packet.messageId })
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.warn(packet)
-      // eslint-disable-next-line no-console
-      console.warn(error)
+      resolveLog('warn', 'MQTT subscription failed', packet, error)
     }
   })
 
@@ -100,10 +96,7 @@ const createServerMqttHandler = (pubsubManager, appId, qos) => ws => {
       }
       client.unsuback({ granted: [packet.qos], messageId: packet.messageId })
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.warn(packet)
-      // eslint-disable-next-line no-console
-      console.warn(error)
+      resolveLog('warn', 'MQTT unsubscription failed', packet, error)
     }
   })
 
@@ -176,8 +169,7 @@ const initSubscribeAdapter = async resolve => {
     })
     socketIOServer.on('connection', handler)
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.log('Cannot init Socket.IO server socket: ', error)
+    resolveLog('warn', 'Cannot init Socket.IO server socket: ', error)
   }
 
   try {
@@ -188,8 +180,7 @@ const initSubscribeAdapter = async resolve => {
     const handler = createServerMqttHandler(pubsubManager, appId, qos)
     socketMqttServer.on('connection', handler)
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.log('Cannot init MQTT server socket: ', error)
+    resolveLog('warn', 'Cannot init MQTT server socket: ', error)
   }
 
   Object.defineProperties(resolve, {
@@ -345,9 +336,11 @@ const localEntry = async ({ assemblies, constants, domain, redux, routes }) => {
     await sagaRunnerExpress(resolve, assemblies.sagas)
     await startExpressServer(resolve)
 
+    resolveLog('debug', 'Local entry point cold start success', resolve)
+
     return emptyWorker
   } catch (error) {
-    println(error)
+    resolveLog('error', 'Local entry point cold start failure', error)
   }
 }
 

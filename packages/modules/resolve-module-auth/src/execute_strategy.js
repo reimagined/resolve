@@ -14,13 +14,9 @@ const callbackInvoker = async function(...args) {
   }
 }
 
-const getBaseStrategyAndOptions = (
-  strategyHash,
-  createStrategy,
-  varyOptions
-) => {
+const getBaseStrategyAndOptions = (strategyHash, createStrategy, options) => {
   if (!authStrategies.has(strategyHash)) {
-    const strategyDescriptor = createStrategy(varyOptions)
+    const strategyDescriptor = createStrategy(options)
     const originalOptions = strategyDescriptor.options
     const StrategyFactory = strategyDescriptor.factory
     const strategyBase = new StrategyFactory(originalOptions, callbackInvoker)
@@ -35,7 +31,7 @@ const TIMEOUT = 30000
 const executeStrategy = async (
   authRequest,
   createStrategy,
-  varyOptions,
+  options,
   strategyHash,
   callback
 ) => {
@@ -44,7 +40,7 @@ const executeStrategy = async (
   const { strategyBase, originalOptions } = getBaseStrategyAndOptions(
     strategyHash,
     createStrategy,
-    varyOptions
+    options
   )
   const internalRes = createResponse()
 

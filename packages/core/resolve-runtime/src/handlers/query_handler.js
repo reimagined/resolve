@@ -3,7 +3,6 @@ import { constants } from 'resolve-query'
 import getRootBasedUrl from '../utils/get_root_based_url'
 import readModelHandler from './read_model_handler'
 import viewModelHandler from './view_model_handler'
-
 import extractRequestBody from '../utils/extract_request_body'
 import message from '../message'
 
@@ -11,10 +10,6 @@ const { modelTypes } = constants
 
 const queryHandler = async (req, res) => {
   try {
-    if (req.method !== 'GET' && req.method !== 'POST') {
-      throw new Error('Invalid HTTP method for query invocation')
-    }
-
     const baseQueryUrl = getRootBasedUrl(req.resolve.rootPath, '/api/query/')
     const paramsPath = req.path.substring(baseQueryUrl.length)
     const [modelName, modelOptions] = paramsPath.split('/')

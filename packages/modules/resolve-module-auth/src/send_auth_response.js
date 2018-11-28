@@ -11,7 +11,7 @@ const sendAuthResponse = async (authResponse, res, rootPath, noredirect) => {
 
   if (noredirect) {
     res.status(200)
-    res.end('OK')
+    res.end(JSON.stringify(authResponse))
     return
   }
 

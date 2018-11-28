@@ -4,8 +4,8 @@ const authenticateWrapper = {
   success: function(jwtToken) {
     const { name: cookieName, ...cookieOptions } = this.jwtCookie
 
-    this.internalRes.setHeader('x-jwt', jwtToken)
     this.internalRes.cookie(cookieName, jwtToken, cookieOptions)
+    this.internalRes.setHeader('X-JWT', jwtToken)
 
     this.internalRes.redirect(
       getRootBasedUrl(this.rootPath, this.successRedirect || '/')

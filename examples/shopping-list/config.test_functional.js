@@ -1,8 +1,8 @@
 const testFunctionalConfig = {
+  target: 'local',
   port: 3000,
   polyfills: ['@babel/polyfill'],
   mode: 'development',
-
   readModelAdapters: [
     {
       name: 'default',
