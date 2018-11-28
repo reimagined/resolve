@@ -12,6 +12,7 @@ const prepareOptions = async pool => {
     process,
     commandLineArgs,
     isYarnAvailable,
+    safeName,
     message
   } = pool
 
@@ -56,7 +57,7 @@ const prepareOptions = async pool => {
 
     const revision = branch ? branch : commit ? commit : 'master'
 
-    const resolveCloneDirName = `resolve-${revision}`
+    const resolveCloneDirName = `resolve-${safeName(revision)}`
 
     const applicationPath = path.join(process.cwd(), applicationName)
     const applicationPackageJsonPath = path.join(

@@ -20,6 +20,7 @@ import printFinishOutput from './print-finish-output'
 import sendAnalytics from './send-analytics'
 import message from './message'
 import isYarnAvailable from './is-yarn-available'
+import safeName from './safe-name'
 import pipeline from './pipeline'
 
 pipeline({
@@ -45,5 +46,6 @@ pipeline({
   printFinishOutput,
   sendAnalytics,
   message,
-  isYarnAvailable
+  isYarnAvailable,
+  safeName
 })
