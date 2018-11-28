@@ -229,13 +229,14 @@ const main = async () => {
       )
       try {
         try {
-          removeExtra(symlinkTo)
+          fs.renameSync(symlinkTo, `${symlinkTo}.backup.${canaryVersion}`)
         } catch (error) {
           throw error
         }
         try {
           fs.symlinkSync(symlinkFrom, symlinkTo, 'junction')
         } catch (error) {
+          fs.renameSync(`${symlinkTo}.backup.${canaryVersion}`, symlinkTo)
           throw error
         }
       } catch (error) {
