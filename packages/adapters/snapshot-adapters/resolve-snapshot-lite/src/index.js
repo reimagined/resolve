@@ -1,18 +1,14 @@
 import NeDB from 'nedb'
 
-const DEFAULT_BUCKET_SIZE = 2147483647
+const DEFAULT_BUCKET_SIZE = 100
 
 const init = async pool => {
   if (pool.initPromise == null) {
     pool.initPromise = (async () => {
       pool.db = new NeDB(
         pool.config && pool.config.hasOwnProperty('pathToFile')
-          ? {
-              filename: pool.config.pathToFile
-            }
-          : {
-              inMemoryOnly: true
-            }
+          ? { filename: pool.config.pathToFile }
+          : { inMemoryOnly: true }
       )
 
       await new Promise((resolve, reject) =>
@@ -57,7 +53,8 @@ const saveSnapshot = async (pool, snapshotKey, content) => {
     throw new Error('Adapter is disposed')
   }
 
-  if (pool.counter++ % pool.bucketSize !== 0) return
+  if (++pool.counter < pool.bucketSize) return
+  pool.counter = 0
 
   await new Promise((resolve, reject) =>
     pool.db.update(

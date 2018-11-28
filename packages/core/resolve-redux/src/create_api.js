@@ -1,3 +1,5 @@
+import unfetch from 'unfetch'
+
 import getRootBasedUrl from './get_root_based_url'
 import syncJwtProviderWithStore from './sync_jwt_provider_with_store'
 
@@ -18,6 +20,14 @@ export const temporaryErrorHttpCodes = [
   523, // Origin Is Unreachable
   524 // A Timeout Occurred
 ]
+
+const doFetch = (...args) => {
+  try {
+    return fetch(...args)
+  } catch (err) {
+    return unfetch(...args)
+  }
+}
 
 const validateStatus = status => {
   // eslint-disable-next-line eqeqeq
@@ -42,7 +52,7 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
         options.headers.Authorization = `Bearer ${jwtToken}`
       }
     }
-    const response = await fetch(rootBasedUrl, options)
+    const response = await doFetch(rootBasedUrl, options)
 
     const responseJwtToken = (
       response.headers.get('Authorization') ||
