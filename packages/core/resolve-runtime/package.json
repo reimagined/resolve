@@ -51,9 +51,9 @@
     "websocket-stream": "^5.1.2"
   },
   "peerDependencies": {
-    "react": ">=16.6.0",
-    "react-dom": ">=16.6.0",
-    "styled-components": ">=4.0.0",
+    "react": "^16.5.0",
+    "react-dom": "^16.5.0",
+    "styled-components": "^4.0.0",
     "resolve-redux": "*"
   },
   "devDependencies": {

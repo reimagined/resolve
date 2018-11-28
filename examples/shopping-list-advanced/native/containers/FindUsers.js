@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import { View, StyleSheet } from 'react-native'
 import { Label } from 'native-base'
 
-import { connectReadModel } from '../resolve/resolve-redux'
+import { connectReadModel } from 'resolve-redux'
 
 import UserList from '../components/UserList'
 

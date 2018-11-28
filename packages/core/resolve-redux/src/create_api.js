@@ -54,17 +54,14 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
     }
     const response = await doFetch(rootBasedUrl, options)
 
-    const responseJwtToken = (
-      response.headers.get('Authorization') ||
-      response.headers.get('authorization') ||
-      ''
-    ).replace(/^Bearer /i, '')
-
     if (jwtProvider) {
+      const responseJwtToken = response.headers.get('x-jwt')
       await jwtProvider.set(responseJwtToken)
     }
-
-    await syncJwtProviderWithStore(jwtProvider, store)
+    syncJwtProviderWithStore(jwtProvider, store).catch(
+      // eslint-disable-next-line no-console
+      error => console.error(error)
+    )
 
     return response
   }

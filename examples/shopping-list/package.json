@@ -15,14 +15,14 @@
     "@babel/node": "7.0.0",
     "@babel/polyfill": "7.0.0",
     "isomorphic-fetch": "2.2.1",
-    "react": "16.6.0",
+    "react": "16.6.3",
     "react-bootstrap": "0.32.1",
-    "react-dom": "16.6.0",
+    "react-dom": "16.6.3",
     "react-helmet": "5.2.0",
     "react-redux": "5.1.1",
     "react-router": "4.3.1",
     "react-router-dom": "4.3.1",
-    "redux": "4.0.0",
+    "redux": "4.0.1",
     "resolve-bus-memory": "0.18.2",
     "resolve-redux": "0.18.2",
     "resolve-scripts": "0.18.2",
@@ -50,7 +50,7 @@
     "babel-jest": "23.6.0",
     "enzyme": "3.6.0",
     "jest": "23.6.0",
-    "react-test-renderer": "16.6.0",
+    "react-test-renderer": "16.6.3",
     "testcafe": "0.22.0"
   }
 }

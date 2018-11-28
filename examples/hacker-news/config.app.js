@@ -7,8 +7,7 @@ const appConfig = {
     middlewares: [
       'client/middlewares/story-create-middleware.js',
       'client/middlewares/optimistic-voting-middleware.js'
-    ],
-    enhancers: ['client/enhancers/redux-devtools.js']
+    ]
   },
   aggregates: [
     {

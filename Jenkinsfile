@@ -12,6 +12,9 @@ pipeline {
                     sh """
                         export YARN_CACHE_FOLDER=/yarn_cache
                         yarn
+                        cd examples/shopping-list-advanced
+                        yarn
+                        cd ../..
                     """
                 }
             }
@@ -59,7 +62,7 @@ pipeline {
                         export DISPLAY=:0;
                         firefox && echo 'err';
 
-                        npx oao run-script test:functional
+                        yarn test:functional
                     """
                 }
             }
