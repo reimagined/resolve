@@ -22,6 +22,10 @@ void (async () => {
       createStrategy: 'auth/create_strategy.js', // Path to strategy construction file in project
       options: { // Passed vary compile-time/runtime options
         strategySecretKey: injectRuntimeEnv('STRATEGY_SECRET_KEY_ENV_VARIABLE_NAME')
+      },
+      logoutRoute: { // HTTP route for logout
+          path: 'logout',
+          method: 'POST'
       }
       routes: [ // HTTP API handlers for current strategy
         {
@@ -33,11 +37,6 @@ void (async () => {
           path: 'login',
           method: 'POST',
           callback: 'auth/route_login_callback.js'
-        },
-        {
-          path: 'logout',
-          method: 'POST',
-          callback: 'auth/route_logout_callback.js'
         }
       ]
     }

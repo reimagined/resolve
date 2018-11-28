@@ -1,7 +1,7 @@
 {
   "name": "resolve-snapshot-mysql",
   "version": "0.18.2",
-  "description": "This package serves as an adapter for snapshots using a file or in memory.",
+  "description": "This package serves as an adapter for snapshots using a file or in mysql.",
   "engines": {
     "node": ">=8.10"
   },

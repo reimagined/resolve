@@ -3,33 +3,39 @@ import NeDB from 'nedb'
 const DEFAULT_BUCKET_SIZE = 100
 
 const init = async pool => {
-  if (pool.initPromise == null) {
-    pool.initPromise = (async () => {
-      pool.db = new NeDB(
-        pool.config && pool.config.hasOwnProperty('pathToFile')
-          ? { filename: pool.config.pathToFile }
-          : { inMemoryOnly: true }
-      )
-
-      await new Promise((resolve, reject) =>
-        pool.db.ensureIndex({ fieldName: 'snapshotKey', unique: true }, err =>
-          err ? reject(err) : resolve()
-        )
-      )
-
-      if (pool.config && pool.config.hasOwnProperty('bucketSize')) {
-        pool.bucketSize = Number(pool.config.bucketSize)
-      }
-
-      pool.counter = 0
-
-      if (!Number.isInteger(pool.bucketSize) || pool.bucketSize < 1) {
-        pool.bucketSize = DEFAULT_BUCKET_SIZE
-      }
-    })()
+  if (pool.initPromise != null) {
+    return pool.initPromise
   }
 
-  return await pool.initPromise
+  pool.initPromise = (async () => {
+    pool.db = new NeDB(
+      pool.config && pool.config.hasOwnProperty('pathToFile')
+        ? { filename: pool.config.pathToFile }
+        : { inMemoryOnly: true }
+    )
+
+    await new Promise((resolve, reject) =>
+      pool.db.loadDatabase(err => (err ? reject(err) : resolve()))
+    )
+
+    await new Promise((resolve, reject) =>
+      pool.db.ensureIndex({ fieldName: 'snapshotKey', unique: true }, err =>
+        err ? reject(err) : resolve()
+      )
+    )
+
+    if (pool.config && pool.config.hasOwnProperty('bucketSize')) {
+      pool.bucketSize = Number(pool.config.bucketSize)
+    }
+
+    pool.counter = 0
+
+    if (!Number.isInteger(pool.bucketSize) || pool.bucketSize < 1) {
+      pool.bucketSize = DEFAULT_BUCKET_SIZE
+    }
+  })()
+
+  return pool.initPromise
 }
 
 const loadSnapshot = async (pool, snapshotKey) => {
