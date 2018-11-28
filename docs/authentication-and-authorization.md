@@ -4,11 +4,6 @@ ReSolve comes with a built-in authentication **module** (resolve-module-auth) th
 
 Create and configure the module in the application's **run.js** script:
 
-```js
-```
-
-To specify authentication strategies for your reSolve application, register the path to a file defining these strategies in the **auth.strategies** config section:
-
 <!-- prettier-ignore-start -->
 [embedmd]:# (../examples/hacker-news/run.js /^[[:blank:]]+const moduleAuth/ /^[[:blank:]]+\)/)
 ```js
@@ -44,7 +39,31 @@ To specify authentication strategies for your reSolve application, register the 
 ```
 <!-- prettier-ignore-end -->
 
-These setting specify the path to a strategy constructor as well as HTTP API hadlers to handle authentication-related requests (register, login and logout in this example).
+These setting specify the path to a strategy constructor as well as HTTP API handlers to handle authentication-related requests (register, login and logout in this example). You can implement a strategy constructor as shown below:
+
+<!-- prettier-ignore-start -->
+[embedmd]:# (../examples/hacker-news/auth/create_strategy.js /^/ /\n$/)
+```js
+import { Strategy as StrategyFactory } from 'passport-local'
+
+const createStrategy = options => ({
+  factory: StrategyFactory,
+  options: {
+    failureRedirect: error =>
+      `/error?text=${encodeURIComponent(error.message)}`,
+    errorRedirect: error => `/error?text=${encodeURIComponent(error.message)}`,
+    usernameField: 'username',
+    passwordField: 'username',
+    successRedirect: null,
+    ...options
+  }
+})
+
+export default createStrategy
+```
+<!-- prettier-ignore-end -->
+
+See the [Hacker News](../examples/hacker-news) example project the full code.
 
 # Using 3rd-Party Auth Services
 
