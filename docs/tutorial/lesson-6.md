@@ -257,7 +257,7 @@ export default optimistic_shopping_lists_middleware
 ```
 <!-- prettier-ignore-end -->
 
-Modify the **mapStateToProps** function implementation for the MyLists component so that component props a bound to the implemented slice of the Redux state:
+Modify the **mapStateToProps** function implementation for the MyLists component so that component props are bound to the implemented slice of the Redux state:
 
 ```jsx
 export const mapStateToProps = (state, ownProps) => ({
