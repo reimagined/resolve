@@ -24,7 +24,7 @@ const timestamp = Date.now()
 
 const [_major, _minor, _patch] = require('./package').version.split('.')
 
-const canaryVersion = [_major, _minor, +_patch + timestamp].join('.')
+const canaryVersion = [_major, _minor, (+_patch || 0) + timestamp].join('.')
 
 const safeName = str =>
   `${str.replace('@', '').replace('/', '-')}-v${canaryVersion}`
