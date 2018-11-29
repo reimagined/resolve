@@ -3,6 +3,7 @@
   "version": "0.18.2",
   "private": true,
   "dependencies": {
+    "@babel/runtime": "^7.0.0",
     "@babel/polyfill": "^7.0.0",
     "jsonwebtoken": "8.3.0",
     "passport-local": "1.0.0",
