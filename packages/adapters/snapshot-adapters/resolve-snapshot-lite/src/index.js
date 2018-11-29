@@ -28,7 +28,7 @@ const init = async pool => {
       pool.bucketSize = Number(pool.config.bucketSize)
     }
 
-    pool.counter = 0
+    pool.counters = new Map()
 
     if (!Number.isInteger(pool.bucketSize) || pool.bucketSize < 1) {
       pool.bucketSize = DEFAULT_BUCKET_SIZE
@@ -50,7 +50,7 @@ const loadSnapshot = async (pool, snapshotKey) => {
     )
   )
 
-  return result
+  return result != null ? result.content : null
 }
 
 const saveSnapshot = async (pool, snapshotKey, content) => {
@@ -58,9 +58,15 @@ const saveSnapshot = async (pool, snapshotKey, content) => {
   if (pool.disposed) {
     throw new Error('Adapter is disposed')
   }
+  if (!pool.counters.has(snapshotKey)) {
+    pool.counters.set(snapshotKey, 0)
+  }
 
-  if (++pool.counter < pool.bucketSize) return
-  pool.counter = 0
+  if (pool.counters.get(snapshotKey) < pool.bucketSize) {
+    pool.counters.set(snapshotKey, pool.counters.get(snapshotKey) + 1)
+    return
+  }
+  pool.counters.set(snapshotKey, 0)
 
   await new Promise((resolve, reject) =>
     pool.db.update(
@@ -78,6 +84,8 @@ const dispose = async (pool, options) => {
     throw new Error('Adapter is disposed')
   }
   pool.disposed = true
+
+  pool.counters.clear()
 
   if (options && options.dropSnapshots) {
     await new Promise((resolve, reject) =>

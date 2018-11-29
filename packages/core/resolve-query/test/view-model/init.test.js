@@ -6,7 +6,6 @@ import init from '../../src/view-model/init'
 test('View-model init should init view-model with default state without snapshot adapter', async () => {
   const eventHandler = sinon.stub().callsFake(async () => null)
   const aggregateIds = ['a', 'b', 'c', 'd']
-  const viewModel = {}
   const eventStore = {
     loadEvents: sinon.stub().callsFake(() => null)
   }
@@ -17,7 +16,6 @@ test('View-model init should init view-model with default state without snapshot
   const callArg = {}
 
   const repository = {
-    viewMap: new Map([['KEY', viewModel]]),
     eventTypes: ['EVENT_TYPE_ONE', 'EVENT_TYPE_TWO'],
     deserializeState: sinon.stub(),
     snapshotAdapter: null,
@@ -27,7 +25,7 @@ test('View-model init should init view-model with default state without snapshot
     eventHandler
   }
 
-  await init(repository, 'KEY', aggregateIds)
+  const viewModel = await init(repository, aggregateIds, 'KEY')
 
   const {
     aggregatesVersionsMap,
@@ -70,7 +68,6 @@ test('View-model init should init view-model with default state without snapshot
 test('View-model init should init view-model with good Init method without snapshot adapter', async () => {
   const eventHandler = sinon.stub().callsFake(async () => null)
   const aggregateIds = ['a', 'b', 'c', 'd']
-  const viewModel = {}
   const eventStore = {
     loadEvents: sinon.stub().callsFake(() => null)
   }
@@ -82,7 +79,6 @@ test('View-model init should init view-model with good Init method without snaps
   const callArg = {}
 
   const repository = {
-    viewMap: new Map([['KEY', viewModel]]),
     eventTypes: ['EVENT_TYPE_ONE', 'EVENT_TYPE_TWO'],
     deserializeState: sinon.stub(),
     snapshotAdapter: null,
@@ -92,7 +88,7 @@ test('View-model init should init view-model with good Init method without snaps
     eventHandler
   }
 
-  await init(repository, 'KEY', aggregateIds)
+  const viewModel = await init(repository, aggregateIds, 'KEY')
 
   const {
     aggregatesVersionsMap,
@@ -132,72 +128,9 @@ test('View-model init should init view-model with good Init method without snaps
 })
 
 // eslint-disable-next-line max-len
-test('View-model init should init view-model with bad Init method without snapshot adapter', async () => {
-  const eventHandler = sinon.stub().callsFake(async () => null)
-  const aggregateIds = ['a', 'b', 'c', 'd']
-  const viewModel = { initPromise: Promise.resolve() }
-  const eventStore = {
-    loadEvents: sinon.stub().callsFake(() => null)
-  }
-  const initError = new Error()
-  const projection = {
-    Init: sinon.stub().callsFake(() => {
-      throw initError
-    }),
-    EVENT_TYPE_ONE: sinon.stub().callsFake(() => null),
-    EVENT_TYPE_TWO: sinon.stub().callsFake(() => null)
-  }
-  const callArg = {}
-
-  const repository = {
-    viewMap: new Map([['KEY', viewModel]]),
-    eventTypes: ['EVENT_TYPE_ONE', 'EVENT_TYPE_TWO'],
-    deserializeState: sinon.stub(),
-    snapshotAdapter: null,
-    invariantHash: null,
-    projection,
-    eventStore,
-    eventHandler
-  }
-
-  await init(repository, 'KEY', aggregateIds, true)
-
-  const {
-    aggregatesVersionsMap,
-    handler: boundHandler,
-    initPromise,
-    ...restViewModel
-  } = viewModel
-
-  expect(aggregatesVersionsMap).toBeInstanceOf(Map)
-  await initPromise
-  expect(eventHandler.callCount).toEqual(0)
-  await boundHandler(callArg)
-  expect(eventHandler.callCount).toEqual(1)
-  expect(eventHandler.firstCall.args[0]).toEqual(repository)
-  expect(eventHandler.firstCall.args[1]).toEqual(viewModel)
-  expect(eventHandler.firstCall.args[2]).toEqual(callArg)
-
-  expect(restViewModel).toEqual({
-    lastError: initError,
-    lastTimestamp: -1,
-    state: null,
-    disposed: false,
-    aggregateIds,
-    snapshotKey: 'null;KEY',
-    key: 'KEY'
-  })
-
-  expect(eventStore.loadEvents.callCount).toEqual(1)
-
-  expect(viewModel.hasOwnProperty('initPromise')).toEqual(false)
-})
-
-// eslint-disable-next-line max-len
 test('View-model init should init view-model with default state with snapshot adapter', async () => {
   const eventHandler = sinon.stub().callsFake(async () => null)
   const aggregateIds = '*'
-  const viewModel = {}
 
   const savedAggregatesVersionsMap = [['root-id', 123]]
   const savedLastTimestamp = 100500
@@ -220,7 +153,6 @@ test('View-model init should init view-model with default state with snapshot ad
   const callArg = {}
 
   const repository = {
-    viewMap: new Map([['KEY', viewModel]]),
     eventTypes: ['EVENT_TYPE_ONE', 'EVENT_TYPE_TWO'],
     deserializeState: sinon.stub().callsFake(() => 'DESERIALIZED_STATE'),
     snapshotAdapter,
@@ -230,7 +162,7 @@ test('View-model init should init view-model with default state with snapshot ad
     eventHandler
   }
 
-  await init(repository, 'KEY', aggregateIds)
+  const viewModel = await init(repository, aggregateIds, 'KEY')
 
   const {
     aggregatesVersionsMap,
@@ -268,36 +200,6 @@ test('View-model init should init view-model with default state with snapshot ad
   })
 
   expect(eventStore.loadEvents.firstCall.args[1]).toEqual(boundHandler)
-
-  expect(viewModel.hasOwnProperty('initPromise')).toEqual(false)
-})
-
-// eslint-disable-next-line max-len
-test('View-model init should use initialized view-model', async () => {
-  const viewModel = {
-    initPromise: Promise.resolve(),
-    handler: sinon.stub()
-  }
-  const eventStore = {
-    loadEvents: sinon.stub().callsFake(() => null)
-  }
-  const repository = {
-    viewMap: new Map([['KEY', viewModel]]),
-    eventTypes: [],
-    deserializeState: sinon.stub(),
-    snapshotAdapter: {
-      loadSnapshot: sinon.stub().callsFake(async () => null)
-    },
-    invariantHash: 'HASH',
-    projection: {},
-    eventStore,
-    eventHandler: sinon.stub()
-  }
-
-  await init(repository, 'KEY', '*', true)
-
-  expect(eventStore.loadEvents.callCount).toEqual(0)
-  expect(repository.snapshotAdapter.loadSnapshot.callCount).toEqual(0)
 
   expect(viewModel.hasOwnProperty('initPromise')).toEqual(false)
 })

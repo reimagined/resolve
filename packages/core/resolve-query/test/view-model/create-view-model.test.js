@@ -3,18 +3,15 @@ import sinon from 'sinon'
 import createViewModel from '../../src/view-model/create-view-model'
 
 describe('View-model creator should create view-model and bind methods', () => {
-  let init, getViewModel, getLastError, read, readAndSerialize, updateByEvents
+  let init, getLastError, read, readAndSerialize, viewModel, callArg
   let dispose, eventHandler, getKey, projection, eventStore, snapshotAdapter
   let invariantHash, serializeState, deserializeState, repository
-  let viewModel, callArg
 
   afterEach(() => {
     init = null
-    getViewModel = null
     getLastError = null
     read = null
     readAndSerialize = null
-    updateByEvents = null
     dispose = null
     eventHandler = null
     getKey = null
@@ -31,11 +28,9 @@ describe('View-model creator should create view-model and bind methods', () => {
   const checkViewModel = async () => {
     viewModel = createViewModel(
       init,
-      getViewModel,
       getLastError,
       read,
       readAndSerialize,
-      updateByEvents,
       dispose,
       eventHandler,
       getKey,
@@ -68,11 +63,6 @@ describe('View-model creator should create view-model and bind methods', () => {
     expect(readAndSerialize.callCount).toEqual(1)
     expect(readAndSerialize.firstCall.args[1]).toEqual(callArg)
 
-    expect(updateByEvents.callCount).toEqual(0)
-    await viewModel.updateByEvents(callArg)
-    expect(updateByEvents.callCount).toEqual(1)
-    expect(updateByEvents.firstCall.args[1]).toEqual(callArg)
-
     expect(dispose.callCount).toEqual(0)
     await viewModel.dispose(callArg)
     expect(dispose.callCount).toEqual(1)
@@ -88,11 +78,9 @@ describe('View-model creator should create view-model and bind methods', () => {
 
   beforeEach(async () => {
     init = sinon.stub()
-    getViewModel = sinon.stub()
     getLastError = sinon.stub()
     read = sinon.stub()
     readAndSerialize = sinon.stub()
-    updateByEvents = sinon.stub()
     dispose = sinon.stub()
     eventHandler = sinon.stub()
     getKey = sinon.stub()
@@ -112,8 +100,8 @@ describe('View-model creator should create view-model and bind methods', () => {
   test('with invariant hash and with snapshot adapter', async () => {
     await checkViewModel()
 
-    const { viewMap, ...restRepository } = repository
-    expect(viewMap).toBeInstanceOf(Map)
+    const { activeWorkers, ...restRepository } = repository
+    expect(activeWorkers).toBeInstanceOf(Map)
 
     expect(restRepository).toEqual({
       eventTypes: ['EVENT_TYPE_ONE', 'EVENT_TYPE_TWO'],
@@ -124,7 +112,6 @@ describe('View-model creator should create view-model and bind methods', () => {
       serializeState,
       deserializeState,
       init,
-      getViewModel,
       eventHandler,
       getKey,
       read
@@ -136,8 +123,8 @@ describe('View-model creator should create view-model and bind methods', () => {
     snapshotAdapter = null
     await checkViewModel()
 
-    const { viewMap, ...restRepository } = repository
-    expect(viewMap).toBeInstanceOf(Map)
+    const { activeWorkers, ...restRepository } = repository
+    expect(activeWorkers).toBeInstanceOf(Map)
 
     expect(restRepository).toEqual({
       eventTypes: ['EVENT_TYPE_ONE', 'EVENT_TYPE_TWO'],
@@ -148,7 +135,6 @@ describe('View-model creator should create view-model and bind methods', () => {
       serializeState,
       deserializeState,
       init,
-      getViewModel,
       eventHandler,
       getKey,
       read

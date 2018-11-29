@@ -29,7 +29,7 @@ const init = async pool => {
       PRIMARY KEY(\`SnapshotKey\`(255))
     )`)
 
-    pool.counter = 0
+    pool.counters = new Map()
   })()
 
   return pool.initPromise
@@ -49,7 +49,7 @@ const loadSnapshot = async (pool, snapshotKey) => {
 
   const content = rows.length > 0 ? rows[0].SnapshotContent.toString() : null
 
-  return content
+  return content != null ? content.SnapshotContent : null
 }
 
 const saveSnapshot = async (pool, snapshotKey, content) => {
@@ -57,9 +57,15 @@ const saveSnapshot = async (pool, snapshotKey, content) => {
   if (pool.disposed) {
     throw new Error('Adapter is disposed')
   }
+  if (!pool.counters.has(snapshotKey)) {
+    pool.counters.set(snapshotKey, 0)
+  }
 
-  if (++pool.counter < pool.bucketSize) return
-  pool.counter = 0
+  if (pool.counters.get(snapshotKey) < pool.bucketSize) {
+    pool.counters.set(snapshotKey, pool.counters.get(snapshotKey) + 1)
+    return
+  }
+  pool.counters.set(snapshotKey, 0)
 
   await pool.connection.execute(
     `INSERT INTO ${escapeId(
@@ -78,6 +84,8 @@ const dispose = async (pool, options) => {
     throw new Error('Adapter is disposed')
   }
   pool.disposed = true
+
+  pool.counters.clear()
 
   if (options && options.dropSnapshots) {
     await pool.connection.execute(`DELETE FROM ${escapeId(pool.tableName)}`)
