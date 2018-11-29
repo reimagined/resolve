@@ -10,7 +10,7 @@ In the Lesson 3, you have implemented a View Model used to obtain information ab
 
 Although it is possible to use a View Model for obtaining available shopping lists, there is a strong reason not to do so.
 
-Consider a situation, in which your application has been running in a production environment for a long time and a large number of shopping lists has been created. If you used a View Model to answer queries, a resulting data sample would be generated on the fly for every requests using events from the beginning of the history. Note that it is not a problem when you use a View Model to obtain a single list's items as the item count is always considerably small.
+Consider a situation, in which your application has been running in a production environment for a long time and a large number of shopping lists has been created. If you used a View Model to answer queries, a resulting data sample would be generated on the fly for every requests using events from the beginning of the history, which will result in a huge performance overhead on _each request_. Note that it is not a problem when you use a View Model to obtain a single list's items as the item count is always considerably small.
 
 To overcome this issue, implement a ShoppingLists Read Model. This Read Model will gradually accumulate its state based on incoming events and store this state in the Read Model Storage. This part of the functionality is implemented by the Red Model **projection**:
 
@@ -110,6 +110,159 @@ $ curl -X POST \
 
 ### Implement Client UI
 
-### Enable Data Editing
+Now you can implement the UI to display all available shopping list an provide and create new shopping lists.
+
+```jsx
+class MyLists extends React.PureComponent {
+  render() {
+    const { lists, createShoppingList } = this.props
+    return (
+      <div style={{ maxWidth: '500px', margin: 'auto' }}>
+        <ShoppingLists lists={lists} />
+        <ShoppingListCreator
+          lists={lists}
+          createShoppingList={createShoppingList}
+        />
+      </div>
+    )
+  }
+}
+```
+
+See the shoppingLists and shoppingListsCreator files to see the details of these components' implementation.
+
+The implemented container component is bound to the ShoppingLists Read Model as shown below:
+
+```jsx
+export const mapStateToOptions = () => ({
+  readModelName: 'ShoppingLists',
+  resolverName: 'all',
+  resolverArgs: {}
+})
+
+export const mapStateToProps = (state, ownProps) => ({
+  lists: ownProps.data
+})
+
+export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+  bindActionCreators(aggregateActions, dispatch)
+
+export default connectReadModel(mapStateToOptions)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(MyLists)
+)
+```
+
+For now, binding a component to a reSolve Read Model looks similar to how you bound the ShoppingList component to a View Model in the Lesson 4. Run, your application and try adding a new shopping list using the implemented UI.
+
+You should have noticed that although you application correctly sends commands to the backend, the client UI does not reflect the change in the application state. A newly created shopping list only appears after you refresh the page. This is an expected behavior because Read Models are not reactive by default. This means that components connected to Read Models do not synchronize their Redux state with the Read Model state on the server.
+
+You can overcome this limitation by introducing optimistic UI updates as the next section describes.
 
 ### Support Optimistic UI Updates
+
+With the optimistic UI updating approach, a component applies model changes to the client Redux state before sending them to the server using an aggregate command. Follow the steps below to provide such functionality.
+
+First, define Redux actions that will perform updates:
+
+<!-- prettier-ignore-start -->
+[embedmd]:# (..\..\examples\shopping-list-tutorial\lesson-6\client\actions\optimistic_actions.js /^/ /\n$/)
+```js
+export const OPTIMISTIC_CREATE_SHOPPING_LIST = 'OPTIMISTIC_CREATE_SHOPPING_LIST'
+export const OPTIMISTIC_SYNC = 'OPTIMISTIC_SYNC'
+```
+<!-- prettier-ignore-end -->
+
+Implement an optimistic reducer function that responds to these commands to update the corresponding slice of the Redux state:
+
+<!-- prettier-ignore-start -->
+[embedmd]:# (..\..\examples\shopping-list-tutorial\lesson-6\client\reducers\optimistic_shopping_lists.js /^/ /\n$/)
+```js
+import { LOCATION_CHANGE } from 'react-router-redux'
+import {
+  OPTIMISTIC_CREATE_SHOPPING_LIST,
+  OPTIMISTIC_SYNC
+} from '../actions/optimistic_actions'
+
+const optimistic_shopping_lists = (state = [], action) => {
+  switch (action.type) {
+    case LOCATION_CHANGE: {
+      return []
+    }
+    case OPTIMISTIC_CREATE_SHOPPING_LIST: {
+      return [
+        ...state,
+        {
+          id: action.payload.id,
+          name: action.payload.name
+        }
+      ]
+    }
+    case OPTIMISTIC_SYNC: {
+      return action.payload.originalLists
+    }
+    default: {
+      return state
+    }
+  }
+}
+
+export default optimistic_shopping_lists
+```
+
+<!-- prettier-ignore-end -->
+
+Provide a middleware that intercepts the service actions used for communication between between Redux and reSolve:
+
+<!-- prettier-ignore-start -->
+[embedmd]:# (..\..\examples\shopping-list-tutorial\lesson-6\client\middlewares\optimistic_shopping_lists_middleware.js /^/ /\n$/)
+```js
+import { actionTypes } from 'resolve-redux'
+
+import {
+  OPTIMISTIC_CREATE_SHOPPING_LIST,
+  OPTIMISTIC_SYNC
+} from '../actions/optimistic_actions'
+
+const { SEND_COMMAND_SUCCESS, LOAD_READMODEL_STATE_SUCCESS } = actionTypes
+
+const optimistic_shopping_lists_middleware = store => next => action => {
+  if (
+    action.type === SEND_COMMAND_SUCCESS &&
+    action.commandType === 'createShoppingList'
+  ) {
+    store.dispatch({
+      type: OPTIMISTIC_CREATE_SHOPPING_LIST,
+      payload: {
+        id: action.aggregateId,
+        name: action.payload.name
+      }
+    })
+  }
+  if (action.type === LOAD_READMODEL_STATE_SUCCESS) {
+    store.dispatch({
+      type: OPTIMISTIC_SYNC,
+      payload: {
+        originalLists: action.result
+      }
+    })
+  }
+
+  next(action)
+}
+
+export default optimistic_shopping_lists_middleware
+```
+<!-- prettier-ignore-end -->
+
+Modify the **mapStateToProps** function implementation for the MyLists component so that component props a bound to the implemented slice of the Redux state:
+
+```jsx
+export const mapStateToProps = (state, ownProps) => ({
+  lists: state.optimisticShoppingLists || []
+})
+```
+
+Now, if you run your application and create a new shopping list, the created shopping list will be displayed automatically.
