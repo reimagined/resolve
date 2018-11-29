@@ -1,5 +1,3 @@
-import sinon from 'sinon'
-
 import read from '../../src/view-model/read'
 
 test('View-model read should fail on wrong aggregates ids', async () => {
