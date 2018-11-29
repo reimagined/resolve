@@ -31,11 +31,13 @@ const createUserModule = strategies => {
       })
     }
 
-    apiHandlers.push({
-      method: logoutRoute.method,
-      path: logoutRoute.path,
-      controller: 'resolve-module-auth/lib/logout_api_handler'
-    })
+    if (logoutRoute) {
+      apiHandlers.push({
+        method: logoutRoute.method,
+        path: logoutRoute.path,
+        controller: 'resolve-module-auth/lib/logout_api_handler'
+      })
+    }
   }
 
   return {

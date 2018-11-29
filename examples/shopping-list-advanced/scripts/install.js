@@ -2,7 +2,6 @@ const fs = require('fs')
 const path = require('path')
 const http = require('http')
 const { spawn } = require('child_process')
-const { babelify } = require('./babel.compile')
 
 const spawnAsync = (command, args, options) =>
   new Promise((resolve, reject) => {
@@ -53,6 +52,7 @@ const main = async () => {
   await spawnAsync('yarn', ['install'], { cwd: __dirname, stdio: 'inherit' })
 
   // 1. Babelify
+  const { babelify } = require('./babel.compile')
   await babelify()
 
   // 2. Start static server
