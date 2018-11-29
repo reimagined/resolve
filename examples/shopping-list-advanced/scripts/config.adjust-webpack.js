@@ -16,7 +16,7 @@ const adjustWebpackConfigs = async (
     ]
   }
 
-  const [webpackWebConfig] = webpackConfigs
+  const [webpackWebConfig, webpackServerConfig] = webpackConfigs
 
   const webpackNativeConfig = {
     ...webpackWebConfig,
@@ -35,7 +35,8 @@ const adjustWebpackConfigs = async (
     output: {
       path: path.resolve(__dirname, '../native'),
       libraryTarget: 'commonjs-module'
-    }
+    },
+    externals: webpackServerConfig.externals.slice(1)
   }
 
   webpackConfigs.push(webpackNativeConfig)

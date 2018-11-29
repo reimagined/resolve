@@ -32,25 +32,37 @@ export default ({ resolveConfig, isClient }) => {
     }
     constants.push(`const name_${index} = ${JSON.stringify(saga.name)}`)
 
-    importResource({
-      resourceName: `eventHandlers_${index}`,
-      resourceValue: saga.eventHandlers,
-      runtimeMode: RUNTIME_ENV_ANYWHERE,
-      importMode: RESOURCE_ANY,
-      instanceMode: IMPORT_INSTANCE,
-      imports,
-      constants
-    })
+    if (saga.eventHandlers == null && saga.cronHandlers == null) {
+      throw new Error(`${message.configNotContainSectionError}.sagas`)
+    }
 
-    importResource({
-      resourceName: `cronHandlers_${index}`,
-      resourceValue: saga.cronHandlers,
-      runtimeMode: RUNTIME_ENV_ANYWHERE,
-      importMode: RESOURCE_ANY,
-      instanceMode: IMPORT_INSTANCE,
-      imports,
-      constants
-    })
+    if (saga.eventHandlers != null) {
+      importResource({
+        resourceName: `eventHandlers_${index}`,
+        resourceValue: saga.eventHandlers,
+        runtimeMode: RUNTIME_ENV_ANYWHERE,
+        importMode: RESOURCE_ANY,
+        instanceMode: IMPORT_INSTANCE,
+        imports,
+        constants
+      })
+    } else {
+      constants.push(`const eventHandlers_${index} = {}`)
+    }
+
+    if (saga.cronHandlers != null) {
+      importResource({
+        resourceName: `cronHandlers_${index}`,
+        resourceValue: saga.cronHandlers,
+        runtimeMode: RUNTIME_ENV_ANYWHERE,
+        importMode: RESOURCE_ANY,
+        instanceMode: IMPORT_INSTANCE,
+        imports,
+        constants
+      })
+    } else {
+      constants.push(`const cronHandlers_${index} = {}`)
+    }
 
     exports.push(`sagas.push({`, `  name: name_${index}`)
     exports.push(`, cronHandlers: cronHandlers_${index}`)
