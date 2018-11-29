@@ -17,7 +17,7 @@
     "redux": "4.0.1",
     "resolve-redux": "0.18.2",
     "uuid": "3.3.2",
-    "redux-devtools-extension": "2.13.6"
+    "redux-devtools-extension": "2.13.7"
   },
   "devDependencies": {
     "regenerator-runtime": "0.13.1",

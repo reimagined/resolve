@@ -33,7 +33,7 @@
     "resolve-subscribe-mqtt": "0.18.2",
     "resolve-subscribe-socket.io": "0.18.2",
     "react-router-redux": "5.0.0-alpha.9",
-    "redux-devtools-extension": "2.13.5",
+    "redux-devtools-extension": "2.13.7",
     "uuid": "3.3.2"
   },
   "devDependencies": {
