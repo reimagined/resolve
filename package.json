@@ -65,9 +65,9 @@
     "lint": "eslint .",
     "prepare": "node ./babel.compile.js --run",
     "prettier": "prettier --write \"**/**.{js,json}\"",
-    "publish": "oao publish -i \"examples/*\" --no-git-commit --no-changelog",
-    "test": "oao all \"yarn test --color 2>&1\"",
-    "test:functional": "oao run-script test:functional",
-    "test:clean-snapshots": "npx oao all \"yarn test -u --color 2>&1\""
+    "publish": "npx oao publish -i \"examples/*\" --no-git-commit --no-changelog",
+    "test": "npx oao all -i \"examples/shopping-list-advanced\" \"yarn test --color 2>&1\"",
+    "test:functional": "npx oao run-script -i \"examples/shopping-list-advanced\" test:functional",
+    "test:clean-snapshots": "npx oao all -i \"examples/shopping-list-advanced\"  \"yarn test -u --color 2>&1\""
   }
 }

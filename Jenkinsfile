@@ -12,9 +12,6 @@ pipeline {
                     sh """
                         export YARN_CACHE_FOLDER=/yarn_cache
                         yarn
-                        cd examples/shopping-list-advanced
-                        yarn
-                        cd ../..
                     """
                 }
             }
@@ -152,7 +149,9 @@ pipeline {
                         mkdir shopping-list-advanced && cd shopping-list-advanced;
                         yarn create resolve-app shopping-list-advanced -e shopping-list-advanced -c \$(cat /last_commit)
                         cd ./shopping-list-advanced
+                        yarn
                         cat ./package.json
+                        yarn test
                         yarn test:functional path:/chromium
                     """
                 }

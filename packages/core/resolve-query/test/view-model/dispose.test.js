@@ -2,52 +2,45 @@ import sinon from 'sinon'
 
 import dispose from '../../src/view-model/dispose'
 
-test('View-model dispose should dispose existing by aggregateIds', async () => {
-  const viewModel = {}
-  const repository = {
-    viewMap: new Map([['KEY', viewModel]]),
-    getKey: sinon.stub().callsFake(() => 'KEY')
+test('View-model dispose should throw on bad options', async () => {
+  try {
+    await dispose({}, 123)
+    return Promise.reject('Test failed')
+  } catch (error) {
+    expect(error).toBeInstanceOf(Error)
+    expect(error.message).toEqual(
+      'Dispose options should be object or not be passed to use default behaviour'
+    )
   }
-
-  await dispose(repository, { aggregateIds: ['FOR-KEY'] })
-
-  expect(repository.getKey.callCount).toEqual(1)
-  expect(repository.getKey.firstCall.args[0]).toEqual(['FOR-KEY'])
-
-  expect(repository.viewMap.has('KEY')).toEqual(false)
-
-  expect(viewModel.disposed).toEqual(true)
 })
 
-test('View-model dispose should work on non-existing aggregateIds', async () => {
-  const repository = {
-    viewMap: new Map(),
-    getKey: sinon.stub().callsFake(() => 'KEY')
-  }
+test('View-model dispose should provide dispose promise if disposing', async () => {
+  const disposePromise = Promise.resolve()
+  const result = dispose({ disposePromise })
 
-  await dispose(repository, { aggregateIds: ['FOR-KEY'] })
-
-  expect(repository.getKey.callCount).toEqual(1)
-  expect(repository.getKey.firstCall.args[0]).toEqual(['FOR-KEY'])
-
-  expect(repository.viewMap.has('KEY')).toEqual(false)
+  expect(result).toEqual(disposePromise)
 })
 
-test('View-model dispose should dispose wildcard', async () => {
-  const viewModelOne = {}
-  const viewModelTwo = {}
+test('View-model dispose should dispose view-model', async () => {
+  const oneViewModelInstance = {}
+  const twoViewModelInstance = {}
+
   const repository = {
-    viewMap: new Map([['KEY_ONE', viewModelOne], ['KEY_TWO', viewModelTwo]]),
-    getKey: sinon.stub().callsFake()
+    activeWorkers: new Map([
+      ['one', oneViewModelInstance],
+      ['two', twoViewModelInstance]
+    ]),
+    snapshotAdapter: {
+      dispose: sinon.stub().callsFake(async () => null)
+    }
   }
 
-  await dispose(repository)
+  const options = {}
+  await dispose(repository, options)
 
-  expect(repository.getKey.callCount).toEqual(0)
+  expect(repository.snapshotAdapter.dispose.callCount).toEqual(1)
+  expect(repository.snapshotAdapter.dispose.firstCall.args[0]).toEqual(options)
 
-  expect(repository.viewMap.has('KEY_ONE')).toEqual(false)
-  expect(repository.viewMap.has('KEY_TWO')).toEqual(false)
-
-  expect(viewModelOne.disposed).toEqual(true)
-  expect(viewModelTwo.disposed).toEqual(true)
+  expect(oneViewModelInstance.disposed).toEqual(true)
+  expect(twoViewModelInstance.disposed).toEqual(true)
 })
