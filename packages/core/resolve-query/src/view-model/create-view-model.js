@@ -44,6 +44,7 @@ const createViewModel = (
   return Object.freeze({
     read: read.bind(null, repository),
     readAndSerialize: readAndSerialize.bind(null, repository),
+    // eslint-disable-next-line no-new-func
     updateByEvents: Function('return Promise.resolve()'),
     getLastError: getLastError.bind(null, repository),
     dispose: dispose.bind(null, repository),

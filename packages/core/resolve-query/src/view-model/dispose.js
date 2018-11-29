@@ -8,7 +8,7 @@ const dispose = async (repository, options = {}) => {
   if (repository.disposePromise != null) {
     return await repository.disposePromise
   }
-  for (const [key, viewModel] of repository.activeWorkers.entries()) {
+  for (const viewModel of repository.activeWorkers.values()) {
     viewModel.disposed = true
   }
 

@@ -25,6 +25,7 @@ module.exports = {
     'no-param-reassign': ['error', { props: false }],
     'new-cap': ['error', { capIsNew: false }],
     'no-lone-block': 'off',
+    'no-lone-blocks': 'off',
     'no-mixed-operators': [
       'error',
       {
