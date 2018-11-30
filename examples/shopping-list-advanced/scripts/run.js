@@ -152,8 +152,10 @@ void (async () => {
       throw new Error('Unknown option')
     }
   }
-})().catch(error => {
-  // eslint-disable-next-line no-console
-  console.log(error)
-  process.exit(1)
-})
+})()
+  .then(() => process.exit(0))
+  .catch(error => {
+    // eslint-disable-next-line no-console
+    console.log(error)
+    process.exit(1)
+  })

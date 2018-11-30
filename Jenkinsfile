@@ -103,6 +103,26 @@ pipeline {
             }
         }
 
+        stage('Create-resolve-app [ shopping-list-advanced ] Functional Tests') {
+            when {
+                expression { CHANGE_TARGET == 'master' }
+            }
+            steps {
+                script {
+                    sh """
+                        export YARN_CACHE_FOLDER=/yarn_cache
+                        mkdir shopping-list-advanced && cd shopping-list-advanced;
+                        yarn create resolve-app shopping-list-advanced -e shopping-list-advanced -c \$(cat /last_commit)
+                        cd ./shopping-list-advanced
+                        yarn
+                        cat ./package.json
+                        yarn test
+                        yarn test:functional path:/chromium
+                    """
+                }
+            }
+        }
+
         stage('Create-resolve-app [ hello-world ] Functional Tests') {
             when {
                 expression { CHANGE_TARGET == 'master' }
@@ -132,26 +152,6 @@ pipeline {
                         yarn create resolve-app shopping-list -e shopping-list -c \$(cat /last_commit)
                         cd ./shopping-list
                         cat ./package.json
-                        yarn test:functional path:/chromium
-                    """
-                }
-            }
-        }
-
-        stage('Create-resolve-app [ shopping-list-advanced ] Functional Tests') {
-            when {
-                expression { CHANGE_TARGET == 'master' }
-            }
-            steps {
-                script {
-                    sh """
-                        export YARN_CACHE_FOLDER=/yarn_cache
-                        mkdir shopping-list-advanced && cd shopping-list-advanced;
-                        yarn create resolve-app shopping-list-advanced -e shopping-list-advanced -c \$(cat /last_commit)
-                        cd ./shopping-list-advanced
-                        yarn
-                        cat ./package.json
-                        yarn test
                         yarn test:functional path:/chromium
                     """
                 }
