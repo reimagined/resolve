@@ -15,9 +15,7 @@ In this lesson, you will enhance your application's functionality with the capab
 
 ### Implement a Shopping Lists Read Model
 
-In the Lesson 3, you have implemented a View Model used to obtain information about shopping lists with the specified aggregate ID's.
-
-Although it is possible to use a View Model for obtaining available shopping lists, there is a strong reason not to do so.
+In the Lesson 3, you have implemented a View Model used to obtain information about shopping lists with the specified aggregate ID's. Although it is possible to use the same approach for obtaining the list of all available shopping lists, there is a strong reason not to do so.
 
 Consider a situation, in which your application has been running in a production environment for a long time and a large number of shopping lists has been created. If you used a View Model to answer queries, a resulting data sample would be generated on the fly for every requests using events from the beginning of the history, which will result in a huge performance overhead on _each request_. Note that it is not a problem when you use a View Model to obtain a single list's items as the item count is always considerably small.
 
