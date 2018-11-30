@@ -1,6 +1,6 @@
 # Setting up Authentication
 
-ReSolve comes with a built-in authentication **module** (resolve-module-auth) that you can use to enable authentication in your application. The authentication module relies on the [Passport.js](http://www.passportjs.org/) library's functionality.
+ReSolve comes with a built-in authentication **[module](./advanced-techniques.md#modules)** ([resolve-module-auth](../packages/modules/resolve-module-auth)) that you can use to enable authentication in your application. The authentication module relies on the [Passport.js](http://www.passportjs.org/) library's functionality.
 
 Create and configure the module in the application's **run.js** script:
 

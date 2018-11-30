@@ -189,8 +189,44 @@ To learn more about a particular adapter type, refer to the documentation for th
 
 # Modules
 
-In reSolve, a module encapsulates a piece of functionality that can be included by an application. A module can encapsulate any structural parts of a reSolve application in any combination. A module can contain client code, read-side and write-side code, sagas and HTTP queries.
+In reSolve, a module encapsulates a piece of functionality that can be included by an application. A module can encapsulate any structural parts of a reSolve application in any combination.
 
-The module code is treated the same as the application's code. The resulting bundles include the module code and configurations as if they were always a part of the application.
+Physically, a module is a standalone configuration object that can reference client code, read-side and write-side code, sagas and HTTP queries. To include a module into your application, you need to initialize this object with any required additional settings and merge it into your applications centralized config:
 
-For an example on using modules, see the Hacker News sample application. This application makes use of the authentication-module as well as the comments-module provided with reSolve.
+```js
+...
+const moduleAuth = resolveModuleAuth([
+  {
+    name: 'local-strategy',
+    createStrategy: 'auth/create_strategy.js',
+    routes: [
+      {
+        path: 'register',
+        method: 'POST',
+        callback: 'auth/route_register_callback.js'
+      },
+      {
+        path: 'login',
+        method: 'POST',
+        callback: 'auth/route_login_callback.js'
+      },
+      {
+        path: 'logout',
+        method: 'POST',
+        callback: 'auth/route_logout_callback.js'
+      }
+    ]
+  }
+])
+
+const baseConfig = merge(
+  defaultResolveConfig,
+  appConfig,
+  moduleAuth,
+  ...
+)
+```
+
+After having been merged, the module's code is treated the same as the application's code. The resulting application's bundles include the module code and configurations as if they were always a part of the application.
+
+For an example on using modules, see the [Hacker News](../examples/hacker-news) sample application. This application makes use of the [authentication module](../packages/modules/resolve-module-auth) as well as the [comments module](../packages/modules/resolve-module-comments) provided with reSolve.
