@@ -1,8 +1,17 @@
 # Lesson 6 - Frontend - Support Multiple Shopping Lists
 
-In the previous two lessons you have been implementing the client-side UI for viewing and editing items in a shopping list. However, you may have noticed that your application's functionality is incomplete: it is possible use HTTP API to create multiple shopping lists, but the client UI only allows viewing and editing only one specific list.
+In the previous two lessons, you have been implementing the client-side UI for viewing and editing items in a shopping list. However, you may have noticed that your application's functionality is incomplete: it is possible use HTTP API to create multiple shopping lists, but the client UI only allows viewing and editing only one specific list, namely **shopping-list-1**:
 
-In this lesson, you will enhance your application's functionality with the capability to create multiple shopping lists and navigate between them using the client UI.
+```jsx
+export const mapStateToOptions = (state, ownProps) => {
+  return {
+    viewModelName: 'ShoppingList',
+    aggregateIds: ['shopping-list-1']
+  }
+}
+```
+
+In this lesson, you will enhance your application's functionality with the capability to create multiple shopping lists, navigate between these lists and add items to them using the client UI.
 
 ### Implement a Shopping Lists Read Model
 
