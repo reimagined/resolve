@@ -5,7 +5,6 @@ import respawn from 'respawn'
 import fsExtra from 'fs-extra'
 import webpack from 'webpack'
 
-import spawnAsync from './spawn_async'
 import getWebpackConfigs from './get_webpack_configs'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
 import getPeerDependencies from './get_peer_dependencies'
@@ -93,30 +92,29 @@ const runTestcafe = async ({
     browser == null ? Object.keys(await getInstallations())[0] : browser
   const targetTimeout = timeout == null ? 20000 : timeout
 
+  let status = 0
   try {
-    await spawnAsync(
-      'npx',
+    execSync(
       [
-        'testcafe',
-        targetBrowser,
-        functionalTestsDir,
-        '--app-init-delay',
-        targetTimeout,
-        '--selector-timeout',
-        targetTimeout,
-        '--assertion-timeout',
-        targetTimeout,
-        '--page-load-timeout',
-        targetTimeout,
-        ...(targetBrowser === 'remote' ? ['--qr-code'] : []),
+        `npx testcafe ${targetBrowser}`,
+        `${functionalTestsDir}`,
+        `--app-init-delay ${targetTimeout}`,
+        `--selector-timeout ${targetTimeout}`,
+        `--assertion-timeout ${targetTimeout}`,
+        `--page-load-timeout ${targetTimeout}`,
+        targetBrowser === 'remote' ? ' --qr-code' : '',
         ...customArgs
-      ],
-      { stdio: 'inherit', cwd: process.cwd() }
+      ].join(' '),
+      { stdio: 'inherit' }
     )
-    await new Promise(resolve => setTimeout(resolve, 10000))
   } catch (error) {
-    await new Promise(resolve => setTimeout(resolve, 10000))
-    throw error
+    status = 1
+    // eslint-disable-next-line no-console
+    console.error(error.message)
+  } finally {
+    server.stop(() => {
+      process.exit(status)
+    })
   }
 }
 
