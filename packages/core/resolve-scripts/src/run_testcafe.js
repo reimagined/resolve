@@ -4,6 +4,7 @@ import path from 'path'
 import respawn from 'respawn'
 import fsExtra from 'fs-extra'
 import webpack from 'webpack'
+import { execSync } from 'child_process'
 
 import getWebpackConfigs from './get_webpack_configs'
 import writePackageJsonsForAssemblies from './write_package_jsons_for_assemblies'
