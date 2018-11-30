@@ -1,5 +1,6 @@
 # Splitting Code Into Chunks
-ReSolve uses **webpack** to transpile and bundle the application code so it can be run by client browsers, the server and serverless platforms. 
+
+ReSolve uses **webpack** to transpile and bundle the application code so it can be run by client browsers, the server and serverless platforms.
 
 ReSolve takes advantage of webpack's code splitting functionality to split the bundles into chunks. Depending on its purpose, every chunk can be server-only (for business logic), browser-only (for UI and client logic) or isomorphic (for view-models on the server side and Redux reducers on the client).
 
@@ -18,33 +19,34 @@ In a cloud/serverless environment, chunks like read-model projection & resolvers
 
 When running locally, `resolve-scripts` requires all necessary chunks and combines them with the runtime code.
 
-
-
 # Running Serverless
 
 Coming soon. A reSolve app is serverless-ready and can be deployed into AWS with a single command.
-
 
 # Server-Side Rendering
 
 ReSolve provides the Server-Side rendering (SSR) functionality for React code out of the box. This means that reSolve application pages are always pre-rendered before being passed to the client browser. Note that server-side rendering is currently performed only for static content, without pre-fetching data.
 
-
 #### Managing routes
+
 ReSolve uses [react-router](https://github.com/ReactTraining/react-router) for routing. The [react-router-config](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config) library is also used to provide a centralized route config that can be used both on the server and client sides. You can define routes as shown below:
 
 ```js
 const routes = [
-  { component: Root,
+  {
+    component: Root,
     routes: [
-      { path: '/',
+      {
+        path: '/',
         exact: true,
         component: Home
       },
-      { path: '/child/:id',
+      {
+        path: '/child/:id',
         component: Child,
         routes: [
-          { path: '/child/:id/grand-child',
+          {
+            path: '/child/:id/grand-child',
             component: GrandChild
           }
         ]
@@ -53,43 +55,42 @@ const routes = [
   }
 ]
 ```
+
 Here, each route is specified by an object whose fields correspond to the [\<Route\>](https://reacttraining.com/react-router/web/api/Route) component's props.
 
 To register routes within a reSolve app, specify the path to the file containing routs definition in the **routes** config section:
 
-``` js
+```js
 routes: 'client/routes.js'
 ```
 
 After this, app routing is configured for server-side rendering. On the client, routing is also performed as expected: when you render a [\<Redirect\>](https://reacttraining.com/react-router/web/api/Redirect), the browser switches to the new location, and this location is appended to the browser's history stack.
 
-
-
 #### Providing the document head
+
 The code below utilizes the [React Helmet](https://github.com/nfl/react-helmet#reference-guide) library to specify the document's **head** section:
 
 ```js
-import React from "react";
-import { Helmet } from "react-helmet";
+import React from 'react'
+import { Helmet } from 'react-helmet'
 
 class Application extends React.Component {
-  render () {
+  render() {
     return (
-        <div className="application">
-            <Helmet>
-                <meta charSet="utf-8" />
-                <title>My Title</title>
-                <link rel="canonical" href="http://mysite.com/example" />
-            </Helmet>
-            ...
-        </div>
-    );
+      <div className="application">
+        <Helmet>
+          <meta charSet="utf-8" />
+          <title>My Title</title>
+          <link rel="canonical" href="http://mysite.com/example" />
+        </Helmet>
+        ...
+      </div>
+    )
   }
-};
+}
 ```
+
 This way, the document head is specified in an isomorphic format so it can be rendered on the server and dynamically modified on the client. Use this approach to make your reSolve applications SEO-friendly.
-
-
 
 # Process Managers (Sagas)
 
@@ -185,3 +186,11 @@ Resolve comes with a set of adapters covering popular DBMS choices. You can also
 Note that reSolve does not force you to use adapters. For example, you may need to implement a Read Model on top of some arbitrary system, such as a full-text-search engine, OLAP or a particular SQL database. In such case, you can just work with that system in the code of the projection function and query resolver, without writing a new Read Model adapter.
 
 To learn more about a particular adapter type, refer to the documentation for the reSolve **[adapters](https://github.com/reimagined/resolve/tree/master/packages/adapters)** package.
+
+# Modules
+
+In reSolve, a module encapsulates a piece of functionality that can be included by an application. A module can encapsulate any structural parts of a reSolve application in any combination. A module can contain client code, read-side and write-side code, sagas and HTTP queries.
+
+The module code is treated the same as the application's code. The resulting bundles include the module code and configurations as if they were always a part of the application.
+
+For an example on using modules, see the Hacker News sample application. This application makes use of the authentication-module as well as the comments-module provided with reSolve.
