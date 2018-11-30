@@ -49,7 +49,7 @@ const loadSnapshot = async (pool, snapshotKey) => {
 
   const content = rows.length > 0 ? rows[0].SnapshotContent.toString() : null
 
-  return content != null ? content.SnapshotContent : null
+  return content != null ? JSON.parse(content) : null
 }
 
 const saveSnapshot = async (pool, snapshotKey, content) => {
@@ -67,6 +67,8 @@ const saveSnapshot = async (pool, snapshotKey, content) => {
   }
   pool.counters.set(snapshotKey, 0)
 
+  const stringContent = JSON.stringify(content)
+
   await pool.connection.execute(
     `INSERT INTO ${escapeId(
       pool.tableName
@@ -74,7 +76,7 @@ const saveSnapshot = async (pool, snapshotKey, content) => {
     VALUES(?, ?)
     ON DUPLICATE KEY UPDATE
     \`SnapshotContent\` = ?`,
-    [snapshotKey, content, content]
+    [snapshotKey, stringContent, stringContent]
   )
 }
 
