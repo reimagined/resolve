@@ -7,7 +7,7 @@ const writePackageJsonsForAssemblies = (
   peerDependencies
 ) => {
   const applicationPackageJson = JSON.parse(
-    fs.readFileSync(path.join(process.cwd(), 'package.json'))
+    fs.readFileSync(path.resolve(process.cwd(), 'package.json'))
   )
 
   const resolveScriptsPackageJson = JSON.parse(

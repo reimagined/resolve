@@ -15,7 +15,7 @@ const createQuery = (
     timestampConditionExpression
   }
 ) => {
-  return aggregateIds.length === 1
+  return aggregateIds != null && aggregateIds.length === 1
     ? {
         TableName: tableName,
         KeyConditionExpression: expressionString(

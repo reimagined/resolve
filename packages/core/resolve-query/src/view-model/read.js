@@ -8,17 +8,22 @@ const read = async (repository, { aggregateIds } = {}) => {
     )
   }
 
-  const getViewModel = repository.getViewModel.bind(
-    null,
-    repository,
-    aggregateIds
-  )
+  const key = repository.getKey(aggregateIds)
+  if (!repository.activeWorkers.has(key)) {
+    repository.activeWorkers.set(
+      key,
+      repository.init(repository, aggregateIds, key)
+    )
+  }
 
   try {
-    const viewModel = getViewModel(true)
-    await viewModel.initPromise
+    const viewModel = await repository.activeWorkers.get(key)
+    repository.activeWorkers.delete(key)
+
     return viewModel.state
   } catch (error) {
+    repository.activeWorkers.delete(key)
+
     return null
   }
 }

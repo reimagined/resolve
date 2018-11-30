@@ -47,10 +47,10 @@ When you are ready to share your project with others (for example, by deploying 
     📁 domain
         📁 auth
             📄 index.js
-            📄 jwt_secret.js
+            📄 jwt-secret.js
         📁 aggregates
-            📄 shopping_list.commands.js
-            📄 shopping_list.projection.js
+            📄 shopping-list.commands.js
+            📄 shopping-list.projection.js
             📄 user.commands.js
             📄 user.projection.js
             📄 validation.js
@@ -58,8 +58,8 @@ When you are ready to share your project with others (for example, by deploying 
             📄 default.projection.js
             📄 default.resolvers.js
         📁 view-models
-            📄 shopping_list.projection.js
-        📄 event_types.js
+            📄 shopping-list.projection.js
+        📄 event-types.js
         📄 package.json
     📁 web
         📁 components
@@ -70,13 +70,13 @@ When you are ready to share your project with others (for example, by deploying 
                 📄 index.js
             📁 reducers
                 📄 index.js
-                📄 optimistic_sharings.js
-                📄 optimistic_shopping_lists.js
+                📄 optimistic-sharings.js
+                📄 optimistic-shopping-lists.js
             📁 middlewares
                 📄 index.js
-                📄 optimistic_sharings_middleware.js
-                📄 optimistic_shopping_lists_middleware.js
-            📄 action_types.js
+                📄 optimistic-sharings-middleware.js
+                📄 optimistic-shopping-lists-middleware.js
+            📄 action-types.js
         📁 static
         📁 test
         📄 routes.js
@@ -88,20 +88,20 @@ When you are ready to share your project with others (for example, by deploying 
             📄 App.js
         📁 redux
             📁 actions
-                📄 aggregate_actions.js
-                📄 refresh_actions.js
+                📄 aggregate-actions.js
+                📄 refresh-actions.js
             📁 store
                 📄 index.js
             📁 reducers
                 📄 index.js
-                📄 optimistic_sharings.js
-                📄 optimistic_shopping_lists.js
+                📄 optimistic-sharings.js
+                📄 optimistic-shopping-lists.js
                 📄 refresh.js
             📁 middlewares
                 📄 index.js
-                📄 optimistic_sharings_middleware.js
-                📄 optimistic_shopping_lists_middleware.js
-            📄 action_types.js
+                📄 optimistic-sharings-middleware.js
+                📄 optimistic-shopping-lists-middleware.js
+            📄 action-types.js
         📁 test
         📄 config.js
         📄 app.json
@@ -124,7 +124,7 @@ When you are ready to share your project with others (for example, by deploying 
     📄 config.app.js	
     📄 config.dev.js
     📄 config.prod.js
-    📄 config.test_functional.js
+    📄 config.test-functional.js
     📄 index.js
     📄 README.md
     📄 .gitignore

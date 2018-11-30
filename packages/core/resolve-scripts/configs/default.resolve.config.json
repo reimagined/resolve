@@ -1,5 +1,5 @@
 {
-  "target": "local",
+  "logLevel": "warn",
   "port": 3000,
   "polyfills": [],
   "rootPath": "",

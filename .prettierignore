@@ -2,4 +2,5 @@ packages/**/es
 packages/**/lib
 packages/**/dist
 examples/**/dist
+examples/**/lib
 examples/shopping-list-advanced/native/resolve/

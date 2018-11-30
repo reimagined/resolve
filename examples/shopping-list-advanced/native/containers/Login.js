@@ -15,9 +15,9 @@ import { StyleSheet } from 'react-native'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
-import { actions } from '../resolve/resolve-redux'
-import requiredNoAuth from '../decorators/required_no_auth'
-import Logo from '../components/Logo'
+import { actions } from 'resolve-redux'
+import requiredNoAuth from '../decorators/required-no-auth'
+import { Logo } from '@shopping-list-advanced/ui'
 
 const styles = StyleSheet.create({
   contentContainer: {
@@ -53,14 +53,16 @@ export class Login extends React.PureComponent {
   onLogin = () => {
     this.props.authRequest('/api/auth/local/login', {
       username: this.state.username,
-      password: this.state.password
+      password: this.state.password,
+      noredirect: true
     })
   }
 
   onRegister = () => {
     this.props.authRequest('/api/auth/local/register', {
       username: this.state.username,
-      password: this.state.password
+      password: this.state.password,
+      noredirect: true
     })
   }
 

@@ -2,7 +2,7 @@
   "expo": {
     "name": "Shopping List",
     "slug": "react-native-shopping-list__native",
-    "sdkVersion": "29.0.0",
+    "sdkVersion": "31.0.0",
     "android": {
       "package": "com.resolve.react_native_shopping_list"
     },

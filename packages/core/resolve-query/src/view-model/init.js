@@ -1,6 +1,5 @@
-const init = async (repository, key, inputAggregateIds, skipEventReading) => {
+const init = async (repository, inputAggregateIds, key) => {
   const {
-    viewMap,
     snapshotAdapter,
     invariantHash,
     projection,
@@ -10,57 +9,45 @@ const init = async (repository, key, inputAggregateIds, skipEventReading) => {
     eventHandler
   } = repository
 
-  const viewModel = viewMap.get(key)
-  let readStorageAnyway = false
+  const viewModel = {
+    aggregatesVersionsMap: new Map(),
+    lastTimestamp: -1,
+    state: null,
+    disposed: false
+  }
 
-  if (!viewModel.handler) {
+  const snapshotKey = `${invariantHash};${key}`
+
+  try {
+    const snapshot = await snapshotAdapter.loadSnapshot(snapshotKey)
     Object.assign(viewModel, {
-      aggregatesVersionsMap: new Map(),
-      lastTimestamp: -1,
-      state: null,
-      disposed: false
+      aggregatesVersionsMap: new Map(snapshot.aggregatesVersionsMap),
+      lastTimestamp: snapshot.lastTimestamp,
+      state: deserializeState(snapshot.state)
     })
+  } catch (error) {}
 
-    const snapshotKey = `${invariantHash};${key}`
-
-    try {
-      const snapshot = await snapshotAdapter.loadSnapshot(snapshotKey)
-      Object.assign(viewModel, {
-        aggregatesVersionsMap: new Map(snapshot.aggregatesVersionsMap),
-        lastTimestamp: snapshot.lastTimestamp,
-        state: deserializeState(snapshot.state)
-      })
-    } catch (error) {}
-
-    try {
-      if (
-        !(+viewModel.lastTimestamp > 0) &&
-        typeof projection.Init === 'function'
-      ) {
-        viewModel.state = projection.Init()
-      }
-    } catch (error) {
-      viewModel.lastError = error
+  try {
+    if (
+      !(+viewModel.lastTimestamp > 0) &&
+      typeof projection.Init === 'function'
+    ) {
+      viewModel.state = projection.Init()
     }
-
-    const handler = eventHandler.bind(null, repository, viewModel)
-
-    const aggregateIds = inputAggregateIds !== '*' ? inputAggregateIds : null
-
-    Object.assign(viewModel, {
-      aggregateIds,
-      handler,
-      snapshotKey,
-      key
-    })
-
-    readStorageAnyway = true
+  } catch (error) {
+    viewModel.lastError = error
   }
 
-  if (skipEventReading && !readStorageAnyway) {
-    delete viewModel.initPromise
-    return
-  }
+  const handler = eventHandler.bind(null, repository, viewModel)
+
+  const aggregateIds = inputAggregateIds !== '*' ? inputAggregateIds : null
+
+  Object.assign(viewModel, {
+    aggregateIds,
+    handler,
+    snapshotKey,
+    key
+  })
 
   await eventStore.loadEvents(
     {
@@ -72,7 +59,7 @@ const init = async (repository, key, inputAggregateIds, skipEventReading) => {
     viewModel.handler
   )
 
-  delete viewModel.initPromise
+  return viewModel
 }
 
 export default init

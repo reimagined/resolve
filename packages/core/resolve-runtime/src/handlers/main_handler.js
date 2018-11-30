@@ -3,7 +3,6 @@ import commandHandler from './command_handler'
 import queryHandler from './query_handler'
 import statusHandler from './status_handler'
 import subscribeHandler from './subscribe_handler'
-
 import getRootBasedUrl from '../utils/get_root_based_url'
 
 const mainHandler = async (originalReq, res) => {
@@ -39,30 +38,39 @@ const mainHandler = async (originalReq, res) => {
   }
 
   switch (true) {
-    case checkPath('/api/query'): {
+    case checkPath('/api/query') && ['GET', 'POST'].includes(req.method): {
       return await queryHandler(req, res)
     }
 
-    case checkPath('/api/status'): {
+    case checkPath('/api/status') && req.method === 'GET': {
       return await statusHandler(req, res)
     }
 
-    case checkPath('/api/commands'): {
+    case checkPath('/api/commands') && req.method === 'POST': {
       return await commandHandler(req, res)
     }
 
-    case checkPath('/api/subscribe'): {
+    case checkPath('/api/subscribe') && ['GET', 'POST'].includes(req.method): {
       return await subscribeHandler(req, res)
     }
 
-    case checkPath(`/`): {
+    case checkPath(`/`) && req.method === 'GET': {
       return await serverSideRendering(req, res)
     }
 
     default: {
       await res.status(405)
       await res.end(
-        `Guard error: path "${req.path}" is not addressable by current executor`
+        `Access error: path "${
+          req.path
+        }" is not addressable by current executor`
+      )
+
+      resolveLog(
+        'warn',
+        'Path is not addressable by current executor',
+        req.path,
+        req
       )
       return
     }

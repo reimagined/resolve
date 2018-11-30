@@ -59,7 +59,7 @@ pipeline {
                         export DISPLAY=:0;
                         firefox && echo 'err';
 
-                        npx oao run-script test:functional
+                        yarn test:functional
                     """
                 }
             }
@@ -103,6 +103,24 @@ pipeline {
             }
         }
 
+        stage('Create-resolve-app [ shopping-list-advanced ] Functional Tests') {
+            when {
+                expression { CHANGE_TARGET == 'master' }
+            }
+            steps {
+                script {
+                    sh """
+                        mkdir shopping-list-advanced && cd shopping-list-advanced;
+                        yarn create resolve-app shopping-list-advanced -e shopping-list-advanced -c \$(cat /last_commit)
+                        cd ./shopping-list-advanced
+                        yarn
+                        cat ./package.json
+                        yarn test
+                    """
+                }
+            }
+        }
+
         stage('Create-resolve-app [ hello-world ] Functional Tests') {
             when {
                 expression { CHANGE_TARGET == 'master' }
@@ -131,24 +149,6 @@ pipeline {
                         mkdir shopping-list && cd shopping-list;
                         yarn create resolve-app shopping-list -e shopping-list -c \$(cat /last_commit)
                         cd ./shopping-list
-                        cat ./package.json
-                        yarn test:functional path:/chromium
-                    """
-                }
-            }
-        }
-
-        stage('Create-resolve-app [ shopping-list-advanced ] Functional Tests') {
-            when {
-                expression { CHANGE_TARGET == 'master' }
-            }
-            steps {
-                script {
-                    sh """
-                        export YARN_CACHE_FOLDER=/yarn_cache
-                        mkdir shopping-list-advanced && cd shopping-list-advanced;
-                        yarn create resolve-app shopping-list-advanced -e shopping-list-advanced -c \$(cat /last_commit)
-                        cd ./shopping-list-advanced
                         cat ./package.json
                         yarn test:functional path:/chromium
                     """

@@ -13,6 +13,7 @@ export default ({ resolveConfig, isClient }) => {
   if (!checkRuntimeEnv(rootPath)) {
     if (!validatePath(rootPath, { allowEmptyPath: true })) {
       throw new Error(
+        // eslint-disable-next-line max-len
         `Incorrect options.rootPath = "${rootPath}"\nValue must be part of the URL, which is the application's subdirectory`
       )
     }

@@ -20,8 +20,12 @@ void (async () => {
     {
       name: 'local-strategy', // Strategy name
       createStrategy: 'auth/create_strategy.js', // Path to strategy construction file in project
-      varyOptions: { // Passed vary compile-time/runtime options
+      options: { // Passed vary compile-time/runtime options
         strategySecretKey: injectRuntimeEnv('STRATEGY_SECRET_KEY_ENV_VARIABLE_NAME')
+      },
+      logoutRoute: { // HTTP route for logout
+          path: 'logout',
+          method: 'POST'
       }
       routes: [ // HTTP API handlers for current strategy
         {
@@ -33,11 +37,6 @@ void (async () => {
           path: 'login',
           method: 'POST',
           callback: 'auth/route_login_callback.js'
-        },
-        {
-          path: 'logout',
-          method: 'POST',
-          callback: 'auth/route_logout_callback.js'
         }
       ]
     }
@@ -64,7 +63,7 @@ Strategy constructor (auth/create_strategy.js):
 ```js
 import { Strategy as StrategyFactory } from 'passport-local' // Import passport strategy
 
-const createStrategy = varyOptions => ({ // Export function which will accept runtime vary options from application config
+const createStrategy = options => ({ // Export function which will accept runtime vary options from application config
   factory: StrategyFactory, // Re-export passport strategy factory
   options: { // Custom compile-time options ...
     failureRedirect: error =>
@@ -74,7 +73,7 @@ const createStrategy = varyOptions => ({ // Export function which will accept ru
     passwordField: 'username',
     successRedirect: null,
     // ... plus runtime options, like secret keys
-    ...varyOptions
+    ...options
   }
 })
 

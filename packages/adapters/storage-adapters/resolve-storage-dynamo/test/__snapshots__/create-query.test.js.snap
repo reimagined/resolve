@@ -123,6 +123,22 @@ Object {
 }
 `;
 
+exports[`method "createQuery" should return correctly query: {"aggregateIds":null,"eventTypes":null} 1`] = `
+Object {
+  "ExpressionAttributeNames": Object {
+    "#globalPartitionKey": "globalPartitionKey",
+  },
+  "ExpressionAttributeValues": Object {
+    ":globalPartitionKey": "globalPartitionKey",
+  },
+  "FilterExpression": undefined,
+  "IndexName": "rangedEvents",
+  "KeyConditionExpression": "(#globalPartitionKey = :globalPartitionKey)",
+  "ScanIndexForward": true,
+  "TableName": "tableName",
+}
+`;
+
 exports[`method "createQuery" should return correctly query: {} 1`] = `
 Object {
   "ExpressionAttributeNames": Object {

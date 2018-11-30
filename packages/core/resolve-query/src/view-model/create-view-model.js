@@ -1,10 +1,8 @@
 const createViewModel = (
   init,
-  getViewModel,
   getLastError,
   read,
   readAndSerialize,
-  updateByEvents,
   dispose,
   eventHandler,
   getKey,
@@ -27,7 +25,7 @@ const createViewModel = (
   }
 
   const repository = {
-    viewMap: new Map(),
+    activeWorkers: new Map(),
     eventTypes: Object.keys(projection).filter(
       eventName => eventName !== 'Init'
     ),
@@ -38,7 +36,6 @@ const createViewModel = (
     serializeState,
     deserializeState,
     init,
-    getViewModel,
     eventHandler,
     getKey,
     read
@@ -47,7 +44,8 @@ const createViewModel = (
   return Object.freeze({
     read: read.bind(null, repository),
     readAndSerialize: readAndSerialize.bind(null, repository),
-    updateByEvents: updateByEvents.bind(null, repository),
+    // eslint-disable-next-line no-new-func
+    updateByEvents: Function('return Promise.resolve()'),
     getLastError: getLastError.bind(null, repository),
     dispose: dispose.bind(null, repository),
     deserialize: deserializeState

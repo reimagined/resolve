@@ -13,11 +13,11 @@ import {
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
-import requiredAuth from '../decorators/required_auth'
-import { connectReadModel } from '../resolve/resolve-redux'
+import requiredAuth from '../decorators/required-auth'
+import { connectReadModel } from 'resolve-redux'
 import ShoppingLists from '../components/ShoppingLists'
 import ShoppingListCreator from '../components/ShoppingListCreator'
-import * as refreshActions from '../redux/actions/refresh_actions'
+import * as refreshActions from '../redux/actions/refresh-actions'
 
 export class MyLists extends React.PureComponent {
   render() {

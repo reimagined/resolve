@@ -1,4 +1,5 @@
 const devConfig = {
+  target: 'local',
   port: 3000,
   polyfills: ['@babel/polyfill'],
   mode: 'development',
@@ -6,7 +7,9 @@ const devConfig = {
   staticPath: 'static',
   staticDir: 'static',
   distDir: 'dist',
-
+  redux: {
+    enhancers: ['client/enhancers/redux-devtools.js']
+  },
   readModelAdapters: [
     {
       name: 'default',
