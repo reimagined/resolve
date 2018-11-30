@@ -57,7 +57,8 @@
       "packages/adapters/api-handler-adapters/*",
       "examples/*",
       "packages/modules/*",
-      "tests"
+      "tests",
+      "website"
     ]
   },
   "scripts": {
