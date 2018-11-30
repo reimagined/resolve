@@ -191,7 +191,7 @@ To learn more about a particular adapter type, refer to the documentation for th
 
 In reSolve, a module encapsulates a piece of functionality that can be included by an application. A module can encapsulate any structural parts of a reSolve application in any combination.
 
-Physically, a module is a standalone configuration object that can reference client code, read-side and write-side code, sagas and HTTP queries. To include a module into your application, you need to initialize this object with any required additional settings and merge it into your applications centralized config:
+Physically, a module is a standalone configuration object that can reference client code, read-side and write-side code, sagas and HTTP queries. To include a module into your application, you need to initialize this object with any required additional settings and merge it into your application's centralized config:
 
 ```js
 ...
