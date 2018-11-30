@@ -110,7 +110,6 @@ pipeline {
             steps {
                 script {
                     sh """
-                        export YARN_CACHE_FOLDER=/yarn_cache
                         mkdir shopping-list-advanced && cd shopping-list-advanced;
                         yarn create resolve-app shopping-list-advanced -e shopping-list-advanced -c \$(cat /last_commit)
                         cd ./shopping-list-advanced

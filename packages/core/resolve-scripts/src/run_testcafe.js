@@ -113,9 +113,15 @@ const runTestcafe = async ({
       ],
       { stdio: 'inherit', cwd: process.cwd() }
     )
-    await new Promise(resolve => server.stop(resolve))
+    await Promise.race([
+      new Promise(resolve => setTimeout(resolve, 10000)),
+      new Promise(resolve => server.stop(resolve))
+    ])
   } catch (error) {
-    await new Promise(resolve => server.stop(resolve))
+    await Promise.race([
+      new Promise(resolve => setTimeout(resolve, 10000)),
+      new Promise(resolve => server.stop(resolve))
+    ])
     throw error
   }
 }
