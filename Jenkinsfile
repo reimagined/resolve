@@ -116,7 +116,6 @@ pipeline {
                         yarn
                         cat ./package.json
                         yarn test
-                        yarn test:functional path:/chromium
                     """
                 }
             }
