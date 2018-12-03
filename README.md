@@ -31,7 +31,7 @@ npm run dev
 
 #### [npm](https://www.npmjs.com/)
 
-> Note: Installing a package globally may require administrative privileges. That means you have to use the `sudo` prefix on Linux and MacOS, or start a terminal with the administrative privileges on Windows.
+> Note: Installing a package globally may require administrative privileges.
 
 ```sh
 npm i -g create-resolve-app
@@ -71,8 +71,8 @@ You can find reSolve documentation in the [docs section](./docs).
 
 - Ask questions on Stackoverlow with [resolvejs tag](https://stackoverflow.com/questions/ask?tags=resolvejs)
 - Use [GitHub Issues](https://github.com/reimagined/resolve/issues) to report bugs and suggest features
-- Email team reimagined@devexpress.com
-- Follow [@resolvejs on Twitter](https://twitter.com/resolvejs) or join [our Facebook page](https://www.facebook.com/resolvejs/) for product news and updates.
+- Follow [@resolvejs on Twitter](https://twitter.com/resolvejs) or join [our Facebook page](https://www.facebook.com/resolvejs/) for product news and updates
+- Email the team reimagined@devexpress.com
 
 reSolve is developed by [Developer Express Inc.](https://devexpress.com)
 
