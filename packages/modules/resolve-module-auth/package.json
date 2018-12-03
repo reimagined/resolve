@@ -26,7 +26,7 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/api-handler-adapters/resolve-module-auth#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "iconv": "2.3.1",
+    "iconv-lite": "0.4.24",
     "isomorphic-fetch": "2.2.1",
     "uuid": "3.3.2"
   },

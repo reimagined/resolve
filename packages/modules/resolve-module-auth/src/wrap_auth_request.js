@@ -1,4 +1,7 @@
-import { Iconv } from 'iconv'
+import iconv from 'iconv-lite'
+
+const convertCodepage = (content, fromEncoding, toEncoding) =>
+  iconv.decode(iconv.encode(content, fromEncoding), toEncoding)
 
 const wrapAuthRequest = req => {
   if (req.body == null && req.headers['content-type'] == null) {
@@ -23,9 +26,8 @@ const wrapAuthRequest = req => {
         value = value.join('=')
 
         if (bodyCharset !== 'utf-8') {
-          const converter = new Iconv('utf-8', bodyCharset)
-          key = converter.convert(key)
-          value = converter.convert(value)
+          key = convertCodepage(key, 'utf-8', bodyCharset)
+          value = convertCodepage(value, 'utf-8', bodyCharset)
         }
 
         acc[key] = value
@@ -39,8 +41,7 @@ const wrapAuthRequest = req => {
       bodyContent = req.body
 
       if (bodyCharset !== 'utf-8') {
-        const converter = new Iconv('utf-8', bodyCharset)
-        bodyContent = converter.convert(bodyContent)
+        bodyContent = convertCodepage(bodyContent, 'utf-8', bodyCharset)
       }
 
       bodyContent = JSON.parse(bodyContent)
