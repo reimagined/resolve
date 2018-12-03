@@ -1,3 +1,8 @@
+---
+id: advanced-techniques
+title: Advanced Techniques
+---
+
 # Splitting Code Into Chunks
 ReSolve uses **webpack** to transpile and bundle the application code so it can be run by client browsers, the server and serverless platforms. 
 
