@@ -8,7 +8,7 @@ reSolve is a full stack functional JavaScript framework.
 
 - [CQRS](https://martinfowler.com/bliki/CQRS.html) - independent Command and Query sides.
 - [DDD Aggregate](https://martinfowler.com/bliki/DDD_Aggregate.html) support.
-- [Event sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) - uses events as a source of truth and calculates read models from them.
+- [Event sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) - using events as a source of truth and calculating read models from them.
 - Integrates with [React](https://reactjs.org) and [Redux](https://redux.js.org) for seamless development experience.
 - [React Native](https://facebook.github.io/react-native/) support.
 
