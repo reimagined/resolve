@@ -217,6 +217,7 @@ module.exports = {
           'noop',
           'noopener',
           'noreferrer',
+          'noredirect',
           'npm',
           'npmjs',
           'npx',
