@@ -1,6 +1,6 @@
 {
   "name": "resolve-bus-zmq",
-  "version": "0.18.6",
+  "version": "0.18.7",
   "description": "This package is an adapter for resolve-bus to emit events using ZeroMQ.",
   "engines": {
     "node": ">=8.10"
@@ -27,7 +27,7 @@
   "dependencies": {
     "@babel/runtime": "^7.0.0",
     "zeromq": "^4.6.0",
-    "resolve-bus-base": "0.18.6"
+    "resolve-bus-base": "0.18.7"
   },
   "devDependencies": {
     "jest": "23.6.0",
