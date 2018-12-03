@@ -1,0 +1,188 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>basics/read-side · ReSolve</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="&lt;h1&gt;&lt;a class=&quot;anchor&quot; aria-hidden=&quot;true&quot; id=&quot;read-models&quot;&gt;&lt;/a&gt;&lt;a href=&quot;#read-models&quot; aria-hidden=&quot;true&quot; class=&quot;hash-link&quot;&gt;&lt;svg class=&quot;hash-link-icon&quot; aria-hidden=&quot;true&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Read Models&lt;/h1&gt;
+"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="basics/read-side · ReSolve"/><meta property="og:type" content="website"/><meta property="og:url" content="https://reimagined.github.io/resolve/index.html"/><meta property="og:description" content="&lt;h1&gt;&lt;a class=&quot;anchor&quot; aria-hidden=&quot;true&quot; id=&quot;read-models&quot;&gt;&lt;/a&gt;&lt;a href=&quot;#read-models&quot; aria-hidden=&quot;true&quot; class=&quot;hash-link&quot;&gt;&lt;svg class=&quot;hash-link-icon&quot; aria-hidden=&quot;true&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Read Models&lt;/h1&gt;
+"/><meta name="twitter:card" content="summary"/><link rel="shortcut icon" href="/resolve/undefined"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/resolve/css/main.css"/></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/resolve/"><img class="logo" src="/resolve/img/resolve.svg" alt="ReSolve"/><h2 class="headerTitleWithLogo">ReSolve</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/resolve/docs/" target="_self">Docs Index</a></li><li class=""><a href="/resolve/docs/faq" target="_self">FAQ</a></li><li class=""><a href="/resolve/docs/troubleshooting" target="_self">Troubleshooting</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">basics/read-side</h1></header><article><div><span><h1><a class="anchor" aria-hidden="true" id="read-models"></a><a href="#read-models" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Read Models</h1>
+<p>The Read Side of the reSolve framework listens to events produced by the write side and updates <strong>Read Models</strong>. Read Models are then used to answer queries.</p>
+<p>A Read Model is defined using functions of the following two kinds:</p>
+<ul>
+<li><strong><a href="#updating-a-read-model-via-projection-functions">Projection functions</a></strong> - Applies events to accumulate state.</li>
+<li><strong><a href="#resolvers">Query resolver</a></strong> - Answers queries based on the accumulated state.</li>
+</ul>
+<p>ReSolve also provides a special kind of Read Models that can be calculated on the fly, sent to the client and kept there up-to-date. Such Read Models are called <strong>View Models</strong>. Refer to the <a href="view-model-specifics">View Model Specifics</a> section for more information.</p>
+<h1><a class="anchor" aria-hidden="true" id="configuring-read-models-and-view-models"></a><a href="#configuring-read-models-and-view-models" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Configuring Read Models and View Models</h1>
+<h3><a class="anchor" aria-hidden="true" id="configuring-read-models"></a><a href="#configuring-read-models" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Configuring Read Models</h3>
+<p>All application's Read Models should be registered in the <strong>config.app.js</strong> file's <strong>readModels</strong> section:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> appConfig = {
+  ...
+  readModels: [
+    {
+      <span class="hljs-attr">name</span>: <span class="hljs-string">'default'</span>,
+      <span class="hljs-attr">projection</span>: <span class="hljs-string">'common/read-models/default.projection.js'</span>,
+      <span class="hljs-attr">resolvers</span>: <span class="hljs-string">'common/read-models/default.resolvers.js'</span>,
+      <span class="hljs-attr">adapter</span>: {
+        <span class="hljs-attr">module</span>: <span class="hljs-string">'common/read-models/readmodel_adapter.module.js'</span>,
+        <span class="hljs-attr">options</span>: {
+          <span class="hljs-attr">pathToFile</span>: <span class="hljs-string">'readmodel.db'</span>
+        }
+      }
+    }
+  ],
+  ...
+}
+
+</code></pre>
+<p>In the configuration object, specify the Read Model's name and the paths to the projection's and resolvers' definitions. Here, you can also specify the storage adapter settings for the Read Model.</p>
+<h3><a class="anchor" aria-hidden="true" id="configuring-view-models"></a><a href="#configuring-view-models" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Configuring View Models</h3>
+<p>In the same way, you should register your View Models using the <strong>viewModels</strong> section:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> appConfig = {
+  ...
+  viewModels: [
+    {
+      <span class="hljs-attr">name</span>: <span class="hljs-string">'storyDetails'</span>,
+      <span class="hljs-attr">projection</span>: <span class="hljs-string">'common/view-models/story_details.projection.js'</span>,
+      <span class="hljs-attr">serializeState</span>: <span class="hljs-string">'common/view-models/story_details.serialize_state.js'</span>,
+      <span class="hljs-attr">deserializeState</span>: <span class="hljs-string">'common/view-models/story_details.deserialize_state.js'</span>,
+      <span class="hljs-attr">snapshotAdapter</span>: {
+        <span class="hljs-attr">module</span>: <span class="hljs-string">'common/view-models/snapshot_adapter.module.js'</span>,
+        <span class="hljs-attr">options</span>: {
+          <span class="hljs-attr">pathToFile</span>: <span class="hljs-string">'snapshot.db'</span>,
+        }
+      }
+    }
+  ],
+  ...
+}
+</code></pre>
+<p>In the configuration object, specify the View Model's name and the path to the projection. You can also specify the storage adapter for View Model snapshots. Use the <strong>serializeState</strong> and <strong>deserializeState</strong> to specify paths to the serializer and deserializer functions for the View Model state.</p>
+<h1><a class="anchor" aria-hidden="true" id="initialize-a-read-model"></a><a href="#initialize-a-read-model" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Initialize a Read Model</h1>
+<p>Each Read Model has an <strong>Init</strong> function that initializes the Read Model storage.</p>
+<p>You can add tables to the storage using the <strong>defineTable</strong> method:</p>
+<pre><code class="hljs css language-js">  Init: <span class="hljs-keyword">async</span> store =&gt; {
+    ...
+    await store.defineTable(<span class="hljs-string">'Comments'</span>, {
+      <span class="hljs-attr">indexes</span>: { <span class="hljs-attr">id</span>: <span class="hljs-string">'string'</span> },
+      <span class="hljs-attr">fields</span>: [
+        <span class="hljs-string">'text'</span>,
+        <span class="hljs-string">'parentId'</span>,
+        <span class="hljs-string">'comments'</span>,
+        <span class="hljs-string">'storyId'</span>,
+        <span class="hljs-string">'createdAt'</span>,
+        <span class="hljs-string">'createdBy'</span>,
+        <span class="hljs-string">'createdByName'</span>
+      ]
+    })
+    ...
+  },
+</code></pre>
+<p>ReSolve provides a unified API to manage data in a storage, so this code will work with any supported storage type. The internal logic used to communicate with various DBMSs is provided by <strong>Read Model Adapters</strong>.
+Do to hesitate to store Read Model data in denormalized form so that your Read Models are optimized for query speed.</p>
+<h1><a class="anchor" aria-hidden="true" id="updating-a-read-model-via-projection-functions"></a><a href="#updating-a-read-model-via-projection-functions" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Updating a Read Model via Projection Functions</h1>
+<p>A projection function is used to accumulate the event data to a <strong>Read Model store</strong>. Each projection function takes the store object and event settings, including the aggregateID, timestamp and payload.</p>
+<p>You can communicate with the store using the standard API. The code sample below demonstrates a typical Read Model projection function implementation:</p>
+<pre><code class="hljs css language-js">[STORY_COMMENTED]: <span class="hljs-keyword">async</span> (
+  store, { aggregateId, timestamp, <span class="hljs-attr">payload</span>: { parentId, userId, userName, commentId, text } }
+) =&gt; {
+  <span class="hljs-keyword">const</span> comment = { <span class="hljs-attr">id</span>: commentId, text, parentId, <span class="hljs-attr">comments</span>: [], <span class="hljs-attr">storyId</span>: aggregateId,
+    <span class="hljs-attr">createdAt</span>: timestamp, <span class="hljs-attr">createdBy</span>: userId, <span class="hljs-attr">createdByName</span>: userName }
+
+  <span class="hljs-keyword">await</span> store.insert(<span class="hljs-string">'Comments'</span>, comment)
+  <span class="hljs-keyword">await</span> store.update(
+    <span class="hljs-string">'Stories'</span>,
+    { <span class="hljs-attr">id</span>: aggregateId },
+    { <span class="hljs-attr">$inc</span>: { <span class="hljs-attr">commentCount</span>: <span class="hljs-number">1</span> } }
+  )
+}
+...
+</code></pre>
+<p>The data from the populated store is then used by <a href="#resolvers">resolvers</a> to prepare the final data samples in response to data requests.</p>
+<p>You can force the system to re-populate the store using events from the start of the history by deleting the Read Model storage. This can be useful in the development environment and when deploying an updated version of the application.</p>
+<p>Note that reSolve does not limit you on what logic you can use in a projection function implementation as long as it helps you prepare data required to answer queries. Depending on your requirements, you can perform SQL queries, update Elastic Search indexes, write arbitrary data to files, etc.</p>
+<h1><a class="anchor" aria-hidden="true" id="resolvers"></a><a href="#resolvers" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Resolvers</h1>
+<p>A <strong>Read Model resolver</strong> is the the part of the Read Model that handles data requests. A resolver function gets the store and requests arguments. Based on the arguments, the resolver function pulls the required data from the store and processes it to prepare the response object.</p>
+<p>The code sample below demonstrate a typical Read Model implementation:</p>
+<pre><code class="hljs css language-js">comments: <span class="hljs-keyword">async</span> (store, { first, offset }) =&gt; {
+  <span class="hljs-keyword">const</span> skip = first || <span class="hljs-number">0</span>
+  <span class="hljs-keyword">const</span> comments = <span class="hljs-keyword">await</span> store.find(
+    <span class="hljs-string">'Comments'</span>,
+    {},
+    <span class="hljs-literal">null</span>,
+    { <span class="hljs-attr">createdAt</span>: <span class="hljs-number">-1</span> },
+    skip,
+    skip + offset
+  )
+  <span class="hljs-keyword">return</span> <span class="hljs-built_in">Array</span>.isArray(comments) ? comments : []
+}
+</code></pre>
+<p>To learn how to send a request to a Read Model resolver, refer to the <a href="#query_a_read_model">Query a Read Model</a> section.</p>
+<h1><a class="anchor" aria-hidden="true" id="view-model-specifics"></a><a href="#view-model-specifics" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>View Model Specifics</h1>
+<p><strong>View Models</strong> are a special kind of Read Models. They are queried by aggregate ID and and can automatically provide updates to Redux state on the client. View Models are defined in a special isomorphic format so their code can also be used on the client side to provide reducer logic.</p>
+<p>Use View Models in the following scenarios:</p>
+<ul>
+<li>To create aggregate-centric views. Such views request relatively portions of data based on aggregate IDs.</li>
+<li>To create reactive components, whose state is kept up-to date on the client.</li>
+</ul>
+<p>A View Model's projection function takes a state and an event object, and returns an updated state. A projection function runs for every event with the specified aggregate ID from the beginning of the history on every request so it is important to keep View Models small. You can also store snapshots of the View Model state to optimize system resource consumption.</p>
+<p>The code sample below demonstrate a typical View Model projection function:</p>
+<pre><code class="hljs css language-js">[SHOPPING_ITEM_CREATED]: <span class="hljs-function">(<span class="hljs-params">state, { payload: { id, text } }</span>) =&gt;</span> ({
+  ...state,
+  <span class="hljs-attr">list</span>: [
+    ...state.list,
+    {
+      id,
+      text,
+      <span class="hljs-attr">checked</span>: <span class="hljs-literal">false</span>
+    }
+  ]
+}),
+</code></pre>
+<p>To learn how to send a request to a View Model projection, refer to the <a href="#query_a_view_model">Query a View Model</a> section.
+Note that a View model does not use the Read Model store in any way.</p>
+<h1><a class="anchor" aria-hidden="true" id="performing-queries-using-http-api"></a><a href="#performing-queries-using-http-api" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Performing Queries Using HTTP API</h1>
+<h3><a class="anchor" aria-hidden="true" id="query-a-read-model"></a><a href="#query-a-read-model" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Query a Read Model</h3>
+<p>You can query a Read Model from the client side by sending a POST request to the following URL:</p>
+<pre><code class="hljs"><span class="xml">http://</span><span class="hljs-template-variable">{host}</span><span class="xml">:</span><span class="hljs-template-variable">{port}</span><span class="xml">/api/query/</span><span class="hljs-template-variable">{readModel}</span><span class="xml">/</span><span class="hljs-template-variable">{resolver}</span><span class="xml">
+</span></code></pre>
+<h5><a class="anchor" aria-hidden="true" id="url-parameters"></a><a href="#url-parameters" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>URL Parameters:</h5>
+<table>
+<thead>
+<tr><th>Name</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>readModel</strong></td><td>The Read Model name as defined in <a href="../examples/with-saga/config.app.js">config.app.js</a></td></tr>
+<tr><td><strong>resolver</strong></td><td>The name of a <a href="#resolvers">resolver defined in the Read Model</a></td></tr>
+</tbody>
+</table>
+<p>The request body should have the <code>application/json</code> content type and the following structure:</p>
+<pre><code class="hljs css language-js">{
+  <span class="hljs-attr">param1</span>: value1,
+  <span class="hljs-attr">param2</span>: value2,
+  <span class="hljs-comment">// ...</span>
+  paramN: valueN
+}
+</code></pre>
+<p>The object contains the parameters that the resolver accepts.</p>
+<h5><a class="anchor" aria-hidden="true" id="example"></a><a href="#example" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Example</h5>
+<p>Use the following command to get 3 users from the <a href="../examples/with-saga">with-saga</a> example.</p>
+<pre><code class="hljs css language-sh">curl -X POST \
+-H <span class="hljs-string">"Content-Type: application/json"</span> \
+-d <span class="hljs-string">"{\"page\":0, \"limit\":3}"</span> \
+<span class="hljs-string">"http://localhost:3000/api/query/default/users"</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="query-a-view-model"></a><a href="#query-a-view-model" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Query a View Model</h3>
+<p>You can query a View Model from the client side by sending a POST request to the following URL:</p>
+<pre><code class="hljs"><span class="xml">http://</span><span class="hljs-template-variable">{host}</span><span class="xml">:</span><span class="hljs-template-variable">{port}</span><span class="xml">/api/query/</span><span class="hljs-template-variable">{viewModel}</span><span class="xml">/</span><span class="hljs-template-variable">{aggregateIds}</span><span class="xml">
+</span></code></pre>
+<h5><a class="anchor" aria-hidden="true" id="url-parameters-1"></a><a href="#url-parameters-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>URL Parameters</h5>
+<table>
+<thead>
+<tr><th>Name</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>viewModel</td><td>The View Model name as defined in <a href="../examples/shopping-list/config.app.js">config.app.js</a></td></tr>
+<tr><td>aggregateIds</td><td>The comma-separated list of Aggregate IDs to include into the View Model. Use <code>*</code> to include all Aggregates</td></tr>
+</tbody>
+</table>
+<h5><a class="anchor" aria-hidden="true" id="example-1"></a><a href="#example-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Example</h5>
+<p>Use the following command to get the current <a href="../examples/shopping-list">shopping-list</a> example application's state.</p>
+<pre><code class="hljs css language-sh">curl -g -X GET <span class="hljs-string">"http://localhost:3000/api/query/Default/shoppingLists"</span>
+</code></pre>
+</span></div></article></div><div class="docs-prevnext"></div></div></div><nav class="onPageNav"></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/resolve/" class="nav-home"><img src="/resolve/img/resolve.svg" alt="ReSolve" width="66" height="58"/></a><div><h5>Docs</h5><a href="/resolve/">Documentation Index</a></div><div><h5>Community</h5><a href="http://stackoverflow.com/questions/resolvejs/" target="_blank" rel="noreferrer noopener">Stack Overflow</a><a href="https://stackoverflow.com/questions/tagged/resolvejs" target="_blank" rel="noreferrer noopener">Twitter</a></div><div><h5>More</h5><a href="https://github.com/reimagined/resolve">GitHub</a><a class="github-button" href="https://github.com/reimagined/resolve" data-icon="octicon-star" data-count-href="/reimagined/resolve/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><section class="copyright">Copyright © 2018 reimagined</section></footer></div></body></html>

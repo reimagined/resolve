@@ -1,0 +1,140 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>API handlers · ReSolve</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="&lt;h1&gt;&lt;a class=&quot;anchor&quot; aria-hidden=&quot;true&quot; id=&quot;api-handlers&quot;&gt;&lt;/a&gt;&lt;a href=&quot;#api-handlers&quot; aria-hidden=&quot;true&quot; class=&quot;hash-link&quot;&gt;&lt;svg class=&quot;hash-link-icon&quot; aria-hidden=&quot;true&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Api Handlers&lt;/h1&gt;
+"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="API handlers · ReSolve"/><meta property="og:type" content="website"/><meta property="og:url" content="https://reimagined.github.io/resolve/index.html"/><meta property="og:description" content="&lt;h1&gt;&lt;a class=&quot;anchor&quot; aria-hidden=&quot;true&quot; id=&quot;api-handlers&quot;&gt;&lt;/a&gt;&lt;a href=&quot;#api-handlers&quot; aria-hidden=&quot;true&quot; class=&quot;hash-link&quot;&gt;&lt;svg class=&quot;hash-link-icon&quot; aria-hidden=&quot;true&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Api Handlers&lt;/h1&gt;
+"/><meta name="twitter:card" content="summary"/><link rel="shortcut icon" href="/resolve/undefined"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/resolve/css/main.css"/></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/resolve/"><img class="logo" src="/resolve/img/resolve.svg" alt="ReSolve"/><h2 class="headerTitleWithLogo">ReSolve</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/resolve/docs/" target="_self">Docs Index</a></li><li class=""><a href="/resolve/docs/faq" target="_self">FAQ</a></li><li class=""><a href="/resolve/docs/troubleshooting" target="_self">Troubleshooting</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">API handlers</h1></header><article><div><span><h1><a class="anchor" aria-hidden="true" id="api-handlers"></a><a href="#api-handlers" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Api Handlers</h1>
+<h2><a class="anchor" aria-hidden="true" id="api-reference"></a><a href="#api-reference" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>API Reference</h2>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">async</span> (req, res) =&gt; {
+  <span class="hljs-comment">// ...</span>
+}
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="request"></a><a href="#request" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Request</h2>
+<p>The <code>req</code> object represents the HTTP request and has properties for the request query string, parameters, body, HTTP headers, and so on.</p>
+<pre><code class="hljs css language-js">{
+  <span class="hljs-attr">adapter</span>: <span class="hljs-string">"express"</span> | <span class="hljs-string">"awslambda"</span>,
+  <span class="hljs-attr">method</span>: <span class="hljs-string">"GET"</span> | <span class="hljs-string">"HEAD"</span> | <span class="hljs-string">"POST"</span> | <span class="hljs-string">"PUT"</span> | <span class="hljs-string">"DELETE"</span> | <span class="hljs-string">"CONNECT"</span> | <span class="hljs-string">"OPTIONS"</span> | <span class="hljs-string">"TRACE"</span> | <span class="hljs-string">"PATCH"</span>,
+  <span class="hljs-attr">path</span>: <span class="hljs-built_in">String</span>,
+  <span class="hljs-attr">body</span>: <span class="hljs-built_in">String</span>,
+  <span class="hljs-attr">cookies</span>: <span class="hljs-built_in">Object</span>&lt;key, value&gt;,
+  <span class="hljs-attr">headers</span>: <span class="hljs-built_in">Object</span>&lt;key, value&gt;,
+  <span class="hljs-attr">query</span>: <span class="hljs-built_in">Object</span>&lt;key, value&gt;
+}
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="response"></a><a href="#response" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Response</h2>
+<p>The <code>res</code> object represents the HTTP response that an api handler sends when it gets an HTTP request.</p>
+<pre><code class="hljs css language-js">{
+  status(code),
+  getHeader(key),
+  setHeader(key, value),
+  text([content] [, encoding]),
+  json([content]),
+  end([content] [, encoding]),
+  file(content, filename [, encoding]),
+  redirect([status,] path),
+  cookie(name, value [, options]),
+  clearCookie(name [, options])
+}
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="how-to-write-an-api-handlers"></a><a href="#how-to-write-an-api-handlers" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>How to write an api handlers</h2>
+<ul>
+<li>Send Text</li>
+</ul>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">async</span> (req, res) =&gt; {
+  <span class="hljs-keyword">const</span> { username } = <span class="hljs-built_in">JSON</span>.parse(req.body)
+
+  res.text(<span class="hljs-string">`Hello <span class="hljs-subst">${username}</span>!')
+}
+</span></code></pre>
+<ul>
+<li>Send JSON</li>
+</ul>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">async</span> (req, res) =&gt; {
+  <span class="hljs-keyword">const</span> { username } = <span class="hljs-built_in">JSON</span>.parse(req.body)
+
+  res.json({
+    <span class="hljs-attr">id</span>: uuid(),
+    username
+  })
+}
+</code></pre>
+<ul>
+<li>Send File</li>
+</ul>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">async</span> (req, res) =&gt; {
+  <span class="hljs-keyword">const</span> { id } = req.query
+
+  <span class="hljs-keyword">const</span> user = <span class="hljs-keyword">await</span> getUserById(id)
+
+  res.file(<span class="hljs-built_in">JSON</span>.stringify(user), <span class="hljs-string">'user.json'</span>)
+}
+</code></pre>
+<ul>
+<li>Set Cookies</li>
+</ul>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">async</span> (req, res) =&gt; {
+  res.cookie(<span class="hljs-string">'expireTime'</span>, <span class="hljs-built_in">Date</span>.now() + <span class="hljs-number">1000</span> * <span class="hljs-number">60</span> * <span class="hljs-number">60</span>)
+
+  res.end()
+}
+</code></pre>
+<ul>
+<li>Redirect</li>
+</ul>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">async</span> (req, res) =&gt; {
+  res.redirect(<span class="hljs-string">'/settings'</span>)
+}
+</code></pre>
+<ul>
+<li>Custom status</li>
+</ul>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">async</span> (req, res) =&gt; {
+  <span class="hljs-keyword">if</span> (!checkAccess(req.query)) {
+    res.status(<span class="hljs-number">401</span>)
+    res.end(<span class="hljs-string">'Access denied'</span>)
+    <span class="hljs-keyword">return</span>
+  }
+
+  res.end(<span class="hljs-string">'Ok'</span>)
+}
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="how-to-write-a-resolve-config"></a><a href="#how-to-write-a-resolve-config" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>How to write a resolve config</h2>
+<pre><code class="hljs"><span class="hljs-comment">// run.js</span>
+
+<span class="hljs-keyword">import</span> {
+  defaultResolveConfig,
+  watch
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'resolve-scripts'</span>
+
+<span class="hljs-keyword">import</span> appConfig <span class="hljs-keyword">from</span> <span class="hljs-string">'./config.app'</span>
+<span class="hljs-keyword">import</span> devConfig <span class="hljs-keyword">from</span> <span class="hljs-string">'./config.dev'</span>
+<span class="hljs-keyword">import</span> prodConfig <span class="hljs-keyword">from</span> <span class="hljs-string">'./config.prod'</span>
+<span class="hljs-keyword">import</span> testFunctionalConfig <span class="hljs-keyword">from</span> <span class="hljs-string">'./config.test_functional'</span>
+
+<span class="hljs-keyword">const</span> launchMode = process.argv[<span class="hljs-number">2</span>]
+
+<span class="hljs-keyword">void</span> (<span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">switch</span> (launchMode) {
+    <span class="hljs-keyword">case</span> <span class="hljs-string">'dev'</span>: {
+      <span class="hljs-keyword">await</span> watch({
+        ...defaultResolveConfig,
+        ...appConfig,
+        ...devConfig,
+        {
+          <span class="hljs-attr">apiHandlers</span>: [
+            {
+              <span class="hljs-attr">path</span>: <span class="hljs-string">'info'</span>,
+              <span class="hljs-attr">controller</span>: <span class="hljs-string">'api-handlers/info.js'</span>,
+              <span class="hljs-attr">method</span>: <span class="hljs-string">'GET'</span>
+            }
+          ]
+        }
+      })
+      <span class="hljs-keyword">break</span>
+    }
+    <span class="hljs-comment">// ...</span>
+  }
+})().catch(<span class="hljs-function"><span class="hljs-params">error</span> =&gt;</span> {
+  <span class="hljs-comment">// eslint-disable-next-line no-console</span>
+  <span class="hljs-built_in">console</span>.log(error)
+})
+</code></pre>
+<p>See <a href="../packages/core/resolve-scripts/configs/schema.resolve.config.json">Schema Resolve Config</a> for more information.</p>
+</span></div></article></div><div class="docs-prevnext"></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#api-reference">API Reference</a></li><li><a href="#request">Request</a></li><li><a href="#response">Response</a></li><li><a href="#how-to-write-an-api-handlers">How to write an api handlers</a></li><li><a href="#how-to-write-a-resolve-config">How to write a resolve config</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/resolve/" class="nav-home"><img src="/resolve/img/resolve.svg" alt="ReSolve" width="66" height="58"/></a><div><h5>Docs</h5><a href="/resolve/">Documentation Index</a></div><div><h5>Community</h5><a href="http://stackoverflow.com/questions/resolvejs/" target="_blank" rel="noreferrer noopener">Stack Overflow</a><a href="https://stackoverflow.com/questions/tagged/resolvejs" target="_blank" rel="noreferrer noopener">Twitter</a></div><div><h5>More</h5><a href="https://github.com/reimagined/resolve">GitHub</a><a class="github-button" href="https://github.com/reimagined/resolve" data-icon="octicon-star" data-count-href="/reimagined/resolve/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><section class="copyright">Copyright © 2018 reimagined</section></footer></div></body></html>
