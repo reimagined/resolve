@@ -12,6 +12,9 @@
     "rename-version": "docusaurus-rename-version",
     "test": "echo Test || exit 0"
   },
+  "dependencies": {
+    "react": "16.6.3"
+  },
   "devDependencies": {
     "docusaurus": "^1.5.1"
   }
