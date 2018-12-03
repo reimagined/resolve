@@ -55,9 +55,11 @@ Your application will be running at http://localhost:3000/.
 
 ### Creating a new app with a code example
 
-You can create a new application with a code example using `create-resolve-app` with the `-e` flag followed by the example's name. Use the `create-resolve-app -h` command to list the available [examples](./examples/).
+There are several [code examples](./examples/) provided. You can add code from these examples into your projects. To list the available examples use the create-resolve-app -h command.
 
-For instance, to run the [shopping-list](./examples/shopping-list) example, run:
+To create a new application with the code of the specific example use the create-resolve-app command with the -e flag followed by the example's name.
+
+For instance, to run the [shopping-list example](./examples/shopping-list), run:
 
 ```sh
 npx create-resolve-app resolve-example -e shopping-list
