@@ -49,5 +49,8 @@ event-storage.db
 dist
 lib
 es
+/website/node_modules
+/website/build
+/website/i18n
 
 
