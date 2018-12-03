@@ -96,6 +96,7 @@ module.exports = {
           'cli',
           'cmd',
           'codeload',
+          'Codepage',
           'commonjs',
           'config',
           'configs',
