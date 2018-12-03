@@ -5,6 +5,9 @@ import validate from './validation'
 import { STORY_CREATED, STORY_UNVOTED, STORY_UPVOTED } from '../event-types'
 import jwtSecret from '../../auth/jwt_secret'
 
+// eslint-disable-next-line eqeqeq
+const wrapEmptyString = str => (str == '' ? '\u200b' : str)
+
 export default {
   createStory: (state, command, jwtToken) => {
     const jwt = jsonwebtoken.verify(jwtToken, jwtSecret)
@@ -27,9 +30,9 @@ export default {
     return {
       type: STORY_CREATED,
       payload: {
-        title,
-        text,
-        link,
+        title: wrapEmptyString(title),
+        text: wrapEmptyString(text),
+        link: wrapEmptyString(link),
         userId: jwt.id,
         userName: jwt.name
       }

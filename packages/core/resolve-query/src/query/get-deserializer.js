@@ -3,7 +3,7 @@ const getDeserializer = (
   { modelName }
 ) => {
   checkQueryDisposeState(disposePromise)
-  const executor = getExecutor(executors, modelName)
+  const executor = getExecutor({ executors }, modelName)
   return executor.deserialize(modelName)
 }
 

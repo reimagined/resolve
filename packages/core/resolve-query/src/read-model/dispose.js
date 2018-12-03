@@ -1,4 +1,4 @@
-const dispose = (repository, options = {}) => {
+const dispose = async (repository, options = {}) => {
   if (options == null || options.constructor !== Object) {
     throw new Error(
       'Dispose options should be object or not be passed to use default behaviour'
@@ -6,21 +6,20 @@ const dispose = (repository, options = {}) => {
   }
 
   if (repository.disposePromise) {
-    return repository.disposePromise
+    return await repository.disposePromise
   }
-
   if (!repository.hasOwnProperty('prepareProjection')) {
     return
   }
 
-  const disposePromise = repository.adapter.reset(options)
+  const disposePromise = repository.metaApi.dropReadModel()
 
-  Object.keys(repository).forEach(key => {
+  for (const key of Object.keys(repository)) {
     delete repository[key]
-  })
+  }
 
   repository.disposePromise = disposePromise
-  return repository.disposePromise
+  return await repository.disposePromise
 }
 
 export default dispose

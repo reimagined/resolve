@@ -10,22 +10,20 @@ const createReadModel = (
     applyEvent,
     applyEvents
   },
-  { name, projection, resolvers, adapterName }
+  { name, projection, resolvers, adapter }
 ) => {
   const storage = createStorageAdapter()
   const bus = createBusAdapter()
 
   const eventStore = createEventStore({ storage, bus })
+  const adapterName = 'default'
 
   const query = createQuery({
     eventStore,
     viewModels: [],
-    readModelAdaptersCreators: [
-      {
-        name: adapterName,
-        factory: createReadModelAdapter
-      }
-    ],
+    readModelAdapters: {
+      [adapterName]: adapter != null ? adapter : createReadModelAdapter()
+    },
     readModels: [
       {
         name,

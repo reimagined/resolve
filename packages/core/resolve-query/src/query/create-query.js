@@ -13,15 +13,18 @@ const createQuery = (
   getDeserializer,
   dispose,
   getExecutors,
+  updateRequest,
   {
     eventStore,
     viewModels,
     readModels,
     snapshotAdapter,
-    readModelAdaptersCreators
+    readModelAdapters,
+    doUpdateRequest
   }
 ) => {
   const repository = {
+    updateRequest: doUpdateRequest == null ? updateRequest : doUpdateRequest,
     executors: new Map(),
     executorTypes: new Map(),
     errorMessages: [],
@@ -29,15 +32,17 @@ const createQuery = (
     createReadModel,
     createViewModel,
     checkQueryDisposeState,
-    getExecutor
+    getExecutor,
+    getModelType
   }
 
-  initReadModels({
-    ...repository,
-    eventStore,
-    readModels,
-    readModelAdaptersCreators
-  })
+  if (doUpdateRequest != null && typeof doUpdateRequest !== 'function') {
+    repository.errorMessages.push(
+      'Parameter `doUpdateRequest` should be function'
+    )
+  }
+
+  initReadModels({ ...repository, eventStore, readModels, readModelAdapters })
   initViewModels({ ...repository, eventStore, viewModels, snapshotAdapter })
   checkInitErrors(repository)
 

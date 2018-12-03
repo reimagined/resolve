@@ -30,14 +30,15 @@ export default {
     store,
     { aggregateId, timestamp, payload: { title, link, userId, userName, text } }
   ) => {
-    const type = !link ? 'ask' : /^(Show HN)/.test(title) ? 'show' : 'story'
+    const isAsk = link == null || link === '' || link === '\u200b'
+    const type = isAsk ? 'ask' : /^(Show HN)/.test(title) ? 'show' : 'story'
 
     const story = {
       id: aggregateId,
       type,
       title,
       text,
-      link,
+      link: !isAsk ? link : '',
       commentCount: 0,
       votes: [],
       createdAt: timestamp,

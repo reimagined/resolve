@@ -1,17 +1,15 @@
-import buildProjection from './build-projection'
-import checkStoreApi from './check-store-api'
 import createAdapter from './create-adapter'
+import checkStoreApi from './check-store-api'
 import checkTableSchema from './check-table-schema'
-import wrapApis from './wrap-apis'
-import init from './init'
-import reset from './reset'
+import bindWithConnection from './bind-with-connection'
+import bindReadModel from './bind-read-model'
+import dispose from './dispose'
 
 export default createAdapter.bind(
   null,
-  buildProjection,
   checkStoreApi,
   checkTableSchema,
-  wrapApis,
-  init,
-  reset
+  bindWithConnection,
+  bindReadModel,
+  dispose
 )

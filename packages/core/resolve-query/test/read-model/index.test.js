@@ -3,8 +3,8 @@ import sinon from 'sinon'
 test('Read-model index', () => {
   const createReadModel = require('../../src/read-model/create-read-model')
 
-  const init = require('../../src/read-model/init')
-  const getModelReadInterface = require('../../src/read-model/get-model-read-interface')
+  const connect = require('../../src/read-model/connect')
+  const loadEvents = require('../../src/read-model/load-events')
   const getLastError = require('../../src/read-model/get-last-error')
   const read = require('../../src/read-model/read')
   const readAndSerialize = require('../../src/read-model/read-and-serialize')
@@ -13,8 +13,8 @@ test('Read-model index', () => {
   const dispose = require('../../src/read-model/dispose')
   const projectionInvoker = require('../../src/read-model/projection-invoker')
 
-  sinon.stub(init, 'default').callsFake(() => () => {})
-  sinon.stub(getModelReadInterface, 'default').callsFake(() => () => {})
+  sinon.stub(connect, 'default').callsFake(() => () => {})
+  sinon.stub(loadEvents, 'default').callsFake(() => () => {})
   sinon.stub(getLastError, 'default').callsFake(() => () => {})
   sinon.stub(read, 'default').callsFake(() => () => {})
   sinon.stub(readAndSerialize, 'default').callsFake(() => () => {})
@@ -33,8 +33,8 @@ test('Read-model index', () => {
 
   const index = require('../../src/read-model/index.js')
 
-  expect(init.default.callCount).toEqual(0)
-  expect(getModelReadInterface.default.callCount).toEqual(0)
+  expect(connect.default.callCount).toEqual(0)
+  expect(loadEvents.default.callCount).toEqual(0)
   expect(getLastError.default.callCount).toEqual(0)
   expect(read.default.callCount).toEqual(0)
   expect(readAndSerialize.default.callCount).toEqual(0)
@@ -45,8 +45,8 @@ test('Read-model index', () => {
 
   index.default()
 
-  expect(init.default.callCount).toEqual(1)
-  expect(getModelReadInterface.default.callCount).toEqual(1)
+  expect(connect.default.callCount).toEqual(1)
+  expect(loadEvents.default.callCount).toEqual(1)
   expect(getLastError.default.callCount).toEqual(1)
   expect(read.default.callCount).toEqual(1)
   expect(readAndSerialize.default.callCount).toEqual(1)
@@ -57,8 +57,8 @@ test('Read-model index', () => {
 
   const readModelCallArgs = createReadModel.default.firstCall.args
 
-  expect(readModelCallArgs[0]).toEqual(init.default)
-  expect(readModelCallArgs[1]).toEqual(getModelReadInterface.default)
+  expect(readModelCallArgs[0]).toEqual(connect.default)
+  expect(readModelCallArgs[1]).toEqual(loadEvents.default)
   expect(readModelCallArgs[2]).toEqual(getLastError.default)
   expect(readModelCallArgs[3]).toEqual(read.default)
   expect(readModelCallArgs[4]).toEqual(readAndSerialize.default)

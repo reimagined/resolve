@@ -11,6 +11,7 @@ import getModelType from './get-model-type'
 import getDeserializer from './get-deserializer'
 import dispose from './dispose'
 import getExecutors from './get-executors'
+import updateRequest from './update-request'
 import createReadModel from '../read-model'
 import createViewModel from '../view-model'
 
@@ -29,5 +30,6 @@ export default createQuery.bind(
   getModelType,
   getDeserializer,
   dispose,
-  getExecutors
+  getExecutors,
+  updateRequest
 )

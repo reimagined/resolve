@@ -3,13 +3,30 @@ import IotData from 'aws-sdk/clients/iotdata'
 import { Converter } from 'aws-sdk/clients/dynamodb'
 import v4 from 'aws-signature-v4'
 import STS from 'aws-sdk/clients/sts'
+import Lambda from 'aws-sdk/clients/lambda'
 
 import wrapApiHandler from 'resolve-api-handler-awslambda'
 import createCommandExecutor from 'resolve-command'
 import createEventStore from 'resolve-es'
-import createQueryExecutor from 'resolve-query'
+import createQueryExecutor, { constants as queryConstants } from 'resolve-query'
 
 import mainHandler from './handlers/main_handler'
+
+const invokeLambdaSelf = async event => {
+  const lambda = new Lambda({ apiVersion: '2015-03-31' })
+  const invokeParams = {
+    FunctionName: process.env.AWS_LAMBDA_FUNCTION_NAME,
+    InvocationType: 'Event',
+    Payload: JSON.stringify(event),
+    LogType: 'None'
+  }
+
+  return await new Promise((resolve, reject) =>
+    lambda.invoke(invokeParams, (err, data) =>
+      !err ? resolve(data) : reject(err)
+    )
+  )
+}
 
 const initResolve = async (
   {
@@ -24,18 +41,47 @@ const initResolve = async (
   const { aggregates, readModels, viewModels } = resolve
   const snapshotAdapter = createSnapshotAdapter()
 
+  const readModelAdapters = {}
+  for (const { name, factory } of readModelAdaptersCreators) {
+    readModelAdapters[name] = factory()
+  }
+
   const executeCommand = createCommandExecutor({
     eventStore,
     aggregates,
     snapshotAdapter
   })
 
+  if (resolve.activeDemandSet == null) {
+    resolve.__proto__.activeDemandSet = new Set()
+  }
+
+  const doUpdateRequest = async (pool, readModelName, readOptions) => {
+    const executor = pool.getExecutor(pool, readModelName)
+
+    Promise.resolve()
+      .then(() => executor.read(readOptions))
+      .catch(error => error)
+      .then(() => invokeLambdaSelf({ Records: [] }))
+      .catch(error => {
+        resolveLog('error', 'Update lambda invocation error', error)
+      })
+
+    if (!resolve.activeDemandSet.has(readModelName)) {
+      // Delay initial read-model on-demand request to enforce awaiting tables creation in common
+      // cases for better usability, but will be evenntually consistent anyway, even no timeout
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      resolve.activeDemandSet.add(readModelName)
+    }
+  }
+
   const executeQuery = createQueryExecutor({
     eventStore,
     viewModels,
     readModels,
-    readModelAdaptersCreators,
-    snapshotAdapter
+    readModelAdapters,
+    snapshotAdapter,
+    doUpdateRequest
   })
 
   Object.assign(resolve, {
@@ -45,15 +91,20 @@ const initResolve = async (
   })
 
   Object.defineProperties(resolve, {
+    readModelAdapters: { value: readModelAdapters },
     snapshotAdapter: { value: snapshotAdapter },
     storageAdapter: { value: storageAdapter }
   })
 }
 
 const disposeResolve = async resolve => {
-  await resolve.executeQuery.dispose()
   await resolve.storageAdapter.dispose()
+
   await resolve.snapshotAdapter.dispose()
+
+  for (const name of Object.keys(resolve.readModelAdapters)) {
+    await resolve.readModelAdapters[name].dispose()
+  }
 }
 
 const getSubscribeAdapterOptions = async ({ sts }) => {
@@ -99,82 +150,88 @@ const lambdaWorker = async (
   let executorResult = null
 
   const resolve = Object.create(resolveBase)
-  await initResolve(assemblies, resolve)
-  resolveLog(
-    'debug',
-    'Lambda handler has initialized resolve instance',
-    resolve
-  )
-
-  // API gateway event
-  if (lambdaEvent.headers != null && lambdaEvent.httpMethod != null) {
+  try {
+    await initResolve(assemblies, resolve)
     resolveLog(
       'debug',
-      'Lambda handler classified event as API gateway',
-      lambdaEvent.httpMethod,
-      lambdaEvent.headers
+      'Lambda handler has initialized resolve instance',
+      resolve
     )
-    const getCustomParameters = async () => ({ resolve })
-    const executor = wrapApiHandler(mainHandler, getCustomParameters)
 
-    executorResult = await executor(lambdaEvent, lambdaContext)
-  }
-  // DynamoDB trigger event
-  // AWS DynamoDB streams guarantees that changesets from one table partition will
-  // be delivered strictly into one lambda instance, i.e. following code works in
-  // single-thread mode for one event storage - see https://amzn.to/2LkKXAV
-  else if (lambdaEvent.Records != null) {
-    resolveLog(
-      'debug',
-      'Lambda handler classified event as Dynamo stream',
-      lambdaEvent.Records
-    )
-    const applicationPromises = []
-    const events = lambdaEvent.Records.map(record =>
-      Converter.unmarshall(record.dynamodb.NewImage)
-    )
-    // TODO. Refactoring MQTT publish event
-    for (const event of events) {
-      const eventDescriptor = {
-        topic: `${process.env.DEPLOYMENT_ID}/${event.type}/${
-          event.aggregateId
-        }`,
-        payload: JSON.stringify(event),
-        qos: 1
+    // API gateway event
+    if (lambdaEvent.headers != null && lambdaEvent.httpMethod != null) {
+      resolveLog(
+        'debug',
+        'Lambda handler classified event as API gateway',
+        lambdaEvent.httpMethod,
+        lambdaEvent.headers
+      )
+      const getCustomParameters = async () => ({ resolve })
+      const executor = wrapApiHandler(mainHandler, getCustomParameters)
+
+      executorResult = await executor(lambdaEvent, lambdaContext)
+    }
+    // DynamoDB trigger event
+    // AWS DynamoDB streams guarantees that changesets from one table partition will
+    // be delivered strictly into one lambda instance, i.e. following code works in
+    // single-thread mode for one event storage - see https://amzn.to/2LkKXAV
+    else if (lambdaEvent.Records != null) {
+      resolveLog(
+        'debug',
+        'Lambda handler classified event as Dynamo stream',
+        lambdaEvent.Records
+      )
+      const applicationPromises = []
+      const events = lambdaEvent.Records.map(record =>
+        Converter.unmarshall(record.dynamodb.NewImage)
+      )
+      // TODO. Refactoring MQTT publish event
+      for (const event of events) {
+        const eventDescriptor = {
+          topic: `${process.env.DEPLOYMENT_ID}/${event.type}/${
+            event.aggregateId
+          }`,
+          payload: JSON.stringify(event),
+          qos: 1
+        }
+
+        applicationPromises.push(
+          resolve.mqtt
+            .publish(eventDescriptor)
+            .promise()
+            .then(() => {
+              resolveLog(
+                'info',
+                'Lambda pushed event into MQTT successfully',
+                eventDescriptor
+              )
+            })
+            .catch(error => {
+              resolveLog(
+                'warn',
+                'Lambda can not publish event into MQTT',
+                eventDescriptor,
+                error
+              )
+            })
+        )
       }
 
-      applicationPromises.push(
-        resolve.mqtt
-          .publish(eventDescriptor)
-          .promise()
-          .then(() => {
-            resolveLog(
-              'info',
-              'Lambda pushed event into MQTT successfully',
-              eventDescriptor
-            )
-          })
-          .catch(error => {
-            resolveLog(
-              'warn',
-              'Lambda can not publish event into MQTT',
-              eventDescriptor,
-              error
-            )
-          })
+      const executors = resolve.executeQuery.getExecutors(
+        queryConstants.modelTypes.readModel
       )
-    }
 
-    for (const executor of resolve.executeQuery.getExecutors().values()) {
-      applicationPromises.push(executor.updateByEvents(events))
-    }
+      for (const executor of executors) {
+        applicationPromises.push(executor.updateByEvents(events))
+      }
 
-    await Promise.all(applicationPromises)
-    executorResult = true
+      await Promise.all(applicationPromises)
+      executorResult = true
+    }
+  } finally {
+    await disposeResolve(resolve)
+    resolveLog('debug', 'Lambda handler has disposed resolve instance')
   }
-
-  await disposeResolve(resolve)
-  resolveLog('debug', 'Lambda handler has disposed resolve instance')
 
   if (executorResult == null) {
     throw new Error(`Lambda cannot be invoked with event: ${lambdaEvent}`)

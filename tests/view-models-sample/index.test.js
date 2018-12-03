@@ -1,8 +1,8 @@
 import { createViewModel } from 'resolve-query'
 
-import projection from '../view-models/default.projection'
-import serializeState from '../view-models/default.serialize_state'
-import deserializeState from '../view-models/default.deserialize_state'
+import projection from './projection'
+import serializeState from './serialize-state'
+import deserializeState from './deserialize-state'
 
 describe('View-model generic adapter API', () => {
   let buildTestViewModelReader, events

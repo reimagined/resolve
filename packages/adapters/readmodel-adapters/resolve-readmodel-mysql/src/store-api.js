@@ -19,12 +19,14 @@ const getTypeDefinitionForColumn = columnType => {
 }
 
 const defineTable = async (
-  { connection, escapeId },
+  { queryTransactionalDDL, tablePrefix, escapeId },
+  readModelName,
   tableName,
   tableDescription
 ) => {
-  await connection.execute(
-    `CREATE TABLE ${escapeId(tableName)} (\n` +
+  await queryTransactionalDDL(
+    readModelName,
+    `CREATE TABLE ${escapeId(`${tablePrefix}${tableName}`)} (\n` +
       [
         Object.keys(tableDescription)
           .map(
@@ -36,11 +38,17 @@ const defineTable = async (
           .join(',\n'),
         Object.keys(tableDescription)
           .filter(columnName => tableDescription[columnName] !== 'regular')
-          .map((columnName, idx) =>
-            idx === 0
-              ? `PRIMARY KEY (${escapeId(columnName)})`
-              : `INDEX USING BTREE (${escapeId(columnName)})`
-          )
+          .map(columnName => {
+            const columnType = tableDescription[columnName]
+            if (
+              columnType === 'primary-string' ||
+              columnType === 'primary-number'
+            ) {
+              return `PRIMARY KEY (${escapeId(columnName)})`
+            } else {
+              return `INDEX USING BTREE (${escapeId(columnName)})`
+            }
+          })
           .join(',\n')
       ].join(',\n') +
       `\n)`
@@ -50,31 +58,19 @@ const defineTable = async (
 const makeNestedPath = nestedPath =>
   `$.${nestedPath.map(JSON.stringify).join('.')}`
 
-const makeCompareOperator = oper => {
-  switch (oper) {
-    case '$eq':
-      return '='
-    case '$ne':
-      return '<>'
-    case '$lte':
-      return '<='
-    case '$gte':
-      return '>='
-    case '$lt':
-      return '<'
-    case '$gt':
-      return '>'
-    default:
-      return '='
-  }
-}
+const compareOperatorsMap = new Map([
+  ['$eq', '='],
+  ['$ne', '<>'],
+  ['$lte', '<='],
+  ['$gte', '>='],
+  ['$lt', '<'],
+  ['$gt', '>']
+])
 
-const searchToWhereExpression = (expression, fieldTypes, escapeId) => {
+const searchToWhereExpression = (expression, fieldTypes, escapeId, escape) => {
   const searchExprArray = []
-  const searchValues = []
-
   const isDocumentExpr =
-    Object.keys(expression).filter(key => key.indexOf('$') > -1).length === 0
+    expression.$and == null && expression.$or == null && expression.$not == null
 
   if (isDocumentExpr) {
     for (let fieldName of Object.keys(expression)) {
@@ -85,30 +81,50 @@ const searchToWhereExpression = (expression, fieldTypes, escapeId) => {
           : escapeId(baseName)
 
       let fieldValue = expression[fieldName]
-      let fieldOperator = '='
+      let fieldOperator = '$eq'
 
       if (fieldValue instanceof Object) {
         fieldOperator = Object.keys(fieldValue)[0]
         fieldValue = fieldValue[fieldOperator]
       }
 
-      const resultOperator = makeCompareOperator(fieldOperator)
+      let compareInlinedValue = null
+      switch (
+        `${fieldValue == null ? 'null' : 'val'}-${fieldTypes[baseName]}`
+      ) {
+        case 'val-primary-string':
+        case 'val-secondary-string':
+          compareInlinedValue = `${escape(fieldValue)}`
+          break
+        case 'val-primary-number':
+        case 'val-secondary-number':
+          compareInlinedValue = `${+fieldValue}`
+          break
+        case 'val-regular':
+          compareInlinedValue = `CAST(${escape(
+            JSON.stringify(fieldValue)
+          )} AS JSON)`
+          break
+        case 'null-secondary-string':
+        case 'null-secondary-number':
+        case 'null-regular':
+          break
+        default: {
+          throw new Error(`Wrong type ${fieldTypes[baseName]}`)
+        }
+      }
 
-      if (fieldTypes[baseName] === 'regular') {
+      if (compareInlinedValue != null) {
+        const resultOperator = compareOperatorsMap.get(fieldOperator)
         searchExprArray.push(
-          `${resultFieldName} ${resultOperator} CAST(? AS JSON)`
+          `${resultFieldName} ${resultOperator} ${compareInlinedValue}`
         )
-        searchValues.push(JSON.stringify(fieldValue))
       } else {
-        searchExprArray.push(`${resultFieldName} ${resultOperator} ?`)
-        searchValues.push(fieldValue)
+        searchExprArray.push(`${resultFieldName} IS NULL`)
       }
     }
 
-    return {
-      searchExpr: searchExprArray.join(' AND '),
-      searchValues
-    }
+    return searchExprArray.join(' AND ')
   }
 
   for (let operatorName of Object.keys(expression)) {
@@ -118,10 +134,10 @@ const searchToWhereExpression = (expression, fieldTypes, escapeId) => {
         const whereExpr = searchToWhereExpression(
           innerExpr,
           fieldTypes,
-          escapeId
+          escapeId,
+          escape
         )
-        localSearchExprArray.push(whereExpr.searchExpr)
-        whereExpr.searchValues.map(val => searchValues.push(val))
+        localSearchExprArray.push(whereExpr)
       }
 
       const joiner = operatorName === '$and' ? ' AND ' : ' OR '
@@ -139,25 +155,20 @@ const searchToWhereExpression = (expression, fieldTypes, escapeId) => {
       const whereExpr = searchToWhereExpression(
         expression[operatorName],
         fieldTypes,
-        escapeId
+        escapeId,
+        escape
       )
 
-      whereExpr.searchValues.map(val => searchValues.push(val))
-      searchExprArray.push(`NOT (${whereExpr.searchExpr})`)
-
+      searchExprArray.push(`NOT (${whereExpr})`)
       break
     }
   }
 
-  return {
-    searchExpr: searchExprArray.join(' AND '),
-    searchValues
-  }
+  return searchExprArray.join(' AND ')
 }
 
-const updateToSetExpression = (expression, fieldTypes, escapeId) => {
+const updateToSetExpression = (expression, fieldTypes, escapeId, escape) => {
   const updateExprArray = []
-  const updateValues = []
 
   for (let operatorName of Object.keys(expression)) {
     for (let fieldName of Object.keys(expression[operatorName])) {
@@ -179,48 +190,106 @@ const updateToSetExpression = (expression, fieldTypes, escapeId) => {
         }
 
         case '$set': {
+          let updatingInlinedValue = null
+          switch (fieldTypes[baseName]) {
+            case 'primary-string':
+            case 'secondary-string':
+              updatingInlinedValue = `${escape(fieldValue)}`
+              break
+            case 'primary-number':
+            case 'secondary-number':
+              updatingInlinedValue = `${+fieldValue}`
+              break
+            case 'regular':
+              updatingInlinedValue = `CAST(${escape(
+                JSON.stringify(fieldValue)
+              )} AS JSON)`
+              break
+            default: {
+              throw new Error(`Wrong type ${fieldTypes[baseName]}`)
+            }
+          }
+
           if (nestedPath.length > 0) {
             updateExprArray.push(
               `${escapeId(baseName)} = JSON_SET(${escapeId(
                 baseName
-              )}, '${makeNestedPath(nestedPath)}', CAST(? AS JSON)) `
+              )}, '${makeNestedPath(nestedPath)}', ${updatingInlinedValue}) `
             )
           } else {
-            updateExprArray.push(`${escapeId(baseName)} = ? `)
-          }
-
-          if (fieldTypes[baseName] === 'regular') {
-            updateValues.push(JSON.stringify(fieldValue))
-          } else {
-            updateValues.push(fieldValue)
+            updateExprArray.push(
+              `${escapeId(baseName)} = ${updatingInlinedValue} `
+            )
           }
 
           break
         }
 
         case '$inc': {
-          if (nestedPath.length > 0) {
-            updateExprArray.push(
-              `${escapeId(baseName)} = JSON_SET(${escapeId(
-                baseName
-              )}, '${makeNestedPath(nestedPath)}', JSON_EXTRACT(${escapeId(
-                baseName
-              )}, '${makeNestedPath(nestedPath)}') + ?) `
-            )
-          } else {
-            if (fieldTypes[baseName] === 'regular') {
-              updateExprArray.push(
-                `${escapeId(baseName)} = CAST((${escapeId(
+          const sourceInlinedValue =
+            nestedPath.length > 0
+              ? `JSON_EXTRACT(${escapeId(baseName)}, '${makeNestedPath(
+                  nestedPath
+                )}')`
+              : escapeId(baseName)
+
+          const targetInlinedPrefix =
+            nestedPath.length > 0
+              ? `${escapeId(baseName)} = JSON_SET(${escapeId(
                   baseName
-                )} + ?) AS JSON) `
-              )
-            } else {
-              updateExprArray.push(
-                `${escapeId(baseName)} = ${escapeId(baseName)} + ? `
-              )
+                )}, '${makeNestedPath(nestedPath)}', `
+              : `${escapeId(baseName)} = `
+
+          const targetInlinedPostfix = nestedPath.length > 0 ? ')' : ''
+
+          let updatingInlinedValue = null
+          switch (fieldTypes[baseName]) {
+            case 'primary-string':
+            case 'secondary-string':
+              updatingInlinedValue = `CAST(CONCAT(
+                CAST(${sourceInlinedValue} AS ${STRING_INDEX_TYPE}),
+                CAST(${escape(fieldValue)} AS ${STRING_INDEX_TYPE})
+              ) AS ${STRING_INDEX_TYPE})`
+              break
+
+            case 'primary-number':
+            case 'secondary-number':
+              updatingInlinedValue = `CAST((
+                CAST(${sourceInlinedValue} AS ${NUMBER_INDEX_TYPE}) +
+                CAST(${+fieldValue} AS ${NUMBER_INDEX_TYPE})
+              ) AS ${NUMBER_INDEX_TYPE})`
+              break
+
+            case 'regular':
+              updatingInlinedValue = `CAST(CASE
+                WHEN JSON_TYPE(${sourceInlinedValue}) = 'STRING' THEN JSON_QUOTE(CONCAT(
+                  CAST(JSON_UNQUOTE(${sourceInlinedValue}) AS CHAR),
+                  CAST(${escape(fieldValue)} AS CHAR)
+                ))
+                WHEN JSON_TYPE(${sourceInlinedValue}) = 'INTEGER' THEN (
+                  CAST(${sourceInlinedValue} AS UNSIGNED) +
+                  CAST(${+fieldValue} AS UNSIGNED)
+                )
+                WHEN JSON_TYPE(${sourceInlinedValue}) = 'DOUBLE' THEN (
+                  CAST(${sourceInlinedValue} AS DECIMAL(48, 16)) +
+                  CAST(${+fieldValue} AS DECIMAL(48, 16))
+                )
+                ELSE (
+                  SELECT 'Invalid JSON type for $inc operation' 
+                  FROM information_schema.tables
+                )
+              END AS JSON)`
+              break
+
+            default: {
+              throw new Error(`Wrong type ${fieldTypes[baseName]}`)
             }
           }
-          updateValues.push(fieldValue)
+
+          updateExprArray.push(
+            `${targetInlinedPrefix} ${updatingInlinedValue} ${targetInlinedPostfix}`
+          )
+
           break
         }
 
@@ -230,10 +299,7 @@ const updateToSetExpression = (expression, fieldTypes, escapeId) => {
     }
   }
 
-  return {
-    updateExpr: updateExprArray.join(', '),
-    updateValues
-  }
+  return updateExprArray.join(', ')
 }
 
 const buildUpsertDocument = (searchExpression, updateExpression) => {
@@ -268,8 +334,48 @@ const buildUpsertDocument = (searchExpression, updateExpression) => {
 
 const convertBinaryRow = row => Object.setPrototypeOf(row, Object.prototype)
 
+const fieldToSelectExpression = (fieldList, fieldTypes, escapeId) => {
+  if (fieldList == null) {
+    return '*'
+  }
+
+  let selectExpression = ''
+  const fieldListKeys = Object.keys(fieldList)
+
+  if (fieldListKeys.length > 0) {
+    const inclusiveMode = fieldList[fieldListKeys[0]] === 1
+    const selectedFields = []
+    for (const fieldName of Object.keys(fieldTypes)) {
+      if (
+        (inclusiveMode && fieldList.hasOwnProperty(fieldName)) ||
+        (!inclusiveMode && !fieldList.hasOwnProperty(fieldName))
+      ) {
+        const [baseName, ...nestedPath] = fieldName.split('.')
+        if (nestedPath.length === 0) {
+          selectedFields.push(escapeId(baseName))
+        } else {
+          selectedFields.push(
+            `${escapeId(baseName)}->'${makeNestedPath(
+              nestedPath
+            )}' AS ${escapeId(fieldName)}`
+          )
+        }
+      }
+    }
+
+    selectExpression = selectedFields.join(', ')
+  }
+
+  if (selectExpression.trim() === '') {
+    selectExpression = 'NULL'
+  }
+
+  return selectExpression
+}
+
 const find = async (
-  { connection, escapeId, metaInfo },
+  { queryTransactionalDML, escapeId, escape, tablePrefix, tableInfoCache },
+  readModelName,
   tableName,
   searchExpression,
   fieldList,
@@ -277,25 +383,12 @@ const find = async (
   skip,
   limit
 ) => {
-  const fieldTypes = metaInfo.tables[tableName]
-
-  let selectExpression =
-    fieldList && Object.keys(fieldList).length > 0
-      ? Object.keys(fieldList)
-          .filter(fieldName => fieldList[fieldName] === 1)
-          .map(fieldName => {
-            const [baseName, ...nestedPath] = fieldName.split('.')
-            if (nestedPath.length === 0) return escapeId(baseName)
-            return `${escapeId(baseName)}->'${makeNestedPath(
-              nestedPath
-            )}' AS ${escapeId(fieldName)}`
-          })
-          .join(', ')
-      : '*'
-
-  if (selectExpression.trim() === '') {
-    selectExpression = 'NULL'
-  }
+  const fieldTypes = tableInfoCache.get(readModelName).get(tableName)
+  const selectExpression = fieldToSelectExpression(
+    fieldList,
+    fieldTypes,
+    escapeId
+  )
 
   const orderExpression =
     sort && Object.keys(sort).length > 0
@@ -318,22 +411,22 @@ const find = async (
     isFinite(limit) ? limit : MAX_LIMIT_VALUE
   }`
 
-  const { searchExpr, searchValues } = searchToWhereExpression(
+  const searchExpr = searchToWhereExpression(
     searchExpression,
     fieldTypes,
-    escapeId
+    escapeId,
+    escape
   )
 
   const inlineSearchExpr =
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
-  const [rows] = await connection.execute(
-    `SELECT ${selectExpression} FROM ${escapeId(tableName)}
+  const rows = await queryTransactionalDML(
+    readModelName,
+    `SELECT ${selectExpression} FROM ${escapeId(`${tablePrefix}${tableName}`)}
     ${inlineSearchExpr}
     ${orderExpression}
-    ${skipLimit}
-  `,
-    searchValues
+    ${skipLimit}`
   )
 
   for (let idx = 0; idx < rows.length; idx++) {
@@ -344,46 +437,34 @@ const find = async (
 }
 
 const findOne = async (
-  { connection, escapeId, metaInfo },
+  { queryTransactionalDML, escapeId, escape, tablePrefix, tableInfoCache },
+  readModelName,
   tableName,
   searchExpression,
   fieldList
 ) => {
-  const fieldTypes = metaInfo.tables[tableName]
-
-  let selectExpression =
-    fieldList && Object.keys(fieldList).length > 0
-      ? Object.keys(fieldList)
-          .filter(fieldName => fieldList[fieldName] === 1)
-          .map(fieldName => {
-            const [baseName, ...nestedPath] = fieldName.split('.')
-            if (nestedPath.length === 0) return escapeId(baseName)
-            return `${escapeId(baseName)}->'${makeNestedPath(
-              nestedPath
-            )}' AS ${escapeId(fieldName)}`
-          })
-          .join(', ')
-      : '*'
-
-  if (selectExpression.trim() === '') {
-    selectExpression = 'NULL'
-  }
-
-  const { searchExpr, searchValues } = searchToWhereExpression(
-    searchExpression,
+  const fieldTypes = tableInfoCache.get(readModelName).get(tableName)
+  const selectExpression = fieldToSelectExpression(
+    fieldList,
     fieldTypes,
     escapeId
+  )
+
+  const searchExpr = searchToWhereExpression(
+    searchExpression,
+    fieldTypes,
+    escapeId,
+    escape
   )
 
   const inlineSearchExpr =
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
-  const [rows] = await connection.execute(
-    `SELECT ${selectExpression} FROM ${escapeId(tableName)}
+  const rows = await queryTransactionalDML(
+    readModelName,
+    `SELECT ${selectExpression} FROM ${escapeId(`${tablePrefix}${tableName}`)}
     ${inlineSearchExpr}
-    LIMIT 0, 1
-  `,
-    searchValues
+    LIMIT 0, 1`
   )
 
   if (Array.isArray(rows) && rows.length > 0) {
@@ -394,32 +475,33 @@ const findOne = async (
 }
 
 const count = async (
-  { connection, escapeId, metaInfo },
+  { queryTransactionalDML, escapeId, escape, tablePrefix, tableInfoCache },
+  readModelName,
   tableName,
   searchExpression
 ) => {
-  const fieldTypes = metaInfo.tables[tableName]
+  const fieldTypes = tableInfoCache.get(readModelName).get(tableName)
 
-  const { searchExpr, searchValues } = searchToWhereExpression(
+  const searchExpr = searchToWhereExpression(
     searchExpression,
     fieldTypes,
-    escapeId
+    escapeId,
+    escape
   )
 
   const inlineSearchExpr =
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
-  const [rows] = await connection.execute(
-    `SELECT Count(*) AS Count FROM ${escapeId(tableName)}
-    ${inlineSearchExpr}
-  `,
-    searchValues
+  const rows = await queryTransactionalDML(
+    readModelName,
+    `SELECT Count(*) AS Count FROM ${escapeId(`${tablePrefix}${tableName}`)}
+    ${inlineSearchExpr}`
   )
 
   if (
     Array.isArray(rows) &&
     rows.length > 0 &&
-    rows[0] &&
+    rows[0] != null &&
     Number.isInteger(+rows[0].Count)
   ) {
     return +rows[0].Count
@@ -429,96 +511,113 @@ const count = async (
 }
 
 const insert = async (
-  { connection, escapeId, metaInfo },
+  { queryTransactionalDML, escapeId, escape, tablePrefix, tableInfoCache },
+  readModelName,
   tableName,
   document
 ) => {
-  const fieldTypes = metaInfo.tables[tableName]
+  const fieldTypes = tableInfoCache.get(readModelName).get(tableName)
 
-  await connection.execute(
-    `INSERT INTO ${escapeId(tableName)}(${Object.keys(document)
+  await queryTransactionalDML(
+    readModelName,
+    `INSERT INTO ${escapeId(`${tablePrefix}${tableName}`)}(${Object.keys(
+      document
+    )
       .map(key => escapeId(key))
       .join(', ')})
      VALUES(${Object.keys(document)
-       .map(key => (fieldTypes[key] === 'regular' ? 'CAST(? AS JSON)' : '?'))
+       .map(key =>
+         fieldTypes[key] === 'regular'
+           ? `CAST(${escape(JSON.stringify(document[key]))} AS JSON)`
+           : `${escape(document[key])}`
+       )
        .join(', ')})
-    `,
-    Object.keys(document).map(key =>
-      fieldTypes[key] === 'regular'
-        ? JSON.stringify(document[key])
-        : document[key]
-    )
+    `
   )
 }
 
 const update = async (
-  { connection, escapeId, metaInfo },
+  { queryTransactionalDML, tablePrefix, escapeId, escape, tableInfoCache },
+  readModelName,
   tableName,
   searchExpression,
   updateExpression,
   options
 ) => {
-  const fieldTypes = metaInfo.tables[tableName]
+  const fieldTypes = tableInfoCache.get(readModelName).get(tableName)
   const isUpsert = !!options.upsert
 
   if (isUpsert) {
     const foundDocumentsCount = await count(
-      { connection, escapeId, metaInfo },
+      { queryTransactionalDML, escapeId, tablePrefix, escape, tableInfoCache },
+      readModelName,
       tableName,
       searchExpression
     )
 
     if (foundDocumentsCount === 0) {
-      const document = buildUpsertDocument(
-        searchExpression,
-        updateExpression,
-        fieldTypes,
-        escapeId
+      const document = buildUpsertDocument(searchExpression, updateExpression)
+      await insert(
+        {
+          queryTransactionalDML,
+          escapeId,
+          tablePrefix,
+          escape,
+          tableInfoCache
+        },
+        readModelName,
+        tableName,
+        document
       )
-      await insert({ connection, escapeId, metaInfo }, tableName, document)
       return
     }
   }
 
-  const { searchExpr, searchValues } = searchToWhereExpression(
+  const searchExpr = searchToWhereExpression(
     searchExpression,
     fieldTypes,
-    escapeId
+    escapeId,
+    escape
   )
-  const { updateExpr, updateValues } = updateToSetExpression(
+  const updateExpr = updateToSetExpression(
     updateExpression,
     fieldTypes,
-    escapeId
+    escapeId,
+    escape
   )
 
   const inlineSearchExpr =
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
-  await connection.execute(
-    `UPDATE ${escapeId(tableName)} SET ${updateExpr} ${inlineSearchExpr}`,
-    [...updateValues, ...searchValues]
+  await queryTransactionalDML(
+    readModelName,
+    `UPDATE ${escapeId(`${tablePrefix}${tableName}`)}
+    SET ${updateExpr} ${inlineSearchExpr}`
   )
 }
 
 const del = async (
-  { connection, escapeId, metaInfo },
+  { queryTransactionalDML, tablePrefix, escapeId, escape, tableInfoCache },
+  readModelName,
   tableName,
   searchExpression
 ) => {
-  const fieldTypes = metaInfo.tables[tableName]
+  const fieldTypes = tableInfoCache.get(readModelName).get(tableName)
 
-  const { searchExpr, searchValues } = searchToWhereExpression(
+  const searchExpr = searchToWhereExpression(
     searchExpression,
     fieldTypes,
-    escapeId
+    escapeId,
+    escape
   )
 
   const inlineSearchExpr =
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
-  await connection.execute(
-    `DELETE FROM ${escapeId(tableName)} ${inlineSearchExpr}`,
-    searchValues
+  await queryTransactionalDML(
+    readModelName,
+    `DELETE FROM ${escapeId(`${tablePrefix}${tableName}`)}
+    ${inlineSearchExpr}`
   )
 }
 
