@@ -9,7 +9,8 @@
     "publish-gh-pages": "docusaurus-publish",
     "write-translations": "docusaurus-write-translations",
     "version": "docusaurus-version",
-    "rename-version": "docusaurus-rename-version"
+    "rename-version": "docusaurus-rename-version",
+    "test": "echo Test || exit 0"
   },
   "devDependencies": {
     "docusaurus": "^1.5.1"

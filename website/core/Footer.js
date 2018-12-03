@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
+const React = require('react')
 
 class Footer extends React.Component {
   render() {
@@ -24,22 +24,22 @@ class Footer extends React.Component {
           </a>
           <div>
             <h5>Docs</h5>
-            <a href={this.props.config.baseUrl}>
-              Documentation Index
-            </a>
+            <a href={this.props.config.baseUrl}>Documentation Index</a>
           </div>
           <div>
             <h5>Community</h5>
             <a
               href="http://stackoverflow.com/questions/resolvejs/"
               target="_blank"
-              rel="noreferrer noopener">
+              rel="noreferrer noopener"
+            >
               Stack Overflow
             </a>
             <a
               href="https://stackoverflow.com/questions/tagged/resolvejs"
               target="_blank"
-              rel="noreferrer noopener">
+              rel="noreferrer noopener"
+            >
               Twitter
             </a>
           </div>
@@ -53,15 +53,16 @@ class Footer extends React.Component {
               data-count-href="/reimagined/resolve/stargazers"
               data-show-count="true"
               data-count-aria-label="# stargazers on GitHub"
-              aria-label="Star this project on GitHub">
+              aria-label="Star this project on GitHub"
+            >
               Star
             </a>
           </div>
         </section>
         <section className="copyright">{this.props.config.copyright}</section>
       </footer>
-    );
+    )
   }
 }
 
-module.exports = Footer;
+module.exports = Footer
