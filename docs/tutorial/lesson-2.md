@@ -1,11 +1,11 @@
 # Lesson 2 - Write side - Add a List Item
 
-This lesson will teach you how to implement a basic write side for your reSolve application. An application's write side is responsible for handling commands, performing input validation and emitting **events** based on valid commands. The emitted events are then saved to the **event store**.
+This lesson will teach you how to implement a basic write side for your reSolve application. An application's [write side](../basics/resolve-app-structure.md#write-and-read-sides) is responsible for handling commands, performing input validation and emitting **events** based on valid commands. The emitted events are then saved to the **event store**.
 
 In CQRS and Event Sourcing paradigms, commands are handled by Domain Objects, which are grouped into aggregates. ReSolve implements aggregates as static objects containing sets of functions. These functions can of one of the following two kinds:
 
-- **Command Handlers** - Handle commands and emit events in response.
-- **Projections** - Build aggregate state from events so this state can be observed on the write side, for example to perform input validation.
+- **[Command Handlers](../basics/write-side.md#aggregate-command-handlers)** - Handle commands and emit events in response.
+- **[Projections](../basics/write-side.md#aggregate-projection-function)** - Build aggregate state from events so this state can be observed on the write side, for example to perform input validation.
 
 ### Creating an Aggregate
 
@@ -54,7 +54,7 @@ export default {
 
 As you can see, the file exports an object containing two command handlers. A command handler receives the aggregate state and a commands payload. A payload can contain any arbitrary data related to the command. For example, the **createShoppingList** command's payload contains a shopping list name, and the **createShoppingItem** command payload contains an item's ID and displayed text.
 
-As the result of its execution, a command handler returns an event object. This object contains an obligatory **type** field defining the event's type and the **payload** field containing data associated with the event. In the example code, the event payloads contain the same field that were obtained from the command payloads. The reSolve framework saves events returned by command handlers to a persistent **event store**. For now, your application is configured to use a file-based event store, which is sufficient for learning purposes. Later on, you will learn how to use different kinds of stores using **storage adapters**.
+As the result of its execution, a command handler returns an event object. This object contains an obligatory **type** field defining the event's type and the **payload** field containing data associated with the event. In the example code, the event payloads contain the same field that were obtained from the command payloads. The reSolve framework saves events returned by command handlers to a persistent **[event store](../basics/write-side.md#event-store)**. For now, your application is configured to use a file-based event store, which is sufficient for learning purposes. Later on, you will learn how to use different kinds of stores using **[storage adapters](../advanced-techniques.md#adapters)**.
 
 Your minimal shopping list aggregate is now ready. The last step is to register it in the application's configuration file. Open the **config.app.js** file, locate the **aggregates** section and specify the following settings:
 
