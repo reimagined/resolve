@@ -15,11 +15,11 @@ In this lesson, you will enhance your application's functionality with the capab
 
 ### Implement a Shopping Lists Read Model
 
-In the Lesson 3, you have implemented a View Model used to obtain information about shopping lists with the specified aggregate ID's. Although it is possible to use the same approach for obtaining the list of all available shopping lists, there is a strong reason not to do so.
+In the [Lesson 3](lesson-3.md), you have implemented a View Model used to obtain information about shopping lists with the specified aggregate ID's. Although it is possible to use the same approach for obtaining the list of all available shopping lists, there is a strong reason not to do so.
 
 Consider a situation, in which your application has been running in a production environment for a long time and a large number of shopping lists has been created. If you used a View Model to answer queries, a resulting data sample would be generated on the fly for every requests using events from the beginning of the history, which will result in a huge performance overhead on _each request_. Note that it is not a problem when you use a View Model to obtain a single list's items as the item count is always considerably small.
 
-To overcome this issue, implement a ShoppingLists Read Model. This Read Model will gradually accumulate its state based on incoming events and store this state in the Read Model Storage. This part of the functionality is implemented by the Red Model **projection**:
+To overcome this issue, implement a ShoppingLists **[Read Model](../basics/read-side.md#read-models)**. This Read Model will gradually accumulate its state based on incoming events and store this state in the Read Model Storage. This part of the functionality is implemented by the Red Model **[projection](../basics/read-side.md)**:
 
 **[common/read-models/shopping_lists.projection.js:](../../examples/shopping-list-tutorial/lesson-6/common/read-models/shopping_lists.projection.js)**
 
@@ -54,7 +54,7 @@ export default {
 ```
 <!-- prettier-ignore-end -->
 
-You also need to implement resolver functions that will answer queries using the accumulated data.
+You also need to implement **[resolver functions](../basics/read-side.md#resolvers)** that will answer queries using the accumulated data.
 
 **[common/read-models/shopping_lists.resolvers.js:](../../examples/shopping-list-tutorial/lesson-6/common/read-models/shopping_lists.resolvers.js)**
 
@@ -86,7 +86,7 @@ Register the created Read Model in the application's configuration file:
 ```
 <!-- prettier-ignore-end -->
 
-Note that regular Read Models are not reactive like View Models are. This will have a side effect, which will be discussed in greater detail later in this lesson.
+Note that regular Read Models are not reactive like View Models are. This results in several side effects, that will be discussed in greater detail later in this lesson.
 
 ### Query a Read Model Through HTTP API
 
@@ -272,4 +272,4 @@ export const mapStateToProps = (state, ownProps) => ({
 })
 ```
 
-Now, if you run your application and create a new shopping list, the created shopping list will be displayed automatically.
+Now, if you run your application and create a new shopping list, the created shopping list will be displayed immediately.
