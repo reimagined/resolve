@@ -96,7 +96,7 @@ Connection: keep-alive
 }
 ```
 
-The request url has the following structure:
+The request URL has the following structure:
 
 ```
 http://{host}:{port}/api/query/{viewModel}/{aggregateIds}
