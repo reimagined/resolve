@@ -5,7 +5,7 @@ import {
   subscribeAdapterAlreadyInitialized
 } from './constants'
 
-const createClientAdapter = ({ origin, rootPath, url, onEvent }) => {
+const createClientAdapter = ({ url, onEvent }) => {
   let client
   let isInitialized
 
@@ -16,9 +16,16 @@ const createClientAdapter = ({ origin, rootPath, url, onEvent }) => {
       }
 
       return await new Promise((resolve, reject) => {
-        client = socketIOClient(origin, {
-          path: `${rootPath ? `/${rootPath}` : ''}${url}`
-        })
+        const protocolLength = 'https://'.length
+        const origin = url.substr(
+          0,
+          url.substr(protocolLength).indexOf('/') + protocolLength
+        )
+        const path = url.substr(
+          url.substr(protocolLength).indexOf('/') + protocolLength
+        )
+
+        client = socketIOClient(origin, { path })
 
         client.on('connect', () => {
           isInitialized = true
