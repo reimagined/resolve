@@ -1,3 +1,8 @@
+---
+id: preparing-to-production
+title: Preparing to production
+---
+
 # Configuration Options
 
 When you move your application to production, you need to perform all required configurations according to your production environment's specifics. 

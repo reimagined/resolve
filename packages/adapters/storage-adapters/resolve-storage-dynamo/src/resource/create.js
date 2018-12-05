@@ -7,7 +7,9 @@ const create = async (pool, options) => {
   })
   await dynamoAdapter.init()
 
-  await setupAutoScaling(pool, options)
+  if (pool.billingMode === 'PROVISIONED') {
+    await setupAutoScaling(pool, options)
+  }
 }
 
 export default create
