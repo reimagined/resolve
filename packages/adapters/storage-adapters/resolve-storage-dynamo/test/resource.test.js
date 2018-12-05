@@ -7,7 +7,7 @@ import setupAutoScalingItem from '../src/resource/setup-auto-scaling-item'
 import setupAutoScaling from '../src/resource/setup-auto-scaling'
 
 describe('as resource', () => {
-  test('method "create" works correctly', async () => {
+  test('method "create" works correctly [PROVISIONED]', async () => {
     const EOL = '\r\n'
     const autoScalingResult = []
     const ApplicationAutoScaling = class {
@@ -32,7 +32,8 @@ describe('as resource', () => {
       ApplicationAutoScaling,
       setupAutoScalingItem,
       setupAutoScaling,
-      createAdapter
+      createAdapter,
+      billingMode: 'PROVISIONED'
     }
 
     const region = 'region-test'
@@ -56,6 +57,36 @@ describe('as resource', () => {
     })
     sinon.assert.calledWith(adapter.init)
     expect(autoScalingResult.join(EOL)).toMatchSnapshot()
+  })
+
+  test('method "create" works correctly [PAY_PER_REQUEST]', async () => {
+    const adapter = {
+      init: sinon.stub()
+    }
+    const setupAutoScalingMock = jest.fn()
+    const createAdapter = sinon.stub().returns(adapter)
+    const pool = {
+      setupAutoScalingItem,
+      setupAutoScaling: setupAutoScalingMock,
+      createAdapter,
+      billingMode: 'PAY_PER_REQUEST'
+    }
+
+    const region = 'region-test'
+    const tableName = 'tableName'
+
+    await create(pool, {
+      region,
+      tableName
+    })
+
+    sinon.assert.calledWith(createAdapter, {
+      region,
+      tableName,
+      skipInit: true
+    })
+    sinon.assert.calledWith(adapter.init)
+    expect(setupAutoScalingMock).not.toBeCalled()
   })
 
   test('method "dispose" works correctly', async () => {

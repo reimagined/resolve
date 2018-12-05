@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`as resource method "create" works correctly 1`] = `
+exports[`as resource method "create" works correctly [PROVISIONED] 1`] = `
 "{
   \\"region\\": \\"region-test\\"
 }
