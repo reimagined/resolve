@@ -1,6 +1,6 @@
 ---
 id: index
-title: Index
+title: reSolve Documentation
 ---
 
 - [Introduction](introduction.md)

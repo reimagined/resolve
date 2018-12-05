@@ -8,8 +8,10 @@
 // See https://docusaurus.io/docs/site-config for all the possible
 // site configuration options.
 
+const GITHUB_URL = 'https://github.com/reimagined/resolve'
+
 const siteConfig = {
-  title: 'ReSolve', // Title for your website.
+  title: 'reSolve', // Title for your website.
   tagline: 'Full stack CQRS, DDD, event sourcing JavaScript framework',
   url: 'https://reimagined.github.io', // Your website URL
   baseUrl: '/resolve/', // Base URL for your project */
@@ -19,9 +21,11 @@ const siteConfig = {
 
   // For no header links in the top nav bar -> headerLinks: [],
   headerLinks: [
-    { doc: 'index', label: 'Docs Index' },
+    { blog: true, label: 'Blog' },
+    { doc: 'index', label: 'Docs' },
     { doc: 'faq', label: 'FAQ' },
-    { doc: 'troubleshooting', label: 'Troubleshooting' }
+    { search: true },
+    { href: GITHUB_URL, label: 'GitHub' }
   ],
 
   /* path to images for header/footer */
