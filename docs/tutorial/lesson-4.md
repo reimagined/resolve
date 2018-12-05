@@ -1,16 +1,16 @@
 # Frontend - Display View Model Data in the Browser
 
-In the previous lesson, you modified your application so that it can answer queries. However, at this moment, your application does not provide a frontent that would present this data to an end-user. In this lesson, you will learn how to create a React frontend to display your reSolve application's data.
+In the previous lesson, you modified your application so that it can answer queries. However, at this moment, your application does not provide a [frontent](../basics/frontend.md) that would present this data to an end-user. In this lesson, you will learn how to create a React frontend to display your reSolve application's data.
 
 To keep the example code simple, in this lesson you will only display items of a single shopping list. Later on, you will add support for multiple shopping lists and provide the required means of navigation between lists.
 
-This tutorial sticks to React + Redux as the default choice for building a frontend for a reSolve application. Both React and Redux work well in conjunction with reSolve's infrastructure. ReSolve comes with the client **resolve-redux** library that provides HOCs allowing you to easily connect your React components to the backend.
+This tutorial sticks to React + Redux as the default choice for building a frontend for a reSolve application. Both React and Redux work well in conjunction with reSolve's infrastructure. ReSolve comes with the client **[resolve-redux](../../packages/core/resolve-redux)** library that provides HOCs allowing you to easily connect your React components to the backend.
 
-Note that, if required, you can use the standard HTTP API to communicate with a reSolve backend and implement the frontend using any client side technology.
+Note that, if required, you can use the [standard HTTP API](../basics/curl.md) to communicate with a reSolve backend and implement the frontend using any client-side technology.
 
 ### Implement a React Frontend
 
-Create a **ShoppingList.js** file in the client application's containers folder. In this file, implement a component that displays a list of values obtained from the **data** prop:
+Create a **ShoppingList.js** file in the client application's containers folder. In this file, implement a component that displays a list of values obtained from the **[data](../basics/frontend.md#obtain-view-model-data)** prop:
 
 **[client/containers/ShoppingList.js:](../../examples/shopping-list-tutorial/lesson-4/client/containers/ShoppingList.js)**
 
