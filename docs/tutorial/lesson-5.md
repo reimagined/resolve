@@ -84,7 +84,7 @@ export default connectViewModel(mapStateToOptions)(
 ```
 <!-- prettier-ignore-end -->
 
-In this code, the component is first connected to a **Redux** state using the **connect** GOC from the **react-redux** library. Then, the component is connected to a reSolve View Model as it was in the previous lesson. The **connect** function is called with the specified **mapDispatchToProps** function. This function takes reSolve aggregate actions from the components payload and wraps them into a **dispatch** function call using the the **bindActionCreators** function.
+In this code, the component is first connected to a **Redux** state using the **connect** HOC from the **react-redux** library. Then, the component is connected to a reSolve View Model as it was in the previous lesson. The **connect** function is called with the specified **mapDispatchToProps** function. This function takes reSolve aggregate actions from the components payload and wraps them into a **dispatch** function call using the the **bindActionCreators** function.
 
 Now the ShoppingList component's props include the **toggleShoppingItem** function.
 
