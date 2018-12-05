@@ -1,7 +1,6 @@
 import mqtt from 'mqtt'
 
 import getMqttTopic from './get_mqtt_topic'
-import getRootBasedUrl from './get_root_based_url'
 
 import {
   subscribeAdapterNotInitialized,
@@ -10,7 +9,7 @@ import {
 
 const qos = 1
 
-const createClientAdapter = ({ origin, rootPath, url, appId, onEvent }) => {
+const createClientAdapter = ({ url, appId, onEvent }) => {
   let client
   let isInitialized
 
@@ -21,7 +20,7 @@ const createClientAdapter = ({ origin, rootPath, url, appId, onEvent }) => {
       }
 
       return await new Promise((resolve, reject) => {
-        client = mqtt.connect(getRootBasedUrl(origin, rootPath, url))
+        client = mqtt.connect(url)
 
         client.on('connect', () => {
           isInitialized = true
