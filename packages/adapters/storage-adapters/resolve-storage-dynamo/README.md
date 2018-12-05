@@ -6,10 +6,12 @@ This package is a `resolve-es` adapter for storing events using [DynamoDB](https
 ## Available Parameters
 * `...connectionOptions` - a DynamoDB connection options. Refer to [Connection Options Format](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html) for more information.
 * `tableName` - a name of a table storing events.
+* `billingMode` - billing mode for dynamodb table.
 * `readCapacityUnits` - the maximum number of strongly consistent reads consumed per second.
 * `writeCapacityUnits` - the maximum number of writes consumed per second.
 ## Usage
 
+### [PROVISIONED] Billing Mode
 ```js
 import createAdapter from 'resolve-storage-dynamo'
 
@@ -23,10 +25,29 @@ const connectionOptions = {
 const adapter = createAdapter({
   ...connectionOptions,
   tableName: 'MY_TABLE_NAME',
+  billingMode: 'PROVISIONED',
   readCapacityUnits: 5,
   writeCapacityUnits: 5
 })
 ```
+
+### [PAY_PER_REQUEST] Billing Mode
+```js
+import createAdapter from 'resolve-storage-dynamo'
+
+const connectionOptions = {
+  region: 'localhost',
+  endpoint: 'http://localhost:8000',
+  accessKeyId: 'xxx',
+  secretAccessKey: 'xxx',
+}
+
+const adapter = createAdapter({
+  ...connectionOptions,
+  tableName: 'MY_TABLE_NAME'
+})
+```
+
 
 #### As Resource
 ```js
