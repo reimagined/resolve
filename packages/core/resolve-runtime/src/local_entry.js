@@ -281,7 +281,8 @@ const getSubscribeAdapterOptions = async (resolve, origin, adapterName) => {
   const { protocol, hostname, port } = Url.parse(origin)
   const isMqtt = adapterName === 'mqtt'
   const targetProtocol = ['wss', 'ws', 'https', 'http'][
-    !/^https/.test(protocol) + (!isMqtt * 2)
+    // eslint-disable-next-line
+    !/^https/.test(protocol) + !isMqtt * 2
   ]
   const targetPath = isMqtt ? '/api/mqtt' : '/api/socket-io/'
 
