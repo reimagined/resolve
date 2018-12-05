@@ -1,10 +1,10 @@
 # Read side - Create a View Model to Query List Items
 
-Currently, your shopping list application has a fully functional write side allowing you to create shopping lists and items in these lists. However, it does not provide means to query the created data. This lesson will teach you how to provide your application with the capability to answer data queries by implementing the application's **read side**.
+Currently, your shopping list application has a fully functional write side allowing you to create shopping lists and items in these lists. However, it does not provide means to query the created data. This lesson will teach you how to provide your application with the capability to answer data queries by implementing the application's **[read side](../basics/resolve-app-structure.md#write-and-read-sides)**.
 
 ### Implement a View Model
 
-A reSolve applications read side answers queries using Read Models. In this lesson, you will implement a **View Model**, which is a special kind of a Read Model used to build an application's state on the fly, so you can keep the implementation simple. In later lesson, you will learn how to use regular Read Models to answer queries based on accumulated persistent state.
+A reSolve applications read side answers queries using **[Read Models](../basics/read-side.md#read-models)**. In this lesson, you will implement a **[View Model](../basics/read-side.md#view-model-specifics)**, which is a Read Model of a special kind used to build an application's state on the fly, so you can keep the implementation simple. In a [later lesson](lesson-6.md#implement-a-shopping-lists-read-model), you will learn how to use regular Read Models to answer queries based on accumulated persistent state.
 
 Create a **shopping_list.projection.js** file in the **view-models** folder and add the following code to this file:
 
@@ -37,7 +37,7 @@ export default {
 ```
 <!-- prettier-ignore-end -->
 
-You just defined a View Model **projection**. A View Model projection runs for all events for a specific aggregate ID. Based on event data, a projection builds state. This state is then returned as a query response.
+You just defined a View Model **[projection](../basics/read-side.md#updating-a-read-model-via-projection-functions)**. A View Model projection runs for all events for a specific aggregate ID. Based on event data, a projection builds state. This state is then returned as a query response.
 
 Now, you need to register the implemented View Model in the application's configuration file.
 
