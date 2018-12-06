@@ -1,3 +1,8 @@
+---
+id: index
+title: reSolve Documentation
+---
+
 - [Introduction](introduction.md)
 
   - [Setting Up](introduction.md#setting-up)

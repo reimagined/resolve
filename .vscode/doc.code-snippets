@@ -20,10 +20,12 @@
     "scope": "markdown",
     "body": [
       "<!-- prettier-ignore-start -->",
+      "",
       "[embedmd]:# (${1:relative_path} ${2:regex_start} ${3:regex_end})",
       "```",
       "{}",
       "```",
+      "",
       "<!-- prettier-ignore-end -->"
     ],
     "description": "Embed code snippet from another file"

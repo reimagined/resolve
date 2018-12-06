@@ -1,3 +1,5 @@
+import unfetch from 'unfetch'
+
 import getRootBasedUrl from './get_root_based_url'
 import syncJwtProviderWithStore from './sync_jwt_provider_with_store'
 
@@ -18,6 +20,14 @@ export const temporaryErrorHttpCodes = [
   523, // Origin Is Unreachable
   524 // A Timeout Occurred
 ]
+
+const doFetch = (...args) => {
+  try {
+    return fetch(...args)
+  } catch (err) {
+    return unfetch(...args)
+  }
+}
 
 const validateStatus = status => {
   // eslint-disable-next-line eqeqeq
@@ -42,19 +52,16 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
         options.headers.Authorization = `Bearer ${jwtToken}`
       }
     }
-    const response = await fetch(rootBasedUrl, options)
-
-    const responseJwtToken = (
-      response.headers.get('Authorization') ||
-      response.headers.get('authorization') ||
-      ''
-    ).replace(/^Bearer /i, '')
+    const response = await doFetch(rootBasedUrl, options)
 
     if (jwtProvider) {
+      const responseJwtToken = response.headers.get('x-jwt')
       await jwtProvider.set(responseJwtToken)
     }
-
-    await syncJwtProviderWithStore(jwtProvider, store)
+    syncJwtProviderWithStore(jwtProvider, store).catch(
+      // eslint-disable-next-line no-console
+      error => console.error(error)
+    )
 
     return response
   }

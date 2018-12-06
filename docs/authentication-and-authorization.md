@@ -1,3 +1,8 @@
+---
+id: authentication-and-authorization
+title: Authentication and authorization
+---
+
 # Setting up Authentication
 
 ReSolve comes with a built-in authentication **[module](./advanced-techniques.md#modules)** ([resolve-module-auth](../packages/modules/resolve-module-auth)) that you can use to enable authentication in your application. The authentication module relies on the [Passport.js](http://www.passportjs.org/) library's functionality.
@@ -37,6 +42,7 @@ Create and configure the module in the application's **run.js** script:
     moduleAuth
   )
 ```
+
 <!-- prettier-ignore-end -->
 
 These setting specify the path to a strategy constructor as well as HTTP API handlers to handle authentication-related requests (register, login and logout in this example). You can implement a strategy constructor as shown below:

@@ -4,6 +4,7 @@ const patchPackageJson = ({
   path,
   fs,
   applicationName,
+  applicationPath,
   applicationPackageJsonPath,
   resolvePackages
 }) => async () => {
@@ -13,10 +14,9 @@ const patchPackageJson = ({
   const resolveVersion = require(path.join(__dirname, '..', 'package.json'))
     .version
 
-  const packageJson = require(applicationPackageJsonPath)
+  const applicationPackageJson = require(applicationPackageJsonPath)
 
-  packageJson.name = applicationName
-  packageJson.version = resolveVersion
+  applicationPackageJson.name = applicationName
 
   const namespaces = [
     'dependencies',
@@ -25,20 +25,56 @@ const patchPackageJson = ({
     'optionalDependencies'
   ]
 
-  for (const namespace of namespaces) {
-    if (packageJson[namespace]) {
-      for (const packageName of Object.keys(packageJson[namespace])) {
-        if (resolvePackages.includes(packageName)) {
-          packageJson[namespace][packageName] = resolveVersion
+  fs.writeFileSync(
+    applicationPackageJsonPath,
+    JSON.stringify(applicationPackageJson, null, 2)
+  )
+
+  const localPackages = fs
+    .readdirSync(applicationPath)
+    .filter(directory => {
+      try {
+        require(path.join(applicationPath, directory, 'package.json'))
+        return true
+      } catch (e) {
+        return false
+      }
+    })
+    .map(directory => ({
+      name: path.join(applicationPath, directory, 'package.json').name,
+      directory: path.join(applicationPath, directory)
+    }))
+
+  localPackages.push({
+    name: applicationName,
+    directory: applicationPath
+  })
+
+  for (const { directory } of localPackages) {
+    const listPackageNamesForPatching = [
+      ...resolvePackages,
+      ...localPackages.map(({ name }) => name)
+    ]
+
+    const packageJson = require(path.join(directory, 'package.json'))
+
+    packageJson.version = resolveVersion
+
+    for (const namespace of namespaces) {
+      if (packageJson[namespace]) {
+        for (const packageName of Object.keys(packageJson[namespace])) {
+          if (listPackageNamesForPatching.includes(packageName)) {
+            packageJson[namespace][packageName] = resolveVersion
+          }
         }
       }
     }
-  }
 
-  fs.writeFileSync(
-    applicationPackageJsonPath,
-    JSON.stringify(packageJson, null, 2)
-  )
+    fs.writeFileSync(
+      path.join(directory, 'package.json'),
+      JSON.stringify(packageJson, null, 2)
+    )
+  }
 }
 
 export default patchPackageJson

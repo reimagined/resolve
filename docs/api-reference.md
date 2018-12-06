@@ -1,3 +1,8 @@
+---
+id: api-reference
+title: API reference
+---
+
 ## Commands
 ### Command HTTP API
 A command can be sent using HTTP API.

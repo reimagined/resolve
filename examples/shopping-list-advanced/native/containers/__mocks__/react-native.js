@@ -1,6 +1,6 @@
 export const StyleSheet = {
-  create() {
-    return {}
+  create(obj) {
+    return obj
   }
 }
 

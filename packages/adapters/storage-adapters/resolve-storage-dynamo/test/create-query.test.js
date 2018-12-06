@@ -17,6 +17,12 @@ describe('method "createQuery"', () => {
         finishTime: undefined
       },
       {
+        aggregateIds: null,
+        eventTypes: null,
+        startTime: undefined,
+        finishTime: undefined
+      },
+      {
         aggregateIds: ['id1'],
         eventTypes: undefined,
         startTime: 5,

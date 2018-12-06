@@ -1,3 +1,8 @@
+---
+id: contributing
+title: Contributing
+---
+
 # How to Contribute
 
 This is a set of guidelines for contributing to reSolve and its packages hosted in the [ReImagined](https://github.com/reimagined) project on GitHub. These guidelines are designed to give you a general idea of our vision. Please do not treat them as strict rules you are obliged to follow, and feel free to propose changes to this document in a Pull Request.

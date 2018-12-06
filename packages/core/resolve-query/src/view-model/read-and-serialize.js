@@ -3,7 +3,7 @@ const readAndSerialize = async (
   { aggregateIds, jwtToken } = {}
 ) => {
   const state = await repository.read(repository, { aggregateIds })
-  const serializedState = repository.serializeState(state, jwtToken)
+  const serializedState = await repository.serializeState(state, jwtToken)
   return serializedState
 }
 

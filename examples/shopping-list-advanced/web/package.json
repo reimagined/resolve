@@ -1,34 +1,44 @@
 {
   "name": "@shopping-list-advanced/web",
-  "version": "0.18.2",
+  "version": "0.18.9",
   "private": true,
   "scripts": {
-    "test": "jest --testMatch=**/test/**/unit/*.test.js --verbose",
-    "test:functional": "echo || exit 0"
+    "test": "jest --testMatch=**/test/**/unit/*.test.js --verbose"
   },
   "dependencies": {
-    "react": "16.6.0",
-    "react-dom": "16.6.0",
-    "react-bootstrap": "0.32.1",
+    "react": "16.5.0",
+    "react-dom": "16.5.0",
+    "react-bootstrap": "0.32.4",
     "react-helmet": "5.2.0",
     "react-redux": "5.1.1",
     "react-router-dom": "4.3.1",
     "react-router-redux": "5.0.0-alpha.9",
-    "@shopping-list-advanced/ui": "0.18.2",
-    "redux": "4.0.0",
-    "resolve-redux": "0.18.2",
+    "@shopping-list-advanced/ui": "0.18.9",
+    "redux": "4.0.1",
+    "resolve-redux": "0.18.9",
     "uuid": "3.3.2",
-    "redux-devtools-extension": "2.13.5"
+    "redux-devtools-extension": "2.13.7",
+    "@babel/runtime": "^7.0.0"
   },
   "devDependencies": {
-    "babel-core": "^7.0.0-0",
-    "regenerator-runtime": "0.12.1",
-    "babel-jest": "23.6.0",
-    "jest": "23.6.0",
+    "regenerator-runtime": "0.13.1",
     "my-local-ip": "1.0.0",
-    "react-test-renderer": "16.6.0",
-    "testcafe": "0.22.0",
-    "enzyme": "3.3.0",
-    "enzyme-adapter-react-16": "1.1.1"
+    "react-test-renderer": "16.5.0",
+    "jest": "23.6.0",
+    "enzyme": "3.7.0",
+    "enzyme-adapter-react-16": "1.7.0",
+    "babel-jest": "23.6.0",
+    "babel-core": "^7.0.0-0",
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-proposal-decorators": "^7.0.0",
+    "@babel/plugin-proposal-class-properties": "^7.0.0",
+    "@babel/plugin-proposal-export-default-from": "^7.0.0",
+    "@babel/plugin-proposal-export-namespace-from": "^7.0.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/preset-flow": "^7.0.0",
+    "testcafe": "0.23.2"
   }
 }

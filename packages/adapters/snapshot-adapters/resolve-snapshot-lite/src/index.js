@@ -1,39 +1,41 @@
 import NeDB from 'nedb'
 
-const DEFAULT_BUCKET_SIZE = 2147483647
+const DEFAULT_BUCKET_SIZE = 100
 
 const init = async pool => {
-  if (pool.initPromise == null) {
-    pool.initPromise = (async () => {
-      pool.db = new NeDB(
-        pool.config && pool.config.hasOwnProperty('pathToFile')
-          ? {
-              filename: pool.config.pathToFile
-            }
-          : {
-              inMemoryOnly: true
-            }
-      )
-
-      await new Promise((resolve, reject) =>
-        pool.db.ensureIndex({ fieldName: 'snapshotKey', unique: true }, err =>
-          err ? reject(err) : resolve()
-        )
-      )
-
-      if (pool.config && pool.config.hasOwnProperty('bucketSize')) {
-        pool.bucketSize = Number(pool.config.bucketSize)
-      }
-
-      pool.counter = 0
-
-      if (!Number.isInteger(pool.bucketSize) || pool.bucketSize < 1) {
-        pool.bucketSize = DEFAULT_BUCKET_SIZE
-      }
-    })()
+  if (pool.initPromise != null) {
+    return pool.initPromise
   }
 
-  return await pool.initPromise
+  pool.initPromise = (async () => {
+    pool.db = new NeDB(
+      pool.config && pool.config.hasOwnProperty('pathToFile')
+        ? { filename: pool.config.pathToFile }
+        : { inMemoryOnly: true }
+    )
+
+    await new Promise((resolve, reject) =>
+      pool.db.loadDatabase(err => (err ? reject(err) : resolve()))
+    )
+
+    await new Promise((resolve, reject) =>
+      pool.db.ensureIndex({ fieldName: 'snapshotKey', unique: true }, err =>
+        err ? reject(err) : resolve()
+      )
+    )
+
+    if (pool.config && pool.config.hasOwnProperty('bucketSize')) {
+      pool.bucketSize = Number(pool.config.bucketSize)
+    }
+
+    pool.counters = new Map()
+
+    if (!Number.isInteger(pool.bucketSize) || pool.bucketSize < 1) {
+      pool.bucketSize = DEFAULT_BUCKET_SIZE
+    }
+  })()
+
+  return pool.initPromise
 }
 
 const loadSnapshot = async (pool, snapshotKey) => {
@@ -48,7 +50,7 @@ const loadSnapshot = async (pool, snapshotKey) => {
     )
   )
 
-  return result
+  return result != null ? result.content : null
 }
 
 const saveSnapshot = async (pool, snapshotKey, content) => {
@@ -56,8 +58,15 @@ const saveSnapshot = async (pool, snapshotKey, content) => {
   if (pool.disposed) {
     throw new Error('Adapter is disposed')
   }
+  if (!pool.counters.has(snapshotKey)) {
+    pool.counters.set(snapshotKey, 0)
+  }
 
-  if (pool.counter++ % pool.bucketSize !== 0) return
+  if (pool.counters.get(snapshotKey) < pool.bucketSize) {
+    pool.counters.set(snapshotKey, pool.counters.get(snapshotKey) + 1)
+    return
+  }
+  pool.counters.set(snapshotKey, 0)
 
   await new Promise((resolve, reject) =>
     pool.db.update(
@@ -75,6 +84,8 @@ const dispose = async (pool, options) => {
     throw new Error('Adapter is disposed')
   }
   pool.disposed = true
+
+  pool.counters.clear()
 
   if (options && options.dropSnapshots) {
     await new Promise((resolve, reject) =>

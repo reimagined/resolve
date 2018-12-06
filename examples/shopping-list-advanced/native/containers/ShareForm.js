@@ -16,7 +16,7 @@ import {
 import { connect } from 'react-redux'
 import { View, StyleSheet } from 'react-native'
 
-import requiredAuth from '../decorators/required_auth'
+import requiredAuth from '../decorators/required-auth'
 
 import FindUsers from './FindUsers'
 

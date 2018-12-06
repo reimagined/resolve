@@ -1,6 +1,6 @@
 {
   "name": "resolve-redux",
-  "version": "0.18.2",
+  "version": "0.18.9",
   "description": "This package serves as a helper for creating the Redux storage.",
   "engines": {
     "node": ">=8.10"
@@ -32,20 +32,21 @@
     "react-router": "^4.3.1",
     "react-router-redux": "^5.0.0-alpha.9",
     "redux-saga": "^0.16.0",
+    "unfetch": "^4.0.1",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
     "jest": "23.6.0",
-    "react": "16.6.0",
-    "react-dom": "16.6.0",
-    "react-test-renderer": "16.6.0",
-    "redux": "4.0.0",
+    "react": "16.6.3",
+    "react-dom": "16.6.3",
+    "react-test-renderer": "16.6.3",
+    "redux": "4.0.1",
     "sinon": "6.3.4"
   },
   "peerDependencies": {
-    "react": ">=16.6.0",
-    "react-dom": ">=16.6.0",
-    "redux": ">=4.0.0"
+    "react": "^16.5.0",
+    "react-dom": "^16.5.0",
+    "redux": "^4.0.0"
   },
   "babelCompile": [
     {

@@ -1,3 +1,8 @@
+---
+id: advanced-techniques
+title: Advanced Techniques
+---
+
 # Splitting Code Into Chunks
 
 ReSolve uses **webpack** to transpile and bundle the application code so it can be run by client browsers, the server and serverless platforms.
@@ -36,20 +41,11 @@ const routes = [
   {
     component: Root,
     routes: [
-      {
-        path: '/',
-        exact: true,
-        component: Home
-      },
+      { path: '/', exact: true, component: Home },
       {
         path: '/child/:id',
         component: Child,
-        routes: [
-          {
-            path: '/child/:id/grand-child',
-            component: GrandChild
-          }
-        ]
+        routes: [{ path: '/child/:id/grand-child', component: GrandChild }]
       }
     ]
   }
@@ -99,6 +95,7 @@ Process Managers (or Sagas) are used to run arbitrary service code in response t
 The code below demonstrates a Saga that handles events:
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../examples/with-saga/common/sagas/user-creation.event.js /^/ /\n$/)
 ```js
 const eventHandlers = {
@@ -135,11 +132,13 @@ const eventHandlers = {
 
 export default eventHandlers
 ```
+
 <!-- prettier-ignore-end -->
 
 For a scheduled Saga, tasks are specified in the cron format. The code below demonstrates a Saga that emits commands on schedule:
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../examples/with-saga/common/sagas/user-creation.cron.js /^/ /\n$/)
 ```js
 const outdatedPeriod = 1000 * 60 * 10
@@ -167,6 +166,7 @@ const cronHandlers = {
 
 export default cronHandlers
 ```
+
 <!-- prettier-ignore-end -->
 
 For the full code, refer to the [With Saga](https://github.com/reimagined/resolve/tree/dev/examples/with-saga) example project.

@@ -165,7 +165,8 @@ const initSubscribeAdapter = async resolve => {
     const handler = createServerSocketIOHandler(pubsubManager)
     const socketIOServer = createSocketServer(resolve.server, {
       path: getRootBasedUrl(resolve.rootPath, '/api/socket-io/'),
-      serveClient: false
+      serveClient: false,
+      transports: ['polling']
     })
     socketIOServer.on('connection', handler)
   } catch (error) {
@@ -273,30 +274,25 @@ const initEventLoop = async resolve => {
 }
 
 const getSubscribeAdapterOptions = async (resolve, origin, adapterName) => {
-  switch (adapterName) {
-    case 'mqtt': {
-      const { protocol, hostname, port } = Url.parse(origin)
-      const wsProtocol = /^https/.test(protocol) ? 'wss' : 'ws'
+  if (adapterName !== 'mqtt' && adapterName !== 'socket.io') {
+    return null
+  }
 
-      const url = `${wsProtocol}://${hostname}:${port}${getRootBasedUrl(
-        resolve.rootPath,
-        '/api/mqtt'
-      )}`
-      return {
-        appId: resolve.applicationName,
-        url
-      }
-    }
+  const { protocol, hostname, port } = Url.parse(origin)
+  const isMqtt = adapterName === 'mqtt'
+  const isSecure = /^https/.test(protocol)
+  const targetProtocol = ['http', 'https', 'ws', 'wss'][isMqtt * 2 + isSecure]
+  const targetPath = isMqtt ? '/api/mqtt' : '/api/socket-io/'
+  const targetPort = port == null ? [80, 443][+isSecure] : port
 
-    case 'socket.io': {
-      return {
-        appId: resolve.applicationName,
-        url: getRootBasedUrl(resolve.rootPath, '/api/socket-io/')
-      }
-    }
+  const url = `${targetProtocol}://${hostname}:${targetPort}${getRootBasedUrl(
+    resolve.rootPath,
+    targetPath
+  )}`
 
-    default:
-      return null
+  return {
+    appId: resolve.applicationName,
+    url
   }
 }
 
