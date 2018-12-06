@@ -10,6 +10,7 @@ ReSolve comes with a built-in authentication **[module](./advanced-techniques.md
 Create and configure the module in the application's **run.js** script:
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../examples/hacker-news/run.js /^[[:blank:]]+const moduleAuth/ /^[[:blank:]]+\)/)
 ```js
   const moduleAuth = resolveModuleAuth([
@@ -48,6 +49,7 @@ Create and configure the module in the application's **run.js** script:
 These setting specify the path to a strategy constructor as well as HTTP API handlers to handle authentication-related requests (register, login and logout in this example). You can implement a strategy constructor as shown below:
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../examples/hacker-news/auth/create_strategy.js /^/ /\n$/)
 ```js
 import { Strategy as StrategyFactory } from 'passport-local'
@@ -67,6 +69,7 @@ const createStrategy = options => ({
 
 export default createStrategy
 ```
+
 <!-- prettier-ignore-end -->
 
 This code sample demonstrates the implementation of an authentication strategy constructor on the example of a **local** authentication strategy. The createStrategy constructor takes a set of options defined at runtime and returns modified options.
