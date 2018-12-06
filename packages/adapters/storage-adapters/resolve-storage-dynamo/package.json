@@ -1,6 +1,6 @@
 {
   "name": "resolve-storage-dynamo",
-  "version": "0.18.8",
+  "version": "0.18.9",
   "description": "This package serves as an adapter for resolve-storage to store events using DynamoDB.",
   "engines": {
     "node": ">=8.10"
@@ -27,7 +27,7 @@
   "dependencies": {
     "@babel/runtime": "^7.0.0",
     "aws-sdk": "^2.369.0",
-    "resolve-storage-base": "0.18.8"
+    "resolve-storage-base": "0.18.9"
   },
   "devDependencies": {
     "jest": "23.6.0",
