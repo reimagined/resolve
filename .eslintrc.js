@@ -26,12 +26,7 @@ module.exports = {
     'new-cap': ['error', { capIsNew: false }],
     'no-lone-block': 'off',
     'no-lone-blocks': 'off',
-    'no-mixed-operators': [
-      'error',
-      {
-        allowSamePrecedence: true
-      }
-    ],
+    'no-mixed-operators': 'off',
     'object-curly-spacing': ['error', 'always'],
     'no-unused-vars': ['error', { args: 'after-used' }],
     'max-len': [
@@ -105,9 +100,11 @@ module.exports = {
           'Cooldown',
           'corejs',
           'cron',
+          'cqrs',
           'cwd',
           'darwin',
           'dddddd',
+          'ddd',
           'deepmerge',
           'del',
           'desc',
@@ -122,6 +119,7 @@ module.exports = {
           'dirname',
           'dns',
           'doctype',
+          'docusaurus',
           'dom',
           'dotenv',
           'downvote',
