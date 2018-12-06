@@ -8,7 +8,7 @@ reSolve is a full stack functional JavaScript framework.
 
 - [CQRS](https://martinfowler.com/bliki/CQRS.html) - independent Command and Query sides.
 - [DDD Aggregate](https://martinfowler.com/bliki/DDD_Aggregate.html) support.
-- [Event sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) - using events as a source of truth and calculates read models from them.
+- [Event sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) - using events as a source of truth and calculating read models from them.
 - Integrates with [React](https://reactjs.org) and [Redux](https://redux.js.org) for seamless development experience.
 - [React Native](https://facebook.github.io/react-native/) support.
 
@@ -16,7 +16,7 @@ reSolve is a full stack functional JavaScript framework.
 
 ### Installation
 
-Make sure you have **NodeJS** version **8.10.0** or greater.
+Make sure you have **NodeJS** version **8.10.0** or higher.
 
 Use [create-resolve-app](packages/core/create-resolve-app) package to create a new reSolve application. The easiest way is to use [npx](https://www.npmjs.com/package/npx/v/1.1.1) ()
 
@@ -31,7 +31,7 @@ npm run dev
 
 #### [npm](https://www.npmjs.com/)
 
-> Note: Installing a package globally may require administrative privileges. That means you have to use the `sudo` prefix on Linux and MacOS, or start a terminal with the administrative privileges on Windows.
+> Note: Installing a package globally may require administrative privileges.
 
 ```sh
 npm i -g create-resolve-app
@@ -51,13 +51,15 @@ yarn run dev
 </details>
 <p></p>
 
-Your application is running at http://localhost:3000/.
+Your application will be running at http://localhost:3000/.
 
-### Creating a new app with an example code
+### Creating a new app with a code example
 
-You can create a new application with an example code using `create-resolve-app` with the `-e` flag followed by an example name. Use the `create-resolve-app -h` command to list the available [examples](./examples/).
+There are several [code examples](./examples/) provided. You can add code from these examples into your projects. To list the available examples use the create-resolve-app -h command.
 
-For instance, to run a [shopping-list](./examples/shopping-list) example, run:
+To create a new application with the code of the specific example use the create-resolve-app command with the -e flag followed by the example's name.
+
+For instance, to run the [shopping-list example](./examples/shopping-list), run:
 
 ```sh
 npx create-resolve-app resolve-example -e shopping-list
@@ -69,12 +71,11 @@ You can find reSolve documentation in the [docs section](./docs).
 
 ## :loudspeaker: Get in Touch
 
-- Ask questions at Stackoverlow with [resolvejs tag](https://stackoverflow.com/tags/resolvejs)
-- Submit bugs and issues to [GitHub Issues](https://github.com/reimagined/resolve/issues)
-- Email team reimagined@devexpress.com
-- Follow us on Twitter [@resolvejs](https://twitter.com/resolvejs)
-- Facebook page [resolvejs](https://www.facebook.com/resolvejs/)
+- Ask questions on Stackoverlow with [resolvejs tag](https://stackoverflow.com/questions/ask?tags=resolvejs)
+- Use [GitHub Issues](https://github.com/reimagined/resolve/issues) to report bugs and suggest features
+- Follow [@resolvejs on Twitter](https://twitter.com/resolvejs) or join [our Facebook page](https://www.facebook.com/resolvejs/) for product news and updates
+- Email the team reimagined@devexpress.com
 
 reSolve is developed by [Developer Express Inc.](https://devexpress.com)
 
-![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/index-readme?pixel)
+![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/readme.md?pixel)

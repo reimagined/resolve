@@ -8,6 +8,7 @@ import {
 } from 'resolve-scripts'
 
 import appConfig from './config.app'
+import cloudConfig from './config.cloud'
 import devConfig from './config.dev'
 import prodConfig from './config.prod'
 import testFunctionalConfig from './config.test_functional'
@@ -23,6 +24,11 @@ void (async () => {
 
     case 'build': {
       await build(merge(defaultResolveConfig, appConfig, prodConfig))
+      break
+    }
+
+    case 'cloud': {
+      await build(merge(defaultResolveConfig, appConfig, cloudConfig))
       break
     }
 

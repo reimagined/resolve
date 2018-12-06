@@ -6,6 +6,7 @@ import { includeAlias as excludeConstantAlias } from './$resolve.constants'
 const excludeAlias = [
   'clientEntry',
   'hotModuleReplacement',
+  'subscribeAdapter',
   'localEntry',
   'cloudEntry',
   'apiHandlers',

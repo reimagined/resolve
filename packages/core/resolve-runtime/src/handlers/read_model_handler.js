@@ -1,38 +1,34 @@
-import println from '../utils/println'
 import extractErrorHttpCode from '../utils/extract_error_http_code'
-
 import message from '../message'
 
 const readModelHandler = async (req, res) => {
   try {
     const executeQuery = req.resolve.executeQuery
-
     const { modelName, modelOptions: resolverName } = req.params
     const resolverArgs = req.arguments
     const jwtToken = req.jwtToken
+    const queryArgs = { modelName, resolverName, resolverArgs, jwtToken }
 
-    const result = await executeQuery.readAndSerialize({
-      modelName,
-      resolverName,
-      resolverArgs,
-      jwtToken
-    })
+    const result = await executeQuery.readAndSerialize(queryArgs)
 
     const lastError = await executeQuery.getLastError({ modelName })
     if (lastError != null) {
-      println.error(lastError.message)
+      resolveLog('warn', 'Read model handler caused error', req.path, lastError)
       throw lastError
     }
 
     await res.status(200)
     await res.setHeader('Content-Type', 'application/json')
     await res.end(result)
+
+    resolveLog('debug', 'Read model handler successful', req.path)
   } catch (err) {
     const errorCode = extractErrorHttpCode(err)
     await res.status(errorCode)
     await res.setHeader('Content-Type', 'text/plain')
     await res.end(`${message.readModelFail}${err.message}`)
-    println.error(err)
+
+    resolveLog('error', 'Read model handler failure', err)
   }
 }
 

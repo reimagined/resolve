@@ -39,6 +39,7 @@ jspm_packages
 #gitbook build folder
 **/_book
 
+# IDE directory
 .idea
 .vscode
 vscode
@@ -48,5 +49,8 @@ event-storage.db
 dist
 lib
 es
+/website/node_modules
+/website/build
+/website/i18n
 
 

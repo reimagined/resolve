@@ -1,3 +1,8 @@
+---
+id: authentication-and-authorization
+title: Authentication and authorization
+---
+
 # Setting up Authentication
 
 ReSolve relies on the [Passport.js](http://www.passportjs.org/) library for authentication. 

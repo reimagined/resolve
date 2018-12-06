@@ -7,8 +7,7 @@ const appConfig = {
     middlewares: [
       'client/middlewares/story-create-middleware.js',
       'client/middlewares/optimistic-voting-middleware.js'
-    ],
-    enhancers: ['client/enhancers/redux-devtools.js']
+    ]
   },
   aggregates: [
     {
@@ -26,7 +25,8 @@ const appConfig = {
     {
       name: 'HackerNews',
       projection: 'common/read-models/hacker-news.projection.js',
-      resolvers: 'common/read-models/hacker-news.resolvers.js'
+      resolvers: 'common/read-models/hacker-news.resolvers.js',
+      adapterName: 'default'
     }
   ]
 }

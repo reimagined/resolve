@@ -1,3 +1,8 @@
+---
+id: index
+title: reSolve Documentation
+---
+
 - [Introduction](introduction.md)
 
   - [Setting Up](introduction.md#setting-up)
@@ -58,3 +63,5 @@
 - [FAQ](faq.md)
 - [API Reference](api-reference.md)
 - [Troubleshooting](troubleshooting.md)
+
+![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/docs/readme.md?pixel)

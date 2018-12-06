@@ -13,7 +13,13 @@ const createQuery = (
   getDeserializer,
   dispose,
   getExecutors,
-  { eventStore, viewModels, readModels, snapshotAdapter }
+  {
+    eventStore,
+    viewModels,
+    readModels,
+    snapshotAdapter,
+    readModelAdaptersCreators
+  }
 ) => {
   const repository = {
     executors: new Map(),
@@ -26,7 +32,12 @@ const createQuery = (
     getExecutor
   }
 
-  initReadModels({ ...repository, eventStore, readModels, snapshotAdapter })
+  initReadModels({
+    ...repository,
+    eventStore,
+    readModels,
+    readModelAdaptersCreators
+  })
   initViewModels({ ...repository, eventStore, viewModels, snapshotAdapter })
   checkInitErrors(repository)
 

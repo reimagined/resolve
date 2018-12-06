@@ -1,6 +1,6 @@
 {
   "name": "resolve-api-handler-express",
-  "version": "0.17.4",
+  "version": "0.18.8",
   "description": "This package is an adapter for api handler to Express.js.",
   "engines": {
     "node": ">=8.10"
@@ -26,6 +26,7 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/api-handler-adapters/resolve-api-handler-express#readme",
   "dependencies": {
     "@babel/runtime": "^7.0.0",
+    "binary-case": "1.1.4",
     "content-disposition": "0.5.2",
     "cookie": "0.3.1",
     "raw-body": "2.3.3"

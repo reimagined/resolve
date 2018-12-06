@@ -1,15 +1,21 @@
-const dispose = async ({ viewMap, getKey }, { aggregateIds } = {}) => {
-  const modelKey = aggregateIds != null ? getKey(aggregateIds) : null
+const dispose = async (repository, options = {}) => {
+  if (options == null || options.constructor !== Object) {
+    throw new Error(
+      'Dispose options should be object or not be passed to use default behaviour'
+    )
+  }
 
-  const disposingViewModels =
-    modelKey != null ? [[modelKey, viewMap.get(modelKey)]] : viewMap.entries()
-
-  for (const [key, viewModel] of disposingViewModels) {
-    if (viewModel == null) continue
-    viewMap.delete(key)
-
+  if (repository.disposePromise != null) {
+    return await repository.disposePromise
+  }
+  for (const viewModel of repository.activeWorkers.values()) {
     viewModel.disposed = true
   }
+
+  repository.disposePromise = repository.snapshotAdapter.dispose(options)
+  repository.activeWorkers.clear()
+
+  return await repository.disposePromise
 }
 
 export default dispose

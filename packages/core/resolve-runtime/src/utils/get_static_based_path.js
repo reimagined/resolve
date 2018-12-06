@@ -1,13 +1,11 @@
 import Url from 'url'
-
 import getRootBasedUrl from './get_root_based_url'
 
 export const isString = value => value != null && value.constructor === String
 
 export const string = (value, name) => {
   if (!isString(value)) {
-    // eslint-disable-next-line
-    console.error(value)
+    resolveLog('warn', 'Value is not a string', value)
     throw new Error(`${name} must be a string`)
   }
 }
@@ -16,8 +14,7 @@ export const nonEmptyString = (value, name) => {
   string(value, name)
 
   if (value === '') {
-    // eslint-disable-next-line
-    console.error(value)
+    resolveLog('warn', 'Value is not empty string', value)
     throw new Error(`${name} must be a non-empty string`)
   }
 }

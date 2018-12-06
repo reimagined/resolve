@@ -15,10 +15,3 @@ if (!fs.existsSync(path.resolve(__dirname, 'resolve/config.js'))) {
     path.resolve(__dirname, 'resolve/config.js')
   )
 }
-
-if (!fs.existsSync(path.resolve(__dirname, 'resolve/resolve-redux.js'))) {
-  fs.copyFileSync(
-    path.resolve(__dirname, 'test/__mocks__/resolve/resolve-redux.js'),
-    path.resolve(__dirname, 'resolve/resolve-redux.js')
-  )
-}

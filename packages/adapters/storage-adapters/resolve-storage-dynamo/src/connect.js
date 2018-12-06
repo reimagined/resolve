@@ -3,6 +3,7 @@ import { apiVersion } from './constants'
 const connect = async (pool, { DynamoDB, checkTableExists, ...helpers }) => {
   const {
     tableName,
+    billingMode = 'PAY_PER_REQUEST',
     readCapacityUnits = 5,
     writeCapacityUnits = 5,
     ...connectionOptions
@@ -21,6 +22,7 @@ const connect = async (pool, { DynamoDB, checkTableExists, ...helpers }) => {
     documentClient,
     checkTableExists,
     tableName,
+    billingMode,
     readCapacityUnits,
     writeCapacityUnits
   })

@@ -60,7 +60,12 @@ typings/
 .next
 
 dist
+es
+lib
+
+report.json
 
 event-storage.db
 package-lock.json
 native/resolve
+yarn.lock

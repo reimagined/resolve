@@ -1,21 +1,12 @@
 const getLastError = async (repository, { aggregateIds } = {}) => {
-  const viewModel = repository.getViewModel(repository, aggregateIds, true)
-  if (viewModel == null) {
+  const key = repository.getKey(aggregateIds)
+  if (!repository.activeWorkers.has(key)) {
     return null
   }
 
+  const viewModel = await repository.activeWorkers.get(key)
   if (viewModel.hasOwnProperty('lastError')) {
     return viewModel.lastError
-  }
-
-  if (!viewModel.hasOwnProperty('initPromise')) {
-    return null
-  }
-
-  try {
-    await viewModel.initPromise
-  } catch (error) {
-    return error
   }
 
   return null

@@ -48,7 +48,7 @@ describe('config with process.env failure', () => {
           resolveConfig,
           isClient: true
         }).code
-    ).toThrow()
+    ).toMatchSnapshot()
   })
 
   test('[server]', () => {
@@ -58,7 +58,7 @@ describe('config with process.env failure', () => {
           resolveConfig,
           isClient: false
         }).code
-    ).toThrow()
+    ).toMatchSnapshot()
   })
 })
 
@@ -78,7 +78,7 @@ describe('config with deep process.env failure', () => {
           resolveConfig,
           isClient: true
         }).code
-    ).toThrow()
+    ).toMatchSnapshot()
   })
 
   test('[server]', () => {
@@ -88,7 +88,7 @@ describe('config with deep process.env failure', () => {
           resolveConfig,
           isClient: false
         }).code
-    ).toThrow()
+    ).toMatchSnapshot()
   })
 })
 

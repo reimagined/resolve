@@ -2,9 +2,6 @@ import {
   message,
   RUNTIME_ENV_NOWHERE,
   RESOURCE_ANY,
-  RESOURCE_CONSTRUCTOR_ONLY,
-  RUNTIME_ENV_ANYWHERE,
-  IMPORT_CONSTRUCTOR,
   IMPORT_INSTANCE
 } from '../constants'
 import importBabel from '../import_babel'
@@ -29,6 +26,15 @@ export default ({ resolveConfig, isClient }) => {
       throw new Error(`${message.clientEnvError}.readModels[${index}].name`)
     }
     constants.push(`const name_${index} = ${JSON.stringify(readModel.name)}`)
+
+    if (checkRuntimeEnv(readModel.adapterName)) {
+      throw new Error(
+        `${message.clientEnvError}.readModels[${index}].adapterName`
+      )
+    }
+    constants.push(
+      `const adapterName_${index} = ${JSON.stringify(readModel.adapterName)}`
+    )
 
     importResource({
       resourceName: `resolvers_${index}`,
@@ -69,24 +75,12 @@ export default ({ resolveConfig, isClient }) => {
       )
     }
 
-    const readModelAdapter =
-      resolveConfig.hasOwnProperty('readModelAdapters') &&
-      resolveConfig.readModelAdapters.hasOwnProperty(readModel.name)
-        ? resolveConfig.readModelAdapters[readModel.name]
-        : null
-
-    if (!readModelAdapter) {
-      throw new Error(
-        `${message.configNotContainSectionError}.readModelAdapters[${
-          readModel.name
-        }]`
-      )
-    }
-
     exports.push(`readModels.push({`, `  name: name_${index}`)
     exports.push(`, resolvers: resolvers_${index}`)
 
     if (!isClient) {
+      exports.push(`, adapterName: adapterName_${index}`)
+
       importResource({
         resourceName: `projection_${index}`,
         resourceValue: readModel.projection,
@@ -99,18 +93,6 @@ export default ({ resolveConfig, isClient }) => {
       })
       exports.push(`, projection: projection_${index}`)
       exports.push(`, invariantHash: projection_${index}_hash`)
-
-      importResource({
-        resourceName: `read_model_adapter_${index}`,
-        resourceValue: readModelAdapter,
-        runtimeMode: RUNTIME_ENV_ANYWHERE,
-        importMode: RESOURCE_CONSTRUCTOR_ONLY,
-        instanceMode: IMPORT_CONSTRUCTOR,
-        imports,
-        constants
-      })
-
-      exports.push(`, adapter: read_model_adapter_${index}`)
     }
     exports.push(`})`, ``)
   }

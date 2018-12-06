@@ -20,15 +20,13 @@ test('method "createReadModel" should create read model { resolvers, applyEvent,
   const name = 'name'
   const projection = { Init: () => {} }
   const resolvers = { test: async () => 42 }
-  const adapter = {
-    /* adapter */
-  }
+  const adapterName = 'default'
 
   const createQuery = sinon.stub().returns(query)
   const createStorageAdapter = sinon.stub().returns(storage)
   const createBusAdapter = sinon.stub().returns(bus)
   const createEventStore = sinon.stub().returns(eventStore)
-  const createReadModelAdapter = sinon.stub().returns(adapter)
+  const createReadModelAdapter = sinon.stub()
   const createResolver = sinon.stub()
   const createResolvers = sinon.stub().returns(resolvers)
   const applyEvent = sinon.stub()
@@ -46,7 +44,7 @@ test('method "createReadModel" should create read model { resolvers, applyEvent,
       applyEvent,
       applyEvents
     },
-    { name, projection, resolvers, adapter }
+    { name, projection, resolvers, adapterName }
   )
 
   const pool = {
@@ -56,7 +54,6 @@ test('method "createReadModel" should create read model { resolvers, applyEvent,
     modelName: name,
     projection,
     resolvers,
-    adapter,
     storage,
     bus,
     query,

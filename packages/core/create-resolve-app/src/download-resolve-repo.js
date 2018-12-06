@@ -17,15 +17,32 @@ const downloadResolveRepo = ({
       } catch (e) {}
 
       try {
-        fs.mkdirSync(applicationPath)
+        fs.ensureDirSync(applicationPath)
       } catch (e) {}
+
+      const resolveCloneZip = fs.createWriteStream(resolveCloneZipPath)
+
+      let error = null
+
+      resolveCloneZip.on('finish', function() {
+        if (error) {
+          reject(error)
+        } else {
+          resolve()
+        }
+      })
 
       https.get(resolveDownloadZipUrl, response => {
         response.on('data', data => {
-          fs.appendFileSync(resolveCloneZipPath, data)
+          resolveCloneZip.write(data)
         })
-        response.on('end', resolve)
-        response.on('error', reject)
+        response.on('end', () => {
+          resolveCloneZip.end()
+        })
+        response.on('error', err => {
+          error = err
+          resolveCloneZip.end()
+        })
       })
     })
   } catch (_) {

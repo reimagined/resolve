@@ -501,7 +501,9 @@ const importConstructorResource = ({
       ${resourceName}_constructor,
       ${resourceName}_options,
       ${resourceName}_imports
-    )`)
+    )
+    Object.assign(${resourceName}, ${resourceName}_constructor)
+    `)
   } else {
     constants.push(`const ${resourceName} = ${resourceName}_constructor(
       ${resourceName}_options,

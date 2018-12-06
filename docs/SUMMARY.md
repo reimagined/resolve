@@ -1,3 +1,8 @@
+---
+id: summary
+title: Summary
+---
+
 - [Introduction](introduction.md)
 
   - [Setting Up](introduction.md#setting-up)

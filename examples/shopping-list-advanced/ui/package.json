@@ -1,20 +1,42 @@
 {
   "name": "@shopping-list-advanced/ui",
-  "version": "0.17.4",
+  "version": "0.18.8",
   "private": true,
-  "main": "src/index",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
   "scripts": {
-    "build": "echo || exit 0",
-    "test": "echo || exit 0",
-    "test:functional": "echo || exit 0"
+    "test": "jest --config=jest.config.js"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.0.0",
+    "react-bootstrap": "0.32.4"
   },
   "devDependencies": {
-    "babel-preset-expo": "4.0.0"
+    "react": "16.5.0",
+    "react-dom": "16.5.0",
+    "redux": "4.0.1",
+    "resolve-redux": "0.18.8",
+    "regenerator-runtime": "0.12.1",
+    "jest": "23.6.0",
+    "enzyme": "3.7.0",
+    "enzyme-adapter-react-16": "1.7.0",
+    "babel-jest": "23.6.0",
+    "babel-core": "^7.0.0-0",
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-proposal-decorators": "^7.0.0",
+    "@babel/plugin-proposal-class-properties": "^7.0.0",
+    "@babel/plugin-proposal-export-default-from": "^7.0.0",
+    "@babel/plugin-proposal-export-namespace-from": "^7.0.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/preset-flow": "^7.0.0"
   },
-  "workspaces": {
-    "nohoist": [
-      "**",
-      "**/**"
-    ]
+  "peerDependencies": {
+    "react": "*",
+    "react-dom": "*",
+    "react-native": "*",
+    "resolve-redux": "*"
   }
 }

@@ -1,43 +1,10 @@
 import Ajv from 'ajv'
+import validatePath from 'resolve-runtime/lib/utils/validate_path'
 
 import { schemaResolveConfig, message } from './constants'
 import { checkRuntimeEnv } from './declare_runtime_env'
-import validatePath from './validate_path'
 
 const ajv = new Ajv()
-
-export const validateRootPath = resolveConfig => {
-  if (!resolveConfig.hasOwnProperty('rootPath')) {
-    return
-  }
-
-  if (!validatePath(resolveConfig.rootPath, { allowEmptyPath: true })) {
-    throw new Error(
-      `Incorrect options.rootPath = "${
-        resolveConfig.rootPath
-      }"\nValue must be part of the URL, which is the application's subdirectory`
-    )
-  }
-
-  resolveConfig.rootPath = encodeURI(resolveConfig.rootPath)
-}
-
-export const validateStaticPath = resolveConfig => {
-  if (!resolveConfig.hasOwnProperty('staticPath')) {
-    return
-  }
-
-  if (!validatePath(resolveConfig.staticPath, { allowAbsolutePath: true })) {
-    throw new Error(
-      `Incorrect options.staticPath = "${
-        resolveConfig.staticPath
-        // eslint-disable-next-line max-len
-      }"\nValue must be part of the URL or the absolute URL, which is the application's static subdirectory`
-    )
-  }
-
-  resolveConfig.staticPath = encodeURI(resolveConfig.staticPath)
-}
 
 const allowedMethods = [
   'HEAD',
@@ -101,8 +68,6 @@ const validateConfig = config => {
     )
   }
 
-  validateStaticPath(config)
-  validateRootPath(config)
   validateApiHandlers(config)
 
   return true

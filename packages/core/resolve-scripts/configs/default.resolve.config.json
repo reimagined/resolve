@@ -1,4 +1,5 @@
 {
+  "logLevel": "warn",
   "port": 3000,
   "polyfills": [],
   "rootPath": "",
@@ -36,7 +37,7 @@
     "module": "resolve-snapshot-lite",
     "options": {}
   },
-  "readModelAdapters": {},
+  "readModelAdapters": [],
   "jwtCookie": {
     "name": "jwt",
     "maxAge": 31536000000

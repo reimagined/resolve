@@ -1,22 +1,59 @@
+import validatePath from 'resolve-runtime/lib/utils/validate_path'
+
 import { message } from '../constants'
-import { checkRuntimeEnv } from '../declare_runtime_env'
+import { checkRuntimeEnv, injectRuntimeEnv } from '../declare_runtime_env'
 
-export default ({ resolveConfig }) => {
-  if (resolveConfig.staticPath == null || resolveConfig.staticPath === '') {
+export default ({ resolveConfig, isClient }) => {
+  let staticPath = resolveConfig.staticPath
+  if (staticPath == null) {
     throw new Error(`${message.configNotContainSectionError}.staticPath`)
-  }
-
-  if (checkRuntimeEnv(resolveConfig.staticPath)) {
-    throw new Error(`${message.clientEnvError}.staticPath`)
   }
 
   const exports = []
 
-  exports.push(
-    `const staticPath = ${JSON.stringify(resolveConfig.staticPath, null, 2)}`,
-    ``,
-    `export default staticPath`
-  )
+  if (!checkRuntimeEnv(staticPath)) {
+    if (!validatePath(staticPath, { allowAbsolutePath: true })) {
+      throw new Error(
+        `Incorrect options.staticPath = "${
+          staticPath
+          // eslint-disable-next-line max-len
+        }"\nValue must be part of the URL or the absolute URL, which is the application's static subdirectory`
+      )
+    }
+    staticPath = encodeURI(staticPath)
+
+    exports.push(
+      `const staticPath = ${JSON.stringify(staticPath)}`,
+      ``,
+      `export default staticPath`
+    )
+  } else {
+    if (!isClient) {
+      exports.push(
+        `import validatePath from 'resolve-runtime/lib/utils/validate_path'`
+      )
+    }
+
+    exports.push(`let staticPath = ${injectRuntimeEnv(staticPath, isClient)}`)
+
+    if (!isClient) {
+      exports.push(
+        /* eslint-disable max-len */
+        `if (!validatePath(staticPath, { allowAbsolutePath: true })) {
+          throw new Error(
+            \`Incorrect options.staticPath = "\${
+              staticPath
+            }"\\nValue must be part of the URL or the absolute URL, which is the application's static subdirectory\`
+          )
+        }`,
+        /* eslint-enable max-len */
+        `staticPath = encodeURI(staticPath)`,
+        ``
+      )
+    }
+
+    exports.push(`export default staticPath`)
+  }
 
   return {
     code: exports.join('\r\n')

@@ -1,10 +1,8 @@
 {
   "name": "@shopping-list-advanced/utils",
-  "version": "0.17.4",
+  "version": "0.18.8",
   "private": true,
   "scripts": {
-    "build": "echo || exit 0",
-    "test": "echo || exit 0",
-    "test:functional": "echo || exit 0"
+    "test": "echo || exit 0"
   }
 }

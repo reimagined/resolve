@@ -4,6 +4,7 @@ import jsonUtfStringify from '../utils/json_utf_stringify'
 
 export default ({
   reducers,
+  seedClientEnvs,
   markup,
   styleTags,
   initialState,
@@ -28,6 +29,7 @@ export default ({
     styleTags +
     '<script>' +
     `window.__INITIAL_STATE__=${jsonUtfStringify(initialState)};` +
+    `window.__RESOLVE_RUNTIME_ENV__=${jsonUtfStringify(seedClientEnvs)};` +
     '</script>' +
     `${helmet.script.toString()}` +
     '</head>' +
