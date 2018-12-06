@@ -15,4 +15,4 @@ This tutorial includes the following lessons:
 - Lesson 4 - Frontend - Display View Model Data in the Browser
 - Lesson 5 - Frontend - Enable Data Editing
 - Lesson 6 - Frontend - Support Multiple Shopping Lists
-- Lesson 7 - Functionality Enhancements - Support Item Editing and Deletion
+- Lesson 7 - Functionality Enhancements
