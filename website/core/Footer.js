@@ -24,23 +24,32 @@ class Footer extends React.Component {
           </a>
           <div>
             <h5>Docs</h5>
-            <a href={this.props.config.baseUrl}>Documentation Index</a>
+            <a href={this.props.config.baseUrl + 'docs/'}>
+              Documentation Index
+            </a>
           </div>
           <div>
             <h5>Community</h5>
             <a
-              href="http://stackoverflow.com/questions/resolvejs/"
+              href="https://stackoverflow.com/questions/tagged/resolvejs"
               target="_blank"
               rel="noreferrer noopener"
             >
               Stack Overflow
             </a>
             <a
-              href="https://stackoverflow.com/questions/tagged/resolvejs"
+              href="https://twitter.com/resolvejs"
               target="_blank"
               rel="noreferrer noopener"
             >
               Twitter
+            </a>
+            <a
+              href="https://www.facebook.com/resolvejs/"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              Facebook
             </a>
           </div>
           <div>
