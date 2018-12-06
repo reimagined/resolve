@@ -136,7 +136,7 @@ class MyLists extends React.PureComponent {
 }
 ```
 
-See the shoppingLists and shoppingListsCreator files to see the details of these components' implementation.
+See the [shoppingLists](../../examples/shopping-list-tutorial/lesson-6/client/components/ShoppingLists.js) and [shoppingListsCreator](../../examples/shopping-list-tutorial/lesson-6/client/components/ShoppingListCreator.js) files to see the details of these components' implementation.
 
 The implemented container component is bound to the ShoppingLists Read Model as shown below:
 
@@ -162,9 +162,95 @@ export default connectReadModel(mapStateToOptions)(
 )
 ```
 
-For now, binding a component to a reSolve Read Model looks similar to how you bound the ShoppingList component to a View Model in the Lesson 4. Run, your application and try adding a new shopping list using the implemented UI.
+Now that your application has two main views, you need to provide means of navigation between them. To achieve this goal, you need to configure the react router.
 
-You should have noticed that although you application correctly sends commands to the backend, the client UI does not reflect the change in the application state. A newly created shopping list only appears after you refresh the page. This is an expected behavior because Read Models are not reactive by default. This means that components connected to Read Models do not synchronize their Redux state with the Read Model state on the server.
+**[client/routes.js:](../../examples/shopping-list-tutorial/lesson-6/client/routes.js)**
+
+<!-- prettier-ignore-start -->
+[embedmd]:# (../../examples/shopping-list-tutorial/lesson-6/client/routes.js /^/ /\n$/)
+```js
+import App from './containers/App'
+import ShoppingList from './containers/ShoppingList'
+import MyLists from './containers/MyLists'
+
+export default [
+  {
+    component: App,
+    routes: [
+      {
+        path: '/',
+        component: MyLists,
+        exact: true
+      },
+      {
+        path: '/:id',
+        component: ShoppingList
+      }
+    ]
+  }
+]
+```
+<!-- prettier-ignore-end -->
+
+Next, modify the **App** component to use the router.
+
+**[client/containers/App.js:](../../examples/shopping-list-tutorial/lesson-6/client/containers/App.js)**
+
+<!-- prettier-ignore-start -->
+[embedmd]:# (../../examples/shopping-list-tutorial/lesson-6/client/containers/App.js /^/ /\n$/)
+```js
+import React from 'react'
+
+import Header from './Header.js'
+import ShoppingList from './ShoppingList'
+
+const App = ({
+  children,
+  match: {
+    params: { id }
+  }
+}) => (
+  <div>
+    <Header
+      title="reSolve Shopping List"
+      name="Shopping List"
+      favicon="/favicon.ico"
+      css={['/bootstrap.min.css']}
+    />
+    {children}
+  </div>
+)
+
+export default App
+```
+<!-- prettier-ignore-end -->
+
+Also, modify the **ShoppingList** component so it obtains the list aggregate ID from the **:id** route parameter and displays proper items.
+
+**[client/containers/ShoppingList.js:](../../examples/shopping-list-tutorial/lesson-6/client/containers/ShoppingList.js)**
+
+```jsx
+export const mapStateToOptions = (state, ownProps) => {
+  const aggregateId = ownProps.match.params.id
+
+  return {
+    viewModelName: 'ShoppingList',
+    aggregateIds: [aggregateId]
+  }
+}
+
+export const mapStateToProps = (state, ownProps) => {
+  const aggregateId = ownProps.match.params.id
+
+  return {
+    aggregateId
+  }
+}
+```
+
+For now, binding a component to a reSolve Read Model looks similar to how you bound the ShoppingList component to a View Model in the [Lesson 4](lesson-4.md). Run, your application and try adding a new shopping list using the implemented UI.
+
+You should have noticed that although you application correctly sends commands to the backend, the client UI does not reflect the change in the application state. A newly created shopping list only appears after you refresh the page. This is an expected behavior because Read Models are not reactive by default. This means that components connected to Read Models do not automatically synchronize their Redux state with the Read Model state on the server.
 
 You can overcome this limitation by introducing optimistic UI updates as the next section describes.
 
