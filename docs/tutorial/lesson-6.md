@@ -2,6 +2,8 @@
 
 In the previous two lessons, you have been implementing the client-side UI for viewing and editing items in a shopping list. However, you may have noticed that your application's functionality is incomplete: it is possible use HTTP API to create multiple shopping lists, but the client UI only allows viewing and editing only one specific list, namely **shopping-list-1**:
 
+**[client/containers/ShoppingList.js:](../../examples/shopping-list-tutorial/lesson-6/client/containers/ShoppingList.js)**
+
 ```jsx
 export const mapStateToOptions = (state, ownProps) => {
   return {
@@ -73,6 +75,8 @@ In this example, the **all** resolver function is used to obtain all available s
 
 Register the created Read Model in the application's configuration file:
 
+**[config.app.js:](../../examples/shopping-list-tutorial/lesson-6/config.app.js)**
+
 <!-- prettier-ignore-start -->
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-6/config.app.js /^[[:blank:]]+readModels:/ /\],/)
 ```js
@@ -119,7 +123,11 @@ $ curl -X POST \
 
 Now you can implement the UI to display all available shopping list an provide and create new shopping lists.
 
-```jsx
+**[client/containers/MyLists.js:](../../examples/shopping-list-tutorial/lesson-6/client/containers/MyLists.js)**
+
+<!-- prettier-ignore-start -->
+[embedmd]:# (../../examples/shopping-list-tutorial/lesson-6/client/containers/MyLists.js /class MyLists/ /^}/)
+```js
 class MyLists extends React.PureComponent {
   render() {
     const { lists, createShoppingList } = this.props
@@ -135,12 +143,15 @@ class MyLists extends React.PureComponent {
   }
 }
 ```
+<!-- prettier-ignore-end -->
 
 See the [shoppingLists](../../examples/shopping-list-tutorial/lesson-6/client/components/ShoppingLists.js) and [shoppingListsCreator](../../examples/shopping-list-tutorial/lesson-6/client/components/ShoppingListCreator.js) files to see the details of these components' implementation.
 
 The implemented container component is bound to the ShoppingLists Read Model as shown below:
 
-```jsx
+**[client/containers/MyLists.js:](../../examples/shopping-list-tutorial/lesson-6/client/containers/MyLists.js)**
+
+```js
 export const mapStateToOptions = () => ({
   readModelName: 'ShoppingLists',
   resolverName: 'all',
@@ -260,8 +271,10 @@ With the optimistic UI updating approach, a component applies model changes to t
 
 First, define Redux actions that will perform updates:
 
+**[client/actions/optimistic_actions.js:](../../examples/shopping-list-tutorial/lesson-6/client/actions/optimistic_actions.js)**
+
 <!-- prettier-ignore-start -->
-[embedmd]:# (..\..\examples\shopping-list-tutorial\lesson-6\client\actions\optimistic_actions.js /^/ /\n$/)
+[embedmd]:# (../../examples/shopping-list-tutorial/lesson-6/client/actions/optimistic_actions.js /^/ /\n$/)
 ```js
 export const OPTIMISTIC_CREATE_SHOPPING_LIST = 'OPTIMISTIC_CREATE_SHOPPING_LIST'
 export const OPTIMISTIC_SYNC = 'OPTIMISTIC_SYNC'
@@ -270,8 +283,10 @@ export const OPTIMISTIC_SYNC = 'OPTIMISTIC_SYNC'
 
 Implement an optimistic reducer function that responds to these commands to update the corresponding slice of the Redux state:
 
+**[client/reducers/optimistic_shopping_lists.js:](../../examples/shopping-list-tutorial/lesson-6/client/reducers/optimistic_shopping_lists.js)**
+
 <!-- prettier-ignore-start -->
-[embedmd]:# (..\..\examples\shopping-list-tutorial\lesson-6\client\reducers\optimistic_shopping_lists.js /^/ /\n$/)
+[embedmd]:# (../../examples/shopping-list-tutorial/lesson-6/client/reducers/optimistic_shopping_lists.js /^/ /\n$/)
 ```js
 import { LOCATION_CHANGE } from 'react-router-redux'
 import {
@@ -309,8 +324,10 @@ export default optimistic_shopping_lists
 
 Provide a middleware that intercepts the service actions used for communication between between Redux and reSolve:
 
+**[client/reducers/optimistic_shopping_lists_middleware.js:](../../examples/shopping-list-tutorial/lesson-6/client/middlewares/optimistic_shopping_lists_middleware.js)**
+
 <!-- prettier-ignore-start -->
-[embedmd]:# (..\..\examples\shopping-list-tutorial\lesson-6\client\middlewares\optimistic_shopping_lists_middleware.js /^/ /\n$/)
+[embedmd]:# (../../examples/shopping-list-tutorial/lesson-6/client/middlewares/optimistic_shopping_lists_middleware.js /^/ /\n$/)
 ```js
 import { actionTypes } from 'resolve-redux'
 
