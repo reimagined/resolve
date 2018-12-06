@@ -25,6 +25,7 @@ Please note that you have to generate a new Aggregate ID and send it with a comm
 To configure aggregates in a reSolve app, provide an aggregates array in the application configuration file:
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../../examples/shopping-list/config.app.js /aggregates: \[/ /\]/)
 ```js
 aggregates: [
@@ -35,6 +36,7 @@ aggregates: [
     }
   ]
 ```
+
 <!-- prettier-ignore-end -->
 
 # Sending a Command
