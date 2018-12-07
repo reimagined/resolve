@@ -1,3 +1,8 @@
+---
+id: write-side
+title: Write Side
+---
+
 # Aggregates
 
 Commands are executed by objects that encapsulate domain logic. These objects are called Domain Objects.
@@ -101,7 +106,7 @@ $ curl -X POST "http://localhost:3000/api/commands"
 
 ### Emitting Commands on the Server
 
-You can emit a command on the server side from a **Saga** or **API Handler** using the **resolve.executeCommand** function as shown below:
+You can emit a command on the server side from a **[Saga](../advanced-techniques.md#process-managers-sagas)** or **[API Handler](../api-handlers.md)** using the **resolve.executeCommand** function as shown below:
 
 ```js
 await resolve.executeCommand({

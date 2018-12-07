@@ -1,3 +1,8 @@
+---
+id: index
+title: reSolve Basics
+---
+
 - [reSolve app structure](resolve-app-structure.md)
   - [Configuration](resolve-app-structure.md#configuration)
   - [Write and Read Sides](resolve-app-structure.md#write-and-read-sides)

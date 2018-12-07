@@ -1,6 +1,13 @@
 {
   "docs": {
-    "Docs Index": ["index"],
+    "Docs Index": [
+      "index",
+      {
+        "type": "subcategory",
+        "label": "Basics",
+        "ids": ["basics/index", "basics/write-side"]
+      }
+    ],
     "FAQ": ["faq"],
     "Troubleshooting": ["troubleshooting"]
   }
