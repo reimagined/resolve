@@ -38,8 +38,7 @@ test('View-model dispose should dispose view-model', async () => {
   const options = {}
   await dispose(repository, options)
 
-  expect(repository.snapshotAdapter.dispose.callCount).toEqual(1)
-  expect(repository.snapshotAdapter.dispose.firstCall.args[0]).toEqual(options)
+  expect(repository.snapshotAdapter.dispose.callCount).toEqual(0)
 
   expect(oneViewModelInstance.disposed).toEqual(true)
   expect(twoViewModelInstance.disposed).toEqual(true)
