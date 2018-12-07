@@ -15,7 +15,7 @@ See Martin Fowler's definition for aggregates in the DDD paradigm: [https://mart
 
 In reSolve, an aggregate is a static object that contains a set of functions. Functions that build aggregate
 state from events are called [projections](#aggregate-projection-function).
-Functions that execute commands - [command handlers](#command-handler).
+Functions that execute commands - [command handlers](#aggregate-command-handlers).
 Aggregate state is passed to each of these functions explicitly as an argument.
 
 # Aggregate ID
@@ -144,7 +144,7 @@ export default {
 
 # Aggregate Projection Function
 
-Projection functions are used to calculate an aggregate state based on the agreggate's events. A projection function receives a previous state and event to be applied. A projection function should return a new state based on the input. The computed state is then passed to the corresponding [command handler](#command_handler).
+Projection functions are used to calculate an aggregate state based on the agreggate's events. A projection function receives a previous state and event to be applied. A projection function should return a new state based on the input. The computed state is then passed to the corresponding [command handler](#aggregate-command-handlers).
 
 The Init function returns initial state of the aggregate.
 

@@ -1,3 +1,8 @@
+---
+id: frontend
+title: Frontend
+---
+
 # React/Redux Support
 
 The reSolve framework is shipped with the client **resolve-redux** library that allows you to easily connect you client React + Redux app to a reSolve-powered backend.

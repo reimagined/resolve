@@ -28,3 +28,4 @@ title: reSolve Basics
   - [Sending Commands as Redux Actions](frontend.md#sending-commands-as-redux-actions)
   - [Reactive View Models, Event Subscription](frontend.md#reactive-view-vodels-event-subscription)
   - [Optimistic Commands](frontend.md#optimistic-commands)
+- [Standard HTTP API](curl.md)
