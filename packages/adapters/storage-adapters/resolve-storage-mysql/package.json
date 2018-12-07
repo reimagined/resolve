@@ -1,6 +1,6 @@
 {
   "name": "resolve-storage-mysql",
-  "version": "0.18.9",
+  "version": "0.18.10",
   "description": "This package serves as an adapter for resolve-storage to store events using mysql.",
   "engines": {
     "node": ">=8.10"
@@ -27,7 +27,7 @@
   "dependencies": {
     "@babel/runtime": "^7.0.0",
     "mysql2": "^1.6.1",
-    "resolve-storage-base": "0.18.9"
+    "resolve-storage-base": "0.18.10"
   },
   "devDependencies": {
     "jest": "23.6.0",

@@ -1,6 +1,6 @@
 {
   "name": "resolve-redux",
-  "version": "0.18.9",
+  "version": "0.18.10",
   "description": "This package serves as a helper for creating the Redux storage.",
   "engines": {
     "node": ">=8.10"
