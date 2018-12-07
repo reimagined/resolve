@@ -11,6 +11,7 @@ Create a **shopping_list.projection.js** file in the **view-models** folder and 
 **[common/view-models/shopping_list.projection.js:](../../examples/shopping-list-tutorial/lesson-3/common/view-models/shopping_list.projection.js)**
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-3/common/view-models/shopping_list.projection.js /^/ /\n$/)
 ```js
 import { SHOPPING_LIST_CREATED, SHOPPING_ITEM_CREATED } from "../eventTypes";
@@ -35,6 +36,7 @@ export default {
   })
 };
 ```
+
 <!-- prettier-ignore-end -->
 
 You just defined a View Model **[projection](../basics/read-side.md#updating-a-read-model-via-projection-functions)**. A View Model projection runs for all events for a specific aggregate ID. Based on event data, a projection builds state. This state is then returned as a query response.

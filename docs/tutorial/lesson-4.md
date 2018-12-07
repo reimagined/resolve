@@ -15,6 +15,7 @@ Create a **ShoppingList.js** file in the client application's containers folder.
 **[client/containers/ShoppingList.js:](../../examples/shopping-list-tutorial/lesson-4/client/containers/ShoppingList.js)**
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-4/client/containers/ShoppingList.js /\/\// /^\}/)
 ```js
 // The example code uses components from the react-bootstrap library to keep the markup compact.
@@ -35,6 +36,7 @@ export class ShoppingList extends React.PureComponent {
   }
 }
 ```
+
 <!-- prettier-ignore-end -->
 
 Now you can use the **resolve-redux** library's **connectViewModel** HOC to bind your component to the **ShoppingList** view model implemented earlier:
@@ -42,6 +44,7 @@ Now you can use the **resolve-redux** library's **connectViewModel** HOC to bind
 **[client/containers/ShoppingList.js:](../../examples/shopping-list-tutorial/lesson-4/client/containers/ShoppingList.js)**
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-4/client/containers/ShoppingList.js /export const mapStateToOptions/ /export default connectViewModel\(mapStateToOptions\)\(ShoppingList\)/)
 ```js
 export const mapStateToOptions = (state, ownProps) => {
@@ -53,6 +56,7 @@ export const mapStateToOptions = (state, ownProps) => {
 
 export default connectViewModel(mapStateToOptions)(ShoppingList)
 ```
+
 <!-- prettier-ignore-end -->
 
 The connectViewModel HOC binds the original component to a reSolve View Model based on options provided by the **mapStateToOptions** function. The **data** prop that you used in your component's implementation is injected by this HOC and contains the View Model's response object. It is the same object that saw when you manually performed a data query using the HTTP API in the lesson 3:

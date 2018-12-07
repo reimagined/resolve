@@ -26,6 +26,7 @@ To overcome this issue, implement a ShoppingLists **[Read Model](../basics/read-
 **[common/read-models/shopping_lists.projection.js:](../../examples/shopping-list-tutorial/lesson-6/common/read-models/shopping_lists.projection.js)**
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-6/common/read-models/shopping_lists.projection.js /^/   /\n$/)
 ```js
 import { SHOPPING_LIST_CREATED } from '../eventTypes'
@@ -54,6 +55,7 @@ export default {
   }
 }
 ```
+
 <!-- prettier-ignore-end -->
 
 You also need to implement **[resolver functions](../basics/read-side.md#resolvers)** that will answer queries using the accumulated data.
@@ -61,6 +63,7 @@ You also need to implement **[resolver functions](../basics/read-side.md#resolve
 **[common/read-models/shopping_lists.resolvers.js:](../../examples/shopping-list-tutorial/lesson-6/common/read-models/shopping_lists.resolvers.js)**
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-6/common/read-models/shopping_lists.resolvers.js /^/   /\n$/)
 ```js
 export default {
@@ -69,6 +72,7 @@ export default {
   }
 }
 ```
+
 <!-- prettier-ignore-end -->
 
 In this example, the **all** resolver function is used to obtain all available shopping lists.
@@ -78,6 +82,7 @@ Register the created Read Model in the application's configuration file:
 **[config.app.js:](../../examples/shopping-list-tutorial/lesson-6/config.app.js)**
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-6/config.app.js /^[[:blank:]]+readModels:/ /\],/)
 ```js
   readModels: [
@@ -88,6 +93,7 @@ Register the created Read Model in the application's configuration file:
     }
   ],
 ```
+
 <!-- prettier-ignore-end -->
 
 Note that regular Read Models are not reactive like View Models are. This results in several side effects, that will be discussed in greater detail later in this lesson.
@@ -126,6 +132,7 @@ Now you can implement the UI to display all available shopping list an provide a
 **[client/containers/MyLists.js:](../../examples/shopping-list-tutorial/lesson-6/client/containers/MyLists.js)**
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-6/client/containers/MyLists.js /class MyLists/ /^}/)
 ```js
 class MyLists extends React.PureComponent {
@@ -143,6 +150,7 @@ class MyLists extends React.PureComponent {
   }
 }
 ```
+
 <!-- prettier-ignore-end -->
 
 See the [shoppingLists](../../examples/shopping-list-tutorial/lesson-6/client/components/ShoppingLists.js) and [shoppingListsCreator](../../examples/shopping-list-tutorial/lesson-6/client/components/ShoppingListCreator.js) files to see the details of these components' implementation.
@@ -178,6 +186,7 @@ Now that your application has two main views, you need to provide means of navig
 **[client/routes.js:](../../examples/shopping-list-tutorial/lesson-6/client/routes.js)**
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-6/client/routes.js /^/ /\n$/)
 ```js
 import App from './containers/App'
@@ -201,6 +210,7 @@ export default [
   }
 ]
 ```
+
 <!-- prettier-ignore-end -->
 
 Next, modify the **App** component to use the router.
@@ -208,6 +218,7 @@ Next, modify the **App** component to use the router.
 **[client/containers/App.js:](../../examples/shopping-list-tutorial/lesson-6/client/containers/App.js)**
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-6/client/containers/App.js /^/ /\n$/)
 ```js
 import React from 'react'
@@ -234,6 +245,7 @@ const App = ({
 
 export default App
 ```
+
 <!-- prettier-ignore-end -->
 
 Also, modify the **ShoppingList** component so it obtains the list aggregate ID from the **:id** route parameter and displays proper items.
@@ -274,11 +286,13 @@ First, define Redux actions that will perform updates:
 **[client/actions/optimistic_actions.js:](../../examples/shopping-list-tutorial/lesson-6/client/actions/optimistic_actions.js)**
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-6/client/actions/optimistic_actions.js /^/ /\n$/)
 ```js
 export const OPTIMISTIC_CREATE_SHOPPING_LIST = 'OPTIMISTIC_CREATE_SHOPPING_LIST'
 export const OPTIMISTIC_SYNC = 'OPTIMISTIC_SYNC'
 ```
+
 <!-- prettier-ignore-end -->
 
 Implement an optimistic reducer function that responds to these commands to update the corresponding slice of the Redux state:
@@ -286,6 +300,7 @@ Implement an optimistic reducer function that responds to these commands to upda
 **[client/reducers/optimistic_shopping_lists.js:](../../examples/shopping-list-tutorial/lesson-6/client/reducers/optimistic_shopping_lists.js)**
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-6/client/reducers/optimistic_shopping_lists.js /^/ /\n$/)
 ```js
 import { LOCATION_CHANGE } from 'react-router-redux'
@@ -327,6 +342,7 @@ Provide a middleware that intercepts the service actions used for communication 
 **[client/reducers/optimistic_shopping_lists_middleware.js:](../../examples/shopping-list-tutorial/lesson-6/client/middlewares/optimistic_shopping_lists_middleware.js)**
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-6/client/middlewares/optimistic_shopping_lists_middleware.js /^/ /\n$/)
 ```js
 import { actionTypes } from 'resolve-redux'
@@ -365,6 +381,7 @@ const optimistic_shopping_lists_middleware = store => next => action => {
 
 export default optimistic_shopping_lists_middleware
 ```
+
 <!-- prettier-ignore-end -->
 
 Modify the **mapStateToProps** function implementation for the MyLists component so that component props are bound to the implemented slice of the Redux state:

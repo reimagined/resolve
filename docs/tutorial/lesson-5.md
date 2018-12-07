@@ -9,10 +9,12 @@ Your application already implements logic required to add new list items. Apply 
 **[common/eventTypes.js:](../../examples/shopping-list-tutorial/lesson-5/common/eventTypes.js)**
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-5/common/eventTypes.js /export const SHOPPING_ITEM_TOGGLED/ /\n$/)
 ```js
 export const SHOPPING_ITEM_TOGGLED = "SHOPPING_ITEM_TOGGLED";
 ```
+
 <!-- prettier-ignore-end -->
 
 2. Add a command handler that produces the added event in response to the **toggleShoppingItem** command.
@@ -20,6 +22,7 @@ export const SHOPPING_ITEM_TOGGLED = "SHOPPING_ITEM_TOGGLED";
 **[common/aggregates/shopping_list.commands.js](../../examples/shopping-list-tutorial/lesson-5/common/aggregates/shopping_list.commands.js):**
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-5/common/aggregates/shopping_list.commands.js /^[[:blank:]]+toggleShoppingItem/   /^[[:blank:]]{2}\}/)
 ```js
   toggleShoppingItem: (state, { payload: { id } }) => {
@@ -33,6 +36,7 @@ export const SHOPPING_ITEM_TOGGLED = "SHOPPING_ITEM_TOGGLED";
     }
   }
 ```
+
 <!-- prettier-ignore-end -->
 
 The event payload contains the toggled item's identifier.
@@ -42,6 +46,7 @@ The event payload contains the toggled item's identifier.
 **[common/view-models/shopping_list.projection.js:](../../examples/shopping-list-tutorial/lesson-5/common/view-models/shopping_list.projection.js)**
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-5/common/view-models/shopping_list.projection.js /^[[:space:]]+\[SHOPPING_ITEM_TOGGLED\]/   /^[[:blank:]]+\}\)/)
 ```js
   [SHOPPING_ITEM_TOGGLED]: (state, { payload: { id } }) => ({
@@ -56,6 +61,7 @@ The event payload contains the toggled item's identifier.
     )
   })
 ```
+
 <!-- prettier-ignore-end -->
 
 ### Implement Data Editing UI
@@ -65,6 +71,7 @@ In the previous lesson, you connected your ShoppingList to a reSolve View Model.
 **[common/view-models/shopping_list.projection.js:](../../examples/shopping-list-tutorial/lesson-5/common/view-models/shopping_list.projection.js)**
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-5/client/containers/ShoppingList.js /export const mapDispatchToProps/   /\n$/)
 ```js
 export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
@@ -82,6 +89,7 @@ export default connectViewModel(mapStateToOptions)(
   )(ShoppingList)
 );
 ```
+
 <!-- prettier-ignore-end -->
 
 In this code, the component is first connected to a **Redux** state using the **connect** HOC from the **react-redux** library. Then, the component is connected to a reSolve View Model as it was in the previous lesson. The **connect** function is called with the specified **mapDispatchToProps** function. This function takes reSolve aggregate actions from the components payload and wraps them into a **dispatch** function call using the the **bindActionCreators** function.
@@ -103,6 +111,7 @@ In the code below, the **toggleShoppingItem** function is used to handle checkbo
 **[client/containers/ShoppingList.js:](../../examples/shopping-list-tutorial/lesson-5/client/containers/ShoppingList.js)**
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-5/client/containers/ShoppingList.js /^[[:space:]]+\<Checkbox/   /\<\/Checkbox\>/)
 ```js
               <Checkbox
@@ -115,6 +124,7 @@ In the code below, the **toggleShoppingItem** function is used to handle checkbo
                 {todo.text}
               </Checkbox>
 ```
+
 <!-- prettier-ignore-end -->
 
 In the same way, you can use the **createShoppingItem** function to add new shopping list items. The UI markup is shown below:
@@ -122,6 +132,7 @@ In the same way, you can use the **createShoppingItem** function to add new shop
 **[common/view-models/shopping_list.projection.js:](../../examples/shopping-list-tutorial/lesson-5/common/view-models/shopping_list.projection.js)**
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-5/client/containers/ShoppingList.js /^[[:space:]]+\<ControlLabel\>Item name/   /\<\/Row\>/)
 ```js
         <ControlLabel>Item name</ControlLabel>
@@ -146,6 +157,7 @@ In the same way, you can use the **createShoppingItem** function to add new shop
           </Col>
         </Row>
 ```
+
 <!-- prettier-ignore-end -->
 
 This markup uses the following methods to handle UI interaction.

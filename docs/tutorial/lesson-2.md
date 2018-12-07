@@ -16,12 +16,14 @@ To add an aggregate to you shopping list application, first define types of even
 **[common/eventTypes.js:](../../examples/shopping-list-tutorial/lesson-2/common/eventTypes.js)**
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-2/common/eventTypes.js /^/ /\n$/)
 ```js
 export const SHOPPING_LIST_CREATED = "SHOPPING_LIST_CREATED";
 
 export const SHOPPING_ITEM_CREATED = "SHOPPING_ITEM_CREATED";
 ```
+
 <!-- prettier-ignore-end -->
 
 For now, your application requires only two types of events:
@@ -160,6 +162,7 @@ Add several more items to have data to work with in future lessons.
 Now, you can check the event store file to see the newly created event. Open the **event-storage.db** file and locate the created event objects:
 
 <!-- prettier-ignore-start -->
+
 ``` json
 {"type":"SHOPPING_LIST_CREATED","payload":{"name":"List 1"},"aggregateId":"shopping-list-1","aggregateVersion":1,"timestamp":1542884752421,"aggregateIdAndVersion":"shopping-list-1:1","_id":"Ujiz4pjVwid1AaZP"}
 {"type":"SHOPPING_ITEM_CREATED","payload":{"id":"1","text":"Milk"},"aggregateId":"shopping-list-1","aggregateVersion":2,"timestamp":1542884835201,"aggregateIdAndVersion":"shopping-list-1:2","_id":"RBr1596unUVhTJeo"}
@@ -168,6 +171,7 @@ Now, you can check the event store file to see the newly created event. Open the
 {"type":"SHOPPING_ITEM_CREATED","payload":{"id":"4","text":"Paper towels"},"aggregateId":"shopping-list-1","aggregateVersion":5,"timestamp":1542884890484,"aggregateIdAndVersion":"shopping-list-1:5","_id":"YEnzkAlBjEqaLwQI"}
 
 ```
+
 <!-- prettier-ignore-end -->
 
 ### Performing Validation
@@ -199,6 +203,7 @@ To overcome the second and third flaws, you need to somehow store information ab
 **[common/aggregates/shopping_list.projection.js:](../../examples/shopping-list-tutorial/lesson-2/common/aggregates/shopping_list.projection.js)**
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-2/common/aggregates/shopping_list.projection.js /^/ /\n$/)
 ```js
 import { SHOPPING_LIST_CREATED } from "../eventTypes";
@@ -211,6 +216,7 @@ export default {
   })
 };
 ```
+
 <!-- prettier-ignore-end -->
 
 Register the create projection in the application configuration file:
@@ -218,6 +224,7 @@ Register the create projection in the application configuration file:
 **[config.app.js:](../../examples/shopping-list-tutorial/lesson-2/config.app.js)**
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../../examples/shopping-list-tutorial/lesson-2/config.app.js /^[[:blank:]]+aggregates:/ /\],/)
 ```js
   aggregates: [
@@ -228,6 +235,7 @@ Register the create projection in the application configuration file:
     }
   ],
 ```
+
 <!-- prettier-ignore-end -->
 
 The projection object should specify an obligatory **Init** function and a set of **projection functions**.
