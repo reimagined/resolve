@@ -1,7 +1,11 @@
+---
+id: frontend
+title: Frontend
+---
+
 # React/Redux Support
 
 The reSolve framework is shipped with the client **resolve-redux** library that allows you to easily connect you client React + Redux app to a reSolve-powered backend.
-
 
 The **redux** config section specifies the following settings related to the Redux-based frontend:
 
@@ -19,19 +23,18 @@ To connect components to the backend, use the following resolve-redux library's 
 - **connectReadModel** - Connects a component to Read Model.
 - **connectViewModel** - Connects a component to a View Model.
 
-A connected component obtains additional props providing access to the Read Model data and available Redux actions mapped to reSolve commands. 
-
+A connected component obtains additional props providing access to the Read Model data and available Redux actions mapped to reSolve commands.
 
 ### Obtain View Model Data
 
 The code below demonstrates the most basic use-case scenario of obtaining data from a reSolve backend:
 
-``` js
+```js
 import { connectViewModel } from 'resolve-redux'
 
 import React from 'react'
 ...
-const TodoList = ({ data }) => ( 
+const TodoList = ({ data }) => (
     <ul>
         {data.map(i => ( Access View Model data via the data prop
           <li>{i}</li>
@@ -47,21 +50,21 @@ export const mapStateToOptions = () => {
 
 export default connectViewModel(mapStateToOptions)(TodoList)
 
-``` 
+```
 
 In this code, a **connectViewModel** HOC is used to associate a React component with an existing View Model. The HOC uses a **mapStateToOptions** function to specify the View Model options. The following options are required:
+
 - **viewModelName** - the name of a View Model to bind to
 - **aggregateIds** - an array of aggregate IDs for which to obtain data
 
 A component connected to a View Model can access the View Model data through the **data** prop.
-
-
 
 ### Connect to Redux
 
 You can chain the **connectReadModel** or **connectViewModel** function call with the Redux **connect** function call:
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (..\..\examples\shopping-list\client\containers\MyLists.js /export const mapStateToOptions/ /^\)/)
 ```js
 export const mapStateToOptions = () => ({
@@ -86,7 +89,6 @@ export default connectReadModel(mapStateToOptions)(
 ```
 <!-- prettier-ignore-end -->
 
-
 ### Fix URLs
 
 Use the following HOCs to automatically fix URLs passed as component props so that these URLs comply with the backend structure.
@@ -101,24 +103,24 @@ Use the following HOCs to automatically fix URLs passed as component props so th
   export default connectStaticBasedUrls(['css', 'favicon'])(Header)
   ```
 
-
-
-
 # Sending Commands as Redux Actions
 
 A component connected to a Read Model receives an object containing available command names. You can use the **redux.bindActionCreators** function to automatically wrap all these commands into **dispatch** function calls. This allows for a compact implementation of the **mapDispatchToProps** function:
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (..\..\examples\shopping-list\client\containers\MyLists.js /export const mapDispatchToProps/ /bindActionCreators\(aggregateActions, dispatch\)/)
 ```js
 export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(aggregateActions, dispatch)
 ```
+
 <!-- prettier-ignore-end -->
 
 After this, you can use dispatch aggregate commands using the corresponding props:
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (..\..\examples\shopping-list\client\containers\MyLists.js /class MyLists/ /^\}/)
 ```js
 class MyLists extends React.PureComponent {
@@ -139,13 +141,12 @@ class MyLists extends React.PureComponent {
 ```
 <!-- prettier-ignore-end -->
 
-
-
 # Reactive View Models, Event Subscription
 
 A View Model is a special kind of a Read Model. Its projection is declared in a universal format so it can also serve as the reducer code on the client side. Events are automatically sent to the client through a WebSocket connection. Because of these properties, View Models are reactive out of the box. This means that a component connected to a View Model using the **connectViewModel** method automatically reflects the Read Model changes on the server side, without the need to implement any additional logic.
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (..\..\examples\shopping-list\client\containers\ShoppingList.js /export const mapStateToOptions/ /^\)/)
 ```js
 export const mapStateToOptions = (state, ownProps) => {
@@ -181,10 +182,8 @@ export default connectViewModel(mapStateToOptions)(
   )(ShoppingList)
 )
 ```
+
 <!-- prettier-ignore-end -->
-
-
-
 
 # Optimistic Commands
 
@@ -194,8 +193,7 @@ Use the following steps to implement the optimistic update functionality:
 
 1. Create Redux actions that will perform optimistic updates:
 
-<!-- prettier-ignore-start -->
-[embedmd]:# (..\..\examples\shopping-list\client\actions\optimistic_actions.js /^/ /\n$/)
+[embedmd]: # '....\examples\shopping-list\client\actions\optimistic_actions.js /^/ /\n$/'
 
 ```js
 export const OPTIMISTIC_CREATE_SHOPPING_LIST = 'OPTIMISTIC_CREATE_SHOPPING_LIST'
@@ -208,6 +206,7 @@ export const OPTIMISTIC_SYNC = 'OPTIMISTIC_SYNC'
 2. Implement an optimistic reducer function that responds to these commands to update the corresponding slice of the Redux state:
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (..\..\examples\shopping-list\client\reducers\optimistic_shopping_lists.js /^/ /\n$/)
 
 ```js
@@ -254,6 +253,7 @@ export default optimistic_shopping_lists
 3. Implement an optimistic middleware to intercept actions used to communicate with a Read Model and update the Redux state accordingly:
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (..\..\examples\shopping-list\client\middlewares\optimistic_shopping_lists_middleware.js /^/ /\n$/)
 
 ```js

@@ -3,7 +3,7 @@ id: api-handlers
 title: API handlers
 ---
 
-# Api Handlers
+# API Handlers
 
 ## API Reference
 

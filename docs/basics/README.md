@@ -1,3 +1,8 @@
+---
+id: index
+title: reSolve Basics
+---
+
 - [reSolve app structure](resolve-app-structure.md)
   - [Configuration](resolve-app-structure.md#configuration)
   - [Write and Read Sides](resolve-app-structure.md#write-and-read-sides)
@@ -23,3 +28,4 @@
   - [Sending Commands as Redux Actions](frontend.md#sending-commands-as-redux-actions)
   - [Reactive View Models, Event Subscription](frontend.md#reactive-view-vodels-event-subscription)
   - [Optimistic Commands](frontend.md#optimistic-commands)
+- [Standard HTTP API](curl.md)
