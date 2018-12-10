@@ -12,7 +12,7 @@ const dispose = async (repository, options = {}) => {
     viewModel.disposed = true
   }
 
-  repository.disposePromise = repository.snapshotAdapter.dispose(options)
+  repository.disposePromise = Promise.resolve()
   repository.activeWorkers.clear()
 
   return await repository.disposePromise

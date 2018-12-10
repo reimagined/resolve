@@ -1,3 +1,8 @@
+---
+id: curl
+title: Standard HTTP API
+---
+
 This document demonstrates how to communicate with a reSolve backend using the HTTP API. To try the provided console inputs on your machine, download and run the [Shopping List](https://github.com/reimagined/resolve/tree/master/examples/shopping-list) example project.
 
 1. Create a new shopping list name "List 1":
@@ -73,6 +78,7 @@ OK
 ```
 
 4. Add another item:
+
 ```sh
 $ curl -i http://localhost:3000/api/commands/ \
 --header "Content-Type: application/json" \
@@ -90,6 +96,7 @@ $ curl -i http://localhost:3000/api/commands/ \
 ```
 
 5. Now you can query view model again and see the items you have added:
+
 ```sh
 $ curl --g -X GET "http://localhost:3000/api/query/ShoppingList/12345-new-shopping-list" '
 HTTP/1.1 200 OK
@@ -105,4 +112,4 @@ Connection: keep-alive
 
 Below you can see the newly created list and its items on a page.
 
-![List1-items](list1-items.png)
+![List1-items](../assets/basics/curl/list1-items.png)

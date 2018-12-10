@@ -4,7 +4,8 @@ title: Advanced Techniques
 ---
 
 # Splitting Code Into Chunks
-ReSolve uses **webpack** to transpile and bundle the application code so it can be run by client browsers, the server and serverless platforms. 
+
+ReSolve uses **webpack** to transpile and bundle the application code so it can be run by client browsers, the server and serverless platforms.
 
 ReSolve takes advantage of webpack's code splitting functionality to split the bundles into chunks. Depending on its purpose, every chunk can be server-only (for business logic), browser-only (for UI and client logic) or isomorphic (for view-models on the server side and Redux reducers on the client).
 
@@ -23,78 +24,69 @@ In a cloud/serverless environment, chunks like read-model projection & resolvers
 
 When running locally, `resolve-scripts` requires all necessary chunks and combines them with the runtime code.
 
-
-
 # Running Serverless
 
 Coming soon. A reSolve app is serverless-ready and can be deployed into AWS with a single command.
-
 
 # Server-Side Rendering
 
 ReSolve provides the Server-Side rendering (SSR) functionality for React code out of the box. This means that reSolve application pages are always pre-rendered before being passed to the client browser. Note that server-side rendering is currently performed only for static content, without pre-fetching data.
 
-
 #### Managing routes
+
 ReSolve uses [react-router](https://github.com/ReactTraining/react-router) for routing. The [react-router-config](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config) library is also used to provide a centralized route config that can be used both on the server and client sides. You can define routes as shown below:
 
 ```js
 const routes = [
-  { component: Root,
+  {
+    component: Root,
     routes: [
-      { path: '/',
-        exact: true,
-        component: Home
-      },
-      { path: '/child/:id',
+      { path: '/', exact: true, component: Home },
+      {
+        path: '/child/:id',
         component: Child,
-        routes: [
-          { path: '/child/:id/grand-child',
-            component: GrandChild
-          }
-        ]
+        routes: [{ path: '/child/:id/grand-child', component: GrandChild }]
       }
     ]
   }
 ]
 ```
+
 Here, each route is specified by an object whose fields correspond to the [\<Route\>](https://reacttraining.com/react-router/web/api/Route) component's props.
 
 To register routes within a reSolve app, specify the path to the file containing routs definition in the **routes** config section:
 
-``` js
+```js
 routes: 'client/routes.js'
 ```
 
 After this, app routing is configured for server-side rendering. On the client, routing is also performed as expected: when you render a [\<Redirect\>](https://reacttraining.com/react-router/web/api/Redirect), the browser switches to the new location, and this location is appended to the browser's history stack.
 
-
-
 #### Providing the document head
+
 The code below utilizes the [React Helmet](https://github.com/nfl/react-helmet#reference-guide) library to specify the document's **head** section:
 
 ```js
-import React from "react";
-import { Helmet } from "react-helmet";
+import React from 'react'
+import { Helmet } from 'react-helmet'
 
 class Application extends React.Component {
-  render () {
+  render() {
     return (
-        <div className="application">
-            <Helmet>
-                <meta charSet="utf-8" />
-                <title>My Title</title>
-                <link rel="canonical" href="http://mysite.com/example" />
-            </Helmet>
-            ...
-        </div>
-    );
+      <div className="application">
+        <Helmet>
+          <meta charSet="utf-8" />
+          <title>My Title</title>
+          <link rel="canonical" href="http://mysite.com/example" />
+        </Helmet>
+        ...
+      </div>
+    )
   }
-};
+}
 ```
+
 This way, the document head is specified in an isomorphic format so it can be rendered on the server and dynamically modified on the client. Use this approach to make your reSolve applications SEO-friendly.
-
-
 
 # Process Managers (Sagas)
 
@@ -103,6 +95,7 @@ Process Managers (or Sagas) are used to run arbitrary service code in response t
 The code below demonstrates a Saga that handles events:
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../examples/with-saga/common/sagas/user-creation.event.js /^/ /\n$/)
 ```js
 const eventHandlers = {
@@ -139,11 +132,13 @@ const eventHandlers = {
 
 export default eventHandlers
 ```
+
 <!-- prettier-ignore-end -->
 
 For a scheduled Saga, tasks are specified in the cron format. The code below demonstrates a Saga that emits commands on schedule:
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../examples/with-saga/common/sagas/user-creation.cron.js /^/ /\n$/)
 ```js
 const outdatedPeriod = 1000 * 60 * 10
@@ -171,6 +166,7 @@ const cronHandlers = {
 
 export default cronHandlers
 ```
+
 <!-- prettier-ignore-end -->
 
 For the full code, refer to the [With Saga](https://github.com/reimagined/resolve/tree/dev/examples/with-saga) example project.

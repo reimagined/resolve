@@ -1,6 +1,6 @@
 {
   "name": "resolve-testing-tools",
-  "version": "0.18.8",
+  "version": "0.18.10",
   "description": "This package for testing read-model, view-model, aggregate, saga, API handler, bus, storage and event-store.",
   "engines": {
     "node": ">=8.10"
@@ -28,11 +28,11 @@
     "@babel/runtime": "^7.0.0",
     "jest": "23.6.0",
     "sinon": "6.3.4",
-    "resolve-es": "0.18.8",
-    "resolve-query": "0.18.8",
-    "resolve-readmodel-memory": "0.18.8",
-    "resolve-storage-lite": "0.18.8",
-    "resolve-bus-memory": "0.18.8"
+    "resolve-es": "0.18.10",
+    "resolve-query": "0.18.10",
+    "resolve-readmodel-memory": "0.18.10",
+    "resolve-storage-lite": "0.18.10",
+    "resolve-bus-memory": "0.18.10"
   },
   "babelCompile": [
     {

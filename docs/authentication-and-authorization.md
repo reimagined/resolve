@@ -5,20 +5,22 @@ title: Authentication and authorization
 
 # Setting up Authentication
 
-ReSolve relies on the [Passport.js](http://www.passportjs.org/) library for authentication. 
+ReSolve relies on the [Passport.js](http://www.passportjs.org/) library for authentication.
 
 To specify authentication strategies for your reSolve application, register the path to a file defining these strategies in the **auth.strategies** config section:
 
 <!-- prettier-ignore-start -->
+
 [embedmd]:# (../examples/hacker-news/config.app.js /auth: \{/ /\}/)
 ```js
 auth: {
     strategies: 'auth/local_strategy.js'
   }
 ```
+
 <!-- prettier-ignore-end -->
 
-The specified file should export an array. Each item in this array defines a strategy by providing a strategy constructor function along with a set of strategy options. You can define strategies using the following general format: 
+The specified file should export an array. Each item in this array defines a strategy by providing a strategy constructor function along with a set of strategy options. You can define strategies using the following general format:
 
 ```js
 // ./auth/index.js
@@ -29,8 +31,8 @@ export default [
     strategyConstructor: options => {
       return new LocalStrategy(
         {
-          customStrategyOption1: "customStrategyOption1",
-          customStrategyOption2: "customStrategyOption2",
+          customStrategyOption1: 'customStrategyOption1',
+          customStrategyOption2: 'customStrategyOption2',
           passReqToCallback: true
         },
         async (req, username, password, done) => {
@@ -54,17 +56,14 @@ export default [
 
 For a comprehensive code sample, refer to the [Hacker News](https://github.com/reimagined/resolve/tree/master/examples/hacker-news) example application.
 
-
 # Using 3rd-Party Auth Services
 
 You can implement authentication via 3rd-party services in the same way, in which you implement local authentication. To implement authentication for a particular service, use corresponding Passport modules, e.g., **passport-google** or **passport-facebook**.
 
-
-
-
 # Making Your Own User Registry
 
 If you prefer to store a user registry in your application, or if you use a third-party authentication service but need to store additional information that is not provided by this service (e.g., roles or permissions), then you can just stick to the standard event sourcing approach:
+
 - Add a User aggregate to accept commands and generate events related to managing a user registry
 - Create a read model and use it to look up a current user's information during logging in and put this information into a JWT (JSON Web Token)
 
