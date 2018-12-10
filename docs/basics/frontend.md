@@ -3,7 +3,7 @@ id: frontend
 title: Frontend
 ---
 
-# React/Redux Support
+## React/Redux Support
 
 The reSolve framework is shipped with the client **resolve-redux** library that allows you to easily connect you client React + Redux app to a reSolve-powered backend.
 
@@ -25,7 +25,7 @@ To connect components to the backend, use the following resolve-redux library's 
 
 A connected component obtains additional props providing access to the Read Model data and available Redux actions mapped to reSolve commands.
 
-### Obtain View Model Data
+#### Obtain View Model Data
 
 The code below demonstrates the most basic use-case scenario of obtaining data from a reSolve backend:
 
@@ -59,7 +59,7 @@ In this code, a **connectViewModel** HOC is used to associate a React component 
 
 A component connected to a View Model can access the View Model data through the **data** prop.
 
-### Connect to Redux
+#### Connect to Redux
 
 You can chain the **connectReadModel** or **connectViewModel** function call with the Redux **connect** function call:
 
@@ -89,7 +89,7 @@ export default connectReadModel(mapStateToOptions)(
 ```
 <!-- prettier-ignore-end -->
 
-### Fix URLs
+#### Fix URLs
 
 Use the following HOCs to automatically fix URLs passed as component props so that these URLs comply with the backend structure.
 
@@ -103,7 +103,7 @@ Use the following HOCs to automatically fix URLs passed as component props so th
   export default connectStaticBasedUrls(['css', 'favicon'])(Header)
   ```
 
-# Sending Commands as Redux Actions
+## Sending Commands as Redux Actions
 
 A component connected to a Read Model receives an object containing available command names. You can use the **redux.bindActionCreators** function to automatically wrap all these commands into **dispatch** function calls. This allows for a compact implementation of the **mapDispatchToProps** function:
 
@@ -141,7 +141,7 @@ class MyLists extends React.PureComponent {
 ```
 <!-- prettier-ignore-end -->
 
-# Reactive View Models, Event Subscription
+## Reactive View Models, Event Subscription
 
 A View Model is a special kind of a Read Model. Its projection is declared in a universal format so it can also serve as the reducer code on the client side. Events are automatically sent to the client through a WebSocket connection. Because of these properties, View Models are reactive out of the box. This means that a component connected to a View Model using the **connectViewModel** method automatically reflects the Read Model changes on the server side, without the need to implement any additional logic.
 
@@ -185,7 +185,7 @@ export default connectViewModel(mapStateToOptions)(
 
 <!-- prettier-ignore-end -->
 
-# Optimistic Commands
+## Optimistic Commands
 
 If a component is connected to a reSolve ReadModel, you can enhance its responsiveness by providing it with **optimistic UI updating** functionality. With this approach, a component applies model changes on the client side before synchronizing them with the server via an aggregate command.
 

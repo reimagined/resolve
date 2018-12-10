@@ -3,7 +3,7 @@ id: read-side
 title: Read Side
 ---
 
-# Read Models
+## Read Models
 
 The Read Side of the reSolve framework listens to events produced by the write side and updates **Read Models**. Read Models are then used to answer queries.
 
@@ -14,7 +14,7 @@ A Read Model is defined using functions of the following two kinds:
 
 ReSolve also provides a special kind of Read Models that can be calculated on the fly, sent to the client and kept there up-to-date. Such Read Models are called **View Models**. Refer to the [View Model Specifics](view-model-specifics) section for more information.
 
-# Configuring Read Models and View Models
+## Configuring Read Models and View Models
 
 ### Configuring Read Models
 
@@ -70,7 +70,7 @@ const appConfig = {
 
 In the configuration object, specify the View Model's name and the path to the projection. You can also specify the storage adapter for View Model snapshots. Use the **serializeState** and **deserializeState** to specify paths to the serializer and deserializer functions for the View Model state.
 
-# Initialize a Read Model
+## Initialize a Read Model
 
 Each Read Model has an **Init** function that initializes the Read Model storage.
 
@@ -98,7 +98,7 @@ You can add tables to the storage using the **defineTable** method:
 ReSolve provides a unified API to manage data in a storage, so this code will work with any supported storage type. The internal logic used to communicate with various DBMSs is provided by **Read Model Adapters**.
 Do to hesitate to store Read Model data in denormalized form so that your Read Models are optimized for query speed.
 
-# Updating a Read Model via Projection Functions
+## Updating a Read Model via Projection Functions
 
 A projection function is used to accumulate the event data to a **Read Model store**. Each projection function takes the store object and event settings, including the aggregateID, timestamp and payload.
 
@@ -127,7 +127,7 @@ You can force the system to re-populate the store using events from the start of
 
 Note that reSolve does not limit you on what logic you can use in a projection function implementation as long as it helps you prepare data required to answer queries. Depending on your requirements, you can perform SQL queries, update Elastic Search indexes, write arbitrary data to files, etc.
 
-# Resolvers
+## Resolvers
 
 A **Read Model resolver** is the the part of the Read Model that handles data requests. A resolver function gets the store and requests arguments. Based on the arguments, the resolver function pulls the required data from the store and processes it to prepare the response object.
 
@@ -150,7 +150,7 @@ comments: async (store, { first, offset }) => {
 
 To learn how to send a request to a Read Model resolver, refer to the [Query a Read Model](#query_a_read_model) section.
 
-# View Model Specifics
+## View Model Specifics
 
 **View Models** are a special kind of Read Models. They are queried by aggregate ID and and can automatically provide updates to Redux state on the client. View Models are defined in a special isomorphic format so their code can also be used on the client side to provide reducer logic.
 
@@ -180,7 +180,7 @@ The code sample below demonstrate a typical View Model projection function:
 To learn how to send a request to a View Model projection, refer to the [Query a View Model](#query_a_view_model) section.
 Note that a View model does not use the Read Model store in any way.
 
-# Performing Queries Using HTTP API
+## Performing Queries Using HTTP API
 
 ### Query a Read Model
 

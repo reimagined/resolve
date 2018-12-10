@@ -4,7 +4,9 @@ title: API reference
 ---
 
 ## Commands
+
 ### Command HTTP API
+
 A command can be sent using HTTP API.
 
 For instance, to create a new list in the shopping list app:

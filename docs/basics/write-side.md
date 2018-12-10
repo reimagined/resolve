@@ -3,7 +3,7 @@ id: write-side
 title: Write Side
 ---
 
-# Aggregates
+## Aggregates
 
 Commands are executed by objects that encapsulate domain logic. These objects are called Domain Objects.
 Usually Domain Objects are grouped into Aggregates. Aggregate boundary should be a transaction boundary.
@@ -18,14 +18,14 @@ state from events are called [projections](#aggregate-projection-function).
 Functions that execute commands - [command handlers](#aggregate-command-handlers).
 Aggregate state is passed to each of these functions explicitly as an argument.
 
-# Aggregate ID
+## Aggregate ID
 
 Each aggregate should have a unique ID that is immutable during its lifetime. An Aggregate ID should be unique in the given event store, however we recommend to also keep it
 globally unique. We recommend generating Aggregate IDs using [UUID v4](https://github.com/kelektiv/node-uuid#version-4) or [cuid](https://github.com/ericelliott/cuid) for distributed scalable apps.
 
 Please note that you have to generate a new Aggregate ID and send it with a command that creates a new aggregate.
 
-# Configuring Aggregates
+## Configuring Aggregates
 
 To configure aggregates in a reSolve app, provide an aggregates array in the application configuration file:
 
@@ -44,7 +44,7 @@ aggregates: [
 
 <!-- prettier-ignore-end -->
 
-# Sending a Command
+## Sending a Command
 
 You can emit a command in the following use-case scenarios:
 
@@ -119,7 +119,7 @@ await resolve.executeCommand({
 
 For the full code sample, refer to the [with-saga](https://github.com/reimagined/resolve/tree/master/examples/with-saga) example project.
 
-# Aggregate Command Handlers
+## Aggregate Command Handlers
 
 The aggregate command handlers object associates command handlers with command names. A command handler receives a state accumulated by the aggregate [Projection](#aggregate-projection-function).
 
@@ -142,7 +142,7 @@ export default {
 }
 ```
 
-# Aggregate Projection Function
+## Aggregate Projection Function
 
 Projection functions are used to calculate an aggregate state based on the agreggate's events. A projection function receives a previous state and event to be applied. A projection function should return a new state based on the input. The computed state is then passed to the corresponding [command handler](#aggregate-command-handlers).
 
@@ -164,7 +164,7 @@ export default {
 }
 ```
 
-# Event Store
+## Event Store
 
 All events returned by command handlers are saved to the event store. The saving is performed by the reSolve framework using one of the supported storage adapters.
 

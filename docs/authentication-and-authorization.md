@@ -3,7 +3,7 @@ id: authentication-and-authorization
 title: Authentication and authorization
 ---
 
-# Setting up Authentication
+## Setting up Authentication
 
 ReSolve relies on the [Passport.js](http://www.passportjs.org/) library for authentication.
 
@@ -56,11 +56,11 @@ export default [
 
 For a comprehensive code sample, refer to the [Hacker News](https://github.com/reimagined/resolve/tree/master/examples/hacker-news) example application.
 
-# Using 3rd-Party Auth Services
+## Using 3rd-Party Auth Services
 
 You can implement authentication via 3rd-party services in the same way, in which you implement local authentication. To implement authentication for a particular service, use corresponding Passport modules, e.g., **passport-google** or **passport-facebook**.
 
-# Making Your Own User Registry
+## Making Your Own User Registry
 
 If you prefer to store a user registry in your application, or if you use a third-party authentication service but need to store additional information that is not provided by this service (e.g., roles or permissions), then you can just stick to the standard event sourcing approach:
 
@@ -142,7 +142,7 @@ if (user)
 ...
 ```
 
-# Using JWT for Command and Query Authorization
+## Using JWT for Command and Query Authorization
 
 Every command and query handler accepts a JSON Web Token (JWT) obtained during the authentication process. This JWT contains an object that was returned by authentication function, or an empty object `{}` if current user is not logged in.
 

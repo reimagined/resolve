@@ -3,7 +3,7 @@ id: preparing-to-production
 title: Preparing to production
 ---
 
-# Configuration Options
+## Configuration Options
 
 When you move your application to production, you need to perform all required configurations according to your production environment's specifics.
 
@@ -36,7 +36,7 @@ export default prodConfig
 
 <!-- prettier-ignore-end -->
 
-# Configuring Adapters
+## Configuring Adapters
 
 Before moving your app into production, specify all required [adapters](advanced-techniques.md#adapters) in the production config.
 
@@ -62,7 +62,7 @@ In addition to storage adapters, you can specify adapters that define how your a
 
 To get familiar with the available adapters, see the **[adapters](https://github.com/reimagined/resolve/tree/master/packages/adapters)** package documentation.
 
-# Using Environment Variables
+## Using Environment Variables
 
 Use the **declareRuntimeEnv** function from the **resolve-scripts** library to bind a configuration setting value to an environment variable:
 

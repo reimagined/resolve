@@ -3,8 +3,6 @@ id: api-handlers
 title: API handlers
 ---
 
-# API Handlers
-
 ## API Reference
 
 ```js
