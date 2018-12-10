@@ -1,6 +1,6 @@
 ---
 id: api-handlers
-title: API handlers
+title: API Handlers
 ---
 
 ## API Reference

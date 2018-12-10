@@ -1,6 +1,6 @@
 ---
 id: api-reference
-title: API reference
+title: API Reference
 ---
 
 ## Commands

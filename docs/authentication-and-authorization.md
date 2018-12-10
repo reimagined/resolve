@@ -1,6 +1,6 @@
 ---
 id: authentication-and-authorization
-title: Authentication and authorization
+title: Authentication and Authorization
 ---
 
 ## Setting up Authentication

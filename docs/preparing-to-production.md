@@ -1,6 +1,6 @@
 ---
 id: preparing-to-production
-title: Preparing to production
+title: Preparing to Production
 ---
 
 ## Configuration Options
