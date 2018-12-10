@@ -1,3 +1,8 @@
+---
+id: lesson-5
+title: Lesson 5 - Frontend - Enable Data Editing
+---
+
 # Lesson 5 - Frontend - Enable Data Editing
 
 ### Modify Backend Functionality

@@ -1,3 +1,8 @@
+---
+id: lesson-1
+title: Lesson 1 - Create a New reSolve Application
+---
+
 # Lesson 1 - Create a New reSolve Application
 
 You can create a new reSolve app using the create-resolve-app utility available on **npm**:

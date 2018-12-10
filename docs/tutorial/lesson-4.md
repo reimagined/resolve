@@ -1,4 +1,9 @@
-# Frontend - Display View Model Data in the Browser
+---
+id: lesson-4
+title: Lesson 4 - Frontend - Display View Model Data in the Browser
+---
+
+# Lesson 4 - Frontend - Display View Model Data in the Browser
 
 In the previous lesson, you modified your application so that it can answer queries. However, at this moment, your application does not provide a [frontent](../basics/frontend.md) that would present this data to an end-user. In this lesson, you will learn how to create a React frontend to display your reSolve application's data.
 

@@ -1,3 +1,8 @@
+---
+id: lesson-7
+title: Lesson 7 - Functionality Enhancements
+---
+
 # Lesson 7 - Functionality Enhancements
 
 In this lesson, you will provide miscellaneous functionality enhancements to your Shopping List application in order to support the full set of data editing operations. These steps are not essential, but they will help you to further deepen your understanding of the reSolve framework's fundamentals.

@@ -1,3 +1,8 @@
+---
+id: lesson-6
+title: Lesson 6 - Frontend - Support Multiple Shopping Lists
+---
+
 # Lesson 6 - Frontend - Support Multiple Shopping Lists
 
 In the previous two lessons, you have been implementing the client-side UI for viewing and editing items in a shopping list. However, you may have noticed that your application's functionality is incomplete: it is possible use HTTP API to create multiple shopping lists, but the client UI only allows viewing and editing only one specific list, namely **shopping-list-1**:

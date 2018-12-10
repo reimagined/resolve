@@ -1,3 +1,8 @@
+---
+id: lesson-2
+title: Lesson 2 - Write side - Add a List Item
+---
+
 # Lesson 2 - Write side - Add a List Item
 
 This lesson will teach you how to implement a basic write side for your reSolve application. An application's [write side](../basics/resolve-app-structure.md#write-and-read-sides) is responsible for handling commands, performing input validation and emitting **events** based on valid commands. The emitted events are then saved to the **event store**.

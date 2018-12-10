@@ -1,4 +1,9 @@
-# Read side - Create a View Model to Query List Items
+---
+id: lesson-3
+title: Lesson 3 - Read side - Create a View Model to Query List Items
+---
+
+# Lesson 3 - Read side - Create a View Model to Query List Items
 
 Currently, your shopping list application has a fully functional write side allowing you to create shopping lists and items in these lists. However, it does not provide means to query the created data. This lesson will teach you how to provide your application with the capability to answer data queries by implementing the application's **[read side](../basics/resolve-app-structure.md#write-and-read-sides)**.
 
