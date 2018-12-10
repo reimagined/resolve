@@ -7,7 +7,7 @@ title: Authentication and authorization
 
 ReSolve comes with a built-in authentication **[module](./advanced-techniques.md#modules)** ([resolve-module-auth](../packages/modules/resolve-module-auth)) that you can use to enable authentication in your application. The authentication module relies on the [Passport.js](http://www.passportjs.org/) library's functionality.
 
-Create and configure the module in the application's **run.js** script:
+Initialize authentication the module in the application's **run.js** script:
 
 <!-- prettier-ignore-start -->
 
@@ -72,7 +72,7 @@ export default createStrategy
 
 <!-- prettier-ignore-end -->
 
-This code sample demonstrates the implementation of an authentication strategy constructor on the example of a **local** authentication strategy. The createStrategy constructor takes a set of options defined at runtime and returns modified options.
+This code sample demonstrates the implementation of an authentication strategy constructor on the example of a **local** authentication strategy. The **createStrategy** constructor takes a set of options defined at runtime and returns modified options.
 
 See the [Hacker News](../examples/hacker-news) example project the full code.
 
