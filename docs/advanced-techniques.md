@@ -186,3 +186,47 @@ Resolve comes with a set of adapters covering popular DBMS choices. You can also
 Note that reSolve does not force you to use adapters. For example, you may need to implement a Read Model on top of some arbitrary system, such as a full-text-search engine, OLAP or a particular SQL database. In such case, you can just work with that system in the code of the projection function and query resolver, without writing a new Read Model adapter.
 
 To learn more about a particular adapter type, refer to the documentation for the reSolve **[adapters](https://github.com/reimagined/resolve/tree/master/packages/adapters)** package.
+
+# Modules
+
+In reSolve, a module encapsulates a fragment of functionality that can be included by an application. A module can encapsulate any structural parts of a reSolve application in any combination.
+
+Physically, a module is a standalone configuration object that can reference client code, read-side and write-side code, sagas and HTTP queries. To include a module into your application, you need to initialize this object with any required additional settings and merge it into your application's centralized config:
+
+```js
+...
+const moduleAuth = resolveModuleAuth([
+  {
+    name: 'local-strategy',
+    createStrategy: 'auth/create_strategy.js',
+    routes: [
+      {
+        path: 'register',
+        method: 'POST',
+        callback: 'auth/route_register_callback.js'
+      },
+      {
+        path: 'login',
+        method: 'POST',
+        callback: 'auth/route_login_callback.js'
+      },
+      {
+        path: 'logout',
+        method: 'POST',
+        callback: 'auth/route_logout_callback.js'
+      }
+    ]
+  }
+])
+
+const baseConfig = merge(
+  defaultResolveConfig,
+  appConfig,
+  moduleAuth,
+  ...
+)
+```
+
+A merged module's code is treated the same as the application's code. The resulting application's bundles include the module code and configurations as if they were always a part of the application.
+
+For an example on using modules, see the [Hacker News](../examples/hacker-news) sample application. This application makes use of the [authentication module](../packages/modules/resolve-module-auth) as well as the [comments module](../packages/modules/resolve-module-comments) provided with reSolve.
