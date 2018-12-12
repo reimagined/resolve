@@ -227,7 +227,7 @@ export const start = async (countCallback, tickCallback) => {
   try {
     const storyIds = await fetchStoryIds()
     countCallback(storyIds.length)
-    dropStore()
+    await dropStore()
     await fetchStories(storyIds, tickCallback)
   } catch (error) {
     // eslint-disable-next-line no-console
