@@ -155,7 +155,12 @@ describe('resolve-es', () => {
       }
 
       const eventStore = createEventStore({ storage, bus })
-      const event = { type: 'EVENT', aggregateId: 'ID' }
+      const event = {
+        type: 'EVENT',
+        aggregateId: 'ID',
+        aggregateVersion: 1,
+        timestamp: 1
+      }
       await eventStore.saveEvent(event)
 
       expect(storage.saveEvent.calledWith(event)).toBeTruthy()
@@ -178,7 +183,7 @@ describe('resolve-es', () => {
         await eventStore.saveEvent(event)
         return Promise.reject('Test failed')
       } catch (err) {
-        expect(err.message).toEqual('The `type` field is missed')
+        expect(err.message).toEqual('The `type` field is invalid')
       }
     })
 
@@ -192,17 +197,17 @@ describe('resolve-es', () => {
       }
 
       const eventStore = createEventStore({ storage, bus })
-      const event = { type: 'EVENT_TYPE' }
+      const event = { type: 'EVENT_TYPE', timestamp: 1 }
 
       try {
         await eventStore.saveEvent(event)
         return Promise.reject('Test failed')
       } catch (err) {
-        expect(err.message).toEqual('The `aggregateId` field is missed')
+        expect(err.message).toEqual('The `aggregateId` field is invalid')
       }
     })
 
-    it('should enforce timestamp field in event with actual time', async () => {
+    it('should reject events without aggregateVersion', async () => {
       const storage = {
         saveEvent: sinon.stub().returns(Promise.resolve())
       }
@@ -212,21 +217,42 @@ describe('resolve-es', () => {
       }
 
       const eventStore = createEventStore({ storage, bus })
-      const event = { type: 'EVENT_TYPE', aggregateId: 'ID' }
+      const event = { type: 'EVENT_TYPE', aggregateId: 'ID', timestamp: 1 }
 
-      const originalDateNow = Date.now
-      Date.now = () => Number.MAX_VALUE
+      try {
+        await eventStore.saveEvent(event)
+        return Promise.reject('Test failed')
+      } catch (err) {
+        expect(err.message).toEqual('The `aggregateVersion` field is invalid')
+      }
+    })
 
-      const savingPromise = eventStore.saveEvent(event)
+    it('should reject events without timestamp', async () => {
+      const storage = {
+        saveEvent: sinon.stub().returns(Promise.resolve())
+      }
+      const bus = {
+        subscribe: sinon.stub().returns(Promise.resolve()),
+        publish: sinon.stub().returns(Promise.resolve())
+      }
 
-      Date.now = originalDateNow
-      await savingPromise
+      const eventStore = createEventStore({ storage, bus })
+      const event = {
+        type: 'EVENT_TYPE',
+        aggregateId: 'ID',
+        aggregateVersion: 1
+      }
 
-      expect(event.timestamp).toEqual(Number.MAX_VALUE)
+      try {
+        await eventStore.saveEvent(event)
+        return Promise.reject('Test failed')
+      } catch (err) {
+        expect(err.message).toEqual('The `timestamp` field is invalid')
+      }
     })
   })
 
-  it('onError', async () => {
+  it('should handle on error', async () => {
     const loadEventsError = new Error('LoadEvents error')
     const saveEventError = new Error('SaveEvent error')
 
@@ -250,9 +276,14 @@ describe('resolve-es', () => {
       eventTypes: ['EVENT_TYPE'],
       aggregateIds: ['AGGREGATE_ID']
     })
+
+    expect(errorHandler.callCount).toEqual(1)
+
     await eventStore.saveEvent({
       type: 'TestEvent',
-      aggregateId: 'id'
+      aggregateId: 'id',
+      aggregateVersion: 1,
+      timestamp: 1
     })
 
     expect(errorHandler.callCount).toEqual(2)
