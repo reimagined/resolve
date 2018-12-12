@@ -3,20 +3,7 @@
     "Docs Index": [
       "index",
       "introduction",
-      {
-        "type": "subcategory",
-        "label": "Step-By-Step Tutorial",
-        "ids": [
-          "tutorial/index",
-          "tutorial/lesson-1",
-          "tutorial/lesson-2",
-          "tutorial/lesson-3",
-          "tutorial/lesson-4",
-          "tutorial/lesson-5",
-          "tutorial/lesson-6",
-          "tutorial/lesson-7"
-        ]
-      },
+      "tutorial",
       {
         "type": "subcategory",
         "label": "Basics",
