@@ -1,0 +1,27 @@
+{
+  "docs": {
+    "Docs Index": [
+      "index",
+      "introduction",
+      {
+        "type": "subcategory",
+        "label": "Basics",
+        "ids": ["app-structure", "write-side", "read-side", "frontend", "curl"]
+      },
+      {
+        "type": "subcategory",
+        "label": "Guides",
+        "ids": [
+          "advanced-techniques",
+          "api-handlers",
+          "authentication-and-authorization",
+          "preparing-to-production",
+          "api-reference",
+          "contributing"
+        ]
+      }
+    ],
+    "FAQ": ["faq"],
+    "Troubleshooting": ["troubleshooting"]
+  }
+}

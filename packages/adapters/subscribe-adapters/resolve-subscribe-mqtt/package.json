@@ -1,12 +1,12 @@
 {
   "name": "resolve-subscribe-mqtt",
-  "version": "0.17.4",
+  "version": "0.18.10",
   "description": "This package serves as an adapter for resolve-redux subscribe to events.",
   "engines": {
     "node": ">=8.10"
   },
-  "main": "./lib/server/index.js",
-  "browser": "./lib/client/index.js",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
@@ -25,10 +25,7 @@
   ],
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "mqtt": "^2.18.8",
-    "ws": "^5.2.1",
-    "websocket-stream": "^5.1.2",
-    "mqtt-connection": "^4.0.0"
+    "mqtt": "^2.18.8"
   },
   "devDependencies": {
     "jest": "23.6.0"
@@ -36,16 +33,16 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/subscribe-adapters/resolve-subscribe-mqtt#readme",
   "babelCompile": [
     {
-      "moduleType": "cjs",
+      "moduleType": "es",
       "moduleTarget": "client",
-      "inputDir": "./src/client",
-      "outDir": "./lib/client"
+      "inputDir": "./src",
+      "outDir": "./es"
     },
     {
       "moduleType": "cjs",
-      "moduleTarget": "server",
-      "inputDir": "./src/server",
-      "outDir": "./lib/server"
+      "moduleTarget": "client",
+      "inputDir": "./src",
+      "outDir": "./lib"
     }
   ]
 }

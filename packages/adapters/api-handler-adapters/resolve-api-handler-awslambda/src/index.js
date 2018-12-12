@@ -1,3 +1,4 @@
+import binaryCase from 'binary-case'
 import contentDisposition from 'content-disposition'
 import cookie from 'cookie'
 
@@ -59,10 +60,12 @@ const createRequest = async (lambdaEvent, customParameters) => {
 
   const req = Object.create(null)
 
+  const query = queryStringParameters != null ? queryStringParameters : {}
+
   const reqProperties = {
     adapter: 'awslambda',
     method: httpMethod,
-    query: queryStringParameters,
+    query,
     path,
     headers,
     cookies,
@@ -87,6 +90,7 @@ const createResponse = () => {
   const internalRes = {
     status: 200,
     headers: {},
+    cookies: [],
     body: '',
     closed: false
   }
@@ -125,14 +129,7 @@ const createResponse = () => {
     validateResponseOpened()
     const serializedCookie = cookie.serialize(name, value, options)
 
-    let cookieHeader = internalRes.headers['Set-Cookie']
-    if (cookieHeader != null) {
-      cookieHeader = `${cookieHeader}, ${serializedCookie}`
-    } else {
-      cookieHeader = serializedCookie
-    }
-
-    internalRes.headers['Set-Cookie'] = cookieHeader
+    internalRes.cookies.push(serializedCookie)
   })
 
   defineResponseMethod('clearCookie', (name, options) => {
@@ -142,14 +139,7 @@ const createResponse = () => {
       expire: COOKIE_CLEAR_DATE
     })
 
-    let cookieHeader = internalRes.headers['Set-Cookie']
-    if (cookieHeader != null) {
-      cookieHeader = `${cookieHeader}, ${serializedCookie}`
-    } else {
-      cookieHeader = serializedCookie
-    }
-
-    internalRes.headers['Set-Cookie'] = cookieHeader
+    internalRes.cookies.push(serializedCookie)
   })
 
   defineResponseMethod('status', code => {
@@ -238,8 +228,14 @@ const wrapApiHandler = (handler, getCustomParameters) => async (
 
     await handler(req, res)
 
-    const { status: statusCode, headers, body: bodyBuffer } = res[INTERNAL]
+    const { status: statusCode, headers, cookies, body: bodyBuffer } = res[
+      INTERNAL
+    ]
     const body = bodyBuffer.toString()
+
+    for (let idx = 0; idx < cookies.length; idx++) {
+      headers[binaryCase('Set-cookie', idx)] = cookies[idx]
+    }
 
     result = { statusCode, headers, body }
   } catch (error) {

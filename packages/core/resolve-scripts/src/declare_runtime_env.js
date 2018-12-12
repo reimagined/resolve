@@ -1,4 +1,5 @@
 import crypto from 'crypto'
+import getClientGlobalObject from './client_global_object'
 
 const runtimeEnvSymbol = Symbol('@@resolve/runtime_env')
 
@@ -23,11 +24,14 @@ const declareRuntimeEnv = envName => {
 export const checkRuntimeEnv = value =>
   !(value == null || value.type !== runtimeEnvSymbol)
 
-export const injectRuntimeEnv = json => {
+export const injectRuntimeEnv = (json, isClient = false) => {
   const seedPrefix = JSON.stringify(json)
-
   const runtimeDigestBegin = createDigestHash('digest-begin', seedPrefix)
   const runtimeDigestEnd = createDigestHash('digest-end', seedPrefix)
+
+  const envObj = isClient
+    ? getClientGlobalObject('__RESOLVE_RUNTIME_ENV__')
+    : 'process.env'
 
   const rawResult = JSON.stringify(
     json,
@@ -47,7 +51,7 @@ export const injectRuntimeEnv = json => {
   )
 
   const result = rawResult.replace(runtimeEnvRegex, (match, group) => {
-    return `process.env[${JSON.stringify(group)}]`
+    return `${envObj}[${JSON.stringify(group)}]`
   })
 
   return result

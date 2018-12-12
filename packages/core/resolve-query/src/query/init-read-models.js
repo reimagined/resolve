@@ -6,6 +6,7 @@ const initReadModels = ({
   executorTypes,
   errorMessages,
   eventStore,
+  readModelAdaptersCreators,
   readModels
 }) => {
   for (const readModel of readModels) {
@@ -13,10 +14,23 @@ const initReadModels = ({
       errorMessages.push(`${errors.duplicateName} ${readModel}`)
     }
 
+    const adapterCreators = readModelAdaptersCreators.filter(
+      ({ name }) => name === readModel.adapterName
+    )
+    if (adapterCreators.length !== 1) {
+      throw new Error(
+        `${errors.wrongAdapter} in ${readModel.name}: ${readModel.adapterName}`
+      )
+    }
+
+    const adapter = adapterCreators[0].factory({
+      metaName: `__ResolveMeta__${readModel.name}`
+    })
+
     const executor = createReadModel({
       projection: readModel.projection,
       resolvers: readModel.resolvers,
-      adapter: readModel.adapter(),
+      adapter,
       eventStore
     })
 

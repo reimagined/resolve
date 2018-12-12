@@ -1,6 +1,11 @@
-# Setting Up
+---
+id: introduction
+title: Introduction
+---
 
-## Prerequisites
+## Setting Up
+
+### Prerequisites
 
 You need to have Node >=8 on you development machine and on the server.
 You can use [nvm](https://github.com/creationix/nvm#installation) (macOS/Linux) or [nvm-windows](https://github.com/coreybutler/nvm-windows#node-version-manager-nvm-for-windows) to easily switch Node versions between different projects.
@@ -14,7 +19,7 @@ $ npx --version
 6.1.0
 ```
 
-## Getting Started
+### Getting Started
 
 ```sh
 npx create-resolve-app my-awesome-app
@@ -24,17 +29,17 @@ npm run dev
 
 Your app is running at http://localhost:3000
 
-# Core Concepts
+## Core Concepts
 
-## Domain Driven Design
+### Domain Driven Design
 
 Domain aggregate is a business model unit. Business logic is mostly in command handlers for the aggregate.
 
-## Event Sourcing
+### Event Sourcing
 
 Don't store system state, store events that brought system to this state.
 
-## CQRS
+### CQRS
 
 System is divided in two "sides":
 
@@ -43,13 +48,6 @@ System is divided in two "sides":
 
 Write side is optimized for writing, read side - for reading.
 
+## Examples
 
-
-
-
-# Examples
-
-
-
-
-# Learning Resources
+## Learning Resources

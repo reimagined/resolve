@@ -18,10 +18,7 @@ export const aggregateName = 'Comments'
 export const readModelName = 'Comments'
 
 // Read Model Adapter
-export const readModelAdapter = {
-  module: 'resolve-readmodel-memory',
-  options: {}
-}
+export const readModelAdapterName = 'default'
 
 // Comments Table Name
 export const commentsTableName = 'Comments'

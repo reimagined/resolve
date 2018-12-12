@@ -4,6 +4,7 @@ exports[`base config works correctly [client] 1`] = `
 "
 
 const name_0 = \\"Todos\\"
+const adapterName_0 = undefined
 const resolvers_0 = {
   todos() {},
   items() {}
@@ -24,7 +25,6 @@ exports[`base config works correctly [server] 1`] = `
 "
 import resolvers_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testResolvers.js\\"
 import projection_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testProjection.js\\"
-import read_model_adapter_0_constructor from \\"resolve-readmodel-memory\\"
 const constructorBindFunction =
     (
       constructorFunction,
@@ -39,25 +39,19 @@ const constructorBindFunction =
 const idempotentFunction = value => value
 
 const name_0 = \\"Todos\\"
+const adapterName_0 = undefined
 const resolvers_0 = resolvers_0_instance
 const projection_0_hash = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
 const projection_0 = projection_0_instance
-const read_model_adapter_0_imports = {  }
-const read_model_adapter_0_options = {}
-const read_model_adapter_0 = constructorBindFunction.bind(null,
-      read_model_adapter_0_constructor,
-      read_model_adapter_0_options,
-      read_model_adapter_0_imports
-    )
 
 const readModels = []
 
 readModels.push({
   name: name_0
 , resolvers: resolvers_0
+, adapterName: adapterName_0
 , projection: projection_0
 , invariantHash: projection_0_hash
-, adapter: read_model_adapter_0
 })
 
 export default readModels
@@ -68,11 +62,13 @@ exports[`base(v2) config works correctly [client] 1`] = `
 "
 
 const name_0 = \\"Todos\\"
+const adapterName_0 = undefined
 const resolvers_0 = {
   todos() {},
   items() {}
 }
 const name_1 = \\"Items\\"
+const adapterName_1 = undefined
 const resolvers_1 = {
   todos() {},
   items() {}
@@ -98,10 +94,8 @@ exports[`base(v2) config works correctly [server] 1`] = `
 "
 import resolvers_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testResolvers.js\\"
 import projection_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testProjection.js\\"
-import read_model_adapter_0_constructor from \\"resolve-readmodel-memory\\"
 import resolvers_1_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testResolvers.js\\"
 import projection_1_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testProjection.js\\"
-import read_model_adapter_1_constructor from \\"resolve-readmodel-memory\\"
 const constructorBindFunction =
     (
       constructorFunction,
@@ -116,44 +110,32 @@ const constructorBindFunction =
 const idempotentFunction = value => value
 
 const name_0 = \\"Todos\\"
+const adapterName_0 = undefined
 const resolvers_0 = resolvers_0_instance
 const projection_0_hash = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
 const projection_0 = projection_0_instance
-const read_model_adapter_0_imports = {  }
-const read_model_adapter_0_options = {}
-const read_model_adapter_0 = constructorBindFunction.bind(null,
-      read_model_adapter_0_constructor,
-      read_model_adapter_0_options,
-      read_model_adapter_0_imports
-    )
 const name_1 = \\"Items\\"
+const adapterName_1 = undefined
 const resolvers_1 = resolvers_1_instance
 const projection_1_hash = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
 const projection_1 = projection_1_instance
-const read_model_adapter_1_imports = {  }
-const read_model_adapter_1_options = {}
-const read_model_adapter_1 = constructorBindFunction.bind(null,
-      read_model_adapter_1_constructor,
-      read_model_adapter_1_options,
-      read_model_adapter_1_imports
-    )
 
 const readModels = []
 
 readModels.push({
   name: name_0
 , resolvers: resolvers_0
+, adapterName: adapterName_0
 , projection: projection_0
 , invariantHash: projection_0_hash
-, adapter: read_model_adapter_0
 })
 
 readModels.push({
   name: name_1
 , resolvers: resolvers_1
+, adapterName: adapterName_1
 , projection: projection_1
 , invariantHash: projection_1_hash
-, adapter: read_model_adapter_1
 })
 
 export default readModels
@@ -164,6 +146,7 @@ exports[`config + process.env works correctly [client] 1`] = `
 "
 
 const name_0 = \\"Todos\\"
+const adapterName_0 = undefined
 const resolvers_0 = {
   todos() {},
   items() {}
@@ -182,7 +165,6 @@ export default readModels
 
 exports[`config + process.env works correctly [server] 1`] = `
 "
-import interopRequireDefault from \\"@babel/runtime/helpers/interopRequireDefault\\"
 import resolvers_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testResolvers.js\\"
 import projection_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testProjection.js\\"
 const constructorBindFunction =
@@ -199,30 +181,19 @@ const constructorBindFunction =
 const idempotentFunction = value => value
 
 const name_0 = \\"Todos\\"
+const adapterName_0 = undefined
 const resolvers_0 = resolvers_0_instance
 const projection_0_hash = \\"e111237317f05b862c7ea099ea1311369f25a01c6ce12768f20cd638ccb3ceec273e155dcbe328fed29eecc553502a19b162f0194f507b2a8a64f3dbc01b5322\\"
 const projection_0 = projection_0_instance
-const read_model_adapter_0_constructor = ((moduleOrFile) => {
-  return interopRequireDefault(__non_webpack_require__(moduleOrFile)).default
-})(process.env[\\"READ_MODEL_TODOS_ADAPTER\\"])
-const read_model_adapter_0_imports = {  }
-const read_model_adapter_0_options = {
-  \\"size\\": process.env[\\"READ_MODEL_TODOS_OPTIONS_SIZE\\"]
-}
-const read_model_adapter_0 = constructorBindFunction.bind(null,
-      read_model_adapter_0_constructor,
-      read_model_adapter_0_options,
-      read_model_adapter_0_imports
-    )
 
 const readModels = []
 
 readModels.push({
   name: name_0
 , resolvers: resolvers_0
+, adapterName: adapterName_0
 , projection: projection_0
 , invariantHash: projection_0_hash
-, adapter: read_model_adapter_0
 })
 
 export default readModels

@@ -11,7 +11,8 @@ const appConfig = {
     {
       name: 'read-model-name',
       projection: 'common/read-models/read-model-name.projection.js',
-      resolvers: 'common/read-models/read-model-name.resolvers.js'
+      resolvers: 'common/read-models/read-model-name.resolvers.js',
+      adapterName: 'default'
     }
   ],
   viewModels: [
@@ -32,8 +33,7 @@ const appConfig = {
   ],
   redux: {
     reducers: { 'reducer-name': 'client/reducers/reducer-name.js' },
-    middlewares: ['client/middlewares/middleware-name.js'],
-    enhancers: ['client/enhancers/redux-devtools.js']
+    middlewares: ['client/middlewares/middleware-name.js']
   }
 }
 

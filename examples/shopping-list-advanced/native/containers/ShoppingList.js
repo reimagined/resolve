@@ -13,8 +13,8 @@ import {
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
-import { connectViewModel } from '../resolve/resolve-redux'
-import requiredAuth from '../decorators/required_auth'
+import { connectViewModel } from 'resolve-redux'
+import requiredAuth from '../decorators/required-auth'
 import ShoppingItemCreator from '../components/ShoppingItemCreator'
 import ShoppingListPanel from '../components/ShoppingListPanel'
 import ShoppingListItems from '../components/ShoppingListItems'

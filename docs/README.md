@@ -1,3 +1,8 @@
+---
+id: index
+title: reSolve Documentation
+---
+
 - [Introduction](introduction.md)
 
   - [Setting Up](introduction.md#setting-up)
@@ -6,33 +11,52 @@
   - [Examples](introduction.md#examples)
   - [Learning Resouces](introduction.md#learning-resouces)
 
-- [Basics](basics/README.md)
+#### Basics
 
-  - [reSolve app structure](basics/resolve-app-structure.md)
-    - [Configuration](basics/resolve-app-structure.md#configuration)
-    - [Write and Read Sides](basics/resolve-app-structure.md#write-and-read-sides)
-    - [Folder Structure](basics/resolve-app-structure.md#folder-structure)
-  - [Write Side](basics/write-side.md)
-    - [Aggregates](basics/write-side.md#aggregates)
-    - [Aggregate ID](basics/write-side.md#aggregate-id)
-    - [Configuring Aggregates](basics/write-side.md#configuring-aggregates)
-    - [Sending a Command](basics/write-side.md#sending-a-command)
-    - [Aggregate Command Handlers](basics/write-side.md#aggregate-command-handlers)
-    - [Aggregate Projection Function](basics/write-side.md#aggregate-projection-function)
-    - [Event Store](basics/write-side.md#event-store)
-  - [Read Side](basics/read-side.md)
-    - [Read Models](basics/read-side.md#read-models)
-    - [Configuring Read Models and View Models](basics/read-side.md#configuring-read-models-and-view-models)
-    - [Initialize a Read Model](basics/read-side.md#initialize-a-read-model)
-    - [Updating a Read Model via Projection Functions](basics/read-side.md#updating-a-read-model-via-projection-functions)
-    - [Resolvers](basics/read-side.md#resolvers)
-    - [View Model Specifics](basics/read-side.md#view-model-specifics)
-    - [Performing Queries Using HTTP API](basics/read-side.md#performing-queries-using-http-api)
-  - [Frontend](basics/frontend.md)
-    - [React/Redux Support](basics/frontend.md#react-redux-support)
-    - [Sending Commands as Redux Actions](basics/frontend.md#sending-commands-as-redux-actions)
-    - [Reactive View Models, Event Subscription](basics/frontend.md#reactive-view-vodels-event-subscription)
-    - [Optimistic Commands](basics/frontend.md#optimistic-commands)
+- [reSolve app structure](resolve-app-structure.md)
+  - [Configuration](resolve-app-structure.md#configuration)
+  - [Write and Read Sides](resolve-app-structure.md#write-and-read-sides)
+  - [Folder Structure](resolve-app-structure.md#folder-structure)
+- [Write Side](write-side.md)
+  - [Aggregates](write-side.md#aggregates)
+  - [Aggregate ID](write-side.md#aggregate-id)
+  - [Configuring Aggregates](write-side.md#configuring-aggregates)
+  - [Sending a Command](write-side.md#sending-a-command)
+  - [Aggregate Command Handlers](write-side.md#aggregate-command-handlers)
+  - [Aggregate Projection Function](write-side.md#aggregate-projection-function)
+  - [Event Store](write-side.md#event-store)
+- [Read Side](read-side.md)
+  - [Read Models](read-side.md#read-models)
+  - [Configuring Read Models and View Models](read-side.md#configuring-read-models-and-view-models)
+  - [Initialize a Read Model](read-side.md#initialize-a-read-model)
+  - [Updating a Read Model via Projection Functions](read-side.md#updating-a-read-model-via-projection-functions)
+  - [Resolvers](read-side.md#resolvers)
+  - [View Model Specifics](read-side.md#view-model-specifics)
+  - [Performing Queries Using HTTP API](read-side.md#performing-queries-using-http-api)
+- [Frontend](frontend.md)
+  - [React/Redux Support](frontend.md#react-redux-support)
+  - [Sending Commands as Redux Actions](frontend.md#sending-commands-as-redux-actions)
+  - [Reactive View Models, Event Subscription](frontend.md#reactive-view-vodels-event-subscription)
+  - [Optimistic Commands](frontend.md#optimistic-commands)
+- [Standard HTTP API](curl.md)
+
+#### Guides
+
+- [Advanced Techniques](advanced-techniques.md)
+
+  - [Splitting Code Into Chunks](advanced-techniques.md#splitting-code-into-chunks)
+  - [Running Serverless](advanced-techniques.md#running-serverless)
+  - [Server-Side Rendering](advanced-techniques.md#server-side-rendering)
+  - [Process Managers (Sagas)](advanced-techniques.md#process-managers-sagas)
+  - [Adapters](advanced-techniques.md#adapters)
+
+- [API Handlers](api-handlers.md)
+
+  - [API Reference](api-handlers.md#api-reference)
+  - [Request](api-handlers.md#request)
+  - [Response](api-handlers.md#response)
+  - [How to Write an API Handler](api-handlers.md#how-to-write-an-api-handler)
+  - [How to Write a Resolve Config](api-handlers.md#how-to-write-a-resolve-config)
 
 - [Authentication and Authorization](authentication-and-authorization.md)
 
@@ -47,14 +71,8 @@
   - [Configuring Adapters](preparing-to-production.md#configuring-adapters)
   - [Using Environment Variables](preparing-to-production.md#using-environment-variables)
 
-- [Advanced Techniques](advanced-techniques.md)
-
-  - [Splitting Code Into Chunks](advanced-techniques.md#splitting-code-into-chunks)
-  - [Running Serverless](advanced-techniques.md#running-serverless)
-  - [Server-Side Rendering](advanced-techniques.md#server-side-rendering)
-  - [Process Managers (Sagas)](advanced-techniques.md#process-managers-sagas)
-  - [Adapters](advanced-techniques.md#adapters)
-
 - [FAQ](faq.md)
 - [API Reference](api-reference.md)
 - [Troubleshooting](troubleshooting.md)
+
+![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/docs/readme.md?pixel)

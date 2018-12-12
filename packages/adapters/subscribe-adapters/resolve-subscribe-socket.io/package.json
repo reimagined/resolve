@@ -1,12 +1,12 @@
 {
   "name": "resolve-subscribe-socket.io",
-  "version": "0.17.4",
+  "version": "0.18.10",
   "description": "This package serves as an adapter for resolve-redux subscribe to events.",
   "engines": {
     "node": ">=8.10"
   },
-  "main": "./lib/server/index.js",
-  "browser": "./lib/client/index.js",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
   "bugs": {
     "url": "https://github.com/reimagined/resolve/issues"
   },
@@ -25,7 +25,6 @@
   ],
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "socket.io": "^2.1.1",
     "socket.io-client": "^2.1.1"
   },
   "devDependencies": {
@@ -34,16 +33,16 @@
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/subscribe-adapters/resolve-subscribe-socket.io#readme",
   "babelCompile": [
     {
-      "moduleType": "cjs",
+      "moduleType": "es",
       "moduleTarget": "client",
-      "inputDir": "./src/client",
-      "outDir": "./lib/client"
+      "inputDir": "./src",
+      "outDir": "./es"
     },
     {
       "moduleType": "cjs",
-      "moduleTarget": "server",
-      "inputDir": "./src/server",
-      "outDir": "./lib/server"
+      "moduleTarget": "client",
+      "inputDir": "./src",
+      "outDir": "./lib"
     }
   ]
 }

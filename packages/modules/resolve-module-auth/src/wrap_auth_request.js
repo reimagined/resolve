@@ -1,50 +1,64 @@
-const wrapDefaultJwt = (executor, defaultJwtToken) => async ({
-  jwtToken,
-  ...args
-}) =>
-  await executor({
-    jwtToken: jwtToken != null ? jwtToken : defaultJwtToken,
-    ...args
-  })
+import iconv from 'iconv-lite'
+
+const convertCodepage = (content, fromEncoding, toEncoding) =>
+  iconv.decode(iconv.encode(content, fromEncoding), toEncoding)
 
 const wrapAuthRequest = req => {
-  const jwtToken = req.cookies[req.resolve.jwtCookie.name]
-
-  const authRequest = {
-    ...req,
-    resolve: {
-      ...req.resolve,
-      executeCommand: wrapDefaultJwt(req.resolve.executeCommand, jwtToken),
-      executeQuery: wrapDefaultJwt(req.resolve.executeQuery, jwtToken)
-    }
+  if (req.body == null && req.headers['content-type'] == null) {
+    return req
   }
+
+  const [bodyContentType, ...bodyOptions] = req.headers['content-type']
+    .toLowerCase()
+    .split(';')
+    .map(value => value.trim())
+  const bodyCharset = (
+    bodyOptions.find(option => option.startsWith('charset=')) || 'charset=utf-8'
+  ).substring(8)
+
+  let bodyContent = null
 
   // TODO: use string-based body parsers (not stream-based like npm body-parser)
-  if (req.body != null && req.headers['content-type'] != null) {
-    const bodyContentType = req.headers['content-type'].toLowerCase()
+  switch (bodyContentType) {
+    case 'application/x-www-form-urlencoded': {
+      bodyContent = req.body.split('&').reduce((acc, part) => {
+        let [key, ...value] = part.split('=').map(decodeURIComponent)
+        value = value.join('=')
 
-    switch (bodyContentType) {
-      case 'application/x-www-form-urlencoded': {
-        authRequest.body = req.body.split('&').reduce((acc, part) => {
-          const [key, ...value] = part.split('=')
-          acc[decodeURIComponent(key)] = decodeURIComponent(value.join('='))
-          return acc
-        }, {})
-        break
+        if (bodyCharset !== 'utf-8') {
+          key = convertCodepage(key, 'utf-8', bodyCharset)
+          value = convertCodepage(value, 'utf-8', bodyCharset)
+        }
+
+        acc[key] = value
+        return acc
+      }, {})
+
+      break
+    }
+
+    case 'application/json': {
+      bodyContent = req.body
+
+      if (bodyCharset !== 'utf-8') {
+        bodyContent = convertCodepage(bodyContent, 'utf-8', bodyCharset)
       }
 
-      case 'application/json': {
-        authRequest.body = JSON.parse(req.body)
-        break
-      }
+      bodyContent = JSON.parse(bodyContent)
+      break
+    }
 
-      default: {
-        throw new Error(`Invalid request body Content-type: ${bodyContentType}`)
-      }
+    default: {
+      throw new Error(`Invalid request body Content-type: ${bodyContentType}`)
     }
   }
 
-  return authRequest
+  return Object.create(req, {
+    body: {
+      value: bodyContent,
+      enumerable: true
+    }
+  })
 }
 
 export default wrapAuthRequest

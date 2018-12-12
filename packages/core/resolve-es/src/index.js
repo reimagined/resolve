@@ -87,15 +87,24 @@ const loadEvents = async (storage, bus, filter, handler) => {
   )
 }
 
+const isInteger = val =>
+  val != null && val.constructor === Number && parseInt(val) === val
+const isString = val => val != null && val.constructor === String
+
 const saveEvent = async (storage, bus, event) => {
-  if (!event.type) {
-    throw new Error('The `type` field is missed')
+  if (!isString(event.type)) {
+    throw new Error('The `type` field is invalid')
   }
-  if (!event.aggregateId) {
-    throw new Error('The `aggregateId` field is missed')
+  if (!isString(event.aggregateId)) {
+    throw new Error('The `aggregateId` field is invalid')
+  }
+  if (!isInteger(event.aggregateVersion)) {
+    throw new Error('The `aggregateVersion` field is invalid')
+  }
+  if (!isInteger(event.timestamp)) {
+    throw new Error('The `timestamp` field is invalid')
   }
 
-  event.timestamp = Date.now()
   event.aggregateId = String(event.aggregateId)
 
   await storage.saveEvent(event)

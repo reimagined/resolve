@@ -3,7 +3,7 @@ import wrapAuthRequest from './wrap_auth_request'
 import sendAuthResponse from './send_auth_response'
 
 const apiHandlerConstructor = (
-  { strategyHash, varyOptions },
+  { strategyHash, options },
   { createStrategy, callback }
 ) => async (req, res) => {
   try {
@@ -12,15 +12,34 @@ const apiHandlerConstructor = (
     const authResponse = await executeStrategy(
       authRequest,
       createStrategy,
-      varyOptions,
+      options,
       strategyHash,
       callback
     )
 
-    await sendAuthResponse(authResponse, res, authRequest.resolve.rootPath)
+    const noredirect =
+      (authRequest.body &&
+        authRequest.body.noredirect &&
+        String(authRequest.body.noredirect) === 'true') ||
+      (authRequest.query &&
+        authRequest.query.noredirect &&
+        String(authRequest.query.noredirect) === 'true')
+
+    await sendAuthResponse(
+      authResponse,
+      res,
+      authRequest.resolve.rootPath,
+      noredirect
+    )
   } catch (error) {
     res.status(504)
-    res.end(String(error.stack))
+
+    const outError =
+      error != null && error.stack != null
+        ? `${error.stack}`
+        : `Unknown error ${error}`
+
+    res.end(outError)
   }
 }
 
