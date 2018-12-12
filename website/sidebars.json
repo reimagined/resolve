@@ -20,21 +20,20 @@
       {
         "type": "subcategory",
         "label": "Basics",
-        "ids": [
-          "basics/index",
-          "basics/app-structure",
-          "basics/write-side",
-          "basics/read-side",
-          "basics/frontend",
-          "basics/curl"
-        ]
+        "ids": ["app-structure", "write-side", "read-side", "frontend", "curl"]
       },
-      "authentication-and-authorization",
-      "preparing-to-production",
-      "api-handlers",
-      "advanced-techniques",
-      "api-reference",
-      "contributing"
+      {
+        "type": "subcategory",
+        "label": "Guides",
+        "ids": [
+          "advanced-techniques",
+          "api-handlers",
+          "authentication-and-authorization",
+          "preparing-to-production",
+          "api-reference",
+          "contributing"
+        ]
+      }
     ],
     "FAQ": ["faq"],
     "Troubleshooting": ["troubleshooting"]
