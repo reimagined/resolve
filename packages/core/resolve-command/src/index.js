@@ -46,30 +46,33 @@ const getAggregateState = async (
   }
 
   const regularHandler = async event => {
+    if (aggregateVersion >= event.aggregateVersion) {
+      throw new Error(
+        `Invalid aggregate version in event storage by aggregateId = ${aggregateId}`
+      )
+    }
     aggregateVersion = event.aggregateVersion
     if (projection != null && typeof projection[event.type] === 'function') {
       aggregateState = await projection[event.type](aggregateState, event)
     }
+
+    lastTimestamp = event.timestamp
   }
 
   const snapshotHandler = async event => {
-    aggregateVersion = event.aggregateVersion
-    if (projection != null && typeof projection[event.type] === 'function') {
-      aggregateState = await projection[event.type](aggregateState, event)
-    }
+    await regularHandler(event)
 
-    lastTimestamp = event.timestamp - 1
     await snapshotAdapter.saveSnapshot(snapshotKey, {
       state: aggregateState,
       version: aggregateVersion,
-      timestamp: lastTimestamp
+      timestamp: lastTimestamp - 1
     })
   }
 
   await eventStore.loadEvents(
     {
       aggregateIds: [aggregateId],
-      startTime: lastTimestamp,
+      startTime: lastTimestamp - 1,
       skipBus: true
     },
     snapshotAdapter != null && snapshotKey != null
@@ -77,7 +80,7 @@ const getAggregateState = async (
       : regularHandler
   )
 
-  return { aggregateState, aggregateVersion }
+  return { aggregateState, aggregateVersion, lastTimestamp }
 }
 
 const executeCommand = async (
@@ -88,7 +91,11 @@ const executeCommand = async (
   snapshotAdapter
 ) => {
   const { aggregateId, type } = command
-  let { aggregateState, aggregateVersion } = await getAggregateState(
+  let {
+    aggregateState,
+    aggregateVersion,
+    lastTimestamp
+  } = await getAggregateState(
     aggregate,
     aggregateId,
     eventStore,
@@ -108,9 +115,9 @@ const executeCommand = async (
   }
 
   event.aggregateId = aggregateId
-  if (!event.aggregateVersion) {
-    event.aggregateVersion = ++aggregateVersion
-  }
+  event.aggregateVersion = aggregateVersion + 1
+  event.timestamp = Math.max(Date.now(), lastTimestamp)
+
   return event
 }
 

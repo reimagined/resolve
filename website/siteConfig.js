@@ -52,7 +52,12 @@ const siteConfig = {
   // On page navigation for the current documentation page.
   onPageNav: 'separate',
   // No .html extensions for paths.
-  cleanUrl: true
+  cleanUrl: true,
+
+  algolia: {
+    apiKey: process.env.ALGOLIA_RESOLVE_API_KEY,
+    indexName: 'reimagined_resolve'
+  }
 }
 
 module.exports = siteConfig

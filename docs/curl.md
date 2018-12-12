@@ -112,4 +112,4 @@ Connection: keep-alive
 
 Below you can see the newly created list and its items on a page.
 
-![List1-items](../assets/basics/curl/list1-items.png)
+![List1-items](assets/curl/list1-items.png)

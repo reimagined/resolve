@@ -3,7 +3,7 @@ id: app-structure
 title: reSolve App Structure
 ---
 
-# Configuration
+## Configuration
 
 The main entry point of a reSolve app is the **run.js** file. Code in this file assembles the app configuration object from several config files.
 
@@ -14,7 +14,7 @@ By default, configuration setting are split across the following files:
 - **config.prod.js** - Contains configuration settings that target the production server.
 - **config.test_functional.js** - Contains configuration settings that target the testing environment.
 
-# Write and Read Sides
+## Write and Read Sides
 
 In accordance with the CQRS paradigm, a reSolve application is divided into the **[write](write-side.md)** and **[read](read-side.md)** sides.
 
@@ -25,7 +25,7 @@ In accordance with the CQRS paradigm, a reSolve application is divided into the 
 
   ReSolve provides one special kind of Read Models - **View Models**. Instead of mutating some store, a View Model is assembled on the fly. View Models are compatible with Redux, so it their data can be reactively updated on the client.
 
-# Folder Structure
+## Folder Structure
 
 A typical reSolve applications has the following general structure:
 

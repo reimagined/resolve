@@ -26,8 +26,25 @@ describe('resolve-command', () => {
 
     eventStore = {
       loadEvents: sinon.stub().callsFake(async (filter, handler) => {
-        if (eventList.length < 1) return null
-        await handler(eventList.shift())
+        const sortedEventList = eventList.sort((a, b) => {
+          if (a.timestamp < b.timestamp) {
+            return -1
+          }
+          if (
+            a.timestamp === b.timestamp &&
+            a.aggregateVersion < b.aggregateVersion
+          ) {
+            return -1
+          }
+          if (a.timestamp === b.timestamp) {
+            return 0
+          }
+          return 1
+        })
+
+        while (sortedEventList.length > 0) {
+          await handler(sortedEventList.shift())
+        }
       }),
       saveEvent: sinon.stub().callsFake(async event => {
         eventList.push(event)
@@ -223,5 +240,46 @@ describe('resolve-command', () => {
     expect(lastState).toEqual({
       value: 42
     })
+  })
+
+  it('Regression test. Invalid aggregate version in event storage by aggregateId', async () => {
+    const executeCommand = createCommandExecutor({ eventStore, aggregates })
+    eventList = [
+      {
+        aggregateId: AGGREGATE_ID,
+        aggregateVersion: 1,
+        eventType: 'AAA',
+        timestamp: 1
+      },
+      {
+        aggregateId: AGGREGATE_ID,
+        aggregateVersion: 2,
+        eventType: 'AAA',
+        timestamp: 3
+      },
+      {
+        aggregateId: AGGREGATE_ID,
+        aggregateVersion: 3,
+        eventType: 'AAA',
+        timestamp: 2
+      }
+    ]
+
+    const jwtToken = 'JWT-TOKEN'
+    try {
+      await executeCommand({
+        aggregateName: AGGREGATE_NAME,
+        aggregateId: AGGREGATE_ID,
+        type: 'emptyCommand',
+        jwtToken
+      })
+
+      return Promise.reject('Test failed')
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error)
+      expect(error.message).toEqual(
+        'Invalid aggregate version in event storage by aggregateId = aggregateId'
+      )
+    }
   })
 })

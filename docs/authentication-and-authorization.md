@@ -1,66 +1,86 @@
 ---
 id: authentication-and-authorization
-title: Authentication and authorization
+title: Authentication and Authorization
 ---
 
-# Setting up Authentication
+## Setting up Authentication
 
-ReSolve relies on the [Passport.js](http://www.passportjs.org/) library for authentication.
+ReSolve comes with a built-in authentication **[module](./advanced-techniques.md#modules)** (**resolve-module-auth**) that you can use to enable authentication in your application. The authentication module relies on the [Passport.js](http://www.passportjs.org/) library's functionality.
 
-To specify authentication strategies for your reSolve application, register the path to a file defining these strategies in the **auth.strategies** config section:
+Initialize authentication the module in the application's **run.js** script:
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../examples/hacker-news/config.app.js /auth: \{/ /\}/)
+[embedmd]:# (../examples/hacker-news/run.js /^[[:blank:]]+const moduleAuth/ /^[[:blank:]]+\)/)
 ```js
-auth: {
-    strategies: 'auth/local_strategy.js'
-  }
+  const moduleAuth = resolveModuleAuth([
+    {
+      name: 'local-strategy',
+      createStrategy: 'auth/create_strategy.js',
+      logoutRoute: {
+        path: 'logout',
+        method: 'POST'
+      },
+      routes: [
+        {
+          path: 'register',
+          method: 'POST',
+          callback: 'auth/route_register_callback.js'
+        },
+        {
+          path: 'login',
+          method: 'POST',
+          callback: 'auth/route_login_callback.js'
+        }
+      ]
+    }
+  ])
+
+  const baseConfig = merge(
+    defaultResolveConfig,
+    appConfig,
+    moduleComments,
+    moduleAuth
+  )
 ```
 
 <!-- prettier-ignore-end -->
 
-The specified file should export an array. Each item in this array defines a strategy by providing a strategy constructor function along with a set of strategy options. You can define strategies using the following general format:
+These setting specify the path to a strategy constructor as well as HTTP API handlers to handle authentication-related requests (register, login and logout in this example). You can implement a strategy constructor as shown below:
 
+<!-- prettier-ignore-start -->
+
+[embedmd]:# (../examples/hacker-news/auth/create_strategy.js /^/ /\n$/)
 ```js
-// ./auth/index.js
-import LocalStrategy from 'passport-local'
-const jwtSecret = process.env.JWT_SECRET
-export default [
-  {
-    strategyConstructor: options => {
-      return new LocalStrategy(
-        {
-          customStrategyOption1: 'customStrategyOption1',
-          customStrategyOption2: 'customStrategyOption2',
-          passReqToCallback: true
-        },
-        async (req, username, password, done) => {
-          try {
-            done(null, { username }, jwtSecret)
-          } catch (error) {
-            done(error)
-          }
-        }
-      )
-    },
-    options: {
-      route: {
-        path: '/auth/local',
-        method: 'get'
-      }
-    }
+import { Strategy as StrategyFactory } from 'passport-local'
+
+const createStrategy = options => ({
+  factory: StrategyFactory,
+  options: {
+    failureRedirect: error =>
+      `/error?text=${encodeURIComponent(error.message)}`,
+    errorRedirect: error => `/error?text=${encodeURIComponent(error.message)}`,
+    usernameField: 'username',
+    passwordField: 'username',
+    successRedirect: null,
+    ...options
   }
-]
+})
+
+export default createStrategy
 ```
 
-For a comprehensive code sample, refer to the [Hacker News](https://github.com/reimagined/resolve/tree/master/examples/hacker-news) example application.
+<!-- prettier-ignore-end -->
 
-# Using 3rd-Party Auth Services
+This code sample demonstrates the implementation of an authentication strategy constructor on the example of a **local** authentication strategy. The **createStrategy** constructor takes a set of options defined at runtime and returns modified options.
+
+See the **Hacker News** example project the full code.
+
+## Using 3rd-Party Auth Services
 
 You can implement authentication via 3rd-party services in the same way, in which you implement local authentication. To implement authentication for a particular service, use corresponding Passport modules, e.g., **passport-google** or **passport-facebook**.
 
-# Making Your Own User Registry
+## Making Your Own User Registry
 
 If you prefer to store a user registry in your application, or if you use a third-party authentication service but need to store additional information that is not provided by this service (e.g., roles or permissions), then you can just stick to the standard event sourcing approach:
 
@@ -142,7 +162,7 @@ if (user)
 ...
 ```
 
-# Using JWT for Command and Query Authorization
+## Using JWT for Command and Query Authorization
 
 Every command and query handler accepts a JSON Web Token (JWT) obtained during the authentication process. This JWT contains an object that was returned by authentication function, or an empty object `{}` if current user is not logged in.
 

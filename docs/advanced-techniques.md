@@ -3,7 +3,7 @@ id: advanced-techniques
 title: Advanced Techniques
 ---
 
-# Splitting Code Into Chunks
+## Splitting Code Into Chunks
 
 ReSolve uses **webpack** to transpile and bundle the application code so it can be run by client browsers, the server and serverless platforms.
 
@@ -24,11 +24,11 @@ In a cloud/serverless environment, chunks like read-model projection & resolvers
 
 When running locally, `resolve-scripts` requires all necessary chunks and combines them with the runtime code.
 
-# Running Serverless
+## Running Serverless
 
 Coming soon. A reSolve app is serverless-ready and can be deployed into AWS with a single command.
 
-# Server-Side Rendering
+## Server-Side Rendering
 
 ReSolve provides the Server-Side rendering (SSR) functionality for React code out of the box. This means that reSolve application pages are always pre-rendered before being passed to the client browser. Note that server-side rendering is currently performed only for static content, without pre-fetching data.
 
@@ -88,7 +88,7 @@ class Application extends React.Component {
 
 This way, the document head is specified in an isomorphic format so it can be rendered on the server and dynamically modified on the client. Use this approach to make your reSolve applications SEO-friendly.
 
-# Process Managers (Sagas)
+## Process Managers (Sagas)
 
 Process Managers (or Sagas) are used to run arbitrary service code in response to events or on schedule. Generally, this is where you define logic that deal with side effects: you can emit new events and communicate with the outside world in any way (e.g., query databases, send emails, etc.). You can view a Saga as a scripted virtual user.
 
@@ -169,9 +169,9 @@ export default cronHandlers
 
 <!-- prettier-ignore-end -->
 
-For the full code, refer to the [With Saga](https://github.com/reimagined/resolve/tree/dev/examples/with-saga) example project.
+For the full code, refer to the **With Saga** example project.
 
-# Adapters
+## Adapters
 
 ReSolve uses the **adapter** mechanism to provide an abstraction layer above APIs used by its subsystems. For instance, adapters are used to define how a reSolve application stores its data. They abstract away all direct interactions with the underlying storage, allowing reSolve to provide a unified data management API.
 
@@ -186,3 +186,47 @@ Resolve comes with a set of adapters covering popular DBMS choices. You can also
 Note that reSolve does not force you to use adapters. For example, you may need to implement a Read Model on top of some arbitrary system, such as a full-text-search engine, OLAP or a particular SQL database. In such case, you can just work with that system in the code of the projection function and query resolver, without writing a new Read Model adapter.
 
 To learn more about a particular adapter type, refer to the documentation for the reSolve **[adapters](https://github.com/reimagined/resolve/tree/master/packages/adapters)** package.
+
+# Modules
+
+In reSolve, a module encapsulates a fragment of functionality that can be included by an application. A module can encapsulate any structural parts of a reSolve application in any combination.
+
+Physically, a module is a standalone configuration object that can reference client code, read-side and write-side code, sagas and HTTP queries. To include a module into your application, you need to initialize this object with any required additional settings and merge it into your application's centralized config:
+
+```js
+...
+const moduleAuth = resolveModuleAuth([
+  {
+    name: 'local-strategy',
+    createStrategy: 'auth/create_strategy.js',
+    routes: [
+      {
+        path: 'register',
+        method: 'POST',
+        callback: 'auth/route_register_callback.js'
+      },
+      {
+        path: 'login',
+        method: 'POST',
+        callback: 'auth/route_login_callback.js'
+      },
+      {
+        path: 'logout',
+        method: 'POST',
+        callback: 'auth/route_logout_callback.js'
+      }
+    ]
+  }
+])
+
+const baseConfig = merge(
+  defaultResolveConfig,
+  appConfig,
+  moduleAuth,
+  ...
+)
+```
+
+A merged module's code is treated the same as the application's code. The resulting application's bundles include the module code and configurations as if they were always a part of the application.
+
+For an example on using modules, see the **Hacker News** sample application. This application makes use of the authentication module as well as the comments module provided with reSolve.
