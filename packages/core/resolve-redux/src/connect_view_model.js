@@ -1,12 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import hoistNonReactStatic from 'hoist-non-react-statics'
 
 import * as actions from './actions'
 import { connectorMetaMap } from './constants'
 import getHash from './get_hash'
 import connectResolveAdvanced from './connect_resolve_advanced'
-import hoistNonReactStatic from 'hoist-non-react-statics'
 
 const connectViewModel = mapStateToOptions => Component => {
   class ViewModelContainer extends React.PureComponent {
@@ -131,7 +131,7 @@ const connectViewModel = mapStateToOptions => Component => {
     mapDispatchToConnectorProps
   )(ViewModelContainer)
   ViewModelConnector.mapStateToOptions = mapStateToOptions
-  
+
   hoistNonReactStatic(ViewModelConnector, ViewModelContainer)
 
   return connectResolveAdvanced(ViewModelConnector)

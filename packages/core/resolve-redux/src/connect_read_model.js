@@ -128,7 +128,7 @@ const connectReadModel = mapStateToOptions => Component => {
   )(ReadModelContainer)
 
   ReadModelConnector.mapStateToOptions = mapStateToOptions
-  
+
   hoistNonReactStatic(ReadModelConnector, ReadModelContainer)
 
   return connectResolveAdvanced(ReadModelConnector)

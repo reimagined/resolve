@@ -14,7 +14,7 @@ const connectResolveAdvanced = Component => {
       return <Consumer>{this.functionAsChildComponent}</Consumer>
     }
   }
-  
+
   hoistNonReactStatic(ConnectResolveAdvanced, Component)
 
   return ConnectResolveAdvanced
