@@ -1,6 +1,6 @@
 {
   "name": "@shopping-list-advanced/ui",
-  "version": "0.18.10",
+  "version": "0.18.11",
   "private": true,
   "main": "./lib/index.js",
   "module": "./es/index.js",
@@ -15,7 +15,7 @@
     "react": "16.5.0",
     "react-dom": "16.5.0",
     "redux": "4.0.1",
-    "resolve-redux": "0.18.10",
+    "resolve-redux": "0.18.11",
     "regenerator-runtime": "0.12.1",
     "jest": "23.6.0",
     "enzyme": "3.7.0",
