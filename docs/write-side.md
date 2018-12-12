@@ -53,7 +53,7 @@ You can emit a command in the following use-case scenarios:
 
 ### Sending Commands From the Client
 
-The reSolve framework exposes [HTTP API](../api-reference.md#commands-http-api) that you can use to to send commands from the client side. Depending on the architecture of your web application's front-end, you can use this API interface directly or using the **Redux** bindings provided by the **[resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-redux)** library.
+The reSolve framework exposes [HTTP API](api-reference.md#commands-http-api) that you can use to to send commands from the client side. Depending on the architecture of your web application's front-end, you can use this API interface directly or using the **Redux** bindings provided by the **[resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-redux)** library.
 
 You can send a command from the client side by sending a POST request to the following URL:
 
@@ -86,7 +86,7 @@ The request body should have the `application/json` content type and contain a J
 
 ##### Example
 
-Use the following command to add an item to the [shopping-list example](../examples/shopping-list).
+Use the following command to add an item to the **shopping-list** example.
 
 ```sh
 $ curl -X POST "http://localhost:3000/api/commands"
@@ -106,7 +106,7 @@ $ curl -X POST "http://localhost:3000/api/commands"
 
 ### Emitting Commands on the Server
 
-You can emit a command on the server side from a **[Saga](../advanced-techniques.md#process-managers-sagas)** or **[API Handler](../api-handlers.md)** using the **resolve.executeCommand** function as shown below:
+You can emit a command on the server side from a **[Saga](advanced-techniques.md#process-managers-sagas)** or **[API Handler](api-handlers.md)** using the **resolve.executeCommand** function as shown below:
 
 ```js
 await resolve.executeCommand({
@@ -185,4 +185,4 @@ Adapters for the following storage types are available out of the box:
 - [MongoDB](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-storage-mongo)
 - [MySQL](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-storage-mysql)
 
-To learn more about adapters, refer to the [Adapters](../advanced-techniques.md#adapters) section of the reSolve documentation.
+To learn more about adapters, refer to the [Adapters](advanced-techniques.md#adapters) section of the reSolve documentation.

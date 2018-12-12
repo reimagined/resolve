@@ -46,7 +46,7 @@ The `res` object represents the HTTP response that an api handler sends when it 
 }
 ```
 
-## How to write an api handlers
+## How to Write an API Handler
 
 - Send Text
 
@@ -115,7 +115,7 @@ export default async (req, res) => {
 }
 ```
 
-## How to write a resolve config
+## How to Write a Resolve Config
 
 ```
 // run.js
@@ -159,4 +159,4 @@ void (async () => {
 })
 ```
 
-See [Schema Resolve Config](../packages/core/resolve-scripts/configs/schema.resolve.config.json) for more information.
+See [Schema Resolve Config](https://github.com/reimagined/resolve/blob/master/packages/core/resolve-scripts/configs/schema.resolve.config.json) for more information.

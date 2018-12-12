@@ -169,7 +169,7 @@ export default cronHandlers
 
 <!-- prettier-ignore-end -->
 
-For the full code, refer to the [With Saga](https://github.com/reimagined/resolve/tree/dev/examples/with-saga) example project.
+For the full code, refer to the **With Saga** example project.
 
 ## Adapters
 
@@ -229,4 +229,4 @@ const baseConfig = merge(
 
 A merged module's code is treated the same as the application's code. The resulting application's bundles include the module code and configurations as if they were always a part of the application.
 
-For an example on using modules, see the [Hacker News](../examples/hacker-news) sample application. This application makes use of the [authentication module](../packages/modules/resolve-module-auth) as well as the [comments module](../packages/modules/resolve-module-comments) provided with reSolve.
+For an example on using modules, see the **Hacker News** sample application. This application makes use of the authentication module as well as the comments module provided with reSolve.

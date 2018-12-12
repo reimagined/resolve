@@ -12,7 +12,7 @@ A Read Model is defined using functions of the following two kinds:
 - **[Projection functions](#updating-a-read-model-via-projection-functions)** - Applies events to accumulate state.
 - **[Query resolver](#resolvers)** - Answers queries based on the accumulated state.
 
-ReSolve also provides a special kind of Read Models that can be calculated on the fly, sent to the client and kept there up-to-date. Such Read Models are called **View Models**. Refer to the [View Model Specifics](view-model-specifics) section for more information.
+ReSolve also provides a special kind of Read Models that can be calculated on the fly, sent to the client and kept there up-to-date. Such Read Models are called **View Models**. Refer to the [View Model Specifics](#view-model-specifics) section for more information.
 
 ## Configuring Read Models and View Models
 
@@ -96,6 +96,7 @@ You can add tables to the storage using the **defineTable** method:
 ```
 
 ReSolve provides a unified API to manage data in a storage, so this code will work with any supported storage type. The internal logic used to communicate with various DBMSs is provided by **Read Model Adapters**.
+
 Do to hesitate to store Read Model data in denormalized form so that your Read Models are optimized for query speed.
 
 ## Updating a Read Model via Projection Functions
@@ -212,7 +213,7 @@ The object contains the parameters that the resolver accepts.
 
 ##### Example
 
-Use the following command to get 3 users from the [with-saga](../examples/with-saga) example.
+Use the following console inputs to obtain 3 users from the **with-saga** example.
 
 ```sh
 curl -X POST \

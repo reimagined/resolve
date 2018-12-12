@@ -9,7 +9,7 @@ When you move your application to production, you need to perform all required c
 
 An application is built for production using the **build** script, and run in the production mode using the **start** script. By default, an application running in the production mode takes into account settings specifies in the **prodConfig** configuration object (the **config.prod.js** file). However, you can use other config structure as long as you properly register it in the **run.js** file.
 
-An example [config.prod.js](../examples/hacker-news/config.prod.js) file:
+An example **config.prod.js** file:
 
 <!-- prettier-ignore-start -->
 

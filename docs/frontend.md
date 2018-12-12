@@ -308,4 +308,4 @@ export default optimistic_shopping_lists_middleware
 
 <!-- prettier-ignore-end -->
 
-For the full code, refer to the [Shopping List](https://github.com/reimagined/resolve/tree/master/examples/shopping-list) example project.
+For the full code, refer to the **Shopping List** example project.
