@@ -1,6 +1,7 @@
 import React from 'react'
-import { Consumer } from './resolve_context'
+import hoistNonReactStatic from 'hoist-non-react-statics'
 
+import { Consumer } from './resolve_context'
 import * as actions from './actions'
 
 const connectResolveAdvanced = Component => {
@@ -13,6 +14,8 @@ const connectResolveAdvanced = Component => {
       return <Consumer>{this.functionAsChildComponent}</Consumer>
     }
   }
+  
+  hoistNonReactStatic(ConnectResolveAdvanced, Component)
 
   return ConnectResolveAdvanced
 }
