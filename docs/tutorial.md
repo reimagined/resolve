@@ -70,7 +70,7 @@ To add an aggregate to you shopping list application, first define types of even
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../../examples/shopping-list-tutorial/lesson-2/common/eventTypes.js /^/ /\n$/)
+[embedmd]:# (../examples/shopping-list-tutorial/lesson-2/common/eventTypes.js /^/ /\n$/)
 ```js
 export const SHOPPING_LIST_CREATED = "SHOPPING_LIST_CREATED";
 
@@ -257,7 +257,7 @@ To overcome the second and third flaws, you need to somehow store information ab
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../../examples/shopping-list-tutorial/lesson-2/common/aggregates/shopping_list.projection.js /^/ /\n$/)
+[embedmd]:# (../examples/shopping-list-tutorial/lesson-2/common/aggregates/shopping_list.projection.js /^/ /\n$/)
 ```js
 import { SHOPPING_LIST_CREATED } from "../eventTypes";
 
@@ -278,7 +278,7 @@ Register the create projection in the application configuration file:
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../../examples/shopping-list-tutorial/lesson-2/config.app.js /^[[:blank:]]+aggregates:/ /\],/)
+[embedmd]:# (../examples/shopping-list-tutorial/lesson-2/config.app.js /^[[:blank:]]+aggregates:/ /\],/)
 ```js
   aggregates: [
     {
@@ -403,7 +403,7 @@ Create a **shopping_list.projection.js** file in the **view-models** folder and 
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../../examples/shopping-list-tutorial/lesson-3/common/view-models/shopping_list.projection.js /^/ /\n$/)
+[embedmd]:# (../examples/shopping-list-tutorial/lesson-3/common/view-models/shopping_list.projection.js /^/ /\n$/)
 ```js
 import { SHOPPING_LIST_CREATED, SHOPPING_ITEM_CREATED } from "../eventTypes";
 
@@ -522,7 +522,7 @@ Create a **ShoppingList.js** file in the client application's containers folder.
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../../examples/shopping-list-tutorial/lesson-4/client/containers/ShoppingList.js /\/\// /^\}/)
+[embedmd]:# (../examples/shopping-list-tutorial/lesson-4/client/containers/ShoppingList.js /\/\// /^\}/)
 ```js
 // The example code uses components from the react-bootstrap library to keep the markup compact.
 import { ListGroup, ListGroupItem, Checkbox } from 'react-bootstrap'
@@ -551,7 +551,7 @@ Now you can use the **resolve-redux** library's **connectViewModel** HOC to bind
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../../examples/shopping-list-tutorial/lesson-4/client/containers/ShoppingList.js /export const mapStateToOptions/ /export default connectViewModel\(mapStateToOptions\)\(ShoppingList\)/)
+[embedmd]:# (../examples/shopping-list-tutorial/lesson-4/client/containers/ShoppingList.js /export const mapStateToOptions/ /export default connectViewModel\(mapStateToOptions\)\(ShoppingList\)/)
 ```js
 export const mapStateToOptions = (state, ownProps) => {
   return {
@@ -626,7 +626,7 @@ Your application already implements logic required to add new list items. Apply 
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../../examples/shopping-list-tutorial/lesson-5/common/eventTypes.js /export const SHOPPING_ITEM_TOGGLED/ /\n$/)
+[embedmd]:# (../examples/shopping-list-tutorial/lesson-5/common/eventTypes.js /export const SHOPPING_ITEM_TOGGLED/ /\n$/)
 ```js
 export const SHOPPING_ITEM_TOGGLED = "SHOPPING_ITEM_TOGGLED";
 ```
@@ -639,7 +639,7 @@ export const SHOPPING_ITEM_TOGGLED = "SHOPPING_ITEM_TOGGLED";
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../../examples/shopping-list-tutorial/lesson-5/common/aggregates/shopping_list.commands.js /^[[:blank:]]+toggleShoppingItem/   /^[[:blank:]]{2}\}/)
+[embedmd]:# (../examples/shopping-list-tutorial/lesson-5/common/aggregates/shopping_list.commands.js /^[[:blank:]]+toggleShoppingItem/   /^[[:blank:]]{2}\}/)
 ```js
   toggleShoppingItem: (state, { payload: { id } }) => {
     if (!state || Object.keys(state).length === 0) {
@@ -663,7 +663,7 @@ The event payload contains the toggled item's identifier.
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../../examples/shopping-list-tutorial/lesson-5/common/view-models/shopping_list.projection.js /^[[:space:]]+\[SHOPPING_ITEM_TOGGLED\]/   /^[[:blank:]]+\}\)/)
+[embedmd]:# (../examples/shopping-list-tutorial/lesson-5/common/view-models/shopping_list.projection.js /^[[:space:]]+\[SHOPPING_ITEM_TOGGLED\]/   /^[[:blank:]]+\}\)/)
 ```js
   [SHOPPING_ITEM_TOGGLED]: (state, { payload: { id } }) => ({
     ...state,
@@ -688,7 +688,7 @@ In the previous lesson, you connected your ShoppingList to a reSolve View Model.
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../../examples/shopping-list-tutorial/lesson-5/client/containers/ShoppingList.js /export const mapDispatchToProps/   /\n$/)
+[embedmd]:# (../examples/shopping-list-tutorial/lesson-5/client/containers/ShoppingList.js /export const mapDispatchToProps/   /\n$/)
 ```js
 export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
   bindActionCreators(
@@ -728,7 +728,7 @@ In the code below, the **toggleShoppingItem** function is used to handle checkbo
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../../examples/shopping-list-tutorial/lesson-5/client/containers/ShoppingList.js /^[[:space:]]+\<Checkbox/   /\<\/Checkbox\>/)
+[embedmd]:# (../examples/shopping-list-tutorial/lesson-5/client/containers/ShoppingList.js /^[[:space:]]+\<Checkbox/   /\<\/Checkbox\>/)
 ```js
               <Checkbox
                 inline
@@ -749,7 +749,7 @@ In the same way, you can use the **createShoppingItem** function to add new shop
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../../examples/shopping-list-tutorial/lesson-5/client/containers/ShoppingList.js /^[[:space:]]+\<ControlLabel\>Item name/   /\<\/Row\>/)
+[embedmd]:# (../examples/shopping-list-tutorial/lesson-5/client/containers/ShoppingList.js /^[[:space:]]+\<ControlLabel\>Item name/   /\<\/Row\>/)
 ```js
         <ControlLabel>Item name</ControlLabel>
         <Row>
@@ -841,7 +841,7 @@ To overcome this issue, implement a ShoppingLists **[Read Model](read-side.md#re
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../../examples/shopping-list-tutorial/lesson-6/common/read-models/shopping_lists.projection.js /^/   /\n$/)
+[embedmd]:# (../examples/shopping-list-tutorial/lesson-6/common/read-models/shopping_lists.projection.js /^/   /\n$/)
 ```js
 import { SHOPPING_LIST_CREATED } from '../eventTypes'
 
@@ -878,7 +878,7 @@ You also need to implement **[resolver functions](read-side.md#resolvers)** that
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../../examples/shopping-list-tutorial/lesson-6/common/read-models/shopping_lists.resolvers.js /^/   /\n$/)
+[embedmd]:# (../examples/shopping-list-tutorial/lesson-6/common/read-models/shopping_lists.resolvers.js /^/   /\n$/)
 ```js
 export default {
   all: async store => {
@@ -897,7 +897,7 @@ Register the created Read Model in the application's configuration file:
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../../examples/shopping-list-tutorial/lesson-6/config.app.js /^[[:blank:]]+readModels:/ /\],/)
+[embedmd]:# (../examples/shopping-list-tutorial/lesson-6/config.app.js /^[[:blank:]]+readModels:/ /\],/)
 ```js
   readModels: [
     {
@@ -947,7 +947,7 @@ Now you can implement the UI to display all available shopping list an provide a
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../../examples/shopping-list-tutorial/lesson-6/client/containers/MyLists.js /class MyLists/ /^}/)
+[embedmd]:# (../examples/shopping-list-tutorial/lesson-6/client/containers/MyLists.js /class MyLists/ /^}/)
 ```js
 class MyLists extends React.PureComponent {
   render() {
@@ -1001,7 +1001,7 @@ Now that your application has two main views, you need to provide means of navig
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../../examples/shopping-list-tutorial/lesson-6/client/routes.js /^/ /\n$/)
+[embedmd]:# (../examples/shopping-list-tutorial/lesson-6/client/routes.js /^/ /\n$/)
 ```js
 import App from './containers/App'
 import ShoppingList from './containers/ShoppingList'
@@ -1033,7 +1033,7 @@ Next, modify the **App** component to use the router.
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../../examples/shopping-list-tutorial/lesson-6/client/containers/App.js /^/ /\n$/)
+[embedmd]:# (../examples/shopping-list-tutorial/lesson-6/client/containers/App.js /^/ /\n$/)
 ```js
 import React from 'react'
 
@@ -1101,7 +1101,7 @@ First, define Redux actions that will perform updates:
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../../examples/shopping-list-tutorial/lesson-6/client/actions/optimistic_actions.js /^/ /\n$/)
+[embedmd]:# (../examples/shopping-list-tutorial/lesson-6/client/actions/optimistic_actions.js /^/ /\n$/)
 ```js
 export const OPTIMISTIC_CREATE_SHOPPING_LIST = 'OPTIMISTIC_CREATE_SHOPPING_LIST'
 export const OPTIMISTIC_SYNC = 'OPTIMISTIC_SYNC'
@@ -1115,7 +1115,7 @@ Implement an optimistic reducer function that responds to these commands to upda
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../../examples/shopping-list-tutorial/lesson-6/client/reducers/optimistic_shopping_lists.js /^/ /\n$/)
+[embedmd]:# (../examples/shopping-list-tutorial/lesson-6/client/reducers/optimistic_shopping_lists.js /^/ /\n$/)
 ```js
 import { LOCATION_CHANGE } from 'react-router-redux'
 import {
@@ -1157,7 +1157,7 @@ Provide a middleware that intercepts the service actions used for communication 
 
 <!-- prettier-ignore-start -->
 
-[embedmd]:# (../../examples/shopping-list-tutorial/lesson-6/client/middlewares/optimistic_shopping_lists_middleware.js /^/ /\n$/)
+[embedmd]:# (../examples/shopping-list-tutorial/lesson-6/client/middlewares/optimistic_shopping_lists_middleware.js /^/ /\n$/)
 ```js
 import { actionTypes } from 'resolve-redux'
 
