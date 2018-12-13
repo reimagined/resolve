@@ -110,7 +110,7 @@ const createResponse = () => {
       )
     if (!isValidValue) {
       throw new Error(
-        `Variable "${fieldName}" should be one of following types: ${types.json(
+        `Variable "${fieldName}" should be one of following types: ${types.join(
           ', '
         )}`
       )
