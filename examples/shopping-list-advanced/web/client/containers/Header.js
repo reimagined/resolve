@@ -5,6 +5,8 @@ import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 import { Logo } from '@shopping-list-advanced/ui'
 
+// const Logo = () => null
+
 import Image from './Image'
 
 const NavItem = connectRootBasedUrls(['href'])(RawNavItem)

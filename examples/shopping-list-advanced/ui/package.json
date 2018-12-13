@@ -2,8 +2,7 @@
   "name": "@shopping-list-advanced/ui",
   "version": "0.18.11",
   "private": true,
-  "main": "./lib/index.js",
-  "module": "./es/index.js",
+  "main": "./src/index.js",
   "scripts": {
     "test": "jest --config=jest.config.js"
   },

@@ -9,7 +9,7 @@
     "babelify": "cd scripts && node babel.compile.js --run",
     "babelify:watch": "cd scripts && node babel.compile.js --watch",
     "build": "cd scripts && node ./run.js build",
-    "dev": "cd scripts && node ./run.js dev",
+    "dev": "cd web && node ./run.js dev",
     "start": "cd scripts && node ./run.js start",
     "start:native": "cd native && npm start",
     "test": "cd scripts && node ./test.js",

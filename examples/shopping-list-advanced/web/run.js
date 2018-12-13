@@ -43,17 +43,17 @@ void (async () => {
   const authModule = createAuthModule([
     {
       name: 'local-strategy',
-      createStrategy: '../domain/lib/auth/create-strategy.js',
+      createStrategy: 'common/auth/create-strategy.js',
       routes: [
         {
           path: 'auth/local/register',
           method: 'POST',
-          callback: '../domain/lib/auth/route-register-callback.js'
+          callback: 'common/auth/route-register-callback.js'
         },
         {
           path: 'auth/local/login',
           method: 'POST',
-          callback: '../domain/lib/auth/route-login-callback.js'
+          callback: 'common/auth/route-login-callback.js'
         }
       ],
       logoutRoute: {
@@ -75,16 +75,16 @@ void (async () => {
         resolveConfig,
         adjustWebpackConfigs.bind(null, resolveConfig, { watch: true })
       )
-      await remotedev({
-        hostname: resolveConfig.customConstants.remoteReduxDevTools.hostname,
-        port: resolveConfig.customConstants.remoteReduxDevTools.port,
-        wsEngine: 'ws'
-      })
-      await opn(
-        `http://${resolveConfig.customConstants.remoteReduxDevTools.hostname}:${
-          resolveConfig.customConstants.remoteReduxDevTools.port
-        }`
-      )
+      // await remotedev({
+      //   hostname: resolveConfig.customConstants.remoteReduxDevTools.hostname,
+      //   port: resolveConfig.customConstants.remoteReduxDevTools.port,
+      //   wsEngine: 'ws'
+      // })
+      // await opn(
+      //   `http://${resolveConfig.customConstants.remoteReduxDevTools.hostname}:${
+      //     resolveConfig.customConstants.remoteReduxDevTools.port
+      //   }`
+      // )
       break
     }
 
@@ -153,7 +153,6 @@ void (async () => {
     }
   }
 })()
-  .then(() => process.exit(0))
   .catch(error => {
     // eslint-disable-next-line no-console
     console.log(error)
