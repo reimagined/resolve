@@ -66,7 +66,7 @@ Use the following steps to implement the write side for your shopping list appli
 
 To add an aggregate to you shopping list application, first define types of events that this aggregate will produce. Create an **eventTypes.js** file in the project's **common** folder and add the following content to it.
 
-**[common/eventTypes.js:](../../examples/shopping-list-tutorial/lesson-2/common/eventTypes.js)**
+**common/eventTypes.js:**
 
 <!-- prettier-ignore-start -->
 
@@ -86,7 +86,7 @@ For now, your application requires only two types of events:
 
 Next, create a **shopping_list.commands.js** file in the **common/aggregates** folder. This file will contain command handlers for the ShoppingList aggregate. Add the following code to the file:
 
-**[common/aggregates/shopping_list.commands.js:](../../examples/shopping-list-tutorial/lesson-2/common/aggregates/shopping_list.commands.js)**
+**common/aggregates/shopping_list.commands.js:**
 
 ```js
 import { SHOPPING_LIST_CREATED, SHOPPING_ITEM_CREATED } from '../eventTypes'
@@ -113,7 +113,7 @@ As the result of its execution, a command handler returns an event object. This 
 
 Your minimal shopping list aggregate is now ready. The last step is to register it in the application's configuration file. Open the **config.app.js** file, locate the **aggregates** section and specify the following settings:
 
-**[config.app.js:](../../examples/shopping-list-tutorial/lesson-2/config.app.js)**
+**config.app.js:**
 
 ```js
 ...
@@ -237,7 +237,7 @@ Your application's write side currently does not perform any input validation. T
 
 You can overcome the first flaw by adding simple checks to each command handler:
 
-**[common/aggregates/shopping_list.commands.js:](../../examples/shopping-list-tutorial/lesson-2/common/aggregates/shopping_list.commands.js)**
+**common/aggregates/shopping_list.commands.js:**
 
 ```js
 createShoppingList: (state, { payload: { name } }) => {
@@ -253,7 +253,7 @@ createShoppingItem: (state, { payload: { id, text } }) => {
 
 To overcome the second and third flaws, you need to somehow store information about previously performed operations. You can achieve this by maintaining an **aggregate state**. This state is assembled on the fly by an aggregate **projection** from previously created events. To add a projection to the ShoppingList aggregate, create a **shopping_list.projection.js** file in the **common/aggregates** folder and add the following code there:
 
-**[common/aggregates/shopping_list.projection.js:](../../examples/shopping-list-tutorial/lesson-2/common/aggregates/shopping_list.projection.js)**
+**common/aggregates/shopping_list.projection.js:**
 
 <!-- prettier-ignore-start -->
 
@@ -274,7 +274,7 @@ export default {
 
 Register the create projection in the application configuration file:
 
-**[config.app.js:](../../examples/shopping-list-tutorial/lesson-2/config.app.js)**
+**config.app.js:**
 
 <!-- prettier-ignore-start -->
 
@@ -298,7 +298,7 @@ The projection object should specify an obligatory **Init** function and a set o
 
 In the example code, the SHOPPING_LIST_CREATED projection function adds the SHOPPING_LIST_CREATED event's timestamp to the state. This information can be used on the write side to find out whether and when a shopping list has been created for the current aggregate instance (i.e., an instance identified by the current aggregate ID).
 
-**[common/aggregates/shopping_list.commands.js:](../../examples/shopping-list-tutorial/lesson-2/common/aggregates/shopping_list.commands.js)**
+**common/aggregates/shopping_list.commands.js:**
 
 ```js
   createShoppingList: (state, { payload: { name } }) => {
@@ -399,7 +399,7 @@ A reSolve applications read side answers queries using **[Read Models](read-side
 
 Create a **shopping_list.projection.js** file in the **view-models** folder and add the following code to this file:
 
-**[common/view-models/shopping_list.projection.js:](../../examples/shopping-list-tutorial/lesson-3/common/view-models/shopping_list.projection.js)**
+**common/view-models/shopping_list.projection.js:**
 
 <!-- prettier-ignore-start -->
 
@@ -434,7 +434,7 @@ You just defined a View Model **[projection](read-side.md#updating-a-read-model-
 
 Now, you need to register the implemented View Model in the application's configuration file.
 
-**[config.app.js:](../../examples/shopping-list-tutorial/lesson-3/config.app.js)**
+**config.app.js:**
 
 ```js
 ...
@@ -510,7 +510,7 @@ In the previous lesson, you modified your application so that it can answer quer
 
 To keep the example code simple, in this lesson you will only display items of a single shopping list. Later on, you will add support for multiple shopping lists and provide the required means of navigation between lists.
 
-This tutorial sticks to React + Redux as the default choice for building a frontend for a reSolve application. Both React and Redux work well in conjunction with reSolve's infrastructure. ReSolve comes with the client **[resolve-redux](../../packages/core/resolve-redux)** library that provides HOCs allowing you to easily connect your React components to the backend.
+This tutorial sticks to React + Redux as the default choice for building a frontend for a reSolve application. Both React and Redux work well in conjunction with reSolve's infrastructure. ReSolve comes with the client **resolve-redux** library that provides HOCs allowing you to easily connect your React components to the backend.
 
 Note that, if required, you can use the [standard HTTP API](curl.md) to communicate with a reSolve backend and implement the frontend using any client-side technology.
 
@@ -518,7 +518,7 @@ Note that, if required, you can use the [standard HTTP API](curl.md) to communic
 
 Create a **ShoppingList.js** file in the client application's containers folder. In this file, implement a component that displays a list of values obtained from the **[data](frontend.md#obtain-view-model-data)** prop:
 
-**[client/containers/ShoppingList.js:](../../examples/shopping-list-tutorial/lesson-4/client/containers/ShoppingList.js)**
+**client/containers/ShoppingList.js:**
 
 <!-- prettier-ignore-start -->
 
@@ -547,7 +547,7 @@ export class ShoppingList extends React.PureComponent {
 
 Now you can use the **resolve-redux** library's **connectViewModel** HOC to bind your component to the **ShoppingList** view model implemented earlier:
 
-**[client/containers/ShoppingList.js:](../../examples/shopping-list-tutorial/lesson-4/client/containers/ShoppingList.js)**
+**client/containers/ShoppingList.js:**
 
 <!-- prettier-ignore-start -->
 
@@ -598,7 +598,7 @@ The connectViewModel HOC binds the original component to a reSolve View Model ba
 
 Place the implemented shopping list within the application's root component:
 
-**[client/containers/App.js:](../../examples/shopping-list-tutorial/lesson-4/client/containers/App.js)**
+**client/containers/App.js:**
 
 ```js
 const App = () => (
@@ -622,7 +622,7 @@ Your application already implements logic required to add new list items. Apply 
 
 1. Add a new event type that signals about the item checkbox being toggled.
 
-**[common/eventTypes.js:](../../examples/shopping-list-tutorial/lesson-5/common/eventTypes.js)**
+**common/eventTypes.js:**
 
 <!-- prettier-ignore-start -->
 
@@ -635,7 +635,7 @@ export const SHOPPING_ITEM_TOGGLED = "SHOPPING_ITEM_TOGGLED";
 
 2. Add a command handler that produces the added event in response to the **toggleShoppingItem** command.
 
-**[common/aggregates/shopping_list.commands.js](../../examples/shopping-list-tutorial/lesson-5/common/aggregates/shopping_list.commands.js):**
+**common/aggregates/shopping_list.commands.js:**
 
 <!-- prettier-ignore-start -->
 
@@ -659,7 +659,7 @@ The event payload contains the toggled item's identifier.
 
 4. Modify the **ShoppingList** View Model projection to apply **SHOPPING_ITEM_TOGGLED** events to the data sample.
 
-**[common/view-models/shopping_list.projection.js:](../../examples/shopping-list-tutorial/lesson-5/common/view-models/shopping_list.projection.js)**
+**common/view-models/shopping_list.projection.js:**
 
 <!-- prettier-ignore-start -->
 
@@ -684,7 +684,7 @@ The event payload contains the toggled item's identifier.
 
 In the previous lesson, you connected your ShoppingList to a reSolve View Model. Because of this, the connected component's props already include an array of Redux action creators used to dispatch Redux actions on the client and send the corresponding commands to the reSolve application on the server. To make use of these action creators to implement editing in your application, update the ShoppingList component's View Model binding code as shown below:
 
-**[common/view-models/shopping_list.projection.js:](../../examples/shopping-list-tutorial/lesson-5/common/view-models/shopping_list.projection.js)**
+**common/view-models/shopping_list.projection.js:**
 
 <!-- prettier-ignore-start -->
 
@@ -712,7 +712,7 @@ In this code, the component is first connected to a **Redux** state using the **
 
 Now the ShoppingList component's props include the **toggleShoppingItem** function.
 
-**[common/view-models/shopping_list.projection.js:](../../examples/shopping-list-tutorial/lesson-5/common/view-models/shopping_list.projection.js)**
+**common/view-models/shopping_list.projection.js:**
 
 ```js
 render() {
@@ -724,7 +724,7 @@ You can use this function to handle item checking on the client and send the **t
 
 In the code below, the **toggleShoppingItem** function is used to handle checkbox click events.
 
-**[client/containers/ShoppingList.js:](../../examples/shopping-list-tutorial/lesson-5/client/containers/ShoppingList.js)**
+**client/containers/ShoppingList.js:**
 
 <!-- prettier-ignore-start -->
 
@@ -745,7 +745,7 @@ In the code below, the **toggleShoppingItem** function is used to handle checkbo
 
 In the same way, you can use the **createShoppingItem** function to add new shopping list items. The UI markup is shown below:
 
-**[common/view-models/shopping_list.projection.js:](../../examples/shopping-list-tutorial/lesson-5/common/view-models/shopping_list.projection.js)**
+**common/view-models/shopping_list.projection.js:**
 
 <!-- prettier-ignore-start -->
 
@@ -778,7 +778,7 @@ In the same way, you can use the **createShoppingItem** function to add new shop
 
 This markup uses the following methods to handle UI interaction.
 
-**[common/view-models/shopping_list.projection.js:](../../examples/shopping-list-tutorial/lesson-5/common/view-models/shopping_list.projection.js)**
+**common/view-models/shopping_list.projection.js:**
 
 ```js
 createShoppingItem = () => {
@@ -816,7 +816,7 @@ After these steps, your application's client UI should look as shown below.
 
 In the previous two lessons, you have been implementing the client-side UI for viewing and editing items in a shopping list. However, you may have noticed that your application's functionality is incomplete: it is possible use HTTP API to create multiple shopping lists, but the client UI only allows viewing and editing only one specific list, namely **shopping-list-1**:
 
-**[client/containers/ShoppingList.js:](../../examples/shopping-list-tutorial/lesson-6/client/containers/ShoppingList.js)**
+**client/containers/ShoppingList.js:**
 
 ```jsx
 export const mapStateToOptions = (state, ownProps) => {
@@ -837,7 +837,7 @@ Consider a situation, in which your application has been running in a production
 
 To overcome this issue, implement a ShoppingLists **[Read Model](read-side.md#read-models)**. This Read Model will gradually accumulate its state based on incoming events and store this state in the Read Model Storage. This part of the functionality is implemented by the Red Model **[projection](read-side.md)**:
 
-**[common/read-models/shopping_lists.projection.js:](../../examples/shopping-list-tutorial/lesson-6/common/read-models/shopping_lists.projection.js)**
+**common/read-models/shopping_lists.projection.js:**
 
 <!-- prettier-ignore-start -->
 
@@ -874,7 +874,7 @@ export default {
 
 You also need to implement **[resolver functions](read-side.md#resolvers)** that will answer queries using the accumulated data.
 
-**[common/read-models/shopping_lists.resolvers.js:](../../examples/shopping-list-tutorial/lesson-6/common/read-models/shopping_lists.resolvers.js)**
+**common/read-models/shopping_lists.resolvers.js:**
 
 <!-- prettier-ignore-start -->
 
@@ -893,7 +893,7 @@ In this example, the **all** resolver function is used to obtain all available s
 
 Register the created Read Model in the application's configuration file:
 
-**[config.app.js:](../../examples/shopping-list-tutorial/lesson-6/config.app.js)**
+**config.app.js:**
 
 <!-- prettier-ignore-start -->
 
@@ -943,7 +943,7 @@ $ curl -X POST \
 
 Now you can implement the UI to display all available shopping list an provide and create new shopping lists.
 
-**[client/containers/MyLists.js:](../../examples/shopping-list-tutorial/lesson-6/client/containers/MyLists.js)**
+**client/containers/MyLists.js:**
 
 <!-- prettier-ignore-start -->
 
@@ -967,11 +967,11 @@ class MyLists extends React.PureComponent {
 
 <!-- prettier-ignore-end -->
 
-See the [shoppingLists](../../examples/shopping-list-tutorial/lesson-6/client/components/ShoppingLists.js) and [shoppingListsCreator](../../examples/shopping-list-tutorial/lesson-6/client/components/ShoppingListCreator.js) files to see the details of these components' implementation.
+See the **shoppingLists** and **shoppingListsCreator** files to see the details of these components' implementation.
 
 The implemented container component is bound to the ShoppingLists Read Model as shown below:
 
-**[client/containers/MyLists.js:](../../examples/shopping-list-tutorial/lesson-6/client/containers/MyLists.js)**
+**client/containers/MyLists.js:**
 
 ```js
 export const mapStateToOptions = () => ({
@@ -997,7 +997,7 @@ export default connectReadModel(mapStateToOptions)(
 
 Now that your application has two main views, you need to provide means of navigation between them. To achieve this goal, you need to configure the react router.
 
-**[client/routes.js:](../../examples/shopping-list-tutorial/lesson-6/client/routes.js)**
+**client/routes.js:**
 
 <!-- prettier-ignore-start -->
 
@@ -1029,7 +1029,7 @@ export default [
 
 Next, modify the **App** component to use the router.
 
-**[client/containers/App.js:](../../examples/shopping-list-tutorial/lesson-6/client/containers/App.js)**
+**client/containers/App.js:**
 
 <!-- prettier-ignore-start -->
 
@@ -1064,7 +1064,7 @@ export default App
 
 Also, modify the **ShoppingList** component so it obtains the list aggregate ID from the **:id** route parameter and displays proper items.
 
-**[client/containers/ShoppingList.js:](../../examples/shopping-list-tutorial/lesson-6/client/containers/ShoppingList.js)**
+**client/containers/ShoppingList.js:**
 
 ```jsx
 export const mapStateToOptions = (state, ownProps) => {
@@ -1097,7 +1097,7 @@ With the optimistic UI updating approach, a component applies model changes to t
 
 First, define Redux actions that will perform updates:
 
-**[client/actions/optimistic_actions.js:](../../examples/shopping-list-tutorial/lesson-6/client/actions/optimistic_actions.js)**
+**client/actions/optimistic_actions.js:**
 
 <!-- prettier-ignore-start -->
 
@@ -1111,7 +1111,7 @@ export const OPTIMISTIC_SYNC = 'OPTIMISTIC_SYNC'
 
 Implement an optimistic reducer function that responds to these commands to update the corresponding slice of the Redux state:
 
-**[client/reducers/optimistic_shopping_lists.js:](../../examples/shopping-list-tutorial/lesson-6/client/reducers/optimistic_shopping_lists.js)**
+**client/reducers/optimistic_shopping_lists.js:**
 
 <!-- prettier-ignore-start -->
 
@@ -1153,7 +1153,7 @@ export default optimistic_shopping_lists
 
 Provide a middleware that intercepts the service actions used for communication between between Redux and reSolve:
 
-**[client/reducers/optimistic_shopping_lists_middleware.js:](../../examples/shopping-list-tutorial/lesson-6/client/middlewares/optimistic_shopping_lists_middleware.js)**
+**client/reducers/optimistic_shopping_lists_middleware.js:**
 
 <!-- prettier-ignore-start -->
 
