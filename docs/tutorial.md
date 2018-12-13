@@ -10,13 +10,13 @@ This tutorial will give an understanding of the reSolve framework and its fundam
 
 ## Table of Contents
 
-- [Lesson 1 - Create a New reSolve Application](#lesson-1---create-a-new-resolve-application)
-- [Lesson 2 - Write side - Add a List Item](lesson-2---write-side---add-a-list-item)
-- [Lesson 3 - Read side - Create a View Model to Query List Items](#lesson-3---read-side---create-a-view-model-to-query-list-items)
-- [Lesson 4 - Frontend - Display View Model Data in the Browser](#lesson-4---frontend---display-view-model-data-in-the-browser)
-- [Lesson 5 - Frontend - Enable Data Editing](#lesson-5---frontend---enable-data-editing)
-- [Lesson 6 - Frontend - Support Multiple Shopping Lists](#lesson-6---frontend---support-multiple-shopping-lists)
-- [Lesson 7 - Functionality Enhancements](#lesson-7---functionality-enhancements)
+- [Lesson 1 - Create a New reSolve Application](#lesson-1-create-a-new-resolve-application)
+- [Lesson 2 - Write side - Add a List Item](lesson-2-write-side-add-a-list-item)
+- [Lesson 3 - Read side - Create a View Model to Query List Items](#lesson-3-read-side-create-a-view-model-to-query-list-items)
+- [Lesson 4 - Frontend - Display View Model Data in the Browser](#lesson-4-frontend-display-view-model-data-in-the-browser)
+- [Lesson 5 - Frontend - Enable Data Editing](#lesson-5-frontend-enable-data-editing)
+- [Lesson 6 - Frontend - Support Multiple Shopping Lists](#lesson-6-frontend-support-multiple-shopping-lists)
+- [Lesson 7 - Functionality Enhancements](#lesson-7-functionality-enhancements)
 
 ---
 
@@ -53,12 +53,12 @@ $ yarn run dev
 
 ## **Lesson 2** - Write side - Add a List Item
 
-This lesson will teach you how to implement a basic write side for your reSolve application. An application's [write side](../basics/resolve-app-structure.md#write-and-read-sides) is responsible for handling commands, performing input validation and emitting **events** based on valid commands. The emitted events are then saved to the **event store**.
+This lesson will teach you how to implement a basic write side for your reSolve application. An application's [write side](resolve-app-structure.md#write-and-read-sides) is responsible for handling commands, performing input validation and emitting **events** based on valid commands. The emitted events are then saved to the **event store**.
 
 In CQRS and Event Sourcing paradigms, commands are handled by Domain Objects, which are grouped into aggregates. ReSolve implements aggregates as static objects containing sets of functions. These functions can of one of the following two kinds:
 
-- **[Command Handlers](../basics/write-side.md#aggregate-command-handlers)** - Handle commands and emit events in response.
-- **[Projections](../basics/write-side.md#aggregate-projection-function)** - Build aggregate state from events so this state can be observed on the write side, for example to perform input validation.
+- **[Command Handlers](write-side.md#aggregate-command-handlers)** - Handle commands and emit events in response.
+- **[Projections](write-side.md#aggregate-projection-function)** - Build aggregate state from events so this state can be observed on the write side, for example to perform input validation.
 
 ### Creating an Aggregate
 
@@ -109,7 +109,7 @@ export default {
 
 As you can see, the file exports an object containing two command handlers. A command handler receives the aggregate state and a commands payload. A payload can contain any arbitrary data related to the command. For example, the **createShoppingList** command's payload contains a shopping list name, and the **createShoppingItem** command payload contains an item's ID and displayed text.
 
-As the result of its execution, a command handler returns an event object. This object contains an obligatory **type** field defining the event's type and the **payload** field containing data associated with the event. In the example code, the event payloads contain the same field that were obtained from the command payloads. The reSolve framework saves events returned by command handlers to a persistent **[event store](../basics/write-side.md#event-store)**. For now, your application is configured to use a file-based event store, which is sufficient for learning purposes. Later on, you will learn how to use different kinds of stores using **[storage adapters](../advanced-techniques.md#adapters)**.
+As the result of its execution, a command handler returns an event object. This object contains an obligatory **type** field defining the event's type and the **payload** field containing data associated with the event. In the example code, the event payloads contain the same field that were obtained from the command payloads. The reSolve framework saves events returned by command handlers to a persistent **[event store](write-side.md#event-store)**. For now, your application is configured to use a file-based event store, which is sufficient for learning purposes. Later on, you will learn how to use different kinds of stores using **[storage adapters](advanced-techniques.md#adapters)**.
 
 Your minimal shopping list aggregate is now ready. The last step is to register it in the application's configuration file. Open the **config.app.js** file, locate the **aggregates** section and specify the following settings:
 
@@ -391,11 +391,11 @@ Command error: shopping list does not exist
 
 ## **Lesson 3** - Read side - Create a View Model to Query List Items
 
-Currently, your shopping list application has a fully functional write side allowing you to create shopping lists and items in these lists. However, it does not provide means to query the created data. This lesson will teach you how to provide your application with the capability to answer data queries by implementing the application's **[read side](../basics/resolve-app-structure.md#write-and-read-sides)**.
+Currently, your shopping list application has a fully functional write side allowing you to create shopping lists and items in these lists. However, it does not provide means to query the created data. This lesson will teach you how to provide your application with the capability to answer data queries by implementing the application's **[read side](resolve-app-structure.md#write-and-read-sides)**.
 
 ### Implement a View Model
 
-A reSolve applications read side answers queries using **[Read Models](../basics/read-side.md#read-models)**. In this lesson, you will implement a **[View Model](../basics/read-side.md#view-model-specifics)**, which is a Read Model of a special kind used to build an application's state on the fly, so you can keep the implementation simple. In a [later lesson](lesson-6.md#implement-a-shopping-lists-read-model), you will learn how to use regular Read Models to answer queries based on accumulated persistent state.
+A reSolve applications read side answers queries using **[Read Models](read-side.md#read-models)**. In this lesson, you will implement a **[View Model](read-side.md#view-model-specifics)**, which is a Read Model of a special kind used to build an application's state on the fly, so you can keep the implementation simple. In a [later lesson](#implement-a-shopping-lists-read-model), you will learn how to use regular Read Models to answer queries based on accumulated persistent state.
 
 Create a **shopping_list.projection.js** file in the **view-models** folder and add the following code to this file:
 
@@ -430,7 +430,7 @@ export default {
 
 <!-- prettier-ignore-end -->
 
-You just defined a View Model **[projection](../basics/read-side.md#updating-a-read-model-via-projection-functions)**. A View Model projection runs for all events for a specific aggregate ID. Based on event data, a projection builds state. This state is then returned as a query response.
+You just defined a View Model **[projection](read-side.md#updating-a-read-model-via-projection-functions)**. A View Model projection runs for all events for a specific aggregate ID. Based on event data, a projection builds state. This state is then returned as a query response.
 
 Now, you need to register the implemented View Model in the application's configuration file.
 
@@ -506,17 +506,17 @@ http://{host}:{port}/api/query/{viewModel}/{aggregateIds}
 
 ## **Lesson 4** - Frontend - Display View Model Data in the Browser
 
-In the previous lesson, you modified your application so that it can answer queries. However, at this moment, your application does not provide a [frontent](../basics/frontend.md) that would present this data to an end-user. In this lesson, you will learn how to create a React frontend to display your reSolve application's data.
+In the previous lesson, you modified your application so that it can answer queries. However, at this moment, your application does not provide a [frontent](frontend.md) that would present this data to an end-user. In this lesson, you will learn how to create a React frontend to display your reSolve application's data.
 
 To keep the example code simple, in this lesson you will only display items of a single shopping list. Later on, you will add support for multiple shopping lists and provide the required means of navigation between lists.
 
 This tutorial sticks to React + Redux as the default choice for building a frontend for a reSolve application. Both React and Redux work well in conjunction with reSolve's infrastructure. ReSolve comes with the client **[resolve-redux](../../packages/core/resolve-redux)** library that provides HOCs allowing you to easily connect your React components to the backend.
 
-Note that, if required, you can use the [standard HTTP API](../basics/curl.md) to communicate with a reSolve backend and implement the frontend using any client-side technology.
+Note that, if required, you can use the [standard HTTP API](curl.md) to communicate with a reSolve backend and implement the frontend using any client-side technology.
 
 ### Implement a React Frontend
 
-Create a **ShoppingList.js** file in the client application's containers folder. In this file, implement a component that displays a list of values obtained from the **[data](../basics/frontend.md#obtain-view-model-data)** prop:
+Create a **ShoppingList.js** file in the client application's containers folder. In this file, implement a component that displays a list of values obtained from the **[data](frontend.md#obtain-view-model-data)** prop:
 
 **[client/containers/ShoppingList.js:](../../examples/shopping-list-tutorial/lesson-4/client/containers/ShoppingList.js)**
 
@@ -610,7 +610,7 @@ const App = () => (
 ```
 
 Run your application to see the result:
-![result](images/lesson4_result.png)
+![result](assets/tutorial/lesson4_result.png)
 
 ---
 
@@ -808,7 +808,7 @@ onItemTextPressEnter = event => {
 
 After these steps, your application's client UI should look as shown below.
 
-![result](images/lesson5_result.png)
+![result](assets/tutorial/lesson5_result.png)
 
 ---
 
@@ -831,11 +831,11 @@ In this lesson, you will enhance your application's functionality with the capab
 
 ### Implement a Shopping Lists Read Model
 
-In the [Lesson 3](lesson-3.md), you have implemented a View Model used to obtain information about shopping lists with the specified aggregate ID's. Although it is possible to use the same approach for obtaining the list of all available shopping lists, there is a strong reason not to do so.
+In the [Lesson 3](#lesson-3-read-side-create-a-view-model-to-query-list-items), you have implemented a View Model used to obtain information about shopping lists with the specified aggregate ID's. Although it is possible to use the same approach for obtaining the list of all available shopping lists, there is a strong reason not to do so.
 
 Consider a situation, in which your application has been running in a production environment for a long time and a large number of shopping lists has been created. If you used a View Model to answer queries, a resulting data sample would be generated on the fly for every requests using events from the beginning of the history, which will result in a huge performance overhead on _each request_. Note that it is not a problem when you use a View Model to obtain a single list's items as the item count is always considerably small.
 
-To overcome this issue, implement a ShoppingLists **[Read Model](../basics/read-side.md#read-models)**. This Read Model will gradually accumulate its state based on incoming events and store this state in the Read Model Storage. This part of the functionality is implemented by the Red Model **[projection](../basics/read-side.md)**:
+To overcome this issue, implement a ShoppingLists **[Read Model](read-side.md#read-models)**. This Read Model will gradually accumulate its state based on incoming events and store this state in the Read Model Storage. This part of the functionality is implemented by the Red Model **[projection](read-side.md)**:
 
 **[common/read-models/shopping_lists.projection.js:](../../examples/shopping-list-tutorial/lesson-6/common/read-models/shopping_lists.projection.js)**
 
@@ -872,7 +872,7 @@ export default {
 
 <!-- prettier-ignore-end -->
 
-You also need to implement **[resolver functions](../basics/read-side.md#resolvers)** that will answer queries using the accumulated data.
+You also need to implement **[resolver functions](read-side.md#resolvers)** that will answer queries using the accumulated data.
 
 **[common/read-models/shopping_lists.resolvers.js:](../../examples/shopping-list-tutorial/lesson-6/common/read-models/shopping_lists.resolvers.js)**
 
@@ -1085,7 +1085,7 @@ export const mapStateToProps = (state, ownProps) => {
 }
 ```
 
-For now, binding a component to a reSolve Read Model looks similar to how you bound the ShoppingList component to a View Model in the [Lesson 4](lesson-4.md). Run, your application and try adding a new shopping list using the implemented UI.
+For now, binding a component to a reSolve Read Model looks similar to how you bound the ShoppingList component to a View Model in the [Lesson 4](#lesson-4-frontend-display-view-model-data-in-the-browser). Run, your application and try adding a new shopping list using the implemented UI.
 
 You should have noticed that although you application correctly sends commands to the backend, the client UI does not reflect the change in the application state. A newly created shopping list only appears after you refresh the page. This is an expected behavior because Read Models are not reactive by default. This means that components connected to Read Models do not automatically synchronize their Redux state with the Read Model state on the server.
 
