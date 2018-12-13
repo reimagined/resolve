@@ -130,7 +130,10 @@ function createExecutor({ eventStore, aggregate, snapshotAdapter }) {
       jwtToken,
       snapshotAdapter
     )
-    return await eventStore.saveEvent(event)
+
+    await eventStore.saveEvent(event)
+
+    return event
   }
 }
 
