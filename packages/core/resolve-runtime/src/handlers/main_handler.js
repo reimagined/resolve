@@ -25,6 +25,11 @@ const mainHandler = async (originalReq, res) => {
     res.setHeader('Authorization', `Bearer ${jwtToken}`)
   }
 
+  if (rootPath && originalReq.path === `/${rootPath}`) {
+    await res.redirect(`/${rootPath}/`)
+    return
+  }
+
   // TODO: Matching URLs one by one is very slow and inefficient
   // TODO: Use Left prefix mathing tree instead of switch/case
 
