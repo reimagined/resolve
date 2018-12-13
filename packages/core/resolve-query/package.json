@@ -1,6 +1,6 @@
 {
   "name": "resolve-query",
-  "version": "0.18.11",
+  "version": "0.18.12",
   "description": "This package creates a function to execute a query.",
   "engines": {
     "node": ">=8.10"
