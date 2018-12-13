@@ -131,7 +131,7 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
     },
 
     async sendCommand({ commandType, aggregateId, aggregateName, payload }) {
-      let response
+      let response, result
       try {
         response = await request('/api/commands', {
           type: commandType,
@@ -148,6 +148,14 @@ const createApi = ({ origin, rootPath, jwtProvider, store }) => {
       if (!response.ok) {
         throw new HttpError(await response.text())
       }
+
+      try {
+        result = await response.json()
+      } catch (error) {
+        throw new HttpError(error.message)
+      }
+
+      return result
     },
 
     async getSubscribeAdapterOptions(adapterName) {
