@@ -1,6 +1,6 @@
 {
   "name": "resolve-storage-base",
-  "version": "0.18.10",
+  "version": "0.18.13",
   "description": "This package contains the basic components for storage adapters",
   "engines": {
     "node": ">=8.10"

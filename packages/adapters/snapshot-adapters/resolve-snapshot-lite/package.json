@@ -1,6 +1,6 @@
 {
   "name": "resolve-snapshot-lite",
-  "version": "0.18.10",
+  "version": "0.18.13",
   "description": "This package serves as an adapter for snapshots using a file or in memory.",
   "engines": {
     "node": ">=8.10"

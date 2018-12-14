@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import hoistNonReactStatic from 'hoist-non-react-statics'
 
 import * as actions from './actions'
 import { connectorMetaMap } from './constants'
@@ -130,6 +131,8 @@ const connectViewModel = mapStateToOptions => Component => {
     mapDispatchToConnectorProps
   )(ViewModelContainer)
   ViewModelConnector.mapStateToOptions = mapStateToOptions
+
+  hoistNonReactStatic(ViewModelConnector, ViewModelContainer)
 
   return connectResolveAdvanced(ViewModelConnector)
 }
