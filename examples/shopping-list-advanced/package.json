@@ -13,6 +13,6 @@
     "start": "cd scripts && node ./run.js start",
     "start:native": "cd native && npm start",
     "test": "cd scripts && node ./test.js",
-    "test:functional": "cd scripts && node ./run.js test:functional"
+    "test:functional": "cd web && node ./run.js test:functional"
   }
 }

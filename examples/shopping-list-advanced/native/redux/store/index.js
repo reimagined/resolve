@@ -22,7 +22,6 @@ import refresh from '../reducers/refresh'
 import optimisticSharingsMiddleware from '../middlewares/optimistic-sharings-middleware'
 import optimisticShoppingListsMiddleware from '../middlewares/optimistic-shopping-lists-middleware'
 
-
 const initialState = {}
 
 const history = createMemoryHistory({

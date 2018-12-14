@@ -4,7 +4,9 @@
   "private": true,
   "main": "./src/index.js",
   "scripts": {
-    "test": "jest --config=jest.config.js"
+    "test": "npm run test:web && npm run test:native",
+    "test:web": "jest --config=jest.config.web.js",
+    "test:native": "jest --config=jest.config.native.js"
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
@@ -13,13 +15,18 @@
   "devDependencies": {
     "react": "16.5.0",
     "react-dom": "16.5.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-31.0.1.tar.gz",
     "redux": "4.0.1",
     "resolve-redux": "0.18.11",
     "regenerator-runtime": "0.12.1",
     "jest": "23.6.0",
+    "jest-expo": "31.0.0",
+    "expo": "31.0.5",
     "enzyme": "3.7.0",
     "enzyme-adapter-react-16": "1.7.0",
+    "enzyme-to-json": "3.3.5",
     "babel-jest": "23.6.0",
+    "babel-preset-expo": "5.0.0",
     "babel-core": "^7.0.0-0",
     "@babel/core": "^7.0.0",
     "@babel/plugin-proposal-decorators": "^7.0.0",

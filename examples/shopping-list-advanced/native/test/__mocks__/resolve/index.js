@@ -5,7 +5,17 @@ export const aggregateActions = {}
 
 export const rootPath = ''
 export const staticPath = ''
-export const origin = 'http://localhost:3000'
+export const customConstants = {
+  backend: {
+    protocol: 'http',
+    hostname: '127.0.0.1',
+    port: 3000
+  },
+  remoteReduxDevTools: {
+    hostname: '127.0.0.1',
+    port: 19042
+  }
+}
 export const port = '3000'
 export const applicationName = 'react-native-shopping-list'
 

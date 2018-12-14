@@ -33,11 +33,13 @@
   },
   "devDependencies": {
     "fs-extra": "7.0.1",
+    "metro-config": "0.48.5",
     "babel-core": "^7.0.0-0",
     "babel-jest": "23.6.0",
     "babel-preset-expo": "5.0.0",
     "enzyme": "3.7.0",
     "enzyme-adapter-react-16": "1.7.0",
+    "enzyme-to-json": "3.3.5",
     "jest": "23.6.0",
     "jest-expo": "31.0.0",
     "react-test-renderer": "16.5.0",
