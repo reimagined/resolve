@@ -1,0 +1,3 @@
+import optimistic_shopping_lists_middleware from './optimistic_shopping_lists_middleware'
+
+export default [optimistic_shopping_lists_middleware]
