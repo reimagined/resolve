@@ -57,7 +57,7 @@ export class ShoppingList extends React.PureComponent {
               <Checkbox
                 inline
                 checked={todo.checked}
-                onClick={toggleShoppingItem.bind(null, aggregateId, {
+                onChange={toggleShoppingItem.bind(null, aggregateId, {
                   id: todo.id
                 })}
               >
