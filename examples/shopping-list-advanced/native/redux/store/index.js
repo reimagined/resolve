@@ -3,6 +3,8 @@ import createMemoryHistory from 'history/createMemoryHistory'
 import { AsyncStorage } from 'react-native'
 
 import { createStore } from 'resolve-redux'
+
+import origin from '../../constants/origin'
 import {
   viewModels,
   readModels,
@@ -11,7 +13,7 @@ import {
   customConstants,
   subscribeAdapter,
   jwtCookie
-} from '../../resolve/config'
+} from '../../resolve'
 
 import optimisticShoppingLists from '../reducers/optimistic-shopping-lists'
 import optimisticSharings from '../reducers/optimistic-sharings'
@@ -20,9 +22,6 @@ import refresh from '../reducers/refresh'
 import optimisticSharingsMiddleware from '../middlewares/optimistic-sharings-middleware'
 import optimisticShoppingListsMiddleware from '../middlewares/optimistic-shopping-lists-middleware'
 
-const origin = `${customConstants.backend.protocol}://${
-  customConstants.backend.hostname
-}:${customConstants.backend.port}`
 
 const initialState = {}
 

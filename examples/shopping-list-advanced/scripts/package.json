@@ -4,8 +4,5 @@
   "private": true,
   "scripts": {
     "test": "echo || exit 0"
-  },
-  "dependencies": {
-
   }
 }

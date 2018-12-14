@@ -1,17 +1,18 @@
+const path = require('path')
 const {
   defaultResolveConfig,
   build,
   start,
   watch,
   runTestcafe,
-  merge: rawMerge
+  merge: rawMerge,
+  adjustWebpackReactNative
 } = require('resolve-scripts')
 
 const devConfig = require('./config.dev')
 const prodConfig = require('./config.prod')
 const cloudConfig = require('./config.cloud')
 const testFunctionalConfig = require('./config.test-functional')
-const adjustWebpackConfigs = require('./config.adjust-webpack')
 const appConfig = require('./config.app')
 const createAuthModule = require('resolve-module-auth').default
 const getLocalIp = require('my-local-ip')
@@ -37,6 +38,11 @@ const merge = (...configs) => {
       }
     }
   }
+}
+
+const reactNativeDir = path.resolve(__dirname, '../native')
+const commonPackages = {
+  '@shopping-list-advanced/ui': path.resolve(__dirname, '../ui')
 }
 
 void (async () => {
@@ -73,18 +79,39 @@ void (async () => {
       )
       await watch(
         resolveConfig,
-        adjustWebpackConfigs.bind(null, resolveConfig)
+        adjustWebpackReactNative({
+          resolveConfig,
+          reactNativeDir,
+          commonPackages
+        })
       )
-      // await remotedev({
-      //   hostname: resolveConfig.customConstants.remoteReduxDevTools.hostname,
-      //   port: resolveConfig.customConstants.remoteReduxDevTools.port,
-      //   wsEngine: 'ws'
-      // })
-      // await opn(
-      //   `http://${resolveConfig.customConstants.remoteReduxDevTools.hostname}:${
-      //     resolveConfig.customConstants.remoteReduxDevTools.port
-      //   }`
-      // )
+      break
+    }
+    case 'dev:native': {
+      const resolveConfig = merge(
+        defaultResolveConfig,
+        appConfig,
+        devConfig,
+        authModule
+      )
+      await watch(
+        resolveConfig,
+        adjustWebpackReactNative({
+          resolveConfig,
+          reactNativeDir,
+          commonPackages
+        })
+      )
+      await remotedev({
+        hostname: resolveConfig.customConstants.remoteReduxDevTools.hostname,
+        port: resolveConfig.customConstants.remoteReduxDevTools.port,
+        wsEngine: 'ws'
+      })
+      await opn(
+        `http://${resolveConfig.customConstants.remoteReduxDevTools.hostname}:${
+          resolveConfig.customConstants.remoteReduxDevTools.port
+        }`
+      )
       break
     }
 
@@ -97,7 +124,11 @@ void (async () => {
       )
       await build(
         resolveConfig,
-        adjustWebpackConfigs.bind(null, resolveConfig)
+        adjustWebpackReactNative({
+          resolveConfig,
+          reactNativeDir,
+          commonPackages
+        })
       )
       break
     }
@@ -111,7 +142,11 @@ void (async () => {
       )
       await build(
         resolveConfig,
-        adjustWebpackConfigs.bind(null, resolveConfig)
+        adjustWebpackReactNative({
+          resolveConfig,
+          reactNativeDir,
+          commonPackages
+        })
       )
       break
     }
@@ -136,11 +171,12 @@ void (async () => {
       )
       await runTestcafe({
         resolveConfig,
-        adjustWebpackConfigs: adjustWebpackConfigs.bind(
-          null,
-          resolveConfig
-        ),
-        functionalTestsDir: '../web/test/functional',
+        adjustWebpackConfigs: adjustWebpackReactNative({
+          resolveConfig,
+          reactNativeDir,
+          commonPackages
+        }),
+        functionalTestsDir: './test/functional',
         browser: process.argv[3]
         // customArgs: ['-r', 'json:report.json']
       })
@@ -151,9 +187,8 @@ void (async () => {
       throw new Error('Unknown option')
     }
   }
-})()
-  .catch(error => {
-    // eslint-disable-next-line no-console
-    console.log(error)
-    process.exit(1)
-  })
+})().catch(error => {
+  // eslint-disable-next-line no-console
+  console.log(error)
+  process.exit(1)
+})

@@ -1,8 +1,7 @@
+import adjustWebpackReactNative from './adjust_webpack_react_native'
 import defaultResolveConfig from '../configs/default.resolve.config.json'
 import declareRuntimeEnv from './declare_runtime_env'
-
 import getModulesDirs from './get_modules_dirs'
-import getWebpackEnvPlugin from './get_webpack_env_plugin'
 
 import start from './start_mode'
 import build from './build_mode'
@@ -11,10 +10,10 @@ import runTestcafe from './run_testcafe'
 import merge from './merge'
 
 export {
+  adjustWebpackReactNative,
   defaultResolveConfig,
   declareRuntimeEnv,
   getModulesDirs,
-  getWebpackEnvPlugin,
   build,
   start,
   watch,

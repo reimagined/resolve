@@ -4,10 +4,10 @@ import { ActionSheetProvider } from '@expo/react-native-action-sheet'
 
 import { Providers } from 'resolve-redux'
 
-import { origin, rootPath, staticPath } from './resolve/config'
+import origin from './constants/origin'
+import { rootPath, staticPath, aggregateActions } from './resolve'
 
 import store from './redux/store'
-import aggregateActions from './redux/actions/aggregate-actions'
 
 import Routes from './routes'
 

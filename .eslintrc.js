@@ -194,6 +194,7 @@ module.exports = {
           'linearized',
           'localhost',
           'lodash',
+          'lstat',
           'lte',
           'Mergeable',
           'middleware',
