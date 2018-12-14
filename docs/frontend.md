@@ -117,7 +117,7 @@ export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
 
 <!-- prettier-ignore-end -->
 
-After this, you can use dispatch aggregate commands using the corresponding props:
+After this, you can dispatch aggregate commands using the corresponding props:
 
 <!-- prettier-ignore-start -->
 

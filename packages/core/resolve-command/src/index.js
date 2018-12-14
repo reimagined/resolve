@@ -60,6 +60,10 @@ const getAggregateState = async (
   }
 
   const snapshotHandler = async event => {
+    if (event.aggregateVersion <= aggregateVersion) {
+      return
+    }
+
     await regularHandler(event)
 
     await snapshotAdapter.saveSnapshot(snapshotKey, {
@@ -130,7 +134,10 @@ function createExecutor({ eventStore, aggregate, snapshotAdapter }) {
       jwtToken,
       snapshotAdapter
     )
-    return await eventStore.saveEvent(event)
+
+    await eventStore.saveEvent(event)
+
+    return event
   }
 }
 

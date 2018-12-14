@@ -19,7 +19,7 @@ const sendAuthResponse = async (authResponse, res, rootPath, noredirect) => {
   if (authResponse.headers.Location) {
     res.redirect(authResponse.headers.Location, authResponse.statusCode)
   } else {
-    res.end(authResponse.error)
+    res.end(String(authResponse.error))
   }
 }
 

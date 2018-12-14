@@ -1,13 +1,17 @@
 import { put } from 'redux-saga/effects'
 
-import { sendCommandSuccess, sendCommandFailure } from './actions'
+import {
+  sendCommandSuccess,
+  sendCommandFailure,
+  dispatchTopicMessage
+} from './actions'
 
 const sendCommandSaga = function*(
   { api },
   { commandType, aggregateId, aggregateName, payload }
 ) {
   try {
-    yield api.sendCommand({
+    const event = yield api.sendCommand({
       commandType,
       aggregateId,
       aggregateName,
@@ -17,6 +21,8 @@ const sendCommandSaga = function*(
     yield put(
       sendCommandSuccess(commandType, aggregateId, aggregateName, payload)
     )
+
+    yield put(dispatchTopicMessage(event))
   } catch (error) {
     yield put(
       sendCommandFailure(
