@@ -73,7 +73,7 @@ void (async () => {
       )
       await watch(
         resolveConfig,
-        adjustWebpackConfigs.bind(null, resolveConfig, { watch: true })
+        adjustWebpackConfigs.bind(null, resolveConfig)
       )
       // await remotedev({
       //   hostname: resolveConfig.customConstants.remoteReduxDevTools.hostname,
@@ -97,7 +97,7 @@ void (async () => {
       )
       await build(
         resolveConfig,
-        adjustWebpackConfigs.bind(null, resolveConfig, {})
+        adjustWebpackConfigs.bind(null, resolveConfig)
       )
       break
     }
@@ -111,7 +111,7 @@ void (async () => {
       )
       await build(
         resolveConfig,
-        adjustWebpackConfigs.bind(null, resolveConfig, {})
+        adjustWebpackConfigs.bind(null, resolveConfig)
       )
       break
     }
@@ -138,8 +138,7 @@ void (async () => {
         resolveConfig,
         adjustWebpackConfigs: adjustWebpackConfigs.bind(
           null,
-          resolveConfig,
-          {}
+          resolveConfig
         ),
         functionalTestsDir: '../web/test/functional',
         browser: process.argv[3]
