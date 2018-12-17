@@ -30,8 +30,10 @@ const authenticateWrapper = {
       )
     } else {
       this.internalRes.statusCode = error.status || status || 401
-      if (error && error.message) {
-        this.internalRes.error = error.message
+      if (error != null && error.message) {
+        this.internalRes.error = String(error.message)
+      } else {
+        this.internalRes.error = String(error || 'Unknown error')
       }
     }
 
