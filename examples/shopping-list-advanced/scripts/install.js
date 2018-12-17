@@ -29,11 +29,11 @@ const canaryVersion = [_major, _minor, (+_patch || 0) + timestamp].join('.')
 const safeName = str =>
   `${str.replace('@', '').replace('/', '-')}-v${canaryVersion}`
 
-const removeExtra = function(dir) {
+const removeExtra = dir => {
   const list = fs.readdirSync(dir)
   for (let i = 0; i < list.length; i++) {
     const filename = path.join(dir, list[i])
-    const stat = fs.statSync(filename)
+    const stat = fs.lstatSync(filename)
 
     if (filename === '.' || filename === '..') {
       continue
@@ -48,13 +48,6 @@ const removeExtra = function(dir) {
 }
 
 const main = async () => {
-  // 0. Install self node_modules
-  await spawnAsync('yarn', ['install'], { cwd: __dirname, stdio: 'inherit' })
-
-  // 1. Babelify
-  const { babelify } = require('./babel.compile')
-  await babelify()
-
   // 2. Start static server
   const staticServer = http.createServer((req, res) => {
     const fileName = req.url.slice(1)

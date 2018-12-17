@@ -4,7 +4,7 @@ const devConfig = {
   polyfills: ['@babel/polyfill'],
   mode: 'development',
   redux: {
-    enhancers: ['../web/lib/redux/enhancers/redux-devtools.js']
+    enhancers: ['client/redux/enhancers/redux-devtools.js']
   },
   readModelAdapters: [
     {
