@@ -30,6 +30,8 @@ export default function createViewModelsReducer(viewModels) {
     const aggregateIds = getHash(action.aggregateIds)
     const aggregateArgs = getHash(action.aggregateArgs)
 
+    const key = `${viewModelName}${aggregateIds}${aggregateArgs}`
+
     return {
       ...state,
       [connectorMetaMap]: {
@@ -38,6 +40,14 @@ export default function createViewModelsReducer(viewModels) {
           isLoading: true,
           isFailure: false
         }
+      },
+      [aggregateVersionsMap]: {
+        ...state[aggregateVersionsMap],
+        [key]: {}
+      },
+      [lastTimestampMap]: {
+        ...state[lastTimestampMap],
+        [key]: +Infinity
       }
     }
   }
@@ -66,10 +76,6 @@ export default function createViewModelsReducer(viewModels) {
           isLoading: false,
           isFailure: false
         }
-      },
-      [aggregateVersionsMap]: {
-        ...state[aggregateVersionsMap],
-        [key]: {}
       },
       [lastTimestampMap]: {
         ...state[lastTimestampMap],
@@ -116,7 +122,8 @@ export default function createViewModelsReducer(viewModels) {
         )
       },
       [connectorMetaMap]: dropKey(state[connectorMetaMap], key),
-      [aggregateVersionsMap]: dropKey(state[aggregateVersionsMap], key)
+      [aggregateVersionsMap]: dropKey(state[aggregateVersionsMap], key),
+      [lastTimestampMap]: dropKey(state[lastTimestampMap], key)
     }
   }
 
@@ -211,7 +218,8 @@ export default function createViewModelsReducer(viewModels) {
 
   let state = {
     [connectorMetaMap]: {},
-    [aggregateVersionsMap]: {}
+    [aggregateVersionsMap]: {},
+    [lastTimestampMap]: {}
   }
 
   return (_, action) => {
