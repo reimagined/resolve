@@ -24,16 +24,21 @@ const authenticateWrapper = {
         getRootBasedUrl(
           this.rootPath,
           typeof this.originalOptions.failureRedirect === 'function'
-            ? this.originalOptions.failureRedirect(error)
+            ? this.originalOptions.failureRedirect(error, status)
             : this.originalOptions.failureRedirect
         )
       )
     } else {
-      this.internalRes.statusCode = error.status || status || 401
+      this.internalRes.statusCode =
+        (error != null && error.status) || status || 401
       if (error != null && error.message) {
         this.internalRes.error = String(error.message)
+        if (error.stack) {
+          // eslint-disable-next-line no-console
+          console.error(error.stack)
+        }
       } else {
-        this.internalRes.error = String(error || 'Unknown error')
+        this.internalRes.error = String(error == null ? 'Unknown error' : error)
       }
     }
 
