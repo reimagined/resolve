@@ -1,5 +1,4 @@
 import React from 'react'
-import '@shopping-list-advanced/ui'
 
 import Header from './Header'
 

@@ -50,8 +50,9 @@
     "testcafe-browser-tools": "^1.6.5",
     "uuid": "^3.3.2",
     "val-loader": "^1.1.1",
-    "webpack": "^4.26.1",
-    "webpack-node-externals": "^1.7.2"
+    "webpack": "^4.27.1",
+    "webpack-node-externals": "^1.7.2",
+    "babel-plugin-module-resolver": "^3.1.1"
   },
   "devDependencies": {
     "sinon": "6.3.4",

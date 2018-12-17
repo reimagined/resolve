@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<Component
+  style={
+    Object {
+      "flexDirection": "row",
+      "flexWrap": "wrap",
+    }
+  }
+>
+  <Component
+    source={1}
+    style={
+      Object {
+        "height": 35,
+        "width": 35,
+      }
+    }
+  />
+  <Component
+    style={
+      Object {
+        "fontSize": 27,
+        "marginBottom": 30,
+        "marginLeft": 5,
+      }
+    }
+  >
+    Shopping List
+  </Component>
+</Component>
+`;

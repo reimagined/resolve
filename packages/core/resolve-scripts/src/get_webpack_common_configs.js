@@ -2,7 +2,6 @@ import path from 'path'
 import nodeExternals from 'webpack-node-externals'
 
 import getModulesDirs from './get_modules_dirs'
-import getWebpackEnvPlugin from './get_webpack_env_plugin'
 
 const getWebpackCommonConfigs = ({
   resolveConfig,
@@ -71,8 +70,9 @@ const getWebpackCommonConfigs = ({
         path: distDir,
         filename: '[name]',
         libraryTarget: 'commonjs-module',
-        devtoolModuleFilenameTemplate: '[absolute-resource-path]',
-        devtoolFallbackModuleFilenameTemplate: '[absolute-resource-path]?[hash]'
+        devtoolModuleFilenameTemplate: '[namespace][resource-path]',
+        devtoolFallbackModuleFilenameTemplate:
+          '[namespace][resource-path]?[hash]'
       },
       module: {
         rules: [
@@ -135,7 +135,6 @@ const getWebpackCommonConfigs = ({
           }
         ]
       },
-      plugins: [getWebpackEnvPlugin({ resolveConfig, isClient })],
       externals: [
         (context, request, callback) => {
           if (assembly.hasOwnProperty('packageJson')) {
