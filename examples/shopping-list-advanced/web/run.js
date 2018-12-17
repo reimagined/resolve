@@ -6,7 +6,8 @@ const {
   watch,
   runTestcafe,
   merge: rawMerge,
-  adjustWebpackReactNative
+  adjustWebpackReactNative,
+  adjustWebpackCommonPackages
 } = require('resolve-scripts')
 
 const devConfig = require('./config.dev')
@@ -37,6 +38,25 @@ const merge = (...configs) => {
         port: process.env.SHOPPING_LIST_PROTOCOL || 19042
       }
     }
+  }
+}
+
+const adjustWebpackConfigs = ({
+  resolveConfig,
+  commonPackages,
+  reactNativeDir
+}) => (...args) => {
+  if (commonPackages) {
+    adjustWebpackCommonPackages({
+      resolveConfig,
+      commonPackages
+    })(...args)
+  }
+  if (reactNativeDir) {
+    adjustWebpackReactNative({
+      resolveConfig,
+      reactNativeDir
+    })(...args)
   }
 }
 
@@ -79,9 +99,8 @@ void (async () => {
       )
       await watch(
         resolveConfig,
-        adjustWebpackReactNative({
+        adjustWebpackConfigs({
           resolveConfig,
-          reactNativeDir,
           commonPackages
         })
       )
@@ -96,7 +115,7 @@ void (async () => {
       )
       await watch(
         resolveConfig,
-        adjustWebpackReactNative({
+        adjustWebpackConfigs({
           resolveConfig,
           reactNativeDir,
           commonPackages
@@ -124,7 +143,7 @@ void (async () => {
       )
       await build(
         resolveConfig,
-        adjustWebpackReactNative({
+        adjustWebpackConfigs({
           resolveConfig,
           reactNativeDir,
           commonPackages
@@ -142,7 +161,7 @@ void (async () => {
       )
       await build(
         resolveConfig,
-        adjustWebpackReactNative({
+        adjustWebpackConfigs({
           resolveConfig,
           reactNativeDir,
           commonPackages
@@ -171,9 +190,8 @@ void (async () => {
       )
       await runTestcafe({
         resolveConfig,
-        adjustWebpackConfigs: adjustWebpackReactNative({
+        adjustWebpackConfigs: adjustWebpackConfigs({
           resolveConfig,
-          reactNativeDir,
           commonPackages
         }),
         functionalTestsDir: './test/functional',

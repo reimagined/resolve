@@ -23,7 +23,7 @@ Run the example:
 1. First Terminal
 
     ```sh
-    yarn dev
+    yarn dev:native
     ```
 
     Runs your web app in development mode.

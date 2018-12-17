@@ -1,4 +1,5 @@
 import adjustWebpackReactNative from './adjust_webpack_react_native'
+import adjustWebpackCommonPackages from './adjust_webpack_common_packages'
 import defaultResolveConfig from '../configs/default.resolve.config.json'
 import declareRuntimeEnv from './declare_runtime_env'
 import getModulesDirs from './get_modules_dirs'
@@ -11,6 +12,7 @@ import merge from './merge'
 
 export {
   adjustWebpackReactNative,
+  adjustWebpackCommonPackages,
   defaultResolveConfig,
   declareRuntimeEnv,
   getModulesDirs,
