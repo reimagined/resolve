@@ -1,5 +1,3 @@
-import { select } from 'redux-saga/effects'
-
 import eventListenerSaga from '../src/event_listener_saga'
 import { aggregateVersionsMap, lastTimestampMap } from '../src/constants'
 import getHash from '../src/get_hash'
