@@ -98,7 +98,7 @@ describe('validateReadModelAdapters', () => {
   })
 
   // eslint-disable-next-line
-  test('should throw error `Duplicate declaration "${adapterName}" read model adapter`', () => {
+  test('should throw error `The "${adapterName}" read model adapter is specified but no read model uses it`', () => {
     const resolveConfig = {
       readModels: [
         {
