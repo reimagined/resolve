@@ -71,16 +71,6 @@ const connectViewModelSaga = function*(sagaArgs, action) {
     return acc
   }, [])
 
-  yield* sagaManager.start(
-    `${CONNECT_VIEWMODEL}${sagaKey}`,
-    eventListenerSaga,
-    {
-      ...sagaArgs,
-      eventTypes
-    },
-    action
-  )
-
   while (subscriptionKeys.length > 0) {
     let counter = subscriptionKeys.length
     for (const { aggregateId, eventType } of subscriptionKeys) {
@@ -114,6 +104,16 @@ const connectViewModelSaga = function*(sagaArgs, action) {
       counter--
     }
   }
+
+  yield* sagaManager.start(
+    `${CONNECT_VIEWMODEL}${sagaKey}`,
+    eventListenerSaga,
+    {
+      ...sagaArgs,
+      eventTypes
+    },
+    action
+  )
 
   while (true) {
     yield put(
