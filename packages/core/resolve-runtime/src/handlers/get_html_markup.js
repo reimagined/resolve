@@ -8,7 +8,8 @@ export default ({
   markup,
   styleTags,
   initialState,
-  bundleUrl
+  bundleUrl,
+  faviconUrl
   // TODO. Revert HMR before 0.18.0. Local Server with HMR / Cloud Server without HMR
   // hmrUrl
 }) => {
@@ -22,6 +23,7 @@ export default ({
     `<!doctype html>` +
     `<html ${helmet.htmlAttributes.toString()}>` +
     '<head>' +
+    `<link rel="icon" type="image/x-icon" href="${faviconUrl}" />` +
     `${helmet.title.toString()}` +
     `${helmet.meta.toString()}` +
     `${helmet.link.toString()}` +
