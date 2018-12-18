@@ -1,6 +1,6 @@
 {
   "name": "resolve-readmodel-memory",
-  "version": "0.18.13",
+  "version": "0.18.15",
   "description": "This package serves as a resolve-query adapter for storing a read model in memory",
   "engines": {
     "node": ">=8.10"
@@ -27,7 +27,7 @@
   "dependencies": {
     "@babel/runtime": "^7.0.0",
     "nedb": "^1.8.0",
-    "resolve-readmodel-base": "0.18.13",
+    "resolve-readmodel-base": "0.18.15",
     "uuid": "^3.3.2"
   },
   "devDependencies": {

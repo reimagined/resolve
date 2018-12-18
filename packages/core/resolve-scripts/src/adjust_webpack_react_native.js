@@ -1,44 +1,38 @@
 import path from 'path'
+import nodeExternals from 'webpack-node-externals'
 
 import getModulesDirs from './get_modules_dirs'
 
-const getClientWebpackConfig = ({ resolveConfig, alias }) => {
-  const clientDistDir = path.resolve(
-    process.cwd(),
-    resolveConfig.distDir,
-    'client'
-  )
+const isString = val => val != null && val.constructor === String
 
+const adjustWebpackReactNative = ({ resolveConfig, reactNativeDir }) => (
+  webpackConfigs,
+  { alias }
+) => {
   const isClient = true
-  const polyfills = Array.isArray(resolveConfig.polyfills)
-    ? resolveConfig.polyfills
-    : []
 
-  return {
-    name: 'Client',
-    entry: {
-      'bundle.js': [
-        ...polyfills,
-        path.resolve(__dirname, './alias/$resolve.clientEntry.js')
-      ],
-      'hmr.js': [
-        path.resolve(__dirname, './alias/$resolve.hotModuleReplacement.js')
-      ]
-    },
-    context: path.resolve(process.cwd()),
+  if (!isString(reactNativeDir)) {
+    throw new Error('The `reactNativeDir` field must be String')
+  }
+
+  const webpackNativeConfig = {
+    name: 'React Native Chunk',
     mode: resolveConfig.mode,
     performance: false,
     devtool: 'source-map',
     target: 'web',
+    context: path.resolve(process.cwd()),
+    resolve: {
+      alias,
+      modules: []
+    },
+    entry: '$resolve.chunkReactNative',
     output: {
-      path: clientDistDir,
-      filename: '[name]',
+      path: reactNativeDir,
+      libraryTarget: 'commonjs-module',
+      filename: 'resolve/index.js',
       devtoolModuleFilenameTemplate: '[namespace][resource-path]',
       devtoolFallbackModuleFilenameTemplate: '[namespace][resource-path]?[hash]'
-    },
-    resolve: {
-      modules: getModulesDirs(),
-      alias
     },
     module: {
       rules: [
@@ -92,8 +86,11 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
           ]
         }
       ]
-    }
+    },
+    externals: getModulesDirs().map(modulesDir => nodeExternals({ modulesDir }))
   }
+
+  webpackConfigs.push(webpackNativeConfig)
 }
 
-export default getClientWebpackConfig
+export default adjustWebpackReactNative

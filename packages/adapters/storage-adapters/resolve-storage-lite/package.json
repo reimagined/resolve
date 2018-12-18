@@ -1,6 +1,6 @@
 {
   "name": "resolve-storage-lite",
-  "version": "0.18.13",
+  "version": "0.18.15",
   "description": "This package serves as an adapter for resolve-storage to store events using a file or in memory.",
   "engines": {
     "node": ">=8.10"
@@ -27,7 +27,7 @@
   "dependencies": {
     "@babel/runtime": "^7.0.0",
     "nedb": "^1.8.0",
-    "resolve-storage-base": "0.18.13"
+    "resolve-storage-base": "0.18.15"
   },
   "devDependencies": {
     "jest": "23.6.0",

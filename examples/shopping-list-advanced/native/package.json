@@ -1,6 +1,6 @@
 {
   "name": "@shopping-list-advanced/native",
-  "version": "0.18.13",
+  "version": "0.18.15",
   "private": true,
   "main": "./index.js",
   "scripts": {
@@ -12,10 +12,10 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "@shopping-list-advanced/ui": "0.18.13",
-    "resolve-redux": "0.18.13",
-    "resolve-subscribe-socket.io": "0.18.13",
-    "resolve-runtime": "0.18.13",
+    "@shopping-list-advanced/ui": "0.18.15",
+    "resolve-redux": "0.18.15",
+    "resolve-subscribe-socket.io": "0.18.15",
+    "resolve-runtime": "0.18.15",
     "@expo/react-native-action-sheet": "1.1.2",
     "@expo/vector-icons": "8.0.0",
     "expo": "31.0.5",
@@ -33,11 +33,13 @@
   },
   "devDependencies": {
     "fs-extra": "7.0.1",
+    "metro-config": "0.48.5",
     "babel-core": "^7.0.0-0",
     "babel-jest": "23.6.0",
     "babel-preset-expo": "5.0.0",
     "enzyme": "3.7.0",
     "enzyme-adapter-react-16": "1.7.0",
+    "enzyme-to-json": "3.3.5",
     "jest": "23.6.0",
     "jest-expo": "31.0.0",
     "react-test-renderer": "16.5.0",

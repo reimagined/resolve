@@ -1,34 +1,36 @@
 {
   "name": "@shopping-list-advanced/web",
-  "version": "0.18.13",
+  "version": "0.18.15",
   "private": true,
   "scripts": {
     "test": "jest --testMatch=**/test/**/unit/*.test.js --verbose"
   },
   "dependencies": {
+    "@babel/runtime": "^7.0.0",
+    "@babel/polyfill": "^7.0.0",
+    "jsonwebtoken": "8.3.0",
+    "passport-local": "1.0.0",
+    "uuid": "3.3.2",
     "react": "16.5.0",
     "react-dom": "16.5.0",
     "react-bootstrap": "0.32.4",
     "react-helmet": "5.2.0",
+    "redux": "4.0.1",
     "react-redux": "5.1.1",
+    "react-router": "4.3.1",
     "react-router-dom": "4.3.1",
     "react-router-redux": "5.0.0-alpha.9",
-    "@shopping-list-advanced/ui": "0.18.13",
-    "redux": "4.0.1",
-    "resolve-redux": "0.18.13",
-    "uuid": "3.3.2",
-    "redux-devtools-extension": "2.13.7",
-    "@babel/runtime": "^7.0.0"
+    "@shopping-list-advanced/ui": "0.18.15",
+    "resolve-module-auth": "0.18.15",
+    "resolve-readmodel-memory": "0.18.15",
+    "resolve-scripts": "0.18.15",
+    "resolve-redux": "0.18.15"
   },
   "devDependencies": {
-    "regenerator-runtime": "0.13.1",
-    "my-local-ip": "1.0.0",
-    "react-test-renderer": "16.5.0",
-    "jest": "23.6.0",
-    "enzyme": "3.7.0",
-    "enzyme-adapter-react-16": "1.7.0",
-    "babel-jest": "23.6.0",
+    "regenerator-runtime": "0.12.1",
     "babel-core": "^7.0.0-0",
+    "babel-jest": "23.6.0",
+    "jest": "23.6.0",
     "@babel/core": "^7.0.0",
     "@babel/plugin-proposal-decorators": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.0.0",
@@ -39,6 +41,14 @@
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-flow": "^7.0.0",
-    "testcafe": "0.23.2"
+    "my-local-ip": "1.0.0",
+    "react-test-renderer": "16.5.0",
+    "enzyme": "3.7.0",
+    "enzyme-adapter-react-16": "1.7.0",
+    "testcafe": "0.23.2",
+    "glob": "7.1.3",
+    "opn": "5.4.0",
+    "remotedev-server": "0.2.7",
+    "redux-devtools-extension": "2.13.7"
   }
 }

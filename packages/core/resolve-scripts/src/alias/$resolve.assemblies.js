@@ -15,6 +15,7 @@ const excludeAlias = [
   'viewModels',
   'sagas',
   'assemblies',
+  'chunkReactNative',
   ...excludeConstantAlias
 ]
 
