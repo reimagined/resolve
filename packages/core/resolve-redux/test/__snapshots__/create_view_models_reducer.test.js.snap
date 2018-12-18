@@ -2,6 +2,7 @@
 
 exports[`createViewModelsReducer reducer work correctly 1`] = `
 Object {
+  "@@resolve/aggregateVersionsMap": Object {},
   "@@resolve/connectorMetaMap": Object {},
   "@@resolve/lastTimestampMap": Object {},
 }
@@ -9,6 +10,7 @@ Object {
 
 exports[`createViewModelsReducer reducer work correctly 2`] = `
 Object {
+  "@@resolve/aggregateVersionsMap": Object {},
   "@@resolve/connectorMetaMap": Object {},
   "@@resolve/lastTimestampMap": Object {},
 }
@@ -16,18 +18,27 @@ Object {
 
 exports[`createViewModelsReducer reducer work correctly 3`] = `
 Object {
+  "@@resolve/aggregateVersionsMap": Object {
+    "Todos[\\"1\\",\\"2\\",\\"3\\"]{}": Object {},
+  },
   "@@resolve/connectorMetaMap": Object {
     "Todos[\\"1\\",\\"2\\",\\"3\\"]{}": Object {
       "isFailure": false,
       "isLoading": true,
     },
   },
-  "@@resolve/lastTimestampMap": Object {},
+  "@@resolve/lastTimestampMap": Object {
+    "Todos[\\"1\\",\\"2\\",\\"3\\"]{}": Infinity,
+  },
 }
 `;
 
 exports[`createViewModelsReducer reducer work correctly 4`] = `
 Object {
+  "@@resolve/aggregateVersionsMap": Object {
+    "Todos*{}": Object {},
+    "Todos[\\"1\\",\\"2\\",\\"3\\"]{}": Object {},
+  },
   "@@resolve/connectorMetaMap": Object {
     "Todos*{}": Object {
       "isFailure": false,
@@ -38,12 +49,19 @@ Object {
       "isLoading": true,
     },
   },
-  "@@resolve/lastTimestampMap": Object {},
+  "@@resolve/lastTimestampMap": Object {
+    "Todos*{}": Infinity,
+    "Todos[\\"1\\",\\"2\\",\\"3\\"]{}": Infinity,
+  },
 }
 `;
 
 exports[`createViewModelsReducer reducer work correctly 5`] = `
 Object {
+  "@@resolve/aggregateVersionsMap": Object {
+    "Todos*{}": Object {},
+    "Todos[\\"1\\",\\"2\\",\\"3\\"]{}": Object {},
+  },
   "@@resolve/connectorMetaMap": Object {
     "Todos*{}": Object {
       "isFailure": false,
@@ -55,6 +73,7 @@ Object {
     },
   },
   "@@resolve/lastTimestampMap": Object {
+    "Todos*{}": Infinity,
     "Todos[\\"1\\",\\"2\\",\\"3\\"]{}": Object {
       "1": 1,
       "2": 1,
@@ -76,6 +95,10 @@ Object {
 
 exports[`createViewModelsReducer reducer work correctly 6`] = `
 Object {
+  "@@resolve/aggregateVersionsMap": Object {
+    "Todos*{}": Object {},
+    "Todos[\\"1\\",\\"2\\",\\"3\\"]{}": Object {},
+  },
   "@@resolve/connectorMetaMap": Object {
     "Todos*{}": Object {
       "isFailure": false,
@@ -121,6 +144,10 @@ Object {
 
 exports[`createViewModelsReducer reducer work correctly 7`] = `
 Object {
+  "@@resolve/aggregateVersionsMap": Object {
+    "Todos*{}": Object {},
+    "Todos[\\"1\\",\\"2\\",\\"3\\"]{}": Object {},
+  },
   "@@resolve/connectorMetaMap": Object {
     "Todos*{}": Object {
       "isFailure": false,
@@ -166,6 +193,10 @@ Object {
 
 exports[`createViewModelsReducer reducer work correctly 8`] = `
 Object {
+  "@@resolve/aggregateVersionsMap": Object {
+    "Todos*{}": Object {},
+    "Todos[\\"1\\",\\"2\\",\\"3\\"]{}": Object {},
+  },
   "@@resolve/connectorMetaMap": Object {
     "Todos*{}": Object {
       "isFailure": false,
@@ -211,6 +242,9 @@ Object {
 
 exports[`createViewModelsReducer reducer work correctly 9`] = `
 Object {
+  "@@resolve/aggregateVersionsMap": Object {
+    "Todos*{}": Object {},
+  },
   "@@resolve/connectorMetaMap": Object {
     "Todos*{}": Object {
       "isFailure": false,
@@ -240,6 +274,7 @@ Object {
 
 exports[`createViewModelsReducer reducer work correctly 10`] = `
 Object {
+  "@@resolve/aggregateVersionsMap": Object {},
   "@@resolve/connectorMetaMap": Object {},
   "@@resolve/lastTimestampMap": Object {},
   "Todos": Object {
@@ -251,6 +286,7 @@ Object {
 
 exports[`createViewModelsReducer reducer work correctly 11`] = `
 Object {
+  "@@resolve/aggregateVersionsMap": Object {},
   "@@resolve/connectorMetaMap": Object {},
   "@@resolve/lastTimestampMap": Object {},
   "Todos": Object {
@@ -262,13 +298,18 @@ Object {
 
 exports[`createViewModelsReducer reducer work correctly 12`] = `
 Object {
+  "@@resolve/aggregateVersionsMap": Object {
+    "Todos*{}": Object {},
+  },
   "@@resolve/connectorMetaMap": Object {
     "Todos*{}": Object {
       "isFailure": false,
       "isLoading": true,
     },
   },
-  "@@resolve/lastTimestampMap": Object {},
+  "@@resolve/lastTimestampMap": Object {
+    "Todos*{}": Infinity,
+  },
   "Todos": Object {
     "*": Object {},
     "[\\"1\\",\\"2\\",\\"3\\"]": Object {},
@@ -278,6 +319,9 @@ Object {
 
 exports[`createViewModelsReducer reducer work correctly 13`] = `
 Object {
+  "@@resolve/aggregateVersionsMap": Object {
+    "Todos*{}": Object {},
+  },
   "@@resolve/connectorMetaMap": Object {
     "Todos*{}": Object {
       "error": "error",
@@ -285,7 +329,9 @@ Object {
       "isLoading": false,
     },
   },
-  "@@resolve/lastTimestampMap": Object {},
+  "@@resolve/lastTimestampMap": Object {
+    "Todos*{}": Infinity,
+  },
   "Todos": Object {
     "*": Object {},
     "[\\"1\\",\\"2\\",\\"3\\"]": Object {},

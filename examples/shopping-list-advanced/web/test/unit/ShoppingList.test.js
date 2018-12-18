@@ -1,7 +1,7 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 
-import { ShoppingList } from '../../src/containers/ShoppingList'
+import { ShoppingList } from '../../client/containers/ShoppingList'
 
 test('renders correctly', () => {
   const data = {

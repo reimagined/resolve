@@ -1,6 +1,6 @@
 {
   "name": "resolve-bus-base",
-  "version": "0.18.10",
+  "version": "0.18.15",
   "description": "This package is an adapter for resolve-bus to emit events using ZeroMQ.",
   "engines": {
     "node": ">=8.10"

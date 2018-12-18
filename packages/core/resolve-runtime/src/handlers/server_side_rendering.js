@@ -91,6 +91,7 @@ const serverSideRendering = async (req, res) => {
 
   const initialState = store.getState()
   const bundleUrl = getStaticBasedPath(rootPath, staticPath, 'bundle.js')
+  const faviconUrl = getStaticBasedPath(rootPath, staticPath, 'favicon.ico')
   const hmrUrl = getStaticBasedPath(rootPath, staticPath, 'hmr.js')
 
   await res.setHeader('Content-Type', 'text/html')
@@ -102,6 +103,7 @@ const serverSideRendering = async (req, res) => {
       styleTags,
       initialState,
       bundleUrl,
+      faviconUrl,
       hmrUrl
     })
   )

@@ -9,7 +9,11 @@ import {
   DISCONNECT_VIEWMODEL
 } from './action_types'
 
-import { connectorMetaMap, lastTimestampMap } from './constants'
+import {
+  connectorMetaMap,
+  aggregateVersionsMap,
+  lastTimestampMap
+} from './constants'
 
 export const dropKey = (state, key) => {
   const nextState = { ...state }
@@ -26,6 +30,8 @@ export default function createViewModelsReducer(viewModels) {
     const aggregateIds = getHash(action.aggregateIds)
     const aggregateArgs = getHash(action.aggregateArgs)
 
+    const key = `${viewModelName}${aggregateIds}${aggregateArgs}`
+
     return {
       ...state,
       [connectorMetaMap]: {
@@ -34,6 +40,14 @@ export default function createViewModelsReducer(viewModels) {
           isLoading: true,
           isFailure: false
         }
+      },
+      [aggregateVersionsMap]: {
+        ...state[aggregateVersionsMap],
+        [key]: {}
+      },
+      [lastTimestampMap]: {
+        ...state[lastTimestampMap],
+        [key]: +Infinity
       }
     }
   }
@@ -108,6 +122,7 @@ export default function createViewModelsReducer(viewModels) {
         )
       },
       [connectorMetaMap]: dropKey(state[connectorMetaMap], key),
+      [aggregateVersionsMap]: dropKey(state[aggregateVersionsMap], key),
       [lastTimestampMap]: dropKey(state[lastTimestampMap], key)
     }
   }
@@ -203,6 +218,7 @@ export default function createViewModelsReducer(viewModels) {
 
   let state = {
     [connectorMetaMap]: {},
+    [aggregateVersionsMap]: {},
     [lastTimestampMap]: {}
   }
 

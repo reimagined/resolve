@@ -1,4 +1,4 @@
-import { aggregates } from '../../resolve/config'
+import { aggregates } from '../../resolve'
 import { createActions } from 'resolve-redux'
 
 const actions = {}

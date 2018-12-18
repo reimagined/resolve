@@ -1,7 +1,6 @@
 import path from 'path'
 
 import getModulesDirs from './get_modules_dirs'
-import getWebpackEnvPlugin from './get_webpack_env_plugin'
 
 const getClientWebpackConfig = ({ resolveConfig, alias }) => {
   const clientDistDir = path.resolve(
@@ -34,8 +33,8 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
     output: {
       path: clientDistDir,
       filename: '[name]',
-      devtoolModuleFilenameTemplate: '[absolute-resource-path]',
-      devtoolFallbackModuleFilenameTemplate: '[absolute-resource-path]?[hash]'
+      devtoolModuleFilenameTemplate: '[namespace][resource-path]',
+      devtoolFallbackModuleFilenameTemplate: '[namespace][resource-path]?[hash]'
     },
     resolve: {
       modules: getModulesDirs(),
@@ -93,8 +92,7 @@ const getClientWebpackConfig = ({ resolveConfig, alias }) => {
           ]
         }
       ]
-    },
-    plugins: [getWebpackEnvPlugin({ resolveConfig, isClient })]
+    }
   }
 }
 

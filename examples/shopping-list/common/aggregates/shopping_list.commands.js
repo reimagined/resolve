@@ -1,4 +1,3 @@
-import validation from './validation'
 import {
   SHOPPING_LIST_CREATED,
   SHOPPING_LIST_RENAMED,
@@ -10,8 +9,12 @@ import {
 
 export default {
   createShoppingList: (state, { payload: { name } }) => {
-    validation.stateIsAbsent(state, 'Shopping List')
-    validation.fieldRequired({ name }, 'name')
+    if (state.createdAt) {
+      throw new Error('Shopping List already exists')
+    }
+    if (!name) {
+      throw new Error(`The "name" field is required`)
+    }
 
     return {
       type: SHOPPING_LIST_CREATED,
@@ -19,8 +22,13 @@ export default {
     }
   },
   renameShoppingList: (state, { payload: { name } }) => {
-    validation.stateExists(state, 'Shopping List')
-    validation.fieldRequired({ name }, 'name')
+    if (!state.createdAt) {
+      throw new Error('Shopping List does not exist')
+    }
+
+    if (!name) {
+      throw new Error(`The "name" field is required`)
+    }
 
     return {
       type: SHOPPING_LIST_RENAMED,
@@ -28,15 +36,25 @@ export default {
     }
   },
   removeShoppingList: state => {
-    validation.stateExists(state, 'Shopping List')
+    if (!state.createdAt) {
+      throw new Error('Shopping List does not exist')
+    }
+
     return {
       type: SHOPPING_LIST_REMOVED
     }
   },
   createShoppingItem: (state, { payload: { id, text } }) => {
-    validation.stateExists(state, 'Shopping List')
-    validation.fieldRequired({ id }, 'id')
-    validation.fieldRequired({ text }, 'text')
+    if (!state.createdAt) {
+      throw new Error('Shopping List does not exist')
+    }
+
+    if (!id) {
+      throw new Error(`The "id" field is required`)
+    }
+    if (!text) {
+      throw new Error(`The "text" field is required`)
+    }
 
     return {
       type: SHOPPING_ITEM_CREATED,
@@ -44,8 +62,13 @@ export default {
     }
   },
   toggleShoppingItem: (state, { payload: { id } }) => {
-    validation.stateExists(state, 'Shopping List')
-    validation.fieldRequired({ id }, 'id')
+    if (!state.createdAt) {
+      throw new Error('Shopping List does not exist')
+    }
+
+    if (!id) {
+      throw new Error(`The "id" field is required`)
+    }
 
     return {
       type: SHOPPING_ITEM_TOGGLED,
@@ -53,8 +76,13 @@ export default {
     }
   },
   removeShoppingItem: (state, { payload: { id } }) => {
-    validation.stateExists(state, 'Shopping List')
-    validation.fieldRequired({ id }, 'id')
+    if (!state.createdAt) {
+      throw new Error('Shopping List does not exist')
+    }
+
+    if (!id) {
+      throw new Error(`The "id" field is required`)
+    }
 
     return {
       type: SHOPPING_ITEM_REMOVED,
