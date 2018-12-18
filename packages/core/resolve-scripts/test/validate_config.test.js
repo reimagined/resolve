@@ -40,11 +40,12 @@ describe('validateReadModelAdapters', () => {
     expect(() => validateReadModelAdapters(resolveConfig)).not.toThrow()
   })
 
+  // eslint-disable-next-line
   test('should throw error `The "${adapterName}" read model adapter is required but not specified`', () => {
     const resolveConfig = {
       readModels: [
         {
-          name: 'third-read-model',
+          name: 'read-model',
           adapterName: 'unknown',
           projection: 'common/read-models/third-read-model/projection.js',
           resolvers: 'common/read-models/third-read-model/resolvers.js'
@@ -59,8 +60,72 @@ describe('validateReadModelAdapters', () => {
       ]
     }
 
-    expect(() => validateReadModelAdapters(resolveConfig)).not
-      .toThrow(`The "unknown" read model adapter is required but not specified
-`)
+    expect(() => validateReadModelAdapters(resolveConfig)).toThrow(
+      new Error(
+        `The "unknown" read model adapter is required but not specified`
+      )
+    )
+  })
+
+  // eslint-disable-next-line
+  test('should throw error `Duplicate declaration "${adapterName}" read model adapter`', () => {
+    const resolveConfig = {
+      readModels: [
+        {
+          name: 'read-model',
+          adapterName: 'default',
+          projection: 'common/read-models/third-read-model/projection.js',
+          resolvers: 'common/read-models/third-read-model/resolvers.js'
+        }
+      ],
+      readModelAdapters: [
+        {
+          name: 'default',
+          module: 'resolve-readmodel-memory',
+          options: {}
+        },
+        {
+          name: 'default',
+          module: 'resolve-readmodel-mysql',
+          options: {}
+        }
+      ]
+    }
+
+    expect(() => validateReadModelAdapters(resolveConfig)).toThrow(
+      new Error(`Duplicate declaration "default" read model adapter`)
+    )
+  })
+
+  // eslint-disable-next-line
+  test('should throw error `Duplicate declaration "${adapterName}" read model adapter`', () => {
+    const resolveConfig = {
+      readModels: [
+        {
+          name: 'read-model',
+          adapterName: 'default',
+          projection: 'common/read-models/third-read-model/projection.js',
+          resolvers: 'common/read-models/third-read-model/resolvers.js'
+        }
+      ],
+      readModelAdapters: [
+        {
+          name: 'default',
+          module: 'resolve-readmodel-memory',
+          options: {}
+        },
+        {
+          name: 'custom',
+          module: 'resolve-readmodel-mysql',
+          options: {}
+        }
+      ]
+    }
+
+    expect(() => validateReadModelAdapters(resolveConfig)).toThrow(
+      new Error(
+        `The "custom" read model adapter is specified but no read model uses it`
+      )
+    )
   })
 })
