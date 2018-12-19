@@ -66,7 +66,7 @@ async function main({ gitlab, github, refreshTime }) {
   }
 }
 
-const { gitlabUrl, gitlabToken, githubToken, refreshTime = 30000 } = minimist(
+const { gitlabUrl, gitlabToken, githubToken, refreshTime = 10000 } = minimist(
   process.argv.slice(2)
 )
 

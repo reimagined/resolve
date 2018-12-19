@@ -11,7 +11,7 @@ stages:
 prepare environment:
   stage: ci/cd
   tags:
-    - ci/cd
+    - ubuntu
   only:
     - ci/cd
   script:
