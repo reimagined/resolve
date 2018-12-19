@@ -8,7 +8,7 @@
   "author": "reimagined team",
   "license": "MIT",
   "dependencies": {
-    "@octokit/rest": "15.12.0",
+    "@octokit/rest": "16.2.0",
     "minimist": "1.2.0",
     "request": "2.88.0"
   }

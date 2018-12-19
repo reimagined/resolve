@@ -8,9 +8,6 @@
     "prettier": "prettier-eslint --write \"**/*.js\""
   },
   "devDependencies": {
-    "@octokit/rest": "16.2.0",
-    "minimist": "1.2.0",
-    "request": "2.88.0",
     "prettier-eslint-cli": "4.7.1",
     "babel-eslint": "10.0.1"
   },

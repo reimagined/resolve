@@ -7,6 +7,8 @@ const triggers = {}
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 async function main({ gitlab, github, refreshTime }) {
+  console.log(JSON.stringify({ gitlab, github, refreshTime }, null, 2))
+
   octokit.authenticate({
     type: 'token',
     token: github.token
@@ -92,4 +94,6 @@ main({
     repo: 'resolve',
     token: githubToken
   }
+}).catch(error => {
+  console.error(error)
 })
