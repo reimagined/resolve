@@ -40,7 +40,7 @@ export default prodConfig
 
 Before moving your app into production, specify all required [adapters](advanced-techniques.md#adapters) in the production config.
 
-Depending on your use case scenario, you may want to specify storage adapters for events, read model data and view model snapshots.
+Depending on your requirements, you may want to specify storage adapters for events, read model data and view model snapshots.
 
 The code below demonstrates how to set up a storage adapter on the example of an in-memory read model storage:
 

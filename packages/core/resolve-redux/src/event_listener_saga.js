@@ -1,7 +1,7 @@
 import { take, put, select } from 'redux-saga/effects'
 
 import getHash from './get_hash'
-import { lastTimestampMap } from './constants'
+import { aggregateVersionsMap, lastTimestampMap } from './constants'
 import { CONNECT_VIEWMODEL, DISPATCH_TOPIC_MESSAGE } from './action_types'
 import unsubscribeViewModelTopicsSaga from './unsubscribe_view_model_topics_saga'
 
@@ -20,7 +20,10 @@ const eventListenerSaga = function*(
     )
 
     const {
-      viewModels: { [lastTimestampMap]: viewModelLastTimestampMap }
+      viewModels: {
+        [aggregateVersionsMap]: viewModelAggregateVersionsMap,
+        [lastTimestampMap]: viewModelLastTimestampMap
+      }
     } = yield select()
 
     const key = `${connectAction.viewModelName}${getHash(
@@ -28,10 +31,18 @@ const eventListenerSaga = function*(
     )}${getHash(connectAction.aggregateArgs)}`
 
     const lastTimestamp = viewModelLastTimestampMap[key]
+    const versionsMap = viewModelAggregateVersionsMap[key]
+    if (!versionsMap.hasOwnProperty(event.aggregateId)) {
+      versionsMap[event.aggregateId] = 0
+    }
 
-    if (event.timestamp >= lastTimestamp) {
+    if (
+      event.aggregateVersion > versionsMap[event.aggregateId] &&
+      event.timestamp >= lastTimestamp
+    ) {
       try {
         yield put(event)
+        versionsMap[event.aggregateId] = event.aggregateVersion
         viewModelLastTimestampMap[key] = event.timestamp
       } catch (error) {
         // eslint-disable-next-line no-console

@@ -23,7 +23,7 @@ Run the example:
 1. First Terminal
 
     ```sh
-    yarn dev
+    yarn dev:native
     ```
 
     Runs your web app in development mode.
@@ -43,89 +43,72 @@ When you are ready to share your project with others (for example, by deploying 
 
 ### Project Structure Overview
 ```
-📁 react-native-shopping-list
-    📁 domain
-        📁 auth
-            📄 index.js
-            📄 jwt-secret.js
-        📁 aggregates
-            📄 shopping-list.commands.js
-            📄 shopping-list.projection.js
-            📄 user.commands.js
-            📄 user.projection.js
-            📄 validation.js
-        📁 read-models
-            📄 default.projection.js
-            📄 default.resolvers.js
-        📁 view-models
-            📄 shopping-list.projection.js
-        📄 event-types.js
-        📄 package.json
+📁 shopping-list-advanced
     📁 web
-        📁 components
-        📁 containers
-            📄 App.js
-        📁 redux
-            📁 store
-                📄 index.js
-            📁 reducers
-                📄 index.js
-                📄 optimistic-sharings.js
-                📄 optimistic-shopping-lists.js
-            📁 middlewares
-                📄 index.js
-                📄 optimistic-sharings-middleware.js
-                📄 optimistic-shopping-lists-middleware.js
-            📄 action-types.js
+        📁 client
+            📁 components
+            📁 containers
+            📁 decorators
+            📁 redux
+                📁 enhancers
+                📁 middlewares
+                📁 reducers
+                📄 action-types.js
+            📄 routes.js
+        📁 common
+            📁 aggregates
+            📁 auth
+            📁 read-models
+            📁 view-models
         📁 static
         📁 test
-        📄 routes.js
+        📄 babel.config.js
+        📄 config.app.js
+        📄 config.cloud.js
+        📄 config.dev.js
+        📄 config.prod.js
+        📄 config.test-functional.js
         📄 jest.config.js
+        📄 jest.transform.js
+        📄 jest-setup.js
         📄 package.json
+        📄 run.js
     📁 native
+        📁 assets
         📁 components
+        📁 constants
         📁 containers
-            📄 App.js
+        📁 decorators
         📁 redux
-            📁 actions
-                📄 aggregate-actions.js
-                📄 refresh-actions.js
-            📁 store
-                📄 index.js
-            📁 reducers
-                📄 index.js
-                📄 optimistic-sharings.js
-                📄 optimistic-shopping-lists.js
-                📄 refresh.js
+            📁 enhancers
             📁 middlewares
-                📄 index.js
-                📄 optimistic-sharings-middleware.js
-                📄 optimistic-shopping-lists-middleware.js
+            📁 reducers
+            📁 store
             📄 action-types.js
         📁 test
-        📄 config.js
         📄 app.json
+        📄 babel.config.js
+        📄 index.js
         📄 jest.config.js
+        📄 jest.transform.js
+        📄 jest-setup.js
         📄 package.json
+        📄 rn-cli.config.js
+        📄 routes.js
     📁 ui
-        📁 Component1
-            📄 index.android.js
-            📄 index.ios.js
+        📁 assets
+        📁 src
             📄 index.js
-        📁 Component2
-            📄 index.android.js
-            📄 index.ios.js
-            📄 index.js
+            📄 Logo.js
+            📄 Logo.native.js
+        📁 test
+        📄 jest.config.native.js
+        📄 jest.config.web.js
+        📄 jest.transform.native.js
+        📄 jest.transform.web.js
+        📄 jest-setup.js
         📄 package.json
-    📁 utils
-        📄 calc_something.js
-        📄 package.json
-    📄 package.json
-    📄 config.app.js	
-    📄 config.dev.js
-    📄 config.prod.js
-    📄 config.test-functional.js
-    📄 index.js
-    📄 README.md
     📄 .gitignore
+    📄 package.json
+    📄 README.md
 ```

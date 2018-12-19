@@ -26,12 +26,12 @@ const adjustWebpackConfigs = webpackConfigs => {
       })
     })
 
-    webpackConfig.plugins.push(
+    webpackConfig.plugins = [
       new ExtractTextPlugin({
         filename: 'style.css',
         allChunks: true
       })
-    )
+    ]
   }
 }
 

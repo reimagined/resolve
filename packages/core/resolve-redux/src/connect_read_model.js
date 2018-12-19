@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import hoistNonReactStatic from 'hoist-non-react-statics'
 
 import * as actions from './actions'
 import { connectorMetaMap } from './constants'
@@ -125,7 +126,10 @@ const connectReadModel = mapStateToOptions => Component => {
     mapStateToConnectorProps,
     mapDispatchToConnectorProps
   )(ReadModelContainer)
+
   ReadModelConnector.mapStateToOptions = mapStateToOptions
+
+  hoistNonReactStatic(ReadModelConnector, ReadModelContainer)
 
   return connectResolveAdvanced(ReadModelConnector)
 }

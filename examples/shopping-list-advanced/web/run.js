@@ -1,17 +1,19 @@
+const path = require('path')
 const {
   defaultResolveConfig,
   build,
   start,
   watch,
   runTestcafe,
-  merge: rawMerge
+  merge: rawMerge,
+  adjustWebpackReactNative,
+  adjustWebpackCommonPackages
 } = require('resolve-scripts')
 
 const devConfig = require('./config.dev')
 const prodConfig = require('./config.prod')
 const cloudConfig = require('./config.cloud')
 const testFunctionalConfig = require('./config.test-functional')
-const adjustWebpackConfigs = require('./config.adjust-webpack')
 const appConfig = require('./config.app')
 const createAuthModule = require('resolve-module-auth').default
 const getLocalIp = require('my-local-ip')
@@ -39,21 +41,45 @@ const merge = (...configs) => {
   }
 }
 
+const adjustWebpackConfigs = ({
+  resolveConfig,
+  commonPackages,
+  reactNativeDir
+}) => (...args) => {
+  if (commonPackages) {
+    adjustWebpackCommonPackages({
+      resolveConfig,
+      commonPackages
+    })(...args)
+  }
+  if (reactNativeDir) {
+    adjustWebpackReactNative({
+      resolveConfig,
+      reactNativeDir
+    })(...args)
+  }
+}
+
+const reactNativeDir = path.resolve(__dirname, '../native')
+const commonPackages = {
+  '@shopping-list-advanced/ui': path.resolve(__dirname, '../ui')
+}
+
 void (async () => {
   const authModule = createAuthModule([
     {
       name: 'local-strategy',
-      createStrategy: '../domain/lib/auth/create-strategy.js',
+      createStrategy: 'common/auth/create-strategy.js',
       routes: [
         {
           path: 'auth/local/register',
           method: 'POST',
-          callback: '../domain/lib/auth/route-register-callback.js'
+          callback: 'common/auth/route-register-callback.js'
         },
         {
           path: 'auth/local/login',
           method: 'POST',
-          callback: '../domain/lib/auth/route-login-callback.js'
+          callback: 'common/auth/route-login-callback.js'
         }
       ],
       logoutRoute: {
@@ -73,7 +99,27 @@ void (async () => {
       )
       await watch(
         resolveConfig,
-        adjustWebpackConfigs.bind(null, resolveConfig, { watch: true })
+        adjustWebpackConfigs({
+          resolveConfig,
+          commonPackages
+        })
+      )
+      break
+    }
+    case 'dev:native': {
+      const resolveConfig = merge(
+        defaultResolveConfig,
+        appConfig,
+        devConfig,
+        authModule
+      )
+      await watch(
+        resolveConfig,
+        adjustWebpackConfigs({
+          resolveConfig,
+          reactNativeDir,
+          commonPackages
+        })
       )
       await remotedev({
         hostname: resolveConfig.customConstants.remoteReduxDevTools.hostname,
@@ -97,7 +143,11 @@ void (async () => {
       )
       await build(
         resolveConfig,
-        adjustWebpackConfigs.bind(null, resolveConfig, {})
+        adjustWebpackConfigs({
+          resolveConfig,
+          reactNativeDir,
+          commonPackages
+        })
       )
       break
     }
@@ -111,7 +161,11 @@ void (async () => {
       )
       await build(
         resolveConfig,
-        adjustWebpackConfigs.bind(null, resolveConfig, {})
+        adjustWebpackConfigs({
+          resolveConfig,
+          reactNativeDir,
+          commonPackages
+        })
       )
       break
     }
@@ -136,12 +190,11 @@ void (async () => {
       )
       await runTestcafe({
         resolveConfig,
-        adjustWebpackConfigs: adjustWebpackConfigs.bind(
-          null,
+        adjustWebpackConfigs: adjustWebpackConfigs({
           resolveConfig,
-          {}
-        ),
-        functionalTestsDir: '../web/test/functional',
+          commonPackages
+        }),
+        functionalTestsDir: './test/functional',
         browser: process.argv[3]
         // customArgs: ['-r', 'json:report.json']
       })
@@ -152,10 +205,8 @@ void (async () => {
       throw new Error('Unknown option')
     }
   }
-})()
-  .then(() => process.exit(0))
-  .catch(error => {
-    // eslint-disable-next-line no-console
-    console.log(error)
-    process.exit(1)
-  })
+})().catch(error => {
+  // eslint-disable-next-line no-console
+  console.log(error)
+  process.exit(1)
+})

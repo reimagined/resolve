@@ -5,15 +5,21 @@ title: API Handlers
 
 ## API Reference
 
+ReSolve API handlers have the following general structure:
+
 ```js
 export default async (req, res) => {
   // ...
 }
 ```
 
+The handler function takes two parameters - the [request](#request) and [response](#response).
+
 ## Request
 
-The `req` object represents the HTTP request and has properties for the request query string, parameters, body, HTTP headers, and so on.
+The `req` object represents the HTTP request. This object exposes properties providing access to the request query string, parameters, body, HTTP headers, and so on.
+
+The request provides the following interface:
 
 ```js
 {
@@ -29,7 +35,9 @@ The `req` object represents the HTTP request and has properties for the request 
 
 ## Response
 
-The `res` object represents the HTTP response that an api handler sends when it gets an HTTP request.
+The `res` object represents the server response. It is sent by the API handler in response to the HTTP request.
+
+The response object provides the following interface:
 
 ```js
 {
@@ -46,7 +54,7 @@ The `res` object represents the HTTP response that an api handler sends when it 
 }
 ```
 
-## How to Write an API Handler
+## API Handler Implementation Examples
 
 - Send Text
 
@@ -115,7 +123,7 @@ export default async (req, res) => {
 }
 ```
 
-## How to Write a Resolve Config
+## API Handler Configuration
 
 ```
 // run.js
@@ -159,4 +167,4 @@ void (async () => {
 })
 ```
 
-See [Schema Resolve Config](https://github.com/reimagined/resolve/blob/master/packages/core/resolve-scripts/configs/schema.resolve.config.json) for more information.
+Refer to the [Schema Resolve Config](https://github.com/reimagined/resolve/blob/master/packages/core/resolve-scripts/configs/schema.resolve.config.json) file for more information.

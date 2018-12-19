@@ -1,5 +1,5 @@
-import projection from '../src/view-models/shopping-list.projection'
-import { SHOPPING_LIST_CREATED } from '../src/event-types'
+import projection from '../../common/view-models/shopping-list.projection'
+import { SHOPPING_LIST_CREATED } from '../../common/event-types'
 
 describe('view-models', () => {
   describe('ShoppingList', () => {
