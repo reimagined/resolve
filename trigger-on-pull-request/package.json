@@ -9,7 +9,6 @@
   "license": "MIT",
   "dependencies": {
     "@octokit/rest": "16.2.0",
-    "minimist": "1.2.0",
     "request": "2.88.0"
   }
 }

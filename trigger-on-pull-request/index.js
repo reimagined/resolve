@@ -1,4 +1,3 @@
-const minimist = require('minimist')
 const request = require('request')
 const octokit = require('@octokit/rest')()
 
@@ -7,7 +6,6 @@ const triggers = {}
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 async function main({ gitlab, github, refreshTime }) {
-
   console.log(JSON.stringify(process.env, null, 2))
   console.log(JSON.stringify({ gitlab, github, refreshTime }, null, 2))
 
@@ -70,22 +68,8 @@ async function main({ gitlab, github, refreshTime }) {
   }
 }
 
-const { gitlabUrl, gitlabToken, githubToken, refreshTime = 10000 } = minimist(
-  process.argv.slice(2)
-)
-
-if (!gitlabUrl) {
-  throw new Error('Option "gitlabUrl" is required and must be a String')
-}
-if (!gitlabToken) {
-  throw new Error('Option "gitlabToken" is required and must be a String')
-}
-if (!githubToken) {
-  throw new Error('Option "githubToken" is required and must be a String')
-}
-
 main({
-  refreshTime: +refreshTime,
+  refreshTime: 10000,
   gitlab: {
     url: process.env.GITLAB_PIPELINE_URL,
     token: process.env.GITLAB_PIPELINE_TOKEN,
