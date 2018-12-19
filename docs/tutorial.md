@@ -171,15 +171,14 @@ $ curl -i http://localhost:3000/api/commands/ \
 }
 '
 
-HTTP/1.1 200 OK
 X-Powered-By: Express
-Content-Type: text/html; charset=utf-8
-Content-Length: 2
-ETag: W/"2-nOO9QiTIwXgNtWtBJezz8kv3SLc"
-Date: Tue, 02 Oct 2018 11:47:53 GMT
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 19 Dec 2018 12:16:56 GMT
 Connection: keep-alive
+Content-Length: 139
 
-OK
+{"type":"SHOPPING_LIST_CREATED","payload":{"name":"List 1"},"aggregateId":"shopping-list-1","aggregateVersion":1,"timestamp":1545221816663}
+
 ```
 
 Use the inputs shown below to add an item to the created shopping list:
@@ -199,15 +198,14 @@ curl -i http://localhost:3000/api/commands/ \
 }
 '
 
-HTTP/1.1 200 OK
 X-Powered-By: Express
-Content-Type: text/html; charset=utf-8
-Content-Length: 2
-ETag: W/"2-nOO9QiTIwXgNtWtBJezz8kv3SLc"
-Date: Tue, 02 Oct 2018 12:13:39 GMT
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 19 Dec 2018 12:17:53 GMT
 Connection: keep-alive
+Content-Length: 146
 
-OK
+{"type":"SHOPPING_ITEM_CREATED","payload":{"id":"1","text":"Milk"},"aggregateId":"shopping-list-1","aggregateVersion":2,"timestamp":1545221873644}
+
 ```
 
 Add several more items to have data to work with in future lessons.
