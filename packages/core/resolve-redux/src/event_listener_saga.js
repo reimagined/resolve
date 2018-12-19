@@ -30,6 +30,10 @@ const eventListenerSaga = function*(
       connectAction.aggregateIds
     )}${getHash(connectAction.aggregateArgs)}`
 
+    if (!viewModelAggregateVersionsMap.hasOwnProperty(key)) {
+      continue
+    }
+
     const lastTimestamp = viewModelLastTimestampMap[key]
     const versionsMap = viewModelAggregateVersionsMap[key]
     if (!versionsMap.hasOwnProperty(event.aggregateId)) {
