@@ -26,7 +26,7 @@ macOS (install):
   only:
     - triggers
   script:
-    - echo macos
+    - ifconfig
     
 ubuntu (install):
   stage: install
