@@ -1,5 +1,5 @@
 stages:
-  - ci/cd
+  - CI/CD
   - install
   - lint
   - unit-tests
@@ -9,13 +9,14 @@ stages:
   - clear
 
 prepare environment:
-  stage: ci/cd
+  stage: CI/CD
   tags:
     - ubuntu
   only:
     - ci/cd
   script:
     - echo ci/cd
+    - ls
 
 macOS (install):
   stage: install
