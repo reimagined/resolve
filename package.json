@@ -13,8 +13,7 @@
     "minimist": "1.2.0",
     "request": "2.88.0",
     "prettier-eslint-cli": "4.7.1",
-    "babel-eslint": "10.0.1",
-    "pm2": "3.2.3"
+    "babel-eslint": "10.0.1"
   },
   "workspaces": {
     "packages": [
