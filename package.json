@@ -5,7 +5,6 @@
   "author": "reimagined team",
   "license": "MIT",
   "scripts": {
-    "trigger-on-pull-request": "cd ./trigger-on-pull-request && pm2 start index.js --name trigger-on-pull-reques",
     "prettier": "prettier-eslint --write \"**/*.js\""
   },
   "devDependencies": {

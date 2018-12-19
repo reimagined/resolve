@@ -16,7 +16,7 @@ prepare environment:
     - ci/cd
   script:
     - yarn
-    - yarn trigger-on-pull-request -- --githubToken $GITHUB_RESOLVE_TOKEN --gitlabUrl $GITLAB_PIPELINE_URL --gitlabToken $GITLAB_PIPELINE_TOKEN
+    - pm2 start index.js --name trigger-on-pull-reques -- --githubToken $GITHUB_RESOLVE_TOKEN --gitlabUrl $GITLAB_PIPELINE_URL --gitlabToken $GITLAB_PIPELINE_TOKEN
 
 macOS (install):
   stage: install
