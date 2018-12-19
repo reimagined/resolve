@@ -16,7 +16,8 @@ prepare environment:
     - ci/cd
   script:
     - echo ci/cd
-    - ls
+    - node -v
+    - yarn -v
 
 macOS (install):
   stage: install
