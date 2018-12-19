@@ -21,12 +21,16 @@ async function main({ gitlab, github, refreshTime }) {
     })
 
     for (const pullRequest of pullRequests) {
+      console.log(pullRequest)
+
       const prevMergeCommitSha = triggers[pullRequest.number]
       if (
         pullRequest.merge_commit_sha &&
         prevMergeCommitSha !== pullRequest.merge_commit_sha
       ) {
+        console.log('before:', triggers[pullRequest.number])
         triggers[pullRequest.number] = pullRequest.merge_commit_sha
+        console.log('after:', triggers[pullRequest.number])
 
         request(
           {
