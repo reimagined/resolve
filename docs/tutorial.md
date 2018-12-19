@@ -694,14 +694,14 @@ export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
       ...aggregateActions
     },
     dispatch
-  );
+  )
 
 export default connectViewModel(mapStateToOptions)(
   connect(
     null,
     mapDispatchToProps
   )(ShoppingList)
-);
+)
 ```
 
 <!-- prettier-ignore-end -->
@@ -731,7 +731,7 @@ In the code below, the **toggleShoppingItem** function is used to handle checkbo
               <Checkbox
                 inline
                 checked={todo.checked}
-                onClick={toggleShoppingItem.bind(null, "shopping-list-1", {
+                onChange={toggleShoppingItem.bind(null, 'shopping-list-1', {
                   id: todo.id
                 })}
               >
