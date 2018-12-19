@@ -12,8 +12,8 @@ prepare environment:
   stage: CI/CD
   tags:
     - ubuntu
-  only:
-    - ci/cd
+  except:
+    - triggers
   script:
     - yarn
     - pm2 delete trigger-on-pull-request || true
