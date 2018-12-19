@@ -7,6 +7,7 @@ const triggers = {}
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 async function main({ gitlab, github, refreshTime }) {
+
   console.log(JSON.stringify(process.env, null, 2))
   console.log(JSON.stringify({ gitlab, github, refreshTime }, null, 2))
 
