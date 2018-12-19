@@ -15,10 +15,8 @@ prepare environment:
   only:
     - ci/cd
   script:
-    - echo GITHUB_RESOLVE_TOKEN $GITHUB_RESOLVE_TOKEN > temp.txt
-    - echo $GITLAB_PIPELINE_URL $GITLAB_PIPELINE_URL >> temp.txt
-    - echo $GITLAB_PIPELINE_TOKEN $GITLAB_PIPELINE_TOKEN >> temp.txt
-    - yarn trigger-on-pull-request --githubToken $GITHUB_RESOLVE_TOKEN --gitlabUrl $GITLAB_PIPELINE_URL --gitlabToken $GITLAB_PIPELINE_TOKEN
+    - yarn
+    - yarn trigger-on-pull-request -- --githubToken $GITHUB_RESOLVE_TOKEN --gitlabUrl $GITLAB_PIPELINE_URL --gitlabToken $GITLAB_PIPELINE_TOKEN
 
 macOS (install):
   stage: install
