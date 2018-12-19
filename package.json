@@ -5,7 +5,7 @@
   "author": "reimagined team",
   "license": "MIT",
   "scripts": {
-    "trigger-on-pull-request": "cd ./trigger-on-pull-request && node ./index.js",
+    "trigger-on-pull-request": "cd ./trigger-on-pull-request && pm2 start index.js --name trigger-on-pull-reques",
     "prettier": "prettier-eslint --write \"**/*.js\""
   },
   "devDependencies": {
@@ -13,7 +13,8 @@
     "minimist": "1.2.0",
     "request": "2.88.0",
     "prettier-eslint-cli": "4.7.1",
-    "babel-eslint": "10.0.1"
+    "babel-eslint": "10.0.1",
+    "pm2": "3.2.3"
   },
   "workspaces": {
     "packages": [
