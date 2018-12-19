@@ -13,14 +13,16 @@ Since the write side is used only to perform commands, your aggregate can be pre
 
 See Martin Fowler's definition for aggregates in the DDD paradigm: [https://martinfowler.com/bliki/DDD_Aggregate.html](https://martinfowler.com/bliki/DDD_Aggregate.html)
 
-In reSolve, an aggregate is a static object that contains a set of functions. Functions that build aggregate
-state from events are called [projections](#aggregate-projection-function).
-Functions that execute commands - [command handlers](#aggregate-command-handlers).
-Aggregate state is passed to each of these functions explicitly as an argument.
+In reSolve, an aggregate is a static object that contains a set of functions. of the following two kinds:
+
+- [Projections](#aggregate-projection-function) - build aggregate state base from events.
+- [Command Handlers](#aggregate-command-handlers) - execute commands.
+
+Aggregate state is explicitly passed to all of these functions as an argument.
 
 ## Aggregate ID
 
-Each aggregate should have a unique ID that is immutable during its lifetime. An Aggregate ID should be unique in the given event store, however we recommend to also keep it
+Each aggregate should have a unique ID that is immutable during the aggregate's lifetime. An Aggregate ID should be unique in the given event store, however we also recommend to keep it
 globally unique. We recommend generating Aggregate IDs using [UUID v4](https://github.com/kelektiv/node-uuid#version-4) or [cuid](https://github.com/ericelliott/cuid) for distributed scalable apps.
 
 Please note that you have to generate a new Aggregate ID and send it with a command that creates a new aggregate.
