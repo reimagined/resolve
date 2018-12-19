@@ -80,7 +80,7 @@ const prepareOptions = async pool => {
       `${resolveCloneDirName}.zip`
     )
 
-    const useYarn = isYarnAvailable(pool)
+    const useYarn = isYarnAvailable(pool)()
 
     Object.assign(pool, {
       applicationName,

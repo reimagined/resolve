@@ -1,4 +1,4 @@
-const isYarnAvailable = ({ execSync }) => async () => {
+const isYarnAvailable = ({ execSync }) => () => {
   try {
     execSync('yarn --version', { stdio: 'ignore' })
     return true
