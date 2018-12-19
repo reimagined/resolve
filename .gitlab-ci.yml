@@ -17,7 +17,7 @@ prepare environment:
   script:
     - yarn
     - pm2 delete trigger-on-pull-request || true
-    - pm2 start trigger-on-pull-request/index.js --name trigger-on-pull-request -- --githubToken $GITHUB_RESOLVE_TOKEN --gitlabUrl $GITLAB_PIPELINE_URL --gitlabToken $GITLAB_PIPELINE_TOKEN
+    - pm2 start trigger-on-pull-request/index.js --name trigger-on-pull-request
 
 macOS (install):
   stage: install

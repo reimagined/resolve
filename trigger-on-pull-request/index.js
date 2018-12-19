@@ -86,14 +86,14 @@ if (!githubToken) {
 main({
   refreshTime: +refreshTime,
   gitlab: {
-    url: gitlabUrl,
-    token: gitlabToken,
+    url: process.env.GITLAB_PIPELINE_URL,
+    token: process.env.GITLAB_PIPELINE_TOKEN,
     ref: 'ci/cd'
   },
   github: {
     owner: 'reimagined',
     repo: 'resolve',
-    token: githubToken
+    token: process.env.GITHUB_RESOLVE_TOKEN
   }
 }).catch(error => {
   console.error(error)
