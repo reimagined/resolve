@@ -11,6 +11,7 @@ cache:
   untracked: true
   paths:
     - resolve-$CI_PIPELINE_ID
+    - node_modules
 
 prepare environment:
   stage: CI/CD
