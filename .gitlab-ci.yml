@@ -44,10 +44,11 @@ ubuntu (install):
   tags:
     - ubuntu
   only:
-    - triggers
-    - ci/cd
-    - variables:
-        - $TARGET_BRANCH_NAME == 'master'
+    refs:
+      - ci/cd
+    variables:
+      - $CI_PIPELINE_SOURCE == 'triggers'
+      - $TARGET_BRANCH_NAME == 'master'
   script:
     - rm -rf resolve-$CI_PIPELINE_ID || true
     - git clone https://github.com/reimagined/resolve.git resolve-$CI_PIPELINE_ID
