@@ -1,7 +1,6 @@
 stages:
   - CI/CD
   - install
-  - lint
   - unit-tests
   - functional-tests
   - integration-tests
@@ -26,7 +25,11 @@ macOS (install):
   only:
     - triggers
   script:
-    - ifconfig
+    - rm -rf resolve || true
+    - git clone https://github.com/reimagined/resolve.git resolve
+    - cd resolve
+    - git checkout $MERGE_COMMIT_SHA
+    - yarn
     
 ubuntu (install):
   stage: install
@@ -35,43 +38,32 @@ ubuntu (install):
   only:
     - triggers
   script:
-    - echo ubuntu
+    - rm -rf resolve || true
+    - git clone https://github.com/reimagined/resolve.git resolve
+    - cd resolve
+    - git checkout $MERGE_COMMIT_SHA
+    - yarn
 
 eslint:
-  stage: lint
-  tags:
-    - macos
+  stage: unit-tests
   only:
     - triggers
   script:
-    - echo eslint
+    - yarn lint
    
 prettier-check:
-  stage: lint
-  tags:
-    - macos
-  only:
-    - triggers
-  script:
-    - echo prettier-check
-    
-macOS (unit-tests):
   stage: unit-tests
-  tags:
-    - macos
   only:
     - triggers
   script:
-    - echo macos
+    - if [ "\$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
     
-ubuntu (unit-tests):
+unit-tests:
   stage: unit-tests
-  tags:
-    - ubuntu
   only:
     - triggers
   script:
-    - echo ubuntu
+    - yarn test
 
 macOS (functional-tests):
   stage: functional-tests
