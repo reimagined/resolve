@@ -47,7 +47,7 @@ ubuntu (install):
     refs:
       - ci/cd
     variables:
-      - $CI_PIPELINE_SOURCE == 'triggers'
+      - $CI_PIPELINE_SOURCE == 'trigger'
       - $TARGET_BRANCH_NAME == 'master'
   script:
     - rm -rf resolve-$CI_PIPELINE_ID || true
