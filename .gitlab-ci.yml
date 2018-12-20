@@ -7,6 +7,10 @@ stages:
   - create-resolve-app-tests
   - clear
 
+cache:
+  paths:
+    - resolve-$CI_PIPELINE_ID
+
 prepare environment:
   stage: CI/CD
   tags:
@@ -25,15 +29,12 @@ macOS (install):
   only:
     - triggers
   script:
-    - rm -rf resolve-$CI_RUNNER_DESCRIPTION || true
-    - git clone https://github.com/reimagined/resolve.git resolve-$CI_RUNNER_DESCRIPTION
-    - cd resolve-$CI_RUNNER_DESCRIPTION
+    - rm -rf resolve-$CI_PIPELINE_ID || true
+    - git clone https://github.com/reimagined/resolve.git resolve-$CI_PIPELINE_ID
+    - cd resolve-$CI_PIPELINE_ID
     - git fetch origin $MERGE_COMMIT_SHA:merge-commit
     - git checkout merge-commit
     - yarn
-  artifacts:
-    paths:
-      - resolve-$CI_RUNNER_DESCRIPTION/
 
 ubuntu (install):
   stage: install
@@ -42,15 +43,12 @@ ubuntu (install):
   only:
     - triggers
   script:
-    - rm -rf resolve-$CI_RUNNER_DESCRIPTION || true
-    - git clone https://github.com/reimagined/resolve.git resolve-$CI_RUNNER_DESCRIPTION
-    - cd resolve-$CI_RUNNER_DESCRIPTION
+    - rm -rf resolve-$CI_PIPELINE_ID || true
+    - git clone https://github.com/reimagined/resolve.git resolve-$CI_PIPELINE_ID
+    - cd resolve-$CI_PIPELINE_ID
     - git fetch origin $MERGE_COMMIT_SHA:merge-commit
     - git checkout merge-commit
     - yarn
-  artifacts:
-    paths:
-      - resolve-$CI_RUNNER_DESCRIPTION/
 
 eslint:
   stage: unit-tests
@@ -59,7 +57,7 @@ eslint:
   only:
     - triggers
   script:
-    - cd resolve-$CI_RUNNER_DESCRIPTION/
+    - cd resolve-$CI_PIPELINE_ID/
     - yarn lint
 
 prettier-check:
@@ -69,7 +67,7 @@ prettier-check:
   only:
     - triggers
   script:
-    - cd resolve-$CI_RUNNER_DESCRIPTION/
+    - cd resolve-$CI_PIPELINE_ID/
     - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
     
 unit-tests:
@@ -79,7 +77,7 @@ unit-tests:
   only:
     - triggers
   script:
-    - cd resolve-$CI_RUNNER_DESCRIPTION/
+    - cd resolve-$CI_PIPELINE_ID/
     - yarn test
 
 macOS (functional-tests):
@@ -89,7 +87,7 @@ macOS (functional-tests):
   only:
     - triggers
   script:
-    - cd resolve-$CI_RUNNER_DESCRIPTION/
+    - cd resolve-$CI_PIPELINE_ID/
     - yarn test:functional safari
     
 ubuntu (functional-tests):
@@ -99,7 +97,7 @@ ubuntu (functional-tests):
   only:
     - triggers
   script:
-    - cd resolve-$CI_RUNNER_DESCRIPTION/
+    - cd resolve-$CI_PIPELINE_ID/
     - DISPLAY=:0 yarn test:functional chromium
 
 bus:
