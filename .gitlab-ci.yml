@@ -16,6 +16,7 @@ cache:
     - resolve-$CI_PIPELINE_ID
     - ci-cd
     - .yarn-cache
+  policy: pull
 
 # CI/CD
 
@@ -27,6 +28,8 @@ prepare environment:
     - ci/cd
   except:
     - triggers
+  cache:
+    policy: pull-push
   script:
     - rm -rf ci-cd || true
     - git clone https://github.com/reimagined/resolve.git ci-cd
@@ -50,6 +53,8 @@ macOS (install):
       - $CI_PIPELINE_TRIGGERED
       - $SOURCE_BRANCH_NAME == 'dev'
       - $TARGET_BRANCH_NAME == 'master'
+  cache:
+    policy: pull-push
   script:
     - rm -rf resolve-$CI_PIPELINE_ID || true
     - git clone https://github.com/reimagined/resolve.git resolve-$CI_PIPELINE_ID
@@ -67,6 +72,8 @@ ubuntu (install):
       - $CI_PIPELINE_TRIGGERED
       - $SOURCE_BRANCH_NAME == 'dev'
       - $TARGET_BRANCH_NAME == 'master'
+  cache:
+    policy: pull-push
   script:
     - rm -rf resolve-$CI_PIPELINE_ID || true
     - git clone https://github.com/reimagined/resolve.git resolve-$CI_PIPELINE_ID
