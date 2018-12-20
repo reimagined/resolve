@@ -17,9 +17,10 @@ prepare environment:
   stage: CI/CD
   tags:
     - ubuntu
+  only:
+    - ci/cd
   except:
     - triggers
-    - ci/cd
   script:
     - yarn
     - pm2 delete trigger-on-pull-request || true
@@ -31,7 +32,6 @@ macOS (install):
     - macos
   only:
     - triggers
-    - ci/cd
   script:
     - echo CI_PIPELINE_TRIGGERED $CI_PIPELINE_TRIGGERED
     - echo TARGET_BRANCH_NAME $TARGET_BRANCH_NAME
@@ -47,8 +47,6 @@ ubuntu (install):
   tags:
     - ubuntu
   only:
-    refs:
-      - ci/cd
     variables:
       - $CI_PIPELINE_TRIGGERED
       - $TARGET_BRANCH_NAME == 'master'
@@ -66,7 +64,6 @@ eslint:
     - any
   only:
     - triggers
-    - ci/cd
   script:
     - cd resolve-$CI_PIPELINE_ID/
     - yarn lint
@@ -77,7 +74,6 @@ prettier-check:
     - any
   only:
     - triggers
-    - ci/cd
   script:
     - cd resolve-$CI_PIPELINE_ID/
     - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
@@ -88,7 +84,6 @@ unit-tests:
     - any
   only:
     - triggers
-    - ci/cd
   script:
     - cd resolve-$CI_PIPELINE_ID/
     - yarn test
@@ -99,7 +94,6 @@ macOS (functional-tests):
     - macos
   only:
     - triggers
-    - ci/cd
   script:
     - cd resolve-$CI_PIPELINE_ID/
     - yarn test:functional safari
@@ -110,7 +104,6 @@ ubuntu (functional-tests):
     - ubuntu
   only:
     - triggers
-    - ci/cd
   script:
     - cd resolve-$CI_PIPELINE_ID/
     - DISPLAY=:0 yarn test:functional chromium
@@ -121,7 +114,6 @@ bus:
     - ubuntu
   only:
     - triggers
-    - ci/cd
   script:
     - echo "(memory, rabbitmq, zeromq)"
 
@@ -131,7 +123,6 @@ storage:
     - ubuntu
   only:
     - triggers
-    - ci/cd
   script:
     - echo "(memory, mongodb, mysql, dynamodb)"
     
@@ -141,7 +132,6 @@ readmodel-adapter:
     - ubuntu
   only:
     - triggers
-    - ci/cd
   script:
     - echo "(memory, mongodb, mysql)"
     
@@ -151,7 +141,6 @@ subscribe-adapters:
     - ubuntu
   only:
     - triggers
-    - ci/cd
   script:
     - echo "(mqtt, socket.io)"
     
@@ -161,7 +150,6 @@ macOS (npx):
     - macos
   only:
     - triggers
-    - ci/cd
   script:
     - echo npx
 
@@ -171,7 +159,6 @@ ubuntu (npx):
     - ubuntu
   only:
     - triggers
-    - ci/cd
   script:
     - echo npx
 
@@ -181,7 +168,6 @@ macOS (yarn):
     - macos
   only:
     - triggers
-    - ci/cd
   script:
     - echo yarn
     
@@ -191,7 +177,6 @@ ubuntu (yarn):
     - ubuntu
   only:
     - triggers
-    - ci/cd
   script:
     - echo yarn
 
@@ -201,7 +186,6 @@ macOS (clear):
     - macos
   only:
     - triggers
-    - ci/cd
   script:
     - echo macos
     
@@ -211,6 +195,5 @@ ubuntu (clear):
     - ubuntu
   only:
     - triggers
-    - ci/cd
   script:
     - echo ubuntu
