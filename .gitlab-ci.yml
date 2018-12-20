@@ -25,15 +25,15 @@ macOS (install):
   only:
     - triggers
   script:
-    - rm -rf resolve || true
+    - rm -rf resolve-$CI_RUNNER_DESCRIPTION || true
     - git clone https://github.com/reimagined/resolve.git resolve
-    - cd resolve
+    - cd resolve-$CI_RUNNER_DESCRIPTION
     - git fetch origin $MERGE_COMMIT_SHA:merge-commit
     - git checkout merge-commit
     - yarn
   artifacts:
     paths:
-      - resolve/
+      - resolve-$CI_RUNNER_DESCRIPTION/
 
 ubuntu (install):
   stage: install
@@ -42,15 +42,15 @@ ubuntu (install):
   only:
     - triggers
   script:
-    - rm -rf resolve || true
+    - rm -rf resolve-$CI_RUNNER_DESCRIPTION || true
     - git clone https://github.com/reimagined/resolve.git resolve
-    - cd resolve
+    - cd resolve-$CI_RUNNER_DESCRIPTION
     - git fetch origin $MERGE_COMMIT_SHA:merge-commit
     - git checkout merge-commit
     - yarn
   artifacts:
     paths:
-      - resolve/
+      - resolve-$CI_RUNNER_DESCRIPTION/
 
 eslint:
   stage: unit-tests
@@ -60,7 +60,7 @@ eslint:
     - triggers
   script:
     - ls
-    - cd resolve
+    - cd resolve-$CI_RUNNER_DESCRIPTION/
     - yarn lint
 
 prettier-check:
@@ -71,7 +71,7 @@ prettier-check:
     - triggers
   script:
     - ls
-    - cd resolve
+    - cd resolve-$CI_RUNNER_DESCRIPTION/
     - if [ "\$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
     
 unit-tests:
@@ -82,7 +82,7 @@ unit-tests:
     - triggers
   script:
     - ls
-    - cd resolve
+    - cd resolve-$CI_RUNNER_DESCRIPTION/
     - yarn test
 
 macOS (functional-tests):
