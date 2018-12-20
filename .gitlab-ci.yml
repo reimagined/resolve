@@ -59,7 +59,6 @@ eslint:
   only:
     - triggers
   script:
-    - ls
     - cd resolve-$CI_RUNNER_DESCRIPTION/
     - yarn lint
 
@@ -70,9 +69,8 @@ prettier-check:
   only:
     - triggers
   script:
-    - ls
     - cd resolve-$CI_RUNNER_DESCRIPTION/
-    - if [ "\$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
+    - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
     
 unit-tests:
   stage: unit-tests
@@ -81,7 +79,6 @@ unit-tests:
   only:
     - triggers
   script:
-    - ls
     - cd resolve-$CI_RUNNER_DESCRIPTION/
     - yarn test
 
@@ -92,7 +89,8 @@ macOS (functional-tests):
   only:
     - triggers
   script:
-    - echo macos
+    - cd resolve-$CI_RUNNER_DESCRIPTION/
+    - yarn test:functional
     
 ubuntu (functional-tests):
   stage: functional-tests
@@ -101,7 +99,8 @@ ubuntu (functional-tests):
   only:
     - triggers
   script:
-    - echo ubuntu
+    - cd resolve-$CI_RUNNER_DESCRIPTION/
+    - yarn test:functional
 
 bus:
   stage: integration-tests
