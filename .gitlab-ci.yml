@@ -90,7 +90,7 @@ macOS (functional-tests):
     - triggers
   script:
     - cd resolve-$CI_RUNNER_DESCRIPTION/
-    - yarn test:functional
+    - yarn test:functional safari
     
 ubuntu (functional-tests):
   stage: functional-tests
@@ -100,7 +100,7 @@ ubuntu (functional-tests):
     - triggers
   script:
     - cd resolve-$CI_RUNNER_DESCRIPTION/
-    - yarn test:functional
+    - yarn test:functional chromium
 
 bus:
   stage: integration-tests
