@@ -28,7 +28,8 @@ macOS (install):
     - rm -rf resolve || true
     - git clone https://github.com/reimagined/resolve.git resolve
     - cd resolve
-    - git checkout $MERGE_COMMIT_SHA
+    - git fetch origin $MERGE_COMMIT_SHA:merge-commit
+    - git checkout merge-commit
     - yarn
     
 ubuntu (install):
@@ -41,7 +42,8 @@ ubuntu (install):
     - rm -rf resolve || true
     - git clone https://github.com/reimagined/resolve.git resolve
     - cd resolve
-    - git checkout $MERGE_COMMIT_SHA
+    - git fetch origin $MERGE_COMMIT_SHA:merge-commit
+    - git checkout merge-commit
     - yarn
 
 eslint:
