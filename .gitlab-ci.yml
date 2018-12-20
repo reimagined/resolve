@@ -32,7 +32,7 @@ macOS (install):
     - triggers
     - ci/cd
   script:
-    - echo CI_PIPELINE_SOURCE $CI_PIPELINE_SOURCE
+    - echo CI_PIPELINE_TRIGGERED $CI_PIPELINE_TRIGGERED
     - echo TARGET_BRANCH_NAME $TARGET_BRANCH_NAME
     - rm -rf resolve-$CI_PIPELINE_ID || true
     - git clone https://github.com/reimagined/resolve.git resolve-$CI_PIPELINE_ID
@@ -49,7 +49,7 @@ ubuntu (install):
     refs:
       - ci/cd
     variables:
-      - $CI_PIPELINE_SOURCE == 'trigger'
+      - $CI_PIPELINE_TRIGGERED
       - $TARGET_BRANCH_NAME == 'master'
   script:
     - rm -rf resolve-$CI_PIPELINE_ID || true
