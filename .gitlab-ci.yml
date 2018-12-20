@@ -100,7 +100,7 @@ ubuntu (functional-tests):
     - triggers
   script:
     - cd resolve-$CI_RUNNER_DESCRIPTION/
-    - yarn test:functional chromium
+    - DISPLAY=:0 yarn test:functional chromium
 
 bus:
   stage: integration-tests
