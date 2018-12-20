@@ -7,10 +7,6 @@ stages:
   - create-resolve-app-tests
   - clear
 
-cache:
-  paths:
-    - resolve-$CI_PIPELINE_ID
-
 prepare environment:
   stage: CI/CD
   tags:
@@ -29,13 +25,16 @@ macOS (install):
   only:
     - triggers
   script:
-    - rm -rf resolve-$CI_PIPELINE_ID || true
-    - git clone https://github.com/reimagined/resolve.git resolve-$CI_PIPELINE_ID
-    - cd resolve-$CI_PIPELINE_ID
+    - rm -rf resolve || true
+    - git clone https://github.com/reimagined/resolve.git resolve
+    - cd resolve
     - git fetch origin $MERGE_COMMIT_SHA:merge-commit
     - git checkout merge-commit
     - yarn
-    
+  artifacts:
+    paths:
+      - resolve/
+
 ubuntu (install):
   stage: install
   tags:
@@ -43,12 +42,15 @@ ubuntu (install):
   only:
     - triggers
   script:
-    - rm -rf resolve-$CI_PIPELINE_ID || true
-    - git clone https://github.com/reimagined/resolve.git resolve-$CI_PIPELINE_ID
-    - cd resolve-$CI_PIPELINE_ID
+    - rm -rf resolve || true
+    - git clone https://github.com/reimagined/resolve.git resolve
+    - cd resolve
     - git fetch origin $MERGE_COMMIT_SHA:merge-commit
     - git checkout merge-commit
     - yarn
+  artifacts:
+    paths:
+      - resolve/
 
 eslint:
   stage: unit-tests
@@ -58,7 +60,7 @@ eslint:
     - triggers
   script:
     - ls
-    - cd resolve-$CI_PIPELINE_ID
+    - cd resolve
     - yarn lint
 
 prettier-check:
@@ -69,6 +71,7 @@ prettier-check:
     - triggers
   script:
     - ls
+    - cd resolve
     - if [ "\$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
     
 unit-tests:
@@ -79,6 +82,7 @@ unit-tests:
     - triggers
   script:
     - ls
+    - cd resolve
     - yarn test
 
 macOS (functional-tests):
