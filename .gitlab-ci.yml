@@ -32,6 +32,8 @@ macOS (install):
     - triggers
     - ci/cd
   script:
+    - echo CI_PIPELINE_SOURCE $CI_PIPELINE_SOURCE
+    - echo TARGET_BRANCH_NAME $TARGET_BRANCH_NAME
     - rm -rf resolve-$CI_PIPELINE_ID || true
     - git clone https://github.com/reimagined/resolve.git resolve-$CI_PIPELINE_ID
     - cd resolve-$CI_PIPELINE_ID
