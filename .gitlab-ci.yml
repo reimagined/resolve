@@ -14,7 +14,8 @@ cache:
   untracked: true
   paths:
     - resolve-$CI_PIPELINE_ID
-    - node_modules
+    - ci-cd
+    - .yarn-cache
 
 prepare environment:
   stage: CI/CD
@@ -24,10 +25,13 @@ prepare environment:
     - ci/cd
   except:
     - triggers
-  variables:
-    GIT_STRATEGY: clone
   script:
-    - yarn
+    - rm -rf ci-cd || true
+    - git clone https://github.com/reimagined/resolve.git ci-cd
+    - cd ci-cd
+    - git fetch origin ci/cd:ci/cd
+    - git checkout ci/cd
+    - yarn install --frozen-lockfile --cache-folder .yarn-cache
     - pm2 delete trigger-on-pull-request || true
     - pm2 start trigger-on-pull-request/index.js --name trigger-on-pull-request
 
@@ -38,14 +42,12 @@ macOS (install):
   only:
     - triggers
   script:
-    - echo CI_PIPELINE_TRIGGERED $CI_PIPELINE_TRIGGERED
-    - echo TARGET_BRANCH_NAME $TARGET_BRANCH_NAME
     - rm -rf resolve-$CI_PIPELINE_ID || true
     - git clone https://github.com/reimagined/resolve.git resolve-$CI_PIPELINE_ID
     - cd resolve-$CI_PIPELINE_ID
     - git fetch origin $MERGE_COMMIT_SHA:merge-commit
     - git checkout merge-commit
-    - yarn
+    - yarn install --frozen-lockfile --cache-folder .yarn-cache
 
 ubuntu (install):
   stage: install
@@ -61,7 +63,7 @@ ubuntu (install):
     - cd resolve-$CI_PIPELINE_ID
     - git fetch origin $MERGE_COMMIT_SHA:merge-commit
     - git checkout merge-commit
-    - yarn
+    - yarn install --frozen-lockfile --cache-folder .yarn-cache
 
 eslint:
   stage: unit-tests
