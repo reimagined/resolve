@@ -17,6 +17,8 @@ cache:
     - ci-cd
     - .yarn-cache
 
+# CI/CD
+
 prepare environment:
   stage: CI/CD
   tags:
@@ -35,12 +37,19 @@ prepare environment:
     - pm2 delete trigger-on-pull-request || true
     - pm2 start trigger-on-pull-request/index.js --name trigger-on-pull-request
 
+# pull request -> dev
+
+# dev -> master
+
 macOS (install):
   stage: install
   tags:
     - macos
   only:
-    - triggers
+    variables:
+      - $CI_PIPELINE_TRIGGERED
+      - $SOURCE_BRANCH_NAME == 'dev'
+      - $TARGET_BRANCH_NAME == 'master'
   script:
     - rm -rf resolve-$CI_PIPELINE_ID || true
     - git clone https://github.com/reimagined/resolve.git resolve-$CI_PIPELINE_ID
@@ -56,6 +65,7 @@ ubuntu (install):
   only:
     variables:
       - $CI_PIPELINE_TRIGGERED
+      - $SOURCE_BRANCH_NAME == 'dev'
       - $TARGET_BRANCH_NAME == 'master'
   script:
     - rm -rf resolve-$CI_PIPELINE_ID || true
@@ -70,7 +80,10 @@ eslint:
   tags:
     - any
   only:
-    - triggers
+    variables:
+      - $CI_PIPELINE_TRIGGERED
+      - $SOURCE_BRANCH_NAME == 'dev'
+      - $TARGET_BRANCH_NAME == 'master'
   script:
     - cd resolve-$CI_PIPELINE_ID/
     - yarn lint
@@ -80,7 +93,10 @@ prettier-check:
   tags:
     - any
   only:
-    - triggers
+    variables:
+      - $CI_PIPELINE_TRIGGERED
+      - $SOURCE_BRANCH_NAME == 'dev'
+      - $TARGET_BRANCH_NAME == 'master'
   script:
     - cd resolve-$CI_PIPELINE_ID/
     - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
@@ -90,7 +106,10 @@ unit-tests:
   tags:
     - any
   only:
-    - triggers
+    variables:
+      - $CI_PIPELINE_TRIGGERED
+      - $SOURCE_BRANCH_NAME == 'dev'
+      - $TARGET_BRANCH_NAME == 'master'
   script:
     - cd resolve-$CI_PIPELINE_ID/
     - yarn test
@@ -100,7 +119,10 @@ macOS (functional-tests):
   tags:
     - macos
   only:
-    - triggers
+    variables:
+      - $CI_PIPELINE_TRIGGERED
+      - $SOURCE_BRANCH_NAME == 'dev'
+      - $TARGET_BRANCH_NAME == 'master'
   script:
     - cd resolve-$CI_PIPELINE_ID/
     - yarn test:functional safari
@@ -110,7 +132,10 @@ ubuntu (functional-tests):
   tags:
     - ubuntu
   only:
-    - triggers
+    variables:
+      - $CI_PIPELINE_TRIGGERED
+      - $SOURCE_BRANCH_NAME == 'dev'
+      - $TARGET_BRANCH_NAME == 'master'
   script:
     - cd resolve-$CI_PIPELINE_ID/
     - DISPLAY=:0 yarn test:functional chromium
@@ -120,7 +145,10 @@ bus:
   tags:
     - ubuntu
   only:
-    - triggers
+    variables:
+      - $CI_PIPELINE_TRIGGERED
+      - $SOURCE_BRANCH_NAME == 'dev'
+      - $TARGET_BRANCH_NAME == 'master'
   script:
     - echo "(memory, rabbitmq, zeromq)"
 
@@ -129,7 +157,10 @@ storage:
   tags:
     - ubuntu
   only:
-    - triggers
+    variables:
+      - $CI_PIPELINE_TRIGGERED
+      - $SOURCE_BRANCH_NAME == 'dev'
+      - $TARGET_BRANCH_NAME == 'master'
   script:
     - echo "(memory, mongodb, mysql, dynamodb)"
     
@@ -138,7 +169,10 @@ readmodel-adapter:
   tags:
     - ubuntu
   only:
-    - triggers
+    variables:
+      - $CI_PIPELINE_TRIGGERED
+      - $SOURCE_BRANCH_NAME == 'dev'
+      - $TARGET_BRANCH_NAME == 'master'
   script:
     - echo "(memory, mongodb, mysql)"
     
@@ -147,7 +181,10 @@ subscribe-adapters:
   tags:
     - ubuntu
   only:
-    - triggers
+    variables:
+      - $CI_PIPELINE_TRIGGERED
+      - $SOURCE_BRANCH_NAME == 'dev'
+      - $TARGET_BRANCH_NAME == 'master'
   script:
     - echo "(mqtt, socket.io)"
     
@@ -156,7 +193,10 @@ macOS (npx):
   tags:
     - macos
   only:
-    - triggers
+    variables:
+      - $CI_PIPELINE_TRIGGERED
+      - $SOURCE_BRANCH_NAME == 'dev'
+      - $TARGET_BRANCH_NAME == 'master'
   script:
     - echo npx
 
@@ -165,7 +205,10 @@ ubuntu (npx):
   tags:
     - ubuntu
   only:
-    - triggers
+    variables:
+      - $CI_PIPELINE_TRIGGERED
+      - $SOURCE_BRANCH_NAME == 'dev'
+      - $TARGET_BRANCH_NAME == 'master'
   script:
     - echo npx
 
@@ -174,7 +217,10 @@ macOS (yarn):
   tags:
     - macos
   only:
-    - triggers
+    variables:
+      - $CI_PIPELINE_TRIGGERED
+      - $SOURCE_BRANCH_NAME == 'dev'
+      - $TARGET_BRANCH_NAME == 'master'
   script:
     - echo yarn
     
@@ -183,7 +229,10 @@ ubuntu (yarn):
   tags:
     - ubuntu
   only:
-    - triggers
+    variables:
+      - $CI_PIPELINE_TRIGGERED
+      - $SOURCE_BRANCH_NAME == 'dev'
+      - $TARGET_BRANCH_NAME == 'master'
   script:
     - echo yarn
 
@@ -192,7 +241,10 @@ macOS (clear):
   tags:
     - macos
   only:
-    - triggers
+    variables:
+      - $CI_PIPELINE_TRIGGERED
+      - $SOURCE_BRANCH_NAME == 'dev'
+      - $TARGET_BRANCH_NAME == 'master'
   script:
     - echo macos
     
@@ -201,6 +253,9 @@ ubuntu (clear):
   tags:
     - ubuntu
   only:
-    - triggers
+    variables:
+      - $CI_PIPELINE_TRIGGERED
+      - $SOURCE_BRANCH_NAME == 'dev'
+      - $TARGET_BRANCH_NAME == 'master'
   script:
     - echo ubuntu

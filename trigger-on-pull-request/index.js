@@ -6,9 +6,6 @@ const triggers = {}
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 async function main({ gitlab, github, refreshTime }) {
-  console.log(JSON.stringify(process.env, null, 2))
-  console.log(JSON.stringify({ gitlab, github, refreshTime }, null, 2))
-
   octokit.authenticate({
     type: 'token',
     token: github.token
@@ -27,17 +24,6 @@ async function main({ gitlab, github, refreshTime }) {
         prevMergeCommitSha !== pullRequest.merge_commit_sha
       ) {
         triggers[pullRequest.number] = pullRequest.merge_commit_sha
-        
-        console.log({
-          PULL_REQUEST_NAME: `${pullRequest.title}`,
-          PULL_REQUEST_NUMBER: `${pullRequest.number}`,
-          MERGE_COMMIT_SHA: `${pullRequest.merge_commit_sha}`,
-          SOURCE_BRANCH_NAME: `${pullRequest.head.ref}`,
-          SOURCE_BRANCH_SHA: `${pullRequest.head.sha}`,
-          TARGET_BRANCH_NAME: `${pullRequest.base.ref}`,
-          TARGET_BRANCH_SHA: `${pullRequest.base.sha}`
-        })
-        console.log(pullRequest)
 
         request(
           {
