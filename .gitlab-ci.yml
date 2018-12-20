@@ -7,6 +7,9 @@ stages:
   - create-resolve-app-tests
   - clear
 
+variables:
+  GIT_STRATEGY: none
+
 cache:
   untracked: true
   paths:
@@ -21,6 +24,8 @@ prepare environment:
     - ci/cd
   except:
     - triggers
+  variables:
+    GIT_STRATEGY: clone
   script:
     - yarn
     - pm2 delete trigger-on-pull-request || true
