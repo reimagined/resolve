@@ -26,7 +26,7 @@ macOS (install):
     - triggers
   script:
     - rm -rf resolve-$CI_RUNNER_DESCRIPTION || true
-    - git clone https://github.com/reimagined/resolve.git resolve
+    - git clone https://github.com/reimagined/resolve.git resolve-$CI_RUNNER_DESCRIPTION
     - cd resolve-$CI_RUNNER_DESCRIPTION
     - git fetch origin $MERGE_COMMIT_SHA:merge-commit
     - git checkout merge-commit
@@ -43,7 +43,7 @@ ubuntu (install):
     - triggers
   script:
     - rm -rf resolve-$CI_RUNNER_DESCRIPTION || true
-    - git clone https://github.com/reimagined/resolve.git resolve
+    - git clone https://github.com/reimagined/resolve.git resolve-$CI_RUNNER_DESCRIPTION
     - cd resolve-$CI_RUNNER_DESCRIPTION
     - git fetch origin $MERGE_COMMIT_SHA:merge-commit
     - git checkout merge-commit
