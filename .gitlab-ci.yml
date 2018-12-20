@@ -48,6 +48,9 @@ ubuntu (install):
 
 eslint:
   stage: unit-tests
+  tags:
+    - macos
+    - ubuntu
   only:
     - triggers
   script:
@@ -55,6 +58,9 @@ eslint:
    
 prettier-check:
   stage: unit-tests
+  tags:
+    - macos
+    - ubuntu
   only:
     - triggers
   script:
@@ -62,6 +68,9 @@ prettier-check:
     
 unit-tests:
   stage: unit-tests
+  tags:
+    - macos
+    - ubuntu
   only:
     - triggers
   script:
