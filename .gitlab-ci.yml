@@ -53,8 +53,9 @@ eslint:
   only:
     - triggers
   script:
+    - ls
     - yarn lint
-   
+
 prettier-check:
   stage: unit-tests
   tags:
@@ -62,6 +63,7 @@ prettier-check:
   only:
     - triggers
   script:
+    - ls
     - if [ "\$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
     
 unit-tests:
@@ -71,6 +73,7 @@ unit-tests:
   only:
     - triggers
   script:
+    - ls
     - yarn test
 
 macOS (functional-tests):
