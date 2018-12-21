@@ -1298,6 +1298,8 @@ Modify the ShoppingLists Read Model projection:
 
 ### Modify the Frontend
 
+#### Update Components
+
 Removing shopping List:
 
 ```js
@@ -1324,10 +1326,52 @@ const { lists, createShoppingList, removeShoppingList } = this.props
 <ShoppingLists lists={lists} removeShoppingList={removeShoppingList} />
 ```
 
-Update the optimistic update code:
+#### Update the optimistic update code
+
+Actions:
 
 ```js
-//
+...
+export const OPTIMISTIC_REMOVE_SHOPPING_LIST = 'OPTIMISTIC_REMOVE_SHOPPING_LIST'
+```
+
+Reducer:
+
+```js
+import { LOCATION_CHANGE } from 'react-router-redux'
+...
+
+  switch (action.type) {
+    case LOCATION_CHANGE: {
+      return []
+    }
+    case OPTIMISTIC_REMOVE_SHOPPING_LIST: {
+      return state.filter(item => {
+        return item.id !== action.payload.id
+      })
+    }
+    ...
+  }
+```
+
+Middleware:
+
+```js
+const optimistic_shopping_lists_middleware = store => next => action => {
+  if (
+    action.type === SEND_COMMAND_SUCCESS &&
+    action.commandType === 'removeShoppingList'
+  ) {
+    store.dispatch({
+      type: OPTIMISTIC_REMOVE_SHOPPING_LIST,
+      payload: {
+        id: action.aggregateId
+      }
+    })
+  }
+
+  next(action)
+}
 ```
 
 Static/Styles.css
