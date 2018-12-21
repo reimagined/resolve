@@ -1298,24 +1298,22 @@ Modify the ShoppingLists Read Model projection:
 
 ### Modify the Frontend
 
-#### Provide Static Content
+#### Add Static Content
 
 Add the required static content to the application's **static** folder. The example application uses the following static files:
 
-- Styles.css - Contains custom styles used by the application's client components.
-- The fontawesome.min.css file an the webfonts folder - The Font Awesome distribution.
-- close-button.png - An icon used in UI to remove shopping list items.
+- The Styles.css file - Contains custom styles used by the application's client components.
+- The fontawesome.min.css file an the webfonts folder - The standard Font Awesome distribution.
+- The close-button.png image - An icon displayed by the button used to remove shopping list items.
 
 #### Update Components
 
-Removing shopping List:
+Removing shopping lists:
 
 ```js
 <th className="example-table-action">Action</th>
 ...
 
-
-//
 <td className="example-table-action">
   <Button
     onClick={() => {
@@ -1332,6 +1330,89 @@ Removing shopping List:
 const { lists, createShoppingList, removeShoppingList } = this.props
 ...
 <ShoppingLists lists={lists} removeShoppingList={removeShoppingList} />
+```
+
+Renaming shopping lists:
+
+```js
+state = {
+  shoppingListName: this.props.data && this.props.data.name
+  ...
+}
+
+renameShoppingList = () => {
+  this.props.renameShoppingList(this.props.aggregateId, {
+    name: this.state.shoppingListName
+  })
+}
+
+onShoppingListNamePressEnter = event => {
+  if (event.charCode === 13) {
+    event.preventDefault()
+    this.renameShoppingList()
+  }
+}
+
+  updateShoppingListName = event => {
+    this.setState({
+      shoppingListName: event.target.value
+    })
+  }
+
+
+<FormControl
+  type="text"
+  value={this.state.shoppingListName}
+  onChange={this.updateShoppingListName}
+  onKeyPress={this.onShoppingListNamePressEnter}
+  onBlur={this.renameShoppingList}
+/>
+```
+
+Removing list items:
+
+```js
+const {
+  ...
+  removeShoppingItem
+} = this.props
+
+<Image
+  className="example-close-button"
+  src="/close-button.png"
+  onClick={removeShoppingItem.bind(null, aggregateId, {
+    id: todo.id
+  })}
+/>
+```
+
+The **Image** component implementation:
+
+```js
+import { Image as BootstrapImage } from 'react-bootstrap'
+import { connectStaticBasedUrls } from 'resolve-redux'
+
+const Image = connectStaticBasedUrls(['src'])(BootstrapImage)
+
+export default Image
+```
+
+Linking stylesheets:
+
+```js
+<Helmet>
+  {css.map((href, index) => (
+    <link rel="stylesheet" href={href} key={index} />
+  ))}
+  ...
+</Helmet>
+```
+
+```js
+<Header
+  css={['/fontawesome.min.css', '/style.css', ...]}
+  ...
+/>
 ```
 
 #### Update the Optimistic Update Code
