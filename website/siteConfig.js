@@ -12,7 +12,7 @@ const GITHUB_URL = 'https://github.com/reimagined/resolve'
 
 const siteConfig = {
   title: 'reSolve', // Title for your website.
-  tagline: 'Full stack CQRS, DDD, event sourcing JavaScript framework',
+  tagline: 'Full stack CQRS, DDD, Event Sourcing JavaScript framework',
   url: 'https://reimagined.github.io', // Your website URL
   baseUrl: '/resolve/', // Base URL for your project */
 
