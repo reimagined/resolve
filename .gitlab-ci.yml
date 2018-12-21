@@ -4,8 +4,6 @@ stages:
   - unit-tests
   - functional-tests
   - integration-tests
-  - create-resolve-app-tests
-  - clear
 
 variables:
   GIT_STRATEGY: none
@@ -18,7 +16,9 @@ cache:
     - .yarn-cache
   policy: pull
 
-# CI/CD
+###############
+# CI/CD setup #
+###############
 
 prepare environment:
   stage: CI/CD
@@ -40,9 +40,65 @@ prepare environment:
     - pm2 delete trigger-on-pull-request || true
     - pm2 start trigger-on-pull-request/index.js --name trigger-on-pull-request
 
-# pull request -> dev
+#######################
+# pull request -> dev #
+#######################
 
-# dev -> master
+install:
+  stage: install
+  tags:
+    - macos
+  only:
+    variables:
+      - $CI_PIPELINE_TRIGGERED == 'true'
+      - $SOURCE_BRANCH_NAME =~ /^feature\/.+/
+      - $TARGET_BRANCH_NAME == 'dev'
+  cache:
+    policy: pull-push
+  script:
+    - rm -rf resolve-$CI_PIPELINE_ID || true
+    - git clone https://github.com/reimagined/resolve.git resolve-$CI_PIPELINE_ID
+    - cd resolve-$CI_PIPELINE_ID
+    - git fetch origin $MERGE_COMMIT_SHA:merge-commit
+    - git checkout merge-commit
+    - yarn install --frozen-lockfile --cache-folder .yarn-cache
+
+checks:
+  stage: unit-tests
+  tags:
+    - macos
+  only:
+    variables:
+      - $CI_PIPELINE_TRIGGERED == 'true'
+      - $SOURCE_BRANCH_NAME =~ /^feature\/.+/
+      - $TARGET_BRANCH_NAME == 'dev'
+  cache:
+    policy: pull
+  script:
+    - cd resolve-$CI_PIPELINE_ID/
+    - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
+    - yarn test
+    - yarn lint
+
+functional-tests:
+  stage: unit-tests
+  tags:
+    - macos
+  only:
+    variables:
+      - $CI_PIPELINE_TRIGGERED == 'true'
+      - $SOURCE_BRANCH_NAME =~ /^feature\/.+/
+      - $TARGET_BRANCH_NAME == 'dev'
+  cache:
+    policy: pull
+  script:
+    - cd resolve-$CI_PIPELINE_ID/
+    - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
+    - yarn test:functional safari
+
+#################
+# dev -> master #
+#################
 
 macOS (install):
   stage: install
@@ -50,7 +106,7 @@ macOS (install):
     - macos
   only:
     variables:
-      - $CI_PIPELINE_TRIGGERED
+      - $CI_PIPELINE_TRIGGERED == 'true'
       - $SOURCE_BRANCH_NAME == 'dev'
       - $TARGET_BRANCH_NAME == 'master'
   cache:
@@ -69,7 +125,7 @@ ubuntu (install):
     - ubuntu
   only:
     variables:
-      - $CI_PIPELINE_TRIGGERED
+      - $CI_PIPELINE_TRIGGERED == 'true'
       - $SOURCE_BRANCH_NAME == 'dev'
       - $TARGET_BRANCH_NAME == 'master'
   cache:
@@ -82,39 +138,27 @@ ubuntu (install):
     - git checkout merge-commit
     - yarn install --frozen-lockfile --cache-folder .yarn-cache
 
-eslint:
+eslint + prettier:
   stage: unit-tests
   tags:
     - any
   only:
     variables:
-      - $CI_PIPELINE_TRIGGERED
-      - $SOURCE_BRANCH_NAME == 'dev'
-      - $TARGET_BRANCH_NAME == 'master'
-  script:
-    - cd resolve-$CI_PIPELINE_ID/
-    - yarn lint
-
-prettier-check:
-  stage: unit-tests
-  tags:
-    - any
-  only:
-    variables:
-      - $CI_PIPELINE_TRIGGERED
+      - $CI_PIPELINE_TRIGGERED == 'true'
       - $SOURCE_BRANCH_NAME == 'dev'
       - $TARGET_BRANCH_NAME == 'master'
   script:
     - cd resolve-$CI_PIPELINE_ID/
     - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
-    
+    - yarn lint
+
 unit-tests:
   stage: unit-tests
   tags:
     - any
   only:
     variables:
-      - $CI_PIPELINE_TRIGGERED
+      - $CI_PIPELINE_TRIGGERED == 'true'
       - $SOURCE_BRANCH_NAME == 'dev'
       - $TARGET_BRANCH_NAME == 'master'
   script:
@@ -127,7 +171,7 @@ macOS (functional-tests):
     - macos
   only:
     variables:
-      - $CI_PIPELINE_TRIGGERED
+      - $CI_PIPELINE_TRIGGERED == 'true'
       - $SOURCE_BRANCH_NAME == 'dev'
       - $TARGET_BRANCH_NAME == 'master'
   script:
@@ -140,129 +184,45 @@ ubuntu (functional-tests):
     - ubuntu
   only:
     variables:
-      - $CI_PIPELINE_TRIGGERED
+      - $CI_PIPELINE_TRIGGERED == 'true'
       - $SOURCE_BRANCH_NAME == 'dev'
       - $TARGET_BRANCH_NAME == 'master'
   script:
     - cd resolve-$CI_PIPELINE_ID/
     - DISPLAY=:0 yarn test:functional chromium
 
-bus:
+ubuntu (integration-tests):
   stage: integration-tests
   tags:
     - ubuntu
   only:
     variables:
-      - $CI_PIPELINE_TRIGGERED
+      - $CI_PIPELINE_TRIGGERED == 'true'
       - $SOURCE_BRANCH_NAME == 'dev'
       - $TARGET_BRANCH_NAME == 'master'
   script:
     - echo "(memory, rabbitmq, zeromq)"
 
-storage:
+macOS (create-resolve-app):
   stage: integration-tests
-  tags:
-    - ubuntu
-  only:
-    variables:
-      - $CI_PIPELINE_TRIGGERED
-      - $SOURCE_BRANCH_NAME == 'dev'
-      - $TARGET_BRANCH_NAME == 'master'
-  script:
-    - echo "(memory, mongodb, mysql, dynamodb)"
-    
-readmodel-adapter:
-  stage: integration-tests
-  tags:
-    - ubuntu
-  only:
-    variables:
-      - $CI_PIPELINE_TRIGGERED
-      - $SOURCE_BRANCH_NAME == 'dev'
-      - $TARGET_BRANCH_NAME == 'master'
-  script:
-    - echo "(memory, mongodb, mysql)"
-    
-subscribe-adapters:
-  stage: integration-tests
-  tags:
-    - ubuntu
-  only:
-    variables:
-      - $CI_PIPELINE_TRIGGERED
-      - $SOURCE_BRANCH_NAME == 'dev'
-      - $TARGET_BRANCH_NAME == 'master'
-  script:
-    - echo "(mqtt, socket.io)"
-    
-macOS (npx):
-  stage: create-resolve-app-tests
   tags:
     - macos
   only:
     variables:
-      - $CI_PIPELINE_TRIGGERED
+      - $CI_PIPELINE_TRIGGERED == 'true'
       - $SOURCE_BRANCH_NAME == 'dev'
       - $TARGET_BRANCH_NAME == 'master'
   script:
     - echo npx
 
-ubuntu (npx):
-  stage: create-resolve-app-tests
+ubuntu (create-resolve-app):
+  stage: integration-tests
   tags:
     - ubuntu
   only:
     variables:
-      - $CI_PIPELINE_TRIGGERED
+      - $CI_PIPELINE_TRIGGERED == 'true'
       - $SOURCE_BRANCH_NAME == 'dev'
       - $TARGET_BRANCH_NAME == 'master'
   script:
     - echo npx
-
-macOS (yarn):
-  stage: create-resolve-app-tests
-  tags:
-    - macos
-  only:
-    variables:
-      - $CI_PIPELINE_TRIGGERED
-      - $SOURCE_BRANCH_NAME == 'dev'
-      - $TARGET_BRANCH_NAME == 'master'
-  script:
-    - echo yarn
-    
-ubuntu (yarn):
-  stage: create-resolve-app-tests
-  tags:
-    - ubuntu
-  only:
-    variables:
-      - $CI_PIPELINE_TRIGGERED
-      - $SOURCE_BRANCH_NAME == 'dev'
-      - $TARGET_BRANCH_NAME == 'master'
-  script:
-    - echo yarn
-
-macOS (clear):
-  stage: clear
-  tags:
-    - macos
-  only:
-    variables:
-      - $CI_PIPELINE_TRIGGERED
-      - $SOURCE_BRANCH_NAME == 'dev'
-      - $TARGET_BRANCH_NAME == 'master'
-  script:
-    - echo macos
-    
-ubuntu (clear):
-  stage: clear
-  tags:
-    - ubuntu
-  only:
-    variables:
-      - $CI_PIPELINE_TRIGGERED
-      - $SOURCE_BRANCH_NAME == 'dev'
-      - $TARGET_BRANCH_NAME == 'master'
-  script:
-    - echo ubuntu
