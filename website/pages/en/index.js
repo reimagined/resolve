@@ -77,7 +77,7 @@ class HomeSplash extends React.Component {
     const language = this.props.language || ''
     return (
       <SplashContainer>
-        <Logo img_src={imgUrl('resolve.svg')} />
+        <Logo img_src={imgUrl('resolve.png')} />
         <div className="inner">
           <ProjectTitle />
           <PromoSection>
@@ -104,34 +104,50 @@ const Block = props => (
   </Container>
 )
 
-const Features = () => (
-  <Block layout="fourColumn">
+const Features = props => (
+  <Block layout="threeColumn" {...props}>
     {[
       {
-        content: 'Command-Query Responsibility Segregation',
-        image: imgUrl('cqrs.png'),
+        content: `You don't need to configure build and dev tools, libraries and frameworks. 
+  Your application is ready in seconds.`,
+        //image: imgUrl('cqrs.png'),
         imageAlign: 'top',
-        title: 'CQRS'
+        title: '## Everything you need in one place.'
       },
       {
-        content: 'Domain Driven Design.',
-        image: imgUrl('ddd.png'),
+        content: `With CQRS and Event Sourciing, your application is easier to develop, adapt, maintain and scale. 
+  Functional Java Script code is easier to test and reason about.`,
+        //image: imgUrl('ddd.png'),
         imageAlign: 'top',
-        title: 'DDD'
+        title: 'Full stack scalable modern app'
       },
       {
-        content:
-          'Store all state changes as events. Calculate system state from events.',
-        image: imgUrl('event-sourcing.png'),
+        content: `With Event Sourcing your application stores everything and removes nothing. 
+You don't have to anticipate what data you will need later.`,
+        //image: imgUrl('event-sourcing.png'),
         imageAlign: 'top',
-        title: 'Event Sourcing'
+        title: "Don't lose your data"
+      }
+    ]}
+  </Block>
+)
+
+const GetStarted = props => (
+  <Block layout="twoColumn" background="light" {...props}>
+    {[
+      {
+        title: 'Get started in seconds',
+        content: `reSolve lets you **focus on code, not build tools**.
+To create a project called \`my-app\`, run this command:
+\`\`\`sh
+npx create-resolve-app my-app
+\`\`\`
+`
       },
       {
-        content:
-          'React + Redux support. Consume events on the client to create reactive UI',
-        image: imgUrl('react-redux.png'),
-        imageAlign: 'top',
-        title: 'React + Redux'
+        image:
+          'https://camo.githubusercontent.com/29765c4a32f03bd01d44edef1cd674225e3c906b/68747470733a2f2f63646e2e7261776769742e636f6d2f66616365626f6f6b2f6372656174652d72656163742d6170702f323762343261632f73637265656e636173742e737667',
+        imageAlign: 'right'
       }
     ]}
   </Block>
@@ -221,6 +237,7 @@ const Index = ({ language = '' }) => (
     <HomeSplash language={language} />
     <div className="mainContainer">
       <Features />
+      <GetStarted />
       {/*       <FeatureCallout />
       <LearnHow />
       <TryOut />
