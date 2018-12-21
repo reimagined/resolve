@@ -89,7 +89,7 @@ checks:
     - yarn lint
 
 functional-tests:
-  stage: unit-tests
+  stage: functional-tests
   tags:
     - macos
   only:
