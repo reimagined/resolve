@@ -193,7 +193,7 @@ unit-tests:
     - cd resolve-$CI_PIPELINE_ID/
     - yarn test
 
-macOS (functional-tests):
+macOS (create-resolve-app + functional-tests):
   stage: functional-tests
   tags:
     - macos
@@ -207,10 +207,35 @@ macOS (functional-tests):
     variables:
       - $TARGET_BRANCH_NAME == 'master'
   script:
-    - cd resolve-$CI_PIPELINE_ID/
+    - npx create-resolve-app -e hacker-news hacker-news
+    - cd hacker-news
+    - yarn test:functional safari
+    - cd ..
+    - npx create-resolve-app -e hello-world hello-world
+    - cd hello-world
+    - yarn test:functional safari
+    - cd ..
+    - npx create-resolve-app -e shopping-list-advanced shopping-list-advanced
+    - cd shopping-list-advanced
+    - yarn test:functional safari
+    - cd ..
+    - npx create-resolve-app -e shopping-list shopping-list
+    - cd shopping-list
+    - yarn test:functional safari
+    - cd ..
+    - npx create-resolve-app -e with-postcss with-postcss
+    - cd with-postcss
+    - yarn test:functional safari
+    - cd ..
+    - npx create-resolve-app -e with-saga with-saga
+    - cd with-saga
+    - yarn test:functional safari
+    - cd ..
+    - npx create-resolve-app -e with-styled-components with-styled-components
+    - cd with-styled-components
     - yarn test:functional safari
     
-ubuntu (functional-tests):
+ubuntu (create-resolve-app + functional-tests):
   stage: functional-tests
   tags:
     - ubuntu
@@ -241,36 +266,5 @@ ubuntu (integration-tests):
     variables:
       - $TARGET_BRANCH_NAME == 'master'
   script:
-    - echo "(memory, rabbitmq, zeromq)"
+    - echo "integration-tests"
 
-macOS (create-resolve-app):
-  stage: integration-tests
-  tags:
-    - macos
-  only:
-    variables:
-      - $CI_PIPELINE_TRIGGERED == 'true'
-  only:
-    variables:
-      - $SOURCE_BRANCH_NAME == 'dev'
-  only:
-    variables:
-      - $TARGET_BRANCH_NAME == 'master'
-  script:
-    - echo npx
-
-ubuntu (create-resolve-app):
-  stage: integration-tests
-  tags:
-    - ubuntu
-  only:
-    variables:
-      - $CI_PIPELINE_TRIGGERED == 'true'
-  only:
-    variables:
-      - $SOURCE_BRANCH_NAME == 'dev'
-  only:
-    variables:
-      - $TARGET_BRANCH_NAME == 'master'
-  script:
-    - echo npx
