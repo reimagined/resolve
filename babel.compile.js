@@ -1,6 +1,73 @@
+const fs = require('fs')
 const path = require('path')
+const http = require('http')
+const { execSync } = require('child_process')
 const find = require('glob').sync
 const babel = require('@babel/cli/lib/babel/dir').default
+
+const RUN = 'RUN'
+const LOCAL_REGISTRY = 'LOCAL_REGISTRY'
+
+const localRegistry = {
+  protocol: 'http',
+  host: '0.0.0.0',
+  port: 10080,
+  directory: path.join(__dirname, '.packages')
+}
+
+function safeName(name) {
+  return `${name.replace(/@/, '').replace(/[/|\\]/g, '-')}.tgz`
+}
+
+function pack({ resolvePackages, directory, name }) {
+  fs.copyFileSync(
+    path.join(directory, 'package.json'),
+    path.join(directory, 'package.backup.json')
+  )
+  const packageJson = JSON.parse(
+    fs.readFileSync(path.join(directory, 'package.json'))
+  )
+  for (const namespace of [
+    'dependencies',
+    'devDependencies',
+    'peerDependencies',
+    'optionalDependencies'
+  ]) {
+    if (!packageJson[namespace]) {
+      continue
+    }
+    for (const name of resolvePackages) {
+      if (packageJson[namespace][name]) {
+        packageJson[namespace][name] =
+          namespace === 'peerDependencies'
+            ? '*'
+            : `${localRegistry.protocol}://${localRegistry.host}:${
+                localRegistry.port
+              }/${safeName(name)}`
+      }
+    }
+  }
+
+  fs.writeFileSync(
+    path.join(directory, 'package.json'),
+    JSON.stringify(packageJson, null, 2)
+  )
+  if (!fs.existsSync(localRegistry.directory)) {
+    fs.mkdirSync(localRegistry.directory)
+  }
+  execSync(
+    `yarn pack --filename="${path.join(
+      localRegistry.directory,
+      safeName(name)
+    )}"`,
+    { cwd: directory }
+  )
+  fs.unlinkSync(path.join(directory, 'package.json'))
+  fs.renameSync(
+    path.join(directory, 'package.backup.json'),
+    path.join(directory, 'package.json')
+  )
+}
 
 function getConfig({ moduleType, moduleTarget }) {
   let useESModules, regenerator, helpers, modules, targets, loose
@@ -97,7 +164,7 @@ function getConfig({ moduleType, moduleTarget }) {
   }
 }
 
-function compile() {
+async function compile({ mode }) {
   const configs = []
 
   const resolvePackages = []
@@ -108,7 +175,7 @@ function compile() {
       continue
     }
 
-    const { name, babelCompile } = require(filePath)
+    const { version, name, babelCompile } = require(filePath)
 
     resolvePackages.push(name)
 
@@ -132,6 +199,8 @@ function compile() {
       }
 
       config.name = name
+      config.version = version
+      config.directory = path.resolve(__dirname, path.dirname(filePath))
       config.inputDir = path.resolve(path.dirname(filePath), config.inputDir)
       config.outDir = path.resolve(path.dirname(filePath), config.outDir)
 
@@ -162,41 +231,84 @@ function compile() {
   process.env.__RESOLVE_EXAMPLES__ = JSON.stringify(resolveExamples)
   process.env.__RESOLVE_VERSION__ = require('./package').version
 
+  const promises = []
   for (const config of configs) {
-    babel({
-      babelOptions: {
-        ...getConfig({
-          moduleType: config.moduleType,
-          moduleTarget: config.moduleTarget
-        }),
-        sourceMaps: true,
-        babelrc: false
-      },
-      cliOptions: {
-        filenames: [config.inputDir],
-        outDir: config.outDir,
-        deleteDirOnStart: true
-      }
-    })
-      .then(() => {
-        // eslint-disable-next-line no-console
-        console.log(
-          `↑ [${config.name}] { moduleType: "${
-            config.moduleType
-          }", moduleType: "${config.moduleTarget}" }`
-        )
+    promises.push(
+      babel({
+        babelOptions: {
+          ...getConfig({
+            moduleType: config.moduleType,
+            moduleTarget: config.moduleTarget
+          }),
+          sourceMaps: true,
+          babelrc: false
+        },
+        cliOptions: {
+          filenames: [config.inputDir],
+          outDir: config.outDir,
+          deleteDirOnStart: true
+        }
       })
-      .catch(error => {
-        // eslint-disable-next-line no-console
-        console.error(error)
-        process.exit(1)
+        .then(() => {
+          // eslint-disable-next-line no-console
+          console.log(
+            `↑ [${config.name}] { moduleType: "${
+              config.moduleType
+            }", moduleType: "${config.moduleTarget}" }`
+          )
+        })
+        .catch(error => {
+          // eslint-disable-next-line no-console
+          console.error(error)
+          process.exit(1)
+        })
+    )
+  }
+  await Promise.all(promises)
+
+  if (mode === LOCAL_REGISTRY) {
+    for (const { directory, name, version } of configs) {
+      pack({
+        resolvePackages,
+        directory,
+        name,
+        version
       })
+    }
+
+    http
+      .createServer((req, res) => {
+        const fileName = req.url.slice(1)
+
+        const filePath = path.join(localRegistry.directory, fileName)
+        const stat = fs.statSync(filePath)
+
+        res.writeHead(200, {
+          'Content-Type': 'application/tar+gzip',
+          'Content-Length': stat.size
+        })
+
+        const readStream = fs.createReadStream(filePath)
+        readStream.pipe(res)
+      })
+      .listen(localRegistry.port, localRegistry.host)
   }
 }
 
 if (process.argv[2] === '--run') {
-  compile()
+  compile({ mode: RUN }).catch(
+    // eslint-disable-next-line no-console
+    error => console.error(error)
+  )
+}
+
+if (process.argv[2] === '--local-registry') {
+  compile({ mode: LOCAL_REGISTRY }).catch(
+    // eslint-disable-next-line no-console
+    error => console.error(error)
+  )
 }
 
 module.exports.getConfig = getConfig
 module.exports.compile = compile
+module.exports.localRegistry = localRegistry
