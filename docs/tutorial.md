@@ -1210,7 +1210,7 @@ Now, if you run your application and create a new shopping list, the created sho
 
 ## **Lesson 7** - Functionality Enhancements
 
-In this lesson, you will provide miscellaneous functionality enhancements to your Shopping List application in order to support the full set of data editing operations. These steps are not essential, but they will help you to further deepen your understanding of the reSolve framework's fundamentals.
+In this lesson, you will provide miscellaneous functionality enhancements to your Shopping List application in order to support the full set of data editing operations. These steps are not essential, but they will help you further deepen your understanding of the reSolve framework's fundamentals.
 
 ### Modify the Write Side
 
@@ -1298,6 +1298,14 @@ Modify the ShoppingLists Read Model projection:
 
 ### Modify the Frontend
 
+#### Provide Static Content
+
+Add the required static content to the application's **static** folder. The example application uses the following static files:
+
+- Styles.css - Contains custom styles used by the application's client components.
+- The fontawesome.min.css file an the webfonts folder - The Font Awesome distribution.
+- close-button.png - An icon used in UI to remove shopping list items.
+
 #### Update Components
 
 Removing shopping List:
@@ -1326,7 +1334,7 @@ const { lists, createShoppingList, removeShoppingList } = this.props
 <ShoppingLists lists={lists} removeShoppingList={removeShoppingList} />
 ```
 
-#### Update the optimistic update code
+#### Update the Optimistic Update Code
 
 Actions:
 
@@ -1373,7 +1381,3 @@ const optimistic_shopping_lists_middleware = store => next => action => {
   next(action)
 }
 ```
-
-Static/Styles.css
-
-Static/fontawesome.min.css
