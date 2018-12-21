@@ -51,7 +51,11 @@ install:
   only:
     variables:
       - $CI_PIPELINE_TRIGGERED == 'true'
+  only:
+    variables:
       - $SOURCE_BRANCH_NAME =~ /^feature\/.+/
+  only:
+    variables:
       - $TARGET_BRANCH_NAME == 'dev'
   cache:
     policy: pull-push
