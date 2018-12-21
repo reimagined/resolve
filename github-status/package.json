@@ -1,11 +1,12 @@
 {
-  "name": "@ci-cd/trigger-on-pull-request",
+  "name": "@ci-cd/github-status",
   "private": true,
   "version": "1.0.0",
   "author": "reimagined team",
   "license": "MIT",
   "dependencies": {
     "@octokit/rest": "16.2.0",
-    "request": "2.88.0"
+    "request": "2.88.0",
+    "minimist": "1.2.0"
   }
 }
