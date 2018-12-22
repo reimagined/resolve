@@ -255,27 +255,27 @@ ubuntu (create-resolve-app + functional-tests):
     - pm2 start resolve-$CI_PIPELINE_ID/babel.compile.js --name local-registry -- --local-registry
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js -c $MERGE_COMMIT_SHA -e hacker-news hacker-news
     - cd hacker-news
-    - yarn test:functional safari
+    - yarn test:functional chromium
     - cd ..
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js -c $MERGE_COMMIT_SHA -e hello-world hello-world
     - cd hello-world
-    - yarn test:functional safari
+    - yarn test:functional chromium
     - cd ..
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js -c $MERGE_COMMIT_SHA -e shopping-list-advanced shopping-list-advanced
     - cd shopping-list-advanced
-    - yarn test:functional safari
+    - yarn test:functional chromium
     - cd ..
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js -c $MERGE_COMMIT_SHA -e shopping-list shopping-list
     - cd shopping-list
-    - yarn test:functional safari
+    - yarn test:functional chromium
     - cd ..
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js -c $MERGE_COMMIT_SHA -e with-postcss with-postcss
     - cd with-postcss
-    - yarn test:functional safari
+    - yarn test:functional chromium
     - cd ..
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js -c $MERGE_COMMIT_SHA -e with-saga with-saga
     - cd with-saga
-    - yarn test:functional safari
+    - yarn test:functional chromium
     - cd ..
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js -c $MERGE_COMMIT_SHA -e with-styled-components with-styled-components
     - cd with-styled-components
