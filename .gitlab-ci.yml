@@ -253,6 +253,7 @@ ubuntu (create-resolve-app + functional-tests):
   script:
     - pm2 delete local-registry || true
     - pm2 start resolve-$CI_PIPELINE_ID/babel.compile.js --name local-registry -- --local-registry
+    - export DISPLAY=:0 
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js -c $MERGE_COMMIT_SHA -e hacker-news hacker-news
     - cd hacker-news
     - yarn test:functional chromium
