@@ -303,10 +303,19 @@ if (process.argv[2] === '--run') {
 }
 
 if (process.argv[2] === '--local-registry') {
-  compile({ mode: LOCAL_REGISTRY }).catch(
-    // eslint-disable-next-line no-console
-    error => console.error(error)
-  )
+  compile({ mode: LOCAL_REGISTRY })
+    .then(() => {
+      // eslint-disable-next-line no-console
+      console.log(
+        `Local registry listening on ${localRegistry.protocol}://${
+          localRegistry.host
+        }:${localRegistry.port}`
+      )
+    })
+    .catch(
+      // eslint-disable-next-line no-console
+      error => console.error(error)
+    )
 }
 
 module.exports.getConfig = getConfig
