@@ -1214,7 +1214,9 @@ In this lesson, you will provide miscellaneous functionality enhancements to you
 
 ### Modify the Write Side
 
-Define events to provide the missing functionality:
+Define additional events to provide the missing functionality.
+
+**common/event_types.js:**
 
 ```js
 ...
@@ -1225,13 +1227,17 @@ export const SHOPPING_LIST_REMOVED = 'SHOPPING_LIST_REMOVED'
 export const SHOPPING_ITEM_REMOVED = 'SHOPPING_ITEM_REMOVED'
 ```
 
-Modify the shopping list projection to account for removing shopping lists:
+Modify the aggregate projection to account for shopping list deletion.
+
+**common/aggregates/shopping_list.projection.js:**
 
 ```js
 [SHOPPING_LIST_REMOVED]: () => ({})
 ```
 
 Define command handlers to provide the data editing functionality.
+
+**common/aggregates/shopping_list.commands.js:**
 
 ```js
 ...
@@ -1259,7 +1265,9 @@ Define command handlers to provide the data editing functionality.
 
 ### Modify the Read Side
 
-Modify the ShoppingList View Model to account for the new functionality:
+Modify the ShoppingList View Model projection to account for the new functionality.
+
+**common/view-models/shopping_list.projection.js:**
 
 ```js
 ...
@@ -1279,7 +1287,9 @@ Modify the ShoppingList View Model to account for the new functionality:
   })
 ```
 
-Modify the ShoppingLists Read Model projection:
+Modify the ShoppingLists Read Model projection.
+
+**common/read-models/shopping_lists.projection.js:**
 
 ```js
 ...
@@ -1302,13 +1312,15 @@ Modify the ShoppingLists Read Model projection:
 
 Add the required static content to the application's **static** folder. The example application uses the following static files:
 
-- The Styles.css file - Contains custom styles used by the application's client components.
-- The fontawesome.min.css file an the webfonts folder - The standard Font Awesome distribution.
-- The close-button.png image - An icon displayed by the button used to remove shopping list items.
+- The **Styles.css** file - Contains custom styles used by the application's client components.
+- The **fontawesome.min.css** file an the **webfonts** folder - The standard Font Awesome distribution.
+- The **close-button.png** image - An icon displayed by the button used to remove shopping list items.
 
 #### Update Components
 
-Removing shopping lists:
+Modify the ShoppingLists component to support shopping list deletion.
+
+**client/components/ShoppingLists.js:**
 
 ```js
 <th className="example-table-action">Action</th>
@@ -1332,7 +1344,9 @@ const { lists, createShoppingList, removeShoppingList } = this.props
 <ShoppingLists lists={lists} removeShoppingList={removeShoppingList} />
 ```
 
-Renaming shopping lists:
+Modify the ShoppingList component to support shopping list renaming.
+
+**client/containers/ShoppingList.js:**
 
 ```js
 state = {
@@ -1353,12 +1367,12 @@ onShoppingListNamePressEnter = event => {
   }
 }
 
-  updateShoppingListName = event => {
-    this.setState({
-      shoppingListName: event.target.value
-    })
-  }
-
+updateShoppingListName = event => {
+  this.setState({
+    shoppingListName: event.target.value
+  })
+}
+...
 
 <FormControl
   type="text"
@@ -1369,7 +1383,9 @@ onShoppingListNamePressEnter = event => {
 />
 ```
 
-Removing list items:
+Add list item deletion functionality.
+
+**client/containers/ShoppingList.js:**
 
 ```js
 const {
@@ -1386,7 +1402,9 @@ const {
 />
 ```
 
-The **Image** component implementation:
+The **Image** component is implemented as follows.
+
+**client/containers/Image.js:**
 
 ```js
 import { Image as BootstrapImage } from 'react-bootstrap'
@@ -1397,7 +1415,11 @@ const Image = connectStaticBasedUrls(['src'])(BootstrapImage)
 export default Image
 ```
 
-Linking stylesheets:
+####Link Stylesheets:
+
+The code sample below demonstrates how to link stylesheets to your application.
+
+**client/containers/Header.js:**
 
 ```js
 <Helmet>
@@ -1406,7 +1428,11 @@ Linking stylesheets:
   ))}
   ...
 </Helmet>
+...
+export default connectStaticBasedUrls(['css', 'favicon'])(Header)
 ```
+
+**client/containers/App.js:**
 
 ```js
 <Header
@@ -1417,14 +1443,16 @@ Linking stylesheets:
 
 #### Update the Optimistic Update Code
 
-Actions:
+Modify the code performing optimistic UI updates to support shopping list deletion.
+
+**client/actions/optimistic_actions.js:**
 
 ```js
 ...
 export const OPTIMISTIC_REMOVE_SHOPPING_LIST = 'OPTIMISTIC_REMOVE_SHOPPING_LIST'
 ```
 
-Reducer:
+**client/reducers/optimistic_shopping_lists.js:**
 
 ```js
 import { LOCATION_CHANGE } from 'react-router-redux'
@@ -1443,7 +1471,7 @@ import { LOCATION_CHANGE } from 'react-router-redux'
   }
 ```
 
-Middleware:
+**client/middlewares/optimistic_shopping_lists_middleware.js:**
 
 ```js
 const optimistic_shopping_lists_middleware = store => next => action => {
