@@ -94,7 +94,7 @@ checks:
     - yarn lint
     - node job-status/index.js --end
   after_script:
-    - if [ "$(node ./job-status/index.js --isSucceeded)" == "true" ]; then node create-github-status/index.js --state success --context "Unit tests" --description "Build \#$CI_PIPELINE_IID succeeded in $(cat job.time)s" --targetUrl $CI_PIPELINE_URL; else then node create-github-status/index.js --state failure --context "Unit tests" --description "Build \#$CI_PIPELINE_IID failed in $(cat job.time)s" --targetUrl $CI_PIPELINE_URL; fi
+    - if [ "$(node ./job-status/index.js --isSucceeded)" == "true" ]; then node create-github-status/index.js --state success --context "Unit tests" --description "Build \#$CI_PIPELINE_IID succeeded in $(cat job.time)s" --targetUrl $CI_PIPELINE_URL; else node create-github-status/index.js --state failure --context "Unit tests" --description "Build \#$CI_PIPELINE_IID failed in $(cat job.time)s" --targetUrl $CI_PIPELINE_URL; fi
 
 functional-tests:
   stage: functional-tests
