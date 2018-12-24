@@ -48,7 +48,7 @@ main({
   owner: 'reimagined',
   repo: 'resolve',
   token: process.env.GITHUB_RESOLVE_TOKEN,
-  commitSha: process.env.CI_COMMIT_SHA,
+  commitSha: process.env.HEAD_COMMIT_SHA,
   state,
   targetUrl,
   description,
