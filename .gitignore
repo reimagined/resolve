@@ -44,6 +44,9 @@ jspm_packages
 .vscode
 vscode
 
+# npm packages
+.packages
+
 event-storage.db
 #
 dist
