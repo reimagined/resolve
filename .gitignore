@@ -77,6 +77,9 @@ examples
 packages
 tests
 website
+job.startTime
+job.success
+job.time
 
 # Serverless directories
 .serverless

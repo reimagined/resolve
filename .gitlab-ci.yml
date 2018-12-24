@@ -40,73 +40,82 @@ prepare environment:
     - pm2 delete trigger-on-pull-request || true
     - pm2 start trigger-on-pull-request/index.js --name trigger-on-pull-request
 
-#######################
-# pull request -> dev #
-#######################
+##################################
+# pull request -> dev or release #
+##################################
 
-#install:
-#  stage: install
-#  tags:
-#    - macos
-#  only:
-#    variables:
-#      - $CI_PIPELINE_TRIGGERED == 'true'
-#  only:
-#    variables:
-#      - $SOURCE_BRANCH_NAME =~ /^feature\/.+/
-#  only:
-#    variables:
-#      - $TARGET_BRANCH_NAME == 'dev'
-#  cache:
-#    policy: pull-push
-#  script:
-#    - rm -rf resolve-$CI_PIPELINE_ID || true
-#    - git clone https://github.com/reimagined/resolve.git resolve-$CI_PIPELINE_ID
-#    - cd resolve-$CI_PIPELINE_ID
-#    - git fetch origin $MERGE_COMMIT_SHA:merge-commit
-#    - git checkout merge-commit
-#    - yarn install --frozen-lockfile --cache-folder .yarn-cache
-#
-#checks:
-#  stage: unit-tests
-#  tags:
-#    - macos
-#  only:
-#    variables:
-#      - $CI_PIPELINE_TRIGGERED == 'true'
-#  only:
-#    variables:
-#      - $SOURCE_BRANCH_NAME =~ /^feature\/.+/
-#  only:
-#    variables:
-#      - $TARGET_BRANCH_NAME == 'dev'
-#  cache:
-#    policy: pull
-#  script:
-#    - cd resolve-$CI_PIPELINE_ID/
-#    - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
-#    - yarn test
-#    - yarn lint
-#
-#functional-tests:
-#  stage: functional-tests
-#  tags:
-#    - macos
-#  only:
-#    variables:
-#      - $CI_PIPELINE_TRIGGERED == 'true'
-#  only:
-#    variables:
-#      - $SOURCE_BRANCH_NAME =~ /^feature\/.+/
-#  only:
-#    variables:
-#      - $TARGET_BRANCH_NAME == 'dev'
-#  cache:
-#    policy: pull
-#  script:
-#    - cd resolve-$CI_PIPELINE_ID/
-#    - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
-#    - yarn test:functional safari
+install:
+  stage: install
+  tags:
+    - macos
+  only:
+    variables:
+      - $CI_PIPELINE_TRIGGERED == 'true'
+  only:
+    variables:
+      - $SOURCE_BRANCH_NAME =~ /^feature\/.+/
+  only:
+    variables:
+      - $TARGET_BRANCH_NAME == 'dev'
+      - $TARGET_BRANCH_NAME =~ /^release\/.+/
+  cache:
+    policy: pull-push
+  script:
+    - rm -rf resolve-$CI_PIPELINE_ID || true
+    - git clone https://github.com/reimagined/resolve.git resolve-$CI_PIPELINE_ID
+    - cd resolve-$CI_PIPELINE_ID
+    - git fetch origin $MERGE_COMMIT_SHA:merge-commit
+    - git checkout merge-commit
+    - yarn install --frozen-lockfile --cache-folder .yarn-cache
+
+checks:
+  stage: unit-tests
+  tags:
+    - macos
+  only:
+    variables:
+      - $CI_PIPELINE_TRIGGERED == 'true'
+  only:
+    variables:
+      - $SOURCE_BRANCH_NAME =~ /^feature\/.+/
+  only:
+    variables:
+      - $TARGET_BRANCH_NAME == 'dev'
+      - $TARGET_BRANCH_NAME =~ /^release\/.+/
+  cache:
+    policy: pull
+  before_script:
+    - node job-status/index.js --start
+  script:
+    - node create-github-status/index.js --state pending --context "Unit tests" --description "Waiting \#$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_PIPELINE_URL
+    - cd resolve-$CI_PIPELINE_ID/
+    - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
+    - yarn test
+    - yarn lint
+    - node job-status/index.js --end
+  after_script:
+    - if [ "$(node ./job-status/index.js --isSucceeded)" == "true" ]; then node create-github-status/index.js --state success --context "Unit tests" --description "Build \#$CI_PIPELINE_IID succeeded in $(cat job.time)s" --targetUrl $CI_PIPELINE_URL; else then node create-github-status/index.js --state failure --context "Unit tests" --description "Build \#$CI_PIPELINE_IID failed in $(cat job.time)s" --targetUrl $CI_PIPELINE_URL; fi
+
+functional-tests:
+  stage: functional-tests
+  tags:
+    - macos
+  only:
+    variables:
+      - $CI_PIPELINE_TRIGGERED == 'true'
+  only:
+    variables:
+      - $SOURCE_BRANCH_NAME =~ /^feature\/.+/
+  only:
+    variables:
+      - $TARGET_BRANCH_NAME == 'dev'
+      - $TARGET_BRANCH_NAME =~ /^release\/.+/
+  cache:
+    policy: pull
+  script:
+    - cd resolve-$CI_PIPELINE_ID/
+    - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
+    - yarn test:functional safari
 
 #################
 # dev -> master #
@@ -119,12 +128,12 @@ macOS (install):
   only:
     variables:
       - $CI_PIPELINE_TRIGGERED == 'true'
-#  only:
-#    variables:
-#      - $SOURCE_BRANCH_NAME == 'dev'
-#  only:
-#    variables:
-#      - $TARGET_BRANCH_NAME == 'master'
+  only:
+    variables:
+      - $SOURCE_BRANCH_NAME == 'dev'
+  only:
+    variables:
+      - $TARGET_BRANCH_NAME == 'master'
   cache:
     policy: pull-push
   script:
@@ -142,12 +151,12 @@ ubuntu (install):
   only:
     variables:
       - $CI_PIPELINE_TRIGGERED == 'true'
-#  only:
-#    variables:
-#      - $SOURCE_BRANCH_NAME == 'dev'
-#  only:
-#    variables:
-#      - $TARGET_BRANCH_NAME == 'master'
+  only:
+    variables:
+      - $SOURCE_BRANCH_NAME == 'dev'
+  only:
+    variables:
+      - $TARGET_BRANCH_NAME == 'master'
   cache:
     policy: pull-push
   script:
@@ -158,40 +167,40 @@ ubuntu (install):
     - git checkout merge-commit
     - yarn install --frozen-lockfile --cache-folder .yarn-cache
 
-#eslint + prettier:
-#  stage: unit-tests
-#  tags:
-#    - any
-#  only:
-#    variables:
-#      - $CI_PIPELINE_TRIGGERED == 'true'
-#  only:
-#    variables:
-#      - $SOURCE_BRANCH_NAME == 'dev'
-#  only:
-#    variables:
-#      - $TARGET_BRANCH_NAME == 'master'
-#  script:
-#    - cd resolve-$CI_PIPELINE_ID/
-#    - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
-#    - yarn lint
-#
-#unit-tests:
-#  stage: unit-tests
-#  tags:
-#    - any
-#  only:
-#    variables:
-#      - $CI_PIPELINE_TRIGGERED == 'true'
-#  only:
-#    variables:
-#      - $SOURCE_BRANCH_NAME == 'dev'
-#  only:
-#    variables:
-#      - $TARGET_BRANCH_NAME == 'master'
-#  script:
-#    - cd resolve-$CI_PIPELINE_ID/
-#    - yarn test
+eslint + prettier:
+  stage: unit-tests
+  tags:
+    - any
+  only:
+    variables:
+      - $CI_PIPELINE_TRIGGERED == 'true'
+  only:
+    variables:
+      - $SOURCE_BRANCH_NAME == 'dev'
+  only:
+    variables:
+      - $TARGET_BRANCH_NAME == 'master'
+  script:
+    - cd resolve-$CI_PIPELINE_ID/
+    - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
+    - yarn lint
+
+unit-tests:
+  stage: unit-tests
+  tags:
+    - any
+  only:
+    variables:
+      - $CI_PIPELINE_TRIGGERED == 'true'
+  only:
+    variables:
+      - $SOURCE_BRANCH_NAME == 'dev'
+  only:
+    variables:
+      - $TARGET_BRANCH_NAME == 'master'
+  script:
+    - cd resolve-$CI_PIPELINE_ID/
+    - yarn test
 
 macOS (create-resolve-app + functional-tests):
   stage: functional-tests
@@ -200,12 +209,12 @@ macOS (create-resolve-app + functional-tests):
   only:
     variables:
       - $CI_PIPELINE_TRIGGERED == 'true'
-#  only:
-#    variables:
-#      - $SOURCE_BRANCH_NAME == 'dev'
-#  only:
-#    variables:
-#      - $TARGET_BRANCH_NAME == 'master'
+  only:
+    variables:
+      - $SOURCE_BRANCH_NAME == 'dev'
+  only:
+    variables:
+      - $TARGET_BRANCH_NAME == 'master'
   script:
     - pm2 delete local-registry || true
     - pm2 start resolve-$CI_PIPELINE_ID/babel.compile.js --name local-registry -- --local-registry
@@ -244,12 +253,12 @@ ubuntu (create-resolve-app + functional-tests):
   only:
     variables:
       - $CI_PIPELINE_TRIGGERED == 'true'
-#  only:
-#    variables:
-#      - $SOURCE_BRANCH_NAME == 'dev'
-#  only:
-#    variables:
-#      - $TARGET_BRANCH_NAME == 'master'
+  only:
+    variables:
+      - $SOURCE_BRANCH_NAME == 'dev'
+  only:
+    variables:
+      - $TARGET_BRANCH_NAME == 'master'
   script:
     - pm2 delete local-registry || true
     - pm2 start resolve-$CI_PIPELINE_ID/babel.compile.js --name local-registry -- --local-registry
