@@ -20,7 +20,7 @@ cache:
 # CI/CD setup #
 ###############
 
-prepare environment:
+ubuntu (prepare environment):
   stage: CI/CD
   tags:
     - ubuntu
@@ -39,6 +39,24 @@ prepare environment:
     - yarn install --frozen-lockfile --cache-folder .yarn-cache
     - pm2 delete trigger-on-pull-request || true
     - pm2 start trigger-on-pull-request/index.js --name trigger-on-pull-request
+
+macOS (prepare environment):
+  stage: CI/CD
+  tags:
+    - macos
+  only:
+    - ci/cd
+  except:
+    - triggers
+  cache:
+    policy: pull-push
+  script:
+    - rm -rf ci-cd || true
+    - git clone https://github.com/reimagined/resolve.git ci-cd
+    - cd ci-cd
+    - git fetch origin ci/cd:ci/cd
+    - git checkout ci/cd
+    - yarn install --frozen-lockfile --cache-folder .yarn-cache
 
 ##################################
 # pull request -> dev or release #
@@ -85,16 +103,16 @@ checks:
   cache:
     policy: pull
   before_script:
-    - node job-status/index.js --start
+    - node ci-cd/job-status/index.js --start
   script:
-    - node create-github-status/index.js --state pending --context "Unit tests" --description "Waiting \#$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_PIPELINE_URL
+    - node ci-cd/create-github-status/index.js --state pending --context "Unit tests" --description "Waiting \#$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_PIPELINE_URL
     - cd resolve-$CI_PIPELINE_ID/
     - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
     - yarn test
     - yarn lint
-    - node job-status/index.js --end
+    - node ../ci-cd/job-status/index.js --end
   after_script:
-    - if [ "$(node ./job-status/index.js --isSucceeded)" == "true" ]; then node create-github-status/index.js --state success --context "Unit tests" --description "Build \#$CI_PIPELINE_IID succeeded in $(cat job.time)s" --targetUrl $CI_PIPELINE_URL; else node create-github-status/index.js --state failure --context "Unit tests" --description "Build \#$CI_PIPELINE_IID failed in $(cat job.time)s" --targetUrl $CI_PIPELINE_URL; fi
+    - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "Unit tests" --description "Build \#$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)s" --targetUrl $CI_PIPELINE_URL; else node ci-cd/create-github-status/index.js --state failure --context "Unit tests" --description "Build \#$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)s" --targetUrl $CI_PIPELINE_URL; fi
 
 functional-tests:
   stage: functional-tests
