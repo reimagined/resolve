@@ -56,15 +56,15 @@ The following example projects are available:
 
 | Example Name                                                                                                | Description                                                                                                     |
 | ----------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| [hacker-news](https://github.com/reimagined/resolve/tree/master/examples/hacker-news)                       | A clone of the [HackerNews](https://news.ycombinator.com/) application implemented using reSolve                |
 | [hello-world](https://github.com/reimagined/resolve/tree/master/examples/hello-world)                       | A blank app used as a default template for new reSolve applications                                             |
+| [with-postcss](https://github.com/reimagined/resolve/tree/master/examples/with-postcss)                     | Demonstrates how to work with [postCSS](https://github.com/postcss/postcss-loader#css-modules)                  |
+| [with-styled-components](https://github.com/reimagined/resolve/tree/master/examples/with-styled-components) | Demonstrates how to work with [Styled Components](https://www.styled-components.com/docs)                       |
+| [with-saga](https://github.com/reimagined/resolve/tree/master/examples/with-saga)                           | Demonstrates how to use sagas in a reSolve application                                                          |
 | [shopping-list](https://github.com/reimagined/resolve/tree/master/examples/shopping-list)                   | Demonstrates how to work with Read Models and View Models                                                       |
 | [shopping-list-advanced](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-advanced) | Demonstrates how to use reSolve with [React Native](https://github.com/react-community/create-react-native-app) |
-| [with-postcss](https://github.com/reimagined/resolve/tree/master/examples/with-postcss)                     | Demonstrates how to work with [postCSS](https://github.com/postcss/postcss-loader#css-modules)                  |
-| [with-saga](https://github.com/reimagined/resolve/tree/master/examples/with-saga)                           | Demonstrates how to use sagas in a reSolve application                                                          |
-| [with-styled-components](https://github.com/reimagined/resolve/tree/master/examples/with-styled-components) | Demonstrates how to work with [Styled Components](https://www.styled-components.com/docs)                       |
+| [hacker-news](https://github.com/reimagined/resolve/tree/master/examples/hacker-news)                       | A clone of the [HackerNews](https://news.ycombinator.com/) application implemented using reSolve                |
 
-You can install any of these examples on your machine using the create-resolve-app tool with the _-e_ option:
+You can install any of these examples on your machine using the `create-resolve-app` tool with the `-e` flag followed by an example name.
 
 ##### npm
 
