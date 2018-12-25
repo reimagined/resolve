@@ -29,7 +29,17 @@ if (start) {
     })
     .toString('utf-8')
 
-  const time = Math.round((Date.now() - startTime) / 1000)
+  const date = new Date(Date.now() - startTime)
+  const hours = date.getUTCHours()
+  const minutes = date.getUTCMinutes()
+  const seconds = date.getUTCSeconds()
+  const timeArray = []
+  if (hours > 0) {
+    timeArray.push(String(hours).padStart(2, '0'))
+  }
+  timeArray.push(String(minutes).padStart(2, '0'))
+  timeArray.push(String(seconds).padStart(2, '0'))
+  const time = timeArray.join(':')
 
   fs.writeFileSync(path.join(__dirname, '..', 'job.time'), String(time), {
     encoding: 'utf-8'

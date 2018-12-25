@@ -4,6 +4,7 @@ stages:
   - unit-tests
   - functional-tests
   - integration-tests
+  - finish
 
 variables:
   GIT_STRATEGY: none
@@ -78,6 +79,8 @@ install:
       - $TARGET_BRANCH_NAME =~ /^release\/.+/
   cache:
     policy: pull-push
+  before_script:
+    - node ci-cd/create-github-status/index.js --state success --context "Pipeline" --description "Waiting #$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_PIPELINE_URL
   script:
     - rm -rf resolve-$CI_PIPELINE_ID || true
     - git clone https://github.com/reimagined/resolve.git resolve-$CI_PIPELINE_ID
@@ -104,15 +107,15 @@ checks:
     policy: pull
   before_script:
     - node ci-cd/job-status/index.js --start
+    - node ci-cd/create-github-status/index.js --state pending --context "Unit tests" --description "Waiting #$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_PIPELINE_URL
   script:
-    - node ci-cd/create-github-status/index.js --state pending --context "Unit tests" --description "Waiting \#$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_PIPELINE_URL
     - cd resolve-$CI_PIPELINE_ID/
     - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
     - yarn test
     - yarn lint
-    - node ../ci-cd/job-status/index.js --end
   after_script:
-    - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "Unit tests" --description "Build \#$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)s" --targetUrl $CI_PIPELINE_URL; else node ci-cd/create-github-status/index.js --state failure --context "Unit tests" --description "Build \#$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)s" --targetUrl $CI_PIPELINE_URL; fi
+    - node ci-cd/job-status/index.js --end
+    - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "Unit tests" --description "Build #$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "Unit tests" --description "Build #$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
 
 functional-tests:
   stage: functional-tests
@@ -130,10 +133,56 @@ functional-tests:
       - $TARGET_BRANCH_NAME =~ /^release\/.+/
   cache:
     policy: pull
+  before_script:
+    - node ci-cd/job-status/index.js --start
+    - node ci-cd/create-github-status/index.js --state pending --context "Functional tests" --description "Waiting #$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_PIPELINE_URL
   script:
     - cd resolve-$CI_PIPELINE_ID/
     - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
     - yarn test:functional safari
+  after_script:
+    - node ci-cd/job-status/index.js --end
+    - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "Functional tests" --description "Build #$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "Functional tests" --description "Build #$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
+
+success:
+  stage: finish
+  when: on_success
+  tags:
+    - macos
+  only:
+    variables:
+      - $CI_PIPELINE_TRIGGERED == 'true'
+  only:
+    variables:
+      - $SOURCE_BRANCH_NAME =~ /^feature\/.+/
+  only:
+    variables:
+      - $TARGET_BRANCH_NAME == 'dev'
+      - $TARGET_BRANCH_NAME =~ /^release\/.+/
+  cache:
+    policy: pull
+  script:
+    - node ci-cd/create-github-status/index.js --state success --context "Pipeline" --description "Build #$CI_PIPELINE_IID succeeded" --targetUrl $CI_PIPELINE_URL
+
+failure:
+  stage: finish
+  when: on_failure
+  tags:
+    - macos
+  only:
+    variables:
+      - $CI_PIPELINE_TRIGGERED == 'true'
+  only:
+    variables:
+      - $SOURCE_BRANCH_NAME =~ /^feature\/.+/
+  only:
+    variables:
+      - $TARGET_BRANCH_NAME == 'dev'
+      - $TARGET_BRANCH_NAME =~ /^release\/.+/
+  cache:
+    policy: pull
+  script:
+    - node ci-cd/create-github-status/index.js --state failure --context "Pipeline" --description "Build #$CI_PIPELINE_IID failed" --targetUrl $CI_PIPELINE_URL
 
 #################
 # dev -> master #

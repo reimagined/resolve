@@ -13,6 +13,8 @@
   },
   "workspaces": {
     "packages": [
+      "create-github-status",
+      "job-status",
       "trigger-on-pull-request"
     ]
   }
