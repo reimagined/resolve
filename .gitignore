@@ -80,6 +80,7 @@ website
 job.startTime
 job.success
 job.time
+trigger-on-pull-request/state.json
 
 # Serverless directories
 .serverless

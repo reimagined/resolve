@@ -1,9 +1,50 @@
+const fs = require('fs')
+const path = require('path')
 const request = require('request')
 const octokit = require('@octokit/rest')()
 
-const triggers = {}
-
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
+
+const triggers = {
+  set: (pullRequestNumber, mergeCommitSha) => {
+    try {
+      const state = fs.existsSync(path.join(__dirname, 'state.json'))
+        ? JSON.parse(
+          fs
+            .readFileSync(path.join(__dirname, 'state.json'), {
+              encoding: 'utf-8'
+            })
+            .toString('utf-8')
+        )
+        : {}
+      state[pullRequestNumber] = mergeCommitSha
+      fs.writeFileSync(
+        path.join(__dirname, 'state.json'),
+        JSON.stringify(state, null, 2),
+        {
+          encoding: 'utf-8'
+        }
+      )
+    } catch (error) {
+      console.error(error)
+    }
+  },
+  get: pullRequestNumber => {
+    try {
+      const state = JSON.parse(
+        fs
+          .readFileSync(path.join(__dirname, 'state.json'), {
+            encoding: 'utf-8'
+          })
+          .toString('utf-8')
+      )
+      const mergeCommitSha = state[pullRequestNumber]
+      return mergeCommitSha
+    } catch (error) {
+      console.error(error)
+    }
+  }
+}
 
 async function main({ gitlab, github, refreshTime }) {
   octokit.authenticate({
@@ -18,12 +59,12 @@ async function main({ gitlab, github, refreshTime }) {
     })
 
     for (const pullRequest of pullRequests) {
-      const prevMergeCommitSha = triggers[pullRequest.number]
+      const prevMergeCommitSha = triggers.get(pullRequest.number)
       if (
         pullRequest.merge_commit_sha &&
         prevMergeCommitSha !== pullRequest.merge_commit_sha
       ) {
-        triggers[pullRequest.number] = pullRequest.merge_commit_sha
+        triggers.set(pullRequest.number, pullRequest.merge_commit_sha)
 
         request(
           {
@@ -45,10 +86,10 @@ async function main({ gitlab, github, refreshTime }) {
             json: true,
             url: gitlab.url
           },
-          err => {
-            if (err) {
-              triggers[pullRequest.number] = prevMergeCommitSha
-              console.error(err)
+          error => {
+            if (error) {
+              triggers.set(pullRequest.number, prevMergeCommitSha)
+              console.error(error)
               return
             }
 
