@@ -39,8 +39,8 @@ async function main({ owner, repo, token, commitSha, state, targetUrl }) {
     sha: commitSha,
     state,
     target_url: targetUrl,
-    description,
-    context
+    description: description.replace(/♯/g, '#'),
+    context: context.replace(/♯/g, '#')
   })
 }
 
