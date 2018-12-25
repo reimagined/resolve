@@ -115,7 +115,7 @@ const Features = props => (
         title: '## Everything you need in one place.'
       },
       {
-        content: `With CQRS and Event Sourciing, your application is easier to develop, adapt, maintain and scale. 
+        content: `With CQRS and Event Sourcing, your application is easier to develop, adapt, maintain and scale. 
   Functional Java Script code is easier to test and reason about.`,
         //image: imgUrl('ddd.png'),
         imageAlign: 'top',
