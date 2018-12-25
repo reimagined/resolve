@@ -11,7 +11,7 @@ This tutorial will give an understanding of the reSolve framework and its fundam
 ## Table of Contents
 
 - [Lesson 1 - Create a New reSolve Application](#lesson-1-create-a-new-resolve-application)
-- [Lesson 2 - Write side - Add a List Item](lesson-2-write-side-add-a-list-item)
+- [Lesson 2 - Write side - Add a List Item](#lesson-2-write-side-add-a-list-item)
 - [Lesson 3 - Read side - Create a View Model to Query List Items](#lesson-3-read-side-create-a-view-model-to-query-list-items)
 - [Lesson 4 - Frontend - Display View Model Data in the Browser](#lesson-4-frontend-display-view-model-data-in-the-browser)
 - [Lesson 5 - Frontend - Enable Data Editing](#lesson-5-frontend-enable-data-editing)
