@@ -31,13 +31,15 @@ const triggers = {
   },
   get: pullRequestNumber => {
     try {
-      const state = JSON.parse(
-        fs
-          .readFileSync(path.join(__dirname, 'state.json'), {
-            encoding: 'utf-8'
-          })
-          .toString('utf-8')
-      )
+      const state = fs.existsSync(path.join(__dirname, 'state.json'))
+        ? JSON.parse(
+          fs
+            .readFileSync(path.join(__dirname, 'state.json'), {
+              encoding: 'utf-8'
+            })
+            .toString('utf-8')
+        )
+        : {}
       const mergeCommitSha = state[pullRequestNumber]
       return mergeCommitSha
     } catch (error) {
