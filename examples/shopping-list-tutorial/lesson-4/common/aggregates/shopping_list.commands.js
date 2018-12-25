@@ -12,7 +12,7 @@ export default {
   createShoppingItem: (state, { payload: { id, text } }) => {
     if (!id) throw new Error('id is required')
     if (!text) throw new Error('text is required')
-    if (!state || Object.keys(state).length === 0) {
+    if (!state || !state.createdAt) {
       throw new Error(`shopping list does not exist`)
     }
     return {

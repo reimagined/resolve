@@ -304,7 +304,7 @@ In the example code, the SHOPPING_LIST_CREATED projection function adds the SHOP
     ...
   },
   createShoppingItem: (state, { payload: { id, text } }) => {
-    if (!state || Object.keys(state).length === 0) {
+    if (!state || !state.createdAt) {
       throw new Error(`shopping list does not exist`);
     }
     ...
@@ -640,7 +640,7 @@ export const SHOPPING_ITEM_TOGGLED = "SHOPPING_ITEM_TOGGLED";
 [embedmd]:# (../examples/shopping-list-tutorial/lesson-5/common/aggregates/shopping_list.commands.js /^[[:blank:]]+toggleShoppingItem/   /^[[:blank:]]{2}\}/)
 ```js
   toggleShoppingItem: (state, { payload: { id } }) => {
-    if (!state || Object.keys(state).length === 0) {
+    if (!state || !state.createdAt) {
       throw new Error(`shopping list does not exist`)
     }
     if (!id) throw new Error('id is required')
