@@ -371,7 +371,7 @@ success:
   stage: finish
   when: on_success
   tags:
-    - macos
+    - any
   only:
     variables:
       - $CI_PIPELINE_TRIGGERED == 'true'
@@ -384,7 +384,7 @@ failure:
   stage: finish
   when: on_failure
   tags:
-    - macos
+    - any
   only:
     variables:
       - $CI_PIPELINE_TRIGGERED == 'true'
