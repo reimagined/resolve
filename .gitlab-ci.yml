@@ -114,8 +114,8 @@ checks:
     - cd resolve-$CI_PIPELINE_ID/
     - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
     - npx npm-run-all -p test lint
-  after_script:
     - node ci-cd/job-status/index.js --end
+  after_script:
     - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "2. Unit tests" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "2. Unit tests" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
 
 functional-tests:
@@ -141,8 +141,8 @@ functional-tests:
     - cd resolve-$CI_PIPELINE_ID/
     - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
     - yarn test:functional safari
-  after_script:
     - node ci-cd/job-status/index.js --end
+  after_script:
     - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "3. Functional tests" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "3. Functional tests" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
 
 #################
@@ -219,8 +219,8 @@ eslint + prettier:
     - cd resolve-$CI_PIPELINE_ID/
     - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
     - yarn lint
-  after_script:
     - node ci-cd/job-status/index.js --end
+  after_script:
     - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "2. ESLint + Prettier" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "2. ESLint + Prettier" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
 
 unit-tests:
@@ -242,8 +242,8 @@ unit-tests:
   script:
     - cd resolve-$CI_PIPELINE_ID/
     - yarn test
-  after_script:
     - node ci-cd/job-status/index.js --end
+  after_script:
     - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "3. Unit-tests" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "3. Unit-tests" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
 
 macOS (create-resolve-app + functional-tests):
@@ -292,8 +292,8 @@ macOS (create-resolve-app + functional-tests):
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js -c $MERGE_COMMIT_SHA -e with-styled-components with-styled-components
     - cd with-styled-components
     - npm run test:functional safari
-  after_script:
     - node ci-cd/job-status/index.js --end
+  after_script:
     - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "4. Functional-tests (macOS)" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "4. Functional-tests (macOS)" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
     
 ubuntu (create-resolve-app + functional-tests):
@@ -343,8 +343,8 @@ ubuntu (create-resolve-app + functional-tests):
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js -c $MERGE_COMMIT_SHA -e with-styled-components with-styled-components
     - cd with-styled-components
     - yarn test:functional chromium
-  after_script:
     - node ci-cd/job-status/index.js --end
+  after_script:
     - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "5. Functional-tests (Ubuntu)" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "5. Functional-tests (Ubuntu)" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
 
 ubuntu (integration-tests):
