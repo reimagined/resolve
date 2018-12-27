@@ -20,10 +20,6 @@ const appConfig = {
       projection: 'common/view-models/shopping_list.projection.js'
     }
   ],
-  sagas: [],
-  auth: {
-    strategies: 'auth/index.js'
-  },
   redux: {
     store: 'client/store/index.js',
     reducers: 'client/reducers/index.js',

@@ -1,4 +1,5 @@
 const devConfig = {
+  target: 'local',
   port: 3000,
   polyfills: ['@babel/polyfill'],
   mode: 'development',
@@ -6,7 +7,6 @@ const devConfig = {
   staticPath: 'static',
   staticDir: 'static',
   distDir: 'dist',
-
   storageAdapter: {
     module: 'resolve-storage-lite',
     options: {

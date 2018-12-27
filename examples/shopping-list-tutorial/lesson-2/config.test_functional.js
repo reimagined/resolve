@@ -1,4 +1,5 @@
 const testFunctionalConfig = {
+  target: 'local',
   port: 3000,
   polyfills: ['@babel/polyfill'],
   mode: 'development',
