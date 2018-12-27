@@ -91,7 +91,7 @@ For example, if you want to grant permissions to a user, you can write something
 
 Write side. "user" aggregate:
 
-user.commands.js:
+**user.commands.js:**
 
 ```js
 ...
@@ -111,7 +111,7 @@ grantPermission: (state, command) => {
 ...
 ```
 
-user.projection.js:
+**user.projection.js:**
 
 ```js
 ...
@@ -140,7 +140,7 @@ users.projection.js:
 ...
 ```
 
-users.resolvers.js:
+**users.resolvers.js:**
 
 ```js
 ...

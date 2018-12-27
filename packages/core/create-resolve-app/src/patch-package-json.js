@@ -1,3 +1,5 @@
+import { localRegistry as server } from './constants'
+
 const patchPackageJson = ({
   console,
   chalk,
@@ -6,7 +8,9 @@ const patchPackageJson = ({
   applicationName,
   applicationPath,
   applicationPackageJsonPath,
-  resolvePackages
+  resolvePackages,
+  safeName,
+  localRegistry
 }) => async () => {
   console.log()
   console.log(chalk.green('Patch package.json'))
@@ -64,7 +68,11 @@ const patchPackageJson = ({
       if (packageJson[namespace]) {
         for (const packageName of Object.keys(packageJson[namespace])) {
           if (listPackageNamesForPatching.includes(packageName)) {
-            packageJson[namespace][packageName] = resolveVersion
+            packageJson[namespace][packageName] = localRegistry
+              ? `${server.protocol}://${server.host}:${server.port}/${safeName(
+                  packageName
+                )}.tgz`
+              : resolveVersion
           }
         }
       }

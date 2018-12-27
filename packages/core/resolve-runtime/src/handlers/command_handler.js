@@ -32,7 +32,7 @@ const commandHandler = async (req, res) => {
 
     await res.status(200)
     await res.setHeader('Content-Type', 'text/plain')
-    await res.json(event)
+    await res.end(JSON.stringify(event, null, 2))
 
     resolveLog(
       'debug',

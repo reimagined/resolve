@@ -13,14 +13,16 @@ Since the write side is used only to perform commands, your aggregate can be pre
 
 See Martin Fowler's definition for aggregates in the DDD paradigm: [https://martinfowler.com/bliki/DDD_Aggregate.html](https://martinfowler.com/bliki/DDD_Aggregate.html)
 
-In reSolve, an aggregate is a static object that contains a set of functions. Functions that build aggregate
-state from events are called [projections](#aggregate-projection-function).
-Functions that execute commands - [command handlers](#aggregate-command-handlers).
-Aggregate state is passed to each of these functions explicitly as an argument.
+In reSolve, an aggregate is a static object that contains a set of functions. of the following two kinds:
+
+- [Projections](#aggregate-projection-function) - build aggregate state base from events.
+- [Command Handlers](#aggregate-command-handlers) - execute commands.
+
+Aggregate state is explicitly passed to all of these functions as an argument.
 
 ## Aggregate ID
 
-Each aggregate should have a unique ID that is immutable during its lifetime. An Aggregate ID should be unique in the given event store, however we recommend to also keep it
+Each aggregate should have a unique ID that is immutable during the aggregate's lifetime. An Aggregate ID should stay unique in the given event store, however we also recommend to keep it
 globally unique. We recommend generating Aggregate IDs using [UUID v4](https://github.com/kelektiv/node-uuid#version-4) or [cuid](https://github.com/ericelliott/cuid) for distributed scalable apps.
 
 Please note that you have to generate a new Aggregate ID and send it with a command that creates a new aggregate.
@@ -46,14 +48,14 @@ aggregates: [
 
 ## Sending a Command
 
-You can emit a command in the following use-case scenarios:
+You can emit aggregate commands in the following cases:
 
 - [Sending commands from the client](#sending-commands-from-the-client)
 - [Emitting commands on the server](#emitting-commands-on-the-server)
 
 ### Sending Commands From the Client
 
-The reSolve framework exposes [HTTP API](api-reference.md#commands-http-api) that you can use to to send commands from the client side. Depending on the architecture of your web application's front-end, you can use this API interface directly or using the **Redux** bindings provided by the **[resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-redux)** library.
+The reSolve framework exposes an [HTTP API](api-reference.md#commands-http-api) that you can use to to send commands from the client side. Depending on the architecture of your web application's front-end, you can use this API directly or using the **Redux** binding mechanism provided by the **[resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-redux)** library.
 
 You can send a command from the client side by sending a POST request to the following URL:
 
@@ -121,9 +123,9 @@ For the full code sample, refer to the [with-saga](https://github.com/reimagined
 
 ## Aggregate Command Handlers
 
-The aggregate command handlers object associates command handlers with command names. A command handler receives a state accumulated by the aggregate [Projection](#aggregate-projection-function).
+An aggregate command handlers object associates command handlers with command names. Each command handler receives a state accumulated by the aggregate [Projection](#aggregate-projection-function).
 
-A command handler should return an event object that is then saved to the [event store](#event-store). A returned object should specify an event type and some **payload** specific to this event type.
+A command handler should return an event object that is then saved to the [event store](#event-store). A returned object should specify an event type and a **payload** specific to this event type.
 
 A typical **Commands** object structure:
 
@@ -144,9 +146,9 @@ export default {
 
 ## Aggregate Projection Function
 
-Projection functions are used to calculate an aggregate state based on the agreggate's events. A projection function receives a previous state and event to be applied. A projection function should return a new state based on the input. The computed state is then passed to the corresponding [command handler](#aggregate-command-handlers).
+Projection functions are used to calculate an aggregate state based on the agreggate's events. A projection function receives a previous state and event to be applied. A projection function should return a new state based on the input. The returned state is then passed to the corresponding [command handler](#aggregate-command-handlers).
 
-The Init function returns initial state of the aggregate.
+The **Init** function returns initial state of the aggregate.
 
 A typical **Projection** object structure:
 

@@ -65,6 +65,7 @@
     "clean": "npx oao all \"npx rimraf dist lib es\" --parallel && npx rimraf yarn-error.log && npx oao clean",
     "lint": "eslint .",
     "prepare": "node ./babel.compile.js --run",
+    "local-registry": "node ./babel.compile.js --local-registry",
     "prettier": "prettier --write \"**/**.{js,json}\"",
     "publish": "npx oao publish -i \"examples/*\" --no-git-commit --no-changelog",
     "test": "npx oao all -i \"examples/shopping-list-advanced\" \"yarn test --color 2>&1\"",
