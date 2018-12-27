@@ -1,4 +1,4 @@
-import { SHOPPING_LIST_CREATED } from "../eventTypes";
+import { SHOPPING_LIST_CREATED } from '../eventTypes'
 
 export default {
   Init: () => ({}),
@@ -6,4 +6,4 @@ export default {
     ...state,
     createdAt: timestamp
   })
-};
+}

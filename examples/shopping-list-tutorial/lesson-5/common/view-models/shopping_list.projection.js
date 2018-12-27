@@ -2,7 +2,7 @@ import {
   SHOPPING_LIST_CREATED,
   SHOPPING_ITEM_CREATED,
   SHOPPING_ITEM_TOGGLED
-} from "../eventTypes";
+} from '../eventTypes'
 
 export default {
   Init: () => null,
@@ -33,4 +33,4 @@ export default {
         : item
     )
   })
-};
+}

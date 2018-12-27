@@ -1,4 +1,4 @@
-import { SHOPPING_LIST_CREATED, SHOPPING_ITEM_CREATED } from "../eventTypes";
+import { SHOPPING_LIST_CREATED, SHOPPING_ITEM_CREATED } from '../eventTypes'
 
 export default {
   Init: () => null,
@@ -18,4 +18,4 @@ export default {
       }
     ]
   })
-};
+}
