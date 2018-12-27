@@ -50,6 +50,6 @@ void (async () => {
   }
 })().catch(error => {
   // eslint-disable-next-line no-console
-  process.exit(1)
   console.log(error)
+  process.exit(1)
 })
