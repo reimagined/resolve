@@ -1,6 +1,6 @@
 {
   "name": "@shopping-list-advanced/ui",
-  "version": "0.18.16",
+  "version": "0.18.17",
   "private": true,
   "main": "./src/index.js",
   "scripts": {
@@ -17,7 +17,7 @@
     "react-dom": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-31.0.1.tar.gz",
     "redux": "4.0.1",
-    "resolve-redux": "0.18.16",
+    "resolve-redux": "0.18.17",
     "regenerator-runtime": "0.12.1",
     "jest": "23.6.0",
     "jest-expo": "31.0.0",
