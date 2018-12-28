@@ -14,9 +14,9 @@
   "dependencies": {
     "@babel/node": "7.0.0",
     "@babel/polyfill": "7.0.0",
-    "react": "16.6.3",
+    "react": "16.7.0",
+    "react-dom": "16.7.0",
     "react-bootstrap": "0.32.1",
-    "react-dom": "16.6.3",
     "react-helmet": "5.2.0",
     "redux": "4.0.1",
     "resolve-bus-memory": "0.18.17",

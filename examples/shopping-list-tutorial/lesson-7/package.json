@@ -1,5 +1,5 @@
 {
-  "name": "shopping-list",
+  "name": "@shopping-list-tutorial/lesson-7",
   "version": "0.18.17",
   "private": true,
   "scripts": {
@@ -12,9 +12,9 @@
   "dependencies": {
     "@babel/node": "7.0.0",
     "@babel/polyfill": "7.0.0",
-    "react": "16.5.2",
+    "react": "16.7.0",
+    "react-dom": "16.7.0",
     "react-bootstrap": "0.32.1",
-    "react-dom": "16.5.2",
     "react-helmet": "5.2.0",
     "react-redux": "5.1.1",
     "react-router": "4.3.1",

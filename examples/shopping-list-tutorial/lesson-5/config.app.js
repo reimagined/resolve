@@ -13,12 +13,7 @@ const appConfig = {
       name: 'ShoppingList',
       projection: 'common/view-models/shopping_list.projection.js'
     }
-  ],
-  redux: {
-    store: 'client/store/index.js',
-    reducers: 'client/reducers/index.js',
-    middlewares: 'client/middlewares/index.js'
-  }
+  ]
 }
 
 export default appConfig

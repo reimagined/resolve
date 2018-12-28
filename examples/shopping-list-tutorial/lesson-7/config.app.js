@@ -11,7 +11,8 @@ const appConfig = {
     {
       name: 'ShoppingLists',
       projection: 'common/read-models/shopping_lists.projection.js',
-      resolvers: 'common/read-models/shopping_lists.resolvers.js'
+      resolvers: 'common/read-models/shopping_lists.resolvers.js',
+      adapterName: 'default'
     }
   ],
   viewModels: [
@@ -21,9 +22,10 @@ const appConfig = {
     }
   ],
   redux: {
-    store: 'client/store/index.js',
-    reducers: 'client/reducers/index.js',
-    middlewares: 'client/middlewares/index.js'
+    reducers: {
+      optimisticShoppingLists: 'client/reducers/optimistic_shopping_lists.js'
+    },
+    middlewares: ['client/middlewares/optimistic_shopping_lists_middleware.js']
   }
 }
 
