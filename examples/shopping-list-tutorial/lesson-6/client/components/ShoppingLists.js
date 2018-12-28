@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, ControlLabel, Table } from 'react-bootstrap'
+import { ControlLabel, Table } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 class ShoppingLists extends React.PureComponent {

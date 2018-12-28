@@ -6,7 +6,6 @@ import { connect } from 'react-redux'
 
 import ShoppingLists from '../components/ShoppingLists'
 import ShoppingListCreator from '../components/ShoppingListCreator'
-import Image from './Image'
 
 class MyLists extends React.PureComponent {
   render() {
@@ -29,6 +28,7 @@ export const mapStateToOptions = () => ({
   resolverArgs: {}
 })
 
+// eslint-disable-next-line no-unused-vars
 export const mapStateToProps = (state, ownProps) => ({
   lists: state.optimisticShoppingLists || []
 })

@@ -28,6 +28,7 @@ export const mapStateToOptions = () => ({
   resolverArgs: {}
 })
 
+// eslint-disable-next-line no-unused-vars
 export const mapStateToProps = (state, ownProps) => ({
   lists: state.optimisticShoppingLists || []
 })

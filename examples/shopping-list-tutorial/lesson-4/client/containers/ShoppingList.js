@@ -19,6 +19,7 @@ export class ShoppingList extends React.PureComponent {
   }
 }
 
+// eslint-disable-next-line no-unused-vars
 export const mapStateToOptions = (state, ownProps) => {
   return {
     viewModelName: 'ShoppingList',
