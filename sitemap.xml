@@ -16,5 +16,6 @@
 <url> <loc>https://reimagined.github.io/resolve/docs/</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://reimagined.github.io/resolve/docs/" /> </url>
 <url> <loc>https://reimagined.github.io/resolve/docs/app-structure</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://reimagined.github.io/resolve/docs/app-structure" /> </url>
 <url> <loc>https://reimagined.github.io/resolve/docs/troubleshooting</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://reimagined.github.io/resolve/docs/troubleshooting" /> </url>
+<url> <loc>https://reimagined.github.io/resolve/docs/tutorial</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://reimagined.github.io/resolve/docs/tutorial" /> </url>
 <url> <loc>https://reimagined.github.io/resolve/docs/write-side</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://reimagined.github.io/resolve/docs/write-side" /> </url>
 </urlset>
