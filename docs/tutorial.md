@@ -53,6 +53,8 @@ $ yarn run dev
 
 ## **Lesson 2** - Write side - Add a List Item
 
+[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-2)
+
 This lesson will teach you how to implement a basic write side for your reSolve application. An application's [write side](resolve-app-structure.md#write-and-read-sides) is responsible for handling commands, performing input validation and emitting **events** based on valid commands. The emitted events are then saved to the **event store**.
 
 In CQRS and Event Sourcing paradigms, commands are handled by Domain Objects, which are grouped into aggregates. ReSolve implements aggregates as static objects containing sets of functions. These functions can of one of the following two kinds:
@@ -389,6 +391,8 @@ Command error: shopping list does not exist
 
 ## **Lesson 3** - Read side - Create a View Model to Query List Items
 
+[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-3)
+
 Currently, your shopping list application has a fully functional write side allowing you to create shopping lists and items in these lists. However, it does not provide means to query the created data. This lesson will teach you how to provide your application with the capability to answer data queries by implementing the application's **[read side](resolve-app-structure.md#write-and-read-sides)**.
 
 ### Implement a View Model
@@ -504,6 +508,8 @@ http://{host}:{port}/api/query/{viewModel}/{aggregateIds}
 
 ## **Lesson 4** - Frontend - Display View Model Data in the Browser
 
+[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-4)
+
 In the previous lesson, you modified your application so that it can answer queries. However, at this moment, your application does not provide a [frontent](frontend.md) that would present this data to an end-user. In this lesson, you will learn how to create a React frontend to display your reSolve application's data.
 
 To keep the example code simple, in this lesson you will only display items of a single shopping list. Later on, you will add support for multiple shopping lists and provide the required means of navigation between lists.
@@ -613,6 +619,8 @@ Run your application to see the result:
 ---
 
 ## **Lesson 5** - Frontend - Enable Data Editing
+
+[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-5)
 
 ### Modify Backend Functionality
 
@@ -811,6 +819,8 @@ After these steps, your application's client UI should look as shown below.
 ---
 
 ## **Lesson 6** - Frontend - Support Multiple Shopping Lists
+
+[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-6)
 
 In the previous two lessons, you have been implementing the client-side UI for viewing and editing items in a shopping list. However, you may have noticed that your application's functionality is incomplete: it is possible use HTTP API to create multiple shopping lists, but the client UI only allows viewing and editing only one specific list, namely **shopping-list-1**:
 
@@ -1209,6 +1219,8 @@ Now, if you run your application and create a new shopping list, the created sho
 ---
 
 ## **Lesson 7** - Functionality Enhancements
+
+[\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-7)
 
 In this lesson, you will provide miscellaneous functionality enhancements to your Shopping List application in order to support the full set of data editing operations. These steps are not essential, but they will help you further deepen your understanding of the reSolve framework's fundamentals.
 
