@@ -4,13 +4,13 @@ const host = process.env.HOST || 'localhost'
 const MAIN_PAGE = `http://${host}:3000`
 
 // eslint-disable-next-line no-unused-expressions, no-undef
-fixture`Hello, world!`.beforeEach(async t => {
+fixture`Shopping List`.beforeEach(async t => {
   await t.setNativeDialogHandler(() => true)
   await t.navigateTo(MAIN_PAGE)
 })
 
 test('home page', async t => {
   await t
-    .expect(await Selector('h1').withText('Hello, reSolve world!').exists)
+    .expect(await Selector('h1').withText('Shopping List').exists)
     .eql(true)
 })

@@ -7,12 +7,9 @@ const testFunctionalConfig = {
   staticPath: 'static',
   staticDir: 'static',
   distDir: 'dist',
-
   storageAdapter: {
     module: 'resolve-storage-lite',
-    options: {
-      pathToFile: 'event-storage.db'
-    }
+    options: {}
   },
   busAdapter: {
     module: 'resolve-bus-memory',

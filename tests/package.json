@@ -21,8 +21,8 @@
     "enzyme": "3.3.0",
     "enzyme-adapter-react-16": "1.1.1",
     "jest": "23.6.0",
-    "regenerator-runtime": "0.12.1",
+    "regenerator-runtime": "0.13.1",
     "sinon": "6.3.4",
-    "testcafe": "0.22.0"
+    "testcafe": "0.23.3"
   }
 }

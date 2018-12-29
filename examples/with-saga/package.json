@@ -43,10 +43,10 @@
     "@babel/preset-env": "7.0.0",
     "@babel/preset-react": "7.0.0",
     "babel-core": "^7.0.0-0",
-    "regenerator-runtime": "0.12.1",
+    "regenerator-runtime": "0.13.1",
     "babel-jest": "23.6.0",
     "jest": "23.6.0",
-    "react-test-renderer": "16.6.3",
-    "testcafe": "0.22.0"
+    "react-test-renderer": "16.7.0",
+    "testcafe": "0.23.3"
   }
 }
