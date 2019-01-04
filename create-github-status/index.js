@@ -48,11 +48,12 @@ main({
   owner: 'reimagined',
   repo: 'resolve',
   token: process.env.GITHUB_RESOLVE_TOKEN,
-  commitSha: process.env.HEAD_COMMIT_SHA,
+  commitSha: process.env.SOURCE_BRANCH_SHA,
   state,
   targetUrl,
   description,
   context
 }).catch(error => {
   console.error(error)
+  process.exit(1)
 })

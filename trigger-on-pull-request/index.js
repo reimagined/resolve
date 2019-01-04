@@ -61,6 +61,7 @@ async function main({ gitlab, github, refreshTime }) {
       ) {
         triggers.set(pullRequest.number, pullRequest.merge_commit_sha)
 
+        console.log('pullRequest.head.sha', pullRequest.head.sha)
         // TODO. Use require('gitlab'). https://github.com/jdalrymple/node-gitlab/issues/254
         request(
           {
@@ -72,7 +73,6 @@ async function main({ gitlab, github, refreshTime }) {
               variables: {
                 PULL_REQUEST_NAME: `${pullRequest.title}`,
                 PULL_REQUEST_NUMBER: `${pullRequest.number}`,
-                HEAD_COMMIT_SHA: `${pullRequest.head.sha}`,
                 MERGE_COMMIT_SHA: `${pullRequest.merge_commit_sha}`,
                 SOURCE_BRANCH_NAME: `${pullRequest.head.ref}`,
                 SOURCE_BRANCH_SHA: `${pullRequest.head.sha}`,
@@ -128,4 +128,5 @@ main({
   }
 }).catch(error => {
   console.error(error)
+  process.exit(1)
 })
