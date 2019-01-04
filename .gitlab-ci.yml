@@ -32,10 +32,8 @@ ubuntu (prepare environment):
   cache:
     policy: pull-push
   script:
-    - mv ci-cd/trigger-on-pull-request/state.json state.json || true
     - rm -rf ci-cd || true
     - git clone https://github.com/reimagined/resolve.git ci-cd
-    - mv state.json ci-cd/trigger-on-pull-request/state.json || true
     - cd ci-cd
     - git fetch origin ci/cd:ci/cd
     - git checkout ci/cd

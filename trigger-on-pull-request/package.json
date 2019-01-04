@@ -5,7 +5,8 @@
   "author": "reimagined team",
   "license": "MIT",
   "dependencies": {
-    "@octokit/rest": "16.3.0",
-    "request": "2.88.0"
+    "@octokit/rest": "16.3.2",
+    "request": "2.88.0",
+    "gitlab": "5.0.0-rc.7"
   }
 }
