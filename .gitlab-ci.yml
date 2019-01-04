@@ -1,5 +1,6 @@
 stages:
-  - CI/CD
+  - prepare-environment
+  - start-environment
   - install
   - unit-tests
   - functional-tests
@@ -22,7 +23,7 @@ cache:
 ###############
 
 ubuntu (prepare environment):
-  stage: CI/CD
+  stage: prepare-environment
   tags:
     - ubuntu
   only:
@@ -38,11 +39,9 @@ ubuntu (prepare environment):
     - git fetch origin ci/cd:ci/cd
     - git checkout ci/cd
     - yarn install --frozen-lockfile --cache-folder .yarn-cache
-    - pm2 delete trigger-on-pull-request || true
-    - pm2 start trigger-on-pull-request/index.js --name trigger-on-pull-request
 
 macOS (prepare environment):
-  stage: CI/CD
+  stage: prepare-environment
   tags:
     - macos
   only:
@@ -58,6 +57,20 @@ macOS (prepare environment):
     - git fetch origin ci/cd:ci/cd
     - git checkout ci/cd
     - yarn install --frozen-lockfile --cache-folder .yarn-cache
+
+ubuntu (start environment):
+  stage: start-environment
+  tags:
+    - ubuntu
+  only:
+    - ci/cd
+  except:
+    - triggers
+  cache:
+    policy: pull
+  script:
+    - pm2 delete trigger-on-pull-request || true
+    - pm2 start trigger-on-pull-request/index.js --name trigger-on-pull-request
 
 ##################################
 # pull request -> dev or release #
