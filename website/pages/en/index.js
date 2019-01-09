@@ -138,7 +138,9 @@ To create a project called \`my-app\`, run this command:
 \`\`\`sh
 npx create-resolve-app my-app
 \`\`\`
-`,
+`
+      },
+      {
         image: imgUrl('create-resolve-app.svg'),
         imageAlign: 'bottom'
       }
