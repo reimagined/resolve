@@ -141,7 +141,8 @@ npx create-resolve-app my-app
 `
       },
       {
-        image: imgUrl('create-resolve-app.svg'),
+        image:
+          'https://raw.githubusercontent.com/reimagined/resolve/3571365c58b025cf628046a96bab23eca93367fe/website/static/img/create-resolve-app.svg?sanitize=true',
         imageAlign: 'bottom'
       }
     ]}
