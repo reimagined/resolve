@@ -141,7 +141,7 @@ npx create-resolve-app my-app
 `
       },
       {
-        image: imgUrl('create-resolve-app.gif'),
+        image: imgUrl('create-resolve-app.svg'),
         imageAlign: 'bottom'
       }
     ]}
