@@ -22,7 +22,14 @@ const testFunctionalConfig = {
   jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000
-  }
+  },
+  readModelAdapters: [
+    {
+      name: 'default',
+      module: 'resolve-readmodel-memory',
+      options: {}
+    }
+  ]
 }
 
 export default testFunctionalConfig

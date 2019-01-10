@@ -21,7 +21,49 @@ exports[`renders correctly 1`] = `
         disabled={false}
         type="checkbox"
       />
-      text
+      Milk
+    </label>
+  </li>
+  <li
+    className="list-group-item"
+  >
+    <label
+      className="checkbox-inline"
+      title=""
+    >
+      <input
+        disabled={false}
+        type="checkbox"
+      />
+      Eggs
+    </label>
+  </li>
+  <li
+    className="list-group-item"
+  >
+    <label
+      className="checkbox-inline"
+      title=""
+    >
+      <input
+        disabled={false}
+        type="checkbox"
+      />
+      Canned beans
+    </label>
+  </li>
+  <li
+    className="list-group-item"
+  >
+    <label
+      className="checkbox-inline"
+      title=""
+    >
+      <input
+        disabled={false}
+        type="checkbox"
+      />
+      Paper towels
     </label>
   </li>
 </ul>

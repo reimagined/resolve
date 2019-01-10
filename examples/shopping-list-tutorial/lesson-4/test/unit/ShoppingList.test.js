@@ -7,12 +7,29 @@ test('renders correctly', () => {
   const tree = renderer
     .create(
       <ShoppingList
-        toggleShoppingItem={() => {}}
         data={{
+          id: 'shopping-list-1',
+          name: 'List 1',
           list: [
             {
-              id: 'id',
-              text: 'text'
+              id: '1',
+              text: 'Milk',
+              checked: false
+            },
+            {
+              id: '2',
+              text: 'Eggs',
+              checked: false
+            },
+            {
+              id: '3',
+              text: 'Canned beans',
+              checked: false
+            },
+            {
+              id: '4',
+              text: 'Paper towels',
+              checked: false
             }
           ]
         }}
