@@ -80,7 +80,10 @@ class HomeSplash extends React.Component {
             <Button href={docUrl('introduction.html', language)}>
               Get Started
             </Button>
-            <Button href="https://github.com/reimagined/resolve/tree/master/examples">
+            <Button
+              href="https://github.com/reimagined/resolve/tree/master/examples"
+              target="_blank"
+            >
               See Examples
             </Button>
           </PromoSection>
