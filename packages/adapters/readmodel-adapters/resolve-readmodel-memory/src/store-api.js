@@ -1,15 +1,21 @@
 const defineTable = async (
-  { createTable, storage },
+  { getReadModel, createTable },
+  readModelName,
   tableName,
   tableDescription
 ) => {
-  storage[tableName] = createTable()
+  const table = createTable()
+  getReadModel(readModelName).content.set(tableName, table)
 
-  for (let fieldName of Object.keys(tableDescription)) {
-    if (tableDescription[fieldName] === 'regular') continue
-
+  for (let columnName of Object.keys(tableDescription)) {
+    const columnType = tableDescription[columnName]
+    if (columnType === 'regular') continue
+    const indexDescriptor = { fieldName: columnName }
+    if (columnType === 'primary-string' || columnType === 'primary-number') {
+      indexDescriptor.unique = true
+    }
     await new Promise((resolve, reject) =>
-      storage[tableName].ensureIndex({ fieldName }, err =>
+      table.ensureIndex(indexDescriptor, err =>
         !err ? resolve() : reject(err)
       )
     )
@@ -154,7 +160,8 @@ const convertSearchExpression = expression => ({
 })
 
 const find = async (
-  { storage },
+  { getReadModel },
+  readModelName,
   tableName,
   searchExpression,
   fieldList,
@@ -162,9 +169,9 @@ const find = async (
   skip,
   limit
 ) => {
-  let findCursor = await storage[tableName].find(
-    convertSearchExpression(searchExpression)
-  )
+  const table = getReadModel(readModelName).content.get(tableName)
+
+  let findCursor = await table.find(convertSearchExpression(searchExpression))
 
   if (sort) {
     findCursor = findCursor.sort(sort)
@@ -189,8 +196,16 @@ const find = async (
   )
 }
 
-const findOne = async ({ storage }, tableName, searchExpression, fieldList) => {
-  let findCursor = await storage[tableName].findOne(
+const findOne = async (
+  { getReadModel },
+  readModelName,
+  tableName,
+  searchExpression,
+  fieldList
+) => {
+  const table = getReadModel(readModelName).content.get(tableName)
+
+  let findCursor = await table.findOne(
     convertSearchExpression(searchExpression)
   )
 
@@ -205,30 +220,41 @@ const findOne = async ({ storage }, tableName, searchExpression, fieldList) => {
   )
 }
 
-const count = async ({ storage }, tableName, searchExpression) => {
+const count = async (
+  { getReadModel },
+  readModelName,
+  tableName,
+  searchExpression
+) => {
+  const table = getReadModel(readModelName).content.get(tableName)
+
   return await new Promise((resolve, reject) =>
-    storage[tableName].count(
-      convertSearchExpression(searchExpression),
-      (err, count) => (!err ? resolve(count) : reject(err))
+    table.count(convertSearchExpression(searchExpression), (err, count) =>
+      !err ? resolve(count) : reject(err)
     )
   )
 }
 
-const insert = async ({ storage }, tableName, document) => {
+const insert = async ({ getReadModel }, readModelName, tableName, document) => {
+  const table = getReadModel(readModelName).content.get(tableName)
+
   await new Promise((resolve, reject) =>
-    storage[tableName].insert(document, err => (!err ? resolve() : reject(err)))
+    table.insert(document, err => (!err ? resolve() : reject(err)))
   )
 }
 
 const update = async (
-  { storage },
+  { getReadModel },
+  readModelName,
   tableName,
   searchExpression,
   updateExpression,
   options
 ) => {
+  const table = getReadModel(readModelName).content.get(tableName)
+
   await new Promise((resolve, reject) =>
-    storage[tableName].update(
+    table.update(
       convertSearchExpression(searchExpression),
       updateExpression,
       { multi: true, upsert: !!options.upsert },
@@ -237,9 +263,16 @@ const update = async (
   )
 }
 
-const del = async ({ storage }, tableName, searchExpression) => {
+const del = async (
+  { getReadModel },
+  readModelName,
+  tableName,
+  searchExpression
+) => {
+  const table = getReadModel(readModelName).content.get(tableName)
+
   await new Promise((resolve, reject) =>
-    storage[tableName].remove(convertSearchExpression(searchExpression), err =>
+    table.remove(convertSearchExpression(searchExpression), err =>
       !err ? resolve() : reject(err)
     )
   )

@@ -1,14 +1,14 @@
 import messages from './messages'
 
 const DEFAULT_META_NAME = '__ResolveMeta__'
+const DEFAULT_TABLE_PREFIX = ''
 
 const createAdapter = (
-  buildProjection,
   checkStoreApi,
   checkTableSchema,
-  wrapApis,
-  init,
-  reset,
+  bindWithConnection,
+  bindReadModel,
+  dispose,
   implementation,
   options
 ) => {
@@ -16,6 +16,11 @@ const createAdapter = (
     options && options.metaName && options.metaName.constructor === String
       ? options.metaName
       : DEFAULT_META_NAME
+
+  const tablePrefix =
+    options && options.tablePrefix && options.tablePrefix.constructor === String
+      ? options.tablePrefix
+      : DEFAULT_TABLE_PREFIX
 
   if (
     !(implementation instanceof Object) ||
@@ -25,29 +30,33 @@ const createAdapter = (
     throw new Error(messages.invalidApiImplementation)
   }
 
+  const { connect, disconnect, drop, ...metaApi } = implementation.metaApi
+
   const pool = {
     adapterContext: Object.create(null),
-    internalContext: Object.create(null)
+    internalContext: Object.create(null),
+    bindWithConnection,
+    checkStoreApi,
+    checkTableSchema,
+    storeApi: implementation.storeApi,
+    metaApi,
+    connect,
+    metaName,
+    tablePrefix,
+    options
   }
 
-  const { metaApi, storeApi } = wrapApis(implementation, pool, {
-    checkStoredTableSchema: checkTableSchema,
-    metaName,
-    ...options
+  Object.assign(pool, {
+    disconnect: bindWithConnection(pool, disconnect),
+    drop: bindWithConnection(pool, drop)
   })
 
-  pool.storeApi = checkStoreApi({ metaApi, storeApi })
-  pool.metaApi = metaApi
-
   return Object.create(null, {
-    buildProjection: {
-      value: buildProjection.bind(null, pool)
+    bindReadModel: {
+      value: bindReadModel.bind(null, pool)
     },
-    init: {
-      value: init.bind(null, pool)
-    },
-    reset: {
-      value: reset.bind(null, pool)
+    dispose: {
+      value: dispose.bind(null, pool)
     }
   })
 }
