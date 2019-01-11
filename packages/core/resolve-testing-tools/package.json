@@ -27,7 +27,7 @@
   "dependencies": {
     "@babel/runtime": "^7.0.0",
     "jest": "23.6.0",
-    "sinon": "6.3.4",
+    "sinon": "7.2.2",
     "resolve-es": "0.18.17",
     "resolve-query": "0.18.17",
     "resolve-readmodel-memory": "0.18.17",
