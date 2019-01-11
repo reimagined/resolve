@@ -377,6 +377,23 @@ const checkAndAcquireSequence = async (
   return null
 }
 
+const checkEventProcessed = async (
+  { metaCollection },
+  readModelName,
+  aggregateId,
+  aggregateVersion
+) => {
+  const doc = await metaCollection.findOne({
+    key: 'aggregateVersionMap',
+    readModelName,
+    aggregateId
+  })
+
+  const storedVersion = doc != null ? doc.aggregateVersion : null
+
+  return storedVersion >= aggregateVersion
+}
+
 const disconnect = async ({ connection }) => {
   await connection.close()
 }
@@ -419,6 +436,7 @@ export default {
   reportDemandAccess,
   pollDemandAccess,
   checkAndAcquireSequence,
+  checkEventProcessed,
   getLastTimestamp,
   setLastTimestamp,
   beginTransaction,

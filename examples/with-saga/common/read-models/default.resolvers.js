@@ -1,6 +1,18 @@
 export default {
-  default: store => store.find('Users', {}),
-  users: store => store.find('Users', {}),
-  createdUsers: store => store.find('CreatedUsers', {}),
-  createdUser: (store, { id }) => store.findOne('CreatedUsers', { id })
+  default: async store => {
+    await store.waitEventCausalConsistency()
+    return await store.find('Users', {})
+  },
+  users: async store => {
+    await store.waitEventCausalConsistency()
+    return await store.find('Users', {})
+  },
+  createdUsers: async store => {
+    await store.waitEventCausalConsistency()
+    return await store.find('CreatedUsers', {})
+  },
+  createdUser: async (store, { id }) => {
+    await store.waitEventCausalConsistency()
+    return await store.findOne('CreatedUsers', { id })
+  }
 }
