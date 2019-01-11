@@ -14,6 +14,11 @@ module.exports = {
   globals: {
     resolveLog: true
   },
+  settings: {
+    react: {
+      version: '16.5'
+    }
+  },
   rules: {
     'func-names': 'off',
     'no-underscore-dangle': 'off',

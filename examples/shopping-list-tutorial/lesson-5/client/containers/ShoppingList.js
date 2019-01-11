@@ -44,7 +44,7 @@ export class ShoppingList extends React.PureComponent {
   }
 
   render() {
-    const list = this.props.data.list
+    const list = (this.props.data && this.props.data.list) || []
     const toggleShoppingItem = this.props.toggleShoppingItem
 
     return (
@@ -90,6 +90,7 @@ export class ShoppingList extends React.PureComponent {
   }
 }
 
+// eslint-disable-next-line no-unused-vars
 export const mapStateToOptions = (state, ownProps) => {
   return {
     viewModelName: 'ShoppingList',

@@ -3,7 +3,8 @@ import {
   build,
   start,
   watch,
-  runTestcafe
+  runTestcafe,
+  merge
 } from 'resolve-scripts'
 
 import appConfig from './config.app'
@@ -16,39 +17,27 @@ const launchMode = process.argv[2]
 void (async () => {
   switch (launchMode) {
     case 'dev': {
-      await watch({
-        ...defaultResolveConfig,
-        ...appConfig,
-        ...devConfig
-      })
+      await watch(merge(defaultResolveConfig, appConfig, devConfig))
       break
     }
 
     case 'build': {
-      await build({
-        ...defaultResolveConfig,
-        ...appConfig,
-        ...prodConfig
-      })
+      await build(merge(defaultResolveConfig, appConfig, prodConfig))
       break
     }
 
     case 'start': {
-      await start({
-        ...defaultResolveConfig,
-        ...appConfig,
-        ...prodConfig
-      })
+      await start(merge(defaultResolveConfig, appConfig, prodConfig))
       break
     }
 
     case 'test:functional': {
       await runTestcafe({
-        resolveConfig: {
-          ...defaultResolveConfig,
-          ...appConfig,
-          ...testFunctionalConfig
-        },
+        resolveConfig: merge(
+          defaultResolveConfig,
+          appConfig,
+          testFunctionalConfig
+        ),
         functionalTestsDir: 'test/functional',
         browser: process.argv[3]
       })
@@ -62,4 +51,5 @@ void (async () => {
 })().catch(error => {
   // eslint-disable-next-line no-console
   console.log(error)
+  process.exit(1)
 })

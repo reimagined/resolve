@@ -14,9 +14,9 @@
   "dependencies": {
     "@babel/node": "7.0.0",
     "@babel/polyfill": "7.0.0",
-    "react": "16.6.3",
+    "react": "16.7.0",
+    "react-dom": "16.7.0",
     "react-bootstrap": "0.32.1",
-    "react-dom": "16.6.3",
     "react-helmet": "5.2.0",
     "redux": "4.0.1",
     "resolve-bus-memory": "0.18.17",
@@ -40,7 +40,7 @@
     "@babel/preset-react": "7.0.0",
     "autoprefixer": "8.6.5",
     "babel-core": "^7.0.0-0",
-    "regenerator-runtime": "0.12.1",
+    "regenerator-runtime": "0.13.1",
     "babel-jest": "23.6.0",
     "css-loader": "1.0.0",
     "extract-text-webpack-plugin": "4.0.0-beta.0",
@@ -48,8 +48,8 @@
     "jest-css-modules-transform": "2.0.0",
     "postcss-import": "11.1.0",
     "postcss-loader": "2.1.5",
-    "react-test-renderer": "16.6.3",
+    "react-test-renderer": "16.7.0",
     "style-loader": "0.21.0",
-    "testcafe": "0.22.0"
+    "testcafe": "0.23.3"
   }
 }

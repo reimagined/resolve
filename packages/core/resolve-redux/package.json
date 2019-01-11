@@ -38,11 +38,11 @@
   },
   "devDependencies": {
     "jest": "23.6.0",
-    "react": "16.6.3",
-    "react-dom": "16.6.3",
-    "react-test-renderer": "16.6.3",
+    "react": "16.7.0",
+    "react-dom": "16.7.0",
+    "react-test-renderer": "16.7.0",
     "redux": "4.0.1",
-    "sinon": "6.3.4"
+    "sinon": "7.2.2"
   },
   "peerDependencies": {
     "react": "^16.5.0",

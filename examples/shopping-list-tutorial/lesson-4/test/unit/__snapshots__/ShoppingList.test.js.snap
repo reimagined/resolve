@@ -1,0 +1,70 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<ul
+  className="list-group"
+  style={
+    Object {
+      "margin": "auto",
+      "maxWidth": "500px",
+    }
+  }
+>
+  <li
+    className="list-group-item"
+  >
+    <label
+      className="checkbox-inline"
+      title=""
+    >
+      <input
+        disabled={false}
+        type="checkbox"
+      />
+      Milk
+    </label>
+  </li>
+  <li
+    className="list-group-item"
+  >
+    <label
+      className="checkbox-inline"
+      title=""
+    >
+      <input
+        disabled={false}
+        type="checkbox"
+      />
+      Eggs
+    </label>
+  </li>
+  <li
+    className="list-group-item"
+  >
+    <label
+      className="checkbox-inline"
+      title=""
+    >
+      <input
+        disabled={false}
+        type="checkbox"
+      />
+      Canned beans
+    </label>
+  </li>
+  <li
+    className="list-group-item"
+  >
+    <label
+      className="checkbox-inline"
+      title=""
+    >
+      <input
+        disabled={false}
+        type="checkbox"
+      />
+      Paper towels
+    </label>
+  </li>
+</ul>
+`;

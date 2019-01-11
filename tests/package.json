@@ -4,17 +4,12 @@
   "description": "API tests for resolve",
   "private": true,
   "scripts": {
-    "test:integrational": "jest --config=../jest.config.js --testMatch=**/*.test.js",
-    "test": "echo Integrational tests"
-  },
-  "dependencies": {
-    "resolve-readmodel-memory": "0.18.17",
-    "resolve-query": "0.18.17",
-    "resolve-testing-tools": "0.18.17"
+    "test": "echo || exit 0",
+    "test:integrational": "jest --config=../jest.config.js --testMatch=**/*.test.js"
   },
   "devDependencies": {
     "jest": "23.6.0",
-    "sinon": "6.3.4",
+    "sinon": "7.2.2",
     "uuid": "3.3.2",
     "resolve-testing-tools": "0.18.17",
     "resolve-query": "0.18.17",

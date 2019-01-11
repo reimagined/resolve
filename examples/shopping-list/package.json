@@ -15,9 +15,9 @@
     "@babel/node": "7.0.0",
     "@babel/polyfill": "7.0.0",
     "isomorphic-fetch": "2.2.1",
-    "react": "16.6.3",
+    "react": "16.7.0",
+    "react-dom": "16.7.0",
     "react-bootstrap": "0.32.1",
-    "react-dom": "16.6.3",
     "react-helmet": "5.2.0",
     "react-redux": "5.1.1",
     "react-router": "4.3.1",
@@ -46,11 +46,11 @@
     "@babel/preset-react": "7.0.0",
     "babel-core": "^7.0.0-0",
     "resolve-testing-tools": "0.18.17",
-    "regenerator-runtime": "0.12.1",
+    "regenerator-runtime": "0.13.1",
     "babel-jest": "23.6.0",
     "enzyme": "3.6.0",
     "jest": "23.6.0",
-    "react-test-renderer": "16.6.3",
-    "testcafe": "0.22.0"
+    "react-test-renderer": "16.7.0",
+    "testcafe": "0.23.3"
   }
 }

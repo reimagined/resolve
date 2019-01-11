@@ -9,7 +9,7 @@ import {
 
 export default {
   createShoppingList: (state, { payload: { name } }) => {
-    if (state.createdAt) throw new Error('Shopping List already exists')
+    if (state.createdAt) throw new Error('shopping list already exists')
     if (!name) throw new Error('name is required')
     return {
       type: SHOPPING_LIST_CREATED,
