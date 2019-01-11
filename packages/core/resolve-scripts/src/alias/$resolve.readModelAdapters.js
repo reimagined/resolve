@@ -19,6 +19,8 @@ export default ({ resolveConfig, isClient }) => {
   const constants = [``]
   const exports = [`const readModelAdapters = []`]
 
+  const readModelAdaptersNames = new Set()
+
   for (let index = 0; index < resolveConfig.readModelAdapters.length; index++) {
     const readModelAdapter = resolveConfig.readModelAdapters[index]
 
@@ -30,6 +32,13 @@ export default ({ resolveConfig, isClient }) => {
     constants.push(
       `const name_${index} = ${JSON.stringify(readModelAdapter.name)}`
     )
+
+    if (readModelAdaptersNames.has(readModelAdapter.name)) {
+      throw new Error(
+        `Duplicate read model adapter: .readModelAdapters[${index}].name`
+      )
+    }
+    readModelAdaptersNames.add(readModelAdapter.name)
 
     importResource({
       resourceName: `factory_${index}`,
@@ -45,9 +54,9 @@ export default ({ resolveConfig, isClient }) => {
     })
 
     exports.push(`readModelAdapters.push({
-        name: name_${index},
-        factory: factory_${index}
-        })`)
+      name: name_${index},
+      factory: factory_${index}
+    })`)
   }
 
   exports.push(`export default readModelAdapters`)

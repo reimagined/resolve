@@ -1,6 +1,6 @@
 import createReadModel from './create-read-model'
-import init from './init'
-import getModelReadInterface from './get-model-read-interface'
+import connect from './connect'
+import loadEvents from './load-events'
 import getLastError from './get-last-error'
 import read from './read'
 import readAndSerialize from './read-and-serialize'
@@ -11,8 +11,8 @@ import projectionInvoker from './projection-invoker'
 
 export default createReadModel.bind(
   null,
-  init,
-  getModelReadInterface,
+  connect,
+  loadEvents,
   getLastError,
   read,
   readAndSerialize,

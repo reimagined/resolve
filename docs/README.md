@@ -11,6 +11,8 @@ title: reSolve Documentation
   - [Examples](introduction.md#examples)
   - [Learning Resouces](introduction.md#learning-resouces)
 
+- [Step-by-Step Tutorial](tutorial.md)
+
 #### Basics
 
 - [reSolve app structure](resolve-app-structure.md)

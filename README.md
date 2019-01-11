@@ -69,6 +69,8 @@ npx create-resolve-app resolve-example -e shopping-list
 
 You can find reSolve documentation in the [docs section](./docs).
 
+To get started with reSolve, see the [step-by-step tutorial](./docs/tutorial.md).
+
 ## :loudspeaker: Get in Touch
 
 - Ask questions on Stackoverlow with [resolvejs tag](https://stackoverflow.com/questions/ask?tags=resolvejs)

@@ -405,8 +405,8 @@ const defineTable = async (
     tableName
   )
   const tableSchema = checkAndGetTableMetaSchema(tableName, inputTableSchema)
-  await storeApi.defineTable(tableName, tableSchema)
   await metaApi.describeTable(tableName, tableSchema)
+  await storeApi.defineTable(tableName, tableSchema)
 }
 
 const find = async (

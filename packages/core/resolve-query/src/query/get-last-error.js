@@ -3,7 +3,7 @@ const getLastError = async (
   { modelName, ...options }
 ) => {
   checkQueryDisposeState(disposePromise)
-  const executor = getExecutor(executors, modelName)
+  const executor = getExecutor({ executors }, modelName)
   return await executor.getLastError(options)
 }
 
