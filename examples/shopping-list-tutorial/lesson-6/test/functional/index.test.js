@@ -11,12 +11,6 @@ fixture`Shopping List`.beforeEach(async t => {
   await t.navigateTo(MAIN_PAGE)
 })
 
-test('home page', async t => {
-  await t
-    .expect(await Selector('h1').withText('Shopping List').exists)
-    .eql(true)
-})
-
 test('createShoppingList', async () => {
   const command = {
     aggregateName: 'ShoppingList',
@@ -234,4 +228,57 @@ test('query should works correctly', async () => {
       }
     ]
   })
+})
+
+test('create first shopping list', async t => {
+  await t.typeText(Selector('input[type=text]'), 'First Shopping List')
+  await t.click(Selector('button').withText('Add Shopping List'))
+
+  await t.expect(await Selector('td > a').count).eql(2)
+})
+
+test('create second shopping list', async t => {
+  await t.typeText(Selector('input[type=text]'), 'Second Shopping List')
+  await t.click(Selector('button').withText('Add Shopping List'))
+
+  await t.expect(await Selector('td > a').count).eql(3)
+})
+
+test('create items in first shopping list', async t => {
+  await t.click(Selector('a').withText('First Shopping List'))
+
+  await t.wait(3000)
+
+  await t.typeText(Selector('input[type=text]'), 'Item 1')
+  await t.click(Selector('button').withText('Add Item'))
+
+  await t.typeText(Selector('input[type=text]'), 'Item 2')
+  await t.click(Selector('button').withText('Add Item'))
+
+  await t.typeText(Selector('input[type=text]'), 'Item 3')
+  await t.click(Selector('button').withText('Add Item'))
+
+  await t.expect(Selector('label').withText('Item 1').exists).eql(true)
+  await t.expect(Selector('label').withText('Item 2').exists).eql(true)
+  await t.expect(Selector('label').withText('Item 3').exists).eql(true)
+})
+
+test('toggle items in first shopping list', async t => {
+  await t.click(Selector('a').withText('First Shopping List'))
+
+  await t.wait(3000)
+
+  await t.click(Selector('label').withText('Item 1'))
+  await t.click(Selector('label').withText('Item 2'))
+  await t.click(Selector('label').withText('Item 3'))
+
+  await t
+    .expect(Selector('label > input[type=checkbox]').nth(0).checked)
+    .eql(true)
+  await t
+    .expect(Selector('label > input[type=checkbox]').nth(1).checked)
+    .eql(true)
+  await t
+    .expect(Selector('label > input[type=checkbox]').nth(2).checked)
+    .eql(true)
 })

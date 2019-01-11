@@ -70,7 +70,8 @@
     "prettier": "prettier --write \"**/**.{js,json}\"",
     "publish": "npx oao publish -i \"examples/*\" --no-git-commit --no-changelog",
     "test": "npx oao all -i \"examples/shopping-list-advanced\" \"yarn test --color 2>&1\"",
-    "test:functional": "npx oao run-script -i \"examples/shopping-list-advanced\" test:functional",
+    "test:functional": "npx oao run-script -i \"{examples/shopping-list-advanced,examples/shopping-list-tutorial/*}\" test:functional",
+    "tutorial-test:functional": "npx oao run-script -i \"examples/*\" test:functional",
     "test:clean-snapshots": "npx oao all -i \"examples/shopping-list-advanced\"  \"yarn test -u --color 2>&1\""
   }
 }

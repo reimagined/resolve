@@ -20,11 +20,60 @@ exports[`renders correctly 1`] = `
         title=""
       >
         <input
+          checked={false}
           disabled={false}
           onChange={[Function]}
           type="checkbox"
         />
-        text
+        Milk
+      </label>
+    </li>
+    <li
+      className="list-group-item"
+    >
+      <label
+        className="checkbox-inline"
+        title=""
+      >
+        <input
+          checked={false}
+          disabled={false}
+          onChange={[Function]}
+          type="checkbox"
+        />
+        Eggs
+      </label>
+    </li>
+    <li
+      className="list-group-item"
+    >
+      <label
+        className="checkbox-inline"
+        title=""
+      >
+        <input
+          checked={false}
+          disabled={false}
+          onChange={[Function]}
+          type="checkbox"
+        />
+        Canned beans
+      </label>
+    </li>
+    <li
+      className="list-group-item"
+    >
+      <label
+        className="checkbox-inline"
+        title=""
+      >
+        <input
+          checked={false}
+          disabled={false}
+          onChange={[Function]}
+          type="checkbox"
+        />
+        Paper towels
       </label>
     </li>
   </ul>
