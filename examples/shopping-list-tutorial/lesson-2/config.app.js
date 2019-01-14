@@ -8,16 +8,7 @@ const appConfig = {
     }
   ],
   readModels: [],
-  viewModels: [],
-  sagas: [],
-  auth: {
-    strategies: 'auth/index.js'
-  },
-  redux: {
-    store: 'client/store/index.js',
-    reducers: 'client/reducers/index.js',
-    middlewares: 'client/middlewares/index.js'
-  }
+  viewModels: []
 }
 
 export default appConfig

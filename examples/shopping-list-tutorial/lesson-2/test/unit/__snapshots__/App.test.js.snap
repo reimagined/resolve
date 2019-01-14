@@ -12,12 +12,17 @@ exports[`renders correctly 1`] = `
         <p
           className="navbar-text"
         >
-          <img
-            className=""
-            src="/static/resolve-logo.png"
-          />
-           
-          Hello World Example
+          <a
+            className="navbar-link"
+            href="/"
+          >
+            <img
+              className=""
+              src="/static/resolve-logo.png"
+            />
+             
+            Shopping List
+          </a>
         </p>
         <div
           aria-expanded={null}
@@ -69,7 +74,7 @@ exports[`renders correctly 1`] = `
   <h1
     align="center"
   >
-    Hello, reSolve world!
+    Shopping List
   </h1>
 </div>
 `;

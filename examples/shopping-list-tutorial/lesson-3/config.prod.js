@@ -1,4 +1,5 @@
 const prodConfig = {
+  target: 'local',
   port: 3000,
   polyfills: ['@babel/polyfill'],
   mode: 'production',
@@ -6,7 +7,6 @@ const prodConfig = {
   staticPath: 'static',
   staticDir: 'static',
   distDir: 'dist',
-
   storageAdapter: {
     module: 'resolve-storage-lite',
     options: {
