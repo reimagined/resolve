@@ -1,6 +1,6 @@
 {
   "name": "tests",
-  "version": "0.18.17",
+  "version": "0.19.0",
   "description": "API tests for resolve",
   "private": true,
   "scripts": {
@@ -11,13 +11,13 @@
     "jest": "23.6.0",
     "sinon": "7.2.2",
     "uuid": "3.3.2",
-    "resolve-testing-tools": "0.18.17",
-    "resolve-query": "0.18.17",
-    "resolve-es": "0.18.17",
-    "resolve-storage-lite": "0.18.17",
-    "resolve-readmodel-memory": "0.18.17",
-    "resolve-readmodel-mysql": "0.18.17",
-    "resolve-readmodel-mongo": "0.18.17",
+    "resolve-testing-tools": "0.19.0",
+    "resolve-query": "0.19.0",
+    "resolve-es": "0.19.0",
+    "resolve-storage-lite": "0.19.0",
+    "resolve-readmodel-memory": "0.19.0",
+    "resolve-readmodel-mysql": "0.19.0",
+    "resolve-readmodel-mongo": "0.19.0",
     "mysql2": "1.6.4"
   }
 }
