@@ -240,7 +240,7 @@ http://{host}:{port}/api/query/{viewModel}/{aggregateIds}
 
 ##### Example
 
-Use the following command to get the current [shopping-list](../examples/shopping-list) example application's state.
+Use the following command to get the current [shopping-list](https://github.com/reimagined/resolve/tree/master/examples/shopping-list) example application's state.
 
 ```sh
 curl -g -X GET "http://localhost:3000/api/query/Default/shoppingLists"
