@@ -1,14 +1,8 @@
 import React from 'react'
 
 import Header from './Header.js'
-import ShoppingList from './ShoppingList'
 
-const App = ({
-  children,
-  match: {
-    params: { id }
-  }
-}) => (
+const App = ({ children }) => (
   <div>
     <Header
       title="reSolve Shopping List"

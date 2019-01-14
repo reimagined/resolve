@@ -43,7 +43,7 @@
     "jest": "23.6.0",
     "jest-expo": "31.0.0",
     "react-test-renderer": "16.5.0",
-    "regenerator-runtime": "0.12.1",
+    "regenerator-runtime": "0.13.1",
     "remote-redux-devtools": "0.5.13",
     "@babel/core": "^7.0.0",
     "@babel/plugin-proposal-decorators": "^7.0.0",

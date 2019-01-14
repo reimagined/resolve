@@ -7,10 +7,10 @@
 import { merge } from 'resolve-scripts'
 import createModuleComments from 'resolve-module-comments'
 
-merge([
+merge(
   resolveConfig,
   createModuleComments()
-])
+)
 ```
 
 #### Customization of module options

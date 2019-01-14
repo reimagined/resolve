@@ -43,17 +43,14 @@ Button.defaultProps = {
   target: '_self'
 }
 
-const SplashContainer = props => (
-  <div className="homeContainer">
+const SplashContainer = ({ children }) => (
+  <div
+    className="homeContainer"
+    style={{ backgroundImage: `url(${imgUrl('background.png')})` }}
+  >
     <div className="homeSplashFade">
-      <div className="wrapper homeWrapper">{props.children}</div>
+      <div className="wrapper homeWrapper">{children}</div>
     </div>
-  </div>
-)
-
-const Logo = props => (
-  <div className="projectLogo">
-    <img src={props.img_src} alt="Project Logo" />
   </div>
 )
 
@@ -77,15 +74,17 @@ class HomeSplash extends React.Component {
     const language = this.props.language || ''
     return (
       <SplashContainer>
-        <Logo img_src={imgUrl('resolve.png')} />
         <div className="inner">
           <ProjectTitle />
           <PromoSection>
             <Button href={docUrl('introduction.html', language)}>
-              GET STARTED
+              Get Started
             </Button>
-            <Button href="https://github.com/reimagined/resolve/tree/master/examples">
-              SEE EXAMPLES
+            <Button
+              href="https://github.com/reimagined/resolve/tree/master/examples"
+              target="_blank"
+            >
+              See Examples
             </Button>
           </PromoSection>
         </div>
@@ -110,21 +109,21 @@ const Features = props => (
       {
         content: `You don't need to configure build and dev tools, libraries and frameworks. 
   Your application is ready in seconds.`,
-        //image: imgUrl('cqrs.png'),
+        image: imgUrl('everything-you-need-in-one-place.png'),
         imageAlign: 'top',
-        title: '## Everything you need in one place.'
+        title: 'Everything you need in one place.'
       },
       {
         content: `With CQRS and Event Sourcing, your application is easier to develop, adapt, maintain and scale. 
   Functional Java Script code is easier to test and reason about.`,
-        //image: imgUrl('ddd.png'),
+        image: imgUrl('full-stack-scalable-modern-app.png'),
         imageAlign: 'top',
         title: 'Full stack scalable modern app'
       },
       {
         content: `With Event Sourcing your application stores everything and removes nothing. 
 You don't have to anticipate what data you will need later.`,
-        //image: imgUrl('event-sourcing.png'),
+        image: imgUrl('don-t-lose-your-data.png'),
         imageAlign: 'top',
         title: "Don't lose your data"
       }
@@ -146,8 +145,8 @@ npx create-resolve-app my-app
       },
       {
         image:
-          'https://camo.githubusercontent.com/29765c4a32f03bd01d44edef1cd674225e3c906b/68747470733a2f2f63646e2e7261776769742e636f6d2f66616365626f6f6b2f6372656174652d72656163742d6170702f323762343261632f73637265656e636173742e737667',
-        imageAlign: 'right'
+          'https://raw.githubusercontent.com/reimagined/resolve/3571365c58b025cf628046a96bab23eca93367fe/website/static/img/create-resolve-app.svg?sanitize=true',
+        imageAlign: 'bottom'
       }
     ]}
   </Block>

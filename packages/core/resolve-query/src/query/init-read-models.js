@@ -6,31 +6,25 @@ const initReadModels = ({
   executorTypes,
   errorMessages,
   eventStore,
-  readModelAdaptersCreators,
-  readModels
+  readModels,
+  readModelAdapters
 }) => {
   for (const readModel of readModels) {
     if (executors.has(readModel.name)) {
       errorMessages.push(`${errors.duplicateName} ${readModel}`)
     }
 
-    const adapterCreators = readModelAdaptersCreators.filter(
-      ({ name }) => name === readModel.adapterName
-    )
-    if (adapterCreators.length !== 1) {
+    if (!readModelAdapters.hasOwnProperty(readModel.adapterName)) {
       throw new Error(
         `${errors.wrongAdapter} in ${readModel.name}: ${readModel.adapterName}`
       )
     }
 
-    const adapter = adapterCreators[0].factory({
-      metaName: `__ResolveMeta__${readModel.name}`
-    })
-
     const executor = createReadModel({
       projection: readModel.projection,
       resolvers: readModel.resolvers,
-      adapter,
+      adapter: readModelAdapters[readModel.adapterName],
+      readModelName: readModel.name,
       eventStore
     })
 

@@ -27,16 +27,3 @@ test('Read-model dispose should do nothing if not initialized', async () => {
 
   expect(adapter.reset.callCount).toEqual(0)
 })
-
-test('Read-model dispose should dispose if initialized', async () => {
-  const disposeOptions = {}
-  const adapter = { reset: sinon.stub().callsFake(async () => null) }
-  const repository = { adapter, prepareProjection: () => null }
-  const disposePromise = dispose(repository, disposeOptions)
-
-  expect(repository).toEqual({ disposePromise })
-  await disposePromise
-
-  expect(adapter.reset.callCount).toEqual(1)
-  expect(adapter.reset.firstCall.args[0]).toEqual(disposeOptions)
-})

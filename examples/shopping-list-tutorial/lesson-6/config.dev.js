@@ -1,4 +1,5 @@
 const devConfig = {
+  target: 'local',
   port: 3000,
   polyfills: ['@babel/polyfill'],
   mode: 'development',
@@ -6,7 +7,6 @@ const devConfig = {
   staticPath: 'static',
   staticDir: 'static',
   distDir: 'dist',
-
   storageAdapter: {
     module: 'resolve-storage-lite',
     options: {
@@ -24,7 +24,14 @@ const devConfig = {
   jwtCookie: {
     name: 'jwt',
     maxAge: 31536000000
-  }
+  },
+  readModelAdapters: [
+    {
+      name: 'default',
+      module: 'resolve-readmodel-memory',
+      options: {}
+    }
+  ]
 }
 
 export default devConfig

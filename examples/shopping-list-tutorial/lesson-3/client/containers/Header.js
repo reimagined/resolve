@@ -18,7 +18,9 @@ const Header = ({ title, name, css, favicon }) => (
 
     <Navbar>
       <Navbar.Text>
-        <Image src="/resolve-logo.png" /> {name}
+        <Navbar.Link href="/">
+          <Image src="/resolve-logo.png" /> {name}
+        </Navbar.Link>
       </Navbar.Text>
 
       <Navbar.Collapse>

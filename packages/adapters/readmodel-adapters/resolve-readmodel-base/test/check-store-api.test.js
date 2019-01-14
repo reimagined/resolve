@@ -23,7 +23,6 @@ describe('resolve-readmodel-base check-store-api', () => {
       tableExists: sinon.stub(),
       getTableInfo: sinon.stub(),
       describeTable: sinon.stub(),
-      getTableNames: sinon.stub(),
       drop: sinon.stub()
     }
 

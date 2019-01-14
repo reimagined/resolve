@@ -1,10 +1,36 @@
-const defineTable = async ({ connection }, tableName, tableDescription) => {
-  const db = await connection.db()
-  const collection = await db.collection(tableName)
-  for (let [idx, columnName] of Object.keys(tableDescription).entries()) {
-    if (tableDescription[columnName] === 'regular') continue
+const getCollection = async (
+  { databasePromise, tablePrefix, affectedReadModel },
+  readModelName,
+  tableName,
+  forceCreate = false
+) => {
+  if (affectedReadModel !== readModelName) {
+    throw new Error(
+      `Attempt to execute query on foreign read-model transaction:
+      "${affectedReadModel}"/"${readModelName}"`
+    )
+  }
+  const database = await databasePromise
+  const collection = forceCreate
+    ? await database.createCollection(`${tablePrefix}${tableName}`)
+    : await database.collection(`${tablePrefix}${tableName}`)
+
+  return collection
+}
+
+const defineTable = async (
+  pool,
+  readModelName,
+  tableName,
+  tableDescription
+) => {
+  pool.hasPerformedMutations = true
+  const collection = await getCollection(pool, readModelName, tableName, true)
+  for (const columnName of Object.keys(tableDescription)) {
+    const columnType = tableDescription[columnName]
+    if (columnType === 'regular') continue
     const indexArgs = [{ [columnName]: 1 }]
-    if (idx === 0) {
+    if (columnType === 'primary-string' || columnType === 'primary-number') {
       indexArgs.push({ unique: true })
     }
     await collection.createIndex(...indexArgs)
@@ -16,7 +42,7 @@ const defineTable = async ({ connection }, tableName, tableDescription) => {
 // Only allowed in *Resolve Read-model Query & Projection API* data types are present
 const bsonTypesMap = new Map([
   [String, 'string'],
-  [Number, 'double'],
+  [Number, ['double', 'int', 'long', 'decimal']],
   [Array, 'array'],
   [Boolean, 'bool'],
   [Object, 'object'],
@@ -83,7 +109,8 @@ const wrapSearchExpression = expression => {
 }
 
 const find = async (
-  { connection },
+  pool,
+  readModelName,
   tableName,
   searchExpression,
   fieldList,
@@ -91,8 +118,8 @@ const find = async (
   skip,
   limit
 ) => {
-  const db = await connection.db()
-  const collection = await db.collection(tableName)
+  const collection = await getCollection(pool, readModelName, tableName)
+
   const findCursor = await collection.find(
     wrapSearchExpression(searchExpression),
     {
@@ -107,40 +134,43 @@ const find = async (
 }
 
 const findOne = async (
-  { connection },
+  pool,
+  readModelName,
   tableName,
   searchExpression,
   fieldList
 ) => {
-  const db = await connection.db()
-  const collection = await db.collection(tableName)
+  const collection = await getCollection(pool, readModelName, tableName)
 
   return await collection.findOne(wrapSearchExpression(searchExpression), {
     projection: fieldList ? { _id: 0, ...fieldList } : { _id: 0 }
   })
 }
 
-const count = async ({ connection }, tableName, searchExpression) => {
-  const db = await connection.db()
-  const collection = await db.collection(tableName)
-  return await collection.count(wrapSearchExpression(searchExpression))
+const count = async (pool, readModelName, tableName, searchExpression) => {
+  const collection = await getCollection(pool, readModelName, tableName)
+
+  return await collection.countDocuments(wrapSearchExpression(searchExpression))
 }
 
-const insert = async ({ connection }, tableName, document) => {
-  const db = await connection.db()
-  const collection = await db.collection(tableName)
+const insert = async (pool, readModelName, tableName, document) => {
+  pool.hasPerformedMutations = true
+  const collection = await getCollection(pool, readModelName, tableName)
+
   return await collection.insertOne(document)
 }
 
 const update = async (
-  { connection },
+  pool,
+  readModelName,
   tableName,
   searchExpression,
   updateExpression,
   options
 ) => {
-  const db = await connection.db()
-  const collection = await db.collection(tableName)
+  pool.hasPerformedMutations = true
+  const collection = await getCollection(pool, readModelName, tableName)
+
   return await collection.updateMany(
     wrapSearchExpression(searchExpression),
     updateExpression,
@@ -148,9 +178,10 @@ const update = async (
   )
 }
 
-const del = async ({ connection }, tableName, searchExpression) => {
-  const db = await connection.db()
-  const collection = await db.collection(tableName)
+const del = async (pool, readModelName, tableName, searchExpression) => {
+  pool.hasPerformedMutations = true
+  const collection = await getCollection(pool, readModelName, tableName)
+
   return await collection.deleteMany(wrapSearchExpression(searchExpression))
 }
 

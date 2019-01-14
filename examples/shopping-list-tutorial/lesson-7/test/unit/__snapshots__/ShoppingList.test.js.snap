@@ -1,0 +1,168 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<div
+  style={
+    Object {
+      "margin": "auto",
+      "maxWidth": "500px",
+    }
+  }
+>
+  <label
+    className="control-label"
+  >
+    Shopping list name
+  </label>
+  <div
+    className="form-group form-group-lg"
+  >
+    <span
+      className="input-group"
+    >
+      <span
+        className="input-group-btn"
+      >
+        <button
+          className="btn btn-lg btn-default"
+          disabled={false}
+          onClick={[Function]}
+          type="button"
+        >
+          <i
+            className="far fa-trash-alt"
+          />
+        </button>
+      </span>
+      <input
+        className="form-control"
+        onBlur={[Function]}
+        onChange={[Function]}
+        onKeyPress={[Function]}
+        type="text"
+        value="List 1"
+      />
+    </span>
+  </div>
+  <ul
+    className="list-group"
+  >
+    <li
+      className="list-group-item"
+    >
+      <label
+        className="checkbox-inline"
+        title=""
+      >
+        <input
+          checked={false}
+          disabled={false}
+          onChange={[Function]}
+          type="checkbox"
+        />
+        Milk
+      </label>
+      <img
+        className="example-close-button"
+        onClick={[Function]}
+        src="/static/close-button.png"
+      />
+    </li>
+    <li
+      className="list-group-item"
+    >
+      <label
+        className="checkbox-inline"
+        title=""
+      >
+        <input
+          checked={false}
+          disabled={false}
+          onChange={[Function]}
+          type="checkbox"
+        />
+        Eggs
+      </label>
+      <img
+        className="example-close-button"
+        onClick={[Function]}
+        src="/static/close-button.png"
+      />
+    </li>
+    <li
+      className="list-group-item"
+    >
+      <label
+        className="checkbox-inline"
+        title=""
+      >
+        <input
+          checked={false}
+          disabled={false}
+          onChange={[Function]}
+          type="checkbox"
+        />
+        Canned beans
+      </label>
+      <img
+        className="example-close-button"
+        onClick={[Function]}
+        src="/static/close-button.png"
+      />
+    </li>
+    <li
+      className="list-group-item"
+    >
+      <label
+        className="checkbox-inline"
+        title=""
+      >
+        <input
+          checked={false}
+          disabled={false}
+          onChange={[Function]}
+          type="checkbox"
+        />
+        Paper towels
+      </label>
+      <img
+        className="example-close-button"
+        onClick={[Function]}
+        src="/static/close-button.png"
+      />
+    </li>
+  </ul>
+  <label
+    className="control-label"
+  >
+    Item name
+  </label>
+  <div
+    className="row"
+  >
+    <div
+      className="col-md-8"
+    >
+      <input
+        className="example-form-control form-control"
+        onChange={[Function]}
+        onKeyPress={[Function]}
+        type="text"
+        value=""
+      />
+    </div>
+    <div
+      className="col-md-4"
+    >
+      <button
+        className="example-button btn btn-success"
+        disabled={false}
+        onClick={[Function]}
+        type="button"
+      >
+        Add Item
+      </button>
+    </div>
+  </div>
+</div>
+`;
