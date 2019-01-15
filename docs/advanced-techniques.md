@@ -5,32 +5,32 @@ title: Advanced Techniques
 
 ## Splitting Code Into Chunks
 
-ReSolve uses **webpack** to transpile and bundle the application code so it can be run by client browsers, the server and serverless platforms.
+ReSolve uses [webpack](https://webpack.js.org/) to transpile and bundle the application code so it can be run by client browsers, the server and serverless platforms.
 
 ReSolve takes advantage of webpack's code splitting functionality to split the bundles into chunks. Depending on its purpose, every chunk can be server-only (for business logic), browser-only (for UI and client logic) or isomorphic (for view-models on the server side and Redux reducers on the client).
 
 Building a reSolve application produces the following chunks:
 
-- command processor code - aggregate command handlers and projections (server only)
-- view model projection (isomorphic)
-- read model projections and resolvers (server only)
+- Command processor code - aggregate command handlers and projections (server only)
+- View model projection (isomorphic)
+- Read model projections and resolvers (server only)
 - API handlers (server only)
-- SSR renderer (server only, with peer dependencies with client, like `styled-components`)
-- the client application with UI (browser only)
+- SSR renderer (server only, with peer dependencies with client, such as `styled-components`)
+- The client application with UI (browser only)
 
 All of these chunks are used by the target application. Some chunks can be included by other chunks. E.g., the client includes the view-model projection chunk to automatically generate Redux reducers.
 
-In a cloud/serverless environment, chunks like read-model projection & resolvers, SSR renderer, API handlers and rest business-logic are distributed to appropriate cloud executors.
+In a cloud/serverless environment, chunks like read-model projection & resolvers, SSR renderer, API handlers and REST business logic are distributed to appropriate cloud executors.
 
 When running locally, `resolve-scripts` requires all necessary chunks and combines them with the runtime code.
 
 ## Running Serverless
 
-Coming soon. A reSolve app is serverless-ready and can be deployed into AWS with a single command.
+Coming soon. A reSolve app is serverless-ready and can be deployed to AWS with a single command.
 
 ## Server-Side Rendering
 
-ReSolve provides the Server-Side rendering (SSR) functionality for React code out of the box. This means that reSolve application pages are always pre-rendered before being passed to the client browser. Note that server-side rendering is currently performed only for static content, without pre-fetching data.
+ReSolve provides the Server-Side rendering (SSR) functionality for React code out of the box. This means that reSolve application pages are always pre-rendered before being sent to the client browser. Note that server-side rendering is currently performed only for static content, without pre-fetching data.
 
 #### Managing routes
 
@@ -191,7 +191,7 @@ To learn more about a particular adapter type, refer to the documentation for th
 
 In reSolve, a module encapsulates a fragment of functionality that can be included by an application. A module can encapsulate any structural parts of a reSolve application in any combination.
 
-Physically, a module is a standalone configuration object that can reference client code, read-side and write-side code, sagas and HTTP queries. To include a module into your application, you need to initialize this object with any required additional settings and merge it into your application's centralized config:
+Physically, a module is a standalone configuration object that can reference client code, read-side and write-side code, sagas and HTTP handlers. To include a module into your application, you need to initialize this object with any required additional settings and merge it into your application's centralized config:
 
 ```js
 ...
