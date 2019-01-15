@@ -148,7 +148,7 @@ userById: async(store, {id}) => store.findOne('Users', {id})
 ...
 ```
 
-Now, upon login you can query Users read model and store user record with its permissions in the JWT Token:
+Now, upon login you can query the Users read model and put the obtained user information to the JWT payload:
 
 ```js
 ...
@@ -164,16 +164,16 @@ if (user)
 
 ## Using JWT for Command and Query Authorization
 
-Every command and query handler accepts a JSON Web Token (JWT) obtained during the authentication process. This JWT contains an object that was returned by authentication function, or an empty object `{}` if current user is not logged in.
+Every command and query handler accepts a JSON Web Token (JWT) obtained during the authentication process. This JWT contains an object that was returned by the authentication function, or an empty object `{}` if the current user is not logged in.
 
-A JWT is signed, so it cannot be forged by an attacker, without knowing a secret that was used for token creation. The token can be decoded and verified using the same secret that was used for its creation:
+A JWT is signed, so it cannot be forged by an attacker, without knowing a secret that was used during the token creation. The token can be decoded and verified using the same secret that was used for its creation:
 
 ```js
 const { id: userId } = jwt.verify(jwtToken, jwtSecret)
 ```
 
 You can store any information in a JWT. For instance, during authentication, you can look up a
-user's permissions and add them to the token. Then, you can check for the user's permissions on a command or query execution as shown below:
+user's permissions and add them to the token. Then, you can check the user's permissions during a command or query execution as shown below:
 
 ```js
 const { id: userId, permissions } = jwt.verify(jwtToken, jwtSecret);
