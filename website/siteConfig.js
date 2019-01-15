@@ -57,7 +57,8 @@ const siteConfig = {
   algolia: {
     apiKey: process.env.ALGOLIA_RESOLVE_API_KEY,
     indexName: 'reimagined_resolve'
-  }
+  },
+  gaTrackingId: 'UA-118635726-1'
 }
 
 module.exports = siteConfig
