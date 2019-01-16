@@ -58,7 +58,7 @@ const siteConfig = {
     apiKey: process.env.ALGOLIA_RESOLVE_API_KEY,
     indexName: 'reimagined_resolve'
   },
-  gaTrackingId: 'UA-118635726-1'
+  gaTrackingId: 'UA-118635726-3'
 }
 
 module.exports = siteConfig
