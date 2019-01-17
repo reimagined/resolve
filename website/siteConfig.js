@@ -59,7 +59,7 @@ const siteConfig = {
     indexName: 'reimagined_resolve'
   },
   gaTrackingId: 'UA-118635726-3',
-  ogImage: 'img/resolve.svg'
+  ogImage: 'img/reSolve400x400-fill.png'
 }
 
 module.exports = siteConfig
