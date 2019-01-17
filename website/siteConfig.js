@@ -21,9 +21,9 @@ const siteConfig = {
 
   // For no header links in the top nav bar -> headerLinks: [],
   headerLinks: [
-    { blog: true, label: 'Blog' },
+    { href: 'https://medium.com/resolvejs', label: 'Blog' },
     { doc: 'index', label: 'Docs' },
-    { doc: 'faq', label: 'FAQ' },
+    { doc: 'tutorial', label: 'Tutorial' },
     { search: true },
     { href: GITHUB_URL, label: 'GitHub' }
   ],
@@ -39,11 +39,11 @@ const siteConfig = {
   },
 
   // This copyright info is used in /core/Footer.js and blog RSS/Atom feeds.
-  copyright: `Copyright © ${new Date().getFullYear()} reimagined`,
+  copyright: `Copyright © ${new Date().getFullYear()} Developer Express, Inc`,
 
   highlight: {
     // Highlight.js theme to use for syntax highlighting in code blocks.
-    theme: 'default'
+    theme: 'agate'
   },
 
   // Add custom scripts here that would be placed in <script> tags.
