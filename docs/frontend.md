@@ -18,7 +18,7 @@ The **redux** configuration section specifies the following settings related to 
 Based on these settings, reSolve generates client code to facilitate client-server communication:
 
 - Redux actions are generated for all reSolve aggregate commands.
-- Auxiliary reducer and middleware code is generated to handle these actions and send the corresponding commands to the server.
+- Auxiliary reducers and middleware are generated to handle these actions and send the corresponding commands to the reSolve backend.
 
 Use the following resolve-redux library's higher order components (HOCs) to connect components to the backend:
 
@@ -94,7 +94,7 @@ export default connectReadModel(mapStateToOptions)(
 
 #### Fix URLs
 
-Use the following HOCs to automatically fix URLs passed to a component as props. The resulting URLs take into account the backend structure.
+Use the following HOCs to automatically fix URLs passed to a component as props. The resulting URLs take the backend structure into account.
 
 - **connectRootBasedUrls** - Fixes server routs:
   ```js
