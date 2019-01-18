@@ -5,9 +5,9 @@ title: Authentication and Authorization
 
 ## Setting up Authentication
 
-ReSolve comes with a built-in authentication **[module](./advanced-techniques.md#modules)** (**resolve-module-auth**) that you can use to enable authentication in your application. The authentication module relies on the [Passport.js](http://www.passportjs.org/) library's functionality.
+You can use ReSolve's built-in authentication **[module](./advanced-techniques.md#modules)** (**resolve-module-auth**) to enable authentication in your application. The authentication module relies on the [Passport.js](http://www.passportjs.org/) library's functionality.
 
-Initialize authentication the module in the application's **run.js** script:
+Initialize the authentication module in the application's **run.js** script:
 
 <!-- prettier-ignore-start -->
 
@@ -72,28 +72,27 @@ export default createStrategy
 
 <!-- prettier-ignore-end -->
 
-This code sample demonstrates the implementation of an authentication strategy constructor on the example of a **local** authentication strategy. The **createStrategy** constructor takes a set of options defined at runtime and returns modified options.
+This code sample implements a strategy constructor for a **local** authentication strategy. The **createStrategy** constructor takes a set of options defined at runtime and returns modified options.
 
-See the **Hacker News** example project the full code.
+See the **Hacker News** example project for the full code.
 
 ## Using 3rd-Party Auth Services
 
-You can implement authentication via 3rd-party services in the same way, in which you implement local authentication. To implement authentication for a particular service, use corresponding Passport modules, e.g., **passport-google** or **passport-facebook**.
+You can implement authentication via 3rd-party services in the same way, in which you implement local authentication. To implement authentication for a particular service, use corresponding Passport modules, for example, **passport-google** or **passport-facebook**.
 
 ## Making Your Own User Registry
 
-If you prefer to store a user registry in your application, or if you use a third-party authentication service but need to store additional information that is not provided by this service (e.g., roles or permissions), then you can just stick to the standard event sourcing approach:
+If you prefer to store a user registry in your application, or if you use a third-party authentication service but need to store additional information that is not provided by this service (for example, roles or permissions), then you can just stick to the standard event sourcing approach:
 
 - Add a User aggregate to accept commands and generate events related to managing a user registry
 - Create a read model and use it to look up a current user's information during logging in and put this information into a JWT (JSON Web Token)
 
 For example, if you want to grant permissions to a user, you can write something like this:
 
-Write side. "user" aggregate:
-
-**user.commands.js:**
+#### Write side - The "user" aggregate
 
 ```js
+// user.commands.js
 ...
 grantPermission: (state, command) => {
    const {payload: {permission: permissionToGrant }} = command;
@@ -111,9 +110,8 @@ grantPermission: (state, command) => {
 ...
 ```
 
-**user.projection.js:**
-
 ```js
+// user.projection.js
 ...
 [PERMISSION_GRANTED]: (state, {payload: {permission}}) => ({
     ...state,
@@ -122,10 +120,10 @@ grantPermission: (state, command) => {
 ...
 ```
 
-Read side. "users" read model:
-users.projection.js:
+#### Read side - The "users" read model
 
 ```js
+// users.projection.js
 ...
 [PERMISSION_GRANTED]: async (store, {aggregateId, payload:{permission}}) => {
     const user = await store.findOne('Users', { id: aggregateId })
@@ -140,15 +138,14 @@ users.projection.js:
 ...
 ```
 
-**users.resolvers.js:**
-
 ```js
+// users.resolvers.js
 ...
 userById: async(store, {id}) => store.findOne('Users', {id})
 ...
 ```
 
-Now, upon login you can query the Users read model and put the obtained user information to the JWT payload:
+Now, upon login you can query the Users read model and put the obtained user information into the JWT payload:
 
 ```js
 ...
@@ -164,7 +161,7 @@ if (user)
 
 ## Using JWT for Command and Query Authorization
 
-Every command and query handler accepts a JSON Web Token (JWT) obtained during the authentication process. This JWT contains an object that was returned by the authentication function, or an empty object `{}` if the current user is not logged in.
+Every command and query handler accepts a JSON Web Token (JWT) obtained during the authentication process. This JWT contains an object that the authentication function has returned, or an empty object `{}` if the current user is not logged in.
 
 A JWT is signed, so it cannot be forged by an attacker, without knowing a secret that was used during the token creation. The token can be decoded and verified using the same secret that was used for its creation:
 
@@ -172,8 +169,8 @@ A JWT is signed, so it cannot be forged by an attacker, without knowing a secret
 const { id: userId } = jwt.verify(jwtToken, jwtSecret)
 ```
 
-You can store any information in a JWT. For instance, during authentication, you can look up a
-user's permissions and add them to the token. Then, you can check the user's permissions during a command or query execution as shown below:
+You can store any information in a JWT. For instance, you can look up a user's permissions and add them to the token
+during authentication. Then, you can check the user's permissions during a command or query execution as shown below:
 
 ```js
 const { id: userId, permissions } = jwt.verify(jwtToken, jwtSecret);
