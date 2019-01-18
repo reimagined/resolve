@@ -87,7 +87,7 @@ The request body should have the `application/json` content type and contain a J
 
 ##### Example
 
-Use the following command to add an item to the **shopping-list** example.
+Use the following command to add an item to the **shopping-list** example:
 
 ```sh
 $ curl -X POST "http://localhost:3000/api/commands"
@@ -107,7 +107,7 @@ $ curl -X POST "http://localhost:3000/api/commands"
 
 ### Emitting Commands on the Server
 
-You can emit a command on the server side from a **[Saga](advanced-techniques.md#process-managers-sagas)** or **[API Handler](api-handlers.md)** using the **resolve.executeCommand** function as shown below:
+You can use the **resolve.executeCommand** function to emit a command on the server side from a **[Saga](advanced-techniques.md#process-managers-sagas)** or **[API Handler](api-handlers.md)**:
 
 ```js
 await resolve.executeCommand({
@@ -143,11 +143,11 @@ export default {
 
 ## Aggregate Projection Function
 
-Projection functions are used to calculate an aggregate state based on the aggregate's events. A projection function receives a previous state and an event to be applied. It should return a new state based on the input.
+Projection functions are used to calculate an aggregate state based on the aggregate's events. A projection function receives the previous state and an event to be applied. It should return a new state based on the input.
 
 Projection functions run for all events with the current aggregate ID. The resulting state is then passed to the corresponding [command handler](#aggregate-command-handlers).
 
-In addition to projection functions, a projection object should define an **Init** function. This function returns initial state of the aggregate.
+In addition to projection functions, a projection object should define an **Init** function. This function returns the initial state of the aggregate.
 
 A typical projection object structure is shown below:
 
@@ -167,7 +167,7 @@ export default {
 
 ## Event Store
 
-All events returned by command handlers are saved to the event store. The reSolve framework writes events to the storage using one of the supported storage adapters.
+All events returned by command handlers are saved to the event store. The reSolve framework uses one of the supported storage adapters to write events to the storage.
 
 You can specify the storage adapter in the **storageAdapter** config section:
 
