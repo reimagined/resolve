@@ -186,4 +186,5 @@ Adapters for the following storage types are available out of the box:
 - [MongoDB](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-storage-mongo)
 - [MySQL](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-storage-mysql)
 
-You can also write your own storage adapter and store events in any required way. To learn more about adapters, refer to the [Adapters](advanced-techniques.md#adapters) section of the reSolve documentation.
+You can also write your own storage adapter according to your requirements.
+Refer to the [Adapters](advanced-techniques.md#adapters) section of the reSolve documentation for more information about adapters.
