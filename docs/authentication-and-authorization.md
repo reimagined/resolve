@@ -82,10 +82,15 @@ You can implement authentication via 3rd-party services in the same way, in whic
 
 ## Making Your Own User Registry
 
-If you prefer to store a user registry in your application, or if you use a third-party authentication service but need to store additional information that is not provided by this service (for example, roles or permissions), then you can just stick to the standard event sourcing approach:
+You can use the standard event sourcing approach to implement your own user registry. This is useful in the following cases:
 
-- Add a User aggregate to accept commands and generate events related to managing a user registry
-- Create a read model and use it to look up a current user's information during logging in and put this information into a JWT (JSON Web Token)
+- You prefer to store a user registry in your application without the help of third-party services.
+- You use a third-party authentication service but need to store additional information that is not provided by this service (for example, roles or permissions).
+
+Use the following steps to a user registry:
+
+1. Add a User aggregate to accept commands and generate events related to managing a user registry
+2. Create a read model and use it to look up a user's information during logging in and add this information to a JWT (JSON Web Token)
 
 For example, if you want to grant permissions to a user, you can write something like this:
 
@@ -163,7 +168,7 @@ if (user)
 
 Every command and query handler accepts a JSON Web Token (JWT) obtained during the authentication process. This JWT contains an object that the authentication function has returned, or an empty object `{}` if the current user is not logged in.
 
-A JWT is signed, so it cannot be forged by an attacker, without knowing a secret that was used during the token creation. The token can be decoded and verified using the same secret that was used for its creation:
+A JWT is signed with a secret to prevent forgery. The token can be decoded and verified using the same secret that was used for its creation:
 
 ```js
 const { id: userId } = jwt.verify(jwtToken, jwtSecret)
