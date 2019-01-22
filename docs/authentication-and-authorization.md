@@ -84,10 +84,10 @@ You can implement authentication via 3rd-party services similarly to how you imp
 
 You can use the standard event sourcing approach to implement a user registry. This is useful in the following cases:
 
-- You prefer to store a user registry in your application without the help of third-party services.
+- You prefer to store a user registry in your application without third-party services.
 - You use a third-party authentication service but need to store additional information that is not provided by this service (for example, roles or permissions).
 
-Use the following steps to a user registry:
+Use the following steps to implement a user registry:
 
 1. Add a User aggregate to accept commands and generate events related to managing a user registry
 2. Create a read model and use it to look up a user's information during logging in and add this information to a JWT (JSON Web Token)
@@ -166,7 +166,7 @@ if (user)
 
 ## Using JWT for Command and Query Authorization
 
-Every command and query handler accepts a JSON Web Token (JWT) obtained during the authentication process. This JWT contains an object that the authentication function has returned, or an empty object `{}` if the current user is not logged in.
+Every command and query handler accepts a JSON Web Token (JWT) obtained during the authentication process. This JWT contains an object that the authentication function returned, or an empty object `{}` if the current user is not logged in.
 
 A JWT is signed with a secret to prevent forgery. Use the same secret to decode and verify the token.
 
