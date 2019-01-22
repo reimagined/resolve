@@ -5,7 +5,7 @@ title: Authentication and Authorization
 
 ## Setting up Authentication
 
-You can use ReSolve's built-in authentication **[module](./advanced-techniques.md#modules)** (**resolve-module-auth**) to enable authentication in your application. The authentication module relies on the [Passport.js](http://www.passportjs.org/) library's functionality.
+You can use ReSolve's built-in **[module](./advanced-techniques.md#modules)** (**resolve-module-auth**) to enable authentication in your application. The authentication module uses the [Passport.js](http://www.passportjs.org/) library.
 
 Initialize the authentication module in the application's **run.js** script:
 
@@ -46,7 +46,7 @@ Initialize the authentication module in the application's **run.js** script:
 
 <!-- prettier-ignore-end -->
 
-These setting specify the path to a strategy constructor as well as HTTP API handlers to handle authentication-related requests (register, login and logout in this example). You can implement a strategy constructor as shown below:
+These setting specify the path to a strategy constructor and HTTP API handlers to handle authentication-related requests (register, login and logout in this example). You can implement a strategy constructor as shown below:
 
 <!-- prettier-ignore-start -->
 
@@ -78,11 +78,11 @@ See the **Hacker News** example project for the full code.
 
 ## Using 3rd-Party Auth Services
 
-You can implement authentication via 3rd-party services in the same way, in which you implement local authentication. To implement authentication for a particular service, use corresponding Passport modules, for example, **passport-google** or **passport-facebook**.
+You can implement authentication via 3rd-party services similarly to how you implement local authentication. To implement authentication for a particular service, use corresponding Passport modules, for example, **passport-google** or **passport-facebook**.
 
-## Making Your Own User Registry
+## Storing a User Registry in the Application
 
-You can use the standard event sourcing approach to implement your own user registry. This is useful in the following cases:
+You can use the standard event sourcing approach to implement a user registry. This is useful in the following cases:
 
 - You prefer to store a user registry in your application without the help of third-party services.
 - You use a third-party authentication service but need to store additional information that is not provided by this service (for example, roles or permissions).
@@ -92,7 +92,7 @@ Use the following steps to a user registry:
 1. Add a User aggregate to accept commands and generate events related to managing a user registry
 2. Create a read model and use it to look up a user's information during logging in and add this information to a JWT (JSON Web Token)
 
-For example, if you want to grant permissions to a user, you can write something like this:
+For example, you can write the following if you want to grant permissions to a user:
 
 #### Write side - The "user" aggregate
 
@@ -150,7 +150,7 @@ userById: async(store, {id}) => store.findOne('Users', {id})
 ...
 ```
 
-Now, upon login you can query the Users read model and put the obtained user information into the JWT payload:
+You can now query a user's read model and add the obtained user information to the JWT payload when they log in:
 
 ```js
 ...
@@ -168,7 +168,7 @@ if (user)
 
 Every command and query handler accepts a JSON Web Token (JWT) obtained during the authentication process. This JWT contains an object that the authentication function has returned, or an empty object `{}` if the current user is not logged in.
 
-A JWT is signed with a secret to prevent forgery. The token can be decoded and verified using the same secret that was used for its creation:
+A JWT is signed with a secret to prevent forgery. Use the same secret to decode and verify the token.
 
 ```js
 const { id: userId } = jwt.verify(jwtToken, jwtSecret)
