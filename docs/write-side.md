@@ -6,7 +6,7 @@ title: Write Side
 ## Aggregates
 
 Commands are executed by objects that encapsulate domain logic. These objects are called Domain Objects.
-Usually Domain Objects are grouped into Aggregates. In a CQRS/ES app, an aggregate is a transaction boundary. This means that any given aggregate should be able to execute its commands without communicating with other aggregates.
+Domain Objects are grouped into Aggregates. In a CQRS/ES app, an aggregate is a transaction boundary. This means that any given aggregate should be able to execute its commands without communicating with other aggregates.
 
 Since the write side is used only to perform commands, your aggregate can be pretty slim, and only keep state that required for command execution.
 
@@ -54,9 +54,9 @@ You can emit aggregate commands in the following cases:
 
 ### Sending Commands From the Client
 
-The reSolve framework exposes an [HTTP API](api-reference.md#commands-http-api) that you can use to to send commands from the client side. Depending on the architecture of your web application's front-end, you can use this API directly or through the **Redux** binding mechanism provided by the **[resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-redux)** library.
+The reSolve framework exposes an [HTTP API](api-reference.md#commands-http-api) that you can use to to send commands from the client side. Your application's frontend can use this API directly or through the **Redux** binding mechanism provided by the **[resolve-redux](https://github.com/reimagined/resolve/tree/master/packages/core/resolve-redux)** library.
 
-You can send a command from the client side by sending a POST request to the following URL:
+You can send a command from the client side as a POST request to the following URL:
 
 ```
 http://{host}:{port}/api/commands
