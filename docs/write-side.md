@@ -6,8 +6,7 @@ title: Write Side
 ## Aggregates
 
 Commands are executed by objects that encapsulate domain logic. These objects are called Domain Objects.
-Usually Domain Objects are grouped into Aggregates. Aggregate boundary should be a transaction boundary.
-In a CQRS/ES app, it means that any given aggregate should be able to execute its commands without talking to other aggregates.
+Usually Domain Objects are grouped into Aggregates. In a CQRS/ES app, an aggregate is a transaction boundary. This means that any given aggregate should be able to execute its commands without communicating with other aggregates.
 
 Since the write side is used only to perform commands, your aggregate can be pretty slim, and only keep state that required for command execution.
 
@@ -23,7 +22,7 @@ Aggregate state is explicitly passed to all of these functions as an argument.
 ## Aggregate ID
 
 Each aggregate should have a unique ID that is immutable during the aggregate's lifetime. An Aggregate ID should stay unique in the given event store, however we also recommend to keep it
-globally unique. We recommend generating Aggregate IDs using [UUID v4](https://github.com/kelektiv/node-uuid#version-4) or [cuid](https://github.com/ericelliott/cuid) for distributed scalable apps.
+globally unique. It is also recommended that you generate aggregate IDs using [UUID v4](https://github.com/kelektiv/node-uuid#version-4) or [cuid](https://github.com/ericelliott/cuid) for distributed scalable apps.
 
 Please note that you have to generate a new Aggregate ID and send it with a command that creates a new aggregate.
 
@@ -123,9 +122,7 @@ For the full code sample, refer to the [with-saga](https://github.com/reimagined
 
 ## Aggregate Command Handlers
 
-An aggregate command handlers object associates command handlers with command names. Each command handler receives a state accumulated by the aggregate [Projection](#aggregate-projection-function).
-
-A command handler should return an event object that is then saved to the [event store](#event-store). A returned object should specify an event type and a **payload** specific to this event type.
+Aggregate command handlers are grouped into a static object. A command handler receives a command and a state object built by the aggregate [Projection](#aggregate-projection-function). The command handler should return an event object that is then saved to the [event store](#event-store). A returned object should specify an event type and a **payload** specific to this event type.
 
 A typical **Commands** object structure:
 
@@ -146,11 +143,13 @@ export default {
 
 ## Aggregate Projection Function
 
-Projection functions are used to calculate an aggregate state based on the agreggate's events. A projection function receives a previous state and event to be applied. A projection function should return a new state based on the input. The returned state is then passed to the corresponding [command handler](#aggregate-command-handlers).
+Projection functions are used to calculate an aggregate state based on the aggregate's events. A projection function receives a previous state and an event to be applied. It should return a new state based on the input.
 
-The **Init** function returns initial state of the aggregate.
+Projection functions run for all events with the current aggregate ID. The resulting state is then passed to the corresponding [command handler](#aggregate-command-handlers).
 
-A typical **Projection** object structure:
+In addition to projection functions, a projection object should define an **Init** function. This function returns initial state of the aggregate.
+
+A typical projection object structure is shown below:
 
 ```js
 export default {
@@ -168,7 +167,7 @@ export default {
 
 ## Event Store
 
-All events returned by command handlers are saved to the event store. The saving is performed by the reSolve framework using one of the supported storage adapters.
+All events returned by command handlers are saved to the event store. The reSolve framework writes events to the storage using one of the supported storage adapters.
 
 You can specify the storage adapter in the **storageAdapter** config section:
 
@@ -187,4 +186,4 @@ Adapters for the following storage types are available out of the box:
 - [MongoDB](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-storage-mongo)
 - [MySQL](https://github.com/reimagined/resolve/tree/master/packages/adapters/storage-adapters/resolve-storage-mysql)
 
-To learn more about adapters, refer to the [Adapters](advanced-techniques.md#adapters) section of the reSolve documentation.
+You can also write your own storage adapter and store events in any required way. To learn more about adapters, refer to the [Adapters](advanced-techniques.md#adapters) section of the reSolve documentation.
