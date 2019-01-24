@@ -8,7 +8,7 @@ const onMessage = async (pool, message) => {
 
     for (const topic of topics) {
       const topicHandlers = pool.handlers.get(topic)
-      if (topicHandlers == null) return
+      if (topicHandlers == null) continue
 
       for (const handler of Array.from(topicHandlers)) {
         applicationPromises.push(handler(event))
