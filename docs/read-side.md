@@ -149,7 +149,7 @@ comments: async (store, { first, offset }) => {
 }
 ```
 
-To learn how to send a request to a Read Model resolver, refer to the [Query a Read Model](#query-a-read-model) section.
+Refer to the [Query a Read Model](#query-a-read-model) section for more information on how to send a request to a Read Model resolver.
 
 ## View Model Specifics
 
@@ -160,7 +160,7 @@ Use View Models in the following scenarios:
 - To create aggregate-centric views. Such views request relatively portions of data based on aggregate IDs.
 - To create reactive components, whose state is kept up-to date on the client.
 
-A View Model's projection function recieves a state and an event object, and returns an updated state. A projection function runs for every event with the specified aggregate ID from the beginning of the history on every request so it is important to keep View Models small. You can also store snapshots of the View Model state to optimize system resource consumption.
+A View Model's projection function receives a state and an event object, and returns an updated state. A projection function runs for every event with the specified aggregate ID from the beginning of the history on every request so it is important to keep View Models small. You can also store snapshots of the View Model state to optimize system resource consumption.
 
 The code sample below demonstrate a typical View Model projection function:
 
@@ -236,7 +236,7 @@ http://{host}:{port}/api/query/{viewModel}/{aggregateIds}
 | Name         | Description                                                                                                                               |
 | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | viewModel    | The View Model name as defined in [config.app.js](https://github.com/reimagined/resolve/blob/master/examples/shopping-list/config.app.js) |
-| aggregateIds | The comma-separated list of Aggregate IDs to include into the View Model. Use `*` to include all Aggregates                               |
+| aggregateIds | The comma-separated list of Aggregate IDs to include in the View Model. Use `*` to include all Aggregates                                 |
 
 ##### Example
 
