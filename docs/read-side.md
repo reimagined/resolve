@@ -157,7 +157,7 @@ Refer to the [Query a Read Model](#query-a-read-model) section for more informat
 
 Use View Models in the following scenarios:
 
-- To create aggregate-centric views. Such views request relatively portions of data based on aggregate IDs.
+- To create aggregate-centric views. Such views request relatively small portions of data based on aggregate IDs.
 - To create reactive components, whose state is kept up-to date on the client.
 
 A View Model's projection function receives a state and an event object, and returns an updated state. A projection function runs for every event with the specified aggregate ID from the beginning of the history on every request so it is important to keep View Models small. You can also store snapshots of the View Model state to optimize system resource consumption.
