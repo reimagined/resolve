@@ -5,7 +5,7 @@ title: reSolve App Structure
 
 ## Configuration
 
-S reSolve application's main entry point is the **run.js** file. Code in this file assembles the app configuration object from several config files.
+A reSolve application's main entry point is the **run.js** file. Code in this file assembles the app configuration object from several config files.
 
 Configuration setting are split across the following files by default:
 
