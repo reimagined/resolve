@@ -5,24 +5,52 @@ const waitEventCausalConsistency = async (
   aggregateId,
   aggregateVersion
 ) => {
-  const latestEvent = await repository.eventStore.getLatestEvent({
-    eventTypes: repository.eventTypes,
-    ...(aggregateId != null ? { aggregateIds: [aggregateId] } : {})
-  })
+  try {
+    await repository.metaApi.rollbackTransaction(true)
 
-  while ((await repository.metaApi.getLastTimestamp()) == null) {
-    await new Promise(resolve => setTimeout(resolve, causalConsistenceWaitTime))
-  }
+    const latestEvent = await repository.eventStore.getLatestEvent({
+      eventTypes: repository.eventTypes,
+      ...(aggregateId != null ? { aggregateIds: [aggregateId] } : {})
+    })
 
-  if (latestEvent == null) return
+    do {
+      await repository.metaApi.beginTransaction(true)
+      const lastTimestamp = await repository.metaApi.getLastTimestamp()
+      await repository.metaApi.rollbackTransaction(true)
 
-  while (
-    !(await repository.metaApi.checkEventProcessed(
-      latestEvent.aggregateId,
-      aggregateVersion != null ? aggregateVersion : latestEvent.aggregateVersion
-    ))
-  ) {
-    await new Promise(resolve => setTimeout(resolve, causalConsistenceWaitTime))
+      if (lastTimestamp == null) {
+        await new Promise(resolve =>
+          setTimeout(resolve, causalConsistenceWaitTime)
+        )
+      } else {
+        break
+      }
+    } while (true)
+
+    if (latestEvent == null) {
+      return
+    }
+
+    do {
+      await repository.metaApi.beginTransaction(true)
+      const isLastEventProcessed = await repository.metaApi.checkEventProcessed(
+        latestEvent.aggregateId,
+        aggregateVersion != null
+          ? aggregateVersion
+          : latestEvent.aggregateVersion
+      )
+      await repository.metaApi.rollbackTransaction(true)
+
+      if (!isLastEventProcessed) {
+        await new Promise(resolve =>
+          setTimeout(resolve, causalConsistenceWaitTime)
+        )
+      } else {
+        break
+      }
+    } while (true)
+  } finally {
+    await repository.metaApi.beginTransaction(true)
   }
 }
 
