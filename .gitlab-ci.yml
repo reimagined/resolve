@@ -280,31 +280,31 @@ macOS (create-resolve-app + functional-tests):
   script:
     - pm2 delete local-registry || true
     - pm2 start resolve-$CI_PIPELINE_ID/babel.compile.js --name local-registry -- --local-registry
-    - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js -c $MERGE_COMMIT_SHA -e hacker-news hacker-news
+    - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e hacker-news hacker-news
     - cd hacker-news
     - npm run test:functional safari
     - cd ..
-    - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js -c $MERGE_COMMIT_SHA -e hello-world hello-world
+    - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e hello-world hello-world
     - cd hello-world
     - npm run test:functional safari
     - cd ..
-    - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js -c $MERGE_COMMIT_SHA -e shopping-list-advanced shopping-list-advanced
+    - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e shopping-list-advanced shopping-list-advanced
     - cd shopping-list-advanced
     - npm run test:functional safari
     - cd ..
-    - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js -c $MERGE_COMMIT_SHA -e shopping-list shopping-list
+    - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e shopping-list shopping-list
     - cd shopping-list
     - npm run test:functional safari
     - cd ..
-    - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js -c $MERGE_COMMIT_SHA -e with-postcss with-postcss
+    - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e with-postcss with-postcss
     - cd with-postcss
     - npm run test:functional safari
     - cd ..
-    - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js -c $MERGE_COMMIT_SHA -e with-saga with-saga
+    - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e with-saga with-saga
     - cd with-saga
     - npm run test:functional safari
     - cd ..
-    - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js -c $MERGE_COMMIT_SHA -e with-styled-components with-styled-components
+    - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e with-styled-components with-styled-components
     - cd with-styled-components
     - npm run test:functional safari
     - cd ..
@@ -332,31 +332,31 @@ ubuntu (create-resolve-app + functional-tests):
     - pm2 delete local-registry || true
     - pm2 start resolve-$CI_PIPELINE_ID/babel.compile.js --name local-registry -- --local-registry
     - export DISPLAY=:0
-    - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js -c $MERGE_COMMIT_SHA -e hacker-news hacker-news
+    - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e hacker-news hacker-news
     - cd hacker-news
     - yarn test:functional chromium
     - cd ..
-    - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js -c $MERGE_COMMIT_SHA -e hello-world hello-world
+    - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e hello-world hello-world
     - cd hello-world
     - yarn test:functional chromium
     - cd ..
-    - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js -c $MERGE_COMMIT_SHA -e shopping-list-advanced shopping-list-advanced
+    - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e shopping-list-advanced shopping-list-advanced
     - cd shopping-list-advanced
     - yarn test:functional chromium
     - cd ..
-    - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js -c $MERGE_COMMIT_SHA -e shopping-list shopping-list
+    - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e shopping-list shopping-list
     - cd shopping-list
     - yarn test:functional chromium
     - cd ..
-    - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js -c $MERGE_COMMIT_SHA -e with-postcss with-postcss
+    - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e with-postcss with-postcss
     - cd with-postcss
     - yarn test:functional chromium
     - cd ..
-    - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js -c $MERGE_COMMIT_SHA -e with-saga with-saga
+    - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e with-saga with-saga
     - cd with-saga
     - yarn test:functional chromium
     - cd ..
-    - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js -c $MERGE_COMMIT_SHA -e with-styled-components with-styled-components
+    - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e with-styled-components with-styled-components
     - cd with-styled-components
     - yarn test:functional chromium
     - cd ..
