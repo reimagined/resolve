@@ -3,11 +3,7 @@
 exports[`createCustomAdapter should work correctly with skipInit = false: skipInit: false 1`] = `
 "connect
 {
-  \\"config\\": {
-    \\"skipInit\\": false,
-    \\"a\\": \\"a\\",
-    \\"b\\": \\"b\\"
-  },
+  \\"config\\": {},
   \\"disposed\\": false,
   \\"initialPromise\\": {},
   \\"connectPromise\\": {},
@@ -15,15 +11,15 @@ exports[`createCustomAdapter should work correctly with skipInit = false: skipIn
   \\"testField2\\": 2
 }
 [
-  {}
-]
-init
-{
-  \\"config\\": {
+  {
     \\"skipInit\\": false,
     \\"a\\": \\"a\\",
     \\"b\\": \\"b\\"
-  },
+  }
+]
+init
+{
+  \\"config\\": {},
   \\"disposed\\": false,
   \\"initialPromise\\": {},
   \\"connectPromise\\": {},
@@ -33,11 +29,7 @@ init
 []
 loadEvents
 {
-  \\"config\\": {
-    \\"skipInit\\": false,
-    \\"a\\": \\"a\\",
-    \\"b\\": \\"b\\"
-  },
+  \\"config\\": {},
   \\"disposed\\": false,
   \\"initialPromise\\": {},
   \\"connectPromise\\": {},
@@ -57,11 +49,7 @@ loadEvents
 exports[`createCustomAdapter should work correctly with skipInit = true: skipInit: true 1`] = `
 "connect
 {
-  \\"config\\": {
-    \\"skipInit\\": true,
-    \\"a\\": \\"a\\",
-    \\"b\\": \\"b\\"
-  },
+  \\"config\\": {},
   \\"disposed\\": false,
   \\"initialPromise\\": {},
   \\"connectPromise\\": {},
@@ -69,15 +57,15 @@ exports[`createCustomAdapter should work correctly with skipInit = true: skipIni
   \\"testField2\\": 2
 }
 [
-  {}
-]
-init
-{
-  \\"config\\": {
+  {
     \\"skipInit\\": true,
     \\"a\\": \\"a\\",
     \\"b\\": \\"b\\"
-  },
+  }
+]
+init
+{
+  \\"config\\": {},
   \\"disposed\\": false,
   \\"initialPromise\\": {},
   \\"connectPromise\\": {},
@@ -87,11 +75,7 @@ init
 []
 loadEvents
 {
-  \\"config\\": {
-    \\"skipInit\\": true,
-    \\"a\\": \\"a\\",
-    \\"b\\": \\"b\\"
-  },
+  \\"config\\": {},
   \\"disposed\\": false,
   \\"initialPromise\\": {},
   \\"connectPromise\\": {},
