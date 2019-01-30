@@ -18,7 +18,7 @@ When you build a reSolve application, the following chunks are generated:
 - SSR renderer (server only, with peer dependencies with client, such as `styled-components`)
 - The client application with UI (browser only)
 
-All of these chunks are used by the target application. Some chunks can include other chunks. For instance, the client includes the view model projection chunk to automatically generate Redux reducers.
+All these chunks are used by the target application. Some chunks can include other chunks. For instance, the client includes the view model projection chunk to automatically generate Redux reducers.
 
 In a cloud/serverless environment, chunks like read model projections & resolvers, SSR renderer, API handlers and REST business logic are distributed to appropriate cloud executors.
 
@@ -28,7 +28,7 @@ When an application runs locally, the `resolve-scripts` utility loads all necess
 
 ReSolve provides the Server-Side rendering (SSR) functionality for React code without any additional configurations. This means that reSolve application pages are always pre-rendered before they are sent to the client browser. Note that server-side rendering is currently performed only for static content, without pre-fetching data.
 
-#### Managing routes
+#### Managing Routes
 
 ReSolve uses the [react-router](https://github.com/ReactTraining/react-router) library to perform routing. The [react-router-config](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config) library is also used to provide a centralized route config that can be used both on the server and client sides. You can define routes as shown below:
 
@@ -58,7 +58,7 @@ routes: 'client/routes.js'
 
 After this, app routing is configured for server-side rendering. On the client, routing is also performed as expected: when you render a [\<Redirect\>](https://reacttraining.com/react-router/web/api/Redirect), the browser switches to the new location, and this location is appended to the browser's history stack.
 
-#### Providing the document head
+#### Providing the Document Head
 
 The code below utilizes the [React Helmet](https://github.com/nfl/react-helmet#reference-guide) library to specify the document's **head** section:
 
@@ -225,4 +225,4 @@ const baseConfig = merge(
 
 A merged module's code is treated the same as the application's code. The resulting application's bundles include the module code and configurations as if they were always a part of the application.
 
-For an example on using modules, see the [Hacker News](https://github.com/reimagined/resolve/tree/master/examples/hacker-news) sample application. This application makes use of the authentication module as well as the comments module provided with reSolve.
+For an example on using modules, see the [Hacker News](https://github.com/reimagined/resolve/tree/master/examples/hacker-news) sample application. This application makes use of the authentication module and the comments module provided by reSolve.
