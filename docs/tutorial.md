@@ -515,7 +515,7 @@ http://{host}:{port}/api/query/{viewModel}/{aggregateIds}
 
 In the previous lesson, you modified your application so that it can answer queries. However, at this moment, your application does not provide a [frontent](frontend.md) that would present this data to an end-user. In this lesson, you will learn how to create a React frontend to display your reSolve application's data.
 
-To keep the example code simple, in this lesson you will only display items of a single shopping list. Later on, you will add support for multiple shopping lists and provide the required means of navigation between lists.
+In this lesson you will only display a single shopping list's items to keep the example code simple. Later on, you will add support for multiple shopping lists and provide the required means of navigation between lists.
 
 This tutorial sticks to React + Redux as the default choice for building a frontend for a reSolve application. Both React and Redux work well in conjunction with reSolve's infrastructure. ReSolve comes with the client **resolve-redux** library that provides HOCs allowing you to easily connect your React components to the backend.
 
@@ -523,7 +523,7 @@ Note that, if required, you can use the [standard HTTP API](curl.md) to communic
 
 ### Implement a React Frontend
 
-Create a **ShoppingList.js** file in the client application's containers folder. In this file, implement a component that displays a list of values obtained from the **[data](frontend.md#obtain-view-model-data)** prop:
+Create a **ShoppingList.js** file in the client application's **containers** folder. In this file, implement a component that displays a list of values obtained from the **[data](frontend.md#obtain-view-model-data)** prop:
 
 **client/containers/ShoppingList.js:**
 
@@ -552,7 +552,7 @@ export class ShoppingList extends React.PureComponent {
 
 <!-- prettier-ignore-end -->
 
-Now you can use the **resolve-redux** library's **connectViewModel** HOC to bind your component to the **ShoppingList** view model implemented earlier:
+Now you can use the **resolve-redux** library's **connectViewModel** HOC to bind your component to the **ShoppingList** view model that you implemented earlier implemented earlier:
 
 **client/containers/ShoppingList.js:**
 
@@ -572,7 +572,7 @@ export default connectViewModel(mapStateToOptions)(ShoppingList)
 
 <!-- prettier-ignore-end -->
 
-The connectViewModel HOC binds the original component to a reSolve View Model based on options provided by the **mapStateToOptions** function. The **data** prop that you used in your component's implementation is injected by this HOC and contains the View Model's response object. It is the same object that saw when you manually performed a data query using the HTTP API in the lesson 3:
+The connectViewModel HOC binds the original component to a reSolve View Model based on options specified by the **mapStateToOptions** function. The **data** prop that you used in your component's implementation is injected by this HOC and contains the View Model's response object. It is the same object that you saw when you manually performed a data query using the HTTP API in the lesson 3:
 
 ```js
 {
