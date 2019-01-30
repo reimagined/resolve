@@ -396,11 +396,11 @@ Command error: shopping list does not exist
 
 [\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-3)
 
-Currently, your shopping list application has a fully functional write side allowing you to create shopping lists and items in these lists. However, it does not provide means to query the created data. This lesson will teach you how to provide your application with the capability to answer data queries by implementing the application's **[read side](resolve-app-structure.md#write-and-read-sides)**.
+Currently, your shopping list application has a fully functional write side. This allows your application to create shopping lists and items in these lists. However, with only a write side your application does not provide means to query the created data. This lesson will teach you how to implement the application's **[read side](resolve-app-structure.md#write-and-read-sides)** to answer data queries.
 
 ### Implement a View Model
 
-A reSolve applications read side answers queries using **[Read Models](read-side.md#read-models)**. In this lesson, you will implement a **[View Model](read-side.md#view-model-specifics)**, which is a Read Model of a special kind used to build an application's state on the fly, so you can keep the implementation simple. In a [later lesson](#implement-a-shopping-lists-read-model), you will learn how to use regular Read Models to answer queries based on accumulated persistent state.
+A reSolve applications read side answers queries using **[Read Models](read-side.md#read-models)**. In this lesson, you will implement a **[View Model](read-side.md#view-model-specifics)**. View Models are Read Models used to build an application's state on the fly. This will allow you to keep the implementation simple. In a [later lesson](#implement-a-shopping-lists-read-model), you will learn how to use regular Read Models to answer queries based on accumulated persistent state.
 
 Create a **shopping_list.projection.js** file in the **view-models** folder and add the following code to this file:
 
@@ -454,7 +454,7 @@ viewModels: [
 
 ### Query a View Model via HTTP API
 
-Now you can tests the read side's functionality by sending an HTTP request to query the Shopping List View Model. You can query a View Model by sending an HTTP request to your application as shown below:
+Now you can tests the read side's functionality. Send an HTTP request to query the Shopping List View Model:
 
 ```sh
 $  curl -i -g -X GET "http://localhost:3000/api/query/ShoppingList/shopping-list-1"
