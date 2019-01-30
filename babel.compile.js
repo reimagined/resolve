@@ -290,7 +290,8 @@ async function compile({ mode }) {
         cliOptions: {
           filenames: [config.inputDir],
           outDir: config.outDir,
-          deleteDirOnStart: true
+          deleteDirOnStart: true,
+          relative: __dirname
         }
       })
         .then(() => {
