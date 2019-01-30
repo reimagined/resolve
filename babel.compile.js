@@ -242,10 +242,9 @@ async function compile({ mode }) {
 
       config.name = name
       config.version = version
-      config.directory = path.resolve(__dirname, path.dirname(filePath))
-      config.inputDir = path.resolve(path.dirname(filePath), config.inputDir)
-      config.outDir = path.resolve(path.dirname(filePath), config.outDir)
-
+      config.directory = path.join(__dirname, path.dirname(filePath))
+      config.inputDir = path.join(config.directory, config.inputDir)
+      config.outDir = path.join(config.directory, config.outDir)
       configs.push(config)
     }
   }
@@ -290,8 +289,7 @@ async function compile({ mode }) {
         cliOptions: {
           filenames: [config.inputDir],
           outDir: config.outDir,
-          deleteDirOnStart: true,
-          relative: __dirname
+          deleteDirOnStart: true
         }
       })
         .then(() => {

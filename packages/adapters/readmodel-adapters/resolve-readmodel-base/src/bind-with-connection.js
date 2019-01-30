@@ -1,15 +1,12 @@
 const bindWithConnection = (...bindArgs) => async (...funcArgs) => {
   const [pool, func, readModelName] = bindArgs
   if (!pool.connectPromise) {
-    pool.connectPromise = pool.connect(
-      pool.adapterContext,
-      {
-        ...pool.options,
-        checkStoredTableSchema: pool.checkTableSchema,
-        metaName: pool.metaName,
-        tablePrefix: pool.tablePrefix
-      }
-    )
+    pool.connectPromise = pool.connect(pool.adapterContext, {
+      ...pool.options,
+      checkStoredTableSchema: pool.checkTableSchema,
+      metaName: pool.metaName,
+      tablePrefix: pool.tablePrefix
+    })
   }
   await pool.connectPromise
 
