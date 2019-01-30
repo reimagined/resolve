@@ -5,9 +5,6 @@ const { execSync } = require('child_process')
 const find = require('glob').sync
 const babel = require('@babel/cli/lib/babel/dir').default
 
-const RUN = 'RUN'
-const LOCAL_REGISTRY = 'LOCAL_REGISTRY'
-
 const localRegistry = {
   protocol: 'http',
   host: '0.0.0.0',
@@ -19,53 +16,90 @@ function safeName(name) {
   return `${name.replace(/@/, '').replace(/[/|\\]/g, '-')}.tgz`
 }
 
-async function pack({ resolvePackages, directory, name }) {
-  fs.copyFileSync(
-    path.join(directory, 'package.json'),
-    path.join(directory, 'package.backup.json')
-  )
-  const packageJson = JSON.parse(
-    fs.readFileSync(path.join(directory, 'package.json'))
-  )
-  for (const namespace of [
-    'dependencies',
-    'devDependencies',
-    'peerDependencies',
-    'optionalDependencies'
-  ]) {
-    if (!packageJson[namespace]) {
+async function getCompileConfigs() {
+  const configs = []
+
+  for (const filePath of find('./packages/**/package.json', {
+    cwd: __dirname
+  })) {
+    if (filePath.includes('node_modules')) {
       continue
     }
-    for (const name of resolvePackages) {
-      if (packageJson[namespace][name]) {
-        packageJson[namespace][name] =
-          namespace === 'peerDependencies'
-            ? '*'
-            : `${localRegistry.protocol}://${localRegistry.host}:${
-                localRegistry.port
-              }/${safeName(name)}`
+
+    const { version, name, babelCompile } = require(filePath)
+
+    if (!Array.isArray(babelCompile)) {
+      throw new Error(`[${name}] package.json "babelCompile" must be an array`)
+    }
+
+    for (let index = 0; index < babelCompile.length; index++) {
+      const config = babelCompile[index]
+      if (config.moduleType.constructor !== String) {
+        throw new Error(`.babelCompile[${index}].moduleType must be a string`)
       }
+      if (config.moduleTarget.constructor !== String) {
+        throw new Error(`.babelCompile[${index}].moduleTarget must be a string`)
+      }
+      if (config.inputDir.constructor !== String) {
+        throw new Error(`.babelCompile[${index}].inputDir must be a string`)
+      }
+      if (config.outDir.constructor !== String) {
+        throw new Error(`.babelCompile[${index}].outDir must be a string`)
+      }
+
+      config.name = name
+      config.version = version
+      config.directory = path.join(__dirname, path.dirname(filePath))
+      config.inputDir = path.join(config.directory, config.inputDir)
+      config.outDir = path.join(config.directory, config.outDir)
+      configs.push(config)
     }
   }
 
-  fs.writeFileSync(
-    path.join(directory, 'package.json'),
-    JSON.stringify(packageJson, null, 2)
-  )
-  if (!fs.existsSync(localRegistry.directory)) {
-    fs.mkdirSync(localRegistry.directory)
+  return configs
+}
+
+async function getResolvePackages() {
+  const resolvePackages = []
+
+  for (const filePath of find('./packages/**/package.json', {
+    cwd: __dirname
+  })) {
+    if (filePath.includes('node_modules')) {
+      continue
+    }
+
+    const { name } = require(filePath)
+
+    resolvePackages.push(name)
   }
-  execSync(
-    `yarn pack --filename="${path.join(
-      localRegistry.directory,
-      safeName(name)
-    )}"`,
-    { cwd: directory }
-  )
-  fs.unlinkSync(path.join(directory, 'package.json'))
-  fs.renameSync(
-    path.join(directory, 'package.backup.json'),
-    path.join(directory, 'package.json')
+
+  resolvePackages.sort((a, b) => (a > b ? 1 : a < b ? -1 : 0))
+
+  return resolvePackages
+}
+
+async function getResolveExamples() {
+  const resolveExamples = []
+
+  for (const filePath of find('./examples/*/package.json', {
+    cwd: __dirname
+  })) {
+    if (filePath.includes('node_modules')) {
+      continue
+    }
+
+    const { name, description } = require(filePath)
+
+    if (!description) {
+      throw new Error(`Example "${name}" .description must be a string`)
+    }
+
+    resolveExamples.push({ name, description })
+  }
+
+  resolveExamples.sort((a, b) =>
+    a.name > b.name ? 1 : a.name < b.name ? -1 : 0
   )
 }
 
@@ -164,111 +198,11 @@ function getConfig({ moduleType, moduleTarget }) {
   }
 }
 
-async function compile({ mode }) {
-  const configs = []
+async function compile() {
+  const configs = await getCompileConfigs()
 
-  const resolvePackages = []
-  const resolveExamples = []
-
-  let packagesReadyResolve
-  const packagesReady = new Promise(resolve => {
-    packagesReadyResolve = resolve
-  })
-
-  if (mode === LOCAL_REGISTRY) {
-    http
-      .createServer(async (req, res) => {
-        const fileName = req.url.slice(1)
-
-        const filePath = path.join(localRegistry.directory, fileName)
-
-        await packagesReady
-
-        if (!resolvePackages.includes(fileName.replace('.tgz', ''))) {
-          res.writeHead(404, {
-            'Content-Type': 'text/plain',
-            'Content-Length': 0
-          })
-          res.end()
-          return
-        }
-
-        while (!fs.existsSync(filePath)) {
-          await new Promise(resolve => setTimeout(resolve, 100))
-        }
-
-        const stat = fs.statSync(filePath)
-
-        res.writeHead(200, {
-          'Content-Type': 'application/tar+gzip',
-          'Content-Length': stat.size
-        })
-
-        const readStream = fs.createReadStream(filePath)
-        readStream.pipe(res)
-      })
-      .listen(localRegistry.port, localRegistry.host)
-  }
-
-  for (const filePath of find('./packages/**/package.json', {
-    cwd: __dirname
-  })) {
-    if (filePath.includes('node_modules')) {
-      continue
-    }
-
-    const { version, name, babelCompile } = require(filePath)
-
-    resolvePackages.push(name)
-
-    if (!Array.isArray(babelCompile)) {
-      throw new Error(`[${name}] package.json "babelCompile" must be an array`)
-    }
-
-    for (let index = 0; index < babelCompile.length; index++) {
-      const config = babelCompile[index]
-      if (config.moduleType.constructor !== String) {
-        throw new Error(`.babelCompile[${index}].moduleType must be a string`)
-      }
-      if (config.moduleTarget.constructor !== String) {
-        throw new Error(`.babelCompile[${index}].moduleTarget must be a string`)
-      }
-      if (config.inputDir.constructor !== String) {
-        throw new Error(`.babelCompile[${index}].inputDir must be a string`)
-      }
-      if (config.outDir.constructor !== String) {
-        throw new Error(`.babelCompile[${index}].outDir must be a string`)
-      }
-
-      config.name = name
-      config.version = version
-      config.directory = path.join(__dirname, path.dirname(filePath))
-      config.inputDir = path.join(config.directory, config.inputDir)
-      config.outDir = path.join(config.directory, config.outDir)
-      configs.push(config)
-    }
-  }
-
-  for (const filePath of find('./examples/*/package.json', {
-    cwd: __dirname
-  })) {
-    if (filePath.includes('node_modules')) {
-      continue
-    }
-
-    const { name, description } = require(filePath)
-
-    if (!description) {
-      throw new Error(`Example "${name}" .description must be a string`)
-    }
-
-    resolveExamples.push({ name, description })
-  }
-
-  resolvePackages.sort((a, b) => (a > b ? 1 : a < b ? -1 : 0))
-  resolveExamples.sort((a, b) =>
-    a.name > b.name ? 1 : a.name < b.name ? -1 : 0
-  )
+  const resolvePackages = await getResolvePackages()
+  const resolveExamples = await getResolveExamples()
 
   process.env.__RESOLVE_PACKAGES__ = JSON.stringify(resolvePackages)
   process.env.__RESOLVE_EXAMPLES__ = JSON.stringify(resolveExamples)
@@ -309,41 +243,144 @@ async function compile({ mode }) {
   }
   await Promise.all(promises)
 
-  if (mode === LOCAL_REGISTRY) {
-    for (const { directory, name, version } of configs) {
-      await pack({
-        resolvePackages,
-        directory,
-        name,
-        version
-      })
+  return { resolvePackages, configs }
+}
+
+async function pack({ resolvePackages, directory, name }) {
+  fs.copyFileSync(
+    path.join(directory, 'package.json'),
+    path.join(directory, 'package.backup.json')
+  )
+  const packageJson = JSON.parse(
+    fs.readFileSync(path.join(directory, 'package.json'))
+  )
+  for (const namespace of [
+    'dependencies',
+    'devDependencies',
+    'peerDependencies',
+    'optionalDependencies'
+  ]) {
+    if (!packageJson[namespace]) {
+      continue
+    }
+    for (const name of resolvePackages) {
+      if (packageJson[namespace][name]) {
+        packageJson[namespace][name] =
+          namespace === 'peerDependencies'
+            ? '*'
+            : `${localRegistry.protocol}://${localRegistry.host}:${
+                localRegistry.port
+              }/${safeName(name)}`
+      }
     }
   }
 
-  packagesReadyResolve()
-}
-
-if (process.argv[2] === '--run') {
-  compile({ mode: RUN }).catch(
-    // eslint-disable-next-line no-console
-    error => console.error(error)
+  fs.writeFileSync(
+    path.join(directory, 'package.json'),
+    JSON.stringify(packageJson, null, 2)
+  )
+  if (!fs.existsSync(localRegistry.directory)) {
+    fs.mkdirSync(localRegistry.directory)
+  }
+  execSync(
+    `yarn pack --filename="${path.join(
+      localRegistry.directory,
+      safeName(name)
+    )}"`,
+    { cwd: directory }
+  )
+  fs.unlinkSync(path.join(directory, 'package.json'))
+  fs.renameSync(
+    path.join(directory, 'package.backup.json'),
+    path.join(directory, 'package.json')
   )
 }
 
-if (process.argv[2] === '--local-registry') {
-  compile({ mode: LOCAL_REGISTRY })
-    .then(() => {
+switch (process.argv[2]) {
+  case '--run': {
+    compile().catch(error => {
+      // eslint-disable-next-line no-console
+      console.error(error)
+      process.exit(1)
+    })
+    break
+  }
+  case '--packages': {
+    compile()
+      .then(async ({ resolvePackages, configs }) => {
+        for (const { directory, name, version } of configs) {
+          await pack({
+            resolvePackages,
+            directory,
+            name,
+            version
+          })
+        }
+      })
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.error(error)
+        process.exit(1)
+      })
+    break
+  }
+  case '--local-registry': {
+    startLocalRegistry().catch(error => {
+      // eslint-disable-next-line no-console
+      console.error(error)
+      process.exit(1)
+    })
+    break
+  }
+  default:
+    process.exit(1)
+}
+
+async function startLocalRegistry() {
+  const resolvePackages = await getResolvePackages()
+
+  http
+    .createServer(async (req, res) => {
+      const fileName = req.url.slice(1)
+
+      const filePath = path.join(localRegistry.directory, fileName)
+
+      if (!resolvePackages.includes(fileName.replace('.tgz', ''))) {
+        res.writeHead(404, {
+          'Content-Type': 'text/plain',
+          'Content-Length': 0
+        })
+        res.end()
+        return
+      }
+
+      while (!fs.existsSync(filePath)) {
+        await new Promise(resolve => setTimeout(resolve, 100))
+      }
+
+      const stat = fs.statSync(filePath)
+
+      res.writeHead(200, {
+        'Content-Type': 'application/tar+gzip',
+        'Content-Length': stat.size
+      })
+
+      const readStream = fs.createReadStream(filePath)
+      readStream.pipe(res)
+    })
+    .listen(localRegistry.port, localRegistry.host, error => {
+      if (error) {
+        // eslint-disable-next-line no-console
+        console.error(error)
+        return
+      }
       // eslint-disable-next-line no-console
       console.log(
-        `Local registry listening on ${localRegistry.protocol}://${
-          localRegistry.host
-        }:${localRegistry.port}`
+        `Local registry listening on http://${localRegistry.host}:${
+          localRegistry.port
+        }`
       )
     })
-    .catch(
-      // eslint-disable-next-line no-console
-      error => console.error(error)
-    )
 }
 
 module.exports.getConfig = getConfig
