@@ -306,8 +306,10 @@ switch (process.argv[2]) {
     break
   }
   case '--packages': {
-    compile()
-      .then(async ({ resolvePackages, configs }) => {
+    Promise.resolve({})
+      .then(async () => {
+        const configs = await getCompileConfigs()
+        const resolvePackages = await getResolvePackages()
         for (const { directory, name, version } of configs) {
           await pack({
             resolvePackages,
