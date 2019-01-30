@@ -19,7 +19,7 @@ function safeName(name) {
   return `${name.replace(/@/, '').replace(/[/|\\]/g, '-')}.tgz`
 }
 
-function pack({ resolvePackages, directory, name }) {
+async function pack({ resolvePackages, directory, name }) {
   fs.copyFileSync(
     path.join(directory, 'package.json'),
     path.join(directory, 'package.backup.json')
@@ -231,6 +231,39 @@ async function compile({ mode }) {
   process.env.__RESOLVE_EXAMPLES__ = JSON.stringify(resolveExamples)
   process.env.__RESOLVE_VERSION__ = require('./package').version
 
+  if (mode === LOCAL_REGISTRY) {
+    http
+      .createServer(async (req, res) => {
+        const fileName = req.url.slice(1)
+
+        const filePath = path.join(localRegistry.directory, fileName)
+
+        if (!resolvePackages.includes(fileName.replace('.tgz', ''))) {
+          res.writeHead(404, {
+            'Content-Type': 'text/plain',
+            'Content-Length': 0
+          })
+          res.end()
+          return
+        }
+
+        while (!fs.existsSync(filePath)) {
+          await new Promise(resolve => setTimeout(resolve, 100))
+        }
+
+        const stat = fs.statSync(filePath)
+
+        res.writeHead(200, {
+          'Content-Type': 'application/tar+gzip',
+          'Content-Length': stat.size
+        })
+
+        const readStream = fs.createReadStream(filePath)
+        readStream.pipe(res)
+      })
+      .listen(localRegistry.port, localRegistry.host)
+  }
+
   const promises = []
   for (const config of configs) {
     promises.push(
@@ -268,30 +301,13 @@ async function compile({ mode }) {
 
   if (mode === LOCAL_REGISTRY) {
     for (const { directory, name, version } of configs) {
-      pack({
+      await pack({
         resolvePackages,
         directory,
         name,
         version
       })
     }
-
-    http
-      .createServer((req, res) => {
-        const fileName = req.url.slice(1)
-
-        const filePath = path.join(localRegistry.directory, fileName)
-        const stat = fs.statSync(filePath)
-
-        res.writeHead(200, {
-          'Content-Type': 'application/tar+gzip',
-          'Content-Length': stat.size
-        })
-
-        const readStream = fs.createReadStream(filePath)
-        readStream.pipe(res)
-      })
-      .listen(localRegistry.port, localRegistry.host)
   }
 }
 
