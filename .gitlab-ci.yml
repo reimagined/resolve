@@ -38,7 +38,7 @@ ubuntu (prepare environment):
     - cd ci-cd
     - git fetch origin ci/cd:ci/cd
     - git checkout ci/cd
-    - yarn install --frozen-lockfile --cache-folder .yarn-cache
+    - yarn install --frozen-lockfile --cache-folder ../.yarn-cache
 
 macOS (prepare environment):
   stage: prepare-environment
@@ -56,7 +56,7 @@ macOS (prepare environment):
     - cd ci-cd
     - git fetch origin ci/cd:ci/cd
     - git checkout ci/cd
-    - yarn install --frozen-lockfile --cache-folder .yarn-cache
+    - yarn install --frozen-lockfile --cache-folder ../.yarn-cache
 
 ubuntu (start environment):
   stage: start-environment
@@ -100,7 +100,7 @@ install:
     - cd resolve-$CI_PIPELINE_ID
     - git fetch origin $MERGE_COMMIT_SHA:merge-commit
     - git checkout merge-commit
-    - yarn install --frozen-lockfile --cache-folder .yarn-cache
+    - yarn install --frozen-lockfile --cache-folder ../.yarn-cache
 
 checks:
   stage: unit-tests
@@ -185,7 +185,8 @@ macOS (install):
     - cd resolve-$CI_PIPELINE_ID
     - git fetch origin $MERGE_COMMIT_SHA:merge-commit
     - git checkout merge-commit
-    - yarn install --frozen-lockfile --cache-folder .yarn-cache
+    - yarn install --frozen-lockfile --cache-folder ../.yarn-cache
+    - yarn packages
 
 ubuntu (install):
   stage: install
@@ -210,7 +211,8 @@ ubuntu (install):
     - cd resolve-$CI_PIPELINE_ID
     - git fetch origin $MERGE_COMMIT_SHA:merge-commit
     - git checkout merge-commit
-    - yarn install --frozen-lockfile --cache-folder .yarn-cache
+    - yarn install --frozen-lockfile --cache-folder ../.yarn-cache
+    - yarn packages
 
 eslint + prettier:
   stage: unit-tests
