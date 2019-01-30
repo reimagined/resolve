@@ -104,7 +104,13 @@ async function getResolveExamples() {
 }
 
 function getConfig({ moduleType, moduleTarget }) {
-  let useESModules, regenerator, helpers, modules, targets, loose
+  let useESModules,
+    regenerator,
+    helpers,
+    modules,
+    targets,
+    loose,
+    forceAllTransforms = false
 
   switch (moduleType) {
     case 'cjs': {
@@ -136,6 +142,7 @@ function getConfig({ moduleType, moduleTarget }) {
       loose = true
       regenerator = true
       helpers = true
+      forceAllTransforms = true
       break
     }
     default: {
@@ -152,6 +159,7 @@ function getConfig({ moduleType, moduleTarget }) {
         {
           loose,
           targets,
+          forceAllTransforms,
           modules
         }
       ],
@@ -335,7 +343,6 @@ switch (process.argv[2]) {
     break
   }
   default:
-    process.exit(1)
 }
 
 async function startLocalRegistry() {
