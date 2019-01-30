@@ -210,7 +210,9 @@ async function compile({ mode }) {
       .listen(localRegistry.port, localRegistry.host)
   }
 
-  for (const filePath of find('./packages/**/package.json')) {
+  for (const filePath of find('./packages/**/package.json', {
+    cwd: __dirname
+  })) {
     if (filePath.includes('node_modules')) {
       continue
     }
@@ -248,7 +250,9 @@ async function compile({ mode }) {
     }
   }
 
-  for (const filePath of find('./examples/*/package.json')) {
+  for (const filePath of find('./examples/*/package.json', {
+    cwd: __dirname
+  })) {
     if (filePath.includes('node_modules')) {
       continue
     }
