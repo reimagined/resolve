@@ -280,34 +280,49 @@ macOS (create-resolve-app + functional-tests):
   script:
     - pm2 delete local-registry || true
     - pm2 start resolve-$CI_PIPELINE_ID/babel.compile.js --name local-registry -- --local-registry
+    - sleep 3
+    - rm -rf hacker-news || true
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e hacker-news hacker-news
     - cd hacker-news
-    - npm run test:functional safari
+    - yarn test:functional chromium
     - cd ..
+    - rm -rf hacker-news
+    - rm -rf hello-world || true
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e hello-world hello-world
     - cd hello-world
-    - npm run test:functional safari
+    - yarn test:functional chromium
     - cd ..
+    - rm -rf hello-world
+    - rm -rf shopping-list-advanced || true
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e shopping-list-advanced shopping-list-advanced
     - cd shopping-list-advanced
-    - npm run test:functional safari
+    - yarn test:functional chromium
     - cd ..
+    - rm -rf shopping-list-advanced
+    - rm -rf shopping-list || true
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e shopping-list shopping-list
     - cd shopping-list
-    - npm run test:functional safari
+    - yarn test:functional chromium
     - cd ..
+    - rm -rf shopping-list
+    - rm -rf with-postcss || true
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e with-postcss with-postcss
     - cd with-postcss
-    - npm run test:functional safari
+    - yarn test:functional chromium
     - cd ..
+    - rm -rf with-postcss
+    - rm -rf with-saga || true
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e with-saga with-saga
     - cd with-saga
-    - npm run test:functional safari
+    - yarn test:functional chromium
     - cd ..
+    - rm -rf with-saga
+    - rm -rf with-styled-components || true
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e with-styled-components with-styled-components
     - cd with-styled-components
-    - npm run test:functional safari
+    - yarn test:functional chromium
     - cd ..
+    - rm -rf with-styled-components
     - node ci-cd/job-status/index.js --end
   after_script:
     - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "4. Functional-tests (macOS)" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "4. Functional-tests (macOS)" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
@@ -331,35 +346,50 @@ ubuntu (create-resolve-app + functional-tests):
   script:
     - pm2 delete local-registry || true
     - pm2 start resolve-$CI_PIPELINE_ID/babel.compile.js --name local-registry -- --local-registry
+    - sleep 3
     - export DISPLAY=:0
+    - rm -rf hacker-news || true
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e hacker-news hacker-news
     - cd hacker-news
     - yarn test:functional chromium
     - cd ..
+    - rm -rf hacker-news
+    - rm -rf hello-world || true
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e hello-world hello-world
     - cd hello-world
     - yarn test:functional chromium
     - cd ..
+    - rm -rf hello-world
+    - rm -rf shopping-list-advanced || true
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e shopping-list-advanced shopping-list-advanced
     - cd shopping-list-advanced
     - yarn test:functional chromium
     - cd ..
+    - rm -rf shopping-list-advanced
+    - rm -rf shopping-list || true
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e shopping-list shopping-list
     - cd shopping-list
     - yarn test:functional chromium
     - cd ..
+    - rm -rf shopping-list
+    - rm -rf with-postcss || true
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e with-postcss with-postcss
     - cd with-postcss
     - yarn test:functional chromium
     - cd ..
+    - rm -rf with-postcss
+    - rm -rf with-saga || true
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e with-saga with-saga
     - cd with-saga
     - yarn test:functional chromium
     - cd ..
+    - rm -rf with-saga
+    - rm -rf with-styled-components || true
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e with-styled-components with-styled-components
     - cd with-styled-components
     - yarn test:functional chromium
     - cd ..
+    - rm -rf with-styled-components
     - node ci-cd/job-status/index.js --end
   after_script:
     - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "5. Functional-tests (Ubuntu)" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "5. Functional-tests (Ubuntu)" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
@@ -395,6 +425,7 @@ success:
   cache:
     policy: pull
   script:
+    - rm -rf resolve-$CI_PIPELINE_ID
     - node ci-cd/create-github-status/index.js --state success --context "1. Pipeline" --description "Build ♯$CI_PIPELINE_IID succeeded" --targetUrl $CI_PIPELINE_URL
 
 failure:
