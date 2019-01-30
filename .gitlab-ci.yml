@@ -278,8 +278,10 @@ macOS (create-resolve-app + functional-tests):
     - node ci-cd/job-status/index.js --start
     - node ci-cd/create-github-status/index.js --state pending --context "4. Functional-tests (macOS)" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
   script:
+    - cd resolve-$CI_PIPELINE_ID
     - pm2 delete local-registry || true
-    - pm2 start resolve-$CI_PIPELINE_ID/babel.compile.js --name local-registry -- --local-registry
+    - pm2 start babel.compile.js --name local-registry -- --local-registry
+    - cd ..
     - sleep 3
     - rm -rf hacker-news || true
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e hacker-news hacker-news
@@ -344,8 +346,10 @@ ubuntu (create-resolve-app + functional-tests):
     - node ci-cd/job-status/index.js --start
     - node ci-cd/create-github-status/index.js --state pending --context "5. Functional-tests (Ubuntu)" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
   script:
+    - cd resolve-$CI_PIPELINE_ID
     - pm2 delete local-registry || true
-    - pm2 start resolve-$CI_PIPELINE_ID/babel.compile.js --name local-registry -- --local-registry
+    - pm2 start babel.compile.js --name local-registry -- --local-registry
+    - cd ..
     - sleep 3
     - export DISPLAY=:0
     - rm -rf hacker-news || true
