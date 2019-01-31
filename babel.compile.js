@@ -16,7 +16,12 @@ function safeName(name) {
   return `${name.replace(/@/, '').replace(/[/|\\]/g, '-')}.tgz`
 }
 
-async function getCompileConfigs() {
+let _configs
+function getCompileConfigs() {
+  if (_configs) {
+    return _configs
+  }
+
   const configs = []
 
   for (const filePath of find('./packages/**/package.json', {
@@ -56,10 +61,17 @@ async function getCompileConfigs() {
     }
   }
 
+  _configs = configs
+
   return configs
 }
 
-async function getResolvePackages() {
+let _resolvePackages
+function getResolvePackages() {
+  if (_resolvePackages) {
+    return _resolvePackages
+  }
+
   const resolvePackages = []
 
   for (const filePath of find('./packages/**/package.json', {
@@ -76,10 +88,17 @@ async function getResolvePackages() {
 
   resolvePackages.sort((a, b) => (a > b ? 1 : a < b ? -1 : 0))
 
+  _resolvePackages = resolvePackages
+
   return resolvePackages
 }
 
-async function getResolveExamples() {
+let _resolveExamples
+function getResolveExamples() {
+  if (_resolveExamples) {
+    return _resolveExamples
+  }
+
   const resolveExamples = []
 
   for (const filePath of find('./examples/*/package.json', {
@@ -101,9 +120,20 @@ async function getResolveExamples() {
   resolveExamples.sort((a, b) =>
     a.name > b.name ? 1 : a.name < b.name ? -1 : 0
   )
+
+  _resolveExamples = resolveExamples
+
+  return resolveExamples
 }
 
 function getConfig({ moduleType, moduleTarget }) {
+  const resolvePackages = getResolvePackages()
+  const resolveExamples = getResolveExamples()
+
+  process.env.__RESOLVE_PACKAGES__ = JSON.stringify(resolvePackages)
+  process.env.__RESOLVE_EXAMPLES__ = JSON.stringify(resolveExamples)
+  process.env.__RESOLVE_VERSION__ = require('./package').version
+
   let useESModules,
     regenerator,
     helpers,
@@ -207,14 +237,7 @@ function getConfig({ moduleType, moduleTarget }) {
 }
 
 async function compile() {
-  const configs = await getCompileConfigs()
-
-  const resolvePackages = await getResolvePackages()
-  const resolveExamples = await getResolveExamples()
-
-  process.env.__RESOLVE_PACKAGES__ = JSON.stringify(resolvePackages)
-  process.env.__RESOLVE_EXAMPLES__ = JSON.stringify(resolveExamples)
-  process.env.__RESOLVE_VERSION__ = require('./package').version
+  const configs = getCompileConfigs()
 
   const promises = []
   for (const config of configs) {
@@ -250,11 +273,9 @@ async function compile() {
     )
   }
   await Promise.all(promises)
-
-  return { resolvePackages, configs }
 }
 
-async function pack({ resolvePackages, directory, name }) {
+function pack({ resolvePackages, directory, name }) {
   fs.copyFileSync(
     path.join(directory, 'package.json'),
     path.join(directory, 'package.backup.json')
@@ -314,24 +335,16 @@ switch (process.argv[2]) {
     break
   }
   case '--packages': {
-    Promise.resolve({})
-      .then(async () => {
-        const configs = await getCompileConfigs()
-        const resolvePackages = await getResolvePackages()
-        for (const { directory, name, version } of configs) {
-          await pack({
-            resolvePackages,
-            directory,
-            name,
-            version
-          })
-        }
+    const configs = getCompileConfigs()
+    const resolvePackages = getResolvePackages()
+    for (const { directory, name, version } of configs) {
+      pack({
+        resolvePackages,
+        directory,
+        name,
+        version
       })
-      .catch(error => {
-        // eslint-disable-next-line no-console
-        console.error(error)
-        process.exit(1)
-      })
+    }
     break
   }
   case '--local-registry': {
@@ -346,25 +359,24 @@ switch (process.argv[2]) {
 }
 
 async function startLocalRegistry() {
-  const resolvePackages = await getResolvePackages()
-
   http
-    .createServer(async (req, res) => {
+    .createServer((req, res) => {
       const fileName = req.url.slice(1)
 
       const filePath = path.join(localRegistry.directory, fileName)
 
-      if (!resolvePackages.includes(fileName.replace('.tgz', ''))) {
+      const resolvePackages = getResolvePackages()
+
+      if (
+        !resolvePackages.includes(fileName.replace('.tgz', '')) ||
+        !fs.existsSync(filePath)
+      ) {
         res.writeHead(404, {
           'Content-Type': 'text/plain',
           'Content-Length': 0
         })
         res.end()
         return
-      }
-
-      while (!fs.existsSync(filePath)) {
-        await new Promise(resolve => setTimeout(resolve, 100))
       }
 
       const stat = fs.statSync(filePath)

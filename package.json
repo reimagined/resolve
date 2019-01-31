@@ -62,7 +62,9 @@
     ]
   },
   "scripts": {
-    "clean": "npx oao all \"npx rimraf dist lib es\" --parallel && npx rimraf yarn-error.log && npx oao clean",
+    "clean": "npm run clean:babel && npm run clean:packages && npx rimraf yarn-error.log && npx oao clean",
+    "clean:babel": "npx oao all \"npx rimraf dist lib es\" --parallel",
+    "clean:packages": "npx rimraf .packages",
     "lint": "eslint .",
     "prepare": "node ./babel.compile.js --run",
     "packages": "node ./babel.compile.js --packages",
