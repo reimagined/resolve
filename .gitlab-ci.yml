@@ -288,43 +288,43 @@ macOS (create-resolve-app + functional-tests):
     - rm -rf hacker-news || true
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e hacker-news hacker-news
     - cd hacker-news
-    - yarn test:functional chromium
+    - yarn test:functional safari
     - cd ..
     - rm -rf hacker-news
     - rm -rf hello-world || true
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e hello-world hello-world
     - cd hello-world
-    - yarn test:functional chromium
+    - yarn test:functional safari
     - cd ..
     - rm -rf hello-world
     - rm -rf shopping-list-advanced || true
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e shopping-list-advanced shopping-list-advanced
     - cd shopping-list-advanced
-    - yarn test:functional chromium
+    - yarn test:functional safari
     - cd ..
     - rm -rf shopping-list-advanced
     - rm -rf shopping-list || true
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e shopping-list shopping-list
     - cd shopping-list
-    - yarn test:functional chromium
+    - yarn test:functional safari
     - cd ..
     - rm -rf shopping-list
     - rm -rf with-postcss || true
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e with-postcss with-postcss
     - cd with-postcss
-    - yarn test:functional chromium
+    - yarn test:functional safari
     - cd ..
     - rm -rf with-postcss
     - rm -rf with-saga || true
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e with-saga with-saga
     - cd with-saga
-    - yarn test:functional chromium
+    - yarn test:functional safari
     - cd ..
     - rm -rf with-saga
     - rm -rf with-styled-components || true
     - node resolve-$CI_PIPELINE_ID/packages/core/create-resolve-app/bin/index.js --local-registry -c $MERGE_COMMIT_SHA -e with-styled-components with-styled-components
     - cd with-styled-components
-    - yarn test:functional chromium
+    - yarn test:functional safari
     - cd ..
     - rm -rf with-styled-components
     - node ci-cd/job-status/index.js --end
