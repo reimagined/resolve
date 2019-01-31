@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "lodash.escaperegexp": "^4.1.2",
-    "jest": "23.6.0",
+    "jest": "24.0.0",
     "sinon": "7.2.2"
   },
   "babelCompile": [

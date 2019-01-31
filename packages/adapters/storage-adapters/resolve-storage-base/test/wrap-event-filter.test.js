@@ -1,6 +1,6 @@
 import sinon from 'sinon'
 
-import wrapLoadEvents from '../src/wrap-load-events'
+import wrapEventFilter from '../src/wrap-event-filter'
 
 test('wrap load events should bypass on correct filter arguments', async () => {
   const rawLoadEvents = sinon.stub().callsFake(async () => null)
@@ -13,7 +13,7 @@ test('wrap load events should bypass on correct filter arguments', async () => {
     finishTime: 200
   }
 
-  const loadEvents = wrapLoadEvents(rawLoadEvents)
+  const loadEvents = wrapEventFilter(rawLoadEvents)
   await loadEvents(pool, filter, callback)
 
   expect(rawLoadEvents.callCount).toEqual(1)
@@ -29,7 +29,7 @@ test('wrap load events should fail on wrong filter argument', async () => {
   const filter = null
 
   try {
-    const loadEvents = wrapLoadEvents(rawLoadEvents)
+    const loadEvents = wrapEventFilter(rawLoadEvents)
     await loadEvents(pool, filter, callback)
 
     return Promise.reject('Test failed')

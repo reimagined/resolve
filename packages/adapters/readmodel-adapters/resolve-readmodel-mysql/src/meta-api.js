@@ -164,7 +164,7 @@ const commitTransactionImpl = async (pool, readModelName) => {
     AND \`LockKey\`=${+pool.connectionId};
   `)
 
-  if (commitError != null && pool.transactionHasUncommittedDDL) {
+  if (commitError != null || pool.transactionHasUncommittedDDL) {
     await dropReadModel(pool, readModelName, true)
   }
 }
@@ -490,6 +490,26 @@ const checkAndAcquireSequence = async (
   return null
 }
 
+const checkEventProcessed = async (
+  { queryTransactionalDML, metaName, tablePrefix, escapeId, escape },
+  readModelName,
+  aggregateId,
+  aggregateVersion
+) => {
+  const rows = await queryTransactionalDML(
+    readModelName,
+    `SELECT \`Value\` AS \`AggregateVersion\`
+    FROM ${escapeId(`${tablePrefix}${metaName}_Schema`)}
+    WHERE \`ReadModelName\`=${escape(readModelName)}
+    AND \`FirstKey\`="AggregatesVersionsMap"
+    AND \`SecondKey\`=${escape(aggregateId)};`
+  )
+
+  const storedVersion = rows.length > 0 ? +rows[0].AggregateVersion : null
+
+  return storedVersion >= aggregateVersion
+}
+
 const disconnect = async pool => {
   const connection = await pool.connectionPromise
   await connection.end()
@@ -553,6 +573,7 @@ export default {
   reportDemandAccess,
   pollDemandAccess,
   checkAndAcquireSequence,
+  checkEventProcessed,
   getLastTimestamp,
   setLastTimestamp,
   beginTransaction,

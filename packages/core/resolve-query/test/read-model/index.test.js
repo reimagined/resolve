@@ -12,6 +12,7 @@ test('Read-model index', () => {
   const resolverNames = require('../../src/read-model/resolver-names')
   const dispose = require('../../src/read-model/dispose')
   const projectionInvoker = require('../../src/read-model/projection-invoker')
+  const waitEventCausalConsistency = require('../../src/read-model/wait-event-causal-consistency')
 
   sinon.stub(connect, 'default').callsFake(() => () => {})
   sinon.stub(loadEvents, 'default').callsFake(() => () => {})
@@ -22,6 +23,7 @@ test('Read-model index', () => {
   sinon.stub(resolverNames, 'default').callsFake(() => () => {})
   sinon.stub(dispose, 'default').callsFake(() => () => {})
   sinon.stub(projectionInvoker, 'default').callsFake(() => () => {})
+  sinon.stub(waitEventCausalConsistency, 'default').callsFake(() => () => {})
 
   sinon.stub(createReadModel, 'default').callsFake((...args) => {
     for (const func of args) {
@@ -42,6 +44,7 @@ test('Read-model index', () => {
   expect(resolverNames.default.callCount).toEqual(0)
   expect(dispose.default.callCount).toEqual(0)
   expect(projectionInvoker.default.callCount).toEqual(0)
+  expect(waitEventCausalConsistency.default.callCount).toEqual(0)
 
   index.default()
 
@@ -54,6 +57,7 @@ test('Read-model index', () => {
   expect(resolverNames.default.callCount).toEqual(1)
   expect(dispose.default.callCount).toEqual(1)
   expect(projectionInvoker.default.callCount).toEqual(1)
+  expect(waitEventCausalConsistency.default.callCount).toEqual(1)
 
   const readModelCallArgs = createReadModel.default.firstCall.args
 
@@ -66,4 +70,5 @@ test('Read-model index', () => {
   expect(readModelCallArgs[6]).toEqual(resolverNames.default)
   expect(readModelCallArgs[7]).toEqual(dispose.default)
   expect(readModelCallArgs[8]).toEqual(projectionInvoker.default)
+  expect(readModelCallArgs[9]).toEqual(waitEventCausalConsistency.default)
 })

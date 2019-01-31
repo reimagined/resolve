@@ -11,7 +11,11 @@ test('Read-model read should throw on disposed state', async () => {
 })
 
 test('Read-model read should throw on non-existing resolver', async () => {
-  const repository = { resolvers: {} }
+  const repository = {
+    metaApi: { reportDemandAccess: () => {} },
+    resolvers: {},
+    connect: () => {}
+  }
   try {
     await read(repository, { resolverName: 'NON_EXISTING_RESOLVER' })
     return Promise.reject('Test failed')

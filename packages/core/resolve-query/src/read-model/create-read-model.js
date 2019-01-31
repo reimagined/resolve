@@ -8,6 +8,7 @@ const createReadModel = (
   resolverNames,
   dispose,
   projectionInvoker,
+  waitEventCausalConsistency,
   deserialize,
   { readModelName, adapter, projection: inputProjection, eventStore, resolvers }
 ) => {
@@ -24,6 +25,7 @@ const createReadModel = (
     eventStore,
     loadEvents,
     projectionInvoker,
+    waitEventCausalConsistency,
     read
   }
 

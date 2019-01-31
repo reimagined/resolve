@@ -9,7 +9,7 @@ The reSolve framework's read side listens to events that the write side produces
 
 A Read Model is defined by a set of projection functions and query resolver functions.
 
-- **[Projection functions](#updating-a-read-model-via-projection-functions)** build Read Model state based on incoming events.
+- **[Projection functions](#updating-a-read-model-via-projection-functions)** build a Read Models state based on incoming events.
 - **[Query resolvers](#resolvers)** answer queries using data from the accumulated state.
 
 ReSolve also provides a special kind of Read Models that can be calculated on the fly, sent to the client and kept there up-to-date. Such Read Models are called **View Models**. Refer to the [View Model Specifics](view-model-specifics) section for more information.
@@ -45,7 +45,7 @@ In the configuration object, specify the Read Model's name and the paths to the 
 
 ### Configuring View Models
 
-In the same way, you should register your View Models using the **viewModels** section:
+In the same way, you should register your View Models in the **viewModels** section:
 
 ```js
 const appConfig = {
@@ -74,7 +74,7 @@ In the configuration object, specify the View Model's name and the path to the f
 
 Each Read Model projection object should define an **Init** function that initializes the Read Model storage.
 
-You can add tables to the storage using the **defineTable** method:
+You can use the **defineTable** method to add tables to the storage:
 
 ```js
   Init: async store => {
@@ -149,7 +149,7 @@ comments: async (store, { first, offset }) => {
 }
 ```
 
-To learn how to send a request to a Read Model resolver, refer to the [Query a Read Model](#query-a-read-model) section.
+Refer to the [Query a Read Model](#query-a-read-model) section for more information on how to send a request to a Read Model resolver.
 
 ## View Model Specifics
 
@@ -157,10 +157,10 @@ To learn how to send a request to a Read Model resolver, refer to the [Query a R
 
 Use View Models in the following scenarios:
 
-- To create aggregate-centric views. Such views request relatively portions of data based on aggregate IDs.
+- To create aggregate-centric views. Such views request relatively small portions of data based on aggregate IDs.
 - To create reactive components, whose state is kept up-to date on the client.
 
-A View Model's projection function recieves a state and an event object, and returns an updated state. A projection function runs for every event with the specified aggregate ID from the beginning of the history on every request so it is important to keep View Models small. You can also store snapshots of the View Model state to optimize system resource consumption.
+A View Model's projection function receives a state and an event object, and returns an updated state. A projection function runs for every event with the specified aggregate ID from the beginning of the history on every request so it is important to keep View Models small. You can also store snapshots of the View Model state to optimize system resource consumption.
 
 The code sample below demonstrate a typical View Model projection function:
 
@@ -236,7 +236,7 @@ http://{host}:{port}/api/query/{viewModel}/{aggregateIds}
 | Name         | Description                                                                                                                               |
 | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | viewModel    | The View Model name as defined in [config.app.js](https://github.com/reimagined/resolve/blob/master/examples/shopping-list/config.app.js) |
-| aggregateIds | The comma-separated list of Aggregate IDs to include into the View Model. Use `*` to include all Aggregates                               |
+| aggregateIds | The comma-separated list of Aggregate IDs to include in the View Model. Use `*` to include all Aggregates                                 |
 
 ##### Example
 

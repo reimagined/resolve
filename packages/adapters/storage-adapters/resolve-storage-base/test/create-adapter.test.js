@@ -6,6 +6,7 @@ test('createAdapter should return the correct interface', async () => {
   const connect = sinon.stub()
   const init = sinon.stub()
   const loadEvents = sinon.stub()
+  const getLatestEvent = sinon.stub()
   const saveEvent = sinon.stub()
   const dispose = sinon.stub()
 
@@ -17,7 +18,7 @@ test('createAdapter should return the correct interface', async () => {
   const db = {
     /* mock */
   }
-  const wrapLoadEvents = sinon
+  const wrapEventFilter = sinon
     .stub()
     .callsFake(func => async (...args) => await func(...args))
   const wrapDispose = sinon
@@ -30,11 +31,12 @@ test('createAdapter should return the correct interface', async () => {
   const adapter = createAdapter(
     prepare,
     wrapMethod,
-    wrapLoadEvents,
+    wrapEventFilter,
     wrapDispose,
     connect,
     init,
     loadEvents,
+    getLatestEvent,
     saveEvent,
     dispose,
     db,
@@ -42,12 +44,14 @@ test('createAdapter should return the correct interface', async () => {
   )
 
   await adapter.loadEvents()
+  await adapter.getLatestEvent()
   await adapter.saveEvent()
   await adapter.dispose()
 
   expect(loadEvents.callCount).toEqual(1)
+  expect(getLatestEvent.callCount).toEqual(1)
   expect(saveEvent.callCount).toEqual(1)
   expect(dispose.callCount).toEqual(1)
 
-  expect(wrapMethod.callCount).toEqual(4)
+  expect(wrapMethod.callCount).toEqual(5)
 })

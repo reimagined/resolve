@@ -36,7 +36,7 @@
     "babel-core": "^7.0.0-0",
     "regenerator-runtime": "0.13.1",
     "babel-jest": "23.6.0",
-    "jest": "23.6.0",
+    "jest": "24.0.0",
     "react-test-renderer": "16.7.0",
     "testcafe": "0.23.3",
     "isomorphic-fetch": "2.2.1",

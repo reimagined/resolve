@@ -12,7 +12,7 @@ const read = async (pool, { modelName, ...options }) => {
   const executor = getExecutor(pool, modelName)
 
   if (getModelType(pool, modelName) === modelTypes.readModel) {
-    await updateRequest(pool, modelName, options)
+    await updateRequest(pool, modelName)
   }
 
   return await executor.read(options)
