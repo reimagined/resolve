@@ -69,6 +69,7 @@ ubuntu (start environment):
   cache:
     policy: pull
   script:
+    - cd ci-cd
     - pm2 delete trigger-on-pull-request || true
     - pm2 start trigger-on-pull-request/index.js --name trigger-on-pull-request
 
