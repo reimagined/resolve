@@ -43,16 +43,17 @@ const validateEventFilter = filter => {
       throw new Error(`Event filter field ${key} should be number`)
     }
   }
+}
+
+const loadEvents = async (storage, bus, filter, handler) => {
+  validateEventFilter(filter)
 
   if (filter.skipStorage && filter.skipBus) {
     throw new Error(
       'Cannot load events when storage and the bus are skipped at the same time'
     )
   }
-}
 
-const loadEvents = async (storage, bus, filter, handler) => {
-  validateEventFilter(filter)
   const {
     skipStorage,
     skipBus,
@@ -114,9 +115,21 @@ const saveEvent = async (storage, bus, event) => {
   return event
 }
 
+const getLatestEvent = async (storage, bus, filter) => {
+  validateEventFilter(filter)
+
+  if (filter.skipStorage || filter.skipBus) {
+    throw new Error('Cannot get last eventstore event with skip-* parameters')
+  }
+
+  void bus // Bus is not used intentionally - last event fetched from storage
+
+  return await storage.getLatestEvent(filter)
+}
+
 const wrapMethod = (method, storage, bus, errorHandler) => async (...args) => {
   try {
-    await method(storage, bus, ...args)
+    return await method(storage, bus, ...args)
   } catch (error) {
     await errorHandler(error)
   }
@@ -130,6 +143,7 @@ export default (
 ) => {
   return Object.freeze({
     loadEvents: wrapMethod(loadEvents, storage, bus, errorHandler),
+    getLatestEvent: wrapMethod(getLatestEvent, storage, bus, errorHandler),
     saveEvent: wrapMethod(saveEvent, storage, bus, errorHandler)
   })
 }

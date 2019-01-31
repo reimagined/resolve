@@ -1,6 +1,16 @@
-const read = async (repository, { resolverName, resolverArgs, jwtToken }) => {
+const read = async (
+  repository,
+  { resolverName, resolverArgs, jwtToken, isBulkRead }
+) => {
   if (repository.disposePromise) {
     throw new Error('Read model is disposed')
+  }
+
+  await repository.connect(repository)
+  await repository.metaApi.reportDemandAccess()
+  // TODO: intoroduce `touch` function instead `isBulkRead` flag
+  if (isBulkRead) {
+    return null
   }
 
   const resolver = repository.resolvers[resolverName]
@@ -10,8 +20,6 @@ const read = async (repository, { resolverName, resolverArgs, jwtToken }) => {
     )
   }
 
-  await repository.connect(repository)
-  await repository.metaApi.reportDemandAccess()
   await repository.metaApi.beginTransaction(true)
 
   try {

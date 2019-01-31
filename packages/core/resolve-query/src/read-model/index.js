@@ -8,6 +8,7 @@ import updateByEvents from './update-by-events'
 import resolverNames from './resolver-names'
 import dispose from './dispose'
 import projectionInvoker from './projection-invoker'
+import waitEventCausalConsistency from './wait-event-causal-consistency'
 
 export default createReadModel.bind(
   null,
@@ -20,5 +21,6 @@ export default createReadModel.bind(
   resolverNames,
   dispose,
   projectionInvoker,
+  waitEventCausalConsistency,
   JSON.parse.bind(JSON)
 )

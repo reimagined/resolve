@@ -10,7 +10,13 @@ const connect = async repository => {
   })
 
   try {
-    const { readModelName, adapter, projection, projectionInvoker } = repository
+    const {
+      readModelName,
+      adapter,
+      projection,
+      projectionInvoker,
+      waitEventCausalConsistency
+    } = repository
 
     const {
       metaApi,
@@ -21,7 +27,13 @@ const connect = async repository => {
     Object.assign(repository, {
       boundProjectionInvoker: projectionInvoker.bind(null, repository),
       eventTypes: Object.keys(projection),
-      readStoreApi,
+      readStoreApi: Object.freeze(
+        Object.create(readStoreApi, {
+          waitEventCausalConsistency: {
+            value: waitEventCausalConsistency.bind(null, repository)
+          }
+        })
+      ),
       writeStoreApi,
       metaApi
     })

@@ -52,27 +52,15 @@ const initResolve = async (
     snapshotAdapter
   })
 
-  if (resolve.activeDemandSet == null) {
-    resolve.__proto__.activeDemandSet = new Set()
-  }
-
-  const doUpdateRequest = async (pool, readModelName, readOptions) => {
+  const doUpdateRequest = async (pool, readModelName) => {
     const executor = pool.getExecutor(pool, readModelName)
 
     Promise.resolve()
-      .then(() => executor.read(readOptions))
-      .catch(error => error)
-      .then(() => invokeLambdaSelf({ Records: [] }))
+      .then(executor.read.bind(null, { isBulkRead: true }))
+      .then(invokeLambdaSelf.bind(null, { Records: [] }))
       .catch(error => {
         resolveLog('error', 'Update lambda invocation error', error)
       })
-
-    if (!resolve.activeDemandSet.has(readModelName)) {
-      // Delay initial read-model on-demand request to enforce awaiting tables creation in common
-      // cases for better usability, but will be evenntually consistent anyway, even no timeout
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      resolve.activeDemandSet.add(readModelName)
-    }
   }
 
   const executeQuery = createQueryExecutor({

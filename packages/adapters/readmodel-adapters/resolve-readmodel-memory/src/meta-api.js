@@ -68,6 +68,17 @@ const checkAndAcquireSequence = async (
   return null
 }
 
+const checkEventProcessed = async (
+  { getReadModel },
+  readModelName,
+  aggregateId,
+  aggregateVersion
+) => {
+  const aggregateVersionsMap = getReadModel(readModelName).aggregateVersionsMap
+  const storedVersion = aggregateVersionsMap.get(aggregateId)
+  return storedVersion >= aggregateVersion
+}
+
 const getLastTimestamp = async ({ getReadModel }, readModelName) => {
   return getReadModel(readModelName).timestamp
 }
@@ -120,6 +131,7 @@ export default {
   reportDemandAccess,
   pollDemandAccess,
   checkAndAcquireSequence,
+  checkEventProcessed,
   getLastTimestamp,
   setLastTimestamp,
   beginTransaction,

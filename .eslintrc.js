@@ -336,6 +336,7 @@ module.exports = {
           'ttl',
           'txt',
           'typeof',
+          'uglify',
           'undef',
           'unfetch',
           'unicode',
