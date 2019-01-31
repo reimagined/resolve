@@ -1,6 +1,6 @@
 {
   "name": "resolve-module-auth",
-  "version": "0.19.1",
+  "version": "0.19.2",
   "description": "This package is resolve module for authentication.",
   "engines": {
     "node": ">=8.10"
