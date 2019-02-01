@@ -183,7 +183,7 @@ Note that reSolve does not force you to use adapters. For example, you may need 
 
 To learn more about a particular adapter type, refer to the documentation for the reSolve **[adapters](https://github.com/reimagined/resolve/tree/master/packages/adapters)** package.
 
-# Modules
+## Modules
 
 In reSolve, a module encapsulates a fragment of functionality that can be included by an application. A module can include any structural parts of a reSolve application in any combination.
 
