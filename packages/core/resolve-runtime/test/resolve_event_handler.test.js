@@ -7,10 +7,7 @@ describe('resolve event handler', () => {
   }
 
   const resolve = {
-    readModels: [
-      { name: 'readModel1' },
-      { name: 'readModel2' }
-    ],
+    readModels: [{ name: 'readModel1' }, { name: 'readModel2' }],
     executeQuery: {
       getExecutor: jest.fn(),
       getExecutors: jest.fn()
