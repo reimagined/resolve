@@ -7,6 +7,10 @@ describe('resolve event handler', () => {
   }
 
   const resolve = {
+    readModels: [
+      { name: 'readModel1' },
+      { name: 'readModel2' }
+    ],
     executeQuery: {
       getExecutor: jest.fn(),
       getExecutors: jest.fn()
@@ -90,6 +94,17 @@ describe('resolve event handler', () => {
       })
 
       expect(executor.dispose).toHaveBeenCalledTimes(1)
+    })
+
+    it('handles getting of list', async () => {
+      const lambdaEvent = {
+        part: 'readModel',
+        operation: 'list'
+      }
+
+      const result = await handleResolveEvent(lambdaEvent, resolve)
+
+      expect(result).toEqual(['readModel1', 'readModel2'])
     })
   })
 })

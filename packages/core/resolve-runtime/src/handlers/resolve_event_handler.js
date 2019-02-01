@@ -14,6 +14,9 @@ const handleResolveReadModelEvent = async (lambdaEvent, resolve) => {
 
       return 'ok'
     }
+    case 'list': {
+      return resolve.readModels.map(readModel => readModel.name)
+    }
     default: {
       return null
     }
