@@ -4,9 +4,9 @@ title: Step-by-Step Tutorial
 ---
 
 This document provides a step-by-step tutorial for the reSolve framework.
-Throughout this tutorial, you will be creating a single application. You will modify your application as you learn new concepts, so with every consequent lesson the application will become more and more sophisticated.
+Throughout this tutorial, you will create a single application. You will modify your application as you learn new concepts, so with every consequent lesson the application will become more and more sophisticated.
 
-This tutorial will give you an understanding of the reSolve framework and its fundamental concepts. It is recommended that your familiarize yourself with event sourcing and CQRS before starting this tutorial, however it is not strictly required.
+This tutorial will give you an understanding of the reSolve framework and its fundamental concepts. It is recommended that your familiarize yourself with event sourcing and CQRS before you start this tutorial, however it is not strictly required.
 
 ## Table of Contents
 
@@ -827,7 +827,7 @@ After these steps, your application's client UI should look as shown below.
 
 [\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-6)
 
-In the previous two lessons, you implemented the client-side UI for viewing and editing items in a shopping list. However, you may have noticed that your application's functionality is incomplete: it is possible use HTTP API to create multiple shopping lists, but the client UI only allows viewing and editing only one specific list, namely **shopping-list-1**:
+In the previous two lessons, you implemented the client-side UI for viewing and editing items in a shopping list. However, you may have noticed that your application's functionality is incomplete: it is possible use HTTP API to create multiple shopping lists, but the client UI only allows an end uesr to view and edit only one specific list, namely **shopping-list-1**:
 
 **client/containers/ShoppingList.js:**
 
@@ -846,9 +846,9 @@ In this lesson, you will enhance your application's functionality with the capab
 
 In the [Lesson 3](#lesson-3-read-side-create-a-view-model-to-query-list-items), you have implemented a View Model used to obtain information about shopping lists with the specified aggregate ID's. Although it is possible to use the same approach to obtain the list of all available shopping lists, there is a strong reason not to do so.
 
-Consider a situation, in which your application has been running in a production environment for a long time and a large number of shopping lists has been created. If you used a View Model to answer queries, a resulting data sample would be generated on the fly for every requests using events from the beginning of the history, which would result in a huge performance overhead on _each request_. Note that it is not a problem when you use a View Model to obtain a single list's items as the item count is always considerably small.
+Consider a situation, in which your application runs in a production environment for a long time and a large number of shopping lists is created. If you used a View Model to answer queries, a resulting data sample would be generated on the fly for every requests based on events from the beginning of the history. Thish would result in a huge performance overhead on _each request_. Note that it is not a problem when you use a View Model to obtain a single list's items as the item count is always considerably small.
 
-To overcome this issue, implement a ShoppingLists **[Read Model](read-side.md#read-models)**. This Read Model will gradually accumulate its state based on incoming events and store this state in the Read Model Storage. This part of the functionality is implemented by the Read Model **[projection](read-side.md)**:
+To overcome this issue, implement a ShoppingLists **[Read Model](read-side.md#read-models)**. This Read Model will gradually accumulate its state based on the incoming events and store this state in the Read Model Storage. This part of the functionality is implemented by the Read Model **[projection](read-side.md)**:
 
 **common/read-models/shopping_lists.projection.js:**
 
@@ -927,7 +927,7 @@ Note that regular Read Models are not reactive like View Models are. This result
 
 ### Query a Read Model Through HTTP API
 
-You can test the ShoppingLists Read Model's functionality using the standard HTTP API:
+You can use the standard HTTP API to test the ShoppingLists Read Model's functionality:
 
 ```sh
 $ curl -X POST \
@@ -1231,7 +1231,7 @@ In this lesson, you will provide miscellaneous functionality enhancements to you
 
 ### Modify the Write Side
 
-Define additional events to provide the missing functionality.
+Define additional events to implement the missing functionality.
 
 **common/event_types.js:**
 
@@ -1460,7 +1460,7 @@ export default connectStaticBasedUrls(['css', 'favicon'])(Header)
 
 #### Update the Optimistic Update Code
 
-Modify the code performing optimistic UI updates to support shopping list deletion.
+Modify the code related to optimistic UI updates to support shopping list deletion.
 
 **client/actions/optimistic_actions.js:**
 
