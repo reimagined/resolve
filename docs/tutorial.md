@@ -719,7 +719,7 @@ export default connectViewModel(mapStateToOptions)(
 
 <!-- prettier-ignore-end -->
 
-In this code, the component is first connected to a **Redux** state using the **connect** HOC from the **react-redux** library. Then, the component is connected to a reSolve View Model as it was in the previous lesson. The **connect** function is called with the specified **mapDispatchToProps** function. This function takes reSolve aggregate actions from the components payload and wraps them into a **dispatch** function call using the the **bindActionCreators** function.
+In this code, the component is first connected to a **Redux** state using the **connect** HOC from the **react-redux** library. Then, the component is connected to a reSolve View Model as in the previous lesson. The **connect** function is called with the specified **mapDispatchToProps** function. This function takes reSolve aggregate actions from the components payload and wraps them into a **dispatch** function call using the the **bindActionCreators** function.
 
 Now the ShoppingList component's props include the **toggleShoppingItem** function.
 
@@ -731,7 +731,7 @@ render() {
   ...
 ```
 
-You can use this function to handle item checking on the client and send the **toggleShoppingItem** command to the server along with the required data in the payload.
+You can use this function to handle item selection on the client and send the **toggleShoppingItem** command to the server along with the required data in the payload.
 
 In the code below, the **toggleShoppingItem** function is used to handle checkbox click events.
 
