@@ -827,7 +827,7 @@ After these steps, your application's client UI should look as shown below.
 
 [\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-6)
 
-In the previous two lessons, you have been implementing the client-side UI for viewing and editing items in a shopping list. However, you may have noticed that your application's functionality is incomplete: it is possible use HTTP API to create multiple shopping lists, but the client UI only allows viewing and editing only one specific list, namely **shopping-list-1**:
+In the previous two lessons, you implemented the client-side UI for viewing and editing items in a shopping list. However, you may have noticed that your application's functionality is incomplete: it is possible use HTTP API to create multiple shopping lists, but the client UI only allows viewing and editing only one specific list, namely **shopping-list-1**:
 
 **client/containers/ShoppingList.js:**
 
@@ -840,13 +840,13 @@ export const mapStateToOptions = (state, ownProps) => {
 }
 ```
 
-In this lesson, you will enhance your application's functionality with the capability to create multiple shopping lists, navigate between these lists and add items to them using the client UI.
+In this lesson, you will enhance your application's functionality with the capability to create multiple shopping lists, navigate between these lists and add items to them from the client UI.
 
 ### Implement a Shopping Lists Read Model
 
-In the [Lesson 3](#lesson-3-read-side-create-a-view-model-to-query-list-items), you have implemented a View Model used to obtain information about shopping lists with the specified aggregate ID's. Although it is possible to use the same approach for obtaining the list of all available shopping lists, there is a strong reason not to do so.
+In the [Lesson 3](#lesson-3-read-side-create-a-view-model-to-query-list-items), you have implemented a View Model used to obtain information about shopping lists with the specified aggregate ID's. Although it is possible to use the same approach to obtain the list of all available shopping lists, there is a strong reason not to do so.
 
-Consider a situation, in which your application has been running in a production environment for a long time and a large number of shopping lists has been created. If you used a View Model to answer queries, a resulting data sample would be generated on the fly for every requests using events from the beginning of the history, which will result in a huge performance overhead on _each request_. Note that it is not a problem when you use a View Model to obtain a single list's items as the item count is always considerably small.
+Consider a situation, in which your application has been running in a production environment for a long time and a large number of shopping lists has been created. If you used a View Model to answer queries, a resulting data sample would be generated on the fly for every requests using events from the beginning of the history, which would result in a huge performance overhead on _each request_. Note that it is not a problem when you use a View Model to obtain a single list's items as the item count is always considerably small.
 
 To overcome this issue, implement a ShoppingLists **[Read Model](read-side.md#read-models)**. This Read Model will gradually accumulate its state based on incoming events and store this state in the Read Model Storage. This part of the functionality is implemented by the Read Model **[projection](read-side.md)**:
 
@@ -885,7 +885,7 @@ export default {
 
 <!-- prettier-ignore-end -->
 
-You also need to implement **[resolver functions](read-side.md#resolvers)** that will answer queries using the accumulated data.
+You also need to implement **[resolver functions](read-side.md#resolvers)** that use the accumulated data to answer queries.
 
 **common/read-models/shopping_lists.resolvers.js:**
 
