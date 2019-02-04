@@ -8,6 +8,14 @@ const createAdapter = (
   checkTableSchema,
   bindWithConnection,
   bindReadModel,
+  getLastError,
+  loadEvents,
+  projectionInvoker,
+  read,
+  readAndSerialize,
+  updateByEvents,
+  waitEventCausalConsistency,
+  disposeReadModel,
   dispose,
   implementation,
   options
@@ -33,6 +41,14 @@ const createAdapter = (
   const { connect, disconnect, drop, ...metaApi } = implementation.metaApi
 
   const pool = {
+    getLastError,
+    loadEvents,
+    projectionInvoker,
+    read,
+    readAndSerialize,
+    updateByEvents,
+    waitEventCausalConsistency,
+    disposeReadModel,
     adapterContext: Object.create(null),
     internalContext: Object.create(null),
     bindWithConnection,

@@ -39,7 +39,7 @@ const initResolve = async (
 ) => {
   const storageAdapter = createStorageAdapter()
   const eventStore = createEventStore({ storage: storageAdapter })
-  const { aggregates, readModels, viewModels } = resolve
+  const { aggregates, customReadModels, readModels, viewModels } = resolve
   const snapshotAdapter = createSnapshotAdapter()
 
   const readModelAdapters = {}
@@ -68,6 +68,7 @@ const initResolve = async (
     eventStore,
     viewModels,
     readModels,
+    customReadModels,
     readModelAdapters,
     snapshotAdapter,
     doUpdateRequest

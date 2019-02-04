@@ -217,7 +217,13 @@ const initDomain = async (
   },
   resolve
 ) => {
-  const { eventStore, aggregates, readModels, viewModels } = resolve
+  const {
+    eventStore,
+    aggregates,
+    customReadModels,
+    readModels,
+    viewModels
+  } = resolve
   const snapshotAdapter = createSnapshotAdapter()
 
   const readModelAdapters = {}
@@ -234,6 +240,7 @@ const initDomain = async (
   const executeQuery = createQueryExecutor({
     eventStore,
     viewModels,
+    customReadModels,
     readModels,
     readModelAdapters,
     snapshotAdapter
