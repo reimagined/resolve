@@ -27,8 +27,8 @@ Use the create-resolve-app utility available on **npm** to create a new reSolve 
 ##### npm:
 
 ```sh
-npm i -g create-resolve-app
-create-resolve-app shopping-list
+$ npm i -g create-resolve-app
+$ create-resolve-app shopping-list
 ```
 
 ##### npx:
@@ -46,6 +46,7 @@ $ yarn create resolve-app shopping-list
 After this, a minimal reSolve application is ready. You can run it in development mode by typing:
 
 ```sh
+$ cd shopping-list
 $ yarn run dev
 ```
 
