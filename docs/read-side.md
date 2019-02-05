@@ -28,17 +28,45 @@ const appConfig = {
       name: 'default',
       projection: 'common/read-models/default.projection.js',
       resolvers: 'common/read-models/default.resolvers.js',
-      adapter: {
-        module: 'common/read-models/readmodel_adapter.module.js',
-        options: {
-          pathToFile: 'readmodel.db'
-        }
-      }
+      adapterName: 'default'
     }
   ],
   ...
 }
+```
 
+You can specify the application's Read Model adapters in the **readModelAdapters** section:
+
+```js
+const devConfig = {
+  ...
+  readModelAdapters: [
+    {
+      name: 'default',
+      module: 'resolve-readmodel-memory',
+      options: {}
+    }
+  ],
+}
+```
+
+```js
+import { declareRuntimeEnv } from 'resolve-scripts'
+const prodConfig = {
+  ...
+  readModelAdapters: [
+    {
+      name: 'default',
+      module: 'resolve-readmodel-mysql',
+      options: {
+        host: declareRuntimeEnv('SQL_HOST'),
+        database: declareRuntimeEnv('SQL_DATABASE'),
+        user: declareRuntimeEnv('SQL_USER'),
+        password: declareRuntimeEnv('SQL_PASSWORD'),
+      }
+    }
+  ],
+}
 ```
 
 In the configuration object, specify the Read Model's name and the paths to the files containing projections and resolvers. Here, you can also specify the Read Model storage adapter settings.
