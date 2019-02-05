@@ -122,7 +122,7 @@ You can communicate with the store using the standard API. The code sample below
 ...
 ```
 
-The data from a populated store is then used by a [resolver](#resolvers) to prepare final data samples in response to data requests.
+A [resolver](#resolvers) then uses the data from the store to prepare final data samples in response to data requests.
 
 If you delete the Read Model storage, this will force the framework to re-populate the store based on all events from the beginning of the history. This can be useful in the development environment and when you deploy an updated version of the application.
 
