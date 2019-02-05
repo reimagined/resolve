@@ -5,11 +5,11 @@ title: Advanced Techniques
 
 ## Splitting Code Into Chunks
 
-ReSolve uses [webpack](https://webpack.js.org/) to transpile and bundle the application code so it can be run by client browsers, the server and serverless platforms.
+ReSolve uses [webpack](https://webpack.js.org/) to transpile and bundle the application code so it can run on client browsers, the server and serverless platforms.
 
-ReSolve takes advantage of webpack's code splitting functionality to split the bundles into chunks. Depending on its purpose, every chunk can be server-only (for business logic), browser-only (for UI and client logic) or isomorphic (for view-models on the server side and Redux reducers on the client).
+ReSolve takes advantage of webpack's code splitting functionality to split the bundles into chunks. A chunk can be server-only (for business logic), browser-only (for UI and client logic) or isomorphic (for view models on the server side and Redux reducers on the client).
 
-Building a reSolve application produces the following chunks:
+When you build a reSolve application, the following chunks are generated:
 
 - Command processor code - aggregate command handlers and projections (server only)
 - View model projection (isomorphic)
@@ -18,23 +18,19 @@ Building a reSolve application produces the following chunks:
 - SSR renderer (server only, with peer dependencies with client, such as `styled-components`)
 - The client application with UI (browser only)
 
-All of these chunks are used by the target application. Some chunks can be included by other chunks. E.g., the client includes the view-model projection chunk to automatically generate Redux reducers.
+All these chunks are used by the target application. Some chunks can include other chunks. For instance, the client includes the view model projection chunk to automatically generate Redux reducers.
 
-In a cloud/serverless environment, chunks like read-model projection & resolvers, SSR renderer, API handlers and REST business logic are distributed to appropriate cloud executors.
+In a cloud/serverless environment, chunks like read model projections & resolvers, SSR renderer, API handlers and REST business logic are distributed to appropriate cloud executors.
 
-When running locally, `resolve-scripts` requires all necessary chunks and combines them with the runtime code.
-
-## Running Serverless
-
-Coming soon. A reSolve app is serverless-ready and can be deployed to AWS with a single command.
+When an application runs locally, the `resolve-scripts` utility loads all necessary chunks and combines them with the runtime code.
 
 ## Server-Side Rendering
 
-ReSolve provides the Server-Side rendering (SSR) functionality for React code out of the box. This means that reSolve application pages are always pre-rendered before being sent to the client browser. Note that server-side rendering is currently performed only for static content, without pre-fetching data.
+ReSolve provides the Server-Side rendering (SSR) functionality for React code without any additional configurations. This means that reSolve application pages are always pre-rendered before they are sent to the client browser. Note that server-side rendering is currently performed only for static content, without pre-fetching data.
 
-#### Managing routes
+#### Managing Routes
 
-ReSolve uses [react-router](https://github.com/ReactTraining/react-router) for routing. The [react-router-config](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config) library is also used to provide a centralized route config that can be used both on the server and client sides. You can define routes as shown below:
+ReSolve uses the [react-router](https://github.com/ReactTraining/react-router) library to perform routing. The [react-router-config](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config) library is also used to provide a centralized route config that can be used both on the server and client sides. You can define routes as shown below:
 
 ```js
 const routes = [
@@ -52,7 +48,7 @@ const routes = [
 ]
 ```
 
-Here, each route is specified by an object whose fields correspond to the [\<Route\>](https://reacttraining.com/react-router/web/api/Route) component's props.
+In this code sample, each route is specified by an object whose fields correspond to the [\<Route\>](https://reacttraining.com/react-router/web/api/Route) component's props.
 
 To register routes within a reSolve app, specify the path to the file containing routs definition in the **routes** config section:
 
@@ -62,7 +58,7 @@ routes: 'client/routes.js'
 
 After this, app routing is configured for server-side rendering. On the client, routing is also performed as expected: when you render a [\<Redirect\>](https://reacttraining.com/react-router/web/api/Redirect), the browser switches to the new location, and this location is appended to the browser's history stack.
 
-#### Providing the document head
+#### Providing the Document Head
 
 The code below utilizes the [React Helmet](https://github.com/nfl/react-helmet#reference-guide) library to specify the document's **head** section:
 
@@ -187,11 +183,11 @@ Note that reSolve does not force you to use adapters. For example, you may need 
 
 To learn more about a particular adapter type, refer to the documentation for the reSolve **[adapters](https://github.com/reimagined/resolve/tree/master/packages/adapters)** package.
 
-# Modules
+## Modules
 
-In reSolve, a module encapsulates a fragment of functionality that can be included by an application. A module can encapsulate any structural parts of a reSolve application in any combination.
+In reSolve, a module encapsulates a fragment of functionality that can be included by an application. A module can include any structural parts of a reSolve application in any combination.
 
-Physically, a module is a standalone configuration object that can reference client code, read-side and write-side code, sagas and HTTP handlers. To include a module into your application, you need to initialize this object with any required additional settings and merge it into your application's centralized config:
+A module is a standalone configuration object that can reference client code, read-side and write-side code, sagas and HTTP handlers. To include a module into your application, you need to initialize this object with any required additional settings and merge it into your application's centralized config:
 
 ```js
 ...
@@ -229,4 +225,4 @@ const baseConfig = merge(
 
 A merged module's code is treated the same as the application's code. The resulting application's bundles include the module code and configurations as if they were always a part of the application.
 
-For an example on using modules, see the **Hacker News** sample application. This application makes use of the authentication module as well as the comments module provided with reSolve.
+For an example on using modules, see the [Hacker News](https://github.com/reimagined/resolve/tree/master/examples/hacker-news) sample application. This application makes use of the authentication module and the comments module provided by reSolve.
