@@ -35,7 +35,9 @@ const appConfig = {
 }
 ```
 
-You can specify the application's Read Model adapters in the **readModelAdapters** section:
+In the configuration object, specify the Read Model's name and the paths to the files containing projections and resolvers. Here, you can also specify the Read Model's storage adapter.
+
+You can define the available adapters in the **readModelAdapters** section:
 
 ```js
 const devConfig = {
@@ -68,8 +70,6 @@ const prodConfig = {
   ],
 }
 ```
-
-In the configuration object, specify the Read Model's name and the paths to the files containing projections and resolvers. Here, you can also specify the Read Model storage adapter settings.
 
 ### Configuring View Models
 
