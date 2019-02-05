@@ -5,7 +5,6 @@
   "license": "MIT",
   "private": true,
   "devDependencies": {
-    "@babel/cli": "^7.0.0",
     "@babel/core": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.0.0",
     "@babel/plugin-proposal-decorators": "^7.0.0",
@@ -48,6 +47,7 @@
     "packages": [
       "packages/core/*",
       "packages/modules/*",
+      "packages/internal/*",
       "packages/adapters/bus-adapters/*",
       "packages/adapters/storage-adapters/*",
       "packages/adapters/readmodel-adapters/*",
@@ -66,9 +66,9 @@
     "clean:babel": "npx oao all \"npx rimraf dist lib es\" --parallel",
     "clean:packages": "npx rimraf .packages",
     "lint": "eslint .",
-    "prepare": "node ./babel.compile.js --run",
-    "packages": "node ./babel.compile.js --packages",
-    "local-registry": "node ./babel.compile.js --local-registry",
+    "prepare": "babel-compile",
+    "packages": "build-packages",
+    "local-registry": "local-registry",
     "prettier": "prettier --write \"**/**.{js,json,babelrc}\"",
     "publish": "npx oao publish -i \"examples/*\" --no-git-commit --no-changelog",
     "test": "npx oao all -i \"examples/shopping-list-advanced\" \"yarn test --color 2>&1\"",

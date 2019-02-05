@@ -65,6 +65,7 @@ module.exports = {
           'applescript',
           'applicationautoscaling',
           'appspot',
+          'archiver',
           'arg',
           'args',
           'argv',

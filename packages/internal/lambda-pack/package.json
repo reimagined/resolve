@@ -1,0 +1,10 @@
+{
+  "name": "@internal/lambda-pack",
+  "private": true,
+  "version": "0.19.2",
+  "bin": "./bin/index.js",
+  "dependencies": {
+    "archiver": "3.0.0",
+    "@internal/helpers": "0.19.2"
+  }
+}
