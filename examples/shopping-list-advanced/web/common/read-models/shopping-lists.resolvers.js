@@ -4,6 +4,8 @@ import jwtSecret from '../auth/jwt-secret'
 
 export default {
   sharings: async (store, { query, shoppingListId }, jwtToken) => {
+    await store.waitEventCausalConsistency()
+
     const { id: userId } = jwt.verify(jwtToken, jwtSecret)
 
     const shoppingList = await store.findOne('ShoppingLists', {
@@ -43,6 +45,8 @@ export default {
     store,
     { id, username, passwordHash = '', accessTokenHash = '' }
   ) => {
+    await store.waitEventCausalConsistency()
+
     let query = {}
 
     if (id) {
@@ -59,6 +63,8 @@ export default {
   },
 
   all: async (store, _, jwtToken) => {
+    await store.waitEventCausalConsistency()
+
     const { id: userId } = jwt.verify(jwtToken, jwtSecret)
 
     const shoppingLists = []

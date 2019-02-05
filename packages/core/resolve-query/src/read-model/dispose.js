@@ -8,7 +8,8 @@ const dispose = async (repository, options = {}) => {
   if (repository.disposePromise) {
     return await repository.disposePromise
   }
-  if (!repository.hasOwnProperty('prepareProjection')) {
+
+  if (!repository.hasOwnProperty('boundProjectionInvoker')) {
     return
   }
 
