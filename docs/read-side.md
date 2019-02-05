@@ -35,6 +35,7 @@ const appConfig = {
 }
 ```
 
+<<<<<<< HEAD
 You can specify the application's Read Model adapters in the **readModelAdapters** section:
 
 ```js
@@ -45,6 +46,38 @@ const devConfig = {
       name: 'default',
       module: 'resolve-readmodel-memory',
       options: {}
+    }
+  ],
+}
+```
+
+```js
+import { declareRuntimeEnv } from 'resolve-scripts'
+const prodConfig = {
+=======
+In the configuration object, specify the Read Model's name and the paths to the files containing projections and resolvers. Here, you can also specify the Read Model's storage adapter.
+
+You can define the available adapters in the **readModelAdapters** section:
+
+```js
+const devConfig = {
+>>>>>>> docs/apply-corrections
+  ...
+  readModelAdapters: [
+    {
+      name: 'default',
+<<<<<<< HEAD
+      module: 'resolve-readmodel-mysql',
+      options: {
+        host: declareRuntimeEnv('SQL_HOST'),
+        database: declareRuntimeEnv('SQL_DATABASE'),
+        user: declareRuntimeEnv('SQL_USER'),
+        password: declareRuntimeEnv('SQL_PASSWORD'),
+      }
+=======
+      module: 'resolve-readmodel-memory',
+      options: {}
+>>>>>>> docs/apply-corrections
     }
   ],
 }
@@ -68,8 +101,6 @@ const prodConfig = {
   ],
 }
 ```
-
-In the configuration object, specify the Read Model's name and the paths to the files containing projections and resolvers. Here, you can also specify the Read Model storage adapter settings.
 
 ### Configuring View Models
 
