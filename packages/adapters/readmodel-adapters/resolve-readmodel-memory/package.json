@@ -27,7 +27,7 @@
   "dependencies": {
     "@babel/runtime": "^7.0.0",
     "nedb": "^1.8.0",
-    "resolve-readmodel-base": "http://0.0.0.0:10080/resolve-readmodel-base.tgz",
+    "resolve-readmodel-base": "0.19.2",
     "uuid": "^3.3.2"
   },
   "devDependencies": {

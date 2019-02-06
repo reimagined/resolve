@@ -30,7 +30,6 @@
     "resolve-subscribe-mqtt": "0.19.2",
     "resolve-subscribe-socket.io": "0.19.2",
     "seamless-immutable": "7.1.3",
-    "testcafe-browser-tools": "1.6.5",
     "uuid": "3.3.2",
     "redux-devtools-extension": "2.13.7"
   },

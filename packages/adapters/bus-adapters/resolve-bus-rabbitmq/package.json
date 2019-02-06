@@ -27,7 +27,7 @@
   "dependencies": {
     "@babel/runtime": "^7.0.0",
     "amqplib": "^0.5.2",
-    "resolve-bus-base": "http://0.0.0.0:10080/resolve-bus-base.tgz"
+    "resolve-bus-base": "0.19.2"
   },
   "devDependencies": {
     "jest": "24.1.0",
