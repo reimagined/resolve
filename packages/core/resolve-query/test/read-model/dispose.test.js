@@ -1,5 +1,3 @@
-import sinon from 'sinon'
-
 import dispose from '../../src/read-model/dispose'
 
 test('Read-model dispose should throw on bad options', async () => {
@@ -22,21 +20,8 @@ test('Read-model dispose should provide dispose promise if disposing', async () 
 })
 
 test('Read-model dispose should do nothing if not initialized', async () => {
-  const adapter = { reset: sinon.stub().callsFake(async () => null) }
+  const adapter = { reset: jest.fn(async () => null) }
   await dispose({ adapter })
 
-  expect(adapter.reset.callCount).toEqual(0)
-})
-
-test('Read-model dispose should dispose if initialized', async () => {
-  const disposeOptions = {}
-  const adapter = { reset: sinon.stub().callsFake(async () => null) }
-  const repository = { adapter, prepareProjection: () => null }
-  const disposePromise = dispose(repository, disposeOptions)
-
-  expect(repository).toEqual({ disposePromise })
-  await disposePromise
-
-  expect(adapter.reset.callCount).toEqual(1)
-  expect(adapter.reset.firstCall.args[0]).toEqual(disposeOptions)
+  expect(adapter.reset).toHaveBeenCalledTimes(0)
 })

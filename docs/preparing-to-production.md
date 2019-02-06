@@ -7,7 +7,7 @@ title: Preparing to Production
 
 When you move your application to production, you need to perform all required configurations according to your production environment's specifics.
 
-An application is built for production using the **build** script, and run in the production mode using the **start** script. By default, an application running in the production mode takes into account settings specifies in the **prodConfig** configuration object (the **config.prod.js** file). However, you can use other config structure as long as you properly register it in the **run.js** file.
+An application is built for production using the **build** script, and run in the production mode using the **start** script. By default, an application that runs in the production mode takes into account settings specifies in the **prodConfig** configuration object (the **config.prod.js** file). However, you can use other config structure as long as you properly register it in the **run.js** file.
 
 An example **config.prod.js** file:
 
@@ -38,11 +38,11 @@ export default prodConfig
 
 ## Configuring Adapters
 
-Before moving your app into production, specify all required [adapters](advanced-techniques.md#adapters) in the production config.
+Before you move your app into production, specify all required [adapters](advanced-techniques.md#adapters) in the production config.
 
-Depending on your requirements, you may want to specify storage adapters for events, read model data and view model snapshots.
+Depending on your requirements, you may want to specify storage adapters for events, Read Model data and View Model snapshots.
 
-The code below demonstrates how to set up a storage adapter on the example of an in-memory read model storage:
+The code below demonstrates how to set up a storage adapter on the example of an in-memory Read Model storage:
 
 <!-- prettier-ignore-start -->
 
@@ -58,9 +58,10 @@ readModelAdapters: {
 
 <!-- prettier-ignore-end -->
 
-In addition to storage adapters, you can specify adapters that define how your application communicates with underlying APIs. For example, use the API handler adapters, to define how your application handles API requests. You can also provide a bus adapter and subscribe adapter, to define how your application sends events and subscribes to events.
+In addition to storage adapters, you can specify adapters that define how your application communicates with underlying APIs. For example, use the API handler adapters, to define how your application handles API requests.
+You can also provide a bus adapter and subscribe adapter to define how your application sends events and subscribes to events.
 
-To get familiar with the available adapters, see the **[adapters](https://github.com/reimagined/resolve/tree/master/packages/adapters)** package documentation.
+to familiarize yourself with the available adapters, see the **[adapters](https://github.com/reimagined/resolve/tree/master/packages/adapters)** package documentation.
 
 ## Using Environment Variables
 
@@ -93,4 +94,4 @@ export default {
 }
 ```
 
-This approach is useful when you need to assign settings that should not be included in application sources (e.g., authentication credentials or secret keys) or settings that should be defined by the current server instance.
+This approach is useful when you need to assign settings that should not be included in application sources (e.g., authentication credentials or secret keys) or settings that should be defined by a server instance.

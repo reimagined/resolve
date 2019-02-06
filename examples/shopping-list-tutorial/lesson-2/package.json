@@ -1,0 +1,40 @@
+{
+  "name": "@shopping-list-tutorial/lesson-2",
+  "version": "0.19.2",
+  "private": true,
+  "scripts": {
+    "build": "babel-node ./run.js build",
+    "dev": "babel-node ./run.js dev",
+    "start": "babel-node ./run.js start",
+    "test": "jest --testMatch=**/test/unit/*.test.js --verbose",
+    "test:functional": "babel-node ./run.js test:functional"
+  },
+  "dependencies": {
+    "@babel/node": "7.0.0",
+    "@babel/polyfill": "7.0.0",
+    "react": "16.7.0",
+    "react-dom": "16.7.0",
+    "react-bootstrap": "0.32.1",
+    "react-helmet": "5.2.0",
+    "redux": "4.0.1",
+    "resolve-redux": "0.19.2",
+    "resolve-scripts": "0.19.2"
+  },
+  "devDependencies": {
+    "@babel/core": "7.0.0",
+    "@babel/plugin-proposal-class-properties": "7.0.0",
+    "@babel/plugin-proposal-export-default-from": "7.0.0",
+    "@babel/plugin-proposal-export-namespace-from": "7.0.0",
+    "@babel/plugin-transform-runtime": "7.0.0",
+    "@babel/preset-env": "7.0.0",
+    "@babel/preset-react": "7.0.0",
+    "babel-core": "^7.0.0-0",
+    "regenerator-runtime": "0.13.1",
+    "babel-jest": "23.6.0",
+    "jest": "24.0.0",
+    "react-test-renderer": "16.7.0",
+    "testcafe": "0.23.3",
+    "isomorphic-fetch": "2.2.1",
+    "chai": "4.2.0"
+  }
+}

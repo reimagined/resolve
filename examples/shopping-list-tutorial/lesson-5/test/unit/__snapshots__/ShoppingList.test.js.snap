@@ -1,0 +1,113 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<div
+  style={
+    Object {
+      "margin": "auto",
+      "maxWidth": "500px",
+    }
+  }
+>
+  <ul
+    className="list-group"
+  >
+    <li
+      className="list-group-item"
+    >
+      <label
+        className="checkbox-inline"
+        title=""
+      >
+        <input
+          checked={false}
+          disabled={false}
+          onChange={[Function]}
+          type="checkbox"
+        />
+        Milk
+      </label>
+    </li>
+    <li
+      className="list-group-item"
+    >
+      <label
+        className="checkbox-inline"
+        title=""
+      >
+        <input
+          checked={false}
+          disabled={false}
+          onChange={[Function]}
+          type="checkbox"
+        />
+        Eggs
+      </label>
+    </li>
+    <li
+      className="list-group-item"
+    >
+      <label
+        className="checkbox-inline"
+        title=""
+      >
+        <input
+          checked={false}
+          disabled={false}
+          onChange={[Function]}
+          type="checkbox"
+        />
+        Canned beans
+      </label>
+    </li>
+    <li
+      className="list-group-item"
+    >
+      <label
+        className="checkbox-inline"
+        title=""
+      >
+        <input
+          checked={false}
+          disabled={false}
+          onChange={[Function]}
+          type="checkbox"
+        />
+        Paper towels
+      </label>
+    </li>
+  </ul>
+  <label
+    className="control-label"
+  >
+    Item name
+  </label>
+  <div
+    className="row"
+  >
+    <div
+      className="col-md-8"
+    >
+      <input
+        className="example-form-control form-control"
+        onChange={[Function]}
+        onKeyPress={[Function]}
+        type="text"
+        value=""
+      />
+    </div>
+    <div
+      className="col-md-4"
+    >
+      <button
+        className="example-button btn btn-success"
+        disabled={false}
+        onClick={[Function]}
+        type="button"
+      >
+        Add Item
+      </button>
+    </div>
+  </div>
+</div>
+`;

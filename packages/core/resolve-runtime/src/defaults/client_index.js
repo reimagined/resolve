@@ -17,20 +17,17 @@ import aggregates from '$resolve.aggregates'
 import subscribeAdapter from '$resolve.subscribeAdapter'
 import redux from '$resolve.redux'
 
-const initialState = deserializeInitialState(
-  viewModels,
-  window.__INITIAL_STATE__
-)
+var initialState = deserializeInitialState(viewModels, window.__INITIAL_STATE__)
 
-const origin = window.location.origin
+var origin = window.location.origin
 
-const history = createHistory({
+var history = createHistory({
   basename: rootPath
 })
 
-const isClient = true
+var isClient = true
 
-const store = createStore({
+var store = createStore({
   redux,
   viewModels,
   readModels,

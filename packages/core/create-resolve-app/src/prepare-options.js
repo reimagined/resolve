@@ -22,7 +22,8 @@ const prepareOptions = async pool => {
       { name: 'branch', alias: 'b', type: String },
       { name: 'commit', alias: 'c', type: String },
       { name: 'version', alias: 'V', type: Boolean },
-      { name: 'help', alias: 'h', type: Boolean }
+      { name: 'help', alias: 'h', type: Boolean },
+      { name: 'local-registry', type: Boolean }
     ],
     { partial: true }
   )
@@ -80,7 +81,8 @@ const prepareOptions = async pool => {
       `${resolveCloneDirName}.zip`
     )
 
-    const useYarn = isYarnAvailable(pool)
+    const useYarn = isYarnAvailable(pool)()
+    const localRegistry = cliArgs['local-registry']
 
     Object.assign(pool, {
       applicationName,
@@ -96,7 +98,8 @@ const prepareOptions = async pool => {
       resolveCloneExamplePath,
       resolveDownloadZipUrl,
       resolveCloneZipPath,
-      useYarn
+      useYarn,
+      localRegistry
     })
   }
 }

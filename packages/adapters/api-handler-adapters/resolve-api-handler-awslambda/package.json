@@ -1,6 +1,6 @@
 {
   "name": "resolve-api-handler-awslambda",
-  "version": "0.18.15",
+  "version": "0.19.2",
   "description": "This package is an adapter for api handler to AWS Lambda.",
   "engines": {
     "node": ">=8.10"
@@ -32,8 +32,8 @@
   },
   "devDependencies": {
     "lodash.escaperegexp": "^4.1.2",
-    "jest": "23.6.0",
-    "sinon": "6.3.4"
+    "jest": "24.0.0",
+    "sinon": "7.2.2"
   },
   "babelCompile": [
     {

@@ -1,0 +1,80 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<div>
+  <div>
+    <nav
+      className="navbar navbar-default"
+    >
+      <div
+        className="container"
+      >
+        <p
+          className="navbar-text"
+        >
+          <a
+            className="navbar-link"
+            href="/"
+          >
+            <img
+              className=""
+              src="/static/resolve-logo.png"
+            />
+             
+            Shopping List
+          </a>
+        </p>
+        <div
+          aria-expanded={null}
+          className="navbar-collapse collapse"
+        >
+          <p
+            className="navbar-text navbar-right"
+          >
+            <a
+              className="navbar-link"
+              href="https://facebook.com/resolvejs/"
+            >
+              <img
+                className=""
+                src="/static/fb-logo.png"
+              />
+            </a>
+          </p>
+          <p
+            className="navbar-text navbar-right"
+          >
+            <a
+              className="navbar-link"
+              href="https://twitter.com/resolvejs"
+            >
+              <img
+                className=""
+                src="/static/twitter-logo.png"
+              />
+            </a>
+          </p>
+          <p
+            className="navbar-text navbar-right"
+          >
+            <a
+              className="navbar-link"
+              href="https://github.com/reimagined/resolve"
+            >
+              <img
+                className=""
+                src="/static/github-logo.png"
+              />
+            </a>
+          </p>
+        </div>
+      </div>
+    </nav>
+  </div>
+  <h1
+    align="center"
+  >
+    Shopping List
+  </h1>
+</div>
+`;

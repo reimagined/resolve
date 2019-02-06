@@ -1,6 +1,6 @@
 const createReadModel = (
-  init,
-  getModelReadInterface,
+  connect,
+  loadEvents,
   getLastError,
   read,
   readAndSerialize,
@@ -8,22 +8,28 @@ const createReadModel = (
   resolverNames,
   dispose,
   projectionInvoker,
+  waitEventCausalConsistency,
   deserialize,
-  { adapter, projection, eventStore, resolvers }
+  { readModelName, adapter, projection: inputProjection, eventStore, resolvers }
 ) => {
+  const { Init: initHandler, ...projection } =
+    inputProjection != null ? inputProjection : {}
+
   const repository = {
-    projection: projection != null ? adapter.buildProjection(projection) : null,
     resolvers: resolvers != null ? resolvers : {},
+    connect,
+    initHandler,
+    projection,
+    readModelName,
     adapter,
     eventStore,
-    init,
-    getModelReadInterface,
+    loadEvents,
     projectionInvoker,
+    waitEventCausalConsistency,
     read
   }
 
   return Object.freeze({
-    getReadInterface: getModelReadInterface.bind(null, repository),
     getLastError: getLastError.bind(null, repository),
     read: read.bind(null, repository),
     readAndSerialize: readAndSerialize.bind(null, repository),

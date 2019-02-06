@@ -125,7 +125,7 @@ export default async (req, res) => {
 
 ## API Handler Configuration
 
-```
+```js
 // run.js
 
 import {

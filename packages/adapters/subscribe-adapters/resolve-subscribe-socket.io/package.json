@@ -1,6 +1,6 @@
 {
   "name": "resolve-subscribe-socket.io",
-  "version": "0.18.15",
+  "version": "0.19.2",
   "description": "This package serves as an adapter for resolve-redux subscribe to events.",
   "engines": {
     "node": ">=8.10"
@@ -28,7 +28,7 @@
     "socket.io-client": "^2.1.1"
   },
   "devDependencies": {
-    "jest": "23.6.0"
+    "jest": "24.0.0"
   },
   "homepage": "https://github.com/reimagined/resolve/tree/master/packages/adapters/subscribe-adapters/resolve-subscribe-socket.io#readme",
   "babelCompile": [

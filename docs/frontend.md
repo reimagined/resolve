@@ -5,29 +5,31 @@ title: Frontend
 
 ## React/Redux Support
 
-The reSolve framework is shipped with the client **resolve-redux** library that allows you to easily connect you client React + Redux app to a reSolve-powered backend.
+### resolve-redux library
 
-The **redux** config section specifies the following settings related to the Redux-based frontend:
+The reSolve framework includes the client **resolve-redux** library used to connect a client React + Redux app to a reSolve-powered backend.
+
+The **redux** configuration section specifies the following settings related to the frontend:
 
 - **store** - Specifies the file containing the Redux store definition.
 - **reducers** - Specifies the file containing the Redux reducer definition.
 - **middlewares** - Specifies the file containing the Redux middleware definitions.
 
-Based on the specified settings, reSolve injects client code to facilitate client-server communication:
+Based on these settings, reSolve generates client code to facilitate client-server communication:
 
-- Redux actions are generated for available reSolve aggregate commands.
-- Auxiliary reducer and middleware code is generated to handle these actions and send the corresponding commands to the server.
+- Redux actions are generated for all reSolve aggregate commands.
+- Auxiliary reducers and middleware are generated to handle these actions and send the corresponding commands to the reSolve backend.
 
-To connect components to the backend, use the following resolve-redux library's higher order components (HOCs):
+Use the following resolve-redux library's higher order components (HOCs) to connect components to the backend:
 
-- **connectReadModel** - Connects a component to Read Model.
+- **connectReadModel** - Connects a component to a Read Model.
 - **connectViewModel** - Connects a component to a View Model.
 
-A connected component obtains additional props providing access to the Read Model data and available Redux actions mapped to reSolve commands.
+A connected component receives additional props. These props provide access to the Read Model data and Redux action creators mapped to reSolve commands.
 
-#### Obtain View Model Data
+### Obtain View Model Data
 
-The code below demonstrates the most basic use-case scenario of obtaining data from a reSolve backend:
+The code sample below demonstrates how to obtain data from a reSolve backend in the most basic use-case scenario:
 
 ```js
 import { connectViewModel } from 'resolve-redux'
@@ -35,33 +37,33 @@ import { connectViewModel } from 'resolve-redux'
 import React from 'react'
 ...
 const TodoList = ({ data }) => (
-    <ul>
-        {data.map(i => ( Access View Model data via the data prop
-          <li>{i}</li>
-        ))}
-    </ul>
+  <ul>
+    {data.map(i => ( Access View Model data via the data prop
+      <li>{i}</li>
+    ))}
+  </ul>
 
 export const mapStateToOptions = () => {
-    return {
-        viewModelName: 'TodoList',
-        aggregateIds: ["root-id"]
-    }
+  return {
+    viewModelName: 'TodoList',
+    aggregateIds: ["root-id"]
+  }
 }
 
 export default connectViewModel(mapStateToOptions)(TodoList)
 
 ```
 
-In this code, a **connectViewModel** HOC is used to associate a React component with an existing View Model. The HOC uses a **mapStateToOptions** function to specify the View Model options. The following options are required:
+In this code, the **connectViewModel** HOC is used to connect a React component to an existing View Model. The **mapStateToOptions** function specifies the connection options. The following options are required:
 
 - **viewModelName** - the name of a View Model to bind to
 - **aggregateIds** - an array of aggregate IDs for which to obtain data
 
 A component connected to a View Model can access the View Model data through the **data** prop.
 
-#### Connect to Redux
+### Connect to Redux
 
-You can chain the **connectReadModel** or **connectViewModel** function call with the Redux **connect** function call:
+You can chain the **connectReadModel** or **connectViewModel** function call with the Redux **connect** function call to synchronize the client Rudux state with Read Model or View Model data.
 
 <!-- prettier-ignore-start -->
 
@@ -87,11 +89,12 @@ export default connectReadModel(mapStateToOptions)(
   )(MyLists)
 )
 ```
+
 <!-- prettier-ignore-end -->
 
 #### Fix URLs
 
-Use the following HOCs to automatically fix URLs passed as component props so that these URLs comply with the backend structure.
+Use the following HOCs to automatically fix URLs passed to a component as props. The resulting URLs take the backend structure into account.
 
 - **connectRootBasedUrls** - Fixes server routs:
   ```js
@@ -139,11 +142,12 @@ class MyLists extends React.PureComponent {
   }
 }
 ```
+
 <!-- prettier-ignore-end -->
 
 ## Reactive View Models, Event Subscription
 
-A View Model is a special kind of a Read Model. Its projection is declared in a universal format so it can also serve as the reducer code on the client side. Events are automatically sent to the client through a WebSocket connection. Because of these properties, View Models are reactive out of the box. This means that a component connected to a View Model using the **connectViewModel** method automatically reflects the Read Model changes on the server side, without the need to implement any additional logic.
+A View Model is a special kind of a Read Model. Its projection is declared in a universal format so it can also serve as the reducer code on the client side. Events are automatically sent to the client through a WebSocket connection. Because of these properties, View Models are reactive. This means that a component connected to a View Model using the **connectViewModel** method automatically reflects the Read Model changes on the server side, without the need to implement any additional logic.
 
 <!-- prettier-ignore-start -->
 
@@ -187,13 +191,15 @@ export default connectViewModel(mapStateToOptions)(
 
 ## Optimistic Commands
 
-If a component is connected to a reSolve ReadModel, you can enhance its responsiveness by providing it with **optimistic UI updating** functionality. With this approach, a component applies model changes on the client side before synchronizing them with the server via an aggregate command.
+You can add **optimistic UI updating** functionality to enhance a component's responsiveness if this component is connected to a reSolve ReadModel. With this approach, a component applies model changes on the client side before synchronizing them with the server via an aggregate command.
 
-Use the following steps to implement the optimistic update functionality:
+Use the following steps to implement optimistic UI updating:
 
-1. Create Redux actions that will perform optimistic updates:
+1. Create Redux actions that perform updates:
 
-[embedmd]: # '....\examples\shopping-list\client\actions\optimistic_actions.js /^/ /\n$/'
+<!-- prettier-ignore-start -->
+
+[embedmd]:# (..\..\examples\shopping-list\client\actions\optimistic_actions.js /^/ /\n$/)
 
 ```js
 export const OPTIMISTIC_CREATE_SHOPPING_LIST = 'OPTIMISTIC_CREATE_SHOPPING_LIST'
@@ -308,4 +314,4 @@ export default optimistic_shopping_lists_middleware
 
 <!-- prettier-ignore-end -->
 
-For the full code, refer to the **Shopping List** example project.
+For the full code, refer to the [Shopping List](https://github.com/reimagined/resolve/tree/master/examples/shopping-list) example project.

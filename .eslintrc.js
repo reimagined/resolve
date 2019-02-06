@@ -14,6 +14,11 @@ module.exports = {
   globals: {
     resolveLog: true
   },
+  settings: {
+    react: {
+      version: '16.5'
+    }
+  },
   rules: {
     'func-names': 'off',
     'no-underscore-dangle': 'off',
@@ -173,6 +178,7 @@ module.exports = {
           'inline',
           'inlined',
           'inlines',
+          'Inno',
           'instanceof',
           'interop',
           'invoker',
@@ -244,11 +250,13 @@ module.exports = {
           'polyfills',
           'postcss',
           'prefetch',
+          'Postfix',
           'preloader',
           'Presigned',
           'prev',
           'println',
           'proc',
+          'processlist',
           'proto',
           'pubsub',
           'qos',
@@ -322,11 +330,13 @@ module.exports = {
           'todolist',
           'todos',
           'topstories',
+          'Transactional',
           'truthy',
           'ttf',
           'ttl',
           'txt',
           'typeof',
+          'uglify',
           'undef',
           'unfetch',
           'unicode',

@@ -3,6 +3,7 @@
     "Docs Index": [
       "index",
       "introduction",
+      "tutorial",
       {
         "type": "subcategory",
         "label": "Basics",

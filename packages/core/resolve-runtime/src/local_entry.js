@@ -6,7 +6,7 @@ import path from 'path'
 import wrapApiHandler from 'resolve-api-handler-express'
 import createCommandExecutor from 'resolve-command'
 import createEventStore from 'resolve-es'
-import createQueryExecutor from 'resolve-query'
+import createQueryExecutor, { constants as queryConstants } from 'resolve-query'
 import createSocketServer from 'socket.io'
 import uuid from 'uuid/v4'
 import Url from 'url'
@@ -220,6 +220,11 @@ const initDomain = async (
   const { eventStore, aggregates, readModels, viewModels } = resolve
   const snapshotAdapter = createSnapshotAdapter()
 
+  const readModelAdapters = {}
+  for (const { name, factory } of readModelAdaptersCreators) {
+    readModelAdapters[name] = factory()
+  }
+
   const executeCommand = createCommandExecutor({
     eventStore,
     aggregates,
@@ -230,7 +235,7 @@ const initDomain = async (
     eventStore,
     viewModels,
     readModels,
-    readModelAdaptersCreators,
+    readModelAdapters,
     snapshotAdapter
   })
 
@@ -239,13 +244,16 @@ const initDomain = async (
     executeQuery
   })
 
-  Object.defineProperty(resolve, 'snapshotAdapter', {
-    value: snapshotAdapter
+  Object.defineProperties(resolve, {
+    readModelAdapters: { value: readModelAdapters },
+    snapshotAdapter: { value: snapshotAdapter }
   })
 }
 
 const initEventLoop = async resolve => {
-  const executors = Array.from(resolve.executeQuery.getExecutors().values())
+  const executors = resolve.executeQuery.getExecutors(
+    queryConstants.modelTypes.readModel
+  )
 
   const unsubscribe = await resolve.eventStore.loadEvents(
     { skipStorage: true },
@@ -257,9 +265,6 @@ const initEventLoop = async resolve => {
       })
 
       const applicationPromises = []
-      // In multi-instance mode application developer should give a guarantee
-      // that every read/view-model had been updated only from singular instance
-      // Updating read/view-model from multiple threads is not supported
       for (const executor of executors) {
         applicationPromises.push(executor.updateByEvents([event]))
       }
