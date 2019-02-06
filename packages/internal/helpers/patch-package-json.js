@@ -32,7 +32,7 @@ const patchPackageJson = directory => {
             ? '*'
             : `${localRegistry.protocol}://${localRegistry.host}:${
                 localRegistry.port
-              }/${safeName(name)}`
+              }/${safeName(name)}?hash=${Date.now()}`
       }
     }
   }

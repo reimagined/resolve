@@ -44,8 +44,12 @@ const writePackageJsonsForAssemblies = (
       }, {})
     }
 
-    assemblyPackageJson.dependencies['resolve-runtime'] =
-      resolveScriptsPackageJson.version
+    const resolveRuntimeVersion =
+      resolveScriptsPackageJson.dependencies['resolve-runtime']
+    if (resolveRuntimeVersion == null) {
+      throw new Error('Incorrect "resolve-runtime" version')
+    }
+    assemblyPackageJson.dependencies['resolve-runtime'] = resolveRuntimeVersion
 
     fs.writeFileSync(
       absolutePackageJsonPath,

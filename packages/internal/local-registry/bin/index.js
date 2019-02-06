@@ -14,12 +14,15 @@ http
   .createServer((req, res) => {
     const fileName = req.url.slice(1)
 
-    const filePath = path.join(localRegistry.directory, fileName)
+    const filePath = path.join(
+      localRegistry.directory,
+      fileName.replace(/\?hash.*$/, '')
+    )
 
     const resolvePackages = getResolvePackages()
 
     if (
-      !resolvePackages.includes(fileName.replace('.tgz', '')) ||
+      !resolvePackages.includes(fileName.replace(/\.tgz.*$/, '')) ||
       !fs.existsSync(filePath)
     ) {
       res.writeHead(404, {
