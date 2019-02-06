@@ -22,7 +22,7 @@ This tutorial will give you an understanding of the reSolve framework and its fu
 
 ## **Lesson 1** - Create a New reSolve Application
 
-Use the create-resolve-app utility available on **npm** to create a new reSolve app:
+Use the create-resolve-app tool to create a new reSolve app:
 
 ##### npm:
 
@@ -43,7 +43,7 @@ $ npx create-resolve-app shopping-list
 $ yarn create resolve-app shopping-list
 ```
 
-After this, a minimal reSolve application is ready. You can run it in development mode by typing:
+After this, a minimal reSolve application is ready. To run it in development mode, type:
 
 ```sh
 $ cd shopping-list
@@ -58,7 +58,7 @@ $ yarn run dev
 
 This lesson will teach you how to implement a basic write side for your reSolve application. An application's [write side](resolve-app-structure.md#write-and-read-sides) handles commands, performs input validation and emits **events** based on valid commands. The framework then saves the emitted events to the **event store**.
 
-In the CQRS and Event Sourcing paradigms, commands are handled by Domain Objects grouped into aggregates. ReSolve implements aggregates as static objects containing sets of functions. These functions can be of one of the following two kinds:
+In the CQRS and Event Sourcing paradigms, commands are handled by Domain Objects grouped into aggregates. ReSolve implements aggregates as static objects that contain sets of functions. These functions can be of one of the following two kinds:
 
 - **[Command Handlers](write-side.md#aggregate-command-handlers)** - Handle commands and emit events in response.
 - **[Projections](write-side.md#aggregate-projection-function)** - Build aggregate state from events so this state can be observed on the write side, for example to perform input validation.
@@ -84,8 +84,8 @@ export const SHOPPING_ITEM_CREATED = "SHOPPING_ITEM_CREATED";
 
 For now, your application requires only two event types:
 
-- The SHOPPING_LIST_CREATED event signals about creation of a shopping list.
-- The SHOPPING_ITEM_CREATED event signals about creation of an item within a shopping list.
+- SHOPPING_LIST_CREATED - Signals about creation of a shopping list;
+- The SHOPPING_ITEM_CREATED - Signals about creation of an item within a shopping list.
 
 Next, create a **shopping_list.commands.js** file in the **common/aggregates** folder. This file will contain command handlers for the ShoppingList aggregate. Add the following code to the file:
 
@@ -110,14 +110,14 @@ export default {
 }
 ```
 
-As you can see, the file exports an object containing two command handlers. A command handler receives the aggregate state and a command payload. A payload can contain any arbitrary data related to the command. For example, the **createShoppingList** command's payload contains a shopping list name, and the **createShoppingItem** command payload contains an item's ID and text to display.
+This file exports an object with two command handlers. A command handler receives the aggregate state and a command payload. A payload can contain any arbitrary data related to the command. For example, the **createShoppingList** command's payload contains a shopping list name, and the **createShoppingItem** command payload contains an item's ID and text to display.
 
 A command handler returns an event object. This object should contain the following obligatory fields:
 
 - **type** - specifies the event's type;
 - **payload** - specifies data associated with the event.
 
-In the example code, the event payload contains the same fields that were obtained from the command payloads. The reSolve framework saves events returned by command handlers to a persistent **[event store](write-side.md#event-store)**. For now, your application is configured to use a file-based event store, which is sufficient for learning purposes. Later on, you will learn how to use different kinds of stores using **[storage adapters](advanced-techniques.md#adapters)**.
+In the example code, the event payload contains the same fields that were obtained from the command payloads. The reSolve framework saves events returned by command handlers to a persistent **[event store](write-side.md#event-store)**. For now, your application is configured to use a file-based event store, which is sufficient for learning purposes.
 
 Your minimal shopping list aggregate is now ready. The last step is to register it in the application's configuration file. Open the **config.app.js** file, locate the **aggregates** configuration section and specify the following settings:
 
@@ -1227,7 +1227,7 @@ Now, if you run your application and create a new shopping list, the created sho
 
 [\[Get the Code for This Lesson\]](https://github.com/reimagined/resolve/tree/master/examples/shopping-list-tutorial/lesson-7)
 
-In this lesson, you will provide miscellaneous functionality enhancements to your Shopping List application in order to support the full set of data editing operations. These steps are not essential, but they will help you further deepen your understanding of the reSolve framework's fundamentals.
+In this lesson, you will provide miscellaneous functionality enhancements to your Shopping List application to support the full set of data editing operations. These steps are not essential, but they will help you further deepen your understanding of the reSolve framework's fundamentals.
 
 ### Modify the Write Side
 
