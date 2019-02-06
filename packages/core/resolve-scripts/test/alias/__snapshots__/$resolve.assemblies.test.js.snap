@@ -6,6 +6,7 @@ Object {
 import busAdapter from '$resolve.busAdapter'
 import constants from '$resolve.constants'
 import customConstants from '$resolve.customConstants'
+import customReadModels from '$resolve.customReadModels'
 import installLogger from '$resolve.installLogger'
 import readModelAdapters from '$resolve.readModelAdapters'
 import redux from '$resolve.redux'
@@ -20,6 +21,7 @@ export default {
 busAdapter,
 constants,
 customConstants,
+customReadModels,
 installLogger,
 readModelAdapters,
 redux,
