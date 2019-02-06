@@ -106,6 +106,7 @@ module.exports = {
           'Cooldown',
           'corejs',
           'cron',
+          'cpus',
           'cqrs',
           'cwd',
           'darwin',
@@ -258,6 +259,7 @@ module.exports = {
           'println',
           'proc',
           'processlist',
+          'promisify',
           'proto',
           'pubsub',
           'qos',
@@ -384,7 +386,8 @@ module.exports = {
           'yargs',
           'ycombinator',
           'zeromq',
-          'zmq'
+          'zmq',
+          'zlib'
         ],
         minLength: 3
       }

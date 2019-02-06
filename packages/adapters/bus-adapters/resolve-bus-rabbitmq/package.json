@@ -27,10 +27,10 @@
   "dependencies": {
     "@babel/runtime": "^7.0.0",
     "amqplib": "^0.5.2",
-    "resolve-bus-base": "0.19.2"
+    "resolve-bus-base": "http://0.0.0.0:10080/resolve-bus-base.tgz"
   },
   "devDependencies": {
-    "jest": "24.0.0",
+    "jest": "24.1.0",
     "sinon": "7.2.2"
   },
   "babelCompile": [

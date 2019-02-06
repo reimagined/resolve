@@ -1,9 +1,9 @@
 const fs = require('fs')
 const path = require('path')
 
-const getResolvePackages = require('./get-resolve-packages')
-const getLocalRegistryConfig = require('./get-local-registry-config')
-const safeName = require('./safe-name')
+const { getResolvePackages } = require('./get-resolve-packages')
+const { getLocalRegistryConfig } = require('./get-local-registry-config')
+const { safeName } = require('./safe-name')
 
 const patchPackageJson = directory => {
   const resolvePackages = getResolvePackages()
@@ -60,6 +60,7 @@ const patchPackageJson = directory => {
     }
   }
 
+  process.setMaxListeners(process.getMaxListeners() + 2)
   process.on('SIGINT', rollback)
   process.on('exit', rollback)
 
