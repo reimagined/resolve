@@ -136,7 +136,7 @@ aggregates: [
 
 ### Sending Commands to an Aggregate
 
-Now that your application is capable of handling commands, you can try sending such commands to create a shopping list and populate it with items.
+Now that your application is capable of handling commands, you can try to send such commands to create a shopping list and populate it with items.
 
 ReSolve framework provides a standard API that allows you to send commands to an application's aggregate using HTTP requests.
 
