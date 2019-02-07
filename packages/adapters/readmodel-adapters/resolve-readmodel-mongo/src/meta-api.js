@@ -28,7 +28,7 @@ const seizeDatabaseLock = async (pool, readModelName) => {
     await metaCollection.deleteMany({
       readModelLock: { $exists: true },
       connectionId: { $ne: pool.connectionId },
-      timestamp: { $lt: currentTimestamp - 60 }
+      timestamp: { $lt: currentTimestamp - 30000 }
     })
   } catch (err) {}
 
