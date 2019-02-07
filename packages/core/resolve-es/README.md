@@ -2,29 +2,24 @@
 
 [![npm version](https://badge.fury.io/js/resolve-es.svg)](https://badge.fury.io/js/resolve-es)
 
-Provides an event store implementation with the capability to use different [storage](../storage-adapters) and [bus](../bus-adapters) adapters to store and emit events.
+Provides an event store implementation with the capability to use different [storage](../../adapters/storage-adapters) and [bus](../../adapters/bus-adapters) adapters to store and emit events.
 
 ## Usage
 
 When initializing an event store, pass the following arguments:
 
-- `storage`  
-   Use a reSolve framework [adapter](../storage-adapters)...
-  _ [resolve-storage-mongo](../storage-adapters/resolve-storage-mongo)
-  _ [resolve-storage-lite](../storage-adapters/resolve-storage-lite)
+#### `storage`  
+   Use a reSolve framework [adapter](../../adapters/storage-adapters)
+   * [resolve-storage-dynamo](../../adapters/storage-adapters/resolve-storage-dynamo)
+   * [resolve-storage-lite](../../adapters/storage-adapters/resolve-storage-lite)
+   * [resolve-storage-mongo](.../../adapters/storage-adapters/resolve-storage-mongo)
+   * [resolve-storage-mysql](../../adapters/storage-adapters/resolve-storage-mysql)
 
-      	... or implement a custom storage adapter. A storage adapter is an object with the following fields:
-      	* `loadEvents` - gets an array of events filtered by the first argument and a function for handling an event as the second argument. Returns a Promise object that is resolved when all the persistent events are handled. If bus involved in loading events, promise resolves with unsubscribe callback for bus, or resolves with null in another case.
-      	* `saveEvent` - a function which takes an event and returns a Promise that is resolved when the event is stored. Event should contain following required fields: `aggregateId`, `aggregateVersion` and `type`. Using `saveEvent` function in custom code is not not recommended.
-
-* `bus`  
-   Use a reSolve framework [adapter](../bus-adapters)...
-  _ [resolve-bus-memory](../bus-adapters/resolve-bus-memory)
-  _ [resolve-bus-rabbitmq](../bus-adapters/resolve-bus-rabbitmq) \* [resolve-bus-zmq](../bus-adapters/resolve-bus-zmq)
-
-      	... or implement a custom bus adapter. A bus adapter is an object with the following fields:
-      	* `subscribe` - a function called when an event is emitted. It takes an emitted event.
-      	* `publish` - a function that takes an event and publishes it.
+#### `bus`  
+   Use a reSolve framework [adapter](../../adapters/bus-adapters)
+   * [resolve-bus-memory](../../adapters/bus-adapters/resolve-bus-memory)
+   * [resolve-bus-rabbitmq](../../adapters/bus-adapters/resolve-bus-rabbitmq) 
+   * [resolve-bus-zmq](../../adapters/bus-adapters/resolve-bus-zmq)
 
 ### Example
 
