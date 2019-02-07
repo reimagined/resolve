@@ -12,7 +12,7 @@ When initializing an event store, pass the following arguments:
    Use a reSolve framework [adapter](../../adapters/storage-adapters)
    * [resolve-storage-dynamo](../../adapters/storage-adapters/resolve-storage-dynamo)
    * [resolve-storage-lite](../../adapters/storage-adapters/resolve-storage-lite)
-   * [resolve-storage-mongo](.../../adapters/storage-adapters/resolve-storage-mongo)
+   * [resolve-storage-mongo](../../adapters/storage-adapters/resolve-storage-mongo)
    * [resolve-storage-mysql](../../adapters/storage-adapters/resolve-storage-mysql)
 
 #### `bus`  
