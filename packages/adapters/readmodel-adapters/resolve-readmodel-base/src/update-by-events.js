@@ -29,28 +29,24 @@ const updateByEvents = async (readModel, events) => {
   }
 
   if (writeElapsedTime > writeActivityTime) {
-    try {
-      await readModel.loadEvents(readModel)
-    } catch (err) {}
+    await readModel.loadEvents(readModel)
   }
 
-  try {
-    let hasReorderedEvents = false
+  let hasReorderedEvents = false
 
-    for (const event of events) {
-      if (readModel.eventTypes.indexOf(event.type) < 0) continue
-      const applyResult = await readModel.boundProjectionInvoker(event, true)
+  for (const event of events) {
+    if (readModel.eventTypes.indexOf(event.type) < 0) continue
+    const applyResult = await readModel.boundProjectionInvoker(event, true)
 
-      if (applyResult === 'REORDERED_EVENT') {
-        hasReorderedEvents = true
-        break
-      }
+    if (applyResult === 'REORDERED_EVENT') {
+      hasReorderedEvents = true
+      break
     }
+  }
 
-    if (hasReorderedEvents) {
-      await readModel.loadEvents(readModel)
-    }
-  } catch (err) {}
+  if (hasReorderedEvents) {
+    await readModel.loadEvents(readModel)
+  }
 }
 
 export default updateByEvents
