@@ -136,9 +136,7 @@ aggregates: [
 
 ### Sending Commands to an Aggregate
 
-Now that your application is capable of handling commands, you can try to send such commands to create a shopping list and populate it with items.
-
-ReSolve framework provides a standard API that allows you to send commands to an application's aggregate using HTTP requests.
+Now that your application can commands, you can use the reSolve framework's standard HTTP API to send such commands to create a shopping list and populate it with items.
 
 A request body should have the `application/json` content type and contain a JSON representation of the command:
 
@@ -235,9 +233,9 @@ Now, you can check the event store file to see the newly created event. Open the
 
 Your application's write side currently does not perform any input validation. This results in the following flaws:
 
-- The aggregate allows you to create shopping lists and items without specifying the required fields in the payload.
+- The command handlers do not check whether or not all required fields are provided in a command's payload.
 - It is possible to create more then one shopping list with the same aggregate ID.
-- You can create items for a shopping list that does not exist.
+- You can create items in a shopping list that does not exist.
 
 You can overcome the first flaw by adding simple checks to each command handler:
 
@@ -255,7 +253,7 @@ createShoppingItem: (state, { payload: { id, text } }) => {
 }
 ```
 
-To overcome the second and third flaws, you need to somehow store information about previously performed operations. You can achieve this by maintaining an **aggregate state**. This state is assembled on the fly by an aggregate **projection** from previously created events. To add a projection to the ShoppingList aggregate, create a **shopping_list.projection.js** file in the **common/aggregates** folder and add the following code there:
+To overcome the second and third flaws, you you can use the **aggregate state**. This state is assembled on the fly by an aggregate **projection** from previously created events. To add a projection to the ShoppingList aggregate, create a **shopping_list.projection.js** file in the **common/aggregates** folder and add the following code there:
 
 **common/aggregates/shopping_list.projection.js:**
 
