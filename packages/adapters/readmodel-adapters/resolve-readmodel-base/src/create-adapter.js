@@ -50,7 +50,6 @@ const createAdapter = (
     waitEventCausalConsistency,
     disposeReadModel,
     adapterContext: Object.create(null),
-    internalContext: Object.create(null),
     bindWithConnection,
     checkStoreApi,
     checkTableSchema,
