@@ -235,19 +235,19 @@ Refer to the [Query a View Model](#query-a-view-model) section, to learn how to 
 
 Note that a View Model does not use the Read Model store.
 
-## Custom Read Models
+## Custom Read Models Specifics
 
-**Custom Read Models** allow develop custom code, which perform reaction for input events and answers for user's queries. Custom Read Models does not use any adapters and not involve any resolve internal mechanisms, used in regular read models, like meta tables with filtering duplicate and out-of-order events, automatic transations and table locking and so on.
+You can implement **custom Read Models** that handle events and answers queries based on custom logic. Custom Read Models do not use adapters and do not involve any reSolve internal mechanisms used by regular Read Models, like meta tables with filtering duplicate and out-of-order events, automatic transactions and table locking and so on.
 
-Custom Read Model is based on the following handlers:
+Custom Read Models are defined based on the following handlers:
 
-- `updateByEvents` (mandatory) - Invoked when new events arrive from eventstore.
+- `updateByEvents` (mandatory) - Invoked when new events arrive from event store.
 - `read` (mandatory) - Invoked when a user performs query to the custom Read Model. Internally, this handler can perform any actions, for instance interact with the event store or send requests to external resources.
 - `getLastError` - Allows a a custom Read Model to signal that a fatal error has occurred during event processing. If there is no error, the `null` value should be returned. Any other value has been returned, `read` is not invoked anymore, since read model is turned into failed state.
 - `readAndSerialize` - Used when `read` result is not a regular entity, and can not be copied via the [structured copy algorithm](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm). In this case, `readAndSerialize` can return custom serialized value as query result.
 - `dispose` - Used to free unmanaged resources (for example, like database connections) which maybe have been allocated by the custom Read Model.
 
-Note that there is no function like `init` or something similar, since read-model must perform auto-initialization when any of above handlers had been invoked.
+Note that custom Read Models do not define an `init` function, since Read Model must perform auto-initialization when any of the above handlers have been invoked.
 
 ## Performing Queries Using HTTP API
 
@@ -315,4 +315,5 @@ curl -g -X GET "http://localhost:3000/api/query/Default/shoppingLists"
 
 ### Query a Custom Read Model
 
-Querying a Custom Read Model is similar to querying regular Read Models, but the structure of resolvers and their arguments is not determinate. Custom Read Models receive the `resolveName` and `resolveArgs` as-is, and can perform custom actions in response.
+Querying a Custom Read Model is similar to querying regular a Read Model, but the structure of resolvers and their arguments is not determinate. Custom Read Models receive the `resolveName` and `resolveArgs` as-is, and can perform custom actions in response.
+S
