@@ -31,7 +31,8 @@ const createReadModel = (
         projection,
         resolvers
       }
-    ]
+    ],
+    customReadModels: []
   })
 
   const pool = {

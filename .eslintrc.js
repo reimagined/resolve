@@ -371,6 +371,7 @@ module.exports = {
           'uuid',
           'validator',
           'verdana',
+          'viewmodel',
           'viewport',
           'webpack',
           'wikipedia',

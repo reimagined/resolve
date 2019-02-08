@@ -164,7 +164,7 @@ const commitTransactionImpl = async (pool, readModelName) => {
     AND \`LockKey\`=${+pool.connectionId};
   `)
 
-  if (commitError != null || pool.transactionHasUncommittedDDL) {
+  if (commitError != null && pool.transactionHasUncommittedDDL) {
     await dropReadModel(pool, readModelName, true)
   }
 }
@@ -192,7 +192,7 @@ const rollbackTransactionImpl = async (pool, readModelName) => {
     AND \`LockKey\`=${+pool.connectionId};
   `)
 
-  if (rollbackError != null && pool.transactionHasUncommittedDDL) {
+  if (rollbackError != null || pool.transactionHasUncommittedDDL) {
     await dropReadModel(pool, readModelName, true)
   }
 }
