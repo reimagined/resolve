@@ -1,4 +1,3 @@
-const path = require('path')
 const find = require('glob').sync
 
 const { getResolveDir } = require('./get-resolve-dir')
@@ -18,7 +17,10 @@ function getResolvePackages() {
     if (filePath.includes('node_modules')) {
       continue
     }
-    if (filePath.includes(path.join('packages', 'internal'))) {
+    if (
+      filePath.includes('packages\\internal') ||
+      filePath.includes('packages/internal')
+    ) {
       continue
     }
 
