@@ -3,6 +3,7 @@ stages:
   - start-environment
   - install
   - unit-tests
+  - tutorial-tests
   - functional-tests
   - integration-tests
   - finish
@@ -125,7 +126,8 @@ checks:
   script:
     - cd resolve-$CI_PIPELINE_ID/
     - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
-    - npx npm-run-all -p test lint
+    - yarn test
+    - yarn lint
     - cd ..
     - node ci-cd/job-status/index.js --end
   after_script:
@@ -152,7 +154,6 @@ functional-tests:
     - node ci-cd/create-github-status/index.js --state pending --context "3. Functional tests" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
   script:
     - cd resolve-$CI_PIPELINE_ID/
-    - if [ "$(node_modules/.bin/prettier --no-semi --single-quote --list-different "**/*.js")" ]; then exit 1; fi
     - yarn test:functional safari
     - cd ..
     - node ci-cd/job-status/index.js --end
@@ -264,6 +265,32 @@ unit-tests:
   after_script:
     - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "3. Unit-tests" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "3. Unit-tests" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
 
+tutorial-tests:
+  stage: tutorial-tests
+  tags:
+    - macos
+  only:
+    variables:
+      - $CI_PIPELINE_TRIGGERED == 'true'
+  only:
+    variables:
+      - $SOURCE_BRANCH_NAME == 'dev'
+  only:
+    variables:
+      - $TARGET_BRANCH_NAME == 'master'
+  cache:
+    policy: pull
+  before_script:
+    - node ci-cd/job-status/index.js --start
+    - node ci-cd/create-github-status/index.js --state pending --context "4. Tutorial. Functional tests" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
+  script:
+    - cd resolve-$CI_PIPELINE_ID/
+    - yarn tutorial-test:functional safari
+    - cd ..
+    - node ci-cd/job-status/index.js --end
+  after_script:
+    - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "4. Tutorial. Functional tests" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "4. Tutorial. Functional tests" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
+
 macOS (create-resolve-app + functional-tests):
   stage: functional-tests
   tags:
@@ -279,7 +306,7 @@ macOS (create-resolve-app + functional-tests):
       - $TARGET_BRANCH_NAME == 'master'
   before_script:
     - node ci-cd/job-status/index.js --start
-    - node ci-cd/create-github-status/index.js --state pending --context "4. Functional-tests (macOS)" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
+    - node ci-cd/create-github-status/index.js --state pending --context "5. Functional-tests (macOS)" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
   script:
     - cd resolve-$CI_PIPELINE_ID
     - pm2 delete local-registry || true
@@ -330,7 +357,7 @@ macOS (create-resolve-app + functional-tests):
     - rm -rf with-styled-components
     - node ci-cd/job-status/index.js --end
   after_script:
-    - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "4. Functional-tests (macOS)" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "4. Functional-tests (macOS)" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
+    - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "5. Functional-tests (macOS)" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "5. Functional-tests (macOS)" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
     
 ubuntu (create-resolve-app + functional-tests):
   stage: functional-tests
@@ -347,7 +374,7 @@ ubuntu (create-resolve-app + functional-tests):
       - $TARGET_BRANCH_NAME == 'master'
   before_script:
     - node ci-cd/job-status/index.js --start
-    - node ci-cd/create-github-status/index.js --state pending --context "5. Functional-tests (Ubuntu)" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
+    - node ci-cd/create-github-status/index.js --state pending --context "6. Functional-tests (Ubuntu)" --description "Waiting ♯$CI_PIPELINE_IID for status to be reported" --targetUrl $CI_JOB_URL
   script:
     - cd resolve-$CI_PIPELINE_ID
     - pm2 delete local-registry || true
@@ -399,7 +426,7 @@ ubuntu (create-resolve-app + functional-tests):
     - rm -rf with-styled-components
     - node ci-cd/job-status/index.js --end
   after_script:
-    - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "5. Functional-tests (Ubuntu)" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "5. Functional-tests (Ubuntu)" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
+    - if [ "$(node ci-cd/job-status/index.js --isSucceeded)" == "true" ]; then node ci-cd/create-github-status/index.js --state success --context "6. Functional-tests (Ubuntu)" --description "Build ♯$CI_PIPELINE_IID succeeded in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; else node ci-cd/create-github-status/index.js --state failure --context "6. Functional-tests (Ubuntu)" --description "Build ♯$CI_PIPELINE_IID failed in $(cat ci-cd/job.time)" --targetUrl $CI_JOB_URL; fi
 
 ubuntu (integration-tests):
   stage: integration-tests
