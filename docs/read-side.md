@@ -245,9 +245,9 @@ Custom Read Model is based on the following handlers:
 - `read` (mandatory) - Invoked when a user performs query to the custom Read Model. Internally, this handler can perform any actions, for instance interact with the event store or send requests to external resources.
 - `getLastError` - Allows a a custom Read Model to signal that a fatal error has occurred during event processing. If there is no error, the `null` value should be returned. Any other value has been returned, `read` is not invoked anymore, since read model is turned into failed state.
 - `readAndSerialize` - Used when `read` result is not a regular entity, and can not be copied via the [structured copy algorithm](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm). In this case, `readAndSerialize` can return custom serialized value as query result.
-- `dispose` - Used to free unmanagment resuources (for example, like database connections) which maybe have been allocated by the custom Read Model.
+- `dispose` - Used to free unmanaged resources (for example, like database connections) which maybe have been allocated by the custom Read Model.
 
-Note that hhere is no function like `init` or something similar, since read-model must perform auto-initialization when any of above handlers had been invoked.
+Note that there is no function like `init` or something similar, since read-model must perform auto-initialization when any of above handlers had been invoked.
 
 ## Performing Queries Using HTTP API
 
@@ -315,4 +315,4 @@ curl -g -X GET "http://localhost:3000/api/query/Default/shoppingLists"
 
 ### Query a Custom Read Model
 
-Querying a Custom Read Model is similar to quarrying regular Read Models, but the structure of resolvers and their arguments is not determinated. Custom Read Models recieve the `resolveName` and `resolveArgs` as-is, and can perform custom actions in response.
+Querying a Custom Read Model is similar to querying regular Read Models, but the structure of resolvers and their arguments is not determinate. Custom Read Models receive the `resolveName` and `resolveArgs` as-is, and can perform custom actions in response.
