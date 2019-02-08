@@ -35,7 +35,7 @@ describe('aggregate "comments"', () => {
     })
   })
 
-  test('command "updateComment" should create comment', async () => {
+  test('command "updateComment" should update comment', async () => {
     const state = {}
     const command = {
       payload: {
@@ -57,7 +57,7 @@ describe('aggregate "comments"', () => {
     })
   })
 
-  test('command "removeComment" should create comment', async () => {
+  test('command "removeComment" should remove comment', async () => {
     const state = {}
     const command = {
       payload: {
