@@ -5,6 +5,11 @@
   "bin": "./bin/index.js",
   "main": "./index.js",
   "dependencies": {
-    "@internal/helpers": "0.19.2"
+    "@internal/helpers": "0.19.2",
+    "@internal/local-registry": "0.19.2"
+  },
+  "scripts": {
+    "start": "node ./bin/index.js",
+    "test": "echo || exit 0"
   }
 }

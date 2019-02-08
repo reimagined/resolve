@@ -1,14 +1,13 @@
 {
-  "name": "@internal/helpers",
+  "name": "@internal/root-yarn",
   "private": true,
   "version": "0.19.2",
   "bin": "./bin/index.js",
-  "main": "./index.js",
   "dependencies": {
-    "glob": "7.1.3",
-    "minimist": "1.2.0"
+    "@internal/helpers": "0.19.2"
   },
   "scripts": {
+    "start": "node ./bin/index.js",
     "test": "echo || exit 0"
   }
 }

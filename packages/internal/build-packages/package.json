@@ -5,5 +5,9 @@
   "bin": "./bin/index.js",
   "dependencies": {
     "@internal/helpers": "0.19.2"
+  },
+  "scripts": {
+    "start": "node ./bin/index.js",
+    "test": "echo || exit 0"
   }
 }
