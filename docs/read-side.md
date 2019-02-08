@@ -316,4 +316,3 @@ curl -g -X GET "http://localhost:3000/api/query/Default/shoppingLists"
 ### Query a Custom Read Model
 
 Querying a Custom Read Model is similar to querying regular a Read Model, but the structure of resolvers and their arguments is not determinate. Custom Read Models receive the `resolveName` and `resolveArgs` as-is, and can perform custom actions in response.
-S
