@@ -310,7 +310,7 @@ macOS (create-resolve-app + functional-tests):
   script:
     - cd resolve-$CI_PIPELINE_ID
     - pm2 delete local-registry || true
-    - pm2 start babel.compile.js --name local-registry -- --local-registry
+    - pm2 start packages/internal/local-registry/bin/index.js --name local-registry
     - cd ..
     - sleep 3
     - rm -rf hacker-news || true
@@ -378,7 +378,7 @@ ubuntu (create-resolve-app + functional-tests):
   script:
     - cd resolve-$CI_PIPELINE_ID
     - pm2 delete local-registry || true
-    - pm2 start babel.compile.js --name local-registry -- --local-registry
+    - pm2 start packages/internal/local-registry/bin/index.js --name local-registry
     - cd ..
     - sleep 3
     - export DISPLAY=:0
