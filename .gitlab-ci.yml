@@ -188,7 +188,7 @@ macOS (install):
     - git fetch origin $MERGE_COMMIT_SHA:merge-commit
     - git checkout merge-commit
     - yarn install --frozen-lockfile --cache-folder ../.yarn-cache
-    - yarn packages
+    - yarn build-packages
 
 ubuntu (install):
   stage: install
@@ -214,7 +214,7 @@ ubuntu (install):
     - git fetch origin $MERGE_COMMIT_SHA:merge-commit
     - git checkout merge-commit
     - yarn install --frozen-lockfile --cache-folder ../.yarn-cache
-    - yarn packages
+    - yarn build-packages
 
 eslint + prettier:
   stage: unit-tests
