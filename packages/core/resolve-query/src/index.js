@@ -1,6 +1,5 @@
 import createViewModelAdapter from 'resolve-viewmodel'
 import createQuery from './create-query'
-import initCustomReadModels from './init-custom-read-models'
 import initReadModels from './init-read-models'
 import initViewModels from './init-view-models'
 import checkInitErrors from './check-init-errors'
@@ -17,7 +16,6 @@ import * as constants from './constants'
 
 export default createQuery.bind(
   null,
-  initCustomReadModels,
   initReadModels,
   initViewModels,
   createViewModelAdapter,

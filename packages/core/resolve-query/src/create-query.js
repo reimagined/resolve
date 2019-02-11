@@ -1,5 +1,4 @@
 const createQuery = (
-  initCustomReadModels,
   initReadModels,
   initViewModels,
   createViewModelAdapter,
@@ -16,7 +15,6 @@ const createQuery = (
   {
     eventStore,
     viewModels,
-    customReadModels,
     readModels,
     snapshotAdapter,
     readModelAdapters,
@@ -38,12 +36,6 @@ const createQuery = (
   if (doUpdateRequest != null && typeof doUpdateRequest !== 'function') {
     pool.errorMessages.push('Parameter `doUpdateRequest` should be function')
   }
-
-  initCustomReadModels({
-    ...pool,
-    eventStore,
-    customReadModels
-  })
 
   initReadModels({
     ...pool,

@@ -28,13 +28,6 @@ const appConfig = {
       resolvers: 'common/read-models/hacker-news.resolvers.js',
       adapterName: 'default'
     }
-  ],
-  customReadModels: [
-    {
-      name: 'CustomReadModel',
-      updateByEvents: 'common/custom-read-models/custom.update-by-events.js',
-      read: 'common/custom-read-models/custom.read.js'
-    }
   ]
 }
 

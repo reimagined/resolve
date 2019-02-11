@@ -150,40 +150,6 @@
       "required": ["name", "projection", "resolvers", "adapterName"],
       "additionalProperties": false
     },
-    "customReadModel": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "updateByEvents": {
-          "oneOf": [
-            { "$ref": "#/definitions/resourceInstance" },
-            { "$ref": "#/definitions/resourceConstructor" }
-          ]
-        },
-        "read": {
-          "oneOf": [
-            { "$ref": "#/definitions/resourceInstance" },
-            { "$ref": "#/definitions/resourceConstructor" }
-          ]
-        },
-        "getLastError": {
-          "oneOf": [
-            { "$ref": "#/definitions/resourceInstance" },
-            { "$ref": "#/definitions/resourceConstructor" }
-          ]
-        },
-        "dispose": {
-          "oneOf": [
-            { "$ref": "#/definitions/resourceInstance" },
-            { "$ref": "#/definitions/resourceConstructor" }
-          ]
-        }
-      },
-      "required": ["name", "updateByEvents", "read"],
-      "additionalProperties": false
-    },
     "saga": {
       "type": "object",
       "properties": {
@@ -346,12 +312,6 @@
             "$ref": "#/definitions/readModel"
           }
         },
-        "customReadModels": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/customReadModel"
-          }
-        },
         "sagas": {
           "type": "array",
           "items": {
@@ -410,7 +370,6 @@
         "aggregates",
         "viewModels",
         "readModels",
-        "customReadModels",
         "busAdapter",
         "readModelAdapters",
         "storageAdapter",

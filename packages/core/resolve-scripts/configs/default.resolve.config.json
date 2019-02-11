@@ -8,7 +8,6 @@
   "distDir": "dist",
   "routes": "client/routes.js",
   "aggregates": [],
-  "customReadModels": [],
   "readModels": [],
   "viewModels": [],
   "sagas": [],

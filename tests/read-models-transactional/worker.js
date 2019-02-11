@@ -58,8 +58,7 @@ void (async () => {
           projection,
           resolvers
         }
-      ],
-      customReadModels: []
+      ]
     })
 
     await query.read({
