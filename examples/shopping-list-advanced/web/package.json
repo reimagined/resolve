@@ -1,6 +1,6 @@
 {
   "name": "@shopping-list-advanced/web",
-  "version": "0.19.3",
+  "version": "0.19.4",
   "private": true,
   "scripts": {
     "test": "jest --testMatch=**/test/**/unit/*.test.js --verbose"
@@ -20,11 +20,11 @@
     "react-router": "4.3.1",
     "react-router-dom": "4.3.1",
     "react-router-redux": "5.0.0-alpha.9",
-    "@shopping-list-advanced/ui": "0.19.3",
-    "resolve-module-auth": "0.19.3",
-    "resolve-readmodel-memory": "0.19.3",
-    "resolve-scripts": "0.19.3",
-    "resolve-redux": "0.19.3"
+    "@shopping-list-advanced/ui": "0.19.4",
+    "resolve-module-auth": "0.19.4",
+    "resolve-readmodel-memory": "0.19.4",
+    "resolve-scripts": "0.19.4",
+    "resolve-redux": "0.19.4"
   },
   "devDependencies": {
     "babel-jest": "24.1.0",

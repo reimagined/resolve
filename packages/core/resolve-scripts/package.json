@@ -1,6 +1,6 @@
 {
   "name": "resolve-scripts",
-  "version": "0.19.3",
+  "version": "0.19.4",
   "description": "This package create server with resolve.",
   "engines": {
     "node": ">=8.10"
@@ -43,7 +43,7 @@
     "glob": "^7.1.3",
     "isomorphic-fetch": "^2.2.1",
     "opn": "^5.4.0",
-    "resolve-runtime": "0.19.3",
+    "resolve-runtime": "0.19.4",
     "respawn": "^2.5.0",
     "socket.io-client": "^2.1.1",
     "testcafe": "^0.23.3",
