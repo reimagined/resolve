@@ -8,6 +8,8 @@ The adapter provides a query API for projection and resolvers. This API is simil
 * `url` - a MongoDB connection string. Refer to [Connection String URI Format](https://docs.mongodb.com/manual/reference/connection-string/) for more information.
 * `...connectionSettings` - see [URI Connection Settings](https://github.com/mongodb/node-mongodb-native/blob/master/docs/reference/content/reference/connecting/connection-settings.md) for more information.
 
+Adapter interface is provided by **resolve-readmodel-base** package.
+
 ## Usage
 
 ```js

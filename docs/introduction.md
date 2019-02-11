@@ -8,9 +8,9 @@ title: Introduction
 ### Prerequisites
 
 You need to have Node >=8 on you development machine and on the server.
-You can use [nvm](https://github.com/creationix/nvm#installation) (macOS/Linux) or [nvm-windows](https://github.com/coreybutler/nvm-windows#node-version-manager-nvm-for-windows) to easily switch Node versions between different projects.
+You can use [nvm](https://github.com/creationix/nvm#installation) (macOS/Linux) or [nvm-windows](https://github.com/coreybutler/nvm-windows#node-version-manager-nvm-for-windows) to switch Node versions between different projects.
 
-Make sure you have Node, NPM and NPX installed:
+Make sure you have Node, NPM, and NPX installed:
 
 ```sh
 $ node --version

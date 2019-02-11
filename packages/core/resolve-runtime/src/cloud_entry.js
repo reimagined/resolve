@@ -11,6 +11,7 @@ import createEventStore from 'resolve-es'
 import createQueryExecutor, { constants as queryConstants } from 'resolve-query'
 
 import mainHandler from './handlers/main_handler'
+import handleResolveEvent from './handlers/resolve_event_handler'
 
 const invokeLambdaSelf = async event => {
   const lambda = new Lambda({ apiVersion: '2015-03-31' })
@@ -140,14 +141,20 @@ const lambdaWorker = async (
   const resolve = Object.create(resolveBase)
   try {
     await initResolve(assemblies, resolve)
-    resolveLog(
-      'debug',
-      'Lambda handler has initialized resolve instance',
-      resolve
-    )
+    resolveLog('debug', 'Lambda handler has initialized resolve instance')
 
+    // Resolve event invoked by deploy service
+    if (lambdaEvent.resolveSource === 'DeployService') {
+      resolveLog(
+        'debug',
+        'Lambda handler classified event as reSolve event',
+        lambdaEvent
+      )
+
+      executorResult = await handleResolveEvent(lambdaEvent, resolve)
+    }
     // API gateway event
-    if (lambdaEvent.headers != null && lambdaEvent.httpMethod != null) {
+    else if (lambdaEvent.headers != null && lambdaEvent.httpMethod != null) {
       resolveLog(
         'debug',
         'Lambda handler classified event as API gateway',
@@ -160,9 +167,6 @@ const lambdaWorker = async (
       executorResult = await executor(lambdaEvent, lambdaContext)
     }
     // DynamoDB trigger event
-    // AWS DynamoDB streams guarantees that changesets from one table partition will
-    // be delivered strictly into one lambda instance, i.e. following code works in
-    // single-thread mode for one event storage - see https://amzn.to/2LkKXAV
     else if (lambdaEvent.Records != null) {
       resolveLog(
         'debug',
@@ -173,7 +177,6 @@ const lambdaWorker = async (
       const events = lambdaEvent.Records.map(record =>
         Converter.unmarshall(record.dynamodb.NewImage)
       )
-      // TODO. Refactoring MQTT publish event
       for (const event of events) {
         const eventDescriptor = {
           topic: `${process.env.DEPLOYMENT_ID}/${event.type}/${
