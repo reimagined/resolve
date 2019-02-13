@@ -1,5 +1,5 @@
 const executePaginationQuery = async (
-  { documentClient, executeSingleQuery },
+  { documentClient, executeSingleQuery, decodeEmptyStrings },
   query,
   callback
 ) => {
@@ -10,7 +10,7 @@ const executePaginationQuery = async (
     query.ExclusiveStartKey = res.LastEvaluatedKey
 
     for (const event of res.Items) {
-      await callback(event)
+      await callback(decodeEmptyStrings(event))
     }
   } while (res.LastEvaluatedKey != null)
 }

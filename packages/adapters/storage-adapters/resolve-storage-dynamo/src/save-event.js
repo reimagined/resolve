@@ -5,16 +5,19 @@ import {
   duplicateError
 } from './constants'
 
-const saveEvent = async ({ documentClient, tableName }, event) => {
+const saveEvent = async (
+  { documentClient, tableName, encodeEmptyStrings },
+  event
+) => {
   while (true) {
     try {
       await documentClient
         .put({
           TableName: tableName,
-          Item: {
+          Item: encodeEmptyStrings({
             globalPartitionKey: globalPartitionKey,
             ...event
-          },
+          }),
           ConditionExpression:
             'attribute_not_exists(aggregateId) AND attribute_not_exists(aggregateVersion)'
         })
