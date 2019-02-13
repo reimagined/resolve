@@ -36,7 +36,7 @@ export default {
   invalidFieldList: (operation, tableName, fieldList, reason, fragment) =>
     `Fields list in operation "${operation}" for table "${tableName}"
     provisioned "${JSON.stringify(fieldList)}" is invalid:
-    ${reason}${fragment ? ` at "${JSON.stringify(fragment)}"` : ''}`,
+    ${reason}${fragment ? ` at ${JSON.stringify(fragment)}` : ''}`,
   fieldListNotObject: 'Object with values for every column declared in table description expected',
   nonExistingField: 'Non existing table column or wrong nested field invocation',
   columnTypeMismatch: 'Column type mismatch or indexed column value is null',
