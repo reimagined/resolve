@@ -318,7 +318,7 @@ describe('resolve-readmodel-base check-store-api', () => {
           'table',
           { volumeErr: 100 },
           messages.nonExistingField,
-          'volumeErr'
+          ['volumeErr']
         )
       )
     }
@@ -350,7 +350,7 @@ describe('resolve-readmodel-base check-store-api', () => {
           'table',
           { idErr: 1, 'contentErr.text': 1 },
           messages.illegalProjectionColumn,
-          'idErr'
+          ['idErr', 'contentErr.text']
         )
       )
     }
@@ -470,7 +470,7 @@ describe('resolve-readmodel-base check-store-api', () => {
           'table',
           { id: 1, 'content.text': 1 },
           messages.illegalSortColumn,
-          'timestampErr'
+          ['timestampErr']
         )
       )
     }
@@ -502,7 +502,7 @@ describe('resolve-readmodel-base check-store-api', () => {
           'table',
           { id: 1, 'content.text': 1 },
           messages.illegalSortColumn,
-          'timestampErr$$%%'
+          ['timestampErr$$%%']
         )
       )
     }
@@ -600,7 +600,7 @@ describe('resolve-readmodel-base check-store-api', () => {
           'table',
           { volumeErr: 100 },
           messages.nonExistingField,
-          'volumeErr'
+          ['volumeErr']
         )
       )
     }
@@ -629,7 +629,7 @@ describe('resolve-readmodel-base check-store-api', () => {
           'table',
           { idErr: 1, 'contentErr.text': 1 },
           messages.illegalProjectionColumn,
-          'idErr'
+          ['idErr', 'contentErr.text']
         )
       )
     }
@@ -694,7 +694,7 @@ describe('resolve-readmodel-base check-store-api', () => {
           'table',
           { volumeErr: 100 },
           messages.nonExistingField,
-          'volumeErr'
+          ['volumeErr']
         )
       )
     }
@@ -773,7 +773,7 @@ describe('resolve-readmodel-base check-store-api', () => {
             contentErr: {}
           },
           messages.nonExistingField,
-          'idErr'
+          ['idErr', 'volumeErr', 'timestampErr', 'contentErr']
         )
       )
     }
@@ -857,7 +857,7 @@ describe('resolve-readmodel-base check-store-api', () => {
           'table',
           { volumeErr: 100 },
           messages.nonExistingField,
-          'volumeErr'
+          ['volumeErr']
         )
       )
     }
@@ -979,7 +979,7 @@ describe('resolve-readmodel-base check-store-api', () => {
           'table',
           { volumeErr: 100 },
           messages.nonExistingField,
-          'volumeErr'
+          ['volumeErr']
         )
       )
     }

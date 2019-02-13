@@ -92,6 +92,7 @@ const checkFieldList = (
   allowNested,
   validProjectionValues = []
 ) => {
+  let wrongFields = []
   if (!checkOptionShape(fieldList, [Object, Array])) {
     return '*'
   }
@@ -99,10 +100,10 @@ const checkFieldList = (
   if (Array.isArray(fieldList)) {
     for (let fieldName of fieldList) {
       if (!checkAndGetColumnStatus(metaInfo, fieldName, allowNested)) {
-        return fieldName
+        wrongFields.push(fieldName)
       }
     }
-    return
+    return wrongFields.length > 0 ? wrongFields : null
   }
 
   for (let fieldName of Object.keys(fieldList)) {
@@ -110,11 +111,11 @@ const checkFieldList = (
       !checkAndGetColumnStatus(metaInfo, fieldName, allowNested) ||
       !(validProjectionValues.indexOf(fieldList[fieldName]) > -1)
     ) {
-      return fieldName
+      wrongFields.push(fieldName)
     }
   }
 
-  return null
+  return wrongFields.length > 0 ? wrongFields : null
 }
 
 // BSON Types in MongoDB: https://docs.mongodb.com/manual/reference/bson-types/
@@ -149,8 +150,7 @@ const checkInsertedDocumentShape = (tableName, metaInfo, document) => {
   const documentKeys = document instanceof Object ? Object.keys(document) : []
 
   checkCondition(
-    checkOptionShape(document, [Object]) &&
-      Object.keys(metaInfo).length === documentKeys.length,
+    checkOptionShape(document, [Object]),
     messages.invalidFieldList,
     'insert',
     tableName,
