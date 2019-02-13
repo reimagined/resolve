@@ -1104,9 +1104,9 @@ You can overcome this limitation by introducing optimistic UI updates as the nex
 
 ### Support Optimistic UI Updates
 
-With the optimistic UI updating approach, a component applies model changes to the client Redux state before sending them to the server using an aggregate command. Follow the steps below to provide such functionality.
+With the optimistic UI updating approach, a component applies model changes to the client Redux state before it sends the changes to the server using an aggregate command. Follow the steps below to provide such functionality.
 
-First, define Redux actions that will perform updates:
+First, define Redux actions that performs updates:
 
 **client/actions/optimistic_actions.js:**
 
@@ -1120,7 +1120,7 @@ export const OPTIMISTIC_SYNC = 'OPTIMISTIC_SYNC'
 
 <!-- prettier-ignore-end -->
 
-Implement an optimistic reducer function that responds to these commands to update the corresponding slice of the Redux state:
+Implement an optimistic reducer function that responds to these actions to update the corresponding slice of the Redux state:
 
 **client/reducers/optimistic_shopping_lists.js:**
 
@@ -1250,7 +1250,7 @@ Modify the aggregate projection to account for shopping list deletion.
 [SHOPPING_LIST_REMOVED]: () => ({})
 ```
 
-Define command handlers to provide the data editing functionality.
+Define command handlers to provide the capability to edit data.
 
 **common/aggregates/shopping_list.commands.js:**
 
