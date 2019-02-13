@@ -12,7 +12,7 @@ A Read Model is defined by a set of projection functions and query resolver func
 - **[Projection functions](#updating-a-read-model-via-projection-functions)** build a Read Models state based on incoming events.
 - **[Query resolvers](#resolvers)** use data from the accumulated state to answer queries.
 
-ReSolve also provides a special kind of Read Models that can be calculated on the fly, sent to the client and kept there up-to-date. Such Read Models are called **View Models**. Refer to the [View Model Specifics](view-model-specifics) section for more information.
+ReSolve also supports **View Models**. A View Model is a Read Model that can be built on the fly, sent to the client and kept there up-to-date. Refer to the [View Model Specifics](view-model-specifics) section for more information.
 
 ## Configuring Read Models and View Models
 
@@ -123,9 +123,9 @@ You can use the **defineTable** method to add tables to the storage:
   },
 ```
 
-ReSolve provides a unified API to manage data in a storage, so this code will work with any supported storage type. The internal logic used to communicate with various DBMSs is provided by **Read Model Adapters**.
+ReSolve provides a unified API to manage data in a storage, so this code works with any supported storage type. The internal logic that a Read Model uses to communicate with various DBMSs is provided by **Read Model Adapters**.
 
-Do not hesitate to store Read Model data in a denormalized form so that your Read Models are optimized for query speed.
+We recommend that you store Read Model data in a denormalized form so that your Read Models are optimized for query performance.
 
 ## Updating a Read Model via Projection Functions
 
