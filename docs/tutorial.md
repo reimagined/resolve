@@ -1328,8 +1328,8 @@ Modify the ShoppingLists Read Model projection.
 Add the required static content to the application's **static** folder. The example application uses the following static files:
 
 - The **Styles.css** file - Contains custom styles used by the application's client components.
-- The **fontawesome.min.css** file an the **webfonts** folder - The standard Font Awesome distribution.
-- The **close-button.png** image - An icon displayed by the button used to remove shopping list items.
+- The **fontawesome.min.css** file an the **webfonts** folder - The standard [Font Awesome](https://fontawesome.com/) distribution.
+- The **close-button.png** image - An icon that the button used to remove shopping list items displays.
 
 #### Update Components
 
@@ -1359,7 +1359,7 @@ const { lists, createShoppingList, removeShoppingList } = this.props
 <ShoppingLists lists={lists} removeShoppingList={removeShoppingList} />
 ```
 
-Modify the ShoppingList component to support shopping list renaming.
+Modify the ShoppingList component to provide the capability to rename shopping lists.
 
 **client/containers/ShoppingList.js:**
 
