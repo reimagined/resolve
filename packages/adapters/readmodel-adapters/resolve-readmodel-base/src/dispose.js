@@ -13,11 +13,13 @@ const dispose = (pool, options = {}) => {
       await drop(options)
     }
     await disconnect()
-  })()
 
-  Object.keys(pool).forEach(key => {
-    delete pool[key]
-  })
+    for (const key of Object.keys(pool)) {
+      if (key !== 'disposePromise') {
+        delete pool[key]
+      }
+    }
+  })()
 
   pool.disposePromise = disposePromise
   return disposePromise
