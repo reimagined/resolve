@@ -184,6 +184,11 @@ describe('API handler wrapper for express.js', () => {
     throw new Error('Custom error')
   }
 
+  const apiEmptyEndHandler = async (req, res) => {
+    res.status(200)
+    res.end()
+  }
+
   it('should work with primitive JSON handler with GET client request', async () => {
     const wrappedHandler = wrapApiHandler(apiJsonHandler, getCustomParams)
     resolveHttpBody(null)
@@ -285,6 +290,22 @@ describe('API handler wrapper for express.js', () => {
 
   it('should work with error throwing handler', async () => {
     const wrappedHandler = wrapApiHandler(apiThrowHandler, getCustomParams)
+    resolveHttpBody(null)
+    await wrappedHandler(expressReq, expressRes)
+
+    expect(extractInvocationInfo(expressReq.on)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.status)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.set)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(expressRes.end)).toMatchSnapshot()
+
+    expect(extractInvocationInfo(getCustomParams)).toMatchSnapshot()
+  })
+
+  it('should work with empty end', async () => {
+    const wrappedHandler = wrapApiHandler(apiEmptyEndHandler, getCustomParams)
     resolveHttpBody(null)
     await wrappedHandler(expressReq, expressRes)
 
