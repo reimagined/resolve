@@ -14,8 +14,8 @@ const dispose = (pool, options = {}) => {
     }
     await disconnect()
 
-    for(const key of Object.keys(pool)) {
-      if(key !== 'disposePromise') {
+    for (const key of Object.keys(pool)) {
+      if (key !== 'disposePromise') {
         delete pool[key]
       }
     }

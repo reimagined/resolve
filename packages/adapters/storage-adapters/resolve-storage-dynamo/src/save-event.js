@@ -7,17 +7,20 @@ import {
 
 const saveEvent = async (
   { documentClient, tableName, encodeEmptyStrings },
-  event
+  { payload, ...metaEvent }
 ) => {
   while (true) {
     try {
       await documentClient
         .put({
           TableName: tableName,
-          Item: encodeEmptyStrings({
+          Item: {
             globalPartitionKey: globalPartitionKey,
-            ...event
-          }),
+            ...metaEvent,
+            ...(payload !== undefined
+              ? { payload: encodeEmptyStrings(payload) }
+              : {})
+          },
           ConditionExpression:
             'attribute_not_exists(aggregateId) AND attribute_not_exists(aggregateVersion)'
         })
@@ -27,7 +30,7 @@ const saveEvent = async (
       if (error.code === duplicateError) {
         throw new ConcurrentError(
           `Can not save the event because aggregate '${
-            event.aggregateId
+            metaEvent.aggregateId
           }' is not actual at the moment. Please retry later.`
         )
       }

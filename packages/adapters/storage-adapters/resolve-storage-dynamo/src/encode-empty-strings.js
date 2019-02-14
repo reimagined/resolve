@@ -1,14 +1,20 @@
-const encodeEmptyStrings = event => {
-  for (const key in event) {
-    if (!event.hasOwnProperty(key) || event[key] == null) {
-      continue
-    } else if(event[key].constructor === String) {
-      event[key] = `${event[key]}\u0004`
-    } else if([Object, Array].includes(event[key].constructor)) {
-      encodeEmptyStrings(event[key])
+const encodeEmptyString = str => `${str}\u0004`
+
+const encodeEmptyStrings = payload => {
+  if (payload == null) {
+    return payload
+  } else if (payload.constructor === String) {
+    return encodeEmptyString(payload)
+  } else if ([Object, Array].includes(payload.constructor)) {
+    for (const key in payload) {
+      if (payload.hasOwnProperty(key)) {
+        payload[key] = encodeEmptyStrings(payload[key])
+      }
     }
+    return payload
+  } else {
+    return payload
   }
-  return event
 }
 
 export default encodeEmptyStrings
