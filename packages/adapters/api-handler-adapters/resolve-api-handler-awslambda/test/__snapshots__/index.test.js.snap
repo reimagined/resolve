@@ -31,6 +31,37 @@ Object {
 }
 `;
 
+exports[`API handler wrapper for express.js should work with empty end 1`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "null",
+        "{\\"statusCode\\":200,\\"headers\\":{},\\"body\\":\\"\\"}",
+      ],
+      "returnValue": "undefined",
+    },
+  ],
+}
+`;
+
+exports[`API handler wrapper for express.js should work with empty end 2`] = `
+Object {
+  "callCount": 1,
+  "callsInfo": Array [
+    Object {
+      "args": Array [
+        "{\\"headers\\":{\\"header-name-1\\":\\"header-value-1\\",\\"header-name-2\\":\\"header-value-2\\",\\"cookie\\":\\"cookie-content\\",\\"host\\":\\"host-content\\"},\\"path\\":\\"PATH_INFO\\",\\"body\\":\\"BODY_CONTENT\\",\\"queryStringParameters\\":{\\"query-name-1\\":\\"query-value-1\\",\\"query-name-2\\":\\"query-value-2\\"},\\"httpMethod\\":\\"GET\\"}",
+        "null",
+        "[FUNCTION IMPLEMENTATION]",
+      ],
+      "returnValue": "{\\"param\\":\\"value\\"}",
+    },
+  ],
+}
+`;
+
 exports[`API handler wrapper for express.js should work with error throwing handler 1`] = `
 Object {
   "callCount": 1,
@@ -38,7 +69,7 @@ Object {
     Object {
       "args": Array [
         "null",
-        "{\\"statusCode\\":500,\\"body\\":\\"Error: Custom error\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\"}",
+        "{\\"statusCode\\":500,\\"body\\":\\"\\"}",
       ],
       "returnValue": "undefined",
     },
@@ -162,7 +193,7 @@ Object {
     Object {
       "args": Array [
         "null",
-        "{\\"statusCode\\":500,\\"body\\":\\"Error: Response already sent\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\\\n    <STACK_FRAME>\\"}",
+        "{\\"statusCode\\":500,\\"body\\":\\"\\"}",
       ],
       "returnValue": "undefined",
     },
