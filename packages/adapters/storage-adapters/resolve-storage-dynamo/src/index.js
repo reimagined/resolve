@@ -28,6 +28,9 @@ import resourceCreate from './resource/create'
 import resourceDispose from './resource/dispose'
 import resourceDestroy from './resource/destroy'
 
+import encodeEmptyStrings from './encode-empty-strings'
+import decodeEmptyStrings from './decode-empty-strings'
+
 // as adapter
 const createAdapter = _createAdapter.bind(
   null,
@@ -47,7 +50,9 @@ const createAdapter = _createAdapter.bind(
     expressionString,
     checkTableExists,
     executePaginationQuery,
-    executeSingleQuery
+    executeSingleQuery,
+    encodeEmptyStrings,
+    decodeEmptyStrings
   }
 )
 export { globalPartitionKey, rangedIndex, apiVersion }
