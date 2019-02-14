@@ -1,11 +1,11 @@
-const isString = obj => obj != null && obj.constructor === String
-
 const encodeEmptyStrings = event => {
   for (const key in event) {
-    if (typeof event[key] === 'object') {
-      encodeEmptyStrings(event[key])
-    } else if (isString(event[key])) {
+    if (!event.hasOwnProperty(key) || event[key] == null) {
+      continue
+    } else if(event[key].constructor === String) {
       event[key] = `${event[key]}\u0004`
+    } else if([Object, Array].includes(event[key].constructor)) {
+      encodeEmptyStrings(event[key])
     }
   }
   return event
