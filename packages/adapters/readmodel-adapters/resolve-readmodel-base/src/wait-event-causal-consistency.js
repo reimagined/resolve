@@ -6,15 +6,7 @@ const waitEventCausalConsistency = async (
   aggregateVersion
 ) => {
   try {
-    await readModel.metaApi.rollbackTransaction(true)
-
-    const latestEvent = await readModel.eventStore.getLatestEvent({
-      eventTypes: readModel.eventTypes,
-      ...(aggregateId != null ? { aggregateIds: [aggregateId] } : {})
-    })
-
     do {
-      await readModel.metaApi.beginTransaction(true)
       const lastTimestamp = await readModel.metaApi.getLastTimestamp()
       await readModel.metaApi.rollbackTransaction(true)
 
@@ -22,10 +14,20 @@ const waitEventCausalConsistency = async (
         await new Promise(resolve =>
           setTimeout(resolve, causalConsistenceWaitTime)
         )
+        await readModel.metaApi.beginTransaction(true)
       } else {
         break
       }
     } while (true)
+
+    if (aggregateId === true) {
+      return
+    }
+
+    const latestEvent = await readModel.eventStore.getLatestEvent({
+      eventTypes: readModel.eventTypes,
+      ...(aggregateId != null ? { aggregateIds: [aggregateId] } : {})
+    })
 
     if (latestEvent == null) {
       return
