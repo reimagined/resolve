@@ -141,11 +141,7 @@ const lambdaWorker = async (
   const resolve = Object.create(resolveBase)
   try {
     await initResolve(assemblies, resolve)
-    resolveLog(
-      'debug',
-      'Lambda handler has initialized resolve instance',
-      resolve
-    )
+    resolveLog('debug', 'Lambda handler has initialized resolve instance')
 
     // Resolve event invoked by deploy service
     if (lambdaEvent.resolveSource === 'DeployService') {
@@ -171,9 +167,6 @@ const lambdaWorker = async (
       executorResult = await executor(lambdaEvent, lambdaContext)
     }
     // DynamoDB trigger event
-    // AWS DynamoDB streams guarantees that changesets from one table partition will
-    // be delivered strictly into one lambda instance, i.e. following code works in
-    // single-thread mode for one event storage - see https://amzn.to/2LkKXAV
     else if (lambdaEvent.Records != null) {
       resolveLog(
         'debug',
@@ -184,7 +177,6 @@ const lambdaWorker = async (
       const events = lambdaEvent.Records.map(record =>
         Converter.unmarshall(record.dynamodb.NewImage)
       )
-      // TODO. Refactoring MQTT publish event
       for (const event of events) {
         const eventDescriptor = {
           topic: `${process.env.DEPLOYMENT_ID}/${event.type}/${

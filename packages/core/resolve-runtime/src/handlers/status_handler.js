@@ -2,10 +2,7 @@ const statusHandler = async (req, res) => {
   const executeQuery = req.resolve.executeQuery
   for (const executor of executeQuery.getExecutors().values()) {
     try {
-      await executor.read({
-        resolverName: executor.resolverNames[0],
-        resolverArgs: {}
-      })
+      await executor.read({ isBulkRead: true })
     } catch (e) {}
   }
 

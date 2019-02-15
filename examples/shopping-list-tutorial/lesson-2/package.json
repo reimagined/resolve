@@ -1,6 +1,6 @@
 {
   "name": "@shopping-list-tutorial/lesson-2",
-  "version": "0.19.2",
+  "version": "0.19.5",
   "private": true,
   "scripts": {
     "build": "babel-node ./run.js build",
@@ -17,8 +17,8 @@
     "react-bootstrap": "0.32.1",
     "react-helmet": "5.2.0",
     "redux": "4.0.1",
-    "resolve-redux": "0.19.2",
-    "resolve-scripts": "0.19.2"
+    "resolve-redux": "0.19.5",
+    "resolve-scripts": "0.19.5"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",
@@ -28,10 +28,8 @@
     "@babel/plugin-transform-runtime": "7.0.0",
     "@babel/preset-env": "7.0.0",
     "@babel/preset-react": "7.0.0",
-    "babel-core": "^7.0.0-0",
-    "regenerator-runtime": "0.13.1",
-    "babel-jest": "23.6.0",
-    "jest": "24.0.0",
+    "babel-jest": "24.1.0",
+    "jest": "24.1.0",
     "react-test-renderer": "16.7.0",
     "testcafe": "0.23.3",
     "isomorphic-fetch": "2.2.1",

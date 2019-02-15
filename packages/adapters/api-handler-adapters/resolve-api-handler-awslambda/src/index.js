@@ -186,7 +186,7 @@ const createResponse = () => {
     internalRes.closed = true
   })
 
-  defineResponseMethod('end', (content, encoding) => {
+  defineResponseMethod('end', (content = '', encoding) => {
     validateResponseOpened()
     validateOptionShape('Content', content, [String, Buffer])
     validateOptionShape('Encoding', encoding, [String], true)
@@ -244,9 +244,12 @@ const wrapApiHandler = (handler, getCustomParameters) => async (
         ? `${error.stack}`
         : `Unknown error ${error}`
 
+    // eslint-disable-next-line no-console
+    console.error(outError)
+
     result = {
       statusCode: 500,
-      body: outError
+      body: ''
     }
   }
 

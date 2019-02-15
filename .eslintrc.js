@@ -65,6 +65,7 @@ module.exports = {
           'applescript',
           'applicationautoscaling',
           'appspot',
+          'archiver',
           'arg',
           'args',
           'argv',
@@ -105,6 +106,7 @@ module.exports = {
           'Cooldown',
           'corejs',
           'cron',
+          'cpus',
           'cqrs',
           'cwd',
           'darwin',
@@ -257,6 +259,7 @@ module.exports = {
           'println',
           'proc',
           'processlist',
+          'promisify',
           'proto',
           'pubsub',
           'qos',
@@ -368,6 +371,7 @@ module.exports = {
           'uuid',
           'validator',
           'verdana',
+          'viewmodel',
           'viewport',
           'webpack',
           'wikipedia',
@@ -383,7 +387,8 @@ module.exports = {
           'yargs',
           'ycombinator',
           'zeromq',
-          'zmq'
+          'zmq',
+          'zlib'
         ],
         minLength: 3
       }
