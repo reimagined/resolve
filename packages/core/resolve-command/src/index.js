@@ -1,3 +1,17 @@
+export function CommandError(message = 'Command error') {
+  Error.call(this)
+  this.name = 'CommandError'
+  this.message = message
+
+  if (Error.captureStackTrace) {
+    Error.captureStackTrace(this, CommandError)
+  } else {
+    this.stack = new Error().stack
+  }
+}
+
+CommandError.prototype = Object.create(Error.prototype)
+
 const verifyCommand = async ({ aggregateId, aggregateName, type }) => {
   if (!aggregateId) throw new Error('The "aggregateId" argument is required')
   if (aggregateId.constructor !== String)
@@ -105,6 +119,10 @@ const executeCommand = async (
     eventStore,
     snapshotAdapter
   )
+
+  if (!aggregate.commands.hasOwnProperty(type)) {
+    throw new CommandError(`command type ${type} does not exist`)
+  }
 
   const handler = aggregate.commands[type]
   const event = await handler(

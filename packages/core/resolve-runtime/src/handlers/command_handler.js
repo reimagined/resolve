@@ -1,4 +1,5 @@
 import { ConcurrentError } from 'resolve-storage-base'
+import { CommandError } from 'resolve-command'
 
 import extractErrorHttpCode from '../utils/extract_error_http_code'
 import extractRequestBody from '../utils/extract_request_body'
@@ -27,6 +28,10 @@ const commandHandler = async (req, res) => {
     }
 
     if (lastError != null) {
+      if (lastError instanceof CommandError) {
+        lastError.code = 400
+      }
+
       throw lastError
     }
 
