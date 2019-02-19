@@ -82,7 +82,23 @@
             { "$ref": "#/definitions/resourceInstance" },
             { "$ref": "#/definitions/resourceConstructor" }
           ]
+        },
+        "serializeState": {
+          "oneOf": [
+            { "$ref": "#/definitions/resourceInstance" },
+            { "$ref": "#/definitions/resourceConstructor" }
+          ]
+        },
+        "deserializeState": {
+          "oneOf": [
+            { "$ref": "#/definitions/resourceInstance" },
+            { "$ref": "#/definitions/resourceConstructor" }
+          ]
         }
+      },
+      "dependencies": {
+        "serializeState": ["deserializeState"],
+        "deserializeState": ["serializeState"]
       },
       "required": ["name", "commands"],
       "additionalProperties": false

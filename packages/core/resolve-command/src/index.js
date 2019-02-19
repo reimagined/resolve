@@ -22,7 +22,7 @@ const verifyCommand = async ({ aggregateId, aggregateName, type }) => {
 }
 
 const getAggregateState = async (
-  { projection, invariantHash = null },
+  { projection, serializeState, deserializeState, invariantHash = null },
   aggregateId,
   eventStore,
   snapshotAdapter = null
@@ -49,8 +49,8 @@ const getAggregateState = async (
   try {
     if (snapshotKey == null) throw new Error()
     const snapshot = await snapshotAdapter.loadSnapshot(snapshotKey)
+    aggregateState = deserializeState(snapshot.state)
     aggregateVersion = snapshot.version
-    aggregateState = snapshot.state
     lastTimestamp = snapshot.timestamp
   } catch (err) {}
 
@@ -81,7 +81,7 @@ const getAggregateState = async (
     await regularHandler(event)
 
     await snapshotAdapter.saveSnapshot(snapshotKey, {
-      state: aggregateState,
+      state: serializeState(aggregateState),
       version: aggregateVersion,
       timestamp: lastTimestamp - 1
     })
