@@ -23,6 +23,8 @@ export default aggregates
 exports[`base config works correctly [server] 1`] = `
 "
 import commands_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
+import serializeState_0_instance from \\"resolve-runtime/lib/defaults/view_model_serialize_state.js\\"
+import deserializeState_0_instance from \\"resolve-runtime/lib/defaults/view_model_deserialize_state.js\\"
 const constructorBindFunction =
     (
       constructorFunction,
@@ -37,12 +39,16 @@ const constructorBindFunction =
 const idempotentFunction = value => value
 const name_0 = \\"Todo\\"
 const commands_0 = commands_0_instance
+const serializeState_0 = serializeState_0_instance
+const deserializeState_0 = deserializeState_0_instance
 
 const aggregates = []
 
 aggregates.push({
   name: name_0
 , commands: commands_0
+, serializeState: serializeState_0
+, deserializeState: deserializeState_0
 })
 
 export default aggregates
@@ -83,7 +89,11 @@ export default aggregates
 exports[`base(v2) config works correctly [server] 1`] = `
 "
 import commands_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
+import serializeState_0_instance from \\"resolve-runtime/lib/defaults/view_model_serialize_state.js\\"
+import deserializeState_0_instance from \\"resolve-runtime/lib/defaults/view_model_deserialize_state.js\\"
 import commands_1_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
+import serializeState_1_instance from \\"resolve-runtime/lib/defaults/view_model_serialize_state.js\\"
+import deserializeState_1_instance from \\"resolve-runtime/lib/defaults/view_model_deserialize_state.js\\"
 const constructorBindFunction =
     (
       constructorFunction,
@@ -98,19 +108,27 @@ const constructorBindFunction =
 const idempotentFunction = value => value
 const name_0 = \\"Todo\\"
 const commands_0 = commands_0_instance
+const serializeState_0 = serializeState_0_instance
+const deserializeState_0 = deserializeState_0_instance
 const name_1 = \\"Item\\"
 const commands_1 = commands_1_instance
+const serializeState_1 = serializeState_1_instance
+const deserializeState_1 = deserializeState_1_instance
 
 const aggregates = []
 
 aggregates.push({
   name: name_0
 , commands: commands_0
+, serializeState: serializeState_0
+, deserializeState: deserializeState_0
 })
 
 aggregates.push({
   name: name_1
 , commands: commands_1
+, serializeState: serializeState_1
+, deserializeState: deserializeState_1
 })
 
 export default aggregates
@@ -140,6 +158,8 @@ export default aggregates
 exports[`config with projection works correctly [server] 1`] = `
 "
 import commands_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testCommands.js\\"
+import serializeState_0_instance from \\"resolve-runtime/lib/defaults/view_model_serialize_state.js\\"
+import deserializeState_0_instance from \\"resolve-runtime/lib/defaults/view_model_deserialize_state.js\\"
 import projection_0_instance from \\"<MONOREPO_DIR>/core/resolve-scripts/test/alias/files/testProjection.js\\"
 const constructorBindFunction =
     (
@@ -155,6 +175,8 @@ const constructorBindFunction =
 const idempotentFunction = value => value
 const name_0 = \\"Todo\\"
 const commands_0 = commands_0_instance
+const serializeState_0 = serializeState_0_instance
+const deserializeState_0 = deserializeState_0_instance
 const projection_0_hash = \\"fd94fac3a204e7a84b8cf3ca72e37aaa23c04dc2e1e971d69af2e20e84a40bbc2170931076d4d3e847c571f3be90e47f4c0f48aac76fdcaed083df090285b39d\\"
 const projection_0 = projection_0_instance
 
@@ -163,6 +185,8 @@ const aggregates = []
 aggregates.push({
   name: name_0
 , commands: commands_0
+, serializeState: serializeState_0
+, deserializeState: deserializeState_0
 , projection: projection_0
 , invariantHash: projection_0_hash
 })

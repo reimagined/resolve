@@ -12,16 +12,16 @@ describe('resolve-command', () => {
 
   const aggregates = [
     {
-      initialState: {},
       name: AGGREGATE_NAME,
-      // Following arguments redefined in beforeEach section
-      projection: null,
+      projection: {
+        Init: () => ({})
+      },
       commands: null
     }
   ]
 
   beforeEach(() => {
-    lastState = aggregates[0].initialState
+    lastState = aggregates[0].projection.Init()
     eventList = []
     aggregateVersion = -1
 
@@ -58,6 +58,7 @@ describe('resolve-command', () => {
     )
 
     aggregate.projection = {
+      Init: () => ({}),
       SuccessEvent: state => {
         lastState = { ...state, value: 42 }
         return lastState
@@ -136,15 +137,14 @@ describe('resolve-command', () => {
     }
   })
 
-  it('should use initialState in case of projection absence', async () => {
+  it('should use initialState on case of empty state', async () => {
     const aggregate = { ...aggregates[0] }
-    delete aggregate.projection
 
     const executeCommand = createCommandExecutor({
       eventStore,
       aggregates: [aggregate]
     })
-    eventList = [{ type: 'SuccessEvent', aggregateVersion: 1 }]
+    eventList = []
 
     await executeCommand({
       aggregateName: AGGREGATE_NAME,
@@ -152,7 +152,7 @@ describe('resolve-command', () => {
       type: 'emptyCommand'
     })
 
-    expect(lastState).toEqual(aggregate.initialState)
+    expect(lastState).toEqual(aggregate.projection.Init())
   })
 
   it('should reject event with type absence', async () => {
