@@ -1,6 +1,7 @@
 import sinon from 'sinon'
 
 import createCommandExecutor from '../src'
+import { CommandError } from '../src'
 
 describe('resolve-command', () => {
   const AGGREGATE_ID = 'aggregateId'
@@ -280,6 +281,25 @@ describe('resolve-command', () => {
       expect(error.message).toEqual(
         'Invalid aggregate version in event storage by aggregateId = aggregateId'
       )
+    }
+  })
+
+  it('Regression test. Incorrect command type', async () => {
+    const executeCommand = createCommandExecutor({ eventStore, aggregates })
+    eventList = []
+
+    const jwtToken = 'JWT-TOKEN'
+    try {
+      await executeCommand({
+        aggregateName: AGGREGATE_NAME,
+        aggregateId: AGGREGATE_ID,
+        type: 'unknownCommand',
+        jwtToken
+      })
+
+      return Promise.reject('Test failed')
+    } catch (error) {
+      expect(error).toBeInstanceOf(CommandError)
     }
   })
 })
