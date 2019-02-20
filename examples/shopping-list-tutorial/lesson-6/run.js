@@ -1,5 +1,6 @@
 import {
   defaultResolveConfig,
+  launchBusBroker,
   build,
   start,
   watch,
@@ -17,7 +18,11 @@ const launchMode = process.argv[2]
 void (async () => {
   switch (launchMode) {
     case 'dev': {
-      await watch(merge(defaultResolveConfig, appConfig, devConfig))
+      const mergedDevConfig = merge(defaultResolveConfig, appConfig, devConfig)
+      await Promise.all([
+        watch(mergedDevConfig),
+        launchBusBroker(mergedDevConfig)
+      ])
       break
     }
 
@@ -27,20 +32,32 @@ void (async () => {
     }
 
     case 'start': {
-      await start(merge(defaultResolveConfig, appConfig, prodConfig))
+      const mergedProdConfig = merge(
+        defaultResolveConfig,
+        appConfig,
+        prodConfig
+      )
+      await Promise.all([
+        start(mergedProdConfig),
+        launchBusBroker(mergedProdConfig)
+      ])
       break
     }
 
     case 'test:functional': {
-      await runTestcafe({
-        resolveConfig: merge(
-          defaultResolveConfig,
-          appConfig,
-          testFunctionalConfig
-        ),
-        functionalTestsDir: 'test/functional',
-        browser: process.argv[3]
-      })
+      const mergedTestFunctionalConfig = merge(
+        defaultResolveConfig,
+        appConfig,
+        testFunctionalConfig
+      )
+      await Promise.all([
+        runTestcafe({
+          resolveConfig: mergedTestFunctionalConfig,
+          functionalTestsDir: 'test/functional',
+          browser: process.argv[3]
+        }),
+        launchBusBroker(mergedTestFunctionalConfig)
+      ])
       break
     }
 

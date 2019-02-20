@@ -9,8 +9,10 @@ const devConfig = {
   readModelAdapters: [
     {
       name: 'default',
-      module: 'resolve-readmodel-memory',
-      options: {}
+      module: 'resolve-readmodel-lite',
+      options: {
+        databaseFile: 'read-models.db'
+      }
     }
   ]
 }

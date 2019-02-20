@@ -26,7 +26,7 @@ describe('validateReadModelAdapters', () => {
       readModelAdapters: [
         {
           name: 'default',
-          module: 'resolve-readmodel-memory',
+          module: 'resolve-readmodel-lite',
           options: {}
         },
         {
@@ -54,7 +54,7 @@ describe('validateReadModelAdapters', () => {
       readModelAdapters: [
         {
           name: 'default',
-          module: 'resolve-readmodel-memory',
+          module: 'resolve-readmodel-lite',
           options: {}
         }
       ]
@@ -81,7 +81,7 @@ describe('validateReadModelAdapters', () => {
       readModelAdapters: [
         {
           name: 'default',
-          module: 'resolve-readmodel-memory',
+          module: 'resolve-readmodel-lite',
           options: {}
         },
         {
@@ -111,7 +111,7 @@ describe('validateReadModelAdapters', () => {
       readModelAdapters: [
         {
           name: 'default',
-          module: 'resolve-readmodel-memory',
+          module: 'resolve-readmodel-lite',
           options: {}
         },
         {

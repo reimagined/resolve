@@ -13,10 +13,6 @@ const devConfig = {
       pathToFile: 'event-storage.db'
     }
   },
-  busAdapter: {
-    module: 'resolve-bus-memory',
-    options: {}
-  },
   subscribeAdapter: {
     module: 'resolve-subscribe-socket.io',
     options: {}

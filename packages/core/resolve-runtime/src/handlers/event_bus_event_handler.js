@@ -1,23 +1,41 @@
 const handleGetAppConfigEvent = async (lambdaEvent, resolve) => {
   return {
-    readModels: resolve.readModels.map(({ name, projection, resolvers }) => ({
+    applicationName: resolve.applicationName,
+    readModels: resolve.readModels.map(
+      ({ name, projection, resolvers, invariantHash }) => ({
+        name,
+        eventTypes: Object.keys(projection || {}).filter(
+          eventType => eventType !== 'Init'
+        ),
+        resolverNames: Object.keys(resolvers || {}),
+        invariantHash
+      })
+    ),
+    viewModels: resolve.viewModels.map(
+      ({ name, projection, invariantHash }) => ({
+        name,
+        eventTypes: Object.keys(projection || {}).filter(
+          eventType => eventType !== 'Init'
+        ),
+        invariantHash
+      })
+    ),
+    aggregates: resolve.aggregates.map(({ name, commands, invariantHash }) => ({
       name,
-      eventTypes: Object.keys(projection || {}).filter(
-        eventType => eventType !== 'Init'
-      ),
-      resolverNames: Object.keys(resolvers || {})
-    })),
-    viewModels: resolve.viewModels.map(({ name, projection }) => ({
-      name,
-      eventTypes: Object.keys(projection || {}).filter(
-        eventType => eventType !== 'Init'
-      )
-    })),
-    aggregates: resolve.aggregates.map(({ name, commands }) => ({
-      name,
-      commandTypes: Object.keys(commands || {})
+      commandTypes: Object.keys(commands || {}),
+      invariantHash
     }))
   }
+}
+
+const handleApplyEvents = async (lambdaEvent, resolve) => {
+  const { events, listenerId } = lambdaEvent
+
+  const executor = resolve.executeQuery.getExecutor(listenerId)
+
+  await executor.updateByEvents(events)
+
+  return true
 }
 
 const handleEventBusEvent = async (lambdaEvent, resolve) => {
@@ -25,15 +43,8 @@ const handleEventBusEvent = async (lambdaEvent, resolve) => {
     case 'GET_APP_CONFIG': {
       return await handleGetAppConfigEvent(lambdaEvent, resolve)
     }
-    case 'LISTEN_EVENT_BUS': {
-      // eslint-disable-next-line no-console
-      console.log('LISTEN_EVENT_BUS', lambdaEvent)
-      break
-    }
-    case 'PAUSE_EVENT_BUS': {
-      // eslint-disable-next-line no-console
-      console.log('PAUSE_EVENT_BUS', lambdaEvent)
-      break
+    case 'APPLY_EVENTS_FROM_EVENT_BUS': {
+      return await handleApplyEvents(lambdaEvent, resolve)
     }
     default: {
       return null

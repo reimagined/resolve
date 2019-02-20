@@ -11,7 +11,7 @@ const testFunctionalConfig = {
   readModelAdapters: [
     {
       name: 'default',
-      module: 'resolve-readmodel-memory',
+      module: 'resolve-readmodel-lite',
       options: {}
     }
   ],
@@ -20,10 +20,6 @@ const testFunctionalConfig = {
     options: {
       pathToFile: 'event-storage.db'
     }
-  },
-  busAdapter: {
-    module: 'resolve-bus-memory',
-    options: {}
   },
   subscribeAdapter: {
     module: 'resolve-subscribe-socket.io',

@@ -47,7 +47,6 @@ vscode
 # npm packages
 .packages
 
-event-storage.db
 #
 dist
 lib
@@ -56,4 +55,5 @@ es
 /website/build
 /website/i18n
 
+*.db
 

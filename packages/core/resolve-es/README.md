@@ -27,11 +27,9 @@ When initializing an event store, pass the following arguments:
 // Import and initializtion
 import createEventStore from 'resolve-es'
 import createInFileStorageAdapter from 'resolve-storage-lite'
-import createInMemoryBusAdapter from 'resolve-bus-memory'
 
 const eventStore = createEventStore({
-  storage: createInFileStorageAdapter({ pathToFile: './event-store.db' }),
-  bus: createInMemoryBusAdapter()
+  storage: createInFileStorageAdapter({ pathToFile: './event-store.db' })
 })
 
 // Load events

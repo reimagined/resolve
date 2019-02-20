@@ -3,7 +3,7 @@ const path = require('path')
 const createQuery = require('resolve-query').default
 const createEventStore = require('resolve-es').default
 const createStorage = require('resolve-storage-lite').default
-const createMemoryAdapter = require('resolve-readmodel-memory').default
+const createMemoryAdapter = require('resolve-readmodel-lite').default
 const createMySQLAdapter = require('resolve-readmodel-mysql').default
 const createMongoDBAdapter = require('resolve-readmodel-mongo').default
 

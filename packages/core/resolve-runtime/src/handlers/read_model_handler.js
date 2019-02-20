@@ -11,12 +11,6 @@ const readModelHandler = async (req, res) => {
 
     const result = await executeQuery.readAndSerialize(queryArgs)
 
-    const lastError = await executeQuery.getLastError({ modelName })
-    if (lastError != null) {
-      resolveLog('warn', 'Read model handler caused error', req.path, lastError)
-      throw lastError
-    }
-
     await res.status(200)
     await res.setHeader('Content-Type', 'application/json')
     await res.end(result)

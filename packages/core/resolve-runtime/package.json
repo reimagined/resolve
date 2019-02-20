@@ -33,6 +33,7 @@
     "history": "^4.7.2",
     "jsonwebtoken": "^8.3.0",
     "mqtt-connection": "^4.0.0",
+    "proper-lockfile": "^3.2.0",
     "react-helmet": "^5.2.0",
     "resolve-api-handler-awslambda": "0.19.8",
     "resolve-api-handler-express": "0.19.8",
@@ -50,12 +51,14 @@
     "url": "^0.11.0",
     "uuid": "^3.3.2",
     "ws": "^5.2.1",
-    "websocket-stream": "^5.1.2"
+    "websocket-stream": "^5.1.2",
+    "zeromq": "^5.1.0"
   },
   "peerDependencies": {
     "react": "^16.5.0",
     "react-dom": "^16.5.0",
     "styled-components": "^4.0.0",
+    "resolve-local-event-broker": "*",
     "resolve-redux": "*"
   },
   "devDependencies": {

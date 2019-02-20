@@ -4,7 +4,6 @@ test('View-model index', () => {
   const createViewModel = require('../src/create-view-model')
 
   const init = require('../src/init')
-  const getLastError = require('../src/get-last-error')
   const read = require('../src/read')
   const readAndSerialize = require('../src/read-and-serialize')
   const dispose = require('../src/dispose')
@@ -12,7 +11,6 @@ test('View-model index', () => {
   const getKey = require('../src/get-key')
 
   sinon.stub(init, 'default').callsFake(() => () => {})
-  sinon.stub(getLastError, 'default').callsFake(() => () => {})
   sinon.stub(read, 'default').callsFake(() => () => {})
   sinon.stub(readAndSerialize, 'default').callsFake(() => () => {})
   sinon.stub(dispose, 'default').callsFake(() => () => {})
@@ -30,7 +28,6 @@ test('View-model index', () => {
   const index = require('../src/index.js')
 
   expect(init.default.callCount).toEqual(0)
-  expect(getLastError.default.callCount).toEqual(0)
   expect(read.default.callCount).toEqual(0)
   expect(readAndSerialize.default.callCount).toEqual(0)
   expect(dispose.default.callCount).toEqual(0)
@@ -40,7 +37,6 @@ test('View-model index', () => {
   index.default()
 
   expect(init.default.callCount).toEqual(1)
-  expect(getLastError.default.callCount).toEqual(1)
   expect(read.default.callCount).toEqual(1)
   expect(readAndSerialize.default.callCount).toEqual(1)
   expect(dispose.default.callCount).toEqual(1)
@@ -50,10 +46,9 @@ test('View-model index', () => {
   const viewModelCallArgs = createViewModel.default.firstCall.args
 
   expect(viewModelCallArgs[0]).toEqual(init.default)
-  expect(viewModelCallArgs[1]).toEqual(getLastError.default)
-  expect(viewModelCallArgs[2]).toEqual(read.default)
-  expect(viewModelCallArgs[3]).toEqual(readAndSerialize.default)
-  expect(viewModelCallArgs[4]).toEqual(dispose.default)
-  expect(viewModelCallArgs[5]).toEqual(eventHandler.default)
-  expect(viewModelCallArgs[6]).toEqual(getKey.default)
+  expect(viewModelCallArgs[1]).toEqual(read.default)
+  expect(viewModelCallArgs[2]).toEqual(readAndSerialize.default)
+  expect(viewModelCallArgs[3]).toEqual(dispose.default)
+  expect(viewModelCallArgs[4]).toEqual(eventHandler.default)
+  expect(viewModelCallArgs[5]).toEqual(getKey.default)
 })

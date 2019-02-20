@@ -12,7 +12,6 @@ test('Read-model read should throw on disposed state', async () => {
 
 test('Read-model read should throw on non-existing resolver', async () => {
   const readModel = {
-    metaApi: { reportDemandAccess: () => {} },
     resolvers: {},
     connect: () => {}
   }
