@@ -7,11 +7,9 @@ const createQuery = (
   getExecutor,
   read,
   readAndSerialize,
-  getLastError,
   getModelType,
   dispose,
   getExecutors,
-  updateRequest,
   {
     eventStore,
     viewModels,
@@ -22,7 +20,6 @@ const createQuery = (
   }
 ) => {
   const pool = {
-    updateRequest: doUpdateRequest == null ? updateRequest : doUpdateRequest,
     createViewModelAdapter,
     executors: new Map(),
     executorTypes: new Map(),
@@ -33,8 +30,10 @@ const createQuery = (
     getModelType
   }
 
-  if (doUpdateRequest != null && typeof doUpdateRequest !== 'function') {
+  if (typeof doUpdateRequest !== 'function') {
     pool.errorMessages.push('Parameter `doUpdateRequest` should be function')
+  } else {
+    pool.updateRequest = doUpdateRequest
   }
 
   initReadModels({
@@ -57,7 +56,6 @@ const createQuery = (
     getExecutor: getExecutor.bind(null, pool),
     read: read.bind(null, pool),
     readAndSerialize: readAndSerialize.bind(null, pool),
-    getLastError: getLastError.bind(null, pool),
     getModelType: getModelType.bind(null, pool),
     dispose: dispose.bind(null, pool),
     getExecutors: getExecutors.bind(null, pool)

@@ -1,8 +1,10 @@
 import 'source-map-support/register'
 import { Server } from 'http'
 import express from 'express'
+import fs from 'fs'
 import MqttConnection from 'mqtt-connection'
 import path from 'path'
+import lockFile from 'proper-lockfile'
 import wrapApiHandler from 'resolve-api-handler-express'
 import createCommandExecutor from 'resolve-command'
 import createEventStore from 'resolve-es'
@@ -16,10 +18,66 @@ import { Server as WebSocketServer } from 'ws'
 import createPubsubManager from './utils/create_pubsub_manager'
 import getRootBasedUrl from './utils/get_root_based_url'
 
-import startExpressServer from './utils/start_express_server'
-import sagaRunnerExpress from './utils/saga_runner_express'
-
 import mainHandler from './handlers/main_handler'
+
+const localBusFile = 'bus.json'
+
+const updateReadModels = async (resolve, pool, readModelName) => {
+  const executor = pool.getExecutor(pool, readModelName)
+
+  if (resolve.updatingThreads == null) {
+    let content = []
+    try {
+      content = JSON.parse(fs.readFileSync(localBusFile).toString())
+    } catch (err) {}
+    resolve.updatingThreads = new Map(content)
+  }
+
+  if (!resolve.updatingThreads.has(readModelName)) {
+    resolve.updatingThreads.set(readModelName, {
+      startTime: 0,
+      updating: false
+    })
+
+    await executor.updateByEvents([{ type: 'Init' }])
+  }
+
+  const descriptor = resolve.updatingThreads.get(readModelName)
+  if (descriptor.updating) {
+    return
+  }
+
+  descriptor.updating = true
+
+  await resolve.eventStore.loadEvents(
+    {
+      startTime: descriptor.startTime,
+      skipBus: true
+    },
+    async event => {
+      await executor.updateByEvents([event])
+      descriptor.startTime = event.timestamp
+    }
+  )
+
+  descriptor.updating = false
+
+  fs.writeFileSync(
+    localBusFile,
+    JSON.stringify(Array.from(resolve.updatingThreads))
+  )
+}
+
+const host = '0.0.0.0'
+const startExpressServer = async ({ port, server }) => {
+  await new Promise((resolve, reject) =>
+    server.listen(port, host, error => (error ? reject(error) : resolve()))
+  )
+
+  server.on('error', err => {
+    throw err
+  })
+}
 
 const initEventStore = async (
   { storageAdapter: createStorageAdapter, busAdapter: createBusAdapter },
@@ -232,6 +290,11 @@ const initDomain = async (
   })
 
   const executeQuery = createQueryExecutor({
+    doUpdateRequest: async (pool, readModelName) => {
+      Promise.resolve().then(
+        updateReadModels.bind(null, resolve, pool, readModelName)
+      )
+    },
     eventStore,
     viewModels,
     readModels,
@@ -246,7 +309,8 @@ const initDomain = async (
 
   Object.defineProperties(resolve, {
     readModelAdapters: { value: readModelAdapters },
-    snapshotAdapter: { value: snapshotAdapter }
+    snapshotAdapter: { value: snapshotAdapter },
+    updatingThreads: { value: null, writable: true }
   })
 }
 
@@ -303,6 +367,17 @@ const getSubscribeAdapterOptions = async (resolve, origin, adapterName) => {
 
 const localEntry = async ({ assemblies, constants, domain, redux, routes }) => {
   try {
+    try {
+      fs.writeFileSync(localBusFile, '', { flag: 'wx' })
+    } catch (err) {}
+
+    try {
+      lockFile.lockSync(localBusFile)
+    } catch (err) {
+      resolveLog('error', 'Cannot run multiple reSolve instances locally', err)
+      process.exit(1)
+    }
+
     const resolve = {
       aggregateActions: assemblies.aggregateActions,
       seedClientEnvs: assemblies.seedClientEnvs,
@@ -334,7 +409,6 @@ const localEntry = async ({ assemblies, constants, domain, redux, routes }) => {
 
     resolve.app.use(executor)
 
-    await sagaRunnerExpress(resolve, assemblies.sagas)
     await startExpressServer(resolve)
 
     resolveLog('debug', 'Local entry point cold start success', resolve)

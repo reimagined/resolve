@@ -11,8 +11,7 @@ test('method "createResolver" should create resolver [success]', async () => {
   const jwtToken = 'jwtToken'
 
   const query = {
-    read: sinon.stub().callsFake(options => ({ result: options })),
-    getLastError: sinon.stub().returns(error)
+    read: sinon.stub().callsFake(options => ({ result: options }))
   }
   const pool = { modelName, query }
 
@@ -39,8 +38,7 @@ test('method "createResolver" should create resolver [failure]', async () => {
   const jwtToken = 'jwtToken'
 
   const query = {
-    read: sinon.stub().callsFake(options => ({ result: options })),
-    getLastError: sinon.stub().returns(error)
+    read: sinon.stub().callsFake(options => ({ result: options }))
   }
   const pool = { modelName, query }
 

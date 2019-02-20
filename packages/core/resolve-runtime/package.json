@@ -33,6 +33,7 @@
     "history": "^4.7.2",
     "jsonwebtoken": "^8.3.0",
     "mqtt-connection": "^4.0.0",
+    "proper-lockfile": "^3.2.0",
     "react-helmet": "^5.2.0",
     "resolve-api-handler-awslambda": "0.19.6",
     "resolve-api-handler-express": "0.19.6",

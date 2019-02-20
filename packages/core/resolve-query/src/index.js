@@ -7,7 +7,6 @@ import checkQueryDisposeState from './check-query-dispose-state'
 import getExecutor from './get-executor'
 import read from './read'
 import readAndSerialize from './read-and-serialize'
-import getLastError from './get-last-error'
 import getModelType from './get-model-type'
 import dispose from './dispose'
 import getExecutors from './get-executors'
@@ -24,11 +23,9 @@ export default createQuery.bind(
   getExecutor,
   read,
   readAndSerialize,
-  getLastError,
   getModelType,
   dispose,
-  getExecutors,
-  updateRequest
+  getExecutors
 )
 
 export { constants }

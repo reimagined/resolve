@@ -27,8 +27,6 @@ Pass the following arguments to the `createReadModel` factory function to create
 
 A **Read Model** supports the following functions to query data:
 * `read` - Performs a query within a Read Model via Resolvers. The first argument is a Resolver name; the second one contains an object with the Resolver function properties. Returns the Resolver execution result.
-* `getLastError` - Returns the last error that occurred while applying events by adapter-bound projection functions.
-* `getReadInterface` - Returns the underlying Read-Side Storage API object after it has been initialized. Can be used for direct read-only interactions with the Read-Model Storage.
 * `dispose` - Removes the Read Model. Invokes the Read Model Adapter's disposal mechanisms and stops listening to the Event Store bus. The default adapters' disposal operation disconnects with the storage and drops stored tables.
 
 

@@ -9,11 +9,6 @@ const createResolver = ({ modelName, query }, resolverName) => async (
     jwtToken
   })
 
-  const error = await query.getLastError({ modelName })
-  if (error != null) {
-    throw error
-  }
-
   return result
 }
 

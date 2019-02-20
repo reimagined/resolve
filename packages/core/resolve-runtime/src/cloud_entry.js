@@ -14,21 +14,17 @@ import mainHandler from './handlers/main_handler'
 import handleDeployServiceEvent from './handlers/deploy_service_event_handler'
 import handleEventBusEvent from './handlers/event_bus_event_handler'
 
-const invokeLambdaSelf = async event => {
-  const lambda = new Lambda({ apiVersion: '2015-03-31' })
-  const invokeParams = {
-    FunctionName: process.env.AWS_LAMBDA_FUNCTION_NAME,
-    InvocationType: 'Event',
-    Payload: JSON.stringify(event),
-    LogType: 'None'
-  }
+const lambda = new Lambda({ apiVersion: '2015-03-31' })
 
-  return await new Promise((resolve, reject) =>
-    lambda.invoke(invokeParams, (err, data) =>
-      !err ? resolve(data) : reject(err)
-    )
-  )
-}
+const invokeUpdateLambda = async readModelName =>
+  await lambda
+    .invoke({
+      FunctionName: process.env.UPDATE_LAMBDA_NAME,
+      InvocationType: 'Event',
+      Payload: JSON.stringify({ readModelName }),
+      LogType: 'None'
+    })
+    .promise()
 
 const initResolve = async (
   {
@@ -54,24 +50,13 @@ const initResolve = async (
     snapshotAdapter
   })
 
-  const doUpdateRequest = async (pool, readModelName) => {
-    const executor = pool.getExecutor(pool, readModelName)
-
-    Promise.resolve()
-      .then(executor.read.bind(null, { isBulkRead: true }))
-      .then(invokeLambdaSelf.bind(null, { Records: [] }))
-      .catch(error => {
-        resolveLog('error', 'Update lambda invocation error', error)
-      })
-  }
-
   const executeQuery = createQueryExecutor({
+    doUpdateRequest: (pool, readModelName) => invokeUpdateLambda(readModelName),
     eventStore,
     viewModels,
     readModels,
     readModelAdapters,
-    snapshotAdapter,
-    doUpdateRequest
+    snapshotAdapter
   })
 
   Object.assign(resolve, {
