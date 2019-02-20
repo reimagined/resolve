@@ -1,6 +1,6 @@
 {
   "name": "hello-world",
-  "version": "0.19.5",
+  "version": "0.19.6",
   "description": "used as a template for new reSolve applications",
   "private": true,
   "scripts": {
@@ -19,15 +19,15 @@
     "react-bootstrap": "0.32.1",
     "react-helmet": "5.2.0",
     "redux": "4.0.1",
-    "resolve-bus-memory": "0.19.5",
-    "resolve-redux": "0.19.5",
-    "resolve-scripts": "0.19.5",
-    "resolve-storage-dynamo": "0.19.5",
-    "resolve-storage-lite": "0.19.5",
-    "resolve-readmodel-memory": "0.19.5",
-    "resolve-readmodel-mysql": "0.19.5",
-    "resolve-subscribe-mqtt": "0.19.5",
-    "resolve-subscribe-socket.io": "0.19.5",
+    "resolve-bus-memory": "0.19.6",
+    "resolve-redux": "0.19.6",
+    "resolve-scripts": "0.19.6",
+    "resolve-storage-dynamo": "0.19.6",
+    "resolve-storage-lite": "0.19.6",
+    "resolve-readmodel-memory": "0.19.6",
+    "resolve-readmodel-mysql": "0.19.6",
+    "resolve-subscribe-mqtt": "0.19.6",
+    "resolve-subscribe-socket.io": "0.19.6",
     "redux-devtools-extension": "2.13.7"
   },
   "devDependencies": {
