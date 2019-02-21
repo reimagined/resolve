@@ -19,7 +19,8 @@
     "redux": "4.0.1",
     "react-redux": "5.1.1",
     "resolve-redux": "0.19.6",
-    "resolve-scripts": "0.19.6"
+    "resolve-scripts": "0.19.6",
+    "resolve-runtime": "0.19.6"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",
