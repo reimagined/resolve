@@ -23,10 +23,10 @@ const handleResolveReadModelEvent = async (lambdaEvent, resolve) => {
   }
 }
 
-const handleResolveEvent = async (lambdaEvent, resolve) => {
+const handleDeployServiceEvent = async (lambdaEvent, resolve) => {
   switch (lambdaEvent.part) {
     case 'readModel': {
-      return handleResolveReadModelEvent(lambdaEvent, resolve)
+      return await handleResolveReadModelEvent(lambdaEvent, resolve)
     }
     default: {
       return null
@@ -34,4 +34,4 @@ const handleResolveEvent = async (lambdaEvent, resolve) => {
   }
 }
 
-export default handleResolveEvent
+export default handleDeployServiceEvent

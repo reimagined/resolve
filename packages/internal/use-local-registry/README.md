@@ -11,11 +11,11 @@ yarn workspace @internal/local-registry start
 #### Second terminal (*nix OS)
 ```sh
 cd examples/example-name
-yarn workspace @internal/use-local-registry start "cd $(pwd) && yarn resolve-cloud deploy"
+yarn workspace @internal/use-local-registry deploy "$(pwd)"
 ```
 
 #### Second terminal (windows)
 ```sh
 cd examples/example-name
-yarn workspace @internal/use-local-registry start "cd %CD% && yarn resolve-cloud deploy"
+yarn workspace @internal/use-local-registry deploy "%CD%"
 ```

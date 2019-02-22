@@ -23,6 +23,7 @@
     "redux": "4.0.1",
     "resolve-redux": "0.19.6",
     "resolve-scripts": "0.19.6",
+    "resolve-runtime": "0.19.6",
     "uuid": "3.3.2"
   },
   "devDependencies": {

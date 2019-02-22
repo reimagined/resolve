@@ -24,6 +24,7 @@
     "resolve-module-auth": "0.19.6",
     "resolve-readmodel-memory": "0.19.6",
     "resolve-scripts": "0.19.6",
+    "resolve-runtime": "0.19.6",
     "resolve-redux": "0.19.6"
   },
   "devDependencies": {

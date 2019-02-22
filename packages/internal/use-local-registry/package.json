@@ -6,10 +6,11 @@
   "main": "./index.js",
   "dependencies": {
     "@internal/helpers": "0.19.6",
-    "@internal/local-registry": "0.19.6"
+    "@internal/local-registry": "0.19.6",
+    "minimist": "1.2.0"
   },
   "scripts": {
-    "start": "node ./bin/index.js",
+    "deploy": "node ./bin/index.js",
     "test": "echo || exit 0"
   }
 }
