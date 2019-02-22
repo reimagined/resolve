@@ -10,12 +10,10 @@ npx create-resolve-app resolve-shopping-list -e shopping-list
 
 ## What's next?
 
-📑 Learn more about this case in the [**View Model**](https://github.com/reimagined/resolve/blob/master/docs/View%20Model.md) article.
+📑 Learn more about this case in the [**View Model Specifics**](https://reimagined.github.io/resolve/docs/read-side#view-model-specifics) article.
 
-📑 Available scripts, project structure overview, configuration files and more useful information are in [**API References**](https://github.com/reimagined/resolve/blob/master/docs/API%20References.md) topic.
+📑 Available scripts, project structure overview, configuration files, and more useful information can be found in the [**API References**](https://reimagined.github.io/resolve/docs/api-reference) topic.
 
-📑 Refer to the [**Architecture**](https://github.com/reimagined/resolve/blob/master/docs/Architecture.md) documentation topic to learn more about common architecture building principles.
-
-📑 You can learn how to create simple applications with reSolve in the [**Tutorials**](https://github.com/reimagined/resolve/tree/master/docs/Tutorials) section.
+📑 The app's creation process is detailed in the the [**Step-by-Step Tutorial**](https://reimagined.github.io/resolve/docs/tutorial).
 
 ![Analytics](https://ga-beacon.appspot.com/UA-118635726-1/examples-shopping-list-readme?pixel)
