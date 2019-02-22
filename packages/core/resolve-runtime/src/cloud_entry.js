@@ -16,12 +16,20 @@ import handleEventBusEvent from './handlers/event_bus_event_handler'
 
 const lambda = new Lambda({ apiVersion: '2015-03-31' })
 
-const invokeUpdateLambda = async readModelName =>
+const invokeUpdateLambda = async readModel =>
   await lambda
     .invoke({
-      FunctionName: process.env.UPDATE_LAMBDA_NAME,
+      FunctionName: process.env.EVENT_BUS_LAMBDA_ARN,
       InvocationType: 'Event',
-      Payload: JSON.stringify({ readModelName }),
+      Payload: JSON.stringify({
+        'detail-type': 'LISTEN_EVENT_BUS',
+        deploymentId: process.env.DEPLOYMENT_ID,
+        listenerId: readModel.name,
+        invariantHash: readModel.invariantHash,
+        lambdaArn: process.env.AWS_LAMBDA_FUNCTION_NAME,
+        inactiveTimeout: 1000 * 60 * 60,
+        eventTypes: Object.keys(readModel.projection)
+      }),
       LogType: 'None'
     })
     .promise()
@@ -51,7 +59,10 @@ const initResolve = async (
   })
 
   const executeQuery = createQueryExecutor({
-    doUpdateRequest: (pool, readModelName) => invokeUpdateLambda(readModelName),
+    doUpdateRequest: async (pool, readModelName) => {
+      const readModel = readModels.find(({ name }) => name === readModelName)
+      await invokeUpdateLambda(readModel)
+    },
     eventStore,
     viewModels,
     readModels,
@@ -161,59 +172,6 @@ const lambdaWorker = async (
       const executor = wrapApiHandler(mainHandler, getCustomParameters)
 
       executorResult = await executor(lambdaEvent, lambdaContext)
-    }
-    // DynamoDB trigger event
-    else if (lambdaEvent.Records != null) {
-      resolveLog(
-        'debug',
-        'Lambda handler classified event as Dynamo stream',
-        lambdaEvent.Records
-      )
-      const applicationPromises = []
-      const events = lambdaEvent.Records.map(record =>
-        Converter.unmarshall(record.dynamodb.NewImage)
-      )
-      for (const event of events) {
-        const eventDescriptor = {
-          topic: `${process.env.DEPLOYMENT_ID}/${event.type}/${
-            event.aggregateId
-          }`,
-          payload: JSON.stringify(event),
-          qos: 1
-        }
-
-        applicationPromises.push(
-          resolve.mqtt
-            .publish(eventDescriptor)
-            .promise()
-            .then(() => {
-              resolveLog(
-                'info',
-                'Lambda pushed event into MQTT successfully',
-                eventDescriptor
-              )
-            })
-            .catch(error => {
-              resolveLog(
-                'warn',
-                'Lambda can not publish event into MQTT',
-                eventDescriptor,
-                error
-              )
-            })
-        )
-      }
-
-      const executors = resolve.executeQuery.getExecutors(
-        queryConstants.modelTypes.readModel
-      )
-
-      for (const executor of executors) {
-        applicationPromises.push(executor.updateByEvents(events))
-      }
-
-      await Promise.all(applicationPromises)
-      executorResult = true
     }
   } finally {
     await disposeResolve(resolve)

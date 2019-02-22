@@ -3,8 +3,6 @@ import sinon from 'sinon'
 import createResolver from '../src/create-resolver'
 
 test('method "createResolver" should create resolver [success]', async () => {
-  const error = null
-
   const modelName = 'modelName'
   const resolverName = 'resolverName'
   const resolverArgs = { a: true, b: false }
@@ -38,7 +36,7 @@ test('method "createResolver" should create resolver [failure]', async () => {
   const jwtToken = 'jwtToken'
 
   const query = {
-    read: sinon.stub().callsFake(options => ({ result: options }))
+    read: sinon.stub().callsFake(() => { throw error })
   }
   const pool = { modelName, query }
 
@@ -47,7 +45,7 @@ test('method "createResolver" should create resolver [failure]', async () => {
   try {
     await resolver(resolverArgs, jwtToken)
     throw new Error('fail')
-  } catch (error) {
-    expect(error.message).toEqual('test')
+  } catch (err) {
+    expect(err).toEqual(error)
   }
 })
