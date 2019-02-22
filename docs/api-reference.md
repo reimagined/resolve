@@ -3,6 +3,26 @@ id: api-reference
 title: API Reference
 ---
 
+## Event Storage
+
+## Read Model Storage
+
+### Adapter Interface
+
+The table below lists functions that should be included into an implementation of a Read Model storage adapter.
+
+| Function Name | Description |
+| ------------- | ----------- |
+|               |             |
+
+### Store Interface
+
+The table below lists functions that you can use to communicate with a Read Model store through a `store` object.
+
+| Function Name | Description |
+| ------------- | ----------- |
+|               |             |
+
 ## Commands
 
 ### Command HTTP API
