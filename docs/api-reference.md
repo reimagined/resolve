@@ -23,6 +23,14 @@ The table below lists functions that you can use to communicate with a Read Mode
 | ------------- | ----------- |
 |               |             |
 
+## Client-Side API
+
+The reSolve framework includes the client **resolve-redux** library used to connect a client React + Redux app to a reSolve-powered backend. This library provides the following HOCs:
+
+| Function Name | Description |
+| ------------- | ----------- |
+|               |             |
+
 ## Commands
 
 ### Command HTTP API
