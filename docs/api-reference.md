@@ -5,6 +5,14 @@ title: API Reference
 
 ## Event Storage
 
+### Adapter Interface
+
+The table below lists functions that should be included into an implementation of a event storage adapter.
+
+| Function Name | Description |
+| ------------- | ----------- |
+|               |             |
+
 ## Read Model Storage
 
 ### Adapter Interface
