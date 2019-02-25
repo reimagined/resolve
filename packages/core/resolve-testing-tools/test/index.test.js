@@ -1,53 +1,48 @@
-import sinon from 'sinon'
+import givenEvents from '../src/index'
+import createReadModelAdapter from 'resolve-readmodel-memory'
 
-describe('resolve-testing-tools index', () => {
-  let sandbox
-
-  beforeAll(() => {
-    sandbox = sinon.createSandbox()
-  })
-
-  afterAll(() => {
-    sandbox.restore()
-  })
-
-  test('should call createReadModel with correct arguments', () => {
-    const createQuery = require('resolve-query')
-    const createStorageAdapter = require('resolve-storage-lite')
-    const createBusAdapter = require('resolve-bus-memory')
-    const createEventStore = require('resolve-es')
-    const createReadModelAdapter = require('resolve-readmodel-memory')
-    const createReadModelFactory = require('../src/create-read-model')
-    const applyEvent = require('../src/apply-event')
-    const applyEvents = require('../src/apply-events')
-    const createResolver = require('../src/create-resolver')
-    const createResolvers = require('../src/create-resolvers')
-
-    sandbox.stub(createQuery, 'default')
-    sandbox.stub(createStorageAdapter, 'default')
-    sandbox.stub(createBusAdapter, 'default')
-    sandbox.stub(createEventStore, 'default')
-    sandbox.stub(createReadModelAdapter, 'default')
-    sandbox.stub(createReadModelFactory, 'default')
-    sandbox.stub(applyEvent, 'default')
-    sandbox.stub(applyEvents, 'default')
-    sandbox.stub(createResolver, 'default')
-    sandbox.stub(createResolvers, 'default')
-
-    const { createReadModel } = require('../src/index.js')
-
-    createReadModel()
-
-    sinon.assert.calledWith(createReadModelFactory.default, {
-      createQuery: createQuery.default,
-      createStorageAdapter: createStorageAdapter.default,
-      createBusAdapter: createBusAdapter.default,
-      createEventStore: createEventStore.default,
-      createReadModelAdapter: createReadModelAdapter.default,
-      createResolver: createResolver.default,
-      createResolvers: createResolvers.default,
-      applyEvent: applyEvent.default,
-      applyEvents: applyEvents.default
+test('resolve-testing-tools index', async () => {
+  const result = await givenEvents([
+    { aggregateId: 'id1', type: 'TEST1' },
+    { aggregateId: 'id2', type: 'TEST2' },
+    { aggregateId: 'id3', type: 'TEST3' }
+  ])
+    .readModel({
+      name: 'readModelName',
+      projection: {
+        Init: async store => {
+          await store.defineTable('items', {
+            indexes: { id: 'string' },
+            fields: []
+          })
+        },
+        TEST1: async store => {
+          await store.insert('items', { id: 1 })
+        },
+        TEST2: async store => {
+          await store.insert('items', { id: 2 })
+        },
+        TEST3: async store => {
+          await store.insert('items', { id: 3 })
+        }
+      },
+      resolvers: {
+        all: async (store, args, jwtToken) => {
+          return {
+            items: await store.find('items', {}, { id: 1 }, { id: 1 }),
+            args,
+            jwtToken
+          }
+        }
+      },
+      adapter: createReadModelAdapter()
     })
+    .all(1, 2, 3)
+    .as('JWT_TOKEN')
+
+  expect(result).toEqual({
+    items: [{ id: 1 }, { id: 2 }, { id: 3 }],
+    args: [1, 2, 3],
+    jwtToken: 'JWT_TOKEN'
   })
 })
