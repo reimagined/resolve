@@ -43,7 +43,7 @@ const handleEventBusEvent = async (lambdaEvent, resolve) => {
     case 'GET_APP_CONFIG': {
       return await handleGetAppConfigEvent(lambdaEvent, resolve)
     }
-    case 'APPLY_EVENTS': {
+    case 'APPLY_EVENTS_FROM_EVENT_BUS': {
       return await handleApplyEvents(lambdaEvent, resolve)
     }
     default: {
