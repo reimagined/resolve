@@ -7,7 +7,7 @@ const init = async ({ promise, createQuery, transformEvents }) => {
 
   try {
     const queryExecutor = createQuery({
-      doUpdateRequest: Function('return Promise.resolve()'),
+      doUpdateRequest: Promise.resolve.bind(Promise),
       eventStore: null,
       viewModels: [],
       readModels: [

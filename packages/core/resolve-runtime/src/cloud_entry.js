@@ -1,38 +1,34 @@
 import 'source-map-support/register'
 import IotData from 'aws-sdk/clients/iotdata'
-import { Converter } from 'aws-sdk/clients/dynamodb'
 import v4 from 'aws-signature-v4'
 import STS from 'aws-sdk/clients/sts'
-import Lambda from 'aws-sdk/clients/lambda'
+import StepFunctions from 'aws-sdk/clients/stepfunctions'
 
 import wrapApiHandler from 'resolve-api-handler-awslambda'
 import createCommandExecutor from 'resolve-command'
 import createEventStore from 'resolve-es'
-import createQueryExecutor, { constants as queryConstants } from 'resolve-query'
+import createQueryExecutor from 'resolve-query'
 
 import mainHandler from './handlers/main_handler'
 import handleDeployServiceEvent from './handlers/deploy_service_event_handler'
 import handleEventBusEvent from './handlers/event_bus_event_handler'
 
-const lambda = new Lambda({ apiVersion: '2015-03-31' })
+const stepFunctions = new StepFunctions()
 
-const invokeUpdateLambda = async readModel =>
-  await lambda
-    .invoke({
-      FunctionName: process.env.EVENT_BUS_LAMBDA_ARN,
-      InvocationType: 'Event',
-      Payload: JSON.stringify({
+const invokeUpdateLambda = async readModel => {
+  await stepFunctions
+    .startExecution({
+      stateMachineArn: process.env.EVENT_BUS_STEP_FUNCTION_ARN,
+      input: JSON.stringify({
         'detail-type': 'LISTEN_EVENT_BUS',
-        deploymentId: process.env.DEPLOYMENT_ID,
         listenerId: readModel.name,
         invariantHash: readModel.invariantHash,
-        lambdaArn: process.env.AWS_LAMBDA_FUNCTION_NAME,
         inactiveTimeout: 1000 * 60 * 60,
         eventTypes: Object.keys(readModel.projection)
-      }),
-      LogType: 'None'
+      })
     })
     .promise()
+}
 
 const initResolve = async (
   {

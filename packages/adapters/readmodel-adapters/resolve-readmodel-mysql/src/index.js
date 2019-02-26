@@ -4,7 +4,6 @@ import createAdapter from 'resolve-readmodel-base'
 
 const dropReadModel = async ({ runQuery, escapeId }, readModelName) => {
   const rows = await runQuery(
-    readModelName,
     `SELECT table_name AS \`tableName\` FROM INFORMATION_SCHEMA.TABLES
     WHERE table_comment LIKE "RESOLVE-${readModelName}"
     AND table_schema=DATABASE()`
@@ -15,7 +14,7 @@ const dropReadModel = async ({ runQuery, escapeId }, readModelName) => {
   }
 }
 
-const runQuery = async (pool, readModelName, querySQL) => {
+const runQuery = async (pool, querySQL) => {
   const connection = await pool.connectionPromise
   const [rows] = await connection.query(querySQL)
   return rows
@@ -40,7 +39,7 @@ const setupConnection = async pool => {
 }
 
 const connect = async (pool, options) => {
-  let { checkStoredTableSchema, tablePrefix, ...connectionOptions } = options
+  let { tablePrefix, ...connectionOptions } = options
 
   if (
     tablePrefix == null ||
@@ -68,7 +67,6 @@ const disconnect = async pool => {
 
 const drop = async ({ runQuery, escapeId }) => {
   const rows = await runQuery(
-    readModelName,
     `SELECT table_name AS \`tableName\` FROM INFORMATION_SCHEMA.TABLES
     WHERE table_comment LIKE "RESOLVE-%"
     AND table_schema=DATABASE()`
@@ -101,7 +99,6 @@ const defineTable = async (
   }
 
   await runQuery(
-    readModelName,
     `CREATE TABLE ${escapeId(`${tablePrefix}${tableName}`)} (` +
       [
         tableDescription.fields
@@ -435,7 +432,6 @@ const find = async (
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
   const rows = await runQuery(
-    readModelName,
     `SELECT * FROM ${escapeId(`${tablePrefix}${tableName}`)}
     ${inlineSearchExpr}
     ${orderExpression}
@@ -462,7 +458,6 @@ const findOne = async (
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
   const rows = await runQuery(
-    readModelName,
     `SELECT * FROM ${escapeId(`${tablePrefix}${tableName}`)}
     ${inlineSearchExpr}
     LIMIT 0, 1`
@@ -487,7 +482,6 @@ const count = async (
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
   const rows = await runQuery(
-    readModelName,
     `SELECT Count(*) AS Count FROM ${escapeId(`${tablePrefix}${tableName}`)}
     ${inlineSearchExpr}`
   )
@@ -511,7 +505,6 @@ const insert = async (
   document
 ) => {
   await runQuery(
-    readModelName,
     `INSERT INTO ${escapeId(`${tablePrefix}${tableName}`)}(${Object.keys(
       document
     )
@@ -566,7 +559,6 @@ const update = async (
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
   await runQuery(
-    readModelName,
     `UPDATE ${escapeId(`${tablePrefix}${tableName}`)}
     SET ${updateExpr} ${inlineSearchExpr}`
   )
@@ -584,7 +576,6 @@ const del = async (
     searchExpr.trim() !== '' ? `WHERE ${searchExpr} ` : ''
 
   await runQuery(
-    readModelName,
     `DELETE FROM ${escapeId(`${tablePrefix}${tableName}`)}
     ${inlineSearchExpr}`
   )

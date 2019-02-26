@@ -3,17 +3,17 @@ import { Selector } from 'testcafe'
 const host = process.env.HOST || 'localhost'
 const MAIN_PAGE = `http://${host}:3000`
 
-const getRootableUrl = url => MAIN_PAGE + url
+const getRootBasedUrl = url => MAIN_PAGE + url
 
 const registerFirstUser = async t => {
-  await t.navigateTo(getRootableUrl('/login'))
+  await t.navigateTo(getRootBasedUrl('/login'))
   await t.typeText(await Selector('input[name="username"]'), 'User 1')
   await t.typeText(await Selector('input[name="password"]'), 'User Password 1')
   await t.click(await Selector('.btn-success'))
 }
 
 const loginFirstUser = async t => {
-  await t.navigateTo(getRootableUrl('/login'))
+  await t.navigateTo(getRootBasedUrl('/login'))
   await t.typeText(await Selector('input[name="username"]'), 'User 1')
   await t.typeText(await Selector('input[name="password"]'), 'User Password 1')
   await t.click(await Selector('.btn-primary'))

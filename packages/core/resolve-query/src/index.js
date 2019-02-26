@@ -10,7 +10,6 @@ import readAndSerialize from './read-and-serialize'
 import getModelType from './get-model-type'
 import dispose from './dispose'
 import getExecutors from './get-executors'
-import updateRequest from './update-request'
 import * as constants from './constants'
 
 export default createQuery.bind(
