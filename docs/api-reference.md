@@ -35,9 +35,85 @@ The table below lists functions that you can use to communicate with a Read Mode
 
 The reSolve framework includes the client **resolve-redux** library used to connect a client React + Redux app to a reSolve-powered backend. This library provides the following HOCs:
 
-| Function Name | Description |
-| ------------- | ----------- |
-|               |             |
+| Function Name                                     | Description                                                                                                      |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| [connectViewModel](#connectviewmodel)             | Connects a React component to a reSolve View Model.                                                              |
+| [connectReadModel](#connectreadmodel)             | Connects a React component to a reSolve Read Model.                                                              |
+| [connectRootBasedUrls](#connectrootbasedurls)     | Fixes URLs passed to the specified props so that they take into respect the correct root folder path.            |
+| [connectStaticBasedUrls](#connectstaticbasedurls) | Fixes URLs passed to the specified props so that they take into respect the correct static resource folder path. |
+
+### connectViewModel
+
+```js
+export const mapStateToOptions = (state, ownProps) => {
+  const aggregateId = ownProps.match.params.id
+
+  return {
+    viewModelName: 'ShoppingList',
+    aggregateIds: [aggregateId]
+  }
+}
+
+export const mapStateToProps = (state, ownProps) => {
+  const aggregateId = ownProps.match.params.id
+
+  return {
+    aggregateId
+  }
+}
+
+export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+  bindActionCreators(
+    {
+      ...aggregateActions,
+      replaceUrl: routerActions.replace
+    },
+    dispatch
+  )
+
+export default connectViewModel(mapStateToOptions)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(ShoppingList)
+)
+```
+
+### connectReadModel
+
+```js
+export const mapStateToOptions = () => ({
+  readModelName: 'ShoppingLists',
+  resolverName: 'all',
+  resolverArgs: {}
+})
+
+export const mapStateToProps = (state, ownProps) => ({
+  lists: ownProps.data
+})
+
+export const mapDispatchToProps = (dispatch, { aggregateActions }) =>
+  bindActionCreators(aggregateActions, dispatch)
+
+export default connectReadModel(mapStateToOptions)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(MyLists)
+)
+```
+
+### connectRootBasedUrls
+
+```js
+export default connectRootBasedUrls(['href'])(Link)
+```
+
+### connectStaticBasedUrls
+
+```js
+export default connectStaticBasedUrls(['css', 'favicon'])(Header)
+```
 
 ## Commands
 
