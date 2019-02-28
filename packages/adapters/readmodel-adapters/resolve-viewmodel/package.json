@@ -1,6 +1,6 @@
 {
   "name": "resolve-viewmodel",
-  "version": "0.19.6",
+  "version": "0.19.7",
   "description": "This package serves as a resolve-query adapter for view models",
   "engines": {
     "node": ">=8.10"

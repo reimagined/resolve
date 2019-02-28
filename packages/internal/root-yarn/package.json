@@ -1,10 +1,10 @@
 {
   "name": "@internal/root-yarn",
   "private": true,
-  "version": "0.19.6",
+  "version": "0.19.7",
   "bin": "./bin/index.js",
   "dependencies": {
-    "@internal/helpers": "0.19.6"
+    "@internal/helpers": "0.19.7"
   },
   "scripts": {
     "start": "node ./bin/index.js",
