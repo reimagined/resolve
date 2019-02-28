@@ -55,10 +55,10 @@ const SplashContainer = ({ children }) => (
 )
 
 const ProjectTitle = () => (
-  <h2 className="projectTitle">
+  <h1 className="projectTitle">
     {siteConfig.title}
     <small>{siteConfig.tagline}</small>
-  </h2>
+  </h1>
 )
 
 const PromoSection = props => (
